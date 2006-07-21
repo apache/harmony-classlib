@@ -19,8 +19,6 @@ import java.beans.DefaultPersistenceDelegate;
 import java.beans.Expression;
 import java.util.Arrays;
 import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -132,19 +130,24 @@ public class ExpressionTest extends TestCase {
      * Test the constructor under normal conditions.
      */
     public void testConstructor_Normal() {
-        Object arg1 = new Object();
-        Object arg2 = "string";
-        Object[] oa = new Object[] { arg1, arg2 };
-        Expression t = new Expression(arg1, "method", oa);
-        assertSame(arg1, t.getTarget());
+        Object target = new MockParent();
+        Object arg1 = "string1";
+        Object arg2 = new Object();
+        Object arg3 = "string3";
+        Object arg4 = new Integer(117);
+        Object[] oa = new Object[] { arg1, arg2, arg3, arg4 };
+        Expression t = new Expression(target, "method", oa);
+
+        assertSame(target, t.getTarget());
         assertSame("method", t.getMethodName());
         assertSame(oa, t.getArguments());
         assertSame(arg1, t.getArguments()[0]);
         assertSame(arg2, t.getArguments()[1]);
-        Pattern p = Pattern
-                .compile(".*=Object[0-9]+\\.method\\(Object[0-9]+, \"string\"\\);");
-        Matcher m = p.matcher(t.toString());
-        assertTrue(m.matches());
+        assertSame(arg3, t.getArguments()[2]);
+        assertSame(arg4, t.getArguments()[3]);
+
+        assertEquals("String=ExpressionTest$MockParent.method(" +
+                "\"string1\", Object, \"string3\", Integer);", t.toString());
     }
 
     /*
@@ -154,32 +157,29 @@ public class ExpressionTest extends TestCase {
         Object arg = new Object();
         Object[] oa = new Object[] { arg };
         Expression t = new Expression(null, "method", oa);
+
         assertSame(null, t.getTarget());
         assertSame("method", t.getMethodName());
         assertSame(oa, t.getArguments());
         assertSame(arg, t.getArguments()[0]);
-
-        Pattern p = Pattern.compile(".*=null\\.method\\(Object[0-9]+\\);");
-        Matcher m = p.matcher(t.toString());
-        assertTrue(m.matches());
     }
 
     /*
      * Test the constructor with an array target.
      */
     public void testConstructor_ArrayTarget() {
+        Object target = new MockParent();
         Object arg = new Object();
         Object[] oa = new Object[] { arg };
-        Expression t = new Expression(oa, "method", oa);
-        assertSame(oa, t.getTarget());
+        Expression t = new Expression(target, "method", oa);
+        
+        assertSame(target, t.getTarget());
         assertSame("method", t.getMethodName());
         assertSame(oa, t.getArguments());
         assertSame(arg, t.getArguments()[0]);
-
-        Pattern p = Pattern
-                .compile(".*=ObjectArray[0-9]+\\.method\\(Object[0-9]+\\);");
-        Matcher m = p.matcher(t.toString());
-        assertTrue(m.matches());
+        
+        assertEquals("String=ExpressionTest$MockParent.method(Object);",
+                t.toString());
     }
 
     /*
@@ -189,30 +189,26 @@ public class ExpressionTest extends TestCase {
         Object target = new Object();
         Object[] oa = new Object[] { new Object() };
         Expression t = new Expression(target, null, oa);
+
         assertSame(target, t.getTarget());
         assertSame(null, t.getMethodName());
         assertSame(oa, t.getArguments());
-
-        Pattern p = Pattern
-                .compile(".*=Object[0-9]+\\.null\\(Object[0-9]+\\);");
-        Matcher m = p.matcher(t.toString());
-        assertTrue(m.matches());
     }
 
     /*
      * Test the constructor with the method name "new".
      */
     public void testConstructor_NewMethodName() {
-        Object target = new Object();
+        Object target = MockObject.class;
         Object[] oa = new Object[] { new Object() };
         Expression t = new Expression(target, "new", oa);
+
         assertSame(target, t.getTarget());
         assertSame("new", t.getMethodName());
         assertSame(oa, t.getArguments());
 
-        Pattern p = Pattern.compile(".*=Object[0-9]+\\.new\\(Object[0-9]+\\);");
-        Matcher m = p.matcher(t.toString());
-        assertTrue(m.matches());
+        assertEquals("ExpressionTest$MockObject=Class.new(Object);",
+                t.toString());
     }
 
     /*
@@ -222,45 +218,42 @@ public class ExpressionTest extends TestCase {
         Object target = new Object();
         Object[] oa = new Object[] { new Object() };
         Expression t = new Expression(target, "", oa);
+
         assertSame(target, t.getTarget());
         assertSame("", t.getMethodName());
         assertSame(oa, t.getArguments());
-
-        Pattern p = Pattern.compile(".*=Object[0-9]+\\.\\(Object[0-9]+\\);");
-        Matcher m = p.matcher(t.toString());
-        assertTrue(m.matches());
     }
 
     /*
      * Test the constructor with null arguments.
      */
     public void testConstructor_NullArguments() {
-        Object target = new Object();
+        Object target = new MockParent();
         Expression t = new Expression(target, "method", null);
+
         assertSame(target, t.getTarget());
         assertSame("method", t.getMethodName());
         assertEquals(0, t.getArguments().length);
 
-        Pattern p = Pattern.compile(".*=Object[0-9]+\\.method\\(\\);");
-        Matcher m = p.matcher(t.toString());
-        assertTrue(m.matches());
+        assertEquals("String=ExpressionTest$MockParent.method();",
+                t.toString());
     }
 
     /*
      * Test the constructor with a null argument.
      */
     public void testConstructor_NullArgument() {
-        Object target = new Object();
+        Object target = new MockParent();
         Object[] oa = new Object[] { null };
         Expression t = new Expression(target, "method", oa);
+
         assertSame(target, t.getTarget());
         assertSame("method", t.getMethodName());
         assertSame(oa, t.getArguments());
         assertNull(t.getArguments()[0]);
 
-        Pattern p = Pattern.compile(".*=Object[0-9]+\\.method\\(null\\);");
-        Matcher m = p.matcher(t.toString());
-        assertTrue(m.matches());
+        assertEquals("String=ExpressionTest$MockParent.method(null);",
+                t.toString());
     }
 
     /*
@@ -268,20 +261,25 @@ public class ExpressionTest extends TestCase {
      */
     public void testConstructor_Value_Normal() throws Exception {
         Object val = new Object();
-        Object arg1 = new Object();
+        Object target = new MockParent();
+        Object arg1 = "mama";
         Object arg2 = new Object();
-        Object[] oa = new Object[] { arg1, arg2 };
-        Expression t = new Expression(val, arg1, "method", oa);
+        Object arg3 = new Object();
+        Object arg4 = new Long(7);
+        Object[] oa = new Object[] { arg1, arg2, arg3, arg4 };
+        Expression t = new Expression(val, target, "method", oa);
+
         assertSame(val, t.getValue());
-        assertSame(arg1, t.getTarget());
+        assertSame(target, t.getTarget());
         assertSame("method", t.getMethodName());
         assertSame(oa, t.getArguments());
         assertSame(arg1, t.getArguments()[0]);
         assertSame(arg2, t.getArguments()[1]);
-        Pattern p = Pattern
-                .compile("Object[0-9]+=Object[0-9]+\\.method\\(Object[0-9]+, Object[0-9]+\\);");
-        Matcher m = p.matcher(t.toString());
-        assertTrue(m.matches());
+        assertSame(arg3, t.getArguments()[2]);
+        assertSame(arg4, t.getArguments()[3]);
+        
+        assertEquals("Object=ExpressionTest$MockParent.method(" +
+                "\"mama\", Object, Object, Long);", t.toString());
     }
 
     /*
@@ -292,36 +290,33 @@ public class ExpressionTest extends TestCase {
         Object arg = new Object();
         Object[] oa = new Object[] { arg };
         Expression t = new Expression(val, null, "method", oa);
+
         assertSame(val, t.getValue());
         assertSame(null, t.getTarget());
         assertSame("method", t.getMethodName());
         assertSame(oa, t.getArguments());
         assertSame(arg, t.getArguments()[0]);
 
-        Pattern p = Pattern
-                .compile("Object[0-9]+=null\\.method\\(Object[0-9]+\\);");
-        Matcher m = p.matcher(t.toString());
-        assertTrue(m.matches());
+        assertEquals("Object=null.method(Object);", t.toString());
     }
 
     /*
      * Test the constructor(value, ...) with an array target.
      */
     public void testConstructor_Value_ArrayTarget() throws Exception {
-        Object val = new Object();
-        Object arg = new Object();
+        Integer val = new Integer(69);
+        Object target = new Integer[] { val }; 
+        Object arg = new Integer(0);
         Object[] oa = new Object[] { arg };
-        Expression t = new Expression(val, oa, "method", oa);
+        Expression t = new Expression(val, target, "get", oa);
+
         assertSame(val, t.getValue());
-        assertSame(oa, t.getTarget());
-        assertSame("method", t.getMethodName());
+        assertSame(target, t.getTarget());
+        assertSame("get", t.getMethodName());
         assertSame(oa, t.getArguments());
         assertSame(arg, t.getArguments()[0]);
 
-        Pattern p = Pattern
-                .compile("Object[0-9]+=ObjectArray[0-9]+\\.method\\(Object[0-9]+\\);");
-        Matcher m = p.matcher(t.toString());
-        assertTrue(m.matches());
+        assertEquals("Integer=IntegerArray.get(Integer);", t.toString());
     }
 
     /*
@@ -332,15 +327,13 @@ public class ExpressionTest extends TestCase {
         Object target = new Object();
         Object[] oa = new Object[] { new Object() };
         Expression t = new Expression(val, target, null, oa);
+
         assertSame(val, t.getValue());
         assertSame(target, t.getTarget());
         assertSame(null, t.getMethodName());
         assertSame(oa, t.getArguments());
 
-        Pattern p = Pattern
-                .compile("Object[0-9]+=Object[0-9]+\\.null\\(Object[0-9]+\\);");
-        Matcher m = p.matcher(t.toString());
-        assertTrue(m.matches());
+        assertEquals("Object=Object.null(Object);", t.toString());
     }
 
     /*
@@ -351,15 +344,13 @@ public class ExpressionTest extends TestCase {
         Object target = new Object();
         Object[] oa = new Object[] { new Object() };
         Expression t = new Expression(val, target, "new", oa);
+
         assertSame(val, t.getValue());
         assertSame(target, t.getTarget());
         assertSame("new", t.getMethodName());
         assertSame(oa, t.getArguments());
 
-        Pattern p = Pattern
-                .compile("Object[0-9]+=Object[0-9]+\\.new\\(Object[0-9]+\\);");
-        Matcher m = p.matcher(t.toString());
-        assertTrue(m.matches());
+        assertEquals("Object=Object.new(Object);", t.toString());
     }
 
     /*
@@ -370,15 +361,13 @@ public class ExpressionTest extends TestCase {
         Object target = new Object();
         Object[] oa = new Object[] { new Object() };
         Expression t = new Expression(val, target, "", oa);
+
         assertSame(val, t.getValue());
         assertSame(target, t.getTarget());
         assertSame("", t.getMethodName());
         assertSame(oa, t.getArguments());
 
-        Pattern p = Pattern
-                .compile("Object[0-9]+=Object[0-9]+\\.\\(Object[0-9]+\\);");
-        Matcher m = p.matcher(t.toString());
-        assertTrue(m.matches());
+        assertEquals("Object=Object.(Object);", t.toString());
     }
 
     /*
@@ -388,15 +377,13 @@ public class ExpressionTest extends TestCase {
         Object val = new Object();
         Object target = new Object();
         Expression t = new Expression(val, target, "method", null);
+
         assertSame(val, t.getValue());
         assertSame(target, t.getTarget());
         assertSame("method", t.getMethodName());
         assertEquals(0, t.getArguments().length);
 
-        Pattern p = Pattern
-                .compile("Object[0-9]+=Object[0-9]+\\.method\\(\\);");
-        Matcher m = p.matcher(t.toString());
-        assertTrue(m.matches());
+        assertEquals("Object=Object.method();", t.toString());
     }
 
     /*
@@ -407,16 +394,14 @@ public class ExpressionTest extends TestCase {
         Object target = new Object();
         Object[] oa = new Object[] { null };
         Expression t = new Expression(val, target, "method", oa);
+
         assertSame(val, t.getValue());
         assertSame(target, t.getTarget());
         assertSame("method", t.getMethodName());
         assertSame(oa, t.getArguments());
         assertNull(t.getArguments()[0]);
 
-        Pattern p = Pattern
-                .compile("Object[0-9]+=Object[0-9]+\\.method\\(null\\);");
-        Matcher m = p.matcher(t.toString());
-        assertTrue(m.matches());
+        assertEquals("Object=Object.method(null);", t.toString());
     }
 
     /*
@@ -426,15 +411,14 @@ public class ExpressionTest extends TestCase {
         Object target = new Object();
         Object[] oa = new Object[] { null };
         Expression t = new Expression(null, target, "method", oa);
+
         assertSame(null, t.getValue());
         assertSame(target, t.getTarget());
         assertSame("method", t.getMethodName());
         assertSame(oa, t.getArguments());
         assertNull(t.getArguments()[0]);
 
-        Pattern p = Pattern.compile("null=Object[0-9]+\\.method\\(null\\);");
-        Matcher m = p.matcher(t.toString());
-        assertTrue(m.matches());
+        assertEquals("<null>=Object.method(null);", t.toString());
     }
 
     /*
@@ -995,6 +979,16 @@ public class ExpressionTest extends TestCase {
             receivedArguments.add(o);
             receivedArguments.add(o2);
             throw new NullPointerException();
+        }
+
+        public Object method(Object o, Object o2, Object o3, Object o4) {
+            reset();
+            calledMethod = "method5";
+            receivedArguments.add(o);
+            receivedArguments.add(o2);
+            receivedArguments.add(o3);
+            receivedArguments.add(o4);
+            return calledMethod;
         }
 
         public static void reset() {
