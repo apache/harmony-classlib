@@ -38,7 +38,7 @@ import javax.net.ssl.SSLSessionBindingEvent;
 import javax.net.ssl.SSLSessionBindingListener;
 import javax.net.ssl.SSLSessionContext;
 
-import org.apache.harmony.security.utils.TwoKeyHashMap;
+import org.apache.harmony.luni.util.TwoKeyHashMap;
 import org.apache.harmony.xnet.provider.jsse.SSLSessionContextImpl;
 
 /**

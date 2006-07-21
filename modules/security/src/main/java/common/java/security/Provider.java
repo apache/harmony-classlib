@@ -35,8 +35,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.harmony.luni.util.TwoKeyHashMap;
 import org.apache.harmony.security.fortress.Services;
-import org.apache.harmony.security.utils.TwoKeyHashMap;
 
 public abstract class Provider extends Properties {
     private static final long serialVersionUID = -4298000515446427739L;

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.security.utils;
+package org.apache.harmony.luni.util;
 
 import java.util.AbstractCollection;
 import java.util.AbstractMap;
