@@ -52,6 +52,9 @@ public class AllTests {
         suite.addTestSuite(NonWritableChannelExceptionTest.class);
         suite.addTestSuite(NotYetBoundExceptionTest.class);
         suite.addTestSuite(NotYetConnectedExceptionTest.class);
+        suite.addTestSuite(OverlappingFileLockExceptionTest.class);
+        suite.addTestSuite(UnresolvedAddressExceptionTest.class);
+        suite.addTestSuite(UnsupportedAddressTypeExceptionTest.class);
         suite.addTestSuite(MapModeTest.class);
         // $JUnit-END$
         return suite;
