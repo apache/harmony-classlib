@@ -439,13 +439,14 @@ public abstract class FileChannelImpl extends FileChannel {
         if (!target.isOpen()) {
             throw new ClosedChannelException();
         }
+        if (target instanceof ReadOnlyFileChannel) {
+            throw new NonWritableChannelException();
+        }
         if (position < 0 || count < 0 || position > Integer.MAX_VALUE
                 || count > Integer.MAX_VALUE) {
             throw new IllegalArgumentException();
         }
-        if (target instanceof ReadOnlyFileChannel) {
-            throw new NonWritableChannelException();
-        }
+        
         if (count == 0 || position >= size()) {
             return 0;
         }

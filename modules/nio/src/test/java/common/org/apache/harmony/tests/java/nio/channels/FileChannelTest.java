@@ -555,6 +555,14 @@ public class FileChannelTest extends TestCase {
      * @tests java.nio.channels.FileChannel#truncate(long)
      */
     public void test_truncateJ_IllegalArgument() throws Exception {
+        // regression test for Harmony-941
+        try {
+            readOnlyFileChannel.truncate(-1);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+        
         try {
             writeOnlyFileChannel.truncate(-1);
             fail("should throw IllegalArgumentException");
@@ -2862,6 +2870,22 @@ public class FileChannelTest extends TestCase {
         // size.
         try {
             readWriteFileChannel.transferTo(10, 10, readOnlyFileChannel);
+            fail("should throw NonWritableChannelException.");
+        } catch (NonWritableChannelException e) {
+            // expected
+        }
+        
+        // regression test for Harmony-941
+        // first throws NonWritableChannelException even arguments are illegal.
+        try {
+            readWriteFileChannel.transferTo(-1, 10, readOnlyFileChannel);
+            fail("should throw NonWritableChannelException.");
+        } catch (NonWritableChannelException e) {
+            // expected
+        }
+
+        try {
+            readWriteFileChannel.transferTo(0, -1, readOnlyFileChannel);
             fail("should throw NonWritableChannelException.");
         } catch (NonWritableChannelException e) {
             // expected

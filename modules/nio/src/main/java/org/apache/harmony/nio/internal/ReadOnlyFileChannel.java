@@ -56,6 +56,9 @@ public final class ReadOnlyFileChannel extends FileChannelImpl {
 
 	public final FileChannel truncate(long size) throws IOException {
 		openCheck();
+        if (size < 0) {
+            throw new IllegalArgumentException();
+        }
 		throw new NonWritableChannelException();
 	}
 
