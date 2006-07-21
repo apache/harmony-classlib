@@ -25,6 +25,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Vector;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
@@ -187,8 +191,8 @@ public class Statement {
         // the code below reproduces exact RI exception throwing behavior 
         if (!methodName.equals("set") && !methodName.equals("get")) {
             throw new NoSuchMethodException("Unknown method name for array");
-        } else if (arguments.length > 0 &&
-                   arguments[0].getClass() != Integer.class) {
+        } else if (arguments.length > 0
+                && arguments[0].getClass() != Integer.class) {
             throw new ClassCastException(
                     "First parameter in array getter(setter) is not of "
                             + "Integer type");
@@ -198,14 +202,14 @@ public class Statement {
         } else if (methodName.equals("set") && (arguments.length != 2)) {
             throw new ArrayIndexOutOfBoundsException(
                     "Illegal number of arguments in array setter");
-        } 
+        }
 
         if (methodName.equals("get")) {
-            return Array.class.getMethod("get",
-                    new Class[] { Object.class, int.class } );
+            return Array.class.getMethod("get", new Class[] { Object.class,
+                    int.class });
         } else {
-            return Array.class.getMethod("set",
-                    new Class[] { Object.class, int.class, Object.class } );
+            return Array.class.getMethod("set", new Class[] { Object.class,
+                    int.class, Object.class });
         }
     }
 
@@ -264,22 +268,22 @@ public class Statement {
     }
 
     /**
-     * Method lookup is performed initially in the current class
-     * then in superclass, then in super class of super class and so on.
+     * Searches for best matching method for given name and argument types.
      */
     private static Method findMethod(Class<?> targetClass, String methodName,
             Object[] arguments, boolean methodIsStatic)
             throws NoSuchMethodException {
-        Class[] argClasses = getClasses(arguments);
 
-        Method result = null;
-        Method[] methods = targetClass.getDeclaredMethods();
+        Class[] argClasses = getClasses(arguments);
+        Method[] methods = targetClass.getMethods();
+        Vector<Method> foundMethods = new Vector<Method>();
+        Method[] foundMethodsArr;
 
         for (int i = 0; i < methods.length; ++i) {
             Method method = methods[i];
             int mods = method.getModifiers();
 
-            if (method.getName().equals(methodName) && Modifier.isPublic(mods)
+            if (method.getName().equals(methodName)
                     && (methodIsStatic ? Modifier.isStatic(mods) : true)) {
 
                 Class<?>[] parameterTypes = method.getParameterTypes();
@@ -306,27 +310,22 @@ public class Statement {
                     }
 
                     if (found) {
-                        result = method;
-                        break;
+                        foundMethods.addElement(method);
                     }
                 }
             }
         }
 
-        if (result == null) {
-            // let's look for this method in the super class
-            Class<?> parent = targetClass.getSuperclass();
-
-            if (parent != null) {
-                result = findMethod(parent, methodName, arguments,
-                        methodIsStatic);
-            } else {
-                throw new NoSuchMethodException("No method with name "
-                        + methodName + " is found");
-            }
+        if (foundMethods.size() == 0) {
+            throw new NoSuchMethodException("No method with name " + methodName
+                    + " is found");
         }
 
-        return result;
+        foundMethodsArr = foundMethods.toArray(new Method[foundMethods.size()]);
+        Arrays.sort(foundMethodsArr, new MethodComparator(methodName,
+                argClasses));
+
+        return foundMethodsArr[0];
     }
 
     private static boolean isPrimitiveWrapper(Class<?> wrapper, Class<?> base) {
@@ -340,12 +339,34 @@ public class Statement {
                 || (base == double.class) && (wrapper == Double.class);
     }
 
+    private static Class getPrimitiveWrapper(Class base) {
+        Class res = null;
+
+        if (base == boolean.class) {
+            res = Boolean.class;
+        } else if (base == byte.class) {
+            res = Byte.class;
+        } else if (base == char.class) {
+            res = Character.class;
+        } else if (base == short.class) {
+            res = Short.class;
+        } else if (base == int.class) {
+            res = Integer.class;
+        } else if (base == long.class) {
+            res = Long.class;
+        } else if (base == float.class) {
+            res = Float.class;
+        } else if (base == double.class) {
+            res = Double.class;
+        }
+        return res;
+    }
+
     static String convertClassName(Class<?> type) {
         Class<?> componentType = type.getComponentType();
         Class<?> resultType = (componentType == null) ? type : componentType;
         String result = resultType.getName();
         int k = result.lastIndexOf('.');
-        ;
 
         if (k != -1 && k < result.length()) {
             result = result.substring(k + 1);
@@ -393,4 +414,126 @@ public class Statement {
             return false;
         }
     }
+
+    /**
+     * Comparator to determine which of two methods is "closer" to the reference
+     * method.  
+     */
+    static class MethodComparator implements Comparator<Method> {
+
+        static int INFINITY = Integer.MAX_VALUE;
+
+        private String referenceMethodName;
+
+        private Class[] referenceMethodArgumentTypes;
+
+        private HashMap<Method, Integer> cache;
+
+        public MethodComparator(String refMethodName, Class[] refArgumentTypes) {
+            this.referenceMethodName = refMethodName;
+            this.referenceMethodArgumentTypes = refArgumentTypes;
+            cache = new HashMap<Method, Integer>();
+        }
+
+        public int compare(Method m1, Method m2) {
+            Integer norm1 = cache.get(m1);
+            Integer norm2 = cache.get(m2);
+
+            if (norm1 == null) {
+                norm1 = getNorm(m1);
+                cache.put(m1, norm1);
+            }
+            if (norm2 == null) {
+                norm2 = getNorm(m2);
+                cache.put(m2, norm2);
+            }
+            return (norm1 - norm2);
+        }
+
+        /**
+         * Returns the norm for given method. The norm is the "distance" from
+         * the reference method to the given method.
+         * @param m the method to calculate the norm for
+         * @return norm of given method
+         */
+        private int getNorm(Method m) {
+            String methodName = m.getName();
+            Class[] argumentTypes = m.getParameterTypes();
+            int totalNorm = 0;
+
+            if (!referenceMethodName.equals(methodName)
+                    || referenceMethodArgumentTypes.length != argumentTypes.length) {
+                return INFINITY;
+            }
+
+            for (int i = 0; i < referenceMethodArgumentTypes.length; i++) {
+
+                if (referenceMethodArgumentTypes[i] == null) {
+                    if (argumentTypes[i].isPrimitive()) {
+                        return INFINITY;
+                    } else {
+                        // doesn't affect the norm calculation if null
+                        continue;
+                    }
+                }
+
+                if (referenceMethodArgumentTypes[i].isPrimitive()) {
+                    referenceMethodArgumentTypes[i] = getPrimitiveWrapper(referenceMethodArgumentTypes[i]);
+                }
+
+                if (argumentTypes[i].isPrimitive()) {
+                    argumentTypes[i] = getPrimitiveWrapper(argumentTypes[i]);
+                }
+
+                totalNorm += getDistance(referenceMethodArgumentTypes[i],
+                        argumentTypes[i]);
+            }
+
+            return totalNorm;
+        }
+
+        /**
+         * Returns a "hierarchy distance" between two classes. 
+         * @param clz1
+         * @param clz2 should be superclass or superinterface of clz1
+         * @return hierarchy distance from clz1 to clz2, Integer.MAX_VALUE if
+         * clz2 is not assignable from clz1.
+         */
+        private static int getDistance(Class<?> clz1, Class<?> clz2) {
+            Class superClz;
+            int superDist = INFINITY;
+
+            if (!clz2.isAssignableFrom(clz1)) {
+                return INFINITY;
+            }
+            if (clz1.getName().equals(clz2.getName())) {
+                return 0;
+            }
+
+            superClz = clz1.getSuperclass();
+            if (superClz != null) {
+                superDist = getDistance(superClz, clz2);
+            }
+            if (clz2.isInterface()) {
+                Class[] interfaces = clz1.getInterfaces();
+                int bestDist = INFINITY;
+
+                for (int i = 0; i < interfaces.length; i++) {
+                    int curDist = getDistance(interfaces[i], clz2);
+
+                    if (curDist < bestDist) {
+                        bestDist = curDist;
+                    }
+                }
+
+                if (superDist < bestDist) {
+                    bestDist = superDist;
+                }
+                return (bestDist != INFINITY ? bestDist + 1 : INFINITY);
+            } else {
+                return (superDist != INFINITY ? superDist + 1 : INFINITY);
+            }
+        }
+    }
+
 }

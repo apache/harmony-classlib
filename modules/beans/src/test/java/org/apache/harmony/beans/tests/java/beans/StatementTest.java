@@ -35,20 +35,6 @@ public class StatementTest extends TestCase {
     private static int testId = -1;
 
     /**
-     * 
-     */
-    public StatementTest() {
-        super();
-    }
-
-    /**
-     * 
-     */
-    public StatementTest(String name) {
-        super(name);
-    }
-
-    /**
      * The test checks the method execute() for setter
      */
     public void testSetter() throws Exception {
@@ -241,7 +227,6 @@ public class StatementTest extends TestCase {
         assertSame(oa, t.getArguments());
         assertSame(arg1, t.getArguments()[0]);
         assertSame(arg2, t.getArguments()[1]);
-        System.out.println(t.toString());
         assertEquals("Object.method(Object, \"string\");", t.toString());
     }
 
@@ -449,8 +434,11 @@ public class StatementTest extends TestCase {
      */
     public void testExecute_OverloadedMethods() throws Exception {
         MockObject mo = new MockObject(false);
-        Object[] arguments = new Object[] { new Object() };
-        Statement t = new Statement(mo, "method", arguments);
+        Object[] arguments;
+        Statement t;
+
+        arguments = new Object[] { new Object() };
+        t = new Statement(mo, "method", arguments);
         t.execute();
         MockObject.assertCalled("method2", arguments);
 
@@ -458,6 +446,11 @@ public class StatementTest extends TestCase {
         t = new Statement(mo, "method", arguments);
         t.execute();
         MockObject.assertCalled("method3", arguments);
+
+        arguments = new Object[] { new Integer(117) };
+        t = new Statement(mo, "method", arguments);
+        t.execute();
+        MockObject.assertCalled("method1-3", arguments);
     }
 
     /*
@@ -611,8 +604,8 @@ public class StatementTest extends TestCase {
      */
     public void testExecute_ArrayGet() throws Exception {
         Object[] array = new Object[] { "test" };
-        Statement t = new Statement(array, "get", new Object[] {
-                new Integer(0)});
+        Statement t = new Statement(array, "get",
+                new Object[] { new Integer(0) });
         t.execute();
 
         array = new Object[] { "test" };
@@ -660,7 +653,7 @@ public class StatementTest extends TestCase {
     public void testExecute_ArrayInvalidSet() throws Exception {
         Object[] array = new Object[] { "test" };
         Statement t = new Statement(array, "set", new Object[] {
-                new Integer(0), "test2"});
+                new Integer(0), "test2" });
         t.execute();
         assertEquals("test2", array[0]);
 
@@ -864,9 +857,15 @@ public class StatementTest extends TestCase {
             receivedArguments.add(o);
         }
 
-        public void method(Integer o) {
+        public void method(Number n) {
             reset();
             calledMethod = "method1-2";
+            receivedArguments.add(n);
+        }
+
+        public void method(Integer o) {
+            reset();
+            calledMethod = "method1-3";
             receivedArguments.add(o);
         }
 
