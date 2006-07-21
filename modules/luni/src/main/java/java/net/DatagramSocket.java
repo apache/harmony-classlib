@@ -504,6 +504,9 @@ public class DatagramSocket {
 	 *            the DatagramSocketImpl to use
 	 */
 	protected DatagramSocket(DatagramSocketImpl socketImpl) {
+		if (socketImpl == null) {
+			throw new NullPointerException();
+		}
 		impl = socketImpl;
 	}
 

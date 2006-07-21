@@ -20,6 +20,7 @@ import java.io.InterruptedIOException;
 import java.net.BindException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.DatagramSocketImpl;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -967,6 +968,23 @@ public class DatagramSocketTest extends SocketTestCase {
 			ensureExceptionThrownIfOptionIsUnsupportedOnOS(SO_TIMEOUT);
 		} catch (Exception e) {
 			handleException(e, SO_TIMEOUT);
+		}
+	}
+	/**
+	 * @tests java.net.DatagramSocket#DatagramSocket(java.net.DatagramSocketImpl)
+	 */
+	public void test_ConstructorLjava_net_DatagramSocketImpl() {
+		class testDatagramSocket extends DatagramSocket {
+		    public testDatagramSocket(DatagramSocketImpl impl){
+		       super(impl);
+		    }
+		}
+
+		try {
+			new testDatagramSocket((DatagramSocketImpl) null);
+			fail("exception expected");
+		} catch (NullPointerException ex) {
+			//expected
 		}
 	}
 
