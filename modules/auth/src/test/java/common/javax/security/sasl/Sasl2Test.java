@@ -26,7 +26,7 @@ import java.security.Provider;
 import java.security.Security;
 import javax.security.auth.callback.CallbackHandler;
 
-import org.apache.harmony.security.tests.support.SpiEngUtils;
+import org.apache.harmony.auth.tests.support.SpiEngUtils;
 
 import junit.framework.TestCase;
 

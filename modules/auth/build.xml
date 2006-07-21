@@ -113,11 +113,9 @@
                 target="${hy.javac.target}"
                 debug="${hy.javac.debug}">
 
-            <!-- FIXME: AUTH tests should not reach into security module code -->
             <src>
                 <pathelement location="${hy.auth.src.test.java}"/>
                 <pathelement location="${hy.auth.src.test.java.platform}"/>
-                <pathelement location="${hy.auth}/../security/src/test/support/common/java"/>
             </src>
 
             <include name="javax/security/auth/**/*Test*.java" />
