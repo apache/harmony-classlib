@@ -75,6 +75,7 @@
     <condition property="is.32bit">
         <or>
             <os arch="x86"/>
+            <os arch="i386"/>
         </or>
     </condition>
     <condition property="hy.bits" value="32">
