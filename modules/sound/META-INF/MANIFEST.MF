@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Harmony Sound
+Bundle-SymbolicName: org.apache.harmony.sound
+Bundle-Version: 1.0.0
+Bundle-ClassPath: .
+Eclipse-JREBundle: true
+Import-Package: java.lang,
+ java.util,
+ java.io,
+ java.net
+Export-Package: javax.sound.midi
