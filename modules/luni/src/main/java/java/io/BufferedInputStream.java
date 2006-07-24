@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,6 +109,9 @@ public class BufferedInputStream extends FilterInputStream {
 	 *             If an error occurs attempting to close this stream.
 	 */
 	public synchronized void close() throws IOException {
+        if(null == in){
+            throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0059"));
+        }
 		super.close();
 		buf = null;
 	}
@@ -311,6 +314,9 @@ public class BufferedInputStream extends FilterInputStream {
 	 *             occurs.
 	 */
 	public synchronized long skip(long amount) throws IOException {
+        if(null == in){
+            throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0059"));
+        }
 		if (amount < 1)
 			return 0;
 

@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -120,6 +120,14 @@ public class BufferedInputStreamTest extends junit.framework.TestCase {
 		// Test for method void java.io.BufferedInputStream.close()
 		new BufferedInputStream(isFile);
 		new BufferedInputStream(isFile);
+		
+		//regression for HARMONY-667
+        BufferedInputStream buf = new BufferedInputStream(null, 5);
+        try {
+            buf.close();
+        } catch (IOException e) {
+            //expected
+        }                         
 	}
 
 	/**
@@ -310,6 +318,14 @@ public class BufferedInputStreamTest extends junit.framework.TestCase {
 		} catch (java.io.IOException e) {
 			fail("Exception during skip test");
 		}
+
+		//regression for HARMONY-667
+        BufferedInputStream buf = new BufferedInputStream(null, 5);
+        try {
+            buf.skip(10);
+        } catch (IOException e) {
+            //expected
+        }                         
 	}
 
 	/**
