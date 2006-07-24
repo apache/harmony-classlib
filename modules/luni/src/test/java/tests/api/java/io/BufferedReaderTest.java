@@ -17,6 +17,7 @@ package tests.api.java.io;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.CharArrayReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PipedReader;
@@ -133,7 +134,7 @@ public class BufferedReaderTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.BufferedReader#read()
 	 */
-	public void test_read() {
+	public void test_read() throws IOException {
 		// Test for method int java.io.BufferedReader.read()
 		try {
 			br = new BufferedReader(new Support_StringReader(testString));
@@ -162,6 +163,9 @@ public class BufferedReaderTest extends junit.framework.TestCase {
 		} catch (IOException e) {
 			fail("Exception during read test 2:" + e);
 		}
+		
+		// regression test for HARMONY-841
+		assertTrue(new BufferedReader(new CharArrayReader(new char[5], 1, 0), 2).read() == -1);
 	}
 
 	/**

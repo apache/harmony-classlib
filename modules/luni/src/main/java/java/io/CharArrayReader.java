@@ -181,7 +181,7 @@ public class CharArrayReader extends Reader {
 				&& len <= buffer.length - offset) {
 			synchronized (lock) {
 				if (isOpen()) {
-					if (pos != this.count) {
+					if (pos < this.count) {
 						int bytesRead = pos + len > this.count ? this.count
 								- pos : len;
 						System.arraycopy(this.buf, pos, buffer, offset,
