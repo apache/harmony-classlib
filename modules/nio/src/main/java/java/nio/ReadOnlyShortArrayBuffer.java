@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,6 +71,10 @@ final class ReadOnlyShortArrayBuffer extends ShortArrayBuffer {
 	protected boolean protectedHasArray() {
 		return false;
 	}
+    
+    public ShortBuffer put(ShortBuffer buf) {
+        throw new ReadOnlyBufferException();
+    }
 
 	public ShortBuffer put(short c) {
 		throw new ReadOnlyBufferException();
