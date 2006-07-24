@@ -1,4 +1,4 @@
-/* Copyright 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -148,6 +148,9 @@ public class RuleBasedCollator extends Collator {
 	 *         than, equivalent to, or greater than <code>target</code>.
 	 */
 	public int compare(String source, String target) {
+        if (source == null || target == null) {
+            throw new NullPointerException("one of arguments is null");
+        }
 		return this.icuColl.compare(source, target);
 	}
 

@@ -264,6 +264,18 @@ public class RuleBasedCollatorTest extends TestCase {
     }
 
     /**
+     * @tests java.text.RuleBasedCollator.compare(java.lang.String, java.lang.String)
+     */
+    public void testCompareNull() throws Exception {
+        //Regression for HARMONY-836
+        try {
+            new RuleBasedCollator("< a").compare(null, null);
+            fail("RuleBasedCollator.compare(null, null) "
+                    + "should throw NullPointerException");
+        } catch (NullPointerException e) {}
+    }
+
+    /**
      * @tests java.text.RuleBasedCollator.RuleBasedCollator(java.lang.String)
      */
     public void testEmptyStringException() {
