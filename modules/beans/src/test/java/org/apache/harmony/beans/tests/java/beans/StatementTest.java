@@ -354,6 +354,19 @@ public class StatementTest extends TestCase {
     }
 
     /*
+     * Test the method execute() with a normal object, normal method and null
+     * arguments.
+     */
+    public void testExecute_NormalInstanceMethodNull() throws Exception {
+        MockObject mo = new MockObject(false);
+        Object[] arguments = new Object[] { null, null, null };
+        Statement t = new Statement(mo, "method", arguments);
+
+        t.execute();
+        MockObject.assertCalled("method5", arguments);
+    }
+
+    /*
      * Test the method execute() with a normal object, a valid method that
      * throws an exception and valid arguments.
      */
@@ -454,18 +467,6 @@ public class StatementTest extends TestCase {
     }
 
     /*
-     * Test the method execute() with a normal object, an overloaded method and
-     * null arguments. See Java Language Specification (15.11) for reference.
-     */
-    public void testExecute_OverloadedMethodsNull() throws Exception {
-        MockObject mo = new MockObject(false);
-        Object[] arguments = new Object[] { null };
-        Statement t = new Statement(mo, "method", arguments);
-        t.execute();
-        MockObject.assertCalled("method1-2", arguments);
-    }
-
-    /*
      * Test the method execute() with a normal object, the method name "new" and
      * valid arguments.
      */
@@ -476,6 +477,23 @@ public class StatementTest extends TestCase {
         t = new Statement(MockObject.class, "new", null);
         t.execute();
         MockObject.assertCalled("new0", new Object[0]);
+    }
+
+    /*
+     * Test the method execute() with a normal object, normal constructor ("new"
+     * method) and null arguments.
+     */
+    public void testExecute_NormalConstructorNull() throws Exception {
+        Object[] arguments = new Object[] { null, null };
+        Statement t = new Statement(MockObject.class, "new", arguments);
+
+        try {
+            t.execute();
+            fail("Should throw NullPointerException!");
+        } catch (NullPointerException ex) {
+            // expected
+        }
+        MockObject.assertCalled("new4", arguments);
     }
 
     /*
@@ -500,7 +518,8 @@ public class StatementTest extends TestCase {
      */
     public void testExecute_NonExistingConstructor() throws Exception {
         Statement t = new Statement(MockObject.class, "new", new Object[] {
-                null, null, null });
+                null, null, null, null });
+
         try {
             t.execute();
             fail("Should throw NoSuchMethodException!");
@@ -522,28 +541,13 @@ public class StatementTest extends TestCase {
         arguments = new Object[] { "test" };
         t = new Statement(MockObject.class, "new", arguments);
         t.execute();
-        // MockObject.assertCalled("new2", arguments);
+        // XXX RI calls new2 here, not the most specific constructor. Bug in RI?
+        // MockObject.assertCalled("new3", arguments);
 
         arguments = new Object[] { new Integer(1) };
         t = new Statement(MockObject.class, "new", arguments);
         t.execute();
         MockObject.assertCalled("new1-2", arguments);
-    }
-
-    /*
-     * Test the method execute() with a normal object with overloaded
-     * constructors, the method name "new" and null arguments.
-     */
-    public void testExecute_OverloadedConstructorsNull() throws Exception {
-        Object[] arguments = new Object[] { null };
-        Statement t = new Statement(MockObject.class, "new", arguments);
-        try {
-            t.execute();
-            fail("Should throw NullPointerException!");
-        } catch (NullPointerException ex) {
-            // expected
-        }
-        // MockObject.assertCalled("new2", arguments);
     }
 
     /*
@@ -589,7 +593,7 @@ public class StatementTest extends TestCase {
      * Test the method execute() with the special method Class.forName().
      */
     public void testExecute_ClassForName() throws Exception {
-        Object[] arguments = new String[] { this.getClass().getName() };
+        Object[] arguments = new String[] { Statement.class.getName() };
         Statement t = new Statement(Class.class, "forName", arguments);
         t.execute();
 
@@ -765,30 +769,29 @@ public class StatementTest extends TestCase {
      * 
      * Note: decided by definition position!
      */
-    public void testExecute_EqualSpecificMethods() throws Exception {
-        MockObject mo = new MockObject(false);
-        Object[] arguments = new Object[] { new MockObject(false),
-                new MockObject(false) };
-        Statement t = new Statement(mo, "equalSpecificMethod", arguments);
-        t.execute();
-        MockObject.assertCalled("equalSpecificMethod1", arguments);
-    }
-
+    // public void testExecute_EqualSpecificMethods() throws Exception {
+    // MockObject mo = new MockObject(false);
+    // Object[] arguments = new Object[] { new MockObject(false),
+    // new MockObject(false) };
+    // Statement t = new Statement(mo, "equalSpecificMethod", arguments);
+    // t.execute();
+    // MockObject.assertCalled("equalSpecificMethod1", arguments);
+    // }
     /*
      * Test the method execute() with two equal specific methods but one
      * declaring thrown exception.
      * 
      * Note: decided by definition position!
      */
-    public void testExecute_EqualSpecificMethodsException() throws Exception {
-        MockObject mo = new MockObject(false);
-        Object[] arguments = new Object[] { new MockObject(false),
-                new MockObject(false), new Object() };
-        Statement t = new Statement(mo, "equalSpecificMethod", arguments);
-        t.execute();
-        MockObject.assertCalled("equalSpecificMethod4", arguments);
-    }
-
+    // public void testExecute_EqualSpecificMethodsException() throws Exception
+    // {
+    // MockObject mo = new MockObject(false);
+    // Object[] arguments = new Object[] { new MockObject(false),
+    // new MockObject(false), new Object() };
+    // Statement t = new Statement(mo, "equalSpecificMethod", arguments);
+    // t.execute();
+    // MockObject.assertCalled("equalSpecificMethod4", arguments);
+    // }
     /*
      * Test the method execute() with int method while providing a null
      * parameter.
@@ -799,8 +802,8 @@ public class StatementTest extends TestCase {
         Statement t = new Statement(mo, "intMethod", arguments);
         try {
             t.execute();
-            fail("Should throw NullPointerException!");
-        } catch (NullPointerException ex) {
+            fail("Should throw NoSuchMethodException!");
+        } catch (NoSuchMethodException ex) {
             // expected
         }
     }
@@ -889,6 +892,14 @@ public class StatementTest extends TestCase {
             throw new NullPointerException();
         }
 
+        public void method(Object o, Number n, String s) {
+            reset();
+            calledMethod = "method5";
+            receivedArguments.add(o);
+            receivedArguments.add(n);
+            receivedArguments.add(s);
+        }
+
         public static void reset() {
             receivedArguments.clear();
             calledMethod = null;
@@ -938,6 +949,14 @@ public class StatementTest extends TestCase {
             throw new NullPointerException();
         }
 
+        public MockObject(Object o, Vector v, Class c) {
+            reset();
+            calledMethod = "new5";
+            receivedArguments.add(o);
+            receivedArguments.add(v);
+            receivedArguments.add(c);
+        }
+
         public void intMethod(int i) {
             reset();
             calledMethod = "intMethod";
@@ -974,36 +993,38 @@ public class StatementTest extends TestCase {
             receivedArguments.add(o);
         }
 
-        public void equalSpecificMethod(MockObject o, MockParent p) {
-            reset();
-            calledMethod = "equalSpecificMethod1";
-            receivedArguments.add(o);
-            receivedArguments.add(p);
-        }
-
-        public void equalSpecificMethod(MockParent p, MockObject o) {
-            reset();
-            calledMethod = "equalSpecificMethod2";
-            receivedArguments.add(p);
-            receivedArguments.add(o);
-        }
-
-        public void equalSpecificMethod(MockParent p, MockObject o, Object o2)
-                throws Exception {
-            reset();
-            calledMethod = "equalSpecificMethod4";
-            receivedArguments.add(p);
-            receivedArguments.add(o);
-            receivedArguments.add(o2);
-        }
-
-        public void equalSpecificMethod(MockObject o, MockParent p, Object o2) {
-            reset();
-            calledMethod = "equalSpecificMethod3";
-            receivedArguments.add(o);
-            receivedArguments.add(p);
-            receivedArguments.add(o2);
-        }
+        // public void equalSpecificMethod(MockObject o, MockParent p) {
+        // reset();
+        // calledMethod = "equalSpecificMethod1";
+        // receivedArguments.add(o);
+        // receivedArguments.add(p);
+        // }
+        //
+        // public void equalSpecificMethod(MockParent p, MockObject o) {
+        // reset();
+        // calledMethod = "equalSpecificMethod2";
+        // receivedArguments.add(p);
+        // receivedArguments.add(o);
+        // }
+        //
+        // public void equalSpecificMethod(MockParent p, MockObject o, Object
+        // o2)
+        // throws Exception {
+        // reset();
+        // calledMethod = "equalSpecificMethod4";
+        // receivedArguments.add(p);
+        // receivedArguments.add(o);
+        // receivedArguments.add(o2);
+        // }
+        //
+        // public void equalSpecificMethod(MockObject o, MockParent p, Object
+        // o2) {
+        // reset();
+        // calledMethod = "equalSpecificMethod3";
+        // receivedArguments.add(o);
+        // receivedArguments.add(p);
+        // receivedArguments.add(o2);
+        // }
 
         public static Class forName(String o) {
             reset();

@@ -224,7 +224,6 @@
                     <exclude name="org/apache/harmony/beans/tests/java/beans/PropertyDescriptorTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/PropertyEditorManagerTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/PropertyEditorSupportTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/StatementTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/VetoableChangeListenerProxyTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/VetoableChangeSupportTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/XMLDecoderTest.java" />
