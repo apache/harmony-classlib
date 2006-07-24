@@ -140,14 +140,14 @@ public final class ServicePermission extends Permission implements Serializable 
     public ServicePermission(String name, String actions) {
         super(name);
 
+        initActions(actions);
+
         if (name == null) {
             throw new NullPointerException("service principal is null");
         }
         if (name.trim().length() == 0) {
             throw new IllegalArgumentException("service principal is empty");
         }
-
-        initActions(actions);
     }
 
     /**

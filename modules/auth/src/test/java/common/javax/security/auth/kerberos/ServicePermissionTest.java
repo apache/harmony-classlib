@@ -42,6 +42,10 @@ public class ServicePermissionTest extends TestCase {
         junit.textui.TestRunner.run(ServicePermissionTest.class);
     }
     
+    /**
+     * @tests javax.security.auth.kerberos.ServicePermission#ServicePermission(
+     *        java.lang.String,java.lang.String)
+     */
     public void testCtor() {
         ServicePermission sp = new ServicePermission("krbtgt/AAA.COM@BBB.COM", "initiate");
         ServicePermission sp1 = new ServicePermission("host/AAA.COM@BBB.COM", "accept");
@@ -51,6 +55,14 @@ public class ServicePermissionTest extends TestCase {
         assertEquals("accept",sp1.getActions());
         ServicePermission sp2 = new ServicePermission("host/AAA.COM@BBB.COM", "accept, initiate");
         assertEquals("initiate,accept", sp2.getActions());
+
+        try {
+            // Regression for HARMONY-769
+            // checks exception order: action parameter is verified first
+            new ServicePermission(null, "initiate accept");
+            fail("No expected IllegalArgumentException"); 
+        } catch(IllegalArgumentException e){
+        }
     }
     
     public void testFailedCtor() {
