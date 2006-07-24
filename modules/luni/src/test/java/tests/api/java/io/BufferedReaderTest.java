@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PipedReader;
 import java.io.Reader;
 
 import tests.support.Support_StringReader;
@@ -166,7 +167,7 @@ public class BufferedReaderTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.BufferedReader#read(char[], int, int)
 	 */
-	public void test_read$CII() {
+	public void test_read$CII() throws Exception{
 		char[] ca = new char[2];
 		BufferedReader toRet = new BufferedReader(new InputStreamReader(
 				new ByteArrayInputStream(new byte[0])));
@@ -258,6 +259,13 @@ public class BufferedReaderTest extends junit.framework.TestCase {
 		} catch (IOException e) {
 			fail("Unexpected: " + e);
 		}
+        
+        //regression for HARMONY-831
+        try{
+            new BufferedReader(new PipedReader(), 9).read(new char[] {}, 7, 0);
+            fail("should throw IndexOutOfBoundsException");
+        }catch(IndexOutOfBoundsException e){
+        }
 	}
 
 	/**

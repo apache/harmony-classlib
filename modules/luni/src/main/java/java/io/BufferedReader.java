@@ -238,55 +238,50 @@ public class BufferedReader extends Reader {
 			if (isOpen()) {
 				// check for null
 				int bufLen = buffer.length;
+                if(offset < 0 || length < 0 || (long)offset + (long)length > bufLen){
+                    throw new ArrayIndexOutOfBoundsException();
+                }
 				if (length == 0)
-					return 0;
-				// avoid int overflow
-				if (0 <= offset && offset <= bufLen && 0 < length
-						&& length <= bufLen - offset) {
-					int required;
-					if (pos < count) {
-						/* There are bytes available in the buffer. */
-						int copylength = count - pos >= length ? length : count
-								- pos;
-						System.arraycopy(buf, pos, buffer, offset, copylength);
-						pos += copylength;
-						if (copylength == length || !in.ready())
-							return copylength;
-						offset += copylength;
-						required = length - copylength;
-					} else
-						required = length;
+                    return 0;
+                int required;
+                if (pos < count) {
+                    /* There are bytes available in the buffer. */
+                    int copylength = count - pos >= length ? length : count
+                            - pos;
+                    System.arraycopy(buf, pos, buffer, offset, copylength);
+                    pos += copylength;
+                    if (copylength == length || !in.ready())
+                        return copylength;
+                    offset += copylength;
+                    required = length - copylength;
+                } else
+                    required = length;
 
-					while (true) {
-						int read;
-						/*
-						 * If we're not marked and the required size is greater
-						 * than the buffer, simply read the bytes directly
-						 * bypassing the buffer.
-						 */
-						if (markpos == -1 && required >= buf.length) {
-							read = in.read(buffer, offset, required);
-							if (read == -1)
-								return required == length ? -1 : length
-										- required;
-						} else {
-							if (fillbuf() == -1)
-								return required == length ? -1 : length
-										- required;
-							read = count - pos >= required ? required : count
-									- pos;
-							System.arraycopy(buf, pos, buffer, offset, read);
-							pos += read;
-						}
-						required -= read;
-						if (required == 0)
-							return length;
-						if (!in.ready())
-							return length - required;
-						offset += read;
-					}
-				}
-				throw new ArrayIndexOutOfBoundsException();
+                while (true) {
+                    int read;
+                    /*
+                     * If we're not marked and the required size is greater than
+                     * the buffer, simply read the bytes directly bypassing the
+                     * buffer.
+                     */
+                    if (markpos == -1 && required >= buf.length) {
+                        read = in.read(buffer, offset, required);
+                        if (read == -1)
+                            return required == length ? -1 : length - required;
+                    } else {
+                        if (fillbuf() == -1)
+                            return required == length ? -1 : length - required;
+                        read = count - pos >= required ? required : count - pos;
+                        System.arraycopy(buf, pos, buffer, offset, read);
+                        pos += read;
+                    }
+                    required -= read;
+                    if (required == 0)
+                        return length;
+                    if (!in.ready())
+                        return length - required;
+                    offset += read;
+                }
 			}
 			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K005b")); //$NON-NLS-1$
 		}
