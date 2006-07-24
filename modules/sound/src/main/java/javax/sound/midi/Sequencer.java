@@ -101,7 +101,7 @@ public interface Sequencer extends MidiDevice {
 
     boolean getTrackMute(int track);
 
-    void getTrackSolo(int track, boolean solo);
+    boolean getTrackSolo(int track);
 
     boolean isRecording();
 
