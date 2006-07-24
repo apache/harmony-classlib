@@ -1,0 +1,43 @@
+# Copyright 2006 The Apache Software Foundation or its licensors, as applicable
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#     http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#
+# Makefile for module 'security'
+#
+
+!include <$(HY_HDK)\build\make\defines.mak>
+
+LIBBASE=hysecurity
+
+DLLNAME=$(DLLPATH)$(LIBBASE).dll
+LIBNAME=$(LIBPATH)$(LIBBASE).lib
+
+HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I$(SHARED)common /I..\zip \
+	   /I$(SHARED)fdlibm
+
+BUILDFILES = security_copyright.obj getWindowsRandom.obj
+
+VIRTFILES = $(LIBBASE).res
+
+SYSLIBFILES = ws2_32.lib Iphlpapi.lib
+
+MDLLIBFILES = $(LIBPATH)hycommon.lib $(LIBPATH)hypool.lib
+
+DLLBASE=0x13900000
+
+COMMENT=/comment:"Security component native code. (c) Copyright 2006 The Apache Software Foundation or its licensors, as applicable."
+
+!include <$(HY_HDK)\build\make\rules.mak>
+

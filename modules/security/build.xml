@@ -38,9 +38,42 @@
 
     <property file="../../make/depends.properties" />
 
+    <property name="hy.security.src.main.java.platform"
+              value="${hy.security.src.main.java}/../${hy.os}" />
+
+    <property name="hy.security.src.test.java.platform"
+              value="${hy.security.src.test.java}/../${hy.os}" />
+
     <target name="build" depends="compile.java, build.jar" />
 
     <target name="test" depends="build, compile.tests, run.tests" />
+
+
+	<!-- Build native code -->
+    <target name="build.native" if="${hy.security.src.main.native}/security/${hy.os}" >
+		<exec failonerror="true" 
+              executable="${make.command}" 
+              dir="${hy.security.src.main.native}/security/${hy.os}">
+            <env key="HY_HDK" value="${hy.hdk}" />
+        </exec>
+
+		<!-- Copy the built shared libs over to the jre/bin dir -->
+		<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+			<fileset dir="${hy.security.src.main.native}/security">
+                <patternset includes="*${shlib.suffix}*" />
+            </fileset>
+        </copy>
+    </target>
+	
+	<!-- Clean natives -->
+    <target name="clean.native" if="${hy.security.src.main.native}/security/${hy.os}" >
+		<exec failonerror="true" 
+              executable="${make.command}" 
+              dir="${hy.security.src.main.native}/security/${hy.os}">
+            <env key="HY_HDK" value="${hy.hdk}" />
+		    <arg line="clean" />
+        </exec>
+    </target>
 
     <target name="clean">
         <delete failonerror="false">
@@ -55,11 +88,15 @@
         <mkdir dir="${hy.build}" />
 
         <javac sourcepath=""
-               srcdir="${hy.security.src.main.java}"
                destdir="${hy.build}"
                source="${hy.javac.source}"
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
+
+            <src>
+                <pathelement location="${hy.security.src.main.java}"/>
+                <pathelement location="${hy.security.src.main.java.platform}" />
+            </src>
 
             <bootclasspath>
                 <fileset dir="${hy.jdk}/jre/lib/boot">
