@@ -108,10 +108,23 @@ public final class Currency implements Serializable {
 		return getInstance(currencyCode);
 	}
 
+    /**
+     * Answers this currency's ISO 4217 currency code.
+     * 
+     * @return this currency's ISO 4217 currency code
+     */
 	public String getCurrencyCode() {
 		return currencyCode;
 	}
-
+    
+    /**
+     * Answers the symbol for this currency in the default locale. For instance,
+     * if the default locale is the US, the symbol of the US dollar is "$". For
+     * other locales it may be "US$". If no symbol can be determined, the ISO
+     * 4217 currency code of the US dollar is returned.
+     * 
+     * @return the symbol for this currency in the default locale
+     */
 	public String getSymbol() {
 		return getSymbol(Locale.getDefault());
 	}
