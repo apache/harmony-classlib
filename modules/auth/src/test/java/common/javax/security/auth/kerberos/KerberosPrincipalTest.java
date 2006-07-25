@@ -36,6 +36,21 @@ public class KerberosPrincipalTest extends TestCase {
         } catch (IllegalArgumentException e) {
         }
 
+        // testing illegal kerberos principal names
+        String[] illegalNames = new String[] { "bbb@a:a.com", // ':' char
+                "bbb@a/a.com", // '/' char
+                "bbb@a\0a.com",// null char
+                "@/" // Regression for HARMONY-770
+        };
+        for (String illegalName : illegalNames) {
+            try {
+                new KerberosPrincipal(illegalName);
+
+                fail("No expected IllegalArgumentException for: " + illegalName);
+            } catch (IllegalArgumentException e) {
+            }
+        }
+
         // valid values
         KerberosPrincipal principal = new KerberosPrincipal("name@apache.org");
 
