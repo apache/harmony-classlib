@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ *  Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.harmony.security.asn1.ObjectIdentifier;
 
 /**
  * Provides Algorithm Name to OID
@@ -70,6 +72,7 @@ public class AlgNameMapper {
     private static final String[] serviceName = {
             "Cipher",
             "AlgorithmParameters",
+            "Signature"
     };
 
     // These mappings CAN NOT be overridden
@@ -194,7 +197,7 @@ public class AlgNameMapper {
                             algAliasesMap.put(algUC, alg);
                         }
                            // Do not allow known standard names as alias 
-                    } else if (!algAliasesMap.containsValue(alias)) {
+                    } else if (!algAliasesMap.containsKey(alias.toUpperCase())) {
                         algAliasesMap.put(alias.toUpperCase(), alg);
                     }
                 }
@@ -209,7 +212,16 @@ public class AlgNameMapper {
      * @return 'true' if parameter represents OID 
      */
     public static boolean isOID(String alias) {
-        return alias.indexOf('.') != -1;
+        try {
+            // The method makes all needed checks in it.
+            // If alias is not an OID, exception is thrown.
+            ObjectIdentifier.toIntArray(normalize(alias));
+            
+            // will not come here if exception is thrown 
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        } 
     }
 
     /**
