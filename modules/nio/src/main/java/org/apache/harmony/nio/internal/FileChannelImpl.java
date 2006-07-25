@@ -131,16 +131,11 @@ public abstract class FileChannelImpl extends FileChannel {
         openCheck();
         FileLock resultLock = null;
         {
-            boolean completed = true;
+            boolean completed = false;
             try {
                 begin();
                 resultLock = basicLock(position, size, shared, true);
-            } catch (IOException e) {
-                completed = false;
-                throw e;
-            } catch (RuntimeException e) {
-                completed = false;
-                throw e;
+                completed = true;
             } finally {
                 end(completed);
             }
@@ -256,7 +251,7 @@ public abstract class FileChannelImpl extends FileChannel {
         if (!buffer.hasRemaining()){
             return 0;
         }
-        boolean completed = true;
+        boolean completed = false;
         int bytesRead = 0;
 		synchronized (repositioningLock) {
 			if (buffer.isDirect()) {
@@ -269,12 +264,7 @@ public abstract class FileChannelImpl extends FileChannel {
                      */
                     bytesRead = (int) fileSystem.readDirect(handle, address,
                             buffer.position(), buffer.remaining());
-                } catch (IOException e) {
-                    completed = false;
-                    throw e;
-                } catch (RuntimeException e) {
-                    completed = false;
-                    throw e;
+                    completed = true;
                 } finally {
                     end(completed && bytesRead >= 0);
                 }
@@ -286,12 +276,7 @@ public abstract class FileChannelImpl extends FileChannel {
                      */
                     bytesRead = (int) fileSystem.read(handle, buffer.array(),
                             buffer.arrayOffset(), buffer.remaining());
-                } catch (IOException e) {
-                    completed = false;
-                    throw e;
-                } catch (RuntimeException e) {
-                    completed = false;
-                    throw e;
+                    completed = true;
                 } finally {
                     end(completed && bytesRead >= 0);
                 }
@@ -337,7 +322,7 @@ public abstract class FileChannelImpl extends FileChannel {
         }
         long bytesRead = 0;
         {
-            boolean completed = true;
+            boolean completed = false;
             try {
                 begin();
                 synchronized (repositioningLock) {
@@ -345,15 +330,10 @@ public abstract class FileChannelImpl extends FileChannel {
                             lengths, length);
 
                 }
+                completed = true;
                 /*
                  * if (bytesRead < EOF) //delt by readv? completed = false;
                  */
-            } catch (IOException e) {
-                completed = false;
-                throw e;
-            } catch (RuntimeException e) {
-                completed = false;
-                throw e;
             } finally {
                 end(completed);
             }
@@ -463,16 +443,12 @@ public abstract class FileChannelImpl extends FileChannel {
 
     private long kernelTransfer(long l, FileDescriptor fd, long position,
             long count) throws IOException {
-        boolean completed = true;
+        boolean completed = false;
         try {
             begin();
-            return fileSystem.transfer(l, fd, position, count);
-        } catch (IOException e) {
-            completed = false;
-            throw e;
-        } catch (RuntimeException e) {
-            completed = false;
-            throw e;
+            long ret = fileSystem.transfer(l, fd, position, count);
+            completed = true;
+            return ret;
         } finally {
             end(completed);
         }
@@ -536,7 +512,7 @@ public abstract class FileChannelImpl extends FileChannel {
 
     private int writeImpl(ByteBuffer buffer) throws IOException {
 		int bytesWritten;
-        boolean completed = true;
+        boolean completed = false;
 		synchronized (repositioningLock) {
 			if (buffer.isDirect()) {
 				DirectBuffer directBuffer = (DirectBuffer) buffer;
@@ -545,12 +521,7 @@ public abstract class FileChannelImpl extends FileChannel {
                     begin();
                     bytesWritten = (int) fileSystem.writeDirect(handle,
                             address, buffer.position(), buffer.remaining());
-                } catch (IOException e) {
-                    completed = false;
-                    throw e;
-                } catch (RuntimeException e) {
-                    completed = false;
-                    throw e;
+                    completed = true;
                 } finally {
                     end(completed);
                 }
@@ -560,12 +531,7 @@ public abstract class FileChannelImpl extends FileChannel {
                     bytesWritten = (int) fileSystem.write(handle, buffer
                             .array(), buffer.arrayOffset() + buffer.position(),
                             buffer.remaining());
-                } catch (IOException e) {
-                    completed = false;
-                    throw e;
-                } catch (RuntimeException e) {
-                    completed = false;
-                    throw e;
+                    completed = true;
                 } finally {
                     end(completed);
                 }
@@ -610,25 +576,20 @@ public abstract class FileChannelImpl extends FileChannel {
         }
 
         long bytesWritten = 0;
-        boolean completed = true;
+        boolean completed = false;
         synchronized (repositioningLock) {
             try {
                 begin();
                 bytesWritten = fileSystem.writev(handle, handles, offsets,
                         lengths, length);
-            } catch (IOException e) {
-                completed = false;
-                throw e;
-            } catch (RuntimeException e) {
-                completed = false;
-                throw e;
+                completed = true;
             } finally {
                 end(completed);
             }
         }
 
         long bytesRemaining = bytesWritten;
-        for (int i = offset; i < length; i++) {
+        for (int i = offset; i < length + offset; i++) {
             if (bytesRemaining > buffers[i].remaining()) {
                 int pos = buffers[i].limit();
                 buffers[i].position(pos);
