@@ -41,7 +41,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>,
 
 	transient int modCount = 0;
 
-        Set<Map.Entry<K,V>> entrySet = null;
+        transient Set<Map.Entry<K,V>> entrySet = null;
 
 	/**
 	 * Entry is an internal class which is used to hold the entries of a
