@@ -216,7 +216,6 @@
                     <exclude name="org/apache/harmony/beans/tests/java/beans/EncoderTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/EventHandlerTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/ExpressionTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/IndexedPropertyDescriptorTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/IntrospectorTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/PersistenceDelegateTest.java" />

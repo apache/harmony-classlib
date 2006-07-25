@@ -20,10 +20,7 @@ import java.beans.Expression;
 import java.util.Arrays;
 import java.util.Vector;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
 
 import org.apache.harmony.beans.tests.support.SampleBean;
 
@@ -31,20 +28,6 @@ import org.apache.harmony.beans.tests.support.SampleBean;
  * Test the class java.beans.Expression.
  */
 public class ExpressionTest extends TestCase {
-
-    /**
-     * 
-     */
-    public ExpressionTest() {
-        super();
-    }
-
-    /**
-     * 
-     */
-    public ExpressionTest(String name) {
-        super(name);
-    }
 
     /**
      * The test checks the correct constructor is initialized
@@ -110,20 +93,6 @@ public class ExpressionTest extends TestCase {
         } else {
             fail("Result of array getter is not of Integer type.");
         }
-    }
-
-    /**
-     * 
-     */
-    public static Test suite() {
-        return new TestSuite(ExpressionTest.class);
-    }
-
-    /**
-     * 
-     */
-    public static void main(String[] args) {
-        TestRunner.run(suite());
     }
 
     /*
@@ -592,8 +561,8 @@ public class ExpressionTest extends TestCase {
         Expression t = new Expression(mo, null, new Object[] { null, null });
         try {
             t.getValue();
-            fail("Should throw NoSuchMethodException!");
-        } catch (NoSuchMethodException ex) {
+            fail("Should throw NullPointerException!");
+        } catch (NullPointerException ex) {
             // expected
         }
     }
@@ -629,20 +598,6 @@ public class ExpressionTest extends TestCase {
         t = new Expression(mo, "method", arguments);
         assertEquals("method3", t.getValue());
         MockObject.assertCalled("method3", arguments);
-    }
-
-    /*
-     * Test the method getValue() with a normal object, an overloaded method and
-     * null arguments.
-     * 
-     * Note: decided by definition position.
-     */
-    public void testGetValue_UnboundedOverloadedMethodsNull() throws Exception {
-        MockObject mo = new MockObject(false);
-        Object[] arguments = new Object[] { null };
-        Expression t = new Expression(mo, "method", arguments);
-        assertEquals("method1-2", t.getValue());
-        MockObject.assertCalled("method1-2", arguments);
     }
 
     /*
@@ -714,23 +669,6 @@ public class ExpressionTest extends TestCase {
     }
 
     /*
-     * Test the method getValue() with a normal object with overloaded
-     * constructors, the method name "new" and null arguments. See Java Language
-     * Specification (15.11) for reference.
-     */
-    public void testGetValue_UnboundedOverloadedConstructorsNull()
-            throws Exception {
-        Object[] arguments = new Object[] { null };
-        Expression t = new Expression(MockObject.class, "new", arguments);
-        try {
-            t.getValue();
-            fail("Should throw NullPointerException!");
-        } catch (NullPointerException ex) {
-            // expected
-        }
-    }
-
-    /*
      * Test the method getValue() with the Class object, a static method name
      * and valid arguments.
      */
@@ -776,9 +714,9 @@ public class ExpressionTest extends TestCase {
      * Test the method getValue() with the special method Class.forName().
      */
     public void testGetValue_UnboundedClassForName() throws Exception {
-        Object[] arguments = new String[] { this.getClass().getName() };
+        Object[] arguments = new String[] { Expression.class.getName() };
         Expression t = new Expression(Class.class, "forName", arguments);
-        assertSame(this.getClass(), t.getValue());
+        assertSame(Expression.class, t.getValue());
 
         // t = new Expression(String.class, "forName", arguments);
         // assertSame(this.getClass(), t.getValue());
@@ -890,15 +828,6 @@ public class ExpressionTest extends TestCase {
         } catch (NoSuchMethodException e) {
             // expected
         }
-    }
-
-    /*
-     * Test that setValue() is called in the constructor.
-     */
-    public void testConstructor_Value_SetValueCalledIn() {
-        Object o = new Object();
-        MockExpression exp = new MockExpression(o);
-        exp.assertCalled(o);
     }
 
     /*
@@ -1139,26 +1068,6 @@ public class ExpressionTest extends TestCase {
         public static void assertNotCalled() {
             assertEquals(null, calledMethod);
             assertTrue(receivedArguments.isEmpty());
-        }
-    }
-
-    /*
-     * Mock expression to test that setValue() is called in the constructor.
-     */
-    public static class MockExpression extends Expression {
-
-        private Object acceptedValue;
-
-        public MockExpression(Object o) {
-            super(o, null, null, null);
-        }
-
-        public void setValue(Object o) {
-            acceptedValue = o;
-        }
-
-        public void assertCalled(Object o) {
-            assertSame(o, acceptedValue);
         }
     }
 }
