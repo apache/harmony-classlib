@@ -19,19 +19,19 @@
 * @version $Revision$
 */
 
-package java.security.cert.serialization;
+package org.apache.harmony.security.tests.java.security.cert.serialization;
 
-import java.security.cert.CertStoreException;
+import java.security.cert.CertPathBuilderException;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for CertStoreException seialization 
+ * Test for CertPathBuilderException seialization 
  *  
  */
 
-public class CertStoreExceptionTest extends SerializationTest {
+public class CertPathBuilderExceptionTest extends SerializationTest {
 
     public static String[] msgs = {
             "New message",
@@ -39,16 +39,16 @@ public class CertStoreExceptionTest extends SerializationTest {
 
     protected Object[] getData() {
         Exception cause = new Exception(msgs[1]);
-        CertStoreException dExc = new CertStoreException(msgs[0], cause);
+        CertPathBuilderException dExc = new CertPathBuilderException(msgs[0], cause);
         String msg = null;
         Throwable th = null;
-        return new Object[] { new CertStoreException(), new CertStoreException(msg),
-                new CertStoreException(msgs[1]),
-                new CertStoreException(new Throwable()), new CertStoreException(th),
-                new CertStoreException(msgs[1], dExc) };
+        return new Object[] { new CertPathBuilderException(), new CertPathBuilderException(msg),
+                new CertPathBuilderException(msgs[1]),
+                new CertPathBuilderException(new Throwable()), new CertPathBuilderException(th),
+                new CertPathBuilderException(msgs[1], dExc) };
     }
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(CertStoreExceptionTest.class);
+        junit.textui.TestRunner.run(CertPathBuilderExceptionTest.class);
     }
 }

@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package java.security.cert.serialization;
+package org.apache.harmony.security.tests.java.security.cert.serialization;
 
 import java.io.Serializable;
 import java.security.cert.CertPath;

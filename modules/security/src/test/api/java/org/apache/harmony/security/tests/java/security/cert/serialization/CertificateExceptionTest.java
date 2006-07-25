@@ -19,31 +19,36 @@
 * @version $Revision$
 */
 
-package java.security.cert.serialization;
+package org.apache.harmony.security.tests.java.security.cert.serialization;
 
-import java.security.cert.CertificateNotYetValidException;
+import java.security.cert.CertificateException;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for CertificateNotYetValidException seialization 
+ * Test for CertificateException seialization 
  *  
  */
 
-public class CertificateNotYetValidExceptionTest extends SerializationTest {
+public class CertificateExceptionTest extends SerializationTest {
 
     public static String[] msgs = {
             "New message",
             "Long message for Exception. Long message for Exception. Long message for Exception." };
 
     protected Object[] getData() {
-        return new Object[] { new CertificateNotYetValidException(),
-                new CertificateNotYetValidException(null),
-                new CertificateNotYetValidException(msgs[1])};
+        Exception cause = new Exception(msgs[1]);
+        CertificateException dExc = new CertificateException(msgs[0], cause);
+        String msg = null;
+        Throwable th = null;
+        return new Object[] { new CertificateException(), new CertificateException(msg),
+                new CertificateException(msgs[1]),
+                new CertificateException(new Throwable()), new CertificateException(th),
+                new CertificateException(msgs[1], dExc) };
     }
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(CertificateNotYetValidExceptionTest.class);
+        junit.textui.TestRunner.run(CertificateExceptionTest.class);
     }
 }

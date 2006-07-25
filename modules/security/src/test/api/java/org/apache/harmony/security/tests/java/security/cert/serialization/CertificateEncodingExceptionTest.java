@@ -19,19 +19,19 @@
 * @version $Revision$
 */
 
-package java.security.cert.serialization;
+package org.apache.harmony.security.tests.java.security.cert.serialization;
 
-import java.security.cert.CertificateParsingException;
+import java.security.cert.CertificateEncodingException;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for CertificateParsingException seialization 
+ * Test for CertificateEncodingException seialization 
  *  
  */
 
-public class CertificateParsingExceptionTest extends SerializationTest {
+public class CertificateEncodingExceptionTest extends SerializationTest {
 
     public static String[] msgs = {
             "New message",
@@ -39,16 +39,16 @@ public class CertificateParsingExceptionTest extends SerializationTest {
 
     protected Object[] getData() {
         Exception cause = new Exception(msgs[1]);
-        CertificateParsingException dExc = new CertificateParsingException(msgs[0], cause);
+        CertificateEncodingException dExc = new CertificateEncodingException(msgs[0], cause);
         String msg = null;
         Throwable th = null;
-        return new Object[] { new CertificateParsingException(), new CertificateParsingException(msg),
-                new CertificateParsingException(msgs[1]),
-                new CertificateParsingException(new Throwable()), new CertificateParsingException(th),
-                new CertificateParsingException(msgs[1], dExc) };
+        return new Object[] { new CertificateEncodingException(), new CertificateEncodingException(msg),
+                new CertificateEncodingException(msgs[1]),
+                new CertificateEncodingException(new Throwable()), new CertificateEncodingException(th),
+                new CertificateEncodingException(msgs[1], dExc) };
     }
-
+    
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(CertificateParsingExceptionTest.class);
+        junit.textui.TestRunner.run(CertificateEncodingExceptionTest.class);
     }
 }

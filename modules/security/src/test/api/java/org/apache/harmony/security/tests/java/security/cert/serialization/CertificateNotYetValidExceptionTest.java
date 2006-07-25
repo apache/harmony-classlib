@@ -19,36 +19,31 @@
 * @version $Revision$
 */
 
-package java.security.cert.serialization;
+package org.apache.harmony.security.tests.java.security.cert.serialization;
 
-import java.security.cert.CertPathBuilderException;
+import java.security.cert.CertificateNotYetValidException;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for CertPathBuilderException seialization 
+ * Test for CertificateNotYetValidException seialization 
  *  
  */
 
-public class CertPathBuilderExceptionTest extends SerializationTest {
+public class CertificateNotYetValidExceptionTest extends SerializationTest {
 
     public static String[] msgs = {
             "New message",
             "Long message for Exception. Long message for Exception. Long message for Exception." };
 
     protected Object[] getData() {
-        Exception cause = new Exception(msgs[1]);
-        CertPathBuilderException dExc = new CertPathBuilderException(msgs[0], cause);
-        String msg = null;
-        Throwable th = null;
-        return new Object[] { new CertPathBuilderException(), new CertPathBuilderException(msg),
-                new CertPathBuilderException(msgs[1]),
-                new CertPathBuilderException(new Throwable()), new CertPathBuilderException(th),
-                new CertPathBuilderException(msgs[1], dExc) };
+        return new Object[] { new CertificateNotYetValidException(),
+                new CertificateNotYetValidException(null),
+                new CertificateNotYetValidException(msgs[1])};
     }
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(CertPathBuilderExceptionTest.class);
+        junit.textui.TestRunner.run(CertificateNotYetValidExceptionTest.class);
     }
 }

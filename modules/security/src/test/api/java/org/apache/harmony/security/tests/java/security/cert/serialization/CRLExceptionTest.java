@@ -19,19 +19,19 @@
 * @version $Revision$
 */
 
-package java.security.cert.serialization;
+package org.apache.harmony.security.tests.java.security.cert.serialization;
 
-import java.security.cert.CertificateEncodingException;
+import java.security.cert.CRLException;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for CertificateEncodingException seialization 
+ * Test for CRLException seialization 
  *  
  */
 
-public class CertificateEncodingExceptionTest extends SerializationTest {
+public class CRLExceptionTest extends SerializationTest {
 
     public static String[] msgs = {
             "New message",
@@ -39,16 +39,16 @@ public class CertificateEncodingExceptionTest extends SerializationTest {
 
     protected Object[] getData() {
         Exception cause = new Exception(msgs[1]);
-        CertificateEncodingException dExc = new CertificateEncodingException(msgs[0], cause);
+        CRLException dExc = new CRLException(msgs[0], cause);
         String msg = null;
         Throwable th = null;
-        return new Object[] { new CertificateEncodingException(), new CertificateEncodingException(msg),
-                new CertificateEncodingException(msgs[1]),
-                new CertificateEncodingException(new Throwable()), new CertificateEncodingException(th),
-                new CertificateEncodingException(msgs[1], dExc) };
+        return new Object[] { new CRLException(), new CRLException(msg),
+                new CRLException(msgs[1]),
+                new CRLException(new Throwable()), new CRLException(th),
+                new CRLException(msgs[1], dExc) };
     }
-    
+
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(CertificateEncodingExceptionTest.class);
+        junit.textui.TestRunner.run(CRLExceptionTest.class);
     }
 }

@@ -19,19 +19,19 @@
 * @version $Revision$
 */
 
-package java.security.cert.serialization;
+package org.apache.harmony.security.tests.java.security.cert.serialization;
 
-import java.security.cert.CRLException;
+import java.security.cert.CertStoreException;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for CRLException seialization 
+ * Test for CertStoreException seialization 
  *  
  */
 
-public class CRLExceptionTest extends SerializationTest {
+public class CertStoreExceptionTest extends SerializationTest {
 
     public static String[] msgs = {
             "New message",
@@ -39,16 +39,16 @@ public class CRLExceptionTest extends SerializationTest {
 
     protected Object[] getData() {
         Exception cause = new Exception(msgs[1]);
-        CRLException dExc = new CRLException(msgs[0], cause);
+        CertStoreException dExc = new CertStoreException(msgs[0], cause);
         String msg = null;
         Throwable th = null;
-        return new Object[] { new CRLException(), new CRLException(msg),
-                new CRLException(msgs[1]),
-                new CRLException(new Throwable()), new CRLException(th),
-                new CRLException(msgs[1], dExc) };
+        return new Object[] { new CertStoreException(), new CertStoreException(msg),
+                new CertStoreException(msgs[1]),
+                new CertStoreException(new Throwable()), new CertStoreException(th),
+                new CertStoreException(msgs[1], dExc) };
     }
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(CRLExceptionTest.class);
+        junit.textui.TestRunner.run(CertStoreExceptionTest.class);
     }
 }
