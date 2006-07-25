@@ -19,25 +19,26 @@
 * @version $Revision$
 */
 
-package java.security.serialization;
+package org.apache.harmony.security.tests.java.security.serialization;
 
-import java.security.SecurityPermission;
+import java.security.AllPermission;
+import java.security.PermissionCollection;
+import java.util.Enumeration;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Serialization tests for <code>SecurityPermission</code>
+ * Serialization tests for <code>AllPermissionCollection</code>
  * 
  */
 
-public class SecurityPermissionTest extends SerializationTest {
+public class AllPermissionCollectionTest extends SerializationTest {
 
-    /**
-     * @see com.intel.drl.test.SerializationTest#getData()
-     */
     protected Object[] getData() {
-        return new Object[] { new SecurityPermission("%&#C"),
-                new SecurityPermission("jlkhb.3465.*", "sf"), };
+        PermissionCollection c1 = new AllPermission().newPermissionCollection();
+        PermissionCollection c2 = new AllPermission().newPermissionCollection();
+        c2.add(new AllPermission());
+        return new Object[] { c1, c2 };
     }
 }

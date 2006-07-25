@@ -19,26 +19,28 @@
 * @version $Revision$
 */
 
-package java.security.serialization;
+package org.apache.harmony.security.tests.java.security.serialization;
 
-import java.security.AllPermission;
+import java.security.UnresolvedPermission;
+import java.security.cert.Certificate;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 
 /**
- * Serialization tests for <code>AllPermission</code>
+ * Serialization tests for <code>UnresolvedPermission</code>
  * 
  */
 
-public class AllPermissionTest extends SerializationTest {
+public class UnresolvedPermissionTest extends SerializationTest {
 
     /**
      * @see com.intel.drl.test.SerializationTest#getData()
      */
     protected Object[] getData() {
-        return new Object[] {new AllPermission()};
+        // test with real certificates ?
+        return new Object[] {new UnresolvedPermission("sjdvb.asef", "", "", null),
+                new UnresolvedPermission("&^%$m,3298746", null, null, new Certificate[0])};
     }
-
 }
