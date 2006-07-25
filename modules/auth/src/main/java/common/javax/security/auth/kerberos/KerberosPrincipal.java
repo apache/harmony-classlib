@@ -92,7 +92,7 @@ public final class KerberosPrincipal implements Principal, Serializable {
         this.name = name;
         
         // verify realm name according to RFC 1964(2.1.1 (2))
-        // check invalid chars '\', ':' and null
+        // check invalid chars '/', ':' and null
         if (realm.indexOf('/') != -1 || realm.indexOf(':') != -1
                 || realm.indexOf(0) != -1) {
             throw new IllegalArgumentException(
