@@ -25,8 +25,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
-import java.util.Arrays;
-import java.util.Random;
 
 import junit.framework.TestCase;
 
@@ -88,25 +86,6 @@ public class SecureRandom_ImplTest extends TestCase {
 	}
 
 	/*
-	 * Class under test for void SecureRandom(byte[])
-	 */
-	public final void testSecureRandombyteArray() {
-		byte[] seed = {1,2,3,4,5,6,7,8};
-		SecureRandom sr = new SecureRandom(seed);
-
-		long l = 0;
-		for (int i = 0; i < seed.length; i++) {
-			l = (l << 8) | (seed[i] & 0xFF);
-		}
-		Random r = new Random(l);
-		byte[] b1 = new byte[8];
-		byte[] b2 = new byte[8];
-		sr.nextBytes(b1);
-		r.nextBytes(b2);
-        assertTrue("incorrect random bytes", Arrays.equals(b1, b2));
-	}
-
-	/*
 	 * Class under test for SecureRandom getInstance(String)
 	 */
 	public final void testGetInstanceString() {
@@ -122,8 +101,13 @@ public class SecureRandom_ImplTest extends TestCase {
 	}
 	
 	public final void testGetAlgorithm() {
+        //test default implementation
 		SecureRandom sr = new SecureRandom();
-        assertEquals("Incorrect algorithm", "java.util.Random", sr.getAlgorithm());
+        assertEquals("Incorrect algorithm", "SHA1PRNG", sr.getAlgorithm());
+        assertNull("Incorrect provider", sr.getProvider());
+        
+        //just in case
+        sr.nextBytes(new byte[100]);
 	}
 	
 	/*

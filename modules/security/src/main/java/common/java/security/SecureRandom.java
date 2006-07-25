@@ -28,6 +28,7 @@ import java.util.Set;
 import org.apache.harmony.security.fortress.Engine;
 import org.apache.harmony.security.fortress.Services;
 
+import org.apache.harmony.security.provider.crypto.SHA1PRNG_SecureRandomImpl;
 
 /**
  * @com.intel.drl.spec_ref
@@ -98,8 +99,8 @@ public class SecureRandom extends Random {
         Provider.Service service = findService();
         if (service == null) {
             this.provider = null;
-            this.secureRandomSpi = new DummySecureRandom();
-            this.algorithm = "java.util.Random";
+            this.secureRandomSpi = new SHA1PRNG_SecureRandomImpl();
+            this.algorithm = "SHA1PRNG";
         } else {
             try {
                 this.provider = service.getProvider();
@@ -329,55 +330,4 @@ public class SecureRandom extends Random {
         return secureRandomSpi.engineGenerateSeed(numBytes);
     }
     
-    /**
-     * 
-     * Dummy SecureRandom based on Random
-     * 
-     */
-    private class DummySecureRandom extends SecureRandomSpi {
-        
-        Random rand;
-        
-        // Creates SecureRandomSpi object
-        public DummySecureRandom() {
-            rand = new Random();
-        }
-        
-        // Creates SecureRandomSpi object
-        public DummySecureRandom(long seed) {
-            rand = new Random(seed);
-        }
-
-        // Sets the seed of this random number generator 
-        public void engineSetSeed(byte[] seed) {
-            long l = 0;
-            int length = 8;
-            
-            if (seed.length < 8) {
-                length = seed.length;
-            }
-            for (int i = 0; i < length; i++) {
-                l = (l << 8) | (seed[i] & 0xFF);
-            }        
-            rand.setSeed(l);
-        }
-        
-        // Generates random bytes and places them into a byte array
-        public void engineNextBytes(byte[] bytes) {
-            rand.nextBytes(bytes);
-        }
-        
-        // Generates random bytes
-        //
-        // @param numBytes
-        // @return An array of random bytes
-        public byte[] engineGenerateSeed(int numBytes) {
-            if (numBytes < 1) {
-                return null;
-            }
-            byte[] next = new byte[numBytes]; 
-            nextBytes(next);
-            return next;
-        }
-    }
 }

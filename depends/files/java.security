@@ -20,10 +20,12 @@
 # Providers
 # See also: J2SE doc. "How to Implement a Provider for the JavaTM Cryptography Architecture"
 #
-# Open Source providers
+# Harmony providers
 security.provider.1=org.apache.harmony.security.provider.cert.DRLCertFactory
-security.provider.2=org.bouncycastle.jce.provider.BouncyCastleProvider
+security.provider.2=org.apache.harmony.security.provider.crypto.CryptoProvider
 security.provider.3=org.apache.harmony.xnet.provider.jsse.JSSEProvider
+# Other Open Source providers
+security.provider.4=org.bouncycastle.jce.provider.BouncyCastleProvider
 
 #
 # Class to instantiate as a default Configuration implementation

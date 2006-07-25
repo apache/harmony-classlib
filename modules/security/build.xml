@@ -49,31 +49,26 @@
     <target name="test" depends="build, compile.tests, run.tests" />
 
 
-	<!-- Build native code -->
-    <target name="build.native" if="${hy.security.src.main.native}/security/${hy.os}" >
-		<exec failonerror="true" 
-              executable="${make.command}" 
-              dir="${hy.security.src.main.native}/security/${hy.os}">
-            <env key="HY_HDK" value="${hy.hdk}" />
-        </exec>
+    <!-- Build native code -->
+    <available file="${hy.security.src.main.native}/security/${hy.os}" property="native.present" />
 
-		<!-- Copy the built shared libs over to the jre/bin dir -->
-		<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-			<fileset dir="${hy.security.src.main.native}/security">
+
+    <target name="build.native" if="native.present" >
+	<make dir="${hy.security.src.main.native}/security/${hy.os}" />
+
+        <!-- Copy the built shared libs over to the jre/bin dir -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.security.src.main.native}/security">
                 <patternset includes="*${shlib.suffix}*" />
             </fileset>
         </copy>
     </target>
 	
-	<!-- Clean natives -->
-    <target name="clean.native" if="${hy.security.src.main.native}/security/${hy.os}" >
-		<exec failonerror="true" 
-              executable="${make.command}" 
-              dir="${hy.security.src.main.native}/security/${hy.os}">
-            <env key="HY_HDK" value="${hy.hdk}" />
-		    <arg line="clean" />
-        </exec>
+    <!-- Clean natives -->
+    <target name="clean.native" if="native.present" >
+        <make dir="${hy.security.src.main.native}/security/${hy.os}" target="clean" />
     </target>
+
 
     <target name="clean">
         <delete failonerror="false">
