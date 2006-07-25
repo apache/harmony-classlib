@@ -699,10 +699,10 @@ public class ScannerTest extends TestCase {
         // Harmony uses 1024 as default buffer size,
         // What if a sentence can not be read in all in once.
         StringBuilder longSentence = new StringBuilder(1025);
-        for (int i = 0; i <= 10; i++) {
+        for (int i = 0; i < 11; i++) {
             longSentence.append(" ");
         }
-        for (int i = 11; i <= 1025; i++) {
+        for (int i = 11; i < 1026; i++) {
             longSentence.append("a");
         }
         s = new Scanner(longSentence.toString());
@@ -4814,6 +4814,159 @@ public class ScannerTest extends TestCase {
         s = new Scanner("aaaa");
         result = s.findWithinHorizon(Pattern.compile("a*"), 0);
         assertEquals("aaaa", result);
+    }
+    
+    /**
+     * @tests java.util.Scanner#findInLine(Pattern)
+     */
+    public void test_findInLine_LPattern() {
+
+        Scanner s = new Scanner("");
+        try {
+            s.findInLine((Pattern) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        String result = s.findInLine(Pattern.compile("^"));
+        assertEquals("", result);
+        MatchResult matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(0, matchResult.end());
+
+        result = s.findInLine(Pattern.compile("$"));
+        assertEquals("", result);
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(0, matchResult.end());
+
+        /*
+         * When we use the operation of findInLine(Pattern), the match region
+         * should not span the line separator.
+         */
+        s = new Scanner("aa\nb.b");
+        result = s.findInLine(Pattern.compile("a\nb*"));
+        assertNull(result);
+
+        s = new Scanner("aa\nbb.b");
+        result = s.findInLine(Pattern.compile("\\."));
+        assertNull(result);
+
+        s = new Scanner("abcd1234test\n");
+        result = s.findInLine(Pattern.compile("\\p{Lower}+"));
+        assertEquals("abcd", result);
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(4, matchResult.end());
+
+        result = s.findInLine(Pattern.compile("\\p{Digit}{5}"));
+        assertNull(result);
+        try {
+            matchResult = s.match();
+            fail("Should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+        assertEquals(0, matchResult.start());
+        assertEquals(4, matchResult.end());
+
+        result = s.findInLine(Pattern.compile("\\p{Lower}+"));
+        assertEquals("test", result);
+        matchResult = s.match();
+        assertEquals(8, matchResult.start());
+        assertEquals(12, matchResult.end());
+
+        char[] chars = new char[2048];
+        Arrays.fill(chars, 'a');
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(chars);
+        stringBuilder.append("1234");
+        s = new Scanner(stringBuilder.toString());
+        result = s.findInLine(Pattern.compile("\\p{Digit}+"));
+        assertEquals("1234", result);
+        matchResult = s.match();
+        assertEquals(2048, matchResult.start());
+        assertEquals(2052, matchResult.end());
+
+        s = new Scanner("test");
+        s.close();
+        try {
+            s.findInLine((Pattern) null);
+            fail("Should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+
+        s = new Scanner("test1234\n1234 test");
+        result = s.findInLine(Pattern.compile("test"));
+        assertEquals("test", result);
+        matchResult = s.match();
+        assertEquals(0, matchResult.start());
+        assertEquals(4, matchResult.end());
+
+        int number = s.nextInt();
+        assertEquals(1234, number);
+        matchResult = s.match();
+        assertEquals(4, matchResult.start());
+        assertEquals(8, matchResult.end());
+
+        result = s.next();
+        assertEquals("1234", result);
+        matchResult = s.match();
+        assertEquals(9, matchResult.start());
+        assertEquals(13, matchResult.end());
+
+        result = s.findInLine(Pattern.compile("test"));
+        assertEquals("test", result);
+        matchResult = s.match();
+        assertEquals(14, matchResult.start());
+        assertEquals(18, matchResult.end());
+        
+        s = new Scanner("test\u0085\ntest");
+        result = s.findInLine("est");
+        assertEquals("est", result);
+        result = s.findInLine("est");
+        assertEquals("est", result);
+        
+        s = new Scanner("test\ntest");
+        result = s.findInLine("est");
+        assertEquals("est", result);
+        result = s.findInLine("est");
+        assertEquals("est", result);
+
+        s = new Scanner("test\n123\ntest");
+        result = s.findInLine("est");
+        assertEquals("est", result);
+        result = s.findInLine("est");
+        // RI fails. It is a RI's bug.
+        assertNull(result);
+    }
+
+    /**
+     * @tests java.util.Scanner#findInLine(String)
+     */
+    public void test_findInLine_LString() {
+        s = new Scanner("test");
+        try {
+            s.findInLine((String) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        s.close();
+        try {
+            s.findInLine((String) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            s.findInLine("test");
+            fail("Should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // exptected
+        }
     }
     
     /**

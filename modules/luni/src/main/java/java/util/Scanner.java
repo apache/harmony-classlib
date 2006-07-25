@@ -56,34 +56,54 @@ import org.apache.harmony.luni.util.NotYetImplementedException;
  */
 public final class Scanner implements Iterator<String> {
 
-    //  Default delimiting pattern
+    //  Default delimiting pattern.
     private static final Pattern DEFAULT_DELIMITER = Pattern
             .compile("\\p{javaWhitespace}+"); //$NON-NLS-1$
     
-    //The boolean's pattern
+    // The boolean's pattern.
     private static final Pattern BOOLEAN_PATTERN = Pattern.compile(
             "true|false", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
     
-    // Pattern used to recognize line terminator
-    private static final Pattern LINE_TERMINATOR = Pattern
-            .compile("\n|\r\n|\r|\u0085|\u2028|\u2029"); //$NON-NLS-1$
     
+    // Pattern used to recognize line terminator.
+    private static final Pattern LINE_TERMINATOR;
+    
+    // Pattern used to recognize multiple line terminators.
+    private static final Pattern MULTI_LINE_TERMINATOR;
+
     // Pattern used to recognize a line with a line terminator.
-    private static final Pattern LINE_PATTERN = Pattern
-            .compile(".*(" + LINE_TERMINATOR.pattern() + //$NON-NLS-1$
-                    ")|.+(" + LINE_TERMINATOR.pattern() + ")?"); //$NON-NLS-1$ //$NON-NLS-2$
+    private static final Pattern LINE_PATTERN;
+
+    static {
+        String terminator = "\n|\r\n|\r|\u0085|\u2028|\u2029";  //$NON-NLS-1$
+        
+        LINE_TERMINATOR = Pattern.compile(terminator);
+        
+        StringBuilder multiTerminator = new StringBuilder();
+        MULTI_LINE_TERMINATOR = Pattern
+            .compile(multiTerminator.append("(") //$NON-NLS-1$
+                    .append(terminator)
+                    .append(")+").toString()); //$NON-NLS-1$
+        StringBuilder line = new StringBuilder();
+        LINE_PATTERN = Pattern
+            .compile(line.append(".*(") //$NON-NLS-1$
+                    .append(terminator)
+                    .append(")|.+(") //$NON-NLS-1$
+                    .append(terminator)
+                    .append(")?").toString()); //$NON-NLS-1$
+    }
     
-    // The pattern matching anything
+    // The pattern matches anything.
     private static final Pattern ANY_PATTERN = Pattern.compile("(?s).*"); //$NON-NLS-1$
 
     private static final int DIPLOID = 2;
 
-    // Default radix
+    // Default radix.
     private static final int DEFAULT_RADIX = 10;
 
     private static final int DEFAULT_TRUNK_SIZE = 1024;
 
-    // The input source of scanner
+    // The input source of scanner.
     private Readable input;
 
     private CharBuffer buffer;
@@ -96,16 +116,17 @@ public final class Scanner implements Iterator<String> {
 
     private Locale locale = Locale.getDefault();
 
-    // The position where find begins
+    // The position where find begins.
     private int findStartIndex = 0;
 
-    // The last find start position
+    // The last find start position.
     private int preStartIndex = findStartIndex;
 
-    // The length of the buffer
+    // The length of the buffer.
     private int bufferLength = 0;
 
-    // Used by find and nextXXX operation
+    // Record the status of this scanner. True if the scanner 
+    // is closed.
     private boolean closed = false;
 
     private IOException lastIOException;
@@ -114,7 +135,7 @@ public final class Scanner implements Iterator<String> {
     
     private DecimalFormat decimalFormat;
     
-    // Records whether the underlying readable has more input
+    // Records whether the underlying readable has more input.
     private boolean inputExhausted = false;
     
     private enum DataType{
@@ -306,14 +327,98 @@ public final class Scanner implements Iterator<String> {
         return delimiter;
     }
 
-    //TODO: To implement this feature
+    /**
+     * Tries to find the pattern in input. Delimiters are ignored. If the
+     * pattern is found before line terminator, the matched string will be
+     * returned, and the scanner will advance to the end of the matched string.
+     * Otherwise, null will be returned and the scanner will not advance the
+     * input. When waiting for input, the scanner may be blocked.
+     * 
+     * All the input may be cached if no line terminator exists in the buffer.
+     * 
+     * @param pattern
+     *            the pattern used to match input
+     * @return the matched string
+     * @throws IllegalStateException
+     *             if the scanner is closed
+     */
     public String findInLine(Pattern pattern) {
-        throw new NotYetImplementedException();
+        checkClosed();
+        checkNull(pattern);
+        int horizonLineSeparator = 0;
+
+        matcher.usePattern(MULTI_LINE_TERMINATOR);
+        matcher.region(findStartIndex, bufferLength);
+
+        boolean findComplete = false;
+        int terminatorLength = 0;
+        while (!findComplete) {
+            if (matcher.find()) {
+                horizonLineSeparator = matcher.start();
+                terminatorLength = matcher.end() - matcher.start();
+                findComplete = true;
+            } else {
+                if (!inputExhausted) {
+                    readMore();
+                    resetMatcher();
+                } else {
+                    horizonLineSeparator = bufferLength;
+                    findComplete = true;
+                }
+            }
+        }
+
+        matcher.usePattern(pattern);
+
+        /*
+         * TODO The following 2 statements are used to deal with regex's
+         * bug. java.util.regex.Matcher.region(int start, int end)
+         * implementation does not have any effects when called. They will be
+         * removed once the bug is fixed.
+         */
+        int oldLimit = buffer.limit();
+        buffer.limit(horizonLineSeparator);
+        // ========== To deal with regex bug ====================
+
+        matcher.region(findStartIndex, horizonLineSeparator);
+        if (matcher.find()) {
+            // The scanner advances past the input that matched
+            findStartIndex = matcher.end();
+            // If the matched pattern is immediately followed by line terminator. 
+            if(horizonLineSeparator == matcher.end()) {
+                findStartIndex += terminatorLength;
+            }
+            matchSuccessful = true;
+
+            // ========== To deal with regex bug ====================
+            buffer.limit(oldLimit);
+            // ========== To deal with regex bug ====================
+
+            return matcher.group();
+        }
+
+        // ========== To deal with regex bug ====================
+        buffer.limit(oldLimit);
+        // ========== To deal with regex bug ====================
+
+        matchSuccessful = false;
+        return null;
     }
 
-    //TODO: To implement this feature
+    /**
+     * Tries to find the pattern compiled from the specified string. The
+     * delimiter will be ignored. It is the same as invoke
+     * findInLine(Pattern.compile(pattern))
+     * 
+     * @param pattern
+     *            a string used to construct a pattern which in turn used to
+     *            match input
+     * @return the matched string
+     * @throws IllegalStateException
+     *             if the scanner is closed
+     */
     public String findInLine(String pattern) {
-        throw new NotYetImplementedException();
+        return findInLine(Pattern.compile(pattern));
     }
 
     /**
@@ -970,8 +1075,6 @@ public final class Scanner implements Iterator<String> {
      * locale specific negative prefixes and suffixes were present. At last the
      * resulting String is passed to {@link BigDecimal#BigDecimal(String)}}.
      * 
-     * @param integerRadix
-     *            the radix used to translate the token into BigDecimal
      * @return the BigDecimal scanned from the input
      * @throws IllegalStateException
      *             if this scanner has been closed
@@ -1624,7 +1727,7 @@ public final class Scanner implements Iterator<String> {
      * The operation of remove is not supported by this implementation of
      * Iterator.
      * 
-     * @return UnsupportedOperationException 
+     * @throw UnsupportedOperationException 
      *            if this method is invoked
      */
     public void remove() {
@@ -2060,9 +2163,9 @@ public final class Scanner implements Iterator<String> {
      */
     private void readMore() {
         int oldPosition = buffer.position();
-        int oldLimit = buffer.limit();
+        int oldBufferLength = bufferLength;
         // Increase capacity if empty space is not enough
-        if (buffer.limit() >= buffer.capacity()) {
+        if (bufferLength >= buffer.capacity()) {
             expandBuffer();
         }
 
@@ -2070,7 +2173,7 @@ public final class Scanner implements Iterator<String> {
         int readCount = 0;
         try {
             buffer.limit(buffer.capacity());
-            buffer.position(oldLimit);
+            buffer.position(oldBufferLength);
             while ((readCount = input.read(buffer)) == 0) {
                 // nothing to do here
             }
@@ -2078,7 +2181,7 @@ public final class Scanner implements Iterator<String> {
             // Consider the scenario: readable puts 4 chars into
             // buffer and then an IOException is thrown out. In this case, buffer is
             // actually grown, but readable.read() will never return.
-            bufferLength += (buffer.position() - oldLimit);
+            bufferLength = buffer.position();
             /*
              * Uses -1 to record IOException occurring, and no more input can be
              * read.
