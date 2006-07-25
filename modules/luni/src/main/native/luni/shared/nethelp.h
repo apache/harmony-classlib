@@ -1,4 +1,4 @@
-/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -161,17 +161,4 @@ getJavaNetSocketImplPort(JNIEnv * env);
 void
 setJavaIoFileDescriptorContents (JNIEnv * env, jobject fd,
                                           void *value);
-
-void setSocketAddressContent(JNIEnv * env, jclass channel_class, jobject channel_object,jbyte * address);
-
-void setFDContent(JNIEnv * env, jclass channel_class, jobject channel_object, void * sock);
-
-void setJavaNioChannelsLocalPort(JNIEnv * env,jclass channel_class,jobject channel_object,int port);
-
-jobject getJavaNioChannelsSocketChannelImplObj(JNIEnv * env, jclass channel_class);
-
-jobject getJavaNioChannelsDatagramChannelImplObj(JNIEnv * env);
-
-void setServerSocketLocalAddressContent(JNIEnv * env, jclass socketImpl_class, jobject socketImpl_object, jbyte * localAddr);
-
 #endif /* nethelp_h */
