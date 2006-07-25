@@ -31,45 +31,43 @@ import java.util.HashMap;
  */
 
 public final class DefaultPersistenceDelegatesFactory {
-    
-    private static HashMap persistenceDelegates = new HashMap();
-    
+
+    private static HashMap<String, PersistenceDelegate> persistenceDelegates = new HashMap<String, PersistenceDelegate>();
+
     private static PersistenceDelegate createPersistenceDelegate(Class type) {
         PersistenceDelegate pd = null;
         try {
-            String className = createDefaultNameForPersistenceDelegateClass(
-                    type);
-            pd = (PersistenceDelegate) Class.forName(
-                className, true, type.getClassLoader()).newInstance();
+            String className = createDefaultNameForPersistenceDelegateClass(type);
+            pd = (PersistenceDelegate) Class.forName(className, true,
+                    type.getClassLoader()).newInstance();
         } catch (Exception e) {
             Class ancestor = type.getSuperclass();
-            
-            while(ancestor != null) {
+
+            while (ancestor != null) {
                 try {
-                    String className =
-                        createDefaultNameForPersistenceDelegateClass(ancestor);
-                    pd = (PersistenceDelegate) Class.forName(
-                            className, true,
+                    String className = createDefaultNameForPersistenceDelegateClass(ancestor);
+                    pd = (PersistenceDelegate) Class.forName(className, true,
                             type.getClassLoader()).newInstance();
-                } catch(Exception e2) {
+                } catch (Exception e2) {
                     ancestor = ancestor.getSuperclass();
                 }
             }
-            
-            if(pd == null) {
+
+            if (pd == null) {
                 pd = new DefaultPersistenceDelegate();
             }
         }
         return pd;
     }
-    
+
     public static PersistenceDelegate getPersistenceDelegate(Class type) {
         String className = type.getName();
-        PersistenceDelegate result =
-                (PersistenceDelegate) persistenceDelegates.get(className);
-        if(result == null) {
-            if(type.isArray()) {
-                result = org.apache.harmony.beans.ArrayPersistenceDelegate.getInstance();
+        PersistenceDelegate result = persistenceDelegates.get(className);
+
+        if (result == null) {
+            if (type.isArray()) {
+                result = org.apache.harmony.beans.ArrayPersistenceDelegate
+                        .getInstance();
             } else {
                 result = createPersistenceDelegate(type);
                 persistenceDelegates.put(className, result);
@@ -77,13 +75,13 @@ public final class DefaultPersistenceDelegatesFactory {
         }
         return result;
     }
-    
+
     private static String createDefaultNameForPersistenceDelegateClass(
             Class type) {
         String typeName = type.getName();
         StringTokenizer st = new StringTokenizer(typeName, ".");
         String className = "";
-        while(st.hasMoreElements()) {
+        while (st.hasMoreElements()) {
             String s = (String) st.nextElement();
             className += "".equals(className) ? s : "_" + s;
         }

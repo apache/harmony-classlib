@@ -97,8 +97,8 @@ public class Encoder {
     }
 
     void doWriteObject(Object object) {
-        PersistenceDelegate pd = (object != null) ? 
-                getPersistenceDelegate(object.getClass())
+        PersistenceDelegate pd = (object != null) ? getPersistenceDelegate(object
+                .getClass())
                 : new NullPersistenceDelegate();
 
         if (pd == null) {
@@ -159,6 +159,8 @@ public class Encoder {
                 nodes.put(oldInstance, node);
 
                 // if an expression is not a constructor
+                // FIXME prevents instance methods of Class and Method objects
+                // from being handled correctly
                 if (!(oldExp.getTarget() instanceof Class || oldExp.getTarget() instanceof Field)) {
                     ObjectNode parent = nodes.get(oldExp.getTarget());
 

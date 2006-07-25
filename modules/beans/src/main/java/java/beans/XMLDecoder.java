@@ -46,9 +46,9 @@ public class XMLDecoder {
 
     private ExceptionListener exceptionListener = null;
 
-    private Vector objects = new Vector();
+    private Vector<Object> objects = new Vector<Object>();
 
-    private Iterator iterator = null;
+    private Iterator<Object> iterator = null;
 
     /**
      * @com.intel.drl.spec_ref

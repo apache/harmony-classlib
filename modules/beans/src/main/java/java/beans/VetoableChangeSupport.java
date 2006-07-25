@@ -37,17 +37,19 @@ import java.util.Map;
  */
 
 public class VetoableChangeSupport implements Serializable {
-    
+
     private static final long serialVersionUID = -5090210921595982017l;
-    
+
     private transient Object sourceBean;
+
     private transient List<VetoableChangeListener> allVetoableChangeListeners = new ArrayList<VetoableChangeListener>();
+
     private transient Map<String, List<VetoableChangeListener>> selectedVetoableChangeListeners = new HashMap<String, List<VetoableChangeListener>>();
-    
+
     // fields for serialization compatibility
     private Hashtable<String, List<VetoableChangeListener>> children;
-    private Object source;
-    private int vetoableChangeSupportSerializedDataVersion = 1; 
+
+    private int vetoableChangeSupportSerializedDataVersion = 1;
 
     /**
      * @com.intel.drl.spec_ref
@@ -62,8 +64,8 @@ public class VetoableChangeSupport implements Serializable {
     /**
      * @com.intel.drl.spec_ref
      */
-    public void fireVetoableChange(
-            String propertyName, Object oldValue, Object newValue) throws PropertyVetoException {
+    public void fireVetoableChange(String propertyName, Object oldValue,
+            Object newValue) throws PropertyVetoException {
         PropertyChangeEvent event = createPropertyChangeEvent(propertyName,
                 oldValue, newValue);
         doFirePropertyChange(event);
@@ -72,13 +74,14 @@ public class VetoableChangeSupport implements Serializable {
     /**
      * @com.intel.drl.spec_ref
      */
-    public synchronized void removeVetoableChangeListener(
-            String propertyName, VetoableChangeListener listener) {
-        if ( (propertyName != null) && (listener != null) ) {
-            List<VetoableChangeListener> listeners = selectedVetoableChangeListeners.get(propertyName);
-            
-            if(listeners != null) {
-                listeners.remove(listener);    
+    public synchronized void removeVetoableChangeListener(String propertyName,
+            VetoableChangeListener listener) {
+        if ((propertyName != null) && (listener != null)) {
+            List<VetoableChangeListener> listeners = selectedVetoableChangeListeners
+                    .get(propertyName);
+
+            if (listeners != null) {
+                listeners.remove(listener);
             }
         }
     }
@@ -107,37 +110,33 @@ public class VetoableChangeSupport implements Serializable {
     public synchronized VetoableChangeListener[] getVetoableChangeListeners(
             String propertyName) {
         List<VetoableChangeListener> listeners = null;
-        
+
         if (propertyName != null) {
             listeners = selectedVetoableChangeListeners.get(propertyName);
         }
-        
-        return (listeners == null) ? new VetoableChangeListener[] {} :
-            getAsVetoableChangeListenerArray(listeners);
-        
+
+        return (listeners == null) ? new VetoableChangeListener[] {}
+                : getAsVetoableChangeListenerArray(listeners);
+
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public void fireVetoableChange(
-            String propertyName,
-            boolean oldValue,
+    public void fireVetoableChange(String propertyName, boolean oldValue,
             boolean newValue) throws PropertyVetoException {
-        PropertyChangeEvent event = createPropertyChangeEvent(
-                propertyName, oldValue, newValue);
+        PropertyChangeEvent event = createPropertyChangeEvent(propertyName,
+                oldValue, newValue);
         doFirePropertyChange(event);
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public void fireVetoableChange(
-            String propertyName,
-            int oldValue,
+    public void fireVetoableChange(String propertyName, int oldValue,
             int newValue) throws PropertyVetoException {
-        PropertyChangeEvent event = createPropertyChangeEvent(
-                propertyName, oldValue, newValue);
+        PropertyChangeEvent event = createPropertyChangeEvent(propertyName,
+                oldValue, newValue);
         doFirePropertyChange(event);
     }
 
@@ -147,12 +146,13 @@ public class VetoableChangeSupport implements Serializable {
     public synchronized boolean hasListeners(String propertyName) {
         boolean result = allVetoableChangeListeners.size() > 0;
         if (!result && propertyName != null) {
-            List<VetoableChangeListener> listeners = selectedVetoableChangeListeners.get(propertyName);
+            List<VetoableChangeListener> listeners = selectedVetoableChangeListeners
+                    .get(propertyName);
             if (listeners != null) {
                 result = listeners.size() > 0;
             }
         }
-        return result;    
+        return result;
     }
 
     /**
@@ -161,7 +161,8 @@ public class VetoableChangeSupport implements Serializable {
     public synchronized void removeVetoableChangeListener(
             VetoableChangeListener listener) {
         if (listener != null) {
-            Iterator<VetoableChangeListener> iterator = allVetoableChangeListeners.iterator();
+            Iterator<VetoableChangeListener> iterator = allVetoableChangeListeners
+                    .iterator();
             while (iterator.hasNext()) {
                 VetoableChangeListener pcl = iterator.next();
                 if (pcl == listener) {
@@ -186,79 +187,85 @@ public class VetoableChangeSupport implements Serializable {
      * @com.intel.drl.spec_ref
      */
     public synchronized VetoableChangeListener[] getVetoableChangeListeners() {
-        List<VetoableChangeListener> result = new ArrayList<VetoableChangeListener>(allVetoableChangeListeners);
-        
-        Iterator<String> keysIterator =
-                selectedVetoableChangeListeners.keySet().iterator();
+        List<VetoableChangeListener> result = new ArrayList<VetoableChangeListener>(
+                allVetoableChangeListeners);
+
+        Iterator<String> keysIterator = selectedVetoableChangeListeners
+                .keySet().iterator();
         while (keysIterator.hasNext()) {
             String propertyName = keysIterator.next();
-            
-            List<VetoableChangeListener> selectedListeners = selectedVetoableChangeListeners.get(propertyName);
-            if(selectedListeners != null) {
+
+            List<VetoableChangeListener> selectedListeners = selectedVetoableChangeListeners
+                    .get(propertyName);
+            if (selectedListeners != null) {
                 for (VetoableChangeListener listener : selectedListeners) {
-                    result.add(new VetoableChangeListenerProxy(
-                            propertyName, listener));
+                    result.add(new VetoableChangeListenerProxy(propertyName,
+                            listener));
                 }
-                
+
             }
-            
+
         }
-        
+
         return getAsVetoableChangeListenerArray(result);
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     private void writeObject(ObjectOutputStream oos) throws IOException {
         List<VetoableChangeListener> allSerializedVetoableChangeListeners = new ArrayList<VetoableChangeListener>();
         for (VetoableChangeListener vcl : allVetoableChangeListeners) {
-            if(vcl instanceof Serializable) {
+            if (vcl instanceof Serializable) {
                 allSerializedVetoableChangeListeners.add(vcl);
             }
         }
-        
+
         Map<String, List<VetoableChangeListener>> selectedSerializedVetoableChangeListeners = new HashMap<String, List<VetoableChangeListener>>();
         for (String propertyName : selectedVetoableChangeListeners.keySet()) {
-            List<VetoableChangeListener> keyValues = selectedVetoableChangeListeners.get(propertyName);
-            if(keyValues != null) {
+            List<VetoableChangeListener> keyValues = selectedVetoableChangeListeners
+                    .get(propertyName);
+            if (keyValues != null) {
                 List<VetoableChangeListener> serializedVetoableChangeListeners = new ArrayList<VetoableChangeListener>();
                 for (VetoableChangeListener pcl : keyValues) {
-                    if(pcl instanceof Serializable) {
+                    if (pcl instanceof Serializable) {
                         serializedVetoableChangeListeners.add(pcl);
                     }
                 }
-                
-                if(!serializedVetoableChangeListeners.isEmpty()) {
-                    selectedSerializedVetoableChangeListeners.put(
-                        propertyName, serializedVetoableChangeListeners);
+
+                if (!serializedVetoableChangeListeners.isEmpty()) {
+                    selectedSerializedVetoableChangeListeners.put(propertyName,
+                            serializedVetoableChangeListeners);
                 }
-                
+
             }
         }
-        
-        children = new Hashtable<String, List<VetoableChangeListener>>(selectedSerializedVetoableChangeListeners);
+
+        children = new Hashtable<String, List<VetoableChangeListener>>(
+                selectedSerializedVetoableChangeListeners);
         children.put("", allSerializedVetoableChangeListeners);
         oos.writeObject(children);
-        
+
         Object source = null;
-        if(sourceBean instanceof Serializable) {
+        if (sourceBean instanceof Serializable) {
             source = sourceBean;
         }
         oos.writeObject(source);
-        
+
         oos.writeInt(vetoableChangeSupportSerializedDataVersion);
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     private void readObject(ObjectInputStream ois) throws IOException,
             ClassNotFoundException {
 
-        children = (Hashtable<String, List<VetoableChangeListener>>)ois.readObject();
+        children = (Hashtable<String, List<VetoableChangeListener>>) ois
+                .readObject();
 
-        selectedVetoableChangeListeners = new HashMap<String, List<VetoableChangeListener>>(children);
+        selectedVetoableChangeListeners = new HashMap<String, List<VetoableChangeListener>>(
+                children);
         allVetoableChangeListeners = selectedVetoableChangeListeners.remove("");
         if (allVetoableChangeListeners == null) {
             allVetoableChangeListeners = new ArrayList<VetoableChangeListener>();
@@ -275,86 +282,88 @@ public class VetoableChangeSupport implements Serializable {
             throws PropertyVetoException {
         doFirePropertyChange(event);
     }
-    
-    private PropertyChangeEvent createPropertyChangeEvent(
-            String propertyName, Object oldValue, Object newValue) {
+
+    private PropertyChangeEvent createPropertyChangeEvent(String propertyName,
+            Object oldValue, Object newValue) {
         return new PropertyChangeEvent(sourceBean, propertyName, oldValue,
                 newValue);
     }
-    
-    private PropertyChangeEvent createPropertyChangeEvent(
-            String propertyName, boolean oldValue, boolean newValue) {
-        return new PropertyChangeEvent(sourceBean, propertyName,
-                new Boolean(oldValue), new Boolean(newValue));
+
+    private PropertyChangeEvent createPropertyChangeEvent(String propertyName,
+            boolean oldValue, boolean newValue) {
+        return new PropertyChangeEvent(sourceBean, propertyName, new Boolean(
+                oldValue), new Boolean(newValue));
     }
-    
-    private PropertyChangeEvent createPropertyChangeEvent(
-            String propertyName, int oldValue, int newValue) {
-        return new PropertyChangeEvent(sourceBean, propertyName,
-                new Integer(oldValue), new Integer(newValue));
+
+    private PropertyChangeEvent createPropertyChangeEvent(String propertyName,
+            int oldValue, int newValue) {
+        return new PropertyChangeEvent(sourceBean, propertyName, new Integer(
+                oldValue), new Integer(newValue));
     }
-    
+
     private void doFirePropertyChange(PropertyChangeEvent event)
-			throws PropertyVetoException {
-		String propName = event.getPropertyName();
-		Object oldValue = event.getOldValue();
-		Object newValue = event.getNewValue();
+            throws PropertyVetoException {
+        String propName = event.getPropertyName();
+        Object oldValue = event.getOldValue();
+        Object newValue = event.getNewValue();
 
-		if (newValue != null && oldValue != null && newValue.equals(oldValue)) {
-			return;
-		}
+        if (newValue != null && oldValue != null && newValue.equals(oldValue)) {
+            return;
+        }
 
-		/* Take note of who we are going to notify (and potentially un-notify) */
+        /* Take note of who we are going to notify (and potentially un-notify) */
 
-		VetoableChangeListener[] listensToAll; // Listeners to all property change events
-		VetoableChangeListener[] listensToOne = null; // Listens to a given property change
-		synchronized (this) {
-			listensToAll = allVetoableChangeListeners.toArray(
-				new VetoableChangeListener[allVetoableChangeListeners.size()]);
+        VetoableChangeListener[] listensToAll; // Listeners to all property
+                                                // change events
+        VetoableChangeListener[] listensToOne = null; // Listens to a given
+                                                        // property change
+        synchronized (this) {
+            listensToAll = allVetoableChangeListeners
+                    .toArray(new VetoableChangeListener[allVetoableChangeListeners
+                            .size()]);
 
-			List<VetoableChangeListener> listeners =
-				selectedVetoableChangeListeners.get(event.getPropertyName());
-			if (listeners != null) {
-				listensToOne = listeners.toArray(
-					new VetoableChangeListener[listeners.size()]);
-			}
-		}
+            List<VetoableChangeListener> listeners = selectedVetoableChangeListeners
+                    .get(event.getPropertyName());
+            if (listeners != null) {
+                listensToOne = listeners
+                        .toArray(new VetoableChangeListener[listeners.size()]);
+            }
+        }
 
-		try {
-			for (VetoableChangeListener listener : listensToAll) {
-				listener.vetoableChange(event);
-			}
-			if (listensToOne != null) {
-				for (VetoableChangeListener listener : listensToOne) {
-					listener.vetoableChange(event);
-				}
-			}
-		} catch (PropertyVetoException pve) {
-			// Tell them we have changed it back
-			PropertyChangeEvent revertEvent = createPropertyChangeEvent(
-					propName, newValue, oldValue);
-			for (VetoableChangeListener listener : listensToAll) {
-				listener.vetoableChange(revertEvent);
-			}
-			if (listensToOne != null) {
-				for (VetoableChangeListener listener : listensToOne) {
-					listener.vetoableChange(revertEvent);
-				}
-			}
-			throw pve;
-		}
-	}
+        try {
+            for (VetoableChangeListener listener : listensToAll) {
+                listener.vetoableChange(event);
+            }
+            if (listensToOne != null) {
+                for (VetoableChangeListener listener : listensToOne) {
+                    listener.vetoableChange(event);
+                }
+            }
+        } catch (PropertyVetoException pve) {
+            // Tell them we have changed it back
+            PropertyChangeEvent revertEvent = createPropertyChangeEvent(
+                    propName, newValue, oldValue);
+            for (VetoableChangeListener listener : listensToAll) {
+                listener.vetoableChange(revertEvent);
+            }
+            if (listensToOne != null) {
+                for (VetoableChangeListener listener : listensToOne) {
+                    listener.vetoableChange(revertEvent);
+                }
+            }
+            throw pve;
+        }
+    }
 
     private static VetoableChangeListener[] getAsVetoableChangeListenerArray(
             List<VetoableChangeListener> listeners) {
         Object[] objects = listeners.toArray();
-        VetoableChangeListener[] arrayResult =
-                new VetoableChangeListener[objects.length];
-        
-        for(int i = 0; i < objects.length; ++i) {
+        VetoableChangeListener[] arrayResult = new VetoableChangeListener[objects.length];
+
+        for (int i = 0; i < objects.length; ++i) {
             arrayResult[i] = (VetoableChangeListener) objects[i];
         }
-        
+
         return arrayResult;
     }
 }

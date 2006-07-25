@@ -29,6 +29,8 @@ import java.util.Iterator;
 
 public class BeanContextServiceAvailableEvent extends BeanContextEvent {
 
+    static final long serialVersionUID = -5333985775656400778L;
+
     /**
      * @serial
      */
@@ -46,8 +48,8 @@ public class BeanContextServiceAvailableEvent extends BeanContextEvent {
      * @com.intel.drl.spec_ref
      */
     public Iterator getCurrentServiceSelectors() {
-        return ((BeanContextServices) super.source).
-            getCurrentServiceSelectors(serviceClass);
+        return ((BeanContextServices) super.source)
+                .getCurrentServiceSelectors(serviceClass);
     }
 
     /**

@@ -31,6 +31,8 @@ import java.util.Vector;
 
 public class BeanContextMembershipEvent extends BeanContextEvent {
 
+    static final long serialVersionUID = 3499346510334590959L;
+
     /**
      * 
      */
@@ -41,11 +43,11 @@ public class BeanContextMembershipEvent extends BeanContextEvent {
      */
     public BeanContextMembershipEvent(BeanContext bc, Collection changes) {
         super(bc);
-        
+
         if (changes == null) {
             throw new NullPointerException("Changes are null");
         }
-        
+
         this.children = changes;
     }
 
@@ -54,20 +56,20 @@ public class BeanContextMembershipEvent extends BeanContextEvent {
      */
     public BeanContextMembershipEvent(BeanContext bc, Object[] changes) {
         super(bc);
-        
+
         if (changes == null) {
             throw new NullPointerException("Changes are null");
         }
-        
+
         // Initialize collection
-        this.children = new Vector();
-        
+        this.children = new Vector<Object>();
+
         // Add all elements to it
-        for(int i = 0; i < changes.length; i++) {
+        for (int i = 0; i < changes.length; i++) {
             this.children.add(changes[i]);
         }
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
@@ -81,7 +83,7 @@ public class BeanContextMembershipEvent extends BeanContextEvent {
     public Iterator iterator() {
         return this.children.iterator();
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */

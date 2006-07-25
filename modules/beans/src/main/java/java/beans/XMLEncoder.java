@@ -41,7 +41,7 @@ public class XMLEncoder extends Encoder {
 
     private Object owner;
 
-    private Vector printed = new Vector();
+    private Vector<ObjectNode> printed = new Vector<ObjectNode>();
 
     /**
      * @com.intel.drl.spec_ref
@@ -107,7 +107,7 @@ public class XMLEncoder extends Encoder {
 
     private void writeAll() {
         Tag mainTag = new Tag("java");
-        Enumeration e;
+        Enumeration<Object> e;
 
         printed.clear();
         NameMaker.clear();
@@ -120,10 +120,10 @@ public class XMLEncoder extends Encoder {
 
         e = roots.elements();
         while (e.hasMoreElements()) {
-            Object object = (Object) e.nextElement();
+            Object object = e.nextElement();
 
             if (object != null) {
-                ObjectNode node = (ObjectNode) nodes.get(object);
+                ObjectNode node = nodes.get(object);
 
                 printObjectTag(0, object, node);
             } else {
@@ -280,7 +280,7 @@ public class XMLEncoder extends Encoder {
         Object exprValue = null;
 
         try {
-            Enumeration enumeration;
+            Enumeration<ObjectNode> enumeration;
             Tag tag;
             String objectName;
             String methodName;
@@ -292,14 +292,14 @@ public class XMLEncoder extends Encoder {
             // find out, if this object is already printed
             enumeration = printed.elements();
             while (enumeration.hasMoreElements()) {
-                ObjectNode node2 = (ObjectNode) enumeration.nextElement();
+                ObjectNode node2 = enumeration.nextElement();
 
                 if (node2.getObjectValue() == exprValue) {
                     return;
                 }
             }
 
-            node = (ObjectNode) nodes.get(exprValue);
+            node = nodes.get(exprValue);
 
             // find out, if this object has no references to be printed
             // System.out.println("---- node.getReferencesNumber() = " + node.getReferencesNumber());
@@ -394,7 +394,7 @@ public class XMLEncoder extends Encoder {
 
         for (int i = tag.hasAttr("index") ? 1 : 0; i < args.length; ++i) {
             if (args[i] != null) {
-                ObjectNode node = (ObjectNode) nodes.get(args[i]);
+                ObjectNode node = nodes.get(args[i]);
 
                 printObjectTag(++tabCount, args[i], node);
             } else {
@@ -471,19 +471,19 @@ public class XMLEncoder extends Encoder {
 
         String name;
 
-        LinkedHashMap attrs;
+        LinkedHashMap<String, String> attrs;
 
         String characters;
 
         public Tag(String name) {
             this.name = name;
-            this.attrs = new LinkedHashMap();
+            this.attrs = new LinkedHashMap<String, String>();
             this.characters = null;
         }
 
         public Tag(String name, String characters) {
             this.name = name;
-            this.attrs = new LinkedHashMap();
+            this.attrs = new LinkedHashMap<String, String>();
             this.characters = characters;
         }
 
@@ -497,11 +497,11 @@ public class XMLEncoder extends Encoder {
 
         public String toStringOnOpenUnfinished() {
             String result = "<" + name;
-            Iterator i = attrs.keySet().iterator();
+            Iterator<String> i = attrs.keySet().iterator();
 
             while (i.hasNext()) {
-                String attrName = (String) i.next();
-                String attrValue = (String) attrs.get(attrName);
+                String attrName = i.next();
+                String attrValue = attrs.get(attrName);
 
                 result += " " + attrName + "=\"" + attrValue + "\"";
             }
@@ -532,7 +532,7 @@ public class XMLEncoder extends Encoder {
 
     static class NameMaker {
 
-        private static HashMap numOfExemplars = new HashMap();
+        private static HashMap<String, Integer> numOfExemplars = new HashMap<String, Integer>();
 
         public static void clear() {
             numOfExemplars.clear();
@@ -561,7 +561,7 @@ public class XMLEncoder extends Encoder {
                 fullName = type.getName();
                 shortName = fullName.substring(fullName.lastIndexOf(".") + 1);
             }
-            iNum = (Integer) numOfExemplars.get(shortName);
+            iNum = numOfExemplars.get(shortName);
             if (iNum == null) {
                 numOfExemplars.put(shortName, new Integer(0));
                 result = shortName + "0";

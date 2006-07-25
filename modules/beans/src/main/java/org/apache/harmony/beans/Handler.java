@@ -36,110 +36,110 @@ import java.beans.XMLDecoder;
  */
 
 public class Handler extends DefaultHandler {
-    
-    private Vector result;
-    private Vector commands;
+
+    private Vector<Object> result;
+
+    private Vector<Command> commands;
+
     private XMLDecoder decoder;
-    private HashMap references;
-    private Stack stack;
+
+    private HashMap<String, Command> references;
+
+    private Stack<Command> stack;
+
     private int tabCount;
 
-    public Handler(XMLDecoder decoder, Vector result) {
+    public Handler(XMLDecoder decoder, Vector<Object> result) {
         this.decoder = decoder;
         this.result = result;
-        this.commands = new Vector();
-        this.references = new HashMap();
-        this.stack = new Stack();
+        this.commands = new Vector<Command>();
+        this.references = new HashMap<String, Command>();
+        this.stack = new Stack<Command>();
     }
-    
+
     // clear collections to prepare parsing document
     public void startDocument() {
         references.clear();
         tabCount = 0;
     }
-    
+
     // create new command and put it on stack
     public void startElement(String namespaceURI, String localeName,
-        String tagName, Attributes attrs) throws SAXException
-    {
+            String tagName, Attributes attrs) throws SAXException {
         Command.printAttrs(tabCount, tagName, attrs);
         Command cmd = tagName.equals("java") ? new Command(decoder, tagName,
-                Command.parseAttrs(tagName, attrs)) :
-            new Command(tagName, Command.parseAttrs(tagName, attrs));
+                Command.parseAttrs(tagName, attrs)) : new Command(tagName,
+                Command.parseAttrs(tagName, attrs));
         stack.push(cmd);
         ++tabCount;
     }
-    
+
     // add data to command
     public void characters(char[] text, int start, int length)
             throws SAXException {
-        if(length > 0) {
-            String data = String.valueOf(text, start, length).replace('\n', ' ')
-                    .replace('\t', ' ').trim();
-            if(data.length() > 0) {
+        if (length > 0) {
+            String data = String.valueOf(text, start, length)
+                    .replace('\n', ' ').replace('\t', ' ').trim();
+            if (data.length() > 0) {
                 Command.prn(tabCount, tabCount + ">setting data=" + data
                         + "<EOL>");
-                Command cmd = (Command) stack.peek();
+                Command cmd = stack.peek();
                 cmd.setData(data);
             }
         }
     }
-    
+
     // pop command from stack and put it to one of collections
     public void endElement(String namespaceURI, String localeName,
-        String tagName) throws SAXException
-    {
-        Command cmd = (Command) stack.pop();
-        cmd.setTabCount(tabCount);
-            
+            String tagName) throws SAXException {
+        Command cmd = stack.pop();
+        //cmd.setTabCount(tabCount);
+
         // find if command works in context
-        if(!stack.isEmpty()) {
-            Command ctx = (Command) stack.peek();
+        if (!stack.isEmpty()) {
+            Command ctx = stack.peek();
             ctx.addChild(cmd);
         }
-    
+
         // upper level commands
-        if(stack.size() == 1 && cmd.isExecutable()){
+        if (stack.size() == 1 && cmd.isExecutable()) {
             commands.add(cmd);
         }
-        
+
         // store reference to command
-        if(cmd.hasAttr("id")) {
+        if (cmd.hasAttr("id")) {
             references.put(cmd.getAttr("id"), cmd);
         }
-            
+
         try {
             cmd.exec(references);
         } catch (Exception e) {
             throw new SAXException(e);
         }
-            
-        if(--tabCount < 0) {
+
+        if (--tabCount < 0) {
             tabCount = 0;
         }
-        
+
         Command.prn(tabCount, tabCount + ">...<" + tagName + "> end");
     }
-    
+
     // iterate over deferred commands and execute them again
     public void endDocument() throws SAXException {
-        for(int i = 0; i < commands.size(); ++i) {
-            Command cmd = (Command) commands.elementAt(i);
-            boolean backtracked = true;
-               try {
-                backtracked = cmd.backtrack(references);
-               } catch (Exception e) {
-                   throw new SAXException("Exception in command excution");
-               }
-               /*
-               if(!backtracked)
-                   throw new SAXException("Command " + cmd.getTagName() +
-                       " is unresolved on second run() call.");
-                   */
+        for (int i = 0; i < commands.size(); ++i) {
+            Command cmd = commands.elementAt(i);
+            try {
+                cmd.backtrack(references);
+            } catch (Exception e) {
+                throw new SAXException("Exception in command execution");
+            }
+            //            if(!backtracked)
+            //                throw new SAXException("Command " + cmd.getTagName() +
+            //                        " is unresolved on second run() call.");
         }
 
-        for(int i = 0; i < commands.size(); ++i) {
-            Command cmd = (Command) commands.elementAt(i);
+        for (int i = 0; i < commands.size(); ++i) {
+            Command cmd = commands.elementAt(i);
             result.add(cmd.getResultValue());
         }
     }

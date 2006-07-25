@@ -64,8 +64,10 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
                         Method setter = pd.getWriteMethod();
 
                         if (setter != null) {
-                            Object oldValue = getter.invoke(oldInstance, null);
-                            Object newValue = getter.invoke(newInstance, null);
+                            Object oldValue = getter.invoke(oldInstance,
+                                    (Object[]) null);
+                            Object newValue = getter.invoke(newInstance,
+                                    (Object[]) null);
 
                             if (oldValue != null && !oldValue.equals(newValue)
                                     || oldValue == null && newValue != null) {
@@ -78,7 +80,8 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
                         } else {
                             // commented since the process should be
                             // continued even if no setter is found
-                            // throw new Exception("no setter for " + pd.getName() + " property.");
+                            // throw new Exception("no setter for " +
+                            // pd.getName() + " property.");
                             continue;
                         }
                     }
@@ -117,7 +120,8 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
                             Method getter = pds[j].getReadMethod();
 
                             if (getter != null) {
-                                args[i] = getter.invoke(oldInstance, null);
+                                args[i] = getter.invoke(oldInstance,
+                                        (Object[]) null);
                                 found = true;
                                 break;
                             } else {

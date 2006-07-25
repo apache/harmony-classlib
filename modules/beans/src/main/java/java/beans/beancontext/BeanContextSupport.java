@@ -36,40 +36,37 @@ import java.io.Serializable;
 import java.net.URL;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 /**
  * @author Sergei A. Krivenko
  * @version $Revision: 1.17.2.3 $
  */
 
-public class BeanContextSupport extends BeanContextChildSupport 
-        implements BeanContext, Serializable, PropertyChangeListener, 
+public class BeanContextSupport extends BeanContextChildSupport implements
+        BeanContext, Serializable, PropertyChangeListener,
         VetoableChangeListener {
-    
+
     /**
      * Nested class
-     */        
+     */
     protected class BCSChild implements Serializable {
-        
+
         private static final long serialVersionUID = -5815286101609939109L;
-        
+
         /**
          * @serial
          */
         private Object child;
-        
+
         /**
          * @serial
          */
         private Object proxyPeer;
-        
+
         /**
          * Construct an object not initially locked for editing 
          * with child and its peer
@@ -81,7 +78,7 @@ public class BeanContextSupport extends BeanContextChildSupport
             this.child = child;
             this.proxyPeer = proxyPeer;
         }
-        
+
         /**
          * Return a child
          *
@@ -91,17 +88,17 @@ public class BeanContextSupport extends BeanContextChildSupport
             return this.child;
         }
     }
-    
+
     /**
      * Nested class
      */
     protected static final class BCSIterator implements Iterator {
-        
+
         /**
          *
          */
         private Iterator it;
-        
+
         /**
          * Construct an iterator
          *
@@ -110,21 +107,21 @@ public class BeanContextSupport extends BeanContextChildSupport
         BCSIterator(HashMap map) {
             this.it = map.values().iterator();
         }
-        
+
         /**
          *
          */
-        public boolean hasNext() {            
+        public boolean hasNext() {
             return it.hasNext();
         }
-        
+
         /**
          *
          */
         public Object next() {
             return it.next();
         }
-        
+
         /**
          *
          */
@@ -137,21 +134,21 @@ public class BeanContextSupport extends BeanContextChildSupport
      *
      */
     private static final long serialVersionUID = -4879613978649577204L;
-    
-    /**
-     * 
-     */
-    protected transient ArrayList bcmListeners;
 
     /**
      * 
      */
-    protected transient HashMap children;
+    protected transient ArrayList<BeanContextMembershipListener> bcmListeners;
+
+    /**
+     * 
+     */
+    protected transient HashMap<Object, BCSChild> children;
 
     /**
      * @serial
      */
-    protected boolean designTime;   
+    protected boolean designTime;
 
     /**
      * @serial
@@ -162,54 +159,54 @@ public class BeanContextSupport extends BeanContextChildSupport
      * @serial
      */
     protected boolean okToUseGui;
-    
+
     /**
      * @serial
      */
     private int serializable;
-    
+
     /**
      * A flag to show if this BeanContext is in a process of serializing
      */
     private transient boolean serializing;
-    
+
     /**
      * PropertyChangeListener of this BeanContext
      */
     private transient PropertyChangeListener pcl;
-    
+
     /**
      * VetoableChangeListener of this BeanContext
      */
     private transient VetoableChangeListener vcl;
-    
+
     /**
      * A flag to prevent the infinite roll backs 
      * while adding and removing children
      */
     private boolean rollingBack = false;;
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public BeanContextSupport() {
         this(null, null, false, true);
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public BeanContextSupport(BeanContext peer) {
         this(peer, null, false, true);
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public BeanContextSupport(BeanContext peer, Locale lcle) {
         this(peer, lcle, false, true);
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
@@ -220,17 +217,17 @@ public class BeanContextSupport extends BeanContextChildSupport
     /**
      * @com.intel.drl.spec_ref
      */
-    public BeanContextSupport(BeanContext peer, Locale lcle, boolean dtime, 
+    public BeanContextSupport(BeanContext peer, Locale lcle, boolean dtime,
             boolean visible) {
-                
+
         super(peer);
-        
+
         // If locale is null, use default
         this.locale = (lcle == null ? Locale.getDefault() : lcle);
-                       
+
         this.designTime = dtime;
         this.okToUseGui = visible;
-        
+
         // Initialize some values necessary for this class to operate
         initialize();
     }
@@ -239,41 +236,42 @@ public class BeanContextSupport extends BeanContextChildSupport
      * @com.intel.drl.spec_ref
      */
     public boolean add(Object targetChild) {
-        
+
         // We must synchronize on BeanContext.globalHierarchyLock
-        synchronized(BeanContext.globalHierarchyLock) {
-            
+        synchronized (BeanContext.globalHierarchyLock) {
+
             // Validate some values and states to check if we can proceed
             if (!addChecks(targetChild)) {
                 return false;
             }
-            
+
             try {
-                
+
                 // If child is an instance of BeanContextChild or 
                 // BeanContextProxy,
                 // invoke setBeanContext() method on this child
                 // and register BeanContext with its child
                 // on PropertyChangeListener and VetoableChangeListener.
                 BeanContextChild ch = getChildBeanContextChild(targetChild);
-                
-                if (ch != null) {                                     
+
+                if (ch != null) {
                     ch.setBeanContext(getBeanContextPeer());
                     ch.addPropertyChangeListener(BEAN_CONTEXT, this.pcl);
                     ch.addVetoableChangeListener(BEAN_CONTEXT, this.vcl);
-                }           
-            } catch(PropertyVetoException e) {
-                
+                }
+            } catch (PropertyVetoException e) {
+
                 // Throw IllegalStateException, if PropertyVetoException occurs
                 throw new IllegalStateException(
-                    "PropertyVetoException was thrown while adding a child: " + 
-                    targetChild + "; Original error message:" + e.getMessage());
-            } 
-            
+                        "PropertyVetoException was thrown while adding a child: "
+                                + targetChild + "; Original error message:"
+                                + e.getMessage());
+            }
+
             // If child implements Visibility, 
             // set an appropriate type of ability to render GUI
             Visibility vis = getChildVisibility(targetChild);
-                
+
             if (vis != null) {
                 if (this.okToUseGui) {
                     vis.okToUseGui();
@@ -281,17 +279,17 @@ public class BeanContextSupport extends BeanContextChildSupport
                     vis.dontUseGui();
                 }
             }
-            
+
             // Check if this child implements Serializable and increase 
             // the number of serializable children of the BeanContext
             if (getChildSerializable(targetChild) != null) {
                 this.serializable++;
             }
-            
+
             // Finally add child to the collection
             addChild(targetChild);
         }
-        
+
         return true;
     }
 
@@ -299,19 +297,19 @@ public class BeanContextSupport extends BeanContextChildSupport
      * @com.intel.drl.spec_ref
      */
     public boolean addAll(Collection c) {
-        
-        Collection col = new ArrayList();
-        
+
+        Collection<Object> col = new ArrayList<Object>();
+
         // Add children one by one
-        for (Iterator i = c.iterator(); i.hasNext(); ) {
+        for (Iterator i = c.iterator(); i.hasNext();) {
             try {
                 Object next = i.next();
-                
+
                 if (add(next)) {
                     col.add(next);
                 }
-            } catch(Exception e) {
-                
+            } catch (Exception e) {
+
                 // Roll back changes but first check if it's already rolling 
                 // back to avoid infinitive action
                 if (!this.rollingBack) {
@@ -320,30 +318,30 @@ public class BeanContextSupport extends BeanContextChildSupport
                 } else {
                     this.rollingBack = false;
                 }
-                
+
                 return false;
             }
         }
-        
+
         return true;
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public void addBeanContextMembershipListener(
             BeanContextMembershipListener bcml) {
-                
+
         // BeanContextMembershipListener canj not be null
         if (bcml == null) {
             throw new NullPointerException("Membership listener is null");
         }
-                
+
         synchronized (this.bcmListeners) {
-            this.bcmListeners.add(bcml);    
+            this.bcmListeners.add(bcml);
         }
     }
-    
+
     /**
      * Check if we can add this child to BeanContext
      *
@@ -352,20 +350,20 @@ public class BeanContextSupport extends BeanContextChildSupport
      * @return true if we may continue
      */
     private boolean addChecks(Object targetChild) {
-        
+
         // Child can not be null
         if (targetChild == null) {
             throw new IllegalArgumentException("Target child can not be null");
         }
-        
+
         // Each child should appear only once in a given BeanContext
         if (containsKey(targetChild)) {
             return false;
         }
-        
-        return validatePendingAdd(targetChild); 
+
+        return validatePendingAdd(targetChild);
     }
-    
+
     /**
      * Add child to the collection
      *
@@ -373,66 +371,66 @@ public class BeanContextSupport extends BeanContextChildSupport
      * @param fire - true if BeanContextMembershipEvent should be fired
      */
     private void addChild(Object targetChild) {
-        
+
         // Add a new child using targetChild as a key and 
         // its BCSChild instance as an entry
-        synchronized(this.children) {        
+        synchronized (this.children) {
             BCSChild ch = createBCSChild(targetChild, getBeanContextPeer());
-            this.children.put(targetChild, ch);                
+            this.children.put(targetChild, ch);
             childJustAddedHook(targetChild, ch);
         }
-        
+
         // Fire memebership event
         fireChildrenAdded(getBCME(new Object[] { targetChild }));
-    }
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean avoidingGui() {
-        
-        // Avoiding GUI means that
-        // GUI is needed but not allowed to use at this time
-        return (needsGui() && !this.okToUseGui);
-    }
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    protected Iterator bcsChildren() {
-        
-        // Return Iterator containing children 
-        // that are instances of BCSChild class
-        synchronized(this.children) {
-            return new BCSIterator(this.children);
-        }
-    }
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    protected void bcsPreDeserializationHook(ObjectInputStream ois) 
-            throws IOException, ClassNotFoundException {
-                
-        // Leave it for subclasses to implement
-    }
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    protected void bcsPreSerializationHook(ObjectOutputStream oos) 
-            throws IOException {
-                
-        // Leave it for subclasses to implement
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
-    protected void childDeserializedHook(Object child, 
+    public boolean avoidingGui() {
+
+        // Avoiding GUI means that
+        // GUI is needed but not allowed to use at this time
+        return (needsGui() && !this.okToUseGui);
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    protected Iterator bcsChildren() {
+
+        // Return Iterator containing children 
+        // that are instances of BCSChild class
+        synchronized (this.children) {
+            return new BCSIterator(this.children);
+        }
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    protected void bcsPreDeserializationHook(ObjectInputStream ois)
+            throws IOException, ClassNotFoundException {
+
+    // Leave it for subclasses to implement
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    protected void bcsPreSerializationHook(ObjectOutputStream oos)
+            throws IOException {
+
+    // Leave it for subclasses to implement
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    protected void childDeserializedHook(Object child,
             BeanContextSupport.BCSChild bcsc) {
-                
-        synchronized(this.children) {
+
+        synchronized (this.children) {
             this.children.put(child, bcsc);
         }
     }
@@ -440,144 +438,141 @@ public class BeanContextSupport extends BeanContextChildSupport
     /**
      * @com.intel.drl.spec_ref
      */
-    protected void childJustAddedHook(Object child, 
+    protected void childJustAddedHook(Object child,
             BeanContextSupport.BCSChild bcsc) {
-        
-        // Leave it for subclasses to implement
-    }
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    protected void childJustRemovedHook(Object child, 
-            BeanContextSupport.BCSChild bcsc) {
-        
-        // Leave it for subclasses to implement
-    }
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    protected static final boolean classEquals(Class first, Class second) {
-        
-        // Either classes themselves or their names should be equal
-        return (first.equals(second) ? 
-                true : 
-                    (first.getName().equals(second.getName()) ? 
-                     true : 
-                     false));
-    }
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void clear() {
-        throw new UnsupportedOperationException();
-        
-        /*
-        synchronized(BeanContext.globalHierarchyLock) {        
-            Collection col = new ArrayList();
-            
-            // Remove all children from BeanContext that are in the collection
-            // one by one. This operation is successful if all the
-            // removals succeeded
-            for (Iterator i = iterator(); i.hasNext(); ) {
-                try {  
-                    Object next = i.next();
-                    
-                    if (remove(next)) {
-                        col.add(next);
-                    }
-                } catch(Exception e) {
-                    
-                    // Roll back changes
-                    this.rollingBack = true;
-                    addAll(col);
-                    return;
-                }
-            }
-        }*/
+
+    // Leave it for subclasses to implement
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public boolean contains(Object o) {      
-                
+    protected void childJustRemovedHook(Object child,
+            BeanContextSupport.BCSChild bcsc) {
+
+    // Leave it for subclasses to implement
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    protected static final boolean classEquals(Class first, Class second) {
+
+        // Either classes themselves or their names should be equal
+        return (first.equals(second) ? true : (first.getName().equals(
+                second.getName()) ? true : false));
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public void clear() {
+        throw new UnsupportedOperationException();
+
+        /*
+         synchronized(BeanContext.globalHierarchyLock) {        
+         Collection col = new ArrayList();
+         
+         // Remove all children from BeanContext that are in the collection
+         // one by one. This operation is successful if all the
+         // removals succeeded
+         for (Iterator i = iterator(); i.hasNext(); ) {
+         try {  
+         Object next = i.next();
+         
+         if (remove(next)) {
+         col.add(next);
+         }
+         } catch(Exception e) {
+         
+         // Roll back changes
+         this.rollingBack = true;
+         addAll(col);
+         return;
+         }
+         }
+         }*/
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public boolean contains(Object o) {
+
         // See if a given object can be found among 
         // the children's collection values
-        synchronized(BeanContext.globalHierarchyLock) {
-            synchronized (this.children) {            
-                return this.children.containsKey(o);
-            }
-        }
-    }
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean containsAll(Collection c) {
-        
-        // Iterate through the collection provided and find matches 
-        // in the current BeanContext. If not found return false.
-        for (Iterator i = c.iterator(); i.hasNext();) {
-            Object next = i.next();
-            
-            if (!contains(next)) {
-                return false;
-            }
-        }
-        
-        // If we are here, all the elements of the collection are presented
-        // in this BeanContext
-        return true;
-    }
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean containsKey(Object o) {
-        
-        // See if a given object can be found among 
-        // the children's collection keys
-        synchronized(BeanContext.globalHierarchyLock) {
+        synchronized (BeanContext.globalHierarchyLock) {
             synchronized (this.children) {
                 return this.children.containsKey(o);
             }
         }
     }
-    
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public boolean containsAll(Collection c) {
+
+        // Iterate through the collection provided and find matches 
+        // in the current BeanContext. If not found return false.
+        for (Iterator i = c.iterator(); i.hasNext();) {
+            Object next = i.next();
+
+            if (!contains(next)) {
+                return false;
+            }
+        }
+
+        // If we are here, all the elements of the collection are presented
+        // in this BeanContext
+        return true;
+    }
+
+    /**
+     * @com.intel.drl.spec_ref
+     */
+    public boolean containsKey(Object o) {
+
+        // See if a given object can be found among 
+        // the children's collection keys
+        synchronized (BeanContext.globalHierarchyLock) {
+            synchronized (this.children) {
+                return this.children.containsKey(o);
+            }
+        }
+    }
+
     /**
      * @com.intel.drl.spec_ref
      */
     protected final Object[] copyChildren() {
-        
+
         // Make a copy of all children
-        synchronized (this.children) {    
+        synchronized (this.children) {
             return this.children.entrySet().toArray();
         }
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     protected BCSChild createBCSChild(Object targetChild, Object peer) {
-        
+
         // Create a child object with a reference to its peer
         return new BCSChild(targetChild, peer);
     }
-   
+
     /**
      * @com.intel.drl.spec_ref
      */
-    protected final void deserialize(ObjectInputStream ois, Collection coll) 
+    protected final void deserialize(ObjectInputStream ois, Collection coll)
             throws IOException, ClassNotFoundException {
-        
+
         // Read objects from output stream until "EOS" (the end of stream)
         // mark is found. Place all the objects into collection provided
         while (true) {
             Object l = ois.readObject();
-            
+
             if (l != null && l.equals("EOS")) {
                 coll.add(l);
             } else {
@@ -585,19 +580,19 @@ public class BeanContextSupport extends BeanContextChildSupport
             }
         }
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public synchronized void dontUseGui() {
-        
+
         // Command this BeanContext and its children not to use GUI
         this.okToUseGui = false;
-        
-        for (Iterator it = iterator(); it.hasNext(); ) {
-            Object next = it.next();            
+
+        for (Iterator it = iterator(); it.hasNext();) {
+            Object next = it.next();
             Visibility vis = getChildVisibility(next);
-            
+
             if (vis != null) {
                 vis.dontUseGui();
             }
@@ -608,30 +603,30 @@ public class BeanContextSupport extends BeanContextChildSupport
      * @com.intel.drl.spec_ref
      */
     protected final void fireChildrenAdded(BeanContextMembershipEvent bcme) {
-        
+
         // Notify all registered listenes about the change made
-        for (Iterator i = bcmListeners.iterator(); i.hasNext(); ) {
-            BeanContextMembershipListener cur =
-                (BeanContextMembershipListener) i.next();
-                
+        for (Iterator<BeanContextMembershipListener> i = bcmListeners
+                .iterator(); i.hasNext();) {
+            BeanContextMembershipListener cur = i.next();
+
             cur.childrenAdded(bcme);
         }
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     protected final void fireChildrenRemoved(BeanContextMembershipEvent bcme) {
-        
+
         // Notify all registered listenes about the change made
-        for (Iterator i = bcmListeners.iterator(); i.hasNext(); ) {
-            BeanContextMembershipListener cur =
-                (BeanContextMembershipListener) i.next();
-                
+        for (Iterator<BeanContextMembershipListener> i = bcmListeners
+                .iterator(); i.hasNext();) {
+            BeanContextMembershipListener cur = i.next();
+
             cur.childrenRemoved(bcme);
         }
     }
-    
+
     /**
      * Get BeanContextMembershipEvent class instance
      *
@@ -642,7 +637,7 @@ public class BeanContextSupport extends BeanContextChildSupport
     private BeanContextMembershipEvent getBCME(Object[] changes) {
         return new BeanContextMembershipEvent(getBeanContextPeer(), changes);
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
@@ -655,12 +650,12 @@ public class BeanContextSupport extends BeanContextChildSupport
      */
     protected static final BeanContextChild getChildBeanContextChild(
             Object child) {
-                
+
         // There's nothing to do here if the child is null
         if (child == null) {
             return null;
         }
-        
+
         // See if the child implements BeanContextChild or BeanContextProxy. 
         // Cast it to appropriate class or simply return null
         if (child instanceof BeanContextChild) {
@@ -675,9 +670,9 @@ public class BeanContextSupport extends BeanContextChildSupport
     /**
      * @com.intel.drl.spec_ref
      */
-    protected static final BeanContextMembershipListener 
-            getChildBeanContextMembershipListener(Object child) {
-                
+    protected static final BeanContextMembershipListener getChildBeanContextMembershipListener(
+            Object child) {
+
         // See if child implements BeanContextMembershipListener. 
         // Cast it to BeanContextMembershipListener if it does 
         // or return null otherwise
@@ -691,9 +686,9 @@ public class BeanContextSupport extends BeanContextChildSupport
     /**
      * @com.intel.drl.spec_ref
      */
-    protected static final PropertyChangeListener 
-            getChildPropertyChangeListener(Object child) {
-                
+    protected static final PropertyChangeListener getChildPropertyChangeListener(
+            Object child) {
+
         // See if child implements PropertyChangeListener. 
         // Cast it to PropertyChangeListener if it does
         // or return null otherwise
@@ -703,12 +698,12 @@ public class BeanContextSupport extends BeanContextChildSupport
             return null;
         }
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     protected static final Serializable getChildSerializable(Object child) {
-        
+
         // See if child implements Serializable. 
         // Cast it to Serializable if it does
         // or return null otherwise
@@ -718,13 +713,13 @@ public class BeanContextSupport extends BeanContextChildSupport
             return null;
         }
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
-    protected static final VetoableChangeListener 
-            getChildVetoableChangeListener(Object child) {
-                
+    protected static final VetoableChangeListener getChildVetoableChangeListener(
+            Object child) {
+
         // See if child implements VetoableChangeListener. 
         // Cast it to VetoableChangeListener if it does
         // or return null otherwise
@@ -734,12 +729,12 @@ public class BeanContextSupport extends BeanContextChildSupport
             return null;
         }
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     protected static final Visibility getChildVisibility(Object child) {
-        
+
         // See if child implements Visibility. 
         // Cast it to Visibility if it does
         // or return null otherwise
@@ -749,14 +744,14 @@ public class BeanContextSupport extends BeanContextChildSupport
             return null;
         }
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public synchronized Locale getLocale() {
         return this.locale;
     }
-    
+
     /**
      * Construct PropertyChangeEvent object and return
      *
@@ -766,34 +761,33 @@ public class BeanContextSupport extends BeanContextChildSupport
      * 
      * @return PropertyChangeEvent object
      */
-    private PropertyChangeEvent getPCE(String prop, Object o, Object n) {
-        return new PropertyChangeEvent(getBeanContextPeer(), prop, o, n);
-    }
-    
+    //    private PropertyChangeEvent getPCE(String prop, Object o, Object n) {
+    //        return new PropertyChangeEvent(getBeanContextPeer(), prop, o, n);
+    //    }
     /**
      * @com.intel.drl.spec_ref
      */
     public URL getResource(String name, BeanContextChild bcc) {
-        
+
         // The resource name should not be null
-        if(name == null) {
+        if (name == null) {
             throw new NullPointerException("Resource name can not be null");
         }
-        
+
         // The child should not be null
-        if(bcc == null) {
+        if (bcc == null) {
             throw new NullPointerException("The child can not be null");
         }
-        
+
         // Load resource using the same ClassLoader as BeanContextChild specified
         // If NullPointerException occurs try to load it as system resource
         try {
             return bcc.getClass().getClassLoader().getResource(name);
-        } catch(NullPointerException e) {
+        } catch (NullPointerException e) {
             try {
                 return ClassLoader.getSystemResource(name);
-            } catch(Exception ex) {
-                
+            } catch (Exception ex) {
+
                 // We tried our best but still failed
                 throw new IllegalArgumentException("Invalid resource");
             }
@@ -804,58 +798,58 @@ public class BeanContextSupport extends BeanContextChildSupport
      * @com.intel.drl.spec_ref
      */
     public InputStream getResourceAsStream(String name, BeanContextChild bcc) {
-        
+
         // The resource name should not be null
-        if(name == null) {
+        if (name == null) {
             throw new NullPointerException("Resource name can not be null");
         }
-        
+
         // The child should not be null
-        if(bcc == null) {
+        if (bcc == null) {
             throw new NullPointerException("The child can not be null");
         }
-        
+
         // Load resource using the same ClassLoader as BeanContextChild specified
         // If NullPointerException occurs try to load it as system resource
         try {
             return bcc.getClass().getClassLoader().getResourceAsStream(name);
-        } catch(NullPointerException e) {
+        } catch (NullPointerException e) {
             try {
                 return ClassLoader.getSystemResourceAsStream(name);
-            } catch(Exception ex) {
-                
+            } catch (Exception ex) {
+
                 // No success at all
                 throw new IllegalArgumentException("Invalid resource");
             }
         }
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     protected synchronized void initialize() {
-        
+
         // Initialize some fields
-        this.children = new HashMap();
-        this.bcmListeners = new ArrayList();
-        
+        this.children = new HashMap<Object, BCSChild>();
+        this.bcmListeners = new ArrayList<BeanContextMembershipListener>();
+
         this.serializable = 0;
         this.serializing = false;
-        
+
         // Initialize PropertyChangeListener
         this.pcl = new PropertyChangeListener() {
-            
+
             public void propertyChange(PropertyChangeEvent pce) {
                 BeanContextSupport.this.propertyChange(pce);
             }
         };
-        
+
         // Initialize VetoableChangeListener
         this.vcl = new VetoableChangeListener() {
-            
-            public void vetoableChange(PropertyChangeEvent pce) 
+
+            public void vetoableChange(PropertyChangeEvent pce)
                     throws PropertyVetoException {
-                       
+
                 BeanContextSupport.this.vetoableChange(pce);
             }
         };
@@ -864,13 +858,12 @@ public class BeanContextSupport extends BeanContextChildSupport
     /**
      * @com.intel.drl.spec_ref
      */
-    public Object instantiateChild(String beanName) 
-            throws IOException, ClassNotFoundException {
-                
+    public Object instantiateChild(String beanName) throws IOException,
+            ClassNotFoundException {
+
         // Use Beans convenience method to instantiate the bean
-        return Beans.instantiate(getBeanContextPeer().getClass().getClassLoader(), 
-                                 beanName, 
-                                 getBeanContextPeer());
+        return Beans.instantiate(getBeanContextPeer().getClass()
+                .getClassLoader(), beanName, getBeanContextPeer());
     }
 
     /**
@@ -884,15 +877,15 @@ public class BeanContextSupport extends BeanContextChildSupport
      * @com.intel.drl.spec_ref
      */
     public boolean isEmpty() {
-        
+
         // See if there are any children in this BeanContext
-        synchronized(BeanContext.globalHierarchyLock) {
-            synchronized(this.children) {
+        synchronized (BeanContext.globalHierarchyLock) {
+            synchronized (this.children) {
                 return this.children.isEmpty();
             }
         }
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
@@ -904,38 +897,38 @@ public class BeanContextSupport extends BeanContextChildSupport
      * @com.intel.drl.spec_ref
      */
     public Iterator iterator() {
-        
-        synchronized(BeanContext.globalHierarchyLock) {
-            synchronized(this.children) {
+
+        synchronized (BeanContext.globalHierarchyLock) {
+            synchronized (this.children) {
                 return this.children.keySet().iterator();
             }
         }
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public synchronized boolean needsGui() {
-        
+
         // BeanContext needs GUI if at least one its children needs it.
         // We may check it by trying to cast each child to Visibility
         // and see it needs GUI.
         // A child definitely needs GUI if it implements Component
-        for (Iterator it = iterator(); it.hasNext(); ) {
-            Object next = it.next();            
+        for (Iterator it = iterator(); it.hasNext();) {
+            Object next = it.next();
             Visibility vis = getChildVisibility(next);
-            
+
             if (vis != null) {
                 if (vis.needsGui()) {
                     return true;
                 }
-            } 
-            
+            }
+
             if (next instanceof java.awt.Component) {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -943,125 +936,125 @@ public class BeanContextSupport extends BeanContextChildSupport
      * @com.intel.drl.spec_ref
      */
     public synchronized void okToUseGui() {
-        
+
         // Notify this BeanContext and its children that it's OK now to use GUI
         this.okToUseGui = true;
-        
-        for (Iterator it = iterator(); it.hasNext(); ) {
-            Object next = it.next();            
+
+        for (Iterator it = iterator(); it.hasNext();) {
+            Object next = it.next();
             Visibility vis = getChildVisibility(next);
-            
+
             if (vis != null) {
                 vis.okToUseGui();
             }
         }
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public void propertyChange(PropertyChangeEvent pce) {
-        
+
         if (!pce.getPropertyName().equals(BEAN_CONTEXT)) {
             return;
         }
-        
+
         Object source = pce.getSource();
-        
+
         if (source instanceof BCSChild) {
             BCSChild ch = (BCSChild) source;
-            Object newValue = pce.getNewValue();            
-            
+            Object newValue = pce.getNewValue();
+
             if (!newValue.equals(this.getBeanContextPeer())) {
                 remove(ch.getChild(), false);
             }
         }
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
-    public final void readChildren(ObjectInputStream ois) 
-            throws IOException, ClassNotFoundException {
-        
+    public final void readChildren(ObjectInputStream ois) throws IOException,
+            ClassNotFoundException {
+
         // Deserialize children
-        for (int i = 0; i < this.serializable; i++) {  
+        for (int i = 0; i < this.serializable; i++) {
             BCSChild bChild = (BCSChild) ois.readObject();
             childDeserializedHook(bChild.getChild(), bChild);
         }
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
-    private void readObject(ObjectInputStream ois) 
-            throws IOException, ClassNotFoundException {
-                
-        synchronized(BeanContext.globalHierarchyLock) {           
-            ois.defaultReadObject();             
-            initialize();             
+    private void readObject(ObjectInputStream ois) throws IOException,
+            ClassNotFoundException {
+
+        synchronized (BeanContext.globalHierarchyLock) {
+            ois.defaultReadObject();
+            initialize();
             bcsPreDeserializationHook(ois);
-            
+
             // Deserialize children
             if (!getBeanContextPeer().equals(this)) {
                 readChildren(ois);
             }
-            
+
             // Deserialize listeners
-            synchronized(this.bcmListeners) {
+            synchronized (this.bcmListeners) {
                 deserialize(ois, this.bcmListeners);
-            } 
+            }
         }
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public boolean remove(Object targetChild) {
         return remove(targetChild, true);
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     protected boolean remove(Object targetChild, boolean callChildSetBC) {
-        
-        synchronized(BeanContext.globalHierarchyLock) {
-            
+
+        synchronized (BeanContext.globalHierarchyLock) {
+
             // Make necessary checks
             if (!validatePendingRemove(targetChild)) {
                 return false;
             }
-            
+
             Object removed = null;
-            
-            if (containsKey(targetChild)) {      
-                
+
+            if (containsKey(targetChild)) {
+
                 // Remove the reference to the BeanContext from the child 
                 // if ordered to do so
                 if (callChildSetBC) {
                     removeFromContext(targetChild);
                 }
-                
-                synchronized(this.children) {
-                    
+
+                synchronized (this.children) {
+
                     // Just before removing save a reference to it for later use
                     // in childJustRemovedHook() method
-                    BCSChild ch = (BCSChild) this.children.get(targetChild);
+                    BCSChild ch = this.children.get(targetChild);
                     removed = this.children.remove(targetChild);
                     childJustRemovedHook(targetChild, ch);
                 }
-                
+
                 // Fire the event
                 fireChildrenRemoved(getBCME(new Object[] { targetChild }));
-                
+
                 // Check if this child implements Serializable and decrease 
                 // the number of serializable children of BeanContext
                 if (getChildSerializable(targetChild) != null) {
                     this.serializable--;
                 }
             }
-            
+
             return (removed != null);
         }
     }
@@ -1072,54 +1065,54 @@ public class BeanContextSupport extends BeanContextChildSupport
     public boolean removeAll(Collection c) {
         throw new UnsupportedOperationException();
         /*
-        synchronized(BeanContext.globalHierarchyLock) {        
-            Collection col = new ArrayList();
-            
-            // Remove all children from BeanContext that are in the collection
-            // one by one. This operation is successful if all the
-            // removals succeeded
-            for (Iterator i = c.iterator(); i.hasNext(); ) {
-                try {
-                    Object next = i.next();
-                    
-                    if (remove(next)) {
-                        col.add(next);
-                    }
-                } catch(Exception e) {
-                    
-                    // Roll back changes but first check if it's already rolling 
-                    // back to avoid infinitive action
-                    if (!this.rollingBack) {
-                        this.rollingBack = true;
-                        addAll(col);
-                    } else {
-                        this.rollingBack = false;
-                    }
-                    
-                    return false;
-                }
-            }
-        }
-        
-        return true;*/
+         synchronized(BeanContext.globalHierarchyLock) {        
+         Collection col = new ArrayList();
+         
+         // Remove all children from BeanContext that are in the collection
+         // one by one. This operation is successful if all the
+         // removals succeeded
+         for (Iterator i = c.iterator(); i.hasNext(); ) {
+         try {
+         Object next = i.next();
+         
+         if (remove(next)) {
+         col.add(next);
+         }
+         } catch(Exception e) {
+         
+         // Roll back changes but first check if it's already rolling 
+         // back to avoid infinitive action
+         if (!this.rollingBack) {
+         this.rollingBack = true;
+         addAll(col);
+         } else {
+         this.rollingBack = false;
+         }
+         
+         return false;
+         }
+         }
+         }
+         
+         return true;*/
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public void removeBeanContextMembershipListener(
             BeanContextMembershipListener bcml) {
-                
+
         // BeanContextMembershipListener can not be null
         if (bcml == null) {
             throw new NullPointerException("Membership listener is null");
         }
-        
-        synchronized(this.bcmListeners) {
+
+        synchronized (this.bcmListeners) {
             this.bcmListeners.remove(bcml);
         }
     }
-    
+
     /**
      * Separate BeanContext and its child that had just been removed
      * by removing all references to each other
@@ -1128,24 +1121,24 @@ public class BeanContextSupport extends BeanContextChildSupport
      */
     private void removeFromContext(Object targetChild) {
         try {
-                        
+
             // If child is an instance of BeanContextChild or BeanContextProxy,
             // invoke setBeanContext() method on this child
             // with null parameter
             BeanContextChild ch = getChildBeanContextChild(targetChild);
-                
-            if (ch != null) {                                     
-                ch.setBeanContext(null);               
+
+            if (ch != null) {
+                ch.setBeanContext(null);
                 ch.removePropertyChangeListener(BEAN_CONTEXT, this.pcl);
                 ch.removeVetoableChangeListener(BEAN_CONTEXT, this.vcl);
-            }   
-        } catch(PropertyVetoException e) {
-            
+            }
+        } catch (PropertyVetoException e) {
+
             // Required by spec
             throw new IllegalStateException(
-                "PropertyVetoException was thrown while removing " +
-                " a child: " + targetChild + "; " +
-                "Original error message:" + e.getMessage());
+                    "PropertyVetoException was thrown while removing "
+                            + " a child: " + targetChild + "; "
+                            + "Original error message:" + e.getMessage());
         }
     }
 
@@ -1154,120 +1147,120 @@ public class BeanContextSupport extends BeanContextChildSupport
      */
     public boolean retainAll(Collection c) {
         throw new UnsupportedOperationException();
-        
+
         /*
-        synchronized(BeanContext.globalHierarchyLock) {
-            synchronized(this.children) {
-                
-                Collection col = new ArrayList();
-                
-                // Remove all children from BeanContext that are not in the 
-                // collection
-                // This operation is successful if all the removals succeeded
-                for (Iterator i = iterator(); i.hasNext(); ) {   
-                    Object nextKey = i.next();
-                    Object nextValue = this.children.get(nextKey);
-                    
-                    if (!c.contains(nextKey) && !c.contains(nextValue)) {
-                        try {                            
-                            if (remove(nextKey)) {
-                                col.add(nextKey);
-                            }
-                        } catch(Exception e) {
-                            
-                            // Roll back changes
-                            this.rollingBack = true;
-                            addAll(col);
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-        
-        return true;*/
+         synchronized(BeanContext.globalHierarchyLock) {
+         synchronized(this.children) {
+         
+         Collection col = new ArrayList();
+         
+         // Remove all children from BeanContext that are not in the 
+         // collection
+         // This operation is successful if all the removals succeeded
+         for (Iterator i = iterator(); i.hasNext(); ) {   
+         Object nextKey = i.next();
+         Object nextValue = this.children.get(nextKey);
+         
+         if (!c.contains(nextKey) && !c.contains(nextValue)) {
+         try {                            
+         if (remove(nextKey)) {
+         col.add(nextKey);
+         }
+         } catch(Exception e) {
+         
+         // Roll back changes
+         this.rollingBack = true;
+         addAll(col);
+         return false;
+         }
+         }
+         }
+         }
+         }
+         
+         return true;*/
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
-    protected final void serialize(ObjectOutputStream oos, Collection coll) 
+    protected final void serialize(ObjectOutputStream oos, Collection coll)
             throws IOException {
-        
+
         // Write the collection into ObjectOutputStream
-        for (Iterator it = coll.iterator(); it.hasNext(); ) {
+        for (Iterator it = coll.iterator(); it.hasNext();) {
             Object l = it.next();
-            
+
             if (getChildSerializable(l) != null) {
                 oos.writeObject(l);
             }
         }
-        
+
         // Mark the end of stream
         oos.writeObject("EOS");
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public synchronized void setDesignTime(boolean dTime) {
-        
+
         boolean old = this.designTime;
         this.designTime = dTime;
-        
+
         // Notify BeanContext about this change
         firePropertyChange("designTime", new Boolean(old), new Boolean(dTime));
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
-    public synchronized void setLocale(Locale newLocale) 
+    public synchronized void setLocale(Locale newLocale)
             throws PropertyVetoException {
-        
+
         // Use default locale if a new value is null        
-        newLocale = (newLocale == null ? Locale.getDefault() : newLocale);   
-        
+        newLocale = (newLocale == null ? Locale.getDefault() : newLocale);
+
         // Notify BeanContext about this change
         Locale old = (Locale) this.locale.clone();
         this.locale = newLocale;
         firePropertyChange("locale", old, newLocale);
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public int size() {
-        
+
         // Return the number of children of this BeanContext
-        synchronized(BeanContext.globalHierarchyLock) {
-            synchronized(this.children) {
+        synchronized (BeanContext.globalHierarchyLock) {
+            synchronized (this.children) {
                 return this.children.size();
             }
         }
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public Object[] toArray() {
-        
+
         // Convert the collection of children to array
-        synchronized(BeanContext.globalHierarchyLock) {
-            synchronized(this.children) {
+        synchronized (BeanContext.globalHierarchyLock) {
+            synchronized (this.children) {
                 return this.children.keySet().toArray();
             }
         }
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public Object[] toArray(Object[] arry) {
-        
+
         // Convert the collection of children to array
-        synchronized(BeanContext.globalHierarchyLock) {
-            synchronized(this.children) {
+        synchronized (BeanContext.globalHierarchyLock) {
+            synchronized (this.children) {
                 return this.children.keySet().toArray(arry);
             }
         }
@@ -1277,73 +1270,72 @@ public class BeanContextSupport extends BeanContextChildSupport
      * @com.intel.drl.spec_ref
      */
     protected boolean validatePendingAdd(Object targetChild) {
-        
-        
+
         return true;
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     protected boolean validatePendingRemove(Object targetChild) {
-        
+
         if (targetChild == null) {
             throw new IllegalArgumentException("Target child is null");
         }
-        
+
         return true;
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
-    public void vetoableChange(PropertyChangeEvent pce) 
+    public void vetoableChange(PropertyChangeEvent pce)
             throws PropertyVetoException {
-                
+
         if (pce == null) {
             throw new NullPointerException("The event is null");
         }
-        
+
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public final void writeChildren(ObjectOutputStream oos) throws IOException {
-        
+
         // Write serializable children to ObjectOutputStream
-        synchronized(this.children) {
-            for (Iterator it = iterator(); it.hasNext(); ) {
+        synchronized (this.children) {
+            for (Iterator it = iterator(); it.hasNext();) {
                 Object next = it.next();
-                
+
                 if (getChildSerializable(next) != null) {
                     oos.writeObject(this.children.get(next));
                 }
             }
         }
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
-    private void writeObject(ObjectOutputStream oos)
-            throws IOException, ClassNotFoundException {
-                  
-        synchronized(BeanContext.globalHierarchyLock) {
-            this.serializing = true;            
-            oos.defaultWriteObject();     
-            
-            bcsPreSerializationHook(oos);          
-            
+    private void writeObject(ObjectOutputStream oos) throws IOException,
+            ClassNotFoundException {
+
+        synchronized (BeanContext.globalHierarchyLock) {
+            this.serializing = true;
+            oos.defaultWriteObject();
+
+            bcsPreSerializationHook(oos);
+
             if (!this.getBeanContextPeer().equals(this)) {
-                writeChildren(oos);            
+                writeChildren(oos);
             }
-            
-            synchronized(this.bcmListeners) {
+
+            synchronized (this.bcmListeners) {
                 serialize(oos, this.bcmListeners);
             }
-            
+
             this.serializing = false;
         }
-    }                         
+    }
 }

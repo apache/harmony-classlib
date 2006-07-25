@@ -27,11 +27,13 @@ package java.beans.beancontext;
 
 public class BeanContextServiceRevokedEvent extends BeanContextEvent {
 
+    static final long serialVersionUID = -1295543154724961754L;
+
     /**
      * @serial
      */
     protected Class serviceClass;
-    
+
     /**
      * @serial
      */
@@ -40,28 +42,28 @@ public class BeanContextServiceRevokedEvent extends BeanContextEvent {
     /**
      * @com.intel.drl.spec_ref
      */
-    public BeanContextServiceRevokedEvent(BeanContextServices bcs, Class sc, 
+    public BeanContextServiceRevokedEvent(BeanContextServices bcs, Class sc,
             boolean invalidate) {
-                
+
         super(bcs);
         this.serviceClass = sc;
         this.invalidateRefs = invalidate;
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public Class getServiceClass() {
         return this.serviceClass;
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
     public BeanContextServices getSourceAsBeanContextServices() {
         return (BeanContextServices) super.propagatedFrom;
     }
-    
+
     /**
      * @com.intel.drl.spec_ref
      */
