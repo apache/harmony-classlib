@@ -22,16 +22,12 @@
 package org.apache.harmony.security.provider.crypto;
 
 import java.security.InvalidParameterException;
-import java.security.ProviderException;
 import java.security.SecureRandomSpi;
 
 import org.apache.harmony.security.provider.crypto.RandomBitsSupplier;
 import org.apache.harmony.security.provider.crypto.SHA1Impl;
 
 import java.io.Serializable;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.IOException;
 
 
 /**
