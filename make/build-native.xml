@@ -177,6 +177,10 @@
     	     target="clean.native.includes" />
     	<ant dir="modules/luni" antfile="build.xml" 
     	     target="clean.native.includes" />
+
+        <!-- delete the deploy/include and deploy/jdk/include directories -->
+        <delete dir="${hy.hdk}/include" />
+        <delete dir="${hy.hdk}/jdk/include" />
     </target>
 
     <!-- ================================= 

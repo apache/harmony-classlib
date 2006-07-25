@@ -17,15 +17,10 @@
 #undef _WIN32_WINNT
 #define _WIN32_WINNT 0x0500
 
-#include <stdio.h>
-
 #include <windows.h>
 #include <wincrypt.h>
-#include <winerror.h>
 
-#include <sddl.h>
-
-#include "harmony.h"
+#include "vmi.h"
 #include "jni.h"
 
 JNIEXPORT jint JNICALL
@@ -33,25 +28,23 @@ Java_org_apache_harmony_security_provider_crypto_RandomBitsSupplier_getWindowsRa
 {
     HCRYPTPROV hcrypt_provider;
 
-    byte * random_bits;
-    int true  = 1;
-    int false = 0;
+    byte *random_bits;
 
     int b;
 
     b = CryptAcquireContext( &hcrypt_provider, NULL, NULL, PROV_DSS, CRYPT_VERIFYCONTEXT );
 
-     if ( !b ) {
-        return false;
+    if ( !b ) {
+        return 0;
     }
 
-	random_bits  = malloc(numBytes);
+    random_bits = malloc(numBytes);
 
     b = CryptGenRandom( hcrypt_provider, numBytes, random_bits );
 
-      if ( !b ){
-		free(random_bits);
-        return false;
+    if ( !b ) {
+        free(random_bits);
+        return 0;
     }
 
     b = CryptReleaseContext(hcrypt_provider, 0);
@@ -59,6 +52,6 @@ Java_org_apache_harmony_security_provider_crypto_RandomBitsSupplier_getWindowsRa
     (*env)->SetByteArrayRegion(env, bytes, 0, numBytes, (signed char*)random_bits);
     free(random_bits);
 
-    return true;
+    return 1;
 }
 
