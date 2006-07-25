@@ -1736,3 +1736,111 @@ getJavaIoFileDescriptorContentsAsAPointer (JNIEnv * env, jobject fd)
   return (void *) ((*env)->GetLongField (env, fd, descriptorFID));
 }
 
+jobject getJavaNioChannelsSocketChannelImplObj(JNIEnv * env, jclass channel_class){
+          jmethodID channel_new;
+	  jobject channel_object;
+          
+          if(NULL == channel_class) {
+              return NULL;
+          }
+	  channel_new = (*env)->GetMethodID(env, channel_class,"<init>","()V");
+          if(NULL == channel_new) {
+              return NULL;
+          }
+          channel_object = (*env)->NewObject(env,channel_class,channel_new);
+          return channel_object;
+}
+
+void setJavaNioChannelsLocalPort(JNIEnv * env,jclass channel_class,jobject channel_object,int port){
+	// set port
+	jfieldID port_field = (*env)->GetFieldID(env,channel_class,"localPort","I");
+	(*env)->SetIntField(env,channel_object,port_field,port);
+}
+
+void setFDContent(JNIEnv * env, jclass channel_class, jobject channel_object, void * sock){
+	jobject fd_object;
+	jfieldID fd_field = (*env)->GetFieldID(env,channel_class,"fd","Ljava/io/FileDescriptor;");
+	jclass fd_class = (*env)->FindClass(env,"java/io/FileDescriptor");
+	if(NULL == fd_class) {
+		return;
+        }
+	fd_object = (*env)->GetObjectField(env,channel_object,fd_field);
+	if(NULL == fd_object) {
+        	return;
+	}
+	setJavaIoFileDescriptorContents (env, fd_object,sock);
+}
+
+void setSocketAddressContent(JNIEnv * env, jclass channel_class, jobject channel_object,jbyte * address){
+	jmethodID addr_new;
+	jfieldID socketaddr_field,addrarray_field,addr_field;
+	jobject addr_object,socketaddr_object;
+	jclass addr_class,socketaddr_class ;
+	jbyteArray addr_array;
+	addr_class = (*env)->FindClass(env,"Ljava/net/InetAddress;");
+	if(NULL == addr_class) {
+	        return;
+        }
+	addr_new = (*env)->GetMethodID(env,addr_class,"<init>","()V");
+        addr_object = (*env)->NewObject(env,addr_class,addr_new);
+	if(NULL == addr_object) {
+        	return;
+        }
+	socketaddr_class = (*env)->FindClass(env,"java/net/InetSocketAddress");
+	socketaddr_field = (*env)->GetFieldID(env,channel_class,"connectAddress","Ljava/net/InetSocketAddress;");
+	socketaddr_object = (*env)->GetObjectField(env,channel_object,socketaddr_field);
+	if(NULL == socketaddr_object){
+		return;
+	}
+	addr_field = (*env)->GetFieldID(env,socketaddr_class,"addr","Ljava/net/InetAddress;");
+	(*env)->SetObjectField(env, socketaddr_object, addr_field, addr_object);
+	addrarray_field = (*env)->GetFieldID(env,addr_class,"ipaddress","[B");
+	addr_array = (*env)->NewByteArray(env,(jsize)4);		
+        (*env)->SetByteArrayRegion(env,addr_array,(jsize)0,(jsize)4,address);
+	(*env)->SetObjectField(env, addr_object, addrarray_field, addr_array);
+}
+
+void setSocketLocalAddressContent(JNIEnv * env, jclass channel_class, jobject channel_object,jbyte * address){
+	jfieldID addrarray_field;
+	jfieldID localAddr_field = (*env)->GetFieldID(env,channel_class,"localAddress","Ljava/net/InetAddress;");
+	jclass addr_class = (*env)->FindClass(env,"Ljava/net/InetAddress;");
+	jmethodID addr_new = (*env)->GetMethodID(env,addr_class,"<init>","()V");
+	jobject localAddr_object = (*env)->NewObject(env,addr_class,addr_new);
+	jclass socketaddr_class = (*env)->FindClass(env,"java/net/InetSocketAddress");
+	jfieldID socketaddr_field = (*env)->GetFieldID(env,channel_class,"connectAddress","Ljava/net/InetSocketAddress;");
+	jobject socketaddr_object = (*env)->GetObjectField(env,channel_object,socketaddr_field);
+	jbyteArray addr_array;
+	if(NULL == addr_class) {
+              return;
+       	}
+	(*env)->SetObjectField(env, socketaddr_object, localAddr_field, localAddr_object);
+	if(NULL == localAddr_object) {
+              return;
+        }
+	addr_array = (*env)->NewByteArray(env,(jsize)4);	
+	(*env)->SetByteArrayRegion(env,addr_array,(jsize)0,(jsize)4,address);
+	addrarray_field = (*env)->GetFieldID(env,addr_class,"ipaddress","[B");
+	(*env)->SetObjectField(env, localAddr_object, addrarray_field, addr_array);
+}
+
+void setServerSocketLocalAddressContent(JNIEnv * env, jclass socketImpl_class, jobject socketImpl_object, jbyte * localAddr){
+	jmethodID addr_new;
+	jfieldID localAddr_field,addrarray_field;
+	jobject localAddr_object;
+	jbyteArray addr_array;
+	jclass addr_class = (*env)->FindClass(env,"Ljava/net/InetAddress;");
+	if(NULL == addr_class) {
+	        return;
+        }
+	addr_new = (*env)->GetMethodID(env,addr_class,"<init>","()V");
+	localAddr_field = (*env)->GetFieldID(env,socketImpl_class,"address","Ljava/net/InetAddress;");
+	localAddr_object = (*env)->NewObject(env,addr_class,addr_new);
+	if(NULL == localAddr_object) {
+        	return;
+        }
+	(*env)->SetObjectField(env, socketImpl_object, localAddr_field, localAddr_object);
+	addr_array = (*env)->NewByteArray(env,(jsize)4);	
+	(*env)->SetByteArrayRegion(env,addr_array,(jsize)0,(jsize)4,localAddr);
+	addrarray_field = (*env)->GetFieldID(env,addr_class,"ipaddress","[B");
+	(*env)->SetObjectField(env, localAddr_object, addrarray_field, addr_array);
+}

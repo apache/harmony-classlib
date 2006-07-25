@@ -1,4 +1,4 @@
-/* Copyright 2004, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -183,10 +183,23 @@ public final class Currency implements Serializable {
 			return currencyCode;
 	}
 
+    /**
+     * Answers the default number of fraction digits for this currency. For
+     * instance, the default number of fraction digits for the US dollar is 2.
+     * For the Japanese Yen the number is 0. In the case of pseudo-currencies,
+     * such as IMF Special Drawing Rights, -1 is returned.
+     * 
+     * @return the default number of fraction digits for this currency
+     */
 	public int getDefaultFractionDigits() {
 		return defaultFractionDigits;
 	}
 
+    /**
+     * Answers this currency's ISO 4217 currency code.
+     * 
+     * @return this currency's ISO 4217 currency code
+     */
 	public String toString() {
 		return currencyCode;
 	}

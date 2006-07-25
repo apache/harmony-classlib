@@ -22,6 +22,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketImpl;
 import java.net.UnknownHostException;
+import java.nio.channels.Channel;
 import java.nio.channels.SelectableChannel;
 
 /*

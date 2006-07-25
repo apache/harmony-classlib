@@ -10,5 +10,6 @@
 	<classpathentry output="bin/test/impl.injected" kind="src" path="src/test/impl/java.injected"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry sourcepath="JUNIT_SRC_HOME/junitsrc.zip" kind="var" path="JUNIT_HOME/junit.jar"/>
+	<classpathentry kind="lib" path="C:/harmonySVN/enhanced/classlib/trunk/deploy/jdk/jre/lib/boot/luni-kernel-stubs.jar"/>
 	<classpathentry kind="output" path="bin/main"/>
 </classpath>

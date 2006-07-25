@@ -221,5 +221,6 @@ HYLUNI_0.1 {
 		Java_org_apache_harmony_luni_platform_OSNetworkSystem_getHostByNameImpl;
 		Java_org_apache_harmony_luni_platform_OSNetworkSystem_setInetAddressImpl;
         Java_org_apache_harmony_luni_platform_OSNetworkSystem_isReachableByICMPImpl;
+        Java_org_apache_harmony_luni_platform_OSNetworkSystem_inheritedChannelImpl;
 	local : *;
 };
