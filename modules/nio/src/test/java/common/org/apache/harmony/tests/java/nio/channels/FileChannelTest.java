@@ -1339,11 +1339,16 @@ public class FileChannelTest extends TestCase {
         writeDataToFile(fileOfReadOnlyFileChannel);
         ByteBuffer readBuffer = ByteBuffer.allocate(CAPACITY);
 
+        final int BUFFER_POSITION = 1;
+        readBuffer.position(BUFFER_POSITION);
+
         final int POSITION = 2;
         int result = readOnlyFileChannel.read(readBuffer, POSITION);
         assertEquals(CONTENT_AS_BYTES_LENGTH - POSITION, result);
+        assertEquals(BUFFER_POSITION + result, readBuffer.position());
 
         readBuffer.flip();
+        readBuffer.position(BUFFER_POSITION);
         for (int i = POSITION; i < CONTENT_AS_BYTES_LENGTH; i++) {
             assertEquals(CONTENT_AS_BYTES[i], readBuffer.get());
         }

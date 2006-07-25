@@ -275,7 +275,8 @@ public abstract class FileChannelImpl extends FileChannel {
                      * if (bytesRead <= EOF) delt by read completed = false;
                      */
                     bytesRead = (int) fileSystem.read(handle, buffer.array(),
-                            buffer.arrayOffset(), buffer.remaining());
+                            buffer.arrayOffset() + buffer.position(), buffer
+                                    .remaining());
                     completed = true;
                 } finally {
                     end(completed && bytesRead >= 0);
