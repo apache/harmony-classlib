@@ -30,7 +30,7 @@ import java.util.ResourceBundle;
  * been passed into the logging framework.
  * <p>
  * The <code>LogRecord</code> class will infer the source method name and
- * source class name the first time they are accessed if the client applicaiton
+ * source class name the first time they are accessed if the client application
  * didn't specify them explicitly. This automatic inference is based on the
  * analysis of the call stack and is not guaranteed to be precise. Client
  * applications should force the initialization of these two fields by calling
@@ -120,7 +120,7 @@ public class LogRecord implements Serializable {
     private int threadID;
 
     /**
-     * The time that the event occured, in milliseconds since 1970.
+     * The time that the event occurred, in milliseconds since 1970.
      * 
      * @serial
      */
@@ -153,7 +153,7 @@ public class LogRecord implements Serializable {
     // The parameters.
     private transient Object[] parameters;
 
-    // If the source method and source class has been inited
+    // If the source method and source class has been initialized
     private transient boolean sourceInited = false;
 
     /*
@@ -269,19 +269,19 @@ public class LogRecord implements Serializable {
     }
 
     /**
-     * Gets the time that the event occured, in milliseconds since 1970.
+     * Gets the time that the event occurred, in milliseconds since 1970.
      * 
-     * @return the time that the event occured, in milliseconds since 1970
+     * @return the time that the event occurred, in milliseconds since 1970
      */
     public long getMillis() {
         return millis;
     }
 
     /**
-     * Sets the time that the event occured, in milliseconds since 1970.
+     * Sets the time that the event occurred, in milliseconds since 1970.
      * 
      * @param millis
-     *            the time that the event occured, in milliseconds since 1970
+     *            the time that the event occurred, in milliseconds since 1970
      */
     public void setMillis(long millis) {
         this.millis = millis;

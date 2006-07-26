@@ -45,7 +45,7 @@ import java.util.Hashtable;
  * </p>
  * <p>
  * <code>MemoryHandler</code> will read following <code>LogManager</code>
- * properties for initialization, if given propeties are not defined or has
+ * properties for initialization, if given properties are not defined or has
  * invalid values, default value will be used.
  * <ul>
  * <li>java.util.logging.FileHandler.level specifies the level for this
@@ -83,17 +83,17 @@ import java.util.Hashtable;
  * </p>
  * Normally, the generation numbers are not larger than given file count and
  * follow the sequence 0, 1, 2.... If the file count is larger than one, but the
- * generation field("%g") has not been specifed in the pattern, then the
+ * generation field("%g") has not been specified in the pattern, then the
  * generation number after a dot will be added to the end of the file name,
  * </p>
  * <p>
  * The "%u" unique field is used to avoid conflicts and set to 0 at first. If
  * one <code>FileHandler</code> tries to open the filename which is currently
- * in use by another process, it will repeatly increment the unique number field
+ * in use by another process, it will repeatedly increment the unique number field
  * and try again. If the "%u" component has not been included in the file name
  * pattern and some contention on a file does occur then a unique numerical
  * value will be added to the end of the filename in question immediately to the
- * right of a dot. The unique ids to avoid conflicts is only guaranteed to work
+ * right of a dot. The unique IDs for avoiding conflicts is only guaranteed to work
  * reliably when using a local disk file system.
  * </p>
  * 
@@ -210,9 +210,11 @@ public class FileHandler extends StreamHandler {
                     //invalid path name, throw exception
                     throw e;
                 }
-                //if lock is unsupported and IOException throwed, just let the 
-                //IOException throws out and exit
-                //otherwise it will go into an undead cycle
+                /*
+                 * if lock is unsupported and IOException thrown, just let the
+                 * IOException throws out and exit otherwise it will go into an
+                 * undead cycle
+                 */
                 lock = channel.tryLock();
                 if (null == lock) {
                     continue;
@@ -314,7 +316,7 @@ public class FileHandler extends StreamHandler {
                     break;
                 case 't':
                     /*
-                     *  we should probably try to do somethig cute here like
+                     *  we should probably try to do something cute here like
                      *  lookahead for adjacent '/'
                      */
                     sb.append(value, cur, next - cur - 1).append(tempPath);
@@ -459,7 +461,7 @@ public class FileHandler extends StreamHandler {
      * @param  pattern
      * 				the name pattern of output file
      * @param  limit
-     * 				the data amount limit in bytes of one ouput file, cannot less
+     * 				the data amount limit in bytes of one output file, cannot less
      * 				than one
      * @param  count
      * 				the maximum number of files can be used, cannot less than one 
@@ -480,7 +482,7 @@ public class FileHandler extends StreamHandler {
         }        
         if (limit < 0 || count < 1) {
             throw new IllegalArgumentException(
-                    "The limit and count property must larger than 0 and 1, respctively"); //$NON-NLS-1$
+                    "The limit and count property must larger than 0 and 1, respectively"); //$NON-NLS-1$
         }
         init(pattern, null, new Integer(limit), new Integer(count));
     }
@@ -499,7 +501,7 @@ public class FileHandler extends StreamHandler {
      * @param  pattern
      * 				the name pattern of output file
      * @param  limit
-     * 				the data amount limit in bytes of one ouput file, cannot less
+     * 				the data amount limit in bytes of one output file, cannot less
      * 				than one
      * @param  count
      * 				the maximum number of files can be used, cannot less than one 
@@ -576,7 +578,7 @@ public class FileHandler extends StreamHandler {
         }
     }
 
-    /*
+    /**
      * This output stream use decorator pattern to add measure feature to OutputStream
      * which can detect the total size(in bytes) of output, the initial size can be set
      */

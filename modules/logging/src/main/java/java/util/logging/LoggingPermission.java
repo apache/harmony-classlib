@@ -28,7 +28,7 @@ import java.security.Guard;
 public final class LoggingPermission extends BasicPermission implements Guard,
         Serializable {
 
-    //for serialization compability with J2SE 1.4.2
+    //for serialization compatibility with J2SE 1.4.2
     private static final long serialVersionUID =63564341580231582L;
     
     

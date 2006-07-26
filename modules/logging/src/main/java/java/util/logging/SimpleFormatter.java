@@ -57,7 +57,7 @@ public class SimpleFormatter extends Formatter {
         sb.append(r.getSourceMethodName()).append(": "); //$NON-NLS-1$
         sb.append(formatMessage(r)).append(LogManager.getSystemLineSeparator());
         if (null != r.getThrown()) {
-            sb.append("Throwable occured: "); //$NON-NLS-1$
+            sb.append("Throwable occurred: "); //$NON-NLS-1$
             Throwable t = r.getThrown();
             PrintWriter pw = null;
             try {

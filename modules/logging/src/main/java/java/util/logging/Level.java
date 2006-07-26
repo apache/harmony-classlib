@@ -37,7 +37,7 @@ import java.util.ResourceBundle;
 public class Level implements Serializable {
     
     
-    //for serialization compability
+    //for serialization compatibility
     private static final long serialVersionUID = -8176160795706313070L;    
 
     /*

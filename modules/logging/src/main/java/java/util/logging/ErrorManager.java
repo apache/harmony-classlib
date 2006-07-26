@@ -21,7 +21,7 @@ package java.util.logging;
  * <code>ErrorManager</code> instance attached to them when they encounter any
  * exceptions or errors.
  * <p>
- * Callers of a logger are unlikely to be interested in the exceptions occured
+ * Callers of a logger are unlikely to be interested in the exceptions occurred
  * during logging. Use an <code>ErrorManager</code> object to report these
  * exceptions.
  * </p>
@@ -42,7 +42,7 @@ public class ErrorManager {
     public static final int GENERIC_FAILURE = 0;
 
     /**
-     * The error code indicating a failure when writting to an output stream.
+     * The error code indicating a failure when writing to an output stream.
      */
     public static final int WRITE_FAILURE = 1;
 

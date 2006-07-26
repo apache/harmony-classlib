@@ -324,7 +324,7 @@ public class Logger {
 
     /*
      * Check whether the same resource bundle has been specified.
-     * Synchronize to ensure the consistency between resouece bundle
+     * Synchronize to ensure the consistency between resource bundle
      * and its name.
      */
     private static void updateResourceBundle(Logger l, String resourceBundleName) {
@@ -361,7 +361,7 @@ public class Logger {
             String resourceBundleName, boolean hasResourceName) {
         LogManager man = LogManager.getLogManager();
         synchronized (man) {
-            // Try to find an existing logger with the specifed name
+            // Try to find an existing logger with the specified name
             Logger l = man.getLogger(name);
             // If no existing logger with the same name, create a new one
             if (null == l) {
@@ -417,7 +417,7 @@ public class Logger {
         if (null == handler) {
             throw new NullPointerException("null"); //$NON-NLS-1$
         }
-        // anonymouse loggers can always add handlers
+        // Anonymous loggers can always add handlers
         if (this.isNamed) {
             LogManager.getLogManager().checkAccess();
         }
@@ -425,9 +425,9 @@ public class Logger {
     }
 
     /**
-     * Gets all the hanlders associated with this logger.
+     * Gets all the handlers associated with this logger.
      * 
-     * @return an array of all the hanlders associated with this logger
+     * @return an array of all the handlers associated with this logger
      */
     public synchronized Handler[] getHandlers() {
         return handlers.toArray(new Handler[handlers.size()]);
@@ -444,7 +444,7 @@ public class Logger {
      *             have the required permission.
      */
     public synchronized void removeHandler(Handler handler) {
-        // anonymouse loggers can always remove handlers
+        // Anonymous loggers can always remove handlers
         if (this.isNamed) {
             LogManager.getLogManager().checkAccess();
         }
@@ -473,7 +473,7 @@ public class Logger {
      *             have the required permission.
      */
     public synchronized void setFilter(Filter newFilter) {
-        // anonymouse loggers can always set the filter
+        // Anonymous loggers can always set the filter
         if (this.isNamed) {
             LogManager.getLogManager().checkAccess();
         }
@@ -490,7 +490,7 @@ public class Logger {
     }
 
     /**
-     * Sets the loggine level for this logger. A <code>null</code> level
+     * Sets the logging level for this logger. A <code>null</code> level
      * indicates this logger will inherit its parent's level.
      * 
      * @param newLevel
@@ -500,7 +500,7 @@ public class Logger {
      *             have the required permission.
      */
     public void setLevel(Level newLevel) {
-        // anonymouse loggers can always set the level
+        // Anonymous loggers can always set the level
         if (this.isNamed) {
             LogManager.getLogManager().checkAccess();
         }
@@ -533,7 +533,7 @@ public class Logger {
      *             have the required permission.
      */
     public synchronized void setUseParentHandlers(boolean notifyParentHandlers) {
-        // anonymouse loggers can always set the useParentHandlers flag
+        // Anonymous loggers can always set the useParentHandlers flag
         if (this.isNamed) {
             LogManager.getLogManager().checkAccess();
         }
@@ -625,10 +625,10 @@ public class Logger {
         return this.resBundleName;
     }
 
-    /*
-     * This method is for compability. Tests written to the reference 
+    /**
+     * This method is for compatibility. Tests written to the reference 
      * implementation API imply that the isLoggable() method is not called 
-     * directly. This behaviour is important because subclass may override 
+     * directly. This behavior is important because subclass may override 
      * isLoggable() method, so that affect the result of log methods.
      */
     private boolean internalIsLoggable(Level l) {
@@ -659,7 +659,7 @@ public class Logger {
      * Sets the resource bundle and its name for a supplied LogRecord object.
      * This method first tries to use this logger's resource bundle if any,
      * otherwise try to inherit from this logger's parent, recursively up the
-     * namespace. Synchronize to ensure the consistency between resouece bundle
+     * namespace. Synchronize to ensure the consistency between resource bundle
      * and its name.
      */
     private synchronized void setResourceBundle(LogRecord record) {
@@ -670,7 +670,7 @@ public class Logger {
             Logger anyParent = this.parent;
             while (null != anyParent) {
                 /*
-                 * Synchronize to ensure the consistency between resouece bundle
+                 * Synchronize to ensure the consistency between resource bundle
                  * and its name.
                  */
                 synchronized (anyParent) {

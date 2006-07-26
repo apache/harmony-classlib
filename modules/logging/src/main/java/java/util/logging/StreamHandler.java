@@ -133,7 +133,7 @@ public class StreamHandler extends Handler {
      * -------------------------------------------------------------------
      */
 
-    // initialize the writter
+    // initialize the writer
     private void initializeWritter() {
         this.writerNotInitialized = false;
         if (null == getEncoding()) {
@@ -157,7 +157,7 @@ public class StreamHandler extends Handler {
             this.writer.write(s);
         } catch (Exception e) {
             getErrorManager().error(
-                    "Exception occured when writing to the output stream.", e, //$NON-NLS-1$
+                    "Exception occurred when writing to the output stream.", e, //$NON-NLS-1$
                     ErrorManager.WRITE_FAILURE);
         }
     }
@@ -251,7 +251,7 @@ public class StreamHandler extends Handler {
                 }
             } catch (Exception e) {
                 getErrorManager().error(
-                        "Exception occured when closing the output stream.", e, //$NON-NLS-1$
+                        "Exception occurred when closing the output stream.", e, //$NON-NLS-1$
                         ErrorManager.CLOSE_FAILURE);
             }
         }
@@ -285,7 +285,7 @@ public class StreamHandler extends Handler {
                 }
             } catch (Exception e) {
                 getErrorManager().error(
-                        "Exception occured when flushing the output stream.", //$NON-NLS-1$
+                        "Exception occurred while flushing the output stream.", //$NON-NLS-1$
                         e, ErrorManager.FLUSH_FAILURE);
             }
         }
@@ -320,14 +320,14 @@ public class StreamHandler extends Handler {
                 } catch (Exception e) {
                     getErrorManager()
                             .error(
-                                    "Exception occured when formatting the log record.", //$NON-NLS-1$
+                                    "Exception occurred while formatting the log record.", //$NON-NLS-1$
                                     e, ErrorManager.FORMAT_FAILURE);
                 }
                 write(msg);
             }
         } catch (Exception e) {
             getErrorManager().error(
-                    "Exception occured when logging the record.", e, //$NON-NLS-1$
+                    "Exception occurred while logging the record.", e, //$NON-NLS-1$
                     ErrorManager.GENERIC_FAILURE);
         }
     }

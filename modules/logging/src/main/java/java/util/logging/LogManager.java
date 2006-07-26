@@ -187,7 +187,7 @@ public class LogManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // if global logger has been inited, set root as its parent
+        // if global logger has been initialized, set root as its parent
         if (null != Logger.global) {
             Logger.global.setParent(manager.root);
         }
@@ -328,7 +328,7 @@ public class LogManager {
                             name + '.'))) {
                 child.setParent(logger);
                 if (null != oldParent) {
-                    //-- remove from old parent childs as the parent has been changed
+                    //-- remove from old parent as the parent has been changed
                     oldParent.removeChild(child);
                 }
             }
@@ -376,7 +376,7 @@ public class LogManager {
     }
 
     /**
-     * Reinitialize the properties and configuration. The initialization process
+     * Re-initialize the properties and configuration. The initialization process
      * is same as the <code>LogManager</code> instantiation.
      * <p>
      * A <code>PropertyChangeEvent</code> must be fired.
@@ -527,7 +527,7 @@ public class LogManager {
     }
 
     /**
-     * Reinitialize the properties and configuration from the given
+     * Re-initialize the properties and configuration from the given
      * <code>InputStream</code>
      * <p>
      * A <code>PropertyChangeEvent</code> must be fired.

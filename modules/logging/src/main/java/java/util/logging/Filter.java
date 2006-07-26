@@ -17,7 +17,7 @@
 package java.util.logging;
 
 /**
- * <code>Filter</code> objects are used to filter loggings that are not
+ * <code>Filter</code> objects are used to filter log records that are not
  * desired. <code>Handler</code> or <code>Logger</code> objects can be
  * attached with a filter to get finer grain control over what should be logged.
  * 

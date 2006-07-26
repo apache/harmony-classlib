@@ -21,7 +21,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 
 /**
- * A handler that writes log messages to a sockect connection.
+ * A handler that writes log messages to a socket connection.
  * <p>
  * This handler reads the following properties from the log manager to
  * initialize itself:
