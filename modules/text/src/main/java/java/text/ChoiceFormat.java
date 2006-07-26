@@ -19,6 +19,7 @@ package java.text;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * ChoiceFormat is used to associate strings with ranges of double values. The
