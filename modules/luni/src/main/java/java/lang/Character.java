@@ -2559,6 +2559,18 @@ public final class Character implements Serializable, Comparable<Character> {
 	 *         character, otherwise <code>false</code>
 	 */
 	public static boolean isISOControl(char c) {
+		return isISOControl((int)c);
+	}
+
+	/**
+	 * Answers whether the character is an ISO control character.
+	 * 
+	 * @param c
+	 *            the character,, including supplementary characters
+	 * @return <code>true</code> if <code>c</code> is an ISO control
+	 *         character, otherwise <code>false</code>
+	 */
+	public static boolean isISOControl(int c) {
 		return (c >= 0 && c <= 0x1f) || (c >= 0x7f && c <= 0x9f);
 	}
 
@@ -2784,6 +2796,16 @@ public final class Character implements Serializable, Comparable<Character> {
 		if (c < 0x2000 || c == 0x2007)
 			return false;
 		return c <= 0x200b || c == 0x2028 || c == 0x2029 || c == 0x3000;
+	}
+
+	/**
+	 * Reverse the order of the first and second bytes in character
+	 * @param c
+	 *            the character
+	 * @return    the character with reordered bytes.
+	 */
+	public static char reverseBytes(char c) {
+		return (char)((c<<8) | (c>>8));
 	}
 
 	/**
