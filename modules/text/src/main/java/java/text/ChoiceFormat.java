@@ -81,7 +81,7 @@ public class ChoiceFormat extends NumberFormat {
 		List<String> formats = new ArrayList<String>();
 		int length = template.length(), limitCount = 0, index = 0;
 		StringBuffer buffer = new StringBuffer();
-		NumberFormat format = NumberFormat.getInstance();
+		NumberFormat format = NumberFormat.getInstance(Locale.US);
 		ParsePosition position = new ParsePosition(0);
 		while (true) {
 			index = skipWhitespace(template, index);
