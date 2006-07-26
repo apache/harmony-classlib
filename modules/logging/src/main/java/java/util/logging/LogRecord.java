@@ -176,7 +176,7 @@ public class LogRecord implements Serializable {
      */
     public LogRecord(Level level, String msg) {
         if (null == level) {
-            throw new NullPointerException("null"); //$NON-NLS-1$
+            throw new NullPointerException("The 'level' parameter is null."); //$NON-NLS-1$
         }
         this.level = level;
         this.message = msg;
@@ -225,7 +225,7 @@ public class LogRecord implements Serializable {
      */
     public void setLevel(Level level) {
         if (null == level) {
-            throw new NullPointerException("null"); //$NON-NLS-1$
+            throw new NullPointerException("The 'level' parameter is null."); //$NON-NLS-1$
         }
         this.level = level;
     }

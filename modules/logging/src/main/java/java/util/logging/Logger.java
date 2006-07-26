@@ -415,7 +415,7 @@ public class Logger {
      */
     public synchronized void addHandler(Handler handler) {
         if (null == handler) {
-            throw new NullPointerException("null"); //$NON-NLS-1$
+            throw new NullPointerException("The 'handler' parameter is null."); //$NON-NLS-1$
         }
         // Anonymous loggers can always add handlers
         if (this.isNamed) {
@@ -449,7 +449,7 @@ public class Logger {
             LogManager.getLogManager().checkAccess();
         }
         if (null == handler) {
-            throw new NullPointerException("null"); //$NON-NLS-1$
+            throw new NullPointerException("The 'handler' parameter is null."); //$NON-NLS-1$
         }
         this.handlers.remove(handler);
     }
@@ -579,7 +579,7 @@ public class Logger {
      */
     public synchronized void setParent(Logger parent) {
         if (null == parent) {
-            throw new NullPointerException("null"); //$NON-NLS-1$
+            throw new NullPointerException("The 'parent' parameter is null."); //$NON-NLS-1$
         }
         // even anonymous loggers are checked
         LogManager.getLogManager().checkAccess();

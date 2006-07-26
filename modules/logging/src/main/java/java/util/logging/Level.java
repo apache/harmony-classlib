@@ -193,7 +193,7 @@ public class Level implements Serializable {
      */
     protected Level(String name, int level, String resourceBundleName) {
         if (null == name) {
-            throw new NullPointerException("null"); //$NON-NLS-1$
+            throw new NullPointerException("The 'name' parameter is null."); //$NON-NLS-1$
         }
         this.name = name;
         this.value = level;
@@ -255,7 +255,7 @@ public class Level implements Serializable {
      */
     public static final Level parse(String name) {
         if (null == name) {
-            throw new NullPointerException("null"); //$NON-NLS-1$
+            throw new NullPointerException("The 'name' parameter is null."); //$NON-NLS-1$
         }
         // Check if the name is a predefined one
         Level result = levels.get(name);

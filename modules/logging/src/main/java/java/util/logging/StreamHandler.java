@@ -120,8 +120,11 @@ public class StreamHandler extends Handler {
      */
     public StreamHandler(OutputStream os, Formatter formatter) {
         this();
-        if (null == os || null == formatter) {
-            throw new NullPointerException("null"); //$NON-NLS-1$
+        if (os == null) {
+            throw new NullPointerException("The OutputStream parameter is null");
+        }
+        if (formatter == null) {
+            throw new NullPointerException("The Formatter parameter is null.");
         }
         this.os = os;
         internalSetFormatter(formatter);
