@@ -216,6 +216,26 @@ public class CharacterTest extends junit.framework.TestCase {
 	}
 
 	/**
+	 * @tests java.lang.Character#isISOControl(int)
+	 */
+	public void test_isISOControlI() {
+		// Test for method boolean java.lang.Character.isISOControl(char)
+		for (int i = 0; i < 32; i++)
+			assertTrue("ISOConstrol char returned false", Character
+				.isISOControl(i));
+
+		for (int i = 127; i < 160; i++)
+			assertTrue("ISOConstrol char returned false", Character
+				.isISOControl(i));
+
+		for (int i = 160; i < 260; i++)
+			assertFalse("Not ISOConstrol char returned true", Character
+				.isISOControl(i));
+
+	}
+
+
+	/**
 	 * @tests java.lang.Character#isJavaIdentifierPart(char)
 	 */
 	public void test_isJavaIdentifierPartC() {
@@ -398,6 +418,25 @@ public class CharacterTest extends junit.framework.TestCase {
 		// Test for method boolean java.lang.Character.isWhitespace(char)
 		assertTrue("space returned false", Character.isWhitespace('\n'));
 		assertTrue("non-space returned true", !Character.isWhitespace('T'));
+	}
+
+	/**
+	 * @tests java.lang.Character#reverseBytes(char)
+	 */
+	public void test_reverseBytesC() {
+		char original[] = new char[]{0x0000, 0x0010, 0x00AA, 0xB000, 0xCC00, 0xABCD, 0xFFAA};
+		char reversed[] = new char[]{0x0000, 0x1000, 0xAA00, 0x00B0, 0x00CC, 0xCDAB, 0xAAFF};
+		assertTrue("Test self check", original.length==reversed.length);
+
+		for (int i=0; i<original.length; i++) {
+			char origChar = original[i];
+			char reversedChar = reversed[i];
+			char origReversed= Character.reverseBytes(origChar);
+
+			assertTrue("java.lang.Character.reverseBytes failed: orig char="
+				+Integer.toHexString(origChar)+", reversed char="
+				+Integer.toHexString(origReversed), reversedChar==origReversed);
+		}
 	}
 
 	/**
