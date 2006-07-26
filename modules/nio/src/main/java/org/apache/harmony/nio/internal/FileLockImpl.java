@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.apache.harmony.nio.internal;
 
 
 import java.io.IOException;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 
@@ -59,9 +60,13 @@ final class FileLockImpl extends FileLock {
 	 * @see java.nio.channels.FileLock#release()
 	 */
 	public void release() throws IOException {
-		if (isValid()) {
-			((FileChannelImpl) channel()).release(this);
-			isReleased = true;
-		}
-	}
+        if (!channel().isOpen()) {
+            throw new ClosedChannelException();
+        }
+
+        if (!isReleased) {
+            ((FileChannelImpl) channel()).release(this);
+            isReleased = true;
+        }
+    }
 }
