@@ -262,7 +262,7 @@ public class BigDecimal extends Number
      */
     public BigDecimal(char[] in, int offset, int len) {
         int endIndex = offset + len - 1;
-        if (offset < 0 || endIndex >= in.length) {
+        if (in.length == 0 || offset < 0 || endIndex >= in.length) {
             throw new NumberFormatException("the subarray exceeds the bounds" +
                                             " of the array");
         }

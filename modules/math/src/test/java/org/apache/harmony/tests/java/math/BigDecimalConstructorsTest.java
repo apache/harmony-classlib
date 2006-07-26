@@ -134,6 +134,13 @@ public class BigDecimalConstructorsTest extends TestCase {
         int resScale = 427;
         assertEquals("incorrect value", res, result.toString());
         assertEquals("incorrect scale", resScale, result.scale());
+        
+        try {
+            // Regression for HARMONY-783
+            new BigDecimal(new char[] {});
+            fail("NumberFormatException has not been thrown");
+        } catch (NumberFormatException e) {
+        }
      }
     
     /**
@@ -148,6 +155,13 @@ public class BigDecimalConstructorsTest extends TestCase {
         int resScale = 46;
         assertEquals("incorrect value", res, result.toString());
         assertEquals("incorrect scale", resScale, result.scale());
+        
+        try {
+            // Regression for HARMONY-783
+            new BigDecimal(new char[] {}, 0, 0);
+            fail("NumberFormatException has not been thrown");
+        } catch (NumberFormatException e) {
+        }
      }
     
     /**
@@ -165,6 +179,13 @@ public class BigDecimalConstructorsTest extends TestCase {
         int resScale = 43;
         assertEquals("incorrect value", res, result.toString());
         assertEquals("incorrect scale", resScale, result.scale());
+        
+        try {
+            // Regression for HARMONY-783
+            new BigDecimal(new char[] {}, 0, 0, MathContext.DECIMAL32);
+            fail("NumberFormatException has not been thrown");
+        } catch (NumberFormatException e) {
+        }
      }
     
     /**
@@ -200,6 +221,18 @@ public class BigDecimalConstructorsTest extends TestCase {
         } catch (NumberFormatException e) {
         }
      }
+
+    /**
+     * new BigDecimal(char[] value, MathContext mc);
+     */
+    public void testConstrCharMathContext() {
+        try {
+            // Regression for HARMONY-783
+            new BigDecimal(new char[] {}, MathContext.DECIMAL32);
+            fail("NumberFormatException has not been thrown");
+        } catch (NumberFormatException e) {
+        }
+    }
     
     /**
      * new BigDecimal(double value) when value is NaN
