@@ -183,7 +183,7 @@ public class LogManager {
         manager.loggers.put("", manager.root); //$NON-NLS-1$
         // read configuration
         try {
-            manager.readConfigurationImpl();
+            manager.readConfiguration();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -413,9 +413,7 @@ public class LogManager {
                     className);
             return clazz.newInstance();
         } catch (Exception e) {
-            System.err
-                    .println("Cannot get instance for class name:" + className); //$NON-NLS-1$
-            System.err.println("Caused by " + e.toString()); //$NON-NLS-1$
+            e.printStackTrace();
             return null;
         }
 
