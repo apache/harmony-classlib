@@ -107,6 +107,15 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
         fd = new FileDescriptor();
         networkSystem.createDatagramSocket(fd, true);
     }
+    
+    /*
+     * for native call
+     */
+    private DatagramChannelImpl() throws IOException {
+        super(SelectorProvider.provider());
+        fd = new FileDescriptor();
+        connectAddress = new InetSocketAddress(0);
+    }
 
     // -------------------------------------------------------------------
     // Methods for getting internal DatagramSocket.

@@ -89,6 +89,16 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
         impl = SocketImplProvider.getServerSocketImpl(fd);
         socket = new ServerSocketAdapter(impl, this);
     }
+    
+    // for native call
+    private ServerSocketChannelImpl() throws IOException {
+        super(SelectorProvider.provider());
+        status = SERVER_STATUS_OPEN;
+        fd = new FileDescriptor();
+        impl = SocketImplProvider.getServerSocketImpl(fd);        
+        socket = new ServerSocketAdapter(impl, this);
+        isBound = false;
+    }
 
     // ----------------------------------------------------
     // Methods

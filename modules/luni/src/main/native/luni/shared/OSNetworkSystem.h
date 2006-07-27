@@ -398,6 +398,15 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
 JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isReachableByICMPImpl
   (JNIEnv *, jobject, jobject, jobject, jint, jint);
 
+/*
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
+ * Method:    inheritedChannelImpl
+ * Signature: ([BII)I
+ */
+JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_inheritedChannelImpl
+  (JNIEnv *, jobject);
+
+
 #ifdef __cplusplus
 }
 #endif

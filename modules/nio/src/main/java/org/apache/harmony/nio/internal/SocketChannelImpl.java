@@ -154,6 +154,16 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         networkSystem.createSocket(fd, true);
     }
 
+    /*
+     * for native call
+     */
+    private SocketChannelImpl() throws IOException {
+		super(SelectorProvider.provider());
+		fd = new FileDescriptor();
+		connectAddress = new InetSocketAddress(0);
+		status = SOCKET_STATUS_CONNECTED;
+	}
+    
     // Keep this to see if need next version
     // SocketChannelImpl(SelectorProvider selectorProvider, FileDescriptor fd,
     // SocketImpl si) {

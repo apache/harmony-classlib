@@ -335,3 +335,9 @@ void set_icmp_packet(struct ICMPHeader* icmp_hdr, int packet_size)
     icmp_hdr->checksum = ip_checksum((unsigned short *)icmp_hdr, packet_size);
 }
 
+JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_inheritedChannelImpl
+  (JNIEnv * env , jobject clz)
+{
+  //inheritedChannel is not supported on windows platform. 
+  return NULL;
+}

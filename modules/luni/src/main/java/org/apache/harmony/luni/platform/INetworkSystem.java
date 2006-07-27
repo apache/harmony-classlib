@@ -22,6 +22,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketImpl;
 import java.net.UnknownHostException;
+import java.nio.channels.Channel;
 import java.nio.channels.SelectableChannel;
 
 /*
@@ -198,5 +199,7 @@ public interface INetworkSystem {
 
 	public void setInetAddress(InetAddress sender, byte[] address);
 	
-	public boolean isReachableByICMP(InetAddress dest,InetAddress source,int ttl,int timeout);    
+	public boolean isReachableByICMP(InetAddress dest,InetAddress source,int ttl,int timeout);
+	
+	public Channel inheritedChannel();
 }
