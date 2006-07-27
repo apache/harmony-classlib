@@ -514,6 +514,9 @@ public final class Character implements Serializable, Comparable<Character> {
 		String name;
 
 		protected Subset(String string) {
+			if (string == null) {
+				throw new NullPointerException();
+			}
 			name = string;
 		}
 
