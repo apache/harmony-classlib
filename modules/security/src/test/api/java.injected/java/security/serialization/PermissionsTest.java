@@ -21,10 +21,9 @@
 
 package java.security.serialization;
 
-import java.security.*;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashSet;
+import java.security.AllPermission;
+import java.security.Permissions;
+import java.security.SecurityPermission;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
@@ -41,32 +40,10 @@ public class PermissionsTest extends SerializationTest {
      */
     protected Object[] getData() {
         Permissions ps = new Permissions();
-        Permission[] arr = new Permission[] {
-            new AllPermission(),
-            new SecurityPermission("abc"),
-            new FakePermission("jkabhj"),
-            new UnresolvedPermission("131234", null, null, null),
-            new UnresolvedPermission("KUJKHVKJgyuygjhb", "xcv456", "26r ytf",
-                new java.security.cert.Certificate[0]), };
 
-        for (int i = 0; i < arr.length; i++) {
-            ps.add(arr[i]);
-        }
-        return new Object[] {
-            new Permissions(), ps };
-    }
-}
+        ps.add(new AllPermission());
+        ps.add(new SecurityPermission("abc"));
 
-/**
- * Custom Permission implementation, intended for testing.
- */
-class FakePermission extends BasicPermission {
-
-    public FakePermission(String name) {
-        super(name);
-    }
-
-    public PermissionCollection newPermissionCollection() {
-        return null;
+        return new Object[] { new Permissions(), ps };
     }
 }
