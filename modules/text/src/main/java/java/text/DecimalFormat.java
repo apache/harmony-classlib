@@ -83,9 +83,10 @@ public class DecimalFormat extends NumberFormat {
      *                when the pattern cannot be parsed
      */
     public DecimalFormat(String pattern, DecimalFormatSymbols value) {
-        symbols = value;
+        symbols = (DecimalFormatSymbols)value.clone();
         Locale locale = (Locale) this.getInternalField("locale", symbols); //$NON-NLS-1$
         icuSymbols = new com.ibm.icu.text.DecimalFormatSymbols(locale);
+        copySymbols(icuSymbols, symbols);
 
         dform = new com.ibm.icu.text.DecimalFormat(pattern, icuSymbols);
 
@@ -457,8 +458,8 @@ public class DecimalFormat extends NumberFormat {
      */
     public void setDecimalFormatSymbols(DecimalFormatSymbols value) {
         symbols = (DecimalFormatSymbols) value.clone();
-        Locale locale = (Locale) this.getInternalField("locale", symbols); //$NON-NLS-1$
-        icuSymbols = new com.ibm.icu.text.DecimalFormatSymbols(locale);
+        icuSymbols = dform.getDecimalFormatSymbols();
+        copySymbols(icuSymbols, symbols);
         dform.setDecimalFormatSymbols(icuSymbols);
     }
 
@@ -807,6 +808,31 @@ public class DecimalFormat extends NumberFormat {
                     Boolean.FALSE);
         }
         serialVersionOnStream = 3;
+    }
+
+    /*
+     * Copies decimal format symbols from text object to ICU one.
+     * 
+     * @param icu the object which recieves the new values.
+     * @param dfs the object which contains the new values.
+     */
+    private void copySymbols(final com.ibm.icu.text.DecimalFormatSymbols icu,
+                             final DecimalFormatSymbols dfs) {
+        icu.setCurrency(com.ibm.icu.util.Currency.getInstance(dfs.getCurrency()
+                                                              .getCurrencyCode()));
+        icu.setCurrencySymbol(dfs.getCurrencySymbol());
+        icu.setDecimalSeparator(dfs.getDecimalSeparator());
+        icu.setDigit(dfs.getDigit());
+        icu.setGroupingSeparator(dfs.getGroupingSeparator());
+        icu.setInfinity(dfs.getInfinity());
+        icu.setInternationalCurrencySymbol(dfs.getInternationalCurrencySymbol());
+        icu.setMinusSign(dfs.getMinusSign());
+        icu.setMonetaryDecimalSeparator(dfs.getMonetaryDecimalSeparator());
+        icu.setNaN(dfs.getNaN());
+        icu.setPatternSeparator(dfs.getPatternSeparator());
+        icu.setPercent(dfs.getPercent());
+        icu.setPerMill(dfs.getPerMill());
+        icu.setZeroDigit(dfs.getZeroDigit());
     }
 
     /*

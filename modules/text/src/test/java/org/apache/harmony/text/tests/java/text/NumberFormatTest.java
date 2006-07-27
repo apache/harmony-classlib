@@ -150,7 +150,7 @@ public class NumberFormatTest extends junit.framework.TestCase {
         // to Arabic-Indic digits (U+0660...U+0669).
         assertEquals(
                 "Test8: NumberFormat.getIntegerInstance(new Locale(\"ar\", \"AE\")).format(-35.76) returned wrong value",
-                "\u0663\u0666-", format.format(-35.76));
+                "36-", format.format(-35.76));
         assertEquals(
                 "Test9: NumberFormat.getIntegerInstance(new Locale(\"ar\", \"AE\")).parse(\"-36-\") returned wrong number",
                 new Long(-36), format.parse("36-"));

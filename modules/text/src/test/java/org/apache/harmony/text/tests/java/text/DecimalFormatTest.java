@@ -61,7 +61,7 @@ public class DecimalFormatTest extends TestCase {
         // Test parsed object of type double when
         // parseBigDecimal is set to true
 
-        form = (DecimalFormat) DecimalFormat.getInstance();
+        form = (DecimalFormat) DecimalFormat.getInstance(Locale.US);
         number = form.parse("23.1", new ParsePosition(0));
         assertTrue(number instanceof Double);
 
@@ -788,7 +788,9 @@ public class DecimalFormatTest extends TestCase {
         int failCount = 0;
         Support_BitSet failures = new Support_BitSet();
 
-        DecimalFormat df = new DecimalFormat("00.0#E0");
+        final DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.US);
+
+        DecimalFormat df = new DecimalFormat("00.0#E0", dfs);
         compare("00.0#E0: 0.0", df.format(0.0), "00.0E0");
         compare("00.0#E0: 1.0", df.format(1.0), "10.0E-1");
         compare("00.0#E0: 12.0", df.format(12.0), "12.0E0");
@@ -815,7 +817,7 @@ public class DecimalFormatTest extends TestCase {
         compare("00.0#E0: -12346.0", df.format(-12346.0), "-12.35E3");
         compare("00.0#E0: -99999.0", df.format(-99999.0), "-10.0E4");
 
-        df = new DecimalFormat("##0.0E0");
+        df = new DecimalFormat("##0.0E0", dfs);
         compare("##0.0E0: -0.0", df.format(-0.0), "-0.0E0");
         compare("##0.0E0: 0.0", df.format(0.0), "0.0E0");
         compare("##0.0E0: 1.0", df.format(1.0), "1.0E0");
@@ -829,7 +831,7 @@ public class DecimalFormatTest extends TestCase {
         failCount++;
         compare("##0.0E0: 999999.0", df.format(999999.0), "1.0E6");
 
-        df = new DecimalFormat("#00.0##E0");
+        df = new DecimalFormat("#00.0##E0", dfs);
         compare("#00.0##E0: 0.1", df.format(0.1), ".100E0");
         compare("#00.0##E0: 0.12", df.format(0.12), ".120E0");
         compare("#00.0##E0: 0.123", df.format(0.123), ".123E0");
@@ -866,7 +868,7 @@ public class DecimalFormatTest extends TestCase {
         compare("#00.0##E0: 12345678.0", df.format(12345678.0), "12.3457E6");
         compare("#00.0##E0: 99999999.0", df.format(99999999.0), "100E6");
 
-        df = new DecimalFormat("#.0E0");
+        df = new DecimalFormat("#.0E0", dfs);
         compare("#.0E0: -0.0", df.format(-0.0), "-.0E0");
         compare("#.0E0: 0.0", df.format(0.0), ".0E0");
         compare("#.0E0: 1.0", df.format(1.0), ".1E1");
@@ -875,7 +877,7 @@ public class DecimalFormatTest extends TestCase {
         compare("#.0E0: 1234.0", df.format(1234.0), ".12E4");
         compare("#.0E0: 9999.0", df.format(9999.0), ".1E5");
 
-        df = new DecimalFormat("0.#E0");
+        df = new DecimalFormat("0.#E0", dfs);
         compare("0.#E0: -0.0", df.format(-0.0), "-0E0");
         compare("0.#E0: 0.0", df.format(0.0), "0E0");
         compare("0.#E0: 1.0", df.format(1.0), "1E0");
@@ -884,7 +886,7 @@ public class DecimalFormatTest extends TestCase {
         compare("0.#E0: 1234.0", df.format(1234.0), "1.2E3");
         compare("0.#E0: 9999.0", df.format(9999.0), "1E4");
 
-        df = new DecimalFormat(".0E0");
+        df = new DecimalFormat(".0E0", dfs);
         compare(".0E0: -0.0", df.format(-0.0), "-.0E0");
         compare(".0E0: 0.0", df.format(0.0), ".0E0");
         compare(".0E0: 1.0", df.format(1.0), ".1E1");
@@ -893,7 +895,7 @@ public class DecimalFormatTest extends TestCase {
         compare(".0E0: 1234.0", df.format(1234.0), ".1E4");
         compare(".0E0: 9999.0", df.format(9999.0), ".1E5");
 
-        df = new DecimalFormat("0.E0");
+        df = new DecimalFormat("0.E0", dfs);
         // Fails in JDK 1.2.2
         if (!compare(failCount, df.format(0.0), "0.E0"))
             failures.set(failCount);
@@ -914,7 +916,7 @@ public class DecimalFormatTest extends TestCase {
             failures.set(failCount);
         failCount++;
 
-        df = new DecimalFormat("##0.00#E0");
+        df = new DecimalFormat("##0.00#E0", dfs);
         compare("##0.00#E0: 0.1", df.format(0.1), ".100E0");
         compare("##0.00#E0: 0.1234567", df.format(0.1234567), ".123457E0");
         compare("##0.00#E0: 0.9999999", df.format(0.9999999), "1.00E0");
@@ -929,7 +931,7 @@ public class DecimalFormatTest extends TestCase {
                 "123.457E-6");
         compare("##0.00#E0: 0.0009999999", df.format(0.0009999999), "1.00E-3");
 
-        df = new DecimalFormat("###0.00#E0");
+        df = new DecimalFormat("###0.00#E0", dfs);
         compare("###0.00#E0: 0.1", df.format(0.1), ".100E0");
         compare("###0.00#E0: 0.12345678", df.format(0.12345678), ".1234568E0");
         compare("###0.00#E0: 0.99999999", df.format(0.99999999), "1.00E0");
@@ -955,7 +957,7 @@ public class DecimalFormatTest extends TestCase {
         compare("###0.00#E0: 0.000099999999", df.format(0.000099999999),
                 "1.00E-4");
 
-        df = new DecimalFormat("###0.0#E0");
+        df = new DecimalFormat("###0.0#E0", dfs);
         compare("###0.0#E0: 0.1", df.format(0.1), ".10E0");
         compare("###0.0#E0: 0.1234567", df.format(0.1234567), ".123457E0");
         compare("###0.0#E0: 0.9999999", df.format(0.9999999), "1.0E0");
@@ -987,7 +989,7 @@ public class DecimalFormatTest extends TestCase {
                 failures.length() == 0);
 
         String formatString = "##0.#";
-        df = new DecimalFormat(formatString);
+        df = new DecimalFormat(formatString, dfs);
         df.setMinimumFractionDigits(30);
         compare(formatString + ": 0.000000000000000000000000000000", df
                 .format(0.0), "0.000000000000000000000000000000");
@@ -1015,7 +1017,9 @@ public class DecimalFormatTest extends TestCase {
         int failCount = 0;
         Support_BitSet failures = new Support_BitSet();
 
-        DecimalFormat df = new DecimalFormat("00.0#E0");
+        final DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.US);
+
+        DecimalFormat df = new DecimalFormat("00.0#E0", dfs);
         assertEquals("00.0#E0: 0", "00.0E0", df.format(0));
         assertEquals("00.0#E0: 1", "10.0E-1", df.format(1));
         assertEquals("00.0#E0: 12", "12.0E0", df.format(12));
@@ -1030,7 +1034,7 @@ public class DecimalFormatTest extends TestCase {
         assertEquals("00.0#E0: -12346", "-12.35E3", df.format(-12346));
         assertEquals("00.0#E0: -99999", "-10.0E4", df.format(-99999));
 
-        df = new DecimalFormat("##0.0E0");
+        df = new DecimalFormat("##0.0E0", dfs);
         assertEquals("##0.0E0: 0", "0.0E0", df.format(0));
         assertEquals("##0.0E0: 1", "1.0E0", df.format(1));
         assertEquals("##0.0E0: 12", "12E0", df.format(12));
@@ -1043,7 +1047,7 @@ public class DecimalFormatTest extends TestCase {
         failCount++;
         assertEquals("##0.0E0: 999999", "1.0E6", df.format(999999));
 
-        df = new DecimalFormat("#00.0##E0");
+        df = new DecimalFormat("#00.0##E0", dfs);
         // Fails in JDK 1.2.2
         if (!df.format(0).equals("0.00E0"))
             failures.set(failCount);
@@ -1058,7 +1062,7 @@ public class DecimalFormatTest extends TestCase {
         assertEquals("#00.0##E0: 12345678", "12.3457E6", df.format(12345678));
         assertEquals("#00.0##E0: 99999999", "100E6", df.format(99999999));
 
-        df = new DecimalFormat("#.0E0");
+        df = new DecimalFormat("#.0E0", dfs);
         assertEquals("#.0E0: 0", ".0E0", df.format(0));
         assertEquals("#.0E0: 1", ".1E1", df.format(1));
         assertEquals("#.0E0: 12", ".12E2", df.format(12));
@@ -1066,7 +1070,7 @@ public class DecimalFormatTest extends TestCase {
         assertEquals("#.0E0: 1234", ".12E4", df.format(1234));
         assertEquals("#.0E0: 9999", ".1E5", df.format(9999));
 
-        df = new DecimalFormat("0.#E0");
+        df = new DecimalFormat("0.#E0", dfs);
         assertEquals("0.#E0: 0", "0E0", df.format(0));
         assertEquals("0.#E0: 1", "1E0", df.format(1));
         assertEquals("0.#E0: 12", "1.2E1", df.format(12));
@@ -1331,8 +1335,7 @@ public class DecimalFormatTest extends TestCase {
     /**
      * @tests java.text.DecimalFormat#setDecimalFormatSymbols(java.text.DecimalFormatSymbols)
      */
-    //FIXME This test fails on Harmony ClassLibrary
-    public void failing_test_setDecimalFormatSymbolsLjava_text_DecimalFormatSymbols() {
+    public void test_setDecimalFormatSymbolsLjava_text_DecimalFormatSymbols() {
         DecimalFormat df = new DecimalFormat("###0.##");
         DecimalFormatSymbols dfs = new DecimalFormatSymbols();
         dfs.setDecimalSeparator('@');
@@ -1354,7 +1357,8 @@ public class DecimalFormatTest extends TestCase {
      * @tests java.text.DecimalFormat#setDecimalSeparatorAlwaysShown(boolean)
      */
     public void test_setDecimalSeparatorAlwaysShownZ() {
-        DecimalFormat df = new DecimalFormat("###0.##");
+        DecimalFormat df = new DecimalFormat("###0.##",
+                                             new DecimalFormatSymbols(Locale.US));
         assertEquals("Wrong default result", "5", df.format(5));
         df.setDecimalSeparatorAlwaysShown(true);
         assertTrue("Not set", df.isDecimalSeparatorAlwaysShown());
@@ -1404,7 +1408,8 @@ public class DecimalFormatTest extends TestCase {
      * @tests java.text.DecimalFormat#setMaximumFractionDigits(int)
      */
     public void test_setMaximumFractionDigitsI() {
-        DecimalFormat df = new DecimalFormat("###0.##");
+        DecimalFormat df = new DecimalFormat("###0.##",
+                                             new DecimalFormatSymbols(Locale.US));
         df.setMaximumFractionDigits(3);
         assertEquals("Not set", 3, df.getMaximumFractionDigits());
         assertEquals("Wrong maximum", "1.235", df.format(1.23456));
@@ -1430,7 +1435,8 @@ public class DecimalFormatTest extends TestCase {
      * @tests java.text.DecimalFormat#setMinimumFractionDigits(int)
      */
     public void test_setMinimumFractionDigitsI() {
-        DecimalFormat df = new DecimalFormat("###0.##");
+        DecimalFormat df = new DecimalFormat("###0.##",
+                                             new DecimalFormatSymbols(Locale.US));
         df.setMinimumFractionDigits(4);
         assertEquals("Not set", 4, df.getMinimumFractionDigits());
         assertEquals("Wrong minimum", "1.2300", df.format(1.23));
@@ -1443,7 +1449,8 @@ public class DecimalFormatTest extends TestCase {
      * @tests java.text.DecimalFormat#setMinimumIntegerDigits(int)
      */
     public void test_setMinimumIntegerDigitsI() {
-        DecimalFormat df = new DecimalFormat("###0.##");
+        DecimalFormat df = new DecimalFormat("###0.##",
+                                             new DecimalFormatSymbols(Locale.US));
         df.setMinimumIntegerDigits(3);
         assertEquals("Not set", 3, df.getMinimumIntegerDigits());
         assertEquals("Wrong minimum", "012", df.format(12));
