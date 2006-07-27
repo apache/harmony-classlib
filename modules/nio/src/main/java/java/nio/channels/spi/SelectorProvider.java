@@ -28,6 +28,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Enumeration;
 
+import org.apache.harmony.luni.platform.Platform;
 import org.apache.harmony.nio.internal.SelectorProviderImpl;
 
 /**
@@ -51,6 +52,8 @@ public abstract class SelectorProvider extends Object {
     private static final String PROVIDER_IN_JAR_RESOURCE = "META-INF/services/java.nio.channels.spi.SelectorProvider"; //$NON-NLS-1$
 
     private static SelectorProvider provider = null;
+    
+    private static Channel inheritedChannel; 
 
     /**
      * Constructor for this class.
@@ -237,12 +240,9 @@ public abstract class SelectorProvider extends Object {
      *             RuntimePermission("selectorProvider").
      */
     public Channel inheritedChannel() throws IOException {
-        return null;
-//        FIXME waiting for VM support      
-//        if (null == inheritedChannel) {
-//            inheritedChannel = OSComponentFactory.getNetworkSystem()
-//                    .inheritedChannel();
-//        }
-//        return inheritedChannel;
+        if (null == inheritedChannel) {
+            inheritedChannel = Platform.getNetworkSystem().inheritedChannel();
+        }
+        return inheritedChannel;
     }
 }
