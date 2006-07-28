@@ -147,7 +147,15 @@ public class LogManager {
 
     // the singleton instance
     private static LogManager manager;
+    
+    /**
+     * <p>The String value of the {@link LoggingMXBean}'s ObjectName.</p>
+     */
+    public static final String LOGGING_MXBEAN_NAME = "java.util.logging:type=Logging";
 
+    public static LoggingMXBean getLoggingMXBean() {
+        throw new AssertionError("This method is not currently implemented.");
+    }
     /*
      * -------------------------------------------------------------------
      * Instance variables
