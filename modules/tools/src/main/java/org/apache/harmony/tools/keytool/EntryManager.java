@@ -16,12 +16,16 @@
 
 package org.apache.harmony.tools.keytool;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
 
 /**
  * Class for managing keystore entries - cloning, deleting, changing entry
@@ -38,10 +42,15 @@ public class EntryManager {
      * @throws NoSuchAlgorithmException
      * @throws KeyStoreException
      * @throws KeytoolException
+     * @throws IOException 
+     * @throws NoSuchProviderException 
+     * @throws FileNotFoundException 
+     * @throws CertificateException 
      */
     static void keyClone(KeytoolParameters param) throws KeyStoreException,
             NoSuchAlgorithmException, UnrecoverableKeyException,
-            KeytoolException {
+            KeytoolException, CertificateException, FileNotFoundException,
+            NoSuchProviderException, IOException {
         KeyStore keyStore = param.getKeyStore();
         String alias = param.getAlias();
         Key srcKey;
@@ -67,8 +76,17 @@ public class EntryManager {
      * 
      * @param param
      * @throws KeyStoreException
+     * @throws KeytoolException 
+     * @throws IOException 
+     * @throws NoSuchProviderException 
+     * @throws FileNotFoundException 
+     * @throws CertificateException 
+     * @throws NoSuchAlgorithmException 
      */
-    static void delete(KeytoolParameters param) throws KeyStoreException {
+    static void delete(KeytoolParameters param) throws KeyStoreException,
+            NoSuchAlgorithmException, CertificateException,
+            FileNotFoundException, NoSuchProviderException, IOException,
+            KeytoolException {
         param.getKeyStore().deleteEntry(param.getAlias());
         param.setNeedSaveKS(true);
     }
@@ -80,9 +98,16 @@ public class EntryManager {
      * @throws KeyStoreException
      * @throws NoSuchAlgorithmException
      * @throws UnrecoverableKeyException
+     * @throws KeytoolException 
+     * @throws IOException 
+     * @throws NoSuchProviderException 
+     * @throws FileNotFoundException 
+     * @throws CertificateException 
      */
     static void keyPasswd(KeytoolParameters param) throws KeyStoreException,
-            NoSuchAlgorithmException, UnrecoverableKeyException {
+            NoSuchAlgorithmException, UnrecoverableKeyException,
+            CertificateException, FileNotFoundException,
+            NoSuchProviderException, IOException, KeytoolException {
         KeyStore keyStore = param.getKeyStore();
         String alias = param.getAlias();
         Key key;

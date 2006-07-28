@@ -23,7 +23,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 import org.apache.harmony.luni.util.Base64;
@@ -36,17 +39,20 @@ public class CertExporter {
 
     /**
      * Reads an X.509 certificate associated with alias and prints it into the
-     * given file. alias and the file name are supplied in param. If the file
+     * given file. alias and the file name are supplied in param. if The file
      * name is not given, the certificate is printed to stdout.
      * 
      * @param param
      * @throws KeyStoreException
-     * @throws CertificateEncodingException
      * @throws IOException
      * @throws KeytoolException
+     * @throws NoSuchProviderException 
+     * @throws CertificateException 
+     * @throws NoSuchAlgorithmException 
      */
     static void exportCert(KeytoolParameters param) throws KeyStoreException,
-            CertificateEncodingException, IOException, KeytoolException {
+            IOException, KeytoolException, NoSuchAlgorithmException,
+            CertificateException, NoSuchProviderException {
         KeyStore keyStore = param.getKeyStore();
         String alias = param.getAlias();
         if (keyStore.entryInstanceOf(alias, KeyStore.SecretKeyEntry.class)) {

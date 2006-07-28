@@ -49,6 +49,16 @@ public class Main {
             case KEYPASSWD:
                 EntryManager.keyPasswd(param);
                 break;
+            case IMPORT:
+                CertImporter.importCert(param);
+                break;
+            case CHECK:
+                CRLManager.checkRevoked(param);
+                break;
+            case HELP:
+                HelpPrinter.printHelp();
+                break;
+
             // TODO: calls for other options.    
         }
     }
@@ -63,7 +73,7 @@ public class Main {
         KeytoolParameters param = ArgumentsParser.parseArgs(args);
 
         if (param == null) {
-            System.out.println("Help message is printed here");
+            HelpPrinter.printHelp();
             System.exit(-1);
         }
 
@@ -78,11 +88,9 @@ public class Main {
                 throw new KeytoolException(
                         "Must specify store password to work with this command.");
             }
-            // load the keystore
-            KeyStoreLoaderSaver.loadStore(param);
             // prompt for additional parameters if some of the expected
             // ones have not been specified.
-            //ArgumentsParser.getAdditionalParameters(param);
+            ArgumentsParser.getAdditionalParameters(param);
         }
 
         // print the warning if store password is not set
@@ -97,10 +105,6 @@ public class Main {
         doWork(param);
 
         if (param.isNeedSaveKS()) {
-            // if the program should output additional information, do it
-            if (param.isVerbose()) {
-                System.out.println("[Saving " + param.getStorePath() + "]");
-            }
             // save the store
             KeyStoreLoaderSaver.saveStore(param);
         }

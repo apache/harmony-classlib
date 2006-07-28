@@ -16,7 +16,8 @@
 
 package org.apache.harmony.tools.keytool;
 
-import java.io.UnsupportedEncodingException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -26,9 +27,12 @@ import java.security.NoSuchProviderException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Iterator;
 
 import org.apache.harmony.luni.util.Base64;
 
@@ -46,16 +50,18 @@ public class KeyStoreCertPrinter {
      * 
      * @param param
      * @throws KeyStoreException
-     * @throws CertificateEncodingException
      * @throws NoSuchAlgorithmException
      * @throws NoSuchProviderException
-     * @throws UnsupportedEncodingException
      * @throws UnrecoverableKeyException
+     * @throws KeytoolException 
+     * @throws IOException 
+     * @throws FileNotFoundException 
+     * @throws CertificateException 
      */
     static void list(KeytoolParameters param) throws KeyStoreException,
-            CertificateEncodingException, NoSuchAlgorithmException,
-            NoSuchProviderException, UnsupportedEncodingException,
-            UnrecoverableKeyException {
+            NoSuchAlgorithmException, NoSuchProviderException,
+            UnrecoverableKeyException, CertificateException,
+            FileNotFoundException, IOException, KeytoolException {
         Enumeration aliases;
         KeyStore keyStore = param.getKeyStore();
         String alias = param.getAlias();
@@ -71,8 +77,9 @@ public class KeyStoreCertPrinter {
             System.out.println("Type of keystore: " + keyStore.getType());
             System.out.println("Keystore provider name: "
                     + keyStore.getProvider().getName());
-            System.out.println("\nThe keystore contains " + keyStore.size()
-                    + " entries \n");
+            int keyStoreSize = keyStore.size();
+            System.out.println("\nThe keystore contains " + keyStoreSize
+                    + ((keyStoreSize == 1) ? " entry \n" : " entries \n"));
         }
 
         String provider = param.getProvider();
@@ -198,7 +205,6 @@ public class KeyStoreCertPrinter {
                     // If the key is explicitly asked to be printed
                     // by setting the alias, print it out, otherwise - do
                     // nothing.
-                    System.out.println();
                     if (alias != null) {
                         char[] keyPass;
                         if ((keyPass = param.getKeyPass()) != null) {
@@ -294,20 +300,39 @@ public class KeyStoreCertPrinter {
      * Reads an X.509 certificate from the file specified in param and prints it
      * in a human-readable format. If param.getFileName() returns null, the
      * certificate is read from the standard input. The input data is awaited
-     * for some time. If the data is not entered, an exception is thrown.
+     * for 3 seconds. If the data is not entered, an exception is thrown.
      * 
      * @param param
+     * @throws KeytoolException
+     * @throws IOException
+     * @throws CertificateException
+     * @throws FileNotFoundException
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchProviderException
      */
-    static void printCert(KeytoolParameters param) {
-        // TODO
-        throw new RuntimeException("The method is not implemented yet.");
+    static void printCert(KeytoolParameters param)
+            throws FileNotFoundException, CertificateException, IOException,
+            KeytoolException, NoSuchAlgorithmException, NoSuchProviderException {
+        // get the certificate(s) from the file
+        Collection certCollection = CertReader.readCerts(param.getFileName(),
+                false, param.getProvider());
+        Iterator certIter = certCollection.iterator();
+        int counter = 1;
+
+        // print the datailed info on all certificates
+        while (certIter.hasNext()) {
+            X509Certificate cert = (X509Certificate) certIter.next();
+            System.out.println("\nCertificate[" + counter + "]:");
+            printX509CertDetailed(cert, param.getProvider());
+            ++counter;
+        }
     }
 
     // Formats byte array as a String looking like "0A:1B:C3:D4:....:E5".
     private static String formatBytes(byte[] bytes) {
         int i;
         // The method is expected to format mostly message digest results and
-        // ? length of the String repesenting a SHA1 digest printed in
+        // åhe length of the String repesenting a SHA1 digest printed in
         // the way: "0A:1B:C3:D4:....:E5" is the biggest and is 59.
         StringBuffer buffer = new StringBuffer(59);
         int length;
@@ -315,14 +340,12 @@ public class KeyStoreCertPrinter {
         for (i = 0; i < bytes.length - 1; i++) {
             // TODO: change when String.format(..) method is implemented.
             // buffer.append(String.format("%02X", bytes[i]) + ":");
-            // /
             currentByte = Integer.toHexString(bytes[i]).toUpperCase();
             if ((length = currentByte.length()) > 1) {
                 buffer.append(currentByte.substring(length - 2) + ":");
             } else {
                 buffer.append("0" + currentByte + ":");
             }
-            // /
         }
         // The last byte doesn't need ":" after it ("...:E5:6F")
         // TODO: change in the same way to (String.format(..))

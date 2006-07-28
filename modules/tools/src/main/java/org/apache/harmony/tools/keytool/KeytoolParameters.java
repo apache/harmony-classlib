@@ -17,11 +17,17 @@
 package org.apache.harmony.tools.keytool;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.cert.CertificateException;
 
 /**
- * The class encapsulates paramaters for Keytool most of which are ususally
- * given in command line.
+ * The class encapsulates paramaters for Keytool most of which are ususally given
+ * in command line.
  */
 public class KeytoolParameters {
     /**
@@ -32,13 +38,14 @@ public class KeytoolParameters {
             .getProperty("user.home")
             + File.separator + ".keystore";
 
-    /**
-     * Location of cacerts file, containing the certificates from root
-     * certificate authorities (usually self-signed).
-     */
-    public static final String cacertsPath = System.getProperty("java.home")
+    // Default location of cacerts file
+    private static final String defaultCacertsPath = System.getProperty("java.home")
             + File.separator + "lib" + File.separator + "security"
             + File.separator + "cacerts";
+    
+    // Default password for cacerts keystore
+    private static final char[] defaultCacertsPass = { 'c', 'h', 'a', 'n', 'g',
+            'e', 'i', 't' };
 
     // the keystore to work with
     private KeyStore keyStore;
@@ -74,8 +81,8 @@ public class KeytoolParameters {
     // generated certificate can be signed with)
     private String issuerAlias;
 
-    // certstore to keep a CRL in
-    private String crlStore;
+    // file with CRLs
+    private String crlFile;
 
     // used in keyclone. Shows the destination alias to copy key pair to
     private String destAlias;
@@ -121,15 +128,37 @@ public class KeytoolParameters {
 
     // should a secret key or a key pair be generated
     private boolean isSecretKey;
+    
+    // should the generated certificate ba a CA certificate or not
+    private boolean isCA;
 
-    // true if the store worked with is a keystore, false - if a certstore
-    private boolean isKeyStore = true;
-
+    // path to the keystore to convert the current keystore to
+    private String convertedKeyStorePath;    
+    
+    // type of the keystore to convert the current keystore to
+    private String convertedKeyStoreType;    
+    
+    // password to the keystore to convert the current keystore to
+    private char [] convertedKeyStorePass;
+    
+    // should the key entries be converted or not
+    private boolean convertKeyEntries;
+    
+    // location of cacerts file
+    private String cacertsPath;
+    
+    // password for cacerts keystore
+    private char [] cacertsPass;
+    
+    // cacerts keystore containing the certificates from root
+    // certificate authorities (usually self-signed)
+    private KeyStore cacerts;
+    
     // command to perform
     private Command command = Command.HELP;
-    
+
     /**
-     * The method sets the fields to default values. If there is no default
+     * The method sets the fields to default values. If there is not a default
      * value the field is set to null.
      */
     void setDefault() {
@@ -154,17 +183,38 @@ public class KeytoolParameters {
         verbose = false;
         isSecretKey = false;
         issuerAlias = null;
+        issuerPass = null;
         X509version = 3;
         certSerialNr = 0;
-        isKeyStore = true;
+        isCA = false;
+        convertedKeyStorePath = null;
+        convertedKeyStoreType = null;
+        convertedKeyStorePass = null;
+        convertKeyEntries = false;
+        cacertsPath = null;
+        cacertsPass = null;
+        cacerts = null;
+        crlFile = null;
         command = Command.HELP;
     }
 
     // getters and setters down here.
     /**
      * @return Returns the keystore to work with.
+     * @throws KeytoolException 
+     * @throws IOException 
+     * @throws NoSuchProviderException 
+     * @throws KeyStoreException 
+     * @throws FileNotFoundException 
+     * @throws CertificateException 
+     * @throws NoSuchAlgorithmException 
      */
-    KeyStore getKeyStore() {
+    KeyStore getKeyStore() throws NoSuchAlgorithmException,
+            CertificateException, FileNotFoundException, KeyStoreException,
+            NoSuchProviderException, IOException, KeytoolException {
+        if (keyStore == null){
+            KeyStoreLoaderSaver.loadStore(this);
+        }
         return keyStore;
     }
 
@@ -224,18 +274,18 @@ public class KeytoolParameters {
     }
 
     /**
-     * @return Returns the certstore path to keep CRLs in.
+     * @return Returns path to a file with CRLs.
      */
-    String getCrlStore() {
-        return crlStore;
+    String getCrlFile() {
+        return crlFile;
     }
 
     /**
-     * @param crlStore
-     *            certstore path to keep CRLs in.
+     * @param crlFile
+     *            path to a file with CRLs.
      */
-    public void setCrlStore(String crlStore) {
-        this.crlStore = crlStore;
+    public void setCrlFile(String crlStore) {
+        this.crlFile = crlStore;
     }
 
     /**
@@ -311,23 +361,6 @@ public class KeytoolParameters {
      */
     public void setFileName(String fileName) {
         this.fileName = fileName;
-    }
-
-    /**
-     * @return Returns true if the store to work with is a keystore, false - if
-     *         a certstore
-     */
-    boolean isKeyStore() {
-        return isKeyStore;
-    }
-
-    /**
-     * @param isKeyStore
-     *            set true if the store worked with is a keystore, false - if a
-     *            certstore
-     */
-    void setIsKeyStore(boolean isKeyStore) {
-        this.isKeyStore = isKeyStore;
     }
 
     /**
@@ -476,6 +509,23 @@ public class KeytoolParameters {
     }
 
     /**
+     * @return true if the generated certificate should be a CA certificate,
+     *         false - otherwise
+     */
+    boolean isCA() {
+        return isCA;
+    }
+
+    /**
+     * @param isCA
+     *            set true if the generated certificate should be a CA
+     *            certificate, false - otherwise
+     */
+    public void setCA(boolean isCA) {
+        this.isCA = isCA;
+    }
+
+    /**
      * @return Returns the digital signature algorithm
      */
     String getSigAlg() {
@@ -604,5 +654,133 @@ public class KeytoolParameters {
         this.storePath = storePath;
     }
 
-}
+    /**
+     * @return password for the keystore to convert the current keystore to
+     */
+    char [] getConvertedKeyStorePass() {
+        return convertedKeyStorePass;
+    }
 
+    /**
+     * @param password
+     *            for the keystore to convert the current keystore to
+     */
+    public void setConvertedKeyStorePass(char [] convertedKeyStorePass) {
+        this.convertedKeyStorePass = convertedKeyStorePass;
+    }
+
+    /**
+     * @return path to the keystore to convert the current keystore to
+     */
+    String getConvertedKeyStorePath() {
+        return convertedKeyStorePath;
+    }
+
+    /**
+     * @param path
+     *            to the keystore to convert the current keystore to
+     */
+    public void setConvertedKeyStorePath(String convertedKeyStorePath) {
+        this.convertedKeyStorePath = convertedKeyStorePath;
+    }
+
+    /**
+     * @return type of the keystore to convert the current keystore to
+     */
+    String getConvertedKeyStoreType() {
+        return convertedKeyStoreType;
+    }
+
+    /**
+     * @param type
+     *            of the keystore to convert the current keystore to
+     */
+    public void setConvertedKeyStoreType(String convertedKeyStoreType) {
+        this.convertedKeyStoreType = convertedKeyStoreType;
+    }
+
+    /**
+     * @return true if key entries should be converted, false - if not
+     */
+    boolean isConvertKeyEntries() {
+        return convertKeyEntries;
+    }
+
+    /**
+     * @param set
+     *            true if key entries should be converted, false - if not
+     */
+    public void setConvertKeyEntries(boolean convertKeyEnties) {
+        this.convertKeyEntries = convertKeyEnties;
+    }
+
+    /**
+     * @return Returns the location of cacerts file, containing the certificates
+     *         from root certificate authorities (usually self-signed).
+     */
+    String getCacertsPath() {
+        if (cacertsPath != null) {
+            return cacertsPath;
+        } else {
+            return defaultCacertsPath;
+        }
+    }
+
+    /**
+     * @param the
+     *            location of cacerts file, containing the certificates from
+     *            root certificate authorities (usually self-signed).
+     */
+    public void setCacertsPath(String cacertsPath) {
+        this.cacertsPath = cacertsPath;
+    }
+
+    /**
+     * @return password for cacerts keystore
+     */
+    char[] getCacertsPass() {
+        if (cacertsPass != null) {
+            return cacertsPass;
+        } else {
+            return defaultCacertsPass;
+        }
+    }
+
+    /**
+     * @param password
+     *            for cacerts keystore
+     */
+    public void setCacertsPass(char[] cacertsPass) {
+        this.cacertsPass = cacertsPass;
+    }
+
+    /**
+     * @return cacerts keystore containing the certificates from root
+     *         certificate authorities (usually self-signed)
+     * @throws KeytoolException 
+     * @throws IOException 
+     * @throws NoSuchProviderException 
+     * @throws CertificateException 
+     * @throws NoSuchAlgorithmException 
+     * @throws KeyStoreException 
+     * @throws FileNotFoundException 
+     */
+    KeyStore getCacerts() throws FileNotFoundException, KeyStoreException,
+            NoSuchAlgorithmException, CertificateException,
+            NoSuchProviderException, IOException, KeytoolException {
+        if (cacerts == null) {
+            cacerts = KeyStoreLoaderSaver.loadStore(getCacertsPath(),
+                    storeType, getCacertsPass(), provider);
+        }
+        return cacerts;
+    }
+
+    /**
+     * @param cacerts
+     *            keystore containing the certificates from root certificate
+     *            authorities (usually self-signed)
+     */
+    void setCacerts(KeyStore cacerts) {
+        this.cacerts = cacerts;
+    }
+}

@@ -16,6 +16,7 @@
 
 package org.apache.harmony.tools.keytool;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,7 +32,6 @@ import java.security.cert.CertificateException;
  * Class for loading keystores, saving ang changing the main keystore password.
  */
 public class KeyStoreLoaderSaver {
-
     /**
      * Creates an instance of class KeyStore and loads a keystore to it.
      * param.getStorePass() is used to check the integrity of the keystore. If
@@ -98,16 +98,16 @@ public class KeyStoreLoaderSaver {
             KeyStoreException, NoSuchAlgorithmException, CertificateException,
             IOException, NoSuchProviderException, KeytoolException {
 
-        FileInputStream fis;
+        BufferedInputStream bis;
         // if the path is given, make a FileInputStream on it
         if (path != null) {
             File ksFile = new File(path);
             if (ksFile.length() == 0) {
                 throw new KeytoolException("Keystore file exists but is empty");
             }
-            fis = new FileInputStream(ksFile);
+            bis = new BufferedInputStream(new FileInputStream(ksFile));
         } else { // if the path is not given, a new keystore will be created
-            fis = null;
+            bis = null;
         }
 
         // Set the store type to default if it is not given.
@@ -131,7 +131,7 @@ public class KeyStoreLoaderSaver {
 
         try {
             // try to load the keystore
-            keyStore.load(fis, storePass);
+            keyStore.load(bis, storePass);
         } catch (NoSuchAlgorithmException e) {
             throw new NoSuchAlgorithmException(
                     "Failed to find the algorithm to check the keystore integrity",
@@ -147,27 +147,54 @@ public class KeyStoreLoaderSaver {
     }
 
     /**
-     * Saves the keystore to the file and protects its integrity with password.
+     * Saves the main keystore to the file and protects its integrity with
+     * password.
+     * 
+     * @throws KeyStoreException
+     * @throws NoSuchAlgorithmException
+     * @throws CertificateException
+     * @throws IOException
+     * @throws KeytoolException 
+     * @throws NoSuchProviderException 
+     */
+    static void saveStore(KeytoolParameters param) throws KeyStoreException,
+            NoSuchAlgorithmException, CertificateException, IOException,
+            NoSuchProviderException, KeytoolException {
+        saveStore(param.getKeyStore(), param.getStorePath(), param
+                .getStorePass(), param.isVerbose());
+    }
+
+    /**
+     * Saves a keystore to the file and protects its integrity with password.
      * 
      * @throws KeyStoreException
      * @throws NoSuchAlgorithmException
      * @throws CertificateException
      * @throws IOException
      */
-    static void saveStore(KeytoolParameters param) throws KeyStoreException,
-            NoSuchAlgorithmException, CertificateException, IOException {
+    static void saveStore(KeyStore keyStore, String storePath,
+            char[] storePass, boolean isVerbose)
+            throws KeyStoreException, NoSuchAlgorithmException,
+            CertificateException, IOException {
         // TODO: store not only to a file?
-        // if the path to the store is not set, use the default value
-        if (param.getStorePath() == null) {
-            param.setStorePath(KeytoolParameters.defaultKeystorePath);
+
+        // if the program should output additional information, do it
+        if (isVerbose) {
+            System.out.println("[Saving " + storePath + "]");
         }
-        File ksFile = new File(param.getStorePath());
+
+        // if the path to the store is not set, use the default value
+        if (storePath == null) {
+            storePath = KeytoolParameters.defaultKeystorePath;
+        }
+
+        File ksFile = new File(storePath);
         // the file will be created if and only if one with the same name
         // doesn't exist
         ksFile.createNewFile();
-        FileOutputStream fos = new FileOutputStream(param.getStorePath());
+        FileOutputStream fos = new FileOutputStream(ksFile);
         try {
-            param.getKeyStore().store(fos, param.getStorePass());
+            keyStore.store(fos, storePass);
         } catch (NoSuchAlgorithmException e) {
             throw new NoSuchAlgorithmException(
                     "Failed to find the algorithm to check the keystore integrity",
@@ -180,7 +207,7 @@ public class KeyStoreLoaderSaver {
                     .initCause(e);
         }
     }
-
+    
     /**
      * Changes the keystore password to the new one.
      * 
@@ -189,5 +216,4 @@ public class KeyStoreLoaderSaver {
     static void storePasswd(KeytoolParameters param) {
         param.setStorePass(param.getNewPasswd());
     }
-
 }

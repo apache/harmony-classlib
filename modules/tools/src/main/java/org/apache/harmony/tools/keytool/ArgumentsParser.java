@@ -16,7 +16,15 @@
 
 package org.apache.harmony.tools.keytool;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 
 /**
  * The class to interact with the user - parse the program arguments, ask for
@@ -25,7 +33,26 @@ import java.io.IOException;
  */
 
 class ArgumentsParser {
-    // / options names to compare to ///
+    // used to get additional data prompted
+    static InputStreamReader in = new InputStreamReader(System.in);
+
+    // buffer for the data read
+    static char[] readData = new char[256];
+
+    // number of symbols read
+    static int charsRead;
+
+    // minimum password length permitted
+    static int minPwdLength = 6;
+
+    // maximum number of attempts to set the password
+    static int maxNrOfAttempts = 3;
+
+    // length of the "\r\n" which is added to the end of the line,
+    // when ENTER is pressed.
+    private static int newLineLength = 2;
+
+    // options names to compare to //
     // commands
     final static String sGenkey = "-genkey";
 
@@ -41,11 +68,9 @@ class ArgumentsParser {
 
     final static String sCertreq = "-certreq";
 
-    final static String sSign = "-sign";
-
     final static String sCheck = "-checkcrl";
 
-    final static String sAdd = "-addtocrl";
+    final static String sConvert = "-convert";
 
     final static String sVerify = "-verify";
 
@@ -97,11 +122,9 @@ class ArgumentsParser {
     final static String sNew = "-new";
 
     final static String sIssuerAlias = "-issuer";
-
+    
     final static String sIssuerPass = "-issuerpass";
-
-    final static String sCertstore = "-certstore";
-
+    
     final static String sSecretkey = "-secretkey";
 
     final static String sX509Version = "-x509version";
@@ -110,18 +133,37 @@ class ArgumentsParser {
 
     final static String sDestAlias = "-dest";
 
-    final static String sCRLstore = "-crlstore";
+    final static String sCRLfile = "-crlfile";
+    
+    final static String sCA = "-ca";
+    
+    final static String sConvStorePath = "-convkeystore";
+    
+    final static String sConvStorePass = "-convstorepass";
+    
+    final static String sConvStoreType = "-convtype";
+
+    final static String sConvKeyEntries = "-convkeys";
+    
+    final static String sCAcertsPath = "-cacerts";
+    
+    final static String sCAcertsPass = "-cacertspass";
 
     /**
      * The method finds known options in args which is usually taken from
      * command line and sets the corresponding fields of the returned
      * KeytoolParameters object to given values.
      * 
-     * @throws KeytoolException
+     * @param args -
+     *            String array to parse.
+     * @return null if args is null or zero-sized, one of the elements of args
+     *         is null or empty, an unknown option is found or an expected
+     *         option value is not given or not of an expected type.
      * @throws IOException
      */
-    static KeytoolParameters parseArgs(String[] args) throws KeytoolException,
-            IOException {
+
+    static KeytoolParameters parseArgs(String[] args)
+            throws NumberFormatException, KeytoolException, IOException {
         if (args == null || args.length == 0) {
             return null;
         }
@@ -164,8 +206,8 @@ class ArgumentsParser {
                     param.setCommand(Command.CHECK);
                     continue;
                 }
-                if (args[i].compareToIgnoreCase(sAdd) == 0) {
-                    param.setCommand(Command.ADD);
+                if (args[i].compareToIgnoreCase(sConvert) == 0) {
+                    param.setCommand(Command.CONVERT);
                     continue;
                 }
                 if (args[i].compareToIgnoreCase(sVerify) == 0) {
@@ -230,10 +272,6 @@ class ArgumentsParser {
                     param.setIssuerAlias(args[++i]);
                     continue;
                 }
-                if (args[i].compareToIgnoreCase(sCertstore) == 0) {
-                    param.setStorePath(args[++i]);
-                    continue;
-                }
                 if (args[i].compareToIgnoreCase(sStorepass) == 0) {
                     param.setStorePass(args[++i].toCharArray());
                     continue;
@@ -246,8 +284,8 @@ class ArgumentsParser {
                     param.setIssuerPass(args[++i].toCharArray());
                     continue;
                 }
-                if (args[i].compareToIgnoreCase(sCRLstore) == 0) {
-                    param.setCrlStore(args[++i]);
+                if (args[i].compareToIgnoreCase(sCRLfile) == 0) {
+                    param.setCrlFile(args[++i]);
                     continue;
                 }
                 if (args[i].compareToIgnoreCase(sDestAlias) == 0) {
@@ -256,6 +294,26 @@ class ArgumentsParser {
                 }
                 if (args[i].compareToIgnoreCase(sNew) == 0) {
                     param.setNewPasswd(args[++i].toCharArray());
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sConvStorePath) == 0) {
+                    param.setConvertedKeyStorePath(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sConvStoreType) == 0) {
+                    param.setConvertedKeyStoreType(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sConvStorePass) == 0) {
+                    param.setConvertedKeyStorePass(args[++i].toCharArray());
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sCAcertsPath) == 0) {
+                    param.setCacertsPath(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sCAcertsPass) == 0) {
+                    param.setCacertsPass(args[++i].toCharArray());
                     continue;
                 }
                 if (args[i].compareToIgnoreCase(sKeysize) == 0) {
@@ -314,6 +372,14 @@ class ArgumentsParser {
                     param.setSecretKey(true);
                     continue;
                 }
+                if (args[i].compareToIgnoreCase(sCA) == 0) {
+                    param.setCA(true);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sConvKeyEntries) == 0) {
+                    param.setConvertKeyEntries(true);
+                    continue;
+                }
 
                 System.out.println("Illegal option: " + args[i]);
                 return null;
@@ -322,7 +388,6 @@ class ArgumentsParser {
             // ignore the last option if its value is not provided
         }
 
-        // set flag to use certstore, not keystore.
         Command cmd = param.getCommand();
 
         // check whether -v and -rfc options are used separately with -list.
@@ -337,14 +402,358 @@ class ArgumentsParser {
             return param;
         }
 
-        // TODO: if the store password has not been entered, prompt for it
+        // if the store password has not been entered, prompt for it
+        if (param.getStorePass() == null) {
+            // get path to the store
+            String storePath = (param.getStorePath() != null) ? param
+                    .getStorePath() : KeytoolParameters.defaultKeystorePath;
+            // get store password
+            String prompt = "Enter keystore password: ";
+            System.out.print(prompt);
+            charsRead = in.read(readData);
+            char[] storePass;
+            File storeFile = new File(storePath);
+            if (storeFile.isDirectory()) {
+                throw new KeytoolException("The keystore path " + storePath
+                        + " points to a directory.");
+            }
+            // Allow short passwords to unlock existing stores and
+            // disallow passwords shorter than minPwdLength symbols for new
+            // ones.
+            // Check whether the file exists
+            if (!storeFile.exists()) {
+                // check of password length and additional prompts for
+                // password are made here
+                storePass = promptLongerPassword(prompt);
+            } else {
+                // if the store exists don't check the length
+                storePass = new char[charsRead - newLineLength];// remove "\r\n"
+                System.arraycopy(readData, 0, storePass, 0, charsRead
+                        - newLineLength);
+            }
+            if (storePass.length != 0) {
+                param.setStorePass(storePass);
+            } else {
+                param.setStorePass(null);
+            }
+        }
+
         return param;
     }
 
     /**
      * Checks if the needed values are set and, if not, prompts for them.
+     * 
+     * This method must be called after the keystore is loaded.
+     * 
+     * @param param
+     * @return
+     * @throws KeytoolException
+     * @throws UnrecoverableKeyException
+     * @throws NoSuchAlgorithmException
+     * @throws IOException
+     * @throws KeyStoreException
+     * @throws NoSuchProviderException 
+     * @throws CertificateException 
      */
-    static void getAdditionalParameters(KeytoolParameters param) {
-        // TODO
+    static void getAdditionalParameters(KeytoolParameters param)
+            throws KeytoolException, IOException, KeyStoreException,
+            UnrecoverableKeyException, NoSuchAlgorithmException,
+            CertificateException, NoSuchProviderException {
+        // this method must be called after the keystore is loaded.
+        KeyStore keyStore = param.getKeyStore();
+
+        // set the alias to "mykey" if it's not set up
+        Command command = param.getCommand();
+        if (param.getAlias() == null
+                && (command == Command.KEYCLONE || command == Command.EXPORT
+                        || command == Command.CERTREQ
+                        || command == Command.GENKEY
+                        || command == Command.SELFCERT
+                        || command == Command.IMPORT || command == Command.KEYPASSWD)) {
+            param.setAlias("mykey");
+        }
+        String alias = param.getAlias();
+        
+        // check if the alias exists
+        if (command == Command.CERTREQ || command == Command.DELETE
+                || command == Command.EXPORT || command == Command.KEYCLONE
+                || command == Command.KEYPASSWD || command == Command.SELFCERT
+                || (command == Command.LIST && param.getAlias() != null)) {
+            if (!keyStore.containsAlias(param.getAlias())) {
+                throw new KeytoolException("Alias <" + alias
+                        + "> doesn't exist");
+            }
+        } else if (command == Command.GENKEY){
+            if (keyStore.containsAlias(param.getAlias())) {
+                throw new KeytoolException("Key(s) not generated, alias <"
+                        + alias + "> already exists.");
+            }
+        }
+
+        // if the key password has not been entered and the password is required
+        // to get the key (it is not a password for a newly created entry)
+        if (param.getKeyPass() == null
+                && (command == Command.KEYCLONE || command == Command.EXPORT
+                        || command == Command.CERTREQ
+                        || command == Command.KEYPASSWD
+                        || command == Command.SELFCERT
+                // if keystore contains alias, import of a certificate reply
+                // is considered, otherwise password is unnecessary.
+                || (command == Command.IMPORT && keyStore.containsAlias(alias)))) {
+            param.setKeyPass(tryStorePassAsKeyPass(keyStore, alias, param
+                    .getStorePass()));
+        }
+        
+        switch (command) {
+            case KEYCLONE:
+                // prompt for a destination alias, if one is not specified
+                if (param.getDestAlias() == null) {
+                    System.out.print("Enter destination alias name: ");
+                    charsRead = in.read(readData);
+                    if (charsRead <= newLineLength) {
+                        throw new KeytoolException(
+                                "Must specify destination alias");
+                    } else {
+                        param.setDestAlias(new String(readData).substring(0,
+                                charsRead - newLineLength));
+                    }
+                }
+                // if the password for a newly created entry is not specified,
+                // ask for it.
+                if (param.getNewPasswd() == null) {
+                    param.setNewPasswd(getNewPassword(alias, param
+                            .getDestAlias(), param.getKeyPass()));
+                }
+                break;
+            case DELETE:
+                // prompt for an alias to delete, if one is not specified
+                if (alias == null) {
+                    System.out.print("Enter alias name: ");
+                    charsRead = in.read(readData);
+                    if (charsRead <= newLineLength) {
+                        throw new KeytoolException("Must specify alias");
+                    } else {
+                        param.setAlias(new String(readData).substring(0,
+                                charsRead - newLineLength));
+                    }
+                }
+                break;
+            case STOREPASSWD:
+            case KEYPASSWD:
+                String prompt;
+                String promptReenter;
+                // prompt for a new password, if it is not specified
+                if (command == Command.KEYPASSWD) {
+                    prompt = "Enter new key password for <" + alias + ">: ";
+                    promptReenter = "Re-enter new keystore password for <"
+                            + alias + ">: ";
+                } else { // if param.getCommand() == Command.STOREPASSWD
+                    // prompt for a new store password, if it is not specified
+                    prompt = "Enter new keystore password: ";
+                    promptReenter = "Re-enter new keystore password: ";
+                }
+
+                // if the new password is not entered
+                if (param.getNewPasswd() == null) {
+                    System.out.print(prompt);
+                    charsRead = in.read(readData);
+                    char[] password = promptLongerPassword(prompt);
+                    System.out.print(promptReenter);
+                    charsRead = in.read(readData);
+                    if (charsRead == password.length + newLineLength) {
+                        for (int i = 0; i < password.length; i++) {
+                            if (readData[i] != password[i]) {
+                                throw new KeytoolException(
+                                        "Passwords do not match");
+                            }
+                        }
+                        param.setNewPasswd(password);
+                    } else {
+                        throw new KeytoolException("Passwords do not match");
+                    }
+                    // if entered a short password in the command line
+                } else if (param.getNewPasswd().length < minPwdLength) {
+                    throw new KeytoolException("The password must be at least "
+                            + minPwdLength + " characters");
+                }
+
+                break;
+            case LIST:
+                if (alias != null) {
+                    // This check is not where the same thing for other
+                    // commands done, because (alias != null) check is
+                    // necessary.
+                    if (keyStore.entryInstanceOf(alias,
+                            KeyStore.SecretKeyEntry.class)
+                            && param.getKeyPass() == null) {
+                        param.setKeyPass(tryStorePassAsKeyPass(keyStore, alias,
+                                param.getStorePass()));
+                    }
+                }
+                break;
+        }// switch (param.getCommand())
+
     }
+
+    /**
+     * The method should be called only after the password was entered and put into
+     * readData. charsRead also shouldn't be changed after the password was
+     * entered and before the method is called. If charsRead is less than
+     * minPwdLength + newLineLength, the method just copies the password from
+     * readData into a newly created char array; otherwise it prompts for a
+     * longer password for maxNrOfAttempts times.
+     * 
+     * @param prompt
+     * @return new password of length equal or longer than minPwdLength
+     * @throws IOException
+     * @throws KeytoolException
+     */
+    private static char[] promptLongerPassword(String prompt)
+            throws IOException, KeytoolException {
+        int cntAttempts = 0;
+        while (charsRead < minPwdLength + newLineLength) {
+            System.out.println("The password must be at least " + minPwdLength
+                    + " characters");
+            System.out.print(prompt);
+            charsRead = in.read(readData);
+            ++cntAttempts;
+            if (cntAttempts >= maxNrOfAttempts) {
+                throw new KeytoolException("Too many failures. "
+                        + "Please, try again later.");
+            }
+        }
+        char[] password = new char[charsRead - newLineLength];
+        System.arraycopy(readData, 0, password, 0, charsRead - newLineLength);
+        return password;
+    }
+
+    /**
+     * Does all work to get from the user a password for a newly created (cloned
+     * or generated) key.
+     * 
+     * @param -
+     *            srcAlias is the alias of the entry to clone, or if it is null,
+     *            the keystore password will be prompted to use.
+     * @param -
+     *            destAlias is the alias of the newly created entry.
+     * @param -
+     *            srcPass is the password to be used with a new entry if the
+     *            user doesn't enter a new one.
+     * 
+     * @return - char array representing the password for the entry. It can be
+     *         equal to the keystore password or the password of a cloned key.
+     */
+    private static char[] getNewPassword(String srcAlias, String destAlias,
+            char[] srcPass) throws IOException, KeytoolException {
+        if (destAlias == null) {
+            return null;
+        }
+        String prompt = "Enter key password for <" + destAlias + ">: ";
+        System.out.print(prompt);
+        if (srcAlias == null) {
+            System.out.print("(Press RETURN if same as for keystore) ");
+        } else {
+            System.out.print("(Press RETURN if same as for <" + srcAlias
+                    + ">) ");
+        }
+        charsRead = in.read(readData);
+        char[] destPass;
+        // if RETURN was pressed
+        if (charsRead <= newLineLength) {
+            destPass = new char[srcPass.length];
+            System.arraycopy(srcPass, 0, destPass, 0, srcPass.length);
+        } else {// if some password was entered
+            destPass = promptLongerPassword(prompt);
+        }
+        return destPass;
+    }
+
+    /**
+     * Prints a promt. Reads what the user enters. If the user has entered
+     * 'y'/"yes" or 'n'/"no" (case insensitively) the method returns
+     * respectively true or false. Depending on acceptAnother parameter the
+     * method can return false if anything except 'y' or "yes" is entered, or it
+     * can prompt for a correct answer. If only ENTER is pressed false is
+     * returned.
+     * 
+     * @param promt -
+     *            text printed to ask the user for a confirmation
+     * @param acceptAnother -
+     *            if set to true, the method returns true if and only if the
+     *            user enters 'y' or "yes"; if set to false prompts to reenter
+     *            the answer from user until 'y'/"yes" or 'n'/"no" is entered.
+     * @return true if the user confirms the request, false - otherwise.
+     * @throws IOException
+     */
+    static boolean getConfirmation(String promt, boolean acceptAnother)
+            throws IOException, KeytoolException {
+        int counter = 0;
+        while (counter++ < 100) {
+            System.out.print(promt);
+            charsRead = in.read(readData);
+            // if pressed ENTER return the default value
+            if (charsRead == newLineLength) {
+                return false;
+            }
+            // confirm, if the user enters 'y' or "yes"
+            if ((charsRead == newLineLength + 1 && (readData[0] == 'y' || readData[0] == 'Y'))
+                    || (charsRead == newLineLength + 3 && "yes"
+                            .equalsIgnoreCase(new String(readData).substring(0,
+                                    3)))) {
+                return true;
+            } else if (acceptAnother) {
+                return false;
+            } else {
+                // if entered 'n' or "no"
+                if (readData[0] == 'n'
+                        || readData[0] == 'N'
+                        && ((charsRead == newLineLength + 1) || (charsRead == newLineLength + 2
+                                && readData[0] == 'o' || readData[0] == 'O'))) {
+                    return false;
+                } else {
+                    System.out.println("Wrong answer, please, try again");
+                }
+            }
+        }
+        throw new KeytoolException("Too many failures. ");
+    }
+    
+    // method tries to get the key, associated with alias, using the storePass,
+    // if it can be recovered using the password storePass is returned,
+    // otherwise - the password is prompted for. Another attempt to recover the
+    // key with entered password. If it is ok, it is returned, otherwise
+    // UnrecoverableKeyException is thrown.
+    private static char[] tryStorePassAsKeyPass(KeyStore keyStore,
+            String alias, char[] storePass) throws KeyStoreException,
+            IOException, UnrecoverableKeyException, NoSuchAlgorithmException {
+        try {
+            // try to get a key with keystore password
+            // if succeed set key password same as that for keystore
+            keyStore.getKey(alias, storePass);
+
+            // will not come here if exception is thrown
+            return storePass;
+        } catch (UnrecoverableKeyException e) {
+            // if key password is not equal to store password, ask for it.
+            System.out.print("Enter key password for <" + alias + ">: ");
+            charsRead = in.read(readData);
+            char[] keyPass = new char[charsRead - newLineLength];
+            System
+                    .arraycopy(readData, 0, keyPass, 0, charsRead
+                            - newLineLength);
+            // if the new password is incorrect an axception will be thrown
+            try {
+                keyStore.getKey(alias, keyPass);
+            } catch (NoSuchAlgorithmException nsae) {
+                throw new NoSuchAlgorithmException(
+                        "Cannot find the algorithm to recover the key. ", e);
+            }
+            return keyPass;
+        } catch (NoSuchAlgorithmException e) {
+            throw new NoSuchAlgorithmException(
+                    "Cannot find the algorithm to recover the key. ", e);
+        }
+    }
+
 }

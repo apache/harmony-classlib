@@ -37,8 +37,8 @@ public enum Command {
     CERTREQ,
     // check a CRL
     CHECK,
-    // add a certificate to a CRL
-    ADD,
+    // convert keystore to another format
+    CONVERT,
     // verify a certificate chain
     VERIFY,
     // copy a key entry into a newly created one
