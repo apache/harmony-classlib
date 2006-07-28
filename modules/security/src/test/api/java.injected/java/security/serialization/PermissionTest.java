@@ -21,14 +21,11 @@
 
 package java.security.serialization;
 
-import java.security.Permission;
-
+import org.apache.harmony.security.tests.support.MyPermission;
 import org.apache.harmony.testframework.serialization.SerializationTest;
-
 
 /**
  * Serialization tests for <code>Permission</code>
- * 
  */
 
 public class PermissionTest extends SerializationTest {
@@ -37,38 +34,7 @@ public class PermissionTest extends SerializationTest {
      * @see com.intel.drl.test.SerializationTest#getData()
      */
     protected Object[] getData() {
-        return new Object[] { new RealPermission(null),
-                new RealPermission("IYF&*%^sd 43") };
-    }
-}
-
-// Bare extension to instantiate abstract Permission class
-final class RealPermission extends Permission {
-
-    public RealPermission(String name) {
-        super(name);
-    }
-
-    public boolean equals(Object obj) {
-        if (obj instanceof RealPermission) {
-            String name = ((RealPermission) obj).getName();
-            if (name == null) {
-                return getName() == null;
-            }
-            return name.equals(getName());
-        }
-        return false;
-    }
-
-    public String getActions() {
-        return null;
-    }
-
-    public int hashCode() {
-        return 0;
-    }
-
-    public boolean implies(Permission permission) {
-        return false;
+        return new Object[] { new MyPermission(null),
+                new MyPermission("IYF&*%^sd 43") };
     }
 }
