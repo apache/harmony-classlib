@@ -23,15 +23,13 @@ package java.security.serialization;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
-import java.security.Guard;
 import java.security.GuardedObject;
 
+import org.apache.harmony.security.tests.support.MyGuard;
 import org.apache.harmony.testframework.serialization.SerializationTest;
-
 
 /**
  * Serialization tests for <code>GuardedObject</code>
- * 
  */
 
 public class GuardedObjectTest extends SerializationTest implements
@@ -43,7 +41,7 @@ public class GuardedObjectTest extends SerializationTest implements
     protected Object[] getData() {
         return new Object[] { new GuardedObject(null, null),
                 new GuardedObject("dsgdfg", null),
-                new GuardedObject(new Integer(76547), new RealGuard(true)), };
+                new GuardedObject(new Integer(76547), new MyGuard(true)), };
     }
 
     public void assertDeserialized(Serializable golden, Serializable test) {
@@ -54,25 +52,10 @@ public class GuardedObjectTest extends SerializationTest implements
 
     public void testDisableGuard() throws Throwable {
         try {
-            putObjectToStream(new GuardedObject(null, new RealGuard(false)),
+            putObjectToStream(new GuardedObject(null, new MyGuard(false)),
                     new ByteArrayOutputStream());
             fail("Should not serialize if guard denies access");
         }
         catch (SecurityException ok) {}
-    }
-}
-
-class RealGuard implements Guard, Serializable {
-
-    final boolean enabled;
-
-    public RealGuard(boolean state) {
-        enabled = state;
-    }
-
-    public void checkGuard(Object object) {
-        if (!enabled) {
-            throw new SecurityException();
-        }
     }
 }
