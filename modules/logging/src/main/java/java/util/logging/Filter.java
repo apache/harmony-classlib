@@ -13,31 +13,20 @@
  * limitations under the License.
  */
 
-
 package java.util.logging;
 
 /**
- * <code>Filter</code> objects are used to filter log records that are not
- * desired. <code>Handler</code> or <code>Logger</code> objects can be
- * attached with a filter to get finer grain control over what should be logged.
- * 
+ * <p>A Filter provides a mechanism for exercising fine-grained control over
+ * what records get logged.</p> 
  */
 public interface Filter {
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
     /**
-     * Checks whether the supplied log record needs to be logged.
+     * <p>Checks the {@link LogRecord} to determine if it should be logged.</p>
      * 
-     * @param record
-     *            the log record to be checked
+     * @param record The {@link LogRecord} to be checked.
      * @return <code>true</code> if the supplied log record needs to be
      *         logged, otherwise <code>false</code>
      */
     boolean isLoggable(LogRecord record);
 }
-

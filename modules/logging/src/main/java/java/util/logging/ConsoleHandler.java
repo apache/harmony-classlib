@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-
 package java.util.logging;
 
 /**
@@ -45,24 +44,12 @@ package java.util.logging;
  */
 public class ConsoleHandler extends StreamHandler {
 
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
-
     /**
      * Constructs a <code>ConsoleHandler</code> object.
      */
     public ConsoleHandler() {
         super(System.err);
     }
-
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
 
     /**
      * Closes this handler. The <code>System.err</code> is flushed but not
@@ -75,15 +62,11 @@ public class ConsoleHandler extends StreamHandler {
     /**
      * Logs a record if necessary. A flush operation will be done.
      * 
-     * @param record
-     *            the log record to be logged
+     * @param record the log record to be logged
      */
     public void publish(LogRecord record) {
         super.publish(record);
         super.flush();
 
     }
-
 }
-
-

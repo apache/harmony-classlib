@@ -13,27 +13,17 @@
  * limitations under the License.
  */
 
-
 package java.util.logging;
 
 /**
- * <code>Handler</code> objects can report errors to the
- * <code>ErrorManager</code> instance attached to them when they encounter any
- * exceptions or errors.
  * <p>
- * Callers of a logger are unlikely to be interested in the exceptions occurred
- * during logging. Use an <code>ErrorManager</code> object to report these
- * exceptions.
+ * An error reporting facility for {@link Handler} implementations to record any
+ * error that may happen during logging. <code>Handlers</code> should report
+ * errors to an <code>ErrorManager</code>, instead of throwing exceptions,
+ * which would interfere with the log issuer's execution.
  * </p>
- * 
  */
 public class ErrorManager {
-
-    /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
-     */
 
     /**
      * The error code indicating a failure that does not fit in any of the
@@ -66,82 +56,54 @@ public class ErrorManager {
      */
     public static final int FORMAT_FAILURE = 5;
 
-    /*
-     * -------------------------------------------------------------------
-     * Instance variables
-     * -------------------------------------------------------------------
+    /**
+     * An indicator for determining if the error manager has been called at
+     * least once before.
      */
-
-    // Used to synchronize calls to the error method.
-    private Object lock;
-
-    // Indicating whether the current call is the first call.
-    private boolean firstCall;
-
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
+    private boolean called;
 
     /**
      * Constructs an instance of <code>ErrorManager</code>.
      */
     public ErrorManager() {
-        lock = new Object();
-        firstCall = true;
+        super();
     }
-
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
 
     /**
-     * Reports an error.
      * <p>
-     * This method can be called by a <code>Handler</code> object when it
-     * encounters an exception or error. The first call to this method will do
-     * the exact error-reporting as desired. Subsequent calls are ignored.
+     * Reports an error using the given message, exception and error code. This
+     * implementation will write out the message to {@link System#err} on the
+     * first call and all subsequent calls are ignored. A subclass of this class
+     * should override this method.
+     * </p>
      * 
-     * @param msg
-     *            the error message which may be <code>null</code>
-     * @param ex
-     *            the exception which may be <code>null</code>
-     * @param errorCode
-     *            the error code indicating the type of the failure
+     * @param message The error message, which may be <code>null</code>.
+     * @param exception The exception associated with the error, which may be
+     *        <code>null</code>.
+     * @param errorCode The error code that identifies the type of error; see
+     *        the constant fields on this class.
      */
-    public void error(String msg, Exception ex, int errorCode) {
-        if (firstCall) {
-            // Synchronize concurrent "first" calls
-            synchronized (lock) {
-                if (firstCall) {
-                    outputError(msg, ex, errorCode);
+    public void error(String message, Exception exception, int errorCode) {
+        synchronized (this) {
+            if (called) {
+                return;
+            }
+            synchronized (System.err) {
+                System.err.print(getClass().getName());
+                System.err.print(": Error Code - ");
+                System.err.print(errorCode);
+                if (message != null) {
+                    System.err.print(", Message - ");
+                    System.err.print(message);
+                }
+                if (exception != null) {
+                    System.err.print(", Exception - ");
+                    exception.printStackTrace(System.err);
+                } else {
+                    System.err.println();
                 }
             }
+            called = true;
         }
     }
-
-    //if it is the first time to call error, output it
-    private void outputError(String msg, Exception ex, int errorCode) {
-        StringBuffer sb = new StringBuffer();
-        sb.append(this.getClass().getName());
-        sb.append(": the error code is "); //$NON-NLS-1$
-        sb.append(errorCode);
-        sb.append("."); //$NON-NLS-1$
-        sb.append(LogManager.getSystemLineSeparator());
-        if (null != msg) {
-            sb.append("The error message is: "); //$NON-NLS-1$
-            sb.append(msg);
-            sb.append(LogManager.getSystemLineSeparator());
-        }
-        if (null != ex) {
-            sb.append(ex.toString());
-        }
-        System.err.println(sb);
-        firstCall = false;
-    }
-
 }
-
