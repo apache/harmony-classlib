@@ -31,6 +31,8 @@ import java.io.ObjectStreamException;
 import java.io.ObjectStreamField;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.io.SerializablePermission;
+import java.security.Permission;
 import java.util.Arrays;
 
 public class ObjectOutputStreamTest extends junit.framework.TestCase implements
@@ -507,7 +509,22 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 	 * @tests java.io.ObjectOutputStream#ObjectOutputStream(java.io.OutputStream)
 	 */
 	public void test_ConstructorLjava_io_OutputStream_subtest0() throws IOException {
-		System.setSecurityManager(new SecurityManager());
+
+		// custom security manager
+		SecurityManager sm = new SecurityManager() {
+
+			final SerializablePermission forbidenPermission =
+				new SerializablePermission("enableSubclassImplementation");
+
+			public void checkPermission(Permission perm) {
+				if (forbidenPermission.equals(perm)) {
+					throw new SecurityException();
+				}
+			}
+		};
+
+		SecurityManager oldSm = System.getSecurityManager();
+		System.setSecurityManager(sm);
 		try {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			// should not cause SecurityException
@@ -551,7 +568,7 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 			} catch (SecurityException e) {
 			}
 		} finally {
-			System.setSecurityManager(null);
+			System.setSecurityManager(oldSm);
 		}
 	}
 
