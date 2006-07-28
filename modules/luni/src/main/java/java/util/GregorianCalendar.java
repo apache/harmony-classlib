@@ -586,7 +586,7 @@ public class GregorianCalendar extends Calendar {
 		}
 
 		long timeVal;
-		int hour = 0;
+		long hour = 0;
 		if (isSet[HOUR_OF_DAY] && lastTimeFieldSet != HOUR) {
             hour = fields[HOUR_OF_DAY];
         } else if (isSet[HOUR]) {
@@ -595,10 +595,10 @@ public class GregorianCalendar extends Calendar {
 		timeVal = hour * 3600000;
 
 		if (isSet[MINUTE]) {
-            timeVal += fields[MINUTE] * 60000;
+            timeVal += ((long)fields[MINUTE]) * 60000;
         }
 		if (isSet[SECOND]) {
-            timeVal += fields[SECOND] * 1000;
+            timeVal += ((long)fields[SECOND]) * 1000;
         }
 		if (isSet[MILLISECOND]) {
             timeVal += fields[MILLISECOND];

@@ -559,6 +559,15 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
         gCalend.set(Calendar.MILLISECOND, 0);//changes nothing
         assertEquals("After", dayOfMonth, gCalend.get(Calendar.DAY_OF_MONTH));
     }
+    
+    /**
+     * @tests GregorianCalendar#GregorianCalendar() 
+     */
+    public void testConstructorMaxvalue(){
+        Calendar cal = new GregorianCalendar();
+        cal.set(1900, 0, 0, 0, Integer.MAX_VALUE);
+        assertTrue(cal.getTime().getTime()>0); 
+    }
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
