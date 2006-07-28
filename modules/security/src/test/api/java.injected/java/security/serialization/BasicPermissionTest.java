@@ -21,30 +21,16 @@
 
 package java.security.serialization;
 
-import java.security.BasicPermission;
-
+import org.apache.harmony.security.tests.support.MyBasicPermission;
 import org.apache.harmony.testframework.serialization.SerializationTest;
-
 
 /**
  * Serialization tests for <code>BasicPermission</code>
- * 
  */
 
 public class BasicPermissionTest extends SerializationTest {
 
-    /*
-     * @see com.intel.drl.test.SerializationTest#getData()
-     */
     protected Object[] getData() {
-        return new Object[] { new RealBasicPermission("kjhgj"),
-                new RealBasicPermission("1.4.*"), new RealBasicPermission("*") };
-    }
-}
-
-final class RealBasicPermission extends BasicPermission {
-
-    public RealBasicPermission(String name) {
-        super(name);
+        return new Object[] { new MyBasicPermission("kjhgj") };
     }
 }
