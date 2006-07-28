@@ -145,9 +145,6 @@ public class NumberFormatTest extends junit.framework.TestCase {
         assertEquals(
                 "Test7: NumberFormat.getIntegerInstance(new Locale(\"ar\", \"AE\")).toPattern() returned wrong pattern",
                 "#,##0;#,##0-", format.toPattern());
-        // The following "assert" fails on RI. It should be a bug of RI.
-        // Reason: RI does not change European digits (U+0030...U+0039)
-        // to Arabic-Indic digits (U+0660...U+0669).
         assertEquals(
                 "Test8: NumberFormat.getIntegerInstance(new Locale(\"ar\", \"AE\")).format(-35.76) returned wrong value",
                 "36-", format.format(-35.76));
