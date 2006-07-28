@@ -19,22 +19,22 @@
 * @version $Revision$
 */
 
-package java.security.serialization;
+package org.apache.harmony.security.tests.java.security.serialization;
 
-import org.apache.harmony.security.tests.support.MyPermission;
+import org.apache.harmony.security.tests.support.MyPermissionCollection;
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
- * Serialization tests for <code>Permission</code>
+ * Serialization tests for <code>PermissionCollection</code>
  */
 
-public class PermissionTest extends SerializationTest {
+public class PermissionCollectionTest extends SerializationTest {
 
     /**
      * @see com.intel.drl.test.SerializationTest#getData()
      */
     protected Object[] getData() {
-        return new Object[] { new MyPermission(null),
-                new MyPermission("IYF&*%^sd 43") };
+        return new Object[] { new MyPermissionCollection(false),
+                new MyPermissionCollection(true) };
     }
 }

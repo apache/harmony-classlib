@@ -19,33 +19,18 @@
 * @version $Revision$
 */
 
-package java.security.serialization;
-
-import java.security.PermissionCollection;
+package org.apache.harmony.security.tests.java.security.serialization;
 
 import org.apache.harmony.security.tests.support.MyBasicPermission;
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
- * Serialization tests for <code>BasicPermissionCollection</code>
+ * Serialization tests for <code>BasicPermission</code>
  */
 
-public class BasicPermissionCollectionTest extends SerializationTest {
+public class BasicPermissionTest extends SerializationTest {
 
     protected Object[] getData() {
-
-        PermissionCollection c1 = new MyBasicPermission("234")
-                .newPermissionCollection();
-
-        PermissionCollection c2 = new MyBasicPermission("1.4.kjhgj.*")
-                .newPermissionCollection();
-        c2.add(new MyBasicPermission("1.4.kjhgj.sdlvjb3o4i578"));
-        c2.add(new MyBasicPermission("1.4"));
-
-        PermissionCollection c3 = new MyBasicPermission("*")
-                .newPermissionCollection();
-        c3.add(new MyBasicPermission("1.4.kjhgj.*"));
-
-        return new Object[] { c1, c2, c3 };
+        return new Object[] { new MyBasicPermission("kjhgj") };
     }
 }
