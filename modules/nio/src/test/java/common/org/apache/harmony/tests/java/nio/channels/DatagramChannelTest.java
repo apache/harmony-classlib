@@ -1427,8 +1427,18 @@ public class DatagramChannelTest extends TestCase {
             String expectedString) throws IOException {
         try {
             ByteBuffer buf = ByteBuffer.wrap(new byte[bufSize]);
-            InetSocketAddress returnAddr = (InetSocketAddress) this.channel1
-                    .receive(buf);
+            InetSocketAddress returnAddr = null;
+            long startTime = System.currentTimeMillis();
+            do {
+                returnAddr = (InetSocketAddress) this.channel1.receive(buf);
+                // continue loop when channel1 is non-blocking and no data was
+                // received.
+                if (channel1.isBlocking() || null != returnAddr) {
+                    break;
+                }
+                // avoid dead loop
+                assertTimeout(startTime, 10000);
+            } while (true);
             int length = returnAddr.getAddress().getAddress().length;
             for (int i = 0; i < length; i++) {
                 assertEquals(returnAddr.getAddress().getAddress()[i],
@@ -1440,6 +1450,17 @@ public class DatagramChannelTest extends TestCase {
                     expectedString);
         } finally {
             this.channel1.close();
+        }
+    }
+    
+    /*
+     * Fails if the difference between current time and start time is greater
+     * than timeout.
+     */
+    private void assertTimeout(long startTime, long timeout) {
+        long currentTime = System.currentTimeMillis();
+        if ((currentTime - startTime) > timeout) {
+            fail("Timeout");
         }
     }
 
