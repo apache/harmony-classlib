@@ -16,13 +16,14 @@
 
 package org.apache.harmony.security.tests.support;
 
-import java.security.BasicPermission;
 import java.security.Permission;
 import java.security.PermissionCollection;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
 public class MyPermissionCollection extends PermissionCollection {
+
+    private static final long serialVersionUID = -8462474212761656528L;
 
      public MyPermissionCollection(boolean readOnly) {
          if (readOnly) {

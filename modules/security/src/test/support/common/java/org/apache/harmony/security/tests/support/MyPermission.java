@@ -20,6 +20,8 @@ import java.security.Permission;
 
 public final class MyPermission extends Permission {
 
+    private static final long serialVersionUID = 4208595188308189251L;
+
     public MyPermission(String name) {
         super(name);
     }
