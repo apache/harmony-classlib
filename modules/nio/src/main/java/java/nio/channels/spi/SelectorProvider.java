@@ -110,7 +110,6 @@ public abstract class SelectorProvider extends Object {
      */
     static SelectorProvider loadProviderByJar() {
         Enumeration enumeration = null;
-        SelectorProvider tempProvider = null;
 
         ClassLoader classLoader = AccessController.doPrivileged(
                 new PrivilegedAction<ClassLoader>() {
@@ -121,7 +120,7 @@ public abstract class SelectorProvider extends Object {
         try {
             enumeration = classLoader.getResources(PROVIDER_IN_JAR_RESOURCE);
         } catch (IOException e) {
-            throw new Error();
+            throw new Error(e);
         }
         if (null == enumeration) {
             return null;
@@ -139,17 +138,14 @@ public abstract class SelectorProvider extends Object {
             try {
                 // only the first class is loaded ,as spec says, not the same as
                 // we do before.
-                if ((className = br.readLine()) != null) {
+                while ((className = br.readLine()) != null) {
                     className = className.trim();
                     int siteComment = className.indexOf(SYMBOL_COMMENT);
                     className = (-1 == siteComment) ? className : className
                             .substring(0, siteComment);
                     if (0 < className.length()) {
-                        tempProvider = (SelectorProvider) classLoader
-                                .loadClass(className).newInstance();
-                        if (null != tempProvider) {
-                            return tempProvider;
-                        }
+                        return (SelectorProvider) classLoader.loadClass(
+                                className).newInstance();                  
                     }
                 }
             } catch (Exception e) {
