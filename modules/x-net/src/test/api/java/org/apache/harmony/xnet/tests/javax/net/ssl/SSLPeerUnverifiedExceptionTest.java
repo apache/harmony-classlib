@@ -14,34 +14,29 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
+package org.apache.harmony.xnet.tests.javax.net.ssl;
 
-package javax.net.ssl;
-
-import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLPeerUnverifiedException;
 
 import junit.framework.TestCase;
 
 
 /**
- * Tests for <code>SSLHandshakeException</code> class constructors and
+ * Tests for <code>SSLPeerUnverifiedException</code> class constructors and
  * methods.
  * 
  */
-public class SSLHandshakeExceptionTest extends TestCase {
+public class SSLPeerUnverifiedExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
 
     /**
-     * Constructor for SSLHandshakeExceptionTests.
+     * Constructor for SSLPeerUnverifiedExceptionTests.
      * 
      * @param arg0
      */
-    public SSLHandshakeExceptionTest(String arg0) {
+    public SSLPeerUnverifiedExceptionTest(String arg0) {
         super(arg0);
     }
 
@@ -53,19 +48,19 @@ public class SSLHandshakeExceptionTest extends TestCase {
     static Throwable tCause = new Throwable("Throwable for exception");
 
     static String createErr(Exception tE, Exception eE) {
-        return "SSLHandshakeException: ".concat(tE.toString()).concat(
+        return "SSLPeerUnverifiedException: ".concat(tE.toString()).concat(
                 " is not equal to caught exception: ").concat(eE.toString());
     }
 
     /**
-     * Test for <code>SSLHandshakeException(String)</code> constructor
-     * Assertion: constructs SSLHandshakeException with detail message msg.
+     * Test for <code>SSLPeerUnverifiedException(String)</code> constructor
+     * Assertion: constructs SSLPeerUnverifiedException with detail message msg.
      * Parameter <code>msg</code> is not null.
      */
-    public void testSSLHandshakeException01() {
-        SSLHandshakeException tE;
+    public void testSSLPeerUnverifiedException01() {
+        SSLPeerUnverifiedException tE;
         for (int i = 0; i < msgs.length; i++) {
-            tE = new SSLHandshakeException(msgs[i]);
+            tE = new SSLPeerUnverifiedException(msgs[i]);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -78,13 +73,13 @@ public class SSLHandshakeExceptionTest extends TestCase {
     }
 
     /**
-     * Test for <code>SSLHandshakeException(String)</code> constructor
-     * Assertion: constructs SSLHandshakeException when <code>msg</code> is
-     * null
+     * Test for <code>SSLPeerUnverifiedException(String)</code> constructor
+     * Assertion: constructs SSLPeerUnverifiedException when <code>msg</code>
+     * is null
      */
-    public void testSSLHandshakeException02() {
+    public void testSSLPeerUnverifiedException02() {
         String msg = null;
-        SSLHandshakeException tE = new SSLHandshakeException(msg);
+        SSLPeerUnverifiedException tE = new SSLPeerUnverifiedException(msg);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {

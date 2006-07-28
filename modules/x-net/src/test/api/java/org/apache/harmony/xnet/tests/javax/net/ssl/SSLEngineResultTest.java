@@ -14,33 +14,18 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
+package org.apache.harmony.xnet.tests.javax.net.ssl;
 
-package javax.net.ssl;
+import javax.net.ssl.SSLEngineResult;
 
 import junit.framework.TestCase;
 
 /**
- * Template tests for SSLEngineResult class
- * FIXME: uncommente these tests  
+ * Tests for SSLEngineResult class
  * 
  */
 public class SSLEngineResultTest extends TestCase {
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(SSLEngineResultTest.class);
-    }
-    
-    /**
-     * Constructor for SSLEngineResult.
-     * @param arg0
-     */
-    public SSLEngineResultTest(String arg0) {
-        super(arg0);
-    }
     /**
      * Test for <code>SSLEngineResult(SSLEngineResult.Status status,
      *              SSLEngineResult.HandshakeStatus handshakeStatus,
@@ -57,10 +42,9 @@ public class SSLEngineResultTest extends TestCase {
      * or bytesProduced is negative or when status or handshakeStatus
      * is null  
      *
-     * FIXME: this test should be added for 1.5 release
      */
     public void testSSLEngineResultConstructor() {
-/*    
+    
         int[] neg = { -1, -10, -1000, Integer.MIN_VALUE,
                 (Integer.MIN_VALUE + 1) };
         int[] pos = { 0, 1, 1000, Integer.MAX_VALUE, (Integer.MAX_VALUE - 1) };
@@ -118,13 +102,12 @@ public class SSLEngineResultTest extends TestCase {
                 }
             }
         }
-*/        
+        
     }
     /**
      * Test for <code>SSLEngineResult.Status.values()</code> method
-     * FIXME: this test should be added for 1.5 release
      */
-/*
+
     public void testStatus01() {
         SSLEngineResult.Status [] enS = SSLEngineResult.Status.values();
         assertTrue("Incorrect array of Status objects", enS.length > 0);
@@ -137,15 +120,14 @@ public class SSLEngineResultTest extends TestCase {
         assertTrue("BUFFER_UNDERFLOW object does not define", findEl(enS,
                 SSLEngineResult.Status.BUFFER_UNDERFLOW));
     }
-*/    
+    
     /**
      * Test for <code>SSLEngineResult.Status.valueOf(String name)</code> method
      * Assertion: 
      * throws IllegalArgumentException when there is no constan with specified
      * name 
-     * FIXME: this test should be added for 1.5 release
      */
-/*
+
     public void testStatus02() {
         String [] invalid = {"", "OK1", "BUFFER_overflow", "BUFFER_UND",
                 "CLOSED_CLOSED", "Bad string for verification valueOf method"
@@ -166,12 +148,11 @@ public class SSLEngineResultTest extends TestCase {
             }
         }                 
     }
-*/    
+    
     /**
      * Test for <code>SSLEngineResult.HandshakeStatus.values()</code> method
-     * FIXME: this test should be added for 1.5 release
      */
-/*
+
     public void testHandshakeStatus01() {
         SSLEngineResult.HandshakeStatus [] enHS = SSLEngineResult.HandshakeStatus
                 .values();
@@ -188,15 +169,14 @@ public class SSLEngineResultTest extends TestCase {
         assertTrue("NOT_HANDSHAKING object does not define", findEl(enHS,
                 SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING));
     }
-*/    
+    
     /**
      * Test for <code>SSLEngineResult.HandshakeStatus.valueOf(String name)</code> method
      * Assertion: 
      * throws IllegalArgumentException when there is no constan with specified
      * name 
-     * FIXME: this test should be added for 1.5 release
      */
-/*
+
     public void testHandshakeStatus02() {
         String [] invalid = {"", "FINISHED1", "NEED_task", "NEED_UN",
                 "NEED_WRAP_WRAP", "not_HANDSHAKING", "Bad string for verification valueOf method"
@@ -230,5 +210,5 @@ public class SSLEngineResultTest extends TestCase {
         }
         return ok;
     }
-*/
+
 }

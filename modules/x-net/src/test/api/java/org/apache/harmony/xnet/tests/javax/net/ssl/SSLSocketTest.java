@@ -14,16 +14,16 @@
  *  limitations under the License.
  */
 
-/**
- * @author Boris V. Kuznetsov
- * @version $Revision$
- */
-package javax.net.ssl;
+package org.apache.harmony.xnet.tests.javax.net.ssl;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
+
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.HandshakeCompletedListener;
 
 import junit.framework.TestCase;
 

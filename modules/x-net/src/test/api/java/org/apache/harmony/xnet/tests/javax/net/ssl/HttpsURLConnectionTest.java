@@ -14,16 +14,17 @@
  *  limitations under the License.
  */
 
-/**
-* @author Boris V. Kuznetsov
-* @version $Revision$
-*/
 
-package javax.net.ssl;
+package org.apache.harmony.xnet.tests.javax.net.ssl;
 
 import java.io.IOException;
-import java.security.cert.Certificate;
 import java.net.URL;
+import java.security.cert.Certificate;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSocketFactory;
 
 import junit.framework.TestCase;
 
@@ -34,8 +35,9 @@ import junit.framework.TestCase;
  */
 public class HttpsURLConnectionTest extends TestCase {
 
-    public final void testGetPeerPrincipal() {
-        HttpsURLConnection con = new MyHttpsURLConnection(null);
+    public final void testGetPeerPrincipal() throws Exception {
+        HttpsURLConnection con = new MyHttpsURLConnection(new URL(
+                "http://foo.com"));
         try {
             con.getPeerPrincipal();
             fail("No expected SSLPeerUnverifiedException");
@@ -47,27 +49,6 @@ public class HttpsURLConnectionTest extends TestCase {
         HttpsURLConnection con = new MyHttpsURLConnection(null);
         if (con.getLocalPrincipal() != null) {
             fail("Non null result");
-        }
-    }
-
-    public final void testGetDefaultHostnameVerifier() {
-        HostnameVerifier ver = HttpsURLConnection.getDefaultHostnameVerifier();
-        if (!(ver instanceof DefaultHostnameVerifier)) {
-            fail("Incorrect instance");
-        }
-        if (ver.verify("localhost", null)) {
-            fail("connection should not be permitted");
-        }
-    }
-
-    public final void testGetHostnameVerifier() {
-        HttpsURLConnection con = new MyHttpsURLConnection(null);
-        HostnameVerifier ver = con.getHostnameVerifier();
-        if (!(ver instanceof DefaultHostnameVerifier)) {
-            fail("Incorrect instance");
-        }
-        if (ver.verify("localhost", null)) {
-            fail("connection should not be permitted");
         }
     }
 

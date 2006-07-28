@@ -14,16 +14,12 @@
  *  limitations under the License.
  */
 
-/**
- * @author Boris V. Kuznetsov
- * @version $Revision$
- */
-package javax.net.ssl;
+package org.apache.harmony.xnet.tests.javax.net.ssl;
 
 import java.security.cert.CertPathParameters;
+import javax.net.ssl.CertPathTrustManagerParameters;
 
 import junit.framework.TestCase;
-
 
 /**
  * Tests for <code>CertPathTrustManagerParameters</code> class constructors

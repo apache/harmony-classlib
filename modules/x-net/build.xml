@@ -76,84 +76,74 @@
     </target>
 
     <target name="compile.tests">
-        <echo message="Compiling X-NET tests" />
 
-        <mkdir dir="${hy.x-net.bin.test}" />
-
-        <javac 	destdir="${hy.x-net.bin.test}"
-            source="${hy.javac.source}"
-            target="${hy.javac.target}"
-            debug="${hy.javac.debug}">
-
+        <compile-tests description="test support files" destdir="../../build/tests">
+            <javac-elements>
+                <src>
             <!-- FIXME: X-NET tests should not reach into security module code -->
-            <src>
-                <pathelement location="${hy.x-net.src.test.java}"/>
-                <pathelement location="${hy.x-net}/../security/src/test/support/common/java"/>
-            </src>
+                    <pathelement location="${hy.x-net}/../security/src/test/support/common/java"/>
+                </src>
 
-            <include name="javax/net/**/*Test*.java" />
-            <include name="org/apache/harmony/security/test/**/*" />
+                <include name="**/*.java" />
+            </javac-elements>
+        </compile-tests>
+        
+        <compile-tests description="api tests" destdir="${hy.x-net.bin.test}/api">
+            <javac-elements>
+                <src path="${hy.x-net.src.test}/api/java"/>
+                <include name="**/*Test.java" />
+            </javac-elements>
+        </compile-tests>
 
-            <bootclasspath>
-                <fileset dir="${hy.jdk}/jre/lib/boot">
-                    <include name="**/*.jar" />
-                </fileset>
-            </bootclasspath>
-            <classpath location="${hy.hdk}/build/test/support.jar" />
-        </javac>
+        <compile-tests description="impl injected tests" destdir="${hy.x-net.bin.test}/impl.injected">
+            <javac-elements>
+                <src path="${hy.x-net.src.test}/impl/java.injected"/>
+                <include name="**/*Test.java" />
+            </javac-elements>
+        </compile-tests>
     </target>
 
-    <target name="run.tests">
+    <target name="run.tests" depends="run.tests.api, run.tests.impl" />
 
-        <mkdir dir="${hy.tests.reports}" />
+    <target name="run.tests.api">
 
-        <property name="test.jre.home" value="${hy.jdk}/jre" />
+        <run-tests description="api tests">
+            <junit-elements>
 
-        <junit fork="yes"
-            forkmode="once"
-            printsummary="withOutAndErr"
-            errorproperty="test.errors"
-            failureproperty="test.failures"
-            showoutput="on"
-            dir="${hy.x-net.bin.test}"
-            jvm="${test.jre.home}/bin/java">
+                <classpath>
+                    <pathelement path="${hy.x-net.bin.test}/api"/>
+                    <pathelement path="${hy.hdk}/build/test/support.jar" />
+                    <pathelement path="../../build/tests" />
+                </classpath>
 
-            <jvmarg value="-showversion"/>
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
+                    <fileset dir="${hy.x-net.src.test}/api/java">
+                        <include name="**/*Test.java"/>
+                    </fileset>
+                </batchtest>
 
-            <!-- Required for running the serialization unit tests -->
-            <!-- Note: will be deleted after improving             -->
-            <!-- SerializationTest support class: all resource     -->
-            <!-- files will be placed on the classpath             -->
-            <jvmarg value="-DRESOURCE_DIR=${hy.x-net.src.test.java}"/>
+            </junit-elements>
+        </run-tests>
 
-            <!--  run tests via bootclasspath  --> 
-            <jvmarg value="-Xbootclasspath/a:${hy.x-net.bin.test}${path.separator}../../../../${junit.jar}${path.separator}../../../../build/tests${path.separator}${hy.hdk}/build/test/support.jar" /> 
+        <antcall target="touch-failures-file" />
+        <antcall target="touch-errors-file" />
+    </target>
 
-    		<env key="JAVA_HOME" value="${test.jre.home}"/>
+    <target name="run.tests.impl" unless="test.noimpl">
+        <run-tests description="impl injected tests">
+            <junit-elements>
+                <!-- to pick up junit.jar               -->
+                <jvmarg value="-Xbootclasspath/a:${hy.x-net.bin.test}/impl.injected${path.separator}../../../../${junit.jar}${path.separator}../../../../build/tests"/>
 
-            <!--classpath-->
-                <!--pathelement path="${hy.x-net.bin.test}"/-->
-            <!--/classpath-->
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
+                    <fileset dir="${hy.x-net.src.test}/impl/java.injected">
+                        <include name="**/*Test.java"/>
+                    </fileset>
+                </batchtest>
 
-            <formatter type="xml" />
+            </junit-elements>
+        </run-tests>
 
-            <test name="${test.case}" todir="${hy.tests.reports}"
-                 if="test.case" />
-
-            <batchtest todir="${hy.tests.reports}" haltonfailure="no"
-                unless="test.case">
-
-                <fileset dir="${hy.x-net.src.test.java}">
-                    <include name="**/*Test.java"/>
-
-                    <!-- Harmony exclude list -->
-                    <!-- FIXME: The following tests require JSSE provider -->
-                    <exclude name="javax/net/ssl/serialization/HandshakeCompletedEventTest.java"/>
-                    <exclude name="javax/net/ssl/serialization/SSLSessionBindingEventTest.java"/>
-
-                </fileset>
-            </batchtest>
-        </junit>
         <antcall target="touch-failures-file" />
         <antcall target="touch-errors-file" />
     </target>
@@ -167,5 +157,69 @@
         <echo file="${hy.tests.reports}/test.errors"
             append="true">x-net${line.separator}</echo>
     </target>
+    
+    <macrodef name="compile-tests">
+        <attribute name="description" default="" />
+        <attribute name="destdir"  />
+        <element name="javac-elements" />
+        <sequential>
+            <echo message="Compiling X-NET @{description}" />
+            
+            <mkdir dir="@{destdir}" />
+            
+            <javac destdir="@{destdir}"
+                   source="${hy.javac.source}"
+                   target="${hy.javac.target}"
+                   debug="${hy.javac.debug}">
+
+                <javac-elements />
+
+                <bootclasspath>
+                    <fileset dir="${hy.jdk}/jre/lib/boot">
+                        <include name="**/*.jar" />
+                    </fileset>
+                </bootclasspath>
+                <classpath location="../../build/tests" />
+                <classpath location="${hy.hdk}/build/test/support.jar" />
+            </javac>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="run-tests">
+        <attribute name="description" default="" />
+        <element name="junit-elements" />
+        <sequential>
+            <echo message="Running X-NET @{description}" />
+
+            <mkdir dir="${hy.tests.reports}" />
+
+            <property name="test.jre.home" value="${hy.jdk}/jre" />
+
+            <junit fork="yes"
+                   forkmode="once"
+                   printsummary="withOutAndErr"
+                   errorproperty="test.errors"
+                   failureproperty="test.failures"
+                   showoutput="on"
+                   dir="${hy.x-net.bin.test}"
+                   jvm="${test.jre.home}/bin/java">
+
+                <jvmarg value="-showversion"/>
+
+                <env key="JAVA_HOME" value="${test.jre.home}"/>
+                <junit-elements />
+
+                <classpath>
+                    <pathelement path="${hy.x-net.src.test.resources}"/>
+                    <pathelement path="../../build/tests" />
+                </classpath>
+
+                <formatter type="xml" />
+
+                <test name="${test.case}" todir="${hy.tests.reports}" if="test.c
+ase" />
+            </junit>
+        </sequential>
+    </macrodef>
 
 </project>

@@ -14,17 +14,14 @@
  *  limitations under the License.
  */
 
-/**
-* @author Boris V. Kuznetsov
-* @version $Revision$
-*/
+package org.apache.harmony.xnet.tests.javax.net.ssl;
 
-package javax.net.ssl;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.net.ssl.KeyStoreBuilderParameters;
 
 import junit.framework.TestCase;
 
@@ -40,11 +37,8 @@ public class KeyStoreBuilderParametersTest extends TestCase {
      * Class under test for void KeyStoreBuilderParameters(KeyStore.Builder)
      */
     public final void testKeyStoreBuilderParametersBuilder() {
-        try {
-            new KeyStoreBuilderParameters((KeyStore.Builder) null);
-            fail("No expected NullPointerException");
-        } catch (NullPointerException e) {
-        }
+        // should not throw NullPointerException
+        new KeyStoreBuilderParameters((KeyStore.Builder) null);
     }
 
     /*

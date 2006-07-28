@@ -14,12 +14,7 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
-package javax.net.ssl;
+package org.apache.harmony.xnet.tests.javax.net.ssl;
 
 import javax.net.ssl.SSLException;
 

@@ -14,11 +14,9 @@
  *  limitations under the License.
  */
 
-/**
- * @author Boris V. Kuznetsov
- * @version $Revision$
- */
-package javax.net.ssl;
+package org.apache.harmony.xnet.tests.javax.net.ssl;
+
+import javax.net.ssl.SSLPermission;
 
 import junit.framework.TestCase;
 

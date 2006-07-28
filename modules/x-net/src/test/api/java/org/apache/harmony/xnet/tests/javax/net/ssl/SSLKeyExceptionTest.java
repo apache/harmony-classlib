@@ -14,33 +14,28 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
+package org.apache.harmony.xnet.tests.javax.net.ssl;
 
-package javax.net.ssl;
-
-import javax.net.ssl.SSLProtocolException;
+import javax.net.ssl.SSLKeyException;
 
 import junit.framework.TestCase;
 
 
 /**
- * Tests for <code>SSLProtocolException</code> class constructors and methods.
+ * Tests for <code>SSLKeyException</code> class constructors and methods.
  * 
  */
-public class SSLProtocolExceptionTest extends TestCase {
+public class SSLKeyExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
 
     /**
-     * Constructor for SSLProtocolExceptionTests.
+     * Constructor for SSLKeyExceptionTests.
      * 
      * @param arg0
      */
-    public SSLProtocolExceptionTest(String arg0) {
+    public SSLKeyExceptionTest(String arg0) {
         super(arg0);
     }
 
@@ -52,19 +47,19 @@ public class SSLProtocolExceptionTest extends TestCase {
     static Throwable tCause = new Throwable("Throwable for exception");
 
     static String createErr(Exception tE, Exception eE) {
-        return "SSLProtocolException: ".concat(tE.toString()).concat(
+        return "SSLKeyException ".concat(tE.toString()).concat(
                 " is not equal to caught exception: ").concat(eE.toString());
     }
 
     /**
-     * Test for <code>SSLProtocolException(String)</code> constructor
-     * Assertion: constructs SSLProtocolException with detail message msg.
-     * Parameter <code>msg</code> is not null.
+     * Test for <code>SSLKeyException(String)</code> constructor Assertion:
+     * constructs SSLKeyException with detail message msg. Parameter
+     * <code>msg</code> is not null.
      */
-    public void testSSLProtocolException01() {
-        SSLProtocolException tE;
+    public void testSSLKeyException01() {
+        SSLKeyException tE;
         for (int i = 0; i < msgs.length; i++) {
-            tE = new SSLProtocolException(msgs[i]);
+            tE = new SSLKeyException(msgs[i]);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -77,13 +72,12 @@ public class SSLProtocolExceptionTest extends TestCase {
     }
 
     /**
-     * Test for <code>SSLProtocolException(String)</code> constructor
-     * Assertion: constructs SSLProtocolException when <code>msg</code> is
-     * null
+     * Test for <code>SSLKeyException(String)</code> constructor Assertion:
+     * constructs SSLKeyException when <code>msg</code> is null
      */
-    public void testSSLProtocolException02() {
+    public void testSSLKeyException02() {
         String msg = null;
-        SSLProtocolException tE = new SSLProtocolException(msg);
+        SSLKeyException tE = new SSLKeyException(msg);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
         try {

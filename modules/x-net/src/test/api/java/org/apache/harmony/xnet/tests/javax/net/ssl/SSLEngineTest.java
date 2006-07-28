@@ -14,15 +14,16 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
-package javax.net.ssl;
+package org.apache.harmony.xnet.tests.javax.net.ssl;
 
 import java.nio.ByteBuffer;
 import java.nio.ReadOnlyBufferException;
+
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLEngineResult.HandshakeStatus;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLEngineResult;
 
 import junit.framework.TestCase;
 
@@ -86,7 +87,7 @@ public class SSLEngineTest extends TestCase {
      * throws IllegalArgumentException when src or dst is null 
      * throws ReadOnlyBufferException when dst is ReadOnly byte buffer
      * 
-     * TODO:
+     * Check that implementation behavior follows RI:
      * jdk 1.5 does not throw IllegalArgumentException when parameters are null
      * and does not throw ReadOnlyBufferException if dst is read only byte buffer
      */
@@ -96,37 +97,27 @@ public class SSLEngineTest extends TestCase {
         ByteBuffer bbN = null;
         ByteBuffer bb = ByteBuffer.allocate(10);
         SSLEngine e = new mySSLEngine(host, port);
-        try {
-            e.wrap(bbN, bb);
-            fail("IllegalArgumentException must be thrown for null src byte buffer");
-        } catch (IllegalArgumentException ex) {
-        }
-        try {
-            e.wrap(bb, bbN);
-            fail("IllegalArgumentException must be thrown for null dst byte buffer");
-        } catch (IllegalArgumentException ex) {
-        }
+
+        e.wrap(bbN, bb);
+        e.wrap(bb, bbN);
+
         ByteBuffer roBb = bb.asReadOnlyBuffer();
         assertTrue("Not read only byte buffer", roBb.isReadOnly());
-        try {
-            e.wrap(bb, roBb);
-            fail("ReadOnlyBufferException must be thrown for read only dst");
-        } catch (ReadOnlyBufferException ex) {
-        }
+        e.wrap(bb, roBb);
+
     }
 
     /**
      * Test for <code>wrap(ByteBuffer[] srcs, ByteBuffer dst)</code> method
      * 
-     * Assertions: 
-     * throws IllegalArgumentException when srcs or dst is null or
-     * srcs contains null byte buffer;
-     * throws ReadOnlyBufferException when dst is read only byte buffer
+     * Assertions: throws IllegalArgumentException when srcs or dst is null or
+     * srcs contains null byte buffer; throws ReadOnlyBufferException when dst
+     * is read only byte buffer
      * 
-     * TODO: 
+     * Check that implementation behavior follows RI:
      * jdk 1.5 does not throw IllegalArgumentException when dst is null or
-     * if srcs contains null elements
-     * It does not throw  ReadOnlyBufferException for read only dst
+     * if srcs contains null elements It does not throw ReadOnlyBufferException
+     * for read only dst
      */
     public void testWrap02() throws SSLException {
         String host = "new host";
@@ -142,27 +133,17 @@ public class SSLEngineTest extends TestCase {
             fail("IllegalArgumentException must be thrown for null srcs byte buffer array");
         } catch (IllegalArgumentException ex) {
         }
-        try {
-            e.wrap(bbA, bb);
-            fail("IllegalArgumentException must be thrown for srcs byte buffer array"
-                    + " which contains null elements");
-        } catch (IllegalArgumentException ex) {
-        }
 
-        try {
-            e.wrap(bbA, bbN);
-            fail("IllegalArgumentException must be thrown for null dst byte buffer");
-        } catch (IllegalArgumentException ex) {
-        }
+        e.wrap(bbA, bb);
+        e.wrap(bbA, bbN);
+
         ByteBuffer roBb = bb.asReadOnlyBuffer();
         bbA[0] = ByteBuffer.allocate(100);
         bbA[2] = ByteBuffer.allocate(20);
         assertTrue("Not read only byte buffer", roBb.isReadOnly());
-        try {
-            e.wrap(bbA, roBb);
-            fail("ReadOnlyBufferException must be thrown for read only dst");
-         } catch (ReadOnlyBufferException ex) {
-         }
+
+        e.wrap(bbA, roBb);
+
     }
 
     /**
@@ -239,7 +220,7 @@ public class SSLEngineTest extends TestCase {
      * throws IllegalArgumentException when src or dst is null
      * throws ReadOnlyBufferException when dst is read only byte buffer
      * 
-     * TODO:
+     * Check that implementation behavior follows RI:
      * jdk 1.5 does not throw IllegalArgumentException when parameters are null
      * and does not throw ReadOnlyBufferException if dst is read only byte buffer
      */
@@ -249,37 +230,27 @@ public class SSLEngineTest extends TestCase {
         ByteBuffer bbN = null;
         ByteBuffer bb = ByteBuffer.allocate(10);
         SSLEngine e = new mySSLEngine(host, port);
-        try {
-            e.unwrap(bbN, bb);
-            fail("IllegalArgumentException must be thrown for null src byte buffer");
-        } catch (IllegalArgumentException ex) {
-        }
-        try {
-            e.unwrap(bb, bbN);
-            fail("IllegalArgumentException must be thrown for null dst byte buffer");
-        } catch (IllegalArgumentException ex) {
-        }
+
+        e.unwrap(bbN, bb);
+        e.unwrap(bb, bbN);
+
         ByteBuffer roBb = bb.asReadOnlyBuffer();
         assertTrue("Not read only byte buffer", roBb.isReadOnly());
-        try {
-            e.unwrap(bb, roBb);
-            fail("ReadOnlyBufferException must be thrown for read only dst");
-        } catch (ReadOnlyBufferException ex) {
-        }
+
+        e.unwrap(bb, roBb);
     }
 
     /**
      * Test for <code>unwrap(ByteBuffer src, ByteBuffer[] dsts)</code> method
      * 
-     * Assertions: 
-     * throws IllegalArgumentException if parameters are null or when dsts 
-     * contains null elements
-     * throws ReadOnlyBufferException when dsts contains read only elements
+     * Assertions: throws IllegalArgumentException if parameters are null or
+     * when dsts contains null elements throws ReadOnlyBufferException when dsts
+     * contains read only elements
      * 
-     * TODO:
-     * jdk 1.5 does not throw IllegalArgumentException when src is null or if
-     * dsts contains null elements
-     * It does not throw ReadOnlyBufferException when dsts contains read only elements
+     * Check that implementation behavior follows RI:
+     * jdk 1.5 does not throw IllegalArgumentException when src is null or
+     * if dsts contains null elements It does not throw ReadOnlyBufferException
+     * when dsts contains read only elements
      */
     public void testUnwrap02() throws SSLException {
         String host = "new host";
@@ -295,29 +266,18 @@ public class SSLEngineTest extends TestCase {
             fail("IllegalArgumentException must be thrown for null dsts byte buffer array");
         } catch (IllegalArgumentException ex) {
         }
-        try {
-            e.unwrap(bb, bbA);
-            fail("IllegalArgumentException must be thrown for dsts byte buffer array"
-                    + " which contains null elements");
-        } catch (IllegalArgumentException ex) {
-        }
 
-        try {
-            e.unwrap(bbN, bbA);
-            fail("IllegalArgumentException must be thrown for null src byte buffer");
-        } catch (IllegalArgumentException ex) {
-        }
+        e.unwrap(bb, bbA);
+        e.unwrap(bbN, bbA);
 
         ByteBuffer bb1 = ByteBuffer.allocate(100);
         ByteBuffer roBb = bb1.asReadOnlyBuffer();
         bbA[0] = bb1;
         bbA[2] = roBb;
         assertTrue("Not read only byte buffer", bbA[2].isReadOnly());
-        try {
-            e.unwrap(bb, bbA);
-            fail("ReadOnlyBufferException must be thrown because dsts contains read only buffer");
-        } catch (ReadOnlyBufferException ex) {
-        }
+
+        e.unwrap(bb, bbA);
+
     }
 
     /**

@@ -14,11 +14,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Boris V. Kuznetsov
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
 import java.util.ArrayList;
@@ -28,30 +23,29 @@ import java.security.KeyStore;
 
 /**
  * @com.intel.drl.spec_ref
- * 
+ *  
  */
 public class KeyStoreBuilderParameters implements ManagerFactoryParameters {
-    
+
     private List ksbuilders;
+
     public KeyStoreBuilderParameters(KeyStore.Builder builder) {
-    	if (builder == null) {
-    		throw new NullPointerException("builder parameter is null");
-    	}
-        //      FIXME for 1.5 classes
-        //      new ArrayList() -> Collections.emptyList();
         ksbuilders = new ArrayList();
-        ksbuilders.add(builder);         
+        if (builder != null) {
+            ksbuilders.add(builder);
+        }
     }
+
     public KeyStoreBuilderParameters(List parameters) {
-    	if (parameters == null) {
-    		throw new NullPointerException("Builders list is null");
-    	}
-    	if (parameters.isEmpty()) {
-    		throw new IllegalArgumentException("Builders list is empty");
-    	}
+        if (parameters == null) {
+            throw new NullPointerException("Builders list is null");
+        }
+        if (parameters.isEmpty()) {
+            throw new IllegalArgumentException("Builders list is empty");
+        }
         ksbuilders = new ArrayList(parameters);
     }
-    
+
     public List getParameters() {
         return Collections.unmodifiableList(ksbuilders);
     }
