@@ -414,23 +414,23 @@ public class BeanContextSupportTest extends TestCase {
      * Test method vetoableChange() with PropertyChangeEvent parameter.
      * <p>
      */
-    public void testVetoableChangePropertyChangeEvent() {
-        /** @todo: not implemented yet in the class * */
-        // Create BeanContext instance
-        BeanContextSupport sup = new BeanContextSupport();
-        // sup.vetoableChange(null);
-    }
+//    public void testVetoableChangePropertyChangeEvent() {
+//        /** @todo: not implemented yet in the class * */
+//         Create BeanContext instance
+//        BeanContextSupport sup = new BeanContextSupport();
+//         sup.vetoableChange(null);
+//    }
 
     /**
      * Test method propertyChange() with PropertyChangeEvent parameter.
      * <p>
      */
-    public void testPropertyChangePropertyChangeEvent() {
-        /** @todo: not implemented yet in the class * */
-        // Create BeanContext instance
-        BeanContextSupport sup = new BeanContextSupport();
-        // sup.propertyChange(null);
-    }
+//    public void testPropertyChangePropertyChangeEvent() {
+//        /** @todo: not implemented yet in the class * */
+//        // Create BeanContext instance
+//        BeanContextSupport sup = new BeanContextSupport();
+//        // sup.propertyChange(null);
+//    }
 
     /**
      * Test method isEmpty() with no parameters.

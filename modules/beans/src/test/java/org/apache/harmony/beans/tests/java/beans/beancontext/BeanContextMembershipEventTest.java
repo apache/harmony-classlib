@@ -39,6 +39,8 @@ public class BeanContextMembershipEventTest extends TestCase {
     private static class MockBeanContextMembershipEvent extends
             BeanContextMembershipEvent {
 
+        static final long serialVersionUID = -4761911723636245515L;
+        
         /**
          * @param bc
          * @param changes
@@ -66,7 +68,7 @@ public class BeanContextMembershipEventTest extends TestCase {
 
     public void testBeanContextMembershipEvent_NullParam() {
         BeanContext ctx = new MockBeanContext();
-        Collection c = new ArrayList();
+        Collection<String> c = new ArrayList<String>();
         c.add("1");
         c.add("2");
         c.add("3");
@@ -108,7 +110,7 @@ public class BeanContextMembershipEventTest extends TestCase {
      */
     public void testBeanContextMembershipEventBeanContextCollection() {
         BeanContext ctx = new MockBeanContext();
-        Collection c = new ArrayList();
+        Collection<String> c = new ArrayList<String>();
         c.add("1");
         c.add("2");
         c.add("3");
@@ -130,7 +132,7 @@ public class BeanContextMembershipEventTest extends TestCase {
 
     public void testSize_Collection() {
         BeanContext ctx = new MockBeanContext();
-        Collection c = new ArrayList();
+        Collection<String> c = new ArrayList<String>();
         c.add("1");
         c.add("2");
         c.add("3");
@@ -149,7 +151,7 @@ public class BeanContextMembershipEventTest extends TestCase {
 
     public void testContains_Collection() {
         BeanContext ctx = new MockBeanContext();
-        Collection c = new ArrayList();
+        Collection<String> c = new ArrayList<String>();
         c.add("1");
         c.add("2");
         c.add("3");
@@ -176,7 +178,7 @@ public class BeanContextMembershipEventTest extends TestCase {
 
     public void testToArray_Collection() {
         BeanContext ctx = new MockBeanContext();
-        Collection c = new ArrayList();
+        Collection<String> c = new ArrayList<String>();
         c.add("1");
         c.add("2");
         c.add("3");
@@ -203,7 +205,7 @@ public class BeanContextMembershipEventTest extends TestCase {
 
     public void testIterator_Collection() {
         BeanContext ctx = new MockBeanContext();
-        Collection c = new ArrayList();
+        Collection<String> c = new ArrayList<String>();
         c.add("1");
         c.add("2");
         c.add("3");
@@ -229,7 +231,7 @@ public class BeanContextMembershipEventTest extends TestCase {
     }
 
     public void testSerialization() throws IOException, ClassNotFoundException {
-        ArrayList things = new ArrayList();
+        ArrayList<String> things = new ArrayList<String>();
         things.add("1");
         things.add("2");
         things.add("3");
@@ -243,7 +245,7 @@ public class BeanContextMembershipEventTest extends TestCase {
     }
 
     public void testSerialization_Compatibility() throws Exception {
-        ArrayList things = new ArrayList();
+        ArrayList<String> things = new ArrayList<String>();
         things.add("1");
         things.add("2");
         things.add("3");

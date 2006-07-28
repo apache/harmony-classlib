@@ -57,6 +57,8 @@ public class BeanContextServicesSupportTest extends TestCase {
     public static class MockBeanContextServicesSupport extends
             BeanContextServicesSupport {
 
+        static final long serialVersionUID = -5521269152428572350L;
+        
         public MethodInvocationRecords records;
 
         public MockBeanContextServicesSupport() {

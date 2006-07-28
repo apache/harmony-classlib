@@ -37,6 +37,8 @@ public class BeanContextServiceAvailableEventTest extends TestCase {
 
     private static class MockBeanContextServiceAvailableEvent extends
             BeanContextServiceAvailableEvent {
+        
+        static final long serialVersionUID = 796722290390289532L;
 
         /**
          * @param bcs

@@ -70,6 +70,8 @@ import tests.util.SerializationTester;
 public class BeanContextSupportTest extends TestCase {
 
     private static class MockBeanContextSupport extends BeanContextSupport {
+        
+        static final long serialVersionUID = -4165267256277214588L;
 
         public transient MethodInvocationRecords records;
 
@@ -836,7 +838,7 @@ public class BeanContextSupportTest extends TestCase {
         support.add(c1);
         support.add(c2);
         support.add(c3);
-        ArrayList l = new ArrayList();
+        ArrayList<Object> l = new ArrayList<Object>();
         l.add(c1);
         l.add(c2);
         l.add(c3);
