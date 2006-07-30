@@ -17,19 +17,17 @@
 package javax.sound.midi;
 
 public abstract class MidiMessage implements Cloneable {
-    private int status;
 
     protected byte[] data;
 
     protected int length;
 
     protected MidiMessage(byte[] data) {
-        if (data == null || data.length == 0) {
-            data = null;
+        if (data == null) {
+            length = 0;
         } else {
             length = data.length;
-            status = (int) (data[0] & 0xFF);
-            this.data = data.clone();
+            this.data = data;
         }
     }
 
@@ -40,34 +38,31 @@ public abstract class MidiMessage implements Cloneable {
     }
 
     public byte[] getMessage() {
+        if (data == null) {
+            throw new NullPointerException();
+        }
         return data.clone();
     }
 
     public int getStatus() {
-        return status;
+        if ((data == null) || (length == 0)) {
+            return 0;
+        } else {
+            return (int) (data[0] & 0xFF);
+        }
     }
 
     protected void setMessage(byte[] data, int length) throws InvalidMidiDataException {
-        //FIXME
-        /**
-         * this method should throw out IndexOutOfBoundsException when 
-         * I use negative length
-         */
-        if (length < 0)
-            throw new IndexOutOfBoundsException();
+        if ((length < 0) || (length > data.length)) {
+            throw new IndexOutOfBoundsException("length out of bounds: " + length);
+        }
 
-        byte[] tdata = new byte[length];
-        if (length == 0 && data != null) {
-            status = 0;
-        } else {
+        this.data = new byte[length];
+        if (length != 0) {
             for (int i = 0; i < length; i++) {
-                tdata[i] = data[i];
+                this.data[i] = data[i];
             }
-            status = (int) (data[0] & 0xFF);
-            this.length = length;
         }
         this.length = length;
-        this.data = tdata;
-
     }
 }

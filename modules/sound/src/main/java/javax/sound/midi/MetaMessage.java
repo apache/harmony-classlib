@@ -19,35 +19,25 @@ package javax.sound.midi;
 public class MetaMessage extends MidiMessage {
     public static final int META = 255;
     
-    private int type;
-
-    private byte[] data;
-
+    private int dsp; //displacement from begin of array that 
+                     //return by method getData() from begin
+                     //of array that contain data
+    
     public MetaMessage() {
-        super(new byte[] { -1, 0 });
-        data = new byte[0];
-        type = 0;
+        super(new byte[] {-1, 0});
     }
 
     protected MetaMessage(byte[] data) {
         super(data);
-        if (data.length >= 2) {
-            type = (int) (data[1] & 0xFF);
-        } else {
-            type = 0;
+        if (data == null) {
+            throw new NullPointerException();
         }
-        if (data.length > 3) {
+        if (super.length > 3) {
             int n = 3;
-            while (data[n - 1] < 0)
+            while ((n <= super.length) && (super.data[n - 1] < 0))
                 n++;
-            this.data = new byte[data.length - n];
-            for (int i = n; i < data.length; i++) {
-                this.data[i - n] = data[i];
-            }
-        } else {
-            this.data = new byte[0];
+            dsp = n;
         }
-
     }
 
     public Object clone() {
@@ -55,15 +45,26 @@ public class MetaMessage extends MidiMessage {
     }
 
     public byte[] getData() {
-        return data.clone();
+        if ((super.data != null) && (super.length > 3)) {
+            byte[] bt = new byte[super.length - dsp];
+            for (int i = dsp; i < super.length; i++) {
+                bt[i - dsp] = super.data[i];
+            }
+            return bt;
+        } else {
+            return new byte[0];
+        }
     }
 
     public int getType() {
-        return type;
+        if ((super.data != null) && (super.length >= 2)) {
+            return (int) (super.data[1] & 0xFF);
+        } else {
+            return 0;
+        }
     }
 
     public void setMessage(int type, byte[] data, int length) throws InvalidMidiDataException {
-        //FIXME
         if (type < 0 || type >= 128) {
             throw new InvalidMidiDataException("Invalid meta event with type " + type);
         }
@@ -76,7 +77,6 @@ public class MetaMessage extends MidiMessage {
                     throw new NullPointerException();
                 }
                 super.setMessage(new byte[] { -1, (byte) type, 0 }, 3);
-                this.data = new byte[0];
             } else {
                 int div = 128;
                 int n = 1;
@@ -105,15 +105,10 @@ public class MetaMessage extends MidiMessage {
                     }
                 }
                 super.setMessage(tdata, length + 2 + ln);
-                this.data = new byte[length];
-                if (length > 0) {
-                    for (int i = 0; i < length; i++)
-                        this.data[i] = data[i];
-                }
+                dsp = ln + 2;
             }
         } catch (InvalidMidiDataException e) {
             throw e;
         }
-        this.type = type;
     }
 }
