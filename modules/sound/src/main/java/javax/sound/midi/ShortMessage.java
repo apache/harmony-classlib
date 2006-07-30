@@ -14,10 +14,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Evgeny S. Sidorenko
- */
-
 package javax.sound.midi;
 
 public class ShortMessage extends MidiMessage {
