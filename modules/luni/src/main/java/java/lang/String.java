@@ -1728,13 +1728,21 @@ public final class String implements Serializable, Comparable<String>, CharSeque
      * @since 1.5
      */
     public boolean contentEquals(CharSequence cs) {
-        if (cs == null)
+        if (cs == null) {
             throw new NullPointerException();
-        if (cs instanceof StringBuffer)
-            return contentEquals((StringBuffer)cs);
-        else {
-            return regionMatches(0, cs.toString(), 0, cs.length());
         }
+
+        int len = cs.length();
+
+        if (len != count) {
+            return false;
+        }
+
+        if (len == 0 && count == 0) {
+            return true; // since both are empty strings
+        }
+
+        return regionMatches(0, cs.toString(), 0, len);
     }
 
 	/**

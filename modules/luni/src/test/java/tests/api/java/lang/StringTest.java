@@ -887,6 +887,14 @@ public class StringTest extends junit.framework.TestCase {
 	}
 
 	/**
+	 * @tests java.lang.String#contentEquals(CharSequence cs)
+	 */
+	public void test_contentEqualsLjava_lang_CharSequence() {
+		// Test for method java.lang.String java.lang.String.contentEquals(CharSequence cs)
+		assertFalse("Incorrect result of compare", "qwerty".contentEquals(""));
+	}
+
+	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
 	 */
