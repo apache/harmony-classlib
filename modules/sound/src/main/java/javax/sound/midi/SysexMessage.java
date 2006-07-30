@@ -22,8 +22,7 @@ public class SysexMessage extends MidiMessage {
     public static final int SYSTEM_EXCLUSIVE = 240;
 
     public SysexMessage() {
-        //TODO
-        super(null);
+        super(new byte[] {-16, -9});
     }
 
     protected SysexMessage(byte[] data) {
@@ -31,20 +30,50 @@ public class SysexMessage extends MidiMessage {
     }
 
     public Object clone() {
-        //TODO
-        return null;
+        return new SysexMessage(this.getMessage());
     }
 
     public byte[] getData() {
-        //TODO
-        return null;
+        byte[] bt = new byte[super.length - 1];
+        for(int i = 1; i < super.length; i++) {
+            bt[i-1] = super.data[i];
+        }
+        return bt;
     }
 
     public void setMessage(byte[] data, int length) throws InvalidMidiDataException {
-        //TODO
+        //FIXME
+        /*
+         * if this exception throw out, the value of wrong status byte
+         * should be the hexadecimal value
+         */
+        if((((int) (data[0] & 0xFF)) != SysexMessage.SPECIAL_SYSTEM_EXCLUSIVE) &&
+                (((int) (data[0] & 0xFF)) != SysexMessage.SYSTEM_EXCLUSIVE)) {
+            throw new InvalidMidiDataException("Invalid status byte for sysex message: " + 
+                    (int) (data[0] & 0xFF));
+        }
+        super.setMessage(data, length);
     }
 
     public void setMessage(int status, byte[] data, int length) throws InvalidMidiDataException {
-        //TODO
+        //FIXME
+        /*
+         * if this exception throw out, the value of wrong status byte
+         * should be the hexadecimal value
+         */
+        if((status != SysexMessage.SPECIAL_SYSTEM_EXCLUSIVE) &&
+                (status != SysexMessage.SYSTEM_EXCLUSIVE)) {
+            throw new InvalidMidiDataException("Invalid status byte for sysex message: " + 
+                    status);
+        }
+        if((length < 0) || (length > data.length)) {
+            throw new IndexOutOfBoundsException("length out of bounds: " + length);
+        }
+        byte[] bt = new byte[length + 1];
+        bt[0] = (byte) status;
+        for(int i = 0; i < length; i++) {
+            bt[i+1] = data[i];
+        }
+        super.setMessage(bt, length + 1);
     }
 }
