@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,6 +71,11 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 				9, gc.get(Calendar.MINUTE));
 		assertTrue("Incorrect calendar constructed", gc.getTimeZone().equals(
 				TimeZone.getDefault()));
+
+        //Regression for HARMONY-998
+        gc = new GregorianCalendar(1900, 0, 0, 0, Integer.MAX_VALUE);
+		assertEquals("Incorrect calendar constructed",
+				5983, gc.get(Calendar.YEAR));
 	}
 
 	/**
@@ -558,15 +563,6 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
         assertEquals("Before", dayOfMonth, gCalend.get(Calendar.DAY_OF_MONTH));
         gCalend.set(Calendar.MILLISECOND, 0);//changes nothing
         assertEquals("After", dayOfMonth, gCalend.get(Calendar.DAY_OF_MONTH));
-    }
-    
-    /**
-     * @tests GregorianCalendar#GregorianCalendar() 
-     */
-    public void testConstructorMaxvalue(){
-        Calendar cal = new GregorianCalendar();
-        cal.set(1900, 0, 0, 0, Integer.MAX_VALUE);
-        assertTrue(cal.getTime().getTime()>0); 
     }
 
 	/**
