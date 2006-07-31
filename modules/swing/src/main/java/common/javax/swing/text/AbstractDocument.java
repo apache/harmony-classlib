@@ -65,7 +65,7 @@ public abstract class AbstractDocument implements Document, Serializable {
 
         private transient AttributeSet attrs;
 
-        private Element parent;
+        private final Element parent;
 
         public AbstractElement(final Element parent,
                                final AttributeSet attributes) {
@@ -180,11 +180,9 @@ public abstract class AbstractDocument implements Document, Serializable {
 
         public Object getAttribute(final Object key) {
             Object value = attrs.getAttribute(key);
-            if (value == null && parent != null) {
-                AttributeSet resolveSet = parent.getAttributes();
-                if (resolveSet != null) {
-                    value = resolveSet.getAttribute(key);
-                }
+            AttributeSet resolver = getResolveParent();
+            if (value == null && resolver != null) {
+                value = resolver.getAttribute(key);
             }
             return value;
         }

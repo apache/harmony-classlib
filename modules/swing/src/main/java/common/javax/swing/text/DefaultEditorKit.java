@@ -22,7 +22,9 @@ package javax.swing.text;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import javax.swing.Action;
@@ -316,15 +318,7 @@ public class DefaultEditorKit extends EditorKit {
 
     public void read(final InputStream in, final Document doc, final int pos)
             throws IOException, BadLocationException {
-        byte[] readArray = new byte[in.available()];
-        in.read(readArray);
-        String readStr = new String(readArray);
-        doc.putProperty(EndOfLineStringProperty, null);
-        if (checkDelimiters(readStr, doc)) {
-            readStr = replaceLineDelimiters(doc, readStr);
-        }
-        AttributeSet attributes = doc.getDefaultRootElement().getAttributes();
-        doc.insertString(pos, readStr, attributes);
+        read(new InputStreamReader(in), doc, pos);
     }
 
     public void read(final Reader in, final Document doc, final int pos)
@@ -342,10 +336,14 @@ public class DefaultEditorKit extends EditorKit {
         while ((numCharRead = in.read(readArray, 0, maxCharToRead)) != -1) {
             String readStr = new String(readArray, 0, numCharRead);
             if (!delimiterInitialised) {
-                delimiterInitialised = checkDelimiters(readStr, doc);
+                final String lineDelimeter = checkDelimiters(readStr);
+                if (lineDelimeter != null) {
+                    doc.putProperty(EndOfLineStringProperty, lineDelimeter);
+                    delimiterInitialised = true;
+                }
             }
             if (delimiterInitialised) {
-                readStr = replaceLineDelimiters(doc, readStr);
+                readStr = replaceLineDelimiters(readStr);
             }
             doc.insertString(offset, readStr, attributes);
             offset += readStr.length();
@@ -355,13 +353,7 @@ public class DefaultEditorKit extends EditorKit {
     public void write(final OutputStream out, final Document doc,
             final int pos, final int len) throws IOException,
             BadLocationException {
-        String writeStr = doc.getText(pos, len);
-        String newLine = (String) doc.getProperty(EndOfLineStringProperty);
-        if (newLine != null) {
-            writeStr = writeStr.replaceAll("\n", (String) doc
-                    .getProperty(EndOfLineStringProperty));
-        }
-        out.write(writeStr.getBytes());
+        write(new OutputStreamWriter(out), doc, pos, len);
     }
 
     public void write(final Writer out, final Document doc, final int pos,
@@ -375,7 +367,7 @@ public class DefaultEditorKit extends EditorKit {
         out.write(writeStr);
     }
 
-    private boolean checkDelimiters(final String str, final Document doc) {
+    private String checkDelimiters(final String str) {
         String lineDelimeter = null;
         final int length = str.length();
         for (int i = 0; i < length; i++) {
@@ -392,14 +384,10 @@ public class DefaultEditorKit extends EditorKit {
                 break;
             }
         }
-        if (lineDelimeter == null) {
-            return false;
-        }
-        doc.putProperty(EndOfLineStringProperty, lineDelimeter);
-        return true;
+        return lineDelimeter;
     }
 
-    private String replaceLineDelimiters(final Document doc, final String str) {
+    private String replaceLineDelimiters(final String str) {
         int index = str.indexOf('\r');
         if (index == -1) {
             return str;

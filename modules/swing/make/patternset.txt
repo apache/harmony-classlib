@@ -22,9 +22,16 @@ javax/swing/plaf/basic/*
 javax/swing/plaf/metal/*
 javax/swing/table/*
 javax/swing/text/*
+javax/swing/text/html/*
+javax/swing/text/html/parser/*
 javax/swing/tree/*
 javax/swing/undo/*
 org/apache/harmony/x/swing/*
+org/apache/harmony/x/swing/text/html/*
+org/apache/harmony/x/swing/text/html/cssparser/*
+org/apache/harmony/x/swing/text/html/cssparser/metamodel/*
+org/apache/harmony/x/swing/text/html/form/*
+org/apache/harmony/x/swing/text/html/icons/*
 org/apache/harmony/x/swing/filechooser/*
 org/apache/harmony/x/swing/filechooser/windows/*
 org/apache/harmony/x/swing/plaf/resources/basic/*

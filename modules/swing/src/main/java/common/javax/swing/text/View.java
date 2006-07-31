@@ -205,7 +205,9 @@ public abstract class View implements SwingConstants {
         }
 
         final View view = getView(index);
-        return view != null ? view.getToolTipText(x, y, shape) : null;
+        return view != null 
+               ? view.getToolTipText(x, y, getChildAllocation(index, shape)) 
+               : null;
     }
 
     public View getView(final int index) {
@@ -221,9 +223,14 @@ public abstract class View implements SwingConstants {
     }
 
     public int getViewIndex(final float x, final float y, final Shape shape) {
+        if (shape == null) {
+            return -1;
+        }
+
         final int count = getViewCount();
         for (int i = 0; i < count; i++) {
-            if (getChildAllocation(i, shape).contains(x, y)) {
+            final Shape childAllocation = getChildAllocation(i, shape);
+            if (childAllocation != null && childAllocation.contains(x, y)) {
                 return i;
             }
         }

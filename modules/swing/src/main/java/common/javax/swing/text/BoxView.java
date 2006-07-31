@@ -30,6 +30,7 @@ import javax.swing.event.DocumentEvent.ElementChange;
 import javax.swing.text.Position.Bias;
 
 import org.apache.harmony.x.swing.SizeRequirementsHelper;
+import org.apache.harmony.x.swing.Utilities;
 
 
 public class BoxView extends CompositeView {
@@ -85,19 +86,20 @@ public class BoxView extends CompositeView {
     public float getMinimumSpan(final int axis) {
         isAxisValid(axis);
 
-        return getTotalRequirements(axis).minimum;
+        return getTotalRequirements(axis).minimum + getSideInset(axis);
     }
 
     public float getPreferredSpan(final int axis)  {
         isAxisValid(axis);
 
-        return getTotalRequirements(axis).preferred;
+        return getTotalRequirements(axis).preferred + getSideInset(axis);
     }
 
     public float getMaximumSpan(final int axis) {
         isAxisValid(axis);
 
-        return getTotalRequirements(axis).maximum;
+        return Utilities.safeIntSum(getTotalRequirements(axis).maximum,
+                                    getSideInset(axis));
     }
 
     public int getResizeWeight(final int axis) {
@@ -116,12 +118,12 @@ public class BoxView extends CompositeView {
     }
 
     public void paint(final Graphics g, final Shape shape) {
-        final Rectangle bounds = shape.getBounds();
+        final Rectangle insideAlloc = getInsideAllocation(shape);
         final Rectangle allocation = new Rectangle();
         final Rectangle clipBounds = g.getClipBounds();
 
         for (int i = 0; i < getViewCount(); i++) {
-            allocation.setBounds(bounds);
+            allocation.setBounds(insideAlloc);
             childAllocation(i, allocation);
             if (allocation.intersects(clipBounds)) {
                 paintChild(g, allocation, i);
@@ -160,8 +162,8 @@ public class BoxView extends CompositeView {
     }
 
     public void setSize(final float width, final float height) {
-        layout((int)(width - getLeftInset() - getRightInset()),
-               (int)(height - getTopInset() - getBottomInset()));
+        layout((int)(width - getSideInset(X_AXIS)),
+               (int)(height - getSideInset(Y_AXIS)));
     }
 
     public int getWidth() {
@@ -560,4 +562,10 @@ public class BoxView extends CompositeView {
          return newArray;
      }
 
+    private int getSideInset(final int axis) {
+        if (axis == X_AXIS) {
+            return getLeftInset() + getRightInset();
+        }
+        return getTopInset() + getBottomInset();
+    }
 }

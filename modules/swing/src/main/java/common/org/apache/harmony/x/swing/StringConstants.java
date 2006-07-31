@@ -88,6 +88,7 @@ public interface StringConstants {
     String TEXT_COMPONENT_MARGIN_PROPERTY = "margin";
     String TEXT_COMPONENR_KEYMAP_PROPERTY = "keymap";
     String TEXT_COMPONENT_NAV_FILTER_NAME = "navigationFilter";
+    String IGNORE_CHARSET_DIRECTIVE = "IgnoreCharsetDirective";
 
     String EDITOR_PANE_EDITOR_KIT_PROPERTY = "editorKit";
 

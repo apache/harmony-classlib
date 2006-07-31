@@ -56,6 +56,11 @@ public class ParagraphView extends FlowView implements TabExpander {
             return super.getEndOffset();
         }
 
+        public AttributeSet getAttributes() {
+            final View parent = getParent();
+            return parent != null ? parent.getAttributes() : null;
+        }
+        
         protected void loadChildren(final ViewFactory factory) {
         }
 
@@ -75,9 +80,6 @@ public class ParagraphView extends FlowView implements TabExpander {
 
             SizeRequirements result = baselineRequirements(axis, r);
             lineSpace = (int)(result.preferred * lineSpacing);
-            result.minimum += lineSpace;
-            result.preferred += lineSpace;
-            result.maximum = result.preferred;
             return result;
         }
 

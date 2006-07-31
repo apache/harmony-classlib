@@ -82,6 +82,7 @@ public class DefaultStyledDocument extends AbstractDocument
         private transient Stack changeStack;
         private transient List changes;
         private transient boolean create;
+        private transient Element tail;
 
         public ElementBuffer(final Element root) {
             this.root = root;
@@ -145,21 +146,189 @@ public class DefaultStyledDocument extends AbstractDocument
 
         protected void insertUpdate(final ElementSpec[] spec) {
             // Find the deepest branch
-            BranchElement branch = (BranchElement)root;
-            Element child;
+            Element branch = root;
             do {
                 changeStack.push(new ChangeDesc(branch));
-                child = branch.getElement(branch.getElementIndex(offset));
-                if (!child.isLeaf()) {
-                    branch = (BranchElement)child;
-                }
-            } while (!child.isLeaf());
+                branch = branch.getElement(branch.getElementIndex(offset));
+            } while (!branch.isLeaf());
 
             current = (ChangeDesc)changeStack.peek();
-            //Element leaf = getCharacterElement(offset);
-            //current = (BranchElement)leaf.getParentElement();
 
-            // Apply each spec to the tree
+            performSpecs(spec);
+            leaveParagraph();
+        }
+
+        protected void removeUpdate() {
+            final int endOffset = offset + length;
+            final Element startLeaf = getCharacterElement(offset);
+            final Element startBranch = startLeaf.getParentElement();
+
+            final Element endLeaf = endOffset == startLeaf.getEndOffset()
+                                    && endOffset < startBranch.getEndOffset()
+                                    ? startLeaf
+                                    : getCharacterElement(endOffset);
+            final Element endBranch = endLeaf.getParentElement();
+
+            if (startLeaf == endLeaf) {
+                if (startLeaf.getStartOffset() == offset
+                    && endOffset == startLeaf.getEndOffset()) {
+
+                    current = new ChangeDesc(startBranch, offset);
+                    current.removed.add(startLeaf);
+                    changes.add(current);
+                }
+            } else if (startBranch == endBranch) {
+                final int index = startBranch.getElementIndex(offset);
+                current = new ChangeDesc(startBranch);
+                for (int i = index; i < startBranch.getElementCount(); i++) {
+                    final Element child = startBranch.getElement(i);
+                    if (offset <= child.getStartOffset()
+                        && child.getEndOffset() <= endOffset) {
+
+                        current.setChildIndex(i);
+                        current.removed.add(child);
+                    }
+                    if (endOffset < child.getEndOffset()) {
+                        break;
+                    }
+                }
+
+                changes.add(current);
+            } else {
+                final BranchElement parent =
+                    (BranchElement)startBranch.getParentElement();
+                if (parent != null) {
+                    current = new ChangeDesc(parent, offset);
+                    
+                    BranchElement branch = (BranchElement)createBranchElement(parent,
+                                                                startBranch.getAttributes());
+                    List children = new LinkedList();
+                    
+                    // Copy elements from startBranch
+                    int index = startBranch.getElementIndex(offset);
+                    if (startBranch.getElement(index).getStartOffset() < offset) {
+                        ++index;
+                    }
+                    for (int i = 0; i < index; i++) {
+                        children.add(clone(branch, startBranch.getElement(i)));
+                    }
+                    
+                    // Copy elements from endBranch
+                    index = endBranch.getElementIndex(endOffset);
+                    for (int i = index; i < endBranch.getElementCount(); i++) {
+                        children.add(clone(branch, endBranch.getElement(i)));
+                    }
+                    
+                    index = parent.getElementIndex(endOffset);
+                    for (int i = current.getChildIndex(); i <= index; i++) {
+                        current.removeChildElement(i);
+                    }
+                    current.added.add(branch);
+                    
+                    branch.replace(0, 0, listToElementArray(children));
+                } else {
+                    current = new ChangeDesc(startBranch, offset);
+                    
+                    // Copy elements from endBranch
+                    int index = endBranch.getElementIndex(endOffset);
+                    for (int i = index; i < endBranch.getElementCount(); i++) {
+                        current.added.add(clone(startBranch, endBranch.getElement(i)));
+                    }
+                    
+                    // Copy elements from startBranch
+                    int startIndex = startBranch.getElementIndex(offset);
+                    int endIndex = startBranch.getElementIndex(endOffset);
+                    for (int i = startIndex; i <= endIndex; i++) {
+                        current.removeChildElement(i);
+                    }
+                    current.setChildIndex(startIndex);
+                    
+                    current.apply();
+                }
+
+                changes.add(current);
+            }
+        }
+
+        protected void changeUpdate() {
+            final int endOffset = offset + length;
+            final Element startLeaf = getCharacterElement(offset);
+            final Element endLeaf = getCharacterElement(endOffset);
+
+            if (startLeaf.getStartOffset() == offset
+                && endOffset == startLeaf.getEndOffset()) {
+                return;
+            }
+
+            if (startLeaf == endLeaf) {
+                current = new ChangeDesc(startLeaf.getParentElement(), offset);
+                current.splitLeafElement(startLeaf, offset, endOffset, true, startLeaf.getAttributes());
+
+                changes.add(current);
+            } else {
+                // Break the startLeaf
+                int start = startLeaf.getStartOffset();
+                int end = startLeaf.getEndOffset();
+
+                if (start < offset) {
+                    current = new ChangeDesc(startLeaf.getParentElement(), offset);
+                    current.splitLeafElement(startLeaf, offset);
+                    changes.add(current);
+                }
+
+                // Break the endLeaf
+                start = endLeaf.getStartOffset();
+                end = endLeaf.getEndOffset();
+
+                if (start < endOffset && endOffset < end) {
+                    final boolean sameParents = current != null
+                        && current.element == endLeaf.getParentElement();
+                    if (!sameParents) {
+                        current = new ChangeDesc(endLeaf.getParentElement(), endOffset);
+                    } else {
+                        final int endIndex = current.getChildIndexAtOffset(endOffset);
+                        for (int i = current.getChildIndex() + 1;
+                             i < endIndex; i++) {
+
+                            final Element child = current.getChildElement(i);
+                            current.removed.add(child);
+                            current.added.add(child);
+                        }
+                    }
+
+                    current.splitLeafElement(endLeaf, endOffset);
+
+                    if (!sameParents) {
+                        changes.add(current);
+                    }
+                }
+            }
+        }
+
+        final void create(final ElementSpec[] specs,
+                          final DefaultDocumentEvent event) {
+            prepare(event.getOffset(), event.getLength(), event);
+            create = true;
+
+            // Remove all elements from the only paragraph
+            current = new ChangeDesc(getParagraphElement(0));
+            current.setChildIndex(0);
+            current.createLeafElement(current.getChildElement(0).getAttributes(),
+                                      length, length + 1);
+            for (int i = 0; i < current.element.getElementCount(); i++) {
+                current.removeChildElement(i);
+            }
+            current.apply();
+            changes.add(current);
+            current = null;
+
+            performSpecs(specs);
+            leaveParagraph();
+
+            collectEdits();
+        }
+
+        private void performSpecs(final ElementSpec[] spec) throws Error {
             for (int i = 0; i < spec.length; i++) {
                 switch (spec[i].getType()) {
                 case ElementSpec.ContentType:
@@ -178,223 +347,6 @@ public class DefaultStyledDocument extends AbstractDocument
                     throw new Error("Unknown type in the spec");
                 }
             }
-            leaveParagraph();
-        }
-
-        protected void removeUpdate() {
-            final int endOffset = offset + length;
-            final Element startLeaf = getCharacterElement(offset);
-            final Element endLeaf = endOffset == startLeaf.getEndOffset()
-                                    && endOffset < startLeaf.getParentElement()
-                                                   .getEndOffset()
-                                    ? startLeaf
-                                    : getCharacterElement(endOffset);
-
-            if (startLeaf == endLeaf) {
-                if (startLeaf.getStartOffset() == offset
-                    && endOffset == startLeaf.getEndOffset()) {
-
-                    current = new ChangeDesc(startLeaf.getParentElement());
-                    current.setIndex(current.element.getElementIndex(offset));
-                    current.removed.add(startLeaf);
-                    changes.add(current);
-                }
-                return;
-            }
-
-            final Element startBranch = startLeaf.getParentElement();
-            final Element endBranch = endLeaf.getParentElement();
-
-            if (startBranch == endBranch) {
-                final int index = startBranch.getElementIndex(offset);
-                current = new ChangeDesc(startBranch);
-                for (int i = index; i < startBranch.getElementCount(); i++) {
-                    final Element child = startBranch.getElement(i);
-                    if (offset <= child.getStartOffset()
-                        && child.getEndOffset() <= endOffset) {
-
-                        if (current.getIndex() < 0) {
-                            current.setIndex(i);
-                        }
-                        current.removed.add(child);
-                    }
-                    if (endOffset < child.getEndOffset()) {
-                        break;
-                    }
-                }
-
-                changes.add(current);
-            } else {
-                final BranchElement parent =
-                    (BranchElement)startBranch.getParentElement();
-                current = new ChangeDesc(parent);
-                current.setIndex(parent.getElementIndex(offset));
-
-                final BranchElement branch =
-                    (BranchElement)createBranchElement(parent,
-                                                       startBranch
-                                                       .getAttributes());
-
-                List children = new LinkedList();
-
-                // Copy elements from startBranch
-                int index = startBranch.getElementIndex(offset);
-                if (startBranch.getElement(index).getStartOffset() < offset) {
-                    ++index;
-                }
-                for (int i = 0; i < index; i++) {
-                    children.add(clone(branch, startBranch.getElement(i)));
-                }
-
-                // Copy elements from endBranch
-                index = endBranch.getElementIndex(endOffset);
-                for (int i = index; i < endBranch.getElementCount(); i++) {
-                    children.add(clone(branch, endBranch.getElement(i)));
-                }
-
-                index = parent.getElementIndex(endOffset);
-                for (int i = current.getIndex(); i <= index; i++) {
-                    current.removed.add(parent.getElement(i));
-                }
-                current.added.add(branch);
-
-                branch.replace(0, 0, listToElementArray(children));
-
-                changes.add(current);
-            }
-        }
-
-        protected void changeUpdate() {
-            final int endOffset = offset + length;
-            final Element startLeaf = getCharacterElement(offset);
-            final Element endLeaf = getCharacterElement(endOffset);
-
-            if (startLeaf.getStartOffset() == offset
-                && endOffset == startLeaf.getEndOffset()) {
-                return;
-            }
-
-            if (startLeaf == endLeaf) {
-                final int start = startLeaf.getStartOffset();
-                final int end = startLeaf.getEndOffset();
-                if (start == offset && endOffset == end) {
-                    return;
-                }
-                final AttributeSet attrs = startLeaf.getAttributes();
-
-                current = new ChangeDesc(startLeaf.getParentElement());
-                current.setIndex(current.element.getElementIndex(offset));
-                current.removed.add(startLeaf);
-
-                if (startLeaf.getStartOffset() < offset) {
-                    current.added.add(createLeafElement(current.element, attrs,
-                                                        start, offset));
-                }
-                current.added.add(createLeafElement(current.element, attrs,
-                                                    offset, endOffset));
-                if (endOffset < end) {
-                    current.added.add(createLeafElement(current.element, attrs,
-                                                        endOffset, end));
-                }
-
-                changes.add(current);
-            } else {
-                // Break the startLeaf
-                int start = startLeaf.getStartOffset();
-                int end = startLeaf.getEndOffset();
-                AttributeSet attrs = startLeaf.getAttributes();
-
-                if (start < offset) {
-                    current = new ChangeDesc(startLeaf.getParentElement());
-                    current.setIndex(current.element.getElementIndex(offset));
-                    current.removed.add(startLeaf);
-
-                    current.added.add(createLeafElement(current.element, attrs,
-                                                        start, offset));
-                    current.added.add(createLeafElement(current.element, attrs,
-                                                        offset, end));
-                    changes.add(current);
-                }
-
-                // Break the endLeaf
-                start = endLeaf.getStartOffset();
-                end = endLeaf.getEndOffset();
-                attrs = endLeaf.getAttributes();
-
-                if (start < endOffset && endOffset < end) {
-                    final boolean sameParents = current != null
-                        && current.element == endLeaf.getParentElement();
-                    if (!sameParents) {
-                        current = new ChangeDesc(endLeaf.getParentElement());
-                        current.setIndex(current.element
-                                         .getElementIndex(endOffset));
-                    } else {
-                        final int endIndex = current.element
-                                             .getElementIndex(endOffset);
-                        for (int i = current.getIndex() + 1;
-                             i < endIndex; i++) {
-
-                            final Element child = current.element.getElement(i);
-                            current.removed.add(child);
-                            current.added.add(child);
-                        }
-                    }
-
-                    current.removed.add(endLeaf);
-
-                    current.added.add(createLeafElement(current.element, attrs,
-                                                        start, endOffset));
-                    current.added.add(createLeafElement(current.element, attrs,
-                                                        endOffset, end));
-
-                    if (!sameParents) {
-                        changes.add(current);
-                    }
-                }
-            }
-        }
-
-        final void create(final ElementSpec[] specs,
-                          final DefaultDocumentEvent event) {
-            prepare(event.getOffset(), event.getLength(), event);
-            create = true;
-
-            // Remove all elements from the only paragraph
-            current = new ChangeDesc(getParagraphElement(0));
-            current.setIndex(0);
-            current.added.add(createLeafElement(current.element,
-                                                current.element
-                                                .getElement(0).getAttributes(),
-                                                length, length + 1));
-            for (int i = 0; i < current.element.getElementCount(); i++) {
-                current.removed.add(current.element.getElement(i));
-            }
-            current.apply();
-            changes.add(current);
-            current = null;
-
-            // Apply each spec to the tree
-            for (int i = 0; i < specs.length; i++) {
-                switch (specs[i].getType()) {
-                case ElementSpec.ContentType:
-                    insertContent(specs[i]);
-                    break;
-
-                case ElementSpec.EndTagType:
-                    insertEndTag();
-                    break;
-
-                case ElementSpec.StartTagType:
-                    insertStartTag(specs[i]);
-                    break;
-
-                default:
-                    throw new Error("Unknown type in the spec");
-                }
-            }
-            leaveParagraph();
-
-            collectEdits();
         }
 
         private void applyEdits() {
@@ -419,6 +371,13 @@ public class DefaultStyledDocument extends AbstractDocument
                 }
             }
             changes.clear();
+
+            clear();
+        }
+
+        private void clear() {
+            event = null;
+            current = null;
         }
 
         private void insertContent(final ElementSpec spec) {
@@ -443,64 +402,66 @@ public class DefaultStyledDocument extends AbstractDocument
         }
 
         private void insertContentOriginate(final ElementSpec spec) {
-            // First we should remove the element that was at the place
+            final AttributeSet specAttr = spec.getAttributes();
             if (current.element.getElementCount() == 0) {
-                if (current.getIndex() < 0) {
-                    current.setIndex(0);
+                current.setChildIndex(0);
+                current.createLeafElement(specAttr,
+                                          offset, offset + spec.length);
+            } else {
+                current.setChildIndexByOffset(offset);
+                final Element leafToRemove = current.getCurrentChild();
+                if (offset == 0 && leafToRemove.isLeaf()) {
+                    current.removed.add(leafToRemove);
+                    current.createLeafElement(specAttr,
+                                              offset, offset + spec.length);
+                    current.createLeafElement(leafToRemove.getAttributes(),
+                                              offset + length, leafToRemove.getEndOffset());
+                    tail = current.getLastAddedElement();
+                    current.added.remove(tail);
+                } else if (offset == event.getOffset()
+                        && leafToRemove.getStartOffset() < offset
+                        && offset < leafToRemove.getEndOffset()) {
+                    if (leafToRemove.isLeaf()) {
+                        current.splitLeafElement(leafToRemove, offset,
+                                                 offset + spec.length,
+                                                 offset + length,
+                                                 true, specAttr);
+                        tail = current.getLastAddedElement();
+                        current.added.remove(tail);
+                    } else {
+                        tail = splitBranch(leafToRemove);
+                        current.createLeafElement(specAttr,
+                                                  offset, offset + spec.length);
+                        current.childIndex = current.getChildIndex() + 1;
+                    }
+                } else {
+                    current.createLeafElement(specAttr,
+                                              offset, offset + spec.length);
+                    if (offset >= current.element.getEndOffset()
+                        && current.getChildIndex() < current.element
+                                .getElementCount()) {
+                        current.childIndex = current.getChildIndex() + 1;
+                    }
                 }
-                current.added.add(createLeafElement(current.element,
-                                                    spec.getAttributes(),
-                                                    offset,
-                                                    offset + spec.getLength()));
-                return;
             }
-
-            if (current.getIndex() < 0) {
-                current.setIndex(current.element.getElementIndex(offset));
-            }
-            final Element leafToRemove = current.element
-                                         .getElement(current.getIndex());
-
-            if (offset == 0) {
-                current.removed.add(leafToRemove);
-            } else if (offset == event.getOffset()
-                       && leafToRemove.getStartOffset() < offset
-                       && offset < leafToRemove.getEndOffset()) {
-                current.removed.add(leafToRemove);
-                current.added.add(createLeafElement(current.element,
-                                            leafToRemove.getAttributes(),
-                                            leafToRemove.getStartOffset(),
-                                            offset));
-            }
-            current.added.add(createLeafElement(current.element,
-                                                spec.getAttributes(),
-                                                offset, offset + spec.length));
         }
 
         private void insertContentJoinNext(final ElementSpec spec) {
-            if (current.getIndex() < 0) {
-                current.setIndex(current.element.getElementIndex(offset));
-            }
-            final Element leaf = current.element.getElement(current.getIndex());
+            current.setChildIndexByOffset(offset);
+            final Element leaf = current.getCurrentChild();
             if (leaf.getStartOffset() >= offset) {
                 current.removed.add(leaf);
-                current.added.add(createLeafElement(current.element,
-                                                    leaf.getAttributes(),
-                                                    offset,
-                                                    leaf.getEndOffset()));
+                current.createLeafElement(leaf.getAttributes(),
+                                          offset, leaf.getEndOffset());
             } else {
                 final Element next =
-                    current.element.getElement(current.getIndex() + 1);
+                    current.getChildElement(current.getChildIndex() + 1);
                 current.removed.add(leaf);
                 current.removed.add(next);
-                current.added.add(createLeafElement(current.element,
-                                                    leaf.getAttributes(),
-                                                    leaf.getStartOffset(),
-                                                    offset));
-                current.added.add(createLeafElement(current.element,
-                                                    next.getAttributes(),
-                                                    offset,
-                                                    next.getEndOffset()));
+                current.createLeafElement(leaf.getAttributes(),
+                                          leaf.getStartOffset(), offset);
+                current.createLeafElement(next.getAttributes(),
+                                          offset, next.getEndOffset());
             }
         }
 
@@ -515,7 +476,7 @@ public class DefaultStyledDocument extends AbstractDocument
                 break;
 
             case ElementSpec.JoinPreviousDirection:
-                insertStartJoinPrevious();
+                insertStartJoinPrevious(spec);
                 break;
 
             case ElementSpec.JoinFractureDirection:
@@ -528,93 +489,87 @@ public class DefaultStyledDocument extends AbstractDocument
         }
 
         private void insertStartFracture(final ElementSpec spec) {
-            final ChangeDesc lastChange = (ChangeDesc)changes.get(changes.size()
-                                                                  - 1);
-            final BranchElement lastBranch = lastChange.element;
             final AttributeSet attrs =
                 spec.getDirection() == ElementSpec.OriginateDirection
                 ? spec.getAttributes()
                 : findLastExistedBranch().getAttributes();
-            final BranchElement branch =
+            final BranchElement newBranch =
                 (BranchElement)createBranchElement(current.element,
                                                    attrs);
-            final ChangeDesc change = new ChangeDesc(branch, true);
-            int index = lastBranch.getElementIndex(offset);
-            if (lastBranch.getElement(index).getEndOffset() <= offset) {
-                ++index;
-            }
-            // Now copy all elements from lastBranch to the new one
-            final List children = new ArrayList();
-            final int count = lastBranch.getElementCount();
-            for (int i = index; i < count; i++) {
-                children.add(clone(branch, lastBranch.getElement(i)));
-            }
-            // Now we need to remove all previously added elements which were
-            // copied from added list
-            for (int i = index - lastChange.index, j = index; j < count; j++) {
 
-                final Object addedElement =
-                    i > 0 && i < lastChange.added.size()
-                    ? lastChange.added.get(i)
-                    : null;
-                final Object existingElement = lastBranch.getElement(j);
-                if (addedElement == existingElement) {
-                    lastChange.added.remove(addedElement);
-                } else if (!lastChange.justCreated) {
-                    lastChange.removed.add(existingElement);
+            final ChangeDesc lastChange = (ChangeDesc)changes.get(changes.size() - 1);
+            int startIndex = lastChange.getChildIndexAtOffset(offset);
+            if (lastChange.getChildElement(startIndex).getEndOffset() <= offset) {
+                ++startIndex;
+            }
+            moveChildren(newBranch, lastChange, startIndex);
+
+            current.added.add(newBranch);
+            if (current.getChildIndex() == -1) {
+                int newIndex = current.getChildIndexAtOffset(offset);
+                if (newBranch.getElementCount() > 0
+                    && newBranch.getEndOffset()
+                       > current.getChildElement(newIndex).getStartOffset()) {
+                    ++newIndex;
                 }
+                current.setChildIndex(newIndex);
             }
-            // Complete the removal of elements from last branch
-            if (count - index > 0) {
-                lastBranch.replace(index, count - index, new Element[0]);
-            }
-
-            // Place copied children into the new element
-            branch.replace(0, 0,
-                (Element[])children.toArray(new Element[children.size()]));
-            //change.setIndex(0);
-            //change.added.addAll(children);
-            //change.apply();
-
-            current.added.add(branch);
-            if (current.index == -1) {
-                current.index = current.element.getElementIndex(offset);
-                if (branch.getElementCount() > 0
-                    && branch.getEndOffset()
-                       > current.element.getElement(current.index)
-                         .getStartOffset()) {
-                    ++current.index;
-                }
-            }
-            if (!current.isApplied()) {
-                current.apply();
-            } else {
-                int replaceIndex = current.element.getElementIndex(offset);
-                if (branch.getElementCount() > 0
-                    && branch.getEndOffset()
-                       > current.element
-                         .getElement(replaceIndex).getStartOffset()) {
+            if (current.isApplied()) {
+                int replaceIndex = current.getChildIndexAtOffset(offset);
+                if (newBranch.getElementCount() > 0
+                    && newBranch.getEndOffset()
+                       > current.getChildElement(replaceIndex).getStartOffset()) {
                     ++replaceIndex;
                 }
                 current.element.replace(replaceIndex, 0,
-                                        new Element[] {branch});
+                                        new Element[] {newBranch});
+            } else {
+                current.apply();
             }
 
-            current = change;
+            current = new ChangeDesc(newBranch, true);
             changeStack.push(current);
         }
 
+        private void moveChildren(final BranchElement newParent,
+                                  final ChangeDesc sourceDesc,
+                                  final int startIndex) {
+            // copy all elements from lastBranch to the new one
+            final int count = sourceDesc.element.getElementCount();
+            final Element[] children = new Element[count - startIndex];
+            for (int i = startIndex; i < count; i++) {
+                children[i - startIndex] = clone(newParent, sourceDesc.getChildElement(i));
+            }
+            // Now we need to remove all previously added elements which were
+            // copied from added list
+            final int i = startIndex - sourceDesc.getChildIndex();
+            for (int j = startIndex; j < count; j++) {
+                final Object addedElement = sourceDesc.getAddedElement(i);
+                final Object existingElement = sourceDesc.getChildElement(j);
+                if (addedElement == existingElement) {
+                    sourceDesc.added.remove(addedElement);
+                } else if (!sourceDesc.justCreated) {
+                    sourceDesc.removed.add(existingElement);
+                }
+            }
+            // Complete the removal of elements from source
+            if (count - startIndex > 0) {
+                sourceDesc.element.replace(startIndex, count - startIndex, new Element[0]);
+            }
+
+            // Place copied children into the new parent
+            newParent.replace(0, 0, children);
+        }
+
         private void insertStartOriginate(final ElementSpec spec) {
-            if (!create) {
+            if (current == null) {
+                insertStartJoinPrevious(spec);
+            } else if (!create && !changes.isEmpty()) {
                 insertStartFracture(spec);
-            } else if (current == null) {
-                insertStartJoinPrevious();
             } else {
                 Element branch = createBranchElement(current.element,
                                                      spec.getAttributes());
-                if (current.getIndex() < 0) {
-                    current.setIndex(current.element.getElementIndex(offset));
-                }
+                current.setChildIndexByOffset(offset);
                 current.added.add(branch);
                 current = new ChangeDesc(branch, true);
                 changeStack.push(current);
@@ -622,53 +577,61 @@ public class DefaultStyledDocument extends AbstractDocument
         }
 
         private void insertStartJoinNext(final ElementSpec spec) {
-            final int index = current.element.getElementIndex(offset);
-            current = new ChangeDesc(current.element.getElement(index));
+            current = new ChangeDesc(current.getChildAtOffset(offset));
             changeStack.push(current);
         }
 
-        private void insertStartJoinPrevious() {
+        private void insertStartJoinPrevious(final ElementSpec spec) {
             if (current == null) {
                 current = new ChangeDesc(getRootElement());
+                // TODO are old attributes to be removed?
+                final AttributeSet specAttr = spec.getAttributes();
+                if (specAttr != null) {
+                    ((AbstractElement)getRootElement()).addAttributes(specAttr);
+                }
                 changeStack.push(current);
             } else {
-                final int index = current.element.getElementIndex(offset);
-                current = new ChangeDesc(current.element.getElement(index));
+                current = new ChangeDesc(current.getChildAtOffset(offset));
                 changeStack.push(current);
             }
         }
 
         private void insertEndTag() {
-            if (current.removed.size() == 0 && current.added.size() == 0) {
-                current.setIndex(current.element.getElementIndex(offset));
-                Element leaf = current.element.getElement(current.getIndex());
+            if (current.isEmpty()) {
+                current.setChildIndexByOffset(offset);
+                Element leaf = current.getCurrentChild();
                 final int start = leaf.getStartOffset();
                 final int end = leaf.getEndOffset();
                 if (start < offset && offset < end
                     || start < offset + length && offset + length < end) {
 
-                    current.removed.add(leaf);
-
-                    if (leaf.getStartOffset() < offset) {
-                        current.added.add(
-                            createLeafElement(current.element,
-                                              leaf.getAttributes(),
-                                              leaf.getStartOffset(),
-                                              offset));
-                    }
-                    if (offset + length < leaf.getEndOffset()) {
-                        current.added.add(
-                            createLeafElement(current.element,
-                                              leaf.getAttributes(),
-                                              offset + length,
-                                              leaf.getEndOffset()));
+                    if (leaf.isLeaf()) {
+                        current.splitLeafElement(leaf, offset, offset + length, false, null);
+                    } else if (length != 0) {
+                        BranchElement rightBranch = splitBranch(leaf);
+                        current.added.add(rightBranch);
+                        int newIndex = current.getChildIndexAtOffset(offset + length);
+                        if (rightBranch.getElementCount() > 0
+                                && rightBranch.getEndOffset()
+                                > current.getChildElement(newIndex).getStartOffset()) {
+                            ++newIndex;
+                        }
+                        current.childIndex = newIndex;
                     }
                 }
             }
             leaveParagraph();
             changes.add(current);
             changeStack.pop();
-            current = (ChangeDesc)changeStack.peek();
+            current = changeStack.empty() ? null : (ChangeDesc)changeStack.peek();
+        }
+
+        private BranchElement splitBranch(final Element branch) {
+            BranchElement result = current.createBranchElement(branch.getAttributes());
+            final ChangeDesc lastChange = (ChangeDesc)changes.get(changes.size() - 1);
+            int startIndex = lastChange.getChildIndexAtOffset(offset + length);
+            moveChildren(result, lastChange, startIndex);
+            return result;
         }
 
         private BranchElement findLastExistedBranch() {
@@ -681,35 +644,19 @@ public class DefaultStyledDocument extends AbstractDocument
         }
 
         private void leaveParagraph() {
-            if ((current.removed.size() == 0 && current.added.size() == 0)) {
+            if (current == null || current.isEmpty()) {
                 return;
             }
 
-            if (current.removed.size() > 0
-                && offset < ((Element)current.removed.get(current.removed.size()
-                                                  - 1)).getEndOffset()
-                && !(current.added.size() > 0
-                     && offset < ((Element)current.added
-                                           .get(current.added.size() - 1))
-                                           .getEndOffset())) {
-                final Element leaf = current.element
-                                     .getElement(current.getIndex());
-                if (event.getOffset() + event.getLength()
-                    < leaf.getEndOffset()) {
-
-                    current.added.add(createLeafElement(current.element,
-                                                        leaf.getAttributes(),
-                                                        event.getOffset()
-                                                        + event.getLength(),
-                                                        leaf.getEndOffset()));
-                }
+            if (tail != null) {
+                current.added.add(tail);
             }
+            tail = null;
             current.apply();
         }
 
         private Element[] listToElementArray(final List list) {
-            Element[] result = new Element[list.size()];
-            return (Element[])list.toArray(result);
+            return (Element[])list.toArray(new Element[list.size()]);
         }
 
         private void initChangeLists() {
@@ -725,8 +672,10 @@ public class DefaultStyledDocument extends AbstractDocument
 
             this.changes.clear();
             this.changeStack.clear();
+            this.current = null;
 
             this.create = false;
+            this.tail = null;
         }
 
         private void readObject(final ObjectInputStream ois)
@@ -875,9 +824,9 @@ public class DefaultStyledDocument extends AbstractDocument
         }
     }
 
-    private static final class ChangeDesc {
+    private final class ChangeDesc {
         public final BranchElement element;
-        private int index = -1;
+        private int childIndex = -1;
         public final List added = new ArrayList();
         public final List removed = new ArrayList();
         public final boolean justCreated;
@@ -893,30 +842,32 @@ public class DefaultStyledDocument extends AbstractDocument
             this.justCreated = justCreated;
         }
 
-        public void setIndex(final int index) {
-            if (this.index != -1) {
-                throw new Error("Index has already been set, "
-                                + "and cannot be changed.");
-            }
-            this.index = index;
+        public ChangeDesc(final Element element,
+                          final int offset) {
+            this(element, false);
+            setChildIndexByOffset(offset);
         }
 
-        public int getIndex() {
-            return index;
+        public void setChildIndex(final int index) {
+            if (this.childIndex == -1) {
+                this.childIndex = index;
+            }
+        }
+
+        public int getChildIndex() {
+            return childIndex;
         }
 
         public Element[] getChildrenAdded() {
-            final Element[] result = new Element[added.size()];
-            return (Element[])added.toArray(result);
+            return (Element[])added.toArray(new Element[added.size()]);
         }
 
         public Element[] getChildrenRemoved() {
-            final Element[] result = new Element[removed.size()];
-            return (Element[])removed.toArray(result);
+            return (Element[])removed.toArray(new Element[removed.size()]);
         }
 
         public ElementEdit toElementEdit() {
-            return new ElementEdit(element, index,
+            return new ElementEdit(element, childIndex,
                                    getChildrenRemoved(),
                                    getChildrenAdded());
         }
@@ -925,12 +876,12 @@ public class DefaultStyledDocument extends AbstractDocument
             if (applied || isEmpty()) {
                 return;
             }
-            if (index == -1) {
-                throw new Error("Index is not initialized");
+            if (childIndex == -1) {
+                childIndex = 0;
             }
 
             applied = true;
-            element.replace(index, removed.size(), getChildrenAdded());
+            element.replace(childIndex, removed.size(), getChildrenAdded());
         }
 
         public boolean isEmpty() {
@@ -939,6 +890,84 @@ public class DefaultStyledDocument extends AbstractDocument
 
         public boolean isApplied() {
             return applied;
+        }
+
+        public void createLeafElement(final AttributeSet attr, final int start,
+                                      final int end) {
+            added.add(DefaultStyledDocument.this.createLeafElement(element, attr, start, end));
+        }
+
+        public BranchElement createBranchElement(final AttributeSet attr) {
+            return (BranchElement)DefaultStyledDocument.this.createBranchElement(element, attr);
+        }
+
+        public void splitLeafElement(final Element leaf, final int splitOffset) {
+            final AttributeSet attrs = leaf.getAttributes();
+            createLeafElement(attrs , leaf.getStartOffset(), splitOffset);
+            createLeafElement(attrs, splitOffset, leaf.getEndOffset());
+            removed.add(leaf);
+        }
+
+        public void splitLeafElement(final Element child,
+                                     final int splitOffset1,
+                                     final int splitOffset2,
+                                     final boolean createMiddle,
+                                     final AttributeSet middleAttr) {
+            splitLeafElement(child, splitOffset1, splitOffset2, splitOffset2, createMiddle, middleAttr);
+        }
+
+        public void splitLeafElement(final Element child,
+                                     final int splitOffset1,
+                                     final int splitOffset2,
+                                     final int splitOffset3,
+                                     final boolean createMiddle,
+                                     final AttributeSet middleAttr) {
+            final AttributeSet attrs = child.getAttributes();
+            if (child.getStartOffset() < splitOffset1) {
+                createLeafElement(attrs, child.getStartOffset(), splitOffset1);
+            }
+            if (createMiddle) {
+                createLeafElement(middleAttr, splitOffset1, splitOffset2);
+            }
+            if (splitOffset3 < child.getEndOffset()) {
+                createLeafElement(attrs, splitOffset3, child.getEndOffset());
+            }
+            removed.add(child);
+        }
+
+        public void setChildIndexByOffset(final int offset) {
+            setChildIndex(element.getElementIndex(offset));
+        }
+
+        public Element getChildAtOffset(final int offset) {
+            return element.getElement(element.getElementIndex(offset));
+        }
+
+        public int getChildIndexAtOffset(final int offset) {
+            return element.getElementIndex(offset);
+        }
+
+        public Element getCurrentChild() {
+            return element.getElement(childIndex);
+        }
+
+        public Element getChildElement(final int index) {
+            return element.getElement(index);
+        }
+
+        public void removeChildElement(final int index) {
+            removed.add(element.getElement(index));
+        }
+
+        public Element getAddedElement(final int i) {
+            return (i > 0 && i < added.size()) ? (Element)added.get(i) : null;
+        }
+
+        public Element getLastAddedElement() {
+            return (Element)added.get(added.size() - 1);
+        }
+        public Element getLastRemovedElement() {
+            return (Element)removed.get(removed.size() - 1);
         }
     }
 
@@ -1004,8 +1033,13 @@ public class DefaultStyledDocument extends AbstractDocument
     }
 
     public Element getParagraphElement(final int offset) {
-        Element root = getDefaultRootElement();
-        return root.getElement(root.getElementIndex(offset));
+        Element branch;
+        Element child = getDefaultRootElement();
+        do {
+            branch = child;
+            child = branch.getElement(branch.getElementIndex(offset));
+        } while (!child.isLeaf());
+        return branch;
     }
 
     public void setCharacterAttributes(final int offset,
@@ -1132,13 +1166,7 @@ public class DefaultStyledDocument extends AbstractDocument
     }
 
     protected void create(final ElementSpec[] specs) {
-        final StringBuffer text = new StringBuffer();
-        for (int i = 0; i < specs.length; i++) {
-            if (specs[i].getLength() > 0) {
-                text.append(specs[i].getArray(), specs[i].getOffset(),
-                            specs[i].getLength());
-            }
-        }
+        final StringBuffer text = appendSpecsText(specs);
 
         writeLock();
         try {
@@ -1188,13 +1216,7 @@ public class DefaultStyledDocument extends AbstractDocument
     protected void insert(final int offset, final ElementSpec[] specs)
         throws BadLocationException {
 
-        final StringBuffer text = new StringBuffer();
-        for (int i = 0; i < specs.length; i++) {
-            if (specs[i].getLength() > 0) {
-                text.append(specs[i].getArray(), specs[i].getOffset(),
-                            specs[i].getLength());
-            }
-        }
+        final StringBuffer text = appendSpecsText(specs);
         writeLock();
         try {
             UndoableEdit contentInsert =
@@ -1246,15 +1268,15 @@ public class DefaultStyledDocument extends AbstractDocument
         final boolean hasLineBreak = firstBreak != -1;
 
         Element charElem = getCharacterElement(offset);
-        ElementSpec spec;
+        ElementSpec spec = null;
         if (!hasLineBreak) {
             if (splitPrevParagraph) {
-                specs.add(new ElementSpec(null, ElementSpec.EndTagType));
-
-                spec = new ElementSpec(defaultLogicalStyle,
-                                       ElementSpec.StartTagType);
-                spec.setDirection(ElementSpec.JoinNextDirection);
-                specs.add(spec);
+                splitBranch(specs, offset, length, charElem,
+                            ElementSpec.JoinNextDirection);
+                // The direction of the next Content element must be chosen
+                // based on attributes of the first Content element
+                // in the next paragraph
+                charElem = getCharacterElement(offset + length);
             }
             spec = new ElementSpec(attributes, ElementSpec.ContentType, length);
             if (charElem.getAttributes().isEqual(attributes)) {
@@ -1269,10 +1291,8 @@ public class DefaultStyledDocument extends AbstractDocument
             int processedLength = 0;
 
             if (splitPrevParagraph) {
-                specs.add(new ElementSpec(null, ElementSpec.EndTagType));
-
-                specs.add(new ElementSpec(defaultLogicalStyle,
-                                          ElementSpec.StartTagType));
+                splitBranch(specs, offset, length, charElem,
+                            ElementSpec.OriginateDirection);
             }
 
             while (currentOffset < offset + length) {
@@ -1322,11 +1342,47 @@ public class DefaultStyledDocument extends AbstractDocument
         super.insertUpdate(event, attrs);
     }
 
+    private void splitBranch(final List specs,
+                             final int offset, final int length,
+                             final Element leaf,
+                             final short lastSpecDirection) {
+        ElementSpec spec = null;
+        Element branch = leaf.getParentElement();
+        final int endOffset = offset + length;
+        while (branch != null && branch.getEndOffset() == endOffset) {
+            specs.add(new ElementSpec(null, ElementSpec.EndTagType));
+            branch = branch.getParentElement();
+        }
+
+        branch = branch.getElement(branch.getElementIndex(offset) + 1);
+        while (branch != null
+               && !branch.isLeaf()
+               && branch.getStartOffset() == endOffset) {
+            spec = new ElementSpec(branch.getAttributes(),
+                                   ElementSpec.StartTagType);
+            spec.setDirection(ElementSpec.JoinNextDirection);
+            specs.add(spec);
+            branch = branch.getElement(0);
+        }
+        spec.setDirection(lastSpecDirection);
+    }
+
     protected void removeUpdate(final DefaultDocumentEvent event) {
         buffer.remove(event.getOffset(), event.getLength(), event);
     }
 
     protected void styleChanged(final Style style) {
+    }
+
+    private StringBuffer appendSpecsText(final ElementSpec[] specs) {
+        final StringBuffer result = new StringBuffer();
+        for (int i = 0; i < specs.length; i++) {
+            if (specs[i].getLength() > 0) {
+                result.append(specs[i].getArray(), specs[i].getOffset(),
+                            specs[i].getLength());
+            }
+        }
+        return result;
     }
 
     private void addListenerToStyles() {

@@ -102,7 +102,7 @@ public abstract class CompositeView extends View {
     public void setParent(final View parentView) {
         super.setParent(parentView);
 
-        if (getViewCount() == 0) {
+        if (parentView != null && getViewCount() == 0) {
             loadChildren(getViewFactory());
         }
     }
@@ -175,7 +175,7 @@ public abstract class CompositeView extends View {
                            final Bias[] biasReturn) {
         biasReturn[0] = Bias.Forward;
 
-        Rectangle bounds = shape.getBounds();
+        Rectangle bounds = getInsideAllocation(shape);
 
         if (isBefore((int)x, (int)y, bounds)) {
             return getStartOffset();
@@ -212,6 +212,10 @@ public abstract class CompositeView extends View {
     }
 
     protected void loadChildren(final ViewFactory factory) {
+        if (factory == null) {
+            return;
+        }
+        
         final int count = getElement().getElementCount();
 
         View[] views = new View[count];

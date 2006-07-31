@@ -30,6 +30,8 @@ import javax.swing.text.Position.Bias;
 
 public abstract class FlowView extends BoxView {
     public static class FlowStrategy {
+        private static FlowStrategy sharedStrategy;
+
         public void insertUpdate(final FlowView fv,
                                  final DocumentEvent event,
                                  final Rectangle alloc) {
@@ -127,12 +129,16 @@ public abstract class FlowView extends BoxView {
                     span = (int)view.getPreferredSpan(flowAxis);
                     weight = view.getBreakWeight(flowAxis, offset, rowSpan);
                     if (weight >= ForcedBreakWeight) {
-                        view = view.breakView(flowAxis, offset, x, rowSpan);
+                        final View broken = view.breakView(flowAxis, offset, x, rowSpan);
+                        if (view == broken && row.getViewCount() > 0) {
+                            break;
+                        }
+                        view = broken;
                     }
                     row.append(view);
                     offset = view.getEndOffset();
                 }
-            } while (view != null && span < rowSpan
+            } while (view != null && span <= rowSpan
                      && weight < ForcedBreakWeight);
 
             if (span > rowSpan) {
@@ -163,6 +169,14 @@ public abstract class FlowView extends BoxView {
             return result;
         }
 
+        static FlowStrategy getSharedStrategy() {
+            if (sharedStrategy == null) {
+                sharedStrategy = new FlowStrategy();
+            }
+
+            return sharedStrategy;
+        }
+
         private void invalidateFlow(final FlowView fv,
                                     final DocumentEvent event,
                                     final Rectangle alloc) {
@@ -190,29 +204,12 @@ public abstract class FlowView extends BoxView {
             super(element);
         }
 
-        protected void childAllocation(final int index, final Rectangle rc) {
+        public int getResizeWeight(final int axis) {
+            return 1;
         }
 
-        protected View getViewAtPoint(final int x, final int y,
-                                      final Rectangle alloc) {
-            throw new UnsupportedOperationException("Not implemented");
-        }
-
-        protected int getViewIndexAtPosition(final int pos) {
-            if (pos < getStartOffset() || pos >= getEndOffset()) {
-                return -1;
-            }
-            return super.getViewIndexAtPosition(pos);
-        }
-
-        protected boolean isAfter(final int x, final int y,
-                                  final Rectangle rc) {
-            throw new UnsupportedOperationException("Not implemented");
-        }
-
-        protected boolean isBefore(final int x, final int y,
-                                   final Rectangle rc) {
-            throw new UnsupportedOperationException("Not implemented");
+        public float getMinimumSpan(final int axis) {
+            return 0;
         }
 
         public float getPreferredSpan(final int axis) {
@@ -229,8 +226,13 @@ public abstract class FlowView extends BoxView {
             return spanY;
         }
 
+        public float getMaximumSpan(final int axis) {
+            return getPreferredSpan(axis);
+        }
+
         public void paint(final Graphics g, final Shape shape) {
-            throw new UnsupportedOperationException("Not implemented");
+            throw new UnsupportedOperationException("Not applicable to "
+                                                    + "Layout Pool");
         }
 
         public void preferenceChanged(final View child,
@@ -245,6 +247,11 @@ public abstract class FlowView extends BoxView {
             super.preferenceChanged(child, width, height);
         }
 
+        public AttributeSet getAttributes() {
+            final View parent = getParent();
+            return parent != null ? parent.getAttributes() : null;
+        }
+        
         protected void loadChildren(final ViewFactory factory) {
             if (factory != null) {
                 super.loadChildren(factory);
@@ -257,6 +264,34 @@ public abstract class FlowView extends BoxView {
                                            final ViewFactory factory) {
             view.setParent(this);
             super.forwardUpdateToView(view, event, shape, factory);
+        }
+
+        protected void childAllocation(final int index, final Rectangle rc) {
+        }
+
+        protected View getViewAtPoint(final int x, final int y,
+                                      final Rectangle alloc) {
+            throw new UnsupportedOperationException("Not applicable to "
+                                                    + "Layout Pool");
+        }
+
+        protected int getViewIndexAtPosition(final int pos) {
+            if (pos < getStartOffset() || pos >= getEndOffset()) {
+                return -1;
+            }
+            return super.getViewIndexAtPosition(pos);
+        }
+
+        protected boolean isAfter(final int x, final int y,
+                                  final Rectangle rc) {
+            throw new UnsupportedOperationException("Not applicable to "
+                                                    + "Layout Pool");
+        }
+
+        protected boolean isBefore(final int x, final int y,
+                                   final Rectangle rc) {
+            throw new UnsupportedOperationException("Not applicable to "
+                                                    + "Layout Pool");
         }
 
         private float getSpanX() {
@@ -279,7 +314,7 @@ public abstract class FlowView extends BoxView {
     protected View layoutPool;
     protected int layoutSpan = Short.MAX_VALUE;
 
-    protected FlowStrategy strategy = new FlowStrategy();
+    protected FlowStrategy strategy = FlowStrategy.getSharedStrategy();
 
     public FlowView(final Element element, final int axis) {
         super(element, axis);
@@ -317,17 +352,13 @@ public abstract class FlowView extends BoxView {
         strategy.changedUpdate(this, event, shapeToRect(alloc));
     }
 
-    public void setParent(final View parentView) {
-        super.setParent(parentView);
-    }
-
     protected SizeRequirements
         calculateMinorAxisRequirements(final int axis,
                                        final SizeRequirements sr) {
         SizeRequirements result = sr != null ? sr : new SizeRequirements();
         result.minimum = (int)layoutPool.getMinimumSpan(axis);
         result.preferred = (int)layoutPool.getPreferredSpan(axis);
-        result.maximum = Short.MAX_VALUE;
+        result.maximum = Integer.MAX_VALUE;
         result.alignment = ALIGN_CENTER;
         return result;
     }

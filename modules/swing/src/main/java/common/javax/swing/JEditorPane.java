@@ -22,11 +22,14 @@ package javax.swing;
 
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 import javax.accessibility.AccessibleContext;
@@ -40,6 +43,7 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.ChangedCharSetException;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.Document;
 import javax.swing.text.EditorKit;
@@ -51,6 +55,10 @@ import javax.swing.text.ViewFactory;
 import javax.swing.text.WrappedPlainView;
 //import javax.swing.text.html.HTML;
 //import javax.swing.text.html.HTMLDocument;
+//import javax.swing.text.html.HTMLEditorKit;
+//import javax.swing.text.rtf.RTFEditorKit;
+
+import org.apache.harmony.x.swing.StringConstants;
 
 public class JEditorPane extends JTextComponent {
     protected class AccessibleJEditorPane extends
@@ -176,7 +184,7 @@ public class JEditorPane extends JTextComponent {
 
     private static final String RTF_HEADER = "{\\rtf";
 
-    private static final String HTML_HEADER = "<html>";
+    private static final String HTML_HEADER = "<html";
 
     private ArrayList localContentTypes = new ArrayList();
 
@@ -388,7 +396,8 @@ public class JEditorPane extends JTextComponent {
                         break;
                     }
                     buffer = new String(bytes);
-                    if (HTML_HEADER.equals("<" + buffer.toLowerCase())) {
+                    if (("<" + buffer.toLowerCase()).startsWith(HTML_HEADER)) {
+
                         return HTML_CONTENT_TYPE;
                     }
                 } else {
@@ -449,13 +458,14 @@ public class JEditorPane extends JTextComponent {
 
     public void read(final InputStream stream, final Object type)
                    throws IOException {
-       //Here is some bug for HTML text: may be fix in DefaultEditorKit.read or
-        //here. API is very hazily for this one.
        if (type instanceof String) {
            setContentType((String)type);
        }
        try {
-          editorKit.read(stream, getDocument(), 0);
+          Document doc = getDocument();
+          doc.putProperty(StringConstants.IGNORE_CHARSET_DIRECTIVE,
+                          Boolean.TRUE);
+          editorKit.read(new InputStreamReader(stream), doc, 0);
        } catch (BadLocationException e) {
        }
     }
@@ -490,11 +500,9 @@ public class JEditorPane extends JTextComponent {
     }
 
     public void scrollToReference(final String ref) {
-        /*if (true) {
-            throw new UnsupportedOperationException("Not implemented");
-        }*/
-       //temporarily commented-out: HTMLDocument not implemented
-        /*Document doc = getDocument();
+        // temporarily commented-out: HTMLDocument not implemented
+        /*
+        Document doc = getDocument();
         if (ref == null || !(doc instanceof HTMLDocument)) {
             return;
         }
@@ -518,22 +526,35 @@ public class JEditorPane extends JTextComponent {
         if (visibleRect != null) {
             rect.height = visibleRect.height;
         }
-        scrollRectToVisible(rect); */
+        scrollRectToVisible(rect);
+        */
     }
+
+    /*
+    private boolean changeEditoKit(final String contentType) {
+        return !((RTF_CONTENT_TYPE.equals(contentType)
+                && editorKit instanceof RTFEditorKit)
+              || (HTML_CONTENT_TYPE.equals(contentType)
+                && editorKit instanceof HTMLEditorKit)
+              || (PLAIN_CONTENT_TYPE.equals(contentType)
+                && editorKit instanceof PlainEditorKit));
+    }
+    */
 
     public final void setContentType(final String type) {
         if (type == "text/html" || type == "text/rtf") {
             System.err.println("WARNING: HTML/RTF is not supported yet. Plain text will be shown");
         }
-       /* if (type == "text/html" || type == "text/rtf") {
-            throw new UnsupportedOperationException("Not implemented");
-        }
+        /*
         int index = contentTypes.indexOf(type);
         contentType = (index >= 0) ? (String)contentTypes.get(index)
                 : PLAIN_CONTENT_TYPE;
-        EditorKit kit = JEditorPane.createEditorKitForContentType(contentType);
-        updateEditorKit((kit != null) ? kit : new PlainEditorKit());
-        updateDocument(editorKit); */
+        if (changeEditoKit(contentType)) {
+            EditorKit kit = getEditorKitForContentType(contentType);
+            updateEditorKit((kit != null) ? kit : new PlainEditorKit());
+            updateDocument(editorKit);
+        } 
+        */
     }
 
     private String getContentTypeByEditorKit(final EditorKit kit) {
@@ -577,13 +598,12 @@ public class JEditorPane extends JTextComponent {
             updateEditorKit(kit);
             updateDocument(kit);
         }
-         /*String newContentType = getContentTypeByEditorKit(kit);
-         if (newContentType == "text/html" || newContentType == "text/rtf") {
-             throw new UnsupportedOperationException("Not implemented");
-         }
+        /*
+         String newContentType = getContentTypeByEditorKit(kit);
          updateEditorKit(kit);
          updateDocument(kit);
-         contentType = newContentType; */
+         contentType = newContentType;
+         */
     }
 
     public void setEditorKitForContentType(final String type,
@@ -601,10 +621,27 @@ public class JEditorPane extends JTextComponent {
         setPage(new URL(page));
     }
 
-    private void documentLoading(final InputStream str, final Document doc)
+    private void documentLoading(final InputStream str, final Document doc,
+                                 final URL url)
             throws IOException {
         try {
             editorKit.read(str, doc, 0);
+        } catch (ChangedCharSetException e) {
+            try {
+                doc.putProperty(StringConstants.IGNORE_CHARSET_DIRECTIVE,
+                                Boolean.TRUE);
+                doc.remove(0, doc.getLength());
+                final String htmlAttribute = e.getCharSetSpec();
+                final int charSetIndex = htmlAttribute.lastIndexOf("charset=");
+                if (charSetIndex >= 0) {
+                    String charSet = htmlAttribute.substring(charSetIndex + 8);
+                    InputStreamReader reader =
+                        new InputStreamReader(url.openStream(),
+                                              Charset.forName(charSet));
+                    editorKit.read(reader, doc, 0);
+                }
+             } catch (BadLocationException e1) {
+             }
         } catch (BadLocationException e) {
         }
     }
@@ -612,14 +649,17 @@ public class JEditorPane extends JTextComponent {
     private class AsynchLoad extends Thread {
         InputStream inputStream;
         boolean successfulLoading = true;
-        public AsynchLoad(final int priority, final InputStream stream) {
+        URL url;
+        public AsynchLoad(final int priority, final InputStream stream,
+                          final URL url) {
            super();
            setPriority(priority);
            inputStream = stream;
+           this.url = url;
         }
         public void run() {
             try {
-                documentLoading(inputStream, getDocument());
+                documentLoading(inputStream, getDocument(), url);
             } catch (IOException e) {
                 successfulLoading = false;
             }
@@ -627,11 +667,9 @@ public class JEditorPane extends JTextComponent {
     }
 
     public void setPage(final URL page) throws IOException {
-        /*if (true) {
-            throw new UnsupportedOperationException("Not implemented");
-        }*/
-       //temporarily commented-out: HTMLDocument not implemented
-        /*String url = page.toString();
+        //temporarily commented-out: HTMLDocument not implemented
+        /*
+        String url = page.toString();
         String baseUrl = getBaseURL(url);
         Document oldDoc = getDocument();
         if (baseUrl != null
@@ -650,7 +688,8 @@ public class JEditorPane extends JTextComponent {
         //Perhaps, it is reasonable only for HTMLDocument...
         if (newDoc instanceof HTMLDocument) {
             newDoc.putProperty(Document.StreamDescriptionProperty, baseUrl);
-            newDoc.putProperty("IgnoreCharsetDirective", new Boolean(true));
+            newDoc.putProperty(StringConstants.IGNORE_CHARSET_DIRECTIVE,
+                               new Boolean(false));
             try {
                 ((HTMLDocument)newDoc).setBase(new URL(baseUrl));
             } catch (IOException e) {
@@ -665,20 +704,21 @@ public class JEditorPane extends JTextComponent {
         if (asynchronousLoadPriority >= 0) {
             setDocument(newDoc);
             AsynchLoad newThread = new AsynchLoad(asynchronousLoadPriority,
-                                                  stream);
+                                                  stream, page);
             newThread.start();
             if (newThread.successfulLoading) {
                 changePage(page);
             }
         } else {
             try {
-                documentLoading(stream, newDoc);
+                documentLoading(stream, newDoc, page);
                 stream.close();
                 setDocument(newDoc);
                 changePage(page);
             } catch (IOException e) {
             }
-        } */
+        }
+        */
     }
 
     private void changePage(final URL newPage) {
