@@ -43,6 +43,7 @@ import org.apache.harmony.luni.net.SocketImplProvider;
 import org.apache.harmony.luni.platform.FileDescriptorHandler;
 import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
+import org.apache.harmony.luni.util.ErrorCodeException;
 import org.apache.harmony.luni.util.Msg;
 
 
@@ -59,7 +60,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
 
     private static final int EOF = -1;
 
-    private static final String ERRMSG_SOCKET_NONBLOCKING_WOULD_BLOCK = "The socket is marked as nonblocking operation would block";
+    private static final int ERRCODE_SOCKET_NONBLOCKING_WOULD_BLOCK = -211;
 
     // The singleton to do the native network operation.
     static final INetworkSystem networkSystem = Platform.getNetworkSystem();
@@ -277,6 +278,10 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
                 result = networkSystem.connectWithTimeout(fd, 0, trafficClass,
                         inetSocketAddress.getAddress(), inetSocketAddress
                                 .getPort(), HY_SOCK_STEP_START, connectContext);
+                // set back to nonblocking to work around with a bug in portlib
+                if (!this.isBlocking()){
+                    networkSystem.setNonBlocking(fd, true);
+                }
             }
             finished = (CONNECT_SUCCESS == result);
             isBound = finished;
@@ -501,7 +506,6 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         }
         int writeCount = 0;
         try {
-            networkSystem.setNonBlocking(fd, !this.isBlocking());
             int pos = source.position();
             int length = source.remaining();
             if (isBlocking()){
@@ -517,9 +521,13 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
             }
             source.position(pos + writeCount);
         } catch (SocketException e) {
-            if (!ERRMSG_SOCKET_NONBLOCKING_WOULD_BLOCK.equals(e.getMessage())) {
-                throw e;
-            }            
+            if (e.getCause() instanceof ErrorCodeException) {
+                if (ERRCODE_SOCKET_NONBLOCKING_WOULD_BLOCK == ((ErrorCodeException) e
+                        .getCause()).getErrorCode()) {
+                    return writeCount;
+                }
+            }
+            throw e;
         } finally {
             if (isBlocking()){
                 end(writeCount >= 0);

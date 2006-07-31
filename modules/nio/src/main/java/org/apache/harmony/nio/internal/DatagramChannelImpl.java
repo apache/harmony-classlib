@@ -37,6 +37,7 @@ import org.apache.harmony.luni.net.SocketImplProvider;
 import org.apache.harmony.luni.platform.FileDescriptorHandler;
 import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
+import org.apache.harmony.luni.util.ErrorCodeException;
 
 
 
@@ -56,10 +57,8 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
 
     // default timeout used to nonblocking mode.
     private static final int DEFAULT_TIMEOUT = 1;
-
-    // error messages, for native dependent.
-    private static final String ERRMSG_TIMEOUT = "The operation timed out";
-
+    
+    private static final int ERRCODE_SOCKET_NONBLOCKING_WOULD_BLOCK = -211;
 
     // -------------------------------------------------------------------
     // Instance variables
@@ -445,11 +444,8 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
             }
             return readCount;
         } catch (InterruptedIOException e) {
-            // FIXME improve native code.
-            if (e.getMessage().equals(ERRMSG_TIMEOUT)) {
-                return 0;
-            }
-            throw e;
+            // InterruptedIOException will be thrown when timeout.
+            return 0;
         } finally {
             end(readCount > 0);
         }
@@ -522,6 +518,14 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
                     length, isBound);
             buf.position(oldposition + result);
             return result;
+        } catch (SocketException e){
+            if (e.getCause() instanceof ErrorCodeException) {
+                if (ERRCODE_SOCKET_NONBLOCKING_WOULD_BLOCK == ((ErrorCodeException) e
+                        .getCause()).getErrorCode()) {
+                    return result;
+                }
+            }
+            throw e;   
         } finally {
             end(result > 0);
         }

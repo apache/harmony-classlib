@@ -351,7 +351,33 @@ throwJavaNetSocketException (JNIEnv * env, I_32 errorNumber)
   /* the error message lookup should be done before the FindClass
    * call, because the FindClass call may reset the error number that
    * is used in hysock_error_message */
+  jclass socketExClass,errorCodeExClass;
+  jmethodID errorCodeExConstructor, socketExConstructor,socketExCauseMethod;
+  jobject errorCodeEx,socketEx;
   char *errorMessage = netLookupErrorString (env, errorNumber);
+  if (HYPORT_ERROR_SOCKET_WOULDBLOCK == errorNumber){
+  	   errorCodeExClass = (*env)->FindClass (env, "org/apache/harmony/luni/util/ErrorCodeException");
+  	   if (!errorCodeExClass){
+  	           return;
+  	   }
+  	   errorCodeExConstructor = (*env)->GetMethodID(env,errorCodeExClass,"init","(I)V");
+       if (!errorCodeExConstructor){
+               return;
+       }
+       errorCodeEx = (*env)->NewObject(env, errorCodeExClass,errorCodeExConstructor,errorNumber);
+       socketExClass = (*env)->FindClass (env, "java/net/SocketException");
+  	   if (!socketExClass) {
+  	           return;
+  	   }
+  	   socketExConstructor = (*env)->GetMethodID(env,socketExClass,"init","(Ljava/lang/String;)V");
+       if (!socketExConstructor) {
+               return;
+       }
+       socketEx = (*env)->NewObject(env, socketExClass,errorCodeExConstructor,errorMessage); 
+       socketExCauseMethod = (*env)->GetMethodID(env,socketExClass,"initCause","(Ljava/lang/Throwable;)Ljava/lang/Throwable;");
+       (*env)->CallObjectMethod(env,socketEx,socketExCauseMethod,errorCodeEx);
+       (*env)->Throw(env,socketEx);
+  }
   throwNewExceptionByName(env, "java/net/SocketException", errorMessage);
 }
 
