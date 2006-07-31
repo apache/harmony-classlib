@@ -5444,7 +5444,7 @@ public class ScannerTest extends TestCase {
         super.setUp();
 
         server = new ServerSocket(0);
-        address = new InetSocketAddress("localhost", server.getLocalPort());
+        address = new InetSocketAddress("127.0.0.1", server.getLocalPort());
 
         client = SocketChannel.open();
         client.connect(address);
