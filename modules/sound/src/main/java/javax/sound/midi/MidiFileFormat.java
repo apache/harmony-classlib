@@ -16,6 +16,8 @@
 
 package javax.sound.midi;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 public class MidiFileFormat {
@@ -30,49 +32,57 @@ public class MidiFileFormat {
     protected int resolution;
 
     protected int type;
+    
+    private HashMap<String, Object> properties;
 
     public MidiFileFormat(int type, float divisionType, int resolution, int bytes,
             long microseconds) {
-        //TODO
+        this.type = type;
+        this.divisionType = divisionType;
+        this.resolution = resolution;
+        this.byteLength = bytes;
+        this.microsecondLength = microseconds;
+        this.properties = new HashMap<String, Object>();
     }
 
     public MidiFileFormat(int type, float divisionType, int resolution, int bytes,
             long microseconds, Map<String, Object> properties) {
-        //TODO
+        this.type = type;
+        this.divisionType = divisionType;
+        this.resolution = resolution;
+        this.byteLength = bytes;
+        this.microsecondLength = microseconds;
+        
+        this.properties = new HashMap<String, Object>();
+        this.properties.putAll(properties);
     }
 
     public int getByteLength() {
-        //TODO
-        return 1;
+        return byteLength;
     }
 
     public float getDivisionType() {
-        //TODO
-        return 1.0F;
+        return divisionType;
     }
 
     public long getMicrosecondLength() {
-        //TODO
-        return 1L;
+        return microsecondLength;
     }
 
     public Object getProperty(String key) {
-        //TODO
-        return null;
+        return properties.get(key);
     }
 
     public int getResolution() {
-        //TODO
-        return 1;
+        return resolution;
     }
 
     public int getType() {
-        //TODO
-        return 1;
+        return type;
     }
 
     public Map<String, Object> properties() {
-        //TODO
-        return null;
+        return Collections.unmodifiableMap(properties);
+        
     }
 }
