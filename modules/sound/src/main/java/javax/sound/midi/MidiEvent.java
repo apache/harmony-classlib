@@ -17,21 +17,24 @@
 package javax.sound.midi;
 
 public class MidiEvent {
+    private MidiMessage message;
+    
+    private long tick;
+    
     public MidiEvent(MidiMessage message, long tick) {
-        //TODO
+        this.message = message;
+        this.tick = tick;
     }
 
     public MidiMessage getMessage() {
-        //TODO
-        return null;
+        return message;
     }
 
     public long getTick() {
-        //TODO
-        return 1L;
+        return tick;
     }
 
     public void setTick(long tick) {
-        //TODO
+        this.tick = tick;
     }
 }
