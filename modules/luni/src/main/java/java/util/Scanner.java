@@ -1658,9 +1658,22 @@ public final class Scanner implements Iterator<String> {
         return skip(Pattern.compile(pattern));
     }
 
-    //TODO: To implement this feature
+    /**
+     * Returns a string. The string is used to represent this scanner. Contained
+     * information may be helpful for debugging. The format of the string is
+     * unspecified.
+     * 
+     * @return a string to represent this scanner
+     */
     public String toString() {
-        throw new NotYetImplementedException();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.getClass()).append(": ") //$NON-NLS-1$
+                .append("{(delimiter:") //$NON-NLS-1$
+                .append(delimiter).append(")(findStartIndex=") //$NON-NLS-1$
+                .append(findStartIndex).append(")(match succeed=") //$NON-NLS-1$
+                .append(matchSuccessful).append(")(closed=") //$NON-NLS-1$
+                .append(closed).append(")}"); //$NON-NLS-1$
+        return stringBuilder.toString();
     }
 
     /**

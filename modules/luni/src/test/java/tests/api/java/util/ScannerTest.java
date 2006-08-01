@@ -5231,7 +5231,15 @@ public class ScannerTest extends TestCase {
         s.useLocale(Locale.ENGLISH);
         assertEquals(new BigDecimal("-123.4"), s.nextBigDecimal());
     }
-    
+
+    /**
+     * @tests java.util.Scanner#toString()
+     */
+    public void test_toString() {
+        s = new Scanner("test");
+        assertNotNull(s.toString());
+    }
+
     /**
      * @tests java.util.Scanner#nextLine()
      */
