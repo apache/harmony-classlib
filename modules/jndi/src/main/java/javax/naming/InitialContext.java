@@ -441,8 +441,11 @@ public class InitialContext implements Context {
     }
 
     public Name composeName(Name name, Name prefix) throws NamingException {
-        if (null == name || null == prefix) {
+        if (null == name) {
             throw new InvalidNameException("Invalid name."); //$NON-NLS-1$
+        }
+        if (prefix == null) {
+        	prefix = new CompositeName("");
         }
         Name comName = (Name) prefix.clone();
         comName.addAll(name);
@@ -451,8 +454,11 @@ public class InitialContext implements Context {
 
     public String composeName(String name, String prefix)
         throws NamingException {
-        if (null == name || null == prefix) {
+        if (null == name) {
             throw new InvalidNameException("Invalid name."); //$NON-NLS-1$
+        }
+        if (prefix == null) {
+        	prefix = "";
         }
         return composeName(new CompositeName(name), new CompositeName(prefix))
             .toString();
