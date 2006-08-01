@@ -28,27 +28,24 @@ import junit.framework.TestCase;
 public class SoundbankResourceTest extends TestCase
 {
     /**
-     * test method getName() of class SoundbankResource
-     *
+     * @tests javax.sound.midi.Soundbank#getName()
      */
     public void test_getName()
     {
-        
         SoundbankResource1 sound = new SoundbankResource1( null, null, null );
-        assertTrue( sound.getName() == null );
+        assertNull(sound.getName());
         
         SoundbankResource1 sound1 = new SoundbankResource1( null, "Test", null );
-        assertTrue( sound1.getName().equals( "Test" ) );
+        assertEquals("Test", sound1.getName());
     }
     
     /**
-     * test method getDataClass() of class SoundbankResource
-     *
+     * @tests javax.sound.midi.Soundbank#getDataClass()
      */
     public void test_getDataClass()
     {
         SoundbankResource1 sound = new SoundbankResource1( null, null, null );
-        assertTrue( sound.getDataClass() == null );
+        assertNull(sound.getDataClass());
     }
     
     /**
