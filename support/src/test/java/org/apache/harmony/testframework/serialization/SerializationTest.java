@@ -39,6 +39,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 /**
@@ -218,7 +219,7 @@ public abstract class SerializationTest extends TestCase {
     // default comparator for a class that has equals(Object) method
     private final static SerializableAssert DEFAULT_COMPARATOR = new SerializableAssert() {
         public void assertDeserialized(Serializable reference, Serializable test) {
-            TestCase.assertEquals(reference, test);
+            Assert.assertEquals(reference, test);
         }
     };
 
@@ -232,16 +233,16 @@ public abstract class SerializationTest extends TestCase {
             Throwable tstThr = (Throwable) test;
 
             // verify class
-            TestCase.assertEquals(refThr.getClass(), tstThr.getClass());
+            Assert.assertEquals(refThr.getClass(), tstThr.getClass());
 
             // verify message
-            TestCase.assertEquals(refThr.getMessage(), tstThr.getMessage());
+            Assert.assertEquals(refThr.getMessage(), tstThr.getMessage());
 
             // verify cause
             if (refThr.getCause() == null) {
-                TestCase.assertNull(tstThr.getCause());
+                Assert.assertNull(tstThr.getCause());
             } else {
-                TestCase.assertNotNull(tstThr.getCause());
+                Assert.assertNotNull(tstThr.getCause());
 
                 THROWABLE_COMPARATOR.assertDeserialized(refThr.getCause(),
                         tstThr.getCause());
@@ -259,10 +260,10 @@ public abstract class SerializationTest extends TestCase {
             PermissionCollection tstPC = (PermissionCollection) test;
 
             // verify class
-            TestCase.assertEquals(refPC.getClass(), tstPC.getClass());
+            Assert.assertEquals(refPC.getClass(), tstPC.getClass());
 
             // verify 'readOnly' field
-            TestCase.assertEquals(refPC.isReadOnly(), tstPC.isReadOnly());
+            Assert.assertEquals(refPC.isReadOnly(), tstPC.isReadOnly());
 
             // verify collection of permissions
             Collection<Permission> refCollection = new HashSet<Permission>(
@@ -270,7 +271,7 @@ public abstract class SerializationTest extends TestCase {
             Collection<Permission> tstCollection = new HashSet<Permission>(
                     Collections.list(tstPC.elements()));
 
-            TestCase.assertEquals(refCollection, tstCollection);
+            Assert.assertEquals(refCollection, tstCollection);
         }
     };
 
@@ -356,7 +357,7 @@ public abstract class SerializationTest extends TestCase {
     public static void verifyGolden(TestCase test, Object object,
             SerializableAssert comparator) throws Exception {
 
-        TestCase.assertNotNull("Null comparator", comparator);
+        Assert.assertNotNull("Null comparator", comparator);
 
         Serializable deserialized = getObject(test, ".golden.ser");
 
@@ -378,7 +379,7 @@ public abstract class SerializationTest extends TestCase {
     public static void verifyGolden(TestCase test, Object[] objects)
             throws Exception {
 
-        TestCase.assertFalse("Empty array", objects.length == 0);
+        Assert.assertFalse("Empty array", objects.length == 0);
         verifyGolden(test, objects, defineComparator(test, objects[0]));
     }
 
@@ -403,7 +404,7 @@ public abstract class SerializationTest extends TestCase {
     public static void verifyGolden(TestCase test, Object[] objects,
             SerializableAssert comparator) throws Exception {
 
-        TestCase.assertFalse("Empty array", objects.length == 0);
+        Assert.assertFalse("Empty array", objects.length == 0);
         for (int i = 0; i < objects.length; i++) {
             Serializable deserialized = getObject(test, ".golden." + i + ".ser");
             comparator.assertDeserialized((Serializable) objects[i],
@@ -463,7 +464,7 @@ public abstract class SerializationTest extends TestCase {
     public static void verifySelf(Object[] objects)
             throws Exception {
 
-        TestCase.assertFalse("Empty array", objects.length == 0);
+        Assert.assertFalse("Empty array", objects.length == 0);
         verifySelf(objects, defineComparator(null, objects[0]));
     }
     
@@ -483,7 +484,7 @@ public abstract class SerializationTest extends TestCase {
     public static void verifySelf(Object[] objects, SerializableAssert comparator)
             throws Exception {
 
-        TestCase.assertFalse("Empty array", objects.length == 0);
+        Assert.assertFalse("Empty array", objects.length == 0);
         for(Object entry: objects){
             verifySelf(entry, comparator);
         }
@@ -500,7 +501,7 @@ public abstract class SerializationTest extends TestCase {
 
         InputStream in = ClassLoader.getSystemClassLoader()
                 .getResourceAsStream(path.toString());
-        // TestCase.assertNotNull("Failed to load resource file: " + path, in);
+        // Assert.assertNotNull("Failed to load resource file: " + path, in);
         if (in == null) {
             // FIXME stub for loading resource files in old way 
             String filename = test.getClass().getName().replace('.',
