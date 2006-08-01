@@ -386,7 +386,6 @@ public class DatagramChannelTest extends TestCase {
 
     private void assertSocketActionBeforeConnect(DatagramSocket s)
             throws IOException {
-        this.datagramSocket2 = new DatagramSocket(1082);
         s.connect(localAddr2);
         assertFalse(this.channel1.isConnected());
         assertFalse(s.isConnected());
@@ -403,7 +402,6 @@ public class DatagramChannelTest extends TestCase {
     private void assertSocketActionAfterConnect(DatagramSocket s)
             throws IOException {
         assertEquals(s.getPort(), localAddr1.getPort());
-        this.datagramSocket2 = new DatagramSocket(1082);
         s.connect(localAddr2);
         assertTrue(this.channel1.isConnected());
         assertTrue(s.isConnected());
