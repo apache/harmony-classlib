@@ -357,10 +357,10 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 			if (next != this) {
 				buffer.append(next);
 			} else {
-				buffer.append("(this Collection)");
+				buffer.append("(this Collection)"); //$NON-NLS-1$
 			}
             if(it.hasNext()) {
-                buffer.append(", ");
+                buffer.append(", "); //$NON-NLS-1$
             }
 		}
 		buffer.append(']');

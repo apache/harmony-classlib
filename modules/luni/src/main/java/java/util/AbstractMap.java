@@ -99,6 +99,16 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
         return false;
     }
 
+    /**
+     * Answers a set view of the mappings contained in this map. Each element in
+     * this set is a Map.Entry. The set is backed by the map so changes to one
+     * are reflected by the other. (If the map is modified while an iteration
+     * over the set is in progress, the results of the iteration are undefined.)
+     * The set supports remove, removeAll, retainAll and clear operations, and
+     * it does not support add or addAll operations.
+     * 
+     * @return a set of the mappings contained in this map
+     */
     public abstract Set<Map.Entry<K, V>> entrySet();
 
     /**
@@ -346,17 +356,17 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
             if (key != this) {
                 buffer.append(key);
             } else {
-                buffer.append("(this Map)");
+                buffer.append("(this Map)"); //$NON-NLS-1$
             }
             buffer.append('=');
             Object value = entry.getValue();
             if (value != this) {
                 buffer.append(value);
             } else {
-                buffer.append("(this Map)");
+                buffer.append("(this Map)"); //$NON-NLS-1$
             }
             if(it.hasNext()) {
-                buffer.append(", ");
+                buffer.append(", "); //$NON-NLS-1$
             }
         }
         buffer.append('}');
