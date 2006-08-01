@@ -18,8 +18,9 @@ package org.apache.harmony.luni.tests.java.util;
 
 import java.util.UUID;
 
+import org.apache.harmony.testframework.serialization.SerializationTest;
+
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
 
 public class UUIDTest extends TestCase {
 
@@ -244,15 +245,20 @@ public class UUIDTest extends TestCase {
         assertEquals("00000000-0000-1000-8000-000000000000", actual);
     }
 
-    public void test_serialization() throws Exception {
-        UUID uuid = new UUID(0xf81d4fae7dec11d0L, 0xa76500a0c91e6bf6L);
-        SerializationTester.assertEquals(uuid);
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
+        SerializationTest.verifySelf(new UUID(0xf81d4fae7dec11d0L,
+                0xa76500a0c91e6bf6L));
     }
 
-    public void test_serializationCompatability() throws Exception {
-        UUID uuid = new UUID(0xf81d4fae7dec11d0L, 0xa76500a0c91e6bf6L);
-        SerializationTester.assertCompabilityEquals(uuid,
-                "serialization/java/util/UUID.ser");
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+        SerializationTest.verifyGolden(this, new UUID(0xf81d4fae7dec11d0L,
+                0xa76500a0c91e6bf6L));
     }
 
     /**
