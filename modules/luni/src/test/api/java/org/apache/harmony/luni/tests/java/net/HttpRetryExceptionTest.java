@@ -16,43 +16,47 @@
 
 package org.apache.harmony.luni.tests.java.net;
 
+import java.io.Serializable;
 import java.net.HttpRetryException;
-import tests.util.SerializationTester;
+
 import junit.framework.TestCase;
 
-public class HttpRetryExceptionTest extends TestCase {
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
-    private static final String SERIALIZATION_FILE_NAME = "serialization/java/net/HttpRetryExceptionTest.golden.ser"; //$NON-NLS-1$
+public class HttpRetryExceptionTest extends TestCase {
 
     private static final String LOCATION = "Http test"; //$NON-NLS-1$
 
     private static final String DETAIL = "detail"; //$NON-NLS-1$
 
+    // comparator for HttpRetryException objects
+    private static final SerializableAssert comparator = new SerializableAssert() {
+        public void assertDeserialized(Serializable reference, Serializable test) {
+
+            HttpRetryException ref = (HttpRetryException) reference;
+            HttpRetryException tst = (HttpRetryException) test;
+
+            assertEquals("getLocation", ref.getLocation(), tst.getLocation());
+            assertEquals("responseCode", ref.responseCode(), tst.responseCode());
+            assertEquals("getReason", ref.getReason(), tst.getReason());
+            assertEquals("getMessage", ref.getMessage(), tst.getMessage());
+        }
+    };
+    
     /**
-     * @tests serialization/deserilazation.
+     * @tests serialization/deserialization.
      */
-    public void testSerialization() throws Exception {
-        HttpRetryException ia = new HttpRetryException(DETAIL, 100, LOCATION);
-
-        HttpRetryException deIA = (HttpRetryException) SerializationTester
-                .getDeserilizedObject(ia);
-
-        assertEquals(LOCATION, deIA.getLocation());
-        assertEquals(100, deIA.responseCode());
-        assertEquals(DETAIL, deIA.getReason());
-        assertEquals(DETAIL, deIA.getMessage());
+    public void testSerializationSelf() throws Exception {
+        SerializationTest.verifySelf(new HttpRetryException(DETAIL, 100,
+                LOCATION), comparator);
     }
 
     /**
-     * @tests serialization/deserilazation compatibility with RI.
+     * @tests serialization/deserialization compatibility with RI.
      */
     public void testSerializationCompatibility() throws Exception {
-        HttpRetryException ia = new HttpRetryException(DETAIL, 100, LOCATION);
-        HttpRetryException deIA = (HttpRetryException) SerializationTester
-                .readObject(ia, SERIALIZATION_FILE_NAME);
-        assertEquals(LOCATION, deIA.getLocation());
-        assertEquals(100, deIA.responseCode());
-        assertEquals(DETAIL, deIA.getReason());
-        assertEquals(DETAIL, deIA.getMessage());
+        SerializationTest.verifyGolden(this, new HttpRetryException(DETAIL,
+                100, LOCATION), comparator);
     }
 }
