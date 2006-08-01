@@ -42,11 +42,14 @@ import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
  */
 public class BeansTest extends TestCase {
 
-    private final String MOCK_JAVA_BEAN2 = "tests.api.java.beans.mock.MockJavaBean2";
+    private final String MOCK_JAVA_BEAN2 =
+            "tests.api.java.beans.mock.MockJavaBean2";
 
-    private final String MOCK_JAVA_BEAN2_FILE = "binary/java/beans/mock/MockJavaBean2.bin";
+    private final String MOCK_JAVA_BEAN2_FILE =
+            "binary/java/beans/mock/MockJavaBean2.bin";
 
-    private final String MOCK_JAVA_BEAN2_SFILE = "serialization/java/beans/mock/MockJavaBean2.ser";
+    private final String MOCK_JAVA_BEAN2_SFILE =
+            "serialization/java/beans/mock/MockJavaBean2.ser";
 
     /*
      * public Beans()
@@ -62,18 +65,21 @@ public class BeansTest extends TestCase {
         MockJavaBean bean = new MockJavaBean();
         Class type = Component.class;
         Object obj = Beans.getInstanceOf(bean, type);
+
         assertSame(bean, obj);
     }
 
     public void testGetInstanceOf_BeanNull() {
         Class type = Component.class;
         Object obj = Beans.getInstanceOf(null, type);
+
         assertNull(obj);
     }
 
     public void testGetInstanceOf_TargetTypeNull() {
         MockJavaBean bean = new MockJavaBean();
         Object obj = Beans.getInstanceOf(bean, null);
+
         assertSame(bean, obj);
     }
 
@@ -85,8 +91,9 @@ public class BeansTest extends TestCase {
         ClassLoader loader = new BinClassLoader();
         Object bean = Beans.instantiate(loader, MOCK_JAVA_BEAN2);
 
-        assertEquals("as_class", (String) bean.getClass().getMethod(
-                "getPropertyOne", (Class[]) null).invoke(bean, null));
+        assertEquals("as_class",
+                (String) bean.getClass().getMethod("getPropertyOne",
+                        (Class[]) null).invoke(bean, (Object[]) null));
         assertSame(loader, bean.getClass().getClassLoader());
     }
 
@@ -94,14 +101,16 @@ public class BeansTest extends TestCase {
         ClassLoader loader = new SerClassLoader();
         Object bean = Beans.instantiate(loader, MOCK_JAVA_BEAN2);
 
-        assertEquals("as_object", (String) bean.getClass().getMethod(
-                "getPropertyOne", (Class[]) null).invoke(bean, null));
+        assertEquals("as_object",
+                (String) bean.getClass().getMethod("getPropertyOne",
+                        (Class[]) null).invoke(bean, (Object[]) null));
         assertSame(loader, bean.getClass().getClassLoader());
     }
 
     public void testInstantiateClassLoaderString_ClassLoaderNull()
             throws Exception {
         Object bean = Beans.instantiate(null, MockJavaBean.class.getName());
+
         assertEquals(bean.getClass(), MockJavaBean.class);
         assertSame(ClassLoader.getSystemClassLoader(), bean.getClass()
                 .getClassLoader());
@@ -125,8 +134,9 @@ public class BeansTest extends TestCase {
         BeanContext context = new BeanContextSupport();
         Object bean = Beans.instantiate(loader, MOCK_JAVA_BEAN2, context);
 
-        assertEquals("as_class", (String) bean.getClass().getMethod(
-                "getPropertyOne", (Class[]) null).invoke(bean, null));
+        assertEquals("as_class",
+                (String) bean.getClass().getMethod("getPropertyOne",
+                        (Class[]) null).invoke(bean, (Object[]) null));
         assertSame(loader, bean.getClass().getClassLoader());
         assertTrue(context.contains(bean));
     }
@@ -137,8 +147,9 @@ public class BeansTest extends TestCase {
         BeanContext context = new BeanContextSupport();
         Object bean = Beans.instantiate(loader, MOCK_JAVA_BEAN2, context);
 
-        assertEquals("as_object", (String) bean.getClass().getMethod(
-                "getPropertyOne", (Class[]) null).invoke(bean, null));
+        assertEquals("as_object",
+                (String) bean.getClass().getMethod("getPropertyOne",
+                        (Class[]) null).invoke(bean, (Object[]) null));
         assertSame(loader, bean.getClass().getClassLoader());
         assertTrue(context.contains(bean));
     }
@@ -148,6 +159,7 @@ public class BeansTest extends TestCase {
         BeanContext context = new BeanContextSupport();
         Object bean = Beans.instantiate(null, MockJavaBean.class.getName(),
                 context);
+
         assertEquals(bean.getClass(), MockJavaBean.class);
         assertSame(ClassLoader.getSystemClassLoader(), bean.getClass()
                 .getClassLoader());
@@ -158,6 +170,7 @@ public class BeansTest extends TestCase {
             throws Exception {
         BeanContext context = new BeanContextSupport();
         ClassLoader loader = createSpecificClassLoader();
+
         try {
             Beans.instantiate(loader, null, context);
             fail("Should throw NullPointerException.");
@@ -169,6 +182,7 @@ public class BeansTest extends TestCase {
         ClassLoader loader = createSpecificClassLoader();
         Object bean = Beans.instantiate(loader, MockJavaBean.class.getName(),
                 null);
+
         assertEquals(bean.getClass(), MockJavaBean.class);
     }
 
@@ -184,8 +198,9 @@ public class BeansTest extends TestCase {
         Object bean = Beans.instantiate(loader, MOCK_JAVA_BEAN2, context,
                 appInit);
 
-        assertEquals("as_class", (String) bean.getClass().getMethod(
-                "getPropertyOne", (Class[]) null).invoke(bean, null));
+        assertEquals("as_class",
+                (String) bean.getClass().getMethod("getPropertyOne",
+                        (Class[]) null).invoke(bean, (Object[]) null));
         assertSame(loader, bean.getClass().getClassLoader());
         assertTrue(context.contains(bean));
     }
@@ -199,19 +214,22 @@ public class BeansTest extends TestCase {
         Object bean = Beans.instantiate(loader, MOCK_JAVA_BEAN2, context,
                 appInit);
 
-        assertEquals("as_object", (String) bean.getClass().getMethod(
-                "getPropertyOne", (Class[]) null).invoke(bean, null));
+        assertEquals("as_object",
+                (String) bean.getClass().getMethod("getPropertyOne",
+                        (Class[]) null).invoke(bean, (Object[]) null));
         assertSame(loader, bean.getClass().getClassLoader());
         assertTrue(context.contains(bean));
     }
 
     public void testInstantiateClassLoaderStringBeanContextAppletInitializer_LoaderNull()
             throws Exception {
-        String beanName = "org.apache.harmony.beans.tests.support.mock.MockJavaBean";
+        String beanName =
+                "org.apache.harmony.beans.tests.support.mock.MockJavaBean";
         BeanContext context = new BeanContextSupport();
         AppletInitializer appInit = new MockAppletInitializer();
 
         Object bean = Beans.instantiate(null, beanName, context, appInit);
+
         assertSame(ClassLoader.getSystemClassLoader(), bean.getClass()
                 .getClassLoader());
         assertEquals(beanName, bean.getClass().getName());
@@ -223,6 +241,7 @@ public class BeansTest extends TestCase {
         ClassLoader loader = createSpecificClassLoader();
         BeanContext context = new BeanContextSupport();
         AppletInitializer appInit = new MockAppletInitializer();
+
         try {
             Beans.instantiate(loader, null, context, appInit);
             fail("Should throw NullPointerException.");
@@ -232,9 +251,11 @@ public class BeansTest extends TestCase {
     public void testInstantiateClassLoaderStringBeanContextAppletInitializer_ContextNull()
             throws Exception {
         ClassLoader loader = createSpecificClassLoader();
-        String beanName = "org.apache.harmony.beans.tests.support.mock.MockJavaBean";
+        String beanName =
+                "org.apache.harmony.beans.tests.support.mock.MockJavaBean";
         AppletInitializer appInit = new MockAppletInitializer();
         Object bean = Beans.instantiate(loader, beanName, null, appInit);
+
         assertSame(ClassLoader.getSystemClassLoader(), bean.getClass()
                 .getClassLoader());
         assertEquals(beanName, bean.getClass().getName());
@@ -243,61 +264,62 @@ public class BeansTest extends TestCase {
     public void testInstantiateClassLoaderStringBeanContextAppletInitializer_InitializerNull()
             throws Exception {
         ClassLoader loader = createSpecificClassLoader();
-        String beanName = "org.apache.harmony.beans.tests.support.mock.MockJavaBean";
+        String beanName =
+                "org.apache.harmony.beans.tests.support.mock.MockJavaBean";
         BeanContext context = new BeanContextSupport();
         Object bean = Beans.instantiate(loader, beanName, context, null);
+
         assertSame(ClassLoader.getSystemClassLoader(), bean.getClass()
                 .getClassLoader());
         assertEquals(beanName, bean.getClass().getName());
     }
 
-    public void testInstantiateClassLoaderStringBeanContextAppletInitializer_AppletBean()
-            throws IOException, ClassNotFoundException {
-    /*
-     * String beanName = MockAppletBean.class.getName(); BeanContext context =
-     * new BeanContextSupport(); MockAppletInitializer appInit = new
-     * MockAppletInitializer(); MockAppletBean bean = (MockAppletBean)
-     * Beans.instantiate(null, beanName, context, appInit);
-     * assertSame(ClassLoader.getSystemClassLoader(), bean.getClass()
-     * .getClassLoader()); assertEquals(beanName, bean.getClass().getName());
-     * assertTrue(context.contains(bean));
-     * assertTrue(appInit.activateHasBeenCalled());
-     * assertTrue(appInit.initializeHasBeenCalled());
-     * assertTrue(bean.initHasBeenCalled());
-     */
-    }
+//    public void testInstantiateClassLoaderStringBeanContextAppletInitializer_AppletBean()
+//            throws IOException, ClassNotFoundException {
+//      String beanName = MockAppletBean.class.getName(); BeanContext context =
+//      new BeanContextSupport(); MockAppletInitializer appInit = new
+//      MockAppletInitializer(); MockAppletBean bean = (MockAppletBean)
+//      Beans.instantiate(null, beanName, context, appInit);
+//      assertSame(ClassLoader.getSystemClassLoader(), bean.getClass()
+//      .getClassLoader()); assertEquals(beanName, bean.getClass().getName());
+//      assertTrue(context.contains(bean));
+//      assertTrue(appInit.activateHasBeenCalled());
+//      assertTrue(appInit.initializeHasBeenCalled());
+//      assertTrue(bean.initHasBeenCalled());
+//    }
 
-    public void testInstantiateClassLoaderStringBeanContextAppletInitializer_AppletBean_SER()
-            throws IOException, ClassNotFoundException {
-    /*
-     * String beanName = MockAppletBean2.class.getName(); BeanContext context =
-     * new BeanContextSupport(); MockAppletInitializer appInit = new
-     * MockAppletInitializer(); MockAppletBean2 bean = (MockAppletBean2)
-     * Beans.instantiate(null, beanName, context, appInit);
-     * assertSame(ClassLoader.getSystemClassLoader(), bean.getClass()
-     * .getClassLoader()); assertEquals(beanName, bean.getClass().getName());
-     * assertTrue(context.contains(bean));
-     * assertTrue(appInit.activateHasBeenCalled());
-     * assertTrue(appInit.initializeHasBeenCalled());
-     * assertFalse(bean.initHasBeenCalled());
-     */
-    }
+//    public void testInstantiateClassLoaderStringBeanContextAppletInitializer_AppletBean_SER()
+//            throws IOException, ClassNotFoundException {
+//    
+//      String beanName = MockAppletBean2.class.getName(); BeanContext context =
+//      new BeanContextSupport(); MockAppletInitializer appInit = new
+//      MockAppletInitializer(); MockAppletBean2 bean = (MockAppletBean2)
+//      Beans.instantiate(null, beanName, context, appInit);
+//      assertSame(ClassLoader.getSystemClassLoader(), bean.getClass()
+//      .getClassLoader()); assertEquals(beanName, bean.getClass().getName());
+//      assertTrue(context.contains(bean));
+//      assertTrue(appInit.activateHasBeenCalled());
+//      assertTrue(appInit.initializeHasBeenCalled());
+//      assertFalse(bean.initHasBeenCalled());
+//     
+//    }
 
-    public void testInstantiateClassLoaderStringBeanContextAppletInitializer_AppletBean_2()
-            throws IOException, ClassNotFoundException {
-    /*
-     * String beanName = MockAppletBean.class.getName(); BeanContext context =
-     * new BeanContextSupport(); MockAppletInitializer appInit = new
-     * MockAppletInitializer(); MockAppletBean bean = (MockAppletBean)
-     * Beans.instantiate(null, beanName, context, null);
-     */
-    }
+//    public void testInstantiateClassLoaderStringBeanContextAppletInitializer_AppletBean_2()
+//            throws IOException, ClassNotFoundException {
+//    
+//      String beanName = MockAppletBean.class.getName(); BeanContext context =
+//      new BeanContextSupport(); MockAppletInitializer appInit = new
+//      MockAppletInitializer(); MockAppletBean bean = (MockAppletBean)
+//      Beans.instantiate(null, beanName, context, null);
+//     
+//    }
 
     /*
      * public static boolean isInstanceOf(Object bean, Class targetType)
      */
     public void testIsInstanceOf() {
         MockJavaBean bean = new MockJavaBean();
+
         assertTrue(Beans.isInstanceOf(bean, Serializable.class));
     }
 
@@ -347,11 +369,12 @@ public class BeansTest extends TestCase {
 
         ClassLoader cls = createSpecificClassLoader();
         Object bean = Beans.instantiate(cls, beanName);
+        SampleBean sampleBean;
 
         assertNotNull(bean);
         assertEquals(bean.getClass(), SampleBean.class);
 
-        SampleBean sampleBean = (SampleBean) bean;
+        sampleBean = (SampleBean) bean;
         assertNull(sampleBean.getText());
     }
 
@@ -363,11 +386,12 @@ public class BeansTest extends TestCase {
         String beanName = "org.apache.harmony.beans.tests.support.SampleBean";
 
         Object bean = Beans.instantiate(null, beanName);
+        SampleBean sampleBean;
 
         assertNotNull(bean);
         assertEquals(bean.getClass(), SampleBean.class);
 
-        SampleBean sampleBean = (SampleBean) bean;
+        sampleBean = (SampleBean) bean;
         assertNull(sampleBean.getText());
     }
 
@@ -385,6 +409,7 @@ public class BeansTest extends TestCase {
         ObjectBean bean = new ObjectBean();
         // correct non-null targetType
         Class targetType = Externalizable.class;
+
         assertTrue(Beans.isInstanceOf(bean, targetType));
 
         // null targetType
@@ -411,6 +436,8 @@ public class BeansTest extends TestCase {
     }
 
     private class ObjectBean implements Externalizable {
+        
+        static final long serialVersionUID = 637071583755213744L;
 
         public void writeExternal(ObjectOutput out) {};
 
@@ -419,7 +446,7 @@ public class BeansTest extends TestCase {
 
     private class BinClassLoader extends ClassLoader {
 
-        protected Class findClass(String name) throws ClassNotFoundException {
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
             if (!MOCK_JAVA_BEAN2.equals(name)) {
                 return super.findClass(name);
             }
@@ -434,6 +461,7 @@ public class BeansTest extends TestCase {
 
                 // read whole file
                 int read;
+
                 while ((read = in.read(buf, sz, buf.length - sz)) >= 0) {
                     sz += read;
                 }
