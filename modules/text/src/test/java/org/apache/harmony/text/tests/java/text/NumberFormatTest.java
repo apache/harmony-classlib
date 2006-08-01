@@ -19,6 +19,7 @@ import java.text.DecimalFormat;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.util.Currency;
 import java.util.Locale;
 
@@ -213,7 +214,14 @@ public class NumberFormatTest extends junit.framework.TestCase {
         } catch (UnsupportedOperationException e) {
         }
     }
-
+    /**
+     * @tests java.text.NumberFormat#parseObject(java.lang.String, java.text.ParsePosition)
+     */
+    public void test_parseObjectLjava_lang_StringLjava_text_ParsePosition() {
+    	// regression test for HARMONY-1003
+    	assertNull(NumberFormat.getInstance().parseObject("0", new ParsePosition(-1)));
+    }
+    
     protected void setUp() {
     }
 

@@ -455,7 +455,11 @@ public abstract class NumberFormat extends Format {
 	 * @return the Number resulting from the parse, or null if there is an error
 	 */
 	public final Object parseObject(String string, ParsePosition position) {
-		return parse(string, position);
+		try {
+			return parse(string, position);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	/**
