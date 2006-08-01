@@ -97,10 +97,9 @@ public class CompoundNameTest extends TestCase {
 
 	public void testConstructor_Null_String() throws InvalidNameException {
 		log.setMethod("testConstructor_Null_String()");
-		CompoundName name;
 
 		try {
-			name = new CompoundName((String) null, props);
+			new CompoundName((String) null, props);
 			fail("should be null pointer exception");
 		} catch (NullPointerException e) {
 		}
@@ -108,10 +107,9 @@ public class CompoundNameTest extends TestCase {
 
 	public void testConstructor_Null_Props() throws InvalidNameException {
 		log.setMethod("testConstructor_Null_Props()");
-		CompoundName name;
 
 		try {
-			name = new CompoundName("abc", null);
+			new CompoundName("abc", null);
 			fail("should be null pointer exception");
 		} catch (NullPointerException e) {
 		}
@@ -129,12 +127,11 @@ public class CompoundNameTest extends TestCase {
 	public void testConstructor_WithProps_D_NotFlat()
 			throws InvalidNameException {
 		log.setMethod("testConstructor_WithProps_D_NotFlat()");
-		CompoundName name;
 		props.clear();
 		props.put("jndi.syntax.direction", "left_to_right");
 
 		try {
-			name = new CompoundName("a/b/c", props);
+			new CompoundName("a/b/c", props);
 			fail("has direction but no separator, should throw IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 		}
@@ -176,13 +173,12 @@ public class CompoundNameTest extends TestCase {
 
 	public void testConstructor_WithProps_DS2() throws InvalidNameException {
 		log.setMethod("testConstructor_WithProps_DS2()");
-		CompoundName name;
 		props.clear();
 		props.put("jndi.syntax.direction", "left_to_right");
 		props.put("jndi.syntax.separator2", "/");
 		try {
-			name = new CompoundName("a/b/c", props);
-			fail();
+			new CompoundName("a/b/c", props);
+			fail("IllegalArgumentException expected");
 		} catch (IllegalArgumentException e) {
 		}
 	}
@@ -552,7 +548,7 @@ public class CompoundNameTest extends TestCase {
 	public void testConstructor_WithProps_DSEQAvTv_sameSE()
 			throws InvalidNameException {
 		log.setMethod("testConstructor_WithProps_DSEQAvTv_sameSE()");
-		CompoundName name, name2;
+		CompoundName name;
 		props.clear();
 		props.put("jndi.syntax.direction", "left_to_right");
 		props.put("jndi.syntax.separator", "/");
@@ -577,7 +573,7 @@ public class CompoundNameTest extends TestCase {
 	public void testConstructor_WithProps_DSEQAvTv_sameSQ()
 			throws InvalidNameException {
 		log.setMethod("testConstructor_WithProps_DSEQAvTv_sameSQ()");
-		CompoundName name, name2;
+		CompoundName name;
 		props.clear();
 		props.put("jndi.syntax.direction", "left_to_right");
 		props.put("jndi.syntax.separator", "/");
@@ -601,7 +597,7 @@ public class CompoundNameTest extends TestCase {
 	public void testConstructor_WithProps_DSEQAvTv_sameEQ()
 			throws InvalidNameException {
 		log.setMethod("testConstructor_WithProps_DSEQAvTv_sameEQ()");
-		CompoundName name, name2;
+		CompoundName name;
 		props.clear();
 		props.put("jndi.syntax.direction", "left_to_right");
 		props.put("jndi.syntax.separator", "/");
@@ -625,7 +621,7 @@ public class CompoundNameTest extends TestCase {
 	public void testConstructor_WithProps_DSEQAvTv_sameSAv()
 			throws InvalidNameException {
 		log.setMethod("testConstructor_WithProps_DSEQAvTv_sameSAv()");
-		CompoundName name, name2;
+		CompoundName name;
 		props.clear();
 		props.put("jndi.syntax.direction", "left_to_right");
 		props.put("jndi.syntax.separator", "/");
@@ -648,7 +644,7 @@ public class CompoundNameTest extends TestCase {
 	public void testConstructor_WithProps_DSEQAvTv_sameSTv()
 			throws InvalidNameException {
 		log.setMethod("testConstructor_WithProps_DSEQAvTv_sameSTv()");
-		CompoundName name, name2;
+		CompoundName name;
 		props.clear();
 		props.put("jndi.syntax.direction", "left_to_right");
 		props.put("jndi.syntax.separator", "/");
@@ -670,7 +666,6 @@ public class CompoundNameTest extends TestCase {
 
 	public void testConstructor_WithProps_DSQ() throws InvalidNameException {
 		log.setMethod("testConstructor_WithProps_DSQ()");
-		CompoundName name;
 		props.clear();
 		props.put("jndi.syntax.direction", "left_to_right");
 		props.put("jndi.syntax.separator", "/");
@@ -688,7 +683,6 @@ public class CompoundNameTest extends TestCase {
 
 	public void testConstructor_Advanced() throws InvalidNameException {
 		log.setMethod("testConstructor_Advanced()");
-		CompoundName name;
 
 		assertNameEmpty(new CompoundName("", props));
 		assertNameEquals(new CompoundName("/", props), "");
@@ -1219,7 +1213,6 @@ public class CompoundNameTest extends TestCase {
 
 	public void testCompareTo() throws InvalidNameException {
 		log.setMethod("testCompareTo()");
-		CompoundName name1, name2;
 
 		assertEquals(-1, new CompoundName("a/b/c/d", props)
 				.compareTo(new CompoundName("a/c/c/d", props)));
