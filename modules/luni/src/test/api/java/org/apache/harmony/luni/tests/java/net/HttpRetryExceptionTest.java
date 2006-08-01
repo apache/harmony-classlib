@@ -14,7 +14,7 @@
  * the License.
  */
 
-package tests.api.java.net;
+package org.apache.harmony.luni.tests.java.net;
 
 import java.net.HttpRetryException;
 import tests.util.SerializationTester;
