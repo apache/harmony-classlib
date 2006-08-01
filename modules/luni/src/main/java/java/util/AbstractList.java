@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -691,6 +691,50 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
 		throw new UnsupportedOperationException();
 	}
 
+    /**
+     * Returns a part of consecutive elements of this list as a view. From start
+     * (inclusive), to end(exclusive). The returned view will be of zero length
+     * if start equals end. Any change occurs in the returned subList will be
+     * reflected to the original list, and vice-versa. All the supported
+     * optional operations by the original list will also be supported by this
+     * subList.
+     * 
+     * This method can be used as a handy method to do some operations on a sub
+     * range of the original list. For example: list.subList(from, to).clear();
+     * 
+     * If the original list is modified other than through the returned subList,
+     * the behavior of the returned subList becomes undefined.
+     * 
+     * The returned subList is a subclass of AbstractList. The subclass stores
+     * offset, size of itself, and modCount of the original list. If the
+     * original list implements RandomAccess interface, the returned subList
+     * also implements RandomAccess interface.
+     * 
+     * The subList's set(int, Object), get(int), add(int, Object), remove(int),
+     * addAll(int, Collection) and removeRange(int, int) methods first check the
+     * bounds, adjust offsets and then call the corresponding methods of the
+     * original AbstractList. addAll(Collection c) method of the returned
+     * subList calls the original addAll(offset + size, c).
+     * 
+     * The listIterator(int) method of the subList wraps the original list
+     * iterator. The iterator() method of the subList invokes the original
+     * listIterator() method, and the size() method merely returns the size of
+     * the subList.
+     * 
+     * All methods will throw a ConcurrentModificationException if the modCount
+     * of the original list is not equal to the expected value.
+     * 
+     * @param start
+     *            start index of the subList, include start
+     * @param end
+     *            end index of the subList, exclude end
+     * @return a subList view of this list start from start (inclusive), end
+     *         with end (exclusive)
+     * @exception IndexOutOfBoundsException
+     *                when (start < 0 || end > size())
+     * @exception IllegalArgumentException
+     *                when (start > end)
+     */
 	public List<E> subList(int start, int end) {
 		if (0 <= start && end <= size()) {
 			if (start <= end) {
