@@ -640,6 +640,9 @@ public class InitialContextMockTest extends TestCase {
 	public void testClose() throws NamingException {
 		gContext.close();
 		assertTrue(InvokeRecord.equals(null, "close"));
+		// regression test for HARMONY-1022
+		new InitialContext().close();
+		new InitialContext(null).close();
 	}
 }
 

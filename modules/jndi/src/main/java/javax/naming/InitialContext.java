@@ -475,7 +475,9 @@ public class InitialContext implements Context {
     }
 
     public void close() throws NamingException {
-        getDefaultInitCtx().close();
+        if (this.gotDefault) {
+        	getDefaultInitCtx().close();
+        }
     }
 
     public String getNameInNamespace() throws NamingException {
