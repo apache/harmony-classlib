@@ -1114,7 +1114,12 @@ public class CompoundNameTest extends TestCase {
 		CompoundName name;
 
 		name = new CompoundName("", props);
-		name.add(null);
+		try {
+			name.add(null);
+			fail("InvalidNameException expected");
+		} catch (InvalidNameException e) {
+			//expected
+		}
 	}
 
 	public void testAdd_Indexed() throws InvalidNameException {
@@ -1146,7 +1151,21 @@ public class CompoundNameTest extends TestCase {
 		CompoundName name;
 
 		name = new CompoundName("", props);
-		name.add(0, null);
+		try {
+			name.add(0, null);
+			fail("InvalidNameException expected");
+		} catch (InvalidNameException e) {
+			//expected
+		}
+
+		// regression test for HARMONY-1021
+		name = new CompoundName("", props);
+		try {
+			name.add(11, null);
+			fail("InvalidNameException expected");
+		} catch (InvalidNameException e) {
+			//expected
+		}
 	}
 
 	public void testRemove() throws InvalidNameException {

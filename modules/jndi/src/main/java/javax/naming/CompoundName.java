@@ -661,6 +661,9 @@ public class CompoundName implements Name {
     }
 
     public Name add(String element) throws InvalidNameException {
+        if (element == null) {
+            throw new InvalidNameException("A flat name can only have a single component");
+        }
         elem.add(element);
         return this;
     }
@@ -678,6 +681,9 @@ public class CompoundName implements Name {
      * 						this <code>CompoundName</code> becoming invalid.
      */
     public Name add(int index, String element) throws InvalidNameException {
+        if (element == null) {
+            throw new InvalidNameException("A flat name can only zero or one component");
+        }
         validateIndex(index, true);
         elem.add(index, element);
         return this;
