@@ -6,6 +6,7 @@ Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Eclipse-ExtensibleAPI: true
+Specification-Title: Java Platform API Specification
 Import-Package: java.lang.annotation,
  java.math,
  java.nio,
