@@ -319,15 +319,15 @@ public class Extension {
     public static class BasicConstraints extends Extension {
         // the value of extension
         private boolean cA = false;
+
         private int pathLenConstraint = Integer.MAX_VALUE;
-            
-        // TODO: Constructor for creating the extension without 
+
+        // Constructor for creating the extension without
         // encoding provided
-        //
-        // public BasicConstraints(List keys, boolean critical) {
-        //     super(ASN1Oid.toString(BASIC_CONSTRAINTS), critical,
-        //    // make extnValue     ASN1.encode(keys));
-        // }
+        public BasicConstraints(List keys, boolean critical) {
+            super(BASIC_CONSTRAINTS, critical,
+                    ASN1.encode(keys.toArray())); // make extnValue
+        }
 
         private BasicConstraints(byte[] extnValue, byte[] rawExtnValue, 
                 byte[] encoding) throws IOException {
