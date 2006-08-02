@@ -225,12 +225,12 @@ class PlainSocketImpl extends SocketImpl {
 					if (timeout == 0) {
 						// PlainSocketImpl2.connectStreamSocketImpl2(fd, aPort,
 						// trafficClass, address);
-						netImpl.connect(fd, trafficClass, anAddr, aPort);
+						netImpl.connect(fd, trafficClass, address, aPort);
 					} else {
 						// PlainSocketImpl2.connectStreamWithTimeoutSocketImpl2(
 						// fd, aPort, timeout, trafficClass, address);
 						netImpl.connectStreamWithTimeoutSocket(fd, aPort,
-								timeout, trafficClass, anAddr);
+								timeout, trafficClass, address);
 					}
 				}
 			}

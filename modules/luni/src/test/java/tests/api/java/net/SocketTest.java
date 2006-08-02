@@ -95,6 +95,25 @@ public class SocketTest extends SocketTestCase {
 		int sport = startServer("Cons String,I");
 		s = new Socket(InetAddress.getLocalHost().getHostName(), sport);
 		assertTrue("Failed to create socket", s.getPort() == sport);
+        
+		//regression for HARMONY-946
+        ServerSocket ss = null;
+        Socket s = null;
+        try{
+            ss = new ServerSocket(0);
+            s = new Socket("0.0.0.0 ", ss.getLocalPort());
+        }finally{
+            try{
+                ss.close();
+            }catch(Exception e){
+                //ignore
+            }
+            try{
+                s.close();
+            }catch(Exception e){
+                //ignore
+            }
+        }
 	}
 
 	/**
@@ -2414,7 +2433,7 @@ public class SocketTest extends SocketTestCase {
             // expected
         }
     }
-
+    
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
