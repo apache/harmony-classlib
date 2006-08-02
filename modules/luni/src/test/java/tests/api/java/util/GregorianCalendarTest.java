@@ -564,6 +564,22 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
         gCalend.set(Calendar.MILLISECOND, 0);//changes nothing
         assertEquals("After", dayOfMonth, gCalend.get(Calendar.DAY_OF_MONTH));
     }
+    
+    /**
+     * @tests java.util.GregorianCalendar#getMinimalDaysInFirstWeek()
+     */
+    public void test_getMinimalDaysInFirstWeek() {
+        // Regression for Harmony-1037
+        GregorianCalendar g = new GregorianCalendar(TimeZone
+                .getTimeZone("Europe/London"), new Locale("en", "GB"));
+        int minimalDaysInFirstWeek = g.getMinimalDaysInFirstWeek();
+        assertEquals(4, minimalDaysInFirstWeek);
+
+        g = new GregorianCalendar(TimeZone.getTimeZone("Europe/London"),
+                new Locale("fr"));
+        minimalDaysInFirstWeek = g.getMinimalDaysInFirstWeek();
+        assertEquals(4, minimalDaysInFirstWeek);
+    }
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method

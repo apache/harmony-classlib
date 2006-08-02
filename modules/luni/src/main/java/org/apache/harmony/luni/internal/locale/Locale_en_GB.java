@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ public class Locale_en_GB extends java.util.ListResourceBundle {
 protected Object[][] getContents() {
 	Object[][] contents = {
 		{"First_Day",new java.lang.Integer(2),},
+        {"Minimal_Days",new java.lang.Integer(4),}, //$NON-NLS-1$
 		{"timezones",new String[][]{new String[]{"Europe/London","Greenwich Mean Time","GMT","British Summer Time","BST",},
 new String[]{"PST","Pacific Standard Time","PST","Pacific Daylight Time","PDT",},
 new String[]{"America/Los_Angeles","Pacific Standard Time","PST","Pacific Daylight Time","PDT",},

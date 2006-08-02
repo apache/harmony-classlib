@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ public class Locale_fr extends java.util.ListResourceBundle {
 protected Object[][] getContents() {
 	Object[][] contents = {
 		{"First_Day",new java.lang.Integer(2),},
+        {"Minimal_Days",new java.lang.Integer(4),}, //$NON-NLS-1$
 		{"eras",new String[]{"BC","ap. J.-C.",},
 },
 		{"months",new String[]{"janvier","f\u00e9vrier","mars","avril","mai","juin","juillet","ao\u00fbt","septembre","octobre","novembre","d\u00e9cembre","",},
