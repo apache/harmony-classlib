@@ -25,6 +25,7 @@ Import-Package: java.lang.annotation,
  org.xml.sax,
  tests.support;hy_usage=test;resolution:=optional,
  tests.support.resource;hy_usage=test;resolution:=optional,
+ org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional,
  tests.util;hy_usage=test;resolution:=optional
 Export-Package: java.io,
  java.lang,
