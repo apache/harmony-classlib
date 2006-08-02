@@ -29,4 +29,6 @@ BUILDFILES = \
 
 DLLNAME = ../libhyzlib.so
 
+LDFLAGS = -Wl,-Bsymbolic
+
 include $(HY_HDK)/build/make/rules.mk

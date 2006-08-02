@@ -28,7 +28,7 @@ $(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
 	-Wl,-soname=$(@F) $(VMLINK) -o $@ \
 	$(BUILDFILES) $(SYSLIBFILES) \
 	-Xlinker --start-group $(MDLLIBFILES) -Xlinker --end-group \
-	-lc -lm -ldl
+	-lc -lm -ldl $(LDFLAGS)
 
 $(EXENAME): $(BUILDFILES) $(MDLLIBFILES)
 	$(CC) $(VMLINK) \
