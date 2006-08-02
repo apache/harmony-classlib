@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -320,6 +320,10 @@ public class LocaleTest extends junit.framework.TestCase {
 		assertEquals("Wrong representation 6", "en_CA", l.toString());
 		l = new Locale("en", "CA", "VAR");
 		assertEquals("Wrong representation 7", "en_CA_VAR", l.toString());
+        
+        l = new Locale("", "", "var");
+        assertEquals("Wrong representation 8", "", l.toString());
+
 	}
 
 	/**

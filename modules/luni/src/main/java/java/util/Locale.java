@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -219,11 +219,11 @@ public final class Locale implements Cloneable, Serializable {
         languageCode = language.toLowerCase();
         // Map new language codes to the obsolete language
         // codes so the correct resource bundles will be used.
-        if (languageCode.equals("he")) {
+        if (languageCode.equals("he")) {//$NON-NLS-1$
             languageCode = "iw"; //$NON-NLS-1$
-        } else if (languageCode.equals("id")) {
+        } else if (languageCode.equals("id")) {//$NON-NLS-1$
             languageCode = "in"; //$NON-NLS-1$
-        } else if (languageCode.equals("yi")) {
+        } else if (languageCode.equals("yi")) {//$NON-NLS-1$
             languageCode = "ji"; //$NON-NLS-1$
         }
 
@@ -307,6 +307,7 @@ public final class Locale implements Cloneable, Serializable {
                             }
 						}
 					} catch (IOException e) {
+                        //Empty
 					}
 				} else {
 					// Handle ZIP/JAR files.
@@ -317,12 +318,13 @@ public final class Locale implements Cloneable, Serializable {
                             ZipEntry e = entries.nextElement();
 							String name = e.getName();
 							if (name.startsWith(prefix)
-									&& name.endsWith(".class")) {
+									&& name.endsWith(".class")) {//$NON-NLS-1$
                                 result.add(name);
                             }
 						}
 						zip.close();
 					} catch (IOException e) {
+                       // Empty
 					}
 				}
 			}
@@ -612,6 +614,7 @@ public final class Locale implements Cloneable, Serializable {
 			bundle.getString("CS"); //$NON-NLS-1$
 			hasCS = true;
 		} catch (MissingResourceException e) {
+            //Empty
 		}
 
 		Enumeration<String> keys = bundle.getKeys(); // to initialize the table
@@ -623,7 +626,7 @@ public final class Locale implements Cloneable, Serializable {
 		int index = 0;
 		while (keys.hasMoreElements()) {
 			String element = keys.nextElement();
-			if (!element.equals("CS")) {
+			if (!element.equals("CS")) {//$NON-NLS-1$
                 result[index++] = element;
             }
 		}
@@ -706,14 +709,14 @@ public final class Locale implements Cloneable, Serializable {
 	 * @return the string representation of this Locale
 	 */
 	public final String toString() {
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		result.append(languageCode);
 		if (countryCode.length() > 0) {
 			result.append('_');
 			result.append(countryCode);
 		}
-		if (variantCode.length() > 0) {
-			if (countryCode.length() == 0) {
+		if (variantCode.length() > 0 && result.length() > 0 ) {
+			if (0 == countryCode.length()) {
                 result.append("__"); //$NON-NLS-1$
             } else {
                 result.append('_');
