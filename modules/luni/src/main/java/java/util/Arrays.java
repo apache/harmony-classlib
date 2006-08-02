@@ -852,6 +852,20 @@ public class Arrays {
         }
     }
 
+    /**
+     * Answers a hash code based on the contents of the given array. For any two
+     * boolean arrays a and b, if Arrays.equals(a, b) returns true, it means
+     * that the return value of Arrays.hashCode(a) equals Arrays.hashCode(b).
+     * 
+     * The value returned by this method is the same value as the
+     * {@link List#hashCode()}} method which is invoked on a {@link List}}
+     * containing a sequence of {@link Boolean}} instances representing the elements of
+     * array in the same order. If the array is null, the return value is 0.
+     * 
+     * @param array
+     *            the array whose hash code to compute
+     * @return the hash code for array
+     */
     public static int hashCode(boolean[] array) {
         if (array == null) {
             return 0;
@@ -864,6 +878,22 @@ public class Arrays {
         return hashCode;
     }
 
+    /**
+     * Answers a hash code based on the contents of the given array. For any two
+     * not-null int arrays a and b, if Arrays.equals(a, b) returns true, it
+     * means that the return value of Arrays.hashCode(a) equals
+     * Arrays.hashCode(b).
+     * 
+     * The value returned by this method is the same value as the
+     * {@link List#hashCode()}} method which is invoked on a {@link List}}
+     * containing a sequence of {@link Integer}} instances representing the
+     * elements of array in the same order. If the array is null, the return
+     * value is 0.
+     * 
+     * @param array
+     *            the array whose hash code to compute
+     * @return the hash code for array
+     */
     public static int hashCode(int[] array) {
         if (array == null) {
             return 0;
@@ -876,6 +906,21 @@ public class Arrays {
         return hashCode;
     }
 
+    /**
+     * Answers a hash code based on the contents of the given array. For any two
+     * short arrays a and b, if Arrays.equals(a, b) returns true, it means that
+     * the return value of Arrays.hashCode(a) equals Arrays.hashCode(b).
+     * 
+     * The value returned by this method is the same value as the
+     * {@link List#hashCode()}} method which is invoked on a {@link List}}
+     * containing a sequence of {@link Short}} instances representing the
+     * elements of array in the same order. If the array is null, the return
+     * value is 0.
+     * 
+     * @param array
+     *            the array whose hash code to compute
+     * @return the hash code for array
+     */
     public static int hashCode(short[] array) {
         if (array == null) {
             return 0;
@@ -888,6 +933,21 @@ public class Arrays {
         return hashCode;
     }
 
+    /**
+     * Answers a hash code based on the contents of the given array. For any two
+     * char arrays a and b, if Arrays.equals(a, b) returns true, it means that
+     * the return value of Arrays.hashCode(a) equals Arrays.hashCode(b).
+     * 
+     * The value returned by this method is the same value as the
+     * {@link List#hashCode()}} method which is invoked on a {@link List}}
+     * containing a sequence of {@link Character}} instances representing the
+     * elements of array in the same order. If the array is null, the return
+     * value is 0.
+     * 
+     * @param array
+     *            the array whose hash code to compute
+     * @return the hash code for array
+     */
     public static int hashCode(char[] array) {
         if (array == null) {
             return 0;
@@ -900,6 +960,21 @@ public class Arrays {
         return hashCode;
     }
 
+    /**
+     * Answers a hash code based on the contents of the given array. For any two
+     * byte arrays a and b, if Arrays.equals(a, b) returns true, it means that
+     * the return value of Arrays.hashCode(a) equals Arrays.hashCode(b).
+     * 
+     * The value returned by this method is the same value as the
+     * {@link List#hashCode()}} method which is invoked on a {@link List}}
+     * containing a sequence of {@link Byte}} instances representing the
+     * elements of array in the same order. If the array is null, the return
+     * value is 0.
+     * 
+     * @param array
+     *            the array whose hash code to compute
+     * @return the hash code for array
+     */
     public static int hashCode(byte[] array) {
         if (array == null) {
             return 0;
@@ -911,7 +986,22 @@ public class Arrays {
         }
         return hashCode;
     }
-
+    
+    /**
+     * Answers a hash code based on the contents of the given array. For any two
+     * long arrays a and b, if Arrays.equals(a, b) returns true, it means that
+     * the return value of Arrays.hashCode(a) equals Arrays.hashCode(b).
+     * 
+     * The value returned by this method is the same value as the
+     * {@link List#hashCode()}} method which is invoked on a {@link List}}
+     * containing a sequence of {@link Long}} instances representing the
+     * elements of array in the same order. If the array is null, the return
+     * value is 0.
+     * 
+     * @param array
+     *            the array whose hash code to compute
+     * @return the hash code for array
+     */
     public static int hashCode(long[] array) {
         if (array == null) {
             return 0;
@@ -928,6 +1018,21 @@ public class Arrays {
         return hashCode;
     }
 
+    /**
+     * Answers a hash code based on the contents of the given array. For any two
+     * float arrays a and b, if Arrays.equals(a, b) returns true, it means that
+     * the return value of Arrays.hashCode(a) equals Arrays.hashCode(b).
+     * 
+     * The value returned by this method is the same value as the
+     * {@link List#hashCode()}} method which is invoked on a {@link List}}
+     * containing a sequence of {@link Float}} instances representing the
+     * elements of array in the same order. If the array is null, the return
+     * value is 0.
+     * 
+     * @param array
+     *            the array whose hash code to compute
+     * @return the hash code for array
+     */
     public static int hashCode(float[] array) {
         if (array == null) {
             return 0;
@@ -943,6 +1048,21 @@ public class Arrays {
         return hashCode;
     }
 
+    /**
+     * Answers a hash code based on the contents of the given array. For any two
+     * double arrays a and b, if Arrays.equals(a, b) returns true, it means that
+     * the return value of Arrays.hashCode(a) equals Arrays.hashCode(b).
+     * 
+     * The value returned by this method is the same value as the
+     * {@link List#hashCode()}} method which is invoked on a {@link List}}
+     * containing a sequence of {@link Double}} instances representing the
+     * elements of array in the same order. If the array is null, the return
+     * value is 0.
+     * 
+     * @param array
+     *            the array whose hash code to compute
+     * @return the hash code for array
+     */
     public static int hashCode(double[] array) {
         if (array == null) {
             return 0;
@@ -960,6 +1080,24 @@ public class Arrays {
         return hashCode;
     }
 
+    /**
+     * Answers a hash code based on the contents of the given array. If the
+     * array contains other arrays as its elements, the hash code is based on
+     * their identities not their contents. So it is acceptable to invoke this
+     * method on an array that contains itself as an element, either directly or
+     * indirectly.
+     * 
+     * For any two arrays a and b, if Arrays.equals(a, b) returns true, it means
+     * that the return value of Arrays.hashCode(a) equals Arrays.hashCode(b).
+     * 
+     * The value returned by this method is the same value as the method
+     * Arrays.asList(array).hashCode(). If the array is null, the return value
+     * is 0.
+     * 
+     * @param array
+     *            the array whose hash code to compute
+     * @return the hash code for array
+     */
     public static int hashCode(Object[] array) {
         if (array == null) {
             return 0;
@@ -978,6 +1116,34 @@ public class Arrays {
         return hashCode;
     }
 
+    /**
+     * Answers a hash code based on the "deep contents" of the given array. If
+     * the array contains other arrays as its elements, the hash code is based
+     * on their contents not their identities. So It is not acceptable to invoke
+     * this method on an array that contains itself as an element, either
+     * directly or indirectly.
+     * 
+     * For any two arrays a and b, if Arrays.deepEquals(a, b) returns true, it
+     * means that the return value of Arrays.deepHashCode(a) equals
+     * Arrays.deepHashCode(b).
+     * 
+     * The computation of the value returned by this method is similar to that
+     * of the value returned by {@link List#hashCode()}} method invoked on a
+     * {@link List}} containing a sequence of instances representing the
+     * elements of array in the same order. The difference is: If an element e
+     * of array is itself an array, its hash code is computed by calling the
+     * appropriate overloading of Arrays.hashCode(e) if e is an array of a
+     * primitive type, or by calling Arrays.deepHashCode(e) recursively if e is
+     * an array of a reference type.
+     * 
+     * The value returned by this method is the same value as the method
+     * Arrays.asList(array).hashCode(). If the array is null, the return value
+     * is 0.
+     * 
+     * @param array
+     *            the array whose hash code to compute
+     * @return the hash code for array
+     */
     public static int deepHashCode(Object[] array) {
         if (array == null) {
             return 0;
@@ -1266,6 +1432,40 @@ public class Arrays {
         return true;
     }
 
+    /**
+     * Returns true if the two given arrays are deeply equal to one another.
+     * Unlike the method equals(Object[] array1, Object[] array2), this method
+     * is appropriate for use for nested arrays of arbitrary depth.
+     * 
+     * Two array references are considered deeply equal if they are both null,
+     * or if they refer to arrays that have the same length and the elements at
+     * each index in the two arrays are equal.
+     * 
+     * Two null elements element1 and element2 are possibly deeply equal if any of the
+     * following conditions satisfied:
+     * 
+     * element1 and element2 are both arrays of object reference types, and
+     * Arrays.deepEquals(element1, element2) would return true.
+     * 
+     * element1 and element2 are arrays of the same primitive type, and the appropriate
+     * overloading of Arrays.equals(element1, element2) would return true.
+     * 
+     * element1 == element2
+     * 
+     * element1.equals(element2) would return true.
+     * 
+     * Note that this definition permits null elements at any depth.
+     * 
+     * If either of the given arrays contain themselves as elements, the
+     * behavior of this method is incertitude.
+     * 
+     * @param array1
+     *            the first Object array
+     * @param array2
+     *            the second Object array
+     * @return true when the arrays have the same length and the elements at
+     *         each index in the two arrays are equal, false otherwise
+     */
     public static boolean deepEquals(Object[] array1, Object[] array2) {
         if (array1 == array2) {
             return true;
