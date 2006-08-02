@@ -29,6 +29,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AlreadyConnectedException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.DatagramChannel;
+import java.nio.channels.IllegalBlockingModeException;
 import java.nio.channels.NotYetConnectedException;
 import java.nio.channels.spi.SelectorProvider;
 
@@ -690,6 +691,26 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
             channelImpl.isBound = true;
         }
 
+        /*
+         * @see java.net.DatagramSocket#receive(java.net.DatagramPacket)
+         */
+        public void receive(DatagramPacket packet) throws IOException {
+            if (!channelImpl.isBlocking()) {
+                throw new IllegalBlockingModeException();
+            }
+            super.receive(packet);
+        }
+
+        /*
+         * @see java.net.DatagramSocket#send(java.net.DatagramPacket)
+         */
+        public void send(DatagramPacket packet) throws IOException {
+            if (!channelImpl.isBlocking()) {
+                throw new IllegalBlockingModeException();
+            }
+            super.send(packet);
+        }
+        
         /*
          * @see java.net.DatagramSocket#close()
          */

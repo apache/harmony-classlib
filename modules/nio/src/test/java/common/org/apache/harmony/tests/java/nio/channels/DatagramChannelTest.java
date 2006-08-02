@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.DatagramChannel;
+import java.nio.channels.IllegalBlockingModeException;
 import java.nio.channels.NotYetConnectedException;
 import java.nio.channels.UnresolvedAddressException;
 import java.nio.channels.UnsupportedAddressTypeException;
@@ -2551,6 +2552,28 @@ public class DatagramChannelTest extends TestCase {
             fail("Should throw NullPointerException");
         } catch (NullPointerException e) {
             //pass
+        }
+    }
+    
+    /**
+     * @tests DatagramChannel#socket()
+     */
+    public void test_socket_IllegalBlockingModeException() throws Exception {
+        // regression test for Harmony-1036
+        DatagramChannel channel = DatagramChannel.open();
+        channel.configureBlocking(false);
+        DatagramSocket socket = channel.socket();
+        try {
+            socket.send(null);
+            fail("should throw IllegalBlockingModeException");
+        } catch (IllegalBlockingModeException e) {
+            // expected
+        }
+        try {
+            socket.receive(null);
+            fail("should throw IllegalBlockingModeException");
+        } catch (IllegalBlockingModeException e) {
+            // expected
         }
     }
     
