@@ -374,10 +374,17 @@ public abstract class URLStreamHandler {
 	 *         <code>false</code> if the hosts are different
 	 */
 	protected boolean hostsEqual(URL url1, URL url2) {
-		String host1 = url1.getHost(), host2 = url2.getHost();
-		return host1 == host2
-				|| (host1 != null && host1.equalsIgnoreCase(host2));
-	}
+        String host1 = url1.getHost(), host2 = url2.getHost();
+        if (host1 == host2 || (host1 != null && host1.equalsIgnoreCase(host2))) {
+            return true;
+        }
+        InetAddress addr1 = getHostAddress(url1);
+        InetAddress addr2 = getHostAddress(url2);
+        if (addr1 == addr2 || (null != addr1 && addr1.equals(addr2))) {
+            return true;
+        }
+        return false;
+    }
 
 	/**
 	 * Answers true if the urls refer to the same file. Compares the protocol,
