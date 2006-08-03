@@ -27,6 +27,15 @@ public class InetSocketAddressTest extends TestCase {
     private static final String SERIALIZATION_FILE_NAME_UNRESOLVED = "serialization/java/net/InetSocketAddress.golden.2.ser";
 
     /**
+     * @tests java.net.InetSocketAddress#InetSocketAddress(String, int)
+     */
+    public void test_ConstructorLjava_lang_StringI() throws Exception {
+        // regression test for Harmony-1042
+        InetSocketAddress address = new InetSocketAddress("127.0.0.1", 0);
+        assertNotNull(address.getHostName());
+    }
+    
+    /**
 	 * @tests java.net.InetSocketAddress#createUnresolved(String, int)
 	 */
 	public void test_createUnresolvedLjava_lang_StringI() {

@@ -90,7 +90,7 @@ public class InetSocketAddress extends SocketAddress {
 	}
 
 	public final String getHostName() {
-        return (null != addr) ? addr.hostName : hostname;
+        return (null != addr) ? addr.getHostName() : hostname;
     }
 
 	public final boolean isUnresolved() {
