@@ -78,7 +78,7 @@
 
         <mkdir dir="${hy.accessibility.bin.test}" />
 
-        <javac srcdir="${hy.accessibility.src.test.java}"
+        <javac srcdir="${hy.accessibility.src.test.api}/java/common"
                destdir="${hy.accessibility.bin.test}"
                sourcepath=""
                source="${hy.javac.source}"
@@ -91,11 +91,11 @@
                 </fileset>
             </bootclasspath>
             <classpath location="../../build/tests" />
-            <classpath location="${hy.hdk}/build/test/support.jar" />
+            <classpath location="${hy.hdk}/build/test/support.jar" /> 
         </javac>
     </target>
 
-    <target name="run.tests">
+    <target name="run.tests" if="with.awt.swing">
 
         <mkdir dir="${hy.tests.reports}" />
 
@@ -110,14 +110,9 @@
                dir="${hy.accessibility.bin.test}"
                jvm="${test.jre.home}/bin/java">
 
-            <jvmarg value="-showversion"/>
-
             <env key="JAVA_HOME" value="${test.jre.home}"/>
 
-            <classpath>
-                <pathelement path="${hy.accessibility.bin.test}"/>
-            </classpath>
-            <classpath location="${hy.hdk}/build/test/support.jar" />
+            <jvmarg value="-Xbootclasspath/a:${hy.accessibility.bin.test}${path.separator}${basedir}/../../depends/jars/junit_3.8.2/junit.jar${path.separator}${hy.hdk}/build/test/support.jar"/>
 
             <formatter type="xml" />
 
@@ -127,7 +122,7 @@
             <batchtest todir="${hy.tests.reports}" haltonfailure="no"
                 unless="test.case">
 
-                <fileset dir="${hy.accessibility.src.test.java}"/>
+                <fileset dir="${hy.accessibility.src.test.api}/java/common"/>
             </batchtest>
         </junit>
         <antcall target="touch-failures-file" />

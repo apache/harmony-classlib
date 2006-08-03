@@ -49,8 +49,6 @@ import javax.swing.text.BadLocationException;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.x.swing.Utilities;
-
 public abstract class BasicSwingTestCase extends TestCase {
     public static final long DEFAULT_TIMEOUT_DELAY = 10000;
 
@@ -63,7 +61,7 @@ public abstract class BasicSwingTestCase extends TestCase {
 
     static {
         String timeoutProp = System.getProperty("test.timeout");
-        if (Utilities.isEmptyString(timeoutProp)) {
+        if (timeoutProp == null || timeoutProp.length() == 0) {
             defaultTimeoutDelay = DEFAULT_TIMEOUT_DELAY;
         } else {
             defaultTimeoutDelay = Integer.parseInt(timeoutProp);
