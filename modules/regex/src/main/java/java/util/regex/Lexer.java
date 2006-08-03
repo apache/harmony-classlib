@@ -111,7 +111,59 @@ class Lexer {
     public static final int MODE_RANGE = 1 << 1;
 
     public static final int MODE_ESCAPE = 1 << 2;
-
+    
+    //maximum length of decomposition
+    static final int MAX_DECOMPOSITION_LENGTH = 4;
+        
+    /*
+     * maximum length of Hangul decomposition
+     * note that MAX_HANGUL_DECOMPOSITION_LENGTH <= MAX_DECOMPOSITION_LENGTH
+     */
+    static final int MAX_HANGUL_DECOMPOSITION_LENGTH = 3;
+        
+    //maximum value of codepoint for basic multilingual pane of Unicode
+    static final int MAX_CODEPOINT_BASIC_MULTILINGUAL_PANE = 0xFFFF;
+        
+    /*
+     * Following constants are needed for Hangul canonical decomposition.
+     * Hangul decomposition algorithm and constants are taken according
+     * to description at http://www.unicode.org/versions/Unicode4.0.0/ch03.pdf
+     * "3.12 Conjoining Jamo Behavior"
+     */    
+    static final int SBase = 0xAC00;
+        
+    static final int LBase = 0x1100;
+        
+    static final int VBase = 0x1161;
+        
+    static final int TBase = 0x11A7;
+        
+    static final int SCount = 11172;
+        
+    static final int LCount = 19;
+        
+    static final int VCount = 21;
+        
+    static final int TCount = 28;
+        
+    static final int NCount = 588;
+        
+    //table that contains canonical decomposition mappings
+    private static IntArrHash decompTable = null;
+        
+    //table that contains canonical combining classes
+    private static IntHash canonClassesTable = null;
+        
+    private static int canonClassesTableSize;
+        
+    /*
+     * Table that contains information about Unicode codepoints with
+     * single codepoint decomposition
+     */
+    private static IntHash singleDecompTable = null;
+        
+    private static int singleDecompTableSize;
+    
     private char[] pattern = null;
 
     private int flags = 0;
@@ -159,7 +211,7 @@ class Lexer {
         if ((flags & Pattern.LITERAL) > 0) {
             pattern = Pattern.quote(pattern);
         } else if ((flags & Pattern.CANON_EQ) > 0) {
-            pattern = normalize(pattern);
+            pattern = Lexer.normalize(pattern);
         }
 
         this.pattern = new char[pattern.length() + 2];
@@ -273,13 +325,159 @@ class Lexer {
     }
 
     /**
-     * Normalize given expression
+     * Normalize given expression.
+     * 
+     * @param input - expression to normalize
+     * @return normalized expression.
      */
-    private String normalize(String pattern) {
-        // TODO this code is workaround in the abcence of unicode normalization
-        return pattern;
+    static String normalize(String input) {                       
+        char [] inputChars = input.toCharArray();
+        int inputLength = inputChars.length;
+        int resCodePointsIndex = 0;
+        int inputCodePointsIndex = 0;
+        int decompHangulIndex = 0;
+        
+        //codePoints of input
+        int [] inputCodePoints = new int [inputLength];
+        
+        //result of canonical decomposition of input
+        int [] resCodePoints = new int [inputLength * MAX_DECOMPOSITION_LENGTH];
+        
+        //current symbol's codepoint
+        int ch;
+        
+        //current symbol's decomposition
+        int [] decomp;
+                
+        //result of canonical and Hangul decomposition of input
+        int [] decompHangul;
+        
+        //result of canonical decomposition of input in UTF-16 encoding
+        StringBuffer result = new StringBuffer();
+        
+        decompTable = HashDecompositions.getHashDecompositions();
+        canonClassesTable = CanClasses.getHashCanClasses();
+        canonClassesTableSize = canonClassesTable.size;
+        singleDecompTable = SingleDecompositions.getHashSingleDecompositions();
+        singleDecompTableSize = singleDecompTable.size;
+        
+        for (int i = 0; i < inputLength; i += Lexer.charCount(ch)) {
+            ch = Lexer.codePointAt(inputChars, i);
+            inputCodePoints[inputCodePointsIndex++] = ch;
+        }
+                        
+        /*
+         * Canonical decomposition based on mappings in decompTable
+         */
+        for (int i = 0; i < inputCodePointsIndex; i++) {            
+            ch = inputCodePoints[i];
+            
+            decomp = Lexer.getDecomposition(ch);
+            if (decomp == null) {
+                resCodePoints[resCodePointsIndex++] = ch;
+            } else {
+                int curSymbDecompLength = decomp.length;
+                
+                for (int j = 0; j < curSymbDecompLength; j++) {
+                    resCodePoints[resCodePointsIndex++] = decomp[j];
+                } 
+            }
+        }
+        
+        /*
+         * Canonical ordering.
+         * See http://www.unicode.org/reports/tr15/#Decomposition for
+         * details
+         */        
+        resCodePoints = Lexer.getCanonicalOrder(resCodePoints,
+                resCodePointsIndex);
+        
+        /*
+         * Decomposition for Hangul syllables.
+         * See http://www.unicode.org/reports/tr15/#Hangul for
+         * details
+         */        
+        decompHangul = new int [resCodePoints.length];
+        
+        for (int i = 0; i < resCodePointsIndex; i++) {
+            int curSymb = resCodePoints[i];
+            
+            decomp = getHangulDecomposition(curSymb);
+            if (decomp == null) {
+                decompHangul[decompHangulIndex++] = curSymb;
+            } else{
+                
+                /*
+                 * Note that Hangul decompositions have length that is
+                 * equal 2 or 3.
+                 */
+                decompHangul[decompHangulIndex++] = decomp[0];
+                decompHangul[decompHangulIndex++] = decomp[1];
+                if (decomp.length == 3) {
+                    decompHangul[decompHangulIndex++] = decomp[2];                    
+                }
+            }
+        }
+        
+        /*
+         * Translating into UTF-16 encoding
+         */
+        for (int i = 0; i < decompHangulIndex; i++) {
+            result.append(Lexer.toChars(decompHangul[i]));
+        }
+        
+        return result.toString();
     }
 
+    /**
+     * Rearrange codepoints according
+     * to canonical order.
+     * 
+     * @param inputInts - array that contains Unicode codepoints
+     * @param length - index of last Unicode codepoint plus 1
+     * 
+     * @return array that contains rearranged codepoints.
+     */
+    static int [] getCanonicalOrder(int [] inputInts, int length) {                      
+        int inputLength = (length < inputInts.length)
+                          ? length
+                          :    inputInts.length;
+        
+        /*
+         * Simple bubble-sort algorithm.
+         * Note that many codepoints have 0
+         * canonical class, so this algorithm works
+         * almost lineary in overwhelming majority
+         * of cases. This is due to specific of Unicode
+         * combining classes and codepoints.
+         */
+        for (int i = 1; i < inputLength; i++) {
+            int j = i - 1;
+            int iCanonicalClass = getCanonicalClass(inputInts[i]);
+            int ch;
+            
+            if (iCanonicalClass == 0) {
+                continue;
+            }
+            
+            while (j > -1) {                                
+                if (getCanonicalClass(inputInts[j]) > iCanonicalClass) {
+                    j = j - 1;
+                } else {
+                    break;
+                }
+            }
+            
+            ch = inputInts [i];            
+            for (int k = i; k > j + 1; k--) {
+                inputInts[k] = inputInts [k - 1];
+            }
+            inputInts[j + 1] = ch;
+        }
+
+        return inputInts;
+    }
+    
     /**
      * Reread current character, may be require if previous token changes mode
      * to one with different character interpretation.
@@ -946,6 +1144,196 @@ class Lexer {
         return (ch == '\n' || ch == '\r' || ch == '\u0085' || (ch | 1) == '\u2029');
     }
 
+    /**
+     * Gets decomposition for given codepoint from
+     * decomposition mappings table.
+     * 
+     * @param ch - Unicode codepoint
+     * @return array of codepoints that is a canonical
+     *         decomposition of ch.
+     */
+    static int [] getDecomposition(int ch) {
+        return decompTable.get(ch);       
+    }
+    
+    /**
+     * Gets decomposition for given Hangul syllable. 
+     * This is an implementation of Hangul decomposition algorithm 
+     * according to http://www.unicode.org/versions/Unicode4.0.0/ch03.pdf
+     * "3.12 Conjoining Jamo Behavior".
+     * 
+     * @param ch - given Hangul syllable
+     * @return canonical decoposition of ch.
+     */
+    static int [] getHangulDecomposition(int ch) {
+        int SIndex = ch - SBase;
+        
+        if (SIndex < 0 || SIndex >= SCount) {
+            return null;
+        } else {            
+            int L = LBase + SIndex / NCount; 
+            int V = VBase + (SIndex % NCount) / TCount; 
+            int T = SIndex % TCount;
+            int decomp [];
+            
+            if (T == 0) {
+                decomp = new int [] {L, V};     
+            } else {
+                T = TBase + T;
+                decomp = new int [] {L, V, T};
+            }
+            return decomp;            
+        }
+    }
+    
+    /**
+     * Gets canonical class for given codepoint from
+     * decomposition mappings table.
+     * 
+     * @param - ch Unicode codepoint
+     * @return canonical class for given Unicode codepoint
+     *         that is represented by ch.
+     */
+    static int getCanonicalClass(int ch) {   
+        int canClass = canonClassesTable.get(ch);        
+        
+        return (canClass == canonClassesTableSize)
+               ? 0
+               : canClass;
+    }
+    
+    /**
+     * Simple stub to Character.charCount().
+     * 
+     * @param - ch Unicode codepoint
+     * @return number of chars that are occupied by Unicode
+     *         codepoint ch in UTF-16 encoding.
+     */
+    final static int charCount(int ch) {
+            
+        //return Character.charCount(ch);
+        return 1;
+    }
+    
+    /**
+     * Simple stub to Character.codePointAt().
+     * 
+     * @param - source  
+     * @param - index 
+     * @return Unicode codepoint at given index at source.
+     *         Note that codepoint can reside in two adjacent chars.
+     */
+    final static int codePointAt(char [] source, int index) {
+        
+        //return Character.codePointAt(source, index);
+        return source[index];
+    }
+    
+    /**
+     * Simple stub to Character.toChars().
+     * 
+     * @param - ch Unicode codepoint
+     * @return UTF-16 encoding of given code point.
+     */
+    final static char [] toChars(int ch) {            
+        
+        //return Character.toChars(ch);
+        return new char [] {(char) ch};
+    }
+    
+    /**
+     * Simple stub to Character.isSurrogatePair().
+     * 
+     * @param high high-surrogate char
+     * @param low low-surrogate char
+     * @return true if high and low compose an UTF-16 encoding
+     *         of some Unicode codepoint (we call such codepoint "surrogate")
+     */
+    final static boolean isSurrogatePair(char high, char low) {
+        
+        //return Character.isSurrogatePair(char, low)
+        return false;
+    }
+
+    /**
+     * Tests if given codepoint is a canonical decomposition of another
+     * codepoint.
+     * 
+     * @param ch - codepoint to test
+     * @return true if ch is a decomposition.
+     */
+    static boolean hasSingleCodepointDecomposition(int ch) {
+        int hasSingleDecomp = singleDecompTable.get(ch);
+        
+        /*
+         * singleDecompTable doesn't contain ch 
+         * == (hasSingleDecomp == singleDecompTableSize)
+         */
+        return (hasSingleDecomp == singleDecompTableSize)
+               ? false
+               : true;
+    }
+    
+    /**
+     * Tests if given codepoint has canonical decomposition
+     * and given codepoint's canonical class is not 0.
+     * 
+     * @param ch - codepoint to test
+     * @return true if canonical class is not 0 and ch has a decomposition.
+     */
+    static boolean hasDecompositionNonNullCanClass(int ch) {
+        return ch == 0x0340 | ch == 0x0341 | ch == 0x0343 | ch == 0x0344;
+    }
+    
+    /**
+     * Reads next Unicode codepoint.
+     * 
+     * @return current Unicode codepoint and moves string
+     *         index to the next one.
+     */
+    int nextChar() {
+           int ch = 0;
+        
+           if (!this.isEmpty()) {
+               char nextChar = (char) lookAhead;
+               char curChar = (char) ch;
+               
+               if (Lexer.isSurrogatePair(curChar, nextChar)){                                   
+                   
+                   /*
+                    * Note that it's slow to create new arrays each time
+                    * when calling to nextChar(). This should be optimized
+                    * later when we will actively use surrogate codepoints.
+                    * You can consider this as simple stub.
+                    */
+                   char [] curCodePointUTF16 = new char [] {curChar, nextChar};
+                ch = Lexer.codePointAt(curCodePointUTF16, 0);                
+                next();
+                next();
+            } else {
+                ch = next();    
+            }
+        } 
+        
+           return ch;
+    }
+    
+    /**
+     * Tests Unicode codepoint if it is a boundary
+     * of decomposed Unicode codepoint. 
+     * 
+     * @param ch - Unicode codepoint to test
+     * @return true if given codepoint is a boundary.
+     */
+     static boolean isDecomposedCharBoundary(int ch) {  
+         int canClass = canonClassesTable.get(ch);
+     
+         //Lexer.getCanonicalClass(ch) == 0
+         boolean isBoundary = (canClass == canonClassesTableSize);
+ 
+            return isBoundary;
+    }
+       
     /**
      * Returns the curr. character index.
      */

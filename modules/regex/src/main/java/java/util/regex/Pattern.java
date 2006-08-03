@@ -455,6 +455,110 @@ public final class Pattern implements Serializable {
             return new UCISequenceSet(substring);
         }
     }
+    
+    /**
+     * D->a
+     */
+    private AbstractSet processDecomposedChar(AbstractSet last) {
+        int [] codePoints = new int [Lexer.MAX_DECOMPOSITION_LENGTH];                        
+        char [] codePointsHangul;
+        int readCodePoints = 0;
+        int curSymb = -1;
+        int curSymbIndex = -1;
+        
+        if (!lexemes.isEmpty() && lexemes.isLetter()) {
+            curSymb = lexemes.nextChar();
+            codePoints [readCodePoints] = curSymb;            
+            curSymbIndex = curSymb - Lexer.LBase;
+        }
+        
+        /*
+         * We process decomposed Hangul syllable LV or LVT or process jamo L.
+         * See http://www.unicode.org/versions/Unicode4.0.0/ch03.pdf
+         * "3.12 Conjoining Jamo Behavior"
+         */
+        if ((curSymbIndex >= 0) && (curSymbIndex < Lexer.LCount)) {
+            codePointsHangul = new char [Lexer
+                                         .MAX_HANGUL_DECOMPOSITION_LENGTH];
+            codePointsHangul[readCodePoints++] = (char) curSymb;
+            
+            curSymb = lexemes.peek();
+               curSymbIndex = curSymb - Lexer.VBase;
+               if ((curSymbIndex >= 0) && (curSymbIndex < Lexer.VCount)) {
+                   codePointsHangul [readCodePoints++] = (char) curSymb;
+                   lexemes.next();
+                   curSymb = lexemes.peek();
+                   curSymbIndex = curSymb - Lexer.TBase;
+                if ((curSymbIndex >= 0) && (curSymbIndex < Lexer.TCount)) {
+                    codePointsHangul [readCodePoints++] = (char) curSymb;
+                    lexemes.next();
+                    
+                    //LVT syllable
+                    return new HangulDecomposedCharSet(codePointsHangul, 3);
+                } else {
+                    
+                    //LV syllable
+                    return new HangulDecomposedCharSet(codePointsHangul, 2);
+                }
+               } else {
+                   
+                   //L jamo
+                   if (!hasFlag(Pattern.CASE_INSENSITIVE)) {
+                    return new CharSet(codePointsHangul[0]);
+                } else if (!hasFlag(Pattern.UNICODE_CASE)) {
+                    return new CICharSet(codePointsHangul[0]);
+                } else {
+                    return new UCICharSet(codePointsHangul[0]);
+                }
+               }
+               
+        /*
+         * We process single codepoint or decomposed codepoint.
+         * We collect decomposed codepoint and obtain 
+         * one DecomposedCharSet.
+         */
+        } else {
+            readCodePoints++;
+            
+            while((readCodePoints < Lexer.MAX_DECOMPOSITION_LENGTH) 
+                    && !lexemes.isEmpty() && lexemes.isLetter() 
+                    && !Lexer.isDecomposedCharBoundary(lexemes.peek())) {
+                  codePoints [readCodePoints++] = lexemes.nextChar();
+            }
+        
+            if (readCodePoints == 0) {
+                return null;
+            }
+        
+            /*
+             * We have read an ordinary Basic Multilingual Pane symbol.
+             */
+            if (readCodePoints == 1 
+                
+                   /*
+                 * We compile supplementary codepoint into 
+                 * DecomposedCharSet for convenience.
+                 */    
+                && curSymb <= Lexer.MAX_CODEPOINT_BASIC_MULTILINGUAL_PANE
+                && !Lexer.hasSingleCodepointDecomposition(codePoints[0])) {
+                if (!hasFlag(Pattern.CASE_INSENSITIVE)) {
+                    return new CharSet((char) codePoints[0]);
+                } else if (!hasFlag(Pattern.UNICODE_CASE)) {
+                    return new CICharSet((char) codePoints[0]);
+                } else {
+                    return new UCICharSet((char) codePoints[0]);
+                }                              
+            } else {
+                if (!hasFlag(Pattern.CASE_INSENSITIVE)) {
+                    return new DecomposedCharSet(codePoints, readCodePoints);
+                } else if (!hasFlag(Pattern.UNICODE_CASE)) {
+                    return new CIDecomposedCharSet(codePoints, readCodePoints);
+                } else {
+                    return new UCIDecomposedCharSet(codePoints, readCodePoints);
+                }
+            }
+        }
+    }
 
     /**
      * S->BS; S->QS; S->Q; B->a+
@@ -463,7 +567,20 @@ public final class Pattern implements Serializable {
         AbstractSet cur;
         if (lexemes.isLetter() && !lexemes.isNextSpecial()
                 && Lexer.isLetter(lexemes.lookAhead())) {
-            cur = processSequence(last);
+            if (hasFlag(Pattern.CANON_EQ)) {
+                cur = processDecomposedChar(last);
+                if (!lexemes.isEmpty()        
+                        
+                        /* && !pattern.isQuantifier() */
+                        && (lexemes.peek() != Lexer.CHAR_RIGHT_PARENTHESIS 
+                                || last instanceof FinalSet)
+                        && lexemes.peek() != Lexer.CHAR_VERTICAL_BAR 
+                        && !lexemes.isLetter()) {
+                    cur = processQuantifier(last, cur);
+                }
+            } else {
+                cur = processSequence(last);
+            }
         } else if (lexemes.peek() == Lexer.CHAR_RIGHT_PARENTHESIS) {
         	if (last instanceof FinalSet) {
         	    throw new PatternSyntaxException(I18n
@@ -473,7 +590,8 @@ public final class Pattern implements Serializable {
         	      cur = new EmptySet(last);
         	}
         } else {
-            cur = processQuantifier(last);
+            AbstractSet term = processTerminal(last);
+            cur = processQuantifier(last, term);
         }
 
         if (!lexemes.isEmpty()
@@ -514,8 +632,7 @@ public final class Pattern implements Serializable {
      * Q->T(*|+|?...) also do some optimizations.
      * 
      */
-    private AbstractSet processQuantifier(AbstractSet last) {
-        AbstractSet term = processTerminal(last);
+    private AbstractSet processQuantifier(AbstractSet last, AbstractSet term) {               
         int quant = lexemes.peek();
 
         if (term != null && !(term instanceof LeafSet)) {
