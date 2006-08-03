@@ -62,7 +62,7 @@ public class ExemptionMechanismSpiTest extends TestCase {
         assertEquals("Incorrect length", bbRes.length, len);
         assertEquals("Incorrect result", 
                 emSpi.engineGenExemptionBlob(new byte[1], len), len);
-        assertEquals("Incorrect output size", emSpi.engineGetOutputSize(100), 5);
+        assertEquals("Incorrect output size", 10, emSpi.engineGetOutputSize(100));
         Key key = null;
         AlgorithmParameters params = null;        
         AlgorithmParameterSpec parSpec = null;
@@ -102,6 +102,6 @@ public class ExemptionMechanismSpiTest extends TestCase {
         emSpi.engineInit(key, params);
         emSpi.engineInit(key, parSpec);
         
-        assertEquals("Incorrect result", emSpi.engineGetOutputSize(100),5);
+        assertEquals("Incorrect result", 10, emSpi.engineGetOutputSize(100));
     }
 }

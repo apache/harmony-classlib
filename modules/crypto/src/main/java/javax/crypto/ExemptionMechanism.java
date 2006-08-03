@@ -14,11 +14,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.crypto;
 
 import java.security.AlgorithmParameters;
@@ -30,14 +25,10 @@ import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
+import java.util.Arrays;
 
 import org.apache.harmony.security.fortress.Engine;
 
-
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 public class ExemptionMechanism {
 
     // Store spi implementation service name
@@ -64,10 +55,9 @@ public class ExemptionMechanism {
     // Store initKey value
     private Key initKey;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+    // Indicates if blob generated successfully
+    private boolean generated;
+
     protected ExemptionMechanism(ExemptionMechanismSpi exmechSpi,
             Provider provider, String mechanism) {
         this.mechanism = mechanism;
@@ -76,18 +66,10 @@ public class ExemptionMechanism {
         isInit = false;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public final String getName() {
         return mechanism;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public static final ExemptionMechanism getInstance(String algorithm)
             throws NoSuchAlgorithmException {
         if (algorithm == null) {
@@ -100,10 +82,6 @@ public class ExemptionMechanism {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public static final ExemptionMechanism getInstance(String algorithm,
             String provider) throws NoSuchAlgorithmException,
             NoSuchProviderException {
@@ -120,10 +98,6 @@ public class ExemptionMechanism {
         return getInstance(algorithm, impProvider);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public static final ExemptionMechanism getInstance(String algorithm,
             Provider provider) throws NoSuchAlgorithmException {
         if (algorithm == null) {
@@ -139,41 +113,21 @@ public class ExemptionMechanism {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public final Provider getProvider() {
         return provider;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     * 
-     * FIXME: check this method
-     */
     public final boolean isCryptoAllowed(Key key)
             throws ExemptionMechanismException {
-        Key initK = initKey;
-        try {
-            initKey = key;
-            spiImpl.engineInit(key);
-            spiImpl.engineGenExemptionBlob();
-            if (initK != null) {
-                spiImpl.engineInit(initK);
-            }
+
+        if (generated
+                && (initKey.equals(key) || Arrays.equals(initKey.getEncoded(),
+                        key.getEncoded()))) {
             return true;
-        } catch (InvalidKeyException e) {
-            return false;
-        } finally {
-            initKey = initK;
         }
+        return false;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public final int getOutputSize(int inputLen) throws IllegalStateException {
         if (!isInit) {
             throw new IllegalStateException(NOTINITEMECH);
@@ -181,115 +135,62 @@ public class ExemptionMechanism {
         return spiImpl.engineGetOutputSize(inputLen);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public final void init(Key key) throws InvalidKeyException,
             ExemptionMechanismException {
+        generated = false;
         spiImpl.engineInit(key);
         initKey = key;
         isInit = true;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public final void init(Key key, AlgorithmParameters param)
             throws InvalidKeyException, InvalidAlgorithmParameterException,
             ExemptionMechanismException {
+        generated = false;
         spiImpl.engineInit(key, param);
         initKey = key;
         isInit = true;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public final void init(Key key, AlgorithmParameterSpec param)
             throws InvalidKeyException, InvalidAlgorithmParameterException,
             ExemptionMechanismException {
+        generated = false;
         spiImpl.engineInit(key, param);
         initKey = key;
         isInit = true;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public final byte[] genExemptionBlob() throws IllegalStateException,
             ExemptionMechanismException {
         if (!isInit) {
             throw new IllegalStateException(NOTINITEMECH);
         }
-        return spiImpl.engineGenExemptionBlob();
+        generated = false;
+        byte[] result = spiImpl.engineGenExemptionBlob();
+        generated = true;
+        return result;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     * 
-     * FIXME: about ShortBufferException (output: null, byte[0],...
-     */
     public final int genExemptionBlob(byte[] output)
             throws IllegalStateException, ShortBufferException,
             ExemptionMechanismException {
-        if (!isInit) {
-            throw new IllegalStateException(NOTINITEMECH);
-        }
-        byte[] result = spiImpl.engineGenExemptionBlob();
-        if (output.length == 0) {
-            throw new ShortBufferException(
-                    "Output buffer is too small to hold the result");
-        }
-        int len = (result.length < output.length ? result.length
-                : output.length);
-        for (int i = 0; i < len; i++) {
-            output[i] = result[i];
-        }
-        return len;
+        return genExemptionBlob(output, 0);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     * 
-     * 
-     * FIXME: about ShortBufferException (output: null, byte[0],... and
-     * outputOffset
-     */
     public final int genExemptionBlob(byte[] output, int outputOffset)
             throws IllegalStateException, ShortBufferException,
             ExemptionMechanismException {
         if (!isInit) {
             throw new IllegalStateException(NOTINITEMECH);
         }
-        byte[] result = spiImpl.engineGenExemptionBlob();
-        if ((output.length == 0) || (outputOffset < 0)
-                || (outputOffset >= output.length)) {
-            throw new ShortBufferException(
-                    "Output buffer is too small to hold the result");
-        }
-        int len = (result.length < (output.length - outputOffset) ? result.length
-                : (output.length - outputOffset));
-        for (int i = 0; i < len; i++) {
-            output[i] = result[i];
-        }
+        generated = false;
+        int len = spiImpl.engineGenExemptionBlob(output, outputOffset);
+        generated = true;
         return len;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     * 
-     * FIXME: check this method
-     */
     protected void finalize() {
-        try {
-            initKey = null;
-            super.finalize();
-        } catch (Throwable e) {
-            new RuntimeException(e);
-        }
+        initKey = null;
     }
 }

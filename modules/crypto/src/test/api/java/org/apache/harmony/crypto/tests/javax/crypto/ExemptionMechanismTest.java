@@ -14,24 +14,21 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package org.apache.harmony.crypto.tests.javax.crypto;
 
 import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.NoSuchProviderException;
 import java.security.Provider;
 
 import javax.crypto.ExemptionMechanism;
 import javax.crypto.ExemptionMechanismSpi;
 
-import junit.framework.TestCase;
-
 import org.apache.harmony.crypto.tests.support.MyExemptionMechanismSpi;
+import org.apache.harmony.crypto.tests.support.MyExemptionMechanismSpi.tmpKey;
 import org.apache.harmony.security.tests.support.SpiEngUtils;
+
+import junit.framework.TestCase;
 
 /**
  * Tests for <code>ExemptionMechanism</code> class constructors and methods
@@ -98,4 +95,64 @@ public class ExemptionMechanismTest extends TestCase {
             //expected
         }
     }
+    
+    /**
+     * Test for <code>isCryptoAllowed(Key key)</code> method 
+     */
+    public void testIsCryptoAllowed() throws Exception {
+
+        //Regression for HARMONY-1029
+        Provider mProv = (new SpiEngUtils()).new MyProvider("MyExMechProvider",
+                "Provider for ExemptionMechanism testing",
+                srvExemptionMechanism.concat(".").concat(defaultAlg),
+                ExemptionMechanismProviderClass);
+
+        ExemptionMechanism em = new ExemptionMechanism(
+                new MyExemptionMechanismSpi(), mProv, defaultAlg) {
+        };
+
+        Key key = new MyExemptionMechanismSpi().new tmpKey("Proba", new byte[0]);
+
+        assertFalse(em.isCryptoAllowed(key));
+
+        em.init(key);
+        assertFalse(em.isCryptoAllowed(key));
+
+        em.genExemptionBlob();
+        assertTrue(em.isCryptoAllowed(key));
+
+        Key key1 = new MyExemptionMechanismSpi().new tmpKey("Proba",
+                new byte[] { 1 });
+        assertFalse(em.isCryptoAllowed(key1));
+
+        em.init(key1);
+        assertFalse(em.isCryptoAllowed(key));
+    }
+    
+    /**
+     * Test for <code>genExemptionBlob((byte[] output, int outputOffset)</code> method
+     */
+    public void testGenExemptionBlob() throws Exception {
+
+        //Regression for HARMONY-1029
+        Provider mProv = (new SpiEngUtils()).new MyProvider("MyExMechProvider",
+                "Provider for ExemptionMechanism testing",
+                srvExemptionMechanism.concat(".").concat(defaultAlg),
+                ExemptionMechanismProviderClass);
+
+        ExemptionMechanism em = new ExemptionMechanism(
+                new MyExemptionMechanismSpi(), mProv, defaultAlg) {
+        };
+
+        Key key = new MyExemptionMechanismSpi().new tmpKey("Proba", new byte[0]);
+
+        em.init(key);
+        // ExemptionMechanism doesn't check parameters
+        // it is a responsibility of ExemptionMechanismSpi
+        em.genExemptionBlob(null, 0);
+        em.genExemptionBlob(new byte[0], 0);
+        em.genExemptionBlob(new byte[10], -5);
+
+    }
+
 }

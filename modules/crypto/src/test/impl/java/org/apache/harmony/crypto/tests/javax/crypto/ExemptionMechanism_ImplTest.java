@@ -14,11 +14,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package org.apache.harmony.crypto.tests.javax.crypto;
 
 import java.security.AlgorithmParameters;
@@ -42,18 +37,17 @@ import org.apache.harmony.security.tests.support.SpiEngUtils;
 
 import junit.framework.TestCase;
 
-
 /**
  * Tests for <code>ExemptionMechanism</code> class constructors and methods
  * 
  */
 
 public class ExemptionMechanism_ImplTest extends TestCase {
-    
+
     public static final String srvExemptionMechanism = "ExemptionMechanism";
-    
+
     private static final String defaultAlg = "EMech";
-    
+
     private static final String ExemptionMechanismProviderClass = "org.apache.harmony.crypto.tests.support.MyExemptionMechanismSpi";
 
     private static final String[] invalidValues = SpiEngUtils.invalidValues;
@@ -72,12 +66,13 @@ public class ExemptionMechanism_ImplTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        mProv = (new SpiEngUtils()).new MyProvider("MyExMechProvider", "Provider for ExemptionMechanism testing", 
-                srvExemptionMechanism.concat(".").concat(defaultAlg), 
+        mProv = (new SpiEngUtils()).new MyProvider("MyExMechProvider",
+                "Provider for ExemptionMechanism testing",
+                srvExemptionMechanism.concat(".").concat(defaultAlg),
                 ExemptionMechanismProviderClass);
         Security.insertProviderAt(mProv, 1);
     }
-    
+
     /*
      * @see TestCase#tearDown()
      */
@@ -86,55 +81,40 @@ public class ExemptionMechanism_ImplTest extends TestCase {
         Security.removeProvider(mProv.getName());
     }
 
-    private void checkResult(ExemptionMechanism exMech) 
+    private void checkResult(ExemptionMechanism exMech)
             throws ExemptionMechanismException, ShortBufferException,
-            InvalidKeyException, InvalidAlgorithmParameterException  {
+            InvalidKeyException, InvalidAlgorithmParameterException {
         Key key = new MyExemptionMechanismSpi().new tmpKey("Proba", new byte[0]);
-        byte [] emptyA = new byte[0];
+        byte[] emptyA = new byte[0];
         int len = MyExemptionMechanismSpi.getLength();
-        byte [] byteA = new byte[len];
+        byte[] byteA = new byte[len];
         try {
             exMech.genExemptionBlob();
             fail("IllegalStateException must be thrown");
-        } catch (IllegalStateException e) {            
+        } catch (IllegalStateException e) {
         }
         try {
             exMech.genExemptionBlob(byteA);
             fail("IllegalStateException must be thrown");
-        } catch (IllegalStateException e) {            
+        } catch (IllegalStateException e) {
         }
         try {
             exMech.genExemptionBlob(byteA, 1);
             fail("IllegalStateException must be thrown");
-        } catch (IllegalStateException e) {            
-        }        
+        } catch (IllegalStateException e) {
+        }
         try {
             exMech.getOutputSize(0);
             fail("IllegalStateException must be thrown");
-        } catch (IllegalStateException e) {            
-        }        
-        
+        } catch (IllegalStateException e) {
+        }
+
         exMech.init(key);
-        byte [] bbRes = exMech.genExemptionBlob();
+        byte[] bbRes = exMech.genExemptionBlob();
         assertEquals("Incorrect length", bbRes.length, len);
         assertEquals("Incorrect result", exMech.genExemptionBlob(new byte[5]), 5);
         assertEquals("Incorrect result", exMech.genExemptionBlob(bbRes), len);
-        try {
-            exMech.genExemptionBlob(new byte[1], len);
-            fail("ShortBufferException must be thrown");
-        } catch (ShortBufferException e) {            
-        }        
-        try {
-            exMech.genExemptionBlob(emptyA);
-            fail("ShortBufferException must be thrown");
-        } catch (ShortBufferException e) {            
-        }
-        
-        assertEquals("Incorrect result", exMech.genExemptionBlob(byteA, 1), 9);
-        assertEquals("Incorrect result", exMech.genExemptionBlob(new byte[20], (len - 2)), len);
-                
-        assertEquals("Incorrect output size", exMech.getOutputSize(100), 5);
-        
+
         AlgorithmParameters params = null;
         exMech.init(key, params);
         AlgorithmParameterSpec parSpec = null;
@@ -159,7 +139,7 @@ public class ExemptionMechanism_ImplTest extends TestCase {
             assertTrue("Empty message", (e.getMessage().length() > 0));
         }
     }
-    
+
     /**
      * Test for <code>getInstance(String algorithm)</code> method
      * Assertions:
@@ -207,7 +187,7 @@ public class ExemptionMechanism_ImplTest extends TestCase {
     public void testGetInstance02() throws NoSuchAlgorithmException,
             NoSuchProviderException, IllegalArgumentException,
             ExemptionMechanismException, InvalidAlgorithmParameterException,
-            ShortBufferException, InvalidKeyException {        
+            ShortBufferException, InvalidKeyException {
         try {
             ExemptionMechanism.getInstance(null, mProv.getName());
             fail("NullPointerException or NoSuchAlgorithmException should be thrown if algorithm is null");

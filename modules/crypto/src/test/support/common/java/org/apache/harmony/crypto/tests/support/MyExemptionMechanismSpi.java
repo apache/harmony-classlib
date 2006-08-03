@@ -39,7 +39,7 @@ import javax.crypto.ShortBufferException;
 
 public class MyExemptionMechanismSpi  extends ExemptionMechanismSpi {
     
-    private static final int byteArrayLength = 10;
+    private static final int byteArrayLength = 5;
     
     public static final int getLength() {
         return byteArrayLength;
@@ -55,7 +55,7 @@ public class MyExemptionMechanismSpi  extends ExemptionMechanismSpi {
     }
 
     protected int engineGetOutputSize(int inputLen) {
-        return 5;
+        return 10;
     }
 
     protected void engineInit(Key key) throws InvalidKeyException,
