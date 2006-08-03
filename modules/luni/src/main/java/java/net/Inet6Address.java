@@ -443,7 +443,7 @@ public final class Inet6Address extends InetAddress {
 		scope_id_set = fields.get("scope_id_set", false);
         ifname = (String)fields.get("ifname", null);
         scope_ifname_set = fields.get("scope_ifname_set", false);
-        if (scope_ifname_set){
+        if (scope_ifname_set && null != ifname){
             scopedIf = NetworkInterface.getByName(ifname);
         }
 	}

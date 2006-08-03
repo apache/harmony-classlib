@@ -24,7 +24,9 @@ import tests.util.SerializationTester;
 
 public class Inet6AddressTest extends junit.framework.TestCase {
 
-    private static final String SERIALIZATION_FILE_NAME = "serialization/java/net/Inet6Address.golden.ser";
+    private static final String SERIALIZATION_FILE_NAME0 = "serialization/java/net/Inet6Address.golden.0.ser";
+    
+    private static final String SERIALIZATION_FILE_NAME1 = "serialization/java/net/Inet6Address.golden.1.ser";
 
 	/**
 	 * @tests java.net.Inet6Address#isMulticastAddress()
@@ -985,7 +987,25 @@ public class Inet6AddressTest extends junit.framework.TestCase {
         byte[] localv6 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
         Inet6Address ia = (Inet6Address) InetAddress.getByAddress(localv6);
         Inet6Address deIA = (Inet6Address) SerializationTester.readObject(ia,
-                SERIALIZATION_FILE_NAME);
+                SERIALIZATION_FILE_NAME0);
+        byte[] deAddr = deIA.getAddress();
+        for (int i = 0; i < localv6.length; i++) {
+            assertEquals(localv6[i], deAddr[i]);
+        }
+        assertEquals(ia.getScopeId(), deIA.getScopeId());
+        assertEquals(ia.getScopedInterface(), deIA.getScopedInterface());
+    }
+    
+    /*
+     * Test serialization/deserilazation compatibility with RI.
+     */
+    public void testSerializationCompatibility_NullInterfaceName()
+            throws Exception {
+        // regression test for Harmony-1039
+        byte[] localv6 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+        Inet6Address ia = (Inet6Address) InetAddress.getByAddress(localv6);
+        Inet6Address deIA = (Inet6Address) SerializationTester.readObject(ia,
+                SERIALIZATION_FILE_NAME1);
         byte[] deAddr = deIA.getAddress();
         for (int i = 0; i < localv6.length; i++) {
             assertEquals(localv6[i], deAddr[i]);
