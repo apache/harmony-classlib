@@ -211,6 +211,9 @@ public class LocaleTest extends junit.framework.TestCase {
 		assertTrue("Returned incorrect ISO3 country: "
 				+ testLocale.getISO3Country(), testLocale.getISO3Country()
 				.equals("CAN"));
+        
+        Locale l = new Locale("", "CD");
+        assertEquals("COD", l.getISO3Country());
 	}
 
 	/**
@@ -221,6 +224,9 @@ public class LocaleTest extends junit.framework.TestCase {
 		assertTrue("Returned incorrect ISO3 language: "
 				+ testLocale.getISO3Language(), testLocale.getISO3Language()
 				.equals("eng"));
+        
+        Locale l = new Locale("ae");
+        assertEquals("ave", l.getISO3Language());
 	}
 
 	/**
