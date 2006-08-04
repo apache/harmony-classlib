@@ -91,6 +91,7 @@
         <compile-tests description="api tests" destdir="${hy.x-net.bin.test}/api">
             <javac-elements>
                 <src path="${hy.x-net.src.test}/api/java"/>
+                <src path="${hy.x-net.src.test}/java"/>
                 <include name="**/*Test.java" />
             </javac-elements>
         </compile-tests>
@@ -98,6 +99,13 @@
         <compile-tests description="impl injected tests" destdir="${hy.x-net.bin.test}/impl.injected">
             <javac-elements>
                 <src path="${hy.x-net.src.test}/impl/java.injected"/>
+                <include name="**/*Test.java" />
+            </javac-elements>
+        </compile-tests>
+    	
+        <compile-tests description="impl tests" destdir="${hy.x-net.bin.test}/impl">
+            <javac-elements>
+                <src path="${hy.x-net.src.test}/impl/java"/>
                 <include name="**/*Test.java" />
             </javac-elements>
         </compile-tests>
@@ -130,6 +138,21 @@
     </target>
 
     <target name="run.tests.impl" unless="test.noimpl">
+        <run-tests description="impl tests">
+            <junit-elements>
+                <classpath>
+                    <pathelement path="${hy.x-net.bin.test}/impl"/>
+                    <pathelement path="${hy.hdk}/build/test/support.jar" />
+                </classpath>
+            	
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
+                    <fileset dir="${hy.x-net.src.test}/impl/java">
+                        <include name="**/*Test.java"/>
+                    </fileset>
+                </batchtest>
+
+            </junit-elements>
+        </run-tests>
         <run-tests description="impl injected tests">
             <junit-elements>
                 <!-- to pick up junit.jar               -->
