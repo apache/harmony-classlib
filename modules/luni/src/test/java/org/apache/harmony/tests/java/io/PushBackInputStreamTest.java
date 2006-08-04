@@ -23,6 +23,31 @@ import junit.framework.TestCase;
 
 public class PushBackInputStreamTest extends TestCase {
 
+    /*
+     * @tests java.io.PushBackInputStream(InputStream)
+     */
+    public void test_ConstructorLjava_io_InputStream() {
+        try {
+            PushbackInputStream str = new PushbackInputStream(null);
+            str.read();
+            fail("Expected IOException");
+        } catch (IOException e) {
+            // Expected
+        }
+    }
+    
+    /*
+     * @tests java.io.PushBackInputStream(InputStream, int)
+     */
+    public void test_ConstructorLjava_io_InputStreamL() {
+        try {
+            PushbackInputStream str = new PushbackInputStream(null, 1);
+            str.read();
+            fail("Expected IOException");
+        } catch (IOException e) {
+            // Expected
+        }
+    }
 	/**
 	 * @tests java.io.PushbackInputStream#unread(byte[], int, int)
 	 */

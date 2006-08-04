@@ -47,7 +47,7 @@ public class PushbackInputStream extends FilterInputStream {
 	 */
 	public PushbackInputStream(InputStream in) {
 		super(in);
-		buf = new byte[1];
+		buf = (in == null) ? null : new byte[1];
 		pos = 1;
 	}
 
@@ -63,7 +63,7 @@ public class PushbackInputStream extends FilterInputStream {
 	public PushbackInputStream(InputStream in, int size) {
 		super(in);
 		if (size > 0) {
-			buf = new byte[size];
+			buf = (in == null) ? null : new byte[size];
 			pos = size;
 		} else
 			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
