@@ -605,10 +605,18 @@ public class Date implements Serializable, Cloneable, Comparable<Date> {
 	 * @deprecated use DateFormat
 	 */
 	public String toGMTString() {
-		SimpleDateFormat format = new SimpleDateFormat(
-				"d MMM yyyy HH:mm:ss 'GMT'", Locale.US); //$NON-NLS-1$
-		format.setTimeZone(TimeZone.getTimeZone("GMT")); //$NON-NLS-1$
-		return format.format(this);
+		SimpleDateFormat format1 = new SimpleDateFormat(
+				"d MMM ", Locale.US); //$NON-NLS-1$
+		SimpleDateFormat format2 = new SimpleDateFormat(
+				" HH:mm:ss 'GMT'", Locale.US); //$NON-NLS-1$
+                TimeZone gmtZone = TimeZone.getTimeZone("GMT"); //$NON-NLS-1$
+		format1.setTimeZone(gmtZone);
+		format2.setTimeZone(gmtZone);
+                GregorianCalendar gc = new GregorianCalendar(gmtZone);
+		gc.setTimeInMillis(milliseconds);
+		return format1.format(this) + 
+                       gc.get(Calendar.YEAR) + 
+                       format2.format(this);
 	}
 
 	/**
@@ -629,8 +637,9 @@ public class Date implements Serializable, Cloneable, Comparable<Date> {
 	 * @return the string representation of this Date
 	 */
 	public String toString() {
-		return new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy", Locale.US) //$NON-NLS-1$
-				.format(this);
+		return new SimpleDateFormat("E MMM dd HH:mm:ss z ", Locale.US) //$NON-NLS-1$
+				.format(this) + 
+                                new GregorianCalendar(milliseconds).get(Calendar.YEAR);
 	}
 
 	/**
