@@ -134,6 +134,9 @@ Java_java_util_zip_Inflater_inflateImpl (JNIEnv * env, jobject recv,
 
   if (err != Z_OK)
     {
+      if(err == Z_STREAM_ERROR) {
+          return 0;
+      }
       if (err == Z_STREAM_END || err == Z_NEED_DICT)
         {
           ((*env)->SetIntField (env, recv, fid, (jint) stream->stream->total_in - sin + inBytes));      /* Update inRead */
