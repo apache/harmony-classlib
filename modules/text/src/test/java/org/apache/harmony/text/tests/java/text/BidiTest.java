@@ -1,4 +1,4 @@
-/* Copyright 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,6 +100,44 @@ public class BidiTest extends TestCase {
 		} catch (IllegalArgumentException e) {
 			// expected
 		}
+
+        //regression for HARMONY-1031
+		try {
+			bd = new Bidi(new char[] { 't','t','t'}, -1, new byte[] { 2, 2 }, 1, 1, 1);
+			fail("should be IAE");					
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
+		
+		try {
+			bd = new Bidi(new char[] { 't','t','t'}, 1, new byte[] { 2, 2 }, -1, 1, 1);
+			fail("should be IAE");					
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
+		
+		try {
+			bd = new Bidi(new char[] { 't','t','t'}, 1, new byte[] { 2, 2 }, 1, -1, 1);
+			fail("should be IAE");					
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
+
+		try {
+			bd = new Bidi(new char[] {}, 5, new byte[] { 2, 2, 2, 2, 2, 2 }, 8, Integer.MAX_VALUE, 5);
+			fail("should be IAE");					
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
+
+        try {
+            bd = new Bidi(null, 5, null, 8, Integer.MAX_VALUE, 5);
+            fail("should be IAE");                  
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+        
+		bd = new Bidi(new char[] {'o'}, 0, new byte[] { 2, 2}, 2, 0, 2 );
 	}
 
 	public void testEmptyParagraph() {
@@ -598,7 +636,12 @@ public class BidiTest extends TestCase {
 	}
 
 	public void testRequiresBidi() {
-		assertFalse(Bidi.requiresBidi(null, 0, 0));
+		try{
+		    Bidi.requiresBidi(null, 0, 0);
+		    fail("should throw NullPointerException");
+        }catch (NullPointerException e){
+            // expected
+        }
 
 		try {
 			assertFalse(Bidi.requiresBidi(null, 0, 1));
@@ -608,35 +651,60 @@ public class BidiTest extends TestCase {
 		}
 		try {
 			assertFalse(Bidi.requiresBidi("".toCharArray(), 0, 1));
-			fail("should throw ArrayIndexOutOfBoundsException");
-		} catch (ArrayIndexOutOfBoundsException e) {
+			fail("should throw IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
 			// expected
 		}
 		try {
-			assertFalse(Bidi.requiresBidi("".toCharArray(), -1, 1));
-			fail("should throw ArrayIndexOutOfBoundsException");
-		} catch (ArrayIndexOutOfBoundsException e) {
+			assertFalse(Bidi.requiresBidi("aaa".toCharArray(), -1, 1));
+			fail("should throw IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
 			// expected
 		}
-		try {
-			assertFalse(Bidi.requiresBidi("".toCharArray(), 1, 2));
-			fail("should throw ArrayIndexOutOfBoundsException");
-		} catch (ArrayIndexOutOfBoundsException e) {
-			// expected
-		}
-		try {
-			assertFalse(Bidi.requiresBidi("".toCharArray(), 4, 5));
-			fail("should throw ArrayIndexOutOfBoundsException");
-		} catch (ArrayIndexOutOfBoundsException e) {
-			// expected
-		}
-		assertFalse(Bidi.requiresBidi("".toCharArray(), 7, 7));
-		assertFalse(Bidi.requiresBidi(" ".toCharArray(), 0, 1));
-		assertFalse(Bidi.requiresBidi("\u05D0".toCharArray(), 1, -1));
-		assertFalse(Bidi.requiresBidi("\u05D0".toCharArray(), -1, -2));
-		assertFalse(Bidi.requiresBidi("\u05D0".toCharArray(), 4, 4));
-		assertFalse(Bidi.requiresBidi("\u05D0".toCharArray(), 3, 1));
+        try {
+            assertFalse(Bidi.requiresBidi("aaa".toCharArray(), 1, -1));
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+        try {
+            assertFalse(Bidi.requiresBidi("\u05D0".toCharArray(), 1, -1));
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+        try {
+            assertFalse(Bidi.requiresBidi("aaa".toCharArray(), 1, 0));
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+        try {
+            assertFalse(Bidi.requiresBidi("aaa".toCharArray(), 7, 7));
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+        try {
+            assertFalse(Bidi.requiresBidi("aaa".toCharArray(), 1, Integer.MAX_VALUE));
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+        try {
+            assertFalse(Bidi.requiresBidi("aaa".toCharArray(), Integer.MAX_VALUE, 1));
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+		
+        assertFalse(Bidi.requiresBidi("".toCharArray(), 0, 0));
+        assertFalse(Bidi.requiresBidi("aaa".toCharArray(), 1, 1));
+        assertFalse(Bidi.requiresBidi("aaa".toCharArray(), 0, 2));
+		assertFalse(Bidi.requiresBidi("\u05D0".toCharArray(), 1, 1));
 		assertTrue(Bidi.requiresBidi("\u05D0".toCharArray(), 0, 1));
+		assertFalse(Bidi.requiresBidi("aa\u05D0a".toCharArray(), 0, 2));
+		assertTrue(Bidi.requiresBidi("aa\u05D0a".toCharArray(), 1, 3));
 	}
 
 	public void testHebrewOverrideEmbeddings() {
@@ -731,6 +799,47 @@ public class BidiTest extends TestCase {
 		assertFalse(line.isRightToLeft());
 	}
 
+    public void testCreateLineBidiInvalid() {
+        //regression for HARMONY-1050
+        Bidi bidi = new Bidi("str", 1);
+        try {
+            bidi.createLineBidi(-1, 1);
+            fail("Expected IAE");           
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+        
+        try {
+            bidi.createLineBidi(1, -1);
+            fail("Expected IAE");           
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+        
+        try {
+            bidi.createLineBidi(-1, -1);
+            fail("Expected IAE");           
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+
+        try {
+            bidi.createLineBidi(2, 1);
+            fail("Expected IAE");           
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+        
+        bidi.createLineBidi(2, 2);
+
+        try {
+            bidi.createLineBidi(2, 4);
+            fail("Expected IAE");           
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+    }
+    
 	public void testIncompatibleLineAlgorithm() {
 		// ICU treat a new line as in the same run, however RI does not
 		bd = new Bidi("aaaaa".toCharArray(), 0,

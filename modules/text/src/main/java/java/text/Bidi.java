@@ -1,4 +1,4 @@
-/* Copyright 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -132,6 +132,15 @@ public final class Bidi {
 	 */
 	public Bidi(char[] text, int textStart, byte[] embeddings, int embStart,
 			int paragraphLength, int flags) {
+		if (textStart < 0) {
+			throw new IllegalArgumentException("Negative textStart value " + textStart);  
+		}
+		if (embStart < 0) {
+			throw new IllegalArgumentException("Negative embStart value " + embStart);  
+		}
+		if (paragraphLength < 0) {
+			throw new IllegalArgumentException("Negative paragraph length " + paragraphLength);  
+		}
 		long pBidi = createUBiDi(text, textStart, embeddings, embStart,
 				paragraphLength, flags);
 		readBidiInfo(pBidi);
@@ -167,29 +176,31 @@ public final class Bidi {
 
 		byte[] realEmbeddings = null;
 
-		if (text == null || text.length < textStart + paragraphLength) {
+		if (text == null || text.length - textStart< paragraphLength) {
 			throw new IllegalArgumentException();
 		}
 		realText = new char[paragraphLength];
 		System.arraycopy(text, textStart, realText, 0, paragraphLength);
 
 		if (embeddings != null) {
-			if (embeddings.length < embStart + paragraphLength) {
+			if (embeddings.length - embStart < paragraphLength) {
 				throw new IllegalArgumentException();
 			}
-			Bidi temp = new Bidi(text, textStart, null, 0, paragraphLength,
-					flags);
-			realEmbeddings = new byte[paragraphLength];
-			System.arraycopy(temp.offsetLevel, 0, realEmbeddings, 0,
-					paragraphLength);
-			for (int i = 0; i < paragraphLength; i++) {
-				byte e = embeddings[i];
-				if (e < 0) {
-					realEmbeddings[i] = (byte) (BidiWrapper.UBIDI_LEVEL_OVERRIDE - e);
-				} else if (e > 0) {
-					realEmbeddings[i] = e;
-				} else {
-					realEmbeddings[i] |= (byte) BidiWrapper.UBIDI_LEVEL_OVERRIDE;
+			if (paragraphLength > 0) {
+				Bidi temp = new Bidi(text, textStart, null, 0, paragraphLength,
+						flags);
+				realEmbeddings = new byte[paragraphLength];
+				System.arraycopy(temp.offsetLevel, 0, realEmbeddings, 0,
+						paragraphLength);
+				for (int i = 0; i < paragraphLength; i++) {
+					byte e = embeddings[i];
+					if (e < 0) {
+						realEmbeddings[i] = (byte) (BidiWrapper.UBIDI_LEVEL_OVERRIDE - e);
+					} else if (e > 0) {
+						realEmbeddings[i] = e;
+					} else {
+						realEmbeddings[i] |= (byte) BidiWrapper.UBIDI_LEVEL_OVERRIDE;
+					}
 				}
 			}
 		}
@@ -267,6 +278,9 @@ public final class Bidi {
 	 *         range from 0 to (limit - start - 1).
 	 */
 	public Bidi createLineBidi(int lineStart, int lineLimit) {
+		if (lineStart < 0 || lineLimit < 0 || lineLimit > length || lineStart > lineLimit) {
+			throw new IllegalArgumentException("Invalid ranges (start=" + lineStart + ", limit=" + lineLimit + ", length=" + length + ")");
+		}
 		char[] text = new char[this.length];
 		Arrays.fill(text, 'a');
 		byte[] embeddings = new byte[this.length];
@@ -440,19 +454,12 @@ public final class Bidi {
 	 * @return true if the range of characters requires a Bidi object.
 	 */
 	public static boolean requiresBidi(char[] text, int start, int limit) {
-		if (limit < 0 || start >= limit) {
-			return false;
-		} else if (start < 0 || start > text.length || limit > text.length) {
-			throw new ArrayIndexOutOfBoundsException();
-		}
-
-		Bidi bidi = new Bidi(text, start, null, 0, limit - start, 0);
-
-		if (bidi.isLeftToRight()) {
-			return false;
-		}
-
-		return true;
+        int length = text.length;
+        if(limit < 0 || start < 0 || start > limit || limit > length){
+            throw new IllegalArgumentException();
+        }
+        Bidi bidi = new Bidi(text, start, null, 0, limit - start, 0);
+		return !bidi.isLeftToRight();
 	}
 
 	/**
