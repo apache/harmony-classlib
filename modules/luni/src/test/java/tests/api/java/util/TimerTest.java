@@ -292,6 +292,8 @@ public class TimerTest extends junit.framework.TestCase {
         Timer t = null;
         try {
             t = new Timer();
+            assertEquals(t.purge(), 0);
+
             TimerTestTask[] tasks = new TimerTestTask[100];
             int[] delayTime = { 50, 80, 20, 70, 40, 10, 90, 30, 60 };
 

@@ -285,6 +285,9 @@ public class Timer {
 		}
 
         public int purge() {
+            if(tasks.isEmpty()) {
+                return 0;
+            }
             // callers are synchronized
             tasks.deletedCancelledNumber = 0;
             tasks.root.deleteIfCancelled(tasks);
