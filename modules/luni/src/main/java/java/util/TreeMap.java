@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -168,8 +168,8 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>,
         }
 
         private static class ComparatorBoundedIterator <K, V> extends AbstractMapIterator<K, V>  {
-            private K endKey;
-            private Comparator<? super K> cmp;
+            final private K endKey;
+            final private Comparator<? super K> cmp;
      
             ComparatorBoundedIterator(TreeMap<K, V> map,
                                            Entry<K, V> startNode, K end) {
@@ -182,6 +182,11 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>,
                 if (node != null && cmp.compare(endKey, node.key) <= 0) {
                     node = null;
                 }
+            }
+            
+            @Override
+            public boolean hasNext() {
+                return (node != null) && (cmp.compare(endKey, node.key) > 0);
             }
         }
 
@@ -240,6 +245,11 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>,
                 if ((node != null) && (endKey.compareTo(node.key) <= 0)) {
                     node = null;
                 }
+            }
+            
+            @Override
+            public boolean hasNext() {
+                return (node != null) && (endKey.compareTo(node.key) > 0);
             }
         }
 

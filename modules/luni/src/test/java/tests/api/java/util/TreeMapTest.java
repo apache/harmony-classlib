@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,18 @@ public class TreeMapTest extends junit.framework.TestCase {
 			return (((Comparable) o1).compareTo((Comparable) o2)) == 0;
 		}
 	}
+    
+    // Regression for Harmony-1026
+    public static class MockComparator<T extends Comparable<T>> implements Comparator<T>{
+        
+        public int compare(T o1, T o2) {
+            if( o1 == o2 ) return 0;
+            if( null == o1 ) return -1;
+            T c1 = (T)o1;
+            T c2 = (T)o2;
+            return c1.compareTo(c2);
+        }
+    }
 
 	TreeMap tm;
 
@@ -238,6 +250,27 @@ public class TreeMapTest extends junit.framework.TestCase {
 		assertTrue("Returned incorrect elements", head.containsKey("0")
 				&& head.containsValue(new Integer("1"))
 				&& head.containsKey("10"));
+        
+	    // Regression for Harmony-1026
+        TreeMap<Integer, Double> map = new TreeMap<Integer, Double>(
+                new MockComparator());
+        map.put(1, 2.1);
+        map.put(2, 3.1);
+        map.put(3, 4.5);
+        map.put(7, 21.3);
+        map.put(null, null);
+
+        SortedMap<Integer, Double> smap = map.headMap(null);
+        assertEquals(0, smap.size());
+        
+        Set<Integer> keySet = smap.keySet();
+        assertEquals(0, keySet.size());
+        
+        Set<Map.Entry<Integer, Double>> entrySet = smap.entrySet();
+        assertEquals(0, entrySet.size());
+        
+        Collection<Double> valueCollection = smap.values();
+        assertEquals(0, valueCollection.size());
 	}
 
 	/**
