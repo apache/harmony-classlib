@@ -71,12 +71,8 @@ class ProxySelectorImpl extends ProxySelector {
 		if (null == scheme) {
 			throw new IllegalArgumentException();
 		}
-		// check host
+        
 		String host = uri.getHost();
-		if (null == host) {
-			throw new IllegalArgumentException();
-		}
-
 		Proxy proxy = Proxy.NO_PROXY;
 
 		if ("http".equals(scheme)) { //$NON-NLS-1$

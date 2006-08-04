@@ -185,6 +185,51 @@ public class ProxySelectorTest extends TestCase {
 		assertProxyEquals(proxyList,Proxy.Type.SOCKS,SOCKS_PROXY_HOST,SOCKS_PROXY_PORT);
 
 	}
+    
+    /**
+     * @tests java.net.ProxySelector#select(URI)
+     */
+    public void test_selectLjava_net_URI_SelectExact_NullHost()
+            throws URISyntaxException {
+        // regression test for Harmony-1063
+        httpUri = new URI("http://a@");
+        ftpUri = new URI("ftp://a@");
+        httpsUri = new URI("https://a@");
+        tcpUri = new URI("socket://a@");
+        // no proxy, return a proxyList only contains NO_PROXY
+        proxyList = selector.select(httpUri);
+        assertProxyEquals(proxyList, Proxy.NO_PROXY);
+
+        // set http proxy
+        System.setProperty("http.proxyHost", HTTP_PROXY_HOST);
+        System.setProperty("http.proxyPort", String.valueOf(HTTP_PROXY_PORT));
+        // set https proxy
+        System.setProperty("https.proxyHost", HTTPS_PROXY_HOST);
+        System.setProperty("https.proxyPort", String.valueOf(HTTPS_PROXY_PORT));
+        // set ftp proxy
+        System.setProperty("ftp.proxyHost", FTP_PROXY_HOST);
+        System.setProperty("ftp.proxyPort", String.valueOf(FTP_PROXY_PORT));
+        // set socks proxy
+        System.setProperty("socksProxyHost", SOCKS_PROXY_HOST);
+        System.setProperty("socksProxyPort", String.valueOf(SOCKS_PROXY_PORT));
+
+        proxyList = selector.select(httpUri);
+        assertProxyEquals(proxyList, Proxy.Type.HTTP, HTTP_PROXY_HOST,
+                HTTP_PROXY_PORT);
+
+        proxyList = selector.select(httpsUri);
+        assertProxyEquals(proxyList, Proxy.Type.HTTP, HTTPS_PROXY_HOST,
+                HTTPS_PROXY_PORT);
+
+        proxyList = selector.select(ftpUri);
+        assertProxyEquals(proxyList, Proxy.Type.HTTP, FTP_PROXY_HOST,
+                FTP_PROXY_PORT);
+
+        proxyList = selector.select(tcpUri);
+        assertProxyEquals(proxyList, Proxy.Type.SOCKS, SOCKS_PROXY_HOST,
+                SOCKS_PROXY_PORT);
+
+    }
 
 	/**
 	 * @tests java.net.ProxySelector#select(URI)
@@ -518,7 +563,7 @@ public class ProxySelectorTest extends TestCase {
 
 		}
 
-		public List select(URI uri) {
+		public List <Proxy> select(URI uri) {
 			return null;
 		}
 	}
