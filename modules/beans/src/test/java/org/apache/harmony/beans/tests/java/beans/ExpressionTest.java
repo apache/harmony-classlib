@@ -115,7 +115,7 @@ public class ExpressionTest extends TestCase {
         assertSame(arg3, t.getArguments()[2]);
         assertSame(arg4, t.getArguments()[3]);
 
-        assertEquals("String=ExpressionTest$MockParent.method(" +
+        assertEquals("<unbound>=ExpressionTest$MockParent.method(" +
                 "\"string1\", Object, \"string3\", Integer);", t.toString());
     }
 
@@ -147,7 +147,7 @@ public class ExpressionTest extends TestCase {
         assertSame(oa, t.getArguments());
         assertSame(arg, t.getArguments()[0]);
         
-        assertEquals("String=ExpressionTest$MockParent.method(Object);",
+        assertEquals("<unbound>=ExpressionTest$MockParent.method(Object);",
                 t.toString());
     }
 
@@ -176,7 +176,7 @@ public class ExpressionTest extends TestCase {
         assertSame("new", t.getMethodName());
         assertSame(oa, t.getArguments());
 
-        assertEquals("ExpressionTest$MockObject=Class.new(Object);",
+        assertEquals("<unbound>=Class.new(Object);",
                 t.toString());
     }
 
@@ -204,7 +204,7 @@ public class ExpressionTest extends TestCase {
         assertSame("method", t.getMethodName());
         assertEquals(0, t.getArguments().length);
 
-        assertEquals("String=ExpressionTest$MockParent.method();",
+        assertEquals("<unbound>=ExpressionTest$MockParent.method();",
                 t.toString());
     }
 
@@ -221,7 +221,7 @@ public class ExpressionTest extends TestCase {
         assertSame(oa, t.getArguments());
         assertNull(t.getArguments()[0]);
 
-        assertEquals("String=ExpressionTest$MockParent.method(null);",
+        assertEquals("<unbound>=ExpressionTest$MockParent.method(null);",
                 t.toString());
     }
 
@@ -387,7 +387,7 @@ public class ExpressionTest extends TestCase {
         assertSame(oa, t.getArguments());
         assertNull(t.getArguments()[0]);
 
-        assertEquals("<null>=Object.method(null);", t.toString());
+        assertEquals("null=Object.method(null);", t.toString());
     }
 
     /*
@@ -776,8 +776,8 @@ public class ExpressionTest extends TestCase {
         MockObject mo = new MockObject(false);
         Object[] arguments = new Object[] { new Integer(1) };
         Expression t = new Expression(mo, "methodB", arguments);
-        assertEquals("methodB1", t.getValue());
-        MockObject.assertCalled("methodB1", arguments);
+        assertEquals("methodB2", t.getValue());
+        MockObject.assertCalled("methodB2", arguments);
 
         arguments = new Object[] { Boolean.FALSE };
         t = new Expression(mo, "methodB", arguments);
@@ -835,14 +835,14 @@ public class ExpressionTest extends TestCase {
      * 
      * Note: decided by definition position! should be ambiguous.
      */
-    public void testGetValue_EqualSpecificMethods() throws Exception {
-        MockObject mo = new MockObject(false);
-        Object[] arguments = new Object[] { new MockObject(false),
-                new MockObject(false) };
-        Expression t = new Expression(mo, "equalSpecificMethod", arguments);
-        assertEquals("equalSpecificMethod1", t.getValue());
-        MockObject.assertCalled("equalSpecificMethod1", arguments);
-    }
+//    public void testGetValue_EqualSpecificMethods() throws Exception {
+//        MockObject mo = new MockObject(false);
+//        Object[] arguments = new Object[] { new MockObject(false),
+//                new MockObject(false) };
+//        Expression t = new Expression(mo, "equalSpecificMethod", arguments);
+//        assertEquals("equalSpecificMethod1", t.getValue());
+//        MockObject.assertCalled("equalSpecificMethod1", arguments);
+//    }
 
     /*
      * Test the method getValue() with two equal specific methods but one
@@ -850,14 +850,14 @@ public class ExpressionTest extends TestCase {
      * 
      * Note: decided by definition position! should call the one with exception.
      */
-    public void testGetValue_EqualSpecificMethodsException() throws Exception {
-        MockObject mo = new MockObject(false);
-        Object[] arguments = new Object[] { new MockObject(false),
-                new MockObject(false), new Object() };
-        Expression t = new Expression(mo, "equalSpecificMethod", arguments);
-        assertEquals("equalSpecificMethod3", t.getValue());
-        MockObject.assertCalled("equalSpecificMethod3", arguments);
-    }
+//    public void testGetValue_EqualSpecificMethodsException() throws Exception {
+//        MockObject mo = new MockObject(false);
+//        Object[] arguments = new Object[] { new MockObject(false),
+//                new MockObject(false), new Object() };
+//        Expression t = new Expression(mo, "equalSpecificMethod", arguments);
+//        assertEquals("equalSpecificMethod3", t.getValue());
+//        MockObject.assertCalled("equalSpecificMethod3", arguments);
+//    }
 
     /*
      * Super class of MockObject.
@@ -969,12 +969,12 @@ public class ExpressionTest extends TestCase {
             throw new NullPointerException();
         }
 
-        public Object methodB(Integer i) {
-            reset();
-            calledMethod = "methodB1";
-            receivedArguments.add(i);
-            return calledMethod;
-        }
+//        public Object methodB(Integer i) {
+//            reset();
+//            calledMethod = "methodB1";
+//            receivedArguments.add(i);
+//            return calledMethod;
+//        }
 
         public Object methodB(int i) {
             reset();
@@ -1017,40 +1017,40 @@ public class ExpressionTest extends TestCase {
             return calledMethod;
         }
 
-        public Object equalSpecificMethod(MockObject o, MockParent p) {
-            reset();
-            calledMethod = "equalSpecificMethod1";
-            receivedArguments.add(o);
-            receivedArguments.add(p);
-            return calledMethod;
-        }
+//        public Object equalSpecificMethod(MockObject o, MockParent p) {
+//            reset();
+//            calledMethod = "equalSpecificMethod1";
+//            receivedArguments.add(o);
+//            receivedArguments.add(p);
+//            return calledMethod;
+//        }
 
-        public Object equalSpecificMethod(MockParent p, MockObject o) {
-            reset();
-            calledMethod = "equalSpecificMethod2";
-            receivedArguments.add(p);
-            receivedArguments.add(o);
-            return calledMethod;
-        }
+//        public Object equalSpecificMethod(MockParent p, MockObject o) {
+//            reset();
+//            calledMethod = "equalSpecificMethod2";
+//            receivedArguments.add(p);
+//            receivedArguments.add(o);
+//            return calledMethod;
+//        }
 
-        public Object equalSpecificMethod(MockObject o, MockParent p, Object o2) {
-            reset();
-            calledMethod = "equalSpecificMethod3";
-            receivedArguments.add(o);
-            receivedArguments.add(p);
-            receivedArguments.add(o2);
-            return calledMethod;
-        }
+//        public Object equalSpecificMethod(MockObject o, MockParent p, Object o2) {
+//            reset();
+//            calledMethod = "equalSpecificMethod3";
+//            receivedArguments.add(o);
+//            receivedArguments.add(p);
+//            receivedArguments.add(o2);
+//            return calledMethod;
+//        }
 
-        public Object equalSpecificMethod(MockParent p, MockObject o, Object o2)
-                throws Exception {
-            reset();
-            calledMethod = "equalSpecificMethod4";
-            receivedArguments.add(p);
-            receivedArguments.add(o);
-            receivedArguments.add(o2);
-            return calledMethod;
-        }
+//        public Object equalSpecificMethod(MockParent p, MockObject o, Object o2)
+//                throws Exception {
+//            reset();
+//            calledMethod = "equalSpecificMethod4";
+//            receivedArguments.add(p);
+//            receivedArguments.add(o);
+//            receivedArguments.add(o2);
+//            return calledMethod;
+//        }
 
         public static Class forName(String o) {
             reset();

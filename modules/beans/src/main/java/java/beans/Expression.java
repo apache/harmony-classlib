@@ -57,10 +57,21 @@ public class Expression extends Statement {
      */
     public String toString() {
         try {
-            Object resultValue = getValue();
-            String result = (resultValue == null) ? "<null>"
-                    : convertClassName(resultValue.getClass());
-            return result + "=" + super.toString();
+            StringBuilder sb = new StringBuilder();
+            
+            if (!valueIsDefined) {
+                sb.append("<unbound>");
+            } else {
+                if (value == null) {
+                    sb.append("null");
+                } else {
+                    sb.append(convertClassName(value.getClass()));
+                }
+            }
+            sb.append('=');
+            sb.append(super.toString());
+            
+            return sb.toString();
         } catch(Exception e) {
             return new String("Error in expression: " + e.getClass());
         }
