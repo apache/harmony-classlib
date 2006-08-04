@@ -163,6 +163,7 @@
                 <patternset includes="xalan-j_2.7.0/*.jar" />
                 <patternset includes="icu4j_3.4.4/*.jar" />
                 <patternset includes="mx4j_3.0.1/*.jar" />
+                <patternset includes="yoko/*.jar" />
             </fileset>
             <fileset dir="${depends.manifests}"/>
         </copy>
