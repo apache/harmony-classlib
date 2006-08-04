@@ -41,6 +41,7 @@ import java.net.URLStreamHandler;
 import java.net.UnknownServiceException;
 import java.security.AccessController;
 import java.security.Permission;
+import java.security.PrivilegedAction;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -516,7 +517,12 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         } catch (URISyntaxException e) {
             // do nothing.
         }
-        responseCache = ResponseCache.getDefault();
+        responseCache = AccessController
+                .doPrivileged(new PrivilegedAction<ResponseCache>() {
+                    public ResponseCache run() {
+                        return ResponseCache.getDefault();
+                    }
+                });
     }
 
     /**

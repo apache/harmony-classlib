@@ -1161,6 +1161,22 @@ public class URLTest extends junit.framework.TestCase {
 		}
 	}
 
+    /**
+     * @tests java.net.URL#openConnection()
+     */
+    public void test_openConnection_Security() throws Exception {
+        // regression test for Harmony-1049
+        System.setSecurityManager(new SecurityManager());
+        try {
+            URL u = new URL("http://anyhost");
+            // openConnection should return successfully, and no exception
+            // should be thrown.
+            u.openConnection();
+        } finally {
+            System.setSecurityManager(null);
+        }
+    }
+    
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
