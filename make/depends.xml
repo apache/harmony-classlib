@@ -30,6 +30,8 @@
 
     <target name="check">
 
+	<check-one-file src="${yoko.url}" dest="${yoko.jar}" />
+
 	<check-one-file src="${xalan.url}" dest="${xalan.jar}" />
 
 	<check-one-file src="${resolver.url}" dest="${resolver.jar}" />
@@ -66,6 +68,10 @@
     </target>
 
     <target name="download" description="Download required jars">
+
+	<mkdir dir="${yoko.dir}" />
+	<download-one-file src="${yoko.url}" dest="${yoko.jar}"
+                           md5="${yoko.md5}" />
 
 	<mkdir dir="${xalan.dir}" />
 	<download-one-file src="${xalan.url}" dest="${xalan.jar}"
