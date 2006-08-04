@@ -11,7 +11,10 @@ Require-Bundle: org.apache.harmony.luni,
  org.apache.harmony.nio,
  org.apache.harmony.security,
  org.apache.harmony.xml.xerces,
- org.apache.harmony.xml.xalan
+ org.apache.harmony.xml.xalan,
+ org.apache.harmony.awt,
+ org.apache.harmony.swing,
+ org.apache.harmony.beans
 Export-Package: tests.support;hy_usage="test";mandatory:="hy_usage",
  tests.support.resource;hy_usage="test";mandatory:="hy_usage",
  tests.util;hy_usage="test";mandatory:="hy_usage",
