@@ -62,7 +62,7 @@ public class BufferedInputStream extends FilterInputStream {
 	 */
 	public BufferedInputStream(InputStream in) {
 		super(in);
-		buf = new byte[2048];
+		buf = (in == null) ? null : new byte[2048];
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class BufferedInputStream extends FilterInputStream {
 	public BufferedInputStream(InputStream in, int size) {
 		super(in);
 		if (size > 0)
-			buf = new byte[size];
+			buf = (in == null) ? null : new byte[size];
 		else
 			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
 					.getString("K0058")); //$NON-NLS-1$

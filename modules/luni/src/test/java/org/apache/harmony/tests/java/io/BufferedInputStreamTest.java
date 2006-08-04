@@ -57,4 +57,29 @@ public class BufferedInputStreamTest extends TestCase {
 		buf.read();
 		buf.close();
 	}
+	
+	/*
+	 * @tests java.io.BufferedInputStream(InputStream)
+	 */
+	public void test_ConstructorLjava_io_InputStream() {
+		try {
+			BufferedInputStream str = new BufferedInputStream(null);
+			str.read();
+			fail("Expected an IOException");
+		} catch (IOException e) {
+			// Expected
+		}
+	}
+	/*
+	 * @tests java.io.BufferedInputStream(InputStream)
+	 */
+	public void test_ConstructorLjava_io_InputStreamI() {
+		try {
+			BufferedInputStream str = new BufferedInputStream(null, 1);
+			str.read();
+			fail("Expected an IOException");
+		} catch (IOException e) {
+			// Expected
+		}
+	}
 }
