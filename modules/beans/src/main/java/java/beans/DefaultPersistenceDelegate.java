@@ -87,9 +87,10 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
                     }
                 }
             }
+        } catch (RuntimeException e) {
+            throw e;
         } catch (Exception e) {
-            System.out.println("in DefaultPersistenceDelegate initialize() "
-                    + e.getClass() + " :" + e.getMessage());
+            out.getExceptionListener().exceptionThrown(e);
         }
     }
 
@@ -125,7 +126,7 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
                                 found = true;
                                 break;
                             } else {
-                                throw new Exception("no getter for "
+                                throw new NoSuchMethodException("no getter for "
                                         + pds[j].getName() + " property");
                             }
 
@@ -133,15 +134,15 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
                     } // for j
 
                     if (found == false) {
-                        throw new Exception("no property for name "
+                        throw new NoSuchMethodException("no property for name "
                                 + constructorPropertyNames[i] + " is found");
                     }
 
                 } // for i
+            } catch (RuntimeException e) {
+                throw e;
             } catch (Exception e) {
-                System.out
-                        .println("in DefaultPersistenceDelegate instantiate() "
-                                + e.getClass() + " :" + e.getMessage());
+                out.getExceptionListener().exceptionThrown(e);
             }
 
         }
@@ -165,6 +166,7 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
                     return ((Boolean) result).booleanValue();
                 }
             } catch (Exception e) {
+                // XXX bad style of logging
                 System.out.println("in DefaultPersistenceDelegate.mutatesTo() "
                         + e.getClass() + " :" + e.getMessage());
 
