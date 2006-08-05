@@ -1914,11 +1914,9 @@ public final class Character implements Serializable, Comparable<Character> {
      * @since 1.5
      */
     public static int codePointAt(char[] seq, int index, int limit) {
-        if (seq == null)
-            throw new NullPointerException();
-        int len = seq.length;
-        if (index < 0 || index >= limit || limit < 0 || limit > len)
-            throw new IndexOutOfBoundsException();
+        if (index < 0 || index >= limit || limit < 0 || limit > seq.length) {
+        	throw new IndexOutOfBoundsException();
+        }    	
 
         char high = seq[index++];
         if (index >= limit)
