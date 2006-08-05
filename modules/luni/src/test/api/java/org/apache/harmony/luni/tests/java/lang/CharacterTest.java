@@ -598,4 +598,34 @@ public class CharacterTest extends TestCase {
         } catch (NullPointerException e) {
         }
     }
+    
+    public void test_codePointAt_Invalid() {
+
+        try {           
+            Character.codePointAt(null, 6, 4);
+            fail("Expected IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        } catch (Exception e) {
+            fail("Expected IndexOutOfBoundsException");
+        }
+
+        try {           
+            Character.codePointAt(null, 4, 6);
+            fail("Expected NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        } catch (Exception e) {
+            fail("Expected NullPointerException");
+        }
+
+        try {           
+            Character.codePointAt(null, 0, 0);
+            fail("Expected IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        } catch (Exception e) {
+            fail("Expected IndexOutOfBoundsException");
+        }
+    }
 }
