@@ -15,6 +15,8 @@
 
 package tests.api.java.lang;
 
+import org.apache.harmony.luni.tests.java.lang.BooleanTest;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -32,7 +34,7 @@ public class AllTests {
 
 		suite.addTestSuite(BooleanTest.class);
 		suite.addTestSuite(ByteTest.class);
-		suite.addTestSuite(CharacterTest.class);
+
 		suite.addTestSuite(ClassTest.class);
 		suite.addTestSuite(ClassLoaderTest.class);
 		suite.addTestSuite(CompilerTest.class);
