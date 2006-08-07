@@ -107,6 +107,7 @@
             <src path="modules/awt/src/main/java/common" />
             <src path="modules/beans/src/main/java" />
             <src path="modules/crypto/src/main/java" />
+            <src path="modules/instrument/src/main/java" />
             <src path="modules/jndi/src/main/java" />
             <src path="modules/logging/src/main/java" />
             <src path="modules/luni-kernel/src/main/java" />
