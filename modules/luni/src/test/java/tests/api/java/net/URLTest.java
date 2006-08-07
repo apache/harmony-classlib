@@ -768,22 +768,24 @@ public class URLTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.URL#sameFile(java.net.URL)
 	 */
-	public void test_sameFileLjava_net_URL() {
-		// Test for method boolean java.net.URL.sameFile(java.net.URL)
-		try {
-			u = new URL("http://www.yahoo.com");
-			u1 = new URL("http", "www.yahoo.com", "");
-			assertTrue("Should be the same1", u.sameFile(u1));
-			u = new URL("http://www.yahoo.com/dir1/dir2/test.html#anchor1");
-			u1 = new URL("http://www.yahoo.com/dir1/dir2/test.html#anchor2");
-			assertTrue("Should be the same ", u.sameFile(u1));
-		} catch (Exception e) {
-		}
-	}
+	public void test_sameFileLjava_net_URL() throws Exception {
+        // Test for method boolean java.net.URL.sameFile(java.net.URL)
+        u = new URL("http://www.yahoo.com");
+        u1 = new URL("http", "www.yahoo.com", "");
+        assertTrue("Should be the same1", u.sameFile(u1));
+        u = new URL("http://www.yahoo.com/dir1/dir2/test.html#anchor1");
+        u1 = new URL("http://www.yahoo.com/dir1/dir2/test.html#anchor2");
+        assertTrue("Should be the same ", u.sameFile(u1));
+
+        // regression test for Harmony-1040
+        u = new URL("file", null, -1, "/d:/somedir/");
+        u1 = new URL("file:/d:/somedir/");
+        assertFalse(u.sameFile(u1));
+    }
 
 	/**
-	 * @tests java.net.URL#getContent()
-	 */
+     * @tests java.net.URL#getContent()
+     */
 	public void test_getContent() {
 		// Test for method java.lang.Object java.net.URL.getContent()
 		byte[] ba;
@@ -1197,12 +1199,12 @@ public class URLTest extends junit.framework.TestCase {
 			System.out.println("connection failed");
 		}
 
-		public List select(URI uri) {
-			isSelectCalled = true;
-			ArrayList proxyList = new ArrayList(1);
-			proxyList.add(Proxy.NO_PROXY);
-			return proxyList;
-		}
+		public List<Proxy> select(URI uri) {
+            isSelectCalled = true;
+            ArrayList<Proxy> proxyList = new ArrayList<Proxy>(1);
+            proxyList.add(Proxy.NO_PROXY);
+            return proxyList;
+        }
 	}
 
 	static class MockSecurityManager extends SecurityManager {
