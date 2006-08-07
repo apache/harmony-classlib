@@ -28,7 +28,6 @@
 
 #include "org_apache_harmony_awt_gl_image_JpegDecoder.h"
 #include "jpeglib.h"
-#include "jpegint.h"
 #include "setjmp.h"
 
 #include "exceptions.h"
@@ -42,5 +41,13 @@ jfieldID img_JPEG_jpegColorSpaceID;
 jfieldID img_JPEG_bytesConsumedID;
 jfieldID img_JPEG_currScanlineID;
 jfieldID img_JPEG_hNativeDecoderID;
+
+/* MIN(a, b) macro */
+#undef MIN
+#define MIN(a, b) ((a) < (b))?(a):(b)
+
+/* MAX(a, b) macro */
+#undef MAX
+#define MAX(a, b) ((a) > (b))?(a):(b)
 
 #endif

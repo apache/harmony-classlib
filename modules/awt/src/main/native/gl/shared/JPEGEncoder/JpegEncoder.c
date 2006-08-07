@@ -24,7 +24,6 @@
 
 #include "org_apache_harmony_x_imageio_plugins_jpeg_JPEGImageWriter.h"
 #include "jpeglib.h"
-#include "jpegint.h"
 #include "setjmp.h"
 
 #include "exceptions.h"
