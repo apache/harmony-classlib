@@ -24,6 +24,7 @@ import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
 
 import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.nio.Util;
 
 
 /*
@@ -84,9 +85,7 @@ public final class IOUtil {
 				if (length == 0) {
 					return 0;
 				}
-				if (offset < 0 || length < 0 || offset + length > buf.length) {
-					throw new IndexOutOfBoundsException();
-				}
+				Util.assertArrayIndex(buf, offset, length);
 				// read at least once
 				if (chars.limit() == chars.position()) {
 					fillBuf(in, bytes, chars, decoder);
@@ -153,10 +152,7 @@ public final class IOUtil {
 	public static void writeOutputStreamWriter(String str, int offset,
 			int count, OutputStream out, ByteBuffer bytes,
 			CharsetEncoder encoder, Object lock) throws IOException {
-		// avoid int overflow
-		if (offset < 0 || count < 0 || offset + count > str.length()) {
-			throw new StringIndexOutOfBoundsException();
-		}
+		Util.assertArrayIndex(str.length(), offset, count);
 		CharBuffer chars = CharBuffer.wrap(str, offset, count + offset);
 		convert(lock, encoder, bytes, chars, out);
 	}
@@ -182,9 +178,7 @@ public final class IOUtil {
 	public static void writeOutputStreamWriter(char[] buf, int offset,
 			int count, OutputStream out, ByteBuffer bytes,
 			CharsetEncoder encoder, Object lock) throws IOException {
-		if (offset < 0 || count < 0 || offset + count > buf.length) {
-			throw new ArrayIndexOutOfBoundsException();
-		}
+		Util.assertArrayIndex(buf, offset, count);
 		CharBuffer chars = CharBuffer.wrap(buf, offset, count);
 		convert(lock, encoder, bytes, chars, out);
 	}
