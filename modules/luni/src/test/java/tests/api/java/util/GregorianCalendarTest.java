@@ -336,7 +336,7 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 				.getGreatestMinimum(Calendar.HOUR));
 
 		BitSet result = new BitSet();
-		int[] min = { 0, 1, 0, 1, 0, 1, 1, 1, -1, 0, 0, 0, 0, 0, 0, -43200000,
+		int[] min = { 0, 1, 0, 1, 0, 1, 1, 1, -1, 0, 0, 0, 0, 0, 0, -46800000,
 				0 };
 		for (int i = 0; i < min.length; i++) {
 			if (gc.getGreatestMinimum(i) != min[i])
@@ -410,7 +410,7 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 		BitSet result = new BitSet();
 		Vector values = new Vector();
 		int[] max = { 1, 292278994, 11, 53, 6, 31, 366, 7, 6, 1, 11, 23, 59,
-				59, 999, 43200000, 3600000 };
+				59, 999, 50400000, 3600000 };
 		for (int i = 0; i < max.length; i++) {
 			if (gc.getMaximum(i) != max[i]) {
 				result.set(i);
@@ -437,7 +437,7 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 				0, gc.getMinimum(Calendar.HOUR));
 
 		BitSet result = new BitSet();
-		int[] min = { 0, 1, 0, 1, 0, 1, 1, 1, -1, 0, 0, 0, 0, 0, 0, -43200000,
+		int[] min = { 0, 1, 0, 1, 0, 1, 1, 1, -1, 0, 0, 0, 0, 0, 0, -46800000,
 				0 };
 		for (int i = 0; i < min.length; i++) {
 			if (gc.getMinimum(i) != min[i])

@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,10 +56,10 @@ public class GregorianCalendar extends Calendar {
 			212, 243, 273, 304, 334 };
 
 	private static int[] maximums = new int[] { 1, 292278994, 11, 53, 6, 31,
-			366, 7, 6, 1, 11, 23, 59, 59, 999, 43200000, 3600000 };
+			366, 7, 6, 1, 11, 23, 59, 59, 999, 14 * 3600 * 1000, 3600000 };
 
 	private static int[] minimums = new int[] { 0, 1, 0, 1, 0, 1, 1, 1, -1, 0,
-			0, 0, 0, 0, 0, -43200000, 0 };
+			0, 0, 0, 0, 0, -13* 3600 * 1000, 0 };
 
 	private static int[] leastMaximums = new int[] { 1, 292269054, 11, 52, 4,
 			28, 365, 7, 4, 1, 11, 23, 59, 59, 999, 43200000, 3600000 };
