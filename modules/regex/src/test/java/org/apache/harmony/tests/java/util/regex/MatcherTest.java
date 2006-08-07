@@ -638,6 +638,21 @@ public class MatcherTest extends TestCase {
 
 	}
 
+    /*
+     * Verify if the Matcher behaves correct with pattern "c" when region is
+     * changed
+     */
+    public void testFindRegionChanged2() {
+        // Regression for HARMONY-713
+        Pattern pattern = Pattern.compile("c");
+
+        String inputStr = "aabb.c";
+        Matcher matcher = pattern.matcher(inputStr);
+        matcher.region(0, 3);
+
+        assertFalse(matcher.find());
+    }
+    
 	/*
 	 * Regression test for HARMONY-674
 	 */
@@ -645,6 +660,7 @@ public class MatcherTest extends TestCase {
         Pattern pattern = Pattern.compile("(?:\\d+)(?:pt)");
         assertTrue(pattern.matcher("14pt").matches());
     } 
+
 
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(MatcherTest.class);

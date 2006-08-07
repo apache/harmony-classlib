@@ -62,11 +62,11 @@ class SequenceSet extends LeafSet {
 
     public int find(int strIndex, CharSequence testString,
             MatchResultImpl matchResult) {
-        String testStr = testString.toString();
+        
         int strLength = matchResult.getRightBound();
 
         while (strIndex <= strLength) {
-            strIndex = indexOf(testStr, strIndex);
+            strIndex = indexOf(testString, strIndex, strLength);
 
             if (strIndex < 0)
                 return -1;
@@ -111,12 +111,11 @@ class SequenceSet extends LeafSet {
         return true;
     }
 
-    protected int indexOf(CharSequence str, int from) {
+    protected int indexOf(CharSequence str, int from, int to) {
         int last = string.charAt(charCount - 1);
         int i = from;
-        int size = str.length();
 
-        while (i <= size - charCount) {
+        while (i <= to - charCount) {
             char ch = str.charAt(i + charCount - 1);
             if (ch == last && startsWith(str, i)) {
                 return i;
