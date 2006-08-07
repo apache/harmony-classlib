@@ -1,4 +1,4 @@
-/* Copyright 2004, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -742,6 +742,7 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V
 	}
 
 	private void writeObject(ObjectOutputStream stream) throws IOException {
+        stream.defaultWriteObject();
 		stream.writeInt(size);
 		Iterator<?> iterator = entrySet().iterator();
 		while (iterator.hasNext()) {
@@ -754,6 +755,7 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V
 	@SuppressWarnings("unchecked")
     private void readObject(ObjectInputStream stream) throws IOException,
 			ClassNotFoundException {
+        stream.defaultReadObject();
 		int savedSize = stream.readInt();
 		threshold = getThreshold(DEFAULT_MAX_SIZE);
 		elementData = newElementArray(computeElementArraySize());
@@ -761,5 +763,6 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V
 			K key = (K)stream.readObject();
 			put(key, (V)stream.readObject());
 		}
+        size = savedSize;
 	}
 }

@@ -1,4 +1,4 @@
-/* Copyright 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import tests.util.SerializationTester;
 
 public class IdentityHashMap2Test extends junit.framework.TestCase {
 
@@ -314,4 +316,19 @@ public class IdentityHashMap2Test extends junit.framework.TestCase {
 		assertTrue("newset and keyset do not have same elements 2", set
 				.equals(newset));
 	}
+    
+    /**
+     * @tests java.util.IdentityHashMap#serializationTest
+     */
+    public void test_serialization_compatibility() throws Exception {
+        IdentityHashMap<String, String> identityHashMap = new IdentityHashMap<String, String>();
+        identityHashMap.put("key1", "value1");
+        identityHashMap.put("key2", "value2");
+        identityHashMap.put("key3", "value3");
+
+        IdentityHashMap<String, String> nobj = (IdentityHashMap<String, String>) SerializationTester
+                .readObject(identityHashMap,
+                        "serialization/java/util/IdentityHashMapTest.golden.0.ser");
+        assertEquals(identityHashMap.size(), nobj.size());
+    }
 }
