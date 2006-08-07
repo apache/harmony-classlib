@@ -37,6 +37,9 @@ public class Main {
             case LIST:
                 KeyStoreCertPrinter.list(param);
                 break;
+            case PRINTCERT:
+                KeyStoreCertPrinter.printCert(param);
+                break;
             case KEYCLONE:
                 EntryManager.keyClone(param);
                 break;
@@ -55,10 +58,15 @@ public class Main {
             case CHECK:
                 CRLManager.checkRevoked(param);
                 break;
-            case HELP:
-                HelpPrinter.printHelp();
+            case VERIFY:
+                CertChainVerifier.verifyChain(param);
                 break;
-
+            case CERTREQ:
+                CSRGenerator.certReq(param);
+                break;
+            case HELP:
+            	HelpPrinter.printHelp();
+                break;
             // TODO: calls for other options.    
         }
     }
@@ -81,8 +89,8 @@ public class Main {
 
         // all commands except printcert and help work with a store
         if (command != Command.PRINTCERT && command != Command.HELP) {
-            // all commands that work with store except list and export 
-            // need store password to with keystore. 
+            // all commands that work with store except list and export
+            // need store password to with keystore.
             if (param.getStorePass() == null && command != Command.LIST
                     && command != Command.EXPORT) {
                 throw new KeytoolException(
@@ -91,14 +99,14 @@ public class Main {
             // prompt for additional parameters if some of the expected
             // ones have not been specified.
             ArgumentsParser.getAdditionalParameters(param);
-        }
 
-        // print the warning if store password is not set
-        if (param.getStorePass() == null) {
-            System.out
-                    .println("\nWARNING!!!\nThe integrity of the keystore data "
-                            + "has NOT been checked!\n"
-                            + "To check it you must provide your keystore password!\n");
+            // print the warning if store password is not set
+            if (param.getStorePass() == null) {
+                System.out.println("\nWARNING!!!\nThe integrity "
+                        + "of the keystore data has NOT been checked!\n"
+                        + "To check it you must provide"
+                        + " your keystore password!\n");
+            }
         }
 
         // the work is being done here

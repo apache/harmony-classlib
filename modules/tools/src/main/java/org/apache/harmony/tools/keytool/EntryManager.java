@@ -33,8 +33,8 @@ import java.security.cert.CertificateException;
  */
 public class EntryManager {
     /**
-     * Copies the private key and the certificate chain from the keystore entry
-     * identifiad by given alias into a newly created one with given destination
+     * Copies the key and the certificate chain (if any) from the keystore entry
+     * identified by given alias into a newly created one with given destination
      * alias. alias and destination alias are specified in param.
      * 
      * @param param

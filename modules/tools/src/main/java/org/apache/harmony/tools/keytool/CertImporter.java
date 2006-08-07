@@ -68,6 +68,8 @@ public class CertImporter {
         String alias = param.getAlias();
         KeyStore keyStore = param.getKeyStore();
         boolean contains = keyStore.containsAlias(alias);
+        String certProvider = (param.getCertProvider() != null) ? param
+                .getCertProvider() : param.getProvider();
 
         // if the alias already exists, try to import the certificate as
         // a cert reply
@@ -76,13 +78,13 @@ public class CertImporter {
                         KeyStore.PrivateKeyEntry.class)) {
             // read the certificates
             Collection<X509Certificate> certCollection = CertReader.readCerts(
-                    param.getFileName(), false, param.getProvider());
+                    param.getFileName(), false, certProvider);
 
             importReply(param, certCollection);
         } else if (!contains) { // import a trusted certificate
             // read the certificate
             Collection<X509Certificate> trustedCert = CertReader.readCerts(
-                    param.getFileName(), true, param.getProvider());
+                    param.getFileName(), true, certProvider);
 
             importTrusted(param, trustedCert.iterator().next());
         } else {// if the existing entry is not a private key entry
@@ -234,8 +236,10 @@ public class CertImporter {
                 } catch (Exception e) {
                     // if the certificate chain cannot be built
                     // print it and ask if it should be trusted or not.
-                    KeyStoreCertPrinter.printX509CertDetailed(newCert, param
-                            .getProvider());
+                    String mdProvider = (param.getMdProvider() != null) ? param
+                            .getMdProvider() : param.getProvider();
+                    KeyStoreCertPrinter.printX509CertDetailed(newCert,
+                            mdProvider);
                     addIt = ArgumentsParser.getConfirmation(
                             "Trust this certificate? [no] ", false);
                 }
@@ -297,11 +301,15 @@ public class CertImporter {
             // If couldn't build full cert path for some reason,
             // ask user if the certificate should be trusted.
             System.out.println("Top-level certificate in the reply chain:\n");
-            KeyStoreCertPrinter.printX509CertDetailed(lastInChain, param
-                    .getProvider());
-            needAddChain = ArgumentsParser.getConfirmation("... is not trusted.\n"
-                    + "Do you still want to install the reply? [no]:  ", false);
-            
+            String mdProvider = (param.getMdProvider() != null) ? param
+                    .getMdProvider() : param.getProvider();
+            KeyStoreCertPrinter.printX509CertDetailed(lastInChain, mdProvider);
+            needAddChain = ArgumentsParser
+                    .getConfirmation(
+                            "... is not trusted.\n"
+                                    + "Do you still want to install the reply? [no]:  ",
+                            false);
+
             if (!needAddChain) {
                 System.out.println("The certificate reply is " + "not "
                         + "installed into the keystore.");

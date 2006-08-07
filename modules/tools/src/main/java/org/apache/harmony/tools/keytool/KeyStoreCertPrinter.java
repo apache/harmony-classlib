@@ -82,7 +82,8 @@ public class KeyStoreCertPrinter {
                     + ((keyStoreSize == 1) ? " entry \n" : " entries \n"));
         }
 
-        String provider = param.getProvider();
+        String mdProvider = (param.getMdProvider() != null) ? param
+                .getMdProvider() : param.getProvider();
 
         while (aliases.hasMoreElements()) {
             String currentAlias = (String) aliases.nextElement();
@@ -134,14 +135,14 @@ public class KeyStoreCertPrinter {
                     if (param.isVerbose()) {
                         // print out the first certificate
                         System.out.println("Certificate[1]:");
-                        printX509CertDetailed(x509cert, provider);
+                        printX509CertDetailed(x509cert, mdProvider);
                         if (!trustedEntry) {
                             for (int i = 1; i < certChain.length; i++) {
                                 System.out.println("Certificate[" + (i + 1)
                                         + "]:");
                                 printX509CertDetailed(
                                         (X509Certificate) certChain[i],
-                                        provider);
+                                        mdProvider);
                             }
                         }
                     }
@@ -197,10 +198,11 @@ public class KeyStoreCertPrinter {
                 String commaSpc = ", ";
                 System.out.print(currentAlias + commaSpc + creationDate
                         + commaSpc + entryType);
-                
+
                 if (!secretKeyEntry) {
-                    System.out.print(commaSpc + "\nCertificate fingerprint (MD5):  ");
-                    printMD(x509cert.getEncoded(), "MD5", provider);
+                    System.out.print(commaSpc
+                            + "\nCertificate fingerprint (MD5):  ");
+                    printMD(x509cert.getEncoded(), "MD5", mdProvider);
                 } else {
                     // If the key is explicitly asked to be printed
                     // by setting the alias, print it out, otherwise - do
@@ -313,9 +315,15 @@ public class KeyStoreCertPrinter {
     static void printCert(KeytoolParameters param)
             throws FileNotFoundException, CertificateException, IOException,
             KeytoolException, NoSuchAlgorithmException, NoSuchProviderException {
+
+        String provider = param.getProvider();
+        String certProvider = (param.getCertProvider() != null) ? param
+                .getCertProvider() : provider;
+        String mdProvider = (param.getMdProvider() != null) ? param
+                .getMdProvider() : provider;
         // get the certificate(s) from the file
         Collection certCollection = CertReader.readCerts(param.getFileName(),
-                false, param.getProvider());
+                false, certProvider);
         Iterator certIter = certCollection.iterator();
         int counter = 1;
 
@@ -323,7 +331,7 @@ public class KeyStoreCertPrinter {
         while (certIter.hasNext()) {
             X509Certificate cert = (X509Certificate) certIter.next();
             System.out.println("\nCertificate[" + counter + "]:");
-            printX509CertDetailed(cert, param.getProvider());
+            printX509CertDetailed(cert, mdProvider);
             ++counter;
         }
     }

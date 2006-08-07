@@ -34,9 +34,10 @@ import java.util.Iterator;
 public class CRLManager {
     /**
      * Checks if the certificate given in the file is contained in the CRL which
-     * is stored in the certstore. If the file name is not given, stdin is used.
+     * is stored in the file. If the file name is not given, stdin is used.
      * File with CRL and the checked certificate file are specified in param.
      * 
+     * @return true if found at least one revoked certifiacte
      * @param param
      * @throws KeytoolException
      * @throws IOException
@@ -46,13 +47,18 @@ public class CRLManager {
      * @throws FileNotFoundException
      * @throws NoSuchAlgorithmException 
      */
-    static void checkRevoked(KeytoolParameters param) throws FileNotFoundException,
-            CertificateException, NoSuchProviderException, CRLException,
-            IOException, KeytoolException, NoSuchAlgorithmException {
+    static boolean checkRevoked(KeytoolParameters param)
+            throws FileNotFoundException, CertificateException,
+            NoSuchProviderException, CRLException, IOException,
+            KeytoolException, NoSuchAlgorithmException {
 
-        String providerName = param.getProvider();
+        String provider = param.getProvider();
+        String certProvider = (param.getCertProvider() != null) ? param
+                .getCertProvider() : provider;
+        String mdProvider = (param.getMdProvider() != null) ? param
+                .getMdProvider() : provider;
         // firstly, get CRLs from the file 
-        Collection crls = CertReader.readCRLs(param.getCrlFile(), providerName);
+        Collection crls = CertReader.readCRLs(param.getCrlFile(), certProvider);
         // quit, if couldn't read anything
         if (crls.isEmpty()) {
             throw new CRLException("Failed to generate a CRL from the input. ");
@@ -67,33 +73,34 @@ public class CRLManager {
         }
 
         boolean foundRevoked = false;
-        
+
         // search in the CRLs for revocations of the certificates
         Iterator crlIter = crls.iterator();
         while (crlIter.hasNext()) {
             X509CRL crl = (X509CRL) crlIter.next();
             Iterator certIter = certs.iterator();
-            while (certIter.hasNext()){
-                X509Certificate cert = (X509Certificate)certIter.next();
-                X509CRLEntry entry = crl.getRevokedCertificate(cert); 
+            while (certIter.hasNext()) {
+                X509Certificate cert = (X509Certificate) certIter.next();
+                X509CRLEntry entry = crl.getRevokedCertificate(cert);
                 if (entry != null) {
                     System.out.println("The certificate ...");
-                    KeyStoreCertPrinter.printX509CertDetailed(cert, providerName);
+                    KeyStoreCertPrinter.printX509CertDetailed(cert, mdProvider);
                     System.out.println("... is revoked on "
                             + entry.getRevocationDate() + "\n");
                     foundRevoked = true;
                     continue;
-                } 
+                }
             }
         }
-        
-        if (certs.size() == 1 && !foundRevoked){
+
+        if (certs.size() == 1 && !foundRevoked) {
             System.out.println("The certificate ...");
             KeyStoreCertPrinter.printX509CertDetailed((X509Certificate) certs
-                    .iterator().next(), providerName);
+                    .iterator().next(), mdProvider);
             System.out.println("... is not found in CRLs given");
-        } else if (!foundRevoked){
+        } else if (!foundRevoked) {
             System.out.println("The certificates are not found in CRLs given");
         }
+        return foundRevoked;
     }
 }

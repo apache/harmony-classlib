@@ -59,9 +59,27 @@ public class KeytoolParameters {
     // type of the store. Default type is set in java.security file.
     private String storeType = KeyStore.getDefaultType();
 
-    // the name of the provider to use
+    // the name of the provider to use if specific provider is not given
     private String provider;
 
+    // the name of the provider to work with certificates  
+    private String certProvider;
+    
+    // the name of the provider to work with keys
+    private String keyProvider;
+    
+    // the name of the provider to work with message digests
+    private String mdProvider;
+    
+    // the name of the provider to work with signatures
+    private String sigProvider;
+    
+    // the name of the provider to work with keystore
+    private String ksProvider;
+    
+    // the name of the provider to work with keystore to convert to
+    private String convKsProvider;
+    
     // alias to access an entry in keystore
     private String alias;
 
@@ -154,6 +172,9 @@ public class KeytoolParameters {
     // certificate authorities (usually self-signed)
     private KeyStore cacerts;
     
+    // topic to print help on
+    private String helpTopic;
+    
     // command to perform
     private Command command = Command.HELP;
 
@@ -167,6 +188,13 @@ public class KeytoolParameters {
         storePath = null;
         storeType = KeyStore.getDefaultType();
         provider = null;
+        certProvider = null;
+        keyProvider = null;
+        mdProvider = null;
+        sigProvider = null;
+        ksProvider = null;
+        convKsProvider = null;
+        helpTopic = null;
         storePass = null;
         alias = null;
         keyAlg = null;
@@ -460,7 +488,8 @@ public class KeytoolParameters {
     }
 
     /**
-     * @return Returns the name of the provider to use
+     * @return Returns the name of the provider to use if specific provider is
+     *         not given
      */
     String getProvider() {
         return provider;
@@ -468,10 +497,103 @@ public class KeytoolParameters {
 
     /**
      * @param provider
-     *            the name of the provider to use
+     *            the name of the provider to use if specific provider is not
+     *            given
      */
     public void setProvider(String provider) {
         this.provider = provider;
+    }
+
+    /**
+     * @return the name of the provider to work with certificates
+     */
+    String getCertProvider() {
+        return certProvider;
+    }
+
+    /**
+     * @param certProvider
+     *            the name of the provider to work with certificates
+     */
+    public void setCertProvider(String certProvider) {
+        this.certProvider = certProvider;
+    }
+
+    /**
+     * @return the name of the provider to work with keystore to convert the
+     *         main keystore to
+     */
+    String getConvKsProvider() {
+        return convKsProvider;
+    }
+
+    /**
+     * @param convKsProvider
+     *            the name of the provider to work with keystore to convert the
+     *            main keystore to
+     */
+    public void setConvKsProvider(String convKsProvider) {
+        this.convKsProvider = convKsProvider;
+    }
+
+    /**
+     * @return the name of the provider to work with keys
+     */
+    String getKeyProvider() {
+        return keyProvider;
+    }
+
+    /**
+     * @param keyProvider
+     *            the name of the provider to work with keys
+     */
+    public void setKeyProvider(String keyProvider) {
+        this.keyProvider = keyProvider;
+    }
+
+    /**
+     * @return the name of the provider to work with keystore
+     */
+    String getKsProvider() {
+        return ksProvider;
+    }
+
+    /**
+     * @param ksProvider
+     *            the name of the provider to work with keystore
+     */
+    public void setKsProvider(String ksProvider) {
+        this.ksProvider = ksProvider;
+    }
+
+    /**
+     * @return the name of the provider to work with message digests
+     */
+    String getMdProvider() {
+        return mdProvider;
+    }
+
+    /**
+     * @param mdProvider
+     *            the name of the provider to work with message digests
+     */
+    public void setMdProvider(String mdProvider) {
+        this.mdProvider = mdProvider;
+    }
+
+    /**
+     * @return the name of the provider to work with signatures
+     */
+    String getSigProvider() {
+        return sigProvider;
+    }
+
+    /**
+     * @param sigProvider
+     *            the name of the provider to work with signatures
+     */
+    public void setSigProvider(String sigProvider) {
+        this.sigProvider = sigProvider;
     }
 
     /**
@@ -662,8 +784,8 @@ public class KeytoolParameters {
     }
 
     /**
-     * @param password
-     *            for the keystore to convert the current keystore to
+     * @param convertedKeyStorePass
+     *            password for the keystore to convert the current keystore to
      */
     public void setConvertedKeyStorePass(char [] convertedKeyStorePass) {
         this.convertedKeyStorePass = convertedKeyStorePass;
@@ -677,8 +799,8 @@ public class KeytoolParameters {
     }
 
     /**
-     * @param path
-     *            to the keystore to convert the current keystore to
+     * @param convertedKeyStorePath
+     *            path to the keystore to convert the current keystore to
      */
     public void setConvertedKeyStorePath(String convertedKeyStorePath) {
         this.convertedKeyStorePath = convertedKeyStorePath;
@@ -692,8 +814,8 @@ public class KeytoolParameters {
     }
 
     /**
-     * @param type
-     *            of the keystore to convert the current keystore to
+     * @param convertedKeyStoreType
+     *            type of the keystore to convert the current keystore to
      */
     public void setConvertedKeyStoreType(String convertedKeyStoreType) {
         this.convertedKeyStoreType = convertedKeyStoreType;
@@ -707,8 +829,8 @@ public class KeytoolParameters {
     }
 
     /**
-     * @param set
-     *            true if key entries should be converted, false - if not
+     * @param convertKeyEnties
+     *            set true if key entries should be converted, false - if not
      */
     public void setConvertKeyEntries(boolean convertKeyEnties) {
         this.convertKeyEntries = convertKeyEnties;
@@ -727,8 +849,8 @@ public class KeytoolParameters {
     }
 
     /**
-     * @param the
-     *            location of cacerts file, containing the certificates from
+     * @param cacertsPath
+     *            the location of cacerts file, containing the certificates from
      *            root certificate authorities (usually self-signed).
      */
     public void setCacertsPath(String cacertsPath) {
@@ -747,8 +869,8 @@ public class KeytoolParameters {
     }
 
     /**
-     * @param password
-     *            for cacerts keystore
+     * @param cacertsPass
+     *            password for cacerts keystore
      */
     public void setCacertsPass(char[] cacertsPass) {
         this.cacertsPass = cacertsPass;
@@ -769,8 +891,9 @@ public class KeytoolParameters {
             NoSuchAlgorithmException, CertificateException,
             NoSuchProviderException, IOException, KeytoolException {
         if (cacerts == null) {
+            String keyStoreProv = (ksProvider != null) ? ksProvider : provider;
             cacerts = KeyStoreLoaderSaver.loadStore(getCacertsPath(),
-                    storeType, getCacertsPass(), provider);
+                    storeType, getCacertsPass(), keyStoreProv);
         }
         return cacerts;
     }
@@ -782,5 +905,19 @@ public class KeytoolParameters {
      */
     void setCacerts(KeyStore cacerts) {
         this.cacerts = cacerts;
+    }
+
+    /**
+     * @return topic to print help on
+     */
+    String getHelpTopic() {
+        return helpTopic;
+}
+    /**
+     * @param helpTopic
+     *            topic to print help on
+     */
+    public void setHelpTopic(String helpTopic) {
+        this.helpTopic = helpTopic;
     }
 }

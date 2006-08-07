@@ -59,15 +59,17 @@ public class KeyStoreLoaderSaver {
         if (param.getStorePath() == null) {
             param.setStorePath(KeytoolParameters.defaultKeystorePath);
         }
+        String ksProvider = (param.getKsProvider() != null) ? param
+                .getKsProvider() : param.getProvider();
         KeyStore keyStore;
         if (new File(param.getStorePath()).exists()) {
             // load an existing store
             keyStore = loadStore(param.getStorePath(), param.getStoreType(),
-                    param.getStorePass(), param.getProvider());
+                    param.getStorePass(), ksProvider);
         } else {
             // create a new store if it doesn't exist
             keyStore = loadStore(null, param.getStoreType(), param
-                    .getStorePass(), param.getProvider());
+                    .getStorePass(), ksProvider);
             param.setNeedSaveKS(true);
         }
         param.setKeyStore(keyStore);

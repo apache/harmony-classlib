@@ -24,11 +24,13 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PublicKey;
+import java.security.SignatureException;
 import java.security.cert.CertPathBuilder;
 import java.security.cert.CertPathBuilderException;
 import java.security.cert.CertPathBuilderResult;
 import java.security.cert.CertStore;
 import java.security.cert.CertStoreException;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CollectionCertStoreParameters;
 import java.security.cert.PKIXBuilderParameters;
@@ -38,6 +40,7 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -51,7 +54,8 @@ import javax.security.auth.x500.X500Principal;
  * certificate chains.
  */
 public class CertChainVerifier {
-    private final static String strFailed = "Failed to build a certificate chain from reply.\n";
+    private final static String strFailed =
+        "Failed to build a certificate chain from reply.\n";
 
     /**
      * A cerificate chain is built by looking up the certificate of the issuer
@@ -61,12 +65,147 @@ public class CertChainVerifier {
      * certificate path is built in the same way as in import operation. If an
      * error occurs the flow is not stopped but an attempt to continue is made.
      * The results of the verification are printed to stdout.
+     * 
+     * @param param
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchProviderException
+     * @throws FileNotFoundException
+     * @throws CertificateException
+     * @throws IOException
+     * @throws KeytoolException
+     * @throws KeyStoreException 
      */
-    static void verifyChain(KeytoolParameters param){
-        // TODO
-        throw new RuntimeException("Method is not implemented yet.");
+    static void verifyChain(KeytoolParameters param)
+            throws NoSuchAlgorithmException, NoSuchProviderException,
+            FileNotFoundException, CertificateException, IOException,
+            KeytoolException, KeyStoreException {
+
+        try {
+            if (param.getCrlFile() != null) {
+                CRLManager.checkRevoked(param);
+            } else {
+                System.out
+                        .println("Certificates revocation status is not checked, "
+                                + "CRL file name is not supplied.");
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            System.out.println("Failed to check revocation status.");
+        }
+
+        String provider = param.getProvider();
+        String certProvider = (param.getCertProvider() != null) ? param
+                .getCertProvider() : provider;
+        String sigProvider = (param.getSigProvider() != null) ? param
+                .getSigProvider() : provider;
+        String mdProvider = (param.getMdProvider() != null) ? param
+                .getMdProvider() : provider;
+
+        // Don't catch exceptions here, because if exception is
+        // thrown here, there is no need to proceed.
+        Collection<X509Certificate> certs = CertReader.readCerts(param
+                .getFileName(), false, certProvider);
+        X509Certificate[] ordered = orderChain(certs);
+
+        try {
+            for (int i = 0; i < ordered.length - 1; i++) {
+                checkSignature(ordered[i], ordered[i + 1].getPublicKey(),
+                        sigProvider, mdProvider);
+            }
+            // check the signature of the last element of the ordered chain
+            boolean lastSignChecked = findIssuerAndCheckSignature(param
+                    .getKeyStore(), ordered[ordered.length - 1], sigProvider,
+                    mdProvider);
+            // if haven't found issuer's certificate in main keystore
+            if (!lastSignChecked) {
+                if (param.isTrustCACerts()) {
+                    // make the search and check again
+                    lastSignChecked = findIssuerAndCheckSignature(param
+                            .getCacerts(), ordered[ordered.length - 1],
+                            sigProvider, mdProvider);
+                }
+
+                if (!lastSignChecked) {
+                    System.out
+                            .println("Failed to find the issuer's certificate.");
+                    System.out
+                            .println("Failed to check the signature of certificate:");
+                    KeyStoreCertPrinter.printX509CertDetailed(
+                            ordered[ordered.length - 1], mdProvider);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            System.out.println("Signature check failed.");
+        }
+
+        try {
+            buildCertPath(param, ordered[0]);
+
+            // won't come here if exception is thrown
+            System.out.println("Certificate path is built successfully.");
+        } catch (Exception e) {
+            // Exception's own message contains strFailed string,
+            // but its cause can be more informative here.
+            System.out.println(e.getCause());
+            System.out.println("Failed to build a certificate path.");
+        }
+        System.out.println("Verification complete.");
     }
-    
+
+    // Checks the signature, prints the result. Returns true if
+    // signature verification process succeeds (no exceptions or
+    // SignatureException thrown)
+    private static boolean checkSignature(X509Certificate cert,
+            PublicKey pubKey, String sigProvider, String mdProvider)
+            throws CertificateEncodingException, NoSuchAlgorithmException,
+            NoSuchProviderException {
+        try {
+            if (sigProvider == null) {
+                cert.verify(pubKey);
+            } else {
+                cert.verify(pubKey, sigProvider);
+            }
+        } catch (SignatureException e) {
+            System.out.println("The signature is incorrect for certificate: ");
+            KeyStoreCertPrinter.printX509CertDetailed(cert, mdProvider);
+        } catch (Exception e) {
+            System.out.println(e);
+            System.out
+                    .println("Signature verification failed for certificate: ");
+            KeyStoreCertPrinter.printX509CertDetailed(cert, mdProvider);
+            return false;
+        }
+        return true;
+    }
+
+    // Searches for cert issuer's certificate in keyStore and checks if
+    // cert was signed using the private key corresponding to public key
+    // wrapped into the found certificate.
+    private static boolean findIssuerAndCheckSignature(KeyStore keyStore,
+            X509Certificate cert, String sigProvider, String mdProvider)
+            throws KeyStoreException, CertificateEncodingException,
+            NoSuchAlgorithmException, NoSuchProviderException {
+
+        Enumeration keyStoreAliases = keyStore.aliases();
+        while (keyStoreAliases.hasMoreElements()) {
+            // get a certificate from keyStore
+            X509Certificate nextKScert = (X509Certificate) keyStore
+                    .getCertificate((String) keyStoreAliases.nextElement());
+            if (nextKScert == null) {
+                continue;
+            }
+            if (Arrays.equals(cert.getIssuerX500Principal().getEncoded(),
+                    nextKScert.getSubjectX500Principal().getEncoded())) {
+                checkSignature(cert, keyStore.getCertificate(
+                        (String) keyStoreAliases.nextElement()).getPublicKey(),
+                        sigProvider, mdProvider);
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Builds a certificate chain from the given X509Certificate newCert to a
      * self-signed root CA whose certificate is contained in the keystore or
@@ -102,8 +241,11 @@ public class CertChainVerifier {
         Collection trustedCerts = trustedSeparated[1];
         Collection selfSignedTAsCerts = trustedSeparated[2];
 
-        CertPathBuilderResult bldResult = buildCertPath(param.getProvider(),
-                newCert, selfSignedTAs, trustedCerts);
+        String certProvider = (param.getCertProvider() != null) ? param
+                .getCertProvider() : param.getProvider();
+
+        CertPathBuilderResult bldResult = buildCertPath(certProvider, newCert,
+                selfSignedTAs, trustedCerts);
 
         // The validation of the certificate path.
         // According to black-box testing, RI keytool doesn't perform
@@ -177,15 +319,16 @@ public class CertChainVerifier {
         Set selfSignedTAs = (Set) trustedSeparated[0];
         Collection trustedCerts = trustedSeparated[1];
 
-        return buildCertPath(param.getProvider(), newCert, selfSignedTAs,
-                trustedCerts);
+        String certProvider = (param.getCertProvider() != null) ? param
+                .getCertProvider() : param.getProvider();
+
+        return buildCertPath(certProvider, newCert, selfSignedTAs, trustedCerts);
     }
 
-    
     // Build a certificte chain up to the self-signed trust anchor, based on
     // trusted certificates given.
     // 
-    // @param provider
+    // @param certProvider
     // @param newCert
     //            is a certificate to build chain for.
     // @param selfSignedTAs
@@ -193,7 +336,7 @@ public class CertChainVerifier {
     // @param trustedCerts
     //            elements of trustedCerts are used as chain links It can be
     //            null if no intermediate certifictaes allowed.
-    private static CertPathBuilderResult buildCertPath(String provider,
+    private static CertPathBuilderResult buildCertPath(String certProvider,
             X509Certificate newCert, Set selfSignedTAs, Collection trustedCerts)
             throws NoSuchAlgorithmException, CertificateException, IOException,
             KeyStoreException, CertPathBuilderException, KeytoolException,
@@ -218,7 +361,7 @@ public class CertChainVerifier {
 
         if (trustedCerts != null) {
             CollectionCertStoreParameters trustedCertsCCSParams = 
-                    new CollectionCertStoreParameters(trustedCerts);
+                new CollectionCertStoreParameters(trustedCerts);
             CertStore trustedCertStore;
             try {
                 trustedCertStore = CertStore.getInstance("Collection",
@@ -236,17 +379,17 @@ public class CertChainVerifier {
 
         CertPathBuilder cpBuilder;
         try {
-            if (provider == null) {
+            if (certProvider == null) {
                 cpBuilder = CertPathBuilder.getInstance(strPKIX);
             } else {
-                cpBuilder = CertPathBuilder.getInstance(strPKIX, provider);
+                cpBuilder = CertPathBuilder.getInstance(strPKIX, certProvider);
             }
         } catch (NoSuchAlgorithmException e) {
             throw new NoSuchAlgorithmException("The algorithm " + strPKIX
                     + " is not available.", e);
         } catch (NoSuchProviderException e) {
             throw (NoSuchProviderException) new NoSuchProviderException(
-                    "The provider " + provider
+                    "The certProvider " + certProvider
                             + " is not found in the environment.").initCause(e);
         }
 
@@ -263,7 +406,6 @@ public class CertChainVerifier {
         return bldResult;
     }
 
-    
     // Separates the trusted certificates from keystore (and cacerts file if
     // "-trustcacerts" option is specified) into self-signed certificate
     // authority certificates and non-self-signed certifcates.
@@ -339,7 +481,7 @@ public class CertChainVerifier {
                 }
             }
         }
-        
+
         // if "-trustcacerts" is specified, add CAs from cacerts
         if (trustCaCerts) {
             KeyStore cacertsFile = null;
@@ -505,7 +647,7 @@ public class CertChainVerifier {
 
         return ordered;
     }
-    
+
     // orders a chain without a starting element given
     static X509Certificate[] orderChain(Collection<X509Certificate> certs)
             throws KeytoolException {
@@ -543,8 +685,7 @@ public class CertChainVerifier {
 
         return orderChain(certsList, certsList.get(startPos).getPublicKey());
     }
-            
-    
+
     /**
      * Checks if the X509Certificate cert is contained as a trusted certificate
      * entry in keystore and possibly cacerts file (if "-trustcacerts" option is

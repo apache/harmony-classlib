@@ -91,6 +91,18 @@ class ArgumentsParser {
 
     final static String sProvider = "-provider";
 
+    final static String sCertProvider = "-certprovider";
+    
+    final static String sKeyProvider = "-keyprovider";
+    
+    final static String sMdProvider = "-mdprovider";
+    
+    final static String sSigProvider = "-sigprovider";
+    
+    final static String sKsProvider = "-ksprovider";
+    
+    final static String sConvKsProvider = "-convprovider";
+    
     final static String sStorepass = "-storepass";
 
     final static String sAlias = "-alias";
@@ -232,6 +244,9 @@ class ArgumentsParser {
                 }
                 if (args[i].compareToIgnoreCase(sHelp) == 0) {
                     param.setCommand(Command.HELP);
+                    if (args.length == i + 2){
+                        param.setHelpTopic(args[++i]);
+                    }
                     continue;
                 }
 
@@ -246,6 +261,30 @@ class ArgumentsParser {
                 }
                 if (args[i].compareToIgnoreCase(sProvider) == 0) {
                     param.setProvider(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sCertProvider) == 0) {
+                    param.setCertProvider(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sKeyProvider) == 0) {
+                    param.setKeyProvider(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sMdProvider) == 0) {
+                    param.setMdProvider(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sSigProvider) == 0) {
+                    param.setSigProvider(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sKsProvider) == 0) {
+                    param.setKsProvider(args[++i]);
+                    continue;
+                }
+                if (args[i].compareToIgnoreCase(sConvKsProvider) == 0) {
+                    param.setConvKsProvider(args[++i]);
                     continue;
                 }
                 if (args[i].compareToIgnoreCase(sAlias) == 0) {
