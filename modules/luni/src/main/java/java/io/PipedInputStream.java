@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -299,34 +299,37 @@ public class PipedInputStream extends InputStream {
 	 *             occurs.
 	 */
 	protected synchronized void receive(int oneByte) throws IOException {
-		if (buffer != null) {
-			/**
-			 * Set the last thread to be writing on this PipedInputStream. If
-			 * lastWriter dies while someone is waiting to read an IOException
-			 * of "Pipe broken" will be thrown in read()
-			 */
-			lastWriter = Thread.currentThread();
-			try {
-				while (buffer != null && out == in) {
-					notifyAll();
-					wait(1000);
-					if (lastReader != null && !lastReader.isAlive())
-						throw new IOException(org.apache.harmony.luni.util.Msg
-								.getString("K0076")); //$NON-NLS-1$
-				}
-			} catch (InterruptedException e) {
-				throw new InterruptedIOException();
+		if (buffer == null || isClosed) {
+		    throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0078")); //$NON-NLS-1$
+        }
+        if (lastReader != null && !lastReader.isAlive()){
+            throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0076")); //$NON-NLS-1$
+        }
+		/**
+		 * Set the last thread to be writing on this PipedInputStream. If
+		 * lastWriter dies while someone is waiting to read an IOException
+		 * of "Pipe broken" will be thrown in read()
+		 */
+		lastWriter = Thread.currentThread();
+		try {
+			while (buffer != null && out == in) {
+				notifyAll();
+				wait(1000);
+				if (lastReader != null && !lastReader.isAlive())
+					throw new IOException(org.apache.harmony.luni.util.Msg
+							.getString("K0076")); //$NON-NLS-1$
 			}
-			if (buffer != null) {
-				if (in == -1)
-					in = 0;
-				buffer[in++] = (byte) oneByte;
-				if (in == buffer.length)
-					in = 0;
-				return;
-			}
+		} catch (InterruptedException e) {
+			throw new InterruptedIOException();
 		}
-		throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0078")); //$NON-NLS-1$
+		if (buffer != null) {
+			if (in == -1)
+				in = 0;
+			buffer[in++] = (byte) oneByte;
+			if (in == buffer.length)
+				in = 0;
+			return;
+		}
 	}
 
 	synchronized void done() {
