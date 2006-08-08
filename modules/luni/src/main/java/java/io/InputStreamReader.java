@@ -1,4 +1,4 @@
-/* Copyright 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -369,11 +369,11 @@ public class InputStreamReader extends Reader {
 	public int read(char[] buf, int offset, int length) throws IOException {
 		synchronized (lock) {
 			if (isOpen()) {
-				if (length == 0)
-					return 0;
-				if (offset < 0 || length < 0 || offset + length > buf.length) {
+				if (offset < 0 || offset > buf.length - length || length < 0) {
 					throw new IndexOutOfBoundsException();
 				}
+				if (length == 0)
+					return 0;			
 				// read at least once
 				if (chars.limit() == chars.position()) {
 					fillBuf();

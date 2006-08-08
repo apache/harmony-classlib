@@ -1,4 +1,4 @@
-/* Copyright 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -165,6 +165,22 @@ public class InputStreamReaderTest extends TestCase {
 	 * Class under test for int read(char[], int, int)
 	 */
 	public void testReadcharArrayintint() throws IOException {
+		//throws IndexOutOfBoundsException before NullPointerException
+		try {
+			reader.read(null, -1, 1);
+			fail("Should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			//expected
+		}
+		
+		//throws NullPointerException before IndexOutOfBoundsException
+		try {
+			reader.read(null, 0, -1);
+			fail("Should throw NullPointerException");
+		} catch (NullPointerException e) {
+			//expected
+		}
+		
 		try {
 			reader.read(null, 0, 1);
 			fail();
