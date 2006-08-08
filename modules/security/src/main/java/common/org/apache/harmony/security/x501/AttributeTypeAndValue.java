@@ -268,7 +268,8 @@ public class AttributeTypeAndValue {
      * @throws IOException
      *             if OID can not be created from its string representation
      */
-    public AttributeTypeAndValue(String sOid, AttributeValue value) {
+    public AttributeTypeAndValue(String sOid, AttributeValue value)
+            throws IOException {
         if (sOid.charAt(0) >= '0' && sOid.charAt(0) <= '9') {
 
             int[] array = org.apache.harmony.security.asn1.ObjectIdentifier
@@ -283,8 +284,7 @@ public class AttributeTypeAndValue {
         } else {
             this.oid = (ObjectIdentifier) KNOWN_NAMES.get(sOid.toUpperCase());
             if (this.oid == null) {
-                throw new IllegalArgumentException(
-                        "Unrecognizable attribute name: " + sOid);
+                throw new IOException("Unrecognizable attribute name: " + sOid);
             }
         }
         this.value = value;

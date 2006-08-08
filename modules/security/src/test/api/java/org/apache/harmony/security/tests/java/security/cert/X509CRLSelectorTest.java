@@ -62,6 +62,14 @@ public class X509CRLSelectorTest extends TestCase {
         } catch (IOException e) {
             // expected
         }
+
+        // Regression for HARMONY-1076
+        try {
+            new X509CRLSelector().addIssuerName("w=y");
+            fail("IOException expected");
+        } catch (IOException e) {
+            // expected
+        }
     }
 
     /**
