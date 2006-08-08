@@ -133,6 +133,14 @@ public class SecretKeySpecTest extends TestCase {
         assertFalse("The change of key specified in the constructor "
                     + "should not cause the change of internal array.",
                     key[offset] == ks.getEncoded()[0]);
+
+        // Regression test for HARMONY-1077
+        try {
+            new SecretKeySpec(new byte[] { 2 }, 4, -100, "CCC");
+            fail("ArrayIndexOutOfBoundsException expected");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            //expected
+        }
     }
 
     /**

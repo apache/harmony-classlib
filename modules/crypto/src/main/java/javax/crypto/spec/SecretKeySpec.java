@@ -69,6 +69,9 @@ public class SecretKeySpec implements SecretKey, KeySpec, Serializable {
     	if (key.length == 0) {
     		throw new IllegalArgumentException("key is empty");
     	}
+        if (len < 0) {
+            throw new ArrayIndexOutOfBoundsException("len is negative");
+        }
     	if ((key.length - offset < len)) {
     		throw new IllegalArgumentException("key is too short");
     	}

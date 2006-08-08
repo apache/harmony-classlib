@@ -123,6 +123,14 @@ public class RC5ParameterSpecTest extends TestCase {
         assertFalse("The change of iv specified in the constructor "
                     + "should not cause the change of internal array.",
                     iv[offset] == ps.getIV()[0]);
+
+        // Regression test for HARMONY-1077
+        try {
+            new RC5ParameterSpec(0, 9, 77, new byte[] { 2 }, -100);
+            fail("ArrayIndexOutOfBoundsException expected");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
     }
 
     /**
