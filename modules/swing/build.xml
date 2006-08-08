@@ -43,7 +43,7 @@
 
     <target name="build" depends="compile.java, build.jar" />
 
-    <target name="test" depends="build, compile.tests, run.tests" />
+    <target name="test" depends="build, run.tests" />
 
     <target name="clean">
         <delete failonerror="false">
@@ -105,7 +105,8 @@
         </javac>
     </target>
 
-    <target name="run.tests" if="with.awt.swing.tests">
+    <target name="run.tests" depends="compile.tests,copy.test.resources"
+            if="with.awt.swing.tests">
 
         <mkdir dir="${hy.tests.reports}" />
 
@@ -173,6 +174,15 @@
     <target name="touch-errors-file" if="test.errors">
         <echo file="${hy.tests.reports}/test.errors"
             append="true">swing${line.separator}</echo>
+    </target>
+
+    <target name="copy.test.resources">
+        <mkdir dir="${hy.swing.bin.test}" />
+        <copy todir="${hy.swing.bin.test}" includeemptydirs="false">
+            <fileset dir="${hy.swing.src.test.resources}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
     </target>
 
 </project>
