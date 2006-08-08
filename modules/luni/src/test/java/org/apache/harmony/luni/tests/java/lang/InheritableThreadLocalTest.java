@@ -13,31 +13,19 @@
  * limitations under the License.
  */
 
-package tests.api.java.lang;
+package org.apache.harmony.luni.tests.java.lang;
 
-public class RuntimePermissionTest extends junit.framework.TestCase {
-
-	/**
-	 * @tests java.lang.RuntimePermission#RuntimePermission(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.lang.RuntimePermission(java.lang.String)
-		RuntimePermission r = new RuntimePermission("createClassLoader");
-		assertEquals("Returned incorrect name", 
-				"createClassLoader", r.getName());
-
-	}
+public class InheritableThreadLocalTest extends junit.framework.TestCase {
 
 	/**
-	 * @tests java.lang.RuntimePermission#RuntimePermission(java.lang.String,
-	 *        java.lang.String)
+	 * @tests java.lang.InheritableThreadLocal#InheritableThreadLocal()
 	 */
-	public void test_ConstructorLjava_lang_StringLjava_lang_String() {
-		// Test for method java.lang.RuntimePermission(java.lang.String,
-		// java.lang.String)
-		RuntimePermission r = new RuntimePermission("createClassLoader", null);
-		assertEquals("Returned incorrect name", 
-				"createClassLoader", r.getName());
+	public void test_Constructor() {
+		// Test for method java.lang.InheritableThreadLocal()
+
+		InheritableThreadLocal l = new InheritableThreadLocal();
+		assertTrue("Failed to create InheritableThreadLocal",
+				l instanceof InheritableThreadLocal);
 	}
 
 	/**

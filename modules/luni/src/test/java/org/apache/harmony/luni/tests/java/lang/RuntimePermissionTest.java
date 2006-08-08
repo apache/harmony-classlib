@@ -13,19 +13,31 @@
  * limitations under the License.
  */
 
-package tests.api.java.lang;
+package org.apache.harmony.luni.tests.java.lang;
 
-public class ThreadDeathTest extends junit.framework.TestCase {
+public class RuntimePermissionTest extends junit.framework.TestCase {
 
 	/**
-	 * @tests java.lang.ThreadDeath#ThreadDeath()
+	 * @tests java.lang.RuntimePermission#RuntimePermission(java.lang.String)
 	 */
-	public void test_Constructor() {
-		// Test for method java.lang.ThreadDeath()
+	public void test_ConstructorLjava_lang_String() {
+		// Test for method java.lang.RuntimePermission(java.lang.String)
+		RuntimePermission r = new RuntimePermission("createClassLoader");
+		assertEquals("Returned incorrect name", 
+				"createClassLoader", r.getName());
 
-		ThreadDeath td = new ThreadDeath();
+	}
 
-		assertTrue(" Should be a Threaddeath", td instanceof ThreadDeath);
+	/**
+	 * @tests java.lang.RuntimePermission#RuntimePermission(java.lang.String,
+	 *        java.lang.String)
+	 */
+	public void test_ConstructorLjava_lang_StringLjava_lang_String() {
+		// Test for method java.lang.RuntimePermission(java.lang.String,
+		// java.lang.String)
+		RuntimePermission r = new RuntimePermission("createClassLoader", null);
+		assertEquals("Returned incorrect name", 
+				"createClassLoader", r.getName());
 	}
 
 	/**

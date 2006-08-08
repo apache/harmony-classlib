@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package tests.api.java.lang;
+package org.apache.harmony.luni.tests.java.lang;
 
 public class CompilerTest extends junit.framework.TestCase {
 

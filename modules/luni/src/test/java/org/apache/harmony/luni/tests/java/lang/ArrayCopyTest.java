@@ -1,4 +1,4 @@
-/* Copyright 2006 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,19 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.tests.java.lang;
+package org.apache.harmony.luni.tests.java.lang;
 
 import junit.framework.TestCase;
 
-public class SecurityManagerTest extends TestCase {
+/**
+ * Testing arraycopy behavior.
+ */
+public class ArrayCopyTest extends TestCase {
 
-	/**
-	 * @tests java.lang.SecurityManager#checkAccess(java.lang.Thread)
-	 */
-	public void test_checkAccessLjava_lang_Thread() throws InterruptedException {
-		// Regression for HARMONY-66
-		Thread t = new Thread() {
-			public void run() {
-			};
-		};
-		t.start();
-		t.join();
-		new SecurityManager().checkAccess(t);
+	public void testArrayCopy() {
+		char[][] source = new char[][] { { 'H', 'e', 'l', 'l', 'o' },
+				{ 'W', 'o', 'r', 'l', 'd' } };
+		char[][] dest = new char[2][];
+		System.arraycopy(source, 0, dest, 0, 2);
 	}
 }

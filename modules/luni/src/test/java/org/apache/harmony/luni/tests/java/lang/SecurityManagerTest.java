@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,23 @@
  * limitations under the License.
  */
 
-package tests.api.java.lang;
+package org.apache.harmony.luni.tests.java.lang;
 
 import junit.framework.TestCase;
 
-/**
- * A simple hello world test to ensure we can run something.
- */
-public class HelloWorldTest extends TestCase {
+public class SecurityManagerTest extends TestCase {
 
-	public static void main(String[] args) {
-		(new HelloWorldTest()).testHelloWorld();
+	/**
+	 * @tests java.lang.SecurityManager#checkAccess(java.lang.Thread)
+	 */
+	public void test_checkAccessLjava_lang_Thread() throws InterruptedException {
+		// Regression for HARMONY-66
+		Thread t = new Thread() {
+			public void run() {
+			};
+		};
+		t.start();
+		t.join();
+		new SecurityManager().checkAccess(t);
 	}
-
-	public HelloWorldTest() {
-		super();
-	}
-
-	public final void testHelloWorld() {
-		System.out.println("Hello world from the test suites");
-	}
-
 }

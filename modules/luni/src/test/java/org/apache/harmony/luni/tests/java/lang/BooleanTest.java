@@ -34,7 +34,7 @@ public class BooleanTest extends TestCase {
         assertEquals(Boolean.TRUE, new Boolean("TRUE"));
         assertEquals(Boolean.TRUE, new Boolean("true"));
         assertEquals(Boolean.TRUE, new Boolean("True"));
-        
+
         assertEquals(Boolean.FALSE, new Boolean("yes"));
         assertEquals(Boolean.FALSE, new Boolean("false"));
     }
@@ -74,10 +74,10 @@ public class BooleanTest extends TestCase {
     public void test_getBooleanLjava_lang_String() {
         System.setProperty(getClass().getName(), "true");
         assertTrue(Boolean.getBoolean(getClass().getName()));
-        
+
         System.setProperty(getClass().getName(), "TRUE");
         assertTrue(Boolean.getBoolean(getClass().getName()));
-        
+
         System.setProperty(getClass().getName(), "false");
         assertFalse(Boolean.getBoolean(getClass().getName()));
     }
@@ -104,13 +104,18 @@ public class BooleanTest extends TestCase {
     public void test_valueOfLjava_lang_String() {
         assertEquals(Boolean.TRUE, Boolean.valueOf("true"));
         assertEquals(Boolean.FALSE, Boolean.valueOf("false"));
-        
+
         assertEquals(Boolean.TRUE, Boolean.valueOf("TRUE"));
         assertEquals(Boolean.FALSE, Boolean.valueOf("false"));
-        
+
         assertEquals(Boolean.FALSE, Boolean.valueOf(null));
         assertEquals(Boolean.FALSE, Boolean.valueOf(""));
         assertEquals(Boolean.FALSE, Boolean.valueOf("invalid"));
+
+        assertTrue("Failed to parse true to true", Boolean.valueOf("true").booleanValue());
+        assertTrue("Failed to parse mixed case true to true", Boolean.valueOf("TrUe")
+                .booleanValue());
+        assertTrue("parsed non-true to true", !Boolean.valueOf("ddddd").booleanValue());
     }
 
     /**
@@ -133,19 +138,19 @@ public class BooleanTest extends TestCase {
         assertFalse(Boolean.parseBoolean("invalid"));
     }
 
-	/**
-	 * @tests java.lang.Boolean#compareTo(Boolean)
-	 */
-	public void test_compareToLjava_lang_Boolean() {
-		assertTrue(Boolean.TRUE.compareTo(Boolean.TRUE) == 0);
-		assertTrue(Boolean.FALSE.compareTo(Boolean.FALSE) == 0);
-		assertTrue(Boolean.TRUE.compareTo(Boolean.FALSE) > 0);
-		assertTrue(Boolean.FALSE.compareTo(Boolean.TRUE) < 0);
+    /**
+     * @tests java.lang.Boolean#compareTo(Boolean)
+     */
+    public void test_compareToLjava_lang_Boolean() {
+        assertTrue(Boolean.TRUE.compareTo(Boolean.TRUE) == 0);
+        assertTrue(Boolean.FALSE.compareTo(Boolean.FALSE) == 0);
+        assertTrue(Boolean.TRUE.compareTo(Boolean.FALSE) > 0);
+        assertTrue(Boolean.FALSE.compareTo(Boolean.TRUE) < 0);
 
-		try {
-			Boolean.TRUE.compareTo(null);
-			fail("No NPE");
-		} catch (NullPointerException e) {
-		}
-	}
+        try {
+            Boolean.TRUE.compareTo(null);
+            fail("No NPE");
+        } catch (NullPointerException e) {
+        }
+    }
 }

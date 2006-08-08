@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package tests.api.java.lang;
+package org.apache.harmony.luni.tests.java.lang;
 
 import java.io.File;
 import java.io.IOException;
@@ -731,20 +731,10 @@ public class ClassTest extends junit.framework.TestCase {
 	 * @tests java.lang.Class#getResource(java.lang.String)
 	 */
 	public void test_getResourceLjava_lang_String() {
-		// Test for method java.net.URL
-		// java.lang.Class.getResource(java.lang.String)
-		String name = Support_Resources.RESOURCE_PACKAGE + "hyts_compressD.txt";
-		System.setSecurityManager(new SecurityManager());
-		try {
-			java.net.URL res = Object.class.getResource("Object.class");
-			assertNull("Object.class should not be found", res);
+		final String name = "/org/apache/harmony/luni/tests/test_resource.txt";
 
-			assertNotNull("Security: the file " + name
-					+ " can not be found in this directory", ClassTest.class
-					.getResource(name));
-		} finally {
-			System.setSecurityManager(null);
-		}
+        java.net.URL res = getClass().getResource(name);
+        assertNotNull(res);
 	}
 
 	/**
@@ -754,42 +744,16 @@ public class ClassTest extends junit.framework.TestCase {
 		// Test for method java.io.InputStream
 		// java.lang.Class.getResourceAsStream(java.lang.String)
 
-		String name = Support_Resources.RESOURCE_PACKAGE + "hyts_compressD.txt";
-		Class clazz = null;
-		try {
-			clazz = Class.forName("tests.api.java.lang.ClassTest");
-		} catch (ClassNotFoundException e) {
-			fail(
-					"Should be able to find the class tests.api.java.lang.ClassTest");
-		}
+        final String name = "/org/apache/harmony/luni/tests/test_resource.txt";
 		assertNotNull("the file " + name + " can not be found in this directory",
-				clazz.getResourceAsStream(name));
+				getClass().getResourceAsStream(name));
 
-		System.setSecurityManager(new SecurityManager());
-		try {
-			InputStream res = Object.class.getResourceAsStream("Object.class");
-			assertNull("Object.class should not be found", res);
-			InputStream is = ClassTest.class.getResourceAsStream(name);
-			assertNotNull("Security: the file " + name
-					+ " can not be found in this directory", is);
-		} finally {
-			System.setSecurityManager(null);
-		}
+		final String nameBadURI = "org/apache/harmony/luni/tests/test_resource.txt";
+		assertNull("the file " + nameBadURI
+				+ " should not be found in this directory", getClass()
+				.getResourceAsStream(nameBadURI));
 
-		name = "hyts_Foo.c";
-		assertNull("the file " + name
-				+ " should not be found in this directory", clazz
-				.getResourceAsStream(name));
-		assertNotNull("the file " + name
-				+ " can not be found in the root directory", clazz
-				.getResourceAsStream("/" + name));
-
-		try {
-			clazz = Class.forName("java.lang.Object");
-		} catch (ClassNotFoundException e) {
-			fail("Should be able to find the class java.lang.Object");
-		}
-		InputStream str = clazz.getResourceAsStream("Class.class");
+		InputStream str = Object.class.getResourceAsStream("Class.class");
 		assertNotNull(
 				"java.lang.Object couldn't find its class with getResource...",
 				str);
@@ -801,8 +765,7 @@ public class ClassTest extends junit.framework.TestCase {
 			fail("Exception while closing resource stream 1.");
 		}
 
-		InputStream str2 = getClass().getResourceAsStream(
-				Support_Resources.RESOURCE_PACKAGE + "hyts_compressD.txt");
+		InputStream str2 = getClass().getResourceAsStream("ClassTest.class");
 		assertNotNull("Can't find resource", str2);
 		try {
 			assertTrue("Cannot read single byte", str2.read() != -1);
@@ -866,48 +829,25 @@ public class ClassTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @tests java.lang.Class#isAssignableFrom(java.lang.Class)
-	 */
-	public void test_isAssignableFromLjava_lang_Class() {
-		// Test for method boolean
-		// java.lang.Class.isAssignableFrom(java.lang.Class)
-		Class clazz1 = null;
-		Class clazz2 = null;
-		try {
-			clazz1 = Class.forName("java.lang.Object");
-		} catch (ClassNotFoundException e) {
-			fail("Should be able to find the class java.lang.Object");
-		}
-		try {
-			clazz2 = Class.forName("java.lang.Class");
-		} catch (ClassNotFoundException e) {
-			fail("Should be able to find the class java.lang.Class");
-		}
-		assertTrue("returned false for superclass", clazz1
-				.isAssignableFrom(clazz2));
+     * @tests java.lang.Class#isAssignableFrom(java.lang.Class)
+     */
+    public void test_isAssignableFromLjava_lang_Class() {
+        // Test for method boolean
+        // java.lang.Class.isAssignableFrom(java.lang.Class)
+        Class<?> clazz1 = null;
+        Class<?> clazz2 = null;
 
-		try {
-			clazz1 = Class.forName("tests.api.java.lang.ClassTest$TestClass");
-		} catch (ClassNotFoundException e) {
-			fail(
-					"Should be able to find the class tests.api.java.lang.ClassTest$TestClass");
-		}
-		assertTrue("returned false for same class", clazz1
-				.isAssignableFrom(clazz1));
+        clazz1 = Object.class;
+        clazz2 = Class.class;
+        assertTrue("returned false for superclass", clazz1.isAssignableFrom(clazz2));
 
-		try {
-			clazz1 = Class.forName("java.lang.Runnable");
-		} catch (ClassNotFoundException e) {
-			fail("Should be able to find the class java.lang.Runnable");
-		}
-		try {
-			clazz2 = Class.forName("java.lang.Thread");
-		} catch (ClassNotFoundException e) {
-			fail("Should be able to find the class java.lang.Thread");
-		}
-		assertTrue("returned false for implemented interface", clazz1
-				.isAssignableFrom(clazz2));
-	}
+        clazz1 = TestClass.class;
+        assertTrue("returned false for same class", clazz1.isAssignableFrom(clazz1));
+
+        clazz1 = Runnable.class;
+        clazz2 = Thread.class;
+        assertTrue("returned false for implemented interface", clazz1.isAssignableFrom(clazz2));
+    }
 
 	/**
 	 * @tests java.lang.Class#isInterface()
@@ -1048,19 +988,5 @@ public class ClassTest extends junit.framework.TestCase {
 		}
 		assertTrue("Class toString printed wrong value:" + clazz.toString(),
 				clazz.toString().equals("class [Ljava.lang.Object;"));
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
 	}
 }

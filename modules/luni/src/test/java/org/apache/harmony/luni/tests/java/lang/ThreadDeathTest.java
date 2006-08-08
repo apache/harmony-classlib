@@ -13,19 +13,19 @@
  * limitations under the License.
  */
 
-package tests.api.java.lang;
+package org.apache.harmony.luni.tests.java.lang;
 
-public class InheritableThreadLocalTest extends junit.framework.TestCase {
+public class ThreadDeathTest extends junit.framework.TestCase {
 
 	/**
-	 * @tests java.lang.InheritableThreadLocal#InheritableThreadLocal()
+	 * @tests java.lang.ThreadDeath#ThreadDeath()
 	 */
 	public void test_Constructor() {
-		// Test for method java.lang.InheritableThreadLocal()
+		// Test for method java.lang.ThreadDeath()
 
-		InheritableThreadLocal l = new InheritableThreadLocal();
-		assertTrue("Failed to create InheritableThreadLocal",
-				l instanceof InheritableThreadLocal);
+		ThreadDeath td = new ThreadDeath();
+
+		assertTrue(" Should be a Threaddeath", td instanceof ThreadDeath);
 	}
 
 	/**

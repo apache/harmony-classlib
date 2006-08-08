@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package tests.api.java.lang;
+package org.apache.harmony.luni.tests.java.lang;
 
 import java.util.Vector;
 
@@ -564,7 +564,7 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 			// Give them some time to really resume
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(500);
 			} catch (InterruptedException ie) {
 				fail("Should not have been interrupted");
 			}
@@ -575,7 +575,7 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 				MyThread t = (MyThread) threads.elementAt(i);
 				if (!failed) { // if one failed, don't waste time checking the
 					// rest
-					isResumed[i] = t.isActivelyRunning(5000);
+					isResumed[i] = t.isActivelyRunning(1000);
 					failed = failed | (!isResumed[i]);
 				}
 				t.stop(); // deprecated but effective
@@ -583,7 +583,7 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 			// Give them some time to really die
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(500);
 			} catch (InterruptedException ie) {
 				fail("Should not have been interrupted");
 			}

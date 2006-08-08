@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.apache.harmony.tests.java.lang;
+package org.apache.harmony.luni.tests.java.lang;
 
 import java.lang.reflect.Constructor;
 
