@@ -163,7 +163,7 @@ public final class KerberosPrincipal implements Principal, Serializable {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof KerberosPrincipal) {
+        if (!(obj instanceof KerberosPrincipal)) {
             return false;
         }
 

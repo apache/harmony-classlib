@@ -119,6 +119,15 @@ public class KerberosPrincipalTest extends TestCase {
         // .toString());
     }
 
+    /**
+     * @tests javax.security.auth.kerberos.KerberosPrincipal#equals(Object)
+     */
+    public void test_equals() {
+        // Regression for HARMONY-744
+        assertFalse(new KerberosPrincipal("A@B").equals(null));
+        assertFalse(new KerberosPrincipal("A@B").equals(new Object()));
+    }
+
     public static void main(String[] args) {
         junit.textui.TestRunner.run(KerberosPrincipalTest.class);
     }
