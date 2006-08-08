@@ -199,7 +199,7 @@ public class CharArrayWriter extends Writer {
 	public void write(String str, int offset, int len) {
         if (str == null) {
             throw new NullPointerException(org.apache.harmony.luni.util.Msg
-                    .getString("K0347")); //$NON-NLS-1$
+                    .getString("K0047")); //$NON-NLS-1$
         }
 		// avoid int overflow
 		if (0 <= offset && offset <= str.length() && 0 <= len
