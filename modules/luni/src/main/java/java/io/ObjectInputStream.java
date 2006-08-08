@@ -49,6 +49,9 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
     private static InputStream emptyStream = new ByteArrayInputStream(
             new byte[0]);
 
+    // To put into objectsRead when reading unsharedObject
+    private static final Object UNSHARED_OBJ = new Object();
+
     // If the receiver has already read & not consumed a TC code
     private boolean hasPushbackTC;
 
@@ -685,7 +688,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             ObjectStreamClass streamClass = ObjectStreamClass
                     .lookup(proxyClass);
             streamClass.setLoadFields(new ObjectStreamField[0]);
-            registerObjectRead(streamClass, new Integer(nextHandle()));
+            registerObjectRead(streamClass, new Integer(nextHandle()), false);
             streamClass.setSuperclass(readClassDesc());
             return streamClass;
         case TC_REFERENCE:
@@ -1411,9 +1414,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         Class<?> arrayClass = classDesc.forClass();
         Class<?> componentType = arrayClass.getComponentType();
         Object result = Array.newInstance(componentType, size);
-        if (!unshared) {
-            registerObjectRead(result, newHandle);
-        }
+
+        registerObjectRead(result, newHandle, unshared);
 
         // Now we have code duplication just because Java is typed. We have to
         // read N elements and assign to array positions, but we must typecast
@@ -1462,7 +1464,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         }
         if (enableResolve) {
             result = resolveObject(result);
-            registerObjectRead(result, newHandle);
+            registerObjectRead(result, newHandle, false);
         }
         return result;
     }
@@ -1487,8 +1489,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         if (classDesc != null) {
             Integer newHandle = new Integer(nextHandle());
             Class<?> localClass = classDesc.forClass();
-            if (localClass != null && !unshared)
-                registerObjectRead(localClass, newHandle);
+            if (localClass != null)
+                registerObjectRead(localClass, newHandle, unshared);
             return localClass;
         }
         throw new InvalidClassException(Msg.getString("K00d1")); //$NON-NLS-1$
@@ -1511,7 +1513,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         descriptorHandle = new Integer(nextHandle());
         classDesc = readClassDescriptor();
         if (descriptorHandle != null) {
-            registerObjectRead(classDesc, descriptorHandle);
+            registerObjectRead(classDesc, descriptorHandle, false);
         }
         descriptorHandle = oldHandle;
         primitiveData = emptyStream;
@@ -1563,9 +1565,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         }
 
         Enum result = Enum.valueOf((Class)classDesc.forClass(), name);
-        if (!unshared) {
-            registerObjectRead(result, newHandle);
-        }
+        registerObjectRead(result, newHandle, unshared);
+
         return result;
     }
     
@@ -1592,8 +1593,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         Integer oldHandle = descriptorHandle;
         descriptorHandle = new Integer(nextHandle());
         ObjectStreamClass newClassDesc = readClassDescriptor();
-        if (descriptorHandle != null && !unshared) {
-            registerObjectRead(newClassDesc, descriptorHandle);
+        if (descriptorHandle != null) {
+            registerObjectRead(newClassDesc, descriptorHandle, unshared);
         }
         descriptorHandle = oldHandle;
         primitiveData = emptyStream;
@@ -1673,7 +1674,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 
         // We must register the class descriptor before reading field
         // descriptors.
-        registerObjectRead(newClassDesc, descriptorHandle);
+        registerObjectRead(newClassDesc, descriptorHandle, false);
         descriptorHandle = null;
 
         readFieldDescriptors(newClassDesc);
@@ -1819,9 +1820,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             // Now we know which class to instantiate and which constructor to
             // run. We are allowed to run the constructor.
             result = newInstance(objectClass, constructorClass);
-            if (!unshared) {
-                registerObjectRead(result, newHandle);
-            }
+            registerObjectRead(result, newHandle, unshared);
+
             registeredResult = result;
         } else {
             result = null;
@@ -1905,8 +1905,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         // it
         if (result != null && enableResolve)
             result = resolveObject(result);
-        if (registeredResult != result && !unshared) {
-            registerObjectRead(result, newHandle);
+        if (registeredResult != result) {
+            registerObjectRead(result, newHandle, unshared);
         }
         return result;
     }
@@ -1927,9 +1927,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         if (enableResolve)
             result = resolveObject(result);
         int newHandle = nextHandle();
-        if (!unshared) {
-            registerObjectRead(result, new Integer(newHandle));
-        }
+        registerObjectRead(result, new Integer(newHandle), unshared);
+
         return result;
     }
 
@@ -1950,9 +1949,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         if (enableResolve)
             result = resolveObject(result);
         int newHandle = nextHandle();
-        if (!unshared) {
-            registerObjectRead(result, new Integer(newHandle));
-        }
+        registerObjectRead(result, new Integer(newHandle), unshared);
+
         return result;
     }
 
@@ -2156,7 +2154,12 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      */
     private Object registeredObjectRead(Integer handle)
             throws InvalidObjectException {
-        return objectsRead.get(handle);
+        Object res = objectsRead.get(handle);
+
+        if (res == UNSHARED_OBJ)
+            throw new InvalidObjectException(Msg.getString("KA010")); //$NON-NLS-1$
+
+        return res;
     }
 
     /**
@@ -2167,11 +2170,13 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      *            Non-null object being loaded.
      * @param handle
      *            An Integer, the handle to this object
+     * @param unshared
+     *            Boolean, indicates that caller is reading in unshared mode
      * 
      * @see #nextHandle
      */
-    private void registerObjectRead(Object obj, Integer handle) {
-        objectsRead.put(handle, obj);
+    private void registerObjectRead(Object obj, Integer handle, boolean unshared) {
+        objectsRead.put(handle, unshared ? UNSHARED_OBJ : obj);
     }
 
     /**

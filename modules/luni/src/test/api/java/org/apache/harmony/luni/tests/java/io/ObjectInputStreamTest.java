@@ -19,14 +19,36 @@ package org.apache.harmony.luni.tests.java.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
 public class ObjectInputStreamTest extends TestCase {
+
+    public void test_readUnshared() throws IOException, ClassNotFoundException {
+        // Regression test for HARMONY-819
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject("abc");
+            oos.writeObject("abc");
+            oos.close();
+
+            ObjectInputStream ois = new ObjectInputStream(
+                    new ByteArrayInputStream(baos.toByteArray()));
+            ois.readUnshared();
+            ois.readObject();
+            ois.close();
+            fail("Expected ObjectStreamException");
+        } catch (ObjectStreamException e) {
+            // expected
+        }
+    } 
 
 	/**
 	 * Micro-scenario of de/serialization of an object with non-serializable superclass.
