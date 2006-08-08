@@ -95,6 +95,6 @@ public interface ClassFileTransformer {
      *             opportunities will still be attempted.
      */
     public byte[] transform(ClassLoader loader, String className,
-            Class classBeingRedefined, ProtectionDomain protectionDomain,
+            Class<?> classBeingRedefined, ProtectionDomain protectionDomain,
             byte[] classfileBuffer) throws IllegalClassFormatException;
 }
