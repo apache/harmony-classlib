@@ -429,11 +429,11 @@ public class ArrayTest extends junit.framework.TestCase {
 		}
 
 		// trying to put null in a primitive array causes
-		// a NullPointerException in 1.4
+		// a IllegalArgumentException in 5.0
 		boolean exception = false;
 		try {
 			Array.set(new int[1], 0, null);
-		} catch (NullPointerException e) {
+		} catch (IllegalArgumentException e) {
 			exception = true;
 		}
 		assertTrue("expected exception not thrown", exception);

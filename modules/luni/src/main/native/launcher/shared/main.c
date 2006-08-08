@@ -122,7 +122,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
   char *endPathPtr;
   UDATA handle;
   int javaRc = 0;
-  char defaultDllName[] = "clearvm";
+  char defaultDllName[] = "harmonyvm";
   char defaultDirName[] = "default";
   int rc = -1;
   int showVersion = 0;

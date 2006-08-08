@@ -284,7 +284,7 @@ public final class Locale implements Cloneable, Serializable {
 		};
 		List<String> result = new ArrayList<String>();
 		StringTokenizer paths = new StringTokenizer(System.getProperty(
-				"com.ibm.oti.system.class.path", ""), System.getProperty( //$NON-NLS-1$ //$NON-NLS-2$
+				"org.apache.harmony.boot.class.path", ""), System.getProperty( //$NON-NLS-1$ //$NON-NLS-2$
 				"path.separator", ";"));  //$NON-NLS-1$//$NON-NLS-2$
 		while (paths.hasMoreTokens()) {
 			String nextToken = paths.nextToken();

@@ -614,7 +614,7 @@ cleanup:
   if (bootstrapClassPath)
     {
       vmiError rcSetProperty = (*vmInterface)->SetSystemProperty (vmInterface,
-                                                                  "com.ibm.oti.system.class.path",
+                                                                  "org.apache.harmony.boot.class.path",
                                                                   bootstrapClassPath);
       if (VMI_ERROR_NONE != rcSetProperty)
         {

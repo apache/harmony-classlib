@@ -142,7 +142,7 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 			}
 		});
 		int count = tg.activeCount();
-		assertTrue("wrong active count: " + count, count == 1);
+		assertTrue("wrong active count: " + count, count == 0);
 		t1.start();
 		count = tg.activeCount();
 		assertTrue("wrong active count: " + count, count == 1);
@@ -539,9 +539,6 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		final Vector threads = populateGroupsWithThreads(testRoot,
 				THREADS_PER_GROUP);
 
-		assertTrue("Internal error when populating ThreadGroups", testRoot
-				.activeCount() == threads.size());
-
 		boolean[] isResumed = null;
 		try {
 			try {
@@ -550,6 +547,9 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 					t.start();
 					t.suspend();
 				}
+				// In 5.0, activeCount() only returns threads that are alive
+				assertTrue("Internal error when populating ThreadGroups", testRoot
+						.activeCount() == threads.size());
 			} catch (OutOfMemoryError e) {
 				for (int i = 0; i < threads.size(); i++) {
 					Thread t = (Thread) threads.elementAt(i);
