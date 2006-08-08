@@ -267,10 +267,39 @@
         </javac>
     </target>
 
-    <target name="build.jar">
+    <target name="-svn-detect">
+      <available file=".svn" type="dir" property="svn.available"/>
+    </target>
+
+    <target name="-svn-prop" depends="-svn-detect" if="svn.available">
+        <exec executable="svn">
+            <arg value="info" />
+            <redirector outputproperty="svn.info">
+                <outputfilterchain>
+                    <linecontainsregexp>
+                        <regexp pattern="Repository Root:|Revision:" />
+                    </linecontainsregexp>
+                    <tokenfilter>
+                        <replacestring from="Repository Root: " to=""/>
+                        <replacestring from="Revision: " to=" "/>
+                    </tokenfilter>
+                    <striplinebreaks/>
+                </outputfilterchain>
+            </redirector>
+        </exec>
+    </target>
+
+    <target name="-nosvn-prop" depends="-svn-detect" unless="svn.available">
+        <property name="svn.info" value ="Unknown"/>
+    </target>
+
+    <target name="build.jar" depends="-svn-prop, -nosvn-prop">
         <jar destfile="${hy.jdk}/jre/lib/boot/luni.jar"
              manifest="${hy.luni}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
         </jar>
     </target>
 
