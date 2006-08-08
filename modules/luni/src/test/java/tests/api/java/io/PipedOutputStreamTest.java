@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -108,6 +108,20 @@ public class PipedOutputStreamTest extends junit.framework.TestCase {
 			fail("Exception during close : " + e.getMessage());
 		}
 	}
+    
+    /**
+     * @tests java.io.PipedOutputStream#connect(java.io.PipedInputStream)
+     */
+    public void test_connectLjava_io_PipedInputStream_Exception() throws IOException {
+        out = new PipedOutputStream();
+        out.connect(new PipedInputStream());
+        try {
+            out.connect(null);
+            fail("should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
 
 	/**
 	 * @tests java.io.PipedOutputStream#connect(java.io.PipedInputStream)

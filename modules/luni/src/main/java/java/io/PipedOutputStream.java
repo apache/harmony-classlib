@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,6 +81,9 @@ public class PipedOutputStream extends OutputStream {
 	 *             If this Stream or the dest is already connected.
 	 */
 	public void connect(PipedInputStream stream) throws IOException {
+        if(null == stream){
+            throw new NullPointerException();
+        }
 		if (this.dest == null) {
 			if (!stream.isConnected) {
 				stream.buffer = new byte[PipedInputStream.PIPE_SIZE];
@@ -135,7 +138,10 @@ public class PipedOutputStream extends OutputStream {
 	 *             If any of the arguments are out of bounds.
 	 */
 	public void write(byte buffer[], int offset, int count) throws IOException {
-		super.write(buffer, offset, count);
+		if (dest == null){
+            throw new IOException("Pipe not connected.");
+        }
+        super.write(buffer, offset, count);
 	}
 
 	/**
@@ -163,6 +169,6 @@ public class PipedOutputStream extends OutputStream {
 		if (dest != null)
 			dest.receive(oneByte);
 		else
-			throw new IOException();
+			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K007b"));
 	}
 }
