@@ -19,7 +19,7 @@ import java.io.Serializable;
 
 import org.apache.harmony.luni.util.NotYetImplementedException;
 
-public class EnumMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
+public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements Map<K, V>,
         Serializable, Cloneable {
     private static final long serialVersionUID = 458661240069192865L;
 
@@ -165,7 +165,7 @@ public class EnumMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * @return the value to which this map maps the given key, or null if this
      *         map has no mapping for the given key.
      */
-    public V put(Object key, Object value) {
+    public V put(K key, V value) {
         throw new NotYetImplementedException();
     }
 
