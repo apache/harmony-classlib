@@ -191,16 +191,15 @@ public class ChoiceFormat extends NumberFormat {
 	 */
 	public StringBuffer format(double value, StringBuffer buffer,
 			FieldPosition field) {
-		if (Double.isNaN(value)
-				|| (choiceLimits.length > 1 && value < choiceLimits[1])) {
+        if(Double.isNaN(value)){
             return buffer.append(choiceFormats[0]);
         }
-		for (int i = 2; i < choiceLimits.length; i++) {
-            if (value >= choiceLimits[i - 1] && value < choiceLimits[i]) {
-                return buffer.append(choiceFormats[i - 1]);
+        for(int i = 0; i < choiceLimits.length; i++) {
+            if (value < choiceLimits[i]) {
+                return buffer.append(choiceFormats[i == 0 ? 0 : i - 1]);
             }
         }
-		return buffer.append(choiceFormats[choiceFormats.length - 1]);
+        return choiceFormats.length == 0 ? buffer : buffer.append(choiceFormats[choiceFormats.length - 1]);
 	}
 
 	/**

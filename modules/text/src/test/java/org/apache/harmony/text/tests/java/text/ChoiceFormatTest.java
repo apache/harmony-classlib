@@ -262,6 +262,10 @@ public class ChoiceFormatTest extends TestCase {
         buf.setLength(0);
         r = f1.format(3, buf, field).toString();
 		assertEquals("Wrong choice for 3", "Greater than two", r);
+
+        // Regression test for HARMONY-1081
+        assertEquals(0, new ChoiceFormat("|").format(1, new StringBuffer(), new FieldPosition(6)).length());
+        assertEquals("Less than one", f1.format(Double.NaN, new StringBuffer(), field).toString());
     }
 
     /**
