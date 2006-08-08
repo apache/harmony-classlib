@@ -1,4 +1,4 @@
-/* Copyright 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -194,6 +194,23 @@ public class OutputStreamWriterTest extends TestCase {
 			fail();
 		} catch (StringIndexOutOfBoundsException e) {
 		}
+		
+		//throws IndexOutOfBoundsException before NullPointerException if count is negative
+		try {
+			writer.write((String) null, -1, -1);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			//expected
+		}
+		
+		//throws NullPointerException before StringIndexOutOfBoundsException 
+		try {
+			writer.write((String) null, -1, 0);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			//expected
+		}
+		
 		writer.write("abc", 1, 2);
 		writer.flush();
 		assertEquals("bc", out.toString("utf-8"));

@@ -1,4 +1,4 @@
-/* Copyright 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -145,6 +145,7 @@ public class OutputStreamWriter extends Writer {
 	public void close() throws IOException {
 		synchronized (lock) {
 			if (encoder != null) {
+				encoder.flush(bytes);
 				flush();
 				out.flush();
 				out.close();
@@ -217,12 +218,12 @@ public class OutputStreamWriter extends Writer {
 	 * @throws IOException
 	 *             If this OuputStreamWriter has already been closed or some
 	 *             other IOException occurs.
-	 * @throws ArrayIndexOutOfBoundsException
+	 * @throws IndexOutOfBoundsException
 	 *             If offset or count are outside of bounds.
 	 */
 	public void write(char[] buf, int offset, int count) throws IOException {
-		if (offset < 0 || count < 0 || offset + count > buf.length) {
-			throw new ArrayIndexOutOfBoundsException();
+		if (offset < 0 || count < 0 || offset > buf.length - count) {
+			throw new IndexOutOfBoundsException();
 		}
 		CharBuffer chars = CharBuffer.wrap(buf, offset, count);
 		convert(chars);
@@ -284,12 +285,17 @@ public class OutputStreamWriter extends Writer {
 	 * @throws IOException
 	 *             If this OuputStreamWriter has already been closed or some
 	 *             other IOException occurs.
+	 * @throws IndexOutOfBoundsException    
+	 *             If count is negative    
 	 * @throws StringIndexOutOfBoundsException
-	 *             If offset or count are outside of bounds.
+	 *             If offset is negative or offset + count is outside of bounds
 	 */
 	public void write(String str, int offset, int count) throws IOException {
 		// avoid int overflow
-		if (offset < 0 || count < 0 || offset + count > str.length()) {
+		if (count < 0) {
+			throw new IndexOutOfBoundsException();
+		}
+		if (offset > str.length() - count || offset < 0) {
 			throw new StringIndexOutOfBoundsException();
 		}
 		CharBuffer chars = CharBuffer.wrap(str, offset, count + offset);
