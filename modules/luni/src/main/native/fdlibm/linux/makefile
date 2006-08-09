@@ -44,7 +44,7 @@ BUILDFILES = \
 	$(FDLIBM_DIST)w_scalb.o $(FDLIBM_DIST)w_sinh.o $(FDLIBM_DIST)w_sqrt.o
 
 # CFLAGS are overriden not just appended to
-CFLAGS= -O0 -fpic -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86 -D_IEEE_LIBM \
+CFLAGS= -O0 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -DHYX86 -D_IEEE_LIBM \
         -DHY_PLATFORM_DOUBLE_ORDER \
 	-I. -I$(SHAREDSUB) -I$(HY_HDK)/include -I$(HY_HDK)/jdk/include \
 	-ffloat-store $(VMDEBUG)

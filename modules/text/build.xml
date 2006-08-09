@@ -45,13 +45,8 @@
 	<mkdir dir="${hy.text.src.main.native}/icu4c/unicode" />
 	<unzip src="${iculib.zip}" dest="${hy.text.src.main.native}/icu4c/unicode" />
 	<chmod dir="${hy.text.src.main.native}/icu4c/unicode" perm="ugo+r" />
-	<antcall target="copy.libs" inheritall="true" />
     </target>
-	<target name="copy.libs" if="is.x86_64">
-	    <copy todir="${hy.text.src.main.native}/icu4c/unicode" overwrite="yes">
-	            <fileset dir="${depends.libs}" includes="*${shlib.suffix}*" />
-	    </copy>
-    </target>
+	
     <target name="clean-overlay-oss">
 	<delete dir="${hy.text.src.main.native}/icu4c" quiet="true" />
     </target>
