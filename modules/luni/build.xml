@@ -267,11 +267,7 @@
         </javac>
     </target>
 
-    <target name="-svn-detect">
-      <available file=".svn" type="dir" property="svn.available"/>
-    </target>
-
-    <target name="-svn-prop" depends="-svn-detect" if="svn.available">
+    <target name="-svn-prop">
         <exec executable="svn" failifexecutionfails="false">
             <arg value="info" />
             <redirector outputproperty="svn.info">
@@ -289,8 +285,10 @@
         </exec>
     </target>
 
-    <target name="-nosvn-prop" depends="-svn-detect" unless="svn.available">
-        <property name="svn.info" value ="Unknown"/>
+    <target name="-nosvn-prop">
+        <tstamp>
+            <format property="svn.info" pattern="'Unknown revision built at' dd-MMM-yyyy hh:mm aa"/>
+        </tstamp>
     </target>
 
     <target name="build.jar" depends="-svn-prop, -nosvn-prop">
