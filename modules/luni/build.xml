@@ -272,7 +272,7 @@
     </target>
 
     <target name="-svn-prop" depends="-svn-detect" if="svn.available">
-        <exec executable="svn">
+        <exec executable="svn" failifexecutionfails="false">
             <arg value="info" />
             <redirector outputproperty="svn.info">
                 <outputfilterchain>
