@@ -15,25 +15,15 @@
 
 package org.apache.harmony.beans.tests.java.beans;
 
-import java.beans.DefaultPersistenceDelegate;
 import java.beans.Encoder;
 import java.beans.Expression;
 import java.beans.PersistenceDelegate;
 import java.beans.Statement;
-import java.beans.XMLEncoder;
-import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.AbstractList;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Vector;
 
 import junit.framework.TestCase;
 
@@ -170,53 +160,7 @@ public class CustomizedPersistenceDelegateTest extends TestCase {
 		enc.writeObject(f);
 		assertEquals(f, enc.get(f));
 	}
-
-	static class MockPersistenceDelegate extends DefaultPersistenceDelegate {
-		public MockPersistenceDelegate(String s) {
-		}
-
-		protected void initialize(Class type, Object oldInstance,
-				Object newInstance, Encoder enc) {
-			// System.out.println(name + " initialize called: " + type);
-			// new Throwable().printStackTrace();
-			super.initialize(type, oldInstance, newInstance, enc);
-			// System.out.println(name + " initialize exited");
-		}
-
-		protected Expression instantiate(Object oldInstance, Encoder enc) {
-			// System.out.println(name + " instantiate called");
-			return super.instantiate(oldInstance, enc);
-		}
-
-		protected boolean mutatesTo(Object o1, Object o2) {
-			// System.out.println(name + " mutatesTo called");
-			return super.mutatesTo(o1, o2);
-		}
-	}
-
-	static class MockPersistenceDelegate2 extends PersistenceDelegate {
-		public MockPersistenceDelegate2(String s) {
-		}
-
-		protected void initialize(Class type, Object oldInstance,
-				Object newInstance, Encoder enc) {
-			// System.out.println(name + " initialize called: " + type);
-			// new Throwable().printStackTrace();
-			super.initialize(type, oldInstance, newInstance, enc);
-			// System.out.println(name + " initialize exited");
-		}
-
-		protected Expression instantiate(Object oldInstance, Encoder enc) {
-			// System.out.println(name + " instantiate called");
-			return null;
-		}
-
-		protected boolean mutatesTo(Object o1, Object o2) {
-			// System.out.println(name + " mutatesTo called");
-			return super.mutatesTo(o1, o2);
-		}
-	}
-
+    
 	static class MockEncoder extends Encoder {
 		public void writeObject(Object o) {
 			// System.out.println("write object: " + o);
@@ -259,156 +203,6 @@ public class CustomizedPersistenceDelegateTest extends TestCase {
 	}
 
 	/*
-	 * Mock grand parent.
-	 */
-	public static class MockGrandParent {
-		boolean b;
-
-		public boolean getPropb() {
-			return this.b;
-		}
-
-		public void setPropb(boolean b) {
-			this.b = b;
-		}
-	}
-
-	/*
-	 * Mock parent.
-	 */
-	public static class MockParent extends MockGrandParent {
-		String s;
-
-		int i;
-
-		public int getProp() {
-			return 2;
-		}
-
-		public void setProp(int i) {
-			this.i = i;
-		}
-
-		public String getProps() {
-			return this.s;
-		}
-
-		public void setProps(String s) {
-			this.s = s;
-		}
-	}
-
-	/*
-	 * Mock object.
-	 */
-	public static class MockObject extends AbstractList implements MyInterface,
-			List {
-		int i;
-
-		Vector v = new Vector();
-
-		public void add(int location, Object object) {
-			v.add(location, object);
-		}
-
-		public boolean add(Object object) {
-			return v.add(object);
-		}
-
-		public boolean addAll(Collection collection) {
-			return v.addAll(collection);
-		}
-
-		public boolean addAll(int location, Collection collection) {
-			return v.addAll(location, collection);
-		}
-
-		public void clear() {
-			v.clear();
-		}
-
-		public boolean contains(Object object) {
-			return v.contains(object);
-		}
-
-		public boolean containsAll(Collection collection) {
-			return v.containsAll(collection);
-		}
-
-		public Object get(int location) {
-			return v.get(location);
-		}
-
-		public int indexOf(Object object) {
-			return v.indexOf(object);
-		}
-
-		public boolean isEmpty() {
-			return v.isEmpty();
-		}
-
-		public Iterator iterator() {
-			return v.iterator();
-		}
-
-		public int lastIndexOf(Object object) {
-			return v.lastIndexOf(object);
-		}
-
-		public ListIterator listIterator() {
-			return v.listIterator();
-		}
-
-		public ListIterator listIterator(int location) {
-			return v.listIterator(location);
-		}
-
-		public Object remove(int location) {
-			return v.remove(location);
-		}
-
-		public boolean remove(Object object) {
-			return v.remove(object);
-		}
-
-		public boolean removeAll(Collection collection) {
-			return v.removeAll(collection);
-		}
-
-		public boolean retainAll(Collection collection) {
-			return v.retainAll(collection);
-		}
-
-		public Object set(int location, Object object) {
-			return v.set(location, object);
-		}
-
-		public int size() {
-			return v.size();
-		}
-
-		public List subList(int start, int end) {
-			return v.subList(start, end);
-		}
-
-		public Object[] toArray() {
-			return v.toArray();
-		}
-
-		public Object[] toArray(Object[] array) {
-			return v.toArray(array);
-		}
-
-		public int getProp() {
-			return i;
-		}
-
-		public void setProp(int i) {
-			this.i = i;
-		}
-	}
-
-	/*
 	 * Handler for the proxy class.
 	 */
 	public static class MyHandler implements InvocationHandler {
@@ -442,94 +236,35 @@ public class CustomizedPersistenceDelegateTest extends TestCase {
 			return this.i;
 		}
 	}
+    
+    public static class MockBean {
+        String str;
 
-	public static void main1(String[] args) throws Exception {
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		XMLEncoder enc = new XMLEncoder(os);
-		MockEncoder enc2 = new MockEncoder();
-		enc2.setPersistenceDelegate(MyInterface.class,
-				new MockPersistenceDelegate("interface"));
-		enc2.setPersistenceDelegate(MockParent.class,
-				new MockPersistenceDelegate("parent class"));
-		enc2.setPersistenceDelegate(MockGrandParent.class,
-				new MockPersistenceDelegate("grand parent class"));
+        public MockBean() {
+            this.str = "";
+        }
 
-		// Vector
-		Vector v = new Vector();
-		v.add("hehe");
-		// enc.writeObject(v);
+        public String getStr() {
+            return str;
+        }
+        
+        public void addStr(String s) {
+            str += s;
+        }
 
-		// ArrayList
-		ArrayList al = new ArrayList();
-		al.add("hehe");
-		// enc.writeObject(al);
+        public MockBean side() {
+            str += "side";
+            return new MockBean();
+        }
 
-		// Field
-		Integer.class.getDeclaredField("TYPE");
-		// enc.writeObject(m);
+        public MockBean side2() {
+            str += "side2";
+            return new MockBean();
+        }
+        
+        public String toString() {
+            return str;
+        }
+    }
 
-		// Complex bean with indexed properties
-		ComplexBean cb = new ComplexBean();
-		cb.setI(0, true);
-		// enc.writeObject(cb);
-
-		MockObject o = new MockObject();
-		o.add("haha");
-		o.setProp(3);
-		// o.setProps("test");
-		// o.setPropb(true);
-		// Menu mm = new Menu("MyMenu");
-		// MenuItem mi = new MenuItem("menu1");
-		// mm.add(mi);
-		// enc.writeObject(mm);
-
-		// enc2.writeObject(o);
-		// enc.writeObject(o);
-		// new MockPersistenceDelegate2("PD").initialize(AbstractList.class, v,
-		// new Vector(), enc2);
-
-		enc.close();
-
-		System.out.println(os.toString());
-		// System.out.println(enc2.getPersistenceDelegate(MyInterface.class));
-		// System.out.println(enc2.getPersistenceDelegate(Vector.class));
-		// System.out.println(enc2.getPersistenceDelegate(List.class));
-		// System.out.println(enc2.getPersistenceDelegate(Collection.class));
-		// System.out.println(enc2
-		// .getPersistenceDelegate(AbstractCollection.class));
-		// System.out.println(enc2.getPersistenceDelegate(AbstractList.class));
-		// System.out.println(enc2.getPersistenceDelegate(Map.class));
-		// System.out.println(enc2.getPersistenceDelegate(Hashtable.class));
-		// System.out.println(enc2.getPersistenceDelegate(HashMap.class));
-		// System.out.println(enc2.getPersistenceDelegate(Component.class));
-
-	}
-
-	public static void main(String[] args) throws Exception {
-		XMLEncoder e = new XMLEncoder(System.out);
-		e.writeStatement(new Expression(Integer.class, "getField",
-				new Object[] { "TYPE" }));
-		// e.writeObject(Integer.TYPE);
-		e.close();
-	}
-
-	public static class ComplexBean {
-		boolean[] ba = new boolean[2];
-
-		public void setI(int i, boolean b) {
-			ba[i] = b;
-		}
-
-		public boolean getI(int i) {
-			return ba[i];
-		}
-		//        
-		// public void setI(boolean[] ba) {
-		// this.ba = ba;
-		// }
-		//        
-		// public boolean[] getI() {
-		// return ba;
-		// }
-	}
 }

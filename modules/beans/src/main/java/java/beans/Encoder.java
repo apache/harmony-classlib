@@ -116,16 +116,20 @@ public class Encoder {
 
         if (node != null) {
             try {
+                Statement statement;
                 Object[] oldArgs = oldStm.getArguments();
-                write(oldArgs);
 
-                Statement statement = new Statement(node.getObjectValue(),
+                write(oldArgs);
+                statement = new Statement(node.getObjectValue(),
                         oldStm.getMethodName(), oldArgs);
+                statement.execute();
                 node.addStatement(statement);
             } catch (Exception e) {
                 getExceptionListener().exceptionThrown(e);
             }
         } else {
+            // FIXME incompatible with RI, default constructor should be
+            // called instead
             System.out.println("no node is found for statement with target = "
                     + oldStm.getTarget());
         }
@@ -161,7 +165,8 @@ public class Encoder {
                 // if an expression is not a constructor
                 // FIXME prevents instance methods of Class and Method objects
                 // from being handled correctly
-                if (!(oldExp.getTarget() instanceof Class || oldExp.getTarget() instanceof Field)) {
+                if (!(oldExp.getTarget() instanceof Class
+                        || oldExp.getTarget() instanceof Field)) {
                     ObjectNode parent = nodes.get(oldExp.getTarget());
 
                     parent.addExpression(oldExp);
@@ -206,10 +211,8 @@ public class Encoder {
         }
 
         ObjectNode node = nodes.get(oldInstance);
-        if (node == null) {
-            //XXX type is never used
-            //Class<?> type = oldInstance.getClass();
 
+        if (node == null) {
             doWriteObject(oldInstance);
             node = nodes.get(oldInstance);
         } else {
@@ -231,6 +234,10 @@ public class Encoder {
         return null;
     }
 
+    /**
+     * @param node node to return the value for
+     * @return tentative object value for given node
+     */
     private Object getValue(ObjectNode node) {
         if (node != null) {
             try {

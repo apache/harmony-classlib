@@ -32,10 +32,16 @@ import java.beans.PersistenceDelegate;
 public class NullPersistenceDelegate extends PersistenceDelegate {
     
     protected Expression instantiate(Object oldInstance, Encoder out) {
+        assert oldInstance == null;
         return new Expression(null, null, null, null);
     }
     
     protected void initialize(
             Class type, Object oldInstance, Object newInstance, Encoder out) {
+    }
+    
+    public void writeObject(Object oldInstance, Encoder out) {
+        assert oldInstance == null;
+        out.writeExpression(instantiate(null, out));
     }
 }

@@ -38,10 +38,11 @@ public abstract class PersistenceDelegate {
      */
     protected void initialize(
             Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
-        if((out != null) && (type != null)) {
+        if ((out != null) && (type != null)) {
             PersistenceDelegate pd = out.getPersistenceDelegate(
                     type.getSuperclass());
-            if(pd != null) {
+
+            if (pd != null) {
                 pd.initialize(type, oldInstance, newInstance, out);
             }
         }
@@ -59,7 +60,7 @@ public abstract class PersistenceDelegate {
         boolean bothInstancesAreNull = (oldInstance == null)
                 && (newInstance == null);
         
-        if(bothInstancesAreNull) {
+        if (bothInstancesAreNull) {
             return false;
         } else {
             return (oldInstance != null) && (newInstance != null) ? 
@@ -71,29 +72,22 @@ public abstract class PersistenceDelegate {
      * @com.intel.drl.spec_ref
      */
     public void writeObject(Object oldInstance, Encoder out) {
-        Object newInstance = (oldInstance != null) ? out.get(oldInstance)
-                : null;
+        
+        // nulls are covered by NullPersistenceDelegate
+        assert oldInstance != null;
+
+        Object newInstance = out.get(oldInstance);
        
-        // FIXME rewrite, handling of nulls is not obvious
-       if(mutatesTo(oldInstance, newInstance)) {
-           if(oldInstance != null) {
-               initialize(oldInstance.getClass(), oldInstance, newInstance,
-                       out);
-           } else {
-               out.writeExpression(instantiate(oldInstance, out));
-           }
-       } else {
-           if(newInstance != null) {
+        if (mutatesTo(oldInstance, newInstance)) {
+           initialize(oldInstance.getClass(), oldInstance, newInstance, out);
+        } else {
+           if (newInstance != null) {
                out.remove(newInstance);
            }
            
            out.writeExpression(instantiate(oldInstance, out));
-           
-           if(oldInstance != null) {
-            newInstance = out.get(oldInstance);
-               initialize(oldInstance.getClass(), oldInstance, newInstance,
-                       out);
-           }
-       }
+           newInstance = out.get(oldInstance);
+           initialize(oldInstance.getClass(), oldInstance, newInstance, out);
+        }
     }
 }
