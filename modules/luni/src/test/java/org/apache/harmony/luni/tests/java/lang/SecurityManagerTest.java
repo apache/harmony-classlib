@@ -18,18 +18,59 @@ package org.apache.harmony.luni.tests.java.lang;
 import junit.framework.TestCase;
 
 public class SecurityManagerTest extends TestCase {
+    
+    /**
+     * @tests java.lang.SecurityManager#checkMemberAccess(java.lang.Class, int)
+     */
+    public void test_checkMemberAccessLjava_lang_ClassI() {
+        System.setSecurityManager(new SecurityManager());
+        try {
+            try {
+                getClass().getDeclaredFields();
+            } catch (SecurityException e) {
+                fail("This should not throw a security exception");
+            }
 
-	/**
-	 * @tests java.lang.SecurityManager#checkAccess(java.lang.Thread)
-	 */
-	public void test_checkAccessLjava_lang_Thread() throws InterruptedException {
-		// Regression for HARMONY-66
-		Thread t = new Thread() {
-			public void run() {
-			};
-		};
-		t.start();
-		t.join();
-		new SecurityManager().checkAccess(t);
-	}
+            try {
+                Object.class.getDeclaredFields();
+                fail("This should throw a SecurityException.");
+            } catch (SecurityException e) {
+            }
+
+        } finally {
+            System.setSecurityManager(null);
+        }
+    }
+
+    /**
+     * @tests java.lang.SecurityManager#checkPermission(java.security.Permission)
+     */
+    public void test_checkPermissionLjava_security_Permission() {
+        System.setSecurityManager(new SecurityManager());
+        try {
+            try {
+                System.getSecurityManager().checkPermission(
+                        new RuntimePermission("createClassLoader"));
+                fail("This should throw a SecurityException");
+            } catch (SecurityException e) {
+            }
+        } finally {
+            System.setSecurityManager(null);
+        }
+    }
+
+    /**
+     * @tests java.lang.SecurityManager#checkAccess(java.lang.Thread)
+     */
+    public void test_checkAccessLjava_lang_Thread() throws InterruptedException {
+        // Regression for HARMONY-66
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+            };
+        };
+        t.start();
+        t.join();
+        new SecurityManager().checkAccess(t);
+    }
 }
