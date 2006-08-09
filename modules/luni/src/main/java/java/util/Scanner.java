@@ -35,8 +35,6 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.harmony.luni.util.NotYetImplementedException;
-
 /**
  * A parser that parses a text string to primitive types with the help of
  * regular expression. It supports localized number and various radixes.
