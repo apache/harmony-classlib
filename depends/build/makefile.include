@@ -28,5 +28,5 @@ LIBPATH=$(HY_HDK)/lib/
 DLLPATH=$(HY_HDK)/jdk/jre/bin/
 SHAREDSUB=../shared/
 
-CFLAGS = -O1 -march=pentium3 -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT \
-         -DHYX86 $(VMDEBUG) -I$(HY_HDK)/include -I$(HY_HDK)/jdk/include -I. -I$(SHAREDSUB)
+CFLAGS = -O1 -fpic -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT \
+         -D$(HY_ARCH_DEFINE) $(VMDEBUG) -I$(HY_HDK)/include -I$(HY_HDK)/jdk/include -I. -I$(SHAREDSUB)

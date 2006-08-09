@@ -55,7 +55,7 @@
 
     <!-- Conditions for different architectures -->
     <condition property="is.x86_64">
-        <os arch="x86_64"/>
+        <equals arg1="x86_64" arg2="${os.arch}"/>
     </condition>
     <condition property="is.x86">
         <or>
@@ -69,13 +69,13 @@
     <condition property="is.64bit">
         <or>
             <os arch="ia64" />
-            <os arch="x86_64"/>
+            <equals arg1="x86_64" arg2="${os.arch}"/>
         </or>
     </condition>
     <condition property="is.32bit">
         <or>
             <os arch="x86"/>
-            <os arch="i386"/>
+            <equals arg1="i386" arg2="${os.arch}"/>
         </or>
     </condition>
     <condition property="hy.bits" value="32">
@@ -85,10 +85,19 @@
 
     <!-- Normalized architecture name -->
     <condition property="hy.arch" value="x86">
-        <isset property="is.x86" />
+        <and>
+            <isset property="is.x86" />
+            <isset property="is.32bit" />
+        </and>
     </condition>
     <property name="hy.arch" value="${os.arch}" />
-
+	
+    <condition property="hy.arch.define" value="HYX86">
+        <equals arg1="${hy.arch}" arg2="x86"/>
+    </condition>
+    <condition property="hy.arch.define" value="HYX86_64">
+        <equals arg1="${hy.arch}" arg2="x86_64"/>
+    </condition>
     <!-- Normalized platform name -->
     <property name="hy.platform" value="${hy.os}.${hy.arch}"/>
     <property name="hy.platform.path" value="${hy.os}/${hy.arch}"/>
@@ -223,6 +232,8 @@ properties in preference to these:
                   executable="${make.command}"
                   dir="@{dir}">
                 <env key="HY_HDK" value="${hy.hdk}" />
+                <env key="HY_ARCH" value="${hy.arch}" />
+                <env key="HY_ARCH_DEFINE" value="${hy.arch.define}" />
                 <arg line="@{target}" />
             </exec>
         </sequential>

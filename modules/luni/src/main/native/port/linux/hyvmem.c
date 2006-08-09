@@ -343,7 +343,7 @@ hyvmem_reserve_memory (struct HyPortLibrary *portLibrary, void *address,
     }
 
   /* Update identifier and commit memory if required, else return reserved memory */
-  update_vmemIdentifier (identifier, baseAddress, (void *) addressKey,
+  update_vmemIdentifier (identifier, baseAddress, baseAddress,
                          byteAmount, mode, largePageSize);
   if (0 != (HYPORT_VMEM_MEMORY_MODE_COMMIT & mode))
     {
