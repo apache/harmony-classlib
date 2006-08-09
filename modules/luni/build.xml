@@ -268,9 +268,11 @@
     </target>
 
     <target name="-svn-prop">
-        <exec executable="svn" failifexecutionfails="false">
+        <exec executable="svn"
+              failifexecutionfails="false"
+              resultproperty="svn.rc">
             <arg value="info" />
-            <redirector outputproperty="svn.info">
+            <redirector outputproperty="svn.info.tmp">
                 <outputfilterchain>
                     <linecontainsregexp>
                         <regexp pattern="Repository Root:|Revision:" />
@@ -283,15 +285,15 @@
                 </outputfilterchain>
             </redirector>
         </exec>
-    </target>
-
-    <target name="-nosvn-prop">
+        <condition property="svn.info" value="${svn.info.tmp}" >
+            <equals arg1="${svn.rc}" arg2="0" />
+        </condition>
         <tstamp>
             <format property="svn.info" pattern="'Unknown revision built at' dd-MMM-yyyy hh:mm aa"/>
         </tstamp>
     </target>
 
-    <target name="build.jar" depends="-svn-prop, -nosvn-prop">
+    <target name="build.jar" depends="-svn-prop">
         <jar destfile="${hy.jdk}/jre/lib/boot/luni.jar"
              manifest="${hy.luni}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
