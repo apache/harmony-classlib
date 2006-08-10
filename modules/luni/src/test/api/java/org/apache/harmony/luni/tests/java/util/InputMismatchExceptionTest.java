@@ -24,26 +24,27 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class InputMismatchExceptionTest extends TestCase {
 
-	private static final String ERROR_MESSAGE = "for serialization test"; //$NON-NLS-1$
+    private static final String ERROR_MESSAGE = "for serialization test"; //$NON-NLS-1$
 
-	/**
-	 * @tests java.util.InputMismatchException#InputMismatchException()
-	 */
-	public void test_Constructor() {
-		InputMismatchException exception = new InputMismatchException();
-		assertNotNull(exception);
-		assertTrue(exception instanceof NoSuchElementException);
-		assertTrue(exception instanceof Serializable);
-	}
+    /**
+     * @tests java.util.InputMismatchException#InputMismatchException()
+     */
+    public void test_Constructor() {
+        InputMismatchException exception = new InputMismatchException();
+        assertNotNull(exception);
+        assertTrue(exception instanceof NoSuchElementException);
+        assertTrue(exception instanceof Serializable);
+    }
 
-	/**
-	 * @tests java.util.InputMismatchException#InputMismatchException(String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		InputMismatchException exception = new InputMismatchException(ERROR_MESSAGE);
-		assertNotNull(exception);
-		assertEquals(ERROR_MESSAGE, exception.getMessage());
-	}
+    /**
+     * @tests java.util.InputMismatchException#InputMismatchException(String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        InputMismatchException exception = new InputMismatchException(
+                ERROR_MESSAGE);
+        assertNotNull(exception);
+        assertEquals(ERROR_MESSAGE, exception.getMessage());
+    }
 
     /**
      * @tests serialization/deserialization.
