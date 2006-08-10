@@ -44,12 +44,9 @@ public class AllTests {
 		suite.addTestSuite(ConcurrentModificationExceptionTest.class);
 		suite.addTestSuite(CurrencyTest.class);
 		suite.addTestSuite(DateTest.class);
-		suite.addTestSuite(DuplicateFormatFlagsExceptionTest.class);
 		suite.addTestSuite(EmptyStackExceptionTest.class);
 		suite.addTestSuite(EventObjectTest.class);
-		suite.addTestSuite(FormatFlagsConversionMismatchExceptionTest.class);
         suite.addTestSuite(FormattableFlagsTest.class);
-        suite.addTestSuite(FormatterClosedExceptionTest.class);
 		suite.addTestSuite(FormatterTest.class);
 		suite.addTestSuite(GregorianCalendarTest.class);
 		suite.addTestSuite(HashMapTest.class);
@@ -57,19 +54,11 @@ public class AllTests {
 		suite.addTestSuite(HashtableTest.class);
 		suite.addTestSuite(IdentityHashMapTest.class);
 		suite.addTestSuite(IdentityHashMap2Test.class);
-		suite.addTestSuite(IllegalFormatCodePointExceptionTest.class);
-		suite.addTestSuite(IllegalFormatConversionExceptionTest.class);
-		suite.addTestSuite(IllegalFormatFlagsExceptionTest.class);
-		suite.addTestSuite(IllegalFormatPrecisionExceptionTest.class);
-		suite.addTestSuite(IllegalFormatWidthExceptionTest.class);
-        suite.addTestSuite(InputMismatchExceptionTest.class);
 		suite.addTestSuite(LinkedHashMapTest.class);
 		suite.addTestSuite(LinkedHashSetTest.class);
 		suite.addTestSuite(LinkedListTest.class);
 		suite.addTestSuite(ListResourceBundleTest.class);
 		suite.addTestSuite(LocaleTest.class);
-		suite.addTestSuite(MissingFormatArgumentExceptionTest.class);
-		suite.addTestSuite(MissingFormatWidthExceptionTest.class);
 		suite.addTestSuite(MissingResourceExceptionTest.class);
 		suite.addTestSuite(NoSuchElementExceptionTest.class);
 		suite.addTestSuite(ObservableTest.class);
@@ -89,8 +78,6 @@ public class AllTests {
 		suite.addTestSuite(TooManyListenersExceptionTest.class);
 		suite.addTestSuite(TreeMapTest.class);
 		suite.addTestSuite(TreeSetTest.class);
-		suite.addTestSuite(UnknownFormatConversionExceptionTest.class);
-		suite.addTestSuite(UnknownFormatFlagsExceptionTest.class);
 		suite.addTestSuite(VectorTest.class);
 		suite.addTestSuite(WeakHashMapTest.class);
 		// $JUnit-END$
