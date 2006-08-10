@@ -58,7 +58,7 @@ public class MissingFormatWidthExceptionTest extends TestCase {
 
     }
 
-    // comparator for comparing UnknownFormatConversionException objects
+    // comparator for comparing MissingFormatWidthException objects
     private static final SerializableAssert exComparator = new SerializableAssert() {
         public void assertDeserialized(Serializable initial,
                 Serializable deserialized) {
