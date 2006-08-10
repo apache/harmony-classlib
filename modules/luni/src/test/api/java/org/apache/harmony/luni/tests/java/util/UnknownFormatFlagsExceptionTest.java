@@ -32,14 +32,11 @@ public class UnknownFormatFlagsExceptionTest extends TestCase {
 	public void test_unknownFormatFlagsException() {
 
 		try {
-			String s = null;
-			UnknownFormatFlagsException UnknownFormatFlagsException = new UnknownFormatFlagsException(
-					s);
+			new UnknownFormatFlagsException(null);
 			fail("should throw NullPointerExcepiton");
 		} catch (NullPointerException e) {
 			// expected
 		}
-
 	}
 
 	/**
