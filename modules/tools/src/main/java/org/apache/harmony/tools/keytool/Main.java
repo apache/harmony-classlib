@@ -65,9 +65,21 @@ public class Main {
                 CSRGenerator.certReq(param);
                 break;
             case HELP:
-            	HelpPrinter.printHelp();
+                if (param.getHelpTopic() != null){
+                    HelpPrinter.topicHelp(param.getHelpTopic());
+                } else {
+                    HelpPrinter.printHelp();
+                }
                 break;
-            // TODO: calls for other options.    
+            case GENKEY:
+                KeyCertGenerator.genKey(param);
+                break;
+            case SELFCERT:
+                KeyCertGenerator.selfCert(param);
+                break;
+            case CONVERT:
+                KeyStoreConverter.convertKeyStore(param);
+                break;
         }
     }
 

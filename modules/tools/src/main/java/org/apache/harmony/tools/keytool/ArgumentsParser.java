@@ -545,6 +545,33 @@ class ArgumentsParser {
         }
         
         switch (command) {
+            case GENKEY:
+                // if the distinguished name is not specified, get the
+                // necessary data
+                if (param.getDName() == null && !param.isSecretKey()) {
+                    param.setDName(getDistinguishedName());
+                }
+                // if the key password has not been entered (and can equal store
+                // password)
+                if (param.getKeyPass() == null) {
+                    param.setKeyPass(getNewPassword(null, alias, param
+                            .getStorePass()));
+                }
+                
+                String issuerAlias = param.getIssuerAlias(); 
+                // if the newly generated certificate should be signed with 
+                // another certificate chain from the keystore. 
+                if (issuerAlias != null && !param.isSecretKey()) {
+                    // Ñheck if the issuer password was entered. If not, try storepass.
+                    // If it's not ok, prompt the user.
+                    if (param.getIssuerPass() == null) {
+                        param.setIssuerPass(tryStorePassAsKeyPass(keyStore, issuerAlias,
+                                param.getStorePass()));
+                    }
+                }
+                
+                break;
+
             case KEYCLONE:
                 // prompt for a destination alias, if one is not specified
                 if (param.getDestAlias() == null) {
@@ -633,6 +660,100 @@ class ArgumentsParser {
                 break;
         }// switch (param.getCommand())
 
+    }
+
+    /**
+     * The method prompts user to enter data to initialize an X.500
+     * Distinguished Name to create a new certificate. It gets the data asks if
+     * it is correct, and if it is returns the String representing the
+     * distinguished name, if the data entered is not correct prompts to enter
+     * it again.
+     * 
+     * @return - String representing the distinguished names
+     */
+    private static String getDistinguishedName() throws IOException,
+            KeytoolException {
+        // X.500 principal: CN, OU, O, L, ST, C;
+        String[] dnFields = { "CN=", ", OU=", ", O=", ", L=", ", ST=", ", C=" };
+        // the flag is set to true, when the user confirms that
+        // the data he (or she) entered is correct.
+        boolean isCorrect = false;
+        // X.500 Dinsinguished Name. It will look like:
+        // "CN=user_name, OU=org_unit, O=organization, L=city, ST=state,
+        // C=com"
+        StringBuffer dname = new StringBuffer(256);
+        // the flag is set to true when there are spaces and/or commas in
+        // the fields of the distinguished name
+        boolean needQuotes = false;
+
+        // data that user enters is saved here
+        StringBuffer[] dnFieldsData = new StringBuffer[] {
+                new StringBuffer("Unknown"), new StringBuffer("Unknown"),
+                new StringBuffer("Unknown"), new StringBuffer("Unknown"),
+                new StringBuffer("Unknown"), new StringBuffer("Unknown") };
+
+        // prompts to show to user when asking to enter some data
+        String[] prompts = { "Enter your first and last name: ",
+                "Enter the name of your organizational unit: ",
+                "Enter the name of your organization: ",
+                "Enter the name of your city or locality: ",
+                "Enter the name of your state or province: ",
+                "Enter the two-letter country code for the unit: ",
+                "Is the information you entered correct? [no]: " };
+
+        // do it until user confirms that the data he entered is true.
+        while (!isCorrect) {
+            // clear dname if it is not empty
+            if (dname.length() > 0) {
+                dname.delete(0, dname.length());
+            }
+            for (int i = 0; i < dnFieldsData.length; i++) {
+                // ask the user to enter info
+                System.out.println(prompts[i]);
+                // print the current value of the field
+                System.out.print("[" + dnFieldsData[i] + "]: ");
+                dname.append(dnFields[i]);
+                charsRead = in.read(readData);
+                // if something was entered put the new value to
+                // dnFieldsData
+                // else don't change what was entered before.
+                if (charsRead > newLineLength) {
+                    // check whether quotes are needed.
+                    needQuotes = false;
+                    for (int j = 0; j < charsRead - newLineLength; j++) {
+                        if (readData[j] == ',' || readData[j] == ' ') {
+                            needQuotes = true;
+                            break;
+                        }
+                    }
+                    // if quotes are not needed
+                    if (!needQuotes) {
+                        // copy the read data into the StringBuffer.
+                        // don't need the '\r' and \n' in the end
+                        dnFieldsData[i].insert(0, readData, 0, charsRead
+                                - newLineLength);
+                        dnFieldsData[i].delete(charsRead - newLineLength,
+                                dnFieldsData[i].length());
+                    } else {// if quotes are needed, add them to the begin
+                        // and to the end
+                        dnFieldsData[i].insert(0, '\"');
+                        dnFieldsData[i].insert(1, readData, 0, charsRead
+                                - newLineLength);
+                        dnFieldsData[i].insert(charsRead - 1, '\"');
+                        dnFieldsData[i].delete(charsRead, dnFieldsData[i]
+                                .length());
+                    }
+                }
+                dname.append(dnFieldsData[i]);
+            }
+            // print the distinguished name with the fields filled
+            System.out.println(dname);
+            // confirm, if the user enters 'y' or "yes"
+            // any other input results in asking the questions again
+            isCorrect = getConfirmation(prompts[prompts.length - 1], true);
+        }
+        // save the data when got the confirmation from the user
+        return new String(dname);
     }
 
     /**
