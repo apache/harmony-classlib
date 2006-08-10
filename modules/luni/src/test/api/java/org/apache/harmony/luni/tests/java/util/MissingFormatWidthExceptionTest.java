@@ -24,39 +24,39 @@ import org.apache.harmony.testframework.serialization.SerializationTest.Serializ
 
 public class MissingFormatWidthExceptionTest extends TestCase {
 
-	/**
-	 * @tests java.util.MissingFormatWidthException#MissingFormatWidthException(String)
-	 */
-	public void test_missingFormatWidthException() {
-		try {
+    /**
+     * @tests java.util.MissingFormatWidthException#MissingFormatWidthException(String)
+     */
+    public void test_missingFormatWidthException() {
+        try {
             new MissingFormatWidthException(null);
-			fail("should throw NullPointerExcepiton");
-		} catch (NullPointerException e) {
-			// expected
-		}
-	}
+            fail("should throw NullPointerExcepiton");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
 
-	/**
-	 * @tests java.util.MissingFormatWidthException#getFormatSpecifier()
-	 */
-	public void test_getFormatSpecifier() {
-		String s = "MYTESTSTRING";
-		MissingFormatWidthException missingFormatWidthException = new MissingFormatWidthException(
-				s);
-		assertEquals(s, missingFormatWidthException.getFormatSpecifier());
+    /**
+     * @tests java.util.MissingFormatWidthException#getFormatSpecifier()
+     */
+    public void test_getFormatSpecifier() {
+        String s = "MYTESTSTRING";
+        MissingFormatWidthException missingFormatWidthException = new MissingFormatWidthException(
+                s);
+        assertEquals(s, missingFormatWidthException.getFormatSpecifier());
 
-	}
+    }
 
-	/**
-	 * @tests java.util.MissingFormatWidthException#getMessage()
-	 */
-	public void test_getMessage() {
-		String s = "MYTESTSTRING";
-		MissingFormatWidthException missingFormatWidthException = new MissingFormatWidthException(
-				s);
-		assertTrue(null != missingFormatWidthException.getMessage());
+    /**
+     * @tests java.util.MissingFormatWidthException#getMessage()
+     */
+    public void test_getMessage() {
+        String s = "MYTESTSTRING";
+        MissingFormatWidthException missingFormatWidthException = new MissingFormatWidthException(
+                s);
+        assertTrue(null != missingFormatWidthException.getMessage());
 
-	}
+    }
 
     // comparator for comparing UnknownFormatConversionException objects
     private static final SerializableAssert exComparator = new SerializableAssert() {
