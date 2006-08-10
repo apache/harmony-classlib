@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@ package java.io;
 
 import java.util.Enumeration;
 import java.util.Vector;
-
-import org.apache.harmony.luni.util.Msg;
 
 /**
  * SequenceInputStream is used for streaming over a sequence of streams
@@ -48,14 +46,13 @@ public class SequenceInputStream extends InputStream {
 	 *            the second stream to get bytes from
 	 */
 	public SequenceInputStream(InputStream s1, InputStream s2) {
-		if (s1 != null && s2 != null) {
-			Vector<InputStream> inVector = new Vector<InputStream>(1);
-			inVector.addElement(s2);
-			e = inVector.elements();
-			in = s1;
-		} else {
-            throw new NullPointerException();
-        }
+		if (s1 == null) {
+			throw new NullPointerException();
+		}
+		Vector<InputStream> inVector = new Vector<InputStream>(1);
+		inVector.addElement(s2);
+		e = inVector.elements();
+		in = s1;
 	}
 
 	/**
@@ -101,10 +98,6 @@ public class SequenceInputStream extends InputStream {
 	 *             If an error occurs attempting to close this FileInputStream.
 	 */
 	public void close() throws IOException {
-		if (e == null) {
-			throw new IOException(Msg.getString("K00b7")); //$NON-NLS-1$
-		}
-
 		while (in != null) {
 			nextStream();
 		}
@@ -167,8 +160,7 @@ public class SequenceInputStream extends InputStream {
 	 * @return the number of bytes actually read or -1 if end of stream.
 	 * 
 	 * @throws IOException
-	 *             If the stream is already closed or another IOException
-	 *             occurs.
+	 *             If an error occurs while reading the stream
 	 */
 	public int read(byte[] buffer, int offset, int count) throws IOException {
 		if (in == null) {
@@ -178,18 +170,16 @@ public class SequenceInputStream extends InputStream {
 			throw new NullPointerException();
 		}
 		// avoid int overflow
-		if (0 <= offset && offset <= buffer.length && 0 <= count
-				&& count <= buffer.length - offset) {
-			while (in != null) {
-				int result = in.read(buffer, offset, count);
-				if (result >= 0) {
-					return result;
-				}
-				nextStream();
-			}
-			return -1;
-		} else {
-			throw new ArrayIndexOutOfBoundsException();
+		if (offset < 0 || offset > buffer.length - count || count < 0) {
+			throw new IndexOutOfBoundsException();
 		}
+		while (in != null) {
+			int result = in.read(buffer, offset, count);
+			if (result >= 0) {
+				return result;
+			}
+			nextStream();
+		}
+		return -1;
 	}
 }

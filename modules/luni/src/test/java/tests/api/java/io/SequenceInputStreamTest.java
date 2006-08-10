@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,23 @@ public class SequenceInputStreamTest extends junit.framework.TestCase {
 		// Test for method java.io.SequenceInputStream(java.io.InputStream,
 		// java.io.InputStream)
 		// Used in tests
+	}
+	
+	/**
+	 * @tests SequenceInputStream#SequenceInputStream(java.io.InputStream,
+	 *        java.io.InputStream)
+	 */
+	public void test_Constructor_LInputStreamLInputStream_Null() {		
+		try {
+			si = new SequenceInputStream(null , null);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			//expected
+		}
+		
+		//will not throw NullPointerException if the first InputStream is not null
+		InputStream is = new ByteArrayInputStream(s1.getBytes()); 
+		si = new SequenceInputStream(is , null);
 	}
 
 	/**
@@ -93,20 +110,16 @@ public class SequenceInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.SequenceInputStream#close()
 	 */
-	public void test_close() {
-		// Test for method void java.io.SequenceInputStream.close()
-		try {
-			si.close();
-		} catch (IOException e) {
-			fail("IOException during close test : " + e.getMessage());
-		}
-
+	public void test_close() throws IOException {
+		si.close();		
+		//will not throw IOException to close a stream which is closed already
+		si.close();
 	}
 
 	/**
 	 * @tests java.io.SequenceInputStream#read()
 	 */
-	public void test_read() {
+	public void test_read() throws IOException {
 		// Test for method int java.io.SequenceInputStream.read()
 		try {
 			si.read();
@@ -114,6 +127,11 @@ public class SequenceInputStreamTest extends junit.framework.TestCase {
 		} catch (IOException e) {
 			fail("IOException during read test: " + e.getMessage());
 		}
+		
+		//returns -1 if the stream is closed , do not throw IOException
+		si.close();
+		int result = si.read();
+		assertEquals(-1 , result);		
 	}
 
 	/**
@@ -144,6 +162,13 @@ public class SequenceInputStreamTest extends junit.framework.TestCase {
 		} catch (NullPointerException e) {
 			// expected
 		}
+		
+        //returns -1 if the stream is closed , do not throw IOException
+		byte[] array = new byte[] { 1 , 2 , 3 ,4 };
+		sis.close();
+		int result = sis.read(array , 0 , 5);
+		assertEquals(-1 , result);	
+		
 	}
 
 	/**
