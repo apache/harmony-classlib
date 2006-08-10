@@ -106,6 +106,23 @@ public class OutputStreamWriterTest extends TestCase {
 	 */
 	public void testWritecharArrayintint() throws IOException {
 		char[] chars = source.toCharArray();
+		
+		//throws IndexOutOfBoundsException if offset is negative
+		try {
+			writer.write((char[]) null, -1, -1);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			//expected
+		}
+		
+		//throws NullPointerException though count is negative 
+		try {
+			writer.write((char[]) null, 1, -1);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			//expected
+		}
+	
 		try {
 			writer.write((char[]) null, 1, 1);
 			fail();
@@ -137,6 +154,15 @@ public class OutputStreamWriterTest extends TestCase {
 		writer.write(chars, 0, chars.length);
 		writer.flush();
 		assertEquals("hi" + source, out.toString("utf-8"));
+			
+		writer.close();
+        //after the stream is closed ,should throw IOException first
+		try {
+			writer.write((char[]) null, -1, -1);
+			fail("should throw IOException");
+		} catch (IOException e) {
+			//expected
+		}
 
 	}
 
@@ -163,6 +189,17 @@ public class OutputStreamWriterTest extends TestCase {
 		writer.flush();
 		str = new String(out.toByteArray(), "utf-8");
 		assertEquals("\u0001\u0002\uffff\uedcb", str);
+		
+		writer.close();
+		 //after the stream is closed ,should throw IOException
+		try {
+			writer.write(1);
+            fail("should throw IOException");
+		} catch (IOException e) {
+			//expected
+		}
+		
+		
 	}
 
 	/*
@@ -217,6 +254,37 @@ public class OutputStreamWriterTest extends TestCase {
 		writer.write(source, 0, source.length());
 		writer.flush();
 		assertEquals("bc" + source, out.toString("utf-8"));
+		
+		writer.close();
+        //throws IndexOutOfBoundsException first if count is negative
+		try {
+			writer.write((String) null, 0, -1);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			//expected
+		}
+		
+		try {
+			writer.write((String) null, -1, 0);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			//expected
+		}
+		
+		try {
+			writer.write("abc", -1, 0);
+			fail("should throw StringIndexOutOfBoundsException");
+		} catch (StringIndexOutOfBoundsException e) {
+			//expected
+		}
+		
+		//throws IOException
+		try {
+			writer.write("abc", 0, 1);
+			fail("should throw IOException");
+		} catch (IOException e) {
+			//expected
+		}
 
 	}
 

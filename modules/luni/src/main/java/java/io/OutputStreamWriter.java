@@ -66,7 +66,7 @@ public class OutputStreamWriter extends Writer {
 
 	/**
 	 * Constructs a new OutputStreamWriter using <code>out</code> as the
-	 * OutputStream to write converted characters to and <code>end</code> as
+	 * OutputStream to write converted characters to and <code>enc</code> as
 	 * the character encoding. If the encoding cannot be found, an
 	 * UnsupportedEncodingException error is thrown.
 	 * 
@@ -216,34 +216,34 @@ public class OutputStreamWriter extends Writer {
 	 *            maximum number of characters to write
 	 * 
 	 * @throws IOException
-	 *             If this OuputStreamWriter has already been closed or some
+	 *             If this OutputStreamWriter has already been closed or some
 	 *             other IOException occurs.
 	 * @throws IndexOutOfBoundsException
-	 *             If offset or count are outside of bounds.
+	 *             If offset or count is outside of bounds.
 	 */
 	public void write(char[] buf, int offset, int count) throws IOException {
-		if (offset < 0 || count < 0 || offset > buf.length - count) {
-			throw new IndexOutOfBoundsException();
+		synchronized (lock) {
+			checkStatus();
+			if (offset < 0 || offset > buf.length - count || count < 0) {
+				throw new IndexOutOfBoundsException();
+			}
+			CharBuffer chars = CharBuffer.wrap(buf, offset, count);
+			convert(chars);
 		}
-		CharBuffer chars = CharBuffer.wrap(buf, offset, count);
-		convert(chars);
 	}
 
 	private void convert(CharBuffer chars) throws IOException {
-		synchronized (lock) {
-			checkStatus();
-            CoderResult result = encoder.encode(chars, bytes, true);
-			while (true) {
-				if (result.isError()) {
-					throw new IOException(result.toString());
-				} else if (result.isOverflow()) {
-					//flush the output buffer
-					flush();
-					result = encoder.encode(chars, bytes, true);
-                    continue;
-				}
-				break;
+		CoderResult result = encoder.encode(chars, bytes, true);
+		while (true) {
+			if (result.isError()) {
+				throw new IOException(result.toString());
+			} else if (result.isOverflow()) {
+				//flush the output buffer
+				flush();
+				result = encoder.encode(chars, bytes, true);
+				continue;
 			}
+			break;
 		}
 	}
 
@@ -257,7 +257,7 @@ public class OutputStreamWriter extends Writer {
 	 *            the character to write
 	 * 
 	 * @throws IOException
-	 *             If this OuputStreamWriter has already been closed or some
+	 *             If this OutputStreamWriter has already been closed or some
 	 *             other IOException occurs.
 	 */
 	public void write(int oneChar) throws IOException {
@@ -283,7 +283,7 @@ public class OutputStreamWriter extends Writer {
 	 *            maximum number of characters to write
 	 * 
 	 * @throws IOException
-	 *             If this OuputStreamWriter has already been closed or some
+	 *             If this OutputStreamWriter has already been closed or some
 	 *             other IOException occurs.
 	 * @throws IndexOutOfBoundsException    
 	 *             If count is negative    
@@ -291,15 +291,18 @@ public class OutputStreamWriter extends Writer {
 	 *             If offset is negative or offset + count is outside of bounds
 	 */
 	public void write(String str, int offset, int count) throws IOException {
-		// avoid int overflow
-		if (count < 0) {
-			throw new IndexOutOfBoundsException();
+		synchronized (lock) {
+			// avoid int overflow
+			if (count < 0) {
+				throw new IndexOutOfBoundsException();
+			}
+			if (offset > str.length() - count || offset < 0) {
+				throw new StringIndexOutOfBoundsException();
+			}
+			checkStatus();
+			CharBuffer chars = CharBuffer.wrap(str, offset, count + offset);
+			convert(chars);
 		}
-		if (offset > str.length() - count || offset < 0) {
-			throw new StringIndexOutOfBoundsException();
-		}
-		CharBuffer chars = CharBuffer.wrap(str, offset, count + offset);
-		convert(chars);
 	}
 }
 
