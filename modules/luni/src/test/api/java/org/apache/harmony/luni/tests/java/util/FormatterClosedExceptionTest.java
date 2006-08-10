@@ -17,13 +17,11 @@ package org.apache.harmony.luni.tests.java.util;
 
 import java.util.FormatterClosedException;
 
-import tests.util.SerializationTester;
-
 import junit.framework.TestCase;
 
-public class FormatterClosedExceptionTest extends TestCase {
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
-	private static final String SERIALIZATION_FILE_NAME = "serialization/java/util/FormatterClosedException.ser"; //$NON-NLS-1$
+public class FormatterClosedExceptionTest extends TestCase {
 
 	/**
 	 * @tests java.util.FormatterClosedException#FormatterClosedException
@@ -33,23 +31,19 @@ public class FormatterClosedExceptionTest extends TestCase {
 		assertTrue(null != formatterClosedException);
 	}
 
-	/**
-	 * @tests serialization/deserilazation.
-	 */
-	public void test_serialization() throws Exception {
-		FormatterClosedException srcFormatterClosedException = new FormatterClosedException();
-		FormatterClosedException destFormatterClosedException = (FormatterClosedException) SerializationTester
-				.getDeserilizedObject(srcFormatterClosedException);
-	}
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
 
-	/**
-	 * @tests serialization/deserilazation compatibility with RI.
-	 */
-	public void test_serializationCompatibility() throws Exception {
-		FormatterClosedException srcFormatterClosedException = new FormatterClosedException();
-		FormatterClosedException destFormatterClosedException = (FormatterClosedException) SerializationTester
-				.readObject(srcFormatterClosedException,
-						SERIALIZATION_FILE_NAME);
-	}
+        SerializationTest.verifySelf(new FormatterClosedException());
+    }
 
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new FormatterClosedException());
+    }
 }

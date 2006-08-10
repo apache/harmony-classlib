@@ -18,13 +18,11 @@ import java.io.Serializable;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 
-import tests.util.SerializationTester;
-
 import junit.framework.TestCase;
 
-public class InputMismatchExceptionTest extends TestCase {
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
-	private static final String SERIALIZATION_FILE_NAME = "serialization/java/util/InputMismatchExceptionTest.ser"; //$NON-NLS-1$
+public class InputMismatchExceptionTest extends TestCase {
 
 	private static final String ERROR_MESSAGE = "for serialization test"; //$NON-NLS-1$
 
@@ -47,25 +45,20 @@ public class InputMismatchExceptionTest extends TestCase {
 		assertEquals(ERROR_MESSAGE, exception.getMessage());
 	}
 
-	/**
-	 * @tests serialization/deserilazation.
-	 */
-	public void testSerialization() throws Exception {
-		InputMismatchException exception = new InputMismatchException(ERROR_MESSAGE);
-		InputMismatchException deserialedException = (InputMismatchException) SerializationTester
-				.getDeserilizedObject(exception);
-		assertEquals(exception.getMessage(), deserialedException.getMessage());
-		assertEquals(exception.getCause(), deserialedException.getCause());
-	}
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
 
-	/**
-	 * @tests serialization/deserilazation compatibility with RI.
-	 */
-	public void testSerializationCompatibility() throws Exception {
-		InputMismatchException exception = new InputMismatchException(ERROR_MESSAGE);
-		InputMismatchException deserialedException = (InputMismatchException) SerializationTester
-				.readObject(exception, SERIALIZATION_FILE_NAME);
-		assertEquals(deserialedException.getMessage(), exception.getMessage());
-		assertEquals(deserialedException.getCause(), exception.getCause());
-	}
+        SerializationTest.verifySelf(new InputMismatchException(ERROR_MESSAGE));
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new InputMismatchException(
+                ERROR_MESSAGE));
+    }
 }
