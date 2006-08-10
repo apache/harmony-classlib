@@ -24,42 +24,39 @@ import org.apache.harmony.testframework.serialization.SerializationTest.Serializ
 
 public class UnknownFormatConversionExceptionTest extends TestCase {
 
-	/**
-	 * @tests java.util.UnknownFormatConversionException#UnknownFormatConversionException(String)
-	 */
-	public void test_unknownFormatConversionException() {
+    /**
+     * @tests java.util.UnknownFormatConversionException#UnknownFormatConversionException(String)
+     */
+    public void test_unknownFormatConversionException() {
 
-		// RI 5.0 will not throw NullPointerException, it is the bug according
-		// to spec.
-		try {
+        // RI 5.0 will not throw NullPointerException, it is the bug according
+        // to spec.
+        try {
             new UnknownFormatConversionException(null);
-		} catch (NullPointerException e) {
-			fail("should not throw NullPointerExcepiton");
-		}
+        } catch (NullPointerException e) {
+            fail("should not throw NullPointerExcepiton");
+        }
+    }
 
-	}
+    /**
+     * @tests java.util.UnknownFormatConversionException#getConversion()
+     */
+    public void test_getConversion() {
+        String s = "MYTESTSTRING";
+        UnknownFormatConversionException UnknownFormatConversionException = new UnknownFormatConversionException(
+                s);
+        assertEquals(s, UnknownFormatConversionException.getConversion());
+    }
 
-	/**
-	 * @tests java.util.UnknownFormatConversionException#getConversion()
-	 */
-	public void test_getConversion() {
-		String s = "MYTESTSTRING";
-		UnknownFormatConversionException UnknownFormatConversionException = new UnknownFormatConversionException(
-				s);
-		assertEquals(s, UnknownFormatConversionException.getConversion());
-
-	}
-
-	/**
-	 * @tests java.util.UnknownFormatConversionException#getMessage()
-	 */
-	public void test_getMessage() {
-		String s = "MYTESTSTRING";
-		UnknownFormatConversionException UnknownFormatConversionException = new UnknownFormatConversionException(
-				s);
-		assertTrue(null != UnknownFormatConversionException.getMessage());
-
-	}
+    /**
+     * @tests java.util.UnknownFormatConversionException#getMessage()
+     */
+    public void test_getMessage() {
+        String s = "MYTESTSTRING";
+        UnknownFormatConversionException UnknownFormatConversionException = new UnknownFormatConversionException(
+                s);
+        assertTrue(null != UnknownFormatConversionException.getMessage());
+    }
 
     // comparator for comparing UnknownFormatConversionException objects
     private static final SerializableAssert exComparator = new SerializableAssert() {
