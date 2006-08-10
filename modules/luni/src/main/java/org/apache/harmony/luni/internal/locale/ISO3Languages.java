@@ -25,6 +25,7 @@ protected Object[][] getContents() {
 		{"ab", "abk"},
         {"ae", "ave"},
 		{"af", "afr"},
+        {"ak", "aka"}, //$NON-NLS-1$ //$NON-NLS-2$
 		{"am", "amh"},
 		{"ar", "ara"},
 		{"as", "asm"},

@@ -227,6 +227,10 @@ public class LocaleTest extends junit.framework.TestCase {
         
         Locale l = new Locale("ae");
         assertEquals("ave", l.getISO3Language());
+        
+        // Regression for Harmony-1129
+        l = new Locale("ak", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("aka", l.getISO3Language()); //$NON-NLS-1$
 	}
 
 	/**
