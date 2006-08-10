@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tests.api.java.util;
+package org.apache.harmony.luni.tests.java.util;
 
 import java.util.MissingFormatWidthException;
 
