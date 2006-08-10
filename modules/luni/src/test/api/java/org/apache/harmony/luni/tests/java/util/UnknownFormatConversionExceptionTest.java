@@ -32,9 +32,7 @@ public class UnknownFormatConversionExceptionTest extends TestCase {
 		// RI 5.0 will not throw NullPointerException, it is the bug according
 		// to spec.
 		try {
-			String s = null;
-			UnknownFormatConversionException UnknownFormatConversionException = new UnknownFormatConversionException(
-					s);
+            new UnknownFormatConversionException(null);
 		} catch (NullPointerException e) {
 			fail("should not throw NullPointerExcepiton");
 		}
