@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,6 +74,10 @@ public class Collections {
 		public Object get(int location) {
 			throw new IndexOutOfBoundsException();
 		}
+        
+        private Object readResolve() {
+            return Collections.EMPTY_LIST;
+        }
 	}
 
 	@SuppressWarnings("unchecked")
@@ -104,6 +108,10 @@ public class Collections {
 				}
 			};
 		}
+        
+        private Object readResolve() {
+            return Collections.EMPTY_SET;
+        }
 	}
 
 	@SuppressWarnings("unchecked")
@@ -134,6 +142,10 @@ public class Collections {
 		public Collection values() {
 			return EMPTY_LIST;
 		}
+        
+        private Object readResolve() {
+            return Collections.EMPTY_MAP;
+        }
 	}
 
     @SuppressWarnings("unchecked")

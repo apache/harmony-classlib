@@ -35,11 +35,20 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
+
 import junit.framework.TestCase;
 import tests.util.SerializationTester;
 
 public class CollectionsTest extends TestCase {
 
+    private static final SerializableAssert comparator = new SerializableAssert() {
+        public void assertDeserialized(Serializable reference, Serializable test) {
+            assertSame(reference, test);
+        }
+    };
+    
 	/**
 	 * @tests java.util.Collections#binarySearch(java.util.List,
 	 *        java.lang.Object, java.util.Comparator)
@@ -361,6 +370,27 @@ public class CollectionsTest extends TestCase {
         c1.add(arr2[10]);
         assertFalse(Collections.disjoint(c1, c2));
 
+    }
+    
+    /**
+     * @tests java.util.Collections.EmptyList#readResolve()
+     */
+    public void test_EmptyList_readResolve() throws Exception {
+        SerializationTest.verifySelf(Collections.EMPTY_LIST, comparator);
+    }
+
+    /**
+     * @tests java.util.Collections.EmptyMap#readResolve()
+     */
+    public void test_EmptyMap_readResolve() throws Exception {
+        SerializationTest.verifySelf(Collections.EMPTY_MAP, comparator);
+    }
+
+    /**
+     * @tests java.util.Collections.EmptySet#readResolve()
+     */
+    public void test_EmptySet_readResolve() throws Exception {
+        SerializationTest.verifySelf(Collections.EMPTY_SET, comparator);
     }
     
     public void test_checkedCollectionSerializationCompatability() throws Exception {
