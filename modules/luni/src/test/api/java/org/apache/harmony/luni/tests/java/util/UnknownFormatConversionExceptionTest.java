@@ -14,15 +14,15 @@
  */
 package org.apache.harmony.luni.tests.java.util;
 
+import java.io.Serializable;
 import java.util.UnknownFormatConversionException;
-
-import tests.util.SerializationTester;
 
 import junit.framework.TestCase;
 
-public class UnknownFormatConversionExceptionTest extends TestCase {
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
-	private static final String SERIALIZATION_FILE_NAME = "serialization/java/util/UnknownFormatConversionException.ser";
+public class UnknownFormatConversionExceptionTest extends TestCase {
 
 	/**
 	 * @tests java.util.UnknownFormatConversionException#UnknownFormatConversionException(String)
@@ -63,33 +63,38 @@ public class UnknownFormatConversionExceptionTest extends TestCase {
 
 	}
 
-	/**
-	 * @tests serialization/deserilazation.
-	 */
-	public void test_serialization() throws Exception {
-		String s = "MYTESTSTRING";
-		UnknownFormatConversionException srcUnknownFormatConversionException = new UnknownFormatConversionException(
-				s);
-		UnknownFormatConversionException destUnknownFormatConversionException = (UnknownFormatConversionException) SerializationTester
-				.getDeserilizedObject(srcUnknownFormatConversionException);
-		assertEquals(srcUnknownFormatConversionException.getConversion(),
-				destUnknownFormatConversionException.getConversion());
+    // comparator for comparing UnknownFormatConversionException objects
+    private static final SerializableAssert exComparator = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
 
-	}
+            SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(initial,
+                    deserialized);
 
-	/**
-	 * @tests serialization/deserilazation compatibility with RI.
-	 */
-	public void test_serializationCompatibility() throws Exception {
-		String s = "MYTESTSTRING";
-		UnknownFormatConversionException srcUnknownFormatConversionException = new UnknownFormatConversionException(
-				s);
-		UnknownFormatConversionException destUnknownFormatConversionException = (UnknownFormatConversionException) SerializationTester
-				.readObject(srcUnknownFormatConversionException,
-						SERIALIZATION_FILE_NAME);
-		assertEquals(srcUnknownFormatConversionException.getConversion(),
-				destUnknownFormatConversionException.getConversion());
+            UnknownFormatConversionException initEx = (UnknownFormatConversionException) initial;
+            UnknownFormatConversionException desrEx = (UnknownFormatConversionException) deserialized;
 
-	}
+            assertEquals("Conversion", initEx.getConversion(), desrEx
+                    .getConversion());
+        }
+    };
 
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new UnknownFormatConversionException(
+                "MYTESTSTRING"), exComparator);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this,
+                new UnknownFormatConversionException("MYTESTSTRING"),
+                exComparator);
+    }
 }
