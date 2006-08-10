@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -622,6 +622,70 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         }
 
         raf.close();
+    }
+    
+    /**
+     * @tests java.io.RandomAccessFile#read(byte[],int,int) 
+     */
+    public void test_read_$BII_IndexOutOfBoundsException() throws IOException {
+        FileOutputStream fos = new java.io.FileOutputStream(fileName);
+        fos.write(fileString.getBytes(), 0, fileString.length());
+        fos.close();
+
+        RandomAccessFile raf = new java.io.RandomAccessFile(fileName, "r");
+        byte[] rbuf = new byte[100];
+        raf.close();
+        try {
+            raf.read(rbuf,-1,0);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+          //expected
+        }
+    }
+    
+    /**
+     * @tests java.io.RandomAccessFile#read(byte[],int,int) 
+     */
+    public void test_read_$BII_IOException() throws IOException {
+        FileOutputStream fos = new java.io.FileOutputStream(fileName);
+        fos.write(fileString.getBytes(), 0, fileString.length());
+        fos.close();
+
+        RandomAccessFile raf = new java.io.RandomAccessFile(fileName, "r");
+        byte[] rbuf = new byte[100];
+        raf.close();
+        int read = raf.read(rbuf,0,0);
+        assertEquals(0,read);
+    }
+    
+    /**
+     * @tests java.io.RandomAccessFile#read(byte[])
+     */
+    public void test_read_$B_IOException() throws IOException {
+        FileOutputStream fos = new java.io.FileOutputStream(fileName);
+        fos.write(fileString.getBytes(), 0, fileString.length());
+        fos.close();
+
+        RandomAccessFile raf = new java.io.RandomAccessFile(fileName, "r");
+        byte[] rbuf = new byte[0];
+        raf.close();
+        int read = raf.read(rbuf);
+        assertEquals(0,read);
+    }
+    
+    /**
+     * @tests java.io.RandomAccessFile#read(byte[],int,int) 
+     */
+    public void test_read_$BII_NullPointerException() throws IOException {
+        RandomAccessFile raf = new RandomAccessFile(File.createTempFile("tmp",
+                "tmp"), "r");
+        byte[] rbuf = null;
+        try {
+            raf.read(rbuf, 0, -1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
 
     /**

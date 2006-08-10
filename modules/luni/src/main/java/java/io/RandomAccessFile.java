@@ -296,11 +296,12 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
      */
     public int read(byte[] buffer, int offset, int count) throws IOException {
         // have to have four comparisions to not miss integer overflow cases
-        if (count < 0 || offset < 0 || offset > buffer.length
-                || count > buffer.length - offset) {
+        if (count > buffer.length - offset || count < 0 || offset < 0) {
             throw new IndexOutOfBoundsException();
         }
-
+        if (0 == count) {
+            return 0;
+        }
         openCheck();
         synchronized (repositionLock) {
             return (int) fileSystem.read(fd.descriptor, buffer, offset, count);
