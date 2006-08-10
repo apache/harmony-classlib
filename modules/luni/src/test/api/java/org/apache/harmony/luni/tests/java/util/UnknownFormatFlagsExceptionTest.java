@@ -25,39 +25,38 @@ import org.apache.harmony.testframework.serialization.SerializationTest.Serializ
 
 public class UnknownFormatFlagsExceptionTest extends TestCase {
 
+    /**
+     * @tests java.util.UnknownFormatFlagsException#UnknownFormatFlagsException(String)
+     */
+    public void test_unknownFormatFlagsException() {
 
-	/**
-	 * @tests java.util.UnknownFormatFlagsException#UnknownFormatFlagsException(String)
-	 */
-	public void test_unknownFormatFlagsException() {
+        try {
+            new UnknownFormatFlagsException(null);
+            fail("should throw NullPointerExcepiton");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
 
-		try {
-			new UnknownFormatFlagsException(null);
-			fail("should throw NullPointerExcepiton");
-		} catch (NullPointerException e) {
-			// expected
-		}
-	}
+    /**
+     * @tests java.util.UnknownFormatFlagsException#getFlags()
+     */
+    public void test_getFlags() {
+        String s = "MYTESTSTRING";
+        UnknownFormatFlagsException UnknownFormatFlagsException = new UnknownFormatFlagsException(
+                s);
+        assertEquals(s, UnknownFormatFlagsException.getFlags());
+    }
 
-	/**
-	 * @tests java.util.UnknownFormatFlagsException#getFlags()
-	 */
-	public void test_getFlags() {
-		String s = "MYTESTSTRING";
-		UnknownFormatFlagsException UnknownFormatFlagsException = new UnknownFormatFlagsException(
-				s);
-		assertEquals(s, UnknownFormatFlagsException.getFlags());
-	}
-
-	/**
-	 * @tests java.util.UnknownFormatFlagsException#getMessage()
-	 */
-	public void test_getMessage() {
-		String s = "MYTESTSTRING";
-		UnknownFormatFlagsException UnknownFormatFlagsException = new UnknownFormatFlagsException(
-				s);
-		assertNotNull(UnknownFormatFlagsException.getMessage());
-	}
+    /**
+     * @tests java.util.UnknownFormatFlagsException#getMessage()
+     */
+    public void test_getMessage() {
+        String s = "MYTESTSTRING";
+        UnknownFormatFlagsException UnknownFormatFlagsException = new UnknownFormatFlagsException(
+                s);
+        assertNotNull(UnknownFormatFlagsException.getMessage());
+    }
 
     // comparator for comparing UnknownFormatFlagsException objects
     private static final SerializableAssert exComparator = new SerializableAssert() {
