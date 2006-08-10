@@ -29,14 +29,11 @@ public class MissingFormatWidthExceptionTest extends TestCase {
 	 */
 	public void test_missingFormatWidthException() {
 		try {
-			String s = null;
-			MissingFormatWidthException missingFormatWidthException = new MissingFormatWidthException(
-					s);
+            new MissingFormatWidthException(null);
 			fail("should throw NullPointerExcepiton");
 		} catch (NullPointerException e) {
 			// expected
 		}
-
 	}
 
 	/**

@@ -31,13 +31,11 @@ public class MissingFormatArgumentExceptionTest extends TestCase {
 	public void test_missingFormatArgumentException() {
 
 		try {
-			MissingFormatArgumentException missingFormatArgumentException = new MissingFormatArgumentException(
-					null);
+            new MissingFormatArgumentException(null);
 			fail("should throw NullPointerExcepiton.");
 		} catch (NullPointerException e) {
 			// expected
 		}
-
 	}
 
 	/**

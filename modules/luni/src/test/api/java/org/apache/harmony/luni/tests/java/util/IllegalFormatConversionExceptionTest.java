@@ -31,13 +31,11 @@ public class IllegalFormatConversionExceptionTest extends TestCase {
 	 */
 	public void test_illegalFormatConversionException() {
 		try {
-			IllegalFormatConversionException illegalFormatConversionException = new IllegalFormatConversionException(
-					' ', null);
+            new IllegalFormatConversionException(' ', null);
 			fail("should throw NullPointerExcetpion.");
 		} catch (NullPointerException e) {
 			// desired
 		}
-
 	}
 
 	/**

@@ -30,8 +30,7 @@ public class IllegalFormatFlagsExceptionTest extends TestCase {
 	 */
 	public void test_illegalFormatFlagsException() {
 		try {
-			IllegalFormatFlagsException illegalFormatFlagsException = new IllegalFormatFlagsException(
-					null);
+            new IllegalFormatFlagsException(null);
 			fail("should throw NullPointerException");
 		} catch (NullPointerException e) {
 			// expected

@@ -30,13 +30,11 @@ public class DuplicateFormatFlagsExceptionTest extends TestCase {
 	 */
 	public void test_duplicateFormatFlagsException() {
 		try {
-			DuplicateFormatFlagsException duplicateFormatException = new DuplicateFormatFlagsException(
-					null);
+            new DuplicateFormatFlagsException(null);
 			fail("should throw NullPointerException.");
 		} catch (NullPointerException e) {
 			// desired
 		}
-
 	}
 
 	/**

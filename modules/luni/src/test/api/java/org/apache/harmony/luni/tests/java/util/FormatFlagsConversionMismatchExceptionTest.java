@@ -31,8 +31,7 @@ public class FormatFlagsConversionMismatchExceptionTest extends TestCase {
 	 */
 	public void test_formatFlagsConversionMismatchException() {
 		try {
-			FormatFlagsConversionMismatchException formatFlagsConversionMismatchException = new FormatFlagsConversionMismatchException(
-					null, ' ');
+            new FormatFlagsConversionMismatchException(null, ' ');
 			fail("should throw NullPointerException.");
 		} catch (NullPointerException e) {
 			// expected
