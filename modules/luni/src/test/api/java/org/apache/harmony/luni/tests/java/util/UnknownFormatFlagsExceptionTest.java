@@ -15,15 +15,16 @@
 
 package org.apache.harmony.luni.tests.java.util;
 
+import java.io.Serializable;
 import java.util.UnknownFormatFlagsException;
-
-import tests.util.SerializationTester;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
+
 public class UnknownFormatFlagsExceptionTest extends TestCase {
 
-	private static final String SERIALIZATION_FILE_NAME = "serialization/java/util/UnknownFormatFlagsException.ser";
 
 	/**
 	 * @tests java.util.UnknownFormatFlagsException#UnknownFormatFlagsException(String)
@@ -61,33 +62,36 @@ public class UnknownFormatFlagsExceptionTest extends TestCase {
 		assertNotNull(UnknownFormatFlagsException.getMessage());
 	}
 
-	/**
-	 * @tests serialization/deserilazation.
-	 */
-	public void test_serialization() throws Exception {
-		String s = "MYTESTSTRING";
-		UnknownFormatFlagsException srcUnknownFormatFlagsException = new UnknownFormatFlagsException(
-				s);
-		UnknownFormatFlagsException destUnknownFormatFlagsException = (UnknownFormatFlagsException) SerializationTester
-				.getDeserilizedObject(srcUnknownFormatFlagsException);
-		assertEquals(srcUnknownFormatFlagsException.getFlags(),
-				destUnknownFormatFlagsException.getFlags());
+    // comparator for comparing UnknownFormatFlagsException objects
+    private static final SerializableAssert exComparator = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
 
-	}
+            SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(initial,
+                    deserialized);
 
-	/**
-	 * @tests serialization/deserilazation compatibility with RI.
-	 */
-	public void test_serializationCompatibility() throws Exception {
-		String s = "MYTESTSTRING";
-		UnknownFormatFlagsException srcUnknownFormatFlagsException = new UnknownFormatFlagsException(
-				s);
-		UnknownFormatFlagsException destUnknownFormatFlagsException = (UnknownFormatFlagsException) SerializationTester
-				.readObject(srcUnknownFormatFlagsException,
-						SERIALIZATION_FILE_NAME);
-		assertEquals(srcUnknownFormatFlagsException.getFlags(),
-				destUnknownFormatFlagsException.getFlags());
+            UnknownFormatFlagsException initEx = (UnknownFormatFlagsException) initial;
+            UnknownFormatFlagsException desrEx = (UnknownFormatFlagsException) deserialized;
 
-	}
+            assertEquals("Flags", initEx.getFlags(), desrEx.getFlags());
+        }
+    };
 
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new UnknownFormatFlagsException(
+                "MYTESTSTRING"), exComparator);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new UnknownFormatFlagsException(
+                "MYTESTSTRING"), exComparator);
+    }
 }
