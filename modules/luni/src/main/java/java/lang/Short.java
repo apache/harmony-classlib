@@ -101,7 +101,8 @@ public final class Short extends Number implements Comparable<Short> {
 	 * 
 	 * @return byte the value of the receiver.
 	 */
-	public byte byteValue() {
+	@Override
+    public byte byteValue() {
 		return (byte) value;
 	}
 
@@ -139,8 +140,9 @@ public final class Short extends Number implements Comparable<Short> {
 	public static Short decode(String string) throws NumberFormatException {
 		int intValue = Integer.decode(string).intValue();
 		short result = (short) intValue;
-		if (result == intValue)
-			return valueOf(result);
+		if (result == intValue) {
+            return valueOf(result);
+        }
 		throw new NumberFormatException();
 	}
 
@@ -149,7 +151,8 @@ public final class Short extends Number implements Comparable<Short> {
 	 * 
 	 * @return double the value of the receiver.
 	 */
-	public double doubleValue() {
+	@Override
+    public double doubleValue() {
 		return value;
 	}
 
@@ -166,7 +169,8 @@ public final class Short extends Number implements Comparable<Short> {
 	 *         <code>false</code> if it is different from this object
 	 * @see #hashCode
 	 */
-	public boolean equals(Object object) {
+	@Override
+    public boolean equals(Object object) {
 		return (object == this) || (object instanceof Short)
 				&& (value == ((Short) object).value);
 	}
@@ -176,7 +180,8 @@ public final class Short extends Number implements Comparable<Short> {
 	 * 
 	 * @return float the value of the receiver.
 	 */
-	public float floatValue() {
+	@Override
+    public float floatValue() {
 		return value;
 	}
 
@@ -189,7 +194,8 @@ public final class Short extends Number implements Comparable<Short> {
 	 * 
 	 * @see #equals
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return value;
 	}
 
@@ -198,7 +204,8 @@ public final class Short extends Number implements Comparable<Short> {
 	 * 
 	 * @return int the value of the receiver.
 	 */
-	public int intValue() {
+	@Override
+    public int intValue() {
 		return value;
 	}
 
@@ -207,7 +214,8 @@ public final class Short extends Number implements Comparable<Short> {
 	 * 
 	 * @return long the value of the receiver.
 	 */
-	public long longValue() {
+	@Override
+    public long longValue() {
 		return value;
 	}
 
@@ -244,8 +252,9 @@ public final class Short extends Number implements Comparable<Short> {
 			throws NumberFormatException {
 		int intValue = Integer.parseInt(string, radix);
 		short result = (short) intValue;
-		if (result == intValue)
-			return result;
+		if (result == intValue) {
+            return result;
+        }
 		throw new NumberFormatException();
 	}
 
@@ -254,7 +263,8 @@ public final class Short extends Number implements Comparable<Short> {
 	 * 
 	 * @return short the value of the receiver.
 	 */
-	public short shortValue() {
+	@Override
+    public short shortValue() {
 		return value;
 	}
 
@@ -264,7 +274,8 @@ public final class Short extends Number implements Comparable<Short> {
 	 * 
 	 * @return a printable representation for the receiver.
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		return Integer.toString(value);
 	}
 

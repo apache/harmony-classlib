@@ -98,7 +98,8 @@ public final class Boolean implements Serializable, Comparable<Boolean> {
 	 * 
 	 * @see #hashCode
 	 */
-	public boolean equals(Object o) {
+	@Override
+    public boolean equals(Object o) {
 		return (o == this)
 				|| ((o instanceof Boolean) && (value == ((Boolean) o).value));
 	}
@@ -120,11 +121,13 @@ public final class Boolean implements Serializable, Comparable<Boolean> {
      * @see java.lang.Comparable
      */
     public int compareTo(Boolean that) {
-        if (that == null)
+        if (that == null) {
             throw new NullPointerException();
+        }
         
-        if (this.value == that.value)
+        if (this.value == that.value) {
             return 0;
+        }
         
         return this.value ? 1 : -1;
     }
@@ -138,7 +141,8 @@ public final class Boolean implements Serializable, Comparable<Boolean> {
 	 * 
 	 * @see #equals
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return value ? 1231 : 1237;
 	}
     
@@ -148,6 +152,7 @@ public final class Boolean implements Serializable, Comparable<Boolean> {
      * 
      * @return a printable representation for the receiver.
      */
+    @Override
     public String toString() {
         return String.valueOf(value);
     }
@@ -160,8 +165,9 @@ public final class Boolean implements Serializable, Comparable<Boolean> {
      * @return The boolean value.
      */
     public static boolean getBoolean(String string) {
-        if (string == null || string.length() == 0)
+        if (string == null || string.length() == 0) {
             return false;
+        }
         return (parseBoolean(System.getProperty(string)));
     }
     

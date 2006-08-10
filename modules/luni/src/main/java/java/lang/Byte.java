@@ -96,7 +96,8 @@ public final class Byte extends Number implements Comparable<Byte> {
 	 * 
 	 * @return byte the value of the receiver.
 	 */
-	public byte byteValue() {
+	@Override
+    public byte byteValue() {
 		return value;
 	}
 
@@ -134,8 +135,9 @@ public final class Byte extends Number implements Comparable<Byte> {
 	public static Byte decode(String string) throws NumberFormatException {
 		int intValue = Integer.decode(string).intValue();
 		byte result = (byte) intValue;
-		if (result == intValue)
-			return valueOf(result);
+		if (result == intValue) {
+            return valueOf(result);
+        }
 		throw new NumberFormatException();
 	}
 
@@ -144,7 +146,8 @@ public final class Byte extends Number implements Comparable<Byte> {
 	 * 
 	 * @return double the value of the receiver.
 	 */
-	public double doubleValue() {
+	@Override
+    public double doubleValue() {
 		return value;
 	}
 
@@ -161,7 +164,8 @@ public final class Byte extends Number implements Comparable<Byte> {
 	 *         <code>false</code> if it is different from this object
 	 * @see #hashCode
 	 */
-	public boolean equals(Object object) {
+	@Override
+    public boolean equals(Object object) {
 		return (object == this) || (object instanceof Byte)
 				&& (value == ((Byte) object).value);
 	}
@@ -171,7 +175,8 @@ public final class Byte extends Number implements Comparable<Byte> {
 	 * 
 	 * @return float the value of the receiver.
 	 */
-	public float floatValue() {
+	@Override
+    public float floatValue() {
 		return value;
 	}
 
@@ -184,7 +189,8 @@ public final class Byte extends Number implements Comparable<Byte> {
 	 * 
 	 * @see #equals
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return value;
 	}
 
@@ -193,7 +199,8 @@ public final class Byte extends Number implements Comparable<Byte> {
 	 * 
 	 * @return int the value of the receiver.
 	 */
-	public int intValue() {
+	@Override
+    public int intValue() {
 		return value;
 	}
 
@@ -202,7 +209,8 @@ public final class Byte extends Number implements Comparable<Byte> {
 	 * 
 	 * @return long the value of the receiver.
 	 */
-	public long longValue() {
+	@Override
+    public long longValue() {
 		return value;
 	}
 
@@ -220,8 +228,9 @@ public final class Byte extends Number implements Comparable<Byte> {
 	public static byte parseByte(String string) throws NumberFormatException {
 		int intValue = Integer.parseInt(string);
 		byte result = (byte) intValue;
-		if (result == intValue)
-			return result;
+		if (result == intValue) {
+            return result;
+        }
 		throw new NumberFormatException();
 	}
 
@@ -243,8 +252,9 @@ public final class Byte extends Number implements Comparable<Byte> {
 			throws NumberFormatException {
 		int intValue = Integer.parseInt(string, radix);
 		byte result = (byte) intValue;
-		if (result == intValue)
-			return result;
+		if (result == intValue) {
+            return result;
+        }
 		throw new NumberFormatException();
 	}
 
@@ -253,7 +263,8 @@ public final class Byte extends Number implements Comparable<Byte> {
 	 * 
 	 * @return short the value of the receiver.
 	 */
-	public short shortValue() {
+	@Override
+    public short shortValue() {
 		return value;
 	}
 
@@ -263,7 +274,8 @@ public final class Byte extends Number implements Comparable<Byte> {
 	 * 
 	 * @return a printable representation for the receiver.
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		return Integer.toString(value);
 	}
 

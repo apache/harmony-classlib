@@ -566,6 +566,7 @@ public final class Character implements Serializable, Comparable<Character> {
          * The &quot;Surrogates Area&quot; Unicode Block. 
          * @deprecated As of Java 5, this block as been replaced by {@link #HIGH_SURROGATES}, {@link #HIGH_PRIVATE_USE_SURROGATES} and {@link #LOW_SURROGATES}.
          */
+        @Deprecated
         public static final UnicodeBlock SURROGATES_AREA = new UnicodeBlock("SURROGATES_AREA", 0x0, 0x0);
         /**
          * The &quot;Basic Latin&quot; Unicode Block. 
@@ -1572,11 +1573,13 @@ public final class Character implements Serializable, Comparable<Character> {
          * @since 1.5
          */
         public static UnicodeBlock forName(String blockName) {
-            if (blockName == null)
+            if (blockName == null) {
                 throw new NullPointerException();
+            }
             UnicodeBlock match = BLOCKS_BY_NAME.get(blockName);
-            if (match == null)
+            if (match == null) {
                 throw new IllegalArgumentException();
+            }
             return match;
         }
         
@@ -1607,8 +1610,9 @@ public final class Character implements Serializable, Comparable<Character> {
          * @since 1.5
          */
         public static UnicodeBlock of(int codePoint) {
-            if (!isValidCodePoint(codePoint))
+            if (!isValidCodePoint(codePoint)) {
                 throw new IllegalArgumentException();
+            }
             int low = 0;
             int mid = -1;
             int high = BLOCKS.length - 1;
@@ -1690,12 +1694,14 @@ public final class Character implements Serializable, Comparable<Character> {
      * @since 1.5
      */
     public static Character valueOf(char c) {
-        if (c > CACHE.length)
+        if (c > CACHE.length) {
             return new Character(c);
+        }
         synchronized (CACHE) {
             Character ch = CACHE[c];
-            if (ch == null)
+            if (ch == null) {
                 CACHE[c] = ch = new Character(c);
+            }
             return ch;
         }
     }
@@ -1840,18 +1846,22 @@ public final class Character implements Serializable, Comparable<Character> {
      * @since 1.5
      */
     public static int codePointAt(CharSequence seq, int index) {
-        if (seq == null)
+        if (seq == null) {
             throw new NullPointerException();
+        }
         int len = seq.length();
-        if (index < 0 || index >= len)
+        if (index < 0 || index >= len) {
             throw new IndexOutOfBoundsException();
+        }
 
         char high = seq.charAt(index++);
-        if (index >= len)
+        if (index >= len) {
             return high;
+        }
         char low = seq.charAt(index);
-        if (isSurrogatePair(high, low))
+        if (isSurrogatePair(high, low)) {
             return toCodePoint(high, low);
+        }
         return high;
     }
 
@@ -1875,18 +1885,22 @@ public final class Character implements Serializable, Comparable<Character> {
      * @since 1.5
      */
     public static int codePointAt(char[] seq, int index) {
-        if (seq == null)
+        if (seq == null) {
             throw new NullPointerException();
+        }
         int len = seq.length;
-        if (index < 0 || index >= len)
+        if (index < 0 || index >= len) {
             throw new IndexOutOfBoundsException();
+        }
 
         char high = seq[index++];
-        if (index >= len)
+        if (index >= len) {
             return high;
+        }
         char low = seq[index];
-        if (isSurrogatePair(high, low))
+        if (isSurrogatePair(high, low)) {
             return toCodePoint(high, low);
+        }
         return high;
     }
 
@@ -1919,11 +1933,13 @@ public final class Character implements Serializable, Comparable<Character> {
         }    	
 
         char high = seq[index++];
-        if (index >= limit)
+        if (index >= limit) {
             return high;
+        }
         char low = seq[index];
-        if (isSurrogatePair(high, low))
+        if (isSurrogatePair(high, low)) {
             return toCodePoint(high, low);
+        }
         return high;
     }
 
@@ -1948,18 +1964,22 @@ public final class Character implements Serializable, Comparable<Character> {
      * @since 1.5
      */
     public static int codePointBefore(CharSequence seq, int index) {
-        if (seq == null)
+        if (seq == null) {
             throw new NullPointerException();
+        }
         int len = seq.length();
-        if (index < 1 || index > len)
+        if (index < 1 || index > len) {
             throw new IndexOutOfBoundsException();
+        }
 
         char low = seq.charAt(--index);
-        if (--index < 0)
+        if (--index < 0) {
             return low;
+        }
         char high = seq.charAt(index);
-        if (isSurrogatePair(high, low))
+        if (isSurrogatePair(high, low)) {
             return toCodePoint(high, low);
+        }
         return low;
     }
 
@@ -1984,18 +2004,22 @@ public final class Character implements Serializable, Comparable<Character> {
      * @since 1.5
      */
     public static int codePointBefore(char[] seq, int index) {
-        if (seq == null)
+        if (seq == null) {
             throw new NullPointerException();
+        }
         int len = seq.length;
-        if (index < 1 || index > len)
+        if (index < 1 || index > len) {
             throw new IndexOutOfBoundsException();
+        }
 
         char low = seq[--index];
-        if (--index < 0)
+        if (--index < 0) {
             return low;
+        }
         char high = seq[index];
-        if (isSurrogatePair(high, low))
+        if (isSurrogatePair(high, low)) {
             return toCodePoint(high, low);
+        }
         return low;
     }
 
@@ -2024,18 +2048,22 @@ public final class Character implements Serializable, Comparable<Character> {
      * @since 1.5
      */
     public static int codePointBefore(char[] seq, int index, int start) {
-        if (seq == null)
+        if (seq == null) {
             throw new NullPointerException();
+        }
         int len = seq.length;
-        if (index <= start || index > len || start < 0 || start >= len)
+        if (index <= start || index > len || start < 0 || start >= len) {
             throw new IndexOutOfBoundsException();
+        }
 
         char low = seq[--index];
-        if (--index < start)
+        if (--index < start) {
             return low;
+        }
         char high = seq[index];
-        if (isSurrogatePair(high, low))
+        if (isSurrogatePair(high, low)) {
             return toCodePoint(high, low);
+        }
         return low;
     }
 
@@ -2062,16 +2090,20 @@ public final class Character implements Serializable, Comparable<Character> {
      * @since 1.5
      */
     public static int toChars(int codePoint, char[] dst, int dstIndex) {
-        if (!isValidCodePoint(codePoint))
+        if (!isValidCodePoint(codePoint)) {
             throw new IllegalArgumentException();
-        if (dst == null)
+        }
+        if (dst == null) {
             throw new NullPointerException();
-        if (dstIndex < 0 || dstIndex >= dst.length)
+        }
+        if (dstIndex < 0 || dstIndex >= dst.length) {
             throw new IndexOutOfBoundsException();
+        }
 
         if (isSupplementaryCodePoint(codePoint)) {
-            if (dstIndex == dst.length - 1)
+            if (dstIndex == dst.length - 1) {
                 throw new IndexOutOfBoundsException();
+            }
             // See RFC 2781, Section 2.1
             // http://www.faqs.org/rfcs/rfc2781.html
             int cpPrime = codePoint - 0x10000;
@@ -2102,8 +2134,9 @@ public final class Character implements Serializable, Comparable<Character> {
      * @since 1.5
      */
     public static char[] toChars(int codePoint) {
-        if (!isValidCodePoint(codePoint))
+        if (!isValidCodePoint(codePoint)) {
             throw new IllegalArgumentException();
+        }
 
         if (isSupplementaryCodePoint(codePoint)) {
             int cpPrime = codePoint - 0x10000;
@@ -2134,11 +2167,13 @@ public final class Character implements Serializable, Comparable<Character> {
      */
     public static int codePointCount(CharSequence seq, int beginIndex,
             int endIndex) {
-        if (seq == null)
+        if (seq == null) {
             throw new NullPointerException();
+        }
         int len = seq.length();
-        if (beginIndex < 0 || endIndex > len || beginIndex > endIndex)
+        if (beginIndex < 0 || endIndex > len || beginIndex > endIndex) {
             throw new IndexOutOfBoundsException();
+        }
 
         int result = 0;
         for (int i = beginIndex; i < endIndex; i++) {
@@ -2146,8 +2181,9 @@ public final class Character implements Serializable, Comparable<Character> {
             if (isHighSurrogate(c)) {
                 if (++i < endIndex) {
                     c = seq.charAt(i);
-                    if (!isLowSurrogate(c))
+                    if (!isLowSurrogate(c)) {
                         result++;
+                    }
                 }
             }
             result++;
@@ -2175,12 +2211,14 @@ public final class Character implements Serializable, Comparable<Character> {
      * @since 1.5
      */
     public static int codePointCount(char[] seq, int offset, int count) {
-        if (seq == null)
+        if (seq == null) {
             throw new NullPointerException();
+        }
         int len = seq.length;
         int endIndex = offset + count;
-        if (offset < 0 || count < 0 || endIndex > len)
+        if (offset < 0 || count < 0 || endIndex > len) {
             throw new IndexOutOfBoundsException();
+        }
 
         int result = 0;
         for (int i = offset; i < endIndex; i++) {
@@ -2188,8 +2226,9 @@ public final class Character implements Serializable, Comparable<Character> {
             if (isHighSurrogate(c)) {
                 if (++i < endIndex) {
                     c = seq[i];
-                    if (!isLowSurrogate(c))
+                    if (!isLowSurrogate(c)) {
                         result++;
+                    }
                 }
             }
             result++;
@@ -2221,26 +2260,31 @@ public final class Character implements Serializable, Comparable<Character> {
      */
     public static int offsetByCodePoints(CharSequence seq, int index,
             int codePointOffset) {
-        if (seq == null)
+        if (seq == null) {
             throw new NullPointerException();
+        }
         int len = seq.length();
-        if (index < 0 || index > len)
+        if (index < 0 || index > len) {
             throw new IndexOutOfBoundsException();
+        }
 
-        if (codePointOffset == 0)
+        if (codePointOffset == 0) {
             return index;
+        }
 
         if (codePointOffset > 0) {
             int codePoints = codePointOffset;
             int i = index;
             while (codePoints > 0) {
                 codePoints--;
-                if (i >= len)
+                if (i >= len) {
                     throw new IndexOutOfBoundsException();
+                }
                 if (isHighSurrogate(seq.charAt(i))) {
                     int next = i + 1;
-                    if (next < len && isLowSurrogate(seq.charAt(next)))
+                    if (next < len && isLowSurrogate(seq.charAt(next))) {
                         i++;
+                    }
                 }
                 i++;
             }
@@ -2253,12 +2297,14 @@ public final class Character implements Serializable, Comparable<Character> {
         while (codePoints > 0) {
             codePoints--;
             i--;
-            if (i < 0)
+            if (i < 0) {
                 throw new IndexOutOfBoundsException();
+            }
             if (isLowSurrogate(seq.charAt(i))) {
                 int prev = i - 1;
-                if (prev >= 0 && isHighSurrogate(seq.charAt(prev)))
+                if (prev >= 0 && isHighSurrogate(seq.charAt(prev))) {
                     i--;
+                }
             }
         }
         return i;
@@ -2296,27 +2342,32 @@ public final class Character implements Serializable, Comparable<Character> {
      */
     public static int offsetByCodePoints(char[] seq, int start, int count,
             int index, int codePointOffset) {
-        if (seq == null)
+        if (seq == null) {
             throw new NullPointerException();
+        }
         int end = start + count;
         if (start < 0 || count < 0 || end > seq.length || index < start
-                || index > end)
+                || index > end) {
             throw new IndexOutOfBoundsException();
+        }
 
-        if (codePointOffset == 0)
+        if (codePointOffset == 0) {
             return index;
+        }
 
         if (codePointOffset > 0) {
             int codePoints = codePointOffset;
             int i = index;
             while (codePoints > 0) {
                 codePoints--;
-                if (i >= end)
+                if (i >= end) {
                     throw new IndexOutOfBoundsException();
+                }
                 if (isHighSurrogate(seq[i])) {
                     int next = i + 1;
-                    if (next < end && isLowSurrogate(seq[next]))
+                    if (next < end && isLowSurrogate(seq[next])) {
                         i++;
+                    }
                 }
                 i++;
             }
@@ -2329,12 +2380,14 @@ public final class Character implements Serializable, Comparable<Character> {
         while (codePoints > 0) {
             codePoints--;
             i--;
-            if (i < start)
+            if (i < start) {
                 throw new IndexOutOfBoundsException();
+            }
             if (isLowSurrogate(seq[i])) {
                 int prev = i - 1;
-                if (prev >= start && isHighSurrogate(seq[prev]))
+                if (prev >= start && isHighSurrogate(seq[prev])) {
                     i--;
+                }
             }
         }
         return i;
@@ -2356,19 +2409,21 @@ public final class Character implements Serializable, Comparable<Character> {
 			if (c < 128) {
 				// Optimized for ASCII
 				int result = -1;
-				if ('0' <= c && c <= '9')
-					result = c - '0';
-				else if ('a' <= c && c <= 'z')
-					result = c - ('a' - 10);
-				else if ('A' <= c && c <= 'Z')
-					result = c - ('A' - 10);
+				if ('0' <= c && c <= '9') {
+                    result = c - '0';
+                } else if ('a' <= c && c <= 'z') {
+                    result = c - ('a' - 10);
+                } else if ('A' <= c && c <= 'Z') {
+                    result = c - ('A' - 10);
+                }
 				return result < radix ? result : -1;
 			}
 			int result = BinarySearch.binarySearchRange(digitKeys, c);
 			if (result >= 0 && c <= digitValues[result * 2]) {
 				int value = (char) (c - digitValues[result * 2 + 1]);
-				if (value >= radix)
-					return -1;
+				if (value >= radix) {
+                    return -1;
+                }
 				return value;
 			}
 		}
@@ -2405,9 +2460,11 @@ public final class Character implements Serializable, Comparable<Character> {
 	 * @return the character which represents the value in the radix
 	 */
 	public static char forDigit(int digit, int radix) {
-		if (MIN_RADIX <= radix && radix <= MAX_RADIX)
-			if (0 <= digit && digit < radix)
-				return (char) (digit < 10 ? digit + '0' : digit + 'a' - 10);
+		if (MIN_RADIX <= radix && radix <= MAX_RADIX) {
+            if (0 <= digit && digit < radix) {
+                return (char) (digit < 10 ? digit + '0' : digit + 'a' - 10);
+            }
+        }
 		return 0;
 	}
 
@@ -2422,22 +2479,27 @@ public final class Character implements Serializable, Comparable<Character> {
 	public static int getNumericValue(char c) {
 		if (c < 128) {
 			// Optimized for ASCII
-			if (c >= '0' && c <= '9')
-				return c - '0';
-			if (c >= 'a' && c <= 'z')
-				return c - ('a' - 10);
-			if (c >= 'A' && c <= 'Z')
-				return c - ('A' - 10);
+			if (c >= '0' && c <= '9') {
+                return c - '0';
+            }
+			if (c >= 'a' && c <= 'z') {
+                return c - ('a' - 10);
+            }
+			if (c >= 'A' && c <= 'Z') {
+                return c - ('A' - 10);
+            }
 			return -1;
 		}
 		int result = BinarySearch.binarySearchRange(numericKeys, c);
 		if (result >= 0 && c <= numericValues[result * 2]) {
 			char difference = numericValues[result * 2 + 1];
-			if (difference == 0)
-				return -2;
+			if (difference == 0) {
+                return -2;
+            }
 			// Value is always positive, must be negative value
-			if (difference > c)
-				return c - (short) difference;
+			if (difference > c) {
+                return c - (short) difference;
+            }
 			return c - difference;
 		}
 		return -1;
@@ -2455,8 +2517,9 @@ public final class Character implements Serializable, Comparable<Character> {
 		int high = typeValues[result * 2];
 		if (c <= high) {
 			int code = typeValues[result * 2 + 1];
-			if (code < 0x100)
-				return code;
+			if (code < 0x100) {
+                return code;
+            }
 			return (c & 1) == 1 ? code >> 8 : code & 0xff;
 		}
 		return UNASSIGNED;
@@ -2474,8 +2537,9 @@ public final class Character implements Serializable, Comparable<Character> {
 		int high = bidiValues[result * 2];
 		if (c <= high) {
 			int code = bidiValues[result * 2 + 1];
-			if (code < 0x100)
-				return (byte) (code - 1);
+			if (code < 0x100) {
+                return (byte) (code - 1);
+            }
 			return (byte) (((c & 1) == 1 ? code >> 8 : code & 0xff) - 1);
 		}
 		return DIRECTIONALITY_UNDEFINED;
@@ -2490,8 +2554,9 @@ public final class Character implements Serializable, Comparable<Character> {
 	 */
 	public static boolean isMirrored(char c) {
 		int value = c / 16;
-		if (value >= mirrored.length)
-			return false;
+		if (value >= mirrored.length) {
+            return false;
+        }
 		int bit = 1 << (c % 16);
 		return (mirrored[value] & bit) != 0;
 	}
@@ -2531,10 +2596,12 @@ public final class Character implements Serializable, Comparable<Character> {
 	 */
 	public static boolean isDigit(char c) {
 		// Optimized case for ASCII
-		if ('0' <= c && c <= '9')
-			return true;
-		if (c < 1632)
-			return false;
+		if ('0' <= c && c <= '9') {
+            return true;
+        }
+		if (c < 1632) {
+            return false;
+        }
 		return getType(c) == DECIMAL_DIGIT_NUMBER;
 	}
 
@@ -2586,8 +2653,9 @@ public final class Character implements Serializable, Comparable<Character> {
 	 */
 	public static boolean isJavaIdentifierPart(char c) {
 		// Optimized case for ASCII
-		if (c < 128)
-			return (typeTags[c] & ISJAVAPART) != 0;
+		if (c < 128) {
+            return (typeTags[c] & ISJAVAPART) != 0;
+        }
 
 		int type = getType(c);
 		return (type >= UPPERCASE_LETTER && type <= OTHER_LETTER)
@@ -2608,8 +2676,9 @@ public final class Character implements Serializable, Comparable<Character> {
 	 */
 	public static boolean isJavaIdentifierStart(char c) {
 		// Optimized case for ASCII
-		if (c < 128)
-			return (typeTags[c] & ISJAVASTART) != 0;
+		if (c < 128) {
+            return (typeTags[c] & ISJAVASTART) != 0;
+        }
 
 		int type = getType(c);
 		return (type >= UPPERCASE_LETTER && type <= OTHER_LETTER)
@@ -2643,10 +2712,12 @@ public final class Character implements Serializable, Comparable<Character> {
 	 * @return true when the character is a letter, false otherwise
 	 */
 	public static boolean isLetter(char c) {
-		if (('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z'))
-			return true;
-		if (c < 128)
-			return false;
+		if (('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z')) {
+            return true;
+        }
+		if (c < 128) {
+            return false;
+        }
 		int type = getType(c);
 		return type >= UPPERCASE_LETTER && type <= OTHER_LETTER;
 	}
@@ -2673,10 +2744,12 @@ public final class Character implements Serializable, Comparable<Character> {
 	 */
 	public static boolean isLowerCase(char c) {
 		// Optimized case for ASCII
-		if ('a' <= c && c <= 'z')
-			return true;
-		if (c < 128)
-			return false;
+		if ('a' <= c && c <= 'z') {
+            return true;
+        }
+		if (c < 128) {
+            return false;
+        }
 
 		return getType(c) == LOWERCASE_LETTER;
 	}
@@ -2701,10 +2774,12 @@ public final class Character implements Serializable, Comparable<Character> {
 	 *         otherwise
 	 */
 	public static boolean isSpaceChar(char c) {
-		if (c == 0x20 || c == 0xa0 || c == 0x1680)
-			return true;
-		if (c < 0x2000)
-			return false;
+		if (c == 0x20 || c == 0xa0 || c == 0x1680) {
+            return true;
+        }
+		if (c < 0x2000) {
+            return false;
+        }
 		return c <= 0x200b || c == 0x2028 || c == 0x2029 || c == 0x202f
 				|| c == 0x3000;
 	}
@@ -2718,12 +2793,14 @@ public final class Character implements Serializable, Comparable<Character> {
 	 *         otherwise
 	 */
 	public static boolean isTitleCase(char c) {
-		if (c == '\u01c5' || c == '\u01c8' || c == '\u01cb' || c == '\u01f2')
-			return true;
+		if (c == '\u01c5' || c == '\u01c8' || c == '\u01cb' || c == '\u01f2') {
+            return true;
+        }
 		if (c >= '\u1f88' && c <= '\u1ffc') {
 			// 0x1f88 - 0x1f8f, 0x1f98 - 0x1f9f, 0x1fa8 - 0x1faf
-			if (c > '\u1faf')
-				return c == '\u1fbc' || c == '\u1fcc' || c == '\u1ffc';
+			if (c > '\u1faf') {
+                return c == '\u1fbc' || c == '\u1fcc' || c == '\u1ffc';
+            }
 			int last = c & 0xf;
 			return last >= 8 && last <= 0xf;
 		}
@@ -2772,10 +2849,12 @@ public final class Character implements Serializable, Comparable<Character> {
 	 */
 	public static boolean isUpperCase(char c) {
 		// Optimized case for ASCII
-		if ('A' <= c && c <= 'Z')
-			return true;
-		if (c < 128)
-			return false;
+		if ('A' <= c && c <= 'Z') {
+            return true;
+        }
+		if (c < 128) {
+            return false;
+        }
 
 		return getType(c) == UPPERCASE_LETTER;
 	}
@@ -2790,12 +2869,15 @@ public final class Character implements Serializable, Comparable<Character> {
 	 */
 	public static boolean isWhitespace(char c) {
 		// Optimized case for ASCII
-		if ((c >= 0x1c && c <= 0x20) || (c >= 0x9 && c <= 0xd))
-			return true;
-		if (c == 0x1680)
-			return true;
-		if (c < 0x2000 || c == 0x2007)
-			return false;
+		if ((c >= 0x1c && c <= 0x20) || (c >= 0x9 && c <= 0xd)) {
+            return true;
+        }
+		if (c == 0x1680) {
+            return true;
+        }
+		if (c < 0x2000 || c == 0x2007) {
+            return false;
+        }
 		return c <= 0x200b || c == 0x2028 || c == 0x2029 || c == 0x3000;
 	}
 
@@ -2820,10 +2902,12 @@ public final class Character implements Serializable, Comparable<Character> {
 	 */
 	public static char toLowerCase(char c) {
 		// Optimized case for ASCII
-		if ('A' <= c && c <= 'Z')
-			return (char) (c + ('a' - 'A'));
-		if (c < 128)
-			return c;
+		if ('A' <= c && c <= 'Z') {
+            return (char) (c + ('a' - 'A'));
+        }
+		if (c < 128) {
+            return c;
+        }
 
 		int result = BinarySearch.binarySearchRange(lowercaseKeys, c);
 		if (result >= 0) {
@@ -2835,8 +2919,9 @@ public final class Character implements Serializable, Comparable<Character> {
 				by2 = true;
 			}
 			if (c <= end) {
-				if (by2 && (c & 1) != (start & 1))
-					return c;
+				if (by2 && (c & 1) != (start & 1)) {
+                    return c;
+                }
 				char mapping = lowercaseValues[result * 2 + 1];
 				return (char) (c + mapping);
 			}
@@ -2874,11 +2959,13 @@ public final class Character implements Serializable, Comparable<Character> {
 	 * @return the title case equivalent of the character
 	 */
 	public static char toTitleCase(char c) {
-		if (isTitleCase(c))
-			return c;
+		if (isTitleCase(c)) {
+            return c;
+        }
 		int result = BinarySearch.binarySearch(titlecaseKeys, c);
-		if (result >= 0)
-			return titlecaseValues[result];
+		if (result >= 0) {
+            return titlecaseValues[result];
+        }
 		return toUpperCase(c);
 	}
 
@@ -2893,10 +2980,12 @@ public final class Character implements Serializable, Comparable<Character> {
 	 */
 	public static char toUpperCase(char c) {
 		// Optimized case for ASCII
-		if ('a' <= c && c <= 'z')
-			return (char) (c - ('a' - 'A'));
-		if (c < 128)
-			return c;
+		if ('a' <= c && c <= 'z') {
+            return (char) (c - ('a' - 'A'));
+        }
+		if (c < 128) {
+            return c;
+        }
 
 		int result = BinarySearch.binarySearchRange(uppercaseKeys, c);
 		if (result >= 0) {
@@ -2908,8 +2997,9 @@ public final class Character implements Serializable, Comparable<Character> {
 				by2 = true;
 			}
 			if (c <= end) {
-				if (by2 && (c & 1) != (start & 1))
-					return c;
+				if (by2 && (c & 1) != (start & 1)) {
+                    return c;
+                }
 				char mapping = uppercaseValues[result * 2 + 1];
 				return (char) (c + mapping);
 			}

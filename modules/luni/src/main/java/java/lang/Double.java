@@ -155,7 +155,8 @@ public final class Double extends Number implements Comparable<Double> {
 	 * 
 	 * @return byte the value of the receiver.
 	 */
-	public byte byteValue() {
+	@Override
+    public byte byteValue() {
 		return (byte) value;
 	}
 
@@ -182,7 +183,8 @@ public final class Double extends Number implements Comparable<Double> {
 	 * 
 	 * @return the receiver's value
 	 */
-	public double doubleValue() {
+	@Override
+    public double doubleValue() {
 		return value;
 	}
 
@@ -198,7 +200,8 @@ public final class Double extends Number implements Comparable<Double> {
 	 *         <code>false</code> if it is different from this object
 	 * @see #hashCode
 	 */
-	public boolean equals(Object object) {
+	@Override
+    public boolean equals(Object object) {
 		return (object == this)
 				|| (object instanceof Double)
 				&& (doubleToLongBits(this.value) == doubleToLongBits(((Double) object).value));
@@ -209,7 +212,8 @@ public final class Double extends Number implements Comparable<Double> {
 	 * 
 	 * @return float the value of the receiver.
 	 */
-	public float floatValue() {
+	@Override
+    public float floatValue() {
 		return (float) value;
 	}
 
@@ -222,7 +226,8 @@ public final class Double extends Number implements Comparable<Double> {
 	 * 
 	 * @see #equals
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		long v = doubleToLongBits(value);
 		return (int) (v ^ (v >>> 32));
 	}
@@ -232,7 +237,8 @@ public final class Double extends Number implements Comparable<Double> {
 	 * 
 	 * @return the receiver's value as an integer
 	 */
-	public int intValue() {
+	@Override
+    public int intValue() {
 		return (int) value;
 	}
 
@@ -299,7 +305,8 @@ public final class Double extends Number implements Comparable<Double> {
 	 * 
 	 * @return long the value of the receiver.
 	 */
-	public long longValue() {
+	@Override
+    public long longValue() {
 		return (long) value;
 	}
 
@@ -322,7 +329,8 @@ public final class Double extends Number implements Comparable<Double> {
 	 * 
 	 * @return short the value of the receiver.
 	 */
-	public short shortValue() {
+	@Override
+    public short shortValue() {
 		return (short) value;
 	}
 
@@ -332,7 +340,8 @@ public final class Double extends Number implements Comparable<Double> {
 	 * 
 	 * @return a printable representation for the receiver.
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		return Double.toString(value);
 	}
 
@@ -423,12 +432,15 @@ public final class Double extends Number implements Comparable<Double> {
         /*
          * Reference: http://en.wikipedia.org/wiki/IEEE_754
          */
-        if (d != d) // isNaN
+        if (d != d) {
             return "NaN";
-        if (d == POSITIVE_INFINITY)
+        }
+        if (d == POSITIVE_INFINITY) {
             return "Infinity";
-        if (d == NEGATIVE_INFINITY)
+        }
+        if (d == NEGATIVE_INFINITY) {
             return "-Infinity";
+        }
 
         long bitValue = doubleToLongBits(d);
 
@@ -438,14 +450,16 @@ public final class Double extends Number implements Comparable<Double> {
         // mask significand bits and shift up
         long significand = bitValue & 0x000FFFFFFFFFFFFFL;
 
-        if (exponent == 0 && significand == 0)
+        if (exponent == 0 && significand == 0) {
             return (negative ? "-0x0.0p0" : "0x0.0p0");
+        }
 
         StringBuilder hexString = new StringBuilder(10);
-        if (negative)
+        if (negative) {
             hexString.append("-0x");
-        else
+        } else {
             hexString.append("0x");
+        }
 
         if (exponent == 0) { // denormal (subnormal) value
             hexString.append("0.");
@@ -463,8 +477,9 @@ public final class Double extends Number implements Comparable<Double> {
             // if there are digits left, then insert some '0' chars first
             if (fractionDigits > hexSignificand.length()) {
                 int digitDiff = fractionDigits - hexSignificand.length();
-                while (digitDiff-- != 0)
+                while (digitDiff-- != 0) {
                     hexString.append('0');
+                }
             }
             hexString.append(hexSignificand);
             hexString.append("p-1022");

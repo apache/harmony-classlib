@@ -108,7 +108,8 @@ public final class Integer extends Number implements Comparable<Integer> {
 	 * 
 	 * @return byte the value of the receiver.
 	 */
-	public byte byteValue() {
+	@Override
+    public byte byteValue() {
 		return (byte) value;
 	}
 
@@ -145,31 +146,36 @@ public final class Integer extends Number implements Comparable<Integer> {
 	 */
 	public static Integer decode(String string) throws NumberFormatException {
 		int length = string.length(), i = 0;
-		if (length == 0)
-			throw new NumberFormatException();
+		if (length == 0) {
+            throw new NumberFormatException();
+        }
 		char firstDigit = string.charAt(i);
 		boolean negative = firstDigit == '-';
 		if (negative) {
-			if (length == 1)
-				throw new NumberFormatException(string);
+			if (length == 1) {
+                throw new NumberFormatException(string);
+            }
 			firstDigit = string.charAt(++i);
 		}
 
 		int base = 10;
 		if (firstDigit == '0') {
-			if (++i == length)
-				return valueOf(0);
+			if (++i == length) {
+                return valueOf(0);
+            }
 			if ((firstDigit = string.charAt(i)) == 'x' || firstDigit == 'X') {
-				if (i == length)
-					throw new NumberFormatException(string);
+				if (i == length) {
+                    throw new NumberFormatException(string);
+                }
 				i++;
 				base = 16;
 			} else {
 				base = 8;
 			}
 		} else if (firstDigit == '#') {
-			if (i == length)
-				throw new NumberFormatException(string);
+			if (i == length) {
+                throw new NumberFormatException(string);
+            }
 			i++;
 			base = 16;
 		}
@@ -183,7 +189,8 @@ public final class Integer extends Number implements Comparable<Integer> {
 	 * 
 	 * @return double the value of the receiver.
 	 */
-	public double doubleValue() {
+	@Override
+    public double doubleValue() {
 		return value;
 	}
 
@@ -200,7 +207,8 @@ public final class Integer extends Number implements Comparable<Integer> {
 	 *         <code>false</code> if it is different from this object
 	 * @see #hashCode
 	 */
-	public boolean equals(Object o) {
+	@Override
+    public boolean equals(Object o) {
 		return (o == this) || (o instanceof Integer)
 				&& (value == ((Integer) o).value);
 	}
@@ -210,7 +218,8 @@ public final class Integer extends Number implements Comparable<Integer> {
 	 * 
 	 * @return float the value of the receiver.
 	 */
-	public float floatValue() {
+	@Override
+    public float floatValue() {
 		return value;
 	}
 
@@ -224,11 +233,13 @@ public final class Integer extends Number implements Comparable<Integer> {
 	 * @return Integer An Integer representing the value of the property.
 	 */
 	public static Integer getInteger(String string) {
-		if (string == null || string.length() == 0)
-			return null;
+		if (string == null || string.length() == 0) {
+            return null;
+        }
 		String prop = System.getProperty(string);
-		if (prop == null)
-			return null;
+		if (prop == null) {
+            return null;
+        }
 		try {
 			return decode(prop);
 		} catch (NumberFormatException ex) {
@@ -247,11 +258,13 @@ public final class Integer extends Number implements Comparable<Integer> {
 	 * @return Integer An Integer representing the value of the property.
 	 */
 	public static Integer getInteger(String string, int defaultValue) {
-		if (string == null || string.length() == 0)
-			return valueOf(defaultValue);
+		if (string == null || string.length() == 0) {
+            return valueOf(defaultValue);
+        }
 		String prop = System.getProperty(string);
-		if (prop == null)
-			return valueOf(defaultValue);
+		if (prop == null) {
+            return valueOf(defaultValue);
+        }
 		try {
 			return decode(prop);
 		} catch (NumberFormatException ex) {
@@ -269,11 +282,13 @@ public final class Integer extends Number implements Comparable<Integer> {
 	 * @return Integer An Integer representing the value of the property.
 	 */
 	public static Integer getInteger(String string, Integer defaultValue) {
-		if (string == null || string.length() == 0)
-			return defaultValue;
+		if (string == null || string.length() == 0) {
+            return defaultValue;
+        }
 		String prop = System.getProperty(string);
-		if (prop == null)
-			return defaultValue;
+		if (prop == null) {
+            return defaultValue;
+        }
 		try {
 			return decode(prop);
 		} catch (NumberFormatException ex) {
@@ -290,7 +305,8 @@ public final class Integer extends Number implements Comparable<Integer> {
 	 * 
 	 * @see #equals
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return value;
 	}
 
@@ -299,7 +315,8 @@ public final class Integer extends Number implements Comparable<Integer> {
 	 * 
 	 * @return int the value of the receiver.
 	 */
-	public int intValue() {
+	@Override
+    public int intValue() {
 		return value;
 	}
 
@@ -308,7 +325,8 @@ public final class Integer extends Number implements Comparable<Integer> {
 	 * 
 	 * @return long the value of the receiver.
 	 */
-	public long longValue() {
+	@Override
+    public long longValue() {
 		return value;
 	}
 
@@ -344,14 +362,17 @@ public final class Integer extends Number implements Comparable<Integer> {
 	public static int parseInt(String string, int radix)
 			throws NumberFormatException {
 		if (string == null || radix < Character.MIN_RADIX
-				|| radix > Character.MAX_RADIX)
-			throw new NumberFormatException();
+				|| radix > Character.MAX_RADIX) {
+            throw new NumberFormatException();
+        }
 		int length = string.length(), i = 0;
-		if (length == 0)
-			throw new NumberFormatException(string);
+		if (length == 0) {
+            throw new NumberFormatException(string);
+        }
 		boolean negative = string.charAt(i) == '-';
-		if (negative && ++i == length)
-			throw new NumberFormatException(string);
+		if (negative && ++i == length) {
+            throw new NumberFormatException(string);
+        }
 
 		return parse(string, i, radix, negative);
 	}
@@ -362,19 +383,23 @@ public final class Integer extends Number implements Comparable<Integer> {
 		int result = 0, length = string.length();
 		while (offset < length) {
 			int digit = Character.digit(string.charAt(offset++), radix);
-			if (digit == -1)
-				throw new NumberFormatException(string);
-			if (max > result)
-				throw new NumberFormatException(string);
+			if (digit == -1) {
+                throw new NumberFormatException(string);
+            }
+			if (max > result) {
+                throw new NumberFormatException(string);
+            }
 			int next = result * radix - digit;
-			if (next > result)
-				throw new NumberFormatException(string);
+			if (next > result) {
+                throw new NumberFormatException(string);
+            }
 			result = next;
 		}
 		if (!negative) {
 			result = -result;
-			if (result < 0)
-				throw new NumberFormatException(string);
+			if (result < 0) {
+                throw new NumberFormatException(string);
+            }
 		}
 		return result;
 	}
@@ -384,7 +409,8 @@ public final class Integer extends Number implements Comparable<Integer> {
 	 * 
 	 * @return short the value of the receiver.
 	 */
-	public short shortValue() {
+	@Override
+    public short shortValue() {
 		return (short) value;
 	}
 
@@ -399,11 +425,13 @@ public final class Integer extends Number implements Comparable<Integer> {
 	public static String toBinaryString(int i) {
 		int count = 1, j = i;
 
-		if (i < 0)
-			count = 32;
-		else
-			while ((j >>>= 1) != 0)
-				count++;
+		if (i < 0) {
+            count = 32;
+        } else {
+            while ((j >>>= 1) != 0) {
+                count++;
+            }
+        }
 
 		char[] buffer = new char[count];
 		do {
@@ -424,19 +452,22 @@ public final class Integer extends Number implements Comparable<Integer> {
 	public static String toHexString(int i) {
 		int count = 1, j = i;
 
-		if (i < 0)
-			count = 8;
-		else
-			while ((j >>>= 4) != 0)
-				count++;
+		if (i < 0) {
+            count = 8;
+        } else {
+            while ((j >>>= 4) != 0) {
+                count++;
+            }
+        }
 
 		char[] buffer = new char[count];
 		do {
 			int t = i & 15;
-			if (t > 9)
-				t = t - 10 + 'a';
-			else
-				t += '0';
+			if (t > 9) {
+                t = t - 10 + 'a';
+            } else {
+                t += '0';
+            }
 			buffer[--count] = (char) t;
 			i >>>= 4;
 		} while (count > 0);
@@ -454,11 +485,13 @@ public final class Integer extends Number implements Comparable<Integer> {
 	public static String toOctalString(int i) {
 		int count = 1, j = i;
 
-		if (i < 0)
-			count = 11;
-		else
-			while ((j >>>= 3) != 0)
-				count++;
+		if (i < 0) {
+            count = 11;
+        } else {
+            while ((j >>>= 3) != 0) {
+                count++;
+            }
+        }
 
 		char[] buffer = new char[count];
 		do {
@@ -474,7 +507,8 @@ public final class Integer extends Number implements Comparable<Integer> {
 	 * 
 	 * @return a printable representation for the receiver.
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		return Integer.toString(value);
 	}
 
@@ -502,10 +536,12 @@ public final class Integer extends Number implements Comparable<Integer> {
 	 * @return String the representation of the argument
 	 */
 	public static String toString(int i, int radix) {
-		if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX)
-			radix = 10;
-		if (i == 0)
-			return "0";
+		if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
+            radix = 10;
+        }
+		if (i == 0) {
+            return "0";
+        }
 
 		int count = 2, j = i;
 		boolean negative = i < 0;
@@ -513,20 +549,23 @@ public final class Integer extends Number implements Comparable<Integer> {
 			count = 1;
 			j = -i;
 		}
-		while ((i /= radix) != 0)
-			count++;
+		while ((i /= radix) != 0) {
+            count++;
+        }
 
 		char[] buffer = new char[count];
 		do {
 			int ch = 0 - (j % radix);
-			if (ch > 9)
-				ch = ch - 10 + 'a';
-			else
-				ch += '0';
+			if (ch > 9) {
+                ch = ch - 10 + 'a';
+            } else {
+                ch += '0';
+            }
 			buffer[--count] = (char) ch;
 		} while ((j /= radix) != 0);
-		if (negative)
-			buffer[0] = '-';
+		if (negative) {
+            buffer[0] = '-';
+        }
 		return new String(0, buffer.length, buffer);
 	}
 
@@ -646,8 +685,9 @@ public final class Integer extends Number implements Comparable<Integer> {
      * @since 1.5
      */
     public static int rotateLeft(int i, int distance) {
-        if (distance == 0)
+        if (distance == 0) {
             return i;
+        }
         /*
          * According to JLS3, 15.19, the right operand of a shift is always
          * implicitly masked with 0x1F, which the negation of 'distance' is
@@ -665,8 +705,9 @@ public final class Integer extends Number implements Comparable<Integer> {
      * @since 1.5
      */
     public static int rotateRight(int i, int distance) {
-        if (distance == 0)
+        if (distance == 0) {
             return i;
+        }
         /*
          * According to JLS3, 15.19, the right operand of a shift is always
          * implicitly masked with 0x1F, which the negation of 'distance' is

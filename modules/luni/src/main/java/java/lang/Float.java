@@ -164,7 +164,8 @@ public final class Float extends Number implements Comparable<Float> {
 	 * 
 	 * @return byte the value of the receiver.
 	 */
-	public byte byteValue() {
+	@Override
+    public byte byteValue() {
 		return (byte) value;
 	}
 
@@ -173,7 +174,8 @@ public final class Float extends Number implements Comparable<Float> {
 	 * 
 	 * @return double the value of the receiver.
 	 */
-	public double doubleValue() {
+	@Override
+    public double doubleValue() {
 		return value;
 	}
 
@@ -189,7 +191,8 @@ public final class Float extends Number implements Comparable<Float> {
 	 *         <code>false</code> if it is different from this object
 	 * @see #hashCode
 	 */
-	public boolean equals(Object object) {
+	@Override
+    public boolean equals(Object object) {
 		return (object == this)
 				|| (object instanceof Float)
 				&& (floatToIntBits(this.value) == floatToIntBits(((Float) object).value));
@@ -218,7 +221,8 @@ public final class Float extends Number implements Comparable<Float> {
 	 * 
 	 * @return the receiver's value
 	 */
-	public float floatValue() {
+	@Override
+    public float floatValue() {
 		return value;
 	}
 
@@ -231,7 +235,8 @@ public final class Float extends Number implements Comparable<Float> {
 	 * 
 	 * @see #equals
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return floatToIntBits(value);
 	}
 
@@ -250,7 +255,8 @@ public final class Float extends Number implements Comparable<Float> {
 	 * 
 	 * @return int the value of the receiver.
 	 */
-	public int intValue() {
+	@Override
+    public int intValue() {
 		return (int) value;
 	}
 
@@ -307,7 +313,8 @@ public final class Float extends Number implements Comparable<Float> {
 	 * 
 	 * @return long the value of the receiver.
 	 */
-	public long longValue() {
+	@Override
+    public long longValue() {
 		return (long) value;
 	}
 
@@ -332,7 +339,8 @@ public final class Float extends Number implements Comparable<Float> {
 	 * @return short the value of the receiver.
      * @since 1.1
 	 */
-	public short shortValue() {
+	@Override
+    public short shortValue() {
 		return (short) value;
 	}
 
@@ -342,7 +350,8 @@ public final class Float extends Number implements Comparable<Float> {
 	 * 
 	 * @return a printable representation for the receiver.
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		return Float.toString(value);
 	}
 
@@ -434,12 +443,15 @@ public final class Float extends Number implements Comparable<Float> {
         /*
          * Reference: http://en.wikipedia.org/wiki/IEEE_754
          */
-        if (f != f) // isNaN
+        if (f != f) {
             return "NaN";
-        if (f == POSITIVE_INFINITY)
+        }
+        if (f == POSITIVE_INFINITY) {
             return "Infinity";
-        if (f == NEGATIVE_INFINITY)
+        }
+        if (f == NEGATIVE_INFINITY) {
             return "-Infinity";
+        }
 
         int bitValue = floatToIntBits(f);
 
@@ -450,14 +462,16 @@ public final class Float extends Number implements Comparable<Float> {
         // significand is 23-bits, so we shift to treat it like 24-bits
         int significand = (bitValue & 0x007FFFFF) << 1;
 
-        if (exponent == 0 && significand == 0)
+        if (exponent == 0 && significand == 0) {
             return (negative ? "-0x0.0p0" : "0x0.0p0");
+        }
 
         StringBuilder hexString = new StringBuilder(10);
-        if (negative)
+        if (negative) {
             hexString.append("-0x");
-        else
+        } else {
             hexString.append("0x");
+        }
 
         if (exponent == 0) { // denormal (subnormal) value
             hexString.append("0.");
@@ -475,8 +489,9 @@ public final class Float extends Number implements Comparable<Float> {
             // if there are digits left, then insert some '0' chars first
             if (fractionDigits > hexSignificand.length()) {
                 int digitDiff = fractionDigits - hexSignificand.length();
-                while (digitDiff-- != 0)
+                while (digitDiff-- != 0) {
                     hexString.append('0');
+                }
             }
             hexString.append(hexSignificand);
             hexString.append("p-126");
