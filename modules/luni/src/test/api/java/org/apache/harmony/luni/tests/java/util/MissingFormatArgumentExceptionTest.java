@@ -25,39 +25,39 @@ import org.apache.harmony.testframework.serialization.SerializationTest.Serializ
 
 public class MissingFormatArgumentExceptionTest extends TestCase {
 
-	/**
-	 * @tests java.util.MissingFormatArgumentException#MissingFormatArgumentException(String)
-	 */
-	public void test_missingFormatArgumentException() {
+    /**
+     * @tests java.util.MissingFormatArgumentException#MissingFormatArgumentException(String)
+     */
+    public void test_missingFormatArgumentException() {
 
-		try {
+        try {
             new MissingFormatArgumentException(null);
-			fail("should throw NullPointerExcepiton.");
-		} catch (NullPointerException e) {
-			// expected
-		}
-	}
+            fail("should throw NullPointerExcepiton.");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
 
-	/**
-	 * @tests java.util.MissingFormatArgumentException#getFormatSpecifier()
-	 */
-	public void test_getFormatSpecifier() {
-		String s = "MYTESTSTRING";
-		MissingFormatArgumentException missingFormatArgumentException = new MissingFormatArgumentException(
-				s);
-		assertEquals(s, missingFormatArgumentException.getFormatSpecifier());
-	}
+    /**
+     * @tests java.util.MissingFormatArgumentException#getFormatSpecifier()
+     */
+    public void test_getFormatSpecifier() {
+        String s = "MYTESTSTRING";
+        MissingFormatArgumentException missingFormatArgumentException = new MissingFormatArgumentException(
+                s);
+        assertEquals(s, missingFormatArgumentException.getFormatSpecifier());
+    }
 
-	/**
-	 * @tests java.util.MissingFormatArgumentException#getMessage()
-	 */
-	public void test_getMessage() {
-		String s = "MYTESTSTRING";
-		MissingFormatArgumentException missingFormatArgumentException = new MissingFormatArgumentException(
-				s);
-		assertTrue(null != missingFormatArgumentException.getMessage());
+    /**
+     * @tests java.util.MissingFormatArgumentException#getMessage()
+     */
+    public void test_getMessage() {
+        String s = "MYTESTSTRING";
+        MissingFormatArgumentException missingFormatArgumentException = new MissingFormatArgumentException(
+                s);
+        assertTrue(null != missingFormatArgumentException.getMessage());
 
-	}
+    }
 
     // comparator for comparing MissingFormatArgumentException objects
     private static final SerializableAssert exComparator = new SerializableAssert() {
