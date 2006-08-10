@@ -14,15 +14,15 @@
  */
 package org.apache.harmony.luni.tests.java.util;
 
+import java.io.Serializable;
 import java.util.MissingFormatWidthException;
-
-import tests.util.SerializationTester;
 
 import junit.framework.TestCase;
 
-public class MissingFormatWidthExceptionTest extends TestCase {
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
-	private static final String SERIALIZATION_FILE_NAME = "serialization/java/util/MissingFormatWidthException.ser";
+public class MissingFormatWidthExceptionTest extends TestCase {
 
 	/**
 	 * @tests java.util.MissingFormatWidthException#MissingFormatWidthException(String)
@@ -58,33 +58,37 @@ public class MissingFormatWidthExceptionTest extends TestCase {
 
 	}
 
-	/**
-	 * @tests serialization/deserilazation.
-	 */
-	public void test_serialization() throws Exception {
-		String s = "MYTESTSTRING";
-		MissingFormatWidthException srcMissingFormatWidthException = new MissingFormatWidthException(
-				s);
-		MissingFormatWidthException destMissingFormatWidthException = (MissingFormatWidthException) SerializationTester
-				.getDeserilizedObject(srcMissingFormatWidthException);
-		assertEquals(srcMissingFormatWidthException.getFormatSpecifier(),
-				destMissingFormatWidthException.getFormatSpecifier());
+    // comparator for comparing UnknownFormatConversionException objects
+    private static final SerializableAssert exComparator = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
 
-	}
+            SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(initial,
+                    deserialized);
 
-	/**
-	 * @tests serialization/deserilazation compatibility with RI.
-	 */
-	public void test_serializationCompatibility() throws Exception {
-		String s = "MYTESTSTRING";
-		MissingFormatWidthException srcMissingFormatWidthException = new MissingFormatWidthException(
-				s);
-		MissingFormatWidthException destMissingFormatWidthException = (MissingFormatWidthException) SerializationTester
-				.readObject(srcMissingFormatWidthException,
-						SERIALIZATION_FILE_NAME);
-		assertEquals(srcMissingFormatWidthException.getFormatSpecifier(),
-				destMissingFormatWidthException.getFormatSpecifier());
+            MissingFormatWidthException initEx = (MissingFormatWidthException) initial;
+            MissingFormatWidthException desrEx = (MissingFormatWidthException) deserialized;
 
-	}
+            assertEquals("FormatSpecifier", initEx.getFormatSpecifier(), desrEx
+                    .getFormatSpecifier());
+        }
+    };
 
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new MissingFormatWidthException(
+                "MYTESTSTRING"), exComparator);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new MissingFormatWidthException(
+                "MYTESTSTRING"), exComparator);
+    }
 }
