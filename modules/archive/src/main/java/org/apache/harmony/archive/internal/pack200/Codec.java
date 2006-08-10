@@ -16,7 +16,6 @@
  */
 package org.apache.harmony.archive.internal.pack200;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -98,146 +97,57 @@ import java.io.InputStream;
  * @author Alex Blewitt
  * @version $Revision: $
  */
-public class Codec {
+public abstract class Codec {
 	/**
 	 * BCI5 = (5,4): Used for storing branching information in bytecode.
 	 */
-	public static Codec BCI5 = new Codec(5, 4);
+	public static Codec BCI5 = new BHSDCodec(5, 4);
 
 	/**
 	 * BRANCH5 = (5,4,2): Used for storing branching information in bytecode.
 	 */
-	public static final Codec BRANCH5 = new Codec(5, 4, 2);
+	public static final Codec BRANCH5 = new BHSDCodec(5, 4, 2);
 
 	/**
 	 * BYTE1 = (1,256): Used for storing plain bytes.
 	 */
-	public static final Codec BYTE1 = new Codec(1, 256);
+	public static final Codec BYTE1 = new BHSDCodec(1, 256);
 
 	/**
 	 * CHAR3 = (3,128): Used for storing text (UTF-8) strings. NB This isn't
 	 * quite the same as UTF-8, but has similar properties; ASCII characters
 	 * &lt; 127 are stored in a single byte.
 	 */
-	public static final Codec CHAR3 = new Codec(3, 128);
+	public static final Codec CHAR3 = new BHSDCodec(3, 128);
 
 	/**
 	 * DELTA5 = (5,64,1,1): Used for the majority of numerical codings where
 	 * there is a correlated sequence of signed values.
 	 */
-	public static final Codec DELTA5 = new Codec(5, 64, 1, 1);
+	public static final Codec DELTA5 = new BHSDCodec(5, 64, 1, 1);
 
 	/**
 	 * DELTA5 = (5,64,2,1): Used for the majority of numerical codings where
 	 * there is a correlated sequence of signed values, but where most of them
 	 * are expected to be non-negative.
 	 */
-	public static final Codec MDELTA5 = new Codec(5, 64, 2, 1);
+	public static final Codec MDELTA5 = new BHSDCodec(5, 64, 2, 1);
 
 	/**
 	 * SIGNED5 = (5,64,1): Used for small signed values.
 	 */
-	public static final Codec SIGNED5 = new Codec(5, 64, 1);
+	public static final Codec SIGNED5 = new BHSDCodec(5, 64, 1);
 
 	/**
 	 * UDELTA5 = (5,64,0,1): Used for the majority of numerical codings where
 	 * there is a correlated sequence of unsigned values.
 	 */
-	public static final Codec UDELTA5 = new Codec(5, 64, 0, 1);
+	public static final Codec UDELTA5 = new BHSDCodec(5, 64, 0, 1);
 
 	/**
 	 * USIGNED5 = (5,64): Used for small unsigned values.
 	 */
-	public static final Codec UNSIGNED5 = new Codec(5, 64);
-
-	/**
-	 * The maximum number of bytes in each coding word
-	 */
-	private int b;
-
-	/**
-	 * Whether delta encoding is used (0=false,1=true)
-	 */
-	private int d;
-
-	/**
-	 * The radix of the encoding
-	 */
-	private int h;
-
-	/**
-	 * The co-parameter of h; h-256
-	 */
-	private int l;
-
-	/**
-	 * Represents signed numbers or not (0=unsigned,1/2=signed)
-	 */
-	private int s;
-
-	/**
-	 * Constructs an unsigned, non-delta Codec with the given B and H values.
-	 * 
-	 * @param b
-	 *            the maximum number of bytes that a value can be encoded as
-	 *            [1..5]
-	 * @param h
-	 *            the radix of the encoding [1..256]
-	 */
-	public Codec(int b, int h) {
-		this(b, h, 0);
-	}
-
-	/**
-	 * Constructs a non-delta Codec with the given B, H and S values.
-	 * 
-	 * @param b
-	 *            the maximum number of bytes that a value can be encoded as
-	 *            [1..5]
-	 * @param h
-	 *            the radix of the encoding [1..256]
-	 * @param s
-	 *            whether the encoding represents signed numbers (s=0 is
-	 *            unsigned; s=1 is signed with 1s complement; s=2 is signed with ?)
-	 */
-	public Codec(int b, int h, int s) {
-		this(b, h, s, 0);
-	}
-
-	/**
-	 * Constructs a Codec with the given B, H, S and D values.
-	 * 
-	 * @param b
-	 *            the maximum number of bytes that a value can be encoded as
-	 *            [1..5]
-	 * @param h
-	 *            the radix of the encoding [1..256]
-	 * @param s
-	 *            whether the encoding represents signed numbers (s=0 is
-	 *            unsigned; s=1 is signed with 1s complement; s=2 is signed with ?)
-	 * @param d
-	 *            whether this is a delta encoding (d=0 is non-delta; d=1 is
-	 *            delta)
-	 */
-	public Codec(int b, int h, int s, int d) {
-		if (b < 1 || b > 5)
-			throw new IllegalArgumentException("1<=b<=5");
-		if (h < 1 || h > 256)
-			throw new IllegalArgumentException("1<=h<=256");
-		if (s < 0 || s > 2)
-			throw new IllegalArgumentException("0<=s<=2");
-		if (d < 0 || d > 1)
-			throw new IllegalArgumentException("0<=d<=1");
-		if (b == 1 && h != 256)
-			throw new IllegalArgumentException("b=1 -> h=256");
-		if (h == 256 && b == 5)
-			throw new IllegalArgumentException("h=256 -> b!=5");
-		this.b = b;
-		this.h = h;
-		this.s = s;
-		this.d = d;
-		this.l = 256 - h;
-	}
+	public static final Codec UNSIGNED5 = new BHSDCodec(5, 64);
 
 	/**
 	 * Decode a sequence of bytes from the given input stream, returning the
@@ -253,12 +163,8 @@ public class Codec {
 	 * @throws Pack200Exception
 	 *             if the encoding is a delta encoding
 	 */
-	public long decode(InputStream in) throws IOException, Pack200Exception {
-		if (d != 0)
-			throw new Pack200Exception(
-					"Delta encoding used without passing in last value; this is a coding error");
-		return decode(in, 0);
-	}
+	public abstract long decode(InputStream in) throws IOException,
+			Pack200Exception;
 
 	/**
 	 * Decode a sequence of bytes from the given input stream, returning the
@@ -275,9 +181,6 @@ public class Codec {
 	 * }
 	 * </pre>
 	 * 
-	 * TODO Note that s=2 encodings are not yet supported, and will result in an
-	 * Error
-	 * 
 	 * @param in
 	 *            the input stream to read from
 	 * @param long
@@ -291,52 +194,35 @@ public class Codec {
 	 *             if there is a problem decoding the value or that the value is
 	 *             invalid
 	 */
-	public long decode(InputStream in, long last) throws IOException,
-			Pack200Exception {
-		int n = 0;
-		long z = 0;
-		long x;
-		do {
-			x = in.read();
-			if (x == -1)
-				throw new EOFException("End of stream reached whilst decoding");
-			z += x * Math.pow(h, n);
-		} while (++n < b && x >= l);
-		// process sign bit -- one's complement?
-		if (s == 1) {
-			if ((z & 1) == 1) {
-				z = z >>> 1 ^ -1L;
-			} else {
-				z >>>= 1;
-			}
-		} else if (s == 2) { // two's complement?
-			throw new Error("s==2 not yet implemented");
-		}
-		if (d == 1)
-			z += last;
-		return z;
-	}
+	public abstract long decode(InputStream in, long last) throws IOException,
+			Pack200Exception;
 
 	/**
-	 * Returns the codec in the form (1,256) or (1,64,1,1). Note that trailing
-	 * zero fields are not shown.
+	 * Decodes a sequence of <code>n</code> values from <code>in</code>.
+	 * This should probably be used in most cases, since some codecs
+	 * (such as @{link PopCodec}) only work when the number of values
+	 * to be read is known.
+	 * 
+	 * @param n
+	 *            the number of values to decode
+	 * @param in
+	 *            the input stream to read from
+	 * @return an array of <code>long</code> values corresponding to values
+	 *         decoded
+	 * @throws IOException
+	 *             if there is a problem reading from the underlying input
+	 *             stream
+	 * @throws Pack200Exception
+	 *             if there is a problem decoding the value or that the value is
+	 *             invalid
 	 */
-	public String toString() {
-		StringBuffer buffer = new StringBuffer(11);
-		buffer.append('(');
-		buffer.append(b);
-		buffer.append(',');
-		buffer.append(h);
-		if (s != 0 || d != 0) {
-			buffer.append(",");
-			buffer.append(s);
+	public long[] decode(int n, InputStream in) throws IOException,
+			Pack200Exception {
+		long result[] = new long[n];
+		long last = 0;
+		for(int i=0;i<n;i++) {
+			result[i] = last = decode(in,last);
 		}
-		if (d != 0) {
-			buffer.append(",");
-			buffer.append(d);
-		}
-		buffer.append(')');
-		return buffer.toString();
+		return result;
 	}
-
 }

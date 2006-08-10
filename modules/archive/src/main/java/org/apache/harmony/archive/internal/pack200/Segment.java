@@ -211,6 +211,30 @@ public class Segment {
 
 	private int segmentsRemaining;
 
+	private String[] icThisClass;
+
+	private int[] icFlags;
+
+	private String[] icOuterClass;
+
+	private Object icName;
+
+	private String[] classThis;
+
+	private String[] classSuper;
+
+	private String[][] classInterfaces;
+
+	private int[] classFieldCount;
+
+	private int[] classMethodCount;
+
+	private String[][] fieldDescr;
+
+	private long[][] fieldFlags;
+
+	private int fieldAttrCount;
+
 	public long getArchiveModtime() {
 		return archiveModtime;
 	}
@@ -283,8 +307,76 @@ public class Segment {
 		System.err.println("Not yet implemented");
 	}
 
-	private void parseClassBands(InputStream in) {
-		System.err.println("Not yet implemented");
+	private void parseClassBands(InputStream in) throws IOException,
+			Pack200Exception {
+		classThis = parseReferences(in, Codec.DELTA5, classCount, cpClass);
+		classSuper = parseReferences(in, Codec.DELTA5, classCount, cpClass);
+		classInterfaces = new String[classCount][];
+		int[] classInterfaceLengths = new int[classCount];
+		long last = 0;
+		for (int i = 0; i < classCount; i++) {
+			classInterfaceLengths[i] = (int) (last = Codec.DELTA5.decode(in,
+					last));
+		}
+		for (int i = 0; i < classCount; i++) {
+			classInterfaces[i] = parseReferences(in, Codec.DELTA5,
+					classInterfaceLengths[i], cpClass);
+		}
+		classFieldCount = new int[classCount];
+		last = 0;
+		for (int i = 0; i < classCount; i++) {
+			classFieldCount[i] = (int) (last = Codec.DELTA5.decode(in, last));
+		}
+		classMethodCount = new int[classCount];
+		last = 0;
+		for (int i = 0; i < classCount; i++) {
+			classMethodCount[i] = (int) (last = Codec.DELTA5.decode(in, last));
+		}
+		parseFieldBands(in);
+		parseMethodBands(in);
+		parseClassAttrBands(in);
+		parseCodeBands(in);
+	}
+
+	private void parseCodeBands(InputStream in) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void parseClassAttrBands(InputStream in) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void parseMethodBands(InputStream in) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void parseFieldBands(InputStream in) throws IOException,
+			Pack200Exception {
+		long last;
+		fieldDescr = new String[classCount][];
+		last = 0;
+		for (int i = 0; i < classCount; i++) {
+			fieldDescr[i] = parseReferences(in, Codec.DELTA5,
+					classFieldCount[i], cpClass);
+		}
+		fieldFlags = new long[classCount][];
+		for (int i = 0; i < classCount; i++) {
+			fieldFlags[i] = parseFlags(in, classFieldCount[i], Codec.UNSIGNED5,
+					options.hasFieldFlagsHi());
+		}
+		for (int i = 0; i < classCount; i++) {
+			for (int j = 0; i < fieldFlags[i].length; j++) {
+				long flag = fieldFlags[i][j];
+				if ((flag & (1 << 16)) != 0)
+					fieldAttrCount++;
+			}
+		}
+		if (fieldAttrCount > 0)
+			throw new Error("There are attribute flags, and I don't know what to do with them");
+		// TODO if we have fieldAttrcount then we ought to do other parsing
 	}
 
 	private void parseClassCounts(InputStream in) throws IOException,
@@ -436,16 +528,32 @@ public class Segment {
 
 	private void parseCpLong(InputStream in) throws IOException,
 			Pack200Exception {
-		cpLong = new long[cpLongCount];
+		cpLong = parseFlags(in, cpLongCount, Codec.UDELTA5, Codec.DELTA5);
+	}
+
+	private long[] parseFlags(InputStream in, int count, Codec codec,
+			boolean hasHi) throws IOException, Pack200Exception {
+		return parseFlags(in, count, (hasHi ? codec : null), codec);
+	}
+
+	private long[] parseFlags(InputStream in, int count, Codec codec)
+			throws IOException, Pack200Exception {
+		return parseFlags(in, count, codec, true);
+	}
+
+	private long[] parseFlags(InputStream in, int count, Codec hiCodec,
+			Codec loCodec) throws IOException, Pack200Exception {
+		long[] result = new long[count];
 		long last = 0;
-		for (int i = 0; i < cpLongCount; i++) {
-			last = Codec.UDELTA5.decode(in, last);
-			cpLong[i] = last << 32;
+		for (int i = 0; i < count && hiCodec != null; i++) {
+			last = hiCodec.decode(in, last);
+			result[i] = last << 32;
 		}
-		for (int i = 0; i < cpLongCount; i++) {
-			last = Codec.DELTA5.decode(in, last);
-			cpLong[i] = cpLong[i] | last;
+		for (int i = 0; i < count; i++) {
+			last = loCodec.decode(in, last);
+			result[i] = result[i] | last;
 		}
+		return result;
 	}
 
 	/**
@@ -648,8 +756,20 @@ public class Segment {
 		}
 	}
 
-	private void parseIcBands(InputStream in) {
-		System.err.println("Not yet implemented");
+	private void parseIcBands(InputStream in) throws IOException,
+			Pack200Exception {
+		icThisClass = parseReferences(in, Codec.UDELTA5, innerClassCount,
+				cpClass);
+		icFlags = new int[innerClassCount];
+		long last = 0;
+		int outerClasses = 0;
+		for (int i = 0; i < innerClassCount; i++) {
+			icFlags[i] = (int) (last = Codec.UNSIGNED5.decode(in, last));
+			if ((icFlags[i] & 1 << 16) != 0)
+				outerClasses++;
+		}
+		icOuterClass = parseReferences(in, Codec.DELTA5, outerClasses, cpClass);
+		icName = parseReferences(in, Codec.DELTA5, outerClasses, cpUTF8);
 	}
 
 	/**
@@ -721,12 +841,13 @@ public class Segment {
 		parseCpMethod(in);
 		parseCpIMethod(in);
 		parseAttributeDefinition(in);
-		parseIcBands(in); // Not yet implemented
+		parseIcBands(in);
 		parseClassBands(in); // Not yet implemented
 		parseBcBands(in); // Not yet implemented
-		parseFileBands(in);
-		processFileBits(in); // this just caches them in file_bits; it should
-								// probably start writing here?
+		// TODO Re-enable these after completing class/bytecode bands
+		// parseFileBands(in);
+		// processFileBits(in); // this just caches them in file_bits; it should
+		// probably start writing here?
 	}
 
 	private void parseSegmentHeader(InputStream in) throws IOException,

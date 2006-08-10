@@ -33,5 +33,13 @@ public class SegmentTest extends TestCase {
 		assertNotNull(Segment.parse(Segment.class
 				.getResourceAsStream("/org/apache/harmony/archive/tests/internal/pack200/HelloWorld.pack")));
 	}
+	/**
+	 * @param args
+	 * @throws Exception
+	 */
+	public void testJustResources() throws Exception {
+		assertNotNull(Segment.parse(Segment.class
+				.getResourceAsStream("/org/apache/harmony/archive/tests/internal/pack200/JustResources.pack")));
+	}
 
 }

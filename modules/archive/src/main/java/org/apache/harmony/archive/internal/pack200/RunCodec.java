@@ -1,0 +1,63 @@
+/*
+ *  Copyright 2006 The Apache Software Foundation or its licensors, 
+ *  as applicable.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+package org.apache.harmony.archive.internal.pack200;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+/**
+ * A run codec is a grouping of two nested codecs; K values are decoded from
+ * the first codec, and the remaining codes are decoded from the remaining
+ * codec. Note that since this codec maintains state, the instances are
+ * not reusable.
+ *
+ * @author Alex Blewitt
+ * @version $Revision: $
+ */
+public class RunCodec extends Codec {
+	private int k;
+	private Codec aCodec;
+	private Codec bCodec;
+	private long last;
+
+	public RunCodec(int k, Codec aCodec, Codec bCodec) throws Pack200Exception {
+		if (k <= 0)
+			throw new Pack200Exception("Cannot have a RunCodec for a negative number of numbers");
+		if (aCodec == null || bCodec == null)
+			throw new Pack200Exception("Must supply both codecs for a RunCodec");
+		this.k = k;
+		this.aCodec = aCodec;
+		this.bCodec = bCodec;
+	}
+	public long decode(InputStream in) throws IOException, Pack200Exception {
+		return decode(in,this.last);
+	}
+
+	public long decode(InputStream in, long last) throws IOException, Pack200Exception {
+		if(--k>=0) {
+			long value = aCodec.decode(in,last);
+			this.last = (k == 0 ? 0 : value);
+			return value;
+		} else {
+			this.last = bCodec.decode(in,last);
+			return this.last;			
+		}
+	}
+	public String toString() {
+		return "RunCodec[k="+k+";aCodec="+aCodec+"bCodec="+bCodec+"]";
+	}
+}
