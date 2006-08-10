@@ -220,10 +220,11 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * @see String#valueOf(Object)
      */
     public StringBuilder append(Object obj) {
-        if (obj == null)
+        if (obj == null) {
             appendNull();
-        else
+        } else {
             append0(obj.toString());
+        }
         return this;
     }
 
@@ -311,10 +312,11 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * @return A reference to this object.
      */
     public StringBuilder append(CharSequence csq) {
-        if (csq == null)
+        if (csq == null) {
             appendNull();
-        else
+        } else {
             append0(csq.toString());
+        }
         return this;
     }
 
@@ -704,6 +706,7 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * 
      * @return a String containing the characters in this StringBuilder
      */
+    @Override
     public String toString() {
         /* Note: This method is required to workaround a compiler bug
          * in the RI javac (at least in 1.5.0_06) that will generate a

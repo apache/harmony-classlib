@@ -102,7 +102,7 @@ class AbstractStringBuilder {
         if (newSize > value.length) {
             enlargeBuffer(newSize);
         } else if (shared) {
-            value = (char[]) value.clone();
+            value = value.clone();
             shared = false;
         }
         value[count++] = 'n';
@@ -116,7 +116,7 @@ class AbstractStringBuilder {
         if (newSize > value.length) {
             enlargeBuffer(newSize);
         } else if (shared) {
-            value = (char[]) value.clone();
+            value = value.clone();
             shared = false;
         }
         System.arraycopy(chars, 0, value, count, chars.length);
@@ -133,7 +133,7 @@ class AbstractStringBuilder {
             if (newSize > value.length) {
                 enlargeBuffer(newSize);
             } else if (shared) {
-                value = (char[]) value.clone();
+                value = value.clone();
                 shared = false;
             }
             System.arraycopy(chars, start, value, count, length);
@@ -148,7 +148,7 @@ class AbstractStringBuilder {
             enlargeBuffer(count + 1);
         }
         if (shared) {
-            value = (char[]) value.clone();
+            value = value.clone();
             shared = false;
         }
         value[count++] = ch;
@@ -164,7 +164,7 @@ class AbstractStringBuilder {
         if (newSize > value.length) {
             enlargeBuffer(newSize);
         } else if (shared) {
-            value = (char[]) value.clone();
+            value = value.clone();
             shared = false;
         }
         string.getChars(0, adding, value, count);
@@ -422,7 +422,7 @@ class AbstractStringBuilder {
                     // replacing with more characters...need some room
                     move(-diff, end);
                 } else if (shared) {
-                    value = (char[]) value.clone();
+                    value = value.clone();
                     shared = false;
                 }
                 string.getChars(0, stringLength, value, start);
@@ -474,7 +474,7 @@ class AbstractStringBuilder {
             throw new StringIndexOutOfBoundsException(index);
         }
         if (shared) {
-            value = (char[]) value.clone();
+            value = value.clone();
             shared = false;
         }
         value[index] = ch;
@@ -566,6 +566,7 @@ class AbstractStringBuilder {
      * 
      * @return a String containing the characters in this StringBuilder.
      */
+    @Override
     public String toString() {
         if (count == 0)
             return "";

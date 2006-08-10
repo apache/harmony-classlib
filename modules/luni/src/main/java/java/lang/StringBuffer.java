@@ -169,10 +169,11 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @return this StringBuffer
      */
     public synchronized StringBuffer append(Object obj) {
-        if (obj == null)
+        if (obj == null) {
             appendNull();
-        else
+        } else {
             append0(obj.toString());
+        }
         return this;
     }
 
@@ -250,10 +251,11 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @since 1.5
      */
     public synchronized StringBuffer append(CharSequence s) {
-        if (s == null)
+        if (s == null) {
             appendNull();
-        else
+        } else {
             append0(s.toString());
+        }
         return this;
     }
 
@@ -306,6 +308,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @throws IndexOutOfBoundsException when <code>index < 0</code> or
      *         <code>index >= length()</code>
      */
+    @Override
     public synchronized char charAt(int index) {
         return super.charAt(index);
     }
@@ -324,6 +327,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @see Character#codePointAt(char[], int, int)
      * @since 1.5
      */
+    @Override
     public synchronized int codePointAt(int index) {
         return super.codePointAt(index);
     }
@@ -343,6 +347,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @see Character#codePointBefore(char[], int, int)
      * @since 1.5
      */
+    @Override
     public synchronized int codePointBefore(int index) {
         return super.codePointBefore(index);
     }
@@ -361,6 +366,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      *         <code>endIndex</code> is greater than {@link #length()}.
      * @since 1.5
      */
+    @Override
     public synchronized int codePointCount(int beginIndex, int endIndex) {
         return super.codePointCount(beginIndex, endIndex);
     }
@@ -402,6 +408,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @param min the minimum number of elements that this StringBuffer will
      *        hold before growing
      */
+    @Override
     public synchronized void ensureCapacity(int min) {
         super.ensureCapacity(min);
     }
@@ -419,6 +426,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      *				start > end, index < 0, end - start > buffer.length - index</code>
      * @throws NullPointerException when buffer is null
      */
+    @Override
     public synchronized void getChars(int start, int end, char[] buffer, int idx) {
         super.getChars(start, end, buffer, idx);
     }
@@ -437,6 +445,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * 
      * @since 1.4
      */
+    @Override
     public synchronized int indexOf(String subString, int start) {
         return super.indexOf(subString, start);
     }
@@ -658,6 +667,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * 
      * @since 1.4
      */
+    @Override
     public synchronized int lastIndexOf(String subString, int start) {
         return super.lastIndexOf(subString, start);
     }
@@ -677,6 +687,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      *         <code>codePointOffset</code>.
      * @since 1.5
      */
+    @Override
     public synchronized int offsetByCodePoints(int index, int codePointOffset) {
         return super.offsetByCodePoints(index, codePointOffset);
     }
@@ -717,6 +728,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @throws IndexOutOfBoundsException when <code>index < 0</code> or
      *         <code>index >= length()</code>
      */
+    @Override
     public synchronized void setCharAt(int index, char ch) {
         super.setCharAt(index, ch);
     }
@@ -733,6 +745,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * 
      * @see #length
      */
+    @Override
     public synchronized void setLength(int length) {
         super.setLength(length);
     }
@@ -750,6 +763,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * 
      * @since 1.4
      */
+    @Override
     public synchronized CharSequence subSequence(int start, int end) {
         return super.substring(start, end);
     }
@@ -764,6 +778,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @throws StringIndexOutOfBoundsException when <code>start < 0</code> or
      *         <code>start > length()</code>
      */
+    @Override
     public synchronized String substring(int start) {
         return super.substring(start);
     }
@@ -779,6 +794,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      *         <code>start < 0, start > end</code> or
      *         <code>end > length()</code>
      */
+    @Override
     public synchronized String substring(int start, int end) {
         return super.substring(start, end);
     }
@@ -788,6 +804,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * 
      * @return a String containing the characters in this StringBuffer
      */
+    @Override
     public synchronized String toString() {
         return super.toString();
     }
@@ -801,6 +818,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * 
      * @since 1.5
      */
+    @Override
     public synchronized void trimToSize() {
         super.trimToSize();
     }
