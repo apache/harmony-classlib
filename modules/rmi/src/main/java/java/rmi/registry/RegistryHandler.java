@@ -15,10 +15,6 @@
  * limitations under the License.
  */
 
-/**
- * @author  Mikhail A. Markov
- * @version $Revision: 1.3.4.1 $
- */
 package java.rmi.registry;
 
 import java.rmi.RemoteException;
@@ -26,21 +22,23 @@ import java.rmi.UnknownHostException;
 
 
 /**
- * @com.intel.drl.spec_ref
- *
- * @author  Mikhail A. Markov
- * @version $Revision: 1.3.4.1 $
+ * @deprecated This interface was used by previous versions of RMI. It should
+ *      not be accessed anymore. There is no replacement for this.
  */
+@Deprecated
 public interface RegistryHandler {
 
     /**
-     * @com.intel.drl.spec_ref
+     * @deprecated not used for registry implementations retrieval since
+     *      Java v1.2
      */
+    @Deprecated
     public Registry registryImpl(int port) throws RemoteException;
 
     /**
-     * @com.intel.drl.spec_ref
+     * @deprecated not used for registry stubs retrieval since Java v1.2
      */
+    @Deprecated
     public Registry registryStub(String host, int port)
             throws RemoteException, UnknownHostException;
 }
