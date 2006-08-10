@@ -516,4 +516,42 @@ public abstract class SerializationTest extends TestCase {
 
         return (Serializable)getObjectFromStream(in);
     }
+    
+    /**
+     * Creates golden file.
+     * 
+     * The folder for created file is: <code>root + test's package name</code>.
+     * The file name is: <code>test's name + "golden.ser"</code>
+     * 
+     * @param root -
+     *            root directory for serialization resource files
+     * @param test -
+     *            test case
+     * @param object -
+     *            object to be serialized
+     * @throws IOException -
+     *             if I/O error
+     */
+    public static void createGoldenFile(String root, TestCase test,
+            Object object) throws IOException {
+
+        String goldenPath = test.getClass().getName().replace('.',
+                File.separatorChar)
+                + ".golden.ser";
+
+        if (root != null) {
+            goldenPath = root + File.separatorChar + goldenPath;
+        }
+
+
+        File goldenFile = new File(goldenPath);
+        goldenFile.getParentFile().mkdirs();
+        goldenFile.createNewFile();
+
+        putObjectToStream(object, new FileOutputStream(goldenFile));
+
+        // don't forget to remove it from test case after using
+        Assert.fail("Generating golden file.\nGolden file name:"
+                + goldenFile.getAbsolutePath());
+    }
 }
