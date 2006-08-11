@@ -75,35 +75,33 @@ public final class FilePermission extends Permission implements Serializable {
     }
 
     private void init(final String path, String pathActions) {
-        if (pathActions != null && pathActions != "") { //$NON-NLS-1$
-            if (path != null) {
-                if (path.equals("<<ALL FILES>>")) { //$NON-NLS-1$
-                    includeAll = true;
-                } else {
-                    canonPath = AccessController
-                            .doPrivileged(new PrivilegedAction<String>() {
-                                public String run() {
-                                    try {
-                                        return new File(path)
-                                                .getCanonicalPath();
-                                    } catch (IOException e) {
-                                        return path;
-                                    }
-                                }
-                            });
-                    if (path.equals("*") || path.endsWith(File.separator + "*")) { //$NON-NLS-1$ //$NON-NLS-2$
-                        allDir = true;
-                    }
-                    if (path.equals("-") || path.endsWith(File.separator + "-")) { //$NON-NLS-1$ //$NON-NLS-2$
-                        allSubdir = true;
-                    }
-                }
-                this.actions = toCanonicalActionString(pathActions);
-            } else {
-                throw new NullPointerException(Msg.getString("K006e")); //$NON-NLS-1$
-            }
-        } else {
+        if (pathActions == null || pathActions.equals("")) { //$NON-NLS-1$
             throw new IllegalArgumentException(Msg.getString("K006d")); //$NON-NLS-1$
+        }
+        this.actions = toCanonicalActionString(pathActions);
+        
+        if (path == null) {
+            throw new NullPointerException(Msg.getString("K006e")); //$NON-NLS-1$
+        }
+        if (path.equals("<<ALL FILES>>")) { //$NON-NLS-1$
+            includeAll = true;
+        } else {
+            canonPath = AccessController
+                    .doPrivileged(new PrivilegedAction<String>() {
+                        public String run() {
+                            try {
+                                return new File(path).getCanonicalPath();
+                            } catch (IOException e) {
+                                return path;
+                            }
+                        }
+                    });
+            if (path.equals("*") || path.endsWith(File.separator + "*")) { //$NON-NLS-1$ //$NON-NLS-2$
+                allDir = true;
+            }
+            if (path.equals("-") || path.endsWith(File.separator + "-")) { //$NON-NLS-1$ //$NON-NLS-2$
+                allSubdir = true;
+            }
         }
     }
 
@@ -166,7 +164,7 @@ public final class FilePermission extends Permission implements Serializable {
             } else if (action.equals("delete")) { //$NON-NLS-1$
                 actionInt |= 1;
             } else {
-                throw new java.lang.IllegalArgumentException(Msg.getString(
+                throw new IllegalArgumentException(Msg.getString(
                         "K006f", action)); //$NON-NLS-1$
             }
             head = tail + 1;

@@ -49,6 +49,27 @@ public class FilePermissionTest extends junit.framework.TestCase {
 				"name given to the construcotr did not correspond - construcotr failed",
 				constructFile.getName() == "test constructor");
 
+        // Regression test for HARMONY-1050
+        try {
+            new FilePermission(null, "drink");
+            fail("Expected IAE");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+        
+        try {
+            new FilePermission(null, "read");
+            fail("Expected NPE");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        
+        try {
+            new FilePermission(null, null);
+            fail("Expected IAE");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
 	}
 
 	/**
