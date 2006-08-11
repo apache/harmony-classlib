@@ -60,8 +60,10 @@ public class FileInputStream extends InputStream implements Closeable{
 	public FileInputStream(File file) throws FileNotFoundException {
 		super();
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkRead(file.getPath());
+		if (security != null) {
+            String filePath = (null == file ? null : file.getPath());
+            security.checkRead(filePath);
+        }
 		fd = new FileDescriptor();
 		fd.descriptor = fileSystem.open(file.properPath(true),
                 IFileSystem.O_RDONLY);
@@ -107,7 +109,7 @@ public class FileInputStream extends InputStream implements Closeable{
 	 *             If the <code>fileName</code> is not found.
 	 */
 	public FileInputStream(String fileName) throws FileNotFoundException {
-		this(new File(fileName));
+        this(null == fileName ? (File)null : new File(fileName));
 	}
 
 	/**
@@ -272,11 +274,12 @@ public class FileInputStream extends InputStream implements Closeable{
 	 *             occurs.
 	 */
 	public int read(byte[] buffer, int offset, int count) throws IOException {
-        if (count < 0 || offset < 0 || offset > buffer.length
-                || count > buffer.length - offset) {
+        if (count > buffer.length - offset || count < 0 || offset < 0) {
             throw new IndexOutOfBoundsException();
         }
-
+        if (0 == count) {
+            return 0;
+        }
         openCheck();
         synchronized (repositioningLock) {
             // stdin requires special handling

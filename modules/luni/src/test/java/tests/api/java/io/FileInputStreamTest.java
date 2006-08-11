@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilePermission;
 import java.io.IOException;
+import java.security.Permission;
 
 import tests.support.Support_PlatformFile;
 
@@ -191,6 +193,124 @@ public class FileInputStreamTest extends junit.framework.TestCase {
 			fail("Exception during read test : " + e.getMessage());
 		}
 	}
+    
+    /**
+     * @tests java.io.FileInputStream#read(byte[], int, int)
+     */
+    public void test_read_$BII_IOException() throws IOException {
+        byte[] buf = new byte[1000];
+        try {
+            is = new java.io.FileInputStream(fileName);
+            is.read(buf, -1, 0);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // Expected
+        } finally {
+            is.close();
+        }
+
+        try {
+            is = new java.io.FileInputStream(fileName);
+            is.read(buf, 0, -1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // Expected
+        } finally {
+            is.close();
+        }
+
+        try {
+            is = new java.io.FileInputStream(fileName);
+            is.read(buf, -1, -1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // Expected
+        } finally {
+            is.close();
+        }
+
+        try {
+            is = new java.io.FileInputStream(fileName);
+            is.read(buf, 0, 1001);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // Expected
+        } finally {
+            is.close();
+        }
+
+        try {
+            is = new java.io.FileInputStream(fileName);
+            is.read(buf, 1001, 0);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // Expected
+        } finally {
+            is.close();
+        }
+
+        try {
+            is = new java.io.FileInputStream(fileName);
+            is.read(buf, 500, 501);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // Expected
+        } finally {
+            is.close();
+        }
+        
+        try {
+            is = new java.io.FileInputStream(fileName);
+            is.close();
+            is.read(buf, 0, 100);
+            fail("should throw IOException");
+        } catch (IOException e) {
+            // Expected
+        } finally {
+            is.close();
+        }
+        
+        try {
+            is = new java.io.FileInputStream(fileName);
+            is.close();
+            is.read(buf, 0, 0);
+        } finally {
+            is.close();
+        }
+    }
+
+    /**
+     * @tests java.io.FileInputStream#read(byte[], int, int)
+     */
+    public void test_read_$BII_NullPointerException() throws IOException {
+        byte[] buf = null;
+        try {
+            is = new java.io.FileInputStream(fileName);
+            is.read(buf, -1, 0);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        } finally {
+            is.close();
+        }
+    }
+
+    /**
+     * @tests java.io.FileInputStream#read(byte[], int, int)
+     */
+    public void test_read_$BII_IndexOutOfBoundsException() throws IOException {
+        byte[] buf = new byte[1000];
+        try {
+            is = new java.io.FileInputStream(fileName);
+            is.close();
+            is.read(buf, -1, -1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // Expected
+        } finally {
+            is.close();
+        }
+    }
 
 	/**
 	 * @tests java.io.FileInputStream#skip(long)
@@ -243,7 +363,24 @@ public class FileInputStreamTest extends junit.framework.TestCase {
         } catch (IndexOutOfBoundsException e) {}
         fis.close();
     }
-
+    
+    /**
+     * @tests java.io.FileInputStream#FileInputStream(String)
+     */
+    public void test_Constructor_LString_WithSecurityManager() throws IOException {
+        SecurityManager old = System.getSecurityManager();
+        try {
+            MockSecurityManager msm = new MockSecurityManager();
+            System.setSecurityManager(msm);
+            new FileInputStream((String)null);
+            fail("should throw SecurityException");
+        } catch (SecurityException e) {
+            //expected
+        } finally {
+            System.setSecurityManager(old);
+        }
+    }
+    
     /**
      * Sets up the fixture, for example, open a network connection. This method
      * is called before a test is executed.
@@ -275,4 +412,20 @@ public class FileInputStreamTest extends junit.framework.TestCase {
 		new File(fileName).delete();
 
 	}
+}
+
+class MockSecurityManager extends SecurityManager {  
+    public void checkPermission(Permission permission) {
+        if (permission instanceof FilePermission) {
+           if (permission.getActions().indexOf("read") == 0)
+               throw new SecurityException();
+        }
+    }
+    
+    public void checkRead(String file) {
+       if( null == file) {
+            file = "";
+        }
+       checkPermission(new FilePermission(file,"read"));
+    }  
 }
