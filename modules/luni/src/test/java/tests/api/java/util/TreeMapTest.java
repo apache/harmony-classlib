@@ -15,6 +15,7 @@
 
 package tests.api.java.util;
 
+import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Comparator;
@@ -24,6 +25,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 import tests.support.Support_MapTest2;
 import tests.support.Support_UnmodifiableCollectionTest;
@@ -41,11 +44,11 @@ public class TreeMapTest extends junit.framework.TestCase {
 	}
     
     // Regression for Harmony-1026
-    public static class MockComparator<T extends Comparable<T>> implements Comparator<T>{
+    public static class MockComparator<T extends Comparable<T>> implements Comparator<T>, Serializable{
         
         public int compare(T o1, T o2) {
             if( o1 == o2 ) return 0;
-            if( null == o1 ) return -1;
+            if( null == o1 || null == o2) return -1;
             T c1 = (T)o1;
             T c2 = (T)o2;
             return c1.compareTo(c2);
@@ -271,6 +274,9 @@ public class TreeMapTest extends junit.framework.TestCase {
         
         Collection<Double> valueCollection = smap.values();
         assertEquals(0, valueCollection.size());
+        
+        // Regression for Harmony-1066
+        assertTrue(head instanceof Serializable);
 	}
 
 	/**
@@ -375,6 +381,9 @@ public class TreeMapTest extends junit.framework.TestCase {
 		for (int i = 900; i < objArray.length; i++)
 			assertTrue("Map contains incorrect entries", tail
 					.containsValue(objArray[i]));
+        
+        // Regression for Harmony-1066
+        assertTrue(tail instanceof Serializable);
 	}
 
 	/**
@@ -403,7 +412,31 @@ public class TreeMapTest extends junit.framework.TestCase {
 				!myTreeMap.containsValue(new Integer(0)));
 
 	}
-
+    
+    /**
+     * @tests java.util.TreeMap#SerializationTest()
+     */
+    // Regression for Harmony-1066
+    public void test_SubMap_Serializable() throws Exception {
+        TreeMap<Integer, Double> map = new TreeMap<Integer, Double>();
+        map.put(1, 2.1);
+        map.put(2, 3.1);
+        map.put(3, 4.5);
+        map.put(7, 21.3);
+        SortedMap<Integer, Double> headMap = map.headMap(3);
+        assertTrue(headMap instanceof Serializable);
+        assertFalse(headMap instanceof TreeMap);
+        assertTrue(headMap instanceof SortedMap);
+        
+        assertFalse(headMap.entrySet() instanceof Serializable);
+        assertFalse(headMap.keySet() instanceof Serializable);
+        assertFalse(headMap.values() instanceof Serializable);
+        
+        // This assertion will fail on RI. This is a bug of RI.
+        SerializationTest.verifySelf(headMap);
+        
+    }
+    
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.

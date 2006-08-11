@@ -297,14 +297,16 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>,
             }
         }
 
-        static final class SubMap<K,V> extends AbstractMap<K,V> implements SortedMap<K,V> {
+        static final class SubMap<K,V> extends AbstractMap<K,V> implements SortedMap<K,V>, Serializable {
+            private static final long serialVersionUID = -6520786458950516097L;
+
             private TreeMap<K,V> backingMap;
 
             boolean hasStart, hasEnd;
 
             K startKey, endKey;
 
-            Set<Map.Entry<K,V>> entrySet = null;
+            transient Set<Map.Entry<K,V>> entrySet = null;
 
             SubMap(K start, TreeMap<K,V> map) {
                 backingMap = map;
