@@ -73,10 +73,13 @@
         </copy>
 	</target>
 
-    <target name="build.jar">
+    <target name="build.jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/suncompat.jar"
              manifest="${hy.suncompat}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
         </jar>
     </target>
 

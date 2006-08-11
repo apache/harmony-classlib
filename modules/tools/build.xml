@@ -70,12 +70,15 @@
 		</javac>
 	</target>
 
-	<target name="build.jar">
+	<target name="build.jar" depends="svn-info">
 		<mkdir dir="${hy.jdk}/lib" />
 
 		<jar destfile="${hy.jdk}/lib/tools.jar"
              manifest="${hy.tools}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
 		</jar>
 	</target>
 

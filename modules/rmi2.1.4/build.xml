@@ -65,10 +65,13 @@
             </bootclasspath>
         </javac>
     </target>
-    <target name="build.jar">
+    <target name="build.jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/rmi.jar"
              manifest="${hy.rmi}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
         </jar>
     </target>
     <target name="compile.tests">

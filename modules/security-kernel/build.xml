@@ -21,6 +21,9 @@
 
     <description>Build for security kernel stub jar</description>
 
+    <!-- import common properties -->
+    <import file="${basedir}/../../make/properties.xml" />
+
     <property name="hy.jdk" location="../../deploy/jdk" />
     <property name="hy.build" location="../../build/classes" />
     <property name="stub.jar"
@@ -35,9 +38,12 @@ the top-level build.
         </fail>
     </target>
 
-    <target name="build">
+    <target name="build" depends="svn-info">
         <jar destfile="${stub.jar}" manifest="META-INF/MANIFEST.MF">
             <fileset dir="${hy.build}" includesfile="make/patternset.txt" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
         </jar>
     </target>
 

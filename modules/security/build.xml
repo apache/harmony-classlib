@@ -101,10 +101,13 @@
         </javac>
     </target>
 
-    <target name="build.jar">
+    <target name="build.jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/${hy.security.packaging.jarname}.jar"
              manifest="${hy.security}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
         </jar>
     </target>
 

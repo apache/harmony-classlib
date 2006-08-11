@@ -113,7 +113,7 @@
     </condition>
     <property name="make.command" value="make" />
 
-    <target name="echo" depends="svn-prop" >
+    <target name="echo" depends="svn-prop, svn-info" >
         <echo>
 
 Harmony module implementation properties:
@@ -156,6 +156,11 @@ called:
   svn.revision = ${svn.revision}
 
 
+The following property is only set if the "svn-info" target has been
+called:
+
+  svn.info = ${svn.info}
+
 Ant native properties, for information, but please use Harmony
 properties in preference to these:
 
@@ -180,6 +185,32 @@ properties in preference to these:
                 </outputfilterchain>
             </redirector>
         </exec>
+    </target>
+
+    <target name="svn-info">
+        <exec executable="svn"
+              failifexecutionfails="false"
+              resultproperty="svn.rc">
+            <arg value="info" />
+            <redirector outputproperty="svn.info.tmp">
+                <outputfilterchain>
+                    <linecontainsregexp>
+                        <regexp pattern="Repository Root:|Revision:" />
+                    </linecontainsregexp>
+                    <tokenfilter>
+                        <replacestring from="Repository Root: " to=""/>
+                        <replacestring from="Revision: " to=" "/>
+                    </tokenfilter>
+                    <striplinebreaks/>
+                </outputfilterchain>
+            </redirector>
+        </exec>
+        <condition property="svn.info" value="${svn.info.tmp}" >
+            <equals arg1="${svn.rc}" arg2="0" />
+        </condition>
+        <tstamp>
+            <format property="svn.info" pattern="'Unknown revision at' dd-MMM-yyyy hh:mm aa"/>
+        </tstamp>
     </target>
 
     <macrodef name="call-modules">

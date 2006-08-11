@@ -73,10 +73,13 @@
         </copy>
 	</target>
 
-    <target name="build.jar">
+    <target name="build.jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/sql.jar"
              manifest="${hy.sql}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
         </jar>
     </target>
 

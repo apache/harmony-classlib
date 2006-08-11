@@ -267,33 +267,7 @@
         </javac>
     </target>
 
-    <target name="-svn-prop">
-        <exec executable="svn"
-              failifexecutionfails="false"
-              resultproperty="svn.rc">
-            <arg value="info" />
-            <redirector outputproperty="svn.info.tmp">
-                <outputfilterchain>
-                    <linecontainsregexp>
-                        <regexp pattern="Repository Root:|Revision:" />
-                    </linecontainsregexp>
-                    <tokenfilter>
-                        <replacestring from="Repository Root: " to=""/>
-                        <replacestring from="Revision: " to=" "/>
-                    </tokenfilter>
-                    <striplinebreaks/>
-                </outputfilterchain>
-            </redirector>
-        </exec>
-        <condition property="svn.info" value="${svn.info.tmp}" >
-            <equals arg1="${svn.rc}" arg2="0" />
-        </condition>
-        <tstamp>
-            <format property="svn.info" pattern="'Unknown revision built at' dd-MMM-yyyy hh:mm aa"/>
-        </tstamp>
-    </target>
-
-    <target name="build.jar" depends="-svn-prop">
+    <target name="build.jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/luni.jar"
              manifest="${hy.luni}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
