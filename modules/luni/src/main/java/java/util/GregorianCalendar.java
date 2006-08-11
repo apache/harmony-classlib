@@ -716,8 +716,20 @@ public class GregorianCalendar extends Calendar {
 				&& timeVal >= gregorianCutover + julianError() * 86400000) {
             timeVal -= julianError() * 86400000;
         }
-		timeVal -= getOffset(timeVal);
-		this.time = timeVal;
+
+        // It is not possible to simply subtract getOffset(timeVal) from timeVal to get UTC.
+        // The trick is needed for the moment when DST transition occurs,
+        // say 1:00 is a transition time when DST offset becomes +1 hour,
+        // then wall time in the interval 1:00 - 2:00 is invalid and is
+        // treated as UTC time.
+        long timeValWithoutDST = timeVal - getOffset(timeVal) + getTimeZone().getRawOffset();
+        timeVal -= getOffset(timeValWithoutDST);
+        // Need to update wall time in fields, since it was invalid due to DST transition
+        this.time = timeVal;
+        if (timeValWithoutDST != timeVal) {
+            computeFields();
+            areFieldsSet = true;
+        }
 	}
 
 	private int computeYearAndDay(long dayCount, long localTime) {
