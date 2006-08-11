@@ -15,32 +15,53 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class ThreadLocalTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class ThreadLocalTest extends TestCase {
 
 	/**
-	 * @tests java.lang.ThreadLocal#ThreadLocal()
-	 */
-	public void test_Constructor() {
-		// Test for method java.lang.ThreadLocal()
-
-		ThreadLocal l = new ThreadLocal();
-		assertTrue("Failed to create ThreadLocal", l instanceof ThreadLocal);
-
-	}
+     * @tests java.lang.ThreadLocal#ThreadLocal()
+     */
+    public void test_Constructor() {
+        try {
+            new ThreadLocal<Object>();
+        } catch (Exception e) {
+            fail("unexpected exception: " + e.toString());
+        }
+    }
+    
+    /**
+     * @tests java.lang.ThreadLocal#remove()
+     */
+    public void test_remove() {
+        ThreadLocal<String> tl = new ThreadLocal<String>() {
+            @Override
+            protected String initialValue() {
+                return "initial";
+            }
+        };
+        
+        assertEquals("initial", tl.get());
+        tl.set("fixture");
+        assertEquals("fixture", tl.get());
+        tl.remove();
+        assertEquals("initial", tl.get());
+    }
 
 	/**
 	 * @tests java.lang.ThreadLocal#get()
 	 */
 	public void test_get() {
 		// Test for method java.lang.Object java.lang.ThreadLocal.get()
-		ThreadLocal l = new ThreadLocal();
+		ThreadLocal<Object> l = new ThreadLocal<Object>();
 		assertNull("ThreadLocal's initial value is null", l.get());
 
 		// The ThreadLocal has to run once for each thread that touches the
 		// ThreadLocal
 		final Object INITIAL_VALUE = "'foo'";
-		final ThreadLocal l1 = new ThreadLocal() {
-			protected Object initialValue() {
+		final ThreadLocal<Object> l1 = new ThreadLocal<Object>() {
+			@Override
+            protected Object initialValue() {
 				return INITIAL_VALUE;
 			}
 		};
@@ -57,7 +78,8 @@ public class ThreadLocalTest extends junit.framework.TestCase {
 
 		final ResultSlot THREADVALUE = new ResultSlot();
 		Thread t = new Thread() {
-			public void run() {
+			@Override
+            public void run() {
 				THREADVALUE.result = l1.get();
 			}
 		};
@@ -83,7 +105,7 @@ public class ThreadLocalTest extends junit.framework.TestCase {
 		// Test for method void java.lang.ThreadLocal.set(java.lang.Object)
 
 		final Object OBJ = new Object();
-		final ThreadLocal l = new ThreadLocal();
+		final ThreadLocal<Object> l = new ThreadLocal<Object>();
 		l.set(OBJ);
 		assertTrue("ThreadLocal's initial value is " + OBJ, l.get() == OBJ);
 
@@ -96,7 +118,8 @@ public class ThreadLocalTest extends junit.framework.TestCase {
 
 		final ResultSlot THREADVALUE = new ResultSlot();
 		Thread t = new Thread() {
-			public void run() {
+			@Override
+            public void run() {
 				THREADVALUE.result = l.get();
 			}
 		};
@@ -115,19 +138,5 @@ public class ThreadLocalTest extends junit.framework.TestCase {
 		assertNull("ThreadLocal's value in other Thread should be null",
 				THREADVALUE.result);
 
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
 	}
 }
