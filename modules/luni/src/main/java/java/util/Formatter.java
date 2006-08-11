@@ -50,6 +50,10 @@ import java.text.NumberFormat;
  */
 public final class Formatter implements Closeable, Flushable {
 
+    public enum BigDecimalLayoutForm {
+        SCIENTIFIC, DECIMAL_FLOAT
+    };
+
     private Appendable out;
 
     private Locale locale;
