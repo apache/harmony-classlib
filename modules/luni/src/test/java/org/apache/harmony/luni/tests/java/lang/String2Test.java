@@ -641,6 +641,18 @@ public class String2Test extends junit.framework.TestCase {
 		// Test for method java.lang.String java.lang.String.replace(char, char)
 		assertEquals("Failed replace", "HezzoWorzd", hw1.replace('l', 'z'));
 	}
+	
+	/**
+	 * @tests java.lang.String#replace(CharSequence, CharSequence)
+	 */
+	public void test_replaceLjava_langCharSequenceLjava_langCharSequence() {	        
+		assertEquals("Failed replace", "aaccdd", "aabbdd".replace(
+			new StringBuffer("bb"), "cc"));
+		assertEquals("Failed replace by bigger seq", "cccbccc", "aba".replace(
+			"a", "ccc"));
+		assertEquals("Failed replace by smaller seq", "$bba^", 
+			"$aaaaa^".replace(new StringBuilder("aa"), "b"));
+	}
 
 	/**
 	 * @tests java.lang.String#startsWith(java.lang.String)
