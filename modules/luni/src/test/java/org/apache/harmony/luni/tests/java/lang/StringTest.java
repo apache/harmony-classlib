@@ -16,6 +16,7 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 
 import junit.framework.TestCase;
@@ -104,6 +105,13 @@ public class StringTest extends TestCase {
     public void test_Constructor$BIILjava_lang_String() throws Exception {
         String s = new String(new byte[] { 65, 66, 67, 68, 69 }, 0, 5, "8859_1");
         assertEquals("Incorrect string returned: " + s, "ABCDE", s);
+        
+        try {
+        	new String(new byte[] { 65, 66, 67, 68, 69 }, 0, 5, "");
+        	fail("Should throw UnsupportedEncodingException");
+        } catch (UnsupportedEncodingException e) {
+        	//expected
+        }
     }
 
     /**

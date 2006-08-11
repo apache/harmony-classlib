@@ -343,12 +343,8 @@ public final class String implements Serializable, Comparable<String>, CharSeque
 		// start + length could overflow, start/length maybe MaxInt
 		if (start >= 0 && 0 <= length && length <= data.length - start) {
 			offset = 0;
-			Charset charset;
-			try {
-				charset = Charset.forName(encoding);
-			} catch (UnsupportedCharsetException e) {
-				throw new UnsupportedEncodingException();
-			}
+			Charset charset = getCharset(encoding);
+			
 			int result;
 			CharBuffer cb = charset
 					.decode(ByteBuffer.wrap(data, start, length));
