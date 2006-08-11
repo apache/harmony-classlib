@@ -222,6 +222,50 @@ public class BufferedInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.BufferedInputStream#read(byte[], int, int)
 	 */
+	public void test_read$BII_Exception() throws IOException {
+		BufferedInputStream bis = new BufferedInputStream(null);
+
+		try {
+			bis.read(null, -1, -1);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			//expected
+		}
+
+		try {
+			bis.read(new byte[0], -1, -1);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			//expected
+		}
+
+		try {
+			bis.read(new byte[0], 1, -1);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			//expected
+		}
+
+		try {
+			bis.read(new byte[0], 1, 1);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			//expected
+		}
+		
+		bis.close();
+		
+		try {
+			bis.read(null, -1, -1);
+			fail("should throw IOException");
+		} catch (IOException e) {
+			//expected
+		}
+	}
+	
+	/**
+	 * @tests java.io.BufferedInputStream#read(byte[], int, int)
+	 */
 	public void test_read$BII() {
 		// Test for method int java.io.BufferedInputStream.read(byte [], int,
 		// int)

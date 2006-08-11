@@ -52,6 +52,10 @@ public class BufferedInputStream extends FilterInputStream {
      * The current position within the byte array <code>buf</code>.
      */
     protected int pos;
+    
+    private boolean closed = false;
+    
+    
 
     /**
      * Constructs a new <code>BufferedInputStream</code> on the InputStream
@@ -112,11 +116,12 @@ public class BufferedInputStream extends FilterInputStream {
      */
     @Override
     public synchronized void close() throws IOException {
-        if (null == in) {
-            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
-        }
-        super.close();
+    	if(null != in ){
+            super.close();
+            in = null;
+    	}
         buf = null;
+        closed = true;
     }
 
     private int fillbuf() throws IOException {
@@ -233,68 +238,65 @@ public class BufferedInputStream extends FilterInputStream {
      */
     @Override
     public synchronized int read(byte[] buffer, int offset, int length)
-            throws IOException {
-        if (buf != null && buffer != null) {
-            // avoid int overflow
-            if (0 <= offset && offset <= buffer.length && 0 <= length
-                    && length <= buffer.length - offset) {
-                if (length == 0) {
-                    return 0;
-                }
+			throws IOException {
+		if (closed) {
+			throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+		}
+		// avoid int overflow
+		if (offset > buffer.length - length || offset < 0 || length < 0) {
+			throw new IndexOutOfBoundsException();
+		}
+		if (length == 0) {
+			return 0;
+		}
+		if (null == buf) {
+			throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+		}
 
-                int required;
-                if (pos < count) {
-                    /* There are bytes available in the buffer. */
-                    int copylength = count - pos >= length ? length : count
-                            - pos;
-                    System.arraycopy(buf, pos, buffer, offset, copylength);
-                    pos += copylength;
-                    if (copylength == length || in.available() == 0) {
-                        return copylength;
-                    }
-                    offset += copylength;
-                    required = length - copylength;
-                } else {
-                    required = length;
-                }
+		int required;
+		if (pos < count) {
+			/* There are bytes available in the buffer. */
+			int copylength = count - pos >= length ? length : count - pos;
+			System.arraycopy(buf, pos, buffer, offset, copylength);
+			pos += copylength;
+			if (copylength == length || in.available() == 0) {
+				return copylength;
+			}
+			offset += copylength;
+			required = length - copylength;
+		} else {
+			required = length;
+		}
 
-                while (true) {
-                    int read;
-                    /*
-                     * If we're not marked and the required size is greater than
-                     * the buffer, simply read the bytes directly bypassing the
-                     * buffer.
-                     */
-                    if (markpos == -1 && required >= buf.length) {
-                        read = in.read(buffer, offset, required);
-                        if (read == -1) {
-                            return required == length ? -1 : length - required;
-                        }
-                    } else {
-                        if (fillbuf() == -1) {
-                            return required == length ? -1 : length - required;
-                        }
-                        read = count - pos >= required ? required : count - pos;
-                        System.arraycopy(buf, pos, buffer, offset, read);
-                        pos += read;
-                    }
-                    required -= read;
-                    if (required == 0) {
-                        return length;
-                    }
-                    if (in.available() == 0) {
-                        return length - required;
-                    }
-                    offset += read;
-                }
-            }
-            throw new ArrayIndexOutOfBoundsException();
-        }
-        if (buf == null) {
-            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
-        }
-        throw new NullPointerException(Msg.getString("K0047")); //$NON-NLS-1$
-    }
+		while (true) {
+			int read;
+			/*
+			 * If we're not marked and the required size is greater than the
+			 * buffer, simply read the bytes directly bypassing the buffer.
+			 */
+			if (markpos == -1 && required >= buf.length) {
+				read = in.read(buffer, offset, required);
+				if (read == -1) {
+					return required == length ? -1 : length - required;
+				}
+			} else {
+				if (fillbuf() == -1) {
+					return required == length ? -1 : length - required;
+				}
+				read = count - pos >= required ? required : count - pos;
+				System.arraycopy(buf, pos, buffer, offset, read);
+				pos += read;
+			}
+			required -= read;
+			if (required == 0) {
+				return length;
+			}
+			if (in.available() == 0) {
+				return length - required;
+			}
+			offset += read;
+		}
+	}
 
     /**
      * Reset this BufferedInputStream to the last marked location. If the
