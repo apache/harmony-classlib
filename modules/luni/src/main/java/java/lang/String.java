@@ -18,6 +18,7 @@ package java.lang;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.Comparator;
+import java.util.Formatter;
 import java.util.Locale;
 
 import java.util.regex.Pattern;
@@ -1965,6 +1966,56 @@ public final class String implements Serializable, Comparable<String>, CharSeque
         return r - offset;
     }
 
+    /**
+     * Returns a printf-style formatted string, using the supplied format and
+     * arguments. This function is a shortcut to
+     * <code>format(Locale.getDefault(), format, args)</code>.
+     * 
+     * @param format
+     *            a format string
+     * @param args
+     *            arguments to replace format specifiers, may be none
+     * @throws NullPointerException
+     *             if the format is null
+     * @throws IllegalArgumentException
+     *             if the format is invalid
+     * @return The formatted string
+     * @since 1.5
+     * @see java.util.Formatter
+     */
+    public static String format(String format, Object... args) {
+        return format(Locale.getDefault(), format, args);
+    }
+
+    /**
+     * Returns a printf-style formatted string, using the supplied format and
+     * arguments, accordingly to the specified locale.
+     * 
+     * @param loc
+     *            the locale to apply; <code>null</code> value means no
+     *            localization
+     * @param format
+     *            a format string
+     * @param args
+     *            arguments to replace format specifiers, may be none
+     * @throws NullPointerException
+     *             if the format is null
+     * @throws IllegalArgumentException
+     *             if the format is invalid
+     * @return The formatted string
+     * @since 1.5
+     * @see java.util.Formatter
+     */
+    public static String format(Locale loc, String format, Object... args) {
+        if (format == null) {
+            throw new NullPointerException("null format argument");
+        }
+        int bufferSize = format.length()
+                + (args == null ? 0 : args.length * 10);
+        Formatter f = new Formatter(new StringBuilder(bufferSize), loc);
+        return f.format(format, args).toString();
+    }
+    
 	/*
 	 * An implementation of a String.indexOf that is supposed to perform
 	 * substantially better than the default algorithm if the the "needle" (the

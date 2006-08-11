@@ -893,6 +893,19 @@ public class String2Test extends junit.framework.TestCase {
 		// Test for method java.lang.String java.lang.String.contentEquals(CharSequence cs)
 		assertFalse("Incorrect result of compare", "qwerty".contentEquals(""));
 	}
+	
+	/**
+	 * @tests java.lang.String#format(Locale, String, Object[])
+	 */	
+	public void test_format() {
+	    assertEquals("13% of sum is 0x11", 
+		    String.format("%d%% of %s is 0x%x", 13, "sum", 17));
+	    assertEquals("empty format", "", String.format("", 123, this));
+	    try {
+		String.format(null);
+		fail("NPE is expected on null format");
+	    } catch (NullPointerException ok){}
+	}
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
