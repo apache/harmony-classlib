@@ -15,6 +15,10 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
+import java.lang.Thread.UncaughtExceptionHandler;
+import java.security.Permission;
+import java.util.Map;
+
 public class ThreadTest extends junit.framework.TestCase {
 
 	static class SimpleThread implements Runnable {
@@ -104,7 +108,10 @@ public class ThreadTest extends junit.framework.TestCase {
 	}
 
 	static class BogusException extends Throwable {
-		public BogusException(String s) {
+
+        private static final long serialVersionUID = 1L;
+
+        public BogusException(String s) {
 			super(s);
 		}
 	}
@@ -121,10 +128,19 @@ public class ThreadTest extends junit.framework.TestCase {
 
 		Thread t;
 		SecurityManager m = new SecurityManager() {
-			public ThreadGroup getThreadGroup() {
+			@Override
+            public ThreadGroup getThreadGroup() {
 				calledMySecurityManager = true;
 				return Thread.currentThread().getThreadGroup();
 			}
+            
+            @Override
+            public void checkPermission(Permission permission) {
+                if (permission.getName().equals("setSecurityManager")) {
+                    return;
+                }
+                super.checkPermission(permission);
+            }
 		};
 		try {
 			// To see if it checks Thread creation with our SecurityManager
@@ -276,33 +292,39 @@ public class ThreadTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @tests java.lang.Thread#countStackFrames()
-	 */
-	public void test_countStackFrames() {
-		// Test for method int java.lang.Thread.countStackFrames()
-		// SM.
-		assertEquals("Test failed.",
-				0, Thread.currentThread().countStackFrames());
-	}
+     * @tests java.lang.Thread#countStackFrames()
+     */
+    @SuppressWarnings("deprecation")
+    public void test_countStackFrames() {
+        /*
+         * Thread.countStackFrames() is unpredictable, so we just test that it
+         * doesn't throw an exception.
+         */
+        try {
+            Thread.currentThread().countStackFrames();
+        } catch (Throwable t) {
+            fail("unexpected throwable: " + t.toString());
+        }
+    }
 
 	/**
 	 * @tests java.lang.Thread#currentThread()
 	 */
 	public void test_currentThread() {
-		// Test for method java.lang.Thread java.lang.Thread.currentThread()
-		assertTrue("Current thread was not main thread: "
-				+ Thread.currentThread().getName(), Thread.currentThread()
-				.getName().equals("main"));
+	    assertNotNull(Thread.currentThread());
 	}
 
 	/**
 	 * @tests java.lang.Thread#destroy()
 	 */
-	public void test_destroy() {
-		// Test for method void java.lang.Thread.destroy()
-		assertTrue(
-				"The method 'destroy' is not implemented so nothing to test",
-				true);
+	@SuppressWarnings("deprecation")
+    public void test_destroy() {
+	    try {
+	        new Thread().destroy();
+            // FIXME uncomment when IBM VME is updated
+            //fail("NoSuchMethodError was not thrown");
+        } catch (NoSuchMethodError e) {
+        }
 	}
 
 	/**
@@ -410,7 +432,8 @@ public class ThreadTest extends junit.framework.TestCase {
 
 		final Object lock = new Object();
 		Thread t = new Thread() {
-			public void run() {
+			@Override
+            public void run() {
 				synchronized (lock) {
 					lock.notifyAll();
 				}
@@ -441,7 +464,8 @@ public class ThreadTest extends junit.framework.TestCase {
 
 			boolean sync;
 
-			public void run() {
+			@Override
+            public void run() {
 				if (sync) {
 					synchronized (lock) {
 						lock.notify();
@@ -494,16 +518,12 @@ public class ThreadTest extends junit.framework.TestCase {
 	 * @tests java.lang.Thread#interrupted()
 	 */
 	public void test_interrupted() {
-		// Test for method boolean java.lang.Thread.interrupted()
-
-		assertTrue("Interrupted returned true for non-interrupted thread",
-				Thread.interrupted() == false);
-		Thread.currentThread().interrupt();
-		assertTrue("Interrupted returned true for non-interrupted thread",
-				Thread.interrupted() == true);
-		assertTrue("Failed to clear interrupted flag",
-				Thread.interrupted() == false);
-	}
+        assertFalse("Interrupted returned true for non-interrupted thread", Thread
+                .interrupted());
+        Thread.currentThread().interrupt();
+        assertTrue("Interrupted returned true for non-interrupted thread", Thread.interrupted());
+        assertFalse("Failed to clear interrupted flag", Thread.interrupted());
+    }
 
 	/**
 	 * @tests java.lang.Thread#isAlive()
@@ -512,7 +532,7 @@ public class ThreadTest extends junit.framework.TestCase {
 		// Test for method boolean java.lang.Thread.isAlive()
 		SimpleThread simple;
 		st = new Thread(simple = new SimpleThread(500));
-		assertTrue("Unstarted thread returned true", !st.isAlive());
+		assertFalse("A thread that wasn't started is alive.", st.isAlive());
 		synchronized (simple) {
 			st.start();
 			try {
@@ -582,7 +602,7 @@ public class ThreadTest extends junit.framework.TestCase {
 		SimpleThread simple;
 		try {
 			st = new Thread(simple = new SimpleThread(100));
-			// cause isAlive() to be compiled by the jit, as it must be called
+			// cause isAlive() to be compiled by the JIT, as it must be called
 			// within 100ms below.
 			assertTrue("Thread is alive", !st.isAlive());
 			synchronized (simple) {
@@ -613,7 +633,7 @@ public class ThreadTest extends junit.framework.TestCase {
 		SimpleThread simple;
 		try {
 			st = new Thread(simple = new SimpleThread(1000), "SimpleThread12");
-			// cause isAlive() to be compiled by the jit, as it must be called
+			// cause isAlive() to be compiled by the JIT, as it must be called
 			// within 100ms below.
 			assertTrue("Thread is alive", !st.isAlive());
 			synchronized (simple) {
@@ -731,14 +751,15 @@ public class ThreadTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.Thread#resume()
 	 */
-	public void test_resume() {
+	@SuppressWarnings("deprecation")
+    public void test_resume() {
 		// Test for method void java.lang.Thread.resume()
 		int orgval;
 		ResSupThread t;
 		try {
 			t = new ResSupThread(Thread.currentThread());
 			synchronized (t) {
-				ct = new Thread(t, "Interupt Test2");
+				ct = new Thread(t, "Interrupt Test2");
 				ct.start();
 				t.wait();
 			}
@@ -894,7 +915,8 @@ public class ThreadTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.Thread#stop()
 	 */
-	public void test_stop() {
+	@SuppressWarnings("deprecation")
+    public void test_stop() {
 		// Test for method void java.lang.Thread.stop()
 		try {
 			Runnable r = new ResSupThread(null);
@@ -921,16 +943,25 @@ public class ThreadTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.Thread#stop()
 	 */
-	public void test_stop_subtest0() {
+	@SuppressWarnings("deprecation")
+    public void test_stop_subtest0() {
 		Thread t = new Thread("t");
 		class MySecurityManager extends SecurityManager {
 			public boolean intest = false;
 
-			public void checkAccess(Thread t) {
+			@Override
+            public void checkAccess(Thread t) {
 				if (intest) {
 					fail("checkAccess called");
 				}
 			}
+            @Override
+            public void checkPermission(Permission permission) {
+                if (permission.getName().equals("setSecurityManager")) {
+                    return;
+                }
+                super.checkPermission(permission);
+            }
 		}
 		MySecurityManager sm = new MySecurityManager();
 		System.setSecurityManager(sm);
@@ -964,18 +995,27 @@ public class ThreadTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.Thread#stop(java.lang.Throwable)
 	 */
-	public void test_stopLjava_lang_Throwable_subtest0() {
+	@SuppressWarnings("deprecation")
+    public void test_stopLjava_lang_Throwable_subtest0() {
 		Thread t = new Thread("t");
 		class MySecurityManager extends SecurityManager {
 			public boolean intest = false;
 
 			public boolean checkAccess = false;
 
-			public void checkAccess(Thread t) {
+			@Override
+            public void checkAccess(Thread t) {
 				if (intest) {
 					checkAccess = true;
 				}
 			}
+            @Override
+            public void checkPermission(Permission permission) {
+                if (permission.getName().equals("setSecurityManager")) {
+                    return;
+                }
+                super.checkPermission(permission);
+            }
 		}
 		MySecurityManager sm = new MySecurityManager();
 		System.setSecurityManager(sm);
@@ -1012,7 +1052,8 @@ public class ThreadTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.Thread#stop(java.lang.Throwable)
 	 */
-	public void test_stopLjava_lang_Throwable() {
+	@SuppressWarnings("deprecation")
+    public void test_stopLjava_lang_Throwable() {
 		// Test for method void java.lang.Thread.stop(java.lang.Throwable)
 		ResSupThread t = new ResSupThread(Thread.currentThread());
 		synchronized (t) {
@@ -1039,7 +1080,8 @@ public class ThreadTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.Thread#suspend()
 	 */
-	public void test_suspend() {
+	@SuppressWarnings("deprecation")
+    public void test_suspend() {
 		// Test for method void java.lang.Thread.suspend()
 		int orgval;
 		ResSupThread t = new ResSupThread(Thread.currentThread());
@@ -1106,19 +1148,103 @@ public class ThreadTest extends junit.framework.TestCase {
 		}
 		tg.destroy();
 	}
+    
+    /**
+     * @tests java.lang.Thread#getAllStackTraces()
+     */
+    public void test_getAllStackTraces() {
+        Map<Thread, StackTraceElement[]> stMap = Thread.getAllStackTraces();
+        assertNotNull(stMap);
+        //TODO add security-based tests
+    }
+    
+    /**
+     * @tests java.lang.Thread#getDefaultUncaughtExceptionHandler
+     * @tests java.lang.Thread#setDefaultUncaughtExceptionHandler
+     */
+    public void test_get_setDefaultUncaughtExceptionHandler() {
+        class Handler implements UncaughtExceptionHandler {
+            public void uncaughtException(Thread thread, Throwable ex) {
+            }
+        }
+        
+        final Handler handler = new Handler();
+        Thread.setDefaultUncaughtExceptionHandler(handler);
+        assertSame(handler, Thread.getDefaultUncaughtExceptionHandler());
+        
+        Thread.setDefaultUncaughtExceptionHandler(null);
+        assertNull(Thread.getDefaultUncaughtExceptionHandler());
+        //TODO add security-based tests
+    }
+    
+    /**
+     * @tests java.lang.Thread#getStackTrace()
+     */
+    public void test_getStackTrace() {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        
+        assertNotNull(stackTrace);
 
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
+        stack_trace_loop: {
+            for (int i = 0; i < stackTrace.length; i++) {
+                StackTraceElement e = stackTrace[i];
+                if (getClass().getName().equals(e.getClassName())) {
+                    if ("test_getStackTrace".equals(e.getMethodName())) {
+                        break stack_trace_loop;
+                    }
+                }
+            }
+            fail("class and method not found in stack trace");
+        }
+        
+        //TODO add security-based tests
+    }
+    
+    /**
+     * @tests java.lang.Thread#getState()
+     */
+    public void test_getState() {
+        Thread.State state = Thread.currentThread().getState();
+        assertNotNull(state);
+        assertEquals(Thread.State.RUNNABLE, state);
+        //TODO add additional state tests
+    }
+    
+    /**
+     * @tests java.lang.Thread#getUncaughtExceptionHandler
+     * @tests java.lang.Thread#setUncaughtExceptionHandler
+     */
+    public void test_get_setUncaughtExceptionHandler() {
+        class Handler implements UncaughtExceptionHandler {
+            public void uncaughtException(Thread thread, Throwable ex) {
+            }
+        }
+        
+        final Handler handler = new Handler();
+        Thread.currentThread().setUncaughtExceptionHandler(handler);
+        assertSame(handler, Thread.currentThread().getUncaughtExceptionHandler());
+        
+        Thread.currentThread().setUncaughtExceptionHandler(null);
 
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
+        //TODO add security-based tests
+    }
+    
+    /**
+     * @tests java.lang.Thread#getId()
+     */
+    public void test_getId() {
+        assertTrue("current thread's ID is not positive", Thread.currentThread().getId() > 0);
+        
+        //check all the current threads for positive IDs
+        Map<Thread, StackTraceElement[]> stMap = Thread.getAllStackTraces();
+        for (Thread thread : stMap.keySet()) {
+            assertTrue("thread's ID is not positive: " + thread.getName(), thread.getId() > 0);
+        }
+    }
+
+
+	@Override
+    protected void tearDown() {
 		try {
 			if (st != null)
 				st.interrupt();
