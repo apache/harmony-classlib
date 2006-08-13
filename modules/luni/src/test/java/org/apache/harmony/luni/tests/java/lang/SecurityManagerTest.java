@@ -23,7 +23,9 @@ public class SecurityManagerTest extends TestCase {
      * @tests java.lang.SecurityManager#checkMemberAccess(java.lang.Class, int)
      */
     public void test_checkMemberAccessLjava_lang_ClassI() {
-        System.setSecurityManager(new SecurityManager());
+        MutableSecurityManager sm = new MutableSecurityManager();
+        sm.addPermission(MutableSecurityManager.SET_SECURITY_MANAGER);
+        System.setSecurityManager(sm);
         try {
             try {
                 getClass().getDeclaredFields();
@@ -46,7 +48,9 @@ public class SecurityManagerTest extends TestCase {
      * @tests java.lang.SecurityManager#checkPermission(java.security.Permission)
      */
     public void test_checkPermissionLjava_security_Permission() {
-        System.setSecurityManager(new SecurityManager());
+        MutableSecurityManager sm = new MutableSecurityManager();
+        sm.addPermission(MutableSecurityManager.SET_SECURITY_MANAGER);
+        System.setSecurityManager(sm);
         try {
             try {
                 System.getSecurityManager().checkPermission(

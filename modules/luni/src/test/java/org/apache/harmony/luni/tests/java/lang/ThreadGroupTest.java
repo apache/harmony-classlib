@@ -27,7 +27,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 			super(group, name);
 		}
 
-		public void run() {
+		@Override
+        public void run() {
 			while (true) {
 				heartBeat++;
 				try {
@@ -48,8 +49,9 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 			do {
 				Thread.yield();
 				int beat2 = heartBeat;
-				if (beat != beat2)
-					return true;
+				if (beat != beat2) {
+                    return true;
+                }
 			} while (System.currentTimeMillis() - start < maxWait);
 			return false;
 		}
@@ -166,14 +168,14 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		boolean passed = true;
 
 		try {
-			if (currentManager != null)
-				testRoot.checkAccess();
+			if (currentManager != null) {
+                testRoot.checkAccess();
+            }
 		} catch (SecurityException se) {
 			passed = false;
 		}
-		;
 
-		assertTrue("CheckAccess is no-op with no Securitymanager", passed);
+		assertTrue("CheckAccess is no-op with no SecurityManager", passed);
 
 		testRoot.destroy();
 
@@ -188,13 +190,13 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		final ThreadGroup originalCurrent = getInitialThreadGroup();
 		ThreadGroup testRoot = new ThreadGroup(originalCurrent, "Test group");
 		final int DEPTH = 4;
-		final Vector subgroups = buildRandomTreeUnder(testRoot, DEPTH);
+		final Vector<ThreadGroup> subgroups = buildRandomTreeUnder(testRoot, DEPTH);
 
 		// destroy them all
 		testRoot.destroy();
 
 		for (int i = 0; i < subgroups.size(); i++) {
-			ThreadGroup child = (ThreadGroup) subgroups.elementAt(i);
+			ThreadGroup child = subgroups.elementAt(i);
 			assertEquals("Destroyed child can't have children", 0, child
 					.activeCount());
 			boolean passed = false;
@@ -244,7 +246,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		testRoot = new ThreadGroup(originalCurrent, "Test group (daemon)");
 		testRoot.setDaemon(true);
 		Thread noOp = new Thread(testRoot, null, "no-op thread") {
-			public void run() {
+			@Override
+            public void run() {
 			}
 		};
 		noOp.start();
@@ -270,15 +273,13 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 		testRoot = new ThreadGroup(originalCurrent, "Test group (daemon)");
 		noOp = new Thread(testRoot, null, "no-op thread") {
-			public void run() {
+			@Override
+            public void run() {
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException ie) {
 					fail("Should not be interrupted");
-//					// We have our own assert
-//					myassertTrue("Should not be interrupted", false);
 				}
-				;
 			}
 		};
 
@@ -320,7 +321,7 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		ThreadGroup group1 = new ThreadGroup("test_destroy_subtest0");
 		group1.destroy();
 		try {
-			Thread t = new Thread(group1, "test_destroy_subtest0");
+			new Thread(group1, "test_destroy_subtest0");
 			fail("should throw IllegalThreadStateException");
 		} catch (IllegalThreadStateException e) {
 		}
@@ -342,7 +343,7 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		} catch (IllegalArgumentException iae) {
 			passed = false;
 		}
-		assertTrue("Should be able to set piority", passed);
+		assertTrue("Should be able to set priority", passed);
 
 		assertTrue("New value should be the same as we set", testRoot
 				.getMaxPriority() == Thread.MIN_PRIORITY);
@@ -368,8 +369,6 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 	}
 
-	static ThreadGroup checkAccessGroup = null;
-
 	/**
 	 * @tests java.lang.ThreadGroup#getParent()
 	 */
@@ -385,7 +384,7 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		// Create some groups, nested some levels.
 		final int TOTAL_DEPTH = 5;
 		ThreadGroup current = testRoot;
-		Vector groups = new Vector();
+		Vector<ThreadGroup> groups = new Vector<ThreadGroup>();
 		// To maintain the invariant that a thread in the Vector is parent
 		// of the next one in the collection (and child of the previous one)
 		groups.addElement(testRoot);
@@ -397,27 +396,33 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 		// Now we walk the levels down, checking if parent is ok
 		for (int i = 1; i < groups.size(); i++) {
-			current = (ThreadGroup) groups.elementAt(i);
-			ThreadGroup previous = (ThreadGroup) groups.elementAt(i - 1);
+			current = groups.elementAt(i);
+			ThreadGroup previous = groups.elementAt(i - 1);
 			assertTrue("Parent is wrong", current.getParent() == previous);
 		}
 
-		SecurityManager m = new SecurityManager() {
-			public void checkAccess(ThreadGroup group) {
-				checkAccessGroup = group;
-			}
-		};
+        final ThreadGroup[] checkAccessGroup = new ThreadGroup[1];
+        class SecurityManagerImpl extends MutableSecurityManager {
+            @Override
+            public void checkAccess(ThreadGroup group) {
+                checkAccessGroup[0] = group;
+            }
+        }
+        SecurityManagerImpl sm = new SecurityManagerImpl();
+        //add permission to allow reset of security manager
+        sm.addPermission(MutableSecurityManager.SET_SECURITY_MANAGER);
+        
 		ThreadGroup parent;
 		try {
 			// To see if it checks Thread creation with our SecurityManager
-			System.setSecurityManager(m); 
+			System.setSecurityManager(sm); 
 			parent = testRoot.getParent();
 		} finally {
 			// restore original, no side-effects
 			System.setSecurityManager(null);
 		}
 		assertTrue("checkAccess with incorrect group",
-				checkAccessGroup == parent);
+				checkAccessGroup[0] == parent);
 
 		testRoot.destroy();
 	}
@@ -442,8 +447,9 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		// wipeSideEffectThreads destroy all side effect of threads created in
 		// java.lang.Thread
 		boolean result = wipeSideEffectThreads(originalCurrent);
-		if (result == false)
-			System.out.println("wipe threads in test_list() not successful");
+		if (result == false) {
+            System.out.println("wipe threads in test_list() not successful");
+        }
 		final ThreadGroup testRoot = new ThreadGroup(originalCurrent,
 				"Test group");
 
@@ -502,9 +508,9 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		buildRandomTreeUnder(testRoot, DEPTH);
 
 		final ThreadGroup[] allChildren = allGroups(testRoot);
-		for (int i = 0; i < allChildren.length; i++) {
+		for (ThreadGroup element : allChildren) {
 			assertTrue("Have to be parentOf all children", testRoot
-					.parentOf((ThreadGroup) allChildren[i]));
+					.parentOf(element));
 		}
 
 		assertTrue("Have to be parentOf itself", testRoot.parentOf(testRoot));
@@ -514,7 +520,7 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 				!arrayIncludes(groups(testRoot.getParent()), testRoot));
 
 		try {
-			System.setSecurityManager(new SecurityManager());
+			System.setSecurityManager(new MutableSecurityManager(MutableSecurityManager.SET_SECURITY_MANAGER));
 			assertTrue("Should not be parent", !testRoot
 					.parentOf(originalCurrent));
 		} finally {
@@ -525,7 +531,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.ThreadGroup#resume()
 	 */
-	public void test_resume() throws OutOfMemoryError {
+	@SuppressWarnings("deprecation")
+    public void test_resume() throws OutOfMemoryError {
 		// Test for method void java.lang.ThreadGroup.resume()
 
 		final ThreadGroup originalCurrent = getInitialThreadGroup();
@@ -536,14 +543,14 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		buildRandomTreeUnder(testRoot, DEPTH);
 
 		final int THREADS_PER_GROUP = 2;
-		final Vector threads = populateGroupsWithThreads(testRoot,
+		final Vector<MyThread> threads = populateGroupsWithThreads(testRoot,
 				THREADS_PER_GROUP);
 
 		boolean[] isResumed = null;
 		try {
 			try {
 				for (int i = 0; i < threads.size(); i++) {
-					Thread t = (Thread) threads.elementAt(i);
+					Thread t = threads.elementAt(i);
 					t.start();
 					t.suspend();
 				}
@@ -552,7 +559,7 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 						.activeCount() == threads.size());
 			} catch (OutOfMemoryError e) {
 				for (int i = 0; i < threads.size(); i++) {
-					Thread t = (Thread) threads.elementAt(i);
+					Thread t = threads.elementAt(i);
 					t.resume();
 					t.stop(); // deprecated but effective
 				}
@@ -572,7 +579,7 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 			isResumed = new boolean[threads.size()];
 			boolean failed = false;
 			for (int i = 0; i < isResumed.length; i++) {
-				MyThread t = (MyThread) threads.elementAt(i);
+				MyThread t = threads.elementAt(i);
 				if (!failed) { // if one failed, don't waste time checking the
 					// rest
 					isResumed[i] = t.isActivelyRunning(1000);
@@ -713,7 +720,7 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 		passed = true;
 		testRoot = new ThreadGroup(originalCurrent, "Test group");
-		System.setSecurityManager(new SecurityManager());
+		System.setSecurityManager(new MutableSecurityManager(MutableSecurityManager.SET_SECURITY_MANAGER));
 		try {
 			try {
 				testRoot.setMaxPriority(Thread.MIN_PRIORITY);
@@ -728,8 +735,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 				passed);
 		testRoot.destroy();
 
-		try {
-			System.setSecurityManager(new SecurityManager());
+		try {            
+			System.setSecurityManager(new MutableSecurityManager(MutableSecurityManager.SET_SECURITY_MANAGER));
 			originalCurrent.setMaxPriority(Thread.MAX_PRIORITY);
 		} finally {
 			System.setSecurityManager(null);
@@ -750,17 +757,17 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		buildRandomTreeUnder(testRoot, DEPTH);
 
 		final int THREADS_PER_GROUP = 2;
-		final Vector threads = populateGroupsWithThreads(testRoot,
+		final Vector<MyThread> threads = populateGroupsWithThreads(testRoot,
 				THREADS_PER_GROUP);
 
 		try {
 			for (int i = 0; i < threads.size(); i++) {
-				Thread t = (Thread) threads.elementAt(i);
+				Thread t = threads.elementAt(i);
 				t.start();
 			}
 		} catch (OutOfMemoryError e) {
 			for (int i = 0; i < threads.size(); i++) {
-				Thread t = (Thread) threads.elementAt(i);
+				Thread t = threads.elementAt(i);
 				t.stop(); // deprecated but effective
 			}
 			throw e;
@@ -776,7 +783,7 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		// work. How much we wait (timeout) is very important
 		boolean passed = true;
 		for (int i = 0; i < threads.size(); i++) {
-			Thread t = (Thread) threads.elementAt(i);
+			Thread t = threads.elementAt(i);
 			try {
 				// We wait 5000 ms per Thread, but due to scheduling it may
 				// take a while to run
@@ -814,19 +821,19 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		buildRandomTreeUnder(testRoot, DEPTH);
 
 		final int THREADS_PER_GROUP = 2;
-		final Vector threads = populateGroupsWithThreads(testRoot,
+		final Vector<MyThread> threads = populateGroupsWithThreads(testRoot,
 				THREADS_PER_GROUP);
 
 		boolean passed = false;
 		try {
 			try {
 				for (int i = 0; i < threads.size(); i++) {
-					Thread t = (Thread) threads.elementAt(i);
+					Thread t = threads.elementAt(i);
 					t.start();
 				}
 			} catch (OutOfMemoryError e) {
 				for (int i = 0; i < threads.size(); i++) {
-					Thread t = (Thread) threads.elementAt(i);
+					Thread t = threads.elementAt(i);
 					t.stop(); // deprecated but effective
 				}
 				throw e;
@@ -926,8 +933,9 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		testRoot = new ThreadGroup(originalCurrent,
 				"Test killing a Thread, forcing it to throw ThreadDeath") {
 			public void uncaughtException(Thread t, Throwable e) {
-				if (e instanceof ThreadDeath)
-					passed[TEST_KILLING] = true;
+				if (e instanceof ThreadDeath) {
+                    passed[TEST_KILLING] = true;
+                }
 				// always forward, any exception
 				super.uncaughtException(t, e);
 			}
@@ -974,8 +982,9 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		testRoot = new ThreadGroup(originalCurrent,
 				"Test Forcing a throw of ThreadDeath") {
 			public void uncaughtException(Thread t, Throwable e) {
-				if (e instanceof ThreadDeath)
-					passed[TEST_FORCING_THROW_THREAD_DEATH] = true;
+				if (e instanceof ThreadDeath) {
+                    passed[TEST_FORCING_THROW_THREAD_DEATH] = true;
+                }
 				// always forward, any exception
 				super.uncaughtException(t, e);
 			}
@@ -1027,11 +1036,12 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 		testRoot = new ThreadGroup(originalCurrent, "Test other Exception") {
 			public void uncaughtException(Thread t, Throwable e) {
-				if (e instanceof TestException)
-					passed[TEST_OTHER] = true;
-				else
-					// only forward exceptions other than our test
+				if (e instanceof TestException) {
+                    passed[TEST_OTHER] = true;
+                } else {
+                    // only forward exceptions other than our test
 					super.uncaughtException(t, e);
+                }
 			}
 		};
 
@@ -1069,9 +1079,10 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 					// method.
 					// This should be no-op according to the spec
 					throw new UncaughtException();
-				} else
-					// only forward exceptions other than our test
+				} else {
+                    // only forward exceptions other than our test
 					super.uncaughtException(t, e);
+                }
 			}
 		};
 
@@ -1110,13 +1121,15 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		testRoot = new ThreadGroup(originalCurrent,
 				"Test Uncaught followed by ThreadDeath") {
 			public void uncaughtException(Thread t, Throwable e) {
-				if (e instanceof ThreadDeath)
-					passed[TEST_DEATH_AFTER_UNCAUGHT] = true;
-				if (e instanceof TestException)
-					passed[TEST_OTHER_THEN_DEATH] = true;
-				else
-					// only forward exceptions other than our test
+				if (e instanceof ThreadDeath) {
+                    passed[TEST_DEATH_AFTER_UNCAUGHT] = true;
+                }
+				if (e instanceof TestException) {
+                    passed[TEST_OTHER_THEN_DEATH] = true;
+                } else {
+                    // only forward exceptions other than our test
 					super.uncaughtException(t, e);
+                }
 			}
 		};
 
@@ -1136,22 +1149,17 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		testRoot.destroy();
 	}
 
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 		initialThreadGroup = Thread.currentThread().getThreadGroup();
 		rootThreadGroup = initialThreadGroup;
-		while (rootThreadGroup.getParent() != null)
-			rootThreadGroup = rootThreadGroup.getParent();
+		while (rootThreadGroup.getParent() != null) {
+            rootThreadGroup = rootThreadGroup.getParent();
+        }
 	}
 
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
+	@Override
+    protected void tearDown() {
 		try {
 			// Give the threads a chance to die.
 			Thread.sleep(50);
@@ -1165,9 +1173,9 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		Thread[] all = new Thread[count];
 		int actualSize = parent.enumerate(all, false);
 		Thread[] result;
-		if (actualSize == all.length)
-			result = all;
-		else {
+		if (actualSize == all.length) {
+            result = all;
+        } else {
 			result = new Thread[actualSize];
 			System.arraycopy(all, 0, result, 0, actualSize);
 		}
@@ -1207,22 +1215,21 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 	private boolean wipeAllThreads(final ThreadGroup aGroup) {
 		boolean ok = true;
 		Thread[] threads = threads(aGroup);
-		for (int i = 0; i < threads.length; i++) {
-			Thread t = threads[i];
+		for (Thread t : threads) {
 			ok = ok && wipeThread(t);
 		}
 
 		// Recursively for subgroups (if any)
 		ThreadGroup[] children = groups(aGroup);
-		for (int i = 0; i < children.length; i++) {
-			ok = ok && wipeAllThreads(children[i]);
+		for (ThreadGroup element : children) {
+			ok = ok && wipeAllThreads(element);
 		}
 
 		return ok;
 
 	}
 
-	private boolean wipeAllThreads(final Vector threads) {
+	private boolean wipeAllThreads(final Vector<?> threads) {
 		boolean ok = true;
 		for (int i = 0; i < threads.size(); i++) {
 			Thread t = (Thread) threads.elementAt(i);
@@ -1236,8 +1243,7 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 	private boolean wipeSideEffectThreads(ThreadGroup aGroup) {
 		boolean ok = true;
 		Thread[] threads = threads(aGroup);
-		for (int i = 0; i < threads.length; i++) {
-			Thread t = threads[i];
+		for (Thread t : threads) {
 			if (t.getName().equals("SimpleThread")
 					|| t.getName().equals("Bogus Name")
 					|| t.getName().equals("Testing")
@@ -1248,19 +1254,21 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 					|| t.getName().equals("firstOne")
 					|| t.getName().equals("secondOne")
 					|| t.getName().equals("Thread-16")
-					|| t.getName().equals("Thread-14"))
-				ok = ok && wipeThread(t);
+					|| t.getName().equals("Thread-14")) {
+                ok = ok && wipeThread(t);
+            }
 		}
 
 		// Recursively for subgroups (if any)
 		ThreadGroup[] children = groups(aGroup);
 
-		for (int i = 0; i < children.length; i++) {
-			ok = ok && wipeSideEffectThreads(children[i]);
-			if (children[i].getName().equals("Test Group")
-					|| children[i].getName().equals("foo")
-					|| children[i].getName().equals("jp"))
-				children[i].destroy();
+		for (ThreadGroup element : children) {
+			ok = ok && wipeSideEffectThreads(element);
+			if (element.getName().equals("Test Group")
+					|| element.getName().equals("foo")
+					|| element.getName().equals("jp")) {
+                element.destroy();
+            }
 		}
 		try {
 			// Give the threads a chance to die.
@@ -1271,9 +1279,10 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 	}
 
 	private void asyncBuildRandomTreeUnder(final ThreadGroup aGroup,
-			final int depth, final Vector allCreated) {
-		if (depth <= 0)
-			return;
+			final int depth, final Vector<ThreadGroup> allCreated) {
+		if (depth <= 0) {
+            return;
+        }
 
 		final int maxImmediateSubgroups = random(3);
 		for (int i = 0; i < maxImmediateSubgroups; i++) {
@@ -1294,9 +1303,9 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 	}
 
-	private Vector asyncBuildRandomTreeUnder(final ThreadGroup aGroup,
+	private Vector<ThreadGroup> asyncBuildRandomTreeUnder(final ThreadGroup aGroup,
 			final int depth) {
-		Vector result = new Vector();
+		Vector<ThreadGroup> result = new Vector<ThreadGroup>();
 		asyncBuildRandomTreeUnder(aGroup, depth, result);
 		return result;
 
@@ -1325,39 +1334,43 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		return true;
 	}
 
-	private boolean allNotSuspended(Vector threads) {
+	private boolean allNotSuspended(Vector<?> threads) {
 		for (int i = 0; i < threads.size(); i++) {
 			MyThread t = (MyThread) threads.elementAt(i);
-			if (!t.isActivelyRunning())
-				return false;
+			if (!t.isActivelyRunning()) {
+                return false;
+            }
 		}
 
 		return true;
 
 	}
 
-	private boolean allSuspended(Vector threads) {
+	private boolean allSuspended(Vector<MyThread> threads) {
 		for (int i = 0; i < threads.size(); i++) {
-			MyThread t = (MyThread) threads.elementAt(i);
-			if (t.isActivelyRunning())
-				return false;
+			MyThread t = threads.elementAt(i);
+			if (t.isActivelyRunning()) {
+                return false;
+            }
 		}
 
 		return true;
 
 	}
 
-	private boolean sameThreads(Thread[] allThreads, Vector threads) {
-		if (allThreads.length != threads.size())
-			return false;
+	private boolean sameThreads(Thread[] allThreads, Vector<?> threads) {
+		if (allThreads.length != threads.size()) {
+            return false;
+        }
 
 		// The complexity of this method is N2, and we do it twice !!
 
 		// First make sure that all threads in @threads are also in @allThreads
 		for (int i = 0; i < allThreads.length; i++) {
 			Thread t = (Thread) threads.elementAt(i);
-			if (!arrayIncludes(allThreads, t))
-				return false;
+			if (!arrayIncludes(allThreads, t)) {
+                return false;
+            }
 		}
 
 		// Now make sure that all threads in @allThreads are also in @threads
@@ -1365,8 +1378,9 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		threads.copyInto(vectorThreads);
 		for (int i = 0; i < vectorThreads.length; i++) {
 			Thread t = allThreads[i];
-			if (!arrayIncludes(vectorThreads, t))
-				return false;
+			if (!arrayIncludes(vectorThreads, t)) {
+                return false;
+            }
 		}
 
 		return true;
@@ -1381,13 +1395,14 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		// Now we may have nulls in the array, we must find the actual size
 		int actualSize = 0;
 		for (; actualSize < all.length; actualSize++) {
-			if (all[actualSize] == null)
-				break;
+			if (all[actualSize] == null) {
+                break;
+            }
 		}
 		ThreadGroup[] result;
-		if (actualSize == all.length)
-			result = all;
-		else {
+		if (actualSize == all.length) {
+            result = all;
+        } else {
 			result = new ThreadGroup[actualSize];
 			System.arraycopy(all, 0, result, 0, actualSize);
 		}
@@ -1396,16 +1411,16 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 	}
 
-	private Vector populateGroupsWithThreads(final ThreadGroup aGroup,
+	private Vector<MyThread> populateGroupsWithThreads(final ThreadGroup aGroup,
 			final int threadCount) {
-		Vector result = new Vector();
+		Vector<MyThread> result = new Vector<MyThread>();
 		populateGroupsWithThreads(aGroup, threadCount, result);
 		return result;
 
 	}
 
 	private void populateGroupsWithThreads(final ThreadGroup aGroup,
-			final int threadCount, final Vector allCreated) {
+			final int threadCount, final Vector<MyThread> allCreated) {
 		for (int i = 0; i < threadCount; i++) {
 			final int iClone = i;
 			final String name = "(MyThread)N =" + iClone + "/" + threadCount
@@ -1417,8 +1432,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 		// Recursively for subgroups (if any)
 		ThreadGroup[] children = groups(aGroup);
-		for (int i = 0; i < children.length; i++) {
-			populateGroupsWithThreads(children[i], threadCount, allCreated);
+		for (ThreadGroup element : children) {
+			populateGroupsWithThreads(element, threadCount, allCreated);
 		}
 
 	}
@@ -1431,9 +1446,10 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 	private boolean parentOfAll(ThreadGroup parentCandidate,
 			ThreadGroup[] childrenCandidates) {
-		for (int i = 0; i < childrenCandidates.length; i++) {
-			if (!parentCandidate.parentOf(childrenCandidates[i]))
-				return false;
+		for (ThreadGroup element : childrenCandidates) {
+			if (!parentCandidate.parentOf(element)) {
+                return false;
+            }
 		}
 
 		return true;
@@ -1449,14 +1465,15 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		}
 		// The thread had plenty (subjective) of time to die so there 
 		// is a problem.
-		if (t.isAlive())
-			return false;
+		if (t.isAlive()) {
+            return false;
+        }
 
 		return true;
 	}
 
-	private Vector buildRandomTreeUnder(ThreadGroup aGroup, int depth) {
-		Vector result = asyncBuildRandomTreeUnder(aGroup, depth);
+	private Vector<ThreadGroup> buildRandomTreeUnder(ThreadGroup aGroup, int depth) {
+		Vector<ThreadGroup> result = asyncBuildRandomTreeUnder(aGroup, depth);
 		while (true) {
 			int sizeBefore = result.size();
 			try {
@@ -1464,12 +1481,14 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 				int sizeAfter = result.size();
 				// If no activity for a while, we assume async building may be
 				// done.
-				if (sizeBefore == sizeAfter)
-					// It can only be done if no more threads. Unfortunately we
+				if (sizeBefore == sizeAfter) {
+                    // It can only be done if no more threads. Unfortunately we
 					// are relying on this API to work as well.
 					// If it does not, we may loop forever.
-					if (aGroup.activeCount() == 0)
-						break;
+					if (aGroup.activeCount() == 0) {
+                        break;
+                    }
+                }
 			} catch (InterruptedException e) {
 			}
 		}
@@ -1478,9 +1497,10 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 	}
 
 	private boolean arrayIncludes(Object[] array, Object toTest) {
-		for (int i = 0; i < array.length; i++) {
-			if (array[i] == toTest)
-				return true;
+		for (Object element : array) {
+			if (element == toTest) {
+                return true;
+            }
 		}
 
 		return false;
