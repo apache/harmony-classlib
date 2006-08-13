@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.tests.java.io;
+package org.apache.harmony.luni.tests.java.io;
 
 import java.io.File;
 import java.io.FileInputStream;
