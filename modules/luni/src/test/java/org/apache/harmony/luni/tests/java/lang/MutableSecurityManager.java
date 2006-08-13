@@ -1,0 +1,59 @@
+/* Copyright 2006 The Apache Software Foundation or its licensors, as applicable
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.harmony.luni.tests.java.lang;
+
+import java.security.Permission;
+import java.util.HashSet;
+import java.util.Set;
+
+class MutableSecurityManager extends SecurityManager {
+
+    static final RuntimePermission SET_SECURITY_MANAGER = new RuntimePermission("setSecurityManager");
+    
+    private final Set<Permission> permissions;
+
+    public MutableSecurityManager() {
+        super();
+        this.permissions = new HashSet<Permission>();
+    }
+    
+    public MutableSecurityManager(Permission... permissions) {
+        this();
+        for (int i = 0; i < permissions.length; i++) {
+            this.permissions.add(permissions[i]);
+        }
+    }
+
+    void addPermission(Permission permission) {
+        permissions.add(permission);
+    }
+
+    void removePermission(Permission permission) {
+        permissions.remove(permission);
+    }
+
+    void clearPermissions() {
+        permissions.clear();
+    }
+
+    @Override
+    public void checkPermission(Permission permission) {
+        if (permissions.contains(permission)) {
+            return;
+        }
+        super.checkPermission(permission);
+    }
+}
