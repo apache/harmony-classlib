@@ -15,7 +15,6 @@
 
 package java.lang;
 
-
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FilePermission;
@@ -28,6 +27,7 @@ import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.AllPermission;
 import java.security.Permission;
+import java.security.PrivilegedAction;
 import java.security.Security;
 import java.security.SecurityPermission;
 import java.util.PropertyPermission;
@@ -40,20 +40,20 @@ import org.apache.harmony.luni.util.PriviAction;
  * security verification for a running program.
  */
 public class SecurityManager {
-	static String[] securePackageList = null;
+
+    static String[] securePackageList;
+    
+    private static final PropertyPermission READ_WRITE_ALL_PROPERTIES_PERMISSION = new PropertyPermission(
+            "*", "read,write");
+
 
 	/**
 	 * Flag to indicate whether a security check is in progress.
 	 * 
 	 * @deprecated Use checkPermission
 	 */
-	protected boolean inCheck = false;
-
-	/**
-	 * Optimization: Don't create a new PropertyPermission each time.
-	 */
-	private PropertyPermission permissionToReadWriteAllProperties = new PropertyPermission(
-			"*", "read,write");
+	@Deprecated
+    protected boolean inCheck;
 
 	/**
 	 * Constructs a new instance of this class.
@@ -283,7 +283,8 @@ public class SecurityManager {
 	 * 
 	 * @deprecated use SecurityManager#checkMulticast(java.net.InetAddress)
 	 */
-	public void checkMulticast(InetAddress maddr, byte ttl) {
+	@Deprecated
+    public void checkMulticast(InetAddress maddr, byte ttl) {
 		checkPermission(new SocketPermission(maddr.getHostAddress(),
 				"accept,connect"));
 	}
@@ -348,16 +349,16 @@ public class SecurityManager {
 	}
 
 	private String getSecurityProperty(final String property) {
-		return (String) AccessController.doPrivileged(PriviAction
-				.getSecurityProperty(property));
-	}
+        PrivilegedAction<String> pa = PriviAction.getSecurityProperty(property);
+        return AccessController.doPrivileged(pa);
+    }
 
 	/**
 	 * Checks whether the running program is allowed to access the system
 	 * properties.
 	 */
 	public void checkPropertiesAccess() {
-		checkPermission(permissionToReadWriteAllProperties);
+		checkPermission(READ_WRITE_ALL_PROPERTIES_PERMISSION);
 	}
 
 	/**
@@ -540,7 +541,8 @@ public class SecurityManager {
 	 * 
 	 * @deprecated Use checkPermission
 	 */
-	public boolean getInCheck() {
+	@Deprecated
+    public boolean getInCheck() {
 		return inCheck;
 	}
 
@@ -563,7 +565,8 @@ public class SecurityManager {
 	 * 
 	 * @deprecated Use checkPermission
 	 */
-	protected ClassLoader currentClassLoader() {
+	@Deprecated
+    protected ClassLoader currentClassLoader() {
 
 		// First, check if AllPermission is allowed. If so, then we
 		// are effectively running in an unsafe environment, so just
@@ -596,7 +599,8 @@ public class SecurityManager {
 	 * 
 	 * @deprecated Use checkPermission
 	 */
-	protected int classLoaderDepth() {
+	@Deprecated
+    protected int classLoaderDepth() {
 		// First, check if AllPermission is allowed. If so, then we
 		// are effectively running in an unsafe environment, so just
 		// answer -1 (==> everything is a system class).
@@ -627,7 +631,8 @@ public class SecurityManager {
 	 * 
 	 * @deprecated Use checkPermission
 	 */
-	protected Class<?> currentLoadedClass() {
+	@Deprecated
+    protected Class<?> currentLoadedClass() {
 		// First, check if AllPermission is allowed. If so, then we
 		// are effectively running in an unsafe environment, so just
 		// answer null (==> everything is a system class).
@@ -661,7 +666,8 @@ public class SecurityManager {
 	 * 
 	 * @deprecated Use checkPermission
 	 */
-	protected int classDepth(String name) {
+	@Deprecated
+    protected int classDepth(String name) {
 		Class[] classes = Class.getStackClasses(-1, false);
 		for (int i = 0; i < classes.length; i++) {
             if (classes[i].getName().equals(name)) {
@@ -681,7 +687,8 @@ public class SecurityManager {
 	 * 
 	 * @deprecated Use checkPermission
 	 */
-	protected boolean inClass(String name) {
+	@Deprecated
+    protected boolean inClass(String name) {
 		return classDepth(name) != -1;
 	}
 
@@ -693,7 +700,8 @@ public class SecurityManager {
 	 * 
 	 * @deprecated Use checkPermission
 	 */
-	protected boolean inClassLoader() {
+	@Deprecated
+    protected boolean inClassLoader() {
 		return currentClassLoader() != null;
 	}
 
