@@ -34,54 +34,106 @@ public class Sequence {
     protected int resolution;
 
     protected Vector<Track> tracks;
+    
+    private Vector<Patch> patches;
 
     public Sequence(float divisionType, int resolution) throws InvalidMidiDataException {
-        //TODO
+        if (divisionType != Sequence.PPQ &&
+                divisionType != Sequence.SMPTE_24 &&
+                divisionType != Sequence.SMPTE_25 &&
+                divisionType != Sequence.SMPTE_30 &&
+                divisionType != Sequence.SMPTE_30DROP ) {
+            throw new InvalidMidiDataException("Unsupported division type: " + divisionType);      
+        }
+        this.divisionType = divisionType;
+        this.resolution = resolution;
+        this.tracks = new Vector<Track>();
+        this.patches = new Vector<Patch>();
+        
     }
 
     public Sequence(float divisionType, int resolution, int numTracks)
             throws InvalidMidiDataException {
-        //TODO
+        if (divisionType != Sequence.PPQ &&
+                divisionType != Sequence.SMPTE_24 &&
+                divisionType != Sequence.SMPTE_25 &&
+                divisionType != Sequence.SMPTE_30 &&
+                divisionType != Sequence.SMPTE_30DROP ) {
+            throw new InvalidMidiDataException("Unsupported division type: " + divisionType);      
+        }
+        this.divisionType = divisionType;
+        this.resolution = resolution;
+        this.patches = new Vector<Patch>();
+        this.tracks = new Vector<Track>();
+        if (numTracks > 0) {
+            for (int i = 0; i < numTracks; i++) {
+                tracks.add(new Track());
+            }
+        }
     }
 
     public Track createTrack() {
-        //TODO
-        return null;
+        /*
+         * new Tracks accrue to the end of vector
+         */
+        Track tr = new Track();
+        tracks.add(tr);
+        return tr;
     }
 
     public boolean deleteTrack(Track track) {
-        //TODO
-        return false;
+        return tracks.remove(track);
     }
 
     public float getDivisionType() {
-        //TODO
-        return 1.0f;
+        return divisionType;
     }
 
     public long getMicrosecondLength() {
-        //TODO
-        return 1L;
+        float divisionType;
+        if (this.divisionType == 0.0f) {
+            divisionType = 2;
+        } else {
+            divisionType = this.divisionType;
+        }
+        return (long) (1000000.0 * getTickLength() / 
+                (divisionType * this.resolution * 1.0f));
     }
 
     public Patch[] getPatchList() {
-        //TODO
-        return null;
+        //FIXME
+        /*
+         * I don't understand how to works this method, and so
+         * I simply return an empty array. 'patches' initializes
+         * in the constructor as empty vector 
+         */
+        Patch[] patch = new Patch[patches.size()];
+        patches.toArray(patch);
+        return patch;
     }
 
     public int getResolution() {
-        //TODO
-        return 1;
+        return resolution;
     }
 
     public long getTickLength() {
-        //TODO
-        return 1L;
+        /*
+         * this method return the biggest value of tick of 
+         * all tracks contain in the Sequence
+         */
+        long maxTick = 0;
+        for (int i = 0; i < tracks.size(); i++) {
+            if (maxTick < tracks.get(i).ticks()) {
+                maxTick = tracks.get(i).ticks();
+            }
+        }
+        return maxTick;
     }
 
     public Track[] getTracks() {
-        //TODO
-        return null;
+        Track[] track = new Track[tracks.size()];
+        tracks.toArray(track);
+        return track;
     }
 
 }
