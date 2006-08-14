@@ -77,7 +77,7 @@ public class TrustManagerFactoryImpl extends TrustManagerFactorySpi {
                         .doPrivileged(new java.security.PrivilegedAction() {
                             public Object run() {
                                 return System
-                                        .getProperty("javax.net.ssl.trustStorePassword ");
+                                        .getProperty("javax.net.ssl.trustStorePassword");
                             }
                         });
                 char[] pwd;
