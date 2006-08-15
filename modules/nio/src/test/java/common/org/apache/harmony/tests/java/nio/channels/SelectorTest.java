@@ -389,7 +389,7 @@ public class SelectorTest extends TestCase {
         } finally {
             try {
                 ssc.accept().close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 // do nothing
             }
           
