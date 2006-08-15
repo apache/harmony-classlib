@@ -188,15 +188,19 @@ public class AlgNameMapper {
                             alias = alias.substring(4);
                         }
                         // Do not overwrite already known mappings
-                        if (!oid2AlgMap.containsKey(alias) &&
-                            !alg2OidMap.containsKey(algUC)) {
-                            // Suppose OID always points to the standard name
-                            alg2OidMap.put(algUC, alias);
-                            oid2AlgMap.put(alias, algUC);
+                        boolean oid2AlgContains = oid2AlgMap.containsKey(alias);
+                        boolean alg2OidContains = alg2OidMap.containsKey(algUC);
+                        if (!oid2AlgContains || !alg2OidContains) {
+                            if (!oid2AlgContains) {
+                                oid2AlgMap.put(alias, algUC);
+                            } 
+                            if (!alg2OidContains) {
+                                alg2OidMap.put(algUC, alias);
+                            }
                             // map upper case alg name to its original name
                             algAliasesMap.put(algUC, alg);
                         }
-                           // Do not allow known standard names as alias 
+                           // Do not override known standard names
                     } else if (!algAliasesMap.containsKey(alias.toUpperCase())) {
                         algAliasesMap.put(alias.toUpperCase(), alg);
                     }
