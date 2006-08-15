@@ -34,7 +34,7 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLitt
 
 JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getPointerSizeImpl (JNIEnv * env, jclass clazz)
 {
-  return 4;
+   return sizeof(void *);
 }
 
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getAddress
@@ -76,7 +76,7 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLoad
   (JNIEnv * env, jobject thiz, jlong addr, jlong size){
 	  PORT_ACCESS_FROM_ENV (env);
   	  jboolean result = 0;
-  	  int m_addr = (int)addr;
+  	  IDATA m_addr = (IDATA)addr;
 	  int PAGE_SIZE = getPageSize();
 	  char* vec = NULL;
 	  int page_count = 0;

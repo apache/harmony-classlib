@@ -23,9 +23,12 @@
 #include <errno.h>
 #include <sys/sendfile.h>
 #include "vmi.h"
+#include "iohelp.h"
 
 #include "IFileSystem.h"
 #include "OSFileSystem.h"
+
+void *getJavaIoFileDescriptorContentsAsPointer (JNIEnv * env, jobject fd);
 
 typedef int OSSOCKET;   
 typedef struct hysocket_struct
@@ -223,7 +226,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_trans
   (JNIEnv *env, jobject thiz, jlong fd, jobject sd, jlong offset, jlong count)
 {
   PORT_ACCESS_FROM_ENV (env);
-  int socket;
+  OSSOCKET socket;
   //TODO IPV6
   hysocket_t hysocketP =
     (hysocket_t)getJavaIoFileDescriptorContentsAsPointer (env,sd);

@@ -18,7 +18,7 @@
 
 include $(HY_HDK)/build/make/makefile.include
 
-CFLAGS += -I../../zlib_dist
+CFLAGS += -fpic -I../../zlib_dist
 BUILDFILES = $(SHAREDSUB)zcpool.o $(SHAREDSUB)zipalloc.o \
 	$(SHAREDSUB)zipcache.o $(SHAREDSUB)zipsup.o
 LIBNAME = $(LIBPATH)libhyzip.a

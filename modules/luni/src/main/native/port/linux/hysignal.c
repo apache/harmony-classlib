@@ -624,35 +624,77 @@ infoForGPR (struct HyPortLibrary *portLibrary,
   switch (index)
     {
     case HYPORT_SIG_GPR_X86_EDI:
+	case HYPORT_SIG_GPR_AMD64_RDI:
     case 0:
+#ifdef HYX86_64
+      *name = "RDI";
+      *value = &info->sigContext->rdi;
+#endif
+#ifdef HYX86
       *name = "EDI";
       *value = &info->sigContext->edi;
-      return HYPORT_SIG_VALUE_ADDRESS;
+#endif
+	  return HYPORT_SIG_VALUE_ADDRESS;
     case HYPORT_SIG_GPR_X86_ESI:
+	case HYPORT_SIG_GPR_AMD64_RSI:
     case 1:
+#ifdef HYX86
       *name = "ESI";
       *value = &info->sigContext->esi;
+#endif
+#ifdef HYX86_64
+      *name = "RSI";
+      *value = &info->sigContext->rsi;
+#endif
       return HYPORT_SIG_VALUE_ADDRESS;
     case HYPORT_SIG_GPR_X86_EAX:
+    case HYPORT_SIG_GPR_AMD64_RAX:
     case 2:
+#ifdef HYX86
       *name = "EAX";
       *value = &info->sigContext->eax;
-      return HYPORT_SIG_VALUE_ADDRESS;
+#endif
+#ifdef HYX86_64
+      *name = "RAX";
+      *value = &info->sigContext->rax;
+#endif
+	  return HYPORT_SIG_VALUE_ADDRESS;
     case HYPORT_SIG_GPR_X86_EBX:
+    case HYPORT_SIG_GPR_AMD64_RBX:
     case 3:
+#ifdef HYX86
       *name = "EBX";
       *value = &info->sigContext->ebx;
-      return HYPORT_SIG_VALUE_ADDRESS;
+#endif
+#ifdef HYX86_64
+      *name = "RBX";
+      *value = &info->sigContext->rbx;
+#endif
+	  return HYPORT_SIG_VALUE_ADDRESS;
     case HYPORT_SIG_GPR_X86_ECX:
+    case HYPORT_SIG_GPR_AMD64_RCX:
     case 4:
+#ifdef HYX86
       *name = "ECX";
       *value = &info->sigContext->ecx;
-      return HYPORT_SIG_VALUE_ADDRESS;
+#endif
+#ifdef HYX86_64
+      *name = "RCX";
+      *value = &info->sigContext->rcx;
+#endif
+	  return HYPORT_SIG_VALUE_ADDRESS;
     case HYPORT_SIG_GPR_X86_EDX:
+    case HYPORT_SIG_GPR_AMD64_RDX:
     case 5:
+#ifdef HYX86
       *name = "EDX";
       *value = &info->sigContext->edx;
-      return HYPORT_SIG_VALUE_ADDRESS;
+#endif
+#ifdef HYX86_64
+      *name = "RDX";
+      *value = &info->sigContext->rdx;
+#endif
+	  return HYPORT_SIG_VALUE_ADDRESS;
     default:
       return HYPORT_SIG_VALUE_UNDEFINED;
     }
@@ -675,9 +717,16 @@ infoForControl (struct HyPortLibrary *portLibrary,
     {
     case HYPORT_SIG_CONTROL_PC:
     case 0:
+#ifdef HYX86
       *name = "EIP";
       *value = (void *) &(info->sigContext->eip);
-      return HYPORT_SIG_VALUE_ADDRESS;
+#endif
+#ifdef HYX86_64
+      *name = "RIP";
+      *value = (void *) &(info->sigContext->rip);
+#endif
+	  return HYPORT_SIG_VALUE_ADDRESS;
+#ifdef HYX86
     case 1:
       *name = "ES";
       *value = (void *) &(info->sigContext->es);
@@ -686,10 +735,17 @@ infoForControl (struct HyPortLibrary *portLibrary,
       *name = "DS";
       *value = (void *) &(info->sigContext->ds);
       return HYPORT_SIG_VALUE_ADDRESS;
+#endif
     case HYPORT_SIG_CONTROL_SP:
     case 3:
+#ifdef HYX86
       *name = "ESP";
       *value = (void *) &(info->sigContext->esp);
+#endif
+#ifdef HYX86_64
+      *name = "RSP";
+      *value = (void *) &(info->sigContext->rsp);
+#endif
       return HYPORT_SIG_VALUE_ADDRESS;
     case 4:
       *name = "EFlags";
@@ -699,15 +755,23 @@ infoForControl (struct HyPortLibrary *portLibrary,
       *name = "CS";
       *value = (void *) &(info->sigContext->cs);
       return HYPORT_SIG_VALUE_ADDRESS;
+#ifdef HYX86
     case 6:
       *name = "SS";
       *value = (void *) &(info->sigContext->ss);
       return HYPORT_SIG_VALUE_ADDRESS;
-    case HYPORT_SIG_CONTROL_BP:
+#endif
+	case HYPORT_SIG_CONTROL_BP:
     case 7:
+#ifdef HYX86
       *name = "EBP";
       *value = &info->sigContext->ebp;
-      return HYPORT_SIG_VALUE_ADDRESS;
+#endif
+#ifdef HYX86_64
+      *name = "RBP";
+      *value = &info->sigContext->rbp;
+#endif
+	  return HYPORT_SIG_VALUE_ADDRESS;
     default:
       return HYPORT_SIG_VALUE_UNDEFINED;
     }
@@ -726,8 +790,14 @@ infoForModule (struct HyPortLibrary *portLibrary,
   Dl_info *dl_info = &(info->dl_info);
   *name = "";
 
+#ifdef HYX86
   address = (void *) info->sigContext->eip;
   int dl_result = dladdr ((void *) info->sigContext->eip, dl_info);
+#endif
+#ifdef HYX86_64
+  address = (void *) info->sigContext->rip;
+  int dl_result = dladdr ((void *) info->sigContext->rip, dl_info);
+#endif
 
   switch (index)
     {
