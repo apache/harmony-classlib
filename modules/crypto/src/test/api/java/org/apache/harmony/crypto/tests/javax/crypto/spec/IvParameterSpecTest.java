@@ -113,6 +113,14 @@ public class IvParameterSpecTest extends TestCase {
         iv[0] ++;
         assertFalse("The change of input array's content should not cause "
                     + "the change of internal array", iv[0] == ivps.getIV()[0]);
+
+        //Regression for HARMONY-1089
+        try {
+            new IvParameterSpec(new byte[2], 2,  -1);
+            fail("ArrayIndexOutOfBoundsException expected");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            //expected
+        }
     }
 
     public void testGetIV() {

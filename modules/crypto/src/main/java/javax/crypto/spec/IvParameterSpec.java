@@ -46,7 +46,10 @@ public class IvParameterSpec implements AlgorithmParameterSpec {
     public IvParameterSpec(byte[] iv, int offset, int len) {
         if ((iv == null) || (iv.length - offset < len)) {
             throw new IllegalArgumentException(
-                    "iv is null or (iv.length - offset < len).");
+                    "iv is null or (iv.length - offset < len)");
+        }
+        if (offset < 0 || len < 0) {
+            throw new ArrayIndexOutOfBoundsException("offset < 0 or len < 0");
         }
         this.iv = new byte[len];
         System.arraycopy(iv, offset, this.iv, 0, len);
