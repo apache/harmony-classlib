@@ -111,7 +111,9 @@ public final class VMID implements Serializable {
 
     /**
      * @com.intel.drl.spec_ref
+     * @deprecated VMID's are unique in overwhelming majority of cases 
      */
+    @Deprecated
     public static boolean isUnique() {
         return unique;
     }
