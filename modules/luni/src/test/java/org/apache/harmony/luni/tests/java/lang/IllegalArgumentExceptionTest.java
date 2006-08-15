@@ -19,16 +19,6 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class IllegalArgumentExceptionTest extends junit.framework.TestCase {
 
-	class TestThread implements Runnable {
-		public void run() {
-			try {
-				Thread.sleep(5000);
-			} catch (Exception e) {
-				System.out.println("Unable to start thread");
-			}
-		}
-	}
-
 	/**
 	 * @tests java.lang.IllegalArgumentException#IllegalArgumentException()
 	 */
