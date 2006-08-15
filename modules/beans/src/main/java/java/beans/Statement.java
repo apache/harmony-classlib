@@ -166,16 +166,17 @@ public class Statement {
                     result = method.invoke(target, arguments);
                 }
             } else {
-                final Method method = findMethod(target.getClass(), methodName,
+                Method method = findMethod(target.getClass(), methodName,
                         arguments, false);
 
-                AccessController.doPrivileged(new PrivilegedAction<Object>() {
-
-                    public Object run() {
-                        method.setAccessible(true);
-                        return null;
-                    }
-                });
+                // XXX investigate: do we really need this?
+//              AccessController.doPrivileged(new PrivilegedAction<Object>() {
+//      
+//                  public Object run() {
+//                      mtd.setAccessible(true);
+//                      return null;
+//                  }
+//              });
 
                 result = method.invoke(target, arguments);
             }
@@ -270,7 +271,7 @@ public class Statement {
     /**
      * Searches for best matching method for given name and argument types.
      */
-    private static Method findMethod(Class<?> targetClass, String methodName,
+    static Method findMethod(Class<?> targetClass, String methodName,
             Object[] arguments, boolean methodIsStatic)
             throws NoSuchMethodException {
 
@@ -328,6 +329,79 @@ public class Statement {
         return foundMethodsArr[0];
     }
 
+    static boolean isStaticMethodCall(Statement stmt) {
+        Object target = stmt.getTarget();
+        String mName = stmt.getMethodName();
+
+        if (!(target instanceof Class)) {
+            return false;
+        }
+
+        try {
+            Statement.findMethod((Class) target, mName,
+                                 stmt.getArguments(), true);
+            return true;
+        } catch (NoSuchMethodException e) {
+            return false;
+        }
+    }
+
+    /**
+     * The list of "method signatures" used by persistence delegates to create
+     * objects. Not necessary reflects to real methods.
+     */
+    private static String[][] pdConstructorSignatures = {
+        {"java.lang.Class", "new", "java.lang.Boolean", "", "", ""}, 
+        {"java.lang.Class", "new", "java.lang.Byte", "", "", ""}, 
+        {"java.lang.Class", "new", "java.lang.Character", "", "", ""}, 
+        {"java.lang.Class", "new", "java.lang.Double", "", "", ""}, 
+        {"java.lang.Class", "new", "java.lang.Float", "", "", ""}, 
+        {"java.lang.Class", "new", "java.lang.Integer", "", "", ""}, 
+        {"java.lang.Class", "new", "java.lang.Long", "", "", ""}, 
+        {"java.lang.Class", "new", "java.lang.Short", "", "", ""}, 
+        {"java.lang.Class", "new", "java.lang.String", "", "", ""}, 
+        {"java.lang.Class", "forName", "java.lang.String", "", "", ""},
+        {"java.lang.Class", "newInstance", "java.lang.Class",
+                "java.lang.Integer", "", ""},
+        {"java.lang.reflect.Field", "get", "null", "", "", ""},
+        {"java.lang.Class", "forName", "java.lang.String", "", "", ""}
+    };
+    
+    static boolean isPDConstructor(Statement stmt) {
+        Object target = stmt.getTarget();
+        String methodName = stmt.getMethodName();
+        Object[] args = stmt.getArguments();
+        String[] sig = new String[pdConstructorSignatures[0].length];
+
+        if (target == null || methodName == null || args == null ||
+                args.length == 0)
+        {
+            // not a constructor for sure
+            return false;
+        }
+
+        sig[0] = target.getClass().getName();
+        sig[1] = methodName;
+
+        for (int i = 2; i < sig.length; i++) {
+            if (args.length > i - 2) {
+                sig[i] = args[i - 2] != null ?
+                        args[i - 2].getClass().getName() : "null"; 
+            } else {
+                sig[i] = "";
+            }
+
+        }
+        
+        for (int i = 0; i < pdConstructorSignatures.length; i++) {
+            if (Arrays.equals(sig, pdConstructorSignatures[i])) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
     private static boolean isPrimitiveWrapper(Class<?> wrapper, Class<?> base) {
         return (base == boolean.class) && (wrapper == Boolean.class)
                 || (base == byte.class) && (wrapper == Byte.class)

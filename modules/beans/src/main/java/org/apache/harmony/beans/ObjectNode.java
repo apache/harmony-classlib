@@ -41,7 +41,8 @@ public class ObjectNode {
     private LinkedHashSet<Statement> statements =
             new LinkedHashSet<Statement>();
     private Vector<Expression> expressions = new Vector<Expression>();
-    private Vector<Expression> referencedExpressions = new Vector<Expression>();
+    // XXX referencedExpressions is not used indeed
+    //private Vector<Expression> referencedExpressions = new Vector<Expression>();
     
     private int referencesNumber = 0;
     private String id = null;
@@ -104,18 +105,19 @@ public class ObjectNode {
     public int getReferencesNumber() {
         return referencesNumber;
     }
-    
-    public int getReferencedExpressionsNumber() {
-        return referencedExpressions.size();
-    }
+
+    // XXX never called by other classes
+//    public int getReferencedExpressionsNumber() {
+//        return referencedExpressions.size();
+//    }
     
     public void addReference() {
         referencesNumber++;
     }
     
-    public void addReferencedExpression(Expression expr) {
-        referencedExpressions.add(expr);
-    }
+//    public void addReferencedExpression(Expression expr) {
+//        referencedExpressions.add(expr);
+//    }
     
     public String getId() {
         return id;
@@ -137,9 +139,10 @@ public class ObjectNode {
         return expressions.iterator();
     }
     
-    public Iterator<Expression> referencedExpressions() {
-        return referencedExpressions.iterator();
-    }
+    // XXX never called by other classes 
+//    public Iterator<Expression> referencedExpressions() {
+//        return referencedExpressions.iterator();
+//    }
     
     public Iterator<Statement> statements() {
         return statements.iterator();

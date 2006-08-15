@@ -21,6 +21,7 @@
 package java.beans;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -119,6 +120,7 @@ public class Encoder {
                 Statement statement;
                 Object[] oldArgs = oldStm.getArguments();
 
+                // FIXME add target processing here
                 write(oldArgs);
                 statement = new Statement(node.getObjectValue(),
                         oldStm.getMethodName(), oldArgs);
@@ -140,44 +142,55 @@ public class Encoder {
      */
     public void writeExpression(Expression oldExp) {
         try {
-            Object oldInstance = oldExp.getValue();
+            Object oldValue = oldExp.getValue();
+            Object oldTarget = oldExp.getTarget();
 
-            ObjectNode node = null;
-            Class<?> type = null;
+            ObjectNode valueNode = null;
+            Class<?> valueType = null;
 
-            if (oldInstance != null) {
-                type = oldInstance.getClass();
-                node = nodes.get(oldInstance);
-            }
+            // write target 
+            if (!Statement.isPDConstructor(oldExp) &&
+                !Statement.isStaticMethodCall(oldExp))
+            {
+                ObjectNode parent;
 
-            if (node == null) {
-                if (isNull(type) || isPrimitive(type) || isString(type)
-                //|| isClass(type)
-                ) {
-                    node = new ObjectNode(oldExp);
-                } else {
-                    write(oldExp.getArguments());
-                    node = new ObjectNode(oldExp, nodes);
-                }
-
-                nodes.put(oldInstance, node);
-
-                // if an expression is not a constructor
-                // FIXME prevents instance methods of Class and Method objects
-                // from being handled correctly
-                if (!(oldExp.getTarget() instanceof Class
-                        || oldExp.getTarget() instanceof Field)) {
-                    ObjectNode parent = nodes.get(oldExp.getTarget());
-
+                //XXX investigate
+                //write(oldTarget);
+                parent = nodes.get(oldTarget);
+                if (parent != null) {
                     parent.addExpression(oldExp);
                 }
+            }
+
+            // write value
+            
+            if (oldValue != null) {
+                valueType = oldValue.getClass();
+                valueNode = nodes.get(oldValue);
+            }
+
+            if (valueNode == null) {
+
+                if (isNull(valueType) || isPrimitive(valueType)
+                        || isString(valueType))
+                {
+                    valueNode = new ObjectNode(oldExp);
+                } else {
+                    write(oldExp.getArguments());
+                    valueNode = new ObjectNode(oldExp, nodes);
+                }
+
+                nodes.put(oldValue, valueNode);
             } else if (oldExp.getMethodName().equals("new")) {
-                node.addReference();
+                valueNode.addReference();
             } else {
-                node.addReferencedExpression(oldExp);
+                // XXX the information about referencedExpressions is not
+                // being used by anyone
+                // node.addReferencedExpression(oldExp);
             }
         } catch (Exception e) {
             // TODO - remove written args
+            e.printStackTrace();
             getExceptionListener().exceptionThrown(e);
         }
     }
@@ -274,7 +287,7 @@ public class Encoder {
     static boolean isArray(Class<?> type) {
         return type.isArray();
     }
-
+    
     static String getPrimitiveName(Class<?> type) {
         String result = null;
 
