@@ -116,7 +116,9 @@ public class MulticastSocketTest extends SocketTestCase {
 	 */
 	public void test_Constructor() throws IOException {
 		// regression test for 497
-        new MulticastSocket();
+        MulticastSocket s = new MulticastSocket();
+        // regression test for Harmony-1162
+        assertTrue(s.getReuseAddress());
 	}
 
 	/**
@@ -130,6 +132,8 @@ public class MulticastSocketTest extends SocketTestCase {
 			mss = new MulticastSocket();
 			int port = mss.getLocalPort();
 			dup = new MulticastSocket(port);
+            // regression test for Harmony-1162
+            assertTrue(dup.getReuseAddress());
 		} catch (IOException e) {
 			fail("duplicate binding not allowed: " + e);
 		}
@@ -921,40 +925,41 @@ public class MulticastSocketTest extends SocketTestCase {
 	/**
 	 * @tests java.net.MulticastSocket#MulticastSocket(java.net.SocketAddress)
 	 */
-	public void test_ConstructorLjava_net_SocketAddress() {
-		try {
-			MulticastSocket ms = new MulticastSocket((SocketAddress) null);
-			assertTrue("should not be bound", !ms.isBound() && !ms.isClosed()
-					&& !ms.isConnected());
-			ms.bind(new InetSocketAddress(InetAddress.getLocalHost(),
-					Support_PortManager.getNextPort()));
-			assertTrue("should be bound", ms.isBound() && !ms.isClosed()
-					&& !ms.isConnected());
-			ms.close();
-			assertTrue("should be closed", ms.isClosed());
-			ms = new MulticastSocket(new InetSocketAddress(InetAddress
-					.getLocalHost(), Support_PortManager.getNextPort()));
-			assertTrue("should be bound", ms.isBound() && !ms.isClosed()
-					&& !ms.isConnected());
-			ms.close();
-			assertTrue("should be closed", ms.isClosed());
-			ms = new MulticastSocket(new InetSocketAddress("localhost",
-					Support_PortManager.getNextPort()));
-			assertTrue("should be bound", ms.isBound() && !ms.isClosed()
-					&& !ms.isConnected());
-			ms.close();
-			assertTrue("should be closed", ms.isClosed());
-			boolean exception = false;
-			try {
-				ms = new MulticastSocket(new InetSocketAddress(
-						"unresolvedname", Support_PortManager.getNextPort()));
-			} catch (IOException e) {
-				exception = true;
-			}
-			assertTrue("Expected IOException", exception);
-		} catch (IOException e) {
-			fail("Unexpected: " + e);
-		}
+	public void test_ConstructorLjava_net_SocketAddress() throws Exception {	
+		MulticastSocket ms = new MulticastSocket((SocketAddress) null);
+        assertTrue("should not be bound", !ms.isBound() && !ms.isClosed()
+                && !ms.isConnected());
+        ms.bind(new InetSocketAddress(InetAddress.getLocalHost(),
+                Support_PortManager.getNextPort()));
+        assertTrue("should be bound", ms.isBound() && !ms.isClosed()
+                && !ms.isConnected());
+        ms.close();
+        assertTrue("should be closed", ms.isClosed());
+        ms = new MulticastSocket(new InetSocketAddress(InetAddress
+                .getLocalHost(), Support_PortManager.getNextPort()));
+        assertTrue("should be bound", ms.isBound() && !ms.isClosed()
+                && !ms.isConnected());
+        ms.close();
+        assertTrue("should be closed", ms.isClosed());
+        ms = new MulticastSocket(new InetSocketAddress("localhost",
+                Support_PortManager.getNextPort()));
+        assertTrue("should be bound", ms.isBound() && !ms.isClosed()
+                && !ms.isConnected());
+        ms.close();
+        assertTrue("should be closed", ms.isClosed());
+        boolean exception = false;
+        try {
+            ms = new MulticastSocket(new InetSocketAddress("unresolvedname",
+                    Support_PortManager.getNextPort()));
+        } catch (IOException e) {
+            exception = true;
+        }
+        assertTrue("Expected IOException", exception);
+
+        // regression test for Harmony-1162
+        InetSocketAddress addr = new InetSocketAddress("0.0.0.0", 0);
+        MulticastSocket s = new MulticastSocket(addr);
+        assertTrue(s.getReuseAddress()); 
 	}
 
 	/**

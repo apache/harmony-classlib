@@ -43,6 +43,7 @@ public class MulticastSocket extends DatagramSocket {
 	 */
 	public MulticastSocket() throws IOException {
 		super();
+        setReuseAddress(true);
 	}
 
 	/**
@@ -56,6 +57,7 @@ public class MulticastSocket extends DatagramSocket {
 	 */
 	public MulticastSocket(int aPort) throws IOException {
 		super(aPort);
+        setReuseAddress(true);
 	}
 
 	/**
@@ -580,6 +582,7 @@ public class MulticastSocket extends DatagramSocket {
 	 */
 	public MulticastSocket(SocketAddress localAddr) throws IOException {
 		super(localAddr);
+        setReuseAddress(true);
 	}
 
 	/**
