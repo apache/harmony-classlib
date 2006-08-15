@@ -1,0 +1,8 @@
+HYINSTRUMENT_0.1 {
+	global :
+	Java_org_apache_harmony_instrument_internal_InstrumentationImpl_getAllLoadedClasses;
+	Java_org_apache_harmony_instrument_internal_InstrumentationImpl_getInitiatedClasses;
+	Java_org_apache_harmony_instrument_internal_InstrumentationImpl_getObjectSize_1native;
+	Java_org_apache_harmony_instrument_internal_InstrumentationImpl_redefineClasses_1native;
+	local : *;
+};
