@@ -27,22 +27,23 @@ public class Environment {
 
 	static {
         byte[] bytes = getEnvBytes();
-        if (bytes != null) {
-            String[] envStrings = new String(bytes).split("\0");
-            for (int i = 0; i < envStrings.length; i++) {
-                int separator = envStrings[i].indexOf("=");
-                envMap.put(envStrings[i].substring(0, separator), envStrings[i]
-                        .substring(separator + 1));
-            }
+        if (bytes == null) {
+            throw new Error("Failed to get environment variables.");
+        }
+        String[] envStrings = new String(bytes).split("\0");
+        for (int i = 0; i < envStrings.length; i++) {
+            int separator = envStrings[i].indexOf("=");
+            envMap.put(envStrings[i].substring(0, separator), envStrings[i]
+                    .substring(separator + 1));
         }
 	}
 
 	/**
-	 * Returns a Map of the current environment variables, containing key and
-	 * value pairs.
-	 * 
-	 * @return a Map containing the environment variables and their values
-	 */
+     * Returns a Map of the current environment variables, containing key and
+     * value pairs.
+     * 
+     * @return a Map containing the environment variables and their values
+     */
 	public static Map<String, String> getenv() {
 		return envMap;
 	}
