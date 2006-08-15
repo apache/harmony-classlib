@@ -558,14 +558,21 @@ class PlainSocketImpl extends SocketImpl {
 	 * Read a SOCKS V4 reply.
 	 */
 	private Socks4Message socksReadReply() throws IOException {
-		Socks4Message reply = new Socks4Message();
-		int bytesRead = 0;
-		while (bytesRead < Socks4Message.REPLY_LENGTH) {
-			bytesRead += getInputStream().read(reply.getBytes(), bytesRead,
-					Socks4Message.REPLY_LENGTH - bytesRead);
-		}
-		return reply;
-	}
+        Socks4Message reply = new Socks4Message();
+        int bytesRead = 0;
+        while (bytesRead < Socks4Message.REPLY_LENGTH) {
+            int count = getInputStream().read(reply.getBytes(), bytesRead,
+                    Socks4Message.REPLY_LENGTH - bytesRead);
+            if (-1 == count) {
+                break;
+            }
+            bytesRead += count;
+        }
+        if (Socks4Message.REPLY_LENGTH != bytesRead) {
+            throw new SocketException(Msg.getString("KA011"));
+        }
+        return reply;
+    }
 
 	/**
 	 * Connect the socket to the host/port specified by the SocketAddress with a
