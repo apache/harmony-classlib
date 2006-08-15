@@ -90,7 +90,7 @@ public class BufferedInputStream extends FilterInputStream {
     }
 
     /**
-     * Answers a int representing then number of bytes that are available before
+     * Answers an int representing the number of bytes that are available before
      * this BufferedInputStream will block. This method returns the number of
      * bytes available in the buffer plus those available in the target stream.
      * 
@@ -311,15 +311,13 @@ public class BufferedInputStream extends FilterInputStream {
 
     @Override
     public synchronized void reset() throws IOException {
-        if (markpos != -1) {
-            if (buf != null) {
-                pos = markpos;
-            } else {
-                throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
-            }
-        } else {
-            throw new IOException(Msg.getString("K005a")); //$NON-NLS-1$
-        }
+    	if (closed) {
+    		throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$	
+    	}
+        if (-1 == markpos) {
+        	throw new IOException(Msg.getString("K005a")); //$NON-NLS-1$
+        }    
+        pos = markpos;         
     }
 
     /**

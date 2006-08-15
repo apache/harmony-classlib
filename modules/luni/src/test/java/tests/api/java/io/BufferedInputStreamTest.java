@@ -345,6 +345,36 @@ public class BufferedInputStreamTest extends junit.framework.TestCase {
 			fail("Exception during reset test");
 		}
 	}
+	
+    /**
+     * @tests java.io.BufferedInputStream#reset()
+	 */
+	public void test_reset_Exception() throws IOException {
+		BufferedInputStream bis = new BufferedInputStream(null);
+		
+		//throws IOExcepiton with message "Mark has been invalidated"
+		try {
+			bis.reset();
+			fail("should throw IOException");
+		} catch (IOException e) {
+			// expected
+		}
+		
+		//does not throw IOException
+		bis.mark(1);
+		bis.reset();
+		
+		bis.close();
+
+		//throws IOException with message "stream is closed"
+		try {
+			bis.reset();
+			fail("should throw IOException");
+		} catch (IOException e) {
+			// expected
+		}
+	}
+
 
 	/**
 	 * @tests java.io.BufferedInputStream#skip(long)
