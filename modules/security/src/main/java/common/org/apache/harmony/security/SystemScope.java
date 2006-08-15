@@ -79,7 +79,7 @@ public class SystemScope extends IdentityScope {
      */
     public synchronized Identity getIdentity(String name) {
         if (name == null) {
-            return null;
+            throw new NullPointerException();
         }
         return (Identity) names.get(name);
     }

@@ -238,16 +238,25 @@ public class IdentityScope2Test extends junit.framework.TestCase {
        		assertEquals("Wrong size", 1, sub.size());
 	}
 
-	/**
-	 * @tests java.security.IdentityScope#toString()
-	 */
-	public void test_toString() throws Exception {
-       		IdentityScopeSubclass sub = new IdentityScopeSubclass("test",
-       				new IdentityScopeSubclass());
-       		Identity id = new IdentitySubclass();
-       		id.setPublicKey(pubKey);
-       		sub.addIdentity(id);
-       		assertNotNull("toString returned a null", sub.toString());
-       		assertTrue("Not a valid String ", sub.toString().length() > 0);
-	}
+    /**
+     * @tests java.security.IdentityScope#toString()
+     */
+    public void test_toString() throws Exception {
+            IdentityScopeSubclass sub = new IdentityScopeSubclass("test",
+                    new IdentityScopeSubclass());
+            Identity id = new IdentitySubclass();
+            id.setPublicKey(pubKey);
+            sub.addIdentity(id);
+            assertNotNull("toString returned a null", sub.toString());
+            assertTrue("Not a valid String ", sub.toString().length() > 0);
+    }
+
+    public void test_getIdentity() throws Exception {
+        //Regression for HARMONY-1173
+        IdentityScope scope = IdentityScope.getSystemScope(); 
+        try {
+            scope.getIdentity((String) null);
+            fail("NPE expected");
+        } catch (NullPointerException npe) {}
+    }
 }
