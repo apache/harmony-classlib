@@ -129,6 +129,11 @@ public class LocaleTest extends junit.framework.TestCase {
 		assertTrue("Returned incorrect country: "
 				+ testLocale.getDisplayCountry(), testLocale
 				.getDisplayCountry().equals("Canada"));
+        
+        // Regression for Harmony-1146
+        Locale l_countryCD = new Locale("", "CD"); //$NON-NLS-1$ //$NON-NLS-2$
+                assertEquals("The Democratic Republic Of Congo", //$NON-NLS-1$
+                        l_countryCD.getDisplayCountry()); 
 	}
 
 	/**
@@ -150,6 +155,10 @@ public class LocaleTest extends junit.framework.TestCase {
 		assertTrue("Returned incorrect language: "
 				+ testLocale.getDisplayLanguage(), testLocale
 				.getDisplayLanguage().equals("English"));
+        
+		// Regression for Harmony-1146
+        Locale l_languageAE = new Locale("ae", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("Avestan", l_languageAE.getDisplayLanguage()); //$NON-NLS-1$
 	}
 
 	/**
@@ -227,6 +236,10 @@ public class LocaleTest extends junit.framework.TestCase {
         
         Locale l = new Locale("ae");
         assertEquals("ave", l.getISO3Language());
+        
+        // Regression for Harmony-1146
+        Locale l_CountryCS = new Locale("", "CS"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("SCG", l_CountryCS.getISO3Country()); //$NON-NLS-1$
         
         // Regression for Harmony-1129
         l = new Locale("ak", ""); //$NON-NLS-1$ //$NON-NLS-2$

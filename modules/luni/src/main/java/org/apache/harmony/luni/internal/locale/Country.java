@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,6 +62,7 @@ protected Object[][] getContents() {
 		{"CV", "Cape Verde"},
 		{"KY", "Cayman Islands"},
 		{"CF", "Central African Republic"},
+        {"CD","The Democratic Republic Of Congo"}, //$NON-NLS-1$ //$NON-NLS-2$
 		{"TD", "Chad"},
 		{"CL", "Chile"},
 		{"CN", "China"},

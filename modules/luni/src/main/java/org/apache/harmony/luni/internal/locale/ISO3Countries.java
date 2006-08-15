@@ -69,7 +69,7 @@ protected Object[][] getContents() {
 		{"CN", "CHN"},
 		{"CO", "COL"},
 		{"CR", "CRI"},
-		{"CS", "CSG"},
+		{"CS", "SCG"},  //$NON-NLS-1$//$NON-NLS-2$
 		{"CU", "CUB"},
 		{"CV", "CPV"},
 		{"CX", "CXR"},
