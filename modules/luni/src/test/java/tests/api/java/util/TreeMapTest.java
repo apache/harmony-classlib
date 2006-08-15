@@ -54,6 +54,20 @@ public class TreeMapTest extends junit.framework.TestCase {
             return c1.compareTo(c2);
         }
     }
+    
+    // Regression for Harmony-1161
+    class MockComparatorNullTolerable implements Comparator<String> {
+
+        public int compare(String o1, String o2) {
+            if( o1 == o2 ) {
+                return 0;
+            }
+            if( null == o1 ) {
+                return -1;
+            }
+            return o1.compareTo(o2);
+        }
+    }
 
 	TreeMap tm;
 
@@ -367,6 +381,13 @@ public class TreeMapTest extends junit.framework.TestCase {
 		}
 		assertEquals("end key less than start key should throw IllegalArgumentException",
 				1, result);
+        
+        // Regression for Harmony-1161
+        TreeMap<String, String> treeMapWithNull = new TreeMap<String, String>(new MockComparatorNullTolerable());
+        treeMapWithNull.put("key1" , "value1"); //$NON-NLS-1$ //$NON-NLS-2$
+        treeMapWithNull.put(null, "value2"); //$NON-NLS-1$
+        SortedMap<String, String> subMapWithNull =  treeMapWithNull.subMap( null, "key1"); //$NON-NLS-1$
+        assertEquals("Size of subMap should be 1:", 1, subMapWithNull.size()); //$NON-NLS-1$
 	}
 
 	/**
