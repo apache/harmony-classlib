@@ -183,7 +183,7 @@ public abstract class Codec {
 	 * 
 	 * @param in
 	 *            the input stream to read from
-	 * @param long
+	 * @param last
 	 *            the previous value read, which must be supplied if the codec
 	 *            is a delta encoding
 	 * @return the value as a long
