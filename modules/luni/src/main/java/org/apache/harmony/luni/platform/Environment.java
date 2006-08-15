@@ -15,38 +15,50 @@
 
 package org.apache.harmony.luni.platform;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Environment
- *  
  */
 public class Environment {
 
-	/**
-	 * Returns a Map of the current environment variables, containing
-         * key and value pairs.
-         * 
-         * @return a Map containing the environment variables and their
-         *         values
-	 * 
-	 * TODO: Implement
-	 */
-	public static Map<String,String> getenv() {
-		throw new org.apache.harmony.luni.util.NotYetImplementedException("getenv is not implemented");
+	private static Map<String, String> envMap = new HashMap<String, String>();
+
+	static {
+        byte[] bytes = getEnvBytes();
+        if (bytes != null) {
+            String[] envStrings = new String(bytes).split("\0");
+            for (int i = 0; i < envStrings.length; i++) {
+                int separator = envStrings[i].indexOf("=");
+                envMap.put(envStrings[i].substring(0, separator), envStrings[i]
+                        .substring(separator + 1));
+            }
+        }
 	}
-	
+
 	/**
-	 * Returns a String containing the value of the specified name
-	 * environment variable
+	 * Returns a Map of the current environment variables, containing key and
+	 * value pairs.
 	 * 
-	 * @param name - the environment variable to get the value of
+	 * @return a Map containing the environment variables and their values
+	 */
+	public static Map<String, String> getenv() {
+		return envMap;
+	}
+
+	/**
+	 * Returns a String containing the value of the specified name environment
+	 * variable
 	 * 
-         * @return the value of the environment variable specified
-         * 
-         * TODO: Implement
+	 * @param name -
+	 *            the environment variable to get the value of
+	 * 
+	 * @return the value of the environment variable specified
 	 */
 	public static String getenv(String name) {
-		throw new org.apache.harmony.luni.util.NotYetImplementedException("getenv is not implemented");
+		return envMap.get(name);
 	}
+
+	private static native byte[] getEnvBytes();
 }

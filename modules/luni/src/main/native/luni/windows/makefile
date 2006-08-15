@@ -34,7 +34,7 @@ BUILDFILES = \
   $(SHAREDSUB)process.obj $(SHAREDSUB)bigint.obj $(SHAREDSUB)osc.obj \
   $(SHAREDSUB)socket.obj $(SHAREDSUB)inetadds.obj \
   $(SHAREDSUB)filedesc.obj $(SHAREDSUB)timezone.obj \
-  OSFileSystemWin32.obj \
+  OSFileSystemWin32.obj hyenv.obj\
   $(SHAREDSUB)OSFileSystem.obj OSMemoryWin32.obj OSMemory.obj \
   $(SHAREDSUB)OSNetworkSystem.obj OSNetworkSystemWin32.obj
 
