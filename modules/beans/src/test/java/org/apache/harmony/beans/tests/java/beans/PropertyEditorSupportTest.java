@@ -32,7 +32,7 @@ public class PropertyEditorSupportTest extends TestCase {
      */
     public void testPropertyEditorSupport() {
         // Regression for HARMONY-516
-        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        PropertyEditorSupport support = new PropertyEditorSupport();
 
         assertEquals("null", support.getAsText());
         assertNull(support.getValue());
@@ -52,7 +52,7 @@ public class PropertyEditorSupportTest extends TestCase {
      */
     public void testPropertyEditorSupportObject() {
         MockSource source = new MockSource();
-        MockPropertyEditorSupport support = new MockPropertyEditorSupport(
+        PropertyEditorSupport support = new PropertyEditorSupport(
                 source);
 
         assertEquals("null", support.getAsText());
@@ -69,7 +69,7 @@ public class PropertyEditorSupportTest extends TestCase {
      */
     public void testPropertyEditorSupportObject_null() {
         try {
-            new MockPropertyEditorSupport(null);
+            new PropertyEditorSupport(null);
             fail("Should throw NullPointerException.");
         } catch (NullPointerException e) {
             // expected
@@ -81,7 +81,7 @@ public class PropertyEditorSupportTest extends TestCase {
      */
     public void testAddPropertyChangeListener() {
         MockTarget target = new MockTarget();
-        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        PropertyEditorSupport support = new PropertyEditorSupport();
         support.addPropertyChangeListener(EventHandler.create(
                 PropertyChangeListener.class, target, "setCalled"));
         support.firePropertyChange();
@@ -92,7 +92,7 @@ public class PropertyEditorSupportTest extends TestCase {
     public void testAddPropertyChangeListener_source() {
         MockTarget target = new MockTarget();
         MockSource source = new MockSource();
-        MockPropertyEditorSupport support = new MockPropertyEditorSupport(
+        PropertyEditorSupport support = new PropertyEditorSupport(
                 source);
         support.addPropertyChangeListener(EventHandler.create(
                 PropertyChangeListener.class, target, "eventSource", "source"));
@@ -102,7 +102,7 @@ public class PropertyEditorSupportTest extends TestCase {
 
     public void testAddPropertyChangeListener_source_null() {
         MockTarget target = new MockTarget();
-        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        PropertyEditorSupport support = new PropertyEditorSupport();
         support.addPropertyChangeListener(EventHandler.create(
                 PropertyChangeListener.class, target, "eventSource", ""));
         support.firePropertyChange();
@@ -114,7 +114,7 @@ public class PropertyEditorSupportTest extends TestCase {
     }
 
     public void testFirePropertyChange_noListener() {
-        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        PropertyEditorSupport support = new PropertyEditorSupport();
         support.firePropertyChange();
     }
 
@@ -122,7 +122,7 @@ public class PropertyEditorSupportTest extends TestCase {
      * listener is null
      */
     public void testAddPropertyChangeListener_null() {
-        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        PropertyEditorSupport support = new PropertyEditorSupport();
         support.addPropertyChangeListener(null);
         try {
             support.firePropertyChange();
@@ -133,13 +133,13 @@ public class PropertyEditorSupportTest extends TestCase {
     }
 
     public void testPaintValue() {
-        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        PropertyEditorSupport support = new PropertyEditorSupport();
         support.paintValue(null, null);
     }
 
     public void testRemovePropertyChangeListener() {
         MockTarget target = new MockTarget();
-        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        PropertyEditorSupport support = new PropertyEditorSupport();
         PropertyChangeListener proxy = EventHandler.create(
                 PropertyChangeListener.class, target, "eventSource", "source");
         support.addPropertyChangeListener(proxy);
@@ -154,7 +154,7 @@ public class PropertyEditorSupportTest extends TestCase {
 
     public void testRemovePropertyChangeListener_null() {
         MockTarget target = new MockTarget();
-        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        PropertyEditorSupport support = new PropertyEditorSupport();
         PropertyChangeListener proxy = EventHandler.create(
                 PropertyChangeListener.class, target, "eventSource", "source");
         support.addPropertyChangeListener(proxy);
@@ -172,7 +172,7 @@ public class PropertyEditorSupportTest extends TestCase {
      */
     public void testRemovePropertyChangeListener_diff() {
         MockTarget target = new MockTarget();
-        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        PropertyEditorSupport support = new PropertyEditorSupport();
         PropertyChangeListener proxy = EventHandler.create(
                 PropertyChangeListener.class, target, "eventSource", "source");
         support.addPropertyChangeListener(proxy);
@@ -191,7 +191,7 @@ public class PropertyEditorSupportTest extends TestCase {
      * remove null listener
      */
     public void testRemovePropertyChangeListener_null_null() {
-        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        PropertyEditorSupport support = new PropertyEditorSupport();
         support.addPropertyChangeListener(null);
         try {
             support.firePropertyChange();
@@ -205,18 +205,31 @@ public class PropertyEditorSupportTest extends TestCase {
     }
 
     public void testSetAsText() {
-        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
-        String asText = "100";
+        // Regression for HARMONY-1113
+        PropertyEditorSupport support;
+
+        support = new PropertyEditorSupport();
         try {
-            support.setAsText(asText);
+            support.setAsText("100");
             fail("Should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {
             // expected
         }
+
+        support = new PropertyEditorSupport();
+        support.setValue(new Object());
+        try {
+            support.setAsText("string");
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException e) {}
+
+        support = new PropertyEditorSupport();
+        support.setValue(new String());
+        support.setAsText("string");
     }
 
     public void testSetValue() {
-        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        PropertyEditorSupport support = new PropertyEditorSupport();
         String[] value = new String[] { "This is a sample value." };
         support.setValue(value);
 
@@ -232,7 +245,7 @@ public class PropertyEditorSupportTest extends TestCase {
     }
 
     public void testSetValue_null() {
-        MockPropertyEditorSupport support = new MockPropertyEditorSupport();
+        PropertyEditorSupport support = new PropertyEditorSupport();
         support.setValue(null);
 
         assertEquals(null, support.getValue());
@@ -254,17 +267,6 @@ public class PropertyEditorSupportTest extends TestCase {
         assertNull(support.getTags());
         assertFalse(support.supportsCustomEditor());
         assertFalse(support.isPaintable());
-    }
-
-    public static class MockPropertyEditorSupport extends PropertyEditorSupport {
-
-        public MockPropertyEditorSupport() {
-            super();
-        }
-
-        public MockPropertyEditorSupport(Object source) {
-            super(source);
-        }
     }
 
     public static class MockSource {

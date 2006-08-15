@@ -53,6 +53,7 @@ public class PropertyEditorSupport implements PropertyEditor {
      * @com.intel.drl.spec_ref
      */
     public PropertyEditorSupport() {
+        source = this;
     }
 
     /**
@@ -65,7 +66,11 @@ public class PropertyEditorSupport implements PropertyEditor {
      * @com.intel.drl.spec_ref
      */
     public void setAsText(String text) throws IllegalArgumentException {
-        setValue(text);
+        if (newValue instanceof String){
+            setValue(text);
+        } else {
+            throw new IllegalArgumentException(text);
+        }
     }
 
     /**
