@@ -117,7 +117,7 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 	public PrintStream(OutputStream out, boolean autoflush, String enc)
 			throws UnsupportedEncodingException {
 		super(out);
-		if (out == null) {
+		if (out == null || enc == null) {
             throw new NullPointerException();
         }
 		this.autoflush = autoflush;

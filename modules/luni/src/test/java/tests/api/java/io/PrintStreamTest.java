@@ -37,13 +37,11 @@ public class PrintStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.PrintStream#PrintStream(java.io.OutputStream)
 	 */
-	public void test_ConstructorLjava_io_OutputStream() {
+	public void test_ConstructorLjava_io_OutputStream() throws Exception{
 		// Test for method java.io.PrintStream(java.io.OutputStream)
 		try {
 			os = new java.io.PrintStream(bos);
 			os.print(2345.76834720202);
-		} catch (Exception e) {
-			fail("IOException during constructor test : " + e.getMessage());
 		} finally {
 			try {
 				os.close();
@@ -51,6 +49,12 @@ public class PrintStreamTest extends junit.framework.TestCase {
 				fail("IOException during constructor test : " + e.getMessage());
 			}
 		}
+        //regression for HARMONY-1195
+        try {
+            os = new PrintStream(bos, true, null);
+            fail("Should throw NPE.");
+        } catch (NullPointerException e) {
+        } 
 	}
 
 	/**
