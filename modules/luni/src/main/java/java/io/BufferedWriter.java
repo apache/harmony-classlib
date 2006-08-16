@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -156,49 +156,46 @@ public class BufferedWriter extends Writer {
 	 * @throws IOException
 	 *             If this Writer has already been closed or some other
 	 *             IOException occurs.
-	 * @throws ArrayIndexOutOfBoundsException
+	 * @throws IndexOutOfBoundsException
 	 *             If offset or count are outside of bounds.
 	 */
 
 	@Override
     public void write(char[] cbuf, int offset, int count) throws IOException {
-		// avoid int overflow
-		if (0 <= offset && offset <= cbuf.length && 0 <= count
-				&& count <= cbuf.length - offset) {
-			synchronized (lock) {
-				if (isOpen()) {
-					if (pos == 0 && count >= this.buf.length) {
-						out.write(cbuf, offset, count);
+        synchronized (lock) {
+            if (!isOpen()) {
+    			throw new IOException(org.apache.harmony.luni.util.Msg
+    					.getString("K005d"));
+    		}
+    		if (offset < 0 || offset > cbuf.length - count || count < 0) {
+    			throw new IndexOutOfBoundsException();
+    		}
+			if (pos == 0 && count >= this.buf.length) {
+				out.write(cbuf, offset, count);
+				return;
+			}
+			int available = this.buf.length - pos;
+			if (count < available)
+				available = count;
+			if (available > 0) {
+				System.arraycopy(cbuf, offset, this.buf, pos, available);
+				pos += available;
+			}
+			if (pos == this.buf.length) {
+				out.write(this.buf, 0, this.buf.length);
+				pos = 0;
+				if (count > available) {
+					offset += available;
+					available = count - available;
+					if (available >= this.buf.length) {
+						out.write(cbuf, offset, available);
 						return;
 					}
-					int available = this.buf.length - pos;
-					if (count < available) {
-                        available = count;
-                    }
-					if (available > 0) {
-						System.arraycopy(cbuf, offset, this.buf, pos, available);
-						pos += available;
-					}
-					if (pos == this.buf.length) {
-						out.write(this.buf, 0, this.buf.length);
-						pos = 0;
-						if (count > available) {
-							offset += available;
-							available = count - available;
-							if (available >= this.buf.length) {
-								out.write(cbuf, offset, available);
-								return;
-							}
-							System.arraycopy(cbuf, offset, this.buf, pos, available);
-                            pos += available;
-						}
-					}
-				} else {
-                    throw new IOException(Msg.getString("K005d")); //$NON-NLS-1$
-                }
-			}
-		} else {
-            throw new ArrayIndexOutOfBoundsException();
+
+					System.arraycopy(cbuf, offset, this.buf, pos, available);
+					pos += available;
+				}
+ 			}
         }
 	}
 
@@ -248,48 +245,46 @@ public class BufferedWriter extends Writer {
 
 	@Override
     public void write(String str, int offset, int count) throws IOException {
-		// avoid int overflow
-		if (0 <= offset && offset <= str.length() && 0 <= count
-				&& count <= str.length() - offset) {
-			synchronized (lock) {
-				if (isOpen()) {
-					if (pos == 0 && count >= buf.length) {
+        synchronized (lock) {
+            if (!isOpen()) {
+    			throw new IOException(org.apache.harmony.luni.util.Msg
+    					.getString("K005d")); //$NON-NLS-1$
+    		}
+            if (count <= 0) {
+            	return;
+            }
+    		if (offset > str.length() - count || offset < 0 ) {
+    			throw new StringIndexOutOfBoundsException();
+    		}
+			if (pos == 0 && count >= buf.length) {
+				char[] chars = new char[count];
+				str.getChars(offset, offset + count, chars, 0);
+				out.write(chars, 0, count);
+				return;
+			}
+			int available = buf.length - pos;
+			if (count < available)
+				available = count;
+			if (available > 0) {
+				str.getChars(offset, offset + available, buf, pos);
+				pos += available;
+			}
+			if (pos == buf.length) {
+				out.write(this.buf, 0, this.buf.length);
+				pos = 0;
+				if (count > available) {
+					offset += available;
+					available = count - available;
+					if (available >= buf.length) {
 						char[] chars = new char[count];
-						str.getChars(offset, offset + count, chars, 0);
-						out.write(chars, 0, count);
+						str.getChars(offset, offset + available, chars, 0);
+						out.write(chars, 0, available);
 						return;
 					}
-					int available = buf.length - pos;
-					if (count < available) {
-                        available = count;
-                    }
-					if (available > 0) {
-						str.getChars(offset, offset + available, buf, pos);
-						pos += available;
-					}
-					if (pos == buf.length) {
-						out.write(this.buf, 0, this.buf.length);
-						pos = 0;
-						if (count > available) {
-							offset += available;
-							available = count - available;
-							if (available >= buf.length) {
-								char[] chars = new char[count];
-								str.getChars(offset, offset + available, chars,
-										0);
-								out.write(chars, 0, available);
-								return;
-							}
-							str.getChars(offset, offset + available, buf, pos);
-							pos += available;
-						}
-					}
-				} else {
-                    throw new IOException(Msg.getString("K005d")); //$NON-NLS-1$
-                }
+					str.getChars(offset, offset + available, buf, pos);
+					pos += available;
+				}
 			}
-		} else {
-            throw new StringIndexOutOfBoundsException();
         }
 	}
 }

@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,12 +102,71 @@ public class BufferedWriterTest extends junit.framework.TestCase {
 	public void test_write$CII() {
 		// Test for method void java.io.BufferedWriter.write(char [], int, int)
 		try {
-			bw.write(testString, 500, 1000);
+			char[] testCharArray = testString.toCharArray();
+			bw.write(testCharArray, 500, 1000);
 			bw.flush();
 			assertTrue("Incorrect string written", sw.toString().equals(
 					testString.substring(500, 1500)));
 		} catch (Exception e) {
 			fail("Exception during write test");
+		}
+	}
+	
+	/**
+	 * @tests java.io.BufferedWriter#write(char[], int, int)
+	 */
+	public void test_write_$CII_Exception() throws IOException {
+		BufferedWriter bWriter = new BufferedWriter(sw);
+		char[] nullCharArray = null;
+
+		try {
+			bWriter.write(nullCharArray, -1, -1);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			// expected
+		}
+
+		try {
+			bWriter.write(nullCharArray, -1, 0);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			// expected
+		}
+
+		try {
+			bWriter.write(nullCharArray, 0, -1);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+
+		try {
+			bWriter.write(nullCharArray, 0, 0);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+
+		char[] testCharArray = testString.toCharArray();
+
+		bWriter.write(testCharArray, 0, 0);
+
+		bWriter.write(testCharArray, testCharArray.length, 0);
+		
+		try {
+			bWriter.write(testCharArray, testCharArray.length + 1, 0);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			//expected
+		}
+
+		bWriter.close();
+
+		try {
+			bWriter.write(nullCharArray, -1, -1);
+			fail("should throw IOException");
+		} catch (IOException e) {
+			// expected
 		}
 	}
 
@@ -139,6 +198,59 @@ public class BufferedWriterTest extends junit.framework.TestCase {
 					testString));
 		} catch (Exception e) {
 			fail("Exception during write test");
+		}
+	}
+	
+	/**
+	 * @tests java.io.BufferedWriter#write(java.lang.String, int, int)
+	 */
+	public void test_write_LStringII_Exception() throws IOException {
+		BufferedWriter bWriter = new BufferedWriter(sw);
+
+		bWriter.write((String) null , -1, -1);		
+		bWriter.write((String) null , -1, 0);
+        bWriter.write((String) null , 0 , -1);
+        bWriter.write((String) null , 0 , 0);
+        
+		try {
+			bWriter.write((String) null , -1, 1);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+
+		bWriter.write(testString, 0, 0);
+		bWriter.write(testString, testString.length(), 0);		
+		bWriter.write(testString, testString.length() + 1, 0);
+		
+		try {
+			bWriter.write(testString, testString.length() + 1, 1);
+			fail("should throw StringIndexOutOfBoundsException");
+		} catch (StringIndexOutOfBoundsException e) {
+			// expected
+		}
+
+		bWriter.close();
+
+		try {
+			bWriter.write((String) null , -1, -1);
+			fail("should throw IOException");
+		} catch (IOException e) {
+			// expected
+		}
+		
+		try {
+			bWriter.write((String) null , -1, 1);
+			fail("should throw IOException");
+		} catch (IOException e) {
+			// expected
+		}
+		
+		try {
+			bWriter.write(testString , -1, -1);
+			fail("should throw IOException");
+		} catch (IOException e) {
+			// expected
 		}
 	}
 
