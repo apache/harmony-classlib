@@ -15,7 +15,6 @@
 
 package java.lang;
 
-
 /**
  * This error is thrown when an exception occurs during class initialization.
  */
@@ -47,7 +46,7 @@ public class ExceptionInInitializerError extends LinkageError {
 
 	/**
 	 * Constructs a new instance of this class with its walkback and exception
-	 * filled in. The exception should be the one which originally occured in
+	 * filled in. The exception should be the one which originally occurred in
 	 * the class initialization code.
 	 * 
 	 * @param exception
@@ -71,7 +70,8 @@ public class ExceptionInInitializerError extends LinkageError {
 	 * 
 	 * @return Throwable The receiver's cause.
 	 */
-	public Throwable getCause() {
+	@Override
+    public Throwable getCause() {
 		return exception;
 	}
 }

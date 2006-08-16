@@ -74,6 +74,7 @@ public abstract class Enum<E extends Enum<E>> implements Serializable,
      * 
      * @return the displayable string name.
      */
+    @Override
     public String toString() {
         return "Enum:" + name;
     }
@@ -85,6 +86,7 @@ public abstract class Enum<E extends Enum<E>> implements Serializable,
      * @return true if the receiver and argument are equal, otherwise return
      *         false.
      */
+    @Override
     public final boolean equals(Object other) {
         return this == other;
     }
@@ -94,6 +96,7 @@ public abstract class Enum<E extends Enum<E>> implements Serializable,
      * 
      * @return the hash code.
      */
+    @Override
     public final int hashCode() {
         return ordinal + (name == null ? 0 : name.hashCode());
     }
@@ -104,6 +107,7 @@ public abstract class Enum<E extends Enum<E>> implements Serializable,
      * 
      * @return does not return.
      */
+    @Override
     protected final Object clone() throws CloneNotSupportedException {
         // KA004=Enums may not be cloned
         throw new CloneNotSupportedException(Msg.getString("KA004"));

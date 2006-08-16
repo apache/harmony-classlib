@@ -531,7 +531,8 @@ public final class Character implements Serializable, Comparable<Character> {
 		 * 
 		 * @see #hashCode
 		 */
-		public final boolean equals(Object object) {
+		@Override
+        public final boolean equals(Object object) {
 			return super.equals(object);
 		}
 
@@ -543,7 +544,8 @@ public final class Character implements Serializable, Comparable<Character> {
 		 * 
 		 * @see #equals
 		 */
-		public final int hashCode() {
+		@Override
+        public final int hashCode() {
 			return super.hashCode();
 		}
 
@@ -552,7 +554,8 @@ public final class Character implements Serializable, Comparable<Character> {
 		 * 
 		 * @return the string representation of this Subset
 		 */
-		public final String toString() {
+		@Override
+        public final String toString() {
 			return name;
 		}
 	}
@@ -2444,7 +2447,8 @@ public final class Character implements Serializable, Comparable<Character> {
 	 * 
 	 * @see #hashCode
 	 */
-	public boolean equals(Object object) {
+	@Override
+    public boolean equals(Object object) {
 		return (object == this) || (object instanceof Character)
 				&& (value == ((Character) object).value);
 	}
@@ -2570,7 +2574,8 @@ public final class Character implements Serializable, Comparable<Character> {
 	 * 
 	 * @see #equals
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return value;
 	}
 
@@ -2691,7 +2696,8 @@ public final class Character implements Serializable, Comparable<Character> {
 	 * 
 	 * @deprecated Use isJavaIdentifierStart
 	 */
-	public static boolean isJavaLetter(char c) {
+	@Deprecated
+    public static boolean isJavaLetter(char c) {
 		return isJavaIdentifierStart(c);
 	}
 
@@ -2700,7 +2706,8 @@ public final class Character implements Serializable, Comparable<Character> {
 	 * 
 	 * @deprecated Use isJavaIdentifierPart
 	 */
-	public static boolean isJavaLetterOrDigit(char c) {
+	@Deprecated
+    public static boolean isJavaLetterOrDigit(char c) {
 		return isJavaIdentifierPart(c);
 	}
 
@@ -2759,7 +2766,8 @@ public final class Character implements Serializable, Comparable<Character> {
 	 * 
 	 * @deprecated Use isWhitespace
 	 */
-	public static boolean isSpace(char c) {
+	@Deprecated
+    public static boolean isSpace(char c) {
 		return c == '\n' || c == '\t' || c == '\f' || c == '\r' || c == ' ';
 	}
 
@@ -2935,7 +2943,8 @@ public final class Character implements Serializable, Comparable<Character> {
 	 * 
 	 * @return a printable representation for the receiver.
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		return String.valueOf(value);
 	}
 
