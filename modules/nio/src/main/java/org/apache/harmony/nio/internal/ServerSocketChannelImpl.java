@@ -227,6 +227,7 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
         public void bind(SocketAddress localAddr, int backlog)
                 throws IOException {
             super.bind(localAddr, backlog);
+            channelImpl.isBound = true;
         }
 
         /*
