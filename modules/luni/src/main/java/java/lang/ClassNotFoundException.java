@@ -15,7 +15,6 @@
 
 package java.lang;
 
-
 /**
  * This exception is thrown when a classloader is unable to find a class.
  */
@@ -59,7 +58,7 @@ public class ClassNotFoundException extends Exception {
 	}
 
 	/**
-	 * Answers the exception which occured when loading the class.
+	 * Answers the exception which occurred when loading the class.
 	 * 
 	 * @return Throwable The exception which occurred while loading the class.
 	 */
@@ -72,7 +71,8 @@ public class ClassNotFoundException extends Exception {
 	 * 
 	 * @return Throwable The receiver's cause.
 	 */
-	public Throwable getCause() {
+	@Override
+    public Throwable getCause() {
 		return ex;
 	}
 }
