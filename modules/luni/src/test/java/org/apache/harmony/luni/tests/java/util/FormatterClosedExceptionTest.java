@@ -24,14 +24,6 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 public class FormatterClosedExceptionTest extends TestCase {
 
     /**
-     * @tests java.util.FormatterClosedException#FormatterClosedException
-     */
-    public void test_formatterClosedException() {
-        FormatterClosedException formatterClosedException = new FormatterClosedException();
-        assertTrue(null != formatterClosedException);
-    }
-
-    /**
      * @tests serialization/deserialization.
      */
     public void testSerializationSelf() throws Exception {
