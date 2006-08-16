@@ -15,15 +15,15 @@
 
 package org.apache.harmony.luni.tests.java.util;
 
+import java.io.Serializable;
 import java.util.IllegalFormatConversionException;
-
-import tests.util.SerializationTester;
 
 import junit.framework.TestCase;
 
-public class IllegalFormatConversionExceptionTest extends TestCase {
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
-	private static final String SERIALIZATION_FILE_NAME = "serialization/java/util/IllegalFormatConversionException.ser";
+public class IllegalFormatConversionExceptionTest extends TestCase {
 
 	/**
 	 * @tests java.util.IllegalFormatConversionException#IllegalFormatConversionException(char,
@@ -75,37 +75,40 @@ public class IllegalFormatConversionExceptionTest extends TestCase {
 
 	}
 
-	/**
-	 * @tests serialization/deserilazation.
-	 */
-	public void test_serialization() throws Exception {
-		char c = '*';
-		Class argClass = String.class;
-		IllegalFormatConversionException srcIllegalFormatConversionException = new IllegalFormatConversionException(
-				c, argClass);
-		IllegalFormatConversionException destIllegalFormatConversionException = (IllegalFormatConversionException) SerializationTester
-				.getDeserilizedObject(srcIllegalFormatConversionException);
-		assertEquals(srcIllegalFormatConversionException.getArgumentClass(),
-				destIllegalFormatConversionException.getArgumentClass());
-		assertEquals(srcIllegalFormatConversionException.getConversion(),
-				destIllegalFormatConversionException.getConversion());
-	}
+    // comparator for IllegalFormatConversionException objects
+    private static final SerializableAssert exComparator = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
 
-	/**
-	 * @tests serialization/deserilazation compatibility with RI.
-	 */
-	public void test_serializationCompatibility() throws Exception {
-		char c = '*';
-		Class argClass = String.class;
-		IllegalFormatConversionException srcIllegalFormatConversionException = new IllegalFormatConversionException(
-				c, argClass);
-		IllegalFormatConversionException destIllegalFormatConversionException = (IllegalFormatConversionException) SerializationTester
-				.readObject(srcIllegalFormatConversionException,
-						SERIALIZATION_FILE_NAME);
-		assertEquals(srcIllegalFormatConversionException.getArgumentClass(),
-				destIllegalFormatConversionException.getArgumentClass());
-		assertEquals(srcIllegalFormatConversionException.getConversion(),
-				destIllegalFormatConversionException.getConversion());
-	}
+            SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(initial,
+                    deserialized);
 
+            IllegalFormatConversionException initEx = (IllegalFormatConversionException) initial;
+            IllegalFormatConversionException desrEx = (IllegalFormatConversionException) deserialized;
+
+            assertEquals("ArgumentClass", initEx.getArgumentClass(), desrEx
+                    .getArgumentClass());
+            assertEquals("Conversion", initEx.getConversion(), desrEx
+                    .getConversion());
+        }
+    };
+
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new IllegalFormatConversionException('*',
+                String.class), exComparator);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this,
+                new IllegalFormatConversionException('*', String.class),
+                exComparator);
+    }
 }

@@ -15,15 +15,15 @@
 
 package org.apache.harmony.luni.tests.java.util;
 
+import java.io.Serializable;
 import java.util.IllegalFormatCodePointException;
-
-import tests.util.SerializationTester;
 
 import junit.framework.TestCase;
 
-public class IllegalFormatCodePointExceptionTest extends TestCase {
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
-	private static final String SERIALIZATION_FILE_NAME = "serialization/java/util/IllegalFormatCodePointException.ser";
+public class IllegalFormatCodePointExceptionTest extends TestCase {
 
 	/**
 	 * @tests java.util.IllegalFormatCodePointException.IllegalFormatCodePointException(int)
@@ -54,31 +54,37 @@ public class IllegalFormatCodePointExceptionTest extends TestCase {
 		assertTrue(null != illegalFormatCodePointException.getMessage());
 	}
 
-	/**
-	 * @tests serialization/deserilazation.
-	 */
-	public void test_serialization() throws Exception {
-		int codePoint = 12345;
-		IllegalFormatCodePointException srcIllegalFormatCodePointException = new IllegalFormatCodePointException(
-				codePoint);
-		IllegalFormatCodePointException destIllegalFormatCodePointException = (IllegalFormatCodePointException) SerializationTester
-				.getDeserilizedObject(srcIllegalFormatCodePointException);
-		assertEquals(srcIllegalFormatCodePointException.getCodePoint(),
-				destIllegalFormatCodePointException.getCodePoint());
-	}
+    // comparator for IllegalFormatCodePointException objects
+    private static final SerializableAssert exComparator = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
 
-	/**
-	 * @tests serialization/deserilazation compatibility with RI.
-	 */
-	public void test_serializationCompatibility() throws Exception {
-		int codePoint = 12345;
-		IllegalFormatCodePointException srcIllegalFormatCodePointException = new IllegalFormatCodePointException(
-				codePoint);
-		IllegalFormatCodePointException destIllegalFormatCodePointException = (IllegalFormatCodePointException) SerializationTester
-				.readObject(srcIllegalFormatCodePointException,
-						SERIALIZATION_FILE_NAME);
-		assertEquals(srcIllegalFormatCodePointException.getCodePoint(),
-				destIllegalFormatCodePointException.getCodePoint());
-	}
+            SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(initial,
+                    deserialized);
 
+            IllegalFormatCodePointException initEx = (IllegalFormatCodePointException) initial;
+            IllegalFormatCodePointException desrEx = (IllegalFormatCodePointException) deserialized;
+
+            assertEquals("CodePoint", initEx.getCodePoint(), desrEx
+                    .getCodePoint());
+        }
+    };
+
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(
+                new IllegalFormatCodePointException(12345), exComparator);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this,
+                new IllegalFormatCodePointException(12345), exComparator);
+    }
 }

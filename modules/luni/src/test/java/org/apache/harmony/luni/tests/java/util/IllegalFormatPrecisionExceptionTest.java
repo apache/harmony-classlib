@@ -14,15 +14,15 @@
  */
 package org.apache.harmony.luni.tests.java.util;
 
+import java.io.Serializable;
 import java.util.IllegalFormatPrecisionException;
-
-import tests.util.SerializationTester;
 
 import junit.framework.TestCase;
 
-public class IllegalFormatPrecisionExceptionTest extends TestCase {
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
-	private static final String SERIALIZATION_FILE_NAME = "serialization/java/util/IllegalFormatPrecisionException.ser";
+public class IllegalFormatPrecisionExceptionTest extends TestCase {
 
 	/**
 	 * @tests java.util.IllegalFormatPrecisionException#IllegalFormatPrecisionException(int)
@@ -55,33 +55,37 @@ public class IllegalFormatPrecisionExceptionTest extends TestCase {
 
 	}
 
-	/**
-	 * @tests serialization/deserilazation.
-	 */
-	public void test_serialization() throws Exception {
-		int precision = 12345;
-		IllegalFormatPrecisionException srcIllegalFormatPrecisionException = new IllegalFormatPrecisionException(
-				precision);
-		IllegalFormatPrecisionException destIllegalFormatPrecisionException = (IllegalFormatPrecisionException) SerializationTester
-				.getDeserilizedObject(srcIllegalFormatPrecisionException);
-		assertEquals(srcIllegalFormatPrecisionException.getPrecision(),
-				destIllegalFormatPrecisionException.getPrecision());
+    // comparator for IllegalFormatPrecisionException objects
+    private static final SerializableAssert exComparator = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
 
-	}
+            SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(initial,
+                    deserialized);
 
-	/**
-	 * @tests serialization/deserilazation compatibility with RI.
-	 */
-	public void test_serializationCompatibility() throws Exception {
-		int precision = 12345;
-		IllegalFormatPrecisionException srcIllegalFormatPrecisionException = new IllegalFormatPrecisionException(
-				precision);
-		IllegalFormatPrecisionException destIllegalFormatPrecisionException = (IllegalFormatPrecisionException) SerializationTester
-				.readObject(srcIllegalFormatPrecisionException,
-						SERIALIZATION_FILE_NAME);
-		assertEquals(srcIllegalFormatPrecisionException.getPrecision(),
-				destIllegalFormatPrecisionException.getPrecision());
+            IllegalFormatPrecisionException initEx = (IllegalFormatPrecisionException) initial;
+            IllegalFormatPrecisionException desrEx = (IllegalFormatPrecisionException) deserialized;
 
-	}
+            assertEquals("Precision", initEx.getPrecision(), desrEx
+                    .getPrecision());
+        }
+    };
 
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(
+                new IllegalFormatPrecisionException(12345), exComparator);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this,
+                new IllegalFormatPrecisionException(12345), exComparator);
+    }
 }

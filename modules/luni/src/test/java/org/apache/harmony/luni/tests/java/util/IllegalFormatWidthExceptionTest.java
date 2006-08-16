@@ -14,15 +14,15 @@
  */
 package org.apache.harmony.luni.tests.java.util;
 
+import java.io.Serializable;
 import java.util.IllegalFormatWidthException;
-
-import tests.util.SerializationTester;
 
 import junit.framework.TestCase;
 
-public class IllegalFormatWidthExceptionTest extends TestCase {
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
-	private static final String SERIALIZATION_FILE_NAME = "serialization/java/util/IllegalFormatWidthException.ser";
+public class IllegalFormatWidthExceptionTest extends TestCase {
 
 	/**
 	 * @tests java.util.IllegalFormatWidthException#IllegalFormatWidthException(int)
@@ -57,33 +57,36 @@ public class IllegalFormatWidthExceptionTest extends TestCase {
 
 	}
 
-	/**
-	 * @tests serialization/deserilazation.
-	 */
-	public void test_serialization() throws Exception {
-		int width = 12345;
-		IllegalFormatWidthException srcIllegalFormatWidthException = new IllegalFormatWidthException(
-				width);
-		IllegalFormatWidthException destIllegalFormatWidthException = (IllegalFormatWidthException) SerializationTester
-				.getDeserilizedObject(srcIllegalFormatWidthException);
-		assertEquals(srcIllegalFormatWidthException.getWidth(),
-				destIllegalFormatWidthException.getWidth());
+    // comparator for IllegalFormatWidthException objects
+    private static final SerializableAssert exComparator = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
 
-	}
+            SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(initial,
+                    deserialized);
 
-	/**
-	 * @tests serialization/deserilazation compatibility with RI.
-	 */
-	public void test_serializationCompatibility() throws Exception {
-		int width = 12345;
-		IllegalFormatWidthException srcIllegalFormatWidthException = new IllegalFormatWidthException(
-				width);
-		IllegalFormatWidthException destIllegalFormatWidthException = (IllegalFormatWidthException) SerializationTester
-				.readObject(srcIllegalFormatWidthException,
-						SERIALIZATION_FILE_NAME);
-		assertEquals(srcIllegalFormatWidthException.getWidth(),
-				destIllegalFormatWidthException.getWidth());
+            IllegalFormatWidthException initEx = (IllegalFormatWidthException) initial;
+            IllegalFormatWidthException desrEx = (IllegalFormatWidthException) deserialized;
 
-	}
+            assertEquals("Width", initEx.getWidth(), desrEx.getWidth());
+        }
+    };
 
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new IllegalFormatWidthException(12345),
+                exComparator);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new IllegalFormatWidthException(
+                12345), exComparator);
+    }
 }

@@ -15,15 +15,15 @@
 
 package org.apache.harmony.luni.tests.java.util;
 
+import java.io.Serializable;
 import java.util.DuplicateFormatFlagsException;
-
-import tests.util.SerializationTester;
 
 import junit.framework.TestCase;
 
-public class DuplicateFormatFlagsExceptionTest extends TestCase {
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
-	private static final String SERIALIZATION_FILE_NAME = "serialization/java/util/DuplicateFormatFlagsException.ser"; //$NON-NLS-1$
+public class DuplicateFormatFlagsExceptionTest extends TestCase {
 
 	/**
 	 * @tests java.util.DuplicateFormatFlagsException#DuplicateFormatFlagsException(String)
@@ -58,25 +58,36 @@ public class DuplicateFormatFlagsExceptionTest extends TestCase {
 
 	}
 
-	/**
-	 * @tests serialization/deserilazation.
-	 */
-	public void test_serialization() throws Exception {
-		DuplicateFormatFlagsException srcDuplicateFormatFlagsException = new DuplicateFormatFlagsException(
-				"TESTDESC");
-		DuplicateFormatFlagsException destDuplicateFormatFlagsException = (DuplicateFormatFlagsException) SerializationTester
-				.getDeserilizedObject(srcDuplicateFormatFlagsException);
-	}
+    // comparator for DuplicateFormatFlagsException objects
+    private static final SerializableAssert exComparator = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
 
-	/**
-	 * @tests serialization/deserilazation compatibility with RI.
-	 */
-	public void test_serializationCompatibility() throws Exception {
-		DuplicateFormatFlagsException srcDuplicateFormatFlagsException = new DuplicateFormatFlagsException(
-				"TESTDESC");
-		DuplicateFormatFlagsException destDuplicateFormatFlagsException = (DuplicateFormatFlagsException) SerializationTester
-				.readObject(srcDuplicateFormatFlagsException,
-						SERIALIZATION_FILE_NAME);
-	}
+            SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(initial,
+                    deserialized);
 
+            DuplicateFormatFlagsException initEx = (DuplicateFormatFlagsException) initial;
+            DuplicateFormatFlagsException desrEx = (DuplicateFormatFlagsException) deserialized;
+
+            assertEquals("Flags", initEx.getFlags(), desrEx.getFlags());
+        }
+    };
+
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new DuplicateFormatFlagsException(
+                "TESTDESC"), exComparator);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new DuplicateFormatFlagsException(
+                "TESTDESC"), exComparator);
+    }
 }

@@ -15,15 +15,15 @@
 
 package org.apache.harmony.luni.tests.java.util;
 
+import java.io.Serializable;
 import java.util.FormatFlagsConversionMismatchException;
-
-import tests.util.SerializationTester;
 
 import junit.framework.TestCase;
 
-public class FormatFlagsConversionMismatchExceptionTest extends TestCase {
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
-	private static final String SERIALIZATION_FILE_NAME = "serialization/java/util/FormatFlagsConversionMismatchException.ser"; //$NON-NLS-1$
+public class FormatFlagsConversionMismatchExceptionTest extends TestCase {
 
 	/**
 	 * @tests java.util.FormatFlagsConversionMismatchException#FormatFlagsConversionMismatchException(String,
@@ -75,33 +75,40 @@ public class FormatFlagsConversionMismatchExceptionTest extends TestCase {
 
 	}
 
-	/**
-	 * @tests serialization/deserilazation.
-	 */
-	public void test_serialization() throws Exception {
-		String flags = "MYTESTFLAGS";
-		char conversion = 'T';
-		FormatFlagsConversionMismatchException srcFormatFlagsConversionMismatchException = new FormatFlagsConversionMismatchException(
-				flags,conversion);
-		FormatFlagsConversionMismatchException destFormatFlagsConversionMismatchException = (FormatFlagsConversionMismatchException) SerializationTester
-				.getDeserilizedObject(srcFormatFlagsConversionMismatchException);
-		assertEquals(srcFormatFlagsConversionMismatchException.getFlags(),destFormatFlagsConversionMismatchException.getFlags());
-		assertEquals(srcFormatFlagsConversionMismatchException.getConversion(),destFormatFlagsConversionMismatchException.getConversion());
-	}
+    // comparator for FormatFlagsConversionMismatchException objects
+    private static final SerializableAssert exComparator = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
 
-	/**
-	 * @tests serialization/deserilazation compatibility with RI.
-	 */
-	public void test_serializationCompatibility() throws Exception {
-		String flags = "MYTESTFLAGS";
-		char conversion = 'T';
-		FormatFlagsConversionMismatchException srcFormatFlagsConversionMismatchException = new FormatFlagsConversionMismatchException(
-				flags,conversion);
-		FormatFlagsConversionMismatchException destFormatFlagsConversionMismatchException = (FormatFlagsConversionMismatchException) SerializationTester
-				.readObject(srcFormatFlagsConversionMismatchException,
-						SERIALIZATION_FILE_NAME);
-		assertEquals(srcFormatFlagsConversionMismatchException.getFlags(),destFormatFlagsConversionMismatchException.getFlags());
-		assertEquals(srcFormatFlagsConversionMismatchException.getConversion(),destFormatFlagsConversionMismatchException.getConversion());
-	}
+            SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(initial,
+                    deserialized);
 
+            FormatFlagsConversionMismatchException initEx = (FormatFlagsConversionMismatchException) initial;
+            FormatFlagsConversionMismatchException desrEx = (FormatFlagsConversionMismatchException) deserialized;
+
+            assertEquals("Flags", initEx.getFlags(), desrEx.getFlags());
+            assertEquals("Conversion", initEx.getConversion(), desrEx
+                    .getConversion());
+        }
+    };
+
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(
+                new FormatFlagsConversionMismatchException("MYTESTFLAGS", 'T'),
+                exComparator);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this,
+                new FormatFlagsConversionMismatchException("MYTESTFLAGS", 'T'),
+                exComparator);
+    }
 }

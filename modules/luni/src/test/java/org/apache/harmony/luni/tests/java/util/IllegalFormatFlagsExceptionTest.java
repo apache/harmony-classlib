@@ -15,15 +15,15 @@
 
 package org.apache.harmony.luni.tests.java.util;
 
+import java.io.Serializable;
 import java.util.IllegalFormatFlagsException;
-
-import tests.util.SerializationTester;
 
 import junit.framework.TestCase;
 
-public class IllegalFormatFlagsExceptionTest extends TestCase {
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
-	private static final String SERIALIZATION_FILE_NAME = "serialization/java/util/IllegalFormatFlagsException.ser";
+public class IllegalFormatFlagsExceptionTest extends TestCase {
 
 	/**
 	 * @tests java.util.IllegalFormatFlagsException#IllegalFormatFlagsException(String)
@@ -58,33 +58,36 @@ public class IllegalFormatFlagsExceptionTest extends TestCase {
 
 	}
 
-	/**
-	 * @tests serialization/deserilazation.
-	 */
-	public void test_serialization() throws Exception {
-		String flags = "TESTFLAGS";
-		IllegalFormatFlagsException srcIllegalFormatFlagsException = new IllegalFormatFlagsException(
-				flags);
-		IllegalFormatFlagsException destIllegalFormatFlagsException = (IllegalFormatFlagsException) SerializationTester
-				.getDeserilizedObject(srcIllegalFormatFlagsException);
-		assertEquals(srcIllegalFormatFlagsException.getFlags(),
-				destIllegalFormatFlagsException.getFlags());
+    // comparator for IllegalFormatFlagsException objects
+    private static final SerializableAssert exComparator = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
 
-	}
+            SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(initial,
+                    deserialized);
 
-	/**
-	 * @tests serialization/deserilazation compatibility with RI.
-	 */
-	public void test_serializationCompatibility() throws Exception {
-		String flags = "TESTFLAGS";
-		IllegalFormatFlagsException srcIllegalFormatFlagsException = new IllegalFormatFlagsException(
-				flags);		
-		IllegalFormatFlagsException destIllegalFormatFlagsException = (IllegalFormatFlagsException) SerializationTester
-				.readObject(srcIllegalFormatFlagsException,
-						SERIALIZATION_FILE_NAME);
-		assertEquals(srcIllegalFormatFlagsException.getFlags(),
-				destIllegalFormatFlagsException.getFlags());
+            IllegalFormatFlagsException initEx = (IllegalFormatFlagsException) initial;
+            IllegalFormatFlagsException desrEx = (IllegalFormatFlagsException) deserialized;
 
-	}
+            assertEquals("Flags", initEx.getFlags(), desrEx.getFlags());
+        }
+    };
 
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new IllegalFormatFlagsException(
+                "TESTFLAGS"), exComparator);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new IllegalFormatFlagsException(
+                "TESTFLAGS"), exComparator);
+    }
 }
