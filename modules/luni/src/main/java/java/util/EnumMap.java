@@ -19,9 +19,21 @@ import java.io.Serializable;
 
 import org.apache.harmony.luni.util.NotYetImplementedException;
 
-public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements Map<K, V>,
-        Serializable, Cloneable {
+public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
+        Map<K, V>, Serializable, Cloneable {
     private static final long serialVersionUID = 458661240069192865L;
+
+    Class<K> keyType;
+
+    transient Enum keys[];
+
+    transient Object values[];
+
+    transient boolean hasMapping[];
+
+    transient int mappingsCount;
+
+    transient int enumSize;
 
     /**
      * Constructs an empty enum map using the given key type.
@@ -32,7 +44,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements 
      *             if the keyType is null
      */
     public EnumMap(Class<K> keyType) {
-        throw new NotYetImplementedException();
+        initialization(keyType);
     }
 
     /**
@@ -216,6 +228,15 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements 
      */
     public Collection<V> values() {
         throw new NotYetImplementedException();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void initialization(Class<K> type) {
+        keyType = type;
+        keys = keyType.getEnumConstants();
+        enumSize = keys.length;
+        values = new Object[enumSize];
+        hasMapping = new boolean[enumSize];
     }
 
 }
