@@ -77,6 +77,7 @@
         <ant dir="modules/misc" antfile="build.xml" target="build.native" />    	
         <ant dir="modules/awt" antfile="build.xml" target="build.native" />    	
         <ant dir="modules/security" antfile="build.xml" target="build.native" />    	
+        <ant dir="modules/instrument" antfile="build.xml" target="build.native" />    	
     </target>
 
 
@@ -96,6 +97,7 @@
     	<ant dir="modules/misc" antfile="build.xml" target="clean.native" />
     	<ant dir="modules/awt" antfile="build.xml" target="clean.native" />
     	<ant dir="modules/security" antfile="build.xml" target="clean.native" />
+    	<ant dir="modules/instrument" antfile="build.xml" target="clean.native" />
     	<delete dir="${native.lib.target}" />
     </target>
 
