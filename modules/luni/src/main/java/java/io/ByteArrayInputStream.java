@@ -15,7 +15,6 @@
 
 package java.io;
 
-
 /**
  * ByteArrayInputStream is used for streaming over a byte array.
  * 
@@ -82,7 +81,8 @@ public class ByteArrayInputStream extends InputStream {
 	 * 
 	 * @return the number of bytes available before blocking.
 	 */
-	public synchronized int available() {
+	@Override
+    public synchronized int available() {
 		return count - pos;
 	}
 
@@ -93,7 +93,8 @@ public class ByteArrayInputStream extends InputStream {
 	 * @throws IOException
 	 *             If an error occurs attempting to close this InputStream.
 	 */
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		// Do nothing on close, this matches JDK behaviour.
 	}
 
@@ -105,7 +106,8 @@ public class ByteArrayInputStream extends InputStream {
 	 * @param readlimit
 	 *            ignored.
 	 */
-	public void mark(int readlimit) {
+	@Override
+    public void mark(int readlimit) {
 		mark = pos;
 	}
 
@@ -118,7 +120,8 @@ public class ByteArrayInputStream extends InputStream {
 	 *         <code>false
 	 *				<code> otherwise.
 	 */
-	public boolean markSupported() {
+	@Override
+    public boolean markSupported() {
 		return true;
 	}
 
@@ -130,7 +133,8 @@ public class ByteArrayInputStream extends InputStream {
 	 * 
 	 * @return the byte read or -1 if end of stream.
 	 */
-	public synchronized int read() {
+	@Override
+    public synchronized int read() {
 		return pos < count ? buf[pos++] & 0xFF : -1;
 	}
 
@@ -149,17 +153,20 @@ public class ByteArrayInputStream extends InputStream {
 	 *            the maximum number of bytes to store in <code>b</code>.
 	 * @return the number of bytes actually read or -1 if end of stream.
 	 */
-	public synchronized int read(byte b[], int offset, int length) {
+	@Override
+    public synchronized int read(byte b[], int offset, int length) {
 		// Are there any bytes available
-		if (this.pos >= this.count)
-			return -1;
+		if (this.pos >= this.count) {
+            return -1;
+        }
 
 		if (b != null) {
 			// avoid int overflow
 			if (0 <= offset && offset <= b.length && 0 <= length
 					&& length <= b.length - offset) {
-				if (length == 0)
-					return 0;
+				if (length == 0) {
+                    return 0;
+                }
 
 				int copylen = this.count - pos < length ? this.count - pos
 						: length;
@@ -179,7 +186,8 @@ public class ByteArrayInputStream extends InputStream {
 	 * is provided.
 	 * 
 	 */
-	public synchronized void reset() {
+	@Override
+    public synchronized void reset() {
 		pos = mark;
 	}
 
@@ -193,9 +201,11 @@ public class ByteArrayInputStream extends InputStream {
 	 *            the number of bytes to skip.
 	 * @return the number of bytes actually skipped.
 	 */
-	public synchronized long skip(long n) {
-		if (n <= 0)
-			return 0;
+	@Override
+    public synchronized long skip(long n) {
+		if (n <= 0) {
+            return 0;
+        }
 		int temp = pos;
 		pos = this.count - pos < n ? this.count : (int) (pos + n);
 		return pos - temp;

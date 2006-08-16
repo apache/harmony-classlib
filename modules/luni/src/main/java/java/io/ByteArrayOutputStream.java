@@ -15,6 +15,7 @@
 
 package java.io;
 
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * ByteArrayOutputStream is a class whose underlying stream is represented by a
@@ -37,7 +38,7 @@ public class ByteArrayOutputStream extends OutputStream {
 	/**
 	 * Constructs a new ByteArrayOutputStream with a default size of 32 bytes.
 	 * If more than 32 bytes are written to this instance, the underlying byte
-	 * array will expand to accomodate.
+	 * array will expand to accommodate.
 	 * 
 	 */
 	public ByteArrayOutputStream() {
@@ -49,7 +50,7 @@ public class ByteArrayOutputStream extends OutputStream {
 	 * Constructs a new ByteArrayOutputStream with a default size of
 	 * <code>size</code> bytes. If more than <code>size</code> bytes are
 	 * written to this instance, the underlying byte array will expand to
-	 * accomodate.
+	 * accommodate.
 	 * 
 	 * @param size
 	 *            an non-negative integer representing the initial size for the
@@ -57,11 +58,11 @@ public class ByteArrayOutputStream extends OutputStream {
 	 */
 	public ByteArrayOutputStream(int size) {
 		super();
-		if (size >= 0)
-			buf = new byte[size];
-		else
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
-					.getString("K005e")); //$NON-NLS-1$
+		if (size >= 0) {
+            buf = new byte[size];
+        } else {
+            throw new IllegalArgumentException(Msg.getString("K005e")); //$NON-NLS-1$
+        }
 	}
 
 	/**
@@ -71,7 +72,8 @@ public class ByteArrayOutputStream extends OutputStream {
 	 * @throws IOException
 	 *             If an error occurs attempting to close this OutputStream.
 	 */
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		/**
 		 * Although the spec claims "A closed stream cannot perform output
 		 * operations and cannot be reopened.", this implementation must do
@@ -82,8 +84,9 @@ public class ByteArrayOutputStream extends OutputStream {
 
 	private void expand(int i) {
 		/* Can the buffer handle @i more bytes, if not expand it */
-		if (count + i <= buf.length)
-			return;
+		if (count + i <= buf.length) {
+            return;
+        }
 
 		byte[] newbuf = new byte[(count + i) * 2];
 		System.arraycopy(buf, 0, newbuf, 0, count);
@@ -130,7 +133,8 @@ public class ByteArrayOutputStream extends OutputStream {
 	 * @return this streams current contents as a String.
 	 */
 
-	public String toString() {
+	@Override
+    public String toString() {
 		return new String(buf, 0, count);
 	}
 
@@ -149,10 +153,12 @@ public class ByteArrayOutputStream extends OutputStream {
 	 * 
 	 * @deprecated Use toString()
 	 */
-	public String toString(int hibyte) {
+	@Deprecated
+    public String toString(int hibyte) {
 		char[] newBuf = new char[size()];
-		for (int i = 0; i < newBuf.length; i++)
-			newBuf[i] = (char) (((hibyte & 0xff) << 8) | (buf[i] & 0xff));
+		for (int i = 0; i < newBuf.length; i++) {
+            newBuf[i] = (char) (((hibyte & 0xff) << 8) | (buf[i] & 0xff));
+        }
 		return new String(newBuf);
 	}
 
@@ -189,10 +195,12 @@ public class ByteArrayOutputStream extends OutputStream {
 	 * @throws IndexOutOfBoundsException
 	 *             If offset or count are outside of bounds.
 	 */
-	public synchronized void write(byte[] buffer, int offset, int len) {
+	@Override
+    public synchronized void write(byte[] buffer, int offset, int len) {
 		/* Unsure what to do here, spec is unclear */
-		if (buf == null)
-			return;
+		if (buf == null) {
+            return;
+        }
 		if (buffer != null) {
 			// avoid int overflow
 			if (0 <= offset && offset <= buffer.length && 0 <= len
@@ -201,12 +209,12 @@ public class ByteArrayOutputStream extends OutputStream {
 				expand(len);
 				System.arraycopy(buffer, offset, buf, this.count, len);
 				this.count += len;
-			} else
-				throw new IndexOutOfBoundsException(org.apache.harmony.luni.util.Msg
-						.getString("K002f")); //$NON-NLS-1$
-		} else
-			throw new NullPointerException(org.apache.harmony.luni.util.Msg
-					.getString("K0047")); //$NON-NLS-1$
+			} else {
+                throw new IndexOutOfBoundsException(Msg.getString("K002f")); //$NON-NLS-1$
+            }
+		} else {
+            throw new NullPointerException(Msg.getString("K0047")); //$NON-NLS-1$
+        }
 	}
 
 	/**
@@ -216,7 +224,8 @@ public class ByteArrayOutputStream extends OutputStream {
 	 * @param oneByte
 	 *            the byte to be written
 	 */
-	public synchronized void write(int oneByte) {
+	@Override
+    public synchronized void write(int oneByte) {
 		try {
 			buf[count] = (byte) oneByte;
 			count++;
@@ -241,5 +250,4 @@ public class ByteArrayOutputStream extends OutputStream {
 	public void writeTo(OutputStream out) throws IOException {
 		out.write(buf, 0, count);
 	}
-
 }
