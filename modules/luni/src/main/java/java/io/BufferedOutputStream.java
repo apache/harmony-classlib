@@ -15,6 +15,7 @@
 
 package java.io;
 
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * BufferedOutputStream is a class which takes an output stream and
@@ -63,11 +64,11 @@ public class BufferedOutputStream extends FilterOutputStream {
 	 */
 	public BufferedOutputStream(OutputStream out, int size) {
 		super(out);
-		if (size > 0)
-			buf = new byte[size];
-		else
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
-					.getString("K0058")); //$NON-NLS-1$
+		if (size > 0) {
+            buf = new byte[size];
+        } else {
+            throw new IllegalArgumentException(Msg.getString("K0058")); //$NON-NLS-1$
+        }
 	}
 
 	/**
@@ -79,9 +80,11 @@ public class BufferedOutputStream extends FilterOutputStream {
 	 *             If an error occurs attempting to flush this
 	 *             BufferedOutputStream.
 	 */
-	public synchronized void flush() throws IOException {
-		if (count > 0)
-			out.write(buf, 0, count);
+	@Override
+    public synchronized void flush() throws IOException {
+		if (count > 0) {
+            out.write(buf, 0, count);
+        }
 		count = 0;
 		out.flush();
 	}
@@ -109,7 +112,8 @@ public class BufferedOutputStream extends FilterOutputStream {
 	 * @throws IndexOutOfBoundsException
 	 *             If offset or count are outside of bounds.
 	 */
-	public synchronized void write(byte[] buffer, int offset, int length)
+	@Override
+    public synchronized void write(byte[] buffer, int offset, int length)
 			throws IOException {
 		if (buffer != null) {
 			// avoid int overflow
@@ -120,8 +124,9 @@ public class BufferedOutputStream extends FilterOutputStream {
 					return;
 				}
 				int available = buf.length - count;
-				if (length < available)
-					available = length;
+				if (length < available) {
+                    available = length;
+                }
 				if (available > 0) {
 					System.arraycopy(buffer, offset, buf, count, available);
 					count += available;
@@ -141,12 +146,12 @@ public class BufferedOutputStream extends FilterOutputStream {
 						}
 					}
 				}
-			} else
-				throw new ArrayIndexOutOfBoundsException(org.apache.harmony.luni.util.Msg
-						.getString("K002f")); //$NON-NLS-1$
-		} else
-			throw new NullPointerException(org.apache.harmony.luni.util.Msg
-					.getString("K0047")); //$NON-NLS-1$
+			} else {
+                throw new ArrayIndexOutOfBoundsException(Msg.getString("K002f")); //$NON-NLS-1$
+            }
+		} else {
+            throw new NullPointerException(Msg.getString("K0047")); //$NON-NLS-1$
+        }
 	}
 
 	/**
@@ -164,7 +169,8 @@ public class BufferedOutputStream extends FilterOutputStream {
 	 *             If an error occurs attempting to write to this
 	 *             BufferedOutputStream.
 	 */
-	public synchronized void write(int oneByte) throws IOException {
+	@Override
+    public synchronized void write(int oneByte) throws IOException {
 		if (count == buf.length) {
 			out.write(buf, 0, count);
 			count = 0;

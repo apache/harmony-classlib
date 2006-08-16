@@ -15,9 +15,9 @@
 
 package java.io;
 
-
 import java.security.AccessController;
 
+import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
@@ -68,9 +68,9 @@ public class BufferedWriter extends Writer {
 		if (size > 0) {
 			this.out = out;
 			this.buf = new char[size];
-		} else
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
-					.getString("K0058")); //$NON-NLS-1$
+		} else {
+            throw new IllegalArgumentException(Msg.getString("K0058")); //$NON-NLS-1$
+        }
 	}
 
 	/**
@@ -82,7 +82,8 @@ public class BufferedWriter extends Writer {
 	 *             If an error occurs attempting to close this Writer.
 	 */
 
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		synchronized (lock) {
 			if (isOpen()) {
 				flush();
@@ -101,15 +102,18 @@ public class BufferedWriter extends Writer {
 	 *             If an error occurs attempting to flush this Writer.
 	 */
 
-	public void flush() throws IOException {
+	@Override
+    public void flush() throws IOException {
 		synchronized (lock) {
 			if (isOpen()) {
-				if (pos > 0)
-					out.write(buf, 0, pos);
+				if (pos > 0) {
+                    out.write(buf, 0, pos);
+                }
 				pos = 0;
 				out.flush();
-			} else
-				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K005d")); //$NON-NLS-1$
+			} else {
+                throw new IOException(Msg.getString("K005d")); //$NON-NLS-1$
+            }
 		}
 	}
 
@@ -156,7 +160,8 @@ public class BufferedWriter extends Writer {
 	 *             If offset or count are outside of bounds.
 	 */
 
-	public void write(char[] cbuf, int offset, int count) throws IOException {
+	@Override
+    public void write(char[] cbuf, int offset, int count) throws IOException {
 		// avoid int overflow
 		if (0 <= offset && offset <= cbuf.length && 0 <= count
 				&& count <= cbuf.length - offset) {
@@ -167,12 +172,11 @@ public class BufferedWriter extends Writer {
 						return;
 					}
 					int available = this.buf.length - pos;
-					if (count < available)
-						available = count;
+					if (count < available) {
+                        available = count;
+                    }
 					if (available > 0) {
-						System
-								.arraycopy(cbuf, offset, this.buf, pos,
-										available);
+						System.arraycopy(cbuf, offset, this.buf, pos, available);
 						pos += available;
 					}
 					if (pos == this.buf.length) {
@@ -185,17 +189,17 @@ public class BufferedWriter extends Writer {
 								out.write(cbuf, offset, available);
 								return;
 							}
-							System.arraycopy(cbuf, offset, this.buf, pos,
-									available);
-							pos += available;
+							System.arraycopy(cbuf, offset, this.buf, pos, available);
+                            pos += available;
 						}
 					}
-				} else
-					throw new IOException(org.apache.harmony.luni.util.Msg
-							.getString("K005d")); //$NON-NLS-1$
+				} else {
+                    throw new IOException(Msg.getString("K005d")); //$NON-NLS-1$
+                }
 			}
-		} else
-			throw new ArrayIndexOutOfBoundsException();
+		} else {
+            throw new ArrayIndexOutOfBoundsException();
+        }
 	}
 
 	/**
@@ -207,7 +211,8 @@ public class BufferedWriter extends Writer {
 	 *
 	 * @throws 		IOException 	If this Writer has already been closed or some other IOException occurs.
 	 */
-	public void write(int oneChar) throws IOException {
+	@Override
+    public void write(int oneChar) throws IOException {
 		synchronized (lock) {
 			if (isOpen()) {
 				if (pos >= buf.length) {
@@ -215,8 +220,9 @@ public class BufferedWriter extends Writer {
 					pos = 0;
 				}
 				buf[pos++] = (char) oneChar;
-			} else
-				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K005d")); //$NON-NLS-1$
+			} else {
+                throw new IOException(Msg.getString("K005d")); //$NON-NLS-1$
+            }
 		}
 	}
 
@@ -240,7 +246,8 @@ public class BufferedWriter extends Writer {
 	 *             If offset or count are outside of bounds.
 	 */
 
-	public void write(String str, int offset, int count) throws IOException {
+	@Override
+    public void write(String str, int offset, int count) throws IOException {
 		// avoid int overflow
 		if (0 <= offset && offset <= str.length() && 0 <= count
 				&& count <= str.length() - offset) {
@@ -253,8 +260,9 @@ public class BufferedWriter extends Writer {
 						return;
 					}
 					int available = buf.length - pos;
-					if (count < available)
-						available = count;
+					if (count < available) {
+                        available = count;
+                    }
 					if (available > 0) {
 						str.getChars(offset, offset + available, buf, pos);
 						pos += available;
@@ -276,11 +284,12 @@ public class BufferedWriter extends Writer {
 							pos += available;
 						}
 					}
-				} else
-					throw new IOException(org.apache.harmony.luni.util.Msg
-							.getString("K005d")); //$NON-NLS-1$
+				} else {
+                    throw new IOException(Msg.getString("K005d")); //$NON-NLS-1$
+                }
 			}
-		} else
-			throw new StringIndexOutOfBoundsException();
+		} else {
+            throw new StringIndexOutOfBoundsException();
+        }
 	}
 }

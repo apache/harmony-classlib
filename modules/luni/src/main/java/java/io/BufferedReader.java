@@ -15,6 +15,8 @@
 
 package java.io;
 
+import org.apache.harmony.luni.util.Msg;
+
 
 /**
  * BufferedReader is a buffered character input reader. Buffering allows reading
@@ -79,9 +81,9 @@ public class BufferedReader extends Reader {
 		if (size > 0) {
 			this.in = in;
 			buf = new char[size];
-		} else
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
-					.getString("K0058")); //$NON-NLS-1$
+		} else {
+            throw new IllegalArgumentException(Msg.getString("K0058")); //$NON-NLS-1$
+        }
 	}
 
 	/**
@@ -93,7 +95,8 @@ public class BufferedReader extends Reader {
 	 *             If an error occurs attempting to close this BufferedReader.
 	 */
 
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		synchronized (lock) {
 			if (isOpen()) {
 				in.close();
@@ -116,8 +119,9 @@ public class BufferedReader extends Reader {
 		if (markpos == 0 && marklimit > buf.length) {
 			/* Increase buffer size to accommodate the readlimit */
 			int newLength = buf.length * 2;
-			if (newLength > marklimit)
-				newLength = marklimit;
+			if (newLength > marklimit) {
+                newLength = marklimit;
+            }
 			char[] newbuf = new char[newLength];
 			System.arraycopy(buf, 0, newbuf, 0, buf.length);
 			buf = newbuf;
@@ -158,18 +162,20 @@ public class BufferedReader extends Reader {
 	 *             If an error occurs attempting mark this BufferedReader.
 	 */
 
-	public void mark(int readlimit) throws IOException {
+	@Override
+    public void mark(int readlimit) throws IOException {
 		if (readlimit >= 0) {
 			synchronized (lock) {
 				if (isOpen()) {
 					marklimit = readlimit;
 					markpos = pos;
-				} else
-					throw new IOException(org.apache.harmony.luni.util.Msg
-							.getString("K005b")); //$NON-NLS-1$
+				} else {
+                    throw new IOException(Msg.getString("K005b")); //$NON-NLS-1$
+                }
 			}
-		} else
-			throw new IllegalArgumentException();
+		} else {
+            throw new IllegalArgumentException();
+        }
 	}
 
 	/**
@@ -180,7 +186,8 @@ public class BufferedReader extends Reader {
 	 *         <code>false</code> otherwise
 	 */
 
-	public boolean markSupported() {
+	@Override
+    public boolean markSupported() {
 		return true;
 	}
 
@@ -198,15 +205,17 @@ public class BufferedReader extends Reader {
 	 *             error occurs.
 	 */
 
-	public int read() throws IOException {
+	@Override
+    public int read() throws IOException {
 		synchronized (lock) {
 			if (isOpen()) {
 				/* Are there buffered characters available? */
-				if (pos < count || fillbuf() != -1)
-					return buf[pos++];
+				if (pos < count || fillbuf() != -1) {
+                    return buf[pos++];
+                }
 				return -1;
 			}
-			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K005b")); //$NON-NLS-1$
+			throw new IOException(Msg.getString("K005b")); //$NON-NLS-1$
 		}
 	}
 
@@ -233,7 +242,8 @@ public class BufferedReader extends Reader {
 	 *             error occurs.
 	 */
 
-	public int read(char[] buffer, int offset, int length) throws IOException {
+	@Override
+    public int read(char[] buffer, int offset, int length) throws IOException {
 		synchronized (lock) {
 			if (isOpen()) {
 				// check for null
@@ -241,8 +251,9 @@ public class BufferedReader extends Reader {
                 if(offset < 0 || length < 0 || (long)offset + (long)length > bufLen){
                     throw new ArrayIndexOutOfBoundsException();
                 }
-				if (length == 0)
+				if (length == 0) {
                     return 0;
+                }
                 int required;
                 if (pos < count) {
                     /* There are bytes available in the buffer. */
@@ -250,12 +261,14 @@ public class BufferedReader extends Reader {
                             - pos;
                     System.arraycopy(buf, pos, buffer, offset, copylength);
                     pos += copylength;
-                    if (copylength == length || !in.ready())
+                    if (copylength == length || !in.ready()) {
                         return copylength;
+                    }
                     offset += copylength;
                     required = length - copylength;
-                } else
+                } else {
                     required = length;
+                }
 
                 while (true) {
                     int read;
@@ -266,24 +279,28 @@ public class BufferedReader extends Reader {
                      */
                     if (markpos == -1 && required >= buf.length) {
                         read = in.read(buffer, offset, required);
-                        if (read == -1)
+                        if (read == -1) {
                             return required == length ? -1 : length - required;
+                        }
                     } else {
-                        if (fillbuf() == -1)
+                        if (fillbuf() == -1) {
                             return required == length ? -1 : length - required;
+                        }
                         read = count - pos >= required ? required : count - pos;
                         System.arraycopy(buf, pos, buffer, offset, read);
                         pos += read;
                     }
                     required -= read;
-                    if (required == 0)
+                    if (required == 0) {
                         return length;
-                    if (!in.ready())
+                    }
+                    if (!in.ready()) {
                         return length - required;
+                    }
                     offset += read;
                 }
 			}
-			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K005b")); //$NON-NLS-1$
+			throw new IOException(Msg.getString("K005b")); //$NON-NLS-1$
 		}
 	}
 
@@ -312,38 +329,43 @@ public class BufferedReader extends Reader {
 				while (true) {
 					/* Are there buffered characters available? */
 					if (pos >= count) {
-						if (eol == '\n')
-							return result.toString();
+						if (eol == '\n') {
+                            return result.toString();
+                        }
 						// attempt to fill buffer
-						if (fillbuf() == -1) // EOF case returns already read
-												// characters or null.
+						if (fillbuf() == -1) {
+                            // characters or null.
 							return result.length() > 0 || eol != '\0' ? result
 									.toString() : null;
+                        }
 					}
 					for (int charPos = pos; charPos < count; charPos++) {
 						if (eol == '\0'
 								&& (buf[charPos] == '\n' || buf[charPos] == '\r')) {
 							eol = buf[charPos];
 						} else if (eol == '\r' && (buf[charPos] == '\n')) {
-							if (charPos > pos)
-								result.append(buf, pos, charPos - pos - 1);
+							if (charPos > pos) {
+                                result.append(buf, pos, charPos - pos - 1);
+                            }
 							pos = charPos + 1;
 							return result.toString();
 						} else if (eol != '\0') {
-							if (charPos > pos)
-								result.append(buf, pos, charPos - pos - 1);
+							if (charPos > pos) {
+                                result.append(buf, pos, charPos - pos - 1);
+                            }
 							pos = charPos;
 							return result.toString();
 						}
 					}
-					if (eol != '\0') // eol could only be last character.
-						result.append(buf, pos, count - pos - 1);
-					else
-						result.append(buf, pos, count - pos);
+					if (eol != '\0') {
+                        result.append(buf, pos, count - pos - 1);
+                    } else {
+                        result.append(buf, pos, count - pos);
+                    }
 					pos = count;
 				}
 			}
-			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K005b")); //$NON-NLS-1$
+			throw new IOException(Msg.getString("K005b")); //$NON-NLS-1$
 		}
 	}
 
@@ -363,11 +385,13 @@ public class BufferedReader extends Reader {
 	 *             error occurs.
 	 */
 
-	public boolean ready() throws IOException {
+	@Override
+    public boolean ready() throws IOException {
 		synchronized (lock) {
-			if (isOpen())
-				return ((count - pos) > 0) || in.ready();
-			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K005b")); //$NON-NLS-1$
+			if (isOpen()) {
+                return ((count - pos) > 0) || in.ready();
+            }
+			throw new IOException(Msg.getString("K005b")); //$NON-NLS-1$
 		}
 	}
 
@@ -381,16 +405,19 @@ public class BufferedReader extends Reader {
 	 *             <code>mark()/reset()</code>, or no mark has been set.
 	 */
 
-	public void reset() throws IOException {
+	@Override
+    public void reset() throws IOException {
 		synchronized (lock) {
 			if (isOpen()) {
-				if (markpos != -1)
-					pos = markpos;
-				else
-					throw new IOException(org.apache.harmony.luni.util.Msg
+				if (markpos != -1) {
+                    pos = markpos;
+                } else {
+                    throw new IOException(Msg
 							.getString("K005c")); //$NON-NLS-1$
-			} else
-				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K005b")); //$NON-NLS-1$
+                }
+			} else {
+                throw new IOException(Msg.getString("K005b")); //$NON-NLS-1$
+            }
 		}
 	}
 
@@ -409,12 +436,14 @@ public class BufferedReader extends Reader {
 	 *             error occurs.
 	 */
 
-	public long skip(long amount) throws IOException {
+	@Override
+    public long skip(long amount) throws IOException {
 		if (amount >= 0) {
 			synchronized (lock) {
 				if (isOpen()) {
-					if (amount < 1)
-						return 0;
+					if (amount < 1) {
+                        return 0;
+                    }
 					if (count - pos >= amount) {
 						pos += amount;
 						return amount;
@@ -423,8 +452,9 @@ public class BufferedReader extends Reader {
 					long read = count - pos;
 					pos = count;
 					while (read < amount) {
-						if (fillbuf() == -1)
-							return read;
+						if (fillbuf() == -1) {
+                            return read;
+                        }
 						if (count - pos >= amount - read) {
 							pos += amount - read;
 							return amount;
@@ -435,7 +465,7 @@ public class BufferedReader extends Reader {
 					}
 					return amount;
 				}
-				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K005b")); //$NON-NLS-1$
+				throw new IOException(Msg.getString("K005b")); //$NON-NLS-1$
 			}
 		}
 		throw new IllegalArgumentException();
