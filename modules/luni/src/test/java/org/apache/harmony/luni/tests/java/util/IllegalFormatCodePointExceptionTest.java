@@ -25,34 +25,34 @@ import org.apache.harmony.testframework.serialization.SerializationTest.Serializ
 
 public class IllegalFormatCodePointExceptionTest extends TestCase {
 
-	/**
-	 * @tests java.util.IllegalFormatCodePointException.IllegalFormatCodePointException(int)
-	 */
-	public void test_illegalFormatCodePointException() {
-		IllegalFormatCodePointException illegalFormatCodePointException = new IllegalFormatCodePointException(
-				-1);
-		assertTrue(null != illegalFormatCodePointException);
-	}
+    /**
+     * @tests java.util.IllegalFormatCodePointException.IllegalFormatCodePointException(int)
+     */
+    public void test_illegalFormatCodePointException() {
+        IllegalFormatCodePointException illegalFormatCodePointException = new IllegalFormatCodePointException(
+                -1);
+        assertTrue(null != illegalFormatCodePointException);
+    }
 
-	/**
-	 * @tests java.util.IllegalFormatCodePointException.getCodePoint()
-	 */
-	public void test_getCodePoint() {
-		int codePoint = 12345;
-		IllegalFormatCodePointException illegalFormatCodePointException = new IllegalFormatCodePointException(
-				codePoint);
-		assertEquals(codePoint, illegalFormatCodePointException.getCodePoint());
-	}
+    /**
+     * @tests java.util.IllegalFormatCodePointException.getCodePoint()
+     */
+    public void test_getCodePoint() {
+        int codePoint = 12345;
+        IllegalFormatCodePointException illegalFormatCodePointException = new IllegalFormatCodePointException(
+                codePoint);
+        assertEquals(codePoint, illegalFormatCodePointException.getCodePoint());
+    }
 
-	/**
-	 * @tests java.util.IllegalFormatCodePointException.getMessage()
-	 */
-	public void test_getMessage() {
-		int codePoint = 12345;
-		IllegalFormatCodePointException illegalFormatCodePointException = new IllegalFormatCodePointException(
-				codePoint);
-		assertTrue(null != illegalFormatCodePointException.getMessage());
-	}
+    /**
+     * @tests java.util.IllegalFormatCodePointException.getMessage()
+     */
+    public void test_getMessage() {
+        int codePoint = 12345;
+        IllegalFormatCodePointException illegalFormatCodePointException = new IllegalFormatCodePointException(
+                codePoint);
+        assertTrue(null != illegalFormatCodePointException.getMessage());
+    }
 
     // comparator for IllegalFormatCodePointException objects
     private static final SerializableAssert exComparator = new SerializableAssert() {

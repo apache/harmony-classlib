@@ -24,38 +24,38 @@ import org.apache.harmony.testframework.serialization.SerializationTest.Serializ
 
 public class IllegalFormatWidthExceptionTest extends TestCase {
 
-	/**
-	 * @tests java.util.IllegalFormatWidthException#IllegalFormatWidthException(int)
-	 */
-	public void test_illegalFormatWidthException() {
-		int width = Integer.MAX_VALUE;
-		IllegalFormatWidthException illegalFormatWidthException = new IllegalFormatWidthException(
-				width);
-		assertEquals(width, illegalFormatWidthException.getWidth());
+    /**
+     * @tests java.util.IllegalFormatWidthException#IllegalFormatWidthException(int)
+     */
+    public void test_illegalFormatWidthException() {
+        int width = Integer.MAX_VALUE;
+        IllegalFormatWidthException illegalFormatWidthException = new IllegalFormatWidthException(
+                width);
+        assertEquals(width, illegalFormatWidthException.getWidth());
 
-	}
+    }
 
-	/**
-	 * @tests java.util.IllegalFormatWidthException#getWidth()
-	 */
-	public void test_getWidth() {
-		int width = 12345;
-		IllegalFormatWidthException illegalFormatWidthException = new IllegalFormatWidthException(
-				width);
-		assertEquals(width, illegalFormatWidthException.getWidth());
+    /**
+     * @tests java.util.IllegalFormatWidthException#getWidth()
+     */
+    public void test_getWidth() {
+        int width = 12345;
+        IllegalFormatWidthException illegalFormatWidthException = new IllegalFormatWidthException(
+                width);
+        assertEquals(width, illegalFormatWidthException.getWidth());
 
-	}
+    }
 
-	/**
-	 * @tests java.util.IllegalFormatWidthException#getMessage()
-	 */
-	public void test_getMessage() {
-		int width = 12345;
-		IllegalFormatWidthException illegalFormatWidthException = new IllegalFormatWidthException(
-				width);
-		assertTrue(null != illegalFormatWidthException.getMessage());
+    /**
+     * @tests java.util.IllegalFormatWidthException#getMessage()
+     */
+    public void test_getMessage() {
+        int width = 12345;
+        IllegalFormatWidthException illegalFormatWidthException = new IllegalFormatWidthException(
+                width);
+        assertTrue(null != illegalFormatWidthException.getMessage());
 
-	}
+    }
 
     // comparator for IllegalFormatWidthException objects
     private static final SerializableAssert exComparator = new SerializableAssert() {

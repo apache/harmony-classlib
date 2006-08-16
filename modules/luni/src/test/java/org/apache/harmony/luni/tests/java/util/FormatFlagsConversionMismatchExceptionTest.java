@@ -25,55 +25,55 @@ import org.apache.harmony.testframework.serialization.SerializationTest.Serializ
 
 public class FormatFlagsConversionMismatchExceptionTest extends TestCase {
 
-	/**
-	 * @tests java.util.FormatFlagsConversionMismatchException#FormatFlagsConversionMismatchException(String,
-	 *        char)
-	 */
-	public void test_formatFlagsConversionMismatchException() {
-		try {
+    /**
+     * @tests java.util.FormatFlagsConversionMismatchException#FormatFlagsConversionMismatchException(String,
+     *        char)
+     */
+    public void test_formatFlagsConversionMismatchException() {
+        try {
             new FormatFlagsConversionMismatchException(null, ' ');
-			fail("should throw NullPointerException.");
-		} catch (NullPointerException e) {
-			// expected
-		}
+            fail("should throw NullPointerException.");
+        } catch (NullPointerException e) {
+            // expected
+        }
 
-	}
+    }
 
-	/**
-	 * @tests java.util.FormatFlagsConversionMismatchException#getFlags()
-	 */
-	public void test_getFlags() {
-		String flags = "MYTESTFLAGS";
-		char conversion = 'T';
-		FormatFlagsConversionMismatchException formatFlagsConversionMismatchException = new FormatFlagsConversionMismatchException(
-				flags, conversion);
-		assertEquals(flags, formatFlagsConversionMismatchException.getFlags());
-	}
+    /**
+     * @tests java.util.FormatFlagsConversionMismatchException#getFlags()
+     */
+    public void test_getFlags() {
+        String flags = "MYTESTFLAGS";
+        char conversion = 'T';
+        FormatFlagsConversionMismatchException formatFlagsConversionMismatchException = new FormatFlagsConversionMismatchException(
+                flags, conversion);
+        assertEquals(flags, formatFlagsConversionMismatchException.getFlags());
+    }
 
-	/**
-	 * @tests java.util.FormatFlagsConversionMismatchException#getConversion()
-	 */
-	public void test_getConversion() {
-		String flags = "MYTESTFLAGS";
-		char conversion = 'T';
-		FormatFlagsConversionMismatchException formatFlagsConversionMismatchException = new FormatFlagsConversionMismatchException(
-				flags, conversion);
-		assertEquals(conversion, formatFlagsConversionMismatchException
-				.getConversion());
+    /**
+     * @tests java.util.FormatFlagsConversionMismatchException#getConversion()
+     */
+    public void test_getConversion() {
+        String flags = "MYTESTFLAGS";
+        char conversion = 'T';
+        FormatFlagsConversionMismatchException formatFlagsConversionMismatchException = new FormatFlagsConversionMismatchException(
+                flags, conversion);
+        assertEquals(conversion, formatFlagsConversionMismatchException
+                .getConversion());
 
-	}
+    }
 
-	/**
-	 * @tests java.util.FormatFlagsConversionMismatchException#getMessage()
-	 */
-	public void test_getMessage() {
-		String flags = "MYTESTFLAGS";
-		char conversion = 'T';
-		FormatFlagsConversionMismatchException formatFlagsConversionMismatchException = new FormatFlagsConversionMismatchException(
-				flags, conversion);
-		assertTrue(null != formatFlagsConversionMismatchException.getMessage());
+    /**
+     * @tests java.util.FormatFlagsConversionMismatchException#getMessage()
+     */
+    public void test_getMessage() {
+        String flags = "MYTESTFLAGS";
+        char conversion = 'T';
+        FormatFlagsConversionMismatchException formatFlagsConversionMismatchException = new FormatFlagsConversionMismatchException(
+                flags, conversion);
+        assertTrue(null != formatFlagsConversionMismatchException.getMessage());
 
-	}
+    }
 
     // comparator for FormatFlagsConversionMismatchException objects
     private static final SerializableAssert exComparator = new SerializableAssert() {

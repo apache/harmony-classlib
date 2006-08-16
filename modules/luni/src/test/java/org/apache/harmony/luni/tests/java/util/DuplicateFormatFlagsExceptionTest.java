@@ -25,38 +25,38 @@ import org.apache.harmony.testframework.serialization.SerializationTest.Serializ
 
 public class DuplicateFormatFlagsExceptionTest extends TestCase {
 
-	/**
-	 * @tests java.util.DuplicateFormatFlagsException#DuplicateFormatFlagsException(String)
-	 */
-	public void test_duplicateFormatFlagsException() {
-		try {
+    /**
+     * @tests java.util.DuplicateFormatFlagsException#DuplicateFormatFlagsException(String)
+     */
+    public void test_duplicateFormatFlagsException() {
+        try {
             new DuplicateFormatFlagsException(null);
-			fail("should throw NullPointerException.");
-		} catch (NullPointerException e) {
-			// desired
-		}
-	}
+            fail("should throw NullPointerException.");
+        } catch (NullPointerException e) {
+            // desired
+        }
+    }
 
-	/**
-	 * @tests java.util.DuplicateFormatFlagsException#getFlags()
-	 */
-	public void test_getFlags() {
-		String strFlags = "MYTESTFLAGS";
-		DuplicateFormatFlagsException duplicateFormatException = new DuplicateFormatFlagsException(
-				strFlags);
-		assertEquals(strFlags, duplicateFormatException.getFlags());
-	}
+    /**
+     * @tests java.util.DuplicateFormatFlagsException#getFlags()
+     */
+    public void test_getFlags() {
+        String strFlags = "MYTESTFLAGS";
+        DuplicateFormatFlagsException duplicateFormatException = new DuplicateFormatFlagsException(
+                strFlags);
+        assertEquals(strFlags, duplicateFormatException.getFlags());
+    }
 
-	/**
-	 * @tests java.util.DuplicateFormatFlagsException#getMessage()
-	 */
-	public void test_getMessage() {
-		String strFlags = "MYTESTFLAGS";
-		DuplicateFormatFlagsException duplicateFormatException = new DuplicateFormatFlagsException(
-				strFlags);
-		assertTrue(null != duplicateFormatException.getFlags());
+    /**
+     * @tests java.util.DuplicateFormatFlagsException#getMessage()
+     */
+    public void test_getMessage() {
+        String strFlags = "MYTESTFLAGS";
+        DuplicateFormatFlagsException duplicateFormatException = new DuplicateFormatFlagsException(
+                strFlags);
+        assertTrue(null != duplicateFormatException.getFlags());
 
-	}
+    }
 
     // comparator for DuplicateFormatFlagsException objects
     private static final SerializableAssert exComparator = new SerializableAssert() {

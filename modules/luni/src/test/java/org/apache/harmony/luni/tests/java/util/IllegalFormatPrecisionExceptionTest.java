@@ -24,36 +24,36 @@ import org.apache.harmony.testframework.serialization.SerializationTest.Serializ
 
 public class IllegalFormatPrecisionExceptionTest extends TestCase {
 
-	/**
-	 * @tests java.util.IllegalFormatPrecisionException#IllegalFormatPrecisionException(int)
-	 */
-	public void test_illegalFormatPrecisionException() {
-		IllegalFormatPrecisionException illegalFormatPrecisionException = new IllegalFormatPrecisionException(
-				Integer.MIN_VALUE);
-		assertEquals(Integer.MIN_VALUE, illegalFormatPrecisionException
-				.getPrecision());
-	}
+    /**
+     * @tests java.util.IllegalFormatPrecisionException#IllegalFormatPrecisionException(int)
+     */
+    public void test_illegalFormatPrecisionException() {
+        IllegalFormatPrecisionException illegalFormatPrecisionException = new IllegalFormatPrecisionException(
+                Integer.MIN_VALUE);
+        assertEquals(Integer.MIN_VALUE, illegalFormatPrecisionException
+                .getPrecision());
+    }
 
-	/**
-	 * @tests java.util.IllegalFormatPrecisionException#getPrecision()
-	 */
-	public void test_getPrecision() {
-		int precision = 12345;
-		IllegalFormatPrecisionException illegalFormatPrecisionException = new IllegalFormatPrecisionException(
-				precision);
-		assertEquals(precision, illegalFormatPrecisionException.getPrecision());
-	}
+    /**
+     * @tests java.util.IllegalFormatPrecisionException#getPrecision()
+     */
+    public void test_getPrecision() {
+        int precision = 12345;
+        IllegalFormatPrecisionException illegalFormatPrecisionException = new IllegalFormatPrecisionException(
+                precision);
+        assertEquals(precision, illegalFormatPrecisionException.getPrecision());
+    }
 
-	/**
-	 * @tests method for 'java.util.IllegalFormatPrecisionException#getMessage()
-	 */
-	public void test_getMessage() {
-		int precision = 12345;
-		IllegalFormatPrecisionException illegalFormatPrecisionException = new IllegalFormatPrecisionException(
-				precision);
-		assertTrue(null != illegalFormatPrecisionException.getMessage());
+    /**
+     * @tests method for 'java.util.IllegalFormatPrecisionException#getMessage()
+     */
+    public void test_getMessage() {
+        int precision = 12345;
+        IllegalFormatPrecisionException illegalFormatPrecisionException = new IllegalFormatPrecisionException(
+                precision);
+        assertTrue(null != illegalFormatPrecisionException.getMessage());
 
-	}
+    }
 
     // comparator for IllegalFormatPrecisionException objects
     private static final SerializableAssert exComparator = new SerializableAssert() {

@@ -25,38 +25,38 @@ import org.apache.harmony.testframework.serialization.SerializationTest.Serializ
 
 public class IllegalFormatFlagsExceptionTest extends TestCase {
 
-	/**
-	 * @tests java.util.IllegalFormatFlagsException#IllegalFormatFlagsException(String)
-	 */
-	public void test_illegalFormatFlagsException() {
-		try {
+    /**
+     * @tests java.util.IllegalFormatFlagsException#IllegalFormatFlagsException(String)
+     */
+    public void test_illegalFormatFlagsException() {
+        try {
             new IllegalFormatFlagsException(null);
-			fail("should throw NullPointerException");
-		} catch (NullPointerException e) {
-			// expected
-		}
-	}
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
 
-	/**
-	 * @tests java.util.IllegalFormatFlagsException.getFlags()
-	 */
-	public void test_getFlags() {
-		String flags = "TESTFLAGS";
-		IllegalFormatFlagsException illegalFormatFlagsException = new IllegalFormatFlagsException(
-				flags);
-		assertEquals(flags, illegalFormatFlagsException.getFlags());
-	}
+    /**
+     * @tests java.util.IllegalFormatFlagsException.getFlags()
+     */
+    public void test_getFlags() {
+        String flags = "TESTFLAGS";
+        IllegalFormatFlagsException illegalFormatFlagsException = new IllegalFormatFlagsException(
+                flags);
+        assertEquals(flags, illegalFormatFlagsException.getFlags());
+    }
 
-	/**
-	 * @tests java.util.IllegalFormatFlagsException.getMessage()
-	 */
-	public void test_getMessage() {
-		String flags = "TESTFLAGS";
-		IllegalFormatFlagsException illegalFormatFlagsException = new IllegalFormatFlagsException(
-				flags);
-		assertTrue(null != illegalFormatFlagsException.getMessage());
+    /**
+     * @tests java.util.IllegalFormatFlagsException.getMessage()
+     */
+    public void test_getMessage() {
+        String flags = "TESTFLAGS";
+        IllegalFormatFlagsException illegalFormatFlagsException = new IllegalFormatFlagsException(
+                flags);
+        assertTrue(null != illegalFormatFlagsException.getMessage());
 
-	}
+    }
 
     // comparator for IllegalFormatFlagsException objects
     private static final SerializableAssert exComparator = new SerializableAssert() {

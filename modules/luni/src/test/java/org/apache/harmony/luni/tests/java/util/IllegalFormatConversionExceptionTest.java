@@ -25,55 +25,55 @@ import org.apache.harmony.testframework.serialization.SerializationTest.Serializ
 
 public class IllegalFormatConversionExceptionTest extends TestCase {
 
-	/**
-	 * @tests java.util.IllegalFormatConversionException#IllegalFormatConversionException(char,
-	 *        Class)
-	 */
-	public void test_illegalFormatConversionException() {
-		try {
+    /**
+     * @tests java.util.IllegalFormatConversionException#IllegalFormatConversionException(char,
+     *        Class)
+     */
+    public void test_illegalFormatConversionException() {
+        try {
             new IllegalFormatConversionException(' ', null);
-			fail("should throw NullPointerExcetpion.");
-		} catch (NullPointerException e) {
-			// desired
-		}
-	}
+            fail("should throw NullPointerExcetpion.");
+        } catch (NullPointerException e) {
+            // desired
+        }
+    }
 
-	/**
-	 * @tests java.util.IllegalFormatConversionException#getArgumentClass()
-	 */
-	public void test_getArgumentClass() {
-		char c = '*';
-		Class argClass = String.class;
-		IllegalFormatConversionException illegalFormatConversionException = new IllegalFormatConversionException(
-				c, argClass);
-		assertEquals(argClass, illegalFormatConversionException
-				.getArgumentClass());
+    /**
+     * @tests java.util.IllegalFormatConversionException#getArgumentClass()
+     */
+    public void test_getArgumentClass() {
+        char c = '*';
+        Class argClass = String.class;
+        IllegalFormatConversionException illegalFormatConversionException = new IllegalFormatConversionException(
+                c, argClass);
+        assertEquals(argClass, illegalFormatConversionException
+                .getArgumentClass());
 
-	}
+    }
 
-	/**
-	 * @tests java.util.IllegalFormatConversionException#getConversion()
-	 */
-	public void test_getConversion() {
-		char c = '*';
-		Class argClass = String.class;
-		IllegalFormatConversionException illegalFormatConversionException = new IllegalFormatConversionException(
-				c, argClass);
-		assertEquals(c, illegalFormatConversionException.getConversion());
+    /**
+     * @tests java.util.IllegalFormatConversionException#getConversion()
+     */
+    public void test_getConversion() {
+        char c = '*';
+        Class argClass = String.class;
+        IllegalFormatConversionException illegalFormatConversionException = new IllegalFormatConversionException(
+                c, argClass);
+        assertEquals(c, illegalFormatConversionException.getConversion());
 
-	}
+    }
 
-	/**
-	 * @tests java.util.IllegalFormatConversionException#getMessage()
-	 */
-	public void test_getMessage() {
-		char c = '*';
-		Class argClass = String.class;
-		IllegalFormatConversionException illegalFormatConversionException = new IllegalFormatConversionException(
-				c, argClass);
-		assertTrue(null != illegalFormatConversionException.getMessage());
+    /**
+     * @tests java.util.IllegalFormatConversionException#getMessage()
+     */
+    public void test_getMessage() {
+        char c = '*';
+        Class argClass = String.class;
+        IllegalFormatConversionException illegalFormatConversionException = new IllegalFormatConversionException(
+                c, argClass);
+        assertTrue(null != illegalFormatConversionException.getMessage());
 
-	}
+    }
 
     // comparator for IllegalFormatConversionException objects
     private static final SerializableAssert exComparator = new SerializableAssert() {
