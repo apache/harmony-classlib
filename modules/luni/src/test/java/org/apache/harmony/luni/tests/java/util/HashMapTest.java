@@ -18,19 +18,27 @@ package org.apache.harmony.luni.tests.java.util;
 import java.util.HashMap;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class HashMapTest extends TestCase {
-    public void test_serialization() throws Exception {
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
         HashMap<String, String> hm = new HashMap<String, String>();
         hm.put("key", "value");
-        SerializationTester.assertEquals(hm);
+
+        SerializationTest.verifySelf(hm);
     }
 
-    public void test_serializationCompatability() throws Exception {
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
         HashMap<String, String> hm = new HashMap<String, String>();
         hm.put("key", "value");
-        SerializationTester.assertCompabilityEquals(hm,
-                "serialization/java/util/HashMapTest.golden.ser");
+
+        SerializationTest.verifyGolden(this, hm);
     }
 }
