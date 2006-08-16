@@ -736,10 +736,13 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     public String getHeaderField(int pos) {
         try {
             getInputStream();
-            return resHeader.get(pos);
         } catch (IOException e) {
+            // ignore
+        }
+        if (null == resHeader) {
             return null;
         }
+        return resHeader.get(pos);
     }
 
     /**
@@ -759,10 +762,13 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     public String getHeaderField(String key) {
         try {
             getInputStream();
-            return resHeader.get(key);
         } catch (IOException e) {
+            // ignore
+        }
+        if (null == resHeader) {
             return null;
         }
+        return resHeader.get(key);
     }
 
     /**
@@ -780,10 +786,13 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     public String getHeaderFieldKey(int pos) {
         try {
             getInputStream();
-            return resHeader.getKey(pos);
         } catch (IOException e) {
+            // ignore
+        }
+        if (null == resHeader) {
             return null;
         }
+        return resHeader.getKey(pos);
     }
 
     /**
@@ -798,11 +807,14 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
     public Map<String, List<String>> getHeaderFields() {
         try {
             // ensure that resHeader exists
-            getInputStream();
-            return resHeader.getFieldMap();
+            getInputStream(); 
         } catch (IOException e) {
+            // ignore
+        }
+        if (null == resHeader) {
             return null;
         }
+        return resHeader.getFieldMap();
     }
 
     /**
