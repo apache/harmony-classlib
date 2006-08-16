@@ -209,17 +209,24 @@ public abstract class SerializationTest extends TestCase {
      * equals() method and it's instances should to be compared manually.
      */
     public interface SerializableAssert {
-        
+
         /**
          * Compares deserialized and reference objects.
+         * 
+         * @param initial -
+         *            initial object used for creating serialized form
+         * @param deserialized -
+         *            deserialized object
          */
-        void assertDeserialized(Serializable reference, Serializable test);
+        void assertDeserialized(Serializable initial, Serializable deserialized);
     }
 
     // default comparator for a class that has equals(Object) method
     private final static SerializableAssert DEFAULT_COMPARATOR = new SerializableAssert() {
-        public void assertDeserialized(Serializable reference, Serializable test) {
-            Assert.assertEquals(reference, test);
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
+
+            Assert.assertEquals(initial, deserialized);
         }
     };
 
@@ -227,8 +234,10 @@ public abstract class SerializationTest extends TestCase {
      * Comparator for verifying that deserialized object is the same as initial.
      */
     public final static SerializableAssert SAME_COMPARATOR = new SerializableAssert() {
-        public void assertDeserialized(Serializable reference, Serializable test) {
-            Assert.assertSame(reference, test);
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
+
+            Assert.assertSame(initial, deserialized);
         }
     };
 
@@ -236,25 +245,25 @@ public abstract class SerializationTest extends TestCase {
      * Comparator for java.lang.Throwable objects
      */
     public final static SerializableAssert THROWABLE_COMPARATOR = new SerializableAssert() {
-        public void assertDeserialized(Serializable reference, Serializable test) {
+        public void assertDeserialized(Serializable initial, Serializable deserialized) {
 
-            Throwable refThr = (Throwable) reference;
-            Throwable tstThr = (Throwable) test;
+            Throwable initThr = (Throwable) initial;
+            Throwable dserThr = (Throwable) deserialized;
 
             // verify class
-            Assert.assertEquals(refThr.getClass(), tstThr.getClass());
+            Assert.assertEquals(initThr.getClass(), dserThr.getClass());
 
             // verify message
-            Assert.assertEquals(refThr.getMessage(), tstThr.getMessage());
+            Assert.assertEquals(initThr.getMessage(), dserThr.getMessage());
 
             // verify cause
-            if (refThr.getCause() == null) {
-                Assert.assertNull(tstThr.getCause());
+            if (initThr.getCause() == null) {
+                Assert.assertNull(dserThr.getCause());
             } else {
-                Assert.assertNotNull(tstThr.getCause());
+                Assert.assertNotNull(dserThr.getCause());
 
-                THROWABLE_COMPARATOR.assertDeserialized(refThr.getCause(),
-                        tstThr.getCause());
+                THROWABLE_COMPARATOR.assertDeserialized(initThr.getCause(),
+                        dserThr.getCause());
             }
         }
     };
@@ -263,22 +272,22 @@ public abstract class SerializationTest extends TestCase {
      * Comparator for java.security.PermissionCollection objects
      */
     public final static SerializableAssert PERMISSION_COLLECTION_COMPARATOR = new SerializableAssert() {
-        public void assertDeserialized(Serializable reference, Serializable test) {
+        public void assertDeserialized(Serializable initial, Serializable deserialized) {
 
-            PermissionCollection refPC = (PermissionCollection) reference;
-            PermissionCollection tstPC = (PermissionCollection) test;
+            PermissionCollection initPC = (PermissionCollection) initial;
+            PermissionCollection dserPC = (PermissionCollection) deserialized;
 
             // verify class
-            Assert.assertEquals(refPC.getClass(), tstPC.getClass());
+            Assert.assertEquals(initPC.getClass(), dserPC.getClass());
 
             // verify 'readOnly' field
-            Assert.assertEquals(refPC.isReadOnly(), tstPC.isReadOnly());
+            Assert.assertEquals(initPC.isReadOnly(), dserPC.isReadOnly());
 
             // verify collection of permissions
             Collection<Permission> refCollection = new HashSet<Permission>(
-                    Collections.list(refPC.elements()));
+                    Collections.list(initPC.elements()));
             Collection<Permission> tstCollection = new HashSet<Permission>(
-                    Collections.list(tstPC.elements()));
+                    Collections.list(dserPC.elements()));
 
             Assert.assertEquals(refCollection, tstCollection);
         }
