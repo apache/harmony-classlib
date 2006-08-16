@@ -224,6 +224,15 @@ public abstract class SerializationTest extends TestCase {
     };
 
     /**
+     * Comparator for verifying that deserialized object is the same as initial.
+     */
+    public final static SerializableAssert SAME_COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable reference, Serializable test) {
+            Assert.assertSame(reference, test);
+        }
+    };
+
+    /**
      * Comparator for java.lang.Throwable objects
      */
     public final static SerializableAssert THROWABLE_COMPARATOR = new SerializableAssert() {
