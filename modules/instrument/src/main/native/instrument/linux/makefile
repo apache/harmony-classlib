@@ -26,7 +26,7 @@ BUILDFILES = \
 MDLLIBFILES = \
 	$(LIBPATH)libhycommon.a $(LIBPATH)libhyzip.a \
 	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
-	$(LIBPATH)libhythr.a $(LIBPATH)vmi.a
+	$(DLLPATH)libhythr.so $(LIBPATH)vmi.so
 
 DLLNAME = ../libhyinstrument.so
 
