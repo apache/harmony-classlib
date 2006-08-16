@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2006 The Apache Software Foundation or its licensors, as applicable.
+ *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,160 +13,194 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Elena Semukhina
- * @version $Revision$
- */
 
 package java.math;
 
 import java.io.IOException;
-import java.io.StreamCorruptedException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.io.StreamCorruptedException;
 
 /**
- * @com.intel.drl.spec_ref
+ * @ar.org.fitc.spec_ref
+ * @author Daniel Fridlender
+ * @author Matthias Gallé
+ * @author Mariano Heredia
+ * @author Miguel Vasquez 
  */
-public final class MathContext implements Serializable {
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static final MathContext DECIMAL128 = 
-        new MathContext(34, RoundingMode.HALF_EVEN);
+public class MathContext implements Serializable {
+
+    /* Fields */
+
+    /** @ar.org.fitc.spec_ref */
+    public static final MathContext DECIMAL128 = new MathContext(34,
+            RoundingMode.HALF_EVEN);
+
+    /** @ar.org.fitc.spec_ref */
+    public static final MathContext DECIMAL32 = new MathContext(7,
+            RoundingMode.HALF_EVEN);
+
+    /** @ar.org.fitc.spec_ref */
+    public static final MathContext DECIMAL64 = new MathContext(16,
+            RoundingMode.HALF_EVEN);
+
+    /** @ar.org.fitc.spec_ref */
+    public static final MathContext UNLIMITED = new MathContext(0,
+            RoundingMode.HALF_UP);
+
+    /** @ar.org.fitc.spec_ref */
+    private static final long serialVersionUID = 5579720004786848255L;
 
     /**
-     * @com.intel.drl.spec_ref
+     * The number of digits to be used for an operation; 
+     * results are rounded to this precision.
      */
-    public static final MathContext DECIMAL32 = 
-        new MathContext(7, RoundingMode.HALF_EVEN);
+    private int precision;
 
     /**
-     * @com.intel.drl.spec_ref
+     * A {@code RoundingMode} object which specifies 
+     * the algorithm to be used for rounding.
      */
-    public static final MathContext DECIMAL64 = 
-        new MathContext(16, RoundingMode.HALF_EVEN);
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static final MathContext UNLIMITED = 
-        new MathContext(0, RoundingMode.HALF_UP);
+    private RoundingMode roundingMode;
 
-    /**
-     * @com.intel.drl.spec_ref
+    /** 
+     * An array of {@code char} containing: 
+     * {@code 'p','r','e','c','i','s','i','o','n','='}.
+     * It's used to improve the methods related to {@code String} conversion.
+     * @see #MathContext(String)
+     * @see #toString() 
      */
-    private static final long serialVersionUID = 5579720004786848255L; 
+    private final static char[] chPrecision = { 'p', 'r', 'e', 'c', 'i', 's',
+            'i', 'o', 'n', '=' };
 
-    final int precision;
-    final RoundingMode roundingMode;
-
-    /**
-     * @com.intel.drl.spec_ref
+    /** 
+     * An array of {@code char} containing: 
+     * {@code 'r','o','u','n','d','i','n','g','M','o','d','e','='}.
+     * It's used to improve the methods related to {@code String} conversion.
+     * @see #MathContext(String)
+     * @see #toString() 
      */
-    public MathContext(int requiredPrecision) {
-        this(requiredPrecision, RoundingMode.HALF_UP);
+    private final static char[] chRoundingMode = { 'r', 'o', 'u', 'n', 'd',
+            'i', 'n', 'g', 'M', 'o', 'd', 'e', '=' };
+
+    /* Constructors */
+
+    /** @ar.org.fitc.spec_ref */
+    public MathContext(int setPrecision) {
+        this(setPrecision, RoundingMode.HALF_UP);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public MathContext(int requiredPrecision, RoundingMode rm) {
-        if (rm == null) {
-            throw new NullPointerException("null roundingMode");
+    /** @ar.org.fitc.spec_ref */
+    public MathContext(int setPrecision, RoundingMode setRoundingMode) {
+        if (setPrecision < 0) {
+            throw new IllegalArgumentException("Digits < 0");
         }
-        if (requiredPrecision < 0) {
-            throw new IllegalArgumentException("negative precision");
+        if (setRoundingMode == null) {
+            throw new NullPointerException("null RoundingMode");
         }
-        this.precision = requiredPrecision;
-        this.roundingMode = rm;
+        precision = setPrecision;
+        roundingMode = setRoundingMode;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public MathContext(String value) {
-        if (!value.startsWith("precision=")) {
-            throw new IllegalArgumentException("the argument should start " +
-                                               "with \"precision=\"");
+    /** @ar.org.fitc.spec_ref */
+    public MathContext(String val) {
+        char[] charVal = val.toCharArray();
+        int i; // Index of charVal
+        int j; // Index of chRoundingMode
+        int digit; // It will contain the digit parsed
+
+        if ((charVal.length < 27) || (charVal.length > 45)) {
+            throw new IllegalArgumentException("bad string format");
         }
-        int spacePosition = value.indexOf(' ');
-        if (spacePosition == -1) {
-            throw new IllegalArgumentException("the argument's words should " +
-                                               "be separated by the space");
+        // Parsing "precision=" String
+        for (i = 0; (i < chPrecision.length) && (charVal[i] == chPrecision[i]); i++)
+            ;
+
+        if (i < chPrecision.length) {
+            throw new IllegalArgumentException("bad string format");
         }
-        if (value.lastIndexOf(" ") != spacePosition) {
-            throw new IllegalArgumentException("there should be only one " +
-                                               "space symbol in the argument");
+        // Parsing the value for "precision="...
+        digit = Character.digit(charVal[i], 10);
+        if (digit == -1) {
+            throw new IllegalArgumentException("bad string format");
         }
-        try {
-            precision = Integer.parseInt(value.substring(10, spacePosition));
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("bad precision value");
+        this.precision = this.precision * 10 + digit;
+        i++;
+
+        do {
+            digit = Character.digit(charVal[i], 10);
+            if (digit == -1) {
+                if (charVal[i] == ' ') {
+                    // It parsed all the digits
+                    i++;
+                    break;
+                } else {// It isn't  a valid digit, and isn't a white space
+                    throw new IllegalArgumentException("bad string format");
+                }
+            }
+            // Acumulating the value parsed
+            this.precision = this.precision * 10 + digit;
+            if (this.precision < 0) {
+                throw new IllegalArgumentException("bad string format");
+            }
+            i++;
+        } while (true);
+        // Parsing "roundingMode="
+        for (j = 0; (j < chRoundingMode.length)
+                && (charVal[i] == chRoundingMode[j]); i++, j++)
+            ;
+
+        if (j < chRoundingMode.length) {
+            throw new IllegalArgumentException("bad string format");
         }
-        int shift = spacePosition + 1;
-        int valLen = value.length();
-        if (valLen - shift < 14) {
-            throw new IllegalArgumentException("bad roundingMode value");
-        }
-        if (!value.substring(shift, shift + 13).equals("roundingMode=")) {
-            throw new IllegalArgumentException
-                ("the second word in the argument should " +
-                 "be \"roundingMode=<rounding mode>\"");
-        }
-        shift += 13;
-        try {
-            roundingMode = RoundingMode.valueOf(value.substring(shift, valLen));
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("bad roundingMode value");
-        }
+        // Parsing the value for "roundingMode"...
+        this.roundingMode = RoundingMode.valueOf(String.valueOf(charVal, i,
+                charVal.length - i));
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean equals(Object obj) {
-        return (obj instanceof MathContext &&
-            this.precision == ((MathContext)obj).precision && 
-            this.roundingMode.equals(((MathContext)obj).roundingMode));
-    }
+    /* Public Methods */
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    /** @ar.org.fitc.spec_ref */
     public int getPrecision() {
         return precision;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    /** @ar.org.fitc.spec_ref */
     public RoundingMode getRoundingMode() {
         return roundingMode;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    /** @ar.org.fitc.spec_ref */
+    @Override
+    public boolean equals(Object x) {
+        return ((x instanceof MathContext)
+                && (((MathContext) x).getPrecision() == precision) && (((MathContext) x)
+                .getRoundingMode() == roundingMode));
+    }
+
+    /** @ar.org.fitc.spec_ref */
+    @Override
     public int hashCode() {
-        return precision * roundingMode.ordinal() + roundingMode.hashCode();
+        // Make place for the necessary bits to represent 8 rounding modes
+        return ((precision << 3) | roundingMode.ordinal());
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    /** @ar.org.fitc.spec_ref */
+    @Override
     public String toString() {
-        return "precision=" + precision + " roundingMode=" + 
-               roundingMode.toString();
+        StringBuffer sb = new StringBuffer(45);
+
+        sb.append(chPrecision);
+        sb.append(precision);
+        sb.append(' ');
+        sb.append(chRoundingMode);
+        sb.append(roundingMode);
+        return sb.toString();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    private void readObject(ObjectInputStream s)
-        throws IOException,
-        ClassNotFoundException {
+    /** @ar.org.fitc.spec_ref */
+    private void readObject(ObjectInputStream s) throws IOException,
+            ClassNotFoundException {
         s.defaultReadObject();
         if (precision < 0) {
             throw new StreamCorruptedException("bad precision value");
@@ -175,5 +209,5 @@ public final class MathContext implements Serializable {
             throw new StreamCorruptedException("null roundingMode");
         }
     }
-}
 
+}

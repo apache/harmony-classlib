@@ -119,8 +119,7 @@ public class BigDecimalScaleOperationsTest extends TestCase {
             BigDecimal bNumber = aNumber.setScale(newScale);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertTrue("Improper exception message", e.getMessage().
-                equals("rounding mode is ROUND_UNNECESSARY but the result is not exact"));
+            assertEquals("Improper exception message", "Rounding necessary", e.getMessage());
         }
     }
 
@@ -333,7 +332,7 @@ public class BigDecimalScaleOperationsTest extends TestCase {
             BigDecimal bNumber = aNumber.movePointRight(shift);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertEquals("Improper exception message", "scale outside the range of a 32-bit integer", e.getMessage());
+            assertEquals("Improper exception message", "Underflow", e.getMessage());
         }
     }
 

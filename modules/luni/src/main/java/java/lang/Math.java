@@ -191,6 +191,19 @@ public final class Math {
 	 */
 	public static native double log(double d);
 
+    /**
+     * Answers the closest double approximation of the base 10 logarithm of the
+     * argument
+     * 
+     * @param d
+     *            the value to compute the log10 of
+     * @return the natural logarithm of the argument.
+     */
+    public static double log10(double d) {
+        //TODO: this is a stub to integrate HARMONY-935
+        return log(d)/log(10);
+    }
+
 	/**
 	 * Answers the most positive (i.e. closest to positive infinity) of the two
 	 * arguments.

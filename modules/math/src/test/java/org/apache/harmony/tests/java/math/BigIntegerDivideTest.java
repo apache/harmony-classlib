@@ -42,7 +42,7 @@ public class BigIntegerDivideTest extends TestCase {
             BigInteger result = aNumber.divide(bNumber);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertEquals("Improper exception message", "division by zero", e.getMessage());
+            assertEquals("Improper exception message", "BigInteger divide by zero", e.getMessage());
         }
     }
 
@@ -58,7 +58,7 @@ public class BigIntegerDivideTest extends TestCase {
             BigInteger result = aNumber.divide(bNumber);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertEquals("Improper exception message", "division by zero", e.getMessage());
+            assertEquals("Improper exception message", "BigInteger divide by zero", e.getMessage());
         }
     }
 
@@ -411,7 +411,7 @@ public class BigIntegerDivideTest extends TestCase {
             BigInteger result = aNumber.remainder(bNumber);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertEquals("Improper exception message", "division by zero", e.getMessage());
+            assertEquals("Improper exception message", "BigInteger divide by zero", e.getMessage());
         }
     }
 
@@ -624,7 +624,7 @@ public class BigIntegerDivideTest extends TestCase {
             BigInteger result = aNumber.mod(bNumber);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertEquals("Improper exception message", "modulus is non-positive", e.getMessage());
+            assertEquals("Improper exception message", "BigInteger: modulus not positive", e.getMessage());
         }
     }
 

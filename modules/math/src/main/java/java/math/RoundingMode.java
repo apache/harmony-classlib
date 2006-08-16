@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005-2006 The Apache Software Foundation or its licensors, as applicable.
+ *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,69 +13,53 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Elena Semukhina
- * @version $Revision$
- */
 
 package java.math;
 
 /**
- * @com.intel.drl.spec_ref
+ * @ar.org.fitc.spec_ref
+ * @author Daniel Fridlender
+ * @author Matthias Gallé
+ * @author Mariano Heredia
+ * @author Miguel Vasquez 
  */
 public enum RoundingMode {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    /** @ar.org.fitc.spec_ref */
     UP(BigDecimal.ROUND_UP),
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    /** @ar.org.fitc.spec_ref */
     DOWN(BigDecimal.ROUND_DOWN),
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
+    /** @ar.org.fitc.spec_ref */
     CEILING(BigDecimal.ROUND_CEILING),
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
+    /** @ar.org.fitc.spec_ref */
     FLOOR(BigDecimal.ROUND_FLOOR),
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
+    /** @ar.org.fitc.spec_ref */
     HALF_UP(BigDecimal.ROUND_HALF_UP),
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
+    /** @ar.org.fitc.spec_ref */
     HALF_DOWN(BigDecimal.ROUND_HALF_DOWN),
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
+    /** @ar.org.fitc.spec_ref */
     HALF_EVEN(BigDecimal.ROUND_HALF_EVEN),
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
+    /** @ar.org.fitc.spec_ref */
     UNNECESSARY(BigDecimal.ROUND_UNNECESSARY);
 
+    /** The old constant of <code>BigDecimal</code>. */
     protected final int bigDecimalRM;
 
+    /** It sets the old contant. */
     RoundingMode(int rm) {
         bigDecimalRM = rm;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    /** @ar.org.fitc.spec_ref */
     public static RoundingMode valueOf(int rM) {
-        switch(rM) {
+        switch (rM) {
             case BigDecimal.ROUND_CEILING:
                 return CEILING;
             case BigDecimal.ROUND_DOWN:
@@ -93,7 +77,7 @@ public enum RoundingMode {
             case BigDecimal.ROUND_UP:
                 return UP;
             default:
-                throw new IllegalArgumentException("rounding mode out of range");
+                throw new IllegalArgumentException("Invalid rounding mode");
         }
     }
 }
