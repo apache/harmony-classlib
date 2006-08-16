@@ -19,6 +19,7 @@ package javax.naming;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
@@ -883,64 +884,20 @@ public class CompoundName implements Name {
      */
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        Enumeration enums = elem.elements();
         String begin = NULL_STRING.equals(beginQuoteString) ? beginQuoteString2
                 : beginQuoteString;
         String end = NULL_STRING.equals(endQuoteString) ? endQuoteString2
                 : endQuoteString;
         String separator = NULL_STRING.equals(separatorString) ? separatorString2
                 : separatorString;
-        while (enums.hasMoreElements()) {
-            String elemString = (String) enums.nextElement();
-            if (0 == elemString.length()) {
-                // if empty element, append a separator and continue
-                sb.append(separator);
-                continue;
+        if(RIGHT_TO_LEFT.equals(direction)){
+            for (int i = elem.size() - 1; i >= 0; i--) {
+                addElement(sb, i, separator, begin, end);
             }
-            int pos = sb.length();
-            sb.append(elemString);
-
-            if (!NULL_STRING.equals(begin) && !NULL_STRING.equals(end)
-                    && !NULL_STRING.equals(separator)
-                    && (0 <= elemString.indexOf(separator))) {
-                // if contains separator string, quoted it
-                sb.insert(pos, begin);
-                pos += begin.length();
-                // if quoted, then every endquote char must be escaped
-                for (int i = 0, j = 0; 0 <= (j = elemString.indexOf(end, i)); i = j
-                        + end.length()) {
-                    sb.insert(pos + j, escapeString);
-                    pos += escapeString.length();
-                }
-                sb.append(end);
-            } else {
-                if (startsWithFromPos(elemString, 0, beginQuoteString)
-                        || startsWithFromPos(elemString, 0, beginQuoteString2)) {
-                    //if not quoted and start with begin quote string, escape it
-                    sb.insert(pos, escapeString);
-                    pos += escapeString.length();
-                }
-                //if not quoted, escape all separator string and all escape string
-                for (int i = 0; i < elemString.length();) {
-                    if (startsWithFromPos(elemString, i, separatorString)) {
-                        sb.insert(pos + i, escapeString);
-                        pos += escapeString.length();
-                        i += separatorString.length();
-                    } else if (startsWithFromPos(elemString, i,
-                            separatorString2)) {
-                        sb.insert(pos + i, escapeString);
-                        pos += escapeString.length();
-                        i += separatorString2.length();
-                    } else if (startsWithFromPos(elemString, i, escapeString)) {
-                        sb.insert(pos + i, escapeString);
-                        pos += escapeString.length();
-                        i += escapeString.length();
-                    } else {
-                        i++;
-                    }
-                }
+        }else{
+            for (int i = 0; i < elem.size(); i++) {
+                addElement(sb, i, separator, begin, end);
             }
-            sb.append(separator);
         }
         if (size() * separator.length() < sb.length()) {
             //if the name contains non-empty element, delete the last separator char, which is abundant
@@ -949,29 +906,86 @@ public class CompoundName implements Name {
         return sb.toString();
     }
 
+    private void addElement(StringBuffer sb, int index, String separator, String begin, String end) {
+        String elemString = elem.get(index);
+        if (0 == elemString.length()) {
+            // if empty element, append a separator and continue
+            sb.append(separator);
+            return;
+        }
+        int pos = sb.length();
+        sb.append(elemString);
+        if (!NULL_STRING.equals(begin) && !NULL_STRING.equals(end)
+                && !NULL_STRING.equals(separator)
+                && (0 <= elemString.indexOf(separator))) {
+            // if contains separator string, quoted it
+            sb.insert(pos, begin);
+            pos += begin.length();
+            // if quoted, then every endquote char must be escaped
+            for (int i = 0, j = 0; 0 <= (j = elemString.indexOf(end, i)); i = j
+                    + end.length()) {
+                sb.insert(pos + j, escapeString);
+                pos += escapeString.length();
+            }
+            sb.append(end);
+        } else {
+            if (startsWithFromPos(elemString, 0, beginQuoteString)
+                    || startsWithFromPos(elemString, 0, beginQuoteString2)) {
+                // if not quoted and start with begin quote string, escape it
+                sb.insert(pos, escapeString);
+                pos += escapeString.length();
+            }
+            // if not quoted, escape all separator string and all escape string
+            for (int i = 0; i < elemString.length();) {
+                if (startsWithFromPos(elemString, i, separatorString)) {
+                    sb.insert(pos + i, escapeString);
+                    pos += escapeString.length();
+                    i += separatorString.length();
+                } else if (startsWithFromPos(elemString, i, separatorString2)) {
+                    sb.insert(pos + i, escapeString);
+                    pos += escapeString.length();
+                    i += separatorString2.length();
+                } else if (startsWithFromPos(elemString, i, escapeString)) {
+                    sb.insert(pos + i, escapeString);
+                    pos += escapeString.length();
+                    i += escapeString.length();
+                } else {
+                    i++;
+                }
+            }
+        }
+        sb.append(separator);
+    }
+
     /**
-     * Check if the supplied object <code>o</code> is equal to this 
+     * Check if the supplied object <code>o</code> is equal to this
      * <code>CompoundName</code>.
      * <p>
-     * The supplied <code>Object o</code> may be null but that will cause false 
-     * to be returned.</p>
+     * The supplied <code>Object o</code> may be null but that will cause
+     * false to be returned.
+     * </p>
      * <p>
-     * The supplied <code>Object o</code> may be something other than a 
-     * <code>CompoundName</code> but that will cause false to be returned.</p>
+     * The supplied <code>Object o</code> may be something other than a
+     * <code>CompoundName</code> but that will cause false to be returned.
+     * </p>
      * <p>
-     * To be equal the supplied <code>CompoundName</code> must have the same 
-     * number of elements and each element must match the corresponding element 
-     * of this <code>CompoundName</code>. The properties jndi.syntax.ignorecase 
-     * and jndi.syntax.trimblanks need to be considered if they have been set.</p>
+     * To be equal the supplied <code>CompoundName</code> must have the same
+     * number of elements and each element must match the corresponding element
+     * of this <code>CompoundName</code>. The properties
+     * jndi.syntax.ignorecase and jndi.syntax.trimblanks need to be considered
+     * if they have been set.
+     * </p>
      * <p>
-     * The properties associated with the <code>CompoundName</code> must be taken 
-     * into account but do not have to match. For example "home/jenningm-abc/.profile" 
-     * with a direction of left to right is equal to ".profile/jenningm-abc/home" with 
-     * a direction of right to left. </p>
+     * The properties associated with the <code>CompoundName</code> must be
+     * taken into account but do not have to match. For example
+     * "home/jenningm-abc/.profile" with a direction of left to right is equal
+     * to ".profile/jenningm-abc/home" with a direction of right to left.
+     * </p>
      * 
-     * @param o				the object to be compared
-     * @return 				true if supplied object <code>o</code> is equals to 
-     * 						this <code>CompoundName</code>, false otherwise
+     * @param o
+     *            the object to be compared
+     * @return true if supplied object <code>o</code> is equals to this
+     *         <code>CompoundName</code>, false otherwise
      */
     public boolean equals(Object o) {
         if (!(o instanceof CompoundName)) {

@@ -1515,7 +1515,7 @@ public class CompoundNameTest extends TestCase {
 		name = new CompoundName(" A / B / c ", props);
 		assertEquals(294, name.hashCode());
 	}
-
+    
 	public void testToString() throws InvalidNameException {
 		log.setMethod("testToString()");
 
@@ -1528,7 +1528,6 @@ public class CompoundNameTest extends TestCase {
 		testToString("/a/b/c", "/a/b/c");
 
 		testToString("a/\\/b/c", "a/</b>/c");
-		testToString("a/\\b/c", "a/\\b/c");
 		testToString("a/b\\", "fail");
 
 		testToString("a/<b/>/c", "a/<b/>/c");
@@ -1546,6 +1545,12 @@ public class CompoundNameTest extends TestCase {
 		testToString("a/'/b\\a\\'b'/c", "a/</b\\a'b>/c");
 
 	}
+    
+    public void testToStringRightToLeft() throws Exception{
+        
+        CompoundName name = new CompoundName("a/b/c", props);
+        assertEquals("a/b/c", name.toString());
+    }
 
 	private void testBehavior(String str, Properties p) {
 		try {
@@ -1560,14 +1565,18 @@ public class CompoundNameTest extends TestCase {
 			throws InvalidNameException {
 		CompoundName name = null;
 		try {
+            props.put("jndi.syntax.direction", "left_to_right");
 			name = new CompoundName(str, props);
 			if ("fail".equals(expected)) {
 				fail("fail.equals()" + expected);
 			}
-			assertEquals(new CompoundName(name.toString(), props), name);
-			// assertEquals(
-			// new CompoundName(name.toString(), props).toString(),
-			// expected);
+            assertEquals(expected, name.toString());
+            props.put("jndi.syntax.direction", "right_to_left");
+            name = new CompoundName(str, props);
+            if ("fail".equals(expected)) {
+                fail("fail.equals()" + expected);
+            }
+            assertEquals(expected, name.toString());
 		} catch (Exception e) {
 			if (!"fail".equals(expected)) {
 				fail(str + "," + expected + "," + e.getMessage());
