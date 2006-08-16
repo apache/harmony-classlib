@@ -51,39 +51,60 @@ public class EventHandler implements InvocationHandler {
      * @com.intel.drl.spec_ref
      */
     public Object invoke(Object proxy, Method method, Object[] arguments) {
-        // workaround if arguments are null - treat them as array with
-        // single null element
+        Class<?> proxyClass;
+        Object result = null;
+        
+        // XXX
         if (arguments == null) {
-            arguments = new Object[] { null };
+            arguments = new Object[0];
         }
 
-        Class<?> proxyClass = proxy.getClass();
+        proxyClass = proxy.getClass();
+
         // if a proxy
         if (Proxy.isProxyClass(proxyClass)) {
             InvocationHandler handler = Proxy.getInvocationHandler(proxy);
 
             // if a valid object
-            if ((handler instanceof EventHandler)
-                    && isValidInvocation(method, arguments)) {
-                try {
-                    // extract value from event property name
-                    Object[] args = getArgs(arguments);
-                    // extract method to be invoked on target
-                    Method m = getMethod(proxy, method, arguments, args);
+            if (handler instanceof EventHandler) {
 
-                    return m.invoke(target, args);
-                } catch (Throwable t) {
-                    System.out.println(t.getClass() + ": " + t.getMessage());
-                    return null;
-                }
-            } else {
-                //  if not a valid call
-                return null;
-            }
-        } else {
-            // if not a valid object
-            return null;
-        }
+                // if the method from the Object class is called
+                if (method.getDeclaringClass().equals(Object.class)) {
+                    if (method.getName().equals("hashCode") && 
+                            arguments.length == 0) {
+                        result = hashCode();
+                    } else if (method.getName().equals("equals") &&
+                            arguments.length == 1 &&
+                            arguments[0] != null) {
+                        result = (proxy == arguments[0]);
+                    } else if (method.getName().equals("toString") &&
+                            arguments.length == 0) {
+                        result = proxy.getClass().getSimpleName() +
+                                toString().substring(
+                                        getClass().getName().length());
+                    }
+                } else if (isValidInvocation(method, arguments)) {
+                    // if listener method
+
+                    try {
+                        // extract value from event property name
+                        Object[] args = getArgs(arguments);
+                        // extract method to be invoked on target
+                        Method m = getMethod(proxy, method, arguments, args);
+
+                        // we have a valid listener method at this point
+                        result = m.invoke(target, args);
+                    } catch (Throwable t) {
+                        System.out.println(t.getClass() + ": " + t.getMessage());
+                    }
+
+                } // valid call
+
+            } // valid object
+
+        } // valid proxy
+        
+        return result;
     }
 
     /**
@@ -120,8 +141,9 @@ public class EventHandler implements InvocationHandler {
     public static <T> T create(Class<T> listenerInterface, Object target,
             String action, String eventPropertyName, String listenerMethodName) {
         return (T) Proxy.newProxyInstance(target.getClass().getClassLoader(),
-                new Class[] { listenerInterface }, new EventHandler(target,
-                        action, eventPropertyName, listenerMethodName));
+                new Class[] { listenerInterface },
+                new EventHandler(target, action, eventPropertyName,
+                        listenerMethodName));
     }
 
     /**
@@ -130,8 +152,8 @@ public class EventHandler implements InvocationHandler {
     public static <T> T create(Class<T> listenerInterface, Object target,
             String action, String eventPropertyName) {
         return (T) Proxy.newProxyInstance(target.getClass().getClassLoader(),
-                new Class[] { listenerInterface }, new EventHandler(target,
-                        action, eventPropertyName, null));
+                new Class[] { listenerInterface },
+                new EventHandler(target, action, eventPropertyName, null));
     }
 
     /**
@@ -140,8 +162,8 @@ public class EventHandler implements InvocationHandler {
     public static <T> T create(Class<T> listenerInterface, Object target,
             String action) {
         return (T) Proxy.newProxyInstance(target.getClass().getClassLoader(),
-                new Class[] { listenerInterface }, new EventHandler(target,
-                        action, null, null));
+                new Class[] { listenerInterface },
+                new EventHandler(target, action, null, null));
     }
 
     private boolean isValidInvocation(Method method, Object[] arguments) {
