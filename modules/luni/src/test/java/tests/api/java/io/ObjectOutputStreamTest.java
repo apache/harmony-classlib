@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import java.io.ObjectStreamField;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.SerializablePermission;
+import java.io.WriteAbortedException;
 import java.security.Permission;
 import java.util.Arrays;
 
@@ -927,6 +928,36 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
         oos.close();
         ois = new ObjectInputStream(new ByteArrayInputStream(bao.toByteArray()));
         assertEquals("Wrote incorrect UTF value", "HelloWorld", ois.readUTF());
+    }
+    
+    /**
+     * @tests java.io.ObjectOutputStream#writeObject(java.lang.Object)
+     */
+    public void test_writeObject_Exception() throws ClassNotFoundException, IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+
+        try {
+            oos.writeObject(new Object());
+            fail("should throw ObjectStreamException");
+        } catch (ObjectStreamException e) {
+            // expected
+        } finally {
+            oos.close();
+            baos.close();
+        }
+
+        byte[] bytes = baos.toByteArray();
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
+                bytes));
+        try {
+            ois.readObject();
+            fail("should throw WriteAbortedException");
+        } catch (WriteAbortedException e) {
+            // expected
+        } finally {
+            ois.close();
+        }
     }
 
     /**

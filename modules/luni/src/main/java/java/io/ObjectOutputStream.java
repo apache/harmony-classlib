@@ -1750,9 +1750,6 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 
 	private void writeObject(Object object, boolean unshared)
 			throws IOException {
-		if (object != null && !ObjectStreamClass.isSerializable(object.getClass())) {
-			throw new NotSerializableException(object.getClass().getName());
-		}
 		boolean setOutput = (primitiveTypes == output);
 		if (setOutput) {
 			primitiveTypes = null;
@@ -1811,6 +1808,9 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	private Integer writeObjectInternal(Object object, boolean unshared,
 			boolean computeClassBasedReplacement,
 			boolean computeStreamReplacement) throws IOException {
+        if (object != null && !ObjectStreamClass.isSerializable(object.getClass())) {
+            throw new NotSerializableException(object.getClass().getName());
+        }
 		if (object == null) {
 			writeNull();
 			return null;
