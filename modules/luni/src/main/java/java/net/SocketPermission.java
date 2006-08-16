@@ -238,7 +238,7 @@ public final class SocketPermission extends Permission implements Serializable {
 
 		// tests if the action list of p is the subset of the one of the
 		// receiver
-		if ((actionsMask & sp.actionsMask) != sp.actionsMask)
+        if (sp == null || (actionsMask & sp.actionsMask) != sp.actionsMask)
 			return false;
 
 		// only check the port range if the action string of the current object

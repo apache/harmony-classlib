@@ -108,6 +108,10 @@ public class SocketPermissionTest extends junit.framework.TestCase {
 		// Test for method boolean
 		// java.net.SocketPermission.implies(java.security.Permission)
 		assertTrue("All should imply resolve", star_All.implies(star_Resolve));
+		
+        // regression for HARMONY-1200
+        assertFalse("Null should not be implied", star_All.implies((SocketPermission)null));
+        
 		assertTrue("Equals should imply eachother", www_All
 				.implies(copyOfWww_All));
 		assertTrue("Wild should imply normal", star_All.implies(www_All));
@@ -154,6 +158,7 @@ public class SocketPermissionTest extends junit.framework.TestCase {
 		PermissionCollection col = perm1.newPermissionCollection();
 		col.add(perm1);
 		assertTrue("collection should imply port 80", col.implies(perm2));
+
 	}
 
 	/**
