@@ -58,6 +58,7 @@
                 <include name="fdlibm.h" />
                 <include name="hymagic.h" />
                 <include name="jsig.h" />
+                <include name="jvmti.h" />
             </fileset>
         </copy>
         <copy todir="${hy.jdk}/include" overwrite="yes">
@@ -239,6 +240,7 @@
                 <include name="fdlibm.h" />
                 <include name="hymagic.h" />
                 <include name="jsig.h" />
+                <include name="jvmti.h" />
             </fileset>
         </delete>
         <delete failonerror="false">
