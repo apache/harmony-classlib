@@ -161,8 +161,7 @@ public class DatagramSocketTest extends SocketTestCase {
 	public void test_connectLjava_net_InetAddressI() {
 		try {
 			ds = new java.net.DatagramSocket();
-			InetAddress inetAddress = InetAddress
-					.getByName(Support_Configuration.HomeAddress);
+			InetAddress inetAddress = InetAddress.getLocalHost();
 			int portNumber = Support_PortManager.getNextPort();
 			ds.connect(inetAddress, portNumber);
 			assertTrue("Incorrect InetAddress", ds.getInetAddress().equals(
@@ -553,8 +552,7 @@ public class DatagramSocketTest extends SocketTestCase {
 	public void test_disconnect() {
 		try {
 			ds = new java.net.DatagramSocket();
-			InetAddress inetAddress = InetAddress
-					.getByName(Support_Configuration.HomeAddress);
+			InetAddress inetAddress = InetAddress.getLocalHost();
 			int portNumber = Support_PortManager.getNextPort();
 			ds.connect(inetAddress, portNumber);
 			ds.disconnect();
