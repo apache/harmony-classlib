@@ -29,6 +29,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.net.SocketImpl;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.security.Permission;
@@ -620,7 +621,7 @@ public class SocketTest extends SocketTestCase {
 	/**
 	 * @tests java.net.Socket#setKeepAlive(boolean)
 	 */
-	public void test_setKeepAliveZ() {
+	public void test_setKeepAliveZ() throws Exception {
 		// There is not really a good test for this as it is there to detect
 		// crashed machines. Just make sure we can set it
 		try {
@@ -634,7 +635,14 @@ public class SocketTest extends SocketTestCase {
 		} catch (Exception e) {
 			handleException(e, SO_KEEPALIVE);
 		}
+        // regression test for HARMONY-1136
+		new testSocket((SocketImpl) null).setKeepAlive(true);
 	}
+	class testSocket extends Socket {
+		public testSocket(SocketImpl impl) throws SocketException {
+			super(impl);
+		}
+	} 
 
 	/**
 	 * @tests java.net.Socket#setSocketImplFactory(java.net.SocketImplFactory)

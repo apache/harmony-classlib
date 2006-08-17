@@ -548,9 +548,11 @@ public class Socket {
 	 *             if an error occurs setting the option
 	 */
 	public void setKeepAlive(boolean value) throws SocketException {
-		checkClosedAndCreate(true);
-		impl.setOption(SocketOptions.SO_KEEPALIVE, value ? Boolean.TRUE
-				: Boolean.FALSE);
+		if (impl != null) {
+			checkClosedAndCreate(true);
+			impl.setOption(SocketOptions.SO_KEEPALIVE, value ? Boolean.TRUE
+					: Boolean.FALSE);
+		}
 	}
 
 //	static native int getSocketFlags();
