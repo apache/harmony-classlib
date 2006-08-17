@@ -300,6 +300,7 @@ public abstract class DateFormat extends Format {
 	 * @return a DateFormat
 	 */
 	public final static DateFormat getDateInstance(int style) {
+		checkDateStyle(style);
 		return getDateInstance(style, Locale.getDefault());
 	}
 
@@ -314,6 +315,7 @@ public abstract class DateFormat extends Format {
 	 * @return a DateFormat
 	 */
 	public final static DateFormat getDateInstance(int style, Locale locale) {
+		checkDateStyle(style);
 		ResourceBundle bundle = getBundle(locale);
 		String pattern = bundle.getString("Date_" + getStyleName(style));
 		return new SimpleDateFormat(pattern, locale);
@@ -342,6 +344,8 @@ public abstract class DateFormat extends Format {
 	 */
 	public final static DateFormat getDateTimeInstance(int dateStyle,
 			int timeStyle) {
+		checkTimeStyle(timeStyle);
+		checkDateStyle(dateStyle);
 		return getDateTimeInstance(dateStyle, timeStyle, Locale.getDefault());
 	}
 
@@ -359,6 +363,8 @@ public abstract class DateFormat extends Format {
 	 */
 	public final static DateFormat getDateTimeInstance(int dateStyle,
 			int timeStyle, Locale locale) {
+		checkTimeStyle(timeStyle);
+		checkDateStyle(dateStyle);
 		ResourceBundle bundle = getBundle(locale);
 		String pattern = bundle.getString("Date_" + getStyleName(dateStyle))
 				+ " " + bundle.getString("Time_" + getStyleName(timeStyle));
@@ -424,6 +430,7 @@ public abstract class DateFormat extends Format {
 	 * @return a DateFormat
 	 */
 	public final static DateFormat getTimeInstance(int style) {
+		checkTimeStyle(style);
 		return getTimeInstance(style, Locale.getDefault());
 	}
 
@@ -438,6 +445,7 @@ public abstract class DateFormat extends Format {
 	 * @return a DateFormat
 	 */
 	public final static DateFormat getTimeInstance(int style, Locale locale) {
+		checkTimeStyle(style);
 		ResourceBundle bundle = getBundle(locale);
 		String pattern = bundle.getString("Time_" + getStyleName(style));
 		return new SimpleDateFormat(pattern, locale);
@@ -698,5 +706,14 @@ public abstract class DateFormat extends Format {
 
 			throw new InvalidObjectException(Msg.getString("K000d"));
 		}
+	}
+
+	private static void checkDateStyle(int style) {
+		if (!(style == SHORT || style == MEDIUM || style ==  LONG || style ==  FULL || style == DEFAULT))
+			throw new IllegalArgumentException("Illegal date style: " + style);
+	}
+	private static void checkTimeStyle(int style) {
+		if (!(style == SHORT || style == MEDIUM || style ==  LONG || style ==  FULL || style == DEFAULT))
+			throw new IllegalArgumentException("Illegal time style: " + style);
 	}
 }

@@ -122,6 +122,14 @@ public class DateFormatTest extends junit.framework.TestCase {
 				new DateFormatSymbols()));
 		assertTrue("Doesn't work4",
 				f2.format(new Date()).getClass() == String.class);
+		
+		// regression test for HARMONY-940
+		try {
+			DateFormat.getDateInstance(77);
+            fail("Should throw IAE");
+		} catch (IllegalArgumentException iae) {
+			//expected
+		}
 	}
 
 	/**
@@ -159,6 +167,14 @@ public class DateFormatTest extends junit.framework.TestCase {
 				new DateFormatSymbols(Locale.GERMAN)));
 		assertTrue("Doesn't work",
 				f2.format(new Date()).getClass() == String.class);
+
+		// regression test for HARMONY-940
+		try {
+			DateFormat.getDateInstance(77, Locale.GERMAN);
+            fail("Should throw IAE");
+		} catch (IllegalArgumentException iae) {
+			//expected
+		}
 	}
 
 	/**
@@ -215,6 +231,14 @@ public class DateFormatTest extends junit.framework.TestCase {
 		testDateTime(DateFormat.FULL, DateFormat.MEDIUM);
 		testDateTime(DateFormat.FULL, DateFormat.LONG);
 		testDateTime(DateFormat.FULL, DateFormat.FULL);
+		
+		// regression test for HARMONY-940
+		try {
+			DateFormat.getDateTimeInstance(77, 66);
+            fail("Should throw IAE");
+		} catch (IllegalArgumentException iae) {
+			//expected
+		}
 	}
 
 	private void testDateTimeLocale(int dStyle, int tStyle) {
@@ -257,6 +281,14 @@ public class DateFormatTest extends junit.framework.TestCase {
 		testDateTimeLocale(DateFormat.FULL, DateFormat.MEDIUM);
 		testDateTimeLocale(DateFormat.FULL, DateFormat.LONG);
 		testDateTimeLocale(DateFormat.FULL, DateFormat.FULL);
+
+		// regression test for HARMONY-940
+		try {
+			DateFormat.getDateTimeInstance(77, 66, Locale.GERMAN);
+            fail("Should throw IAE");
+		} catch (IllegalArgumentException iae) {
+			//expected
+		}
 	}
 
 	/**
@@ -337,6 +369,14 @@ public class DateFormatTest extends junit.framework.TestCase {
 				new DateFormatSymbols()));
 		assertTrue("Doesn't work4",
 				f2.format(new Date()).getClass() == String.class);
+
+		// regression test for HARMONY-940
+		try {
+			DateFormat.getTimeInstance(77);
+            fail("Should throw IAE");
+		} catch (IllegalArgumentException iae) {
+			//expected
+		}
 	}
 
 	/**
@@ -374,6 +414,14 @@ public class DateFormatTest extends junit.framework.TestCase {
 				new DateFormatSymbols(Locale.GERMAN)));
 		assertTrue("Doesn't work",
 				f2.format(new Date()).getClass() == String.class);
+		
+		// regression test for HARMONY-940
+		try {
+			DateFormat.getTimeInstance(77, Locale.GERMAN);
+            fail("Should throw IAE");
+		} catch (IllegalArgumentException iae) {
+			//expected
+		}
 	}
 
 	/**
