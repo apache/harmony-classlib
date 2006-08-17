@@ -265,8 +265,6 @@ public abstract class Handler {
      */
     public boolean isLoggable(LogRecord record) {
         if (null == record) {
-            reportError(
-                    "Null pointer of LogRecord", new NullPointerException(), ErrorManager.GENERIC_FAILURE); //$NON-NLS-1$ //$NON-NLS-2$
             return false;
         }
         if (this.level.intValue() == Level.OFF.intValue()) {
