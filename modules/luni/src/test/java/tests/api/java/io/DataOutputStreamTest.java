@@ -151,7 +151,7 @@ public class DataOutputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.DataOutputStream#writeBytes(java.lang.String)
 	 */
-	public void test_writeBytesLjava_lang_String() {
+	public void test_writeBytesLjava_lang_String() throws IOException {
 		// Test for method void
 		// java.io.DataOutputStream.writeBytes(java.lang.String)
 		try {
@@ -166,6 +166,8 @@ public class DataOutputStreamTest extends junit.framework.TestCase {
 		} catch (IOException e) {
 			fail("Exception during writeBytes test : " + e.getMessage());
 		}
+		// regression test for HARMONY-1101
+		new DataOutputStream(null).writeBytes("");
 	}
 
 	/**

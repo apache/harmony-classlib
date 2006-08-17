@@ -157,6 +157,9 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
 	 * @see DataInput#readFully(byte[],int,int)
 	 */
 	public final void writeBytes(String str) throws IOException {
+		if (str.length() == 0) {
+			return;
+		}
 		byte bytes[] = new byte[str.length()];
 		for (int index = 0; index < str.length(); index++)
 			bytes[index] = (byte) str.charAt(index);
