@@ -101,6 +101,10 @@ public final class URI implements Comparable<URI>, Serializable {
 			String path, String query, String fragment)
 			throws URISyntaxException {
 
+		if (scheme == null && userinfo == null && host == null &&
+				path == null && query == null && fragment == null)
+			return;
+
 		if (scheme != null && path != null && path.length() > 0
 				&& path.charAt(0) != '/') {
 			throw new URISyntaxException(path, Msg.getString("K0302"));

@@ -734,7 +734,7 @@ public class URITest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.URI#getAuthority()
 	 */
-	public void test_getAuthority() {
+	public void test_getAuthority() throws Exception {
 		URI[] uris = getUris();
 
 		String[] getAuthorityResults = {
@@ -759,6 +759,8 @@ public class URITest extends junit.framework.TestCase {
 				fail("Unexpected " + e.toString());
 			}
 		}
+		//regression test for HARMONY-1119
+		assertNull(new URI(null, null, null, 127, null, null, null).getAuthority());
 	}
 
 	/**
