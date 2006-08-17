@@ -382,6 +382,25 @@ public class FileInputStreamTest extends junit.framework.TestCase {
     }
     
     /**
+     * @tests java.io.FileInputStream#skip(long)
+     */
+    public void test_skipNegativeArgumentJ() throws IOException{
+        
+        FileInputStream fis = new java.io.FileInputStream(fileName);
+
+        try {
+            fis.skip(-5);
+            fail("IOException must be thrown if number of bytes to skip <0");
+        } catch (IOException e) {
+            // Expected IOException
+        } catch (Exception e) {
+            fail("IOException expected, but found: " + e.getMessage());
+        }
+        
+        fis.close();
+    } 
+    
+    /**
      * Sets up the fixture, for example, open a network connection. This method
      * is called before a test is executed.
      */

@@ -20,6 +20,7 @@ import java.nio.channels.FileChannel;
 
 import org.apache.harmony.luni.platform.IFileSystem;
 import org.apache.harmony.luni.platform.Platform;
+import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.nio.FileChannelFactory;
 
 /**
@@ -310,6 +311,10 @@ public class FileInputStream extends InputStream implements Closeable{
     	if (count == 0) {
 			return 0;
 		}
+        if (count < 0){
+            // KA013=Number of bytes to skip cannot be negative
+            throw new IOException(Msg.getString("KA013")); //$NON-NLS-1$
+        }
 
 		// stdin requires special handling
 		if (fd == FileDescriptor.in) {
