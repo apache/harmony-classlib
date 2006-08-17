@@ -176,9 +176,21 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      *            the value to be associated with the given key
      * @return the value to which this map maps the given key, or null if this
      *         map has no mapping for the given key.
+     * @throws NullPointerException
+     *             if the given key is null
      */
+    @Override
+    @SuppressWarnings("unchecked")
     public V put(K key, V value) {
-        throw new NotYetImplementedException();
+        validateKeyType(key);
+        int keyOrdinal = key.ordinal();
+        if (!hasMapping[keyOrdinal]) {
+            hasMapping[keyOrdinal] = true;
+            mappingsCount++;
+        }
+        V oldValue = (V) values[keyOrdinal];
+        values[keyOrdinal] = value;
+        return oldValue;
     }
 
     /**
@@ -228,6 +240,15 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      */
     public Collection<V> values() {
         throw new NotYetImplementedException();
+    }
+
+    private void validateKeyType(Object key) {
+        if(key == null){
+            throw new NullPointerException();
+        }
+        if(!keyType.isInstance(key)){
+            throw new ClassCastException();
+        }
     }
 
     @SuppressWarnings("unchecked")
