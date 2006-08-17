@@ -432,6 +432,25 @@ public class CalendarTest extends junit.framework.TestCase {
                 .getTimeZone());
     }
 
+    /**
+     * @tests java.util.Calendar#getTimeInMillis()
+     */
+    public void test_getTimeInMillis() {
+        Calendar cal = Calendar.getInstance();
+
+        int year = Integer.MIN_VALUE + 71;
+        cal.setTimeZone(TimeZone.getTimeZone("GMT"));;
+        cal.set(Calendar.YEAR, year + 1900);
+        cal.set(Calendar.MONTH, Calendar.JANUARY);
+        cal.set(Calendar.DATE, 1);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        assertEquals(cal.getTimeInMillis(), 6017546357372606464L);
+    }
+
 	protected void setUp() {
 		defaultLocale = Locale.getDefault();
 		Locale.setDefault(Locale.US);

@@ -755,7 +755,9 @@ public class GregorianCalendar extends Calendar {
 		return (int) days + 1;
 	}
 
-	private long daysFromBaseYear(int year) {
+	private long daysFromBaseYear(int iyear) {
+                long year = iyear;
+
 		if (year >= 1970) {
 			long days = (year - 1970) * (long) 365 + ((year - 1969) / 4);
 			if (year > changeYear) {
