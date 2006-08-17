@@ -1496,7 +1496,11 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 		// The handle for the classDesc is NOT the handle for the
 		// class object being dumped. We must allocate a new handle and return
 		// it.
-		writeClassDesc(ObjectStreamClass.lookupStreamClass(object), unshared);
+        if (object.isEnum()){
+            writeEnumDesc(object, unshared);
+        } else {
+            writeClassDesc(ObjectStreamClass.lookupStreamClass(object), unshared);
+        }
 		
 		Integer previousHandle = objectsWritten.get(object);
 		Integer handle = registerObjectWritten(object);
@@ -1540,7 +1544,12 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 				flags |= SC_BLOCK_DATA;
 		}
 		output.writeByte(flags);
-		writeFieldDescriptors(classDesc, externalizable);
+        if (((byte)SC_ENUM | SC_SERIALIZABLE) != classDesc.getFlags()){
+            writeFieldDescriptors(classDesc, externalizable);
+        } else {
+            // enum write no fields
+            output.writeShort(0);    
+        }
 	}
 
 	/**
@@ -1973,7 +1982,15 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
             drain(); // flush primitive types in the annotation
             output.writeByte(TC_ENDBLOCKDATA);
             // write super class
-            writeClassDesc(classDesc.getSuperclass(), unshared);
+            ObjectStreamClass superClass = classDesc.getSuperclass();            
+            if (null != superClass) {
+            	// super class is also enum
+                superClass.setFlags((byte)(SC_SERIALIZABLE|SC_ENUM));
+                superClass.setSerialVersionUID(0L);
+                writeEnumDesc(superClass.forClass(), unshared);
+            } else {
+                output.writeByte(TC_NULL);
+            }
             if (unshared) {
                 // remove reference to unshared object
                 removeUnsharedReference(classDesc, previousHandle);
@@ -1990,6 +2007,10 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         currentPutField = null;
 
         output.writeByte(TC_ENUM);
+        while (!theClass.isEnum() && null != theClass ){
+        	// write enum only
+            theClass = theClass.getSuperclass();
+        }
         ObjectStreamClass classDesc = writeEnumDesc(theClass, unshared);
 
         Integer previousHandle = objectsWritten.get(object);
@@ -1998,16 +2019,17 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         ObjectStreamField[] fields = classDesc.getSuperclass().fields();
         Class declaringClass = classDesc.getSuperclass().forClass();
         // Only write field "name" for enum class, which is the second field of
-        // enum
-        String str = (String) getFieldObj(object, declaringClass, fields[1]
-                .getName(), fields[1].getTypeString());
-
-        Integer strhandle = null;
-        if (!unshared) {
-            strhandle = dumpCycle(str);
-        }
-        if (null == strhandle) {
-            writeNewString(str, unshared);
+        // enum, that is fileds[1]. Ignore all non-fields and fields.length < 2
+        if (null != fields && fields.length > 1) {
+            String str = (String) getFieldObj(object, declaringClass, fields[1]
+                    .getName(), fields[1].getTypeString());
+            Integer strhandle = null;
+            if (!unshared) {
+                strhandle = dumpCycle(str);
+            }
+            if (null == strhandle) {
+                writeNewString(str, unshared);
+            }
         }
 
         if (unshared) {

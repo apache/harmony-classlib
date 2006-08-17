@@ -16,8 +16,12 @@
 package org.apache.harmony.tests.java.lang;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import junit.framework.TestCase;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
+
 import tests.util.SerializationTester;
 
 public class EnumTest extends TestCase {
@@ -36,6 +40,10 @@ public class EnumTest extends TestCase {
     enum Bogus {
         UNUSED
     }   
+    
+    enum Color {
+        Red, Green, Blue {};
+    }
     
     /**
      * @tests java.lang.Enum#compareTo(java.lang.Enum) 
@@ -239,5 +247,31 @@ public class EnumTest extends TestCase {
         assertEquals(mock.i,test.i);
         assertEquals(mock.str,test.str);
         assertEquals(mock.samEnum,test.samEnum);
-    }    
+    }       
+    
+    /**
+     * test a map class that has enums.
+     * 
+     * @test Serialization/deserialization compatibility.
+     */
+    public void test_serialization_inMap() throws Exception {
+        // regression test for Harmony-1163
+        HashMap<Color, Integer> enumColorMap = new HashMap<Color, Integer>();
+        enumColorMap.put(Color.Red, 1);
+        enumColorMap.put(Color.Blue, 3);
+        SerializationTest.verifySelf(enumColorMap);
+    }
+    
+    /**
+     * test a map class that has enums.
+     * 
+     * @test Serialization/deserialization compatibility.
+     */
+    public void test_compatibilitySerialization_inMap() throws Exception {
+        // regression test for Harmony-1163
+        HashMap<Color, Integer> enumColorMap = new HashMap<Color, Integer>();
+        enumColorMap.put(Color.Red, 1);
+        enumColorMap.put(Color.Blue, 3);        
+        assertTrue(SerializationTester.assertCompabilityEquals(enumColorMap,"serialization/java/lang/EnumTest.golden.4.ser"));
+    }
 }

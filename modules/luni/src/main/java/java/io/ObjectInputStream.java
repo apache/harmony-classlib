@@ -1536,12 +1536,22 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      */
     private ObjectStreamClass readEnumDesc() throws IOException,
             ClassNotFoundException {
-        ObjectStreamClass classDesc;
         byte tc = nextTC();
-        if (tc != TC_CLASSDESC) {
+        switch (tc) {
+        case TC_CLASSDESC:
+            return readEnumDescInternal(tc);            
+        case TC_REFERENCE:
+            return (ObjectStreamClass) readCyclicReference();
+        case TC_NULL:
+            return null;
+        default:
             throw new StreamCorruptedException(Msg.getString(
                     "K00d2", Integer.toHexString(tc & 0xff))); //$NON-NLS-1$
-        }
+        }        
+    }
+    
+    private ObjectStreamClass readEnumDescInternal(byte tc) throws IOException, ClassNotFoundException{
+        ObjectStreamClass classDesc;
         primitiveData = input;
         Integer oldHandle = descriptorHandle;
         descriptorHandle = new Integer(nextHandle());
@@ -1574,7 +1584,6 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         }
         return classDesc;
     }
-
     private Object readEnum(boolean unshared) throws OptionalDataException,
             ClassNotFoundException, IOException {
         // read classdesc for Enum first
