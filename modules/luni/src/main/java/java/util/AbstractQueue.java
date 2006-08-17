@@ -82,13 +82,7 @@ public abstract class AbstractQueue<E> extends AbstractCollection<E> implements
         if (this == c) {
             throw new IllegalArgumentException();
         }
-        Iterator<? extends E> iter = c.iterator();
-        while (iter.hasNext()) {
-            E o = iter.next();
-            add(o);
-        }
-        return true;
-
+        return super.addAll(c);
     }
 
     /**

@@ -15,6 +15,7 @@
 package tests.api.java.util;
 
 import java.util.AbstractQueue;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -186,6 +187,15 @@ public class AbstractQueueTest extends TestCase {
         } catch (IllegalStateException e) {
             // expected
         }
+    }
+
+    /**
+     * @tests java.util.AbstractQueue#addAll(E)
+     */
+    public void test_addAllLE_empty() {
+        // Regression test for HARMONY-1178
+        List list = new ArrayList<Object>(0);
+        assertFalse("Non modification to queue should return false", queue.addAll(list));
     }
 
     /**
