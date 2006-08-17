@@ -47,8 +47,6 @@ public class MulticastSocketTest extends SocketTestCase {
 
 	private NetworkInterface networkInterface1 = null;
 
-	private NetworkInterface sameAsNetworkInterface1 = null;
-
 	private NetworkInterface networkInterface2 = null;
 
 	private NetworkInterface IPV6networkInterface1 = null;
@@ -1115,15 +1113,7 @@ public class MulticastSocketTest extends SocketTestCase {
 				}
 			}
 
-			Enumeration addresses = networkInterface1.getInetAddresses();
-			if (addresses != null) {
-				try {
-					sameAsNetworkInterface1 = NetworkInterface
-							.getByInetAddress((InetAddress) addresses
-									.nextElement());
-				} catch (SocketException e) {
-				}
-			}
+			Enumeration addresses;
 
 			// first the first interface that supports IPV6 if one exists
 			try {
