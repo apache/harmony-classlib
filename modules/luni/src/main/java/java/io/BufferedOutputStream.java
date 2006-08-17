@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,6 +60,8 @@ public class BufferedOutputStream extends FilterOutputStream {
 	 *            the OutputStream to buffer writes on.
 	 * @param size
 	 *            the size of the buffer in bytes.
+	 * @throws IllegalArgumentException
+	 *             the size is <= 0
 	 * 
 	 */
 	public BufferedOutputStream(OutputStream out, int size) {
@@ -109,49 +111,46 @@ public class BufferedOutputStream extends FilterOutputStream {
 	 *             BufferedOutputStream.
 	 * @throws NullPointerException
 	 *             If buffer is null.
-	 * @throws IndexOutOfBoundsException
-	 *             If offset or count are outside of bounds.
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             If offset or count is outside of bounds.
 	 */
 	@Override
-    public synchronized void write(byte[] buffer, int offset, int length)
+	public synchronized void write(byte[] buffer, int offset, int length)
 			throws IOException {
-		if (buffer != null) {
-			// avoid int overflow
-			if (0 <= offset && offset <= buffer.length && 0 <= length
-					&& length <= buffer.length - offset) {
-				if (count == 0 && length >= buf.length) {
-					out.write(buffer, offset, length);
-					return;
-				}
-				int available = buf.length - count;
-				if (length < available) {
-                    available = length;
-                }
-				if (available > 0) {
+		if (buffer == null) {
+			throw new NullPointerException(org.apache.harmony.luni.util.Msg
+					.getString("K0047")); //$NON-NLS-1$
+		}
+		if (offset < 0 || offset > buffer.length - length || length < 0) {
+			throw new ArrayIndexOutOfBoundsException(
+					org.apache.harmony.luni.util.Msg.getString("K002f")); //$NON-NLS-1$
+		}
+		if (count == 0 && length >= buf.length) {
+			out.write(buffer, offset, length);
+			return;
+		}
+		int available = buf.length - count;
+		if (length < available) {
+			available = length;
+		}
+		if (available > 0) {
+			System.arraycopy(buffer, offset, buf, count, available);
+			count += available;
+		}
+		if (count == buf.length) {
+			out.write(buf, 0, buf.length);
+			count = 0;
+			if (length > available) {
+				offset += available;
+				available = length - available;
+				if (available >= buf.length) {
+					out.write(buffer, offset, available);
+				} else {
 					System.arraycopy(buffer, offset, buf, count, available);
 					count += available;
 				}
-				if (count == buf.length) {
-					out.write(buf, 0, buf.length);
-					count = 0;
-					if (length > available) {
-						offset += available;
-						available = length - available;
-						if (available >= buf.length) {
-							out.write(buffer, offset, available);
-						} else {
-							System.arraycopy(buffer, offset, buf, count,
-									available);
-							count += available;
-						}
-					}
-				}
-			} else {
-                throw new ArrayIndexOutOfBoundsException(Msg.getString("K002f")); //$NON-NLS-1$
-            }
-		} else {
-            throw new NullPointerException(Msg.getString("K0047")); //$NON-NLS-1$
-        }
+			}
+		}
 	}
 
 	/**

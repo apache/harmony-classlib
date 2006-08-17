@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,10 @@
 
 package tests.api.java.io;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class BufferedOutputStreamTest extends junit.framework.TestCase {
 
@@ -85,7 +88,7 @@ public class BufferedOutputStreamTest extends junit.framework.TestCase {
 		// int)
 		try {
 			os = new java.io.BufferedOutputStream(
-					baos = new java.io.ByteArrayOutputStream());
+					baos = new java.io.ByteArrayOutputStream(),512);
 			os.write(fileString.getBytes(), 0, 500);
 			bais = new java.io.ByteArrayInputStream(baos.toByteArray());
 			assertEquals("Bytes written, not buffered", 0, bais.available());
@@ -104,6 +107,146 @@ public class BufferedOutputStreamTest extends junit.framework.TestCase {
 			fail("Flush test failed");
 		}
 
+	}
+	
+	/**
+	 * @tests java.io.BufferedOutputStream#write(byte[], int, int)
+	 */
+	public void test_write_$BII_Exception() throws IOException {
+		OutputStream bos = new BufferedOutputStream(new ByteArrayOutputStream());	
+		byte[] nullByteArray = null;
+		byte[] byteArray = new byte[10];
+		
+		try {
+			bos.write(nullByteArray, -1, -1);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+
+		try {
+			bos.write(nullByteArray, -1, 0);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+		
+		try {
+			bos.write(nullByteArray, -1, 1);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+
+		try {
+			bos.write(nullByteArray, 0, -1);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+
+		try {
+			bos.write(nullByteArray, 0, 0);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+		
+		try {
+			bos.write(nullByteArray, 0, 1);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+		
+		try {
+			bos.write(nullByteArray, 1, -1);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+
+		try {
+			bos.write(nullByteArray, 1, 0);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+		
+		try {
+			bos.write(nullByteArray, 1, 1);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+		
+		try {
+			bos.write(byteArray, -1, -1);
+			fail("should throw ArrayIndexOutOfBoundsException");
+		} catch (ArrayIndexOutOfBoundsException e) {
+			// expected
+		}
+
+		try {
+			bos.write(byteArray, -1, 0);
+			fail("should throw ArrayIndexOutOfBoundsException");
+		} catch (ArrayIndexOutOfBoundsException e) {
+			// expected
+		}
+		
+		try {
+			bos.write(byteArray, -1, 1);
+			fail("should throw ArrayIndexOutOfBoundsException");
+		} catch (ArrayIndexOutOfBoundsException e) {
+			// expected
+		}
+
+		try {
+			bos.write(byteArray, 0, -1);
+			fail("should throw ArrayIndexOutOfBoundsException");
+		} catch (ArrayIndexOutOfBoundsException e) {
+			// expected
+		}
+
+		bos.write(byteArray, 0, 0);
+        bos.write(byteArray, 0, 1);
+        bos.write(byteArray, 0, byteArray.length);
+			
+		try {
+			bos.write(byteArray, 1, -1);
+			fail("should throw ArrayIndexOutOfBoundsException");
+		} catch (ArrayIndexOutOfBoundsException e) {
+			// expected
+		}
+
+		bos.write(byteArray, 1, 0);
+		bos.write(byteArray, 1, 1);
+
+
+		bos.write(byteArray, byteArray.length, 0);
+		
+		try {
+			bos.write(byteArray, byteArray.length + 1, 0);
+			fail("should throw ArrayIndexOutOfBoundsException");
+		} catch (ArrayIndexOutOfBoundsException e) {
+			//expected
+		}
+		
+		try {
+			bos.write(byteArray, byteArray.length + 1, 1);
+			fail("should throw ArrayIndexOutOfBoundsException");
+		} catch (ArrayIndexOutOfBoundsException e) {
+			//expected
+		}
+
+		bos.close();
+
+		try {
+			bos.write(byteArray, -1, -1);
+			fail("should throw ArrayIndexOutOfBoundsException");
+		} catch (ArrayIndexOutOfBoundsException e) {
+			//expected
+		}
 	}
 
 	/**
