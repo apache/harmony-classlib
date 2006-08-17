@@ -1,4 +1,4 @@
-/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,12 @@ import org.apache.harmony.luni.util.NotYetImplementedException;
 
 public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
         implements Cloneable, java.io.Serializable {
+    
+    final Class<E> elementClass;
+
+    EnumSet(Class<E> cls) {
+        elementClass = cls;
+    }
 
     /**
      * Creates an empty enum set. The permitted elements are of type Class<E>.
@@ -30,6 +36,12 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
      *             if the specified elementType is null
      */
     public static <E extends Enum<E>> EnumSet<E> noneOf(Class<E> elementType) {
+        if (!elementType.isEnum()) {
+            throw new ClassCastException();
+        }
+        if (elementType.getEnumConstants().length < 64) {
+            return new MiniEnumSet<E>(elementType);
+        }
         throw new NotYetImplementedException();
     }
 
