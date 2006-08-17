@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -289,37 +289,43 @@ public class PipedReader extends Reader {
 	 *             occurs.
 	 */
 	void receive(char oneChar) throws IOException {
-		synchronized (lock) {
-			if (data != null) {
-				/**
-				 * Set the last thread to be writing on this PipedWriter. If
-				 * lastWriter dies while someone is waiting to read an
-				 * IOException of "Pipe broken" will be thrown in read()
-				 */
-				lastWriter = Thread.currentThread();
-				try {
-					while (data != null && out == in) {
-						notifyAll();
-						wait(1000);
-						if (lastReader != null && !lastReader.isAlive())
-							throw new IOException(org.apache.harmony.luni.util.Msg
-									.getString("K0076")); //$NON-NLS-1$
-					}
-				} catch (InterruptedException e) {
-					throw new InterruptedIOException();
-				}
-				if (data != null) {
-					if (in == -1)
-						in = 0;
-					data[in++] = oneChar;
-					if (in == data.length)
-						in = 0;
-					return;
-				}
-			}
-			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0078")); //$NON-NLS-1$
-		}
-	}
+        synchronized (lock) {
+            if (data == null || isClosed) {
+                throw new IOException(org.apache.harmony.luni.util.Msg
+                        .getString("K0078")); //$NON-NLS-1$
+            }
+            if (lastReader != null && !lastReader.isAlive()) {
+                throw new IOException(org.apache.harmony.luni.util.Msg
+                        .getString("K0076")); //$NON-NLS-1$
+            }
+            /**
+             * Set the last thread to be writing on this PipedWriter. If
+             * lastWriter dies while someone is waiting to read an IOException
+             * of "Pipe broken" will be thrown in read()
+             */
+            lastWriter = Thread.currentThread();
+            try {
+                while (data != null && out == in) {
+                    notifyAll();
+                    wait(1000);
+                    if (lastReader != null && !lastReader.isAlive()) {
+                        throw new IOException(org.apache.harmony.luni.util.Msg
+                                .getString("K0076")); //$NON-NLS-1$
+                    }
+                }
+            } catch (InterruptedException e) {
+                throw new InterruptedIOException();
+            }
+            if (data != null) {
+                if (in == -1)
+                    in = 0;
+                data[in++] = oneChar;
+                if (in == data.length)
+                    in = 0;
+                return;
+            }
+        }
+    }
 
 	/**
 	 * Receives a char array and stores it into the PipedReader. This called by
@@ -340,57 +346,64 @@ public class PipedReader extends Reader {
 	 *             occurs.
 	 */
 	void receive(char[] chars, int offset, int count) throws IOException {
-		synchronized (lock) {
-			if (data != null) {
-				/**
-				 * Set the last thread to be writing on this PipedWriter. If
-				 * lastWriter dies while someone is waiting to read an
-				 * IOException of "Pipe broken" will be thrown in read()
-				 */
-				lastWriter = Thread.currentThread();
-				while (count > 0) {
-					try {
-						while (data != null && out == in) {
-							notifyAll();
-							wait(1000);
-							if (lastReader != null && !lastReader.isAlive())
-								throw new IOException(org.apache.harmony.luni.util.Msg
-										.getString("K0076")); //$NON-NLS-1$
-						}
-					} catch (InterruptedException e) {
-						throw new InterruptedIOException();
-					}
-					if (data == null)
-						break;
-					if (in == -1)
-						in = 0;
-					if (in >= out) {
-						int length = data.length - in;
-						if (count < length)
-							length = count;
-						System.arraycopy(chars, offset, data, in, length);
-						offset += length;
-						count -= length;
-						in += length;
-						if (in == data.length)
-							in = 0;
-					}
-					if (count > 0 && in != out) {
-						int length = out - in;
-						if (count < length)
-							length = count;
-						System.arraycopy(chars, offset, data, in, length);
-						offset += length;
-						count -= length;
-						in += length;
-					}
-				}
-				if (count == 0)
-					return;
-			}
-			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0078")); //$NON-NLS-1$
-		}
-	}
+        synchronized (lock) {
+            if (data == null || isClosed) {
+                throw new IOException(org.apache.harmony.luni.util.Msg
+                        .getString("K0078")); //$NON-NLS-1$
+            }
+            if (lastReader != null && !lastReader.isAlive()) {
+                throw new IOException(org.apache.harmony.luni.util.Msg
+                        .getString("K0076")); //$NON-NLS-1$
+            }
+            /**
+             * Set the last thread to be writing on this PipedWriter. If
+             * lastWriter dies while someone is waiting to read an IOException
+             * of "Pipe broken" will be thrown in read()
+             */
+            lastWriter = Thread.currentThread();
+            while (count > 0) {
+                try {
+                    while (data != null && out == in) {
+                        notifyAll();
+                        wait(1000);
+                        if (lastReader != null && !lastReader.isAlive()) {
+                            throw new IOException(
+                                    org.apache.harmony.luni.util.Msg
+                                            .getString("K0076")); //$NON-NLS-1$
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    throw new InterruptedIOException();
+                }
+                if (data == null)
+                    break;
+                if (in == -1)
+                    in = 0;
+                if (in >= out) {
+                    int length = data.length - in;
+                    if (count < length)
+                        length = count;
+                    System.arraycopy(chars, offset, data, in, length);
+                    offset += length;
+                    count -= length;
+                    in += length;
+                    if (in == data.length)
+                        in = 0;
+                }
+                if (count > 0 && in != out) {
+                    int length = out - in;
+                    if (count < length)
+                        length = count;
+                    System.arraycopy(chars, offset, data, in, length);
+                    offset += length;
+                    count -= length;
+                    in += length;
+                }
+            }
+            if (count == 0)
+                return;
+        }
+    }
 
 	void done() {
 		synchronized (lock) {

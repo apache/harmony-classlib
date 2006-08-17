@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -236,6 +236,129 @@ public class PipedWriterTest extends junit.framework.TestCase {
         } catch (IndexOutOfBoundsException t) {
             fail("NullPointerException expected");
         } catch (NullPointerException t) {}
+    }
+    
+    /**
+     * @tests java.io.PipedWriter#write(int)
+     */
+    public void test_write_I_MultiThread() throws IOException {
+        final PipedReader pr = new PipedReader();
+        final PipedWriter pw = new PipedWriter();
+        // test if writer recognizes dead reader
+        pr.connect(pw);
+
+        class WriteRunnable implements Runnable {
+            boolean pass = false;
+            boolean readerAlive = true;
+            public void run() {
+                try {
+                    pw.write(1);
+                    while (readerAlive) {
+                    // wait the reader thread dead
+                    }
+                    try {
+                        // should throw exception since reader thread
+                        // is now dead
+                        pw.write(1);
+                    } catch (IOException e) {
+                        pass = true;
+                    }
+                } catch (IOException e) {
+                  //ignore
+                }
+            }
+        }
+        WriteRunnable writeRunnable = new WriteRunnable();
+        Thread writeThread = new Thread(writeRunnable);
+        class ReadRunnable implements Runnable {
+            boolean pass;
+            public void run() {
+                try {
+                    pr.read();
+                    pass = true;
+                } catch (IOException e) {
+                  //ignore
+                }
+            }
+        }
+        ReadRunnable readRunnable = new ReadRunnable();
+        Thread readThread = new Thread(readRunnable);
+        writeThread.start();
+        readThread.start();
+        while (readThread.isAlive()) {
+           //wait the reader thread dead
+        }
+        writeRunnable.readerAlive = false;
+        assertTrue("reader thread failed to read", readRunnable.pass);
+        while (writeThread.isAlive()) {
+           //wait the writer thread dead
+        }
+        assertTrue("writer thread failed to recognize dead reader",
+                writeRunnable.pass);
+    }
+    
+    /**
+     * @tests java.io.PipedWriter#write(char[],int,int)
+     */
+    public void test_write_$CII_MultiThread() throws Exception {
+        final PipedReader pr = new PipedReader();
+        final PipedWriter pw = new PipedWriter();
+
+        // test if writer recognizes dead reader
+        pr.connect(pw);
+
+        class WriteRunnable implements Runnable {
+            boolean pass = false;
+
+            boolean readerAlive = true;
+
+            public void run() {
+                try {
+                    pw.write(1);
+                    while (readerAlive) {
+                    // wait the reader thread dead
+                    }
+                    try {
+                        // should throw exception since reader thread
+                        // is now dead
+                        char[] buf = new char[10];
+                        pw.write(buf, 0, 10);
+                    } catch (IOException e) {
+                        pass = true;
+                    }
+                } catch (IOException e) {
+                  //ignore
+                }
+            }
+        }
+        WriteRunnable writeRunnable = new WriteRunnable();
+        Thread writeThread = new Thread(writeRunnable);
+        class ReadRunnable implements Runnable {
+            boolean pass;
+
+            public void run() {
+                try {
+                    pr.read();
+                    pass = true;
+                } catch (IOException e) {
+                  //ignore
+                }
+            }
+        }
+        ReadRunnable readRunnable = new ReadRunnable();
+        Thread readThread = new Thread(readRunnable);
+        writeThread.start();
+        readThread.start();
+        while (readThread.isAlive()) {
+            //wait the reader thread dead
+        }
+        writeRunnable.readerAlive = false;
+        assertTrue("reader thread failed to read", readRunnable.pass);
+        while (writeThread.isAlive()) {
+            //wait the writer thread dead
+        }
+        assertTrue("writer thread failed to recognize dead reader",
+                writeRunnable.pass);
     }
 
     /**
