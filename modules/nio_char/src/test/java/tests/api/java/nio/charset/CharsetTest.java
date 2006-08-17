@@ -27,6 +27,7 @@ import java.nio.charset.spi.CharsetProvider;
 import java.security.Permission;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.SortedMap;
 import java.util.Vector;
 
 import junit.framework.TestCase;
@@ -701,6 +702,39 @@ public class CharsetTest extends TestCase {
 		assertTrue(-1 != c1.toString().indexOf("mock"));
 	}
 
+    /**
+     * @tests java.nio.charset.Charset#availableCharsets()
+     */
+    public void test_availableCharsets() throws Exception {
+        // regression test for Harmony-1051
+        ClassLoader originalClassLoader = Thread.currentThread()
+                .getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(null);
+            SortedMap<String, Charset> charsets = Charset.availableCharsets();
+            // make sure "mockCharset00" is loaded by MockCharsetProvider
+            assertTrue(charsets.containsKey("mockCharset00"));
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
+    }
+    
+    /**
+     * @tests java.nio.charset.Charset#availableCharsets()
+     */
+    public void test_forNameLString() throws Exception {
+        // regression test for Harmony-1051
+        ClassLoader originalClassLoader = Thread.currentThread()
+                .getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(null);
+            // make sure "mockCharset00" is loaded by MockCharsetProvider
+            assertNotNull(Charset.forName("mockCharset00"));
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
+    }
+    
 	/*
 	 * Mock charset class.
 	 */
@@ -802,48 +836,7 @@ public class CharsetTest extends TestCase {
 			return v.iterator();
 		}
 	}
-
-	/*
-	 * Another mock charset provider.
-	 */
-	public static class MockCharsetProvider2 extends CharsetProvider {
-
-		public Charset charsetForName(String charsetName) {
-			if ("MockCharset10".equalsIgnoreCase(charsetName)
-					|| "MockCharset11".equals(charsetName)
-					|| "MockCharset12".equalsIgnoreCase(charsetName)) {
-				return charset2;
-			}
-			return null;
-		}
-
-		public Iterator charsets() {
-			Vector v = new Vector();
-			v.add(charset2);
-			return v.iterator();
-		}
-	}
-
-	/*
-	 * Another mock charset provider providing build-in charset "ascii".
-	 */
-	public static class MockCharsetProvider3 extends CharsetProvider {
-
-		public Charset charsetForName(String charsetName) {
-			if ("US-ASCII".equalsIgnoreCase(charsetName)
-					|| "ASCII".equalsIgnoreCase(charsetName)) {
-				return new MockCharset("US-ASCII", new String[] { "ASCII" });
-			}
-			return null;
-		}
-
-		public Iterator charsets() {
-			Vector v = new Vector();
-			v.add(new MockCharset("US-ASCII", new String[] { "ASCII" }));
-			return v.iterator();
-		}
-	}
-
+    
 	/*
 	 * Used to grant all permissions except charset provider access.
 	 */

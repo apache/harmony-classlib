@@ -121,6 +121,9 @@
                 <pathelement path="${hy.nio_char.bin.test}"/>
                 <pathelement path="../../build/tests" />
                 <pathelement path="${hy.hdk}/build/test/support.jar" />
+                <fileset dir="${hy.nio_char.src.test.resources}/jars">
+                    <include name="**/*.jar" />
+                </fileset>
             </classpath>
 
             <formatter type="xml" />

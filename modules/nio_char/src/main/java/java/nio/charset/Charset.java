@@ -96,6 +96,8 @@ public abstract class Charset implements Comparable<Charset> {
 	 * the comment string used in configuration files
 	 */
 	private static final String PROVIDER_CONFIGURATION_FILE_COMMENT = "#"; //$NON-NLS-1$
+    
+    private static ClassLoader systemClassLoader;
 
 	/*
 	 * --------------------------------------------------------------------
@@ -253,6 +255,20 @@ public abstract class Charset implements Comparable<Charset> {
 					}
 				});
 	}
+    
+    /*
+     * Use privileged code to get the system class loader.
+     */
+    private static void getSystemClassLoader() {
+        if (null == systemClassLoader) {
+            systemClassLoader = AccessController
+                    .doPrivileged(new PrivilegedAction<ClassLoader>() {
+                        public ClassLoader run() {
+                            return ClassLoader.getSystemClassLoader();
+                        }
+                    });
+        }
+    }
 
 	/*
 	 * Add the charsets supported by the given provider to the map.
@@ -286,8 +302,8 @@ public abstract class Charset implements Comparable<Charset> {
 	 * Read a configuration file and add the charsets supported by the providers
 	 * specified by this configuration file to the map.
 	 */
-	private static void loadConfiguredCharsets(URL configFile, ClassLoader cl,
-			TreeMap<String, Charset> charsets) {
+	private static void loadConfiguredCharsets(URL configFile,
+            ClassLoader contextClassLoader, TreeMap<String, Charset> charsets) {
 		BufferedReader reader = null;
 		try {
 			InputStream is = configFile.openStream();
@@ -302,14 +318,21 @@ public abstract class Charset implements Comparable<Charset> {
 					// Load the charset provider
 					Object cp = null;
 					try {
-						Class c = Class.forName(providerClassName, true, cl);
-						cp = c.newInstance();
-					} catch (SecurityException ex) {
-						// assume no permission to use charset provider
-						throw ex;
-					} catch (Exception ex) {
-						throw new Error(ex.getMessage(), ex);
-					}
+                        Class c = Class.forName(providerClassName, true,
+                                contextClassLoader);
+                        cp = c.newInstance();
+                    } catch (Exception ex) {
+                        // try to use system classloader when context
+                        // classloader failed to load config file.
+                        try {
+                            getSystemClassLoader();
+                            Class c = Class.forName(providerClassName, true,
+                                    systemClassLoader);
+                            cp = c.newInstance();
+                        } catch (Exception e) {
+                            throw new Error(e.getMessage(), e);
+                        }
+                    }
 					// Put the charsets supported by this provider into the map
 					addCharsets((CharsetProvider) cp, charsets);
 				}
@@ -357,21 +380,25 @@ public abstract class Charset implements Comparable<Charset> {
 				.clone();
 
 		// Collect all charsets provided by charset providers
-		final ClassLoader cl = getContextClassLoader();
-		if (null != cl) {
-			try {
-				// Load all configuration files
-				Enumeration e = cl
-						.getResources(PROVIDER_CONFIGURATION_FILE_NAME);
-				// Examine each configuration file
-				while (e.hasMoreElements()) {
-					loadConfiguredCharsets((URL) e.nextElement(), cl, charsets);
-				}
-			} catch (IOException ex) {
-				// Unexpected ClassLoader exception, ignore
-			}
-		}
-
+        ClassLoader contextClassLoader = getContextClassLoader();
+        Enumeration e = null;
+        try {
+            if (null != contextClassLoader) {
+                e = contextClassLoader
+                        .getResources(PROVIDER_CONFIGURATION_FILE_NAME);
+            } else {
+                getSystemClassLoader();
+                e = systemClassLoader
+                        .getResources(PROVIDER_CONFIGURATION_FILE_NAME);
+            }
+            // Examine each configuration file
+            while (e.hasMoreElements()) {
+                loadConfiguredCharsets((URL) e.nextElement(),
+                        contextClassLoader, charsets);
+            }
+        } catch (IOException ex) {
+            // Unexpected ClassLoader exception, ignore
+        } 
 		return Collections.unmodifiableSortedMap(charsets);
 	}
 
@@ -381,7 +408,7 @@ public abstract class Charset implements Comparable<Charset> {
 	 * file.
 	 */
 	private static Charset searchConfiguredCharsets(String charsetName,
-			URL configFile, ClassLoader cl) {
+            ClassLoader contextClassLoader, URL configFile) {
 		BufferedReader reader = null;
 		try {
 			InputStream is = configFile.openStream();
@@ -395,14 +422,20 @@ public abstract class Charset implements Comparable<Charset> {
 					// Load the charset provider
 					Object cp = null;
 					try {
-						Class c = Class.forName(providerClassName, true, cl);
-						cp = c.newInstance();
-					} catch (SecurityException ex) {
-						// assume no permission to use charset provider
-						throw ex;
-					} catch (Exception ex) {
-						throw new Error(ex.getMessage(), ex);
-					}
+                        Class c = Class.forName(providerClassName, true, contextClassLoader);
+                        cp = c.newInstance();
+                    } catch (Exception ex) {
+                        // try to use system classloader when context
+                        // classloader failed to load config file.
+                        try {
+                            getSystemClassLoader();
+                            Class c = Class.forName(providerClassName, true,
+                                    systemClassLoader);
+                            cp = c.newInstance();
+                        } catch (Exception e) {
+                            throw new Error(e.getMessage(), e);
+                        }
+                    }
 					// Try to get the desired charset from this provider
 					Charset cs = ((CharsetProvider) cp)
 							.charsetForName(charsetName);
@@ -452,26 +485,30 @@ public abstract class Charset implements Comparable<Charset> {
 				return cs;
 			}
 
-			// Collect all charsets provided by charset providers
-			final ClassLoader cl = getContextClassLoader();
-			if (null != cl) {
-				try {
-					// Load all configuration files
-					Enumeration e = cl
-							.getResources(PROVIDER_CONFIGURATION_FILE_NAME);
-					// Examine each configuration file
-					while (e.hasMoreElements()) {
-						cs = searchConfiguredCharsets(charsetName, (URL) e
-								.nextElement(), cl);
-						if (null != cs) {
-							cacheCharset(cs);
-							return cs;
-						}
-					}
-				} catch (IOException ex) {
-					// Unexpected ClassLoader exception, ignore
-				}
-			}
+            // Collect all charsets provided by charset providers
+            ClassLoader contextClassLoader = getContextClassLoader();
+            Enumeration e = null;
+            try {
+                if (null != contextClassLoader) {
+                    e = contextClassLoader
+                            .getResources(PROVIDER_CONFIGURATION_FILE_NAME);
+                } else {
+                    getSystemClassLoader();
+                    e = systemClassLoader
+                            .getResources(PROVIDER_CONFIGURATION_FILE_NAME);
+                }
+                // Examine each configuration file
+                while (e.hasMoreElements()) {
+                    cs = searchConfiguredCharsets(charsetName,
+                            contextClassLoader, (URL) e.nextElement());
+                    if (null != cs) {
+                        cacheCharset(cs);
+                        return cs;
+                    }
+                }
+            } catch (IOException ex) {
+                // Unexpected ClassLoader exception, ignore
+            } 
 		}
 		return null;
 	}
