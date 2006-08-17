@@ -273,6 +273,104 @@ public class BufferedReaderTest extends junit.framework.TestCase {
 	}
 
 	/**
+	 * @tests java.io.BufferedReader#read(char[], int, int)
+	 */
+	public void test_read_$CII_Exception() throws IOException {
+		br = new BufferedReader(new Support_StringReader(testString));
+		char[] nullCharArray = null;
+		char[] charArray = testString.toCharArray();
+		
+		try {
+			br.read(nullCharArray, -1, -1);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			// expected
+		}
+		
+		try {
+			br.read(nullCharArray, -1, 0);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			// expected
+		}
+
+		try {
+			br.read(nullCharArray, 0, -1);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+
+		try {
+			br.read(nullCharArray, 0, 0);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+		
+		try {
+			br.read(nullCharArray, 0, 1);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+		
+		try {
+			br.read(charArray, -1, -1);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			// expected
+		}
+
+		try {
+			br.read(charArray, -1, 0);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			// expected
+		}
+
+		br.read(charArray, 0, 0);
+        br.read(charArray, 0, charArray.length);
+        br.read(charArray, charArray.length, 0);
+		
+		try {
+			br.read(charArray, charArray.length + 1, 0);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			//expected
+		}
+		
+		try {
+			br.read(charArray, charArray.length + 1, 1);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			//expected
+		}
+
+		br.close();
+
+		try {
+			br.read(nullCharArray, -1, -1);
+			fail("should throw IOException");
+		} catch (IOException e) {
+			// expected
+		}
+
+		try {
+			br.read(charArray, -1, 0);
+			fail("should throw IOException");
+		} catch (IOException e) {
+			// expected
+		}
+
+		try {
+			br.read(charArray, 0, -1);
+			fail("should throw IOException");
+		} catch (IOException e) {
+			// expected
+		}
+	}
+	/**
 	 * @tests java.io.BufferedReader#readLine()
 	 */
 	public void test_readLine() {

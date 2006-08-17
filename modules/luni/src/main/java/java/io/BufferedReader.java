@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,6 +74,8 @@ public class BufferedReader extends Reader {
 	 *            the Reader to buffer reads on.
 	 * @param size
 	 *            the size of buffer to allocate.
+	 * @throws IllegalArgumentException 
+	 *            if the size is <= 0         
 	 */
 
 	public BufferedReader(Reader in, int size) {
@@ -160,6 +162,8 @@ public class BufferedReader extends Reader {
 	 * 
 	 * @throws IOException
 	 *             If an error occurs attempting mark this BufferedReader.
+	 * @throws IllegalArgumentException
+	 *             If readlimit is < 0      
 	 */
 
 	@Override
@@ -245,62 +249,58 @@ public class BufferedReader extends Reader {
 	@Override
     public int read(char[] buffer, int offset, int length) throws IOException {
 		synchronized (lock) {
-			if (isOpen()) {
-				// check for null
-				int bufLen = buffer.length;
-                if(offset < 0 || length < 0 || (long)offset + (long)length > bufLen){
-                    throw new ArrayIndexOutOfBoundsException();
-                }
-				if (length == 0) {
-                    return 0;
-                }
-                int required;
-                if (pos < count) {
-                    /* There are bytes available in the buffer. */
-                    int copylength = count - pos >= length ? length : count
-                            - pos;
-                    System.arraycopy(buf, pos, buffer, offset, copylength);
-                    pos += copylength;
-                    if (copylength == length || !in.ready()) {
-                        return copylength;
-                    }
-                    offset += copylength;
-                    required = length - copylength;
-                } else {
-                    required = length;
-                }
-
-                while (true) {
-                    int read;
-                    /*
-                     * If we're not marked and the required size is greater than
-                     * the buffer, simply read the bytes directly bypassing the
-                     * buffer.
-                     */
-                    if (markpos == -1 && required >= buf.length) {
-                        read = in.read(buffer, offset, required);
-                        if (read == -1) {
-                            return required == length ? -1 : length - required;
-                        }
-                    } else {
-                        if (fillbuf() == -1) {
-                            return required == length ? -1 : length - required;
-                        }
-                        read = count - pos >= required ? required : count - pos;
-                        System.arraycopy(buf, pos, buffer, offset, read);
-                        pos += read;
-                    }
-                    required -= read;
-                    if (required == 0) {
-                        return length;
-                    }
-                    if (!in.ready()) {
-                        return length - required;
-                    }
-                    offset += read;
-                }
+			if (!isOpen()) {
+				throw new IOException(Msg.getString("K005b")); //$NON-NLS-1$
 			}
-			throw new IOException(Msg.getString("K005b")); //$NON-NLS-1$
+            if (offset < 0 || offset > buffer.length - length || length < 0) {
+				throw new IndexOutOfBoundsException();
+			}
+			if (length == 0) {
+				return 0;
+			}
+			int required;
+			if (pos < count) {
+				/* There are bytes available in the buffer. */
+				int copylength = count - pos >= length ? length : count - pos;
+				System.arraycopy(buf, pos, buffer, offset, copylength);
+				pos += copylength;
+				if (copylength == length || !in.ready()) {
+					return copylength;
+				}
+				offset += copylength;
+				required = length - copylength;
+			} else {
+				required = length;
+			}
+
+			while (true) {
+				int read;
+				/*
+				 * If we're not marked and the required size is greater than the
+				 * buffer, simply read the bytes directly bypassing the buffer.
+				 */
+				if (markpos == -1 && required >= buf.length) {
+					read = in.read(buffer, offset, required);
+					if (read == -1) {
+						return required == length ? -1 : length - required;
+					}
+				} else {
+					if (fillbuf() == -1) {
+						return required == length ? -1 : length - required;
+					}
+					read = count - pos >= required ? required : count - pos;
+					System.arraycopy(buf, pos, buffer, offset, read);
+					pos += read;
+				}
+				required -= read;
+				if (required == 0) {
+					return length;
+				}
+				if (!in.ready()) {
+					return length - required;
+				}
+				offset += read;
+			}
 		}
 	}
 
@@ -434,6 +434,8 @@ public class BufferedReader extends Reader {
 	 * @throws IOException
 	 *             If the BufferedReader is already closed or some other IO
 	 *             error occurs.
+	 * @throws  IllegalArgumentException
+	 *              If amount is negative
 	 */
 
 	@Override
