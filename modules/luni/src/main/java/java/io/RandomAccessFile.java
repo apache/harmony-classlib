@@ -34,7 +34,7 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
     /**
      * The FileDescriptor representing this RandomAccessFile.
      */
-    FileDescriptor fd;
+    private FileDescriptor fd;
 
     private boolean syncMetadata = false;
 
@@ -733,12 +733,15 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
      * @see #read(byte[], int, int)
      */
     public void write(byte[] buffer, int offset, int count) throws IOException {
-        // have to have four comparisions to not miss integer overflow cases
-        if (count < 0 || offset < 0 || offset > buffer.length
-                || count > buffer.length - offset) {
+    	if (null == buffer) {
+    		throw new NullPointerException();
+    	}
+        if (count < 0 || offset < 0 || count > buffer.length - offset) {
             throw new IndexOutOfBoundsException();
         }
-
+        if (0 == count){
+        	return;
+        }
         openCheck();
         synchronized (repositionLock) {
             fileSystem.write(fd.descriptor, buffer, offset, count);

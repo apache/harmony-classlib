@@ -384,13 +384,40 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
     public void test_write$B() throws IOException {
         // Test for method void java.io.RandomAccessFile.write(byte [])
         RandomAccessFile raf = new java.io.RandomAccessFile(fileName, "rw");
+        
+        byte[] nullByteArray = null;
+        try {
+        	raf.write(nullByteArray);
+        	fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+        	//expected
+        }   
+        
         byte[] rbuf = new byte[4000];
         raf.write(fileString.getBytes());
         raf.close();
+        
+        try {
+        	raf.write(nullByteArray);
+        	fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+        	//expected
+        }  
+        
+        //will not throw IOException if array's length is 0
+        raf.write(new byte[0]);
+        
+        try {
+        	raf.write(fileString.getBytes());
+        	fail("should throw IOException");
+        } catch (IOException e) {
+        	//expected
+        }  
+        
         FileInputStream fis = new java.io.FileInputStream(fileName);
         fis.read(rbuf, 0, fileString.length());
         assertEquals("Incorrect bytes written", fileString, new String(rbuf, 0,
-                fileString.length()));
+                fileString.length()));    
     }
 
     /**
@@ -408,6 +435,146 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         assertEquals("Incorrect bytes written", fileString, new String(rbuf, 0,
                 fileString.length()));
     }
+    
+    /**
+     * @tests java.io.RandomAccessFile#write(byte[], int, int)
+     */
+    public void test_write_$BII_Exception() throws IOException {
+    	raf = new java.io.RandomAccessFile(f, "rw");
+		byte[] nullByteArray = null;
+		byte[] byteArray = new byte[10];
+		
+		try {
+			raf.write(nullByteArray, -1, -1);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+
+		try {
+			raf.write(nullByteArray, 0, 0);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+		
+		try {
+			raf.write(nullByteArray, 1, -1);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+
+		try {
+			raf.write(nullByteArray, 1, 0);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+		
+		try {
+			raf.write(nullByteArray, 1, 1);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+		
+		try {
+			raf.write(byteArray, -1, -1);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			// expected
+		}
+
+		try {
+			raf.write(byteArray, -1, 0);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			// expected
+		}
+		
+		try {
+			raf.write(byteArray, -1, 1);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			// expected
+		}
+
+		try {
+			raf.write(byteArray, 0, -1);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			// expected
+		}
+
+		raf.write(byteArray, 0, 0);
+        raf.write(byteArray, 0, byteArray.length);
+		raf.write(byteArray, 1, 0);
+        raf.write(byteArray, byteArray.length, 0);
+		
+		try {
+			raf.write(byteArray, byteArray.length + 1, 0);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			//expected
+		}
+		
+		try {
+			raf.write(byteArray, byteArray.length + 1, 1);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			//expected
+		}
+
+		raf.close();
+
+		try {
+			raf.write(nullByteArray, -1, -1);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+		
+		try {
+			raf.write(byteArray, -1, -1);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			// expected
+		}
+		
+		try {
+	        raf.write(byteArray, 0, 1);
+	        fail("should throw IOException");
+		} catch (IOException e) {
+			//expected
+		}
+		
+		try {
+	        raf.write(byteArray, 0, byteArray.length);
+	        fail("should throw IOException");
+		} catch (IOException e) {
+			//expected
+		}
+		
+		try {
+			raf.write(byteArray, 1, 1);
+	        fail("should throw IOException");
+		} catch (IOException e) {
+			//expected
+		}
+		
+		try {
+			raf.write(byteArray, byteArray.length + 1, 0);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			//expected
+		}
+		
+		// will not throw IOException if count = 0
+		raf.write(byteArray, 0, 0);
+		raf.write(byteArray, byteArray.length, 0);
+    }
+    
 
     /**
      * @tests java.io.RandomAccessFile#write(int)
