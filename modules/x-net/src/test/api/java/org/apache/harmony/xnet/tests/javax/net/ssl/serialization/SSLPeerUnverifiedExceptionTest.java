@@ -19,30 +19,30 @@
 * @version $Revision$
 */
 
-package javax.net.ssl.serialization;
+package org.apache.harmony.xnet.tests.javax.net.ssl.serialization;
 
-import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLPeerUnverifiedException;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for SSLException serialization
+ * Test for SSLPeerUnverifiedException serialization
  * 
  */
 
-public class SSLExceptionTest extends SerializationTest {
+public class SSLPeerUnverifiedExceptionTest extends SerializationTest {
 
     public static String[] msgs = {
             "New message",
             "Long message for Exception. Long message for Exception. Long message for Exception." };
 
     protected Object[] getData() {
-        String msg = null;
-        Exception cause = new Exception(msgs[1]);
-        SSLException excSSL = new SSLException(msgs[0]);
-        return new Object[] { new SSLException(msg), new SSLException(msgs[1]),
-                new SSLException(excSSL), new SSLException(cause),
-                new SSLException(msgs[1], cause) };
+        return new Object[] { new SSLPeerUnverifiedException(null),
+                new SSLPeerUnverifiedException(msgs[0]), new SSLPeerUnverifiedException(msgs[1]) };
+    }
+
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(SSLPeerUnverifiedExceptionTest.class);
     }
 }

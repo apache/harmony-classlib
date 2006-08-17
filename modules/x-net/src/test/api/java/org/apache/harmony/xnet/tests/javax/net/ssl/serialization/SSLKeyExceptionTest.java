@@ -19,30 +19,30 @@
 * @version $Revision$
 */
 
-package javax.net.ssl.serialization;
+package org.apache.harmony.xnet.tests.javax.net.ssl.serialization;
 
-import javax.net.ssl.SSLProtocolException;
+import javax.net.ssl.SSLKeyException;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
- * Test for SSLProtocolException serialization
+ * Test for SSLKeyException serialization
  * 
  */
 
-public class SSLProtocolExceptionTest extends SerializationTest {
+public class SSLKeyExceptionTest extends SerializationTest {
 
     public static String[] msgs = {
             "New message",
             "Long message for Exception. Long message for Exception. Long message for Exception." };
 
     protected Object[] getData() {
-        return new Object[] { new SSLProtocolException(null),
-                new SSLProtocolException(msgs[0]), new SSLProtocolException(msgs[1]) };
+        return new Object[] { new SSLKeyException(null),
+                new SSLKeyException(msgs[0]), new SSLKeyException(msgs[1]) };
     }
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(SSLProtocolExceptionTest.class);
+        junit.textui.TestRunner.run(SSLKeyExceptionTest.class);
     }
 }

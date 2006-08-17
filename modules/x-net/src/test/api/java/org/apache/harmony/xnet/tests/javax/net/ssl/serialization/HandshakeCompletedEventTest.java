@@ -14,22 +14,22 @@
  *  limitations under the License.
  */
 
-package javax.net.ssl.serialization;
+package org.apache.harmony.xnet.tests.javax.net.ssl.serialization;
 
 import java.io.Serializable;
 
+import javax.net.ssl.HandshakeCompletedEvent;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSessionBindingEvent;
 import javax.net.ssl.SSLSocket;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
- * Test for SSLSessionBindingEvent serialization
+ * Test for HandshakeCompletedEvent serialization
  * 
  */
 
-public class SSLSessionBindingEventTest extends SerializationTest implements
+public class HandshakeCompletedEventTest extends SerializationTest implements
         SerializationTest.SerializableAssert {
 
     protected Object[] getData() {
@@ -37,16 +37,17 @@ public class SSLSessionBindingEventTest extends SerializationTest implements
             SSLContext cont = SSLContext.getInstance("TLS");
             cont.init(null, null, null);
             SSLSocket soc = (SSLSocket )cont.getSocketFactory().createSocket();
-            return new Object[] { new SSLSessionBindingEvent(soc.getSession(), "someName")};
+            return new Object[] { new HandshakeCompletedEvent(soc, soc.getSession())};
         } catch (Exception e) {
             fail("Can not create data: "+ e);
             return null;
         }
+        
     }
 
     public void assertDeserialized(Serializable oref, Serializable otest) {
-        SSLSessionBindingEvent ref = (SSLSessionBindingEvent) oref;
-        SSLSessionBindingEvent test = (SSLSessionBindingEvent) otest;
-        assertEquals(ref.getName(), test.getName());
+        HandshakeCompletedEvent test = (HandshakeCompletedEvent) otest;
+        test.getSession();
+        test.getSocket();
     }
 }
