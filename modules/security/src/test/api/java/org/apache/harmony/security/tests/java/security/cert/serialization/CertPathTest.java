@@ -19,12 +19,11 @@
 * @version $Revision$
 */
 
-package java.security.cert.serialization;
+package org.apache.harmony.security.tests.java.security.cert.serialization;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -35,9 +34,10 @@ import java.security.cert.CertPath;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 
-import org.apache.harmony.security.tests.support.cert.MyCertPath;
-
 import junit.framework.TestCase;
+
+import org.apache.harmony.security.tests.support.cert.MyCertPath;
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 
 /**
@@ -45,15 +45,13 @@ import junit.framework.TestCase;
  * 
  */
 public class CertPathTest extends TestCase {
-    /**
-     * <code>Certificate/CertPath</code> type to be created during testing
-     */
+
+    //Certificate/CertPath type to be created during testing
     private static final String certType = "X.509";
-    /**
-     * <code>CertPath</code> encoding name, defines input file names
-     * used during testing
-     */
+
+    // CertPath encoding name, defines input file names used during testing
     private static final String certPathEncoding = "PkiPath";
+
     /**
      * Input file name used for <code>CertPath</code> instance generation
      */
@@ -61,88 +59,35 @@ public class CertPathTest extends TestCase {
         org.apache.harmony.security.tests.support.TestUtils.TEST_ROOT +
         "java/security/cert/serialization/CertPath." +
         certPathEncoding;
-    /**
-     * Golden file containing serial <code>CertPath</code> stream
-     */
-    private static final String serializedCertPathFileName =
-        certPathFileName + ".dat";
-
-    /**
-     * Constructor for CertPathTest.
-     * @param name
-     */
-    public CertPathTest(String name) {
-        super(name);
-    }
 
     //
     // Tests
     //
 
     /**
-     * Test #1 for <code>CertPath</code> serialization/deserialization.<br>
-     * ByteArray streams used.
-     *
-     * Assertion: original and deserialized objects must be equal
-     * 
-     * @throws CertificateException
-     * @throws IOException
-     * @throws ClassNotFoundException
+     * @tests serialization/deserialization.
      */
-    public final void testSerialization01()
-        throws CertificateException,
-               IOException,
-               ClassNotFoundException {
-        CertificateFactory cf = null;
-        try {
-            cf = CertificateFactory.getInstance(certType);
-        } catch (CertificateException e) {
-            fail(getName() +
-                    ": PASSED (could not create CertificateFactory): " + e);
-            return;
-        }
-        // Create object to be serialized
-        CertPath cp1 = cf.generateCertPath(new FileInputStream(certPathFileName));
-        // This testcase uses ByteArray streams
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        // Serialize cert
-        serialize(cp1, bos);
-        // Deserialize it
-        CertPath cp2 = deserialize(new ByteArrayInputStream(bos.toByteArray()));
-        // compare both Certificates
-        assertTrue(cp1.equals(cp2) && cp2.equals(cp1));
+    public void testSerializationSelf() throws Exception {
+
+        CertificateFactory cf = CertificateFactory.getInstance(certType);
+
+        CertPath certPath = cf.generateCertPath(new FileInputStream(
+                certPathFileName));
+
+        SerializationTest.verifySelf(certPath);
     }
 
     /**
-     * Test #2 for <code>CertPath</code> serialization/deserialization.<br>
-     * File input stream with golden content used.
-     *
-     * Assertion: original and deserialized objects must be equal
-     * 
-     * @throws CertificateException
-     * @throws FileNotFoundException
-     * @throws IOException
-     * @throws ClassNotFoundException
+     * @tests serialization/deserialization compatibility with RI.
      */
-    public final void testSerialization02()
-        throws CertificateException,
-               FileNotFoundException,
-               IOException,
-               ClassNotFoundException {
-        CertificateFactory cf = null;
-        try {
-            cf = CertificateFactory.getInstance(certType);
-        } catch (CertificateException e) {
-            fail(getName() +
-                    ": PASSED (could not create CertificateFactory): " + e);
-            return;
-        }
-        // Create object to be compared to deserialized one
-        CertPath cp1 = cf.generateCertPath(new FileInputStream(certPathFileName));
-        // Deserialize CertPath from golden file
-        CertPath cp2 = deserialize(new FileInputStream(serializedCertPathFileName));
-        // compare both Certificates
-        assertTrue(cp1.equals(cp2) && cp2.equals(cp1));
+    public void testSerializationCompatibility() throws Exception {
+
+        CertificateFactory cf = CertificateFactory.getInstance(certType);
+
+        CertPath certPath = cf.generateCertPath(new FileInputStream(
+                certPathFileName));
+
+        SerializationTest.verifyGolden(this, certPath);
     }
 
     /**
