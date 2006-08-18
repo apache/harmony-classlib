@@ -21,6 +21,7 @@
 
 package org.apache.harmony.security.tests.java.security.cert;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.Provider;
@@ -35,7 +36,7 @@ import java.util.Vector;
 import junit.framework.TestCase;
 
 import org.apache.harmony.security.tests.support.SpiEngUtils;
-import org.apache.harmony.security.tests.support.TestUtils;
+import org.apache.harmony.security.tests.support.cert.TestUtils;
 
 /**
  * Tests for <code>CertificateFactory</code> class methods
@@ -48,8 +49,6 @@ public class CertificateFactory3Test extends TestCase {
     private static Provider defaultProvider = null;
 
     private static String defaultType = CertificateFactory1Test.defaultType;
-
-    public static String fileCertificateX509 = "java/security/cert/serialization/Certificate.X.509";
 
     public static String fileCertPathPki = "java/security/cert/serialization/CertPath.PkiPath";
 
@@ -65,12 +64,8 @@ public class CertificateFactory3Test extends TestCase {
 
         NotSupportMsg = defaultType.concat(" is not supported");
 
-        fileCertificateX509 = SpiEngUtils.getFileName(TestUtils.TEST_ROOT,
-                fileCertificateX509);
-        fileCertificateX509 = fileCertificateX509.replace('/',
-                File.separatorChar);
-
-        fileCertPathPki = SpiEngUtils.getFileName(TestUtils.TEST_ROOT,
+        fileCertPathPki = SpiEngUtils.getFileName(
+                org.apache.harmony.security.tests.support.TestUtils.TEST_ROOT,
                 fileCertPathPki);
         fileCertPathPki = fileCertPathPki.replace('/', File.separatorChar);
 
@@ -97,12 +92,10 @@ public class CertificateFactory3Test extends TestCase {
     public void testGenerateCertificate() throws Exception {
         CertificateFactory[] certFs = initCertFs();
         assertNotNull("CertificateFactory objects were not created", certFs);
-        FileInputStream fis = null;
         Certificate[] certs = new Certificate[3];
         for (int i = 0; i < certFs.length; i++) {
-            fis = new FileInputStream(fileCertificateX509);
-            certs[i] = certFs[i].generateCertificate(fis);
-            fis.close();
+            certs[i] = certFs[i].generateCertificate(new ByteArrayInputStream(
+                    TestUtils.getEncodedX509Certificate()));
         }
         assertEquals(certs[0], certs[1]);
         assertEquals(certs[0], certs[2]);
@@ -115,14 +108,13 @@ public class CertificateFactory3Test extends TestCase {
     public void testeGnerateCertificates() throws Exception {
         CertificateFactory[] certFs = initCertFs();
         assertNotNull("CertificateFactory objects were not created", certFs);
-        FileInputStream fis = new FileInputStream(fileCertificateX509);
-        Certificate cert = certFs[0].generateCertificate(fis);
-        fis.close();
+        Certificate cert = certFs[0]
+                .generateCertificate(new ByteArrayInputStream(TestUtils
+                        .getEncodedX509Certificate()));
         for (int i = 0; i < certFs.length; i++) {
             Collection col = null;
-            fis = new FileInputStream(fileCertificateX509);
-            col = certFs[i].generateCertificates(fis);
-            fis.close();
+            col = certFs[i].generateCertificates(new ByteArrayInputStream(
+                    TestUtils.getEncodedX509Certificate()));
             Iterator it = col.iterator();
             assertEquals("Incorrect Collection size", col.size(), 1);
             assertEquals("Incorect Certificate in Collection", cert, it.next());
@@ -137,9 +129,9 @@ public class CertificateFactory3Test extends TestCase {
         CertificateFactory[] certFs = initCertFs();
         assertNotNull("CertificateFactory objects were not created", certFs);
         // create list of certificates with one certificate
-        FileInputStream fis = new FileInputStream(fileCertificateX509);
-        Certificate cert = certFs[0].generateCertificate(fis);
-        fis.close();
+        Certificate cert = certFs[0]
+                .generateCertificate(new ByteArrayInputStream(TestUtils
+                        .getEncodedX509Certificate()));
         List list = new Vector();
         list.add(cert);
         for (int i = 0; i < certFs.length; i++) {

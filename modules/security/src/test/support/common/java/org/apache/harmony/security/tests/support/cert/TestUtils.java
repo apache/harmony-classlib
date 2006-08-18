@@ -22,6 +22,7 @@
 package org.apache.harmony.security.tests.support.cert;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -52,10 +53,6 @@ import java.util.Set;
 public class TestUtils {
     // Certificate type used during testing
     private static final String certType = "X.509";
-    // The file name to read certificate from
-    private static final String certFileName =
-        org.apache.harmony.security.tests.support.TestUtils.TEST_ROOT +
-        "java/security/cert/serialization/Certificate." + certType;
     // Key store type used during testing
     private static final String keyStoreType = "BKS";
     // The file name prefix to load keystore from
@@ -97,7 +94,8 @@ public class TestUtils {
         }
         BufferedInputStream bis = null;
         try {
-            bis = new BufferedInputStream(new FileInputStream(certFileName));
+            bis = new BufferedInputStream(new ByteArrayInputStream(
+                    getEncodedX509Certificate()));
             X509Certificate c1 = (X509Certificate)cf.generateCertificate(bis);
 
             return new TrustAnchor(c1, null);
@@ -287,6 +285,27 @@ public class TestUtils {
                 return null;
             }
         };
+    }
+    // X.509 encoded sertificate
+    private static final String ENCODED_X509_CERTIFICATE = "-----BEGIN CERTIFICATE-----\n"
+            + "MIIDHTCCAtsCBEFT72swCwYHKoZIzjgEAwUAMHQxCzAJBgNVBAYTAlJVMQwwCgYDVQQIEwNOU08x\n"
+            + "FDASBgNVBAcTC05vdm9zaWJpcnNrMQ4wDAYDVQQKEwVJbnRlbDEVMBMGA1UECxMMRFJMIFNlY3Vy\n"
+            + "aXR5MRowGAYDVQQDExFWbGFkaW1pciBNb2xvdGtvdjAeFw0wNDA5MjQwOTU2NTlaFw0wNjA1MTcw\n"
+            + "OTU2NTlaMHQxCzAJBgNVBAYTAlJVMQwwCgYDVQQIEwNOU08xFDASBgNVBAcTC05vdm9zaWJpcnNr\n"
+            + "MQ4wDAYDVQQKEwVJbnRlbDEVMBMGA1UECxMMRFJMIFNlY3VyaXR5MRowGAYDVQQDExFWbGFkaW1p\n"
+            + "ciBNb2xvdGtvdjCCAbgwggEsBgcqhkjOOAQBMIIBHwKBgQD9f1OBHXUSKVLfSpwu7OTn9hG3Ujzv\n"
+            + "RADDHj+AtlEmaUVdQCJR+1k9jVj6v8X1ujD2y5tVbNeBO4AdNG/yZmC3a5lQpaSfn+gEexAiwk+7\n"
+            + "qdf+t8Yb+DtX58aophUPBPuD9tPFHsMCNVQTWhaRMvZ1864rYdcq7/IiAxmd0UgBxwIVAJdgUI8V\n"
+            + "IwvMspK5gqLrhAvwWBz1AoGBAPfhoIXWmz3ey7yrXDa4V7l5lK+7+jrqgvlXTAs9B4JnUVlXjrrU\n"
+            + "WU/mcQcQgYC0SRZxI+hMKBYTt88JMozIpuE8FnqLVHyNKOCjrh4rs6Z1kW6jfwv6ITVi8ftiegEk\n"
+            + "O8yk8b6oUZCJqIPf4VrlnwaSi2ZegHtVJWQBTDv+z0kqA4GFAAKBgQDiNmj9jgWu1ILYqYWcUhNN\n"
+            + "8CjjRitf80yWP/s/565wZz3anb2w72jum63mdShDko9eOOOd1hiVuiBnNhSL7D6JfIYBJvNXr1av\n"
+            + "Gw583BBv12OBgg0eAW/GRWBn2Ak2JjsoBc5x2c1HAEufakep7T6RoC+n3lqbKPKyHWVdfqQ9KTAL\n"
+            + "BgcqhkjOOAQDBQADLwAwLAIUaRS3C9dXcMbrOAhmidFBr7oMvH0CFEC3LUwfLJX5gY8P6uxpkPx3\n"
+            + "JDSM\n" + "-----END CERTIFICATE-----\n";
+
+    public static byte[] getEncodedX509Certificate() {
+        return ENCODED_X509_CERTIFICATE.getBytes();
     }
     
     /**

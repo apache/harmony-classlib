@@ -36,6 +36,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 
 import org.apache.harmony.security.tests.support.cert.MyCertificate;
+import org.apache.harmony.security.tests.support.cert.TestUtils;
 
 import junit.framework.TestCase;
 
@@ -96,7 +97,8 @@ public class CertificateTest extends TestCase {
             return;
         }
         // Create object to be serialized
-        Certificate c1 = cf.generateCertificate(new FileInputStream(certFileName));
+        Certificate c1 = cf.generateCertificate(new ByteArrayInputStream(
+                TestUtils.getEncodedX509Certificate()));
         // This testcase uses ByteArray streams
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         // Serialize cert
@@ -132,7 +134,8 @@ public class CertificateTest extends TestCase {
             return;
         }
         // Create object to be compared to deserialized one
-        Certificate c1 = cf.generateCertificate(new FileInputStream(certFileName));
+        Certificate c1 = cf.generateCertificate(new ByteArrayInputStream(
+                TestUtils.getEncodedX509Certificate()));
         // Deserialize certificate from golden file
         Certificate c2 = deserialize(new FileInputStream(serializedCertFileName));
         // compare both Certificates
