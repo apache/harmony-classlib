@@ -164,6 +164,10 @@
 
             <env key="JAVA_HOME" value="${test.jre.home}"/>
 
+            <classpath>
+                <pathelement path="${hy.auth.src.test.resources}"/>
+            </classpath>
+
             <formatter type="xml" />
 
             <test name="${test.case}" todir="${hy.tests.reports}"
