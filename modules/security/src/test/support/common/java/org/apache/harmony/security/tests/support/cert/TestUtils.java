@@ -58,7 +58,7 @@ public class TestUtils {
     // The file name prefix to load keystore from
     private static final String keyStoreFileName =
         org.apache.harmony.security.tests.support.TestUtils.TEST_ROOT +
-        "java/security/cert/serialization/test." + keyStoreType + ".ks";
+        "test." + keyStoreType + ".ks";
     //
     // The file name suffixes to load keystore from
     //  *.ks1 - keystore containing untrusted cerificates only
