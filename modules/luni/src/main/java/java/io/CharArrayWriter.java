@@ -15,11 +15,13 @@
 
 package java.io;
 
+import org.apache.harmony.luni.util.Msg;
+
 
 /**
  * CharArrayWriter is used as a character output stream on a character array.
  * The buffer used to store the written characters will grow as needed to
- * accomodate more characters as they are written.
+ * accommodate more characters as they are written.
  * 
  */
 public class CharArrayWriter extends Writer {
@@ -59,9 +61,9 @@ public class CharArrayWriter extends Writer {
 		if (initialSize >= 0) {
 			buf = new char[initialSize];
 			lock = buf;
-		} else
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
-					.getString("K005e")); //$NON-NLS-1$
+		} else {
+            throw new IllegalArgumentException(Msg.getString("K005e")); //$NON-NLS-1$
+        }
 	}
 
 	/**
@@ -69,14 +71,16 @@ public class CharArrayWriter extends Writer {
 	 * particular implementation does nothing.
 	 * 
 	 */
-	public void close() {
+	@Override
+    public void close() {
 		/* empty */
 	}
 
 	private void expand(int i) {
 		/* Can the buffer handle @i more chars, if not expand it */
-		if (count + i <= buf.length)
-			return;
+		if (count + i <= buf.length) {
+            return;
+        }
 
 		char[] newbuf = new char[buf.length + (2 * i)];
 		System.arraycopy(buf, 0, newbuf, 0, count);
@@ -89,7 +93,8 @@ public class CharArrayWriter extends Writer {
 	 * 
 	 */
 
-	public void flush() {
+	@Override
+    public void flush() {
 		/* empty */
 	}
 
@@ -139,7 +144,8 @@ public class CharArrayWriter extends Writer {
 	 * 
 	 * @return String this CharArrayWriters contents as a new String.
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		synchronized (lock) {
 			return new String(buf, 0, count);
 		}
@@ -156,7 +162,8 @@ public class CharArrayWriter extends Writer {
 	 * @param len
 	 *            maximum number of characters to write
 	 */
-	public void write(char[] c, int offset, int len) {
+	@Override
+    public void write(char[] c, int offset, int len) {
 		// avoid int overflow
 		if (0 <= offset && offset <= c.length && 0 <= len
 				&& len <= c.length - offset) {
@@ -165,8 +172,9 @@ public class CharArrayWriter extends Writer {
 				System.arraycopy(c, offset, this.buf, this.count, len);
 				this.count += len;
 			}
-		} else
-			throw new IndexOutOfBoundsException();
+		} else {
+            throw new IndexOutOfBoundsException();
+        }
 	}
 
 	/**
@@ -177,7 +185,8 @@ public class CharArrayWriter extends Writer {
 	 * @param oneChar
 	 *            The character to write
 	 */
-	public void write(int oneChar) {
+	@Override
+    public void write(int oneChar) {
 		synchronized (lock) {
 			expand(1);
 			buf[count++] = (char) oneChar;
@@ -196,10 +205,10 @@ public class CharArrayWriter extends Writer {
 	 * @param len
 	 *            the number of characters to retrieve and write.
 	 */
-	public void write(String str, int offset, int len) {
+	@Override
+    public void write(String str, int offset, int len) {
         if (str == null) {
-            throw new NullPointerException(org.apache.harmony.luni.util.Msg
-                    .getString("K0047")); //$NON-NLS-1$
+            throw new NullPointerException(Msg.getString("K0047")); //$NON-NLS-1$
         }
 		// avoid int overflow
 		if (0 <= offset && offset <= str.length() && 0 <= len
@@ -209,8 +218,9 @@ public class CharArrayWriter extends Writer {
 				str.getChars(offset, offset + len, buf, this.count);
 				this.count += len;
 			}
-		} else
-			throw new StringIndexOutOfBoundsException();
+		} else {
+            throw new StringIndexOutOfBoundsException();
+        }
 	}
 
 	/**
@@ -240,7 +250,8 @@ public class CharArrayWriter extends Writer {
 	 *            The character appended to the CharArrayWriter.
 	 * @return The CharArrayWriter.
 	 */
-	public CharArrayWriter append(char c) {
+	@Override
+    public CharArrayWriter append(char c) {
 	    write(c);
 	    return this;
 	}
@@ -257,7 +268,8 @@ public class CharArrayWriter extends Writer {
 	 *            The CharSequence appended to the CharArrayWriter.
 	 * @return The CharArrayWriter
 	 */
-	public CharArrayWriter append(CharSequence csq) {
+	@Override
+    public CharArrayWriter append(CharSequence csq) {
 	    if (null == csq) {
 	        append(TOKEN_NULL, 0, TOKEN_NULL.length());
 	    } else {
@@ -289,7 +301,8 @@ public class CharArrayWriter extends Writer {
 	 *             If start is less than end, end is greater than the length of
 	 *             the CharSequence, or start or end is negative.
 	 */
-	public CharArrayWriter append(CharSequence csq, int start, int end) {
+	@Override
+    public CharArrayWriter append(CharSequence csq, int start, int end) {
 	    if (null == csq) {
 	        csq = TOKEN_NULL;
 	    }

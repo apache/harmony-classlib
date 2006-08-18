@@ -20,8 +20,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.AccessController;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.harmony.luni.util.DeleteOnExit;
+import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
+import org.apache.harmony.luni.util.Util;
 
 /**
  * File is a class which represents a file name or directory. The file may be
@@ -101,8 +106,9 @@ public class File implements Serializable, Comparable<File> {
 			} else {
 				this.path = calculatePath(dir.getPath(),name);
 			}
-		} else
-			throw new NullPointerException();
+		} else {
+            throw new NullPointerException();
+        }
 	}
 
 	/**
@@ -132,8 +138,9 @@ public class File implements Serializable, Comparable<File> {
 			} else {
 				this.path = calculatePath(dirPath, name);
 			}
-		} else
-			throw new NullPointerException();
+		} else {
+            throw new NullPointerException();
+        }
 	}
 
 	/**
@@ -162,8 +169,9 @@ public class File implements Serializable, Comparable<File> {
 	private String calculatePath(String dirPath, String name) {
 		// Remove all the proceeding separator chars from name
 		name = fixSlashes(name);
-		while (name.length() > 0 && (name.charAt(0) == separatorChar))
-			name = name.substring(1, name.length());
+		while (name.length() > 0 && (name.charAt(0) == separatorChar)) {
+            name = name.substring(1, name.length());
+        }
 
 		// Ensure there is a separator char between dirPath and name
 		dirPath = fixSlashes(dirPath);
@@ -176,37 +184,39 @@ public class File implements Serializable, Comparable<File> {
 
 	private void checkURI(URI uri) {
 		if (!uri.isAbsolute()) {
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
+			throw new IllegalArgumentException(Msg.getString(
 					"K031a", uri)); //$NON-NLS-1$
 		} else if (!uri.getRawSchemeSpecificPart().startsWith("/")) { //$NON-NLS-1$
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
+			throw new IllegalArgumentException(Msg.getString(
 					"K031b", uri)); //$NON-NLS-1$
 		}
 
 		String temp = uri.getScheme();
 		if (temp == null || !temp.equals("file")) { //$NON-NLS-1$
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
+			throw new IllegalArgumentException(Msg.getString(
 					"K031c", uri)); //$NON-NLS-1$
 		}
 
 		temp = uri.getRawPath();
 		if (temp == null || temp.length() == 0) {
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
+			throw new IllegalArgumentException(Msg.getString(
 					"K031d", uri)); //$NON-NLS-1$
 		}
 
 		if (uri.getRawAuthority() != null) {
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
+			throw new IllegalArgumentException(Msg.getString(
 					"K031e", new String[] { "authority", uri.toString() })); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
-		if (uri.getRawQuery() != null)
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
+		if (uri.getRawQuery() != null) {
+            throw new IllegalArgumentException(Msg.getString(
 					"K031e", new String[] { "query", uri.toString() }));  //$NON-NLS-1$//$NON-NLS-2$
+        }
 
-		if (uri.getRawFragment() != null)
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
+		if (uri.getRawFragment() != null) {
+            throw new IllegalArgumentException(Msg.getString(
 					"K031e", new String[] { "fragment", uri.toString() })); //$NON-NLS-1$ //$NON-NLS-2$
+        }
 	}
 
 	private static native byte[][] rootsImpl();
@@ -224,11 +234,13 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	public static File[] listRoots() {
 		byte[][] rootsList = rootsImpl();
-		if (rootsList == null)
-			return new File[0];
+		if (rootsList == null) {
+            return new File[0];
+        }
 		File result[] = new File[rootsList.length];
-		for (int i = 0; i < rootsList.length; i++)
-			result[i] = new File(org.apache.harmony.luni.util.Util.toString(rootsList[i]));
+		for (int i = 0; i < rootsList.length; i++) {
+            result[i] = new File(Util.toString(rootsList[i]));
+        }
 		return result;
 	}
 
@@ -240,10 +252,11 @@ public class File implements Serializable, Comparable<File> {
 	private String fixSlashes(String origPath) {
 		int uncIndex = 1;
 		int length = origPath.length(), newLength = 0;
-		if (separatorChar == '/') // disable UNC names
-			uncIndex = 0;
-		else if (length > 2 && origPath.charAt(1) == ':')
-			uncIndex = 2;
+		if (separatorChar == '/') {
+            uncIndex = 0;
+        } else if (length > 2 && origPath.charAt(1) == ':') {
+            uncIndex = 2;
+        }
 
 		boolean foundSlash = false;
 		char newPath[] = origPath.toCharArray();
@@ -294,8 +307,9 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	public boolean canRead() {
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkRead(path);
+		if (security != null) {
+            security.checkRead(path);
+        }
 		return exists() && !isWriteOnlyImpl(properPath(true));
 	}
 
@@ -310,8 +324,9 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	public boolean canWrite() {
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkWrite(path);
+		if (security != null) {
+            security.checkWrite(path);
+        }
 		
 		// Cannot use exists() since that does an unwanted read-check.
 		boolean exists = false;
@@ -372,10 +387,11 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	public void deleteOnExit() {
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkDelete(path);
+		if (security != null) {
+            security.checkDelete(path);
+        }
 
-		org.apache.harmony.luni.util.DeleteOnExit.addFile(org.apache.harmony.luni.util.Util
+		DeleteOnExit.addFile(Util
 				.toString(properPath(true)));
 	}
 
@@ -389,9 +405,11 @@ public class File implements Serializable, Comparable<File> {
 	 * @return <code>true</code> if the object is the same as this object,
 	 *         <code>false</code> otherwise.
 	 */
-	public boolean equals(Object obj) {
-		if (!(obj instanceof File))
-			return false;
+	@Override
+    public boolean equals(Object obj) {
+		if (!(obj instanceof File)) {
+            return false;
+        }
 		if (!caseSensitive) {
 			return path.equalsIgnoreCase(((File) obj).getPath());
 		}
@@ -409,11 +427,13 @@ public class File implements Serializable, Comparable<File> {
 	 * @see java.lang.SecurityManager#checkRead(FileDescriptor)
 	 */
 	public boolean exists() {
-		if (path.length() == 0)
-			return false;
+		if (path.length() == 0) {
+            return false;
+        }
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkRead(path);
+		if (security != null) {
+            security.checkRead(path);
+        }
 		return existsImpl(properPath(true));
 	}
 
@@ -428,7 +448,7 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	public String getAbsolutePath() {
 		byte[] absolute = properPath(false);
-		return org.apache.harmony.luni.util.Util.toString(absolute);
+		return Util.toString(absolute);
 	}
 
 	/**
@@ -466,14 +486,16 @@ public class File implements Serializable, Comparable<File> {
 		byte[] pathBytes = result;
 		do {
 			byte[] linkBytes = getLinkImpl(pathBytes);
-			if (linkBytes == pathBytes)
-				break;
+			if (linkBytes == pathBytes) {
+                break;
+            }
 			if (linkBytes[0] == separatorChar) {
 				pathBytes = linkBytes;
 			} else {
 				int index = pathBytes.length - 1;
-				while (pathBytes[index] != separatorChar)
-					index--;
+				while (pathBytes[index] != separatorChar) {
+                    index--;
+                }
 				byte[] temp = new byte[index + 1 + linkBytes.length];
 				System.arraycopy(pathBytes, 0, temp, 0, index + 1);
 				System.arraycopy(linkBytes, 0, temp, index + 1,
@@ -482,30 +504,36 @@ public class File implements Serializable, Comparable<File> {
 			}
 			exists = existsImpl(pathBytes);
 		} while (exists);
-		if (exists)
-			result = pathBytes;
+		if (exists) {
+            result = pathBytes;
+        }
 
 		int numSeparators = 1;
-		for (int i = 0; i < result.length; i++)
-			if (result[i] == separatorChar)
-				numSeparators++;
+		for (int i = 0; i < result.length; i++) {
+            if (result[i] == separatorChar) {
+                numSeparators++;
+            }
+        }
 		int sepLocations[] = new int[numSeparators];
 		int rootLoc = 0;
-		if (separatorChar != '/')
-			if (result[0] == '\\')
-				rootLoc = (result.length > 1 && result[1] == '\\') ? 1 : 0;
-			else
-				rootLoc = 2; // skip drive i.e. c:
+		if (separatorChar != '/') {
+            if (result[0] == '\\') {
+                rootLoc = (result.length > 1 && result[1] == '\\') ? 1 : 0;
+            } else {
+                rootLoc = 2; // skip drive i.e. c:
+            }
+        }
 		byte newResult[] = new byte[result.length + 1];
 		int newLength = 0, lastSlash = 0, foundDots = 0;
 		sepLocations[lastSlash] = rootLoc;
 		for (int i = 0; i <= result.length; i++) {
-			if (i < rootLoc)
-				newResult[newLength++] = result[i];
-			else {
+			if (i < rootLoc) {
+                newResult[newLength++] = result[i];
+            } else {
 				if (i == result.length || result[i] == separatorChar) {
-					if (i == result.length && foundDots == 0)
-						break;
+					if (i == result.length && foundDots == 0) {
+                        break;
+                    }
 					if (foundDots == 1) {
 						/* Don't write anything, just reset and continue */
 						foundDots = 0;
@@ -528,21 +556,24 @@ public class File implements Serializable, Comparable<File> {
 					continue;
 				}
 				/* Found some dots within text, write them out */
-				if (foundDots > 0)
-					for (int j = 0; j < foundDots; j++)
-						newResult[newLength++] = (byte) '.';
+				if (foundDots > 0) {
+                    for (int j = 0; j < foundDots; j++) {
+                        newResult[newLength++] = (byte) '.';
+                    }
+                }
 				newResult[newLength++] = result[i];
 				foundDots = 0;
 			}
 		}
 		// remove trailing slash
 		if (newLength > (rootLoc + 1)
-				&& newResult[newLength - 1] == separatorChar)
-			newLength--;
+				&& newResult[newLength - 1] == separatorChar) {
+            newLength--;
+        }
 		newResult[newLength] = 0;
 		newResult = getCanonImpl(newResult);
 		newLength = newResult.length;
-		return org.apache.harmony.luni.util.Util.toString(newResult, 0, newLength);
+		return Util.toString(newResult, 0, newLength);
 	}
 
 	/**
@@ -582,16 +613,20 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	public String getParent() {
 		int length = path.length(), firstInPath = 0;
-		if (separatorChar == '\\' && length > 2 && path.charAt(1) == ':')
-			firstInPath = 2;
+		if (separatorChar == '\\' && length > 2 && path.charAt(1) == ':') {
+            firstInPath = 2;
+        }
 		int index = path.lastIndexOf(separatorChar);
-		if (index == -1 && firstInPath > 0)
-			index = 2;
-		if (index == -1 || path.charAt(length - 1) == separatorChar)
-			return null;
+		if (index == -1 && firstInPath > 0) {
+            index = 2;
+        }
+		if (index == -1 || path.charAt(length - 1) == separatorChar) {
+            return null;
+        }
 		if (path.indexOf(separatorChar) == index
-				&& path.charAt(firstInPath) == separatorChar)
-			return path.substring(0, index + 1);
+				&& path.charAt(firstInPath) == separatorChar) {
+            return path.substring(0, index + 1);
+        }
 		return path.substring(0, index);
 	}
 
@@ -604,8 +639,9 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	public File getParentFile() {
 		String tempParent = getParent();
-		if (tempParent == null)
-			return null;
+		if (tempParent == null) {
+            return null;
+        }
 		return new File(tempParent);
 	}
 
@@ -627,11 +663,12 @@ public class File implements Serializable, Comparable<File> {
 	 * 
 	 * @see #equals
 	 */
-	public int hashCode() {
-		if (caseSensitive)
-			return path.hashCode() ^ 1234321;
-		else
-			return path.toLowerCase().hashCode() ^ 1234321;
+	@Override
+    public int hashCode() {
+		if (caseSensitive) {
+            return path.hashCode() ^ 1234321;
+        }
+        return path.toLowerCase().hashCode() ^ 1234321;
 	}
 
 	/**
@@ -646,7 +683,7 @@ public class File implements Serializable, Comparable<File> {
 	 * @see #getPath
 	 */
 	public boolean isAbsolute() {
-		return isAbsoluteImpl(org.apache.harmony.luni.util.Util.getBytes(path));
+		return isAbsoluteImpl(Util.getBytes(path));
 	}
 
 	private native boolean isAbsoluteImpl(byte[] filePath);
@@ -662,11 +699,13 @@ public class File implements Serializable, Comparable<File> {
 	 * @see java.lang.SecurityManager#checkRead(FileDescriptor)
 	 */
 	public boolean isDirectory() {
-		if (path.length() == 0)
-			return false;
+		if (path.length() == 0) {
+            return false;
+        }
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkRead(path);
+		if (security != null) {
+            security.checkRead(path);
+        }
 		return isDirectoryImpl(properPath(true));
 	}
 
@@ -683,11 +722,13 @@ public class File implements Serializable, Comparable<File> {
 	 * @see java.lang.SecurityManager#checkRead(FileDescriptor)
 	 */
 	public boolean isFile() {
-		if (path.length() == 0)
-			return false;
+		if (path.length() == 0) {
+            return false;
+        }
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkRead(path);
+		if (security != null) {
+            security.checkRead(path);
+        }
 		return isFileImpl(properPath(true));
 	}
 
@@ -701,11 +742,13 @@ public class File implements Serializable, Comparable<File> {
 	 *         otherwise.
 	 */
 	public boolean isHidden() {
-		if (path.length() == 0)
-			return false;
+		if (path.length() == 0) {
+            return false;
+        }
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkRead(path);
+		if (security != null) {
+            security.checkRead(path);
+        }
 		return isHiddenImpl(properPath(true));
 	}
 
@@ -727,12 +770,14 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	public long lastModified() {
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkRead(path);
+		if (security != null) {
+            security.checkRead(path);
+        }
 		long result = lastModifiedImpl(properPath(true));
 		/* Temporary code to handle both return cases until natives fixed */
-		if (result == -1 || result == 0)
-			return 0;
+		if (result == -1 || result == 0) {
+            return 0;
+        }
 		return (result * 1000);
 	}
 
@@ -750,11 +795,12 @@ public class File implements Serializable, Comparable<File> {
 	public boolean setLastModified(long time) {
 		if (time >= 0) {
 			SecurityManager security = System.getSecurityManager();
-			if (security != null)
-				security.checkWrite(path);
+			if (security != null) {
+                security.checkWrite(path);
+            }
 			return (setLastModifiedImpl(properPath(true), time));
 		}
-		throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
+		throw new IllegalArgumentException(Msg
 				.getString("K006a")); //$NON-NLS-1$
 	}
 
@@ -769,8 +815,9 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	public boolean setReadOnly() {
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkWrite(path);
+		if (security != null) {
+            security.checkWrite(path);
+        }
 		return (setReadOnlyImpl(properPath(true)));
 	}
 
@@ -786,8 +833,9 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	public long length() {
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkRead(path);
+		if (security != null) {
+            security.checkRead(path);
+        }
 		return lengthImpl(properPath(true));
 	}
 
@@ -809,16 +857,20 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	public java.lang.String[] list() {
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkRead(path);
-		if (!isDirectory())
-			return null;
+		if (security != null) {
+            security.checkRead(path);
+        }
+		if (!isDirectory()) {
+            return null;
+        }
 		byte[][] implList = listImpl(properPath(true));
-		if (implList == null)
-			return new String[0];
+		if (implList == null) {
+            return new String[0];
+        }
 		String result[] = new String[implList.length];
-		for (int index = 0; index < implList.length; index++)
-			result[index] = org.apache.harmony.luni.util.Util.toString(implList[index]);
+		for (int index = 0; index < implList.length; index++) {
+            result[index] = Util.toString(implList[index]);
+        }
 		return result;
 	}
 
@@ -836,12 +888,14 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	public File[] listFiles() {
 		String[] tempNames = list();
-		if (tempNames == null)
-			return null;
+		if (tempNames == null) {
+            return null;
+        }
 		int resultLength = tempNames.length;
 		File results[] = new File[resultLength];
-		for (int i = 0; i < resultLength; i++)
-			results[i] = new File(this, tempNames[i]);
+		for (int i = 0; i < resultLength; i++) {
+            results[i] = new File(this, tempNames[i]);
+        }
 		return results;
 	}
 
@@ -865,12 +919,14 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	public File[] listFiles(FilenameFilter filter) {
 		String[] tempNames = list(filter);
-		if (tempNames == null)
-			return null;
+		if (tempNames == null) {
+            return null;
+        }
 		int resultLength = tempNames.length;
 		File results[] = new File[resultLength];
-		for (int i = 0; i < resultLength; i++)
-			results[i] = new File(this, tempNames[i]);
+		for (int i = 0; i < resultLength; i++) {
+            results[i] = new File(this, tempNames[i]);
+        }
 		return results;
 	}
 
@@ -893,23 +949,25 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	public File[] listFiles(FileFilter filter) {
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkRead(path);
-		if (!isDirectory())
-			return null;
+		if (security != null) {
+            security.checkRead(path);
+        }
+		if (!isDirectory()) {
+            return null;
+        }
 		byte[][] implList = listImpl(properPath(true));
-		if (implList == null)
-			return new File[0];
-		java.util.Vector<File> tempResult = new java.util.Vector<File>();
+		if (implList == null) {
+            return new File[0];
+        }
+		List<File> tempResult = new ArrayList<File>();
 		for (int index = 0; index < implList.length; index++) {
-			String aName = org.apache.harmony.luni.util.Util.toString(implList[index]);
+			String aName = Util.toString(implList[index]);
 			File aFile = new File(this, aName);
-			if (filter == null || filter.accept(aFile))
-				tempResult.addElement(aFile);
+			if (filter == null || filter.accept(aFile)) {
+                tempResult.add(aFile);
+            }
 		}
-		File[] result = new File[tempResult.size()];
-		tempResult.copyInto(result);
-		return result;
+		return tempResult.toArray(new File[tempResult.size()]);
 	}
 
 	/**
@@ -931,18 +989,22 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	public java.lang.String[] list(FilenameFilter filter) {
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkRead(path);
-		if (!isDirectory())
-			return null;
+		if (security != null) {
+            security.checkRead(path);
+        }
+		if (!isDirectory()) {
+            return null;
+        }
 		byte[][] implList = listImpl(properPath(true));
-		if (implList == null)
-			return new String[0];
+		if (implList == null) {
+            return new String[0];
+        }
 		java.util.Vector<String> tempResult = new java.util.Vector<String>();
 		for (int index = 0; index < implList.length; index++) {
-			String aName = org.apache.harmony.luni.util.Util.toString(implList[index]);
-			if (filter == null || filter.accept(this, aName))
-				tempResult.addElement(aName);
+			String aName = Util.toString(implList[index]);
+			if (filter == null || filter.accept(this, aName)) {
+                tempResult.addElement(aName);
+            }
 		}
 		String[] result = new String[tempResult.size()];
 		tempResult.copyInto(result);
@@ -963,8 +1025,9 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	public boolean mkdir() {
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkWrite(path);
+		if (security != null) {
+            security.checkWrite(path);
+        }
 		return mkdirImpl(properPath(true));
 	}
 
@@ -981,17 +1044,20 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	public boolean mkdirs() {
 		/* If the terminal directory already exists, answer false */
-		if (exists())
-			return false;
+		if (exists()) {
+            return false;
+        }
 
 		/* If the receiver can be created, answer true */
-		if (mkdir())
-			return true;
+		if (mkdir()) {
+            return true;
+        }
 
 		String parentDir = getParent();
 		/* If there is no parent and we were not created, answer false */
-		if (parentDir == null)
-			return false;
+		if (parentDir == null) {
+            return false;
+        }
 
 		/* Otherwise, try to create a parent directory and then this directory */
 		return (new File(parentDir).mkdirs() && mkdir());
@@ -1013,10 +1079,11 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	public boolean createNewFile() throws IOException {
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkWrite(path);
+		if (security != null) {
+            security.checkWrite(path);
+        }
         if(0 == path.length()) {
-            throw new IOException(org.apache.harmony.luni.util.Msg.getString("KA012")); //$NON-NLS-1$
+            throw new IOException(Msg.getString("KA012")); //$NON-NLS-1$
         }
 		int result = newFileImpl(properPath(true));
 		switch (result) {
@@ -1026,7 +1093,7 @@ public class File implements Serializable, Comparable<File> {
 		case 3:
 			return false;
 		default:
-			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K01c2", path)); //$NON-NLS-1$
+			throw new IOException(Msg.getString("K01c2", path)); //$NON-NLS-1$
 		}
 	}
 
@@ -1080,7 +1147,7 @@ public class File implements Serializable, Comparable<File> {
 				} while (!result.createNewFile());
 				return result;
 			}
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
+			throw new IllegalArgumentException(Msg
 					.getString("K006b")); //$NON-NLS-1$
 		}
 		throw new NullPointerException();
@@ -1107,38 +1174,43 @@ public class File implements Serializable, Comparable<File> {
 	 * @return the proper path
 	 */
 	byte[] properPath(boolean internal) {
-		if (properPath != null)
-			return properPath;
-		byte[] pathBytes = org.apache.harmony.luni.util.Util.getBytes(path);
-		if (isAbsoluteImpl(pathBytes))
-			return properPath = pathBytes;
+		if (properPath != null) {
+            return properPath;
+        }
+		byte[] pathBytes = Util.getBytes(path);
+		if (isAbsoluteImpl(pathBytes)) {
+            return properPath = pathBytes;
+        }
 		// Check security by getting user.dir when the path is not absolute
 		String userdir;
 		if (internal) {
 			userdir = AccessController.doPrivileged(new PriviAction<String>("user.dir")); //$NON-NLS-1$
-		} else
-			userdir = System.getProperty("user.dir"); //$NON-NLS-1$
-		if ((properPath = properPathImpl(pathBytes)) != null)
-			return properPath;
-		if (path.length() == 0)
-			return properPath = org.apache.harmony.luni.util.Util.getBytes(userdir);
+		} else {
+            userdir = System.getProperty("user.dir"); //$NON-NLS-1$
+        }
+		if ((properPath = properPathImpl(pathBytes)) != null) {
+            return properPath;
+        }
+		if (path.length() == 0) {
+            return properPath = Util.getBytes(userdir);
+        }
 		int length = userdir.length();
 		if (path.charAt(0) == '\\') {
 			if (length > 1 && userdir.charAt(1) == ':') {
-				return properPath = org.apache.harmony.luni.util.Util.getBytes(userdir
+				return properPath = Util.getBytes(userdir
 						.substring(0, 2)
 						+ path);
 			}
 			if (length > 0 && userdir.charAt(length - 1) == separatorChar) {
-				return properPath = org.apache.harmony.luni.util.Util.getBytes(userdir
+				return properPath = Util.getBytes(userdir
 						+ path.substring(1));
 			}
-			return properPath = org.apache.harmony.luni.util.Util.getBytes(userdir + path);
+			return properPath = Util.getBytes(userdir + path);
 		}
 		if (length > 0 && userdir.charAt(length - 1) == separatorChar) {
-			return properPath = org.apache.harmony.luni.util.Util.getBytes(userdir + path);
+			return properPath = Util.getBytes(userdir + path);
 		}
-		return properPath = org.apache.harmony.luni.util.Util.getBytes(userdir + separator
+		return properPath = Util.getBytes(userdir + separator
 				+ path);
 	}
 
@@ -1174,7 +1246,8 @@ public class File implements Serializable, Comparable<File> {
 	 * 
 	 * @return a printable representation for the receiver.
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		return path.toString();
 	}
 
@@ -1188,13 +1261,14 @@ public class File implements Serializable, Comparable<File> {
 	public URI toURI() {
 		String name = getAbsoluteName();
 		try {
-			if (!name.startsWith("/")) // On Windows, absolute paths might not //$NON-NLS-1$
-										// start with sep.
+			if (!name.startsWith("/")) {
+                // start with sep.
 				return new URI("file", null, //$NON-NLS-1$
 						new StringBuilder(name.length() + 1).append('/').append(
 								name).toString(), null, null);
-			else if (name.startsWith("//")) //$NON-NLS-1$
-				return new URI("file", name, null); // UNC path //$NON-NLS-1$
+            } else if (name.startsWith("//")) {
+                return new URI("file", name, null); // UNC path //$NON-NLS-1$
+            }
 			return new URI("file", null, name, null, null); //$NON-NLS-1$
 		} catch (URISyntaxException e) {
 			// this should never happen
@@ -1214,12 +1288,13 @@ public class File implements Serializable, Comparable<File> {
 	 */
 	public URL toURL() throws java.net.MalformedURLException {
 		String name = getAbsoluteName();
-		if (!name.startsWith("/")) // On Windows, absolute paths might not //$NON-NLS-1$
-									// start with sep.
+		if (!name.startsWith("/")) {
+            // start with sep.
 			return new URL("file", "", -1, new StringBuilder(name.length() + 1) //$NON-NLS-1$ //$NON-NLS-2$
 					.append('/').append(name).toString(), null);
-		else if (name.startsWith("//")) //$NON-NLS-1$
-			return new URL("file:" + name); // UNC path //$NON-NLS-1$
+        } else if (name.startsWith("//")) {
+            return new URL("file:" + name); // UNC path //$NON-NLS-1$
+        }
 		return new URL("file", "", -1, name, null); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 

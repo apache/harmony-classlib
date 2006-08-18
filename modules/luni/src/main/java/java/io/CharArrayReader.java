@@ -15,6 +15,7 @@
 
 package java.io;
 
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * CharArrayReader is used as a buffered character input stream on a character
@@ -30,7 +31,7 @@ public class CharArrayReader extends Reader {
 	/**
 	 * Current buffer position.
 	 */
-	protected int pos = 0;
+	protected int pos;
 
 	/**
 	 * Current mark position.
@@ -40,7 +41,7 @@ public class CharArrayReader extends Reader {
 	/**
 	 * The ending index of the buffer.
 	 */
-	protected int count = 0;
+	protected int count;
 
 	/**
 	 * Construct a CharArrayReader on the char array <code>buffer</code>. The
@@ -78,8 +79,9 @@ public class CharArrayReader extends Reader {
 
 			/* This is according to spec */
 			this.count = this.pos + length < buf.length ? length : buf.length;
-		} else
-			throw new IllegalArgumentException();
+		} else {
+            throw new IllegalArgumentException();
+        }
 	}
 
 	/**
@@ -88,10 +90,12 @@ public class CharArrayReader extends Reader {
 	 * effect.
 	 * 
 	 */
-	public void close() {
+	@Override
+    public void close() {
 		synchronized (lock) {
-			if (isOpen())
-				buf = null;
+			if (isOpen()) {
+                buf = null;
+            }
 		}
 	}
 
@@ -116,12 +120,14 @@ public class CharArrayReader extends Reader {
 	 * @throws IOException
 	 *             If an error occurs attempting to mark this CharArrayReader.
 	 */
-	public void mark(int readLimit) throws IOException {
+	@Override
+    public void mark(int readLimit) throws IOException {
 		synchronized (lock) {
-			if (isOpen())
-				markedPos = pos;
-			else
-				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0060")); //$NON-NLS-1$
+			if (isOpen()) {
+                markedPos = pos;
+            } else {
+                throw new IOException(Msg.getString("K0060")); //$NON-NLS-1$
+            }
 		}
 	}
 
@@ -131,7 +137,8 @@ public class CharArrayReader extends Reader {
 	 * 
 	 * @return indicates whether or not mark() and reset() are supported.
 	 */
-	public boolean markSupported() {
+	@Override
+    public boolean markSupported() {
 		return true;
 	}
 
@@ -145,14 +152,16 @@ public class CharArrayReader extends Reader {
 	 * @throws IOException
 	 *             If the CharArrayReader is already closed.
 	 */
-	public int read() throws IOException {
+	@Override
+    public int read() throws IOException {
 		synchronized (lock) {
 			if (isOpen()) {
-				if (pos != count)
-					return buf[pos++];
+				if (pos != count) {
+                    return buf[pos++];
+                }
 				return -1;
 			}
-			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0060")); //$NON-NLS-1$
+			throw new IOException(Msg.getString("K0060")); //$NON-NLS-1$
 		}
 	}
 
@@ -175,7 +184,8 @@ public class CharArrayReader extends Reader {
 	 *             If the CharArrayReader is closed.
 	 */
 
-	public int read(char buffer[], int offset, int len) throws IOException {
+	@Override
+    public int read(char buffer[], int offset, int len) throws IOException {
 		// avoid int overflow
 		if (0 <= offset && offset <= buffer.length && 0 <= len
 				&& len <= buffer.length - offset) {
@@ -191,7 +201,7 @@ public class CharArrayReader extends Reader {
 					}
 					return -1;
 				}
-				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0060")); //$NON-NLS-1$
+				throw new IOException(Msg.getString("K0060")); //$NON-NLS-1$
 			}
 		}
 		throw new ArrayIndexOutOfBoundsException();
@@ -212,12 +222,13 @@ public class CharArrayReader extends Reader {
 	 * @throws IOException
 	 *             If the CharArrayReader is closed.
 	 */
-	public boolean ready() throws IOException {
+	@Override
+    public boolean ready() throws IOException {
 		synchronized (lock) {
 			if (isOpen()) {
 				return pos != count;
 			}
-			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0060")); //$NON-NLS-1$
+			throw new IOException(Msg.getString("K0060")); //$NON-NLS-1$
 		}
 	}
 
@@ -230,12 +241,14 @@ public class CharArrayReader extends Reader {
 	 * @throws IOException
 	 *             If this CharArrayReader has already been closed.
 	 */
-	public void reset() throws IOException {
+	@Override
+    public void reset() throws IOException {
 		synchronized (lock) {
-			if (isOpen())
-				pos = markedPos != -1 ? markedPos : 0;
-			else
-				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0060")); //$NON-NLS-1$
+			if (isOpen()) {
+                pos = markedPos != -1 ? markedPos : 0;
+            } else {
+                throw new IOException(Msg.getString("K0060")); //$NON-NLS-1$
+            }
 		}
 	}
 
@@ -251,11 +264,13 @@ public class CharArrayReader extends Reader {
 	 * @throws IOException
 	 *             If this CharArrayReader has already been closed.
 	 */
-	public long skip(long n) throws IOException {
+	@Override
+    public long skip(long n) throws IOException {
 		synchronized (lock) {
 			if (isOpen()) {
-				if (n <= 0)
-					return 0;
+				if (n <= 0) {
+                    return 0;
+                }
 				long skipped = 0;
 				if (n < this.count - pos) {
 					pos = pos + (int) n;
@@ -266,7 +281,7 @@ public class CharArrayReader extends Reader {
 				}
 				return skipped;
 			}
-			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0060")); //$NON-NLS-1$
+			throw new IOException(Msg.getString("K0060")); //$NON-NLS-1$
 		}
 	}
 }

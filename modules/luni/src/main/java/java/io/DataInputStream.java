@@ -15,6 +15,8 @@
 
 package java.io;
 
+import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.util.Util;
 
 /**
  * DataInputStream is a filter class which can read typed data from a Stream.
@@ -55,7 +57,8 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 	 * @see DataOutput#write(byte[])
 	 * @see DataOutput#write(byte[], int, int)
 	 */
-	public final int read(byte[] buffer) throws IOException {
+	@Override
+    public final int read(byte[] buffer) throws IOException {
 		return in.read(buffer, 0, buffer.length);
 	}
 
@@ -79,7 +82,8 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 	 * @see DataOutput#write(byte[])
 	 * @see DataOutput#write(byte[], int, int)
 	 */
-	public final int read(byte[] buffer, int offset, int length)
+	@Override
+    public final int read(byte[] buffer, int offset, int length)
 			throws IOException {
 		return in.read(buffer, offset, length);
 	}
@@ -96,8 +100,9 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 	 */
 	public final boolean readBoolean() throws IOException {
 		int temp = in.read();
-		if (temp >= 0)
-			return temp != 0;
+		if (temp >= 0) {
+            return temp != 0;
+        }
 		throw new EOFException();
 	}
 
@@ -113,8 +118,9 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 	 */
 	public final byte readByte() throws IOException {
 		int temp = in.read();
-		if (temp >= 0)
-			return (byte) temp;
+		if (temp >= 0) {
+            return (byte) temp;
+        }
 		throw new EOFException();
 	}
 
@@ -131,8 +137,9 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 	public final char readChar() throws IOException {
 		int b1 = in.read();
 		int b2 = in.read();
-		if ((b1 | b2) >= 0)
-			return (char) ((b1 << 8) + b2);
+		if ((b1 | b2) >= 0) {
+            return (char) ((b1 << 8) + b2);
+        }
 		throw new EOFException();
 	}
 
@@ -198,14 +205,16 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 					if (result >= 0) {
 						offset += result;
 						length -= result;
-					} else
-						throw new EOFException();
+					} else {
+                        throw new EOFException();
+                    }
 				}
-			} else
-				throw new IndexOutOfBoundsException();
-		} else
-			throw new NullPointerException(org.apache.harmony.luni.util.Msg
-					.getString("K0047")); //$NON-NLS-1$
+			} else {
+                throw new IndexOutOfBoundsException();
+            }
+		} else {
+            throw new NullPointerException(Msg.getString("K0047")); //$NON-NLS-1$
+        }
 	}
 
 	/**
@@ -223,8 +232,9 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 		int b2 = in.read();
 		int b3 = in.read();
 		int b4 = in.read();
-		if ((b1 | b2 | b3 | b4) >= 0)
-			return ((b1 << 24) + (b2 << 16) + (b3 << 8) + b4);
+		if ((b1 | b2 | b3 | b4) >= 0) {
+            return ((b1 << 24) + (b2 << 16) + (b3 << 8) + b4);
+        }
 		throw new EOFException();
 	}
 
@@ -244,15 +254,17 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 	 * 
 	 * @deprecated Use BufferedReader
 	 */
-	public final String readLine() throws IOException {
+	@Deprecated
+    public final String readLine() throws IOException {
 		StringBuffer line = new StringBuffer(80); // Typical line length
 		boolean foundTerminator = false;
 		while (true) {
 			int nextByte = in.read();
 			switch (nextByte) {
 			case -1:
-				if (line.length() == 0 && !foundTerminator)
-					return null;
+				if (line.length() == 0 && !foundTerminator) {
+                    return null;
+                }
 				return line.toString();
 			case (byte) '\r':
 				if (foundTerminator) {
@@ -261,8 +273,9 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 				}
 				foundTerminator = true;
 				/* Have to be able to peek ahead one byte */
-				if (!(in.getClass() == PushbackInputStream.class))
-					in = new PushbackInputStream(in);
+				if (!(in.getClass() == PushbackInputStream.class)) {
+                    in = new PushbackInputStream(in);
+                }
 				break;
 			case (byte) '\n':
 				return line.toString();
@@ -292,9 +305,10 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 		int b2 = in.read();
 		int b3 = in.read();
 		int b4 = in.read();
-		if ((b1 | b2 | b3 | b4) >= 0)
-			return (((long) i1) << 32) + ((long) b1 << 24) + (b2 << 16)
+		if ((b1 | b2 | b3 | b4) >= 0) {
+            return (((long) i1) << 32) + ((long) b1 << 24) + (b2 << 16)
 					+ (b3 << 8) + b4;
+        }
 		throw new EOFException();
 	}
 
@@ -311,8 +325,9 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 	public final short readShort() throws IOException {
 		int b1 = in.read();
 		int b2 = in.read();
-		if ((b1 | b2) >= 0)
-			return (short) ((b1 << 8) + b2);
+		if ((b1 | b2) >= 0) {
+            return (short) ((b1 << 8) + b2);
+        }
 		throw new EOFException();
 	}
 
@@ -329,8 +344,9 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 	 */
 	public final int readUnsignedByte() throws IOException {
 		int temp = in.read();
-		if (temp >= 0)
-			return temp;
+		if (temp >= 0) {
+            return temp;
+        }
 		throw new EOFException();
 	}
 
@@ -349,8 +365,9 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 	public final int readUnsignedShort() throws IOException {
 		int b1 = in.read();
 		int b2 = in.read();
-		if ((b1 | b2) >= 0)
-			return ((b1 << 8) + b2);
+		if ((b1 | b2) >= 0) {
+            return ((b1 << 8) + b2);
+        }
 		throw new EOFException();
 	}
 
@@ -408,8 +425,9 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 			 * explicitly check and fix their length after sampling.
 			 */
 			buf = byteBuf;
-			if (buf.length < utfSize)
-				buf = byteBuf = new byte[utfSize];
+			if (buf.length < utfSize) {
+                buf = byteBuf = new byte[utfSize];
+            }
 			out = charBuf;
 			if (out.length < utfSize) {
 				out = charBuf = new char[utfSize];
@@ -418,7 +436,7 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 
 		readFully(buf, 0, utfSize);
 		String result;
-		result = org.apache.harmony.luni.util.Util.convertUTF8WithBuf(buf, out, 0, utfSize);
+		result = Util.convertUTF8WithBuf(buf, out, 0, utfSize);
 		if (!makeBuf) {
 			/*
 			 * Do not synchronize useShared on cacheLock, it will make it back
@@ -461,10 +479,12 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 	public final int skipBytes(int count) throws IOException {
 		int skipped = 0;
 		long skip;
-		while (skipped < count && (skip = in.skip(count - skipped)) != 0)
-			skipped += skip;
-		if (skipped >= 0)
-			return skipped;
+		while (skipped < count && (skip = in.skip(count - skipped)) != 0) {
+            skipped += skip;
+        }
+		if (skipped >= 0) {
+            return skipped;
+        }
 		throw new EOFException();
 	}
 
