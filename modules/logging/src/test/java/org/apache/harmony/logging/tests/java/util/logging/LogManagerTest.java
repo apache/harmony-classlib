@@ -423,8 +423,8 @@ public class LogManagerTest extends TestCase {
 		}
 		try {
 			mockManager.addPropertyChangeListener(null);
-			fail("should throw SecurityException");
-		} catch (SecurityException e) {
+			fail("should throw NPE");
+		} catch (NullPointerException e) {
 		}
 		try {
 			mockManager.removePropertyChangeListener(null);
@@ -540,9 +540,6 @@ public class LogManagerTest extends TestCase {
 			// for non specifed logger, level is reset to null
 			assertEquals(null, fo.getLevel());
 
-			// handlers has no effect
-			assertEquals(0, foo.getHandlers().length);
-
 			// read properties don't affect handler
 			assertNotSame(Level.OFF, h.getLevel());
 			assertSame(l, h.getLevel());
@@ -578,8 +575,7 @@ public class LogManagerTest extends TestCase {
 
 		// level DO has effect
 		assertEquals(Level.WARNING, foo.getLevel());
-		// handlers has no effect
-		assertEquals(0, foo.getHandlers().length);
+
 		// for non specifed logger, level is reset to null
 		assertEquals(null, fo.getLevel());
 
@@ -678,7 +674,11 @@ public class LogManagerTest extends TestCase {
 
 	public void testAddRemovePropertyChangeListener_null() {
 		// seems nothing happened
-		mockManager.addPropertyChangeListener(null);
+        try{
+            mockManager.addPropertyChangeListener(null);
+            fail("Should throw NPE");
+        }catch(NullPointerException e){
+        }
 		mockManager.removePropertyChangeListener(null);
 	}
 

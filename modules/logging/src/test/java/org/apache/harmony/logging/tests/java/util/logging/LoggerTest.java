@@ -57,7 +57,7 @@ public class LoggerTest extends TestCase {
 	private Logger sharedLogger = null;
 
 	private Locale oldLocale = null;
-
+    
 	/*
 	 * @see TestCase#setUp()
 	 */
@@ -733,11 +733,7 @@ public class LoggerTest extends TestCase {
 	 */
 	public void testRemoveHandler_Null() {
 		Logger log = Logger.getLogger("testRemoveHandler_Null");
-		try {
-			log.removeHandler(null);
-			fail("Should throw NullPointerException!");
-		} catch (NullPointerException e) {
-		}
+		log.removeHandler(null);
 		assertEquals(log.getHandlers().length, 0);
 	}
 

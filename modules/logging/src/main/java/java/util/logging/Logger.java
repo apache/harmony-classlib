@@ -18,11 +18,12 @@ package java.util.logging;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.MissingResourceException;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import java.util.StringTokenizer;
 
 /**
  * Loggers are used to log records to certain outputs, including file, console,
@@ -126,7 +127,7 @@ public class Logger {
     private ResourceBundle resBundle;
 
     // the handlers attached to this logger
-    private List<Handler> handlers;
+    List<Handler> handlers = null;
 
     /*
      * flag indicating whether to notify parent's handlers on receiving a log
@@ -138,6 +139,8 @@ public class Logger {
     private boolean isNamed;
 
     private List<Logger> childs;
+    
+    LogManager manager = null;
 
     /*
      * -------------------------------------------------------------------
@@ -169,7 +172,6 @@ public class Logger {
         this.name = name;
         this.parent = null;
         this.filter = null;
-        this.handlers = new ArrayList<Handler>();
         this.childs = new ArrayList<Logger>();
         this.notifyParentHandlers = true;
         // any logger is not anonymous by default
@@ -421,7 +423,32 @@ public class Logger {
         if (this.isNamed) {
             LogManager.getLogManager().checkAccess();
         }
+        initHandler();
         this.handlers.add(handler);
+    }
+    
+    private void initHandler() {
+      if(handlers == null){
+          if(manager == null){
+              handlers = new ArrayList<Handler>();
+              return;
+          }
+          handlers = new ArrayList<Handler>();
+          String handlerStr = manager.getProperty(name==""?"handlers":name+".handlers"); //$NON-NLS-1$
+          if (null == handlerStr) {
+              return;
+          }
+          StringTokenizer st = new StringTokenizer(handlerStr, " "); //$NON-NLS-1$
+          while (st.hasMoreTokens()) {
+              String handlerName = st.nextToken();
+              Handler handler = (Handler)LogManager.getInstanceByClass(handlerName);
+              handlers.add(handler);
+              String level = manager.getProperty(handlerName + ".level"); //$NON-NLS-1$
+              if (null != level) {
+                  handler.setLevel(Level.parse(level));
+              }
+          }
+      }
     }
 
     /**
@@ -430,6 +457,7 @@ public class Logger {
      * @return an array of all the handlers associated with this logger
      */
     public synchronized Handler[] getHandlers() {
+        initHandler();
         return handlers.toArray(new Handler[handlers.size()]);
     }
 
@@ -449,8 +477,9 @@ public class Logger {
             LogManager.getLogManager().checkAccess();
         }
         if (null == handler) {
-            throw new NullPointerException("The 'handler' parameter is null."); //$NON-NLS-1$
+            return;
         }
+        initHandler();
         this.handlers.remove(handler);
     }
 
@@ -1061,24 +1090,19 @@ public class Logger {
              * call the handlers of this logger, throw any exception that
              * occurs
              */
-            Handler[] ha = this.getHandlers();
-            for (Handler element : ha) {
+            initHandler();
+            for (Handler element : handlers) {
                 element.publish(record);
             }
             // call the parent's handlers if set useParentHandlers
-            if (getUseParentHandlers()) {
-                Logger anyParent = this.parent;
-                while (null != anyParent) {
-                    ha = anyParent.getHandlers();
-                    for (Handler element : ha) {
-                        element.publish(record);
-                    }
-                    if (anyParent.getUseParentHandlers()) {
-                        anyParent = anyParent.parent;
-                    } else {
-                        break;
-                    }
+            Logger temp = this;
+            while (temp.parent != null && temp.getUseParentHandlers()) {
+                Logger anyParent = temp.parent;
+                Handler[] ha = anyParent.getHandlers();
+                for (Handler element : ha) {
+                    element.publish(record);
                 }
+                temp = anyParent;   
             }
         }
     }

@@ -153,9 +153,9 @@ public class FileHandler extends StreamHandler {
 
     //current output file name
     String fileName = null;
-
-    //current generation
-    int generation = 0;
+    
+    //current unique ID
+    int uniqueID = -1;
 
     /*
      * ---------------------------------------------
@@ -181,8 +181,7 @@ public class FileHandler extends StreamHandler {
     }
 
     //init properties
-    private void init(String p, Boolean a, Integer l, Integer c)
-            throws IOException {
+    private void init(String p, Boolean a, Integer l, Integer c) throws IOException{
         //check access
         manager = LogManager.getLogManager();
         manager.checkAccess();
@@ -191,20 +190,33 @@ public class FileHandler extends StreamHandler {
     }
 
     private void initOutputFiles() throws FileNotFoundException, IOException {
-        int uniqueID = -1;
         FileOutputStream fileStream = null;
         FileChannel channel = null;
         while (true) {
             //try to find a unique file which is not locked by other process
-            fileName = parseFileName(generation, ++uniqueID);
+            uniqueID++;
+            //FIXME: improve performance here
+            for (int generation = 0; generation < count; generation++) {
+                //cache all file names for rotation use
+                files[generation] = new File(parseFileName(generation, uniqueID));
+            }
+            fileName = files[0].getAbsolutePath();
             synchronized (allLocks) {
                 //if current process has held lock for this fileName
                 //continue to find next file
                 if (null != allLocks.get(fileName)) {
                     continue;
                 }
+                if(files[0].exists() && (!append || files[0].length() >= limit)){
+                    for (int i = count - 1; i > 0; i--) {
+                        if (files[i].exists()) {
+                            files[i].delete();
+                        }
+                        files[i - 1].renameTo(files[i]);
+                    }
+                }
                 try {
-                    fileStream = new FileOutputStream(fileName, true);
+                    fileStream = new FileOutputStream(fileName, append);
                     channel = fileStream.getChannel();
                 } catch(FileNotFoundException e){
                     //invalid path name, throw exception
@@ -219,23 +231,13 @@ public class FileHandler extends StreamHandler {
                 if (null == lock) {
                     continue;
                 }
-				files[0] = new File(fileName);
 				allLocks.put(fileName, lock);
 				break;
             }
         }
-        for (generation = 1; generation < count; generation++) {
-            //cache all file names for rotation use
-            files[generation] = new File(parseFileName(generation, uniqueID));
-        }
         output = new MeasureOutputStream(new BufferedOutputStream(fileStream),
                 files[0].length());
-        if (append && output.getLength() < limit) {
-            setOutputStream(output);
-        } else {
-            setOutputStream(output);
-            findNextGeneration();
-        }
+        setOutputStream(output);
     }
 
     private void initProperties(String p, Boolean a, Integer l, Integer c) {
@@ -550,8 +552,6 @@ public class FileHandler extends StreamHandler {
     public void close() {
         //release locks
         super.close();
-        //        //FIXME: delete this
-        //        System.out.println("close:"+fileName);
         allLocks.remove(fileName);
         try {
             lock.release();

@@ -227,7 +227,7 @@ public class FileHandlerTest extends TestCase {
 			// System.out.println(new String(chars));
 			assertEquals(msg, new String(chars));
 			// assert has reached the end of the file
-			assertEquals(reader.read(), -1);
+			assertEquals(-1, reader.read());
 		} finally {
 			try {
                 if (reader != null) {

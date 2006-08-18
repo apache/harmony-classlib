@@ -138,9 +138,6 @@ public class LogManager {
     // Use privileged code to read the line.separator system property
     private static final String lineSeparator = getPrivilegedSystemProperty("line.separator"); //$NON-NLS-1$
 
-    // The file separator of the underlying OS
-    private static final String fileSeparator = File.separator;
-
     // The shared logging permission
     private static final LoggingPermission perm = new LoggingPermission(
             "control", null); //$NON-NLS-1$
@@ -186,15 +183,14 @@ public class LogManager {
         if (null == manager) {
             manager = new LogManager();
         }
-        // init root logger
-        manager.root = new Logger("", null); //$NON-NLS-1$
-        manager.loggers.put("", manager.root); //$NON-NLS-1$
+
         // read configuration
         try {
             manager.readConfiguration();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
         // if global logger has been initialized, set root as its parent
         if (null != Logger.global) {
             Logger.global.setParent(manager.root);
@@ -291,6 +287,7 @@ public class LogManager {
         }
 
         setLoggerLevel(logger, name, false);
+        logger.manager = this;
         return true;
     }
 
@@ -447,8 +444,8 @@ public class LogManager {
             if (null == configFile) {
                 // if cannot find configFile, use default logging.properties
                 configFile = new StringBuilder().append(
-                        System.getProperty("java.home")).append(fileSeparator) //$NON-NLS-1$
-                        .append("lib").append(fileSeparator).append( //$NON-NLS-1$
+                        System.getProperty("java.home")).append(File.separator) //$NON-NLS-1$
+                        .append("lib").append(File.separator).append( //$NON-NLS-1$
                                 "logging.properties").toString(); //$NON-NLS-1$
             }
             InputStream input = null;
@@ -468,13 +465,16 @@ public class LogManager {
     private synchronized void readConfigurationImpl(InputStream ins)
             throws IOException {
         reset();
+        if(manager.root == null){
+            // init root logger
+            manager.root = new Logger("", null); //$NON-NLS-1$
+            manager.loggers.put("", manager.root); //$NON-NLS-1$
+            root.manager = this;
+        }
         props.load(ins);
 
         // configs
         parseConfigProp();
-
-        // handlers
-        parseHandlerProp();
 
         // set levels for logger
         initLevelForLoggers();
@@ -498,25 +498,6 @@ public class LogManager {
                 continue;
             }
             setLoggerLevel(l, loggerName, true);
-        }
-    }
-
-    // parse "handlers" property and apply setting
-    private void parseHandlerProp() {
-        // Logger rootLogger = root.getLogger();
-        String handlers = props.getProperty("handlers"); //$NON-NLS-1$
-        if (null == root || null == handlers) {
-            return;
-        }
-        StringTokenizer st = new StringTokenizer(handlers, " "); //$NON-NLS-1$
-        while (st.hasMoreTokens()) {
-            String handlerName = st.nextToken();
-            Handler handler = (Handler) getInstanceByClass(handlerName);
-            root.addHandler(handler);
-            String level = props.getProperty(handlerName + ".level"); //$NON-NLS-1$
-            if (null != level) {
-                handler.setLevel(Level.parse(level));
-            }
         }
     }
 
@@ -571,16 +552,17 @@ public class LogManager {
         while (it.hasNext()) {
             Logger l = (Logger) it.next();
             l.setLevel(null);
-            Handler[] handlers = l.getHandlers();
-            for (Handler element : handlers) {
-                l.removeHandler(element);
-                // close all handlers, when unknown exceptions happen,
-                // ignore them and go on
-                try {
-                    element.close();
-                } catch (Exception e) {
-                    // Ignored.
+            if(l.handlers != null){
+                for (Handler element : l.handlers) {
+                    // close all handlers, when unknown exceptions happen,
+                    // ignore them and go on
+                    try {
+                        element.close();
+                    } catch (Exception e) {
+                        // Ignored.
+                    }
                 }
+                l.handlers = null;
             }
         }
         if (null != root) {
@@ -599,6 +581,9 @@ public class LogManager {
      *             not have the required permissions to perform this action
      */
     public void addPropertyChangeListener(PropertyChangeListener l) {
+        if(l == null){
+            throw new NullPointerException();
+        }
         checkAccess();
         listeners.addPropertyChangeListener(l);
     }
