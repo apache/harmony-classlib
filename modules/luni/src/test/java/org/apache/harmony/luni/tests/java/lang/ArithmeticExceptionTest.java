@@ -15,55 +15,25 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class ArithmeticExceptionTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
 
-	/**
-	 * @tests java.lang.ArithmeticException#ArithmeticException()
-	 */
-	public void test_Constructor() {
-		// Test for method java.lang.ArithmeticException()
-		try {
-			try {
-				int i = 100;
-				i /= 0;
-			} catch (ArithmeticException e) {
-				return;
-			}
-			fail("Failed to generate expected exception");
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-	}
+public class ArithmeticExceptionTest extends TestCase {
 
-	/**
-	 * @tests java.lang.ArithmeticException#ArithmeticException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.lang.ArithmeticException(java.lang.String)
-		try {
-			try {
-				int i = 100;
-				i /= 0;
-			} catch (ArithmeticException e) {
-				return;
-			}
-			fail("Failed to generate expected exception");
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-	}
+    /**
+     * @tests java.lang.ArithmeticException#ArithmeticException()
+     */
+    public void test_Constructor() {
+        ArithmeticException e = new ArithmeticException();
+        assertNull(e.getMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.ArithmeticException#ArithmeticException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        ArithmeticException e = new ArithmeticException("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

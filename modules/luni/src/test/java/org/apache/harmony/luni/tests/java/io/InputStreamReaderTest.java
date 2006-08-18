@@ -95,6 +95,7 @@ public class InputStreamReaderTest extends TestCase {
             count = bytes.length;
         }
 
+        @Override
         public int read() {
             if (count == 0) {
                 return -1;
@@ -103,6 +104,7 @@ public class InputStreamReaderTest extends TestCase {
             return bytes[bytes.length - count];
         }
 
+        @Override
         public int read(byte[] buffer, int offset, int length) {
             if (count == 0) {
                 return -1;
@@ -115,6 +117,7 @@ public class InputStreamReaderTest extends TestCase {
             return 1;
         }
 
+        @Override
         public int available() {
             return count;
         }

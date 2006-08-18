@@ -483,9 +483,7 @@ public class ByteTest extends TestCase {
      * @tests java.lang.Byte#doubleValue()
      */
     public void test_doubleValue2() {
-        // Test for method double java.lang.Byte.doubleValue()
-        assertTrue("Returned incorrect double value",
-                new Byte((byte) 127).doubleValue() == (double) (127));
+        assertEquals(127D, new Byte((byte) 127).doubleValue(), 0.0);
     }
 
     /**
@@ -504,9 +502,7 @@ public class ByteTest extends TestCase {
      * @tests java.lang.Byte#floatValue()
      */
     public void test_floatValue2() {
-        // Test for method float java.lang.Byte.floatValue()
-        assertTrue("Returned incorrect float value",
-                new Byte((byte) 127).byteValue() == (float) (127));
+        assertEquals(127F, new Byte((byte) 127).floatValue(), 0.0);
     }
 
     /**
@@ -537,43 +533,29 @@ public class ByteTest extends TestCase {
      * @tests java.lang.Byte#parseByte(java.lang.String)
      */
     public void test_parseByteLjava_lang_String2() {
-        // Test for method byte java.lang.Byte.parseByte(java.lang.String)
+        assertEquals((byte)127, Byte.parseByte("127"));
+        assertEquals((byte)-128, Byte.parseByte("-128"));
+        assertEquals((byte)0, Byte.parseByte("0"));
+        assertEquals((byte)0x80, Byte.parseByte("-128"));
+        assertEquals((byte)0x7F, Byte.parseByte("127"));
 
-        byte b = Byte.parseByte("127");
-        byte bn = Byte.parseByte("-128");
-        assertTrue("Invalid parse of byte", b == (byte) 127 && (bn == (byte) -128));
-        assertEquals("Returned incorrect value for 0", 0, Byte.parseByte("0"));
-        assertTrue("Returned incorrect value for most negative value",
-                Byte.parseByte("-128") == (byte) 0x80);
-        assertTrue("Returned incorrect value for most positive value",
-                Byte.parseByte("127") == 0x7f);
-
-        boolean exception = false;
         try {
             Byte.parseByte("-1000");
+            fail("No NumberFormatException");
         } catch (NumberFormatException e) {
-            // Correct
-            exception = true;
         }
-        assertTrue("Failed to throw exception", exception);
 
-        exception = false;
         try {
             Byte.parseByte("128");
+            fail("No NumberFormatException");
         } catch (NumberFormatException e) {
-            // Correct
-            exception = true;
         }
-        assertTrue("Failed to throw exception for MAX_VALUE + 1", exception);
 
-        exception = false;
         try {
             Byte.parseByte("-129");
+            fail("No NumberFormatException");
         } catch (NumberFormatException e) {
-            // Correct
-            exception = true;
         }
-        assertTrue("Failed to throw exception for MIN_VALUE - 1", exception);
     }
 
     /**
@@ -596,66 +578,48 @@ public class ByteTest extends TestCase {
         assertTrue("Returned incorrect value for most positive value decimal", Byte.parseByte(
                 "127", 10) == 0x7f);
 
-        boolean exception = false;
         try {
             Byte.parseByte("-1000", 10);
+            fail("Failed to throw exception");
         } catch (NumberFormatException e) {
-            // Correct
-            exception = true;
         }
-        assertTrue("Failed to throw exception", exception);
 
-        exception = false;
         try {
             Byte.parseByte("128", 10);
+            fail("Failed to throw exception for MAX_VALUE + 1");
         } catch (NumberFormatException e) {
-            // Correct
-            exception = true;
         }
-        assertTrue("Failed to throw exception for MAX_VALUE + 1", exception);
 
-        exception = false;
         try {
             Byte.parseByte("-129", 10);
+            fail("Failed to throw exception for MIN_VALUE - 1");
         } catch (NumberFormatException e) {
-            // Correct
-            exception = true;
         }
-        assertTrue("Failed to throw exception for MIN_VALUE - 1", exception);
 
-        exception = false;
         try {
             Byte.parseByte("80", 16);
+            fail("Failed to throw exception for hex MAX_VALUE + 1");
         } catch (NumberFormatException e) {
-            // Correct
-            exception = true;
         }
-        assertTrue("Failed to throw exception for hex MAX_VALUE + 1", exception);
-
-        exception = false;
+        
         try {
             Byte.parseByte("-81", 16);
+            fail("Failed to throw exception for hex MIN_VALUE + 1");
         } catch (NumberFormatException e) {
-            // Correct
-            exception = true;
         }
-        assertTrue("Failed to throw exception for hex MIN_VALUE + 1", exception);
     }
 
     /**
      * @tests java.lang.Byte#shortValue()
      */
     public void test_shortValue2() {
-        // Test for method short java.lang.Byte.shortValue()
-        assertTrue("Returned incorrect short value",
-                new Byte((byte) 127).shortValue() == (short) (127));
+        assertEquals((short)127, new Byte((byte)127).shortValue());
     }
 
     /**
      * @tests java.lang.Byte#toString()
      */
     public void test_toString2() {
-        // Test for method java.lang.String java.lang.Byte.toString()
         assertEquals("Returned incorrect String", "127", new Byte((byte) 127).toString());
         assertEquals("Returned incorrect String", "-127", new Byte((byte) -127).toString());
         assertEquals("Returned incorrect String", "-128", new Byte((byte) -128).toString());
@@ -665,7 +629,6 @@ public class ByteTest extends TestCase {
      * @tests java.lang.Byte#toString(byte)
      */
     public void test_toStringB2() {
-        // Test for method java.lang.String java.lang.Byte.toString(byte)
         assertEquals("Returned incorrect String", "127", Byte.toString((byte) 127));
         assertEquals("Returned incorrect String", "-127", Byte.toString((byte) -127));
         assertEquals("Returned incorrect String", "-128", Byte.toString((byte) -128));
@@ -675,8 +638,6 @@ public class ByteTest extends TestCase {
      * @tests java.lang.Byte#valueOf(java.lang.String)
      */
     public void test_valueOfLjava_lang_String2() {
-        // Test for method java.lang.Byte
-        // java.lang.Byte.valueOf(java.lang.String)
         assertEquals("Returned incorrect byte", 0, Byte.valueOf("0").byteValue());
         assertEquals("Returned incorrect byte", 127, Byte.valueOf("127").byteValue());
         assertEquals("Returned incorrect byte", -127, Byte.valueOf("-127").byteValue());
@@ -684,19 +645,15 @@ public class ByteTest extends TestCase {
 
         try {
             Byte.valueOf("128");
+            fail("Failed to throw exception when passes value > byte");
         } catch (NumberFormatException e) {
-            // Correct
-            return;
         }
-        fail("Failed to throw exception when passes value > byte");
     }
 
     /**
      * @tests java.lang.Byte#valueOf(java.lang.String, int)
      */
     public void test_valueOfLjava_lang_StringI2() {
-        // Test for method java.lang.Byte
-        // java.lang.Byte.valueOf(java.lang.String, int)
         assertEquals("Returned incorrect byte", 10, Byte.valueOf("A", 16).byteValue());
         assertEquals("Returned incorrect byte", 127, Byte.valueOf("127", 10).byteValue());
         assertEquals("Returned incorrect byte", -127, Byte.valueOf("-127", 10).byteValue());
@@ -707,10 +664,8 @@ public class ByteTest extends TestCase {
 
         try {
             Byte.valueOf("128", 10);
+            fail("Failed to throw exception when passes value > byte");
         } catch (NumberFormatException e) {
-            // Correct
-            return;
         }
-        fail("Failed to throw exception when passes value > byte");
     }
 }

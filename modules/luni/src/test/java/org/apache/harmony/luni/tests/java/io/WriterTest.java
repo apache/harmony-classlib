@@ -43,15 +43,18 @@ public class WriterTest extends TestCase {
 			myLock = lock;
 		}
 
-		public synchronized void close() throws IOException {
+		@Override
+        public synchronized void close() throws IOException {
 			// do nothing
 		}
 
-		public synchronized void flush() throws IOException {
+		@Override
+        public synchronized void flush() throws IOException {
 			// do nothing
 		}
 
-		public void write(char[] arg0, int arg1, int arg2) throws IOException {
+		@Override
+        public void write(char[] arg0, int arg1, int arg2) throws IOException {
 			assertTrue(Thread.holdsLock(myLock));
 		}
 	}

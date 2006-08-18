@@ -15,70 +15,36 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class ArrayIndexOutOfBoundsExceptionTest extends
-		junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class ArrayIndexOutOfBoundsExceptionTest extends TestCase {
 
 	/**
-	 * @tests java.lang.ArrayIndexOutOfBoundsException#ArrayIndexOutOfBoundsException()
-	 */
-	public void test_Constructor() {
-		// Test for method java.lang.ArrayIndexOutOfBoundsException()
-		int r = 0;
-		try {
-			byte[] b = new byte[1];
-			byte z = b[2];
-			if (z > 0)
-				; // use z so we don't get an unused variable warning
-		} catch (ArrayIndexOutOfBoundsException e) {
-			r = 1;
-		}
-		assertEquals("failed to generate ArrayIndexOutOfBoundsException", 1, r);
-	}
+     * @tests java.lang.ArrayIndexOutOfBoundsException#ArrayIndexOutOfBoundsException(int)
+     */
+    public void test_ConstructorI() {
+        ArrayIndexOutOfBoundsException e = new ArrayIndexOutOfBoundsException(-1);
+        assertNotNull(e.getMessage());
+        assertTrue("Unable to find index value in 'message' property.", e.getMessage().indexOf(
+                "-1", 0) >= 0);
 
-	/**
-	 * @tests java.lang.ArrayIndexOutOfBoundsException#ArrayIndexOutOfBoundsException(int)
-	 */
-	public void test_ConstructorI() {
-		try {
-			if (true)
-				throw new ArrayIndexOutOfBoundsException(-1);
-		} catch (ArrayIndexOutOfBoundsException e) {
-			assertTrue(
-					"toString of ArrayIndexOutOfBoundsException did not reveal offending position",
-					e.toString().indexOf("-1", 0) >= 0);
-		}
-	}
+    }
 
-	/**
-	 * @tests java.lang.ArrayIndexOutOfBoundsException#ArrayIndexOutOfBoundsException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method
-		// java.lang.ArrayIndexOutOfBoundsException(java.lang.String)
-		int r = 0;
-		try {
-			byte[] b = new byte[1];
-			byte z = b[2];
-			if (z > 0)
-				; // use z so we don't get an unused variable warning
-		} catch (ArrayIndexOutOfBoundsException e) {
-			r = 1;
-		}
-		assertEquals("failed to generate ArrayIndexOutOfBoundsException", 1, r);
+    /**
+     * @tests java.lang.ArrayIndexOutOfBoundsException#ArrayIndexOutOfBoundsException()
+     */
+    public void test_Constructor() {
+        ArrayIndexOutOfBoundsException e = new ArrayIndexOutOfBoundsException();
+        assertNull(e.getMessage());
+        assertNull(e.getCause());
+    }
 
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.ArrayIndexOutOfBoundsException#ArrayIndexOutOfBoundsException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        ArrayIndexOutOfBoundsException e = new ArrayIndexOutOfBoundsException("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

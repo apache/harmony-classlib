@@ -15,67 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class ArrayStoreExceptionTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
 
-	/**
-	 * @tests java.lang.ArrayStoreException#ArrayStoreException()
-	 */
-	public void test_Constructor() {
-		// Test for method java.lang.ArrayStoreException()
+public class ArrayStoreExceptionTest extends TestCase {
 
-		class ASClass extends Object {
-			void store(Object array[], Object elm) {
-				array[0] = elm;
-			}
-		}
+    /**
+     * @tests java.lang.ArrayStoreException#ArrayStoreException()
+     */
+    public void test_Constructor() {
+        ArrayStoreException e = new ArrayStoreException();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-		try {
-			Exception x[] = new Exception[9];
-			new ASClass().store(x, new Object());
-		} catch (ArrayStoreException e) {
-			return;
-		} catch (Exception e) {
-			fail("Exception during ArrayStoreException test : "
-					+ e.getMessage());
-		}
-		fail("Failed to generate expected exception");
-	}
-
-	/**
-	 * @tests java.lang.ArrayStoreException#ArrayStoreException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.lang.ArrayStoreException(java.lang.String)
-
-		class ASClass extends Object {
-			void store(Object array[], Object elm) {
-				array[0] = elm;
-			}
-		}
-
-		try {
-			Exception x[] = new Exception[9];
-			new ASClass().store(x, new Object());
-		} catch (ArrayStoreException e) {
-			return;
-		} catch (Exception e) {
-			fail("Exception during ArrayStoreException test : "
-					+ e.getMessage());
-		}
-		fail("Failed to generate expected exception");
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.ArrayStoreException#ArrayStoreException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        ArrayStoreException e = new ArrayStoreException("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

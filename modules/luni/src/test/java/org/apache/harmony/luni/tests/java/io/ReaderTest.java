@@ -82,23 +82,29 @@ public class ReaderTest extends TestCase {
             length = contents.length;
         }
 
+        @Override
         public void close() throws IOException {
 
             contents = null;
         }
 
+        @Override
         public int read(char[] buf, int offset, int count) throws IOException {
 
-            if (null == contents)
+            if (null == contents) {
                 return -1;
-            if (length <= current_offset)
+            }
+            if (length <= current_offset) {
                 return -1;
-            if (buf.length < offset + count)
+            }
+            if (buf.length < offset + count) {
                 throw new IndexOutOfBoundsException();
+            }
 
             count = Math.min(count, length - current_offset);
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < count; i++) {
                 buf[offset + i] = contents[current_offset + i];
+            }
             current_offset += count;
             return count;
         }
