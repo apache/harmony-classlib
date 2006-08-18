@@ -519,18 +519,9 @@ public abstract class SerializationTest extends TestCase {
 
         InputStream in = ClassLoader.getSystemClassLoader()
                 .getResourceAsStream(path.toString());
-        // Assert.assertNotNull("Failed to load resource file: " + path, in);
-        if (in == null) {
-            // FIXME stub for loading resource files in old way 
-            String filename = test.getClass().getName().replace('.',
-                    File.separatorChar)
-                    + toAppend.replaceAll("\\.golden", "").replaceAll("\\.ser",
-                            ".dat");
-            if (outputPath != null && outputPath.length() != 0) {
-                filename = outputPath + File.separator + filename;
-            }
-            in = new FileInputStream(filename);
-        }
+
+        Assert.assertNotNull("Failed to load serialization resource file: "
+                + path, in);
 
         return (Serializable)getObjectFromStream(in);
     }
