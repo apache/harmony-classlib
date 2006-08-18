@@ -187,9 +187,10 @@ public class SocketTest extends SocketTestCase {
 		} else {
 			int testPort = Support_PortManager.getNextPort();
 			Socket s1 = null, s2 = null;
+            int serverPort = ss.getLocalPort();
 			try {
-				s1 = new Socket(Support_Configuration.ProxyServerTestHost, 80,
-						InetAddress.getLocalHost(), testPort);
+				s1 = new Socket("127.0.0.1", serverPort, InetAddress
+                        .getLocalHost(), testPort);
 			} catch (IOException e) {
 				e.printStackTrace();
 
@@ -213,8 +214,8 @@ public class SocketTest extends SocketTestCase {
 			}
 			boolean exception = false;
 			try {
-				s2 = new Socket(Support_Configuration.ProxyServerTestHost, 80,
-						InetAddress.getLocalHost(), testPort);
+				s2 = new Socket("127.0.0.1", serverPort, InetAddress
+                        .getLocalHost(), testPort);
 			} catch (IOException e) {
 				exception = true;
 			}
