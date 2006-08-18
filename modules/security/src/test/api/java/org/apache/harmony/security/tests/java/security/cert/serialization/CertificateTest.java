@@ -23,8 +23,6 @@ package org.apache.harmony.security.tests.java.security.cert.serialization;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -32,19 +30,16 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.OutputStream;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+
+import junit.framework.TestCase;
 
 import org.apache.harmony.security.tests.support.cert.MyCertificate;
 import org.apache.harmony.security.tests.support.cert.TestUtils;
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
-import junit.framework.TestCase;
-
-
 /**
  * Tests for <code>Certificate</code> serialization
- * 
  */
 public class CertificateTest extends TestCase {
 
@@ -82,16 +77,8 @@ public class CertificateTest extends TestCase {
      * 
      * Assertion: ObjectStreamException if a <code>CertPath</code> could not
      * be constructed
-     * 
-     * @throws CertificateException
-     * @throws IOException
-     * @throws ClassNotFoundException
      */
-    public final void testSerialization03()
-        throws CertificateException,
-               IOException,
-               ClassNotFoundException {
-        boolean passed = false;
+    public final void testCertificateRep_readResolve() throws Exception {
         // Create object to be serialized
         Certificate c1 = new MyCertificate("DUMMY", new byte[] {(byte)0, (byte)1});
         // This testcase uses ByteArray streams
@@ -101,29 +88,17 @@ public class CertificateTest extends TestCase {
         // try to deserialize it
         try {
             deserialize(new ByteArrayInputStream(bos.toByteArray()));
-        } catch (Exception e) {
-        	System.out.println(getName() + ": " + e);
-            if (e instanceof ObjectStreamException) {
-                passed = true;
-            }
+            fail("No expected ObjectStreamException");
+        } catch (ObjectStreamException e) {
         }
-        // check that exception has been thrown
-        assertTrue(passed);
     }
 
     /**
      * Test for <code>writeReplace()</code> method<br>
      * ByteArray streams used.
-     * 
-     * @throws CertificateException
-     * @throws IOException
-     * @throws ClassNotFoundException
      */
-    public final void testSerialization04()
-        throws CertificateException,
-               IOException,
-               ClassNotFoundException {
-        boolean passed = false;
+    public final void testWriteReplace() throws Exception
+               {
         // Create object to be serialized
         Certificate c1 = new MyCertificate("DUMMY", null);
         // This testcase uses ByteArray streams
@@ -131,12 +106,10 @@ public class CertificateTest extends TestCase {
         // Try to serialize cert
         try {
             serialize(c1, bos);
-        } catch (Exception e) {
-        	System.out.println(getName() + ": " + e);
-            // OSE and NPE are possible
-            passed = true;
+            fail("No exception");
+        } catch (ObjectStreamException e) {
+        } catch (NullPointerException e) {
         }
-        assertTrue(passed);
     }
 
     //
@@ -173,10 +146,8 @@ public class CertificateTest extends TestCase {
                    ClassNotFoundException {
         // deserialize our object
         ObjectInputStream ois = new ObjectInputStream(is);
-        Certificate cert = null;
         try {
-            cert = (Certificate)ois.readObject();
-            return cert;
+            return (Certificate)ois.readObject();
         } finally {
             ois.close();
         }
