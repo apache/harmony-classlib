@@ -128,6 +128,7 @@
             <src path="modules/swing/src/main/java/common" />
             <src path="modules/text/src/main/java" />
             <src path="modules/x-net/src/main/java/" />
+            <src path="modules/lang-management/src/main/java/" />
 
             <classpath location="${build.output}" />
             <classpath>
