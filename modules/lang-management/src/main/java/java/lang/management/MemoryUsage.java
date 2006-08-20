@@ -37,11 +37,16 @@ public class MemoryUsage {
      *         MemoryUsage data.
      */
     public static MemoryUsage from(CompositeData cd) {
-        long init = ((Long) cd.get("init")).longValue();
-        long used = ((Long) cd.get("used")).longValue();
-        long committed = ((Long) cd.get("committed")).longValue();
-        long max = ((Long) cd.get("max")).longValue();
-        return new MemoryUsage(init, used, committed, max);
+        try {
+            long init = ((Long) cd.get("init")).longValue();
+            long used = ((Long) cd.get("used")).longValue();
+            long committed = ((Long) cd.get("committed")).longValue();
+            long max = ((Long) cd.get("max")).longValue();
+            return new MemoryUsage(init, used, committed, max);
+        } catch (ClassCastException e) {
+            // if any cast fails, then a type was incorrect
+            throw new IllegalArgumentException(e);
+        }
     }
 
     private final long init;
