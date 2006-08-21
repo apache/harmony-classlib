@@ -930,7 +930,7 @@ public class Rmid extends RemoteServer implements ActivationSystem,
                 String bootClassPathVal = (String)
                         AccessController.doPrivileged(new GetStringPropAction(
                             (javaVmNameVal.equals("J9")
-                                            ? "com.ibm.oti.system.class.path"
+                                           ? "org.apache.harmony.boot.class.path"
                                             : "sun.boot.class.path")));
 
                 String executable = new File(new File(

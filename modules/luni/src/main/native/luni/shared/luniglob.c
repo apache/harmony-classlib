@@ -465,7 +465,7 @@ bail:
 /**
  * Initializes the bootstrap classpath used by the VM with entries suitable for this
  * class library configuration.  Stores the result into a system property named
- * 'com.ibm.oti.system.class.path'.
+ * 'org.apache.harmony.boot.class.path'.
  *
  * Reads the bootclasspath.properties file a line at a time 
  *

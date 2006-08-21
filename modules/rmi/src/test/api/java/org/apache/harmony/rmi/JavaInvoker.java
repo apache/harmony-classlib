@@ -85,7 +85,7 @@ public final class JavaInvoker {
         String vmName = System.getProperty("java.vm.name");
 
         bootClassPath = System.getProperty(vmName.equals("J9")
-                ? "com.ibm.oti.system.class.path" : "sun.boot.class.path");
+                ? "org.apache.harmony.boot.class.path" : "sun.boot.class.path");
 
         executable = new File(new File(javaHome, "bin"), "java").getPath();
     }

@@ -91,7 +91,7 @@ public class SerializationStressTest5 extends SerializationStressTest {
 	private File[] makeClassPathArray() {
 		String classPath;
 		if (System.getProperty("java.vendor").startsWith("IBM"))
-			classPath = System.getProperty("com.ibm.oti.system.class.path");
+			classPath = System.getProperty("org.apache.harmony.boot.class.path");
 		else
 			classPath = System.getProperty("sun.boot.class.path");
 		int instanceOfSep = -1;
