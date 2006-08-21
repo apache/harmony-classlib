@@ -16,14 +16,24 @@
 package tests.api.java.util;
 
 import java.util.EnumSet;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
 public class EnumSetTest extends TestCase {
+    
+    static enum EnumWithInnerClass {
+        a, b, c, d, e, f {
+        },
+    }
 
     enum EnumWithAllInnerClass {
         a {},
         b {},
+    }
+    
+    static enum EnumFoo {
+        a, b,
     }
 
     /**
@@ -57,5 +67,87 @@ public class EnumSetTest extends TestCase {
         EnumSet<EnumWithAllInnerClass> setWithInnerClass = EnumSet
                 .noneOf(EnumWithAllInnerClass.class);
         assertNotNull(setWithInnerClass);
+    }
+    
+    /**
+     * @tests java.util.EnumSet#add(E)
+     */
+    @SuppressWarnings("unchecked")
+    public void test_add_E() {
+        Set<EnumFoo> set = EnumSet.noneOf(EnumFoo.class);
+        set.add(EnumFoo.a);
+        set.add(EnumFoo.b);
+        
+        try {
+            set.add(null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        set.clear();
+        try {
+            set.add(null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        boolean result = set.add(EnumFoo.a);
+        assertEquals("Size should be 1:", 1, set.size()); //$NON-NLS-1$
+        assertTrue("Return value should be true", result); //$NON-NLS-1$
+
+        result = set.add(EnumFoo.a);
+        assertEquals("Size should be 1:", 1, set.size()); //$NON-NLS-1$
+        assertFalse("Return value should be false", result); //$NON-NLS-1$
+
+        set.add(EnumFoo.b);
+        assertEquals("Size should be 2:", 2, set.size()); //$NON-NLS-1$
+        
+        Set rawSet = set;
+        try {
+            rawSet.add(EnumWithAllInnerClass.a);
+            fail("Should throw ClassCastException"); //$NON-NLS-1$
+        } catch(ClassCastException e) {
+            // expected
+        }
+        
+        try {
+            rawSet.add(EnumWithInnerClass.a);
+            fail("Should throw ClassCastException"); //$NON-NLS-1$
+        } catch(ClassCastException e) {
+            // expected
+        }
+        
+        try {
+            rawSet.add(new Object());
+            fail("Should throw ClassCastException"); //$NON-NLS-1$
+        } catch(ClassCastException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests java.util.EnumSet#clear()
+     */
+    public void test_clear() {
+        Set<EnumFoo> set = EnumSet.noneOf(EnumFoo.class);
+        set.add(EnumFoo.a);
+        set.add(EnumFoo.b);
+        assertEquals("Size should be 2", 2, set.size()); //$NON-NLS-1$
+
+        set.clear();
+
+        assertEquals("Size should be 0", 0, set.size()); //$NON-NLS-1$
+    }
+    
+    /**
+     * @tests java.util.EnumSet#size()
+     */
+    public void test_size() {
+        Set<EnumFoo> set = EnumSet.noneOf(EnumFoo.class);
+        set.add(EnumFoo.a);
+        set.add(EnumFoo.b);
+        assertEquals("Size should be 2", 2, set.size()); //$NON-NLS-1$
     }
 }

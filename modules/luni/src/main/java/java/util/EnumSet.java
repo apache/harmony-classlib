@@ -250,4 +250,8 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
     public EnumSet<E> clone() {
         throw new NotYetImplementedException();
     }
+    
+    boolean isValidType(Class cls) {
+        return cls == elementClass || cls.getSuperclass() == elementClass;
+    }
 }

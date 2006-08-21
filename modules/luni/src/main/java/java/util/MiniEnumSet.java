@@ -22,7 +22,12 @@ import org.apache.harmony.luni.util.NotYetImplementedException;
  * with less than or equal to 64 elements.
  * 
  */
+@SuppressWarnings("serial")
 final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
+    
+    private int size = 0;
+    
+    private long bits = 0;
     
     MiniEnumSet(Class<E> elementType) {
         super(elementType);
@@ -35,6 +40,27 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
 
     @Override
     public int size() {
-        throw new NotYetImplementedException();
+        return size;
+    }
+    
+    @Override
+    public void clear() {
+        bits = 0;
+        size = 0;
+    }
+    
+    @Override
+    public boolean add(E element) {
+        if (!isValidType(element.getDeclaringClass())) {
+            throw new ClassCastException();
+        }
+        int mask = 1 << element.ordinal();
+        if ((bits & mask) == mask) {
+            return false;
+        }
+        bits |= mask;
+
+        size = Long.bitCount(bits);
+        return true;
     }
 }
