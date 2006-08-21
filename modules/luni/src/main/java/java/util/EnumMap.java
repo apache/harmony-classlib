@@ -150,8 +150,14 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      * @return the value to which this map maps the given key, or null if this
      *         map has no mapping for the given key.
      */
+    @Override
+    @SuppressWarnings("unchecked")
     public V get(Object key) {
-        throw new NotYetImplementedException();
+        if (!isValidKeyType(key)) {
+            return null;
+        }
+        int keyOrdinal = ((Enum) key).ordinal();
+        return (V) values[keyOrdinal];
     }
 
     /**
@@ -182,7 +188,13 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     @Override
     @SuppressWarnings("unchecked")
     public V put(K key, V value) {
-        validateKeyType(key);
+        if (null == key) {
+            throw new NullPointerException();
+        }
+
+        if (!isValidKeyType(key)) {
+            throw new ClassCastException();
+        }
         int keyOrdinal = key.ordinal();
         if (!hasMapping[keyOrdinal]) {
             hasMapping[keyOrdinal] = true;
@@ -204,8 +216,14 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      *             if the given map is null, or if one or more keys in the given
      *             map are null
      */
+    @Override
+    @SuppressWarnings("unchecked")
     public void putAll(Map<? extends K, ? extends V> map) {
-        throw new NotYetImplementedException();
+        Iterator iter = map.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            put((K) entry.getKey(), (V) entry.getValue());
+        }
     }
 
     /**
@@ -242,13 +260,11 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
         throw new NotYetImplementedException();
     }
 
-    private void validateKeyType(Object key) {
-        if(key == null){
-            throw new NullPointerException();
+    private boolean isValidKeyType(Object key) {
+        if (null != key && keyType.isInstance(key)) {
+            return true;
         }
-        if(!keyType.isInstance(key)){
-            throw new ClassCastException();
-        }
+        return false;
     }
 
     @SuppressWarnings("unchecked")

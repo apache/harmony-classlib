@@ -16,6 +16,9 @@
 package tests.api.java.util;
 
 import java.util.EnumMap;
+import java.util.HashMap;
+
+import org.apache.harmony.luni.util.NotYetImplementedException;
 
 import junit.framework.TestCase;
 
@@ -31,11 +34,12 @@ public class EnumMapTest extends TestCase {
     enum Empty {
         //Empty
     }
+    
 
     /**
      * @tests java.util.EnumMap#EnumMap(Class)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "boxing" })
     public void test_ConstructorLjava_lang_Class() {
         try {
             new EnumMap((Class) null);
@@ -43,6 +47,7 @@ public class EnumMapTest extends TestCase {
         } catch (NullPointerException e) {
             // Expected
         }
+        
         
         try {
             new EnumMap(Size.Big.getClass());
@@ -58,14 +63,87 @@ public class EnumMapTest extends TestCase {
             // Expected
         }
 
-        assertNotNull(new EnumMap<Color, Double>(Color.class));
-        
-        assertNotNull(new EnumMap<Empty, Double>(Empty.class));
+        EnumMap enumColorMap = new EnumMap<Color, Double>(Color.class);
+        assertNull("Return non-null for non mapped key", enumColorMap.put( //$NON-NLS-1$
+                Color.Green, 2));
+        assertEquals("Get returned incorrect value for given key", 2, //$NON-NLS-1$
+                enumColorMap.get(Color.Green));
 
-        assertNotNull(new EnumMap(Size.class));
+        EnumMap enumEmptyMap = new EnumMap<Empty, Double>(Empty.class);
+        try {
+            enumEmptyMap.put(Color.Red, 2);
+            fail("Expected ClassCastException"); //$NON-NLS-1$
+        } catch (ClassCastException e) {
+            // Expected
+        }
+
+        EnumMap enumSizeMap = new EnumMap(Size.class);
+        assertNull("Return non-null for non mapped key", enumSizeMap.put( //$NON-NLS-1$
+                Size.Big, 2));
+        assertEquals("Get returned incorrect value for given key", 2, //$NON-NLS-1$
+                enumSizeMap.get(Size.Big));
+        try {
+            enumSizeMap.put(Color.Red, 2);
+            fail("Expected ClassCastException"); //$NON-NLS-1$
+        } catch (ClassCastException e) {
+            // Expected
+        }
         
-        assertNotNull(new EnumMap(Size.Middle.getClass()));
+        enumSizeMap = new EnumMap(Size.Middle.getClass());
+        assertNull("Return non-null for non mapped key", enumSizeMap.put( //$NON-NLS-1$
+                Size.Small, 1));
+        assertEquals("Get returned incorrect value for given key", 1, //$NON-NLS-1$
+                enumSizeMap.get(Size.Small));
+        try {
+            enumSizeMap.put(Color.Red, 2);
+            fail("Expected ClassCastException"); //$NON-NLS-1$
+        } catch (ClassCastException e) {
+            // Expected
+        }
+    }
+    
+    /**
+     * @tests java.util.EnumMap#get(Object)
+     */
+    @SuppressWarnings({ "unchecked", "boxing" })
+    public void test_getLjava_lang_Object() {
+        EnumMap enumSizeMap = new EnumMap(Size.class);
+        assertNull("Get returned non-null for non mapped key", enumSizeMap //$NON-NLS-1$
+                .get(Size.Big));
+        enumSizeMap.put(Size.Big, 1);
+        assertEquals("Get returned incorrect value for given key", 1, //$NON-NLS-1$
+                enumSizeMap.get(Size.Big));
         
+        assertNull("Get returned non-null for non mapped key", enumSizeMap //$NON-NLS-1$
+                .get(Size.Small));
+        assertNull("Get returned non-null for non existent key", enumSizeMap //$NON-NLS-1$
+                .get(Color.Red));
+        assertNull("Get returned non-null for non existent key", enumSizeMap //$NON-NLS-1$
+                .get(new Integer(1)));
+        assertNull("Get returned non-null for non existent key", enumSizeMap //$NON-NLS-1$
+                .get(null));
+
+        EnumMap enumColorMap = new EnumMap<Color, Double>(Color.class);
+        assertNull("Get returned non-null for non mapped key", enumColorMap //$NON-NLS-1$
+                .get(Color.Green));
+        enumColorMap.put(Color.Green, 2);
+        assertEquals("Get returned incorrect value for given key", 2, //$NON-NLS-1$
+                enumColorMap.get(Color.Green));
+        assertNull("Get returned non-null for non mapped key", enumColorMap //$NON-NLS-1$
+                .get(Color.Blue));
+        
+        enumColorMap.put(Color.Green, new Double(4));
+        assertEquals("Get returned incorrect value for given key", //$NON-NLS-1$
+                new Double(4), enumColorMap.get(Color.Green));
+        enumColorMap.put(Color.Green, new Integer("3"));//$NON-NLS-1$
+        assertEquals("Get returned incorrect value for given key", new Integer( //$NON-NLS-1$
+                "3"), enumColorMap.get(Color.Green));//$NON-NLS-1$
+        enumColorMap.put(Color.Green, null);
+        assertNull("Can not handle null value", enumColorMap.get(Color.Green)); //$NON-NLS-1$
+        Float f = new Float("3.4");//$NON-NLS-1$
+        enumColorMap.put(Color.Green, f);
+        assertSame("Get returned incorrect value for given key", f, //$NON-NLS-1$
+                enumColorMap.get(Color.Green));
     }
     
     /**
@@ -111,6 +189,78 @@ public class EnumMapTest extends TestCase {
                 Color.Blue, 2));
         assertEquals("Return wrong value", 2, enumColorMap.put(Color.Blue, //$NON-NLS-1$
                 new Double(4)));
+    }
+    
+    /**
+     * @tests java.util.EnumMap#putAll(Map)
+     */
+    @SuppressWarnings({ "unchecked", "boxing" })
+    public void test_putAllLjava_util_Map() {
+        EnumMap enumColorMap = new EnumMap<Color, Double>(Color.class);
+        enumColorMap.put(Color.Green, 2);
+
+        // TODO: The EnumMap.entrySet() will be implemented later.
+        try {
+            EnumMap enumSizeMap = new EnumMap(Size.class);
+            enumColorMap.putAll(enumSizeMap);
+
+            enumSizeMap.put(Size.Big, 1);
+            try {
+                enumColorMap.putAll(enumSizeMap);
+                fail("Expected ClassCastException"); //$NON-NLS-1$
+            } catch (ClassCastException e) {
+                // Expected
+            }
+
+            EnumMap enumColorMap1 = new EnumMap<Color, Double>(Color.class);
+            enumColorMap1.put(Color.Blue, 3);
+            enumColorMap.putAll(enumColorMap1);
+            assertEquals("Get returned incorrect value for given key", 3, //$NON-NLS-1$
+                    enumColorMap.get(Color.Blue));
+            assertEquals("Wrong Size", 2, enumColorMap.size()); //$NON-NLS-1$
+
+            enumColorMap = new EnumMap<Color, Double>(Color.class);
+        } catch (NotYetImplementedException e) {
+            // Expected
+        }
+        
+        HashMap hashColorMap = null;
+        try {
+            enumColorMap.putAll(hashColorMap);
+            fail("Expected NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // Expected
+        }
+
+        hashColorMap = new HashMap();
+        enumColorMap.putAll(hashColorMap);
+
+        hashColorMap.put(Color.Green, 2);
+        enumColorMap.putAll(hashColorMap);
+        assertEquals("Get returned incorrect value for given key", 2, //$NON-NLS-1$
+                enumColorMap.get(Color.Green));
+        assertNull("Get returned non-null for non mapped key", enumColorMap //$NON-NLS-1$
+                .get(Color.Red));
+        hashColorMap.put(Color.Red, new Integer(1));
+        enumColorMap.putAll(hashColorMap);
+        assertEquals("Get returned incorrect value for given key", new Integer( //$NON-NLS-1$
+                2), enumColorMap.get(Color.Green));
+        hashColorMap.put(Size.Big, 3);
+        try {
+            enumColorMap.putAll(hashColorMap);
+            fail("Expected ClassCastException"); //$NON-NLS-1$
+        } catch (ClassCastException e) {
+            // Expected
+        }
+
+        hashColorMap = new HashMap();
+        hashColorMap.put(new Integer(1), 1);
+        try {
+            enumColorMap.putAll(hashColorMap);
+            fail("Expected ClassCastException"); //$NON-NLS-1$
+        } catch (ClassCastException e) {
+            // Expected
+        }
     }
     
     /**
