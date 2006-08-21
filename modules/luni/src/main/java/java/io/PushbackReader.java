@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,6 +61,8 @@ public class PushbackReader extends FilterReader {
      * @param size
      *            the size of the pushback buffer (<code>size>=0</code>) in
      *            characters.
+     * @throws IllegalArgumentException
+     *             if size <= 0
      */
     public PushbackReader(Reader in, int size) {
         super(in);
@@ -141,7 +143,7 @@ public class PushbackReader extends FilterReader {
                  */
                 return in.read();
             }
-            throw new IOException();
+            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
         }
     }
 
@@ -166,42 +168,41 @@ public class PushbackReader extends FilterReader {
      */
     @Override
     public int read(char[] buffer, int offset, int count) throws IOException {
-        // avoid int overflow
-        if (0 <= offset && offset <= buffer.length && 0 <= count
-                && count <= buffer.length - offset) {
-            synchronized (lock) {
-                if (buf != null) {
-                    int copiedChars = 0, copyLength = 0, newOffset = offset;
-                    /* Are there pushback chars available? */
-                    if (pos < buf.length) {
-                        copyLength = (buf.length - pos >= count) ? count
-                                : buf.length - pos;
-                        System.arraycopy(buf, pos, buffer, newOffset,
-                                copyLength);
-                        newOffset += copyLength;
-                        copiedChars += copyLength;
-                        /* Use up the chars in the local buffer */
-                        pos += copyLength;
-                    }
-                    /* Have we copied enough? */
-                    if (copyLength == count) {
-                        return count;
-                    }
-                    int inCopied = in.read(buffer, newOffset, count
-                            - copiedChars);
-                    if (inCopied > 0) {
-                        return inCopied + copiedChars;
-                    }
-                    if (copiedChars == 0) {
-                        return inCopied;
-                    }
-                    return copiedChars;
-                }
-                throw new IOException();
-            }
-        }
-        throw new ArrayIndexOutOfBoundsException();
-    }
+		synchronized (lock) {
+			if (null == buf) {
+				throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+			}
+			// avoid int overflow
+			if (offset < 0 || count < 0 || offset > buffer.length - count) {
+				throw new IndexOutOfBoundsException();
+			}
+			int copiedChars = 0;
+			int copyLength = 0;
+			int newOffset = offset;
+			/* Are there pushback chars available? */
+			if (pos < buf.length) {
+				copyLength = (buf.length - pos >= count) ? count : buf.length
+						- pos;
+				System.arraycopy(buf, pos, buffer, newOffset, copyLength);
+				newOffset += copyLength;
+				copiedChars += copyLength;
+				/* Use up the chars in the local buffer */
+				pos += copyLength;
+			}
+			/* Have we copied enough? */
+			if (copyLength == count) {
+				return count;
+			}
+			int inCopied = in.read(buffer, newOffset, count - copiedChars);
+			if (inCopied > 0) {
+				return inCopied + copiedChars;
+			}
+			if (copiedChars == 0) {
+				return inCopied;
+			}
+			return copiedChars;
+		}
+	}
 
     /**
      * Answers a <code>boolean</code> indicating whether or not this
@@ -276,22 +277,26 @@ public class PushbackReader extends FilterReader {
      *             If the pushback buffer becomes, or is, full.
      */
     public void unread(char[] buffer, int offset, int count) throws IOException {
-        if (count > pos) {
-            // Pushback buffer full
-            throw new IOException(Msg.getString("K007e")); //$NON-NLS-1$
-        }
-        // avoid int overflow
-        if (0 <= offset && offset <= buffer.length && 0 <= count
-                && count <= buffer.length - offset) {
-            synchronized (lock) {
-                for (int i = offset + count - 1; i >= offset; i--) {
-                    unread(buffer[i]);
-                }
-            }
-        } else {
-            throw new ArrayIndexOutOfBoundsException();
-        }
-    }
+		synchronized (lock) {
+			if (buf == null) {
+				throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+			}
+			if (count > pos) {
+				// Pushback buffer full
+				throw new IOException(Msg.getString("K007e")); //$NON-NLS-1$
+			}
+			if (buffer == null) {
+				throw new NullPointerException();
+			}
+			// avoid int overflow
+			if (offset < 0 || count < 0 || offset > buffer.length - count) {
+				throw new ArrayIndexOutOfBoundsException();
+			}
+			for (int i = offset + count - 1; i >= offset; i--) {
+				unread(buffer[i]);
+			}
+		}
+	}
 
     /**
      * Push back one <code>char</code>. Takes the char <code>oneChar</code>
@@ -313,7 +318,7 @@ public class PushbackReader extends FilterReader {
                     throw new IOException(Msg.getString("K007e")); //$NON-NLS-1$
                 }
             } else {
-                throw new IOException();
+            	throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
             }
         }
     }
@@ -358,7 +363,7 @@ public class PushbackReader extends FilterReader {
                 }
                 return inSkipped + availableFromBuffer;
             }
-            throw new IOException();
+            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
         }
     }
 }

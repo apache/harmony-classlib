@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -119,6 +119,71 @@ public class PushbackReaderTest extends junit.framework.TestCase {
 					.substring(0, 5)));
 		} catch (IOException e) {
 			fail("IOException during read test : " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * @tests java.io.PushbackReader#read(char[], int, int)
+	 */
+	public void test_read_$CII_Exception() throws IOException {
+		pbr = new PushbackReader(new StringReader(pbString), 10);
+		
+		char[] nullCharArray = null;
+		char[] charArray = new char[10];
+		
+		try {
+			pbr.read(nullCharArray, -1, -1);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			// expected
+		}
+		
+		try {
+			pbr.read(nullCharArray, 1, 0);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+		
+		try {
+			pbr.read(charArray, -1, -1);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			// expected
+		}
+
+		pbr.read(charArray, 0, 0);
+        pbr.read(charArray, 0, charArray.length);
+		pbr.read(charArray, charArray.length, 0);
+		
+		try {
+			pbr.read(charArray, charArray.length + 1, 0);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			//expected
+		}
+		
+		try {
+			pbr.read(charArray, charArray.length + 1, 1);
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			//expected
+		}
+
+		pbr.close();
+
+		try {
+			pbr.read(nullCharArray, -1, -1);
+			fail("should throw IOException");
+		} catch (IOException e) {
+			// expected
+		}
+
+		try {
+			pbr.read(charArray, -1, -1);
+			fail("should throw IOException");
+		} catch (IOException e) {
+			// expected
 		}
 	}
 
@@ -250,6 +315,52 @@ public class PushbackReaderTest extends junit.framework.TestCase {
 		}
 	}
 
+	/**
+	 * @tests java.io.PushbackReader#unread(char[], int, int)
+	 */
+	public void test_unread_$CII_NullPointerException() throws IOException {
+		//a pushback reader with one character buffer
+		pbr = new PushbackReader(new StringReader(pbString));
+		
+		try {
+			pbr.unread(null, 0, 1);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
+	}
+	
+	/**
+	 * @tests java.io.PushbackReader#unread(char[], int, int)
+	 */
+	public void test_unread_$CII_Exception_InsufficientBuffer() throws IOException {
+		//a pushback reader with one character buffer
+		pbr = new PushbackReader(new StringReader(pbString));
+		
+		//if count > buffer's size , should throw IOException
+		try {
+			pbr.unread(new char[pbString.length()], 0, 2);
+			fail("should throw IOException");
+		} catch (IOException e) {
+			// expected
+		}
+	}
+	
+	/**
+	 * @tests java.io.PushbackReader#unread(char[], int, int)
+	 */
+	public void test_unread_$CII_ArrayIndexOutOfBoundsException() throws IOException {
+		//a pushback reader with one character buffer
+		pbr = new PushbackReader(new StringReader(pbString));
+		
+		try {
+			pbr.unread(new char[pbString.length()], -1 , -1);
+			fail("should throw ArrayIndexOutOfBoundsException");
+		} catch (ArrayIndexOutOfBoundsException e) {
+			// expected
+		}
+	}
+	
 	/**
 	 * @tests java.io.PushbackReader#unread(int)
 	 */
