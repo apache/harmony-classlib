@@ -1,0 +1,305 @@
+<!--
+    Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+  
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-us">
+<title>Keytool description</title>
+</head>
+
+<body>
+
+<table border="0"  width="100%">
+	<tr>
+		<td valign="top">
+				
+<font face="Courier New"><b><font size="4">Short description.</font></b></font><p>
+<font face="Courier New">Keytool is a tool for managing key pairs, secret keys and certificates. 
+
+</font>
+		</p>
+		<p><font face="Courier New"><b><font size="4">Keytool usage</font></b>
+
+		</font></p>
+		<p><font face="Courier New">keytool {-&lt;command_name&gt;} {-&lt;command_option&gt;} {&lt;option_value&gt;}... -J&lt;java_option&gt;
+		</font></p>
+		<p><font face="Courier New"><b><font size="4">Description</font></b>
+
+		</font></p>
+		<p><font face="Courier New">Keytool is an utility that lets users to manage keys and X.509 certificates which are used for authentication of an entity or self-authentication. 
+
+The tools stores the certificates and keys in database which is called keystore. Keystore is usually implemented as a file and protected with password.
+
+		</font></p>
+		<p><b><font size="4" face="Courier New">Default values of the options</font></b></p>
+		<p><font face="Courier New">-alias &quot;mykey&quot;
+
+-cacerts {<i>JAVA_HOME</i>}/lib/security/cacerts </font></p>
+		<p><font face="Courier New">-cacertspass &quot;changeit&quot;
+
+</font></p>
+		<p><font face="Courier New">-certserial <i>random integer value</i>
+
+		</font></p>
+		<p><font face="Courier New">-convkeystore {<i>USER_HOME</i>}/{<i>keystore_type_to_convert_to</i>}_converted.keystore, 
+		E.g. &quot;<a href="file:///C:/users/Joe/jks_converted.keystore">C:\users\Joe\jks_converted.keystore</a>&quot;</font></p>
+<p><font face="Courier New">If a file with such name already exists, an index is 
+added to the end of the file name: {<i>USER_HOME</i>}/{<i>keystore_type_to_convert_to</i>}_converted<i>_{index}</i>.keystore, 
+e.g. &quot;<a href="file:///C:/users/Joe/jks_converted.keystore">C:\users\Joe\jks_converted_1.keystore</a>&quot;</font></p>
+		<p><font face="Courier New">-convstorepass <i>password for main keystore</i>
+		</font></p>
+<p><font face="Courier New">-file <i>stdin for input, stdout for output</i>
+
+		</font></p>
+		<p><font face="Courier New">-keyalg &quot;DSA&quot;
+
+</font></p>
+		<p><font face="Courier New">-keysize 1024
+
+</font></p>
+		<p><font face="Courier New">-keystore {<i>USER_HOME</i>}/.keystore
+
+		</font></p>
+		<p><font face="Courier New">-sigalg <i>&quot;SHA1withDSA&quot; if certificate issuer's private key algorithm is &quot;DSA&quot; or &quot;MD5withRSA&quot; if key algorithm is &quot;RSA&quot;
+</i></font></p>
+		<p><font face="Courier New">-storetype <i>value of &quot;keystore.type&quot; property in {JAVA_HOME}/lib/security/java.security file</i>
+
+		</font></p>
+		<p><font face="Courier New">-validity 90</font></p>
+		<p><font face="Courier New">-x509version 3</font></p>
+		<p><font face="Courier New">-certprovider, -keyprovider, -mdprovider, -sigprovider, -ksprovider, -convprovider <i>the provider which name is noted after -provider option if any.</i>
+
+<br>
+<br>
+-keypass <i>if key entry password does not equal keystore password, the user will ne prompted to enter it.
+</i>
+-provider <i>if the option is not specified and no &quot;specific provider&quot; name given for the action, it will be performed using one of security providers available in the system.
+</i> 
+
+</font></p>
+		<p><font face="Courier New">Default command is -help. 
+
+</font></p>
+		<p><font face="Courier New"><b><font size="4">Common options</font></b>
+
+		</font></p>
+		<p><font face="Courier New">-keystore <i>keystore </i><br>
+<br>The path to keystore. Its default value is {USER_HOME}/.keystore.
+
+</font></p>
+		<p><font face="Courier New">-storetype <i>store_type</i> <br>
+<br>Type of the keystore. If it is not given in command line, default value is used. 
+
+		</font></p>
+		<p><font face="Courier New">-storepass <i>store_password</i> <br>
+<br>The password used to protect keystore integrity. If a new keystore is created the the value must be equal or more than 6 characters. If keytool works with an existing keystore, the password can be of any length. If the password is not given in command line it is prompted for. 
+
+		</font></p>
+		<p><font face="Courier New">-cacerts <i>cacerts</i> <br>
+<br>The path to the cacerts file. cacerts is a keystore that contains certificates of widely known Certificate Authorities (CAs). If it is not given in command line, default value is used. 
+
+		</font></p>
+		<p><font face="Courier New">-cacertspass <i>cacerts_pass</i>word<br>
+<br>The password used to protect integrity of cacerts keystore. See -storepass option description. 
+
+		</font></p>
+		<p><font face="Courier New">-provider <i>provider_name</i><br>
+<br>The name of the security provider to use when performing the action.
+
+
+
+</font></p>
+		<p><b><font size="4" face="Courier New">Commands
+</font></b></p>
+		<p><i><font face="Courier New"><b>-certreq</b> {-alias &lt;alias&gt;} {-file &lt;csr_file&gt;}
+ {-sigalg &lt;signature_algorithm&gt;} {-keypass &lt;key_password&gt;} {-sigprovider 
+		&lt;signature_provider_name&gt;} {-ksprovider &lt;keystore_provider_name&gt;} 
+		{-provider &lt;provider_name&gt;} {-keystore &lt;keystore_path&gt;} {-storepass &lt;store_password&gt;} 
+		{-v} {-storetype &lt;store_type&gt;} {-cacerts &lt;cacerts_path&gt;} {-cacertspass &lt;cacerts_password&gt;}
+
+</font></i></p>
+		<p><font face="Courier New">Generates a Certificate Signing Request (CSR). The request is generated based on data taken from keystore entry associated with &lt;alias&gt; given. The certificate request is printed to a file &lt;csr_file&gt;, if its name is supplied, or otherwise printed to stdout.
+
+
+		</font></p>
+		<p>&nbsp;</p>
+		<p><i><font face="Courier New"><b>-checkcrl</b> {-file &lt;certificate_file&gt;} {-crlfile &lt;crl_file&gt;} 
+		{-certprovider &lt;cert_provider_name&gt;} {-mdprovider &lt;MD_provider_name&gt;} {-ksprovider 
+		&lt;keystore_provider_name&gt;} {-provider &lt;provider_name&gt;} {-keystore &lt;keystore_path&gt;} 
+		{-storepass &lt;store_password&gt;} {-v} {-storetype &lt;store_type&gt;} {-cacerts &lt;cacerts_path&gt;} 
+		{-cacertspass &lt;cacerts_password&gt;}
+
+</font></i></p>
+		<p><font face="Courier New">Checks if the certificate given in the &lt;certificate_file&gt; is contained in the CRL which is stored in the &lt;crl_file&gt; file. If the file name is not given, stdin is used.
+
+
+		</font></p>
+		<p>&nbsp;</p>
+		<p><font face="Courier New"><i><b>-convert</b> {-convtype &lt;result_type&gt;} {-convkeystore &lt;result_store&gt;}
+ {-convstorepass &lt;result_store_pass&gt;} {-convkeys} {-convprovider &lt;convert_provider_name&gt;} 
+		{-ksprovider &lt;keystore_provider_name&gt;} {-provider &lt;provider_name&gt;} 
+		{-keystore &lt;keystore_path&gt;} {-storepass &lt;store_password&gt;} {-v} {-storetype 
+		&lt;store_type&gt;} {-cacerts &lt;cacerts_path&gt;} {-cacertspass &lt;cacerts_password&gt;} </i>
+
+</font></p>
+		<p><font face="Courier New">Converts keystore to type &lt;result_type&gt; and saves it to &lt;result_store&gt; and protects with password &lt;result_store_pass&gt;. If &lt;result_store_pass&gt; is not set &lt;store_password&gt; is used. If &quot;-convkeys&quot; option has been specified, an attempt to convert key entries is performed. Only entries with password equal to keystore password are converted.
+
+
+		</font></p>
+		<p>&nbsp;</p>
+		<p><font face="Courier New"><i><b>-delete</b> {-alias &lt;alias&gt;} {-ksprovider 
+		&lt;keystore_provider_name&gt;} {-provider &lt;provider_name&gt;} {-keystore &lt;keystore_path&gt;} 
+		{-storepass &lt;store_password&gt;} {-v} {-storetype &lt;store_type&gt;} {-cacerts &lt;cacerts_path&gt;} 
+		{-cacertspass &lt;cacerts_password&gt;} </i>
+
+</font></p>
+		<p><font face="Courier New">Removes from the keystore the entry associated with &lt;alias&gt;.
+		</font></p>
+		<p>&nbsp;</p>
+		<p><font face="Courier New"><i><b>-export</b> {-rfc | -v} {-alias 
+		&lt;alias&gt;} {-file &lt;certificate_file&gt;} {-ksprovider &lt;keystore_provider_name&gt;} 
+		{-provider &lt;provider_name&gt;} {-keystore &lt;keystore_path&gt;} {-storepass &lt;store_password&gt;} 
+		{-v} {-storetype &lt;store_type&gt;} {-cacerts &lt;cacerts_path&gt;} {-cacertspass &lt;cacerts_password&gt;} </i>
+
+</font></p>
+		<p><font face="Courier New">Reads an X.509 certificate associated with &lt;alias&gt; and prints it into the given &lt;certificate_file&gt;. If The file name is not given, the certificate is printed to stdout. If -rfc option is used, the certificate is printed in printable BASE64 encoding (PEM) otherwise it is printed in binary encoding (DER). Both &quot;-rfc&quot; and &quot;-v&quot; options may not be specified.
+
+
+		</font></p>
+		<p>&nbsp;</p>
+		<p><font face="Courier New"><i><b>-genkey</b> {-alias &lt;alias&gt;} {-keyalg 
+		&lt;key_algorithm&gt;} {-keysize &lt;key_size&gt;} {-sigalg &lt;signature_algorithm&gt;} 
+		{-validity &lt;validity_period&gt;} {-dname &lt;X500_distinguished_dname&gt;} 
+		{-x509version &lt;X509_version&gt;} {-ca} {-certserial &lt;cert_serial_number&gt;} 
+		{-secretkey} {-keypass &lt;key_password&gt;} {-issuer &lt;issuer_alias&gt;} {-issuerpass 
+		&lt;issuer_password&gt;} {-keyprovider &lt;key_provider_name&gt;} {-certprovider &lt;cert_provider_name&gt;} 
+		{-sigprovider &lt;signature_provider_name&gt;} {-ksprovider &lt;keystore_provider_name&gt;} 
+		{-provider &lt;provider_name&gt;} {-keystore &lt;keystore_path&gt;} {-storepass &lt;store_password&gt;} 
+		{-v} {-storetype &lt;store_type&gt;} {-cacerts &lt;cacerts_path&gt;} {-cacertspass &lt;cacerts_password&gt;} </i>
+
+</font></p>
+		<p><font face="Courier New">Generates a key pair or a secret key. <br>
+<br>Generation of key pair.<br>Key pair is composed of a private and a public key. Keytool wraps the public key into a self-signed X.509 (v1, v2, v3) certificate and puts the certificate into a single-element certificate chain OR signs the certificate with private key from another key entry &lt;issuer_alias&gt; and adds its chain to the newly generated certificate. &lt;issuer_password&gt; is used to recover the &lt;issuer_alias&gt; entry. After that keytool adds to the keystore a new entry containing the generated private key and the chain with alias &lt;alias&gt; and protected with &lt;key_password&gt;. Subject of the new certificate is generated based on &lt;X500_distinguished_dname&gt;. If it is not given in the command line it is prompted for. The certificate validity period is set to &lt;validity_period&gt;. X.509 certificate version is set to &lt;X509_version&gt;, certificate serial number is set to &lt;cert_serial_number&gt;. If &quot;-ca&quot; option is specified, the certificate can be used to sign another certificates. <br>
+<br>Secret key generation.<br>If a secret key is generated it is put into a secret key entry, with null certificate chain. If &quot;-secretkey&quot; option is specified, a secret key will. be generated instead of key pair and a certificate which are generated by default.
+
+
+		</font></p>
+		<p>&nbsp;</p>
+		<p><font face="Courier New"><i><b>-help</b> {&lt;command_name&gt;} </i> </font></p>
+		<p><font face="Courier New">If no command name is given shows the list of the commands with their short descriptions. If a command name is given shows the usage of the command and its description.
+
+
+		</font></p>
+		<p>&nbsp;</p>
+		<p><font face="Courier New"><i><b>-import</b> {-alias &lt;alias&gt;} {-file &lt;certificate_file&gt;} 
+		{-noprompt} {-trustcacerts} {-keypass &lt;key_password&gt;} {-cacerts &lt;cacerts_path&gt;} 
+		{-cacertspass &lt;cacerts_password&gt;} {-certprovider &lt;cert_provider_name&gt;} 
+		{-mdprovider &lt;MD_provider_name&gt;} {-ksprovider &lt;keystore_provider_name&gt;} 
+		{-provider &lt;provider_name&gt;} {-keystore &lt;keystore_path&gt;} {-storepass &lt;store_password&gt;} 
+		{-v} {-storetype &lt;store_type&gt;} {-cacerts &lt;cacerts_path&gt;} {-cacertspass &lt;cacerts_password&gt;}</i></font></p>
+		<p><font face="Courier New">Reads an X.509 certificate or a PKCS#7 formatted certificate chain from the file &lt;certificate_file&gt; and puts it into the entry identified by &lt;alias&gt;. If the input file is not specified, the certificates are read from the standard input. If &lt;alias&gt; already exists the imported certificate chain is interpreted as a reply to CSR generated for the certificate associated with &lt;alias&gt;, otherwise it is considered to be a trusted certificate. If &quot;-noprompt&quot; option is specified, the certificate is added to the keystore even if an equal certificate is in keystore or the certificate issuer's certificate is not contained in keystore (and in cacerts if &quot;-trustcacerts&quot; option is specified), otherwise the user is asked to confirm that the certificate should be imported.
+
+
+		</font></p>
+		<p>&nbsp;</p>
+		<p><font face="Courier New"><i><b>-keyclone</b> {-alias &lt;alias&gt;} {-dest 
+		&lt;dest_alias&gt;} {-new &lt;new_password&gt;} {-keypass &lt;key_password&gt;} {-ksprovider 
+		&lt;keystore_provider_name&gt;} {-provider &lt;provider_name&gt;} {-keystore &lt;keystore_path&gt;} 
+		{-storepass &lt;store_password&gt;} {-v} {-storetype &lt;store_type&gt;} {-cacerts &lt;cacerts_path&gt;} 
+		{-cacertspass &lt;cacerts_password&gt;} </i>
+
+</font></p>
+		<p><font face="Courier New">Copies the key and the certificate chain (if any) from the keystore entry identified by &lt;alias&gt; into a newly created one with alias &lt;dest_alias&gt; and protected with password &lt;new_password&gt;. If any of &lt;dest_alias&gt; or &lt;new_password&gt; is not specified it is prompted for.
+
+
+		</font></p>
+		<p>&nbsp;</p>
+		<p><i><font face="Courier New"><b>-keypasswd</b> {-alias &lt;alias&gt;} {-keypass 
+		&lt;old_key_password&gt;} {-new &lt;new_password&gt;} {-ksprovider &lt;keystore_provider_name&gt;} 
+		{-provider &lt;provider_name&gt;} {-keystore &lt;keystore_path&gt;} {-storepass &lt;store_password&gt;} 
+		{-v} {-storetype &lt;store_type&gt;} {-cacerts &lt;cacerts_path&gt;} {-cacertspass &lt;cacerts_password&gt;}
+
+</font></i></p>
+		<p><font face="Courier New">Changes the key password of the entry associated with alias &lt;alias&gt; to &lt;new_password&gt;.
+
+
+		</font></p>
+		<p>&nbsp;</p>
+		<p><font face="Courier New"><i><b>-list</b> {-rfc | -v} {-alias &lt;alias&gt;} 
+		{-mdprovider &lt;MD_provider_name&gt;} {-ksprovider &lt;keystore_provider_name&gt;} 
+		{-provider &lt;provider_name&gt;} {-keystore &lt;keystore_path&gt;} {-storepass &lt;store_password&gt;} 
+		{-v} {-storetype &lt;store_type&gt;} {-cacerts &lt;cacerts_path&gt;} {-cacertspass &lt;cacerts_password&gt;}</i>
+
+</font></p>
+		<p><font face="Courier New">Prints the contents of the entry associated with the &lt;alias&gt;. If no alias is specified, the contents of the entire keystore are printed.<span lang="en"> </span>If -rfc option is used, certificates are printed in printable BASE64 encoding (PEM) otherwise they are printed in binary encoding (DER). Both &quot;-rfc&quot; and &quot;-v&quot; options may not be specified.
+
+
+		</font></p>
+		<p>&nbsp;</p>
+		<p><i><font face="Courier New"><b>-printcert</b> {-v} {-file &lt;certificate_file&gt;} 
+		{-certprovider &lt;cert_provider_name&gt;}</font></i><font face="Courier New"><i> 
+		{-mdprovider &lt;MD_provider_name&gt;} {-provider &lt;provider_name&gt;}</i></font></p>
+		<p><font face="Courier New">Prints the detailed description of a certificate contained in file &lt;certificate_file&gt; in a human-readable format: its owner and issuer, serial number, validity period and fingerprints. Keystore is not used.
+
+
+		</font></p>
+		<p>&nbsp;</p>
+		<p><i><font face="Courier New"><b>-selfcert</b> {-alias &lt;alias&gt;} {-dname 
+		&lt;X500_distinguished_dname&gt;} {-validity &lt;validity_period&gt;} {-sigalg &lt;signature_algorithm&gt;} 
+		{-keypass &lt;key_password&gt;} {-ca} {-certserial &lt;cert_serial_number&gt;} {-sigprovider 
+		&lt;signature_provider_name&gt;} {-ksprovider &lt;keystore_provider_name&gt;} 
+		{-provider &lt;provider_name&gt;} {-keystore &lt;keystore_path&gt;} {-storepass &lt;store_password&gt;} 
+		{-v} {-storetype &lt;store_type&gt;} {-cacerts &lt;cacerts_path&gt;} {-cacertspass &lt;cacerts_password&gt;}
+
+</font></i></p>
+		<p><font face="Courier New">Generates an X.509 (v1, v2, v3) self-signed certificate using a key pair associated with &lt;alias&gt;. If X.500 Distinguished Name is supplied it is used as both subject and issuer of thecertificate. Otherwise the distinguished name associated with alias is used. Signature algorithm, validity period and certificate serial number are taken from command line if defined there or from the keystore entry identified by alias. If &quot;-ca&quot; option is specified, generated certificate will can be used for signing another certifictes. If &quot;-secretkey&quot; option is specified, a secret key will be generated instead of key pair and a certificate which are generated by default.
+
+
+		</font></p>
+		<p>&nbsp;</p>
+		<p><font face="Courier New"><i><b>-storepasswd</b> {-new &lt;new_password&gt;} 
+		{-ksprovider &lt;keystore_provider_name&gt;} {-provider &lt;provider_name&gt;} 
+		{-keystore &lt;keystore_path&gt;} {-storepass &lt;store_password&gt;} {-v} {-storetype 
+		&lt;store_type&gt;} {-cacerts &lt;cacerts_path&gt;} {-cacertspass &lt;cacerts_password&gt;}</i>
+
+</font></p>
+		<p><font face="Courier New">Changes the keystore password to &lt;new_password&gt;.
+
+
+		</font></p>
+		<p>&nbsp;</p>
+		<p><font face="Courier New"><i><b>-verify</b> {-file &lt;certificate_file&gt;} 
+		{-crlfile &lt;crl_file&gt;} {-trustcacerts} {-cacerts &lt;cacerts_path&gt;} {-cacertspass 
+		&lt;cacerts_password&gt;} {-certprovider &lt;cert_provider_name&gt;} {-sigprovider &lt;signature_provider_name&gt;} 
+		{-mdprovider &lt;MD_provider_name&gt;} {-ksprovider &lt;keystore_provider_name&gt;} 
+		{-provider &lt;provider_name&gt;} {-keystore &lt;keystore_path&gt;} {-storepass &lt;store_password&gt;} 
+		{-v} {-storetype &lt;store_type&gt;} {-cacerts &lt;cacerts_path&gt;} {-cacertspass &lt;cacerts_password&gt;}</i>
+
+</font></p>
+		<p><font face="Courier New">A cerificate chain is built by looking up the certificate of the issuer of the current certificate. If a sertificate is self-signed it is assumed to be the root CA. After that the certificates are searched in the lists of revoked certificates. Certificate signatures are checked and certificate path is built in the same way as in import operation. If an error occurs the flow is not stopped but an attempt to continue is made. The results of the verification are printed to stdout.
+
+&nbsp;<br>		</font>		</td>
+	</tr>
+</table>
+
+
+
+</body>
+
+</html>
+
