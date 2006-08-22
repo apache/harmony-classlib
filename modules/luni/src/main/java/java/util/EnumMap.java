@@ -57,7 +57,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      *             if the map is null
      */
     public EnumMap(EnumMap<K, ? extends V> map) {
-        throw new NotYetImplementedException();
+        initialization(map);
     }
 
     /**
@@ -75,7 +75,22 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      *             if the map is null
      */
     public EnumMap(Map<K, ? extends V> map) {
-        throw new NotYetImplementedException();
+        if (map instanceof EnumMap) {
+            initialization((EnumMap<K, V>) map);
+        } else {
+            if (0 == map.size()) {
+                throw new IllegalArgumentException();
+            }
+            Iterator<K> iter = map.keySet().iterator();
+            K enumKey = iter.next();
+            Class clazz=enumKey.getClass();
+            if(clazz.isEnum()){
+                initialization(clazz);
+            }else{
+                initialization(clazz.getSuperclass());
+            }
+            putAllImpl(map);
+        }
     }
 
     /**
@@ -188,21 +203,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     @Override
     @SuppressWarnings("unchecked")
     public V put(K key, V value) {
-        if (null == key) {
-            throw new NullPointerException();
-        }
-
-        if (!isValidKeyType(key)) {
-            throw new ClassCastException();
-        }
-        int keyOrdinal = key.ordinal();
-        if (!hasMapping[keyOrdinal]) {
-            hasMapping[keyOrdinal] = true;
-            mappingsCount++;
-        }
-        V oldValue = (V) values[keyOrdinal];
-        values[keyOrdinal] = value;
-        return oldValue;
+        return putImpl(key,value);
     }
 
     /**
@@ -219,11 +220,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     @Override
     @SuppressWarnings("unchecked")
     public void putAll(Map<? extends K, ? extends V> map) {
-        Iterator iter = map.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            put((K) entry.getKey(), (V) entry.getValue());
-        }
+        putAllImpl(map);
     }
 
     /**
@@ -268,12 +265,48 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     @SuppressWarnings("unchecked")
+    private void initialization(EnumMap enumMap){
+        keyType = enumMap.keyType;
+        keys = enumMap.keys;
+        enumSize = enumMap.enumSize;
+        values = enumMap.values.clone();
+        hasMapping = enumMap.hasMapping.clone();
+        mappingsCount = enumMap.mappingsCount;
+    }
+    
     private void initialization(Class<K> type) {
         keyType = type;
         keys = keyType.getEnumConstants();
         enumSize = keys.length;
         values = new Object[enumSize];
         hasMapping = new boolean[enumSize];
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void putAllImpl(Map map){
+        Iterator iter = map.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            putImpl((K) entry.getKey(), (V) entry.getValue());
+        }
+    }
+  
+    @SuppressWarnings("unchecked")
+    private V putImpl(K key, V value) {
+        if (null == key) {
+            throw new NullPointerException();
+        }
+        if (!isValidKeyType(key)) {
+            throw new ClassCastException();
+        }
+        int keyOrdinal = key.ordinal();
+        if (!hasMapping[keyOrdinal]) {
+            hasMapping[keyOrdinal] = true;
+            mappingsCount++;
+        }
+        V oldValue = (V) values[keyOrdinal];
+        values[keyOrdinal] = value;
+        return oldValue;
     }
 
 }

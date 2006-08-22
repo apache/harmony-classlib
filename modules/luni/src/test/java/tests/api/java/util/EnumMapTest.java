@@ -17,6 +17,7 @@ package tests.api.java.util;
 
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.harmony.luni.util.NotYetImplementedException;
 
@@ -96,6 +97,98 @@ public class EnumMapTest extends TestCase {
                 enumSizeMap.get(Size.Small));
         try {
             enumSizeMap.put(Color.Red, 2);
+            fail("Expected ClassCastException"); //$NON-NLS-1$
+        } catch (ClassCastException e) {
+            // Expected
+        }
+    }
+    
+    /**
+     * @tests java.util.EnumMap#EnumMap(EnumMap)
+     */
+    @SuppressWarnings({ "unchecked", "boxing" })
+    public void test_ConstructorLjava_util_EnumMap() {
+        EnumMap enumMap;
+        EnumMap enumColorMap = null;
+        try {
+            enumMap = new EnumMap(enumColorMap);
+            fail("Expected NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // Expected
+        }
+
+        enumColorMap = new EnumMap<Color, Double>(Color.class);
+        Double double1 = new Double(1);
+        enumColorMap.put(Color.Green, 2);
+        enumColorMap.put(Color.Blue, double1);
+        
+        enumMap = new EnumMap(enumColorMap);
+        assertEquals("Constructor fails", 2, enumMap.get(Color.Green)); //$NON-NLS-1$
+        assertSame("Constructor fails", double1, enumMap.get(Color.Blue)); //$NON-NLS-1$
+        assertNull("Constructor fails", enumMap.get(Color.Red)); //$NON-NLS-1$
+        enumMap.put(Color.Red, 1);
+        assertEquals("Wrong value", 1, enumMap.get(Color.Red)); //$NON-NLS-1$
+
+        try {
+            enumMap.put(Size.Middle, 2);
+            fail("Expected ClassCastException"); //$NON-NLS-1$
+        } catch (ClassCastException e) {
+            // Expected
+        }
+    }
+
+    /**
+     * @tests java.util.EnumMap#EnumMap(Map)
+     */
+    @SuppressWarnings({ "unchecked", "boxing" })
+    public void test_ConstructorLjava_util_Map() {
+        EnumMap enumMap;
+        Map enumColorMap = null;
+        try {
+            enumMap = new EnumMap(enumColorMap);
+            fail("Expected NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        enumColorMap = new EnumMap<Color, Double>(Color.class);
+        enumMap = new EnumMap(enumColorMap);
+        enumColorMap.put(Color.Blue, 3);
+        enumMap = new EnumMap(enumColorMap);
+
+        HashMap hashColorMap = null;
+        try {
+            enumMap = new EnumMap(hashColorMap);
+            fail("Expected NullPointerException");//$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // Expected
+        }
+
+        hashColorMap = new HashMap();
+        try {
+            enumMap = new EnumMap(hashColorMap);
+            fail("Expected IllegalArgumentException"); //$NON-NLS-1$
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+
+        hashColorMap.put(Color.Green, 2);
+        enumMap = new EnumMap(hashColorMap);
+        assertEquals("Constructor fails", 2, enumMap.get(Color.Green)); //$NON-NLS-1$
+        assertNull("Constructor fails", enumMap.get(Color.Red)); //$NON-NLS-1$
+        enumMap.put(Color.Red, 1);
+        assertEquals("Wrong value", 1, enumMap.get(Color.Red)); //$NON-NLS-1$
+        hashColorMap.put(Size.Big, 3);
+        try {
+            enumMap = new EnumMap(hashColorMap);
+            fail("Expected ClassCastException"); //$NON-NLS-1$
+        } catch (ClassCastException e) {
+            // Expected
+        }
+
+        hashColorMap = new HashMap();
+        hashColorMap.put(new Integer(1), 1);
+        try {
+            enumMap = new EnumMap(hashColorMap);
             fail("Expected ClassCastException"); //$NON-NLS-1$
         } catch (ClassCastException e) {
             // Expected
