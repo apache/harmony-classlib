@@ -54,7 +54,7 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
         if (!isValidType(element.getDeclaringClass())) {
             throw new ClassCastException();
         }
-        int mask = 1 << element.ordinal();
+        long mask = 1l << element.ordinal();
         if ((bits & mask) == mask) {
             return false;
         }
@@ -62,5 +62,19 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
 
         size = Long.bitCount(bits);
         return true;
+    }
+    
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean contains(Object object) {
+        if (null == object) {
+            return false;
+        }
+        if (!isValidType(object.getClass())) {
+            return false;
+        }
+        E element = (E) object;
+        int ordinal = element.ordinal();
+        return (bits & (1l << ordinal)) != 0;
     }
 }

@@ -33,7 +33,7 @@ public class EnumSetTest extends TestCase {
     }
     
     static enum EnumFoo {
-        a, b,
+        a, b,c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, aa, bb, cc, dd, ee, ff, gg, hh, ii, jj, kk, ll,
     }
 
     /**
@@ -149,5 +149,51 @@ public class EnumSetTest extends TestCase {
         set.add(EnumFoo.a);
         set.add(EnumFoo.b);
         assertEquals("Size should be 2", 2, set.size()); //$NON-NLS-1$
+    }
+    
+    /**
+     * @tests java.util.EnumSet#contains(Object)
+     */
+    public void test_contains_LObject() {
+        Set<EnumFoo> set = EnumSet.noneOf(EnumFoo.class);
+        Enum[] elements = EnumFoo.class.getEnumConstants();
+        for(int i = 0; i < elements.length; i++) {
+            set.add((EnumFoo)elements[i]);
+        }
+        boolean result = set.contains(null);
+        assertFalse("Should not contain null:", result); //$NON-NLS-1$
+
+        result = set.contains(EnumFoo.a);
+        assertTrue("Should contain EnumFoo.a", result); //$NON-NLS-1$
+        result = set.contains(EnumFoo.ll);
+        assertTrue("Should contain EnumFoo.ll", result); //$NON-NLS-1$
+
+        result = set.contains(EnumFoo.b);
+        assertTrue("Should contain EnumFoo.b", result); //$NON-NLS-1$
+
+        result = set.contains(new Object());
+        assertFalse("Should not contain Object instance", result); //$NON-NLS-1$
+
+        result = set.contains(EnumWithInnerClass.a);
+        assertFalse("Should not contain EnumWithSubclass.a", result); //$NON-NLS-1$
+        
+        set = EnumSet.noneOf(EnumFoo.class);
+        set.add(EnumFoo.aa);
+        set.add(EnumFoo.bb);
+        set.add(EnumFoo.cc);
+        
+        assertEquals("Size of set should be 3", 3, set.size()); //$NON-NLS-1$
+        assertTrue("set should contain EnumFoo.aa", set.contains(EnumFoo.aa)); //$NON-NLS-1$
+
+        Set<EnumWithInnerClass> setWithSubclass = EnumSet
+                .noneOf(EnumWithInnerClass.class);
+        setWithSubclass.add(EnumWithInnerClass.a);
+        setWithSubclass.add(EnumWithInnerClass.b);
+        setWithSubclass.add(EnumWithInnerClass.c);
+        setWithSubclass.add(EnumWithInnerClass.d);
+        setWithSubclass.add(EnumWithInnerClass.e);
+        setWithSubclass.add(EnumWithInnerClass.f);
+        result = setWithSubclass.contains(EnumWithInnerClass.f);
+        assertTrue("Should contain EnumWithSubclass.f", result); //$NON-NLS-1$
     }
 }
