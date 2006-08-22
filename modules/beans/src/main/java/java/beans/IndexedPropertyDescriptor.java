@@ -72,11 +72,15 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
         String indexedGetterName = createDefaultMethodName(propertyName, "get");
         if(hasMethod(beanClass, indexedGetterName)) {
             setIndexedReadMethod(beanClass, indexedGetterName);
+        } else {
+            throw new IntrospectionException("Method not found: get" + propertyName);
         }
         
         String indexedSetterName = createDefaultMethodName(propertyName, "set");
         if(hasMethod(beanClass, indexedSetterName)) {
             setIndexedWriteMethod(beanClass, indexedSetterName);
+        } else {
+            throw new IntrospectionException("Method not found: set" + propertyName);
         }
     }
 

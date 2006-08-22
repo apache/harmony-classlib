@@ -348,6 +348,14 @@ public class IndexedPropertyDescriptorTest extends TestCase {
         assertFalse(ipd.isExpert());
         assertFalse(ipd.isHidden());
         assertFalse(ipd.isPreferred());
+
+        //Regression for HARMONY-1236
+        try {
+            new IndexedPropertyDescriptor("0xDFRF", Float.TYPE);
+            fail("IntrospectionException expected");
+        } catch (IntrospectionException e) {
+            //expected
+        }
     }
 
     public void testIndexedPropertyDescriptorStringClass_PropertyNameNull()
