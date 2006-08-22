@@ -135,7 +135,7 @@
 			errorproperty="test.errors"
 			failureproperty="test.failures"
 			showoutput="on"
-			dir="${hy.nio.bin.test}"
+			dir="${basedir}"
 			jvm="${test.jre.home}/bin/java">
 
 			<jvmarg value="-showversion" />

@@ -138,13 +138,13 @@
         <property name="test.jre.home" value="${hy.jdk}/jre" />
 
         <junit fork="yes"
-            forkmode="once"
-            printsummary="withOutAndErr"
-            errorproperty="test.errors"
-            failureproperty="test.failures"
-            showoutput="on"
-            dir="${hy.text.bin.test}"
-            jvm="${test.jre.home}/bin/java">
+               forkmode="once"
+               printsummary="withOutAndErr"
+               errorproperty="test.errors"
+               failureproperty="test.failures"
+               showoutput="on"
+               dir="${basedir}"
+               jvm="${test.jre.home}/bin/java">
 
             <jvmarg value="-showversion"/>
 

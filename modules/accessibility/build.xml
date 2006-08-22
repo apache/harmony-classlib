@@ -35,6 +35,8 @@
 	     use the Eclipse Java compiler. -->
     <property name="build.compiler" value="modern" />
 
+    <property file="../../make/depends.properties" />
+
     <target name="build" depends="compile.java, build.jar" />
 
     <target name="test" depends="build, compile.tests, run.tests" />
@@ -110,12 +112,12 @@
                errorproperty="test.errors"
                failureproperty="test.failures"
                showoutput="on"
-               dir="${hy.accessibility.bin.test}"
+               dir="${basedir}"
                jvm="${test.jre.home}/bin/java">
 
             <env key="JAVA_HOME" value="${test.jre.home}"/>
 
-            <jvmarg value="-Xbootclasspath/a:${hy.accessibility.bin.test}${path.separator}${basedir}/../../depends/jars/junit_3.8.2/junit.jar${path.separator}${hy.hdk}/build/test/support.jar"/>
+            <jvmarg value="-Xbootclasspath/a:${hy.accessibility.bin.test}${path.separator}../../${junit.jar}${path.separator}${hy.hdk}/build/test/support.jar"/>
 
             <formatter type="xml" />
 

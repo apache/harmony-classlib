@@ -300,10 +300,10 @@
                     <pathelement path="${hy.hdk}/build/test/support.jar" />
                 </classpath>
                 <!-- Required by various tests that set security manager etc -->
-                <jvmarg value="-Djava.security.policy=../../../../support/src/test/resources/config/testing.policy" />
+                <jvmarg value="-Djava.security.policy=../../support/src/test/resources/config/testing.policy" />
 
                 <!-- Required for running the java.net unit tests -->
-                <jvmarg value="-Dtest.ini.file=../../../../support/src/test/resources/config/localhosttest.ini" />
+                <jvmarg value="-Dtest.ini.file=../..support/src/test/resources/config/localhosttest.ini" />
 
 
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
@@ -393,7 +393,7 @@
                    errorproperty="test.errors"
                    failureproperty="test.failures"
                    showoutput="on"
-                   dir="${hy.luni.bin.test}"
+                   dir="${basedir}"
                    jvm="${test.jre.home}/bin/java">
 
                 <jvmarg value="-showversion" />

@@ -148,7 +148,7 @@
         <run-tests description="api.injected tests">
             <junit-elements>
                 <!-- to pick up junit.jar               -->
-                <jvmarg value="-Xbootclasspath/a:${hy.crypto.bin.test}/api.injected${path.separator}../../../../${junit.jar}${path.separator}../../../../build/tests${path.separator}${hy.hdk}/build/test/support.jar"/>
+                <jvmarg value="-Xbootclasspath/a:${hy.crypto.bin.test}/api.injected${path.separator}../../${junit.jar}${path.separator}../../build/tests${path.separator}${hy.hdk}/build/test/support.jar"/>
 
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.crypto.src.test}/api/java.injected">
@@ -183,7 +183,7 @@
         <run-tests description="impl injected tests">
             <junit-elements>
                 <!-- to pick up junit.jar               -->
-                <jvmarg value="-Xbootclasspath/a:${hy.crypto.bin.test}/impl.injected${path.separator}../../../../${junit.jar}${path.separator}../../../../build/tests"/>
+                <jvmarg value="-Xbootclasspath/a:${hy.crypto.bin.test}/impl.injected${path.separator}../../${junit.jar}${path.separator}../../build/tests"/>
 
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.crypto.src.test}/impl/java.injected">
@@ -251,7 +251,7 @@
                    errorproperty="test.errors"
                    failureproperty="test.failures"
                    showoutput="on"
-                   dir="${hy.crypto.bin.test}"
+                   dir="${basedir}"
                    jvm="${test.jre.home}/bin/java">
 
                 <jvmarg value="-showversion"/>

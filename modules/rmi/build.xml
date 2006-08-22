@@ -174,11 +174,11 @@
                    errorproperty="test.errors"
                    failureproperty="test.failures"
                    showoutput="on"
-                   dir="${hy.rmi.bin.test}"
+                   dir="${basedir}"
                    jvm="${test.jre.home}/bin/java">
 
                 <jvmarg value="-showversion"/>
-                <jvmarg value="-Djava.security.policy=../../make/all.policy"/>
+                <jvmarg value="-Djava.security.policy=make/all.policy"/>
 
                 <env key="JAVA_HOME" value="${test.jre.home}"/>
                 <junit-elements />

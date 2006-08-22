@@ -110,7 +110,7 @@
                errorproperty="test.errors"
                failureproperty="test.failures"
                showoutput="on"
-               dir="${hy.lang-management.bin.test}"
+               dir="${basedir}"
                jvm="${test.jre.home}/bin/java">
 
             <jvmarg value="-showversion"/>
