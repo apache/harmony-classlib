@@ -111,7 +111,7 @@
     </target>
 
     <target name="run.tests" depends="compile.tests,copy.test.resources"
-            if="with.awt.swing.tests">
+            if="with.awt.swing">
 
         <mkdir dir="${hy.tests.reports}" />
 
@@ -139,31 +139,49 @@
 
                 <fileset dir="${hy.swing.src.test.api}/java/common">
                     <include name="**/*Test*.java"/>
+                    <exclude name="javax/swing/AccessibleJComponent_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/AccessibleJComponent_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/JComponent_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/JEditorPaneTest.java"/>
+                    <exclude name="javax/swing/JFormattedTextField_CommitActionRTest.java"/>
+                    <exclude name="javax/swing/JInternalFrame_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/JTextField_NotifyActionRTest.java"/>
+                    <exclude name="javax/swing/ProgressMonitorTest.java"/>
                     <exclude name="javax/swing/RobotTestCase.java"/>
                     <exclude name="javax/swing/SerializableTestCase.java"/>
-                    <exclude name="javax/swing/SwingWaitTestCase.java"/>
                     <exclude name="javax/swing/SpringTest.java"/>
+                    <exclude name="javax/swing/SwingWaitTestCase.java"/>
+                    <exclude name="javax/swing/TestBundle.java"/>
+                    <exclude name="javax/swing/event/SwingPropertyChangeSupportTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicDesktopPaneUIActionsTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicMenuUI_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicOptionPaneUITest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicTreeUITest.java"/>
                     <exclude name="javax/swing/table/BasicSwingTableTestCase.java"/>
-                    <exclude name="javax/swing/text/ViewTestHelpers.java"/>
                     <exclude name="javax/swing/text/AbstractDocument_DefaultDocumentEventTest.java"/>
                     <exclude name="javax/swing/text/AbstractDocument_ElementEditTest.java"/>
                     <exclude name="javax/swing/text/AbstractDocument_UpdateTest.java"/>
-                    <exclude name="javax/swing/text/GapContent_InternalTest.java"/>
+                    <exclude name="javax/swing/text/DefaultCaret_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/text/DefaultEditorKitTest.java"/>
+                    <exclude name="javax/swing/text/DefaultEditorKit_Actions_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/text/FlowViewTest.java"/>
                     <exclude name="javax/swing/text/GapContentTest.java"/>
+                    <exclude name="javax/swing/text/GapContent_InternalTest.java"/>
+                    <exclude name="javax/swing/text/InternationalFormatterTest.java"/>
                     <exclude name="javax/swing/text/JTextComponentTest.java"/>
                     <exclude name="javax/swing/text/ParagraphViewTest.java"/>
                     <exclude name="javax/swing/text/PlainViewI18N_LayoutTest.java"/>
-                    <exclude name="javax/swing/text/PlainViewI18N_LineView_UpdateTest.java"/>
                     <exclude name="javax/swing/text/PlainViewI18N_LineViewTest.java"/>
+                    <exclude name="javax/swing/text/PlainViewI18N_LineView_UpdateTest.java"/>
                     <exclude name="javax/swing/text/PlainViewI18N_VisualPositionTest.java"/>
-                    <exclude name="javax/swing/text/StyleContextTest.java"/>
                     <exclude name="javax/swing/text/StringContentTest.java"/>
                     <exclude name="javax/swing/text/StringContentTest_CommonTests.java"/>
-                    <exclude name="javax/swing/TestBundle.java"/>
-                    <exclude name="javax/swing/event/SwingPropertyChangeSupportTest.java"/>
-                    <exclude name="javax/swing/text/DefaultCaret_MultithreadedTest.java"/>
-                    <exclude name="javax/swing/text/DefaultEditorKit_Actions_MultithreadedTest.java"/>
-                    <exclude name="javax/swing/JEditorPaneTest.java"/>
+                    <exclude name="javax/swing/text/StyleConstantsTest.java"/>
+                    <exclude name="javax/swing/text/StyleContextTest.java"/>
+                    <exclude name="javax/swing/text/StyledEditorKitTest.java"/>
+                    <exclude name="javax/swing/text/TextAction_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/text/ViewTestHelpers.java"/>
+                    <exclude name="javax/swing/text/View_ForwardUpdateRTest.java"/>
                 </fileset>
             </batchtest>
         </junit>
