@@ -51,6 +51,7 @@ public class HandlerTest extends TestCase {
 	 */
 	protected void tearDown() throws Exception {
 		super.tearDown();
+        CallVerificationStack.getInstance().clear();
 	}
 
 	/**
