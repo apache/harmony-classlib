@@ -601,6 +601,14 @@ public class EventSetDescriptorTest extends TestCase {
 		assertEquals(listenerType, esd.getListenerType());
 		assertTrue(esd.isInDefaultEventSet());
 		assertFalse(esd.isUnicast());
+		// Regression for HARMONY-1237
+        try {
+            new EventSetDescriptor(Thread.class, "0xABCD", Thread.class,
+                    new String[] {}, "aaa", null, "bbb");
+            fail("IntrospectionException expected");
+        } catch (IntrospectionException e) {
+            //expected
+        }
 	}
 
 	/*

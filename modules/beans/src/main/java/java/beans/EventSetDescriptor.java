@@ -363,8 +363,10 @@ public class EventSetDescriptor extends FeatureDescriptor {
             throws ClassNotFoundException {
         String listenerTypeName = listenerType.getName();
         int idx = listenerTypeName.lastIndexOf("Listener");
-        String eventTypeName = listenerTypeName.substring(0, idx) + "Event";
-
+        String eventTypeName = listenerTypeName;
+        if (idx != -1) {
+            eventTypeName = listenerTypeName.substring(0, idx) + "Event";
+        }
         return Class
                 .forName(eventTypeName, true, listenerType.getClassLoader());
     }
