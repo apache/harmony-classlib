@@ -19,7 +19,7 @@
 * @version $Revision$
 */
 
-package javax.security.auth;
+package org.apache.harmony.auth.tests.javax.security.auth;
 
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -31,8 +31,11 @@ import java.security.Principal;
 import java.security.ProtectionDomain;
 import java.security.cert.Certificate;
 
-import org.apache.harmony.auth.internal.SecurityTest;
+import javax.security.auth.AuthPermission;
+import javax.security.auth.Subject;
+import javax.security.auth.SubjectDomainCombiner;
 
+import org.apache.harmony.auth.internal.SecurityTest;
 
 /**
  * Tests SubjectDomainCombiner class
@@ -41,8 +44,8 @@ import org.apache.harmony.auth.internal.SecurityTest;
 public class SubjectDomainCombinerTest extends SecurityTest {
 
     public static void main(String[] args) {
-        junit.textui.TestRunner
-                .run(javax.security.auth.SubjectDomainCombinerTest.class);
+        junit.textui.TestRunner.run(
+                org.apache.harmony.auth.tests.javax.security.auth.SubjectDomainCombinerTest.class);
     }
 
     /**
