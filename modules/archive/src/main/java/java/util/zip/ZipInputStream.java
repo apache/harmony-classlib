@@ -74,13 +74,15 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
 	}
 
 	/**
-	 * Closes this ZipInputStream.
-	 */
-	public void close() throws IOException {
-		closeEntry(); // Close the current entry
-		zipClosed = true;
-		super.close();
-	}
+     * Closes this ZipInputStream.
+     */
+    public void close() throws IOException {
+        if (zipClosed != true) {
+            closeEntry(); // Close the current entry
+            zipClosed = true;
+            super.close();
+        }
+    }
 
 	/**
 	 * Closes the current zip entry and positions to read the next entry.

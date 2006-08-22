@@ -65,6 +65,19 @@ public class ZipInputStreamTest extends junit.framework.TestCase {
 	}
 
 	/**
+     * @tests java.util.zip.ZipInputStream#close()
+     */
+    public void test_close2() {
+        // Regression for HARMONY-1101
+        try {
+            zis.close();
+            zis.close();
+        } catch (java.io.IOException e) {
+            fail("No exception expected: " + e);
+        }
+    }
+
+	/**
 	 * @tests java.util.zip.ZipInputStream#closeEntry()
 	 */
 	public void test_closeEntry() {
