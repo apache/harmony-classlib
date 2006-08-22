@@ -18,12 +18,13 @@ package org.apache.harmony.beans.tests.java.beans;
 import java.beans.Beans;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
-import java.io.IOException;
-
-import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
+import java.io.Serializable;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 /**
  * Unit test for class PropertyVetoException
@@ -64,49 +65,43 @@ public class PropertyVetoExceptionTest extends TestCase {
 		assertNull(e.getPropertyChangeEvent());
 	}
 
-	public void testSerializablization() throws IOException,
-			ClassNotFoundException {
-		String message = "testPropertyVetoException";
-		PropertyVetoException e = new PropertyVetoException(message, event);
-		assertSame(message, e.getMessage());
-		assertSame(event, e.getPropertyChangeEvent());
+    // comparator for PropertyVetoException objects
+    private static final SerializableAssert comparator = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
 
-		PropertyVetoException deserializedException = (PropertyVetoException) SerializationTester
-				.getDeserilizedObject(e);
+            SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(initial,
+                    deserialized);
 
-		assertEquals(message, deserializedException.getMessage());
-		assertEquals(event.getNewValue(), deserializedException
-				.getPropertyChangeEvent().getNewValue());
-		assertEquals(event.getOldValue(), deserializedException
-				.getPropertyChangeEvent().getOldValue());
-		assertEquals(event.getPropertyName(), deserializedException
-				.getPropertyChangeEvent().getPropertyName());
-		assertEquals(event.getPropagationId(), deserializedException
-				.getPropertyChangeEvent().getPropagationId());
-		assertNull(deserializedException.getPropertyChangeEvent().getSource());
-	}
+            PropertyVetoException initEx = (PropertyVetoException) initial;
+            PropertyVetoException desrEx = (PropertyVetoException) deserialized;
 
-	public void testSerializablization_Compatibility() throws Exception {
-		String message = "testPropertyVetoException";
-		PropertyVetoException e = new PropertyVetoException(message, event);
-		assertSame(message, e.getMessage());
-		assertSame(event, e.getPropertyChangeEvent());
+            assertNull(desrEx.getPropertyChangeEvent().getSource());
 
-		PropertyVetoException deserializedException = (PropertyVetoException) SerializationTester
-				.readObject(e, "serialization/java/beans/PropertyVetoException.ser");
+            // compare event objects
+            PropertyChangeEventTest.comparator.assertDeserialized(initEx
+                    .getPropertyChangeEvent(), desrEx.getPropertyChangeEvent());
+        }
+    };
 
-		assertEquals(message, deserializedException.getMessage());
-		assertEquals(event.getNewValue(), deserializedException
-				.getPropertyChangeEvent().getNewValue());
-		assertEquals(event.getOldValue(), deserializedException
-				.getPropertyChangeEvent().getOldValue());
-		assertEquals(event.getPropertyName(), deserializedException
-				.getPropertyChangeEvent().getPropertyName());
-		assertEquals(event.getPropagationId(), deserializedException
-				.getPropertyChangeEvent().getPropagationId());
-		assertNull(deserializedException.getPropertyChangeEvent().getSource());
-	}
-    
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new PropertyVetoException(
+                "testPropertyVetoException", event), comparator);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new PropertyVetoException(
+                "testPropertyVetoException", event), comparator);
+    }
+
     public void testPropertyVetoExceptionMessage() {
         // Regression for HARMONY-235 (tracking the similar bug)
         PropertyChangeEvent event = new PropertyChangeEvent(new Beans(),

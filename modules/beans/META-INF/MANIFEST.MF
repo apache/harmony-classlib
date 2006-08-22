@@ -19,6 +19,7 @@ Import-Package: java.applet,
  javax.accessibility;resolution:=optional,
  org.xml.sax,
  org.xml.sax.helpers,
+ org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional,
  tests.util;hy_usage=test;resolution:=optional
 Export-Package: java.beans,
  java.beans.beancontext

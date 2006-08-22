@@ -16,10 +16,12 @@
 package org.apache.harmony.beans.tests.java.beans;
 
 import java.beans.PropertyChangeEvent;
-
-import tests.util.SerializationTester;
+import java.io.Serializable;
 
 import junit.framework.TestCase;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 /**
  * Test class java.beans.PropertyChangeEvent.
@@ -137,40 +139,39 @@ public class PropertyChangeEventTest extends TestCase {
 		assertNull(event.getPropagationId());
 	}
 
-	/*
-	 * Test serialization/deserialization.
-	 */
-	public void testSerialization() throws Exception {
-		Object src = new Object();
-		Object oldValue = "oldValue";
-		Object newValue = "newValue";
+    // comparator for PropertyChangeEvent objects
+    public static final SerializableAssert comparator = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
 
-		PropertyChangeEvent event = new PropertyChangeEvent(src, "myPropName",
-				oldValue, newValue);
-		PropertyChangeEvent deEvent = (PropertyChangeEvent) SerializationTester
-				.getDeserilizedObject(event);
-		assertEquals(event.getNewValue(), deEvent.getNewValue());
-		assertEquals(event.getOldValue(), deEvent.getOldValue());
-		assertEquals(event.getPropagationId(), deEvent.getPropagationId());
-		assertEquals(event.getPropertyName(), deEvent.getPropertyName());
-	}
+            PropertyChangeEvent initEv = (PropertyChangeEvent) initial;
+            PropertyChangeEvent desrEv = (PropertyChangeEvent) deserialized;
 
-	/*
-	 * Test serialization compatibility.
-	 */
-	public void testSerializationCompatibility() throws Exception {
-		Object src = new Object();
-		Object oldValue = "oldValue";
-		Object newValue = "newValue";
+            assertEquals("NewValue", initEv.getNewValue(), desrEv.getNewValue());
+            assertEquals("OldValue", initEv.getOldValue(), desrEv.getOldValue());
+            assertEquals("PropagationId", initEv.getPropagationId(), desrEv
+                    .getPropagationId());
+            assertEquals("PropertyName", initEv.getPropertyName(), desrEv
+                    .getPropertyName());
+        }
+    };
 
-		PropertyChangeEvent event = new PropertyChangeEvent(src, "myPropName",
-				oldValue, newValue);
-		PropertyChangeEvent deEvent = (PropertyChangeEvent) SerializationTester
-				.readObject(event,
-						"serialization/java/beans/PropertyChangeEvent.ser");
-		assertEquals(event.getNewValue(), deEvent.getNewValue());
-		assertEquals(event.getOldValue(), deEvent.getOldValue());
-		assertEquals(event.getPropagationId(), deEvent.getPropagationId());
-		assertEquals(event.getPropertyName(), deEvent.getPropertyName());
-	}
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new PropertyChangeEvent(new Object(),
+                "myPropName", "oldValue", "newValue"), comparator);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest
+                .verifyGolden(this, new PropertyChangeEvent(new Object(),
+                        "myPropName", "oldValue", "newValue"), comparator);
+    }
 }

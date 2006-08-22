@@ -16,11 +16,10 @@
 package org.apache.harmony.beans.tests.java.beans;
 
 import java.beans.IntrospectionException;
-import java.io.IOException;
-
-import tests.util.SerializationTester;
 
 import junit.framework.TestCase;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * Unit test of IntrospectionException.
@@ -39,25 +38,22 @@ public class IntrospectionExceptionTest extends TestCase {
         assertNull(e.getMessage());
     }
 
-    public void testSerialization() throws IOException, ClassNotFoundException {
-        String message = "IntrospectionExceptionTest";
-        IntrospectionException e = new IntrospectionException(message);
-        assertSame(message, e.getMessage());
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
 
-        IntrospectionException de = (IntrospectionException) SerializationTester
-                .getDeserilizedObject(e);
-        assertEquals(message, de.getMessage());
+        SerializationTest.verifySelf(new IntrospectionException(
+                "IntrospectionExceptionTest"));
     }
 
-    public void testSerialization_Compatibility() throws Exception {
-        String message = "IntrospectionExceptionTest";
-        IntrospectionException e = new IntrospectionException(message);
-        assertSame(message, e.getMessage());
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
 
-        IntrospectionException de = (IntrospectionException) SerializationTester
-                .readObject(e,
-                        "serialization/java/beans/IntrospectionException.ser");
-        assertEquals(message, de.getMessage());
+        SerializationTest.verifyGolden(this, new IntrospectionException(
+                "IntrospectionExceptionTest"));
     }
     
     public void testIntrospectionExceptionMessage() {
