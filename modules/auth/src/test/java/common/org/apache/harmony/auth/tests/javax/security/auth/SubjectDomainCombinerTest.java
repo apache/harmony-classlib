@@ -58,7 +58,7 @@ public class SubjectDomainCombinerTest extends SecurityTest {
 
         SubjectDomainCombiner combiner = new SubjectDomainCombiner(subject);
 
-        assertTrue("Subject is not null", subject == combiner.getSubject());
+        assertSame("Subject", subject, combiner.getSubject());
 
         try {
             // Regression for HARMONY-219
@@ -69,7 +69,8 @@ public class SubjectDomainCombinerTest extends SecurityTest {
     }
 
     /**
-     * Testing combine(ProtectionDomain[], ProtectionDomain[]) 
+     * @tests javax.security.auth.SubjectDomainCombiner#combine(ProtectionDomain[],
+     *        ProtectionDomain[])
      */
     public final void testCombine() throws Exception {
 
@@ -87,11 +88,10 @@ public class SubjectDomainCombinerTest extends SecurityTest {
 
         ProtectionDomain[] pd;
 
-        // both prarameters are null
-        pd = combiner.combine(null, null);
-        assertEquals("Returned protection domain array", null, pd);
+        // test case: both prarameters are null
+        assertNull(combiner.combine(null, null));
 
-        // check assigned principals
+        // test case: check assigned principals
         URL url = new URL("file://foo.txt");
 
         CodeSource source = new CodeSource(url, (Certificate[]) null);
@@ -110,29 +110,25 @@ public class SubjectDomainCombinerTest extends SecurityTest {
 
         pd = combiner.combine(new ProtectionDomain[] { domain }, null);
 
-        assertTrue("CodeSource", source == pd[0].getCodeSource());
-        assertTrue("PermissionCollection", permissions == pd[0]
+        assertSame("CodeSource", source, pd[0].getCodeSource());
+        assertSame("PermissionCollection", permissions, pd[0]
                 .getPermissions());
-        assertTrue("ClassLoader", classLoader == pd[0].getClassLoader());
+        assertSame("ClassLoader", classLoader, pd[0].getClassLoader());
 
         assertEquals("Size", 1, pd[0].getPrincipals().length);
-        assertTrue("Principal", principal == (pd[0].getPrincipals())[0]);
+        assertSame("Principal", principal, (pd[0].getPrincipals())[0]);
 
-        // check inherited domains
+        // test case: check inherited domains
         pd = combiner.combine(null, new ProtectionDomain[] { domain });
-        assertTrue("Inherited domain", domain == pd[0]);
+        assertSame("Inherited domain", domain, pd[0]);
     }
 
     public final void testSecurityException() {
 
         denyPermission(new AuthPermission("getSubjectFromDomainCombiner"));
 
-        Subject subject = new Subject();
-
-        SubjectDomainCombiner combiner = new SubjectDomainCombiner(subject);
-
         try {
-            combiner.getSubject();
+            new SubjectDomainCombiner(new Subject()).getSubject();
         } catch (AccessControlException e) {
             assertEquals(e, AuthPermission.class);
         }
