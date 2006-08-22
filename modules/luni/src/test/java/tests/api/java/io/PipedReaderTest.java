@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -202,6 +202,153 @@ public class PipedReaderTest extends junit.framework.TestCase {
         } catch (ArrayIndexOutOfBoundsException t) {
             fail("IndexOutOfBoundsException expected");
         } catch (IndexOutOfBoundsException t) {
+        }
+    }
+    
+    /**
+     * @tests java.io.PipedReader#read(char[], int, int)
+     */
+    public void test_read_$CII_IOException() throws IOException {
+        PipedWriter pw = new PipedWriter();
+        PipedReader pr = new PipedReader(pw);
+        char[] buf = null;
+        pr.close();
+        try {
+            pr.read(buf, 0, 10);
+            fail("Should throws IOException"); //$NON-NLS-1$
+        } catch (IOException e) {
+            // expected
+        } finally {
+            pw = null;
+            pr = null;
+        }
+        
+        pr = new PipedReader();
+        buf = null;
+        pr.close();
+        try {
+            pr.read(buf, 0, 10);
+            fail("Should throws IOException"); //$NON-NLS-1$
+        } catch (IOException e) {
+            // expected
+        } finally {
+            pr = null;
+        }
+        
+        pw = new PipedWriter();
+        pr = new PipedReader(pw);
+        buf = new char[10];
+        pr.close();
+        try {
+            pr.read(buf, -1, 0);
+            fail("Should throws IOException"); //$NON-NLS-1$
+        } catch (IOException e) {
+            // expected
+        } finally {
+            pw = null;
+            pr = null;
+        }
+        
+        pw = new PipedWriter();
+        pr = new PipedReader(pw);
+        buf = new char[10];
+        pr.close();
+        try {
+            pr.read(buf, 0, -1);
+            fail("Should throws IOException"); //$NON-NLS-1$
+        } catch (IOException e) {
+            // expected
+        } finally {
+            pw = null;
+            pr = null;
+        }
+        
+        pw = new PipedWriter();
+        pr = new PipedReader(pw);
+        buf = new char[10];
+        pr.close();
+        try {
+            pr.read(buf, 1, 10);
+            fail("Should throws IOException"); //$NON-NLS-1$
+        } catch (IOException e) {
+            // expected
+        } finally {
+            pw = null;
+            pr = null;
+        }
+        
+        pw = new PipedWriter();
+        pr = new PipedReader(pw);
+        pr.close();
+        try {
+            pr.read(new char[0], -1, -1);
+            fail("should throw IOException"); //$NON-NLS-1$
+        } catch (IOException e) {
+            // expected
+        } finally {
+            pw = null;
+            pr = null;
+        }
+        
+        pw = new PipedWriter();
+        pr = new PipedReader(pw);
+        pr.close();
+        try {
+            pr.read(null, 0, 1);
+            fail("should throw IOException"); //$NON-NLS-1$
+        } catch (IOException e) {
+            // expected
+        } finally {
+            pw = null;
+            pr = null;
+        }
+        
+        pw = new PipedWriter();
+        pr = new PipedReader(pw);
+        try {
+            pr.read(null, -1, 1);
+            fail("should throw IndexOutOfBoundsException"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        } finally {
+            pw = null;
+            pr = null;
+        }
+        
+        pw = new PipedWriter();
+        pr = new PipedReader(pw);
+        try {
+            pr.read(null, 0, -1);
+            fail("should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        } finally {
+            pw = null;
+            pr = null;
+        }
+        
+        pw = new PipedWriter();
+        pr = new PipedReader(pw);
+        try {
+            pr.read(new char[10], 11, 0);
+            fail("should throw IndexOutOfBoundsException"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        } finally {
+            pw = null;
+            pr = null;
+        }
+        
+        pw = new PipedWriter();
+        pr = new PipedReader(pw);
+        try {
+            pr.read(null, 1, 0);
+            fail("should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        } finally {
+            pw = null;
+            pr = null;
         }
     }
 

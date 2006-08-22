@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,7 +88,7 @@ public class PipedWriter extends Writer {
 		synchronized (lock) {
 			if (this.dest == null) {
 				if (!closed) {
-					stream.establishConnection(this);
+					stream.establishConnection();
 					this.dest = stream;
 				} else
 					throw new IOException(org.apache.harmony.luni.util.Msg
