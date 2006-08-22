@@ -25,7 +25,7 @@ public class URLEncoderTest extends TestCase {
 	/**
 	 * @tests URLEncoder#encode(String, String)
 	 */
-	public void test_encodeLjava_lang_StringLjava_lang_String() {
+	public void test_encodeLjava_lang_StringLjava_lang_String() throws Exception {
 		// Regression for HARMONY-24
         try {
             URLEncoder.encode("str","unknown_enc");
@@ -33,5 +33,12 @@ public class URLEncoderTest extends TestCase {
         } catch (UnsupportedEncodingException e) {
             // expected
         } 
+		//Regression for HARMONY-1233
+		try {
+			URLEncoder.encode(null, "harmony");
+			fail("NullPointerException expected");
+		} catch (NullPointerException e) {
+			//expected
+		}
 	}
 }

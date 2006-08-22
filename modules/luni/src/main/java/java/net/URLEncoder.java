@@ -91,7 +91,7 @@ public class URLEncoder {
 	 */
 	public static String encode(String s, String enc)
 			throws UnsupportedEncodingException {
-		if (enc == null) {
+		if (s == null || enc == null) {
 			throw new NullPointerException();
 		}
 		// check for UnsupportedEncodingException
