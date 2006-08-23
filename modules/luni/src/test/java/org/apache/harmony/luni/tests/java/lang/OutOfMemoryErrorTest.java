@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,9 @@ public class OutOfMemoryErrorTest extends junit.framework.TestCase {
 	 */
 	public void test_Constructor() {
 		// Test for method java.lang.OutOfMemoryError()
-		try {
-			StringBuffer large[] = new StringBuffer[100000];
-
-			for (int i = 0; i < large.length; i++)
-				large[i] = new StringBuffer(1000000);
-		} catch (OutOfMemoryError e) {
-			return;
-		}
-		fail("No error generated");
+	    Error e = new OutOfMemoryError();
+        assertEquals(null, e.getCause());
+        assertEquals(null, e.getMessage());
 	}
 
 	/**
@@ -38,29 +32,13 @@ public class OutOfMemoryErrorTest extends junit.framework.TestCase {
 	 */
 	public void test_ConstructorLjava_lang_String() {
 		// Test for method java.lang.OutOfMemoryError(java.lang.String)
-		try {
-			StringBuffer large[] = new StringBuffer[100000];
-
-			for (int i = 0; i < large.length; i++)
-				large[i] = new StringBuffer(1000000);
-		} catch (OutOfMemoryError e) {
-			return;
-		}
-		fail("No error generated");
+		Error e = new OutOfMemoryError(null);
+        assertEquals(null, e.getMessage());
+        assertEquals(null, e.getCause());
+        
+        e= new OutOfMemoryError("msg");
+        assertEquals("msg", e.getMessage());
+        assertEquals(null, e.getCause());
 	}
 
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-		System.gc();
-	}
 }
