@@ -19,22 +19,24 @@
 * @version $Revision$
 */
 
-package javax.security.auth.login;
+package org.apache.harmony.auth.tests.javax.security.auth.login;
+
+import javax.security.auth.login.AccountException;
 
 import junit.framework.TestCase;
 
 /**
- * Tests AccountLockedException class
+ * Tests AccountException class
  */
 
-public class AccountLockedExceptionTest extends TestCase {
+public class AccountExceptionTest extends TestCase {
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccountLockedExceptionTest.class);
+        junit.textui.TestRunner.run(AccountExceptionTest.class);
     }
 
-    public final void testAccountLockedException_01() {
-        AccountLockedException tE = new AccountLockedException();
+    public final void testAccountException_01() {
+        AccountException tE = new AccountException();
         assertEquals (null, tE.getMessage());
         try {
             throw tE;
@@ -44,33 +46,21 @@ public class AccountLockedExceptionTest extends TestCase {
 
     }
 
-    public final void testAccountLockedException_02() {
-        AccountLockedException tE = new AccountLockedException("message");
+    public final void testAccountException_02() {
+        AccountException tE = new AccountException("message");
         assertEquals ("message", tE.getMessage());
         try {
             throw tE;
         }catch (Exception e){
             assertTrue(tE.equals(e));
         }
-
     }
-    
-    public final void testAccountLockedException_03() {
-        AccountLockedException tE = new AccountLockedException("message");
+
+    public final void testAccountException_03() {
         try {
-            throw tE;
-        }catch (AccountException e){
-            assertTrue(tE.equals(e));
-        }
-        try {
-            throw tE;
-        }catch (AccountLockedException e){
-            assertTrue(tE.equals(e));
-        }
-        try {
-            throw new AccountLockedException();
-        }catch (AccountException e){
-            assertEquals("javax.security.auth.login.AccountLockedException", e
+            throw new AccountException();
+        }catch (Exception e){
+            assertEquals("javax.security.auth.login.AccountException", e
                     .getClass().getName());
         }
     }

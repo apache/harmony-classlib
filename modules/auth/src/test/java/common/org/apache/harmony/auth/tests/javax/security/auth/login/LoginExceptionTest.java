@@ -19,22 +19,23 @@
 * @version $Revision$
 */
 
-package javax.security.auth.login;
+package org.apache.harmony.auth.tests.javax.security.auth.login;
+
+import javax.security.auth.login.LoginException;
 
 import junit.framework.TestCase;
-
 /**
- * Tests AccountException class
+ * Tests LoginException class
  */
 
-public class AccountExceptionTest extends TestCase {
+public class LoginExceptionTest extends TestCase {
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccountExceptionTest.class);
+        junit.textui.TestRunner.run(LoginExceptionTest.class);
     }
 
-    public final void testAccountException_01() {
-        AccountException tE = new AccountException();
+    public final void testLoginException_01() {
+        LoginException tE = new LoginException();
         assertEquals (null, tE.getMessage());
         try {
             throw tE;
@@ -44,8 +45,8 @@ public class AccountExceptionTest extends TestCase {
 
     }
 
-    public final void testAccountException_02() {
-        AccountException tE = new AccountException("message");
+    public final void testLoginException_02() {
+        LoginException tE = new LoginException("message");
         assertEquals ("message", tE.getMessage());
         try {
             throw tE;
@@ -54,11 +55,11 @@ public class AccountExceptionTest extends TestCase {
         }
     }
 
-    public final void testAccountException_03() {
+    public final void testLoginException_03() {
         try {
-            throw new AccountException();
+            throw new LoginException();
         }catch (Exception e){
-            assertEquals("javax.security.auth.login.AccountException", e
+            assertEquals("javax.security.auth.login.LoginException", e
                     .getClass().getName());
         }
     }

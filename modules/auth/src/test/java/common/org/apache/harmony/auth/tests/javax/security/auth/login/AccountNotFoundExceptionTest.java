@@ -19,23 +19,25 @@
 * @version $Revision$
 */
 
-package javax.security.auth.login;
+package org.apache.harmony.auth.tests.javax.security.auth.login;
+
+import javax.security.auth.login.AccountException;
+import javax.security.auth.login.AccountNotFoundException;
 
 import junit.framework.TestCase;
 
-
 /**
- * Tests AccountExpiredException class
+ * Tests AccountNotFoundException class
  */
 
-public class AccountExpiredExceptionTest extends TestCase {
+public class AccountNotFoundExceptionTest extends TestCase {
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(AccountExpiredExceptionTest.class);
+        junit.textui.TestRunner.run(AccountNotFoundExceptionTest.class);
     }
-
-    public final void testAccountExpiredException_01() {
-        AccountExpiredException tE = new AccountExpiredException();
+ 
+    public final void testAccountNotFoundException_01() {
+        AccountNotFoundException tE = new AccountNotFoundException();
         assertEquals (null, tE.getMessage());
         try {
             throw tE;
@@ -45,8 +47,8 @@ public class AccountExpiredExceptionTest extends TestCase {
 
     }
 
-    public final void testAccountExpiredException_02() {
-        AccountExpiredException tE = new AccountExpiredException("message");
+    public final void testAccountNotFoundException_02() {
+        AccountNotFoundException tE = new AccountNotFoundException("message");
         assertEquals ("message", tE.getMessage());
         try {
             throw tE;
@@ -56,8 +58,8 @@ public class AccountExpiredExceptionTest extends TestCase {
 
     }
     
-    public final void testAccountExpiredException_03() {
-        AccountExpiredException tE = new AccountExpiredException("message");
+    public final void testAccountNotFoundException_03() {
+        AccountNotFoundException tE = new AccountNotFoundException("message");
         try {
             throw tE;
         }catch (AccountException e){
@@ -65,14 +67,14 @@ public class AccountExpiredExceptionTest extends TestCase {
         }
         try {
             throw tE;
-        }catch (AccountExpiredException e){
+        }catch (AccountNotFoundException e){
             assertTrue(tE.equals(e));
         }
         try {
-            throw new AccountExpiredException();
+            throw new AccountNotFoundException();
         }catch (AccountException e){
-            assertEquals("javax.security.auth.login.AccountExpiredException", e
-                    .getClass().getName());
+            assertEquals("javax.security.auth.login.AccountNotFoundException",
+                    e.getClass().getName());
         }
     }
 }

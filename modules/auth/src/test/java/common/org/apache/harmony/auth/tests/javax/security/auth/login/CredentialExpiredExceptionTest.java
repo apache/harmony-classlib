@@ -19,7 +19,10 @@
 * @version $Revision$
 */
 
-package javax.security.auth.login;
+package org.apache.harmony.auth.tests.javax.security.auth.login;
+
+import javax.security.auth.login.CredentialException;
+import javax.security.auth.login.CredentialExpiredException;
 
 import junit.framework.TestCase;
 

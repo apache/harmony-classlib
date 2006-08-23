@@ -19,22 +19,24 @@
 * @version $Revision$
 */
 
-package javax.security.auth.login;
+package org.apache.harmony.auth.tests.javax.security.auth.login;
+
+import javax.security.auth.login.CredentialException;
 
 import junit.framework.TestCase;
 
 /**
- * Tests CredentialNotFoundException class
+ * Tests CredentialException class
  */
 
-public class CredentialNotFoundExceptionTest extends TestCase {
+public class CredentialExceptionTest extends TestCase {
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(CredentialNotFoundExceptionTest.class);
+        junit.textui.TestRunner.run(CredentialExceptionTest.class);
     }
-
-    public final void testCredentialNotFoundException_01() {
-        CredentialNotFoundException tE = new CredentialNotFoundException();
+    
+    public final void testCredentialException_01() {
+        CredentialException tE = new CredentialException();
         assertEquals (null, tE.getMessage());
         try {
             throw tE;
@@ -44,35 +46,23 @@ public class CredentialNotFoundExceptionTest extends TestCase {
 
     }
 
-    public final void testCredentialNotFoundException_02() {
-        CredentialNotFoundException tE = new CredentialNotFoundException("message");
+    public final void testCredentialException_02() {
+        CredentialException tE = new CredentialException("message");
         assertEquals ("message", tE.getMessage());
         try {
             throw tE;
         }catch (Exception e){
             assertTrue(tE.equals(e));
         }
-
     }
-    
-    public final void testCredentialNotFoundException_03() {
-        CredentialNotFoundException tE = new CredentialNotFoundException("message");
+
+
+    public final void testCredentialException_03() {
         try {
-            throw tE;
-        }catch (CredentialException e){
-            assertTrue(tE.equals(e));
-        }
-        try {
-            throw tE;
-        }catch (CredentialNotFoundException e){
-            assertTrue(tE.equals(e));
-        }
-        try {
-            throw new CredentialNotFoundException();
-        }catch (CredentialException e){
-            assertEquals(
-                    "javax.security.auth.login.CredentialNotFoundException", e
-                            .getClass().getName());
+            throw new CredentialException();
+        }catch (Exception e){
+            assertEquals("javax.security.auth.login.CredentialException", e
+                    .getClass().getName());
         }
     }
 }

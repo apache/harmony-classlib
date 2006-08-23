@@ -19,32 +19,34 @@
 * @version $Revision$
 */
 
-package javax.security.auth.login;
+package org.apache.harmony.auth.tests.javax.security.auth.login;
+
+import javax.security.auth.login.FailedLoginException;
+import javax.security.auth.login.LoginException;
 
 import junit.framework.TestCase;
 /**
- * Tests LoginException class
+ * Tests FailedLoginException class
  */
 
-public class LoginExceptionTest extends TestCase {
+public class FailedLoginExceptionTest extends TestCase {
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(LoginExceptionTest.class);
+        junit.textui.TestRunner.run(FailedLoginExceptionTest.class);
     }
 
-    public final void testLoginException_01() {
-        LoginException tE = new LoginException();
+    public final void testFailedLoginException_01() {
+        FailedLoginException tE = new FailedLoginException();
         assertEquals (null, tE.getMessage());
         try {
             throw tE;
         }catch (Exception e){
             assertTrue(tE.equals(e));
         }
-
     }
 
-    public final void testLoginException_02() {
-        LoginException tE = new LoginException("message");
+    public final void testFailedLoginException_02() {
+        FailedLoginException tE = new FailedLoginException("message");
         assertEquals ("message", tE.getMessage());
         try {
             throw tE;
@@ -52,12 +54,23 @@ public class LoginExceptionTest extends TestCase {
             assertTrue(tE.equals(e));
         }
     }
-
-    public final void testLoginException_03() {
+    
+    public final void testFailedLoginException_03() {
+        FailedLoginException tE = new FailedLoginException("message");
         try {
-            throw new LoginException();
-        }catch (Exception e){
-            assertEquals("javax.security.auth.login.LoginException", e
+            throw tE;
+        }catch (LoginException e){
+            assertTrue(tE.equals(e));
+        }
+        try {
+            throw tE;
+        }catch (FailedLoginException e){
+            assertTrue(tE.equals(e));
+        }
+        try {
+            throw new FailedLoginException();
+        }catch (LoginException e){
+            assertEquals("javax.security.auth.login.FailedLoginException", e
                     .getClass().getName());
         }
     }
