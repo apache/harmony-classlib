@@ -376,7 +376,7 @@ public class EncryptedPrivateKeyInfo {
     // EncryptedPrivateKeyInfo DER encoder/decoder.
     // EncryptedPrivateKeyInfo ASN.1 definition
     // (as defined in PKCS #8: Private-Key Information Syntax Standard
-    //  http://www.rsasecurity.com/rsalabs/node.asp?id=2130)
+    //  http://www.ietf.org/rfc/rfc2313.txt)
     //
     // EncryptedPrivateKeyInfo ::=  SEQUENCE {
     //      encryptionAlgorithm   AlgorithmIdentifier,
@@ -406,7 +406,7 @@ public class EncryptedPrivateKeyInfo {
     // PrivateKeyInfo DER decoder.
     // PrivateKeyInfo ASN.1 definition
     // (as defined in PKCS #8: Private-Key Information Syntax Standard
-    //  http://www.rsasecurity.com/rsalabs/node.asp?id=2130)
+    //  http://www.ietf.org/rfc/rfc2313.txt)
     //
     // 
     //    PrivateKeyInfo ::= SEQUENCE {

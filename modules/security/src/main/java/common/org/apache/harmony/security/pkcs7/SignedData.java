@@ -36,7 +36,7 @@ import org.apache.harmony.security.x509.CertificateList;
 
 /**
  * As defined in PKCS #7: Cryptographic Message Syntax Standard
- * (http://www.rsasecurity.com/rsalabs/node.asp?id=2129)
+ * (http://www.ietf.org/rfc/rfc2315.txt)
  * 
  * SignedData ::= SEQUENCE { 
  *   version Version, 

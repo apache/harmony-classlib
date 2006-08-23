@@ -61,7 +61,7 @@ import org.apache.harmony.security.x509.Certificate;
  * ContentInfo structure. CertPath object is generated on the base of
  * certificates presented in <code>certificates</code> field of the SignedData
  * object which in its turn is retrieved from ContentInfo structure.
- * (see http://www.rsasecurity.com/rsalabs/node.asp?id=2129
+ * (see http://www.ietf.org/rfc/rfc2315.txt
  * for more info on PKCS #7)
  * <br>
  * &nbsp;

@@ -33,7 +33,7 @@ import org.apache.harmony.security.asn1.BerInputStream;
 
 /**
  * As defined in PKCS #7: Cryptographic Message Syntax Standard
- * (http://www.rsasecurity.com/rsalabs/node.asp?id=2129)
+ * (http://www.ietf.org/rfc/rfc2315.txt)
  * 
  * ContentInfo ::= SEQUENCE {
  *       contentType  ContentType,

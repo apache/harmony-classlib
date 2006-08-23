@@ -49,7 +49,7 @@ import org.apache.harmony.security.x501.AttributeTypeAndValue;
 public class JarUtils {
 
 	// as defined in PKCS #9: Selected Attribute Types:
-	// http://www.rsasecurity.com/rsalabs/node.asp?id=2131
+	// http://www.ietf.org/rfc/rfc2985.txt
     private static final int[] MESSAGE_DIGEST_OID =
         new int[] {1, 2, 840, 113549, 1, 9, 4};
 
@@ -57,7 +57,7 @@ public class JarUtils {
      * This method handle all the work with  PKCS7, ASN1 encoding, signature verifying, 
      * and certification path building. 
      * See also PKCS #7: Cryptographic Message Syntax Standard:
-     * http://www.rsasecurity.com/rsalabs/node.asp?id=2129
+     * http://www.ietf.org/rfc/rfc2315.txt
      * @param signature - the input stream of signature file to be verified
      * @param signatureBlock - the input stream of corresponding signature block file
      * @return array of certificates used to verify the signature file

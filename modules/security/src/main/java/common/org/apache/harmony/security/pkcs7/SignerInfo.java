@@ -39,7 +39,7 @@ import org.apache.harmony.security.x509.AlgorithmIdentifier;
 
 /**
  * As defined in PKCS #7: Cryptographic Message Syntax Standard
- * (http://www.rsasecurity.com/rsalabs/node.asp?id=2129)
+ * (http://www.ietf.org/rfc/rfc2315.txt)
  * 
  * SignerInfo ::= SEQUENCE {
  *   version Version,
@@ -187,7 +187,7 @@ public class SignerInfo {
 /**
  * 
  * As defined in PKCS #7: Cryptographic Message Syntax Standard
- * (http://www.rsasecurity.com/rsalabs/node.asp?id=2129):
+ * (http://www.ietf.org/rfc/rfc2315.txt):
  * authenticatedAttributes is a set of attributes that are signed (i.e., authenticated) by the signer
  */
 class AuthenticatedAttributes {
