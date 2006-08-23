@@ -42,13 +42,18 @@ import org.apache.harmony.security.asn1.ASN1UTCTime;
  */
 public class Time {
     
+    private static final long JAN_01_2050 = 2524608000000L;
+    
     public static final ASN1Choice ASN1 = new ASN1Choice(new ASN1Type[] {
             ASN1GeneralizedTime.getInstance(), ASN1UTCTime.getInstance() }) {
 
         public int getIndex(java.lang.Object object) {
-            return 1; // always code as ASN1UTCTime ()
-            // FIXME: But it is correct only if the Date to encode 
-            // is before 2050. See rfc 3280 p.22
+            // choose encoding method (see RFC 3280 p. 22)
+            if (((java.util.Date) object).getTime() < JAN_01_2050) {
+                return 1; // it is before 2050, so encode as UTCTime
+            } else {
+                return 0; // it is after 2050, encode as GeneralizedTime
+            }
         }
 
         public Object getObjectToEncode(Object object) {
