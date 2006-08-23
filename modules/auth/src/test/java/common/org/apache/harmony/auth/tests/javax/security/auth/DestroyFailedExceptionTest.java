@@ -19,25 +19,24 @@
 * @version $Revision$
 */
 
-package javax.security.auth;
+package org.apache.harmony.auth.tests.javax.security.auth;
 
+import javax.security.auth.DestroyFailedException;
 
 import junit.framework.TestCase;
 
 /**
- * Tests RefreshFailedException class
+ * Tests DestroyFailedException class
  */
 
-public class RefreshFailedExceptionTest extends TestCase {
+public class DestroyFailedExceptionTest extends TestCase {
 
-    RefreshFailedException rfe;
-    
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(RefreshFailedExceptionTest.class);
+        junit.textui.TestRunner.run(DestroyFailedExceptionTest.class);
     }
 
-    public final void testRefreshFailedException_01() {
-        RefreshFailedException tE = new RefreshFailedException();
+    public final void testDestroyFailedException_01() {
+        DestroyFailedException tE = new DestroyFailedException();
         assertEquals (null, tE.getMessage());
         try {
             throw tE;
@@ -47,8 +46,8 @@ public class RefreshFailedExceptionTest extends TestCase {
 
     }
 
-    public final void testRefreshFailedException_02() {
-        RefreshFailedException tE = new RefreshFailedException("message");
+    public final void testDestroyFailedException_02() {
+        DestroyFailedException tE = new DestroyFailedException("message");
         assertEquals ("message", tE.getMessage());
         try {
             throw tE;
@@ -57,14 +56,12 @@ public class RefreshFailedExceptionTest extends TestCase {
         }
     }
 
-    public final void testRefreshFailedException_03() {
+    public final void testDestroyFailedException_03() {
         try {
-            throw new RefreshFailedException();
+            throw new DestroyFailedException();
         }catch (Exception e){
-            assertEquals("javax.security.auth.RefreshFailedException", e
+            assertEquals("javax.security.auth.DestroyFailedException", e
                     .getClass().getName());
         }
     }
 }
-
-
