@@ -256,7 +256,11 @@ public final class URL implements java.io.Serializable {
 		if (index >= 0) {
 			if ((startIPv6Addr == -1) || (index < startIPv6Addr)) {
 				protocol = spec.substring(0, index);
-				if (protocol.indexOf('/') >= 0) {
+                // According to RFC 2396 scheme part should match
+                // the following expression:
+                // alpha *( alpha | digit | "+" | "-" | "." )
+                if (!protocol.matches("\\A\\p{Alpha}[\\p{Alnum}+-.]*\\z") || 
+                    protocol.indexOf('/') >= 0) {
 					protocol = null;
 					index = -1;
 				} else {
