@@ -14,10 +14,12 @@
  */
 package java.util;
 
+import java.io.Serializable;
+
 import org.apache.harmony.luni.util.NotYetImplementedException;
 
 public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
-        implements Cloneable, java.io.Serializable {
+        implements Cloneable, Serializable {
     
     final Class<E> elementClass;
 

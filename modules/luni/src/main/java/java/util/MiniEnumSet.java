@@ -77,4 +77,16 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
         int ordinal = element.ordinal();
         return (bits & (1l << ordinal)) != 0;
     }
+    
+    @Override
+    public boolean containsAll(Collection<?> collection) {
+        if (collection.size() == 0) {
+            return true;
+        }
+        if (collection instanceof MiniEnumSet) {
+            MiniEnumSet<E> set = (MiniEnumSet<E>) collection;
+            return isValidType(set.elementClass ) && ((bits & set.bits) == set.bits);
+        }
+        return !(collection instanceof EnumSet) && super.containsAll(collection);  
+    }
 }

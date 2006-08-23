@@ -15,6 +15,8 @@
 
 package tests.api.java.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -34,6 +36,10 @@ public class EnumSetTest extends TestCase {
     
     static enum EnumFoo {
         a, b,c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, aa, bb, cc, dd, ee, ff, gg, hh, ii, jj, kk, ll,
+    }
+    
+    static enum EmptyEnum {
+        // expected
     }
 
     /**
@@ -195,5 +201,80 @@ public class EnumSetTest extends TestCase {
         setWithSubclass.add(EnumWithInnerClass.f);
         result = setWithSubclass.contains(EnumWithInnerClass.f);
         assertTrue("Should contain EnumWithSubclass.f", result); //$NON-NLS-1$
+    }
+    
+    /**
+     * @tests java.util.EnumSet#containsAll(Collection)
+     */
+    @SuppressWarnings( { "unchecked", "boxing" })
+    public void test_containsAll_LCollection() {
+        EnumSet<EnumFoo> set = EnumSet.noneOf(EnumFoo.class);
+        Enum[] elements = EnumFoo.class.getEnumConstants();
+        for(int i = 0; i < elements.length; i++) {
+            set.add((EnumFoo)elements[i]);
+        }
+        try {
+            set.containsAll(null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        EnumSet<EmptyEnum> emptySet = EnumSet.noneOf(EmptyEnum.class);
+        elements = EmptyEnum.class.getEnumConstants();
+        for(int i = 0; i < elements.length; i++) {
+            emptySet.add((EmptyEnum)elements[i]);
+        }
+        boolean result = set.containsAll(emptySet);
+        assertTrue("Should return true", result); //$NON-NLS-1$
+
+        Collection rawCollection = new ArrayList();
+        result = set.containsAll(rawCollection);
+        assertTrue("Should contain empty collection:", result); //$NON-NLS-1$
+
+        rawCollection.add(1);
+        result = set.containsAll(rawCollection);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        rawCollection.add(EnumWithInnerClass.a);
+        result = set.containsAll(rawCollection);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        EnumSet rawSet = EnumSet.noneOf(EnumFoo.class);
+        result = set.containsAll(rawSet);
+        assertTrue("Should contain empty set", result); //$NON-NLS-1$
+
+        emptySet = EnumSet.noneOf(EmptyEnum.class);
+        result = set.containsAll(emptySet);
+        assertTrue("No class cast should be performed on empty set", result); //$NON-NLS-1$
+
+        Collection<EnumFoo> collection = new ArrayList<EnumFoo>();
+        collection.add(EnumFoo.a);
+        result = set.containsAll(collection);
+        assertTrue("Should contain all elements in collection", result); //$NON-NLS-1$
+
+        EnumSet<EnumFoo> fooSet = EnumSet.noneOf(EnumFoo.class);
+        fooSet.add(EnumFoo.a);
+        result = set.containsAll(fooSet);
+        assertTrue("Should return true", result); //$NON-NLS-1$
+
+        set.clear();
+        try {
+            set.containsAll(null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        Collection<EnumWithInnerClass> collectionWithSubclass = new ArrayList<EnumWithInnerClass>();
+        collectionWithSubclass.add(EnumWithInnerClass.a);
+        result = set.containsAll(collectionWithSubclass);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        EnumSet<EnumWithInnerClass> setWithSubclass = EnumSet
+                .noneOf(EnumWithInnerClass.class);
+        setWithSubclass.add(EnumWithInnerClass.a);
+        result = set.containsAll(setWithSubclass);
+        assertFalse("Should return false", result); //$NON-NLS-1$
     }
 }
