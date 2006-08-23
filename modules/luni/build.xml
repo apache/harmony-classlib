@@ -303,7 +303,7 @@
                 <jvmarg value="-Djava.security.policy=../../support/src/test/resources/config/testing.policy" />
 
                 <!-- Required for running the java.net unit tests -->
-                <jvmarg value="-Dtest.ini.file=../..support/src/test/resources/config/localhosttest.ini" />
+                <jvmarg value="-Dtest.ini.file=../../support/src/test/resources/config/localhosttest.ini" />
 
 
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
