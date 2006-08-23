@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -30,6 +31,8 @@ import java.net.SocketImpl;
 import java.net.SocketOptions;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
@@ -58,8 +61,6 @@ class PlainSocketImpl extends SocketImpl {
 
 	private boolean tcpNoDelay = true;
 
-	private Object connectLock = new Object();
-
 	// used to store the trafficClass value which is simply returned
 	// as the value that was set. We also need it to pass it to methods
 	// that specify an address packets are going to be sent to
@@ -74,6 +75,10 @@ class PlainSocketImpl extends SocketImpl {
 	public boolean shutdownInput = false;
 	
 	Proxy proxy = null;
+	
+	private static Field fdField = null;
+	
+	private static Field localportField = null;
 
 	/**
 	 * Accepts a connection on the provided socket, by calling the IP stack.
@@ -91,14 +96,50 @@ class PlainSocketImpl extends SocketImpl {
 		}
 
 		try {
-			netImpl.acceptStreamSocket(fd, newImpl, ((PlainSocketImpl) newImpl)
-					.getFD(), receiveTimeout);
+			if (newImpl instanceof PlainSocketImpl) {
+				PlainSocketImpl newPlainSocketImpl = (PlainSocketImpl) newImpl;
+				netImpl.acceptStreamSocket(fd, newImpl, newPlainSocketImpl
+						.getFileDescriptor(), receiveTimeout);
+				newPlainSocketImpl.setLocalport(getLocalPort());
+			} else {
+				// if newImpl is not an instance of PlainSocketImpl, use
+				// reflection to get/set protected fields.
+				if (null == fdField) {
+					fdField = getSocketImplField("fd"); // $NON-NLS-1$
+				}
+				FileDescriptor newFd = (FileDescriptor) fdField.get(newImpl);
+				netImpl.acceptStreamSocket(fd, newImpl, newFd, receiveTimeout);
+
+				if (null == localportField) {
+					localportField = getSocketImplField("localport"); // $NON-NLS-1$
+				}
+				localportField.setInt(newImpl, getLocalPort());
+			}
 		} catch (InterruptedIOException e) {
 			throw new SocketTimeoutException(e.getMessage());
-		}
-		((PlainSocketImpl) newImpl).setLocalport(getLocalPort());
+		} catch (IllegalAccessException e) {
+			// empty
+		}	
 	}
 
+	/*
+	 * gets SocketImpl field by reflection.
+	 */
+	private Field getSocketImplField(final String fieldName) {
+		return AccessController.doPrivileged(new PrivilegedAction<Field>() {
+			public Field run() {
+				Field field = null;
+				try {
+					field = SocketImpl.class.getDeclaredField(fieldName); //$NON-NLS-1$
+					field.setAccessible(true);
+				} catch (NoSuchFieldException e) {
+				    throw new Error(e);
+				}
+				return field;
+			}
+		});
+	}
+	
 	/**
 	 * Answer the number of bytes that may be read from this socket without
 	 * blocking. This call does not block.

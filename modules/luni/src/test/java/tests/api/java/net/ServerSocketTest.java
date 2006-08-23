@@ -16,7 +16,9 @@
 package tests.api.java.net;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InterruptedIOException;
+import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -24,6 +26,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.net.SocketImpl;
 import java.util.Date;
 import java.util.Properties;
 
@@ -946,6 +949,93 @@ public class ServerSocketTest extends SocketTestCase {
 			Thread.sleep(1000);
 		} catch (java.lang.InterruptedException e) {
 			System.out.println("Exception during startClinet()" + e.toString());
+		}
+	}
+	
+	/**
+	 * @tests java.net.ServerSocket#implAccept
+	 */
+	public void test_implAcceptLjava_net_Socket() throws Exception {
+		// regression test for Harmony-1235
+		try {
+			new MockServerSocket().mockImplAccept(new MockSocket(
+					new MockSocketImpl()));
+		} catch (SocketException e) {
+			// expected
+		}
+	}
+	
+	static class MockSocketImpl extends SocketImpl {
+		protected void create(boolean arg0) throws IOException {
+			// empty
+		}
+
+		protected void connect(String arg0, int arg1) throws IOException {
+			// empty
+		}
+
+		protected void connect(InetAddress arg0, int arg1) throws IOException {
+			// empty
+		}
+
+		protected void connect(SocketAddress arg0, int arg1) throws IOException {
+			// empty
+		}
+
+		protected void bind(InetAddress arg0, int arg1) throws IOException {
+			// empty
+		}
+
+		protected void listen(int arg0) throws IOException {
+			// empty
+		}
+
+		protected void accept(SocketImpl arg0) throws IOException {
+			// empty
+		}
+
+		protected InputStream getInputStream() throws IOException {
+			return null;
+		}
+
+		protected OutputStream getOutputStream() throws IOException {
+			return null;
+		}
+
+		protected int available() throws IOException {
+			return 0;
+		}
+
+		protected void close() throws IOException {
+			// empty
+		}
+
+		protected void sendUrgentData(int arg0) throws IOException {
+			// empty
+		}
+
+		public void setOption(int arg0, Object arg1) throws SocketException {
+			// empty
+		}
+
+		public Object getOption(int arg0) throws SocketException {
+			return null;
+		}
+	}
+
+	static class MockSocket extends Socket {
+		public MockSocket(SocketImpl impl) throws SocketException {
+			super(impl);
+		}
+	}
+
+	static class MockServerSocket extends ServerSocket {
+		public MockServerSocket() throws Exception {
+			super();
+		}
+
+		public void mockImplAccept(Socket s) throws Exception {
+			super.implAccept(s);
 		}
 	}
 }
