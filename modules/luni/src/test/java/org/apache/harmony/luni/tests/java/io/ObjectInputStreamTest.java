@@ -90,6 +90,27 @@ public class ObjectInputStreamTest extends TestCase {
 	    	list.add(this);
 	    }
 	} 	
+    
+    class OIS extends ObjectInputStream {
+        
+        OIS () throws IOException {
+            super();
+         }
+        
+        void test() throws ClassNotFoundException,IOException {
+            readClassDescriptor();
+        }
+        
+    }
+    
+    public void test_readClassDescriptor() throws ClassNotFoundException,IOException {
+        try {
+            new OIS().test();
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+    
 }
 
 

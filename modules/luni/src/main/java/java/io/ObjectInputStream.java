@@ -1710,9 +1710,6 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      */
     protected ObjectStreamClass readClassDescriptor() throws IOException,
             ClassNotFoundException {
-        if (descriptorHandle == null) {
-            throw new NotActiveException();
-        }
 
         ObjectStreamClass newClassDesc = new ObjectStreamClass();
         newClassDesc.setName(input.readUTF());
