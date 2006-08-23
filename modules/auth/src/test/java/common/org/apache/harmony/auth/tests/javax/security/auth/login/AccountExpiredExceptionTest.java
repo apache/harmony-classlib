@@ -21,7 +21,6 @@
 
 package org.apache.harmony.auth.tests.javax.security.auth.login;
 
-import javax.security.auth.login.AccountException;
 import javax.security.auth.login.AccountExpiredException;
 
 import junit.framework.TestCase;
@@ -29,52 +28,30 @@ import junit.framework.TestCase;
 /**
  * Tests AccountExpiredException class
  */
-
 public class AccountExpiredExceptionTest extends TestCase {
+
+    /**
+     * @tests javax.security.auth.login.AccountExpiredException#AccountExpiredException()
+     */
+    public final void testCtor1() {
+        assertNull(new AccountExpiredException().getMessage());
+    }
+
+    /**
+     * @tests javax.security.auth.login.AccountExpiredException#AccountExpiredException(
+     *        java.lang.String)
+     */
+    public final void testCtor2() {
+        assertNull(new AccountExpiredException(null).getMessage());
+
+        String message = "";
+        assertSame(message, new AccountExpiredException(message).getMessage());
+
+        message = "message";
+        assertSame(message, new AccountExpiredException(message).getMessage());
+    }
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(AccountExpiredExceptionTest.class);
-    }
-
-    public final void testAccountExpiredException_01() {
-        AccountExpiredException tE = new AccountExpiredException();
-        assertEquals (null, tE.getMessage());
-        try {
-            throw tE;
-        }catch (Exception e){
-            assertTrue(tE.equals(e));
-        }
-
-    }
-
-    public final void testAccountExpiredException_02() {
-        AccountExpiredException tE = new AccountExpiredException("message");
-        assertEquals ("message", tE.getMessage());
-        try {
-            throw tE;
-        }catch (Exception e){
-            assertTrue(tE.equals(e));
-        }
-
-    }
-    
-    public final void testAccountExpiredException_03() {
-        AccountExpiredException tE = new AccountExpiredException("message");
-        try {
-            throw tE;
-        }catch (AccountException e){
-            assertTrue(tE.equals(e));
-        }
-        try {
-            throw tE;
-        }catch (AccountExpiredException e){
-            assertTrue(tE.equals(e));
-        }
-        try {
-            throw new AccountExpiredException();
-        }catch (AccountException e){
-            assertEquals("javax.security.auth.login.AccountExpiredException", e
-                    .getClass().getName());
-        }
     }
 }

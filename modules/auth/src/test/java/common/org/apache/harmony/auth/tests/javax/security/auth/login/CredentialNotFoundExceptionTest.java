@@ -21,7 +21,6 @@
 
 package org.apache.harmony.auth.tests.javax.security.auth.login;
 
-import javax.security.auth.login.CredentialException;
 import javax.security.auth.login.CredentialNotFoundException;
 
 import junit.framework.TestCase;
@@ -29,53 +28,32 @@ import junit.framework.TestCase;
 /**
  * Tests CredentialNotFoundException class
  */
-
 public class CredentialNotFoundExceptionTest extends TestCase {
+
+    /**
+     * @tests javax.security.auth.login.CredentialNotFoundException#CredentialNotFoundException()
+     */
+    public final void testCtor1() {
+        assertNull(new CredentialNotFoundException().getMessage());
+    }
+
+    /**
+     * @tests javax.security.auth.login.CredentialNotFoundException#CredentialNotFoundException(
+     *        java.lang.String)
+     */
+    public final void testCtor2() {
+        assertNull(new CredentialNotFoundException(null).getMessage());
+
+        String message = "";
+        assertSame(message, new CredentialNotFoundException(message)
+                .getMessage());
+
+        message = "message";
+        assertSame(message, new CredentialNotFoundException(message)
+                .getMessage());
+    }
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(CredentialNotFoundExceptionTest.class);
-    }
-
-    public final void testCredentialNotFoundException_01() {
-        CredentialNotFoundException tE = new CredentialNotFoundException();
-        assertEquals (null, tE.getMessage());
-        try {
-            throw tE;
-        }catch (Exception e){
-            assertTrue(tE.equals(e));
-        }
-
-    }
-
-    public final void testCredentialNotFoundException_02() {
-        CredentialNotFoundException tE = new CredentialNotFoundException("message");
-        assertEquals ("message", tE.getMessage());
-        try {
-            throw tE;
-        }catch (Exception e){
-            assertTrue(tE.equals(e));
-        }
-
-    }
-    
-    public final void testCredentialNotFoundException_03() {
-        CredentialNotFoundException tE = new CredentialNotFoundException("message");
-        try {
-            throw tE;
-        }catch (CredentialException e){
-            assertTrue(tE.equals(e));
-        }
-        try {
-            throw tE;
-        }catch (CredentialNotFoundException e){
-            assertTrue(tE.equals(e));
-        }
-        try {
-            throw new CredentialNotFoundException();
-        }catch (CredentialException e){
-            assertEquals(
-                    "javax.security.auth.login.CredentialNotFoundException", e
-                            .getClass().getName());
-        }
     }
 }

@@ -24,43 +24,34 @@ package org.apache.harmony.auth.tests.javax.security.auth.login;
 import javax.security.auth.login.LoginException;
 
 import junit.framework.TestCase;
+
 /**
  * Tests LoginException class
  */
-
 public class LoginExceptionTest extends TestCase {
+
+    /**
+     * @tests javax.security.auth.login.LoginException#LoginException()
+     */
+    public final void testCtor1() {
+        assertNull(new LoginException().getMessage());
+    }
+
+    /**
+     * @tests javax.security.auth.login.LoginException#LoginException(
+     *        java.lang.String)
+     */
+    public final void testCtor2() {
+        assertNull(new LoginException(null).getMessage());
+
+        String message = "";
+        assertSame(message, new LoginException(message).getMessage());
+
+        message = "message";
+        assertSame(message, new LoginException(message).getMessage());
+    }
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(LoginExceptionTest.class);
-    }
-
-    public final void testLoginException_01() {
-        LoginException tE = new LoginException();
-        assertEquals (null, tE.getMessage());
-        try {
-            throw tE;
-        }catch (Exception e){
-            assertTrue(tE.equals(e));
-        }
-
-    }
-
-    public final void testLoginException_02() {
-        LoginException tE = new LoginException("message");
-        assertEquals ("message", tE.getMessage());
-        try {
-            throw tE;
-        }catch (Exception e){
-            assertTrue(tE.equals(e));
-        }
-    }
-
-    public final void testLoginException_03() {
-        try {
-            throw new LoginException();
-        }catch (Exception e){
-            assertEquals("javax.security.auth.login.LoginException", e
-                    .getClass().getName());
-        }
     }
 }

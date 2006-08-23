@@ -28,41 +28,30 @@ import junit.framework.TestCase;
 /**
  * Tests CredentialException class
  */
-
 public class CredentialExceptionTest extends TestCase {
+
+    /**
+     * @tests javax.security.auth.login.CredentialException#CredentialException()
+     */
+    public final void testCtor1() {
+        assertNull(new CredentialException().getMessage());
+    }
+
+    /**
+     * @tests javax.security.auth.login.CredentialException#CredentialException(
+     *        java.lang.String)
+     */
+    public final void testCtor2() {
+        assertNull(new CredentialException(null).getMessage());
+
+        String message = "";
+        assertSame(message, new CredentialException(message).getMessage());
+
+        message = "message";
+        assertSame(message, new CredentialException(message).getMessage());
+    }
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(CredentialExceptionTest.class);
-    }
-    
-    public final void testCredentialException_01() {
-        CredentialException tE = new CredentialException();
-        assertEquals (null, tE.getMessage());
-        try {
-            throw tE;
-        }catch (Exception e){
-            assertTrue(tE.equals(e));
-        }
-
-    }
-
-    public final void testCredentialException_02() {
-        CredentialException tE = new CredentialException("message");
-        assertEquals ("message", tE.getMessage());
-        try {
-            throw tE;
-        }catch (Exception e){
-            assertTrue(tE.equals(e));
-        }
-    }
-
-
-    public final void testCredentialException_03() {
-        try {
-            throw new CredentialException();
-        }catch (Exception e){
-            assertEquals("javax.security.auth.login.CredentialException", e
-                    .getClass().getName());
-        }
     }
 }

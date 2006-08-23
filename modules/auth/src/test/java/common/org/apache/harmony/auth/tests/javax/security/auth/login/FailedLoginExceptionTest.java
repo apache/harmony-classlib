@@ -22,56 +22,36 @@
 package org.apache.harmony.auth.tests.javax.security.auth.login;
 
 import javax.security.auth.login.FailedLoginException;
-import javax.security.auth.login.LoginException;
 
 import junit.framework.TestCase;
+
 /**
  * Tests FailedLoginException class
  */
-
 public class FailedLoginExceptionTest extends TestCase {
+
+    /**
+     * @tests javax.security.auth.login.FailedLoginException#FailedLoginException()
+     */
+    public final void testCtor1() {
+        assertNull(new FailedLoginException().getMessage());
+    }
+
+    /**
+     * @tests javax.security.auth.login.FailedLoginException#FailedLoginException(
+     *        java.lang.String)
+     */
+    public final void testCtor2() {
+        assertNull(new FailedLoginException(null).getMessage());
+
+        String message = "";
+        assertSame(message, new FailedLoginException(message).getMessage());
+
+        message = "message";
+        assertSame(message, new FailedLoginException(message).getMessage());
+    }
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(FailedLoginExceptionTest.class);
-    }
-
-    public final void testFailedLoginException_01() {
-        FailedLoginException tE = new FailedLoginException();
-        assertEquals (null, tE.getMessage());
-        try {
-            throw tE;
-        }catch (Exception e){
-            assertTrue(tE.equals(e));
-        }
-    }
-
-    public final void testFailedLoginException_02() {
-        FailedLoginException tE = new FailedLoginException("message");
-        assertEquals ("message", tE.getMessage());
-        try {
-            throw tE;
-        }catch (Exception e){
-            assertTrue(tE.equals(e));
-        }
-    }
-    
-    public final void testFailedLoginException_03() {
-        FailedLoginException tE = new FailedLoginException("message");
-        try {
-            throw tE;
-        }catch (LoginException e){
-            assertTrue(tE.equals(e));
-        }
-        try {
-            throw tE;
-        }catch (FailedLoginException e){
-            assertTrue(tE.equals(e));
-        }
-        try {
-            throw new FailedLoginException();
-        }catch (LoginException e){
-            assertEquals("javax.security.auth.login.FailedLoginException", e
-                    .getClass().getName());
-        }
     }
 }

@@ -28,40 +28,30 @@ import junit.framework.TestCase;
 /**
  * Tests DestroyFailedException class
  */
-
 public class DestroyFailedExceptionTest extends TestCase {
+
+    /**
+     * @tests javax.security.auth.DestroyFailedException#DestroyFailedException()
+     */
+    public final void testCtor1() {
+        assertNull(new DestroyFailedException().getMessage());
+    }
+
+    /**
+     * @tests javax.security.auth.DestroyFailedException#DestroyFailedException(
+     *        java.lang.String)
+     */
+    public final void testCtor2() {
+        assertNull(new DestroyFailedException(null).getMessage());
+
+        String message = "";
+        assertSame(message, new DestroyFailedException(message).getMessage());
+
+        message = "message";
+        assertSame(message, new DestroyFailedException(message).getMessage());
+    }
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(DestroyFailedExceptionTest.class);
-    }
-
-    public final void testDestroyFailedException_01() {
-        DestroyFailedException tE = new DestroyFailedException();
-        assertEquals (null, tE.getMessage());
-        try {
-            throw tE;
-        }catch (Exception e){
-            assertTrue(tE.equals(e));
-        }
-
-    }
-
-    public final void testDestroyFailedException_02() {
-        DestroyFailedException tE = new DestroyFailedException("message");
-        assertEquals ("message", tE.getMessage());
-        try {
-            throw tE;
-        }catch (Exception e){
-            assertTrue(tE.equals(e));
-        }
-    }
-
-    public final void testDestroyFailedException_03() {
-        try {
-            throw new DestroyFailedException();
-        }catch (Exception e){
-            assertEquals("javax.security.auth.DestroyFailedException", e
-                    .getClass().getName());
-        }
     }
 }

@@ -21,7 +21,6 @@
 
 package org.apache.harmony.auth.tests.javax.security.auth.login;
 
-import javax.security.auth.login.AccountException;
 import javax.security.auth.login.AccountNotFoundException;
 
 import junit.framework.TestCase;
@@ -29,52 +28,30 @@ import junit.framework.TestCase;
 /**
  * Tests AccountNotFoundException class
  */
-
 public class AccountNotFoundExceptionTest extends TestCase {
+
+    /**
+     * @tests javax.security.auth.login.AccountNotFoundException#AccountNotFoundException()
+     */
+    public final void testCtor1() {
+        assertNull(new AccountNotFoundException().getMessage());
+    }
+
+    /**
+     * @tests javax.security.auth.login.AccountNotFoundException#AccountNotFoundException(
+     *        java.lang.String)
+     */
+    public final void testCtor2() {
+        assertNull(new AccountNotFoundException(null).getMessage());
+
+        String message = "";
+        assertSame(message, new AccountNotFoundException(message).getMessage());
+
+        message = "message";
+        assertSame(message, new AccountNotFoundException(message).getMessage());
+    }
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(AccountNotFoundExceptionTest.class);
-    }
- 
-    public final void testAccountNotFoundException_01() {
-        AccountNotFoundException tE = new AccountNotFoundException();
-        assertEquals (null, tE.getMessage());
-        try {
-            throw tE;
-        }catch (Exception e){
-            assertTrue(tE.equals(e));
-        }
-
-    }
-
-    public final void testAccountNotFoundException_02() {
-        AccountNotFoundException tE = new AccountNotFoundException("message");
-        assertEquals ("message", tE.getMessage());
-        try {
-            throw tE;
-        }catch (Exception e){
-            assertTrue(tE.equals(e));
-        }
-
-    }
-    
-    public final void testAccountNotFoundException_03() {
-        AccountNotFoundException tE = new AccountNotFoundException("message");
-        try {
-            throw tE;
-        }catch (AccountException e){
-            assertTrue(tE.equals(e));
-        }
-        try {
-            throw tE;
-        }catch (AccountNotFoundException e){
-            assertTrue(tE.equals(e));
-        }
-        try {
-            throw new AccountNotFoundException();
-        }catch (AccountException e){
-            assertEquals("javax.security.auth.login.AccountNotFoundException",
-                    e.getClass().getName());
-        }
     }
 }

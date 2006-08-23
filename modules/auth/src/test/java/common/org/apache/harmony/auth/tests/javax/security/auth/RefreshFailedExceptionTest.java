@@ -28,44 +28,30 @@ import junit.framework.TestCase;
 /**
  * Tests RefreshFailedException class
  */
-
 public class RefreshFailedExceptionTest extends TestCase {
 
-    RefreshFailedException rfe;
+    /**
+     * @tests javax.security.auth.RefreshFailedException#RefreshFailedException()
+     */
+    public final void testCtor1() {
+        assertNull(new RefreshFailedException().getMessage());
+    }
+
+    /**
+     * @tests javax.security.auth.RefreshFailedException#RefreshFailedException(
+     *        java.lang.String)
+     */
+    public final void testCtor2() {
+        assertNull(new RefreshFailedException(null).getMessage());
+
+        String message = "";
+        assertSame(message, new RefreshFailedException(message).getMessage());
+
+        message = "message";
+        assertSame(message, new RefreshFailedException(message).getMessage());
+    }
     
     public static void main(String[] args) {
         junit.textui.TestRunner.run(RefreshFailedExceptionTest.class);
     }
-
-    public final void testRefreshFailedException_01() {
-        RefreshFailedException tE = new RefreshFailedException();
-        assertEquals (null, tE.getMessage());
-        try {
-            throw tE;
-        }catch (Exception e){
-            assertTrue(tE.equals(e));
-        }
-
-    }
-
-    public final void testRefreshFailedException_02() {
-        RefreshFailedException tE = new RefreshFailedException("message");
-        assertEquals ("message", tE.getMessage());
-        try {
-            throw tE;
-        }catch (Exception e){
-            assertTrue(tE.equals(e));
-        }
-    }
-
-    public final void testRefreshFailedException_03() {
-        try {
-            throw new RefreshFailedException();
-        }catch (Exception e){
-            assertEquals("javax.security.auth.RefreshFailedException", e
-                    .getClass().getName());
-        }
-    }
 }
-
-

@@ -28,40 +28,30 @@ import junit.framework.TestCase;
 /**
  * Tests AccountException class
  */
-
 public class AccountExceptionTest extends TestCase {
+
+    /**
+     * @tests javax.security.auth.login.AccountException#AccountException()
+     */
+    public final void testCtor1() {
+        assertNull(new AccountException().getMessage());
+    }
+
+    /**
+     * @tests javax.security.auth.login.AccountException#AccountException(
+     *        java.lang.String)
+     */
+    public final void testCtor2() {
+        assertNull(new AccountException(null).getMessage());
+
+        String message = "";
+        assertSame(message, new AccountException(message).getMessage());
+
+        message = "message";
+        assertSame(message, new AccountException(message).getMessage());
+    }
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(AccountExceptionTest.class);
-    }
-
-    public final void testAccountException_01() {
-        AccountException tE = new AccountException();
-        assertEquals (null, tE.getMessage());
-        try {
-            throw tE;
-        }catch (Exception e){
-            assertTrue(tE.equals(e));
-        }
-
-    }
-
-    public final void testAccountException_02() {
-        AccountException tE = new AccountException("message");
-        assertEquals ("message", tE.getMessage());
-        try {
-            throw tE;
-        }catch (Exception e){
-            assertTrue(tE.equals(e));
-        }
-    }
-
-    public final void testAccountException_03() {
-        try {
-            throw new AccountException();
-        }catch (Exception e){
-            assertEquals("javax.security.auth.login.AccountException", e
-                    .getClass().getName());
-        }
     }
 }

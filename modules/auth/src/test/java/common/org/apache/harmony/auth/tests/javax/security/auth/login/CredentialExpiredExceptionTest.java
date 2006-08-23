@@ -21,7 +21,6 @@
 
 package org.apache.harmony.auth.tests.javax.security.auth.login;
 
-import javax.security.auth.login.CredentialException;
 import javax.security.auth.login.CredentialExpiredException;
 
 import junit.framework.TestCase;
@@ -32,50 +31,30 @@ import junit.framework.TestCase;
 
 public class CredentialExpiredExceptionTest extends TestCase {
 
+    /**
+     * @tests javax.security.auth.login.CredentialExpiredException#CredentialExpiredException()
+     */
+    public final void testCtor1() {
+        assertNull(new CredentialExpiredException().getMessage());
+    }
+
+    /**
+     * @tests javax.security.auth.login.CredentialExpiredException#CredentialExpiredException(
+     *        java.lang.String)
+     */
+    public final void testCtor2() {
+        assertNull(new CredentialExpiredException(null).getMessage());
+
+        String message = "";
+        assertSame(message, new CredentialExpiredException(message)
+                .getMessage());
+
+        message = "message";
+        assertSame(message, new CredentialExpiredException(message)
+                .getMessage());
+    }
+
     public static void main(String[] args) {
         junit.textui.TestRunner.run(CredentialExpiredException.class);
-    }
-
-    public final void testCredentialExpiredException_01() {
-        CredentialExpiredException tE = new CredentialExpiredException();
-        assertEquals (null, tE.getMessage());
-        try {
-            throw tE;
-        }catch (Exception e){
-            assertTrue(tE.equals(e));
-        }
-
-    }
-
-    public final void testCredentialExpiredException_02() {
-        CredentialExpiredException tE = new CredentialExpiredException("message");
-        assertEquals ("message", tE.getMessage());
-        try {
-            throw tE;
-        }catch (Exception e){
-            assertTrue(tE.equals(e));
-        }
-
-    }
-    
-    public final void testCredentialExpiredException_03() {
-        CredentialExpiredException tE = new CredentialExpiredException("message");
-        try {
-            throw tE;
-        }catch (CredentialException e){
-              assertTrue(tE.equals(e));
-        }
-        try {
-            throw tE;
-        }catch (CredentialExpiredException e){
-              assertTrue(tE.equals(e));
-        }
-        try {
-            throw new CredentialExpiredException();
-        }catch (CredentialException e){
-            assertEquals(
-                    "javax.security.auth.login.CredentialExpiredException", e
-                            .getClass().getName());
-        }
     }
 }
