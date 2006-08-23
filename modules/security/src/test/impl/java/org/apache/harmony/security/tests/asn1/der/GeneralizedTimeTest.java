@@ -17,9 +17,11 @@
 package org.apache.harmony.security.tests.asn1.der;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -72,7 +74,14 @@ public class GeneralizedTimeTest extends TestCase {
                         "13 Dec 2050 14:15:16",
                         new byte[] { 0x18, 0x0F, 0x32, 0x30, 0x35, 0x30, 0x31,
                                 0x32, 0x31, 0x33, 0x31, 0x34, 0x31, 0x35, 0x31,
-                                0x36, 0x5A }, null }, };
+                                0x36, 0x5A }, null },
+                // YYYYMMDD-HHMMSS = "20501213141516Z"
+                {
+                        "29 Mar 2332 06:56:40",
+                        new byte[] { 0x18, 0x0F, 0x32, 0x33, 0x33, 0x32, 0x30,
+                                0x33, 0x32, 0x39, 0x30, 0x36, 0x35, 0x36, 0x34,
+                                0x30, 0x5A }, null },
+        };
 
         try {
             // fill values for Date objects by parsing date string
@@ -120,6 +129,17 @@ public class GeneralizedTimeTest extends TestCase {
         }
     }
 
+    /**
+     * Tests milliseconds result of encoding/decoding on the date after 2050.
+     */
+    public void test_Milliseconds() throws IOException{
+        // Regression test for HARMONY-1252
+        long old_date = 11431151800000L;
+        long new_date = ((Date) gtime.decode(gtime.encode(new Date(old_date))))
+                .getTime();
+        assertEquals(old_date, new_date);
+    }
+    
     public static void main(String[] args) {
         junit.textui.TestRunner.run(GeneralizedTimeTest.class);
     }

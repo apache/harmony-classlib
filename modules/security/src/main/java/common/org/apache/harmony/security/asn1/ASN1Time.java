@@ -22,7 +22,9 @@
 package org.apache.harmony.security.asn1;
 
 import java.io.IOException;
-import java.util.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 
 /**
@@ -32,10 +34,6 @@ import java.util.Date;
  */
 
 public abstract class ASN1Time extends ASN1StringType {
-
-    // The number of days in monthes
-    protected static final byte[] DAYS = new byte[] { 31, 28, 31, 30, 31, 30,
-            31, 31, 30, 31, 30, 31 };
 
     /**
      * TODO Put ctor description here
@@ -47,45 +45,19 @@ public abstract class ASN1Time extends ASN1StringType {
     }
 
     public Object getDecodedObject(BerInputStream in) throws IOException {
-        long milliseconds = ASN1Time.getMilliseconds(in.times);
-        return new Date(milliseconds);
-
-    }
-
-    public static long getMilliseconds(int[] times) {
-        // count the number of milliseconds since Jan 1, 1970, 00:00:00 GMT
-        long res = times[6]; //milliseconds
-        res += times[5] * 1000; //second
-        res += (long) times[4] * 60000; //minute
-        res += (long) times[3] * 3600000; //hour
-        res += (long) (times[2]-1) * 86400000; //day
-        for (int i = 1; i < times[1]; i++) { //month
-            res += (long) DAYS[i - 1] * 86400000;
-        }
-        // the number of passed leap years without this year
-        int leap_years_num =
-            (times[0] > 1970) ? (times[0] - 1969)/4 : (times[0] - 1971)/4;
-        res += (times[0] - 1970) * 31536000000l 
-                            + (long) leap_years_num * 86400000;
-        // if this year is a leap year and this is time after the february
-        if ((times[0] % 4 == 0) && (times[1] > 2)) {
-            res += (times[0] > 1970) ? 86400000 : -86400000; 
-        }
-//        // count the number of milliseconds since Jan 1, 1970, 00:00:00 GMT
-//        long res = times[6]; //milliseconds
-//        res += times[5] * 1000; //second
-//        res += (long) times[4] * 60000; //minute
-//        res += (long) times[3] * 3600000; //hour
-//        res += (long) (times[2] - 1) * 86400000; //day
-//        for (int i = 1; i < times[1]; i++) { //month
-//            res += (long) DAYS[i - 1] * 86400000;
-//        }
-//        if ((times[0] % 4 == 0) && (times[1] > 2)) {
-//            res += (long) 86400000; // this year is a leap year
-//        }
-//        if (times[0] > 1970) {
-//            res += ((long) (times[0] - 1970) * 31536000000l + (long) ((times[0] - 1969) / 4) * 86400000);
-//        }
-        return res;
+        
+        // TODO optimize me:
+        // It makes sense use calendar instance instead of times array
+        GregorianCalendar c = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+        
+        c.set(Calendar.YEAR, in.times[0]);
+        c.set(Calendar.MONTH, in.times[1]-1);
+        c.set(Calendar.DAY_OF_MONTH, in.times[2]);
+        c.set(Calendar.HOUR_OF_DAY, in.times[3]);
+        c.set(Calendar.MINUTE, in.times[4]);
+        c.set(Calendar.SECOND, in.times[5]);
+        c.set(Calendar.MILLISECOND, in.times[6]);
+        
+        return c.getTime();
     }
 }
