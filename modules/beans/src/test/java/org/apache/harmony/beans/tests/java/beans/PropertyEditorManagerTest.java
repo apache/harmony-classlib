@@ -110,7 +110,7 @@ public class PropertyEditorManagerTest extends TestCase {
     public void testGetEditorSearchPath_default() {
         String[] path = PropertyEditorManager.getEditorSearchPath();
         assertEquals(1, path.length);
-        assertEquals("sun.beans.editors", path[0]);
+        assertEquals("org.apache.harmony.beans.editors", path[0]);
     }
 
     public void testGetEditorSearchPath() {
