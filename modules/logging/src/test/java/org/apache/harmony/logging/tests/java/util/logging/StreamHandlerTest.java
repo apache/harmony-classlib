@@ -496,7 +496,7 @@ public class StreamHandlerTest extends TestCase {
 	public void testIsLoggable_Null() {
 		StreamHandler h = new StreamHandler(new ByteArrayOutputStream(),
 				new SimpleFormatter());
-		h.isLoggable(null);
+		assertFalse(h.isLoggable(null));
 	}
 
 	/*
@@ -504,7 +504,7 @@ public class StreamHandlerTest extends TestCase {
 	 */
 	public void testIsLoggable_Null_NoOutputStream() {
 		StreamHandler h = new StreamHandler();
-		h.isLoggable(null);
+		assertFalse(h.isLoggable(null));
 	}
 
 	/*

@@ -346,6 +346,9 @@ public class StreamHandler extends Handler {
      *         otherwise <code>false</code>
      */
     public boolean isLoggable(LogRecord record) {
+    	if (null == record) {
+			return false;
+		}
         if (super.isLoggable(record) && null != this.os) {
             return true;
         }

@@ -473,13 +473,17 @@ public class HandlerTest extends TestCase {
 		assertSame(r, CallVerificationStack.getInstance().pop());
 	}
 
-	/*
-	 * Null log record, handler should call ErrorManager to handle
-	 * exceptional case
+	/**
+	 * @tests java.util.logging.Handler#isLoggable(LogRecord)
 	 */
 	public void testIsLoggable_Null() {
 		MockHandler h = new MockHandler();
-		h.isLoggable(null);
+		try {
+			h.isLoggable(null);
+			fail("should throw NullPointerException");
+		} catch (NullPointerException e) {
+			// expected
+		}
 	}
 
 	/*

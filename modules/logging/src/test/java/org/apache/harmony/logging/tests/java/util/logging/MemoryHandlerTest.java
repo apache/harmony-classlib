@@ -161,7 +161,9 @@ public class MemoryHandlerTest extends TestCase {
 	public void testIsLoggable() {
 		try {
 			handler.isLoggable(null);
+			fail("should throw NullPointerException");
 		} catch (NullPointerException e) {
+			// expected
 		}
 		LogRecord record = new LogRecord(Level.FINER, "MSG1");
 		assertFalse(handler.isLoggable(record));

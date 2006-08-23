@@ -265,7 +265,7 @@ public abstract class Handler {
      */
     public boolean isLoggable(LogRecord record) {
         if (null == record) {
-            return false;
+            throw new NullPointerException();
         }
         if (this.level.intValue() == Level.OFF.intValue()) {
             return false;
