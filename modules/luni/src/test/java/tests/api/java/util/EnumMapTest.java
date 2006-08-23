@@ -196,6 +196,17 @@ public class EnumMapTest extends TestCase {
     }
     
     /**
+     * @tests java.util.EnumMap#clear()
+     */
+    @SuppressWarnings({ "unchecked", "boxing" })
+    public void test_clear() {
+        EnumMap enumSizeMap = new EnumMap(Size.class);
+        enumSizeMap.put(Size.Small, 1);
+        enumSizeMap.clear();
+        assertNull("Failed to clear all elements", enumSizeMap.get(Size.Small)); //$NON-NLS-1$
+    }
+    
+    /**
      * @tests java.util.EnumMap#get(Object)
      */
     @SuppressWarnings({ "unchecked", "boxing" })
@@ -354,6 +365,85 @@ public class EnumMapTest extends TestCase {
         } catch (ClassCastException e) {
             // Expected
         }
+    }
+    
+    /**
+     * @tests java.util.EnumMap#remove(Object)
+     */
+    @SuppressWarnings({ "unchecked", "boxing" })
+    public void test_removeLjava_lang_Object() {
+        EnumMap enumSizeMap = new EnumMap(Size.class);
+        assertNull("Remove of non-mapped key returned non-null", enumSizeMap //$NON-NLS-1$
+                .remove(Size.Big));
+        enumSizeMap.put(Size.Big, 3);
+        enumSizeMap.put(Size.Middle, 2);
+
+        assertNull("Get returned non-null for non mapped key", enumSizeMap //$NON-NLS-1$
+                .get(Size.Small));
+        assertEquals("Remove returned incorrect value", 3, enumSizeMap //$NON-NLS-1$
+                .remove(Size.Big));
+        assertNull("Get returned non-null for non mapped key", enumSizeMap //$NON-NLS-1$
+                .get(Size.Big));
+        assertNull("Remove of non-mapped key returned non-null", enumSizeMap //$NON-NLS-1$
+                .remove(Size.Big));
+        assertNull("Remove of non-existent key returned non-null", enumSizeMap //$NON-NLS-1$
+                .remove(Color.Red));
+        assertNull("Remove of non-existent key returned non-null", enumSizeMap //$NON-NLS-1$
+                .remove(new Double(4)));
+        assertNull("Remove of non-existent key returned non-null", enumSizeMap //$NON-NLS-1$
+                .remove(null));
+
+        EnumMap enumColorMap = new EnumMap<Color, Double>(Color.class);
+        assertNull("Get returned non-null for non mapped key", enumColorMap //$NON-NLS-1$
+                .get(Color.Green));
+        enumColorMap.put(Color.Green, new Double(4));
+        assertEquals("Remove returned incorrect value", new Double(4), //$NON-NLS-1$
+                enumColorMap.remove(Color.Green));
+        assertNull("Get returned non-null for non mapped key", enumColorMap //$NON-NLS-1$
+                .get(Color.Green));
+        enumColorMap.put(Color.Green, null);
+        assertNull("Can not handle null value", enumColorMap //$NON-NLS-1$
+                .remove(Color.Green));
+        assertNull("Get returned non-null for non mapped key", enumColorMap //$NON-NLS-1$
+                .get(Color.Green));
+    }
+
+    /**
+     * @tests java.util.EnumMap#size()
+     */
+    @SuppressWarnings({ "unchecked", "boxing" })
+    public void test_size() {
+        EnumMap enumSizeMap = new EnumMap(Size.class);
+        assertEquals("Wrong size", 0, enumSizeMap.size()); //$NON-NLS-1$
+        enumSizeMap.put(Size.Small, 1);
+        assertEquals("Wrong size", 1, enumSizeMap.size()); //$NON-NLS-1$
+        enumSizeMap.put(Size.Small, 0);
+        assertEquals("Wrong size", 1, enumSizeMap.size()); //$NON-NLS-1$
+        try {
+            enumSizeMap.put(Color.Red, 2);
+            fail("Expected ClassCastException"); //$NON-NLS-1$
+        } catch (ClassCastException e) {
+            // Expected
+        }
+        assertEquals("Wrong size", 1, enumSizeMap.size()); //$NON-NLS-1$
+        
+        enumSizeMap.put(Size.Middle, null);
+        assertEquals("Wrong size", 2, enumSizeMap.size()); //$NON-NLS-1$
+        enumSizeMap.remove(Size.Big);
+        assertEquals("Wrong size", 2, enumSizeMap.size()); //$NON-NLS-1$
+        enumSizeMap.remove(Size.Middle);
+        assertEquals("Wrong size", 1, enumSizeMap.size()); //$NON-NLS-1$
+        enumSizeMap.remove(Color.Green);
+        assertEquals("Wrong size", 1, enumSizeMap.size()); //$NON-NLS-1$
+
+        EnumMap enumColorMap = new EnumMap<Color, Double>(Color.class);
+        enumColorMap.put(Color.Green, 2);
+        assertEquals("Wrong size", 1, enumColorMap.size()); //$NON-NLS-1$
+        enumColorMap.remove(Color.Green);
+        assertEquals("Wrong size", 0, enumColorMap.size()); //$NON-NLS-1$
+
+        EnumMap enumEmptyMap = new EnumMap<Empty, Double>(Empty.class);
+        assertEquals("Wrong size", 0, enumEmptyMap.size()); //$NON-NLS-1$
     }
     
     /**

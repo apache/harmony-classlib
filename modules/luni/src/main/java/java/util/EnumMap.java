@@ -96,8 +96,11 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     /**
      * Removes all mappings in this map.
      */
+    @Override
     public void clear() {
-        throw new NotYetImplementedException();
+        Arrays.fill(values, null);
+        Arrays.fill(hasMapping, false);
+        mappingsCount = 0;
     }
 
     /**
@@ -231,8 +234,20 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      * @return the previous value associated with the given key, or null if this
      *         map has no mapping for this key.
      */
+    @Override
+    @SuppressWarnings("unchecked")
     public V remove(Object key) {
-        throw new NotYetImplementedException();
+        if (!isValidKeyType(key)) {
+            return null;
+        }
+        int keyOrdinal = ((Enum) key).ordinal();
+        if (hasMapping[keyOrdinal]) {
+            hasMapping[keyOrdinal] = false;
+            mappingsCount--;
+        }
+        V oldValue = (V) values[keyOrdinal];
+        values[keyOrdinal] = null;
+        return oldValue;
     }
 
     /**
@@ -240,8 +255,9 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      * 
      * @return the number of the mappings in this map
      */
+    @Override
     public int size() {
-        throw new NotYetImplementedException();
+        return mappingsCount;
     }
 
     /**
