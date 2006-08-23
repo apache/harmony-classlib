@@ -48,7 +48,7 @@ import org.apache.harmony.kernel.vm.VM;
  * 
  */
 public class JarURLConnection extends java.net.JarURLConnection {
-	static Hashtable<String,CacheEntry> jarCache = new Hashtable<String,CacheEntry>();
+	static Hashtable<Object,CacheEntry> jarCache = new Hashtable<Object,CacheEntry>();
 
 	InputStream jarInput;
 
@@ -56,9 +56,9 @@ public class JarURLConnection extends java.net.JarURLConnection {
 
 	private JarEntry jarEntry;
 
-	ReferenceQueue<JarFile> cacheQueue = new ReferenceQueue<JarFile>();
+	ReferenceQueue cacheQueue = new ReferenceQueue();
 
-	static TreeSet<LRUKey> lru = new TreeSet<LRUKey>(new LRUComparitor());
+	static TreeSet lru = new TreeSet(new LRUComparitor());
 
 	static int Limit;
 	static {
@@ -70,10 +70,10 @@ public class JarURLConnection extends java.net.JarURLConnection {
 		VM.closeJars();
 	}
 
-	static final class CacheEntry extends WeakReference<JarFile> {
-		String key;
+	static final class CacheEntry extends WeakReference {
+		Object key;
 
-		CacheEntry(JarFile jar, String key, ReferenceQueue<JarFile> queue) {
+		CacheEntry(Object jar, String key, ReferenceQueue queue) {
 			super(jar, queue);
 			this.key = key;
 		}
@@ -97,18 +97,18 @@ public class JarURLConnection extends java.net.JarURLConnection {
 		}
 	}
 
-	static final class LRUComparitor implements Comparator<LRUKey> {
+	static final class LRUComparitor implements Comparator {
 		LRUComparitor() {
 		}
 
 		/**
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */
-		public int compare(LRUKey o1, LRUKey o2) {
-			if (o1.ts > o2.ts) {
+		public int compare(Object o1, Object o2) {
+			if (((LRUKey) o1).ts > ((LRUKey) o2).ts) {
 				return 1;
 			}
-			return o1.ts == o2.ts ? 0 : -1;
+			return ((LRUKey) o1).ts == ((LRUKey) o2).ts ? 0 : -1;
 		}
 
 		/**
@@ -228,9 +228,9 @@ public class JarURLConnection extends java.net.JarURLConnection {
 		    CacheEntry entry;
             while ((entry = (CacheEntry) cacheQueue.poll()) != null)
                 jarCache.remove(entry.key);
-            entry = jarCache.get(key);
+            entry = (CacheEntry) jarCache.get(key);
             if (entry != null)
-                jar = entry.get();
+                jar = (JarFile) entry.get();
             if (jar == null && fileString != null) {
                 int flags = ZipFile.OPEN_READ
                         + (temp ? ZipFile.OPEN_DELETE : 0);
