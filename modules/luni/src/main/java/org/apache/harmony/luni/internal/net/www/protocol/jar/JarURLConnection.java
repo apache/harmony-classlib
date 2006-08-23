@@ -48,7 +48,7 @@ import org.apache.harmony.kernel.vm.VM;
  * 
  */
 public class JarURLConnection extends java.net.JarURLConnection {
-	static Hashtable<Object,CacheEntry> jarCache = new Hashtable<Object,CacheEntry>();
+	static Hashtable<String,CacheEntry> jarCache = new Hashtable<String,CacheEntry>();
 
 	InputStream jarInput;
 
@@ -56,9 +56,9 @@ public class JarURLConnection extends java.net.JarURLConnection {
 
 	private JarEntry jarEntry;
 
-	ReferenceQueue cacheQueue = new ReferenceQueue();
+	ReferenceQueue<JarFile> cacheQueue = new ReferenceQueue<JarFile>();
 
-	static TreeSet lru = new TreeSet(new LRUComparitor());
+	static TreeSet<LRUKey> lru = new TreeSet<LRUKey>(new LRUComparitor());
 
 	static int Limit;
 	static {
@@ -70,10 +70,10 @@ public class JarURLConnection extends java.net.JarURLConnection {
 		VM.closeJars();
 	}
 
-	static final class CacheEntry extends WeakReference {
-		Object key;
+	static final class CacheEntry extends WeakReference<JarFile> {
+		String key;
 
-		CacheEntry(Object jar, String key, ReferenceQueue queue) {
+		CacheEntry(JarFile jar, String key, ReferenceQueue<JarFile> queue) {
 			super(jar, queue);
 			this.key = key;
 		}
@@ -97,18 +97,18 @@ public class JarURLConnection extends java.net.JarURLConnection {
 		}
 	}
 
-	static final class LRUComparitor implements Comparator {
+	static final class LRUComparitor implements Comparator<LRUKey> {
 		LRUComparitor() {
 		}
 
 		/**
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */
-		public int compare(Object o1, Object o2) {
-			if (((LRUKey) o1).ts > ((LRUKey) o2).ts) {
+		public int compare(LRUKey o1, LRUKey o2) {
+			if (o1.ts > o2.ts) {
 				return 1;
 			}
-			return ((LRUKey) o1).ts == ((LRUKey) o2).ts ? 0 : -1;
+			return o1.ts == o2.ts ? 0 : -1;
 		}
 
 		/**
@@ -222,28 +222,37 @@ public class JarURLConnection extends java.net.JarURLConnection {
 
 	JarFile openJarFile(String fileString, String key, boolean temp)
 			throws IOException {
-		CacheEntry entry;
-		while ((entry = (CacheEntry) cacheQueue.poll()) != null)
-			jarCache.remove(entry.key);
-		entry = (CacheEntry) jarCache.get(key);
+
 		JarFile jar = null;
-		if (entry != null)
-			jar = (JarFile) entry.get();
-		if (jar == null && fileString != null) {
-			int flags = ZipFile.OPEN_READ + (temp ? ZipFile.OPEN_DELETE : 0);
-			jar = new JarFile(new File(Util.decode(fileString, false)), true, flags);
-			jarCache.put(key, new CacheEntry(jar, key, cacheQueue));
-		} else {
-			SecurityManager security = System.getSecurityManager();
-			if (security != null)
-				security.checkPermission(getPermission());
-			if (temp)
-				lru.remove(new LRUKey(jar, 0));
+		if(useCaches){
+		    CacheEntry entry;
+            while ((entry = (CacheEntry) cacheQueue.poll()) != null)
+                jarCache.remove(entry.key);
+            entry = jarCache.get(key);
+            if (entry != null)
+                jar = entry.get();
+            if (jar == null && fileString != null) {
+                int flags = ZipFile.OPEN_READ
+                        + (temp ? ZipFile.OPEN_DELETE : 0);
+                jar = new JarFile(new File(Util.decode(fileString, false)),
+                        true, flags);
+                jarCache.put(key, new CacheEntry(jar, key, cacheQueue));
+            } else {
+                SecurityManager security = System.getSecurityManager();
+                if (security != null)
+                    security.checkPermission(getPermission());
+                if (temp)
+                    lru.remove(new LRUKey(jar, 0));
+            }
+		}else{
+		    int flags = ZipFile.OPEN_READ + (temp ? ZipFile.OPEN_DELETE : 0);
+		    jar = new JarFile(new File(Util.decode(fileString, false)), true, flags);
 		}
+
 		if (temp) {
-			lru.add(new LRUKey(jar, new Date().getTime()));
-			if (lru.size() > Limit)
-				lru.remove(lru.first());
+		    lru.add(new LRUKey(jar, new Date().getTime()));
+		    if (lru.size() > Limit)
+			lru.remove(lru.first());
 		}
 		return jar;
 	}
