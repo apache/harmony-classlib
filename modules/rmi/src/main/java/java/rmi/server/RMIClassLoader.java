@@ -60,7 +60,7 @@ public class RMIClassLoader {
      */
     private static RMIClassLoaderSpi activeSpi =
             (RMIClassLoaderSpi) AccessController.doPrivileged(
-                    new PrivilegedAction() {
+                    new PrivilegedAction<Object>() {
                         public Object run() {
                             return initActiveSpi();
                         }
@@ -73,7 +73,7 @@ public class RMIClassLoader {
     /**
      * @com.intel.drl.spec_ref
      */
-    public static Class loadProxyClass(String codebase,
+    public static Class<?> loadProxyClass(String codebase,
                                        String[] interf,
                                        ClassLoader defaultCl)
             throws ClassNotFoundException, MalformedURLException {
@@ -83,7 +83,7 @@ public class RMIClassLoader {
     /**
      * @com.intel.drl.spec_ref
      */
-    public static Class loadClass(String codebase,
+    public static Class<?> loadClass(String codebase,
                                   String name,
                                   ClassLoader defaultCl)
             throws MalformedURLException, ClassNotFoundException {
@@ -93,7 +93,7 @@ public class RMIClassLoader {
     /**
      * @com.intel.drl.spec_ref
      */
-    public static Class loadClass(URL codebase, String name)
+    public static Class<?> loadClass(URL codebase, String name)
             throws MalformedURLException, ClassNotFoundException {
         return activeSpi.loadClass((codebase == null) ? null
                                     : codebase.toString(), name, null);
@@ -102,7 +102,7 @@ public class RMIClassLoader {
     /**
      * @com.intel.drl.spec_ref
      */
-    public static Class loadClass(String codebase, String name)
+    public static Class<?> loadClass(String codebase, String name)
             throws MalformedURLException, ClassNotFoundException {
         return activeSpi.loadClass(codebase, name, null);
     }
@@ -110,14 +110,17 @@ public class RMIClassLoader {
     /**
      * @com.intel.drl.spec_ref
      */
-    public static String getClassAnnotation(Class cl) {
+    public static String getClassAnnotation(Class<?> cl) {
         return activeSpi.getClassAnnotation(cl);
     }
 
     /**
      * @com.intel.drl.spec_ref
      * It's depricated so we just return null.
+     * @deprecated since Java v1.2 this method is no longer used by RMI
+     *  framework
      */
+    @Deprecated
     public static Object getSecurityContext(ClassLoader loader) {
         return null;
     }
@@ -132,8 +135,10 @@ public class RMIClassLoader {
 
     /**
      * @com.intel.drl.spec_ref
+     * @deprecated method loadClass(String, String) should be used instead
      */
-    public static Class loadClass(String name)
+    @Deprecated
+    public static Class<?> loadClass(String name)
             throws MalformedURLException, ClassNotFoundException {
         return loadClass((String) null, name);
     }

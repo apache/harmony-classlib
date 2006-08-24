@@ -29,7 +29,9 @@ import java.rmi.RemoteException;
  *
  * @author  Mikhail A. Markov
  * @version $Revision: 1.4.4.2 $
+ * @deprecated Skeletons are not used by RMI framework since Java v1.2
  */
+@Deprecated
 public class SkeletonNotFoundException extends RemoteException {
 
     private static final long serialVersionUID = -7860299673822761231L;
@@ -37,6 +39,7 @@ public class SkeletonNotFoundException extends RemoteException {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public SkeletonNotFoundException(String msg, Exception cause) {
         super(msg, cause);
     }
@@ -44,6 +47,7 @@ public class SkeletonNotFoundException extends RemoteException {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public SkeletonNotFoundException(String msg) {
         super(msg);
     }

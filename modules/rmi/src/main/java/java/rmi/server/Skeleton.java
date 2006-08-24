@@ -29,17 +29,21 @@ import java.rmi.Remote;
  *
  * @author  Mikhail A. Markov
  * @version $Revision: 1.3.4.2 $
+ * @deprecated Skeletons are not used by RMI framework since Java v1.2
  */
+@Deprecated
 public interface Skeleton {
 
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public Operation[] getOperations();
 
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public void dispatch(Remote impl, RemoteCall call, int opnum, long hash)
             throws Exception;
 }

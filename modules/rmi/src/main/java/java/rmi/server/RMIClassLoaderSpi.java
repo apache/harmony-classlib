@@ -41,7 +41,7 @@ public abstract class RMIClassLoaderSpi {
     /**
      * @com.intel.drl.spec_ref
      */
-    public abstract Class loadProxyClass(String codebase,
+    public abstract Class<?> loadProxyClass(String codebase,
                                          String[] interf,
                                          ClassLoader defaultCl)
             throws MalformedURLException, ClassNotFoundException;
@@ -49,7 +49,7 @@ public abstract class RMIClassLoaderSpi {
     /**
      * @com.intel.drl.spec_ref
      */
-    public abstract Class loadClass(String codebase,
+    public abstract Class<?> loadClass(String codebase,
                                     String name,
                                     ClassLoader defaultCl)
             throws MalformedURLException, ClassNotFoundException;
@@ -57,7 +57,7 @@ public abstract class RMIClassLoaderSpi {
     /**
      * @com.intel.drl.spec_ref
      */
-    public abstract String getClassAnnotation(Class cl);
+    public abstract String getClassAnnotation(Class<?> cl);
 
     /**
      * @com.intel.drl.spec_ref

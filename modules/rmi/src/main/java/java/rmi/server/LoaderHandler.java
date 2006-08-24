@@ -30,28 +30,35 @@ import java.net.URL;
  *
  * @author  Mikhail A. Markov
  * @version $Revision: 1.3.4.2 $
+ * @deprecated This interface was being used by previous versions of RMI.
+ *     It should not be used anymore. There is no replacement.
  */
+@Deprecated
 public interface LoaderHandler {
 
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public static final String packagePrefix = "org.apache.harmony.rmi";
 
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public Object getSecurityContext(ClassLoader loader);
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public Class loadClass(URL codebase, String name)
+    @Deprecated
+    public Class<?> loadClass(URL codebase, String name)
             throws MalformedURLException, ClassNotFoundException;
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public Class loadClass(String name)
+    @Deprecated
+    public Class<?> loadClass(String name)
             throws MalformedURLException, ClassNotFoundException;
 }

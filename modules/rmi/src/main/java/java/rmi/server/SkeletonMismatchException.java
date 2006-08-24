@@ -29,7 +29,9 @@ import java.rmi.RemoteException;
  *
  * @author  Mikhail A. Markov
  * @version $Revision: 1.4.4.2 $
+ * @deprecated Skeletons are not used by RMI framework since Java v1.2
  */
+@Deprecated
 public class SkeletonMismatchException extends RemoteException {
 
     private static final long serialVersionUID = -7780460454818859281L;
@@ -37,6 +39,7 @@ public class SkeletonMismatchException extends RemoteException {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public SkeletonMismatchException(String msg) {
         super(msg);
     }
