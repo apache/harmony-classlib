@@ -45,4 +45,24 @@ public class AlgNameMapperTest extends TestCase {
         assertFalse(AlgNameMapper.isOID(badOID));
         assertFalse(AlgNameMapper.isOID(notOID));
     }
+
+    /**
+     * @tests org.apache.harmony.crypto.utils.AlgNameMapper.selectEntries(Provider)
+     */
+    public void testSelectEntries() {
+        // Regression for HARMONY-1185
+        String algStandardName = "SHA1withRSA";
+        String hardcodedOID = "1.2.840.113549.1.1.5";
+        String alternativeName = "SHA1WithRSAEncryption";
+        String anotherAlgStandardName = "SHA1withDSA";
+        String alternativeOID = "1.3.14.3.2.13";
+        assertEquals(hardcodedOID, AlgNameMapper.map2OID(algStandardName));
+        assertEquals(algStandardName, AlgNameMapper.map2AlgName(hardcodedOID));
+
+        // Mappings taken from a provider that do not override any of hardcoded
+        // mappings should not be rejected.
+        assertEquals(hardcodedOID, AlgNameMapper.map2OID(alternativeName));
+        assertEquals(anotherAlgStandardName, AlgNameMapper
+                .map2AlgName(alternativeOID));
+    }
 }
