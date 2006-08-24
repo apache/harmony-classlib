@@ -1531,12 +1531,21 @@ public class LoggerTest extends TestCase {
 	 * logging level set.
 	 */
 	public void testEntering_StringStringObjects_Null() {
-		this.sharedLogger.setLevel(Level.FINER);
-		try {
-			this.sharedLogger.entering(null, null, (Object[]) null);
-			fail("Should throw NullPointerException!");
-		} catch (NullPointerException e) {
-		}
+		sharedLogger.setLevel(Level.FINER);
+		sharedLogger.entering(null, null, (Object[]) null);
+		// regression test for Harmony-1265
+		LogRecord r = (LogRecord) CallVerificationStack.getInstance().pop();
+		assertTrue(CallVerificationStack.getInstance().empty());
+		assertSame(sharedLogger.getName(), r.getLoggerName());
+		assertEquals("ENTRY", r.getMessage());
+		assertSame(sharedLogger.getResourceBundleName(), r
+				.getResourceBundleName());
+		assertSame(sharedLogger.getResourceBundle(), r.getResourceBundle());
+		assertNull(r.getSourceClassName());
+		assertNull(r.getSourceMethodName());
+		assertSame(Level.FINER, r.getLevel());
+		assertNull(r.getParameters());
+		assertNull(r.getThrown());
 	}
 
 	/*

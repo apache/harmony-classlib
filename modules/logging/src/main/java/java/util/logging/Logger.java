@@ -776,11 +776,15 @@ public class Logger {
     public void entering(String sourceClass, String sourceMethod,
             Object[] params) {
         if (internalIsLoggable(Level.FINER)) {
-            StringBuffer msg = new StringBuffer(MSG_ENTERING);
-            for (int i = 0; i < params.length; i++) {
-                msg.append(" {" + i + "}"); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-            LogRecord record = new LogRecord(Level.FINER, msg.toString());
+        	String msg = MSG_ENTERING;
+			if (null != params) {
+				StringBuffer msgBuffer = new StringBuffer(MSG_ENTERING);
+				for (int i = 0; i < params.length; i++) {
+					msgBuffer.append(" {" + i + "}"); //$NON-NLS-1$ //$NON-NLS-2$
+				}
+				msg = msgBuffer.toString();
+			}
+            LogRecord record = new LogRecord(Level.FINER, msg);
             record.setLoggerName(this.name);
             record.setSourceClassName(sourceClass);
             record.setSourceMethodName(sourceMethod);
