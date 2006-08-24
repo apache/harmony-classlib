@@ -1,4 +1,4 @@
-/* Copyright 1998, 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -411,16 +411,6 @@ public class StreamTokenizer {
 			sval = quoteString.toString();
 			return ttype;
 		}
-		// Check for comment character
-		if (currentType == TOKEN_COMMENT) {
-			// Skip to EOF or new line then return the next token
-			while ((currentChar = read()) >= 0 && currentChar != '\r'
-					&& currentChar != '\n') {
-				// Intentionally empty
-			}
-			peekChar = currentChar;
-			return nextToken();
-		}
 		// Do comments, both "//" and "/*stuff*/"
 		if (currentChar == '/' && (slashSlashComments || slashStarComments)) {
 			if ((currentChar = read()) == '*' && slashStarComments) {
@@ -451,12 +441,23 @@ public class StreamTokenizer {
 				}
 				peekChar = currentChar;
 				return nextToken();
-			} else {
+			} else if(currentType != TOKEN_COMMENT){
 				// Was just a slash by itself
 				peekChar = currentChar;
 				return (ttype = '/');
 			}
 		}
+        // Check for comment character
+        if (currentType == TOKEN_COMMENT) {
+            // Skip to EOF or new line then return the next token
+            while ((currentChar = read()) >= 0 && currentChar != '\r'
+                    && currentChar != '\n') {
+                // Intentionally empty
+            }
+            peekChar = currentChar;
+            return nextToken();
+        }
+        
 		peekChar = read();
 		return (ttype = currentChar);
 	}

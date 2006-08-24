@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,11 @@
 
 package tests.api.java.io;
 
+import java.io.CharArrayReader;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.io.StringBufferInputStream;
 
@@ -352,7 +354,48 @@ public class StreamTokenizerTest extends junit.framework.TestCase {
 			fail("Exception during test : " + e.getMessage());
 		}
 	}
+    
+    /**
+     * @tests java.io.StreamTokenizer#slashSlashComments(boolean)
+     */
+    public void test_slashSlashComments_withSSOpen() throws IOException {
+        Reader reader = new CharArrayReader( "t // t t t".toCharArray());
 
+        StreamTokenizer st = new StreamTokenizer(reader);
+        st.slashSlashComments(true);
+
+        assertEquals(StreamTokenizer.TT_WORD,st.nextToken());
+        assertEquals(StreamTokenizer.TT_EOF,st.nextToken());
+    }
+
+    /**
+     * @tests java.io.StreamTokenizer#slashSlashComments(boolean)
+     */
+    public void test_slashSlashComments_withSSOpen_NoComment() throws IOException {
+        Reader reader = new CharArrayReader( "// t".toCharArray());
+
+        StreamTokenizer st = new StreamTokenizer(reader);
+        st.slashSlashComments(true);
+        st.ordinaryChar('/');
+
+        assertEquals(StreamTokenizer.TT_EOF,st.nextToken());
+    }
+    
+    /**
+     * @tests java.io.StreamTokenizer#slashSlashComments(boolean)
+     */
+    public void test_slashSlashComments_withSSClosed() throws IOException {
+        Reader reader = new CharArrayReader( "// t".toCharArray());
+
+        StreamTokenizer st = new StreamTokenizer(reader);
+        st.slashSlashComments(false);
+        st.ordinaryChar('/');
+
+        assertEquals('/',st.nextToken());
+        assertEquals('/',st.nextToken());
+        assertEquals(StreamTokenizer.TT_WORD,st.nextToken());
+    }
+    
 	/**
 	 * @tests java.io.StreamTokenizer#slashStarComments(boolean)
 	 */
@@ -368,6 +411,33 @@ public class StreamTokenizerTest extends junit.framework.TestCase {
 		}
 	}
 
+    /**
+     * @tests java.io.StreamTokenizer#slashStarComments(boolean)
+     */
+    public void test_slashStarComments_withSTOpen() throws IOException {
+        Reader reader = new CharArrayReader( "t /* t */ t".toCharArray());
+
+        StreamTokenizer st = new StreamTokenizer(reader);
+        st.slashStarComments(true);
+
+        assertEquals(StreamTokenizer.TT_WORD,st.nextToken());
+        assertEquals(StreamTokenizer.TT_WORD,st.nextToken());
+        assertEquals(StreamTokenizer.TT_EOF,st.nextToken());
+    }
+
+    /**
+     * @tests java.io.StreamTokenizer#slashStarComments(boolean)
+     */
+    public void test_slashStarComments_withSTClosed() throws IOException {
+        Reader reader = new CharArrayReader( "t /* t */ t".toCharArray());
+
+        StreamTokenizer st = new StreamTokenizer(reader);
+        st.slashStarComments(false);
+
+        assertEquals(StreamTokenizer.TT_WORD,st.nextToken());
+        assertEquals(StreamTokenizer.TT_EOF,st.nextToken());
+    }
+    
 	/**
 	 * @tests java.io.StreamTokenizer#toString()
 	 */
