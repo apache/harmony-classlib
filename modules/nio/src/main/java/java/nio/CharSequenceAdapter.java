@@ -117,7 +117,7 @@ final class CharSequenceAdapter extends CharBuffer {
 	}
 
     public final CharBuffer put(char[] src, int off, int len) {
-        if ((off < 0 ) || (len < 0) || off + len > src.length) {
+        if ((off < 0 ) || (len < 0) || (long)off + (long)len > src.length) {
             throw new IndexOutOfBoundsException();
         }
         

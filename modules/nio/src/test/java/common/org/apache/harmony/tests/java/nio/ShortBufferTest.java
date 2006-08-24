@@ -296,13 +296,25 @@ public class ShortBufferTest extends AbstractBufferTest {
         }
         assertEquals(buf.position(), 0);
         try {
-            buf.get(array, 2, -1);
+            buf.get((short[])null, 2, -1);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            buf.get(array, 2, array.length);
             fail("Should throw Exception"); //$NON-NLS-1$
         } catch (IndexOutOfBoundsException e) {
             // expected
         }
         try {
-            buf.get(array, 2, array.length);
+            buf.get(array, 1, Integer.MAX_VALUE);
+            fail("Should throw Exception"); //$NON-NLS-1$
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            buf.get(array, Integer.MAX_VALUE, 1);
             fail("Should throw Exception"); //$NON-NLS-1$
         } catch (IndexOutOfBoundsException e) {
             // expected
