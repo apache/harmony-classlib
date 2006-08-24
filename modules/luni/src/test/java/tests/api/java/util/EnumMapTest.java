@@ -205,7 +205,60 @@ public class EnumMapTest extends TestCase {
         enumSizeMap.clear();
         assertNull("Failed to clear all elements", enumSizeMap.get(Size.Small)); //$NON-NLS-1$
     }
-    
+
+    /**
+     * @tests java.util.EnumMap#containsKey(Object)
+     */
+    @SuppressWarnings( { "unchecked", "boxing" })
+    public void test_containsKeyLjava_lang_Object() {
+        EnumMap enumSizeMap = new EnumMap(Size.class);
+        assertFalse("Returned true for uncontained key", enumSizeMap //$NON-NLS-1$
+                .containsKey(Size.Small));
+        enumSizeMap.put(Size.Small, 1);
+        assertTrue("Returned false for contained key", enumSizeMap //$NON-NLS-1$
+                .containsKey(Size.Small));
+
+        enumSizeMap.put(Size.Big, null);
+        assertTrue("Returned false for contained key", enumSizeMap //$NON-NLS-1$
+                .containsKey(Size.Big));
+
+        assertFalse("Returned true for uncontained key", enumSizeMap //$NON-NLS-1$
+                .containsKey(Color.Red));
+        assertFalse("Returned true for uncontained key", enumSizeMap //$NON-NLS-1$
+                .containsKey(new Integer("3"))); //$NON-NLS-1$
+        assertFalse("Returned true for uncontained key", enumSizeMap //$NON-NLS-1$
+                .containsKey(null));
+    }
+
+    /**
+     * @tests java.util.EnumMap#containsValue(Object)
+     */
+    @SuppressWarnings( { "unchecked", "boxing" })
+    public void test_containsValueLjava_lang_Object() {
+        EnumMap enumSizeMap = new EnumMap(Size.class);
+        Double double1 = new Double(3);
+        Double double2 = new Double(3);
+
+        assertFalse("Returned true for uncontained value", enumSizeMap //$NON-NLS-1$
+                .containsValue(double1));
+        enumSizeMap.put(Size.Middle, 2);
+        enumSizeMap.put(Size.Small, double1);
+        assertTrue("Returned false for contained value", enumSizeMap //$NON-NLS-1$
+                .containsValue(double1));
+        assertTrue("Returned false for contained value", enumSizeMap //$NON-NLS-1$
+                .containsValue(double2));
+        assertTrue("Returned false for contained value", enumSizeMap //$NON-NLS-1$
+                .containsValue(2));
+        assertFalse("Returned true for uncontained value", enumSizeMap //$NON-NLS-1$
+                .containsValue(1));
+
+        assertFalse("Returned true for uncontained value", enumSizeMap //$NON-NLS-1$
+                .containsValue(null));
+        enumSizeMap.put(Size.Big, null);
+        assertTrue("Returned false for contained value", enumSizeMap //$NON-NLS-1$
+                .containsValue(null));
+    }
+
     /**
      * @tests java.util.EnumMap#get(Object)
      */

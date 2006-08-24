@@ -119,8 +119,13 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      *            the key whose presence in this map is to be tested
      * @return true if this map has a mapping for the given key.
      */
+    @Override
     public boolean containsKey(Object key) {
-        throw new NotYetImplementedException();
+        if (isValidKeyType(key)) {
+            int keyOrdinal = ((Enum) key).ordinal();
+            return hasMapping[keyOrdinal];
+        }
+        return false;
     }
 
     /**
@@ -130,8 +135,22 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      *            the value whose presence in this map is to be tested
      * @return true if this map has one or more keys mapped to the given value.
      */
+    @Override
     public boolean containsValue(Object value) {
-        throw new NotYetImplementedException();
+        if (null == value) {
+            for (int i = 0; i < enumSize; i++) {
+                if (hasMapping[i] && null == values[i]) {
+                    return true;
+                }
+            }
+        } else {
+            for (int i = 0; i < enumSize; i++) {
+                if (hasMapping[i] && value.equals(values[i])) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
