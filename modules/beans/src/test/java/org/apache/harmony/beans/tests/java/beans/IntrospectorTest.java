@@ -645,7 +645,7 @@ public class IntrospectorTest extends TestCase {
     public void testGetBeanInfoSearchPath() {
         String[] path = Introspector.getBeanInfoSearchPath();
         assertEquals(1, path.length);
-        assertEquals("sun.beans.infos", path[0]);
+        assertEquals("org.apache.harmony.beans.infos", path[0]);
     }
 
     public void testGetBeanInfoSearchPath_Default()

@@ -258,7 +258,7 @@ public class Introspector {
 
     // private fields
 
-    private static String[] path = {"sun.beans.infos"};
+    private static String[] path = {"org.apache.harmony.beans.infos"};
     private static Map<String, List<BeanInfoData>> beanInfos =
         new HashMap<String, List<BeanInfoData>>();
 
