@@ -8,5 +8,6 @@ Eclipse-JREBundle: true
 Import-Package: java.io,
  java.lang,
  org.apache.harmony.luni.util
-Export-Package: sun.misc
+Export-Package: sun.misc,
+ com.sun
 
