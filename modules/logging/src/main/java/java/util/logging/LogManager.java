@@ -186,7 +186,7 @@ public class LogManager {
 
         // read configuration
         try {
-            manager.readConfiguration();
+            manager.readConfigurationImpl(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -394,7 +394,7 @@ public class LogManager {
      *             not have the required permissions to perform this action
      */
     public void readConfiguration() throws IOException {
-        readConfigurationImpl();
+        readConfigurationImpl(false);
     }
 
     // use privilege code to get system property
@@ -425,7 +425,7 @@ public class LogManager {
     }
 
     // actual default initialization process
-    private synchronized void readConfigurationImpl() throws IOException {
+    private synchronized void readConfigurationImpl(boolean createLoggers) throws IOException {
         checkAccess();
         boolean needInit = true;
 
@@ -451,7 +451,7 @@ public class LogManager {
             InputStream input = null;
             try {
                 input = new BufferedInputStream(new FileInputStream(configFile));
-                readConfigurationImpl(input);
+                readConfigurationImpl(input, createLoggers);
             } finally {
                 try {
                     input.close();
@@ -462,42 +462,38 @@ public class LogManager {
     }
 
     // actual initialization process from a given input stream
-    private synchronized void readConfigurationImpl(InputStream ins)
+    private synchronized void readConfigurationImpl(InputStream ins, boolean createLoggers)
             throws IOException {
         reset();
-        if(manager.root == null){
-            // init root logger
-            manager.root = new Logger("", null); //$NON-NLS-1$
-            manager.loggers.put("", manager.root); //$NON-NLS-1$
-            root.manager = this;
-        }
         props.load(ins);
 
         // configs
         parseConfigProp();
 
         // set levels for logger
-        initLevelForLoggers();
+        initLoggers(createLoggers);
         listeners.firePropertyChange(null, null, null);
     }
 
     // init "level" properties for all registered loggers
-    private void initLevelForLoggers() {
+    private void initLoggers(boolean createLoggers) {
         Enumeration<?> enumeration = props.propertyNames();
         while (enumeration.hasMoreElements()) {
             // search for all properties whose name is ended with ".level"
-            String loggerLevel = (String) enumeration.nextElement();
-            if (!loggerLevel.endsWith(".level")) { //$NON-NLS-1$
-                continue;
+            String property = (String) enumeration.nextElement();
+            if (property.endsWith(".level")) { //$NON-NLS-1$
+                String loggerName = property.substring(0,
+                        property.length() - ".level".length());
+                Logger l = createLoggers?Logger.getLogger(loggerName):loggers.get(loggerName);
+                if (null != l) {
+                    setLoggerLevel(l, loggerName, true);
+                }
+            }else if(createLoggers && property.endsWith(".handlers")){ //$NON-NLS-1$
+                String loggerName = property.substring(0,
+                        property.length() - ".handlers".length());
+                Logger.getLogger(loggerName);
+                //lazily load handlers because some of them are expensive
             }
-            // if find such properties, search for relevant registered logger
-            String loggerName = loggerLevel.substring(0,
-                    loggerLevel.length() - 6);
-            Logger l = loggers.get(loggerName);
-            if (null == l) {
-                continue;
-            }
-            setLoggerLevel(l, loggerName, true);
         }
     }
 
@@ -530,7 +526,7 @@ public class LogManager {
      */
     public void readConfiguration(InputStream ins) throws IOException {
         checkAccess();
-        readConfigurationImpl(ins);
+        readConfigurationImpl(ins, false);
     }
 
     /**

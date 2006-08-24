@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -434,7 +434,7 @@ public class Logger {
               return;
           }
           handlers = new ArrayList<Handler>();
-          String handlerStr = manager.getProperty(name==""?"handlers":name+".handlers"); //$NON-NLS-1$
+          String handlerStr = manager.getProperty("".equals(name)?"handlers":name+".handlers"); //$NON-NLS-1$
           if (null == handlerStr) {
               return;
           }
