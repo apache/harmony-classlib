@@ -25,7 +25,7 @@ HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I$(SHARED)common /I$(SHARED)fdlibm
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \
-  $(SHAREDSUB)instrument.obj 
+  $(SHAREDSUB)instrument.obj $(SHAREDSUB)inst_agt.obj 
   
 VIRTFILES = hyinstrument.res
 

@@ -21,7 +21,7 @@ include $(HY_HDK)/build/make/makefile.include
 CFLAGS += -fpic
 
 BUILDFILES = \
-	../shared/instrument.o 
+	../shared/instrument.o ../shared/inst_agt.o 
 
 MDLLIBFILES = \
 	$(LIBPATH)libhycommon.a $(LIBPATH)libhyzip.a \
