@@ -106,10 +106,12 @@
             <src path="modules/awt/src/main/java/${hy.os}" />
             <src path="modules/awt/src/main/java/common" />
             <src path="modules/beans/src/main/java" />
+            <src path="modules/concurrent/src/main/java/" />
             <src path="modules/crypto/src/main/java" />
             <src path="modules/instrument/src/main/java" />
             <src path="modules/jndi/src/main/java" />
             <src path="modules/logging/src/main/java" />
+            <src path="modules/lang-management/src/main/java/" />
             <src path="modules/luni-kernel/src/main/java" />
             <src path="modules/luni/src/main/java" />
             <src path="modules/math/src/main/java" />
@@ -128,8 +130,6 @@
             <src path="modules/swing/src/main/java/common" />
             <src path="modules/text/src/main/java" />
             <src path="modules/x-net/src/main/java/" />
-            <src path="modules/lang-management/src/main/java/" />
-
             <classpath location="${build.output}" />
             <classpath>
                 <fileset dir="${depends.jars}">

@@ -9,7 +9,8 @@ Bundle-Version: 1.0.0
 Export-Package: java.lang,
  java.lang.reflect,
  java.lang.ref,
- org.apache.harmony.kernel.vm
+ org.apache.harmony.kernel.vm,
+ sun.misc
 Import-Package: java.io,
  java.lang.annotation,
  java.nio,

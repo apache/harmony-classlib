@@ -57,3 +57,5 @@ java/lang/ref/WeakReference$*.*
 
 org/apache/harmony/kernel/vm/VM.*
 org/apache/harmony/kernel/vm/VM$*.*
+
+sun/misc/Unsafe*.*
