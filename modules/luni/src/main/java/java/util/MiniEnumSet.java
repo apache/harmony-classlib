@@ -27,10 +27,15 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
     
     private int size = 0;
     
+    final private E[] enums;
+
+    static final private int MAX_ELEMENTS = 64;
+    
     private long bits = 0;
     
     MiniEnumSet(Class<E> elementType) {
         super(elementType);
+        enums = elementType.getEnumConstants();
     }
 
     @Override
@@ -60,8 +65,27 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
         }
         bits |= mask;
 
-        size = Long.bitCount(bits);
+        size++;
         return true;
+    }
+    
+    @Override
+    public boolean addAll(Collection<? extends E> collection) {
+        if (0 == collection.size()) {
+            return false;
+        }
+        if (collection instanceof EnumSet) {
+            EnumSet<E> set = (EnumSet<E>) collection;
+            if (!isValidType(set.elementClass)) {
+                throw new ClassCastException();
+            }
+            MiniEnumSet<E> miniSet = (MiniEnumSet<E>) set;
+            long oldBits = bits;
+            bits |= miniSet.bits;
+            size = Long.bitCount(bits);
+            return (oldBits != bits);
+        }
+        return super.addAll(collection);
     }
     
     @Override
@@ -88,5 +112,40 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
             return isValidType(set.elementClass ) && ((bits & set.bits) == set.bits);
         }
         return !(collection instanceof EnumSet) && super.containsAll(collection);  
+    }
+    
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean remove(Object object) {
+        if (!contains(object)) {
+            return false;
+        }
+        E element = (E) object;
+        int ordinal = element.ordinal();
+        bits -= (1l << ordinal);
+        size--;
+        return true;
+    }
+    
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean equals(Object object) {
+        if (!(object instanceof EnumSet)) {
+            return super.equals(object);
+        }
+        EnumSet<E> set =(EnumSet<E>)object; 
+        if( !isValidType(set.elementClass) ) {
+            return size == 0 && set.size() == 0;
+        }
+        return bits == ((MiniEnumSet)set).bits;
+    }
+    
+    @Override
+    void complement() {
+        if (0 != enums.length) {
+            bits = ~bits;
+            bits &= (-1l >>> (MAX_ELEMENTS - enums.length));
+            size = enums.length - size;
+        }
     }
 }

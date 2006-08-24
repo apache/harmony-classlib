@@ -104,8 +104,13 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
      *             if the specified enum set is null
      */
     public static <E extends Enum<E>> EnumSet<E> complementOf(EnumSet<E> s) {
-        throw new NotYetImplementedException();
+        EnumSet<E> set = EnumSet.noneOf(s.elementClass);
+        set.addAll(s);
+        set.complement();
+        return set;
     }
+    
+    abstract void complement();
 
     /**
      * Creates a new enum set, containing only the specified element. There are
