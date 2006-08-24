@@ -15,12 +15,11 @@
 
 package org.apache.harmony.prefs.tests.java.util.prefs;
 
-import java.io.NotSerializableException;
 import java.util.prefs.InvalidPreferencesFormatException;
 
-import tests.util.SerializationTester;
-
 import junit.framework.TestCase;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * 
@@ -63,14 +62,22 @@ public class InvalidPreferencesFormatExceptionTest extends TestCase {
 		assertTrue(e.getMessage().indexOf(t.getClass().getName()) >= 0);
 	}
 
-	public void testSerialization() throws Exception {
-		try {
-			SerializationTester.writeObject(
-					new InvalidPreferencesFormatException("msg"), "test.txt");
-			fail();
-		} catch (NotSerializableException e) {
-		}
-	}
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
 
+        SerializationTest.verifySelf(new InvalidPreferencesFormatException(
+                "msg"));
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this,
+                new InvalidPreferencesFormatException("msg"));
+    }
 }
 

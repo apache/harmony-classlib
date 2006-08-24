@@ -20,5 +20,6 @@ Import-Package: java.io,
  org.apache.xpath,
  org.w3c.dom,
  org.xml.sax,
+ org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional,
  tests.util;resolution:=optional;hy_usage=test
 Export-Package: java.util.prefs

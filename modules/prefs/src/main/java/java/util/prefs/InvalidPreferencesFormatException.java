@@ -24,9 +24,6 @@ import java.io.ObjectOutputStream;
  * An exception to indicate that the input XML file is not well-formed or 
  * validating to the appropriate document type, which is specified by 
  * <code>Preferences</code>. 
- * <p>
- * Please note that this class cannot be serialized actually, so relevant 
- * serialization methods only throw <code>NotSerializableException</code>.</p>
  * 
  * @see Preferences
  *
@@ -66,22 +63,6 @@ public class InvalidPreferencesFormatException extends Exception {
 	public InvalidPreferencesFormatException (Throwable t) {
 		super(t);
 	}
-	
-    /*
-     * This method always throws a <code>NotSerializableException</code>, because 
-     * this object cannot be serialized,  
-     */
-	private void writeObject(ObjectOutputStream out) throws NotSerializableException{
-	    throw new NotSerializableException();	    
-	}
-	
-    /*
-     * This method always throws a <code>NotSerializableException</code>, because 
-     * this object cannot be serialized,  
-     */
-	private void readObject(ObjectInputStream in) throws NotSerializableException{
-	    throw new NotSerializableException();	    
-	}	
 }
 
 
