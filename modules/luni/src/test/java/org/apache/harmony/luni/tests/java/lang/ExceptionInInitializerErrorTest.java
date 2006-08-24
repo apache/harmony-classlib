@@ -20,65 +20,32 @@ public class ExceptionInInitializerErrorTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.ExceptionInInitializerError#ExceptionInInitializerError()
 	 */
-	public void test_Constructor() {
-		try {
-			if (true)
-				throw new ExceptionInInitializerError();
-		} catch (ExceptionInInitializerError e) {
-			assertTrue("Initializer failed." + e.toString(), e.toString()
-					.equals("java.lang.ExceptionInInitializerError"));
-			assertNull("Initializer failed.", e.getException());
-			assertNull("Initializer failed.", e.getMessage());
-			return;
-		}
-		fail("Constructor failed.");
-	}
+    public void test_Constructor() {
+        ExceptionInInitializerError e = new ExceptionInInitializerError();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
+
+    /**
+     * @tests java.lang.ExceptionInInitializerError#ExceptionInInitializerError(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        ExceptionInInitializerError e = new ExceptionInInitializerError("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 
 	/**
-	 * @tests java.lang.ExceptionInInitializerError#ExceptionInInitializerError(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		try {
-			if (true) {
-				throw new ExceptionInInitializerError("HelloWorld");
-			}
-			fail("Constructor failed.");
-		} catch (ExceptionInInitializerError e) {
-			assertTrue("Initializer failed: " + e.getMessage(), e.getMessage()
-					.equals("HelloWorld"));
-		}
-	}
-
-	/**
-	 * @tests java.lang.ExceptionInInitializerError#ExceptionInInitializerError(java.lang.Throwable)
+	 * @tests java.lang.ExceptionInInitializerExceptionInInitializerError#ExceptionInInitializerError(java.lang.Throwable)
 	 */
 	public void test_ConstructorLjava_lang_Throwable() {
-		try {
-			if (true) {
-				throw new ExceptionInInitializerError(
-						new ExceptionInInitializerError("HelloWorld"));
-			}
-			fail("Constructor failed.");
-		} catch (ExceptionInInitializerError e) {
-			assertNull("Initializer failed." + e.getMessage(),
-					e.getMessage());
-			assertTrue("Initializer failed." + e.toString(),
-					e.getException() != null
-							&& e.getException().getMessage().equals(
-									"HelloWorld"));
-		}
+	    NullPointerException npe = new NullPointerException("fixture");
+        ExceptionInInitializerError e = new ExceptionInInitializerError(npe);
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertSame(npe, e.getException());
+        assertSame(npe, e.getCause());
 	}
 
-	/**
-	 * @tests java.lang.ExceptionInInitializerError#getException()
-	 */
-	public void test_getException() {
-		assertTrue("Already tested.", true);
-	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
 }

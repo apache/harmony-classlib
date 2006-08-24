@@ -15,47 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class IllegalAccessErrorTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class IllegalAccessErrorTest extends TestCase {
 
 	/**
 	 * @tests java.lang.IllegalAccessError#IllegalAccessError()
 	 */
-	public void test_Constructor() {
-		try {
-			if (true) {
-				throw new IllegalAccessError();
-			}
-			fail("IllegalAccessError not thrown.");
-		} catch (IllegalAccessError e) {
-			assertTrue("Initializer failed." + e.toString(), e.toString()
-					.equals("java.lang.IllegalAccessError"));
-		} catch (Exception e) {
-			fail("Exception in test : " + e.getMessage());
-		}
-	}
+    public void test_Constructor() {
+        IllegalAccessError e = new IllegalAccessError();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * @tests java.lang.IllegalAccessError#IllegalAccessError(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		try {
-			if (true)
-				throw new IllegalAccessError("hello world.");
-		} catch (IllegalAccessError e) {
-			assertTrue("Wrong toString displayed." + e.toString(), e.toString()
-					.equals("java.lang.IllegalAccessError: hello world."));
-			assertTrue("Wrong message displayed." + e.getMessage(), e
-					.getMessage().equals("hello world."));
-			return;
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-		fail("Error not thrown.");
-	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.IllegalAccessError#IllegalAccessError(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        IllegalAccessError e = new IllegalAccessError("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

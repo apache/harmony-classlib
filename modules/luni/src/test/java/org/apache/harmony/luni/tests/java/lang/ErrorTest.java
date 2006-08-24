@@ -15,49 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class ErrorTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class ErrorTest extends TestCase {
 
 	/**
 	 * @tests java.lang.Error#Error()
 	 */
-	public void test_Constructor() {
-		// Test for method java.lang.Error()
-		try {
-			if (true)
-				throw new Error();
-		} catch (Error e) {
-			return;
-		}
-		fail("Failed to generate Error");
-	}
+    public void test_Constructor() {
+        Error e = new Error();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * @tests java.lang.Error#Error(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.lang.Error(java.lang.String)
-		try {
-			if (true)
-				throw new Error("Throw an Error");
-		} catch (Error e) {
-			assertEquals("Incorrect message string generated", "Throw an Error", e.getMessage()
-					);
-			return;
-		}
-		fail("Failed to generate Error");
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.Error#Error(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        Error e = new Error("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

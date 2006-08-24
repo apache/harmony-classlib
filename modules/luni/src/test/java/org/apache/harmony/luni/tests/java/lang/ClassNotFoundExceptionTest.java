@@ -15,53 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class ClassNotFoundExceptionTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class ClassNotFoundExceptionTest extends TestCase {
 
 	/**
 	 * @tests java.lang.ClassNotFoundException#ClassNotFoundException()
 	 */
 	public void test_Constructor() {
-		// Test for method java.lang.ClassNotFoundException()
-		try {
-			try {
-				Class.forName("zz.xx.ll.Wiggum");
-			} catch (ClassNotFoundException e) {
-				return;
-			}
-			fail("Failed to generate expected exception");
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+        ClassNotFoundException e = new ClassNotFoundException();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
 	}
 
 	/**
 	 * @tests java.lang.ClassNotFoundException#ClassNotFoundException(java.lang.String)
 	 */
 	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.lang.ClassNotFoundException(java.lang.String)
-		try {
-			try {
-				Class.forName("zz.xx.ll.Wiggum");
-			} catch (ClassNotFoundException e) {
-				return;
-			}
-			fail("Failed to generate expected exception");
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
+        ClassNotFoundException e = new ClassNotFoundException("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
 	}
 }

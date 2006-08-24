@@ -15,58 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class CloneNotSupportedExceptionTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class CloneNotSupportedExceptionTest extends TestCase {
 
 	/**
 	 * @tests java.lang.CloneNotSupportedException#CloneNotSupportedException()
 	 */
 	public void test_Constructor() {
-		// Test for method java.lang.CloneNotSupportedException()
-		class NoClone extends Object {
-			public Object clone() throws CloneNotSupportedException {
-				return super.clone();
-			}
-		}
-		try {
-			NoClone x = new NoClone();
-			NoClone y = (NoClone) x.clone();
-		} catch (CloneNotSupportedException e) {
-			return;
-		}
-		fail("Failed to generate expected exception");
+        CloneNotSupportedException e = new CloneNotSupportedException();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
 	}
 
 	/**
 	 * @tests java.lang.CloneNotSupportedException#CloneNotSupportedException(java.lang.String)
 	 */
 	public void test_ConstructorLjava_lang_String() {
-		// Test for method
-		// java.lang.CloneNotSupportedException(java.lang.String)
-		class NoClone extends Object {
-			public Object clone() throws CloneNotSupportedException {
-				return super.clone();
-			}
-		}
-		try {
-			NoClone x = new NoClone();
-			x.clone();
-		} catch (CloneNotSupportedException e) {
-			return;
-		}
-		fail("Failed to generate expected exception");
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
+        CloneNotSupportedException e = new CloneNotSupportedException("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
 	}
 }
