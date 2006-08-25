@@ -168,7 +168,7 @@ public interface RuntimeMXBean {
      * 
      * @return The JVM's up time.
      */
-    long getUpTime();
+    long getUptime();
 
     /**
      * <p>

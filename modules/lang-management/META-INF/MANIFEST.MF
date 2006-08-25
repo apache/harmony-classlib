@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.apache.harmony.langmanagement
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Import-Package: java.lang,
+Import-Package: java.io,
+ java.lang,
  java.lang.reflect,
  java.security,
  java.util,

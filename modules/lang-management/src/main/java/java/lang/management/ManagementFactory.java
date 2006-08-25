@@ -15,6 +15,7 @@
 
 package java.lang.management;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -138,7 +139,7 @@ public class ManagementFactory {
     }
 
     public static <T> T newPlatformMXBeanProxy(MBeanServerConnection connection,
-            String mxbeanName, Class<T> mxbeanInterface) {
+            String mxbeanName, Class<T> mxbeanInterface) throws IOException {
         return null;
     }
 
