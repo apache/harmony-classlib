@@ -101,8 +101,8 @@ public class LogStream extends PrintStream {
                 isFirstByte = true;
             } else {
                 if (isFirstByte) {
-                    print(toString() + ":");
                     isFirstByte = false;
+                    print(toString() + ":");
                 }
                 super.write(b);
             }
