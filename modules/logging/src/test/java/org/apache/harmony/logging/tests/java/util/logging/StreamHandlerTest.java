@@ -611,7 +611,7 @@ public class StreamHandlerTest extends TestCase {
 	public void testPublish_Null_NoOutputStream() {
 		StreamHandler h = new StreamHandler();
 		h.publish(null);
-		// regression test for Harmony-1275
+		// regression test for Harmony-1279
 		MockFilter filter = new MockFilter();
 		h.setLevel(Level.FINER);
 		h.setFilter(filter);
