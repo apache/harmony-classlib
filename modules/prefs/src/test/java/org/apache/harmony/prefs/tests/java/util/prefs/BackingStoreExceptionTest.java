@@ -15,11 +15,11 @@
 
 package org.apache.harmony.prefs.tests.java.util.prefs;
 
-import java.io.NotSerializableException;
 import java.util.prefs.BackingStoreException;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * 
@@ -47,14 +47,20 @@ public class BackingStoreExceptionTest extends TestCase {
 		assertEquals(t, e.getCause());
 	}
 
-	public void testSerialization() throws Exception {
-		try {
-			SerializationTester.writeObject(new BackingStoreException("msg"),
-					"test.txt");
-			fail();
-		} catch (NotSerializableException e) {
-		}
-	}
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
 
+        SerializationTest.verifySelf(new BackingStoreException("msg"));
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new BackingStoreException("msg"));
+    }
 }
 

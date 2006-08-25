@@ -16,17 +16,10 @@
 
 package java.util.prefs;
 
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 /**
  * An exception to indicate that some error was encountered while accessing
  * the backing store.
- * <p>
- * Please note that this class cannot be serialized actually, so relevant 
- * serialization methods only throw <code>NotSerializableException</code>.
- * </p>
  *
  * @since 1.4
  */
@@ -52,22 +45,6 @@ public class BackingStoreException extends Exception {
 	 */
 	public BackingStoreException (Throwable t) {
 		super(t);
-	}
-	
-    /*
-     * This method always throws a <code>NotSerializableException</code>, because 
-     * this object cannot be serialized,  
-     */
-	private void writeObject(ObjectOutputStream out) throws NotSerializableException{
-	    throw new NotSerializableException();	    
-	}
-	
-    /*
-     * This method always throws a <code>NotSerializableException</code>, because 
-     * this object cannot be serialized,  
-     */
-	private void readObject(ObjectInputStream in) throws NotSerializableException{
-	    throw new NotSerializableException();	    
 	}
 }
 
