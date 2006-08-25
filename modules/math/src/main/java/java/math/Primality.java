@@ -21,11 +21,8 @@ import java.util.Random;
 
 /**
  * Provides primality probabilistic methods.
- * 
- * @author Daniel Fridlender
- * @author Matthias Gallé
- * @author Mariano Heredia
- * @author Miguel Vasquez
+ * @author Intel Middleware Product Division
+ * @author Instituto Tecnologico de Cordoba
  */
 class Primality {
 

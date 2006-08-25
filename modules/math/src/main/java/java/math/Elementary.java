@@ -24,13 +24,10 @@ package java.math;
  * <li>Subtraction.</li>
  * <li>Comparison.</li>
  * </ul>
- * In addition to this, some <i><b>Inplace</b></i> (mutable) methods are
- * provided.
+ * In addition to this, some <i><b>Inplace</b></i> (mutable) methods are provided.
  * 
- * @author Daniel Fridlender
- * @author Matthias Gallé
- * @author Mariano Heredia
- * @author Miguel Vasquez
+ * @author Intel Middleware Product Division
+ * @author Instituto Tecnológico de Córdoba
  */
 class Elementary {
 

@@ -35,12 +35,10 @@ package java.math;
  * <li>Modular inverse of a {@link BigInteger} numbers.</li>
  * </ul>
  * </li>
- * </ul>
+ *</ul>
  * 
- * @author Daniel Fridlender
- * @author Matthias Gallé
- * @author Mariano Heredia
- * @author Miguel Vasquez
+ * @author Intel Middleware Product Division
+ * @author Instituto Tecnológico de Córdoba
  */
 class Division {
 

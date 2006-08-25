@@ -486,10 +486,10 @@ public class BigDecimalArithmeticTest extends TestCase {
         BigDecimal aNumber = new BigDecimal(new BigInteger(a), aScale);
         BigDecimal bNumber = BigDecimal.valueOf(0L);
         try {
-            aNumber.divide(bNumber, BigDecimal.ROUND_UNNECESSARY);
+            aNumber.divide(bNumber);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
-            assertEquals("Improper exception message", "BigInteger divide by zero", e.getMessage());
+            assertEquals("Improper exception message", "Division by zero", e.getMessage());
         }
     }
 

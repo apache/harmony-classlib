@@ -19,10 +19,8 @@ package java.math;
 /**
  * Static library that provides all multiplication of {@link BigInteger} methods.
  *
- * @author Daniel Fridlender
- * @author Matthias Gallé
- * @author Mariano Heredia
- * @author Miguel Vasquez
+ * @author Intel Middleware Product Division
+ * @author Instituto Tecnologico de Cordoba
  */
 class Multiplication {
 
@@ -35,19 +33,48 @@ class Multiplication {
      */
     static final int whenUseKaratsuba = 63; // an heuristic value
 
-    static final int tenPows[] = { 1, 10, 100, 1000, 10000, 100000, 1000000,
-            10000000, 100000000, 1000000000 };
+    /**
+     * An array with powers of ten that fit in the type {@code int}.
+     * ({@code 10^0,10^1,...,10^9})
+     */
+    static final int tenPows[] = {
+        1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000
+    };
+    
+    /**
+     * An array with powers of five that fit in the type {@code int}.
+     * ({@code 5^0,5^1,...,5^13})
+     */
+    static final int fivePows[] = {
+        1, 5, 25, 125, 625, 3125, 15625, 78125, 390625,
+        1953125, 9765625, 48828125, 244140625, 1220703125
+    };
 
+    /**
+     * An array with the fisrt powers of ten in {@code BigInteger} version.
+     * ({@code 10^0,10^1,...,10^31})
+     */
     static final BigInteger[] bigTenPows = new BigInteger[32];
 
+    /**
+     * An array with the first powers of five in {@code BigInteger} version.
+     * ({@code 5^0,5^1,...,5^31})
+     */
+    static final BigInteger bigFivePows[] = new BigInteger[32];
+    
+    
+
     static {
-        int i = 0;
-        long val = 1;
-        for (; i <= 18; i++) {
-            bigTenPows[i] = BigInteger.valueOf(val);
-            val *= 10L;
+        int i;
+        long fivePow = 1L;
+        
+        for (i = 0; i <= 18; i++) {
+            bigFivePows[i] = BigInteger.valueOf(fivePow);
+            bigTenPows[i] = BigInteger.valueOf(fivePow << i);
+            fivePow *= 5;
         }
         for (; i < bigTenPows.length; i++) {
+            bigFivePows[i] = bigFivePows[i - 1].multiply(bigFivePows[1]);
             bigTenPows[i] = bigTenPows[i - 1].multiply(BigInteger.TEN);
         }
     }
@@ -73,30 +100,34 @@ class Multiplication {
      *</tt>
      * @param op1 first factor of the product
      * @param op2 second factor of the product
-     * @return op1*op2
+     * @return {@code op1 * op2}
      * @see #multiply(BigInteger, BigInteger)
      */
     static BigInteger karatsuba(BigInteger op1, BigInteger op2) {
-        if (Math.min(op1.numberLength, op2.numberLength) < whenUseKaratsuba) {
-            return multiplyPAP(op2, op1);
+        BigInteger temp;
+        if (op2.numberLength > op1.numberLength) {
+            temp = op1;
+            op1 = op2;
+            op2 = temp;
         }
-        BigInteger upperOp1, lowerOp1, upperOp2, lowerOp2;
-        int bitndiv2 = Math.max(op1.numberLength, op2.numberLength) >> 1;
-        int ndiv2 = bitndiv2 << 5;
+        if (op2.numberLength < whenUseKaratsuba) {
+            return multiplyPAP(op1, op2);
+        }
         /*  Karatsuba:  u = u1*B + u0
          *              v = v1*B + v0
-         *
          *  u*v = (u1*v1)*B^2 + ((u1-u0)*(v0-v1) + u1*v1 + u0*v0)*B + u0*v0
          */
-        upperOp1 = op1.shiftRight(ndiv2);
-        upperOp2 = op2.shiftRight(ndiv2);
-        lowerOp1 = op1.subtract(upperOp1.shiftLeft(ndiv2));
-        lowerOp2 = op2.subtract(upperOp2.shiftLeft(ndiv2));
+        // ndiv2 = (op1.numberLength / 2) * 32
+        int ndiv2 = (op1.numberLength & 0xFFFFFFFE) << 4;
+        BigInteger upperOp1 = op1.shiftRight(ndiv2);
+        BigInteger upperOp2 = op2.shiftRight(ndiv2);
+        BigInteger lowerOp1 = op1.subtract(upperOp1.shiftLeft(ndiv2));
+        BigInteger lowerOp2 = op2.subtract(upperOp2.shiftLeft(ndiv2));
 
         BigInteger upper = karatsuba(upperOp1, upperOp2);
         BigInteger lower = karatsuba(lowerOp1, lowerOp2);
-        BigInteger middle = karatsuba(upperOp1.subtract(lowerOp1), lowerOp2
-                .subtract(upperOp2));
+        BigInteger middle = karatsuba( upperOp1.subtract(lowerOp1),
+                lowerOp2.subtract(upperOp2));
         middle = middle.add(upper).add(lower);
         middle = middle.shiftLeft(ndiv2);
         upper = upper.shiftLeft(ndiv2 << 1);
@@ -187,126 +218,109 @@ class Multiplication {
      *
      *</tt>
      *
-     * @param op1 first factor of the multiplication <code> op1 >= 0 </code>
-     * @param op2 second factor of the multiplication <code> op2 >= 0 </code>
-     * @return a <code>BigInteger</code> of value <code> op1 * op2 </code>
+     * @param op1 first factor of the multiplication {@code  op1 >= 0}
+     * @param op2 second factor of the multiplication {@code  op2 >= 0}
+     * @return a {@code BigInteger} of value {@code  op1 * op2}
      */
     static BigInteger multiplyPAP(BigInteger a, BigInteger b) {
-        BigInteger tmp;
-        if (a.numberLength < b.numberLength) {
-            tmp = a;
-            a = b;
-            b = tmp;
-        }
+        // PRE: a >= b
         int aLen = a.numberLength;
         int bLen = b.numberLength;
         int resLength = aLen + bLen;
-        // a special case when both numbers don't exceed int
+        int resSign = (a.sign != b.sign) ? -1 : 1;
+        // A special case when both numbers don't exceed int
         if (resLength == 2) {
-            long val = ((long) a.digits[0] & 0xFFFFFFFFL)
-                    * ((long) b.digits[0] & 0xFFFFFFFFL);
-            int sign = a.sign != b.sign ? -1 : 1;
-            int valueLo = (int) val;
-            int valueHi = (int) (val >>> 32);
-            return ((valueHi == 0) ? new BigInteger(sign, valueLo)
-                    : new BigInteger(sign, 2, new int[] { valueLo, valueHi }));
+            long val = (a.digits[0] & 0xFFFFFFFFL)
+            * (b.digits[0] & 0xFFFFFFFFL);
+            int valueLo = (int)val;
+            int valueHi = (int)(val >>> 32);
+            return ((valueHi == 0)
+            ? new BigInteger(resSign, valueLo)
+            : new BigInteger(resSign, 2, new int[]{valueLo, valueHi}));
         }
         int[] aDigits = a.digits;
         int[] bDigits = b.digits;
         int resDigits[] = new int[resLength];
-        // common case
+        // Common case
         for (int j = 0; j < bLen; j++) {
             long carry = 0;
             int i;
             for (i = 0; i < aLen; i++) {
                 int m = i + j;
-                carry += ((long) aDigits[i] & 0xFFFFFFFFL)
-                        * ((long) bDigits[j] & 0xFFFFFFFFL)
-                        + ((long) resDigits[m] & 0xFFFFFFFFL);
-                resDigits[m] = (int) carry;
+                carry += (aDigits[i] & 0xFFFFFFFFL)
+                * (bDigits[j] & 0xFFFFFFFFL)
+                + (resDigits[m] & 0xFFFFFFFFL);
+                resDigits[m] = (int)carry;
                 carry >>>= 32;
             }
             resDigits[i + j] = (int) carry;
         }
-        BigInteger result = new BigInteger((a.sign == b.sign) ? 1 : -1,
-                resLength, resDigits);
-        result.cutOffLeadingZeroes();
-        return result;
-    }
-
-    /**
-     * Multiplies an array of integers by an integer value.
-     * @param intArray the array of integers
-     * @param arrayLength the number of elements of intArray to be multiplied
-     * @param factor the multiplier
-     * @return the top digit of production
-     */
-    static int multiplyByInt(int intArray[], final int arrayLength,
-            final int factor) {
-        long carry = 0;
-
-        for (int i = 0; i < arrayLength; i++) {
-            carry += ((long) intArray[i] & 0xFFFFFFFFL)
-                    * ((long) factor & 0xFFFFFFFFL);
-            intArray[i] = (int) carry;
-            carry >>>= 32;
-        }
-        return (int) carry;
-    }
-
-    static BigInteger multiplyByPositiveInt(BigInteger a, int b) {
-        int resSign = a.sign;
-        if (resSign == 0) {
-            return BigInteger.ZERO;
-        }
-        int aNumberLength = a.numberLength;
-        int[] aDigits = a.digits;
-        if (aNumberLength == 1) {
-            long res = ((long) aDigits[0] & 0xFFFFFFFFL) * ((long) b);
-            int resLo = (int) res;
-            int resHi = (int) (res >>> 32);
-            if (resHi == 0) {
-                return new BigInteger(resSign, resLo);
-            }
-            return new BigInteger(resSign, 2, new int[] { resLo, resHi });
-        }
-        int resLength = aNumberLength + 1;
-        int resDigits[] = new int[resLength];
-        long carry = 0;
-        // common case
-        int i;
-        for (i = 0; i < aNumberLength; i++) {
-            carry += ((long) aDigits[i] & 0xFFFFFFFFL)
-                    * ((long) b & 0xFFFFFFFFL);
-            resDigits[i] = (int) carry;
-            carry >>>= 32;
-        }
-        resDigits[i] = (int) carry;
         BigInteger result = new BigInteger(resSign, resLength, resDigits);
         result.cutOffLeadingZeroes();
         return result;
     }
 
     /**
-     * Multiplies a number by a power of ten.
-     * This method could be used in {@code BigDecimal} class.
-     * @param val the number to be scaled
-     * @param exp a positive exponent
-     * @return {@code val * 10<sup>exp</sup>}
+     * Multiplies an array of integers by an integer value
+     * and saves the result in {@code res}.
+     * @param a the array of integers
+     * @param aSize the number of elements of intArray to be multiplied
+     * @param factor the multiplier
+     * @return the top digit of production
      */
-    static BigInteger multiplyByTenPow(BigInteger val, int exp) {
-        return ((exp < 10) ? multiplyByPositiveInt(val, tenPows[exp]) : val
-                .multiply(getTenPow(exp)));
+    private static int multiplyByInt(int res[], int a[], final int aSize, final int factor) {
+        long carry = 0;
+
+        for (int i = 0; i < aSize; i++) {
+            carry += (a[i] & 0xFFFFFFFFL) * (factor & 0xFFFFFFFFL);
+            res[i] = (int)carry;
+            carry >>>= 32;
+        }
+        return (int)carry;
     }
 
+    
     /**
-     * Generates a power of ten, using the first powers cached in an array. 
-     * @param exp a positive exponent
-     * @return {@code 10<sup>exp</sup>}
+     * Multiplies an array of integers by an integer value.
+     * @param a the array of integers
+     * @param aSize the number of elements of intArray to be multiplied
+     * @param factor the multiplier
+     * @return the top digit of production
      */
-    static BigInteger getTenPow(int exp) {
-        return ((exp < bigTenPows.length) ? bigTenPows[exp] : BigInteger.TEN
-                .pow(exp));
+    static int multiplyByInt(int a[], final int aSize, final int factor) {
+        return multiplyByInt(a, a, aSize, factor);
+    }
+    
+    /**
+     * Multiplies a number by a positive integer.
+     * @param val an arbitrary {@code BigInteger}
+     * @param factor a positive {@code int} number
+     * @return {@code val * factor}
+     */
+    static BigInteger multiplyByPositiveInt(BigInteger val, int factor) {
+        int resSign = val.sign;
+        if (resSign == 0) {
+            return BigInteger.ZERO;
+        }
+        int aNumberLength = val.numberLength;
+        int[] aDigits = val.digits;
+        
+        if (aNumberLength == 1) {
+            long res = (aDigits[0] & 0xFFFFFFFFL) * ((long)factor);
+            int resLo = (int)res;
+            int resHi = (int)(res >>> 32);
+            return ((resHi == 0)
+            ? new BigInteger(resSign, resLo)
+            : new BigInteger(resSign, 2, new int[]{resLo, resHi}));
+        }
+        // Common case
+        int resLength = aNumberLength + 1;
+        int resDigits[] = new int[resLength];
+        
+        resDigits[aNumberLength] = multiplyByInt(resDigits, aDigits, aNumberLength, factor);
+        BigInteger result = new BigInteger(resSign, resLength, resDigits);
+        result.cutOffLeadingZeroes();
+        return result;
     }
 
     /**
@@ -320,7 +334,7 @@ class Multiplication {
         BigInteger res = BigInteger.ONE;
         BigInteger acc = base;
 
-        for (; exponent != 1; exponent >>= 1) {
+        for (; exponent > 1; exponent >>= 1) {
             if ((exponent & 1) != 0) {
                 // if odd, multiply one more time by acc
                 res = res.multiply(acc);
@@ -333,4 +347,94 @@ class Multiplication {
         return res;
     }
 
+    /**
+     * Multiplies a number by a power of ten.
+     * This method is used in {@code BigDecimal} class.
+     * @param val the number to be multiplied
+     * @param exp a positive {@code long} exponent
+     * @return {@code val * 10<sup>exp</sup>}
+     */
+    static BigInteger multiplyByTenPow(BigInteger val, long exp) {
+        // PRE: exp >= 0
+        return ((exp < tenPows.length)
+        ? multiplyByPositiveInt(val, tenPows[(int)exp])
+        : val.multiply(powerOf10(exp)));
+    }
+    
+    /**
+     * It calculates a power of ten, which exponent could be out of 32-bit range.
+     * Note that internally this method will be used in the worst case with
+     * an exponent equals to: {@code Integer.MAX_VALUE - Integer.MIN_VALUE}.
+     * @param exp the exponent of power of ten, it must be positive.
+     * @return a {@code BigInteger} with value {@code 10<sup>exp</sup>}.
+     */
+    static BigInteger powerOf10(long exp) {
+        // PRE: exp >= 0
+        int intExp = (int)exp;
+        // "SMALL POWERS"
+        if (exp < bigTenPows.length) {
+            // The largest power that fit in 'long' type
+            return bigTenPows[intExp];
+        } else if (exp <= 50) {
+            // To calculate:    10^exp
+            return BigInteger.TEN.pow(intExp);
+        } else if (exp <= 1000) {
+            // To calculate:    5^exp * 2^exp
+            return bigFivePows[1].pow(intExp).shiftLeft(intExp);
+        }
+        // "LARGE POWERS"
+        /* To check if there is free memory to allocate a BigInteger
+         * of the estimated size, measured in bytes: 1 + [exp / log10(2)] */
+        long byteArraySize = 1 + (long)(exp / 2.4082399653118496);
+        
+        if (byteArraySize > Runtime.getRuntime().freeMemory()) {
+            throw new OutOfMemoryError("power of ten too big");
+        }
+        if (exp <= Integer.MAX_VALUE) {
+            // To calculate:    5^exp * 2^exp
+            return bigFivePows[1].pow(intExp).shiftLeft(intExp);
+        } else {/* "HUGE POWERS"
+         * Probably this branch won't be executed
+         * since the power of ten is too big. */
+            // To calculate:    5^exp
+            BigInteger powerOfFive = bigFivePows[1].pow(Integer.MAX_VALUE);
+            BigInteger res = powerOfFive;
+            long longExp = exp - Integer.MAX_VALUE;
+            
+            intExp = (int)(exp % Integer.MAX_VALUE);
+            while (longExp > Integer.MAX_VALUE) {
+                res = res.multiply(powerOfFive);
+                longExp -= Integer.MAX_VALUE;
+            }
+            res = res.multiply(bigFivePows[1].pow(intExp));
+            // To calculate:    5^exp << exp
+            res = res.shiftLeft(Integer.MAX_VALUE);
+            longExp = exp - Integer.MAX_VALUE;
+            while (longExp > Integer.MAX_VALUE) {
+                res = res.shiftLeft(Integer.MAX_VALUE);
+                longExp -= Integer.MAX_VALUE;
+            }
+            res = res.shiftLeft(intExp);
+            return res;
+        }
+    }
+    
+    /**
+     * Multiplies a number by a power of five.
+     * This method is used in {@code BigDecimal} class.
+     * @param val the number to be multiplied
+     * @param exp a positive {@code int} exponent
+     * @return {@code val * 5<sup>exp</sup>}
+     */
+    static BigInteger multiplyByFivePow(BigInteger val, int exp) {
+        // PRE: exp >= 0
+        if (exp < fivePows.length) {
+            return multiplyByPositiveInt(val, fivePows[(int)exp]);
+        } else if (exp < bigFivePows.length) {
+            return val.multiply(bigFivePows[exp]);
+        } else {// Large powers of five
+            return val.multiply(bigFivePows[1].pow(exp));
+        }
+    }
+    
 }

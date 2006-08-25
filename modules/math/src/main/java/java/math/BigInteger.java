@@ -22,11 +22,8 @@ import java.util.Random;
 import java.io.Serializable;
 
 /**
- * @author Daniel Fridlender
- * @author Matthias Gallé
- * @author Mariano Heredia
- * @author Miguel Vasquez
- * 
+ * @author Intel Middleware Product Division
+ * @author Instituto Tecnologico de Cordoba
  * @ar.org.fitc.spec_ref 
  */
 public class BigInteger extends Number implements Comparable<BigInteger>,
@@ -268,7 +265,11 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     /** @ar.org.fitc.spec_ref */
     public static BigInteger valueOf(long val) {
         if (val < 0) {
+            if(val != -1) {
             return new BigInteger(-1, -val);
+            } else {
+                return MINUS_ONE;
+            }
         } else if (val <= 10) {
             return SMALL_VALUES[(int) val];
         } else {// (val > 10)

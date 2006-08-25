@@ -30,10 +30,8 @@ package java.math;
  * All operations are provided in immutable way, and some in both mutable and
  * immutable.
  * 
- * @author Daniel Fridlender
- * @author Matthias Gallé
- * @author Mariano Heredia
- * @author Miguel Vasquez
+ * @author Intel Middleware Product Division
+ * @author Instituto Tecnologico de Cordoba
  */
 class BitLevel {
 

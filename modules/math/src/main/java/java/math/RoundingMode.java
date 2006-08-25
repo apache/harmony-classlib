@@ -18,10 +18,8 @@ package java.math;
 
 /**
  * @ar.org.fitc.spec_ref
- * @author Daniel Fridlender
- * @author Matthias Gallé
- * @author Mariano Heredia
- * @author Miguel Vasquez 
+ * @author Intel Middleware Product Division
+ * @author Instituto Tecnologico de Cordoba
  */
 public enum RoundingMode {
 

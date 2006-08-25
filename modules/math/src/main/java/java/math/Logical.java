@@ -25,11 +25,8 @@ package java.math;
  * <li>or</li>
  * <li>xor</li>
  * </ul>
- * 
- * @author Daniel Fridlender
- * @author Matthias Gallé
- * @author Mariano Heredia
- * @author Miguel Vasquez
+ * @author Intel Middleware Product Division
+ * @author Instituto Tecnologico de Cordoba
  */
 class Logical {
 
@@ -358,13 +355,13 @@ class Logical {
             for (i = opLen; i < resLength; i++) {
                 if (val.sign == that.sign) {
                     // the numbers have the same signs
-                    resDigits[i] = ((val.numberLength > that.numberLength) ? (valNeg == null) ? val.digits[i]
-                            : ~valNeg[i]
+                    resDigits[i] = ((val.numberLength > that.numberLength)
+                    ? (valNeg == null) ? val.digits[i] : ~valNeg[i]
                             : (thatNeg == null) ? that.digits[i] : ~thatNeg[i]);
                 } else {
                     // the numbers have different signs
-                    resDigits[i] = ((val.numberLength >= that.numberLength) ? (val.sign < 0) ? valNeg[i]
-                            : ~val.digits[i]
+                    resDigits[i] = ((val.numberLength >= that.numberLength)
+                    ? (val.sign < 0) ? valNeg[i] : ~val.digits[i]
                             : (val.sign < 0) ? ~that.digits[i] : thatNeg[i]);
                 }
             }
