@@ -15,13 +15,15 @@
 
 package org.apache.harmony.prefs.tests.java.util.prefs;
 
+import java.io.ByteArrayOutputStream;
 import java.io.NotSerializableException;
+import java.io.ObjectOutputStream;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.Preferences;
 
-import tests.util.SerializationTester;
-
 import junit.framework.TestCase;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * 
@@ -74,14 +76,13 @@ public class PreferenceChangeEventTest extends TestCase {
 	}
 
 	public void testSerialization() throws Exception {
-		event = new PreferenceChangeEvent(Preferences.userRoot(), "key",
-				"value");
-		try {
-			SerializationTester.writeObject(event, "test.txt");
-			fail();
-		} catch (NotSerializableException e) {
-		}
-
-	}
-
+        event = new PreferenceChangeEvent(Preferences.userRoot(), "key",
+                "value");
+        try {
+            SerializationTest.putObjectToStream(event, new ObjectOutputStream(
+                    new ByteArrayOutputStream()));
+            fail("No expected NotSerializableException");
+        } catch (NotSerializableException e) {
+        }
+    }
 }

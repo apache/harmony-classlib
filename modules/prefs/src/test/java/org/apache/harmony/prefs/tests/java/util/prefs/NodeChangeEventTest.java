@@ -15,12 +15,15 @@
 
 package org.apache.harmony.prefs.tests.java.util.prefs;
 
+import java.io.ByteArrayOutputStream;
 import java.io.NotSerializableException;
+import java.io.ObjectOutputStream;
 import java.util.prefs.NodeChangeEvent;
 import java.util.prefs.Preferences;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * 
@@ -51,12 +54,14 @@ public class NodeChangeEventTest extends TestCase {
 	}
 
 	public void testSerialization() throws Exception {
-		try {
-			SerializationTester.writeObject(new NodeChangeEvent(Preferences
-					.systemRoot(), null), "test.txt");
-			fail();
-		} catch (NotSerializableException e) {
-		}
-	}
+        
+        event = new NodeChangeEvent(Preferences.systemRoot(), null);
 
+        try {
+            SerializationTest.putObjectToStream(event, new ObjectOutputStream(
+                    new ByteArrayOutputStream()));
+            fail("No expected NotSerializableException");
+        } catch (NotSerializableException e) {
+        }
+    }
 }
