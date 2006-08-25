@@ -35,35 +35,13 @@ public interface MidiDevice {
             this.version = version;
         }
 
+        /*
+         * returns true when objects are the same
+         * 
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
         public final boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (!super.equals(obj))
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            final Info other = (Info) obj;
-            if (description == null) {
-                if (other.description != null)
-                    return false;
-            } else if (!description.equals(other.description))
-                return false;
-            if (name == null) {
-                if (other.name != null)
-                    return false;
-            } else if (!name.equals(other.name))
-                return false;
-            if (vendor == null) {
-                if (other.vendor != null)
-                    return false;
-            } else if (!vendor.equals(other.vendor))
-                return false;
-            if (version == null) {
-                if (other.version != null)
-                    return false;
-            } else if (!version.equals(other.version))
-                return false;
-            return true;
+            return this == obj;
         }
 
         public final String getDescription() {

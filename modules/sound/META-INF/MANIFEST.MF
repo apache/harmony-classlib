@@ -9,4 +9,5 @@ Import-Package: java.lang,
  java.util,
  java.io,
  java.net
-Export-Package: javax.sound.midi
+Export-Package: javax.sound.midi,
+ javax.sound.midi.spi
