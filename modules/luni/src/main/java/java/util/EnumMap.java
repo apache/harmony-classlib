@@ -35,6 +35,112 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
 
     transient int enumSize;
 
+    private static class EnumMapIterator<E, KT extends Enum<KT>, VT> implements
+            Iterator<E> {
+        private int position = 0;
+
+        private int prePosition = -1;
+
+        private final EnumMap<KT, VT> enumMap;
+
+        private final MapEntry.Type<E, KT, VT> type;
+
+        EnumMapIterator(MapEntry.Type<E, KT, VT> value, EnumMap<KT, VT> em) {
+            enumMap = em;
+            type = value;
+        }
+
+        public boolean hasNext() {
+            int length = enumMap.enumSize;
+            for (; position < length; position++) {
+                if (enumMap.hasMapping[position]) {
+                    break;
+                }
+            }
+            return position != length;
+        }
+
+        @SuppressWarnings("unchecked")
+        public E next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            prePosition = position++;
+            return type.get(new MapEntry(enumMap.keys[prePosition],
+                    enumMap.values[prePosition]));
+        }
+
+        public void remove() {
+            checkStatus();
+            if (enumMap.hasMapping[prePosition]) {
+                enumMap.remove(enumMap.keys[prePosition]);
+            }
+            prePosition = -1;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public String toString() {
+            if (-1 == prePosition) {
+                return super.toString();
+            }
+            return type.get(
+                    new MapEntry(enumMap.keys[prePosition],
+                            enumMap.values[prePosition])).toString();
+        }
+
+        void checkStatus() {
+            if (-1 == prePosition) {
+                throw new IllegalStateException();
+            }
+        }
+    }
+
+    private static class EnumMapKeySet<KT extends Enum<KT>, VT> extends
+            AbstractSet<KT> {
+        private final EnumMap<KT, VT> enumMap;
+
+        EnumMapKeySet(EnumMap<KT, VT> em) {
+            enumMap = em;
+        }
+
+        @Override
+        public void clear() {
+            enumMap.clear();
+        }
+
+        @Override
+        public boolean contains(Object object) {
+            return enumMap.containsKey(object);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public Iterator iterator() {
+            return new EnumMapIterator<KT, KT, VT>(
+                    new MapEntry.Type<KT, KT, VT>() {
+                        public KT get(MapEntry<KT, VT> entry) {
+                            return entry.key;
+                        }
+                    }, enumMap);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public boolean remove(Object object) {
+            if (contains(object)) {
+                enumMap.remove(object);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public int size() {
+            return enumMap.size();
+        }
+    }
+
     /**
      * Constructs an empty enum map using the given key type.
      * 
@@ -205,8 +311,12 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      * 
      * @return a set view of the keys contained in this map.
      */
+    @Override
     public Set<K> keySet() {
-        throw new NotYetImplementedException();
+        if (null == keySet) {
+            keySet = new EnumMapKeySet<K, V>(this);
+        }
+        return keySet;
     }
 
     /**

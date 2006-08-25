@@ -15,9 +15,14 @@
 
 package tests.api.java.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.apache.harmony.luni.util.NotYetImplementedException;
 
@@ -257,6 +262,163 @@ public class EnumMapTest extends TestCase {
         enumSizeMap.put(Size.Big, null);
         assertTrue("Returned false for contained value", enumSizeMap //$NON-NLS-1$
                 .containsValue(null));
+    }
+
+    /**
+     * @tests java.util.EnumMap#keySet()
+     */
+    @SuppressWarnings( { "unchecked", "boxing" })
+    public void test_keySet() {
+        EnumMap enumSizeMap = new EnumMap(Size.class);
+        enumSizeMap.put(Size.Middle, 2);
+        enumSizeMap.put(Size.Big, null);
+        Set set = enumSizeMap.keySet();
+
+        Set set1 = enumSizeMap.keySet();
+        assertSame("Should be same", set1, set); //$NON-NLS-1$
+        try {
+            set.add(Size.Big);
+            fail("Should throw UnsupportedOperationException"); //$NON-NLS-1$
+        } catch (UnsupportedOperationException e) {
+            // Expected
+        }
+
+        assertTrue("Returned false for contained object", set//$NON-NLS-1$
+                .contains(Size.Middle));
+        assertTrue("Returned false for contained object", set//$NON-NLS-1$
+                .contains(Size.Big));
+        assertFalse("Returned true for uncontained object", set //$NON-NLS-1$
+                .contains(Size.Small));
+        assertFalse("Returned true for uncontained object", set //$NON-NLS-1$
+                .contains(new Integer(1)));
+        assertTrue("Returned false when the object can be removed", set //$NON-NLS-1$
+                .remove(Size.Big));
+        assertFalse("Returned true for uncontained object", set //$NON-NLS-1$
+                .contains(Size.Big));
+        assertFalse("Returned true when the object cann't be removed", set //$NON-NLS-1$
+                .remove(Size.Big));
+        assertFalse("Returned true when the object cann't be removed", set //$NON-NLS-1$
+                .remove(new Integer(1)));
+
+        // The set is backed by the map so changes to one are reflected by the
+        // other.
+        enumSizeMap.put(Size.Big, 3);
+        assertTrue("Returned false for contained object", set//$NON-NLS-1$
+                .contains(Size.Big));
+        enumSizeMap.remove(Size.Big);
+        assertFalse("Returned true for uncontained object", set //$NON-NLS-1$
+                .contains(Size.Big));
+
+        assertEquals("Wrong size", 1, set.size()); //$NON-NLS-1$
+        set.clear();
+        assertEquals("Wrong size", 0, set.size()); //$NON-NLS-1$
+
+        enumSizeMap = new EnumMap(Size.class);
+        enumSizeMap.put(Size.Middle, 1);
+        enumSizeMap.put(Size.Big, null);
+        set = enumSizeMap.keySet();
+        Collection c = new ArrayList();
+        c.add(Size.Big);
+        assertTrue("Should return true", set.containsAll(c)); //$NON-NLS-1$
+        c.add(Size.Small);
+        assertFalse("Should return false", set.containsAll(c)); //$NON-NLS-1$
+        assertTrue("Should return true", set.removeAll(c)); //$NON-NLS-1$
+        assertEquals("Wrong size", 1, set.size()); //$NON-NLS-1$
+        assertFalse("Should return false", set.removeAll(c)); //$NON-NLS-1$
+        assertEquals("Wrong size", 1, set.size()); //$NON-NLS-1$
+        try {
+            set.addAll(c);
+            fail("Should throw UnsupportedOperationException"); //$NON-NLS-1$
+        } catch (UnsupportedOperationException e) {
+            // Expected
+        }
+
+        enumSizeMap.put(Size.Big, null);
+        assertEquals("Wrong size", 2, set.size()); //$NON-NLS-1$
+        assertTrue("Should return true", set.retainAll(c)); //$NON-NLS-1$
+        assertEquals("Wrong size", 1, set.size()); //$NON-NLS-1$
+        assertFalse("Should return false", set.retainAll(c)); //$NON-NLS-1$
+        assertEquals(1, set.size());
+        Object[] array = set.toArray();
+        assertEquals("Wrong length", 1, array.length); //$NON-NLS-1$
+        assertEquals("Wrong key", Size.Big, array[0]); //$NON-NLS-1$
+
+        enumSizeMap = new EnumMap(Size.class);
+        enumSizeMap.put(Size.Middle, 1);
+        enumSizeMap.put(Size.Big, null);
+        set = enumSizeMap.keySet();
+        c = new ArrayList();
+        c.add(Color.Blue);
+        assertFalse("Should return false", set.remove(c)); //$NON-NLS-1$
+        assertEquals("Wrong size", 2, set.size()); //$NON-NLS-1$
+        assertTrue("Should return true", set.retainAll(c)); //$NON-NLS-1$
+        assertEquals("Wrong size", 0, set.size()); //$NON-NLS-1$
+
+        enumSizeMap = new EnumMap(Size.class);
+        enumSizeMap.put(Size.Middle, 1);
+        enumSizeMap.put(Size.Big, null);
+        set = enumSizeMap.keySet();
+
+        Iterator iter = set.iterator();
+        Enum enumKey = (Enum) iter.next();
+        assertTrue("Returned false for contained object", set.contains(enumKey)); //$NON-NLS-1$
+        enumKey = (Enum) iter.next();
+        assertTrue("Returned false for contained object", set.contains(enumKey)); //$NON-NLS-1$
+
+        enumSizeMap.remove(Size.Big);
+        assertFalse("Returned true for uncontained object", set //$NON-NLS-1$
+                .contains(enumKey));
+        iter.remove();
+        try {
+            iter.remove();
+            fail("Should throw IllegalStateException"); //$NON-NLS-1$
+        } catch (IllegalStateException e) {
+            // Expected
+        }
+        assertFalse("Returned true for uncontained object", set //$NON-NLS-1$
+                .contains(enumKey));
+
+        iter = set.iterator();
+        enumKey = (Enum) iter.next();
+        assertTrue("Returned false for contained object", set.contains(enumKey)); //$NON-NLS-1$
+        enumSizeMap.put(Size.Middle, 3);
+        assertTrue("Returned false for contained object", set.contains(enumKey)); //$NON-NLS-1$
+
+        enumSizeMap = new EnumMap(Size.class);
+        enumSizeMap.put(Size.Middle, 1);
+        enumSizeMap.put(Size.Big, null);
+        set = enumSizeMap.keySet();
+        iter = set.iterator();
+        try {
+            iter.remove();
+            fail("Should throw IllegalStateException"); //$NON-NLS-1$
+        } catch (IllegalStateException e) {
+            // Expected
+        }
+        enumKey = (Enum) iter.next();
+        assertEquals("Wrong key", Size.Middle, enumKey); //$NON-NLS-1$
+        assertSame("Wrong key", Size.Middle, enumKey); //$NON-NLS-1$
+        assertFalse("Returned true for unequal object", iter.equals(enumKey)); //$NON-NLS-1$
+        iter.remove();
+        assertFalse("Returned true for uncontained object", set //$NON-NLS-1$
+                .contains(enumKey));
+        try {
+            iter.remove();
+            fail("Should throw IllegalStateException"); //$NON-NLS-1$
+        } catch (IllegalStateException e) {
+            // Expected
+        }
+
+        assertEquals("Wrong size", 1, set.size()); //$NON-NLS-1$
+        enumKey = (Enum) iter.next();
+        assertEquals("Wrong key", Size.Big, enumKey); //$NON-NLS-1$
+        iter.remove();
+        try {
+            iter.next();
+            fail("Should throw NoSuchElementException"); //$NON-NLS-1$
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
     }
 
     /**
