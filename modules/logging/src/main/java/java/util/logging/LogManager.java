@@ -175,33 +175,33 @@ public class LogManager {
      */
 
     static {
-        // init LogManager singleton instance
-        String className = getPrivilegedSystemProperty("java.util.logging.manager"); //$NON-NLS-1$
-        if (null != className) {
-            manager = (LogManager) getInstanceByClass(className);
-        }
-        if (null == manager) {
-            manager = new LogManager();
-        }
+		// init LogManager singleton instance
+		AccessController.doPrivileged(new PrivilegedAction<Object>() {
+			public Object run() {
+				String className = getSystemProperty("java.util.logging.manager"); //$NON-NLS-1$
+				if (null != className) {
+					manager = (LogManager) getInstanceByClass(className);
+				}
+				if (null == manager) {
+					manager = new LogManager();
+				}
 
-        // read configuration
-        try {
-            manager.readConfigurationImpl(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        // if global logger has been initialized, set root as its parent
-        if (null != Logger.global) {
-            Logger.global.setParent(manager.root);
-        }
-    }
+				// read configuration
+				try {
+					manager.readConfigurationImpl(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
-    /*
-     * -------------------------------------------------------------------
-     * Constructor
-     * -------------------------------------------------------------------
-     */
+				// if global logger has been initialized, set root as its parent
+				if (null != Logger.global) {
+					Logger.global.setParent(manager.root);
+				}
+				return null;
+			}
+		});
+	}
+
     /**
      * 
      * Default constructor. This is not public because there should be only one
