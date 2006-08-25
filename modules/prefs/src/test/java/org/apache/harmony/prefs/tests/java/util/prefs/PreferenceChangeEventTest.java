@@ -30,52 +30,52 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
  */
 public class PreferenceChangeEventTest extends TestCase {
 
-	PreferenceChangeEvent event;
+    PreferenceChangeEvent event;
 
-	public void testPreferenceChangeEventException() {
-		try {
-			event = new PreferenceChangeEvent(null, "key", "value");
-			fail();
-		} catch (IllegalArgumentException e) {
-		}
-	}
+    public void testPreferenceChangeEventException() {
+        try {
+            event = new PreferenceChangeEvent(null, "key", "value");
+            fail();
+        } catch (IllegalArgumentException e) {
+        }
+    }
 
-	public void testConstructorNullValue() {
-		event = new PreferenceChangeEvent(Preferences.userRoot(), "key", null);
-		assertEquals("key", event.getKey());
-		assertNull(event.getNewValue());
-		assertSame(Preferences.userRoot(), event.getNode());
-		assertSame(Preferences.userRoot(), event.getSource());
+    public void testConstructorNullValue() {
+        event = new PreferenceChangeEvent(Preferences.userRoot(), "key", null);
+        assertEquals("key", event.getKey());
+        assertNull(event.getNewValue());
+        assertSame(Preferences.userRoot(), event.getNode());
+        assertSame(Preferences.userRoot(), event.getSource());
 
-		event = new PreferenceChangeEvent(Preferences.userRoot(), "", null);
-		assertEquals("", event.getKey());
-		assertNull(event.getNewValue());
-		assertSame(Preferences.userRoot(), event.getNode());
-		assertSame(Preferences.userRoot(), event.getSource());
+        event = new PreferenceChangeEvent(Preferences.userRoot(), "", null);
+        assertEquals("", event.getKey());
+        assertNull(event.getNewValue());
+        assertSame(Preferences.userRoot(), event.getNode());
+        assertSame(Preferences.userRoot(), event.getSource());
 
-		event = new PreferenceChangeEvent(Preferences.userRoot(), null, "value");
-		assertNull(event.getKey());
-		assertEquals("value", event.getNewValue());
-		assertSame(Preferences.userRoot(), event.getNode());
-		assertSame(Preferences.userRoot(), event.getSource());
+        event = new PreferenceChangeEvent(Preferences.userRoot(), null, "value");
+        assertNull(event.getKey());
+        assertEquals("value", event.getNewValue());
+        assertSame(Preferences.userRoot(), event.getNode());
+        assertSame(Preferences.userRoot(), event.getSource());
 
-		event = new PreferenceChangeEvent(Preferences.userRoot(), null, "");
-		assertNull(event.getKey());
-		assertEquals("", event.getNewValue());
-		assertSame(Preferences.userRoot(), event.getNode());
-		assertSame(Preferences.userRoot(), event.getSource());
-	}
+        event = new PreferenceChangeEvent(Preferences.userRoot(), null, "");
+        assertNull(event.getKey());
+        assertEquals("", event.getNewValue());
+        assertSame(Preferences.userRoot(), event.getNode());
+        assertSame(Preferences.userRoot(), event.getSource());
+    }
 
-	public void testConstructor() {
-		event = new PreferenceChangeEvent(Preferences.userRoot(), "key",
-				"value");
-		assertEquals("key", event.getKey());
-		assertEquals("value", event.getNewValue());
-		assertSame(Preferences.userRoot(), event.getNode());
-		assertSame(Preferences.userRoot(), event.getSource());
-	}
+    public void testConstructor() {
+        event = new PreferenceChangeEvent(Preferences.userRoot(), "key",
+                "value");
+        assertEquals("key", event.getKey());
+        assertEquals("value", event.getNewValue());
+        assertSame(Preferences.userRoot(), event.getNode());
+        assertSame(Preferences.userRoot(), event.getSource());
+    }
 
-	public void testSerialization() throws Exception {
+    public void testSerialization() throws Exception {
         event = new PreferenceChangeEvent(Preferences.userRoot(), "key",
                 "value");
         try {

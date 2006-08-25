@@ -30,31 +30,31 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
  */
 public class NodeChangeEventTest extends TestCase {
 
-	NodeChangeEvent event;
+    NodeChangeEvent event;
 
-	public void testConstructor() {
-		event = new NodeChangeEvent(Preferences.systemRoot(), Preferences
-				.userRoot());
-		assertSame(Preferences.systemRoot(), event.getParent());
-		assertSame(Preferences.userRoot(), event.getChild());
-		assertSame(Preferences.systemRoot(), event.getSource());
-	}
+    public void testConstructor() {
+        event = new NodeChangeEvent(Preferences.systemRoot(), Preferences
+                .userRoot());
+        assertSame(Preferences.systemRoot(), event.getParent());
+        assertSame(Preferences.userRoot(), event.getChild());
+        assertSame(Preferences.systemRoot(), event.getSource());
+    }
 
-	public void testConstructorNullParam() {
-		try {
-			event = new NodeChangeEvent(null, Preferences.userRoot());
-			fail();
-		} catch (IllegalArgumentException e) {
-		}
+    public void testConstructorNullParam() {
+        try {
+            event = new NodeChangeEvent(null, Preferences.userRoot());
+            fail();
+        } catch (IllegalArgumentException e) {
+        }
 
-		event = new NodeChangeEvent(Preferences.systemRoot(), null);
-		assertSame(Preferences.systemRoot(), event.getParent());
-		assertNull(event.getChild());
-		assertSame(Preferences.systemRoot(), event.getSource());
-	}
+        event = new NodeChangeEvent(Preferences.systemRoot(), null);
+        assertSame(Preferences.systemRoot(), event.getParent());
+        assertNull(event.getChild());
+        assertSame(Preferences.systemRoot(), event.getSource());
+    }
 
-	public void testSerialization() throws Exception {
-        
+    public void testSerialization() throws Exception {
+
         event = new NodeChangeEvent(Preferences.systemRoot(), null);
 
         try {

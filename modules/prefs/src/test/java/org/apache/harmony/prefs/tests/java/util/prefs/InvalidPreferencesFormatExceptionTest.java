@@ -26,41 +26,41 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
  */
 public class InvalidPreferencesFormatExceptionTest extends TestCase {
 
-	/*
-	 * Class under test for void InvalidPreferencesFormatException(String)
-	 */
-	public void testInvalidPreferencesFormatExceptionString() {
-		InvalidPreferencesFormatException e = new InvalidPreferencesFormatException(
-				"msg");
-		assertNull(e.getCause());
-		assertEquals("msg", e.getMessage());
-	}
+    /*
+     * Class under test for void InvalidPreferencesFormatException(String)
+     */
+    public void testInvalidPreferencesFormatExceptionString() {
+        InvalidPreferencesFormatException e = new InvalidPreferencesFormatException(
+                "msg");
+        assertNull(e.getCause());
+        assertEquals("msg", e.getMessage());
+    }
 
-	/*
-	 * Class under test for void InvalidPreferencesFormatException(String,
-	 * Throwable)
-	 */
-	public void testInvalidPreferencesFormatExceptionStringThrowable() {
-		Throwable t = new Throwable("root");
-		InvalidPreferencesFormatException e = new InvalidPreferencesFormatException(
-				"msg", t);
-		assertSame(t, e.getCause());
-		assertTrue(e.getMessage().indexOf("root") < 0);
-		assertTrue(e.getMessage().indexOf(t.getClass().getName()) < 0);
-		assertTrue(e.getMessage().indexOf("msg") >= 0);
-	}
+    /*
+     * Class under test for void InvalidPreferencesFormatException(String,
+     * Throwable)
+     */
+    public void testInvalidPreferencesFormatExceptionStringThrowable() {
+        Throwable t = new Throwable("root");
+        InvalidPreferencesFormatException e = new InvalidPreferencesFormatException(
+                "msg", t);
+        assertSame(t, e.getCause());
+        assertTrue(e.getMessage().indexOf("root") < 0);
+        assertTrue(e.getMessage().indexOf(t.getClass().getName()) < 0);
+        assertTrue(e.getMessage().indexOf("msg") >= 0);
+    }
 
-	/*
-	 * Class under test for void InvalidPreferencesFormatException(Throwable)
-	 */
-	public void testInvalidPreferencesFormatExceptionThrowable() {
-		Throwable t = new Throwable("root");
-		InvalidPreferencesFormatException e = new InvalidPreferencesFormatException(
-				t);
-		assertSame(t, e.getCause());
-		assertTrue(e.getMessage().indexOf("root") >= 0);
-		assertTrue(e.getMessage().indexOf(t.getClass().getName()) >= 0);
-	}
+    /*
+     * Class under test for void InvalidPreferencesFormatException(Throwable)
+     */
+    public void testInvalidPreferencesFormatExceptionThrowable() {
+        Throwable t = new Throwable("root");
+        InvalidPreferencesFormatException e = new InvalidPreferencesFormatException(
+                t);
+        assertSame(t, e.getCause());
+        assertTrue(e.getMessage().indexOf("root") >= 0);
+        assertTrue(e.getMessage().indexOf(t.getClass().getName()) >= 0);
+    }
 
     /**
      * @tests serialization/deserialization.
@@ -80,4 +80,3 @@ public class InvalidPreferencesFormatExceptionTest extends TestCase {
                 new InvalidPreferencesFormatException("msg"));
     }
 }
-

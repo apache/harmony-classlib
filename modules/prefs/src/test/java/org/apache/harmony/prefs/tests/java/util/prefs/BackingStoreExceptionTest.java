@@ -27,25 +27,25 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
  */
 public class BackingStoreExceptionTest extends TestCase {
 
-	/*
-	 * Class under test for void BackingStoreException(String)
-	 */
-	public void testBackingStoreExceptionString() {
-		BackingStoreException e = new BackingStoreException("msg");
-		assertNull(e.getCause());
-		assertEquals("msg", e.getMessage());
-	}
+    /*
+     * Class under test for void BackingStoreException(String)
+     */
+    public void testBackingStoreExceptionString() {
+        BackingStoreException e = new BackingStoreException("msg");
+        assertNull(e.getCause());
+        assertEquals("msg", e.getMessage());
+    }
 
-	/*
-	 * Class under test for void BackingStoreException(Throwable)
-	 */
-	public void testBackingStoreExceptionThrowable() {
-		Throwable t = new Throwable("msg");
-		BackingStoreException e = new BackingStoreException(t);
-		assertTrue(e.getMessage().indexOf(t.getClass().getName()) >= 0);
-		assertTrue(e.getMessage().indexOf("msg") >= 0);
-		assertEquals(t, e.getCause());
-	}
+    /*
+     * Class under test for void BackingStoreException(Throwable)
+     */
+    public void testBackingStoreExceptionThrowable() {
+        Throwable t = new Throwable("msg");
+        BackingStoreException e = new BackingStoreException(t);
+        assertTrue(e.getMessage().indexOf(t.getClass().getName()) >= 0);
+        assertTrue(e.getMessage().indexOf("msg") >= 0);
+        assertEquals(t, e.getCause());
+    }
 
     /**
      * @tests serialization/deserialization.
@@ -63,4 +63,3 @@ public class BackingStoreExceptionTest extends TestCase {
         SerializationTest.verifyGolden(this, new BackingStoreException("msg"));
     }
 }
-
