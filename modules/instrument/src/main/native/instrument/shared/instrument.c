@@ -16,7 +16,62 @@
 #include <stdlib.h>
 #include "instrument.h"
 #include "vmi.h"
+#include "exceptions.h"
 
+
+
+void throw_exception(JNIEnv * env,jvmtiError err){
+      switch (err) {
+        case JVMTI_ERROR_MUST_POSSESS_CAPABILITY:
+            throwNewExceptionByName(env, "java/lang/UnsupportedOperationException",
+                          "The environment does not possess the capability can_redefine_classes."); 
+        case JVMTI_ERROR_NULL_POINTER:
+        	throwNewExceptionByName(env, "java/lang/NullPointerException",
+                          "One of class_bytes is NULL."); 
+        case JVMTI_ERROR_UNMODIFIABLE_CLASS:
+        	throwNewExceptionByName(env, "java/lang/instrument/UnmodifiableClassException",
+                          "An element of class_definitions cannot be modified."); 
+        case JVMTI_ERROR_INVALID_CLASS:
+            throwNewExceptionByName(env, "java/lang/ClassNotFoundException",
+                          "An element of class_definitions is not a valid class."); 
+        case JVMTI_ERROR_UNSUPPORTED_VERSION:
+        	throwNewExceptionByName(env, "java/lang/UnsupportedClassVersionError",
+                          "A new class file has a version number not supported by this VM."); 
+        case JVMTI_ERROR_INVALID_CLASS_FORMAT:
+        	throwNewExceptionByName(env, "java/lang/ClassFormatError",
+                          "A new class file is malformed."); 
+        case JVMTI_ERROR_CIRCULAR_CLASS_DEFINITION:
+        	throwNewExceptionByName(env, "java/lang/ClassCircularityError",
+                          "The new class file definitions would lead to a circular definition."); 
+        case JVMTI_ERROR_FAILS_VERIFICATION:
+            throwNewExceptionByName(env, "java/lang/ClassFormatError",
+                          "The class bytes fail verification."); 
+        case JVMTI_ERROR_NAMES_DONT_MATCH:
+        	throwNewExceptionByName(env, "java/lang/NoClassDefFoundError",
+                          "The class name defined in a new class file is different from the name in the old class object."); 
+        case JVMTI_ERROR_UNSUPPORTED_REDEFINITION_METHOD_ADDED:
+            throwNewExceptionByName(env, "java/lang/UnsupportedOperationException",
+                          "A new class file requires adding a method."); 
+        case JVMTI_ERROR_UNSUPPORTED_REDEFINITION_SCHEMA_CHANGED:
+            throwNewExceptionByName(env, "java/lang/UnsupportedOperationException",
+                    "A new class version changes a field."); 
+        case JVMTI_ERROR_UNSUPPORTED_REDEFINITION_HIERARCHY_CHANGED:
+            throwNewExceptionByName(env, "java/lang/UnsupportedOperationException",
+                    "A direct superclass is different for a new class version, or the set of directly implemented interfaces is different."); 
+        case JVMTI_ERROR_UNSUPPORTED_REDEFINITION_METHOD_DELETED:
+            throwNewExceptionByName(env, "java/lang/UnsupportedOperationException",
+                    "A new class version does not declare a method declared in the old class version."); 
+        case JVMTI_ERROR_UNSUPPORTED_REDEFINITION_CLASS_MODIFIERS_CHANGED:
+            throwNewExceptionByName(env, "java/lang/UnsupportedOperationException",
+                    "A new class version has different modifiers."); 
+        case JVMTI_ERROR_UNSUPPORTED_REDEFINITION_METHOD_MODIFIERS_CHANGED:
+            throwNewExceptionByName(env, "java/lang/UnsupportedOperationException",
+                    "A method in the new class version has different modifiers than its counterpart in the old class version."); 
+        default:
+            throwNewExceptionByName(env, "java/lang/InternalError",
+                    "Unknown error during redefinition."); 
+        }
+}
 
 /*
  * This file contains native methods implementation for org/apache/harmony/instrument/internal/InstrumentationImpl
@@ -109,9 +164,9 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_instrument_internal_Instrumentat
 /*
  * Class:     Java_org_apache_harmony_instrument_internal_InstrumentationImpl
  * Method:    redefineClasses_native
- * Signature: ([Ljava/lang/instrument/ClassDefinition;)I
+ * Signature: ([Ljava/lang/instrument/ClassDefinition;)V
  */
-JNIEXPORT jint JNICALL Java_org_apache_harmony_instrument_internal_InstrumentationImpl_redefineClasses_1native
+JNIEXPORT void JNICALL Java_org_apache_harmony_instrument_internal_InstrumentationImpl_redefineClasses_1native
   (JNIEnv * env, jobject objThis, jobjectArray javaClassDefArr){
       PORT_ACCESS_FROM_ENV (env);
 	  jvmtiEnv* jvmti=gdata->jvmti;
@@ -122,28 +177,29 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_instrument_internal_Instrumentati
 	  jsize length;
 	  jvmtiClassDefinition *class_definitions;	  
 	  int i=0;
+	  jmethodID method_clear;
 
 	  //locate the java methods needed by class definition data extraction
 	  jclass class_ClassDefinition=(*env)->FindClass(env, "java/lang/instrument/ClassDefinition");
 	  if(NULL == class_ClassDefinition){
-		return JNI_ERR;
+		return;
 	  }
 
 	  method_get_data=(*env)->GetMethodID(env, class_ClassDefinition, "getDefinitionClassFile", "()[B");
 	  if(NULL == method_get_data){
-		return JNI_ERR;
+		return;
 	  }
 	  
 	  method_get_class=(*env)->GetMethodID(env, class_ClassDefinition, "getDefinitionClass", "()Ljava/lang/Class;");
 	  if(NULL == method_get_class){
-		return JNI_ERR;
+		return;
 	  }
 
 	  //allocate memory for native jvmtiClassDefinition structs to hold class redefinition data
 	  length=(*env)->GetArrayLength(env, javaClassDefArr);
 	  class_definitions=(jvmtiClassDefinition*) hymem_allocate_memory(sizeof(jvmtiClassDefinition)*length);
 	  if(NULL == class_definitions){
-	  	return JNI_ERR;
+	  	return;
 	  }
 	  
 	  //extract class definition data from java array into native array
@@ -156,14 +212,14 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_instrument_internal_Instrumentati
 		  jclass klass=(jclass)(*env)->CallObjectMethod(env, obj_ClassDefinition, method_get_class);
 		  if (NULL == klass){
 		    hymem_free_memory(class_definitions);
-		  	return JNI_ERR;
+		  	return;
 		  }
 		  jclass_bytes =(jbyteArray)(*env)->CallObjectMethod(env, obj_ClassDefinition, method_get_data);
 		  copy = JNI_TRUE;
 		  class_bytes = (*env)->GetByteArrayElements(env, jclass_bytes, &copy);
 		  if(NULL == class_bytes){
 			hymem_free_memory(class_definitions);
-			return JNI_ERR;
+			return;
 		  }
 		  class_byte_count = (*env)->GetArrayLength(env, jclass_bytes);
           if(copy == JNI_TRUE){
@@ -178,9 +234,15 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_instrument_internal_Instrumentati
 
 	  //perform redefinition
 	  err=(*jvmti)->RedefineClasses(jvmti, length, class_definitions);
+	  if (JVMTI_ERROR_NONE!=err){
+	  	  jclass clz= (*env)->FindClass(env, "java/lang/instrument/Instrumentation");
+	  	  method_clear=(*env)->GetMethodID(env, clz, "clear", "()V");
+	  	  (*env)->CallVoidMethod(env,objThis,method_clear);
+	      throw_exception(env,err);
+	  }
 	  //free memory
 	  hymem_free_memory(class_definitions);
-	  return err;
+	  return;
 }
 
 void check_jvmti_error(JNIEnv *env, jvmtiError error, const char *msg){

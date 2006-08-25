@@ -199,16 +199,17 @@ char* Read_Manifest(JavaVM *vm, JNIEnv *env,const char *jar_name){
 }
 
 char* read_attribute(JavaVM *vm, char *manifest,char *lwrmanifest, const char * target){
-	char *pos = manifest+ (strstr(lwrmanifest,target) - lwrmanifest);
+	char *pos;
 	char *end;
 	char *value;
 	int length;
-
-	PORT_ACCESS_FROM_JAVAVM(vm);
-	
-	if(NULL == pos){
+    PORT_ACCESS_FROM_JAVAVM(vm);
+    
+    if(NULL == strstr(lwrmanifest,target)){
 		return NULL;
 	}
+    
+    pos = manifest+ (strstr(lwrmanifest,target) - lwrmanifest);
 	pos += strlen(target)+2;//": "
 	end = strchr(pos, '\r');
 	if(NULL == end){

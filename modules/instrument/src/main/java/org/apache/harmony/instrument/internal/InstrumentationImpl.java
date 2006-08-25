@@ -31,37 +31,6 @@ public class InstrumentationImpl implements Instrumentation {
      * Consts
      * ----------------------------------------------------------------------------
      */
-    private static final int JVMTI_SUCCEED = 0;
-
-    private static final int JVMTI_ERROR_MUST_POSSESS_CAPABILITY = 99;
-
-    private static final int JVMTI_ERROR_NULL_POINTER = 100;
-
-    private static final int JVMTI_ERROR_UNMODIFIABLE_CLASS = 79;
-
-    private static final int JVMTI_ERROR_INVALID_CLASS = 21;
-
-    private static final int JVMTI_ERROR_UNSUPPORTED_VERSION = 68;
-
-    private static final int JVMTI_ERROR_INVALID_CLASS_FORMAT = 60;
-
-    private static final int JVMTI_ERROR_CIRCULAR_CLASS_DEFINITION = 61;
-
-    private static final int JVMTI_ERROR_FAILS_VERIFICATION = 62;
-
-    private static final int JVMTI_ERROR_NAMES_DONT_MATCH = 69;
-
-    private static final int JVMTI_ERROR_UNSUPPORTED_REDEFINITION_METHOD_ADDED = 63;
-
-    private static final int JVMTI_ERROR_UNSUPPORTED_REDEFINITION_SCHEMA_CHANGED = 64;
-
-    private static final int JVMTI_ERROR_UNSUPPORTED_REDEFINITION_HIERARCHY_CHANGED = 66;
-
-    private static final int JVMTI_ERROR_UNSUPPORTED_REDEFINITION_METHOD_DELETED = 67;
-
-    private static final int JVMTI_ERROR_UNSUPPORTED_REDEFINITION_CLASS_MODIFIERS_CHANGED = 70;
-
-    private static final int JVMTI_ERROR_UNSUPPORTED_REDEFINITION_METHOD_MODIFIERS_CHANGED = 71;
 
     private static final Class[] PREMAIN_SIGNATURE = new Class[] {
             String.class, Instrumentation.class };
@@ -100,6 +69,7 @@ public class InstrumentationImpl implements Instrumentation {
      * @see java.lang.instrument.Instrumentation#addTransformer(java.lang.instrument.ClassFileTransformer)
      */
     public void addTransformer(ClassFileTransformer transformer) {
+        System.out.println("Coming!");
         if (null == transformer) {
             throw new NullPointerException();
         }
@@ -126,59 +96,10 @@ public class InstrumentationImpl implements Instrumentation {
                 throw new NullPointerException();
             }
         }
-        int result = redefineClasses_native(definitions);
-
-        switch (result) {
-        case JVMTI_SUCCEED:
-            return;
-        case JVMTI_ERROR_MUST_POSSESS_CAPABILITY:
-            throw new UnsupportedOperationException(
-                    "The environment does not possess the capability can_redefine_classes."); //$NON-NLS-1$
-        case JVMTI_ERROR_NULL_POINTER:
-            throw new NullPointerException("One of class_bytes is NULL."); //$NON-NLS-1$
-        case JVMTI_ERROR_UNMODIFIABLE_CLASS:
-            throw new UnmodifiableClassException(
-                    "An element of class_definitions cannot be modified."); //$NON-NLS-1$
-        case JVMTI_ERROR_INVALID_CLASS:
-            throw new ClassNotFoundException(
-                    "An element of class_definitions is not a valid class."); //$NON-NLS-1$
-        case JVMTI_ERROR_UNSUPPORTED_VERSION:
-            throw new UnsupportedClassVersionError(
-                    "A new class file has a version number not supported by this VM."); //$NON-NLS-1$
-        case JVMTI_ERROR_INVALID_CLASS_FORMAT:
-            throw new ClassFormatError("A new class file is malformed."); //$NON-NLS-1$
-        case JVMTI_ERROR_CIRCULAR_CLASS_DEFINITION:
-            throw new ClassCircularityError(
-                    "The new class file definitions would lead to a circular definition."); //$NON-NLS-1$
-        case JVMTI_ERROR_FAILS_VERIFICATION:
-            throw new ClassFormatError("The class bytes fail verification."); //$NON-NLS-1$
-        case JVMTI_ERROR_NAMES_DONT_MATCH:
-            throw new NoClassDefFoundError(
-                    "The class name defined in a new class file is different from the name in the old class object."); //$NON-NLS-1$
-        case JVMTI_ERROR_UNSUPPORTED_REDEFINITION_METHOD_ADDED:
-            throw new UnsupportedOperationException(
-                    "A new class file requires adding a method."); //$NON-NLS-1$
-        case JVMTI_ERROR_UNSUPPORTED_REDEFINITION_SCHEMA_CHANGED:
-            throw new UnsupportedOperationException(
-                    "A new class version changes a field."); //$NON-NLS-1$
-        case JVMTI_ERROR_UNSUPPORTED_REDEFINITION_HIERARCHY_CHANGED:
-            throw new UnsupportedOperationException(
-                    "A direct superclass is different for a new class version, or the set of directly implemented interfaces is different."); //$NON-NLS-1$
-        case JVMTI_ERROR_UNSUPPORTED_REDEFINITION_METHOD_DELETED:
-            throw new UnsupportedOperationException(
-                    "A new class version does not declare a method declared in the old class version."); //$NON-NLS-1$
-        case JVMTI_ERROR_UNSUPPORTED_REDEFINITION_CLASS_MODIFIERS_CHANGED:
-            throw new UnsupportedOperationException(
-                    "A new class version has different modifiers."); //$NON-NLS-1$
-        case JVMTI_ERROR_UNSUPPORTED_REDEFINITION_METHOD_MODIFIERS_CHANGED:
-            throw new UnsupportedOperationException(
-                    "A method in the new class version has different modifiers than its counterpart in the old class version."); //$NON-NLS-1$
-        default:
-            throw new InternalError("Unknown error during redefinition."); //$NON-NLS-1$
-        }
+        redefineClasses_native(definitions);
     }
 
-    private native int redefineClasses_native(ClassDefinition[] definitions);
+    private native void redefineClasses_native(ClassDefinition[] definitions);
 
     /*
      * (non-Javadoc)
@@ -191,9 +112,9 @@ public class InstrumentationImpl implements Instrumentation {
         }
         int i = 0;
         int length = transformers.length;
-        for (; i < length && transformers[i] != transformer; i++)
+        for (i = length-1; i >= 0 && transformers[i] != transformer; i--)
             ;
-        if (i == length) {
+        if (i == -1) {
             return false;
         }
         ClassFileTransformer[] temp = new ClassFileTransformer[length - 1];
