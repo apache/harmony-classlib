@@ -97,7 +97,7 @@ public class LogStream extends PrintStream {
     public void write(int b) {
         synchronized (this) {
             if (b == '\n') {
-                write(b);
+                super.write(b);
                 isFirstByte = true;
             } else {
                 if (isFirstByte) {
