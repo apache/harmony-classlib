@@ -942,11 +942,20 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             if (isPrimType) {
                 classSig = String.valueOf(typecode);
             } else {
-                // The spec says it is a UTF, but experience shows they dump
-                // this String using writeObject (unlike the field name, which
-                // is saved with writeUTF)
-                classSig = (String) readObject();
-            }
+				// The spec says it is a UTF, but experience shows they dump
+				// this String using writeObject (unlike the field name, which
+				// is saved with writeUTF).
+                // And if resolveObject is enabled, the classSig may be modified 
+                // so that the original class descriptor cannot be read properly,
+                // so it is disabled.
+				boolean old = enableResolve;
+				try {
+					enableResolve = false;
+					classSig = (String) readObject();
+				} finally {
+					enableResolve = old;
+				}
+			}
             ObjectStreamField f = new ObjectStreamField(classSig, fieldName);
             fields[i] = f;
         }

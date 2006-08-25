@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,18 @@
 
 package tests.api.java.io;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.NotActiveException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.io.ObjectStreamField;
 import java.io.Serializable;
+import java.io.StreamCorruptedException;
+import java.util.Date;
 
 public class ObjectStreamFieldTest extends junit.framework.TestCase {
 
@@ -134,6 +143,49 @@ public class ObjectStreamFieldTest extends junit.framework.TestCase {
 		assertTrue("toString on a long returned: " + bamField.toString(),
 				bamField.toString().indexOf("bam") >= 0);
 	}
+    
+    /**
+     * @tests java.io.ObjectStreamField#getType() 
+     */
+    public void test_getType_Deserialized() throws IOException,
+            ClassNotFoundException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(new SerializableObject());
+        oos.close();
+        baos.close();
+
+        byte[] bytes = baos.toByteArray();
+        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        SerializableObject obj = (SerializableObject) ois.readObject();
+
+        ObjectStreamClass oc = obj.getObjectStreamClass();
+        ObjectStreamField field = oc.getField("i");
+        assertEquals(Object.class, field.getType());
+    }
+    
+    /**
+     * @tests java.io.ObjectStreamField#getType()
+     */
+    public void test_getType_MockObjectInputStream() throws IOException, ClassNotFoundException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(new SerializableObject());
+        oos.close();
+        baos.close();
+
+        byte[] bytes = baos.toByteArray();
+        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+        MockObjectInputStream ois = new MockObjectInputStream(bais);
+        ois.readObject();
+
+        ObjectStreamClass oc = ois.getObjectStreamClass();
+        ObjectStreamField field = oc.getField("i");
+        assertEquals(Object.class, field.getType());
+    }
+    
+
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
@@ -153,4 +205,66 @@ public class ObjectStreamFieldTest extends junit.framework.TestCase {
 	 */
 	protected void tearDown() {
 	}
+}
+
+class SerializableObject implements Serializable {
+    public ObjectInputStream.GetField getField = null;
+
+    private static final long serialVersionUID = -2953957835918368056L;
+
+    public Date d;
+
+    public Integer i;
+    
+    public Exception e;
+    
+    public SerializableObject() {
+        d = new Date();
+        i = new Integer(1);
+        e = new Exception("e");
+    }
+
+    private void writeObject(ObjectOutputStream o) throws IOException {
+        o.putFields().put("d", new Date());
+        o.putFields().put("i", new Integer(11));
+        o.writeFields();
+    }
+
+    private void readObject(ObjectInputStream in) throws NotActiveException,
+            IOException, ClassNotFoundException {
+        getField = in.readFields();
+        d = (Date) getField.get("d", null);
+        i = (Integer) getField.get("i", null);
+    }
+
+    public ObjectStreamClass getObjectStreamClass() {
+        return getField.getObjectStreamClass();
+    }
+}
+
+class MockObjectInputStream extends ObjectInputStream {
+    private ObjectStreamClass temp = null;
+
+    public MockObjectInputStream() throws SecurityException, IOException {
+        super();
+    }
+
+    public MockObjectInputStream(InputStream in)
+            throws StreamCorruptedException, IOException {
+        super(in);
+    }
+
+    public ObjectStreamClass readClassDescriptor() throws IOException,
+            ClassNotFoundException {
+        ObjectStreamClass osc = super.readClassDescriptor();
+        //To get the ObjectStreamClass of SerializableObject
+        if (osc.getSerialVersionUID() == -2953957835918368056L) {
+            temp = osc;
+        }
+        return osc;
+    }
+
+    public ObjectStreamClass getObjectStreamClass() {
+        return temp;
+    }
 }

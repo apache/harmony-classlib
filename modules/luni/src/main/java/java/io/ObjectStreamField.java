@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,8 @@ public class ObjectStreamField implements Comparable<Object> {
 	private String typeString;
 
 	private boolean unshared;
+    
+    private boolean isDeserialized;
 
 	/**
 	 * Constructs an ObjectStreamField with the given name and the given type
@@ -95,6 +97,7 @@ public class ObjectStreamField implements Comparable<Object> {
 		}
 		this.name = name;
 		this.typeString = signature.replace('.', '/');
+        this.isDeserialized = true;
 	}
 
 	/**
@@ -142,16 +145,30 @@ public class ObjectStreamField implements Comparable<Object> {
 	}
 
 	/**
-	 * Return the type of the field the receiver represents
+	 * Return the type of the field the receiver represents,
+     * this is an internal method
 	 * 
 	 * @return A Class object representing the type of the field
 	 */
-	public Class<?> getType() {
+	private Class<?> getTypeInternal() {
 		if (type instanceof WeakReference) {
 			return (Class<?>)((WeakReference) type).get();
 		}
 		return (Class<?>) type;
 	}
+    
+    /**
+     * Return the type of the field the receiver represents
+     * 
+     * @return A Class object representing the type of the field
+     */
+    public Class<?> getType() {
+    	Class<?> cl = getTypeInternal();
+        if (isDeserialized && !cl.isPrimitive()) {
+            return Object.class;
+        }
+        return cl;
+    }
 
 	/**
 	 * Return the type code that corresponds to the class the receiver
@@ -160,7 +177,7 @@ public class ObjectStreamField implements Comparable<Object> {
 	 * @return A char, the typecode of the class
 	 */
 	public char getTypeCode() {
-		Class<?> t = getType();
+		Class<?> t = getTypeInternal();
 		if (t == Integer.TYPE) {
 			return 'I';
 		}
@@ -202,7 +219,7 @@ public class ObjectStreamField implements Comparable<Object> {
 			return null;
 		}
 		if (typeString == null) {
-			Class<?> t = getType();
+			Class<?> t = getTypeInternal();
 			String typeName = t.getName().replace('.', '/');
 			String str = (t.isArray()) ? typeName : ("L" + typeName + ';'); //$NON-NLS-1$
 			typeString = str.intern();
@@ -218,7 +235,7 @@ public class ObjectStreamField implements Comparable<Object> {
 	 *         type of this field is a regular class.
 	 */
 	public boolean isPrimitive() {
-		Class<?> t = getType();
+		Class<?> t = getTypeInternal();
 		return t != null && t.isPrimitive();
 	}
 
@@ -239,7 +256,7 @@ public class ObjectStreamField implements Comparable<Object> {
 	 * @return a printable representation for the receiver.
 	 */
 	public String toString() {
-		return this.getClass().getName() + '(' + getName() + ':' + getType()
+		return this.getClass().getName() + '(' + getName() + ':' + getTypeInternal()
 				+ ')';
 	}
 
