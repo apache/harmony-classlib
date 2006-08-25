@@ -349,7 +349,7 @@ public class StreamHandler extends Handler {
     	if (null == record) {
 			return false;
 		}
-        if (super.isLoggable(record) && null != this.os) {
+        if (null != this.os && super.isLoggable(record)) {
             return true;
         }
         return false;

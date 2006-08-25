@@ -611,6 +611,15 @@ public class StreamHandlerTest extends TestCase {
 	public void testPublish_Null_NoOutputStream() {
 		StreamHandler h = new StreamHandler();
 		h.publish(null);
+		// regression test for Harmony-1275
+		MockFilter filter = new MockFilter();
+		h.setLevel(Level.FINER);
+		h.setFilter(filter);
+		LogRecord record = new LogRecord(Level.FINE, "abc");
+		h.publish(record);
+		// verify that filter.isLoggable is not called, because there's no
+		// associated output stream.
+		assertTrue(CallVerificationStack.getInstance().empty());
 	}
 
 	/*
@@ -906,7 +915,6 @@ public class StreamHandlerTest extends TestCase {
 
 		public boolean isLoggable(LogRecord record) {
 			CallVerificationStack.getInstance().push(record);
-			// System.out.println("filter called...");
 			return false;
 		}
 	}
