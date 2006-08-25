@@ -31,5 +31,6 @@ public class VoiceStatus {
 
     public VoiceStatus() {
         // TODO
+        throw new Error("not yet implemented");
     }
 }

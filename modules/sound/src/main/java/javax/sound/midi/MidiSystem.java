@@ -26,117 +26,117 @@ public class MidiSystem {
     public static MidiDevice getMidiDevice(MidiDevice.Info info)
             throws MidiUnavailableException {
         //TODO
-        return null;
+        throw new Error("not yet implemented");
     }
 
     public static MidiDevice.Info[] getMidiDeviceInfo() {
         //TODO
-        return null;
+        throw new Error("not yet implemented");
     }
 
     public static MidiFileFormat getMidiFileFormat(File file) throws InvalidMidiDataException,
             IOException {
         //TODO
-        return null;
+        throw new Error("not yet implemented");
     }
 
     public static MidiFileFormat getMidiFileFormat(InputStream stream)
             throws InvalidMidiDataException, IOException {
         //TODO
-        return null;
+        throw new Error("not yet implemented");
     }
 
     public static MidiFileFormat getMidiFileFormat(URL url) throws InvalidMidiDataException,
             IOException {
         //TODO
-        return null;
+        throw new Error("not yet implemented");
     }
 
     public static int[] getMidiFileTypes() {
         //TODO
-        return null;
+        throw new Error("not yet implemented");
     }
 
     public static int[] getMidiFileTypes(Sequence sequence) {
         //TODO
-        return null;
+        throw new Error("not yet implemented");
     }
 
     public static Receiver getReceiver() throws MidiUnavailableException {
         //TODO
-        return null;
+        throw new Error("not yet implemented");
     }
 
     public static Sequence getSequence(File file) throws InvalidMidiDataException, IOException {
         //TODO
-        return null;
+        throw new Error("not yet implemented");
     }
 
     public static Sequence getSequence(InputStream stream) throws InvalidMidiDataException,
             IOException {
         //TODO
-        return null;
+        throw new Error("not yet implemented");
     }
 
     public static Sequence getSequence(URL url) throws InvalidMidiDataException, IOException {
         //TODO
-        return null;
+        throw new Error("not yet implemented");
     }
 
     public static Sequencer getSequencer() throws MidiUnavailableException {
         //TODO
-        return null;
+        throw new Error("not yet implemented");
     }
 
     public static Sequencer getSequencer(boolean connected) throws MidiUnavailableException {
         //TODO
-        return null;
+        throw new Error("not yet implemented");
     }
 
     public static Soundbank getSoundbank(File file) throws InvalidMidiDataException,
             IOException {
         //TODO
-        return null;
+        throw new Error("not yet implemented");
     }
 
     public static Soundbank getSoundbank(InputStream stream) throws InvalidMidiDataException,
             IOException {
         //TODO
-        return null;
+        throw new Error("not yet implemented");
     }
 
     public static Soundbank getSoundbank(URL url) throws InvalidMidiDataException, IOException {
         //TODO
-        return null;
+        throw new Error("not yet implemented");
     }
 
     public static Synthesizer getSynthesizer() throws MidiUnavailableException {
         //TODO
-        return null;
+        throw new Error("not yet implemented");
     }
 
     public static Transmitter getTransmitter() throws MidiUnavailableException {
         //TODO
-        return null;
+        throw new Error("not yet implemented");
     }
 
     public static boolean isFileTypeSupported(int fileType) {
         //TODO
-        return false;
+        throw new Error("not yet implemented");
     }
 
     public static boolean isFileTypeSupported(int fileType, Sequence sequence) {
         //TODO
-        return false;
+        throw new Error("not yet implemented");
     }
 
     public static int write(Sequence in, int type, File out) throws IOException {
         //TODO
-        return 1;
+        throw new Error("not yet implemented");
     }
 
     public static int write(Sequence in, int fileType, OutputStream out) throws IOException {
         //TODO
-        return 1;
+        throw new Error("not yet implemented");
     }
 }
