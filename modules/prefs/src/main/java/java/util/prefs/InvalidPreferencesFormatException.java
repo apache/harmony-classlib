@@ -16,10 +16,6 @@
 
 package java.util.prefs;
 
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
 /**
  * An exception to indicate that the input XML file is not well-formed or 
  * validating to the appropriate document type, which is specified by 
