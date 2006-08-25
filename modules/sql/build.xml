@@ -100,7 +100,7 @@
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
-            <classpath location="../../build/tests" />
+            <classpath location="${hy.hdk}/build/test/support.jar" />
         </javac>
     </target>
 
@@ -125,6 +125,8 @@
 
             <classpath>
                 <pathelement path="${hy.sql.bin.test}"/>
+                <pathelement path="${hy.sql.src.test.resources}"/>
+                <pathelement path="${hy.hdk}/build/test/support.jar"/>
             </classpath>
             <classpath location="../../build/tests" />
 

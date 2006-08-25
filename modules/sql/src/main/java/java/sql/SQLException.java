@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,9 +44,9 @@ public class SQLException extends Exception implements Serializable {
 
     private String SQLState = null;
 
-    private int errorCode = 0;
+    private int vendorCode = 0;
 
-    private SQLException chainedException = null;
+    private SQLException next = null;
 
     /**
      * Creates an SQLException object. The Reason string is set to null, the
@@ -97,7 +97,7 @@ public class SQLException extends Exception implements Serializable {
     public SQLException(String theReason, String theSQLState, int theErrorCode) {
         super(theReason);
         SQLState = theSQLState;
-        errorCode = theErrorCode;
+        vendorCode = theErrorCode;
     }
 
     /**
@@ -107,7 +107,7 @@ public class SQLException extends Exception implements Serializable {
      *         code is specific to the vendor of the database.
      */
     public int getErrorCode() {
-        return errorCode;
+        return vendorCode;
     }
 
     /**
@@ -117,7 +117,7 @@ public class SQLException extends Exception implements Serializable {
      *         no SQLException chained to this SQLException.
      */
     public SQLException getNextException() {
-        return chainedException;
+        return next;
     }
 
     /**
@@ -143,6 +143,6 @@ public class SQLException extends Exception implements Serializable {
      *            the SQLException to chain to this SQLException
      */
     public void setNextException(SQLException ex) {
-        chainedException = ex;
+        next = ex;
     }
 }
