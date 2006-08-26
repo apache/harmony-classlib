@@ -44,6 +44,8 @@ public class MemoryUsageTest extends TestCase {
 
         // test illegal argument exception with an invalid value
         // TODO This does not fail on Sun RI 5.0_7 - a bug has been logged
+        // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6464013
+        // http://issues.apache.org/jira/browse/HARMONY-1284
         items = new Object[] { Long.valueOf(-2), Long.valueOf(2048), Long.valueOf(4096),
                 Long.valueOf(8128) };
         cd = new CompositeDataSupport(muType, itemNames, items);
