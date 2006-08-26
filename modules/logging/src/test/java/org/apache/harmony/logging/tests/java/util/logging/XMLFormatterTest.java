@@ -144,6 +144,10 @@ public class XMLFormatterTest extends TestCase {
 		result = formatter.getHead(handler);
 		assertNull(handler.getEncoding());
 		// assertTrue(result.indexOf(defaultEncoding)>0);
+		
+		// regression test for Harmony-1280
+		// make sure no NPE is thrown
+		formatter.getHead(null);
 
 	}
 
@@ -153,11 +157,6 @@ public class XMLFormatterTest extends TestCase {
 
 	public void testInvalidParameter() {
 		formatter.getTail(null);
-		try {
-			formatter.getHead(null);
-			fail();
-		} catch (NullPointerException e) {
-		}
 		try {
 			formatter.format(null);
 			fail();

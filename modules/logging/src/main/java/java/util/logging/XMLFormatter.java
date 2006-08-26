@@ -188,7 +188,10 @@ public class XMLFormatter extends Formatter {
      * @return the header string for XML
      */
     public String getHead(Handler h) {
-        String encoding = h.getEncoding();
+        String encoding = null;
+        if(null != h) {
+        	encoding = h.getEncoding();
+        }
         if (null == encoding) {
             encoding = getSystemProperty("file.encoding"); //$NON-NLS-1$
         }
