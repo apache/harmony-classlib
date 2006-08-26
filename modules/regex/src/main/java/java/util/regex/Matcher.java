@@ -72,7 +72,8 @@ public final class Matcher implements MatchResult {
      * Parses replacement string and creates pattern
      */
     private String processReplacement(String replacement) {
-        if (this.replacement == replacement) {
+        if (this.replacement != null 
+                && this.replacement.equals(replacement)) {
             if (replacementParts == null) {
                 return processedRepl;
             } else {
@@ -94,47 +95,49 @@ public final class Matcher implements MatchResult {
             boolean nextBackSlashed = false;
 
             while (index < repl.length) {
+                
                 if (repl[index] == '\\' && !nextBackSlashed) {
                     nextBackSlashed = true;
+                    index++;
+                } 
+               
+                if (nextBackSlashed) {
+                    res.append(repl[index]);
+                    nextBackSlashed = false;
                 } else {
-                    if (nextBackSlashed) {
-                        res.append(repl[index]);
-                        nextBackSlashed = false;
-                    } else {
-                        if (repl[index] == '$') {
-                            if (replacementParts == null) {
-                                replacementParts = new ArrayList();
-                            }
-                            try {
-                                final int gr = Integer.parseInt(new String(
-                                        repl, ++index, 1));
-
-                                if (replacementPos != res.length()) {
-                                    replacementParts.add(res.subSequence(
-                                            replacementPos, res.length()));
-                                    replacementPos = res.length();
-                                }
-
-                                replacementParts.add(new Object() {
-                                    private final int grN = gr;
-
-                                    public String toString() {
-                                        return group(grN);
-                                    }
-                                });
-                                String group = group(gr);
-                                replacementPos += group.length();
-                                res.append(group);
-
-                            } catch (IndexOutOfBoundsException iob) {
-                                throw iob;
-                            } catch (Exception e) {
-                                throw new IllegalArgumentException(I18n
-                                        .getMessage("Illegal group reference"));
-                            }
-                        } else {
-                            res.append(repl[index]);
+                    if (repl[index] == '$') {
+                        if (replacementParts == null) {
+                            replacementParts = new ArrayList();
                         }
+                        try {
+                            final int gr = Integer.parseInt(new String(
+                                    repl, ++index, 1));
+
+                            if (replacementPos != res.length()) {
+                                replacementParts.add(res.subSequence(
+                                        replacementPos, res.length()));
+                                replacementPos = res.length();
+                            }
+
+                            replacementParts.add(new Object() {
+                                private final int grN = gr;
+
+                                public String toString() {
+                                    return group(grN);
+                                }
+                            });
+                            String group = group(gr);
+                            replacementPos += group.length();
+                            res.append(group);
+
+                        } catch (IndexOutOfBoundsException iob) {
+                            throw iob;
+                        } catch (Exception e) {
+                            throw new IllegalArgumentException(I18n
+                                    .getMessage("Illegal group reference"));
+                        }
+                    } else {
+                        res.append(repl[index]);
                     }
                 }
 
@@ -146,29 +149,6 @@ public final class Matcher implements MatchResult {
                         .length()));
             }
             return res.toString();
-        }
-    }
-
-    /**
-     * Shortcut for resetImpl(CharSequence)
-     * 
-     */
-    /*
-     * private void resetImpl() { //matchResult.reset() resetImpl(null); }
-     */
-
-    /**
-     * Reset(CharacterSequence) implementation;
-     * 
-     */
-    private void resetImpl(CharSequence string) {
-        if (string != null) {
-            this.string = string;
-            this.leftBound = 0;
-            this.rightBound = string.length();
-            matchResult.reset(string, leftBound, rightBound);
-        } else {
-            matchResult.reset();
         }
     }
 

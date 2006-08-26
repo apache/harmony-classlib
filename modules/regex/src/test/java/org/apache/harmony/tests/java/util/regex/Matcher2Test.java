@@ -204,5 +204,21 @@ public class Matcher2Test extends TestCase {
 		} catch (IllegalStateException e) {
 		}
 	}
+    
+    /*
+     * Regression test for HARMONY-997
+     */
+    public void testReplacementBackSlash() {
+        String str = "replace me";
+        String replacedString = "me";
+        String substitutionString = "\\";
+        Pattern pat = Pattern.compile(replacedString);
+        Matcher mat = pat.matcher(str);
+        try {
+            mat.replaceAll(substitutionString);
+            fail("IndexOutOfBoundsException should be thrown");
+        } catch (Exception e) {
+        }
+    }
 }
 
