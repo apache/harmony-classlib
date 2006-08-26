@@ -15,43 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class NoSuchFieldErrorTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class NoSuchFieldErrorTest extends TestCase {
 
 	/**
 	 * @tests java.lang.NoSuchFieldError#NoSuchFieldError()
 	 */
-	public void test_Constructor() {
-		try {
-			if (true)
-				throw new NoSuchFieldError();
-		} catch (NoSuchFieldError e) {
-			assertNull("Initializer failed.", e.getMessage());
-			assertEquals("To string failed.", 
-					"java.lang.NoSuchFieldError", e.toString());
-		}
-	}
+    public void test_Constructor() {
+        NoSuchFieldError e = new NoSuchFieldError();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * @tests java.lang.NoSuchFieldError#NoSuchFieldError(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// No accessible method throws this error.
-		try {
-			if (true)
-				throw new NoSuchFieldError("Hello World");
-		} catch (NoSuchFieldError e) {
-			assertTrue("Incorrect message: " + e.getMessage(), e.getMessage()
-					.equals("Hello World"));
-			return;
-		} catch (Throwable e) {
-			fail("Wrong error thrown : " + e.getMessage());
-		}
-		fail("Error not thrown.");
-	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.NoSuchFieldError#NoSuchFieldError(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        NoSuchFieldError e = new NoSuchFieldError("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

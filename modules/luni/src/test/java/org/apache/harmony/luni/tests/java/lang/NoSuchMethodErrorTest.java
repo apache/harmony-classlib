@@ -15,43 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class NoSuchMethodErrorTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class NoSuchMethodErrorTest extends TestCase {
 
 	/**
 	 * @tests java.lang.NoSuchMethodError#NoSuchMethodError()
 	 */
-	public void test_Constructor() {
-		try {
-			if (true)
-				throw new NoSuchMethodError();
-		} catch (NoSuchMethodError e) {
-			assertNull("Initializer failed.", e.getMessage());
-			assertEquals("To string failed.", 
-					"java.lang.NoSuchMethodError", e.toString());
-		}
-	}
+    public void test_Constructor() {
+        NoSuchMethodError e = new NoSuchMethodError();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * @tests java.lang.NoSuchMethodError#NoSuchMethodError(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// No accessible method throws this error.
-		try {
-			if (true)
-				throw new NoSuchMethodError("Hello World");
-		} catch (NoSuchMethodError e) {
-			assertTrue("Incorrect message: " + e.getMessage(), e.getMessage()
-					.equals("Hello World"));
-			return;
-		} catch (Throwable e) {
-			fail("Wrong error thrown : " + e);
-		}
-		fail("Error not thrown");
-	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.NoSuchMethodError#NoSuchMethodError(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        NoSuchMethodError e = new NoSuchMethodError("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

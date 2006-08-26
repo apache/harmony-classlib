@@ -15,53 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class NumberFormatExceptionTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class NumberFormatExceptionTest extends TestCase {
 
 	/**
 	 * @tests java.lang.NumberFormatException#NumberFormatException()
 	 */
-	public void test_Constructor() {
-		// Test for method java.lang.NumberFormatException()
-		try {
-			try {
-				Byte.parseByte("128");
-			} catch (NumberFormatException e) {
-				return;
-			}
-			fail("Failed to generate Exception");
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-	}
+    public void test_Constructor() {
+        NumberFormatException e = new NumberFormatException();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * @tests java.lang.NumberFormatException#NumberFormatException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.lang.NumberFormatException(java.lang.String)
-		try {
-			try {
-				Byte.parseByte("128");
-			} catch (NumberFormatException e) {
-				return;
-			}
-			fail("Failed to generate Exception");
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.NumberFormatException#NumberFormatException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        NumberFormatException e = new NumberFormatException("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

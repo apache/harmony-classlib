@@ -15,49 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class NoSuchFieldExceptionTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class NoSuchFieldExceptionTest extends TestCase {
 
 	/**
 	 * @tests java.lang.NoSuchFieldException#NoSuchFieldException()
 	 */
-	public void test_Constructor() {
-		// Test for method java.lang.NoSuchFieldException()
-		try {
-			String.class.getDeclaredField("prsttrvol");
-		} catch (NoSuchFieldException e) {
-			// Correct
-			return;
-		}
-		fail("Failed to throw exception");
+    public void test_Constructor() {
+        NoSuchFieldException e = new NoSuchFieldException();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	}
-
-	/**
-	 * @tests java.lang.NoSuchFieldException#NoSuchFieldException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.lang.NoSuchFieldException(java.lang.String)
-		try {
-			String.class.getDeclaredField("prsttrvol");
-		} catch (NoSuchFieldException e) {
-			// Correct
-			return;
-		}
-		fail("Failed to throw exception");
-
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.NoSuchFieldException#NoSuchFieldException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        NoSuchFieldException e = new NoSuchFieldException("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

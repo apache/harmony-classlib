@@ -15,26 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class InstantiationErrorTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class InstantiationErrorTest extends TestCase {
 
 	/**
 	 * @tests java.lang.InstantiationError#InstantiationError()
 	 */
-	public void test_Constructor() {
-		try {
-			if (true)
-				throw new InstantiationError();
-		} catch (InstantiationError e) {
-			assertTrue("Error not instantiated correctly: " + e.toString(), e
-					.toString().equals("java.lang.InstantiationError"));
-		} catch (Exception e) {
-			fail("Exception occured during test : " + e.getMessage());
-		}
-	}
+    public void test_Constructor() {
+        InstantiationError e = new InstantiationError();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.InstantiationError#InstantiationError(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        InstantiationError e = new InstantiationError("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

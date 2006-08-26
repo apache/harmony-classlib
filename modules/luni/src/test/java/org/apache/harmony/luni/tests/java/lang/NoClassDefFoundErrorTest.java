@@ -15,43 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class NoClassDefFoundErrorTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class NoClassDefFoundErrorTest extends TestCase {
 
 	/**
 	 * @tests java.lang.NoClassDefFoundError#NoClassDefFoundError()
 	 */
-	public void test_Constructor() {
-		try {
-			if (true) {
-				throw new NoClassDefFoundError();
-			}
-			fail("Error not thrown.");
-		} catch (NoClassDefFoundError e) {
-			assertEquals("Error not intitialized.", 
-					"java.lang.NoClassDefFoundError", e.toString());
-		}
-	}
+    public void test_Constructor() {
+        NoClassDefFoundError e = new NoClassDefFoundError();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * @tests java.lang.NoClassDefFoundError#NoClassDefFoundError(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		try {
-			if (true) {
-				throw new NoClassDefFoundError("Hello World");
-			}
-			fail("Error not thrown.");
-		} catch (NoClassDefFoundError e) {
-			assertTrue("Wrong error message: " + e.getMessage(), e.getMessage()
-					.equals("Hello World"));
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.NoClassDefFoundError#NoClassDefFoundError(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        NoClassDefFoundError e = new NoClassDefFoundError("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

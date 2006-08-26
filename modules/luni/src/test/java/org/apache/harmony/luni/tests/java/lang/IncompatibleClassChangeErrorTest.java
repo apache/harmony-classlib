@@ -15,42 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class IncompatibleClassChangeErrorTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class IncompatibleClassChangeErrorTest extends TestCase {
 
 	/**
 	 * @tests java.lang.IncompatibleClassChangeError#IncompatibleClassChangeError()
 	 */
-	public void test_Constructor() {
-		try {
-			if (true) {
-				throw new IncompatibleClassChangeError();
-			}
-			fail("Error not thrown.");
-		} catch (IncompatibleClassChangeError e) {
-			assertTrue("Wrong message." + e.toString(), e.toString().equals(
-					"java.lang.IncompatibleClassChangeError"));
-		}
-	}
+    public void test_Constructor() {
+        IncompatibleClassChangeError e = new IncompatibleClassChangeError();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * @tests java.lang.IncompatibleClassChangeError#IncompatibleClassChangeError(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Indirect testing done through subclasses.
-		try {
-			if (true)
-				throw new IncompatibleClassChangeError("Hello World");
-		} catch (IncompatibleClassChangeError e) {
-			assertTrue("Wrong message." + e.getMessage(), e.getMessage()
-					.equals("Hello World"));
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.IncompatibleClassChangeError#IncompatibleClassChangeError(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        IncompatibleClassChangeError e = new IncompatibleClassChangeError("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

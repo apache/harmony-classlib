@@ -18,37 +18,28 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
-public class ThrowableTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class ThrowableTest extends TestCase {
 
 	/**
 	 * @tests java.lang.Throwable#Throwable()
 	 */
-	public void test_Constructor() {
-		// Test for method java.lang.Throwable()
-		try {
-			if (true)
-				throw new Throwable();
-		} catch (Throwable e) {
-			return;
-		}
-		fail("Failed to throw Throwable");
-	}
+    public void test_Constructor() {
+        Throwable e = new Throwable();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * @tests java.lang.Throwable#Throwable(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.lang.Throwable(java.lang.String)
-		try {
-			if (true)
-				throw new Throwable("Throw");
-		} catch (Throwable e) {
-			assertEquals("Threw Throwable with incorrect message", "Throw", e.getMessage()
-					);
-			return;
-		}
-		fail("Failed to throw Throwable");
-	}
+    /**
+     * @tests java.lang.Throwable#Throwable(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        Throwable e = new Throwable("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 
 	/**
 	 * @tests java.lang.Throwable#fillInStackTrace()
@@ -204,19 +195,5 @@ public class ThrowableTest extends junit.framework.TestCase {
 			return;
 		}
 		fail("Failed to throw Throwable");
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
 	}
 }

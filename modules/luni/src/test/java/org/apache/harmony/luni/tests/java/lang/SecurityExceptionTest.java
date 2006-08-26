@@ -15,9 +15,10 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
+import junit.framework.TestCase;
 import tests.util.SerializationTester;
 
-public class SecurityExceptionTest extends junit.framework.TestCase {
+public class SecurityExceptionTest extends TestCase {
 	
 	private static final String SERIALIZATION_FILE_NAME =
 		"serialization/java/lang/SecurityException.ser"; //$NON-NLS-1$
@@ -25,30 +26,21 @@ public class SecurityExceptionTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.SecurityException#SecurityException()
 	 */
-	public void test_Constructor() {
-		// Test for method java.lang.SecurityException()
-		boolean threwException = false;
-		try {
-			throw new SecurityException();
-		} catch (SecurityException e) {
-			threwException = true;
-		}
-		assertTrue("Failed to generate exception", threwException);
-	}
+    public void test_Constructor() {
+        SecurityException e = new SecurityException();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * @tests java.lang.SecurityException#SecurityException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.lang.SecurityException(java.lang.String)
-		boolean threwException = false;
-		try {
-			throw new SecurityException("Cannot use sockets with this manager");
-		} catch (SecurityException e) {
-			threwException = true;
-		}
-		assertTrue("Failed to generate exception", threwException);
-	}
+    /**
+     * @tests java.lang.SecurityException#SecurityException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        SecurityException e = new SecurityException("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 
 	/**
 	 * @tests serialization/deserilazation.
@@ -67,20 +59,5 @@ public class SecurityExceptionTest extends junit.framework.TestCase {
 		SecurityException destSecurityException = (SecurityException) SerializationTester
 				.readObject(srcSecurityException,
 						SERIALIZATION_FILE_NAME);
-	}
-	
-	
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
 	}
 }

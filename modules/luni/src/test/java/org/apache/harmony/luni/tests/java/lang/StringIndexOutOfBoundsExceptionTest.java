@@ -15,48 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class StringIndexOutOfBoundsExceptionTest extends
-		junit.framework.TestCase {
+import junit.framework.TestCase;
 
-	/**
-	 * @tests java.lang.StringIndexOutOfBoundsException#StringIndexOutOfBoundsException()
-	 */
-	public void test_Constructor() {
-		// Test for method java.lang.StringIndexOutOfBoundsException()
+public class StringIndexOutOfBoundsExceptionTest extends TestCase {
 
-		try {
-			"X".charAt(99);
-		} catch (StringIndexOutOfBoundsException e) {
-			return;
-		}
-		fail("Failed to generate exception");
-	}
+    /**
+     * @tests java.lang.StringIndexOutOfBoundsException#StringIndexOutOfBoundsException()
+     */
+    public void test_Constructor() {
+        StringIndexOutOfBoundsException e = new StringIndexOutOfBoundsException();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * @tests java.lang.StringIndexOutOfBoundsException#StringIndexOutOfBoundsException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method
-		// java.lang.StringIndexOutOfBoundsException(java.lang.String)
-		try {
-			"X".charAt(99);
-		} catch (StringIndexOutOfBoundsException e) {
-			return;
-		}
-		fail("Failed to generate exception");
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.StringIndexOutOfBoundsException#StringIndexOutOfBoundsException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        StringIndexOutOfBoundsException e = new StringIndexOutOfBoundsException("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

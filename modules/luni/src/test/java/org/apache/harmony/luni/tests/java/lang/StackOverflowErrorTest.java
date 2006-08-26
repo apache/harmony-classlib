@@ -15,59 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class StackOverflowErrorTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class StackOverflowErrorTest extends TestCase {
 
 	/**
 	 * @tests java.lang.StackOverflowError#StackOverflowError()
 	 */
-	public void test_Constructor() {
-		// Test for method java.lang.StackOverflowError()
-		new StackOverflowError();
-		try {
-			this.createOverflow();
-		} catch (StackOverflowError e) {
-			return;
-		}
-		fail("Failed to generate stack overflow");
-	}
+    public void test_Constructor() {
+        StackOverflowError e = new StackOverflowError();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * @tests java.lang.StackOverflowError#StackOverflowError(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.lang.StackOverflowError(java.lang.String)
-		new StackOverflowError();
-		try {
-			this.createOverflow();
-		} catch (StackOverflowError e) {
-			return;
-		}
-		fail("Failed to generate stack overflow");
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
-
-	/**
-	 * 
-	 */
-	protected int createOverflow() {
-		this.createOverflow();
-		return dummy() + 1;
-	}
-
-	protected int dummy() {
-		return 0;
-	}
+    /**
+     * @tests java.lang.StackOverflowError#StackOverflowError(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        StackOverflowError e = new StackOverflowError("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

@@ -15,50 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class InterruptedExceptionTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class InterruptedExceptionTest extends TestCase {
 
 	/**
 	 * @tests java.lang.InterruptedException#InterruptedException()
 	 */
-	public void test_Constructor() {
-		// Test for method java.lang.InterruptedException()
-		try {
-			throw new InterruptedException();
-		} catch (InterruptedException e) {
-			return;
-		} catch (Exception e) {
-			fail("Exception during InterruptedException() test"
-					+ e.toString());
-		}
-		fail("Failed to generate Exception");
-	}
+    public void test_Constructor() {
+        InterruptedException e = new InterruptedException();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * @tests java.lang.InterruptedException#InterruptedException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.lang.InterruptedException(java.lang.String)
-		try {
-			throw new InterruptedException("Message");
-		} catch (InterruptedException e) {
-			return;
-		} catch (Exception e) {
-			fail("Exception during InterruptedException(String) test");
-		}
-		fail("Failed to generate Exception");
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.InterruptedException#InterruptedException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        InterruptedException e = new InterruptedException("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

@@ -14,51 +14,26 @@
  */
 package org.apache.harmony.luni.tests.java.lang;
 
-public class NullPointerExceptionTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class NullPointerExceptionTest extends TestCase {
 
 	/**
 	 * @tests java.lang.NullPointerException#NullPointerException()
 	 */
-	public void test_Constructor() {
-		// Test for method java.lang.NullPointerException()
-		try {
-			byte[] rbuf = null;
-			int z = rbuf.length;
-			if (z > 0)
-				; // use z to avoid a warning msg
-		} catch (java.lang.NullPointerException e) {
-			return;
-		}
-		fail("Failed to generate Exception");
-	}
+    public void test_Constructor() {
+        NullPointerException e = new NullPointerException();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * @tests java.lang.NullPointerException#NullPointerException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.lang.NullPointerException(java.lang.String)
-		try {
-			byte[] rbuf = null;
-			int z = rbuf.length;
-			if (z > 0)
-				; // use z to avoid a warning msg
-		} catch (java.lang.NullPointerException e) {
-			return;
-		}
-		fail("Failed to generate Exception");
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.NullPointerException#NullPointerException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        NullPointerException e = new NullPointerException("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

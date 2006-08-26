@@ -15,53 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class RuntimeExceptionTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class RuntimeExceptionTest extends TestCase {
 
 	/**
 	 * @tests java.lang.RuntimeException#RuntimeException()
 	 */
-	public void test_Constructor() {
-		// Test for method java.lang.RuntimeException()
-		// Effectively tested by the subclasses
+    public void test_Constructor() {
+        RuntimeException e = new RuntimeException();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-		try {
-			if (true)
-				throw new RuntimeException();
-		} catch (RuntimeException e) {
-			return;
-		}
-		fail("Failed to throw Runtime Exception");
-	}
-
-	/**
-	 * @tests java.lang.RuntimeException#RuntimeException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.lang.RuntimeException(java.lang.String)
-		// Effectively tested by the subclasses
-
-		try {
-			if (true)
-				throw new RuntimeException("Runtime message");
-		} catch (RuntimeException e) {
-			assertEquals("Incorrect message", 
-					"Runtime message", e.getMessage());
-			return;
-		}
-		fail("Failed to throw Runtime Exception");
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.RuntimeException#RuntimeException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        RuntimeException e = new RuntimeException("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

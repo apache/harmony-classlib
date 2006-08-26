@@ -15,57 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class InstantiationExceptionTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class InstantiationExceptionTest extends TestCase {
 
 	/**
 	 * @tests java.lang.InstantiationException#InstantiationException()
 	 */
-	public void test_Constructor() {
-		// Test for method java.lang.InstantiationException()
-		try {
-			try {
-				Class cl = null;
-				cl = Class.forName("java.io.OutputStream");
-				cl.newInstance();
-			} catch (InstantiationException e) {
-				return;
-			}
-			fail("Failed to generate Exception");
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-	}
+    public void test_Constructor() {
+        InstantiationException e = new InstantiationException();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * @tests java.lang.InstantiationException#InstantiationException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.lang.InstantiationException(java.lang.String)
-		try {
-			try {
-				Class cl = null;
-				cl = Class.forName("java.io.OutputStream");
-				cl.newInstance();
-			} catch (InstantiationException e) {
-				return;
-			}
-			fail("Failed to generate Exception");
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.InstantiationException#InstantiationException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        InstantiationException e = new InstantiationException("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

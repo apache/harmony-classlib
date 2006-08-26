@@ -15,56 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class IllegalMonitorStateExceptionTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
 
-	/**
-	 * @tests java.lang.IllegalMonitorStateException#IllegalMonitorStateException()
-	 */
-	public void test_Constructor() {
-		// Test for method java.lang.IllegalMonitorStateException()
-		try {
-			try {
-				Object o = new Object();
-				o.wait();
-			} catch (IllegalMonitorStateException e) {
-				return;
-			}
-			fail("Failed to generate Exception");
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-	}
+public class IllegalMonitorStateExceptionTest extends TestCase {
 
-	/**
-	 * @tests java.lang.IllegalMonitorStateException#IllegalMonitorStateException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method
-		// java.lang.IllegalMonitorStateException(java.lang.String)
-		try {
-			try {
-				Object o = new Object();
-				o.wait();
-			} catch (IllegalMonitorStateException e) {
-				return;
-			}
-			fail("Failed to generate Exception");
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-	}
+    /**
+     * @tests java.lang.IllegalMonitorStateException#IllegalMonitorStateException()
+     */
+    public void test_Constructor() {
+        IllegalMonitorStateException e = new IllegalMonitorStateException();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.IllegalMonitorStateException#IllegalMonitorStateException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        IllegalMonitorStateException e = new IllegalMonitorStateException("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

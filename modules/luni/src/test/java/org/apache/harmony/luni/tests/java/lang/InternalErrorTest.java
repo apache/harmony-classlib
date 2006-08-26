@@ -15,50 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class InternalErrorTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class InternalErrorTest extends TestCase {
 
 	/**
 	 * @tests java.lang.InternalError#InternalError()
 	 */
-	public void test_Constructor() {
-		// Test for method java.lang.InternalError()
-		// TODO : How do you create an actual InternalError ?
-		try {
-			if (true)
-				throw new InternalError();
-		} catch (InternalError e) {
-			return;
-		}
-		fail("Failed to throw Runtime Exception");
-	}
+    public void test_Constructor() {
+        InternalError e = new InternalError();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * @tests java.lang.InternalError#InternalError(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.lang.InternalError(java.lang.String)
-		try {
-			if (true)
-				throw new InternalError("Test");
-		} catch (InternalError e) {
-			assertEquals("Returned incorrect message", 
-					"Test", e.getMessage());
-			return;
-		}
-		fail("Failed to throw Runtime Exception");
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.InternalError#InternalError(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        InternalError e = new InternalError("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

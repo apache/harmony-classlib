@@ -15,39 +15,29 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
+import junit.framework.TestCase;
+
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
-public class IllegalArgumentExceptionTest extends junit.framework.TestCase {
+public class IllegalArgumentExceptionTest extends TestCase {
 
 	/**
 	 * @tests java.lang.IllegalArgumentException#IllegalArgumentException()
 	 */
 	public void test_Constructor() {
-		// Test for method java.lang.IllegalArgumentException()
-		IllegalArgumentException ill = new IllegalArgumentException();
-		assertNull("failed to create an instance of illegalArgumentException",
-				ill.getMessage());
-		try {
-			try {
-				new java.io.ByteArrayOutputStream(-12);
-			} catch (IllegalArgumentException e) {
-				return;
-			}
-			fail("Failed to generate Exception");
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+		IllegalArgumentException e = new IllegalArgumentException();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
 	}
 
 	/**
 	 * @tests java.lang.IllegalArgumentException#IllegalArgumentException(java.lang.String)
 	 */
 	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.lang.IllegalArgumentException(java.lang.String)
-		IllegalArgumentException ill = new IllegalArgumentException(
-				"testing illArg exception");
-		assertEquals("failed to create instance of illegalArgumentException(string)",
-				"testing illArg exception", ill.getMessage());
+        IllegalArgumentException e = new IllegalArgumentException("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
 	}
 
     /**
@@ -63,18 +53,4 @@ public class IllegalArgumentExceptionTest extends junit.framework.TestCase {
     public void testSerializationCompatibility() throws Exception {
         SerializationTest.verifyGolden(this, new IllegalArgumentException());
     }
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
 }

@@ -15,42 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class LinkageErrorTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class LinkageErrorTest extends TestCase {
 
 	/**
 	 * @tests java.lang.LinkageError#LinkageError()
 	 */
-	public void test_Constructor() {
-		try {
-			if (true) {
-				throw new LinkageError();
-			}
-			fail("Error not thrown.");
-		} catch (LinkageError e) {
-			assertEquals("Error not initialized.", 
-					"java.lang.LinkageError", e.toString());
-		}
-	}
+    public void test_Constructor() {
+        LinkageError e = new LinkageError();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * @tests java.lang.LinkageError#LinkageError(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Indirect testing is done for subclasses.
-		try {
-			if (true) {
-				throw new LinkageError("Hello World");
-			}
-			fail("Error not thrown.");
-		} catch (LinkageError e) {
-			assertTrue("Wrong error message: " + e.getMessage(), e.getMessage()
-					.equals("Hello World"));
-		}
-	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.LinkageError#LinkageError(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        LinkageError e = new LinkageError("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }
