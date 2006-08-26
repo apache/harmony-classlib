@@ -76,7 +76,8 @@ public class InvocationTargetException extends Exception {
 	 * 
 	 * @return Throwable The receiver's cause.
 	 */
-	public Throwable getCause() {
+	@Override
+    public Throwable getCause() {
 		return target;
 	}
 }

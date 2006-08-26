@@ -71,7 +71,8 @@ public class UndeclaredThrowableException extends RuntimeException {
 	 * 
 	 * @return Throwable The receiver's cause.
 	 */
-	public Throwable getCause() {
+	@Override
+    public Throwable getCause() {
 		return undeclaredThrowable;
 	}
 }
