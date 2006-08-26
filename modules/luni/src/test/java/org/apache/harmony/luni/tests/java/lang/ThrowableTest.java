@@ -120,17 +120,6 @@ public class ThrowableTest extends TestCase {
 	}
 
 	/**
-	 * @tests java.lang.Throwable#getMessage()
-	 */
-	public void test_getMessage() {
-		// Test for method java.lang.String java.lang.Throwable.getMessage()
-
-		Throwable x = new ClassNotFoundException("A Message");
-		assertEquals("Returned incorrect messasge string", 
-				"A Message", x.getMessage());
-	}
-
-	/**
 	 * @tests java.lang.Throwable#printStackTrace()
 	 */
 	public void test_printStackTrace() {
@@ -185,15 +174,8 @@ public class ThrowableTest extends TestCase {
 	 * @tests java.lang.Throwable#toString()
 	 */
 	public void test_toString() {
-		// Test for method java.lang.String java.lang.Throwable.toString()
-		try {
-			if (true)
-				throw new Throwable("Throw");
-		} catch (Throwable e) {
-			assertEquals("Threw Throwable with incorrect string", "java.lang.Throwable: Throw", e.toString()
-					);
-			return;
-		}
-		fail("Failed to throw Throwable");
-	}
+        Throwable e = new Throwable("Throw");
+        assertEquals("java.lang.Throwable: Throw", e.toString());
+
+    }
 }

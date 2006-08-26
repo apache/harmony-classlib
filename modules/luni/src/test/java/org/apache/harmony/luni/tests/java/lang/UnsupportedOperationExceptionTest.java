@@ -15,12 +15,10 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-import java.util.AbstractCollection;
-import java.util.Iterator;
-
+import junit.framework.TestCase;
 import tests.util.SerializationTester;
 
-public class UnsupportedOperationExceptionTest extends junit.framework.TestCase {
+public class UnsupportedOperationExceptionTest extends TestCase {
 
 	private static final String SERIALIZATION_FILE_NAME =
 		"serialization/java/lang/UnsupportedOperationException.ser"; //$NON-NLS-1$
@@ -28,46 +26,21 @@ public class UnsupportedOperationExceptionTest extends junit.framework.TestCase 
 	/**
 	 * @tests java.lang.UnsupportedOperationException#UnsupportedOperationException()
 	 */
-	public void test_Constructor() {
-		// Test for method java.lang.UnsupportedOperationException()
-		class UnsupportedCollection extends AbstractCollection {
-			public int size() {
-				return 0;
-			}
+    public void test_Constructor() {
+        UnsupportedOperationException e = new UnsupportedOperationException();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-			public Iterator iterator() {
-				return null;
-			}
-		}
-		try {
-			UnsupportedCollection uc = new UnsupportedCollection();
-			uc.add(new Object());
-		} catch (UnsupportedOperationException e) {
-			return;
-		} catch (Exception e) {
-			fail("Exception during Constructor : " + e.getMessage());
-		}
-		fail("Constructor failed.");
-	}
-
-	/**
-	 * @tests java.lang.UnsupportedOperationException#UnsupportedOperationException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method
-		// java.lang.UnsupportedOperationException(java.lang.String)
-		try {
-			throw new UnsupportedOperationException("HelloWorld");
-		} catch (UnsupportedOperationException e) {
-			assertEquals("Wrong message given.", 
-					"HelloWorld", e.getMessage());
-			return;
-		} catch (Exception e) {
-			fail("Exception during Constructor : " + e.getMessage());
-		}
-		fail("Constructor failed");
-	}
-	
+    /**
+     * @tests java.lang.UnsupportedOperationException#UnsupportedOperationException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        UnsupportedOperationException e = new UnsupportedOperationException("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 	
 	/**
 	 * @tests serialization/deserilazation.
@@ -86,19 +59,5 @@ public class UnsupportedOperationExceptionTest extends junit.framework.TestCase 
 		UnsupportedOperationException destUnsupportedOperationException = (UnsupportedOperationException) SerializationTester
 				.readObject(srcUnsupportedOperationException,
 						SERIALIZATION_FILE_NAME);
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
 	}
 }

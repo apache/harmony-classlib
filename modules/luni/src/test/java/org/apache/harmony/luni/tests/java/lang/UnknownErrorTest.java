@@ -15,49 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class UnknownErrorTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class UnknownErrorTest extends TestCase {
 
 	/**
 	 * @tests java.lang.UnknownError#UnknownError()
 	 */
-	public void test_Constructor() {
-		// Test for method java.lang.UnknownError()
-		try {
-			if (true)
-				throw new UnknownError();
-		} catch (UnknownError e) {
-			return;
-		}
-		fail("Failed to generate error");
-	}
+    public void test_Constructor() {
+        UnknownError e = new UnknownError();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * @tests java.lang.UnknownError#UnknownError(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.lang.UnknownError(java.lang.String)
-		try {
-			if (true)
-				throw new UnknownError("Unknown");
-		} catch (UnknownError e) {
-			assertEquals(" Incorrect msg string ", 
-					"Unknown", e.getMessage());
-			return;
-		}
-		fail("Failed to generate error");
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.UnknownError#UnknownError(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        UnknownError e = new UnknownError("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

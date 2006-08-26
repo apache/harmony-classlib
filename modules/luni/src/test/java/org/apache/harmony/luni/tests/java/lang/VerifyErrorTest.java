@@ -15,39 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class VerifyErrorTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class VerifyErrorTest extends TestCase {
 
 	/**
 	 * @tests java.lang.VerifyError#VerifyError()
 	 */
-	public void test_Constructor() {
-		try {
-			if (true)
-				throw new VerifyError();
-		} catch (VerifyError e) {
-			return;
-		}
-		fail("Constructor failed");
-	}
+    public void test_Constructor() {
+        VerifyError e = new VerifyError();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * @tests java.lang.VerifyError#VerifyError(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		try {
-			if (true)
-				throw new VerifyError("HelloWorld");
-		} catch (VerifyError e) {
-			assertEquals("VerifyError(String) failed.", 
-					"HelloWorld", e.getMessage());
-			return;
-		}
-		fail("Constructor failed");
-	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.VerifyError#VerifyError(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        VerifyError e = new VerifyError("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }

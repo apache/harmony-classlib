@@ -15,44 +15,26 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class UnsatisfiedLinkErrorTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class UnsatisfiedLinkErrorTest extends TestCase {
 
 	/**
 	 * @tests java.lang.UnsatisfiedLinkError#UnsatisfiedLinkError()
 	 */
-	public void test_Constructor() {
-		// SM.
-		try {
-			if (true)
-				throw new UnsatisfiedLinkError();
-		} catch (UnsatisfiedLinkError e) {
-			assertNull("Initializer failed.", e.getMessage());
-			assertEquals("To string failed.", 
-					"java.lang.UnsatisfiedLinkError", e.toString());
-		}
-	}
+    public void test_Constructor() {
+        UnsatisfiedLinkError e = new UnsatisfiedLinkError();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
-	/**
-	 * @tests java.lang.UnsatisfiedLinkError#UnsatisfiedLinkError(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// TODO : No method throws this error.
-		boolean exception = false;
-		try {
-			Runtime.getRuntime().loadLibrary("Hello World89797");
-		} catch (UnsatisfiedLinkError e) {
-			assertNotNull("Does not set message", e.getMessage());
-			exception = true;
-		}
-		assertTrue("Does not throw UnsatisfiedLinkError", exception);
-
-		UnsatisfiedLinkError err = new UnsatisfiedLinkError("my message");
-		assertEquals("Incorrect message", "my message", err.getMessage());
-	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.lang.UnsatisfiedLinkError#UnsatisfiedLinkError(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        UnsatisfiedLinkError e = new UnsatisfiedLinkError("fixture");
+        assertEquals("fixture", e.getMessage());
+        assertNull(e.getCause());
+    }
 }
