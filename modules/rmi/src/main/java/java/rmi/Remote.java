@@ -15,18 +15,7 @@
  * limitations under the License.
  */
 
-/**
- * @author  Mikhail A. Markov
- * @version $Revision: 1.4.4.1 $
- */
 package java.rmi;
 
-
-/**
- * @com.intel.drl.spec_ref
- *
- * @author  Mikhail A. Markov
- * @version $Revision: 1.4.4.1 $
- */
 public interface Remote {
 }

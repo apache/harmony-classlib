@@ -15,67 +15,40 @@
  * limitations under the License.
  */
 
-/**
- * @author  Mikhail A. Markov
- * @version $Revision: 1.7.4.1 $
- */
 package java.rmi;
 
 import java.io.IOException;
 
-
-/**
- * @com.intel.drl.spec_ref
- *
- * @author  Mikhail A. Markov
- * @version $Revision: 1.7.4.1 $
- */
 public class RemoteException extends IOException {
     private static final long serialVersionUID = -5148567311918794206L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Throwable detail;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public RemoteException(String msg, Throwable cause) {
         super(msg);
         detail = cause;
+        // prevent subsequent initCause calls
         initCause(null);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public RemoteException(String msg) {
         this(msg, null);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public RemoteException() {
-        initCause(null);
+        this(null, null);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public Throwable getCause() {
         return detail;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public String getMessage() {
         if (detail == null) {
             return super.getMessage();
-        } else {
-            return super.getMessage() + "; nested exception is:\n\t" + detail;
         }
+        return super.getMessage() + "; nested exception is:\n\t" + detail;
     }
 }

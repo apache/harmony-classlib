@@ -15,32 +15,19 @@
  * limitations under the License.
  */
 
-/**
- * @author  Mikhail A. Markov
- * @version $Revision: 1.4.4.1 $
- */
 package java.rmi;
 
-
 /**
- * @com.intel.drl.spec_ref
- *
- * @author  Mikhail A. Markov
- * @version $Revision: 1.4.4.1 $
+ * @deprecated Use {@link SecurityException} instead.
  */
+@Deprecated
 public class RMISecurityException extends SecurityException {
     private static final long serialVersionUID = -8433406075740433514L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public RMISecurityException(String msg, String arg) {
         super(msg);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public RMISecurityException(String msg) {
         super(msg);
     }

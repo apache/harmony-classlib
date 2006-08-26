@@ -15,10 +15,6 @@
  * limitations under the License.
  */
 
-/**
- * @author  Mikhail A. Markov
- * @version $Revision: 1.12.4.2 $
- */
 package java.rmi;
 
 import java.net.MalformedURLException;
@@ -27,34 +23,20 @@ import java.net.URISyntaxException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-
-/**
- * @com.intel.drl.spec_ref
- *
- * This class could not be instantiated.
- *
- * @author  Mikhail A. Markov
- * @version $Revision: 1.12.4.2 $
- */
 public final class Naming {
 
     // This class could not be instantiated.
     private Naming() {
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static String[] list(String name)
-            throws RemoteException, MalformedURLException {
+    public static String[] list(String name) throws RemoteException, MalformedURLException {
         if (name == null) {
             throw new NullPointerException("URL could not be null.");
         }
         RegistryURL url = getRegistryURL(name, true);
         Registry reg = LocateRegistry.getRegistry(url.host, url.port);
         String[] names = reg.list();
-        String regName = "//" + ((url.host == null) ? "" : url.host) + ":"
-                + url.port + "/";
+        String regName = "//" + ((url.host == null) ? "" : url.host) + ":" + url.port + "/";
 
         for (int i = 0; i < names.length; ++i) {
             names[i] = regName + names[i];
@@ -62,11 +44,8 @@ public final class Naming {
         return names;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static void rebind(String name, Remote obj)
-            throws RemoteException, MalformedURLException {
+    public static void rebind(String name, Remote obj) throws RemoteException,
+            MalformedURLException {
         if (name == null) {
             throw new NullPointerException("URL could not be null.");
         }
@@ -75,11 +54,8 @@ public final class Naming {
         reg.rebind(url.name, obj);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static void unbind(String name)
-            throws RemoteException, NotBoundException, MalformedURLException {
+    public static void unbind(String name) throws RemoteException, NotBoundException,
+            MalformedURLException {
         if (name == null) {
             throw new NullPointerException("URL could not be null.");
         }
@@ -88,12 +64,8 @@ public final class Naming {
         reg.unbind(url.name);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static void bind(String name, Remote obj)
-            throws AlreadyBoundException, MalformedURLException,
-            RemoteException {
+    public static void bind(String name, Remote obj) throws AlreadyBoundException,
+            MalformedURLException, RemoteException {
         if (name == null) {
             throw new NullPointerException("URL could not be null.");
         }
@@ -102,11 +74,8 @@ public final class Naming {
         reg.bind(url.name, obj);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static Remote lookup(String name)
-            throws NotBoundException, MalformedURLException, RemoteException {
+    public static Remote lookup(String name) throws NotBoundException, MalformedURLException,
+            RemoteException {
         if (name == null) {
             throw new NullPointerException("URL could not be null.");
         }
@@ -116,35 +85,33 @@ public final class Naming {
     }
 
     /*
-     * Parse the given name and returnes URL containing parsed parameters.
+     * Parse the given name and returns URL containing parsed parameters.
      */
-    private static RegistryURL getRegistryURL(String strUrl,
-                                              boolean ignoreEmptyNames)
+    private static RegistryURL getRegistryURL(String strUrl, boolean ignoreEmptyNames)
             throws MalformedURLException {
         URI uri;
 
         try {
             uri = new URI(strUrl);
         } catch (URISyntaxException use) {
-            throw new MalformedURLException("Invalid URL \"" + strUrl + "\":"
-                    + use);
+            throw new MalformedURLException("Invalid URL \"" + strUrl + "\":" + use);
         }
         String prot = uri.getScheme();
 
         if ((prot != null) && !prot.toLowerCase().equals("rmi")) {
-            throw new MalformedURLException(
-                    "Non-rmi protocol in URL \"" + strUrl + "\": " + prot);
+            throw new MalformedURLException("Non-rmi protocol in URL \"" + strUrl + "\": "
+                    + prot);
         }
 
         if (uri.getUserInfo() != null) {
-            throw new MalformedURLException("Invalid character ('@') in URL \""
-                    + strUrl + "\" host part.");
+            throw new MalformedURLException("Invalid character ('@') in URL \"" + strUrl
+                    + "\" host part.");
         } else if (uri.getQuery() != null) {
-            throw new MalformedURLException("Invalid character ('?') in URL \""
-                    + strUrl + "\" name part.");
+            throw new MalformedURLException("Invalid character ('?') in URL \"" + strUrl
+                    + "\" name part.");
         } else if (uri.getFragment() != null) {
-            throw new MalformedURLException("Invalid character ('#') in URL \""
-                    + strUrl + "\" name part.");
+            throw new MalformedURLException("Invalid character ('#') in URL \"" + strUrl
+                    + "\" name part.");
         }
         int port = uri.getPort();
         String auth = uri.getAuthority();
@@ -154,8 +121,8 @@ public final class Naming {
             try {
                 port = Integer.parseInt(auth.substring(1));
             } catch (NumberFormatException nfe) {
-                throw new MalformedURLException("Invalid port number in URL \""
-                        + strUrl + "\": " + auth.substring(1));
+                throw new MalformedURLException("Invalid port number in URL \"" + strUrl
+                        + "\": " + auth.substring(1));
             }
         }
 
@@ -166,8 +133,8 @@ public final class Naming {
 
         if (!ignoreEmptyNames) {
             if (path == null || path.length() == 0) {
-                throw new MalformedURLException(
-                        "Name could not be empty (URL: \"" + strUrl + "\").");
+                throw new MalformedURLException("Name could not be empty (URL: \"" + strUrl
+                        + "\").");
             }
         }
 
@@ -182,8 +149,7 @@ public final class Naming {
         return new RegistryURL(host, port, path);
     }
 
-
-    /*
+    /**
      * Auxiliary class holding information about host, port and name.
      */
     private static class RegistryURL {
@@ -197,7 +163,7 @@ public final class Naming {
         // bind name
         String name;
 
-        /*
+        /**
          * Constructs RegistryURL from the given host, port and bind name.
          */
         RegistryURL(String host, int port, String name) {

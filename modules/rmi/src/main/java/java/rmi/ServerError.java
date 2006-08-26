@@ -15,25 +15,11 @@
  * limitations under the License.
  */
 
-/**
- * @author  Mikhail A. Markov
- * @version $Revision: 1.5.4.1 $
- */
 package java.rmi;
 
-
-/**
- * @com.intel.drl.spec_ref
- *
- * @author  Mikhail A. Markov
- * @version $Revision: 1.5.4.1 $
- */
 public class ServerError extends RemoteException {
     private static final long serialVersionUID = 8455284893909696482L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public ServerError(String msg, Error cause) {
         super(msg, cause);
     }

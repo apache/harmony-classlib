@@ -15,32 +15,15 @@
  * limitations under the License.
  */
 
-/**
- * @author  Mikhail A. Markov
- * @version $Revision: 1.4.4.1 $
- */
 package java.rmi;
 
-
-/**
- * @com.intel.drl.spec_ref
- *
- * @author  Mikhail A. Markov
- * @version $Revision: 1.4.4.1 $
- */
 public class NotBoundException extends Exception {
     private static final long serialVersionUID = -1857741824849069317L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public NotBoundException(String msg) {
         super(msg);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public NotBoundException() {
         super();
     }

@@ -15,10 +15,6 @@
  * limitations under the License.
  */
 
-/**
- * @author  Mikhail A. Markov
- * @version $Revision: 1.8.4.2 $
- */
 package java.rmi;
 
 import java.io.IOException;
@@ -29,66 +25,50 @@ import java.util.Arrays;
 import org.apache.harmony.rmi.MarshalledObjectInputStream;
 import org.apache.harmony.rmi.MarshalledObjectOutputStream;
 
-
-/**
- * @com.intel.drl.spec_ref
- *
- * @author  Mikhail A. Markov
- * @version $Revision: 1.8.4.2 $
- */
 public final class MarshalledObject implements Serializable {
     private static final long serialVersionUID = 8988374069173025854L;
-    byte[] objBytes;
-    byte[] locBytes;
-    int hash;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    private final byte[] objBytes;
+
+    private final byte[] locBytes;
+
+    private final int hash;
+
     public MarshalledObject(Object obj) throws IOException {
         ByteArrayOutputStream objStream = new ByteArrayOutputStream();
-        MarshalledObjectOutputStream moStream =
-                new MarshalledObjectOutputStream(objStream);
+        MarshalledObjectOutputStream moStream = new MarshalledObjectOutputStream(objStream);
         moStream.writeObject(obj);
         moStream.flush();
         objBytes = objStream.toByteArray();
         locBytes = moStream.getLocBytes();
 
         // calculate hash code
-        hash = 0;
+        int hash = 0;
 
         for (int i = 0; i < objBytes.length; ++i) {
             hash = hash * 31 + objBytes[i];
         }
+        this.hash = hash;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof MarshalledObject)) {
             return false;
         }
         MarshalledObject anotherObj = (MarshalledObject) obj;
-        return (hash == anotherObj.hash)
-                || (Arrays.equals(objBytes, anotherObj.objBytes));
+        return (hash == anotherObj.hash) || (Arrays.equals(objBytes, anotherObj.objBytes));
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Object get() throws IOException, ClassNotFoundException {
         if (objBytes == null) {
             return null;
         }
-        MarshalledObjectInputStream moin =
-                new MarshalledObjectInputStream(objBytes, locBytes);
+        MarshalledObjectInputStream moin = new MarshalledObjectInputStream(objBytes, locBytes);
         return moin.readObject();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public int hashCode() {
         return hash;
     }

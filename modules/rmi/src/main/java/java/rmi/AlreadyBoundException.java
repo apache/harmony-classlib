@@ -15,32 +15,15 @@
  * limitations under the License.
  */
 
-/**
- * @author  Mikhail A. Markov
- * @version $Revision: 1.4.4.1 $
- */
 package java.rmi;
 
-
-/**
- * @com.intel.drl.spec_ref
- *
- * @author  Mikhail A. Markov
- * @version $Revision: 1.4.4.1 $
- */
 public class AlreadyBoundException extends Exception {
     private static final long serialVersionUID = 9218657361741657110L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public AlreadyBoundException(String msg) {
         super(msg);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public AlreadyBoundException() {
         super();
     }

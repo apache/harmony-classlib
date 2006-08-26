@@ -15,25 +15,15 @@
  * limitations under the License.
  */
 
-/**
- * @author  Mikhail A. Markov
- * @version $Revision: 1.4.4.1 $
- */
 package java.rmi;
 
-
 /**
- * @com.intel.drl.spec_ref
- *
- * @author  Mikhail A. Markov
- * @version $Revision: 1.4.4.1 $
+ * @deprecated No replacement.
  */
+@Deprecated
 public class ServerRuntimeException extends RemoteException {
     private static final long serialVersionUID = 7054464920481467219L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public ServerRuntimeException(String msg, Exception cause) {
         super(msg, cause);
     }
