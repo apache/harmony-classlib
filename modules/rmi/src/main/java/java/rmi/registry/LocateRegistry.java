@@ -54,6 +54,9 @@ public final class LocateRegistry {
                                           RMIClientSocketFactory csf,
                                           RMIServerSocketFactory ssf)
             throws RemoteException {
+        if (port < 0) {
+            throw new IllegalArgumentException("Port value out of range: " + port);
+        }
         return new RegistryImpl(port, csf, ssf);
     }
 
