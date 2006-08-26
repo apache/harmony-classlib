@@ -15,25 +15,42 @@
 
 package java.lang.ref;
 
-
 /**
  * The implementation of this class is provided. The non-public implementation
- * details are documented so the vm vendor can use the implementation.
+ * details are documented so the VM vendor can use the implementation.
  * 
  * ReferenceQueue is the container on which reference objects are enqueued when
  * their reachability type is detected for the referent.
  * 
  * @since JDK1.2
  */
-public class ReferenceQueue<T> extends Object {
+public class ReferenceQueue<T> {
+    
+    private static final int DEFAULT_QUEUE_SIZE = 128;
+    
+    private Reference<? extends T>[] references;
 
-	private Reference<? extends T>[] references;
-
-	private int head, tail;
+	private int head;
+    
+    private int tail;
 
 	private boolean empty;
-
-	static private final int DEFAULT_QUEUE_SIZE = 128;
+    
+    /**
+     * Constructs a new instance of this class.
+     */
+    public ReferenceQueue() {
+        super();
+        references = newArray(DEFAULT_QUEUE_SIZE);
+        head = 0;
+        tail = 0;
+        empty = true;
+    }
+    
+    @SuppressWarnings("unchecked")
+    private Reference<? extends T>[] newArray(int size) {
+        return new Reference[size];
+    }
 
 	/**
 	 * Returns the next available reference from the queue if one is enqueued,
@@ -62,7 +79,7 @@ public class ReferenceQueue<T> extends Object {
 
 	/**
 	 * Return the next available enqueued reference on the queue, blocking
-	 * indefinately until one is available.
+	 * indefinitely until one is available.
 	 * 
 	 * @return Reference a Reference object if one is available, null otherwise.
 	 * @exception InterruptedException
@@ -121,40 +138,27 @@ public class ReferenceQueue<T> extends Object {
 	 * @return boolean true if reference is enqueued. false if reference failed
 	 *         to enqueue.
 	 */
-	boolean enqueue(Reference<? extends T> reference) {
+    boolean enqueue(Reference<? extends T> reference) {
 		synchronized (this) {
-			if (!empty && head == tail) {
-				/* Queue is full - grow */
-				int newQueueSize = (int) (references.length * 1.10);
-				Reference<? extends T> newQueue[] =
-                    (Reference<? extends T>[])new Reference[newQueueSize];
-				System.arraycopy(references, head, newQueue, 0,
-						references.length - head);
-				if (tail > 0) {
-					System.arraycopy(references, 0, newQueue, references.length
-							- head, tail);
-				}
-				head = 0;
-				tail = references.length;
-				references = newQueue;
-			}
-			references[tail++] = reference;
-			if (tail == references.length) {
-				tail = 0;
-			}
-			empty = false;
-			notifyAll();
-		}
-		return true;
-	}
-
-	/**
-	 * Constructs a new instance of this class.
-	 */
-	public ReferenceQueue() {
-		references = (Reference<? extends T>[])new Reference[DEFAULT_QUEUE_SIZE];
-		head = 0;
-		tail = 0;
-		empty = true;
+            if (!empty && head == tail) {
+                /* Queue is full - grow */
+                int newQueueSize = (int) (references.length * 1.10);
+                Reference<? extends T> newQueue[] = newArray(newQueueSize);
+                System.arraycopy(references, head, newQueue, 0, references.length - head);
+                if (tail > 0) {
+                    System.arraycopy(references, 0, newQueue, references.length - head, tail);
+                }
+                head = 0;
+                tail = references.length;
+                references = newQueue;
+            }
+            references[tail++] = reference;
+            if (tail == references.length) {
+                tail = 0;
+            }
+            empty = false;
+            notifyAll();
+        }
+        return true;
 	}
 }
