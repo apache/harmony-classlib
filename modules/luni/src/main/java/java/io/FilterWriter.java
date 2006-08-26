@@ -51,7 +51,8 @@ public abstract class FilterWriter extends Writer {
 	 * @throws java.io.IOException
 	 *             If an error occurs attempting to close this FilterWriter.
 	 */
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		synchronized (lock) {
 			out.close();
 		}
@@ -64,7 +65,8 @@ public abstract class FilterWriter extends Writer {
 	 * @throws java.io.IOException
 	 *             If an error occurs attempting to flush this FilterWriter.
 	 */
-	public void flush() throws IOException {
+	@Override
+    public void flush() throws IOException {
 		synchronized (lock) {
 			out.flush();
 		}
@@ -86,7 +88,8 @@ public abstract class FilterWriter extends Writer {
 	 * @throws java.io.IOException
 	 *             If an error occurs attempting to write to this FilterWriter.
 	 */
-	public void write(char buffer[], int offset, int count) throws IOException {
+	@Override
+    public void write(char buffer[], int offset, int count) throws IOException {
 		synchronized (lock) {
 			out.write(buffer, offset, count);
 		}
@@ -103,7 +106,8 @@ public abstract class FilterWriter extends Writer {
 	 * @throws java.io.IOException
 	 *             If an error occurs attempting to write to this FilterWriter.
 	 */
-	public void write(int oneChar) throws IOException {
+	@Override
+    public void write(int oneChar) throws IOException {
 		synchronized (lock) {
 			out.write(oneChar);
 		}
@@ -125,7 +129,8 @@ public abstract class FilterWriter extends Writer {
 	 * @throws java.io.IOException
 	 *             If an error occurs attempting to write to this FilterWriter.
 	 */
-	public void write(String str, int offset, int count) throws IOException {
+	@Override
+    public void write(String str, int offset, int count) throws IOException {
 		synchronized (lock) {
 			out.write(str, offset, count);
 		}

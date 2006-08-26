@@ -15,21 +15,23 @@
 
 package java.io; 
 
-
 /**
  * LineNumberInputStream is a filter class which counts the number of line
- * terminators from the data read from the target InputStream. A line delimeter
+ * terminators from the data read from the target InputStream. A line delimiter
  * sequence is determined by '\r', '\n', or '\r\n'. When using <code>read</code>,
  * the sequence is always translated into '\n'.
  * 
  * @deprecated Use LineNumberReader
  */
+@Deprecated
 public class LineNumberInputStream extends FilterInputStream {
-	private int lineNumber = 0;
+	private int lineNumber;
 
 	private int markedLineNumber = -1;
 
-	private int lastChar = -1, markedLastChar;
+	private int lastChar = -1;
+    
+    private int markedLastChar;
 
 	/**
 	 * Constructs a new LineNumberInputStream on the InputStream <code>in</code>.
@@ -55,7 +57,8 @@ public class LineNumberInputStream extends FilterInputStream {
 	 *
 	 * @throws 		IOException	If an error occurs in this stream.
 	 */
-	public int available() throws IOException {
+	@Override
+    public int available() throws IOException {
 		return in.available() / 2 + (lastChar == -1 ? 0 : 1);
 	}
 
@@ -83,7 +86,8 @@ public class LineNumberInputStream extends FilterInputStream {
 	 *            The number of bytes to be able to read before invalidating the
 	 *            mark.
 	 */
-	public void mark(int readlimit) {
+	@Override
+    public void mark(int readlimit) {
 		in.mark(readlimit);
 		markedLineNumber = lineNumber;
 		markedLastChar = lastChar;
@@ -94,7 +98,7 @@ public class LineNumberInputStream extends FilterInputStream {
 	 * result as an int. The low-order byte is returned or -1 of the end of
 	 * stream was encountered. This implementation returns a byte from the
 	 * target stream. The line number count is incremented if a line terminator
-	 * is encountered. A line delimeter sequence is determined by '\r', '\n', or
+	 * is encountered. A line delimiter sequence is determined by '\r', '\n', or
 	 * '\r\n'. In this method, the sequence is always translated into '\n'.
 	 * 
 	 * @return int The byte read or -1 if end of stream.
@@ -103,18 +107,21 @@ public class LineNumberInputStream extends FilterInputStream {
 	 *             If the stream is already closed or another IOException
 	 *             occurs.
 	 */
-	public int read() throws IOException {
+	@Override
+    public int read() throws IOException {
 		int currentChar = lastChar;
-		if (currentChar == -1)
-			currentChar = in.read();
-		else
-			lastChar = -1;
+		if (currentChar == -1) {
+            currentChar = in.read();
+        } else {
+            lastChar = -1;
+        }
 		switch (currentChar) {
 		case '\r':
 			currentChar = '\n';
 			lastChar = in.read();
-			if (lastChar == '\n')
-				lastChar = -1;
+			if (lastChar == '\n') {
+                lastChar = -1;
+            }
 		case '\n':
 			lineNumber++;
 		}
@@ -127,7 +134,7 @@ public class LineNumberInputStream extends FilterInputStream {
 	 * <code>offset</code>. Answer the number of bytes actually read or -1 if
 	 * no bytes were read and end of stream was encountered. This implementation
 	 * reads bytes from the target stream. The line number count is incremented
-	 * if a line terminator is encountered. A line delimeter sequence is
+	 * if a line terminator is encountered. A line delimiter sequence is
 	 * determined by '\r', '\n', or '\r\n'. In this method, the sequence is
 	 * always translated into '\n'.
 	 * 
@@ -148,7 +155,8 @@ public class LineNumberInputStream extends FilterInputStream {
 	 *             If <code>offset</code> or <code>count</code> are out of
 	 *             bounds.
 	 */
-	public int read(byte[] buffer, int offset, int length) throws IOException {
+	@Override
+    public int read(byte[] buffer, int offset, int length) throws IOException {
 		if (buffer != null) {
 			// avoid int overflow
 			if (0 <= offset && offset <= buffer.length && 0 <= length
@@ -158,12 +166,14 @@ public class LineNumberInputStream extends FilterInputStream {
 					try {
 						currentChar = read();
 					} catch (IOException e) {
-						if (i != 0)
-							return i;
+						if (i != 0) {
+                            return i;
+                        }
 						throw e;
 					}
-					if (currentChar == -1)
-						return i == 0 ? -1 : i;
+					if (currentChar == -1) {
+                        return i == 0 ? -1 : i;
+                    }
 					buffer[offset + i] = (byte) currentChar;
 				}
 				return length;
@@ -184,7 +194,8 @@ public class LineNumberInputStream extends FilterInputStream {
 	 *             If the stream is already closed or another IOException
 	 *             occurs.
 	 */
-	public void reset() throws IOException {
+	@Override
+    public void reset() throws IOException {
 		in.reset();
 		lineNumber = markedLineNumber;
 		lastChar = markedLastChar;
@@ -217,13 +228,16 @@ public class LineNumberInputStream extends FilterInputStream {
 	 *             If the stream is already closed or another IOException
 	 *             occurs.
 	 */
-	public long skip(long count) throws IOException {
-		if (count <= 0)
-			return 0;
+	@Override
+    public long skip(long count) throws IOException {
+		if (count <= 0) {
+            return 0;
+        }
 		for (int i = 0; i < count; i++) {
 			int currentChar = read();
-			if (currentChar == -1)
-				return i;
+			if (currentChar == -1) {
+                return i;
+            }
 		}
 		return count;
 	}

@@ -48,7 +48,8 @@ public abstract class FilterReader extends Reader {
 	 * @throws IOException
 	 *             If an error occurs attempting to close this Reader.
 	 */
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		synchronized (lock) {
 			in.close();
 		}
@@ -70,7 +71,8 @@ public abstract class FilterReader extends Reader {
 	 * @throws IOException
 	 *             If an error occurs attempting mark this Reader.
 	 */
-	public synchronized void mark(int readlimit) throws IOException {
+	@Override
+    public synchronized void mark(int readlimit) throws IOException {
 		synchronized (lock) {
 			in.mark(readlimit);
 		}
@@ -83,7 +85,8 @@ public abstract class FilterReader extends Reader {
 	 * 
 	 * @return indicates whether or not mark() and reset() are supported.
 	 */
-	public boolean markSupported() {
+	@Override
+    public boolean markSupported() {
 		synchronized (lock) {
 			return in.markSupported();
 		}
@@ -99,7 +102,8 @@ public abstract class FilterReader extends Reader {
 	 * @throws IOException
 	 *             If an error occurs attempting to read from this Reader.
 	 */
-	public int read() throws IOException {
+	@Override
+    public int read() throws IOException {
 		synchronized (lock) {
 			return in.read();
 		}
@@ -123,7 +127,8 @@ public abstract class FilterReader extends Reader {
 	 * @throws IOException
 	 *             If an error occurs attempting to read from this Reader.
 	 */
-	public int read(char[] buffer, int offset, int count) throws IOException {
+	@Override
+    public int read(char[] buffer, int offset, int count) throws IOException {
 		synchronized (lock) {
 			return in.read(buffer, offset, count);
 		}
@@ -145,7 +150,8 @@ public abstract class FilterReader extends Reader {
 	 *             occurs.
 	 */
 
-	public boolean ready() throws IOException {
+	@Override
+    public boolean ready() throws IOException {
 		synchronized (lock) {
 			return in.ready();
 		}
@@ -160,10 +166,11 @@ public abstract class FilterReader extends Reader {
 	 * action is to throw <code>IOException</code>.
 	 * 
 	 * @throws IOException
-	 *             if a problem occured or the target Reader does not support
+	 *             if a problem occurred or the target Reader does not support
 	 *             <code>mark()/reset()</code>.
 	 */
-	public void reset() throws IOException {
+	@Override
+    public void reset() throws IOException {
 		synchronized (lock) {
 			in.reset();
 		}
@@ -183,7 +190,8 @@ public abstract class FilterReader extends Reader {
 	 *             If the Reader is already closed or some other IO error
 	 *             occurs.
 	 */
-	public long skip(long count) throws IOException {
+	@Override
+    public long skip(long count) throws IOException {
 		synchronized (lock) {
 			return in.skip(count);
 		}

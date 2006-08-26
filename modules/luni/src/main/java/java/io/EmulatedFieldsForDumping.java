@@ -64,7 +64,8 @@ class EmulatedFieldsForDumping extends ObjectOutputStream.PutField {
 	 *            New value for the field.
 	 * 
 	 */
-	public void put(String name, byte value) {
+	@Override
+    public void put(String name, byte value) {
 		emulatedFields.put(name, value);
 	}
 
@@ -78,7 +79,8 @@ class EmulatedFieldsForDumping extends ObjectOutputStream.PutField {
 	 *            New value for the field.
 	 * 
 	 */
-	public void put(String name, char value) {
+	@Override
+    public void put(String name, char value) {
 		emulatedFields.put(name, value);
 	}
 
@@ -92,7 +94,8 @@ class EmulatedFieldsForDumping extends ObjectOutputStream.PutField {
 	 *            New value for the field.
 	 * 
 	 */
-	public void put(String name, double value) {
+	@Override
+    public void put(String name, double value) {
 		emulatedFields.put(name, value);
 	}
 
@@ -106,7 +109,8 @@ class EmulatedFieldsForDumping extends ObjectOutputStream.PutField {
 	 *            New value for the field.
 	 * 
 	 */
-	public void put(String name, float value) {
+	@Override
+    public void put(String name, float value) {
 		emulatedFields.put(name, value);
 	}
 
@@ -120,7 +124,8 @@ class EmulatedFieldsForDumping extends ObjectOutputStream.PutField {
 	 *            New value for the field.
 	 * 
 	 */
-	public void put(String name, int value) {
+	@Override
+    public void put(String name, int value) {
 		emulatedFields.put(name, value);
 	}
 
@@ -134,7 +139,8 @@ class EmulatedFieldsForDumping extends ObjectOutputStream.PutField {
 	 *            New value for the field.
 	 * 
 	 */
-	public void put(String name, long value) {
+	@Override
+    public void put(String name, long value) {
 		emulatedFields.put(name, value);
 	}
 
@@ -148,7 +154,8 @@ class EmulatedFieldsForDumping extends ObjectOutputStream.PutField {
 	 *            New value for the field.
 	 * 
 	 */
-	public void put(String name, Object value) {
+	@Override
+    public void put(String name, Object value) {
 		emulatedFields.put(name, value);
 	}
 
@@ -162,7 +169,8 @@ class EmulatedFieldsForDumping extends ObjectOutputStream.PutField {
 	 *            New value for the field.
 	 * 
 	 */
-	public void put(String name, short value) {
+	@Override
+    public void put(String name, short value) {
 		emulatedFields.put(name, value);
 	}
 
@@ -176,7 +184,8 @@ class EmulatedFieldsForDumping extends ObjectOutputStream.PutField {
 	 *            New value for the field.
 	 * 
 	 */
-	public void put(String name, boolean value) {
+	@Override
+    public void put(String name, boolean value) {
 		emulatedFields.put(name, value);
 	}
 
@@ -189,7 +198,8 @@ class EmulatedFieldsForDumping extends ObjectOutputStream.PutField {
 	 * @throws IOException
 	 *             If an IO exception happened when writing the field values.
 	 */
-	public void write(ObjectOutput output) throws IOException {
+	@Override
+    public void write(ObjectOutput output) throws IOException {
 		EmulatedFields.ObjectSlot[] slots = emulatedFields.slots();
 		for (int i = 0; i < slots.length; i++) {
 			EmulatedFields.ObjectSlot slot = slots[i];

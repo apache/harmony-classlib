@@ -315,15 +315,14 @@ public final class FilePermission extends Permission implements Serializable {
                 }
             }
         }
-        // Must have matched upto this point or it's a valid file in an include
+        // Must have matched up to this point or it's a valid file in an include
         // all directory
         if (pLength == thisLength) {
             if (allSubdir) {
                 // /- implies /- or /*
                 return fp.allSubdir || fp.allDir ? matchedMask : 0;
-            } else {
-                return allDir == fp.allDir ? matchedMask : 0;
             }
+            return allDir == fp.allDir ? matchedMask : 0;
         }
         return includeDir ? matchedMask : 0;
     }

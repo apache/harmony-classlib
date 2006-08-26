@@ -35,133 +35,109 @@ import org.apache.harmony.luni.util.PriviAction;
  * @see Externalizable
  */
 public class ObjectOutputStream extends OutputStream implements ObjectOutput,
-		ObjectStreamConstants {
+        ObjectStreamConstants {
 
-	private int nestedLevels; // How many nested levels to writeObject. We may
+    /*
+     * How many nested levels to writeObject. We may not need this.
+     */
+    private int nestedLevels;
 
-	// not need this.
+    /*
+     * Where we write to
+     */
+    private DataOutputStream output;
 
-	private DataOutputStream output; // Where we write to
+    /*
+     * If object replacement is enabled or not
+     */
+    private boolean enableReplace;
 
-	private boolean enableReplace; // If object replacement is enabled or not
+    /*
+     * Where we write primitive types to
+     */
+    private DataOutputStream primitiveTypes;
 
-	private DataOutputStream primitiveTypes; // Where we write primitive
+    /*
+     * Where the write primitive types are actually written to
+     */
+    private ByteArrayOutputStream primitiveTypesBuffer;
 
-	// types to
+    /*
+     * Table mapping Object -> Integer (handle)
+     */
+    private IdentityHashMap<Object, Integer> objectsWritten;
 
-	private ByteArrayOutputStream primitiveTypesBuffer; // Where the write
+    /*
+     * All objects are assigned an ID (integer handle)
+     */
+    private int currentHandle;
 
-	// primitive types are
-	// actually written to
+    /*
+     * Used by defaultWriteObject
+     */
+    private Object currentObject;
 
-	private IdentityHashMap<Object, Integer> objectsWritten; // Table mapping Object -> Integer
+    /*
+     * Used by defaultWriteObject
+     */
+    private ObjectStreamClass currentClass;
 
-	// (handle)
+    /*
+     * Either ObjectStreamConstants.PROTOCOL_VERSION_1 or
+     * ObjectStreamConstants.PROTOCOL_VERSION_2
+     */
+    private int protocolVersion;
 
-	private int currentHandle; // All objects are assigned an ID (integer
+    /*
+     * Used to detect nested exception when saving an exception due to an error
+     */
+    private StreamCorruptedException nestedException;
 
-	// handle)
+    /*
+     * Used to keep track of the PutField object for the class/object being
+     * written
+     */
+    private EmulatedFieldsForDumping currentPutField;
 
-	private Object currentObject; // Used by defaultWriteObject
+    /*
+     * Allows the receiver to decide if it needs to call writeObjectOverride
+     */
+    private boolean subclassOverridingImplementation;
 
-	private ObjectStreamClass currentClass; // Used by defaultWriteObject
-
-	private int protocolVersion; // Either
-
-	// ObjectStreamConstants.PROTOCOL_VERSION_1
-	// or
-	// ObjectStreamConstants.PROTOCOL_VERSION_2
-
-	private StreamCorruptedException nestedException; // Used to detect nested
-
-	// exception when saving
-	// an exception due to
-	// an error
-
-	private EmulatedFieldsForDumping currentPutField; // Used to keep track of
-
-	// the PutField object
-	// for the class/object
-	// being written
-
-	private boolean subclassOverridingImplementation; // Allows the receiver
-
-	// to decide if it needs
-	// to call
-	// writeObjectOverride
-
-	private IdentityHashMap<Class<?>, Object> writeReplaceCache; // cache for writeReplace
-
-	// methods
+    /*
+     * cache for writeReplace methods
+     */
+    private IdentityHashMap<Class<?>, Object> writeReplaceCache; 
 
 	/**
-	 * Inner class to provide access to serializable fields
-	 */
-	abstract static public class PutField {
-		/**
-		 * @param name
-		 * @param value
-		 */
-		public abstract void put(String name, boolean value);
+     * Inner class to provide access to serializable fields
+     */
+    public static abstract class PutField {
+        public abstract void put(String name, boolean value);
 
-		/**
-		 * @param name
-		 * @param value
-		 */
-		public abstract void put(String name, char value);
+        public abstract void put(String name, char value);
 
-		/**
-		 * @param name
-		 * @param value
-		 */
-		public abstract void put(String name, byte value);
+        public abstract void put(String name, byte value);
 
-		/**
-		 * @param name
-		 * @param value
-		 */
-		public abstract void put(String name, short value);
+        public abstract void put(String name, short value);
 
-		/**
-		 * @param name
-		 * @param value
-		 */
-		public abstract void put(String name, int value);
+        public abstract void put(String name, int value);
 
-		/**
-		 * @param name
-		 * @param value
-		 */
-		public abstract void put(String name, long value);
+        public abstract void put(String name, long value);
 
-		/**
-		 * @param name
-		 * @param value
-		 */
-		public abstract void put(String name, float value);
+        public abstract void put(String name, float value);
 
-		/**
-		 * @param name
-		 * @param value
-		 */
-		public abstract void put(String name, double value);
+        public abstract void put(String name, double value);
 
-		/**
-		 * @param name
-		 * @param value
-		 */
-		public abstract void put(String name, Object value);
+        public abstract void put(String name, Object value);
 
-		/**
-		 * @param out
-		 * 
-		 * @throws IOException
-		 * 
-		 * @deprecated This method is unsafe and may corrupt the output stream.
-		 *             Use ObjectOutputStream#writeFields() instead.
-		 */
-		public abstract void write(ObjectOutput out) throws IOException;
-	}
+        /**
+         * @deprecated This method is unsafe and may corrupt the output stream.
+         *             Use ObjectOutputStream#writeFields() instead.
+         */
+        @Deprecated
+        public abstract void write(ObjectOutput out) throws IOException;
+    }
 
 	/**
 	 * Constructs a new <code>ObjectOutputStream</code>. The representation
@@ -174,14 +150,17 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * @see SecurityManager#checkPermission(java.security.Permission)
 	 */
 	protected ObjectOutputStream() throws IOException, SecurityException {
-		super();
-		SecurityManager currentManager = System.getSecurityManager();
-		if (currentManager != null)
-			currentManager.checkPermission(SUBCLASS_IMPLEMENTATION_PERMISSION);
-		// WARNING - we should throw IOException if not called from a subclass
-		// according to the JavaDoc. Add the test.
-		this.subclassOverridingImplementation = true;
-	}
+        super();
+        SecurityManager currentManager = System.getSecurityManager();
+        if (currentManager != null) {
+            currentManager.checkPermission(SUBCLASS_IMPLEMENTATION_PERMISSION);
+        }
+        /*
+         * WARNING - we should throw IOException if not called from a subclass
+         * according to the JavaDoc. Add the test.
+         */
+        this.subclassOverridingImplementation = true;
+    }
 
 	/**
 	 * Constructs a new ObjectOutputStream on the OutputStream
@@ -294,7 +273,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * @throws IOException
 	 *             If an error occurs attempting to close this stream.
 	 */
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		// First flush what is needed (primitive data, etc)
 		flush();
 		output.close();
@@ -323,10 +303,11 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 */
 	public void defaultWriteObject() throws IOException {
 		// We can't be called from just anywhere. There are rules.
-		if (currentObject != null)
-			writeFieldValues(currentObject, currentClass);
-		else
-			throw new NotActiveException();
+		if (currentObject != null) {
+            writeFieldValues(currentObject, currentClass);
+        } else {
+            throw new NotActiveException();
+        }
 	}
 
 	/**
@@ -336,8 +317,9 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 *             If an error occurs attempting to drain the data
 	 */
 	protected void drain() throws IOException {
-		if (primitiveTypes == null)
-			return;
+		if (primitiveTypes == null) {
+            return;
+        }
 
 		// If we got here we have a Stream previously created
 		int offset = 0;
@@ -412,8 +394,9 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 			// The Stream has to be trusted for this feature to be enabled.
 			// trusted means the stream's classloader has to be null
 			SecurityManager currentManager = System.getSecurityManager();
-			if (currentManager != null)
-				currentManager.checkPermission(SUBSTITUTION_PERMISSION);
+			if (currentManager != null) {
+                currentManager.checkPermission(SUBSTITUTION_PERMISSION);
+            }
 		}
 		boolean originalValue = enableReplace;
 		enableReplace = enable;
@@ -428,7 +411,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 *             If an error occurs attempting to flush this
 	 *             ObjectOutputStream.
 	 */
-	public void flush() throws IOException {
+	@Override
+    public void flush() throws IOException {
 		drain();
 		output.flush();
 	}
@@ -652,8 +636,9 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	public PutField putFields() throws IOException {
 		// We can't be called from just anywhere. There are rules.
 		if (currentObject != null) {
-			if (currentPutField == null)
-				computePutField();
+			if (currentPutField == null) {
+                computePutField();
+            }
 			return currentPutField;
 		}
 		throw new NotActiveException();
@@ -745,8 +730,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	/**
 	 * Reset the receiver. A marker is written to the stream, so that
 	 * deserialization will also perform a rest at the same point. Objects
-	 * previouly written are no longer remembered, so they will be written again
-	 * (instead of a ciclyc reference) if found in the object graph.
+	 * previously written are no longer remembered, so they will be written again
+	 * (instead of a cyclical reference) if found in the object graph.
 	 * 
 	 * @throws IOException
 	 *             If any IO problem occurred when trying to reset the receiver
@@ -754,9 +739,10 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	public void reset() throws IOException {
 		// First we flush what we have
 		drain();
-		// And dump a reset marker, so that the ObjectInputStream can reset
-		// itself
-		// at the same point
+		/*
+         * And dump a reset marker, so that the ObjectInputStream can reset
+         * itself at the same point
+         */
 		output.writeByte(TC_RESET);
 		// Now we reset ourselves
 		resetState();
@@ -813,7 +799,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 *             If an error occurs attempting to write to this
 	 *             ObjectOutputStream.
 	 */
-	public void write(byte[] buffer) throws IOException {
+	@Override
+    public void write(byte[] buffer) throws IOException {
 		checkWritePrimitiveTypes();
 		primitiveTypes.write(buffer);
 	}
@@ -833,7 +820,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * @throws IOException
 	 *             If an error occurs attempting to write to this OutputStream.
 	 */
-	public void write(byte[] buffer, int offset, int length) throws IOException {
+	@Override
+    public void write(byte[] buffer, int offset, int length) throws IOException {
 		checkWritePrimitiveTypes();
 		primitiveTypes.write(buffer, offset, length);
 	}
@@ -848,7 +836,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 * @throws IOException
 	 *             If an IO exception happened when writing the byte.
 	 */
-	public void write(int value) throws IOException {
+	@Override
+    public void write(int value) throws IOException {
 		checkWritePrimitiveTypes();
 		primitiveTypes.write(value);
 	}
@@ -965,8 +954,9 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 				output.writeByte(TC_PROXYCLASSDESC);
 				Class[] interfaces = classToWrite.getInterfaces();
 				output.writeInt(interfaces.length);
-				for (int i = 0; i < interfaces.length; i++)
-					output.writeUTF(interfaces[i].getName());
+				for (int i = 0; i < interfaces.length; i++) {
+                    output.writeUTF(interfaces[i].getName());
+                }
 				annotateProxyClass(classToWrite);
 				output.writeByte(TC_ENDBLOCKDATA);
 				writeClassDescForClass(Proxy.class);
@@ -978,9 +968,9 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 			}
 
 			output.writeByte(TC_CLASSDESC);
-			if (protocolVersion == PROTOCOL_VERSION_1)
-				writeNewClassDesc(classDesc);
-			else {
+			if (protocolVersion == PROTOCOL_VERSION_1) {
+                writeNewClassDesc(classDesc);
+            } else {
 				// So write...() methods can be used by
 				// subclasses during writeClassDescriptor()
 				primitiveTypes = output;
@@ -1105,10 +1095,11 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	 */
 	public void writeFields() throws IOException {
 		// Has to have fields to write
-		if (currentPutField != null)
-			writeFieldValues(currentPutField);
-		else
-			throw new NotActiveException();
+		if (currentPutField != null) {
+            writeFieldValues(currentPutField);
+        } else {
+            throw new NotActiveException();
+        }
 	}
 
 	/**
@@ -1237,8 +1228,9 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 							.getName(), fieldDesc.getTypeString());
 					if (fieldDesc.isUnshared()) {
 						writeUnshared(field);
-					} else
-						writeObject(field);
+					} else {
+                        writeObject(field);
+                    }
 				}
 			} catch (NoSuchFieldError nsf) {
 				// The user defined serialPersistentFields but did not provide
@@ -1295,9 +1287,10 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 		if (object != null) {
 			// Fields are written from class closest to Object to leaf class
 			// (down the chain)
-			if (classDesc.getSuperclass() != null) // Read superclass slots
-				// first
+			if (classDesc.getSuperclass() != null) {
+                // first
 				writeHierarchy(object, classDesc.getSuperclass());
+            }
 
 			// Have to do this before calling defaultWriteObject or anything
 			// that calls defaultWriteObject
@@ -1319,10 +1312,11 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 						executed = true;
 					} catch (InvocationTargetException e) {
 						Throwable ex = e.getTargetException();
-						if (ex instanceof RuntimeException)
-							throw (RuntimeException) ex;
-						else if (ex instanceof Error)
-							throw (Error) ex;
+						if (ex instanceof RuntimeException) {
+                            throw (RuntimeException) ex;
+                        } else if (ex instanceof Error) {
+                            throw (Error) ex;
+                        }
 						throw (IOException) ex;
 					} catch (IllegalAccessException e) {
 						throw new RuntimeException(e.toString());
@@ -1344,8 +1338,9 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 				currentClass = null;
 				currentPutField = null;
 			}
-		} else
-			throw new NotActiveException();
+		} else {
+            throw new NotActiveException();
+        }
 	}
 
 	/**
@@ -1419,8 +1414,9 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 			if (componentType == Integer.TYPE) {
 				int[] intArray = (int[]) array;
 				output.writeInt(intArray.length);
-				for (int i = 0; i < intArray.length; i++)
-					output.writeInt(intArray[i]);
+				for (int i = 0; i < intArray.length; i++) {
+                    output.writeInt(intArray[i]);
+                }
 			} else if (componentType == Byte.TYPE) {
 				byte[] byteArray = (byte[]) array;
 				output.writeInt(byteArray.length);
@@ -1428,33 +1424,39 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 			} else if (componentType == Character.TYPE) {
 				char[] charArray = (char[]) array;
 				output.writeInt(charArray.length);
-				for (int i = 0; i < charArray.length; i++)
-					output.writeChar(charArray[i]);
+				for (int i = 0; i < charArray.length; i++) {
+                    output.writeChar(charArray[i]);
+                }
 			} else if (componentType == Short.TYPE) {
 				short[] shortArray = (short[]) array;
 				output.writeInt(shortArray.length);
-				for (int i = 0; i < shortArray.length; i++)
-					output.writeShort(shortArray[i]);
+				for (int i = 0; i < shortArray.length; i++) {
+                    output.writeShort(shortArray[i]);
+                }
 			} else if (componentType == Boolean.TYPE) {
 				boolean[] booleanArray = (boolean[]) array;
 				output.writeInt(booleanArray.length);
-				for (int i = 0; i < booleanArray.length; i++)
-					output.writeBoolean(booleanArray[i]);
+				for (int i = 0; i < booleanArray.length; i++) {
+                    output.writeBoolean(booleanArray[i]);
+                }
 			} else if (componentType == Long.TYPE) {
 				long[] longArray = (long[]) array;
 				output.writeInt(longArray.length);
-				for (int i = 0; i < longArray.length; i++)
-					output.writeLong(longArray[i]);
+				for (int i = 0; i < longArray.length; i++) {
+                    output.writeLong(longArray[i]);
+                }
 			} else if (componentType == Float.TYPE) {
 				float[] floatArray = (float[]) array;
 				output.writeInt(floatArray.length);
-				for (int i = 0; i < floatArray.length; i++)
-					output.writeFloat(floatArray[i]);
+				for (int i = 0; i < floatArray.length; i++) {
+                    output.writeFloat(floatArray[i]);
+                }
 			} else if (componentType == Double.TYPE) {
 				double[] doubleArray = (double[]) array;
 				output.writeInt(doubleArray.length);
-				for (int i = 0; i < doubleArray.length; i++)
-					output.writeDouble(doubleArray[i]);
+				for (int i = 0; i < doubleArray.length; i++) {
+                    output.writeDouble(doubleArray[i]);
+                }
 			} else {
 				throw new InvalidClassException(org.apache.harmony.luni.util.Msg.getString(
 						"K00d7", arrayClass.getName())); //$NON-NLS-1$
@@ -1463,8 +1465,9 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 			// Array of Objects
 			Object[] objectArray = (Object[]) array;
 			output.writeInt(objectArray.length);
-			for (int i = 0; i < objectArray.length; i++)
-				writeObject(objectArray[i]);
+			for (int i = 0; i < objectArray.length; i++) {
+                writeObject(objectArray[i]);
+            }
 		}
 		return handle;
 	}
@@ -1540,11 +1543,12 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 			// or in the 1.2 format (PROTOCOL_VERSION_2)
 			// Nested "if" check to optimize checking. Second check is more
 			// expensive.
-			if (externalizable)
-				flags |= SC_BLOCK_DATA;
+			if (externalizable) {
+                flags |= SC_BLOCK_DATA;
+            }
 		}
 		output.writeByte(flags);
-        if (((byte)SC_ENUM | SC_SERIALIZABLE) != classDesc.getFlags()){
+        if ((SC_ENUM | SC_SERIALIZABLE) != classDesc.getFlags()){
             writeFieldDescriptors(classDesc, externalizable);
         } else {
             // enum write no fields
@@ -1628,9 +1632,10 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 
 		boolean externalizable = ObjectStreamClass.isExternalizable(theClass);
 		boolean serializable = ObjectStreamClass.isSerializable(theClass);
-		if (!externalizable && !serializable)
-			// Object is neither externalizable nor serializable. Error
+		if (!externalizable && !serializable) {
+            // Object is neither externalizable nor serializable. Error
 			throw new NotSerializableException(theClass.getName());
+        }
 
 		// Either serializable or externalizable, now we can save info
 		output.writeByte(TC_OBJECT);
@@ -1647,8 +1652,9 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 		try {
 			if (externalizable) {
 				boolean noBlockData = protocolVersion == PROTOCOL_VERSION_1;
-				if (noBlockData)
-					primitiveTypes = output;
+				if (noBlockData) {
+                    primitiveTypes = output;
+                }
 				// Object is externalizable, just call its own method
 				((Externalizable) object).writeExternal(this);
 				if (noBlockData) {
@@ -1765,9 +1771,9 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 		}
 		// This is the spec'ed behavior in JDK 1.2. Very bizarre way to allow
 		// behavior overriding.
-		if (subclassOverridingImplementation && !unshared)
-			writeObjectOverride(object);
-		else {
+		if (subclassOverridingImplementation && !unshared) {
+            writeObjectOverride(object);
+        } else {
 
 			try {
 				// First we need to flush primitive types if they were written
@@ -1775,8 +1781,9 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 				// Actual work, and class-based replacement should be computed
 				// if needed.
 				writeObjectInternal(object, unshared, true, true);
-				if (setOutput)
-					primitiveTypes = output;
+				if (setOutput) {
+                    primitiveTypes = output;
+                }
 			} catch (IOException ioEx1) {
 				// This will make it pass through until the top caller. It also
 				// lets it pass
@@ -1827,8 +1834,9 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 		Integer handle = null;
 		if (!unshared) {
 			handle = dumpCycle(object);
-			if (handle != null)
-				return handle; // cyclic reference
+			if (handle != null) {
+                return handle; // cyclic reference
+            }
 		}
 
 		// Non-null object, first time seen...
@@ -1876,12 +1884,13 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 							// the method
 						} catch (InvocationTargetException ite) {
 							Throwable target = ite.getTargetException();
-							if (target instanceof ObjectStreamException)
-								throw (ObjectStreamException) target;
-							else if (target instanceof Error)
-								throw (Error) target;
-							else
-								throw (RuntimeException) target;
+							if (target instanceof ObjectStreamException) {
+                                throw (ObjectStreamException) target;
+                            } else if (target instanceof Error) {
+                                throw (Error) target;
+                            } else {
+                                throw (RuntimeException) target;
+                            }
 						}
 						if (classBasedReplacement != object) {
 							Integer replacementHandle = writeObjectInternal(
@@ -1893,8 +1902,9 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 							// (see 1F9RNT1)
 							// Make the original object also map to the same
 							// handle.
-							if (replacementHandle != null)
-								registerObjectWritten(object, replacementHandle);
+							if (replacementHandle != null) {
+                                registerObjectWritten(object, replacementHandle);
+                            }
 							return replacementHandle;
 						}
 					}
@@ -1917,8 +1927,9 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 					// time (see
 					// 1F9RNT1)
 					// Make the original object also map to the same handle.
-					if (replacementHandle != null)
-						registerObjectWritten(object, replacementHandle);
+					if (replacementHandle != null) {
+                        registerObjectWritten(object, replacementHandle);
+                    }
 					return replacementHandle;
 				}
 			}
@@ -1926,15 +1937,17 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 			// We get here if stream-based replacement produced the same object
 
 			// Is it a String ?
-			if (objClass == ObjectStreamClass.STRINGCLASS) // we could also use
-				// instanceof, but
+			if (objClass == ObjectStreamClass.STRINGCLASS) {
+                // instanceof, but
 				// == is faster
 				return writeNewString((String) object, unshared);
+            }
 
 			// Is it an Array ?
-			if (objClass.isArray()) // We are dumping an array
-				return writeNewArray(object, objClass, objClass
+			if (objClass.isArray()) {
+                return writeNewArray(object, objClass, objClass
 						.getComponentType(), unshared);
+            }
 
             if (object instanceof Enum){
                 return writeNewEnum(object, objClass, unshared);
@@ -1948,7 +1961,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	}
 
     // write for Enum Class Desc only, which is different from other classes
-    private ObjectStreamClass writeEnumDesc(Class theClass, boolean unshared)
+    private ObjectStreamClass writeEnumDesc(Class<?> theClass, boolean unshared)
             throws IOException {
         // write classDesc, classDesc for enum is different
         ObjectStreamClass classDesc = ObjectStreamClass.lookup(theClass);
@@ -1962,15 +1975,15 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
             handle = dumpCycle(classDesc);
         }
         if (handle == null) {
-            Class classToWrite = classDesc.forClass();
+            Class<?> classToWrite = classDesc.forClass();
             // If we got here, it is a new (non-null) classDesc that will have
             // to be registered as well
             registerObjectWritten(classDesc);
 
             output.writeByte(TC_CLASSDESC);
-            if (protocolVersion == PROTOCOL_VERSION_1)
+            if (protocolVersion == PROTOCOL_VERSION_1) {
                 writeNewClassDesc(classDesc);
-            else {
+            } else {
                 // So write...() methods can be used by
                 // subclasses during writeClassDescriptor()
                 primitiveTypes = output;
@@ -1999,7 +2012,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         return classDesc;
     }
 
-    private Integer writeNewEnum(Object object, Class theClass, boolean unshared)
+    private Integer writeNewEnum(Object object, Class<?> theClass, boolean unshared)
             throws IOException {
         // write new Enum
         EmulatedFieldsForDumping originalCurrentPutField = currentPutField; // save
@@ -2017,9 +2030,9 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         Integer handle = registerObjectWritten(object);        
 
         ObjectStreamField[] fields = classDesc.getSuperclass().fields();
-        Class declaringClass = classDesc.getSuperclass().forClass();
+        Class<?> declaringClass = classDesc.getSuperclass().forClass();
         // Only write field "name" for enum class, which is the second field of
-        // enum, that is fileds[1]. Ignore all non-fields and fields.length < 2
+        // enum, that is fields[1]. Ignore all non-fields and fields.length < 2
         if (null != fields && fields.length > 1) {
             String str = (String) getFieldObj(object, declaringClass, fields[1]
                     .getName(), fields[1].getTypeString());
@@ -2041,7 +2054,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Method to be overriden by subclasses to write <code>object</code> into
+     * Method to be overridden by subclasses to write <code>object</code> into
      * the receiver's underlying stream.
      * 
      * @param object

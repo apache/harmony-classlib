@@ -48,7 +48,7 @@ class EmulatedFieldsForLoading extends ObjectInputStream.GetField {
 
 	/**
 	 * Return a boolean indicating if the field named <code>name</code> has
-	 * been assigned a value explicitely (false) or if it still holds a default
+	 * been assigned a value explicitly (false) or if it still holds a default
 	 * value for the type (true) because it hasn't been assigned to yet.
 	 * 
 	 * @param name
@@ -61,7 +61,8 @@ class EmulatedFieldsForLoading extends ObjectInputStream.GetField {
 	 * @throws IllegalArgumentException
 	 *             If the corresponding field can not be found.
 	 */
-	public boolean defaulted(String name) throws IOException,
+	@Override
+    public boolean defaulted(String name) throws IOException,
 			IllegalArgumentException {
 		return emulatedFields.defaulted(name);
 	}
@@ -94,7 +95,8 @@ class EmulatedFieldsForLoading extends ObjectInputStream.GetField {
 	 * @throws IllegalArgumentException
 	 *             If the corresponding field can not be found.
 	 */
-	public byte get(String name, byte defaultValue) throws IOException,
+	@Override
+    public byte get(String name, byte defaultValue) throws IOException,
 			IllegalArgumentException {
 		return emulatedFields.get(name, defaultValue);
 	}
@@ -116,7 +118,8 @@ class EmulatedFieldsForLoading extends ObjectInputStream.GetField {
 	 * @throws IllegalArgumentException
 	 *             If the corresponding field can not be found.
 	 */
-	public char get(String name, char defaultValue) throws IOException,
+	@Override
+    public char get(String name, char defaultValue) throws IOException,
 			IllegalArgumentException {
 		return emulatedFields.get(name, defaultValue);
 	}
@@ -138,7 +141,8 @@ class EmulatedFieldsForLoading extends ObjectInputStream.GetField {
 	 * @throws IllegalArgumentException
 	 *             If the corresponding field can not be found.
 	 */
-	public double get(String name, double defaultValue) throws IOException,
+	@Override
+    public double get(String name, double defaultValue) throws IOException,
 			IllegalArgumentException {
 		return emulatedFields.get(name, defaultValue);
 	}
@@ -160,7 +164,8 @@ class EmulatedFieldsForLoading extends ObjectInputStream.GetField {
 	 * @throws IllegalArgumentException
 	 *             If the corresponding field can not be found.
 	 */
-	public float get(String name, float defaultValue) throws IOException,
+	@Override
+    public float get(String name, float defaultValue) throws IOException,
 			IllegalArgumentException {
 		return emulatedFields.get(name, defaultValue);
 	}
@@ -182,7 +187,8 @@ class EmulatedFieldsForLoading extends ObjectInputStream.GetField {
 	 * @throws IllegalArgumentException
 	 *             If the corresponding field can not be found.
 	 */
-	public int get(String name, int defaultValue) throws IOException,
+	@Override
+    public int get(String name, int defaultValue) throws IOException,
 			IllegalArgumentException {
 		return emulatedFields.get(name, defaultValue);
 	}
@@ -204,7 +210,8 @@ class EmulatedFieldsForLoading extends ObjectInputStream.GetField {
 	 * @throws IllegalArgumentException
 	 *             If the corresponding field can not be found.
 	 */
-	public long get(String name, long defaultValue) throws IOException,
+	@Override
+    public long get(String name, long defaultValue) throws IOException,
 			IllegalArgumentException {
 		return emulatedFields.get(name, defaultValue);
 	}
@@ -226,7 +233,8 @@ class EmulatedFieldsForLoading extends ObjectInputStream.GetField {
 	 * @throws IllegalArgumentException
 	 *             If the corresponding field can not be found.
 	 */
-	public Object get(String name, Object defaultValue) throws IOException,
+	@Override
+    public Object get(String name, Object defaultValue) throws IOException,
 			IllegalArgumentException {
 		return emulatedFields.get(name, defaultValue);
 	}
@@ -248,7 +256,8 @@ class EmulatedFieldsForLoading extends ObjectInputStream.GetField {
 	 * @throws IllegalArgumentException
 	 *             If the corresponding field can not be found.
 	 */
-	public short get(String name, short defaultValue) throws IOException,
+	@Override
+    public short get(String name, short defaultValue) throws IOException,
 			IllegalArgumentException {
 		return emulatedFields.get(name, defaultValue);
 	}
@@ -271,7 +280,8 @@ class EmulatedFieldsForLoading extends ObjectInputStream.GetField {
 	 * @throws IllegalArgumentException
 	 *             If the corresponding field can not be found.
 	 */
-	public boolean get(String name, boolean defaultValue) throws IOException,
+	@Override
+    public boolean get(String name, boolean defaultValue) throws IOException,
 			IllegalArgumentException {
 		return emulatedFields.get(name, defaultValue);
 	}
@@ -282,7 +292,8 @@ class EmulatedFieldsForLoading extends ObjectInputStream.GetField {
 	 * @return ObjectStreamClass The class descriptor for which the emulated
 	 *         fields are defined.
 	 */
-	public ObjectStreamClass getObjectStreamClass() {
+	@Override
+    public ObjectStreamClass getObjectStreamClass() {
 		return streamClass;
 	}
 }

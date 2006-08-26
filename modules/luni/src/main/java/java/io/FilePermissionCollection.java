@@ -45,15 +45,17 @@ final class FilePermissionCollection extends PermissionCollection
 	 * 
 	 * @see java.security.PermissionCollection#add(java.security.Permission)
 	 */
-	public void add(Permission permission) {
+	@Override
+    public void add(Permission permission) {
         if (!isReadOnly()) {
             if (permission instanceof FilePermission) {
                 permissions.addElement(permission);
             } else {
                 throw new IllegalArgumentException(permission.toString());
             }
-        } else
+        } else {
             throw new IllegalStateException();
+        }
     }
 
 	/**
@@ -61,7 +63,8 @@ final class FilePermissionCollection extends PermissionCollection
      * 
      * @see java.security.PermissionCollection#elements()
      */
-	public Enumeration<Permission> elements() {
+	@Override
+    public Enumeration<Permission> elements() {
 		return permissions.elements();
 	}
 
@@ -71,7 +74,8 @@ final class FilePermissionCollection extends PermissionCollection
 	 * 
 	 * @see java.security.PermissionCollection#implies(java.security.Permission)
 	 */
-	public boolean implies(Permission permission) {
+	@Override
+    public boolean implies(Permission permission) {
         if (permission instanceof FilePermission) {
             FilePermission fp = (FilePermission) permission;
             int matchedMask = 0;

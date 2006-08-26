@@ -15,6 +15,8 @@
 
 package java.io; 
 
+import org.apache.harmony.luni.util.Msg;
+
 
 /**
  * FilteredOutputStream is a class which takes an output stream and
@@ -49,7 +51,8 @@ public class FilterOutputStream extends OutputStream {
 	 * @throws IOException
 	 *             If an error occurs attempting to close this stream.
 	 */
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		try {
 			flush();
 		} catch (IOException e) {
@@ -67,7 +70,8 @@ public class FilterOutputStream extends OutputStream {
 	 *             If an error occurs attempting to flush this
 	 *             FilterOutputStream.
 	 */
-	public void flush() throws IOException {
+	@Override
+    public void flush() throws IOException {
 		out.flush();
 	}
 
@@ -83,7 +87,8 @@ public class FilterOutputStream extends OutputStream {
 	 *             If an error occurs attempting to write to this
 	 *             FilterOutputStream.
 	 */
-	public void write(byte buffer[]) throws IOException {
+	@Override
+    public void write(byte buffer[]) throws IOException {
 		write(buffer, 0, buffer.length);
 	}
 
@@ -106,17 +111,19 @@ public class FilterOutputStream extends OutputStream {
 	 * @throws IndexOutOfBoundsException
 	 *             If offset or count are outside of bounds.
 	 */
-	public void write(byte buffer[], int offset, int count) throws IOException {
+	@Override
+    public void write(byte buffer[], int offset, int count) throws IOException {
 		// avoid int overflow, check null buffer
 		if (offset <= buffer.length && 0 <= offset && 0 <= count
 				&& count <= buffer.length - offset) {
-			for (int i = 0; i < count; i++)
-				// Call write() instead of out.write() since subclasses could
+			for (int i = 0; i < count; i++) {
+                // Call write() instead of out.write() since subclasses could
 				// override the write() method.
 				write(buffer[offset + i]);
-		} else
-			throw new ArrayIndexOutOfBoundsException(org.apache.harmony.luni.util.Msg
-					.getString("K002f")); //$NON-NLS-1$
+            }
+		} else {
+            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002f")); //$NON-NLS-1$
+        }
 	}
 
 	/**
@@ -131,7 +138,8 @@ public class FilterOutputStream extends OutputStream {
 	 *             If an error occurs attempting to write to this
 	 *             FilterOutputStream.
 	 */
-	public void write(int oneByte) throws IOException {
+	@Override
+    public void write(int oneByte) throws IOException {
 		out.write(oneByte);
 	}
 }

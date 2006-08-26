@@ -140,7 +140,8 @@ public class InputStreamReader extends Reader {
 	 *             If an error occurs attempting to close this
 	 *             InputStreamReader.
 	 */
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		synchronized (lock) {
 			decoder = null;
 			if (in != null) {
@@ -313,9 +314,8 @@ public class InputStreamReader extends Reader {
 		}
 
 		public static String getHistoricalName(String name) {
-			return (String) (historicalNames.get(name) == null ? name
-					: historicalNames.get(name));
-		}
+            return (!historicalNames.containsKey(name) ? name : historicalNames.get(name));
+        }
 	}
 
 	/**
@@ -331,7 +331,8 @@ public class InputStreamReader extends Reader {
 	 *             If the InputStreamReader is already closed or some other IO
 	 *             error occurs.
 	 */
-	public int read() throws IOException {
+	@Override
+    public int read() throws IOException {
 		synchronized (lock) {
 			if (isOpen()) {
 				if (chars.limit() == chars.position()) {
@@ -342,7 +343,7 @@ public class InputStreamReader extends Reader {
 				}
 				return chars.get();
 			}
-			throw new IOException("InputStreamReader is closed."); //$NON-NLS-1$
+			throw new IOException("InputStreamReader is closed.");
 		}
 	}
 
@@ -366,14 +367,16 @@ public class InputStreamReader extends Reader {
 	 *             If the InputStreamReader is already closed or some other IO
 	 *             error occurs.
 	 */
-	public int read(char[] buf, int offset, int length) throws IOException {
+	@Override
+    public int read(char[] buf, int offset, int length) throws IOException {
 		synchronized (lock) {
 			if (isOpen()) {
 				if (offset < 0 || offset > buf.length - length || length < 0) {
 					throw new IndexOutOfBoundsException();
 				}
-				if (length == 0)
-					return 0;			
+				if (length == 0) {
+                    return 0;
+                }			
 				// read at least once
 				if (chars.limit() == chars.position()) {
 					fillBuf();
@@ -403,7 +406,7 @@ public class InputStreamReader extends Reader {
 				chars.position(chars.position() + needChars);
 				return length;
 			}
-			throw new IOException("InputStreamReader is closed."); //$NON-NLS-1$
+			throw new IOException("InputStreamReader is closed.");
 		}
 	}
 
@@ -458,17 +461,17 @@ public class InputStreamReader extends Reader {
 	 *             If the InputStreamReader is already closed or some other IO
 	 *             error occurs.
 	 */
-	public boolean ready() throws IOException {
+	@Override
+    public boolean ready() throws IOException {
 		synchronized (lock) {
 			if (in == null) {
-				throw new IOException("This reader has been closed!"); //$NON-NLS-1$
+				throw new IOException("This reader has been closed!");
 			}
 			try {
 				return chars.limit() > chars.position() || in.available() > 0;
 			} catch (IOException e) {
 				return false;
 			}
-
 		}
 	}
 }

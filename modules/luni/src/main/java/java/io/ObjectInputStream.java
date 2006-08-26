@@ -838,7 +838,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 
     /**
      * Reads the next item from the stream assuming it is a cyclic reference to
-     * an object previouly read. Return the actual object previously read.
+     * an object previously read. Return the actual object previously read.
      * 
      * @return the object previously read from the stream
      * 
@@ -1616,7 +1616,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                 throw new StreamCorruptedException(Msg.getString("K00d2"));//$NON-NLS-1$
         }
 
-        Enum result = Enum.valueOf((Class) classDesc.forClass(), name);
+        Enum<?> result = Enum.valueOf((Class) classDesc.forClass(), name);
         registerObjectRead(result, newHandle, unshared);
 
         return result;
@@ -1761,7 +1761,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
     }
 
     /**
-     * Write a new handfle describing a cyclic reference from the stream.
+     * Write a new handle describing a cyclic reference from the stream.
      * 
      * @return the handle read
      * 
@@ -2212,7 +2212,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      * 
      * @param handle
      *            The handle that this object was assigned when it was read.
-     * @return the object previusly read.
+     * @return the object previously read.
      * 
      * @throws InvalidObjectException
      *             If there is no previously read object with this handle
@@ -2540,7 +2540,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      * @param instance
      *            Object whose field to set
      * @param declaringClass
-     *            Class which delares the field
+     *            Class which declares the field
      * @param fieldName
      *            Name of the field to set
      * @param fieldTypeName

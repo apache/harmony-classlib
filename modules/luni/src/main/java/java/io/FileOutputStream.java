@@ -86,8 +86,9 @@ public class FileOutputStream extends OutputStream implements Closeable{
 			throws FileNotFoundException {
 		super();
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkWrite(file.getPath());
+		if (security != null) {
+            security.checkWrite(file.getPath());
+        }
 		fd = new FileDescriptor();
         fd.descriptor = fileSystem.open(file.properPath(true), append?IFileSystem.O_APPEND:IFileSystem.O_WRONLY);
         channel = FileChannelFactory.getFileChannel(this, fd.descriptor,
@@ -111,8 +112,9 @@ public class FileOutputStream extends OutputStream implements Closeable{
                     .getString("K006c")); //$NON-NLS-1$
         }
         SecurityManager security = System.getSecurityManager();
-        if (security != null)
+        if (security != null) {
             security.checkWrite(fd);
+        }
         this.fd = fd;
         channel = FileChannelFactory.getFileChannel(this, fd.descriptor,
                 IFileSystem.O_WRONLY);
@@ -162,6 +164,7 @@ public class FileOutputStream extends OutputStream implements Closeable{
 	 * @throws IOException
 	 *             If an error occurs attempting to close this FileOutputStream.
 	 */
+    @Override
     public void close() throws IOException {
         if (fd == null) {
             // if fd is null, then the underlying file is not opened, so nothing
@@ -181,7 +184,7 @@ public class FileOutputStream extends OutputStream implements Closeable{
             }
         } else {
             /*
-             * if the FileOutputStream is constructed sucessfully, then channel
+             * if the FileOutputStream is constructed successfully, then channel
              * must be closed, which will close the underlying file
              */
             synchronized (channel) {
@@ -205,7 +208,8 @@ public class FileOutputStream extends OutputStream implements Closeable{
 	 *             If an error occurs attempting to finalize this
 	 *             FileOutputStream.
 	 */
-	protected void finalize() throws IOException {
+	@Override
+    protected void finalize() throws IOException {
 		close();
 	}
 
@@ -249,7 +253,8 @@ public class FileOutputStream extends OutputStream implements Closeable{
 	 *             If an error occurs attempting to write to this
 	 *             FileOutputStream.
 	 */
-	public void write(byte[] buffer) throws IOException {
+	@Override
+    public void write(byte[] buffer) throws IOException {
 		write(buffer, 0, buffer.length);
 	}
 
@@ -273,7 +278,8 @@ public class FileOutputStream extends OutputStream implements Closeable{
 	 * @throws NullPointerException
 	 *             If buffer is <code>null</code>.
 	 */
-	public void write(byte[] buffer, int offset, int count) throws IOException {
+	@Override
+    public void write(byte[] buffer, int offset, int count) throws IOException {
         if (buffer == null) {
             throw new NullPointerException();
         }
@@ -300,7 +306,8 @@ public class FileOutputStream extends OutputStream implements Closeable{
      * @throws IOException If an error occurs attempting to write to this
      *         FileOutputStream.
      */
-	public void write(int oneByte) throws IOException {
+	@Override
+    public void write(int oneByte) throws IOException {
 		openCheck();
         byte[] byteArray = new byte[1];
         byteArray[0] = (byte)oneByte;

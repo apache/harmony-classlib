@@ -24,11 +24,13 @@ package java.io;
  * @see BufferedWriter
  */
 public class LineNumberReader extends BufferedReader {
-	private int lineNumber = 0;
+	private int lineNumber;
 
 	private int markedLineNumber = -1;
 
-	private boolean lastWasCR = false, markedLastWasCR;
+	private boolean lastWasCR;
+    
+    private boolean markedLastWasCR;
 
 	/**
 	 * Constructs a new buffered LineNumberReader on the Reader <code>in</code>.
@@ -84,7 +86,8 @@ public class LineNumberReader extends BufferedReader {
 	 * @throws IOException
 	 *             If an error occurs attempting mark this LineNumberReader.
 	 */
-	public void mark(int readlimit) throws IOException {
+	@Override
+    public void mark(int readlimit) throws IOException {
 		synchronized (lock) {
 			super.mark(readlimit);
 			markedLineNumber = lineNumber;
@@ -97,7 +100,7 @@ public class LineNumberReader extends BufferedReader {
 	 * an int. The low-order 2 bytes are returned or -1 of the end of reader was
 	 * encountered. This implementation returns a char from the target reader.
 	 * The line number count is incremented if a line terminator is encountered.
-	 * A line delimeter sequence is determined by '\r', '\n', or '\r\n'. In this
+	 * A line delimiter sequence is determined by '\r', '\n', or '\r\n'. In this
 	 * method, the sequence is always translated into '\n'.
 	 * 
 	 * @return int The char read or -1 if end of reader.
@@ -106,11 +109,13 @@ public class LineNumberReader extends BufferedReader {
 	 *             If the reader is already closed or another IOException
 	 *             occurs.
 	 */
-	public int read() throws IOException {
+	@Override
+    public int read() throws IOException {
 		synchronized (lock) {
 			int ch = super.read();
-			if (ch == '\n' && lastWasCR)
-				ch = super.read();
+			if (ch == '\n' && lastWasCR) {
+                ch = super.read();
+            }
 			lastWasCR = false;
 			switch (ch) {
 			case '\r':
@@ -130,7 +135,7 @@ public class LineNumberReader extends BufferedReader {
 	 * <code>offset</code>. Answer the number of chars actually read or -1 if
 	 * no chars were read and end of reader was encountered. This implementation
 	 * reads chars from the target stream. The line number count is incremented
-	 * if a line terminator is encountered. A line delimeter sequence is
+	 * if a line terminator is encountered. A line delimiter sequence is
 	 * determined by '\r', '\n', or '\r\n'. In this method, the sequence is
 	 * always translated into '\n'.
 	 * 
@@ -147,22 +152,26 @@ public class LineNumberReader extends BufferedReader {
 	 *             occurs.
 	 */
 
-	public int read(char[] buffer, int offset, int count) throws IOException {
+	@Override
+    public int read(char[] buffer, int offset, int count) throws IOException {
 		synchronized (lock) {
 			int read = super.read(buffer, offset, count);
-			if (read == -1)
-				return -1;
+			if (read == -1) {
+                return -1;
+            }
 			for (int i = 0; i < read; i++) {
 				char ch = buffer[offset + i];
 				if (ch == '\r') {
 					lineNumber++;
 					lastWasCR = true;
 				} else if (ch == '\n') {
-					if (!lastWasCR)
-						lineNumber++;
+					if (!lastWasCR) {
+                        lineNumber++;
+                    }
 					lastWasCR = false;
-				} else
-					lastWasCR = false;
+				} else {
+                    lastWasCR = false;
+                }
 			}
 			return read;
 		}
@@ -182,16 +191,19 @@ public class LineNumberReader extends BufferedReader {
 	 *             If the LineNumberReader is already closed or some other IO
 	 *             error occurs.
 	 */
-	public String readLine() throws IOException {
+	@Override
+    public String readLine() throws IOException {
 		synchronized (lock) {
 			/* Typical Line Length */
             StringBuilder result = new StringBuilder(80);
 			while (true) {
 				int character = read();
-				if (character == -1)
-					return result.length() != 0 ? result.toString() : null;
-				if (character == '\n')
-					return result.toString();
+				if (character == -1) {
+                    return result.length() != 0 ? result.toString() : null;
+                }
+				if (character == '\n') {
+                    return result.toString();
+                }
 				result.append((char) character);
 			}
 		}
@@ -208,7 +220,8 @@ public class LineNumberReader extends BufferedReader {
 	 *             If the reader is already closed or another IOException
 	 *             occurs.
 	 */
-	public void reset() throws IOException {
+	@Override
+    public void reset() throws IOException {
 		synchronized (lock) {
 			super.reset();
 			lineNumber = markedLineNumber;
@@ -245,12 +258,15 @@ public class LineNumberReader extends BufferedReader {
 	 *             If the reader is already closed or another IOException
 	 *             occurs.
 	 */
-	public long skip(long count) throws IOException {
+	@Override
+    public long skip(long count) throws IOException {
 		if (count >= 0) {
 			synchronized (lock) {
-				for (int i = 0; i < count; i++)
-					if (read() == -1)
-						return i;
+				for (int i = 0; i < count; i++) {
+                    if (read() == -1) {
+                        return i;
+                    }
+                }
 				return count;
 			}
 		}

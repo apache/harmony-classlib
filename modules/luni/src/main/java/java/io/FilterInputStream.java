@@ -29,7 +29,7 @@ public class FilterInputStream extends InputStream {
 	/**
 	 * The target InputStream which is being filtered.
 	 */
-	protected volatile InputStream in;
+	protected InputStream in;
 
 	/**
 	 * Constructs a new FilterInputStream on the InputStream <code>in</code>.
@@ -53,7 +53,8 @@ public class FilterInputStream extends InputStream {
 	 * @throws IOException
 	 *             If an error occurs in this stream.
 	 */
-	public int available() throws IOException {
+	@Override
+    public int available() throws IOException {
 		return in.available();
 	}
 
@@ -64,7 +65,8 @@ public class FilterInputStream extends InputStream {
 	 * @throws IOException
 	 *             If an error occurs attempting to close this stream.
 	 */
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		in.close();
 	}
 
@@ -81,7 +83,8 @@ public class FilterInputStream extends InputStream {
 	 *            the number of bytes to be able to read before invalidating the
 	 *            mark.
 	 */
-	public synchronized void mark(int readlimit) {
+	@Override
+    public synchronized void mark(int readlimit) {
 		in.mark(readlimit);
 	}
 
@@ -93,7 +96,8 @@ public class FilterInputStream extends InputStream {
 	 * @return <code>true</code> if mark() and reset() are supported,
 	 *         <code>false</code> otherwise.
 	 */
-	public boolean markSupported() {
+	@Override
+    public boolean markSupported() {
 		return in.markSupported();
 	}
 
@@ -108,7 +112,8 @@ public class FilterInputStream extends InputStream {
 	 *             If the stream is already closed or another IOException
 	 *             occurs.
 	 */
-	public int read() throws IOException {
+	@Override
+    public int read() throws IOException {
 		return in.read();
 	}
 
@@ -126,7 +131,8 @@ public class FilterInputStream extends InputStream {
 	 *             If the stream is already closed or another IOException
 	 *             occurs.
 	 */
-	public int read(byte[] buffer) throws IOException {
+	@Override
+    public int read(byte[] buffer) throws IOException {
 		return read(buffer, 0, buffer.length);
 	}
 
@@ -149,7 +155,8 @@ public class FilterInputStream extends InputStream {
 	 *             If the stream is already closed or another IOException
 	 *             occurs.
 	 */
-	public int read(byte[] buffer, int offset, int count) throws IOException {
+	@Override
+    public int read(byte[] buffer, int offset, int count) throws IOException {
 		return in.read(buffer, offset, count);
 	}
 
@@ -163,7 +170,8 @@ public class FilterInputStream extends InputStream {
 	 *             If the stream is already closed or another IOException
 	 *             occurs.
 	 */
-	public synchronized void reset() throws IOException {
+	@Override
+    public synchronized void reset() throws IOException {
 		in.reset();
 	}
 
@@ -181,7 +189,8 @@ public class FilterInputStream extends InputStream {
 	 *             If the stream is already closed or another IOException
 	 *             occurs.
 	 */
-	public long skip(long count) throws IOException {
+	@Override
+    public long skip(long count) throws IOException {
 		return in.skip(count);
 	}
 }
