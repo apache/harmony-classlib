@@ -33,22 +33,27 @@ import java.util.Hashtable;
  *
  * @author  Mikhail A. Markov
  * @version $Revision: 1.3.4.2 $
+ * @deprecated No replacement. This class is deprecated since Java v1.2. 
  */
+@Deprecated
 public class LogStream extends PrintStream {
 
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public static final int SILENT = 0;
 
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public static final int BRIEF = 10;
 
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public static final int VERBOSE = 20;
 
     // The default print stream.
@@ -78,6 +83,7 @@ public class LogStream extends PrintStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public String toString() {
         return "LogStream[" + name + "]";
     }
@@ -85,6 +91,7 @@ public class LogStream extends PrintStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public void write(byte[] b, int off, int len) {
         for (int i = 0; i < len; ++i) {
             write(b[off + i]);
@@ -94,6 +101,7 @@ public class LogStream extends PrintStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public void write(int b) {
         synchronized (this) {
             if (b == '\n') {
@@ -112,6 +120,7 @@ public class LogStream extends PrintStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public synchronized void setOutputStream(OutputStream out) {
         this.out = out;
     }
@@ -119,6 +128,7 @@ public class LogStream extends PrintStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public synchronized OutputStream getOutputStream() {
         return out;
     }
@@ -126,6 +136,7 @@ public class LogStream extends PrintStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public static int parseLevel(String levelStr) {
         if (levelStr == null) {
             return -1;
@@ -150,6 +161,7 @@ public class LogStream extends PrintStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public static synchronized void setDefaultStream(PrintStream stream) {
         defaultStream = stream;
     }
@@ -157,6 +169,7 @@ public class LogStream extends PrintStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public static synchronized PrintStream getDefaultStream() {
         return defaultStream;
     }
@@ -164,6 +177,7 @@ public class LogStream extends PrintStream {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public static LogStream log(String name) {
         synchronized (logStreams) {
             LogStream stream = (LogStream) logStreams.get(name);

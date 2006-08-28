@@ -32,42 +32,53 @@ import java.io.StreamCorruptedException;
  *
  * @author  Mikhail A. Markov
  * @version $Revision: 1.3.4.1 $
+ * @deprecated This interface is no longer required by RMI framework since v1.2.
+ *  It is only used by the deprecated methods of
+ *  {@link java.rmi.server.RemoteRef} class.
  */
+@Deprecated
 public interface RemoteCall {
 
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public void done() throws IOException;
 
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public void executeCall() throws Exception;
 
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public ObjectOutput getResultStream(boolean success)
             throws IOException, StreamCorruptedException;
 
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public void releaseInputStream() throws IOException;
 
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public ObjectInput getInputStream() throws IOException;
 
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public void releaseOutputStream() throws IOException;
 
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public ObjectOutput getOutputStream() throws IOException;
 }

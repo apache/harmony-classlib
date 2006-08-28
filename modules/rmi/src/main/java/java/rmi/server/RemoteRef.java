@@ -53,7 +53,11 @@ public interface RemoteRef extends Externalizable {
 
     /**
      * @com.intel.drl.spec_ref
+     * @deprecated The newCall() -> invoke() -> done() method invocation
+     *  triplet is replaced by the single invocation of the 
+     *  invoke(Remote, Method, Object[], long) method in RMI v1.2.
      */
+    @Deprecated
     public RemoteCall newCall(RemoteObject obj,
                               Operation[] op,
                               int a1,
@@ -72,12 +76,20 @@ public interface RemoteRef extends Externalizable {
 
     /**
      * @com.intel.drl.spec_ref
+     * @deprecated The newCall() -> invoke() -> done() method invocation
+     *  triplet is replaced by the single invocation of the 
+     *  invoke(Remote, Method, Object[], long) method in RMI v1.2.
      */
+    @Deprecated
     public void invoke(RemoteCall call) throws Exception;
 
     /**
      * @com.intel.drl.spec_ref
+     * @deprecated The newCall() -> invoke() -> done() method invocation
+     *  triplet is replaced by the single invocation of the 
+     *  invoke(Remote, Method, Object[], long) method in RMI v1.2.
      */
+    @Deprecated
     public void done(RemoteCall call) throws RemoteException;
 
     /**

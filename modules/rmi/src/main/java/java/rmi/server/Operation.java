@@ -27,7 +27,10 @@ package java.rmi.server;
  *
  * @author  Mikhail A. Markov
  * @version $Revision: 1.4.4.2 $
+ * @deprecated This class was used by the previous versions of the RMI
+ *  framework. It is not required since Java v1.2.
  */
+@Deprecated
 public class Operation {
 
     private String op;
@@ -35,6 +38,7 @@ public class Operation {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public Operation(String op) {
         this.op = op;
     }
@@ -42,6 +46,7 @@ public class Operation {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public String toString() {
         return op;
     }
@@ -49,6 +54,7 @@ public class Operation {
     /**
      * @com.intel.drl.spec_ref
      */
+    @Deprecated
     public String getOperation() {
         return op;
     }
