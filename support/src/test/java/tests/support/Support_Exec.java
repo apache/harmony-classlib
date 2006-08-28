@@ -90,13 +90,13 @@ public class Support_Exec extends TestCase {
 			execArgs[1] = "";
 			if (onUnix) {
 				execArgs[2] = "-Xbootclasspath:"
-						+ System.getProperty("com.ibm.oti.system.class.path");
+						+ System.getProperty("org.apache.harmony.boot.class.path");
 				execArgs[3] = "-cp";
 				execArgs[4] = System.getProperty("java.class.path")
 						+ classPathString;
 			} else {
 				execArgs[2] = "\"-Xbootclasspath:"
-						+ System.getProperty("com.ibm.oti.system.class.path")
+						+ System.getProperty("org.apache.harmony.boot.class.path")
 						+ "\"";
 				execArgs[3] = "-cp";
 				execArgs[4] = "\"" + System.getProperty("java.class.path")
