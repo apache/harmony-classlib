@@ -7,7 +7,8 @@ Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Import-Package: java.io,
  java.lang,
- org.apache.harmony.luni.util
-Export-Package: sun.misc,
- com.sun
-
+ java.security,
+ org.apache.harmony.luni.util,
+ org.apache.harmony.xnet.provider.jsse;hy_usage=suncompat
+Export-Package: com.sun.net.ssl.internal.ssl,
+ sun.misc
