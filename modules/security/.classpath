@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java/common"/>
+	<classpathentry output="bin/main" kind="src" path="src/main/java/windows"/>
 	<classpathentry kind="src" path="src/test/support/common/java"/>
 	<classpathentry kind="src" path="src/test/impl/java.injected"/>
 	<classpathentry kind="src" path="src/test/impl/java"/>
