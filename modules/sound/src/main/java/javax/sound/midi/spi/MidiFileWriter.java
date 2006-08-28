@@ -17,6 +17,7 @@
 package javax.sound.midi.spi;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.sound.midi.Sequence;
@@ -47,7 +48,9 @@ public abstract class MidiFileWriter {
         return false;
     }
 
-    public abstract int write(Sequence in, int fileType, File out);
+    public abstract int write(Sequence in, int fileType, File out)
+            throws IOException;
 
-    public abstract int write(Sequence in, int fileType, OutputStream out);
+    public abstract int write(Sequence in, int fileType, OutputStream out)
+            throws IOException;
 }
