@@ -41,12 +41,12 @@ public abstract class FormatConversionProvider {
         return false;
     }
 
-    public abstract AudioFormat[] getTargetEncodings(
+    public abstract AudioFormat[] getTargetFormats(
             AudioFormat.Encoding targetFormat, AudioFormat sourceFormat);
 
     public boolean isConversionSupported(AudioFormat targetFormat,
             AudioFormat sourceFormat) {
-        AudioFormat[] formats = getTargetEncodings(targetFormat.getEncoding(),
+        AudioFormat[] formats = getTargetFormats(targetFormat.getEncoding(),
                 sourceFormat);
         for (int i = 0; i < formats.length; i++) {
             if (targetFormat.equals(formats[i])) {

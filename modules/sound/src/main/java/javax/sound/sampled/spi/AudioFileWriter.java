@@ -17,6 +17,7 @@
 package javax.sound.sampled.spi;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.sound.sampled.AudioInputStream;
@@ -48,7 +49,9 @@ public abstract class AudioFileWriter {
         return false;
     }
 
-    public abstract int write(AudioInputStream stream, AudioFileFormat.Type fileType, File out);
+    public abstract int write(AudioInputStream stream,
+            AudioFileFormat.Type fileType, File out) throws IOException;
 
-    public abstract int write(AudioInputStream stream, AudioFileFormat.Type fileType, OutputStream out);
+    public abstract int write(AudioInputStream stream,
+            AudioFileFormat.Type fileType, OutputStream out) throws IOException;
 }
