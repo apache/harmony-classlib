@@ -214,7 +214,7 @@ public class MemoryHandler extends Handler {
             cursor = 0;
         }
         buffer[cursor++] = record;
-        if (record.getLevel().intValue() > push.intValue()) {
+        if (record.getLevel().intValue() >= push.intValue()) {
             push();
         }
         return;

@@ -348,6 +348,12 @@ public class MemoryHandlerTest extends TestCase {
 		handler.publish(new LogRecord(Level.SEVERE, "MSG2"));
 		assertEquals(writer.toString(), "MSG1MSG2");
 		writer.getBuffer().setLength(0);
+        
+        // regression test for Harmony-1292
+        handler.publish(new LogRecord(Level.WARNING, "MSG"));
+        assertEquals("MSG",writer.toString());
+        
+        writer.getBuffer().setLength(0);
 		// push nothing
 		handler.push();
 		assertEquals("", writer.toString());
