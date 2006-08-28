@@ -472,6 +472,49 @@ public class ArrayListTest extends junit.framework.TestCase {
 					.get(i) == objArray[i]);
 	}
 
+    /**
+     * @test java.util.ArrayList#addAll(int, Collection)
+     */
+    public void test_addAll() {
+        ArrayList list = new ArrayList();
+        list.add("one");
+        list.add("two");
+        assertEquals(2, list.size());
+
+        list.remove(0);
+        assertEquals(1, list.size());
+        
+        ArrayList collection = new ArrayList();
+        collection.add("1");
+        collection.add("2");
+        collection.add("3");
+        assertEquals(3, collection.size());
+        
+        list.addAll(0, collection);
+        assertEquals(4, list.size());
+        
+        list.remove(0);
+        list.remove(0);
+        assertEquals(2, list.size());
+
+        collection.add("4");
+        collection.add("5");
+        collection.add("6");
+        collection.add("7");
+        collection.add("8");
+        collection.add("9");
+        collection.add("10");
+        collection.add("11");
+        collection.add("12");
+        
+        assertEquals(12, collection.size());
+        
+        list.addAll(0, collection);
+        assertEquals(14, list.size());
+    }
+    
+    
+    
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
