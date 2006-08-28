@@ -47,3 +47,5 @@ org/apache/harmony/awt/theme/windows/*
 org/apache/harmony/awt/wtk/*
 org/apache/harmony/awt/wtk/linux/*
 org/apache/harmony/awt/wtk/windows/*
+
+org/apache/harmony/awt/internal/nls/*

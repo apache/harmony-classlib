@@ -36,3 +36,5 @@ org/apache/harmony/x/swing/filechooser/*
 org/apache/harmony/x/swing/filechooser/windows/*
 org/apache/harmony/x/swing/plaf/resources/basic/*
 org/apache/harmony/x/swing/plaf/resources/metal/*
+
+org/apache/harmony/swing/internal/nls/*

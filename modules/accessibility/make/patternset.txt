@@ -13,3 +13,5 @@
 # limitations under the License.
  
 javax/accessibility/*
+
+org/apache/harmony/accessibility/internal/nls/*

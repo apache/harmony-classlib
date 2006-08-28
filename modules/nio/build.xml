@@ -17,168 +17,177 @@
 -->
 
 <project name="NIO Build" default="build" basedir=".">
-	<description>Build for NIO component</description>
+    <description>Build for NIO component</description>
 
-	<!-- import common properties -->
-	<import file="${basedir}/../../make/properties.xml" />
+    <!-- import common properties -->
+    <import file="${basedir}/../../make/properties.xml" />
 
-	<!-- set global properties for this build. -->
-	<xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
+    <!-- set global properties for this build. -->
+    <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
-	<fileset id="classes" dir="${hy.build}">
-		<includesfile name="${hy.nio}/make/patternset.txt" />
-		<excludesfile name="${hy.hdk}/build/patternsets/luni-kernel.txt" />
-		<excludesfile name="${hy.hdk}/build/patternsets/security-kernel.txt" />
-	</fileset>
+    <fileset id="classes" dir="${hy.build}">
+        <includesfile name="${hy.nio}/make/patternset.txt" />
+        <excludesfile name="${hy.hdk}/build/patternsets/luni-kernel.txt" />
+        <excludesfile name="${hy.hdk}/build/patternsets/security-kernel.txt" />
+    </fileset>
 
-	<!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
-	     use the Eclipse Java compiler. -->
-	<property name="build.compiler" value="modern" />
+    <!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
+         use the Eclipse Java compiler. -->
+    <property name="build.compiler" value="modern" />
 
         <property name="hy.nio.src.test.java.platform"
                   value="${hy.nio.src.test.java}/../${hy.os}" />
 
-	<target name="build" depends="compile.java, build.jar" />
+    <target name="build" depends="compile.java, copy.resources, build.jar" />
 
-	<target name="test" depends="build, compile.tests, run.tests" />
+    <target name="test" depends="build, compile.tests, run.tests" />
 
-	<!-- Build natives.-->
-	<target name="build.native">
-		<make dir="${hy.nio.src.main.native}/nio/${hy.os}" />
+    <!-- Build natives.-->
+    <target name="build.native">
+        <make dir="${hy.nio.src.main.native}/nio/${hy.os}" />
 
-		<!-- Copy the built shared libs over to the jre/bin dir -->
-		<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-			<fileset dir="${hy.nio.src.main.native}/nio">
-				<patternset includes="*${shlib.suffix}*" />
-			</fileset>
-		</copy>
-	</target>
+        <!-- Copy the built shared libs over to the jre/bin dir -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.nio.src.main.native}/nio">
+                <patternset includes="*${shlib.suffix}*" />
+            </fileset>
+        </copy>
+    </target>
 
-	<target name="clean">
-		<delete includeemptydirs="true" failonerror="false">
-			<fileset refid="classes" />
-			<fileset dir="${hy.nio.bin.test}" />
-		</delete>
-	</target>
+    <target name="clean">
+        <delete includeemptydirs="true" failonerror="false">
+            <fileset refid="classes" />
+            <fileset dir="${hy.nio.bin.test}" />
+        </delete>
+    </target>
 
-	<!-- Clean natives. -->
-	<target name="clean.native">
-		<make dir="${hy.nio.src.main.native}/nio/${hy.os}"
+    <!-- Clean natives. -->
+    <target name="clean.native">
+        <make dir="${hy.nio.src.main.native}/nio/${hy.os}"
                       target="clean" />
-	</target>
+    </target>
 
 
-	<target name="compile.java">
-		<echo message="Compiling NIO classes" />
+    <target name="compile.java">
+        <echo message="Compiling NIO classes" />
 
-		<mkdir dir="${hy.build}" />
+        <mkdir dir="${hy.build}" />
 
-		<javac sourcepath=""
-			srcdir="${hy.nio.src.main.java}"
-			destdir="${hy.build}"
-			source="${hy.javac.source}"
-			target="${hy.javac.target}"
-			debug="${hy.javac.debug}">
+        <javac sourcepath=""
+            srcdir="${hy.nio.src.main.java}"
+            destdir="${hy.build}"
+            source="${hy.javac.source}"
+            target="${hy.javac.target}"
+            debug="${hy.javac.debug}">
 
-			<bootclasspath>
-				<fileset dir="${hy.jdk}/jre/lib/boot">
-					<include name="**/*.jar" />
-				</fileset>
-			</bootclasspath>
-		</javac>
-	</target>
+            <bootclasspath>
+                <fileset dir="${hy.jdk}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+        </javac>
+    </target>
 
-	<target name="build.jar" depends="svn-info">
-		<jar destfile="${hy.jdk}/jre/lib/boot/nio.jar"
-			manifest="${hy.nio}/META-INF/MANIFEST.MF">
+    <target name="copy.resources">
+        <mkdir dir="${hy.build}" />
+        <copy todir="${hy.build}" includeemptydirs="false">
+            <fileset dir="${hy.nio.src.main.java}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+    </target>
 
-			<fileset refid="classes" />
+    <target name="build.jar" depends="svn-info">
+        <jar destfile="${hy.jdk}/jre/lib/boot/nio.jar"
+            manifest="${hy.nio}/META-INF/MANIFEST.MF">
+
+            <fileset refid="classes" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
-		</jar>
-	</target>
+        </jar>
+    </target>
 
-	<target name="compile.tests" depends="copy.test.resources">
-		<echo message="Compiling NIO tests" />
+    <target name="compile.tests" depends="copy.test.resources">
+        <echo message="Compiling NIO tests" />
 
-		<mkdir dir="${hy.nio.bin.test}" />
+        <mkdir dir="${hy.nio.bin.test}" />
 
-		<javac destdir="${hy.nio.bin.test}"
-		       sourcepath=""
-		       source="${hy.javac.source}"
-		       target="${hy.javac.target}"
-		       debug="${hy.javac.debug}">
+        <javac destdir="${hy.nio.bin.test}"
+               sourcepath=""
+               source="${hy.javac.source}"
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
 
                     <src>
                         <pathelement location="${hy.nio.src.test.java}"/>
                         <pathelement
                              location="${hy.nio.src.test.java.platform}"/>
                     </src>
-		    <bootclasspath>
-			<fileset dir="${hy.jdk}/jre/lib/boot">
-			    <include name="**/*.jar" />
-			</fileset>
-		    </bootclasspath>
-		    <classpath location="${hy.hdk}/build/test/support.jar" />
-		</javac>
-	</target>
+            <bootclasspath>
+            <fileset dir="${hy.jdk}/jre/lib/boot">
+                <include name="**/*.jar" />
+            </fileset>
+            </bootclasspath>
+            <classpath location="${hy.hdk}/build/test/support.jar" />
+        </javac>
+    </target>
 
-	<target name="run.tests">
-		<mkdir dir="${hy.tests.reports}" />
+    <target name="run.tests">
+        <mkdir dir="${hy.tests.reports}" />
 
-		<property name="test.jre.home" value="${hy.jdk}/jre" />
+        <property name="test.jre.home" value="${hy.jdk}/jre" />
 
-		<junit fork="yes"
-			forkmode="once"
-			printsummary="withOutAndErr"
-			errorproperty="test.errors"
-			failureproperty="test.failures"
-			showoutput="on"
-			dir="${basedir}"
-			jvm="${test.jre.home}/bin/java">
+        <junit fork="yes"
+            forkmode="once"
+            printsummary="withOutAndErr"
+            errorproperty="test.errors"
+            failureproperty="test.failures"
+            showoutput="on"
+            dir="${basedir}"
+            jvm="${test.jre.home}/bin/java">
 
-			<jvmarg value="-showversion" />
+            <jvmarg value="-showversion" />
 
-			<env key="JAVA_HOME" value="${test.jre.home}" />
+            <env key="JAVA_HOME" value="${test.jre.home}" />
 
-			<classpath>
-				<pathelement path="${hy.nio.bin.test}" />
-				<pathelement path="${hy.hdk}/build/test/support.jar" />
-			</classpath>
+            <classpath>
+                <pathelement path="${hy.nio.bin.test}" />
+                <pathelement path="${hy.hdk}/build/test/support.jar" />
+            </classpath>
 
-			<formatter type="xml" />
+            <formatter type="xml" />
 
-			<test name="${test.case}" todir="${hy.tests.reports}" if="test.case" />
+            <test name="${test.case}" todir="${hy.tests.reports}" if="test.case" />
 
-			<batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
-				<fileset dir="${hy.nio.src.test.java}">
-					<include name="**/*Test.java" />
-				</fileset>
-				<fileset dir="${hy.nio.src.test.java.platform}">
-					<include name="**/*Test.java" />
-				</fileset>
-			</batchtest>
-		</junit>
-		<antcall target="touch-failures-file" />
-		<antcall target="touch-errors-file" />
-	</target>
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
+                <fileset dir="${hy.nio.src.test.java}">
+                    <include name="**/*Test.java" />
+                </fileset>
+                <fileset dir="${hy.nio.src.test.java.platform}">
+                    <include name="**/*Test.java" />
+                </fileset>
+            </batchtest>
+        </junit>
+        <antcall target="touch-failures-file" />
+        <antcall target="touch-errors-file" />
+    </target>
 
-	<target name="touch-failures-file" if="test.failures">
-		<echo file="${hy.tests.reports}/test.failures" append="true">nio${line.separator}</echo>
-	</target>
+    <target name="touch-failures-file" if="test.failures">
+        <echo file="${hy.tests.reports}/test.failures" append="true">nio${line.separator}</echo>
+    </target>
 
-	<target name="touch-errors-file" if="test.errors">
-		<echo file="${hy.tests.reports}/test.errors" append="true">nio${line.separator}</echo>
-	</target>
+    <target name="touch-errors-file" if="test.errors">
+        <echo file="${hy.tests.reports}/test.errors" append="true">nio${line.separator}</echo>
+    </target>
 
-	<target name="copy.test.resources">
-		<mkdir dir="${hy.nio.bin.test}" />
-		<copy todir="${hy.nio.bin.test}" includeemptydirs="false">
-			<fileset dir="${hy.nio.src.test.resources}">
-				<exclude name="**/*.java" />
-			</fileset>
-		</copy>
-	</target>
+    <target name="copy.test.resources">
+        <mkdir dir="${hy.nio.bin.test}" />
+        <copy todir="${hy.nio.bin.test}" includeemptydirs="false">
+            <fileset dir="${hy.nio.src.test.resources}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+    </target>
 
 </project>

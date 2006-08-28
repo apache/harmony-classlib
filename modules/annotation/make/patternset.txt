@@ -13,3 +13,5 @@
 # limitations under the License.
  
 java/lang/annotation/*
+
+org/apache/harmony/annotation/internal/nls/*

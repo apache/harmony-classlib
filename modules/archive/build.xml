@@ -32,59 +32,59 @@
     </fileset>
                                
     <!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
-	     use the Eclipse Java compiler. -->
+         use the Eclipse Java compiler. -->
     <property name="build.compiler" value="modern" />
-	<property name="zlib.zip" location="${depends.oss}/zlib_1.2.3.zip" />
+    <property name="zlib.zip" location="${depends.oss}/zlib_1.2.3.zip" />
 
-    <target name="build" depends="compile.java, build.jar" />
-	
+    <target name="build" depends="compile.java, copy.resources, build.jar" />
+    
     <target name="copy.native.includes" depends="overlay-oss">
-	<copy todir="${hy.hdk}/include" overwrite="yes">
-	    <fileset dir="${hy.archive.src.main.native}/include/shared">
-		<include name="zipsup.h" />
-	    </fileset>
-	    <fileset dir="${hy.archive.src.main.native}/zlib_dist">
-		<include name="zlib.h" />
-		<include name="zconf.h" />
-	    </fileset>
-	</copy>
+    <copy todir="${hy.hdk}/include" overwrite="yes">
+        <fileset dir="${hy.archive.src.main.native}/include/shared">
+        <include name="zipsup.h" />
+        </fileset>
+        <fileset dir="${hy.archive.src.main.native}/zlib_dist">
+        <include name="zlib.h" />
+        <include name="zconf.h" />
+        </fileset>
+    </copy>
     </target>
-	
+    
     <target name="overlay-oss">
-	<mkdir dir="${hy.archive.src.main.native}/zlib_dist" />
-	<unzip src="${zlib.zip}" dest="${hy.archive.src.main.native}/zlib_dist" />
-	<chmod dir="${hy.archive.src.main.native}/zlib_dist" perm="ugo+r" />
+    <mkdir dir="${hy.archive.src.main.native}/zlib_dist" />
+    <unzip src="${zlib.zip}" dest="${hy.archive.src.main.native}/zlib_dist" />
+    <chmod dir="${hy.archive.src.main.native}/zlib_dist" perm="ugo+r" />
     </target>
     
     <target name="clean-overlay-oss">
-	<delete dir="${hy.archive.src.main.native}/zlib_dist" quiet="true" />
+    <delete dir="${hy.archive.src.main.native}/zlib_dist" quiet="true" />
     </target>
     
     <!-- Build native code -->
     <target name="build.native" >
-    	<make dir="${hy.archive.src.main.native}/zip/${hy.os}" />
-    	
-    	<make dir="${hy.archive.src.main.native}/zlib/${hy.os}" />
-    	<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-	    <fileset dir="${hy.archive.src.main.native}/zlib">
+        <make dir="${hy.archive.src.main.native}/zip/${hy.os}" />
+        
+        <make dir="${hy.archive.src.main.native}/zlib/${hy.os}" />
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <fileset dir="${hy.archive.src.main.native}/zlib">
                 <patternset includes="*${shlib.suffix}*" />
             </fileset>
         </copy>
-    	
-	<make dir="${hy.archive.src.main.native}/archive/${hy.os}" />
-	<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-	    <fileset dir="${hy.archive.src.main.native}/archive">
+        
+    <make dir="${hy.archive.src.main.native}/archive/${hy.os}" />
+    <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <fileset dir="${hy.archive.src.main.native}/archive">
                 <patternset includes="*${shlib.suffix}*" />
             </fileset>
         </copy>
     </target>
-	
+    
     <!-- Clean natives -->
     <target name="clean.native">
-    	<make dir="${hy.archive.src.main.native}/zip/${hy.os}" target="clean" />
-    	<make dir="${hy.archive.src.main.native}/zlib/${hy.os}"
+        <make dir="${hy.archive.src.main.native}/zip/${hy.os}" target="clean" />
+        <make dir="${hy.archive.src.main.native}/zlib/${hy.os}"
               target="clean" />
-    	<make dir="${hy.archive.src.main.native}/archive/${hy.os}"
+        <make dir="${hy.archive.src.main.native}/archive/${hy.os}"
               target="clean" />
     </target>
 
@@ -95,15 +95,15 @@
             <fileset refid="classes" />
             <fileset dir="${hy.archive.bin.test}" />
         </delete>
-    	<antcall target="clean.native.includes" />
+        <antcall target="clean.native.includes" />
     </target>
 
     <target name="clean.native.includes">
-	<delete failonerror="false">
-	    <fileset dir="${hy.hdk}/include">
-		<include name="zipsup.h" />
-	    </fileset>
-	</delete>
+    <delete failonerror="false">
+        <fileset dir="${hy.hdk}/include">
+        <include name="zipsup.h" />
+        </fileset>
+    </delete>
     </target>
 
     <target name="compile.java">
@@ -124,6 +124,15 @@
                 </fileset>
             </bootclasspath>
         </javac>
+    </target>
+
+    <target name="copy.resources">
+        <mkdir dir="${hy.build}" />
+        <copy todir="${hy.build}" includeemptydirs="false">
+            <fileset dir="${hy.archive.src.main.java}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
     </target>
 
     <target name="build.jar" depends="svn-info">
@@ -192,7 +201,7 @@
 
                 <fileset dir="${hy.archive.src.test.java}">
                     <include name="**/*Test.java"/>
-                	<exclude name="org/apache/harmony/archive/tests/java/util/jar/JarOutputStreamTest.java" />
+                    <exclude name="org/apache/harmony/archive/tests/java/util/jar/JarOutputStreamTest.java" />
                 </fileset>
             </batchtest>
         </junit>

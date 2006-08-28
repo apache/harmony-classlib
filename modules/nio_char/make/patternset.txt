@@ -14,3 +14,5 @@
 
 java/nio/charset/*
 java/nio/charset/spi/*
+
+org/apache/harmony/niochar/internal/nls/*

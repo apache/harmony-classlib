@@ -43,7 +43,7 @@
     <property name="hy.awt.src.test.api.java.platform"
               value="${hy.awt.src.test.api}/java/${hy.os}" />
 
-    <target name="build" depends="compile.java, build.jar" />
+    <target name="build" depends="compile.java, copy.resources, build.jar" />
 
     <target name="test" depends="build, compile.tests, run.tests" />
 
@@ -76,6 +76,15 @@
                 </fileset>
             </bootclasspath>
         </javac>
+    </target>
+
+    <target name="copy.resources">
+        <mkdir dir="${hy.build}" />
+        <copy todir="${hy.build}" includeemptydirs="false">
+            <fileset dir="${hy.awt.src.main.java}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
     </target>
 
     <target name="build.jar" depends="svn-info">

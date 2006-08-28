@@ -19,3 +19,4 @@ java/nio/channels/spi/*
 org/apache/harmony/nio/*
 org/apache/harmony/nio/internal/*
 
+org/apache/harmony/nio/internal/nls/*

@@ -32,20 +32,20 @@
     </fileset>
                                
     <!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
-	     use the Eclipse Java compiler. -->
+         use the Eclipse Java compiler. -->
     <property name="build.compiler" value="modern" />
 
-    <target name="build" depends="compile.java, build.jar" />
+    <target name="build" depends="compile.java, copy.resources, build.jar" />
 
     <target name="test" depends="build, compile.tests, run.tests" />
 
     <!-- Build natives. Currently there are only windows natives for
-	 prefs, so we check if we are on a windows platform -->
+     prefs, so we check if we are on a windows platform -->
     <target name="build.native" if="is.windows">
-	<make dir="${hy.prefs.src.main.native}/prefs/${hy.os}" />
+    <make dir="${hy.prefs.src.main.native}/prefs/${hy.os}" />
 
-	<!-- Copy the built shared libs over to the jre/bin dir -->
-	<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+    <!-- Copy the built shared libs over to the jre/bin dir -->
+    <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.prefs.src.main.native}/prefs">
                 <patternset includes="*${shlib.suffix}*" />
             </fileset>
@@ -60,9 +60,9 @@
     </target>
 
     <!-- Clean natives. Currently there are only windows natives for
-	 prefs, so we check if we are on a windows platform -->
+     prefs, so we check if we are on a windows platform -->
     <target name="clean.native" if="is.windows">
-	<make dir="${hy.prefs.src.main.native}/prefs/${hy.os}" target="clean" />
+    <make dir="${hy.prefs.src.main.native}/prefs/${hy.os}" target="clean" />
     </target>
 
 
@@ -84,6 +84,15 @@
                 </fileset>
             </bootclasspath>
         </javac>
+    </target>
+
+    <target name="copy.resources">
+        <mkdir dir="${hy.build}" />
+        <copy todir="${hy.build}" includeemptydirs="false">
+            <fileset dir="${hy.prefs.src.main.java}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
     </target>
 
     <target name="build.jar" depends="svn-info">

@@ -13,3 +13,5 @@
 # limitations under the License.
 
 java/util/prefs/*
+
+org/apache/harmony/prefs/internal/nls/*

@@ -32,10 +32,10 @@
     </fileset>
                                
     <!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
-	     use the Eclipse Java compiler. -->
+         use the Eclipse Java compiler. -->
     <property name="build.compiler" value="modern" />
 
-    <target name="build" depends="compile.java, build.jar" />
+    <target name="build" depends="compile.java, copy.resources, build.jar" />
 
     <target name="test" depends="build, compile.tests, run.tests" />
 
@@ -64,6 +64,15 @@
                 </fileset>
             </bootclasspath>
         </javac>
+    </target>
+
+    <target name="copy.resources">
+        <mkdir dir="${hy.build}" />
+        <copy todir="${hy.build}" includeemptydirs="false">
+            <fileset dir="${hy.regex.src.main.java}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
     </target>
 
     <target name="build.jar" depends="svn-info">

@@ -33,7 +33,7 @@
     </fileset>
                                
     <!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
-	     use the Eclipse Java compiler. -->
+         use the Eclipse Java compiler. -->
     <property name="build.compiler" value="modern" />
 
     <property file="../../make/depends.properties" />
@@ -44,7 +44,7 @@
     <property name="hy.security.src.test.java.platform"
               value="${hy.security.src.test.java}/../${hy.os}" />
 
-    <target name="build" depends="compile.java, build.jar" />
+    <target name="build" depends="compile.java, copy.resources, build.jar" />
 
     <target name="test" depends="build, compile.tests, run.tests" />
 
@@ -54,7 +54,7 @@
 
 
     <target name="build.native" if="native.present" >
-	<make dir="${hy.security.src.main.native}/security/${hy.os}" />
+    <make dir="${hy.security.src.main.native}/security/${hy.os}" />
 
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -63,7 +63,7 @@
             </fileset>
         </copy>
     </target>
-	
+    
     <!-- Clean natives -->
     <target name="clean.native" if="native.present" >
         <make dir="${hy.security.src.main.native}/security/${hy.os}" target="clean" />
@@ -99,6 +99,15 @@
                 </fileset>
             </bootclasspath>
         </javac>
+    </target>
+
+    <target name="copy.resources">
+        <mkdir dir="${hy.build}" />
+        <copy todir="${hy.build}" includeemptydirs="false">
+            <fileset dir="${hy.security.src.main.java}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
     </target>
 
     <target name="build.jar" depends="svn-info">
@@ -229,7 +238,7 @@
                     <pathelement path="${hy.security.bin.test}/impl"/>
                     <pathelement path="../../build/tests"/>
                 </classpath>
-            	
+                
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.security.src.test}/impl/java">
                         <include name="**/*Test.java"/>

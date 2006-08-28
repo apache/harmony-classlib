@@ -32,45 +32,45 @@
     </fileset>
                                
     <!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
-	     use the Eclipse Java compiler. -->
+         use the Eclipse Java compiler. -->
     <property name="build.compiler" value="modern" />
-	
-	<property name="iculib.zip" location="${depends.oss}/icu4c-3.4-harmony.zip" />
+    
+    <property name="iculib.zip" location="${depends.oss}/icu4c-3.4-harmony.zip" />
 
-    <target name="build" depends="compile.java, build.jar" />
+    <target name="build" depends="compile.java, copy.resources, build.jar" />
 
     <target name="test" depends="build, compile.tests, run.tests" />
-	
+    
     <target name="overlay-oss">
-	<mkdir dir="${hy.text.src.main.native}/icu4c/unicode" />
-	<unzip src="${iculib.zip}" dest="${hy.text.src.main.native}/icu4c/unicode" />
-	<chmod dir="${hy.text.src.main.native}/icu4c/unicode" perm="ugo+r" />
-	<antcall target="copy.libs" inheritall="true" />
+    <mkdir dir="${hy.text.src.main.native}/icu4c/unicode" />
+    <unzip src="${iculib.zip}" dest="${hy.text.src.main.native}/icu4c/unicode" />
+    <chmod dir="${hy.text.src.main.native}/icu4c/unicode" perm="ugo+r" />
+    <antcall target="copy.libs" inheritall="true" />
     </target>
-	<target name="copy.libs" if="is.x86_64">
-	    <copy todir="${hy.text.src.main.native}/icu4c/unicode" overwrite="yes">
-	            <fileset dir="${depends.libs}" includes="*${shlib.suffix}*" />
-	    </copy>
+    <target name="copy.libs" if="is.x86_64">
+        <copy todir="${hy.text.src.main.native}/icu4c/unicode" overwrite="yes">
+                <fileset dir="${depends.libs}" includes="*${shlib.suffix}*" />
+        </copy>
     </target>
     <target name="clean-overlay-oss">
-	<delete dir="${hy.text.src.main.native}/icu4c" quiet="true" />
+    <delete dir="${hy.text.src.main.native}/icu4c" quiet="true" />
     </target>
-	
+    
     <!-- Build native code -->
     <target name="build.native" >
-	<make dir="${hy.text.src.main.native}/text/${hy.os}" />
+    <make dir="${hy.text.src.main.native}/text/${hy.os}" />
 
-	<!-- Copy the built shared libs over to the jre/bin dir -->
-	<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-	    <fileset dir="${hy.text.src.main.native}/text">
+    <!-- Copy the built shared libs over to the jre/bin dir -->
+    <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <fileset dir="${hy.text.src.main.native}/text">
                 <patternset includes="*${shlib.suffix}*" />
             </fileset>
         </copy>
     </target>
-	
+    
     <!-- Clean natives -->
     <target name="clean.native">
-	<make dir="${hy.text.src.main.native}/text/${hy.os}" target="clean" />
+    <make dir="${hy.text.src.main.native}/text/${hy.os}" target="clean" />
     </target>
 
     <target name="clean">
@@ -98,6 +98,15 @@
                 </fileset>
             </bootclasspath>
         </javac>
+    </target>
+
+    <target name="copy.resources">
+        <mkdir dir="${hy.build}" />
+        <copy todir="${hy.build}" includeemptydirs="false">
+            <fileset dir="${hy.text.src.main.java}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
     </target>
 
     <target name="build.jar" depends="svn-info">

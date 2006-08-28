@@ -15,4 +15,5 @@
 java/lang/instrument/*
 
 org/apache/harmony/instrument/internal/*
+org/apache/harmony/instrument/internal/nls/*
 

@@ -38,7 +38,7 @@
     <property file="../../make/depends.properties" />
     <property name="fdlibm.zip" location="${depends.oss}/fdlibm_5.2.zip" />
 
-    <target name="build" depends="compile.java, build.jar" />
+    <target name="build" depends="compile.java, copy.resources, build.jar" />
 
     <target name="copy.native.includes">
         <copy todir="${hy.hdk}/include" overwrite="yes">
@@ -251,7 +251,7 @@
         </delete>
     </target>
 
-    <target name="compile.java" depends="copy.resources">
+    <target name="compile.java">
         <echo message="Compiling LUNI classes" />
 
         <javac sourcepath=""

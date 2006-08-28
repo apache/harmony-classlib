@@ -33,7 +33,7 @@
     </fileset>
                                
     <!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
-	     use the Eclipse Java compiler. -->
+         use the Eclipse Java compiler. -->
     <property name="build.compiler" value="modern" />
 
     <property file="../../make/depends.properties" />
@@ -44,25 +44,25 @@
     <property name="hy.auth.src.test.java.platform"
               value="${hy.auth.src.test.java}/../${hy.os}" />
 
-    <target name="build" depends="compile.java, build.jar" />
+    <target name="build" depends="compile.java, copy.resources, build.jar" />
 
     <target name="test" depends="build, compile.tests, run.tests" />
-	
+    
     <!-- Build native code -->
     <target name="build.native" >
-	<make dir="${hy.auth.src.main.native}/auth/${hy.os}" />
+    <make dir="${hy.auth.src.main.native}/auth/${hy.os}" />
 
-	<!-- Copy the built shared libs over to the jre/bin dir -->
-	<copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-	    <fileset dir="${hy.auth.src.main.native}/auth">
+    <!-- Copy the built shared libs over to the jre/bin dir -->
+    <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <fileset dir="${hy.auth.src.main.native}/auth">
                 <patternset includes="*${shlib.suffix}*" />
             </fileset>
         </copy>
     </target>
-	
+    
     <!-- Clean natives -->
     <target name="clean.native">
-	<make dir="${hy.auth.src.main.native}/auth/${hy.os}" target="clean" />
+    <make dir="${hy.auth.src.main.native}/auth/${hy.os}" target="clean" />
     </target>
 
     <target name="clean">
@@ -96,6 +96,15 @@
         </javac>
     </target>
 
+    <target name="copy.resources">
+        <mkdir dir="${hy.build}" />
+        <copy todir="${hy.build}" includeemptydirs="false">
+            <fileset dir="${hy.auth.src.main.java}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+    </target>
+
     <target name="build.jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/${hy.auth.packaging.jarname}.jar"
              manifest="${hy.auth}/META-INF/MANIFEST.MF">
@@ -111,7 +120,7 @@
 
         <mkdir dir="${hy.auth.bin.test}" />
 
-        <javac 	destdir="${hy.auth.bin.test}"
+        <javac  destdir="${hy.auth.bin.test}"
                 source="${hy.javac.source}"
                 target="${hy.javac.target}"
                 debug="${hy.javac.debug}">

@@ -32,12 +32,12 @@
     </fileset>
                                
     <!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
-	     use the Eclipse Java compiler. -->
+         use the Eclipse Java compiler. -->
     <property name="build.compiler" value="modern" />
 
     <property file="../../make/depends.properties" />
 
-    <target name="build" depends="compile.java, build.jar" />
+    <target name="build" depends="compile.java, copy.resources, build.jar" />
 
     <target name="test" depends="build, compile.tests, run.tests" />
 
@@ -66,6 +66,15 @@
                 </fileset>
             </bootclasspath>
         </javac>
+    </target>
+
+    <target name="copy.resources">
+        <mkdir dir="${hy.build}" />
+        <copy todir="${hy.build}" includeemptydirs="false">
+            <fileset dir="${hy.x-net.src.main.java}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
     </target>
 
     <target name="build.jar" depends="svn-info">
@@ -105,7 +114,7 @@
                 <include name="**/*Test.java" />
             </javac-elements>
         </compile-tests>
-    	
+        
         <compile-tests description="impl tests" destdir="${hy.x-net.bin.test}/impl">
             <javac-elements>
                 <src path="${hy.x-net.src.test}/impl/java"/>
@@ -147,7 +156,7 @@
                     <pathelement path="${hy.x-net.bin.test}/impl"/>
                     <pathelement path="${hy.hdk}/build/test/support.jar" />
                 </classpath>
-            	
+                
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
                     <fileset dir="${hy.x-net.src.test}/impl/java">
                         <include name="**/*Test.java"/>

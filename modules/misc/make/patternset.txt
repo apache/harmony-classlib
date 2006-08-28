@@ -14,3 +14,5 @@
 #
 org/apache/harmony/misc/*
 org/apache/harmony/misc/accessors/*
+
+org/apache/harmony/misc/internal/nls/*

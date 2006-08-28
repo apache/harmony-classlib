@@ -29,3 +29,5 @@ org/apache/harmony/rmi/server/*
 org/apache/harmony/rmi/transport/*
 org/apache/harmony/rmi/transport/proxy/*
 org/apache/harmony/rmi/transport/tcp/*
+
+org/apache/harmony/rmi/internal/nls/*

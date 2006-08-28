@@ -38,3 +38,5 @@ org/apache/harmony/luni/internal/reflect/*
 org/apache/harmony/luni/net/*
 org/apache/harmony/luni/platform/*
 org/apache/harmony/luni/util/*
+
+org/apache/harmony/luni/internal/nls/*

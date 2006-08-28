@@ -13,3 +13,5 @@
 # limitations under the License.
 
 java/util/logging/*
+
+org/apache/harmony/logging/internal/nls/*

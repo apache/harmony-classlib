@@ -14,3 +14,5 @@
 
 java/text/*
 org/apache/harmony/text/*
+
+org/apache/harmony/text/internal/nls/*

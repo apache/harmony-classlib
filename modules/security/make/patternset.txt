@@ -20,3 +20,4 @@ java/security/spec/*
 javax/security/cert/*
 org/apache/harmony/security/**/*
 
+org/apache/harmony/security/internal/nls/*

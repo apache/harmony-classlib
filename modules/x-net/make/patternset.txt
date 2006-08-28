@@ -15,3 +15,5 @@
 javax/net/*
 javax/net/ssl/*
 org/apache/harmony/xnet/provider/jsse/*
+
+org/apache/harmony/xnet/internal/nls/*

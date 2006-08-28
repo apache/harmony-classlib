@@ -32,12 +32,12 @@
     </fileset>
                                
     <!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
-	     use the Eclipse Java compiler. -->
+         use the Eclipse Java compiler. -->
     <property name="build.compiler" value="modern" />
 
     <property file="../../make/depends.properties" />
 
-    <target name="build" depends="compile.java, build.jar" />
+    <target name="build" depends="compile.java, copy.resources, build.jar" />
 
     <target name="test" depends="build, compile.tests, run.tests" />
 
@@ -68,6 +68,15 @@
         </javac>
     </target>
 
+    <target name="copy.resources">
+        <mkdir dir="${hy.build}" />
+        <copy todir="${hy.build}" includeemptydirs="false">
+            <fileset dir="${hy.beans.src.main.java}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+    </target>
+
     <target name="build.jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/beans.jar"
              manifest="${hy.beans}/META-INF/MANIFEST.MF">
@@ -82,8 +91,8 @@
         <mkdir dir="${hy.beans.bin.internal}" />
         <mkdir dir="${hy.beans.bin.test}" />
         <mkdir dir="${hy.beans.bin.test.support}" />
-    	
-    	<echo message="Compiling support classes for BEANS tests" />
+        
+        <echo message="Compiling support classes for BEANS tests" />
         <javac srcdir="${hy.beans.src.test.support}"
                destdir="${hy.beans.bin.test.support}"
                sourcepath=""
@@ -99,7 +108,7 @@
             <classpath location="../../build/tests" />
         </javac>
 
-    	<echo message="Compiling internal BEANS tests" />
+        <echo message="Compiling internal BEANS tests" />
         <javac srcdir="${hy.beans.src.test.internal}"
                destdir="${hy.beans.bin.internal}"
                sourcepath=""
@@ -117,7 +126,7 @@
             <classpath location="${hy.hdk}/build/test/support.jar" />
         </javac>
 
-    	<echo message="Compiling BEANS tests" />
+        <echo message="Compiling BEANS tests" />
         <javac srcdir="${hy.beans.src.test.java}"
                destdir="${hy.beans.bin.test}"
                sourcepath=""
@@ -142,9 +151,9 @@
 
         <property name="test.jre.home" value="${hy.jdk}/jre" />
 
-    	<!-- internal tests that need to run on the bootclasspath -->
-    	<echo message="Running internal BEANS tests" />
-    	<junit fork="yes"
+        <!-- internal tests that need to run on the bootclasspath -->
+        <echo message="Running internal BEANS tests" />
+        <junit fork="yes"
                forkmode="once"
                printsummary="withOutAndErr"
                errorproperty="test.errors"
@@ -157,8 +166,8 @@
 
             <env key="JAVA_HOME" value="${test.jre.home}"/>
 
-    		<jvmarg value="-Xbootclasspath/a:${hy.beans.bin.internal}${path.separator}../../${junit.jar}"/>    		
-    		
+            <jvmarg value="-Xbootclasspath/a:${hy.beans.bin.internal}${path.separator}../../${junit.jar}"/>         
+            
             <classpath>
                 <pathelement path="${hy.beans.bin.test}"/>
                 <pathelement path="${hy.beans.bin.test.support}"/>
@@ -179,10 +188,10 @@
                 </fileset>
             </batchtest>
         </junit>
-    	
-    	<!-- API tests -->
-    	<echo message="Running BEANS tests" />
-    	<junit fork="yes"
+        
+        <!-- API tests -->
+        <echo message="Running BEANS tests" />
+        <junit fork="yes"
                forkmode="once"
                printsummary="withOutAndErr"
                errorproperty="test.errors"

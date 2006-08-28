@@ -16,5 +16,5 @@ javax/crypto/*
 javax/crypto/interfaces/*
 javax/crypto/spec/*
 
-org/apache/harmony/crypto/internal/*
+org/apache/harmony/crypto/internal/**
 org/apache/harmony/crypto/utils/*
