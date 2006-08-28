@@ -262,11 +262,9 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
             if (!isBound) {
                 // bind
                 networkSystem.bind2(fd, 0, true, InetAddress
-                        .getByAddress(localAddrArray));
+                        .getByAddress(new byte[] { 0, 0, 0, 0 }));
+                isBound = true;
             }
-
-            localPort = networkSystem.getSocketLocalPort(fd, false);
-            localAddress = networkSystem.getSocketLocalAddress(fd, false);
 
             if (isBlocking()) {
                 begin();
@@ -301,6 +299,10 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
             }
         }
 
+        // set local port
+        localPort = networkSystem.getSocketLocalPort(fd, false);
+        localAddress = networkSystem.getSocketLocalAddress(fd, false);
+        
         // set the connected address.
         connectAddress = inetSocketAddress;
         synchronized (this) {
@@ -347,6 +349,8 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
                         HY_PORT_SOCKET_STEP_CHECK, connectContext);
             }
             finished = (result == CONNECT_SUCCESS);
+            isBound = finished;
+            localAddress = networkSystem.getSocketLocalAddress(fd, false);
         } catch (ConnectException e) {
             if (isOpen()){
                 close();
@@ -748,6 +752,32 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
             }
         }
 
+        
+        public boolean getReuseAddress() throws SocketException {
+            checkOpen();
+            return ((Boolean) socketImpl.getOption(SocketOptions.SO_REUSEADDR))
+                    .booleanValue();
+        }
+        
+        public synchronized int getReceiveBufferSize() throws SocketException {
+            checkOpen();
+            return ((Integer) socketImpl.getOption(SocketOptions.SO_RCVBUF)).intValue();
+        }
+        
+        public synchronized int getSendBufferSize() throws SocketException {
+            checkOpen();
+            return ((Integer) socketImpl.getOption(SocketOptions.SO_SNDBUF)).intValue();
+        }
+        
+        public synchronized int getSoTimeout() throws SocketException {
+            checkOpen();
+            return ((Integer) socketImpl.getOption(SocketOptions.SO_TIMEOUT)).intValue();
+        }
+        
+        public int getTrafficClass() throws SocketException {
+            checkOpen();
+            return ((Number) socketImpl.getOption(SocketOptions.IP_TOS)).intValue();
+        }
         /*
          * 
          * @see java.net.Socket#getKeepAlive()
