@@ -23,4 +23,4 @@ Import-Package: java.io,
 Export-Package: javax.crypto,
  javax.crypto.interfaces,
  javax.crypto.spec,
- org.apache.harmony.crypto.utils
+ org.apache.harmony.crypto.utils;version="1.0.0"
