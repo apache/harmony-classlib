@@ -336,6 +336,22 @@ public class LogManagerTest extends TestCase {
 		assertNotSame(root, manager.getLogger(""));
 	}
 
+	/**
+	 * @tests java.util.logging.LogManager#addLogger(Logger)
+	 */
+	public void test_addLoggerLLogger_Security() throws Exception {
+		// regression test for Harmony-1286
+		SecurityManager originalSecurityManager = System.getSecurityManager();
+		System.setSecurityManager(new SecurityManager());
+		try {
+			LogManager manager = LogManager.getLogManager();
+			manager.addLogger(new MockLogger("mock", null));
+			manager.addLogger(new MockLogger("mock.child", null));
+		} finally {
+			System.setSecurityManager(originalSecurityManager);
+		}
+	}
+	
 	public void testDefaultLoggerProperties() {
 		// mock LogManager has no default logger
 		assertNull(mockManager.getLogger(""));

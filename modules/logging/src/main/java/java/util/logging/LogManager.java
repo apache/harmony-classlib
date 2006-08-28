@@ -315,13 +315,13 @@ public class LogManager {
         while ((lastSeparator = parentName.lastIndexOf('.')) != -1) {
             parentName = parentName.substring(0, lastSeparator);
             if ((parent = loggers.get(parentName)) != null) {
-                logger.setParent(parent);
+                logger.internalSetParent(parent);
                 break;
             }
         }
         if (parent == null && parent != root) {
             parent = root;
-            logger.setParent(parent);
+            logger.internalSetParent(parent);
         }
 
         // find children
