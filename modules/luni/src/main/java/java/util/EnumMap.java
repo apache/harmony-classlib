@@ -141,6 +141,62 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
         }
     }
 
+    private static class EnumMapValueCollection<KT extends Enum<KT>, VT> extends
+            AbstractCollection<VT> {
+        private final EnumMap<KT, VT> enumMap;
+
+        EnumMapValueCollection(EnumMap<KT, VT> em) {
+            enumMap = em;
+        }
+
+        @Override
+        public void clear() {
+            enumMap.clear();
+        }
+
+        @Override
+        public boolean contains(Object object) {
+            return enumMap.containsValue(object);
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Iterator iterator() {
+            return new EnumMapIterator<VT, KT, VT>(
+                    new MapEntry.Type<VT, KT, VT>() {
+                        public VT get(MapEntry<KT, VT> entry) {
+                            return entry.value;
+                        }
+                    }, enumMap);
+        }
+
+        @Override
+        public boolean remove(Object object) {
+            if (null == object) {
+                for (int i = 0; i < enumMap.enumSize; i++) {
+                    if (enumMap.hasMapping[i] && null == enumMap.values[i]) {
+                        enumMap.remove(enumMap.keys[i]);
+                        return true;
+                    }
+                }
+            } else {
+                for (int i = 0; i < enumMap.enumSize; i++) {
+                    if (enumMap.hasMapping[i]
+                            && object.equals(enumMap.values[i])) {
+                        enumMap.remove(enumMap.keys[i]);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public int size() {
+            return enumMap.size();
+        }
+    }
+
     /**
      * Constructs an empty enum map using the given key type.
      * 
@@ -398,8 +454,12 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      * 
      * @return a collection view of the mappings contained in this map.
      */
+    @Override
     public Collection<V> values() {
-        throw new NotYetImplementedException();
+        if (null == valuesCollection) {
+            valuesCollection = new EnumMapValueCollection<K, V>(this);
+        }
+        return valuesCollection;
     }
 
     private boolean isValidKeyType(Object key) {
