@@ -211,17 +211,7 @@ public class SimpleTimeZone extends TimeZone {
 
 		this(offset, name, startMonth, startDay, startDayOfWeek, startTime,
 				endMonth, endDay, endDayOfWeek, endTime, daylightSavings);
-
-		if (startTimeMode > 4 || startTimeMode < 1) {
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
-					"K00e9", startTimeMode)); //$NON-NLS-1$
-		}
 		startMode = startTimeMode;
-
-		if (endTimeMode > 4 || endTimeMode < 1) {
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
-					"K00e9", endTimeMode)); //$NON-NLS-1$
-		}
 		endMode = endTimeMode;
 	}
 

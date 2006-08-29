@@ -93,6 +93,37 @@ public class SimpleTimeZoneTest extends junit.framework.TestCase {
 		// Test for method java.util.SimpleTimeZone(int, java.lang.String, int,
 		// int, int, int, int, int, int, int, int, int, int)
 		// TODO : Implement test
+		//Regression for HARMONY-1241
+		assertNotNull(new SimpleTimeZone(
+                TimeZone.LONG,
+                "Europe/Paris",
+                SimpleTimeZone.STANDARD_TIME,
+                SimpleTimeZone.STANDARD_TIME,
+                SimpleTimeZone.UTC_TIME,
+                SimpleTimeZone.WALL_TIME,
+                SimpleTimeZone.WALL_TIME,
+                TimeZone.SHORT,
+                SimpleTimeZone.STANDARD_TIME,
+                TimeZone.LONG,
+                SimpleTimeZone.UTC_TIME,
+                SimpleTimeZone.STANDARD_TIME,
+                TimeZone.LONG));
+        //seems RI doesn't check the startTimeMode and endTimeMode at all
+        //this behavior is contradicts with spec
+        assertNotNull(new SimpleTimeZone(
+                TimeZone.LONG,
+                "Europe/Paris",
+                SimpleTimeZone.STANDARD_TIME,
+                SimpleTimeZone.STANDARD_TIME,
+                SimpleTimeZone.UTC_TIME,
+                SimpleTimeZone.WALL_TIME,
+                Integer.MAX_VALUE,
+                TimeZone.SHORT,
+                SimpleTimeZone.STANDARD_TIME,
+                TimeZone.LONG,
+                SimpleTimeZone.UTC_TIME,
+                Integer.MIN_VALUE,
+                TimeZone.LONG));
 	}
 
 	/**
