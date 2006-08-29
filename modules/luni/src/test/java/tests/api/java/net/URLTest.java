@@ -1178,7 +1178,81 @@ public class URLTest extends junit.framework.TestCase {
             System.setSecurityManager(null);
         }
     }
+
+    /**
+     * URLStreamHandler implementation class necessary for tests. 
+     */
+    private class TestURLStreamHandler extends URLStreamHandler {
+        public URLConnection openConnection(URL arg0) throws IOException {
+            try {
+                return arg0.openConnection();
+            } catch (Throwable e) {
+                return null;
+            }
+        }
+    }
     
+    /**
+     * Check NPE throwing in constructor when protocol argument is null and
+     * URLStreamHandler argument is initialized.
+     */
+    public void test_ConstructorLnullLjava_lang_StringILjava_lang_StringLjava_net_URLStreamHandler()
+        throws Exception {
+        // Regression for HARMONY-1131
+        TestURLStreamHandler lh = new TestURLStreamHandler();
+
+        try {
+            new URL(null, "1", 0, "file", lh);
+            fail("NullPointerException expected, but nothing was thrown!");
+        } catch (NullPointerException e) {
+            // Expected NullPointerException
+        }
+
+    }
+    
+    /**
+     * Check NPE throwing in constructor when protocol argument is null and
+     * URLStreamHandler argument is null.
+     */
+    public void test_ConstructorLnullLjava_lang_StringILjava_lang_StringLnull()
+        throws Exception {
+        // Regression for HARMONY-1131
+        try {
+            new URL(null, "1", 0, "file", null);
+            fail("NullPointerException expected, but nothing was thrown!");
+        } catch (NullPointerException e) {
+            // Expected NullPointerException
+        }
+    }
+
+    /**
+     * Check NPE throwing in constructor with 4 params when protocol argument is null.
+     */
+    public void test_ConstructorLnullLjava_lang_StringILjava_lang_String()
+        throws Exception {
+        // Regression for HARMONY-1131
+        try {
+            new URL(null, "1", 0, "file");
+            fail("NullPointerException expected, but nothing was thrown!");
+        } catch (NullPointerException e) {
+            // Expected NullPointerException
+        }
+    }
+
+    /**
+     * Check NPE throwing in constructor with 3 params when protocol argument is null.
+     */
+    public void test_ConstructorLnullLjava_lang_StringLjava_lang_String()
+        throws Exception {
+        // Regression for HARMONY-1131
+        try {
+            new URL(null, "1", "file");
+            fail("NullPointerException expected, but nothing was thrown!");
+        } catch (NullPointerException e) {
+            // Expected NullPointerException
+        }
+    }
+
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.

@@ -402,7 +402,12 @@ public final class URL implements java.io.Serializable {
 			host = "[" + host + "]"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
-		this.protocol = protocol;
+		if (protocol != null){
+		    this.protocol = protocol;
+        } else {
+            throw new NullPointerException(Msg.getString("K00b3", protocol)); //$NON-NLS-1$
+        }
+        
 		this.host = host;
 		this.port = port;
 
