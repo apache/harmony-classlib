@@ -16,12 +16,10 @@
 package org.apache.harmony.luni.tests.java.lang;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class SecurityExceptionTest extends TestCase {
-	
-	private static final String SERIALIZATION_FILE_NAME =
-		"serialization/java/lang/SecurityException.ser"; //$NON-NLS-1$
 	
 	/**
 	 * @tests java.lang.SecurityException#SecurityException()
@@ -42,22 +40,19 @@ public class SecurityExceptionTest extends TestCase {
         assertNull(e.getCause());
     }
 
-	/**
-	 * @tests serialization/deserilazation.
-	 */
-	public void test_serialization() throws Exception {
-		SecurityException srcSecurityException = new SecurityException();
-		SecurityException destSecurityException = (SecurityException) SerializationTester
-				.getDeserilizedObject(srcSecurityException);
-	}
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
 
-	/**
-	 * @tests serialization/deserilazation compatibility with RI.
-	 */
-	public void test_serializationCompatibility() throws Exception {
-		SecurityException srcSecurityException = new SecurityException();
-		SecurityException destSecurityException = (SecurityException) SerializationTester
-				.readObject(srcSecurityException,
-						SERIALIZATION_FILE_NAME);
-	}
+        SerializationTest.verifySelf(new SecurityException());
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new SecurityException());
+    }
 }

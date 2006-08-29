@@ -15,8 +15,12 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-import tests.util.SerializationTester;
+import java.io.Serializable;
+
 import junit.framework.TestCase;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 public class StringBufferTest extends TestCase {
 
@@ -450,17 +454,37 @@ public class StringBufferTest extends TestCase {
             
         }
     }
-    
-    public void test_serialization() throws Exception {
-        final String fixture = "0123456789";
-        StringBuffer sb = new StringBuffer(fixture);
-        SerializationTester.assertEquals(sb);
+
+    // comparator for StringBuffer objects
+    private static final SerializableAssert STRING_BUFFER_COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
+
+            StringBuffer init = (StringBuffer) initial;
+            StringBuffer desr = (StringBuffer) deserialized;
+
+            // serializable fields are: 'count', 'shared', 'value'
+            // serialization of 'shared' is not verified
+            // 'count' + 'value' should result in required string
+            assertEquals("toString", init.toString(), desr.toString());
+        }
+    };
+
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new StringBuffer("0123456789"),
+                STRING_BUFFER_COMPARATOR);
     }
 
-    public void test_serializationCompatability() throws Exception {
-        final String fixture = "0123456789";
-        StringBuffer sb = new StringBuffer(fixture);
-        SerializationTester.assertCompabilityEquals(sb,
-                "serialization/java/lang/StringBuffer.ser");
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new StringBuffer("0123456789"),
+                STRING_BUFFER_COMPARATOR);
     }
 }

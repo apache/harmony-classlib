@@ -16,13 +16,11 @@
 package org.apache.harmony.luni.tests.java.lang;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class UnsupportedOperationExceptionTest extends TestCase {
 
-	private static final String SERIALIZATION_FILE_NAME =
-		"serialization/java/lang/UnsupportedOperationException.ser"; //$NON-NLS-1$
-	
 	/**
 	 * @tests java.lang.UnsupportedOperationException#UnsupportedOperationException()
 	 */
@@ -42,22 +40,20 @@ public class UnsupportedOperationExceptionTest extends TestCase {
         assertNull(e.getCause());
     }
 	
-	/**
-	 * @tests serialization/deserilazation.
-	 */
-	public void test_serialization() throws Exception {
-		UnsupportedOperationException srcUnsupportedOperationException = new UnsupportedOperationException();
-		UnsupportedOperationException destUnsupportedOperationException = (UnsupportedOperationException) SerializationTester
-				.getDeserilizedObject(srcUnsupportedOperationException);
-	}
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
 
-	/**
-	 * @tests serialization/deserilazation compatibility with RI.
-	 */
-	public void test_serializationCompatibility() throws Exception {
-		UnsupportedOperationException srcUnsupportedOperationException = new UnsupportedOperationException();
-		UnsupportedOperationException destUnsupportedOperationException = (UnsupportedOperationException) SerializationTester
-				.readObject(srcUnsupportedOperationException,
-						SERIALIZATION_FILE_NAME);
-	}
+        SerializationTest.verifySelf(new UnsupportedOperationException());
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this,
+                new UnsupportedOperationException());
+    }
 }

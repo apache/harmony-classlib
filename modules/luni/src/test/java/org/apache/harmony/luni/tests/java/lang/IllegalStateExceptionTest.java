@@ -16,13 +16,11 @@
 package org.apache.harmony.luni.tests.java.lang;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class IllegalStateExceptionTest extends TestCase {
 
-	private static final String SERIALIZATION_FILE_NAME =
-		"serialization/java/lang/IllegalStateException.ser"; //$NON-NLS-1$
-	
 	/**
 	 * @tests java.lang.IllegalStateException#IllegalStateException()
 	 */
@@ -42,22 +40,19 @@ public class IllegalStateExceptionTest extends TestCase {
         assertNull(e.getCause());
     }
 
-	/**
-	 * @tests serialization/deserilazation.
-	 */
-	public void test_serialization() throws Exception {
-		IllegalStateException srcIllegalStateException = new IllegalStateException();
-		IllegalStateException destIllegalStateException = (IllegalStateException) SerializationTester
-				.getDeserilizedObject(srcIllegalStateException);
-	}
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
 
-	/**
-	 * @tests serialization/deserilazation compatibility with RI.
-	 */
-	public void test_serializationCompatibility() throws Exception {
-		IllegalStateException srcIllegalStateException = new IllegalStateException();
-		IllegalStateException destIllegalStateException = (IllegalStateException) SerializationTester
-				.readObject(srcIllegalStateException,
-						SERIALIZATION_FILE_NAME);
-	}
+        SerializationTest.verifySelf(new IllegalStateException());
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new IllegalStateException());
+    }
 }

@@ -17,11 +17,13 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-import tests.util.SerializationTester;
-
 import junit.framework.TestCase;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 public class StringBuilderTest extends TestCase {
 
@@ -1771,18 +1773,35 @@ public class StringBuilderTest extends TestCase {
 		assertEquals(fixture.length(), sb.length());
 		assertEquals(fixture, sb.toString());
 	}
-    
-    public void test_serialization() throws Exception {
-        final String fixture = "0123456789";
-        StringBuilder sb = new StringBuilder(fixture);
-        SerializationTester.assertEquals(sb);
+
+    // comparator for StringBuilder objects
+    private static final SerializableAssert STRING_BILDER_COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
+
+            StringBuilder init = (StringBuilder) initial;
+            StringBuilder desr = (StringBuilder) deserialized;
+
+            assertEquals("toString", init.toString(), desr.toString());
+        }
+    };
+
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new StringBuilder("0123456789"),
+                STRING_BILDER_COMPARATOR);
     }
 
-    public void test_serializationCompatability() throws Exception {
-        final String fixture = "0123456789";
-        StringBuilder sb = new StringBuilder(fixture);
-        SerializationTester.assertCompabilityEquals(sb,
-                "serialization/java/lang/StringBuilder.ser");
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new StringBuilder("0123456789"),
+                STRING_BILDER_COMPARATOR);
     }
 
 	private static final class Fixture {
