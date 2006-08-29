@@ -1570,4 +1570,18 @@ public class DecimalFormatTest extends TestCase {
         assertTrue(number instanceof Double);
         assertTrue(Double.isInfinite(number.doubleValue()));
     }
+    
+    /**
+     * Test if setDecimalFormatSymbols method wont throw NullPointerException 
+     * when it is called with null parameter.
+     */
+    public void testSetDecimalFormatSymbolsAsNull(){
+	// Regression for HARMONY-1070
+        try {                                                                   
+            DecimalFormat format = (DecimalFormat)DecimalFormat.getInstance();
+            format.setDecimalFormatSymbols(null);                     
+        } catch (Exception e) {
+            fail("Unexpected exception caught: " + e);
+        }  
+    }
 }

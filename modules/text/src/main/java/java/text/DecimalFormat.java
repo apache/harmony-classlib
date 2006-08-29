@@ -457,10 +457,12 @@ public class DecimalFormat extends NumberFormat {
      *            the DecimalFormatSymbols
      */
     public void setDecimalFormatSymbols(DecimalFormatSymbols value) {
-        symbols = (DecimalFormatSymbols) value.clone();
-        icuSymbols = dform.getDecimalFormatSymbols();
-        copySymbols(icuSymbols, symbols);
-        dform.setDecimalFormatSymbols(icuSymbols);
+        if (value != null){
+            symbols = (DecimalFormatSymbols) value.clone();
+            icuSymbols = dform.getDecimalFormatSymbols();
+            copySymbols(icuSymbols, symbols);
+            dform.setDecimalFormatSymbols(icuSymbols);
+        }
     }
 
     /**
