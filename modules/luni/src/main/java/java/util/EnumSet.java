@@ -58,7 +58,9 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
      *             if the specified elementType is null
      */
     public static <E extends Enum<E>> EnumSet<E> allOf(Class<E> elementType) {
-        throw new NotYetImplementedException();
+        EnumSet<E> set = noneOf(elementType);
+        set.complement();
+        return set;
     }
 
     /**

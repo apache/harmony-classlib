@@ -15,7 +15,6 @@
 
 package java.util;
 
-import org.apache.harmony.luni.util.NotYetImplementedException;
 
 /**
  * This is a concrete subclass of EnumSet designed specifically for enum type
@@ -37,10 +36,54 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
         super(elementType);
         enums = elementType.getEnumConstants();
     }
+    
+    private class MiniEnumSetIterator implements Iterator<E> {
+
+        private long unProcessedBits = 0;
+
+        /*
+         * Mask for current element.
+         */
+        private long currentElementMask = 0;
+
+        private boolean canProcess = true;
+
+        private MiniEnumSetIterator() {
+            unProcessedBits = bits;
+            if (0 == unProcessedBits) {
+                canProcess = false;
+            }
+        }
+
+        public boolean hasNext() {
+            return canProcess;
+        }
+
+        public E next() {
+            if (!canProcess) {
+                throw new NoSuchElementException();
+            }
+            currentElementMask = unProcessedBits & (-unProcessedBits);
+            unProcessedBits -= currentElementMask;
+            if (0 == unProcessedBits) {
+                canProcess = false;
+            }
+            return enums[Long.numberOfTrailingZeros(currentElementMask)];
+        }
+
+        public void remove() {
+            if ( currentElementMask == 0 ) {
+                throw new IllegalStateException();
+            }
+            bits &= ~currentElementMask;
+            size = Long.bitCount(bits);
+            currentElementMask = 0;
+        }
+    }
 
     @Override
     public Iterator<E> iterator() {
-        throw new NotYetImplementedException();
+        return new MiniEnumSetIterator();
     }
 
     @Override
@@ -75,11 +118,11 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
             return false;
         }
         if (collection instanceof EnumSet) {
-            EnumSet<E> set = (EnumSet<E>) collection;
+            EnumSet set = (EnumSet) collection;
             if (!isValidType(set.elementClass)) {
                 throw new ClassCastException();
             }
-            MiniEnumSet<E> miniSet = (MiniEnumSet<E>) set;
+            MiniEnumSet miniSet = (MiniEnumSet) set;
             long oldBits = bits;
             bits |= miniSet.bits;
             size = Long.bitCount(bits);
@@ -89,7 +132,6 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
     }
     
     @Override
-    @SuppressWarnings("unchecked")
     public boolean contains(Object object) {
         if (null == object) {
             return false;
@@ -97,7 +139,7 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
         if (!isValidType(object.getClass())) {
             return false;
         }
-        E element = (E) object;
+        Enum element = (Enum) object;
         int ordinal = element.ordinal();
         return (bits & (1l << ordinal)) != 0;
     }
@@ -108,19 +150,59 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
             return true;
         }
         if (collection instanceof MiniEnumSet) {
-            MiniEnumSet<E> set = (MiniEnumSet<E>) collection;
+            MiniEnumSet set = (MiniEnumSet) collection;
             return isValidType(set.elementClass ) && ((bits & set.bits) == set.bits);
         }
         return !(collection instanceof EnumSet) && super.containsAll(collection);  
     }
     
     @Override
-    @SuppressWarnings("unchecked")
+    public boolean removeAll(Collection<?> collection) {
+        if (0 == collection.size()) {
+            return false;
+        }
+        if (collection instanceof EnumSet) {
+            EnumSet<E> set = (EnumSet<E>) collection;
+            boolean removeSuccessful = false;
+            if (isValidType(set.elementClass)) {
+                long mask = bits & ((MiniEnumSet<E>) set).bits;
+                if (mask != 0) {
+                    bits -= mask;
+                    size = Long.bitCount(bits);
+                    removeSuccessful = true;
+                }
+            }
+            return removeSuccessful;
+        }
+        return super.removeAll(collection);
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> collection) {
+        if (collection instanceof EnumSet) {
+            EnumSet<E> set = (EnumSet<E>) collection;
+            if (!isValidType(set.elementClass)) {
+                clear();
+                return true;
+            }
+            boolean retainSuccessful = false;
+            long oldBits = bits;
+            bits &= ((MiniEnumSet<E>)set).bits;
+            if (oldBits != bits) {
+                size = Long.bitCount(bits);
+                retainSuccessful = true;
+            }
+            return retainSuccessful;
+        }
+        return super.retainAll(collection);
+    }
+    
+    @Override
     public boolean remove(Object object) {
         if (!contains(object)) {
             return false;
         }
-        E element = (E) object;
+        Enum element = (Enum) object;
         int ordinal = element.ordinal();
         bits -= (1l << ordinal);
         size--;
@@ -128,7 +210,6 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
     }
     
     @Override
-    @SuppressWarnings("unchecked")
     public boolean equals(Object object) {
         if (!(object instanceof EnumSet)) {
             return super.equals(object);

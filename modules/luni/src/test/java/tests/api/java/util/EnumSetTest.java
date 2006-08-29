@@ -18,6 +18,8 @@ package tests.api.java.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -73,6 +75,44 @@ public class EnumSetTest extends TestCase {
         EnumSet<EnumWithAllInnerClass> setWithInnerClass = EnumSet
                 .noneOf(EnumWithAllInnerClass.class);
         assertNotNull(setWithInnerClass);
+    }
+    
+    /**
+     * @tests java.util.EnumSet#allOf(java.lang.Class)
+     */
+    @SuppressWarnings("unchecked")
+    public void test_AllOf_LClass() {
+        try {
+            EnumSet.allOf((Class) null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            EnumSet.allOf(Enum.class);
+            fail("Should throw ClassCastException"); //$NON-NLS-1$
+        } catch (ClassCastException cce) {
+            // expected
+        }
+
+        EnumSet<EnumFoo> enumSet = EnumSet.allOf(EnumFoo.class);
+        assertEquals("Size of enumSet should be 64", 64, enumSet.size()); //$NON-NLS-1$
+
+        assertFalse(
+                "enumSet should not contain null value", enumSet.contains(null)); //$NON-NLS-1$
+        assertTrue(
+                "enumSet should contain EnumFoo.a", enumSet.contains(EnumFoo.a)); //$NON-NLS-1$
+        assertTrue(
+                "enumSet should contain EnumFoo.b", enumSet.contains(EnumFoo.b)); //$NON-NLS-1$
+
+        enumSet.add(EnumFoo.a);
+        assertEquals("Should be equal", 64, enumSet.size()); //$NON-NLS-1$
+
+        EnumSet<EnumFoo> anotherSet = EnumSet.allOf(EnumFoo.class);
+        assertEquals("Should be equal", enumSet, anotherSet); //$NON-NLS-1$
+        assertNotSame("Should not be identical", enumSet, anotherSet); //$NON-NLS-1$
+
     }
     
     /**
@@ -463,5 +503,331 @@ public class EnumSetTest extends TestCase {
         setWithSubclass.add(EnumWithInnerClass.a);
         result = set.containsAll(setWithSubclass);
         assertFalse("Should return false", result); //$NON-NLS-1$
+    }
+    
+    /**
+     * @tests java.util.EnumSet#removeAll(Collection)
+     */
+    @SuppressWarnings("unchecked")
+    public void test_removeAll_LCollection() {
+        Set<EnumFoo> set = EnumSet.noneOf(EnumFoo.class);
+        try {
+            set.removeAll(null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        set = EnumSet.allOf(EnumFoo.class);
+        assertEquals("Size of set should be 64:", 64, set.size()); //$NON-NLS-1$
+
+        try {
+            set.removeAll(null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        Collection<EnumFoo> collection = new ArrayList<EnumFoo>();
+        collection.add(EnumFoo.a);
+
+        boolean result = set.removeAll(collection);
+        assertTrue("Should return true", result); //$NON-NLS-1$
+        assertEquals("Size of set should be 63", 63, set.size()); //$NON-NLS-1$
+
+        collection = new ArrayList();
+        result = set.removeAll(collection);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        Set<EmptyEnum> emptySet = EnumSet.noneOf(EmptyEnum.class);
+        result = set.removeAll(emptySet);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        EnumSet<EnumFoo> emptyFooSet = EnumSet.noneOf(EnumFoo.class);
+        result = set.removeAll(emptyFooSet);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        emptyFooSet.add(EnumFoo.a);
+        result = set.removeAll(emptyFooSet);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        Set<EnumWithInnerClass> setWithSubclass = EnumSet
+                .noneOf(EnumWithInnerClass.class);
+        result = set.removeAll(setWithSubclass);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        setWithSubclass.add(EnumWithInnerClass.a);
+        result = set.removeAll(setWithSubclass);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        Set<EnumFoo> anotherSet = EnumSet.noneOf(EnumFoo.class);
+        anotherSet.add(EnumFoo.a);
+
+        set = EnumSet.allOf(EnumFoo.class);
+        result = set.removeAll(anotherSet);
+        assertTrue("Should return true", result); //$NON-NLS-1$
+        assertEquals("Size of set should be 63:", 63, set.size()); //$NON-NLS-1$
+
+        Set<EnumWithInnerClass> setWithInnerClass = EnumSet
+                .noneOf(EnumWithInnerClass.class);
+        setWithInnerClass.add(EnumWithInnerClass.a);
+        setWithInnerClass.add(EnumWithInnerClass.b);
+
+        Set<EnumWithInnerClass> anotherSetWithInnerClass = EnumSet
+                .noneOf(EnumWithInnerClass.class);
+        anotherSetWithInnerClass.add(EnumWithInnerClass.c);
+        anotherSetWithInnerClass.add(EnumWithInnerClass.d);
+        result = anotherSetWithInnerClass.removeAll(setWithInnerClass);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        anotherSetWithInnerClass.add(EnumWithInnerClass.a);
+        result = anotherSetWithInnerClass.removeAll(setWithInnerClass);
+        assertTrue("Should return true", result); //$NON-NLS-1$
+        assertEquals("Size of anotherSetWithInnerClass should remain 2", //$NON-NLS-1$
+                2, anotherSetWithInnerClass.size());
+
+        anotherSetWithInnerClass.remove(EnumWithInnerClass.c);
+        anotherSetWithInnerClass.remove(EnumWithInnerClass.d);
+        result = anotherSetWithInnerClass.remove(setWithInnerClass);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        Set rawSet = EnumSet.allOf(EnumWithAllInnerClass.class);
+        result = rawSet.removeAll(EnumSet.allOf(EnumFoo.class));
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        setWithInnerClass = EnumSet.allOf(EnumWithInnerClass.class);
+        anotherSetWithInnerClass = EnumSet.allOf(EnumWithInnerClass.class);
+        setWithInnerClass.remove(EnumWithInnerClass.a);
+        anotherSetWithInnerClass.remove(EnumWithInnerClass.f);
+        result = setWithInnerClass.removeAll(anotherSetWithInnerClass);
+        assertTrue("Should return true", result); //$NON-NLS-1$
+        assertEquals("Size of setWithInnerClass should be 1", 1, setWithInnerClass.size()); //$NON-NLS-1$
+
+        result = setWithInnerClass.contains(EnumWithInnerClass.f);
+        assertTrue("Should return true", result); //$NON-NLS-1$
+    }
+    
+    /**
+     * @tests java.util.EnumSet#retainAll(Collection)
+     */
+    @SuppressWarnings("unchecked")
+    public void test_retainAll_LCollection() {
+        Set<EnumFoo> set = EnumSet.allOf(EnumFoo.class);
+
+        try {
+            set.retainAll(null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        set.clear();
+        boolean result = set.retainAll(null);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        Collection rawCollection = new ArrayList();
+        result = set.retainAll(rawCollection);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        rawCollection.add(EnumFoo.a);
+        result = set.retainAll(rawCollection);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        rawCollection.add(EnumWithInnerClass.a);
+        result = set.retainAll(rawCollection);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+        assertEquals("Size of set should be 0:", 0, set.size()); //$NON-NLS-1$
+
+        rawCollection.remove(EnumFoo.a);
+        result = set.retainAll(rawCollection);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        Set<EnumFoo> anotherSet = EnumSet.allOf(EnumFoo.class);
+        result = set.retainAll(anotherSet);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+        assertEquals("Size of set should be 0", 0, set.size()); //$NON-NLS-1$
+
+        Set<EnumWithInnerClass> setWithInnerClass = EnumSet
+                .allOf(EnumWithInnerClass.class);
+        result = set.retainAll(setWithInnerClass);
+        assertTrue("Should return true", result); //$NON-NLS-1$
+        assertEquals("Size of set should be 0", 0, set.size()); //$NON-NLS-1$
+
+        setWithInnerClass = EnumSet.noneOf(EnumWithInnerClass.class);
+        result = set.retainAll(setWithInnerClass);
+        assertTrue("Should return true", result); //$NON-NLS-1$
+
+        Set<EmptyEnum> emptySet = EnumSet.allOf(EmptyEnum.class);
+        result = set.retainAll(emptySet);
+        assertTrue("Should return true", result); //$NON-NLS-1$
+
+        Set<EnumWithAllInnerClass> setWithAllInnerClass = EnumSet
+                .allOf(EnumWithAllInnerClass.class);
+        result = set.retainAll(setWithAllInnerClass);
+        assertTrue("Should return true", result); //$NON-NLS-1$
+
+        set.add(EnumFoo.a);
+        result = set.retainAll(setWithInnerClass);
+        assertTrue("Should return true", result); //$NON-NLS-1$
+        assertEquals("Size of set should be 0", 0, set.size()); //$NON-NLS-1$
+
+        setWithInnerClass = EnumSet.allOf(EnumWithInnerClass.class);
+        setWithInnerClass.remove(EnumWithInnerClass.f);
+        Set<EnumWithInnerClass> anotherSetWithInnerClass = EnumSet
+                .noneOf(EnumWithInnerClass.class);
+        anotherSetWithInnerClass.add(EnumWithInnerClass.e);
+        anotherSetWithInnerClass.add(EnumWithInnerClass.f);
+
+        result = setWithInnerClass.retainAll(anotherSetWithInnerClass);
+        assertTrue("Should return true", result); //$NON-NLS-1$
+        result = setWithInnerClass.contains(EnumWithInnerClass.e);
+        assertTrue("Should contain EnumWithInnerClass.e", result); //$NON-NLS-1$
+        result = setWithInnerClass.contains(EnumWithInnerClass.b);
+        assertFalse("Should not contain EnumWithInnerClass.b", result); //$NON-NLS-1$
+        assertEquals("Size of set should be 1:", 1, setWithInnerClass.size()); //$NON-NLS-1$
+
+        anotherSetWithInnerClass = EnumSet.allOf(EnumWithInnerClass.class);
+        result = setWithInnerClass.retainAll(anotherSetWithInnerClass);
+
+        assertFalse("Return value should be false", result); //$NON-NLS-1$
+
+        rawCollection = new ArrayList();
+        rawCollection.add(EnumWithInnerClass.e);
+        rawCollection.add(EnumWithInnerClass.f);
+        result = setWithInnerClass.retainAll(rawCollection);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        set = EnumSet.allOf(EnumFoo.class);
+        set.remove(EnumFoo.a);
+        anotherSet = EnumSet.noneOf(EnumFoo.class);
+        anotherSet.add(EnumFoo.a);
+        result = set.retainAll(anotherSet);
+        assertTrue("Should return true", result); //$NON-NLS-1$
+        assertEquals("size should be 0", 0, set.size()); //$NON-NLS-1$
+    }
+    
+    /**
+     * @tests java.util.EnumSet#iterator()
+     */
+    public void test_iterator() {
+        Set<EnumFoo> set = EnumSet.noneOf(EnumFoo.class);
+        set.add(EnumFoo.a);
+        set.add(EnumFoo.b);
+
+        Iterator<EnumFoo> iterator = set.iterator();
+        Iterator<EnumFoo> anotherIterator = set.iterator();
+        assertNotSame(iterator, anotherIterator);
+        try {
+            iterator.remove();
+            fail("Should throw IllegalStateException"); //$NON-NLS-1$
+        } catch (IllegalStateException e) {
+            // expectedd
+        }
+
+        assertTrue("Should has next element:", iterator.hasNext()); //$NON-NLS-1$
+        assertSame("Should be identical", EnumFoo.a, iterator.next()); //$NON-NLS-1$
+        iterator.remove();
+        assertTrue("Should has next element:", iterator.hasNext()); //$NON-NLS-1$
+        assertSame("Should be identical", EnumFoo.b, iterator.next()); //$NON-NLS-1$
+        assertFalse("Should not has next element:", iterator.hasNext()); //$NON-NLS-1$
+        assertFalse("Should not has next element:", iterator.hasNext()); //$NON-NLS-1$
+
+        assertEquals("Size should be 1:", 1, set.size()); //$NON-NLS-1$
+
+        try {
+            iterator.next();
+            fail("Should throw NoSuchElementException"); //$NON-NLS-1$
+        } catch (NoSuchElementException e) {
+            // expected
+        }
+        set = EnumSet.noneOf(EnumFoo.class);
+        set.add(EnumFoo.a);
+        iterator = set.iterator();
+        assertEquals("Should be equal", EnumFoo.a, iterator.next()); //$NON-NLS-1$
+        iterator.remove();
+        try {
+            iterator.remove();
+            fail("Should throw IllegalStateException"); //$NON-NLS-1$
+        } catch(IllegalStateException e) {
+            // expected
+        }
+        
+        Set<EmptyEnum> emptySet = EnumSet.allOf(EmptyEnum.class);
+        Iterator<EmptyEnum> emptyIterator = emptySet.iterator();
+        try {
+            emptyIterator.next();
+            fail("Should throw NoSuchElementException"); //$NON-NLS-1$
+        } catch (NoSuchElementException e) {
+            // expected
+        }
+
+        Set<EnumWithInnerClass> setWithSubclass = EnumSet
+                .allOf(EnumWithInnerClass.class);
+        setWithSubclass.remove(EnumWithInnerClass.e);
+        Iterator<EnumWithInnerClass> iteratorWithSubclass = setWithSubclass
+                .iterator();
+        assertSame("Should be same", EnumWithInnerClass.a, iteratorWithSubclass.next()); //$NON-NLS-1$
+
+        assertTrue("Should return true", iteratorWithSubclass.hasNext()); //$NON-NLS-1$
+        assertSame("Should be same", EnumWithInnerClass.b, iteratorWithSubclass.next()); //$NON-NLS-1$
+
+        setWithSubclass.remove(EnumWithInnerClass.c);
+        assertTrue("Should return true", iteratorWithSubclass.hasNext()); //$NON-NLS-1$
+        assertSame("Should be same", EnumWithInnerClass.c, iteratorWithSubclass.next()); //$NON-NLS-1$
+
+        assertTrue("Should return true", iteratorWithSubclass.hasNext()); //$NON-NLS-1$
+        assertSame("Should be same", EnumWithInnerClass.d, iteratorWithSubclass.next()); //$NON-NLS-1$
+
+        setWithSubclass.add(EnumWithInnerClass.e);
+        assertTrue("Should return true", iteratorWithSubclass.hasNext()); //$NON-NLS-1$
+        assertSame("Should be same", EnumWithInnerClass.f, iteratorWithSubclass.next()); //$NON-NLS-1$
+
+        set = EnumSet.noneOf(EnumFoo.class);
+        iterator = set.iterator();
+        try {
+            iterator.next();
+            fail("Should throw NoSuchElementException"); //$NON-NLS-1$
+        } catch (NoSuchElementException e) {
+            // expected
+        }
+        
+        set.add(EnumFoo.a);
+        iterator = set.iterator();
+        assertEquals("Should return EnumFoo.a", EnumFoo.a, iterator.next()); //$NON-NLS-1$
+        assertEquals("Size of set should be 1", 1, set.size()); //$NON-NLS-1$
+        iterator.remove();
+        assertEquals("Size of set should be 0", 0, set.size()); //$NON-NLS-1$
+        assertFalse("Should return false", set.contains(EnumFoo.a)); //$NON-NLS-1$
+        
+        set.add(EnumFoo.a);
+        set.add(EnumFoo.b);
+        iterator = set.iterator();
+        assertEquals("Should be equals", EnumFoo.a, iterator.next()); //$NON-NLS-1$
+        iterator.remove();
+        try {
+            iterator.remove();
+            fail("Should throw IllegalStateException"); //$NON-NLS-1$
+        } catch(IllegalStateException e) {
+            // expected
+        }
+        
+        assertTrue("Should have next element", iterator.hasNext()); //$NON-NLS-1$
+        try {
+            iterator.remove();
+            fail("Should throw IllegalStateException"); //$NON-NLS-1$
+        } catch (IllegalStateException e) {
+            // expected
+        }
+        assertEquals("Size of set should be 1", 1, set.size()); //$NON-NLS-1$
+        assertTrue("Should have next element", iterator.hasNext()); //$NON-NLS-1$
+        assertEquals("Should return EnumFoo.b", EnumFoo.b, iterator.next()); //$NON-NLS-1$
+        set.remove(EnumFoo.b);
+        assertEquals("Size of set should be 0", 0, set.size()); //$NON-NLS-1$
+        iterator.remove();
+        assertFalse("Should return false", set.contains(EnumFoo.a)); //$NON-NLS-1$
+        
+        // RI's bug, EnumFoo.b should not exist at the moment.
+        assertFalse("Should return false", set.contains(EnumFoo.b)); //$NON-NLS-1$
+        
     }
 }
