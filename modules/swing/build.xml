@@ -167,9 +167,6 @@
                     <exclude name="javax/swing/plaf/basic/BasicOptionPaneUITest.java"/>
                     <exclude name="javax/swing/plaf/basic/BasicTreeUITest.java"/>
                     <exclude name="javax/swing/table/BasicSwingTableTestCase.java"/>
-                    <exclude name="javax/swing/text/AbstractDocument_DefaultDocumentEventTest.java"/>
-                    <exclude name="javax/swing/text/AbstractDocument_ElementEditTest.java"/>
-                    <exclude name="javax/swing/text/AbstractDocument_UpdateTest.java"/>
                     <exclude name="javax/swing/text/DefaultCaret_MultithreadedTest.java"/>
                     <exclude name="javax/swing/text/DefaultEditorKitTest.java"/>
                     <exclude name="javax/swing/text/DefaultEditorKit_Actions_MultithreadedTest.java"/>

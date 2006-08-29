@@ -124,7 +124,7 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
         if (inProgress) {
             UndoableEdit undoEdit = editToBeUndone();
             if (undoEdit == null) {
-                return UndoName;
+                return getUndoName();
             }
             return undoEdit.getUndoPresentationName();
         } else {
@@ -144,7 +144,7 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
         if (inProgress) {
             UndoableEdit redoEdit = editToBeRedone();
             if (redoEdit == null) {
-                return RedoName;
+                return getRedoName();
             }
             return redoEdit.getRedoPresentationName();
         } else {

@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import javax.swing.BasicSwingTestCase;
+import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.UndoableEditEvent;
@@ -69,6 +70,12 @@ public class AbstractDocument_DefaultDocumentEventTest extends TestCase
      */
     UndoableEditEvent undoEvent;
 
+    private static final String UNDO_TEXT_KEY = "AbstractDocument.undoText";
+    private static final String REDO_TEXT_KEY = "AbstractDocument.redoText";
+
+    private String undoName;
+    private String redoName;
+
     /*
      * @see TestCase#setUp()
      */
@@ -97,6 +104,9 @@ public class AbstractDocument_DefaultDocumentEventTest extends TestCase
 
         change = doc.new DefaultDocumentEvent(0, 10,
                 DocumentEvent.EventType.CHANGE);
+
+        undoName = UIManager.getString(UNDO_TEXT_KEY);
+        redoName = UIManager.getString(REDO_TEXT_KEY);
     }
 
     /**
@@ -232,27 +242,56 @@ public class AbstractDocument_DefaultDocumentEventTest extends TestCase
             ref += edit.toString();
         }
         ref += "]";
-        //System.out.println(ref);
         assertEquals(ref, insert.toString());
-        //System.out.println(insert + "\n" + remove);
     }
 
     public void testGetUndoPresentationName() {
-        assertEquals("Undo addition",     insert.getUndoPresentationName());
-        assertEquals("Undo deletion",     remove.getUndoPresentationName());
-        assertEquals("Undo style change", change.getUndoPresentationName());
+        assertEquals(undoName + " " + insert.getPresentationName(),
+                     insert.getUndoPresentationName());
+        assertEquals(undoName + " " + remove.getPresentationName(),
+                     remove.getUndoPresentationName());
+        assertEquals(undoName + " " + change.getPresentationName(),
+                     change.getUndoPresentationName());
+    }
+
+    public void testGetUndoPresentationNameModified() {
+        UIManager.put(UNDO_TEXT_KEY, "ODNU");
+        try {
+            assertEquals("ODNU "
+                         + UIManager.getString("AbstractDocument.additionText"),
+                         insert.getUndoPresentationName());
+        } finally {
+            UIManager.put(UNDO_TEXT_KEY, undoName);
+        }
     }
 
     public void testGetRedoPresentationName() {
-        assertEquals("Redo addition",     insert.getRedoPresentationName());
-        assertEquals("Redo deletion",     remove.getRedoPresentationName());
-        assertEquals("Redo style change", change.getRedoPresentationName());
+        assertEquals(redoName + " " + insert.getPresentationName(),
+                     insert.getRedoPresentationName());
+        assertEquals(redoName + " " + remove.getPresentationName(),
+                     remove.getRedoPresentationName());
+        assertEquals(redoName + " " + change.getPresentationName(),
+                     change.getRedoPresentationName());
+    }
+
+    public void testGetRedoPresentationNameModified() {
+        UIManager.put(REDO_TEXT_KEY, "ODER");
+        try {
+            assertEquals("ODER "
+                         + UIManager.getString("AbstractDocument.additionText"),
+                         insert.getRedoPresentationName());
+        } finally {
+            UIManager.put(REDO_TEXT_KEY, redoName);
+        }
     }
 
     public void testGetPresentationName() {
-        assertEquals("addition",     insert.getPresentationName());
-        assertEquals("deletion",     remove.getPresentationName());
-        assertEquals("style change", change.getPresentationName());
+        assertSame(UIManager.getString("AbstractDocument.additionText"),
+                   insert.getPresentationName());
+        assertSame(UIManager.getString("AbstractDocument.deletionText"),
+                   remove.getPresentationName());
+        assertSame(UIManager.getString("AbstractDocument.styleChangeText"),
+                   change.getPresentationName());
     }
 
     public void testIsSignificant() {

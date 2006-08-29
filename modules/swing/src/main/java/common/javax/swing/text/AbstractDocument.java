@@ -559,7 +559,7 @@ public abstract class AbstractDocument implements Document, Serializable {
         }
 
         public String getRedoPresentationName() {
-            return RedoName + " " + getPresentationName();
+            return getRedoName() + " " + getPresentationName();
         }
 
         public EventType getType() {
@@ -567,7 +567,7 @@ public abstract class AbstractDocument implements Document, Serializable {
         }
 
         public String getUndoPresentationName() {
-            return UndoName + " " + getPresentationName();
+            return getUndoName() + " " + getPresentationName();
         }
 
         public boolean isSignificant() {
@@ -625,6 +625,13 @@ public abstract class AbstractDocument implements Document, Serializable {
             }
         }
 
+        private String getUndoName() {
+            return UIManager.getString("AbstractDocument.undoText");
+        }
+
+        private String getRedoName() {
+            return UIManager.getString("AbstractDocument.redoText");
+        }
     }
 
     public static class ElementEdit extends AbstractUndoableEdit

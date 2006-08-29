@@ -25,7 +25,13 @@ import javax.swing.UIManager;
 import junit.framework.TestCase;
 
 public class AbstractUndoableEditTest extends TestCase {
+    private static final String UNDO_NAME_KEY = "AbstractUndoableEdit.undoText";
+    private static final String REDO_NAME_KEY = "AbstractUndoableEdit.redoText";
+
     protected AbstractUndoableEdit obj;
+
+    private String defaultUndoName;
+    private String defaultRedoName;
 
     public static void main(final String[] args) {
         junit.textui.TestRunner.run(AbstractUndoableEditTest.class);
@@ -33,6 +39,13 @@ public class AbstractUndoableEditTest extends TestCase {
 
     protected void setUp() throws Exception {
         obj = new AbstractUndoableEdit();
+        defaultUndoName = UIManager.getString(UNDO_NAME_KEY);
+        defaultRedoName = UIManager.getString(REDO_NAME_KEY);
+    }
+
+    protected void tearDown() throws Exception {
+        UIManager.put(UNDO_NAME_KEY, defaultUndoName);
+        UIManager.put(REDO_NAME_KEY, defaultRedoName);
     }
 
     public void testToString() {
@@ -141,12 +154,42 @@ public class AbstractUndoableEditTest extends TestCase {
     }
 
     public void testGetRedoPresentationName() {
-        assertEquals(UIManager.getString("AbstractUndoableEdit.redoText"),
+        assertEquals(UIManager.getString(REDO_NAME_KEY),
                      obj.getRedoPresentationName());
     }
 
+    public void testGetRedoPresentationNameModified() {
+        String redoName = "name of Redo";
+        UIManager.put(REDO_NAME_KEY, redoName);
+        assertEquals(redoName, obj.getRedoPresentationName());
+
+        redoName = "alternative redo";
+        UIManager.put(REDO_NAME_KEY, redoName);
+        assertEquals(redoName, obj.getRedoPresentationName());
+    }
+
     public void testGetUndoPresentationName() {
-        assertEquals(UIManager.getString("AbstractUndoableEdit.undoText"),
+        assertEquals(UIManager.getString(UNDO_NAME_KEY),
+                     obj.getUndoPresentationName());
+    }
+
+    public void testGetUndoPresentationNameModified() {
+        String undoName = "name of Undo";
+        UIManager.put(UNDO_NAME_KEY, undoName);
+        assertEquals(undoName, obj.getUndoPresentationName());
+
+        undoName = "alternative undo";
+        UIManager.put(UNDO_NAME_KEY, undoName);
+        assertEquals(undoName, obj.getUndoPresentationName());
+    }
+
+    public void testGetUndoPresentationNameNull() {
+        obj = new AbstractUndoableEdit() {
+            public String getPresentationName() {
+                return null;
+            }
+        };
+        assertEquals(UIManager.getString(UNDO_NAME_KEY),
                      obj.getUndoPresentationName());
     }
 

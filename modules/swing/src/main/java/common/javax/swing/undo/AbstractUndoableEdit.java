@@ -22,6 +22,8 @@ package javax.swing.undo;
 import java.io.Serializable;
 import javax.swing.UIManager;
 
+import org.apache.harmony.x.swing.Utilities;
+
 public class AbstractUndoableEdit implements UndoableEdit, Serializable {
 
     private static final long serialVersionUID = 580150227676302096L;
@@ -60,21 +62,11 @@ public class AbstractUndoableEdit implements UndoableEdit, Serializable {
     }
 
     public String getUndoPresentationName() {
-        String presentationName = getPresentationName();
-        String name = getUndoName();
-        if (presentationName.length() == 0) {
-            return name;
-        }
-        return name + " " + presentationName;
+        return getOperationPresentationName(getUndoName());
     }
 
     public String getRedoPresentationName() {
-        String presentationName = getPresentationName();
-        String name = getRedoName();
-        if (presentationName.length() == 0) {
-            return name;
-        }
-        return name + " " + presentationName;
+        return getOperationPresentationName(getRedoName());
     }
 
     public String getPresentationName() {
@@ -113,21 +105,19 @@ public class AbstractUndoableEdit implements UndoableEdit, Serializable {
         alive = false;
     }
 
-    private String undoName;
-    private String redoName;
-    private String getUndoName() {
-        if (undoName == null) {
-            undoName = UIManager.getString("AbstractUndoableEdit.undoText");
-        }
-        return undoName;
+    final String getUndoName() {
+        return UIManager.getString("AbstractUndoableEdit.undoText");
     }
 
-    private String getRedoName() {
-        if (redoName == null) {
-            redoName = UIManager.getString("AbstractUndoableEdit.redoText");
-        }
-        return redoName;
+    final String getRedoName() {
+        return UIManager.getString("AbstractUndoableEdit.redoText");
     }
 
+    private String getOperationPresentationName(final String operationName) {
+        final String presentationName = getPresentationName();
+        return Utilities.isEmptyString(presentationName)
+               ? operationName
+               : operationName + " " + presentationName;
+    }
 }
 
