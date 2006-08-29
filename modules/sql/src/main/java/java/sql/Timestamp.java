@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class Timestamp extends Date {
     private static final long serialVersionUID = 2745179027874758501L;
 
     // The nanoseconds time value of the Timestamp
-    private int nanoseconds;
+    private int nanos;
 
     /**
      * @deprecated Please use the constructor Timestamp( long ) Returns a
@@ -75,7 +75,7 @@ public class Timestamp extends Date {
         if (theNano < 0 || theNano > 999999999) {
             throw new IllegalArgumentException();
         }
-        nanoseconds = theNano;
+        nanos = theNano;
     }
 
     /**
@@ -234,7 +234,7 @@ public class Timestamp extends Date {
      *         999,999,999
      */
     public int getNanos() {
-        return nanoseconds;
+        return nanos;
     }
 
     /**
@@ -244,7 +244,7 @@ public class Timestamp extends Date {
      */
     public long getTime() {
         long theTime = super.getTime();
-        theTime = theTime + (nanoseconds / 1000000);
+        theTime = theTime + (nanos / 1000000);
         return theTime;
     }
 
@@ -256,7 +256,7 @@ public class Timestamp extends Date {
             // sql.0=Value out of range
             throw new IllegalArgumentException(Messages.getString("sql.0")); //$NON-NLS-1$
         }
-        nanoseconds = n;
+        nanos = n;
     }
 
     /**
@@ -305,7 +305,7 @@ public class Timestamp extends Date {
         DecimalFormat decimalFormat = new DecimalFormat("0"); //$NON-NLS-1$
         decimalFormat.setMinimumIntegerDigits(9);
         decimalFormat.setMaximumIntegerDigits(9);
-        String theNanos = decimalFormat.format(nanoseconds);
+        String theNanos = decimalFormat.format(nanos);
         theNanos = stripTrailingZeros(theNanos);
         // Concatenate the nanosecond value with a dot - and return
         return (dateFormat.format(this) + '.' + theNanos);

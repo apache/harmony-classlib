@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.apache.harmony.testframework.serialization.SerializationTest;
 import junit.framework.TestCase;
 
 /**
@@ -587,9 +588,10 @@ public class TimestampTest extends TestCase {
 		Timestamp theTimestamp = new Timestamp(TIME_ARRAY[1]);
 		try {
 			theTimestamp.compareTo(nastyTest);
-			fail(
-					"testCompareToObject: Did not get expected ClassCastException");
-		} catch (ClassCastException e) {
+            // It throws ClassCastException in JDK 1.5.0_06 but in 1.5.0_07 it
+            // does not throw the expected exception.
+            fail("testCompareToObject: Did not get expected ClassCastException");
+        } catch (ClassCastException e) {
 			// Should get here
 			/*
 			 * System.out.println("testCompareToObject: ClassCastException as
@@ -599,5 +601,21 @@ public class TimestampTest extends TestCase {
 		} // end try
 
 	} // end method testcompareToObject
+    
+    /**
+     * @tests serialization/deserialization compatibility.
+     */
+    public void testSerializationSelf() throws Exception {
+        Timestamp object = new Timestamp(100L);
+        SerializationTest.verifySelf(object);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+        Timestamp object = new Timestamp(100L);
+        SerializationTest.verifyGolden(this, object);
+    }
 
 } // end class TimestampTest
