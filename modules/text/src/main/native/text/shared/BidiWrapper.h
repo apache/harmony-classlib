@@ -111,11 +111,11 @@ extern "C"
     (JNIEnv *, jclass, jlong);
 /*
  * Class:     org_apache_harmony_text_BidiWrapper
- * Method:    ubidi_getRun
- * Signature: (JI)Lorg/apache/harmony/text/BidiRun;
+ * Method:    ubidi_getRuns
+ * Signature: (J)[Lorg/apache/harmony/text/BidiRun;
  */
-  JNIEXPORT jobject JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1getRun
-    (JNIEnv *, jclass, jlong, jint);
+JNIEXPORT jobjectArray JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1getRuns
+  (JNIEnv *, jclass, jlong);
 /*
  * Class:     org_apache_harmony_text_BidiWrapper
  * Method:    ubidi_reorderVisual

@@ -123,26 +123,34 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1countRuns
   return count;
 }
 
-JNIEXPORT jobject JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1getRun
-  (JNIEnv * env, jclass clazz, jlong pBiDi, jint index)
+JNIEXPORT jobjectArray JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1getRuns
+  (JNIEnv * env, jclass clz, jlong pBiDi)
 {
+  int runCount = 0;
   int start = 0;
-  int length = 0;
+  int limit = 0;
+  int i = 0;
   UBiDiLevel level = 0;
   jclass run_clazz = 0;
   jmethodID initID = 0;
   jobject run = 0;
-
-  ubidi_getVisualRun ((UBiDi *) ((IDATA) pBiDi), index, &start, &length);
-  ubidi_getLogicalRun ((const UBiDi *) ((IDATA) pBiDi), start, NULL, &level);
+  jobjectArray runs;
+  UErrorCode err = 0;
 
   run_clazz = (*env)->FindClass (env, "org/apache/harmony/text/BidiRun");
   initID = (*env)->GetMethodID (env, run_clazz, "<init>", "(III)V");
 
-  run =
-    (*env)->NewObject (env, run_clazz, initID, start, start + length, level);
-
-  return run;
+  runCount = ubidi_countRuns ((UBiDi *) ((IDATA) pBiDi), &err);
+  check_fail (env, err);
+  
+  runs = (*env)->NewObjectArray(env, runCount,run_clazz, NULL);  
+  for (i = 0; i < runCount; i++) {
+      ubidi_getLogicalRun ((const UBiDi *)pBiDi, start, &limit, &level);
+	  run = (*env)->NewObject (env, run_clazz, initID, start, limit, level);
+      (*env)->SetObjectArrayElement(env, runs, i, run);
+	  start = limit;	  
+  }
+  return runs;
 }
 
 void

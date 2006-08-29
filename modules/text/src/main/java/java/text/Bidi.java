@@ -238,10 +238,7 @@ public final class Bidi {
 			runCount = 0;
 			runs = null;
 		} else {
-			runs = new BidiRun[runCount];
-			for (int i = 0; i < runs.length; i++) {
-				runs[i] = BidiWrapper.ubidi_getRun(pBidi, i);
-			}
+			runs = BidiWrapper.ubidi_getRuns(pBidi);
 		}
 
 		direction = BidiWrapper.ubidi_getDirection(pBidi);

@@ -923,4 +923,28 @@ public class BidiTest extends TestCase {
 			// expected
 		}
 	}
+    
+    public void testGetRuns() {
+        //Regression test for Harmony-1028
+        
+        String LTR = "\u0061\u0062";
+        String RTL = "\u05DC\u05DD";
+        String newLine = "\n";
+        String defText = LTR + newLine + RTL + LTR + RTL;
+        
+        int[][] expectedRuns = {
+                {0, 3},
+                {3, 5},
+                {5, 7},
+                {7, 9},
+        };
+        
+        Bidi bi = new Bidi(defText, 0);
+        final int count = bi.getRunCount();
+        for (int i = 0; i < count; i++) {
+            assertEquals(expectedRuns[i][0], bi.getRunStart(i));
+            assertEquals(expectedRuns[i][1], bi.getRunLimit(i));
+        }
+    }
+
 }

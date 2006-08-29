@@ -79,8 +79,8 @@ public final class BidiWrapper {
 	// Get the number of runs.
 	public static native int ubidi_countRuns(long pBiDi);
 
-	// Get the BidiRun of the nth logical run
-	public static native BidiRun ubidi_getRun(long pBidi, int index);
+	// Get the BidiRuns
+	public static native BidiRun[] ubidi_getRuns(long pBidi);
 
 	// This is a convenience function that does not use a UBiDi object
 	public static native int[] ubidi_reorderVisual(byte[] levels, int length);
