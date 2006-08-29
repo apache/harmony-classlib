@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 /**
-* @author Maxim V. Makarov, Stepan M. Mishura
-* @version $Revision$
-*/
+ * @author Maxim V. Makarov, Stepan M. Mishura
+ * @version $Revision$
+ */
 
 package javax.security.auth.kerberos;
 
@@ -25,6 +25,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.security.Principal;
+import java.util.StringTokenizer;
+
+import org.apache.harmony.auth.internal.kerberos.v5.PrincipalName;
+import org.apache.harmony.security.asn1.ASN1StringType;
 
 /**
  * @com.intel.drl.spec_ref
@@ -68,29 +72,32 @@ public final class KerberosPrincipal implements Principal, Serializable {
 
     // the full name of principal
     private transient String name;
+
     // the realm
     private transient String realm;
-    // type of the principal 
+
+    // type of the principal
     private transient int type;
 
     // TODO: It is gag.
-    // When KerberosPrincipla will be realize then this method 
+    // When KerberosPrincipla will be realize then this method
     // should be delete or modify
     private void init(String name) {
-        
+
         // FIXME: correctly implement parsing name according to RFC 1964
         // http://www.ietf.org/rfc/rfc1964.txt
-        if (name == null || name.trim().length()==0) {
+        if (name == null || name.trim().length() == 0) {
             throw new IllegalArgumentException("Invalid principal name");
         }
         int pos = name.indexOf('@');
         if (pos != -1) {
             realm = name.substring(pos + 1, name.length());
         } else {
+            // look for local realm name
             throw new UnsupportedOperationException();
         }
         this.name = name;
-        
+
         // verify realm name according to RFC 1964(2.1.1 (2))
         // check invalid chars '/', ':' and null
         if (realm.indexOf('/') != -1 || realm.indexOf(':') != -1
@@ -101,10 +108,10 @@ public final class KerberosPrincipal implements Principal, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref 
+     * @com.intel.drl.spec_ref
      */
     public KerberosPrincipal(String name) {
-        //TODO: If principal name does't specify then a default realm 
+        // TODO: If principal name does't specify then a default realm
         // should be read from krb.conf file else IllegalArgumentException
         // should be throw
         init(name);
@@ -112,14 +119,14 @@ public final class KerberosPrincipal implements Principal, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref 
+     * @com.intel.drl.spec_ref
      */
     public KerberosPrincipal(String name, int type) {
-        //TODO: If principal name does't specify then a default realm 
+        // TODO: If principal name does't specify then a default realm
         // should be read from krb.conf file else IllegalArgumentException
         // should be throw
         init(name);
-        //TODO: it is gag
+        // TODO: it is gag
         if (type < 0 || type > KRB_NT_UID) {
             throw new IllegalArgumentException("Invalid name type");
         }
@@ -167,8 +174,8 @@ public final class KerberosPrincipal implements Principal, Serializable {
             return false;
         }
 
-        KerberosPrincipal that = (KerberosPrincipal)obj;
-        
+        KerberosPrincipal that = (KerberosPrincipal) obj;
+
         return (that.name.equals(this.name) && that.type == this.type);
     }
 
@@ -179,15 +186,61 @@ public final class KerberosPrincipal implements Principal, Serializable {
         return super.toString();
     }
 
-    // TODO: read a object from a stream
     private void readObject(ObjectInputStream s) throws IOException,
-        ClassNotFoundException {
+            ClassNotFoundException {
+
         s.defaultReadObject();
+
+        PrincipalName principalName = (PrincipalName) PrincipalName.ASN1
+                .decode((byte[]) s.readObject());
+        realm = (String) ASN1StringType.GENERALSTRING.decode((byte[]) s
+                .readObject());
+
+        String[] nameString = principalName.getName();
+        StringBuilder buf = new StringBuilder();
+        for (int i = 0; i < (nameString.length - 1); i++) {
+            buf.append(nameString[i]);
+            buf.append('/');
+        }
+        // append last name element
+        buf.append(nameString[nameString.length - 1]);
+
+        // append realm
+        buf.append('@');
+        buf.append(realm);
+
+        name = buf.toString();
+
+        type = principalName.getType();
+
+        //FIXME: verify serialized values
     }
 
-    // TODO: write a object to a stream
     private void writeObject(ObjectOutputStream s) throws IOException {
-        s.defaultWriteObject();
-    }
 
+        s.defaultWriteObject();
+
+        String[] nameString;
+
+        // FIXME: ignores escaped '/','@' chars
+        int pos = name.indexOf('@');
+        String str = name.substring(0, pos);
+        if (name.indexOf('/') == -1) {
+            //there is only one component in principal name
+            nameString = new String[] { str };
+        } else {
+            StringTokenizer strTknzr = new StringTokenizer(str, "/");
+            nameString = new String[strTknzr.countTokens()];
+            for (int i = 0; i < nameString.length; i++) {
+                nameString[i] = strTknzr.nextToken();
+            }
+        }
+
+        byte[] enc = PrincipalName.ASN1.encode(new PrincipalName(type,
+                nameString));
+        s.writeObject(enc);
+
+        enc = ASN1StringType.GENERALSTRING.encode(realm);
+        s.writeObject(enc);
+    }
 }
