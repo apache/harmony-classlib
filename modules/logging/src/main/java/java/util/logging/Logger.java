@@ -259,8 +259,13 @@ public class Logger {
             }
         }
         // try all class loaders up the class stack
-        final Class[] classes = (new PrivateSecurityManager())
-                .privateGetClassContext();
+        final Class[] classes = AccessController
+                .doPrivileged(new PrivilegedAction<Class[]>() {
+                    public Class[] run() {
+                        return (new PrivateSecurityManager())
+                                .privateGetClassContext();
+                    }
+                });
         // the first class, which is PrivateSecurityManager, is skipped
         for (int i = 1; i < classes.length; i++) {
             final int index = i;

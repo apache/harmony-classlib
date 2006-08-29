@@ -26,12 +26,13 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import java.util.logging.LoggerExtension;
 import java.util.logging.LoggingPermission;
 
-import java.util.logging.LoggerExtension;
-
 import junit.framework.TestCase;
+
 import org.apache.harmony.logging.tests.java.util.logging.util.EnvironmentHelper;
+
 import tests.util.CallVerificationStack;
 
 /**
@@ -2716,6 +2717,22 @@ public class LoggerTest extends TestCase {
 		assertEquals(null, r.getParameters()[0]);
 		assertSame(r.getThrown(), null);
 	}
+    
+    /**
+     * @tests java.util.logging.Logger#logrb(Level, String, String, String,
+     *        String, Object)
+     */
+    public void test_logrbLLevel_LString_LString_LObject_Security()
+            throws Exception {
+        // regression test for Harmony-1290
+        SecurityManager originalSecurityManager = System.getSecurityManager();
+        try {
+            System.setSecurityManager(new SecurityManager());
+            Logger.global.logrb(Level.OFF, null, null, "abc", "def");
+        } finally {
+            System.setSecurityManager(originalSecurityManager);
+        }
+    }
 
 	/*
 	 * Test logrb(Level, String, String, String, String, Object) with null
