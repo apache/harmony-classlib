@@ -29,6 +29,14 @@ extern "C" {
 JNIEXPORT jbyteArray JNICALL Java_org_apache_harmony_luni_platform_Environment_getEnvBytes
   (JNIEnv *, jclass);
 
+/*
+ * Class:     org_apache_harmony_luni_platform_Environment
+ * Method:    getEnvByName
+ * Signature: ([B)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_org_apache_harmony_luni_platform_Environment_getEnvByName
+  (JNIEnv *, jclass, jbyteArray);
+
 #ifdef __cplusplus
 }
 #endif

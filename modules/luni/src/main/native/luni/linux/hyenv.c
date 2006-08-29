@@ -13,14 +13,13 @@
  * limitations under the License.
  */
 #include <string.h>
-#include <unistd.h>
+#include <vmi.h>
 #include "hyenv.h"
 
 JNIEXPORT jbyteArray JNICALL Java_org_apache_harmony_luni_platform_Environment_getEnvBytes
   (JNIEnv *env, jclass obj){
-  jstring returnvar;
-  char* var;
   extern char** environ;
+  char* var;  
   jbyteArray byteArray;
   int bufsize=0,i=0,start=0,len=0;
   for(i=0;*(environ+i);i++){
@@ -35,3 +34,27 @@ JNIEXPORT jbyteArray JNICALL Java_org_apache_harmony_luni_platform_Environment_g
   return byteArray;
 }
 
+JNIEXPORT jbyteArray JNICALL Java_org_apache_harmony_luni_platform_Environment_getEnvByName
+  (JNIEnv *env, jclass obj, jbyteArray name){
+  jsize len = 0;
+  jbyteArray byteArray;
+  char *envname, *envvalue;
+  PORT_ACCESS_FROM_ENV(env);
+
+  len = (*env)->GetArrayLength(env, name);
+  envname = (char *)hymem_allocate_memory(len+1);  
+  (*env)->GetByteArrayRegion(env, name, 0, len,(jbyte *)envname);
+  envname[len] = 0;
+
+  envvalue = getenv(envname);
+  hymem_free_memory(envname);
+  
+  if(NULL == envvalue){
+    return NULL;
+  }
+  
+  len = strlen(envvalue);
+  byteArray = (*env)->NewByteArray(env,len);
+  (*env)->SetByteArrayRegion(env,byteArray, 0, len, (jbyte *)envvalue);
+  return byteArray;
+}

@@ -23,28 +23,28 @@ import java.util.Map;
  */
 public class Environment {
 
-	private static Map<String, String> envMap = new HashMap<String, String>();
-
-	static {
-        byte[] bytes = getEnvBytes();
-        if (bytes == null) {
-            throw new Error("Failed to get environment variables.");
-        }
-        String[] envStrings = new String(bytes).split("\0");
-        for (int i = 0; i < envStrings.length; i++) {
-            int separator = envStrings[i].indexOf("=");
-            envMap.put(envStrings[i].substring(0, separator), envStrings[i]
-                    .substring(separator + 1));
-        }
-	}
+	private static Map<String, String> envMap = null;
 
 	/**
-     * Returns a Map of the current environment variables, containing key and
-     * value pairs.
-     * 
-     * @return a Map containing the environment variables and their values
-     */
+	 * Returns a Map of the current environment variables, containing key and
+	 * value pairs.
+	 * 
+	 * @return a Map containing the environment variables and their values
+	 1*/
 	public static Map<String, String> getenv() {
+		if (null == envMap) {
+			envMap = new HashMap<String, String>();
+			byte[] bytes = getEnvBytes();
+			if (bytes == null) {
+				throw new Error("Failed to get environment variables.");
+			}
+			String[] envStrings = new String(bytes).split("\0");
+			for (int i = 0; i < envStrings.length; i++) {
+				int separator = envStrings[i].indexOf("=");
+				envMap.put(envStrings[i].substring(0, separator), envStrings[i]
+						.substring(separator + 1));
+			}
+		}
 		return envMap;
 	}
 
@@ -58,8 +58,14 @@ public class Environment {
 	 * @return the value of the environment variable specified
 	 */
 	public static String getenv(String name) {
-		return envMap.get(name);
+		byte[] env = getEnvByName(name.getBytes());
+		if (null == env) {
+			return null;
+		}
+		return new String(env);
 	}
 
 	private static native byte[] getEnvBytes();
+
+	private static native byte[] getEnvByName(byte[] name);
 }
