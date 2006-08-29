@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public class BatchUpdateException extends SQLException implements Serializable {
 
     private static final long serialVersionUID = 5977529877145521757L;
 
-    private int[] theUpdateCounts = null;
+    private int[] updateCounts = null;
 
     /**
      * Creates a BatchUpdateException with the Reason, SQLState, and Update
@@ -59,7 +59,7 @@ public class BatchUpdateException extends SQLException implements Serializable {
      */
     public BatchUpdateException(int[] updateCounts) {
         super();
-        this.theUpdateCounts = updateCounts;
+        this.updateCounts = updateCounts;
     }
 
     /**
@@ -74,7 +74,7 @@ public class BatchUpdateException extends SQLException implements Serializable {
      */
     public BatchUpdateException(String reason, int[] updateCounts) {
         super(reason);
-        this.theUpdateCounts = updateCounts;
+        this.updateCounts = updateCounts;
     }
 
     /**
@@ -92,7 +92,7 @@ public class BatchUpdateException extends SQLException implements Serializable {
     public BatchUpdateException(String reason, String SQLState,
             int[] updateCounts) {
         super(reason, SQLState);
-        this.theUpdateCounts = updateCounts;
+        this.updateCounts = updateCounts;
     }
 
     /**
@@ -112,7 +112,7 @@ public class BatchUpdateException extends SQLException implements Serializable {
     public BatchUpdateException(String reason, String SQLState, int vendorCode,
             int[] updateCounts) {
         super(reason, SQLState, vendorCode);
-        this.theUpdateCounts = updateCounts;
+        this.updateCounts = updateCounts;
     }
 
     /**
@@ -140,6 +140,6 @@ public class BatchUpdateException extends SQLException implements Serializable {
      *         </ol>
      */
     public int[] getUpdateCounts() {
-        return theUpdateCounts;
+        return updateCounts;
     }
 }

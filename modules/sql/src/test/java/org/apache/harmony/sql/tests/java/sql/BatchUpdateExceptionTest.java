@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,10 @@
 
 package org.apache.harmony.sql.tests.java.sql;
 
+import java.io.Serializable;
 import java.sql.BatchUpdateException;
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 import junit.framework.TestCase;
 
@@ -321,6 +324,51 @@ public class BatchUpdateExceptionTest extends TestCase {
 		} // end for
 
 	} // end method testGetUpdateCounts
+    
+    /**
+     * @tests serialization/deserialization compatibility.
+     */
+    public void testSerializationSelf() throws Exception {
+        BatchUpdateException object = new BatchUpdateException();
+        SerializationTest.verifySelf(object, BATCHUPDATEEXCEPTION_COMPARATOR);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+        int vendorCode = 10;
+        int[] updateCounts = { 1, 2, 3, 4 };
+        BatchUpdateException object = new BatchUpdateException("reason",
+                "SQLState", vendorCode, updateCounts);
+        SerializationTest.verifyGolden(this, object,
+                BATCHUPDATEEXCEPTION_COMPARATOR);
+    }
+
+    // comparator for BatchUpdateException field updateCounts
+    private static final SerializableAssert BATCHUPDATEEXCEPTION_COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
+
+            // do common checks for all throwable objects
+            SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(initial,
+                    deserialized);
+
+            BatchUpdateException initThr = (BatchUpdateException) initial;
+            BatchUpdateException dserThr = (BatchUpdateException) deserialized;
+
+            // verify updateCounts
+            int[] initUpdateCounts = initThr.getUpdateCounts();
+            int[] dserUpdateCounts = dserThr.getUpdateCounts();
+            if (initUpdateCounts == null) {
+                assertNull(dserUpdateCounts);
+            } else {
+                for (int i = 0; i < initUpdateCounts.length; i++) {
+                    assertEquals(initUpdateCounts[i], dserUpdateCounts[i]);
+                }
+            }
+        }
+    };
 
 } // end class BatchUpdateExceptionTest
 
