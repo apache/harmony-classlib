@@ -26,3 +26,4 @@ org/apache/harmony/auth/login/*
 org/apache/harmony/auth/module/*
 
 org/apache/harmony/auth/internal/nls/*
+org/apache/harmony/auth/internal/kerberos/v5/*
