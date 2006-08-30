@@ -26,7 +26,7 @@ public class StringReader extends Reader {
 
 	private int markpos = -1;
 
-	private int pos = 0;
+	private int pos;
 
 	private int count;
 
@@ -49,16 +49,18 @@ public class StringReader extends Reader {
 	 * longer read from it. Only the first invocation of this method has any
 	 * effect.
 	 */
-	public void close() {
+	@Override
+    public void close() {
 		synchronized (lock) {
-			if (isOpen())
-				str = null;
+			if (isOpen()) {
+                str = null;
+            }
 		}
 	}
 
 	/**
 	 * Answer a boolean indicating whether or not this StringReader is open.
-	 * @return str
+	 * @return <code>true</code> if open, otherwise <code>false</code>
 	 */
 	private boolean isOpen() {
 		return str != null;
@@ -75,17 +77,20 @@ public class StringReader extends Reader {
 	 * @throws IOException
 	 *             If an error occurs attempting mark this StringReader.
 	 */
-	public void mark(int readLimit) throws IOException {
+	@Override
+    public void mark(int readLimit) throws IOException {
 		if (readLimit >= 0) {
 			synchronized (lock) {
-				if (isOpen())
-					markpos = pos;
-				else
-					throw new IOException(org.apache.harmony.luni.util.Msg
+				if (isOpen()) {
+                    markpos = pos;
+                } else {
+                    throw new IOException(org.apache.harmony.luni.util.Msg
 							.getString("K0083")); //$NON-NLS-1$
+                }
 			}
-		} else
-			throw new IllegalArgumentException();
+		} else {
+            throw new IllegalArgumentException();
+        }
 	}
 
 	/**
@@ -96,7 +101,8 @@ public class StringReader extends Reader {
 	 *         <code>false</code> otherwise. This implementation always
 	 *         returns <code>true</code>.
 	 */
-	public boolean markSupported() {
+	@Override
+    public boolean markSupported() {
 		return true;
 	}
 
@@ -110,7 +116,8 @@ public class StringReader extends Reader {
 	 * @throws IOException
 	 *             If the StringReader is already closed.
 	 */
-	public int read() throws IOException {
+	@Override
+    public int read() throws IOException {
 		synchronized (lock) {
 			if (isOpen()) {
 				if (pos != count) {
@@ -127,7 +134,8 @@ public class StringReader extends Reader {
 	 * 
 	 * @see java.io.Reader#read(char[], int, int)
 	 */
-	public int read(char buf[], int offset, int len) throws IOException {
+	@Override
+    public int read(char buf[], int offset, int len) throws IOException {
 		// avoid int overflow
 		if (0 <= offset && offset <= buf.length && 0 <= len
 				&& len <= buf.length - offset) {
@@ -163,10 +171,12 @@ public class StringReader extends Reader {
 	 * @throws IOException
 	 *             If an IO error occurs.
 	 */
-	public boolean ready() throws IOException {
+	@Override
+    public boolean ready() throws IOException {
 		synchronized (lock) {
-			if (isOpen())
-				return true;
+			if (isOpen()) {
+                return true;
+            }
 			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0083")); //$NON-NLS-1$
 		}
 	}
@@ -180,12 +190,14 @@ public class StringReader extends Reader {
 	 * @throws IOException
 	 *             If this StringReader has already been closed.
 	 */
-	public void reset() throws IOException {
+	@Override
+    public void reset() throws IOException {
 		synchronized (lock) {
-			if (isOpen())
-				pos = markpos != -1 ? markpos : 0;
-			else
-				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0083")); //$NON-NLS-1$
+			if (isOpen()) {
+                pos = markpos != -1 ? markpos : 0;
+            } else {
+                throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0083")); //$NON-NLS-1$
+            }
 		}
 	}
 
@@ -194,7 +206,8 @@ public class StringReader extends Reader {
 	 * 
 	 * @see java.io.Reader#skip(long)
 	 */
-	public long skip(long ns) throws IOException {
+	@Override
+    public long skip(long ns) throws IOException {
 		synchronized (lock) {
 			if (isOpen()) {
 				if (ns <= 0) {

@@ -87,9 +87,11 @@ public class PipedInputStream extends InputStream {
 	 * @throws IOException
 	 *             If an error occurs in this stream.
 	 */
-	public synchronized int available() throws IOException {
-		if (buffer == null || in == -1)
-			return 0;
+	@Override
+    public synchronized int available() throws IOException {
+		if (buffer == null || in == -1) {
+            return 0;
+        }
 		return in <= out ? buffer.length - out + in : in - out;
 	}
 
@@ -100,7 +102,8 @@ public class PipedInputStream extends InputStream {
 	 * @throws IOException
 	 *             If an error occurs attempting to close this stream.
 	 */
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		synchronized (this) {
 			/* No exception thrown if already closed */
 			if (buffer != null) {
@@ -139,7 +142,8 @@ public class PipedInputStream extends InputStream {
 	 *             If the stream is already closed or another IOException
 	 *             occurs.
 	 */
-	public synchronized int read() throws IOException {
+	@Override
+    public synchronized int read() throws IOException {
 		if (isConnected) {
 			if (buffer != null) {
 				/**
@@ -152,12 +156,14 @@ public class PipedInputStream extends InputStream {
 					boolean first = true;
 					while (in == -1) {
 						// Are we at end of stream?
-						if (isClosed)
-							return -1;
+						if (isClosed) {
+                            return -1;
+                        }
 						if (!first && lastWriter != null
-								&& !lastWriter.isAlive())
-							throw new IOException(org.apache.harmony.luni.util.Msg
+								&& !lastWriter.isAlive()) {
+                            throw new IOException(org.apache.harmony.luni.util.Msg
 									.getString("K0076")); //$NON-NLS-1$
+                        }
 						first = false;
 						// Notify callers of receive()
 						notifyAll();
@@ -168,8 +174,9 @@ public class PipedInputStream extends InputStream {
 				}
 
 				byte result = buffer[out++];
-				if (out == buffer.length)
-					out = 0;
+				if (out == buffer.length) {
+                    out = 0;
+                }
 				if (out == in) {
 					// empty buffer
 					in = -1;
@@ -203,12 +210,14 @@ public class PipedInputStream extends InputStream {
 	 *             If the stream is already closed or another IOException
 	 *             occurs.
 	 */
-	public synchronized int read(byte[] bytes, int offset, int count)
+	@Override
+    public synchronized int read(byte[] bytes, int offset, int count)
 			throws IOException {
 		if (bytes != null && 0 <= offset && offset <= bytes.length
 				&& 0 <= count && count <= bytes.length - offset) {
-			if (count == 0)
-				return 0;
+			if (count == 0) {
+                return 0;
+            }
 			if (isConnected && buffer != null) {
 				/**
 				 * Set the last thread to be reading on this PipedInputStream.
@@ -220,12 +229,14 @@ public class PipedInputStream extends InputStream {
 					boolean first = true;
 					while (in == -1) {
 						// Are we at end of stream?
-						if (isClosed)
-							return -1;
+						if (isClosed) {
+                            return -1;
+                        }
 						if (!first && lastWriter != null
-								&& !lastWriter.isAlive())
-							throw new IOException(org.apache.harmony.luni.util.Msg
+								&& !lastWriter.isAlive()) {
+                            throw new IOException(org.apache.harmony.luni.util.Msg
 									.getString("K0076")); //$NON-NLS-1$
+                        }
 						first = false;
 						// Notify callers of receive()
 						notifyAll();
@@ -242,8 +253,9 @@ public class PipedInputStream extends InputStream {
 							- out : count;
 					System.arraycopy(buffer, out, bytes, offset, copyLength);
 					out += copyLength;
-					if (out == buffer.length)
-						out = 0;
+					if (out == buffer.length) {
+                        out = 0;
+                    }
 					if (out == in) {
 						// empty buffer
 						in = -1;
@@ -255,8 +267,9 @@ public class PipedInputStream extends InputStream {
 				 * Did the read fully succeed in the previous copy or is the
 				 * buffer empty?
 				 */
-				if (copyLength == count || in == -1)
-					return copyLength;
+				if (copyLength == count || in == -1) {
+                    return copyLength;
+                }
 
 				int bytesCopied = copyLength;
 				/* Copy bytes from 0 to the number of available bytes */
@@ -315,19 +328,22 @@ public class PipedInputStream extends InputStream {
 			while (buffer != null && out == in) {
 				notifyAll();
 				wait(1000);
-				if (lastReader != null && !lastReader.isAlive())
-					throw new IOException(org.apache.harmony.luni.util.Msg
+				if (lastReader != null && !lastReader.isAlive()) {
+                    throw new IOException(org.apache.harmony.luni.util.Msg
 							.getString("K0076")); //$NON-NLS-1$
+                }
 			}
 		} catch (InterruptedException e) {
 			throw new InterruptedIOException();
 		}
 		if (buffer != null) {
-			if (in == -1)
-				in = 0;
+			if (in == -1) {
+                in = 0;
+            }
 			buffer[in++] = (byte) oneByte;
-			if (in == buffer.length)
-				in = 0;
+			if (in == buffer.length) {
+                in = 0;
+            }
 			return;
 		}
 	}

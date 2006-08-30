@@ -1080,7 +1080,8 @@ public class ObjectStreamClass implements Serializable {
 	 * 
 	 * @return a printable representation for the receiver.
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		return getName() + ": static final long serialVersionUID =" //$NON-NLS-1$
 				+ getSerialVersionUID() + "L;"; //$NON-NLS-1$
 	}

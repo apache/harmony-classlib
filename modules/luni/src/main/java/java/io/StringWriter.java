@@ -49,8 +49,9 @@ public class StringWriter extends Writer {
 		if (initialSize >= 0) {
 			buf = new StringBuffer(initialSize);
 			lock = buf;
-		} else
-			throw new IllegalArgumentException();
+		} else {
+            throw new IllegalArgumentException();
+        }
 	}
 
 	/**
@@ -60,7 +61,8 @@ public class StringWriter extends Writer {
 	 * @throws IOException
 	 *             If an IO error occurs closing this StringWriter.
 	 */
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		/*empty*/
 	}
 
@@ -68,7 +70,8 @@ public class StringWriter extends Writer {
 	 * Flush this Writer. This is the concrete implementation required. This
 	 * particular implementation does nothing.
 	 */
-	public void flush() {
+	@Override
+    public void flush() {
 		/*empty*/
 	}
 
@@ -92,7 +95,8 @@ public class StringWriter extends Writer {
 	 * 
 	 * @return this StringWriters current contents as a String.
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		synchronized (lock) {
 			return buf.toString();
 		}
@@ -112,7 +116,8 @@ public class StringWriter extends Writer {
 	 * @throws ArrayIndexOutOfBoundsException
 	 *             If offset or count are outside of bounds.
 	 */
-	public void write(char[] cbuf, int offset, int count) {
+	@Override
+    public void write(char[] cbuf, int offset, int count) {
 		// avoid int overflow
 		if (0 <= offset && offset <= cbuf.length && 0 <= count
 				&& count <= cbuf.length - offset) {
@@ -133,7 +138,8 @@ public class StringWriter extends Writer {
 	 *            The character to write
 	 * 
 	 */
-	public void write(int oneChar) {
+	@Override
+    public void write(int oneChar) {
 		synchronized (lock) {
 			buf.append((char) oneChar);
 		}
@@ -147,7 +153,8 @@ public class StringWriter extends Writer {
 	 *            the non-null String containing the characters to write.
 	 * 
 	 */
-	public void write(String str) {
+	@Override
+    public void write(String str) {
 		synchronized (lock) {
 			buf.append(str);
 		}
@@ -168,7 +175,8 @@ public class StringWriter extends Writer {
 	 * @throws ArrayIndexOutOfBoundsException
 	 *             If offset or count are outside of bounds.
 	 */
-	public void write(String str, int offset, int count) {
+	@Override
+    public void write(String str, int offset, int count) {
 		String sub = str.substring(offset, offset + count);
 		synchronized (lock) {
 			buf.append(sub);
@@ -180,12 +188,12 @@ public class StringWriter extends Writer {
 	 * StringWriter.append(<code>c</code>) works the same way as
 	 * StringWriter.write(<code>c</code>).
 	 * 
-	 * @override Writer.append
 	 * @param c
 	 *            The character appended to the StringWriter.
 	 * @return The StringWriter.
 	 */
-	public StringWriter append(char c) {
+	@Override
+    public StringWriter append(char c) {
 		write(c);
 		return this;
 	}
@@ -196,12 +204,12 @@ public class StringWriter extends Writer {
 	 * StringWriter.write(<code>csq</code>.toString()). If <code>csq</code>
 	 * is null, then "null" will be substituted for <code>csq</code>.
 	 * 
-	 * @override Writer.append
 	 * @param csq
 	 *            The CharSequence appended to the StringWriter.
 	 * @return The StringWriter
 	 */
-	public StringWriter append(CharSequence csq) {
+	@Override
+    public StringWriter append(CharSequence csq) {
 		if (null == csq) {
 			append(TOKEN_NULL, 0, TOKEN_NULL.length());
 		} else {
@@ -218,8 +226,7 @@ public class StringWriter extends Writer {
 	 * StringWriter.write(<code>csq</code>.subSequence(<code>start</code>,<code>end</code>).toString).If
 	 * <code>csq</code> is null, then "null" will be substituted for
 	 * <code>csq</code>.
-	 * 
-	 * @override Writer.append
+	 * s
 	 * @param csq
 	 *            The CharSequence appended to the StringWriter.
 	 * @param start
@@ -233,7 +240,8 @@ public class StringWriter extends Writer {
 	 *             If start is less than end, end is greater than the length of
 	 *             the CharSequence, or start or end is negative.
 	 */
-	public StringWriter append(CharSequence csq, int start, int end) {
+	@Override
+    public StringWriter append(CharSequence csq, int start, int end) {
 		if (null == csq) {
 			csq = TOKEN_NULL;
 		}

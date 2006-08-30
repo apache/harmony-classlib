@@ -40,13 +40,13 @@ public class PrintWriter extends Writer {
 	/**
 	 * indicates whether or not this PrintWriter has incurred an error.
 	 */
-	boolean ioError;
+	private boolean ioError;
 
 	/**
 	 * indicates whether or not this PrintWriter should flush its contents after
 	 * printing a new line.
 	 */
-	boolean autoflush;
+	private boolean autoflush;
 
 	private final String lineSeparator = AccessController
             .doPrivileged(new PriviAction<String>("line.separator")); //$NON-NLS-1$
@@ -215,7 +215,8 @@ public class PrintWriter extends Writer {
 	 * <code>true</code>.
 	 * 
 	 */
-	public void close() {
+	@Override
+    public void close() {
 		synchronized (lock) {
 			if (out != null) {
 				try {
@@ -233,7 +234,8 @@ public class PrintWriter extends Writer {
 	 * target Writer. This implementation flushes the target writer. If an error
 	 * occurs, set an error in this PrintWriter to <code>true</code>.
 	 */
-	public void flush() {
+	@Override
+    public void flush() {
 		synchronized (lock) {
 			if (out != null) {
 				try {
@@ -603,7 +605,8 @@ public class PrintWriter extends Writer {
 	 * @param buf
 	 *            the non-null array containing characters to write.
 	 */
-	public void write(char buf[]) {
+	@Override
+    public void write(char buf[]) {
 		write(buf, 0, buf.length);
 	}
 
@@ -618,7 +621,8 @@ public class PrintWriter extends Writer {
 	 *
 	 * @throws		ArrayIndexOutOfBoundsException 	If offset or count are outside of bounds.
 	 */
-	public void write(char buf[], int offset, int count) {
+	@Override
+    public void write(char buf[], int offset, int count) {
 		doWrite(buf, offset, count);
 	}
 
@@ -629,7 +633,8 @@ public class PrintWriter extends Writer {
 	 * @param oneChar
 	 *            The character to write
 	 */
-	public void write(int oneChar) {
+	@Override
+    public void write(int oneChar) {
 		doWrite(new char[] { (char) oneChar }, 0, 1);
 	}
 	
@@ -653,7 +658,8 @@ public class PrintWriter extends Writer {
 	 * @param str
 	 *            the non-null String containing the characters to write.
 	 */
-	public void write(String str) {
+	@Override
+    public void write(String str) {
 		write(str.toCharArray());
 	}
 
@@ -671,7 +677,8 @@ public class PrintWriter extends Writer {
 	 * @throws ArrayIndexOutOfBoundsException
 	 *             If offset or count are outside of bounds.
 	 */
-	public void write(String str, int offset, int count) {
+	@Override
+    public void write(String str, int offset, int count) {
 		write(str.substring(offset, offset + count).toCharArray());
 	}
 
@@ -685,7 +692,8 @@ public class PrintWriter extends Writer {
 	 *            The character appended to the PrintWriter.
 	 * @return The PrintWriter.
 	 */
-	public PrintWriter append(char c) {
+	@Override
+    public PrintWriter append(char c) {
 		write(c);
 		return this;
 	}
@@ -701,7 +709,8 @@ public class PrintWriter extends Writer {
 	 *            The CharSequence appended to the PrintWriter.
 	 * @return The PrintWriter
 	 */
-	public PrintWriter append(CharSequence csq) {
+	@Override
+    public PrintWriter append(CharSequence csq) {
 		if (null == csq) {
 			append(TOKEN_NULL, 0, TOKEN_NULL.length());
 		} else {
@@ -733,7 +742,8 @@ public class PrintWriter extends Writer {
 	 *             If start is less than end, end is greater than the length of
 	 *             the CharSequence, or start or end is negative.
 	 */
-	public PrintWriter append(CharSequence csq, int start, int end) {
+	@Override
+    public PrintWriter append(CharSequence csq, int start, int end) {
 		if (null == csq) {
 			csq = TOKEN_NULL;
 		}

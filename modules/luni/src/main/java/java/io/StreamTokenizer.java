@@ -96,17 +96,17 @@ public class StreamTokenizer {
 
 	private int lineNumber = 1;
 
-	private boolean forceLowercase = false;
+	private boolean forceLowercase;
 
-	private boolean isEOLSignificant = false;
+	private boolean isEOLSignificant;
 
-	private boolean slashStarComments = false;
+	private boolean slashStarComments;
 
-	private boolean slashSlashComments = false;
+	private boolean slashSlashComments;
 
-	private boolean pushBackToken = false;
+	private boolean pushBackToken;
 
-	private boolean lastCr = false;
+	private boolean lastCr;
 
 	/* One of these will have the stream */
 	private InputStream inStream;
@@ -160,12 +160,14 @@ public class StreamTokenizer {
 	 * 
 	 * @deprecated Use StreamTokenizer(Reader)
 	 */
-	public StreamTokenizer(InputStream is) {
+	@Deprecated
+    public StreamTokenizer(InputStream is) {
 		this();
-		if (is != null)
-			inStream = is;
-		else
-			throw new NullPointerException();
+		if (is != null) {
+            inStream = is;
+        } else {
+            throw new NullPointerException();
+        }
 	}
 
 	/**
@@ -189,10 +191,11 @@ public class StreamTokenizer {
 	 */
 	public StreamTokenizer(Reader r) {
 		this();
-		if (r != null)
-			inReader = r;
-		else
-			throw new NullPointerException();
+		if (r != null) {
+            inReader = r;
+        } else {
+            throw new NullPointerException();
+        }
 	}
 
 	/**
@@ -203,8 +206,9 @@ public class StreamTokenizer {
 	 *            The character to be considered a comment character.
 	 */
 	public void commentChar(int ch) {
-		if (0 <= ch && ch < tokenTypes.length)
-			tokenTypes[ch] = TOKEN_COMMENT;
+		if (0 <= ch && ch < tokenTypes.length) {
+            tokenTypes[ch] = TOKEN_COMMENT;
+        }
 	}
 
 	/**
@@ -251,8 +255,9 @@ public class StreamTokenizer {
 	public int nextToken() throws IOException {
 		if (pushBackToken) {
 			pushBackToken = false;
-			if (ttype != TT_UNKNOWN)
-				return ttype;
+			if (ttype != TT_UNKNOWN) {
+                return ttype;
+            }
 		}
 		sval = null; // Always reset sval to null
 		int currentChar = peekChar == -2 ? read() : peekChar;
@@ -261,8 +266,9 @@ public class StreamTokenizer {
 			lastCr = false;
 			currentChar = read();
 		}
-		if (currentChar == -1)
-			return (ttype = TT_EOF);
+		if (currentChar == -1) {
+            return (ttype = TT_EOF);
+        }
 
 		byte currentType = currentChar > 255 ? TOKEN_WORD
 				: tokenTypes[currentChar];
@@ -277,8 +283,9 @@ public class StreamTokenizer {
 					peekChar = -2;
 					return (ttype = TT_EOL);
 				}
-				if ((currentChar = read()) == '\n')
-					currentChar = read();
+				if ((currentChar = read()) == '\n') {
+                    currentChar = read();
+                }
 			} else if (currentChar == '\n') {
 				lineNumber++;
 				if (isEOLSignificant) {
@@ -290,8 +297,9 @@ public class StreamTokenizer {
 				// Advance over this white space character and try again.
 				currentChar = read();
 			}
-			if (currentChar == -1)
-				return (ttype = TT_EOF);
+			if (currentChar == -1) {
+                return (ttype = TT_EOF);
+            }
 			currentType = currentChar > 255 ? TOKEN_WORD
 					: tokenTypes[currentChar];
 		}
@@ -304,18 +312,21 @@ public class StreamTokenizer {
             StringBuilder digits = new StringBuilder(20);
 			boolean haveDecimal = false, checkJustNegative = currentChar == '-';
 			while (true) {
-				if (currentChar == '.')
-					haveDecimal = true;
+				if (currentChar == '.') {
+                    haveDecimal = true;
+                }
 				digits.append((char) currentChar);
 				currentChar = read();
 				if ((currentChar < '0' || currentChar > '9')
-						&& (haveDecimal || currentChar != '.'))
-					break;
+						&& (haveDecimal || currentChar != '.')) {
+                    break;
+                }
 			}
 			peekChar = currentChar;
-			if (checkJustNegative && digits.length() == 1)
-				// Didn't get any other digits other than '-'
+			if (checkJustNegative && digits.length() == 1) {
+                // Didn't get any other digits other than '-'
 				return (ttype = '-');
+            }
 			try {
 				nval = Double.valueOf(digits.toString()).doubleValue();
 			} catch (NumberFormatException e) {
@@ -331,8 +342,9 @@ public class StreamTokenizer {
 				word.append((char) currentChar);
 				currentChar = read();
 				if (currentChar == -1
-						|| (currentChar < 256 && (tokenTypes[currentChar] & (TOKEN_WORD | TOKEN_DIGIT)) == 0))
-					break;
+						|| (currentChar < 256 && (tokenTypes[currentChar] & (TOKEN_WORD | TOKEN_DIGIT)) == 0)) {
+                    break;
+                }
 			}
 			peekChar = currentChar;
 			sval = forceLowercase ? word.toString().toLowerCase() : word
@@ -359,10 +371,11 @@ public class StreamTokenizer {
 							digitValue = digitValue * 8 + (c1 - '0');
 							c1 = read();
 							// limit the digit value to a byte
-							if (digitValue > 037 || c1 > '7' || c1 < '0')
-								readPeek = false;
-							else
-								digitValue = digitValue * 8 + (c1 - '0');
+							if (digitValue > 037 || c1 > '7' || c1 < '0') {
+                                readPeek = false;
+                            } else {
+                                digitValue = digitValue * 8 + (c1 - '0');
+                            }
 						}
 						if (!readPeek) {
 							// We've consumed one to many
@@ -404,8 +417,9 @@ public class StreamTokenizer {
 					peekOne = read();
 				}
 			}
-			if (peekOne == matchQuote)
-				peekOne = read();
+			if (peekOne == matchQuote) {
+                peekOne = read();
+            }
 			peekChar = peekOne;
 			ttype = matchQuote;
 			sval = quoteString.toString();
@@ -423,8 +437,9 @@ public class StreamTokenizer {
 						return (ttype = TT_EOF);
 					}
 					if (currentChar == '\r') {
-						if (peekOne == '\n')
-							peekOne = read();
+						if (peekOne == '\n') {
+                            peekOne = read();
+                        }
 						lineNumber++;
 					} else if (currentChar == '\n') {
 						lineNumber++;
@@ -470,8 +485,9 @@ public class StreamTokenizer {
 	 *            The character to be considered an ordinary comment character.
 	 */
 	public void ordinaryChar(int ch) {
-		if (0 <= ch && ch < tokenTypes.length)
-			tokenTypes[ch] = 0;
+		if (0 <= ch && ch < tokenTypes.length) {
+            tokenTypes[ch] = 0;
+        }
 	}
 
 	/**
@@ -484,20 +500,24 @@ public class StreamTokenizer {
 	 *            The ending range for ordinary characters.
 	 */
 	public void ordinaryChars(int low, int hi) {
-		if (low < 0)
-			low = 0;
-		if (hi > tokenTypes.length)
-			hi = tokenTypes.length - 1;
-		for (int i = low; i <= hi; i++)
-			tokenTypes[i] = 0;
+		if (low < 0) {
+            low = 0;
+        }
+		if (hi > tokenTypes.length) {
+            hi = tokenTypes.length - 1;
+        }
+		for (int i = low; i <= hi; i++) {
+            tokenTypes[i] = 0;
+        }
 	}
 
 	/**
 	 * Indicate that numbers should be parsed.
 	 */
 	public void parseNumbers() {
-		for (int i = '0'; i <= '9'; i++)
-			tokenTypes[i] |= TOKEN_DIGIT;
+		for (int i = '0'; i <= '9'; i++) {
+            tokenTypes[i] |= TOKEN_DIGIT;
+        }
 		tokenTypes['.'] |= TOKEN_DIGIT;
 		tokenTypes['-'] |= TOKEN_DIGIT;
 	}
@@ -517,14 +537,16 @@ public class StreamTokenizer {
 	 *            The character to be considered a quote comment character.
 	 */
 	public void quoteChar(int ch) {
-		if (0 <= ch && ch < tokenTypes.length)
-			tokenTypes[ch] = TOKEN_QUOTE;
+		if (0 <= ch && ch < tokenTypes.length) {
+            tokenTypes[ch] = TOKEN_QUOTE;
+        }
 	}
 
 	private int read() throws IOException {
 		// Call the read for the appropriate stream
-		if (inStream == null)
-			return inReader.read();
+		if (inStream == null) {
+            return inReader.read();
+        }
 		return inStream.read();
 	}
 
@@ -532,8 +554,9 @@ public class StreamTokenizer {
 	 * Reset all characters so that they are ordinary.
 	 */
 	public void resetSyntax() {
-		for (int i = 0; i < 256; i++)
-			tokenTypes[i] = 0;
+		for (int i = 0; i < 256; i++) {
+            tokenTypes[i] = 0;
+        }
 	}
 
 	/**
@@ -566,7 +589,8 @@ public class StreamTokenizer {
 	 * 
 	 * @return The current state of this tokenizer.
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		// Values determined through experimentation
         StringBuilder result = new StringBuilder();
 		result.append("Token["); //$NON-NLS-1$
@@ -605,12 +629,15 @@ public class StreamTokenizer {
 	 *            The ending range for whitespace characters.
 	 */
 	public void whitespaceChars(int low, int hi) {
-		if (low < 0)
-			low = 0;
-		if (hi > tokenTypes.length)
-			hi = tokenTypes.length - 1;
-		for (int i = low; i <= hi; i++)
-			tokenTypes[i] = TOKEN_WHITE;
+		if (low < 0) {
+            low = 0;
+        }
+		if (hi > tokenTypes.length) {
+            hi = tokenTypes.length - 1;
+        }
+		for (int i = low; i <= hi; i++) {
+            tokenTypes[i] = TOKEN_WHITE;
+        }
 	}
 
 	/**
@@ -623,11 +650,14 @@ public class StreamTokenizer {
 	 *            The ending range for word characters.
 	 */
 	public void wordChars(int low, int hi) {
-		if (low < 0)
-			low = 0;
-		if (hi > tokenTypes.length)
-			hi = tokenTypes.length - 1;
-		for (int i = low; i <= hi; i++)
-			tokenTypes[i] |= TOKEN_WORD;
+		if (low < 0) {
+            low = 0;
+        }
+		if (hi > tokenTypes.length) {
+            hi = tokenTypes.length - 1;
+        }
+		for (int i = low; i <= hi; i++) {
+            tokenTypes[i] |= TOKEN_WORD;
+        }
 	}
 }

@@ -15,6 +15,8 @@
 
 package java.io;
 
+import org.apache.harmony.luni.util.Msg;
+
 
 /**
  * PipedReader is a class which receives information on a communications pipe.
@@ -23,9 +25,11 @@ package java.io;
  * 
  */
 public class PipedReader extends Reader {
-	private Thread lastReader, lastWriter;
+	private Thread lastReader;
+    
+    private Thread lastWriter;
 
-	private boolean isClosed = false;
+	private boolean isClosed;
 
 	/**
 	 * The circular buffer through which data is passed.
@@ -41,7 +45,7 @@ public class PipedReader extends Reader {
 	/**
 	 * The index in <code>buffer</code> where the next character will be read.
 	 */
-	private int out = 0;
+	private int out;
 
 	/**
 	 * The size of the default pipe in characters
@@ -51,7 +55,7 @@ public class PipedReader extends Reader {
 	/**
 	 * Indicates if this pipe is connected
 	 */
-	private boolean isConnected = false;
+	private boolean isConnected;
 
 	/**
 	 * Constructs a new unconnected PipedReader. The resulting Reader must be
@@ -84,7 +88,8 @@ public class PipedReader extends Reader {
 	 * @throws IOException
 	 *             If an error occurs attempting to close this reader.
 	 */
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		synchronized (lock) {
 			/* No exception thrown if already closed */
 			if (data != null) {
@@ -118,12 +123,14 @@ public class PipedReader extends Reader {
 	 */
 	void establishConnection() throws IOException {
 		synchronized (lock) {
-			if (data == null)
-				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0078")); //$NON-NLS-1$
+			if (data == null) {
+                throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
+            }
 			if (!isConnected) {
 				isConnected = true;
-			} else
-				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K007a")); //$NON-NLS-1$
+			} else {
+                throw new IOException(Msg.getString("K007a")); //$NON-NLS-1$
+            }
 		}
 	}
 
@@ -140,7 +147,8 @@ public class PipedReader extends Reader {
 	 *             If the reader is already closed or another IOException
 	 *             occurs.
 	 */
-	public int read() throws IOException {
+	@Override
+    public int read() throws IOException {
 		char[] carray = new char[1];
 		int result = read(carray, 0, 1);
 		return result != -1 ? carray[0] : result;
@@ -156,7 +164,7 @@ public class PipedReader extends Reader {
 	 * interacts a reader or writer pipe.
 	 * 
 	 * @param buffer
-	 *            the charcter array in which to store the read characters.
+	 *            the character array in which to store the read characters.
 	 * @param offset
 	 *            the offset in <code>buffer</code> to store the read
 	 *            characters.
@@ -170,22 +178,22 @@ public class PipedReader extends Reader {
 	 *             If the reader is already closed or another IOException
 	 *             occurs.
 	 */
-	public int read(char[] buffer, int offset, int count) throws IOException {
+	@Override
+    public int read(char[] buffer, int offset, int count) throws IOException {
         synchronized (lock) {
             if (!isConnected) {
-                throw new IOException(org.apache.harmony.luni.util.Msg
-                        .getString("K007b")); //$NON-NLS-1$
+                throw new IOException(Msg.getString("K007b")); //$NON-NLS-1$
             }
             if (data == null) {
-                throw new IOException(org.apache.harmony.luni.util.Msg
-                        .getString("K0078")); //$NON-NLS-1$
+                throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
             }
             // avoid int overflow
             if (offset < 0 || count > buffer.length - offset || count < 0) {
                 throw new IndexOutOfBoundsException();
             }
-            if (count == 0)
+            if (count == 0) {
                 return 0;
+            }
             /**
              * Set the last thread to be reading on this PipedReader. If
              * lastReader dies while someone is waiting to write an IOException
@@ -196,11 +204,12 @@ public class PipedReader extends Reader {
                 boolean first = true;
                 while (in == -1) {
                     // Are we at end of stream?
-                    if (isClosed)
+                    if (isClosed) {
                         return -1;
-                    if (!first && lastWriter != null && !lastWriter.isAlive())
-                        throw new IOException(org.apache.harmony.luni.util.Msg
-                                .getString("K0076")); //$NON-NLS-1$
+                    }
+                    if (!first && lastWriter != null && !lastWriter.isAlive()) {
+                        throw new IOException(Msg.getString("K0076")); //$NON-NLS-1$
+                    }
                     first = false;
                     // Notify callers of receive()
                     notifyAll();
@@ -213,12 +222,12 @@ public class PipedReader extends Reader {
             int copyLength = 0;
             /* Copy chars from out to end of buffer first */
             if (out >= in) {
-                copyLength = count > data.length - out ? data.length - out
-                        : count;
+                copyLength = count > data.length - out ? data.length - out : count;
                 System.arraycopy(data, out, buffer, offset, copyLength);
                 out += copyLength;
-                if (out == data.length)
+                if (out == data.length) {
                     out = 0;
+                }
                 if (out == in) {
                     // empty buffer
                     in = -1;
@@ -230,13 +239,13 @@ public class PipedReader extends Reader {
              * Did the read fully succeed in the previous copy or is the buffer
              * empty?
              */
-            if (copyLength == count || in == -1)
+            if (copyLength == count || in == -1) {
                 return copyLength;
+            }
 
             int charsCopied = copyLength;
             /* Copy bytes from 0 to the number of available bytes */
-            copyLength = in - out > count - copyLength ? count - copyLength
-                    : in - out;
+            copyLength = in - out > count - copyLength ? count - copyLength : in - out;
             System.arraycopy(data, out, buffer, offset + charsCopied,
                     copyLength);
             out += copyLength;
@@ -258,17 +267,18 @@ public class PipedReader extends Reader {
 	 *
 	 * @throws 		IOException If the reader is already closed or another IOException occurs.
 	 */
-	public boolean ready() throws IOException {
-		synchronized (lock) {
-			if (isConnected) {
-				if (data != null) {
-					return in != -1;
-				}
-				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0078")); //$NON-NLS-1$
-			}
-			throw new IOException(org.apache.harmony.luni.util.Msg.getString("K007b")); //$NON-NLS-1$
-		}
-	}
+	@Override
+    public boolean ready() throws IOException {
+        synchronized (lock) {
+            if (isConnected) {
+                if (data != null) {
+                    return in != -1;
+                }
+                throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
+            }
+            throw new IOException(Msg.getString("K007b")); //$NON-NLS-1$
+        }
+    }
 
 	/**
 	 * Receives a char and stores it into the PipedReader. This called by
@@ -287,14 +297,12 @@ public class PipedReader extends Reader {
 	void receive(char oneChar) throws IOException {
         synchronized (lock) {
             if (data == null) {
-                throw new IOException(org.apache.harmony.luni.util.Msg
-                        .getString("K0078")); //$NON-NLS-1$
+                throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
             }
             if (lastReader != null && !lastReader.isAlive()) {
-                throw new IOException(org.apache.harmony.luni.util.Msg
-                        .getString("K0076")); //$NON-NLS-1$
+                throw new IOException(Msg.getString("K0076")); //$NON-NLS-1$
             }
-            /**
+            /*
              * Set the last thread to be writing on this PipedWriter. If
              * lastWriter dies while someone is waiting to read an IOException
              * of "Pipe broken" will be thrown in read()
@@ -305,19 +313,20 @@ public class PipedReader extends Reader {
                     notifyAll();
                     wait(1000);
                     if (lastReader != null && !lastReader.isAlive()) {
-                        throw new IOException(org.apache.harmony.luni.util.Msg
-                                .getString("K0076")); //$NON-NLS-1$
+                        throw new IOException(Msg.getString("K0076")); //$NON-NLS-1$
                     }
                 }
             } catch (InterruptedException e) {
                 throw new InterruptedIOException();
             }
             if (data != null) {
-                if (in == -1)
+                if (in == -1) {
                     in = 0;
+                }
                 data[in++] = oneChar;
-                if (in == data.length)
+                if (in == data.length) {
                     in = 0;
+                }
                 return;
             }
         }
@@ -344,12 +353,10 @@ public class PipedReader extends Reader {
 	void receive(char[] chars, int offset, int count) throws IOException {
         synchronized (lock) {
             if (data == null) {
-                throw new IOException(org.apache.harmony.luni.util.Msg
-                        .getString("K0078")); //$NON-NLS-1$
+                throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
             }
             if (lastReader != null && !lastReader.isAlive()) {
-                throw new IOException(org.apache.harmony.luni.util.Msg
-                        .getString("K0076")); //$NON-NLS-1$
+                throw new IOException(Msg.getString("K0076")); //$NON-NLS-1$
             }
             /**
              * Set the last thread to be writing on this PipedWriter. If
@@ -363,41 +370,45 @@ public class PipedReader extends Reader {
                         notifyAll();
                         wait(1000);
                         if (lastReader != null && !lastReader.isAlive()) {
-                            throw new IOException(
-                                    org.apache.harmony.luni.util.Msg
-                                            .getString("K0076")); //$NON-NLS-1$
+                            throw new IOException(Msg.getString("K0076")); //$NON-NLS-1$
                         }
                     }
                 } catch (InterruptedException e) {
                     throw new InterruptedIOException();
                 }
-                if (data == null)
+                if (data == null) {
                     break;
-                if (in == -1)
+                }
+                if (in == -1) {
                     in = 0;
+                }
                 if (in >= out) {
                     int length = data.length - in;
-                    if (count < length)
+                    if (count < length) {
                         length = count;
+                    }
                     System.arraycopy(chars, offset, data, in, length);
                     offset += length;
                     count -= length;
                     in += length;
-                    if (in == data.length)
+                    if (in == data.length) {
                         in = 0;
+                    }
                 }
                 if (count > 0 && in != out) {
                     int length = out - in;
-                    if (count < length)
+                    if (count < length) {
                         length = count;
+                    }
                     System.arraycopy(chars, offset, data, in, length);
                     offset += length;
                     count -= length;
                     in += length;
                 }
             }
-            if (count == 0)
+            if (count == 0) {
                 return;
+            }
         }
     }
 

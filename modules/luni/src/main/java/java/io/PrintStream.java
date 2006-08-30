@@ -36,6 +36,8 @@ import org.apache.harmony.luni.util.PriviAction;
 public class PrintStream extends FilterOutputStream implements Appendable,
 		Closeable {
 
+    private static final String TOKEN_NULL = "null"; //$NON-NLS-1$
+    
 	/**
 	 * protect writes to the underlying stream.
 	 */
@@ -44,20 +46,18 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 	/**
 	 * indicates whether or not this PrintStream has incurred an error.
 	 */
-	boolean ioError;
+	private boolean ioError;
 
 	/**
 	 * indicates whether or not this PrintStream should flush its contents after
 	 * printing a new line.
 	 */
-	boolean autoflush;
+	private boolean autoflush;
 
 	private String encoding;
 
 	private final String lineSeparator = AccessController
 			.doPrivileged(new PriviAction<String>("line.separator")); //$NON-NLS-1$
-
-	static final String TOKEN_NULL = "null"; //$NON-NLS-1$
 
 	// private Formatter formatter;
 
@@ -240,7 +240,8 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 	 * <code>true</code>.
 	 * 
 	 */
-	public void close() {
+	@Override
+    public void close() {
 		synchronized (lock) {
 			flush();
 			if (out != null) {
@@ -260,7 +261,8 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 	 * If an error occurs, set an error in this PrintStream to <code>true</code>.
 	 * 
 	 */
-	public void flush() {
+	@Override
+    public void flush() {
 		synchronized (lock) {
 			if (out != null) {
 				try {
@@ -643,7 +645,8 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 	 * @throws IndexOutOfBoundsException
 	 *             If offset or count are outside of bounds.
 	 */
-	public void write(byte[] buffer, int offset, int count) {
+	@Override
+    public void write(byte[] buffer, int offset, int count) {
 		if (buffer != null) {
 			// avoid int overflow
 			if (0 <= offset && offset <= buffer.length && 0 <= count
@@ -681,7 +684,8 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 	 * @param oneByte
 	 *            the byte to be written
 	 */
-	public void write(int oneByte) {
+	@Override
+    public void write(int oneByte) {
 		synchronized (lock) {
 			if (out == null) {
 				setError();

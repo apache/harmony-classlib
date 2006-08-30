@@ -22,6 +22,7 @@ package java.io;
  * 
  * @deprecated Use StringReader
  */
+@Deprecated
 public class StringBufferInputStream extends InputStream {
 	/**
 	 * The String containing the data to read.
@@ -48,8 +49,9 @@ public class StringBufferInputStream extends InputStream {
 		if (str != null) {
 			buffer = str;
 			count = str.length();
-		} else
-			throw new NullPointerException();
+		} else {
+            throw new NullPointerException();
+        }
 	}
 
 	/**
@@ -59,7 +61,8 @@ public class StringBufferInputStream extends InputStream {
 	 * @return the number of characters available.
 	 * 
 	 */
-	public synchronized int available() {
+	@Override
+    public synchronized int available() {
 		return count - pos;
 	}
 
@@ -70,7 +73,8 @@ public class StringBufferInputStream extends InputStream {
 	 * 
 	 * @return the byte read or -1 if end of stream.
 	 */
-	public synchronized int read() {
+	@Override
+    public synchronized int read() {
 		return pos < count ? buffer.charAt(pos++) & 0xFF : -1;
 	}
 
@@ -88,7 +92,8 @@ public class StringBufferInputStream extends InputStream {
 	 *            the maximum number of bytes to store in <code>b</code>.
 	 * @return the number of bytes actually read or -1 if end of stream.
 	 */
-	public synchronized int read(byte b[], int offset, int length) {
+	@Override
+    public synchronized int read(byte b[], int offset, int length) {
 		// According to 22.7.6 should return -1 before checking other
 		// parameters.
 		if (pos >= count) {
@@ -103,8 +108,9 @@ public class StringBufferInputStream extends InputStream {
 				}
 
 				int copylen = count - pos < length ? count - pos : length;
-				for (int i = 0; i < copylen; i++)
-					b[offset + i] = (byte) buffer.charAt(pos + i);
+				for (int i = 0; i < copylen; i++) {
+                    b[offset + i] = (byte) buffer.charAt(pos + i);
+                }
 				pos += copylen;
 				return copylen;
 			}
@@ -118,7 +124,8 @@ public class StringBufferInputStream extends InputStream {
 	 * from this position.
 	 * 
 	 */
-	public synchronized void reset() {
+	@Override
+    public synchronized void reset() {
 		pos = 0;
 	}
 
@@ -131,9 +138,11 @@ public class StringBufferInputStream extends InputStream {
 	 *            the number of characters to skip.
 	 * @return the number of characters actually skipped.
 	 */
-	public synchronized long skip(long n) {
-		if (n <= 0)
-			return 0;
+	@Override
+    public synchronized long skip(long n) {
+		if (n <= 0) {
+            return 0;
+        }
 
 		int numskipped;
 		if (this.count - pos < n) {

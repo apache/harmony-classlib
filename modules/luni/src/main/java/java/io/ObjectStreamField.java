@@ -255,7 +255,8 @@ public class ObjectStreamField implements Comparable<Object> {
 	 * 
 	 * @return a printable representation for the receiver.
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		return this.getClass().getName() + '(' + getName() + ':' + getTypeInternal()
 				+ ')';
 	}

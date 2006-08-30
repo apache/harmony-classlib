@@ -15,6 +15,8 @@
 
 package java.io;
 
+import org.apache.harmony.luni.util.Msg;
+
 
 /**
  * PipedWriter is a class which places information on a communications pipe.
@@ -29,7 +31,7 @@ public class PipedWriter extends Writer {
 	 */
 	private PipedReader dest;
 
-	private boolean closed = false;
+	private boolean closed;
 
 	/**
 	 * Constructs a new unconnected PipedWriter. The resulting Stream must be
@@ -63,7 +65,8 @@ public class PipedWriter extends Writer {
 	 * @throws java.io.IOException
 	 *             If an error occurs attempting to close this PipedWriter.
 	 */
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		synchronized (lock) {
 			/* Is the pipe connected? */
 			if (dest != null) {
@@ -90,11 +93,12 @@ public class PipedWriter extends Writer {
 				if (!closed) {
 					stream.establishConnection();
 					this.dest = stream;
-				} else
-					throw new IOException(org.apache.harmony.luni.util.Msg
-							.getString("K0078")); //$NON-NLS-1$
-			} else
-				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0079")); //$NON-NLS-1$
+				} else {
+                    throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
+                }
+			} else {
+                throw new IOException(Msg.getString("K0079")); //$NON-NLS-1$
+            }
 		}
 	}
 
@@ -105,9 +109,11 @@ public class PipedWriter extends Writer {
 	 * @throws java.io.IOException
 	 *             If an IO error occurs during the flush.
 	 */
-	public void flush() throws IOException {
-		if (dest != null)
-			dest.flush();
+	@Override
+    public void flush() throws IOException {
+		if (dest != null) {
+            dest.flush();
+        }
 	}
 
 	/**
@@ -137,24 +143,24 @@ public class PipedWriter extends Writer {
 	 * @throws java.lang.IllegalArgumentException
 	 *             If any of the arguments are out of bounds.
 	 */
-	public void write(char buffer[], int offset, int count) throws IOException {
+	@Override
+    public void write(char buffer[], int offset, int count) throws IOException {
         if (buffer == null) {
-            throw new NullPointerException(org.apache.harmony.luni.util.Msg
-                    .getString("K0047")); //$NON-NLS-1$
+            throw new NullPointerException(Msg.getString("K0047")); //$NON-NLS-1$
         }
 		// avoid int overflow
 		if (0 <= offset && offset <= buffer.length && 0 <= count
 				&& count <= buffer.length - offset) {
 			synchronized (lock) {
 				if (!closed) {
-					if (dest != null)
-						dest.receive(buffer, offset, count);
-					else
-						throw new IOException(org.apache.harmony.luni.util.Msg
-								.getString("K007b")); //$NON-NLS-1$
-				} else
-					throw new IOException(org.apache.harmony.luni.util.Msg
-							.getString("K0078")); //$NON-NLS-1$
+					if (dest != null) {
+                        dest.receive(buffer, offset, count);
+                    } else {
+                        throw new IOException(Msg.getString("K007b")); //$NON-NLS-1$
+                    }
+                } else {
+                    throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
+                }
 			}
 		} else {
 			throw new IndexOutOfBoundsException();
@@ -181,16 +187,18 @@ public class PipedWriter extends Writer {
 	 * @throws java.lang.NullPointerException
 	 *             If the receiver has not been connected yet.
 	 */
-	public void write(int c) throws IOException {
+	@Override
+    public void write(int c) throws IOException {
 		synchronized (lock) {
 			if (!closed) {
-				if (dest != null)
-					dest.receive((char) c);
-				else
-					throw new IOException(org.apache.harmony.luni.util.Msg
-							.getString("K007b")); //$NON-NLS-1$
-			} else
-				throw new IOException(org.apache.harmony.luni.util.Msg.getString("K0078")); //$NON-NLS-1$
+				if (dest != null) {
+                    dest.receive((char) c);
+                } else {
+                    throw new IOException(Msg.getString("K007b")); //$NON-NLS-1$
+                }
+			} else {
+                throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
+            }
 		}
 	}
 }

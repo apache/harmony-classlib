@@ -1399,6 +1399,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      * 
      * @deprecated Use BufferedReader
      */
+    @SuppressWarnings("deprecation")
     @Deprecated
     public String readLine() throws IOException {
         return primitiveTypes.readLine();
@@ -1593,6 +1594,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         }
         return classDesc;
     }
+    
+    @SuppressWarnings("unchecked") //For the Enum.valueOf call
     private Object readEnum(boolean unshared) throws OptionalDataException,
             ClassNotFoundException, IOException {
         // read classdesc for Enum first

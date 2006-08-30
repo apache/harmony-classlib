@@ -142,7 +142,8 @@ public class OutputStreamWriter extends Writer {
 	 *             If an error occurs attempting to close this
 	 *             OutputStreamWriter.
 	 */
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		synchronized (lock) {
 			if (encoder != null) {
 				encoder.flush(bytes);
@@ -165,7 +166,8 @@ public class OutputStreamWriter extends Writer {
 	 *             OutputStreamWriter.
 	 */
 
-	public void flush() throws IOException {
+	@Override
+    public void flush() throws IOException {
 		synchronized (lock) {
 			checkStatus();
 			int position;
@@ -221,7 +223,8 @@ public class OutputStreamWriter extends Writer {
 	 * @throws IndexOutOfBoundsException
 	 *             If offset or count is outside of bounds.
 	 */
-	public void write(char[] buf, int offset, int count) throws IOException {
+	@Override
+    public void write(char[] buf, int offset, int count) throws IOException {
 		synchronized (lock) {
 			checkStatus();
 			if (offset < 0 || offset > buf.length - count || count < 0) {
@@ -260,7 +263,8 @@ public class OutputStreamWriter extends Writer {
 	 *             If this OutputStreamWriter has already been closed or some
 	 *             other IOException occurs.
 	 */
-	public void write(int oneChar) throws IOException {
+	@Override
+    public void write(int oneChar) throws IOException {
 		synchronized (lock) {
 			checkStatus();
 			CharBuffer chars = CharBuffer.wrap(new char[] { (char) oneChar });
@@ -290,7 +294,8 @@ public class OutputStreamWriter extends Writer {
 	 * @throws StringIndexOutOfBoundsException
 	 *             If offset is negative or offset + count is outside of bounds
 	 */
-	public void write(String str, int offset, int count) throws IOException {
+	@Override
+    public void write(String str, int offset, int count) throws IOException {
 		synchronized (lock) {
 			// avoid int overflow
 			if (count < 0) {

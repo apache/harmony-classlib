@@ -59,7 +59,8 @@ public class WriteAbortedException extends ObjectStreamException {
 	 * 
 	 * @return the receiver's message.
 	 */
-	public String getMessage() {
+	@Override
+    public String getMessage() {
 		String msg = super.getMessage();
 		if (detail != null) {
 			msg = msg + "; " + detail.toString(); //$NON-NLS-1$
@@ -72,7 +73,8 @@ public class WriteAbortedException extends ObjectStreamException {
 	 * 
 	 * @return the receiver's cause.
 	 */
-	public Throwable getCause() {
+	@Override
+    public Throwable getCause() {
 		return detail;
 	}
 }

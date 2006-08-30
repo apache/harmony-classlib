@@ -28,12 +28,12 @@ public class SequenceInputStream extends InputStream {
 	/**
 	 * An enumeration which will return types of InputStream.
 	 */
-	Enumeration<? extends InputStream> e;
+	private Enumeration<? extends InputStream> e;
 
 	/**
 	 * The current input stream.
 	 */
-	InputStream in;
+	private InputStream in;
 
 	/**
 	 * Constructs a new SequenceInputStream using the two streams
@@ -82,7 +82,8 @@ public class SequenceInputStream extends InputStream {
 	 * @throws IOException
 	 *             If an error occurs in this InputStream.
 	 */
-	public int available() throws IOException {
+	@Override
+    public int available() throws IOException {
 		if (e != null && in != null) {
             return in.available();
         }
@@ -97,7 +98,8 @@ public class SequenceInputStream extends InputStream {
 	 * @throws IOException
 	 *             If an error occurs attempting to close this FileInputStream.
 	 */
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		while (in != null) {
 			nextStream();
 		}
@@ -134,7 +136,8 @@ public class SequenceInputStream extends InputStream {
 	 * @throws IOException
 	 *             If an error occurs while reading the stream
 	 */
-	public int read() throws IOException {
+	@Override
+    public int read() throws IOException {
 		while (in != null) {
 			int result = in.read();
 			if (result >= 0) {
@@ -162,7 +165,8 @@ public class SequenceInputStream extends InputStream {
 	 * @throws IOException
 	 *             If an error occurs while reading the stream
 	 */
-	public int read(byte[] buffer, int offset, int count) throws IOException {
+	@Override
+    public int read(byte[] buffer, int offset, int count) throws IOException {
 		if (in == null) {
 			return -1;
 		}
