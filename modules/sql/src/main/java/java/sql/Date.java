@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -181,7 +181,7 @@ public class Date extends java.util.Date {
         if (theString == null) {
             throw new IllegalArgumentException();
         }
-
+        validateString(theString, '-');
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
         try {
             aDate = dateFormat.parse(theString);
@@ -201,4 +201,27 @@ public class Date extends java.util.Date {
     private static long normalizeTime(long theTime) {
         return theTime;
     }
+    
+    /*
+     * Private method to validate the string. If the string is separated into 
+     * three parts by two separator char,we should check each part of the string.We just
+     * use the first two separator char, the others are treated as normal characters.
+     */
+    static void validateString(String timeString, char sep) {
+        int first = timeString.indexOf(sep); //$NON-NLS-1$
+        int second = timeString.indexOf(sep, first + 1); //$NON-NLS-1$
+        if (second != -1) {
+            //The string is separated into three parts by two separator character,
+            //if the first or the third part is null string, we should
+            //throw IllegalArgumentException to follow RI
+            if (first == 0 || second + 1 == timeString.length()) {
+                throw new IllegalArgumentException();
+            }
+            //check each part of the string
+            Integer.parseInt(timeString.substring(0, first));
+            Integer.parseInt(timeString.substring(first + 1, second));
+            Integer.parseInt(timeString.substring(second + 1, timeString
+                    .length()));
+        }
+    }   
 }

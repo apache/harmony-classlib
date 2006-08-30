@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -254,6 +254,73 @@ public class TimeTest extends TestCase {
 			 */
 		} // end try
 	} // end method test
-
+    
+    /**
+     * @tests java.sql.Time#valueOf(String )
+     */
+     public void test_valueOf_IllegalArgumentException() {
+            try{
+                Time.valueOf("15:43:12:34");
+                fail("should throw NumberFormatException");
+            } catch (NumberFormatException e) {
+                //expected
+            }
+            
+            try{
+                Time.valueOf(":10:07:01");
+                fail("should throw IllegalArgumentException");
+            } catch (IllegalArgumentException e) {
+                //expected
+            }
+            
+            try{
+                Time.valueOf("::01");
+                fail("should throw IllegalArgumentException");
+            } catch (IllegalArgumentException e) {
+                //expected
+            }
+            
+            try{
+                Time.valueOf("11::");
+                fail("should throw IllegalArgumentException");
+            } catch (IllegalArgumentException e) {
+                //expected
+            }
+            
+            try{
+                Time.valueOf(":01:");
+                fail("should throw IllegalArgumentException");
+            } catch (IllegalArgumentException e) {
+                //expected
+            }
+            
+            try{
+                Time.valueOf(":10:w2:01");
+                fail("should throw IllegalArgumentException");
+            } catch (IllegalArgumentException e) {
+                //expected
+            }
+        
+            try{
+                Time.valueOf("07:w2:");
+                fail("should throw IllegalArgumentException");
+            } catch (IllegalArgumentException e) {
+                //expected
+            }
+            
+            try{
+                Time.valueOf("17:w2:w2");
+                fail("should throw NumberFormatException");
+            } catch (NumberFormatException e) {
+                //expected
+            }
+            
+            try{
+                Time.valueOf("16::01");
+                fail("should throw NumberFormatException");
+            } catch (NumberFormatException e) {
+                //expected
+            }
+        }
 } // end class TimeTest
 

@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -389,6 +389,74 @@ public class DateTest extends TestCase {
 		} // end for
 
 	} // end method testValueOf()
+    
+    /**
+     * @tests java.sql.Date#valueOf(String )
+     */
+    public void test_valueOf_IllegalArgumentException() {
+        try{
+            Date.valueOf("1996-10-07-01");
+            fail("should throw NumberFormatException");
+        } catch (NumberFormatException e) {
+            //expected
+        }
+        
+        try{
+            Date.valueOf("-10-07-01");
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            //expected
+        }
+        
+        try{
+            Date.valueOf("--01");
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            //expected
+        }
+        
+        try{
+            Date.valueOf("1991--");
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            //expected
+        }
+        
+        try{
+            Date.valueOf("-01-");
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            //expected
+        }
+        
+        try{
+            Date.valueOf("-10-w2-01");
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            //expected
+        }
+        
+        try{
+            Date.valueOf("07-w2-");
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            //expected
+        }
+        
+        try{
+            Date.valueOf("1997-w2-w2");
+            fail("should throw NumberFormatException");
+        } catch (NumberFormatException e) {
+            //expected
+        }
+        
+        try{
+            Date.valueOf("1996--01");
+            fail("should throw NumberFormatException");
+        } catch (NumberFormatException e) {
+            //expected
+        }
+    }
 
 } // end class DateTest
 

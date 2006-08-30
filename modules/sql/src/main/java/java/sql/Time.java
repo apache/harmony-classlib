@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -178,7 +178,7 @@ public class Time extends Date {
         if (theTime == null) {
             throw new IllegalArgumentException();
         }
-
+        java.sql.Date.validateString(theTime, ':');
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss"); //$NON-NLS-1$
         try {
             aDate = dateFormat.parse(theTime);
@@ -188,4 +188,5 @@ public class Time extends Date {
 
         return new Time(aDate.getTime());
     }
+
 }
