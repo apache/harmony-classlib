@@ -18,14 +18,26 @@ package org.apache.harmony.logging.tests.java.util.logging;
 import java.util.logging.LoggingPermission;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class LoggingPermissionTest extends TestCase {
-	public void testSerializationCompability() throws Exception {
-		LoggingPermission lp = new LoggingPermission("control", "");
-		SerializationTester.assertCompabilityEquals(lp,
-				"serialization/java/util/logging/LogPermission.ser");
-	}
+
+    /**
+     * @tests serialization/deserialization compatibility.
+     */
+    public void testSerializationSelf() throws Exception {
+        SerializationTest.verifySelf(new LoggingPermission("control", ""));
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new LoggingPermission("control",
+                ""));
+    }
 
 	public void testLoggingPermission() {
 		try {

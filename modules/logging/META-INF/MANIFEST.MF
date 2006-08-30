@@ -16,5 +16,6 @@ Import-Package: java.beans,
  java.text,
  java.util,
  org.apache.harmony.kernel.vm,
- tests.util;hy_usage=test;resolution:=optional
+ tests.util;hy_usage=test;resolution:=optional,
+ org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional
 Export-Package: java.util.logging
