@@ -24,8 +24,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.apache.harmony.luni.util.NotYetImplementedException;
-
 import junit.framework.TestCase;
 
 public class EnumMapTest extends TestCase {
@@ -40,7 +38,38 @@ public class EnumMapTest extends TestCase {
     enum Empty {
         //Empty
     }
-    
+
+    private static class MockEntry<K, V> implements Map.Entry<K, V> {
+        private K key;
+
+        private V value;
+
+        public MockEntry(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        @Override
+        public int hashCode() {
+            return (key == null ? 0 : key.hashCode())
+                    ^ (value == null ? 0 : value.hashCode());
+        }
+
+        public K getKey() {
+            return key;
+        }
+
+        public V getValue() {
+            return value;
+        }
+
+        public V setValue(V object) {
+            V oldValue = value;
+            value = object;
+            return oldValue;
+        }
+    }
+
 
     /**
      * @tests java.util.EnumMap#EnumMap(Class)
@@ -262,6 +291,236 @@ public class EnumMapTest extends TestCase {
         enumSizeMap.put(Size.Big, null);
         assertTrue("Returned false for contained value", enumSizeMap //$NON-NLS-1$
                 .containsValue(null));
+    }
+
+    /**
+     * @tests java.util.EnumMap#entrySet()
+     */
+    @SuppressWarnings({ "unchecked", "boxing" })
+    public void test_entrySet() {
+        EnumMap enumSizeMap = new EnumMap(Size.class);
+        enumSizeMap.put(Size.Middle, 1);
+        enumSizeMap.put(Size.Big, null);
+        MockEntry mockEntry = new MockEntry(Size.Middle, 1);
+        Set set = enumSizeMap.entrySet();
+
+        Set set1 = enumSizeMap.entrySet();
+        assertSame("Should be same", set1, set); //$NON-NLS-1$
+        try {
+            set.add(mockEntry);
+            fail("Should throw UnsupportedOperationException"); //$NON-NLS-1$
+        } catch (UnsupportedOperationException e) {
+            // Expected
+        }
+
+        assertTrue("Returned false for contained object", set//$NON-NLS-1$
+                .contains(mockEntry));
+        mockEntry = new MockEntry(Size.Middle, null);
+        assertFalse("Returned true for uncontained object", set //$NON-NLS-1$
+                .contains(mockEntry));
+        assertFalse("Returned true for uncontained object", set //$NON-NLS-1$
+                .contains(Size.Small));
+        mockEntry = new MockEntry(new Integer(1), 1);
+        assertFalse("Returned true for uncontained object", set //$NON-NLS-1$
+                .contains(mockEntry));
+        assertFalse("Returned true for uncontained object", set //$NON-NLS-1$
+                .contains(new Integer(1)));
+
+        mockEntry = new MockEntry(Size.Big, null);
+        assertTrue("Returned false for contained object", set//$NON-NLS-1$
+                .contains(mockEntry));
+        assertTrue("Returned false when the object can be removed", set //$NON-NLS-1$
+                .remove(mockEntry));
+        assertFalse("Returned true for uncontained object", set //$NON-NLS-1$
+                .contains(mockEntry));
+        assertFalse("Returned true when the object can not be removed", set //$NON-NLS-1$
+                .remove(mockEntry));
+        mockEntry = new MockEntry(new Integer(1), 1);
+        assertFalse("Returned true when the object can not be removed", set //$NON-NLS-1$
+                .remove(mockEntry));
+        assertFalse("Returned true when the object can not be removed", set //$NON-NLS-1$
+                .remove(new Integer(1)));
+
+        // The set is backed by the map so changes to one are reflected by the
+        // other.
+        enumSizeMap.put(Size.Big, 3);
+        mockEntry = new MockEntry(Size.Big, 3);
+        assertTrue("Returned false for contained object", set//$NON-NLS-1$
+                .contains(mockEntry));
+        enumSizeMap.remove(Size.Big);
+        assertFalse("Returned true for uncontained object", set //$NON-NLS-1$
+                .contains(mockEntry));
+
+        assertEquals("Wrong size", 1, set.size()); //$NON-NLS-1$
+        set.clear();
+        assertEquals("Wrong size", 0, set.size()); //$NON-NLS-1$
+
+        enumSizeMap = new EnumMap(Size.class);
+        enumSizeMap.put(Size.Middle, 1);
+        enumSizeMap.put(Size.Big, null);
+        set = enumSizeMap.entrySet();
+        Collection c = new ArrayList();
+        c.add(new MockEntry(Size.Middle, 1));
+        assertTrue("Return wrong value", set.containsAll(c)); //$NON-NLS-1$
+        assertTrue("Remove does not success", set.removeAll(c)); //$NON-NLS-1$
+
+        enumSizeMap.put(Size.Middle, 1);
+        c.add(new MockEntry(Size.Big, 3));
+        assertTrue("Remove does not success", set.removeAll(c)); //$NON-NLS-1$
+        assertFalse("Should return false", set.removeAll(c)); //$NON-NLS-1$
+        assertEquals("Wrong size", 1, set.size()); //$NON-NLS-1$
+
+        enumSizeMap = new EnumMap(Size.class);
+        enumSizeMap.put(Size.Middle, 1);
+        enumSizeMap.put(Size.Big, null);
+        set = enumSizeMap.entrySet();
+        c = new ArrayList();
+        c.add(new MockEntry(Size.Middle, 1));
+        c.add(new MockEntry(Size.Big, 3));
+
+        assertTrue("Retain does not success", set.retainAll(c)); //$NON-NLS-1$
+        assertEquals("Wrong size", 1, set.size()); //$NON-NLS-1$
+        assertFalse("Should return false", set.retainAll(c)); //$NON-NLS-1$
+
+        enumSizeMap = new EnumMap(Size.class);
+        enumSizeMap.put(Size.Middle, 1);
+        enumSizeMap.put(Size.Big, null);
+
+        set = enumSizeMap.entrySet();
+        Object[] array = set.toArray();
+        assertEquals("Wrong length", 2, array.length); //$NON-NLS-1$
+        Map.Entry entry = (Map.Entry) array[0];
+        assertEquals("Wrong key", Size.Middle, entry.getKey()); //$NON-NLS-1$
+        assertEquals("Wrong value", 1, entry.getValue()); //$NON-NLS-1$
+
+        Object[] array1 = new Object[10];
+        array1 = set.toArray();
+        assertEquals("Wrong length", 2, array1.length); //$NON-NLS-1$
+        entry = (Map.Entry) array[0];
+        assertEquals("Wrong key", Size.Middle, entry.getKey()); //$NON-NLS-1$
+        assertEquals("Wrong value", 1, entry.getValue()); //$NON-NLS-1$
+
+        array1 = new Object[10];
+        array1 = set.toArray(array1);
+        assertEquals("Wrong length", 10, array1.length); //$NON-NLS-1$
+        entry = (Map.Entry) array[1];
+        assertEquals("Wrong key", Size.Big, entry.getKey()); //$NON-NLS-1$
+        assertNull("Should be null", array1[2]); //$NON-NLS-1$
+
+        set = enumSizeMap.entrySet();
+        Integer integer = new Integer("1"); //$NON-NLS-1$
+        assertFalse("Returned true when the object can not be removed", set //$NON-NLS-1$
+                .remove(integer));
+        assertTrue("Returned false when the object can be removed", set //$NON-NLS-1$
+                .remove(entry));
+
+        enumSizeMap = new EnumMap(Size.class);
+        enumSizeMap.put(Size.Middle, 1);
+        enumSizeMap.put(Size.Big, null);
+        set = enumSizeMap.entrySet();
+        Iterator iter = set.iterator();
+        entry = (Map.Entry) iter.next();
+        assertTrue("Returned false for contained object", set.contains(entry)); //$NON-NLS-1$
+        mockEntry = new MockEntry(Size.Middle, 2);
+        assertFalse("Returned true for uncontained object", set //$NON-NLS-1$
+                .contains(mockEntry));
+        mockEntry = new MockEntry(new Integer(2), 2);
+        assertFalse("Returned true for uncontained object", set //$NON-NLS-1$
+                .contains(mockEntry));
+        entry = (Map.Entry) iter.next();
+        assertTrue("Returned false for contained object", set.contains(entry)); //$NON-NLS-1$
+
+        enumSizeMap.put(Size.Middle, 1);
+        enumSizeMap.remove(Size.Big);
+        mockEntry = new MockEntry(Size.Big, null);
+        assertEquals("Wrong size", 1, set.size()); //$NON-NLS-1$
+        assertFalse("Returned true for uncontained object", set.contains(mockEntry)); //$NON-NLS-1$
+        enumSizeMap.put(Size.Big, 2);
+        mockEntry = new MockEntry(Size.Big, 2);
+        assertTrue("Returned false for contained object", set //$NON-NLS-1$
+                .contains(mockEntry));
+
+        iter.remove();
+        try {
+            iter.remove();
+            fail("Should throw IllegalStateException"); //$NON-NLS-1$
+        } catch (IllegalStateException e) {
+            // Expected
+        }
+        try {
+            entry.setValue(2);
+            fail("Should throw IllegalStateException"); //$NON-NLS-1$
+        } catch (IllegalStateException e) {
+            // Expected
+        }
+        try {
+            set.contains(entry);
+            fail("Should throw IllegalStateException"); //$NON-NLS-1$
+        } catch (IllegalStateException e) {
+            // Expected
+        }
+
+        enumSizeMap = new EnumMap(Size.class);
+        enumSizeMap.put(Size.Middle, 1);
+        enumSizeMap.put(Size.Big, null);
+        set = enumSizeMap.entrySet();
+        iter = set.iterator();
+        entry = (Map.Entry) iter.next();
+        assertEquals("Wrong key", Size.Middle, entry.getKey()); //$NON-NLS-1$
+
+        assertTrue("Returned false for contained object", set.contains(entry)); //$NON-NLS-1$
+        enumSizeMap.put(Size.Middle, 3);
+        assertTrue("Returned false for contained object", set.contains(entry)); //$NON-NLS-1$
+        entry.setValue(2);
+        assertTrue("Returned false for contained object", set.contains(entry)); //$NON-NLS-1$
+        assertFalse("Returned true for uncontained object", set //$NON-NLS-1$
+                .remove(new Integer(1)));
+
+        iter.next();
+        //The following test case fails on RI.
+        assertEquals("Wrong key", Size.Middle, entry.getKey()); //$NON-NLS-1$
+        set.clear();
+        assertEquals("Wrong size", 0, set.size()); //$NON-NLS-1$
+
+        enumSizeMap = new EnumMap(Size.class);
+        enumSizeMap.put(Size.Middle, 1);
+        enumSizeMap.put(Size.Big, null);
+        set = enumSizeMap.entrySet();
+        iter = set.iterator();
+        mockEntry = new MockEntry(Size.Middle, 1);
+
+        assertFalse("Wrong result", entry.equals(mockEntry)); //$NON-NLS-1$
+        try {
+            iter.remove();
+            fail("Should throw IllegalStateException"); //$NON-NLS-1$
+        } catch (IllegalStateException e) {
+            // Expected
+        }
+        entry = (Map.Entry) iter.next();
+        assertEquals("Wrong key", Size.Middle, entry.getKey()); //$NON-NLS-1$
+        assertTrue("Should return true", entry.equals(mockEntry)); //$NON-NLS-1$
+        assertEquals("Should be equal", mockEntry.hashCode(), entry.hashCode()); //$NON-NLS-1$
+        mockEntry = new MockEntry(Size.Big, 1);
+        assertFalse("Wrong result", entry.equals(mockEntry)); //$NON-NLS-1$
+
+        entry = (Map.Entry) iter.next();
+        assertFalse("Wrong result", entry.equals(mockEntry)); //$NON-NLS-1$
+        assertEquals("Wrong key", Size.Big, entry.getKey()); //$NON-NLS-1$
+        iter.remove();
+        assertFalse("Wrong result", entry.equals(mockEntry)); //$NON-NLS-1$
+        assertEquals("Wrong size", 1, set.size()); //$NON-NLS-1$
+        try {
+            iter.remove();
+            fail("Should throw IllegalStateException"); //$NON-NLS-1$
+        } catch (IllegalStateException e) {
+            // Expected
+        }
+        try {
+            iter.next();
+            fail("Should throw NoSuchElementException"); //$NON-NLS-1$
+        } catch (NoSuchElementException e) {
+            // Expected
+        }
     }
 
     /**
@@ -509,7 +768,7 @@ public class EnumMapTest extends TestCase {
         assertEquals("Return wrong value", 2, enumColorMap.put(Color.Blue, //$NON-NLS-1$
                 new Double(4)));
     }
-    
+
     /**
      * @tests java.util.EnumMap#putAll(Map)
      */
@@ -518,31 +777,26 @@ public class EnumMapTest extends TestCase {
         EnumMap enumColorMap = new EnumMap<Color, Double>(Color.class);
         enumColorMap.put(Color.Green, 2);
 
-        // TODO: The EnumMap.entrySet() will be implemented later.
+        EnumMap enumSizeMap = new EnumMap(Size.class);
+        enumColorMap.putAll(enumSizeMap);
+
+        enumSizeMap.put(Size.Big, 1);
         try {
-            EnumMap enumSizeMap = new EnumMap(Size.class);
             enumColorMap.putAll(enumSizeMap);
-
-            enumSizeMap.put(Size.Big, 1);
-            try {
-                enumColorMap.putAll(enumSizeMap);
-                fail("Expected ClassCastException"); //$NON-NLS-1$
-            } catch (ClassCastException e) {
-                // Expected
-            }
-
-            EnumMap enumColorMap1 = new EnumMap<Color, Double>(Color.class);
-            enumColorMap1.put(Color.Blue, 3);
-            enumColorMap.putAll(enumColorMap1);
-            assertEquals("Get returned incorrect value for given key", 3, //$NON-NLS-1$
-                    enumColorMap.get(Color.Blue));
-            assertEquals("Wrong Size", 2, enumColorMap.size()); //$NON-NLS-1$
-
-            enumColorMap = new EnumMap<Color, Double>(Color.class);
-        } catch (NotYetImplementedException e) {
+            fail("Expected ClassCastException"); //$NON-NLS-1$
+        } catch (ClassCastException e) {
             // Expected
         }
-        
+
+        EnumMap enumColorMap1 = new EnumMap<Color, Double>(Color.class);
+        enumColorMap1.put(Color.Blue, 3);
+        enumColorMap.putAll(enumColorMap1);
+        assertEquals("Get returned incorrect value for given key", 3, //$NON-NLS-1$
+                enumColorMap.get(Color.Blue));
+        assertEquals("Wrong Size", 2, enumColorMap.size()); //$NON-NLS-1$
+
+        enumColorMap = new EnumMap<Color, Double>(Color.class);
+
         HashMap hashColorMap = null;
         try {
             enumColorMap.putAll(hashColorMap);
@@ -562,7 +816,7 @@ public class EnumMapTest extends TestCase {
                 .get(Color.Red));
         hashColorMap.put(Color.Red, new Integer(1));
         enumColorMap.putAll(hashColorMap);
-        assertEquals("Get returned incorrect value for given key", new Integer( //$NON-NLS-1$
+        assertEquals("Get returned incorrect value for given key", new Integer(//$NON-NLS-1$
                 2), enumColorMap.get(Color.Green));
         hashColorMap.put(Size.Big, 3);
         try {
@@ -581,7 +835,7 @@ public class EnumMapTest extends TestCase {
             // Expected
         }
     }
-    
+
     /**
      * @tests java.util.EnumMap#remove(Object)
      */

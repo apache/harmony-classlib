@@ -16,6 +16,7 @@
 package java.util;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 
 import org.apache.harmony.luni.util.NotYetImplementedException;
 
@@ -23,27 +24,101 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
         Map<K, V>, Serializable, Cloneable {
     private static final long serialVersionUID = 458661240069192865L;
 
-    Class<K> keyType;
+    private Class<K> keyType;
 
-    transient Enum keys[];
+    transient Enum[] keys;
 
-    transient Object values[];
+    transient Object[] values;
 
-    transient boolean hasMapping[];
+    transient boolean[] hasMapping;
 
-    transient int mappingsCount;
+    private transient int mappingsCount;
 
     transient int enumSize;
 
-    private static class EnumMapIterator<E, KT extends Enum<KT>, VT> implements
-            Iterator<E> {
-        private int position = 0;
+    private transient EnumMapEntrySet<K, V> entrySet = null;
 
-        private int prePosition = -1;
-
+    private static class Entry<KT extends Enum<KT>, VT> extends
+            MapEntry<KT, VT> {
         private final EnumMap<KT, VT> enumMap;
 
-        private final MapEntry.Type<E, KT, VT> type;
+        private final int ordinal;
+
+        Entry(KT theKey, VT theValue, EnumMap<KT, VT> em) {
+            super(theKey, theValue);
+            enumMap = em;
+            ordinal = ((Enum) theKey).ordinal();
+        }
+
+        @Override
+        public boolean equals(Object object) {
+            if (!enumMap.hasMapping[ordinal]) {
+                return false;
+            }
+            boolean isEqual = false;
+            if (object instanceof Map.Entry) {
+                Map.Entry<KT, VT> entry = (Map.Entry<KT, VT>) object;
+                Object enumKey = entry.getKey();
+                if (key.equals(enumKey)) {
+                    Object theValue = entry.getValue();
+                    isEqual = enumMap.values[ordinal] == null ? null == theValue
+                            : enumMap.values[ordinal].equals(theValue);
+                }
+            }
+            return isEqual;
+        }
+
+        @Override
+        public int hashCode() {
+            return (enumMap.keys[ordinal] == null ? 0
+                    : enumMap.keys[ordinal].hashCode())
+                    ^ (enumMap.values[ordinal] == null ? 0
+                            : enumMap.values[ordinal].hashCode());
+        }
+
+        @Override
+        public KT getKey() {
+            checkEntryStatus();
+            return (KT) enumMap.keys[ordinal];
+        }
+
+        @Override
+        public VT getValue() {
+            checkEntryStatus();
+            return (VT) enumMap.values[ordinal];
+        }
+
+        @Override
+        public VT setValue(VT value) {
+            checkEntryStatus();
+            return enumMap.put((KT) enumMap.keys[ordinal], value);
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder result = new StringBuilder(enumMap.keys[ordinal]
+                    .toString());
+            result.append("="); //$NON-NLS-1$
+            result.append(enumMap.values[ordinal].toString());
+            return result.toString();
+        }
+
+        private void checkEntryStatus() {
+            if (!enumMap.hasMapping[ordinal]) {
+                throw new IllegalStateException();
+            }
+        }
+    }
+
+    private static class EnumMapIterator<E, KT extends Enum<KT>, VT> implements
+            Iterator<E> {
+        int position = 0;
+
+        int prePosition = -1;
+
+        final EnumMap<KT, VT> enumMap;
+
+        final MapEntry.Type<E, KT, VT> type;
 
         EnumMapIterator(MapEntry.Type<E, KT, VT> value, EnumMap<KT, VT> em) {
             enumMap = em;
@@ -89,7 +164,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
                             enumMap.values[prePosition])).toString();
         }
 
-        void checkStatus() {
+        private void checkStatus() {
             if (-1 == prePosition) {
                 throw new IllegalStateException();
             }
@@ -194,6 +269,103 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
         @Override
         public int size() {
             return enumMap.size();
+        }
+    }
+
+    private static class EnumMapEntryIterator<E, KT extends Enum<KT>, VT>
+            extends EnumMapIterator<E, KT, VT> {
+        EnumMapEntryIterator(MapEntry.Type<E, KT, VT> value, EnumMap<KT, VT> em) {
+            super(value, em);
+        }
+
+        @Override
+        public E next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            prePosition = position++;
+            return type.get(new Entry<KT, VT>((KT) enumMap.keys[prePosition],
+                    (VT) enumMap.values[prePosition], enumMap));
+        }
+    }
+
+    private static class EnumMapEntrySet<KT extends Enum<KT>, VT> extends
+            AbstractSet<Map.Entry<KT, VT>> {
+        private final EnumMap<KT, VT> enumMap;
+
+        EnumMapEntrySet(EnumMap<KT, VT> em) {
+            enumMap = em;
+        }
+
+        @Override
+        public void clear() {
+            enumMap.clear();
+        }
+
+        @Override
+        public boolean contains(Object object) {
+            boolean isEqual = false;
+            if (object instanceof Map.Entry) {
+                Object enumKey = ((Map.Entry) object).getKey();
+                Object enumValue = ((Map.Entry) object).getValue();
+                if (enumMap.containsKey(enumKey)) {
+                    VT value = enumMap.get(enumKey);
+                    isEqual = (value == null ? null == enumValue : value
+                            .equals(enumValue));
+                }
+            }
+            return isEqual;
+        }
+
+        @Override
+        public Iterator<Map.Entry<KT, VT>> iterator() {
+            return new EnumMapEntryIterator<Map.Entry<KT, VT>, KT, VT>(
+                    new MapEntry.Type<Map.Entry<KT, VT>, KT, VT>() {
+                        public Map.Entry<KT, VT> get(MapEntry<KT, VT> entry) {
+                            return entry;
+                        }
+                    }, enumMap);
+        }
+
+        @Override
+        public boolean remove(Object object) {
+            if (contains(object)) {
+                enumMap.remove(((Map.Entry) object).getKey());
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public int size() {
+            return enumMap.size();
+        }
+
+        @Override
+        public Object[] toArray() {
+            Object[] entryArray = new Object[enumMap.size()];
+            return toArray(entryArray);
+        }
+
+        @Override
+        public Object[] toArray(Object[] array) {
+            int size = enumMap.size();
+            int index = 0;
+            Object[] entryArray = array;
+            if (size > array.length) {
+                Class clazz = array.getClass().getComponentType();
+                entryArray = (Object[]) Array.newInstance(clazz, size);
+            }
+            Iterator iter = iterator();
+            for (; index < size; index++) {
+                Map.Entry<KT, VT> entry = (Map.Entry<KT, VT>) iter.next();
+                entryArray[index] = new MapEntry<KT, VT>((KT) entry.getKey(),
+                        (VT) entry.getValue());
+            }
+            if (index < array.length) {
+                entryArray[index] = null;
+            }
+            return entryArray;
         }
     }
 
@@ -324,8 +496,12 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      * 
      * @return a set view of the mappings contained in this map.
      */
+    @Override
     public Set<Map.Entry<K, V>> entrySet() {
-        throw new NotYetImplementedException();
+        if (null == entrySet) {
+            entrySet = new EnumMapEntrySet<K, V>(this);
+        }
+        return entrySet;
     }
 
     /**
