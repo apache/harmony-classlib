@@ -168,7 +168,8 @@
                 unless="test.case">
 
                 <fileset dir="${hy.instrument.src.test.java}">
-                    <include name="**/*Test.java"/>
+                    <include name="**/*Test.java" />
+                    <exclude name="org/apache/harmony/tests/java/lang/instrument/InstrumentTest.java" />
                 </fileset>
             </batchtest>
         </junit>

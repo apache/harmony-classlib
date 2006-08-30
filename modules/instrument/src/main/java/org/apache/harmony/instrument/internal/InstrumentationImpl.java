@@ -69,7 +69,6 @@ public class InstrumentationImpl implements Instrumentation {
      * @see java.lang.instrument.Instrumentation#addTransformer(java.lang.instrument.ClassFileTransformer)
      */
     public void addTransformer(ClassFileTransformer transformer) {
-        System.out.println("Coming!");
         if (null == transformer) {
             throw new NullPointerException();
         }
