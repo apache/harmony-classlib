@@ -36,6 +36,8 @@ import javax.security.auth.x500.X500Principal;
 public abstract class X509Certificate
         extends Certificate implements X509Extension {
 
+    private static final long serialVersionUID = -2491127588187038216L;
+
     /**
      * @com.intel.drl.spec_ref
      */
