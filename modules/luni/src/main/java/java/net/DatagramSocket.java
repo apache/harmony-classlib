@@ -405,7 +405,7 @@ public class DatagramSocket {
 		} else {
 			// not connected so the target address cannot be null
 			if (packAddr == null) {
-				throw new NullPointerException(Msg.getString("K0331"));
+				return;
 			}
 			SecurityManager security = System.getSecurityManager();
 			if (security != null) {

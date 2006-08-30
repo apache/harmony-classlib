@@ -25,6 +25,7 @@ import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 import java.net.PortUnreachableException;
 import java.net.SocketAddress;
 import java.net.SocketException;
@@ -865,7 +866,7 @@ public class DatagramSocketTest extends SocketTestCase {
 	/**
 	 * @tests java.net.DatagramSocket#send(java.net.DatagramPacket)
 	 */
-	public void test_sendLjava_net_DatagramPacket() {
+	public void test_sendLjava_net_DatagramPacket() throws Exception {
 		// Test for method void
 		// java.net.DatagramSocket.send(java.net.DatagramPacket)
 
@@ -920,6 +921,44 @@ public class DatagramSocketTest extends SocketTestCase {
 		} finally {
 			ds.close();
 		}
+		//Regression for HARMONY-1118
+		class testDatagramSocket extends DatagramSocket {
+		    public testDatagramSocket(DatagramSocketImpl impl){
+		       super(impl);
+		    }
+		}
+		class testDatagramSocketImpl extends DatagramSocketImpl { 
+		    protected void create() throws SocketException {} 
+		    protected void bind(int arg0, InetAddress arg1) throws SocketException {} 
+		    protected void send(DatagramPacket arg0) throws IOException {} 
+		    protected int peek(InetAddress arg0) throws IOException { 
+		        return 0; 
+		    } 
+		    protected int peekData(DatagramPacket arg0) throws IOException { 
+		        return 0; 
+		    } 
+		    protected void receive(DatagramPacket arg0) throws IOException {} 
+		    protected void setTTL(byte arg0) throws IOException {} 
+		    protected byte getTTL() throws IOException { 
+		        return 0; 
+		    } 
+		    protected void setTimeToLive(int arg0) throws IOException {} 
+		    protected int getTimeToLive() throws IOException { 
+		        return 0; 
+		    } 
+		    protected void join(InetAddress arg0) throws IOException {} 
+		    protected void leave(InetAddress arg0) throws IOException {} 
+		    protected void joinGroup(SocketAddress arg0, NetworkInterface arg1) throws IOException {} 
+		    protected void leaveGroup(SocketAddress arg0, NetworkInterface arg1) throws IOException {} 
+		    protected void close() {} 
+		    public void setOption(int arg0, Object arg1) throws SocketException {} 
+		    public Object getOption(int arg0) throws SocketException { 
+		        return null; 
+		    } 
+		} 
+        InetSocketAddress sa = InetSocketAddress.createUnresolved("localhost", 0); 
+        //no exception expected for next line
+        new testDatagramSocket(new testDatagramSocketImpl()).send(new DatagramPacket(new byte[272], 3, sa)); 
 	}
 
 	/**
