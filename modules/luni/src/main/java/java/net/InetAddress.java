@@ -61,7 +61,7 @@ public class InetAddress extends Object implements Serializable {
 	
     private Object waitReachable = new Object();
     
-    private boolean reached = false;
+    private boolean reached;
     
     private int addrCount;
 
@@ -136,7 +136,8 @@ public class InetAddress extends Object implements Serializable {
 	 *            the object to be tested for equality
 	 * @return boolean true, if the objects are equal
 	 */
-	public boolean equals(Object obj) {
+	@Override
+    public boolean equals(Object obj) {
 		if (obj == null) {
 			return false;
 		}
@@ -374,7 +375,8 @@ public class InetAddress extends Object implements Serializable {
 	 * 
 	 * @return int the hashcode
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return bytesToInt(ipaddress, 0);
 	}
 
@@ -514,7 +516,8 @@ public class InetAddress extends Object implements Serializable {
 	 * 
 	 * @return String the description, as host/address
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		return (hostName == null ? "" : hostName) + "/" + getHostAddress();
 	}
 
@@ -810,6 +813,7 @@ public class InetAddress extends Object implements Serializable {
         while (addresses.hasMoreElements()) {
             final InetAddress addr = addresses.nextElement();
             new Thread() {
+                @Override
                 public void run() {
                     boolean threadReached = false;
                     // if isICMP, tries ICMP ping, else TCP echo

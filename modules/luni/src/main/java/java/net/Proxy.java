@@ -104,7 +104,8 @@ public class Proxy {
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 * @return representing string of the proxy.
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		String proxyString = String.valueOf(type);
 		if (null != address) {
 			proxyString += "/" + address.toString();
@@ -124,7 +125,8 @@ public class Proxy {
 	 * @return true if <code>obj</code> represents the same proxy. Otherwise,
 	 *         returns false.
 	 */
-	public final boolean equals(Object obj) {
+	@Override
+    public final boolean equals(Object obj) {
 		if(this == obj){
 			return true;
 		}
@@ -142,7 +144,8 @@ public class Proxy {
 	 * @see java.lang.Object#hashCode()
 	 * @return the hash code of <code>Proxy</code>.
 	 */
-	public final int hashCode() {
+	@Override
+    public final int hashCode() {
 		int ret = 0;
 		ret += type.hashCode();
 		if (null != address) {

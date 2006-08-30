@@ -111,7 +111,8 @@ public class URISyntaxException extends Exception {
 	 * @return a String containing information about the exception.
 	 * @see java.lang.Throwable#getMessage()
 	 */
-	public String getMessage() {
+	@Override
+    public String getMessage() {
 		String reason = super.getMessage();
 
 		if (index != -1) {

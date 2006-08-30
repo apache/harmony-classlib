@@ -22,7 +22,7 @@ import java.util.List;
 import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
 
-/*
+/**
  * Default implementation for ProxySelector
  */
 class ProxySelectorImpl extends ProxySelector {
@@ -35,32 +35,20 @@ class ProxySelectorImpl extends ProxySelector {
 
 	private static final int SOCKS_PROXY_PORT = 1080;
 
-	/*
-	 * Constructor method.
-	 */
 	public ProxySelectorImpl() {
 		super();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.net.ProxySelector#connectFailed(java.net.URI,
-	 *      java.net.SocketAddress, java.io.IOException)
-	 */
-	public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+	@Override
+    public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
 		if (null == uri || null == sa || null == ioe) {
             // "KA001=Argument must not be null"
 			throw new IllegalArgumentException(Msg.getString("KA001")); //$NON-NLS-1$
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.net.ProxySelector#select(java.net.URI)
-	 */
-	public List<Proxy> select(URI uri) {
+	@Override
+    public List<Proxy> select(URI uri) {
 		// argument check
 		if (null == uri) {
             // "KA001=Argument must not be null"

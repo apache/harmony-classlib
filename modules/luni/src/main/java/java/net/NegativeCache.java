@@ -55,7 +55,8 @@ class NegativeCache<K, V> extends LinkedHashMap<K, V> {
 	 * @param eldest
 	 *            the map entry which will be deleted if we return true
 	 */
-	protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+	@Override
+    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
 		return size() > MAX_NEGATIVE_ENTRIES;
 	}
 

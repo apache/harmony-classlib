@@ -34,12 +34,14 @@ public class InetSocketAddress extends SocketAddress {
 	}
 
 	public InetSocketAddress(InetAddress address, int port) {
-		if (port < 0 || port > 65535)
-			throw new IllegalArgumentException();
-		if (address == null)
-			addr = InetAddress.ANY;
-		else
-			addr = address;
+		if (port < 0 || port > 65535) {
+            throw new IllegalArgumentException();
+        }
+		if (address == null) {
+            addr = InetAddress.ANY;
+        } else {
+            addr = address;
+        }
 		hostname = addr.getHostName();
 		this.port = port;
 	}
@@ -53,8 +55,9 @@ public class InetSocketAddress extends SocketAddress {
 	 * createUnresolved(String, int);
 	 */
 	InetSocketAddress(String host, int port, boolean needResolved){
-		if (host == null || port < 0 || port > 65535)
-			throw new IllegalArgumentException();
+		if (host == null || port < 0 || port > 65535) {
+            throw new IllegalArgumentException();
+        }
 		hostname = host;
 		this.port = port;
 		if(needResolved){
@@ -97,7 +100,8 @@ public class InetSocketAddress extends SocketAddress {
 		return addr == null;
 	}
 
-	public String toString() {
+	@Override
+    public String toString() {
 		String host;
 		if (addr != null) {
             host = addr.toString();
@@ -107,11 +111,14 @@ public class InetSocketAddress extends SocketAddress {
 		return host + ":" + port; //$NON-NLS-1$
 	}
 
-	public final boolean equals(Object socketAddr) {
-		if (this == socketAddr)
-			return true;
-		if (!(socketAddr instanceof InetSocketAddress))
-			return false;
+	@Override
+    public final boolean equals(Object socketAddr) {
+		if (this == socketAddr) {
+            return true;
+        }
+		if (!(socketAddr instanceof InetSocketAddress)) {
+            return false;
+        }
 		InetSocketAddress iSockAddr = (InetSocketAddress) socketAddr;
 
 		// check the ports as we always need to do this
@@ -123,18 +130,19 @@ public class InetSocketAddress extends SocketAddress {
 		// resolved
 		if ((addr == null) && (iSockAddr.addr == null)) {
 			return hostname.equals(iSockAddr.hostname);
-		} else {
-			// addrs were resolved so use them for the comparison
-			if (addr == null) {
-				// if we are here we know iSockAddr is not null so just return
-				// false
-				return false;
-			}
-			return addr.equals(iSockAddr.addr);
 		}
+        
+        // addrs were resolved so use them for the comparison
+        if (addr == null) {
+        	// if we are here we know iSockAddr is not null so just return
+        	// false
+        	return false;
+        }
+        return addr.equals(iSockAddr.addr);
 	}
 
-	public final int hashCode() {
+	@Override
+    public final int hashCode() {
 		if (addr == null) {
             return hostname.hashCode() + port;
         }

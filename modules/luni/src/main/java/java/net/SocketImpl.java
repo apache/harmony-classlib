@@ -52,11 +52,11 @@ public abstract class SocketImpl implements SocketOptions {
     
     INetworkSystem netImpl;
     
-    int receiveTimeout = 0;
+    int receiveTimeout;
 
     boolean streaming = true;
 
-    boolean shutdownInput = false;
+    boolean shutdownInput;
 
 //	Used when cache mode is OK
 //  Fill in the JNI id caches
@@ -376,15 +376,17 @@ public abstract class SocketImpl implements SocketOptions {
 	 */
 
 	int read(byte[] buffer, int offset, int count) throws IOException {
-		if (shutdownInput)
-			return -1;
+		if (shutdownInput) {
+            return -1;
+        }
 		try {
 //			int read = receiveStreamImpl(fd, buffer, offset, count,
 //					receiveTimeout);
             int read = this.netImpl.receiveStream(fd, buffer, offset, count,
                     receiveTimeout);
-			if (read == -1)
-				shutdownInput = true;
+			if (read == -1) {
+                shutdownInput = true;
+            }
 			return read;
 		} catch (InterruptedIOException e) {
 			throw new SocketTimeoutException(e.getMessage());
@@ -411,7 +413,8 @@ public abstract class SocketImpl implements SocketOptions {
 	 * 
 	 * @return String the description
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		return new StringBuffer(100).append("Socket[addr=").append(
 				getInetAddress()).append(",port=").append(port).append(
 				",localport=").append(getLocalPort()).append("]").toString();

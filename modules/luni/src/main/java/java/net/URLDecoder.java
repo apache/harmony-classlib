@@ -44,7 +44,8 @@ public class URLDecoder {
 	 * 
 	 * @deprecated use URLDecoder#decode(String, String) instead
 	 */
-	public static String decode(String s) {
+	@Deprecated
+    public static String decode(String s) {
 		return Util.decode(s, true);
 	}
 
@@ -83,27 +84,30 @@ public class URLDecoder {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		for (int i = 0; i < s.length();) {
 			char c = s.charAt(i);
-			if (c == '+')
-				result.append(' ');
-			else if (c == '%') {
+			if (c == '+') {
+                result.append(' ');
+            } else if (c == '%') {
 				out.reset();
 				do {
-					if (i + 2 >= s.length())
-						throw new IllegalArgumentException(Msg.getString(
+					if (i + 2 >= s.length()) {
+                        throw new IllegalArgumentException(Msg.getString(
 								"K01fe", i));
+                    }
 					int d1 = Character.digit(s.charAt(i + 1), 16);
 					int d2 = Character.digit(s.charAt(i + 2), 16);
-					if (d1 == -1 || d2 == -1)
-						throw new IllegalArgumentException(Msg.getString(
+					if (d1 == -1 || d2 == -1) {
+                        throw new IllegalArgumentException(Msg.getString(
 								"K01ff", s.substring(i, i + 3), String
 										.valueOf(i)));
+                    }
 					out.write((byte) ((d1 << 4) + d2));
 					i += 3;
 				} while (i < s.length() && s.charAt(i) == '%');
 				result.append(out.toString(enc));
 				continue;
-			} else
-				result.append(c);
+			} else {
+                result.append(c);
+            }
 			i++;
 		}
 		return result.toString();

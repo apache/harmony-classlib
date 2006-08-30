@@ -30,7 +30,6 @@ import org.apache.harmony.luni.util.PriviAction;
  * wide web as specified by RFC 1738.
  * 
  */
-
 public final class URL implements java.io.Serializable {
 	private static final long serialVersionUID = -7627629688361524110L;
 
@@ -510,7 +509,8 @@ public final class URL implements java.io.Serializable {
 	 * 
 	 * @see #hashCode
 	 */
-	public boolean equals(Object o) {
+	@Override
+    public boolean equals(Object o) {
 		if (o == null) {
             return false;
         }
@@ -540,7 +540,8 @@ public final class URL implements java.io.Serializable {
 	 * 
 	 * @return the hashcode for hashtable indexing
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		if (hashCode == 0) {
             hashCode = strmHandler.hashCode(this);
         }
@@ -700,7 +701,8 @@ public final class URL implements java.io.Serializable {
 	 * 
 	 * @return a printable representation for the receiver.
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		return toExternalForm();
 	}
 

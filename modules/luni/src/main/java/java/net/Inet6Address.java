@@ -32,18 +32,18 @@ public final class Inet6Address extends InetAddress {
 	static final InetAddress ANY = new Inet6Address(any_bytes);
 	static final InetAddress LOOPBACK = new Inet6Address(localhost_bytes, "localhost"); 
 
-	int scope_id = 0;
+	int scope_id;
 
-	boolean scope_id_set = false;
+	boolean scope_id_set;
 
-	boolean scope_ifname_set = false;
+	boolean scope_ifname_set;
 
-	String ifname = null;
+	String ifname;
 	
 	/*
 	 * scoped interface.
 	 */
-	transient NetworkInterface scopedIf = null;
+	transient NetworkInterface scopedIf;
 
 	Inet6Address(byte address[]) {
 		ipaddress = address;
@@ -200,7 +200,8 @@ public final class Inet6Address extends InetAddress {
 	 * @return boolean true, if the address is in the multicast group, false
 	 *         otherwise
 	 */
-	public boolean isMulticastAddress() {
+	@Override
+    public boolean isMulticastAddress() {
 
 		// Multicast addresses are prefixed with 11111111 (255)
 		return ipaddress[0] == -1;
@@ -212,7 +213,8 @@ public final class Inet6Address extends InetAddress {
 	 * @return boolean true, if the address is in the multicast group, false
 	 *         otherwise
 	 */
-	public boolean isAnyLocalAddress() {
+	@Override
+    public boolean isAnyLocalAddress() {
 		for (int i = 0; i < ipaddress.length; i++) {
 			if (ipaddress[i] != 0) {
                 return false;
@@ -228,7 +230,8 @@ public final class Inet6Address extends InetAddress {
 	 * 
 	 * @return boolean true if the address is the loopback, false otherwise
 	 */
-	public boolean isLoopbackAddress() {
+	@Override
+    public boolean isLoopbackAddress() {
 
 		// The last word must be 1
 		if (ipaddress[15] != 1) {
@@ -252,7 +255,8 @@ public final class Inet6Address extends InetAddress {
 	 * 
 	 * @return boolean true, if it is a link-local address, false otherwise
 	 */
-	public boolean isLinkLocalAddress() {
+	@Override
+    public boolean isLinkLocalAddress() {
 
 		// the first 10 bits need to be 1111111010 (1018)
 		return (ipaddress[0] == -2) && ((ipaddress[1] & 255) >>> 6) == 2;
@@ -265,7 +269,8 @@ public final class Inet6Address extends InetAddress {
 	 * 
 	 * @return boolean true, if it is a site-local address, false otherwise
 	 */
-	public boolean isSiteLocalAddress() {
+	@Override
+    public boolean isSiteLocalAddress() {
 
 		// the first 10 bits need to be 1111111011 (1019)
 		return (ipaddress[0] == -2) && ((ipaddress[1] & 255) >>> 6) == 3;
@@ -279,7 +284,8 @@ public final class Inet6Address extends InetAddress {
 	 * @return boolean true, if it is a global multicast address, false
 	 *         otherwise
 	 */
-	public boolean isMCGlobal() {
+	@Override
+    public boolean isMCGlobal() {
 
 		// the first byte should be 0xFF and the lower 4 bits
 		// of the second byte should be 0xE
@@ -295,7 +301,8 @@ public final class Inet6Address extends InetAddress {
 	 * @return boolean true, if it is a node-local multicast address, false
 	 *         otherwise
 	 */
-	public boolean isMCNodeLocal() {
+	@Override
+    public boolean isMCNodeLocal() {
 
 		// the first byte should be 0xFF and the lower 4 bits
 		// of the second byte should be 0x1
@@ -312,7 +319,8 @@ public final class Inet6Address extends InetAddress {
 	 * @return boolean true, if it is a link-local multicast address, false
 	 *         otherwise
 	 */
-	public boolean isMCLinkLocal() {
+	@Override
+    public boolean isMCLinkLocal() {
 
 		// the first byte should be 0xFF and the lower 4 bits
 		// of the second byte should be 0x2
@@ -329,7 +337,8 @@ public final class Inet6Address extends InetAddress {
 	 * @return boolean true, if it is a site-local multicast address, false
 	 *         otherwise
 	 */
-	public boolean isMCSiteLocal() {
+	@Override
+    public boolean isMCSiteLocal() {
 
 		// the first byte should be 0xFF and the lower 4 bits
 		// of the second byte should be 0x5
@@ -346,14 +355,16 @@ public final class Inet6Address extends InetAddress {
 	 * @return boolean true, if it is a org-local multicast address, false
 	 *         otherwise
 	 */
-	public boolean isMCOrgLocal() {
+	@Override
+    public boolean isMCOrgLocal() {
 
 		// the first byte should be 0xFF and the lower 4 bits
 		// of the second byte should be 0x8
 		return (ipaddress[0] == -1) && (ipaddress[1] & 15) == 8;
 	}
 
-	public String getHostAddress() {
+	@Override
+    public String getHostAddress() {
 		return Inet6Util.createIPAddrStringFromByteArray(ipaddress);
 	}
 	
@@ -383,7 +394,8 @@ public final class Inet6Address extends InetAddress {
 		return null;
 	}
 	
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		/* Returns the low order int as the hash code */
 		return bytesToInt(ipaddress, 12);
 	}
@@ -396,7 +408,8 @@ public final class Inet6Address extends InetAddress {
 	 * @return String
 	 * 
 	 */
-	public boolean equals(Object obj) {
+	@Override
+    public boolean equals(Object obj) {
 		return super.equals(obj);
 	}
 
@@ -454,7 +467,8 @@ public final class Inet6Address extends InetAddress {
 	 * 
 	 * @return String the description, as host/address
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		if (ifname != null) {
 			return super.toString() + "%" + ifname;
 		}

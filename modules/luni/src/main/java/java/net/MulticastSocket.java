@@ -32,7 +32,7 @@ public class MulticastSocket extends DatagramSocket {
 
 	final static int SO_REUSEPORT = 512;
 
-	private InetAddress interfaceSet = null;
+	private InetAddress interfaceSet;
 
 	/**
 	 * Constructs a multicast socket, bound to any available port on the
@@ -173,12 +173,15 @@ public class MulticastSocket extends DatagramSocket {
 	 * @deprecated Replaced by getTimeToLive
 	 * @see #getTimeToLive()
 	 */
-	public byte getTTL() throws IOException {
+	@SuppressWarnings("deprecation")
+    @Deprecated
+    public byte getTTL() throws IOException {
 		checkClosedAndBind(false);
 		return impl.getTTL();
 	}
 
-	boolean isMulticastSocket() {
+	@Override
+    boolean isMulticastSocket() {
 		return true;
 	}
 
@@ -348,7 +351,9 @@ public class MulticastSocket extends DatagramSocket {
 	 * 
 	 * @deprecated use MulticastSocket#setTimeToLive
 	 */
-	public void send(DatagramPacket pack, byte ttl) throws IOException {
+	@SuppressWarnings("deprecation")
+    @Deprecated
+    public void send(DatagramPacket pack, byte ttl) throws IOException {
 		checkClosedAndBind(false);
 		InetAddress packAddr = pack.getAddress();
 		SecurityManager security = System.getSecurityManager();
@@ -545,12 +550,15 @@ public class MulticastSocket extends DatagramSocket {
 	 * @deprecated Replaced by setTimeToLive
 	 * @see #setTimeToLive(int)
 	 */
-	public void setTTL(byte ttl) throws IOException {
+	@SuppressWarnings("deprecation")
+    @Deprecated
+    public void setTTL(byte ttl) throws IOException {
 		checkClosedAndBind(false);
 		impl.setTTL(ttl);
 	}
 
-	synchronized void createSocket(int aPort, InetAddress addr)
+	@Override
+    synchronized void createSocket(int aPort, InetAddress addr)
 			throws SocketException {
 		impl = factory != null ? factory.createDatagramSocketImpl()
 				: SocketImplProvider.getMulticastSocketImpl();

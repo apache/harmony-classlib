@@ -16,6 +16,7 @@
 package java.net;
 
 
+import java.io.IOException;
 import java.net.ProtocolException;
 import java.net.URL;
 import org.apache.harmony.luni.util.Msg;
@@ -100,7 +101,7 @@ public abstract class HttpURLConnection extends java.net.URLConnection {
 	public final static int HTTP_FORBIDDEN = 403;
 
 	/**
-	 * Numeric status code, 504: atewaytimeout
+	 * Numeric status code, 504: Gateway timeout
 	 */
 	public final static int HTTP_GATEWAY_TIMEOUT = 504;
 
@@ -207,7 +208,8 @@ public abstract class HttpURLConnection extends java.net.URLConnection {
 	/**
 	 * @deprecated Use HTTP_INTERNAL_ERROR
 	 */
-	public final static int HTTP_SERVER_ERROR = 500;
+	@Deprecated
+    public final static int HTTP_SERVER_ERROR = 500;
 
 	/**
 	 * Numeric status code, 305: Use proxy
@@ -289,21 +291,23 @@ public abstract class HttpURLConnection extends java.net.URLConnection {
 	 * 
 	 * @return the permission object required for this connection
 	 * 
-	 * @throws java.io.IOException
+	 * @throws IOException
 	 *             if an IO exception occurs during the creation of the
 	 *             permission object.
 	 */
-	public java.security.Permission getPermission() throws java.io.IOException {
+	@Override
+    public java.security.Permission getPermission() throws IOException {
 		int port = url.getPort();
-		if (port < 0)
-			port = 80;
+		if (port < 0) {
+            port = 80;
+        }
 		return new java.net.SocketPermission(url.getHost() + ":" + port,
 				"connect, resolve");
 	}
 
 	/**
 	 * Answers the request method which will be used to make the request to the
-	 * remote HTTP server. All possible methods of this HTTP impl is listed in
+	 * remote HTTP server. All possible methods of this HTTP implementation is listed in
 	 * the class definition.
 	 * 
 	 * @return the request method string
@@ -316,34 +320,38 @@ public abstract class HttpURLConnection extends java.net.URLConnection {
 	}
 
 	/**
-	 * Answers the reponse code returned by the remote HTTP server
+	 * Answers the response code returned by the remote HTTP server
 	 * 
 	 * @return the response code, -1 if no valid response code
 	 * 
-	 * @throws java.io.IOException
+	 * @throws IOException
 	 *             if there is an IO error during the retrieval.
 	 * 
 	 * @see #getResponseMessage
 	 */
-	public int getResponseCode() throws java.io.IOException {
+	public int getResponseCode() throws IOException {
 		// Response Code Sample : " HTTP/1.0 200 OK "
 
 		// Call getInputStream() first since getHeaderField() doesn't return
 		// exceptions
 		getInputStream();
 		String response = getHeaderField(0);
-		if (response == null)
-			return -1;
+		if (response == null) {
+            return -1;
+        }
 		response.trim();
 		int mark = response.indexOf(" ") + 1;
-		if (mark == 0)
-			return -1;
+		if (mark == 0) {
+            return -1;
+        }
 		int last = mark + 3;
-		if (last > response.length())
-			last = response.length();
+		if (last > response.length()) {
+            last = response.length();
+        }
 		responseCode = Integer.parseInt(response.substring(mark, last));
-		if (last + 1 <= response.length())
-			responseMessage = response.substring(last + 1);
+		if (last + 1 <= response.length()) {
+            responseMessage = response.substring(last + 1);
+        }
 		return responseCode;
 	}
 
@@ -352,15 +360,16 @@ public abstract class HttpURLConnection extends java.net.URLConnection {
 	 * 
 	 * @return the response message. <code>null</code> if such response exists
 	 * 
-	 * @throws java.io.IOException
+	 * @throws IOException
 	 *             if there is an IO error during the retrieval.
 	 * 
 	 * @see #getResponseCode()
-	 * @see java.io.IOException
+	 * @see IOException
 	 */
-	public String getResponseMessage() throws java.io.IOException {
-		if (responseMessage != null)
-			return responseMessage;
+	public String getResponseMessage() throws IOException {
+		if (responseMessage != null) {
+            return responseMessage;
+        }
 		getResponseCode();
 		return responseMessage;
 	}
@@ -378,8 +387,9 @@ public abstract class HttpURLConnection extends java.net.URLConnection {
 
 	public static void setFollowRedirects(boolean auto) {
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkSetFactory();
+		if (security != null) {
+            security.checkSetFactory();
+        }
 		followRedirects = auto;
 	}
 
@@ -392,14 +402,15 @@ public abstract class HttpURLConnection extends java.net.URLConnection {
 	 * 
 	 * @throws java.net.ProtocolException
 	 *             Thrown when this is called after connected, or the method is
-	 *             not supported by this HTTP impl.
+	 *             not supported by this HTTP implementation.
 	 * 
 	 * @see #getRequestMethod()
 	 * @see #method
 	 */
 	public void setRequestMethod(String method) throws ProtocolException {
-		if (connected)
-			throw new ProtocolException(org.apache.harmony.luni.util.Msg.getString("K0037"));
+		if (connected) {
+            throw new ProtocolException(Msg.getString("K0037"));
+        }
 		for (int i = 0; i < methodTokens.length; i++) {
 			if (methodTokens[i].equals(method)) {
 				// if there is a supported method that matches the desired
@@ -451,7 +462,8 @@ public abstract class HttpURLConnection extends java.net.URLConnection {
 	 *            the default value if no field is found
 	 * @return milliseconds since epoch
 	 */
-	public long getHeaderFieldDate(String field, long defaultValue) {
+	@Override
+    public long getHeaderFieldDate(String field, long defaultValue) {
 		return super.getHeaderFieldDate(field, defaultValue);
 	}
     

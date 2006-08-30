@@ -43,7 +43,7 @@ public abstract class URLConnection {
 
 	private String contentType;
 
-	private static boolean defaultAllowUserInteraction = false;
+	private static boolean defaultAllowUserInteraction;
 
 	private static boolean defaultUseCaches = true;
 
@@ -55,9 +55,9 @@ public abstract class URLConnection {
 
 	protected boolean useCaches = defaultUseCaches;
 
-	protected boolean connected = false;
+	protected boolean connected;
 
-	protected boolean doOutput = false;
+	protected boolean doOutput;
 
 	protected boolean doInput = true;
 
@@ -329,7 +329,8 @@ public abstract class URLConnection {
 	 * 
 	 * @deprecated Use getRequestProperty().
 	 */
-	public static String getDefaultRequestProperty(String field) {
+	@Deprecated
+    public static String getDefaultRequestProperty(String field) {
 		return null;
 	}
 
@@ -819,7 +820,8 @@ public abstract class URLConnection {
 	 * 
 	 * @deprecated Use getRequestProperty().
 	 */
-	public static void setDefaultRequestProperty(String field, String value) {
+	@Deprecated
+    public static void setDefaultRequestProperty(String field, String value) {
 	}
 
 	/**
@@ -1020,7 +1022,8 @@ public abstract class URLConnection {
 	 * @see #getURL
 	 * @see #URLConnection(URL)
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		return getClass().getName() + ":" + url.toString();
 	}
 
@@ -1032,7 +1035,8 @@ public abstract class URLConnection {
 		 * 
 		 * @see java.net.ContentHandler#getContent(java.net.URLConnection)
 		 */
-		public Object getContent(URLConnection u) throws IOException {
+		@Override
+        public Object getContent(URLConnection u) throws IOException {
 			return u.getInputStream();
 		}
 	}

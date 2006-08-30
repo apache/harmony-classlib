@@ -32,37 +32,38 @@ public final class Inet4Address extends InetAddress {
 	}
 
 	/**
-	 * Answers true if the address is a mutlicast address.
-	 * 
-	 * @return boolean
-	 * 
-	 * Valid IPv4 mutlicast addresses are prefixed with 1110 = 0xE
-	 */
-	public boolean isMulticastAddress() {
-		return (ipaddress[0] & 0xF0) == 0xE0;
-	}
+     * Answers true if the address is a multicast address. Valid IPv4 multicast
+     * addresses are prefixed with 1110 = 0xE
+     * 
+     * @return boolean
+     */
+    @Override
+    public boolean isMulticastAddress() {
+        return (ipaddress[0] & 0xF0) == 0xE0;
+    }
 
 	/**
 	 * Answers if the address is the ANY Address
 	 * 
 	 * @return boolean
 	 */
-	public boolean isAnyLocalAddress() {
+	@Override
+    public boolean isAnyLocalAddress() {
 		for (int i = 0; i < ipaddress.length; i++) {
-			if (ipaddress[i] != 0)
-				return false;
+			if (ipaddress[i] != 0) {
+                return false;
+            }
 		}
 		return true;
 	}
 
 	/**
 	 * Answers true if the address is a loopback address.
-	 * 
-	 * @return boolean
-	 * 
 	 * Loopback ipv4 addresses are prefixed with: 011111111 = 127
+     * @return boolean
 	 */
-	public boolean isLoopbackAddress() {
+	@Override
+    public boolean isLoopbackAddress() {
 		return (ipaddress[0] & 255) == 127;
 	}
 
@@ -75,7 +76,8 @@ public final class Inet4Address extends InetAddress {
 	 * 
 	 * @return boolean
 	 */
-	public boolean isLinkLocalAddress() {
+	@Override
+    public boolean isLinkLocalAddress() {
 		// The reference implementation does not return true
 		// for loopback addresses even though RFC 3484 says to do so
 		return (((ipaddress[0] & 255) == 169) && ((ipaddress[1] & 255) == 254));
@@ -83,14 +85,13 @@ public final class Inet4Address extends InetAddress {
 
 	/**
 	 * Answers whether this address has site-local scope.
-	 * 
-	 * @return boolean
-	 * 
 	 * RFC 3484 Default Address Selection for Internet Protocol version 6 (IPv6)
 	 * states IPv4 private addresses, prefixes 10/8, 172.16/12, and 192.168/16,
 	 * are assigned site-local scope.
+     * @return boolean
 	 */
-	public boolean isSiteLocalAddress() {
+	@Override
+    public boolean isSiteLocalAddress() {
 		return ((ipaddress[0] & 255) == 10) || ((ipaddress[0] & 255) == 172)
 				&& (((ipaddress[1] & 255) > 15) && (ipaddress[1] & 255) < 32)
 				|| ((ipaddress[0] & 255) == 192)
@@ -99,82 +100,87 @@ public final class Inet4Address extends InetAddress {
 
 	/**
 	 * Answers true if an address is a global multicast address.
-	 * 
-	 * @return boolean true, if the address is in the global multicast group,
-	 *         false otherwise
-	 * 
 	 * Valid MCGlobal IPv4 addresses are 224.0.1.0 - 238.255.255.255
+     * @return boolean true, if the address is in the global multicast group,
+     *         false otherwise
 	 */
-	public boolean isMCGlobal() {
+	@Override
+    public boolean isMCGlobal() {
 
 		// Check if we have a prefix of 1110
-		if (!isMulticastAddress())
-			return false;
+		if (!isMulticastAddress()) {
+            return false;
+        }
 
 		int address = InetAddress.bytesToInt(ipaddress, 0);
-		// Now check the boundaries of the global space
-		// if we have an address that is prefixed by something less
-		// than 111000000000000000000001 (fortunately we don't have
-		// to worry about sign after shifting 8 bits right) it is
-		// not mutlicast. ( < 224.0.1.0)
-		if (address >>> 8 < 0xE00001)
-			return false;
+		/*
+         * Now check the boundaries of the global space if we have an address
+         * that is prefixed by something less than 111000000000000000000001
+         * (fortunately we don't have to worry about sign after shifting 8 bits
+         * right) it is not multicast. ( < 224.0.1.0)
+         */
+        if (address >>> 8 < 0xE00001) {
+            return false;
+        }
 
-		// Now check the high boundary which is prefixed by
-		// 11101110 = 0xEE. If the value is higher than this than
-		// it is not MCGlobal ( > 238.255.255.255 )
-		if (address >>> 24 > 0xEE)
-			return false;
+        /*
+         * Now check the high boundary which is prefixed by 11101110 = 0xEE. If
+         * the value is higher than this than it is not MCGlobal ( >
+         * 238.255.255.255 )
+         */
+        if (address >>> 24 > 0xEE) {
+            return false;
+        }
 
 		return true;
 
 	}
 
 	/**
-	 * Answers false for all IPv4 addresses.
-	 * 
-	 * @return boolean
-	 * 
-	 * There are no valid IPv4 Node-local addresses
-	 */
-	public boolean isMCNodeLocal() {
+     * Answers false for all IPv4 addresses. There are no valid IPv4 Node-local
+     * addresses
+     * 
+     * @return boolean
+     */
+	@Override
+    public boolean isMCNodeLocal() {
 		return false;
 	}
 
 	/**
-	 * Answers true if the address is a link-local address.
-	 * 
-	 * @return boolean
-	 * 
-	 * The valid range for IPv4 link-local addresses is: 224.0.0.0 to
-	 * 239.0.0.255 Hence a mask of 111000000000000000000000 = 0xE00000
-	 */
-	public boolean isMCLinkLocal() {
+     * Answers true if the address is a link-local address.The valid range for
+     * IPv4 link-local addresses is: 224.0.0.0 to 239.0.0.255 Hence a mask of
+     * 111000000000000000000000 = 0xE00000
+     * 
+     * @return boolean
+     */
+	@Override
+    public boolean isMCLinkLocal() {
 		return InetAddress.bytesToInt(ipaddress, 0) >>> 8 == 0xE00000;
 	}
 
 	/**
-	 * Answers true if the address is a site-local address.
-	 * 
-	 * @return boolean
-	 * 
-	 * The valid range for IPv4 site-local addresses is: 239.255.0.0 to
-	 * 239.255.255.255 Hence a mask of 11101111 11111111 = 0xEFFF.
-	 */
-	public boolean isMCSiteLocal() {
+     * Answers true if the address is a site-local address.The valid range for
+     * IPv4 site-local addresses is: 239.255.0.0 to 239.255.255.255 Hence a mask
+     * of 11101111 11111111 = 0xEFFF.
+     * 
+     * @return boolean
+     */
+	@Override
+    public boolean isMCSiteLocal() {
 		return (InetAddress.bytesToInt(ipaddress, 0) >>> 16) == 0xEFFF;
 	}
 
 	/**
-	 * Answers true if the address is a organization-local address.
-	 * 
-	 * @return boolean
-	 * 
-	 * The valid range for IPv4 org-local addresses is: 239.192.0.0 to
-	 * 239.195.255.255 Hence masks of 11101111 11000000 to 11101111 11000011 are
-	 * valid. 0xEFC0 to 0xEFC3
-	 */
-	public boolean isMCOrgLocal() {
+     * Answers true if the address is a organization-local address. The valid
+     * range for IPv4 org-local addresses is: 239.192.0.0 to 239.195.255.255
+     * Hence masks of 11101111 11000000 to 11101111 11000011 are valid. 0xEFC0
+     * to 0xEFC3
+     * 
+     * @return boolean
+     */
+	@Override
+    public boolean isMCOrgLocal() {
 		int prefix = InetAddress.bytesToInt(ipaddress, 0) >>> 16;
 		return prefix >= 0xEFC0 && prefix <= 0xEFC3;
 	}
@@ -185,12 +191,14 @@ public final class Inet4Address extends InetAddress {
 	 * @return String
 	 * 
 	 */
-	public String getHostAddress() {
+	@Override
+    public String getHostAddress() {
 		String hostAddress = "";
 		for (int i = 0; i < 4; i++) {
 			hostAddress += ipaddress[i] & 255;
-			if (i != 3)
-				hostAddress += ".";
+			if (i != 3) {
+                hostAddress += ".";
+            }
 		}
 		return hostAddress;
 	}
@@ -201,7 +209,8 @@ public final class Inet4Address extends InetAddress {
 	 * @return String
 	 * 
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return InetAddress.bytesToInt(ipaddress, 0);
 	}
 
@@ -212,7 +221,8 @@ public final class Inet4Address extends InetAddress {
 	 * @return String
 	 * 
 	 */
-	public boolean equals(Object obj) {
+	@Override
+    public boolean equals(Object obj) {
 		return super.equals(obj);
 	}
 

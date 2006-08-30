@@ -36,7 +36,7 @@ public final class PasswordAuthentication {
 	 */
 	public PasswordAuthentication(String userName, char[] password) {
 		this.userName = userName;
-		this.password = (char[]) password.clone();
+		this.password = password.clone();
 	}
 
 	/**
@@ -45,7 +45,7 @@ public final class PasswordAuthentication {
 	 * @return char[] the reference of the password
 	 */
 	public char[] getPassword() {
-		return (char[]) password.clone();
+		return password.clone();
 	}
 
 	/**

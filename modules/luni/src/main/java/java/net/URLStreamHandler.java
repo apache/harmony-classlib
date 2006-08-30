@@ -83,11 +83,13 @@ public abstract class URLStreamHandler {
 	 * @see URL
 	 */
 	protected void parseURL(URL u, String str, int start, int end) {
-		if (end < start)
-			return;
+		if (end < start) {
+            return;
+        }
 		String parseString = "";
-		if (start < end)
-			parseString = str.substring(start, end);
+		if (start < end) {
+            parseString = str.substring(start, end);
+        }
 		end -= start;
 		int fileIdx = 0;
 
@@ -111,8 +113,9 @@ public abstract class URLStreamHandler {
 				file = "";
 			}
 			int hostEnd = fileIdx;
-			if (refIdx != -1 && refIdx < fileIdx)
-				hostEnd = refIdx;
+			if (refIdx != -1 && refIdx < fileIdx) {
+                hostEnd = refIdx;
+            }
 			int userIdx = parseString.lastIndexOf('@', hostEnd);
 			authority = parseString.substring(hostIdx, hostEnd);
 			if (userIdx > -1) {
@@ -141,78 +144,90 @@ public abstract class URLStreamHandler {
 				}
 			}
 
-			if (portIdx == -1 || portIdx > fileIdx)
-				host = parseString.substring(hostIdx, hostEnd);
-			else {
+			if (portIdx == -1 || portIdx > fileIdx) {
+                host = parseString.substring(hostIdx, hostEnd);
+            } else {
 				host = parseString.substring(hostIdx, portIdx);
 				String portString = parseString.substring(portIdx + 1, hostEnd);
-				if (portString.length() == 0)
-					port = -1;
-				else
-					port = Integer.parseInt(portString);
+				if (portString.length() == 0) {
+                    port = -1;
+                } else {
+                    port = Integer.parseInt(portString);
+                }
 			}
 		}
 
-		if (refIdx > -1)
-			ref = parseString.substring(refIdx + 1, end);
+		if (refIdx > -1) {
+            ref = parseString.substring(refIdx + 1, end);
+        }
 		int fileEnd = (refIdx == -1 ? end : refIdx);
 
 		int queryIdx = parseString.lastIndexOf('?', fileEnd);
 		if (queryIdx > -1) {
 			query = parseString.substring(queryIdx + 1, fileEnd);
 			// Don't inherit file if query is changed
-			if (queryIdx == 0 && file != null)
-				file = "/";
+			if (queryIdx == 0 && file != null) {
+                file = "/";
+            }
 			fileEnd = queryIdx;
 		} else
 		// Don't inherit query unless only the ref is changed
-		if (refIdx != 0)
-			query = null;
+		if (refIdx != 0) {
+            query = null;
+        }
 
 		boolean canonicalize = false;
 		if (fileIdx > -1) {
-			if (fileIdx < end && parseString.charAt(fileIdx) == '/')
-				file = parseString.substring(fileIdx, fileEnd);
-			else if (fileEnd > fileIdx) {
-				if (file == null)
-					file = "";
-				else if (file.equals(""))
-					file = "/";
-				else if (file.startsWith("/"))
-					canonicalize = true;
+			if (fileIdx < end && parseString.charAt(fileIdx) == '/') {
+                file = parseString.substring(fileIdx, fileEnd);
+            } else if (fileEnd > fileIdx) {
+				if (file == null) {
+                    file = "";
+                } else if (file.equals("")) {
+                    file = "/";
+                } else if (file.startsWith("/")) {
+                    canonicalize = true;
+                }
 				int last = file.lastIndexOf('/') + 1;
-				if (last == 0)
-					file = parseString.substring(fileIdx, fileEnd);
-				else
-					file = file.substring(0, last)
+				if (last == 0) {
+                    file = parseString.substring(fileIdx, fileEnd);
+                } else {
+                    file = file.substring(0, last)
 							+ parseString.substring(fileIdx, fileEnd);
+                }
 			}
 		}
-		if (file == null)
-			file = "";
+		if (file == null) {
+            file = "";
+        }
 
-		if (host == null)
-			host = "";
+		if (host == null) {
+            host = "";
+        }
 
 		if (canonicalize) {
 			// modify file if there's any relative referencing
 			int dirIndex;
-			while ((dirIndex = file.indexOf("/./")) >= 0)
-				file = file.substring(0, dirIndex + 1)
+			while ((dirIndex = file.indexOf("/./")) >= 0) {
+                file = file.substring(0, dirIndex + 1)
 						+ file.substring(dirIndex + 3);
-			if (file.endsWith("/."))
-				file = file.substring(0, file.length() - 1);
+            }
+			if (file.endsWith("/.")) {
+                file = file.substring(0, file.length() - 1);
+            }
 			while ((dirIndex = file.indexOf("/../")) >= 0) {
 				if (dirIndex != 0) {
 					file = file.substring(0, file
 							.lastIndexOf('/', dirIndex - 1))
 							+ file.substring(dirIndex + 3);
-				} else
-					file = file.substring(dirIndex + 3);
+				} else {
+                    file = file.substring(dirIndex + 3);
+                }
 			}
-			if (file.endsWith("/..") && file.length() > 3)
-				file = file.substring(0, file.lastIndexOf('/',
+			if (file.endsWith("/..") && file.length() > 3) {
+                file = file.substring(0, file.lastIndexOf('/',
 						file.length() - 4) + 1);
+            }
 		}
 
 		setURL(u, u.getProtocol(), host, port, authority, userInfo, file,
@@ -240,10 +255,12 @@ public abstract class URLStreamHandler {
 	 * @deprecated use setURL(URL, String String, int, String, String, String,
 	 *             String, String)
 	 */
-	protected void setURL(URL u, String protocol, String host, int port,
+	@Deprecated
+    protected void setURL(URL u, String protocol, String host, int port,
 			String file, String ref) {
-		if (this != u.strmHandler)
-			throw new SecurityException();
+		if (this != u.strmHandler) {
+            throw new SecurityException();
+        }
 		u.set(protocol, host, port, file, ref);
 	}
 
@@ -274,8 +291,9 @@ public abstract class URLStreamHandler {
 	protected void setURL(URL u, String protocol, String host, int port,
 			String authority, String userInfo, String file, String query,
 			String ref) {
-		if (this != u.strmHandler)
-			throw new SecurityException();
+		if (this != u.strmHandler) {
+            throw new SecurityException();
+        }
 		u.set(protocol, host, port, authority, userInfo, file, query, ref);
 	}
 
@@ -326,11 +344,13 @@ public abstract class URLStreamHandler {
 	 * @see #hashCode
 	 */
 	protected boolean equals(URL url1, URL url2) {
-		if (!sameFile(url1, url2))
-			return false;
+		if (!sameFile(url1, url2)) {
+            return false;
+        }
 		String s1 = url1.getRef(), s2 = url2.getRef();
-		if (s1 != s2 && (s1 == null || !s1.equals(s2)))
-			return false;
+		if (s1 != s2 && (s1 == null || !s1.equals(s2))) {
+            return false;
+        }
 		s1 = url1.getQuery();
 		s2 = url2.getQuery();
 		return s1 == s2 || (s1 != null && s1.equals(s2));
@@ -349,8 +369,9 @@ public abstract class URLStreamHandler {
 	protected InetAddress getHostAddress(URL url) {
 		try {
 			String host = url.getHost();
-			if (host == null || host.length() == 0)
-				return null;
+			if (host == null || host.length() == 0) {
+                return null;
+            }
 			return InetAddress.getByName(host);
 		} catch (UnknownHostException e) {
 			return null;
@@ -396,21 +417,26 @@ public abstract class URLStreamHandler {
 	protected boolean sameFile(URL url1, URL url2) {
 		String s1 = url1.getProtocol();
 		String s2 = url2.getProtocol();
-		if (s1 != s2 && (s1 == null || !s1.equals(s2)))
-			return false;
+		if (s1 != s2 && (s1 == null || !s1.equals(s2))) {
+            return false;
+        }
 
 		s1 = url1.getFile();
 		s2 = url2.getFile();
-		if (s1 != s2 && (s1 == null || !s1.equals(s2)))
-			return false;
-		if (!hostsEqual(url1, url2))
-			return false;
+		if (s1 != s2 && (s1 == null || !s1.equals(s2))) {
+            return false;
+        }
+		if (!hostsEqual(url1, url2)) {
+            return false;
+        }
 		int p1 = url1.getPort();
-		if (p1 == -1)
-			p1 = getDefaultPort();
+		if (p1 == -1) {
+            p1 = getDefaultPort();
+        }
 		int p2 = url2.getPort();
-		if (p2 == -1)
-			p2 = getDefaultPort();
+		if (p2 == -1) {
+            p2 = getDefaultPort();
+        }
 		return p1 == p2;
 	}
 }

@@ -51,16 +51,17 @@ public class URLEncoder {
 	 * 
 	 * @deprecated use URLEncoder#encode(String, String) instead
 	 */
-	public static String encode(String s) {
+	@Deprecated
+    public static String encode(String s) {
 		StringBuffer buf = new StringBuffer();
 		for (int i = 0; i < s.length(); i++) {
 			char ch = s.charAt(i);
 			if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')
-					|| (ch >= '0' && ch <= '9') || ".-*_".indexOf(ch) > -1)
-				buf.append(ch);
-			else if (ch == ' ')
-				buf.append('+');
-			else {
+					|| (ch >= '0' && ch <= '9') || ".-*_".indexOf(ch) > -1) {
+                buf.append(ch);
+            } else if (ch == ' ') {
+                buf.append('+');
+            } else {
 				byte[] bytes = new String(new char[] { ch }).getBytes();
 				for (int j = 0; j < bytes.length; j++) {
 					buf.append('%');

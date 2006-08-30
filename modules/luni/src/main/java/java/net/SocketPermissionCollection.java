@@ -37,7 +37,8 @@ final class SocketPermissionCollection extends PermissionCollection {
 	}
 
 	// Adds the argument to the collection.
-	public void add(Permission permission) {
+	@Override
+    public void add(Permission permission) {
 		if (isReadOnly()) {
             throw new IllegalStateException();
         }
@@ -48,7 +49,8 @@ final class SocketPermissionCollection extends PermissionCollection {
 	}
 
 	// Answers an enumeration of the permissions
-	public Enumeration<Permission> elements() {
+	@Override
+    public Enumeration<Permission> elements() {
 		return permissions.elements();
 	}
 
@@ -56,7 +58,8 @@ final class SocketPermissionCollection extends PermissionCollection {
 	 * Basically it tests
 	 * if <code>permission</code> is the subset of this collection.
 	 * */
-	public boolean implies(Permission permission) {
+	@Override
+    public boolean implies(Permission permission) {
 		if (!(permission instanceof SocketPermission)) {
             return false;
         }

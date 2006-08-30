@@ -78,9 +78,9 @@ public final class SocketPermission extends Permission implements Serializable {
 			"accept", "", "", "", "resolve" };
 
 	// If a wildcard is present store the information
-	private transient boolean isPartialWild = false;
+	private transient boolean isPartialWild;
 
-	private transient boolean isWild = false;
+	private transient boolean isWild;
 
 	// The highest port number
 	private static final int HIGHEST_PORT = 65535;
@@ -92,7 +92,7 @@ public final class SocketPermission extends Permission implements Serializable {
 
 	transient String ipString; // IP address as returned by InetAddress
 
-	transient boolean resolved = false; // IP address has been resolved
+	transient boolean resolved; // IP address has been resolved
 
 	// the port range;
 	transient int portMin = LOWEST_PORT;
@@ -120,10 +120,12 @@ public final class SocketPermission extends Permission implements Serializable {
 	public SocketPermission(String host, String action) {
 		super(host.equals("") ? "localhost" : host);
 		hostName = getHostString(host);
-		if (action == null)
-			throw new NullPointerException();
-		if (action.equals(""))
-			throw new IllegalArgumentException();
+		if (action == null) {
+            throw new NullPointerException();
+        }
+		if (action.equals("")) {
+            throw new IllegalArgumentException();
+        }
 
 		setActions(action);
 		actions = toCanonicalActionString(action);
@@ -142,20 +144,26 @@ public final class SocketPermission extends Permission implements Serializable {
 	 *         <code>false</code> if it is different from this object
 	 * @see #hashCode
 	 */
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (this.getClass() != o.getClass())
-			return false;
+	@Override
+    public boolean equals(Object o) {
+		if (this == o) {
+            return true;
+        }
+		if (this.getClass() != o.getClass()) {
+            return false;
+        }
 		SocketPermission sp = (SocketPermission) o;
 		if (!hostName.equals(sp.hostName)) {
-			if (getIPString() == null || !ipString.equals(sp.getIPString()))
-				return false;
+			if (getIPString() == null || !ipString.equals(sp.getIPString())) {
+                return false;
+            }
 		}
-		if (this.portMin != sp.portMin)
-			return false;
-		if (this.portMax != sp.portMax)
-			return false;
+		if (this.portMin != sp.portMin) {
+            return false;
+        }
+		if (this.portMax != sp.portMax) {
+            return false;
+        }
 		return this.actionsMask == sp.actionsMask;
 	}
 
@@ -168,7 +176,8 @@ public final class SocketPermission extends Permission implements Serializable {
 	 * 
 	 * @see #equals
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return hostName.hashCode() ^ actionsMask ^ portMin ^ portMax;
 	}
 
@@ -178,7 +187,8 @@ public final class SocketPermission extends Permission implements Serializable {
 	 * 
 	 * @return java.lang.String the canonical action list
 	 */
-	public String getActions() {
+	@Override
+    public String getActions() {
 		return actions;
 	}
 
@@ -189,8 +199,9 @@ public final class SocketPermission extends Permission implements Serializable {
 	 *            java.lang.String the action list
 	 */
 	private void setActions(String actions) throws IllegalArgumentException {
-		if (actions.equals(""))
-			return;
+		if (actions.equals("")) {
+            return;
+        }
 		boolean parsing = true;
 		String action;
 		StringBuffer sb = new StringBuffer();
@@ -198,21 +209,23 @@ public final class SocketPermission extends Permission implements Serializable {
 		while (parsing) {
 			char c;
 			sb.setLength(0);
-			while (pos < length && (c = actions.charAt(pos++)) != ',')
-				sb.append(c);
-			if (pos == length)
-				parsing = false;
+			while (pos < length && (c = actions.charAt(pos++)) != ',') {
+                sb.append(c);
+            }
+			if (pos == length) {
+                parsing = false;
+            }
 			action = sb.toString().trim().toLowerCase();
-			if (action.equals(actionNames[SP_CONNECT]))
-				actionsMask |= SP_CONNECT;
-			else if (action.equals(actionNames[SP_LISTEN]))
-				actionsMask |= SP_LISTEN;
-			else if (action.equals(actionNames[SP_ACCEPT]))
-				actionsMask |= SP_ACCEPT;
-			else if (action.equals(actionNames[SP_RESOLVE])) {
-			} else
-				throw new IllegalArgumentException(Msg.getString("K0048",
-						action));
+			if (action.equals(actionNames[SP_CONNECT])) {
+                actionsMask |= SP_CONNECT;
+            } else if (action.equals(actionNames[SP_LISTEN])) {
+                actionsMask |= SP_LISTEN;
+            } else if (action.equals(actionNames[SP_ACCEPT])) {
+                actionsMask |= SP_ACCEPT;
+            } else if (action.equals(actionNames[SP_RESOLVE])) {
+			} else {
+                throw new IllegalArgumentException(Msg.getString("K0048", action));
+            }
 		}
 	}
 
@@ -228,7 +241,8 @@ public final class SocketPermission extends Permission implements Serializable {
 	 * @param p
 	 *            java.security.Permission the other socket permission
 	 */
-	public boolean implies(Permission p) {
+	@Override
+    public boolean implies(Permission p) {
 		SocketPermission sp;
 		try {
 			sp = (SocketPermission) p;
@@ -238,14 +252,17 @@ public final class SocketPermission extends Permission implements Serializable {
 
 		// tests if the action list of p is the subset of the one of the
 		// receiver
-        if (sp == null || (actionsMask & sp.actionsMask) != sp.actionsMask)
-			return false;
+        if (sp == null || (actionsMask & sp.actionsMask) != sp.actionsMask) {
+            return false;
+        }
 
 		// only check the port range if the action string of the current object
 		// is not "resolve"
-		if (!p.getActions().equals("resolve"))
-			if ((sp.portMin < this.portMin) || (sp.portMax > this.portMax))
-				return false;
+		if (!p.getActions().equals("resolve")) {
+            if ((sp.portMin < this.portMin) || (sp.portMax > this.portMax)) {
+                return false;
+            }
+        }
 
 		// Verify the host is valid
 		return checkHost(sp);
@@ -256,7 +273,8 @@ public final class SocketPermission extends Permission implements Serializable {
 	 * 
 	 * @return java.security.PermissionCollection a permission collection
 	 */
-	public PermissionCollection newPermissionCollection() {
+	@Override
+    public PermissionCollection newPermissionCollection() {
 		return new SocketPermissionCollection();
 	}
 
@@ -308,8 +326,9 @@ public final class SocketPermission extends Permission implements Serializable {
 						}
 					}
 				}
-				if (portMax < portMin)
-					throw new IllegalArgumentException(Msg.getString("K0049"));
+				if (portMax < portMin) {
+                    throw new IllegalArgumentException(Msg.getString("K0049"));
+                }
 
 			} catch (NumberFormatException e) {
 				throw new IllegalArgumentException(Msg.getString("K004a"));
@@ -326,8 +345,9 @@ public final class SocketPermission extends Permission implements Serializable {
 	 * @return java.lang.String
 	 */
 	private String toCanonicalActionString(String action) {
-		if (action == null || action.equals("") || actionsMask == SP_RESOLVE)
-			return actionNames[SP_RESOLVE]; // If none specified return the
+		if (action == null || action.equals("") || actionsMask == SP_RESOLVE) {
+            return actionNames[SP_RESOLVE]; // If none specified return the
+        }
 		// implied action resolve
 		StringBuffer sb = new StringBuffer();
 		if ((actionsMask & SP_CONNECT) == SP_CONNECT) {
@@ -400,8 +420,9 @@ public final class SocketPermission extends Permission implements Serializable {
 	 */
 	boolean checkHost(SocketPermission sp) {
 		if (isPartialWild) {
-			if (isWild)
-				return true; // Match on any host
+			if (isWild) {
+                return true; // Match on any host
+            }
 			int length = hostName.length() - 1;
 			return sp.hostName.regionMatches(sp.hostName.length() - length,
 					hostName, 1, length);

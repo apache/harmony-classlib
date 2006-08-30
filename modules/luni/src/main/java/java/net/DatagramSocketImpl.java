@@ -23,7 +23,7 @@ import org.apache.harmony.luni.net.NetUtil;
 import org.apache.harmony.luni.platform.Platform;
 
 /**
- * The abstract superclass of datagram & multicast socket implementatations.
+ * The abstract superclass of datagram & multicast socket implementations.
  */
 public abstract class DatagramSocketImpl implements SocketOptions {
 
@@ -50,7 +50,7 @@ public abstract class DatagramSocketImpl implements SocketOptions {
 	 *            the address on the multihomed localhost to bind
 	 * 
 	 * @exception SocketException
-	 *                if an error occured during bind, such as if the port was
+	 *                if an error occurred during bind, such as if the port was
 	 *                already bound
 	 */
 	protected abstract void bind(int port, InetAddress addr)
@@ -110,18 +110,19 @@ public abstract class DatagramSocketImpl implements SocketOptions {
 	 * Answer the time-to-live (TTL) for multicast packets sent on this socket.
 	 * 
 	 * @return java.net.InetAddress
-	 * @exception java.io.IOException
+	 * @@throws IOException
 	 *                The exception description.
 	 * @deprecated Replaced by getTimeToLive
 	 * @see #getTimeToLive()
 	 */
-	protected abstract byte getTTL() throws IOException;
+	@Deprecated
+    protected abstract byte getTTL() throws IOException;
 
 	/**
 	 * Answer the time-to-live (TTL) for multicast packets sent on this socket.
 	 * 
 	 * @return int
-	 * @exception java.io.IOException
+	 * @@throws IOException
 	 *                The exception description.
 	 */
 	protected abstract int getTimeToLive() throws IOException;
@@ -143,7 +144,7 @@ public abstract class DatagramSocketImpl implements SocketOptions {
 	 * 
 	 * @param addr
 	 *            the multicast group to be joined
-	 * @exception java.io.IOException
+	 * @@throws IOException
 	 *                may be thrown while joining a group
 	 */
 	protected abstract void join(InetAddress addr) throws IOException;
@@ -157,7 +158,7 @@ public abstract class DatagramSocketImpl implements SocketOptions {
 	 *            the multicast group to be joined
 	 * @param netInterface
 	 *            the network interface on which the addresses should be dropped
-	 * @exception java.io.IOException
+	 * @@throws IOException
 	 *                may be thrown while joining a group
 	 */
 	protected abstract void joinGroup(SocketAddress addr,
@@ -168,7 +169,7 @@ public abstract class DatagramSocketImpl implements SocketOptions {
 	 * 
 	 * @param addr
 	 *            the multicast group to be left
-	 * @exception java.io.IOException
+	 * @@throws IOException
 	 *                May be thrown while leaving the group
 	 */
 	protected abstract void leave(InetAddress addr) throws IOException;
@@ -180,7 +181,7 @@ public abstract class DatagramSocketImpl implements SocketOptions {
 	 *            the multicast group to be left
 	 * @param netInterface
 	 *            the network interface on which the addresses should be dropped
-	 * @exception java.io.IOException
+	 * @@throws IOException
 	 *                May be thrown while leaving the group
 	 */
 	protected abstract void leaveGroup(SocketAddress addr,
@@ -236,7 +237,7 @@ public abstract class DatagramSocketImpl implements SocketOptions {
 	 * 
 	 * @param ttl
 	 *            the time-to-live, 0<ttl<= 255
-	 * @exception java.io.IOException
+	 * @@throws IOException
 	 *                The exception thrown while setting the TTL
 	 */
 	protected abstract void setTimeToLive(int ttl) throws IOException;
@@ -246,12 +247,13 @@ public abstract class DatagramSocketImpl implements SocketOptions {
 	 * 
 	 * @param ttl
 	 *            the time-to-live, 0<ttl<= 255
-	 * @exception java.io.IOException
+	 * @@throws IOException
 	 *                The exception thrown while setting the TTL
 	 * @deprecated Replaced by setTimeToLive
 	 * @see #setTimeToLive(int)
 	 */
-	protected abstract void setTTL(byte ttl) throws IOException;
+	@Deprecated
+    protected abstract void setTTL(byte ttl) throws IOException;
 
 	/**
 	 * Connect the socket to the specified remote address and port.

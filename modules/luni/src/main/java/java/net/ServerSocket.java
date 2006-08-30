@@ -37,11 +37,11 @@ public class ServerSocket {
 
 	static SocketImplFactory factory;
 
-	private volatile boolean isCreated = false;
+	private volatile boolean isCreated;
 
-	private boolean isBound = false;
+	private boolean isBound;
 
-	private boolean isClosed = false;
+	private boolean isClosed;
 	
 	/**
 	 * Construct a ServerSocket, which is not bound to any port. The default
@@ -131,8 +131,9 @@ public class ServerSocket {
 	 */
 	public Socket accept() throws IOException {
 		checkClosedAndCreate(false);
-		if (!isBound())
-			throw new SocketException(Msg.getString("K031f"));
+		if (!isBound()) {
+            throw new SocketException(Msg.getString("K031f"));
+        }
 
 		Socket aSocket = new Socket();
 		try {
@@ -163,11 +164,13 @@ public class ServerSocket {
 	 *            the candidate port to listen on
 	 */
 	void checkListen(int aPort) {
-		if (aPort < 0 || aPort > 65535)
-			throw new IllegalArgumentException(Msg.getString("K0325", aPort)); //$NON-NLS-1$
+		if (aPort < 0 || aPort > 65535) {
+            throw new IllegalArgumentException(Msg.getString("K0325", aPort)); //$NON-NLS-1$
+        }
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkListen(aPort);
+		if (security != null) {
+            security.checkListen(aPort);
+        }
 	}
 
 	/**
@@ -195,8 +198,9 @@ public class ServerSocket {
 	 * @return InetAddress the local address
 	 */
 	public InetAddress getInetAddress() {
-		if (!isBound())
-			return null;
+		if (!isBound()) {
+            return null;
+        }
 		return impl.getInetAddress();
 	}
 
@@ -207,8 +211,9 @@ public class ServerSocket {
 	 * @return int the local port the server is listening on
 	 */
 	public int getLocalPort() {
-		if (!isBound())
-			return -1;
+		if (!isBound()) {
+            return -1;
+        }
 		return impl.getLocalPort();
 	}
 
@@ -267,12 +272,14 @@ public class ServerSocket {
 	public static synchronized void setSocketFactory(SocketImplFactory aFactory)
 			throws IOException {
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkSetFactory();
-		if (factory == null)
-			factory = aFactory;
-		else
-			throw new SocketException(Msg.getString("K0042")); //$NON-NLS-1$
+		if (security != null) {
+            security.checkSetFactory();
+        }
+		if (factory == null) {
+            factory = aFactory;
+        } else {
+            throw new SocketException(Msg.getString("K0042")); //$NON-NLS-1$
+        }
 	}
 
 	/**
@@ -299,7 +306,8 @@ public class ServerSocket {
 	 * 
 	 * @return String the description
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
         StringBuffer result = new StringBuffer(64);
         result.append("ServerSocket["); //$NON-NLS-1$
         if (!isBound()) {
@@ -348,23 +356,27 @@ public class ServerSocket {
 	 */
 	public void bind(SocketAddress localAddr, int backlog) throws IOException {
 		checkClosedAndCreate(true);
-		if (isBound())
-			throw new BindException(Msg.getString("K0315")); //$NON-NLS-1$
+		if (isBound()) {
+            throw new BindException(Msg.getString("K0315")); //$NON-NLS-1$
+        }
 		int port = 0;
 		InetAddress addr = InetAddress.ANY;
 		if (localAddr != null) {
-			if (!(localAddr instanceof InetSocketAddress))
-				throw new IllegalArgumentException(Msg.getString(
+			if (!(localAddr instanceof InetSocketAddress)) {
+                throw new IllegalArgumentException(Msg.getString(
 						"K0316", localAddr.getClass())); //$NON-NLS-1$
+            }
 			InetSocketAddress inetAddr = (InetSocketAddress) localAddr;
-			if ((addr = inetAddr.getAddress()) == null)
-				throw new SocketException(Msg.getString(
+			if ((addr = inetAddr.getAddress()) == null) {
+                throw new SocketException(Msg.getString(
 						"K0317", inetAddr.getHostName())); //$NON-NLS-1$
+            }
 			port = inetAddr.getPort();
 		}
 		SecurityManager security = System.getSecurityManager();
-		if (security != null)
-			security.checkListen(port);
+		if (security != null) {
+            security.checkListen(port);
+        }
 
 		synchronized (this) {
 			try {
@@ -383,8 +395,9 @@ public class ServerSocket {
 	 * socket is not bound. This is useful on multihomed hosts.
 	 */
 	public SocketAddress getLocalSocketAddress() {
-		if (!isBound())
-			return null;
+		if (!isBound()) {
+            return null;
+        }
 		return new InetSocketAddress(getInetAddress(), getLocalPort());
 	}
 
@@ -406,15 +419,18 @@ public class ServerSocket {
 	 * Check if the socket is closed, and throw an exception.
 	 */
 	private void checkClosedAndCreate(boolean create) throws SocketException {
-		if (isClosed())
-			throw new SocketException(Msg.getString("K003d"));
+		if (isClosed()) {
+            throw new SocketException(Msg.getString("K003d"));
+        }
 
-		if (!create || isCreated)
-			return;
+		if (!create || isCreated) {
+            return;
+        }
 
 		synchronized (this) {
-			if (isCreated)
-				return;
+			if (isCreated) {
+                return;
+            }
 			try {
 				impl.create(true);
 			} catch (SocketException e) {
@@ -459,10 +475,11 @@ public class ServerSocket {
 	 */
 	public void setReceiveBufferSize(int size) throws SocketException {
 		checkClosedAndCreate(true);
-		if (size >= 1)
-			impl.setOption(SocketOptions.SO_RCVBUF, new Integer(size));
-		else
-			throw new IllegalArgumentException(Msg.getString("K0035")); //$NON-NLS-1$
+		if (size >= 1) {
+            impl.setOption(SocketOptions.SO_RCVBUF, new Integer(size));
+        } else {
+            throw new IllegalArgumentException(Msg.getString("K0035")); //$NON-NLS-1$
+        }
 	}
 
 	/**

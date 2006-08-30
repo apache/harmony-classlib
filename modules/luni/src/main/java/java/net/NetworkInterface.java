@@ -33,18 +33,18 @@ public final class NetworkInterface extends Object {
 
     static final int UNSET_INTERFACE_INDEX = -1;
 
-    private String name = null;
+    private String name;
 
-    private String displayName = null;
+    private String displayName;
 
-    InetAddress addresses[] = null;
+    InetAddress addresses[];
 
     // The interface index is a positive integer which is non-negative. Where
     // value is zero then we do not have an index for the interface (which
     // occurs in systems which only support IPV4)
-    private int interfaceIndex = 0;
+    private int interfaceIndex;
 
-    private int hashCode = 0;
+    private int hashCode;
 
     /**
      * This native answers the list of network interfaces supported by the
@@ -328,6 +328,7 @@ public final class NetworkInterface extends Object {
      * 
      * @see #hashCode
      */
+    @Override
     public boolean equals(Object obj) {
         // just return true if it is the exact same object
         if (obj == this) {
@@ -395,6 +396,7 @@ public final class NetworkInterface extends Object {
      * 
      * @return the hashcode for hashtable indexing
      */
+    @Override
     public int hashCode() {
         if (hashCode == 0) {
             hashCode = name.hashCode();
@@ -408,6 +410,7 @@ public final class NetworkInterface extends Object {
      * 
      * @return a printable representation for the network interface
      */
+    @Override
     public String toString() {
         StringBuilder string = new StringBuilder(25);
         string.append("[");
