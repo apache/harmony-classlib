@@ -73,6 +73,7 @@ public class SimpleFormatterTest extends TestCase {
 
 	public void testFormat() {
 		String str = sf.format(lr);
+		Throwable t;
 
 		lr.setMessage(MSG + " {0,number}");
 		lr.setLoggerName("logger");
@@ -81,7 +82,7 @@ public class SimpleFormatterTest extends TestCase {
 		lr.setSourceMethodName("method");
 		lr.setParameters(new Object[] { new Integer(100), new Object() });
 		lr.setThreadID(1000);
-		lr.setThrown(new Exception("exception") {
+		lr.setThrown(t = new Exception("exception") {
 			private static final long serialVersionUID = 1L;
 
 			public String getLocalizedMessage() {
@@ -97,7 +98,8 @@ public class SimpleFormatterTest extends TestCase {
 		assertTrue(str.indexOf("class") > 0);
 		assertTrue(str.indexOf("method") > 0);
 		assertTrue(str.indexOf("100") > 0);
-		assertTrue(str.indexOf("locale") > 0);
+		assertTrue(str.indexOf(t.toString()) > 0);
+        System.out.println(t.toString());
 		assertTrue(str.indexOf(Level.FINE.getLocalizedName()) > 0);
 	}
 
