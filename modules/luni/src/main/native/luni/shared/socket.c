@@ -1133,7 +1133,7 @@ setReuseAddrAndReusePort (JNIEnv * env, hysocket_t hysocketP, jobject optVal)
   I_32 result;
   U_32 value;
 
-  value = intValue (env, optVal);
+  value = booleanValue (env, optVal);
 
   /* first set REUSEPORT.  Ignore the error as not all platforms will support this */
   result =
