@@ -330,15 +330,25 @@ public class FileHandlerTest extends TestCase {
 		assertFileContent(TEMPPATH, "testLimitCount0.0",
 				new LogRecord[] { rs[9] }, handler.getFormatter());
 		
+        FileHandler h1 = null;
+        FileHandler h2 = null;
         try {
             File logDir = new File("log");
             reset("log",""); 
             logDir.mkdir();
-            FileHandler h1 = new FileHandler("log/a", 0, 1);
+            h1 = new FileHandler("log/a", 0, 1);
             assertNotNull(h1);
-            FileHandler h2 = new FileHandler("log/a", 0, 1, false);
+            h2 = new FileHandler("log/a", 0, 1, false);
             assertNotNull(h2);
         } finally {
+            try{
+                h1.close();
+            }catch(Exception e){
+            }
+            try{
+                h2.close();
+            }catch(Exception e){
+            }
             reset("log", "");
         }	
 	}
@@ -525,10 +535,12 @@ public class FileHandlerTest extends TestCase {
 		} catch (NullPointerException e) {
 		}
 		try {
-			new FileHandler("");
-			fail("should throw null exception");
-		} catch (NullPointerException e) {
-		}
+            // regression test for Harmony-1299
+            new FileHandler("");
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected 
+        }
 		try {
 			new FileHandler("%t/java%u", 0, 0);
 			fail("should throw IllegalArgumentException");

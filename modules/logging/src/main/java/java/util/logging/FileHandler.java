@@ -412,8 +412,11 @@ public class FileHandler extends StreamHandler {
      * 								
      */
     public FileHandler(String pattern) throws IOException {
-        if(null == pattern || "".equals(pattern)){ //$NON-NLS-1$
+        if(null == pattern){ 
             throw new NullPointerException("Pattern cannot be empty"); //$NON-NLS-1$
+        }
+        if("".equals(pattern)){
+            throw new IllegalArgumentException();
         }
         init(pattern, null, new Integer(DEFAULT_LIMIT), new Integer(
                 DEFAULT_COUNT));
