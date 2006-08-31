@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,11 +27,11 @@ public class DataTruncation extends SQLWarning implements Serializable {
 
     private static final long serialVersionUID = 6464298989504059473L;
 
-    private int theIndex = 0;
+    private int index = 0;
 
-    private boolean parameterFlag = false;
+    private boolean parameter = false;
 
-    private boolean readFlag = false;
+    private boolean read = false;
 
     private int dataSize = 0;
 
@@ -65,9 +65,9 @@ public class DataTruncation extends SQLWarning implements Serializable {
     public DataTruncation(int index, boolean parameter, boolean read,
             int dataSize, int transferSize) {
         super(THE_REASON, THE_SQLSTATE, THE_ERROR_CODE);
-        this.theIndex = index;
-        this.parameterFlag = parameter;
-        this.readFlag = read;
+        this.index = index;
+        this.parameter = parameter;
+        this.read = read;
         this.dataSize = dataSize;
         this.transferSize = transferSize;
     }
@@ -88,7 +88,7 @@ public class DataTruncation extends SQLWarning implements Serializable {
      * @return the index number of the column or of the parameter.
      */
     public int getIndex() {
-        return theIndex;
+        return index;
     }
 
     /**
@@ -98,7 +98,7 @@ public class DataTruncation extends SQLWarning implements Serializable {
      *         was a column value
      */
     public boolean getParameter() {
-        return parameterFlag;
+        return parameter;
     }
 
     /**
@@ -109,7 +109,7 @@ public class DataTruncation extends SQLWarning implements Serializable {
      *         otherwise.
      */
     public boolean getRead() {
-        return readFlag;
+        return read;
     }
 
     /**

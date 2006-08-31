@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,10 @@
 
 package org.apache.harmony.sql.tests.java.sql;
 
+import java.io.Serializable;
 import java.sql.DataTruncation;
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 import junit.framework.TestCase;
 
@@ -435,5 +438,50 @@ public class DataTruncationTest extends TestCase {
 		} // end for
 
 	} // end method testGetTransferSize
+    
+    /**
+     * @tests serialization/deserialization compatibility.
+     */
+    public void testSerializationSelf() throws Exception {
+        DataTruncation object = new DataTruncation(10, true, true, 10, 10);
+        SerializationTest.verifySelf(object, DATATRUNCATION_COMPARATOR);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+        DataTruncation object = new DataTruncation(10, true, true, 10, 10);
+        SerializationTest.verifyGolden(this, object, DATATRUNCATION_COMPARATOR);
+    }
+
+    // comparator for DataTruncation objects
+    private static final SerializableAssert DATATRUNCATION_COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
+
+            // do common checks for all throwable objects
+            SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(initial,
+                    deserialized);
+
+            DataTruncation initThr = (DataTruncation) initial;
+            DataTruncation dserThr = (DataTruncation) deserialized;
+
+            // verify index
+            assertEquals(initThr.getIndex(), dserThr.getIndex());
+
+            // verify parameter
+            assertEquals(initThr.getParameter(), dserThr.getParameter());
+
+            // verify read
+            assertEquals(initThr.getRead(), dserThr.getRead());
+
+            // verify dataSize
+            assertEquals(initThr.getDataSize(), dserThr.getDataSize());
+
+            // verify transferSize
+            assertEquals(initThr.getTransferSize(), dserThr.getTransferSize());
+        }
+    };
 
 } // end class DataTruncationTest
