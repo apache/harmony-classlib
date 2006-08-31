@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,14 @@ package java.sql;
 
 import java.io.Serializable;
 
+import org.apache.harmony.sql.internal.nls.Messages;
+
 /**
  * An exception class that holds information about Database access warnings.
  */
 public class SQLWarning extends SQLException implements Serializable {
 
     private static final long serialVersionUID = 3917336774604784856L;
-
-    private SQLWarning chainedWarning = null;
 
     /**
      * Creates an SQLWarning object. The Reason string is set to null, the
@@ -79,7 +79,14 @@ public class SQLWarning extends SQLException implements Serializable {
      *         is chained to this SQLWarning.
      */
     public SQLWarning getNextWarning() {
-        return chainedWarning;
+        SQLException next = super.getNextException();
+        if (next == null) {
+            return null;
+        }
+        if (next instanceof SQLWarning) {
+            return (SQLWarning) next;
+        }
+        throw new Error(Messages.getString("sql.8")); //$NON-NLS-1$
     }
 
     /**
@@ -89,7 +96,6 @@ public class SQLWarning extends SQLException implements Serializable {
      *            the SQLWarning to chain to this SQLWarning.
      */
     public void setNextWarning(SQLWarning w) {
-        chainedWarning = w;
-        return;
+        super.setNextException(w);
     }
 }
