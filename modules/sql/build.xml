@@ -140,9 +140,6 @@
 
                 <fileset dir="${hy.sql.src.test.java}">
                     <include name="**/*Test.java"/>
-
-                    <!-- This test is empty -->
-                    <exclude name="org/apache/harmony/sql/tests/java/sql/ArrayTest.java" />
                 </fileset>
             </batchtest>
         </junit>
