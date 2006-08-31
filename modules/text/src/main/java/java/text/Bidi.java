@@ -18,6 +18,8 @@ package java.text;
 
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.awt.font.TextAttribute;
+import java.awt.font.NumericShaper;
 
 import org.apache.harmony.text.BidiRun;
 import org.apache.harmony.text.BidiWrapper;
@@ -91,11 +93,65 @@ public final class Bidi {
 	public Bidi(AttributedCharacterIterator paragraph) {
         if (paragraph == null) {
             throw new IllegalArgumentException("paragraph is null");
-        /*
-         * TODO: dependency on java.awt.font.TextAttribute and
-         * java.awt.font.NumericShaper which is not implemented yet.
-         */
         }
+
+        int begin = paragraph.getBeginIndex();
+        int end = paragraph.getEndIndex();
+        int length = end - begin;
+        char text[] = new char[length+1]; // One more char for AttributedCharacterIterator.DONE
+
+        if (length != 0) {
+            text[0] = paragraph.first();
+        } else {
+            paragraph.first();
+        }
+
+        // First check the RUN_DIRECTION attribute.
+        int flags = DIRECTION_DEFAULT_LEFT_TO_RIGHT;
+        Object direction = paragraph.getAttribute(TextAttribute.RUN_DIRECTION);
+        if (direction != null && direction instanceof Boolean) {
+            if (direction.equals(TextAttribute.RUN_DIRECTION_LTR)) {
+                flags = DIRECTION_LEFT_TO_RIGHT;
+            } else {
+                flags = DIRECTION_RIGHT_TO_LEFT;
+            }
+        }
+
+        // Retrieve the text and gather BIDI_EMBEDDINGS
+        byte embeddings[] = null;
+        for (
+                int textLimit = 1, i = 1;
+                i < length;
+                textLimit = paragraph.getRunLimit(TextAttribute.BIDI_EMBEDDING) - begin + 1
+        ) {
+            Object embedding = paragraph.getAttribute(TextAttribute.BIDI_EMBEDDING);
+            if (embedding != null && embedding instanceof Integer) {
+                int embLevel = ((Integer) embedding).intValue();
+
+                if (embeddings == null) {
+                    embeddings = new byte[length];
+                }
+
+                for (; i < textLimit; i++) {
+                    text[i] = paragraph.next();
+                    embeddings[i-1] = (byte) embLevel;
+                }
+            } else {
+                for (; i < textLimit; i++) {
+                    text[i] = paragraph.next();
+                }
+            }
+        }
+
+        // Apply NumericShaper to the text
+        Object numericShaper = paragraph.getAttribute(TextAttribute.NUMERIC_SHAPING);
+        if (numericShaper != null && numericShaper instanceof NumericShaper) {
+            ((NumericShaper) numericShaper).shape(text, 0, length);
+        }
+
+        long pBidi = createUBiDi(text, 0, embeddings, 0, length, flags);
+        readBidiInfo(pBidi);
+        BidiWrapper.ubidi_close(pBidi);
     }
 
 	/**
@@ -231,14 +287,18 @@ public final class Bidi {
 
 		int runCount = BidiWrapper.ubidi_countRuns(pBidi);
 		if (runCount == 0) {
-			runCount = 1;
-			runs = new BidiRun[runCount];
-			runs[0] = new BidiRun(0, 0, baseLevel);
+            unidirectional = true;
+            runs = null;
 		} else if (runCount < 0) {
-			runCount = 0;
 			runs = null;
 		} else {
 			runs = BidiWrapper.ubidi_getRuns(pBidi);
+
+            // Simplified case for one run which has the base level
+            if (runCount == 1 && runs[0].getLevel() == baseLevel) {
+                unidirectional = true;
+                runs = null;
+            }
 		}
 
 		direction = BidiWrapper.ubidi_getDirection(pBidi);
@@ -253,6 +313,8 @@ public final class Bidi {
 	private BidiRun[] runs;
 
 	private int direction;
+
+    private boolean unidirectional;
 
 	/**
 	 * Return whether the base level is from left to right.
@@ -320,7 +382,7 @@ public final class Bidi {
 	 * 
 	 * @param offset
 	 *            the offset of the character.
-	 * @return the int value of the evel.
+	 * @return the int value of the level.
 	 */
 	public int getLevelAt(int offset) {
 		try {
@@ -336,7 +398,7 @@ public final class Bidi {
 	 * @return the int value of runs, at least 1.
 	 */
 	public int getRunCount() {
-		return runs.length;
+		return unidirectional ? 1 : runs.length;
 	}
 
 	/**
@@ -347,7 +409,7 @@ public final class Bidi {
 	 * @return the level of the run.
 	 */
 	public int getRunLevel(int run) {
-		return runs[run].getLevel();
+		return unidirectional ? baseLevel : runs[run].getLevel();
 	}
 
 	/**
@@ -358,7 +420,7 @@ public final class Bidi {
 	 * @return the limit offset of the run.
 	 */
 	public int getRunLimit(int run) {
-		return runs[run].getLimit();
+		return unidirectional ? length : runs[run].getLimit();
 	}
 
 	/**
@@ -369,7 +431,7 @@ public final class Bidi {
 	 * @return the start offset of the run.
 	 */
 	public int getRunStart(int run) {
-		return runs[run].getStart();
+		return unidirectional ? 0 : runs[run].getStart();
 	}
 
 	/**
@@ -466,6 +528,6 @@ public final class Bidi {
 	 */
 	public String toString() {
 		return super.toString() + "[direction: " + direction + " baselevel: " + baseLevel
-			 + " length: " + length + " runs: " + runs + "]";
+			 + " length: " + length + " runs: " + (unidirectional ? "null" : runs.toString()) + "]";
 	}
 }

@@ -15,6 +15,7 @@
 
 package org.apache.harmony.text.tests.java.text;
 
+import java.text.AttributedString; 
 import java.text.Bidi;
 import java.util.Arrays;
 
@@ -946,5 +947,22 @@ public class BidiTest extends TestCase {
             assertEquals(expectedRuns[i][1], bi.getRunLimit(i));
         }
     }
+       public void testGetRunLimit() {
+         bd = new Bidi("text", Bidi.DIRECTION_LEFT_TO_RIGHT);
+         try {
+             assertTrue(4 == bd.getRunLimit(-1));
+         } catch (Exception e) {
+                       fail("Unexpected exception: " + e);
+         }
+       }
+       public void testBidiConstructor_Iterator() {
+               AttributedString paragraph = new AttributedString("text");
+         bd = new Bidi(paragraph.getIterator());
+         try {
+             assertTrue(4 == bd.getRunLimit(1));
+         } catch (Exception e) {
+                       fail("Unexpected exception: " + e);
+         }
+       }
 
 }

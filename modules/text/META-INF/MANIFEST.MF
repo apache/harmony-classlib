@@ -12,6 +12,7 @@ Import-Package: java.io,
  java.net,
  java.security,
  java.util,
+ java.awt.font,
  org.apache.harmony.luni.util,
  tests.support;resolution:=optional;hy_usage=test,
  tests.util;resolution:=optional;hy_usage=test
