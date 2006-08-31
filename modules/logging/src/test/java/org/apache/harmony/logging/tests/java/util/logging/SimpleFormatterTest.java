@@ -99,7 +99,6 @@ public class SimpleFormatterTest extends TestCase {
 		assertTrue(str.indexOf("method") > 0);
 		assertTrue(str.indexOf("100") > 0);
 		assertTrue(str.indexOf(t.toString()) > 0);
-        System.out.println(t.toString());
 		assertTrue(str.indexOf(Level.FINE.getLocalizedName()) > 0);
 	}
 
