@@ -74,7 +74,9 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
      *             if the specified enum set is null
      */
     public static <E extends Enum<E>> EnumSet<E> copyOf(EnumSet<E> s) {
-        throw new NotYetImplementedException();
+        EnumSet<E> set = EnumSet.noneOf(s.elementClass);
+        set.addAll(s);
+        return set;
     }
 
     /**
@@ -91,7 +93,20 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
      *             if the specified collection is null
      */
     public static <E extends Enum<E>> EnumSet<E> copyOf(Collection<E> c) {
-        throw new NotYetImplementedException();
+        if (c instanceof EnumSet) {
+            return copyOf((EnumSet<E>) c);
+        }
+        if (0 == c.size()) {
+            throw new IllegalArgumentException();
+        }
+        Iterator<E> iterator = c.iterator();
+        E element = iterator.next();
+        EnumSet<E> set = EnumSet.noneOf(element.getDeclaringClass());
+        set.add(element);
+        while (iterator.hasNext()) {
+            set.add(iterator.next());
+        }
+        return set;
     }
 
     /**
@@ -127,7 +142,9 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
      *             if the specified element is null
      */
     public static <E extends Enum<E>> EnumSet<E> of(E e) {
-        throw new NotYetImplementedException();
+        EnumSet<E> set = EnumSet.noneOf(e.getDeclaringClass());
+        set.add(e);
+        return set;
     }
 
     /**
@@ -145,7 +162,9 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
      *             if any of the specified elements is null
      */
     public static <E extends Enum<E>> EnumSet<E> of(E e1, E e2) {
-        throw new NotYetImplementedException();
+        EnumSet<E> set = of(e1);
+        set.add(e2);
+        return set;
     }
 
     /**
@@ -165,7 +184,9 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
      *             if any of the specified elements is null
      */
     public static <E extends Enum<E>> EnumSet<E> of(E e1, E e2, E e3) {
-        throw new NotYetImplementedException();
+        EnumSet<E> set = of(e1, e2);
+        set.add(e3);
+        return set;
     }
 
     /**
@@ -187,7 +208,9 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
      *             if any of the specified elements is null
      */
     public static <E extends Enum<E>> EnumSet<E> of(E e1, E e2, E e3, E e4) {
-        throw new NotYetImplementedException();
+        EnumSet<E> set = of(e1, e2, e3);
+        set.add(e4);
+        return set;
     }
 
     /**
@@ -211,7 +234,9 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
      *             if any of the specified elements is null
      */
     public static <E extends Enum<E>> EnumSet<E> of(E e1, E e2, E e3, E e4, E e5) {
-        throw new NotYetImplementedException();
+        EnumSet<E> set = of(e1, e2, e3, e4);
+        set.add(e5);
+        return set;
     }
 
     /**
@@ -228,7 +253,11 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
      *             if any of the specified elements is null
      */
     public static <E extends Enum<E>> EnumSet<E> of(E start, E... others) {
-        throw new NotYetImplementedException();
+        EnumSet<E> set = of(start);
+        for (E e : others) {
+            set.add(e);
+        }
+        return set;
     }
 
     /**
@@ -246,8 +275,15 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
      *             if start is behind end
      */
     public static <E extends Enum<E>> EnumSet<E> range(E start, E end) {
-        throw new NotYetImplementedException();
+        if (start.compareTo(end) > 0) {
+            throw new IllegalArgumentException();
+        }
+        EnumSet<E> set = EnumSet.noneOf(start.getDeclaringClass());
+        set.addRange(start, end);
+        return set;
     }
+    
+    abstract void addRange(E start, E end);
 
     /**
      * Creates a new enum set with the same elements as those contained in this
@@ -256,10 +292,12 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
      * @return a new enum set with the same elements as those contained in this
      *         enum set
      */
+    @Override
     public EnumSet<E> clone() {
         throw new NotYetImplementedException();
     }
     
+    @SuppressWarnings("unchecked")
     boolean isValidType(Class cls) {
         return cls == elementClass || cls.getSuperclass() == elementClass;
     }

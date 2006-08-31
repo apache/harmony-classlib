@@ -506,6 +506,97 @@ public class EnumSetTest extends TestCase {
     }
     
     /**
+     * @tests java.util.EnumSet#copyOf(java.util.Collection)
+     */
+    @SuppressWarnings("unchecked")
+    public void test_CopyOf_LCollection() {
+        try {
+            EnumSet.copyOf((Collection) null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException npe) {
+            // expected
+        }
+
+        Collection collection = new ArrayList();
+        try {
+            EnumSet.copyOf(collection);
+            fail("Should throw IllegalArgumentException"); //$NON-NLS-1$
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        collection.add(new Object());
+        try {
+            EnumSet.copyOf(collection);
+            fail("Should throw ClassCastException"); //$NON-NLS-1$
+        } catch (ClassCastException e) {
+            // expected
+        }
+
+        Collection<EnumFoo> enumCollection = new ArrayList<EnumFoo>();
+        enumCollection.add(EnumFoo.b);
+
+        EnumSet<EnumFoo> copyOfEnumCollection = EnumSet.copyOf(enumCollection);
+        assertEquals("Size of copyOfEnumCollection should be 1:", //$NON-NLS-1$
+                1, copyOfEnumCollection.size());
+        assertTrue("copyOfEnumCollection should contain EnumFoo.b:", //$NON-NLS-1$
+                copyOfEnumCollection.contains(EnumFoo.b));
+
+        enumCollection.add(null);
+        assertEquals("Size of enumCollection should be 2:", //$NON-NLS-1$
+                2, enumCollection.size());
+
+        try {
+            copyOfEnumCollection = EnumSet.copyOf(enumCollection);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException npe) {
+            // expected
+        }
+        
+        Collection rawEnumCollection = new ArrayList();
+        rawEnumCollection.add(EnumFoo.a);
+        rawEnumCollection.add(EnumWithInnerClass.a);
+        try {
+            EnumSet.copyOf(rawEnumCollection);
+            fail("Should throw ClassCastException"); //$NON-NLS-1$
+        } catch(ClassCastException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests java.util.EnumSet#copyOf(java.util.EnumSet)
+     */
+    @SuppressWarnings("unchecked")
+    public void test_CopyOf_LEnumSet() {
+        EnumSet<EnumWithInnerClass> enumSet = EnumSet
+                .noneOf(EnumWithInnerClass.class);
+        enumSet.add(EnumWithInnerClass.a);
+        enumSet.add(EnumWithInnerClass.f);
+        EnumSet<EnumWithInnerClass> copyOfE = EnumSet.copyOf(enumSet);
+        assertEquals("Size of enumSet and copyOfE should be equal", //$NON-NLS-1$
+                enumSet.size(), copyOfE.size());
+
+        assertTrue("EnumWithSubclass.a should be contained in copyOfE", //$NON-NLS-1$
+                copyOfE.contains(EnumWithInnerClass.a));
+        assertTrue("EnumWithSubclass.f should be contained in copyOfE", //$NON-NLS-1$
+                copyOfE.contains(EnumWithInnerClass.f));
+
+        Object[] enumValue = copyOfE.toArray();
+        assertSame("enumValue[0] should be identical with EnumWithSubclass.a", //$NON-NLS-1$
+                enumValue[0], EnumWithInnerClass.a);
+        assertSame("enumValue[1] should be identical with EnumWithSubclass.f", //$NON-NLS-1$
+                enumValue[1], EnumWithInnerClass.f);
+
+        try {
+            EnumSet.copyOf((EnumSet) null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException npe) {
+            // expected
+        }
+    }
+    
+    /**
      * @tests java.util.EnumSet#removeAll(Collection)
      */
     @SuppressWarnings("unchecked")
@@ -716,7 +807,7 @@ public class EnumSetTest extends TestCase {
 
         Iterator<EnumFoo> iterator = set.iterator();
         Iterator<EnumFoo> anotherIterator = set.iterator();
-        assertNotSame(iterator, anotherIterator);
+        assertNotSame("Should not be same", iterator, anotherIterator); //$NON-NLS-1$
         try {
             iterator.remove();
             fail("Should throw IllegalStateException"); //$NON-NLS-1$
@@ -829,5 +920,194 @@ public class EnumSetTest extends TestCase {
         // RI's bug, EnumFoo.b should not exist at the moment.
         assertFalse("Should return false", set.contains(EnumFoo.b)); //$NON-NLS-1$
         
+    }
+    
+    /**
+     * @tests java.util.EnumSet#of(E)
+     */
+    public void test_Of_E() {
+        EnumSet<EnumWithInnerClass> enumSet = EnumSet.of(EnumWithInnerClass.a);
+        assertEquals("enumSet should have length 1:", 1, enumSet.size()); //$NON-NLS-1$
+
+        assertTrue("enumSet should contain EnumWithSubclass.a:", //$NON-NLS-1$
+                enumSet.contains(EnumWithInnerClass.a));
+
+        try {
+            EnumSet.of((EnumWithInnerClass) null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException npe) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests java.util.EnumSet#of(E, E)
+     */
+    public void test_Of_EE() {
+        EnumSet<EnumWithInnerClass> enumSet = EnumSet.of(EnumWithInnerClass.a,
+                EnumWithInnerClass.b);
+        assertEquals("enumSet should have length 2:", 2, enumSet.size()); //$NON-NLS-1$
+
+        assertTrue("enumSet should contain EnumWithSubclass.a:", //$NON-NLS-1$
+                enumSet.contains(EnumWithInnerClass.a));
+        assertTrue("enumSet should contain EnumWithSubclass.b:", //$NON-NLS-1$
+                enumSet.contains(EnumWithInnerClass.b));
+
+        try {
+            EnumSet.of((EnumWithInnerClass) null, EnumWithInnerClass.a);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException npe) {
+            // expected
+        }
+        
+        try {
+            EnumSet.of( EnumWithInnerClass.a, (EnumWithInnerClass) null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException npe) {
+            // expected
+        }
+        
+        try {
+            EnumSet.of( (EnumWithInnerClass) null, (EnumWithInnerClass) null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException npe) {
+            // expected
+        }
+
+        enumSet = EnumSet.of(EnumWithInnerClass.a, EnumWithInnerClass.a);
+        assertEquals("Size of enumSet should be 1", //$NON-NLS-1$
+                1, enumSet.size());
+    }
+    
+    /**
+     * @tests java.util.EnumSet#of(E, E, E)
+     */
+    public void test_Of_EEE() {
+        EnumSet<EnumWithInnerClass> enumSet = EnumSet.of(EnumWithInnerClass.a,
+                EnumWithInnerClass.b, EnumWithInnerClass.c);
+        assertEquals("Size of enumSet should be 3:", 3, enumSet.size()); //$NON-NLS-1$
+
+        assertTrue(
+                "enumSet should contain EnumWithSubclass.a:", enumSet.contains(EnumWithInnerClass.a)); //$NON-NLS-1$
+        assertTrue("Should return true", enumSet.contains(EnumWithInnerClass.c)); //$NON-NLS-1$
+
+        try {
+            EnumSet.of((EnumWithInnerClass) null, null, null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException npe) {
+            // expected
+        }
+
+        enumSet = EnumSet.of(EnumWithInnerClass.a, EnumWithInnerClass.b,
+                EnumWithInnerClass.b);
+        assertEquals("enumSet should contain 2 elements:", 2, enumSet.size()); //$NON-NLS-1$
+    }
+    
+    /**
+     * @tests java.util.EnumSet#of(E, E, E, E)
+     */
+    public void test_Of_EEEE() {
+        EnumSet<EnumWithInnerClass> enumSet = EnumSet.of(EnumWithInnerClass.a,
+                EnumWithInnerClass.b, EnumWithInnerClass.c,
+                EnumWithInnerClass.d);
+        assertEquals("Size of enumSet should be 4", 4, enumSet.size()); //$NON-NLS-1$
+
+        assertTrue(
+                "enumSet should contain EnumWithSubclass.a:", enumSet.contains(EnumWithInnerClass.a)); //$NON-NLS-1$
+        assertTrue("enumSet should contain EnumWithSubclass.d:", enumSet //$NON-NLS-1$
+                .contains(EnumWithInnerClass.d));
+
+        try {
+            EnumSet.of((EnumWithInnerClass) null, null, null, null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException npe) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests java.util.EnumSet#of(E, E, E, E, E)
+     */
+    public void test_Of_EEEEE() {
+        EnumSet<EnumWithInnerClass> enumSet = EnumSet.of(EnumWithInnerClass.a,
+                EnumWithInnerClass.b, EnumWithInnerClass.c,
+                EnumWithInnerClass.d, EnumWithInnerClass.e);
+        assertEquals("Size of enumSet should be 5:", 5, enumSet.size()); //$NON-NLS-1$
+
+        assertTrue("Should return true", enumSet.contains(EnumWithInnerClass.a)); //$NON-NLS-1$
+        assertTrue("Should return true", enumSet.contains(EnumWithInnerClass.e)); //$NON-NLS-1$
+
+        try {
+            EnumSet.of((EnumWithInnerClass) null, null, null, null, null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException npe) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests java.util.EnumSet#of(E, E...)
+     */
+    public void test_Of_EEArray() {
+        EnumWithInnerClass[] enumArray = new EnumWithInnerClass[] {
+                EnumWithInnerClass.b, EnumWithInnerClass.c };
+        EnumSet<EnumWithInnerClass> enumSet = EnumSet.of(EnumWithInnerClass.a,
+                enumArray);
+        assertEquals("Should be equal", 3, enumSet.size()); //$NON-NLS-1$
+
+        assertTrue("Should return true", enumSet.contains(EnumWithInnerClass.a)); //$NON-NLS-1$
+        assertTrue("Should return true", enumSet.contains(EnumWithInnerClass.c)); //$NON-NLS-1$
+
+        try {
+            EnumSet.of(EnumWithInnerClass.a, (EnumWithInnerClass[])null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException npe) {
+            // expected
+        }
+        
+        EnumFoo[] foos = {EnumFoo.a, EnumFoo.c, EnumFoo.d};
+        EnumSet<EnumFoo> set = EnumSet.of(EnumFoo.c, foos);
+        assertEquals("size of set should be 1", 3, set.size()); //$NON-NLS-1$
+        assertTrue("Should contain EnumFoo.a", set.contains(EnumFoo.a)); //$NON-NLS-1$
+        assertTrue("Should contain EnumFoo.c", set.contains(EnumFoo.c)); //$NON-NLS-1$
+        assertTrue("Should contain EnumFoo.d", set.contains(EnumFoo.d)); //$NON-NLS-1$
+    }
+    
+    /**
+     * @tests java.util.EnumSet#range(E, E)
+     */
+    public void test_Range_EE() {
+        try {
+            EnumSet.range(EnumWithInnerClass.c, null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            EnumSet.range(null, EnumWithInnerClass.c);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            EnumSet.range(null, (EnumWithInnerClass) null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            EnumSet.range(EnumWithInnerClass.b, EnumWithInnerClass.a);
+            fail("Should throw IllegalArgumentException"); //$NON-NLS-1$
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        EnumSet<EnumWithInnerClass> enumSet = EnumSet.range(
+                EnumWithInnerClass.a, EnumWithInnerClass.a);
+        assertEquals("Size of enumSet should be 1", 1, enumSet.size()); //$NON-NLS-1$
+
     }
 }

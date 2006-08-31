@@ -218,7 +218,7 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
         if( !isValidType(set.elementClass) ) {
             return size == 0 && set.size() == 0;
         }
-        return bits == ((MiniEnumSet)set).bits;
+        return bits == ((MiniEnumSet<E>)set).bits;
     }
     
     @Override
@@ -228,5 +228,13 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
             bits &= (-1l >>> (MAX_ELEMENTS - enums.length));
             size = enums.length - size;
         }
+    }
+    
+    @Override
+    void addRange(E start, E end) {
+        int length = end.ordinal() - start.ordinal() + 1;
+        long range = (-1l >>> (MAX_ELEMENTS - length)) << start.ordinal();
+        bits |= range;
+        size += length;
     }
 }
