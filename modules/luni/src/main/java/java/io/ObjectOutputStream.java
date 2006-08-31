@@ -1965,8 +1965,6 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
             throws IOException {
         // write classDesc, classDesc for enum is different
         ObjectStreamClass classDesc = ObjectStreamClass.lookup(theClass);
-        // SUID of enum is 0L
-        classDesc.setSerialVersionUID(0L);
         // set flag for enum, the flag is (SC_SERIALIZABLE | SC_ENUM)
         classDesc.setFlags((byte)(SC_SERIALIZABLE|SC_ENUM));
         Integer previousHandle = objectsWritten.get(classDesc);
@@ -1999,7 +1997,6 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
             if (null != superClass) {
             	// super class is also enum
                 superClass.setFlags((byte)(SC_SERIALIZABLE|SC_ENUM));
-                superClass.setSerialVersionUID(0L);
                 writeEnumDesc(superClass.forClass(), unshared);
             } else {
                 output.writeByte(TC_NULL);

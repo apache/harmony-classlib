@@ -195,8 +195,8 @@ public class ObjectStreamClass implements Serializable {
         if (computeSUID) {
             // Lazy computation, to save speed & space
             declaredFields = cl.getDeclaredFields();
-            result.setSerialVersionUID(computeSerialVersionUID(cl,
-                    declaredFields));
+            result.setSerialVersionUID(cl.isEnum() ? 0
+                    : computeSerialVersionUID(cl, declaredFields));
         }
 
         boolean serializable = isSerializable(cl);
