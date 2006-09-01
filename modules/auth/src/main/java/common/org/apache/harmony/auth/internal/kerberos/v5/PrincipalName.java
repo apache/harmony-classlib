@@ -71,10 +71,41 @@ public class PrincipalName {
         return name;
     }
 
-    /** PrincipalName ::= SEQUENCE {
-     *      name-type   [0] Int32,
-     *      name-string [1] SEQUENCE OF KerberosString
-     *  }
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof PrincipalName)) {
+            return false;
+        }
+
+        PrincipalName that = (PrincipalName) obj;
+
+        return type == that.type && Arrays.equals(that.name, name);
+    }
+
+    public int hashCode() {
+        return type + Arrays.hashCode(name);
+    }
+
+    public String toString() {
+        StringBuilder buf = new StringBuilder("Name: ");
+
+        for (int i = 0; i < (name.length - 1); i++) {
+            buf.append(name[i]);
+            buf.append('/');
+        }
+        buf.append(name[name.length - 1]);
+        buf.append(", type: ");
+        buf.append(type);
+
+        return buf.toString();
+    }
+
+    /**
+     * PrincipalName ::= SEQUENCE { name-type [0] Int32, name-string [1]
+     * SEQUENCE OF KerberosString }
      */
     public static final ASN1Sequence ASN1 = new ASN1Sequence(new ASN1Type[] {
             new ASN1Explicit(0, ASN1Integer.getInstance()),
@@ -86,7 +117,7 @@ public class PrincipalName {
             Object[] values = (Object[]) in.content;
 
             int type = ASN1Integer.toIntValue(values[0]);
-            
+
             // TODO: list to array conversion should be done by framework
             List list = (List) values[1];
             String[] name = new String[list.size()];
@@ -100,7 +131,7 @@ public class PrincipalName {
             PrincipalName name = (PrincipalName) object;
 
             values[0] = BigInteger.valueOf(name.getType()).toByteArray();
-            
+
             values[1] = Arrays.asList(name.getName());
         }
     };
