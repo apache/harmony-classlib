@@ -41,8 +41,8 @@ public class MidiDeviceProviderTest extends TestCase {
             }
         };
 
-        recorded = new MidiDevice.Info[1];
-        recorded[0] = new MidiDevice.Info("1", "2", "3", "4") {};
+        recorded = new MidiDevice.Info[] { new MidiDevice.Info("1", "2", "3",
+                "4") {} };
         assertTrue(myProvider.isDeviceSupported(recorded[0]));
 
         MidiDevice.Info similar = new MidiDevice.Info("1", "2", "3", "4") {};

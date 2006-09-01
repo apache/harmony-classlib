@@ -93,8 +93,7 @@ public class MidiFileWriterTest extends TestCase {
             }
         };
 
-        recorded = new int[1];
-        recorded[0] = 3;
+        recorded = new int[] {3};
 
         assertTrue(writer.isFileTypeSupported(3, null));
         assertFalse(writer.isFileTypeSupported(5, null));

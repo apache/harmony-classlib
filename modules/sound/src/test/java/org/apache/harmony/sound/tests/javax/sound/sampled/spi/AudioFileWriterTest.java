@@ -58,8 +58,7 @@ public class AudioFileWriterTest extends TestCase {
             }
         };
 
-        recorded = new AudioFileFormat.Type[1];
-        recorded[0] = new AudioFileFormat.Type("1", "2");
+        recorded = new AudioFileFormat.Type[] {new AudioFileFormat.Type("1", "2")};
 
         assertTrue(writer.isFileTypeSupported(recorded[0]));
 
@@ -108,8 +107,8 @@ public class AudioFileWriterTest extends TestCase {
             }
         };
 
-        recorded = new AudioFileFormat.Type[1];
-        recorded[0] = new AudioFileFormat.Type("1", "2");
+        recorded = new AudioFileFormat.Type[] { new AudioFileFormat.Type("1",
+                "2") };
 
         assertTrue(writer.isFileTypeSupported(recorded[0], null));
 

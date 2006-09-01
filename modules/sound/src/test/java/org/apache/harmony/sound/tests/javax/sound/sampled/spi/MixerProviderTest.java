@@ -41,8 +41,7 @@ public class MixerProviderTest extends TestCase {
             }
         };
 
-        recorded = new Mixer.Info[1];
-        recorded[0] = new Mixer.Info("1", "2", "3", "4") {};
+        recorded = new Mixer.Info[] { new Mixer.Info("1", "2", "3", "4") {} };
         assertTrue(myProvider.isMixerSupported(recorded[0]));
 
         Mixer.Info similar = new Mixer.Info("1", "2", "3", "4") {};

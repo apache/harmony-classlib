@@ -16,7 +16,7 @@
 
 package javax.sound.sampled;
 
-public interface Mixer {
+public interface Mixer extends Line {
     static class Info{
         private String name;
         private String vendor;
@@ -58,4 +58,30 @@ public interface Mixer {
             throw new Error("not yet implemented");
         }
     }
+
+    Line getLine(Line.Info info);
+    
+    int getMaxLines(Line.Info info);
+    
+    Mixer.Info getMixerInfo();
+    
+    Line.Info[] getSourceLineInfo();
+    
+    Line.Info[] getSourceLineInfo(Line.Info info);
+    
+    Line[] getSourceLines();
+    
+    Line.Info[] getTargetLineInfo();
+    
+    Line.Info[] getTargetLineInfo(Line.Info info);
+    
+    Line[] getTargetLines();
+    
+    boolean isLineSupported(Line.Info info);
+    
+    boolean isSynchronizationSupported(Line[] lines, boolean maintainSync);
+    
+    void synchronize(Line[] lines, boolean maintainSync);
+
+    void unsynchronize(Line[] lines);
 }
