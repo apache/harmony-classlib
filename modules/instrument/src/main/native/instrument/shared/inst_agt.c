@@ -211,9 +211,13 @@ char* read_attribute(JavaVM *vm, char *manifest,char *lwrmanifest, const char * 
     
     pos = manifest+ (strstr(lwrmanifest,target) - lwrmanifest);
 	pos += strlen(target)+2;//": "
-	end = strchr(pos, '\r');
+	end = strchr(pos, '\n');	
 	if(NULL == end){
 		end = manifest + strlen(manifest);
+	}
+	/* in windows, has '\r\n' in the end of line, omit '\r' */
+	if (*(end - 1) == '\r'){
+		end--;
 	}
 	length = end - pos;
 	
@@ -223,8 +227,15 @@ char* read_attribute(JavaVM *vm, char *manifest,char *lwrmanifest, const char * 
 	return value;
 }
 
+char* strlower(char * str){
+     char *temp = str;
+     while(*temp = tolower(*temp))
+         temp++;
+     return str;
+}
+
 int str2bol(char *str){	
-	return 0 == strcmp("true", strlwr(str));
+	return 0 == strcmp("true", strlower(str));
 }
 
 jint Parse_Options(JavaVM *vm, JNIEnv *env, jvmtiEnv *jvmti,  const char *agent){
@@ -259,7 +270,7 @@ jint Parse_Options(JavaVM *vm, JNIEnv *env, jvmtiEnv *jvmti,  const char *agent)
 	manifest = Read_Manifest(vm,env, jar_name);	
 	lwrmanifest = (char *)hymem_allocate_memory(sizeof(char) * (strlen(manifest)+1));
 	strcpy(lwrmanifest,manifest);
-	strlwr(lwrmanifest);
+	strlower(lwrmanifest);
 	
 	//jar itself added to bootclasspath
 	check_jvmti_error(env, (*jvmti)->GetSystemProperty(jvmti,"java.class.path",&classpath),"Failed to get classpath.");
