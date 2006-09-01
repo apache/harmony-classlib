@@ -15,7 +15,6 @@
 
 package java.sql;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -165,28 +164,31 @@ public class Time extends Date {
      * An exception occurs if the input string is not in the form of a time in
      * JDBC escape format.
      * 
-     * @param theTime
+     * @param timeString
      *            A String representing the time value in JDBC escape format:
      *            hh:mm:ss
      * @return The Time object set to a time corresponding to the given time
      * @throws IllegalArgumentException
-     *             is the supplied time string is not in JDBC escape format.
+     *             if the supplied time string is not in JDBC escape format.
      */
-    public static Time valueOf(String theTime) {
-        java.util.Date aDate;
-
-        if (theTime == null) {
+    public static Time valueOf(String timeString) {
+        if (timeString == null) {
             throw new IllegalArgumentException();
         }
-        java.sql.Date.validateString(theTime, ':');
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss"); //$NON-NLS-1$
-        try {
-            aDate = dateFormat.parse(theTime);
-        } catch (ParseException pe) {
+        int firstIndex = timeString.indexOf(':');
+        int secondIndex = timeString.indexOf(':', firstIndex + 1);
+        // secondIndex == -1 means none or only one separater '-' has been found.
+        // The string is separated into three parts by two separator characters,
+        // if the first or the third part is null string, we should throw
+        // IllegalArgumentException to follow RI
+        if (secondIndex == -1|| firstIndex == 0 || secondIndex + 1 == timeString.length()) {
             throw new IllegalArgumentException();
         }
-
-        return new Time(aDate.getTime());
+        // parse each part of the string
+        int hour = Integer.parseInt(timeString.substring(0, firstIndex));
+        int minute = Integer.parseInt(timeString.substring(firstIndex + 1, secondIndex));
+        int second = Integer.parseInt(timeString.substring(secondIndex + 1, timeString
+                .length()));
+        return new Time(hour, minute, second);
     }
-
 }
