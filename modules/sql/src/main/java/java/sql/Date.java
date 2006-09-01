@@ -16,8 +16,6 @@
 package java.sql;
 
 import java.text.SimpleDateFormat;
-import java.lang.IllegalArgumentException;
-import java.text.ParseException;
 
 /**
  * A Date class which can consume and produce dates in SQL Date format.
@@ -167,7 +165,7 @@ public class Date extends java.util.Date {
     /**
      * Creates a Date from a string representation of a date in SQL format.
      * 
-     * @param theString
+     * @param dateString
      *            the string representation of a date in SQL format -
      *            "yyyy-mm-dd".
      * @return the Date object
@@ -175,21 +173,28 @@ public class Date extends java.util.Date {
      *             if the format of the supplied string does not match the SQL
      *             format.
      */
-    public static Date valueOf(String theString) {
-        java.util.Date aDate;
-
-        if (theString == null) {
+    public static Date valueOf(String dateString) {
+        if (dateString == null) {
             throw new IllegalArgumentException();
         }
-        validateString(theString, '-');
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
-        try {
-            aDate = dateFormat.parse(theString);
-        } catch (ParseException pe) {
+        int firstIndex = dateString.indexOf('-');
+        int secondIndex = dateString.indexOf('-', firstIndex + 1);
+        // secondIndex == -1 means none or only one separater '-' has been
+        // found.
+        // The string is separated into three parts by two separator characters,
+        // if the first or the third part is null string, we should throw
+        // IllegalArgumentException to follow RI
+        if (secondIndex == -1 || firstIndex == 0
+                || secondIndex + 1 == dateString.length()) {
             throw new IllegalArgumentException();
         }
-
-        return new Date(aDate.getTime());
+        // parse each part of the string
+        int year = Integer.parseInt(dateString.substring(0, firstIndex));
+        int month = Integer.parseInt(dateString.substring(firstIndex + 1,
+                secondIndex));
+        int day = Integer.parseInt(dateString.substring(secondIndex + 1,
+                dateString.length()));
+        return new Date(year - 1900, month - 1, day);
     }
 
     /*
@@ -201,27 +206,4 @@ public class Date extends java.util.Date {
     private static long normalizeTime(long theTime) {
         return theTime;
     }
-    
-    /*
-     * Private method to validate the string. If the string is separated into 
-     * three parts by two separator char,we should check each part of the string.We just
-     * use the first two separator char, the others are treated as normal characters.
-     */
-    static void validateString(String timeString, char sep) {
-        int first = timeString.indexOf(sep); //$NON-NLS-1$
-        int second = timeString.indexOf(sep, first + 1); //$NON-NLS-1$
-        if (second != -1) {
-            //The string is separated into three parts by two separator character,
-            //if the first or the third part is null string, we should
-            //throw IllegalArgumentException to follow RI
-            if (first == 0 || second + 1 == timeString.length()) {
-                throw new IllegalArgumentException();
-            }
-            //check each part of the string
-            Integer.parseInt(timeString.substring(0, first));
-            Integer.parseInt(timeString.substring(first + 1, second));
-            Integer.parseInt(timeString.substring(second + 1, timeString
-                    .length()));
-        }
-    }   
 }
