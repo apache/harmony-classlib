@@ -33,7 +33,7 @@ public class java_lang_ShortPersistenceDelegate extends PersistenceDelegate {
     
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Short value = (Short) oldInstance;
-        return new Expression(oldInstance, Short.class, "new",
+        return new Expression(oldInstance, Short.class, "new", //$NON-NLS-1$
                 new Object[] { new Short(value.shortValue()) });
     }
     

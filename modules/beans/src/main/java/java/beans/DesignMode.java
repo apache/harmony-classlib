@@ -27,7 +27,7 @@ package java.beans;
 
 public interface DesignMode {
 
-    public static final String PROPERTYNAME = "designTime";
+    public static final String PROPERTYNAME = "designTime"; //$NON-NLS-1$
 
     /**
      * @com.intel.drl.spec_ref

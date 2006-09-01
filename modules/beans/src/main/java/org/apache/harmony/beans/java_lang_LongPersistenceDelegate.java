@@ -33,7 +33,7 @@ public class java_lang_LongPersistenceDelegate extends PersistenceDelegate {
 	
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Long value = (Long) oldInstance;
-        return new Expression(oldInstance, Long.class, "new",
+        return new Expression(oldInstance, Long.class, "new", //$NON-NLS-1$
                 new Object[] { new Long(value.longValue()) });
     }
     

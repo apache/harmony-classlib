@@ -26,6 +26,8 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 import java.util.StringTokenizer;
 
+import org.apache.harmony.beans.internal.nls.Messages;
+
 public class EventHandler implements InvocationHandler {
 
     private Object target;
@@ -70,14 +72,14 @@ public class EventHandler implements InvocationHandler {
 
                 // if the method from the Object class is called
                 if (method.getDeclaringClass().equals(Object.class)) {
-                    if (method.getName().equals("hashCode") && 
+                    if (method.getName().equals("hashCode") &&  //$NON-NLS-1$
                             arguments.length == 0) {
                         result = hashCode();
-                    } else if (method.getName().equals("equals") &&
+                    } else if (method.getName().equals("equals") && //$NON-NLS-1$
                             arguments.length == 1 &&
                             arguments[0] != null) {
                         result = (proxy == arguments[0]);
-                    } else if (method.getName().equals("toString") &&
+                    } else if (method.getName().equals("toString") && //$NON-NLS-1$
                             arguments.length == 0) {
                         result = proxy.getClass().getSimpleName() +
                                 toString().substring(
@@ -95,7 +97,7 @@ public class EventHandler implements InvocationHandler {
                         // we have a valid listener method at this point
                         result = m.invoke(target, args);
                     } catch (Throwable t) {
-                        System.out.println(t.getClass() + ": " + t.getMessage());
+                        System.out.println(t.getClass() + ": " + t.getMessage()); //$NON-NLS-1$
                     }
 
                 } // valid call
@@ -199,7 +201,7 @@ public class EventHandler implements InvocationHandler {
             return arguments;
         } else {
             Object arg = arguments[0];
-            StringTokenizer st = new StringTokenizer(eventPropertyName, ".");
+            StringTokenizer st = new StringTokenizer(eventPropertyName, "."); //$NON-NLS-1$
 
             while (st.hasMoreTokens()) {
                 String propertyName = st.nextToken();
@@ -213,8 +215,7 @@ public class EventHandler implements InvocationHandler {
                         arg = getter.invoke(arg, new Object[] {});
                     } else {
                         throw new IntrospectionException(
-                                "no getter for property " + propertyName
-                                        + " found");
+                                Messages.getString("beans.11", propertyName)); //$NON-NLS-1$
                     }
                 } else {
                     Method method = findStaticGetter(arg.getClass(),
@@ -224,8 +225,7 @@ public class EventHandler implements InvocationHandler {
                         arg = method.invoke(null, new Object[] {});
                     } else {
                         throw new IntrospectionException(
-                                "cannot access property " + propertyName
-                                        + " getter");
+                                Messages.getString("beans.12", propertyName)); //$NON-NLS-1$
                     }
                 }
             }
@@ -285,17 +285,17 @@ public class EventHandler implements InvocationHandler {
 
                     if (result == null) {
                         throw new NoSuchMethodException(
-                                "no setter for property " + action + " found");
+                                Messages.getString("beans.13", action)); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 } else {
                     throw new Exception(
-                            "Exception while finding property descriptor");
+                            Messages.getString("beans.14")); //$NON-NLS-1$
                 }
             } else {
                 return result;
             }
         } catch (IntrospectionException ie) {
-            throw new Exception("Exception while finding property descriptor");
+            throw new Exception(Messages.getString("beans.14")); //$NON-NLS-1$
         }
 
         return result;
@@ -328,9 +328,9 @@ public class EventHandler implements InvocationHandler {
                 String methodName = methods[i].getName();
                 String postfix = null;
 
-                if (methodName.startsWith("get")) {
+                if (methodName.startsWith("get")) { //$NON-NLS-1$
                     postfix = methodName.substring(3);
-                } else if (methodName.startsWith("is")) {
+                } else if (methodName.startsWith("is")) { //$NON-NLS-1$
                     postfix = methodName.substring(2);
                 } else {
                     continue;

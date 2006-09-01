@@ -33,7 +33,7 @@ public class java_lang_IntegerPersistenceDelegate extends PersistenceDelegate {
     
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Integer value = (Integer) oldInstance;
-        return new Expression(oldInstance, Integer.class, "new",
+        return new Expression(oldInstance, Integer.class, "new", //$NON-NLS-1$
                 new Object[] { new Integer(value.intValue()) });
     }
     

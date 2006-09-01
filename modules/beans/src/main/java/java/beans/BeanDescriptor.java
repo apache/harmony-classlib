@@ -102,7 +102,7 @@ public class BeanDescriptor extends FeatureDescriptor {
 
         if (beanClass != null) {
             String beanClassName = beanClass.getName();
-            int idx = beanClassName.lastIndexOf(".");
+            int idx = beanClassName.lastIndexOf("."); //$NON-NLS-1$
 
             result = (idx == -1) ? beanClassName : beanClassName
                     .substring(idx + 1);

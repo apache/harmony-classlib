@@ -41,6 +41,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 
+import org.apache.harmony.beans.internal.nls.Messages;
+
 /**
  * @author Sergei A. Krivenko
  * @version $Revision: 1.17.2.3 $
@@ -263,9 +265,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
 
                 // Throw IllegalStateException, if PropertyVetoException occurs
                 throw new IllegalStateException(
-                        "PropertyVetoException was thrown while adding a child: "
-                                + targetChild + "; Original error message:"
-                                + e.getMessage());
+                        Messages.getString("beans.30", targetChild, e.getMessage())); //$NON-NLS-1$
             }
 
             // If child implements Visibility, 
@@ -334,7 +334,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
 
         // BeanContextMembershipListener canj not be null
         if (bcml == null) {
-            throw new NullPointerException("Membership listener is null");
+            throw new NullPointerException(Messages.getString("beans.29")); //$NON-NLS-1$
         }
 
         synchronized (this.bcmListeners) {
@@ -353,7 +353,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
 
         // Child can not be null
         if (targetChild == null) {
-            throw new IllegalArgumentException("Target child can not be null");
+            throw new IllegalArgumentException(Messages.getString("beans.2A")); //$NON-NLS-1$
         }
 
         // Each child should appear only once in a given BeanContext
@@ -573,7 +573,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
         while (true) {
             Object l = ois.readObject();
 
-            if (l != null && l.equals("EOS")) {
+            if (l != null && l.equals("EOS")) { //$NON-NLS-1$
                 coll.add(l);
             } else {
                 break;
@@ -771,12 +771,12 @@ public class BeanContextSupport extends BeanContextChildSupport implements
 
         // The resource name should not be null
         if (name == null) {
-            throw new NullPointerException("Resource name can not be null");
+            throw new NullPointerException(Messages.getString("beans.2B")); //$NON-NLS-1$
         }
 
         // The child should not be null
         if (bcc == null) {
-            throw new NullPointerException("The child can not be null");
+            throw new NullPointerException(Messages.getString("beans.2C")); //$NON-NLS-1$
         }
 
         // Load resource using the same ClassLoader as BeanContextChild specified
@@ -789,7 +789,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
             } catch (Exception ex) {
 
                 // We tried our best but still failed
-                throw new IllegalArgumentException("Invalid resource");
+                throw new IllegalArgumentException(Messages.getString("beans.2D")); //$NON-NLS-1$
             }
         }
     }
@@ -801,12 +801,12 @@ public class BeanContextSupport extends BeanContextChildSupport implements
 
         // The resource name should not be null
         if (name == null) {
-            throw new NullPointerException("Resource name can not be null");
+            throw new NullPointerException(Messages.getString("beans.2B")); //$NON-NLS-1$
         }
 
         // The child should not be null
         if (bcc == null) {
-            throw new NullPointerException("The child can not be null");
+            throw new NullPointerException(Messages.getString("beans.2C")); //$NON-NLS-1$
         }
 
         // Load resource using the same ClassLoader as BeanContextChild specified
@@ -819,7 +819,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
             } catch (Exception ex) {
 
                 // No success at all
-                throw new IllegalArgumentException("Invalid resource");
+                throw new IllegalArgumentException(Messages.getString("beans.2D")); //$NON-NLS-1$
             }
         }
     }
@@ -1105,7 +1105,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
 
         // BeanContextMembershipListener can not be null
         if (bcml == null) {
-            throw new NullPointerException("Membership listener is null");
+            throw new NullPointerException(Messages.getString("beans.29")); //$NON-NLS-1$
         }
 
         synchronized (this.bcmListeners) {
@@ -1136,9 +1136,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
 
             // Required by spec
             throw new IllegalStateException(
-                    "PropertyVetoException was thrown while removing "
-                            + " a child: " + targetChild + "; "
-                            + "Original error message:" + e.getMessage());
+                    Messages.getString("beans.2E", targetChild, e.getMessage())); //$NON-NLS-1$
         }
     }
 
@@ -1197,7 +1195,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
         }
 
         // Mark the end of stream
-        oos.writeObject("EOS");
+        oos.writeObject("EOS"); //$NON-NLS-1$
     }
 
     /**
@@ -1209,7 +1207,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
         this.designTime = dTime;
 
         // Notify BeanContext about this change
-        firePropertyChange("designTime", new Boolean(old), new Boolean(dTime));
+        firePropertyChange("designTime", new Boolean(old), new Boolean(dTime)); //$NON-NLS-1$
     }
 
     /**
@@ -1224,7 +1222,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
         // Notify BeanContext about this change
         Locale old = (Locale) this.locale.clone();
         this.locale = newLocale;
-        firePropertyChange("locale", old, newLocale);
+        firePropertyChange("locale", old, newLocale); //$NON-NLS-1$
     }
 
     /**
@@ -1280,7 +1278,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
     protected boolean validatePendingRemove(Object targetChild) {
 
         if (targetChild == null) {
-            throw new IllegalArgumentException("Target child is null");
+            throw new IllegalArgumentException(Messages.getString("beans.2F")); //$NON-NLS-1$
         }
 
         return true;
@@ -1293,7 +1291,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
             throws PropertyVetoException {
 
         if (pce == null) {
-            throw new NullPointerException("The event is null");
+            throw new NullPointerException(Messages.getString("beans.1C")); //$NON-NLS-1$
         }
 
     }

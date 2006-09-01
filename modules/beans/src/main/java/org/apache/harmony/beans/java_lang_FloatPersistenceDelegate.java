@@ -33,7 +33,7 @@ public class java_lang_FloatPersistenceDelegate extends PersistenceDelegate {
     
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Float value = (Float) oldInstance;
-        return new Expression(oldInstance, Float.class, "new",
+        return new Expression(oldInstance, Float.class, "new", //$NON-NLS-1$
                 new Object[] { new Float(value.floatValue()) });
     }
     

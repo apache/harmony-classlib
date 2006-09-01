@@ -182,10 +182,10 @@ public class Introspector {
 
     private static Class<?> findBeanInfoClass(Class<?> beanClass) {
         String beanClassName = beanClass.getName();
-        int idx = beanClassName.lastIndexOf(".");
+        int idx = beanClassName.lastIndexOf("."); //$NON-NLS-1$
         String shortBeanInfoClassName = beanClassName.substring(idx + 1,
-            beanClassName.length()) + "BeanInfo";
-        String fullBeanInfoClassName = beanClassName + "BeanInfo";
+            beanClassName.length()) + "BeanInfo"; //$NON-NLS-1$
+        String fullBeanInfoClassName = beanClassName + "BeanInfo"; //$NON-NLS-1$
 
         Class<?> beanInfoClass = null;
         try {
@@ -195,7 +195,7 @@ public class Introspector {
         } catch (ClassNotFoundException cnfe) {
             for (int i = 0; i < path.length; ++i) {
                 try {
-                    fullBeanInfoClassName = path[i] + "."
+                    fullBeanInfoClassName = path[i] + "." //$NON-NLS-1$
                             + shortBeanInfoClassName;
                     beanInfoClass = Class.forName(fullBeanInfoClassName, true,
                             beanClass.getClassLoader());
@@ -258,7 +258,7 @@ public class Introspector {
 
     // private fields
 
-    private static String[] path = {"org.apache.harmony.beans.infos"};
+    private static String[] path = {"org.apache.harmony.beans.infos"}; //$NON-NLS-1$
     private static Map<String, List<BeanInfoData>> beanInfos =
         new HashMap<String, List<BeanInfoData>>();
 

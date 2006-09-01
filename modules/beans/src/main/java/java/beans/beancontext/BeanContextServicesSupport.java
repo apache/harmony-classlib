@@ -31,6 +31,8 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.TooManyListenersException;
 
+import org.apache.harmony.beans.internal.nls.Messages;
+
 /**
  * @author Sergei A. Krivenko
  * @version $Revision: 1.12.4.3 $
@@ -226,7 +228,7 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
     public void addBeanContextServicesListener(BeanContextServicesListener bcsl) {
 
         if (bcsl == null) {
-            throw new NullPointerException("The listener is null");
+            throw new NullPointerException(Messages.getString("beans.15")); //$NON-NLS-1$
         }
 
         synchronized (this.bcsListeners) {
@@ -250,7 +252,7 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
             BeanContextServiceProvider bcsp, boolean fireEvent) {
 
         if (bcsp == null) {
-            throw new NullPointerException("The provider is null");
+            throw new NullPointerException(Messages.getString("beans.16")); //$NON-NLS-1$
         }
 
         synchronized (BeanContext.globalHierarchyLock) {
@@ -452,23 +454,23 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
             throws TooManyListenersException {
 
         if (child == null) {
-            throw new NullPointerException("The child is null");
+            throw new NullPointerException(Messages.getString("beans.17")); //$NON-NLS-1$
         }
 
         if (requestor == null) {
-            throw new NullPointerException("The requestor is null");
+            throw new NullPointerException(Messages.getString("beans.18")); //$NON-NLS-1$
         }
 
         if (serviceClass == null) {
-            throw new NullPointerException("The service class is null");
+            throw new NullPointerException(Messages.getString("beans.19")); //$NON-NLS-1$
         }
 
         if (serviceSelector == null) {
-            throw new NullPointerException("The service selector is null");
+            throw new NullPointerException(Messages.getString("beans.1A")); //$NON-NLS-1$
         }
 
         if (bcsrl == null) {
-            throw new NullPointerException("The listener is null");
+            throw new NullPointerException(Messages.getString("beans.15")); //$NON-NLS-1$
         }
 
         synchronized (BeanContext.globalHierarchyLock) {
@@ -499,7 +501,7 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
      */
     public synchronized boolean hasService(Class serviceClass) {
         if (serviceClass == null) {
-            throw new NullPointerException("The service class is null");
+            throw new NullPointerException(Messages.getString("beans.19")); //$NON-NLS-1$
         }
 
         synchronized (BeanContext.globalHierarchyLock) {
@@ -567,15 +569,15 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
             Object service) {
 
         if (child == null) {
-            throw new NullPointerException("The child is null");
+            throw new NullPointerException(Messages.getString("beans.17")); //$NON-NLS-1$
         }
 
         if (requestor == null) {
-            throw new NullPointerException("The requestor is null");
+            throw new NullPointerException(Messages.getString("beans.18")); //$NON-NLS-1$
         }
 
         if (service == null) {
-            throw new NullPointerException("The service is null");
+            throw new NullPointerException(Messages.getString("beans.1B")); //$NON-NLS-1$
         }
 
         synchronized (BeanContext.globalHierarchyLock) {
@@ -593,7 +595,7 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
             BeanContextServicesListener bcsl) {
 
         if (bcsl == null) {
-            throw new NullPointerException("The listener is null");
+            throw new NullPointerException(Messages.getString("beans.15")); //$NON-NLS-1$
         }
 
         synchronized (this.bcsListeners) {
@@ -608,11 +610,11 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
             BeanContextServiceProvider bcsp, boolean revokeCurrentServicesNow) {
 
         if (serviceClass == null) {
-            throw new NullPointerException("The service class is null");
+            throw new NullPointerException(Messages.getString("beans.19")); //$NON-NLS-1$
         }
 
         if (bcsp == null) {
-            throw new NullPointerException("The provider is null");
+            throw new NullPointerException(Messages.getString("beans.16")); //$NON-NLS-1$
         }
 
         synchronized (BeanContext.globalHierarchyLock) {
@@ -647,7 +649,7 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
      */
     public void serviceAvailable(BeanContextServiceAvailableEvent bcssae) {
         if (bcssae == null) {
-            throw new NullPointerException("The event is null");
+            throw new NullPointerException(Messages.getString("beans.1C")); //$NON-NLS-1$
         }
 
         for (Iterator<BeanContextServicesListener> it = this.bcsListeners
@@ -663,7 +665,7 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
      */
     public void serviceRevoked(BeanContextServiceRevokedEvent bcssre) {
         if (bcssre == null) {
-            throw new NullPointerException("The event is null");
+            throw new NullPointerException(Messages.getString("beans.1C")); //$NON-NLS-1$
         }
 
         for (Iterator<BeanContextServicesListener> it = this.bcsListeners

@@ -62,7 +62,7 @@ public class FontEditor extends PropertyEditorSupport {
             String name = font.getName();
             int style = font.getStyle();
             int size = font.getSize();
-            result = "new Font(" + name + "," + style + "," + size + ")";
+            result = "new Font(" + name + "," + style + "," + size + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         }
         return result;
     }
@@ -85,7 +85,7 @@ public class FontEditor extends PropertyEditorSupport {
         Font font = (Font) getValue();
         if(font != null) {
             gfx.setFont(font);
-            gfx.drawBytes("Hello".getBytes(), box.x, box.y, box.x + box.width,
+            gfx.drawBytes("Hello".getBytes(), box.x, box.y, box.x + box.width, //$NON-NLS-1$
                     box.y + box.height);
         }
     }

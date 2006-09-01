@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.harmony.beans.internal.nls.Messages;
+
 /**
  * @author Maxim V. Berkultsev
  * @version $Revision: 1.3.6.3 $
@@ -44,7 +46,7 @@ public class PropertyEditorSupport implements PropertyEditor {
      */
     public PropertyEditorSupport(Object source) {
         if( source == null ) {
-            throw new NullPointerException("source is null");
+            throw new NullPointerException(Messages.getString("beans.0C")); //$NON-NLS-1$
         }
         this.source = source;
     }
@@ -84,14 +86,14 @@ public class PropertyEditorSupport implements PropertyEditor {
      * @com.intel.drl.spec_ref
      */
     public String getJavaInitializationString() {
-        return "???";
+        return "???"; //$NON-NLS-1$
     }
 
     /**
      * @com.intel.drl.spec_ref
      */
     public String getAsText() {
-        return newValue == null ? "null" : newValue.toString();
+        return newValue == null ? "null" : newValue.toString(); //$NON-NLS-1$
     }
 
     /**

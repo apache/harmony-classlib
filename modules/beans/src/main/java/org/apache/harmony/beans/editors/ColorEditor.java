@@ -62,7 +62,7 @@ public class ColorEditor extends PropertyEditorSupport {
             int red = color.getRed();
             int green = color.getGreen();
             int blue = color.getBlue();
-            result = "new Color(" + red + "," + green + "," + blue + ")";
+            result = "new Color(" + red + "," + green + "," + blue + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         }
         return result;
     }

@@ -51,7 +51,7 @@ public class ArrayPersistenceDelegate extends PersistenceDelegate {
         int length = Array.getLength(oldInstance);
         Class componentType = oldInstance.getClass().getComponentType();
 
-        return new Expression(oldInstance, Array.class, "newInstance",
+        return new Expression(oldInstance, Array.class, "newInstance", //$NON-NLS-1$
                 new Object[] { componentType, new Integer(length) });
     }
 
@@ -76,7 +76,7 @@ public class ArrayPersistenceDelegate extends PersistenceDelegate {
                    oldValue == null && newValue != null)
             {
                 if (nullValue == null || !nullValue.equals(oldValue)) {
-                    Statement s = new Statement(oldInstance, "set",
+                    Statement s = new Statement(oldInstance, "set", //$NON-NLS-1$
                             new Object[]{ new Integer(i), oldValue });
 
                     out.writeStatement(s);

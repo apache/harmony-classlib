@@ -32,6 +32,8 @@ import java.util.Vector;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import org.apache.harmony.beans.internal.nls.Messages;
+
 /**
  * @author Maxim V. Berkultsev
  * @version $Revision: 1.18.6.3 $
@@ -64,7 +66,7 @@ public class Statement {
     public String toString() {
         StringBuffer sb = new StringBuffer();
         String targetVar = target != null ? convertClassName(target.getClass())
-                : "null";
+                : "null"; //$NON-NLS-1$
 
         sb.append(targetVar);
         sb.append('.');
@@ -74,11 +76,11 @@ public class Statement {
         if (arguments != null) {
             for (int i = 0; i < arguments.length; ++i) {
                 if (i > 0) {
-                    sb.append(", ");
+                    sb.append(", "); //$NON-NLS-1$
                 }
 
                 if (arguments[i] == null) {
-                    sb.append("null");
+                    sb.append("null"); //$NON-NLS-1$
                 } else if (arguments[i] instanceof String) {
                     sb.append('"');
                     sb.append(arguments[i].toString());
@@ -130,16 +132,16 @@ public class Statement {
                 Object[] ama = getArrayMethodArguments();
 
                 result = method.invoke(null, ama);
-            } else if (methodName.equals("newInstance")
+            } else if (methodName.equals("newInstance") //$NON-NLS-1$
                     && target instanceof Class
                     && ((Class) target).getName().equals(
-                            "java.lang.reflect.Array")) {
+                            "java.lang.reflect.Array")) { //$NON-NLS-1$
                 Class<?> componentType = (Class) arguments[0];
                 int length = ((Integer) arguments[1]).intValue();
 
                 result = Array.newInstance(componentType, length);
-            } else if (methodName.equals("new")
-                    || methodName.equals("newInstance")) {
+            } else if (methodName.equals("new") //$NON-NLS-1$
+                    || methodName.equals("newInstance")) { //$NON-NLS-1$
                 if (target instanceof Class) {
                     Constructor<?> constructor = findConstructor();
 
@@ -190,26 +192,25 @@ public class Statement {
 
     private Method findArrayMethod() throws NoSuchMethodException {
         // the code below reproduces exact RI exception throwing behavior 
-        if (!methodName.equals("set") && !methodName.equals("get")) {
-            throw new NoSuchMethodException("Unknown method name for array");
+        if (!methodName.equals("set") && !methodName.equals("get")) { //$NON-NLS-1$ //$NON-NLS-2$
+            throw new NoSuchMethodException(Messages.getString("beans.3C")); //$NON-NLS-1$
         } else if (arguments.length > 0
                 && arguments[0].getClass() != Integer.class) {
             throw new ClassCastException(
-                    "First parameter in array getter(setter) is not of "
-                            + "Integer type");
-        } else if (methodName.equals("get") && (arguments.length != 1)) {
+                    Messages.getString("beans.3D")); //$NON-NLS-1$
+        } else if (methodName.equals("get") && (arguments.length != 1)) { //$NON-NLS-1$
             throw new ArrayIndexOutOfBoundsException(
-                    "Illegal number of arguments in array getter");
-        } else if (methodName.equals("set") && (arguments.length != 2)) {
+                    Messages.getString("beans.3E")); //$NON-NLS-1$
+        } else if (methodName.equals("set") && (arguments.length != 2)) { //$NON-NLS-1$
             throw new ArrayIndexOutOfBoundsException(
-                    "Illegal number of arguments in array setter");
+                    Messages.getString("beans.3F")); //$NON-NLS-1$
         }
 
-        if (methodName.equals("get")) {
-            return Array.class.getMethod("get", new Class[] { Object.class,
+        if (methodName.equals("get")) { //$NON-NLS-1$
+            return Array.class.getMethod("get", new Class[] { Object.class, //$NON-NLS-1$
                     int.class });
         } else {
-            return Array.class.getMethod("set", new Class[] { Object.class,
+            return Array.class.getMethod("set", new Class[] { Object.class, //$NON-NLS-1$
                     int.class, Object.class });
         }
     }
@@ -261,8 +262,7 @@ public class Statement {
         }
 
         if (result == null) {
-            throw new NoSuchMethodException("No constructor for class "
-                    + targetClass.getName() + " found");
+            throw new NoSuchMethodException(Messages.getString("beans.40", targetClass.getName())); //$NON-NLS-1$
         }
 
         return result;
@@ -318,8 +318,7 @@ public class Statement {
         }
 
         if (foundMethods.size() == 0) {
-            throw new NoSuchMethodException("No method with name " + methodName
-                    + " is found");
+            throw new NoSuchMethodException(Messages.getString("beans.41", methodName)); //$NON-NLS-1$
         }
 
         foundMethodsArr = foundMethods.toArray(new Method[foundMethods.size()]);
@@ -351,20 +350,20 @@ public class Statement {
      * objects. Not necessary reflects to real methods.
      */
     private static String[][] pdConstructorSignatures = {
-        {"java.lang.Class", "new", "java.lang.Boolean", "", "", ""}, 
-        {"java.lang.Class", "new", "java.lang.Byte", "", "", ""}, 
-        {"java.lang.Class", "new", "java.lang.Character", "", "", ""}, 
-        {"java.lang.Class", "new", "java.lang.Double", "", "", ""}, 
-        {"java.lang.Class", "new", "java.lang.Float", "", "", ""}, 
-        {"java.lang.Class", "new", "java.lang.Integer", "", "", ""}, 
-        {"java.lang.Class", "new", "java.lang.Long", "", "", ""}, 
-        {"java.lang.Class", "new", "java.lang.Short", "", "", ""}, 
-        {"java.lang.Class", "new", "java.lang.String", "", "", ""}, 
-        {"java.lang.Class", "forName", "java.lang.String", "", "", ""},
-        {"java.lang.Class", "newInstance", "java.lang.Class",
-                "java.lang.Integer", "", ""},
-        {"java.lang.reflect.Field", "get", "null", "", "", ""},
-        {"java.lang.Class", "forName", "java.lang.String", "", "", ""}
+        {"java.lang.Class", "new", "java.lang.Boolean", "", "", ""},  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        {"java.lang.Class", "new", "java.lang.Byte", "", "", ""},  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        {"java.lang.Class", "new", "java.lang.Character", "", "", ""},  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        {"java.lang.Class", "new", "java.lang.Double", "", "", ""},  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        {"java.lang.Class", "new", "java.lang.Float", "", "", ""},  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        {"java.lang.Class", "new", "java.lang.Integer", "", "", ""},  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        {"java.lang.Class", "new", "java.lang.Long", "", "", ""},  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        {"java.lang.Class", "new", "java.lang.Short", "", "", ""},  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        {"java.lang.Class", "new", "java.lang.String", "", "", ""},  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        {"java.lang.Class", "forName", "java.lang.String", "", "", ""}, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        {"java.lang.Class", "newInstance", "java.lang.Class", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "java.lang.Integer", "", ""}, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        {"java.lang.reflect.Field", "get", "null", "", "", ""}, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        {"java.lang.Class", "forName", "java.lang.String", "", "", ""} //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
     };
     
     static boolean isPDConstructor(Statement stmt) {
@@ -386,9 +385,9 @@ public class Statement {
         for (int i = 2; i < sig.length; i++) {
             if (args.length > i - 2) {
                 sig[i] = args[i - 2] != null ?
-                        args[i - 2].getClass().getName() : "null"; 
+                        args[i - 2].getClass().getName() : "null";  //$NON-NLS-1$
             } else {
-                sig[i] = "";
+                sig[i] = ""; //$NON-NLS-1$
             }
 
         }
@@ -447,7 +446,7 @@ public class Statement {
         }
 
         if (componentType != null) {
-            result += "Array";
+            result += "Array"; //$NON-NLS-1$
         }
 
         return result;

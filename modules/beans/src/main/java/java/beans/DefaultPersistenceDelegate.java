@@ -22,6 +22,8 @@ package java.beans;
 
 import java.lang.reflect.Method;
 
+import org.apache.harmony.beans.internal.nls.Messages;
+
 /**
  * @author Maxim V. Berkultsev
  * @version $Revision: 1.7.6.3 $
@@ -126,16 +128,14 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
                                 found = true;
                                 break;
                             } else {
-                                throw new NoSuchMethodException("no getter for "
-                                        + pds[j].getName() + " property");
+                                throw new NoSuchMethodException(Messages.getString("beans.00", pds[j].getName())); //$NON-NLS-1$
                             }
 
                         }
                     } // for j
 
                     if (found == false) {
-                        throw new NoSuchMethodException("no property for name "
-                                + constructorPropertyNames[i] + " is found");
+                        throw new NoSuchMethodException(Messages.getString("beans.01", constructorPropertyNames[i])); //$NON-NLS-1$
                     }
 
                 } // for i
@@ -147,7 +147,7 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
 
         }
 
-        return new Expression(oldInstance, oldInstance.getClass(), "new", args);
+        return new Expression(oldInstance, oldInstance.getClass(), "new", args); //$NON-NLS-1$
     }
 
     /**
@@ -157,7 +157,7 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
         if (oldInstance != null) {
             try {
                 Method equalsMethod = oldInstance.getClass().getMethod(
-                        "equals", new Class[] { Object.class });
+                        "equals", new Class[] { Object.class }); //$NON-NLS-1$
 
                 if (equalsMethod != null) {
                     Object result = equalsMethod.invoke(oldInstance,
@@ -167,8 +167,7 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
                 }
             } catch (Exception e) {
                 // XXX bad style of logging
-                System.out.println("in DefaultPersistenceDelegate.mutatesTo() "
-                        + e.getClass() + " :" + e.getMessage());
+                System.out.println(Messages.getString("beans.02", e.getClass(), e.getMessage())); //$NON-NLS-1$
 
                 return false;
             }
@@ -177,7 +176,7 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
     }
 
     private static boolean isTransient(PropertyDescriptor pd) {
-        Boolean isTransient = (Boolean) pd.getValue("transient");
+        Boolean isTransient = (Boolean) pd.getValue("transient"); //$NON-NLS-1$
 
         return (isTransient != null) && isTransient.equals(Boolean.TRUE);
     }

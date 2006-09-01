@@ -24,6 +24,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Vector;
 
+import org.apache.harmony.beans.internal.nls.Messages;
+
 /**
  * @author Maxim V. Berkultsev
  * @version $Revision: 1.9.4.3 $
@@ -50,10 +52,10 @@ public class PropertyDescriptor extends FeatureDescriptor {
 
         super();
         if (beanClass == null) {
-            throw new IntrospectionException("Target Bean class is null");
+            throw new IntrospectionException(Messages.getString("beans.03")); //$NON-NLS-1$
         }
         if (propertyName == null || propertyName.length() == 0) {
-            throw new IntrospectionException("bad property name");
+            throw new IntrospectionException(Messages.getString("beans.04")); //$NON-NLS-1$
         }
 
         this.beanClass = beanClass;
@@ -73,7 +75,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
             throws IntrospectionException {
         super();
         if (propertyName == null || propertyName.length() == 0) {
-            throw new IntrospectionException("bad property name");
+            throw new IntrospectionException(Messages.getString("beans.04")); //$NON-NLS-1$
         }
 
         this.propertyName = propertyName;
@@ -92,10 +94,10 @@ public class PropertyDescriptor extends FeatureDescriptor {
             throws IntrospectionException {
         super();
         if (beanClass == null) {
-            throw new IntrospectionException("Target Bean class is null");
+            throw new IntrospectionException(Messages.getString("beans.03")); //$NON-NLS-1$
         }
         if (propertyName == null || propertyName.length() == 0) {
-            throw new IntrospectionException("bad property name");
+            throw new IntrospectionException(Messages.getString("beans.04")); //$NON-NLS-1$
         }
 
         this.propertyName = propertyName;
@@ -103,16 +105,16 @@ public class PropertyDescriptor extends FeatureDescriptor {
         this.setName(propertyName);
         this.setDisplayName(propertyName);
         
-        String getterName = createDefaultMethodName(propertyName, "is");
+        String getterName = createDefaultMethodName(propertyName, "is"); //$NON-NLS-1$
         if(hasMethod(beanClass, getterName)) {
             setReadMethod(beanClass, getterName);
         } else {
-            getterName = createDefaultMethodName(propertyName, "get");
+            getterName = createDefaultMethodName(propertyName, "get"); //$NON-NLS-1$
             if(hasMethod(beanClass, getterName)) {
                 setReadMethod(beanClass, getterName);
             }
         }
-        String setterName = createDefaultMethodName(propertyName, "set");
+        String setterName = createDefaultMethodName(propertyName, "set"); //$NON-NLS-1$
         if(hasMethod(beanClass, setterName)) {
             setWriteMethod(beanClass, setterName);
         }
@@ -126,22 +128,20 @@ public class PropertyDescriptor extends FeatureDescriptor {
             int modifiers = setter.getModifiers();
             if (!Modifier.isPublic(modifiers)) {
                 throw new IntrospectionException(
-                        "Modifier for setter method should be public.");
+                        Messages.getString("beans.05")); //$NON-NLS-1$
             }
             
             Class[] parameterTypes = setter.getParameterTypes();
             if (parameterTypes.length != 1) {
                 throw new IntrospectionException(
-                        "Number of parameters in setter method is not "
-                        + "equal to 1.");
+                        Messages.getString("beans.06")); //$NON-NLS-1$
             }
             
             Class<?> parameterType = parameterTypes[0];
             Class<?> propertyType = getPropertyType();
             if(propertyType != null && !propertyType.equals(parameterType)) {
                 throw new IntrospectionException(
-                        "Parameter type in setter method does not "
-                        + "corresponds to predefined.");
+                        Messages.getString("beans.07")); //$NON-NLS-1$
             }
         }
         
@@ -156,22 +156,20 @@ public class PropertyDescriptor extends FeatureDescriptor {
             int modifiers = getter.getModifiers();
             if (!Modifier.isPublic(modifiers)) {
                 throw new IntrospectionException(
-                        "Modifier for getter method should be public.");
+                        Messages.getString("beans.0A")); //$NON-NLS-1$
             }
             
             Class[] parameterTypes = getter.getParameterTypes();
             if (parameterTypes.length != 0) {
                 throw new IntrospectionException(
-                        "Number of parameters in getter method is not "
-                        + "equal to 0.");
+                        Messages.getString("beans.08")); //$NON-NLS-1$
             }
             
             Class<?> returnType = getter.getReturnType();
             Class<?> propertyType = getPropertyType();
             if((propertyType != null) && !returnType.equals(propertyType)) {
                 throw new IntrospectionException(
-                        "Parameter type in getter method does not "
-                        + "corresponds to predefined.");
+                        Messages.getString("beans.09")); //$NON-NLS-1$
             }
         }
         

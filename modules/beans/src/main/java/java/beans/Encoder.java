@@ -28,6 +28,7 @@ import java.util.Vector;
 import org.apache.harmony.beans.NullPersistenceDelegate;
 import org.apache.harmony.beans.ObjectNode;
 import org.apache.harmony.beans.DefaultPersistenceDelegatesFactory;
+import org.apache.harmony.beans.internal.nls.Messages;
 
 public class Encoder {
 
@@ -132,8 +133,7 @@ public class Encoder {
         } else {
             // FIXME incompatible with RI, default constructor should be
             // called instead
-            System.out.println("no node is found for statement with target = "
-                    + oldStm.getTarget());
+            System.out.println(Messages.getString("beans.10", oldStm.getTarget())); //$NON-NLS-1$
         }
     }
 
@@ -181,7 +181,7 @@ public class Encoder {
                 }
 
                 nodes.put(oldValue, valueNode);
-            } else if (oldExp.getMethodName().equals("new")) {
+            } else if (oldExp.getMethodName().equals("new")) { //$NON-NLS-1$
                 valueNode.addReference();
             } else {
                 // XXX the information about referencedExpressions is not
@@ -210,7 +210,7 @@ public class Encoder {
             exceptionListener = new ExceptionListener() {
 
                 public void exceptionThrown(Exception e) {
-                    System.out.println(e.getClass() + ": " + e.getMessage());
+                    System.out.println(e.getClass() + ": " + e.getMessage()); //$NON-NLS-1$
                 }
             };
         }
@@ -292,25 +292,25 @@ public class Encoder {
         String result = null;
 
         if (type == Boolean.class) {
-            result = "boolean";
+            result = "boolean"; //$NON-NLS-1$
         } else if (type == Byte.class) {
-            result = "byte";
+            result = "byte"; //$NON-NLS-1$
         } else if (type == Character.class) {
-            result = "char";
+            result = "char"; //$NON-NLS-1$
         } else if (type == Double.class) {
-            result = "double";
+            result = "double"; //$NON-NLS-1$
         } else if (type == Float.class) {
-            result = "float";
+            result = "float"; //$NON-NLS-1$
         } else if (type == Integer.class) {
-            result = "int";
+            result = "int"; //$NON-NLS-1$
         } else if (type == Long.class) {
-            result = "long";
+            result = "long"; //$NON-NLS-1$
         } else if (type == Short.class) {
-            result = "short";
+            result = "short"; //$NON-NLS-1$
         } else if (type == String.class) {
-            result = "string";
+            result = "string"; //$NON-NLS-1$
         } else if (type == Class.class) {
-            result = "class";
+            result = "class"; //$NON-NLS-1$
         }
 
         return result;

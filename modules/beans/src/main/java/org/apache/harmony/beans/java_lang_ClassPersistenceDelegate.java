@@ -37,7 +37,7 @@ public class java_lang_ClassPersistenceDelegate extends PersistenceDelegate {
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Class value = (Class) oldInstance;
         Field fld = null;
-        final String TYPE = "TYPE";
+        final String TYPE = "TYPE"; //$NON-NLS-1$
         Expression result;
 
         try {
@@ -64,10 +64,10 @@ public class java_lang_ClassPersistenceDelegate extends PersistenceDelegate {
         }
         if (fld != null) {
             // we have primitive type
-            result = new Expression(oldInstance, fld, "get",
+            result = new Expression(oldInstance, fld, "get", //$NON-NLS-1$
                                     new Object[] {null});
         } else {
-            result = new Expression(oldInstance, Class.class, "forName",
+            result = new Expression(oldInstance, Class.class, "forName", //$NON-NLS-1$
                     new Object[] { new String(value.getName()) });
         }
         return result;

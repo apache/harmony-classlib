@@ -20,6 +20,8 @@
  */
 package java.beans;
 
+import org.apache.harmony.beans.internal.nls.Messages;
+
 /**
  * @author Maxim V. Berkultsev
  * @version $Revision: 1.7.6.3 $
@@ -60,10 +62,10 @@ public class Expression extends Statement {
             StringBuilder sb = new StringBuilder();
             
             if (!valueIsDefined) {
-                sb.append("<unbound>");
+                sb.append("<unbound>"); //$NON-NLS-1$
             } else {
                 if (value == null) {
-                    sb.append("null");
+                    sb.append("null"); //$NON-NLS-1$
                 } else {
                     sb.append(convertClassName(value.getClass()));
                 }
@@ -73,7 +75,7 @@ public class Expression extends Statement {
             
             return sb.toString();
         } catch(Exception e) {
-            return new String("Error in expression: " + e.getClass());
+            return new String(Messages.getString("beans.0D", e.getClass())); //$NON-NLS-1$
         }
     }
 

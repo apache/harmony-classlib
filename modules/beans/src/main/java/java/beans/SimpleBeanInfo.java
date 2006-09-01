@@ -68,12 +68,12 @@ public class SimpleBeanInfo implements BeanInfo {
                 
             } catch (IOException ioe) {
                 byteArrayList.clear();
-                System.out.println(ioe.getClass() + ": " + ioe.getMessage());
+                System.out.println(ioe.getClass() + ": " + ioe.getMessage()); //$NON-NLS-1$
             } finally {
                    try {
                        is.close();
                    } catch (IOException ioe) {
-                       System.out.println(ioe.getClass() + ": "
+                       System.out.println(ioe.getClass() + ": " //$NON-NLS-1$
                                + ioe.getMessage());
                    }
             }

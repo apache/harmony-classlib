@@ -79,12 +79,12 @@ public final class DefaultPersistenceDelegatesFactory {
     private static String createDefaultNameForPersistenceDelegateClass(
             Class type) {
         String typeName = type.getName();
-        StringTokenizer st = new StringTokenizer(typeName, ".");
-        String className = "";
+        StringTokenizer st = new StringTokenizer(typeName, "."); //$NON-NLS-1$
+        String className = ""; //$NON-NLS-1$
         while (st.hasMoreElements()) {
             String s = (String) st.nextElement();
-            className += "".equals(className) ? s : "_" + s;
+            className += "".equals(className) ? s : "_" + s; //$NON-NLS-1$ //$NON-NLS-2$
         }
-        return "org.apache.harmony.beans." + className + "PersistenceDelegate";
+        return "org.apache.harmony.beans." + className + "PersistenceDelegate"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

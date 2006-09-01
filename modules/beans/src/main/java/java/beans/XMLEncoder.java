@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import org.apache.harmony.beans.ObjectNode;
+import org.apache.harmony.beans.internal.nls.Messages;
 
 /**
  * @author Maxim V. Berkultsev
@@ -106,16 +107,16 @@ public class XMLEncoder extends Encoder {
     }
 
     private void writeAll() {
-        Tag mainTag = new Tag("java");
+        Tag mainTag = new Tag("java"); //$NON-NLS-1$
         Enumeration<Object> e;
 
         printed.clear();
         NameMaker.clear();
 
-        mainTag.addAttr("version", System.getProperty("java.version"));
-        mainTag.addAttr("class", "java.beans.XMLDecoder");
+        mainTag.addAttr("version", System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
+        mainTag.addAttr("class", "java.beans.XMLDecoder"); //$NON-NLS-1$ //$NON-NLS-2$
 
-        printBytes(0, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        printBytes(0, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); //$NON-NLS-1$
         printBytes(0, mainTag.toStringOnOpen());
 
         e = roots.elements();
@@ -141,8 +142,7 @@ public class XMLEncoder extends Encoder {
         try {
             nodeType = node.getObjectType();
         } catch (Exception e) {
-            Exception e2 = new Exception("skipping expression "
-                    + node.getInitializer() + "...");
+            Exception e2 = new Exception(Messages.getString("beans.3B", node.getInitializer())); //$NON-NLS-1$
 
             e2.initCause(e);
             getExceptionListener().exceptionThrown(e2);
@@ -162,9 +162,9 @@ public class XMLEncoder extends Encoder {
             boolean isReferenced = node.getReferencesNumber() > 0;
 
             if (isArray(nodeType)) {
-                tag = new Tag("array");
+                tag = new Tag("array"); //$NON-NLS-1$
             } else {
-                tag = new Tag("object");
+                tag = new Tag("object"); //$NON-NLS-1$
             }
 
             // check if the object presents references
@@ -173,7 +173,7 @@ public class XMLEncoder extends Encoder {
                     String nodeId = node.getId();
 
                     if (nodeId != null) {
-                        tag.addAttr("idref", node.getId());
+                        tag.addAttr("idref", node.getId()); //$NON-NLS-1$
                     }
 
                     objectPrinted = true;
@@ -187,7 +187,7 @@ public class XMLEncoder extends Encoder {
                             String objectName = NameMaker.getInstanceName(type);
 
                             node.setId(objectName);
-                            tag.addAttr("id", objectName);
+                            tag.addAttr("id", objectName); //$NON-NLS-1$
                         }
                     } catch (Exception e) {
                         getExceptionListener().exceptionThrown(e);
@@ -198,11 +198,11 @@ public class XMLEncoder extends Encoder {
             if (!objectPrinted) {
                 try {
                     if (isArray(nodeType)) {
-                        tag.addAttr("class", ((Class) arguments[0]).getName());
-                        tag.addAttr("length", ((Integer) arguments[1])
+                        tag.addAttr("class", ((Class) arguments[0]).getName()); //$NON-NLS-1$
+                        tag.addAttr("length", ((Integer) arguments[1]) //$NON-NLS-1$
                                 .toString());
                     } else {
-                        tag.addAttr("class", node.getObjectType().getName());
+                        tag.addAttr("class", node.getObjectType().getName()); //$NON-NLS-1$
                     }
                 } catch (Exception e) {
                     getExceptionListener().exceptionThrown(e);
@@ -309,39 +309,39 @@ public class XMLEncoder extends Encoder {
                 return;
             }
 
-            tag = new Tag("void");
+            tag = new Tag("void"); //$NON-NLS-1$
             objectName = NameMaker.getInstanceName(exprValue.getClass());
 
             node.setId(objectName);
-            tag.addAttr("id", objectName);
+            tag.addAttr("id", objectName); //$NON-NLS-1$
 
             methodName = expr.getMethodName();
             args = expr.getArguments();
 
-            if (methodName.startsWith("get")
+            if (methodName.startsWith("get") //$NON-NLS-1$
                     && (args.length == 0 || args.length == 1
                             && args[0].getClass() == Integer.class)
-                    || methodName.startsWith("set")
+                    || methodName.startsWith("set") //$NON-NLS-1$
                     && (args.length == 1 || args.length == 2
                             && args[0].getClass() == Integer.class)) {
                 String propertyName = methodName.substring(3);
 
                 if (propertyName.length() > 0) {
-                    tag.addAttr("property", Introspector
+                    tag.addAttr("property", Introspector //$NON-NLS-1$
                             .decapitalize(propertyName));
                 }
 
-                if (methodName.startsWith("get") && args.length == 1
-                        || methodName.startsWith("set") && args.length == 2) {
-                    tag.addAttr("index", args[0].toString());
+                if (methodName.startsWith("get") && args.length == 1 //$NON-NLS-1$
+                        || methodName.startsWith("set") && args.length == 2) { //$NON-NLS-1$
+                    tag.addAttr("index", args[0].toString()); //$NON-NLS-1$
                 }
             } else {
-                tag.addAttr("method", expr.getMethodName());
+                tag.addAttr("method", expr.getMethodName()); //$NON-NLS-1$
             }
 
             printBytes(tabCount, tag.toStringOnOpen());
 
-            for (int i = tag.hasAttr("index") ? 1 : 0; i < args.length; ++i) {
+            for (int i = tag.hasAttr("index") ? 1 : 0; i < args.length; ++i) { //$NON-NLS-1$
                 if (args[i] != null) {
                     ObjectNode node2 = nodes.get(args[i]);
 
@@ -363,36 +363,36 @@ public class XMLEncoder extends Encoder {
     }
 
     private void printVoidTag(int tabCount, Statement stat) {
-        Tag tag = new Tag("void");
+        Tag tag = new Tag("void"); //$NON-NLS-1$
 
         String methodName = stat.getMethodName();
         Object[] args = stat.getArguments();
 
-        if (methodName.startsWith("get")
+        if (methodName.startsWith("get") //$NON-NLS-1$
                 && (args.length == 0 || args.length == 1
                         && args[0].getClass() == Integer.class)
-                || methodName.startsWith("set")
+                || methodName.startsWith("set") //$NON-NLS-1$
                 && (args.length == 1 || args.length == 2
                         && args[0].getClass() == Integer.class)) {
             String propertyName = methodName.substring(3);
 
             if (propertyName.length() > 0) {
                 tag
-                        .addAttr("property", Introspector
+                        .addAttr("property", Introspector //$NON-NLS-1$
                                 .decapitalize(propertyName));
             }
 
-            if (methodName.startsWith("get") && args.length == 1
-                    || methodName.startsWith("set") && args.length == 2) {
-                tag.addAttr("index", args[0].toString());
+            if (methodName.startsWith("get") && args.length == 1 //$NON-NLS-1$
+                    || methodName.startsWith("set") && args.length == 2) { //$NON-NLS-1$
+                tag.addAttr("index", args[0].toString()); //$NON-NLS-1$
             }
         } else {
-            tag.addAttr("method", stat.getMethodName());
+            tag.addAttr("method", stat.getMethodName()); //$NON-NLS-1$
         }
 
         printBytes(tabCount, tag.toStringOnOpen());
 
-        for (int i = tag.hasAttr("index") ? 1 : 0; i < args.length; ++i) {
+        for (int i = tag.hasAttr("index") ? 1 : 0; i < args.length; ++i) { //$NON-NLS-1$
             if (args[i] != null) {
                 ObjectNode node = nodes.get(args[i]);
 
@@ -408,18 +408,18 @@ public class XMLEncoder extends Encoder {
     }
 
     private void printNullTag(int tabCount) {
-        printBytes(tabCount, "<null/>");
+        printBytes(tabCount, "<null/>"); //$NON-NLS-1$
     }
 
     private void printBytes(int tabCount, String s) {
         try {
-            String result = "";
+            String result = ""; //$NON-NLS-1$
 
             for (int i = 0; i < tabCount; ++i) {
                 result += '\t';
             }
-            result = result + s + "\n";
-            out.write(result.getBytes("UTF-8"));
+            result = result + s + "\n"; //$NON-NLS-1$
+            out.write(result.getBytes("UTF-8")); //$NON-NLS-1$
         } catch (IOException ioe) {
             ExceptionListener listener = getExceptionListener();
 
@@ -442,19 +442,19 @@ public class XMLEncoder extends Encoder {
 
             switch (c) {
                 case '&':
-                    sb.append("&amp;");
+                    sb.append("&amp;"); //$NON-NLS-1$
                     break;
                 case '<':
-                    sb.append("&lt;");
+                    sb.append("&lt;"); //$NON-NLS-1$
                     break;
                 case '>':
-                    sb.append("&gt;");
+                    sb.append("&gt;"); //$NON-NLS-1$
                     break;
                 case '\'':
-                    sb.append("&apos;");
+                    sb.append("&apos;"); //$NON-NLS-1$
                     break;
                 case '"':
-                    sb.append("&quot;");
+                    sb.append("&quot;"); //$NON-NLS-1$
                     break;
                 default:
                     sb.append(c);
@@ -496,28 +496,28 @@ public class XMLEncoder extends Encoder {
         }
 
         public String toStringOnOpenUnfinished() {
-            String result = "<" + name;
+            String result = "<" + name; //$NON-NLS-1$
             Iterator<String> i = attrs.keySet().iterator();
 
             while (i.hasNext()) {
                 String attrName = i.next();
                 String attrValue = attrs.get(attrName);
 
-                result += " " + attrName + "=\"" + attrValue + "\"";
+                result += " " + attrName + "=\"" + attrValue + "\""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
             return result;
         }
 
         public String toStringOnOpen() {
-            return toStringOnOpenUnfinished() + ">";
+            return toStringOnOpenUnfinished() + ">"; //$NON-NLS-1$
         }
 
         public String toStringShortForm() {
-            return toStringOnOpenUnfinished() + "/>";
+            return toStringOnOpenUnfinished() + "/>"; //$NON-NLS-1$
         }
 
         public String toStringOnClose() {
-            return "</" + name + ">";
+            return "</" + name + ">"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         public String toStringOnCharacters() {
@@ -540,10 +540,10 @@ public class XMLEncoder extends Encoder {
 
         private static String getCompName(Class clz) {
             if (clz.isArray()) {
-                return getCompName(clz.getComponentType()) + "Array";
+                return getCompName(clz.getComponentType()) + "Array"; //$NON-NLS-1$
             } else {
                 return clz.getName().substring(
-                        clz.getName().lastIndexOf(".") + 1);
+                        clz.getName().lastIndexOf(".") + 1); //$NON-NLS-1$
             }
         }
 
@@ -559,12 +559,12 @@ public class XMLEncoder extends Encoder {
                 shortName = fullName;
             } else {
                 fullName = type.getName();
-                shortName = fullName.substring(fullName.lastIndexOf(".") + 1);
+                shortName = fullName.substring(fullName.lastIndexOf(".") + 1); //$NON-NLS-1$
             }
             iNum = numOfExemplars.get(shortName);
             if (iNum == null) {
                 numOfExemplars.put(shortName, new Integer(0));
-                result = shortName + "0";
+                result = shortName + "0"; //$NON-NLS-1$
             } else {
                 int newValue = iNum.intValue() + 1;
 

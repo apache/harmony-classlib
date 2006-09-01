@@ -56,7 +56,7 @@ public class BooleanEditor extends PropertyEditorSupport {
     }
     
     public String[] getTags() {
-        return new String[] {"true", "false"};
+        return new String[] {"true", "false"}; //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     public void setValue(Object value) {

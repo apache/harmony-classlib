@@ -32,6 +32,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import org.apache.harmony.beans.internal.nls.Messages;
+
 /**
  * @author Sergei A. Krivenko
  * @version $Revision: 1.7.4.3 $
@@ -41,7 +43,7 @@ public class BeanContextChildSupport
         implements BeanContextChild, BeanContextServicesListener, Serializable {
 
     private static final long serialVersionUID = 6328947014421475877L;
-    static final String BEAN_CONTEXT = "beanContext";
+    static final String BEAN_CONTEXT = "beanContext"; //$NON-NLS-1$
     
     /**
      * 
@@ -245,7 +247,7 @@ public class BeanContextChildSupport
                 fireVetoableChange(BEAN_CONTEXT, this.beanContext, bc);
                 
                 throw new PropertyVetoException(
-                    "The new BeanContext can not be set", 
+                    Messages.getString("beans.0F"),  //$NON-NLS-1$
                     new PropertyChangeEvent(this.beanContextChildPeer, 
                                             BEAN_CONTEXT, 
                                             this.beanContext, 

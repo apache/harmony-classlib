@@ -243,7 +243,7 @@ public class VetoableChangeSupport implements Serializable {
 
         children = new Hashtable<String, List<VetoableChangeListener>>(
                 selectedSerializedVetoableChangeListeners);
-        children.put("", allSerializedVetoableChangeListeners);
+        children.put("", allSerializedVetoableChangeListeners); //$NON-NLS-1$
         oos.writeObject(children);
 
         Object source = null;
@@ -266,7 +266,7 @@ public class VetoableChangeSupport implements Serializable {
 
         selectedVetoableChangeListeners = new HashMap<String, List<VetoableChangeListener>>(
                 children);
-        allVetoableChangeListeners = selectedVetoableChangeListeners.remove("");
+        allVetoableChangeListeners = selectedVetoableChangeListeners.remove(""); //$NON-NLS-1$
         if (allVetoableChangeListeners == null) {
             allVetoableChangeListeners = new ArrayList<VetoableChangeListener>();
         }

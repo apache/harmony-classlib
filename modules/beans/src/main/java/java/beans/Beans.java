@@ -28,6 +28,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 import java.lang.reflect.Array;
 
+import org.apache.harmony.beans.internal.nls.Messages;
+
 /**
  * @author Maxim V. Berkultsev
  * @version $Revision: 1.6.6.3 $
@@ -114,11 +116,11 @@ public class Beans {
                         applet.init();
                     }
                 } catch (IllegalAccessException iae) {
-                    throw new ClassNotFoundException(iae.getClass() + ": "
+                    throw new ClassNotFoundException(iae.getClass() + ": " //$NON-NLS-1$
                             + iae.getMessage());
                 }
             } catch (InstantiationException ie) {
-                throw new ClassNotFoundException(ie.getClass() + ": "
+                throw new ClassNotFoundException(ie.getClass() + ": " //$NON-NLS-1$
                         + ie.getMessage());
             }
         }
@@ -138,7 +140,7 @@ public class Beans {
      */
     public static boolean isInstanceOf(Object bean, Class<?> targetType) {
         if (bean == null) {
-            throw new NullPointerException("bean is null");
+            throw new NullPointerException(Messages.getString("beans.1D")); //$NON-NLS-1$
         }
 
         return targetType == null ? false : targetType.isInstance(bean);
@@ -185,7 +187,7 @@ public class Beans {
     }
 
     private static String getBeanResourceName(String beanName) {
-        return beanName.replace('.', '/') + ".ser";
+        return beanName.replace('.', '/') + ".ser"; //$NON-NLS-1$
     }
 
 }
@@ -208,8 +210,8 @@ class CustomizedObjectInputStream extends ObjectInputStream {
             ClassNotFoundException {
         String className = desc.getName();
 
-        if (className.startsWith("[")) {
-            int idx = className.lastIndexOf("[");
+        if (className.startsWith("[")) { //$NON-NLS-1$
+            int idx = className.lastIndexOf("["); //$NON-NLS-1$
             String prefix = className.substring(0, idx + 1);
             int[] dimensions = new int[prefix.length()];
             String postfix;
@@ -220,30 +222,29 @@ class CustomizedObjectInputStream extends ObjectInputStream {
             }
 
             postfix = className.substring(idx + 1);
-            if (postfix.equals("Z")) {
+            if (postfix.equals("Z")) { //$NON-NLS-1$
                 componentType = boolean.class;
-            } else if (postfix.equals("B")) {
+            } else if (postfix.equals("B")) { //$NON-NLS-1$
                 componentType = byte.class;
-            } else if (postfix.equals("C")) {
+            } else if (postfix.equals("C")) { //$NON-NLS-1$
                 componentType = char.class;
-            } else if (postfix.equals("D")) {
+            } else if (postfix.equals("D")) { //$NON-NLS-1$
                 componentType = double.class;
-            } else if (postfix.equals("F")) {
+            } else if (postfix.equals("F")) { //$NON-NLS-1$
                 componentType = float.class;
-            } else if (postfix.equals("I")) {
+            } else if (postfix.equals("I")) { //$NON-NLS-1$
                 componentType = int.class;
-            } else if (postfix.equals("L")) {
+            } else if (postfix.equals("L")) { //$NON-NLS-1$
                 componentType = long.class;
-            } else if (postfix.equals("S")) {
+            } else if (postfix.equals("S")) { //$NON-NLS-1$
                 componentType = short.class;
-            } else if (postfix.equals("V")) {
+            } else if (postfix.equals("V")) { //$NON-NLS-1$
                 componentType = null;
-            } else if (postfix.startsWith("L")) {
+            } else if (postfix.startsWith("L")) { //$NON-NLS-1$
                 componentType = cls.loadClass(postfix.substring(1, postfix
                         .length() - 1));
             } else {
-                throw new IllegalArgumentException("Illegal class name: "
-                        + className);
+                throw new IllegalArgumentException(Messages.getString("beans.1E", className)); //$NON-NLS-1$
             }
 
             return Array.newInstance(componentType, dimensions).getClass();

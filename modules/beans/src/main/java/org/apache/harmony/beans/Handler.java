@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.apache.harmony.beans.internal.nls.Messages;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -67,7 +68,7 @@ public class Handler extends DefaultHandler {
     public void startElement(String namespaceURI, String localeName,
             String tagName, Attributes attrs) throws SAXException {
         Command.printAttrs(tabCount, tagName, attrs);
-        Command cmd = tagName.equals("java") ? new Command(decoder, tagName,
+        Command cmd = tagName.equals("java") ? new Command(decoder, tagName, //$NON-NLS-1$
                 Command.parseAttrs(tagName, attrs)) : new Command(tagName,
                 Command.parseAttrs(tagName, attrs));
         stack.push(cmd);
@@ -81,8 +82,8 @@ public class Handler extends DefaultHandler {
             String data = String.valueOf(text, start, length)
                     .replace('\n', ' ').replace('\t', ' ').trim();
             if (data.length() > 0) {
-                Command.prn(tabCount, tabCount + ">setting data=" + data
-                        + "<EOL>");
+                Command.prn(tabCount, tabCount + ">setting data=" + data //$NON-NLS-1$
+                        + "<EOL>"); //$NON-NLS-1$
                 Command cmd = stack.peek();
                 cmd.setData(data);
             }
@@ -107,8 +108,8 @@ public class Handler extends DefaultHandler {
         }
 
         // store reference to command
-        if (cmd.hasAttr("id")) {
-            references.put(cmd.getAttr("id"), cmd);
+        if (cmd.hasAttr("id")) { //$NON-NLS-1$
+            references.put(cmd.getAttr("id"), cmd); //$NON-NLS-1$
         }
 
         try {
@@ -121,7 +122,7 @@ public class Handler extends DefaultHandler {
             tabCount = 0;
         }
 
-        Command.prn(tabCount, tabCount + ">...<" + tagName + "> end");
+        Command.prn(tabCount, tabCount + ">...<" + tagName + "> end"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     // iterate over deferred commands and execute them again
@@ -131,7 +132,7 @@ public class Handler extends DefaultHandler {
             try {
                 cmd.backtrack(references);
             } catch (Exception e) {
-                throw new SAXException("Exception in command execution");
+                throw new SAXException(Messages.getString("beans.0B")); //$NON-NLS-1$
             }
             //            if(!backtracked)
             //                throw new SAXException("Command " + cmd.getTagName() +

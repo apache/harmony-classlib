@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TooManyListenersException;
 
+import org.apache.harmony.beans.internal.nls.Messages;
+
 public class EventSetDescriptor extends FeatureDescriptor {
 
     //XXX: never read
@@ -64,17 +66,17 @@ public class EventSetDescriptor extends FeatureDescriptor {
         this.listenerMethodDescriptors.add(new MethodDescriptor(
                 findMethodByName(listenerType, listenerMethodName)));
 
-        this.addListenerMethod = findMethodByPrefix(sourceClass, "add", "",
+        this.addListenerMethod = findMethodByPrefix(sourceClass, "add", "", //$NON-NLS-1$ //$NON-NLS-2$
                 listenerType);
-        this.removeListenerMethod = findMethodByPrefix(sourceClass, "remove",
-                "", listenerType);
+        this.removeListenerMethod = findMethodByPrefix(sourceClass, "remove", //$NON-NLS-1$
+                "", listenerType); //$NON-NLS-1$
 
         if (addListenerMethod == null && removeListenerMethod == null) {
             throw new IntrospectionException(
-                    "Add and remove methods are not available");
+                    Messages.getString("beans.38")); //$NON-NLS-1$
         }
 
-        this.getListenerMethod = findMethodByPrefix(sourceClass, "get", "s",
+        this.getListenerMethod = findMethodByPrefix(sourceClass, "get", "s", //$NON-NLS-1$ //$NON-NLS-2$
                 listenerType);
 
         this.unicast = isUnicastByDefault(addListenerMethod);
@@ -362,10 +364,10 @@ public class EventSetDescriptor extends FeatureDescriptor {
     private Class<?> getEventType(Class<?> listenerType)
             throws ClassNotFoundException {
         String listenerTypeName = listenerType.getName();
-        int idx = listenerTypeName.lastIndexOf("Listener");
+        int idx = listenerTypeName.lastIndexOf("Listener"); //$NON-NLS-1$
         String eventTypeName = listenerTypeName;
         if (idx != -1) {
-            eventTypeName = listenerTypeName.substring(0, idx) + "Event";
+            eventTypeName = listenerTypeName.substring(0, idx) + "Event"; //$NON-NLS-1$
         }
         return Class
                 .forName(eventTypeName, true, listenerType.getClassLoader());
@@ -376,9 +378,8 @@ public class EventSetDescriptor extends FeatureDescriptor {
         if (listenerMethod != null
                 && !listenerMethod.getDeclaringClass().isAssignableFrom(
                         listenerType)) {
-            throw new IntrospectionException("No method \""
-                    + listenerMethod.getName() + "\" for "
-                    + listenerType.getName() + " found.");
+            throw new IntrospectionException(Messages.getString("beans.31", //$NON-NLS-1$
+                    listenerMethod.getName(), listenerType.getName()));
         } else {
             return true;
         }
@@ -390,12 +391,10 @@ public class EventSetDescriptor extends FeatureDescriptor {
             return listenerType.getMethod(listenerMethodName,
                     new Class[] { getEventType(listenerType) });
         } catch (NoSuchMethodException nsme) {
-            throw new IntrospectionException("No method \""
-                    + listenerMethodName + "\" for " + listenerType.getName()
-                    + " found.");
+            throw new IntrospectionException(Messages.getString("beans.31", //$NON-NLS-1$
+                    listenerMethodName, listenerType.getName())); //$NON-NLS-1$
         } catch (ClassNotFoundException cnfe) {
-            throw new IntrospectionException("Cannot acquire event type from "
-                    + listenerType.getName() + " listener.");
+            throw new IntrospectionException(Messages.getString("beans.32", listenerType.getName())); //$NON-NLS-1$
         }
     }
 
@@ -404,12 +403,12 @@ public class EventSetDescriptor extends FeatureDescriptor {
 
         // com.drl.beans.SmthListener
         String fullName = listenerType.getName();
-        int idx = fullName.lastIndexOf(".");
+        int idx = fullName.lastIndexOf("."); //$NON-NLS-1$
         // prefix(e.g., add) + SmthListener
         String methodName = prefix + fullName.substring(idx + 1) + postfix;
 
         try {
-            if (prefix.equals("get")) {
+            if (prefix.equals("get")) { //$NON-NLS-1$
                 return sourceClass.getMethod(methodName, new Class[] {});
             } else {
                 return sourceClass.getMethod(methodName,
@@ -443,18 +442,17 @@ public class EventSetDescriptor extends FeatureDescriptor {
             Class[] parameterTypes;
 
             if (returnType != void.class) {
-                throw new IntrospectionException(registrationMethod.getName()
-                        + " does not return <void>");
+                throw new IntrospectionException(
+                        Messages.getString("beans.33", registrationMethod.getName())); //$NON-NLS-1$
             }
 
             parameterTypes = registrationMethod.getParameterTypes();
             if (parameterTypes == null || parameterTypes.length != 1) {
-                throw new IntrospectionException(registrationMethod.getName()
-                        + " should have a single input parameter");
+                throw new IntrospectionException(
+                        Messages.getString("beans.34", registrationMethod.getName())); //$NON-NLS-1$
             } else if (parameterTypes[0] != listenerType) {
                 throw new IntrospectionException(
-                        "Single parameter does not match to "
-                                + listenerType.getName() + " class");
+                        Messages.getString("beans.35", listenerType.getName())); //$NON-NLS-1$
             } else {
                 return registrationMethod;
             }
@@ -471,7 +469,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
 
             if (parameterTypes.length != 0) {
                 throw new IntrospectionException(
-                        "No input params are allowed for getListenerMethod");
+                        Messages.getString("beans.36")); //$NON-NLS-1$
             }
 
             returnType = getListenerMethod.getReturnType();
@@ -480,8 +478,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
                 return getListenerMethod;
             } else {
                 throw new IntrospectionException(
-                        "Return type of getListenerMethod is not an array "
-                                + "of listeners");
+                        Messages.getString("beans.37")); //$NON-NLS-1$
             }
         }
     }

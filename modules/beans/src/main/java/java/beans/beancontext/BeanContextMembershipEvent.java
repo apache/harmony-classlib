@@ -24,6 +24,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
 
+import org.apache.harmony.beans.internal.nls.Messages;
+
 /**
  * @author Sergei A. Krivenko
  * @version $Revision: 1.4.4.3 $
@@ -45,7 +47,7 @@ public class BeanContextMembershipEvent extends BeanContextEvent {
         super(bc);
 
         if (changes == null) {
-            throw new NullPointerException("Changes are null");
+            throw new NullPointerException(Messages.getString("beans.0E")); //$NON-NLS-1$
         }
 
         this.children = changes;
@@ -58,7 +60,7 @@ public class BeanContextMembershipEvent extends BeanContextEvent {
         super(bc);
 
         if (changes == null) {
-            throw new NullPointerException("Changes are null");
+            throw new NullPointerException(Messages.getString("beans.0E")); //$NON-NLS-1$
         }
 
         // Initialize collection

@@ -33,7 +33,7 @@ public class java_lang_DoublePersistenceDelegate extends PersistenceDelegate {
     
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Double value = (Double) oldInstance;
-        return new Expression(oldInstance, Double.class, "new",
+        return new Expression(oldInstance, Double.class, "new", //$NON-NLS-1$
                 new Object[] { new Double(value.doubleValue()) });
     }
     

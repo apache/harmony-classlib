@@ -30,7 +30,7 @@ import java.util.Map;
 
 public class PropertyEditorManager {
     
-    private static String[] path = {"org.apache.harmony.beans.editors"};
+    private static String[] path = {"org.apache.harmony.beans.editors"}; //$NON-NLS-1$
     private static Map<Class<?>, Class<?>> registeredEditors = new HashMap<Class<?>, Class<?>>();
     
     /**
@@ -71,7 +71,7 @@ public class PropertyEditorManager {
         editorClass = registeredEditors.get(targetType);
 
         if (editorClass == null) {
-            String editorClassName = targetType.getName() + "Editor";
+            String editorClassName = targetType.getName() + "Editor"; //$NON-NLS-1$
             ClassLoader loader = targetType.getClassLoader();
 
             if (loader == null) {
@@ -82,7 +82,7 @@ public class PropertyEditorManager {
                 editorClass = Class.forName(editorClassName, true, loader);
             } catch (ClassNotFoundException cnfe) {
                 String shortEditorClassName = editorClassName
-                        .substring(editorClassName.lastIndexOf(".") + 1);
+                        .substring(editorClassName.lastIndexOf(".") + 1); //$NON-NLS-1$
 
                 if (targetType.isPrimitive()) {
                     shortEditorClassName = shortEditorClassName.substring(0, 1)
@@ -91,7 +91,7 @@ public class PropertyEditorManager {
                 }
 
                 for (int i = 0; i < path.length; ++i) {
-                    editorClassName = path[i] + "." + shortEditorClassName;
+                    editorClassName = path[i] + "." + shortEditorClassName; //$NON-NLS-1$
 
                     try {
                         editorClass = Class.forName(editorClassName, true,

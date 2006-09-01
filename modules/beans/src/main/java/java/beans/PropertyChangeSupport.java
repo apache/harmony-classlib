@@ -320,7 +320,7 @@ public class PropertyChangeSupport implements Serializable {
 
 		children = new Hashtable<String, List<PropertyChangeListener>>(
 				selectedSerializedPropertiesChangeListeners);
-		children.put("", allSerializedPropertiesChangeListeners);
+		children.put("", allSerializedPropertiesChangeListeners); //$NON-NLS-1$
 		oos.writeObject(children);
 
 		Object source = null;
@@ -343,7 +343,7 @@ public class PropertyChangeSupport implements Serializable {
 		selectedPropertiesChangeListeners = new HashMap<String, List<PropertyChangeListener>>(
 				children);
 		allPropertiesChangeListeners = selectedPropertiesChangeListeners
-				.remove("");
+				.remove(""); //$NON-NLS-1$
 		if (allPropertiesChangeListeners == null) {
 			allPropertiesChangeListeners = new ArrayList<PropertyChangeListener>();
 		}

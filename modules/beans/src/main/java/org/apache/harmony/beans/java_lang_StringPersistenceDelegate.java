@@ -34,7 +34,7 @@ public class java_lang_StringPersistenceDelegate extends PersistenceDelegate {
     protected Expression instantiate(Object oldInstance, Encoder out) {
         String value = (String) oldInstance;
 
-        return new Expression(oldInstance, String.class, "new",
+        return new Expression(oldInstance, String.class, "new", //$NON-NLS-1$
                               new Object[] {new String(value)});
     }
 

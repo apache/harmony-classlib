@@ -23,6 +23,8 @@ package java.beans;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import org.apache.harmony.beans.internal.nls.Messages;
+
 /**
  * @author Maxim V. Berkultsev
  * @version $Revision: 1.5.6.3 $
@@ -69,18 +71,18 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
             throws IntrospectionException {
         super(propertyName, beanClass);        
         
-        String indexedGetterName = createDefaultMethodName(propertyName, "get");
+        String indexedGetterName = createDefaultMethodName(propertyName, "get"); //$NON-NLS-1$
         if(hasMethod(beanClass, indexedGetterName)) {
             setIndexedReadMethod(beanClass, indexedGetterName);
         } else {
-            throw new IntrospectionException("Method not found: get" + propertyName);
+            throw new IntrospectionException(Messages.getString("beans.1F", propertyName)); //$NON-NLS-1$
         }
         
-        String indexedSetterName = createDefaultMethodName(propertyName, "set");
+        String indexedSetterName = createDefaultMethodName(propertyName, "set"); //$NON-NLS-1$
         if(hasMethod(beanClass, indexedSetterName)) {
             setIndexedWriteMethod(beanClass, indexedSetterName);
         } else {
-            throw new IntrospectionException("Method not found: set" + propertyName);
+            throw new IntrospectionException(Messages.getString("beans.20", propertyName)); //$NON-NLS-1$
         }
     }
 
@@ -93,20 +95,18 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
             int modifiers = indexedGetter.getModifiers();
             if (!Modifier.isPublic(modifiers)) {
                 throw new IntrospectionException(
-                        "Modifier for indexed getter method should be public.");
+                        Messages.getString("beans.21")); //$NON-NLS-1$
             }
             
             Class[] parameterTypes = indexedGetter.getParameterTypes();
             if (parameterTypes.length != 1) {
                 throw new IntrospectionException(
-                        "Number of parameters in getter method is not "
-                        + "equal to 1.");
+                        Messages.getString("beans.22")); //$NON-NLS-1$
             }
             
             if (!parameterTypes[0].equals(int.class)) {
                 throw new IntrospectionException(
-                        "Parameter in indexed getter method is not of "
-                        + "integer type.");
+                        Messages.getString("beans.23")); //$NON-NLS-1$
             }
             
             Class<?> returnType = indexedGetter.getReturnType();
@@ -114,8 +114,7 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
             if((indexedPropertyType != null) && !returnType.equals(
                     indexedPropertyType)) {
                 throw new IntrospectionException(
-                        "Parameter type in indexed getter method does not "
-                        + "correspond to predefined.");
+                        Messages.getString("beans.24")); //$NON-NLS-1$
             }
         }
         
@@ -131,28 +130,25 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
             int modifiers = indexedSetter.getModifiers();
             if (!Modifier.isPublic(modifiers)) {
                 throw new IntrospectionException(
-                        "Modifier for indexed setter method should be public.");
+                        Messages.getString("beans.25")); //$NON-NLS-1$
             }
             
             Class[] parameterTypes = indexedSetter.getParameterTypes();
             if (parameterTypes.length != 2) {
                 throw new IntrospectionException(
-                        "Number of parameters in indexed setter method is not "
-                        + "equal to 2.");
+                        Messages.getString("beans.26")); //$NON-NLS-1$
             }
             
             Class<?> firstParameterType = parameterTypes[0];
             if (!firstParameterType.equals(int.class)) {
                 throw new IntrospectionException(
-                        "First parameter type in indexed setter method "
-                        + "should be int.");
+                        Messages.getString("beans.27")); //$NON-NLS-1$
             }            
             
             Class<?> secondParameterType = parameterTypes[1];
             if (!secondParameterType.equals(getIndexedPropertyType())) {
                 throw new IntrospectionException(
-                        "Second parameter type in indexed setter method "
-                        + "does not corresponds to predefined.");
+                        Messages.getString("beans.28")); //$NON-NLS-1$
             }
         }
         

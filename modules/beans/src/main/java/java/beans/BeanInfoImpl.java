@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.harmony.beans.internal.nls.Messages;
+
 class BeanInfoImpl implements BeanInfo {
 
     private static int MT_OTHER = 0;
@@ -136,13 +138,13 @@ class BeanInfoImpl implements BeanInfo {
 
                 String listenerName = null;
 
-                if (methodName.endsWith("Listener")) {
+                if (methodName.endsWith("Listener")) { //$NON-NLS-1$
                     listenerName = methodName.substring(0, methodName
-                            .lastIndexOf("Listener"));
+                            .lastIndexOf("Listener")); //$NON-NLS-1$
 
-                    if (methodName.startsWith("add")) {
+                    if (methodName.startsWith("add")) { //$NON-NLS-1$
                         listenerName = listenerName.substring(3);
-                    } else if (methodName.startsWith("remove")) {
+                    } else if (methodName.startsWith("remove")) { //$NON-NLS-1$
                         listenerName = listenerName.substring(6);
                     } else {
                         continue;
@@ -161,10 +163,10 @@ class BeanInfoImpl implements BeanInfo {
                             // listener name extracted from registration method are the same
                             String listenerNameFromParam = listenerTypeName
                                     .substring(listenerTypeName
-                                            .lastIndexOf(".") + 1);
+                                            .lastIndexOf(".") + 1); //$NON-NLS-1$
 
                             String listenerNameFromMethod = listenerName
-                                    + "Listener";
+                                    + "Listener"; //$NON-NLS-1$
 
                             if (!listenerNameFromParam
                                     .equals(listenerNameFromMethod)) {
@@ -172,8 +174,8 @@ class BeanInfoImpl implements BeanInfo {
                             }
 
                             String eventTypeName = listenerTypeName.substring(
-                                    0, listenerTypeName.lastIndexOf(".") + 1)
-                                    + listenerName + "Event";
+                                    0, listenerTypeName.lastIndexOf(".") + 1) //$NON-NLS-1$
+                                    + listenerName + "Event"; //$NON-NLS-1$
 
                             // classes generated from classes names
                             Class<?> eventType = null;
@@ -182,8 +184,7 @@ class BeanInfoImpl implements BeanInfo {
                                 eventType = Class.forName(eventTypeName, true,
                                         beanClass.getClassLoader());
                             } catch (ClassNotFoundException cnfe) {
-                                System.out.println("Event type with name "
-                                        + eventTypeName + " is not found.");
+                                System.out.println(Messages.getString("beans.3A", eventTypeName)); //$NON-NLS-1$
                             } finally {
                                 if (eventType == null) {
                                     continue;
@@ -213,8 +214,8 @@ class BeanInfoImpl implements BeanInfo {
                             }
 
                             Method addListenerMethod = null;
-                            String addListenerMethodName = "add" + listenerName
-                                    + "Listener";
+                            String addListenerMethodName = "add" + listenerName //$NON-NLS-1$
+                                    + "Listener"; //$NON-NLS-1$
                             try {
                                 addListenerMethod = beanClass.getMethod(
                                         addListenerMethodName,
@@ -225,8 +226,8 @@ class BeanInfoImpl implements BeanInfo {
                             }
 
                             Method removeListenerMethod = null;
-                            String removeListenerMethodName = "remove"
-                                    + listenerName + "Listener";
+                            String removeListenerMethodName = "remove" //$NON-NLS-1$
+                                    + listenerName + "Listener"; //$NON-NLS-1$
                             try {
                                 removeListenerMethod = beanClass.getMethod(
                                         removeListenerMethodName,
@@ -237,8 +238,8 @@ class BeanInfoImpl implements BeanInfo {
                             }
 
                             Method getListenerMethod = null;
-                            String getListenerMethodName = "get" + listenerName
-                                    + "Listeners";
+                            String getListenerMethodName = "get" + listenerName //$NON-NLS-1$
+                                    + "Listeners"; //$NON-NLS-1$
                             try {
                                 getListenerMethod = beanClass.getMethod(
                                         getListenerMethodName, new Class[] {});
@@ -256,10 +257,7 @@ class BeanInfoImpl implements BeanInfo {
                                 result.put(listenerName, esd);
                             } catch (IntrospectionException ie) {
                                 System.out
-                                        .println("Cannot generate event set descriptor "
-                                                + "for name"
-                                                + listenerName
-                                                + ".");
+                                        .println(Messages.getString("beans.39", listenerName)); //$NON-NLS-1$
                             }
 
                         }
@@ -321,24 +319,24 @@ class BeanInfoImpl implements BeanInfo {
                 Class[] parameterTypes = method.getParameterTypes();
                 Class<?> returnType = method.getReturnType();
 
-                if (name.startsWith("get") && (parameterTypes.length == 0)
+                if (name.startsWith("get") && (parameterTypes.length == 0) //$NON-NLS-1$
                         && (returnType != void.class) && (name.length() > 3)) {
                     result = MT_GETTER;
-                } else if (name.startsWith("is")
+                } else if (name.startsWith("is") //$NON-NLS-1$
                         && (parameterTypes.length == 0)
                         && (returnType == boolean.class) && (name.length() > 2)) {
                     result = MT_BOOLEAN_GETTER;
-                } else if (name.startsWith("get")
+                } else if (name.startsWith("get") //$NON-NLS-1$
                         && (parameterTypes.length == 1)
                         && (returnType != void.class)
                         && (parameterTypes[0] == int.class)
                         && (name.length() > 3)) {
                     result = MT_INDEXED_GETTER;
-                } else if (name.startsWith("set")
+                } else if (name.startsWith("set") //$NON-NLS-1$
                         && (parameterTypes.length == 1)
                         && (returnType == void.class) && (name.length() > 3)) {
                     result = MT_SETTER;
-                } else if (name.startsWith("set")
+                } else if (name.startsWith("set") //$NON-NLS-1$
                         && (parameterTypes.length == 2)
                         && (returnType == void.class)
                         && (parameterTypes[0] == int.class)
@@ -357,10 +355,10 @@ class BeanInfoImpl implements BeanInfo {
             throws Exception {
         String result = null;
 
-        if (methodName.startsWith("set") || methodName.startsWith("get")) {
+        if (methodName.startsWith("set") || methodName.startsWith("get")) { //$NON-NLS-1$ //$NON-NLS-2$
             result = methodName.substring(3);
             result = Introspector.decapitalize(result);
-        } else if (methodName.startsWith("is")) {
+        } else if (methodName.startsWith("is")) { //$NON-NLS-1$
             result = methodName.substring(2);
             result = Introspector.decapitalize(result);
         }
@@ -397,7 +395,7 @@ class BeanInfoImpl implements BeanInfo {
                             beanClass);
                     hmPropertyDescriptors.put(propertyName, propertyDescriptor);
                 } catch (IntrospectionException ie) {
-                    System.out.println(ie.getClass() + ": " + ie.getMessage());
+                    System.out.println(ie.getClass() + ": " + ie.getMessage()); //$NON-NLS-1$
                 }
             }
         }
@@ -420,7 +418,7 @@ class BeanInfoImpl implements BeanInfo {
                     hmPropertyDescriptors.put(propertyName,
                             indexedPropertyDescriptor);
                 } catch (IntrospectionException ie) {
-                    System.out.println(ie.getClass() + ": " + ie.getMessage());
+                    System.out.println(ie.getClass() + ": " + ie.getMessage()); //$NON-NLS-1$
                 }
             }
         }

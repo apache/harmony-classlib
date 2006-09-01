@@ -33,7 +33,7 @@ public class java_lang_reflect_FieldPersistenceDelegate extends
         Field oldField = (Field) oldInstance;
         Class declClass = oldField.getDeclaringClass();
         
-        return new Expression(oldField, declClass, "getDeclaredField",
+        return new Expression(oldField, declClass, "getDeclaredField", //$NON-NLS-1$
                 new Object[] { oldField.getName() });
     }
 

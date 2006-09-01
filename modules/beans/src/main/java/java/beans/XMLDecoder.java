@@ -137,10 +137,10 @@ public class XMLDecoder {
     private void initialize() {
         try {
             String saxParserClassName = System
-                    .getProperty("org.xml.sax.driver");
+                    .getProperty("org.xml.sax.driver"); //$NON-NLS-1$
 
             if (saxParserClassName == null) {
-                saxParserClassName = "org.apache.xerces.parsers.SAXParser";
+                saxParserClassName = "org.apache.xerces.parsers.SAXParser"; //$NON-NLS-1$
             }
             XMLReader xmlReader = XMLReaderFactory
                     .createXMLReader(saxParserClassName);
