@@ -272,4 +272,12 @@ public class ConfirmationCallbackTest extends TestCase {
         } catch (ArrayIndexOutOfBoundsException e){}
         
     }
+
+    /*
+     * Regression test for bug in setSelectedIndex
+     */
+    public final void testSetSelectedIndex() throws Exception {
+        cc = new ConfirmationCallback("prompt", mt[0], ot[0], dopt[0]);
+        cc.setSelectedIndex(ConfirmationCallback.YES);
+    }
 }

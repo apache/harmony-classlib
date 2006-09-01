@@ -312,7 +312,7 @@ public class ConfirmationCallback implements Callback, Serializable {
         } else {
             switch (optionType) {
             case YES_NO_OPTION:
-                if (selection == YES || selection != NO) {
+                if (selection != YES && selection != NO) {
                     throw new IllegalArgumentException("invalid selection");
                 }
                 break;
