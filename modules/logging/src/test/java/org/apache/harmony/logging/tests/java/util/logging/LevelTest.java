@@ -19,6 +19,8 @@ import java.io.Serializable;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
+import org.apache.harmony.testframework.serialization.SerializationTest;
+
 import junit.framework.TestCase;
 import tests.util.SerializationTester;
 
@@ -282,14 +284,15 @@ public class LevelTest extends TestCase implements Serializable {
 	}
 
 
-	/*
-	 * Test serilaziation of pre-defined const levels. It is expected that the
-	 * deserialized cost level should be the same instance as the existing one.
-	 */
-	public void testSerialization_ConstLevel() throws Exception {
-		Level.ALL.toString();
-		SerializationTester.assertSame(Level.ALL);
-	}
+    /**
+     * Test serilaziation of pre-defined const levels. It is expected that the
+     * deserialized cost level should be the same instance as the existing one.
+     */
+    public void testSerialization_ConstLevel() throws Exception {
+
+        SerializationTest.verifySelf(Level.ALL,
+                SerializationTest.SAME_COMPARATOR);
+    }
 
 	/*
 	 * Test serilaziation of normal instance of Level. It is expected that the
