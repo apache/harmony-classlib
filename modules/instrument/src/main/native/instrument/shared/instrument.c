@@ -25,48 +25,63 @@ void throw_exception(JNIEnv * env,jvmtiError err){
         case JVMTI_ERROR_MUST_POSSESS_CAPABILITY:
             throwNewExceptionByName(env, "java/lang/UnsupportedOperationException",
                           "The environment does not possess the capability can_redefine_classes."); 
+            return;
         case JVMTI_ERROR_NULL_POINTER:
         	throwNewExceptionByName(env, "java/lang/NullPointerException",
-                          "One of class_bytes is NULL."); 
+                          "One of class_bytes is NULL.");
+            return;
         case JVMTI_ERROR_UNMODIFIABLE_CLASS:
         	throwNewExceptionByName(env, "java/lang/instrument/UnmodifiableClassException",
-                          "An element of class_definitions cannot be modified."); 
+                          "An element of class_definitions cannot be modified.");
+            return; 
         case JVMTI_ERROR_INVALID_CLASS:
             throwNewExceptionByName(env, "java/lang/ClassNotFoundException",
-                          "An element of class_definitions is not a valid class."); 
+                          "An element of class_definitions is not a valid class.");
+            return; 
         case JVMTI_ERROR_UNSUPPORTED_VERSION:
         	throwNewExceptionByName(env, "java/lang/UnsupportedClassVersionError",
-                          "A new class file has a version number not supported by this VM."); 
+                          "A new class file has a version number not supported by this VM.");
+            return; 
         case JVMTI_ERROR_INVALID_CLASS_FORMAT:
         	throwNewExceptionByName(env, "java/lang/ClassFormatError",
-                          "A new class file is malformed."); 
+                          "A new class file is malformed.");
+            return; 
         case JVMTI_ERROR_CIRCULAR_CLASS_DEFINITION:
         	throwNewExceptionByName(env, "java/lang/ClassCircularityError",
-                          "The new class file definitions would lead to a circular definition."); 
+                          "The new class file definitions would lead to a circular definition.");
+            return; 
         case JVMTI_ERROR_FAILS_VERIFICATION:
             throwNewExceptionByName(env, "java/lang/ClassFormatError",
-                          "The class bytes fail verification."); 
+                          "The class bytes fail verification.");
+            return; 
         case JVMTI_ERROR_NAMES_DONT_MATCH:
         	throwNewExceptionByName(env, "java/lang/NoClassDefFoundError",
-                          "The class name defined in a new class file is different from the name in the old class object."); 
+                          "The class name defined in a new class file is different from the name in the old class object.");
+            return; 
         case JVMTI_ERROR_UNSUPPORTED_REDEFINITION_METHOD_ADDED:
             throwNewExceptionByName(env, "java/lang/UnsupportedOperationException",
-                          "A new class file requires adding a method."); 
+                          "A new class file requires adding a method.");
+            return; 
         case JVMTI_ERROR_UNSUPPORTED_REDEFINITION_SCHEMA_CHANGED:
             throwNewExceptionByName(env, "java/lang/UnsupportedOperationException",
-                    "A new class version changes a field."); 
+                    "A new class version changes a field.");
+            return; 
         case JVMTI_ERROR_UNSUPPORTED_REDEFINITION_HIERARCHY_CHANGED:
             throwNewExceptionByName(env, "java/lang/UnsupportedOperationException",
-                    "A direct superclass is different for a new class version, or the set of directly implemented interfaces is different."); 
+                    "A direct superclass is different for a new class version, or the set of directly implemented interfaces is different.");
+            return; 
         case JVMTI_ERROR_UNSUPPORTED_REDEFINITION_METHOD_DELETED:
             throwNewExceptionByName(env, "java/lang/UnsupportedOperationException",
-                    "A new class version does not declare a method declared in the old class version."); 
+                    "A new class version does not declare a method declared in the old class version.");
+            return; 
         case JVMTI_ERROR_UNSUPPORTED_REDEFINITION_CLASS_MODIFIERS_CHANGED:
             throwNewExceptionByName(env, "java/lang/UnsupportedOperationException",
-                    "A new class version has different modifiers."); 
+                    "A new class version has different modifiers.");
+            return; 
         case JVMTI_ERROR_UNSUPPORTED_REDEFINITION_METHOD_MODIFIERS_CHANGED:
             throwNewExceptionByName(env, "java/lang/UnsupportedOperationException",
-                    "A method in the new class version has different modifiers than its counterpart in the old class version."); 
+                    "A method in the new class version has different modifiers than its counterpart in the old class version.");
+            return; 
         default:
             throwNewExceptionByName(env, "java/lang/InternalError",
                     "Unknown error during redefinition."); 
@@ -177,6 +192,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_instrument_internal_Instrumentati
 	  jsize length;
 	  jvmtiClassDefinition *class_definitions;	  
 	  int i=0;
+	  jclass clz;
 	  jmethodID method_clear;
 
 	  //locate the java methods needed by class definition data extraction
@@ -234,8 +250,9 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_instrument_internal_Instrumentati
 
 	  //perform redefinition
 	  err=(*jvmti)->RedefineClasses(jvmti, length, class_definitions);
+
 	  if (JVMTI_ERROR_NONE!=err){
-	  	  jclass clz= (*env)->FindClass(env, "java/lang/instrument/Instrumentation");
+	  	  clz= (*env)->FindClass(env, "org/apache/harmony/instrument/internal/InstrumentationImpl");
 	  	  method_clear=(*env)->GetMethodID(env, clz, "clear", "()V");
 	  	  (*env)->CallVoidMethod(env,objThis,method_clear);
 	      throw_exception(env,err);
