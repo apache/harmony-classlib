@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.apache.harmony.testframework.serialization.SerializationTest;
+
 import junit.framework.TestCase;
 
 public class EnumMapTest extends TestCase {
@@ -69,7 +71,6 @@ public class EnumMapTest extends TestCase {
             return oldValue;
         }
     }
-
 
     /**
      * @tests java.util.EnumMap#EnumMap(Class)
@@ -228,7 +229,7 @@ public class EnumMapTest extends TestCase {
             // Expected
         }
     }
-    
+
     /**
      * @tests java.util.EnumMap#clear()
      */
@@ -262,6 +263,28 @@ public class EnumMapTest extends TestCase {
                 .containsKey(new Integer("3"))); //$NON-NLS-1$
         assertFalse("Returned true for uncontained key", enumSizeMap //$NON-NLS-1$
                 .containsKey(null));
+    }
+
+    /**
+     * @tests java.util.EnumMap#clone()
+     */
+    @SuppressWarnings( { "unchecked", "boxing" })
+    public void test_clone() {
+        EnumMap enumSizeMap = new EnumMap(Size.class);
+        Integer integer = new Integer("3"); //$NON-NLS-1$
+        enumSizeMap.put(Size.Small, integer);
+        EnumMap enumSizeMapClone = enumSizeMap.clone();
+        assertNotSame("Should not be same", enumSizeMap, enumSizeMapClone); //$NON-NLS-1$
+        assertEquals("Clone answered unequal EnumMap", enumSizeMap, //$NON-NLS-1$
+                enumSizeMapClone);
+
+        assertSame("Should be same", enumSizeMap.get(Size.Small), //$NON-NLS-1$
+                enumSizeMapClone.get(Size.Small));
+        assertSame("Clone is not shallow clone", integer, enumSizeMapClone //$NON-NLS-1$
+                .get(Size.Small));
+        enumSizeMap.remove(Size.Small);
+        assertSame("Clone is not shallow clone", integer, enumSizeMapClone //$NON-NLS-1$
+                .get(Size.Small));
     }
 
     /**
@@ -521,6 +544,46 @@ public class EnumMapTest extends TestCase {
         } catch (NoSuchElementException e) {
             // Expected
         }
+    }
+
+    /**
+     * @tests java.util.EnumMap#equals(Object)
+     */
+    @SuppressWarnings( { "unchecked", "boxing" })
+    public void test_equalsLjava_lang_Object() {
+        EnumMap enumMap = new EnumMap(Size.class);
+        enumMap.put(Size.Small, 1);
+
+        EnumMap enumSizeMap = new EnumMap(Size.class);
+        assertFalse("Returned true for unequal EnumMap", enumSizeMap //$NON-NLS-1$
+                .equals(enumMap));
+        enumSizeMap.put(Size.Small, 1);
+        assertTrue("Returned false for equal EnumMap", enumSizeMap //$NON-NLS-1$
+                .equals(enumMap));
+        enumSizeMap.put(Size.Big, null);
+        assertFalse("Returned true for unequal EnumMap", enumSizeMap //$NON-NLS-1$
+                .equals(enumMap));
+
+        enumMap.put(Size.Middle, null);
+        assertFalse("Returned true for unequal EnumMap", enumSizeMap //$NON-NLS-1$
+                .equals(enumMap));
+        enumMap.remove(Size.Middle);
+        enumMap.put(Size.Big, 3);
+        assertFalse("Returned true for unequal EnumMap", enumSizeMap //$NON-NLS-1$
+                .equals(enumMap));
+        enumMap.put(Size.Big, null);
+        assertTrue("Returned false for equal EnumMap", enumSizeMap //$NON-NLS-1$
+                .equals(enumMap));
+
+        HashMap hashMap = new HashMap();
+        hashMap.put(Size.Small, 1);
+        assertFalse("Returned true for unequal EnumMap", hashMap //$NON-NLS-1$
+                .equals(enumMap));
+        hashMap.put(Size.Big, null);
+        assertTrue("Returned false for equal EnumMap", enumMap.equals(hashMap)); //$NON-NLS-1$
+
+        assertFalse("Should return false", enumSizeMap //$NON-NLS-1$
+                .equals(new Integer(1)));
     }
 
     /**
@@ -1069,6 +1132,27 @@ public class EnumMapTest extends TestCase {
         } catch (NoSuchElementException e) {
             // Expected
         }
+    }
+
+    /**
+     * @tests serialization/deserialization.
+     */
+    @SuppressWarnings({ "unchecked", "boxing" })
+    public void testSerializationSelf() throws Exception {
+        EnumMap enumColorMap = new EnumMap<Color, Double>(Color.class);
+        enumColorMap.put(Color.Blue, 3);
+        SerializationTest.verifySelf(enumColorMap);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    @SuppressWarnings({ "unchecked", "boxing" })
+    public void testSerializationCompatibility() throws Exception {
+        EnumMap enumColorMap = new EnumMap<Color, Double>(Color.class);
+        enumColorMap.put(Color.Red, 1);
+        enumColorMap.put(Color.Blue, 3);
+        SerializationTest.verifyGolden(this, enumColorMap);
     }
 
     /**

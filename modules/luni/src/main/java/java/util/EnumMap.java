@@ -15,10 +15,11 @@
 
 package java.util;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Array;
-
-import org.apache.harmony.luni.util.NotYetImplementedException;
 
 public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
         Map<K, V>, Serializable, Cloneable {
@@ -442,8 +443,15 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      * 
      * @return a shallow copy of this map
      */
-    public EnumMap<K,V> clone() {
-        throw new NotYetImplementedException();
+    @Override
+    public EnumMap<K, V> clone() {
+        try {
+            EnumMap<K, V> enumMap = (EnumMap<K, V>) super.clone();
+            enumMap.initialization(this);
+            return enumMap;
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
     }
 
     /**
@@ -512,8 +520,20 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      *            the object to be compared with this map
      * @return true if the given object is equal to this map.
      */
+    @Override
     public boolean equals(Object object) {
-        throw new NotYetImplementedException();
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof EnumMap)) {
+            return super.equals(object);
+        }
+        EnumMap<K, V> enumMap = (EnumMap<K, V>) object;
+        if (keyType != enumMap.keyType || size() != enumMap.size()) {
+            return false;
+        }
+        return Arrays.equals(hasMapping, enumMap.hasMapping) &&
+            Arrays.equals(values, enumMap.values);
     }
 
     /**
@@ -636,6 +656,31 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
             valuesCollection = new EnumMapValueCollection<K, V>(this);
         }
         return valuesCollection;
+    }
+
+    private void readObject(ObjectInputStream stream) throws IOException,
+            ClassNotFoundException {
+        stream.defaultReadObject();
+        initialization(keyType);
+        int elementCount = stream.readInt();
+        Enum<K> enumKey;
+        Object value;
+        for (int i = elementCount; i > 0; i--) {
+            enumKey = (Enum<K>) stream.readObject();
+            value = stream.readObject();
+            putImpl((K) enumKey, (V) value);
+        }
+    }
+
+    private void writeObject(ObjectOutputStream stream) throws IOException {
+        stream.defaultWriteObject();
+        stream.writeInt(mappingsCount);
+        Iterator iterator = entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<K, V> entry = (Map.Entry<K, V>) iterator.next();
+            stream.writeObject(entry.getKey());
+            stream.writeObject(entry.getValue());
+        }
     }
 
     private boolean isValidKeyType(Object key) {
