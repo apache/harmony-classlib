@@ -15,6 +15,7 @@
 
 package org.apache.harmony.logging.tests.java.util.logging;
 
+import java.io.Serializable;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Handler;
@@ -23,6 +24,10 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import junit.framework.TestCase;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
+
 import tests.util.SerializationTester;
 
 public class LogRecordTest extends TestCase {
@@ -253,6 +258,48 @@ public class LogRecordTest extends TestCase {
 		assertEquals(e, lr.getThrown());
 	}
 
+    // comparator for LogRecord objects
+    private static final SerializableAssert LOGRECORD_COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
+
+            LogRecord init = (LogRecord) initial;
+            LogRecord dser = (LogRecord) deserialized;
+
+            assertEquals("Class", init.getClass(), dser.getClass());
+            assertEquals("Level", init.getLevel(), dser.getLevel());
+            assertEquals("LoggerName", init.getLoggerName(), dser
+                    .getLoggerName());
+            assertEquals("Message", init.getMessage(), dser.getMessage());
+            assertEquals("Millis", init.getMillis(), dser.getMillis());
+
+            // compare parameters 
+            Object[] paramInit = init.getParameters();
+            Object[] paramDser = dser.getParameters();
+            assertEquals("Parameters length", paramInit.length,
+                    paramDser.length);
+            for (int i = 0; i < paramInit.length; i++) {
+                assertEquals("Param: " + i, paramInit[i].toString(),
+                        paramDser[i]);
+            }
+
+            // don't check ResourceBundle object
+            // verify only bundle's name
+            assertEquals("ResourceBundleName", init.getResourceBundleName(),
+                    dser.getResourceBundleName());
+            assertEquals("SequenceNumber", init.getSequenceNumber(), dser
+                    .getSequenceNumber());
+            assertEquals("SourceClassName", init.getSourceClassName(), dser
+                    .getSourceClassName());
+            assertEquals("SourceMethodName", init.getSourceMethodName(), dser
+                    .getSourceMethodName());
+            assertEquals("ThreadID", init.getThreadID(), dser.getThreadID());
+
+            SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(init
+                    .getThrown(), dser.getThrown());
+        }
+    };
+
 	public void testSerialization() throws Exception {
 		lr.setLoggerName("logger");
 		lr.setResourceBundleName("bundles/java/util/logging/res2");
@@ -327,11 +374,25 @@ public class LogRecordTest extends TestCase {
 		}
 	}
 
-	public void testSerializationCompability() throws Exception {
-		LogRecord r = new LogRecord(Level.ALL, "msg");
-		SerializationTester.assertCompabilityEquals(r,
-				"serialization/java/util/logging/LogRecord.ser");
-	}
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+        LogRecord r = new LogRecord(Level.ALL, "msg");
+        r.setLoggerName("LoggerName");
+        r.setMillis(123456789);
+        r.setResourceBundleName("ResourceBundleName");
+        r.setSequenceNumber(987654321);
+        r.setSourceClassName("SourceClassName");
+        r.setSourceMethodName("SourceMethodName");
+        r
+                .setParameters(new Object[] { "test string",
+                        new Exception("ex-msg") });
+        r.setThreadID(3232);
+        r.setThrown(new Exception("ExceptionMessage"));
+
+        SerializationTest.verifyGolden(this, r, LOGRECORD_COMPARATOR);
+    }
 
 	public static class MockHandler extends Handler {
 		private String className;
