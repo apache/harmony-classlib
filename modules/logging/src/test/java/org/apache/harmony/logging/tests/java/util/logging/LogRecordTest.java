@@ -324,42 +324,24 @@ public class LogRecordTest extends TestCase {
      * @tests resolution of resource bundle for serialization/deserialization.
      */
     public void testSerializationResourceBundle() throws Exception {
-        //TODO add testcase for valid resource bundle
-        
-		lr.setLoggerName("logger");
-		lr.setResourceBundleName("bad bundle name");
-		lr.setSourceClassName("class");
-		lr.setSourceMethodName("method");
-		lr.setParameters(new Object[] { new Object(), new Object() });
-		lr.setThreadID(1000);
-		lr.setThrown(new Exception("exception"));
-		lr.setSequenceNumber(12321312);
-		lr.setMillis(12313123);
-		lr.setResourceBundle(ResourceBundle.getBundle(
-				"bundles/java/util/logging/res", Locale.US));
-		if (!SerializationTester.assertEquals(lr)) {
-			LogRecord result = (LogRecord) SerializationTester.getLastOutput();
-			assertSame(result.getLevel(), lr.getLevel());
-			assertEquals(result.getLoggerName(), lr.getLoggerName());
-			assertEquals(result.getMessage(), lr.getMessage());
-			assertEquals(result.getResourceBundleName(), lr
-					.getResourceBundleName());
-			assertEquals(result.getSourceClassName(), lr.getSourceClassName());
-			assertEquals(result.getSourceMethodName(), lr.getSourceMethodName());
-			assertEquals(result.getMillis(), lr.getMillis());
-			Object[] oa = result.getParameters();
-			Object[] ob = lr.getParameters();
-			for (int i = 0; i < oa.length; i++) {
-				assertEquals(oa[i].toString(), ob[i].toString());
-			}
-			assertNull(result.getResourceBundle());
-			assertEquals(result.getThreadID(), lr.getThreadID());
-			assertEquals(result.getThrown().getMessage(), lr.getThrown()
-					.getMessage());
-			assertEquals(result.getSequenceNumber(), lr.getSequenceNumber());
 
-		}
-	}
+        // test case: valid resource bundle name
+        lr.setResourceBundleName("bundles/java/util/logging/res2");
+        lr.setResourceBundle(ResourceBundle.getBundle(
+                "bundles/java/util/logging/res", Locale.US));
+
+        LogRecord result = (LogRecord) SerializationTest.copySerializable(lr);
+        assertNotNull(result.getResourceBundle());
+
+        // test case: invalid resource bundle name, it is not resolved during
+        // deserialization LogRecord object so check for returned null value
+        lr.setResourceBundleName("bad bundle name");
+        lr.setResourceBundle(ResourceBundle.getBundle(
+                "bundles/java/util/logging/res", Locale.US));
+
+        result = (LogRecord) SerializationTest.copySerializable(lr);
+        assertNull(result.getResourceBundle());
+    }
 
     /**
      * @tests serialization/deserialization compatibility with RI.
