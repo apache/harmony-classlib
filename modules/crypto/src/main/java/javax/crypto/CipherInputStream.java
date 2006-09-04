@@ -94,6 +94,10 @@ public class CipherInputStream extends FilterInputStream {
      * @com.intel.drl.spec_ref
      */
     public int read(byte[] b, int off, int len) throws IOException {
+        if (in == null) {
+            throw new NullPointerException("Underlying input stream is null");
+        }
+
         int read_b;
         int i;
         for (i=0; i<len; i++) {
