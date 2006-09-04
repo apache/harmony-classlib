@@ -97,7 +97,6 @@ public abstract class FileChannelImpl extends FileChannel {
         if (stream instanceof Closeable) {
             ((Closeable) stream).close();
         }
-		fileSystem.close(handle);
 	}
 
 	protected FileLock basicLock(long position, long size, boolean shared,

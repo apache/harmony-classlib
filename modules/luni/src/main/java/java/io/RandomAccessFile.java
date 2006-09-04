@@ -147,10 +147,13 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
      */
     public void close() throws IOException {
         synchronized (channel) {
-            synchronized (this) {
-                if (channel.isOpen() && fd.descriptor >= 0) {
-                    channel.close();
-                }
+            if (channel.isOpen()) {
+                channel.close();
+            }
+        }
+        synchronized (this) {
+            if (fd != null && fd.descriptor >= 0) {
+                fileSystem.close(fd.descriptor);
                 fd.descriptor = -1;
             }
         }

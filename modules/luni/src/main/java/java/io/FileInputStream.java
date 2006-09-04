@@ -39,6 +39,8 @@ public class FileInputStream extends InputStream implements Closeable {
     // initialized).
     private FileChannel channel;
 
+    boolean innerFD;
+
     private IFileSystem fileSystem = Platform.getFileSystem();
 
     private Object repositioningLock = new Object();
@@ -67,6 +69,7 @@ public class FileInputStream extends InputStream implements Closeable {
         fd = new FileDescriptor();
         fd.descriptor = fileSystem.open(file.properPath(true),
                 IFileSystem.O_RDONLY);
+		innerFD = true;
         channel = FileChannelFactory.getFileChannel(this, fd.descriptor,
                 IFileSystem.O_RDONLY);
     }
@@ -93,6 +96,7 @@ public class FileInputStream extends InputStream implements Closeable {
             security.checkRead(fd);
         }
         this.fd = fd;
+        innerFD = false;
         channel = FileChannelFactory.getFileChannel(this, fd.descriptor,
                 IFileSystem.O_RDONLY);
     }
@@ -155,30 +159,17 @@ public class FileInputStream extends InputStream implements Closeable {
             // to close
             return;
         }
-        if (channel == null) {
-            /*
-             * if channel is null, then the channel doesn't need be taken care
-             * of but the underlying file has been opened
-             */
-            synchronized (this) {
-                if (fd.descriptor >= 0) {
-                    fileSystem.close(fd.descriptor);
-                }
-                fd.descriptor = -1;
-            }
-        } else {
-            /*
-             * if the FileInputStream is constructed sucessfully, then channel
-             * must be closed, which will close the underlying file
-             */
+        if (channel != null) {
             synchronized (channel) {
-                synchronized (this) {
-                    // FIXME: System.in, out, err may not want to be closed?
-                    if (channel.isOpen() && fd.descriptor >= 0) {
-                        channel.close();
-                    }
-                    fd.descriptor = -1;
+                if (channel.isOpen()) {
+                    channel.close();
                 }
+            }
+        }
+	synchronized (this) {
+            if (fd.descriptor >= 0 && innerFD) {
+                fileSystem.close(fd.descriptor);
+                fd.descriptor = -1;
             }
         }
     }
