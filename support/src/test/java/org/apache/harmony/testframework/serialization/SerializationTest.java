@@ -194,12 +194,12 @@ public abstract class SerializationTest extends TestCase {
     /**
      * Deserializes single object from an input stream.
      */
-    public static Object getObjectFromStream(InputStream is) throws IOException,
+    public static Serializable getObjectFromStream(InputStream is) throws IOException,
         ClassNotFoundException {
         ObjectInputStream ois = new ObjectInputStream(is);
         Object result = ois.readObject();
         ois.close();
-        return result;
+        return (Serializable)result;
     }
     
     /**
@@ -460,13 +460,9 @@ public abstract class SerializationTest extends TestCase {
     public static void verifySelf(Object object, SerializableAssert comparator)
             throws Exception {
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        putObjectToStream(object, out);
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        Serializable initial = (Serializable) object;
 
-        comparator.assertDeserialized((Serializable) object,
-                (Serializable) getObjectFromStream(in));
-
+        comparator.assertDeserialized(initial, copySerializable(initial));
     }
 
     /**
@@ -523,7 +519,7 @@ public abstract class SerializationTest extends TestCase {
         Assert.assertNotNull("Failed to load serialization resource file: "
                 + path, in);
 
-        return (Serializable)getObjectFromStream(in);
+        return getObjectFromStream(in);
     }
     
     /**
@@ -562,5 +558,22 @@ public abstract class SerializationTest extends TestCase {
         // don't forget to remove it from test case after using
         Assert.fail("Generating golden file.\nGolden file name:"
                 + goldenFile.getAbsolutePath());
+    }
+    
+    /**
+     * Copies an object by serializing/deserializing it.
+     * 
+     * @param initial -
+     *            an object to be copied
+     * @return copy of provided object
+     */
+    public static Serializable copySerializable(Serializable initial)
+            throws IOException, ClassNotFoundException {
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        putObjectToStream(initial, out);
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+
+        return getObjectFromStream(in);
     }
 }
