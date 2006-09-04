@@ -174,7 +174,6 @@
                     <exclude name="javax/swing/text/GapContentTest.java"/>
                     <exclude name="javax/swing/text/GapContent_InternalTest.java"/>
                     <exclude name="javax/swing/text/InternationalFormatterTest.java"/>
-                    <exclude name="javax/swing/text/JTextComponentTest.java"/>
                     <exclude name="javax/swing/text/ParagraphViewTest.java"/>
                     <exclude name="javax/swing/text/PlainViewI18N_LayoutTest.java"/>
                     <exclude name="javax/swing/text/PlainViewI18N_LineViewTest.java"/>

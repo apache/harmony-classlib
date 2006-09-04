@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Vector;
+
 import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
@@ -53,6 +54,8 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingTestCase;
 import javax.swing.TransferHandler;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
@@ -558,37 +561,28 @@ public class JTextComponentTest extends SwingTestCase {
     }
 
     public void testSetGetColors() throws Exception {
-
-        Color color1 = new Color(0,0,0); //1.4.2
-        //Color color1 = new Color(51, 51, 51); //1.5.0
-        // Depends on LookAndFeel ( 1 line)
+        Color color1 = getColorProperty("caretForeground");
         assertEquals(color1, jtc.getCaretColor());
         jtc.setCaretColor(color);
         assertEqualsPropertyChangeEvent("caretColor", color1, color,
                 pChListener.event);
         assertEquals(color, jtc.getCaretColor());
 
-        color1 = new Color(204,204,255); //1.4.2
-        //color1 = new Color(184, 207, 229);//1.5.0
-        // Depends on LookAndFeel ( 1 line)
+        color1 = getColorProperty("selectionBackground");
         assertEquals(color1, jtc.getSelectionColor());
         jtc.setSelectionColor(color);
         assertEqualsPropertyChangeEvent("selectionColor", color1, color,
                 pChListener.event);
         assertEquals(color, jtc.getSelectionColor());
 
-        color1 = new Color(153,153,153); //1.4.2
-        //color1 = new Color(184, 207, 229);//1.5.0
-        // Depends on LookAndFeel ( 1 line)
+        color1 = getColorProperty("inactiveForeground");
         assertEquals(color1, jtc.getDisabledTextColor());
         jtc.setDisabledTextColor(color);
         assertEqualsPropertyChangeEvent("disabledTextColor", color1, color,
                 pChListener.event);
         assertEquals(color, jtc.getDisabledTextColor());
 
-        color1 = new Color(0,0,0); //1.4.2
-        //color1 = new Color(51, 51, 51); //1.5.0
-        // Depends on LookAndFeel ( 1 line)
+        color1 = getColorProperty("selectionForeground");
         assertEquals(color1, jtc.getSelectedTextColor());
         jtc.setSelectedTextColor(color);
         assertEqualsPropertyChangeEvent("selectedTextColor", color1, color,
@@ -840,10 +834,11 @@ public class JTextComponentTest extends SwingTestCase {
 
         //TODO It's very strange but in 1.5.0 PropertyChangeEvent's
         //name doesn't equal JTextComponent.FOCUS_ACCELERATOR_KEY
-        String name = "focusAcceleratorKey";
+        String name = JTextComponent.FOCUS_ACCELERATOR_KEY;
         //String name = "focusAccelerator";
         assertEquals('\0', jtc.getFocusAccelerator());
         jtc.setFocusAccelerator('a');
+        assertSame(name, pChListener.event.getPropertyName());
         assertEqualsPropertyChangeEvent(name, new Character('\0'),
                 new Character('A'), pChListener.event);
         assertEquals('A', jtc.getFocusAccelerator());
@@ -1188,7 +1183,8 @@ public class JTextComponentTest extends SwingTestCase {
         jtc.getKeymap().removeKeyStrokeBinding(keyStrokeZ);
     }
 
-    private String replaceFor150(final String s) {
-        return s.replaceAll("-P", "").replaceAll("keyCode Ctrl", "ctrl pressed ");
+    private Color getColorProperty(final String key) {
+        final UIDefaults uiDefaults = UIManager.getLookAndFeelDefaults();
+        return uiDefaults.getColor("TextArea." + key);
     }
 }
