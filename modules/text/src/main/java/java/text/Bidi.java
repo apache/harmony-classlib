@@ -483,21 +483,25 @@ public final class Bidi {
 	 */
 	public static void reorderVisually(byte[] levels, int levelStart,
 			Object[] objects, int objectStart, int count) {
-		try {
-			byte[] realLevels = new byte[count];
-			System.arraycopy(levels, levelStart, realLevels, 0, count);
+        if (count < 0 || levelStart < 0 || objectStart < 0
+                || count > levels.length - levelStart
+                || count > objects.length - objectStart) {
+            throw new IllegalArgumentException("Invalid ranges (levels="
+                    + levels.length + ", levelStart=" + levelStart
+                    + ", objects=" + objects.length + ", objectStart="
+                    + objectStart + ", count=" + count + ")");
+        }
+        byte[] realLevels = new byte[count];
+        System.arraycopy(levels, levelStart, realLevels, 0, count);
 
-			int[] indices = BidiWrapper.ubidi_reorderVisual(realLevels, count);
+        int[] indices = BidiWrapper.ubidi_reorderVisual(realLevels, count);
 
-			LinkedList<Object> result = new LinkedList<Object>();
-			for (int i = 0; i < count; i++) {
-				result.addLast(objects[objectStart + indices[i]]);
-			}
+        LinkedList<Object> result = new LinkedList<Object>();
+        for (int i = 0; i < count; i++) {
+            result.addLast(objects[objectStart + indices[i]]);
+        }
 
-			System.arraycopy(result.toArray(), 0, objects, objectStart, count);
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new IllegalArgumentException();
-		}
+        System.arraycopy(result.toArray(), 0, objects, objectStart, count);
 	}
 
 	/**

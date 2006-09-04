@@ -923,6 +923,14 @@ public class BidiTest extends TestCase {
 		} catch (NullPointerException e) {
 			// expected
 		}
+        
+        try {
+            Bidi.reorderVisually(new byte[] { 2, 1, 3, 0 }, 1, s, 0, -1);
+            fail("should throw IAE");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
 	}
     
     public void testGetRuns() {
