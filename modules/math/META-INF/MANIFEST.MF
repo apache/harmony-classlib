@@ -7,5 +7,7 @@ Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Import-Package: java.util,
  java.lang,
- java.io
+ java.io,
+ java.security,
+ org.apache.harmony.kernel.vm
 Export-Package: java.math

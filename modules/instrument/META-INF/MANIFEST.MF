@@ -10,5 +10,8 @@ Import-Package: java.io;resolution:=optional,
  java.lang.reflect,
  java.nio,
  java.security,
- org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional
+ java.util,
+ org.apache.harmony.kernel.vm,
+ org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional,
+ tests.support;hy_usage=test;resolution:=optional
 Export-Package: java.lang.instrument

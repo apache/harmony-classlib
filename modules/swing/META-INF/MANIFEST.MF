@@ -28,6 +28,7 @@ Import-Package: java.lang,
  org.apache.harmony.awt.nativebridge,
  org.apache.harmony.awt.nativebridge.windows,
  org.apache.harmony.awt.text,
+ org.apache.harmony.kernel.vm,
  org.apache.harmony.misc
 Export-Package: javax.swing,
  javax.swing.border,

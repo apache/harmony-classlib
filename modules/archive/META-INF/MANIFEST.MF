@@ -19,6 +19,7 @@ Import-Package: java.beans,
  javax.security.auth.x500,
  org.apache.harmony.luni.util,
  org.apache.harmony.security.utils,
+ org.apache.harmony.kernel.vm,
  tests.support;hy_usage=test;resolution:=optional,
  tests.support.resource;hy_usage=test;resolution:=optional
 Export-Package: java.util.jar,

@@ -14,7 +14,8 @@ Import-Package: java.io,
  java.security,
  java.security.cert,
  java.util,
- java.util.logging
+ java.util.logging,
+ org.apache.harmony.kernel.vm
 Export-Package: java.rmi,
  java.rmi.activation,
  java.rmi.dgc,

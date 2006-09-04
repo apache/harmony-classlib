@@ -8,5 +8,7 @@ Eclipse-JREBundle: true
 Import-Package: java.io,
  java.lang,
  java.text,
- java.util
+ java.util,
+ java.security,
+ org.apache.harmony.kernel.vm
 Export-Package: java.util.regex

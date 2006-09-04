@@ -8,5 +8,8 @@ Eclipse-JREBundle: true
 Import-Package: java.awt,
  java.beans,
  java.lang,
- javax.accessibility
+ java.security,
+ java.util,
+ javax.accessibility,
+ org.apache.harmony.kernel.vm
 Export-Package: java.applet

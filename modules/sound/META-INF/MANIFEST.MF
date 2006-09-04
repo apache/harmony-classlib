@@ -8,6 +8,8 @@ Eclipse-JREBundle: true
 Import-Package: java.lang,
  java.util,
  java.io,
- java.net
+ java.net,
+ java.security,
+ org.apache.harmony.kernel.vm
 Export-Package: javax.sound.midi,
  javax.sound.midi.spi

@@ -9,6 +9,8 @@ Import-Package: java.lang,
  java.lang.reflect,
  java.io,
  java.nio,
- java.util
+ java.util,
+ java.security,
+ org.apache.harmony.kernel.vm
 Export-Package: org.apache.harmony.misc,
  org.apache.harmony.misc.accessors
