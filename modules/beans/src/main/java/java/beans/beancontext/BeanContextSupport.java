@@ -779,7 +779,12 @@ public class BeanContextSupport extends BeanContextChildSupport implements
             throw new NullPointerException(Messages.getString("beans.2C")); //$NON-NLS-1$
         }
 
-        // Load resource using the same ClassLoader as BeanContextChild specified
+        if (!containsKey(bcc)) {
+            throw new IllegalArgumentException(Messages.getString("beans.46")); //$NON-NLS-1$
+        }
+
+        // Load resource using the same ClassLoader as BeanContextChild
+        // specified
         // If NullPointerException occurs try to load it as system resource
         try {
             return bcc.getClass().getClassLoader().getResource(name);
@@ -807,6 +812,10 @@ public class BeanContextSupport extends BeanContextChildSupport implements
         // The child should not be null
         if (bcc == null) {
             throw new NullPointerException(Messages.getString("beans.2C")); //$NON-NLS-1$
+        }
+
+        if (!containsKey(bcc)) {
+            throw new IllegalArgumentException(Messages.getString("beans.46")); //$NON-NLS-1$
         }
 
         // Load resource using the same ClassLoader as BeanContextChild specified
