@@ -399,13 +399,19 @@ public class AttributedString {
     }
 
     public AttributedString(AttributedCharacterIterator iterator) {
+        if (iterator.getBeginIndex() > iterator.getEndIndex()) {
+        	throw new IllegalArgumentException("Invalid substring range");
+        }
         StringBuffer buffer = new StringBuffer();
-        while (iterator.current() != CharacterIterator.DONE) {
+        for (int i = iterator.getBeginIndex(); i < iterator.getEndIndex(); i++) { 
             buffer.append(iterator.current());
             iterator.next();
         }
         text = buffer.toString();
         Set<AttributedCharacterIterator.Attribute> attributes = iterator.getAllAttributeKeys();
+        if (attributes == null) {
+        	return;
+        }
         attributeMap = new HashMap<Attribute, List<Range>>((attributes.size() * 4 / 3) + 1);
 
         Iterator<Attribute> it = attributes.iterator();
@@ -428,6 +434,10 @@ public class AttributedString {
             Set<Attribute> attributes) {
         if (start < iterator.getBeginIndex() || end > iterator.getEndIndex() || start > end) {
             throw new IllegalArgumentException();
+        }
+        
+        if(attributes == null){
+            return;
         }
 
         StringBuffer buffer = new StringBuffer();
