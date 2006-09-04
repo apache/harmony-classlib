@@ -273,7 +273,7 @@ public class LogRecordTest extends TestCase {
             assertEquals("Message", init.getMessage(), dser.getMessage());
             assertEquals("Millis", init.getMillis(), dser.getMillis());
 
-            // compare parameters 
+            // compare parameters
             Object[] paramInit = init.getParameters();
             Object[] paramDser = dser.getParameters();
             assertEquals("Parameters length", paramInit.length,
@@ -300,45 +300,32 @@ public class LogRecordTest extends TestCase {
         }
     };
 
-	public void testSerialization() throws Exception {
-		lr.setLoggerName("logger");
-		lr.setResourceBundleName("bundles/java/util/logging/res2");
-		lr.setSourceClassName("class");
-		lr.setSourceMethodName("method");
-		lr.setParameters(new Object[] { new Object(), new Object() });
-		lr.setThreadID(1000);
-		lr.setThrown(new Exception("exception"));
-		lr.setSequenceNumber(12321312);
-		lr.setMillis(12313123);
-		lr.setResourceBundle(ResourceBundle.getBundle(
-				"bundles/java/util/logging/res", Locale.US));
-		if (!SerializationTester.assertEquals(lr)) {
-			LogRecord result = (LogRecord) SerializationTester.getLastOutput();
-			assertSame(result.getLevel(), lr.getLevel());
-			assertEquals(result.getLoggerName(), lr.getLoggerName());
-			assertEquals(result.getMessage(), lr.getMessage());
-			assertEquals(result.getResourceBundleName(), lr
-					.getResourceBundleName());
-			assertEquals(result.getSourceClassName(), lr.getSourceClassName());
-			assertEquals(result.getSourceMethodName(), lr.getSourceMethodName());
-			assertEquals(result.getMillis(), lr.getMillis());
-			Object[] oa = result.getParameters();
-			Object[] ob = lr.getParameters();
-			for (int i = 0; i < oa.length; i++) {
-				assertEquals(oa[i].toString(), ob[i].toString());
-			}
-			assertNotNull(result.getResourceBundle());
-			assertFalse(result.getResourceBundle().equals(
-					lr.getResourceBundle()));
-			assertEquals(result.getThreadID(), lr.getThreadID());
-			assertEquals(result.getThrown().getMessage(), lr.getThrown()
-					.getMessage());
-			assertEquals(result.getSequenceNumber(), lr.getSequenceNumber());
+    /**
+     * @tests serialization/deserialization compatibility.
+     */
+    public void testSerializationSelf() throws Exception {
+        LogRecord r = new LogRecord(Level.ALL, "msg");
+        r.setLoggerName("LoggerName");
+        r.setMillis(123456789);
+        r.setResourceBundleName("ResourceBundleName");
+        r.setSequenceNumber(987654321);
+        r.setSourceClassName("SourceClassName");
+        r.setSourceMethodName("SourceMethodName");
+        r
+                .setParameters(new Object[] { "test string",
+                        new Exception("ex-msg") });
+        r.setThreadID(3232);
+        r.setThrown(new Exception("ExceptionMessage"));
 
-		}
-	}
+        SerializationTest.verifySelf(r, LOGRECORD_COMPARATOR);
+    }
 
-	public void testSerializationInvalidBundleName() throws Exception {
+    /**
+     * @tests resolution of resource bundle for serialization/deserialization.
+     */
+    public void testSerializationResourceBundle() throws Exception {
+        //TODO add testcase for valid resource bundle
+        
 		lr.setLoggerName("logger");
 		lr.setResourceBundleName("bad bundle name");
 		lr.setSourceClassName("class");
