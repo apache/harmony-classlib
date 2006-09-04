@@ -15,6 +15,8 @@
 
 package java.lang.instrument;
 
+import org.apache.harmony.instrument.internal.nls.Messages;
+
 /**
  * Wraps a {@link java.lang.Class} that is to be redefined together with the
  * byte array which constitutes the updated version of the class.
@@ -48,10 +50,10 @@ public final class ClassDefinition {
      */
     public ClassDefinition(Class<?> theClass, byte[] theClassFile) {
         if (theClass == null) {
-            throw new NullPointerException("Received null class argument.");
+            throw new NullPointerException(Messages.getString("instrument.1"));
         }
         if (theClassFile == null) {
-            throw new NullPointerException("Received null class file argument.");
+            throw new NullPointerException(Messages.getString("instrument.2"));
         }
         this.definitionClass = theClass;
         this.definitionClassFile = theClassFile;

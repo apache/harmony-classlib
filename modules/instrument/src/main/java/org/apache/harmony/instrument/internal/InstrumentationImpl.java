@@ -22,6 +22,8 @@ import java.lang.instrument.UnmodifiableClassException;
 import java.lang.reflect.Method;
 import java.security.ProtectionDomain;
 
+import org.apache.harmony.instrument.internal.nls.Messages;
+
 /**
  * Default implementation of Instrumentation
  */
@@ -87,8 +89,7 @@ public class InstrumentationImpl implements Instrumentation {
     public void redefineClasses(ClassDefinition[] definitions)
             throws ClassNotFoundException, UnmodifiableClassException {
         if (!isRedefineClassesSupported) {
-            throw new UnsupportedOperationException(
-                    "Redefinition operation is not supported!"); //$NON-NLS-1$
+            throw new UnsupportedOperationException(Messages.getString("instrument.3"));
         }
         for (int i = 0; i < definitions.length; i++) {
             if (null == definitions[i]) {
@@ -211,7 +212,7 @@ public class InstrumentationImpl implements Instrumentation {
         } catch (Exception e) {
             e.printStackTrace();
             System.err
-                    .println("Fatal error: failed to execute premain class of java agent.");
+                    .println(Messages.getString("instrument.4"));
             System.exit(1);
         }
     }
