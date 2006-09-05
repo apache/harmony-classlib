@@ -89,7 +89,7 @@ public class InstrumentationImpl implements Instrumentation {
     public void redefineClasses(ClassDefinition[] definitions)
             throws ClassNotFoundException, UnmodifiableClassException {
         if (!isRedefineClassesSupported) {
-            throw new UnsupportedOperationException(Messages.getString("instrument.3"));
+            throw new UnsupportedOperationException(Messages.getString("instrument.3")); //$NON-NLS-1$
         }
         for (int i = 0; i < definitions.length; i++) {
             if (null == definitions[i]) {
@@ -206,13 +206,13 @@ public class InstrumentationImpl implements Instrumentation {
         try {
             ClassLoader loader = ClassLoader.getSystemClassLoader();
             Class c = loader.loadClass(new String(className));
-            Method method = c.getMethod("premain", PREMAIN_SIGNATURE);
+            Method method = c.getMethod("premain", PREMAIN_SIGNATURE); //$NON-NLS-1$
             method.invoke(null, new Object[] {
                     null == options ? null : new String(options), this });
         } catch (Exception e) {
             e.printStackTrace();
             System.err
-                    .println(Messages.getString("instrument.4"));
+                    .println(Messages.getString("instrument.4")); //$NON-NLS-1$
             System.exit(1);
         }
     }

@@ -50,10 +50,10 @@ public final class ClassDefinition {
      */
     public ClassDefinition(Class<?> theClass, byte[] theClassFile) {
         if (theClass == null) {
-            throw new NullPointerException(Messages.getString("instrument.1"));
+            throw new NullPointerException(Messages.getString("instrument.1")); //$NON-NLS-1$
         }
         if (theClassFile == null) {
-            throw new NullPointerException(Messages.getString("instrument.2"));
+            throw new NullPointerException(Messages.getString("instrument.2")); //$NON-NLS-1$
         }
         this.definitionClass = theClass;
         this.definitionClassFile = theClassFile;
