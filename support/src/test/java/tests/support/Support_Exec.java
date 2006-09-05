@@ -113,7 +113,7 @@ public class Support_Exec extends TestCase {
 		System.out.println();
 		System.out.println("Exec: " + command.toString());
 
-		final Process proc = Runtime.getRuntime().exec(execArgs);
+		final Process proc = Runtime.getRuntime().exec(command.toString());
 		final StringBuffer errBuf = new StringBuffer();
 		Thread errThread = new Thread(new Runnable() {
 			public void run() {
