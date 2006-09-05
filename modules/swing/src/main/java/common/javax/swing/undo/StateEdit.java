@@ -29,9 +29,9 @@ public class StateEdit extends AbstractUndoableEdit {
 
     protected StateEditable object;
 
-    protected Hashtable preState;
+    protected Hashtable<Object, Object> preState;
 
-    protected Hashtable postState;
+    protected Hashtable<Object, Object> postState;
 
     protected String undoRedoName;
 
@@ -58,9 +58,11 @@ public class StateEdit extends AbstractUndoableEdit {
         return undoRedoName;
     }
 
-    private Hashtable initHashtable(final Hashtable ht) {
+    private Hashtable<Object, Object>
+                    initHashtable(final Hashtable<Object, Object> ht) {
+
         if (ht == null) {
-            return new Hashtable();
+            return new Hashtable<Object, Object>();
         }
         ht.clear();
         return ht;
@@ -109,4 +111,3 @@ public class StateEdit extends AbstractUndoableEdit {
     }
 
 }
-

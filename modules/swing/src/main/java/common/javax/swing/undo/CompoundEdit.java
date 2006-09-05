@@ -25,18 +25,13 @@ import java.util.Vector;
 
 public class CompoundEdit extends AbstractUndoableEdit {
 
-    protected Vector edits;
+    protected Vector<UndoableEdit> edits = new Vector<UndoableEdit>();
 
     /**
      * This is flag that indicates edits are still being added to it.
      * The method end() sets inProgress to false.
      */
-    boolean inProgress;
-
-    public CompoundEdit() {
-        edits = new Vector();
-        inProgress = true;
-    }
+    boolean inProgress = true;
 
     public boolean addEdit(final UndoableEdit anEdit) {
        if (!inProgress) {
@@ -55,7 +50,7 @@ public class CompoundEdit extends AbstractUndoableEdit {
     protected UndoableEdit lastEdit() {
         UndoableEdit last = null;
         try {
-            last = (UndoableEdit)edits.lastElement();
+            last = edits.lastElement();
         } catch (final NoSuchElementException e) {
         }
 
@@ -169,4 +164,3 @@ public class CompoundEdit extends AbstractUndoableEdit {
     }
 
 }
-

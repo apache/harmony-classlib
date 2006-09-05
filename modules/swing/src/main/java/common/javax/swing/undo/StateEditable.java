@@ -28,10 +28,9 @@ public interface StateEditable {
         + "/08 19:39:08 marklin Exp $";
 
 
-    void restoreState(final Hashtable ht);
+    void restoreState(final Hashtable<?, ?> ht);
 
 
-    void storeState(final Hashtable ht);
+    void storeState(final Hashtable<Object, Object> ht);
 
 }
-

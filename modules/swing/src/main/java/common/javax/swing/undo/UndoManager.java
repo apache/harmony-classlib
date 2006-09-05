@@ -64,7 +64,7 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
     protected void undoTo(final UndoableEdit edit) {
         int index = edits.indexOf(edit);
         for (int i = indexOfNextAdd - 1; i >= index; i--) {
-            UndoableEdit e = (UndoableEdit)edits.get(i);
+            UndoableEdit e = edits.get(i);
             e.undo();
         }
         indexOfNextAdd = index;
@@ -73,7 +73,7 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
     protected void redoTo(final UndoableEdit edit) {
         int index = edits.indexOf(edit);
         for (int i = indexOfNextAdd; i <= index; i++) {
-            UndoableEdit e = (UndoableEdit)edits.get(i);
+            UndoableEdit e = edits.get(i);
             e.redo();
         }
         indexOfNextAdd = index + 1;
@@ -82,7 +82,7 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
     protected UndoableEdit editToBeUndone() {
         // find first significant edit starting from indexOfNextAdd - 1 -> start
         for (int i = indexOfNextAdd - 1; i >= 0; i--) {
-            UndoableEdit edit = (UndoableEdit)edits.get(i);
+            UndoableEdit edit = edits.get(i);
             if (edit.isSignificant()) {
                 return edit;
             }
@@ -93,7 +93,7 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
     protected UndoableEdit editToBeRedone() {
         // find first significant edit starting from indexOfNextAdd -> end
         for (int i = indexOfNextAdd; i < edits.size(); i++) {
-            UndoableEdit edit = (UndoableEdit)edits.get(i);
+            UndoableEdit edit = edits.get(i);
             if (edit.isSignificant()) {
                 return edit;
             }
@@ -102,8 +102,6 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
     }
 
     public void undoableEditHappened(final UndoableEditEvent e) {
-        // implements just described behaviour
-        // XXX to be additionally tested
         addEdit(e.getEdit());
     }
 
@@ -160,7 +158,7 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
         // and remove all edits in the given range (inclusive) from edits
         // we must go from end to start (to -> from)
         for (int i = to; i >= from; i--) {
-            ((UndoableEdit)edits.get(i)).die();
+            edits.get(i).die();
             edits.remove(i);
         }
     }
@@ -272,7 +270,7 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
     public synchronized void discardAllEdits() {
         indexOfNextAdd = 0;
         for (int i = 0; i < edits.size(); i++) {
-            ((UndoableEdit)edits.get(i)).die();
+            edits.get(i).die();
         }
         edits.removeAllElements();
         return;
@@ -283,4 +281,3 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
     }
 
 }
-

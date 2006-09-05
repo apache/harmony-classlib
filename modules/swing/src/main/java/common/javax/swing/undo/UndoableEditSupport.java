@@ -34,7 +34,7 @@ public class UndoableEditSupport {
 
     protected CompoundEdit compoundEdit;
 
-    protected Vector       listeners;
+    protected Vector<UndoableEditListener> listeners;
 
     /**
      * Source for UndoableEditEvent
@@ -54,7 +54,7 @@ public class UndoableEditSupport {
      */
     public UndoableEditSupport(final Object source) {
         realSource = (source == null) ? this : source;
-        listeners = new Vector();
+        listeners = new Vector<UndoableEditListener>();
         updateLevel = 0;
     }
 
@@ -145,8 +145,7 @@ public class UndoableEditSupport {
     }
 
     public synchronized UndoableEditListener[] getUndoableEditListeners() {
-        return (UndoableEditListener[])listeners
-                .toArray(new UndoableEditListener[listeners.size()]);
+        return listeners.toArray(new UndoableEditListener[listeners.size()]);
     }
 
 }
