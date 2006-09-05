@@ -146,7 +146,6 @@
                 <fileset dir="${hy.nio_char.src.test.java}">
                     <include name="**/*Test.java"/>
                     <exclude name="tests/api/java/nio/charset/ASCCharsetEncoderTest.java"/>
-                    <exclude name="tests/api/java/nio/charset/CharsetEncoderTest.java"/>
                     <exclude name="tests/api/java/nio/charset/CharsetProviderTest.java"/>
                     <exclude name="tests/api/java/nio/charset/CharsetTest.java"/>
                     <!-- No public constructor? -->

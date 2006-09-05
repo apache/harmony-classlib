@@ -345,6 +345,7 @@ public abstract class CharsetEncoder {
 		CoderResult result = null;
 		while (true) {
 			result = encode(in, output, false);
+            checkCoderResult(result);
 			if (result.isUnderflow()) {
 				break;
 			} else if (result.isOverflow()) {

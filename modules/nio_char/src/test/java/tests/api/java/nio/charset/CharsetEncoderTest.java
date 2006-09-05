@@ -596,6 +596,7 @@ public class CharsetEncoderTest extends TestCase {
 		encoder.onUnmappableCharacter(CodingErrorAction.REPORT);
 		if (in != null) {
 			try {
+                // regression test for Harmony-1379
 				encoder.encode(in);
 				fail("should throw MalformedInputException");
 			} catch (MalformedInputException e) {
