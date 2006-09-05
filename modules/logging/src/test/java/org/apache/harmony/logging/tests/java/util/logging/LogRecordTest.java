@@ -28,8 +28,6 @@ import junit.framework.TestCase;
 import org.apache.harmony.testframework.serialization.SerializationTest;
 import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
-import tests.util.SerializationTester;
-
 public class LogRecordTest extends TestCase {
 
 	static final String MSG = "test msg, pls. ignore itb";
