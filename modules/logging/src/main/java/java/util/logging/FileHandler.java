@@ -215,13 +215,8 @@ public class FileHandler extends StreamHandler {
                         files[i - 1].renameTo(files[i]);
                     }
                 }
-                try {
-                    fileStream = new FileOutputStream(fileName, append);
-                    channel = fileStream.getChannel();
-                } catch(FileNotFoundException e){
-                    //invalid path name, throw exception
-                    throw e;
-                }
+                fileStream = new FileOutputStream(fileName, append);
+                channel = fileStream.getChannel();
                 /*
                  * if lock is unsupported and IOException thrown, just let the
                  * IOException throws out and exit otherwise it will go into an
@@ -229,6 +224,11 @@ public class FileHandler extends StreamHandler {
                  */
                 lock = channel.tryLock();
                 if (null == lock) {
+                    try{
+                        fileStream.close();
+                    }catch(Exception e){
+                        //ignore
+                    }
                     continue;
                 }
 				allLocks.put(fileName, lock);

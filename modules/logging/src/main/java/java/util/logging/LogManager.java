@@ -160,8 +160,6 @@ public class LogManager {
      */
     private Hashtable<String, Logger> loggers;
 
-    private Logger root;
-
     // the configuration properties
     private Properties props;
 
@@ -178,7 +176,7 @@ public class LogManager {
 		// init LogManager singleton instance
 		AccessController.doPrivileged(new PrivilegedAction<Object>() {
 			public Object run() {
-				String className = getSystemProperty("java.util.logging.manager"); //$NON-NLS-1$
+				String className = System.getProperty("java.util.logging.manager"); //$NON-NLS-1$
 				if (null != className) {
 					manager = (LogManager) getInstanceByClass(className);
 				}
@@ -194,8 +192,9 @@ public class LogManager {
 				}
 
 				// if global logger has been initialized, set root as its parent
-				if (null != Logger.global) {
-					Logger.global.setParent(manager.root);
+                Logger root = manager.getLogger("");
+				if (null != Logger.global && null != root) {
+					Logger.global.setParent(root);
 				}
 				return null;
 			}
@@ -203,7 +202,6 @@ public class LogManager {
 	}
 
     /**
-     * 
      * Default constructor. This is not public because there should be only one
      * <code>LogManager</code> instance, which can be get by
      * <code>LogManager.getLogManager(</code>. This is protected so that
@@ -282,9 +280,6 @@ public class LogManager {
         }
         addToFamilyTree(logger, name);
         loggers.put(name, logger);
-        if (name.length() == 0) {
-            root = logger;
-        }
 
         setLoggerLevel(logger, name, false);
         logger.manager = this;
@@ -319,8 +314,7 @@ public class LogManager {
                 break;
             }
         }
-        if (parent == null && parent != root) {
-            parent = root;
+        if (parent == null && null != (parent = loggers.get(""))) {
             logger.internalSetParent(parent);
         }
 
@@ -406,11 +400,6 @@ public class LogManager {
         });
     }
 
-    // get system property
-    static String getSystemProperty(final String key) {
-        return System.getProperty(key);
-    }
-
     // use SystemClassLoader to load class from system classpath
     static Object getInstanceByClass(final String className) {
         try {
@@ -430,7 +419,7 @@ public class LogManager {
         boolean needInit = true;
 
         // check config class
-        String configClassName = getSystemProperty("java.util.logging.config.class"); //$NON-NLS-1$
+        String configClassName = System.getProperty("java.util.logging.config.class"); //$NON-NLS-1$
         if (null != configClassName) {
             if (null == getInstanceByClass(configClassName)) {
                 throw new RuntimeException("Cannot instantiate " //$NON-NLS-1$
@@ -440,7 +429,7 @@ public class LogManager {
         }
         // if config class failed, check config file
         if (needInit) {
-            String configFile = getSystemProperty("java.util.logging.config.file"); //$NON-NLS-1$
+            String configFile = System.getProperty("java.util.logging.config.file"); //$NON-NLS-1$
             if (null == configFile) {
                 // if cannot find configFile, use default logging.properties
                 configFile = new StringBuilder().append(
@@ -561,6 +550,7 @@ public class LogManager {
                 l.handlers = null;
             }
         }
+        Logger root = loggers.get("");
         if (null != root) {
             root.setLevel(Level.INFO);
         }
