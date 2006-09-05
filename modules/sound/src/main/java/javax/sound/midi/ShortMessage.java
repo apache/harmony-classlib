@@ -16,6 +16,8 @@
 
 package javax.sound.midi;
 
+import org.apache.harmony.sound.internal.nls.Messages;
+
 public class ShortMessage extends MidiMessage {
 
     public static final int ACTIVE_SENSING = 254;
@@ -73,7 +75,7 @@ public class ShortMessage extends MidiMessage {
         if ((data == null) || (data.length == 0)) {
             return 0;
         } else {
-            return ((int) (data[0] & 0xFF)) % 16;
+            return data[0] & 0x0F;
         }
     }
 
@@ -84,7 +86,7 @@ public class ShortMessage extends MidiMessage {
         if ((data == null) || (data.length == 0)) {
             return 0;
         } else {
-            return ((int) (data[0] & 0xFF)) - getChannel();
+            return (data[0] & 0xFF) - getChannel();
         }
     }
 
@@ -94,7 +96,7 @@ public class ShortMessage extends MidiMessage {
         } else if (data.length < 2) {
             return 0;
         } else {
-            return (int) (data[1] & 0xFF);
+            return data[1] & 0xFF;
         }
     }
 
@@ -104,7 +106,7 @@ public class ShortMessage extends MidiMessage {
         } else if (data.length < 3) {
             return 0;
         } else {
-            return (int) (data[2] & 0xFF);
+            return data[2] & 0xFF;
         }
     }
 
@@ -130,18 +132,22 @@ public class ShortMessage extends MidiMessage {
          * - from 246 up to 255 -- return 0;
          */
         if (status < 0) {
-            throw new InvalidMidiDataException("Invalid status byte: " + status);
+            // sound.04=Invalid status byte: {0}
+            throw new InvalidMidiDataException(Messages.getString("sound.04", status)); //$NON-NLS-1$
         }
         if (((status % 256) >= 0) && ((status % 256) <= 127)) {
-            throw new InvalidMidiDataException("Invalid status byte: " + status);
+            // sound.04=Invalid status byte: {0}
+            throw new InvalidMidiDataException(Messages.getString("sound.04", status)); //$NON-NLS-1$
         }
         if (((status / 256) == 0)
                 && ((status == 240) || (status == 244) || (status == 245))) {
-            throw new InvalidMidiDataException("Invalid status byte: " + status);
+            // sound.04=Invalid status byte: {0}
+            throw new InvalidMidiDataException(Messages.getString("sound.04", status)); //$NON-NLS-1$
         }
         if (((status / 256) != 0) && ((status % 256) >= 244)
                 && ((status % 256) <= 255)) {
-            throw new InvalidMidiDataException("Invalid status byte: " + status);
+            // sound.04=Invalid status byte: {0}
+            throw new InvalidMidiDataException(Messages.getString("sound.04", status)); //$NON-NLS-1$
         }
 
         if ((status / 256) == 0) {
@@ -167,7 +173,8 @@ public class ShortMessage extends MidiMessage {
          * value of variable status is more or equals 246 and less or equals 255
          */
         if ((status < 246) || (status > 255)) {
-            throw new InvalidMidiDataException("Invalid status byte: " + status);
+            // sound.04=Invalid status byte: {0}
+            throw new InvalidMidiDataException(Messages.getString("sound.04", status)); //$NON-NLS-1$
         }
         super.setMessage(new byte[] {(byte) status}, 1);
     }
@@ -183,7 +190,8 @@ public class ShortMessage extends MidiMessage {
          * it's true.
          */
         if ((status < 246) || (status > 255)) {
-            throw new InvalidMidiDataException("Invalid status byte: " + status);
+            // sound.04=Invalid status byte: {0}
+            throw new InvalidMidiDataException(Messages.getString("sound.04", status)); //$NON-NLS-1$
         }
         super.setMessage(new byte[] {(byte) status}, 1);
     }
@@ -200,13 +208,15 @@ public class ShortMessage extends MidiMessage {
              * when this exception throw out, the value of variable command
              * should be the hexadecimal number
              */
-            throw new InvalidMidiDataException("command out of range: " + command);
+            // sound.05=command out of range: {0}
+            throw new InvalidMidiDataException(Messages.getString("sound.05", command)); //$NON-NLS-1$
         }
         /*
          * value of variable channel is more or equals 0 and less or equals 15
          */
         if ((channel < 0) || (channel > 15)) {
-            throw new InvalidMidiDataException("channel out of range: " + channel);
+            // sound.06=channel out of range: {0}
+            throw new InvalidMidiDataException(Messages.getString("sound.06", channel)); //$NON-NLS-1$
         }
         /*
          * value of data1 and data2 is more or equals 0 and less or equals 127,
@@ -215,10 +225,12 @@ public class ShortMessage extends MidiMessage {
          * case, and in other cases it return 2
          */
         if ((getDataLength(command) >= 1) && ((data1 < 0) || (data1 > 127))) {
-            throw new InvalidMidiDataException("data1 out of range: " + data1);
+            // sound.07=data1 out of range: {0}
+            throw new InvalidMidiDataException(Messages.getString("sound.07", data1)); //$NON-NLS-1$
         }
         if ((getDataLength(command) == 2) && ((data2 < 0) || (data2 > 127))) {
-            throw new InvalidMidiDataException("data2 out of range: " + data2);
+            // sound.08=data2 out of range: {0}
+            throw new InvalidMidiDataException(Messages.getString("sound.08", data2)); //$NON-NLS-1$
         }
 
         int tcom = command - (command % 16);

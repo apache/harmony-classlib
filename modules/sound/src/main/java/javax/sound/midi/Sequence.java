@@ -18,6 +18,8 @@ package javax.sound.midi;
 
 import java.util.Vector;
 
+import org.apache.harmony.sound.internal.nls.Messages;
+
 public class Sequence {
     public static final float PPQ = 0.0f;
 
@@ -43,7 +45,8 @@ public class Sequence {
                 divisionType != Sequence.SMPTE_25 &&
                 divisionType != Sequence.SMPTE_30 &&
                 divisionType != Sequence.SMPTE_30DROP ) {
-            throw new InvalidMidiDataException("Unsupported division type: " + divisionType);      
+            // sound.0B=Unsupported division type: {0}
+            throw new InvalidMidiDataException(Messages.getString("sound.0B", divisionType));       //$NON-NLS-1$
         }
         this.divisionType = divisionType;
         this.resolution = resolution;
@@ -59,7 +62,8 @@ public class Sequence {
                 divisionType != Sequence.SMPTE_25 &&
                 divisionType != Sequence.SMPTE_30 &&
                 divisionType != Sequence.SMPTE_30DROP ) {
-            throw new InvalidMidiDataException("Unsupported division type: " + divisionType);      
+            // sound.0B=Unsupported division type: {0}
+            throw new InvalidMidiDataException(Messages.getString("sound.0B", divisionType));       //$NON-NLS-1$
         }
         this.divisionType = divisionType;
         this.resolution = resolution;

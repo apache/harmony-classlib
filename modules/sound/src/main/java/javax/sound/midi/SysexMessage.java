@@ -16,6 +16,8 @@
 
 package javax.sound.midi;
 
+import org.apache.harmony.sound.internal.nls.Messages;
+
 public class SysexMessage extends MidiMessage {
     public static final int SPECIAL_SYSTEM_EXCLUSIVE = 247;
 
@@ -47,10 +49,11 @@ public class SysexMessage extends MidiMessage {
          * if this exception throw out, the value of wrong status byte
          * should be the hexadecimal value
          */
-        if((((int) (data[0] & 0xFF)) != SysexMessage.SPECIAL_SYSTEM_EXCLUSIVE) &&
-                (((int) (data[0] & 0xFF)) != SysexMessage.SYSTEM_EXCLUSIVE)) {
-            throw new InvalidMidiDataException("Invalid status byte for sysex message: " + 
-                    (int) (data[0] & 0xFF));
+        if(((data[0] & 0xFF) != SysexMessage.SPECIAL_SYSTEM_EXCLUSIVE) &&
+                ((data[0] & 0xFF) != SysexMessage.SYSTEM_EXCLUSIVE)) {
+            // sound.09=Invalid status byte for sysex message: {0}
+            throw new InvalidMidiDataException(Messages.getString("sound.09",  //$NON-NLS-1$
+                    data[0] & 0xFF));
         }
         super.setMessage(data, length);
     }
@@ -63,11 +66,13 @@ public class SysexMessage extends MidiMessage {
          */
         if((status != SysexMessage.SPECIAL_SYSTEM_EXCLUSIVE) &&
                 (status != SysexMessage.SYSTEM_EXCLUSIVE)) {
-            throw new InvalidMidiDataException("Invalid status byte for sysex message: " + 
-                    status);
+            // sound.09=Invalid status byte for sysex message: {0}
+            throw new InvalidMidiDataException(Messages.getString("sound.09",  //$NON-NLS-1$
+                    status));
         }
         if((length < 0) || (length > data.length)) {
-            throw new IndexOutOfBoundsException("length out of bounds: " + length);
+            // sound.03=length out of bounds: {0}
+            throw new IndexOutOfBoundsException(Messages.getString("sound.03", length)); //$NON-NLS-1$
         }
         byte[] bt = new byte[length + 1];
         bt[0] = (byte) status;

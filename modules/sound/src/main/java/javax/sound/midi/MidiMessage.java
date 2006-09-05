@@ -16,6 +16,8 @@
 
 package javax.sound.midi;
 
+import org.apache.harmony.sound.internal.nls.Messages;
+
 public abstract class MidiMessage implements Cloneable {
 
     protected byte[] data;
@@ -48,13 +50,14 @@ public abstract class MidiMessage implements Cloneable {
         if ((data == null) || (length == 0)) {
             return 0;
         } else {
-            return (int) (data[0] & 0xFF);
+            return data[0] & 0xFF;
         }
     }
 
     protected void setMessage(byte[] data, int length) throws InvalidMidiDataException {
         if ((length < 0) || (length > data.length)) {
-            throw new IndexOutOfBoundsException("length out of bounds: " + length);
+            // sound.03=length out of bounds: {0}
+            throw new IndexOutOfBoundsException(Messages.getString("sound.03", length)); //$NON-NLS-1$
         }
 
         this.data = new byte[length];

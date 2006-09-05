@@ -23,13 +23,13 @@ public interface Sequencer extends MidiDevice {
     int LOOP_CONTINUOUSLY = -1;
 
     class SyncMode {
-        public static final SyncMode INTERNAL_CLOCK = new SyncMode("INTERNAL_CLOCK");
+        public static final SyncMode INTERNAL_CLOCK = new SyncMode("INTERNAL_CLOCK"); //$NON-NLS-1$
 
-        public static final SyncMode MIDI_SYNC = new SyncMode("MIDI_SYNC");
+        public static final SyncMode MIDI_SYNC = new SyncMode("MIDI_SYNC"); //$NON-NLS-1$
 
-        public static final SyncMode MIDI_TIME_CODE = new SyncMode("MIDI_TIME_CODE");
+        public static final SyncMode MIDI_TIME_CODE = new SyncMode("MIDI_TIME_CODE"); //$NON-NLS-1$
 
-        public static final SyncMode NO_SYNC = new SyncMode("NO_SYNC");
+        public static final SyncMode NO_SYNC = new SyncMode("NO_SYNC"); //$NON-NLS-1$
 
         private String name;
 

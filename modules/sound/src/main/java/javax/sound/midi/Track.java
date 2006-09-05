@@ -18,6 +18,8 @@ package javax.sound.midi;
 
 import java.util.ArrayList;
 
+import org.apache.harmony.sound.internal.nls.Messages;
+
 public class Track {
     private ArrayList<MidiEvent> events; //vector of events contain in the Track
     
@@ -88,7 +90,8 @@ public class Track {
         if (events.size() == 0) {
             events.add(new MidiEvent(new MetaMessage(new byte[] {-1, 47, 0}), 0));
             badEvent = event;
-            throw new ArrayIndexOutOfBoundsException("-1");
+            // sounds.01=-1
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("sound.01")); //$NON-NLS-1$
         } else {
             byte[] bt = events.get(events.size() - 1).getMessage().getMessage();
             if ((bt[0] != -1) && (bt[1] != 47) && (bt[2] != 0)) {
@@ -126,8 +129,8 @@ public class Track {
 
     public MidiEvent get(int index) throws ArrayIndexOutOfBoundsException {
         if (index < 0 || index >= events.size()) {
-            throw new ArrayIndexOutOfBoundsException("Index: " + index + ", Size: " + 
-                    events.size());
+            // sound.02=Index: {0}, Size: {1}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("sound.02", index, events.size()));  //$NON-NLS-1$
         }
         return events.get(index);
     }

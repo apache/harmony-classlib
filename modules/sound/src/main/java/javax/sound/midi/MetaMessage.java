@@ -16,6 +16,8 @@
 
 package javax.sound.midi;
 
+import org.apache.harmony.sound.internal.nls.Messages;
+
 public class MetaMessage extends MidiMessage {
     public static final int META = 255;
     
@@ -58,7 +60,7 @@ public class MetaMessage extends MidiMessage {
 
     public int getType() {
         if ((super.data != null) && (super.length >= 2)) {
-            return (int) (super.data[1] & 0xFF);
+            return super.data[1] & 0xFF;
         } else {
             return 0;
         }
@@ -66,10 +68,12 @@ public class MetaMessage extends MidiMessage {
 
     public void setMessage(int type, byte[] data, int length) throws InvalidMidiDataException {
         if (type < 0 || type >= 128) {
-            throw new InvalidMidiDataException("Invalid meta event with type " + type);
+            // sound.0A=Invalid meta event with type {0}
+            throw new InvalidMidiDataException(Messages.getString("sound.0A", type)); //$NON-NLS-1$
         }
         if (length < 0 || (data != null && length > data.length)) {
-            throw new InvalidMidiDataException("length out of bounds: " + length);
+            // sound.03=length out of bounds: {0}
+            throw new InvalidMidiDataException(Messages.getString("sound.03", length)); //$NON-NLS-1$
         }
         try {
             if (data == null) {
