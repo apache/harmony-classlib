@@ -230,10 +230,10 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
     }
     
     @Override
-    void addRange(E start, E end) {
+    void setRange(E start, E end) {
         int length = end.ordinal() - start.ordinal() + 1;
         long range = (-1l >>> (MAX_ELEMENTS - length)) << start.ordinal();
         bits |= range;
-        size += length;
+        size = Long.bitCount(bits);
     }
 }
