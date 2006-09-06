@@ -15,9 +15,7 @@
 
 package org.apache.harmony.prefs.tests.java.util.prefs;
 
-import java.io.ByteArrayOutputStream;
 import java.io.NotSerializableException;
-import java.io.ObjectOutputStream;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.Preferences;
 
@@ -79,8 +77,7 @@ public class PreferenceChangeEventTest extends TestCase {
         event = new PreferenceChangeEvent(Preferences.userRoot(), "key",
                 "value");
         try {
-            SerializationTest.putObjectToStream(event, new ObjectOutputStream(
-                    new ByteArrayOutputStream()));
+            SerializationTest.copySerializable(event);
             fail("No expected NotSerializableException");
         } catch (NotSerializableException e) {
         }

@@ -15,9 +15,7 @@
 
 package org.apache.harmony.prefs.tests.java.util.prefs;
 
-import java.io.ByteArrayOutputStream;
 import java.io.NotSerializableException;
-import java.io.ObjectOutputStream;
 import java.util.prefs.NodeChangeEvent;
 import java.util.prefs.Preferences;
 
@@ -58,8 +56,7 @@ public class NodeChangeEventTest extends TestCase {
         event = new NodeChangeEvent(Preferences.systemRoot(), null);
 
         try {
-            SerializationTest.putObjectToStream(event, new ObjectOutputStream(
-                    new ByteArrayOutputStream()));
+            SerializationTest.copySerializable(event);
             fail("No expected NotSerializableException");
         } catch (NotSerializableException e) {
         }

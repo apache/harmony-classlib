@@ -21,7 +21,6 @@
 
 package org.apache.harmony.security.tests.java.security.serialization;
 
-import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.security.GuardedObject;
 
@@ -52,8 +51,7 @@ public class GuardedObjectTest extends SerializationTest implements
 
     public void testDisableGuard() throws Throwable {
         try {
-            putObjectToStream(new GuardedObject(null, new MyGuard(false)),
-                    new ByteArrayOutputStream());
+            copySerializable(new GuardedObject(null, new MyGuard(false)));
             fail("Should not serialize if guard denies access");
         }
         catch (SecurityException ok) {}
