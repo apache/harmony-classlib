@@ -909,10 +909,11 @@ public abstract class URLConnection {
 	 * 
 	 * @param newValue
 	 *            number of milliseconds since epoch
+     * @throws IllegalStateException if already connected.
 	 */
 	public void setIfModifiedSince(long newValue) {
 		if (connected) {
-			throw new IllegalAccessError(Msg.getString("K0037"));
+			throw new IllegalStateException(Msg.getString("K0037"));
 		}
 		this.ifModifiedSince = newValue;
 	}
