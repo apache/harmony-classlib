@@ -96,9 +96,8 @@ public class PropertyEditorManager {
                     try {
                         editorClass = Class.forName(editorClassName, true,
                                 loader);
-                    } catch (ClassNotFoundException cnfe2) {} catch (Exception e) {
                         break;
-                    }
+                    } catch (Exception e) {}
                 }
             } catch (Exception e) {}
         }

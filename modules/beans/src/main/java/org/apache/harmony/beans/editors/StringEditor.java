@@ -42,4 +42,8 @@ public class StringEditor extends PropertyEditorSupport {
     public StringEditor() {
         super();
     }
+    
+    public void setAsText(String text){
+        setValue(text);
+    }
 }
