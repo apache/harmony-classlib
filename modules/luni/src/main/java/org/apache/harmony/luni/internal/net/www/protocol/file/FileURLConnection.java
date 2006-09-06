@@ -15,7 +15,6 @@
 
 package org.apache.harmony.luni.internal.net.www.protocol.file;
 
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,7 +28,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import org.apache.harmony.luni.internal.net.www.MimeTable;
-
+import org.apache.harmony.luni.util.Util;
 
 /**
  * This subclass extends <code>URLConnection</code>.
@@ -39,147 +38,159 @@ import org.apache.harmony.luni.internal.net.www.MimeTable;
  */
 public class FileURLConnection extends URLConnection {
 
-	String fileName;
+    String fileName;
 
-	private InputStream is;
+    private InputStream is;
 
-	private int length = -1;
+    private int length = -1;
 
-	private boolean isDir = false;
+    private boolean isDir;
 
-	private FilePermission permission;
+    private FilePermission permission;
 
-	/**
-	 * Creates an instance of <code>FileURLConnection</code> for establishing
-	 * a connection to the file pointed by this <code>URL<code>
-	 *
-	 * @param 		url 		The URL this connection is connected to
-	 */
-	public FileURLConnection(URL url) {
-		super(url);
-		if ((fileName = url.getFile()) == null)
-			fileName = "";
-		String host = url.getHost();
-		if (host != null && host.length() > 0)
-			fileName = "//" + host + fileName;
-		fileName = org.apache.harmony.luni.util.Util.decode(fileName, false);
-	}
+    /**
+     * Creates an instance of <code>FileURLConnection</code> for establishing
+     * a connection to the file pointed by this <code>URL<code>
+     *
+     * @param url The URL this connection is connected to
+     */
+    public FileURLConnection(URL url) {
+        super(url);
+        if ((fileName = url.getFile()) == null) {
+            fileName = "";
+        }
+        String host = url.getHost();
+        if (host != null && host.length() > 0) {
+            fileName = "//" + host + fileName;
+        }
+        fileName = Util.decode(fileName, false);
+    }
 
-	/**
-	 * This methods will attempt to obtain the input stream of the file pointed
-	 * by this <code>URL</code>. If the file is a directory, it will return
-	 * that directory listing as an input stream.
-	 * 
-	 * @throws IOException
-	 *             if an IO error occurs while connecting
-	 */
-	public void connect() throws IOException {
-		File f = new File(fileName);
-		if (f.isDirectory()) {
-			isDir = true;
-			is = getDirectoryListing(f);
-			// use -1 for the contentLength
-		} else {
-			is = new BufferedInputStream(new FileInputStream(f));
-			length = is.available();
-		}
-		connected = true;
-	}
+    /**
+     * This methods will attempt to obtain the input stream of the file pointed
+     * by this <code>URL</code>. If the file is a directory, it will return
+     * that directory listing as an input stream.
+     * 
+     * @throws IOException if an IO error occurs while connecting
+     */
+    @Override
+    public void connect() throws IOException {
+        File f = new File(fileName);
+        if (f.isDirectory()) {
+            isDir = true;
+            is = getDirectoryListing(f);
+            // use -1 for the contentLength
+        } else {
+            is = new BufferedInputStream(new FileInputStream(f));
+            length = is.available();
+        }
+        connected = true;
+    }
 
-	/**
-	 * Answers the length of the file in bytes.
-	 * 
-	 * @return the length of the file
-	 * 
-	 * @see #getContentType()
-	 */
-	public int getContentLength() {
-		try {
-			if (!connected)
-				connect();
-		} catch (IOException e) {
-			// default is -1
-		}
-		return length;
-	}
+    /**
+     * Answers the length of the file in bytes.
+     * 
+     * @return the length of the file
+     * 
+     * @see #getContentType()
+     */
+    @Override
+    public int getContentLength() {
+        try {
+            if (!connected) {
+                connect();
+            }
+        } catch (IOException e) {
+            // default is -1
+        }
+        return length;
+    }
 
-	/**
-	 * Answers the content type of the resource. Just takes a guess based on the
-	 * name.
-	 * 
-	 * @return the content type
-	 */
-	public String getContentType() {
-		try {
-			if (!connected)
-				connect();
-		} catch (IOException e) {
-			return MimeTable.UNKNOWN;
-		}
-		if (isDir)
-			return "text/html";
-		String result = guessContentTypeFromName(url.getFile());
-		if (result == null)
-			return MimeTable.UNKNOWN;
-		return result;
-	}
+    /**
+     * Answers the content type of the resource. Just takes a guess based on the
+     * name.
+     * 
+     * @return the content type
+     */
+    @Override
+    public String getContentType() {
+        try {
+            if (!connected) {
+                connect();
+            }
+        } catch (IOException e) {
+            return MimeTable.UNKNOWN;
+        }
+        if (isDir) {
+            return "text/html";
+        }
+        String result = guessContentTypeFromName(url.getFile());
+        if (result == null) {
+            return MimeTable.UNKNOWN;
+        }
+        return result;
+    }
 
-	/**
-	 * Answers the directory listing of the file component as an input stream.
-	 * 
-	 * @return the input stream of the directory listing
-	 */
-	private InputStream getDirectoryListing(File f) {
-		String fileList[] = f.list();
-		ByteArrayOutputStream bytes = new java.io.ByteArrayOutputStream();
-		PrintStream out = new PrintStream(bytes);
-		out.print("<title>Directory Listing</title>\n");
-		out.print("<base href=\"file:");
-		out.print(f.getPath().replace('\\', '/') + "/\"><h1>" + f.getPath()
-				+ "</h1>\n<hr>\n");
-		int i;
-		for (i = 0; i < fileList.length; i++)
-			out.print(fileList[i] + "<br>\n");
-		out.close();
-		return new ByteArrayInputStream(bytes.toByteArray());
-	}
+    /**
+     * Answers the directory listing of the file component as an input stream.
+     * 
+     * @return the input stream of the directory listing
+     */
+    private InputStream getDirectoryListing(File f) {
+        String fileList[] = f.list();
+        ByteArrayOutputStream bytes = new java.io.ByteArrayOutputStream();
+        PrintStream out = new PrintStream(bytes);
+        out.print("<title>Directory Listing</title>\n");
+        out.print("<base href=\"file:");
+        out.print(f.getPath().replace('\\', '/') + "/\"><h1>" + f.getPath() + "</h1>\n<hr>\n");
+        int i;
+        for (i = 0; i < fileList.length; i++) {
+            out.print(fileList[i] + "<br>\n");
+        }
+        out.close();
+        return new ByteArrayInputStream(bytes.toByteArray());
+    }
 
-	/**
-	 * Answers the input stream of the object refered to by this
-	 * <code>URLConnection</code>
-	 * 
-	 * File Sample : "/ZIP211/+/ibm/tools/javac/resources/javac.properties"
-	 * Invalid File Sample: "/ZIP/+/ibm/tools/javac/resources/javac.properties"
-	 * "ZIP211/+/ibm/tools/javac/resources/javac.properties"
-	 * 
-	 * @return input stream of the object
-	 * 
-	 * @throws IOException
-	 *             if an IO error occurs
-	 */
-	public InputStream getInputStream() throws IOException {
-		if (!connected)
-			connect();
-		return is;
-	}
+    /**
+     * Answers the input stream of the object referred to by this
+     * <code>URLConnection</code>
+     * 
+     * File Sample : "/ZIP211/+/harmony/tools/javac/resources/javac.properties"
+     * Invalid File Sample:
+     * "/ZIP/+/harmony/tools/javac/resources/javac.properties"
+     * "ZIP211/+/harmony/tools/javac/resources/javac.properties"
+     * 
+     * @return input stream of the object
+     * 
+     * @throws IOException if an IO error occurs
+     */
+    @Override
+    public InputStream getInputStream() throws IOException {
+        if (!connected) {
+            connect();
+        }
+        return is;
+    }
 
-	/**
-	 * Answers the permission, in this case the subclass, FilePermission object
-	 * which represents the permission necessary for this URLConnection to
-	 * establish the connection.
-	 * 
-	 * @return the permission required for this URLConnection.
-	 * 
-	 * @exception IOException
-	 *                if an IO exception occurs while creating the permission.
-	 */
-	public java.security.Permission getPermission() throws IOException {
-		if (permission == null) {
-			String path = fileName;
-			if (File.separatorChar != '/')
-				path = path.replace('/', File.separatorChar);
-			permission = new FilePermission(path, new String("read"));
-		}
-		return permission;
-	}
+    /**
+     * Answers the permission, in this case the subclass, FilePermission object
+     * which represents the permission necessary for this URLConnection to
+     * establish the connection.
+     * 
+     * @return the permission required for this URLConnection.
+     * 
+     * @throws IOException if an IO exception occurs while creating the
+     *         permission.
+     */
+    @Override
+    public java.security.Permission getPermission() throws IOException {
+        if (permission == null) {
+            String path = fileName;
+            if (File.separatorChar != '/') {
+                path = path.replace('/', File.separatorChar);
+            }
+            permission = new FilePermission(path, new String("read"));
+        }
+        return permission;
+    }
 }
