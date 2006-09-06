@@ -1,4 +1,4 @@
-/* Copyright 2004, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ jdouble internal_exp (jdouble arg1);
 jdouble internal_tan (jdouble arg1);
 jdouble internal_sin (jdouble arg1);
 jdouble internal_rint (jdouble arg1);
+jdouble internal_cbrt (jdouble arg1);
 
 extern scaleUpDouble (double *, int);
 
@@ -87,6 +88,16 @@ internal_atan2 (jdouble arg1, jdouble arg2)
   jdouble result;
 
   result = fdlibm_atan2 (arg1, arg2);
+
+  return result;
+}
+
+jdouble
+internal_cbrt (jdouble arg1)
+{
+  jdouble result;
+
+  result = fdlibm_cbrt (arg1);
 
   return result;
 }
@@ -237,6 +248,18 @@ Java_java_lang_Math_atan2 (JNIEnv * env, jclass jclazz, jdouble arg1,
                            jdouble arg2)
 {
   return internal_atan2 (arg1, arg2);
+}
+
+jdouble JNICALL
+Java_java_lang_StrictMath_cbrt (JNIEnv * env, jclass jclazz, jdouble arg1)
+{
+  return internal_cbrt (arg1);
+}
+
+jdouble JNICALL
+Java_java_lang_Math_cbrt (JNIEnv * env, jclass jclazz, jdouble arg1)
+{
+  return internal_cbrt (arg1);
 }
 
 jdouble JNICALL

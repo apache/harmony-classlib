@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -129,6 +129,17 @@ public final class Math {
 	 * @return the arc tangent of d1/d2.
 	 */
 	public static native double atan2(double d1, double d2);
+    
+    /**
+     * Answers the closest double approximation of the cube root of the
+     * argument. The final result should be within 1ulp of the one returned by
+     * StrictMath.
+     * 
+     * @param d
+     *            the value to compute cube root of
+     * @return the cube root of the argument.
+     */
+    public static native double cbrt(double d);
 
 	/**
 	 * Answers the double conversion of the most negative (i.e. closest to

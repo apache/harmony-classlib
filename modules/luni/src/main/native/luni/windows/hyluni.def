@@ -87,6 +87,7 @@ EXPORTS
 	Java_java_lang_Math_asin
 	Java_java_lang_Math_atan
 	Java_java_lang_Math_atan2
+	Java_java_lang_Math_cbrt
 	Java_java_lang_Math_ceil
 	Java_java_lang_Math_cos
 	Java_java_lang_Math_exp
@@ -103,6 +104,7 @@ EXPORTS
 	Java_java_lang_StrictMath_asin
 	Java_java_lang_StrictMath_atan
 	Java_java_lang_StrictMath_atan2
+	Java_java_lang_StrictMath_cbrt
 	Java_java_lang_StrictMath_ceil
 	Java_java_lang_StrictMath_cos
 	Java_java_lang_StrictMath_exp

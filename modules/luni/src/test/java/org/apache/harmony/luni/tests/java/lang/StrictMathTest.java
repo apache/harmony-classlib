@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -108,6 +108,46 @@ public class StrictMathTest extends junit.framework.TestCase {
 		assertTrue("Returned incorrect arc tangent: " + answer, answer <= 1.0
 				&& answer >= 9.9999999999999983E-1);
 	}
+    
+    /**
+     * @tests java.lang.StrictMath#cbrt(double)
+     */
+    @SuppressWarnings("boxing")
+    public void test_cbrt_D() {
+        // Test for special situations
+        assertEquals("Should return Double.NaN", Double.NaN, StrictMath
+                .cbrt(Double.NaN));
+        assertEquals("Should return Double.POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, StrictMath
+                        .cbrt(Double.POSITIVE_INFINITY));
+        assertEquals("Should return Double.NEGATIVE_INFINITY",
+                Double.NEGATIVE_INFINITY, StrictMath
+                        .cbrt(Double.NEGATIVE_INFINITY));
+        assertEquals("Should return 0.0", 0.0, StrictMath.cbrt(0.0));
+        assertEquals("Should return +0.0", +0.0, StrictMath.cbrt(+0.0));
+        assertEquals("Should return -0.0", -0.0, StrictMath.cbrt(-0.0));
+
+        assertEquals("Should return 3.0", 3.0, StrictMath.cbrt(27.0));
+        assertEquals("Should return 23.111993172558684", 23.111993172558684,
+                StrictMath.cbrt(12345.6));
+        assertEquals("Should return 5.643803094122362E102",
+                5.643803094122362E102, StrictMath.cbrt(Double.MAX_VALUE));
+        assertEquals("Should return 0.01", 0.01, StrictMath.cbrt(0.000001));
+
+        assertEquals("Should return -3.0", -3.0, StrictMath.cbrt(-27.0));
+        assertEquals("Should return -23.111993172558684", -23.111993172558684,
+                StrictMath.cbrt(-12345.6));
+        assertEquals("Should return 1.7031839360032603E-108",
+                1.7031839360032603E-108, StrictMath.cbrt(Double.MIN_VALUE));
+        assertEquals("Should return -0.01", -0.01, StrictMath.cbrt(-0.000001));
+        
+        try{
+            StrictMath.cbrt((Double)null);
+            fail("Should throw NullPointerException");
+        }catch(NullPointerException e){
+            //expected
+        }
+    }
 
 	/**
 	 * @tests java.lang.StrictMath#ceil(double)
