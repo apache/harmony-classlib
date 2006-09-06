@@ -30,6 +30,8 @@ import java.security.Principal;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.harmony.auth.internal.nls.Messages;
+
 /** 
  * @com.intel.drl.spec_ref 
  *
@@ -43,7 +45,7 @@ public final class PrivateCredentialPermission extends Permission {
     private static final long serialVersionUID = 5284372143517237068L;
 
     // allowed action
-    private static final String READ = "read";
+    private static final String READ = "read"; //$NON-NLS-1$
 
     /** 
      * @com.intel.drl.spec_ref 
@@ -70,21 +72,20 @@ public final class PrivateCredentialPermission extends Permission {
     private void initTargetName(String name) {
 
         if (name == null) {
-            throw new NullPointerException("target name is null");
+            throw new NullPointerException(Messages.getString("auth.0E")); //$NON-NLS-1$
         }
 
         // check empty string
         name = name.trim();
         if (name.length() == 0) {
-            throw new IllegalArgumentException("target name has a length of 0");
+            throw new IllegalArgumentException(Messages.getString("auth.0F")); //$NON-NLS-1$
         }
 
         // get CredentialClass
         int beg = name.indexOf(' ');
         if (beg == -1) {
             throw new IllegalArgumentException(
-                    "Target name MUST have the following syntax: "
-                            + "CredentialClass 1*(PrincipalClass \"PrincipalName\")");
+                    Messages.getString("auth.10")); //$NON-NLS-1$
         }
         this.credentialClass = name.substring(0, beg);
 
@@ -98,16 +99,14 @@ public final class PrivateCredentialPermission extends Permission {
 
             if (i == -1 || j == -1 || name.charAt(i + 1) != '"') {
                 throw new IllegalArgumentException(
-                        "Target name MUST have the following syntax: "
-                                + "CredentialClass 1*(PrincipalClass \"PrincipalName\")");
+                        Messages.getString("auth.10")); //$NON-NLS-1$
             }
         }
 
         // name MUST have one pair at least
         if (count < 1) {
             throw new IllegalArgumentException(
-                    "Target name MUST have the following syntax: "
-                            + "CredentialClass 1*(PrincipalClass \"PrincipalName\")");
+                    Messages.getString("auth.10")); //$NON-NLS-1$
         }
 
         beg = name.indexOf(' ');
@@ -157,7 +156,7 @@ public final class PrivateCredentialPermission extends Permission {
         if (READ.equalsIgnoreCase(action)) {
             initTargetName(name);
         } else {
-            throw new IllegalArgumentException("Action must be \"read\" only");
+            throw new IllegalArgumentException(Messages.getString("auth.11")); //$NON-NLS-1$
         }
     }
 
@@ -261,7 +260,7 @@ public final class PrivateCredentialPermission extends Permission {
 
         PrivateCredentialPermission that = (PrivateCredentialPermission) permission;
 
-        if (!("*".equals(this.credentialClass) || this.credentialClass
+        if (!("*".equals(this.credentialClass) || this.credentialClass //$NON-NLS-1$
                 .equals(that.getCredentialClass()))) {
             return false;
         }
@@ -347,18 +346,17 @@ public final class PrivateCredentialPermission extends Permission {
         // Creates a new CredOwner with the specified Principal Class and Principal Name 
         CredOwner(String principalClass, String principalName) {
 
-            if ("*".equals(principalClass)) {
+            if ("*".equals(principalClass)) { //$NON-NLS-1$
                 isClassWildcard = true;
             }
 
-            if ("*".equals(principalName)) {
+            if ("*".equals(principalName)) { //$NON-NLS-1$
                 isPNameWildcard = true;
             }
 
             if (isClassWildcard && !isPNameWildcard) {
                 throw new IllegalArgumentException(
-                        "invalid syntax: Principal Class can not be a wildcard (*)"
-                                + "value if Principal Name is not a wildcard (*) value");
+                        Messages.getString("auth.12")); //$NON-NLS-1$
             }
 
             this.principalClass = principalClass;

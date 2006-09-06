@@ -89,7 +89,7 @@ public class SaslException extends IOException {
             return super.toString();
         } else {
             StringBuffer sb = new StringBuffer(super.toString());
-            sb.append(", caused by: ");
+            sb.append(", caused by: "); //$NON-NLS-1$
             sb.append(_exception.toString());
             return sb.toString();
         }

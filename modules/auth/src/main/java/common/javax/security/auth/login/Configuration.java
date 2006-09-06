@@ -37,14 +37,14 @@ public abstract class Configuration {
     
     // creates a AuthPermission object with a specify property
     private static final AuthPermission GET_LOGIN_CONFIGURATION = new AuthPermission(
-            "getLoginConfiguration"); 
+            "getLoginConfiguration");  //$NON-NLS-1$
 
     // creates a AuthPermission object with a specify property
     private static final AuthPermission SET_LOGIN_CONFIGURATION = new AuthPermission(
-            "setLoginConfiguration");
+            "setLoginConfiguration"); //$NON-NLS-1$
     
     // Key to security properties, defining default configuration provider.
-    private static final String LOGIN_CONFIGURATION_PROVIDER = "login.configuration.provider";
+    private static final String LOGIN_CONFIGURATION_PROVIDER = "login.configuration.provider"; //$NON-NLS-1$
     
     /**
      * @com.intel.drl.spec_ref

@@ -33,6 +33,8 @@ import java.util.Enumeration;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 
+import org.apache.harmony.auth.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  */
@@ -54,7 +56,7 @@ public final class DelegationPermission extends BasicPermission implements
         // length MUST be at least 7 characters
         if (length < 7) {
             throw new IllegalArgumentException(
-                    "Name must have the following syntax: \"subordinate service\" \"target service \"");
+                    Messages.getString("auth.20")); //$NON-NLS-1$
 
         }
 
@@ -66,7 +68,7 @@ public final class DelegationPermission extends BasicPermission implements
                 || trName.charAt(index + 2) != '"'
                 || trName.charAt(trName.length() - 1) != '"') {
             throw new IllegalArgumentException(
-                    "Name must have the following syntax: \"subordinate service\" \"target service \"");
+                    Messages.getString("auth.20")); //$NON-NLS-1$
         }
         return trName;
     }
@@ -155,7 +157,7 @@ class KrbDelegationPermissionCollection extends PermissionCollection implements
     private transient int offset;
 
     private static final ObjectStreamField[] serialPersistentFields = { new ObjectStreamField(
-            "permissions", Vector.class) };
+            "permissions", Vector.class) }; //$NON-NLS-1$
 
     //initialization of a collection
     KrbDelegationPermissionCollection() {
@@ -167,12 +169,11 @@ class KrbDelegationPermissionCollection extends PermissionCollection implements
     public void add(Permission permission) {
 
         if (isReadOnly()) {
-            throw new SecurityException("collection is read-only");
+            throw new SecurityException(Messages.getString("auth.21")); //$NON-NLS-1$
         }
 
         if (permission == null || !(permission instanceof DelegationPermission)) {
-            throw new IllegalArgumentException("invalid permission: "
-                    + permission);
+            throw new IllegalArgumentException(Messages.getString("auth.22", permission)); //$NON-NLS-1$
         }
         synchronized (this) {
             if (offset == items.length) {
@@ -231,7 +232,7 @@ class KrbDelegationPermissionCollection extends PermissionCollection implements
             }
         }
         ObjectOutputStream.PutField fields = out.putFields();
-        fields.put("permissions", permissions);
+        fields.put("permissions", permissions); //$NON-NLS-1$
         out.writeFields();
     }
 
@@ -239,12 +240,12 @@ class KrbDelegationPermissionCollection extends PermissionCollection implements
     private void readObject(java.io.ObjectInputStream in) throws IOException,
             ClassNotFoundException {
         ObjectInputStream.GetField fields = in.readFields();
-        Vector permissions = (Vector) fields.get("permissions", null);
+        Vector permissions = (Vector) fields.get("permissions", null); //$NON-NLS-1$
         items = new DelegationPermission[permissions.size() * 2];
         for (offset = 0; offset < items.length / 2;) {
             Object obj = permissions.get(offset);
             if (obj == null || !(obj instanceof DelegationPermission)) {
-                throw new IllegalArgumentException("invalid permission: " + obj);
+                throw new IllegalArgumentException(Messages.getString("auth.22", obj)); //$NON-NLS-1$
             }
             items[offset++] = (DelegationPermission) obj;
         }

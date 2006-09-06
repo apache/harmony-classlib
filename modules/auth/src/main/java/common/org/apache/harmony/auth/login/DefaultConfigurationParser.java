@@ -37,6 +37,7 @@ import java.util.Properties;
 
 import javax.security.auth.login.AppConfigurationEntry;
 
+import org.apache.harmony.auth.internal.nls.Messages;
 import org.apache.harmony.security.fortress.PolicyUtils;
 
 
@@ -119,17 +120,16 @@ public class DefaultConfigurationParser {
                 entriesList.add(entry);
 
                 if (debug) {
-                   System.out.println("loginModuleName: " + loginModuleName);
-                   System.out.println("flag: " + flag.toString());
-                   System.out.println("options: " + options.toString());
+                   System.out.println("loginModuleName: " + loginModuleName); //$NON-NLS-1$
+                   System.out.println("flag: " + flag.toString()); //$NON-NLS-1$
+                   System.out.println("options: " + options.toString()); //$NON-NLS-1$
                 }
             }
             hasToken(st, '}');
             hasToken(st, ';');
         
             if (newConfig.containsKey(appName)) {
-                throw new InvalidFormatException("\n\tApplication name" + " ["
-                    + appName + "] " + "already exists");
+                throw new InvalidFormatException(Messages.getString("auth.4B", appName)); //$NON-NLS-1$
             } 
             newConfig.put(appName, entriesList);
         }
@@ -146,14 +146,13 @@ public class DefaultConfigurationParser {
         throws IOException, InvalidFormatException {
 
         if (st.ttype != StreamTokenizer.TT_WORD) {
-            throw new InvalidFormatException("\n\tInvalid application name "
-                                         + st.toString());
+            throw new InvalidFormatException(Messages.getString("auth.4C",st.toString())); //$NON-NLS-1$
         }
 
         String appName = st.sval;
 
         if (debug) {
-            System.out.println("\nAppname: " + appName);
+            System.out.println(Messages.getString("auth.4D", appName)); //$NON-NLS-1$
         }
         st.nextToken();
 
@@ -167,8 +166,7 @@ public class DefaultConfigurationParser {
         throws IOException, InvalidFormatException {
 
         if (st.ttype != StreamTokenizer.TT_WORD) {
-            throw new InvalidFormatException("\n\tInvalid LoginModule name "
-                                         + st.toString());
+            throw new InvalidFormatException(Messages.getString("auth.4E", st.toString())); //$NON-NLS-1$
         }
         return st.sval;
     }
@@ -181,16 +179,16 @@ public class DefaultConfigurationParser {
 
         st.nextToken();
 
-        if ("required".equalsIgnoreCase(st.sval)) {
+        if ("required".equalsIgnoreCase(st.sval)) { //$NON-NLS-1$
             return AppConfigurationEntry.LoginModuleControlFlag.REQUIRED;
-        } else if ("requisite".equalsIgnoreCase(st.sval)) {
+        } else if ("requisite".equalsIgnoreCase(st.sval)) { //$NON-NLS-1$
             return AppConfigurationEntry.LoginModuleControlFlag.REQUISITE;
-        } else if ("optional".equalsIgnoreCase(st.sval)) {
+        } else if ("optional".equalsIgnoreCase(st.sval)) { //$NON-NLS-1$
             return AppConfigurationEntry.LoginModuleControlFlag.OPTIONAL;
-        } else if ("sufficient".equalsIgnoreCase(st.sval)) {
+        } else if ("sufficient".equalsIgnoreCase(st.sval)) { //$NON-NLS-1$
             return AppConfigurationEntry.LoginModuleControlFlag.SUFFICIENT;
         } else {
-            throw new InvalidFormatException("\n\tInvalid control flag: " + st.sval);
+            throw new InvalidFormatException(Messages.getString("auth.4F", st.sval)); //$NON-NLS-1$
         }
     }
 
@@ -222,11 +220,10 @@ public class DefaultConfigurationParser {
                     }
                 } else {
                     throw new InvalidFormatException(
-                        "\n\tInvalid options format " + st.toString());
+                        Messages.getString("auth.50", st.toString())); //$NON-NLS-1$
                 }
             } else {
-                throw new InvalidFormatException("\n\tInvalid options format "
-                    + st.toString());
+                throw new InvalidFormatException(Messages.getString("auth.50", st.toString())); //$NON-NLS-1$
             }
 
             if (key != null && val != null) {
@@ -247,8 +244,7 @@ public class DefaultConfigurationParser {
         if (st.ttype == ttype) {
             st.nextToken();
         } else {
-            throw new InvalidFormatException("\n\tInvalid token: "
-                + st.toString());
+            throw new InvalidFormatException(Messages.getString("auth.51", st.toString())); //$NON-NLS-1$
         }
     }
 

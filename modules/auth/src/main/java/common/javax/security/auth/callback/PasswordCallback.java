@@ -24,6 +24,8 @@ package javax.security.auth.callback;
 import java.io.Serializable;
 import java.util.Arrays;
 
+import org.apache.harmony.auth.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  *
@@ -53,7 +55,7 @@ public class PasswordCallback implements Callback, Serializable {
     // sets the prompt
     private void setPrompt(String prompt) throws IllegalArgumentException {
         if (prompt == null || prompt.length() == 0) {
-            throw new IllegalArgumentException("Invalid prompt");
+            throw new IllegalArgumentException(Messages.getString("auth.14")); //$NON-NLS-1$
         }
         this.prompt = prompt;
     }

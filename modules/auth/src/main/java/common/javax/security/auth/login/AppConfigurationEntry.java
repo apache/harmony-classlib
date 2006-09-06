@@ -24,6 +24,8 @@ package javax.security.auth.login;
 import java.util.Collections;
 import java.util.Map;
 
+import org.apache.harmony.auth.internal.nls.Messages;
+
 /** 
  * @com.intel.drl.spec_ref 
  */
@@ -48,15 +50,15 @@ public class AppConfigurationEntry {
 
         if (loginModuleName == null || loginModuleName.length() == 0) {
             throw new IllegalArgumentException(
-                    "name of the LoginModule is null or has a length of 0");
+                    Messages.getString("auth.26")); //$NON-NLS-1$
         }
 
         if (controlFlag == null) {
-            throw new IllegalArgumentException("invalid control flag");
+            throw new IllegalArgumentException(Messages.getString("auth.27")); //$NON-NLS-1$
         }
 
         if (options == null) {
-            throw new IllegalArgumentException("invalid options");
+            throw new IllegalArgumentException(Messages.getString("auth.1A")); //$NON-NLS-1$
         }
 
         this.loginModuleName = loginModuleName;
@@ -97,25 +99,25 @@ public class AppConfigurationEntry {
          * @com.intel.drl.spec_ref 
          */
         public static final LoginModuleControlFlag REQUIRED = new LoginModuleControlFlag(
-                "LoginModuleControlFlag: required");
+                "LoginModuleControlFlag: required"); //$NON-NLS-1$
 
         /** 
          * @com.intel.drl.spec_ref 
          */
         public static final LoginModuleControlFlag REQUISITE = new LoginModuleControlFlag(
-                "LoginModuleControlFlag: requisite");
+                "LoginModuleControlFlag: requisite"); //$NON-NLS-1$
 
         /** 
          * @com.intel.drl.spec_ref 
          */
         public static final LoginModuleControlFlag OPTIONAL = new LoginModuleControlFlag(
-                "LoginModuleControlFlag: optional");
+                "LoginModuleControlFlag: optional"); //$NON-NLS-1$
 
         /** 
          * @com.intel.drl.spec_ref 
          */
         public static final LoginModuleControlFlag SUFFICIENT = new LoginModuleControlFlag(
-                "LoginModuleControlFlag: sufficient");
+                "LoginModuleControlFlag: sufficient"); //$NON-NLS-1$
 
         // Creates the LoginModuleControlFlag object with specified a flag
         private LoginModuleControlFlag(String flag) {

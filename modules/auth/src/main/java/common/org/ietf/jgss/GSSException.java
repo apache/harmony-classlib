@@ -138,12 +138,12 @@ public class GSSException extends Exception {
     public static final int UNSEQ_TOKEN = 21;
 
     //error messages
-    private static final String[] errorMessages = { "BAD BINDINGS", "BAD MECH",
-            "BAD NAME", "BAD NAMETYPE", "BAD STATUS", "BAD MIC",
-            "CONTEXT EXPIRED", "CREDENTIALS EXPIRED", "DEFECTIVE CREDENTIAL",
-            "DEFECTIVE TOKEN", "FAILURE", "NO CONTEXT", "NO CRED", "BAD QOP",
-            "UNAUTHORIZED", "UNAVAILABLE", "DUPLICATE ELEMENT", "NAME NOT MN",
-            "DUPLICATE TOKEN", "OLD TOKEN", "UNSEQ TOKEN", "GAP TOKEN" };
+    private static final String[] errorMessages = { "BAD BINDINGS", "BAD MECH", //$NON-NLS-1$ //$NON-NLS-2$
+            "BAD NAME", "BAD NAMETYPE", "BAD STATUS", "BAD MIC", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "CONTEXT EXPIRED", "CREDENTIALS EXPIRED", "DEFECTIVE CREDENTIAL", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            "DEFECTIVE TOKEN", "FAILURE", "NO CONTEXT", "NO CRED", "BAD QOP", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "UNAUTHORIZED", "UNAVAILABLE", "DUPLICATE ELEMENT", "NAME NOT MN", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "DUPLICATE TOKEN", "OLD TOKEN", "UNSEQ TOKEN", "GAP TOKEN" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     //major code
     private int major = FAILURE;
@@ -216,7 +216,7 @@ public class GSSException extends Exception {
         if (tmp == null) {
             return tmp2;
         }
-        return tmp2 + " (" + tmp + ')';
+        return tmp2 + " (" + tmp + ')'; //$NON-NLS-1$
     }
 
     /**
@@ -231,6 +231,6 @@ public class GSSException extends Exception {
      * @com.intel.drl.spec_ref
      */
     public String toString() {
-        return "GSSException: " + getMessage();
+        return "GSSException: " + getMessage(); //$NON-NLS-1$
     }
 }

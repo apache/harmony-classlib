@@ -38,7 +38,7 @@ public class SubjectDomainCombiner implements DomainCombiner {
 
     // permission required to get a subject object
     private static final AuthPermission _GET = new AuthPermission(
-            "getSubjectFromDomainCombiner");
+            "getSubjectFromDomainCombiner"); //$NON-NLS-1$
 
     /**
      * @com.intel.drl.spec_ref

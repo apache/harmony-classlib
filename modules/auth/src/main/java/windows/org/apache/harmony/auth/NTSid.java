@@ -23,6 +23,8 @@ package org.apache.harmony.auth;
 import java.security.Principal;
 import java.io.Serializable;
 
+import org.apache.harmony.auth.internal.nls.Messages;
+
 /** 
  * A Principal class which serves as a base class for many SID-based 
  * principals. 
@@ -49,10 +51,10 @@ public class NTSid implements Serializable, Principal {
      */
     public NTSid(String sid) {
         if (sid == null) {
-            throw new NullPointerException("sid can not be null");
+            throw new NullPointerException(Messages.getString("auth.01")); //$NON-NLS-1$
         }
         if (sid.length() == 0) {
-            throw new IllegalArgumentException("sid can not be empty");
+            throw new IllegalArgumentException(Messages.getString("auth.02")); //$NON-NLS-1$
         }
         this.sid = sid;
     }
@@ -104,9 +106,9 @@ public class NTSid implements Serializable, Principal {
     public String toString() {
         String str = getClass().getName();
         int dot = str.lastIndexOf('.');
-        str = str.substring(dot + 1) + ": ";
+        str = str.substring(dot + 1) + ": "; //$NON-NLS-1$
         str += name + '@' + domain;
-        str += "; SID=" + sid;
+        str += "; SID=" + sid; //$NON-NLS-1$
         return str;
     }
 

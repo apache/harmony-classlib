@@ -35,6 +35,7 @@ import org.apache.harmony.auth.NTSidGroupPrincipal;
 import org.apache.harmony.auth.NTSidPrimaryGroupPrincipal;
 import org.apache.harmony.auth.NTSidUserPrincipal;
 import org.apache.harmony.auth.NTUserPrincipal;
+import org.apache.harmony.auth.internal.nls.Messages;
 
 
 /** 
@@ -72,16 +73,16 @@ public class NTLoginModule implements LoginModule {
     public void initialize(Subject subject, CallbackHandler cbHandler,
             Map sharedState, Map options) {
         if (subject == null) {
-            throw new NullPointerException("subject can not be null");
+            throw new NullPointerException(Messages.getString("auth.03")); //$NON-NLS-1$
         }
         if (options == null) {
-            throw new NullPointerException("options can not be null");
+            throw new NullPointerException(Messages.getString("auth.04")); //$NON-NLS-1$
         }
         this.subject = subject;
         //cbHandler - unused in this version
         //sharedState - unused
         this.options = options;
-        debug = "true".equalsIgnoreCase((String) options.get("debug"));
+        debug = "true".equalsIgnoreCase((String) options.get("debug")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -113,7 +114,7 @@ public class NTLoginModule implements LoginModule {
      */
     public boolean commit() throws LoginException {
         if (subject.isReadOnly()) {
-            throw new LoginException("Read-only Subject");
+            throw new LoginException(Messages.getString("auth.05")); //$NON-NLS-1$
         }
         Set ps = subject.getPrincipals();
 
@@ -178,7 +179,7 @@ public class NTLoginModule implements LoginModule {
      */
     public boolean logout() throws LoginException {
         if (subject.isReadOnly()) {
-            throw new LoginException("Read-only Subject");
+            throw new LoginException(Messages.getString("auth.05")); //$NON-NLS-1$
         }
         Set ps = subject.getPrincipals();
 

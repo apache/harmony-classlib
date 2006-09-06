@@ -34,6 +34,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Destroyable;
 
+import org.apache.harmony.auth.internal.nls.Messages;
 import org.apache.harmony.security.utils.Array;
 
 /**
@@ -66,7 +67,7 @@ public class KerberosKey implements SecretKey, Destroyable {
                        int keyType, int versionNumber) {
 
         if (keyBytes == null) {
-            throw new NullPointerException("key is null");
+            throw new NullPointerException(Messages.getString("auth.47")); //$NON-NLS-1$
         }
 
         this.principal = principal;
@@ -154,8 +155,8 @@ public class KerberosKey implements SecretKey, Destroyable {
     public String toString() {
         checkState();
         StringBuffer sb = new StringBuffer();
-        sb.append("KerberosPrincipal ").append(principal.getName()).append("\n");
-        sb.append("KeyVersion ").append(versionNum).append("\n");
+        sb.append("KerberosPrincipal ").append(principal.getName()).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        sb.append("KeyVersion ").append(versionNum).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
         sb.append(key.toString());
         return sb.toString();
     } 
@@ -163,7 +164,7 @@ public class KerberosKey implements SecretKey, Destroyable {
     // if a key is destroyed then IllegalStateException must be thrown 
     private void checkState() {
         if (destroyed) {
-            throw new IllegalStateException ("The key is destroyed");
+            throw new IllegalStateException (Messages.getString("auth.48")); //$NON-NLS-1$
         }
     }
 }
@@ -253,8 +254,8 @@ class KeyImpl implements SecretKey, Destroyable, Serializable {
             throw new NullPointerException();
         }
 
-        if (algorithm != null && "DES".compareTo(algorithm) != 0) {
-            throw new IllegalArgumentException("Unsupported algorithm");
+        if (algorithm != null && "DES".compareTo(algorithm) != 0) { //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("auth.49")); //$NON-NLS-1$
         }
 
         keyType = 3; // DES algorithm
@@ -304,13 +305,13 @@ class KeyImpl implements SecretKey, Destroyable, Serializable {
 
         // calculate DES-CBC check sum
         try {
-            Cipher cipher = Cipher.getInstance("DES/CBC/NoPadding");
+            Cipher cipher = Cipher.getInstance("DES/CBC/NoPadding"); //$NON-NLS-1$
 
             // use tmp key as IV
             IvParameterSpec IV = new IvParameterSpec(keyBytes);
 
             // do DES encryption 
-            SecretKey secretKey = new SecretKeySpec(keyBytes, "DES");
+            SecretKey secretKey = new SecretKeySpec(keyBytes, "DES"); //$NON-NLS-1$
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, IV);
             byte[] enc = cipher.doFinal(raw);
 
@@ -321,7 +322,7 @@ class KeyImpl implements SecretKey, Destroyable, Serializable {
 
         } catch (Exception e) {
             throw new RuntimeException(
-                    "Failed to generate DES key from password.", e);
+                    Messages.getString("auth.4A"), e); //$NON-NLS-1$
         }
     }
 
@@ -350,9 +351,9 @@ class KeyImpl implements SecretKey, Destroyable, Serializable {
     public final String getAlgorithm() {
         checkState();
         if (keyType == 0) {
-            return "NULL";
+            return "NULL"; //$NON-NLS-1$
         }
-        return "DES";
+        return "DES"; //$NON-NLS-1$
     }
     
     /**
@@ -361,7 +362,7 @@ class KeyImpl implements SecretKey, Destroyable, Serializable {
      */
     public final String getFormat() {
         checkState();
-        return "RAW";
+        return "RAW"; //$NON-NLS-1$
     }
    
     /**
@@ -408,12 +409,12 @@ class KeyImpl implements SecretKey, Destroyable, Serializable {
        StringBuffer sb = new StringBuffer();
        
        if (keyBytes.length == 0) {
-           s_key = "Empty Key";
+           s_key = "Empty Key"; //$NON-NLS-1$
        } else {
-           s_key = Array.toString(keyBytes," ");
+           s_key = Array.toString(keyBytes," "); //$NON-NLS-1$
        }
-       sb.append("EncryptionKey: ").append("KeyType = ").append(keyType);
-       sb.append("KeyBytes (Hex dump) = ").append(s_key);
+       sb.append("EncryptionKey: ").append("KeyType = ").append(keyType); //$NON-NLS-1$ //$NON-NLS-2$
+       sb.append("KeyBytes (Hex dump) = ").append(s_key); //$NON-NLS-1$
        return sb.toString();
    }
    
@@ -422,7 +423,7 @@ class KeyImpl implements SecretKey, Destroyable, Serializable {
     */  
    private void checkState() {
        if (destroyed) {
-           throw new IllegalStateException ("The key is destroyed");
+           throw new IllegalStateException (Messages.getString("auth.48")); //$NON-NLS-1$
        }
    }
 
@@ -436,7 +437,7 @@ class KeyImpl implements SecretKey, Destroyable, Serializable {
    private void writeObject(ObjectOutputStream s) throws IOException {
        
        if(destroyed){
-           throw new IOException("Key was destroyed");
+           throw new IOException(Messages.getString("auth.48")); //$NON-NLS-1$
        }
        s.defaultWriteObject();
    }

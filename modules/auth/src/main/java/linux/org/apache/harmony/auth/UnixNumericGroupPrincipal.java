@@ -23,6 +23,8 @@ package org.apache.harmony.auth;
 import java.io.Serializable;
 import java.security.Principal;
 
+import org.apache.harmony.auth.internal.nls.Messages;
+
 /**
  * This class represents a unix groupd by its group id. 
  */
@@ -48,7 +50,7 @@ public class UnixNumericGroupPrincipal implements Serializable, Principal {
      */
     public UnixNumericGroupPrincipal(String gid, boolean primary) {
         if (gid == null) {
-            throw new NullPointerException("gid can not be null");
+            throw new NullPointerException(Messages.getString("auth.07")); //$NON-NLS-1$
         }
         this.gid = Long.parseLong(gid);
         this.primary = primary;
@@ -102,10 +104,10 @@ public class UnixNumericGroupPrincipal implements Serializable, Principal {
      */
     public String toString() {
         if( gname == null ) {
-            return "UnixNumericGroupPrincipal, gid=" + gid;
+            return "UnixNumericGroupPrincipal, gid=" + gid; //$NON-NLS-1$
         }
         else {
-            return "UnixNumericGroupPrincipal, gid=" + gid+"; name="+gname;
+            return "UnixNumericGroupPrincipal, gid=" + gid+"; name="+gname; //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

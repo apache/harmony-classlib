@@ -23,6 +23,8 @@ package org.apache.harmony.auth;
 import java.io.Serializable;
 import java.security.Principal;
 
+import org.apache.harmony.auth.internal.nls.Messages;
+
 /**
  * This class represents a unix user by its user id. 
  */
@@ -43,7 +45,7 @@ public class UnixNumericUserPrincipal implements Serializable, Principal {
      */
     public UnixNumericUserPrincipal(String uid) {
         if (uid == null) {
-            throw new NullPointerException("uid can not be null");
+            throw new NullPointerException(Messages.getString("auth.06")); //$NON-NLS-1$
         }
         this.uid = Long.parseLong(uid);
     }
@@ -74,7 +76,7 @@ public class UnixNumericUserPrincipal implements Serializable, Principal {
      * Returns String representation of this object.
      */
     public String toString() {
-        return "UnixNumericUserPrincipal, uid=" + uid;
+        return "UnixNumericUserPrincipal, uid=" + uid; //$NON-NLS-1$
     }
 
     /**

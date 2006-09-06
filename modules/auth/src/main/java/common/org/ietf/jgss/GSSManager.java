@@ -31,7 +31,7 @@ import org.apache.harmony.security.fortress.PolicyUtils;
  */
 public abstract class GSSManager {
 
-    static final String MANAGER = "jgss.spi.manager";
+    static final String MANAGER = "jgss.spi.manager"; //$NON-NLS-1$
 
     /**
      * @com.intel.drl.spec_ref The implementation class name should be specified

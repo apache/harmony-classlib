@@ -40,13 +40,15 @@ import javax.security.auth.AuthPermission;
 
 import javax.security.auth.login.AppConfigurationEntry.LoginModuleControlFlag;
 
+import org.apache.harmony.auth.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  */
 
 public class LoginContext {
 
-    private static final String DEFAULT_CALLBACK_HANDLER_PROPERTY = "auth.login.defaultCallbackHandler";
+    private static final String DEFAULT_CALLBACK_HANDLER_PROPERTY = "auth.login.defaultCallbackHandler"; //$NON-NLS-1$
 
     // Integer constants which serve as a replacement for 
     // the corresponding LoginModuleControlFlag.* constants.
@@ -104,7 +106,7 @@ public class LoginContext {
     public LoginContext(String name, CallbackHandler cbHandler)
             throws LoginException {
         if (cbHandler == null) {
-            throw new LoginException("CallbackHandler can not be null");
+            throw new LoginException(Messages.getString("auth.34")); //$NON-NLS-1$
         }
         init(name, null, cbHandler, null);
     }
@@ -114,7 +116,7 @@ public class LoginContext {
      */
     public LoginContext(String name, Subject subject) throws LoginException {
         if (subject == null) {
-            throw new LoginException("Subject can not be null");
+            throw new LoginException(Messages.getString("auth.03")); //$NON-NLS-1$
         }
         init(name, subject, null, null);
     }
@@ -125,10 +127,10 @@ public class LoginContext {
     public LoginContext(String name, Subject subject, CallbackHandler cbHandler)
             throws LoginException {
         if (subject == null) {
-            throw new LoginException("Subject can not be null");
+            throw new LoginException(Messages.getString("auth.03")); //$NON-NLS-1$
         }
         if (cbHandler == null) {
-            throw new LoginException("CallbackHandler can not be null");
+            throw new LoginException(Messages.getString("auth.34")); //$NON-NLS-1$
         }
         init(name, subject, cbHandler, null);
     }
@@ -155,7 +157,7 @@ public class LoginContext {
         // Set config
         //
         if (name == null) {
-            throw new LoginException("name can not be null");
+            throw new LoginException(Messages.getString("auth.00")); //$NON-NLS-1$
         }
 
         if (config == null) {
@@ -168,7 +170,7 @@ public class LoginContext {
 
         if (sm != null && !userProvidedConfig) {
             sm
-                    .checkPermission(new AuthPermission("createLoginContext."
+                    .checkPermission(new AuthPermission("createLoginContext." //$NON-NLS-1$
                             + name));
         }
 
@@ -176,12 +178,11 @@ public class LoginContext {
         if (entries == null) {
             if (sm != null && !userProvidedConfig) {
                 sm.checkPermission(new AuthPermission(
-                        "createLoginContext.other"));
+                        "createLoginContext.other")); //$NON-NLS-1$
             }
-            entries = config.getAppConfigurationEntry("other");
+            entries = config.getAppConfigurationEntry("other"); //$NON-NLS-1$
             if (entries == null) {
-                throw new LoginException("There is no \"" + name
-                        + "\" in Configuration or it's empty.");
+                throw new LoginException(Messages.getString("auth.35", name)); //$NON-NLS-1$
             }
         }
 
@@ -225,7 +226,7 @@ public class LoginContext {
             });
         } catch (PrivilegedActionException ex) {
             throw (LoginException) new LoginException(
-                    "Could not get default callback handler.").initCause(ex
+                    Messages.getString("auth.36")).initCause(ex //$NON-NLS-1$
                     .getCause());
         }
 
@@ -411,7 +412,7 @@ public class LoginContext {
                 throw (LoginException) firstProblem;
             } else {
                 throw (LoginException) new LoginException(
-                        "Login attempt failed.").initCause(firstProblem);
+                        Messages.getString("auth.37")).initCause(firstProblem); //$NON-NLS-1$
             }
         } else {
             loggedIn = true;
@@ -444,7 +445,7 @@ public class LoginContext {
     // appropriate doPrivileged calls in logout().
     private void logoutImpl() throws LoginException {
         if (subject == null) {
-            throw new LoginException("This LoginContext is not logged.");
+            throw new LoginException(Messages.getString("auth.38")); //$NON-NLS-1$
         }
         loggedIn = false;
         Throwable firstProblem = null;
@@ -468,7 +469,7 @@ public class LoginContext {
                 throw (LoginException) firstProblem;
             } else {
                 throw (LoginException) new LoginException(
-                        "Login attempt failed.").initCause(firstProblem);
+                        Messages.getString("auth.37")).initCause(firstProblem); //$NON-NLS-1$
             }
         }
     }
@@ -547,7 +548,7 @@ public class LoginContext {
                     klass = Class.forName(klassName, false, contextClassLoader);
                 } catch (ClassNotFoundException ex) {
                     throw (LoginException) new LoginException(
-                            "Could not load module " + klassName).initCause(ex);
+                            Messages.getString("auth.39", klassName)).initCause(ex); //$NON-NLS-1$
                 }
             }
 
@@ -556,11 +557,11 @@ public class LoginContext {
                     module = (LoginModule) klass.newInstance();
                 } catch (IllegalAccessException ex) {
                     throw (LoginException) new LoginException(
-                            "Could not instantiate module " + klassName)
+                            Messages.getString("auth.3A", klassName)) //$NON-NLS-1$
                             .initCause(ex);
                 } catch (InstantiationException ex) {
                     throw (LoginException) new LoginException(
-                            "Could not instantiate module " + klassName)
+                            Messages.getString("auth.3A", klassName)) //$NON-NLS-1$
                             .initCause(ex);
                 }
                 module.initialize(subject, callbackHandler, sharedState, entry

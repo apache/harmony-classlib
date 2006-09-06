@@ -23,6 +23,8 @@ package javax.security.auth.callback;
 
 import java.io.Serializable;
 
+import org.apache.harmony.auth.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  *
@@ -52,7 +54,7 @@ public class NameCallback implements Callback, Serializable {
     // sets the prompt
     private void setPrompt(String prompt) {
         if (prompt == null || prompt.length() == 0) {
-            throw new IllegalArgumentException("Invalid prompt");
+            throw new IllegalArgumentException(Messages.getString("auth.14")); //$NON-NLS-1$
         }
         this.prompt = prompt;
     }
@@ -60,7 +62,7 @@ public class NameCallback implements Callback, Serializable {
     // sets the default name
     private void setDefaultName(String defaultName) {
         if (defaultName == null || defaultName.length() == 0) {
-            throw new IllegalArgumentException("Invalid default name");
+            throw new IllegalArgumentException(Messages.getString("auth.1E")); //$NON-NLS-1$
         }
         this.defaultName = defaultName;
     }

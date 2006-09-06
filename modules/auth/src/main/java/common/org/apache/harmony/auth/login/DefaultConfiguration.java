@@ -54,17 +54,17 @@ public class DefaultConfiguration extends Configuration {
 
     
     // system property for dynamically added login configuration file location.
-    private static final String JAVA_SECURITY_LOGIN_CONFIG = "java.security.auth.login.config";
+    private static final String JAVA_SECURITY_LOGIN_CONFIG = "java.security.auth.login.config"; //$NON-NLS-1$
 
     // location of login configuration file
-    private static final String LOGIN_CONFIG_URL_PREFIX = "login.config.url.";
+    private static final String LOGIN_CONFIG_URL_PREFIX = "login.config.url."; //$NON-NLS-1$
     
     // default a config file from user's home directory
-    private static final String JAVA_LOGIN_CONF_FILE = "file:" + System.getProperty("user.home") +
-                                                        + File.separatorChar + ".java.login.config";
+    private static final String JAVA_LOGIN_CONF_FILE = "file:" + System.getProperty("user.home") + //$NON-NLS-1$ //$NON-NLS-2$
+                                                        + File.separatorChar + ".java.login.config"; //$NON-NLS-1$
 
     // creates a AuthPermission object 
-    private static final AuthPermission REFRESH_LOGIN_CONFIGURATION = new AuthPermission("refreshLoginConfiguration");
+    private static final AuthPermission REFRESH_LOGIN_CONFIGURATION = new AuthPermission("refreshLoginConfiguration"); //$NON-NLS-1$
 
     // set of application entry
     private Map configutations = Collections.synchronizedMap(new HashMap());
@@ -119,7 +119,7 @@ public class DefaultConfiguration extends Configuration {
         HashMap fresh = new HashMap();
         Properties system = new Properties((Properties)AccessController
                                             .doPrivileged(new PolicyUtils.SystemKit()));
-        system.setProperty("/", File.separator);
+        system.setProperty("/", File.separator); //$NON-NLS-1$
         URL[] policyLocations = PolicyUtils.getPolicyURLs(system,
                 JAVA_SECURITY_LOGIN_CONFIG, LOGIN_CONFIG_URL_PREFIX);
 

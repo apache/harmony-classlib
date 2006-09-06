@@ -23,6 +23,8 @@ package javax.security.auth.callback;
 
 import java.io.Serializable;
 
+import org.apache.harmony.auth.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  *
@@ -62,11 +64,11 @@ public class ChoiceCallback implements Callback, Serializable {
     // sets the choices.
     private void setChoices(String[] choices) {
         if (choices == null || choices.length == 0){
-            throw new IllegalArgumentException("Invalid choices");
+            throw new IllegalArgumentException(Messages.getString("auth.1C")); //$NON-NLS-1$
         }
         for (int i = 0; i < choices.length; i++) {
             if (choices[i] == null || choices[i].length() == 0) {
-                throw new IllegalArgumentException("Invalid choices");
+                throw new IllegalArgumentException(Messages.getString("auth.1C")); //$NON-NLS-1$
             }
         }
         //FIXME: System.arraycopy(choices, 0 , new String[choices.length], 0, choices.length);
@@ -77,7 +79,7 @@ public class ChoiceCallback implements Callback, Serializable {
     // sets the prompt.
     private void setPrompt(String prompt) {
         if (prompt == null || prompt.length() == 0) {
-            throw new IllegalArgumentException("Invalid prompt");
+            throw new IllegalArgumentException(Messages.getString("auth.14")); //$NON-NLS-1$
         }
         this.prompt = prompt;
     }
@@ -85,7 +87,7 @@ public class ChoiceCallback implements Callback, Serializable {
     // sets the defaultChoice.
     private void setDefaultChoice(int defaultChoice) {
         if (0 > defaultChoice || defaultChoice >= choices.length) {
-            throw new IllegalArgumentException("Invalid default choices");
+            throw new IllegalArgumentException(Messages.getString("auth.1D")); //$NON-NLS-1$
         }
         this.defaultChoice = defaultChoice;
     }

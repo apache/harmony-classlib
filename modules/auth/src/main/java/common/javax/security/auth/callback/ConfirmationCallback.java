@@ -23,6 +23,8 @@ package javax.security.auth.callback;
 
 import java.io.Serializable;
 
+import org.apache.harmony.auth.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  *
@@ -127,28 +129,28 @@ public class ConfirmationCallback implements Callback, Serializable {
 
         if (messageType > ERROR ||
                 messageType < INFORMATION) {
-            throw new IllegalArgumentException("Invalid message type");
+            throw new IllegalArgumentException(Messages.getString("auth.16")); //$NON-NLS-1$
         }
 
         switch (optionType) {
         case YES_NO_OPTION:
             if (defaultOption != YES && defaultOption != NO) {
-                throw new IllegalArgumentException("invalid defaultOption");
+                throw new IllegalArgumentException(Messages.getString("auth.17")); //$NON-NLS-1$
             }
             break;
         case YES_NO_CANCEL_OPTION:
             if (defaultOption != YES && defaultOption != NO
                     && defaultOption != CANCEL) {
-                throw new IllegalArgumentException("invalid defaultOption");
+                throw new IllegalArgumentException(Messages.getString("auth.17")); //$NON-NLS-1$
             }
             break;
         case OK_CANCEL_OPTION:
             if (defaultOption != OK && defaultOption != CANCEL) {
-                throw new IllegalArgumentException("invalid defaultOption");
+                throw new IllegalArgumentException(Messages.getString("auth.17")); //$NON-NLS-1$
             }
             break;
         default:
-            throw new IllegalArgumentException("Invalid option type");
+            throw new IllegalArgumentException(Messages.getString("auth.18")); //$NON-NLS-1$
         }
         this.messageType = messageType;
         this.optionType = optionType;
@@ -163,19 +165,19 @@ public class ConfirmationCallback implements Callback, Serializable {
 
         if (messageType > ERROR ||
                 messageType < INFORMATION) {
-            throw new IllegalArgumentException("Invalid message type");
+            throw new IllegalArgumentException(Messages.getString("auth.16")); //$NON-NLS-1$
         }
 
         if (options == null || options.length == 0) {
-            throw new IllegalArgumentException("Invalid options");
+            throw new IllegalArgumentException(Messages.getString("auth.1A")); //$NON-NLS-1$
         }
         for (int i = 0; i < options.length; i++) {
             if (options[i] == null || options[i].length() == 0) {
-                throw new IllegalArgumentException("Invalid options");
+                throw new IllegalArgumentException(Messages.getString("auth.1A")); //$NON-NLS-1$
             }
         }
         if (0 > defaultOption  || defaultOption >= options.length) {
-            throw new IllegalArgumentException("Invalid defaultOption");
+            throw new IllegalArgumentException(Messages.getString("auth.17")); //$NON-NLS-1$
         }
         //FIXME:System.arraycopy(options, 0 , new String[this.options.length], 0, this.options.length);
         this.options = options;
@@ -190,33 +192,33 @@ public class ConfirmationCallback implements Callback, Serializable {
             int defaultOption) {
 
         if (prompt == null || prompt.length() == 0) {
-            throw new IllegalArgumentException("Invalid prompt");
+            throw new IllegalArgumentException(Messages.getString("auth.14")); //$NON-NLS-1$
         }
         
         if (messageType > ERROR ||
                 messageType < INFORMATION) {
-            throw new IllegalArgumentException("Invalid message type");
+            throw new IllegalArgumentException(Messages.getString("auth.16")); //$NON-NLS-1$
         }
 
         switch (optionType) {
         case YES_NO_OPTION:
             if (defaultOption != YES && defaultOption != NO) {
-                throw new IllegalArgumentException("invalid defaultOption");
+                throw new IllegalArgumentException(Messages.getString("auth.17")); //$NON-NLS-1$
             }
             break;
         case YES_NO_CANCEL_OPTION:
             if (defaultOption != YES && defaultOption != NO
                     && defaultOption != CANCEL) {
-                throw new IllegalArgumentException("invalid defaultOption");
+                throw new IllegalArgumentException(Messages.getString("auth.17")); //$NON-NLS-1$
             }
             break;
         case OK_CANCEL_OPTION:
             if (defaultOption != OK && defaultOption != CANCEL) {
-                throw new IllegalArgumentException("invalid defaultOption");
+                throw new IllegalArgumentException(Messages.getString("auth.17")); //$NON-NLS-1$
             }
             break;
         default:
-            throw new IllegalArgumentException("Invalid option type");
+            throw new IllegalArgumentException(Messages.getString("auth.18")); //$NON-NLS-1$
         }
         this.prompt = prompt;
         this.messageType = messageType;
@@ -231,24 +233,24 @@ public class ConfirmationCallback implements Callback, Serializable {
             String[] options, int defaultOption) {
 
         if (prompt == null || prompt.length() == 0) {
-            throw new IllegalArgumentException("Invalid prompt");
+            throw new IllegalArgumentException(Messages.getString("auth.14")); //$NON-NLS-1$
         }
 
         if (messageType > ERROR ||
                 messageType < INFORMATION) {
-            throw new IllegalArgumentException("Invalid message type");
+            throw new IllegalArgumentException(Messages.getString("auth.16")); //$NON-NLS-1$
         }
 
         if (options == null || options.length == 0) {
-            throw new IllegalArgumentException("Invalid options");
+            throw new IllegalArgumentException(Messages.getString("auth.1A")); //$NON-NLS-1$
         }
         for (int i = 0; i < options.length; i++) {
             if (options[i] == null || options[i].length() == 0) {
-                throw new IllegalArgumentException("Invalid options");
+                throw new IllegalArgumentException(Messages.getString("auth.1A")); //$NON-NLS-1$
             }
         }
         if (0 > defaultOption  || defaultOption >= options.length) {
-            throw new IllegalArgumentException("Invalid defaultOption");
+            throw new IllegalArgumentException(Messages.getString("auth.17")); //$NON-NLS-1$
         }
         //FIXME:System.arraycopy(options, 0 , new String[this.options.length], 0, this.options.length);
         this.options = options;
@@ -307,24 +309,24 @@ public class ConfirmationCallback implements Callback, Serializable {
             if ( 0 <= selection && selection <= options.length) {
                 this.selection = selection;
             } else {
-                throw new ArrayIndexOutOfBoundsException("specified selection is out of bounds");
+                throw new ArrayIndexOutOfBoundsException(Messages.getString("auth.1B")); //$NON-NLS-1$
             }
         } else {
             switch (optionType) {
             case YES_NO_OPTION:
                 if (selection != YES && selection != NO) {
-                    throw new IllegalArgumentException("invalid selection");
+                    throw new IllegalArgumentException(Messages.getString("auth.19")); //$NON-NLS-1$
                 }
                 break;
             case YES_NO_CANCEL_OPTION:
                 if (selection != YES && selection != NO
                         && selection != CANCEL) {
-                    throw new IllegalArgumentException("invalid selection");
+                    throw new IllegalArgumentException(Messages.getString("auth.19")); //$NON-NLS-1$
                 }
                 break;
             case OK_CANCEL_OPTION:
                 if (selection != OK && selection != CANCEL) {
-                    throw new IllegalArgumentException("invalid selection");
+                    throw new IllegalArgumentException(Messages.getString("auth.19")); //$NON-NLS-1$
                 }
                 break;
             }

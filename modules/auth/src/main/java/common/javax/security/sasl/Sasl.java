@@ -25,6 +25,8 @@ import java.security.Provider;
 import java.security.Security;
 import javax.security.auth.callback.CallbackHandler;
 
+import org.apache.harmony.auth.internal.nls.Messages;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -40,82 +42,82 @@ import java.util.Iterator;
  */
 public class Sasl {
     // SaslClientFactory service name
-    private static final String CLIENTFACTORYSRV = "SaslClientFactory";
+    private static final String CLIENTFACTORYSRV = "SaslClientFactory"; //$NON-NLS-1$
 
     // SaslServerFactory service name
-    private static final String SERVERFACTORYSRV = "SaslServerFactory";
+    private static final String SERVERFACTORYSRV = "SaslServerFactory"; //$NON-NLS-1$
 
     /**
      * @com.intel.drl.spec_ref
      *  
      */
-    public static final String POLICY_NOPLAINTEXT = "javax.security.sasl.policy.noplaintext";
+    public static final String POLICY_NOPLAINTEXT = "javax.security.sasl.policy.noplaintext"; //$NON-NLS-1$
 
     /**
      * @com.intel.drl.spec_ref
      *  
      */
-    public static final String POLICY_NOACTIVE = "javax.security.sasl.policy.noactive";
+    public static final String POLICY_NOACTIVE = "javax.security.sasl.policy.noactive"; //$NON-NLS-1$
 
     /**
      * @com.intel.drl.spec_ref
      *  
      */
-    public static final String POLICY_NODICTIONARY = "javax.security.sasl.policy.nodictionary";
+    public static final String POLICY_NODICTIONARY = "javax.security.sasl.policy.nodictionary"; //$NON-NLS-1$
 
     /**
      * @com.intel.drl.spec_ref
      *  
      */
-    public static final String POLICY_NOANONYMOUS = "javax.security.sasl.policy.noanonymous";
+    public static final String POLICY_NOANONYMOUS = "javax.security.sasl.policy.noanonymous"; //$NON-NLS-1$
 
     /**
      * @com.intel.drl.spec_ref
      *  
      */
-    public static final String POLICY_FORWARD_SECRECY = "javax.security.sasl.policy.forward";
+    public static final String POLICY_FORWARD_SECRECY = "javax.security.sasl.policy.forward"; //$NON-NLS-1$
 
     /**
      * @com.intel.drl.spec_ref
      *  
      */
-    public static final String POLICY_PASS_CREDENTIALS = "javax.security.sasl.policy.credentials";
+    public static final String POLICY_PASS_CREDENTIALS = "javax.security.sasl.policy.credentials"; //$NON-NLS-1$
 
     /**
      * @com.intel.drl.spec_ref
      *  
      */
-    public static final String MAX_BUFFER = "javax.security.sasl.maxbuffer";
+    public static final String MAX_BUFFER = "javax.security.sasl.maxbuffer"; //$NON-NLS-1$
 
     /**
      * @com.intel.drl.spec_ref
      *  
      */
-    public static final String RAW_SEND_SIZE = "javax.security.sasl.rawsendsize";
+    public static final String RAW_SEND_SIZE = "javax.security.sasl.rawsendsize"; //$NON-NLS-1$
 
     /**
      * @com.intel.drl.spec_ref
      *  
      */
-    public static final String REUSE = "javax.security.sasl.reuse";
+    public static final String REUSE = "javax.security.sasl.reuse"; //$NON-NLS-1$
 
     /**
      * @com.intel.drl.spec_ref
      *  
      */
-    public static final String QOP = "javax.security.sasl.qop";
+    public static final String QOP = "javax.security.sasl.qop"; //$NON-NLS-1$
 
     /**
      * @com.intel.drl.spec_ref
      *  
      */
-    public static final String STRENGTH = "javax.security.sasl.strength";
+    public static final String STRENGTH = "javax.security.sasl.strength"; //$NON-NLS-1$
 
     /**
      * @com.intel.drl.spec_ref
      *  
      */
-    public static final String SERVER_AUTH = "javax.security.sasl.server.authentication";
+    public static final String SERVER_AUTH = "javax.security.sasl.server.authentication"; //$NON-NLS-1$
 
     // Default public constructor is overridden
     private Sasl() {
@@ -124,7 +126,7 @@ public class Sasl {
     // Forms new instance of factory
     private static Object newInstance(String factoryName, Provider prv)
             throws SaslException {
-        String msg = "Implementation was not found for: ";
+        String msg = Messages.getString("auth.31"); //$NON-NLS-1$
         Object factory;
         ClassLoader cl = prv.getClass().getClassLoader();
         if (cl == null) {
@@ -204,7 +206,7 @@ public class Sasl {
             String protocol, String serverName, Map<String,?> prop, CallbackHandler cbh)
             throws SaslException {
         if (mechanism == null) {
-            throw new NullPointerException("mechanism is null");
+            throw new NullPointerException(Messages.getString("auth.32")); //$NON-NLS-1$
         }
         HashSet res = (HashSet) findFactories(SERVERFACTORYSRV);
         if (res.size() == 0) {
@@ -246,7 +248,7 @@ public class Sasl {
             String authanticationID, String protocol, String serverName,
             Map<String,?> prop, CallbackHandler cbh) throws SaslException {
         if (mechanisms == null) {
-            throw new NullPointerException("mechanisms is null");
+            throw new NullPointerException(Messages.getString("auth.33")); //$NON-NLS-1$
         }
         HashSet res = (HashSet) findFactories(CLIENTFACTORYSRV);
         if (res.size() == 0) {

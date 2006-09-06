@@ -64,7 +64,7 @@ public class UnixSystem {
      */
     public UnixSystem() {
         if (!loadLibDone) {
-            System.loadLibrary("hyauth");
+            System.loadLibrary("hyauth"); //$NON-NLS-1$
             loadLibDone = true;
         }
         load();
@@ -132,19 +132,19 @@ public class UnixSystem {
      */
     public String toString() {
         StringBuffer buf = new StringBuffer();
-        buf.append("UnixSystem: \n");
-        buf.append("uid:gid=").append(uid).append(":").append(gid);
-        buf.append("=");
-        buf.append(username).append(":").append(groupname);
-        buf.append("\n");
+        buf.append("UnixSystem: \n"); //$NON-NLS-1$
+        buf.append("uid:gid=").append(uid).append(":").append(gid); //$NON-NLS-1$ //$NON-NLS-2$
+        buf.append("="); //$NON-NLS-1$
+        buf.append(username).append(":").append(groupname); //$NON-NLS-1$
+        buf.append("\n"); //$NON-NLS-1$
 
-        buf.append("total groups: ");
+        buf.append("total groups: "); //$NON-NLS-1$
         buf.append(groups == null ? 0 : groups.length);
 
         if (groups != null) {
-            buf.append("\n");
+            buf.append("\n"); //$NON-NLS-1$
             for (int i = 0; i < groups.length; i++) {
-                buf.append(i).append(") ").append(groupsNames[i]).append("\n");
+                buf.append(i).append(") ").append(groupsNames[i]).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         return buf.toString();

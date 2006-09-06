@@ -28,6 +28,7 @@ import java.security.PrivilegedAction;
 
 import org.apache.harmony.security.fortress.PolicyUtils;
 import org.apache.harmony.auth.DefaultSubjectPolicy;
+import org.apache.harmony.auth.internal.nls.Messages;
 
 
 /**
@@ -44,15 +45,15 @@ public abstract class Policy
 {
 
     // Key to security properties, defining default policy provider.
-    private static final String POLICY_PROVIDER = "auth.policy.provider";
+    private static final String POLICY_PROVIDER = "auth.policy.provider"; //$NON-NLS-1$
 
     // The AuthPermission required to set custom Policy.
     private static final AuthPermission SET_POLICY = new AuthPermission(
-            "setPolicy");
+            "setPolicy"); //$NON-NLS-1$
 
     // The AuthPermission required to get current Policy.
     private static final AuthPermission GET_POLICY = new AuthPermission(
-            "getPolicy");
+            "getPolicy"); //$NON-NLS-1$
 
     // the current policy object
     private static Policy activePolicy;
@@ -127,7 +128,7 @@ public abstract class Policy
                             ClassLoader.getSystemClassLoader()).newInstance();
                 } catch (Exception e) {
                     SecurityException se = new SecurityException(
-                            "Failed to load Subject-based policy");
+                            Messages.getString("auth.08")); //$NON-NLS-1$
                     se.initCause(e);
                     throw se;
                 }
@@ -135,7 +136,7 @@ public abstract class Policy
         });
 
         if (!(policy instanceof Policy)) {
-            throw new SecurityException("Failed to load Subject-based policy");
+            throw new SecurityException(Messages.getString("auth.08")); //$NON-NLS-1$
         }
         return (Policy) policy;
     }

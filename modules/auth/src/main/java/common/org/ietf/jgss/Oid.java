@@ -23,6 +23,7 @@ package org.ietf.jgss;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.harmony.auth.internal.nls.Messages;
 import org.apache.harmony.security.asn1.ASN1Oid;
 import org.apache.harmony.security.asn1.ObjectIdentifier;
 
@@ -107,7 +108,7 @@ public class Oid {
      */
     public boolean containedIn(Oid[] oids) {
         if (oids == null) {
-            throw new NullPointerException("Null oids were provided");
+            throw new NullPointerException(Messages.getString("auth.0D")); //$NON-NLS-1$
         }
         for (int i = 0; i < oids.length; ++i) {
             if (oid.equals(oids[i].oid)) {

@@ -31,6 +31,7 @@ import javax.security.auth.Destroyable;
 import javax.security.auth.RefreshFailedException;
 import javax.security.auth.Refreshable;
 
+import org.apache.harmony.auth.internal.nls.Messages;
 import org.apache.harmony.security.utils.Array;
 
 
@@ -83,7 +84,7 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
     private static final int UNUSED = 31; 
 
     // line feed 
-    private static final String LF = "\n";
+    private static final String LF = "\n"; //$NON-NLS-1$
     
     //ASN.1 encoding of the ticket
     private byte[] asn1Encoding;
@@ -130,26 +131,26 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
 
         if (asn1Encoding == null) {
             throw new IllegalArgumentException(
-                "ASN.1 encoding of this ticket is null");
+                Messages.getString("auth.3B")); //$NON-NLS-1$
         }
         if (client == null) {
-            throw new IllegalArgumentException("client is null");
+            throw new IllegalArgumentException(Messages.getString("auth.3C")); //$NON-NLS-1$
         }
 
         if (server == null) {
-            throw new IllegalArgumentException("server is null");
+            throw new IllegalArgumentException(Messages.getString("auth.3D")); //$NON-NLS-1$
         }
 
         if (keyBytes == null) {
-            throw new IllegalArgumentException("session key is null");
+            throw new IllegalArgumentException(Messages.getString("auth.3E")); //$NON-NLS-1$
         }
 
         if (authTime == null) {
-            throw new IllegalArgumentException("authentication time is null");
+            throw new IllegalArgumentException(Messages.getString("auth.3F")); //$NON-NLS-1$
         }
 
         if (endTime == null) {
-            throw new IllegalArgumentException("expiration time is null");
+            throw new IllegalArgumentException(Messages.getString("auth.40")); //$NON-NLS-1$
         }
 
         this.asn1Encoding = new byte[asn1Encoding.length];
@@ -176,7 +177,7 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
 
         if (flags[RENEWABLE] && renewTill == null) {
             throw new IllegalArgumentException(
-                "An absolute expiration time can not be null for renewable tickets");
+                Messages.getString("auth.41")); //$NON-NLS-1$
         }
 
         this.renewTill = renewTill;
@@ -189,7 +190,7 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
         
         if (startTime.getTime() > endTime.getTime()) {
             //TODO: make correct description of the exception  
-            throw new IllegalArgumentException("Incorrect start or end time");
+            throw new IllegalArgumentException(Messages.getString("auth.42")); //$NON-NLS-1$
         }
         
         this.authTime = authTime;
@@ -375,7 +376,7 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
             this.clientAddresses = null;
             destroyed = true;
         } else {
-            throw new DestroyFailedException("This ticket is already destroyed"); 
+            throw new DestroyFailedException(Messages.getString("auth.43"));  //$NON-NLS-1$
         }
 
     }
@@ -395,12 +396,12 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
         checkState();
         
         if (!flags[RENEWABLE]) {
-            throw new RefreshFailedException("The ticket is not renewable");
+            throw new RefreshFailedException(Messages.getString("auth.44")); //$NON-NLS-1$
         }
 
         if (System.currentTimeMillis() > this.renewTill.getTime()) {
             throw new RefreshFailedException(
-                "The allowable renew time is passed for this ticket");
+                Messages.getString("auth.45")); //$NON-NLS-1$
         }
         
         //TODO: need access to a KDC server          
@@ -425,32 +426,32 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
     public String toString() {
         checkState();
         StringBuffer sb = new StringBuffer();
-        sb.append("Ticket = ").append(Array.toString(asn1Encoding,"(hex) ") + LF);
-        sb.append("Client Principal = ").append(client.getName() + LF);
-        sb.append("Server Principal = ").append(server.getName() + LF);
+        sb.append("Ticket = ").append(Array.toString(asn1Encoding,"(hex) ") + LF); //$NON-NLS-1$ //$NON-NLS-2$
+        sb.append("Client Principal = ").append(client.getName() + LF); //$NON-NLS-1$
+        sb.append("Server Principal = ").append(server.getName() + LF); //$NON-NLS-1$
         //TODO: append session key
-        sb.append("Session Key = ").append(sessionKey.toString() + LF);
-        sb.append("Forwardable Ticket = ").append(flags[FORWARDABLE] + LF);
-        sb.append("Forwarded Ticket = ").append(flags[FORWARDED] + LF);
-        sb.append("Proxiable Ticket = ").append(flags[PROXIABLE] + LF);
-        sb.append("Proxy Ticket = ").append(flags[PROXY] + LF);
-        sb.append("Postdated Ticket = ").append(flags[POSTDATED] + LF);
-        sb.append("Renewable Ticket = ").append(flags[RENEWABLE] + LF);
-        sb.append("Initial Ticket = ").append(flags[INITIAL] + LF);
-        sb.append("Auth Time = ").append(this.authTime.toString() + LF);
-        sb.append("Start Time = ").append(this.startTime.toString() + LF);
-        sb.append("End Time = ").append(this.endTime.toString() + LF);
-        sb.append("Renew Till = ").append(this.renewTill.toString() + LF);
-        sb.append("Client Addresses ");
+        sb.append("Session Key = ").append(sessionKey.toString() + LF); //$NON-NLS-1$
+        sb.append("Forwardable Ticket = ").append(flags[FORWARDABLE] + LF); //$NON-NLS-1$
+        sb.append("Forwarded Ticket = ").append(flags[FORWARDED] + LF); //$NON-NLS-1$
+        sb.append("Proxiable Ticket = ").append(flags[PROXIABLE] + LF); //$NON-NLS-1$
+        sb.append("Proxy Ticket = ").append(flags[PROXY] + LF); //$NON-NLS-1$
+        sb.append("Postdated Ticket = ").append(flags[POSTDATED] + LF); //$NON-NLS-1$
+        sb.append("Renewable Ticket = ").append(flags[RENEWABLE] + LF); //$NON-NLS-1$
+        sb.append("Initial Ticket = ").append(flags[INITIAL] + LF); //$NON-NLS-1$
+        sb.append("Auth Time = ").append(this.authTime.toString() + LF); //$NON-NLS-1$
+        sb.append("Start Time = ").append(this.startTime.toString() + LF); //$NON-NLS-1$
+        sb.append("End Time = ").append(this.endTime.toString() + LF); //$NON-NLS-1$
+        sb.append("Renew Till = ").append(this.renewTill.toString() + LF); //$NON-NLS-1$
+        sb.append("Client Addresses "); //$NON-NLS-1$
         if (clientAddresses != null) {
             for (int i = 0; i < clientAddresses.length; i++) {
                 if (clientAddresses[i] == null) {
-                    throw new NullPointerException("InetAddress is null");
+                    throw new NullPointerException(Messages.getString("auth.46")); //$NON-NLS-1$
                 }
-                sb.append("clientAddresses[" + i + "] = ").append(clientAddresses[i].toString() + LF +"\t\t");
+                sb.append("clientAddresses[" + i + "] = ").append(clientAddresses[i].toString() + LF +"\t\t"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
         } else {
-            sb.append("null");
+            sb.append("null"); //$NON-NLS-1$
         }
         
         return sb.toString();
@@ -461,7 +462,7 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
      */
     private void checkState() {
         if (destroyed) {
-            throw new IllegalStateException("This ticket is destroyed");
+            throw new IllegalStateException(Messages.getString("auth.43")); //$NON-NLS-1$
         }
     }
 }

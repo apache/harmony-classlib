@@ -32,6 +32,8 @@ import java.util.Enumeration;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 
+import org.apache.harmony.auth.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -44,10 +46,10 @@ public final class ServicePermission extends Permission implements Serializable 
      */
     private static final long serialVersionUID = -1227585031618624935L;
 
-    private static final String INITIATE = "initiate";
-    private static final String ACCEPT = "accept";
-    private static final String INITIATE_ACCEPT = "initiate,accept";
-    private static final String[] ACTIONS_TABLE = {"", ACCEPT, INITIATE, INITIATE_ACCEPT};
+    private static final String INITIATE = "initiate"; //$NON-NLS-1$
+    private static final String ACCEPT = "accept"; //$NON-NLS-1$
+    private static final String INITIATE_ACCEPT = "initiate,accept"; //$NON-NLS-1$
+    private static final String[] ACTIONS_TABLE = {"", ACCEPT, INITIATE, INITIATE_ACCEPT}; //$NON-NLS-1$
 
     private final static char ACCEPT_MASK = 1;
     private final static char INITIATE_MASK = 2;
@@ -66,7 +68,7 @@ public final class ServicePermission extends Permission implements Serializable 
     // initialization of actions
     private void initActions(String actions) {
         if (actions == null || actions.length() < MIN_LEN) {
-            throw new IllegalArgumentException("Invalid actions mask");
+            throw new IllegalArgumentException(Messages.getString("auth.2E")); //$NON-NLS-1$
         }
 
         char[] c_acts = actions.toCharArray();
@@ -89,7 +91,7 @@ public final class ServicePermission extends Permission implements Serializable 
             if (ptr > len6) {
                 // expect string "accept" or "initiate", not just white
                 // spaces
-                throw new IllegalArgumentException("Invalid actions mask");
+                throw new IllegalArgumentException(Messages.getString("auth.2E")); //$NON-NLS-1$
             }
 
             //parsing string
@@ -113,7 +115,7 @@ public final class ServicePermission extends Permission implements Serializable 
                 result |= INITIATE_MASK;
                 ptr += INITIATE_LEN;
             } else {
-                throw new IllegalArgumentException("Invalid actions mask");
+                throw new IllegalArgumentException(Messages.getString("auth.2E")); //$NON-NLS-1$
             }
 
             //skipping trailing whitespaces
@@ -131,7 +133,7 @@ public final class ServicePermission extends Permission implements Serializable 
         } while (c_acts[ptr++] == ',');
 
         // unknown trailing symbol
-        throw new IllegalArgumentException("Invalid actions mask");
+        throw new IllegalArgumentException(Messages.getString("auth.2E")); //$NON-NLS-1$
     }
 
     /**
@@ -143,10 +145,10 @@ public final class ServicePermission extends Permission implements Serializable 
         initActions(actions);
 
         if (name == null) {
-            throw new NullPointerException("service principal is null");
+            throw new NullPointerException(Messages.getString("auth.2F")); //$NON-NLS-1$
         }
         if (name.trim().length() == 0) {
-            throw new IllegalArgumentException("service principal is empty");
+            throw new IllegalArgumentException(Messages.getString("auth.30")); //$NON-NLS-1$
         }
     }
 
@@ -234,7 +236,7 @@ final class KrbServicePermissionCollection extends PermissionCollection
     private static final long serialVersionUID = -4118834211490102011L;
 
     private static final ObjectStreamField[] serialPersistentFields = { new ObjectStreamField(
-            "permissions", Vector.class) };
+            "permissions", Vector.class) }; //$NON-NLS-1$
 
     private transient ServicePermission[] items = new ServicePermission[10];
 
@@ -250,12 +252,11 @@ final class KrbServicePermissionCollection extends PermissionCollection
     public void add(Permission permission) {
 
         if (isReadOnly()) {
-            throw new SecurityException("collection is read-only");
+            throw new SecurityException(Messages.getString("auth.21")); //$NON-NLS-1$
         }
 
         if (permission == null || !(permission instanceof ServicePermission)) {
-            throw new IllegalArgumentException("invalid permission: "
-                    + permission);
+            throw new IllegalArgumentException(Messages.getString("auth.22",permission)); //$NON-NLS-1$
         }
         synchronized (this) {
             if (offset == items.length) {
@@ -316,7 +317,7 @@ final class KrbServicePermissionCollection extends PermissionCollection
             }
         }
         ObjectOutputStream.PutField fields = out.putFields();
-        fields.put("permissions", permissions);
+        fields.put("permissions", permissions); //$NON-NLS-1$
         out.writeFields();
     }
 
@@ -324,12 +325,12 @@ final class KrbServicePermissionCollection extends PermissionCollection
     private void readObject(java.io.ObjectInputStream in) throws IOException,
             ClassNotFoundException {
         ObjectInputStream.GetField fields = in.readFields();
-        Vector permissions = (Vector) fields.get("permissions", null);
+        Vector permissions = (Vector) fields.get("permissions", null); //$NON-NLS-1$
         items = new ServicePermission[permissions.size() * 2];
         for (offset = 0; offset < items.length / 2;) {
             Object obj = permissions.get(offset);
             if (obj == null || !(obj instanceof ServicePermission)) {
-                throw new IllegalArgumentException("invalid permission: " + obj);
+                throw new IllegalArgumentException(Messages.getString("auth.22", obj)); //$NON-NLS-1$
             }
             items[offset++] = (ServicePermission) obj;
         }

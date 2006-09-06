@@ -23,6 +23,8 @@ package org.apache.harmony.auth;
 import java.security.Principal;
 import java.io.Serializable;
 
+import org.apache.harmony.auth.internal.nls.Messages;
+
 /** 
  * A Principal which stores user name. 
  */
@@ -42,7 +44,7 @@ public class NTUserPrincipal implements Serializable, Principal {
      */
     public NTUserPrincipal(String name) {
         if (name == null) {
-            throw new NullPointerException("name can not be null");
+            throw new NullPointerException(Messages.getString("auth.00")); //$NON-NLS-1$
         }
         this.name = name;
     }
@@ -58,7 +60,7 @@ public class NTUserPrincipal implements Serializable, Principal {
      * Returns String representation of this object.
      */
     public String toString() {
-        return "NTUserPrincipal: name=" + name;
+        return "NTUserPrincipal: name=" + name; //$NON-NLS-1$
     }
 
     /**

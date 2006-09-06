@@ -28,6 +28,7 @@ import java.security.Principal;
 import java.util.StringTokenizer;
 
 import org.apache.harmony.auth.internal.kerberos.v5.PrincipalName;
+import org.apache.harmony.auth.internal.nls.Messages;
 import org.apache.harmony.security.asn1.ASN1StringType;
 
 /**
@@ -87,7 +88,7 @@ public final class KerberosPrincipal implements Principal, Serializable {
         // FIXME: correctly implement parsing name according to RFC 1964
         // http://www.ietf.org/rfc/rfc1964.txt
         if (name == null || name.trim().length() == 0) {
-            throw new IllegalArgumentException("Invalid principal name");
+            throw new IllegalArgumentException(Messages.getString("auth.23")); //$NON-NLS-1$
         }
         int pos = name.indexOf('@');
         if (pos != -1) {
@@ -103,7 +104,7 @@ public final class KerberosPrincipal implements Principal, Serializable {
         if (realm.indexOf('/') != -1 || realm.indexOf(':') != -1
                 || realm.indexOf(0) != -1) {
             throw new IllegalArgumentException(
-                    "Illegal character in realm name; one of: '/', ':', null");
+                    Messages.getString("auth.24")); //$NON-NLS-1$
         }
     }
 
@@ -128,7 +129,7 @@ public final class KerberosPrincipal implements Principal, Serializable {
         init(name);
         // TODO: it is gag
         if (type < 0 || type > KRB_NT_UID) {
-            throw new IllegalArgumentException("Invalid name type");
+            throw new IllegalArgumentException(Messages.getString("auth.25")); //$NON-NLS-1$
         }
         this.type = type;
     }
@@ -229,7 +230,7 @@ public final class KerberosPrincipal implements Principal, Serializable {
             //there is only one component in principal name
             nameString = new String[] { str };
         } else {
-            StringTokenizer strTknzr = new StringTokenizer(str, "/");
+            StringTokenizer strTknzr = new StringTokenizer(str, "/"); //$NON-NLS-1$
             nameString = new String[strTknzr.countTokens()];
             for (int i = 0; i < nameString.length; i++) {
                 nameString[i] = strTknzr.nextToken();

@@ -23,6 +23,8 @@ package javax.security.auth.callback;
 
 import java.io.Serializable;
 
+import org.apache.harmony.auth.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  *
@@ -64,10 +66,10 @@ public class TextOutputCallback implements Callback, Serializable {
      */
     public TextOutputCallback(int messageType, String message) {
         if (messageType > ERROR || messageType < INFORMATION) {
-            throw new IllegalArgumentException("Invalid message type");
+            throw new IllegalArgumentException(Messages.getString("auth.16")); //$NON-NLS-1$
         }
         if (message == null || message.length() == 0) {
-            throw new IllegalArgumentException("Invalid message");
+            throw new IllegalArgumentException(Messages.getString("auth.1F")); //$NON-NLS-1$
         }
         this.messageType = messageType;
         this.message = message;

@@ -48,13 +48,13 @@ import org.apache.harmony.security.fortress.PolicyUtils;
 public class DefaultSubjectPolicy extends Policy {
 
     private static final AuthPermission REFRESH_POLICY = new AuthPermission(
-            "refreshPolicy");
+            "refreshPolicy"); //$NON-NLS-1$
 
     // System property for dynamically added policy location.
-    private static final String AUTH_SECURITY_POLICY = "java.security.auth.policy";
+    private static final String AUTH_SECURITY_POLICY = "java.security.auth.policy"; //$NON-NLS-1$
 
     // Prefix for numbered Policy locations specified in security.properties.
-    private static final String POLICY_URL_PREFIX = "auth.policy.url.";
+    private static final String POLICY_URL_PREFIX = "auth.policy.url."; //$NON-NLS-1$
 
     // A flag to denote whether this policy object was initialized or not. 
     private boolean isInitialized;
@@ -117,7 +117,7 @@ public class DefaultSubjectPolicy extends Policy {
 
         Properties system = new Properties((Properties) AccessController
                 .doPrivileged(new PolicyUtils.SystemKit()));
-        system.setProperty("/", File.separator);
+        system.setProperty("/", File.separator); //$NON-NLS-1$
         URL[] policyLocations = PolicyUtils.getPolicyURLs(system,
                 AUTH_SECURITY_POLICY, POLICY_URL_PREFIX);
 

@@ -25,6 +25,8 @@ import java.security.cert.X509Certificate;
 import java.security.PrivateKey;
 import javax.security.auth.Destroyable;
 
+import org.apache.harmony.auth.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  */
@@ -44,10 +46,10 @@ public final class X500PrivateCredential implements Destroyable {
      */
     public X500PrivateCredential(X509Certificate cert, PrivateKey key) {
         if (cert == null) {
-            throw new IllegalArgumentException("X509 certificate is null");
+            throw new IllegalArgumentException(Messages.getString("auth.28")); //$NON-NLS-1$
         }
         if (key == null) {
-            throw new IllegalArgumentException("Private key is null");
+            throw new IllegalArgumentException(Messages.getString("auth.29")); //$NON-NLS-1$
         }
         this.cert = cert;
         this.key = key;
@@ -60,7 +62,7 @@ public final class X500PrivateCredential implements Destroyable {
             String alias) {
         this(cert, key);
         if (alias == null) {
-            throw new IllegalArgumentException("Alias is null");
+            throw new IllegalArgumentException(Messages.getString("auth.2A")); //$NON-NLS-1$
         }
         this.alias = alias;
     }

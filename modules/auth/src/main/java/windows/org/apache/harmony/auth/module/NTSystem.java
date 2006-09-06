@@ -59,7 +59,7 @@ public final class NTSystem {
      */
     public NTSystem() {
         if (!loadLibDone) {
-            System.loadLibrary("hyauth");
+            System.loadLibrary("hyauth"); //$NON-NLS-1$
             initNatives();
             loadLibDone = true;
         }
@@ -71,8 +71,8 @@ public final class NTSystem {
      */
     public NTSystem(Map options) {
         this();
-        debugNative = "true".equalsIgnoreCase((String) options
-                .get("debugNative"));
+        debugNative = "true".equalsIgnoreCase((String) options //$NON-NLS-1$
+                .get("debugNative")); //$NON-NLS-1$
     }
 
     /**
@@ -150,16 +150,16 @@ public final class NTSystem {
      * Returns a String representation of this object.
      */
     public String toString() {
-        String s = "NTSystem:\n";
-        s += "   user         : " + user + "\n";
-        s += "   domainSid    : " + domainSid + "\n";
-        s += "   mainGroup    : " + mainGroup + "\n";
-        s += "   token        : " + token + "\n";
-        s += "   groups count : " + (groups == null ? 0 : groups.length);
+        String s = "NTSystem:\n"; //$NON-NLS-1$
+        s += "   user         : " + user + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
+        s += "   domainSid    : " + domainSid + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
+        s += "   mainGroup    : " + mainGroup + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
+        s += "   token        : " + token + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
+        s += "   groups count : " + (groups == null ? 0 : groups.length); //$NON-NLS-1$
         if (groups != null) {
-            s += "\n";
+            s += "\n"; //$NON-NLS-1$
             for (int i = 0; i < groups.length; i++) {
-                s += "      " + i + "] " + groups[i] + "\n";
+                s += "      " + i + "] " + groups[i] + "\n"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
         }
         return s;

@@ -68,6 +68,6 @@ public class NTNumericCredential {
      * Returns String representation of this object.
      */
     public String toString() {
-        return "NTNumericCredential: 0x" + Long.toHexString(token);
+        return "NTNumericCredential: 0x" + Long.toHexString(token); //$NON-NLS-1$
     }
 }
