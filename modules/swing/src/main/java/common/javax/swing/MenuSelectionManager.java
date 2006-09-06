@@ -87,7 +87,7 @@ public class MenuSelectionManager {
             }
         }
         if (selectedPath != null) {
-            for (int j = diffStart; j < selectedPath.length; j++) {
+            for (int j = selectedPath.length - 1; j >= diffStart; j--) {
                 selectedPath[j].menuSelectionChanged(false);
             }
         }

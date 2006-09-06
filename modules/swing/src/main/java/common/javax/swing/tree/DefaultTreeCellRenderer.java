@@ -49,6 +49,7 @@ public class DefaultTreeCellRenderer extends JLabel implements TreeCellRenderer 
 
     private Font font;
     private Color textDisabledColor;
+    private boolean drawsFocusBorderAroundIcon;
 
     public DefaultTreeCellRenderer() {
         setHorizontalAlignment(SwingConstants.LEFT);
@@ -61,6 +62,7 @@ public class DefaultTreeCellRenderer extends JLabel implements TreeCellRenderer 
         backgroundNonSelectionColor = UIManager.getColor("Tree.textBackground");
         borderSelectionColor = UIManager.getColor("Tree.selectionBorderColor");
         textDisabledColor = UIManager.getColor("Label.disabledForeground");
+        drawsFocusBorderAroundIcon = UIManager.getBoolean("Tree.drawsFocusBorderAroundIcon");
     }
 
     public Icon getDefaultOpenIcon() {
@@ -203,7 +205,11 @@ public class DefaultTreeCellRenderer extends JLabel implements TreeCellRenderer 
 
         if (hasFocus) {
             g.setColor(getBorderSelectionColor());
-            g.drawRect(x, 0, getWidth() - textOffest - 1, getHeight() - 1);
+            if (drawsFocusBorderAroundIcon) {
+                g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
+            } else {
+                g.drawRect(x, 0, getWidth() - textOffest - 1, getHeight() - 1);
+            }
         }
 
         g.setColor(oldColor);

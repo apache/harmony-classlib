@@ -743,8 +743,9 @@ public abstract class Component
 
     private boolean ignoreRepaint;
     private boolean enabled = true;
-    boolean inputMethodsEnabled = true;
-    private boolean focusable = true;       
+    private boolean inputMethodsEnabled = true;
+    transient boolean dispatchToIM = true;
+    private boolean focusable = true;       //By default, all Components return true from isFocusable() method
     boolean visible = true;
 
     private boolean calledSetFocusable;
@@ -1457,6 +1458,9 @@ public abstract class Component
             if(!isDisplayable()) return null;
 
             GraphicsConfiguration gc = getGraphicsConfiguration();
+            if (gc == null)
+                return null;
+            
             ColorModel cm = gc.getColorModel(Transparency.OPAQUE);
             WritableRaster wr = cm.createCompatibleWritableRaster(width, height);
             Image image = new BufferedImage(cm, wr, cm.isAlphaPremultiplied(), null);
@@ -1475,8 +1479,12 @@ public abstract class Component
             if(!isDisplayable()) {
                 return null;
             }
-            VolatileImage image = getGraphicsConfiguration().
-                    createCompatibleVolatileImage(width, height, caps);
+            
+            GraphicsConfiguration gc = getGraphicsConfiguration();
+            if (gc == null)
+                return null;
+            
+            VolatileImage image = gc.createCompatibleVolatileImage(width, height, caps);
 
             fillImageBackground(image, width, height);
             return image;
@@ -1491,8 +1499,12 @@ public abstract class Component
             if(!isDisplayable()) {
                 return null;
             }
-            VolatileImage image = getGraphicsConfiguration().
-                    createCompatibleVolatileImage(width, height);
+            
+            GraphicsConfiguration gc = getGraphicsConfiguration();
+            if (gc == null)
+                return null;
+            
+            VolatileImage image = gc.createCompatibleVolatileImage(width, height);
 
             fillImageBackground(image, width, height);
             return image;
@@ -1835,12 +1847,7 @@ public abstract class Component
     }
 
     public InputMethodRequests getInputMethodRequests() {
-        toolkit.lockAWT();
-        try {
-            return null;
-        } finally {
-            toolkit.unlockAWT();
-        }
+        return null;
     }
 
     public Locale getLocale() {
@@ -2430,6 +2437,9 @@ public abstract class Component
      * Calls InputContext.removeNotify
      */
     private void removeNotifyInputContext() {
+        if (!inputMethodsEnabled) {
+            return;
+        }
         InputContext ic = getInputContext();
         if (ic != null) {
             ic.removeNotify(this);
@@ -2526,6 +2536,7 @@ public abstract class Component
                 } else {
                     redrawManager.addUpdateRegion(this, new Rectangle(x, y, width, height));
                 }
+                toolkit.getSystemEventQueueCore().notifyEventMonitor(toolkit);
             }
 
         } finally {
@@ -2534,7 +2545,7 @@ public abstract class Component
     }
 
     void postEvent(AWTEvent e) {
-        getToolkit().getSystemEventQueue().postEvent(e);
+        getToolkit().getSystemEventQueueImpl().postEvent(e);
     }
 
     public void repaint(int x, int y, int width, int height) {
@@ -2677,7 +2688,11 @@ public abstract class Component
         notifyInputMethod(new Rectangle(x, y, w, h));
     }
 
-    void notifyInputMethod(Rectangle bounds) {
+    /**
+     * Calls InputContextImpl.notifyClientWindowChanged.
+     */
+    void notifyInputMethod(Rectangle bounds) {        
+        // only Window actually notifies IM of bounds change
     }
 
     private void setBoundsFields(int x, int y, int w, int h, int bMask) {
@@ -3258,10 +3273,11 @@ public abstract class Component
                 return new Dimension(minimumSize);
             }
             Dimension defSize = getDefaultMinimumSize();
-            if (defSize != null) {
-                return new Dimension(defSize);
+            if (defSize == null) {
+                defSize = (isDisplayable() ? new Dimension(1, 1) :
+                                             new Dimension(w, h));
             }
-            return new Dimension (w, h);
+            return new Dimension(defSize);
         } finally {
             toolkit.unlockAWT();
         }
@@ -3545,8 +3561,16 @@ public abstract class Component
                 }
             }
         }
-        AWTEvent.EventDescriptor descriptor = 
-            toolkit.eventTypeLookup.getEventDescriptor(e);
+            
+        if (inputMethodsEnabled && dispatchToIM && e.isPosted &&
+            dispatchEventToIM(e)) {
+            return;
+        }            
+        if (e.getID() == WindowEvent.WINDOW_ICONIFIED) {
+            notifyInputMethod(null);
+        }
+            
+        AWTEvent.EventDescriptor descriptor = toolkit.eventTypeLookup.getEventDescriptor(e);
 
         toolkit.dispatchAWTEvent(e);
         if (descriptor != null) {
@@ -3790,6 +3814,9 @@ public abstract class Component
     public void enableInputMethods(boolean enable) {
         toolkit.lockAWT();
         try {
+            if (!enable) {
+                removeNotifyInputContext();
+            }
             inputMethodsEnabled = enable;
         } finally {
             toolkit.unlockAWT();
@@ -4144,7 +4171,8 @@ public abstract class Component
         if (Thread.currentThread() instanceof EventDispatchThread) {
             r.run();
         } else {
-            toolkit.systemEventQueue.postEvent(new InvocationEvent(this, r));
+            toolkit.getSystemEventQueueImpl().postEvent(
+                    new InvocationEvent(this, r));
         }
     }
 
@@ -4344,5 +4372,34 @@ public abstract class Component
 
     void setTextFieldKit(TextFieldKit kit) {
         textFieldKit = kit;
+    }
+    
+    /**
+     * Dispatches input & focus events to input method
+     * context.
+     * @param e event to pass to InputContext.dispatchEvent()
+     * @return true if event was consumed by IM, false otherwise
+     */
+    private boolean dispatchEventToIM(AWTEvent e) {
+        InputContext ic = getInputContext();
+        if (ic == null) {
+            return false;
+        }
+        int id = e.getID();
+        boolean isInputEvent = 
+            ((id >= KeyEvent.KEY_FIRST) && 
+             (id <= KeyEvent.KEY_LAST)) ||
+            ((id >= MouseEvent.MOUSE_FIRST) &&
+             (id <= MouseEvent.MOUSE_LAST));
+        
+        if ( ((id >= FocusEvent.FOCUS_FIRST) &&
+              (id <= FocusEvent.FOCUS_LAST)) ||
+              isInputEvent) {
+            
+            ic.dispatchEvent(e);
+            
+        }
+        
+        return e.isConsumed();
     }
 }

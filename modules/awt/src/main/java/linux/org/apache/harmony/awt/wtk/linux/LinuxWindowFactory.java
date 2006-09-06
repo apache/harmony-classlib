@@ -22,10 +22,9 @@ package org.apache.harmony.awt.wtk.linux;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Point;
-import java.awt.event.WindowEvent;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.Map;
 
 import org.apache.harmony.awt.nativebridge.CLongPointer;
 import org.apache.harmony.awt.nativebridge.Int32Pointer;
@@ -34,41 +33,22 @@ import org.apache.harmony.awt.nativebridge.NativeBridge;
 import org.apache.harmony.awt.nativebridge.linux.X11;
 import org.apache.harmony.awt.nativebridge.linux.X11Defs;
 import org.apache.harmony.awt.wtk.CreationParams;
-import org.apache.harmony.awt.wtk.NativeEvent;
-import org.apache.harmony.awt.wtk.NativeEventListener;
-import org.apache.harmony.awt.wtk.NativeEventQueue;
 import org.apache.harmony.awt.wtk.NativeWindow;
 import org.apache.harmony.awt.wtk.WindowFactory;
 
 
-public final class LinuxWindowFactory implements WindowFactory, NativeEventQueue {
+public final class LinuxWindowFactory implements WindowFactory {
 
     private static final X11 x11 = X11.getInstance();
     private static final NativeBridge bridge = NativeBridge.getInstance();
 
     private final XServerConnection xConnection = new XServerConnection(x11);
-
     private final long display = xConnection.getDisplay();
-
     private final int screen = xConnection.getScreen();
-
     final WindowManager wm;
 
-    private final LinuxEventDecoder eventDecoder;
-
-    private NativeEventListener listener;
-
     private final long javaWindow;
-
     private final LinuxWindowMap allWindows = new LinuxWindowMap();
-
-    private X11.XEvent curEvent;
-
-    private LinkedList preprocessors = new LinkedList();
-
-    public void addPreprocessor(Preprocessor preprocessor) {
-        preprocessors.add(preprocessor);
-    }
 
     /**
      * Returns current root window id.
@@ -95,14 +75,10 @@ public final class LinuxWindowFactory implements WindowFactory, NativeEventQueue
     }
 
     public LinuxWindowFactory() {
-        curEvent = x11.createXEvent(false);
         javaWindow = x11.XCreateSimpleWindow(display, x11.XDefaultRootWindow(display),
                 0, 0, 1, 1, 0, 0, 0);
         x11.XSelectInput(display, javaWindow, X11Defs.StructureNotifyMask);
-        eventDecoder = new LinuxEventDecoder(javaWindow, this);
 
-        // select input for root window
-        // we need to have notification about selection owner change
         long rootWindow = getRootWindow();
         X11.XWindowAttributes attributes = x11.createXWindowAttributes(false);
         x11.XGetWindowAttributes(display, rootWindow, attributes);
@@ -112,65 +88,7 @@ public final class LinuxWindowFactory implements WindowFactory, NativeEventQueue
             attributes.get_your_event_mask() | X11Defs.StructureNotifyMask);
 
         wm = new WindowManager(this);
-
     }
-
-//  NativeEventQueue interface begin
-    public boolean waitEvent() {
-        if (eventDecoder.exposeEvent == null) {
-            do {
-                x11.XNextEvent(display, curEvent);
-            } while (preprocessEvent(curEvent));
-        }
-
-        return true; //X server doesn't provide the last event
-    }
-
-    public boolean isEmpty() {
-        return (x11.XPending(display) == 0);
-    }
-
-    public void awake() {
-        X11.XEvent event = x11.createXEvent(false);
-
-        event.set_type(X11Defs.MapNotify);
-        event.get_xany().set_window(javaWindow);
-        x11.XSendEvent(display, javaWindow, 0, X11Defs.StructureNotifyMask, event);
-        x11.XFlush(display);
-
-        listener.onAwake();
-    }
-
-    public long dispatchEventToListener() {
-        listener.onEventBegin();
-
-        if (eventDecoder.exposeEvent == null) {
-            eventDecoder.setEvent(curEvent);
-        } else {
-            eventDecoder.setEvent(eventDecoder.exposeEvent);
-            eventDecoder.exposeEvent = null;
-        }
-
-        try {
-            if ((eventDecoder.getEventId() != NativeEvent.ID_PLATFORM) &&
-                (eventDecoder.getEventId() != NativeEvent.ID_JAVA_EVENT))
-            {
-                listener.onEvent(eventDecoder);
-                if (eventDecoder.getEventId() == WindowEvent.WINDOW_CLOSED) {
-                    allWindows.remove(eventDecoder.getWindowId());
-                }
-            }
-            return 0; //Everything is always fine
-        } finally {
-            listener.onEventEnd();
-            listener.onEventNestingEnd();
-        }
-    }
-
-    public void setNativeEventListener(NativeEventListener l) {
-        listener = l;
-    }
-//NativeEventQueue interface end
 
     public NativeWindow createWindow(CreationParams p) {
         LinuxWindow lw = new LinuxWindow(this, p);
@@ -190,10 +108,6 @@ public final class LinuxWindowFactory implements WindowFactory, NativeEventQueue
     }
 
     public NativeWindow getWindowById(long id) {
-        if (!validWindowId(id)) {
-            throw new RuntimeException("GetWindowById: invalid Window ID " + id);
-        }
-
         return allWindows.get(id);
     }
 
@@ -204,10 +118,6 @@ public final class LinuxWindowFactory implements WindowFactory, NativeEventQueue
     void onWindowDispose(long windowID) {
         allWindows.remove(windowID);
     }
-
-    //Dummy-Gummy
-    public void onModalLoopBegin() {}
-    public void onModalLoopEnd() {}
 
     public String getAtomName(long atom) {
         long atomNamePtr = x11.XGetAtomName(display, atom);
@@ -299,22 +209,6 @@ public final class LinuxWindowFactory implements WindowFactory, NativeEventQueue
         return javaWindow;
     }
 
-    private boolean preprocessEvent(X11.XEvent event) {
-        for (Iterator i = preprocessors.iterator(); i.hasNext(); ) {
-            if (((Preprocessor) i.next()).preprocess(event)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public interface Preprocessor {
-
-        public boolean preprocess(X11.XEvent event);
-
-    }
-
 }
 
 class XServerConnection {
@@ -349,7 +243,7 @@ class XServerConnection {
 }
 
 final class LinuxWindowMap {
-    private final HashMap map = new HashMap();
+    private final Map map = Collections.synchronizedMap(new HashMap());
 
     LinuxWindow get(long id) {
         return (LinuxWindow)map.get(new Long(id));

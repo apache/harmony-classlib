@@ -531,6 +531,7 @@ public class TextComponent extends Component implements Accessible {
     TextComponent() {
         state = new State();
         editable = true;
+        dispatchToIM = true; // had been disabled by createBehavior()
         setFont(new Font("DialogInput", Font.PLAIN, 12)); // QUICK FIX
         document = new PlainDocument();
 

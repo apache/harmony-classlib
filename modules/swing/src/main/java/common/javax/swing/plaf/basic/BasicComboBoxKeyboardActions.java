@@ -1,5 +1,5 @@
 /*
- *  Copyright 2005 - 2006 The Apache Software Software Foundation or its licensors, as applicable.
+ *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -44,15 +44,41 @@ class BasicComboBoxKeyboardActions {
             }
         }
     }
-
-    private static AbstractAction selectNextAction = new PassThroughAction() {
-        public void actionPerformed(final ActionEvent e) {
+    
+    private abstract static class SelectNextPreviousAction extends AbstractAction {
+        private String command;
+        
+        private SelectNextPreviousAction(final String command) {
+            this.command = command;
+        }
+        
+        abstract void selectValue(final BasicComboBoxUI ui);
+        
+        public void actionPerformed(ActionEvent e) {
             JComboBox comboBox = (JComboBox)e.getSource();
             if (!comboBox.isPopupVisible()) {
                 comboBox.showPopup();
             } else {
-                passThroughEvent(e, "selectNextRow");
+                BasicComboBoxUI ui = ((BasicComboBoxUI)comboBox.getUI());
+                JList popupList = ui.popup.getList();
+                Action action = popupList.getActionMap().get(command);
+                if (action != null) {
+                    action.actionPerformed(new ActionEvent(popupList, ActionEvent.ACTION_PERFORMED, command, 
+                                           e.getWhen(), e.getModifiers()));
+                    selectValue(ui);
+                }
             }
+        }
+    }
+
+    private static AbstractAction selectPreviousAction = new SelectNextPreviousAction("selectPreviousRow") {
+        void selectValue(final BasicComboBoxUI ui) {
+            ui.selectPreviousPossibleValue();
+        }
+    };
+    private static AbstractAction selectNextAction = new SelectNextPreviousAction("selectNextRow") {
+        void selectValue(final BasicComboBoxUI ui) {
+            ui.selectNextPossibleValue();
         }
     };
 
@@ -89,7 +115,7 @@ class BasicComboBoxKeyboardActions {
 
 
     private static class HidePopupAction extends AbstractAction {
-        private final JComboBox comboBox;
+        protected final JComboBox comboBox;
 
         public HidePopupAction(final JComboBox comboBox) {
             this.comboBox = comboBox;
@@ -97,10 +123,31 @@ class BasicComboBoxKeyboardActions {
 
         public void actionPerformed(final ActionEvent e) {
             comboBox.hidePopup();
+            setValue();
         }
 
         public boolean isEnabled() {
             return comboBox.isPopupVisible();
+        }
+
+        protected void setValue() {
+        }
+    }
+
+    private static class HidePopupAndSetValueAction extends HidePopupAction {
+        public HidePopupAndSetValueAction(final JComboBox comboBox) {
+            super(comboBox);
+        }
+
+        public boolean isEnabled() {
+            return true;
+        }
+
+        protected void setValue() {
+            BasicComboBoxUI ui = ((BasicComboBoxUI)comboBox.getUI());
+            if (ui.isTableEditor) {
+                comboBox.setSelectedIndex(ui.popup.getList().getSelectedIndex());
+            }
         }
     }
 
@@ -108,17 +155,9 @@ class BasicComboBoxKeyboardActions {
         Utilities.installKeyboardActions(comboBox, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, "ComboBox.ancestorInputMap", null);
 
         comboBox.getActionMap().put("hidePopup", new HidePopupAction(comboBox));
-        comboBox.getActionMap().put("enterPressed", new HidePopupAction(comboBox));
+        comboBox.getActionMap().put("enterPressed", new HidePopupAndSetValueAction(comboBox));
         comboBox.getActionMap().put("selectNext", selectNextAction);
-        comboBox.getActionMap().put("selectPrevious", new PassThroughAction() {
-            public void actionPerformed(final ActionEvent e) {
-                passThroughEvent(e, "selectPreviousRow");
-            }
-
-            public boolean isEnabled() {
-                return comboBox.isPopupVisible();
-            }
-        });
+        comboBox.getActionMap().put("selectPrevious", selectPreviousAction);
         comboBox.getActionMap().put("togglePopup", togglePopupAction);
         comboBox.getActionMap().put("spacePopup", new AbstractAction() {
             public void actionPerformed(final ActionEvent e) {

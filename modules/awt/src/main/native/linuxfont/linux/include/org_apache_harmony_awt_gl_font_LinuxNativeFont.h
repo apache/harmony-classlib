@@ -102,13 +102,6 @@ Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getFamilyNative(JNIEnv *, jc
     jlong);
 
 /*
- * Method: org.apache.harmony.awt.gl.font.LinuxNativeFont.getFontNameNative(J)Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL
-Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getFontNameNative(JNIEnv *, jclass, 
-    jlong);
-
-/*
  * Method: org.apache.harmony.awt.gl.font.LinuxNativeFont.getFontPSNameNative(J)Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL
@@ -199,6 +192,13 @@ Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_NativeInitGlyphBitmap(JNIEnv
     jlong, jchar);
 
 /*
+ * Method: org.apache.harmony.awt.gl.font.LinuxNativeFont.getFontNameNative(J)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL
+Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getFontNameNative(JNIEnv *, jclass, 
+    jlong);
+
+/*
  * Method: org.apache.harmony.awt.gl.font.LinuxNativeFont.createXftDrawNative(JJJ)J
  */
 JNIEXPORT jlong JNICALL
@@ -233,6 +233,12 @@ JNIEXPORT jlong JNICALL
 Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getGlyphOutline(JNIEnv *, jclass, 
     jlong, jchar);
 
+/*
+ * Method: org.apache.harmony.awt.gl.font.LinuxNativeFont.getExtraMetricsNative(JII)[F
+ */
+JNIEXPORT jfloatArray JNICALL
+Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getExtraMetricsNative(JNIEnv *, jclass, 
+    jlong, jint, jint);
 
 #ifdef __cplusplus
 }

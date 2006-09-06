@@ -35,6 +35,8 @@ public class MultiRectArea implements Shape {
      */
     private static final boolean CHECK = false;
 
+    boolean sorted = true;
+    
     /**
      * Rectangle buffer
      */
@@ -351,6 +353,11 @@ public class MultiRectArea implements Shape {
         rect = MultiRectAreaOp.createBuf(0);
     }
 
+    public MultiRectArea(boolean sorted) {
+       this();
+       this.sorted = sorted;
+    }
+    
     /**
      * Constructs a new MultiRectArea as a copy of another one 
      */
@@ -465,7 +472,7 @@ public class MultiRectArea implements Shape {
      */
     static MultiRectArea check(MultiRectArea mra, String msg) {
         if (CHECK && mra != null) {
-            if (MultiRectArea.checkValidation(mra.getRectangles()) != -1) {
+            if (MultiRectArea.checkValidation(mra.getRectangles(), mra.sorted) != -1) {
                 new RuntimeException("Invalid MultiRectArea in method " + msg);
             }
         }
@@ -475,7 +482,7 @@ public class MultiRectArea implements Shape {
     /**
      * Checks validation of MultiRectArea object
      */
-    public static int checkValidation(Rectangle[] r) {
+    public static int checkValidation(Rectangle[] r, boolean sorted) {
 
         // Check width and height
         for(int i = 0; i < r.length; i++) {
@@ -485,13 +492,15 @@ public class MultiRectArea implements Shape {
         }
 
         // Check order
-        for(int i = 1; i < r.length; i++) {
-            if (r[i - 1].y > r[i].y) {
-                return i;
-            }
-            if (r[i - 1].y == r[i].y) {
-                if (r[i - 1].x > r[i].x) {
+        if (sorted) {
+            for(int i = 1; i < r.length; i++) {
+                if (r[i - 1].y > r[i].y) {
                     return i;
+                }
+                if (r[i - 1].y == r[i].y) {
+                    if (r[i - 1].x > r[i].x) {
+                        return i;
+                    }
                 }
             }
         }
@@ -671,8 +680,10 @@ public class MultiRectArea implements Shape {
         int y1 = rect[2];
         int x2 = rect[3];
         int y2 = rect[4];
+        
         for(int i = 5; i < rect[0]; i += 4) {
             int rx1 = rect[i + 0];
+            int ry1 = rect[i + 1];
             int rx2 = rect[i + 2];
             int ry2 = rect[i + 3];
             if (rx1 < x1) {
@@ -681,10 +692,14 @@ public class MultiRectArea implements Shape {
             if (rx2 > x2) {
                 x2 = rx2;
             }
+            if (ry1 < y1) {
+                y1 = ry1;
+            }
             if (ry2 > y2) {
                 y2 = ry2;
             }
         }
+        
         return bounds = new Rectangle(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
     }
 

@@ -89,11 +89,11 @@ public class BasicProgressBarUI extends ProgressBarUI {
 
     private static final int NOTEXT_HEIGHT_ADDITION = 5;
     private static final int MIN_WIDTH = 10;
-
+    private static final int STRING_PAINTED_CELL_LENGTH = 1;
+    private static final int STRING_PAINTED_CELL_SPACING = 0;
+    
     private int cellLength;
     private int cellSpacing;
-    private int defCellLength;
-    private int defCellSpacing;
     private PropertyChangeListener propertyChangeListener;
     private Color selectionBackground;
     private Color selectionForeground;
@@ -170,11 +170,9 @@ public class BasicProgressBarUI extends ProgressBarUI {
         selectionBackground = UIManager.getColor("ProgressBar.selectionBackground");
         selectionForeground = UIManager.getColor("ProgressBar.selectionForeground");
 
-        defCellLength = UIManager.getInt("ProgressBar.cellLength");
-        defCellSpacing = UIManager.getInt("ProgressBar.cellSpacing");
-        cellLength = defCellLength;
-        cellSpacing = defCellSpacing;
-
+        cellLength = UIManager.getInt("ProgressBar.cellLength");
+        cellSpacing = UIManager.getInt("ProgressBar.cellSpacing");
+        
         cycleTime = UIManager.getInt("ProgressBar.cycleTime");
         repaintInterval = UIManager.getInt("ProgressBar.repaintInterval");
         maxAnimationIndex = cycleTime / repaintInterval;
@@ -233,11 +231,7 @@ public class BasicProgressBarUI extends ProgressBarUI {
     }
 
     protected int getCellLength() {
-        if (!progressBar.isStringPainted()) {
-            return cellLength;
-        } else {
-            return defCellLength;
-        }
+        return !progressBar.isStringPainted() ? cellLength : STRING_PAINTED_CELL_LENGTH;        
     }
 
     protected void setCellLength(final int cellLen) {
@@ -245,11 +239,7 @@ public class BasicProgressBarUI extends ProgressBarUI {
     }
 
     protected int getCellSpacing() {
-        if (progressBar.isStringPainted()) {
-            return defCellSpacing;
-        } else {
-            return cellSpacing;
-        }
+        return !progressBar.isStringPainted() ? cellSpacing : STRING_PAINTED_CELL_SPACING;
     }
 
     protected void setCellSpacing(final int cellSpace) {
@@ -257,11 +247,8 @@ public class BasicProgressBarUI extends ProgressBarUI {
     }
 
     protected int getAmountFull(final Insets b, final int width, final int height) {
-        if (!isVertical()) {
-            return (int)(width * progressBar.getPercentComplete());
-         } else {
-             return (int)(height * progressBar.getPercentComplete());
-         }
+        return isVertical() ? (int)(height * progressBar.getPercentComplete()) :
+                              (int)(width * progressBar.getPercentComplete());
     }
 
     protected Rectangle getBox(final Rectangle r) {
@@ -287,12 +274,27 @@ public class BasicProgressBarUI extends ProgressBarUI {
         int actualWidth = innerArea.width;
         int actualHeight = innerArea.height;
 
+        
         g.setColor(progressBar.getForeground());
         int amountFull = getAmountFull(insets, actualWidth, actualHeight);
         if (!isVertical()) {
-            g.fillRect(insets.left, insets.top, amountFull, actualHeight);
+            if (getCellSpacing() == 0) {
+                g.fillRect(insets.left, insets.top, amountFull, actualHeight);    
+            } else {
+                g.clipRect(insets.left, insets.top, amountFull, actualHeight);
+                for (int i = 0; i < amountFull; i += cellLength + cellSpacing) {
+                    g.fillRect(i, insets.top, cellLength, actualHeight);
+                }
+            }
         } else {
-            g.fillRect(insets.left, insets.top - amountFull + actualHeight, actualWidth, amountFull);
+            if (getCellSpacing() == 0) {
+                g.fillRect(insets.left, insets.top - amountFull + actualHeight, actualWidth, amountFull);
+            } else {
+                g.clipRect(insets.left, insets.top - amountFull + actualHeight, actualWidth, amountFull);
+                for (int i = 0; i < amountFull; i += cellLength + cellSpacing) {
+                    g.fillRect(insets.left, insets.top - i + actualHeight, actualWidth, cellLength);
+                }
+            }
         }
     }
 

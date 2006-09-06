@@ -356,7 +356,9 @@ public class MultiRectAreaOp {
 
             MultiRectArea.RectCash dst = new MultiRectArea.RectCash();
 
-            if (src1.getRectCount() <= MAX_SIMPLE || src2.getRectCount() <= MAX_SIMPLE) {
+            if (!src1.sorted || !src2.sorted || 
+               src1.getRectCount() <= MAX_SIMPLE || src2.getRectCount() <= MAX_SIMPLE) 
+            {
                 dst.setRect(simpleIntersect(src1, src2), false);
             } else {
                 Rectangle bounds1 = src1.getBounds();
@@ -535,7 +537,9 @@ public class MultiRectAreaOp {
 
             dst = new MultiRectArea.RectCash();
 
-            if (src1.getRectCount() <= MAX_SIMPLE || src2.getRectCount() <= MAX_SIMPLE) {
+            if (!src1.sorted || !src2.sorted ||
+               src1.getRectCount() <= MAX_SIMPLE || src2.getRectCount() <= MAX_SIMPLE) 
+            {
                 simpleUnion(src1, src2, dst);
             } else {
                 Rectangle bounds1 = src1.getBounds();
@@ -808,8 +812,9 @@ public class MultiRectAreaOp {
 
             MultiRectArea.RectCash dst = new MultiRectArea.RectCash();
 
-            if (src1.getRectCount() <= MAX_SIMPLE || src2.getRectCount() <= MAX_SIMPLE) {
-
+            if (!src1.sorted || !src2.sorted ||
+               src1.getRectCount() <= MAX_SIMPLE || src2.getRectCount() <= MAX_SIMPLE) 
+            {
                 simpleSubtract(src1, src2, dst);
             } else {
                 Rectangle bounds1 = src1.getBounds();

@@ -111,7 +111,7 @@ public abstract class BasicTextUI extends TextUI implements ViewFactory {
     // The Parent of all view Hierarchy. In never changes. When document
     // changes,
     // a child of rootView will be replaced only.
-    private RootViewContext        rootViewContext ;
+    private RootViewContext        rootViewContext;
 
     // PropertyChangeListener, DocumentListener
     private Listener               listener             = new Listener();
@@ -545,35 +545,33 @@ public abstract class BasicTextUI extends TextUI implements ViewFactory {
     }
 
     protected void installDefaults() {
-        UIDefaults uiDefaults = UIManager.getLookAndFeelDefaults();
-
         LookAndFeel.installColorsAndFont(component, addPrefix(".background"),
                                                     addPrefix(".foreground"),
                                                     addPrefix(".font"));
         if (Utilities.isUIResource(component.getBorder())) {
-            component.setBorder(uiDefaults.getBorder(addPrefix(".border")));
+            component.setBorder(UIManager.getBorder(addPrefix(".border")));
         }
         if (Utilities.isUIResource(component.getMargin())) {
-            component.setMargin(uiDefaults.getInsets(addPrefix(".margin")));
+            component.setMargin(UIManager.getInsets(addPrefix(".margin")));
         }
         //RI 6251901. Documentation error
         if (Utilities.isUIResource(component.getCaretColor())) {
-            component.setCaretColor(uiDefaults.getColor(addPrefix(
+            component.setCaretColor(UIManager.getColor(addPrefix(
                                                       ".caretForeground")));
         }
 
         if (Utilities.isUIResource(component.getSelectionColor())) {
-            component.setSelectionColor(uiDefaults.getColor(addPrefix(
+            component.setSelectionColor(UIManager.getColor(addPrefix(
                                                       ".selectionBackground")));
         }
 
         if (Utilities.isUIResource(component.getSelectedTextColor())) {
-            component.setSelectedTextColor(uiDefaults
+            component.setSelectedTextColor(UIManager
                     .getColor(addPrefix(".selectionForeground")));
         }
 
         if (Utilities.isUIResource(component.getDisabledTextColor())) {
-            component.setDisabledTextColor(uiDefaults.getColor(addPrefix(
+            component.setDisabledTextColor(UIManager.getColor(addPrefix(
                                          ".inactiveForeground")));
         }
     }
@@ -629,10 +627,9 @@ public abstract class BasicTextUI extends TextUI implements ViewFactory {
   }
 
     final void installUIInputMap() {
-        UIDefaults uiDefaults = UIManager.getLookAndFeelDefaults();
         String propertyName = addPrefix(".focusInputMap");
         InputMapUIResource inputMap1 = new InputMapUIResource();
-        InputMapUIResource inputMap2 = (InputMapUIResource)uiDefaults
+        InputMapUIResource inputMap2 = (InputMapUIResource)UIManager
                 .get(propertyName);
         inputMap1.setParent(inputMap2);
         SwingUtilities.replaceUIInputMap(component, JComponent.WHEN_FOCUSED,
@@ -1007,9 +1004,10 @@ public abstract class BasicTextUI extends TextUI implements ViewFactory {
     }
 
     final boolean getI18nProperty() {
-        return document == null ? false
-           :((Boolean)document.getProperty(StringConstants.BIDI_PROPERTY))
-               .booleanValue();
+        return document == null
+               ? false
+               : ((Boolean)document.getProperty(StringConstants.BIDI_PROPERTY))
+                 .booleanValue();
     }
 
     private View getRootView() {

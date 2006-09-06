@@ -50,4 +50,11 @@ public abstract class WTK {
      * @return implementation of NativeRobot
      */
     public abstract NativeRobot getNativeRobot(GraphicsDevice screen);
+    
+    /**
+     * Returns platform specific implementation of the abstract
+     * class org.apache.harmony.awt.wtk.NativeIM.
+     * @return implementation of NativeIM
+     */
+    public abstract NativeIM getNativeIM();
 }

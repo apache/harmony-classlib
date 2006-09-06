@@ -205,6 +205,8 @@ public class BasicComboPopup extends JPopupMenu implements ComboPopup {
                 list.setCellRenderer((ListCellRenderer)event.getNewValue());
             } else if (StringConstants.COMPONENT_ORIENTATION.equals(event.getPropertyName())) {
                 applyComponentOrientation((ComponentOrientation)event.getNewValue());
+            } else if (StringConstants.LIGHTWEIGHT_POPUP_ENABLED_PROPERTY_CHANGED.equals(event.getPropertyName())) {
+                setLightWeightPopupEnabled(((Boolean)event.getNewValue()).booleanValue());
             }
         }
     }

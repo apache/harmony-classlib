@@ -27,15 +27,18 @@ import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
 import java.awt.Paint;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
+import java.util.Map;
 
 import org.apache.harmony.awt.gl.CommonGraphics2D;
 import org.apache.harmony.awt.gl.MultiRectArea;
+import org.apache.harmony.awt.gl.font.NativeFont;
 import org.apache.harmony.awt.wtk.NativeWindow;
 
 
@@ -132,6 +135,15 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
         setTransform(getTransform());
     }
 
+    public void addRenderingHints(Map hints) {
+        super.addRenderingHints(hints);
+        Object value = this.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+        if (value == RenderingHints.VALUE_ANTIALIAS_ON) 
+            NativeFont.setAntialiasing(gi,true);
+        else
+            NativeFont.setAntialiasing(gi,false);
+    }
+    
     public void copyArea(int x, int y, int width, int height, int dx, int dy) {
         copyArea(gi, x, y, width, height, dx, dy);
     }
@@ -497,6 +509,24 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
 
     // Fill native primitives
     private native void fillRect(long gi, int x, int y, int width, int height);
+
+    public void setRenderingHint(RenderingHints.Key key, Object value) {
+        super.setRenderingHint(key,value);
+        Object val = this.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+        if (val == RenderingHints.VALUE_ANTIALIAS_ON) 
+            NativeFont.setAntialiasing(gi,true);
+        else
+            NativeFont.setAntialiasing(gi,false);
+    }
+
+    public void setRenderingHints(Map hints) {
+        super.setRenderingHints(hints);
+        Object value = this.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+        if (value == RenderingHints.VALUE_ANTIALIAS_ON) 
+            NativeFont.setAntialiasing(gi,true);
+        else
+            NativeFont.setAntialiasing(gi,false);
+    }
 
 
     // Set native clip

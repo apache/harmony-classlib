@@ -205,6 +205,15 @@ public interface NativeWindow {
      * must be resized instead
      */
     void setPacked(boolean packed);
+    
+    /**
+     * Make window an "input method window" by setting
+     * special window style, e. g. small title bar, no
+     * close, minimize/maximize buttons. For internal
+     * use by input method framework.
+     *
+     */
+    void setIMStyle();
 
     MultiRectArea getObscuredRegion(Rectangle part);
 }

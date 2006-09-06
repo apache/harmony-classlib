@@ -22,16 +22,7 @@ package java.awt.dnd;
 public final class DnDConstants {
 
     static boolean isValidAction(int action) {
-        switch (action) {
-        case ACTION_NONE:
-        case ACTION_COPY:
-        case ACTION_MOVE:
-        case ACTION_COPY_OR_MOVE:
-        case ACTION_LINK:
-            return true;
-        default:
-            return false;
-        }
+        return (action & ~(ACTION_COPY_OR_MOVE|ACTION_LINK)) == 0;
     }
 
     private DnDConstants() {

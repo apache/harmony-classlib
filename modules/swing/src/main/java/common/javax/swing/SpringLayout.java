@@ -24,27 +24,20 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.LayoutManager2;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 
 public class SpringLayout implements LayoutManager2 {
-    public static final String WEST = "West";
-    public static final String EAST = "East";
-    public static final String NORTH = "North";
-    public static final String SOUTH = "South";
-
-    private static final byte WEST_EDGE = 0;
-    private static final byte EAST_EDGE = 1;
-    private static final byte NORTH_EDGE = 2;
-    private static final byte SOUTH_EDGE = 3;
-    private static final byte WIDTH = 4;
-    private static final byte HEIGHT = 5;
-
     public static class Constraints {
         private Spring x;
         private Spring y;
-        private Spring width;
-        private Spring height;
 
-        private Spring[] edges = new Spring[4];
+        private final Spring[] constraintSprings = new Spring[6];
+
+        private final ConstraintsOrder horizontalConstraintsOrder;
+        private final ConstraintsOrder verticalConstraintsOrder;
+
 
         public Constraints() {
             this(null, null, null, null);
@@ -63,28 +56,35 @@ public class SpringLayout implements LayoutManager2 {
 
         public Constraints(final Spring x, final Spring y,
                            final Spring width, final Spring height) {
-             this.width = width;
-             this.height = height;
-             this.edges[WEST_EDGE] = x;
-             this.edges[EAST_EDGE] = Spring.sum(x, width);
-             this.edges[NORTH_EDGE] = y;
-             this.edges[SOUTH_EDGE] = Spring.sum(y, height);
+             horizontalConstraintsOrder = new ConstraintsOrder(EAST_EDGE,
+                                                               WEST_EDGE,
+                                                               WIDTH);
+             constraintSprings[WIDTH] = width;
+             constraintSprings[WEST_EDGE] = x;
+             deriveConstraint(EAST_EDGE);
+
+             verticalConstraintsOrder = new ConstraintsOrder(SOUTH_EDGE,
+                                                             NORTH_EDGE,
+                                                             HEIGHT);
+             constraintSprings[HEIGHT] = height;
+             constraintSprings[NORTH_EDGE] = y;
+             deriveConstraint(SOUTH_EDGE);
         }
 
         public void setX(final Spring x) {
-            edges[WEST_EDGE] = x;
-            width = Spring.sum(edges[EAST_EDGE],
-                               Spring.minus(edges[WEST_EDGE]));
+            constraintSprings[WEST_EDGE] = x;
+            deriveConstraint(horizontalConstraintsOrder.push(WEST_EDGE));
+            this.x = null;
         }
 
         public Spring getX() {
-            return x == null ? calculateX() : x;
+           return x == null ? calculateX() : x;
         }
 
         public void setY(final Spring y) {
-            edges[NORTH_EDGE] = y;
-            height = Spring.sum(edges[SOUTH_EDGE],
-                                Spring.minus(edges[NORTH_EDGE]));
+            constraintSprings[NORTH_EDGE] = y;
+            deriveConstraint(verticalConstraintsOrder.push(NORTH_EDGE));
+            this.y = null;
         }
 
         public Spring getY() {
@@ -92,21 +92,23 @@ public class SpringLayout implements LayoutManager2 {
         }
 
         public void setWidth(final Spring width) {
-            this.width = width;
-            edges[EAST_EDGE] = Spring.sum(edges[WEST_EDGE], width);
+            constraintSprings[WIDTH] = width;
+            deriveConstraint(horizontalConstraintsOrder.push(WIDTH));
+            x = null;
         }
 
         public Spring getWidth() {
-            return width;
+            return constraintSprings[WIDTH];
         }
 
         public void setHeight(final Spring height) {
-            this.height = height;
-            edges[SOUTH_EDGE] = Spring.sum(edges[NORTH_EDGE], height);
+            constraintSprings[HEIGHT] = height;
+            deriveConstraint(verticalConstraintsOrder.push(HEIGHT));
+            y = null;
         }
 
         public Spring getHeight() {
-            return height;
+            return constraintSprings[HEIGHT];
         }
 
         public void setConstraint(final String edgeName, final Spring s) {
@@ -114,17 +116,17 @@ public class SpringLayout implements LayoutManager2 {
 
             switch (edge) {
                 case EAST_EDGE :
-                    edges[EAST_EDGE] = s;
-                    edges[WEST_EDGE] = Spring.sum(edges[EAST_EDGE],
-                                                  Spring.minus(width));
+                    constraintSprings[EAST_EDGE] = s;
+                    deriveConstraint(horizontalConstraintsOrder.push(EAST_EDGE));
+                    x = null;
                     break;
                 case WEST_EDGE:
                     setX(s);
                     break;
                 case SOUTH_EDGE:
-                    edges[SOUTH_EDGE] = s;
-                    edges[NORTH_EDGE] = Spring.sum(edges[SOUTH_EDGE],
-                                                   Spring.minus(height));
+                    constraintSprings[SOUTH_EDGE] = s;
+                    deriveConstraint(verticalConstraintsOrder.push(SOUTH_EDGE));
+                    y = null;
                     break;
                 case NORTH_EDGE:
                     setY(s);
@@ -135,54 +137,136 @@ public class SpringLayout implements LayoutManager2 {
         }
 
         public Spring getConstraint(final String edgeName) {
-            final int edge = SpringLayout.getType(edgeName);
-            if (edge >= 0) {
-                return edges[edge];
+            final int constraintType = SpringLayout.getType(edgeName);
+            if (constraintType >= 0) {
+                 return constraintSprings[constraintType];
             }
             return null;
         }
 
-        private Spring calculateX() {
-            if (edges[WEST_EDGE] != null) {
-                x = edges[WEST_EDGE];
-            } else if (edges[EAST_EDGE] != null) {
-                x = Spring.sum(edges[EAST_EDGE], Spring.minus(width));
-            } else {
-                x = Spring.constant(0);
+        private void deriveConstraint(final byte type) {
+            Spring newValue = null;
+            switch (type) {
+               case WEST_EDGE:
+                   if (constraintSprings[EAST_EDGE] != null && getWidth() != null) {
+                       newValue = Spring.sum(constraintSprings[EAST_EDGE],
+                                             Spring.minus(getWidth()));
+                   }
+                   break;
+               case EAST_EDGE:
+                   if (constraintSprings[WEST_EDGE] != null && getWidth() != null) {
+                       newValue =  Spring.sum(constraintSprings[WEST_EDGE],
+                                              getWidth());
+                   }
+                   break;
+               case WIDTH:
+                   if (constraintSprings[EAST_EDGE] != null
+                       && constraintSprings[WEST_EDGE] != null) {
+
+                       newValue =
+                           Spring.sum(constraintSprings[EAST_EDGE],
+                                      Spring.minus(constraintSprings[WEST_EDGE]));
+                   }
+                   break;
+               case NORTH_EDGE:
+                   if (constraintSprings[SOUTH_EDGE] != null && getHeight() != null) {
+                       newValue =  Spring.sum(constraintSprings[SOUTH_EDGE],
+                                              Spring.minus(getHeight()));
+                   }
+                   break;
+               case SOUTH_EDGE:
+                   if (constraintSprings[NORTH_EDGE] != null && getHeight() != null) {
+                       newValue =  Spring.sum(constraintSprings[NORTH_EDGE],
+                                              getHeight());
+                   }
+                   break;
+               case HEIGHT:
+                   if (constraintSprings[SOUTH_EDGE] != null
+                       && constraintSprings[NORTH_EDGE] != null) {
+
+                       newValue =
+                           Spring.sum(constraintSprings[SOUTH_EDGE],
+                                      Spring.minus(constraintSprings[NORTH_EDGE]));
+                   }
+                   break;
+               default:
+                   return;
             }
-            return x;
+            constraintSprings[type] = newValue;
+        }
+
+        private Spring calculateX() {
+            return constraintSprings[WEST_EDGE];
         }
 
         private Spring calculateY() {
-            if (edges[NORTH_EDGE] != null) {
-                y = edges[NORTH_EDGE];
-            } else if (edges[SOUTH_EDGE] != null) {
-                y = Spring.sum(edges[SOUTH_EDGE], Spring.minus(height));
-            } else {
-                y = Spring.constant(0);
-            }
-            return y;
+            return constraintSprings[NORTH_EDGE];
         }
 
-        private void clearConstraints() {
-            x = null;
-            y = null;
-            width.setValue(Spring.UNSET);
-            height.setValue(Spring.UNSET);
-            edges[WEST_EDGE].setValue(Spring.UNSET);
-            edges[EAST_EDGE].setValue(Spring.UNSET);
-            edges[NORTH_EDGE].setValue(Spring.UNSET);
-            edges[SOUTH_EDGE].setValue(Spring.UNSET);
+        private void clearConstraints(final SpringLayout layout) {
+            layout.markedSprings.clear();
+            constraintSprings[WIDTH].setValue(Spring.UNSET);
+            layout.markedSprings.clear();
+            constraintSprings[HEIGHT].setValue(Spring.UNSET);
+
+            layout.markedSprings.clear();
+            constraintSprings[WEST_EDGE].setValue(Spring.UNSET);
+            layout.markedSprings.clear();
+            constraintSprings[EAST_EDGE].setValue(Spring.UNSET);
+
+            layout.markedSprings.clear();
+            constraintSprings[NORTH_EDGE].setValue(Spring.UNSET);
+            layout.markedSprings.clear();
+            constraintSprings[SOUTH_EDGE].setValue(Spring.UNSET);
         }
     }
 
-    private static class ProxySpring extends Spring{
-        private final byte edgeType;
-        private final Constraints constraints;
+    private static class ConstraintsOrder {
+        private byte[] constraintsOrder = new byte[3];
+        private int offset;
+        public ConstraintsOrder(final byte constraintType1,
+                                final byte constrintType2,
+                                final byte constrintType3) {
+            push(constraintType1);
+            push(constrintType2);
+            push(constrintType3);
+        }
 
-        public ProxySpring(final byte edgeType, final Constraints constraints) {
+        public byte push(final byte constraintType) {
+            final int nextOffset = (offset + 1) % 3;
+            final int prevOffset = (offset + 2) % 3;
+            final byte oldConstraintType = constraintsOrder[nextOffset];
+
+            if (oldConstraintType == constraintType) {
+                offset = nextOffset;
+                return constraintsOrder[prevOffset];
+            }
+            if (peek() != constraintType) {
+                if (constraintsOrder[prevOffset] == constraintType) {
+                    constraintsOrder[prevOffset] = oldConstraintType;
+                }
+                constraintsOrder[nextOffset] = constraintType;
+
+                offset = nextOffset;
+            }
+            return oldConstraintType;
+        }
+
+        public byte peek() {
+            return constraintsOrder[offset];
+        }
+    }
+
+    private static class ProxySpring extends Spring {
+        private final byte edgeType;
+        private final SpringLayout layout;
+        private final Component component;
+
+        public ProxySpring(final byte edgeType, final Component component,
+                                 final SpringLayout layout) {
             this.edgeType = edgeType;
-            this.constraints = constraints;
+            this.layout = layout;
+            this.component = component;
         }
 
         public int getMinimumValue() {
@@ -198,50 +282,95 @@ public class SpringLayout implements LayoutManager2 {
         }
 
         public int getValue() {
-            return getSpring().getValue();
+            final Spring s = getSpring();
+            if (layout.calculatedSprings.containsKey(s)) {
+                return ((Integer)layout.calculatedSprings.get(s)).intValue();
+            }
+            if (layout.markedSprings.contains(s)) {
+                printCycles();
+                return 0;
+            }
+            layout.markedSprings.add(s);
+            final int value = s.getValue();
+            layout.calculatedSprings.put(s, new Integer(value));
+            return value;
         }
 
         public void setValue(final int value) {
-            getSpring().setValue(value);
+            final Spring s = getSpring();
+            if (layout.markedSprings.contains(s)) {
+                printCycles();
+                return;
+            }
+            layout.markedSprings.add(s);
+            s.setValue(value);
+        }
+
+        public String toString() {
+            String edgeName;
+            switch (edgeType) {
+               case WEST_EDGE:
+                   edgeName = "WEST";
+                   break;
+               case EAST_EDGE:
+                   edgeName = "EAST";
+                   break;
+               case NORTH_EDGE:
+                   edgeName = "NORTH";
+                   break;
+               case SOUTH_EDGE:
+                   edgeName = "SOUTH";
+                   break;
+               default:
+                   edgeName = "";
+                   break;
+            }
+            return "[ProxySpring for " + edgeName + " edge of component "
+                   + component.getClass().getName() + "]";
         }
 
         private Spring getSpring() {
             switch (edgeType) {
-                case WEST_EDGE:
-                    return constraints.getX();
-                case EAST_EDGE:
-                    return Spring.sum(constraints.getX(),
-                                      constraints.getWidth());
-                case NORTH_EDGE:
-                    return constraints.getY();
+            case WEST_EDGE:
+                return layout.getConstraints(component).getX();
+            case EAST_EDGE:
+                return Spring.sum(layout.getConstraints(component).getX(),
+                                  layout.getConstraints(component).getWidth());
+            case NORTH_EDGE:
+                return layout.getConstraints(component).getY();
 
-                case SOUTH_EDGE:
-                    return Spring.sum(constraints.getY(),
-                                      constraints.getHeight());
-                case WIDTH:
-                    return constraints.getWidth();
+            case SOUTH_EDGE:
+                return Spring.sum(layout.getConstraints(component).getY(),
+                                  layout.getConstraints(component).getHeight());
+            default:
+                return null;
+            }
+        }
 
-                case HEIGHT:
-                    return constraints.getHeight();
-
-                default:
-                    return null;
+        private void printCycles() {
+            final Iterator iterator = layout.markedSprings.iterator();
+            while (iterator.hasNext()) {
+                System.err.println(iterator.next() + " is cyclic.");
             }
         }
     }
 
+    public static final String WEST = "West";
+    public static final String EAST = "East";
+    public static final String NORTH = "North";
+    public static final String SOUTH = "South";
+
     private static final float CENTERED = 0.5f;
+    private static final byte WEST_EDGE = 0;
+    private static final byte EAST_EDGE = 1;
+    private static final byte NORTH_EDGE = 2;
+    private static final byte SOUTH_EDGE = 3;
+    private static final byte WIDTH = 4;
+    private static final byte HEIGHT = 5;
 
-    private HashMap constraintsMap = new HashMap();
-    private HashMap calculatedprings = new HashMap();
-
-    private Container target;
-
-    private boolean isLayoutValid = false;
-
-    private Dimension minimumSize;
-    private Dimension preferredSize;
-    private Dimension maximumSize;
+    private Map calculatedSprings = new HashMap();
+    private Map constraintsMap = new HashMap();
+    private HashSet markedSprings = new HashSet();
 
     public SpringLayout() {
     }
@@ -254,21 +383,48 @@ public class SpringLayout implements LayoutManager2 {
         constraintsMap.remove(c);
     }
 
-    public Dimension minimumLayoutSize(final Container parent) {
-        if (!isLayoutValid || target != parent) {
-            calculateLayoutParams();
-        }
-        return minimumSize;
+    public Dimension minimumLayoutSize(final Container container) {
+        Constraints targetConstraints = getConstraints(container);
+        initTargetConstrains(container, targetConstraints);
+
+        return new Dimension(targetConstraints.getWidth()
+                                 .getMinimumValue()
+                             + container.getInsets().left
+                             + container.getInsets().right,
+
+                             targetConstraints.getHeight()
+                                 .getMinimumValue()
+                             + container.getInsets().top
+                             + container.getInsets().bottom);
     }
 
-    public Dimension preferredLayoutSize(final Container parent) {
-        calculateLayoutParams();
-        return preferredSize;
+    public Dimension preferredLayoutSize(final Container container) {
+      Constraints targetConstraints = getConstraints(container);
+      initTargetConstrains(container, targetConstraints);
+      return new Dimension(targetConstraints.getWidth()
+                               .getPreferredValue()
+                           + container.getInsets().left
+                           + container.getInsets().right,
+
+                           targetConstraints.getHeight()
+                               .getPreferredValue()
+                           + container.getInsets().top
+                           + container.getInsets().bottom);
     }
 
-    public Dimension maximumLayoutSize(final Container parent) {
-        calculateLayoutParams();
-        return maximumSize;
+    public Dimension maximumLayoutSize(final Container container) {
+        Constraints targetConstraints = getConstraints(container);
+        initTargetConstrains(container, targetConstraints);
+
+        return new Dimension(targetConstraints.getWidth()
+                                 .getMaximumValue()
+                             + container.getInsets().left
+                             + container.getInsets().right,
+
+                             targetConstraints.getHeight()
+                                 .getMaximumValue()
+                             + container.getInsets().top
+                             + container.getInsets().bottom);
     }
 
     public void addLayoutComponent(final Component component,
@@ -287,7 +443,7 @@ public class SpringLayout implements LayoutManager2 {
     }
 
     public void invalidateLayout(final Container p) {
-        isLayoutValid = false;
+        //Do nothing
     }
 
     public void putConstraint(final String edge1, final Component component1,
@@ -305,7 +461,6 @@ public class SpringLayout implements LayoutManager2 {
 
         Constraints constraints1 =  getConstraints(component1);
 
-        Spring springValue;
         final byte edge1Type = getType(edge1);
         final byte edge2Type = getType(edge2);
 
@@ -314,30 +469,14 @@ public class SpringLayout implements LayoutManager2 {
         final boolean edge2IsHorizontal =  edge2Type == EAST_EDGE
                                            || edge2Type == WEST_EDGE;
 
-        springValue = Spring.sum(new ProxySpring(edge2Type,
-                                                 getConstraints(component2)),
-                                 pad);
-        if (edge1IsHorizontal &&  edge2IsHorizontal) {
+        if ((edge1IsHorizontal &&  edge2IsHorizontal)
+            || (!edge1IsHorizontal && !edge2IsHorizontal)) {
 
-            if (edge1Type == EAST_EDGE) {
-                constraints1.setConstraint(edge1, springValue);
-            } else {
-                constraints1.edges[WEST_EDGE] = springValue;
-                constraints1.edges[EAST_EDGE] =
-                    Spring.sum(constraints1.edges[WEST_EDGE],
-                               new ProxySpring(WIDTH, constraints1));
-            }
-            constraints1.x = null;
-        } else if (!edge1IsHorizontal && !edge2IsHorizontal) {
-            if (edge1Type == SOUTH_EDGE) {
-                constraints1.setConstraint(edge1, springValue);
-            } else {
-                constraints1.edges[NORTH_EDGE] = springValue;
-                constraints1.edges[SOUTH_EDGE] =
-                    Spring.sum(constraints1.edges[NORTH_EDGE],
-                               new ProxySpring(HEIGHT, constraints1));
-            }
-            constraints1.y = null;
+            constraints1.setConstraint(edge1,
+                                       Spring.sum(new ProxySpring(edge2Type,
+                                                                  component2,
+                                                                  this),
+                                        pad));
         }
     }
 
@@ -346,6 +485,7 @@ public class SpringLayout implements LayoutManager2 {
         if (constraints != null) {
             return (Constraints) constraints;
         }
+
         constraints = new Constraints(Spring.constant(0),
                                       Spring.constant(0),
                                       Spring.width(component),
@@ -357,35 +497,33 @@ public class SpringLayout implements LayoutManager2 {
     public Spring getConstraint(final String edgeName,
                                 final Component component) {
 
-        return getConstraints(component).getConstraint(edgeName);
+        return new ProxySpring(getType(edgeName),
+                                     component,
+                                     this);
     }
 
-    public void layoutContainer(final Container parent) {
+    public void layoutContainer(final Container container) {
         Component component;
         Constraints constraints;
 
-        if (target != parent) {
-            target = parent;
+        Constraints targetConstraints = getConstraints(container);
+        initTargetConstrains(container, targetConstraints);
+        targetConstraints.clearConstraints(this);
+
+        if (container.getLayout() != this) {
+            return;
         }
 
-        for (int i = 0; i < target.getComponentCount(); i++) {
-           constraints = getConstraints(target.getComponent(i));
-           constraints.clearConstraints();
+        for (int i = 0; i < container.getComponentCount(); i++) {
+            getConstraints(container.getComponent(i)).clearConstraints(this);
         }
+        calculatedSprings.clear();
 
-        calculatedprings.clear();
+        targetConstraints.getWidth().setValue(container.getWidth());
+        targetConstraints.getHeight().setValue(container.getHeight());
 
-        Constraints targetConstraints =  getConstraints(target);
-        targetConstraints.clearConstraints();
-        targetConstraints.getWidth().setValue(target.getWidth());
-        targetConstraints.getHeight().setValue(target.getHeight());
-        targetConstraints.getConstraint(SpringLayout.EAST)
-            .setValue(target.getWidth());
-        targetConstraints.getConstraint(SpringLayout.SOUTH)
-            .setValue(target.getHeight());
-
-        for (int i = 0; i < target.getComponentCount(); i++) {
-            component = target.getComponent(i);
+        for (int i = 0; i < container.getComponentCount(); i++) {
+            component = container.getComponent(i);
             constraints = getConstraints(component);
 
             component.setBounds(getValue(constraints.getX()),
@@ -393,42 +531,50 @@ public class SpringLayout implements LayoutManager2 {
                                 getValue(constraints.getWidth()),
                                 getValue(constraints.getHeight()));
         }
-        isLayoutValid = true;
-
     }
 
-    private void calculateLayoutParams() {
-//      Constraints constraints = getConstraints(target);
-//      minimumSize = new Dimension(constraints.getWidth().getMinimumValue(),
-//                                  constraints.getHeight().getMinimumValue());
-//      preferredSize = new Dimension(constraints.getWidth().getPreferredValue(),
-//                                    constraints.getHeight().getPreferredValue());
-//      maximumSize = new Dimension(constraints.getWidth().getMaximumValue(),
-//                                  constraints.getHeight().getMaximumValue());
-        minimumSize = new Dimension(0, 0);
-        preferredSize = new Dimension(0, 0);
-        maximumSize = new Dimension(0, 0);
-    }
-
-    private int getValue(final Spring s) {
-        if (!calculatedprings.containsKey(s)) {
-            int value = s.getValue();
-            calculatedprings.put(s, new Integer(value));
-            return value;
-        }
-        return ((Integer)calculatedprings.get(s)).intValue();
-    }
-
-    private static byte getType(final String edge) {
-        if (EAST.equals(edge)) {
+    private static byte getType(final String edgeName) {
+        if (EAST.equals(edgeName)) {
             return EAST_EDGE;
-        } else if (WEST.equals(edge)) {
+        } else if (WEST.equals(edgeName)) {
             return WEST_EDGE;
-        } else if (NORTH.equals(edge)) {
+        } else if (NORTH.equals(edgeName)) {
             return NORTH_EDGE;
-        } else if (SOUTH.equals(edge)) {
+        } else if (SOUTH.equals(edgeName)) {
             return SOUTH_EDGE;
         }
         return -1;
+    }
+
+    private int getValue(final Spring s) {
+        if (!calculatedSprings.containsKey(s)) {
+            markedSprings.clear();
+            final int value = s.getValue();
+            calculatedSprings.put(s, new Integer(value));
+            return value;
+        }
+        return ((Integer)calculatedSprings.get(s)).intValue();
+    }
+
+    private void initTargetConstrains(final Container target,
+                                      final Constraints targetConstraints) {
+        targetConstraints.setX(Spring.constant(0));
+        targetConstraints.setY(Spring.constant(0));
+
+        Spring width  = targetConstraints.getWidth();
+        if (width instanceof Spring.WidthSpring) {
+            if (((Spring.WidthSpring) width).component == target) {
+                targetConstraints.setWidth(Spring.constant(0, 0,
+                                                          Integer.MAX_VALUE));
+            }
+        }
+
+        Spring height  = targetConstraints.getHeight();
+        if (height instanceof Spring.HeightSpring) {
+            if (((Spring.HeightSpring) height).component == target) {
+                targetConstraints.setHeight(Spring.constant(0, 0,
+                                                           Integer.MAX_VALUE));
+            }
+        }
     }
 }

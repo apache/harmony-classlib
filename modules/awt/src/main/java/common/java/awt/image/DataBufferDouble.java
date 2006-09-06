@@ -62,18 +62,22 @@ public final class DataBufferDouble extends DataBuffer {
 
     public void setElem(int bank, int i, int val) {
         data[bank][offsets[bank] + i] = (double) val;
+        notifyChanged();
     }
 
     public void setElemFloat(int bank, int i, float val) {
         data[bank][offsets[bank] + i] = (double) val;
+        notifyChanged();
     }
 
     public void setElemDouble(int bank, int i, double val) {
         data[bank][offsets[bank] + i] = val;
+        notifyChanged();
     }
 
     public void setElem(int i, int val) {
         data[0][offset + i] = (double) val;
+        notifyChanged();
     }
 
     public int getElem(int bank, int i) {
@@ -90,13 +94,16 @@ public final class DataBufferDouble extends DataBuffer {
 
     public void setElemFloat(int i, float val) {
         data[0][offset + i] = (double) val;
+        notifyChanged();
     }
 
     public void setElemDouble(int i, double val) {
         data[0][offset + i] = val;
+        notifyChanged();
     }
 
     public double[] getData(int bank) {
+        notifyTaken();
         return data[bank];
     }
 
@@ -113,10 +120,12 @@ public final class DataBufferDouble extends DataBuffer {
     }
 
     public double[][] getBankData() {
+        notifyTaken();
         return (double[][]) data.clone();
     }
 
     public double[] getData() {
+        notifyTaken();
         return data[0];
     }
 }

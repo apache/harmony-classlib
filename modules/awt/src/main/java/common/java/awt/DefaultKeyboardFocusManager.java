@@ -309,8 +309,9 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
 
         if (prevWindow != null) {
             // do the same thing as when native "focus gained" event comes on
-            // prevFocusedWindow
-            requestFocusInWindow(prevWindow, false);
+            // prevFocusedWindow, but call behavior
+            // to generate native event & activate ancestor Frame
+            requestFocusInWindow(prevWindow, true);
         } else {
             // If there is no such Window,
             // then the KeyboardFocusManager will clear the global focus owner.

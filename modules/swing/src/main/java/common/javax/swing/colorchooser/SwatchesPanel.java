@@ -63,7 +63,8 @@ class SwatchesPanel extends AbstractColorChooserPanel {
         }
 
         public Dimension getPreferredSize() {
-            return new Dimension((oneColorWidth + 1) * colors.length, (oneColorHeight + 1) * colors[0].length);
+            return new Dimension((oneColorWidth + 1) * colors.length + 1,
+                                 (oneColorHeight + 1) * colors[0].length + 1);
         }
 
         public Dimension getMinimumSize() {
@@ -90,12 +91,10 @@ class SwatchesPanel extends AbstractColorChooserPanel {
                     Color paintColor = colors[i][j] != null ? colors[i][j] : this.getBackground();
                     graphics.setColor(paintColor);
                     graphics.fillRect((oneColorWidth + 1) * i, (oneColorHeight + 1)* j, oneColorWidth, oneColorHeight);
+                    graphics.setColor(Color.WHITE);
+                    graphics.draw3DRect((oneColorWidth + 1) * i, (oneColorHeight + 1)* j, oneColorWidth - 1, oneColorHeight - 1, true);
                 }
             }
-            graphics.setColor(Color.BLACK);
-            graphics.drawRect(0, 0, (oneColorWidth + 1) * colors.length - 1,
-                              (oneColorHeight + 1) * colors[0].length - 1);
-
             graphics.setColor(oldColor);
         }
 
@@ -125,15 +124,13 @@ class SwatchesPanel extends AbstractColorChooserPanel {
     }
 
     protected void buildChooser() {
-        // TODO: fix layout
         mnemonic = Integer.parseInt(UIManager.getString("ColorChooser.swatchesMnemonic"));
         displayedMnemonicIndex = Integer.parseInt(UIManager.getString("ColorChooser.swatchesDisplayedMnemonicIndex"));
 
         swatchSize = UIManager.getDimension("ColorChooser.swatchesSwatchSize");
         recentSwatchSize = UIManager.getDimension("ColorChooser.swatchesRecentSwatchSize");
 
-        JPanel right = new JPanel();
-        right.setLayout(new BorderLayout());
+        JPanel right = new JPanel(new BorderLayout());
         recentPanel = new SwatchPanel(new Color[RECENT_SWATCH_WIDTH][RECENT_SWATCH_HEIGHT],
                                                   null, recentSwatchSize);
         right.add(BorderLayout.CENTER, new JLabel(UIManager.getString("ColorChooser.swatchesRecentText")));

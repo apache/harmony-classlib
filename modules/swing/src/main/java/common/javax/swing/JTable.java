@@ -76,7 +76,6 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 import org.apache.harmony.x.swing.StringConstants;
-import org.apache.harmony.x.swing.Utilities;
 
 
 public class JTable extends JComponent implements TableModelListener, Scrollable, TableColumnModelListener, ListSelectionListener, CellEditorListener, Accessible {
@@ -658,6 +657,8 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
     private boolean dragEnabled;
     private Vector rowHeights = new Vector();
     private boolean surrendersFocusOnKeystroke;
+    private boolean wasConsumed;
+
 
     private static final String HEADER_PROPERTY = "tableHeader";
     private static final String ROW_HEIGHT_PROPERTY = "rowHeight";
@@ -694,8 +695,8 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
 
     public JTable(final TableModel model, final TableColumnModel columnModel, final ListSelectionModel selectionModel) {
         setColumnModel(columnModel != null ? columnModel : createDefaultColumnModel());
-        setSelectionModel(selectionModel != null ? selectionModel : createDefaultSelectionModel());
         setModel(model != null ? model : createDefaultDataModel());
+        setSelectionModel(selectionModel != null ? selectionModel : createDefaultSelectionModel());
 
         initializeLocalVars();
 
@@ -970,8 +971,19 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
 
 
     public void selectAll() {
-        getSelectionModel().setSelectionInterval(0, getRowCount() - 1);
-        getColumnModel().getSelectionModel().setSelectionInterval(0, getColumnCount() - 1);
+        int rowLead = getSelectionModel().getLeadSelectionIndex();
+        int rowAnchor = getSelectionModel().getAnchorSelectionIndex();
+        int columnLead = getColumnModel().getSelectionModel().getLeadSelectionIndex();
+        int columnAnchor = getColumnModel().getSelectionModel().getAnchorSelectionIndex();
+
+        getSelectionModel().setValueIsAdjusting(true);
+        getColumnModel().getSelectionModel().setValueIsAdjusting(true);
+        setRowSelectionInterval(0, getRowCount() - 1);
+        getSelectionModel().addSelectionInterval(rowAnchor, rowLead);
+        setColumnSelectionInterval(0, getColumnCount() - 1);
+        getColumnModel().getSelectionModel().addSelectionInterval(columnAnchor, columnLead);
+        getSelectionModel().setValueIsAdjusting(false);
+        getColumnModel().getSelectionModel().setValueIsAdjusting(false);
     }
 
     public void clearSelection() {
@@ -1048,18 +1060,18 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
 
     public void changeSelection(final int row, final int column, final boolean toggle, final boolean extend) {
         if (!toggle && !extend) {
-            getSelectionModel().setSelectionInterval(row, row);
-            getColumnModel().getSelectionModel().setSelectionInterval(column, column);
+            setRowSelectionInterval(row, row);
+            setColumnSelectionInterval(column, column);
         } else if (!toggle && extend) {
-            getSelectionModel().setSelectionInterval(getSelectionModel().getAnchorSelectionIndex(), row);
-            getColumnModel().getSelectionModel().setSelectionInterval(getColumnModel().getSelectionModel().getAnchorSelectionIndex(), column);
+            setRowSelectionInterval(getSelectionModel().getAnchorSelectionIndex(), row);
+            setColumnSelectionInterval(getColumnModel().getSelectionModel().getAnchorSelectionIndex(), column);
         } else if (toggle && !extend) {
             if (isCellSelected(row, column)) {
-                getSelectionModel().removeSelectionInterval(row, row);
-                getColumnModel().getSelectionModel().removeSelectionInterval(column, column);
+                removeRowSelectionInterval(row, row);
+                removeColumnSelectionInterval(column, column);
             } else {
-                getSelectionModel().addSelectionInterval(row, row);
-                getColumnModel().getSelectionModel().addSelectionInterval(column, column);
+                addRowSelectionInterval(row, row);
+                addColumnSelectionInterval(column, column);
             }
         } else {
             getSelectionModel().setAnchorSelectionIndex(row);
@@ -1387,7 +1399,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         columnModel = model;
         JTableHeader header = getTableHeader();
         if (header != null) {
-            columnModel.addColumnModelListener(getTableHeader());
+            columnModel.addColumnModelListener(header);
         }
         columnModel.addColumnModelListener(this);
     }
@@ -1408,6 +1420,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
 
         selectionModel = model;
         selectionModel.addListSelectionListener(this);
+        alignSelectionModelToRows();
 
         firePropertyChange(StringConstants.SELECTION_MODEL_PROPERTY, oldValue, model);
     }
@@ -1426,8 +1439,12 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
             }
         }
 
-        updateSelectionModel(getSelectionModel(), e);
-        updateColumnSelectionModel(getColumnModel().getSelectionModel(), e);
+        if (getSelectionModel() != null) {
+            updateSelectionModel(getSelectionModel(), e);
+        }
+        if (getColumnModel().getSelectionModel() != null) {
+            updateColumnSelectionModel(getColumnModel().getSelectionModel(), e);
+        }
 
         revalidate();
         repaint();
@@ -1669,11 +1686,22 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
     }
 
     protected void configureEnclosingScrollPane() {
-        setColumnHeader(getTableHeader());
+        JScrollPane enclosingScrollPane = getEnclosingScrollPane();
+        if (enclosingScrollPane == null) {
+            return;
+        }
+        enclosingScrollPane.setColumnHeaderView(getTableHeader());
+        enclosingScrollPane.setBorder(UIManager.getBorder("Table.scrollPaneBorder"));
+
     }
 
     protected void unconfigureEnclosingScrollPane() {
-        setColumnHeader(null);
+        JScrollPane enclosingScrollPane = getEnclosingScrollPane();
+        if (enclosingScrollPane == null) {
+            return;
+        }
+        enclosingScrollPane.setColumnHeaderView(null);
+        enclosingScrollPane.setBorder(null);
     }
 
     protected void createDefaultRenderers() {
@@ -1719,18 +1747,28 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
     protected void processKeyEvent(final KeyEvent event) {
         super.processKeyEvent(event);
         if (event.isConsumed()) {
+            wasConsumed = true;
+        }
+
+        if (event.getID() == KeyEvent.KEY_RELEASED) {
+            wasConsumed = false;
+            return;
+        }
+        if (wasConsumed) {
             return;
         }
 
         if (event.getKeyCode() == KeyEvent.VK_SHIFT
             || event.getKeyCode() == KeyEvent.VK_ALT
-            || event.getKeyCode() == KeyEvent.VK_CONTROL) {
+            || event.getKeyCode() == KeyEvent.VK_ALT_GRAPH
+            || event.getKeyCode() == KeyEvent.VK_CONTROL
+            || event.getKeyCode() == KeyEvent.VK_PRINTSCREEN
+            || event.getKeyCode() == KeyEvent.VK_CAPS_LOCK
+            || event.getKeyCode() == KeyEvent.VK_NUM_LOCK
+            || event.getKeyCode() == KeyEvent.VK_SCROLL_LOCK
+            || event.isAltDown()
+            || event.isControlDown()) {
 
-            return;
-        }
-
-        KeyStroke pressStroke = getPressedKeyStroke(event);
-        if (pressStroke == null || getActionForKeyStroke(pressStroke) != null) {
             return;
         }
 
@@ -1754,25 +1792,16 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         }
     }
 
-
-    private KeyStroke getPressedKeyStroke(final KeyEvent e) {
-        if (e.getID() == KeyEvent.KEY_PRESSED) {
-            return KeyStroke.getKeyStrokeForEvent(e);
-        } else if (e.getID() == KeyEvent.KEY_RELEASED) {
-            return KeyStroke.getKeyStroke(e.getKeyCode(), e.getModifiers(), false);
-        } else {
-            return KeyStroke.getKeyStroke(Utilities.keyCharToKeyCode(e.getKeyChar()), e.getModifiers(), false);
-        }
-    }
-
-    private void setColumnHeader(final Component c) {
+    private JScrollPane getEnclosingScrollPane() {
         if (getParent() instanceof JViewport
             && ((JViewport)getParent()).getView() == this) {
 
             if (getParent().getParent() instanceof JScrollPane) {
-                ((JScrollPane)getParent().getParent()).setColumnHeaderView(c);
+                return (JScrollPane)getParent().getParent();
             }
         }
+
+        return null;
     }
 
     private Object getClosestClass(final Class columnClass, final Hashtable classes) {
@@ -1829,9 +1858,11 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
     private void updateSelectionModel(final ListSelectionModel model, final TableModelEvent e) {
         if (e.getType() == TableModelEvent.INSERT) {
             model.insertIndexInterval(e.getFirstRow(), e.getLastRow() - e.getFirstRow() + 1, true);
+            alignSelectionModelToRows();
         }
         if (e.getType() == TableModelEvent.DELETE) {
             model.removeIndexInterval(e.getFirstRow(), e.getLastRow());
+            alignSelectionModelToRows();
         }
 
         if (e.getType() == TableModelEvent.UPDATE
@@ -1925,7 +1956,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         if (resizable.getElementsCount() == 0) {
             return;
         }
-        
+
         long minColsWidth = 0;
         long maxColsWidth = 0;
         long colsWidth = 0;
@@ -1987,7 +2018,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
                 result = i;
             }
         }
-        
+
         widths[result]--;
     }
 
@@ -1999,9 +2030,22 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
                 result = i;
             }
         }
-        
+
         widths[result]++;
     }
+
+    private void alignSelectionModelToRows() {
+        if (getRowCount() == 0) {
+            if (selectionModel.getAnchorSelectionIndex() >= 0) {
+                selectionModel.setValueIsAdjusting(true);
+                selectionModel.setAnchorSelectionIndex(-1);
+                selectionModel.setLeadSelectionIndex(-1);
+                selectionModel.setValueIsAdjusting(false);
+            }
+        } else if (selectionModel.getLeadSelectionIndex() < 0) {
+            selectionModel.removeSelectionInterval(0, 0);
+        }
+     }
 
     private interface ResizableElements {
         int getElementsCount();
@@ -2118,9 +2162,14 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
                 final boolean hasFocus,
                 final int row, final int column) {
 
+            
             JLabel result = (JLabel)super.getTableCellRendererComponent(table, null, isSelected, hasFocus, row, column);
             if (value != null) {
-                result.setIcon(new ImageIcon(value.toString()));
+                if (value instanceof Icon) {
+                    result.setIcon((Icon)value);
+                } else {
+                    result.setIcon(new ImageIcon(value.toString()));
+                }
                 result.setHorizontalAlignment(SwingConstants.CENTER);
                 result.setVerticalAlignment(SwingConstants.CENTER);
             } else {

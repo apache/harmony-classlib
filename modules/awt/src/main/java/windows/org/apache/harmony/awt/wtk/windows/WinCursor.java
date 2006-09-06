@@ -24,24 +24,32 @@ import org.apache.harmony.awt.wtk.NativeCursor;
 public class WinCursor implements NativeCursor {
     final long hCursor;
 
+    final WinEventQueue eventQueue;
+
   /*is this a system cursor?(such cursors are shared and can't be destroyed
           by user*/
     final boolean system;
 
-    WinCursor(final long handle, final boolean system) {
+    WinCursor(WinEventQueue eventQueue, final long handle, final boolean system) {
         hCursor = handle;
         this.system = system;
+        this.eventQueue = eventQueue;
     }
 
-    WinCursor(final long handle) {
-        this(handle, true); //create system(predefined) cursors by default
+    WinCursor(WinEventQueue eventQueue, final long handle) {
+        this(eventQueue, handle, true); //create system(predefined) cursors by default
     }
 
     /**
      * @see org.apache.harmony.awt.wtk.NativeCursor#setCursor()
      */
     public void setCursor(long winID) {
-        WinEventQueue.win32.SetCursor(hCursor);
+        WinEventQueue.Task task = new WinEventQueue.Task() {
+            public void perform() {
+                WinEventQueue.win32.SetCursor(hCursor);
+            }
+        };
+        eventQueue.performTask(task);
     }
 
     /**

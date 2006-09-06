@@ -104,16 +104,19 @@ public class GDIBlitter implements Blitter {
                 float alpha = ac.getAlpha();
                 if(srcSurf instanceof ImageSurface){
                     if(bgcolor == null || srcSurf.getTransparency() == Transparency.OPAQUE){
-                        bltImage(srcX, srcY, srcSurfStruct, ((ImageSurface)srcSurf).getData(),
+                        bltImage(srcX, srcY, srcSurfStruct, srcSurf.getData(),
                                 dstX, dstY, dstSurfStruct,
                                 width, height, compType, alpha,
-                                matrix, clipRects, numVertex);
+                                matrix, clipRects, numVertex, 
+                                srcSurf.invalidated());
                     }else{
-                        bltBGImage(srcX, srcY, srcSurfStruct, ((ImageSurface)srcSurf).getData(),
+                        bltBGImage(srcX, srcY, srcSurfStruct, srcSurf.getData(),
                                 dstX, dstY, dstSurfStruct,
                                 width, height, bgcolor.getRGB(),
-                                compType, alpha, matrix, clipRects, numVertex);
+                                compType, alpha, matrix, clipRects, 
+                                numVertex, srcSurf.invalidated());
                     }
+                    srcSurf.validate();
                 }else{
                     bltBitmap(srcX, srcY, srcSurfStruct,
                             dstX, dstY, dstSurfStruct,
@@ -123,10 +126,11 @@ public class GDIBlitter implements Blitter {
             }else if(comp instanceof XORComposite){
                 XORComposite xcomp = (XORComposite) comp;
                 if(srcSurf instanceof ImageSurface){
-                    xorImage(srcX, srcY, srcSurfStruct, ((ImageSurface)srcSurf).getData(),
+                    xorImage(srcX, srcY, srcSurfStruct, srcSurf.getData(),
                             dstX, dstY, dstSurfStruct,
                             width, height, xcomp.getXORColor().getRGB(),
-                            matrix, clipRects, numVertex);
+                            matrix, clipRects, numVertex, srcSurf.invalidated());
+                    srcSurf.validate();
                 }else{
                     xorBitmap(srcX, srcY, srcSurfStruct,
                             dstX, dstY, dstSurfStruct,
@@ -134,7 +138,8 @@ public class GDIBlitter implements Blitter {
                             matrix, clipRects, numVertex);
                 }
             }else{
-                throw new IllegalArgumentException("Unknown Composite type - " + comp.getClass());
+                throw new IllegalArgumentException("Unknown Composite type - " + 
+                        comp.getClass());
             }
         }else{
             BufferedImage bi;
@@ -165,13 +170,13 @@ public class GDIBlitter implements Blitter {
             Object srcData, int dstX, int dstY, long dstSurfDataPtr,
             int width, int height, int bgcolor,
             int compType, float alpha, double matrix[],
-            int clip[], int numVertex);
+            int clip[], int numVertex, boolean invalidated);
 
     private native void bltImage(int srcX, int srcY, long srsSurfDataPtr,
             Object srcData, int dstX, int dstY, long dstSurfDataPtr,
             int width, int height, int compType,
             float alpha, double matrix[],
-            int clip[], int numVertex);
+            int clip[], int numVertex, boolean invalidated);
 
     private native void bltBitmap(int srcX, int srcY, long srsSurfDataPtr,
             int dstX, int dstY, long dstSurfDataPtr,
@@ -182,7 +187,7 @@ public class GDIBlitter implements Blitter {
     private native void xorImage(int srcX, int srcY, long srsSurfDataPtr,
             Object srcData, int dstX, int dstY, long dstSurfDataPtr,
             int width, int height, int xorcolor, double matrix[],
-            int clip[], int numVertex);
+            int clip[], int numVertex, boolean invalidated);
 
     private native void xorBitmap(int srcX, int srcY, long srsSurfDataPtr,
             int dstX, int dstY, long dstSurfDataPtr,

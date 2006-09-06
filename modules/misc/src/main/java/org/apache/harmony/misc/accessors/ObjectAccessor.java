@@ -860,6 +860,10 @@ public class ObjectAccessor {
 
     private final native long getStaticFieldID(Class c, String name, String sig);
 
-
+    public final native long getGlobalReference(Object o);
+    
+    public final native void releaseGlobalReference(long ref);
+    
+    public final native Object getObjectFromReference(long ref);
 }
 

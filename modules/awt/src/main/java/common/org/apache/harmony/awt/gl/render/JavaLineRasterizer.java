@@ -675,7 +675,7 @@ public class JavaLineRasterizer {
      */
     public static MultiRectArea rasterize(int x1, int y1, int x2, int y2, MultiRectArea clip, LineDasher dasher, boolean invert) {
 
-        MultiRectArea dst = new MultiRectArea();
+        MultiRectArea dst = new MultiRectArea(false);
         int dx = x2 - x1;
         int dy = y2 - y1;
 

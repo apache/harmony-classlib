@@ -86,6 +86,7 @@ public class JavaTextRenderer extends TextRenderer {
                 Math.min((int)Math.round(c.getMaxY()), (int)Math.round(rBounds.getMaxY())));
 
     }
+
     /**
      * 
      * Draws string on specified raster at desired position.
@@ -178,7 +179,7 @@ public class JavaTextRenderer extends TextRenderer {
      * @param cMinY minimum y of the raster area to draw
      * @param cMaxX maximum x of the raster area to draw
      * @param cMaxY maximum y of the raster area to draw
-     */
+     */    
     public void drawClipString(WritableRaster raster, Object color, String str,
             FontPeerImpl font, int x, int y, int cMinX, int cMinY, int cMaxX,
             int cMaxY) {

@@ -19,6 +19,7 @@
  */
 package org.apache.harmony.awt.theme.windows;
 
+import java.awt.FileDialog;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
@@ -87,4 +88,19 @@ public class WinTheme extends Theme {
         WinTextComponent.drawBackground(g, s, this);
     }
 
+    public boolean showFileDialog(FileDialog fd) {
+        WinFileDialog dlg = WinFileDialog.getInstance(fd);
+        if (dlg == null) {
+            dlg = new WinFileDialog(fd);
+        }                
+        return dlg.show();
+    }
+
+    public boolean hideFileDialog(FileDialog fd) {
+        WinFileDialog dlg = WinFileDialog.getInstance(fd);
+        if (dlg != null) {
+            dlg.close();
+        }
+        return false;
+    }
 }

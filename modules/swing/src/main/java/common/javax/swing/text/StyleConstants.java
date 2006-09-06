@@ -251,6 +251,7 @@ public class StyleConstants {
     }
 
     public static void setFontSize(final MutableAttributeSet a, final int s) {
+        // TODO in version 1.5.0 use Integer.valueOf instead of constructor
         a.addAttribute(FontSize, new Integer(s));
     }
 
@@ -265,6 +266,7 @@ public class StyleConstants {
 
     public static void setSpaceBelow(final MutableAttributeSet a,
                                      final float i) {
+        // TODO in version 1.5.0 use Float.valueOf instead of constructor
         a.addAttribute(SpaceBelow, new Float(i));
     }
 

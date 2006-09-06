@@ -303,7 +303,7 @@ public class FlowViewTest extends BasicSwingTestCase {
                                                                    null);
         assertEquals(-19, xSR.minimum);
         assertEquals(-13, xSR.preferred);
-        assertEquals(Short.MAX_VALUE, xSR.maximum);
+        assertEquals(Integer.MAX_VALUE, xSR.maximum);
         assertEquals(0.5f, xSR.alignment, 1e-5f);
 
         SizeRequirements ySR = view.calculateMinorAxisRequirements(View.Y_AXIS,
@@ -311,7 +311,7 @@ public class FlowViewTest extends BasicSwingTestCase {
         assertSame(xSR, ySR);
         assertEquals(7, xSR.minimum);
         assertEquals(13, xSR.preferred);
-        assertEquals(Short.MAX_VALUE, xSR.maximum);
+        assertEquals(Integer.MAX_VALUE, xSR.maximum);
         assertEquals(0.5f, xSR.alignment, 1e-5f);
     }
 
@@ -407,7 +407,7 @@ public class FlowViewTest extends BasicSwingTestCase {
         assertNotNull(view.strategy);
 
         FlowView other = new FlowViewImpl(root, View.Y_AXIS);
-        assertNotSame(view.strategy, other.strategy);
+        assertSame(view.strategy, other.strategy);
     }
 
     public void testGetFlowAxis() {
@@ -453,6 +453,203 @@ public class FlowViewTest extends BasicSwingTestCase {
         assertEquals(-10, view.getFlowSpan(0));
         assertEquals(-10, view.getFlowSpan(1));
         assertEquals(-10, view.getFlowSpan(2));
+    }
+
+    public void testGetSpanNoRow() throws Exception {
+        view = new FlowViewImplWithFactory(root, View.Y_AXIS);
+        view.loadChildren(null);
+        assertEquals(0, view.getViewCount());
+
+        view.layoutPool.replace(1, view.layoutPool.getViewCount() - 1, null);
+        assertEquals(1, view.layoutPool.getViewCount());
+
+        final View child = view.layoutPool.getView(0);
+        int childX = (int)child.getPreferredSpan(View.X_AXIS);
+        int childY = (int)child.getPreferredSpan(View.Y_AXIS);
+        assertEquals(childX, (int)child.getMinimumSpan(View.X_AXIS));
+        assertEquals(childY, (int)child.getMinimumSpan(View.Y_AXIS));
+        assertEquals(childX, (int)child.getMaximumSpan(View.X_AXIS));
+        assertEquals(childY, (int)child.getMaximumSpan(View.Y_AXIS));
+
+        assertEquals(0, (int)view.layoutPool.getMinimumSpan(View.X_AXIS));
+        assertEquals(0, (int)view.layoutPool.getMinimumSpan(View.Y_AXIS));
+        assertEquals(childX, (int)view.layoutPool.getPreferredSpan(View.X_AXIS));
+        assertEquals(childY, (int)view.layoutPool.getPreferredSpan(View.Y_AXIS));
+        assertEquals(childX, (int)view.layoutPool.getMaximumSpan(View.X_AXIS));
+        assertEquals(childY, (int)view.layoutPool.getMaximumSpan(View.Y_AXIS));
+
+        assertEquals(0, (int)view.getMinimumSpan(View.X_AXIS));
+        assertEquals(0, (int)view.getMinimumSpan(View.Y_AXIS));
+        assertEquals(childX, (int)view.getPreferredSpan(View.X_AXIS));
+        assertEquals(0, (int)view.getPreferredSpan(View.Y_AXIS));
+        assertEquals(Integer.MAX_VALUE, (int)view.getMaximumSpan(View.X_AXIS));
+        assertEquals(0, (int)view.getMaximumSpan(View.Y_AXIS));
+    }
+
+    public void testGetSpanOneRowNoChildren() throws Exception {
+        view = new FlowViewImplWithFactory(root, View.Y_AXIS);
+        view.loadChildren(null);
+        assertEquals(0, view.getViewCount());
+
+        view.layoutPool.replace(1, view.layoutPool.getViewCount() - 1, null);
+        assertEquals(1, view.layoutPool.getViewCount());
+        final View row = view.createRow();
+        view.append(row);
+
+        final View child = view.layoutPool.getView(0);
+        int childX = (int)child.getPreferredSpan(View.X_AXIS);
+        int childY = (int)child.getPreferredSpan(View.Y_AXIS);
+        assertEquals(childX, (int)child.getMinimumSpan(View.X_AXIS));
+        assertEquals(childY, (int)child.getMinimumSpan(View.Y_AXIS));
+        assertEquals(childX, (int)child.getMaximumSpan(View.X_AXIS));
+        assertEquals(childY, (int)child.getMaximumSpan(View.Y_AXIS));
+
+        assertEquals(0, (int)view.layoutPool.getMinimumSpan(View.X_AXIS));
+        assertEquals(0, (int)view.layoutPool.getMinimumSpan(View.Y_AXIS));
+        assertEquals(childX, (int)view.layoutPool.getPreferredSpan(View.X_AXIS));
+        assertEquals(childY, (int)view.layoutPool.getPreferredSpan(View.Y_AXIS));
+        assertEquals(childX, (int)view.layoutPool.getMaximumSpan(View.X_AXIS));
+        assertEquals(childY, (int)view.layoutPool.getMaximumSpan(View.Y_AXIS));
+
+        assertEquals(0, (int)view.getMinimumSpan(View.X_AXIS));
+        assertEquals(0, (int)view.getMinimumSpan(View.Y_AXIS));
+        assertEquals(childX, (int)view.getPreferredSpan(View.X_AXIS));
+        assertEquals(0, (int)view.getPreferredSpan(View.Y_AXIS));
+        assertEquals(Integer.MAX_VALUE, (int)view.getMaximumSpan(View.X_AXIS));
+        assertEquals(Integer.MAX_VALUE, (int)view.getMaximumSpan(View.Y_AXIS));
+    }
+
+    public void testGetSpanOneRowOneChild() throws Exception {
+        view = new FlowViewImplWithFactory(root, View.Y_AXIS);
+        view.loadChildren(null);
+        assertEquals(0, view.getViewCount());
+
+        view.layoutPool.replace(1, view.layoutPool.getViewCount() - 1, null);
+        assertEquals(1, view.layoutPool.getViewCount());
+
+        final View row = view.createRow();
+        view.append(row);
+        final View child = view.layoutPool.getView(0);
+        row.append(child);
+
+        int childX = (int)child.getPreferredSpan(View.X_AXIS);
+        int childY = (int)child.getPreferredSpan(View.Y_AXIS);
+        assertEquals(childX, (int)child.getMinimumSpan(View.X_AXIS));
+        assertEquals(childY, (int)child.getMinimumSpan(View.Y_AXIS));
+        assertEquals(childX, (int)child.getMaximumSpan(View.X_AXIS));
+        assertEquals(childY, (int)child.getMaximumSpan(View.Y_AXIS));
+
+        assertEquals(0, (int)view.layoutPool.getMinimumSpan(View.X_AXIS));
+        assertEquals(0, (int)view.layoutPool.getMinimumSpan(View.Y_AXIS));
+        assertEquals(childX, (int)view.layoutPool.getPreferredSpan(View.X_AXIS));
+        assertEquals(childY, (int)view.layoutPool.getPreferredSpan(View.Y_AXIS));
+        assertEquals(childX, (int)view.layoutPool.getMaximumSpan(View.X_AXIS));
+        assertEquals(childY, (int)view.layoutPool.getMaximumSpan(View.Y_AXIS));
+
+        assertEquals(0, (int)view.getMinimumSpan(View.X_AXIS));
+        assertEquals(childY, (int)view.getMinimumSpan(View.Y_AXIS));
+        assertEquals(childX, (int)view.getPreferredSpan(View.X_AXIS));
+        assertEquals(childY, (int)view.getPreferredSpan(View.Y_AXIS));
+        assertEquals(Integer.MAX_VALUE, (int)view.getMaximumSpan(View.X_AXIS));
+        assertEquals(Integer.MAX_VALUE, (int)view.getMaximumSpan(View.Y_AXIS));
+    }
+
+    public void testGetSpanNoRowFlexible() throws Exception {
+        ChildrenFactory factory = new ChildrenFactory();
+        factory.makeFlexible();
+        view = new FlowViewImplWithFactory(root, View.Y_AXIS, factory);
+        view.loadChildren(null);
+        assertEquals(0, view.getViewCount());
+
+        view.layoutPool.replace(1, view.layoutPool.getViewCount() - 1, null);
+        assertEquals(1, view.layoutPool.getViewCount());
+        final View child = view.layoutPool.getView(0);
+        int childPrefX = (int)child.getPreferredSpan(View.X_AXIS);
+        int childPrefY = (int)child.getPreferredSpan(View.Y_AXIS);
+
+        assertEquals(0, (int)view.layoutPool.getMinimumSpan(View.X_AXIS));
+        assertEquals(0, (int)view.layoutPool.getMinimumSpan(View.Y_AXIS));
+        assertEquals(childPrefX, (int)view.layoutPool.getPreferredSpan(View.X_AXIS));
+        assertEquals(childPrefY, (int)view.layoutPool.getPreferredSpan(View.Y_AXIS));
+        assertEquals(childPrefX, (int)view.layoutPool.getMaximumSpan(View.X_AXIS));
+        assertEquals(childPrefY, (int)view.layoutPool.getMaximumSpan(View.Y_AXIS));
+
+        assertEquals(0, (int)view.getMinimumSpan(View.X_AXIS));
+        assertEquals(0, (int)view.getMinimumSpan(View.Y_AXIS));
+        assertEquals(childPrefX, (int)view.getPreferredSpan(View.X_AXIS));
+        assertEquals(0, (int)view.getPreferredSpan(View.Y_AXIS));
+        assertEquals(Integer.MAX_VALUE, (int)view.getMaximumSpan(View.X_AXIS));
+        assertEquals(0, (int)view.getMaximumSpan(View.Y_AXIS));
+    }
+
+    public void testGetSpanOneRowNoChildrenFlexible() throws Exception {
+        ChildrenFactory factory = new ChildrenFactory();
+        factory.makeFlexible();
+        view = new FlowViewImplWithFactory(root, View.Y_AXIS, factory);
+        view.loadChildren(null);
+        assertEquals(0, view.getViewCount());
+
+        view.layoutPool.replace(1, view.layoutPool.getViewCount() - 1, null);
+        assertEquals(1, view.layoutPool.getViewCount());
+        final View row = view.createRow();
+        view.append(row);
+        final View child = view.layoutPool.getView(0);
+        int childPrefX = (int)child.getPreferredSpan(View.X_AXIS);
+        int childPrefY = (int)child.getPreferredSpan(View.Y_AXIS);
+
+        assertEquals(0, (int)view.layoutPool.getMinimumSpan(View.X_AXIS));
+        assertEquals(0, (int)view.layoutPool.getMinimumSpan(View.Y_AXIS));
+        assertEquals(childPrefX, (int)view.layoutPool.getPreferredSpan(View.X_AXIS));
+        assertEquals(childPrefY, (int)view.layoutPool.getPreferredSpan(View.Y_AXIS));
+        assertEquals(childPrefX, (int)view.layoutPool.getMaximumSpan(View.X_AXIS));
+        assertEquals(childPrefY, (int)view.layoutPool.getMaximumSpan(View.Y_AXIS));
+
+        assertEquals(0, (int)view.getMinimumSpan(View.X_AXIS));
+        assertEquals(0, (int)view.getMinimumSpan(View.Y_AXIS));
+        assertEquals(childPrefX, (int)view.getPreferredSpan(View.X_AXIS));
+        assertEquals(0, (int)view.getPreferredSpan(View.Y_AXIS));
+        assertEquals(Integer.MAX_VALUE, (int)view.getMaximumSpan(View.X_AXIS));
+        assertEquals(Integer.MAX_VALUE, (int)view.getMaximumSpan(View.Y_AXIS));
+    }
+
+    public void testGetSpanOneRowOneChildFlexible() throws Exception {
+        ChildrenFactory factory = new ChildrenFactory();
+        factory.makeFlexible();
+        view = new FlowViewImplWithFactory(root, View.Y_AXIS, factory);
+        view.loadChildren(null);
+        assertEquals(0, view.getViewCount());
+
+        view.layoutPool.replace(1, view.layoutPool.getViewCount() - 1, null);
+        assertEquals(1, view.layoutPool.getViewCount());
+        final View row = view.createRow();
+        view.append(row);
+        final View child = view.layoutPool.getView(0);
+        row.append(child);
+        int childMinY = (int)child.getMinimumSpan(View.Y_AXIS);
+        int childPrefX = (int)child.getPreferredSpan(View.X_AXIS);
+        int childPrefY = (int)child.getPreferredSpan(View.Y_AXIS);
+
+        assertEquals(0, (int)view.layoutPool.getMinimumSpan(View.X_AXIS));
+        assertEquals(0, (int)view.layoutPool.getMinimumSpan(View.Y_AXIS));
+        assertEquals(childPrefX, (int)view.layoutPool.getPreferredSpan(View.X_AXIS));
+        assertEquals(childPrefY, (int)view.layoutPool.getPreferredSpan(View.Y_AXIS));
+        assertEquals(childPrefX, (int)view.layoutPool.getMaximumSpan(View.X_AXIS));
+        assertEquals(childPrefY, (int)view.layoutPool.getMaximumSpan(View.Y_AXIS));
+
+        assertEquals(0, (int)view.getMinimumSpan(View.X_AXIS));
+        assertEquals(childMinY, (int)view.getMinimumSpan(View.Y_AXIS));
+        assertEquals(childPrefX, (int)view.getPreferredSpan(View.X_AXIS));
+        assertEquals(childPrefY, (int)view.getPreferredSpan(View.Y_AXIS));
+        assertEquals(Integer.MAX_VALUE, (int)view.getMaximumSpan(View.X_AXIS));
+        assertEquals(Integer.MAX_VALUE, (int)view.getMaximumSpan(View.Y_AXIS));
+    }
+
+    public void testGetAttributesLayoutPool() {
+        view = new FlowViewImplWithFactory(root, View.Y_AXIS);
+        view.loadChildren(null);
+        assertSame(view.getAttributes(), view.layoutPool.getAttributes());
+        view.layoutPool.setParent(null);
+        assertNull(view.layoutPool.getAttributes());
     }
 
     private int getSpanY() {

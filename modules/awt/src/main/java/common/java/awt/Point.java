@@ -78,7 +78,7 @@ public class Point extends Point2D implements Serializable {
     }
 
     public void setLocation(double x, double y) {
-        setLocation((int)Math.ceil(x), (int)Math.ceil(y));
+        setLocation((int)Math.round(x), (int)Math.round(y));
     }
 
     public void move(int x, int y) {

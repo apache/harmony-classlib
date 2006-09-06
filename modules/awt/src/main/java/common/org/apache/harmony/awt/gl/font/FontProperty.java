@@ -27,7 +27,7 @@ package org.apache.harmony.awt.gl.font;
  *
  */
 public class FontProperty {
-    
+
     // font file name 
     String fileName = null;
     

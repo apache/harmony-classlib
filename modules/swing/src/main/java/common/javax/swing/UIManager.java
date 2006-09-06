@@ -42,7 +42,6 @@ import javax.swing.border.Border;
 import javax.swing.event.SwingPropertyChangeSupport;
 import javax.swing.plaf.ComponentUI;
 
-import org.apache.harmony.misc.SystemUtils;
 import org.apache.harmony.x.swing.Utilities;
 
 

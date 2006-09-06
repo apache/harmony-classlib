@@ -197,8 +197,12 @@ class HSBPanel extends AbstractColorChooserPanel {
     }
 
     public void updateChooser() {
-        internalUpdateDisabled = true;
         Color color = getColorSelectionModel().getSelectedColor();
+        if (color == null) {
+            return;
+        }
+        internalUpdateDisabled = true;
+        
         float[] hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
         float[] rgb = color.getRGBComponents(null);
 

@@ -30,7 +30,7 @@ import java.awt.geom.AffineTransform;
 public class FontMetricsImpl extends FontMetrics  {
 
     private static final long serialVersionUID = 844695615201925138L;
-    
+
     // ascent of the font
     private int ascent;
     
@@ -216,7 +216,7 @@ public class FontMetricsImpl extends FontMetrics  {
     
     /**
      * Returns FontPeer implementation of the Font describing this 
-     * FontMetricsImpl object.
+     * FontMetricsImpl object. 
      *  
      * @return a FontPeer object, that is the platform dependent FontPeer 
      * implementation for the Font describing this FontMetricsImpl object.

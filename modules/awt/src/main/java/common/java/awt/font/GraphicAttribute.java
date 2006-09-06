@@ -33,7 +33,7 @@ public abstract class GraphicAttribute {
     public static final int CENTER_BASELINE = 1;
 
     public static final int HANGING_BASELINE = 2;
-    
+
     // the alignment of this GraphicAttribute
     private int alignment;
 

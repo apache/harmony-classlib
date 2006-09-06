@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.Vector;
 
-import org.apache.harmony.awt.gl.font.CompositeFont;
 import org.apache.harmony.awt.gl.font.FontManager;
 import org.apache.harmony.awt.gl.font.FontProperty;
 
@@ -69,54 +68,6 @@ public class LinuxFontManager extends FontManager {
         fontFile.deleteOnExit();
 
         return fontFile;
-    }
-
-    /**
-     * Creates and returns logical font peer. 
-     * 
-     * @param logicalName logical font family name
-     * @param font specified Font object
-     * @return In case of non-null fontproperties for the specified logical 
-     * name CompositeFont object is returned, otherwise LinuxFont object is 
-     * returned.
-     */
-    private FontPeer CreateLogicalFont(String logicalName, Font font){
-        FontProperty[] fps = getFontProperties(logicalName.toLowerCase() + "." + font.getStyle());
-        if (fps != null){
-            return new CompositeFont(font, fps, logicalName);
-        }
-        return new LinuxFont(font, true, logicalName, logicalName, null);
-    }
-
-    public FontPeer createFont(Font font){
-        String fontName = font.getName();
-        if (isFontLogical(font)){
-            return CreateLogicalFont(fontName, font);
-        }
-
-        String fontStyle = null;
-        String family = null;
-        String face = null;
-
-        int faceIndex = getFaceIndex(fontName);
-        // Check if name parameter is face name
-        if (faceIndex != -1){
-            fontStyle = LinuxNativeFont.getFontStyle(faceIndex);
-            family = LinuxNativeFont.getFamily(faceIndex);
-            face = fontName;
-        } else
-            // Check if name parameter is family name
-            if(isFamilyExist(fontName)){
-                family = fontName;
-            } else {
-                return CreateLogicalFont(FontManager.LOGICAL_FONT_NAMES[3], font);  // "dialog"
-            }
-        return new LinuxFont(font, false, family, face, fontStyle);
-    }
-
-    public FontPeer createFont(FontProperty fp, int size){
-        LinuxFontProperty lfp = (LinuxFontProperty)fp;
-        return new LinuxFont(lfp, size);
     }
 
     /**
@@ -289,6 +240,33 @@ public class LinuxFontManager extends FontManager {
             fonts[i] = new Font(faces[i], Font.PLAIN, 1);
         }
         return fonts;
+    }
+
+    public FontPeer createPhysicalFontPeer(String name, int style, int size) {
+        LinuxFont peer;
+        int familyIndex = getFamilyIndex(name);
+        if (familyIndex != -1){
+            // !! we use family names from the list with cached families because 
+            // they are differ from the family names in xlfd structure, in xlfd 
+            // family names mostly in lower case.
+            peer = new LinuxFont(getFamily(familyIndex), style, size);
+            peer.setFamily(getFamily(familyIndex));
+            return peer;
+        }
+        int faceIndex = getFaceIndex(name); 
+        if (faceIndex != -1){
+            style |= LinuxNativeFont.getFontStyle(faceIndex);
+            name = LinuxNativeFont.getFamilyFromFaceIndex(faceIndex);
+
+            peer = new LinuxFont(name, style, size);
+            return peer;
+        }
+        
+        return null;
+    }
+
+    public FontPeer createDefaultFont(int style, int size) {
+        return new LinuxFont(DEFAULT_NAME, style, size);
     }
 
 }

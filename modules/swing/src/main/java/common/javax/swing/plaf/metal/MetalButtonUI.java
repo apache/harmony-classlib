@@ -38,8 +38,6 @@ public class MetalButtonUI extends BasicButtonUI {
     protected Color focusColor;
     protected Color selectColor;
 
-    private Color pressedButtonBG;
-
     private static MetalButtonUI commonMetalButtonUI;
 
     public static ComponentUI createUI(final JComponent component) {
@@ -51,7 +49,6 @@ public class MetalButtonUI extends BasicButtonUI {
 
     public void installDefaults(final AbstractButton button) {
         super.installDefaults(button);
-        pressedButtonBG = UIManager.getColor(getPropertyPrefix() + "shadow");
     }
 
     public void uninstallDefaults(final AbstractButton button) {
@@ -75,7 +72,7 @@ public class MetalButtonUI extends BasicButtonUI {
 
     protected void paintButtonPressed(final Graphics g, final AbstractButton button) {
         if (button.getModel().isArmed() && button.isContentAreaFilled()) {
-            ButtonCommons.paintPressed(g, button, pressedButtonBG);
+            ButtonCommons.paintPressed(g, button, getSelectColor());
         }
     }
 

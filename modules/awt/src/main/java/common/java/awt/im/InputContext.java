@@ -23,12 +23,14 @@ import java.awt.AWTEvent;
 import java.awt.Component;
 import java.util.Locale;
 
+import org.apache.harmony.awt.im.InputMethodContext;
+
 public class InputContext {
     protected InputContext() {
     }
 
     public static InputContext getInstance() {
-        return null;
+        return new InputMethodContext();
     }
 
     public void dispatchEvent(AWTEvent event) {

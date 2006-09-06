@@ -31,17 +31,16 @@ import org.apache.harmony.awt.gl.font.FontPeerImpl;
  */
 public class LinuxNativeFont {
     
-    
     public static final int FC_SLANT_ROMAN = 0;
     public static final int FC_SLANT_ITALIC = 100;
     public static final int FC_SLANT_OBLIQUE = 110;
     public static final int FC_WEIGHT_MEDIUM = 100;
-    
+
     /**
      * Returns array of Strings that represents list of all font families names
      * available on the system.  
      */
-    public static native String[] getFontFamiliesNames();
+    public synchronized static native String[] getFontFamiliesNames();
 
     /**
      * Returns true if the new font was added to the system, false otherwise.
@@ -50,8 +49,8 @@ public class LinuxNativeFont {
      *   
      * @param absolutePath absolute path to the font.
      */
-    public static native boolean embedFontNative(String absolutePath);
-    
+    public synchronized static native boolean embedFontNative(String absolutePath);
+
     /**
      * Initiailzes native Xft font object from specified parameters and returns 
      * font handle, also sets font type to the font peer parameter. 
@@ -63,27 +62,16 @@ public class LinuxNativeFont {
      * @param size size of the font
      * @param styleName style name of the font
      */
-    public static native long initializeFont(LinuxFont linFont, String family, int style, int size, String styleName);
-
-    /**
-     * Initializes native Xft font object from xlfd string and returns font handle,  
-     * also sets font type to the font peer parameter. If font 
-     * that is described by the given xlfd doesn't exist onto a system returned value
-     * is null. NullPointerException is thrown if there are errors in native code. 
-     * 
-     * @param linFont LinuxFont instanse
-     * @param xlfd String representing font in xlfd format
-     * @param size size of the font
-     */
-    public static native long initializeFontFromFP(LinuxFont linFont, String xlfd, int size);
+    public synchronized static native long initializeFont(LinuxFont linFont, String family, int style, int size, String styleName);
 
     /** 
      * Returns number of glyphs in specified XftFont if success. 
      * 
      * @param hndFont XftFont handle
      */
-    public static native int getNumGlyphsNative(long hndFont);
-    
+
+    public synchronized static native int getNumGlyphsNative(long hndFont);
+
     /**
      * Returns true, if XftFont object can display specified char.
      * 
@@ -93,21 +81,21 @@ public class LinuxNativeFont {
     // !! Instead of this method getGlyphCode can be used
     // TODO: implement method and find out if this method faster than getGlyphCode 
     // usage 
-    public static native boolean canDisplayCharNative(long hndFont, char c);
+    public synchronized static native boolean canDisplayCharNative(long hndFont, char c);
 
     /**
      * Returns family name of the XftFont object.
      * 
      * @param hndFont XftFont handle
      */
-    public static native String getFamilyNative(long hndFont);
-    
+    public synchronized static native String getFamilyNative(long hndFont);
+
     /**
      * Returns face name of the XftFont object.
      * 
      * @param hndFont XftFont handle
      */
-    public static native String getFontNameNative(long hndFont);
+    public synchronized static native String getFontNameNative(long hndFont);
 
     /**
      * Returns XftFont's postscript name.
@@ -116,7 +104,7 @@ public class LinuxNativeFont {
      * 
      * @param fnt XftFont handle
      */
-    public static native String getFontPSNameNative(long fnt);
+    public synchronized static native String getFontPSNameNative(long fnt);
 
     /**
      * Disposing XftFont object.
@@ -124,7 +112,7 @@ public class LinuxNativeFont {
      * @param hndFont XftFont handle
      * @param display Display handle
      */
-    public static native void pFontFree(long hndFont, long display);
+    public synchronized static native void pFontFree(long hndFont, long display);
 
     /**
      * Returns tangent of Italic angle of given Font.
@@ -133,13 +121,13 @@ public class LinuxNativeFont {
      * @param hndFont XftFont handle
      * @param fontType type of the font
      */
-    public static native float getItalicAngleNative(long hndFont, int fontType);
-    
+    public synchronized static native float getItalicAngleNative(long hndFont, int fontType);
+
     /** 
      * Returns an array of available system fonts names.
      * In case of errors in native code NullPointerException is thrown.
      */
-    public static native String[] getFonts();
+    public synchronized static native String[] getFonts();
 
     /**
      * Returns array of values of font metrics corresponding to the given XftFont 
@@ -151,7 +139,7 @@ public class LinuxNativeFont {
      * @param usesFractionalMetrics true if results calculated using fractional metrics
      * @param fontType type of the specified font
      */
-    public static native float[] getNativeLineMetrics(long hFont, int fontSize,
+    public synchronized static native float[] getNativeLineMetrics(long hFont, int fontSize,
             boolean isAntialiased, boolean usesFractionalMetrics, int fontType);
 
     /** 
@@ -162,7 +150,7 @@ public class LinuxNativeFont {
      * @param pFnt XftFont handle
      * @param c specified char
      */
-    public static native float[] getGlyphInfoNative(long pFnt, char c,
+    public synchronized static native float[] getGlyphInfoNative(long pFnt, char c,
             int fontSize);
 
     /** 
@@ -172,8 +160,8 @@ public class LinuxNativeFont {
      * @param pFnt XftFont handle
      * @param c specified char
      */
-    public static native int[] getGlyphPxlInfoNative(long display, long pFnt, char c);
-    
+    public synchronized static native int[] getGlyphPxlInfoNative(long display, long pFnt, char c);
+
     /**
      * Returns glyphs code corresponding to the characters in String specified, null 
      * is returned if failure. NullPointerException is thrown in case of Display 
@@ -184,8 +172,8 @@ public class LinuxNativeFont {
      * @param display Display handle
      */
     // TODO: implement native call
-    public static native int[] getGlyphCodesNative(long fnt, String str, int len);
-    
+    public synchronized static native int[] getGlyphCodesNative(long fnt, String str, int len);
+
     /**
      * Returns glyph code corresponding to the specified character, null is 
      * returned if failure. NullPointerException is thrown in case of Display is null.
@@ -194,8 +182,8 @@ public class LinuxNativeFont {
      * @param uChar specified char
      * @param display Display handle
      */
-    public static native int getGlyphCodeNative(long fnt, char uChar, long display);
-    
+    public synchronized static native int getGlyphCodeNative(long fnt, char uChar, long display);
+
     /**
      * Updates specified folder where temporary font created from InputStream stored.
      * This method used in LinuxFont dispose method, it re-caches ~/.fonts
@@ -204,20 +192,7 @@ public class LinuxNativeFont {
      * @param tempFontFileName directory that is being re-cached name.
      * @return not null value if succcess, 0 otherwise
      */
-    public static native int RemoveFontResource(String tempFontFileName);
-    
-    /**
-     * Returns byte array that represents bitmap
-     * of the character specified. 
-     * ( Better to use NativeInitGlyphBitmap method to get
-     * bitmap of the glyph. This method is to be deleted in the nearest future.)
-     * 
-     * @param fnt XftFont handle
-     * @param chr specified char
-     */
-    // TODO: avoid use of this method in font classes due to incomplete returned 
-    // bitmap information
-    public static native byte[] NativeInitGlyphImage(long fnt, char uChar);
+    public synchronized static native int RemoveFontResource(String tempFontFileName);
 
     /**
      * Draws text on XftDraw with specified parameters using Xft library.
@@ -232,17 +207,52 @@ public class LinuxNativeFont {
      * @param len length of the array of chars
      * @param xcolor XColor handle, the color of the text
      */
-    public static native void drawStringNative(long xftDraw, long display, long colormap, long font, int x, int y, char[] chars, int len, long xcolor);
+    public synchronized static native void drawStringNative(long xftDraw, long display, long colormap, long font, int x, int y, char[] chars, int len, long xcolor);
     
 // FreeType routines
+    
     /**
-     * Returns pointer to FreeType FT_Bitmap that represents bitmap
-     * of the character specified or 0 if failures in native code.
+     * Returns pointer to GlyphBitmap structure that represents bitmap
+     * with parameters of the character specified or 0 if failures 
+     * in native code.
      * 
      * @param fnt XftFont handle
      * @param chr specified char
      */
-    public static native long NativeInitGlyphBitmap(long fnt, char chr);
+    public synchronized static native long NativeInitGlyphBitmap(long fnt, char chr);
+    
+    /**
+     * Disposes memory block that is used by FreeType FT_Bitmap structure
+     * by pointer specified.
+     * 
+     * @param ptr specified pointer to the memory block
+     */    
+    public synchronized static native void NativeFreeGlyphBitmap(long bitmap);
+
+    /**
+     * Returns pointer to the FreeType FT_Outline structure. 
+     * 
+     * @param pFont XFT font handle
+     * @param c specified character
+     */
+    public synchronized static native long getGlyphOutline(long pFont, char c);
+    
+    /**
+     * Disposes memory block that is used by FreeType FT_Outline structure
+     * by pointer specified.
+     * 
+     * @param ptr specified pointer to the memory block
+     */
+    public synchronized static native void freeGlyphOutline(long ptr);
+
+    /**
+     * Returns an array of pairs of coordinates [x1, y1, x2, y2...] from 
+     * FreeType FT_Vector structure.  
+     * 
+     * @param ft_vector pointer to the memory block with FT_Vector structure
+     * @param size number of elements in FT_Vector structure
+     */
+    public synchronized static native float[] getPointsFromFTVector(long ft_vector, int size);
 
 // Xft routines
     
@@ -253,13 +263,13 @@ public class LinuxNativeFont {
      * @param drawable Drawable handle
      * @param visual Visual handle
      */
-    public static native long createXftDrawNative(long display, long drawable, long visual);
+    public synchronized static native long createXftDrawNative(long display, long drawable, long visual);
 
     /**
      * Destroys XftDraw object.
      * @param xftDraw XftDraw handle 
      */
-    public static native void freeXftDrawNative(long xftDraw);
+    public synchronized static native void freeXftDrawNative(long xftDraw);
 
     /**
      * Set new subwindow mode to XftDraw object
@@ -268,7 +278,7 @@ public class LinuxNativeFont {
      * @param mode new mode
      */
     public static native void xftDrawSetSubwindowModeNative(long xftDraw, int mode);
-    
+
     /**
      * Sets clipping rectangles in Xft drawable to the specified clipping rectangles. 
      * 
@@ -283,15 +293,29 @@ public class LinuxNativeFont {
     public static native boolean XftDrawSetClipRectangles(long xftDraw, int xOrigin,
             int yOrigin, long rects, int n);
 
-    /**
-     * Returns pointer to the FreeType FT_Outline structure. 
-     * 
-     * @param pFont XFT font handle
-     * @param c specified character
-     */
-    public static native long getGlyphOutline(long pFont, char c);
-
 //  public static native boolean isCharExists(char chr);
+
+    /**
+     * Returns an array of extrametrics of the font:<p>
+     *  elem[0] - the average width of characters in the font (Type1 - 0.0f)<p>
+     *  elem[1] - horizontal size for subscripts (Type1 - 0.7f * fontHeight)<p> 
+     *  elem[2] - vertical size for subscripts (Type1 - 0.65f * fontHeight)<p> 
+     *  elem[3] - horizontal offset for subscripts (Type1 - 0.0f)<p>
+     *  elem[4] - vertical offset value for subscripts(Type1 - 0.15f * fontHeight)<p>
+     *  elem[5] - horizontal size for superscripts (Type1 - 0.7f * fontHeight)<p>
+     *  elem[6] - vertical size for superscripts (Type1 - 0.65f * fontHeight)<p>
+     *  elem[7] - horizontal offset for superscripts (Type1 - 0.0f)<p> 
+     *  elem[8] - vertical offset for superscripts (Type1 - 0.45f * fontHeight)<p> 
+     * For TrueType fonts metrics are taken from OS2 table, for Type1 fonts
+     * metrics are calculated using coefficients (read FontExtraMetrics comments).
+     * OS2 table can be found at http://www.freetype.org/freetype2/docs/reference/ft2-truetype_tables.html#TT_OS2
+     * 
+     * @param hFont XFT font handle
+     * @param fontSize font size
+     * @param fontType type of the font
+     */
+    public synchronized static native float[] getExtraMetricsNative(long hFont, int fontSize, int fontType);
+
 
     /**
      * Initializes LCID table
@@ -510,13 +534,19 @@ public class LinuxNativeFont {
      * List of font style names of system fonts supported by a system 
      * corresponding to faces indexing.
      */
-    public static String[] styles;
-
+    public static String[] styleNames;
+    
     /**
      * List of family indexes in families array corresponding to the faces 
      * indexing.
      */
     public static int[] famIndices;
+
+    /**
+     * List of font styles of system fonts supported by a system 
+     * corresponding to faces indexing.
+     */
+    public static int[] fontStyles;
 
     /**
      * The number of different fonts installed onto the system.
@@ -529,11 +559,12 @@ public class LinuxNativeFont {
     public static Vector fams = new Vector();
 
     /**
-     * Returns font family name of the font with face having specified index.
+     * Returns family name that corresponds to the face with specified 
+     * face index.
      * 
-     * @param faceIndex specified index of the face in faces array
+     * @param faceIndex index of the face in faces array
      */
-    public static String getFamily(int faceIndex){
+    public static String getFamilyFromFaceIndex(int faceIndex){
         return (String)fams.get(famIndices[faceIndex]);
     }
 
@@ -542,8 +573,17 @@ public class LinuxNativeFont {
      * 
      * @param faceIndex specified index of the face in faces array
      */
-    public static String getFontStyle(int faceIndex){
-        return styles[faceIndex];
+    public static String getFontStyleName(int faceIndex){
+        return styleNames[faceIndex];
+    }
+
+    /**
+     * Returns font style of the font with face having specified index.
+     * 
+     * @param faceIndex specified index of the face in faces array
+     */
+    public static int getFontStyle(int faceIndex){
+        return fontStyles[faceIndex];
     }
 
     /**
@@ -555,45 +595,53 @@ public class LinuxNativeFont {
             initFaces();
         return faces;
     }
-    
+
     /**
-     * Initializes famIndices, styles and faces arrays according to the 
-     * font information available on the system. 
+     * Initializes famIndices, styles, style names and faces arrays 
+     * according to the font information available on the system. 
      */
     public static void initFaces(){
         if (facesCount == 0){
             String[] fontNames = getFonts();
             facesCount = fontNames.length;
             faces = new String[facesCount];
-            styles = new String[facesCount];
+            styleNames = new String[facesCount];
             famIndices = new int[facesCount];
+            fontStyles = new int[facesCount];
 
             for (int i =0; i < facesCount; i++){
                 initFace(i, fontNames[i]);
             }
         }
     }
-    
+
     /**
      * Initializes specified elements with index specified of famIndices, styles and 
      * faces arrays according to the given faceString. faceString has format 
-     * "family name"-"style name".
+     * "family name"-"style name"-style.
      * 
      * @param index index of element to identify
-     * @param faceString String defining family name and style in special format
+     * @param faceString String defining family name, style name and style in 
+     * special format
      */
     public static void initFace(int index, String faceString){
         String delim = "-";
         int pos;
-
         if (faceString == null) {
             return;
         }
-        pos = faceString.lastIndexOf(delim);
 
-        styles[index] = faceString.substring(pos+1);
+        String str = faceString;
+        pos = str.lastIndexOf(delim);
 
-        String family = faceString.substring(0, pos);
+        // get style value
+        int style = Integer.parseInt(str.substring(pos+1));
+        str = str.substring(0, pos);
+
+        pos = str.lastIndexOf(delim);
+
+        // get family name
+        String family = str.substring(0, pos);
         int famIndex = fams.indexOf(family);
         if(famIndex == -1){
             fams.add(family);
@@ -601,7 +649,11 @@ public class LinuxNativeFont {
         }
         famIndices[index] = famIndex;
 
-        faces[index] = family + " " + styles[index];
+        styleNames[index] = str.substring(pos+1);
+        
+        fontStyles[index] = style;
+
+        faces[index] = family + " " + styleNames[index];
     }
 
     /** Returns the list of system font families names. */
@@ -615,7 +667,7 @@ public class LinuxNativeFont {
         }
         return names;
     }
-    
+
     /**
      * Returns an array of instanses of 1 pt. sized plain Font objects
      * corresponding to fonts supported by a system. 

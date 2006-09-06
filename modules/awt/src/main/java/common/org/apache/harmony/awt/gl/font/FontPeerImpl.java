@@ -34,13 +34,6 @@ import java.util.Locale;
  */
 public abstract class FontPeerImpl implements FontPeer{
 
-    // logical family types (indices in FontManager.LOGICAL_FONT_NAMES)
-    static final int DIALOG = 3;        // FF_SWISS
-    static final int SANSSERIF = 1;     // FF_SWISS
-    static final int DIALOGINPUT = 4;   // FF_MODERN
-    static final int MONOSPACED = 2;    // FF_MODERN
-    static final int SERIF = 0;         // FF_ROMAN
-
     // ascent of this font peer (in pixels)
     int ascent;
 
@@ -78,10 +71,10 @@ public abstract class FontPeerImpl implements FontPeer{
     Rectangle2D maxCharBounds;
 
     // italic angle value of this font peer
-    float italicAngle;
+    float italicAngle = 0.0f;
 
     // the number of glyphs supported by this font peer
-    int numGlyphs;
+    int numGlyphs = 0;
 
     // native font handle
     long pFont;
@@ -110,22 +103,20 @@ public abstract class FontPeerImpl implements FontPeer{
      */
     int fontType = FontManager.FONT_TYPE_UNDEF;
 
-    /** 
-     * The number of Font objects, that link to this font peer.
-     * If the number of linking fonts is equal to null this
-     * font peer can be disposed. Depends on FontManager implementation.
-     */
-    private int numRefs = 1; 
-
     /**
      * Flag if this Font was created from stream, 
      * this parameter used in finilize method.
      */ 
-    private boolean createdFromStream = false;
+    private boolean createdFromStream = false;  
     
     // temorary Font file name, if this FontPeerImpl was created from InputStream 
     private String tempFontFileName = null;     
+    
+    // cached FontExtraMetrics object related to this font peer
+    FontExtraMetrics extraMetrix = null;
 
+    public abstract FontExtraMetrics getExtraMetrics();
+    
     /**
      * Returns LineMetrics object with specified parameters
      * @param str specified String
@@ -139,7 +130,14 @@ public abstract class FontPeerImpl implements FontPeer{
      * Returns postscript name of the font.  
      */
     public abstract String getPSName();
-
+    
+    /**
+     * Set postscript name of the font to the specified parameter.  
+     */
+    public void setPSName(String name){
+        this.psName = name;
+    }
+    
     /**
      * Returns code of the missing glyph. 
      */
@@ -150,7 +148,7 @@ public abstract class FontPeerImpl implements FontPeer{
      * @param ch specified char
      */
     public abstract Glyph getGlyph(char ch);
-    
+
     /**
      * Disposes nesessary resources.
      */
@@ -167,11 +165,18 @@ public abstract class FontPeerImpl implements FontPeer{
     public abstract boolean canDisplay(char c);
 
     /**
-     * Returns fanily name of the font in specified locale settings.
+     * Returns family name of the font in specified locale settings.
      * @param l specified Locale
      */
     public String getFamily(Locale l){
         return this.getFamily();
+    }
+
+    /**
+     * Sets family name of the font in specified locale settings.
+     */
+    public void setFamily(String familyName){
+        this.fontFamilyName = familyName;
     }
 
     /**
@@ -180,6 +185,13 @@ public abstract class FontPeerImpl implements FontPeer{
      */
     public String getFontName(Locale l){
         return this.getFontName();
+    }
+
+    /**
+     * Sets font name of the font in specified locale settings.
+     */
+    public void setFontName(String fontName){
+        this.faceName = fontName;
     }
 
     /**
@@ -214,30 +226,6 @@ public abstract class FontPeerImpl implements FontPeer{
      */
     public void setFontFileName(String value){
         this.tempFontFileName = value;
-    }
-
-    /**
-     * Returns the number of active font references to this font peer object. 
-     */
-    public int getNumRefs(){
-        return this.numRefs;
-    }
-
-    /**
-     * Increases the number of active font references to this font peer object. 
-     */
-    public int addRef(){
-        this.numRefs++;
-        return this.numRefs;
-    }
-
-    
-    /**
-     * Decreases the number of active font references to this font peer object. 
-     */
-    public int removeRef(){
-        this.numRefs--;
-        return this.numRefs;
     }
 
     /**
@@ -453,7 +441,7 @@ public abstract class FontPeerImpl implements FontPeer{
      * Returns type of this font.
      *  
      * @return one of constant font type values. 
-     */
+     */    
     public int getFontType(){
         return fontType;
     }
@@ -467,6 +455,17 @@ public abstract class FontPeerImpl implements FontPeer{
         if (newType == FontManager.FONT_TYPE_T1 || newType == FontManager.FONT_TYPE_TT){
             fontType = newType;
         }
+    }
+
+    /**
+     * Sets new font type to the font object.
+     * 
+     * @param newType new type value
+     */
+    protected void finalize() throws Throwable {
+      super.finalize();
+      
+      dispose();
     }
 
 }

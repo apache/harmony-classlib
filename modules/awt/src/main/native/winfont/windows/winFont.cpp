@@ -295,7 +295,8 @@ int enumFonts(){
     // installed(removed) into the system and it isn't taken into account. 
     // From the other hand it is too expencive in terms of performance re-cache 
     // names lists each time font to be created or removed from system this 
-    // action must be performed every time new Font object is being created. 
+    // action must be performed every time new Font object in Java is being 
+    // created. 
     // If system fonts changed current font enumeration implementation might 
     // rise an exception.
     
@@ -478,10 +479,8 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_embedFontNative(JNIEnv *env, jcla
 * Description: Returns pointer to Font object created with given parameters.
 */
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_font_NativeFont_initializeFont(JNIEnv *env, 
-        jclass obj, jobject winFont, jstring jFace, jint style) {
-
+        jclass obj, jobject winFont, jstring jFace, jint style, jint size) {
     jclass cls;
-    jfieldID fid;
     jmethodID mid;
     jboolean iscopy;
     jintArray ranges;
@@ -495,21 +494,8 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_font_NativeFont_initializ
 
     cls = env->GetObjectClass(winFont);
 
-    fid=env->GetFieldID(cls, "size", "I");
-    if (fid == 0) {
-        //      printf("Can't find field \"size\"");
-        env->ExceptionDescribe();
-        env->ExceptionClear();
-        return (jlong)NULL;
-    }
-    lf.lfHeight = - env->GetIntField(winFont, fid);
-    if(env->ExceptionOccurred()) {
-        //      printf("Error occured when getting \"size\" value");
-        env->ExceptionDescribe();
-        env->ExceptionClear();
-        return (jlong)NULL;
-    }
-
+    lf.lfHeight = - size;
+    
     lf.lfWidth = 0; // need to be defined
     lf.lfEscapement = 0; // need to be defined
     lf.lfOrientation = 0; // need to be defined
@@ -529,24 +515,8 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_font_NativeFont_initializ
     lf.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
     lf.lfQuality = NONANTIALIASED_QUALITY;//DEFAULT_QUALITY; // Rendering hints ?
 
-    mid=env->GetMethodID(cls,
-        "getFPitchAndFamily",
-        "()I");
-    if (mid == 0) {
-        // Can't find method "getFPitchAndFamily()"
-        env->ExceptionDescribe();
-        env->ExceptionClear();
-        return (jlong)NULL;
-    }
-
-    lf.lfPitchAndFamily = (BYTE)env->CallIntMethod(winFont, mid);
-    if(env->ExceptionOccurred()) {
-        //      printf("Error occured when getting \"getFPitchAndFamily()\" value");
-        env->ExceptionDescribe();
-        env->ExceptionClear();
-        return (jlong)NULL;
-    }
-
+    lf.lfPitchAndFamily = DEFAULT_PITCH;
+    
     length = env->GetStringLength(jFace);
     fontName = env->GetStringCritical(jFace, &iscopy);
     lf.lfFaceName[0] = 0;
@@ -1458,6 +1428,21 @@ int getTagIndex(Tag* tagList, int count, Tag value){
 }
 
 /*
+ * Sets antialiasing mode using GDI+ objects defined in graphics info. 
+ */
+JNIEXPORT void JNICALL
+       Java_org_apache_harmony_awt_gl_font_NativeFont_setAntialiasing(JNIEnv *env, jclass obj, 
+       jlong gfxInfo, jboolean isAntialiasing){
+       
+       GraphicsInfo *gi = (GraphicsInfo *)gfxInfo;
+    Graphics *graphics = (Graphics *)gi->graphics;
+       if(isAntialiasing)
+               graphics->SetTextRenderingHint(TextRenderingHintAntiAlias);
+       else
+               graphics->SetTextRenderingHint(TextRenderingHintSingleBitPerPixel);
+}
+
+/*
  * Draws string at the specified coordinates using GDI+ objects defined in graphics info.
  * This method is applicable for drawing without affine transformes.
  */
@@ -1679,4 +1664,114 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_font_NativeFont_gdiPlusGe
     Graphics *graphics = (Graphics *)gi->graphics;
 
     return (jlong)graphics->GetHDC();
+}
+
+/*
+ * Returns an array of extra font metrics result[]:
+ *      result[0] - average width of characters in the font
+ *      result[1] - horizontal size for subscripts
+ *      result[2] - vertical size for subscripts
+ *      result[3] - horizontal offset for subscripts
+ *      result[4] - vertical offset value for subscripts
+ *      result[5] - horizontal size for superscripts
+ *      result[6] - vertical size for superscripts
+ *      result[7] - horizontal offset for superscripts
+ *      result[8] - vertical offset for superscripts
+ */
+JNIEXPORT jfloatArray JNICALL 
+    Java_org_apache_harmony_awt_gl_font_NativeFont_getExtraMetricsNative(JNIEnv *env, jclass obj, jlong fnt, jint fontSize, jint fontType) {
+    
+    // XXX: Subscript/superscript metrics are undefined for Type1. As a possible 
+    // solution for Type1 we can use coefficients obtained from the TrueType values
+    // (e.g. for the type1 font size 12 SubscriptSizeX coefficient equals 
+    //  to the truetype font size 12 SubscriptSizeX value / size of the font):
+    //  SubscriptSizeX == 0.7 * fontSize
+    //  SubscriptSizeY == 0.65 * fontSize
+    //  SubscriptOffsetX == 0
+    //  SubscriptOffsetY == 0.15 * fontSize
+    //  SuperscriptSizeX == 0.7 * fontSize
+    //  SuperscriptSizeY == 0.65 * fontSize
+    //  SuperscriptOffsetX == 0
+    //  SuperscriptOffsetY == 0.45 * fontSize
+
+    HFONT hFont  = (HFONT)fnt;
+    HGDIOBJ hOld;
+    OUTLINETEXTMETRIC outm[3];
+    jfloat result[9];
+    jfloatArray floatArray;
+    HDC hDC = CreateCompatibleDC(NULL);
+    DWORD size;
+    TEXTMETRIC tm;
+    HGDIOBJ hFontEM;
+    LOGFONT lf;
+    int emsquare;
+    float mltpl;
+  
+    hOld = SelectObject(hDC, hFont);
+
+    // Getting current size of Font
+    size = GetOutlineTextMetrics(hDC, sizeof(outm), outm);
+    if (size == 0 ){
+        throwNPException(env, "Error occured during getting text outline metrics in native code.");
+
+        SelectObject(hDC, hOld);
+        DeleteDC(hDC);
+        return NULL;
+    }
+    
+    if (fontType == FONT_TYPE_TT) {
+        emsquare = outm[0].otmEMSquare; // EM Square size
+
+        // Create font with height == "EM Square size" in device units to
+        // get multyply factor
+        GetObject(hFont, sizeof(lf), &lf);
+        lf.lfHeight = -emsquare;
+        lf.lfWidth = 0;
+        hFontEM = CreateFontIndirect(&lf);
+
+        SelectObject(hDC, hFontEM);
+
+        size = GetOutlineTextMetrics(hDC, sizeof(outm), outm);
+        if (size == 0 ){
+            throwNPException(env, "Error occured during getting text outline metrics in native code.");
+            SelectObject(hDC, hOld);
+            DeleteObject(hFontEM);
+            DeleteDC(hDC);
+            return NULL;
+        }
+
+        tm = outm[0].otmTextMetrics;
+        
+        // Multiplier for the precise values
+        mltpl = (float)fontSize/emsquare;
+    
+        result[0] = tm.tmAveCharWidth * mltpl; // the average width of characters in the font
+    
+        result[1] = outm[0].otmptSubscriptSize.x * mltpl; // horizontal size for subscripts 
+        result[2] = outm[0].otmptSubscriptSize.y * mltpl; // vertical size for subscripts 
+        result[3] = outm[0].otmptSubscriptOffset.x * mltpl; // horizontal offset for subscripts
+        result[4] = outm[0].otmptSubscriptOffset.y * mltpl; // vertical offset value for subscripts
+        result[5] = outm[0].otmptSuperscriptSize.x * mltpl; // horizontal size for superscripts
+        result[6] = outm[0].otmptSuperscriptSize.y * mltpl; // vertical size for superscripts
+        result[7] = outm[0].otmptSuperscriptOffset.x * mltpl; // horizontal offset for superscripts 
+        result[8] = outm[0].otmptSuperscriptOffset.y * mltpl; // vertical offset for superscripts 
+    } else {
+        result[1] = 0.7f * fontSize;
+        result[2] = 0.65f * fontSize; 
+        result[3] = 0.0f;
+        result[4] = 0.15f * fontSize;
+        result[5] = 0.7f * fontSize;
+        result[6] = 0.65f * fontSize;
+        result[7] = 0.0f;
+        result[8] = 0.45f * fontSize; 
+    }
+    
+    SelectObject(hDC, hOld);
+    DeleteDC(hDC);
+    
+    floatArray=env->NewFloatArray(9);
+    env->SetFloatArrayRegion(floatArray, 0, 9, result);
+
+    return floatArray;
+       
 }

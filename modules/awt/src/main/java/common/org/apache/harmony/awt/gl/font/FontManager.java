@@ -24,6 +24,9 @@ import java.awt.peer.FontPeer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.SoftReference;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Locale;
@@ -40,6 +43,9 @@ public abstract class FontManager {
      */
     public String[] allFamilies;
 
+    public static final String DEFAULT_NAME = "Default"; /* Default font name */
+    public static final String DIALOG_NAME = "Dialog";  /* Dialog font name */
+
     /**
      * Set of constants applicable to the TrueType 'name' table.
      */
@@ -47,13 +53,21 @@ public abstract class FontManager {
     public static final byte  FONT_NAME_ID  = 4;        /* Full font name identifier    */
     public static final byte  POSTSCRIPT_NAME_ID = 6;   /* PostScript name identifier   */
     public static final short ENGLISH_LANGID = 0x0409;  /* English (United States)language identifier   */
-    
+
     /**
      * Set of constants describing font type.
      */
     public static final byte  FONT_TYPE_TT  = 4;        /* TrueType type (TRUETYPE_FONTTYPE)    */
     public static final byte  FONT_TYPE_T1  = 2;        /* Type1 type    (DEVICE_FONTTYPE)      */
     public static final byte  FONT_TYPE_UNDEF  = 0;     /* Undefined type                       */
+
+    // logical family types (indices in FontManager.LOGICAL_FONT_NAMES)
+    static final int DIALOG = 3;        // FF_SWISS
+    static final int SANSSERIF = 1;     // FF_SWISS
+    static final int DIALOGINPUT = 4;   // FF_MODERN
+    static final int MONOSPACED = 2;    // FF_MODERN
+    static final int SERIF = 0;         // FF_ROMAN
+
 
     /**
      * FontProperty related constants. 
@@ -75,17 +89,32 @@ public abstract class FontManager {
     public static final String FONT_FILE_NAME = "filename.PlatformFontName";
 
     /**
-     * Available font names.
-     */
-    public static final String[] LOGICAL_FONT_NAMES = {
-            "serif", "sansserif", "monospaced", "dialog", "dialoginput"
-    };
-    
-    /**
-     * Available font families names.
+     * Available logical font families names.
      */
     public static final String[] LOGICAL_FONT_FAMILIES = {
             "Serif", "SansSerif", "Monospaced", "Dialog", "DialogInput"
+    };
+
+    /**
+     * Available logical font names.
+     */
+    public static final String[] LOGICAL_FONT_NAMES = {
+            "serif", "serif.plain", "serif.bold", "serif.italic", "serif.bolditalic",
+            "sansserif", "sansserif.plain", "sansserif.bold", "sansserif.italic", "sansserif.bolditalic",
+            "monospaced", "monospaced.plain", "monospaced.bold", "monospaced.italic", "monospaced.bolditalic",
+            "dialog", "dialog.plain", "dialog.bold", "dialog.italic", "dialog.bolditalic",
+            "dialoginput", "dialoginput.plain", "dialoginput.bold", "dialoginput.italic", "dialoginput.bolditalic"
+    };
+
+    /**
+     * Available logical font face names.
+     */
+    public static final String[] LOGICAL_FONT_FACES = {
+            "Serif", "Serif.plain", "Serif.bold", "Serif.italic", "Serif.bolditalic",
+            "Sansserif", "Sansserif.plain", "Sansserif.bold", "Sansserif.italic", "Sansserif.bolditalic",
+            "Monospaced", "Monospaced.plain", "Monospaced.bold", "Monospaced.italic", "Monospaced.bolditalic",
+            "Dialog", "Dialog.plain", "Dialog.bold", "Dialog.italic", "Dialog.bolditalic",
+            "Dialoginput", "Dialoginput.plain", "Dialoginput.bold", "Dialoginput.italic", "Dialoginput.bolditalic"
     };
 
     /**
@@ -95,29 +124,29 @@ public abstract class FontManager {
     public static final String[] STYLE_NAMES = {
             "plain", "bold", "italic", "bolditalic"
     };
-    
+
     /**
-     * Logical font names table where font names used as the key
-     * and the value is the index of this name.
+     * Logical font styles names table where font styles names used 
+     * as the key and the value is the index of this style name.
      */
-    private static Hashtable keys = new Hashtable(5);
-    
+    private static Hashtable style_keys = new Hashtable(4);
+
     /**
-     * Initialize keys table.
+     * Initialize font styles keys table.
      */
     static {
-        for (int i = 0; i < LOGICAL_FONT_NAMES.length; i++){
-            keys.put(LOGICAL_FONT_NAMES[i], new Integer(i));
+        for (int i = 0; i < STYLE_NAMES.length; i++){
+            style_keys.put(STYLE_NAMES[i], new Integer(i));
         }
     }
-    
+
     /**
-     * Returns index in the LOGICAL_FONT_NAMES array of the logical name specified.
+     * Return font style from the logical style name.
      * 
-     * @param lName specified logical font name
+     * @param lName style name of the logical face
      */
-    public static int getLogicalIndex(String lName){
-        Integer value = (Integer) keys.get(lName);
+    public static int getLogicalStyle(String lName){
+        Integer value = (Integer) style_keys.get(lName);
         return value != null ? value.intValue(): -1;
     }
 
@@ -161,6 +190,10 @@ public abstract class FontManager {
             "/lib/font.properties"
     };
 
+    /**
+     * Table with all available font properties corresponding
+     * to the current system configuration.
+     */
     public Hashtable fProperties = new Hashtable();
 
     public FontManager(){
@@ -172,8 +205,9 @@ public abstract class FontManager {
         DisposeNativeHook shutdownHook = new DisposeNativeHook();
         Runtime.getRuntime().addShutdownHook(shutdownHook);
     }
+
     /**
-     * 
+     * Maximum number of unreferensed font peers to keep.
      */
     public static final int EMPTY_FONTS_CAPACITY = 10;
 
@@ -185,13 +219,14 @@ public abstract class FontManager {
     /**
      * Hash table that contains FontPeers instances.
      */
-    public Hashtable fonts = new Hashtable();
 
+    public Hashtable fontsTable = new Hashtable();
+    
     /**
-     * Vector of keys objects for the fonts Hashtable,
-     * that have no references to Java font objects.
+     * ReferenceQueue for HashMapReference objects to check
+     * if they were collected by garbage collector. 
      */
-    public Vector unrefs = new Vector();
+    public ReferenceQueue queue = new ReferenceQueue();
 
     /**
      * Singleton instance
@@ -209,126 +244,252 @@ public abstract class FontManager {
     }
 
     /**
-     * Returns platform-dependent Font peer from the specified Font.
-     * 
-     * @param font the specified Font object
-     * @return platform dependent FontPeer implementation created from Font
-     */
-    public abstract FontPeer createFont(Font font);
-
-    /**
-     * Creates platform-dependent Font peer from the specified FontProperty
-     *  and size.
-     * 
-     * @param fp the specified FontProperty object
-     * @param size the point size of the Font
-     * 
-     * @return platform dependent FontPeer implementation with specified  
-     * FontProperty and size parameters
-     */
-    public abstract FontPeer createFont(FontProperty fp, int size);
-
-    /**
-     * Returns platform-dependent Font peer created from the specified 
-     * FontProperty and size from the table with cached FontPeers instanses.
-     * 
-     * Note, this method checks whether FontPeer with specified parameters 
-     * exists in the table with cached FontPeers' instanses. If there is no needed 
-     * instanse - it is created and cached. Required FontPeer instanse 
-     * fetched from the table with cached FontPeers' instanses.  
-     * 
-     * @param fontID string that uniquily describes font 
-     * (fontname+fontstyle+fontsize)
-     * @param fp the specified FontProperty object
-     * @param size the point size of the Font
-     * @return platform dependent FontPeer implementation created from 
-     * FontProperty and size parameters
-     */
-    public FontPeer setFont(String fontID, FontProperty fp, int size){
-        if (!fonts.containsKey(fontID)){
-            FontPeer peer = createFont(fp, size);
-            fonts.put(fontID, peer);
-        }
-        return (FontPeer)fonts.get(fontID);
-
-    }
-
-    /**
      * Returns platform-dependent Font peer created from the specified 
      * Font object from the table with cached FontPeers instanses.
      * 
      * Note, this method checks whether FontPeer with specified parameters 
      * exists in the table with cached FontPeers' instanses. If there is no needed 
-     * instanse - it is created and cached. Required FontPeer instanse 
-     * fetched from the table with cached FontPeers' instanses. 
-     * @param fontStr string that uniquily describes font 
-     * (fontname+fontstyle+fontsize)
-     * @param font specified Font
-     *
+     * instanse - it is created and cached.
+     * 
+     * @param fontName name of the font 
+     * @param _fontStyle style of the font 
+     * @param size font size
+     * 
      * @return platform dependent FontPeer implementation created from 
-     * the specified Font object
+     * the specified parameters
      */
-    public FontPeer setFont(String fontStr, Font font) {
-        if (!fonts.containsKey(fontStr)){
-            FontPeer peer = createFont(font);
-            fonts.put(fontStr, peer);
+    public FontPeer getFontPeer(String fontName, int _fontStyle, int size) {
+        
+        updateFontsTable();
+        
+        FontPeer peer = null;
+        String key; 
+        String name;
+        int fontStyle = _fontStyle;
+        
+        int logicalIndex = getLogicalFaceIndex(fontName);
+        
+        if (logicalIndex != -1){
+            name = getLogicalFaceFromFont(fontStyle, logicalIndex);
+            fontStyle = getStyleFromLogicalFace(name);
+            key = name.concat(String.valueOf(size));
+        } else {
+            name = fontName;
+            key = name.concat(String.valueOf(fontStyle)).
+                    concat(String.valueOf(size));
         }
-        return (FontPeer)fonts.get(fontStr);
-    }
-
-
-    /**
-     * Returns font peer instance corresponding to the specified 
-     * font string id.
-     * 
-     * If number of Font references after inrcrement in FontPeer
-     * object is equal to 1 it means, that FontPeer was in list of
-     * fonts that have no references to Font objects. For this
-     * reason, this FontPeer can be deleted from unrefs list.
-     * 
-     * @param fontStr specified font string id
-     */
-    public FontPeer getFont(String fontStr){
-        FontPeerImpl peer = (FontPeerImpl)fonts.get(fontStr);
-
-        if (peer != null){
-            int numRef = peer.addRef();
-            if (numRef == 1)
-                unrefs.remove(fontStr);
+        
+        Reference hmr   = (Reference)fontsTable.get(key);
+        if (hmr != null) {
+            peer = (FontPeer)hmr.get();
         }
+
+        if (peer == null) {
+            peer = createFontPeer(name, fontStyle, size, logicalIndex);
+            if (peer == null){
+                peer = getFontPeer(DIALOG_NAME, fontStyle, size);
+            }
+            fontsTable.put(key, new HashMapReference(key, peer, queue));
+        }
+
         return peer;
     }
+    
+    /**
+     * Returns instanse of font peer (logical or physical) according to the 
+     * specified parameters.
+     * 
+     * @param name font face name
+     * @param style style of the font
+     * @param size size of the font
+     * @param logicalIndex index of the logical face name in LOGICAL_FONT_FACES 
+     * array or -1 if desired font peer is not logical.
+     */
+    private FontPeer createFontPeer(String name, int style, int size, int logicalIndex){
+        FontPeer peer;
+        if (logicalIndex != -1){
+            peer = createLogicalFontPeer(name, style, size);
+        }else {
+            peer = createPhysicalFontPeer(name, style, size);
+        }
+        
+        return peer;
+    } 
+    
+    /**
+     * Returns family name for logical face names as a parameter.
+     * 
+     * @param faceName logical font face name
+     */
+    public String getFamilyFromLogicalFace(String faceName){
+        int pos = faceName.indexOf(".");
+        if (pos == -1){
+            return faceName;
+        }
+            
+        return faceName.substring(0, pos);
+    }
+            
+    /**
+     * Returns new logical font peer for the parameters specified using font 
+     * properties.
+     * 
+     * @param faceName face name of the logical font 
+     * @param style style of the font 
+     * @param size font size
+     * 
+     */
+    private FontPeer createLogicalFontPeer(String faceName, int style, int size){
+        String family = getFamilyFromLogicalFace(faceName);
+        FontProperty[] fps = getFontProperties(family.toLowerCase() + "." + style);
+        if (fps != null){
+            int numFonts = fps.length;
+            FontPeerImpl[] physicalFonts = new FontPeerImpl[numFonts];
+            for (int i = 0; i < numFonts; i++){
+                FontProperty fp = fps[i];
+                
+                String name = fp.getName();
+                int fpStyle = fp.getStyle();
+                String key = name.concat(String.valueOf(fpStyle)).
+                    concat(String.valueOf(size));
+                
+                Reference hmr   = (Reference)fontsTable.get(key);
+                if (hmr != null) {
+                    physicalFonts[i] = (FontPeerImpl)hmr.get();
+                }
+
+                if (physicalFonts[i] == null){
+                    physicalFonts[i] = (FontPeerImpl)createPhysicalFontPeer(name, fpStyle, size);
+                    fontsTable.put(key, new HashMapReference(key, physicalFonts[i], queue));
+                }
+
+                if (physicalFonts[i] == null){
+                    physicalFonts[i] = (FontPeerImpl)getDefaultFont(style, size);
+                }
+            }
+            return new CompositeFont(family, faceName, style, size, fps, physicalFonts); 
+        }
+        
+        // if there is no property for this logical font - default font is to be
+        // created
+        FontPeerImpl peer = (FontPeerImpl)getDefaultFont(style, size);
+        
+        return peer;
+    } 
 
     /**
-     * Moves font with specified font string id to the unreferenced font 
-     * objects list.
+     * Returns new physical font peer for the parameters specified using font properties
+     * This method must be overridden by subclasses implementations.
+     *  
+     * @param faceName face name or family name of the font 
+     * @param style style of the font 
+     * @param size font size
      * 
-     * If number of Font references after decrement in FontPeer
-     * object is equal to 0 it means, that FontPeer has 
-     * no references to Font objects. For this
-     * reason, this FontPeer must be added to the first
-     * position in unrefs list. If the number of emelemnts in list
-     * is equals to it's size - the last element must be deleted, as
-     * the low-activity object.
-     * 
-     * @param fontStr specified font string id
      */
-    public void deleteFont(String fontStr){
-        FontPeerImpl peer = (FontPeerImpl)fonts.get(fontStr);
-        if (peer != null){
-            int numRef = peer.removeRef();
-            if (numRef == 0){
-                if (unrefs.size() == EMPTY_FONTS_CAPACITY){
-                    Object obj = unrefs.remove(EMPTY_FONTS_CAPACITY - 1);
-                    FontPeerImpl delPeer = (FontPeerImpl)fonts.remove(obj);
-
-                    delPeer.dispose();
-                }
-                unrefs.add(0, peer);
-            }
+    public abstract FontPeer createPhysicalFontPeer(String name, int style, int size);
+    
+    /**
+     * Returns default font peer class with "Default" name that is usually 
+     * used when font with specified font names and style doesn't exsist 
+     * on a system. 
+     * 
+     * @param style style of the font
+     * @param size size of the font
+     */
+    public FontPeer getDefaultFont(int style, int size){
+        updateFontsTable();
+        
+        FontPeer peer = null;
+        String key = DEFAULT_NAME.concat(String.valueOf(style)).
+                    concat(String.valueOf(size));
+        
+        Reference hmr   = (Reference)fontsTable.get(key);
+        if (hmr != null) {
+            peer = (FontPeer)hmr.get();
         }
+
+        if (peer == null) {
+            peer = createDefaultFont(style, size);
+            
+            ((FontPeerImpl)peer).setFamily(DEFAULT_NAME);
+            ((FontPeerImpl)peer).setPSName(DEFAULT_NAME);
+            ((FontPeerImpl)peer).setFontName(DEFAULT_NAME);
+
+            fontsTable.put(key, new HashMapReference(key, peer, queue));
+        }
+
+        return peer;
+    }
+    
+    /**
+     * 
+     * Returns new default font peer with "Default" name for the parameters 
+     * specified. This method must be overridden by subclasses implementations.
+     *  
+     * @param style style of the font
+     * @param size size of the font
+     */
+    public abstract FontPeer createDefaultFont(int style, int size);
+    
+    /**
+     * Returns face name of the logical font, which is the result
+     * of specified font style and face style union.   
+     * 
+     * @param fontStyle specified style of the font
+     * @param logicalIndex index of the specified face from the 
+     * LOGICAL_FONT_FACES array
+     * @return resulting face name
+     */
+    public String getLogicalFaceFromFont(int fontStyle, int logicalIndex){
+        int style = 0;
+        String name = LOGICAL_FONT_FACES[logicalIndex];
+        int pos = name.indexOf(".");
+        
+        if (pos == -1){
+            return createLogicalFace(name, fontStyle);
+        }
+        
+        String styleName = name.substring(pos+1);
+        name = name.substring(0, pos);
+        
+        // appending font style to the face style
+        style = fontStyle | getLogicalStyle(styleName);
+        
+        return createLogicalFace(name, style);
+    }
+    
+    /**
+     * Function returns style value from logical face name.
+     *  
+     * @param name face name
+     * @return font style
+     */
+    public int getStyleFromLogicalFace(String name){
+        int style;
+        int pos = name.indexOf(".");
+        
+        if (pos == -1){
+            return Font.PLAIN;
+        }
+        
+        String styleName = name.substring(pos+1);
+        
+        style = getLogicalStyle(styleName);
+        
+        return style;
     }
 
+    /**
+     * Returns logical face name corresponding to the logical
+     * family name and style of the font.
+     * 
+     * @param family font family
+     * @param styleIndex index of the style name from the STYLE_NAMES array 
+     */
+    public String createLogicalFace(String family, int styleIndex){
+        return family + "." + STYLE_NAMES[styleIndex];
+    }
+    
     /**
      * Return language Id from LCID hash corresponding to the specified locale
      * 
@@ -356,15 +517,20 @@ public abstract class FontManager {
         public void run() {
             try{
                 /* Disposing native font peer's resources */
-                Enumeration kEnum = fonts.keys();
+                Enumeration kEnum = fontsTable.keys();
 
                 while(kEnum.hasMoreElements()){
                     Object key = kEnum.nextElement();
-                    FontPeerImpl delPeer = (FontPeerImpl)fonts.remove(key);
-                    delPeer.dispose();
+                    HashMapReference hmr = (HashMapReference)fontsTable.remove(key);
+                    FontPeerImpl delPeer = (FontPeerImpl)hmr.get();
+                    
+                    if ((delPeer != null) && (delPeer.getClass() != CompositeFont.class)){
+                        // there's nothing to dispose in CompositeFont objects
+                        delPeer.dispose();
+                    }
                 }
             } catch (Throwable t){
-
+                throw new RuntimeException(t);
             }
         }
       }
@@ -504,19 +670,26 @@ public abstract class FontManager {
     }
 
     /**
-     * Returns an array of FontProperties from the properties set
-     * with the specified font property name.
-     * 
+     * Returns an array of FontProperties from the properties file
+     * with the specified property name "logical face.style". E.g. 
+     * "dialog.2" corresponds to the font family Dialog with bold style. 
+     *
      * @param fpName key of the font properties in the properties set
      */
     public FontProperty[] getFontProperties(String fpName){
         Vector props = (Vector)fProperties.get(fpName);
-
+        
         if (props == null){
             return null;
         }
 
-        FontProperty[] fps = new FontProperty[props.size()];
+        int size =  props.size();
+        
+        if (size == 0){
+            return null;
+        }
+
+        FontProperty[] fps = new FontProperty[size];
         for (int i=0; i < fps.length; i++){
             fps[i] = (FontProperty)props.elementAt(i);
         }
@@ -524,18 +697,18 @@ public abstract class FontManager {
     }
 
     /**
-     * Returns true if specified font is logical.
+     * Returns index of the font name in array of font names or -1 if 
+     * this font is not logical.
      * 
-     * @param font the specified font object
+     * @param fontName specified font name
      */
-    public static boolean isFontLogical(Font font){
-        String name = font.getName();
+    public static int getLogicalFaceIndex(String fontName){
         for (int i=0; i<LOGICAL_FONT_NAMES.length; i++ ){
-            if (LOGICAL_FONT_NAMES[i].equalsIgnoreCase(name)){
-                return true;
+            if (LOGICAL_FONT_NAMES[i].equalsIgnoreCase(fontName)){
+                return i;
             }
         }
-        return false;
+        return -1;
     }
 
     /**
@@ -545,40 +718,95 @@ public abstract class FontManager {
      * @param familyName the specified font family name
      */
     public boolean isFamilyExist(String familyName){
-        for (int i=0; i<allFamilies.length; i++ ){
-            if (familyName.equalsIgnoreCase(allFamilies[i])){
-                return true;
-            }
-        }
-        return false;
+        return (getFamilyIndex(familyName) != -1);
     }
 
+    /**
+     * Returns index of family name from the array of family names available in 
+     * this GraphicsEnvironment or -1 if no family name was found.
+     * 
+     * @param familyName specified font family name 
+     */
+    public int getFamilyIndex(String familyName){
+        for (int i=0; i<allFamilies.length; i++ ){
+            if (familyName.equalsIgnoreCase(allFamilies[i])){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Returns family with index specified from the array of family names available in 
+     * this GraphicsEnvironment.
+     * 
+     * @param index index of the family in families names array 
+     */
+    public String getFamily(int index){
+        return allFamilies[index];
+    }
     /**
      * Returns index of face name from the array of face names available in 
      * this GraphicsEnvironment or -1 if no face name was found. Default return 
      * value is -1, method must be overridden by FontManager implementation.
      * 
-     * @param faceName specified face name
+     * @param faceName font face name which index is to be searched
      */
     public int getFaceIndex(String faceName){
         return -1;
     }
 
-    /**
-     * Returns correct logical family name from the specified font name.
-     * 
-     * @param fontName specified font name 
-     */
-    public static String getLogicalFamilyName(String fontName){
-        for (int i=0; i<LOGICAL_FONT_NAMES.length; i++ ){
-            if (LOGICAL_FONT_NAMES[i].equalsIgnoreCase(fontName)){
-                return LOGICAL_FONT_FAMILIES[i];
-            }
-        }
-        return null;
-    }
-
     public abstract String[] getAllFamilies();
 
     public abstract Font[] getAllFonts();
+    
+    /**
+     * Class contains SoftReference instance that can be stored in the 
+     * Hashtable by means of key field corresponding to it.
+     */
+    private class HashMapReference extends SoftReference {
+        
+        /**
+         * The key for Hashtable.
+         */
+        private final Object key;
+
+        /**
+         * Creates a new soft reference with the key specified and 
+         * adding this reference in the reference queue specified.
+         *
+         * @param key the key in Hashtable
+         * @param value object that corresponds to the key
+         * @param queue reference queue where reference is to be added 
+         */
+        public HashMapReference(final Object key, final Object value,
+                              final ReferenceQueue queue) {
+            super(value, queue);
+            this.key = key;
+        }
+
+        /**
+         * Returns the key that corresponds to the SoftReference instance 
+         *
+         * @return the key in Hashtable with cached references
+         */
+        public Object getKey() {
+            return key;
+        }
+    }
+
+    /**
+     * Removes keys from the Hashtable with font peers which corresponding 
+     * HashMapReference objects were garbage collected.
+     */
+    private void updateFontsTable() {
+        HashMapReference r;
+        while ((r = (HashMapReference)queue.poll()) != null) {
+            Object obj = fontsTable.remove(r.getKey());
+            
+        }
+    }
+
 }
+
+

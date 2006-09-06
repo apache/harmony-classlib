@@ -22,19 +22,20 @@
 
 package org.apache.harmony.awt.gl.linux;
 
-import org.apache.harmony.awt.nativebridge.Int8Pointer;
-import org.apache.harmony.awt.nativebridge.NativeBridge;
+import org.apache.harmony.awt.nativebridge.*;
 import org.apache.harmony.awt.nativebridge.linux.X11;
 import org.apache.harmony.awt.nativebridge.linux.X11Defs;
 
 import java.awt.*;
-import java.awt.color.ColorSpace;
 import java.awt.image.*;
 import java.awt.geom.AffineTransform;
 
 
 public class XGraphicsConfiguration extends GraphicsConfiguration {
-    private static final X11 x11 = X11.getInstance();
+    // X11 atom, required for getting the default colormap
+    private static final long XA_RGB_DEFAULT_MAP = 27;
+
+    protected static final X11 x11 = X11.getInstance();
 
     XGraphicsDevice dev;
     X11.XVisualInfo info;
@@ -45,7 +46,82 @@ public class XGraphicsConfiguration extends GraphicsConfiguration {
     XGraphicsConfiguration(XGraphicsDevice dev, X11.XVisualInfo info) {
         this.dev = dev;
         this.info = info;
-        xcolormap = x11.XDefaultColormap(dev.display, dev.screen);
+        xcolormap = obtainRGBColorMap();
+    }
+
+    public long getXColormap() {
+        return xcolormap;
+    }
+
+    public int getDepth() {
+        return info.get_depth();
+    }
+
+    public X11.Visual getVisual() {
+        return info.get_visual();
+    }
+
+    private long obtainRGBColorMap() {
+        X11.Visual defVisual = x11.createVisual(x11.XDefaultVisual(dev.display, dev.screen));
+        if (info.get_visualid() == defVisual.get_visualid()) {
+            return x11.XDefaultColormap(dev.display, dev.screen);
+        }
+
+        X11.Visual vis = info.get_visual();
+        long rootWindow = x11.XRootWindow(dev.display, dev.screen);
+
+        int status = x11.XmuLookupStandardColormap(
+                dev.display, dev.screen,
+                info.get_visualid(),
+                info.get_depth(),
+                               XA_RGB_DEFAULT_MAP,
+                               X11Defs.False,
+                X11Defs.True
+        );
+
+        if (status == 1) {
+            Int32Pointer nCmaps = NativeBridge.getInstance().createInt32Pointer(1, true);
+            PointerPointer stdCmaps = NativeBridge.getInstance().createPointerPointer(1, true);
+
+            status = x11.XGetRGBColormaps(
+                    dev.display,
+                    rootWindow,
+                    stdCmaps,
+                                   nCmaps,
+                    XA_RGB_DEFAULT_MAP
+            );
+
+            int numCmaps = nCmaps.get(0);
+            VoidPointer ptr = stdCmaps.get(0);
+            nCmaps.free();
+            stdCmaps.free();
+
+            if (status == 1) {
+                for (int i = 0; i < numCmaps; i++) {
+
+                    X11.XStandardColormap stdCmap = x11.createXStandardColormap(
+                            ptr.byteBase.getElementPointer(i*X11.XStandardColormap.sizeof)
+                    );
+
+                    if (stdCmap.get_visualid() == info.get_visualid()) {
+                        long cmap = stdCmap.get_colormap();
+                        x11.XFree(ptr);
+                        return cmap;
+                    }
+                }
+
+                x11.XFree(ptr);
+            }
+        }
+
+        long cmap = x11.XCreateColormap(
+                dev.display,
+                rootWindow,
+                vis.lock(),
+                X11Defs.AllocNone
+        );
+        vis.unlock();
+        return cmap;
     }
 
     public GraphicsDevice getDevice() {
@@ -95,6 +171,9 @@ public class XGraphicsConfiguration extends GraphicsConfiguration {
                     );
                     break;
                 case X11Defs.StaticGray:
+                    // looks like native colormap differs from the colors given
+                    // by the gray ICC profile
+                    /*
                     // This should be enough
                     cm = new ComponentColorModel(
                             ColorSpace.getInstance(ColorSpace.CS_GRAY),
@@ -105,6 +184,7 @@ public class XGraphicsConfiguration extends GraphicsConfiguration {
                             DataBuffer.TYPE_BYTE
                     );
                     break;
+                    */
                 case X11Defs.PseudoColor:
                 case X11Defs.GrayScale:
                 case X11Defs.StaticColor: {

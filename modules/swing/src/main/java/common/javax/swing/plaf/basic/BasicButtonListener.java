@@ -96,7 +96,6 @@ public class BasicButtonListener implements MouseListener, MouseMotionListener, 
     }
 
     public void stateChanged(final ChangeEvent event) {
-        button.revalidate();
         button.repaint();
     }
 

@@ -46,6 +46,7 @@ import javax.accessibility.AccessibleStateSet;
 import org.apache.harmony.awt.AWTPermissionCollection;
 import org.apache.harmony.awt.FieldsAccessor;
 import org.apache.harmony.awt.gl.MultiRectArea;
+import org.apache.harmony.awt.im.InputMethodContext;
 import org.apache.harmony.awt.wtk.NativeWindow;
 
 
@@ -92,6 +93,8 @@ public class Window extends Container implements Accessible {
     private boolean disposed = false;
 
     boolean painted;
+    
+    private transient InputContext inputContext;
 
     protected  class AccessibleAWTWindow extends AccessibleAWTContainer {
 
@@ -288,12 +291,22 @@ public class Window extends Container implements Accessible {
                 mapToDisplay(false);
                 disposed = true;
                 opened = false;
+                disposeInputContext();
 
                 finishHierarchyChange(this, parent, 0);
                 postEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSED));
             }
         } finally {
             toolkit.unlockAWT();
+        }
+    }
+
+    private void disposeInputContext() {
+        // only default windows input contexts are disposed
+        // custom input contexts returned by
+        // overridden getInputContext() are not!
+        if (inputContext != null) {
+            inputContext.dispose();
         }
     }
 
@@ -381,7 +394,10 @@ public class Window extends Container implements Accessible {
     public InputContext getInputContext() {
         toolkit.lockAWT();
         try {
-            return null;
+            if (inputContext == null) {
+                inputContext = InputContext.getInstance();
+            }
+            return inputContext;
         } finally {
             toolkit.unlockAWT();
         }
@@ -408,6 +424,7 @@ public class Window extends Container implements Accessible {
                     w.hide();
                 }
             }
+            notifyInputMethod(null);
         } finally {
             toolkit.unlockAWT();
         }
@@ -1196,4 +1213,12 @@ public class Window extends Container implements Accessible {
         visible = false;
         redrawManager = new RedrawManager(this);
     }
+    
+    void notifyInputMethod(Rectangle bounds) {
+        InputContext ic = getInputContext();
+        if (ic instanceof InputMethodContext) {
+            ((InputMethodContext)ic).notifyClientWindowChange(bounds);
+        }
+    }
+    
 }

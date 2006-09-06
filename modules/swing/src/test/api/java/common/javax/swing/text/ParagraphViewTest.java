@@ -1011,6 +1011,13 @@ public class ParagraphViewTest extends BasicSwingTestCase {
         params.check(end, Bias.Forward, SwingConstants.NORTH, 0, 0);
     }
 
+    public void testGetAttributesRow() {
+        final View row = view.createRow();
+        assertNull(row.getAttributes());
+        row.setParent(view);
+        assertSame(view.getAttributes(), row.getAttributes());
+    }
+
     private static AttributeSet getInsetsAttributeSet() {
         MutableAttributeSet attrs = new SimpleAttributeSet();
         StyleConstants.setSpaceAbove(attrs, 9.53f);

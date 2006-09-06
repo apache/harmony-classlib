@@ -50,18 +50,9 @@ class DefaultMouseDragGestureRecognizer extends
         int distance = 2; // TODO: use desktop property 
         MouseEvent e0 = (MouseEvent)events.get(0);
         if (e0.getPoint().distance(e.getPoint()) >= distance) {
-            int act = DnDConstants.ACTION_NONE;
-            if (e.isControlDown()) {
-                act = e.isShiftDown() ? 
-                        DnDConstants.ACTION_LINK : DnDConstants.ACTION_COPY;
-            } else {
-                act = DnDConstants.ACTION_MOVE;
-            }
-            act &= super.sourceActions;
-            
-            if (act != DnDConstants.ACTION_NONE) {
+            if (sourceActions != DnDConstants.ACTION_NONE) {
                 active = true;
-                fireDragGestureRecognized(act, e.getPoint());
+                fireDragGestureRecognized(sourceActions, e.getPoint());
             }
         }
     }

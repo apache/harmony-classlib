@@ -50,8 +50,6 @@ public class JColorChooser extends JComponent implements Accessible {
     public static final String PREVIEW_PANEL_PROPERTY = "previewPanel";
     public static final String CHOOSER_PANELS_PROPERTY = "chooserPanels";
     
-    protected AccessibleContext accessibleContext;
-
     private ColorSelectionModel colorSelectionModel;
     private boolean dragEnabled;
     private JComponent previewPanel;
@@ -122,15 +120,13 @@ public class JColorChooser extends JComponent implements Accessible {
         };
         
         String okText = UIManager.getString("ColorChooser.okText");
-        JButton okButton = new JButton(okText);
-        if (okListener != null) {
-            okButton.addActionListener(okListener);
-        }
+        final JButton okButton = new JButton(okText);
+        okButton.addActionListener(okListener);
+        
         String cancelText = UIManager.getString("ColorChooser.cancelText");
-        JButton cancelButton = new JButton(cancelText);
-        if (cancelListener != null) {
-            cancelButton.addActionListener(cancelListener);
-        }
+        final JButton cancelButton = new JButton(cancelText);
+        cancelButton.addActionListener(cancelListener);
+        
         String resetText = UIManager.getString("ColorChooser.resetText");
         JButton resetButton = new JButton(resetText);
         int resetMnemonic = UIManager.getInt("ColorChooser.resetMnemonic");
@@ -145,11 +141,13 @@ public class JColorChooser extends JComponent implements Accessible {
         cancelButton.addActionListener(disposeListener);
         
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
+        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 5));
         buttonsPanel.add(Box.createHorizontalGlue());
         buttonsPanel.add(okButton);
+        buttonsPanel.add(Box.createHorizontalStrut(6));
         buttonsPanel.add(cancelButton);
+        buttonsPanel.add(Box.createHorizontalStrut(6));
         buttonsPanel.add(resetButton);
-        buttonsPanel.add(Box.createHorizontalGlue());
         
         result.add(buttonsPanel, BorderLayout.SOUTH);
         result.getRootPane().setDefaultButton(okButton);
@@ -160,7 +158,7 @@ public class JColorChooser extends JComponent implements Accessible {
         SwingUtilities.replaceUIInputMap(chooserPane, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, map);
         chooserPane.getActionMap().put("cancelAction", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                result.dispose();
+                cancelButton.doClick(0);
             }
         });
         

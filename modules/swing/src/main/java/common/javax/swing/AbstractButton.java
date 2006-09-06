@@ -712,10 +712,8 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
     }
 
     public void setEnabled(final boolean enabled) {
-        if (model.isEnabled() != enabled) {
-            model.setEnabled(enabled);
-            super.setEnabled(enabled);
-        }
+        model.setEnabled(enabled);
+        super.setEnabled(enabled);
     }
 
     public void setContentAreaFilled(final boolean filled) {

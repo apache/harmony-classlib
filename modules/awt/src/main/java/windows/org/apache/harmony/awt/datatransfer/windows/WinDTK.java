@@ -14,29 +14,94 @@
  *  limitations under the License.
  */
 /**
- * @author Michael Danilov
+ * @author Michael Danilov, Pavel Dolgov
  * @version $Revision$
  */
 package org.apache.harmony.awt.datatransfer.windows;
 
-import org.apache.harmony.awt.datatransfer.*;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DropTargetContext;
+import java.awt.dnd.peer.DragSourceContextPeer;
+import java.awt.dnd.peer.DropTargetContextPeer;
 
-public final class WinDTK extends DTK {
+import org.apache.harmony.awt.datatransfer.DTK;
+import org.apache.harmony.awt.datatransfer.NativeClipboard;
+import org.apache.harmony.awt.nativebridge.windows.Callback;
+import org.apache.harmony.awt.nativebridge.windows.Win32;
+import org.apache.harmony.awt.nativebridge.windows.WinDataTransfer;
+import org.apache.harmony.awt.nativebridge.windows.WindowsDefs;
+import org.apache.harmony.awt.wtk.NativeEventQueue.Task;
+import org.apache.harmony.awt.wtk.windows.WindowProcHandler;
+import org.apache.harmony.misc.accessors.AccessorFactory;
+import org.apache.harmony.misc.accessors.ObjectAccessor;
+
+public final class WinDTK extends DTK implements Callback.Handler {
+    
+    private static final Win32 win32 = Win32.getInstance();
+    private static final ObjectAccessor objAccessor = 
+        AccessorFactory.getObjectAccessor();
+    
+    private static final int WM_TASK = WindowsDefs.WM_USER + 1;
+    
+    private long dataTransferWindow;
+    private long windowProc;
+    private static final String windowClass = 
+        "org.apache.harmony.awt.datatransfer.window";
 
     protected NativeClipboard newNativeClipboard() {
         return new WinClipboard();
-    }
-
-    protected NativeTextDescriptor newTextDescriptor() {
-        return new WinTextDescriptor();
-    }
-
-    protected NativeTranslationManager newTranslationManager() {
-        return new WinTranslationManager();
     }
 
     protected NativeClipboard newNativeSelection() {
         return null;
     }
 
+    public void initDragAndDrop() {
+        WinDataTransfer.init();
+        
+        if (windowProc != 0) {
+            return;
+        }
+        windowProc = Callback.registerCallbackDataTransfer(this);
+        WindowProcHandler.registerWindowClass(windowClass, windowProc);
+        dataTransferWindow = win32.CreateWindowExW(0, windowClass,
+                windowClass, 0, 0, 0, 0, 0, // style, x, y, w, h 
+                WindowsDefs.HWND_MESSAGE, 0, 0, null);
+    }
+    
+    public void runEventLoop() {
+        Win32.MSG msg = win32.createMSG(false);
+        while (win32.GetMessageW(msg, 0, 0, 0) != 0) {
+            win32.DispatchMessageW(msg);
+        }
+    }
+
+    public DropTargetContextPeer createDropTargetContextPeer(
+            DropTargetContext context) {
+        return new WinDropTarget(this, context);
+    }
+
+    public DragSourceContextPeer createDragSourceContextPeer(
+            DragGestureEvent dge) {
+        return new WinDragSource();
+    }
+    
+    public String getDefaultCharset() {
+        return "utf-16le";
+    }
+
+    public long windowProc(long hwnd, int msg, long wParam, long lParam) {
+        if (hwnd == dataTransferWindow && msg == WM_TASK) {
+            Task t = (Task)objAccessor.getObjectFromReference(lParam);
+            t.perform();
+            return 0;
+        }
+        return win32.DefWindowProcW(hwnd, msg, wParam, lParam);
+    }
+
+    public void performTask(Task task) {
+        long ref = objAccessor.getGlobalReference(task);
+        win32.SendMessageW(dataTransferWindow, WM_TASK, 0, ref);
+        objAccessor.releaseGlobalReference(ref);
+    }
 }

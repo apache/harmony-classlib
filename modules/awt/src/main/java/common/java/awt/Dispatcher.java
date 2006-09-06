@@ -36,8 +36,6 @@ import org.apache.harmony.awt.wtk.NativeWindow;
  */
 class Dispatcher {
 
-    private final EventQueue eventQueue;
-
     final PopupDispatcher popupDispatcher = new PopupDispatcher();
 
     final FocusDispatcher focusDispatcher;
@@ -55,15 +53,13 @@ class Dispatcher {
     int clickInterval = 250;
 
     /**
-     * @param queue - AWT's system event queue 
      * @param toolkit - AWT toolkit
      */
-    Dispatcher(EventQueue queue, Toolkit toolkit) {
-        eventQueue = queue;
+    Dispatcher(Toolkit toolkit) {
         this.toolkit = toolkit;
 
         focusDispatcher = new FocusDispatcher(toolkit);
-        mouseDispatcher = new MouseDispatcher(mouseGrabManager, queue, toolkit);
+        mouseDispatcher = new MouseDispatcher(mouseGrabManager, toolkit);
     }
 
     /**
@@ -165,8 +161,8 @@ class Dispatcher {
             int id = event.getEventId();
 
             if (id == WindowEvent.WINDOW_CLOSING) {
-                eventQueue.postEvent(new WindowEvent(window,
-                        WindowEvent.WINDOW_CLOSING));
+                toolkit.getSystemEventQueueImpl().postEvent(
+                          new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
 
                 return true;
             } else if (id == WindowEvent.WINDOW_STATE_CHANGED) {
@@ -258,6 +254,8 @@ class Dispatcher {
                 src = KeyboardFocusManager.getCurrentKeyboardFocusManager().actualFocusOwner;
             }
 
+            EventQueue eventQueue = toolkit.getSystemEventQueueImpl();
+            
             if (src != null) {
                 eventQueue.postEvent(new KeyEvent(src, id, time, modifiers,
                         code, keyChar, location));

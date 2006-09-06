@@ -21,20 +21,13 @@ package org.apache.harmony.awt.datatransfer;
 
 import java.awt.datatransfer.Clipboard;
 
-import org.apache.harmony.awt.ContextStorage;
-import org.apache.harmony.awt.wtk.Synchronizer;
-
 
 /**
- * Native clipboard class. Base class for concrete native clipboards.
+ * Base class for platrorm-specific clipboards.
  */
 public abstract class NativeClipboard extends Clipboard {
 
     protected static final int OPS_TIMEOUT = 10000;     // ms
-
-    protected final Synchronizer awtSynchronizer;
-    protected final long javaWindow;
-    protected final NativeTranslationManager translationManager;
 
     /**
      * Creates native clipboard object.
@@ -42,10 +35,6 @@ public abstract class NativeClipboard extends Clipboard {
      */
     public NativeClipboard(String name) {
         super(name);
-
-        translationManager = DTK.getContextInstance().getTranslationManager();
-        awtSynchronizer = ContextStorage.getSynchronizer();
-        javaWindow = ContextStorage.getNativeEventQueue().getJavaWindow();
     }
 
     /**

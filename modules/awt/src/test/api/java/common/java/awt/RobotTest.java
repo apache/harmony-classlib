@@ -26,6 +26,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.math.BigInteger;
 import java.security.Permission;
 
@@ -71,14 +72,13 @@ public class RobotTest extends TestCase {
 
     private void waitForButton() {
         int timeout = 16, time = 0;
-        int nAttempts = 10;
+        int nAttempts = 10;        
         f.add(b);
         f.setSize(100, 100);
         int x = 50;
         int y = 50;
-        Color bkColor = robot.getPixelColor(x, y);
-        Color btnColor = new Color(bkColor.getRGB() + 100);
-        b.setBackground(btnColor);
+        Color bkColor = robot.getPixelColor(x, y);        
+        b.setBackground(getNextColor(bkColor));
         f.show();
 
         for (int i = 0; i < nAttempts; i++) {
@@ -94,6 +94,25 @@ public class RobotTest extends TestCase {
         }
 
         assertEquals("button is shown", b.getBackground(), robot.getPixelColor(x, y));
+    }
+
+    private int inv(int val) {
+        return ~val & 0xFF;
+    }
+    
+    private Color getNextColor(Color bkColor) {
+        Color color = bkColor;
+        ColorModel cm = f.getGraphicsConfiguration().getColorModel();
+        Object pixel = null;
+        while (color.equals(bkColor)) {
+
+            color = new Color(inv(color.getRed()), inv(color.getGreen()),
+                    inv(color.getBlue()));
+
+            pixel = cm.getDataElements(color.getRGB(), pixel);
+            color = new Color(cm.getRGB(pixel));
+        }
+        return color;
     }
 
     public final void testToString() {

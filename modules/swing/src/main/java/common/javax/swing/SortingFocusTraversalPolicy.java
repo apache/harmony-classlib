@@ -43,7 +43,32 @@ public class SortingFocusTraversalPolicy extends InternalFrameFocusTraversalPoli
                                      .getDefaultComponent(innerCycleRoot);
             } else {
                 int nextIndex = (currentComponentIndex + 1) % availableComponents.size();
-                return (Component)availableComponents.get(nextIndex);
+                Component result = (Component)availableComponents.get(nextIndex);
+
+                if (focusCycleRoot.isFocusCycleRoot()) {
+                    Container policyProviderForCurrentComponent = getPolicyProvider(currentComponent);
+                    if (currentComponent == focusCycleRoot || policyProviderForCurrentComponent == focusCycleRoot) {
+                        if (result instanceof Container
+                            && ((Container)result).isFocusTraversalPolicyProvider()
+                            && !accept(result)) {
+
+                            Container policyProvider = (Container)result;
+
+                            return policyProvider.getFocusTraversalPolicy().getDefaultComponent(policyProvider);
+                        }
+
+                        return result;
+                    } else {
+                        Component resultFromProvider = policyProviderForCurrentComponent.getFocusTraversalPolicy().getComponentAfter(policyProviderForCurrentComponent, currentComponent);
+                        if (resultFromProvider != policyProviderForCurrentComponent.getFocusTraversalPolicy().getDefaultComponent(policyProviderForCurrentComponent)) {
+                            return resultFromProvider;
+                        } else {
+                            return focusCycleRoot.getFocusTraversalPolicy().getComponentAfter(focusCycleRoot, policyProviderForCurrentComponent);
+                        }
+                    }
+                } else {
+                    return result;
+                }
             }
         }
     };
@@ -51,7 +76,32 @@ public class SortingFocusTraversalPolicy extends InternalFrameFocusTraversalPoli
     private final NextComponentFinder beforeComponentFinder = new NextComponentFinder() {
         public Component findNextComponent(final List availableComponents, final int currentComponentIndex) {
             int nextIndex = (currentComponentIndex + availableComponents.size() - 1) % availableComponents.size();
-            return (Component)availableComponents.get(nextIndex);
+            Component result = (Component)availableComponents.get(nextIndex);
+
+            if (focusCycleRoot.isFocusCycleRoot()) {
+                Container policyProviderForCurrentComponent = getPolicyProvider(currentComponent);
+                if (currentComponent == focusCycleRoot || policyProviderForCurrentComponent == focusCycleRoot) {
+                    if (result instanceof Container
+                        && ((Container)result).isFocusTraversalPolicyProvider()
+                        && !accept(result)) {
+
+                        Container policyProvider = (Container)result;
+
+                        return policyProvider.getFocusTraversalPolicy().getLastComponent(policyProvider);
+                    }
+
+                    return result;
+                } else {
+                    Component resultFromProvider = policyProviderForCurrentComponent.getFocusTraversalPolicy().getComponentBefore(policyProviderForCurrentComponent, currentComponent);
+                    if (resultFromProvider != policyProviderForCurrentComponent.getFocusTraversalPolicy().getLastComponent(policyProviderForCurrentComponent)) {
+                        return resultFromProvider;
+                    } else {
+                        return focusCycleRoot.getFocusTraversalPolicy().getComponentBefore(focusCycleRoot, policyProviderForCurrentComponent);
+                    }
+                }
+            } else {
+                return result;
+            }
         }
     };
 
@@ -161,11 +211,15 @@ public class SortingFocusTraversalPolicy extends InternalFrameFocusTraversalPoli
         Component[] components = container.getComponents();
         for (int i = 0; i < components.length; i++) {
             Component component = components[i];
-            if (accept(component)) {
+            if (accept(component)
+                || ((component instanceof Container)
+                    && ((Container)component).isFocusTraversalPolicyProvider()
+                    && ((Container)component).getComponentCount() > 0)) {
+
                 result.add(component);
             }
 
-            if (component.isDisplayable() && component.isVisible() && component instanceof Container && !((Container)component).isFocusCycleRoot()) {
+            if (component.isDisplayable() && component.isVisible() && component instanceof Container && !isPolicyRoot((Container)component)) {
                 collectAllAcceptableComponents((Container)component, result);
             }
         }
@@ -175,7 +229,7 @@ public class SortingFocusTraversalPolicy extends InternalFrameFocusTraversalPoli
 
     private Component getComponentBeforeOrAfter(final NextComponentFinder finder) {
         checkCycleRootIsNotNull(finder.focusCycleRoot);
-        if (!finder.focusCycleRoot.isFocusCycleRoot()) {
+        if (!finder.focusCycleRoot.isFocusCycleRoot() && !finder.focusCycleRoot.isFocusTraversalPolicyProvider()) {
             throw new IllegalArgumentException("Container is not a focus cycle root");
         }
 
@@ -184,7 +238,8 @@ public class SortingFocusTraversalPolicy extends InternalFrameFocusTraversalPoli
         }
 
         if (finder.currentComponent != finder.focusCycleRoot
-            && finder.currentComponent.getFocusCycleRootAncestor() != finder.focusCycleRoot) {
+            && finder.currentComponent.getFocusCycleRootAncestor() != finder.focusCycleRoot
+            && getPolicyProvider(finder.currentComponent) != finder.focusCycleRoot) {
 
             throw new IllegalArgumentException("Component must be in a cycle root of the specified container");
         }
@@ -213,6 +268,18 @@ public class SortingFocusTraversalPolicy extends InternalFrameFocusTraversalPoli
         if (focusCycleRoot == null) {
             throw new IllegalArgumentException("Container must be specified");
         }
+    }
+
+    private Container getPolicyProvider(final Component c) {
+        Container parent = c.getParent();
+        if (parent == null || isPolicyRoot(parent)) {
+            return parent;
+        }
+        return getPolicyProvider(parent);
+    }
+
+    private boolean isPolicyRoot(final Container c) {
+        return c.isFocusTraversalPolicyProvider() || c.isFocusCycleRoot();
     }
 
     private abstract class NextComponentFinder {

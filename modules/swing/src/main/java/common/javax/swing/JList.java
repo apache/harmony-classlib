@@ -61,6 +61,7 @@ import javax.swing.plaf.ListUI;
 import javax.swing.text.Position;
 
 import org.apache.harmony.x.swing.StringConstants;
+import org.apache.harmony.x.swing.Utilities;
 
 
 public class JList extends JComponent implements Scrollable, Accessible {
@@ -741,44 +742,16 @@ public class JList extends JComponent implements Scrollable, Accessible {
     }
 
     public int getNextMatch(final String prefix, final int startIndex, final Position.Bias bias) {
-        if (prefix == null) {
-            throw new IllegalArgumentException("Prefix must be not null");
-        }
+        return Utilities.getNextMatch(new Utilities.ListModelAccessor() {
+            public Object getElementAt(final int index) {
+                return model.getElementAt(index);
+            }
 
-        if (startIndex < 0 || startIndex >= model.getSize()) {
-            throw new IllegalArgumentException("Incorrect start index");
-        }
-
-        String ucPrefix = prefix.toUpperCase();
-        if (Position.Bias.Forward == bias) {
-            for (int i = startIndex; i < model.getSize(); i++) {
-                String elementAsString = model.getElementAt(i).toString().toUpperCase();
-                if (elementAsString.startsWith(ucPrefix)) {
-                    return i;
-                }
+            public int getSize() {
+                return model.getSize();
             }
-            for (int i = 0; i < startIndex; i++) {
-                String elementAsString = model.getElementAt(i).toString().toUpperCase();
-                if (elementAsString.startsWith(ucPrefix)) {
-                    return i;
-                }
-            }
-        } else if (Position.Bias.Backward == bias) {
-            for (int i = startIndex; i >= 0; i--) {
-                String elementAsString = model.getElementAt(i).toString().toUpperCase();
-                if (elementAsString.startsWith(ucPrefix)) {
-                    return i;
-                }
-            }
-            for (int i = model.getSize() - 1; i > startIndex; i--) {
-                String elementAsString = model.getElementAt(i).toString().toUpperCase();
-                if (elementAsString.startsWith(ucPrefix)) {
-                    return i;
-                }
-            }
-        }
-
-        return -1;
+            
+        }, prefix, startIndex, bias);
     }
 
     public Rectangle getCellBounds(final int index0, final int index1) {

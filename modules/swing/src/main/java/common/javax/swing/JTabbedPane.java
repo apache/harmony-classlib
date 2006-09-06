@@ -26,6 +26,7 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 
 import java.io.Serializable;
@@ -41,6 +42,8 @@ import javax.swing.event.ChangeListener;
 
 import javax.swing.plaf.TabbedPaneUI;
 import javax.swing.plaf.UIResource;
+
+import org.apache.harmony.x.swing.StringConstants;
 
 public class JTabbedPane extends JComponent
     implements Serializable, Accessible, SwingConstants {
@@ -493,6 +496,16 @@ public class JTabbedPane extends JComponent
     }
 
     public void setMnemonicAt(final int tabIndex, final int mnemonic) {
+        int oldValue = getMnemonicAt(tabIndex);
+        if (oldValue == mnemonic) {
+            return;
+        }
+
+        InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW, true);
+        inputMap.remove(KeyStroke.getKeyStroke(oldValue, InputEvent.ALT_DOWN_MASK));
+        inputMap.put(KeyStroke.getKeyStroke(mnemonic, InputEvent.ALT_DOWN_MASK),
+                     StringConstants.MNEMONIC_ACTION);
+
         getTabAt(tabIndex).setMnemonic(mnemonic);
         repaint();
     }

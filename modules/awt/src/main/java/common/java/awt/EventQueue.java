@@ -19,23 +19,26 @@
  */
 package java.awt;
 
-import java.awt.event.*;
-
-import java.util.EmptyStackException;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.awt.event.InvocationEvent;
 import java.lang.reflect.InvocationTargetException;
+import java.util.EmptyStackException;
 
 public class EventQueue {
+    
+    private final EventQueueCoreAtomicReference coreRef = 
+            new EventQueueCoreAtomicReference();
+    
+    private static final class EventQueueCoreAtomicReference {
+        private EventQueueCore core;
 
-    private final Toolkit toolkit;
+        /*synchronized*/ EventQueueCore get() { 
+            return core;
+        }
 
-    private final boolean systemEventQueue;
-
-    private LinkedList events;
-
-    private LinkedList queues;
-    private EventQueue curQueue;
+        /*synchronized*/ void set(EventQueueCore newCore) { 
+            core = newCore;
+        }
+    }
 
     public static boolean isDispatchThread() {
         return Thread.currentThread() instanceof EventDispatchThread;
@@ -43,22 +46,24 @@ public class EventQueue {
 
     public static void invokeLater(Runnable runnable) {
         Toolkit toolkit = Toolkit.getDefaultToolkit();
-        toolkit.systemEventQueue.postEvent(new InvocationEvent(toolkit, runnable));
+        InvocationEvent event = new InvocationEvent(toolkit, runnable);
+        toolkit.getSystemEventQueueImpl().postEvent(event);
     }
 
     public static void invokeAndWait(Runnable runnable)
-            throws InterruptedException, InvocationTargetException
-    {
+            throws InterruptedException, InvocationTargetException {
+
         if (isDispatchThread()) {
             throw new Error();
         }
 
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
         final Object notifier = new Object();
-        InvocationEvent event = new InvocationEvent(toolkit, runnable, notifier, true);
+        InvocationEvent event = new InvocationEvent(
+                toolkit, runnable, notifier, true);
 
         synchronized (notifier) {
-            toolkit.systemEventQueue.postEvent(event);
+            toolkit.getSystemEventQueueImpl().postEvent(event);
             notifier.wait();
         }
 
@@ -69,248 +74,84 @@ public class EventQueue {
         }
     }
 
-    public static long getMostRecentEventTime() {
-        final Toolkit toolkit = Toolkit.getDefaultToolkit();
-        toolkit.lockAWT();
-        try {
-            return (isDispatchThread() ?
-                    toolkit.eventQueueLastEvent.mostRecentEventTime :
-                    System.currentTimeMillis());
-        } finally {
-            toolkit.unlockAWT();
+    private static EventQueue getSystemEventQueue() {
+        Thread th = Thread.currentThread();
+        if (th instanceof EventDispatchThread) {
+            return ((EventDispatchThread)th).toolkit.getSystemEventQueueImpl();
         }
+        return null;
+    }
+    
+    public static long getMostRecentEventTime() {
+        EventQueue eq = getSystemEventQueue();
+        return (eq != null) ? 
+                eq.getMostRecentEventTimeImpl() : System.currentTimeMillis();
+    }
+    
+    private long getMostRecentEventTimeImpl() {
+        return getCore().getMostRecentEventTime();
     }
 
     public static AWTEvent getCurrentEvent() {
-        final Toolkit toolkit = Toolkit.getDefaultToolkit();
-        toolkit.lockAWT();
-        try {
-            return (isDispatchThread() ?
-                    toolkit.eventQueueLastEvent.curEvent : null);
-        } finally {
-            toolkit.unlockAWT();
-        }
+        EventQueue eq = getSystemEventQueue();
+        return (eq != null) ? 
+                eq.getCurrentEventImpl() : null;
+    }
+
+    private AWTEvent getCurrentEventImpl() {
+        return getCore().getCurrentEvent();
     }
 
     public EventQueue() {
-        this(false, Toolkit.getDefaultToolkit());
+        setCore(new EventQueueCore(this));
     }
 
-    EventQueue(boolean sysEventQueue, Toolkit toolkit) {
-        synchronized (this) {
-            this.toolkit = toolkit;
-            systemEventQueue = sysEventQueue;
-            events = new LinkedList();
-            queues =  new LinkedList();
-            curQueue = null;
-        }
+    EventQueue(Toolkit t) {
+        setCore(new EventQueueCore(this, t));
     }
 
     public void postEvent(AWTEvent event) {
-        synchronized (this) {
-            if (curQueue == null) {
-                AWTEvent eventToAdd = event;
-                Object src = event.getSource();
-
-                if (src instanceof Component) {
-                    Component comp = (Component) src;
-
-                    if (comp.isCoalescer()) {
-                        AWTEvent relative = comp.getRelativeEvent(event.getID());
-
-                        if (relative != null) {
-                            AWTEvent coalisced = comp.coalesceEvents(relative, event);
-
-                            if (coalisced != null) {
-                                events.remove(relative);
-                                comp.removeRelativeEvent();
-                                eventToAdd = coalisced;
-                            }
-                        }
-                        comp.addNewEvent(eventToAdd);
-                    }
-                }
-
-                events.addLast(eventToAdd);
-                notifyAll();
-            } else {
-                curQueue.postEvent(event);
-            }
-        }
-
-        if (systemEventQueue) {
-            if (!isDispatchThread()) {
-                toolkit.getNativeEventQueue().awake();
-            } else {
-                toolkit.validateShutdownThread();
-            }
-        }
+        event.isPosted = true;
+        getCore().postEvent(event);
     }
 
     public AWTEvent getNextEvent() throws InterruptedException {
-        synchronized (this) {
-            if (curQueue == null) {
-                while (events.isEmpty()) {
-                    wait();
-                }
-
-                AWTEvent event = (AWTEvent) events.removeFirst();
-                Object src = event.getSource();
-
-                if (src instanceof Component) {
-                    Component comp = (Component) src;
-
-                    if (comp.isCoalescer()) {
-                        comp.removeNextEvent(event.getID());
-                    }
-                }
-
-                return event;
-            } else {
-                return curQueue.getNextEvent();
-            }
-        }
+        return getCore().getNextEvent();
+    }
+    
+    AWTEvent getNextEventNoWait() {
+        return getCore().getNextEventNoWait();
     }
 
     public AWTEvent peekEvent() {
-        synchronized (this) {
-            if (curQueue == null) {
-                return events.isEmpty() ? null : (AWTEvent) events.getFirst();
-            } else {
-                return curQueue.peekEvent();
-            }
-        }
+        return getCore().peekEvent();
     }
 
     public AWTEvent peekEvent(int id) {
-        synchronized (this) {
-            if (curQueue == null) {
-                for (Iterator i = events.iterator(); i.hasNext(); ) {
-                    AWTEvent event = (AWTEvent) i.next();
-
-                    if (event.getID() == id) {
-                        return event;
-                    }
-                }
-
-                return null;
-            } else {
-                return curQueue.peekEvent(id);
-            }
-        }
+        return getCore().peekEvent(id);
     }
 
     public void push(EventQueue newEventQueue) {
-        synchronized (this) {
-            while (peekEvent() != null) {
-                try {
-                    newEventQueue.postEvent(getNextEvent());
-                } catch (InterruptedException e) {
-                }
-            }
-            queues.addLast(newEventQueue);
-            curQueue = newEventQueue;
-        }
+        getCore().push(newEventQueue);
     }
-
+    
     protected void pop() throws EmptyStackException {
-        synchronized (this) {
-            if (curQueue == null) {
-                throw new EmptyStackException();
-            }
-
-            queues.removeLast();
-            EventQueue destQueue = queues.isEmpty() ? this : (EventQueue) queues.getLast();
-
-            while (curQueue.peekEvent() != null) {
-                try {
-                    destQueue.postEvent(curQueue.getNextEvent());
-                } catch (InterruptedException e) {
-                }
-            }
-            curQueue = queues.isEmpty() ? null : destQueue;
-        }
+        getCore().pop();
     }
 
     protected void dispatchEvent(AWTEvent event) {
-        EventQueue subsequentQueue = null;
-        synchronized (this) {
-            long when = 0l;
-
-            if (event instanceof ActionEvent) {
-                when = ((ActionEvent) event).getWhen();
-            } else if (event instanceof InputEvent) {
-                when = ((InputEvent) event).getWhen();
-            } else if (event instanceof InputMethodEvent) {
-                when = ((InputMethodEvent) event).getWhen();
-            } else if (event instanceof InvocationEvent) {
-                when = ((InvocationEvent) event).getWhen();
-            }
-            if (when != 0l) {
-                toolkit.eventQueueLastEvent.mostRecentEventTime = when;
-            }
-            toolkit.eventQueueLastEvent.curEvent = event;
-
-            subsequentQueue = curQueue;
-        }
-
-        if (subsequentQueue != null) {
-            subsequentQueue.dispatchEvent(event);
-            return;
-        }
-
-        if (event instanceof ActiveEvent) {
-            toolkit.dispatchAWTEvent(event);
-            ((ActiveEvent) event).dispatch();
-            return;
-        }
-
-        Object src = event.getSource();
-
-        if (src instanceof Component) {
-            if (preprocessComponentEvent(event)) {
-                ((Component) src).dispatchEvent(event);
-            }
-        } else {
-            toolkit.dispatchAWTEvent(event);
-            if (src instanceof MenuComponent) {
-                ((MenuComponent) src).dispatchEvent(event);
-            }
-        }
-    }
-
-    private final boolean preprocessComponentEvent(AWTEvent event) {
-        if (event instanceof MouseEvent) {
-            return preprocessMouseEvent((MouseEvent)event);
-        }
-        return true;
-    }
-
-    private final boolean preprocessMouseEvent(MouseEvent event) {
-        if (toolkit.mouseEventPreprocessor != null) {
-            toolkit.lockAWT();
-            try {
-                return toolkit.mouseEventPreprocessor.preprocess(event);
-            } finally {
-                toolkit.unlockAWT();
-            }
-        }
-        return true;
+        getCore().dispatchEventImpl(event);
     }
 
     boolean isEmpty() {
-        synchronized (this) {
-            if ((curQueue == null)) {
-                return events.isEmpty();
-            } else {
-                return (curQueue.peekEvent() == null);
-            }
-        }
+        return getCore().isEmpty();
     }
 
-    static final class LastEvent {
-        long mostRecentEventTime = System.currentTimeMillis();
-        AWTEvent curEvent = null;
+    EventQueueCore getCore() {
+        return coreRef.get();
     }
-
+    
+    void setCore(EventQueueCore newCore) {
+        coreRef.set((newCore != null) ? newCore : new EventQueueCore(this));
+    }
 }

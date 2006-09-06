@@ -206,6 +206,7 @@ public class JOptionPane extends JComponent implements Accessible {
         pane.setWantsInput(true);
 
         JDialog dialog = pane.createDialog(parentComponent, title);
+        setDialogDecorations(dialog, messageType);
         dialog.setVisible(true);
 
         return pane.getInputValue();
@@ -224,6 +225,7 @@ public class JOptionPane extends JComponent implements Accessible {
             final String title, final int messageType, final Icon icon) throws HeadlessException {
         JOptionPane pane = new JOptionPane(message, messageType, DEFAULT_OPTION, icon);
         JDialog dialog = pane.createDialog(parentComponent, title);
+        setDialogDecorations(dialog, messageType);
         dialog.setVisible(true);
     }
 
@@ -249,6 +251,7 @@ public class JOptionPane extends JComponent implements Accessible {
             final Icon icon) throws HeadlessException {
         JOptionPane pane = new JOptionPane(message, messageType, optionType, icon);
         JDialog dialog = pane.createDialog(parentComponent, title);
+        setDialogDecorations(dialog, messageType);
         dialog.setVisible(true);
 
         return getResultedIndex(pane);
@@ -278,6 +281,7 @@ public class JOptionPane extends JComponent implements Accessible {
             final Object initialValue) throws HeadlessException {
         JOptionPane pane = new JOptionPane(message, messageType, optionType, icon, options, initialValue);
         JDialog dialog = pane.createDialog(parentComponent, title);
+        setDialogDecorations(dialog, messageType);
         dialog.setVisible(true);
 
         return getResultedIndex(pane);
@@ -297,6 +301,7 @@ public class JOptionPane extends JComponent implements Accessible {
             final Icon icon) {
         JOptionPane pane = new JOptionPane(message, messageType, DEFAULT_OPTION, icon);
         JDialog dialog = pane.createDialog(parentComponent, title);
+        setDialogDecorations(dialog, messageType);
         JInternalFrame internalFrame = pane.createInternalFrame(parentComponent, title);
         showInternalFrameAndWaitTillClosed(internalFrame, pane, parentComponent);
     }
@@ -324,6 +329,7 @@ public class JOptionPane extends JComponent implements Accessible {
             final int messageType, final Icon icon) {
         JOptionPane pane = new JOptionPane(message, messageType, optionType, icon);
         JDialog dialog = pane.createDialog(parentComponent, title);
+        setDialogDecorations(dialog, messageType);
         JInternalFrame internalFrame = pane.createInternalFrame(parentComponent, title);
         showInternalFrameAndWaitTillClosed(internalFrame, pane, parentComponent);
 
@@ -336,6 +342,7 @@ public class JOptionPane extends JComponent implements Accessible {
             final Object[] options, final Object initialValue) {
         JOptionPane pane = new JOptionPane(message, messageType, optionType, icon, options, initialValue);
         JDialog dialog = pane.createDialog(parentComponent, title);
+        setDialogDecorations(dialog, messageType);
         JInternalFrame internalFrame = pane.createInternalFrame(parentComponent, title);
         showInternalFrameAndWaitTillClosed(internalFrame, pane, parentComponent);
 
@@ -364,6 +371,7 @@ public class JOptionPane extends JComponent implements Accessible {
             pane.setInitialSelectionValue(initialSelectionValue);
         }
         JDialog dialog = pane.createDialog(parentComponent, title);
+        setDialogDecorations(dialog, messageType);
         JInternalFrame internalFrame = pane.createInternalFrame(parentComponent, title);
         showInternalFrameAndWaitTillClosed(internalFrame, pane, parentComponent);
 
@@ -394,6 +402,7 @@ public class JOptionPane extends JComponent implements Accessible {
         }
 
         JInternalFrame frame = new JInternalFrame(title);
+        frame.putClientProperty("JInternalFrame.optionDialog", Boolean.TRUE);
         parent.add(frame);
         frame.add(this);
         frame.pack();
@@ -604,5 +613,23 @@ public class JOptionPane extends JComponent implements Accessible {
 
         return -1;
     }
-
+    
+    private static int messageTypeToRootPaneDecoration(final int messageType) {
+        switch (messageType) {
+        case ERROR_MESSAGE:
+            return JRootPane.ERROR_DIALOG;
+        case INFORMATION_MESSAGE:
+            return JRootPane.INFORMATION_DIALOG;
+        case QUESTION_MESSAGE:
+            return JRootPane.QUESTION_DIALOG;
+        case WARNING_MESSAGE:
+            return JRootPane.WARNING_DIALOG;
+        default:
+            return JRootPane.PLAIN_DIALOG;
+        }
+    }
+    
+    private static void setDialogDecorations(final JDialog dialog, final int messageType) {
+        dialog.getRootPane().setWindowDecorationStyle(messageTypeToRootPaneDecoration(messageType));
+    }
 }

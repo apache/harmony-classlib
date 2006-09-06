@@ -27,6 +27,8 @@ extern "C" {
 #endif
 
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Callback_initCallBackWNDPROC (JNIEnv * , jclass);
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Callback_initCallBackOFNHOOKPROC (JNIEnv * , jclass);
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Callback_initCallBackDataTransferProc (JNIEnv * , jclass);
 
 
 #ifdef __cplusplus

@@ -24,11 +24,13 @@ import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.LookAndFeel;
+import javax.swing.UIManager;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import javax.swing.colorchooser.ColorChooserComponentFactory;
 import javax.swing.colorchooser.ColorSelectionModel;
@@ -160,6 +162,7 @@ public class BasicColorChooserUI extends ColorChooserUI {
         }
         previewPanel.removeAll();
         previewPanel.add(chooser.getPreviewPanel());
+        previewPanel.setBorder(BorderFactory.createTitledBorder(UIManager.getString("ColorChooser.previewText")));
 
         if (previewPanel.getParent() == null) {
             chooser.add(previewPanel, BorderLayout.SOUTH);

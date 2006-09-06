@@ -23,22 +23,82 @@ import java.awt.Component;
 
 public abstract class Spring {
 
-    static final class ConstantSpring extends Spring {
+    static final class HeightSpring extends Spring {
+        final Component component;
+        private int value = Spring.UNSET;
+
+        public int getMinimumValue() {
+            return trim(component.getMinimumSize().height);
+        }
+
+        public int getPreferredValue() {
+            return trim(component.getPreferredSize().height);
+        }
+
+        public int getMaximumValue() {
+            return trim(component.getMaximumSize().height);
+        }
+
+        public int getValue() {
+            return (value != Spring.UNSET ? value : getPreferredValue());
+        }
+
+        public void setValue(final int value) {
+            this.value = value;
+        }
+
+        public String toString() {
+            return "[Height of " + component.getClass().getName() + ": ("
+                   + getMinimumValue() + ", " + getPreferredValue() + ", "
+                   + getMaximumValue() + ")]";
+        }
+
+        private HeightSpring(final Component component) {
+            this.component = component;
+        }
+    }
+
+    static final class WidthSpring extends Spring {
+        final Component component;
+        private int value = Spring.UNSET;
+
+        public int getMinimumValue() {
+            return trim(component.getMinimumSize().width);
+        }
+
+        public int getPreferredValue() {
+            return trim(component.getPreferredSize().width);
+        }
+
+        public int getMaximumValue() {
+            return trim(component.getMaximumSize().width);
+        }
+
+        public int getValue() {
+            return (value != Spring.UNSET ? value : getPreferredValue());
+        }
+
+        public void setValue(final int value) {
+            this.value = value;
+        }
+
+        public String toString() {
+            return "[Width of " + component.getClass().getName() + ": ("
+                   + getMinimumValue() + ", " + getPreferredValue() + ", "
+                   + getMaximumValue() + ")]";
+        }
+
+        private WidthSpring(final Component component) {
+            this.component = component;
+        }
+    }
+
+
+    private static final class ConstantSpring extends Spring {
         private final int minValue;
         private final int prefValue;
         private final int maxValue;
         private int value;
-
-        private ConstantSpring(final int pref) {
-            this(pref, pref, pref);
-        }
-
-        private ConstantSpring(final int min, final int pref, final int max) {
-            this.maxValue = trim(max);
-            this.minValue = trim(min);
-            this.prefValue = trim(pref);
-            value = pref;
-        }
 
         public int getMinimumValue() {
             return minValue;
@@ -63,84 +123,21 @@ public abstract class Spring {
         public String toString() {
             return "[" + minValue + ", " + prefValue + ", " + maxValue + "]";
         }
-    }
 
-    static final class WidthSpring extends Spring {
-        private final Component component;
-        private int value = Spring.UNSET;
-
-        private WidthSpring(final Component component) {
-            this.component = component;
+        private ConstantSpring(final int pref) {
+            this(pref, pref, pref);
         }
 
-        public int getMinimumValue() {
-            return trim(component.getMinimumSize().width);
-        }
-
-        public int getPreferredValue() {
-            return trim(component.getPreferredSize().width);
-        }
-
-        public int getMaximumValue() {
-            return trim(component.getMaximumSize().width);
-        }
-
-        public int getValue() {
-            return (value != Spring.UNSET ? value : getPreferredValue());
-        }
-
-        public void setValue(final int value) {
-            this.value = value;
-        }
-
-        public String toString() {
-            return "Width of " + component.getClass().getName() + ": ["
-                   + getMinimumValue() + ", " + getPreferredValue() + ", "
-                   + getMaximumValue() + "]";
+        private ConstantSpring(final int min, final int pref, final int max) {
+            this.maxValue = max;
+            this.minValue = min;
+            this.prefValue = pref;
+            value = pref;
         }
     }
 
-    static final class HeightSpring extends Spring {
-        private final Component component;
-        private int value = Spring.UNSET;
-
-        private HeightSpring(final Component component) {
-            this.component = component;
-        }
-
-        public int getMinimumValue() {
-            return trim(component.getMinimumSize().height);
-        }
-
-        public int getPreferredValue() {
-            return trim(component.getPreferredSize().height);
-        }
-
-        public int getMaximumValue() {
-            return trim(component.getMaximumSize().height);
-        }
-
-        public int getValue() {
-            return (value != Spring.UNSET ? value : getPreferredValue());
-        }
-
-        public void setValue(final int value) {
-            this.value = value;
-        }
-
-        public String toString() {
-            return "Height of " + component.getClass().getName() + ": ["
-                   + getMinimumValue() + ", " + getPreferredValue() + ", "
-                   + getMaximumValue() + "]";
-        }
-    }
-
-    static final class MinusSpring extends Spring {
+    private static final class MinusSpring extends Spring {
         private final Spring sourceSpring;
-
-        private MinusSpring(final Spring spring) {
-            sourceSpring = spring;
-        }
 
         public int getMinimumValue() {
             int val = sourceSpring.getMaximumValue();
@@ -168,7 +165,7 @@ public abstract class Spring {
         }
 
         public String toString() {
-            return "-[" + sourceSpring + "]";
+            return "(-" + sourceSpring + ")";
         }
 
         private int negativeValue(final int val) {
@@ -184,9 +181,13 @@ public abstract class Spring {
                 return (-1) * value;
             }
         }
+
+        private MinusSpring(final Spring spring) {
+            sourceSpring = spring;
+        }
     }
 
-    static final class MaxSpring extends Spring {
+    private static final class MaxSpring extends Spring {
         private final Spring sourceSpring1;
         private final Spring sourceSpring2;
 
@@ -244,7 +245,6 @@ public abstract class Spring {
             final int pref1 = sourceSpring1.getPreferredValue();
             final int pref2 = sourceSpring2.getPreferredValue();
 
-            //TODO check with tests
             if (pref1 < pref2) {
                 sourceSpring1.setValue(Math.min(value, pref1));
                 sourceSpring2.setValue(value);
@@ -255,8 +255,8 @@ public abstract class Spring {
         }
 
         public String toString() {
-            return "max([" + sourceSpring1 + "], ["
-                   + sourceSpring2 + "])";
+            return "max(" + sourceSpring1 + ", "
+                   + sourceSpring2 + ")";
         }
 
         private MaxSpring(final Spring spring1, final Spring spring2) {
@@ -265,7 +265,7 @@ public abstract class Spring {
         }
     }
 
-    static final class SumSpring extends Spring {
+    private static final class SumSpring extends Spring {
         private final Spring sourceSpring1;
         private final Spring sourceSpring2;
 
@@ -276,24 +276,24 @@ public abstract class Spring {
 
         public int getMinimumValue() {
             if (minValue == Spring.UNSET) {
-                minValue  = trim(trim(sourceSpring1.getMinimumValue())
-                                 + trim(sourceSpring2.getMinimumValue()));
+                minValue  = sourceSpring1.getMinimumValue()
+                                 + sourceSpring2.getMinimumValue();
             }
             return minValue;
         }
 
         public int getPreferredValue() {
             if (prefValue == Spring.UNSET) {
-                prefValue  = trim(trim(sourceSpring1.getPreferredValue())
-                                  + trim(sourceSpring2.getPreferredValue()));
+                prefValue  = sourceSpring1.getPreferredValue()
+                                  + sourceSpring2.getPreferredValue();
             }
             return prefValue;
         }
 
         public int getMaximumValue() {
             if (maxValue == Spring.UNSET) {
-                maxValue  = trim(trim(sourceSpring1.getMaximumValue())
-                                 + trim(sourceSpring2.getMaximumValue()));
+                maxValue  = sourceSpring1.getMaximumValue()
+                                 + sourceSpring2.getMaximumValue();
             }
             return maxValue;
         }
@@ -321,7 +321,7 @@ public abstract class Spring {
 
             final int c;
             final int c1;
-            final int c2;
+ //           final int c2;
             int val1;
 
             boolean compression = (value <= getPreferredValue());
@@ -331,14 +331,14 @@ public abstract class Spring {
                 c = getPreferredValue() - getMinimumValue();
                 c1 = sourceSpring1.getPreferredValue()
                      - sourceSpring1.getMinimumValue();
-                c2 = sourceSpring2.getPreferredValue()
-                     - sourceSpring2.getMinimumValue();
+//                c2 = sourceSpring2.getPreferredValue()
+//                     - sourceSpring2.getMinimumValue();
             } else {
                 c =  getMaximumValue() - getPreferredValue();
                 c1 = sourceSpring1.getMaximumValue()
                      - sourceSpring1.getPreferredValue();
-                c2 = sourceSpring2.getMaximumValue()
-                     - sourceSpring2.getPreferredValue();
+//                c2 = sourceSpring2.getMaximumValue()
+//                     - sourceSpring2.getPreferredValue();
 
             }
 
@@ -347,7 +347,8 @@ public abstract class Spring {
                 if ((val1 * c1 >= 0)) {
                     val1 = sourceSpring1.getPreferredValue();
                 } else {
-                    val1 = Spring.UNSET + sourceSpring1.getPreferredValue();
+                    val1 = Spring.TRIMMED_MAX_VALUE
+                           + sourceSpring1.getPreferredValue();
                 }
             } else {
                 val1 = val1 * c1 / c + sourceSpring1.getPreferredValue();
@@ -358,8 +359,8 @@ public abstract class Spring {
         }
 
         public String toString() {
-            return "[" + sourceSpring1 + "] + ["
-                   + sourceSpring2 + "]";
+            return "(" + sourceSpring1 + " + "
+                   + sourceSpring2 + ")";
         }
 
         private SumSpring(final Spring spring1, final Spring spring2) {
@@ -368,7 +369,7 @@ public abstract class Spring {
         }
     }
 
-    static final class ScaleSpring extends Spring {
+    private static final class ScaleSpring extends Spring {
         private final Spring sourceSpring;
         private float factor;
 
@@ -416,15 +417,29 @@ public abstract class Spring {
         }
 
         public String toString() {
-            return factor + " * [" + sourceSpring + "]";
+            return "(" + factor + " * " + sourceSpring + ")";
         }
 
     }
+
     public static final int UNSET = -2147483648;
 
     static final int TRIMMED_MAX_VALUE = Short.MAX_VALUE;
     static final int TRIMMED_MIN_VALUE = Short.MIN_VALUE;
 
+
+    protected Spring() {
+    }
+
+    public abstract int getMinimumValue();
+
+    public abstract int getPreferredValue();
+
+    public abstract int getMaximumValue();
+
+    public abstract void setValue(int value);
+
+    public abstract int getValue();
 
     public static Spring constant(final int pref) {
         return new ConstantSpring(pref);
@@ -459,11 +474,6 @@ public abstract class Spring {
         return new HeightSpring(c);
     }
 
-
-    protected Spring() {
-    }
-
-
     private static int trim(final int value) {
         if (value > TRIMMED_MAX_VALUE) {
             return  TRIMMED_MAX_VALUE;
@@ -472,10 +482,4 @@ public abstract class Spring {
         }
         return value;
     }
-
-    public abstract int getMinimumValue();
-    public abstract int getPreferredValue();
-    public abstract int getMaximumValue();
-    public abstract int getValue();
-    public abstract void setValue(int value);
 }

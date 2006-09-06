@@ -39,7 +39,7 @@ public final class LinuxWTK extends WTK {
      * @see org.apache.harmony.awt.wtk.WTK#getNativeEventQueue()
      */
     public NativeEventQueue getNativeEventQueue() {
-        return windowFactory;
+        return eventQueue;
     }
 
     /**
@@ -82,8 +82,14 @@ public final class LinuxWTK extends WTK {
         }
         return robot;
     }
+    
+    public NativeIM getNativeIM() {
+        // TODO implement
+        return null;
+    }
 
     private final LinuxWindowFactory windowFactory = new LinuxWindowFactory();
+    private final LinuxEventQueue eventQueue = new LinuxEventQueue(windowFactory);
     private final GraphicsFactory graphicsFactory = new org.apache.harmony.awt.gl.linux.LinuxGraphics2DFactory();
     private final LinuxCursorFactory cursorFactory = new LinuxCursorFactory(windowFactory);
     private final NativeMouseInfo mouseInfo = new LinuxMouseInfo(windowFactory);

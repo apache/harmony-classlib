@@ -25,6 +25,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.TransferHandler;
@@ -47,6 +48,23 @@ final class BasicListKeyboardActions {
         }
     };
 
+    private static AbstractAction selectPreviousRowChangeLeadAction = new AbstractAction() {
+        public void actionPerformed(final ActionEvent e) {
+            JList list = (JList)e.getSource();
+            if (!(list.getSelectionModel() instanceof DefaultListSelectionModel)) {
+                return;
+            }
+
+            int previousIndex = getPreviousRow(list);
+            if (previousIndex == -1) {
+                return;
+            }
+
+            ((DefaultListSelectionModel)list.getSelectionModel()).moveLeadSelectionIndex(previousIndex);
+            list.ensureIndexIsVisible(previousIndex);
+        }
+    };
+
     private static AbstractAction selectPreviousRowExtendSelectionAction = new AbstractAction() {
         public void actionPerformed(final ActionEvent e) {
             JList list = (JList)e.getSource();
@@ -57,7 +75,7 @@ final class BasicListKeyboardActions {
             }
 
             list.setValueIsAdjusting(true);
-            list.removeSelectionInterval(list.getAnchorSelectionIndex(), list.getLeadSelectionIndex());
+            list.clearSelection();
             list.addSelectionInterval(list.getAnchorSelectionIndex(), previousIndex);
             list.setValueIsAdjusting(false);
             list.ensureIndexIsVisible(previousIndex);
@@ -77,6 +95,23 @@ final class BasicListKeyboardActions {
         }
     };
 
+    private static AbstractAction selectNextRowChangeLeadAction = new AbstractAction() {
+        public void actionPerformed(final ActionEvent e) {
+            JList list = (JList)e.getSource();
+            if (!(list.getSelectionModel() instanceof DefaultListSelectionModel)) {
+                return;
+            }
+
+            int nextIndex = getNextRow(list);
+            if (nextIndex == -1) {
+                return;
+            }
+
+            ((DefaultListSelectionModel)list.getSelectionModel()).moveLeadSelectionIndex(nextIndex);
+            list.ensureIndexIsVisible(nextIndex);
+        }
+    };
+
     private static AbstractAction selectNextRowExtendSelectionAction = new AbstractAction() {
         public void actionPerformed(final ActionEvent e) {
             JList list = (JList)e.getSource();
@@ -86,7 +121,7 @@ final class BasicListKeyboardActions {
             }
 
             list.setValueIsAdjusting(true);
-            list.removeSelectionInterval(list.getAnchorSelectionIndex(), list.getLeadSelectionIndex());
+            list.clearSelection();
             list.addSelectionInterval(list.getAnchorSelectionIndex(), nextIndex);
             list.setValueIsAdjusting(false);
             list.ensureIndexIsVisible(nextIndex);
@@ -106,6 +141,23 @@ final class BasicListKeyboardActions {
         }
     };
 
+    private static AbstractAction selectPreviousColumnChangeLeadAction = new AbstractAction() {
+        public void actionPerformed(final ActionEvent e) {
+            JList list = (JList)e.getSource();
+            if (!(list.getSelectionModel() instanceof DefaultListSelectionModel)) {
+                return;
+            }
+
+            int previousIndex = getPreviousColumn(list);
+            if (previousIndex == -1) {
+                return;
+            }
+
+            ((DefaultListSelectionModel)list.getSelectionModel()).moveLeadSelectionIndex(previousIndex);
+            list.ensureIndexIsVisible(previousIndex);
+        }
+    };
+
     private static AbstractAction selectPreviousColumnExtendSelectionAction = new AbstractAction() {
         public void actionPerformed(final ActionEvent e) {
             JList list = (JList)e.getSource();
@@ -116,7 +168,7 @@ final class BasicListKeyboardActions {
             }
 
             list.setValueIsAdjusting(true);
-            list.removeSelectionInterval(list.getAnchorSelectionIndex(), list.getLeadSelectionIndex());
+            list.clearSelection();
             list.addSelectionInterval(list.getAnchorSelectionIndex(), previousIndex);
             list.setValueIsAdjusting(false);
             list.ensureIndexIsVisible(previousIndex);
@@ -137,6 +189,23 @@ final class BasicListKeyboardActions {
         }
     };
 
+    private static AbstractAction selectNextColumnChangeLeadAction = new AbstractAction() {
+        public void actionPerformed(final ActionEvent e) {
+            JList list = (JList)e.getSource();
+            if (!(list.getSelectionModel() instanceof DefaultListSelectionModel)) {
+                return;
+            }
+
+            int nextIndex = getNextColumn(list);
+            if (nextIndex == -1) {
+                return;
+            }
+
+            ((DefaultListSelectionModel)list.getSelectionModel()).moveLeadSelectionIndex(nextIndex);
+            list.ensureIndexIsVisible(nextIndex);
+        }
+    };
+
     private static AbstractAction selectNextColumnExtendSelectionAction = new AbstractAction() {
         public void actionPerformed(final ActionEvent e) {
             JList list = (JList)e.getSource();
@@ -147,7 +216,7 @@ final class BasicListKeyboardActions {
             }
 
             list.setValueIsAdjusting(true);
-            list.removeSelectionInterval(list.getAnchorSelectionIndex(), list.getLeadSelectionIndex());
+            list.clearSelection();
             list.addSelectionInterval(list.getAnchorSelectionIndex(), nextIndex);
             list.setValueIsAdjusting(false);
             list.ensureIndexIsVisible(nextIndex);
@@ -166,6 +235,21 @@ final class BasicListKeyboardActions {
         }
     };
 
+    private static AbstractAction selectFirstRowChangeLeadAction = new AbstractAction() {
+        public void actionPerformed(final ActionEvent e) {
+            JList list = (JList)e.getSource();
+            if (list.getModel().getSize() == 0) {
+                return;
+            }
+            if (!(list.getSelectionModel() instanceof DefaultListSelectionModel)) {
+                return;
+            }
+
+            ((DefaultListSelectionModel)list.getSelectionModel()).moveLeadSelectionIndex(0);
+            list.ensureIndexIsVisible(0);
+        }
+    };
+
     private static AbstractAction selectFirstRowExtendSelectionAction = new AbstractAction() {
         public void actionPerformed(final ActionEvent e) {
             JList list = (JList)e.getSource();
@@ -176,7 +260,7 @@ final class BasicListKeyboardActions {
             int beginIndex = list.getAnchorSelectionIndex();
             if (beginIndex != -1) {
                 list.setValueIsAdjusting(true);
-                list.removeSelectionInterval(list.getAnchorSelectionIndex(), list.getLeadSelectionIndex());
+                list.clearSelection();
                 list.addSelectionInterval(beginIndex, 0);
                 list.setValueIsAdjusting(false);
             }
@@ -198,6 +282,22 @@ final class BasicListKeyboardActions {
         }
     };
 
+    private static AbstractAction selectLastRowChangeLeadAction = new AbstractAction() {
+        public void actionPerformed(final ActionEvent e) {
+            JList list = (JList)e.getSource();
+            if (list.getModel().getSize() == 0) {
+                return;
+            }
+            if (!(list.getSelectionModel() instanceof DefaultListSelectionModel)) {
+                return;
+            }
+
+            int lastIndex = list.getModel().getSize() - 1;
+            ((DefaultListSelectionModel)list.getSelectionModel()).moveLeadSelectionIndex(lastIndex);
+            list.ensureIndexIsVisible(lastIndex);
+        }
+    };
+
     private static AbstractAction selectLastRowExtendSelectionAction = new AbstractAction() {
         public void actionPerformed(final ActionEvent e) {
             JList list = (JList)e.getSource();
@@ -209,7 +309,7 @@ final class BasicListKeyboardActions {
             int beginIndex = list.getAnchorSelectionIndex();
             if (beginIndex != -1) {
                 list.setValueIsAdjusting(true);
-                list.removeSelectionInterval(list.getAnchorSelectionIndex(), list.getLeadSelectionIndex());
+                list.clearSelection();
                 list.addSelectionInterval(beginIndex, lastIndex);
                 list.setValueIsAdjusting(false);
             }
@@ -232,6 +332,23 @@ final class BasicListKeyboardActions {
         }
     };
 
+    private static AbstractAction scrollUpChangeLeadAction = new AbstractAction() {
+        public void actionPerformed(final ActionEvent e) {
+            JList list = (JList)e.getSource();
+            if (!(list.getSelectionModel() instanceof DefaultListSelectionModel)) {
+                return;
+            }
+
+            int upIndex = getScrollUpIndex(list);
+            if (upIndex == -1) {
+                return;
+            }
+
+            ((DefaultListSelectionModel)list.getSelectionModel()).moveLeadSelectionIndex(upIndex);
+            list.ensureIndexIsVisible(upIndex);
+        }
+    };
+
     private static AbstractAction scrollUpExtendSelectionAction = new AbstractAction() {
         public void actionPerformed(final ActionEvent e) {
             JList list = (JList)e.getSource();
@@ -244,7 +361,7 @@ final class BasicListKeyboardActions {
             int beginIndex = list.getAnchorSelectionIndex();
             if (beginIndex != -1) {
                 list.setValueIsAdjusting(true);
-                list.removeSelectionInterval(list.getAnchorSelectionIndex(), list.getLeadSelectionIndex());
+                list.clearSelection();
                 list.addSelectionInterval(beginIndex, upIndex);
                 list.setValueIsAdjusting(false);
             }
@@ -267,6 +384,23 @@ final class BasicListKeyboardActions {
         }
     };
 
+    private static AbstractAction scrollDownChangeLeadAction = new AbstractAction() {
+        public void actionPerformed(final ActionEvent e) {
+            JList list = (JList)e.getSource();
+            if (!(list.getSelectionModel() instanceof DefaultListSelectionModel)) {
+                return;
+            }
+
+            int downIndex = getScrollDownIndex(list);
+            if (downIndex == -1) {
+                return;
+            }
+
+            ((DefaultListSelectionModel)list.getSelectionModel()).moveLeadSelectionIndex(downIndex);
+            list.ensureIndexIsVisible(downIndex);
+        }
+    };
+
     private static AbstractAction scrollDownExtendSelectionAction = new AbstractAction() {
         public void actionPerformed(final ActionEvent e) {
             JList list = (JList)e.getSource();
@@ -279,7 +413,7 @@ final class BasicListKeyboardActions {
             int beginIndex = list.getAnchorSelectionIndex();
             if (beginIndex != -1) {
                 list.setValueIsAdjusting(true);
-                list.removeSelectionInterval(list.getAnchorSelectionIndex(), list.getLeadSelectionIndex());
+                list.clearSelection();
                 list.addSelectionInterval(beginIndex, downIndex);
                 list.setValueIsAdjusting(false);
             }
@@ -310,6 +444,65 @@ final class BasicListKeyboardActions {
         }
     };
 
+    private static AbstractAction addToSelectionAction = new AbstractAction() {
+        public void actionPerformed(final ActionEvent e) {
+            JList list = (JList)e.getSource();
+
+            int addIndex = list.getLeadSelectionIndex();
+            if (addIndex == -1) {
+                return;
+            }
+
+            list.addSelectionInterval(addIndex, addIndex);
+        }
+    };
+
+    private static AbstractAction toggleAndAnchorAction = new AbstractAction() {
+        public void actionPerformed(final ActionEvent e) {
+            JList list = (JList)e.getSource();
+
+            int toggleIndex = list.getLeadSelectionIndex();
+            if (toggleIndex == -1) {
+                return;
+            }
+
+            if (list.isSelectedIndex(toggleIndex)) {
+                list.removeSelectionInterval(toggleIndex, toggleIndex);
+            } else {
+                list.addSelectionInterval(toggleIndex, toggleIndex);
+            }
+            list.getSelectionModel().setAnchorSelectionIndex(toggleIndex);
+        }
+    };
+
+    private static AbstractAction moveSelectionToAction = new AbstractAction() {
+        public void actionPerformed(final ActionEvent e) {
+            JList list = (JList)e.getSource();
+
+            int moveIndex = list.getLeadSelectionIndex();
+            if (moveIndex == -1) {
+                return;
+            }
+
+            list.setSelectedIndex(moveIndex);
+        }
+    };
+
+    private static AbstractAction extendToAction = new AbstractAction() {
+        public void actionPerformed(final ActionEvent e) {
+            JList list = (JList)e.getSource();
+            int extendIndex = list.getLeadSelectionIndex();
+            if (extendIndex == -1) {
+                return;
+            }
+
+            list.setValueIsAdjusting(true);
+            list.clearSelection();
+            list.addSelectionInterval(list.getAnchorSelectionIndex(), extendIndex);
+            list.setValueIsAdjusting(false);
+        }
+    };
+
 
     public static void installKeyboardActions(final JList list) {
         Utilities.installKeyboardActions(list, JComponent.WHEN_FOCUSED, "List.focusInputMap", "List.focusInputMap.RightToLeft");
@@ -318,6 +511,11 @@ final class BasicListKeyboardActions {
         list.getActionMap().put("selectNextRow", selectNextRowAction);
         list.getActionMap().put("selectPreviousRowExtendSelection", selectPreviousRowExtendSelectionAction);
         list.getActionMap().put("selectNextRowExtendSelection", selectNextRowExtendSelectionAction);
+
+        list.getActionMap().put("selectPreviousRowChangeLead", selectPreviousRowChangeLeadAction);
+        list.getActionMap().put("selectNextRowChangeLead", selectNextRowChangeLeadAction);
+        list.getActionMap().put("selectPreviousColumnChangeLead", selectPreviousColumnChangeLeadAction);
+        list.getActionMap().put("selectNextColumnChangeLead", selectNextColumnChangeLeadAction);
 
         list.getActionMap().put("selectPreviousColumn", selectPreviousColumnAction);
         list.getActionMap().put("selectNextColumn", selectNextColumnAction);
@@ -329,13 +527,24 @@ final class BasicListKeyboardActions {
         list.getActionMap().put("selectLastRow", selectLastRowAction);
         list.getActionMap().put("selectLastRowExtendSelection", selectLastRowExtendSelectionAction);
 
+        list.getActionMap().put("selectLastRowChangeLead", selectLastRowChangeLeadAction);
+        list.getActionMap().put("selectFirstRowChangeLead", selectFirstRowChangeLeadAction);
+
         list.getActionMap().put("scrollUp", scrollUpAction);
         list.getActionMap().put("scrollUpExtendSelection", scrollUpExtendSelectionAction);
         list.getActionMap().put("scrollDown", scrollDownAction);
         list.getActionMap().put("scrollDownExtendSelection", scrollDownExtendSelectionAction);
 
+        list.getActionMap().put("scrollUpChangeLead", scrollUpChangeLeadAction);
+        list.getActionMap().put("scrollDownChangeLead", scrollDownChangeLeadAction);
+
         list.getActionMap().put("selectAll", selectAllAction);
         list.getActionMap().put("clearSelection", clearSelectionAction);
+
+        list.getActionMap().put("addToSelection", addToSelectionAction);
+        list.getActionMap().put("toggleAndAnchor", toggleAndAnchorAction);
+        list.getActionMap().put("moveSelectionTo", moveSelectionToAction);
+        list.getActionMap().put("extendTo", extendToAction);
 
         list.getActionMap().put("copy", TransferHandler.getCopyAction());
         list.getActionMap().put("paste", TransferHandler.getPasteAction());
@@ -422,8 +631,6 @@ final class BasicListKeyboardActions {
             } else {
                 return list.getModel().getSize() - 1;
             }
-        } else if (list.getLayoutOrientation() == JList.VERTICAL_WRAP && selectedRow < strategy.getRowCount() - 1 && strategy.getIndex(selectedRow + 1, selectedColumn) < list.getModel().getSize()) {
-            return strategy.getIndex(selectedRow + 1, selectedColumn);
         }
 
         return -1;
@@ -448,8 +655,6 @@ final class BasicListKeyboardActions {
         int selectedColumn = strategy.getColumn(currectSelection);
         if (selectedColumn > 0) {
             return strategy.getIndex(selectedRow, selectedColumn - 1);
-        } else if (list.getLayoutOrientation() == JList.VERTICAL_WRAP && selectedRow > 0) {
-            return strategy.getIndex(selectedRow - 1, selectedColumn);
         }
 
         return -1;

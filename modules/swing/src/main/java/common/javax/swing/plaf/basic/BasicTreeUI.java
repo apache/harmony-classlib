@@ -184,7 +184,10 @@ public class BasicTreeUI extends TreeUI {
 
         public void keyTyped(final KeyEvent e) {
             int rowCount = tree.getRowCount();
-            if (rowCount == 0) {
+            if (rowCount == 0 
+                || (e.getModifiersEx() & KeyEvent.ALT_DOWN_MASK) != 0
+                || (e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0) {
+                
                 return;
             }
 
@@ -1512,6 +1515,10 @@ public class BasicTreeUI extends TreeUI {
             treeModel.valueForPathChanged(editingPath, getCellEditor().getCellEditorValue());
         }
 
+        if (!isEditing(tree)) {
+            return;
+        }
+        
         tree.remove(editingComponent);
         editingComponent = null;
         editingPath = null;

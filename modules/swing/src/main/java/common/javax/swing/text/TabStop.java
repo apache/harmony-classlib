@@ -85,13 +85,6 @@ public class TabStop implements Serializable {
         return hash.hashCode();
     }
 
-    /*
-     * The format of the string is based on 1.5 release behavior
-     * which can be revealed using the following code:
-     *
-     *  Object obj = new TabStop(1.0f, TabStop.ALIGN_RIGHT, TabStop.LEAD_DOTS);
-     *  System.out.println(obj.toString());
-     */
     public String toString() {
         final StringBuffer result = new StringBuffer();
         switch (alignment) {

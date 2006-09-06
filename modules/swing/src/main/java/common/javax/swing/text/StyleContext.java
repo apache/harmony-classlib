@@ -466,7 +466,6 @@ public class StyleContext
 
     public StyleContext() {
         initTransientFields();
-        styles = new NamedStyle();
         addStyle(DEFAULT_STYLE, null);
     }
 

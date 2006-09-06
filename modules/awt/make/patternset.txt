@@ -37,6 +37,7 @@ org/apache/harmony/awt/gl/image/*
 org/apache/harmony/awt/gl/linux/*
 org/apache/harmony/awt/gl/render/*
 org/apache/harmony/awt/gl/windows/*
+org/apache/harmony/awt/im/*
 org/apache/harmony/awt/nativebridge/*
 org/apache/harmony/awt/nativebridge/linux/*
 org/apache/harmony/awt/nativebridge/windows/*

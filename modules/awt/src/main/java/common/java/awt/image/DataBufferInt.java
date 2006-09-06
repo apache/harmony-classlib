@@ -62,10 +62,12 @@ public final class DataBufferInt extends DataBuffer {
 
     public void setElem(int bank, int i, int val) {
         data[bank][offsets[bank] + i] = val;
+        notifyChanged();
     }
 
     public void setElem(int i, int val) {
         data[0][offset + i] = val;
+        notifyChanged();
     }
 
     public int getElem(int bank, int i) {
@@ -73,6 +75,7 @@ public final class DataBufferInt extends DataBuffer {
     }
 
     public int[] getData(int bank) {
+        notifyTaken();
         return data[bank];
     }
 
@@ -81,10 +84,12 @@ public final class DataBufferInt extends DataBuffer {
     }
 
     public int[][] getBankData() {
+        notifyTaken();
         return (int[][]) data.clone();
     }
 
     public int[] getData() {
+        notifyTaken();
         return data[0];
     }
 }

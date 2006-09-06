@@ -72,8 +72,6 @@ public interface GraphicsFactory {
     // Font methods
     FontMetrics getFontMetrics(Font font);
     FontManager getFontManager();
-    FontPeer createFontPeer(Font font);
-    FontPeer createFontPeer(FontProperty fp, int size);
-    void freeFontPeer(Font font);
+    FontPeer getFontPeer(Font font);
     Font embedFont(String fontFilePath);
 }

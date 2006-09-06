@@ -94,21 +94,75 @@ class BasicSplitPaneKeyboardActions {
         return new AbstractAction() {
             public void actionPerformed(final ActionEvent e) {
                 JSplitPane splitPane = (JSplitPane)e.getSource();
+                isFocusRequested = false;
                 if (splitPane.getOrientation() == JSplitPane.HORIZONTAL_SPLIT) {
-                    if (splitPane.getLeftComponent().isFocusOwner()) {
-                        splitPane.getRightComponent().requestFocus();
+                    if (splitPane.getLeftComponent() instanceof Container 
+                        && isHierarchyFocused((Container)splitPane.getLeftComponent()) 
+                        || splitPane.getLeftComponent().isFocusOwner()) {
+                        
+                        requestFocusInHierarchy((Container)splitPane.getRightComponent());
                     } else {
-                        splitPane.getLeftComponent().requestFocus();
+                        requestFocusInHierarchy((Container)splitPane.getLeftComponent());
                     }
                 } else {
-                    if (splitPane.getTopComponent().isFocusOwner()) {
-                        splitPane.getBottomComponent().requestFocus();
+                    if (splitPane.getTopComponent() instanceof Container 
+                        && isHierarchyFocused((Container)splitPane.getLeftComponent()) 
+                        || splitPane.getTopComponent().isFocusOwner()) {
+
+                        requestFocusInHierarchy((Container)splitPane.getBottomComponent());
                     } else {
-                        splitPane.getTopComponent().requestFocus();
+                        requestFocusInHierarchy((Container)splitPane.getTopComponent());
                     }
                 }
             }
         };
+    }
+    
+    private static boolean isHierarchyFocused(final Container root) {
+        if (root.isFocusOwner()) {
+            return root.isFocusOwner();
+        }
+
+        for (int i = 0; i < root.getComponentCount(); i++) {
+            Component child = root.getComponent(i);
+            if (child instanceof Container) {
+                return isHierarchyFocused((Container)child);
+            } else {
+                return child.isFocusOwner();
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean isFocusRequested;
+    private static void requestFocusInHierarchy(final Container root) {
+        if (isFocusRequested) {
+            return;
+        }
+        
+        if (root.getComponentCount() == 0) {
+            root.requestFocus();
+            isFocusRequested = true;
+            
+            return;
+        }
+
+        for (int i = 0; i < root.getComponentCount(); i++) {
+            Component child = root.getComponent(i);
+            if (!(child instanceof JComponent)) {
+                root.requestFocus();
+                isFocusRequested = true;
+                
+                return;
+            }
+            if (child instanceof Container) {
+                requestFocusInHierarchy((Container)child);
+                if (isFocusRequested) {
+                    return;
+                }
+            }
+        }
     }
 
     private static Action newStartResizeAction() {

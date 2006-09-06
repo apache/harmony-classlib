@@ -327,6 +327,7 @@ public class BasicListUI extends ListUI {
             if (nextIndex != -1) {
                 searchTimer.stop();
                 list.setSelectedIndex(nextIndex);
+                list.ensureIndexIsVisible(nextIndex);
                 searchTimer.restart();
             } else {
                 resetSearch();
@@ -586,6 +587,7 @@ public class BasicListUI extends ListUI {
 
         if (currectSelection < list.getModel().getSize() - 1 && list.getModel().getSize() > 0) {
             list.setSelectedIndex(currectSelection + 1);
+            list.ensureIndexIsVisible(currectSelection + 1);
         }
     }
 
@@ -593,6 +595,7 @@ public class BasicListUI extends ListUI {
         int currectSelection = list.getMinSelectionIndex();
         if (currectSelection > 0) {
             list.setSelectedIndex(currectSelection - 1);
+            list.ensureIndexIsVisible(currectSelection - 1);
         }
     }
 

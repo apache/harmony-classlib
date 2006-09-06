@@ -32,8 +32,6 @@ import java.awt.image.WritableRaster;
 import java.util.Hashtable;
 import java.util.Locale;
 
-import org.apache.harmony.awt.gl.CommonGraphics2DFactory;
-import org.apache.harmony.awt.gl.font.FontManager;
 import org.apache.harmony.awt.gl.font.FontPeerImpl;
 import org.apache.harmony.awt.gl.font.Glyph;
 import org.apache.harmony.awt.gl.font.LineMetricsImpl;
@@ -49,35 +47,13 @@ public class WindowsFont extends FontPeerImpl{
     // Pairs of [begin, end],[..].. unicode ranges values 
     private int[] fontUnicodeRanges;
 
-    // pitch and family flag for logical font peer
-    private int fPitchAndFamily = WindowsFont.FF_DONTCARE | WindowsFont.DEFAULT_PITCH;
-    
-    // GDI pitch constants
-    private static final int DEFAULT_PITCH = 0; // GDI DEFAULT_PITCH
-    private static final int FIXED_PITCH = 1;   // GDI FIXED_PITCH
-    private static final int VARIABLE_PITCH = 2; // GDI VARIABLE_PITCH
-
-    // GDI family constants
-    private static final int FF_DONTCARE = (0<<4);  // GDI FF_DONTCARE
-    private static final int FF_SWISS = (2<<4);     // GDI FF_SWISS
-    private static final int FF_MODERN = (3<<4);    // GDI FF_MODERN
-    private static final int FF_ROMAN = (1<<4);     // GDI FF_ROMAN
-
-    public WindowsFont(Font font, boolean isLogical, String familyName, String faceName, int fontStyle) {
-
-        this.name = font.getName();
-        this.size = font.getSize();
-        this.style = font.getStyle();
-
-        this.fontFamilyName = familyName;
-        this.faceName = faceName;
-
-        if (isLogical){
-            this.setFPitchAndFamily(FontManager.getLogicalIndex(this.name.toLowerCase()));
-            this.psName  = familyName;  // logical name
-        }
-
-        pFont = NativeFont.initializeFont(this, this.fontFamilyName, this.style | fontStyle);
+    public WindowsFont(String fontName, int fontStyle, int fontSize) {
+        this.size = fontSize;
+        this.style = fontStyle;
+        this.name = fontName;
+        this.fontFamilyName = name;
+        
+        pFont = NativeFont.initializeFont(this, fontName, fontStyle, fontSize);
 
         initWindowsFont();
 
@@ -107,7 +83,7 @@ public class WindowsFont extends FontPeerImpl{
         }
 //      this.defaultChar = NativeFont.getDefaultCharNative(pFont);
 
-        addGlyphs((char) 0x20, (char) 0x7E);
+//        addGlyphs((char) 0x20, (char) 0x7E);
     }
 
     /**
@@ -242,15 +218,7 @@ public class WindowsFont extends FontPeerImpl{
         return result;
 
     }
-    /**
-     * Dispose native font handle.
-     */
-    public void freeResource() {
-        if (pFont != 0) {
-            NativeFont.pFontFree(pFont);
-        }
-    }
-    
+
     /**
      * Returns string image, that can be blitted onto a BufferedImageGraphics2D.
      * @param str the specified string
@@ -329,7 +297,7 @@ public class WindowsFont extends FontPeerImpl{
 
        return this.getFontName();
     }
-
+    
     /**
      * Returns a clone of LineMetrics object that contains metrics of this 
      * WindowsFont.
@@ -373,45 +341,15 @@ public class WindowsFont extends FontPeerImpl{
      * if this WindowsFont object was created from stream.
      */
     public void dispose(){
-        NativeFont.pFontFree(this.pFont);
-        if (this.isCreatedFromStream()) {
-            NativeFont.RemoveFontResource(this.getTempFontFileName());
+        if (pFont != 0){
+            NativeFont.pFontFree(pFont);
+            pFont = 0;
+
+            if (isCreatedFromStream()) {
+                NativeFont.RemoveFontResource(getTempFontFileName());
+            }
+            
         }
-    }
-
-    /**
-     * Set pitch and family flag in case of predefined logical names as.
-     * If the list fonts in the font.propery file that corresponds to the
-     * logical name is absent or there is no such fonts in the 
-     * GraphicsEnvironment, flag fPitchAndFamily set to the corresponding 
-     * to the logical name value. This value is used in GDI native font 
-     * handle creation. 
-     */
-    private void setFPitchAndFamily(int logFontNameIndex){
-        switch (logFontNameIndex){
-            case DIALOG:
-            case SANSSERIF:
-                this.fPitchAndFamily = WindowsFont.FF_SWISS | WindowsFont.VARIABLE_PITCH;
-                break;
-            case DIALOGINPUT:
-            case MONOSPACED:
-                this.fPitchAndFamily = WindowsFont.FF_MODERN | WindowsFont.FIXED_PITCH;
-                break;
-            case SERIF:
-                this.fPitchAndFamily = WindowsFont.FF_ROMAN | WindowsFont.VARIABLE_PITCH;
-                break;
-            default:
-                this.fPitchAndFamily = WindowsFont.FF_DONTCARE | WindowsFont.DEFAULT_PITCH;
-        }
-
-    }
-
-    /**
-     * Returns pitch and family flag of this WindowsFont 
-     * for the logical font creation by means of GDI purpose.
-     */
-    public int getFPitchAndFamily(){
-        return this.fPitchAndFamily;
     }
 
     /**
@@ -420,7 +358,7 @@ public class WindowsFont extends FontPeerImpl{
     public String getPSName(){
         if (psName == null){
             // TODO: implement method
-            psName = this.faceName;
+            psName = getFontName();
         }
         return psName;
     }
@@ -444,12 +382,28 @@ public class WindowsFont extends FontPeerImpl{
     public String getFontName() {
         if (faceName == null){
             if (this.fontType == FontManager.FONT_TYPE_T1)
-                faceName = fontFamilyName;
+                faceName = getFamily();
             else
-                faceName = NativeFont.getFontNameNative(this.getFontHandle());
+                faceName = NativeFont.getFontNameNative(this.pFont);
         }
 
         return faceName;
     }
+    
+    /**
+     * Returns initiated FontExtraMetrics instance of this WindowsFont.
+     */
+    public FontExtraMetrics getExtraMetrics(){
+        if (extraMetrix == null){
+
+            //!! for Type1 fonts 'x' char width used as average char width
+            float[] metrics = NativeFont.getExtraMetricsNative(this.getFontHandle(), this.size, this.fontType);
+            if (fontType == FontManager.FONT_TYPE_T1){
+                metrics[0] = charWidth('x');
+            }
+            extraMetrix = new FontExtraMetrics(metrics);
+        }
+        return extraMetrix;
+    }   
 
 }

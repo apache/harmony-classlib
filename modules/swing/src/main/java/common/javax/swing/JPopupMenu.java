@@ -463,10 +463,8 @@ public class JPopupMenu extends JComponent implements Accessible, MenuElement {
             } else {
                 newPath = Utilities.addToPath(oldPath, this);
             }
-        } else {
-            newPath = Utilities.removeFromPath(oldPath, this);
+            manager.setSelectedPath(newPath);
         }
-        manager.setSelectedPath(newPath);
     }
 
     private void endMouseGrab() {

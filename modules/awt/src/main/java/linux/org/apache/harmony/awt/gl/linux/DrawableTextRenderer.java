@@ -98,6 +98,7 @@ public class DrawableTextRenderer extends TextRenderer {
         LinuxFont peer = (LinuxFont)g.getFont().getPeer();
 
         X11.XColor xcolor = getXColor(g.getColor());
+        long xcolorPtr = xcolor.lock();
 
         /*
          * Work around for escape-subsequences.
@@ -127,9 +128,9 @@ public class DrawableTextRenderer extends TextRenderer {
         if (inChars.length != 0 ){
             LinuxNativeFont.drawStringNative(xg2d.xftDraw, display, colormap, 
                     peer.getFontHandle(), (int)Math.round(x), (int)Math.round(y), 
-                    outChars, j, xcolor.lock());
-            xcolor.unlock();
+                    outChars, j, xcolorPtr);
         }
+        xcolor.unlock();
 
     }
 
@@ -151,7 +152,8 @@ public class DrawableTextRenderer extends TextRenderer {
         long colormap = x11.XDefaultColormap(display, screen);
 
         X11.XColor xcolor = getXColor(g.getColor());
-
+        long xcolorPtr = xcolor.lock();
+        
         CompositeFont wcf = (CompositeFont)(g.getFont().getPeer());
         long font = 0;
         int xOffset = (int)Math.round(x);    // X offset to draw
@@ -174,8 +176,7 @@ public class DrawableTextRenderer extends TextRenderer {
                 chars = sChars.toCharArray();
                 LinuxNativeFont.drawStringNative(xg2d.xftDraw, display, 
                         colormap, font, xOffset, yOffset, chars, 
-                        sChars.length(), xcolor.lock());
-                xcolor.unlock();
+                        sChars.length(), xcolorPtr);
 
                 xOffset += offs;
                 offs = 0;
@@ -190,9 +191,9 @@ public class DrawableTextRenderer extends TextRenderer {
         if (chars.length != 0){
             LinuxNativeFont.drawStringNative(xg2d.xftDraw, display, colormap, 
                     font, xOffset, yOffset, chars, sChars.length(), 
-                    xcolor.lock());
-            xcolor.unlock();
+                    xcolorPtr);
         }
+        xcolor.unlock();
 
     }
 
@@ -233,6 +234,7 @@ public class DrawableTextRenderer extends TextRenderer {
         LinuxFont peer = (LinuxFont)glyphVector.getFont().getPeer();
 
         X11.XColor xcolor = getXColor(g.getColor());
+        long xcolorPtr = xcolor.lock();
 
         for (int i = 0; i < glyphVector.getNumGlyphs(); i++) {
 
@@ -249,9 +251,9 @@ public class DrawableTextRenderer extends TextRenderer {
 
             LinuxNativeFont.drawStringNative(xg2d.xftDraw, display, colormap, 
                     peer.getFontHandle(), xBaseLine, yBaseLine, chars, 1, 
-                    xcolor.lock());
-            xcolor.unlock();
+                    xcolorPtr);
         }
+        xcolor.unlock();
 
     }
 
@@ -273,6 +275,7 @@ public class DrawableTextRenderer extends TextRenderer {
         long colormap = x11.XDefaultColormap(display, screen);
 
         X11.XColor xcolor = getXColor(g.getColor());
+        long xcolorPtr = xcolor.lock();
 
         for (int i = 0; i < glyphVector.getNumGlyphs(); i++) {
 
@@ -289,9 +292,9 @@ public class DrawableTextRenderer extends TextRenderer {
 
             LinuxNativeFont.drawStringNative(xg2d.xftDraw, display, colormap, 
                     gl.getPFont(), xBaseLine, yBaseLine, chars, 1, 
-                    xcolor.lock());
-            xcolor.unlock();
+                    xcolorPtr);
         }
+        xcolor.unlock();
 
     }
 }

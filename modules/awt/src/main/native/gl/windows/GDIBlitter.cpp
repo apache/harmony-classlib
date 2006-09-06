@@ -44,11 +44,12 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltBGIm
   (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jobject srcData, 
   jint dstX, jint dstY, jlong dstSurfStruct, jint width, jint height, 
   jint bgcolor, jint compType, jfloat alpha, jdoubleArray matrix, 
-  jintArray clip, jint numVertex){
+  jintArray clip, jint numVertex, jboolean invalidated){
 
       SURFACE_STRUCTURE *srcSurf = (SURFACE_STRUCTURE *)srcSurfStruct;
       SURFACE_STRUCTURE *dstSurf = (SURFACE_STRUCTURE *)dstSurfStruct;
 
+         srcSurf->invalidated = invalidated;
       HDC tmpDC = CreateCompatibleDC(dstSurf->gi->hdc);
       int w = srcSurf->width;
       int h = srcSurf->height;
@@ -182,7 +183,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltImag
   (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jobject srcData, 
   jint dstX, jint dstY, jlong dstSurfStruct, jint width, jint height, 
   jint compType, jfloat alpha, jdoubleArray matrix, 
-  jintArray clip, jint numVertex){
+  jintArray clip, jint numVertex, jboolean invalidated){
 
       SURFACE_STRUCTURE *srcSurf = (SURFACE_STRUCTURE *)srcSurfStruct;
       SURFACE_STRUCTURE *dstSurf = (SURFACE_STRUCTURE *)dstSurfStruct;
@@ -192,6 +193,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltImag
       BLITSTRUCT blitStruct;
       memset(&blitStruct, 0, sizeof(BLITSTRUCT));
 
+         srcSurf->invalidated = invalidated;
       if(!initBlitData(srcSurf, env, srcData, compType, srca, &blitStruct)) return;
 
       XFORM currentTransform, transform;
@@ -349,7 +351,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltBitm
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_xorImage
   (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jobject srcData, 
   jint dstX, jint dstY, jlong dstSurfStruct, jobject dstData, jint width, jint heigth, 
-  jint xorcolor, jdoubleArray matrix, jintArray clip, jint numVertex){
+  jint xorcolor, jdoubleArray matrix, jintArray clip, jint numVertex, jboolean invalidated){
 
   }
 
@@ -407,14 +409,18 @@ BOOL initBlitData
                 blitStruct->rastOp = BLACKNESS;
                 return true;
             }
-            if(!initBitmap(srcSurf, env, srcData, false)) return false;
+                       if(srcSurf->invalidated || srcSurf->isAlphaPre != false){
+                               if(!initBitmap(srcSurf, env, srcData, false)) return false;
+                       }
             blitStruct->blitFunctintType = BIT_BLT;
             blitStruct->rastOp = SRCCOPY;
             return true;
 
         case COMPOSITE_SRC_OVER:
         case COMPOSITE_SRC_ATOP:
-            if(!initBitmap(srcSurf, env, srcData, true)) return false;
+                       if(srcSurf->invalidated || srcSurf->isAlphaPre != true){
+                               if(!initBitmap(srcSurf, env, srcData, true)) return false;
+                       }
             if(srcSurf->transparency != GL_OPAQUE || srcConstAlpha != 255){
                 blitStruct->blitFunctintType = ALPHA_BLEND;
                 blitStruct->blendFunc.AlphaFormat = srcSurf->transparency != GL_OPAQUE ? AC_SRC_ALPHA : 0;
@@ -459,375 +465,12 @@ BOOL initBlitData
 BOOL initBitmap
 (SURFACE_STRUCTURE *srcSurf, JNIEnv *env, jobject srcData, BOOL alphaPre){
 
-    HBITMAP srcBmp = srcSurf->bitmap;
+       HBITMAP srcBmp = srcSurf->bitmap;
     if(!srcBmp){
         return false;
     }
-
-    void *bmpDataPtr = srcSurf->bmpData;
-    void *srcDataPtr = env->GetPrimitiveArrayCritical((jarray)srcData, 0);
-
-    UINT srcstride, dststride;
-    DIBSECTION dibs;
-    GetObject(srcBmp, sizeof(DIBSECTION), &dibs);
-    srcstride = srcSurf->scanline_stride_byte;
-    dststride = dibs.dsBm.bmWidthBytes;
-    int transparency = srcSurf->transparency;
-
-    UCHAR *src, *dst, *s, *d;
-    src = (UCHAR *)srcDataPtr;
-    dst = (UCHAR *)bmpDataPtr;
-    UINT *dstIntPtr, *dstInt, r, g, b, a, pixel, pixelBits, bitnum, elem, shift, bitMask;
-    UCHAR sa;
-    USHORT *usSrc, *tus, uspixel;
-
-    switch(srcSurf->ss_type){
-
-        case INT_RGB:
-            if(!srcSurf->invalidated) return true;
-            //for(int y = srcSurf->height; y > 0; y--, src += srcstride, dst += dststride){
-            //    memcpy(dst, src, dststride);
-            //}
-            for(int y = srcSurf->height; y > 0; y--, src += srcstride, dst += dststride){
-                int x = srcSurf->width;
-                s = src + (x << 2) - 1;
-                d = dst + (x << 2) - 1;
-
-                for(; x > 0 ; x--){
-                    *d-- = 255;
-                    *s--;
-                    *d-- = *s--;
-                    *d-- = *s--;
-                    *d-- = *s--;
-                }
-            }
-            break;
-
-        case INT_ARGB:
-            if(alphaPre){
-                if(!srcSurf->invalidated && srcSurf->isAlphaPre) return true;
-                for(int y = srcSurf->height; y > 0 ; y--, src += srcstride, dst += dststride){
-                    int x = srcSurf->width;
-                    s = src + (x << 2) - 1;
-                    d = dst + (x << 2) - 1;
-
-                    for(; x > 0 ; x--){
-                        sa = *s--;
-                        *d-- = sa;
-                        *d-- = MUL(sa, *s--);
-                        *d-- = MUL(sa, *s--);
-                        *d-- = MUL(sa, *s--);
-                    }
-                }
-                srcSurf->isAlphaPre = true;
-            }else{
-                if(!srcSurf->invalidated && !srcSurf->isAlphaPre) return true;
-                for(int y = srcSurf->height; y > 0 ; y--, src += srcstride, dst += dststride){
-                    int x = srcSurf->width;
-                    s = src + (x << 2) - 1;
-                    d = dst + (x << 2) - 1;
-
-                    for(; x > 0 ; x--){
-                        sa = *s--;
-                        if(sa == 0){
-                            *d-- = 0;
-                            *d-- = 0;
-                            *d-- = 0;
-                            *d-- = 0;
-                            s -= 3;
-                        }else{
-                            *d-- = sa;
-                            *d-- = MUL(sa, *s--);
-                            *d-- = MUL(sa, *s--);
-                            *d-- = MUL(sa, *s--);
-                        }
-                    }
-                }
-                srcSurf->isAlphaPre = false;
-            }
-            break;
-
-        case BYTE_ABGR:
-            if(alphaPre){
-                if(!srcSurf->invalidated && srcSurf->isAlphaPre) return true;
-                for(int y = srcSurf->height; y > 0 ; y--, src += srcstride, dst += dststride){
-                    int x = srcSurf->width;
-                    s = src + (x << 2) - 1;
-                    d = dst + (x << 2) - 1;
-
-                    for(; x > 0 ; x--){
-                        r = *s--;
-                        g = *s--;
-                        b = *s--;
-                        sa = *s--;
-                        *d-- = sa;
-                        *d-- = MUL(sa, r);
-                        *d-- = MUL(sa, g);
-                        *d-- = MUL(sa, b);
-                    }
-                }
-                srcSurf->isAlphaPre = true;
-            }else{
-                if(!srcSurf->invalidated && !srcSurf->isAlphaPre) return true;
-                for(int y = srcSurf->height; y > 0 ; y--, src += srcstride, dst += dststride){
-                    int x = srcSurf->width;
-                    s = src + (x << 2) - 1;
-                    d = dst + (x << 2) - 1;
-
-                    for(; x > 0 ; x--){
-                        r = *s--;
-                        g = *s--;
-                        b = *s--;
-                        sa = *s--;
-                        if(sa == 0){
-                            *d-- = 0;
-                            *d-- = 0;
-                            *d-- = 0;
-                            *d-- = 0;
-                        }else{
-                            *d-- = sa;
-                            *d-- = r;
-                            *d-- = g;
-                            *d-- = b;
-                        }
-                    }
-                }
-                srcSurf->isAlphaPre = false;
-            }
-            break;
-
-        case INT_ARGB_PRE:
-            if(alphaPre){
-                if(!srcSurf->invalidated && srcSurf->isAlphaPre) return true;
-                for(int y = srcSurf->height; y > 0; y--, src += srcstride, dst += dststride){
-                    memcpy(dst, src, dststride);
-                }
-                srcSurf->isAlphaPre = true;
-            }else{
-                if(!srcSurf->invalidated && !srcSurf->isAlphaPre) return true;
-                for(int y = srcSurf->height; y > 0 ; y--, src += srcstride, dst += dststride){
-                    int x = srcSurf->width;
-                    s = src + (x << 2) - 1;
-                    d = dst + (x << 2) - 1;
-
-                    for(; x > 0 ; x--){
-                        sa = *s--;
-                        *d-- = sa;
-                        *d-- = DIV(sa, *s--);
-                        *d-- = DIV(sa, *s--);
-                        *d-- = DIV(sa, *s--);
-                    }
-                }
-                srcSurf->isAlphaPre = false;
-            }
-            break;
-
-        case BYTE_ABGR_PRE:
-            if(alphaPre){
-                if(!srcSurf->invalidated && srcSurf->isAlphaPre) return true;
-                for(int y = srcSurf->height; y > 0 ; y--, src += srcstride, dst += dststride){
-                    int x = srcSurf->width;
-                    s = src + (x << 2) - 1;
-                    d = dst + (x << 2) - 1;
-
-                    for(; x > 0 ; x--){
-                        r = *s--;
-                        g = *s--;
-                        b = *s--;
-                        sa = *s--;
-                        *d-- = sa;
-                        *d-- = r;
-                        *d-- = g;
-                        *d-- = b;
-                    }
-                }
-                srcSurf->isAlphaPre = true;
-            }else{
-                if(!srcSurf->invalidated && !srcSurf->isAlphaPre) return true;
-                    for(int y = srcSurf->height; y > 0 ; y--, src += srcstride, dst += dststride){
-                        int x = srcSurf->width;
-                        s = src + (x << 2) - 1;
-                        d = dst + (x << 2) - 1;
-
-                        for(; x > 0 ; x--){
-                            r = *s--;
-                            g = *s--;
-                            b = *s--;
-                            sa = *s--;
-                            *d-- = sa;
-                            *d-- = DIV(sa, r);
-                            *d-- = DIV(sa, g);
-                            *d-- = DIV(sa, b);
-                        }
-                    }
-                srcSurf->isAlphaPre = false;
-            }
-            break;
-
-        case INT_BGR:
-            if(!srcSurf->invalidated) return true;
-            for(int y = srcSurf->height; y > 0; y--, src += srcstride, dst += dststride){
-                int x = srcSurf->width;
-                s = src + (x << 2) - 1;
-                d = dst + (x << 2) - 1;
-
-                for(; x > 0 ; x--){
-                    *d = 255;
-                    *s--;
-                    *(d - 3) = *s--;
-                    *(d - 2) = *s--;
-                    *(d - 1) = *s--;
-                    d -= 4;
-                }
-            }
-            break;
-
-        case USHORT_555:
-        case USHORT_565:
-            if(!srcSurf->invalidated) return true;
-            usSrc = (USHORT *)srcDataPtr;
-            srcstride >>= 1;
-            dstIntPtr = (UINT *)bmpDataPtr;
-            dststride >>= 2;
-            a = 0xff000000;
-            for(int y = srcSurf->height; y > 0; y--, usSrc += srcstride, dstIntPtr += dststride){
-                dstInt = dstIntPtr;
-                tus = usSrc;
-                for(int x = srcSurf->width; x > 0; x--){
-                    uspixel = *tus++;
-                    r = (uspixel & srcSurf->red_mask) >> srcSurf->red_sht;
-                    g = (uspixel & srcSurf->green_mask) >> srcSurf->green_sht;
-                    b = (uspixel & srcSurf->blue_mask) >> srcSurf->blue_sht;
-                    r = DIV(srcSurf->max_red, r);
-                    g = DIV(srcSurf->max_green, g);
-                    b = DIV(srcSurf->max_blue, b);
-                    *dstInt++ = a | (r << 16) | (g << 8) | b;
-                }
-            }
-            break;
-
-        case USHORT_GRAY:
-            if(!srcSurf->invalidated) return true;
-            dstIntPtr = (UINT *)bmpDataPtr;
-            dststride >>= 2;
-            usSrc = (USHORT *)srcDataPtr;
-            srcstride = srcSurf->scanline_stride;
-            a = 0xff000000;
-            for(int y = srcSurf->height; y > 0; y--, usSrc += srcstride, dstIntPtr += dststride){
-                tus = usSrc;
-                dstInt = dstIntPtr;
-                for(int x = srcSurf->width; x > 0; x--){
-                    pixel = (UINT)(*tus++ / 257);
-                    *dstInt++ = a | (pixel << 16) | (pixel << 8) | pixel;
-                }
-            }
-            break;
-
-        case BYTE_BINARY:
-            if(!srcSurf->invalidated) return true;
-            dstIntPtr = (UINT *)bmpDataPtr;
-            dststride >>= 2;
-            a = 0xff000000;
-            for(int y = srcSurf->height; y > 0; y--, src += srcstride, dstIntPtr += dststride){
-                int x = srcSurf->width;
-                dstInt = dstIntPtr + x - 1;
-
-                for(; x > 0; x--){
-                    pixelBits = srcSurf->pixel_stride;
-                    bitnum = x * pixelBits;
-                    s = src + bitnum / 8;
-                    elem = *s;
-                    shift = 8 - (bitnum & 7) - pixelBits;
-                    bitMask = (1 << pixelBits) - 1;
-                    pixel = (elem >> shift) & bitMask;
-                    *dstInt-- = a | *(srcSurf->colormap + pixel);
-                }
-            }
-            break;
-
-        case BYTE_INDEXED:
-            if(!srcSurf->invalidated && srcSurf->transparency != GL_TRANSLUCENT) return true;
-            dstIntPtr = (UINT *)bmpDataPtr;
-            dststride >>= 2;
-            for(int y = srcSurf->height; y > 0; y--, src += srcstride, dstIntPtr += dststride){
-                s = src;
-                dstInt = dstIntPtr;
-
-                for(int x = srcSurf->width; x > 0; x--){
-                    pixel = *s++;
-                    if(transparency == GL_OPAQUE){
-                        *dstInt++ = *(srcSurf->colormap + pixel);
-                    }else if(transparency == GL_BITMASK){
-                        if(pixel != srcSurf->transparent_pixel){
-                            *dstInt++ = *(srcSurf->colormap + pixel);
-                        }else{
-                            *dstInt++ = 0;
-                        }
-                    }else{
-                        pixel = *(srcSurf->colormap + pixel);
-                        a = (pixel >> 24) & 0xff;
-                        if(alphaPre){
-                            if(a == 255) *dstInt = pixel;
-                            else{
-                                r = (pixel >> 16) & 0xff;
-                                g = (pixel >> 8) & 0xff;
-                                b = pixel & 0xff;
-                                r = MUL(a, r);
-                                g = MUL(a, g);
-                                b = MUL(a, b);
-                                *dstInt = (a << 24) | (r << 16) | (g << 8) | b;
-                            }
-                        }else{
-                            if(a == 0) *dstInt = 0;
-                            else *dstInt = pixel;
-                        }
-                    }
-                }
-            }
-            if(srcSurf->transparency == GL_TRANSLUCENT && alphaPre){
-                srcSurf->isAlphaPre = true;
-            }else if(srcSurf->transparency == GL_TRANSLUCENT && !alphaPre){
-                srcSurf->isAlphaPre = false;
-            }else{
-                srcSurf->isAlphaPre = true;
-            }
-            break;
-
-        case BYTE_GRAY:
-            if(!srcSurf->invalidated) return true;
-            dstIntPtr = (UINT *)bmpDataPtr;
-            dststride >>= 2;
-            a = 0xff000000;
-            for(int y = srcSurf->height; y > 0; y--, src += srcstride, dstIntPtr += dststride){
-                s = src;
-                dstInt = dstIntPtr;
-
-                for(int x = srcSurf->width; x > 0; x--){
-                    pixel = *s++;
-                    *dstInt++ = a | (pixel << 16) | (pixel << 8) | pixel;
-                }
-            }
-            break;
-
-        case BYTE_BGR:
-            if(!srcSurf->invalidated) return true;
-            dstIntPtr = (UINT *)bmpDataPtr;
-            dststride >>= 2;
-            a = 0xff000000;
-            for(int y = srcSurf->height; y > 0; y--, src += srcstride, dstIntPtr += dststride){
-                s = src;
-                dstInt = dstIntPtr;
-
-                for(int x = srcSurf->width; x > 0; x--){
-                    b = *s++;
-                    g = *s++;
-                    r = *s++;
-                    *dstInt++ = a | (r << 16) | (g << 8) | b;
-                }
-            }
-            break;
-    }
-    env->ReleasePrimitiveArrayCritical((jarray)srcData, srcDataPtr, 0);
+       updateCache(srcSurf, env, srcData, alphaPre);
+       SetDIBits(srcSurf->srcDC, srcSurf->bitmap, 0, srcSurf->height, srcSurf->bmpData, (BITMAPINFO *)&srcSurf->bmpInfo, DIB_RGB_COLORS);
     return true;
 }
 

@@ -45,7 +45,7 @@ public final class ShapeGraphicAttribute extends GraphicAttribute {
     
     // Y coordinate of the origin point
     private float fOriginY;
-    
+
     // width of the shape
     private float fShapeWidth;
     

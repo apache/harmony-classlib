@@ -57,28 +57,38 @@ public abstract class AbstractLayoutCache implements RowMapper {
         }
 
         public void add(final StateNode child, final int index) {
-            children.add(index, child);
-            child.invalidateTreePartBelow();
+            synchronized (AbstractLayoutCache.this) {
+                children.add(index, child);
+                child.invalidateTreePartBelow();
+            }
         }
 
         public void add(final StateNode child) {
-            add(child, children.size());
-            child.invalidateTreePartBelow();
+            synchronized (AbstractLayoutCache.this) {
+                add(child, children.size());
+                child.invalidateTreePartBelow();
+            }
         }
 
         public void remove(final int index) {
-            children.remove(index);
-            invalidateTreePartBelow();
+            synchronized (AbstractLayoutCache.this) {
+                children.remove(index);
+                invalidateTreePartBelow();
+            }
         }
 
         public void remove(final StateNode child) {
-            children.remove(child);
-            invalidateTreePartBelow();
+            synchronized (AbstractLayoutCache.this) {
+                children.remove(child);
+                invalidateTreePartBelow();
+            }
         }
 
         public void removeAll() {
-            children.clear();
-            invalidateTreePartBelow();
+            synchronized (AbstractLayoutCache.this) {
+                children.clear();
+                invalidateTreePartBelow();
+            }
         }
 
         public StateNode getParent() {
@@ -115,7 +125,6 @@ public abstract class AbstractLayoutCache implements RowMapper {
             return -1;
         }
 
-
         public Object[] getModelChildren() {
             if (modelChildren == null) {
                 int childCount = getModel().getChildCount(getModelNode());
@@ -128,11 +137,15 @@ public abstract class AbstractLayoutCache implements RowMapper {
         }
 
         public int getChildCount() {
-            return children.size();
+            synchronized (AbstractLayoutCache.this) {
+                return unsyncGetChildCount();
+            }
         }
 
         public boolean isLeaf() {
-            return children.size() == 0;
+            synchronized (AbstractLayoutCache.this) {
+                return unsyncIsLeaf();
+            }
         }
 
         public void setExpanded() {
@@ -150,49 +163,60 @@ public abstract class AbstractLayoutCache implements RowMapper {
         }
 
         public List children() {
-            return children;
+            synchronized (AbstractLayoutCache.this) {
+                return children;
+            }
         }
 
         public StateNode get(final int index) {
-            return (StateNode)children.get(index);
+            synchronized (AbstractLayoutCache.this) {
+                return unsyncGet(index);
+            }
         }
 
         public StateNode getChild(final Object modelNode) {
-            for (Iterator it = children.iterator(); it.hasNext();) {
-                StateNode stateNode = (StateNode)it.next();
-                if (stateNode.getModelNode().equals(modelNode)) {
-                    return stateNode;
+            synchronized (AbstractLayoutCache.this) {
+                for (Iterator it = children.iterator(); it.hasNext();) {
+                    StateNode stateNode = (StateNode)it.next();
+                    if (stateNode.getModelNode().equals(modelNode)) {
+                        return stateNode;
+                    }
                 }
-            }
 
-            return null;
+                return null;
+            }
         }
 
         public StateNode addChild(final Object modelChildNode) {
-            int childModelIndex = getModelIndexOfChild(modelChildNode);
-            int insertionIndex;
-            for (insertionIndex = 0; insertionIndex < children.size(); insertionIndex++) {
-                StateNode childStateNode = (StateNode)children.get(insertionIndex);
-                int childModelIndexForStateNode = getModelIndexOfChild(childStateNode.getModelNode());
-                if (childModelIndexForStateNode == childModelIndex) {
-                    return childStateNode;
+            synchronized (AbstractLayoutCache.this) {
+                int childModelIndex = getModelIndexOfChild(modelChildNode);
+                int insertionIndex;
+                for (insertionIndex = 0; insertionIndex < children.size(); insertionIndex++) {
+                    StateNode childStateNode = (StateNode)children.get(insertionIndex);
+                    int childModelIndexForStateNode = getModelIndexOfChild(childStateNode.getModelNode());
+                    if (childModelIndexForStateNode == childModelIndex) {
+                        return childStateNode;
+                    }
+                    if (childModelIndexForStateNode > childModelIndex) {
+                        break;
+                    }
                 }
-                if (childModelIndexForStateNode > childModelIndex) {
-                    break;
-                }
+                StateNode newChildStateNode = createStateNode(this, getModelPath().pathByAddingChild(modelChildNode));
+                add(newChildStateNode, insertionIndex);
+
+                return newChildStateNode;
             }
-            StateNode newChildStateNode = createStateNode(this, getModelPath().pathByAddingChild(modelChildNode));
-            add(newChildStateNode, insertionIndex);
-            return newChildStateNode;
         }
 
         public StateNode getNextSibling() {
-            if (getParent() == null) {
-                return null;
+            synchronized (AbstractLayoutCache.this) {
+                if (getParent() == null) {
+                    return null;
+                }
+                int index = getParent().children().indexOf(this);
+                return index + 1 < getParent().getChildCount() ? getParent().get(index + 1)
+                        : null;
             }
-            int index = getParent().children().indexOf(this);
-            return index + 1 < getParent().getChildCount() ? getParent().get(index + 1)
-                                                           : null;
         }
 
         public int getTotalChildrenCount() {
@@ -204,32 +228,73 @@ public abstract class AbstractLayoutCache implements RowMapper {
             return isValid;
         }
 
+        public void validate() {
+            synchronized (AbstractLayoutCache.this) {
+                if (isValid) {
+                    return;
+                }
+
+                // validation should go hierarchically, from the top to leaves
+                // therefore a parent shoul dbe validated first
+                if (getParent() != null) {
+                    getParent().validate();
+                }
+
+                // validation of the parent can cause children validation.
+                // In this case we don't need to validate this children again
+                if (isValid) {
+                    return;
+                }
+
+                // important to be BEFORE validateData() to get rid of potential cycling
+                isValid = true;
+                validateData();
+            }
+        }
+
+        public String toString() {
+            return getModelNode().toString();
+        }
+
         public void invalidate() {
-            isValid = false;
-            resetCachedData();
-            if (parent != null) {
-                parent.invalidate();
+            synchronized (AbstractLayoutCache.this) {
+                isValid = false;
+                resetCachedData();
+                if (parent != null) {
+                    parent.invalidate();
+                }
             }
         }
 
         public void invalidateSubtree() {
             invalidate();
-            for (int i = 0; i < getChildCount(); i++) {
-                get(i).invalidateSubtree();
+            synchronized (AbstractLayoutCache.this) {
+                for (int i = 0; i < unsyncGetChildCount(); i++) {
+                    unsyncInvalidateSubtree(unsyncGet(i));
+                }
+            }
+        }
+        
+        public void invalidateTreePartBelow() {
+            synchronized (AbstractLayoutCache.this) {
+                unsyncInvalidateTreePartBelow(this);
             }
         }
 
-        public void invalidateTreePartBelow() {
-            invalidate();
+        protected void validateData() {
+        }
 
-            if (!isLeaf()) {
-                get(0).invalidateTreePartBelow();
+        private void unsyncInvalidateTreePartBelow(final StateNode node) {
+            node.invalidate();
+            
+            if (!node.unsyncIsLeaf()) {
+                unsyncInvalidateTreePartBelow(node.unsyncGet(0));
             } else {
-                StateNode currentNode = this;
+                StateNode currentNode = node;
                 while(currentNode != null) {
                     StateNode sibling = currentNode.getNextSibling();
                     if (sibling != null) {
-                        sibling.invalidateTreePartBelow();
+                        unsyncInvalidateTreePartBelow(sibling);
                         break;
                     }
                     currentNode = currentNode.getParent();
@@ -237,39 +302,27 @@ public abstract class AbstractLayoutCache implements RowMapper {
             }
         }
 
-
-        public void validate() {
-            if (isValid) {
-                return;
-            }
-
-            // validation should go hierarchically, from the top to leaves
-            // therefore a parent shoul dbe validated first
-            if (getParent() != null) {
-                getParent().validate();
-            }
-
-            // validation of the parent can cause children validation.
-            // In this case we don't need to validate this children again
-            if (isValid) {
-                return;
-            }
-
-            // important to be BEFORE validateData() to get rid of potential cycling
-            isValid = true;
-            validateData();
+        private boolean unsyncIsLeaf() {
+            return children.size() == 0;
         }
-
-        public String toString() {
-            return getModelNode().toString();
-        }
-
-        protected void validateData() {
-        }
-
 
         private void resetCachedData() {
             modelChildren = null;
+        }
+
+        private void unsyncInvalidateSubtree(final StateNode root) {
+            root.invalidate();
+            for (int i = 0; i < root.unsyncGetChildCount(); i++) {
+                unsyncInvalidateSubtree(root.unsyncGet(i));
+            }
+        }
+
+        private StateNode unsyncGet(final int index) {
+            return (StateNode)children.get(index);
+        }
+
+        private int unsyncGetChildCount() {
+            return children.size();
         }
     }
 
@@ -309,14 +362,7 @@ public abstract class AbstractLayoutCache implements RowMapper {
 
     public void setModel(final TreeModel model) {
         treeModel = model;
-        if (model != null && model.getRoot() != null) {
-            stateRoot = createStateNode(null, new TreePath(model.getRoot()));
-            if (model.isLeaf(model.getRoot())) {
-                stateRoot.setCollapsed();
-            }
-        } else {
-            stateRoot = null;
-        }
+        resetRoot(model);
     }
 
     public TreeModel getModel() {
@@ -657,6 +703,9 @@ public abstract class AbstractLayoutCache implements RowMapper {
     }
 
     void treeStructureChangedImpl(final TreeModelEvent e) {
+        if (stateRoot.getModelNode() != treeModel.getRoot()) {
+            resetRoot(treeModel);
+        }
         TreePath path = e.getTreePath();
         StateNode node = getStateNodeForPath(path);
         if (node == null) {
@@ -729,6 +778,17 @@ public abstract class AbstractLayoutCache implements RowMapper {
     private void resetRowSelection() {
         if (getSelectionModel() != null) {
             getSelectionModel().resetRowSelection();
+        }
+    }
+
+    private void resetRoot(final TreeModel model) {
+        if (model != null && model.getRoot() != null) {
+            stateRoot = createStateNode(null, new TreePath(model.getRoot()));
+            if (model.isLeaf(model.getRoot())) {
+                stateRoot.setCollapsed();
+            }
+        } else {
+            stateRoot = null;
         }
     }
 }

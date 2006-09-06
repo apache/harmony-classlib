@@ -362,11 +362,7 @@ public class ScrollPaneLayout implements Serializable, LayoutManager, ScrollPane
             Insets viewportBorderInsets = pane.getViewportBorder().getBorderInsets(viewport);
             viewportWidth -= viewportBorderInsets.left + viewportBorderInsets.right;
             viewportHeight -= viewportBorderInsets.top + viewportBorderInsets.bottom;
-            if (leftToRight) {
-                viewportX += viewportBorderInsets.left;
-            } else {
-                viewportX += viewportBorderInsets.left;
-            }
+            viewportX += viewportBorderInsets.left;
             viewportY += viewportBorderInsets.top;
         }
         viewportWidth = viewportWidth > 0 ? viewportWidth : 0;

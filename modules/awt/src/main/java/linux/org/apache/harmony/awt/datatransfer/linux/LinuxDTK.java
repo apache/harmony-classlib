@@ -19,7 +19,13 @@
  */
 package org.apache.harmony.awt.datatransfer.linux;
 
-import org.apache.harmony.awt.datatransfer.*;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DropTargetContext;
+import java.awt.dnd.peer.DragSourceContextPeer;
+import java.awt.dnd.peer.DropTargetContextPeer;
+
+import org.apache.harmony.awt.datatransfer.DTK;
+import org.apache.harmony.awt.datatransfer.NativeClipboard;
 
 public final class LinuxDTK extends DTK {
 
@@ -27,16 +33,27 @@ public final class LinuxDTK extends DTK {
         return new LinuxSelection("CLIPBOARD");
     }
 
-    protected NativeTextDescriptor newTextDescriptor() {
-        return new LinuxTextDescriptor();
-    }
-
-    protected NativeTranslationManager newTranslationManager() {
-        return new LinuxTranslationManager();
-    }
-
     protected NativeClipboard newNativeSelection() {
         return new LinuxSelection("PRIMARY");
     }
 
+    public void initDragAndDrop() {
+    }
+
+    public void runEventLoop() {
+    }
+
+    public DropTargetContextPeer createDropTargetContextPeer(
+            DropTargetContext context) {
+        return new LinuxDropTarget(this, context);
+    }
+
+    public DragSourceContextPeer createDragSourceContextPeer(
+            DragGestureEvent dge) {
+        return new LinuxDragSource();
+    }
+
+    public String getDefaultCharset() {
+        return "iso-10646-ucs-2";
+    }
 }

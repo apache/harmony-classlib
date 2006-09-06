@@ -20,6 +20,7 @@
 package org.apache.harmony.awt;
 
 import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Insets;
@@ -176,4 +177,24 @@ public abstract class ComponentInternals {
      * heavyweight components overlapping with passed component
      */
     public abstract MultiRectArea getObscuredRegion(Component c);
+    
+    /**
+     * Makes it possible to call protected Toolkit.setDesktopProperty()
+     * method from any class outside of java.awt package
+     */
+    public abstract void setDesktopProperty(String name, Object value);
+    
+    /**
+     * Makes it possible to start/stop dialog modal loop
+     * from anywhere outside of java.awt package
+     */
+    public abstract void runModalLoop(Dialog dlg);
+    public abstract void endModalLoop(Dialog dlg);
+    
+    /**
+     * Sets component's visible flag only
+     * (the component is not actually shown/hidden)
+     */
+    public abstract void setVisibleFlag(Component comp, boolean visible);
+    
 }

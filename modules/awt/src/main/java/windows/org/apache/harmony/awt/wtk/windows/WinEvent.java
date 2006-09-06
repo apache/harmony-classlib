@@ -121,10 +121,10 @@ final class WinEvent extends NativeEvent implements WindowsDefs {
         return lastChar;
     }
 
-    WinEvent(long hwnd, int msg, long wParam, long lParam,
-            long lastTime, StringBuffer lastTranslation, char lastChar, WinEventQueue proxy)
+    WinEvent(long hwnd, int msg, long wParam, long lParam, long lastTime, 
+             StringBuffer lastTranslation, char lastChar, WinWindowFactory factory)
     {
-        factory = proxy.factory;
+        this.factory = factory;
         this.windowId = hwnd;
         this.msg = msg;
         this.wParam = wParam;
@@ -137,13 +137,14 @@ final class WinEvent extends NativeEvent implements WindowsDefs {
         this.lastChar = lastChar;
         eventId = ID_PLATFORM;
 
-        if (hwnd == proxy.getJavaWindow()) {
+        if (hwnd == factory.eventQueue.getJavaWindow()) {
             if ((msg == WM_THEMECHANGED) || (msg == WM_SYSCOLORCHANGE)
                     || (msg == WM_SETTINGCHANGE)) {
-                // TODO: handle this
+                // TODO: handle this                
 
                 if (msg == WM_THEMECHANGED) {
                     factory.eventQueue.getThemeMap().refresh();
+                    factory.eventQueue.systemProperties.getXPTheme(null);
                 }
                 eventId = ID_THEME_CHANGED;
             }
@@ -160,6 +161,7 @@ final class WinEvent extends NativeEvent implements WindowsDefs {
             processFocus(msg);
         } else if (msg == WM_PAINT) {
             eventId = PaintEvent.PAINT;
+            processPaint();
         } else if (msg == WM_SIZE) {
             processSize();
         } else if (msg == WM_MOVE) {
@@ -174,15 +176,19 @@ final class WinEvent extends NativeEvent implements WindowsDefs {
             }
         } else if (msg == WM_CREATE) {
             eventId = ID_CREATED;
-        } else if (msg == WM_AWAKE) {
-            eventId = ID_JAVA_EVENT;
         } else if (msg == WM_SHOWWINDOW) {
             processShowWindow();
         } else if (msg == WM_STYLECHANGED) {
             processStyleChanged();
         } else if (msg == WM_THEMECHANGED) {
             processThemeChanged();
+        } else if (msg == WM_INPUTLANGCHANGEREQUEST) {
+            WinIM.onInputLangChange(lParam);
         }
+    }
+    
+    public String toString() {
+        return "hwnd=0x" + Long.toHexString(windowId) + ", msg=0x" + Integer.toHexString(msg);
     }
 
     private void processChar() {
@@ -295,6 +301,10 @@ final class WinEvent extends NativeEvent implements WindowsDefs {
             }
         }
 
+    }
+    
+    private void processPaint() {
+        getClipRects();
     }
 
     private MultiRectArea decodeComplexRgn(long hRgn, int dx, int dy) {

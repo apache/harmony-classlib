@@ -283,6 +283,14 @@ public class StyleContextTest extends TestCase implements ChangeListener {
                        style.getResolveParent());
         }
     }
+    
+    public void testAddStyleTwice() {
+        final String styleName = "styleName";
+        final Style style = sc.addStyle(styleName, null);
+        final Style another = sc.addStyle(styleName, null);
+        assertNotSame(style, another);
+        assertSame(another, sc.getStyle(styleName));
+    }
 
     public void testCreateSmallAttributeSet() {
         AttributeSet as = sc.createSmallAttributeSet(sc.getEmptySet());

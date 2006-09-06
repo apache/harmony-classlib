@@ -48,7 +48,6 @@ class MouseDispatcher {
     private Point lastLocalPos = new Point(-1, -1);
 
     private final MouseGrabManager mouseGrabManager;
-    private final EventQueue eventQueue;
     private final Toolkit toolkit;
 
     static Point convertPoint(Component src, int x, int y, Component dest) {
@@ -81,10 +80,9 @@ class MouseDispatcher {
         return location;
     }
 
-    MouseDispatcher(MouseGrabManager mouseGrabManager, EventQueue queue,
+    MouseDispatcher(MouseGrabManager mouseGrabManager,
                     Toolkit toolkit) {
         this.mouseGrabManager = mouseGrabManager;
-        eventQueue = queue;
         this.toolkit = toolkit;
     }
 
@@ -159,8 +157,8 @@ class MouseDispatcher {
     private void postMouseEnterExit(int id, int mod, long when,
                                     int x, int y, Component comp) {
         if (comp.isIndirectlyEnabled()) {
-            eventQueue.postEvent(new MouseEvent(comp, id, when, mod,
-                                                x, y, 0, false));
+            toolkit.getSystemEventQueueImpl().postEvent(
+                    new MouseEvent(comp, id, when, mod, x, y, 0, false));
             comp.setMouseExitedExpected(id == MouseEvent.MOUSE_ENTERED);
         } else {
             comp.setMouseExitedExpected(false);
@@ -276,15 +274,17 @@ class MouseDispatcher {
         if (info.src.isIndirectlyEnabled()) {
             final Point pos = info.position;
             final int mod = event.getInputModifiers();
-            eventQueue.postEvent(new MouseEvent(info.src, id, time, mod, pos.x,
-                                                pos.y, clickCount[index],
-                                                event.getTrigger(), button));
+            toolkit.getSystemEventQueueImpl().postEvent(
+                            new MouseEvent(info.src, id, time, mod, pos.x,
+                            pos.y, clickCount[index],
+                            event.getTrigger(), button));
             if (clickRequired) {
-                eventQueue.postEvent(new MouseEvent(info.src,
-                                                    MouseEvent.MOUSE_CLICKED,
-                                                    time, mod, pos.x, pos.y,
-                                                    clickCount[index], false,
-                                                    button));
+                toolkit.getSystemEventQueueImpl().postEvent(
+                            new MouseEvent(info.src,
+                            MouseEvent.MOUSE_CLICKED,
+                            time, mod, pos.x, pos.y,
+                            clickCount[index], false,
+                            button));
             }
         }
     }
@@ -310,10 +310,11 @@ class MouseDispatcher {
             lastLocalPos = pos;
 
             if (info.src.isIndirectlyEnabled()) {
-                eventQueue.postEvent(new MouseEvent(info.src, event.getEventId(),
-                                                    event.getTime(),
-                                                    event.getInputModifiers(),
-                                                    pos.x, pos.y, 0, false));
+                toolkit.getSystemEventQueueImpl().postEvent(
+                            new MouseEvent(info.src, event.getEventId(),
+                            event.getTime(),
+                            event.getInputModifiers(),
+                            pos.x, pos.y, 0, false));
             }
         }
     }
@@ -350,8 +351,8 @@ class MouseDispatcher {
         propagateEvent(info, AWTEvent.MOUSE_WHEEL_EVENT_MASK,
                        MouseWheelListener.class, true);
         if ((info.src != null) && info.src.isIndirectlyEnabled()) {
-            eventQueue.postEvent(createWheelEvent(info.src, event,
-                                                  info.position));
+            toolkit.getSystemEventQueueImpl().postEvent(
+                    createWheelEvent(info.src, event, info.position));
         }
     }
 

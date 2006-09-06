@@ -55,6 +55,9 @@ class RGBPanel extends AbstractColorChooserPanel {
 
     public void updateChooser() {
         Color color = getColorSelectionModel().getSelectedColor();
+        if (color == null) {
+            return;
+        }
         float[] rgb = color.getRGBColorComponents(null);
         for (int i = 0; i < 3; i++) {
             int colorComponent = Math.round(rgb[i] * 255);
@@ -74,10 +77,11 @@ class RGBPanel extends AbstractColorChooserPanel {
                            UIManager.getInt("ColorChooser.rgbGreenMnemonic"),
                            UIManager.getInt("ColorChooser.rgbBlueMnemonic")};
         
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(3, 1));
+        JPanel panel = new JPanel(new GridLayout(3, 1));
         Color color = getColorSelectionModel().getSelectedColor();
-        float[] rgb = color.getRGBColorComponents(null);
+        float[] rgb = color == null 
+                      ? Color.BLACK.getRGBColorComponents(null) 
+                      : color.getRGBColorComponents(null);
 
         JPanel[] panels = {new JPanel(),
                            new JPanel(),
@@ -102,7 +106,7 @@ class RGBPanel extends AbstractColorChooserPanel {
                     
                     for (int i = 0; i < 3; i++) {
                         if (e.getSource() == sliders[i]) {
-                            rgb[i] = sliders[i].getValue() / 255.f;
+                            rgb[i] = sliders[i].getValue() / 255f;
                         }
                     }                    
                     getColorSelectionModel().setSelectedColor(new Color(rgb[0], rgb[1], rgb[2]));

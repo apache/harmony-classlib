@@ -62,10 +62,12 @@ public final class DataBufferByte extends DataBuffer {
 
     public void setElem(int bank, int i, int val) {
         data[bank][offsets[bank] + i] = (byte) val;
+        notifyChanged();
     }
 
     public void setElem(int i, int val) {
         data[0][offset + i] = (byte) val;
+        notifyChanged();
     }
 
     public int getElem(int bank, int i) {
@@ -73,6 +75,7 @@ public final class DataBufferByte extends DataBuffer {
     }
 
     public byte[] getData(int bank) {
+        notifyTaken();
         return data[bank];
     }
 
@@ -81,10 +84,12 @@ public final class DataBufferByte extends DataBuffer {
     }
 
     public byte[][] getBankData() {
+        notifyTaken();
         return (byte[][]) data.clone();
     }
 
     public byte[] getData() {
+        notifyTaken();
         return data[0];
     }
 

@@ -23,7 +23,7 @@ import org.apache.harmony.awt.nativebridge.Int16Pointer;
 import org.apache.harmony.awt.nativebridge.windows.Callback;
 import org.apache.harmony.awt.nativebridge.windows.Win32;
 import org.apache.harmony.awt.nativebridge.windows.WindowsDefs;
-import org.apache.harmony.awt.wtk.NativeEventListener;
+import org.apache.harmony.awt.wtk.NativeEventThread;
 
 
 
@@ -52,11 +52,11 @@ public class WindowProcHandler implements Callback.Handler {
 
     private WindowProcHandler() {
         windowProcPtr = Callback.registerCallback(this);
-        registerWindowClass();
+        registerWindowClass(windowClassName, windowProcPtr);
     }
 
     public long windowProc(long hwnd, int msg, long wParam, long lParam) {
-        NativeEventListener thread = (NativeEventListener)Thread.currentThread();
+        NativeEventThread thread = (NativeEventThread)Thread.currentThread();
         WinWTK wtk = (WinWTK)thread.getWTK();
         if (wtk == null || wtk.getWinEventQueue() == null) {
             return win32.DefWindowProcW(hwnd, msg, wParam, lParam);
@@ -64,17 +64,17 @@ public class WindowProcHandler implements Callback.Handler {
         return wtk.getWinEventQueue().windowProc(hwnd, msg, wParam, lParam);
     }
 
-    private void registerWindowClass() {
+    public static void registerWindowClass(String className, long windowProc) {
 
         Int16Pointer namePtr = WinEventQueue.bridge.createInt16Pointer(
-                windowClassName, false);
+                className, false);
 
         Win32.WNDCLASSEXW wndCls = win32.createWNDCLASSEXW(false);
 
         wndCls.set_cbSize(wndCls.size());
         wndCls.set_style(WindowsDefs.CS_OWNDC);
-        wndCls.set_lpfnWndProc(windowProcPtr);
-        wndCls.set_hCursor(win32.LoadCursorW(0, WindowsDefs.IDC_CROSS));
+        wndCls.set_lpfnWndProc(windowProc);
+        wndCls.set_hCursor(0);
         wndCls.set_lpszClassName(namePtr);
 
         short classAtom = win32.RegisterClassExW(wndCls);
@@ -83,7 +83,7 @@ public class WindowProcHandler implements Callback.Handler {
 
         if (classAtom == 0) {
             throw new InternalError("Failed to register window class "
-                    + windowClassName + " GetLastError returned " + winError);
+                    + className + " GetLastError returned " + winError);
         }
     }
 }

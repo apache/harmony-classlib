@@ -19,28 +19,23 @@
  */
 package org.apache.harmony.awt.gl.font;
 
-import java.awt.Font;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
-import org.apache.harmony.awt.gl.CommonGraphics2DFactory;
 import org.apache.harmony.awt.gl.font.FontPeerImpl;
 import org.apache.harmony.awt.gl.font.FontProperty;
 
 /**
-  * CompositeFont class is the implementation of logical font classes. 
-  * Every logical font consists of several physical fonts that described 
-  * in font.properties file according to the face name of this logical font.
-  */
+ * CompositeFont class is the implementation of logical font classes. 
+ * Every logical font consists of several physical fonts that described 
+ * in font.properties file according to the face name of this logical font.
+ */
 public class CompositeFont extends FontPeerImpl{
     
     // a number of physical fonts that CompositeFont consist of 
     int numFonts;
-    
-    // font name
-    String name;
 
     // font family name
     String family;
@@ -48,20 +43,13 @@ public class CompositeFont extends FontPeerImpl{
     // font face name
     String face;
 
-    // font postscript name
-    String psName;
-
-    // font style
-    int style;
-
-    // font size
-    float size;
+    String[] fontNames;
     
     // an array of font properties applicable to this CompositeFont
     FontProperty[] fontProperties;
     
     // an array of font peers applicable to this CompositeFont
-    public FontPeerImpl[] physicalFonts;
+    public FontPeerImpl[] fPhysicalFonts;
     
     // missing glyph code field
     int missingGlyphCode = -1;
@@ -72,35 +60,33 @@ public class CompositeFont extends FontPeerImpl{
     // cached num glyphs parameter of this font that is the sum of num glyphs of 
     // font peers composing this font
     int cachedNumGlyphs = -1;
-    
     /**
      * Creates CompositeFont object that is corresponding to the specified logical 
      * family name.
      * 
-     * @param font Font object CompositeFont is to be created from
+     * @param familyName logical family name CompositeFont is to be created from
+     * @param faceName logical face name CompositeFont is to be created from
+     * @param _style style of the CompositeFont to be created
+     * @param _size size of the CompositeFont to be created 
      * @param fProperties an array of FontProperties describing physical fonts - 
      * parts of logical font
-     * @param familyName family name of the logical font
+     * @param physFonts an array of physical font peers related to the CompositeFont
+     * to be created
      */
-    public CompositeFont(Font font, FontProperty[] fProperties, String familyName){
-        this.size = font.getSize();
-        this.name = font.getName();
+    public CompositeFont(String familyName, String faceName, int _style, int _size, FontProperty[] fProperties, FontPeerImpl[] physFonts){
+        this.size = _size;
+        this.name = faceName;
         this.family = familyName;
-        this.style = font.getStyle();
-        this.face = family.concat(".").concat(FontManager.STYLE_NAMES[style]);
-        this.psName = family.toLowerCase().concat(".").concat(FontManager.STYLE_NAMES[style]);
+        this.style = _style;
+        this.face = faceName;
+        this.psName = faceName;
         this.fontProperties = fProperties;// !! Supposed that fProperties parameter != null
-        this.numFonts = fontProperties.length;
-        physicalFonts = new FontPeerImpl[numFonts];
-        for (int i = 0; i < numFonts; i++){
-            FontProperty fp = fontProperties[i];
-            physicalFonts[i] = (FontPeerImpl)CommonGraphics2DFactory.inst.getFontManager().createFont(fp, (int)size);
-        }
-
+        fPhysicalFonts = physFonts;
+        numFonts = fPhysicalFonts.length; 
         setDefaultLineMetrics("", null);
         this.uniformLM = false;
     }
-    
+
     /**
      * Returns the index of the FontPeer in array of physical fonts that is applicable 
      * for the given character. This font has to have the highest priority among fonts
@@ -116,7 +102,7 @@ public class CompositeFont extends FontPeerImpl{
             if (fontProperties[i].isCharExcluded(chr)){
                 continue;
             }
-            if (physicalFonts[i].canDisplay(chr)){
+            if (fPhysicalFonts[i].canDisplay(chr)){
                 return i;
             }
         }
@@ -135,12 +121,12 @@ public class CompositeFont extends FontPeerImpl{
      * @return index of the font from the array of physical fonts that will be used 
      * during processing of the specified character. 
      */
-    public int getCharFontIndex(char chr, int defaultValue){
+     public int getCharFontIndex(char chr, int defaultValue){
         for (int i = 0; i < numFonts; i++){
             if (fontProperties[i].isCharExcluded(chr)){
                 continue;
             }
-            if (physicalFonts[i].canDisplay(chr)){
+            if (fPhysicalFonts[i].canDisplay(chr)){
                 return i;
             }
         }
@@ -157,14 +143,14 @@ public class CompositeFont extends FontPeerImpl{
     public boolean canDisplay(char chr){
         return (getCharFontIndex(chr) != -1);
     }
-    
+
     /**
      * Returns logical ascent (in pixels)
      */
     public int getAscent(){
         return nlm.getLogicalAscent();
     }
-    
+
     /**
      * Returns LineMetrics instance scaled according to the specified transform.  
      * 
@@ -172,7 +158,7 @@ public class CompositeFont extends FontPeerImpl{
      * @param frc specified FontRenderContext 
      * @param at specified AffineTransform
      */
-    public LineMetrics getLineMetrics(String str, FontRenderContext frc , AffineTransform at){
+     public LineMetrics getLineMetrics(String str, FontRenderContext frc , AffineTransform at){
         LineMetricsImpl lm = (LineMetricsImpl)(this.nlm.clone());
         lm.setNumChars(str.length());
 
@@ -205,8 +191,8 @@ public class CompositeFont extends FontPeerImpl{
      * @param frc specified FontRenderContext 
      */
     private void setDefaultLineMetrics(String str, FontRenderContext frc){
-        LineMetrics lm = physicalFonts[0].getLineMetrics(str, frc, null);
-        float maxCharWidth = (float)physicalFonts[0].getMaxCharBounds(frc).getWidth();
+        LineMetrics lm = fPhysicalFonts[0].getLineMetrics(str, frc, null);
+        float maxCharWidth = (float)fPhysicalFonts[0].getMaxCharBounds(frc).getWidth();
 
         if (numFonts == 1) {
             this.nlm = (LineMetricsImpl)lm;
@@ -229,7 +215,7 @@ public class CompositeFont extends FontPeerImpl{
         float maxDescent = lm.getDescent(); // Descent of the font
 
         for (int i = 1; i < numFonts; i++){
-            lm = physicalFonts[i].getLineMetrics(str, frc, null);
+            lm = fPhysicalFonts[i].getLineMetrics(str, frc, null);
             if (maxUnderlineThickness < lm.getUnderlineThickness()){
                 maxUnderlineThickness = lm.getUnderlineThickness();
             }
@@ -258,7 +244,7 @@ public class CompositeFont extends FontPeerImpl{
                 maxDescent = lm.getDescent();
             }
 
-            float width = (float)physicalFonts[i].getMaxCharBounds(frc).getWidth();
+            float width = (float)fPhysicalFonts[i].getMaxCharBounds(frc).getWidth();
             if(maxCharWidth < width){
                 maxCharWidth = width;
             }
@@ -297,7 +283,7 @@ public class CompositeFont extends FontPeerImpl{
             this.cachedNumGlyphs = 0;
 
             for (int i = 0; i < numFonts; i++){
-                this.cachedNumGlyphs += physicalFonts[i].getNumGlyphs();
+                this.cachedNumGlyphs += fPhysicalFonts[i].getNumGlyphs();
             }
         }
 
@@ -309,7 +295,7 @@ public class CompositeFont extends FontPeerImpl{
      */
     public float getItalicAngle(){
         // !! only first physical font used to get this value
-        return physicalFonts[0].getItalicAngle();
+        return fPhysicalFonts[0].getItalicAngle();
     }
 
     /**
@@ -347,21 +333,34 @@ public class CompositeFont extends FontPeerImpl{
      */
     public Rectangle2D getMaxCharBounds(FontRenderContext frc){
 
-        Rectangle2D rect2D = physicalFonts[0].getMaxCharBounds(frc);
-
+        Rectangle2D rect2D = fPhysicalFonts[0].getMaxCharBounds(frc);
+        float minY = (float)rect2D.getY();
+        float maxWidth = (float)rect2D.getWidth();
+        float maxHeight = (float)rect2D.getHeight();
         if (numFonts == 1){
             return rect2D;
         }
 
         for (int i = 1; i < numFonts; i++){
-            if (physicalFonts[i] != null){
-                Rectangle2D currRect2D = physicalFonts[i].getMaxCharBounds(frc);
-                float minY = (float)(rect2D.getY() < currRect2D.getY()? rect2D.getY() : currRect2D.getY());
-                float maxWidth = (float)(rect2D.getWidth() > currRect2D.getWidth()? rect2D.getWidth() : currRect2D.getWidth());
-                float maxHeight = (float)(rect2D.getHeight() > currRect2D.getHeight()? rect2D.getHeight() : currRect2D.getHeight());
-                rect2D = new Rectangle2D.Float(0, minY, maxWidth, maxHeight);
+            if (fPhysicalFonts[i] != null){
+                rect2D = fPhysicalFonts[i].getMaxCharBounds(frc);
+                float y = (float)rect2D.getY();
+                float mWidth = (float)rect2D.getWidth();
+                float mHeight = (float)rect2D.getHeight();
+                if (y < minY){
+                    minY = y;
+                }
+                if (mWidth > maxWidth){
+                    maxHeight = mWidth;
+                }
+                
+                if (mHeight > maxHeight){
+                    maxHeight = mHeight;
+                }
             }
         }
+
+        rect2D = new Rectangle2D.Float(0, minY, maxWidth, maxHeight);
 
         return rect2D;
     }
@@ -392,7 +391,7 @@ public class CompositeFont extends FontPeerImpl{
      */
     public int getMissingGlyphCode(){
         // !! only first physical font used to get this value
-        return physicalFonts[0].getMissingGlyphCode();
+        return fPhysicalFonts[0].getMissingGlyphCode();
     }
 
     /**
@@ -405,18 +404,13 @@ public class CompositeFont extends FontPeerImpl{
             if (fontProperties[i].isCharExcluded(ch)){
                     continue;
             }
-            if (physicalFonts[i].canDisplay(ch)){
-                return physicalFonts[i].getGlyph(ch);
+            
+            /* Control symbols considered to be supported by the font peer */
+            if ((ch < 0x20) || fPhysicalFonts[i].canDisplay(ch)){
+                return fPhysicalFonts[i].getGlyph(ch);
             }
         }
         return getDefaultGlyph();
-    }
-    
-    /**
-     * Disposes resources. 
-     */
-    public void dispose(){
-        if (true) throw new RuntimeException("Method is not implemented");
     }
 
     /**
@@ -425,9 +419,7 @@ public class CompositeFont extends FontPeerImpl{
      * @param ind specified index of the character 
      */
     public int charWidth(int ind){
-        if (true) throw new RuntimeException("Method is not implemented");
-        return 0;
-
+        return charWidth((char)ind);
     }
 
     /**
@@ -439,7 +431,7 @@ public class CompositeFont extends FontPeerImpl{
         Glyph gl = this.getGlyph(c);
         return (int)gl.getGlyphPointMetrics().getAdvanceX();
     }
-    
+
     /**
      * Returns debug information about this class.
      */
@@ -455,7 +447,23 @@ public class CompositeFont extends FontPeerImpl{
      */
     public Glyph getDefaultGlyph(){
         // !! only first physical font used to get this value
-        return physicalFonts[0].getDefaultGlyph();
+        return fPhysicalFonts[0].getDefaultGlyph();
+    }
+    
+    /**
+     * Returns FontExtraMetrics object with extra metrics
+     * related to this CompositeFont.
+     */
+    public FontExtraMetrics getExtraMetrics(){
+        // Returns FontExtraMetrics instanse of the first physical 
+        // Font from the array of fonts.
+        return fPhysicalFonts[0].getExtraMetrics();
     }
 
+    /**
+     * Disposes CompositeFont object's resources.
+     */
+    public void dispose() {
+        // Nothing to dispose
+    }
 }

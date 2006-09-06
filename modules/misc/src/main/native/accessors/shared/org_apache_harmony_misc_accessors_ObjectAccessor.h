@@ -438,6 +438,27 @@ Java_org_apache_harmony_misc_accessors_ObjectAccessor_allocateObject(JNIEnv *, j
     jclass);
 
 
+/*
+ * Method: org.apache.harmony.misc.accessors.ObjectAccessor.getGlobalReference(Ljava/lang/Object;)J
+ */
+JNIEXPORT jlong JNICALL
+Java_org_apache_harmony_misc_accessors_ObjectAccessor_getGlobalReference(JNIEnv *, jobject, 
+    jobject);
+
+/*
+ * Method: org.apache.harmony.misc.accessors.ObjectAccessor.releaseGlobalReference(J)V
+ */
+JNIEXPORT void JNICALL
+Java_org_apache_harmony_misc_accessors_ObjectAccessor_releaseGlobalReference(JNIEnv *, jobject, 
+    jlong);
+
+/*
+ * Method: org.apache.harmony.misc.accessors.ObjectAccessor.getObjectFromReference(J)Ljava/lang/Object;
+ */
+JNIEXPORT jobject JNICALL
+Java_org_apache_harmony_misc_accessors_ObjectAccessor_getObjectFromReference(JNIEnv *, jobject, 
+    jlong);
+
 #ifdef __cplusplus
 }
 #endif

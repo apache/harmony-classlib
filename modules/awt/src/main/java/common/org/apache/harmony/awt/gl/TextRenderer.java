@@ -33,7 +33,7 @@ public abstract class TextRenderer {
      * @param y start Y position to draw
      */
     public abstract void drawString(Graphics2D g, String str, float x, float y);
-    
+
     /**
      * Draws string on specified Graphics at desired position.
      * 
@@ -41,11 +41,11 @@ public abstract class TextRenderer {
      * @param str String object to draw
      * @param x start X position to draw
      * @param y start Y position to draw
-     */
+     */    
     public void drawString(Graphics2D g, String str, int x, int y){
         drawString(g, str, (float)x, (float)y);
     }
-    
+
     /**
      * Draws GlyphVector on specified Graphics at desired position.
      * 

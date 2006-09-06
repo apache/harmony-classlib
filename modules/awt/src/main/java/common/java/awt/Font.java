@@ -90,14 +90,14 @@ public class Font implements Serializable {
 
     // font peer object corresponding to this Font
     private transient FontPeerImpl fontPeer;
-    
-    // number of glyphs in this Font
+
+    // number of glyphs in this Font    
     private transient int numGlyphs = -1;
-    
-    // code for missing glyph for this Font 
+
+    // code for missing glyph for this Font     
     private transient int missingGlyphCode = -1;
 
-    // flag, true if this Font was created from InputStream 
+    // flag, true if this Font was created from InputStream
     private boolean createdFromStream;
 
     /**
@@ -110,7 +110,7 @@ public class Font implements Serializable {
         throws IOException{
         out.defaultWriteObject();
     }
-    
+
     /**
      * Reads object from ObjectInputStream object and set native platform
      * dependent fields to default values.
@@ -134,7 +134,7 @@ public class Font implements Serializable {
 
         // Default values are taken from the documentation of the Font class. 
         // See Font constructor, decode and getFont sections.
-        
+  
         this.name = "default";
         this.size = 12;
         this.pointSize = 12;
@@ -310,7 +310,7 @@ public class Font implements Serializable {
 
 
     }
-    
+
     /**
      * Returns font style constant value corresponding to one of the font style 
      * names ("BOLD", "ITALIC", "BOLDITALIC"). Method returns Font.PLAIN if there 
@@ -507,15 +507,6 @@ public class Font implements Serializable {
 
         return false;
     }
-
-    protected void finalize() throws Throwable {
-
-        Toolkit.getDefaultToolkit().getGraphicsFactory().freeFontPeer(this);
-
-        super.finalize();
-    }
-
-
 
     public Map getAttributes() {
         return (Map)fRequestedAttributes.clone();
@@ -796,7 +787,7 @@ public class Font implements Serializable {
 
     public FontPeer getPeer() {
         if (fontPeer == null){
-            fontPeer = (FontPeerImpl)Toolkit.getDefaultToolkit().getGraphicsFactory().createFontPeer(this);
+            fontPeer = (FontPeerImpl)Toolkit.getDefaultToolkit().getGraphicsFactory().getFontPeer(this);
         }
         return fontPeer;
     }

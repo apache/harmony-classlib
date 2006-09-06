@@ -72,6 +72,7 @@ import javax.swing.plaf.UIResource;
 import javax.swing.text.View;
 
 import org.apache.harmony.x.swing.ButtonCommons;
+import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
 public class BasicTabbedPaneUI extends TabbedPaneUI implements SwingConstants {
@@ -656,6 +657,20 @@ public class BasicTabbedPaneUI extends TabbedPaneUI implements SwingConstants {
         }
     }
 
+    private static class MnemonicAction extends AbstractAction {
+        public void actionPerformed(final ActionEvent e) {
+            JTabbedPane tabPane = (JTabbedPane)e.getSource();
+
+            int keyCode = Utilities.keyCharToKeyCode(e.getActionCommand().charAt(0));
+            for (int i = 0; i < tabPane.getTabCount(); i++) {
+                if (keyCode == tabPane.getMnemonicAt(i)) {
+                    tabPane.setSelectedIndex(i);
+                    break;
+                }
+            }
+        }
+    }
+
     public static ComponentUI createUI(final JComponent c) {
         return new BasicTabbedPaneUI();
     }
@@ -681,6 +696,7 @@ public class BasicTabbedPaneUI extends TabbedPaneUI implements SwingConstants {
     }
 
     private static int TAB_RUNS_ARRAY_SIZE_INCREMENT = 5;
+    private static AbstractAction MNEMONIC_ACTION = new MnemonicAction();
 
     protected transient Rectangle calcRect = new Rectangle();
 
@@ -1137,6 +1153,8 @@ public class BasicTabbedPaneUI extends TabbedPaneUI implements SwingConstants {
                             tabPane.requestFocus();
                         }
         });
+
+        actionMap.put(StringConstants.MNEMONIC_ACTION, MNEMONIC_ACTION);
 
         return actionMap;
     }

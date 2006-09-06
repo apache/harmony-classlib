@@ -39,25 +39,25 @@ extern "C" {
 /* Native methods */
 
 /*
- * Method: org.apache.harmony.awt.gl.render.NativeImageBlitter.xor(IIJLjava/lang/Object;IIJLjava/lang/Object;III[I)V
+ * Method: org.apache.harmony.awt.gl.render.NativeImageBlitter.xor(IIJLjava/lang/Object;IIJLjava/lang/Object;III[IZ)V
  */
 JNIEXPORT void JNICALL
 Java_org_apache_harmony_awt_gl_render_NativeImageBlitter_xor(JNIEnv *, jobject, 
-    jint, jint, jlong, jobject, jint, jint, jlong, jobject, jint, jint, jint, jintArray);
+    jint, jint, jlong, jobject, jint, jint, jlong, jobject, jint, jint, jint, jintArray, jboolean);
 
 /*
- * Method: org.apache.harmony.awt.gl.render.NativeImageBlitter.blt(IIJLjava/lang/Object;IIJLjava/lang/Object;IIIF[I)V
+ * Method: org.apache.harmony.awt.gl.render.NativeImageBlitter.blt(IIJLjava/lang/Object;IIJLjava/lang/Object;IIIF[IZ)V
  */
 JNIEXPORT void JNICALL
 Java_org_apache_harmony_awt_gl_render_NativeImageBlitter_blt(JNIEnv *, jobject, 
-    jint, jint, jlong, jobject, jint, jint, jlong, jobject, jint, jint, jint, jfloat, jintArray);
+    jint, jint, jlong, jobject, jint, jint, jlong, jobject, jint, jint, jint, jfloat, jintArray, jboolean);
 
 /*
- * Method: org.apache.harmony.awt.gl.render.NativeImageBlitter.bltBG(IIJLjava/lang/Object;IIJLjava/lang/Object;IIIIF[I)V
+ * Method: org.apache.harmony.awt.gl.render.NativeImageBlitter.bltBG(IIJLjava/lang/Object;IIJLjava/lang/Object;IIIIF[IZ)V
  */
 JNIEXPORT void JNICALL
 Java_org_apache_harmony_awt_gl_render_NativeImageBlitter_bltBG(JNIEnv *, jobject, 
-    jint, jint, jlong, jobject, jint, jint, jlong, jobject, jint, jint, jint, jint, jfloat, jintArray);
+    jint, jint, jlong, jobject, jint, jint, jlong, jobject, jint, jint, jint, jint, jfloat, jintArray, jboolean);
 
 
 #ifdef __cplusplus

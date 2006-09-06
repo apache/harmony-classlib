@@ -64,21 +64,9 @@ public class BasicSplitPaneUI extends SplitPaneUI {
 
         public void layoutContainer(final Container container) {
             Insets insets = container.getInsets();
-
+            
             if (getOrientation() == JSplitPane.HORIZONTAL_SPLIT) {
-                if (splitPane.getDividerLocation() < 0) {
-                    resetToPreferredSizes();
-                } else if (splitPane.getDividerLocation() < insets.left) {
-                    dividerLocation = insets.left;
-                } else if (splitPane.getDividerLocation() > container.getWidth() - insets.right - dividerSize) {
-                    dividerLocation = container.getWidth() - insets.right - dividerSize;
-                } else {
-                    dividerLocation = splitPane.getDividerLocation();
-                }
-
-                if (dividerLocation >= insets.left && dividerLocation != splitPane.getDividerLocation() && isDisplayed) {
-                    splitPane.setDividerLocation(dividerLocation);
-                }
+                calculateNewDividerLocation(container.getWidth(), insets.left, insets.right);
 
                 int divX = dividerLocation;
                 int divY = insets.top;
@@ -91,6 +79,23 @@ public class BasicSplitPaneUI extends SplitPaneUI {
                 int rightCompX = divX + divWidth;
                 int rightCompY = leftCompY;
                 int rightCompWidth = container.getWidth() - leftCompWidth - divWidth - insets.left - insets.right;
+                
+                if (rightCompWidth < components[RIGHT_COMPONENT_INDEX].getMinimumSize().width
+                    && leftCompWidth > components[LEFT_COMPONENT_INDEX].getMinimumSize().width) {
+                    
+                    rightCompWidth = components[RIGHT_COMPONENT_INDEX].getMinimumSize().width;
+                    leftCompWidth = container.getWidth() - rightCompWidth - divWidth - insets.left - insets.right;
+                    
+                    if (leftCompWidth < components[LEFT_COMPONENT_INDEX].getMinimumSize().width) {
+                        leftCompWidth = components[LEFT_COMPONENT_INDEX].getMinimumSize().width;
+                        rightCompWidth = container.getWidth() - leftCompWidth - divWidth - insets.left - insets.right;
+                    }
+
+                    dividerLocation = leftCompWidth + insets.left;
+                    if (dividerLocation >= insets.left && dividerLocation != splitPane.getDividerLocation() && isDisplayed) {
+                        splitPane.setDividerLocation(dividerLocation);
+                    }
+                }
 
                 int height = container.getHeight() - insets.top - insets.bottom;
 
@@ -107,22 +112,9 @@ public class BasicSplitPaneUI extends SplitPaneUI {
                     sizes[RIGHT_COMPONENT_INDEX] = rightCompWidth;
                 }
             } else {
+                calculateNewDividerLocation(container.getHeight(), insets.top, insets.bottom);
+
                 int divX = insets.left;
-
-                if (splitPane.getDividerLocation() < 0) {
-                    resetToPreferredSizes();
-                } else if (splitPane.getDividerLocation() < insets.top) {
-                    dividerLocation = insets.top;
-                } else if (splitPane.getDividerLocation() > container.getHeight() - insets.bottom - dividerSize) {
-                    dividerLocation = container.getHeight() - insets.bottom - dividerSize;
-                } else {
-                    dividerLocation = splitPane.getDividerLocation();
-                }
-
-                if (dividerLocation >= insets.top && dividerLocation != splitPane.getDividerLocation() && isDisplayed) {
-                    splitPane.setDividerLocation(dividerLocation);
-                }
-
                 int divY = dividerLocation;
                 int divHeight = dividerSize;
 
@@ -133,9 +125,25 @@ public class BasicSplitPaneUI extends SplitPaneUI {
                 int rightCompX = insets.left;
                 int rightCompY = divY + divHeight;
                 int rightCompHeight = container.getHeight() - leftCompHeight - divHeight - insets.top - insets.bottom;
-
+                
+                if (rightCompHeight < components[RIGHT_COMPONENT_INDEX].getMinimumSize().height
+                    && leftCompHeight > components[LEFT_COMPONENT_INDEX].getMinimumSize().height) {
+                        
+                    rightCompHeight = components[RIGHT_COMPONENT_INDEX].getMinimumSize().height;
+                    leftCompHeight = container.getHeight() - rightCompHeight - divHeight - insets.top - insets.bottom;
+                    
+                    if (leftCompHeight < components[LEFT_COMPONENT_INDEX].getMinimumSize().height) {
+                        leftCompHeight = components[LEFT_COMPONENT_INDEX].getMinimumSize().height;
+                        rightCompHeight = container.getHeight() - leftCompHeight - divHeight - insets.top - insets.bottom;
+                    }
+                    
+                    dividerLocation = leftCompHeight + insets.top;
+                    if (dividerLocation >= insets.top && dividerLocation != splitPane.getDividerLocation() && isDisplayed) {
+                        splitPane.setDividerLocation(dividerLocation);
+                    }
+                }
+                
                 int width = container.getWidth() - insets.left - insets.right;
-
                 if (components[LEFT_COMPONENT_INDEX] != null) {
                     components[LEFT_COMPONENT_INDEX].setBounds(leftCompX, leftCompY, width, leftCompHeight);
                     sizes[LEFT_COMPONENT_INDEX] = leftCompHeight;
@@ -170,6 +178,8 @@ public class BasicSplitPaneUI extends SplitPaneUI {
             if (JSplitPane.BOTTOM.equals(place) || JSplitPane.RIGHT.equals(place)) {
                 components[RIGHT_COMPONENT_INDEX] = component;
             }
+            
+            resetToPreferredSizes();
         }
 
         public Dimension minimumLayoutSize(final Container container) {
@@ -255,8 +265,15 @@ public class BasicSplitPaneUI extends SplitPaneUI {
         }
 
         public void resetToPreferredSizes() {
-            dividerLocation = getPreferredSizeOfComponent(components[LEFT_COMPONENT_INDEX])
+            if (components[LEFT_COMPONENT_INDEX] == null) {
+                return;
+            }
+            
+            int prefLocation = getPreferredSizeOfComponent(components[LEFT_COMPONENT_INDEX])
                               + getInitialLocation(splitPane.getInsets());
+            int minLocation = getMinimumSizeOfComponent(components[LEFT_COMPONENT_INDEX])
+                              + getInitialLocation(splitPane.getInsets());
+            dividerLocation = prefLocation > minLocation ? prefLocation : minLocation;
             splitPane.setDividerLocation(dividerLocation);
         }
 
@@ -347,6 +364,22 @@ public class BasicSplitPaneUI extends SplitPaneUI {
 
         private int componentMinHeight(final int index) {
             return components[index] == null ? 0 : components[index].getMinimumSize().height;
+        }
+
+        private void calculateNewDividerLocation(final int containerSize, final int topLeft, final int bottomRight) {
+            if (dividerLocation != splitPane.getDividerLocation()) {
+                if (splitPane.getDividerLocation() < 0 || splitPane.getDividerLocation() < topLeft) {
+                    dividerLocation = topLeft;
+                } else if (splitPane.getDividerLocation() > containerSize - bottomRight - dividerSize) {
+                    dividerLocation = containerSize - bottomRight - dividerSize;
+                } else {
+                    dividerLocation = splitPane.getDividerLocation();
+                }
+                
+                if (dividerLocation >= topLeft && dividerLocation != splitPane.getDividerLocation() && isDisplayed) {
+                    splitPane.setDividerLocation(dividerLocation);
+                }
+            }
         }
     }
 
@@ -489,6 +522,7 @@ public class BasicSplitPaneUI extends SplitPaneUI {
         installKeyboardActions();
 
         divider.oneTouchExpandableChanged();
+        resetToPreferredSizes(getSplitPane());
     }
 
     protected void installDefaults() {
@@ -509,7 +543,7 @@ public class BasicSplitPaneUI extends SplitPaneUI {
         dividerSize = UIManager.getInt("SplitPane.dividerSize");
         divider = createDefaultDivider();
         divider.setDividerSize(dividerSize);
-        divider.setBorder(UIManager.getBorder("SplitPane.border"));
+        LookAndFeel.installBorder(splitPane, "SplitPane.border");
         splitPane.setDividerSize(dividerSize);
 
         setNonContinuousLayoutDivider(createDefaultNonContinuousLayoutDivider());
@@ -768,4 +802,15 @@ public class BasicSplitPaneUI extends SplitPaneUI {
         return 0;
     }
 
+    private int getMinimumSizeOfComponent(final Component c) {
+        if (c == null) {
+            return 0;
+        }
+
+        if (getOrientation() == JSplitPane.HORIZONTAL_SPLIT) {
+            return c.getMinimumSize().width;
+        } else {
+            return c.getMinimumSize().height;
+        }
+    }
 }

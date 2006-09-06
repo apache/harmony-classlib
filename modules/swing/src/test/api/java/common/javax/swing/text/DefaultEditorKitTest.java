@@ -222,6 +222,52 @@ public class DefaultEditorKitTest extends EditorKitTest {
             }
         });
     }
+    
+    public void testWriteWriterFlush() throws Exception {
+        final String str = "Test text";
+        final Document doc = kit.createDefaultDocument();
+        doc.insertString(0, str, null);
+
+        final Marker flushMarker = new Marker();
+        final Marker closeMarker = new Marker();
+        StringWriter writer = new StringWriter() {
+            public void close() throws IOException {
+                closeMarker.setOccurred();
+                super.close();
+            }
+            public void flush() {
+                flushMarker.setOccurred();
+                super.flush();
+            }
+        };
+        kit.write(writer, doc, 0, doc.getLength());
+
+        assertFalse(closeMarker.isOccurred());
+        assertTrue(flushMarker.isOccurred());
+    }
+    
+    public void testWriteOutputStreamFlush() throws Exception {
+        final String str = "Test text";
+        final Document doc = kit.createDefaultDocument();
+        doc.insertString(0, str, null);
+
+        final Marker flushMarker = new Marker();
+        final Marker closeMarker = new Marker();
+        OutputStream stream = new ByteArrayOutputStream() {
+            public void close() throws IOException {
+                closeMarker.setOccurred();
+                super.close();
+            }
+            public void flush() throws IOException {
+                flushMarker.setOccurred();
+                super.flush();
+            }
+        };
+        kit.write(stream, doc, 0, doc.getLength());
+
+        assertFalse(closeMarker.isOccurred());
+        assertTrue(flushMarker.isOccurred());
+    }
 
     public void testNewLineReader() throws IOException, BadLocationException {
         String str1 = "This is a very \r\nshort plain-text document.\r\nIt's to be read only by the \r\ntest.";

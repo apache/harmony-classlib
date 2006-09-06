@@ -16,31 +16,12 @@
 /**
  * @author Ilya S. Okomin
  * @version $Revision$
- * 
- * Description: This file contains native calls to get font data on Linux 
- * platform. Font data obtained using Xft, FreeType and FontConfig libraries.
- * 
+ *
  */
 #include <X11/Xft/Xft.h>
 #include <freetype/tttables.h>
 #include <freetype/t1tables.h>
-#if (FREETYPE_MAJOR >= 2 && FREETYPE_MINOR >= 2)
-
-#undef HAS_FREETYPE_INTERNAL
-#include <freetype/ftsizes.h>
-#include <freetype/ftglyph.h>
-#ifndef FALSE
-#define FALSE (0)
-#define TRUE (1)
-#endif /* FALSE */
-
-#else /* FREETYPE_MAJOR ... */
-
-#define HAS_FREETYPE_INTERNAL 1
 #include <freetype/internal/tttypes.h>
-
-#endif /* FREETYPE_MAJOR ... */
-
 #include <freetype/ftsnames.h>
 
 #include <stdio.h>
@@ -75,6 +56,7 @@ JNIEXPORT jobjectArray JNICALL
     XftPattern *xftPattern;
     XftFontSet *fs;
     int j, i;
+    int len;
     int numFamilies;
     FcChar8 *family;
     char** famList;
@@ -85,7 +67,7 @@ JNIEXPORT jobjectArray JNICALL
     /* Create pattern */
     xftPattern = XftPatternCreate();
 
-    if (!XftPatternAddBool (xftPattern, XFT_OUTLINE, FcTrue)){
+    if (!XftPatternAddBool (xftPattern, XFT_OUTLINE, True)){
         throwNPException(env, "Outline value can't be added to XftPattern");
     }
 
@@ -93,40 +75,42 @@ JNIEXPORT jobjectArray JNICALL
     os = XftObjectSetBuild (XFT_FAMILY, (char *) 0);
 
     fs = FcFontList (0, xftPattern, os);
-    
-        FcObjectSetDestroy (os);
-    
+
+    XftObjectSetDestroy (os);
+
     if(xftPattern){
-            XftPatternDestroy(xftPattern);
+        XftPatternDestroy(xftPattern);
     }
 
-        if (!fs){
+    if (!fs){
         throwNPException(env, "Font list can't be created");
-    } else  {
+        return NULL;
+    } else {
         numFamilies = fs->nfont;
         famList = (char** )malloc(numFamilies * sizeof(char *));
 
-        for (j = 0; j < numFamilies; j++)
-        {
+        for (j = 0; j < numFamilies; j++) {
 
 #ifdef DEBUG
-                font = FcNameUnparse (fs->fonts[j]);
+            font = FcNameUnparse (fs->fonts[j]);
             printf ("%s\n", font);
-                free (font);
+            free (font);
 #endif /* DEBUG */
 
-                if (XftPatternGetString (fs->fonts[j], XFT_FAMILY, 0, &family) == XftResultMatch){
+            if (XftPatternGetString (fs->fonts[j], XFT_FAMILY, 0, &family) == XftResultMatch){
+        
 #ifdef DEBUG
-                    printf ("       %s", family);
+                printf ("       %s", family);
 #endif /* DEBUG */
-                famList[j] = (char*)malloc(sizeof(char) * (strlen(family)+1));
-                strcpy(famList[j], family);
+
+                len = (strlen(family)+1);
+                famList[j] = (char*)malloc(sizeof(char) * len);
+
+                strncpy(famList[j], family, len);
             }
-                
         }
         XftFontSetDestroy (fs);
-        }
-
+    }
 
     strClass = (*env)->FindClass(env, "java/lang/String");
     initStr = (*env)->NewStringUTF(env, "");
@@ -141,16 +125,18 @@ JNIEXPORT jobjectArray JNICALL
             free(famList[i]);
         }
         free(famList);
-        
         throwNPException(env, "Not enough memory to create families list");
+        return NULL;
     }
 
     for (i = 0;i < numFamilies;i++){
-        (*env)->SetObjectArrayElement(env, families,i,(*env)->NewStringUTF(env, famList[i])); // number of chars == length of string -1
+        // number of chars == length of string -1
+        (*env)->SetObjectArrayElement(env, families,i,(*env)->NewStringUTF(env, famList[i]));
+        free(famList[i]);
     }
+    free(famList);
 
     return families;
-    
 }
 
 /*
@@ -166,34 +152,29 @@ JNIEXPORT jboolean JNICALL
     Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_embedFontNative(JNIEnv *env, jclass obj, jstring fName){
 
     int fontAdded = FALSE;
-    FcChar8* fileName;  
-    jboolean iscopy;
     FcConfig *config;
     FcFontSet *set;
     int numFonts;
-    fileName = (FcChar8*)((*env)->GetStringUTFChars(env, fName, &iscopy));
-
-    (*env)->ReleaseStringUTFChars(env, fName, fileName);
 
     config = FcConfigGetCurrent();
-
-    set = FcConfigGetFonts(config, FcSetSystem);
-    if (!set){
-        return fontAdded;
-    }
-        
-    numFonts = set->nfont;
     if (!config){
         return fontAdded;
     }
 
-    fontAdded = FcConfigBuildFonts(config);
-
     set = FcConfigGetFonts(config, FcSetSystem);
     if (!set){
         return fontAdded;
     }
-        
+
+    numFonts = set->nfont;
+
+    fontAdded = FcConfigBuildFonts(config);
+    
+    set = FcConfigGetFonts(config, FcSetSystem);
+    if (!set){
+        return fontAdded;
+    }
+
     fontAdded = fontAdded && (numFonts < set->nfont);
 
     return fontAdded;
@@ -226,22 +207,35 @@ JNIEXPORT jlong JNICALL
     int scr;
     FcChar8 *faceStyle = NULL;
     XftFont *xftFnt;
-    int pitch = 0;
     int font_type = FONT_TYPE_UNDEF;
-    int spacing;
     double fSize;
     FT_Face face;
-    /* Initialize part */
     
+    /* Initialize part */
     cls = (*env)->GetObjectClass(env, linuxFont);
 
+    fid=(*env)->GetFieldID(env, cls, "display", "J");
+    if (fid == 0) {
+        (*env)->ExceptionDescribe(env);
+        (*env)->ExceptionClear(env);
+        return (jlong)NULL;
+    }
+    dpy = (Display *)(long)(*env)->GetLongField(env, linuxFont, fid);
+
+    if (dpy == NULL){
+        throwNPException(env, "Cannot connect to XServer");
+        return (jlong)NULL;
+    }
+
     if (jStyle & FONT_BOLD) {
-        weight = XFT_WEIGHT_BOLD; // TODO: need to be defined from TextAttributes
+        // TODO: need to be defined from TextAttributes
+        weight = XFT_WEIGHT_BOLD;
 #ifdef DEBUG
         printf("Weight is bold");
 #endif // DEBUG 
     } else {
-        weight = XFT_WEIGHT_MEDIUM; // TODO: need to be defined from TextAttributes
+        // TODO: need to be defined from TextAttributes
+        weight = XFT_WEIGHT_MEDIUM;
 #ifdef DEBUG
         printf("Weight is medium");
 #endif // DEBUG 
@@ -253,57 +247,20 @@ JNIEXPORT jlong JNICALL
         slant = XFT_SLANT_ROMAN;
     }
 
-    // TODO: to find out about UTF16 strings
     name = (*env)->GetStringUTFChars(env, jName, &iscopy);
-    if(jFaceStyle){
+    if (jFaceStyle){
         faceStyle = (FcChar8 *)(*env)->GetStringUTFChars(env, jFaceStyle, &iscopy);
     }
-    fid=(*env)->GetFieldID(env, cls, "display", "J");
-    if (fid == 0) {
-        //      printf("Can't find field \"size\"");
-        (*env)->ExceptionDescribe(env);
-        (*env)->ExceptionClear(env);
-        return (jlong)NULL;
-    }
-
-
-    dpy = (Display *)(*env)->GetLongField(env, linuxFont, fid);
-
+    
     fid=(*env)->GetFieldID(env, cls, "screen", "I");
     if (fid == 0) {
-        //      printf("Can't find field \"size\"");
         (*env)->ExceptionDescribe(env);
         (*env)->ExceptionClear(env);
         return (jlong)NULL;
     }
     scr = (*env)->GetIntField(env, linuxFont, fid);
-
-    mid=(*env)->GetMethodID(env, 
-        cls, 
-        "getPitch", 
-        "()I");
-    if (mid == 0) {
-        // Can't find method "getPitch()"
-        (*env)->ExceptionDescribe(env);
-        (*env)->ExceptionClear(env);
-        return (jlong)NULL;
-    }
-
-    pitch = (*env)->CallIntMethod(env, linuxFont, mid);
-    if((*env)->ExceptionOccurred(env)) {
-        //      printf("Error occured when getting \"getFPitchAndFamily()\" value");
-        (*env)->ExceptionDescribe(env);
-        (*env)->ExceptionClear(env);
-        return (jlong)NULL;
-    }
-
     
     /* Xft part */
-
-    if (dpy == NULL){
-        throwNPException(env, "Cannot connect to XServer");
-    }   
-
     /* Create pattern */
     pattern = XftPatternCreate();
 
@@ -323,18 +280,14 @@ JNIEXPORT jlong JNICALL
         throwNPException(env, "Error during adding font weight to XFTPattern structure");
     }
 
-/*  if (!XftPatternAddInteger(pattern, FC_WIDTH, FC_WIDTH_NORMAL)){
-        throwNPException(env, "Error during adding font width to XFTPattern structure");
-    }
-*/
     /* We set antialias mode for simple text rendering without antialiasing */
     if (!XftPatternAddBool(pattern, XFT_ANTIALIAS, False)){
         throwNPException(env, "Error during adding font antialias set to false to XFTPattern structure");
     }
 
-    /* 
+    /*
      *
-     *  To comply with Java specification and results we have  to use DPI value 
+     *  To comply with Java specification and results we have  to use DPI value
      *  equals to 96. Actually, it is properly to use resolution Y value instead of DPI value
      *  the correct formula  resolutionY = (XDisplayHeight(dpy, scr)/(XDisplayHeightMM(dpy, scr)/25.4));
      *  hence size = size / (double)resolutionY * 72;
@@ -360,23 +313,6 @@ JNIEXPORT jlong JNICALL
         throwNPException(env, "Error during adding font autohinting set to false to XFTPattern structure");
     }
         
-    if (pitch != 0){
-        if (pitch == 2){
-          spacing = FC_PROPORTIONAL;
-        } else if(pitch == 1){
-          spacing = FC_MONO;
-        }
-
-        if (!XftPatternAddInteger(pattern, XFT_SPACING, spacing)){
-            throwNPException(env, "Error during adding font spacing type to XFTPattern structure");
-        }
-    }
-                                                                   
-    (*env)->ReleaseStringUTFChars(env, jName, name);
-    if(faceStyle){
-        (*env)->ReleaseStringUTFChars(env, jFaceStyle, faceStyle);
-
-}
     matchPattern = XftFontMatch (dpy, scr, pattern, &result);
 
 #ifdef DEBUG
@@ -393,16 +329,44 @@ JNIEXPORT jlong JNICALL
 #endif /* DEBUG */
 
     XftPatternDestroy (pattern);
-    if (!matchPattern)
+
+    if (!matchPattern){
+        XftPatternDestroy (matchPattern);
         return (long)NULL;
+    }
     
     xftFnt = XftFontOpenPattern (dpy, matchPattern);
+
     if (!xftFnt){
         XftPatternDestroy (matchPattern);
         return (long)NULL;
     }
 
-    /* Set Font type upcall */
+    if(name){
+        (*env)->ReleaseStringUTFChars(env, jName, name);
+    }
+    if(faceStyle){
+        (*env)->ReleaseStringUTFChars(env, jFaceStyle, faceStyle);
+    }
+
+    /* defining font type */
+    face = XftLockFace(xftFnt);
+    if ((face->face_flags & FT_FACE_FLAG_SCALABLE) &&
+            !(face->face_flags & FT_FACE_FLAG_FIXED_SIZES)){
+        if (face->face_flags & FT_FACE_FLAG_SFNT){
+            font_type = FONT_TYPE_TT;
+        } else {
+            font_type = FONT_TYPE_T1;
+        }
+    }
+    XftUnlockFace(xftFnt);
+
+    if (font_type == FONT_TYPE_UNDEF){
+        XftFontClose (dpy, xftFnt);
+        return (jlong)NULL;
+    }
+
+    /* Set Font type in LinuxFont object (upcall) */
     mid=(*env)->GetMethodID(env, cls, "setFontType", "(I)V");
 
     if (mid == 0) {
@@ -413,14 +377,6 @@ JNIEXPORT jlong JNICALL
         (*env)->ExceptionClear(env);
         return (jlong)NULL;
     }
- 
-    face = XftLockFace(xftFnt);
-        if (face->face_flags & FT_FACE_FLAG_SFNT){
-            font_type = FONT_TYPE_TT;
-        } else {
-            font_type = FONT_TYPE_T1;
-        }
-    XftUnlockFace(xftFnt);
 
     (*env)->CallVoidMethod(env, linuxFont, mid, font_type);
 
@@ -464,42 +420,45 @@ JNIEXPORT jlong JNICALL
     int n = 0;
     int buf_size;
     char *buffer;
+    
+    XftPattern *pattern;
+    XftPattern *matchPattern;
+    XftResult result;
+
     // Initialize part
     cls = (*env)->GetObjectClass(env, linuxFont);
 
-    xlfd = (*env)->GetStringUTFChars(env, jXLFD, &iscopy);
-    buf_size = (*env)->GetStringLength(env, jXLFD) + 8; 
-    buffer = (char *)malloc(buf_size);
-
-    snprintf(buffer, buf_size, xlfd, (int)((double)(size*10) / 96 * 72));
-    (*env)->ReleaseStringUTFChars(env, jXLFD, xlfd);
-    
+    /* get display value */
     fid=(*env)->GetFieldID(env, cls, "display", "J");
     if (fid == 0) {
-        //      printf("Can't find field \"size\"");
         (*env)->ExceptionDescribe(env);
         (*env)->ExceptionClear(env);
         return (jlong)NULL;
     }
-
-
-    dpy = (Display *)(*env)->GetLongField(env, linuxFont, fid);
+    dpy = (Display *)(long)(*env)->GetLongField(env, linuxFont, fid);
 
     if (dpy == NULL){
         throwNPException(env, "Cannot connect to XServer");
-    }   
+        return (jlong)NULL;
+    }
     
+    xlfd = (*env)->GetStringUTFChars(env, jXLFD, &iscopy);
+    buf_size = (*env)->GetStringLength(env, jXLFD) + 8;
+    buffer = (char *)malloc(buf_size);
 
+    snprintf(buffer, buf_size, xlfd, (int)((double)(size*10) / 96 * 72));
+    (*env)->ReleaseStringUTFChars(env, jXLFD, xlfd);
+
+    /* get screen value */
     fid=(*env)->GetFieldID(env, cls, "screen", "I");
     if (fid == 0) {
-        //      printf("Can't find field \"screen\"");
         (*env)->ExceptionDescribe(env);
         (*env)->ExceptionClear(env);
         return (jlong)NULL;
     }
     scr = (*env)->GetIntField(env, linuxFont, fid);
 
-    // Xft part
+    /* check if there any fonts with specified xlfd structure */
     fn = XListFonts( dpy, buffer, 10, &n );
     if (fn != NULL){
         XFreeFontNames(fn);
@@ -507,17 +466,82 @@ JNIEXPORT jlong JNICALL
 
     if (n == 0){
         free(buffer);
-        return 0;
+        return (jlong)NULL;
     }
 
-    xftFnt = XftFontOpenXlfd (dpy, scr, buffer);
-        free(buffer);
+    /* Xft part */
+    /* Create xlfd pattern */
+    pattern = XftXlfdParse(buffer, False, True);
+    
+    /* We set antialias mode for simple text rendering without antialiasing */
+    if (!XftPatternAddBool(pattern, XFT_ANTIALIAS, False)){
+        throwNPException(env, "Error during adding font antialias set to false to XFTPattern structure");
+    }
+
+    if (!XftPatternAddBool (pattern, XFT_RENDER, True)){
+        throwNPException(env, "Error during adding font RENDER set to true to XFTPattern structure");
+    }
+
+
+    if (!XftPatternAddBool (pattern, FC_AUTOHINT, True)){
+        throwNPException(env, "Error during adding font autohinting set to false to XFTPattern structure");
+    }
+
+    
+    matchPattern = XftFontMatch (dpy, scr, pattern, &result);
+
+#ifdef DEBUG
+    printf ("Pattern ");
+    FcPatternPrint (pattern);
+    if (matchPattern)
+    {
+        printf ("Match ");
+        FcPatternPrint (matchPattern);
+    }
+    else {
+        printf ("No Match\n");
+        }
+#endif // DEBUG 
+
+    XftPatternDestroy (pattern);
+
+    if (!matchPattern){
+        XftPatternDestroy (matchPattern);
+        return (long)NULL;
+    }
+    
+    xftFnt = XftFontOpenPattern (dpy, matchPattern);
+
+    if (!xftFnt){
+        XftPatternDestroy (matchPattern);
+        return (long)NULL;
+    }
+
+    free(buffer);
 
     if (!xftFnt){
         return (long)NULL;
     }
 
-    // Set Font type upcall
+    face = XftLockFace(xftFnt);
+
+    if ((face->face_flags & FT_FACE_FLAG_SCALABLE) &&
+            !(face->face_flags & FT_FACE_FLAG_FIXED_SIZES)){
+        if (face->face_flags & FT_FACE_FLAG_SFNT){
+            font_type = FONT_TYPE_TT;
+        } else {
+            font_type = FONT_TYPE_T1;
+        }
+    }
+    XftUnlockFace(xftFnt);
+    
+
+    if (font_type == FONT_TYPE_UNDEF){
+        XftFontClose (dpy, xftFnt);
+        return (jlong)NULL;
+    }
+
+    /* Set Font type in LinuxFont object (upcall) */
     mid=(*env)->GetMethodID(env, cls, "setFontType", "(I)V");
 
     if (mid == 0) {
@@ -529,23 +553,6 @@ JNIEXPORT jlong JNICALL
         return (jlong)NULL;
     }
  
-    face = XftLockFace(xftFnt);
-        if ((face->face_flags & FT_FACE_FLAG_SCALABLE) &&       
-        !(face->face_flags & (FT_FACE_FLAG_FIXED_SIZES | FT_FACE_FLAG_FIXED_WIDTH))){
-            if (face->face_flags & FT_FACE_FLAG_SFNT){
-                font_type = FONT_TYPE_TT;
-            } else {
-
-                font_type = FONT_TYPE_T1;
-            }
-        }
-    XftUnlockFace(xftFnt);
-    
-    if (font_type == FONT_TYPE_UNDEF){
-        XftFontClose (dpy, xftFnt);
-        return (jlong)NULL;
-    }
-
     (*env)->CallVoidMethod(env, linuxFont, mid, font_type);
 
     if((*env)->ExceptionOccurred(env)) {
@@ -572,19 +579,27 @@ JNIEXPORT jint JNICALL
     Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getNumGlyphsNative(JNIEnv *env, jclass obj, jlong fnt){
 
     jint numGlyphs = 0;
-    XftFont *xftFnt = (XftFont *)fnt;
+    XftFont *xftFnt = (XftFont *)(long)fnt;
     FT_Face face;
-    
-        face = XftLockFace(xftFnt);
-        numGlyphs = face->num_glyphs;
+
+    if(!xftFnt){
+        return 0;
+    }
+    face = XftLockFace(xftFnt);
+
+    if(!face)
+        return 0;
+    numGlyphs = face->num_glyphs;
+
 #ifdef DEBUG
-        printf("Num glyphs = %d\n", numGlyphs);
+    printf("Num glyphs = %d\n", numGlyphs);
 #endif /* DEBUG */
 
-        XftUnlockFace(xftFnt);
-
-    return numGlyphs;   
+    XftUnlockFace(xftFnt);
     
+
+    return numGlyphs;
+
 }
 
 /*
@@ -598,12 +613,12 @@ JNIEXPORT jboolean JNICALL
 
     jboolean canDisplay = 0;
 
-    /* TODO: implement method - or we can use getGlyphCode results to find out, 
+    /* TODO: implement method - or we can use getGlyphCode results to find out,
      * whether we can display char or not.
      */
 
     return canDisplay;
-    
+
 }
 
 /*
@@ -615,19 +630,18 @@ JNIEXPORT jboolean JNICALL
 JNIEXPORT jstring JNICALL 
     Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getFamilyNative(JNIEnv *env, jclass obj, jlong fnt){
 
-    XftFont *xftFnt = (XftFont *)fnt;
-    
-    jstring familyName = NULL;
-    char* family;   
+    XftFont *xftFnt = (XftFont *)(long)fnt;
 
-        if (XftPatternGetString (xftFnt->pattern, XFT_FAMILY, 0, &family) != XftResultMatch){
+    jstring familyName = NULL;
+    char* family;
+
+    if (XftPatternGetString (xftFnt->pattern, XFT_FAMILY, 0, &family) != XftResultMatch){
         throwNPException(env, "Can not get font family value");
-                    
     }
 
     familyName = (*env)->NewStringUTF(env, family);
 
-    return familyName;  
+    return familyName;
 }
 
 /*
@@ -639,27 +653,34 @@ JNIEXPORT jstring JNICALL
 JNIEXPORT jstring JNICALL 
     Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getFontNameNative(JNIEnv *env, jclass obj, jlong fnt){
 
-
+    // !! at the moment only EN locale font names used
     jstring faceName = NULL;
-    XftFont *xftFnt = (XftFont *)fnt;
+    XftFont *xftFnt = (XftFont *)(long)fnt;
     FT_Face face;
     const int BUF_SIZE = 64;
-    char name[BUF_SIZE];    
-    char* fStr = "%s %s";       
-    
-        // At the moment we use only EN locale font name representing.
+    char name[BUF_SIZE];
+    char fStr[6] = "%s %s";
+
+    if(!xftFnt){
+        return 0;
+    }
     face = XftLockFace(xftFnt);
-        snprintf(name, BUF_SIZE, fStr, face->family_name, face->style_name);
+
+    if(!face)
+        return 0;
+    
+    snprintf(name, BUF_SIZE, &fStr, face->family_name, face->style_name);
+
 #ifdef DEBUG
         printf("Face name = %s\n", name);
 #endif // DEBUG 
 
     XftUnlockFace(xftFnt);
+  
 
-    faceName = (*env)->NewStringUTF(env, name);
+    faceName = (*env)->NewStringUTF(env, name); 
 
-    return faceName;    
-
+    return faceName;
 }
 
 /*
@@ -673,26 +694,31 @@ JNIEXPORT jstring JNICALL
 JNIEXPORT jstring JNICALL 
     Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getFontPSNameNative(JNIEnv *env, jclass obj, jlong fnt){
 
-    XftFont *xftFnt = (XftFont *)fnt;
+    XftFont *xftFnt = (XftFont *)(long)fnt;
     FT_Face face;
-    const char* name;   
-    
+    const char* name;
     jstring psName;
-    
-        face = XftLockFace(xftFnt);
 
+    if(!xftFnt){
+        return 0;
+    }
+    face = XftLockFace(xftFnt);
+
+    if(!face)
+        return 0;
+    
     name = FT_Get_Postscript_Name(face);
 #ifdef DEBUG
         printf("PostScript name = %s\n", name);
 #endif /* DEBUG */
 
 
-        XftUnlockFace(xftFnt);
-
     psName = (*env)->NewStringUTF(env, name);
+    
+    XftUnlockFace(xftFnt);
+    
 
-    return psName;  
-
+    return psName;
 }
 
 /*
@@ -703,11 +729,12 @@ JNIEXPORT jstring JNICALL
  */
 JNIEXPORT void JNICALL 
     Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_pFontFree(JNIEnv *env, jclass obj, jlong fnt, jlong display){
-    Display *dpy = (Display *)display;
-    XftFont *xftFnt = (XftFont *)fnt;
 
-    XftFontClose (dpy, xftFnt);
-    
+    Display *dpy = (Display *)(long)display;
+    XftFont *xftFnt = (XftFont *)(long)fnt;
+    if(xftFnt){
+        XftFontClose (dpy, xftFnt);
+    }
 }
 
 /*
@@ -721,50 +748,49 @@ JNIEXPORT jfloat JNICALL
     Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getItalicAngleNative(JNIEnv *env, jclass obj, jlong fnt, int fontType){
 
     jfloat italicAngle = 0.0;
-    XftFont *xftFnt = (XftFont *)fnt;
+    XftFont *xftFnt = (XftFont *)(long)fnt;
     FT_Face face;
-#if HAS_FREETYPE_INTERNAL
     TT_Face tt_face;
-#endif
-    TT_HoriHeader* hh;
+    TT_HoriHeader hh;
     float rise;
     float run;
     PS_FontInfoRec afont_info;
     FT_Error err;
     double pi = 3.1415926535;
 
+    if(!xftFnt){
+        return 0;
+    }
     face = XftLockFace(xftFnt);
+
+    if(!face){
+        return 0;
+    }
     if (fontType == FONT_TYPE_TT){
-
-#if HAS_FREETYPE_INTERNAL
-            tt_face = (TT_Face)face;
-            hh = &(tt_face->horizontal);
-#else
-            hh = (TT_HoriHeader*)FT_Get_Sfnt_Table(face, ft_sfnt_hhea);
-#endif
-            rise = (float)hh->caret_Slope_Rise;
-            run = (float)hh->caret_Slope_Run;
+           tt_face = (TT_Face)face;
+            hh = tt_face->horizontal;
+            rise = (float)hh.caret_Slope_Rise;
+            run = (float)hh.caret_Slope_Run;
             italicAngle = run / rise ;
-
     } else {
         err =  FT_Get_PS_Font_Info( face, &afont_info);
         if (err){
-            throwNPException(env, "Error in FT_Get_PS_Font_Info fucntion");
             XftUnlockFace(xftFnt);
+            
             return italicAngle;
         }
-        italicAngle = tan(((double)afont_info.italic_angle * pi) / 180);        
-
+        italicAngle = tan(((double)afont_info.italic_angle * pi) / 180);
     }
-    
+
 #ifdef DEBUG
-            printf("Italic angle value = %f\n", italicAngle);
+    printf("Italic angle value = %f\n", italicAngle);
 #endif /* DEBUG */
 
     XftUnlockFace(xftFnt);
+    
 
     return italicAngle;
-    
+
 }
 
 /*
@@ -786,76 +812,94 @@ JNIEXPORT jobjectArray JNICALL
     int j, i;
     int numFonts;
     const int BUF_SIZE = 128;
-        FcChar8 font[BUF_SIZE];
-        FcChar8 *family;
+    FcChar8 font[BUF_SIZE];
+    FcChar8 *family;
     FcChar8 *style;
     char** fontList;
-    char* fstr="%s-%s"; // family name-style
+    char* fstr="%s-%s-%d"; // "family name"-"styleName"-"style"
+    int fontStyle;
+    int weight;
+    int slant;
     jclass strClass;
     jstring initStr;
 
     /* Create pattern */
     xftPattern = XftPatternCreate();
 
-    if (!XftPatternAddBool (xftPattern, XFT_OUTLINE, FcTrue)){
+    if (!XftPatternAddBool (xftPattern, XFT_OUTLINE, True)){
         throwNPException(env, "Outline value can't be added to XftPattern");
     }
 
     /* Just need to add which fields you want to list */
-    os = XftObjectSetBuild (XFT_FAMILY, XFT_STYLE, (char *) 0);
+    os = XftObjectSetBuild (XFT_FAMILY, XFT_STYLE, XFT_SLANT, XFT_WEIGHT, (char *) 0);
 
     fs = FcFontList (0, xftPattern, os);
-    
-        FcObjectSetDestroy (os);
-    
+
+    XftObjectSetDestroy (os);
+
     if(xftPattern){
-            XftPatternDestroy(xftPattern);
+        XftPatternDestroy(xftPattern);
     }
 
-        if (!fs){
+    if (!fs){
         throwNPException(env, "Font list can't be created");
+        return NULL;
     } else  {
         numFonts = fs->nfont;
         fontList = (char** )malloc(numFonts * sizeof(char *));
 
-        for (j = 0; j < numFonts; j++)
-        {
-
-                if (XftPatternGetString (fs->fonts[j], XFT_FAMILY, 0, &family) != XftResultMatch){
+        for (j = 0; j < numFonts; j++){
+            if (XftPatternGetString (fs->fonts[j], XFT_FAMILY, 0, &family) != XftResultMatch){
                 throwNPException(env, "Couldn't get font family name");
-                                                
             }
 
 #ifdef DEBUG
-//              font = FcNameUnparse (fs->fonts[j]);
-//              printf ("%s\n", font);
-
+            font = FcNameUnparse (fs->fonts[j]);
+            printf ("%s\n", font);
+            free(font);
 #endif /* DEBUG */
-//              XftPatternGetInteger (fs->fonts[j], XFT_SLANT, 0, &slant);
 
-//              XftPatternGetInteger (fs->fonts[j], XFT_WEIGHT, 0, &weight);
-                        
-                XftPatternGetString (fs->fonts[j], XFT_STYLE, 0, &style);
+            if (XftPatternGetString (fs->fonts[j], XFT_STYLE, 0, &style) != XftResultMatch) {
+                throwNPException(env, "Couldn't get font style name");
+            }
+            
+            if (XftPatternGetInteger (fs->fonts[j], XFT_SLANT, 0, &slant) != XftResultMatch) {
+                throwNPException(env, "Couldn't get font slant");
+            }
 
-            len = snprintf(font, BUF_SIZE, fstr, family, style);
+            if (XftPatternGetInteger (fs->fonts[j], XFT_WEIGHT, 0, &weight) != XftResultMatch) {
+                throwNPException(env, "Couldn't get font weight");
+            }
+
+            if (weight <= XFT_WEIGHT_MEDIUM) {
+                fontStyle = FONT_PLAIN;
+            } else {
+                fontStyle = FONT_BOLD;
+            }
+
+            if (slant != XFT_SLANT_ROMAN){
+                fontStyle |= FONT_ITALIC;
+            }
+
+            len = snprintf(font, BUF_SIZE, fstr, family, style, fontStyle);
 
             if (len < 0){
                 len = BUF_SIZE;
             }
 
             fontList[j] = (char*)malloc(sizeof(char) * (len+1));
-            strcpy(fontList[j], font);
-                
+            strncpy(fontList[j], font, len);
+            fontList[j][len] = 0;
         }
         XftFontSetDestroy (fs);
-        }
+    }
 
 
     strClass = (*env)->FindClass(env, "java/lang/String");
     initStr = (*env)->NewStringUTF(env, "");
 
-    fonts = (jobjectArray)(*env)->NewObjectArray(env, 
-        numFonts,  
+    fonts = (jobjectArray)(*env)->NewObjectArray(env,
+        numFonts,
         strClass,
         initStr);
 
@@ -864,8 +908,9 @@ JNIEXPORT jobjectArray JNICALL
             free(fontList[i]);
         }
         free(fontList);
-        
+
         throwNPException(env, "Not enough memory to create families list");
+        return (jlong)NULL;
     }
 
     for (i = 0;i < numFonts;i++){
@@ -890,109 +935,100 @@ JNIEXPORT jfloatArray JNICALL
     jfloatArray metrics;
     jfloat values[17];
 
-
-    XftFont *xftFnt = (XftFont *)fnt;
+    XftFont *xftFnt = (XftFont *)(long)fnt;
     FT_Face face;
-    TT_OS2* os2;
-#if HAS_FREETYPE_INTERNAL
+    TT_OS2 os2;
     TT_Face tt_face;
-#endif
     int units_per_EM;
     FT_Size_Metrics size_metrics;
     FT_Size size;
     float mltpl;
-
+    
+    if (!xftFnt){
+        return NULL;
+    }
 #ifdef DEBUG
     printf("XFT Ascent = %d\n", xftFnt->ascent);
     printf("XFT Descent = %d\n", xftFnt->descent);
     printf("XFT Height = %d\n", xftFnt->height);
 #endif /* DEBUG */
-        face = XftLockFace(xftFnt);
-        units_per_EM = face->units_per_EM;
-            if (units_per_EM == 0){
-            throwNPException(env, "Units per EM value is equals to zero");
-        }
-        values[16] = units_per_EM;
-        mltpl = (float)fontHeight / units_per_EM;
-        values[0] = (float)(face->ascender) * mltpl;    // Ascent value
-        values[1] = (float)(face->descender) * mltpl;   // -Descent value
-        values[2] = (float)(face->height) * mltpl  - values[0] + values[1]; // External Leading value
-        values[3] = (float)(face->underline_thickness) * mltpl;     // Underline size value
-        values[4] = (float)(face->underline_position) * mltpl;  // Underline position value
 
-        if (fontType == FONT_TYPE_TT){
-#if HAS_FREETYPE_INTERNAL
-            tt_face = (TT_Face)face;
-            os2 = &(tt_face->os2);
-#else
-            os2 = (TT_OS2*)FT_Get_Sfnt_Table(face, ft_sfnt_os2);
-#endif
+    face = XftLockFace(xftFnt);
 
-            values[5] = (float)(os2->yStrikeoutSize) * mltpl;    // Strikeout size value
-            values[6] = (float)(os2->yStrikeoutPosition) * mltpl;    // Strikeout position value
-        } else {
-            values[5] = values[3];
-            // !!Workaround: for Type1 fonts strikethrough position = (-ascent+descent)/2
-            values[6] = (-values[0] - values[1])/2;
-        }
+    if(!face){
+        return NULL;
+    }
+    units_per_EM = face->units_per_EM;
+    if (units_per_EM == 0){
+//          throwNPException(env, "Units per EM value is equals to zero");
+        XftUnlockFace(xftFnt);
+        
+        
+        return NULL;
+    }
+    values[16] = units_per_EM;
+    mltpl = (float)fontHeight / units_per_EM;
+    values[0] = (float)(face->ascender) * mltpl;    // Ascent value
+    values[1] = (float)(face->descender) * mltpl;   // -Descent value
+    values[2] = (float)(face->height) * mltpl  - values[0] + values[1]; // External Leading value
+    values[3] = (float)(face->underline_thickness) * mltpl;     // Underline size value
+    values[4] = (float)(face->underline_position) * mltpl;  // Underline position value
 
-        values[7] = (float)(face->bbox.xMax - face->bbox.xMin)* mltpl;  // Max char width
+    if (fontType == FONT_TYPE_TT){
+        tt_face = (TT_Face)face;
+        os2 = tt_face->os2;
+        values[5] = (float)(os2.yStrikeoutSize) * mltpl;    // Strikeout size value
+        values[6] = (float)(os2.yStrikeoutPosition) * mltpl;    // Strikeout position value
+    } else {
+        values[5] = values[3];
+        // !!Workaround: for Type1 fonts strikethrough position = (-ascent+descent)/2
+        values[6] = (-values[0] - values[1])/2;
+    }
+
+    values[7] = (float)(face->bbox.xMax - face->bbox.xMin)* mltpl;  // Max char width
+
+    size = face->size;
+    size_metrics = size->metrics;
+    values[8] = (int)size_metrics.ascender >> 6;    // Ascent value
+    values[9] = (int)size_metrics.descender >> 6;   // Descent value
+    values[10] = (int)(size_metrics.height >> 6)  - values[8] + values[9]; // External Leading value
+    values[11] = (int)values[3];    // Underline size value
+    values[12] = (int)values[4];    // Underline position value
+
+    values[13] = (int)values[5];    // Strikeout size value
+    values[14] = (int)values[6];    // Strikeout sposition value
+
+    values[15] = (int)values[7];    // Max char width
 
 #ifdef DEBUG
-/*      printf("Ascent = %d\n", face->ascender >> 6);
-        printf("Descent = %f\n", values[1]);
-        printf("External Leading = %f\n", values[2]);
-        printf("Underline size = %f\n", values[3]);
-        printf("Underline position = %f\n", values[4]);
-        printf("Strikeout size = %f\n", values[5]);
-        printf("Strikeout position = %f\n", values[6]);
-        printf("Max char width = %f\n", values[7]);
-*/
-#endif /* DEBUG */
-        
-        size = face->size;
-        size_metrics = size->metrics;
-        values[8] = (int)size_metrics.ascender >> 6;    // Ascent value
-        values[9] = (int)size_metrics.descender >> 6;   // Descent value
-        values[10] = (int)(size_metrics.height >> 6)  - values[8] + values[9]; // External Leading value
-        values[11] = (int)values[3];    // Underline size value
-        values[12] = (int)values[4];    // Underline position value
+    printf("Ascent = %f\n", values[0]);
+    printf("Descent = %f\n", values[1]);
+    printf("External Leading = %f\n", values[2]);
+    printf("Underline size = %f\n", values[3]);
+    printf("Underline position = %f\n", values[4]);
+    printf("Strikeout size = %f\n", values[5]);
+    printf("Strikeout position = %f\n", values[6]);
+    printf("Max char width = %f\n", values[7]);
 
-        values[13] = (int)values[5];    // Strikeout size value
-        values[14] = (int)values[6];    // Strikeout sposition value
-
-        values[15] = (int)values[7];    // Max char width
-
-#ifdef DEBUG_LL
-        printf("Ascent = %f\n", values[0]);
-        printf("Descent = %f\n", values[1]);
-        printf("External Leading = %f\n", values[2]);
-        printf("Underline size = %f\n", values[3]);
-        printf("Underline position = %f\n", values[4]);
-        printf("Strikeout size = %f\n", values[5]);
-        printf("Strikeout position = %f\n", values[6]);
-        printf("Max char width = %f\n", values[7]);
-
-        printf("Pixel Ascent = %f\n", values[8]);
-        printf("Pixel Descent = %f\n", values[9]);
-        printf("Pixel External Leading = %f\n", values[10]);
-        printf("Pixel Underline size = %f\n", values[11]);
-        printf("Pixel Underline position = %f\n", values[12]);
-        printf("Pixel Strikeout size = %f\n", values[13]);
-        printf("Pixel Strikeout position = %f\n", values[14]);
-        printf("Pixel Max char width = %f\n", values[15]);
+    printf("Pixel Ascent = %f\n", values[8]);
+    printf("Pixel Descent = %f\n", values[9]);
+    printf("Pixel External Leading = %f\n", values[10]);
+    printf("Pixel Underline size = %f\n", values[11]);
+    printf("Pixel Underline position = %f\n", values[12]);
+    printf("Pixel Strikeout size = %f\n", values[13]);
+    printf("Pixel Strikeout position = %f\n", values[14]);
+    printf("Pixel Max char width = %f\n", values[15]);
 
 #endif /* DEBUG */
 
-
-        XftUnlockFace(xftFnt);
+    XftUnlockFace(xftFnt);
+    
 
     metrics = (*env)->NewFloatArray(env, 17);
-    
     (*env)->SetFloatArrayRegion(env, metrics, 0, 17, values);
 
     return metrics;
-    
+
 }
 
 /*
@@ -1006,76 +1042,87 @@ JNIEXPORT jfloatArray JNICALL
 JNIEXPORT jfloatArray JNICALL 
     Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getGlyphInfoNative(JNIEnv *env, jclass obj, jlong fnt, jchar chr, jint fontHeight){
 
-    jfloatArray results;
+    jfloatArray results = 0;
     jfloat values[11];
 
-    XftFont *font = (XftFont *)fnt;
+    XftFont *font = (XftFont *)(long)fnt;
     const float CONST_96_DIV_76 = (float)96 / 72;
     float mltpl;
     FT_Face face;
     FT_GlyphSlot glyphslot;
-        FT_Glyph_Metrics  metrics;
-        FT_UInt glyph_index;
+    FT_Glyph_Metrics  metrics;
 
-        FT_Pos  width;         /* glyph width  */
-        FT_Pos  height;        /* glyph height */
+    FT_Pos  width;         /* glyph width  */
+    FT_Pos  height;        /* glyph height */
 
-        FT_Pos  horiBearingX;  /* left side bearing in horizontal layouts */
-        FT_Pos  horiBearingY;  /* top side bearing in horizontal layouts  */
-        FT_Pos  horiAdvance;   /* advance width for horizontal layout     */
+    FT_Pos  horiBearingX;  /* left side bearing in horizontal layouts */
+    FT_Pos  horiBearingY;  /* top side bearing in horizontal layouts  */
+    FT_Pos  horiAdvance;   /* advance width for horizontal layout     */
 
-        FT_Pos  vertBearingX;  /* left side bearing in vertical layouts */
-        FT_Pos  vertBearingY;  /* top side bearing in vertical layouts  */
-        FT_Pos  vertAdvance;   /* advance height for vertical layout    */
+    FT_Pos  vertBearingX;  /* left side bearing in vertical layouts */
+    FT_Pos  vertBearingY;  /* top side bearing in vertical layouts  */
+    FT_Pos  vertAdvance;   /* advance height for vertical layout    */
     int units_per_EM;
+    FT_Error error;
 
-        face = XftLockFace(font);
+    if (!font){
+        return results;
+    }
+    face = XftLockFace(font);
 
-        units_per_EM = face->units_per_EM;
-            glyph_index = FT_Get_Char_Index( face, chr );
+    if(!face){
+        return results;
+    }
+    units_per_EM = face->units_per_EM;
 
-        FT_Load_Glyph(face, glyph_index, FT_LOAD_RENDER | FT_LOAD_TARGET_MONO);
-                glyphslot = face->glyph;
-            metrics = glyphslot->metrics;          
-                
-            width      = metrics.width;         /* glyph width  */
-            height     = metrics.height;        /* glyph height */
-                          
-            horiBearingX = metrics.horiBearingX;  /* left side bearing in horizontal layouts */
-            horiBearingY = metrics.horiBearingY;  /* top side bearing in horizontal layouts  */
-            horiAdvance  = metrics.horiAdvance;   /* advance width for horizontal layout     */
-                          
-            vertBearingX = metrics.vertBearingX;  /* left side bearing in vertical layouts */
-            vertBearingY = metrics.vertBearingY;  /* top side bearing in vertical layouts  */
-            vertAdvance  = metrics.vertAdvance;   /* advance height for vertical layout    */
+    error = FT_Load_Char(face, (FT_ULong)chr, FT_LOAD_RENDER | FT_LOAD_TARGET_MONO);
 
-        /* Multyplier to obtain proper values in pixels of the metrics */
-            mltpl = CONST_96_DIV_76 / units_per_EM;
+    if(error){
+//        throwNPException(env, "FT_Load_char : FreeType error");
+        XftUnlockFace(font);
+    
+        return NULL;
+    }
+    
+    glyphslot = face->glyph;
+    metrics = glyphslot->metrics;          
+
+    width      = metrics.width;         /* glyph width  */
+    height     = metrics.height;        /* glyph height */
+
+    horiBearingX = metrics.horiBearingX;  /* left side bearing in horizontal layouts */
+    horiBearingY = metrics.horiBearingY;  /* top side bearing in horizontal layouts  */
+    horiAdvance  = metrics.horiAdvance;   /* advance width for horizontal layout     */
+
+    vertBearingX = metrics.vertBearingX;  /* left side bearing in vertical layouts */
+    vertBearingY = metrics.vertBearingY;  /* top side bearing in vertical layouts  */
+    vertAdvance  = metrics.vertAdvance;   /* advance height for vertical layout    */
+
+    /* Multyplier to obtain proper values in pixels of the metrics */
+    mltpl = CONST_96_DIV_76 / units_per_EM;
 
 #ifdef DEBUG
 
-        printf("\n   glyph metrics char = %d: : \n", chr);      
-        printf("width = %f : height = %f \n", width, height);       
-        printf("ghoriBearingX = %f : ghoriBearingY = %f \n", (float)fontHeight * horiBearingX *mltpl, (float)fontHeight * horiBearingY *mltpl);     
-        printf("gvertBearingX = %f : gvertBearingY = %f \n", (float)fontHeight * vertBearingX *mltpl, (float)fontHeight * vertBearingY  *mltpl);        
-        printf("ghoriAdvance = %f : gvertAdvance = %f \n", (float)fontHeight * horiAdvance  *mltpl, (float)fontHeight * vertAdvance  *mltpl);       
+    printf("\n   glyph metrics char = %d: : \n", chr);
+    printf("width = %d : height = %d \n", (int)width >> 6, (int)height >> 6);
+    printf("ghoriBearingX = %d : ghoriBearingY = %d \n", horiBearingX >> 6, horiBearingY>> 6);
+    printf("gvertBearingX = %d : gvertBearingY = %d \n", vertBearingX>> 6, vertBearingY>> 6);
+    printf("ghoriAdvance = %d : gvertAdvance = %d \n", horiAdvance>> 6, vertAdvance>> 6);
 #endif /* DEBUG*/
 
-        XftUnlockFace(font);
-
-    values[0] = (float)fontHeight * horiBearingX * mltpl; // Glyph Precise Bounds : X
-    values[1] = (float)fontHeight * horiBearingY * mltpl; // Glyph Precise Bounds : Y
-    values[2] = (float)fontHeight * horiAdvance * mltpl; // Precise AdvanceX
-    values[3] = (float)fontHeight * vertAdvance * mltpl; // Precise AdvanceY ?= Ascent+Descent
-    values[4] = (float)fontHeight * width * mltpl; // Glyph Precise Bounds : width
-    values[5] = (float)fontHeight * height * mltpl; // Glyph Precise Bounds : height
-
+    XftUnlockFace(font);
+    
+    values[0] = (horiBearingX >> 6) + (horiBearingX & 0x3F)/64; // Glyph Precise Bounds : X
+    values[1] = (horiBearingY  >> 6) + (horiBearingY & 0x3F)/64;// Glyph Precise Bounds : Y
+    values[2] = (horiAdvance >> 6) + (horiAdvance  & 0x3F)/64; // Precise AdvanceX
+    values[3] = 0;//(vertAdvance >> 6) + (vertAdvance  & 0x3F)/64; // Precise AdvanceY ?= Ascent+Descent
+    values[4] = (width >> 6) + (width  & 0x3F)/64; // Glyph Precise Bounds : width
+    values[5] = (height >> 6) + (height  & 0x3F)/64; // Glyph Precise Bounds : height
+    
     results = (*env)->NewFloatArray(env, 6);
     (*env)->SetFloatArrayRegion(env, results, 0, 6, values);
 
     return results;
-
-
 }
 
 /*
@@ -1088,57 +1135,70 @@ JNIEXPORT jfloatArray JNICALL
 JNIEXPORT jintArray JNICALL 
     Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getGlyphPxlInfoNative(JNIEnv *env, jclass obj, jlong display, jlong fnt, jchar chr){
 
-    Display * dpy = (Display *)display;
-    jintArray metricsArr = 0;
+    Display * dpy = (Display *)(long)display;
+    jintArray metricsArr = NULL;
     jint values[6];
-    XftFont *font = (XftFont *)fnt;
+    XftFont *font = (XftFont *)(long)fnt;
     XGlyphInfo extents;
-        FT_Face face;
-    FT_UInt glyph_index;
+    FT_Face face;
     FT_BBox  acbox;
-        FT_Glyph        glyph;                                         
-        FT_Error error;
+    FT_Glyph        glyph;                                         
+    FT_Error error;
+    
+    if (!font){
+        return metricsArr;
+    }
+    face = XftLockFace(font);
 
-        face = XftLockFace(font);
+    if (!face){
+        return metricsArr;
+    }
+    error = FT_Load_Char(face, (FT_ULong)chr, FT_LOAD_RENDER | FT_LOAD_TARGET_MONO);
 
-        glyph_index = FT_Get_Char_Index (face, chr);
+    if(error){
+        XftUnlockFace(font);
+    
+        return metricsArr;
+    }
 
-            error = FT_Load_Glyph( face, glyph_index, (FT_LOAD_RENDER | FT_LOAD_TARGET_MONO));
+    error = FT_Get_Glyph( face->glyph, &glyph );
 
-        error = FT_Get_Glyph( face->glyph, &glyph );                   
+    if(error){
+        throwNPException(env, "getGlyphPxlInfoNative 1 : FreeType error");
+        XftUnlockFace(font);
+        
+        return metricsArr;
+    }
 
-        FT_Glyph_Get_CBox(glyph,
+    FT_Glyph_Get_CBox(glyph,
                       2,   //FT_GLYPH_BBOX_PIXELS
                      &acbox);
+    FT_Done_Glyph(glyph);
+    XftUnlockFace(font);
+    
 
     XftTextExtents16 (dpy,
               font,
-              &chr, 
+              &chr,
               1,
               &extents);
 #ifdef DEBUG
 
-    printf("char = %d; y = %d; x = %d; height = %d; width = %d; advX = %d; advY = %d \n", 
+    printf("char = %d; y = %d; x = %d; height = %d; width = %d; advX = %d; advY = %d \n",
             chr, extents.y, extents.x, extents.height, extents.width, extents.xOff, extents.yOff);
-#endif /* DEBUG */
-
+#endif // DEBUG 
 
     values[0] = - extents.x ; // Glyph Pixels Bounds : X
     values[1] = extents.y ; // Glyph Pixels Bounds : Y
     values[2] = extents.xOff; // Pixels AdvanceX
     values[3] = extents.yOff; // Pixels AdvanceY ?= Ascent+Descent
-//  values[4] = extents.width;  // Glyph Pixels Bounds : width
-//  values[5] = extents.height; // Glyph Pixels Bounds : height
-    values[4] = acbox.xMax-acbox.xMin;
-    values[5] = acbox.yMax-acbox.yMin;
-
-    XftUnlockFace(font);
-
+    values[4] = acbox.xMax-acbox.xMin;  // Glyph Pixels Bounds : width
+    values[5] = acbox.yMax-acbox.yMin; // Glyph Pixels Bounds : height
+    
     metricsArr = (*env)->NewIntArray(env, 6);
     (*env)->SetIntArrayRegion(env, metricsArr, 0, 6, values);
 
     return metricsArr;
-
 }
 
 /*
@@ -1155,8 +1215,8 @@ JNIEXPORT jintArray JNICALL
     jintArray glyphsCodes = NULL;
 
     // TODO: implement method
-    
-    return glyphsCodes; 
+
+    return glyphsCodes;
 }
 
 /*
@@ -1168,21 +1228,18 @@ JNIEXPORT jintArray JNICALL
  */
 JNIEXPORT jint JNICALL 
     Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getGlyphCodeNative(JNIEnv *env, jclass obj, jlong fnt, jchar chr, jlong display){
-    
+
     jint code = 0xFFFF;
-    Display *dpy = (Display *)display;
-    XftFont *font = (XftFont *)fnt;
+    Display *dpy = (Display *)(long)display;
+    XftFont *font = (XftFont *)(long)fnt;
 
-    if (dpy == NULL){
-        throwNPException(env, "Cannot connect to XServer");
-    }   
-
-
-    code = XftCharIndex (dpy, font, (XftChar32)chr);
-
-    return (code == 0) ? 0xFFFF : code; 
+    if (!font){
+        return 0xFFFF;
+    }
     
+    code = XftCharIndex (dpy, font, chr);
 
+    return (code == 0) ? 0xFFFF : code;
 }
 
 /*
@@ -1198,7 +1255,7 @@ JNIEXPORT jint JNICALL
     jboolean iscopy;
     FcConfig *config;
     FcFontSet *set;
-        FcStrSet *subdirs;
+    FcStrSet *subdirs;
     FcStrList *list;
     jboolean result = TRUE;
     dirName = (FcChar8*)((*env)->GetStringUTFChars(env, fName, &iscopy));
@@ -1218,14 +1275,13 @@ JNIEXPORT jint JNICALL
     result = result && FcDirScan (set, subdirs, 0, FcConfigGetBlanks (config), dirName, FcFalse);
 
     /* save changes to the config */
-        result = result && FcDirSave (set, subdirs, dirName);
+    result = result && FcDirSave (set, subdirs, dirName);
 
     /* rebuild fonts list */
     FcConfigBuildFonts(config);
 
     FcFontSetDestroy (set);
     FcStrSetDestroy (subdirs);
-
     FcStrListDone (list);
 
     (*env)->ReleaseStringUTFChars(env, fName, dirName);
@@ -1243,43 +1299,60 @@ JNIEXPORT jint JNICALL
 JNIEXPORT jlong JNICALL 
     Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_NativeInitGlyphBitmap(JNIEnv *env, jclass jobj,  jlong fnt, jchar chr){
 
-    XftFont *font = (XftFont *)fnt;
+    XftFont *font = (XftFont *)(long)fnt;
     FT_Glyph glyph;
-        FT_BitmapGlyph  glyph_bitmap;                                  
-        FT_UInt glyph_index;
+    FT_BitmapGlyph  glyph_bitmap;                                  
     int size;
 
-        FT_Error error;
+    FT_Error error;
     FT_Face face;
-    FT_Bitmap ft_bitmap;                                                                      
-                              
+    FT_Bitmap ft_bitmap;
+    
     GlyphBitmap *gbmp = (GlyphBitmap *)malloc(sizeof(GlyphBitmap));
                                          
-        face = XftLockFace(font);
+    if (!font){
+        return 0;
+    }
+    face = XftLockFace(font);
 
-    glyph_index = FT_Get_Char_Index( face, chr );
+    if (!face){
+        return 0;
+    }
+    
+    error = FT_Load_Char(face, (FT_ULong)chr, FT_LOAD_RENDER | FT_LOAD_TARGET_MONO);
+    
+    if(error){        
+        throwNPException(env, "NativeInitGlyphBitmap : FreeType error");
 
-        // load glyph                                                  
-    error = FT_Load_Glyph(face, glyph_index, (FT_LOAD_RENDER | FT_LOAD_TARGET_MONO));
-        // extract glyph image                                         
-        error = FT_Get_Glyph( face->glyph, &glyph );                   
-                                                                       
-        // convert to a bitmap (default render mode + destroy old)     
-        if ( glyph->format != FT_GLYPH_FORMAT_BITMAP )                 
-        {                                                              
-          error = FT_Glyph_To_Bitmap( &glyph, (FT_LOAD_RENDER | FT_LOAD_TARGET_MONO),  
+        XftUnlockFace(font);
+    
+        return (jlong)NULL;
+    }
+
+    error = FT_Get_Glyph( face->glyph, &glyph );
+
+    if(error){
+//        throwNPException(env, "NativeInitGlyphBitmap 1 : FreeType error");
+        XftUnlockFace(font);
+    
+        return (jlong)NULL;
+    }        
+    // convert to a bitmap (default render mode + destroy old)     
+    if ( glyph->format != FT_GLYPH_FORMAT_BITMAP ) {                                                              
+        error = FT_Glyph_To_Bitmap( &glyph, (FT_LOAD_RENDER | FT_LOAD_TARGET_MONO),  
                                       0, 1 );                          
-            if ( error ){
-             // glyph unchanged                              
-                FT_Done_Glyph( glyph );
-                XftUnlockFace(font);
-            return 0;
+        if ( error ){
+            // glyph unchanged                              
+            FT_Done_Glyph( glyph );
+            XftUnlockFace(font);
+            return (jlong)NULL;
         }
-        }                                                              
-                                                                           
-        glyph_bitmap = (FT_BitmapGlyph)(glyph);                          
+    }                                                              
+    
+    glyph_bitmap = (FT_BitmapGlyph)(glyph);                          
     ft_bitmap = (FT_Bitmap)glyph_bitmap->bitmap;
         
+    
     gbmp->left = glyph_bitmap->left;
     gbmp->top = glyph_bitmap->top;
     gbmp->bitmap.rows = ft_bitmap.rows;
@@ -1291,107 +1364,21 @@ JNIEXPORT jlong JNICALL
 
     FT_Done_Glyph(glyph);
     XftUnlockFace(font);
-    return (jlong)gbmp;
+    return (long)gbmp;
 }
 
 /*
  * Class:     org_apache_harmony_awt_gl_font_LinuxNativeFont
- * Method:    NativeInitGlyphImage
- * Signature: (JC)[B
- * Returns byte array that represents bitmap of the character specified. 
+ * Method:    NativeFreeGlyphBitmap
+ * Signature: (J)V
+ * Disposes GlyphBitmap memory block. 
  */
-JNIEXPORT jbyteArray JNICALL 
-    Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_NativeInitGlyphImage(JNIEnv *env, jclass jobj,  jlong fnt, jchar chr){
-    
-    jintArray bitmap = NULL;
-
-
-    XftFont *font = (XftFont *)fnt;
-        FT_Glyph        glyph;                                         
-        FT_BitmapGlyph  glyph_bitmap;                                  
-        FT_UInt glyph_index;
-        int rows;
-        int pitch;
-    int width;
-    int size;
-        unsigned char*  buffer;
-        short           num_grays;
-        char            pixel_mode;
-        char            palette_mode;
-
-        FT_Error error;
-    FT_Face face;
-    FT_Bitmap ft_bitmap;                                                                      
-                                                                       
-    face = XftLockFace(font);
-
-    glyph_index = FT_Get_Char_Index( face, chr );
-
-      // load glyph                                                  
-        error = FT_Load_Glyph( face, glyph_index, (FT_LOAD_RENDER | FT_LOAD_TARGET_MONO) );     
-        // extract glyph image                                         
-        error = FT_Get_Glyph( face->glyph, &glyph );                   
-                                                                       
-        // convert to a bitmap (default render mode + destroy old)     
-        if ( glyph->format != FT_GLYPH_FORMAT_BITMAP )                 
-        {                                                              
-
-          error = FT_Glyph_To_Bitmap( &glyph, (FT_LOAD_RENDER | FT_LOAD_TARGET_MONO),  
-                                      0, 1 );                          
-            if ( error ){
-             // glyph unchanged                              
-                FT_Done_Glyph( glyph );
-                XftUnlockFace(font);
-
-        }
-        }                                                              
-                                                                       
-        glyph_bitmap = (FT_BitmapGlyph)glyph;                          
-                                                                       
-    ft_bitmap = (FT_Bitmap)glyph_bitmap->bitmap;
-        
-    rows = ft_bitmap.rows;
-    width = ft_bitmap.width;
-    pitch = ft_bitmap.pitch;
-        buffer = ft_bitmap.buffer;       
-        num_grays = ft_bitmap.num_grays;    
-        pixel_mode = ft_bitmap.pixel_mode;   
-        palette_mode = ft_bitmap.palette_mode; 
-        size = pitch * rows;
-#ifdef DEBUG
-    printf("Bitmap: ");
-        printf("    left = %d : top  = %d\n", glyph_bitmap->left, glyph_bitmap->top);                                                              
-        printf("    rows = %d : width  = %d\n", rows, width);                                                              
-        printf("    pitch (bytes in a row)  = %d\n", pitch);                                                              
-        printf("    num grays  = %d\n", num_grays);                                                              
-        printf("    pixel_mode  = %d\n", pixel_mode);                                                              
-    printf("    size  = %d\n", pitch * rows);                                                              
-    printf("    buffer:: \n");                                                              
-
-    k = 0;
-    while ( k < rows){
-        for (j = 0 ; j < pitch; j++){
-            for (i = 7; i >= 0; i--){
-                if (buffer[k*pitch + j] & (1 << i)){
-                    printf("*");
-                } else {
-                    printf(".");
-                }
-            }
-        }
-        k++;
-        printf(" \n");
-    }
-#endif // DEBUG
-    if (size){
-        bitmap = (*env)->NewByteArray(env, size); // resulting Int Array ; 
-        (*env)->SetByteArrayRegion(env, bitmap, 0, size, (jbyte *)buffer);
-    }
-        FT_Done_Glyph( glyph );                                        
-    XftUnlockFace(font);
-
-    return bitmap;  
-
+JNIEXPORT void JNICALL 
+    Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_NativeFreeGlyphBitmap(JNIEnv *env, jclass jobj,  
+            jlong bitmap){
+    GlyphBitmap *gbmp = (GlyphBitmap *)(long)bitmap;
+    free(gbmp->bitmap.buffer);
+    free(gbmp);
 }
 
 /*
@@ -1402,19 +1389,19 @@ JNIEXPORT jbyteArray JNICALL
  */
 JNIEXPORT void 
     JNICALL Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_drawStringNative
-      (JNIEnv *env, jclass jobj,  jlong xftDraw, jlong display,  
+      (JNIEnv *env, jclass jobj,  jlong xftDraw, jlong display,
             jlong colormap, jlong font, jint x, jint y, jcharArray str, jint len, jlong color){
 
     jboolean iscopy;
 
-        XftDraw *draw = (XftDraw *)xftDraw;
-    Display *dpy = (Display *)display;
+    XftDraw *draw = (XftDraw *)(long)xftDraw;
+    Display *dpy = (Display *)(long)display;
     Colormap  cmap = (Colormap)colormap;
-    XftFont *fnt = (XftFont *)font;
-    XftColor *xftColor = (XftColor *)calloc(1, sizeof(XftColor));
+    XftFont *fnt = (XftFont *)(long)font;
+    XftColor xftColor;
     XRenderColor renderColor;
-        XftChar16 *string;
-    XColor *xcolor = (XColor *)color;
+    XftChar16 *string;
+    XColor *xcolor = (XColor *)(long)color;
 
     XftDrawSetSubwindowMode(draw, IncludeInferiors/*mode*/); 
 
@@ -1428,23 +1415,22 @@ JNIEXPORT void
 
     /* Creating XftColor structure */
     if (XAllocColor (dpy, cmap, xcolor)){
-        xftColor->pixel = xcolor->pixel;
+        xftColor.pixel = xcolor->pixel;
     }
-    xftColor->color.red = renderColor.red;
-    xftColor->color.green = renderColor.green;
-    xftColor->color.blue = renderColor.blue;
-    xftColor->color.alpha = renderColor.alpha;
+    xftColor.color.red = renderColor.red;
+    xftColor.color.green = renderColor.green;
+    xftColor.color.blue = renderColor.blue;
+    xftColor.color.alpha = renderColor.alpha;
 
     XftDrawString16 (draw,
-             xftColor,
+             &xftColor,
              fnt,
              x,
              y,
              string,
              len);
 
-    free(xftColor);
-    (*env)->ReleaseCharArrayElements(env, str, string, JNI_ABORT);
+    (*env)->ReleaseCharArrayElements(env, str, string, iscopy);
 }
 
 /*
@@ -1457,14 +1443,14 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_crea
   (JNIEnv *env, jclass jobj, jlong display, jlong drawable, jlong visual){
 
         XftDraw *draw;
-    Display *dpy = (Display *)display;
+    Display *dpy = (Display *)(long)display;
     Drawable drwbl = (Drawable)drawable;
 
     /* Creating xftDraw structure */
-    draw = XftDrawCreate (dpy, drwbl, (Visual *)visual, 0);
+    draw = XftDrawCreate (dpy, drwbl, (Visual *)(long)visual, 0);
 
-    return (jlong)draw;
-        
+    return (long)draw;
+
 }
 
 /*
@@ -1476,10 +1462,10 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_crea
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_xftDrawSetSubwindowModeNative
   (JNIEnv *env, jclass jobj, jlong xftDraw, jint mode){
 
-        XftDraw *draw = (XftDraw *)xftDraw;
-    
+        XftDraw *draw = (XftDraw *)(long)xftDraw;
+
         XftDrawSetSubwindowMode(draw, mode); 
-    
+
 }
 
 /*
@@ -1491,9 +1477,9 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_xftDr
 JNIEXPORT jboolean JNICALL Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_XftDrawSetClipRectangles
   (JNIEnv *env, jclass jobj, jlong xftDraw, jint xOrigin, jint yOrigin, jlong rects, jint n){
 
-    XftDraw *draw = (XftDraw *)xftDraw;
-    XRectangle *xrects = (XRectangle *)rects;
-    
+    XftDraw *draw = (XftDraw *)(long)xftDraw;
+    XRectangle *xrects = (XRectangle *)(long)rects;
+
     return XftDrawSetClipRectangles (draw, xOrigin, yOrigin, xrects, n);
 
 }
@@ -1507,10 +1493,53 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_X
  */
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_freeXftDrawNative
   (JNIEnv *env, jclass jobj, jlong xftDraw){
-    
-    XftDraw *draw = (XftDraw *)xftDraw;
+
+    XftDraw *draw = (XftDraw *)(long)xftDraw;
 
     XftDrawDestroy(draw);
+}
+
+/* Initializes FreeType FT_Outline structure with the source FT_Outline data. */
+int createOutline(FT_Outline *outline, FT_Outline *srcOutline){
+    int size;
+    outline->flags = srcOutline->flags | FT_OUTLINE_OWNER;
+    outline->n_points = srcOutline->n_points;
+    outline->n_contours = srcOutline->n_contours;
+
+    size = srcOutline->n_points * sizeof(FT_Vector);
+    outline->points = (FT_Vector *)malloc(size);
+    if (!outline->points){
+        return 0;
+    }
+    memcpy(outline->points, srcOutline->points, size);
+
+    size = srcOutline->n_points * sizeof(char);
+    outline->tags = (char *)malloc(size);
+    if (!outline->tags){
+        free(outline->points);
+        return 0;
+    }
+    memcpy(outline->tags, srcOutline->tags, size);
+
+    size = srcOutline->n_contours * sizeof(short);
+    outline->contours = (short *)malloc(size);
+    if (!outline->contours){
+        free(outline->points);
+        free(outline->tags);
+        return 0;
+    }
+    memcpy(outline->contours, srcOutline->contours, size);
+
+    return 1;
+}
+
+/* Disposes FreeType FT_Outline structure. */
+void freeOutline(FT_Outline *outline){
+    free(outline->points);
+    free(outline->tags);
+    free(outline->contours);
+
+    free(outline);
 }
 
 
@@ -1523,24 +1552,152 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_freeX
 JNIEXPORT jlong JNICALL 
     Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getGlyphOutline(JNIEnv *env, jclass obj, jlong fnt, jchar chr){
 
-    XftFont *font = (XftFont *)fnt;
+    XftFont *font = (XftFont *)(long)fnt;
     FT_Face face;
-    FT_GlyphSlot glyphslot;
-        FT_UInt glyph_index;
-
-        face = XftLockFace(font);
-
-            glyph_index = FT_Get_Char_Index( face, chr );
-
-        FT_Load_Glyph(face, glyph_index, FT_LOAD_RENDER | FT_LOAD_TARGET_MONO);
-                glyphslot = face->glyph;
-
-        XftUnlockFace(font);
-        if ((glyphslot->format & FT_GLYPH_FORMAT_OUTLINE) != 0){
-        return (jlong)(&glyphslot->outline);                        
+    FT_Error error;
+    FT_Outline *outline = NULL;
+    
+    if (!font){
+        return 0;
     }
-    return 0;
+    face = XftLockFace(font);
+
+    if(!face){
+        return 0;
+    }
+    error = FT_Load_Char(face, (FT_ULong)chr, FT_LOAD_RENDER | FT_LOAD_TARGET_MONO);
+    
+    if(error){
+        throwNPException(env, "getGlyphOutline : FreeType error");
+        XftUnlockFace(font);
+    
+        return (jlong)NULL;
+    }
+
+    if ((face->glyph->format & ft_glyph_format_outline) != 0){
+        outline = (FT_Outline *)malloc(sizeof(FT_Outline));
+        if (!createOutline(outline, &face->glyph->outline)){
+            free(outline);
+        }
+    }   
+    
+    XftUnlockFace(font);
+    
+    return (long)outline;
 }
 
+/*
+ * Class:     org_apache_harmony_awt_gl_font_LinuxNativeFont
+ * Method:    freeGlyphOutline
+ * Signature: (JC)J
+ * Disposes FT_Outline memory block.
+ */
+JNIEXPORT void JNICALL 
+    Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_freeGlyphOutline(JNIEnv *env, jclass obj, jlong j_outline){
+    FT_Outline *outline = (FT_Outline *)(long)j_outline;
+    
+    freeOutline(outline);
+}
 
+/*
+ *  Returns desierd tag index from the list.
+ */
+int getTagIndex(Tag* tagList, int count, Tag value){
+    int result = -1;
+    int i;
 
+    for (i = 0; i < count; i++){
+        if (* (DWORD *)tagList[i] == * (DWORD *)value){
+            return result = i;
+        }
+    }
+    return result;
+
+}
+
+/*
+ * Returns an array of pairs of coordinates [x1, y1, x2, y2...] from 
+ * FreeType FT_Vector structure.  
+ */
+JNIEXPORT jfloatArray JNICALL Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getPointsFromFTVector
+    (JNIEnv *env, jclass obj, jlong points, jint size){
+
+    jfloatArray flArray;
+    float * fpPoints = (float *)malloc(sizeof(float) * size * 2);
+    int i;
+    FT_Vector *ft_points = (FT_Vector *)(long)points;
+    for(i = 0; i < size; i++){
+        fpPoints[i*2] = (float)((int)ft_points[i].x + 32)/64;
+        fpPoints[i*2 + 1] = (float)(-(int)ft_points[i].y + 32)/64;
+    }
+
+    flArray=(*env)->NewFloatArray(env, size*2);
+    (*env)->SetFloatArrayRegion(env, flArray, 0, size*2, fpPoints);
+    free(fpPoints);
+    return flArray;
+}
+
+/* Returns an array of extrametrics of the font. */
+JNIEXPORT jfloatArray JNICALL 
+    Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getExtraMetricsNative(JNIEnv *env, jclass obj, jlong fnt, jint fontHeight, jint fontType) {
+
+    jfloatArray metrics;
+    jfloat values[9];
+
+    XftFont *xftFnt = (XftFont *)(long)fnt;
+    FT_Face face;
+    TT_OS2 os2;
+    TT_Face tt_face;
+    int units_per_EM;
+    float mltpl;
+    
+    if (!xftFnt){
+        return NULL;
+    }
+
+    face = XftLockFace(xftFnt);
+
+    if(!face){
+        return NULL;
+    }
+    units_per_EM = face->units_per_EM;
+    if (units_per_EM == 0){
+//          throwNPException(env, "Units per EM value is equals to zero");
+        XftUnlockFace(xftFnt);
+        
+        return NULL;
+    }
+    mltpl = (float)fontHeight / units_per_EM;
+    
+    if (fontType == FONT_TYPE_TT){
+        tt_face = (TT_Face)face;
+        os2 = tt_face->os2;
+
+        values[0] = (float)(os2.xAvgCharWidth) * mltpl; // the average width of characters in the font
+        values[1] = (float)(os2.ySubscriptXSize) * mltpl; // horizontal size for subscripts 
+        values[2] = (float)(os2.ySubscriptYSize) * mltpl; // vertical size for subscripts 
+        values[3] = (float)(os2.ySubscriptXOffset) * mltpl; // horizontal offset for subscripts
+        values[4] = (float)(os2.ySubscriptYOffset) * mltpl; // vertical offset value for subscripts
+        values[5] = (float)(os2.ySuperscriptXSize) * mltpl; // horizontal size for superscripts
+        values[6] = (float)(os2.ySuperscriptYSize) * mltpl; // vertical size for superscripts
+        values[7] = (float)(os2.ySuperscriptXOffset) * mltpl; // horizontal offset for superscripts 
+        values[8] = (float)(os2.ySuperscriptYOffset) * mltpl; // vertical offset for superscripts 
+    } else {
+        values[0] = 0.0f; // the average width of characters in the font
+        values[1] = 0.7f * fontHeight; // horizontal size for subscripts 
+        values[2] = 0.65f * fontHeight;; // vertical size for subscripts 
+        values[3] = 0.0f; // horizontal offset for subscripts
+        values[4] = 0.15f * fontHeight; // vertical offset value for subscripts
+        values[5] = 0.7f * fontHeight; // horizontal size for superscripts
+        values[6] = 0.65f * fontHeight; // vertical size for superscripts
+        values[7] = 0.0f; // horizontal offset for superscripts 
+        values[8] = 0.45 * fontHeight; // vertical offset for superscripts 
+    }  
+    XftUnlockFace(xftFnt);
+    
+    metrics = (*env)->NewFloatArray(env, 9);
+    (*env)->SetFloatArrayRegion(env, metrics, 0, 9, values);
+
+    return metrics;
+       
+}

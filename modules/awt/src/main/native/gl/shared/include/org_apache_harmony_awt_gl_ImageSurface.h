@@ -121,27 +121,38 @@ JNIEXPORT void JNICALL
 Java_org_apache_harmony_awt_gl_ImageSurface_dispose(JNIEnv *, jobject, 
     jlong);
 
-/*
- * Method: org.apache.harmony.awt.gl.ImageSurface.createStructCCM(IIIIIIII[I[I[IIZ)J
- */
-JNIEXPORT jlong JNICALL
-Java_org_apache_harmony_awt_gl_ImageSurface_createStructCCM(JNIEnv *, jobject, 
-    jint, jint, jint, jint, jint, jint, jint, jint, jintArray, jintArray, jintArray, jint, jboolean);
+///*
+// * Method: org.apache.harmony.awt.gl.ImageSurface.createStructCCM(IIIIIIII[I[I[IIZ)J
+// */
+//JNIEXPORT jlong JNICALL
+//Java_org_apache_harmony_awt_gl_ImageSurface_createStructCCM(JNIEnv *, jobject, 
+//    jint, jint, jint, jint, jint, jint, jint, jint, jintArray, jintArray, jintArray, jint, jboolean);
+//
+///*
+// * Method: org.apache.harmony.awt.gl.ImageSurface.createStructICM(IIIIIII[IZIII)J
+// */
+//JNIEXPORT jlong JNICALL
+//Java_org_apache_harmony_awt_gl_ImageSurface_createStructICM(JNIEnv *, jobject, 
+//    jint, jint, jint, jint, jint, jint, jint, jintArray, jboolean, jint, jint, jint);
+//
+///*
+// * Method: org.apache.harmony.awt.gl.ImageSurface.createStructDCM(IIIIIIIIIIIIZ)J
+// */
+//JNIEXPORT jlong JNICALL
+//Java_org_apache_harmony_awt_gl_ImageSurface_createStructDCM(JNIEnv *, jobject, 
+//    jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jboolean);
+
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_ImageSurface_createSurfStruct
+  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jintArray, 
+  jintArray, jint, jintArray, jint, jboolean, jintArray, jintArray, jint, jboolean, jboolean, jint);
 
 /*
- * Method: org.apache.harmony.awt.gl.ImageSurface.createStructICM(IIIIIII[IZIII)J
+ * Class:     org_apache_harmony_awt_gl_ImageSurface
+ * Method:    updateCache
+ * Signature: (JLjava/lang/Object;Z)J
  */
-JNIEXPORT jlong JNICALL
-Java_org_apache_harmony_awt_gl_ImageSurface_createStructICM(JNIEnv *, jobject, 
-    jint, jint, jint, jint, jint, jint, jint, jintArray, jboolean, jint, jint, jint);
-
-/*
- * Method: org.apache.harmony.awt.gl.ImageSurface.createStructDCM(IIIIIIIIIIIIZ)J
- */
-JNIEXPORT jlong JNICALL
-Java_org_apache_harmony_awt_gl_ImageSurface_createStructDCM(JNIEnv *, jobject, 
-    jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jboolean);
-
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_ImageSurface_updateCache
+  (JNIEnv *, jobject, jlong, jobject, jboolean);
 
 #ifdef __cplusplus
 }

@@ -27,9 +27,10 @@ import org.apache.harmony.misc.HashCode;
 
 
 public final class ImageGraphicAttribute extends GraphicAttribute {
+
     // Image object rendered by this ImageGraphicAttribute
     private Image fImage;
-    
+
     // X coordinate of the origin point
     private float fOriginX;
 

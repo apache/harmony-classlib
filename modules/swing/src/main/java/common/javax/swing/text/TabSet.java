@@ -97,13 +97,6 @@ public class TabSet implements Serializable {
         return hash.hashCode();
     }
 
-    /*
-     * The format of the string is based on 1.5 release behavior
-     * which can be revealed using the following code:
-     *
-     *  Object obj = new TabSet(new TabStop[] { new TabStop(1.0f), new TabStop(2.0f)});
-     *  System.out.println(obj.toString());
-     */
     public String toString() {
         StringBuffer result = new StringBuffer("[ ");
         for (int i = 0; i < tabs.length; i++) {

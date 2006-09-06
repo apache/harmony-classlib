@@ -34,6 +34,7 @@ import java.awt.image.IndexColorModel;
 import java.awt.image.MultiPixelPackedSampleModel;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
+import java.util.ArrayList;
 
 import org.apache.harmony.awt.gl.color.LUTColorConverter;
 
@@ -50,6 +51,11 @@ public abstract class Surface implements Transparency{
     public static final int Linear_RGB_CS = 2;
     public static final int Linear_Gray_CS = 3;
     public static final int Custom_CS = 0;
+    
+    // Color Model Types
+    public static final int DCM = 1;  // Direct Color Model
+    public static final int ICM = 2;  // Index Color Model
+    public static final int CCM = 3;  // Component Color Model
 
     // Sample Model Types
     public static final int SPPSM = 1;  // Single Pixel Packed Sample Model
@@ -84,6 +90,14 @@ public abstract class Surface implements Transparency{
     protected int width;
     protected int height;
 
+    /**
+     * This list contains caches with the data of this surface that are valid at the moment.
+     * Surface should clear this list when its data is updated.
+     * Caches may check if they are still valid using isCacheValid method.
+     * When cache gets data from the surface, it should call addValidCache method of the surface.
+     */
+    private ArrayList validCaches = new ArrayList();
+
     public abstract ColorModel getColorModel();
     public abstract WritableRaster getRaster();
     public abstract int getSurfaceType(); // Syrface type. It is equal 
@@ -106,6 +120,18 @@ public abstract class Surface implements Transparency{
 
     public long getSurfaceDataPtr(){
         return surfaceDataPtr;
+    }
+
+    public final boolean isCaheValid(Object cache) {
+        return validCaches.contains(cache);
+    }
+
+    public final void addValidCache(Object cache) {
+        validCaches.add(cache);
+    }
+
+    protected final void clearValidCaches() {
+        validCaches.clear();
     }
 
     /**
@@ -136,6 +162,14 @@ public abstract class Surface implements Transparency{
     public Object getData(){
         return null;
     }
+    
+    public boolean invalidated(){
+        return true;
+    }
+    
+    public void validate(){}
+    
+    public void invalidate(){}
 
     /**
      * Computation type of BufferedImage or Surface

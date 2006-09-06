@@ -34,6 +34,9 @@ class HWBehavior implements ComponentBehavior {
     HWBehavior(Component comp) {
         component = comp;
         Toolkit.checkHeadless();
+        // implicitly disable IM for all heavyweight components
+        // TextComponents must set this flag back to true
+        component.dispatchToIM = false;
     }
 
     public boolean isOpaque() {

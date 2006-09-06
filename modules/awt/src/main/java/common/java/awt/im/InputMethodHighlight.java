@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 /**
- * @author Pavel Dolgov
+ * @author Dmitry A. Durnev
  * @version $Revision$
  */
 package java.awt.im;
@@ -28,43 +28,58 @@ public class InputMethodHighlight {
     public static final int CONVERTED_TEXT = 1;
 
     public static final InputMethodHighlight
-        UNSELECTED_RAW_TEXT_HIGHLIGHT = null;
+        UNSELECTED_RAW_TEXT_HIGHLIGHT = new InputMethodHighlight(false, RAW_TEXT);
 
     public static final InputMethodHighlight
-        SELECTED_RAW_TEXT_HIGHLIGHT = null;
+        SELECTED_RAW_TEXT_HIGHLIGHT = new InputMethodHighlight(true, RAW_TEXT);
 
     public static final InputMethodHighlight
-        UNSELECTED_CONVERTED_TEXT_HIGHLIGHT = null;
+        UNSELECTED_CONVERTED_TEXT_HIGHLIGHT = 
+            new InputMethodHighlight(false, CONVERTED_TEXT);
 
     public static final InputMethodHighlight
-        SELECTED_CONVERTED_TEXT_HIGHLIGHT = null;
-
-    private InputMethodHighlight() {
-    }
+        SELECTED_CONVERTED_TEXT_HIGHLIGHT = 
+            new InputMethodHighlight(true, CONVERTED_TEXT);
+    
+    private boolean selected;
+    private int state;
+    private int variation;
+    private Map style; // Map<TextAttribute,?>
 
     public InputMethodHighlight(boolean selected, int state, int variation) {
+        this(selected, state, variation, null);
     }
 
-    public InputMethodHighlight(boolean selected, int state, int variation, Map style) {
+    public InputMethodHighlight(boolean selected, int state,
+                                int variation, Map style) {
+        if ((state != RAW_TEXT) && (state != CONVERTED_TEXT)) {
+            throw new IllegalArgumentException("unknown input method" +
+                    " highlight state");
+        }
+        this.selected = selected;
+        this.state = state;
+        this.variation = variation;
+        this.style = style;
     }
 
     public InputMethodHighlight(boolean selected, int state) {
+        this(selected, state, 0, null);
     }
 
     public int getState() {
-        return 0;
+        return state;
     }
 
     public Map getStyle() {
-        return null;
+        return style;
     }
 
     public int getVariation() {
-        return 0;
+        return variation;
     }
 
     public boolean isSelected() {
-        return false;
+        return selected;
     }
 }
 

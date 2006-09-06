@@ -33,6 +33,7 @@ import java.awt.image.BufferedImage;
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.gl.Utils;
 import org.apache.harmony.awt.gl.linux.XVolatileImage;
+import org.apache.harmony.awt.gl.linux.XGraphicsConfiguration;
 import org.apache.harmony.awt.nativebridge.CLongPointer;
 import org.apache.harmony.awt.nativebridge.Int32Pointer;
 import org.apache.harmony.awt.nativebridge.NativeBridge;
@@ -148,10 +149,31 @@ class LinuxWindow implements NativeWindow {
         if (child) {
             windowRect = new Rectangle(p.x, p.y, p.w, p.h);
         }
+
+        XGraphicsConfiguration xgcfg =
+                (XGraphicsConfiguration) GraphicsEnvironment.
+                getLocalGraphicsEnvironment().getDefaultScreenDevice().
+                getDefaultConfiguration();
+
+        X11.XSetWindowAttributes setAttrs = x11.createXSetWindowAttributes(false);
+        setAttrs.set_colormap(xgcfg.getXColormap());
+
+        windowID = x11.XCreateWindow(
+                display, parentID,
+                p.x, p.y, p.w, p.h, 0,
+                xgcfg.getDepth(),
+                X11Defs.InputOutput,
+                xgcfg.getVisual(),
+                (long) (X11Defs.CWColormap),
+                setAttrs
+        );
+
+        /*
         windowID = x11.XCreateWindow(display, parentID, p.x, p.y, p.w, p.h, 0,
                                      X11Defs.CopyFromParent,
                                      X11Defs.InputOutput,
                                      X11Defs.CopyFromParent, 0, 0);
+                                     */
         String title = (p.name != null) ? p.name : "";
         x11.XSetStandardProperties(display, windowID, title, title, 0,
                 null, 0, null);
@@ -883,5 +905,8 @@ class LinuxWindow implements NativeWindow {
 
     public MultiRectArea getObscuredRegion(Rectangle part) {
         return null;
+    }
+
+    public void setIMStyle() {
     }
 }

@@ -67,7 +67,6 @@ class RedrawManager {
             addRegion(updateRegions, c, r);
             updateNeeded = true;
         }
-        awake();
     }
 
     public void addUpdateRegion(Component c, MultiRectArea r) {
@@ -75,7 +74,6 @@ class RedrawManager {
             addRegion(updateRegions, c, r);
             updateNeeded = true;
         }
-        awake();
     }
 
     public void addUpdateRegion(Component c) {
@@ -157,9 +155,6 @@ class RedrawManager {
         }
     }
 
-    private void awake() {
-        window.toolkit.getNativeEventQueue().awake();
-    }
 
     /**
      * Post paint events for the collected regions
@@ -184,7 +179,7 @@ class RedrawManager {
     private static void postPaintEvent(Component c, MultiRectArea clip, int eventId) {
         PaintEvent event = new PaintEvent(c, eventId,
                 new ClipRegion(clip));
-        c.toolkit.systemEventQueue.postEvent(event);
+        c.toolkit.getSystemEventQueueImpl().postEvent(event);
     }
 
 

@@ -115,5 +115,40 @@ public class GridBagLayoutRTest extends TestCase {
             fail();
         }
     }
-
+    
+    static void addToGridBag(Panel panel, Component comp, int x, int y, int w,
+                             int h, double weightx, double weighty) {
+        GridBagLayout gbl = (GridBagLayout) panel.getLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = x;
+        c.gridy = y;
+        c.gridwidth = w;
+        c.gridheight = h;
+        c.weightx = weightx;
+        c.weighty = weighty;
+        panel.add(comp);
+        gbl.setConstraints(comp, c);
+    }
+    
+    public final void testZeroWeights() {
+        Dimension minSize = new Dimension(10, 25);
+        final Panel p = new Panel(new GridBagLayout());
+        addToGridBag(p, new Button(), 0, 0, 1, 1, 0, 0);
+        addToGridBag(p, new Button(), 0, 1, 1, 1, 0, 0);
+        addToGridBag(p, new Button(), 0, 2, 1, 1, 0, 0);
+        for (int i=0; i < p.getComponentCount(); i++) {
+            p.getComponent(i).setMinimumSize(minSize);
+        }
+        Dimension size = new Dimension(minSize);
+        size.height -= 15;
+        p.setSize(size);
+        p.doLayout();
+        assertEquals("first component has zero height", 0,
+                     p.getComponent(0).getHeight());
+        assertEquals("second component has height < min", 18,
+                     p.getComponent(1).getHeight());
+        assertEquals("third component has min height", minSize.height,
+                     p.getComponent(2).getHeight());
+    }
 }

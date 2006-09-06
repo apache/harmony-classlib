@@ -27,17 +27,16 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.LookAndFeel;
-
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import javax.swing.plaf.ComponentUI;
-
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 
 public class MetalInternalFrameUI extends BasicInternalFrameUI {
     protected static String IS_PALETTE = "JInternalFrame.isPalette";
 
+    private static String IS_OPTION_DIALOG = "JInternalFrame.optionDialog";
+
     private MetalInternalFramePropertyChangeListener metalPropertyChangeListener;
-    private BasicInternalFrameTitlePane titlePane;
+    private MetalInternalFrameTitlePane titlePane;
 
 
     private class MetalInternalFramePropertyChangeListener implements PropertyChangeListener {
@@ -47,6 +46,8 @@ public class MetalInternalFrameUI extends BasicInternalFrameUI {
         public void propertyChange(final PropertyChangeEvent e) {
             if (IS_PALETTE.equals(e.getPropertyName())) {
                 setPalette(((Boolean)e.getNewValue()).booleanValue());
+            } else if (IS_OPTION_DIALOG.equals(e.getPropertyName())) {
+                setBorder();
             }
         }
     }
@@ -95,8 +96,7 @@ public class MetalInternalFrameUI extends BasicInternalFrameUI {
     public void installUI(final JComponent c) {
         super.installUI(c);
 
-        Boolean b = (Boolean)c.getClientProperty(MetalInternalFrameUI.IS_PALETTE);
-        setPalette(b != null && b.booleanValue());
+        setPalette(isPropertySet(IS_PALETTE));
     }
 
     public void uninstallUI(final JComponent c) {
@@ -109,13 +109,24 @@ public class MetalInternalFrameUI extends BasicInternalFrameUI {
     }
 
     public void setPalette(final boolean b) {
-        ((MetalInternalFrameTitlePane)titlePane).setPalette(b);
+        titlePane.setPalette(b);
 
-        if (b) {
+        setBorder();
+        // the layer isn't changed
+    }
+    
+    private void setBorder() {
+        if (titlePane.isPalette) {
             LookAndFeel.installBorder(frame, "InternalFrame.paletteBorder");
+        } else if (isPropertySet(IS_OPTION_DIALOG)) {
+            LookAndFeel.installBorder(frame, "InternalFrame.optionDialogBorder");
         } else {
             LookAndFeel.installBorder(frame, "InternalFrame.border");
         }
-        // the layer isn't changed
+    }
+    
+    private boolean isPropertySet(final String propertyName) {
+        Boolean b = (Boolean)frame.getClientProperty(propertyName);
+        return b != null && b.booleanValue();
     }
 }

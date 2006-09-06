@@ -39,7 +39,7 @@ public final class ContextStorage {
     private GraphicsEnvironment graphicsEnvironment;
 
     private final Object contextLock = new Object();
-    private final Synchronizer synchronizer = createSynchronizer();
+    private final Synchronizer synchronizer = new Synchronizer();
 
     public static void activateMultiContextMode() {
         // TODO: checkPermission
@@ -90,6 +90,10 @@ public final class ContextStorage {
         getCurrentContext().wtk = wtk;
     }
 
+    public static NativeIM getNativeIM() {
+        return getCurrentContext().wtk.getNativeIM();
+    }
+
     public static NativeEventQueue getNativeEventQueue() {
         return getCurrentContext().wtk.getNativeEventQueue();
     }
@@ -117,26 +121,6 @@ public final class ContextStorage {
             group = group.getParent();
         }
         throw new RuntimeException("Application has run out of context thread group");
-    }
-
-    static Synchronizer createSynchronizer() {
-        try {
-            return (Synchronizer) Class.forName(getSynchronizerClassName()).newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static String getSynchronizerClassName() {
-        String osName = System.getProperty("os.name").toLowerCase();
-        String packageBase = "org.apache.harmony.awt.wtk", win = "windows", lin = "linux";
-        if (osName.startsWith(lin)) {
-            return packageBase + "." + lin + ".LinuxSynchronizer";
-        }
-        if (osName.startsWith(win)) {
-            return packageBase + "." + win + ".WinSynchronizer";
-        }
-        return null;
     }
 
     public static boolean shutdownPending() {

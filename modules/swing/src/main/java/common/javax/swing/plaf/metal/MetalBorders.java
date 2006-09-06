@@ -339,6 +339,14 @@ public class MetalBorders {
     }
 
     public static class TextFieldBorder extends Flush3DBorder {
+
+        public void paintBorder(Component c, Graphics g, int x, int y, int w,
+                                int h) {
+            if (!c.isEnabled()) {
+                return;
+            }
+            super.paintBorder(c, g, x, y, w, h);
+        }
     }
 
     public static class ToggleButtonBorder extends ButtonBorder {

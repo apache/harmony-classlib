@@ -117,24 +117,6 @@ public class ListTest extends TestCase {
     }
 
     /*
-     * Class under test for java.awt.Dimension getPreferredSize()
-     */
-    public final void testGetPreferredSize() {
-        Dimension prefSize = list.getPreferredSize();
-        assertEquals(new Dimension(), prefSize);
-        Frame f = new Frame("");
-        f.add(list);
-        f.addNotify();
-        Dimension minSize = list.getMinimumSize();
-        assertEquals(minSize, list.getPreferredSize());
-        list.add("12345678901234567890");
-        prefSize = list.getPreferredSize();
-        assertEquals(minSize.height, prefSize.height);
-        assertTrue(prefSize.width > minSize.width);
-        f.dispose();
-    }
-
-    /*
      * Class under test for java.awt.Dimension preferredSize()
      */
     public final void testPreferredSize() {
@@ -326,24 +308,6 @@ public class ListTest extends TestCase {
         int fontSize = list.getFont().getSize();
         assertTrue("min height > font size * i", minSize.height > i * fontSize);
         assertTrue("min width > 0", minSize.width > 0);
-        f.dispose();
-    }
-
-    /*
-     * Class under test for java.awt.Dimension getPreferredSize(int)
-     */
-    public final void testGetPreferredSizeint() {
-        int i = 3;
-        assertEquals(new Dimension(), list.getPreferredSize(i));
-        Frame f = new Frame("");
-        f.add(list);
-        f.pack();
-        Dimension minSize = list.getMinimumSize(i);
-        assertEquals(minSize, list.getPreferredSize(i));
-        list.add("12345678901234567890");
-        Dimension prefSize = list.getPreferredSize(i);
-        assertEquals("minSize.height == prefSize.height", minSize.height, prefSize.height);
-        assertTrue("prefSize.width > minSize.width", prefSize.width > minSize.width);
         f.dispose();
     }
 

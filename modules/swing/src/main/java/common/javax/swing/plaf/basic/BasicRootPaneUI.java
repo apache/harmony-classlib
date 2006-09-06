@@ -21,8 +21,10 @@
 
 package javax.swing.plaf.basic;
 
+import java.awt.Component;
+import java.awt.KeyboardFocusManager;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -30,16 +32,17 @@ import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
+import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-
 import javax.swing.plaf.ActionMapUIResource;
-import javax.swing.plaf.ComponentInputMapUIResource;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.RootPaneUI;
+
+import org.apache.harmony.x.swing.Utilities;
 
 
 public class BasicRootPaneUI extends RootPaneUI
@@ -84,9 +87,7 @@ public class BasicRootPaneUI extends RootPaneUI
     protected void installKeyboardActions(final JRootPane root) {
         SwingUtilities.replaceUIActionMap(root, getActionMap(root));
 
-        SwingUtilities.replaceUIInputMap(root,
-                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-                getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, root));
+        Utilities.installKeyboardActions(root, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, "RootPane.ancestorInputMap", "RootPane.ancestorInputMap.RightToLeft");
         if (root.getDefaultButton() != null) {
             loadDefaultButtonKeyBindings(root);
         }
@@ -94,8 +95,7 @@ public class BasicRootPaneUI extends RootPaneUI
 
     protected void uninstallKeyboardActions(final JRootPane root) {
         SwingUtilities.replaceUIActionMap(root, null);
-        SwingUtilities.replaceUIInputMap(root,
-                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, null);
+        Utilities.uninstallKeyboardActions(root, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
     protected void installDefaults(final JRootPane root) {
@@ -176,24 +176,6 @@ public class BasicRootPaneUI extends RootPaneUI
     }
 
     /*
-     * Create InputMap and returns it.
-     */
-    private InputMap getInputMap(final int cond, final JRootPane root) {
-        // there is a separage InputMap for every JRootPane (because
-        // bindings are removed if defaultButton is set to null),
-        // but the bindings are the same
-        return createInputMap(cond, root);
-    }
-
-    /*
-     * Create a new instance of InputMap.
-     */
-    private InputMap createInputMap(final int cond, final JRootPane root) {
-        ComponentInputMapUIResource map = new ComponentInputMapUIResource(root);
-        return map;
-    }
-
-    /*
      * Create ActionMap if necessary, and return it.
      */
     private ActionMap getActionMap(final JRootPane root) {
@@ -209,6 +191,34 @@ public class BasicRootPaneUI extends RootPaneUI
 
         actionMap.put("press", new DefaultButtonAction(root, true));
         actionMap.put("release", new DefaultButtonAction(root, false));
+        actionMap.put("postPopup", new AbstractAction() {
+            public void actionPerformed(final ActionEvent e) {
+                JComponent focusOwner = getFocusOwner();
+                JPopupMenu menu = focusOwner.getComponentPopupMenu();
+                if (menu == null) {
+                    return;
+                }
+                Point location = focusOwner.getPopupLocation(null);
+                if (location == null) {
+                    location = Utilities.getMousePointerScreenLocation();
+                    SwingUtilities.convertPointFromScreen(location, focusOwner);
+                }
+
+                menu.show(focusOwner, location.x, location.y);
+            }
+
+            public boolean isEnabled() {
+                JComponent focusOwner = getFocusOwner();
+                return focusOwner != null
+                       && focusOwner.getComponentPopupMenu() != null;
+            }
+
+            private JComponent getFocusOwner() {
+                Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+                return focusOwner instanceof JComponent ? (JComponent)focusOwner : null;
+            }
+
+        });
 
         return actionMap;
     }

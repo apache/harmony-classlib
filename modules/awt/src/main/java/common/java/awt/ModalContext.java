@@ -50,7 +50,6 @@ class ModalContext {
      */
     void endModalLoop() {
         running = false;
-        toolkit.getNativeEventQueue().awake();
     }
 
     /**

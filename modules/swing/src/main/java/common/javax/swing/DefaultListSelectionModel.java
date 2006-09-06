@@ -163,7 +163,7 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
         if (!isValidInterval(intervalEnd1, intervalEnd2)) {
             return;
         }
-        
+
         Selection oldSelection = (Selection)selection.clone();
         selection.clear();
 
@@ -174,12 +174,12 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
         if (!isValidInterval(intervalEnd1, intervalEnd2)) {
             return;
         }
-        
+
         Selection oldSelection = (Selection)selection.clone();
         if (selectionMode == SINGLE_SELECTION || selectionMode == SINGLE_INTERVAL_SELECTION) {
             selection.clear();
         }
-        
+
         setSelectionAndUpdateLeadAnchor(intervalEnd1, intervalEnd2, oldSelection);
     }
 
@@ -187,7 +187,7 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
         if (!isValidInterval(intervalEnd1, intervalEnd2)) {
             return;
         }
-        
+
         Segment interval = new Segment(intervalEnd1, intervalEnd2);
         Selection oldSelection = (Selection)selection.clone();
 
@@ -230,7 +230,7 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
         if (!isValidInterval(index, length)) {
             return;
         }
-        
+
         Selection oldSelection = (Selection)selection.clone();
         int insertionIndex = before ? index : index + 1;
         selection.insertIndices(index, length, selectionMode != SINGLE_SELECTION);
@@ -252,7 +252,7 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
         if (!isValidInterval(intervalEnd1, intervalEnd2)) {
             return;
         }
-        
+
         Selection oldSelection = (Selection)selection.clone();
 
         Segment removalInterval = new Segment(intervalEnd1, intervalEnd2);
@@ -280,7 +280,10 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
     }
 
     public void setLeadSelectionIndex(final int leadIndex) {
-        if (leadIndex < 0) {
+        if (leadIndex < 0 && anchorSelectionIndex < 0) {
+            leadSelectionIndex = leadIndex;
+        }
+        if (leadIndex < 0 || anchorSelectionIndex < 0) {
             return;
         }
 
@@ -299,6 +302,16 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
         }
 
         doNotification(selection.getDifferenceBounds(oldSelection), anchorSelectionIndex, oldLead);
+    }
+
+    public void moveLeadSelectionIndex(final int leadIndex) {
+        if (leadIndex < 0 || leadSelectionIndex == leadIndex) {
+            return;
+        }
+
+        int oldIndex = leadSelectionIndex;
+        leadSelectionIndex = leadIndex;
+        doNotification(null, anchorSelectionIndex, oldIndex);
     }
 
     public int getLeadSelectionIndex() {
@@ -465,8 +478,6 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
 
     private void setSelectionAndUpdateLeadAnchor(final int intervalEnd1, final int intervalEnd2,
                                                  final Selection oldSelection) {
-        
-        
         int oldAnchor = anchorSelectionIndex;
         int oldLead = leadSelectionIndex;
 
@@ -480,7 +491,7 @@ public class DefaultListSelectionModel implements ListSelectionModel, Cloneable,
 
         doNotification(selection.getDifferenceBounds(oldSelection), oldAnchor, oldLead);
     }
-    
+
     private boolean isValidInterval(final int n1, final int n2) {
         return n1 >= 0 && n2 >= 0;
     }

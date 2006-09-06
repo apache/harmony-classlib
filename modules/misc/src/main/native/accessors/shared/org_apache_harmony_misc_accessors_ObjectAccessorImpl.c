@@ -390,6 +390,36 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_ge
     return res;
 }
 
+/*
+ * Class: org_apache_harmony_misc_accessors_ObjectAccessor
+ * Method: getGlobalReference
+ * Signature: (Ljava/lang/Object;)J
+ */
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_getGlobalReference
+(JNIEnv * env, jobject accessorObj, jobject obj) {
+    return (jlong)(intptr_t)(*env)->NewGlobalRef(env, obj);
+}
+
+/*
+ * Class: org_apache_harmony_misc_accessors_ObjectAccessor
+ * Method: releaseGlobalReference
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_releaseGlobalReference
+(JNIEnv * env, jobject accessorObj, jlong ref) {
+    (*env)->DeleteGlobalRef(env, (jobject)(intptr_t)ref);
+}
+
+/*
+ * Class: org_apache_harmony_misc_accessors_ObjectAccessor
+ * Method: getObjectFromReference
+ * Signature: (J)Ljava/lang/Object;
+ */
+JNIEXPORT jobject JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_getObjectFromReference
+(JNIEnv * env, jobject accessorObj, jlong ref) {
+    return (jobject)(intptr_t)ref;
+}
+
 
 
 

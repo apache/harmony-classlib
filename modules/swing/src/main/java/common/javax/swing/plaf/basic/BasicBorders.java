@@ -30,6 +30,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import javax.swing.AbstractButton;
+import javax.swing.UIManager;
 import javax.swing.border.AbstractBorder;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
@@ -41,18 +42,15 @@ import org.apache.harmony.x.swing.Utilities;
 
 
 public class BasicBorders {
-    private static Insets borderInsets = new Insets(2, 3, 3, 3);
 
     /*
      * All color constants used in this class are selected to be consistent with
      * Basic L&F color pattern.
      */
-    private static final Color shadow = Color.GRAY;
-    private static final Color darkShadow = Color.DARK_GRAY;
-    private static final Color lightHighlight = Color.WHITE;
-    private static final Color highlight = Color.WHITE;
 
     public static class ButtonBorder extends AbstractBorder implements UIResource {
+        private static Insets borderInsets = new Insets(2, 3, 3, 3);
+        
         protected Color shadow;
         protected Color darkShadow;
         protected Color highlight;
@@ -305,14 +303,20 @@ public class BasicBorders {
     }
 
     public static Border getToggleButtonBorder() {
-        ToggleButtonBorder toggleButtonBorder = new ToggleButtonBorder(shadow, darkShadow, highlight, lightHighlight);
+        final String prefix = "ToggleButton.";
+        ToggleButtonBorder toggleButtonBorder = new ToggleButtonBorder(getShadow(prefix),
+                                                                       getDarkShadow(prefix),
+                                                                       getHighlight(prefix),
+                                                                       getLightHighlight(prefix));
         MarginBorder marginBorder = new MarginBorder();
 
         return new BorderUIResource.CompoundBorderUIResource(toggleButtonBorder, marginBorder);
     }
 
     public static Border getTextFieldBorder() {
-        return new FieldBorder(shadow, darkShadow, highlight, lightHighlight);
+        final String prefix = "TextField.";
+        return new FieldBorder(getShadow(prefix), getDarkShadow(prefix),
+                               getHighlight(prefix), getLightHighlight(prefix));
     }
 
     public static Border getSplitPaneDividerBorder() {
@@ -320,11 +324,16 @@ public class BasicBorders {
     }
 
     public static Border getSplitPaneBorder() {
-        return new SplitPaneBorder(highlight, darkShadow);
+        final String prefix = "SplitPane.";
+        return new SplitPaneBorder(getHighlight(prefix), getShadow(prefix));
     }
 
     public static Border getRadioButtonBorder() {
-        RadioButtonBorder radioButtonBorder = new RadioButtonBorder(shadow, darkShadow, highlight, lightHighlight);
+        final String prefix = "RadioButton.";
+        RadioButtonBorder radioButtonBorder = new RadioButtonBorder(getShadow(prefix),
+                                                                    getDarkShadow(prefix),
+                                                                    getHighlight(prefix),
+                                                                    getLightHighlight(prefix));
         MarginBorder marginBorder = new MarginBorder();
 
         return new BorderUIResource.CompoundBorderUIResource(radioButtonBorder, marginBorder);
@@ -335,18 +344,29 @@ public class BasicBorders {
     }
 
     public static Border getMenuBarBorder() {
-        return new MenuBarBorder(shadow, highlight);
+        final String prefix = "MenuBar.";
+        return new MenuBarBorder(getShadow(prefix), getHighlight(prefix));
     }
 
     public static Border getInternalFrameBorder() {
+        final String prefix = "InternalFrame.";
+        final Color borderColor = UIManager.getColor(prefix + "borderColor");
+        final Color shadow = UIManager.getColor(prefix + "borderShadow");
+        final Color darkShadow = UIManager.getColor(prefix + "borderDarkShadow");
+        final Color highlight = UIManager.getColor(prefix + "borderLight");
+        final Color lightHighlight = UIManager.getColor(prefix + "borderHighlight");
         BevelBorder bevelBorder = new BevelBorder(0, highlight, lightHighlight, darkShadow, shadow);
-        BorderUIResource.LineBorderUIResource lineBorder = new BorderUIResource.LineBorderUIResource(Color.LIGHT_GRAY, 1);
+        BorderUIResource.LineBorderUIResource lineBorder = new BorderUIResource.LineBorderUIResource(borderColor, 1);
 
         return new BorderUIResource.CompoundBorderUIResource(bevelBorder, lineBorder);
     }
 
     public static Border getButtonBorder() {
-        ButtonBorder buttonBorder = new ButtonBorder(shadow, darkShadow, highlight, lightHighlight);
+        final String prefix = "Button.";
+        ButtonBorder buttonBorder = new ButtonBorder(getShadow(prefix),
+                                                     getDarkShadow(prefix),
+                                                     getHighlight(prefix),
+                                                     getLightHighlight(prefix));
         MarginBorder marginBorder = new MarginBorder();
 
         return new BorderUIResource.CompoundBorderUIResource(buttonBorder, marginBorder);
@@ -357,6 +377,9 @@ public class BasicBorders {
      * Border used for divider of JSplitPane
      */
     private static class SplitPaneDividerBorder implements Border, UIResource {
+        private static final Color shadow = Color.GRAY;
+        private static final Color lightHighlight = Color.WHITE;
+
         public SplitPaneDividerBorder() {
         }
 
@@ -372,5 +395,20 @@ public class BasicBorders {
             return true;
         }
     }
-}
 
+    private static Color getLightHighlight(final String prefix) {
+        return UIManager.getColor(prefix + "light");
+    }
+
+    private static Color getHighlight(final String prefix) {
+        return UIManager.getColor(prefix + "highlight");
+    }
+
+    private static Color getDarkShadow(final String prefix) {
+        return UIManager.getColor(prefix + "darkShadow");
+    }
+
+    private static Color getShadow(final String prefix) {
+        return UIManager.getColor(prefix + "shadow");
+    }
+}

@@ -147,24 +147,13 @@ public final class SystemColor extends Color implements Serializable {
     }
 
     public int getRGB() {
-        return getARGB();
-    }
-
-    public int getRed() {
-        return (getARGB() >> 16) & 0xFF;
-    }
-
-    public int getGreen() {
-        return (getARGB() >> 8) & 0xFF;
-    }
-
-    public int getBlue() {
-        return getARGB() & 0xFF;
+        return value = getARGB();
     }
 
     private SystemColor(int index) {
         super(0, 0, 0);
         this.index = index;
+        value = getRGB();
     }
 
     private int getARGB() {

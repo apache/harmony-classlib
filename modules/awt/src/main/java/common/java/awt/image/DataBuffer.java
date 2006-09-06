@@ -19,6 +19,8 @@
  */
 package java.awt.image;
 
+import org.apache.harmony.awt.gl.image.DataBufferListener;
+
 public abstract class DataBuffer {
 
     public static final int TYPE_BYTE = 0;
@@ -44,6 +46,10 @@ public abstract class DataBuffer {
     protected int size;
 
     protected int offsets[];
+    
+    boolean dataChanged = true;
+    boolean dataTaken = false;
+    DataBufferListener listener;
 
     static {
         AwtImageBackdoorAccessorImpl.init();
@@ -170,5 +176,39 @@ public abstract class DataBuffer {
             throw new IllegalArgumentException("Unknown data type " + type);
         }
     }
+    
+    void notifyChanged(){
+        if(listener != null && !dataChanged){
+            dataChanged = true;
+            listener.dataChanged();
+        }
+    }
+    
+    void notifyTaken(){
+        if(listener != null && !dataTaken){
+            dataTaken = true;
+            listener.dataTaken();
+        }
+    }
+    
+    void releaseData(){
+        if(listener != null && dataTaken){
+            dataTaken = false;
+            listener.dataReleased();
+        }
+    }
+    
+    void addDataBufferListener(DataBufferListener listener){
+        this.listener = listener;
+    }
+    
+    void removeDataBufferListener(){
+        listener = null;
+    }
+    
+    void validate(){
+        dataChanged = false;
+    }
+    
 }
 

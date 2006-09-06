@@ -19,6 +19,7 @@
  */
 package javax.swing;
 
+import java.applet.Applet;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.EventQueue;
@@ -113,10 +114,16 @@ public class SwingUtilities implements SwingConstants {
     }
 
     public static void convertPointToScreen(final Point point, final Component component) {
+        if (component == null) {
+            throw new NullPointerException("Cannot convert point from null-component");
+        }
         translateRelatedPoint(point, component, 1, false);
     }
 
     public static void convertPointFromScreen(final Point point, final Component component) {
+        if (component == null) {
+            throw new NullPointerException("Cannot convert point to null-component");
+        }
         translateRelatedPoint(point, component, -1, false);
     }
 
@@ -399,12 +406,10 @@ public class SwingUtilities implements SwingConstants {
     public static Component getRoot(final Component component) {
         Component result = getWindowOrAppletAncestor(component);
         Component topRoot = result;
-        /* This commented code should be enabled when JApplet is supported
         while (topRoot instanceof Applet) {
             result = topRoot;
             topRoot = getWindowOrAppletAncestor(topRoot.getParent());
         }
-        */
         return result;
     }
 
@@ -611,8 +616,7 @@ public class SwingUtilities implements SwingConstants {
 
     private static Component getWindowOrAppletAncestor(final Component component) {
         Component result = component;
-        // commented code should be enabled when JAppllet is supported
-        while (result != null && !(result instanceof Window /*|| result instanceof Applet */)) {
+        while (result != null && !(result instanceof Window || result instanceof Applet)) {
             result = Utilities.getNotWindowParent(result);
         }
         return result;

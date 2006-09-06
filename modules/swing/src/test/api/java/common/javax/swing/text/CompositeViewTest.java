@@ -252,6 +252,36 @@ public class CompositeViewTest extends BasicSwingTestCase {
         assertFalse(childrenLoaded);
     }
 
+    public void testSetParentNull() throws Exception {
+        view = new CompositeViewImpl(root) {
+            protected void loadChildren(final ViewFactory factory) {
+                childrenLoaded = true;
+                assertSame(getViewFactory(), factory);
+                super.loadChildren(factory);
+            }
+        };
+        assertEquals(0, view.getViewCount());
+        assertFalse(childrenLoaded);
+        view.setParent(null);
+        assertFalse(childrenLoaded);
+    }
+
+    public void testSetParentNoViewFactory() throws Exception {
+        view = new CompositeViewImpl(root) {
+            protected void loadChildren(final ViewFactory factory) {
+                childrenLoaded = true;
+                assertNull(factory);
+                super.loadChildren(factory);
+            }
+        };
+        assertEquals(0, view.getViewCount());
+        assertFalse(childrenLoaded);
+        final PlainView parent = new PlainView(root);
+        assertNull(parent.getViewFactory());
+        view.setParent(parent);
+        assertTrue(childrenLoaded);
+    }
+
     public void testCompositeView() {
         view = new CompositeViewImpl(root);
         assertEquals(0, view.getViewCount());
@@ -386,6 +416,13 @@ public class CompositeViewTest extends BasicSwingTestCase {
         assertEquals(root.getElementCount(), view.getViewCount());
         assertSame(view, view.getView(0).getParent());
         assertSame(root.getElement(0), view.getView(0).getElement());
+    }
+
+    public void testLoadChildrenNull() {
+        view = new CompositeViewImpl(root);
+        assertEquals(0, view.getViewCount());
+        view.loadChildren(null);
+        assertEquals(0, view.getViewCount());
     }
 
     /**

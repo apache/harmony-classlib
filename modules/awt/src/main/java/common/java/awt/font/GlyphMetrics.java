@@ -24,7 +24,7 @@ import java.awt.geom.Rectangle2D;
 public final class GlyphMetrics {
 
     // advance width of the glyph character cell
-    private float advanceX; 
+    private float advanceX;
     
     // advance height of the glyph character cell
     private float advanceY;
@@ -34,7 +34,7 @@ public final class GlyphMetrics {
 
     // glyph type code 
     private byte glyphType;
-
+    
     // bounding box for outline of the glyph
     private Rectangle2D.Float bounds;
 

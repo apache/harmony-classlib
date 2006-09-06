@@ -37,7 +37,7 @@ import org.apache.harmony.awt.gl.image.BufferedImageSource;
 
 
 public class BufferedImage extends 
-Image implements WritableRenderedImage, Transparency {
+Image implements WritableRenderedImage, Transparency{
 
     public static final int TYPE_CUSTOM = 0;
 

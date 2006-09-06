@@ -380,8 +380,7 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
      */
     public DefaultCaret() {
         blinkTimer = createTimer(false, 0);
-        magicTimer = createTimer(true, 0);
-        startTimer(magicTimer);
+        magicTimer = createTimer(true, 0);       
     }
 
     public void addChangeListener(final ChangeListener changeListener) {
@@ -511,6 +510,7 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
         component.removeMouseMotionListener(this);
         component.removeFocusListener(this);
         stopTimer(blinkTimer);
+        stopTimer(magicTimer);
         highlighter = null;
         component = null;
         textKit = null;
@@ -792,7 +792,7 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
     public void mousePressed(final MouseEvent me) {
         int offset;
         int mask = MouseEvent.SHIFT_DOWN_MASK;
-        if (me.getButton() != MouseEvent.BUTTON1) {
+        if (me.getButton() != MouseEvent.BUTTON1 || !component.isEnabled()) {
             return;
         }
         component.requestFocusInWindow();
@@ -934,7 +934,6 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
 
         blinkTimer = (Timer)createTimer(false, 0);
         magicTimer = (Timer)createTimer(true, 0);
-        startTimer(magicTimer);
 
         triangleX = new int[APEX_NUMBER];
         triangleY = new int[APEX_NUMBER];

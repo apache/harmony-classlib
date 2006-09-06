@@ -43,37 +43,32 @@ public abstract class NativeEvent {
      * Message has no common cross-platform
      * interpretation and should be skipped.
      */
-    public static final int ID_PLATFORM = -1;
+    public static final int ID_PLATFORM = 0;
 
     /**
      * Window bounds have changed.
      */
-    public static final int ID_BOUNDS_CHANGED = -2;
-
-    /**
-     * Special event initiated by Java code.
-     */
-    public static final int ID_JAVA_EVENT = -3;
+    public static final int ID_BOUNDS_CHANGED = -1;
 
     /**
      * Window decoration size has changed.
      */
-    public static final int ID_INSETS_CHANGED = -4;
+    public static final int ID_INSETS_CHANGED = -2;
 
     /**
      * Window was just created (WM_CREATE on Windows)
      */
-    public static final int ID_CREATED = -5;
+    public static final int ID_CREATED = -3;
 
     /**
      * Mouse grab was canceled by the native system
      */
-    public static final int ID_MOUSE_GRAB_CANCELED = -6;
+    public static final int ID_MOUSE_GRAB_CANCELED = -4;
 
     /**
      * System color scheme or visual theme was changed
      */
-    public static final int ID_THEME_CHANGED = -7;
+    public static final int ID_THEME_CHANGED = -5;
 
     protected long windowId;
     protected int eventId;
@@ -234,14 +229,14 @@ public abstract class NativeEvent {
     }
 
     /**
-     * Returns the "damaged" area of the window as set of non-intersecting
+     * Returns the "dirty" area of the window as set of non-intersecting
      * rectangles. This area is to be painted.
      * @return non-empty array of null if empty
      */
     public abstract MultiRectArea getClipRects();
 
     /**
-     * Returns the "damaged" area of the window as one rectangles.
+     * Returns the "dirty" area of the window as one rectangle.
      * This area is to be painted.
      * @return non-null Rectangle
      */
@@ -268,24 +263,5 @@ public abstract class NativeEvent {
      */
     public int getWheelRotation() {
         return wheelRotation;
-    }
-
-    protected void reset() {
-        windowId = 0;
-        eventId = 0;
-        otherWindowId = 0;
-
-        localPos = null;
-        screenPos = null;
-        windowRect = null;
-
-        modifiers = 0;
-        mouseButton = 0;
-        wheelRotation = 0;
-
-        keyInfo = null;
-
-        windowState = -1;
-        time = 0;
     }
 }

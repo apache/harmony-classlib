@@ -36,13 +36,14 @@ import java.awt.image.SinglePixelPackedSampleModel;
 import java.awt.image.WritableRaster;
 
 import org.apache.harmony.awt.gl.color.LUTColorConverter;
+import org.apache.harmony.awt.gl.image.DataBufferListener;
 
 
 /**
  * This class represent Surface for differnt types of Images (BufferedImage, 
  * OffscreenImage and so on) 
  */
-public class ImageSurface extends Surface {
+public class ImageSurface extends Surface implements DataBufferListener {
 
     boolean nativeDrawable = true;
     int surfaceType;
@@ -50,6 +51,12 @@ public class ImageSurface extends Surface {
     ColorModel cm;
     WritableRaster raster;
     Object data;
+    
+    boolean needToRefresh = true;
+    boolean dataTaken = false;
+    
+    private long cachedDataPtr;       // Pointer for cached Image Data
+    private boolean alphaPre;         // Cached Image Data alpha premultiplied 
 
     public ImageSurface(ColorModel cm, WritableRaster raster){
         this(cm, raster, Surface.getType(cm, raster));
@@ -63,6 +70,8 @@ public class ImageSurface extends Surface {
         this.raster = raster;
         surfaceType = type;
 
+        data = AwtImageBackdoorAccessor.getInstance().
+        getData(raster.getDataBuffer());
         ColorSpace cs = cm.getColorSpace();
         transparency = cm.getTransparency();
         width = raster.getWidth();
@@ -85,7 +94,6 @@ public class ImageSurface extends Surface {
         if(type == BufferedImage.TYPE_CUSTOM){
             nativeDrawable = false;
         }
-        if(nativeDrawable) createSufaceStructure();
     }
 
     public ColorModel getColorModel() {
@@ -97,6 +105,9 @@ public class ImageSurface extends Surface {
     }
 
     public long getSurfaceDataPtr() {
+        if(surfaceDataPtr == 0L && nativeDrawable){
+            createSufaceStructure();
+        }
         return surfaceDataPtr;
     }
 
@@ -116,39 +127,43 @@ public class ImageSurface extends Surface {
      * Creates native Surface structure which used for native blitting
      */
     private void createSufaceStructure(){
+        int cmType = 0;
+        int numComponents = cm.getNumComponents();
+        boolean hasAlpha = cm.hasAlpha();
+        boolean isAlphaPre = cm.isAlphaPremultiplied();
+        int transparency = cm.getTransparency();
+        int bits[] = cm.getComponentSize();
+        int pixelStride = cm.getPixelSize();
+        int masks[] = null;
+        int colorMap[] = null;
+        int colorMapSize = 0;
+        int transpPixel = -1;
+        boolean isGrayPallete = false;
         SampleModel sm = raster.getSampleModel();
+        int smType = 0;
         int dataType = sm.getDataType();
-        data = AwtImageBackdoorAccessor.getInstance().
-        getData(raster.getDataBuffer());
+        int scanlineStride = 0;
+        int bankIndeces[] = null;
+        int bandOffsets[] = null;
+        int offset = raster.getDataBuffer().getOffset();
 
         if(cm instanceof DirectColorModel){
+            cmType = DCM;
             DirectColorModel dcm = (DirectColorModel) cm;
-            int redMask = dcm.getRedMask();
-            int greenMask = dcm.getGreenMask();
-            int blueMask = dcm.getBlueMask();
-            int alphaMask = dcm.getAlphaMask();
-            SinglePixelPackedSampleModel sppsm =
-                (SinglePixelPackedSampleModel) sm;
-            int scanlineStride = sppsm.getScanlineStride();
-            boolean isAlphaPre = dcm.isAlphaPremultiplied();
-
-            surfaceDataPtr = createStructDCM(surfaceType, dataType,
-                    csType, redMask, greenMask, blueMask, alphaMask,
-                    cm.getPixelSize(), scanlineStride, raster.getWidth(),
-                    raster.getHeight(), dcm.getTransparency(), isAlphaPre);
+            masks = dcm.getMasks();
+            smType = SPPSM;
+            SinglePixelPackedSampleModel sppsm = (SinglePixelPackedSampleModel) sm;
+            scanlineStride = sppsm.getScanlineStride();
 
         }else if(cm instanceof IndexColorModel){
+            cmType = ICM;
             IndexColorModel icm = (IndexColorModel) cm;
-            int mapSize = icm.getMapSize();
-            int colorMap[] = new int[mapSize];
+            colorMapSize = icm.getMapSize();
+            colorMap = new int[colorMapSize];
             icm.getRGBs(colorMap);
-            int pixelStride = icm.getPixelSize();
-            int trans = icm.getTransparentPixel();
-            int transparency = icm.getTransparency();
-            boolean isGrayPallete = Surface.isGrayPallete(icm);
+            transpPixel = icm.getTransparentPixel();
+            isGrayPallete = Surface.isGrayPallete(icm);
 
-            int smType;
-            int scanlineStride;
             if(sm instanceof MultiPixelPackedSampleModel){
                 smType = MPPSM;
                 MultiPixelPackedSampleModel mppsm =
@@ -163,23 +178,9 @@ public class ImageSurface extends Surface {
                 throw new IllegalArgumentException("The raster is" +
                 " incompatible with this ColorModel");
             }
-            surfaceDataPtr = createStructICM(surfaceType, dataType,
-                    pixelStride, scanlineStride, width, height,
-                    mapSize, colorMap, isGrayPallete, transparency,
-                    trans, smType);
 
         }else if(cm instanceof ComponentColorModel){
-            ComponentColorModel ccm = (ComponentColorModel) cm;
-            int transparency = ccm.getTransparency();
-            boolean isAlphaPre = ccm.isAlphaPremultiplied();
-            int numComponents = ccm.getNumComponents();
-            int bits[] = ccm.getComponentSize();
-
-            int smType;
-            int scanlineStride;
-            int bankIndeces[];
-            int bandOffsets[];
-
+            cmType = CCM;
             if(sm instanceof ComponentSampleModel){
                 ComponentSampleModel csm = (ComponentSampleModel) sm;
                 scanlineStride = csm.getScanlineStride();
@@ -196,39 +197,49 @@ public class ImageSurface extends Surface {
                 throw new IllegalArgumentException("The raster is" +
                 " incompatible with this ColorModel");
             }
-            surfaceDataPtr = createStructCCM(surfaceType, dataType,
-                    csType, numComponents, cm.getPixelSize(), scanlineStride,
-                    width, height, bits, bankIndeces, bandOffsets,
-                    transparency, isAlphaPre);
+
         }else{
             surfaceDataPtr = 0L;
+            return;
         }
+        surfaceDataPtr = createSurfStruct(surfaceType, width, height, cmType, csType, smType, dataType,
+                numComponents, pixelStride, scanlineStride, bits, masks, colorMapSize,
+                colorMap, transpPixel, isGrayPallete, bankIndeces, bandOffsets,
+                offset, hasAlpha, isAlphaPre, transparency);
     }
 
     public void dispose() {
-        dispose(surfaceDataPtr);
-        surfaceDataPtr = 0L;
+        if(surfaceDataPtr != 0L){
+            dispose(surfaceDataPtr);
+            surfaceDataPtr = 0L;
+        }
+    }
+    
+    public long getCachedData(boolean alphaPre){
+        if(nativeDrawable){
+            if(cachedDataPtr == 0L || needToRefresh || this.alphaPre != alphaPre){
+                cachedDataPtr = updateCache(getSurfaceDataPtr(), data, alphaPre);
+                this.alphaPre = alphaPre;
+                validate(); 
+            }
+        }
+        return cachedDataPtr;
     }
 
-    private native long createStructDCM(int surfaceType, int dataType,
-            int csType, int redMask, int greenMask, int blueMask,
-            int alphaMask, int pixelStride, int scanlineStride, int width, int height,
-            int transparancy, boolean isAlphaPre);
-
-    private native long createStructICM(int surfaceType, int dataType,
-            int pixelStride, int scanlineStride, int width, int height,
-            int mapSize, int colorMap[], boolean isGrayPallete, int transparency,
-            int trans, int smType);
-
-    private native long createStructCCM(int surfaceType, int dataType,
-            int csType, int numComponents, int pixelStride, int scanlineStride,
-            int width, int height, int bits[], int bankIndeces[], int bandOffsets[],
-            int transparency, boolean isAlphaPre);
+    private native long createSurfStruct(int surfaceType, int width, int height, 
+            int cmType, int csType, int smType, int dataType,
+            int numComponents, int pixelStride, int scanlineStride,
+            int bits[], int masks[], int colorMapSize, int colorMap[],
+            int transpPixel, boolean isGrayPalette, int bankIndeces[], 
+            int bandOffsets[], int offset, boolean hasAlpha, boolean isAlphaPre,
+            int transparency);
 
     private native void dispose(long structPtr);
 
     private native void setImageSize(long structPtr, int width, int height);
 
+    private native long updateCache(long structPtr, Object data, boolean alphaPre);
+    
     /**
      * Supposes that new raster is compatible with an old one
      * @param r
@@ -236,7 +247,9 @@ public class ImageSurface extends Surface {
     public void setRaster(WritableRaster r) {
         raster = r;
         data = AwtImageBackdoorAccessor.getInstance().getData(r.getDataBuffer());
-        setImageSize(surfaceDataPtr, r.getWidth(), r.getHeight());
+        if (surfaceDataPtr != 0) {
+            setImageSize(surfaceDataPtr, r.getWidth(), r.getHeight());
+        }
         this.width = r.getWidth();
         this.height = r.getHeight();
     }
@@ -252,5 +265,41 @@ public class ImageSurface extends Surface {
 
     public Surface getImageSurface() {
         return this;
+    }
+
+    public void dataChanged() {
+        needToRefresh = true;
+        clearValidCaches();
+    }
+
+    public void dataTaken() {
+        dataTaken = true;
+        needToRefresh = true;
+        clearValidCaches();
+    }
+    
+    public void dataReleased(){
+        dataTaken = false;
+        needToRefresh = true;
+        clearValidCaches();
+    }
+    
+    public void invalidate(){
+        needToRefresh = true;
+        clearValidCaches();
+    }
+    
+    public void validate(){
+        if(!needToRefresh) return;
+        if(!dataTaken){
+            needToRefresh = false;
+            AwtImageBackdoorAccessor ba = AwtImageBackdoorAccessor.getInstance();
+            ba.validate(raster.getDataBuffer());
+        }
+        
+    }
+    
+    public boolean invalidated(){
+        return needToRefresh;
     }
 }

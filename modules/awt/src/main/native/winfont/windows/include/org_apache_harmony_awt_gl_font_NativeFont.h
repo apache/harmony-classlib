@@ -67,11 +67,11 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_embedFontNative(JNIEnv *, jclass,
     jstring);
 
 /*
- * Method: org.apache.harmony.awt.gl.font.NativeFont.initializeFont(Lorg/apache/harmony/awt/gl/font/WindowsFont;Ljava/lang/String;I)J
+ * Method: org.apache.harmony.awt.gl.font.NativeFont.initializeFont(Lorg/apache/harmony/awt/gl/font/WindowsFont;Ljava/lang/String;II)J
  */
 JNIEXPORT jlong JNICALL
 Java_org_apache_harmony_awt_gl_font_NativeFont_initializeFont(JNIEnv *, jclass, 
-    jobject, jstring, jint);
+    jobject, jstring, jint, jint);
 
 /*
  * Method: org.apache.harmony.awt.gl.font.NativeFont.canDisplayCharNative(JC)Z
@@ -182,6 +182,20 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_nativeInitLCIDsTable(JNIEnv *, jc
 JNIEXPORT jint JNICALL
 Java_org_apache_harmony_awt_gl_font_NativeFont_getGlyphOutline(JNIEnv *, jclass, 
     jlong, jchar, jlong, jint);
+
+/*
+ * Method: org.apache.harmony.awt.gl.font.NativeFont.getExtraMetricsNative(JII)[F
+ */
+JNIEXPORT jfloatArray JNICALL
+Java_org_apache_harmony_awt_gl_font_NativeFont_getExtraMetricsNative(JNIEnv *, jclass, 
+    jlong, jint, jint);
+
+/*
+ * Method: org.apache.harmony.awt.gl.font.NativeFont.setAntialiasing
+ */
+JNIEXPORT void JNICALL
+Java_org_apache_harmony_awt_gl_font_NativeFont_setAntialiasing(JNIEnv *, jclass, 
+    jlong, jboolean);
 
 /*
  * Method: org.apache.harmony.awt.gl.font.NativeFont.gdiPlusDrawText(JLjava/lang/String;IJFF)I

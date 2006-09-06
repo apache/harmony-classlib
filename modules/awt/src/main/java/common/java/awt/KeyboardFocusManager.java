@@ -720,7 +720,7 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
             prevFocusedWindow = (c == null ? actualFocusedWindow : null);
             postWindowEvent(ancestorWnd, oppositeAncestorWnd, focus);
         }
-        if (focus) {
+        if (focus && callCB) {
             c.behaviour.setFocus(focus, opposite);
         }
 
@@ -735,11 +735,19 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
         if (wnd == null) {
             return false;
         }
-
+        
         Component lastReqFocus = wnd.getRequestedFocus();
+        if ((lastReqFocus != null) && (lastReqFocus.getWindowAncestor() != wnd)) {
+            lastReqFocus = null;
+            wnd.setRequestedFocus(null);
+        }
         Component lastFocusOwner = wnd.getMostRecentFocusOwner();
+        if ((lastFocusOwner != null) && lastFocusOwner.getWindowAncestor() != wnd) {
+            lastFocusOwner = null;
+        }
         Component compToFocus = ((lastReqFocus != null) ? lastReqFocus :
                                                           lastFocusOwner);
+                
 
         if (compToFocus != null) {
             return requestFocus(compToFocus, wnd, false, false, callCB);

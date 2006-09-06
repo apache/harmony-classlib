@@ -25,7 +25,6 @@ import java.io.File;
 import java.util.Properties;
 import java.util.Vector;
 
-import org.apache.harmony.awt.gl.font.CompositeFont;
 import org.apache.harmony.awt.gl.font.FontManager;
 import org.apache.harmony.awt.gl.font.FontProperty;
 
@@ -35,6 +34,16 @@ import org.apache.harmony.awt.gl.font.FontProperty;
  */
 public class WinFontManager extends FontManager {
 
+    static final int DEFAULT_PITCH = 0; // GDI DEFAULT_PITCH
+    static final int FIXED_PITCH = 1;   // GDI FIXED_PITCH
+    static final int VARIABLE_PITCH = 2; // GDI VARIABLE_PITCH
+
+    static final int FF_DONTCARE = (0<<4);  // GDI FF_DONTCARE
+    static final int FF_SWISS = (2<<4);     // GDI FF_SWISS
+    static final int FF_MODERN = (3<<4);    // GDI FF_MODERN
+    static final int FF_ROMAN = (1<<4);     // GDI FF_ROMAN
+
+
     /** Available windows charset names */
     public static final String[] WINDOWS_CHARSET_NAMES = {
             "ANSI_CHARSET", "DEFAULT_CHARSET", "SYMBOL_CHARSET", "SHIFTJIS_CHARSET",
@@ -43,7 +52,7 @@ public class WinFontManager extends FontManager {
             "GREEK_CHARSET", "TURKISH_CHARSET", "VIETNAMESE_CHARSET", "THAI_CHARSET",
             "EASTEUROPE_CHARSET", "RUSSIAN_CHARSET", "MAC_CHARSET", "BALTIC_CHARSET"
     };
-    
+
     /** WinFontManager singleton instanse */
     public static final WinFontManager inst = new WinFontManager();
 
@@ -54,49 +63,6 @@ public class WinFontManager extends FontManager {
 
     public void initLCIDTable(){
         NativeFont.initLCIDsTable(this.tableLCID);
-    }
-
-    /**
-     * Creates and returns logical font peer. 
-     * 
-     * @param logicalName logical font family name
-     * @param font specified Font object
-     * @return In case of non-null fontproperties for the specified logical 
-     * name CompositeFont object is returned, otherwise WindowsFont object is 
-     * returned.
-     */
-    private FontPeer CreateLogicalFont(String logicalName, Font font){
-        FontProperty[] fps = getFontProperties(logicalName + "." + font.getStyle());
-        if (fps != null){
-            return new CompositeFont(font, fps, logicalName);
-        }
-        return new WindowsFont(font, true, logicalName, logicalName, 0);
-    }
-
-    public FontPeer createFont(Font font){
-        String fontName = font.getName();
-        if (isFontLogical(font)){
-            return CreateLogicalFont(fontName, font);
-        }
-
-        int fontStyle = 0;
-        String family = null;
-        String face = null;
-
-        int faceIndex = getFaceIndex(fontName);
-        // Check if name parameter is face name
-        if (faceIndex != -1){
-            fontStyle = NativeFont.getFontStyle(faceIndex);
-            family = NativeFont.getFamily(faceIndex);
-        } else {
-            return CreateLogicalFont(FontManager.LOGICAL_FONT_NAMES[3], font);  // "dialog"
-        }
-        return new WindowsFont(font, false, family, face, fontStyle);
-    }
-
-    public FontPeer createFont(FontProperty fp, int size){
-        Font propertyFont = new Font(fp.getName(), fp.getStyle(), size);
-        return createFont(propertyFont);
     }
 
     /**
@@ -178,7 +144,7 @@ public class WinFontManager extends FontManager {
         return true;
 
     }
-
+    
     public int getFaceIndex(String faceName){
         for (int i=0; i<NativeFont.faces.length; i++ ){
             if (NativeFont.faces[i].equalsIgnoreCase(faceName))
@@ -206,5 +172,27 @@ public class WinFontManager extends FontManager {
         return allFamilies;
     }
 
+    public FontPeer createPhysicalFontPeer(String name, int style, int size) {
+        WindowsFont peer;
+        if (isFamilyExist(name)){
+            peer = new WindowsFont(name, style, size);
+            peer.setFamily(name);
+            return peer;
+        }
+        int faceIndex = getFaceIndex(name); 
+        if (faceIndex != -1){
+            style |= NativeFont.fontStyles[faceIndex];
+            name = NativeFont.getFamily(faceIndex);
+
+            peer = new WindowsFont(name, style, size);
+            return peer;
+        }
+        
+        return null;
+    }
+
+    public FontPeer createDefaultFont(int style, int size) {
+        return new WindowsFont(DEFAULT_NAME, style, size);
+    }
 
 }

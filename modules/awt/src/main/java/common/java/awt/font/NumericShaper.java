@@ -73,14 +73,14 @@ public final class NumericShaper implements Serializable {
      * range constant value. Also script ranges, context names and digits low
      * ranges are indexed with these indices.
      */
-    
+
     // Index of the EUROPEAN range 
     private static final int INDEX_EUROPEAN = 0;
 
     // Index of the ARABIC range 
     private static final int INDEX_ARABIC = 1;
 
-    // Index of the EASTERN_ARABIC range 
+    // Index of the EASTERN_ARABIC range    
     private static final int INDEX_EASTERN_ARABIC = 2;
 
     // Index of the DEVANAGARI range 
@@ -193,7 +193,7 @@ public final class NumericShaper implements Serializable {
             0x17B0,             // KHMER
             0x17E0              // MONGOLIAN
     };
-    
+
     // Set of context names used in toString method
     private final String[] contexts = {
             "EUROPEAN",
@@ -225,6 +225,7 @@ public final class NumericShaper implements Serializable {
      * This array was generated using UnicodeData.txt file from  
      * http://www.unicode.org/Public/UNIDATA/ 
      */
+
     private static final int[] STRONG_TEXT_FLAGS = { 0, 0, 134217726, 134217726,
             0, 69207040, -8388609, -8388609, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -65533, -1, -1, -100663297, 196611, 16415, 0, 0, 0,
@@ -348,13 +349,12 @@ public final class NumericShaper implements Serializable {
     // index of context range (Serialization support)
     private int key;
     
-    // flag, indicating if shaping is contextual and 
-    // which ranges are specified (Serialization support)
+    // flag, true if shaping contextual (Serialization support)
     private int mask;
-    
+
     // ranges to be shaped
     private int fRanges;
-    
+
     // index of the default context
     private int fDefaultContextIndex;
 
@@ -630,7 +630,7 @@ public final class NumericShaper implements Serializable {
         }
 
     }
-    
+
     /**
      * Returns the index of the script of the specified char.
      * 
@@ -665,7 +665,7 @@ public final class NumericShaper implements Serializable {
      * according to the serialized form of this class mentioned in the 
      * documentation.
      */
-    private void updateRangesFields(){
+     private void updateRangesFields(){
         fRanges = (mask & ~(1 << 31));
         fContextual = ((mask &(1 << 31)) != 0);
         if (fContextual){

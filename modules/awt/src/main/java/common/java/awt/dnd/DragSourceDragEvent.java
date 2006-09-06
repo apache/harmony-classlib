@@ -19,7 +19,7 @@
  */
 package java.awt.dnd;
 
-import java.awt.event.KeyEvent;
+import java.awt.event.InputEvent;
 
 public class DragSourceDragEvent extends DragSourceEvent {
 
@@ -44,12 +44,10 @@ public class DragSourceDragEvent extends DragSourceEvent {
     }
 
     private void initFields(int dropAction, int action, int modifiers) {
-        KeyEvent converter = new KeyEvent(null, 0, 0l, modifiers, 0, (char) 0);
-
         userAction = dropAction;
         targetAction = action;
-        modifiers = converter.getModifiers();
-        modifiersEx = converter.getModifiersEx();
+        this.modifiers = getInputModifiers(modifiers);
+        this.modifiersEx = modifiers;
     }
 
     public int getUserAction() {
@@ -72,4 +70,35 @@ public class DragSourceDragEvent extends DragSourceEvent {
         return (userAction & targetAction & getDragSourceContext().getSourceActions());
     }
 
+    private int getInputModifiers(int modifiersEx) {
+        // TODO: share this code with KeyEvent.getModifiers()
+        int modifiers = 0;
+
+        if ((modifiersEx & InputEvent.SHIFT_DOWN_MASK) != 0) {
+            modifiers |= InputEvent.SHIFT_MASK;
+        }
+        if ((modifiersEx & InputEvent.CTRL_DOWN_MASK) != 0) {
+            modifiers |= InputEvent.CTRL_MASK;
+        }
+        if ((modifiersEx & InputEvent.META_DOWN_MASK) != 0) {
+            modifiers |= InputEvent.META_MASK;
+        }
+        if ((modifiersEx & InputEvent.ALT_DOWN_MASK) != 0) {
+            modifiers |= InputEvent.ALT_MASK;
+        }
+        if ((modifiersEx & InputEvent.ALT_GRAPH_DOWN_MASK) != 0) {
+            modifiers |= InputEvent.ALT_GRAPH_MASK;
+        }
+        if ((modifiersEx & InputEvent.BUTTON1_DOWN_MASK) != 0) {
+            modifiers |= InputEvent.BUTTON1_MASK;
+        }
+        if ((modifiersEx & InputEvent.BUTTON2_DOWN_MASK) != 0) {
+            modifiers |= InputEvent.BUTTON2_MASK;
+        }
+        if ((modifiersEx & InputEvent.BUTTON3_DOWN_MASK) != 0) {
+            modifiers |= InputEvent.BUTTON3_MASK;
+        }
+
+        return modifiers;
+    }
 }

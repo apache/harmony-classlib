@@ -28,7 +28,9 @@ HYCFLAGS = \
 
 BUILDFILES = \
   Callback.obj \
-  org_apache_harmony_awt_nativebridge_windows_Win32.obj
+  org_apache_harmony_awt_nativebridge_windows_Win32.obj \
+  WinDataTransfer.obj \
+  WinManagement.obj
 
 VIRTFILES = $(LIBBASE).res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib

@@ -31,9 +31,11 @@ import org.apache.harmony.awt.nativebridge.windows.WindowsDefs;
 /**
  * Implementation of CursorFactory for Windows platform.
  */
-public class WinCursorFactory extends CursorFactory implements WindowsDefs {
+public class WinCursorFactory extends CursorFactory {
 
     static final Win32 win32 = Win32.getInstance();
+
+    final WinEventQueue eventQueue;
 
     /**
      * Java to native type translation table:
@@ -41,29 +43,33 @@ public class WinCursorFactory extends CursorFactory implements WindowsDefs {
      * commented Java cursor type
      */
     static final long [] predefined = {
-            IDC_ARROW/*OCR_NORMAL*/, /*DEFAULT_CURSOR*/
-            IDC_CROSS/*OCR_CROSS*/, /*CROSSHAIR_CURSOR*/
-            IDC_IBEAM/*OCR_IBEAM*/, /*TEXT_CURSOR*/
-            IDC_WAIT /*OCR_WAIT*/, /*WAIT_CURSOR*/
-            IDC_SIZENESW/*OCR_SIZENESW*/, /*SW_RESIZE_CURSOR*/
-            IDC_SIZENWSE/*OCR_SIZENWSE*/, /*SE_RESIZE_CURSOR*/
-            IDC_SIZENWSE/*OCR_SIZENWSE*/, /*NW_RESIZE_CURSOR*/
-            IDC_SIZENESW/*OCR_SIZENESW*/, /*NE_RESIZE_CURSOR*/
-            IDC_SIZENS/*OCR_SIZENS*/, /*N_RESIZE_CURSOR*/
-            IDC_SIZENS/*OCR_SIZENS*/, /*S_RESIZE_CURSOR*/
-            IDC_SIZEWE/*OCR_SIZEWE*/, /*W_RESIZE_CURSOR*/
-            IDC_SIZEWE/*OCR_SIZEWE*/, /*E_RESIZE_CURSOR*/
-            IDC_HAND/*OCR_HAND*/, /*HAND_CURSOR*/
-            IDC_SIZEALL/*OCR_SIZEALL*/, /*MOVE_CURSOR*/
+            WindowsDefs.IDC_ARROW/*OCR_NORMAL*/, /*DEFAULT_CURSOR*/
+            WindowsDefs.IDC_CROSS/*OCR_CROSS*/, /*CROSSHAIR_CURSOR*/
+            WindowsDefs.IDC_IBEAM/*OCR_IBEAM*/, /*TEXT_CURSOR*/
+            WindowsDefs.IDC_WAIT /*OCR_WAIT*/, /*WAIT_CURSOR*/
+            WindowsDefs.IDC_SIZENESW/*OCR_SIZENESW*/, /*SW_RESIZE_CURSOR*/
+            WindowsDefs.IDC_SIZENWSE/*OCR_SIZENWSE*/, /*SE_RESIZE_CURSOR*/
+            WindowsDefs.IDC_SIZENWSE/*OCR_SIZENWSE*/, /*NW_RESIZE_CURSOR*/
+            WindowsDefs.IDC_SIZENESW/*OCR_SIZENESW*/, /*NE_RESIZE_CURSOR*/
+            WindowsDefs.IDC_SIZENS/*OCR_SIZENS*/, /*N_RESIZE_CURSOR*/
+            WindowsDefs.IDC_SIZENS/*OCR_SIZENS*/, /*S_RESIZE_CURSOR*/
+            WindowsDefs.IDC_SIZEWE/*OCR_SIZEWE*/, /*W_RESIZE_CURSOR*/
+            WindowsDefs.IDC_SIZEWE/*OCR_SIZEWE*/, /*E_RESIZE_CURSOR*/
+            WindowsDefs.IDC_HAND/*OCR_HAND*/, /*HAND_CURSOR*/
+            WindowsDefs.IDC_SIZEALL/*OCR_SIZEALL*/, /*MOVE_CURSOR*/
 
     };
+
+    WinCursorFactory(WinEventQueue eventQueue) {
+        this.eventQueue = eventQueue;
+    }
     /**
      * @see org.apache.harmony.awt.wtk.CursorFactory#createCursor(int)
      */
     public NativeCursor createCursor(int type) {
         if (type >= 0 && type < predefined.length) {
             long hCursor = win32.LoadCursorW(0l, predefined[type]);
-            return new WinCursor(hCursor);
+            return new WinCursor(eventQueue, hCursor);
         }
         return null;
     }
@@ -73,15 +79,15 @@ public class WinCursorFactory extends CursorFactory implements WindowsDefs {
      */
     public NativeCursor createCustomCursor(Image img, int xHotSpot, int yHotSpot) {
         long hCursor = WinIcons.createIcon(false, img, xHotSpot, yHotSpot);
-        return new WinCursor(hCursor, false);
+        return new WinCursor(eventQueue, hCursor, false);
     }
 
     /**
      * @see org.apache.harmony.awt.wtk.CursorFactory#getBestCursorSize(int, int)
      */
     public Dimension getBestCursorSize(int prefWidth, int prefHeight) {
-        return new Dimension(win32.GetSystemMetrics(SM_CXCURSOR),
-                win32.GetSystemMetrics(SM_CYCURSOR));
+        return new Dimension(win32.GetSystemMetrics(WindowsDefs.SM_CXCURSOR),
+                win32.GetSystemMetrics(WindowsDefs.SM_CYCURSOR));
     }
 
     /**
@@ -89,11 +95,11 @@ public class WinCursorFactory extends CursorFactory implements WindowsDefs {
      */
     public int getMaximumCursorColors() {
         long screenDC = win32.GetDC(0);
-        int nColors = win32.GetDeviceCaps(screenDC, NUMCOLORS);
+        int nColors = win32.GetDeviceCaps(screenDC, WindowsDefs.NUMCOLORS);
         if (nColors < 0) {
             //if device has more than 256 colors:
             final int COLORS_PER_PLANE = 256;
-            int nPlanes = win32.GetDeviceCaps(screenDC, PLANES);
+            int nPlanes = win32.GetDeviceCaps(screenDC, WindowsDefs.PLANES);
             nColors = COLORS_PER_PLANE * nPlanes;
         }
         win32.ReleaseDC(0, screenDC);

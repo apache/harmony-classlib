@@ -21,7 +21,6 @@ package org.apache.harmony.awt.gl.font;
 
 import java.awt.font.FontRenderContext;
 
-import org.apache.harmony.awt.gl.font.FontManager;
 import org.apache.harmony.awt.gl.font.LineMetricsImpl;
 
 /**
@@ -32,7 +31,7 @@ public class LinuxLineMetrics extends LineMetricsImpl {
     
     // LinuxFont corresponding to this LineMetrics object
     private LinuxFont font = null;
-    
+
     /**
      * Constructor
      */
@@ -42,6 +41,10 @@ public class LinuxLineMetrics extends LineMetricsImpl {
         // TODO : FontRenderContext isn't used now
         float[] metrics = LinuxNativeFont.getNativeLineMetrics(fnt.getFontHandle(), fnt.getSize(), false, false, fnt.fontType);
 
+        if (metrics == null){
+            metrics = new float[17];
+        }
+        
         font = fnt;
         numChars = str.length();
         baseLineIndex = 0;
@@ -95,8 +98,29 @@ public class LinuxLineMetrics extends LineMetricsImpl {
     public float[] getBaselineOffsets() {
         // TODO: implement baseline offsets for TrueType fonts
         if (baselineOffsets == null){
-            baseLineIndex = 0;
-            baselineOffsets = new float[]{0, (-ascent+descent)/2, -ascent};
+            float[] baselineData = null;
+
+            // Temporary workaround:
+            // Commented out native data initialization, since it can 
+            // cause failures with opening files in multithreaded applications.
+            //
+            // TODO: support work with truetype data in multithreaded
+            // applications.
+
+            // If font TrueType data is taken from BASE table
+//            if ((this.font.getFontHandle() != 0) && (font.getFontType() == FontManager.FONT_TYPE_TT)){
+//                baselineData = LinuxNativeFont.getBaselineOffsetsNative(font.getFontHandle(), font.getSize(), ascent, descent, units_per_EM);
+//            }
+//
+//            if (baselineData == null){
+                baseLineIndex = 0;
+                baselineOffsets = new float[]{0, (-ascent+descent)/2, -ascent};
+//            } else {
+//                baseLineIndex = (int)baselineData[3];
+//                baselineOffsets = new float[3];
+//                System.arraycopy(baselineData, 0, baselineOffsets, 0, 3);
+//            }
+
         }
 
         return baselineOffsets;

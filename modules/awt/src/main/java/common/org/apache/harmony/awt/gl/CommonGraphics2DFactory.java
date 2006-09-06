@@ -63,52 +63,10 @@ public abstract class CommonGraphics2DFactory implements GraphicsFactory {
 
         return fm;
     }
-    
-    /**
-     * Returns native dependent FontPeer object applicable to the specified font.
-     * 
-     * @param font specified Font
-     * @return FontPeer object
-     */
-    public FontPeer createFontPeer(Font font) {
-        StringBuffer init = new StringBuffer();
-        init.append(font.getName());
-        init.append(font.getStyle());
-        init.append(font.getSize());
-        return getFontManager().setFont(init.toString(), font);
-    }
+    // Font methods
 
-    /**
-     * Manages resources of the FontPeer corresponding to the specified font.
-     * If there is no other Font objects that links on the applicaple FontPeer than
-     * this font peer is to be disposed, otherwise links counter in the FontPeer 
-     * object is decreased by one. 
-     * 
-     * @param font specified Font
-     */
-    public void freeFontPeer(Font font) {
-        StringBuffer init = new StringBuffer();
-        init.append(font.getName());
-        init.append(font.getStyle());
-        init.append(font.getSize());
-        getFontManager().deleteFont(init.toString());
-    }
-
-    /**
-     * Returns native dependent FontPeer object applicable to the specified 
-     * FontProperty object and size of the font. 
-     * !! This constructor mostly used for LinuxFont creation where font 
-     * families names in font properties lowercased. 
-     * 
-     * @param font specified Font
-     * @return FontPeer object
-     */
-    public FontPeer createFontPeer(FontProperty fp, int size){
-        StringBuffer init = new StringBuffer();
-        init.append(fp.getName());
-        init.append(fp.getStyle());
-        init.append(size);
-        return getFontManager().setFont(init.toString(), fp, size);
+    public FontPeer getFontPeer(Font font) {
+        return getFontManager().getFontPeer(font.getName(), font.getStyle(), font.getSize());
     }
     
     /**

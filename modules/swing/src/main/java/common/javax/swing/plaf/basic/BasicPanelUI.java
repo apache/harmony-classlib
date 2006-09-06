@@ -69,8 +69,9 @@ public class BasicPanelUI extends PanelUI {
      * Installs default properties for given panel
      */
     protected void installDefaults(final JPanel panel) {
-        LookAndFeel.installColors(panel, PROPERTY_PREFIX + "background",
-                                  PROPERTY_PREFIX + "foreground");
+        LookAndFeel.installColorsAndFont(panel, PROPERTY_PREFIX + "background",
+                                         PROPERTY_PREFIX + "foreground",
+                                         PROPERTY_PREFIX + "font");
         LookAndFeel.installBorder(panel, PROPERTY_PREFIX + "border");
     }
 

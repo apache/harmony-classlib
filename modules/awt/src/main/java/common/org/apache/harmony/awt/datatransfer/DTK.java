@@ -19,9 +19,16 @@
  */
 package org.apache.harmony.awt.datatransfer;
 
-import java.awt.datatransfer.FlavorMap;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.SystemFlavorMap;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DropTargetContext;
+import java.awt.dnd.peer.DragSourceContextPeer;
+import java.awt.dnd.peer.DropTargetContextPeer;
+import java.nio.charset.Charset;
 
 import org.apache.harmony.awt.ContextStorage;
+import org.apache.harmony.misc.SystemUtils;
 
 /**
  * Data transfer ToolKit.
@@ -29,24 +36,21 @@ import org.apache.harmony.awt.ContextStorage;
  */
 public abstract class DTK {
 
-    private static final String osName = System.getProperty("os.name").toLowerCase();
-
-    /**
-     * Descriptor of text representation in native platform (common for all application contexts).
-     */
-    public static final NativeTextDescriptor textDescriptor =
-            getContextInstance().newTextDescriptor();
-
-    private NativeTranslationManager translationManager = null;
     private NativeClipboard nativeClipboard = null;
     private NativeClipboard nativeSelection = null;
 
-    private FlavorMap flavorMap = null;
+    protected SystemFlavorMap systemFlavorMap;
 
+    protected final DataTransferThread dataTransferThread;
+
+    protected DTK() {
+        dataTransferThread = new DataTransferThread(this);
+        dataTransferThread.start();
+    }
     /**
      * Returns data transfer toolkit for current application context.
      */
-    public static DTK getContextInstance() {
+    public static DTK getDTK() {
         synchronized(ContextStorage.getContextLock()) {
             if (ContextStorage.shutdownPending()) {
                 return null;
@@ -55,22 +59,7 @@ public abstract class DTK {
             DTK instance = ContextStorage.getDTK();
 
             if (instance == null) {
-                String name;
-
-                if (osName.startsWith("linux")) {
-                    name = "org.apache.harmony.awt.datatransfer.linux.LinuxDTK";
-                } else if (osName.startsWith("windows")) {
-                    name = "org.apache.harmony.awt.datatransfer.windows.WinDTK";
-                } else {
-                    throw new RuntimeException("Unknown native platform.");
-                }
-
-                try {
-                    instance = (DTK) Class.forName(name).newInstance();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-
+                instance = createDTK();
                 ContextStorage.setDTK(instance);
             }
 
@@ -82,27 +71,16 @@ public abstract class DTK {
      * Returns system flavor map for current application context.
      * For use from SystemFlavorMap.getDefaultFlavorMap() only
      */
-    public FlavorMap getFlavorMap() {
-        return flavorMap;
+    public synchronized SystemFlavorMap getSystemFlavorMap() {
+        return systemFlavorMap;
     }
 
     /**
      * Sets system flavor map for current application context.
      * For use from SystemFlavorMap.getDefaultFlavorMap() only.
      */
-    public void setFlavorMap(FlavorMap flavorMap) {
-        this.flavorMap = flavorMap;
-    }
-
-    /**
-     * Returns clipboard translation manager for current application context.
-     */
-    public NativeTranslationManager getTranslationManager() {
-        if (translationManager == null) {
-            translationManager = newTranslationManager();
-        }
-
-        return translationManager;
+    public synchronized void setSystemFlavorMap(SystemFlavorMap newFlavorMap) {
+        this.systemFlavorMap = newFlavorMap;
     }
 
     /**
@@ -136,15 +114,92 @@ public abstract class DTK {
      * Creates native selection for current native platform.
      */
     protected abstract NativeClipboard newNativeSelection();
+    
+    public abstract void initDragAndDrop();
+    
+    public abstract void runEventLoop();
 
-    /**
-     * Creates text descriptor for current native platform.
-     */
-    protected abstract NativeTextDescriptor newTextDescriptor();
+    public abstract DropTargetContextPeer createDropTargetContextPeer(
+            DropTargetContext context);
 
-    /**
-     * Creates translation manager for current native platform.
-     */
-    protected abstract NativeTranslationManager newTranslationManager();
+    public abstract DragSourceContextPeer createDragSourceContextPeer(
+            DragGestureEvent dge);
+    
+    private static DTK createDTK() {
+        String name;
+        switch (SystemUtils.getOS()) {
+        case SystemUtils.OS_WINDOWS:
+            name = "org.apache.harmony.awt.datatransfer.windows.WinDTK";
+            break;
+        case SystemUtils.OS_LINUX:
+            name = "org.apache.harmony.awt.datatransfer.linux.LinuxDTK";
+            break;
+        default:
+            throw new RuntimeException("Unknown native platform.");
+        }
+        try {
+            DTK dtk = (DTK) Class.forName(name).newInstance();
+            return dtk;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    public String getDefaultCharset() {
+        return "unicode";
+    }
 
+    protected String[] getCharsets() {
+        return new String[] { 
+                "UTF-16", "UTF-8", "unicode", "ISO-8859-1", "US-ASCII" };
+    }
+
+    public void initSystemFlavorMap(SystemFlavorMap fm) {
+        String[] charsets = getCharsets();
+        
+        appendSystemFlavorMap(fm,
+                DataFlavor.stringFlavor, 
+                DataProvider.FORMAT_TEXT);
+        appendSystemFlavorMap(fm,
+                charsets, "plain",
+                DataProvider.FORMAT_TEXT);
+
+        appendSystemFlavorMap(fm,
+                charsets, "html",
+                DataProvider.FORMAT_HTML);
+        
+        appendSystemFlavorMap(fm,
+                DataProvider.urlFlavor, 
+                DataProvider.FORMAT_URL);
+        appendSystemFlavorMap(fm,
+                charsets, "uri-list",
+                DataProvider.FORMAT_URL);
+        
+        appendSystemFlavorMap(fm,
+                DataFlavor.javaFileListFlavor, 
+                DataProvider.FORMAT_FILE_LIST);
+
+        appendSystemFlavorMap(fm,
+                DataFlavor.imageFlavor, 
+                DataProvider.FORMAT_IMAGE);
+    }
+
+    protected void appendSystemFlavorMap(SystemFlavorMap fm, 
+                                         DataFlavor flav,
+                                         String nat) {
+        fm.addFlavorForUnencodedNative(nat, flav);
+        fm.addUnencodedNativeForFlavor(flav, nat);
+    }
+
+    protected void appendSystemFlavorMap(SystemFlavorMap fm,
+                                         String[] charsets,
+                                         String subType,
+                                         String nat) {
+        TextFlavor.addUnicodeClasses(fm, nat, subType);
+        for (int i = 0; i < charsets.length; i++) {
+            if (charsets[i] != null && Charset.isSupported(charsets[i])) {
+                TextFlavor.addCharsetClasses(fm, nat, subType, charsets[i]);
+            }
+        }
+    }
 }

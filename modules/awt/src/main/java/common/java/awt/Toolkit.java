@@ -46,9 +46,9 @@ public abstract class Toolkit {
     private static final ResourceBundle properties = loadResources(RECOURCE_PATH);
 
     final Dispatcher dispatcher;
-    final EventQueue systemEventQueue;
+    private EventQueueCore systemEventQueueCore;
     final EventDispatchThread dispatchThread;
-    private ShutdownThread shutdownThread;
+    NativeEventThread nativeThread;
     private final AWTEventsManager awtEventsManager;
     /* key = nativeWindow, value = Component, should be Map<NativeWindow, Component> */
     private final Map windowComponentMap = new HashMap();
@@ -60,12 +60,11 @@ public abstract class Toolkit {
 
     final Object awtTreeLock = new Object();
     private final Synchronizer synchronizer = ContextStorage.getSynchronizer();
-    private final Object shutdownThreadLock = new Object();
+    final ShutdownWatchdog shutdownWatchdog = new ShutdownWatchdog();
 
     final Theme theme = createTheme();
 
     final AutoNumber autoNumber = new AutoNumber();
-    final EventQueue.LastEvent eventQueueLastEvent = new EventQueue.LastEvent();
     final AWTEvent.EventTypeLookup eventTypeLookup = new AWTEvent.EventTypeLookup();
     final Frame.AllFrames allFrames = new Frame.AllFrames();
 
@@ -99,6 +98,7 @@ public abstract class Toolkit {
     final WindowList windows = new WindowList();
 
     private WTK wtk = null;
+    final DTK dtk;
 
     private final class ComponentInternalsImpl extends ComponentInternals {
 
@@ -261,14 +261,21 @@ public abstract class Toolkit {
         public MultiRectArea getObscuredRegion(Component c) {
             return c.getObscuredRegion(null);
         }
-    }
 
-    void stopShutdownThread() {
-        synchronized(shutdownThreadLock) {
-            if (shutdownThread != null) {
-                shutdownThread.shutdown();
-                shutdownThread = null;
-            }
+        public void setDesktopProperty(String name, Object value) {
+            Toolkit.this.setDesktopProperty(name, value);            
+        }
+
+        public void runModalLoop(Dialog dlg) {
+            dlg.runModalLoop();
+        }
+
+        public void endModalLoop(Dialog dlg) {
+            dlg.endModalLoop();            
+        }
+
+        public void setVisibleFlag(Component comp, boolean visible) {
+            comp.visible = visible;            
         }
     }
 
@@ -364,8 +371,6 @@ public abstract class Toolkit {
                 try {
                     defToolkit = new ToolkitImpl();
                     ContextStorage.setDefaultToolkit(defToolkit);
-                    defToolkit.getNativeEventQueue().awake();
-
                     return defToolkit;
                 } finally {
                     staticUnlockAWT();
@@ -374,21 +379,6 @@ public abstract class Toolkit {
         //TODO: read system property named awt.toolkit
         //and create an instance of the specified class,
         //by default use ToolkitImpl
-        }
-    }
-
-    void validateShutdownThread() {
-        synchronized(shutdownThreadLock) {
-            if (shutdownThread == null) {
-                shutdownThread = new ShutdownThread();
-                shutdownThread.startAndInit();
-                if (systemClipboard != null) {
-                    systemClipboard.onRestart();
-                }
-                if (systemSelection != null) {
-                    systemSelection.onRestart();
-                }
-            }
         }
     }
 
@@ -448,25 +438,34 @@ public abstract class Toolkit {
     public Toolkit() {
         lockAWT();
         try {
-            systemEventQueue = new EventQueue(true, this);
-            dispatcher = new Dispatcher(systemEventQueue, this);
+            ComponentInternals.setComponentInternals(new ComponentInternalsImpl());
+            EventQueue eq = new EventQueue(this);
+            dispatcher = new Dispatcher(this);
             final String className = getWTKClassName();
 
             desktopProperties = new HashMap();
             desktopPropsSupport = new PropertyChangeSupport(this);
 
             awtEventsManager = new AWTEventsManager();
-            dispatchThread = new EventDispatchThread(this, systemEventQueue, dispatcher);
-            dispatchThread.startAndInit(new Runnable() {
-                    public void run() {
-                        wtk = createWTK(className);
-                        synchronizer.setEnvironment(wtk, dispatchThread);
-                        ContextStorage.setWTK(wtk);
-                    }
-                }
-            );
+            dispatchThread = new EventDispatchThread(this, dispatcher);
+            nativeThread = new NativeEventThread();
+            
+            dtk = DTK.getDTK();
 
-            ComponentInternals.setComponentInternals(new ComponentInternalsImpl());
+            NativeEventThread.Init init = new NativeEventThread.Init() {
+                public WTK init() {
+                    wtk = createWTK(className);
+                    wtk.getNativeEventQueue().setShutdownWatchdog(shutdownWatchdog);
+                    synchronizer.setEnvironment(wtk, nativeThread);
+                    ContextStorage.setWTK(wtk);
+                    dtk.initDragAndDrop();
+                    return wtk;
+                }
+            };
+            nativeThread.start(init);
+            
+            dispatchThread.start();
+            wtk.getNativeEventQueue().awake();
         } finally {
             unlockAWT();
         }
@@ -556,7 +555,10 @@ public abstract class Toolkit {
 
     Map mapInputMethodHighlightImpl(InputMethodHighlight highlight)
             throws HeadlessException {
-        return null;
+        checkHeadless();
+        HashMap map = new HashMap();
+        wtk.getSystemProperties().mapInputMethodHighlight(highlight, map);
+        return Collections.unmodifiableMap(map);
     }
 
     public void addPropertyChangeListener(String propName, PropertyChangeListener l) {
@@ -733,14 +735,21 @@ public abstract class Toolkit {
     }
 
     public final EventQueue getSystemEventQueue() {
-        lockAWT();
-        try {
-            return getSystemEventQueueImpl();
-        } finally {
-            unlockAWT();
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkAwtEventQueueAccess();
         }
+        return getSystemEventQueueImpl();
     }
 
+    EventQueueCore getSystemEventQueueCore() {
+        return systemEventQueueCore;
+    }
+    
+    void setSystemEventQueueCore(EventQueueCore core) {
+        systemEventQueueCore = core;
+    }
+    
     public Clipboard getSystemSelection() throws HeadlessException {
         lockAWT();
         try {
@@ -753,7 +762,7 @@ public abstract class Toolkit {
             }
 
             if (systemSelection == null) {
-                systemSelection = DTK.getContextInstance().getNativeSelection();
+                systemSelection = dtk.getNativeSelection();
             }
 
             return systemSelection;
@@ -765,6 +774,7 @@ public abstract class Toolkit {
     protected void initializeDesktopProperties() {
         lockAWT();
         try {
+            wtk.getSystemProperties().init(desktopProperties);
         } finally {
             unlockAWT();
         }
@@ -861,7 +871,7 @@ public abstract class Toolkit {
             if (systemSelection != null) {
                 systemSelection.onShutdown();
             }
-            stopShutdownThread();
+            shutdownWatchdog.setWindowListEmpty(true);
         } else {
             for (Iterator i = windows.iterator(); i.hasNext();) {
                 ((Window) i.next()).redrawAll();
@@ -942,7 +952,7 @@ public abstract class Toolkit {
         NativeWindow win = getWindowFactory().createWindow(cp);
         nativeWindowCreated(win);
 
-        validateShutdownThread();
+        shutdownWatchdog.setWindowListEmpty(false);
 
         return win;
     }
@@ -1024,7 +1034,7 @@ public abstract class Toolkit {
         nativeWindowCreated(win);
 
         if (c instanceof Window) {
-            validateShutdownThread();
+            shutdownWatchdog.setWindowListEmpty(false);
         }
 
         return win;
@@ -1232,7 +1242,7 @@ public abstract class Toolkit {
 
         return new Theme();
     }
-
+    
     final class AWTEventsManager {
 
         AWTPermission permission = new AWTPermission("listenToAllAWTEvents");

@@ -21,6 +21,7 @@ package java.awt.dnd;
 
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.util.List;
 
 public class DropTargetDragEvent extends DropTargetEvent {
@@ -65,4 +66,7 @@ public class DropTargetDragEvent extends DropTargetEvent {
         return context.getCurrentDataFlavors();
     }
 
+    public Transferable getTransferable() {
+        return context.getTransferable();
+    }
 }

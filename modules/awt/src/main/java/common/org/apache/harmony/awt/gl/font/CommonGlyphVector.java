@@ -50,6 +50,7 @@ public class CommonGlyphVector extends GlyphVector {
     float[] defaultPositions;
 
     // array of logical positions of glyphs in GlyphVector
+
     float[] logicalPositions;
 
     // array of visual (real) positions of glyphs in GlyphVector
@@ -60,7 +61,7 @@ public class CommonGlyphVector extends GlyphVector {
 
     // layout flags mask
     protected int layoutFlags = 0;
-    
+
     // array of cached glyph outlines 
     protected Shape[] gvShapes;
 
@@ -203,7 +204,7 @@ public class CommonGlyphVector extends GlyphVector {
     /**
      * Returnes the pixel bounds of this GlyphVector rendered at the 
      * specified x,y location with the given FontRenderContext.
-     * 
+     *  
      * @param frc a FontRenderContext that is used
      * @param x specified x coordinate value
      * @param y specified y coordinate value
@@ -459,7 +460,7 @@ public class CommonGlyphVector extends GlyphVector {
     /**
      * Returnes the pixel bounds of the specified glyph within GlyphVector 
      * rendered at the specified x,y location.
-     * 
+     *  
      * @param glyphIndex index of the glyph
      * @param frc a FontRenderContext that is used
      * @param x specified x coordinate value
@@ -859,7 +860,7 @@ public class CommonGlyphVector extends GlyphVector {
     }
 
     /**
-     * Clear desired flags in layout flags describing the state.
+     * Clear desired flags in layout flags describing the state. 
      * 
      * @param clearFlags flags mask to clear 
      */

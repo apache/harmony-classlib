@@ -39,11 +39,11 @@ class PreviewPanel extends JPanel {
     private static final int TOP_OFFSET = 10;
     private static final int TEXT_OFFSET = 10;
     
-    private int sampleWidth = 180;
-    private int sampleHeight = 20;
+    private int sampleWidth;
+    private int sampleHeight;
             
-    private int swatchSize = 40;
-    private int swatchOffset = sampleWidth * 2 + TEXT_OFFSET * 2;
+    private int swatchSize;
+    private int swatchOffset;
     
     private Polygon oldColorPoly = new Polygon(new int[]{swatchOffset, swatchOffset + swatchSize, swatchOffset + swatchSize}, 
                                                               new int[]{TOP_OFFSET, TOP_OFFSET, TOP_OFFSET + swatchSize},

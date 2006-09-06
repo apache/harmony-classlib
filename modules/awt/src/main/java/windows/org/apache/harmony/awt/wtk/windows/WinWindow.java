@@ -104,8 +104,8 @@ final class WinWindow implements NativeWindow {
     }
 
     public void setVisible(final boolean visible) {
-        NativeServer.Callback callback = new NativeServer.Callback () {
-            void body() {
+        WinEventQueue.Task task = new WinEventQueue.Task () {
+            public void perform() {
                 int cmd;
                 if (visible) {
                     cmd = iconified ? WindowsDefs.SW_SHOWMINNOACTIVE : WindowsDefs.SW_SHOW;
@@ -116,12 +116,12 @@ final class WinWindow implements NativeWindow {
                 win32.ShowWindow(hwnd, cmd);
             }
         };
-        factory.nativeServer.invokeAndWait(callback);
+        factory.eventQueue.performTask(task);
     }
 
     public void setBounds(final int x, final int y, final int w, final int h, final int boundsMask) {
-        NativeServer.Callback callback = new NativeServer.Callback () {
-            void body() {
+        WinEventQueue.Task task = new WinEventQueue.Task () {
+            public void perform() {
                 if (iconified || maximized) {
                     setNotNormalBounds(x, y, w, h, boundsMask);
                 } else {
@@ -129,7 +129,7 @@ final class WinWindow implements NativeWindow {
                 }
             }
         };
-        factory.nativeServer.invokeAndWait(callback);
+        factory.eventQueue.performTask(task);
     }
 
     private void setNotNormalBounds(int x, int y, int w, int h, int boundsMask) {
@@ -198,86 +198,86 @@ final class WinWindow implements NativeWindow {
     }
 
     public void setEnabled(final boolean value) {
-        NativeServer.Callback callback = new NativeServer.Callback () {
-            void body() {
+        WinEventQueue.Task task = new WinEventQueue.Task () {
+            public void perform() {
                 win32.EnableWindow(hwnd, value ? 1 : 0);
             }
         };
-        factory.nativeServer.invokeAndWait(callback);
+        factory.eventQueue.performTask(task);
     }
 
     public void dispose() {
-        NativeServer.Callback callback = new NativeServer.Callback () {
-            void body() {
+        WinEventQueue.Task task = new WinEventQueue.Task () {
+            public void perform() {
                 factory.remove(WinWindow.this);
                 win32.DestroyWindow(hwnd);
             }
         };
-        factory.nativeServer.invokeAndWait(callback);
+        factory.eventQueue.performTask(task);
     }
 
     /**
      * @see org.apache.harmony.awt.wtk.NativeWindow#placeAfter(org.apache.harmony.awt.wtk.NativeWindow)
      */
     public void placeAfter(final NativeWindow w) {
-        NativeServer.Callback callback = new NativeServer.Callback () {
-            void body() {
+        WinEventQueue.Task task = new WinEventQueue.Task () {
+            public void perform() {
                 long hwndPrev = (w == null ? WindowsDefs.HWND_TOP : w.getId());
                 int flags = WindowsDefs.SWP_NOMOVE | WindowsDefs.SWP_NOSIZE;
                 win32.SetWindowPos(hwnd, hwndPrev, 0, 0, 0, 0, flags);
             }
         };
-        factory.nativeServer.invokeAndWait(callback);
+        factory.eventQueue.performTask(task);
     }
 
     public void toFront() {
-        NativeServer.Callback callback = new NativeServer.Callback () {
-            void body() {
+        WinEventQueue.Task task = new WinEventQueue.Task () {
+            public void perform() {
                 int flags = WindowsDefs.SWP_NOMOVE | WindowsDefs.SWP_NOSIZE;
                 win32.SetWindowPos(hwnd, WindowsDefs.HWND_TOP, 0, 0, 0, 0, flags);
                 win32.SetForegroundWindow(hwnd);
             }
         };
-        factory.nativeServer.invokeAndWait(callback);
+        factory.eventQueue.performTask(task);
     }
 
     public void toBack() {
-        NativeServer.Callback callback = new NativeServer.Callback () {
-            void body() {
+        WinEventQueue.Task task = new WinEventQueue.Task () {
+            public void perform() {
                 int flags = WindowsDefs.SWP_NOMOVE | WindowsDefs.SWP_NOSIZE;
                 win32.SetWindowPos(hwnd, WindowsDefs.HWND_BOTTOM, 0, 0, 0, 0, flags);
             }
         };
-        factory.nativeServer.invokeAndWait(callback);
+        factory.eventQueue.performTask(task);
     }
 
     public boolean setFocus(final boolean focus) {
-        NativeServer.Callback callback = new NativeServer.Callback () {
-            void body() {
+        WinEventQueue.Task task = new WinEventQueue.Task () {
+            public void perform() {
                 long res = win32.SetFocus(focus ? hwnd : 0);
                 returnValue = new Boolean(res != 0);
             }
         };
-        factory.nativeServer.invokeAndWait(callback);
-        return ((Boolean) callback.returnValue).booleanValue();
+        factory.eventQueue.performTask(task);
+        return ((Boolean) task.returnValue).booleanValue();
     }
 
     public void setTitle(final String title) {
-        NativeServer.Callback callback = new NativeServer.Callback () {
-            void body() {
+        WinEventQueue.Task task = new WinEventQueue.Task () {
+            public void perform() {
                 win32.SetWindowTextW(hwnd, title);
             }
         };
-        factory.nativeServer.invokeAndWait(callback);
+        factory.eventQueue.performTask(task);
     }
 
     public void setResizable(final boolean value) {
-        NativeServer.Callback callback = new NativeServer.Callback () {
-            void body() {
+        WinEventQueue.Task task = new WinEventQueue.Task () {
+            public void perform() {
                 modifyStyle(WindowsDefs.WS_SIZEBOX|WindowsDefs.WS_MAXIMIZEBOX, value);
             }
         };
-        factory.nativeServer.invokeAndWait(callback);
+        factory.eventQueue.performTask(task);
     }
 
     public void grabMouse() {
@@ -353,8 +353,8 @@ final class WinWindow implements NativeWindow {
     }
 
     public void setState(final int state) {
-        NativeServer.Callback callback = new NativeServer.Callback () {
-            void body() {
+        WinEventQueue.Task task = new WinEventQueue.Task () {
+            public void perform() {
                 if (state == Frame.NORMAL) {
                     win32.ShowWindow(hwnd, WindowsDefs.SW_SHOWNORMAL);
                 } else if (state == Frame.MAXIMIZED_BOTH) {
@@ -377,15 +377,15 @@ final class WinWindow implements NativeWindow {
                 }
             }
         };
-        factory.nativeServer.invokeAndWait(callback);
+        factory.eventQueue.performTask(task);
     }
 
     /**
      * @see org.apache.harmony.awt.wtk.NativeWindow#setIconImage(java.awt.Image)
      */
     public void setIconImage(final Image image) {
-        NativeServer.Callback callback = new NativeServer.Callback () {
-            void body() {
+        WinEventQueue.Task task = new WinEventQueue.Task () {
+            public void perform() {
                 long hIcon = 0;
                 if (image != null) {
                     hIcon = WinIcons.createIcon(true, image, 0, 0);
@@ -394,7 +394,7 @@ final class WinWindow implements NativeWindow {
                 win32.SendMessageW(hwnd, WindowsDefs.WM_SETICON, WindowsDefs.ICON_SMALL, hIcon);
             }
         };
-        factory.nativeServer.invokeAndWait(callback);
+        factory.eventQueue.performTask(task);
 
     }
 
@@ -423,15 +423,15 @@ final class WinWindow implements NativeWindow {
      * @see org.apache.harmony.awt.wtk.NativeWindow#setAlwaysOnTop(boolean)
      */
     public void setAlwaysOnTop(final boolean value) {
-        NativeServer.Callback callback = new NativeServer.Callback () {
-            void body() {
+        WinEventQueue.Task task = new WinEventQueue.Task () {
+            public void perform() {
                 int hwndInsertAfter = (value ? WindowsDefs.HWND_TOPMOST : WindowsDefs.HWND_NOTOPMOST);
                 int flags = WindowsDefs.SWP_NOMOVE | WindowsDefs.SWP_NOSIZE |
                         WindowsDefs.SWP_NOACTIVATE;
                 win32.SetWindowPos(hwnd, hwndInsertAfter, 0, 0, 0, 0, flags);
             }
         };
-        factory.nativeServer.invokeAndWait(callback);
+        factory.eventQueue.performTask(task);
     }
 
     public void setPacked(boolean packed) {
@@ -440,5 +440,12 @@ final class WinWindow implements NativeWindow {
 
     public MultiRectArea getObscuredRegion(Rectangle part) {
         return WinManagement.getObscuredRegion(hwnd, part);
+    }
+
+    public void setIMStyle() {
+        // set small title bar:
+        factory.setWindowExStyle(getId(), WindowsDefs.WS_EX_PALETTEWINDOW);
+        // remove system menu & buttons:
+        modifyStyle(WindowsDefs.WS_SYSMENU, false);        
     }
 }

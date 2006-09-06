@@ -36,10 +36,6 @@ import org.apache.harmony.awt.nativebridge.windows.WindowsDefs;
 import org.apache.harmony.awt.nativebridge.windows.Win32;
 
 /**
- * @author Ilya S. Okomin
- * @version $Revision$
- *
- * Created on 28.02.2005
  *
  * TextRenderer that works by means of GDI calls.
  */
@@ -267,7 +263,7 @@ public class GDITextRenderer extends TextRenderer {
         int charFontIndex = wcf.getCharFontIndex(str.charAt(0), 0);
         int fontIndex = charFontIndex;
 
-        WindowsFont physFont = (WindowsFont)wcf.physicalFonts[charFontIndex];
+        WindowsFont physFont = (WindowsFont)wcf.fPhysicalFonts[charFontIndex];
         long font = physFont.getFontHandle();
 
         win32.SelectObject(hdc, font);
@@ -300,7 +296,7 @@ public class GDITextRenderer extends TextRenderer {
                 count = 1;
                 start = i;
 
-                physFont = (WindowsFont)wcf.physicalFonts[charFontIndex];
+                physFont = (WindowsFont)wcf.fPhysicalFonts[charFontIndex];
                 font = physFont.getFontHandle();
                 win32.SelectObject(hdc, font);
                 yOffset = y - physFont.getAscent();

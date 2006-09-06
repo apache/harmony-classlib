@@ -22,6 +22,7 @@ package javax.swing.plaf.basic;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -148,21 +149,27 @@ public class BasicSpinnerUI extends SpinnerUI {
                     editor.setBounds(left, top, leftMargin - left, height - bottom - top);
                 }
                 if (nextButton != null) {
-                    nextButton.setBounds(leftMargin, 0, nextButton.getWidth(), height / 2);
+                    nextButton.setBounds(leftMargin, buttonInsets.top, 
+                                         nextButton.getWidth() - buttonInsets.right, height / 2 - buttonInsets.top);
                 }
                 if (previousButton != null) {
-                    previousButton.setBounds(leftMargin, height / 2, previousButton.getWidth(), height / 2);
+                    previousButton.setBounds(leftMargin, height / 2, previousButton.getWidth() - buttonInsets.right,
+                                             height / 2 - buttonInsets.bottom);
                 }
-            } else {
+            }  else {
                 if (editor != null) {
                     leftMargin = width - rightMargin;
                     editor.setBounds(rightMargin, top, leftMargin - right, height - bottom - top);
                 }
                 if (nextButton != null) {
-                    nextButton.setBounds(0, 0, nextButton.getWidth(), height / 2);
+                    nextButton.setBounds(buttonInsets.left, buttonInsets.top, 
+                                         nextButton.getWidth() - buttonInsets.left,
+                                         height / 2 - buttonInsets.top);
                 }
                 if (previousButton != null) {
-                    previousButton.setBounds(0, height / 2, previousButton.getWidth(), height / 2);
+                    previousButton.setBounds(buttonInsets.left, height / 2, 
+                                             previousButton.getWidth() - buttonInsets.left,
+                                             height / 2 - buttonInsets.bottom);
                 }
             }
         }
@@ -195,6 +202,7 @@ public class BasicSpinnerUI extends SpinnerUI {
     private PropertyChangeListener changeListener;
     private ArrowButtonHandler buttonHandler = new ArrowButtonHandler();
     private Dimension buttonSize;
+    private Insets buttonInsets;
     private boolean paintEditorBorder;
 
     public static ComponentUI createUI(final JComponent c) {
@@ -246,6 +254,7 @@ public class BasicSpinnerUI extends SpinnerUI {
 
         paintEditorBorder = UIManager.getBoolean("Spinner.editorBorderPainted");
         buttonSize = UIManager.getDimension("Spinner.arrowButtonSize");
+        buttonInsets = UIManager.getInsets("Spinner.arrowButtonInsets");
     }
 
     protected void uninstallDefaults() {

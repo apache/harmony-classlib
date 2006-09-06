@@ -38,7 +38,7 @@ public class MetalResourceBundle extends ListResourceBundle {
                    { "FileChooser.fileAttrHeaderText", "Attributes" },
                    { "FileChooser.fileDateHeaderText", "Date Modified" },
                    { "FileChooser.fileNameHeaderText", "Filename" },
-                   { "FileChooser.fileNameLabelText", "Filename:" },
+                   { "FileChooser.fileNameLabelText", "File Name:" },
                    { "FileChooser.fileNameLabelMnemonic", new Integer(KeyEvent.VK_N) },
                    { "FileChooser.fileSizeHeaderText", "File size" },
                    { "FileChooser.filesOfTypeLabelText", "Files of Type:" },
@@ -55,11 +55,11 @@ public class MetalResourceBundle extends ListResourceBundle {
                    { "FileChooser.saveInLabelText", "Save To:" },
                    { "FileChooser.upFolderAccessibleName", "Up" },
                    { "FileChooser.upFolderToolTipText", "Go Up One Level" },
-                   
+
                    { "InternalFrameTitlePane.closeButtonAccessibleName", "Close" },
                    { "InternalFrameTitlePane.iconifyButtonAccessibleName", "Iconify" },
                    { "InternalFrameTitlePane.maximizeButtonAccessibleName", "Maximize" },
-                   
+
                    { "MetalTitlePane.closeMnemonic", new Integer(KeyEvent.VK_C) },
                    { "MetalTitlePane.closeTitle", "Close" },
                    { "MetalTitlePane.iconifyMnemonic", new Integer(KeyEvent.VK_E) },

@@ -127,7 +127,7 @@
         <property name="test.jre.home" value="${hy.jdk}/jre" />
 
         <junit fork="yes"
-               forkmode="once"
+               forkmode="perTest"
                printsummary="withOutAndErr"
                errorproperty="test.errors"
                failureproperty="test.failures"
@@ -187,6 +187,29 @@
                     <exclude name="javax/swing/text/TextAction_MultithreadedTest.java"/>
                     <exclude name="javax/swing/text/ViewTestHelpers.java"/>
                     <exclude name="javax/swing/text/View_ForwardUpdateRTest.java"/>
+
+                    <exclude name="javax/swing/JComboBoxRTest.java"/>
+                    <exclude name="javax/swing/JComboBoxTest.java"/>
+                    <exclude name="javax/swing/JComponentTest.java"/>
+                    <exclude name="javax/swing/JMenuTest.java"/>
+                    <exclude name="javax/swing/JSplitPaneTest.java"/>
+                    <exclude name="javax/swing/JTableTest.java"/>
+                    <exclude name="javax/swing/RepaintManagerTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicBordersTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicComboBoxUITest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicLookAndFeelTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicProgressBarUITest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicSplitPaneDividerTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicSplitPaneUITest.java"/>
+                    <exclude name="javax/swing/plaf/metal/MetalComboBoxUITest.java"/>
+                    <exclude name="javax/swing/plaf/metal/MetalLookAndFeelTest.java"/>
+                    <exclude name="javax/swing/text/AbstractDocument_AbstractElementRTest.java"/>
+                    <exclude name="javax/swing/text/DefaultStyledDocumentRTest.java"/>
+                    <exclude name="javax/swing/text/GapContent_GapVectorTest.java"/>
+                    <exclude name="javax/swing/text/GlyphView_AttributesTest.java"/>
+                    <exclude name="org/apache/harmony/x/swing/plaf/resources/basic/BasicResourceBundleTest.java"/>
+
+
                 </fileset>
             </batchtest>
         </junit>

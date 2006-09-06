@@ -28,40 +28,8 @@ import java.awt.event.*;
 import junit.framework.TestCase;
 
 public class MenuTest extends TestCase {
-
-    Frame frame;
-    Component comp;
-
-    boolean bMenuShown;
-    volatile boolean bMenuClicked;
-    boolean bMenuHidden;
-    volatile boolean bEndModalLoop;
-    Robot robot;
-
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        frame = new Frame("MenuTest");
-        frame.setBounds(100, 100, 300, 200);
-        comp = new Component() {
-            public void paint(Graphics g) {
-                g.setColor(Color.yellow);
-                g.fillRect(0, 0, getWidth(), getHeight());
-            }
-        };
-        frame.add(comp);
-    }
-
-    protected void tearDown() throws Exception {
-        if (frame.isDisplayable()) {
-            frame.dispose();
-        }
-        robot = null;
-
-        super.tearDown();
-    }
-
     public void testAddRemove() {
+        Component comp = new Component() {};
         // create topmost menu
         PopupMenu popup = new PopupMenu();
         comp.add(popup);
@@ -87,17 +55,11 @@ public class MenuTest extends TestCase {
 
         // remove submenu from topmost menu
         popup.remove(menu);
-        assertNull(menu.getParent());
         assertEquals(1, popup.getItemCount());
 
         // remove item from topmost menu
         popup.remove(item);
-        assertNull(item.getParent());
         assertEquals(0, popup.getItemCount());
-
-        // remove topmost menu from component
-        comp.remove(popup);
-        assertNull(popup.getParent());
     }
 
     public void testAddRemoveListener() {
@@ -109,102 +71,5 @@ public class MenuTest extends TestCase {
         assertNotNull(item.getActionListeners());
         assertEquals(1, item.getActionListeners().length);
         assertEquals(listener, item.getActionListeners()[0]);
-    }
-
-    public void testShowPopupMenu() {
-        bMenuShown = bMenuClicked = bMenuHidden = false;
-        bEndModalLoop = false;
-        frame.setVisible(true);
-
-        final PopupMenu popup = new PopupMenu();
-        final Object endModalLoop = new Object();
-        comp.add(popup);
-        assertEquals(comp, popup.getParent());
-
-        comp.addMouseListener(new MouseAdapter() {
-            public void mouseReleased(MouseEvent e) {
-                if (e.getButton() != MouseEvent.BUTTON3) {
-                    return;
-                }
-                popup.show(comp, 10, 10);
-                synchronized(endModalLoop) {
-                    bEndModalLoop = true;
-                    endModalLoop.notifyAll();
-                }
-            }
-        });
-
-        // add single item to the popup menu
-        MenuItem item = new MenuItem("Item");
-        item.setActionCommand("item");
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                synchronized(robot) {
-                    bMenuClicked = true;
-                    robot.notifyAll();
-                }
-            }
-        });
-        popup.add(item);
-
-        assertEquals("Item", item.getLabel());
-        assertEquals("item", item.getActionCommand());
-        assertEquals(popup, item.getParent());
-
-        try {
-            robot = new Robot();
-            robot.setAutoDelay(100);
-        } catch (AWTException e) {
-            fail("failed to create robot " + e.getMessage());
-        }
-
-        Point clickLocation = comp.getLocation();
-        Point shift = frame.getLocation();
-        Point menuLocation = new Point(10, 10);
-        clickLocation.x += shift.x + menuLocation.x + 5;
-        clickLocation.y += shift.y + menuLocation.y + 5;
-
-        try {
-            synchronized(robot) {
-                // simulate right-click
-                robot.mouseMove(clickLocation.x, clickLocation.y);
-                clickLocation.translate(20, 5);
-                robot.mousePress(MouseEvent.BUTTON3_MASK);
-                robot.mouseRelease(MouseEvent.BUTTON3_MASK);
-                robot.mouseMove(clickLocation.x, clickLocation.y);
-
-                // wait until popup menu is shown
-                bMenuShown = waitForPixelChange(clickLocation, false);
-                assertTrue("show menu", bMenuShown && !bMenuClicked && !bMenuHidden);
-
-                synchronized(endModalLoop) {
-                    // click the menu item
-                    robot.mousePress(MouseEvent.BUTTON1_MASK);
-                    robot.mouseRelease(MouseEvent.BUTTON1_MASK);
-
-                    robot.wait(5000);
-                    assertTrue("click menu", bMenuClicked);
-                
-                    endModalLoop.wait(5000);
-                    assertTrue("end modal loop", bEndModalLoop);
-                }
-
-                // wait until menu is hidden
-                bMenuHidden = waitForPixelChange(clickLocation, true);
-                assertTrue("hide menu", bMenuHidden);
-            }
-        } catch (InterruptedException e) {
-            fail("robot thread interrupted " + e.getMessage());
-        }
-    }
-
-    boolean waitForPixelChange(Point point, boolean equals) throws InterruptedException {
-        for (int i=0; i<50; i++) {
-            Thread.sleep(100);
-            if (robot.getPixelColor(point.x, point.y).equals(Color.yellow) == equals) {
-                return true;
-            }
-        }
-        return false;
     }
 }

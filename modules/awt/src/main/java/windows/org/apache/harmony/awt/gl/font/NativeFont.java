@@ -24,7 +24,6 @@ import java.awt.Font;
 import java.util.*;
 
 import org.apache.harmony.awt.gl.font.FontManager;
-import org.apache.harmony.awt.gl.font.FontPeerImpl;
 import org.apache.harmony.awt.gl.font.Glyph;
 
 public class NativeFont {
@@ -34,7 +33,6 @@ public class NativeFont {
      * indexing.
      */
     public static int[] famIndices = null;
-
     /**
      * List of font styles of system fonts initialized using GDI
      * corresponding to faces indexing.
@@ -82,10 +80,11 @@ public class NativeFont {
      * @param winFont Windows font peer
      * @param name the name of the font
      * @param style style of the font
+     * @param size font size
      * 
      * @return native GDI font handle.
      */
-    public static native long initializeFont(WindowsFont winFont, String name, int style);
+    public static native long initializeFont(WindowsFont winFont, String name, int style, int size);
 
     /**
      * Returns true if native GDI font can display char, false otherwise.
@@ -148,7 +147,7 @@ public class NativeFont {
      * @param fontSize size of the font
      * @param usesFractionalMetrics true if results calculated using fractional metrics
      * @param fontType type of the specified font
-     * */
+     */
     public static native float[] getNativeLineMetrics(long hFont, int fontSize, boolean isAntialiased, boolean usesFractionalMetrics, int fontType);
 
     /** 
@@ -158,7 +157,7 @@ public class NativeFont {
      * @param pFnt GDI font handle
      * @param c specified char
      * @param fontSize size of the font
-     * */
+     */
     public static native float[] getGlyphInfoNative(long pFnt, char c, int fontSize);
 
     /** 
@@ -232,11 +231,36 @@ public class NativeFont {
      */
     public static native int getGlyphOutline(long fnt, char uChar, long polyheaders, int size);
 
+    /**
+     * Returns an array of extrametrics of the font:<p>
+     *  elem[0] - the average width of characters in the font (Type1 - 0.0f)<p>
+     *  elem[1] - horizontal size for subscripts (Type1 - 0.7f * fontHeight)<p> 
+     *  elem[2] - vertical size for subscripts (Type1 - 0.65f * fontHeight)<p> 
+     *  elem[3] - horizontal offset for subscripts (Type1 - 0.0f)<p>
+     *  elem[4] - vertical offset value for subscripts(Type1 - 0.15f * fontHeight)<p>
+     *  elem[5] - horizontal size for superscripts (Type1 - 0.7f * fontHeight)<p>
+     *  elem[6] - vertical size for superscripts (Type1 - 0.65f * fontHeight)<p>
+     *  elem[7] - horizontal offset for superscripts (Type1 - 0.0f)<p> 
+     *  elem[8] - vertical offset for superscripts (Type1 - 0.45f * fontHeight)<p> 
+     * For TrueType fonts metrics are taken from OS2 table, for Type1 fonts
+     * metrics are calculated using coefficients (read FontExtraMetrics comments).
+     * 
+     * @param hFont GDI font handle
+     * @param fontSize font size
+     * @param fontType type of the font
+     */
+    public static native float[] getExtraMetricsNative(long hFont, int fontSize, int fontType);
+   
     /***************************************************************************
     *
     *  GDI+ text native functions
     *
     ***************************************************************************/
+
+    /**
+     * Sets antialiasing mode using GDI+ objects defined in graphics info.
+     */
+    public static native void setAntialiasing(long graphicsInfo, boolean isAntialiasing);
     
     /**
      * Draws string at the specified coordinates using GDI+ objects defined in graphics info.
@@ -244,13 +268,13 @@ public class NativeFont {
      */
     public static native int gdiPlusDrawText(long graphicsInfo, String text, int length, long font,
             float xOffset, float yOffset);
-    
+
     /** GDI+ DriverStringOptions constants */
     public static final int DriverStringOptionsCmapLookup = 1;
     public static final int DriverStringOptionsVertical = 2;
     public static final int DriverStringOptionsRealizedAdvance = 4;
     public static final int DriverStringOptionsLimitSubpixel = 8;
-    
+
     /**
      * Draws transformed char according to the matrix at the specified position.
      * @param gi GraphicsInfo pointer
@@ -353,7 +377,7 @@ public class NativeFont {
              ht.put(new String("sv"), new Short((short)0x041d)); // sv-se
              ht.put(new String("th"), new Short((short)0x041e));
              ht.put(new String("tr"), new Short((short)0x041f));
-             ht.put(new String("ur"), new Short((short)0x0420)); 
+             ht.put(new String("ur"), new Short((short)0x0420));
              ht.put(new String("in"), new Short((short)0x0421)); // "id"
              ht.put(new String("uk"), new Short((short)0x0422));
              ht.put(new String("be"), new Short((short)0x0423));
@@ -365,13 +389,13 @@ public class NativeFont {
              ht.put(new String("vi"), new Short((short)0x042a));
              ht.put(new String("hy"), new Short((short)0x042b));
              ht.put(new String("eu"), new Short((short)0x042d));
-             ht.put(new String("sb"), new Short((short)0x042e)); 
+             ht.put(new String("sb"), new Short((short)0x042e));
              ht.put(new String("mk"), new Short((short)0x042f));
-             ht.put(new String("sx"), new Short((short)0x0430)); 
-             ht.put(new String("ts"), new Short((short)0x0431)); 
+             ht.put(new String("sx"), new Short((short)0x0430));
+             ht.put(new String("ts"), new Short((short)0x0431));
              ht.put(new String("tn"), new Short((short)0x0432));
-             ht.put(new String("xh"), new Short((short)0x0434)); 
-             ht.put(new String("zu"), new Short((short)0x0435)); 
+             ht.put(new String("xh"), new Short((short)0x0434));
+             ht.put(new String("zu"), new Short((short)0x0435));
              ht.put(new String("af"), new Short((short)0x0436));
              ht.put(new String("fo"), new Short((short)0x0438));
              ht.put(new String("hi"), new Short((short)0x0439));
@@ -394,6 +418,7 @@ public class NativeFont {
         }
         return families;
     }
+    
     /** Fills fonts and families arrays with current system font data. */
     public static void updateFontLists(){
         if (families == null){
@@ -410,7 +435,7 @@ public class NativeFont {
         updateFontLists();
         return faces;
     }
-    
+
     /**
      * Returns font family name that corresposnds to the face name with 
      * specified index.
@@ -465,7 +490,7 @@ public class NativeFont {
         System.arraycopy(indices, 0, famIndices, 0, fontsCount);
         System.arraycopy(fFaces, 0, faces, 0, fontsCount);
     }
-    
+
     /**
      * Returns font type (TrueType, Type1 or UndefinedType) for the specified
      * font face name and style.
@@ -495,7 +520,7 @@ public class NativeFont {
 
         return FontManager.FONT_TYPE_TT;
     }
-    
+
     /** flag, returns true if native fontlib was loaded */
     private static boolean isLibLoaded = false;
 
@@ -518,4 +543,5 @@ public class NativeFont {
             loadLibrary();
             updateFontLists();
     }
+
 }

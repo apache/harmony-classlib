@@ -150,7 +150,6 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
     }
 
     private static final String UI_CLASS_ID = "ComboBoxUI";
-    private static final String LIGHTWEIGHT_POPUP_ENABLED_PROPERTY_CHANGED = "lightWeightPopupEnabled";
     private static final String MAXIMUM_ROW_COUNT_PROPERTY_CHANGED = "maximumRowCount";
     private static final String PROTOTYPE_DISPLAY_VALUE_PROPERTY_CHANGED = "prototypeDisplayValue";
 
@@ -223,7 +222,7 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
     public void setLightWeightPopupEnabled(final boolean isEnabled) {
         if (lightWeightPopupEnabled != isEnabled) {
             lightWeightPopupEnabled = isEnabled;
-            firePropertyChange(LIGHTWEIGHT_POPUP_ENABLED_PROPERTY_CHANGED, !isEnabled, isEnabled);
+            firePropertyChange(StringConstants.LIGHTWEIGHT_POPUP_ENABLED_PROPERTY_CHANGED, !isEnabled, isEnabled);
         }
     }
 
@@ -289,11 +288,11 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
     public void setSelectedItem(final Object element) {
         selectedItemReminder = dataModel.getSelectedItem();
 
-        if (selectedItemReminder == null || !selectedItemReminder.equals(element)) {
-            if (isEditable || getIndex(element) != -1) {
-                if (element != getSelectedItem() || element != null && !element.equals(getSelectedItem())) {
-                    dataModel.setSelectedItem(element);
-                }
+        if (isEditable || getIndex(element) != -1 || element == null) {
+            if (element != getSelectedItem() || element != null && !element.equals(getSelectedItem())) {
+                dataModel.setSelectedItem(element);
+            } else if (isEditable && element != null && !element.equals(getEditor().getItem())) {
+                getEditor().setItem(element);
             }
         }
     }
@@ -472,6 +471,7 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
     public void showPopup() {
         setPopupVisible(true);
     }
+
     public void hidePopup() {
         setPopupVisible(false);
     }
@@ -530,6 +530,7 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
 
     public void actionPerformed(final ActionEvent e) {
         setSelectedItem(editor.getItem());
+        getUI().setPopupVisible(this, false);
     }
 
     public void contentsChanged(final ListDataEvent e) {

@@ -20,9 +20,13 @@
 package javax.swing.text;
 
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.LayoutManager;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.util.HashMap;
 
 import javax.swing.text.Position.Bias;
 
@@ -30,9 +34,49 @@ import org.apache.harmony.awt.text.TextUtils;
 
 public class ComponentView extends View {
 
+    private static final class ComponentViewLayout implements LayoutManager {
+        private static final HashMap componentViews = new HashMap();
+        
+        public void layoutContainer(final Container c) {
+            for (int i = 0; i < c.getComponentCount(); i++) {
+                Component child = c.getComponent(i);
+                View componentView = (View)componentViews.get(child);
+                if (componentView == null) {
+                    break;
+                }
+                Shape bounds1 = null;
+                Shape bounds2 = null;
+                try {
+                    final JTextComponent textComponent = (JTextComponent)c;
+                    bounds1 = textComponent.modelToView(componentView.getStartOffset());
+                    bounds2 = textComponent.modelToView(componentView.getEndOffset());
+                } catch (BadLocationException e) {
+                }
+                if (bounds1 == null || bounds2 == null) {
+                    return;
+                }
+                Rectangle bounds = ((Rectangle)bounds1).union((Rectangle)bounds2);
+                child.setBounds(bounds.x, bounds.y, bounds.width,
+                                bounds.height);
+            }
+        }
+        
+        public Dimension minimumLayoutSize(Container c) {
+            return null;
+        }
+
+        public Dimension preferredLayoutSize(Container c) {
+            return null;
+        }
+
+        public void addLayoutComponent(String name, Component c) {
+        }
+
+        public void removeLayoutComponent(Component c) {
+        }
+    }
+
     private static final int EMPTY_SPAN = 0;
-    private boolean notInitialized = true;
-    private boolean compInHierarchy = false;
     private Component component;
 
     public ComponentView(final Element element) {
@@ -108,43 +152,30 @@ public class ComponentView extends View {
     }
 
     public void setParent(final View parent) {
-        if (getParent() != null) {
-            if (parent == null) {
-                if (component.getParent() != null) {
-                    component.getParent().remove(component);
-                    compInHierarchy = false;
-                }
-                super.setParent(parent);
-            } else {
-                if (component.getParent() == null) {
-                    getContainer().add(component);
-                    compInHierarchy = true;
-                }
+        if (parent == null) {
+            if (component != null && component.getParent() != null) {
+                component.getParent().remove(component);
             }
-        } else {
             super.setParent(parent);
-
-            if (parent != null) {
-                if (notInitialized) {
+        } else {
+            if (getParent() == null) {
+                super.setParent(parent);
+                if (component == null) {
                     component = createComponent();
-                    notInitialized = false;
+                    ComponentViewLayout.componentViews.put(component, this);
                 }
-                getContainer().add(component);
-                compInHierarchy = true;
+            } 
+            final Container container = getContainer();
+            if (container != null) {
+                container.add(component);
+                if (container.getLayout() == null) {
+                    container.setLayout(new ComponentViewLayout());
+                }
             }
         }
     }
 
-    public void paint(final Graphics g, final Shape shape)  {
-       if (component != null && compInHierarchy) {
-           final Rectangle bounds = shape.getBounds();
-           final int height = Math.min(bounds.height,
-                                       component.getPreferredSize().height);
-           component.setBounds(bounds.x + 1,
-                               (bounds.height - height) + bounds.y,
-                               bounds.width - 1,
-                               height);
-       }
+    public void paint(final Graphics g, final Shape shape) {
     }
 
     protected Component createComponent() {
@@ -156,4 +187,6 @@ public class ComponentView extends View {
             throw new IllegalArgumentException("Invalid axis: " + axis);
         }
     }
+    
+    
 }

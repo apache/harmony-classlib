@@ -112,28 +112,39 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
  */
 static inline GraphicsInfo *createCompatibleImageInfo(JNIEnv *env, HDC hdc, jint width, jint height) {
     GraphicsInfo *gi = (GraphicsInfo *) malloc(sizeof(GraphicsInfo));
+
+       // To avoid issue of joint operation Windows NetMeeting and GL,
+       // we create HDC and Bitmap for Volatile Image which will compatible 
+       // HDC of the entire screen. It may leads to other issues on 
+       // multimonitor systems in the future.
     
     gi->hwnd = 0;
-    gi->hdc = CreateCompatibleDC(hdc);
+       HDC dc = GetDC(NULL);
+    //gi->hdc = CreateCompatibleDC(hdc);
+    gi->hdc = CreateCompatibleDC(dc);
     if (gi->hdc == NULL) {
         // We are out of GDI resources
         runGC(env);
-        gi->hdc = CreateCompatibleDC(hdc);
+        //gi->hdc = CreateCompatibleDC(hdc);
+        gi->hdc = CreateCompatibleDC(dc);
         if (gi->hdc == NULL)
             throwRuntimeException(env);
     }
         
     
     // Creating bitmap and setting it to DC
-    gi->bmp = CreateCompatibleBitmap(hdc, width, height);
+    //gi->bmp = CreateCompatibleBitmap(hdc, width, height);
+    gi->bmp = CreateCompatibleBitmap(dc, width, height);
     if (gi->bmp == NULL) {
         // We are out of GDI resources
         runGC(env);
-        gi->bmp = CreateCompatibleBitmap(hdc, width, height);
+        //gi->bmp = CreateCompatibleBitmap(hdc, width, height);
+        gi->bmp = CreateCompatibleBitmap(dc, width, height);
         if (gi->bmp == NULL)
             throwRuntimeException(env);
     }
     SelectObject(gi->hdc, gi->bmp);
+       ReleaseDC(NULL, dc);
     
     gi->graphics = new Graphics(gi->hdc);
     gi->pen = 0;

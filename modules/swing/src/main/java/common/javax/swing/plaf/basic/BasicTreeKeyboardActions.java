@@ -259,20 +259,30 @@ final class BasicTreeKeyboardActions {
     private static AbstractAction toggleSelectionPreserveAnchorAction = new PreserveLeadAnchorAction() {
         public void preserveActionPerformed(final JTree tree) {
             TreePath leadPath = tree.getLeadSelectionPath();
-            TreePath togglePath = leadPath != null ? leadPath : tree.getPathForRow(0);
-
-            if (tree.isPathSelected(togglePath)) {
-                tree.removeSelectionPath(togglePath);
-            } else {
-                tree.addSelectionPath(togglePath);
+            if (leadPath == null) {
+                return;
             }
+
+            if (tree.isPathSelected(leadPath)) {
+                tree.removeSelectionPath(leadPath);
+            } else {
+                tree.addSelectionPath(leadPath);
+            }
+        }
+    };
+    private static AbstractAction moveSelectionToAction = new TreeAction() {
+        public void actionPerformed(final JTree tree) {
+            TreePath leadPath = tree.getLeadSelectionPath();
+            if (leadPath == null) {
+                return;
+            }
+            tree.setSelectionPath(leadPath);
         }
     };
     private static AbstractAction extendSelectionAction = new TreeAction() {
         public void actionPerformed(final JTree tree) {
             TreePath leadPath = tree.getLeadSelectionPath();
             if (leadPath == null) {
-                tree.setSelectionPath(tree.getPathForRow(0));
                 return;
             }
             extendSelection(tree, leadPath);
@@ -353,6 +363,18 @@ final class BasicTreeKeyboardActions {
             tree.scrollRectToVisible(visibleRect);
         }
     };
+    private static AbstractAction expandAction = new TreeAction() {
+        public void actionPerformed(final JTree tree) {
+            int leadRow = tree.getLeadSelectionRow();
+            tree.expandRow(leadRow);
+        }
+    };
+    private static AbstractAction collapseAction = new TreeAction() {
+        public void actionPerformed(final JTree tree) {
+            int leadRow = tree.getLeadSelectionRow();
+            tree.collapseRow(leadRow);
+        }
+    };
 
 
     public static void installKeyboardActions(final JTree tree) {
@@ -380,6 +402,7 @@ final class BasicTreeKeyboardActions {
 
         tree.getActionMap().put("toggleSelectionPreserveAnchor", toggleSelectionPreserveAnchorAction);
         tree.getActionMap().put("extendSelection", extendSelectionAction);
+        tree.getActionMap().put("moveSelectionTo", moveSelectionToAction);
 
         tree.getActionMap().put("selectFirstChangeLead", selectFirstChangeLeadAction);
         tree.getActionMap().put("selectLastChangeLead", selectLastChangeLeadAction);
@@ -398,6 +421,9 @@ final class BasicTreeKeyboardActions {
 
         tree.getActionMap().put("startEditing", startEditingAction);
         tree.getActionMap().put("cancel", cancelAction);
+
+        tree.getActionMap().put("expand", expandAction);
+        tree.getActionMap().put("collapse", collapseAction);
     }
 
     public static void uninstallKeyboardActions(final JTree tree) {

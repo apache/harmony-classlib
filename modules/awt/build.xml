@@ -98,8 +98,7 @@
     </target>
 
     <target name="build.native"
-            depends="-build.native.linux,-build.native.windows"
-            if="with.awt.swing">
+            depends="-build.native.linux,-build.native.windows">
 
         <make dir="${hy.awt.src.main.native}/lcmm/${hy.os}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
@@ -164,8 +163,7 @@
     </target>
 
     <target name="clean.native"
-            depends="-clean.native.linux,-clean.native.windows"
-            if="with.awt.swing">
+            depends="-clean.native.linux,-clean.native.windows">
         <make dir="${hy.awt.src.main.native}/lcmm/${hy.os}"
               target="clean"/>
         <make dir="${hy.awt.src.main.native}/jpegdecoder/${hy.os}"
@@ -233,14 +231,14 @@
         </copy>    
     </target>
 
-    <target name="run.tests" if="with.awt.swing.tests">
+    <target name="run.tests" if="with.awt.swing">
 
         <mkdir dir="${hy.tests.reports}" />
 
         <property name="test.jre.home" value="${hy.jdk}/jre" />
 
         <junit fork="yes"
-               forkmode="once"
+               forkmode="perTest"
                printsummary="withOutAndErr"
                errorproperty="test.errors"
                failureproperty="test.failures"
@@ -272,9 +270,45 @@
                     <exclude name="org/apache/harmony/awt/gl/MultiRectAreaTestCase.java"/>
                     <exclude name="java/awt/datatransfer/SystemFlavorMapTest.java"/>
                     <exclude name="java/awt/MenuTest.java"/>
+
+                    <exclude name="java/awt/AccessibleAWTCanvasTest.java"/>
+                    <exclude name="java/awt/AccessibleAWTComponentTest.java"/>
+                    <exclude name="java/awt/AccessibleAWTContainerTest.java"/>
+                    <exclude name="java/awt/AccessibleAWTListChildTest.java"/>
+                    <exclude name="java/awt/AccessibleAWTMenuItemTest.java"/>
+                    <exclude name="java/awt/AccessibleAWTWindowTest.java"/>
+                    <exclude name="java/awt/FileDialogTest.java"/>
+                    <exclude name="java/awt/DimensionTest.java"/>
+                    <exclude name="java/awt/FlowLayoutTest.java"/>
+                    <exclude name="java/awt/GridBagLayoutTest.java"/>
+                    <exclude name="java/awt/GridLayoutTest.java"/>
+                    <exclude name="java/awt/RobotTest.java"/>
+                    <exclude name="java/awt/WindowTest.java"/>
+                    <exclude name="java/awt/WindowRTest.java"/>
+                    <exclude name="java/awt/datatransfer/ClipboardTest.java"/>
+                    <exclude name="java/awt/BorderLayoutTest.java"/>
+                    <exclude name="java/awt/ButtonRTest.java"/>
+                    <exclude name="java/awt/CardLayoutTest.java"/>
+                    <exclude name="java/awt/ChoiceTest.java"/>
+                    <exclude name="java/awt/ComponentTest.java"/>
+                    <exclude name="java/awt/ContainerOrderFocusTraversalPolicyTest.java"/>
+                    <exclude name="java/awt/DialogRTest.java"/>
+                    <exclude name="java/awt/KeyboardFocusManagerRTest.java"/>
+                    <exclude name="java/awt/ListTest.java"/>
+                    <exclude name="java/awt/ScrollPaneAdjustableTest.java"/>
+                    <exclude name="java/awt/TextAreaTest.java"/>
+                    <exclude name="java/awt/TextComponentTest.java"/>
+                    <exclude name="java/awt/TextFieldTest.java"/>
+                    <exclude name="java/awt/dnd/DropTargetTest.java"/>
+                    <exclude name="java/awt/event/ContainerEventTest.java"/>
+                    <exclude name="java/awt/WinWindowRTest.java"/>
+                    <exclude name="org/apache/harmony/awt/gl/render/JavaBlitterTest.java"/>
+                    <exclude name="org/apache/harmony/awt/wtk/ShutdownWatchdogTest.java"/>
                 </fileset>
                 <fileset dir="${hy.awt.src.test.api.java.platform}">
                     <include name="**/*Test*.java"/>
+
+                    <exclude name="java/awt/WinWindowRTest.java"/>
                 </fileset>
             </batchtest>  
         </junit>

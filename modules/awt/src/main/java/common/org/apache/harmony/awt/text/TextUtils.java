@@ -1129,12 +1129,10 @@ public class TextUtils {
     public static void isPositionValid(final View view, final int pos)
         throws BadLocationException {
 
-        final Element element = view.getElement();
-
-        if (pos < element.getStartOffset() || pos > element.getEndOffset()) {
+        if (pos < view.getStartOffset() || pos > view.getEndOffset()) {
             throw new BadLocationException(pos + " not in range "
-                                           + element.getStartOffset() + ","
-                                           + element.getEndOffset(), pos);
+                                           + view.getStartOffset() + ","
+                                           + view.getEndOffset(), pos);
         }
     }
 }

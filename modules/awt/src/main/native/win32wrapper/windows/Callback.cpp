@@ -22,13 +22,15 @@
 #include "Callback.h"
 
 static jmethodID javaCallback;
-static jclass javaClass;
+static jmethodID javaCallbackOFN;
+static jmethodID javaCallbackDataTransfer;
+static jclass javaClass = NULL;
 static JavaVM* jvm;
 
 LRESULT __stdcall CallBackWNDPROC(HWND p1, UINT p2, WPARAM p3, LPARAM p4) {
     JNIEnv* env;
     jvm->GetEnv((void**)&env, JNI_VERSION_1_2);
-    return env->CallStaticLongMethod(javaClass, javaCallback, (jlong)p1, (jint)p2, (jlong)p3, (jlong)p4);
+    return (LRESULT)env->CallStaticLongMethod(javaClass, javaCallback, (jlong)p1, (jint)p2, (jlong)p3, (jlong)p4);
 }
 
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Callback_initCallBackWNDPROC (JNIEnv * env, jclass cls) {
@@ -38,3 +40,28 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Callbac
     return (jlong)(void *)CallBackWNDPROC;
 }
 
+LRESULT __stdcall CallBackOFNHOOKPROC(HWND p1, UINT p2, WPARAM p3, LPARAM p4) {
+    JNIEnv* env;
+    jvm->GetEnv((void**)&env, JNI_VERSION_1_2);
+    return (LRESULT)env->CallStaticLongMethod(javaClass, javaCallbackOFN, (jlong)p1, (jint)p2, (jlong)p3, (jlong)p4);
+}
+
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Callback_initCallBackOFNHOOKPROC (JNIEnv * env, jclass cls) {
+    javaClass = (jclass)env->NewGlobalRef(cls);
+    javaCallbackOFN = env->GetStaticMethodID(cls, "runCallbackOFNHOOKPROC", "(JIJJ)J");
+    env->GetJavaVM(&jvm);
+    return (jlong)(void *)CallBackOFNHOOKPROC;
+}
+
+LRESULT __stdcall DataTransferProc(HWND p1, UINT p2, WPARAM p3, LPARAM p4) {
+    JNIEnv* env;
+    jvm->GetEnv((void**)&env, JNI_VERSION_1_2);
+    return (LRESULT)env->CallStaticLongMethod(javaClass, javaCallbackDataTransfer, (jlong)p1, (jint)p2, (jlong)p3, (jlong)p4);
+}
+
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_nativebridge_windows_Callback_initCallBackDataTransferProc (JNIEnv * env, jclass cls) {
+    javaClass = (jclass)env->NewGlobalRef(cls);
+    javaCallbackDataTransfer = env->GetStaticMethodID(cls, "runCallbackDataTransferProc", "(JIJJ)J");
+    env->GetJavaVM(&jvm);
+    return (jlong)(void *)DataTransferProc;
+}

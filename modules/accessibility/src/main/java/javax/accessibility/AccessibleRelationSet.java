@@ -25,10 +25,10 @@ import java.util.Iterator;
 import java.util.Vector;
 
 public class AccessibleRelationSet {
-    protected Vector<AccessibleRelation> relations;
+    protected Vector relations;
 
     public AccessibleRelationSet() {
-        initStorage(0);
+        initStorage();
     }
 
     public AccessibleRelationSet(final AccessibleRelation[] relations) {
@@ -37,7 +37,7 @@ public class AccessibleRelationSet {
     }
 
     public boolean add(final AccessibleRelation relation) {
-        initStorage(1);
+        initStorage();
         if (contains(relation.key)) {
             return false;
         }
@@ -49,12 +49,6 @@ public class AccessibleRelationSet {
         initStorage(relations.length);
         for(int i = 0; i < relations.length; i++) {
             add(relations[i]);
-        }
-    }
-    
-    private void initStorage(final int capacity) {
-        if(relations == null) {
-            relations = new Vector<AccessibleRelation>(capacity);
         }
     }
 
@@ -80,8 +74,8 @@ public class AccessibleRelationSet {
         if (relations == null) {
             return null;
         }
-        for (Iterator<AccessibleRelation> i = relations.iterator(); i.hasNext();) {
-            AccessibleRelation rel = i.next();
+        for (Iterator i = relations.iterator(); i.hasNext();) {
+            AccessibleRelation rel = (AccessibleRelation)i.next();
             if(key.equals(rel.key)) {
                 return rel;
             }
@@ -98,13 +92,26 @@ public class AccessibleRelationSet {
         if (relations == null) {
             return "";
         }
-        StringBuilder result = new StringBuilder();
-        for (Iterator<AccessibleRelation> it = relations.iterator(); it.hasNext(); ) {
+        StringBuffer result = new StringBuffer();
+        for (Iterator it = relations.iterator(); it.hasNext(); ) {
             result.append(it.next());
             if (it.hasNext()) {
                 result.append(",");
             }
         }
         return result.toString();
+    }
+
+
+    private void initStorage(final int capacity) {
+        if(relations == null) {
+            relations = new Vector(capacity);
+        }
+    }
+
+    private void initStorage() {
+        if(relations == null) {
+            relations = new Vector();
+        }
     }
 }

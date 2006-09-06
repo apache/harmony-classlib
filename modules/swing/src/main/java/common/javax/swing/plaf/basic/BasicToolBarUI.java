@@ -63,7 +63,6 @@ import javax.swing.plaf.ActionMapUIResource;
 import javax.swing.plaf.BorderUIResource;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.ToolBarUI;
-import javax.swing.plaf.basic.BasicBorders;
 
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
@@ -160,14 +159,17 @@ public class BasicToolBarUI extends ToolBarUI implements SwingConstants {
             repaint();
         }
 
-        private void changeOrientation(final int o) {
+        private void updateBounds(final int o, final Point newLocation) {
             if (orientation != o) {
                 Rectangle bounds = SwingUtilities.getLocalBounds(this);
                 setOffset(new Point(offset.y, offset.x));
                 bounds.setLocation((int)bounds.getCenterX() - getOffset().x,
                                    (int)bounds.getCenterY() - getOffset().y);
                 bounds.setSize(getHeight(), getWidth());
+                bounds.setLocation(newLocation);
                 setBounds(bounds);
+            } else {
+                setLocation(newLocation);
             }
             setOrientation(o);
         }
@@ -244,6 +246,16 @@ public class BasicToolBarUI extends ToolBarUI implements SwingConstants {
         }
     }
 
+    private class FloatingWindow extends JDialog {
+        public FloatingWindow(final Frame owner, final String title) {
+            super(owner, title, false);
+        }
+
+        public FloatingWindow(final Dialog owner, final String title) {
+            super(owner, title, false);
+        }
+    }
+
     public static ComponentUI createUI(final JComponent c) {
         return new BasicToolBarUI();
     }
@@ -295,6 +307,12 @@ public class BasicToolBarUI extends ToolBarUI implements SwingConstants {
     private Color light;
     private Color shadow;
 
+    private Color buttonDarkShadow;
+    private Color buttonHighlight;
+    private Color buttonLight;
+    private Color buttonShadow;
+
+
     public void installUI(final JComponent c) {
         toolBar = (JToolBar)c;
 
@@ -326,7 +344,18 @@ public class BasicToolBarUI extends ToolBarUI implements SwingConstants {
     }
 
     public boolean canDock(final Component c, final Point p) {
-        return getDockingConstraints(c, p) != BorderLayout.CENTER;
+        String constraints = getDockingConstraints(c, p);
+        if (constraints == BorderLayout.CENTER || !(c instanceof Container)) {
+            return false;
+        }
+
+        if (((Container)c).getLayout() instanceof BorderLayout) {
+            BorderLayout borderLayout = (BorderLayout)((Container)c).getLayout();
+            if (borderLayout.getLayoutComponent(constraints) != null) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void setDockingColor(final Color c) {
@@ -468,13 +497,16 @@ public class BasicToolBarUI extends ToolBarUI implements SwingConstants {
 
     protected RootPaneContainer createFloatingWindow(final JToolBar toolbar) {
         Window owner = SwingUtilities.getWindowAncestor(toolBar);
+        while (owner instanceof FloatingWindow) {
+            owner = owner.getOwner();
+        }
         JDialog floatingFrame;
         if (owner instanceof Dialog) {
-            floatingFrame = new JDialog((Dialog)owner, toolbar.getName(), false);
+            floatingFrame = new FloatingWindow((Dialog)owner, toolbar.getName());
         } else if (owner instanceof Frame) {
-            floatingFrame = new JDialog((Frame)owner, toolbar.getName(), false);
+            floatingFrame = new FloatingWindow((Frame)owner, toolbar.getName());
         } else {
-            floatingFrame = new JDialog((Frame)null, toolbar.getName(), false);
+            floatingFrame = new FloatingWindow((Frame)null, toolbar.getName());
         }
 
         floatingFrame.setResizable(false);
@@ -500,7 +532,7 @@ public class BasicToolBarUI extends ToolBarUI implements SwingConstants {
 
     protected Border createNonRolloverBorder() {
         Border buttonBorder = new BasicBorders.ButtonBorder(
-                shadow, darkShadow, highlight, light);
+                buttonShadow, buttonDarkShadow, buttonHighlight, buttonLight);
         Border marginBorder = new BasicBorders.ToolBarButtonMarginBorder();
         return new BorderUIResource.CompoundBorderUIResource(buttonBorder,
                                                              marginBorder);
@@ -541,11 +573,10 @@ public class BasicToolBarUI extends ToolBarUI implements SwingConstants {
         dragWindow.setBorderColor(canDock
                                   ? dockingBorderColor
                                   : floatingBorderColor);
-        dragWindow.changeOrientation(calculateOrientation(
-                getDockingConstraints(parent, p)));
+        int newOrientation = calculateOrientation(getDockingConstraints(parent, p));
         SwingUtilities.convertPointToScreen(p, parent);
         p.translate(-dragWindow.getOffset().x, -dragWindow.getOffset().y);
-        dragWindow.setLocation(p);
+        dragWindow.updateBounds(newOrientation, p);
     }
 
     protected void floatAt(final Point position, final Point origin) {
@@ -590,6 +621,10 @@ public class BasicToolBarUI extends ToolBarUI implements SwingConstants {
         highlight = UIManager.getColor("ToolBar.highlight");
         light = UIManager.getColor("ToolBar.light");
         shadow = UIManager.getColor("ToolBar.shadow");
+        buttonDarkShadow = UIManager.getColor("Button.darkShadow");
+        buttonHighlight = UIManager.getColor("Button.highlight");
+        buttonLight = UIManager.getColor("Button.light");
+        buttonShadow = UIManager.getColor("Button.shadow");
 
         setRolloverBorders(toolBar.isRollover());
     }

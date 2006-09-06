@@ -21,6 +21,9 @@ package org.apache.harmony.awt.wtk.linux;
 
 import java.awt.Font;
 import java.awt.SystemColor;
+import java.awt.font.TextAttribute;
+import java.awt.im.InputMethodHighlight;
+import java.util.Map;
 
 import org.apache.harmony.awt.wtk.SystemProperties;
 
@@ -42,10 +45,8 @@ public class LinuxSystemProperties implements SystemProperties {
         // Grey-blue
         case SystemColor.ACTIVE_CAPTION:
             return 0xff336699;
-        // Grey
         case SystemColor.ACTIVE_CAPTION_BORDER:
             return 0xffcccccc;
-        // White
         case SystemColor.ACTIVE_CAPTION_TEXT:
             return 0xffffffff;
         // Light grey
@@ -81,7 +82,6 @@ public class LinuxSystemProperties implements SystemProperties {
         // Almost white
         case SystemColor.INFO:
             return 0xffeeeeee;
-        // Almost black
         case SystemColor.INFO_TEXT:
             return 0xff222222;
         // Light grey
@@ -126,5 +126,26 @@ public class LinuxSystemProperties implements SystemProperties {
         // Default font parameters are described 
         // in java.awt.Font specification
         return new Font("Dialog", Font.PLAIN, 12);
+    }
+
+    public void init(Map desktopProperties) {
+    }
+
+    public void mapInputMethodHighlight(InputMethodHighlight highlight, Map map) {
+        TextAttribute key = TextAttribute.SWAP_COLORS;
+        if (highlight.isSelected()) {
+            map.put(key, TextAttribute.SWAP_COLORS_ON);
+            return;
+        }
+        switch(highlight.getState()) {
+        case InputMethodHighlight.RAW_TEXT:
+            key = TextAttribute.WEIGHT;
+            map.put(key, TextAttribute.WEIGHT_BOLD);
+            break;
+        case InputMethodHighlight.CONVERTED_TEXT:
+            key = TextAttribute.INPUT_METHOD_UNDERLINE;
+            map.put(key, TextAttribute.UNDERLINE_LOW_ONE_PIXEL);
+            break;
+        }
     }
 }

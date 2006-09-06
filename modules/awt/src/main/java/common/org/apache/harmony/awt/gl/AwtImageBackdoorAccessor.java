@@ -26,12 +26,14 @@ package org.apache.harmony.awt.gl;
 import java.awt.Image;
 import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
+import org.apache.harmony.awt.gl.image.DataBufferListener;
 
 /**
  * This class give an opportunity to get access to private data of 
  * some java.awt.image classes 
  * Implementation of this class placed in java.awt.image package
  */
+
 public abstract class AwtImageBackdoorAccessor {
 
     static protected AwtImageBackdoorAccessor inst;
@@ -50,4 +52,9 @@ public abstract class AwtImageBackdoorAccessor {
     public abstract short[] getDataUShort(DataBuffer db);
     public abstract double[] getDataDouble(DataBuffer db);
     public abstract float[] getDataFloat(DataBuffer db);
+    public abstract void releaseData(DataBuffer db);
+    
+    public abstract void addDataBufferListener(DataBuffer db, DataBufferListener listener);
+    public abstract void removeDataBufferListener(DataBuffer db);
+    public abstract void validate(DataBuffer db);
 }

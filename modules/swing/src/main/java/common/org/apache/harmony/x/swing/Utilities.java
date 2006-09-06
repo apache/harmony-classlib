@@ -57,6 +57,7 @@ import javax.swing.UIManager;
 import javax.swing.plaf.UIResource;
 import javax.swing.plaf.basic.BasicComboPopup;
 import javax.swing.plaf.basic.BasicGraphicsUtils;
+import javax.swing.text.Position;
 
 /**
  * SwingUtilities extension. This class provides utility
@@ -64,6 +65,77 @@ import javax.swing.plaf.basic.BasicGraphicsUtils;
  *
  */
 public class Utilities implements SwingConstants {
+    /**
+     * This interface allows to access list data
+     */
+    public interface ListModelAccessor {
+        /**
+         * Returns the list data element according to specified index
+         * 
+         * @param index of the element
+         * @return element, specified by index
+         */
+        public Object getElementAt(final int index);
+        
+        /**
+         * Returns the size of the list
+         * @return size of the list
+         */
+        public int getSize();
+    }
+    
+    /**
+     * Returns the index of the next element of the list according to specified
+     * prefix, start index and bias
+     * 
+     * @param model of the list
+     * @param prefix of the list element
+     * @param startIndex index to start search from
+     * @param bias
+     * @return index of the next element
+     */
+    public static int getNextMatch(final ListModelAccessor model, final String prefix, 
+                            final int startIndex, final Position.Bias bias) {
+        if (prefix == null) {
+            throw new IllegalArgumentException("Prefix must be not null");
+        }
+
+        if (startIndex < 0 || startIndex >= model.getSize()) {
+            throw new IllegalArgumentException("Incorrect start index");
+        }
+
+        String ucPrefix = prefix.toUpperCase();
+        if (Position.Bias.Forward == bias) {
+            for (int i = startIndex; i < model.getSize(); i++) {
+                String elementAsString = model.getElementAt(i).toString().toUpperCase();
+                if (elementAsString.startsWith(ucPrefix)) {
+                    return i;
+                }
+            }
+            for (int i = 0; i < startIndex; i++) {
+                String elementAsString = model.getElementAt(i).toString().toUpperCase();
+                if (elementAsString.startsWith(ucPrefix)) {
+                    return i;
+                }
+            }
+        } else if (Position.Bias.Backward == bias) {
+            for (int i = startIndex; i >= 0; i--) {
+                String elementAsString = model.getElementAt(i).toString().toUpperCase();
+                if (elementAsString.startsWith(ucPrefix)) {
+                    return i;
+                }
+            }
+            for (int i = model.getSize() - 1; i > startIndex; i--) {
+                String elementAsString = model.getElementAt(i).toString().toUpperCase();
+                if (elementAsString.startsWith(ucPrefix)) {
+                    return i;
+                }
+            }
+        }
+
+        return -1;
+    }
+
     /**
     * Clips string due to the width of an area available for painting the text.
     *

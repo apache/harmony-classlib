@@ -209,19 +209,26 @@ public class Dialog extends Window {
     public void hide() {
         toolkit.lockAWT();
         try {
-            if (modalContext != null && modalContext.isModalLoopRunning()) {
-                modalContext.endModalLoop();
-                super.hide();
-            }
-            else {
-                super.hide();
-            }
+            hideImpl();
         } finally {
             toolkit.unlockAWT();
         }
     }
-
+    
+    void hideImpl() {
+        if (modalContext != null && modalContext.isModalLoopRunning()) {
+            modalContext.endModalLoop();
+            super.hide();
+        } else {
+            super.hide();
+        }
+    }
+    
     public void show() {
+        showImpl();
+    }
+
+    void showImpl() {
         if (isModal()) {
             if (EventQueue.isDispatchThread()) {
                 showModal();
@@ -376,4 +383,11 @@ public class Dialog extends Window {
         return SystemColor.control;
     }
 
+    void runModalLoop() {
+        modalContext.runModalLoop();
+    }
+    
+    void endModalLoop() {
+        modalContext.endModalLoop();
+    }
 }

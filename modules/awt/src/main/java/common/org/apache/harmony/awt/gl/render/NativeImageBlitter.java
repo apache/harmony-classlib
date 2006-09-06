@@ -149,19 +149,25 @@ public class NativeImageBlitter implements Blitter {
                     bltBG(srcX, srcY, srcSurfStruct, srcData,
                             dstX, dstY, dstSurfStruct, dstData,
                             width, height, bgcolor.getRGB(),
-                            compType, alpha, clipRects);
+                            compType, alpha, clipRects, srcSurf.invalidated());
+                    dstSurf.invalidate();
+                    srcSurf.validate();
                 }else{
                     blt(srcX, srcY, srcSurfStruct, srcData,
                             dstX, dstY, dstSurfStruct, dstData,
                             width, height, compType, alpha,
-                            clipRects);
+                            clipRects, srcSurf.invalidated());
+                    dstSurf.invalidate();
+                    srcSurf.validate();
                 }
             }else if(comp instanceof XORComposite){
                 XORComposite xcomp = (XORComposite) comp;
                 xor(srcX, srcY, srcSurfStruct, srcData,
                         dstX, dstY, dstSurfStruct, dstData,
                         width, height, xcomp.getXORColor().getRGB(),
-                        clipRects);
+                        clipRects, srcSurf.invalidated());
+                dstSurf.invalidate();
+                srcSurf.validate();
             }else{
                 if(srcSurf instanceof ImageSurface){
                     JavaBlitter.inst.blit(srcX, srcY, srcSurf, dstX, dstY, 
@@ -181,7 +187,8 @@ public class NativeImageBlitter implements Blitter {
                     blt(0, 0, srcSurfStruct, srcData, 0, 0,
                             tmpSurfStruct, tmpData, w, h, 
                             AlphaComposite.SRC_OVER,
-                            1.0f, tmpClip);
+                            1.0f, tmpClip, srcSurf.invalidated());
+                    srcSurf.validate();
                     JavaBlitter.inst.blit(srcX, srcY, tmpSurf, dstX, dstY, 
                             dstSurf, width, height,
                             comp, bgcolor, clip);
@@ -194,17 +201,17 @@ public class NativeImageBlitter implements Blitter {
     private native void bltBG(int srcX, int srcY, long srsSurfDataPtr,
             Object srcData, int dstX, int dstY, long dstSurfDataPtr,
             Object dstData, int width, int height, int bgcolor,
-            int compType, float alpha, int clip[]);
+            int compType, float alpha, int clip[], boolean invalidated);
 
     private native void blt(int srcX, int srcY, long srsSurfDataPtr,
             Object srcData, int dstX, int dstY, long dstSurfDataPtr,
             Object dstData, int width, int height, int compType,
-            float alpha, int clip[]);
+            float alpha, int clip[], boolean invalidated);
 
     private native void xor(int srcX, int srcY, long srsSurfDataPtr,
             Object srcData, int dstX, int dstY, long dstSurfDataPtr,
             Object dstData, int width, int height, int xorcolor,
-            int clip[]);
+            int clip[], boolean invalidated);
 
 
 }

@@ -218,15 +218,9 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
-    public DragSourceContextPeer createDragSourceContextPeer(DragGestureEvent a0)
-            throws InvalidDnDOperationException
-    {
-        lockAWT();
-        try {
-        } finally {
-            unlockAWT();
-        }
-        return null;
+    public DragSourceContextPeer createDragSourceContextPeer(
+            DragGestureEvent dge) throws InvalidDnDOperationException {
+        return dtk.createDragSourceContextPeer(dge);
     }
 
     protected FileDialogPeer createFileDialog(FileDialog a0)
@@ -466,7 +460,7 @@ class ToolkitImpl extends Toolkit {
             }
 
             if (systemClipboard == null) {
-                systemClipboard = DTK.getContextInstance().getNativeClipboard();
+                systemClipboard = DTK.getDTK().getNativeClipboard();
             }
 
             return systemClipboard;
@@ -486,7 +480,7 @@ class ToolkitImpl extends Toolkit {
     }
 
     protected EventQueue getSystemEventQueueImpl() {
-        return systemEventQueue;
+        return getSystemEventQueueCore().getActiveEventQueue();
     }
 
 }

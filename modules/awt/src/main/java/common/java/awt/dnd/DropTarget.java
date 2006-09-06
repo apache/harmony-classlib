@@ -25,11 +25,14 @@ import java.awt.HeadlessException;
 import java.awt.Point;
 import java.awt.datatransfer.FlavorMap;
 import java.awt.datatransfer.SystemFlavorMap;
+import java.awt.dnd.peer.DropTargetContextPeer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.peer.ComponentPeer;
 import java.io.Serializable;
 import java.util.TooManyListenersException;
+
+import org.apache.harmony.awt.datatransfer.DTK;
 
 public class DropTarget implements DropTargetListener, Serializable {
 
@@ -64,7 +67,7 @@ public class DropTarget implements DropTargetListener, Serializable {
     int actions;
     FlavorMap flavorMap;
     DropTargetListener dropTargetListener;
-    DropTargetContext context;
+    final DropTargetContext context;
     DropTargetAutoScroller autoScroller;
 
     public DropTarget(Component c, int ops, DropTargetListener dtl, 
@@ -108,10 +111,14 @@ public class DropTarget implements DropTargetListener, Serializable {
     }
 
     public void removeNotify(ComponentPeer peer) {
+        context.removeNotify();
         // TODO: implement
     }
 
     public void addNotify(ComponentPeer peer) {
+        DTK dtk = DTK.getDTK();
+        DropTargetContextPeer dtp = dtk.createDropTargetContextPeer(context);
+        context.addNotify(dtp);
         // TODO: implement
     }
 

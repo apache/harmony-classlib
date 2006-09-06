@@ -190,6 +190,11 @@ public class BasicComboBoxUI extends ComboBoxUI {
                 newModel.addListDataListener(listDataListener);
             } else if (StringConstants.COMPONENT_ORIENTATION.equals(event.getPropertyName())) {
                 listBox.setComponentOrientation((ComponentOrientation)event.getNewValue());
+            } else if (StringConstants.IS_TABLE_EDITOR.equals(event.getPropertyName())) {
+                isTableEditor = ((Boolean)event.getNewValue()).booleanValue();
+            } else if (StringConstants.EDITOR_PROPERTY_CHANGED.equals(event.getPropertyName())) {
+                removeEditor();
+                addEditor();
             }
 
             isMinimumSizeDirty = true;
@@ -203,7 +208,9 @@ public class BasicComboBoxUI extends ComboBoxUI {
     private class EditorFocusHandler extends FocusHandler {
         public void focusLost(final FocusEvent e) {
             super.focusLost(e);
-            comboBox.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, null));
+            ActionEvent actionEvent = new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, null);
+            editorActionListener.actionPerformed(actionEvent);
+            comboBox.actionPerformed(actionEvent);
         }
     }
 
@@ -287,11 +294,15 @@ public class BasicComboBoxUI extends ComboBoxUI {
     protected MouseMotionListener popupMouseMotionListener;
     protected PropertyChangeListener propertyChangeListener;
 
+    boolean isTableEditor;
+
     private Dimension cachedDisplaySize;
     private Rectangle cachedTextPartBounds = new Rectangle();
     private Insets cachedInsets = new Insets(0, 0, 0, 0);
 
     private FocusListener editorFocusListener;
+    private ActionListener editorActionListener;
+    private Object selectedValue;
     
     private static final String PROTOTYPE_VALUE_FOR_EDITABLE_COMBOBOX = "wwwwwwwwww";
 
@@ -372,6 +383,7 @@ public class BasicComboBoxUI extends ComboBoxUI {
         }
         if (isVisible) {
             popup.show();
+            selectedValue = popup.getList().getSelectedValue();
         } else {
             popup.hide();
         }
@@ -607,14 +619,14 @@ public class BasicComboBoxUI extends ComboBoxUI {
 
     protected void selectNextPossibleValue() {
         int selectedIndex = comboBox.getSelectedIndex();
-        if (selectedIndex != -1 && selectedIndex + 1 < comboBox.getItemCount()) {
+        if (!isTableEditor && selectedIndex != -1 && selectedIndex + 1 < comboBox.getItemCount()) {
             comboBox.setSelectedIndex(selectedIndex + 1);
         }
     }
 
     protected void selectPreviousPossibleValue() {
         int selectedIndex = comboBox.getSelectedIndex();
-        if (selectedIndex != -1 && selectedIndex > 0) {
+        if (!isTableEditor && selectedIndex != -1 && selectedIndex > 0) {
             comboBox.setSelectedIndex(selectedIndex - 1);
         }
     }
@@ -636,10 +648,20 @@ public class BasicComboBoxUI extends ComboBoxUI {
         editor.addFocusListener(editorFocusListener);
         editor.setFont(comboBox.getFont());
         comboBox.getEditor().setItem(comboBox.getSelectedItem());
+        
+        editorActionListener = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (selectedValue != null && !selectedValue.equals(popup.getList().getSelectedValue())) {
+                    comboBox.getEditor().setItem(popup.getList().getSelectedValue());
+                }
+            }
+        };
+        comboBox.getEditor().addActionListener(editorActionListener);
     }
 
     protected void unconfigureEditor() {
         editor.removeFocusListener(editorFocusListener);
+        comboBox.getEditor().removeActionListener(editorActionListener);
         editorFocusListener = null;
     }
 

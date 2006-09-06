@@ -32,6 +32,8 @@ import java.util.EventObject;
 import javax.swing.table.TableCellEditor;
 import javax.swing.tree.TreeCellEditor;
 
+import org.apache.harmony.x.swing.StringConstants;
+
 public class DefaultCellEditor extends AbstractCellEditor implements TableCellEditor, TreeCellEditor {
     protected class EditorDelegate implements ActionListener, ItemListener, Serializable {
         protected Object value;
@@ -127,6 +129,8 @@ public class DefaultCellEditor extends AbstractCellEditor implements TableCellEd
         };
         comboBox.addActionListener(delegate);
         setClickCountToStart(1);
+        
+        comboBox.putClientProperty(StringConstants.IS_TABLE_EDITOR, Boolean.TRUE);
     }
 
     public Component getComponent() {

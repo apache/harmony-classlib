@@ -49,6 +49,7 @@ public class DefaultTableColumnModel implements TableColumnModel, PropertyChange
     public DefaultTableColumnModel() {
         selectionModel = createSelectionModel();
         selectionModel.addListSelectionListener(this);
+        alignSelectionModelToColumns();
     }
 
     public void addColumn(final TableColumn column) {
@@ -58,6 +59,7 @@ public class DefaultTableColumnModel implements TableColumnModel, PropertyChange
         tableColumns.add(column);
         totalColumnWidth = -1;
         column.addPropertyChangeListener(this);
+        alignSelectionModelToColumns();
         fireColumnAdded(new TableColumnModelEvent(this, tableColumns.size() - 2 >= 0 ? tableColumns.size() - 2 : tableColumns.size() - 1, tableColumns.size() - 1));
     }
 
@@ -67,6 +69,7 @@ public class DefaultTableColumnModel implements TableColumnModel, PropertyChange
             totalColumnWidth = -1;
             column.removePropertyChangeListener(this);
         }
+        alignSelectionModelToColumns();
         fireColumnRemoved(new TableColumnModelEvent(this, index, index));
     }
 
@@ -162,6 +165,7 @@ public class DefaultTableColumnModel implements TableColumnModel, PropertyChange
 
         selectionModel = model;
         selectionModel.addListSelectionListener(this);
+        alignSelectionModelToColumns();
     }
 
     public ListSelectionModel getSelectionModel() {
@@ -289,5 +293,18 @@ public class DefaultTableColumnModel implements TableColumnModel, PropertyChange
         }
 
         return changeEvent;
+    }
+
+    private void alignSelectionModelToColumns() {
+        if (getColumnCount() == 0) {
+            if (selectionModel.getAnchorSelectionIndex() >= 0) {
+                selectionModel.setValueIsAdjusting(true);
+                selectionModel.setAnchorSelectionIndex(-1);
+                selectionModel.setLeadSelectionIndex(-1);
+                selectionModel.setValueIsAdjusting(false);
+            }
+        } else if (selectionModel.getLeadSelectionIndex() < 0) {
+            selectionModel.removeSelectionInterval(0, 0);
+        }
     }
 }

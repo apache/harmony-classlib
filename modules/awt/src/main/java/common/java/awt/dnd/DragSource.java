@@ -53,8 +53,8 @@ public class DragSource implements Serializable {
 
     static {
         if (GraphicsEnvironment.isHeadless()) {
-            DefaultMoveDrop = DefaultMoveNoDrop = DefaultCopyDrop =
-                    DefaultCopyNoDrop = DefaultLinkDrop = DefaultLinkNoDrop = null;
+            DefaultMoveDrop = DefaultMoveNoDrop = DefaultCopyDrop = null;
+            DefaultCopyNoDrop = DefaultLinkDrop = DefaultLinkNoDrop = null;
         } else {
             Toolkit toolkit = Toolkit.getDefaultToolkit();
 
@@ -117,7 +117,8 @@ public class DragSource implements Serializable {
 
     public DragSourceMotionListener[] getDragSourceMotionListeners() {
         return (DragSourceMotionListener[])
-                dragSourceMotionListeners.getUserListeners(new DragSourceMotionListener[0]);
+                dragSourceMotionListeners.getUserListeners(
+                        new DragSourceMotionListener[0]);
     }
 
     public void addDragSourceMotionListener(DragSourceMotionListener dsml) {
@@ -131,71 +132,98 @@ public class DragSource implements Serializable {
     public EventListener[] getListeners(Class listenerType) {
         if (DragSourceListener.class.isAssignableFrom(listenerType)) {
             return getDragSourceListeners();
-        } else if (DragSourceMotionListener.class.isAssignableFrom(listenerType)) {
+        } else if (DragSourceMotionListener.class.isAssignableFrom(
+                listenerType)) {
             return getDragSourceMotionListeners();
         }
 
         return new EventListener[0];
     }
 
-    protected DragSourceContext createDragSourceContext(DragSourceContextPeer dscp,
-            DragGestureEvent dgl, Cursor dragCursor, Image dragImage, Point imageOffset,
+    protected DragSourceContext createDragSourceContext(
+            DragSourceContextPeer dscp,
+            DragGestureEvent dgl, Cursor dragCursor, 
+            Image dragImage, Point imageOffset,
             Transferable t, DragSourceListener dsl)
     {
-        return new DragSourceContext(dscp, dgl, dragCursor, dragImage, imageOffset, t, dsl);
+        return new DragSourceContext(dscp, dgl, dragCursor, 
+                                     dragImage, imageOffset, t, dsl);
     }
 
     public FlavorMap getFlavorMap() {
         return SystemFlavorMap.getDefaultFlavorMap();
     }
 
-    public void startDrag(DragGestureEvent trigger, Cursor dragCursor, Image dragImage,
-            Point imageOffset, Transferable transferable, DragSourceListener dsl,
-            FlavorMap flavorMap) throws InvalidDnDOperationException
-    {
+    public void startDrag(DragGestureEvent trigger, Cursor dragCursor, 
+                          Image dragImage, Point imageOffset, 
+                          Transferable transferable, DragSourceListener dsl,
+                          FlavorMap flavorMap)
+            throws InvalidDnDOperationException {
+
         if (curContext != null) {
             throw new InvalidDnDOperationException(
-                    "Attempt to start a drag while an existing drag operation is still executing.");
+                    "Attempt to start a drag while an existing " + 
+                    "drag operation is still executing.");
         }
 
         DragSourceContextPeer peer =
-                Toolkit.getDefaultToolkit().createDragSourceContextPeer(trigger);
+            Toolkit.getDefaultToolkit().createDragSourceContextPeer(trigger);
         curContext = createDragSourceContext(peer, trigger, dragCursor,
-                dragImage, imageOffset, transferable, dsl);
+                                             dragImage, imageOffset,
+                                             transferable, dsl);
 
         peer.startDrag(curContext, dragCursor, dragImage, imageOffset);
+        curContext = null;
     }
 
-    public void startDrag(DragGestureEvent trigger, Cursor dragCursor, Image dragImage,
-            Point dragOffset, Transferable transferable, DragSourceListener dsl)
-            throws InvalidDnDOperationException
-    {
-        startDrag(trigger, dragCursor, dragImage, dragOffset, transferable, dsl, null);
+    public void startDrag(DragGestureEvent trigger, 
+                          Cursor dragCursor,
+                          Image dragImage, 
+                          Point dragOffset, 
+                          Transferable transferable, 
+                          DragSourceListener dsl)
+            throws InvalidDnDOperationException {
+
+        startDrag(trigger, dragCursor, dragImage, 
+                  dragOffset, transferable, dsl, null);
     }
 
-    public void startDrag(DragGestureEvent trigger, Cursor dragCursor, Transferable transferable,
-            DragSourceListener dsl, FlavorMap flavorMap) throws InvalidDnDOperationException
-    {
-        startDrag(trigger, dragCursor, null, null, transferable, dsl, flavorMap);
+    public void startDrag(DragGestureEvent trigger, 
+                          Cursor dragCursor, 
+                          Transferable transferable, 
+                          DragSourceListener dsl, 
+                          FlavorMap flavorMap)
+            throws InvalidDnDOperationException {
+
+        startDrag(trigger, dragCursor, null, null, 
+                  transferable, dsl, flavorMap);
     }
 
-    public void startDrag(DragGestureEvent trigger, Cursor dragCursor, Transferable transferable,
-            DragSourceListener dsl) throws InvalidDnDOperationException
-    {
+    public void startDrag(DragGestureEvent trigger,
+                          Cursor dragCursor, 
+                          Transferable transferable,
+                          DragSourceListener dsl)
+            throws InvalidDnDOperationException {
+
         startDrag(trigger, dragCursor, transferable, dsl, null);
     }
 
     public DragGestureRecognizer createDragGestureRecognizer(
-                                            Class recognizerAbstractClass, 
-                                            Component c, int 
-                                            actions, 
-                                            DragGestureListener dgl) {
+                            Class recognizerAbstractClass, 
+                            Component c, 
+                            int actions, 
+                            DragGestureListener dgl) {
+
         Toolkit t = Toolkit.getDefaultToolkit();
         return t.createDragGestureRecognizer(
                     recognizerAbstractClass, this, c, actions, dgl);
     }
 
-    public DragGestureRecognizer createDefaultDragGestureRecognizer(Component c, int actions, DragGestureListener dgl) {
+    public DragGestureRecognizer createDefaultDragGestureRecognizer(
+                            Component c, 
+                            int actions, 
+                            DragGestureListener dgl) {
+
         Toolkit t = Toolkit.getDefaultToolkit();
         return t.createDragGestureRecognizer(
                 MouseDragGestureRecognizer.class, this, c, actions, dgl);

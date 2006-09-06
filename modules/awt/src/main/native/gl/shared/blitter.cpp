@@ -562,14 +562,14 @@ void src_over_intrgb_intargb
                   sstride = srcStruct->scanline_stride;
                   dstride = dstStruct->scanline_stride;
 
-                  srcPtr += srcY * sstride + srcX;
-                  dstPtr += dstY * dstride + dstX;
+                  srcPtr += srcY * sstride + width + srcX - 1;
+                  dstPtr += dstY * dstride + width + dstX - 1;
 
-                  for(int y = 0; y < height; y++, srcPtr += sstride, dstPtr += dstride){
+                  for(int y = height; y > 0; y--, srcPtr += sstride, dstPtr += dstride){
                           sp = srcPtr;
                           dp = dstPtr;
-                          for(int x = 0; x < width; x++){
-                                  *dp++ = 0xff000000 | *sp++;
+                          for(int x = width; x > 0; x--){
+                                  *dp-- = 0xff000000 | *sp--;
                           }
                   }
           }else{
@@ -653,39 +653,44 @@ void src_over_intargb_intrgb
       int sstride = srcStruct->scanline_stride << 2;
       int dstride = dstStruct->scanline_stride << 2;
 
-      srcPtr += srcY * sstride + (srcX << 2);
-      dstPtr += dstY * dstride + (dstX << 2);
+      srcPtr += srcY * sstride + ((width + srcX) << 2) - 1;
+      dstPtr += dstY * dstride + ((width + dstX) << 2) - 1;
 
       int x, y;
       unsigned char sr, sg, sb, sa, dr, dg, db, da, fs = 255, fd;
-      for(y = 0; y < height; y++, srcPtr += sstride, dstPtr += dstride){
+      for(y = height; y > 0 ; y--, srcPtr += sstride, dstPtr += dstride){
           sp = srcPtr;
-          dp = dstPtr;
-          _dp = dp;
+          dp = _dp = dstPtr;
 
-          for(x = 0; x < width; x++){
-              sb = *sp++;
-              sg = *sp++;
-              sr = *sp++;
-              sa = *sp++;
+          for(x = width; x > 0; x--){
+              sa = *sp--;
+              sr = *sp--;
+              sg = *sp--;
+              sb = *sp--;
               sa = MUL(alpha, sa);
-              sb = MUL(sa, sb);
-              sg = MUL(sa, sg);
-              sr = MUL(sa, sr);
-              db = *dp++;
-              dg = *dp++;
-              dr = *dp++;
+                         if(sa != 255){
+                                 sb = MUL(sa, sb);
+                                 sg = MUL(sa, sg);
+                                 sr = MUL(sa, sr);
+                         }
+              dp--;
               da = 255;
-              dp++;
+              dr = *dp--;
+              dg = *dp--;
+              db = *dp--;
               fd = 255 - sa;
               COMPOSE(sa, sr, sg, sb, fs, da, dr, dg, db, fd);
-              db = DIV(da, db);
-              dg = DIV(da, dg);
-              dr = DIV(da, dr);
-              *_dp++ = db;
-              *_dp++ = dg;
-              *_dp++ = dr;
-              *_dp++ = 255;
+                         if(da != 255){
+                                 *_dp-- = 255;
+                                 *_dp-- = DIV(da, dr);
+                                 *_dp-- = DIV(da, dg);
+                                 *_dp-- = DIV(da, db);
+                         }else{
+                                 *_dp-- = 255;
+                                 *_dp-- = dr;
+                                 *_dp-- = dg;
+                                 *_dp-- = db;
+                         }
           }
       }
   }
@@ -699,44 +704,50 @@ void src_over_intargb_intargb
       unsigned char *dstPtr = (unsigned char *)dstData;
       unsigned char *sp, *dp, *_dp;
 
-      int sstride = srcStruct->scanline_stride << 2;
-      int dstride = dstStruct->scanline_stride << 2;
+      int sstride = srcStruct->scanline_stride_byte;
+      int dstride = dstStruct->scanline_stride_byte;
 
-      srcPtr += srcY * sstride;
-      dstPtr += dstY * dstride;
+      srcPtr += srcY * sstride + ((width + srcX) << 2) - 1;
+      dstPtr += dstY * dstride + ((width + dstX) << 2) - 1;
 
       int x, y;
       unsigned char sr, sg, sb, sa, dr, dg, db, da, fs = 255, fd;
-      for(y = 0; y < height; y++, srcPtr += sstride, dstPtr += dstride){
-          sp = srcPtr + (srcX << 2);
-          dp = dstPtr + (dstX << 2);
-          _dp = dp;
+      for(y = height; y > 0; y--, srcPtr += sstride, dstPtr += dstride){
+          sp = srcPtr;
+          dp = _dp = dstPtr;
 
-          for(x = 0; x < width; x++){
-              sb = *sp++;
-              sg = *sp++;
-              sr = *sp++;
-              sa = *sp++;
+          for(x = width; x > 0; x--){
+              sa = *sp--;
+              sr = *sp--;
+              sg = *sp--;
+              sb = *sp--;
               sa = MUL(alpha, sa);
-              sb = MUL(sa, sb);
-              sg = MUL(sa, sg);
-              sr = MUL(sa, sr);
-              db = *dp++;
-              dg = *dp++;
-              dr = *dp++;
-              da = *dp++;
-              db = MUL(da, db);
-              dg = MUL(da, dg);
-              dr = MUL(da, dr);
+                         if(sa != 255){
+                                 sb = MUL(sa, sb);
+                                 sg = MUL(sa, sg);
+                                 sr = MUL(sa, sr);
+                         }
+              da = *dp--;
+              dr = *dp--;
+              dg = *dp--;
+              db = *dp--;
+                         if(da != 255){
+                                 db = MUL(da, db);
+                                 dg = MUL(da, dg);
+                                 dr = MUL(da, dr);
+                         }
               fd = 255 - sa;
               COMPOSE(sa, sr, sg, sb, fs, da, dr, dg, db, fd);
-              db = DIV(da, db);
-              dg = DIV(da, dg);
-              dr = DIV(da, dr);
-              *_dp++ = db;
-              *_dp++ = dg;
-              *_dp++ = dr;
-              *_dp++ = da;
+              *_dp-- = da;
+                         if(da != 255){
+                                 *_dp-- = DIV(da, dr);
+                                 *_dp-- = DIV(da, dg);
+                                 *_dp-- = DIV(da, db);
+                         }else{
+                                 *_dp-- = dr;
+                                 *_dp-- = dg;
+                                 *_dp-- = db;
+                         }
           }
       }
   }
@@ -1226,7 +1237,7 @@ void blitMapInit(){
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_render_NativeImageBlitter_bltBG
   (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jobject srcData, 
   jint dstX, jint dstY, jlong dstSurfStruct, jobject dstData, jint width, jint height, 
-  jint bgcolor, jint compType, jfloat alpha, jintArray clip){
+  jint bgcolor, jint compType, jfloat alpha, jintArray clip, jboolean invalidated){
 
       if(compType == COMPOSITE_DST) return;
 
@@ -1399,7 +1410,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_render_NativeImageBlitter_
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_render_NativeImageBlitter_blt
   (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jobject srcData, 
   jint dstX, jint dstY, jlong dstSurfStruct, jobject dstData, jint width, jint height, 
-  jint compType, jfloat alpha, jintArray clip){
+  jint compType, jfloat alpha, jintArray clip, jboolean invalidated){
 
       if(compType == COMPOSITE_DST) return;
 
@@ -1478,7 +1489,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_render_NativeImageBlitter_
       if(dstY < 0){
           height += srcY;
           srcY -= dstY;
-          srcY = 0;
+          dstY = 0;
       }
 
       if(srcX + width > srcX2) width = srcX2 - srcX + 1;
@@ -1590,7 +1601,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_render_NativeImageBlitter_
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_render_NativeImageBlitter_xor
   (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jobject srcData, 
   jint dstX, jint dstY, jlong dstSurfStruct, jobject dstData, jint width, jint heigth, 
-  jint xorcolor, jintArray clip){
+  jint xorcolor, jintArray clip, jboolean invalidated){
 
   }
 

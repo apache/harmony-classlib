@@ -111,15 +111,17 @@ public class BasicButtonUI extends ButtonUI {
 
     protected void paintText(final Graphics g, final AbstractButton b,
                              final Rectangle textRect, final String text) {
+        paintText(g, (JComponent)b, textRect, text);
+    }
+
+    protected void paintText(final Graphics g, final JComponent c,
+                             final Rectangle textRect, final String text) {
+        final AbstractButton b = (AbstractButton)c;
         final Color color = b.isEnabled() ? b.getForeground() : disabledTextColor;
 
         final int textShiftOffset = getTextShiftOffset();
         textRect.translate(textShiftOffset, textShiftOffset);
         ButtonCommons.paintText(g, b, textRect, text, color);
-    }
-
-    protected void paintText(final Graphics g, final JComponent c, final Rectangle textRect, final String text) {
-        paintText(g, (AbstractButton)c, textRect, text);
     }
 
     protected void paintFocus(final Graphics g, final AbstractButton b, final Rectangle viewRect,
@@ -156,7 +158,7 @@ public class BasicButtonUI extends ButtonUI {
             listener.installKeyboardActions(button);
         }
         SwingUtilities.replaceUIInputMap(button, JComponent.WHEN_FOCUSED,
-                                         (InputMap)UIManager.get(PROPERTY_PREFIX + "focusInputMap"));
+                                         (InputMap)UIManager.get(getPropertyPrefix() + "focusInputMap"));
     }
 
     protected void uninstallKeyboardActions(final AbstractButton button) {

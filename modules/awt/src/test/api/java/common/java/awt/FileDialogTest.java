@@ -29,6 +29,7 @@ import junit.framework.TestCase;
  */
 public class FileDialogTest extends TestCase {
     Frame frame;
+    Dialog dialog;
     FileDialog fd;
 
     public static void main(String[] args) {
@@ -37,6 +38,7 @@ public class FileDialogTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         frame = new Frame();
+        dialog = new Dialog(frame);
         fd = new FileDialog(frame);
     }
 
@@ -70,6 +72,55 @@ public class FileDialogTest extends TestCase {
         assertTrue(fd.isModal());
         assertNull(fd.getFile());
         assertNull(fd.getDirectory());
+    }
+    
+    private final void constructorTestDialog() {        
+        assertSame(dialog, fd.getParent());
+        assertTrue(fd.isModal());
+        assertNull(fd.getFile());
+        assertNull(fd.getDirectory());
+    }
+    
+    /*
+     * Class under test for void FileDialog(java.awt.Frame)
+     */
+    public final void testFileDialogDialog() {
+        fd = new FileDialog(dialog);
+        constructorTestDialog();
+        assertEquals("", fd.getTitle());
+        assertEquals(FileDialog.LOAD, fd.getMode());
+
+    }
+
+    /*
+     * Class under test for void FileDialog(java.awt.Frame, java.lang.String)
+     */
+    public final void testFileDialogDialogString() {
+        String title = "Open";
+        fd = new FileDialog(dialog, title);
+        constructorTestDialog();
+        assertEquals(title, fd.getTitle());
+        assertEquals(FileDialog.LOAD, fd.getMode());
+    }
+
+    /*
+     * Class under test for void FileDialog(java.awt.Frame, java.lang.String, int)
+     */
+    public final void testFileDialogDialogStringint() {
+        String title = "Save";
+        int mode = FileDialog.SAVE;
+        fd = new FileDialog(dialog, title, mode);
+        constructorTestDialog();
+        assertEquals(title, fd.getTitle());
+        assertEquals(mode, fd.getMode());
+        boolean iae = false;
+        try {
+            fd = new FileDialog(dialog, title, mode = -666);
+        } catch (IllegalArgumentException e) {
+            iae = true;
+        }
+        assertTrue(iae);
+        assertEquals(FileDialog.SAVE, fd.getMode());
     }
     /*
      * Class under test for void FileDialog(java.awt.Frame)

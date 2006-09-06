@@ -82,11 +82,18 @@ public class WinWTK extends WTK {
         return robot;
     }
 
+    public NativeIM getNativeIM() {
+        if (im == null) {
+            im = new WinIM();
+        }
+        return im;
+    }
+
     private final WinSystemProperties systemProperties = new WinSystemProperties();
     private final WinEventQueue eventQueue = new WinEventQueue(systemProperties);
     private final GraphicsFactory graphicsFactory = new org.apache.harmony.awt.gl.windows.WinGraphics2DFactory();
-    private final CursorFactory cursorFactory = new WinCursorFactory();
+    private final CursorFactory cursorFactory = new WinCursorFactory(eventQueue);
     private final NativeMouseInfo mouseInfo = new WinMouseInfo();
     private WinRobot robot;
-
+    private WinIM im;
 }

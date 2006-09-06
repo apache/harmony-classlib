@@ -150,7 +150,6 @@ public class BasicTableUI extends TableUI {
                         changeSelection(e);
                     }
                     forwardEventToEditor(e);
-                    table.getEditorComponent().requestFocus();
                 } else {
                     changeSelection(e);
                 }

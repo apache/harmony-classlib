@@ -21,6 +21,8 @@ package javax.swing.plaf.basic;
 
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
@@ -37,8 +39,9 @@ class RootPaneFocusHandler implements ChangeListener {
     private static RootPaneFocusHandler sharedInstance;
     private static int numInstallations;
     private static Component previousFocusOwner;
+    private static Component focusedRootPane;
 
-    private boolean focusGrabbed;
+    private KeyListener rootPaneKeyListener;
 
     private RootPaneFocusHandler() {
     }
@@ -65,11 +68,11 @@ class RootPaneFocusHandler implements ChangeListener {
     public void stateChanged(final ChangeEvent e) {
         final MenuElement[] path = MenuSelectionManager.defaultManager().getSelectedPath();
         if (Utilities.isEmptyArray(path)) {
-            if (focusGrabbed) {
+            if (focusedRootPane != null) {
                 returnFocus();
             }
         } else {
-            if (!focusGrabbed && Utilities.isValidFirstPathElement(path[0])) {
+            if (focusedRootPane == null && Utilities.isValidFirstPathElement(path[0])) {
                 grabFocus(path);
             }
         }
@@ -86,11 +89,31 @@ class RootPaneFocusHandler implements ChangeListener {
                 Component focusOwner = getFocusManager().getFocusOwner();
                 if (pane.requestFocus(true)) {
                     previousFocusOwner = focusOwner;
-                    focusGrabbed = true;
+                    focusedRootPane = pane;
+                    MenuKeyBindingProcessor.attach();
+                    if (pane.getJMenuBar() == null) {
+                        pane.addKeyListener(createRootPaneKeyListener());
+                    }
                 }
                 break;
             }
         }
+    }
+
+    private KeyListener createRootPaneKeyListener() {
+        return (rootPaneKeyListener != null) ? rootPaneKeyListener : (rootPaneKeyListener = new KeyListener() {
+            public void keyPressed(KeyEvent event) {
+                MenuSelectionManager.defaultManager().processKeyEvent(event);
+            }
+
+            public void keyReleased(KeyEvent event) {
+                MenuSelectionManager.defaultManager().processKeyEvent(event);
+            }
+
+            public void keyTyped(KeyEvent event) {
+                MenuSelectionManager.defaultManager().processKeyEvent(event);
+            }
+        });
     }
 
     private Component getRootPaneChild(final MenuElement item) {
@@ -103,7 +126,9 @@ class RootPaneFocusHandler implements ChangeListener {
         } else {
             getFocusManager().focusNextComponent();
         }
-        focusGrabbed = false;
+        focusedRootPane.removeKeyListener(rootPaneKeyListener);
+        focusedRootPane = null;
+        MenuKeyBindingProcessor.detach();
     }
 
     private KeyboardFocusManager getFocusManager() {

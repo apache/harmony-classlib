@@ -19,6 +19,7 @@
  */
 package javax.swing;
 
+import java.applet.Applet;
 import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.Container;
@@ -627,8 +628,7 @@ public abstract class JComponent extends Container implements Serializable {
 
     public Container getTopLevelAncestor() {
         for(Container parent = getParent(); parent != null; parent = parent.getParent()) {
-            // TODO: Code should be uncommented when JApplet is supported
-            if(parent instanceof Window /*|| parent instanceof Applet*/) {
+            if(parent instanceof Window || parent instanceof Applet) {
                 return parent;
             }
         }
@@ -650,7 +650,7 @@ public abstract class JComponent extends Container implements Serializable {
     }
 
     public final void setInputMap(final int condition, final InputMap map) {
-        if (condition == WHEN_IN_FOCUSED_WINDOW && !(map instanceof ComponentInputMap)) {
+        if (condition == WHEN_IN_FOCUSED_WINDOW && !(map instanceof ComponentInputMap) && map != null) {
             throw new IllegalArgumentException("For WHEN_IN_FOCUSED_WINDOW condition " +
                                                "ComponentInputMap has to be provided");
         }
@@ -1163,6 +1163,7 @@ public abstract class JComponent extends Container implements Serializable {
     }
 
     public void revalidate() {
+        invalidate();
         RepaintManager.currentManager(this).addInvalidComponent(this);
     }
 

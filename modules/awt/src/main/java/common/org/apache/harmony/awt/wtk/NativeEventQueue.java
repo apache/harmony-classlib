@@ -19,6 +19,9 @@
  */
 package org.apache.harmony.awt.wtk;
 
+import java.util.LinkedList;
+
+
 /**
  * Describes the cross-platform native event queue interface
  *
@@ -26,7 +29,18 @@ package org.apache.harmony.awt.wtk;
  * created. All other methods would be called obly from this thread,
  * except awake().
  */
-public interface NativeEventQueue {
+public abstract class NativeEventQueue {
+    
+    private ShutdownWatchdog shutdownWatchdog;
+    private final Object eventMonitor = new Object();
+    private final LinkedList eventQueue = new LinkedList();
+
+    public static abstract class Task {
+        public volatile Object returnValue;
+
+        public abstract void perform();
+    }
+    
     /**
      * Blocks current thread until native event queue is not empty
      * or awaken from other thread by awake().
@@ -36,7 +50,7 @@ public interface NativeEventQueue {
      *
      * @return if event loop should be stopped
      */
-    boolean waitEvent();
+    public abstract boolean waitEvent();
 
     /**
      * Determines whether or not the native event queue is empty.
@@ -44,45 +58,58 @@ public interface NativeEventQueue {
      *
      * @return true if the queue is empty; false otherwise
      */
-    boolean isEmpty();
+    public boolean isEmpty() {
+        synchronized(eventQueue) {
+            return eventQueue.isEmpty();
+        }
+    }
 
-    /**
-     * Dispatches latest native event to listener. Should be called on
-     * the same thread as waitEvent.
-     *
-     * <p/>The return value should be ignored in most cases.
-     * @return result of event dipatching
-     */
-    long dispatchEventToListener();
+    public NativeEvent getNextEvent() {
+        synchronized (eventQueue) {
+            if (eventQueue.isEmpty()) {
+                shutdownWatchdog.setNativeQueueEmpty(true);
+                return null;
+            }
+            return (NativeEvent)eventQueue.remove(0);
+        }
+    }
+    
+    protected void addEvent(NativeEvent event) {
+        synchronized (eventQueue) {
+            eventQueue.add(event);
+            shutdownWatchdog.setNativeQueueEmpty(false);
+        }
+        synchronized (eventMonitor) {
+            eventMonitor.notify();
+        }
+    }
 
-    /**
-     * Sets the application provided native event listener.
-     * Only one listener is allowed simultanously.
-     *
-     * @param e -  the listener
-     */
-    void setNativeEventListener(NativeEventListener e);
+    public final Object getEventMonitor() {
+        return eventMonitor;
+    }
 
-    /**
-     * Awakes blocked waitEvent from other thread.
-     */
-    void awake();
-
-    /**
-     * Called at the beginning of each modal loop
-     */
-    void onModalLoopBegin();
-
-    /**
-     * Called at the end of each modal loop
-     */
-    void onModalLoopEnd();
+    public abstract void awake();
 
     /**
      * Gets AWT system window ID.
      *
      * @return AWT system window ID
      */
-    long getJavaWindow();
+    public abstract long getJavaWindow();
+
+    /**
+     * Add NativeEvent to the queue
+     */
+    public abstract void dispatchEvent();
+
+    public abstract void performTask(Task task);
+
+    public abstract void performLater(Task task);
+    
+    public final void setShutdownWatchdog(ShutdownWatchdog watchdog) {
+        synchronized (eventQueue) {
+            shutdownWatchdog = watchdog;
+        }
+    }
 
 }

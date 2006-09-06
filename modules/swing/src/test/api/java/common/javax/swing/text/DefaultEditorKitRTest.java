@@ -22,7 +22,11 @@ package javax.swing.text;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.Action;
@@ -32,6 +36,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
+
 
 public class DefaultEditorKitRTest extends BasicSwingTestCase {
 
@@ -121,6 +126,28 @@ public class DefaultEditorKitRTest extends BasicSwingTestCase {
         c = getInitedComponent(2, 7, "0123456789");
         performAction(c, action, null);
         assertEquals("resulted string", "0123456789", c.getText());
+    }
+
+    public void testReadInputStreamDocumentint() throws Exception {
+        final Marker readerMarker = new Marker();
+        DefaultEditorKit kit = new DefaultEditorKit() {
+            public void read(Reader in, Document doc, int pos) throws IOException, BadLocationException {
+                readerMarker.setOccurred();
+            }
+        };
+        kit.read(new ByteArrayInputStream(new byte[10]), new DefaultStyledDocument(), 0);
+        assertTrue(readerMarker.isOccurred());
+    }
+    
+    public void testWriteOutputStreamDocumentintint() throws Exception {
+        final Marker writeMarker = new Marker();
+        DefaultEditorKit kit = new DefaultEditorKit() {
+            public void write(Writer out, Document doc, int pos, int len) throws IOException, BadLocationException {
+                writeMarker.setOccurred();
+            }
+        };
+        kit.write(new ByteArrayOutputStream(), new DefaultStyledDocument(), 0, 1);
+        assertTrue(writeMarker.isOccurred());
     }
 
     public void testInsertContentActionPerformed_NullEvent() throws Exception {

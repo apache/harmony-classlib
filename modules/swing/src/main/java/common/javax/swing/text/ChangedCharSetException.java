@@ -22,21 +22,20 @@ package javax.swing.text;
 import java.io.IOException;
 
 public class ChangedCharSetException extends IOException {
+    private final String charSet;
+    private final boolean charSetKey;
 
-
-    public ChangedCharSetException(final String a0, final boolean a1) {
-        throw new UnsupportedOperationException("Not implemented");
+    public ChangedCharSetException(final String charSet, final boolean charSetKey) {
+        this.charSet = charSet;
+        this.charSetKey = charSetKey;
     }
-
 
     public boolean keyEqualsCharSet() {
-        throw new UnsupportedOperationException("Not implemented");
+        return charSetKey;
     }
-
 
     public String getCharSetSpec() {
-        throw new UnsupportedOperationException("Not implemented");
+        return charSet;
     }
-
 }
 

@@ -196,5 +196,9 @@ public class Theme {
         DefaultFileDialog dfd = new DefaultFileDialog(fd);
         return dfd.show();
     }
+    
+    public boolean hideFileDialog(FileDialog fd) {
+        return true;
+    }
 
 }

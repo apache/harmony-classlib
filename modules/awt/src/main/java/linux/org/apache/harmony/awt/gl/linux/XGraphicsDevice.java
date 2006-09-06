@@ -23,6 +23,7 @@
 package org.apache.harmony.awt.gl.linux;
 
 import java.awt.*;
+import java.lang.reflect.InvocationTargetException;
 
 import org.apache.harmony.awt.gl.GLGraphicsDevice;
 import org.apache.harmony.awt.gl.Utils;
@@ -30,6 +31,7 @@ import org.apache.harmony.awt.nativebridge.Int32Pointer;
 import org.apache.harmony.awt.nativebridge.NativeBridge;
 import org.apache.harmony.awt.nativebridge.linux.X11;
 import org.apache.harmony.awt.nativebridge.linux.X11Defs;
+import org.apache.harmony.awt.ContextStorage;
 
 public class XGraphicsDevice extends GLGraphicsDevice {
     private static final X11 x11 = X11.getInstance();
@@ -63,17 +65,39 @@ public class XGraphicsDevice extends GLGraphicsDevice {
 
         return xscreen;
     }
-    /*
-    private final X11.Display getXdisplay() {
-        if (xdisplay == null)
-            xdisplay = x11.new Display(display);
 
-        return xdisplay;
-    }
-    */
     private final XGraphicsConfiguration[] getConfigs() {
-        if (configs == null)
-            createConfigs();
+        if (configs == null) {
+            //createConfigs();
+
+            if (true || EventQueue.isDispatchThread()) {
+                createConfigs();
+            } else {
+                boolean wasAWTLocked = false;
+                try {
+                    // XXX - todo - This is a hack actually, should be discussed further
+                    try {
+                        ContextStorage.getSynchronizer().storeStateAndFree();
+                        wasAWTLocked = true;
+                    } catch (RuntimeException e) {}
+
+                    try {
+                        EventQueue.invokeAndWait(
+                                new Runnable() {
+                                    public void run () { createConfigs(); }
+                                }
+                        );
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                } finally {
+                    if (wasAWTLocked)
+                        ContextStorage.getSynchronizer().lockAndRestoreState();
+                }
+            }
+        }
 
         return configs;
     }
@@ -106,15 +130,32 @@ public class XGraphicsDevice extends GLGraphicsDevice {
         // Allocate array for configurations
         configs = new XGraphicsConfiguration[numVisualInfos];
 
+        String opengl = System.getProperty("java2d.opengl");
+        boolean useOpenGL = opengl != null && opengl.equals("true");
+
         for (int i=0; i<numVisualInfos; i++) {
             X11.XVisualInfo info = x11.createXVisualInfo(
                     infosPtr.getElementPointer(i*infosPtr.size())
             );
-            configs[i] = new XGraphicsConfiguration(this, info);
+            configs[i] = //useOpenGL ?
+//                    new GLXGraphicsConfiguration(this, info) :
+                    new XGraphicsConfiguration(this, info);
 
             if (info.get_visualid() == defVisId)
                 defaultConfigIdx = i;
         }
+
+/*        if (useOpenGL) {
+            //defVisId = 36;
+            defVisId = GLXGraphicsConfiguration.GlxConfigsRec.getBestGLXVisualId(display, screen);
+            for (int i=0; i<numVisualInfos; i++) {
+                if (configs[i].info.get_visualid() == defVisId) {
+                    defaultConfigIdx = i;
+                    break;
+                }
+            }
+        }
+*/        
     }
 
     public int getType() {

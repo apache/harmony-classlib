@@ -182,7 +182,7 @@ public abstract class FontMetrics implements Serializable {
     public int stringWidth(String str) {
         return 0;
     }
-
+    
     /**
      * Returns FontRenderContext instanse of the Graphics context specified.
      * @param context the specified Graphics context

@@ -168,7 +168,7 @@ public class BasicFileChooserUI extends FileChooserUI {
         }
 
         private File translateFile(final String fileName) {
-            if (fileName == null) {
+            if (Utilities.isEmptyString(fileName)) {
                 return null;
             }
 
@@ -232,7 +232,6 @@ public class BasicFileChooserUI extends FileChooserUI {
         protected CancelSelectionAction() {
             putValue(AbstractAction.NAME, cancelButtonText);
             putValue(AbstractAction.SHORT_DESCRIPTION, cancelButtonToolTipText);
-            putValue(AbstractAction.MNEMONIC_KEY, new Integer(cancelButtonMnemonic));
         }
 
         public void actionPerformed(final ActionEvent e) {
@@ -285,7 +284,6 @@ public class BasicFileChooserUI extends FileChooserUI {
         protected UpdateAction() {
             putValue(AbstractAction.NAME, updateButtonText);
             putValue(AbstractAction.SHORT_DESCRIPTION, updateButtonToolTipText);
-            putValue(AbstractAction.MNEMONIC_KEY, new Integer(updateButtonMnemonic));
         }
 
         public void actionPerformed(final ActionEvent e) {
@@ -525,10 +523,6 @@ public class BasicFileChooserUI extends FileChooserUI {
     }
 
     protected void installDefaults(final JFileChooser fc) {
-        saveButtonMnemonic = UIManager.getInt("FileChooser.saveButtonMnemonic");
-        openButtonMnemonic = UIManager.getInt("FileChooser.openButtonMnemonic");
-        cancelButtonMnemonic = UIManager.getInt("FileChooser.cancelButtonMnemonic");
-        updateButtonMnemonic = UIManager.getInt("FileChooser.updateButtonMnemonic");
         helpButtonMnemonic = UIManager.getInt("FileChooser.helpButtonMnemonic");
         directoryOpenButtonMnemonic = UIManager.getInt("FileChooser.directoryOpenButtonMnemonic");
 
@@ -716,12 +710,10 @@ public class BasicFileChooserUI extends FileChooserUI {
             dialogTitleText = openDialogTitleText;
             approveButtonText = openButtonText;
             approveButtonToolTipText = openButtonToolTipText;
-            approveButtonMnemonic = openButtonMnemonic;
         } else if (type == JFileChooser.SAVE_DIALOG) {
             dialogTitleText = saveDialogTitleText;
             approveButtonText = saveButtonText;
             approveButtonToolTipText = saveButtonToolTipText;
-            approveButtonMnemonic = saveButtonMnemonic;
         } else {
             dialogTitleText = null;
             approveButtonText = fileChooser.getApproveButtonText();

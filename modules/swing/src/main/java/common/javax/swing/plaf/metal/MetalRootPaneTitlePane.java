@@ -21,7 +21,9 @@
 
 package javax.swing.plaf.metal;
 
+import java.awt.Frame;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.Window;
 
 import java.awt.event.ActionEvent;
@@ -324,9 +326,10 @@ final class MetalRootPaneTitlePane extends MetalInternalFrameTitlePane {
 
     private void loadWindowProperties() {
         if (rootPane.getWindowDecorationStyle() == JRootPane.FRAME) {
-            isIconifiable = true;
+            Toolkit toolkit = Toolkit.getDefaultToolkit();
+            isIconifiable = toolkit.isFrameStateSupported(Frame.ICONIFIED);
             isClosable = true;
-            isMaximizable = true;
+            isMaximizable = toolkit.isFrameStateSupported(Frame.MAXIMIZED_BOTH);
             internals.hasMenuBar = true;
         } else {
             isIconifiable = false;

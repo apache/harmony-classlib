@@ -91,7 +91,12 @@ public class XTestRobot implements NativeRobot {
         Rectangle rect = new Rectangle(x, y, 1, 1);
         X11.XImage ximg = getScreenImage(rect);
         long pixel = ximg.get_f().get_pixel(ximg, 0, 0);
-        return getColor(ximg, pixel);
+        // this only works if window containing (x, y)
+        // point uses default color map:
+        // ideally we should find window at (x,y)
+        // and take its own color map
+        long cmap = x11.XDefaultColormap(dpy, screen);
+        return getColor(cmap, pixel);
     }
 
     /**
@@ -172,27 +177,14 @@ public class XTestRobot implements NativeRobot {
         return x11.createXImage(ptr);
     }
 
-    private Color getColor(X11.XImage ximg, long pixel) {
-        long redMask = ximg.get_red_mask();
-        long greenMask = ximg.get_green_mask();
-        long blueMask = ximg.get_blue_mask();
-        int r = getColorComp(pixel, redMask, getMaskShift(redMask));
-        int g = getColorComp(pixel, greenMask, getMaskShift(greenMask));
-        int b = getColorComp(pixel, blueMask, getMaskShift(blueMask));
+    private Color getColor(long cmap, long pixel) {
+        X11.XColor xcolor = x11.createXColor(false);
+        xcolor.set_pixel(pixel);
+        x11.XQueryColor(dpy, cmap, xcolor);
+        int r = xcolor.get_red() & 0xFF;
+        int g = xcolor.get_green() & 0xFF;
+        int b = xcolor.get_blue() & 0xFF;
         return new Color(r, g, b);
-    }
-
-    private int getMaskShift(long mask) {
-        int i = 0;
-        while ((mask != 0) && ((mask & 1) == 0)) {
-            mask >>= 1;
-            i++;
-        }
-        return i;
-    }
-
-    private int getColorComp(long pixel, long mask, int shift) {
-        return (int) ((pixel >> shift) & (mask >> shift) & 0xFF);
     }
 
     private int getBool(boolean b) {

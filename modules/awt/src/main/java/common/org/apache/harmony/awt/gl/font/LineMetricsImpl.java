@@ -27,7 +27,7 @@ import java.awt.font.LineMetrics;
  */
 
 public class LineMetricsImpl extends LineMetrics implements Cloneable{
-    
+
     // array of baseline offsets
     float[] baselineOffsets;
 
@@ -84,7 +84,7 @@ public class LineMetricsImpl extends LineMetrics implements Cloneable{
 
     // Ascent of the font (in pixels)
     int lAscent;
- 
+    
     // Descent of the font (in pixels)
     int lDescent;
 
@@ -93,7 +93,7 @@ public class LineMetricsImpl extends LineMetrics implements Cloneable{
 
     // units per EM square in font value
     int units_per_EM = 0;
-    
+
     /**
      * Creates LineMetricsImpl object from specified parameters. If baseline data parameter
      * is null than {0, (-ascent+descent)/2, -ascent} values are used for baseline offsets.
@@ -161,7 +161,23 @@ public class LineMetricsImpl extends LineMetrics implements Cloneable{
 
     }
 
-
+    /**
+     * Creates LineMetricsImpl object from specified parameters. If baseline data parameter
+     * is null than {0, (-ascent+descent)/2, -ascent} values are used for baseline offsets.
+     *  
+     * @param _numChars number of chars 
+     * @param _baseLineIndex index of the baseline offset
+     * @param _baselineOffsets an array of baseline offsets
+     * @param _underlineThickness underline thickness
+     * @param _underlineOffset underline offset
+     * @param _strikethroughThickness strikethrough thickness
+     * @param _strikethroughOffset strinkethrough offset
+     * @param _leading leading of the font
+     * @param _height font height
+     * @param _ascent ascent of the font
+     * @param _descent descent of the font
+     * @param _maxCharWidth max char width
+     */
     public LineMetricsImpl(int _numChars, int _baseLineIndex,
             float[] _baselineOffsets, float _underlineThickness,
             float _underlineOffset, float _strikethroughThickness,

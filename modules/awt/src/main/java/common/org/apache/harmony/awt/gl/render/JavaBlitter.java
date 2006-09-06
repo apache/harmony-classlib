@@ -156,9 +156,6 @@ public class JavaBlitter implements Blitter {
         int dstX2 = dstW - 1;
         int dstY2 = dstH - 1;
 
-        if(srcX > srcX2 || srcY > srcY2) return;
-        if(dstX > dstX2 || dstY > dstY2) return;
-
         if(srcX < 0){
             width += srcX;
             srcX = 0;
@@ -170,12 +167,17 @@ public class JavaBlitter implements Blitter {
 
         if(dstX < 0){
             width += dstX;
+            srcX -= dstX;
             dstX = 0;
         }
         if(dstY < 0){
-            height += srcY;
-            srcY = 0;
+            height += dstY;
+            srcY -= dstY;
+            dstY = 0;
         }
+
+        if(srcX > srcX2 || srcY > srcY2) return;
+        if(dstX > dstX2 || dstY > dstY2) return;
 
         if(srcX + width > srcX2) width = srcX2 - srcX + 1;
         if(srcY + height > srcY2) height = srcY2 - srcY + 1;

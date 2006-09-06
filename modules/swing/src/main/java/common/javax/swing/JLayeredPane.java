@@ -253,13 +253,14 @@ public class JLayeredPane extends JComponent implements Accessible {
      * @param position the position to set
      */
     public void setPosition(final Component c, final int position) {
+        int layer = getLayer(c);
         int index = getIndexOf(c);
         if (index == -1) {
             // do nothing if c is not in the container
             return;
         }
 
-        setLayer(c, getLayer(c), position);
+        setLayer(c, layer, position);
     }
 
     /**
@@ -306,6 +307,10 @@ public class JLayeredPane extends JComponent implements Accessible {
      * @return layer of component c
      */
     public int getLayer(final Component c) {
+        if (c == null) {
+            return -1;
+        }
+
         Object layer = getComponentToLayer().get(c);
         if (layer != null) {
             return ((Integer)layer).intValue();

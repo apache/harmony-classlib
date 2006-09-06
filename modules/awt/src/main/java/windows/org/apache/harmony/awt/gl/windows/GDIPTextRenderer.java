@@ -246,7 +246,7 @@ public class GDIPTextRenderer extends TextRenderer {
         double positions[] = new double[size*2];
         char chars[] = new char[size];
         int count = 0;
-        WindowsFont physFont = (WindowsFont)wcf.physicalFonts[charFontIndex];
+        WindowsFont physFont = (WindowsFont)wcf.fPhysicalFonts[charFontIndex];
         
         long font = physFont.getFontHandle();
 
@@ -295,7 +295,7 @@ public class GDIPTextRenderer extends TextRenderer {
 
                     count = 0;
                     font = gl.getPFont();
-                    physFont = (WindowsFont)wcf.physicalFonts[charFontIndex];
+                    physFont = (WindowsFont)wcf.fPhysicalFonts[charFontIndex];
                 }else {
                     chars[count] = c;
                     int ind = count * 2;
@@ -432,7 +432,7 @@ public class GDIPTextRenderer extends TextRenderer {
                     status);
         }
     }
-    
+
     /**
      * Method for fast drawing strings at the desired coordinates with Graphics 
      * or Font object has transforms.
@@ -525,7 +525,7 @@ public class GDIPTextRenderer extends TextRenderer {
         int charFontIndex = wcf.getCharFontIndex(str.charAt(0), 0);
         int fontIndex = charFontIndex;
 
-        WindowsFont physFont = (WindowsFont)wcf.physicalFonts[charFontIndex];
+        WindowsFont physFont = (WindowsFont)wcf.fPhysicalFonts[charFontIndex];
         
         long font = physFont.getFontHandle();
         float yPos = 0;    // Y position to draw (y - font.ascent)

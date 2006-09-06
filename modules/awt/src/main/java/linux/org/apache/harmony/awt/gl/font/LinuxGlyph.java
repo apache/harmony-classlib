@@ -61,32 +61,41 @@ public class LinuxGlyph extends Glyph{
      * Constructor
      */
     public LinuxGlyph(long pFnt, int fntSize, char c, int glyphIndex) {
-        int[] pxlMetrics;
+        // FIXME: all code related to the precise metrics array 
+        // commented out because we have the same results as pxl metrics
 
+        int[] pxlMetrics = new int[6];
+//        float[] metrics = new float[6]; 
+        
         this.pFont = pFnt;
         this.fontSize = fntSize;
         long display = ((LinuxWindowFactory)ContextStorage.getWindowFactory()).getDisplay();
-
         switch (c){
         case '\t':
         case '\r':
         case '\n':
-            pxlMetrics = new int[6];
             break;
         default:
             pxlMetrics = LinuxNativeFont.getGlyphPxlInfoNative(display, this.pFont, c);
+            if (pxlMetrics == null){
+                pxlMetrics = new int[6];
+            }
+/*            metrics = LinuxNativeFont.getGlyphInfoNative(this.pFont, c, fntSize);
+            if (metrics == null){
+                metrics = new float[6];
+            }
+*/ 
             break;
 
-    }
-//      LinuxNativeFont.getGlyphInfoNative(this.pFont, c, fntSize);
+        }
 
-/*      FIXME: The same results as pxl metrics
-        metrics = LinuxNativeFont.getGlyphInfoNative(this.pFont, c, fntSize);
+/*        metrics = LinuxNativeFont.getGlyphInfoNative(this.pFont, c, fntSize);
 
         Rectangle2D.Float rect  = new Rectangle2D.Float(metrics[0],
                                                         -metrics[1],
                                                         metrics[4],
                                                         metrics[5]);
+        this.glPointMetrics = new GlyphMetrics((float)Math.ceil(metrics[2]), rect, (byte)1);
         this.glMetrics = new GlyphMetrics((float)Math.ceil(metrics[2]), rect, (byte)1);
 */
         this.glCode = glyphIndex;
@@ -96,6 +105,7 @@ public class LinuxGlyph extends Glyph{
                                                         -pxlMetrics[1],
                                                         pxlMetrics[4],
                                                         pxlMetrics[5]);
+
         this.glPointMetrics = new GlyphMetrics(pxlMetrics[2], rct, (byte)1);
         this.glMetrics = new GlyphMetrics((float)Math.ceil(pxlMetrics[2]), rct, (byte)0);
 
@@ -137,22 +147,22 @@ public class LinuxGlyph extends Glyph{
         }
 
         if (this.bitmap == null){
-            getFTBitmap();
+            initFTBitmap();
         }
 
         return this.bitmap;
     }
 
-
     /**
-     * Returns array of bytes, representing image of this glyph from native code.
+     * Returns cached GlyphBitmap object representing bitmap data of this glyph.
+     * If cached value is null - bitmap data is to be obtained from native code.
+     * @return GlyphBitmap data object
      */
-    public LinuxNativeFontWrapper.GlyphBitmap getFTBitmap(){
+    public LinuxNativeFontWrapper.GlyphBitmap initFTBitmap(){
         if (this.gBmp == null){
             long ptr = LinuxNativeFont.NativeInitGlyphBitmap(this.pFont, this.glChar);
-            if (ptr != 0)
+            if (ptr != 0){
                 this.gBmp = lnfw.createGlyphBitmap(ptr);
-
                 Xft.FT_Bitmap ft_bitmap = gBmp.get_bitmap();
                 Int8Pointer buffer = ft_bitmap.get_buffer();
                 this.bmp_left = gBmp.get_left();
@@ -161,9 +171,11 @@ public class LinuxGlyph extends Glyph{
                 this.bmp_rows = ft_bitmap.get_rows();
                 this.bmp_width = ft_bitmap.get_width();
                 int bufSize = bmp_pitch * bmp_rows; // size of buffer
-
+                
                 bitmap = new byte[bufSize];
                 buffer.get(bitmap, 0, bufSize);
+                LinuxNativeFont.NativeFreeGlyphBitmap(ptr);
+            }
         }
 
         return this.gBmp;
@@ -204,57 +216,59 @@ public class LinuxGlyph extends Glyph{
 
         return this.image;
     }
-
+    
     public Shape initOutline(char c){
-        if ((this.getWidth()==0) || (this.getHeight()==0)){
-            return new GeneralPath();
+       GeneralPath gp = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
+       if ((this.getWidth()==0) || (this.getHeight()==0)){
+            return gp;
         }
 
-        GeneralPath gp = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
         Shape shape = null;
         long ptr;
 
         ptr = LinuxNativeFont.getGlyphOutline(this.pFont, c);
         if (ptr == 0){
-            return null;
+            return gp;
         }
 
         Xft.FT_Outline outline = xft.createFT_Outline(ptr);
 
-        int n_contours = outline.get_n_contours(); /* number of contours in the glyph */
-        Xft.FT_Vector pPoints = outline.get_points(); /* array of outline points */
+        int n_contours = outline.get_n_contours(); // number of contours in the glyph
+        if (n_contours == 0){
+            LinuxNativeFont.freeGlyphOutline(ptr);
+            return gp;
+        }
+        Xft.FT_Vector pPoints = outline.get_points(); // array of outline points
+
         long pPointsPtr = pPoints.lock();
         pPoints.unlock();
+        
+        int size = outline.get_n_points();
+        float points[] = LinuxNativeFont.getPointsFromFTVector(pPointsPtr, size);
 
-        Int16Pointer pContours = outline.get_contours(); /* array of contour end points */
-        Int8Pointer pTags = outline.get_tags(); /* an array of point tags */
-
-        int index = 0;  /* current point's index */
-        int tag;        /* current tag */
+        Int16Pointer pContours = outline.get_contours(); // array of contour end points 
+        Int8Pointer pTags = outline.get_tags(); // an array of point tags
+        int index = 0;  // current point's index 
+        int tag;        // current tag 
         float x_start;
         float y_start;
         float x_finish;
         float y_finish;
         for (int i=0; i < n_contours; i++){
-
             short end = pContours.get(i);// index of the last point
-            Xft.FT_Vector point;
 
             // get start position
-            point = xft.createFT_Vector(pPointsPtr + index * (Xft.FT_Vector.sizeof));
-            x_start = (float)((int)point.get_x() + 32)/64;
-            y_start = (float)(-(int)point.get_y() + 32)/64;
-//          System.out.println("AddPoint [" + x_start + "," + y_start + "]");
-
+            x_start = points[index*2];
+            y_start = points[index*2 + 1];
+            
             // get finish position
-            point = xft.createFT_Vector(pPointsPtr + (end - 1) * Xft.FT_Vector.sizeof);
-            x_finish = (float)((int)point.get_x() + 32)/64;
-            y_finish = (float)(-(int)point.get_y() + 32)/64;
+            x_finish = points[end*2];
+            y_finish = points[end*2 + 1];
 
             tag = pTags.get(index);// tag of the current point
 
             if (tag == LinuxNativeFontWrapper.FT_CURVE_TAG_CONIC){
-                tag = pTags.get(end - 1);// tag of the last point
+                tag = pTags.get(end);// tag of the last point
                 if ((tag & LinuxNativeFontWrapper.FT_CURVE_TAG_ON)==0){
                     x_start = x_finish;
                     y_start = y_finish;
@@ -277,25 +291,22 @@ public class LinuxGlyph extends Glyph{
                 tag = pTags.get(index);// tag of the current point
                 switch((tag & 3)){
                     case(LinuxNativeFontWrapper.FT_CURVE_TAG_ON):
-                        point = xft.createFT_Vector(pPointsPtr + index*Xft.FT_Vector.sizeof);
-                        float x = (float)((int)point.get_x() + 32)/64;
-                        float y = (float)(-(int)point.get_y() + 32)/64;
+                        float x = points[index*2];
+                        float y = points[index*2 + 1];
                         gp.lineTo(x, y);
 //                      System.out.println("AddPoint [" + x + "," + y + "]");
                         break;
                     case(LinuxNativeFontWrapper.FT_CURVE_TAG_CONIC):
-                        point = xft.createFT_Vector(pPointsPtr + index*Xft.FT_Vector.sizeof);
-                        float x1 = (float)((int)point.get_x() + 32)/64;
-                        float y1 = (float)(-(int)point.get_y() + 32)/64;
+                        float x1 = points[index*2];
+                        float y1 = points[index*2 + 1];
 
                         float x2;
                         float y2;
                         while (index < end){
                             index++;
                             tag = pTags.get(index);// tag of the current point
-                            point = xft.createFT_Vector(pPointsPtr + index*Xft.FT_Vector.sizeof);
-                            x2 = (float)((int)point.get_x() + 32)/64;
-                            y2 = (float)(-(int)point.get_y() + 32)/64;
+                            x2 = points[index*2];
+                            y2 = points[index*2 + 1];
                             if ((tag & LinuxNativeFontWrapper.FT_CURVE_TAG_ON) != 0){
                                 gp.quadTo(x1, y1, x2, y2);
 //                              System.out.println("AddQSpline 1[" + x1 + "," + y1 + "][" + x2 + "," + y2 + "]");
@@ -313,21 +324,17 @@ public class LinuxGlyph extends Glyph{
                         }
                         break;
                     case(LinuxNativeFontWrapper.FT_CURVE_TAG_CUBIC):
-                        point = xft.createFT_Vector(pPointsPtr + index*Xft.FT_Vector.sizeof);
-                        x1 = (float)((int)point.get_x()+ 32)/64;
-                        y1 = (float)(-(int)point.get_y()+ 32)/64;
-                        point = xft.createFT_Vector(pPointsPtr + index*Xft.FT_Vector.sizeof);
+                        x1 = points[index*2];
+                        y1 = points[index*2 + 1];
                         index++;
+                        x2 = points[index*2];
+                        y2 = points[index*2 + 1];
 
-                        x2 = (float)((int)point.get_x()+ 32)/64;
-                        y2 = (float)(-(int)point.get_y()+ 32)/64;
+                        if (index < end){
+                            index ++;
 
-                        index ++;
-
-                        if (index <= end){
-                            point = xft.createFT_Vector(pPointsPtr + index * Xft.FT_Vector.sizeof);
-                            float x3 = (float)((int)point.get_x()+ 32)/64;
-                            float y3 = (float)(-(int)point.get_y()+ 32)/64;
+                            float x3 = points[index*2];
+                            float y3 = points[index*2 + 1];
                             gp.curveTo(x1, y1, x2, y2, x3, y3);
 //                          System.out.println("AddCSpline 1[" + x1 + "," + y1 + "][" + x2 + "," + y2 + "][" + x3 + "," + y3 + "]");
                         } else {
@@ -336,7 +343,8 @@ public class LinuxGlyph extends Glyph{
                         }
                         break;
                     default:
-                        return null;
+                        LinuxNativeFont.freeGlyphOutline(ptr);
+                        return new GeneralPath(GeneralPath.WIND_EVEN_ODD);
                 }
 
             }
@@ -345,6 +353,7 @@ public class LinuxGlyph extends Glyph{
         }
 
         shape = gp;
+        LinuxNativeFont.freeGlyphOutline(ptr);
         return shape;
     }
 }

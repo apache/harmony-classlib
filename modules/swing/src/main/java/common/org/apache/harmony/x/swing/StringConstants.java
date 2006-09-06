@@ -71,6 +71,7 @@ public interface StringConstants {
     String VIEWPORT_PROPERTY = "viewport";
     String COMPONENT_ORIENTATION = "componentOrientation";
     String OPAQUE_PROPERTY = "opaque";
+    String IS_TABLE_EDITOR = "isTableEditor";
 
     String INTERNAL_FRAME_ICONABLE_PROPERTY = "iconable";
     String INTERNAL_FRAME_MAXIMIZABLE_PROPERTY = "maximizable";
@@ -103,4 +104,5 @@ public interface StringConstants {
     String INDETERMINATE_PROPERTY = "indeterminate";
 
     String VALUE_PROPERTY_NAME = "value";
+    String LIGHTWEIGHT_POPUP_ENABLED_PROPERTY_CHANGED = "lightWeightPopupEnabled";
 }

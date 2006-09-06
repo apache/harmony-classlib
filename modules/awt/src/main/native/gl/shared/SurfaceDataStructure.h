@@ -23,6 +23,7 @@
 #define __SURFACE_STRUCTURE__
 
 #include <stdio.h>
+#include <jni.h>
 
 #ifdef _WIN32
 
@@ -108,7 +109,7 @@ typedef struct _SURFACE_STRUCTURE{
 
     int *bits;           // An array of the number of bits per color/alpha component
 
-    long dataPtr;        // Pointer to the Volotile Image Surface Data
+    int offset;          // Offset in the data elements from the beginig of data array
 
     // Direct Color Model
     int red_mask;
@@ -136,6 +137,13 @@ typedef struct _SURFACE_STRUCTURE{
     int *bank_indexes;
     int *band_offsets;
 
+       // Cached Data
+       long bmp_byte_stride;
+    void *bmpData;
+       bool hasRealAlpha;
+    bool invalidated;
+    bool isAlphaPre;
+
 #ifdef _WIN32
     // VolataileImage
     GraphicsInfo *gi;
@@ -143,9 +151,6 @@ typedef struct _SURFACE_STRUCTURE{
 
     HBITMAP bitmap;
     HDC srcDC;
-    void *bmpData;
-    bool invalidated;
-    bool isAlphaPre;
     DWORD rtc;
 #endif
 
@@ -153,5 +158,8 @@ typedef struct _SURFACE_STRUCTURE{
 }SURFACE_STRUCTURE;
 
 int parseMask(unsigned int, int *, int *);
+int getShift(unsigned int);
+
+extern inline void updateCache(SURFACE_STRUCTURE *, JNIEnv *, jobject, bool);
 
 #endif

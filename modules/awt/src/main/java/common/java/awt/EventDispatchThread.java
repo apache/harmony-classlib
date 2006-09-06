@@ -19,39 +19,28 @@
  */
 package java.awt;
 
-import org.apache.harmony.awt.wtk.*;
+import org.apache.harmony.awt.wtk.NativeEvent;
+import org.apache.harmony.awt.wtk.NativeEventQueue;
 
-/**
- * The thread that runs the main event loop, 
- * which handles both AWT events and native events.
- * 
- */
-final class EventDispatchThread extends Thread implements NativeEventListener {
+final class EventDispatchThread extends Thread  {
+    
+    private static final class MarkerEvent extends AWTEvent {
+        MarkerEvent(Object source, int id) {
+            super(source, id);
+        }
+    }
 
-    /**
-     * The AWT's system event queue
-     */
-    private EventQueue eventQueue;
     final Dispatcher dispatcher;
     final Toolkit toolkit;
     private NativeEventQueue nativeQueue;
 
-    private Runnable startupAction;
     private volatile boolean shutdownPending = false;
 
     /**
      * Initialise and run the main event loop
      */
     public void run() {
-        synchronized (this) {
-            try {
-                startupAction.run();
-                nativeQueue = toolkit.getNativeEventQueue();
-                nativeQueue.setNativeEventListener(this);
-            } finally {
-                notifyAll();
-            }
-        }
+        nativeQueue = toolkit.getNativeEventQueue();
 
         try {
             runModalLoop(null);
@@ -59,100 +48,66 @@ final class EventDispatchThread extends Thread implements NativeEventListener {
             e.printStackTrace();
         }
 
-        toolkit.stopShutdownThread();
-    }
-
-    /**
-     * Handle the native event
-     * @param event - the native event
-     * @return true if the default processing by OS is not needed
-     */
-    public boolean onEvent(NativeEvent event) {
-        return dispatcher.onEvent(event);
-    }
-
-    /**
-     * Dispatch the AWT events from the system event queue
-     */
-    public void onEventNestingEnd() {
-        boolean reloaded;
-
-        try {
-            do {
-                while(eventQueue.peekEvent() != null) {
-                    if (shutdownPending) {
-                        return;
-                    }
-                    eventQueue.dispatchEvent(eventQueue.getNextEvent());
-                }
-
-                reloaded = false;
-                if (nativeQueue.isEmpty()) {
-                    toolkit.onQueueEmpty();
-                    if (shutdownPending) {
-                        return;
-                    }
-                    if (!eventQueue.isEmpty()) {
-                        reloaded = true;
-                    }
-                }
-            } while (reloaded);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void onEventBegin() {
-        toolkit.lockAWT();
-        toolkit.validateShutdownThread();
-    }
-
-    public void onEventEnd() {
-        toolkit.unlockAWT();
-    }
-
-    public void onAwake() {
-        toolkit.validateShutdownThread();
-    }
-
-    public Synchronizer getSynchronizer() {
-        return toolkit.getSynchronizer();
-    }
-
-    public WTK getWTK() {
-        return toolkit.getWTK();
-    }
-
-    void startAndInit(Runnable startupAction) {
-        synchronized (this) {
-            this.startupAction = startupAction;
-            setName("AWT-EventQueue");
-            setDaemon(true);
-            start();
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException("Attempt to shutdown AWT in wrong way.");
-            }
-        }
+        toolkit.shutdownWatchdog.forceShutdown();
     }
 
     void runModalLoop(ModalContext context) {
-        nativeQueue.onModalLoopBegin();
-        while (!shutdownPending && (context == null || context.isModalLoopRunning()) && nativeQueue.waitEvent()) {
-            nativeQueue.dispatchEventToListener();
+        long lastPaintTime = System.currentTimeMillis();
+        while (!shutdownPending && (context == null || context.isModalLoopRunning())) {
+            EventQueue eventQueue = toolkit.getSystemEventQueueImpl();
+
+            NativeEvent ne = nativeQueue.getNextEvent();
+            if (ne != null) {
+                dispatcher.onEvent(ne);
+                MarkerEvent marker = new MarkerEvent(this, 0);
+                eventQueue.postEvent(marker);
+                for (AWTEvent ae = eventQueue.getNextEventNoWait(); 
+                        (ae != null) && (ae != marker); 
+                        ae = eventQueue.getNextEventNoWait()) {
+                    eventQueue.dispatchEvent(ae);
+                }
+            } else {
+                toolkit.shutdownWatchdog.setNativeQueueEmpty(true);
+                AWTEvent ae = eventQueue.getNextEventNoWait();
+                if (ae != null) {
+                    eventQueue.dispatchEvent(ae);
+                    long curTime = System.currentTimeMillis();
+                    if (curTime - lastPaintTime > 10) {
+                        toolkit.onQueueEmpty();
+                        lastPaintTime = System.currentTimeMillis();
+                    }
+                } else {
+                    toolkit.shutdownWatchdog.setAwtQueueEmpty(true);
+                    toolkit.onQueueEmpty();
+                    lastPaintTime = System.currentTimeMillis();
+                    waitForAnyEvent();
+                }
+            }
         }
-        nativeQueue.onModalLoopEnd();
+    }
+    
+    private void waitForAnyEvent() {
+        EventQueue eventQueue = toolkit.getSystemEventQueueImpl();
+        if (!eventQueue.isEmpty() || !nativeQueue.isEmpty()) {
+            return;
+        }
+        Object eventMonitor = nativeQueue.getEventMonitor();
+        synchronized(eventMonitor) {
+            try {
+                eventMonitor.wait();
+            } catch (InterruptedException e) {}
+        }
     }
 
     void shutdown() {
         shutdownPending = true;
     }
 
-    EventDispatchThread(Toolkit toolkit, EventQueue eventQueue, Dispatcher dispatcher ) {
+    EventDispatchThread(Toolkit toolkit, Dispatcher dispatcher ) {
         this.toolkit = toolkit;
-        this.eventQueue = eventQueue;
         this.dispatcher = dispatcher;
+        setName("AWT-EventDispatchThread");
+        setDaemon(true);
     }
 
 }

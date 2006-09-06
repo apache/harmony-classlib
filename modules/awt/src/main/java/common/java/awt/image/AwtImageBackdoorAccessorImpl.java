@@ -33,6 +33,7 @@ import java.awt.image.DataBufferUShort;
 import org.apache.harmony.awt.gl.AwtImageBackdoorAccessor;
 import org.apache.harmony.awt.gl.GLVolatileImage;
 import org.apache.harmony.awt.gl.Surface;
+import org.apache.harmony.awt.gl.image.DataBufferListener;
 
 /**
  * This class not part of public API. It useful for receiving package private
@@ -120,6 +121,22 @@ class AwtImageBackdoorAccessorImpl extends AwtImageBackdoorAccessor {
         } else {
             return null;
         }
+    }
+
+    public void addDataBufferListener(DataBuffer db, DataBufferListener listener) {
+        db.addDataBufferListener(listener);
+    }
+
+    public void removeDataBufferListener(DataBuffer db) {
+        db.removeDataBufferListener();
+    }
+
+    public void validate(DataBuffer db) {
+        db.validate();
+    }
+
+    public void releaseData(DataBuffer db) {
+        db.releaseData();
     }
 
 }

@@ -362,31 +362,31 @@ public class JavaArcRasterizer {
      * Rasterizes arc using clippind and dashing style
      * @param x1 - the x coordinate of the left-upper corner of the arc bounds
      * @param y1 - the y coordinate of the left-upper corner of the arc bounds
-     * @param x2 - the width of the arc bounds
-     * @param y2 - the height of the arc bounds
+     * @param width - the width of the arc bounds
+     * @param height - the height of the arc bounds
      * @param angleStart - the start angle of the arc in degrees
      * @param angleExtent - the angle extent in degrees
      * @param clip - the MultiRectArea object of clipping area
      * @return a MultiRectArea of rasterizer arc
      */
-    public static MultiRectArea rasterize(int x1, int y1, int x2, int y2, double angleStart, double angleExtent, MultiRectArea clip) {
+    public static MultiRectArea rasterize(int x, int y, int width, int height, double angleStart, double angleExtent, MultiRectArea clip) {
 
-        MultiRectArea mra = new MultiRectArea();
+        MultiRectArea mra = new MultiRectArea(false);
 
         int cx1, cx2, cy1, cy2;
-        cx1 = cx2 = (x1 + x2) / 2;
-        cy1 = cy2 = (y1 + y2) / 2;
+        cx1 = cx2 = x + width / 2;
+        cy1 = cy2 = y + height / 2;
 
-        if ((x2 - x1) % 2 == 0) {
+        if (width % 2 == 0) {
             cx2--;
         }
 
-        if ((y2 - y1) % 2 == 0) {
+        if (height % 2 == 0) {
             cy2--;
         }
 
-        int a = Math.abs(x2 - x1) / 2;
-        int b = Math.abs(y2 - y1) / 2;
+        int a = width / 2;
+        int b = height / 2;
         double c = Math.sqrt(a * a + b * b);
 
         int xcount, ycount;

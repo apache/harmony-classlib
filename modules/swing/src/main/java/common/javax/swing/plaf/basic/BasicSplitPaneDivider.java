@@ -44,6 +44,7 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 
 import org.apache.harmony.x.swing.StringConstants;
+import org.apache.harmony.x.swing.Utilities;
 
 
 public class BasicSplitPaneDivider extends Container implements PropertyChangeListener {
@@ -139,6 +140,10 @@ public class BasicSplitPaneDivider extends Container implements PropertyChangeLi
             int delta = mousePosition - initialMousePosition;
             int dividerLocation = splitPane.getDividerLocation() + delta;
 
+            if (splitPane.getMaximumDividerLocation() < splitPane.getMinimumDividerLocation()) {
+                return splitPane.getDividerLocation();
+            }
+            
             if (dividerLocation >= splitPane.getMinimumDividerLocation()
                 && dividerLocation <= splitPane.getMaximumDividerLocation()) {
 
@@ -299,6 +304,10 @@ public class BasicSplitPaneDivider extends Container implements PropertyChangeLi
         addMouseListener(mouseHandler);
         addMouseMotionListener(mouseHandler);
         updateCursor();
+        
+        if (Utilities.isUIResource(getBorder())) {
+            setBorder(UIManager.getBorder("SplitPaneDivider.border"));
+        }
     }
 
     public void setBasicSplitPaneUI(final BasicSplitPaneUI ui) {
@@ -378,12 +387,12 @@ public class BasicSplitPaneDivider extends Container implements PropertyChangeLi
 
     public void paint(final Graphics g) {
         super.paint(g);
-        if (getBorder() != null) {
-            getBorder().paintBorder(this, g, 0, 0, getWidth(), getHeight());
-        }
         if (splitPane.isFocusOwner()) {
             g.setColor(UIManager.getColor("SplitPane.darkShadow"));
             g.drawRect(0, 0, getWidth() - 2, getHeight() - 2);
+        }
+        if (getBorder() != null) {
+            getBorder().paintBorder(this, g, 0, 0, getWidth(), getHeight());
         }
     }
 
@@ -452,16 +461,17 @@ public class BasicSplitPaneDivider extends Container implements PropertyChangeLi
     }
 
     protected void oneTouchExpandableChanged() {
-        if (splitPane.isOneTouchExpandable()) {
+        if (leftButton != null) {
             remove(leftButton);
+        }
+        if (rightButton != null) {
             remove(rightButton);
+        }
+        if (splitPane.isOneTouchExpandable()) {
             leftButton = createLeftOneTouchButton();
             rightButton = createRightOneTouchButton();
             add(leftButton);
             add(rightButton);
-        } else {
-            remove(leftButton);
-            remove(rightButton);
         }
     }
 

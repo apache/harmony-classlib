@@ -31,16 +31,19 @@ import org.apache.harmony.awt.nativebridge.NativeBridge;
 import org.apache.harmony.awt.nativebridge.windows.Win32;
 import org.apache.harmony.awt.nativebridge.windows.WindowsDefs;
 import org.apache.harmony.awt.wtk.NativeEvent;
-import org.apache.harmony.awt.wtk.NativeEventListener;
 import org.apache.harmony.awt.wtk.NativeEventQueue;
 import org.apache.harmony.awt.wtk.NativeWindow;
+import org.apache.harmony.misc.accessors.AccessorFactory;
+import org.apache.harmony.misc.accessors.ObjectAccessor;
 
 /**
  * Handler of Windows messages
  */
-public class WinEventQueue implements NativeEventQueue {
+public class WinEventQueue extends NativeEventQueue {
+    
     static final NativeBridge bridge = NativeBridge.getInstance();
     static final Win32 win32 = Win32.getInstance();
+    static final ObjectAccessor objAccessor = AccessorFactory.getObjectAccessor();
 
     /**
      * Invisible auxlitary window for service messages
@@ -56,13 +59,7 @@ public class WinEventQueue implements NativeEventQueue {
      */
     private final Win32.MSG lastMsg = win32.createMSG(false);
 
-    /**
-     * Callback to EventDispatchThread
-     */
-    private NativeEventListener listener;
-
     final int dispatchThreadID = win32.GetCurrentThreadId();
-    final Thread dispatchThread = Thread.currentThread();
     final WinSystemProperties systemProperties;
 
     /**
@@ -85,27 +82,14 @@ public class WinEventQueue implements NativeEventQueue {
 
     final WinWindowFactory factory;
 
-    /**
-     * Levels of re-entrant windowProc() calls, saved/restored 
-     * when entering/leaving nested modal loops
-     */
-    private LinkedList nestingEndsStack;
-    /**
-     * Level of re-entrant windowProc() calls for current modal loop. 
-     * For main modal loop it is zero.
-     */
-    private int curNestingEnd;
-    private boolean empty;
-    /**
-     * Current level of re-entrant windowProc() calls
-     */
-    private int msgNestingCnt;
-
     private long utcOffset = -1;
     /**
      * Return value for the Windows message being processed
      */
     private final long[] result = new long[1];
+
+    public static final int WM_PERFORM_TASK = WindowsDefs.WM_USER + 1;
+    public static final int WM_PERFORM_LATER = WindowsDefs.WM_USER + 2;
 
     private LinkedList preprocessors = new LinkedList();
 
@@ -115,12 +99,6 @@ public class WinEventQueue implements NativeEventQueue {
      */
     public WinEventQueue(WinSystemProperties systemProperties) {
         this.systemProperties = systemProperties;
-        // Force create EventQueue
-        win32.PeekMessageW(lastMsg, 0, WindowsDefs.WM_USER, WindowsDefs.WM_USER, WindowsDefs.PM_NOREMOVE);
-
-        empty = true;
-        msgNestingCnt = 0;
-        nestingEndsStack = new LinkedList();
 
         WindowProcHandler.registerCallback();
         factory = new WinWindowFactory(this);
@@ -140,8 +118,6 @@ public class WinEventQueue implements NativeEventQueue {
     public boolean waitEvent() {
         win32.GetMessageW(lastMsg, 0, 0, 0);
 
-        empty = (win32.PeekMessageW(0, 0, 0, 0, WindowsDefs.PM_NOREMOVE) == 0);
-
         return lastMsg.get_message() != WindowsDefs.WM_QUIT;
     }
 
@@ -153,7 +129,6 @@ public class WinEventQueue implements NativeEventQueue {
         if (win32.GetCurrentThreadId() != dispatchThreadID) {
             win32.PostThreadMessageW(dispatchThreadID, WinEvent.WM_AWAKE, 0, 0);
         }
-        listener.onAwake();
     }
 
     /**
@@ -161,24 +136,9 @@ public class WinEventQueue implements NativeEventQueue {
      * @param msg - the Windows message
      */
     private void processThreadMessage(Win32.MSG msg) {
-        callListener(0, msg.get_message(), msg.get_wParam(), msg.get_lParam());
+        handleEvent(0, msg.get_message(), msg.get_wParam(), msg.get_lParam());
     }
-
-    /**
-     * Indirectly call the windowProc() to handle the message being processed.
-     * Also translate keyboard messages before calling windowProc()
-     * @return - the value returned by windowProc()
-     */
-    public long dispatchEventToListener() {
-        if (lastMsg.get_hwnd() == 0) {
-            processThreadMessage(lastMsg);
-            return 0;
-        }
-
-        translateMessage(lastMsg);
-        return win32.DispatchMessageW(lastMsg);
-    }
-
+    
     /**
      * Translate key code to typed character for keyboard messages,
      * do nothing for all other messages
@@ -244,7 +204,7 @@ public class WinEventQueue implements NativeEventQueue {
         if (preProcessMessage(hwnd, msg,  wParam, lParam, result)) {
             return result[0];
         }
-        if (callListener(hwnd, msg,  wParam, lParam)) {
+        if (handleEvent(hwnd, msg,  wParam, lParam)) {
             return 0;
         }
 
@@ -254,27 +214,7 @@ public class WinEventQueue implements NativeEventQueue {
         return win32.DefWindowProcW(hwnd, msg, wParam, lParam);
     }
 
-    /**
-     * Call native event listener, pass the native event constructed from
-     * the following parameters 
-     * @param hwnd - window handle
-     * @param msg - message code
-     * @param wParam - first message-dependent parameter
-     * @param lParam - second message-dependent parameter
-     * @return - false if the default Windows handler should be called; 
-     *  true otherwise 
-     */
-    private boolean callListener(long hwnd, int msg, long wParam, long lParam) {
-        if (listener == null) {
-            // not intialized yet
-            if (msg == WindowsDefs.WM_CREATE) {
-                // we must return true for WM_CREATE
-                // to continue window creation
-                return true;
-            }
-            return false;
-        }
-
+    private boolean handleEvent(long hwnd, int msg, long wParam, long lParam) {
         if (msg == WindowsDefs.WM_KEYUP || msg == WindowsDefs.WM_SYSKEYUP) {
             Character ch = (Character)keyCodeToChar.remove(new Integer((int)wParam));
             if (ch != null) {
@@ -284,47 +224,21 @@ public class WinEventQueue implements NativeEventQueue {
             }
         }
 
-        WinEvent decoder = new WinEvent(hwnd, msg, wParam,
+        WinEvent event = new WinEvent(hwnd, msg, wParam,
                 lParam, utcOffset + lastMsg.get_time(),
-                lastTranslation, lastChar, this);
-
-        msgNestingCnt++;
-        listener.onEventBegin();
-        try {
-            if ((decoder.getEventId() != NativeEvent.ID_PLATFORM) &&
-                    (decoder.getEventId() != NativeEvent.ID_JAVA_EVENT))
-            {
-                return listener.onEvent(decoder);
-            }
-            return false;
-        } finally {
-            listener.onEventEnd();
-
-            if (msgNestingCnt == curNestingEnd) {
-                listener.onEventNestingEnd();
-            }
-            msgNestingCnt--;
+                lastTranslation, lastChar, factory);
+        if (event.getEventId() != NativeEvent.ID_PLATFORM) {
+            addEvent(event);
+            return !isKeyUpOrKeyDownMessage(msg);
         }
+        return false;
     }
 
-    /**
-     * Enter nested modal loop
-     */
-    public void onModalLoopBegin() {
-        curNestingEnd = msgNestingCnt + 1;
-        nestingEndsStack.addLast(new Integer(curNestingEnd));
-    }
-
-    /**
-     * Leave nested modal loop
-     */
-    public void onModalLoopEnd() {
-        nestingEndsStack.removeLast();
-        if ( !nestingEndsStack.isEmpty()) {
-            curNestingEnd = ((Integer) nestingEndsStack.getLast()).intValue();
-        } else {
-            curNestingEnd = -1;
-        }
+    private boolean isKeyUpOrKeyDownMessage(int msg) {
+        return msg == WindowsDefs.WM_KEYDOWN 
+            || msg == WindowsDefs.WM_KEYUP 
+            || msg == WindowsDefs.WM_SYSKEYDOWN 
+            || msg == WindowsDefs.WM_SYSKEYUP;
     }
 
     /**
@@ -339,6 +253,18 @@ public class WinEventQueue implements NativeEventQueue {
      * @return - false if the default Windows handler should be called; 
      */
     private boolean preProcessMessage(long hwnd, int msg, long wParam, long lParam, long[] result) {
+        if (msg == WM_PERFORM_TASK && hwnd == javaWindow) {
+            Task t = (Task)objAccessor.getObjectFromReference(lParam);
+            t.perform();
+            return true;
+        }
+        
+        if (msg == WM_PERFORM_LATER && hwnd == javaWindow) {
+            Task t = (Task)objAccessor.getObjectFromReference(lParam);
+            t.perform();
+            objAccessor.releaseGlobalReference(lParam);
+            return true;
+        }
         for (Iterator i = preprocessors.iterator(); i.hasNext(); ) {
             if (((Preprocessor) i.next()).preprocess(hwnd, msg, wParam, lParam, result)) {
                 return true;
@@ -362,6 +288,29 @@ public class WinEventQueue implements NativeEventQueue {
 
                 result[0] = 0;
                 return true;
+            }
+            break;
+            
+        case WindowsDefs.WM_ACTIVATE:
+            if (wParam == WindowsDefs.WA_ACTIVE) {
+                // while activation of Frame/Dialog
+                // [actually focus transfer to focusProxy] is in progress
+                // skip all focus events related to windows being activated/deactivated,
+                // such spurious events are sometimes generated by Win32
+                WinWindow ownd = (WinWindow) factory.getWindowById(lParam);
+                long hOwner = lParam;
+                // find nearest decorated ancestor window of
+                // the window being deactivated
+                while ((ownd != null) && ownd.undecorated) {
+                    hOwner = win32.GetParent(hOwner);
+                    ownd = (WinWindow) factory.getWindowById(hOwner);
+                }
+                // cancel focus only if
+                // this is the window found
+                if ((ownd != null) && (hOwner == hwnd)) {
+                    result[0] = 0;
+                    return true;
+                }
             }
             break;
 
@@ -398,26 +347,28 @@ public class WinEventQueue implements NativeEventQueue {
                 systemProperties.resetSystemColors();
             }
             break;
+            
+        case WindowsDefs.WM_SETTINGCHANGE:
+            systemProperties.processSettingChange(wParam);
+            break;
+        case WindowsDefs.WM_IME_STARTCOMPOSITION:            
+            return WinIM.onStartComposition(hwnd);
+        case WindowsDefs.WM_IME_SETCONTEXT:
+            if (wParam != 0l) {
+                return WinIM.onActivateContext(hwnd);
+            }
+            break;
+        case WindowsDefs.WM_IME_COMPOSITION:
+            WinIM.onComposition(hwnd, lParam);
+            break;
         }
 
+        
         return false;
-    }
-
-    public void setNativeEventListener(NativeEventListener e) {
-        listener = e;
-    }
-
-    public boolean isEmpty() {
-        return empty;
     }
 
     public ThemeMap getThemeMap() {
         return themeMap;
-    }
-
-    NativeServer getNativeServer() {
-        // TODO: obtain NativeServer in more elegant way
-        return (NativeServer)((NativeEventListener) dispatchThread).getSynchronizer();
     }
 
     /**
@@ -531,5 +482,25 @@ public class WinEventQueue implements NativeEventQueue {
                 e.setValue(new Long(hTheme));
             }
         }
+    }
+
+    public void dispatchEvent() {
+        if (lastMsg.get_hwnd() == 0) {
+            processThreadMessage(lastMsg);
+        }
+        
+        translateMessage(lastMsg);
+        win32.DispatchMessageW(lastMsg);
+    }
+
+    public void performTask(Task task) {
+        long ref = objAccessor.getGlobalReference(task);
+        win32.SendMessageW(javaWindow, WM_PERFORM_TASK, 0, ref);
+        objAccessor.releaseGlobalReference(ref);
+    }
+
+    public void performLater(Task task) {
+        long ref = objAccessor.getGlobalReference(task);
+        win32.PostMessageW(javaWindow, WM_PERFORM_LATER, 0, ref);
     }
 }

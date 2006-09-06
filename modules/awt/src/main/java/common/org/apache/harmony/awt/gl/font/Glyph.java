@@ -27,7 +27,7 @@ import java.awt.image.BufferedImage;
 public abstract class Glyph{
 
     // character of the glyph
-    char glChar; 
+    char glChar;
     
     // precise glyph metrics
     GlyphMetrics glMetrics;
@@ -61,7 +61,7 @@ public abstract class Glyph{
      */
     
     //  top side bearing
-    public int bmp_top = 0; 
+    public int bmp_top = 0;
     
     // left side bearing
     public int bmp_left = 0;
@@ -72,7 +72,7 @@ public abstract class Glyph{
     // number of rows
     public int bmp_rows;
     
-    // number of rows
+    // width of the row
     public int bmp_width;
 
     /**
@@ -139,7 +139,7 @@ public abstract class Glyph{
     public void setGlyphJustificationInfo(GlyphJustificationInfo newJustInfo){
         this.glJustInfo = newJustInfo;
     }
-    
+
     /**
      * Returns an int array of 3 elements, so-called ABC structure that contains 
      * the width of the character:
@@ -193,7 +193,7 @@ public abstract class Glyph{
     public int getPointHeight(){
         return (int)glPointMetrics.getBounds2D().getHeight();
     }
-    
+
     /**
      * Returns width of the glyph in points. 
      */

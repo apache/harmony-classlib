@@ -355,7 +355,7 @@ public class GapContent
                              final int addSize)
         throws BadLocationException {
 
-        if (where < 0 || where >= length()) {
+        if (where < 0 || where > length()) {
             throw new BadLocationException("Invalid insert position", where);
         }
 

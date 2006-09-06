@@ -22,6 +22,7 @@ package javax.swing.text;
 import java.util.Enumeration;
 
 import javax.swing.text.AbstractDocument.AbstractElement;
+import javax.swing.text.AbstractDocument.BranchElement;
 
 import junit.framework.TestCase;
 
@@ -112,6 +113,19 @@ public class AbstractDocument_AbstractElementRTest extends TestCase {
             element.getName();
             fail("ClassCastException is expected");
         } catch (ClassCastException e) { }
+    }
+    
+    public void testGetNameParent() throws Exception {
+        final String parentName = "parentName";
+        attrs.addAttribute(AbstractDocument.ElementNameAttribute, parentName);
+        BranchElement parent = doc.new BranchElement(null, attrs);
+        AbstractElement element = new AbstractElementImpl(doc, parent, null);
+        
+        assertTrue(parent.isDefined(AbstractDocument.ElementNameAttribute));
+        assertEquals(parentName, parent.getName());
+        
+        assertFalse(element.isDefined(AbstractDocument.ElementNameAttribute));
+        assertNull(element.getName());
     }
 
     protected void setUp() throws Exception {

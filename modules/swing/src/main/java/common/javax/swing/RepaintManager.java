@@ -91,8 +91,14 @@ public class RepaintManager {
         instance = repaintManager;
     }
 
+    /**
+     * Method doesn't perform component invalidation. It just adds component
+     * validation root to the list of roots waiting for validation and schedules
+     * it.
+     */
     public void addInvalidComponent(final JComponent invalidComponent) {
-        invalidComponent.invalidate();
+        // implementation is done according to the black-box testing and contradict to the
+        // spec: component is not marked as invalid (needed layout)
         final Component root = getValidationRoot(invalidComponent);
         if (root != null && !invalidRoots.contains(root) && !root.isValid() && root.isShowing()) {
             invalidRoots.add(root);
@@ -100,22 +106,22 @@ public class RepaintManager {
         }
     }
 
+    public void removeInvalidComponent(final JComponent component) {
+        invalidRoots.remove(component);
+    }
+
     public void validateInvalidComponents() {
         while(!invalidRoots.isEmpty()) {
-            List processingRoots = new ArrayList(invalidRoots);
-            invalidRoots.clear();
+            List processingRoots;
+            synchronized(invalidRoots) {
+                processingRoots = new ArrayList(invalidRoots);
+                invalidRoots.clear();
+            }
             for (Iterator it = processingRoots.iterator(); it.hasNext(); ) {
                 Component c = (Component)it.next();
                 c.validate();
             }
         }
-    }
-
-    /**
-     * It is impossile to avoid validation for the previously invalidated component since
-     * the entire hierarchy (up to the validation root) was invalidated and scheduled for validation.
-     */
-    public void removeInvalidComponent(final JComponent component) {
     }
 
     public void addDirtyRegion(final JComponent c, final int x, final int y, final int w, final int h) {

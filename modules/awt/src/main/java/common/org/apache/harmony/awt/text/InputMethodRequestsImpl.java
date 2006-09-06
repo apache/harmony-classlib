@@ -19,6 +19,7 @@
  */
 package org.apache.harmony.awt.text;
 
+import java.awt.Component;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.font.TextHitInfo;
@@ -258,8 +259,16 @@ public class InputMethodRequestsImpl implements InputMethodRequests {
 
     public TextHitInfo getLocationOffset(final int x, final int y) {
         Point p = new Point(x, y);
-        Point location = textKit.getComponent().getLocationOnScreen();
+        final Component component = textKit.getComponent();
+        if (!component.isDisplayable()) {
+            return null;
+        }
+        Point location = component.getLocationOnScreen();
         p.translate(-location.x, -location.y);
+        if (!component.contains(p)) {
+            // Return null if the location is outside the component.
+            return null;
+        }
         int offset = textKit.viewToModel(p, new Position.Bias[1]);
         ComposedTextParams composedTextParams = getComposedTextParams();
         int lastInsertPosition = composedTextParams.getComposedTextStart();

@@ -19,12 +19,14 @@
  */
 package javax.swing.plaf.basic;
 
+import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.lang.reflect.Constructor;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import javax.swing.JComponent;
+import javax.swing.UIManager;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.text.Document;
 import javax.swing.text.Element;
@@ -79,10 +81,20 @@ public class BasicTextFieldUI extends BasicTextUI {
         super.installUI(c);
     }
 
+    private void updateBackgroundColor() {
+        String property = getComponent().isEditable()
+            ? ".background" : ".inactiveBackground";
+        Color color = UIManager.getColor(addPrefix(property));
+        getComponent().setBackground(color);
+    }
+
     protected  void propertyChange(final PropertyChangeEvent evt) {
         String propertyName = evt.getPropertyName();
         if ("horizontalAlignment".equals(propertyName)) {
             getComponent().repaint();
+        } else  if (org.apache.harmony.x.swing.StringConstants
+                    .EDITABLE_PROPERTY_CHANGED.equals(evt.getPropertyName())) {
+            updateBackgroundColor();
         }
         super.propertyChange(evt);
     }

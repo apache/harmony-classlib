@@ -106,7 +106,7 @@ public class UIDefaults extends Hashtable {
                         if (params == null) {
                             value = (methodName == null)
                                     ? classObj.newInstance()
-                                    : classObj.getMethod(methodName, (Class[])null).invoke(null, null);
+                                    : classObj.getMethod(methodName, null).invoke(null, null);
                         } else {
                             Class[] mParams = new Class[params.length];
                             for (int i = 0; i < mParams.length; i++) {
@@ -317,10 +317,13 @@ public class UIDefaults extends Hashtable {
         try {
             String classID = comp.getUIClassID();
             String fullClassName = (String)get(classID);
+            if (fullClassName == null) {
+                getUIError("there is no UI class for " + classID + " key");
+                return null;
+            }
             Class uiClass = (Class)get(fullClassName);
             Method method = null;
-            boolean init = uiClass == null;
-            if (init) {
+            if (uiClass == null) {
                 uiClass = getUIClass(classID);
                 method = getCreateUIMethodPriveledged(uiClass);
 

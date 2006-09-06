@@ -43,14 +43,6 @@ import org.apache.harmony.awt.wtk.linux.LinuxWindowFactory;
  */
 public class LinuxFont extends FontPeerImpl {
 
-    // pitch value of this font
-    private int fPitch;
-
-    // available pitch constants
-    private static final int PITCH_DONTCARE = 0;
-    private static final int PITCH_MONO = 1;
-    private static final int PITCH_PROPORTIONAL = 2;
-
     // Pairs of [begin, end],[..].. unicode ranges values 
     private int[] fontUnicodeRanges;
     
@@ -63,86 +55,21 @@ public class LinuxFont extends FontPeerImpl {
     // X11 screen value
     private int screen = 0;
     
-    // font style name of this font peer
-    private String fontStyle;
-
-    public LinuxFont(Font font, boolean isLogical, String familyName, String faceName, String fontStyle) {
+    public LinuxFont(String fontName, int fontStyle, int fontSize) {
         /*
          * Workaround : to initialize awt platform-dependent fields and libraries.
          */
         Toolkit.getDefaultToolkit();
 
-        this.name = font.getName();
-        this.size = font.getSize();
-        this.style = font.getStyle();
-
+        this.name = fontName;
+        this.size = fontSize;
+        this.style = fontStyle;
+        
         this.display = ((LinuxWindowFactory)ContextStorage.getWindowFactory()).getDisplay();
         this.screen = ((LinuxWindowFactory)ContextStorage.getWindowFactory()).getScreen();
 
-        String family = familyName;
-        this.fontFamilyName = familyName;
-        this.faceName = faceName;
-        this.fontStyle = fontStyle;
+        pFont = LinuxNativeFont.initializeFont(this, name, style, size, null);
 
-        if (isLogical){
-            this.psName = familyName;
-            int index = FontManager.getLogicalIndex(familyName.toLowerCase());
-            this.setPitch(index);
-            
-            /* Xft chooses Luxi Sans font with fixed width parameter as monospaced 
-             * font. At first we check if Courier font is on the system, if it is
-             * we create this font as monospaced, otherwise we create XFT font with
-             * XFT_MONO spacing.
-             */
-            if (index == MONOSPACED){
-                if (CommonGraphics2DFactory.inst.getFontManager().isFamilyExist("Courier")){
-                    family = "Courier";
-                }
-            }
-
-        }
-
-        pFont = LinuxNativeFont.initializeFont(this, family, style, size, fontStyle);
-
-        initLinuxFont();
-    }
-
-    public LinuxFont(LinuxFontProperty lfp, int size) {
-        /*
-         * Workaround : to initialize awt platform-dependent fields and libraries.
-         */
-        Toolkit.getDefaultToolkit();
-
-        this.name = lfp.getName();
-        this.size = size;
-        this.style = lfp.getStyle();
-
-        this.display = ((LinuxWindowFactory)ContextStorage.getWindowFactory()).getDisplay();
-        this.screen = ((LinuxWindowFactory)ContextStorage.getWindowFactory()).getScreen();
-
-        pFont = LinuxNativeFont.initializeFontFromFP(this, lfp.getXLFD(), size);
-        if (pFont == 0){
-            int index = FontManager.getLogicalIndex(lfp.getLogicalName().toLowerCase());
-            this.setPitch(index);
-
-            this.fontFamilyName = FontManager.LOGICAL_FONT_FAMILIES[index];
-            this.faceName       = FontManager.LOGICAL_FONT_NAMES[index];
-            this.psName         = FontManager.LOGICAL_FONT_NAMES[index];
-
-            String family = FontManager.LOGICAL_FONT_FAMILIES[index];
-
-            /* Xft chooses Luxi Sans font with fixed width parameter as monospaced 
-             * font. At first we check if Courier font is on the system, if it is
-             * we create this font as monospaced, otherwise we create XFT font with
-             * XFT_MONO spacing.
-             */
-            if ((index == MONOSPACED) &&
-                    CommonGraphics2DFactory.inst.getFontManager().isFamilyExist("Courier")){
-                family = "Courier";
-            }
-
-            pFont = LinuxNativeFont.initializeFont(this, family, style, size, fontStyle);
-        }
         initLinuxFont();
     }
 
@@ -151,9 +78,11 @@ public class LinuxFont extends FontPeerImpl {
      * font metrics, italic angle etc. 
      */
     public void initLinuxFont(){
-        this.numGlyphs = LinuxNativeFont.getNumGlyphsNative(pFont);
-        this.italicAngle = LinuxNativeFont.getItalicAngleNative(pFont, this.fontType);
-
+        if (pFont != 0){
+                this.numGlyphs = LinuxNativeFont.getNumGlyphsNative(pFont);
+                this.italicAngle = LinuxNativeFont.getItalicAngleNative(pFont, this.fontType);
+        }
+        
         this.nlm = new LinuxLineMetrics(this, null, " ");
 
         this.ascent = nlm.getLogicalAscent();
@@ -170,7 +99,8 @@ public class LinuxFont extends FontPeerImpl {
 
         this.maxCharBounds = new Rectangle2D.Float(0, -nlm.getAscent(), nlm.getMaxCharWidth(), this.height);
 
-        addGlyphs((char) 0x20, (char) 0x7E);
+//        addGlyphs((char) 0x20, (char) 0x7E);
+
     }
 
 
@@ -184,6 +114,10 @@ public class LinuxFont extends FontPeerImpl {
 
     public LineMetrics getLineMetrics(String str, FontRenderContext frc, AffineTransform at) {
         //TODO: frc isn't used now
+        
+        // Initialize baseline offsets
+        nlm.getBaselineOffsets();
+        
         LineMetricsImpl lm = (LineMetricsImpl)(this.nlm.clone());
         lm.setNumChars(str.length());
 
@@ -195,8 +129,8 @@ public class LinuxFont extends FontPeerImpl {
     }
 
     public String getPSName() {
-        if (psName == null){
-            psName = LinuxNativeFont.getFontPSNameNative(this.getFontHandle());
+        if ((pFont != 0) && (psName == null)){
+                psName = LinuxNativeFont.getFontPSNameNative(pFont);
         }
         return psName;
     }
@@ -211,8 +145,7 @@ public class LinuxFont extends FontPeerImpl {
     }
 
     public String getFontName(Locale l) {
-        // TODO: implement localized font name
-        if (this.fontType == FontManager.FONT_TYPE_T1){
+        if ((pFont == 0) || (this.fontType == FontManager.FONT_TYPE_T1)){
             return this.name;
         }
 
@@ -252,8 +185,9 @@ public class LinuxFont extends FontPeerImpl {
                 glyphs.put(key, new LinuxGlyph(defaultChar, defaultChar));
                 result = (Glyph) glyphs.get(key);
             } else {
-                glyphs.put(key, new LinuxGlyph(this.pFont,
-                    this.getSize(), defaultChar, LinuxNativeFont.getGlyphCodeNative(this.pFont, defaultChar, this.display)));
+                    int code = LinuxNativeFont.getGlyphCodeNative(this.pFont, defaultChar, this.display);
+                    glyphs.put(key, new LinuxGlyph(this.pFont,
+                            this.getSize(), defaultChar, code));
                 result = (Glyph) glyphs.get(key);
             }
         }
@@ -267,13 +201,16 @@ public class LinuxFont extends FontPeerImpl {
      */
     public void dispose(){
         String tempDirName;
-        LinuxNativeFont.pFontFree(this.pFont,this.display);
-        
-        if (this.isCreatedFromStream()) {
-            File fontFile = new File(this.getTempFontFileName());
-            tempDirName = fontFile.getParent();
-            fontFile.delete();
-            LinuxNativeFont.RemoveFontResource(tempDirName);
+        if (pFont != 0){
+            LinuxNativeFont.pFontFree(pFont, display);
+            pFont = 0;
+
+            if (isCreatedFromStream()) {
+                File fontFile = new File(getTempFontFileName());
+                tempDirName = fontFile.getParent();
+                fontFile.delete();
+                LinuxNativeFont.RemoveFontResource(tempDirName);
+            }
         }
     }
 
@@ -284,7 +221,7 @@ public class LinuxFont extends FontPeerImpl {
      * @return true if glyph of the specified character exists in this
      * LinuxFont or this character is escape sequence character.
      */
-   public boolean addGlyph(char uChar) {
+    public boolean addGlyph(char uChar) {
         boolean result = false;
         boolean isEscape = false;
 
@@ -296,7 +233,6 @@ public class LinuxFont extends FontPeerImpl {
                             this.getSize(), uChar, glyphCode));
                 result = true;
         }
-
         return result;
     }
 
@@ -333,9 +269,9 @@ public class LinuxFont extends FontPeerImpl {
                     return false;
                 }
             }
-        }
-*/
-        return (LinuxNativeFont.getGlyphCodeNative(this.getFontHandle(), uIndex, display) != 0xFFFF);
+        }*/
+        int code = LinuxNativeFont.getGlyphCodeNative(this.getFontHandle(), uIndex, display);
+        return (code != 0xFFFF);
     }
 
     /**
@@ -350,38 +286,6 @@ public class LinuxFont extends FontPeerImpl {
     }
 
     /**
-     * Returns Physical font name in case of predefined in Java logical names
-     * If there is no matches - the return value is the string parameter without 
-     * changes, in this case GDI chooses font that match to Font parent object 
-     * parameters.
-     * 
-     * @param logFontNameIndex index of the logical font family name
-     */
-    private void setPitch(int logFontNameIndex){
-        switch (logFontNameIndex){
-            case DIALOG:
-            case SANSSERIF:
-            case SERIF:
-                this.fPitch = PITCH_PROPORTIONAL;
-                break;
-            case DIALOGINPUT:
-            case MONOSPACED:
-                this.fPitch = PITCH_MONO;
-                break;
-            default:
-                this.fPitch = PITCH_DONTCARE;
-        }
-
-    }
-    
-    /**
-     * Returns pitch of this font peer. 
-     */
-    public int getPitch(){
-        return this.fPitch;
-    }
-
-    /**
      * Return Font object if it was successfully embedded in System
      */
     public static Font embedFont(String absolutePath){
@@ -389,7 +293,7 @@ public class LinuxFont extends FontPeerImpl {
     }
 
     public String getFontName(){
-        if (faceName == null){
+        if ((pFont != 0) && (faceName == null)){
             if (this.fontType == FontManager.FONT_TYPE_T1){
                 faceName = getFamily();
             } else {
@@ -400,9 +304,30 @@ public class LinuxFont extends FontPeerImpl {
     }
 
     public String getFamily() {
-        if (fontFamilyName == null){
+        if ((pFont != 0) && (fontFamilyName == null)){
             fontFamilyName = LinuxNativeFont.getFamilyNative(pFont);
         }
         return fontFamilyName;
+    }
+    
+    /**
+     * Returns initiated FontExtraMetrics instance of this WindowsFont.
+     */
+    public FontExtraMetrics getExtraMetrics(){
+        if (extraMetrix == null){
+            float[] metrics = LinuxNativeFont.getExtraMetricsNative(pFont, size, fontType);
+            if (metrics == null){
+                return null;
+            }
+                
+            //!! for Type1 fonts 'x' char width used as average char width
+            if (fontType == FontManager.FONT_TYPE_T1){
+                metrics[0] = this.charWidth('x');
+            }
+            
+            extraMetrix = new FontExtraMetrics(metrics);
+        }
+        
+        return extraMetrix;
     }
 }

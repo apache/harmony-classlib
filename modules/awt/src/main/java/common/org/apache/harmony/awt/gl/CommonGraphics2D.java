@@ -59,6 +59,7 @@ import java.util.Map;
 import org.apache.harmony.awt.gl.Surface;
 import org.apache.harmony.awt.gl.image.OffscreenImage;
 import org.apache.harmony.awt.gl.render.Blitter;
+import org.apache.harmony.awt.gl.render.JavaArcRasterizer;
 import org.apache.harmony.awt.gl.render.JavaLineRasterizer;
 import org.apache.harmony.awt.gl.render.JavaShapeRasterizer;
 import org.apache.harmony.awt.gl.render.JavaTextRenderer;
@@ -273,6 +274,15 @@ public abstract class CommonGraphics2D extends Graphics2D {
     }
 
     public void drawArc(int x, int y, int width, int height, int sa, int ea) {
+        if (stroke instanceof BasicStroke && ((BasicStroke)stroke).getLineWidth() <= 1 &&
+                ((BasicStroke)stroke).getDashArray() == null && 
+                (transform.isIdentity() || transform.getType() == AffineTransform.TYPE_TRANSLATION)) {
+            Point p = new Point(x, y);
+            transform.transform(p, p);
+            MultiRectArea mra = JavaArcRasterizer.rasterize(x, y, width, height, sa, ea, clip);
+            fillMultiRectArea(mra);
+            return;
+        }
         draw(new Arc2D.Float(x, y, width, height, sa, ea, Arc2D.OPEN));
     }
 
@@ -488,6 +498,15 @@ public abstract class CommonGraphics2D extends Graphics2D {
     }
 
     public void drawOval(int x, int y, int width, int height) {
+        if (stroke instanceof BasicStroke && ((BasicStroke)stroke).getLineWidth() <= 1 &&
+                ((BasicStroke)stroke).getDashArray() == null && 
+                (transform.isIdentity() || transform.getType() == AffineTransform.TYPE_TRANSLATION)) {
+            Point p = new Point(x, y);
+            transform.transform(p, p);
+            MultiRectArea mra = JavaArcRasterizer.rasterize(x, y, width, height, 0, 360, clip);
+            fillMultiRectArea(mra);
+            return;
+        }
         draw(new Ellipse2D.Float(x, y, width, height));
     }
 

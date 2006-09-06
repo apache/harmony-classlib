@@ -42,7 +42,6 @@ public final class WinWindowFactory implements WindowFactory {
     private final HashMap hwnd2winMap = new HashMap();
     private CreationParams creationParams = null;
 
-    final NativeServer nativeServer;
     final WinEventQueue eventQueue;
 
     // for WinEvent
@@ -51,14 +50,13 @@ public final class WinWindowFactory implements WindowFactory {
     final MouseGrab mouseGrab = new MouseGrab();
 
     WinWindowFactory(WinEventQueue eq) {
-        nativeServer = eq.getNativeServer();
         eventQueue = eq;
         eventQueue.addPreprocessor(mouseGrab);
     }
 
     public NativeWindow createWindow(final CreationParams p) {
-        NativeServer.Callback callback = new NativeServer.Callback () {
-            void body() {
+        WinEventQueue.Task task = new WinEventQueue.Task () {
+            public void perform() {
                 String title = (p.name != null) ? p.name : "";
                 Rectangle rect = new Rectangle(p.x, p.y, p.w, p.h);
                 int style = getStyle(p);
@@ -86,8 +84,8 @@ public final class WinWindowFactory implements WindowFactory {
                 returnValue = win;
             }
         };
-        nativeServer.invokeAndWait(callback);
-        return (WinWindow) callback.returnValue;
+        eventQueue.performTask(task);
+        return (WinWindow) task.returnValue;
     }
 
     public NativeWindow getWindowById(long id) {
@@ -361,12 +359,12 @@ public final class WinWindowFactory implements WindowFactory {
      * @see org.apache.harmony.awt.wtk.WindowFactory#setCaretPosition(int, int)
      */
     public void setCaretPosition(final int x, final int y) {
-        NativeServer.Callback callback = new NativeServer.Callback () {
-           void body() {
+        WinEventQueue.Task task = new WinEventQueue.Task () {
+           public void perform() {
                 win32.SetCaretPos(x, y);
             }
         };
-        nativeServer.invokeAndWait(callback);
+        eventQueue.performTask(task);
     }
 
     /**

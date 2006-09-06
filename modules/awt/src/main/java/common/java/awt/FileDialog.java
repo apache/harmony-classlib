@@ -61,6 +61,35 @@ public class FileDialog extends Dialog {
             toolkit.unlockAWT();
         }
     }
+    
+    public FileDialog(Dialog owner) {
+        this(owner, "");
+        toolkit.lockAWT();
+        try {
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public FileDialog(Dialog owner, String title) {
+        this(owner, title, LOAD);
+        toolkit.lockAWT();
+        try {
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
+
+    public FileDialog(Dialog owner, String title, int mode) {
+        super(owner, title, true); // initially always modal
+        toolkit.lockAWT();
+        try {
+            setMode(mode);
+            setLayout(null);
+        } finally {
+            toolkit.unlockAWT();
+        }
+    }
 
     public String getFile() {
         toolkit.lockAWT();
@@ -164,12 +193,27 @@ public class FileDialog extends Dialog {
     }
 
 
-    public void show() {
+    void showImpl() {
         if (toolkit.theme.showFileDialog(this)) {
-            super.show();
+            super.showImpl();
         }
     }
 
+    void hideImpl() {
+        if (toolkit.theme.hideFileDialog(this)) {        
+            super.hideImpl();
+        }
+    }
+    
+    ComponentBehavior createBehavior() {
+        return new HWBehavior(this) {
+            public void removeNotify() {
+                super.removeNotify();
+                hideImpl();                
+            }
+        };
+    }
+    
     String autoName() {
         return "filedlg" + toolkit.autoNumber.nextFileDialog++;
     }

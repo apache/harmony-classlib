@@ -23,6 +23,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -71,10 +72,33 @@ final class BasicTableKeyboardActions {
         }
     }
 
+    private static abstract class EnablebableLeadRowColumnAction extends LeadRowColumnAction {
+        final JTable table;
+
+        public EnablebableLeadRowColumnAction(final JTable table) {
+            this.table = table;
+        }
+
+        public boolean isEnabled() {
+            return isEnabled(table, table.getSelectionModel().getLeadSelectionIndex(),
+                             table.getColumnModel().getSelectionModel().getLeadSelectionIndex());
+        }
+
+        public abstract boolean isEnabled(final JTable table, final int currentRow, final int currentColumn);
+    }
+
     private static AbstractAction selectNextColumnAction = new LeadRowColumnAction() {
         protected void processRowColumn(final JTable table, final int currentRow, final int currentColumn) {
             if (currentColumn + 1 < table.getColumnCount()) {
                 table.changeSelection(currentRow, currentColumn + 1, false, false);
+            }
+        }
+    };
+    private static AbstractAction selectNextColumnChangeLeadAction = new LeadRowColumnAction() {
+        protected void processRowColumn(final JTable table, final int currentRow, final int currentColumn) {
+            if (currentColumn + 1 < table.getColumnCount() && (table.getColumnModel().getSelectionModel() instanceof DefaultListSelectionModel)) {
+                ((DefaultListSelectionModel)table.getColumnModel().getSelectionModel()).moveLeadSelectionIndex(currentColumn + 1);
+                ensureCellIsVisible(table, currentRow, currentColumn + 1);
             }
         }
     };
@@ -85,6 +109,14 @@ final class BasicTableKeyboardActions {
             }
         }
     };
+    private static AbstractAction selectPreviousColumnChangeLeadAction = new LeadRowColumnAction() {
+        protected void processRowColumn(final JTable table, final int currentRow, final int currentColumn) {
+            if (currentColumn > 0 && (table.getColumnModel().getSelectionModel() instanceof DefaultListSelectionModel)) {
+                ((DefaultListSelectionModel)table.getColumnModel().getSelectionModel()).moveLeadSelectionIndex(currentColumn - 1);
+                ensureCellIsVisible(table, currentRow, currentColumn - 1);
+            }
+        }
+    };
     private static AbstractAction selectNextRowAction = new LeadRowColumnAction() {
         protected void processRowColumn(final JTable table, final int currentRow, final int currentColumn) {
             if (currentRow + 1 < table.getRowCount()) {
@@ -92,10 +124,26 @@ final class BasicTableKeyboardActions {
             }
         }
     };
+    private static AbstractAction selectNextRowChangeLeadAction = new LeadRowColumnAction() {
+        protected void processRowColumn(final JTable table, final int currentRow, final int currentColumn) {
+            if (currentRow + 1 < table.getRowCount() && (table.getSelectionModel() instanceof DefaultListSelectionModel)) {
+                ((DefaultListSelectionModel)table.getSelectionModel()).moveLeadSelectionIndex(currentRow + 1);
+                ensureCellIsVisible(table, currentRow + 1, currentColumn);
+            }
+        }
+    };
     private static AbstractAction selectPreviousRowAction = new LeadRowColumnAction() {
         protected void processRowColumn(final JTable table, final int currentRow, final int currentColumn) {
             if (currentRow > 0) {
                 table.changeSelection(currentRow - 1, currentColumn, false, false);
+            }
+        }
+    };
+    private static AbstractAction selectPreviousRowChangeLeadAction = new LeadRowColumnAction() {
+        protected void processRowColumn(final JTable table, final int currentRow, final int currentColumn) {
+            if (currentRow > 0 && (table.getSelectionModel() instanceof DefaultListSelectionModel)) {
+                ((DefaultListSelectionModel)table.getSelectionModel()).moveLeadSelectionIndex(currentRow - 1);
+                ensureCellIsVisible(table, currentRow - 1, currentColumn);
             }
         }
     };
@@ -170,6 +218,30 @@ final class BasicTableKeyboardActions {
             table.changeSelection(table.getRowCount() - 1, currentColumn, false, true);
         }
     };
+    private static AbstractAction toggleAndAnchorAction = new LeadRowColumnAction() {
+        protected void processRowColumn(final JTable table, final int currentRow, final int currentColumn) {
+            if (currentRow >= 0 && currentColumn >=0) {
+                table.changeSelection(currentRow, currentColumn, true, false);
+                table.getSelectionModel().setAnchorSelectionIndex(currentRow);
+                table.getColumnModel().getSelectionModel().setAnchorSelectionIndex(currentColumn);
+            }
+        }
+    };
+    private static AbstractAction moveSelectionToAction = new LeadRowColumnAction() {
+        protected void processRowColumn(final JTable table, final int currentRow, final int currentColumn) {
+            if (currentRow >= 0 && currentColumn >=0) {
+                table.changeSelection(currentRow, currentColumn, false, false);
+            }
+        }
+    };
+    private static AbstractAction extendToAction = new LeadRowColumnAction() {
+        protected void processRowColumn(final JTable table, final int currentRow, final int currentColumn) {
+            if (currentRow >= 0 && currentColumn >=0) {
+                table.changeSelection(currentRow, currentColumn, false, true);
+            }
+        }
+    };
+
 
     private static abstract class SelectRowColumnCellAction extends LeadRowColumnAction {
         protected abstract int[] nextCellCoords(final int[] cell, final int minRow, final int maxRow,
@@ -186,11 +258,42 @@ final class BasicTableKeyboardActions {
                 table.changeSelection(currentCell[0], currentCell[1], false, false);
             } else {
                 int[] currentCell = new int[] { currentRow, currentColumn };
+                int rowMinSelectionIndex;
+                int rowMaxSelectionIndex;
+                int colMinSelectionIndex;
+                int colMaxSelectionIndex;
+                
+                if (table.getRowSelectionAllowed() && table.getColumnSelectionAllowed()) {
+                    rowMinSelectionIndex = rowSelectionModel.getMinSelectionIndex();
+                    rowMaxSelectionIndex = rowSelectionModel.getMaxSelectionIndex();
+                    colMinSelectionIndex = colSelectionModel.getMinSelectionIndex();
+                    colMaxSelectionIndex = colSelectionModel.getMaxSelectionIndex();
+                } else if (table.getRowSelectionAllowed() && !table.getColumnSelectionAllowed()) {
+                    rowMinSelectionIndex = rowSelectionModel.getMinSelectionIndex();
+                    rowMaxSelectionIndex = rowSelectionModel.getMaxSelectionIndex();
+                    colMinSelectionIndex = 0;
+                    colMaxSelectionIndex = table.getColumnCount() - 1;
+                } else if (!table.getRowSelectionAllowed() && table.getColumnSelectionAllowed()) {
+                    rowMinSelectionIndex = 0;
+                    rowMaxSelectionIndex = table.getRowCount() - 1;
+                    colMinSelectionIndex = colSelectionModel.getMinSelectionIndex();
+                    colMaxSelectionIndex = colSelectionModel.getMaxSelectionIndex();
+                } else {
+                    rowMinSelectionIndex = 0;
+                    rowMaxSelectionIndex = table.getRowCount() - 1;
+                    colMinSelectionIndex = 0;
+                    colMaxSelectionIndex = table.getColumnCount() - 1;
+                }
+                
                 do {
-                    currentCell = nextCellCoords(currentCell, rowSelectionModel.getMinSelectionIndex(), rowSelectionModel.getMaxSelectionIndex(),
-                            colSelectionModel.getMinSelectionIndex(), colSelectionModel.getMaxSelectionIndex());
+                    currentCell = nextCellCoords(currentCell, rowMinSelectionIndex, rowMaxSelectionIndex,
+                                                 colMinSelectionIndex, colMaxSelectionIndex);
+                    
+                    if (!table.getRowSelectionAllowed() && !table.getColumnSelectionAllowed()) {
+                        break;
+                    }
                 } while (!table.isCellSelected(currentCell[0], currentCell[1]));
-
+                
                 colSelectionModel.addSelectionInterval(currentCell[1], currentCell[1]);
                 rowSelectionModel.addSelectionInterval(currentCell[0], currentCell[0]);
             }
@@ -264,7 +367,18 @@ final class BasicTableKeyboardActions {
 
     private static AbstractAction selectAllAction = new AbstractTableAction() {
         protected void processTable(final JTable table) {
+            if (table.isEditing()) {
+                table.getCellEditor().cancelCellEditing();
+            }
             table.selectAll();
+        }
+    };
+    private static AbstractAction clearSelectionAction = new AbstractTableAction() {
+        protected void processTable(final JTable table) {
+            if (table.isEditing()) {
+                table.getCellEditor().cancelCellEditing();
+            }
+            table.clearSelection();
         }
     };
 
@@ -380,6 +494,11 @@ final class BasicTableKeyboardActions {
         table.getActionMap().put("selectPreviousColumn", selectPreviousColumnAction);
         table.getActionMap().put("selectNextRow", selectNextRowAction);
         table.getActionMap().put("selectPreviousRow", selectPreviousRowAction);
+        
+        table.getActionMap().put("selectPreviousRowChangeLead", selectPreviousRowChangeLeadAction);
+        table.getActionMap().put("selectNextRowChangeLead", selectNextRowChangeLeadAction);
+        table.getActionMap().put("selectPreviousColumnChangeLead", selectPreviousColumnChangeLeadAction);
+        table.getActionMap().put("selectNextColumnChangeLead", selectNextColumnChangeLeadAction);
 
         table.getActionMap().put("selectNextColumnExtendSelection", selectNextColumnExtendSelectionAction);
         table.getActionMap().put("selectPreviousColumnExtendSelection", selectPreviousColumnExtendSelectionAction);
@@ -411,6 +530,23 @@ final class BasicTableKeyboardActions {
         table.getActionMap().put("selectPreviousRowCell", selectPreviousRowCellAction);
 
         table.getActionMap().put("selectAll", selectAllAction);
+        table.getActionMap().put("clearSelection", clearSelectionAction);
+
+        table.getActionMap().put("addToSelection", new EnablebableLeadRowColumnAction(table) {
+            protected void processRowColumn(final JTable table, final int currentRow, final int currentColumn) {
+                if (currentRow >= 0 && currentColumn >=0) {
+                    table.addRowSelectionInterval(currentRow, currentRow);
+                    table.addColumnSelectionInterval(currentColumn, currentColumn);
+                }
+            }
+            public boolean isEnabled(final JTable table, final int currentRow, final int currentColumn) {
+                return !table.isCellSelected(currentRow, currentColumn);
+            }
+        });
+
+        table.getActionMap().put("toggleAndAnchor", toggleAndAnchorAction);
+        table.getActionMap().put("moveSelectionTo", moveSelectionToAction);
+        table.getActionMap().put("extendTo", extendToAction);
 
         table.getActionMap().put("startEditing", startEditingAction);
         table.getActionMap().put("cancel", cancelAction);
@@ -583,4 +719,8 @@ final class BasicTableKeyboardActions {
             return i;
         }
     }
+
+    private static void ensureCellIsVisible(final JTable table, final int row, final int column) {
+        table.scrollRectToVisible(table.getCellRect(row, column, true));
+     }
 }

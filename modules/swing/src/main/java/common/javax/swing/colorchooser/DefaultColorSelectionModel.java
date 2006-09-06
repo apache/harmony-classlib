@@ -45,9 +45,12 @@ public class DefaultColorSelectionModel implements ColorSelectionModel, Serializ
     }
 
     public void setSelectedColor(final Color color) {
+        if (color == null) {
+            return;
+        }
         Color oldColor = this.color;
         this.color = color;
-        if (oldColor == null || !oldColor.equals(color)) {
+        if (!oldColor.equals(color)) {
             fireStateChanged();
         }
     }

@@ -25,6 +25,7 @@ import java.awt.GraphicsEnvironment;
 
 import org.apache.harmony.awt.gl.CommonGraphics2DFactory;
 import org.apache.harmony.awt.gl.MultiRectArea;
+import org.apache.harmony.awt.gl.opengl.OGLGraphics2D;
 import org.apache.harmony.awt.gl.font.FontManager;
 import org.apache.harmony.awt.gl.font.LinuxFont;
 import org.apache.harmony.awt.gl.font.LinuxFontManager;
@@ -42,11 +43,19 @@ public class LinuxGraphics2DFactory extends CommonGraphics2DFactory {
         inst = new LinuxGraphics2DFactory();
     }
     public Graphics2D getGraphics2D(NativeWindow nw, int tx, int ty, MultiRectArea clip) {
-        return new XGraphics2D(nw, tx, ty, clip);
+        String opengl = System.getProperty("java2d.opengl");
+        boolean useOpenGL = opengl != null && opengl.equals("true");
+        return useOpenGL ?
+                (Graphics2D) new OGLGraphics2D(nw, tx, ty, clip) :
+                new XGraphics2D(nw, tx, ty, clip);
     }
 
     public Graphics2D getGraphics2D(NativeWindow nw, int tx, int ty, int width, int height) {
-        return new XGraphics2D(nw, tx, ty, width, height);
+        String opengl = System.getProperty("java2d.opengl");
+        boolean useOpenGL = opengl != null && opengl.equals("true");
+        return useOpenGL ?
+                (Graphics2D) new OGLGraphics2D(nw, tx, ty, width, height) :
+                new XGraphics2D(nw, tx, ty, width, height);
     }
 
     public GraphicsEnvironment createGraphicsEnvironment(WindowFactory wf) {

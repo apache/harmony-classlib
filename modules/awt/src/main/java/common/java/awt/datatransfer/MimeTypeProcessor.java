@@ -226,6 +226,16 @@ final class MimeTypeProcessor {
         }
 
         void addParameter(String name, String value) {
+            if (value == null) {
+                return;
+            }
+            if ((value.charAt(0) == '\"') 
+                    && (value.charAt(value.length() - 1) == '\"')) {
+                value = value.substring(1, value.length() - 2);
+            }
+            if (value.length() == 0) {
+                return;
+            }
             parameters.put(name, value);
         }
 

@@ -50,7 +50,6 @@ public class WinRobot implements NativeRobot {
 
     private final NativeBridge nb = NativeBridge.getInstance();
     private final Win32 win32 = Win32.getInstance();
-    private final long screenDC = win32.GetDC(0l);
 
     /**
      * @see org.apache.harmony.awt.wtk.NativeRobot#createScreenCapture(java.awt.Rectangle)
@@ -71,8 +70,11 @@ public class WinRobot implements NativeRobot {
         // compBMP and use them to create BufferedImage
         Int32Pointer pData = nb.createInt32Pointer(size, false);
         win32.DeleteObject(compBMP);
+        long screenDC = win32.GetDC(0l);
         int nLines = win32.GetDIBits(screenDC, compBMP, 0, h, pData,
                         bmi, WindowsDefs.DIB_RGB_COLORS);
+        win32.ReleaseDC(0, screenDC);
+        
         if (nLines != h) {
             return null;
         }
@@ -87,7 +89,9 @@ public class WinRobot implements NativeRobot {
      * @see org.apache.harmony.awt.wtk.NativeRobot#getPixel(int, int)
      */
     public Color getPixel(int x, int y) {
+        long screenDC = win32.GetDC(0l);
         long bgr = win32.GetPixel(screenDC, x, y);
+        win32.ReleaseDC(0, screenDC);
         return fromBGR(bgr);
     }
 
@@ -209,6 +213,7 @@ public class WinRobot implements NativeRobot {
     private long createScreenBMP(Rectangle screenRect) {
         int w = screenRect.width;
         int h = screenRect.height;
+        long screenDC = win32.GetDC(0l);
         long compBMP = win32.CreateCompatibleBitmap(screenDC, w, h);
         long compDC = win32.CreateCompatibleDC(screenDC);
         // create a compatible bitmap to copy screen to
@@ -227,6 +232,7 @@ public class WinRobot implements NativeRobot {
         hObj = win32.BitBlt(compDC, 0, 0, w, h,
                             screenDC, screenRect.x, screenRect.y,
                             SRCCOPY);
+        win32.ReleaseDC(0, screenDC);
         win32.ReleaseDC(0, compDC);
         return compBMP;
     }
@@ -244,7 +250,6 @@ public class WinRobot implements NativeRobot {
     }
 
     protected void finalize() throws Throwable {
-        win32.ReleaseDC(0, screenDC);
         super.finalize();
     }
 

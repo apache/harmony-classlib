@@ -87,7 +87,7 @@ public class DataFlavor implements Externalizable, Cloneable {
     public static final DataFlavor getTextPlainUnicodeFlavor() {
         if (plainUnicodeFlavor == null) {
             plainUnicodeFlavor = new DataFlavor("text/plain"
-                    + "; charset=" + DTK.textDescriptor.getDefaultCharset()
+                    + "; charset=" + DTK.getDTK().getDefaultCharset()
                     + "; class=java.io.InputStream",
                     "Plain Text");
         }
@@ -197,7 +197,7 @@ public class DataFlavor implements Externalizable, Cloneable {
             String charset = mimeInfo.getParameter("charset");
 
             if (isCharsetRequired() && ((charset == null) || (charset.length() == 0))) {
-                return DTK.textDescriptor.getDefaultCharset();
+                return DTK.getDTK().getDefaultCharset();
             } else {
                 if (charset == null) {
                     return "";
@@ -568,7 +568,7 @@ public class DataFlavor implements Externalizable, Cloneable {
 
         best = getFlavors(list, new String[] {"UTF-16", "UTF-8", "UTF-16BE", "UTF-16LE"});
         if (best == null) {
-            best = getFlavors(list, new String[] {DTK.textDescriptor.getDefaultCharset()});
+            best = getFlavors(list, new String[] {DTK.getDTK().getDefaultCharset()});
             if (best == null) {
                 best = getFlavors(list, new String[] {"US-ASCII"});
                 if (best == null) {

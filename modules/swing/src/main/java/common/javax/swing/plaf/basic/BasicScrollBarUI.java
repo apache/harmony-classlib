@@ -376,7 +376,7 @@ public class BasicScrollBarUI extends ScrollBarUI implements LayoutManager, Swin
     }
 
     protected void installKeyboardActions() {
-        Utilities.installKeyboardActions(scrollbar, JComponent.WHEN_FOCUSED, "ScrollBar.focusInputMap", "ScrollBar.focusInputMap.RightToLeft");
+        Utilities.installKeyboardActions(scrollbar, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, "ScrollBar.ancestorInputMap", "ScrollBar.ancestorInputMap.RightToLeft");
 
         scrollbar.getActionMap().put("positiveUnitIncrement", newPositiveUnitIncrementAction());
         scrollbar.getActionMap().put("positiveBlockIncrement", newPositiveBlockIncrementAction());

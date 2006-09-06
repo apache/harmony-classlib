@@ -54,6 +54,22 @@ public class ComponentRTest extends TestCase {
         assertTrue(((Boolean)oldVal).booleanValue());
 
     }
+    
+    public final void testGetMinimumSize() {
+        final Component comp = new Component() {
+        };
+        Dimension size = new Dimension(100, 100);
+        Dimension defSize = new Dimension(1, 1);
+        comp.setSize(size);
+        assertEquals(size, comp.getMinimumSize());
+        comp.addNotify();
+        assertEquals(defSize, comp.getMinimumSize());
+        size.setSize(13, 13);
+        comp.setSize(size);
+        assertEquals(defSize, comp.getMinimumSize());
+        comp.removeNotify();
+        assertEquals(size, comp.getMinimumSize());
+    }
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(ComponentRTest.class);

@@ -112,7 +112,7 @@ public class TitledBorder extends AbstractBorder {
         Insets insideInsets = getBorder().getBorderInsets(c);
         Utilities.addInsets(insets, insideInsets);
 
-        if (!Utilities.isEmptyString(title)) {
+        if (!Utilities.isEmptyString(title) && c != null) {
             FontMetrics metrics = c.getFontMetrics(getTitleFont());
             switch (titlePosition) {
             case DEFAULT_POSITION:

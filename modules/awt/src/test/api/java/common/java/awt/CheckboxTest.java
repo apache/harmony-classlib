@@ -21,7 +21,6 @@ package java.awt;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
 
 import junit.framework.TestCase;
 
@@ -58,49 +57,26 @@ public class CheckboxTest extends TestCase {
             super.paint(g);
             EventQueue.invokeLater(new Runnable() {
                 public void run() {
-                    paintFlag = true;
                 }
             });
         }
     }
 
     private TestCheckbox checkbox;
-    private Frame frame;
-    private Insets insets;
     private boolean eventProcessed;
-    private boolean eventExpected;
-    private boolean paintFlag;
 
     /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
-        super.setUp();
-
-        frame = new Frame();
+        super.setUp();        
         checkbox = new TestCheckbox("Checkbox");
-        frame.add(checkbox);
-        frame.setBounds(0, 0, 100, 100);
-        paintFlag = false;
-        frame.setVisible(true);
-        while (!paintFlag) {
-            Thread.yield();
-        }
-        insets = frame.getInsets();
-        paintFlag = false;
-        frame.setSize(200 + insets.left + insets.right,
-                      200 + insets.top + insets.bottom);
-        frame.validate();
-        while (!paintFlag) {
-            Thread.yield();
-        }
     }
 
     /*
      * @see TestCase#tearDown()
      */
     protected void tearDown() throws Exception {
-        frame.dispose();
         super.tearDown();
     }
 
@@ -227,102 +203,5 @@ public class CheckboxTest extends TestCase {
 
         checkbox.removeItemListener(listener);
         assertEquals(0, checkbox.getListeners(cls).length);
-    }
-
-    Robot robot;
-
-    public void testBehaviour() {
-        try {
-            robot = new Robot();
-        } catch (AWTException e1) {
-            e1.printStackTrace();
-        }
-        robot.setAutoWaitForIdle(true);
-
-        checkbox.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent ie) {
-                if (eventExpected) {
-                    eventExpected = false;
-                    eventProcessed = true;
-                } else {
-                    //throw new RuntimeException("Unexpected event");
-                }
-            }
-        });
-
-        colorTest();
-        actionOnMouseTest();
-        actionOnSpaceTest();
-        noActionOnMouseTest();
-        noActionOnSpaceTest();
-    }
-
-    private void colorTest() {
-        assertEquals(checkbox.getBackground().getRGB(),
-                     robot.getPixelColor(insets.left + 10,
-                                         insets.top + 10).getRGB());
-        paintFlag = false;
-        checkbox.setBackground(Color.blue);
-        while (!paintFlag) {
-            Thread.yield();
-        }
-        assertEquals(Color.blue,
-                     robot.getPixelColor(insets.left + 10,
-                                         insets.top + 10));
-        checkbox.setBackground(null);
-    };
-
-    private void noActionOnSpaceTest() {
-        eventExpected = false;
-        robot.keyPress(KeyEvent.VK_SPACE);
-        eventProcessed = false;
-        checkbox.setFocusable(false);
-        robot.keyRelease(KeyEvent.VK_SPACE);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-        }
-        assertFalse(eventProcessed);
-    }
-
-    private void noActionOnMouseTest() {
-        eventExpected = false;
-        robot.mouseMove(insets.left + 99, insets.top + 99);
-        robot.mouseMove(insets.left + 100, insets.top + 100);
-        robot.mousePress(KeyEvent.BUTTON1_MASK);
-        eventProcessed = false;
-        robot.mouseMove(insets.left + 200, insets.top + 200);
-        robot.mouseRelease(KeyEvent.BUTTON1_MASK);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-        }
-        assertFalse(eventProcessed);
-    }
-
-    private void actionOnSpaceTest() {
-        eventExpected = false;
-        robot.keyPress(KeyEvent.VK_SPACE);
-        eventExpected = true;
-        eventProcessed = false;
-        robot.keyRelease(KeyEvent.VK_SPACE);
-        while (!eventProcessed) {
-            Thread.yield();
-        }
-        assertTrue(eventProcessed);
-    }
-
-    private void actionOnMouseTest() {
-        eventExpected = false;
-        robot.mouseMove(insets.left + 99, insets.top + 99);
-        robot.mouseMove(insets.left + 100, insets.top + 100);
-        robot.mousePress(KeyEvent.BUTTON1_MASK);
-        eventExpected = true;
-        eventProcessed = false;
-        robot.mouseRelease(KeyEvent.BUTTON1_MASK);
-        while (!eventProcessed) {
-            Thread.yield();
-        }
-        assertTrue(eventProcessed);
     }
 }
