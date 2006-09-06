@@ -26,21 +26,21 @@ import java.net.URLStreamHandler;
  */
 public class Handler extends URLStreamHandler {
 
+    @Override
     protected URLConnection openConnection(URL url) throws IOException {
         return new HttpsURLConnection(url, getDefaultPort());
     }
 
-    protected URLConnection openConnection(URL url, Proxy proxy)
-                                                    throws IOException {
-        if((url == null) || (proxy == null)) {
-            throw new IllegalArgumentException(
-                    "Some of the parameters is null");
+    @Override
+    protected URLConnection openConnection(URL url, Proxy proxy) throws IOException {
+        if ((url == null) || (proxy == null)) {
+            throw new IllegalArgumentException("Some of the parameters is null");
         }
         return new HttpsURLConnection(url, getDefaultPort(), proxy);
     }
 
+    @Override
     protected int getDefaultPort() {
         return 443;
     }
 }
-

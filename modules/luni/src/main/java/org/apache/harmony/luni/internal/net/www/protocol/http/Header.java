@@ -18,30 +18,24 @@ package org.apache.harmony.luni.internal.net.www.protocol.http;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * The general structure for request / response header. It is essentially
  * constructed by hashtable with key indexed in a vector for position lookup.
  * 
  */
-
 public class Header implements Cloneable {
-    /**
-     * The default amount of fields for a header
-     */
-    private static final int incCapacity = 20;
-
     /*
      * we use the non-synchronized ArrayList and HashMap instead of the
      * synchronized Vector and Hashtable
      */
-    private ArrayList<String> props = new ArrayList<String>(incCapacity);
+    private ArrayList<String> props;
 
-    private HashMap<String, LinkedList<String>> keyTable = new HashMap<String, LinkedList<String>>(incCapacity);
+    private HashMap<String, LinkedList<String>> keyTable;
 
     private String statusLine;
 
@@ -51,43 +45,42 @@ public class Header implements Cloneable {
      * is stored in an array for indexed slot access.
      */
     public Header() {
+        super();
+        this.props = new ArrayList<String>(20);
+        this.keyTable = new HashMap<String, LinkedList<String>>(20);
     }
 
     /**
      * The alternative constructor which sets the input map as its initial
      * keyTable.
      * 
-     * @param map
-     *            the initial keyTable as a map
+     * @param map the initial keyTable as a map
      */
     public Header(Map<String, List<String>> map) {
-        for (Iterator<Map.Entry<String, List<String>>> entries = map.entrySet().iterator(); entries.hasNext();) {
-            Map.Entry<String, List<String>> next = entries.next();
+        this(); //initialize fields
+        for (Entry<String, List<String>> next : map.entrySet()) {
             String key = next.getKey();
             props.add(key);
             List<String> value = next.getValue();
             LinkedList<String> linkedList = new LinkedList<String>();
-            for (Iterator<String> iter = value.iterator(); iter.hasNext();) {
-                String element = iter.next();
+            for (String element : value) {
                 linkedList.add(element);
                 props.add(element);
             }
             keyTable.put(key, linkedList);
         }
     }
-    
+
     @SuppressWarnings("unchecked")
+    @Override
     public Object clone() {
         try {
             Header clone = (Header) super.clone();
-
             clone.props = (ArrayList<String>) props.clone();
-            HashMap<String, LinkedList<String>> cloneTable = clone.keyTable = new HashMap<String, LinkedList<String>>(incCapacity);
-            Iterator<Map.Entry<String, LinkedList<String>>> entries = keyTable.entrySet().iterator();
-            while (entries.hasNext()) {
-                Map.Entry<String, LinkedList<String>> next = entries.next();
-                LinkedList<String> v = (LinkedList<String>)next.getValue().clone();
-                cloneTable.put(next.getKey(), v);
+            clone.keyTable = new HashMap<String, LinkedList<String>>(20);
+            for (Map.Entry<String, LinkedList<String>> next : this.keyTable.entrySet()) {
+                LinkedList<String> v = (LinkedList<String>) next.getValue().clone();
+                clone.keyTable.put(next.getKey(), v);
             }
             return clone;
         } catch (CloneNotSupportedException e) {
@@ -99,9 +92,9 @@ public class Header implements Cloneable {
      * Add a field with the specified value.
      * 
      * @param key
-     *            java.lang.String
+     * 
      * @param value
-     *            java.lang.String
+     * 
      */
     public void add(String key, String value) {
         if (key == null) {
@@ -123,9 +116,8 @@ public class Header implements Cloneable {
      * 
      * 
      * @param key
-     *            java.lang.String
      * @param value
-     *            java.lang.String
+     * 
      */
     public void set(String key, String value) {
         if (key == null) {
@@ -169,8 +161,7 @@ public class Header implements Cloneable {
      * exist.
      * 
      * @return java.lang.String the value of the key
-     * @param pos
-     *            int the position to look for
+     * @param pos int the position to look for
      */
     public String get(int pos) {
         if (pos >= 0 && pos < props.size() / 2) {
@@ -184,9 +175,8 @@ public class Header implements Cloneable {
      * fewer keys in the header
      * 
      * 
-     * @return java.lang.String the key the desired position
-     * @param pos
-     *            int the position to look for
+     * @return the key the desired position
+     * @param pos the position to look for
      */
     public String getKey(int pos) {
         if (pos >= 0 && pos < props.size() / 2) {
@@ -200,9 +190,9 @@ public class Header implements Cloneable {
      * exists.
      * 
      * 
-     * @return java.lang.String
+     * @return
      * @param key
-     *            java.lang.String
+     * 
      */
     public String get(String key) {
         LinkedList<String> result = keyTable.get(key.toLowerCase());
@@ -216,7 +206,7 @@ public class Header implements Cloneable {
      * Answers the number of keys stored in this header
      * 
      * 
-     * @return int
+     * @return
      */
     public int length() {
         return props.size() / 2;
@@ -230,12 +220,13 @@ public class Header implements Cloneable {
      */
     public void setStatusLine(String statusLine) {
         this.statusLine = statusLine;
-        // we add the status line to the list of headers so that it is
-        // accessible
-        // from java.net.HttpURLConnection.getResponseCode()
-        // which calls
-        // org.apache.harmony.luni.internal.net.www.protocol.http.HttpURLConnection.getHeaderField(0)
-        // to get it
+        /*
+         * we add the status line to the list of headers so that it is
+         * accessible from java.net.HttpURLConnection.getResponseCode() which
+         * calls
+         * org.apache.harmony.luni.internal.net.www.protocol.http.HttpURLConnection.getHeaderField(0)
+         * to get it
+         */
         props.add(0, null);
         props.add(1, statusLine);
     }
