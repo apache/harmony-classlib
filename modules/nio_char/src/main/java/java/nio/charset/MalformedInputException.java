@@ -15,6 +15,8 @@
 
 package java.nio.charset;
 
+import org.apache.harmony.niochar.internal.nls.Messages;
+
 
 /**
  * Thrown when a malformed input is encountered, for example, a byte sequence is
@@ -87,7 +89,8 @@ public class MalformedInputException extends CharacterCodingException {
 	 * @return a message describing this exception
 	 */
 	public String getMessage() {
-		return "Malformed input length is " + this.inputLength + "."; //$NON-NLS-1$ //$NON-NLS-2$
+        // niochar.05=Malformed input length is {0}.
+		return Messages.getString("niochar.05", this.inputLength);  //$NON-NLS-1$
 	}
 
 }

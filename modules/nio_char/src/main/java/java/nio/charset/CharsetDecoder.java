@@ -768,12 +768,14 @@ public abstract class CharsetDecoder {
 	 */
 	public final CharsetDecoder replaceWith(String newReplacement) {
 		if (null == newReplacement || newReplacement.length() == 0) {
+            // niochar.06=Replacement string cannot be null or empty.
 			throw new IllegalArgumentException(
-					"Replacement string cannot be null or empty."); //$NON-NLS-1$
+					Messages.getString("niochar.06"));  //$NON-NLS-1$
 		}
 		if (newReplacement.length() > maxChars) {
+            // niochar.07=Replacement string's length cannot be larger than max characters per byte.
 			throw new IllegalArgumentException(
-					"Replacement string's length cannot be larger than max characters per byte."); //$NON-NLS-1$
+					Messages.getString("niochar.07"));  //$NON-NLS-1$
 		}
 		replace = newReplacement;
 		implReplaceWith(newReplacement);

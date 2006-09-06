@@ -250,8 +250,9 @@ public abstract class CharsetEncoder {
 			status = INIT;
 		}
 		if (status != INIT) {
+            // niochar.0B=Another encoding process is ongoing\!
 			throw new IllegalStateException(
-					"Another encoding process is ongoing!"); //$NON-NLS-1$
+					Messages.getString("niochar.0B"));  //$NON-NLS-1$
 		}
 		CodingErrorAction malformBak = malformAction;
 		CodingErrorAction unmapBak = unmapAction;
@@ -780,8 +781,9 @@ public abstract class CharsetEncoder {
 	 */
 	public final CharsetEncoder onMalformedInput(CodingErrorAction newAction) {
 		if (null == newAction) {
+            // niochar.0C=Action on malformed input error cannot be null\!
 			throw new IllegalArgumentException(
-					"Action on malformed input error cannot be null!"); //$NON-NLS-1$
+					Messages.getString("niochar.0C"));  //$NON-NLS-1$
 		}
 		malformAction = newAction;
 		implOnMalformedInput(newAction);
@@ -804,8 +806,9 @@ public abstract class CharsetEncoder {
 	public final CharsetEncoder onUnmappableCharacter(
 			CodingErrorAction newAction) {
 		if (null == newAction) {
+            // niochar.0D=Action on unmappable character error cannot be null\!
 			throw new IllegalArgumentException(
-					"Action on unmappable character error cannot be null!"); //$NON-NLS-1$
+					Messages.getString("niochar.0D"));  //$NON-NLS-1$
 		}
 		unmapAction = newAction;
 		implOnUnmappableCharacter(newAction);
@@ -845,7 +848,8 @@ public abstract class CharsetEncoder {
 		if (null == replacement || 0 == replacement.length
 				|| maxBytes < replacement.length
 				|| !isLegalReplacement(replacement)) {
-			throw new IllegalArgumentException("Replacement is illegal"); //$NON-NLS-1$
+            // niochar.0E=Replacement is illegal
+			throw new IllegalArgumentException(Messages.getString("niochar.0E"));  //$NON-NLS-1$
 		}
 		replace = replacement;
 		implReplaceWith(replacement);

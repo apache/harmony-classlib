@@ -20,6 +20,8 @@ import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.util.WeakHashMap;
 
+import org.apache.harmony.niochar.internal.nls.Messages;
+
 /**
  * Used to indicate the result of encoding/decoding. There are four types of
  * results:
@@ -149,7 +151,8 @@ public class CoderResult {
 				return r;
 			}
 		}
-		throw new IllegalArgumentException("The length must be positive."); //$NON-NLS-1$
+        // niochar.08=The length must be positive.
+		throw new IllegalArgumentException(Messages.getString("niochar.08"));  //$NON-NLS-1$
 	}
 
 	/**
@@ -177,7 +180,8 @@ public class CoderResult {
 				return r;
 			}
 		}
-		throw new IllegalArgumentException("The length must be positive."); //$NON-NLS-1$
+        // niochar.08=The length must be positive.
+		throw new IllegalArgumentException(Messages.getString("niochar.08"));  //$NON-NLS-1$
 	}
 
 	/**
@@ -241,8 +245,10 @@ public class CoderResult {
 				|| this.type == TYPE_UNMAPPABLE_CHAR) {
 			return this.length;
 		}
-		throw new UnsupportedOperationException(
-				"The length of the erroneous input is only meaningful to a malformed-input error or an unmappble character error"); //$NON-NLS-1$
+		// niochar.09=The length of the erroneous input is only meaningful to 
+        // a malformed-input error or an unmappble character error
+        throw new UnsupportedOperationException(
+				Messages.getString("niochar.09"));  //$NON-NLS-1$
 	}
 
 	/**

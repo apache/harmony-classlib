@@ -15,6 +15,8 @@
 
 package java.nio.charset;
 
+import org.apache.harmony.niochar.internal.nls.Messages;
+
 
 /**
  * Thrown when an unmappable character for the given charset is encountered.
@@ -87,7 +89,8 @@ public class UnmappableCharacterException extends CharacterCodingException {
 	 * @return a message describing this exception
 	 */
 	public String getMessage() {
-		return "The unmappable character length is " + this.inputLength + "."; //$NON-NLS-1$ //$NON-NLS-2$
+        // niochar.0A=The unmappable character length is {0}.
+		return Messages.getString("niochar.0A", this.inputLength);  //$NON-NLS-1$
 	}
 
 }
