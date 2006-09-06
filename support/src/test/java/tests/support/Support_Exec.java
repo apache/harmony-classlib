@@ -87,6 +87,9 @@ public class Support_Exec extends TestCase {
 			execArgs = new String[baseArgs + args.length];
 			execArgs[0] = System.getProperty("com.ibm.oti.vm.exe");
 			// stop passing -jcl:null into the VM
+            // WARNING: empty string in args array may confuse
+            // Process.exec(String[] cmdarray) on Linux so
+            // Process.exec(String command) is used instead
 			execArgs[1] = "";
 			if (onUnix) {
 				execArgs[2] = "-Xbootclasspath:"
