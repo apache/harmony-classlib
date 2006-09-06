@@ -640,8 +640,8 @@ public abstract class Charset implements Comparable<Charset> {
 	 *         false.
 	 */
 	public final boolean isRegistered() {
-		return !canonicalName.startsWith("x-")
-				&& !canonicalName.startsWith("X-");
+		return !canonicalName.startsWith("x-") //$NON-NLS-1$
+				&& !canonicalName.startsWith("X-"); //$NON-NLS-1$
 	}
 
 	/**

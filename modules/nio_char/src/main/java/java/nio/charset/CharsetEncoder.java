@@ -20,6 +20,8 @@ import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 
+import org.apache.harmony.niochar.internal.nls.Messages;
+
 /**
  * An converter that can convert 16-bit Unicode character sequence to byte
  * sequence in some charset .
@@ -189,12 +191,14 @@ public abstract class CharsetEncoder {
 	protected CharsetEncoder(Charset cs, float averageBytesPerChar,
 			float maxBytesPerChar, byte[] replacement) {
 		if (averageBytesPerChar <= 0 || maxBytesPerChar <= 0) {
+            // niochar.02=Bytes number for one character must be positive.
 			throw new IllegalArgumentException(
-					"Bytes number for one character must be positive.");
+					Messages.getString("niochar.02")); //$NON-NLS-1$
 		}
 		if (averageBytesPerChar > maxBytesPerChar) {
+            // niochar.03=averageBytesPerChar is greater than maxBytesPerChar.
 			throw new IllegalArgumentException(
-					"averageBytesPerChar is greater than maxBytesPerChar.");
+					Messages.getString("niochar.03")); //$NON-NLS-1$
 		}
 		this.cs = cs;
 		averBytes = averageBytesPerChar;
