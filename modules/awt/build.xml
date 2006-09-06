@@ -98,7 +98,8 @@
     </target>
 
     <target name="build.native"
-            depends="-build.native.linux,-build.native.windows">
+        depends="-build.native.linux,-build.native.windows"
+        if="with.awt.swing">
 
         <make dir="${hy.awt.src.main.native}/lcmm/${hy.os}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
