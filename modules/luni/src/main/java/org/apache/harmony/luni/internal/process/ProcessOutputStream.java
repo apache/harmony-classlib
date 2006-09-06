@@ -15,124 +15,93 @@
 
 package org.apache.harmony.luni.internal.process;
 
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.io.OutputStream;
 
-class ProcessOutputStream extends java.io.OutputStream {
+class ProcessOutputStream extends OutputStream {
 
-	private long handle;
+    private long handle;
 
-	private java.io.FileDescriptor fd;
+    private FileDescriptor fd;
 
-	// Fill in the JNI id caches
-	private static native void oneTimeInitialization();
+    // Fill in the JNI id caches
+    private static native void oneTimeInitialization();
 
-	static {
-		oneTimeInitialization();
-	}
+    static {
+        oneTimeInitialization();
+    }
 
-	/**
-	 * Open an OutputStream based on the handle.
-	 */
-	protected ProcessOutputStream(long handle) {
-		this.fd = new java.io.FileDescriptor();
-		setFDImpl(fd, handle);
-		this.handle = handle;
-	}
+    /**
+     * Native to close the stream.
+     */
+    private native void closeImpl() throws IOException;
 
-	/*
-	 * There is no way, at the library/vm level, to know when the stream will be
-	 * available for closing. If the user doesn't close it in its code, the
-	 * finalize() will run (eventually ?) and close the dandling OS
-	 * fileDescriptor.
-	 */
-	protected void finalize() throws Throwable {
-		close();
-	}
+    /**
+     * Native to set the FileDescriptor handle.
+     */
+    private native void setFDImpl(FileDescriptor fd, long handle);
 
-	/**
-	 * Close the stream.
-	 */
-	public void close() throws java.io.IOException {
-		synchronized (this) {
-			if (handle == -1)
-				return;
-			closeImpl();
-			handle = -1;
-		}
-	}
+    /**
+     * Native to write the buffer to the stream.
+     */
+    private native void writeImpl(byte[] buf, int offset, int nbytes, long hndl)
+            throws IOException;
 
-	/**
-	 * Native to close the stream.
-	 */
-	private native void closeImpl() throws java.io.IOException;
+    /**
+     * Open an OutputStream based on the handle.
+     */
+    protected ProcessOutputStream(long handle) {
+        this.fd = new FileDescriptor();
+        setFDImpl(fd, handle);
+        this.handle = handle;
+    }
 
-	/**
-	 * Native to set the FileDescriptor handle.
-	 */
-	private native void setFDImpl(java.io.FileDescriptor fd, long handle);
+    /**
+     * There is no way, at the library/VM level, to know when the stream will be
+     * available for closing. If the user doesn't close it in its code, the
+     * finalize() will run (eventually ?) and close the dangling OS
+     * fileDescriptor.
+     */
+    @Override
+    protected void finalize() throws Throwable {
+        close();
+    }
 
-	/**
-	 * Writes the entire contents of the byte array <code>buf</code> to this
-	 * OutputStream.
-	 * 
-	 * @param buf
-	 *            the buffer to be written
-	 * 
-	 * @throws java.io.IOException
-	 *             If an error occurs attempting to write to this OutputStream.
-	 */
-	public void write(byte[] buf) throws java.io.IOException {
-		synchronized (this) {
-			writeImpl(buf, 0, buf.length, handle);
-		}
-	}
+    @Override
+    public void close() throws IOException {
+        synchronized (this) {
+            if (handle == -1) {
+                return;
+            }
+            closeImpl();
+            handle = -1;
+        }
+    }
 
-	/**
-	 * Writes <code>nbytes</code> <code>bytes</code> from the byte array
-	 * <code>buf</code> starting at <code>offset</code> to this
-	 * OutputStream.
-	 * 
-	 * @param buf
-	 *            the buffer to be written
-	 * @param offset
-	 *            offset in buffer to get bytes
-	 * @param nbytes
-	 *            number of bytes in buffer to write
-	 * 
-	 * @throws java.io.IOException
-	 *             If an error occurs attempting to write to this OutputStream.
-	 * @throws java.lang.IndexOutOfBoundsException
-	 *             If offset or count are outside of bounds.
-	 */
-	public void write(byte[] buf, int offset, int nbytes)
-			throws java.io.IOException {
-		synchronized (this) {
-			if (handle == -1)
-				return;
-			writeImpl(buf, offset, nbytes, handle);
-		}
-	}
+    @Override
+    public void write(byte[] buf) throws IOException {
+        synchronized (this) {
+            writeImpl(buf, 0, buf.length, handle);
+        }
+    }
 
-	/**
-	 * Writes the specified byte <code>oneByte</code> to this OutputStream.
-	 * Only the low order byte of <code>oneByte</code> is written.
-	 * 
-	 * @param oneByte
-	 *            the byte to be written
-	 * 
-	 * @throws java.io.IOException
-	 *             If an error occurs attempting to write to this OutputStream.
-	 */
-	public void write(int oneByte) throws java.io.IOException {
-		byte buf[] = new byte[1];
-		buf[0] = (byte) oneByte;
-		synchronized (this) {
-			writeImpl(buf, 0, 1, handle);
-		}
-	}
+    @Override
+    public void write(byte[] buf, int offset, int nbytes) throws IOException {
+        synchronized (this) {
+            if (handle == -1) {
+                return;
+            }
+            writeImpl(buf, offset, nbytes, handle);
+        }
+    }
 
-	/**
-	 * Native to write the buffer to the stream.
-	 */
-	private native void writeImpl(byte[] buf, int offset, int nbytes, long hndl)
-			throws java.io.IOException;
+    @Override
+    public void write(int oneByte) throws IOException {
+        byte buf[] = new byte[1];
+        buf[0] = (byte) oneByte;
+        synchronized (this) {
+            writeImpl(buf, 0, 1, handle);
+        }
+    }
 }
