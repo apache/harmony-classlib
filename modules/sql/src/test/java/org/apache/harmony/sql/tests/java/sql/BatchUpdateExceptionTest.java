@@ -17,10 +17,12 @@ package org.apache.harmony.sql.tests.java.sql;
 
 import java.io.Serializable;
 import java.sql.BatchUpdateException;
-import org.apache.harmony.testframework.serialization.SerializationTest;
-import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 public class BatchUpdateExceptionTest extends TestCase {
 
@@ -360,13 +362,7 @@ public class BatchUpdateExceptionTest extends TestCase {
             // verify updateCounts
             int[] initUpdateCounts = initThr.getUpdateCounts();
             int[] dserUpdateCounts = dserThr.getUpdateCounts();
-            if (initUpdateCounts == null) {
-                assertNull(dserUpdateCounts);
-            } else {
-                for (int i = 0; i < initUpdateCounts.length; i++) {
-                    assertEquals(initUpdateCounts[i], dserUpdateCounts[i]);
-                }
-            }
+            assertTrue(Arrays.equals(initUpdateCounts, dserUpdateCounts));
         }
     };
 
