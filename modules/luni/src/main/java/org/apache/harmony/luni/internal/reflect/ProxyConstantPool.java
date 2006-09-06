@@ -39,7 +39,7 @@ class ProxyConstantPool implements ProxyConstants {
 
 	public static final int CONSTANTPOOL_GROW_SIZE = 1000;
 
-	public ProxyCharArrayCache UTF8Cache;
+	ProxyCharArrayCache UTF8Cache;
 
 	ProxyCharArrayCache stringCache;
 
@@ -53,11 +53,11 @@ class ProxyConstantPool implements ProxyConstants {
 
 	ProxyNameAndTypeCache nameAndTypeCache;
 
-	public byte[] poolContent;
+	byte[] poolContent;
 
-	public int currentIndex;
+	int currentIndex;
 
-	public int currentOffset;
+	int currentOffset;
 
 	ProxyConstantPool(ProxyClassFile classFile) {
 		UTF8Cache = new ProxyCharArrayCache(UTF8_INITIAL_SIZE);
@@ -136,7 +136,7 @@ class ProxyConstantPool implements ProxyConstants {
 		return index;
 	}
 
-	int literalIndex(Constructor aMethod) {
+	int literalIndex(Constructor<?> aMethod) {
 		int index;
 		if ((index = methodCache.get(aMethod)) < 0) {
 			int classIndex = typeIndex(aMethod.getDeclaringClass().getName());
