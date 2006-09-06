@@ -147,7 +147,6 @@
                     <include name="**/*Test.java"/>
                     <exclude name="tests/api/java/nio/charset/ASCCharsetEncoderTest.java"/>
                     <exclude name="tests/api/java/nio/charset/CharsetProviderTest.java"/>
-                    <exclude name="tests/api/java/nio/charset/CharsetTest.java"/>
                     <!-- No public constructor? -->
                     <exclude name="tests/api/java/nio/charset/ConcreteCharsetTest.java"/>
                     <exclude name="tests/api/java/nio/charset/GBCharsetEncoderTest.java"/>

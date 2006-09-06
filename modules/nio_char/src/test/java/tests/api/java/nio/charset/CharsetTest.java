@@ -551,7 +551,7 @@ public class CharsetTest extends TestCase {
 	 * Test the method encode(CharBuffer) under normal condition.
 	 */
 	public void testEncode_CharBuffer_Normal() throws Exception {
-		MockCharset c1 = new MockCharset("mock", null);
+		MockCharset c1 = new MockCharset("testEncode_CharBuffer_Normal_mock", null);
 		ByteBuffer bb = c1.encode(CharBuffer.wrap("abcdefg"));
 		assertEquals(new String(bb.array(), "iso8859-1"), "abcdefg");
 		bb = c1.encode(CharBuffer.wrap(""));
@@ -599,7 +599,7 @@ public class CharsetTest extends TestCase {
 	 * Test the method encode(String) under normal condition.
 	 */
 	public void testEncode_String_Normal() throws Exception {
-		MockCharset c1 = new MockCharset("mock", null);
+		MockCharset c1 = new MockCharset("testEncode_String_Normal_mock", null);
 		ByteBuffer bb = c1.encode("abcdefg");
 		assertEquals(new String(bb.array(), "iso8859-1"), "abcdefg");
 		bb = c1.encode("");
