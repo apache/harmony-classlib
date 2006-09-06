@@ -16,8 +16,6 @@ package java.util;
 
 import java.io.Serializable;
 
-import org.apache.harmony.luni.util.NotYetImplementedException;
-
 public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
         implements Cloneable, Serializable {
     
@@ -44,7 +42,7 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
         if (elementType.getEnumConstants().length <= 64) {
             return new MiniEnumSet<E>(elementType);
         }
-        throw new NotYetImplementedException();
+        return new HugeEnumSet<E>(elementType);
     }
 
     /**
@@ -279,11 +277,11 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
             throw new IllegalArgumentException();
         }
         EnumSet<E> set = EnumSet.noneOf(start.getDeclaringClass());
-        set.addRange(start, end);
+        set.setRange(start, end);
         return set;
     }
     
-    abstract void addRange(E start, E end);
+    abstract void setRange(E start, E end);
 
     /**
      * Creates a new enum set with the same elements as those contained in this
@@ -294,11 +292,42 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
      */
     @Override
     public EnumSet<E> clone() {
-        throw new NotYetImplementedException();
+        try {
+            Object set = super.clone();
+            return (EnumSet<E>) set;
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
     }
     
     @SuppressWarnings("unchecked")
     boolean isValidType(Class cls) {
         return cls == elementClass || cls.getSuperclass() == elementClass;
+    }
+    
+    private static class SerializationProxy<E extends Enum<E>> implements
+        Serializable {
+
+        private static final long serialVersionUID = 362491234563181265L;
+
+        private Class<E> elementType;
+
+        private E[] elements;
+
+        private Object readResolve() {
+            EnumSet<E> set = EnumSet.noneOf(elementType);
+            for (E e : elements) {
+                set.add(e);
+            }
+            return set;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Object writeReplace() {
+        SerializationProxy proxy = new SerializationProxy();
+        proxy.elements = (Enum[]) toArray();
+        proxy.elementType = elementClass;
+        return proxy;
     }
 }

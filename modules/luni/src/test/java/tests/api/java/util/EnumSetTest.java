@@ -24,6 +24,8 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.testframework.serialization.SerializationTest;
+
 public class EnumSetTest extends TestCase {
     
     static enum EnumWithInnerClass {
@@ -42,6 +44,14 @@ public class EnumSetTest extends TestCase {
     
     static enum EmptyEnum {
         // expected
+    }
+    
+    static enum HugeEnumWithInnerClass {
+        a{}, b{}, c{}, d{}, e{}, f{}, g{}, h{}, i{}, j{}, k{}, l{}, m{}, n{}, o{}, p{}, q{}, r{}, s{}, t{}, u{}, v{}, w{}, x{}, y{}, z{}, A{}, B{}, C{}, D{}, E{}, F{}, G{}, H{}, I{}, J{}, K{}, L{}, M{}, N{}, O{}, P{}, Q{}, R{}, S{}, T{}, U{}, V{}, W{}, X{}, Y{}, Z{}, aa{}, bb{}, cc{}, dd{}, ee{}, ff{}, gg{}, hh{}, ii{}, jj{}, kk{}, ll{}, mm{},
+    }
+    
+    static enum HugeEnum {
+        a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, aa, bb, cc, dd, ee, ff, gg, hh, ii, jj, kk, ll, mm,
     }
 
     /**
@@ -75,6 +85,20 @@ public class EnumSetTest extends TestCase {
         EnumSet<EnumWithAllInnerClass> setWithInnerClass = EnumSet
                 .noneOf(EnumWithAllInnerClass.class);
         assertNotNull(setWithInnerClass);
+        
+        // test enum type with more than 64 elements
+        Class<HugeEnumWithInnerClass> hc = (Class<HugeEnumWithInnerClass>) HugeEnumWithInnerClass.a
+            .getClass();
+        try {
+            EnumSet.noneOf(hc);
+            fail("Should throw ClassCastException"); //$NON-NLS-1$
+        } catch (ClassCastException e) {
+            // expected
+        }
+
+        EnumSet<HugeEnumWithInnerClass> hugeSetWithInnerClass = EnumSet
+            .noneOf(HugeEnumWithInnerClass.class);
+        assertNotNull(hugeSetWithInnerClass);
     }
     
     /**
@@ -112,6 +136,21 @@ public class EnumSetTest extends TestCase {
         EnumSet<EnumFoo> anotherSet = EnumSet.allOf(EnumFoo.class);
         assertEquals("Should be equal", enumSet, anotherSet); //$NON-NLS-1$
         assertNotSame("Should not be identical", enumSet, anotherSet); //$NON-NLS-1$
+        
+        // test enum with more than 64 elements
+        EnumSet<HugeEnum> hugeEnumSet = EnumSet.allOf(HugeEnum.class);
+        assertEquals(65, hugeEnumSet.size());
+
+        assertFalse(hugeEnumSet.contains(null));
+        assertTrue(hugeEnumSet.contains(HugeEnum.a));
+        assertTrue(hugeEnumSet.contains(HugeEnum.b));
+
+        hugeEnumSet.add(HugeEnum.a);
+        assertEquals(65, hugeEnumSet.size());
+
+        EnumSet<HugeEnum> anotherHugeSet = EnumSet.allOf(HugeEnum.class);
+        assertEquals(hugeEnumSet, anotherHugeSet);
+        assertNotSame(hugeEnumSet, anotherHugeSet);
 
     }
     
@@ -128,6 +167,15 @@ public class EnumSetTest extends TestCase {
             set.add(null);
             fail("Should throw NullPointerException"); //$NON-NLS-1$
         } catch (NullPointerException e) {
+            // expected
+        }
+        
+        // test enum type with more than 64 elements
+        Set rawSet = set;
+        try {
+            rawSet.add(HugeEnumWithInnerClass.b);
+            fail("Should throw ClassCastException"); //$NON-NLS-1$
+        } catch (ClassCastException e) {
             // expected
         }
 
@@ -150,7 +198,7 @@ public class EnumSetTest extends TestCase {
         set.add(EnumFoo.b);
         assertEquals("Size should be 2:", 2, set.size()); //$NON-NLS-1$
         
-        Set rawSet = set;
+        rawSet = set;
         try {
             rawSet.add(EnumWithAllInnerClass.a);
             fail("Should throw ClassCastException"); //$NON-NLS-1$
@@ -171,6 +219,43 @@ public class EnumSetTest extends TestCase {
         } catch(ClassCastException e) {
             // expected
         }
+        
+        // test enum type with more than 64 elements
+        Set<HugeEnum> hugeSet = EnumSet.noneOf(HugeEnum.class);
+        result = hugeSet.add(HugeEnum.a);
+        assertTrue(result);
+
+        result = hugeSet.add(HugeEnum.a);
+        assertFalse(result);
+
+        try {
+            hugeSet.add(null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        rawSet = hugeSet;
+        try {
+            rawSet.add(HugeEnumWithInnerClass.b);
+            fail("Should throw ClassCastException"); //$NON-NLS-1$
+        } catch (ClassCastException e) {
+            // expected
+        }
+
+        try {
+            rawSet.add(new Object());
+            fail("Should throw ClassCastException"); //$NON-NLS-1$
+        } catch (ClassCastException e) {
+            // expected
+        }
+
+        result = hugeSet.add(HugeEnum.mm);
+        assertTrue(result);
+        result = hugeSet.add(HugeEnum.mm);
+        assertFalse(result);
+        assertEquals(2, hugeSet.size());
+        
     }
     
     /**
@@ -258,6 +343,76 @@ public class EnumSetTest extends TestCase {
         anotherSetWithSubclass.remove(EnumWithInnerClass.a);
         result = setWithSubclass.addAll(anotherSetWithSubclass);
         assertFalse("Should return false", result); //$NON-NLS-1$
+        
+        // test enum type with more than 64 elements
+        Set<HugeEnum> hugeSet = EnumSet.noneOf(HugeEnum.class);
+        assertEquals(0, hugeSet.size());
+
+        try {
+            hugeSet.addAll(null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        hugeSet = EnumSet.allOf(HugeEnum.class);
+        result = hugeSet.addAll(hugeSet);
+        assertFalse(result);
+
+        hugeSet = EnumSet.noneOf(HugeEnum.class);
+        Collection<HugeEnum> hugeCollection = new ArrayList<HugeEnum>();
+        hugeCollection.add(HugeEnum.a);
+        hugeCollection.add(HugeEnum.b);
+        result = hugeSet.addAll(hugeCollection);
+        assertTrue(result);
+        assertEquals(2, set.size());
+
+        hugeSet = EnumSet.noneOf(HugeEnum.class);
+
+        rawCollection = new ArrayList<Integer>();
+        result = hugeSet.addAll(rawCollection);
+        assertFalse(result);
+        rawCollection.add(1);
+        try {
+            hugeSet.addAll(rawCollection);
+            fail("Should throw ClassCastException"); //$NON-NLS-1$
+        } catch (ClassCastException e) {
+            // expected
+        }
+
+        EnumSet<HugeEnum> aHugeSet = EnumSet.noneOf(HugeEnum.class);
+        aHugeSet.add(HugeEnum.a);
+        aHugeSet.add(HugeEnum.b);
+        result = hugeSet.addAll(aHugeSet);
+        assertTrue(result);
+        assertEquals(2, hugeSet.size());
+
+        try {
+            aHugeSet.addAll(null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        Set hugeSetWithSubclass = EnumSet.allOf(HugeEnumWithInnerClass.class);
+        try {
+            hugeSet.addAll(hugeSetWithSubclass);
+            fail("Should throw ClassCastException"); //$NON-NLS-1$
+        } catch (ClassCastException e) {
+            // expected
+        }
+        Set<HugeEnumWithInnerClass> hugeSetWithInnerSubclass = hugeSetWithSubclass;
+        result = hugeSetWithInnerSubclass.addAll(hugeSetWithInnerSubclass);
+        assertFalse(result);
+
+        Set<HugeEnumWithInnerClass> anotherHugeSetWithSubclass = EnumSet
+                .allOf(HugeEnumWithInnerClass.class);
+        result = hugeSetWithSubclass.addAll(anotherHugeSetWithSubclass);
+        assertFalse(result);
+
+        anotherHugeSetWithSubclass.remove(HugeEnumWithInnerClass.a);
+        result = setWithSubclass.addAll(anotherSetWithSubclass);
+        assertFalse(result);
 
     }
     
@@ -284,6 +439,24 @@ public class EnumSetTest extends TestCase {
         result = set.remove(EnumWithInnerClass.a);
         assertFalse("Should return false", result); //$NON-NLS-1$
         result = set.remove(EnumWithInnerClass.f);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+        
+        // test enum with more than 64 elements
+        Set<HugeEnum> hugeSet = EnumSet.allOf(HugeEnum.class);
+        
+        result = hugeSet.remove(null);
+        assertFalse("'set' does not contain null", result); //$NON-NLS-1$
+
+        result = hugeSet.remove(HugeEnum.a);
+        assertTrue("Should return true", result); //$NON-NLS-1$
+        result = hugeSet.remove(HugeEnum.a);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        assertEquals("Size of set should be 64:", 64, hugeSet.size()); //$NON-NLS-1$
+
+        result = hugeSet.remove(HugeEnumWithInnerClass.a);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+        result = hugeSet.remove(HugeEnumWithInnerClass.f);
         assertFalse("Should return false", result); //$NON-NLS-1$
     }
     
@@ -326,6 +499,24 @@ public class EnumSetTest extends TestCase {
         set.clear();
         assertTrue("Should be equal", set.equals(setWithInnerClass)); //$NON-NLS-1$
         
+        // test enum type with more than 64 elements
+        Set<HugeEnum> hugeSet = EnumSet.noneOf(HugeEnum.class);
+        assertTrue(hugeSet.equals(set));
+
+        hugeSet = EnumSet.allOf(HugeEnum.class);
+        assertFalse(hugeSet.equals(null));
+        assertFalse(hugeSet.equals(new Object()));
+
+        Set<HugeEnum> anotherHugeSet = EnumSet.allOf(HugeEnum.class);
+        anotherHugeSet.remove(HugeEnum.a);
+        assertFalse(hugeSet.equals(anotherHugeSet));
+
+        Set<HugeEnumWithInnerClass> hugeSetWithInnerClass = EnumSet
+                .allOf(HugeEnumWithInnerClass.class);
+        assertFalse(hugeSet.equals(hugeSetWithInnerClass));
+        hugeSetWithInnerClass.clear();
+        hugeSet.clear();
+        assertTrue(hugeSet.equals(hugeSetWithInnerClass));
     }
     
     /**
@@ -340,6 +531,18 @@ public class EnumSetTest extends TestCase {
         set.clear();
 
         assertEquals("Size should be 0", 0, set.size()); //$NON-NLS-1$
+        
+        // test enum type with more than 64 elements
+        Set<HugeEnum> hugeSet = EnumSet.allOf(HugeEnum.class);
+        assertEquals(65, hugeSet.size());
+        
+        boolean result = hugeSet.contains(HugeEnum.aa);
+        assertTrue(result);
+        
+        hugeSet.clear();
+        assertEquals(0, hugeSet.size());
+        result = hugeSet.contains(HugeEnum.aa);
+        assertFalse(result);
     }
     
     /**
@@ -350,6 +553,12 @@ public class EnumSetTest extends TestCase {
         set.add(EnumFoo.a);
         set.add(EnumFoo.b);
         assertEquals("Size should be 2", 2, set.size()); //$NON-NLS-1$
+        
+        // test enum type with more than 64 elements
+        Set<HugeEnum> hugeSet = EnumSet.noneOf(HugeEnum.class);
+        hugeSet.add(HugeEnum.a);
+        hugeSet.add(HugeEnum.bb);
+        assertEquals("Size should be 2", 2, hugeSet.size()); //$NON-NLS-1$
     }
     
     /**
@@ -382,6 +591,24 @@ public class EnumSetTest extends TestCase {
                 complementOfE.contains(EnumWithInnerClass.b));
         assertTrue("complementOfE should contain EnumWithSubclass.c:", //$NON-NLS-1$
                 complementOfE.contains(EnumWithInnerClass.c));
+        
+        // test enum type with more than 64 elements
+        EnumSet<HugeEnum> hugeSet = EnumSet.noneOf(HugeEnum.class);
+        assertEquals(0, hugeSet.size());
+        Set<HugeEnum> complementHugeSet = EnumSet.complementOf(hugeSet);
+        assertEquals(65, complementHugeSet.size());
+
+        hugeSet.add(HugeEnum.A);
+        hugeSet.add(HugeEnum.mm);
+        complementHugeSet = EnumSet.complementOf(hugeSet);
+        assertEquals(63, complementHugeSet.size());
+        
+        try {
+            EnumSet.complementOf((EnumSet<HugeEnum>) null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException npe) {
+            // expected
+        }
     }
     
     /**
@@ -428,6 +655,31 @@ public class EnumSetTest extends TestCase {
         setWithSubclass.add(EnumWithInnerClass.f);
         result = setWithSubclass.contains(EnumWithInnerClass.f);
         assertTrue("Should contain EnumWithSubclass.f", result); //$NON-NLS-1$
+        
+        // test enum type with more than 64 elements
+        Set<HugeEnum> hugeSet = EnumSet.allOf(HugeEnum.class);
+        hugeSet.add(HugeEnum.a);
+        result = hugeSet.contains(HugeEnum.a);
+        assertTrue(result);
+
+        result = hugeSet.contains(HugeEnum.b);
+        assertTrue(result);
+        
+        result = hugeSet.contains(null);
+        assertFalse(result);
+        
+        result = hugeSet.contains(HugeEnum.a);
+        assertTrue(result);
+        
+        result = hugeSet.contains(HugeEnum.ll);
+        assertTrue(result);
+
+        result = hugeSet.contains(new Object());
+        assertFalse(result);
+        
+        result = hugeSet.contains(Enum.class);
+        assertFalse(result);
+        
     }
     
     /**
@@ -503,6 +755,82 @@ public class EnumSetTest extends TestCase {
         setWithSubclass.add(EnumWithInnerClass.a);
         result = set.containsAll(setWithSubclass);
         assertFalse("Should return false", result); //$NON-NLS-1$
+        
+        // test enum type with more than 64 elements
+        Set<HugeEnum> hugeSet = EnumSet.noneOf(HugeEnum.class);
+        hugeSet.add(HugeEnum.a);
+        hugeSet.add(HugeEnum.b);
+        hugeSet.add(HugeEnum.aa);
+        hugeSet.add(HugeEnum.bb);
+        hugeSet.add(HugeEnum.cc);
+        hugeSet.add(HugeEnum.dd);
+
+        Set<HugeEnum> anotherHugeSet = EnumSet.noneOf(HugeEnum.class);
+        hugeSet.add(HugeEnum.b);
+        hugeSet.add(HugeEnum.cc);
+        result = hugeSet.containsAll(anotherHugeSet);
+        assertTrue(result);
+        
+        try {
+            hugeSet.containsAll(null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch(NullPointerException e) {
+            // expected
+        }
+
+        Set<HugeEnumWithInnerClass> hugeSetWithInnerClass = EnumSet
+                .noneOf(HugeEnumWithInnerClass.class);
+        hugeSetWithInnerClass.add(HugeEnumWithInnerClass.a);
+        hugeSetWithInnerClass.add(HugeEnumWithInnerClass.b);
+        result = hugeSetWithInnerClass.containsAll(hugeSetWithInnerClass);
+        assertTrue(result);
+        result = hugeSet.containsAll(hugeSetWithInnerClass);
+        assertFalse(result);
+        
+        rawCollection = new ArrayList();
+        result = hugeSet.containsAll(rawCollection);
+        assertTrue("Should contain empty collection:", result); //$NON-NLS-1$
+        
+        rawCollection.add(1);
+        result = hugeSet.containsAll(rawCollection);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+        
+        rawCollection.add(EnumWithInnerClass.a);
+        result = set.containsAll(rawCollection);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        rawSet = EnumSet.noneOf(HugeEnum.class);
+        result = hugeSet.containsAll(rawSet);
+        assertTrue("Should contain empty set", result); //$NON-NLS-1$
+
+        EnumSet<HugeEnumWithInnerClass> emptyHugeSet 
+            = EnumSet.noneOf(HugeEnumWithInnerClass.class);
+        result = hugeSet.containsAll(emptyHugeSet);
+        assertTrue("No class cast should be performed on empty set", result); //$NON-NLS-1$
+
+        Collection<HugeEnum> hugeCollection = new ArrayList<HugeEnum>();
+        hugeCollection.add(HugeEnum.a);
+        result = hugeSet.containsAll(hugeCollection);
+        assertTrue("Should contain all elements in collection", result); //$NON-NLS-1$
+
+        hugeSet.clear();
+        try {
+            hugeSet.containsAll(null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        Collection<HugeEnumWithInnerClass> hugeCollectionWithSubclass = new ArrayList<HugeEnumWithInnerClass>();
+        hugeCollectionWithSubclass.add(HugeEnumWithInnerClass.a);
+        result = hugeSet.containsAll(hugeCollectionWithSubclass);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        EnumSet<HugeEnumWithInnerClass> hugeSetWithSubclass = EnumSet
+                .noneOf(HugeEnumWithInnerClass.class);
+        hugeSetWithSubclass.add(HugeEnumWithInnerClass.a);
+        result = hugeSet.containsAll(hugeSetWithSubclass);
+        assertFalse("Should return false", result); //$NON-NLS-1$
     }
     
     /**
@@ -562,6 +890,34 @@ public class EnumSetTest extends TestCase {
         } catch(ClassCastException e) {
             // expected
         }
+        
+        // test enum type with more than 64 elements
+        Collection<HugeEnum> hugeEnumCollection = new ArrayList<HugeEnum>();
+        hugeEnumCollection.add(HugeEnum.b);
+
+        EnumSet<HugeEnum> copyOfHugeEnumCollection = EnumSet.copyOf(hugeEnumCollection);
+        assertEquals(1, copyOfHugeEnumCollection.size());
+        assertTrue(copyOfHugeEnumCollection.contains(HugeEnum.b));
+
+        hugeEnumCollection.add(null);
+        assertEquals(2, hugeEnumCollection.size());
+
+        try {
+            copyOfHugeEnumCollection = EnumSet.copyOf(hugeEnumCollection);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException npe) {
+            // expected
+        }
+        
+        rawEnumCollection = new ArrayList();
+        rawEnumCollection.add(HugeEnum.a);
+        rawEnumCollection.add(HugeEnumWithInnerClass.a);
+        try {
+            EnumSet.copyOf(rawEnumCollection);
+            fail("Should throw ClassCastException"); //$NON-NLS-1$
+        } catch(ClassCastException e) {
+            // expected
+        }
     }
     
     /**
@@ -594,6 +950,21 @@ public class EnumSetTest extends TestCase {
         } catch (NullPointerException npe) {
             // expected
         }
+        
+        // test enum type with more than 64 elements
+        EnumSet<HugeEnumWithInnerClass> hugeEnumSet = EnumSet
+            .noneOf(HugeEnumWithInnerClass.class);
+        hugeEnumSet.add(HugeEnumWithInnerClass.a);
+        hugeEnumSet.add(HugeEnumWithInnerClass.f);
+        EnumSet<HugeEnumWithInnerClass> copyOfHugeEnum = EnumSet.copyOf(hugeEnumSet);
+        assertEquals(enumSet.size(), copyOfE.size());
+
+        assertTrue(copyOfHugeEnum.contains(HugeEnumWithInnerClass.a));
+        assertTrue(copyOfHugeEnum.contains(HugeEnumWithInnerClass.f));
+
+        Object[] hugeEnumValue = copyOfHugeEnum.toArray();
+        assertSame(hugeEnumValue[0], HugeEnumWithInnerClass.a);
+        assertSame(hugeEnumValue[1], HugeEnumWithInnerClass.f);
     }
     
     /**
@@ -696,6 +1067,78 @@ public class EnumSetTest extends TestCase {
 
         result = setWithInnerClass.contains(EnumWithInnerClass.f);
         assertTrue("Should return true", result); //$NON-NLS-1$
+        
+        // test enum type with more than 64 elements
+        Set<HugeEnum> hugeSet = EnumSet.allOf(HugeEnum.class);
+        
+        Collection<HugeEnum> hugeCollection = new ArrayList<HugeEnum>();
+        hugeCollection.add(HugeEnum.a);
+
+        result = hugeSet.removeAll(hugeCollection);
+        assertTrue(result);
+        assertEquals(64, hugeSet.size());
+
+        collection = new ArrayList();
+        result = hugeSet.removeAll(collection);
+        assertFalse(result);
+
+        Set<HugeEnum> emptyHugeSet = EnumSet.noneOf(HugeEnum.class);
+        result = hugeSet.removeAll(emptyHugeSet);
+        assertFalse(result);
+
+        Set<HugeEnumWithInnerClass> hugeSetWithSubclass = EnumSet
+                .noneOf(HugeEnumWithInnerClass.class);
+        result = hugeSet.removeAll(hugeSetWithSubclass);
+        assertFalse(result);
+
+        hugeSetWithSubclass.add(HugeEnumWithInnerClass.a);
+        result = hugeSet.removeAll(hugeSetWithSubclass);
+        assertFalse(result);
+
+        Set<HugeEnum> anotherHugeSet = EnumSet.noneOf(HugeEnum.class);
+        anotherHugeSet.add(HugeEnum.a);
+
+        hugeSet = EnumSet.allOf(HugeEnum.class);
+        result = hugeSet.removeAll(anotherHugeSet);
+        assertTrue(result);
+        assertEquals(63, set.size());
+
+        Set<HugeEnumWithInnerClass> hugeSetWithInnerClass = EnumSet
+                .noneOf(HugeEnumWithInnerClass.class);
+        hugeSetWithInnerClass.add(HugeEnumWithInnerClass.a);
+        hugeSetWithInnerClass.add(HugeEnumWithInnerClass.b);
+
+        Set<HugeEnumWithInnerClass> anotherHugeSetWithInnerClass = EnumSet
+                .noneOf(HugeEnumWithInnerClass.class);
+        anotherHugeSetWithInnerClass.add(HugeEnumWithInnerClass.c);
+        anotherHugeSetWithInnerClass.add(HugeEnumWithInnerClass.d);
+        result = anotherHugeSetWithInnerClass.removeAll(setWithInnerClass);
+        assertFalse("Should return false", result); //$NON-NLS-1$
+
+        anotherHugeSetWithInnerClass.add(HugeEnumWithInnerClass.a);
+        result = anotherHugeSetWithInnerClass.removeAll(hugeSetWithInnerClass);
+        assertTrue(result);
+        assertEquals(2, anotherHugeSetWithInnerClass.size());
+
+        anotherHugeSetWithInnerClass.remove(HugeEnumWithInnerClass.c);
+        anotherHugeSetWithInnerClass.remove(HugeEnumWithInnerClass.d);
+        result = anotherHugeSetWithInnerClass.remove(hugeSetWithInnerClass);
+        assertFalse(result);
+
+        rawSet = EnumSet.allOf(HugeEnumWithInnerClass.class);
+        result = rawSet.removeAll(EnumSet.allOf(HugeEnum.class));
+        assertFalse(result);
+
+        hugeSetWithInnerClass = EnumSet.allOf(HugeEnumWithInnerClass.class);
+        anotherHugeSetWithInnerClass = EnumSet.allOf(HugeEnumWithInnerClass.class);
+        hugeSetWithInnerClass.remove(HugeEnumWithInnerClass.a);
+        anotherHugeSetWithInnerClass.remove(HugeEnumWithInnerClass.f);
+        result = hugeSetWithInnerClass.removeAll(anotherHugeSetWithInnerClass);
+        assertTrue(result);
+        assertEquals(1, hugeSetWithInnerClass.size());
+
+        result = hugeSetWithInnerClass.contains(HugeEnumWithInnerClass.f);
+        assertTrue(result);
     }
     
     /**
@@ -795,6 +1238,96 @@ public class EnumSetTest extends TestCase {
         result = set.retainAll(anotherSet);
         assertTrue("Should return true", result); //$NON-NLS-1$
         assertEquals("size should be 0", 0, set.size()); //$NON-NLS-1$
+        
+        // test enum type with more than 64 elements
+        Set<HugeEnum> hugeSet = EnumSet.allOf(HugeEnum.class);
+
+        try {
+            hugeSet.retainAll(null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        hugeSet.clear();
+        result = hugeSet.retainAll(null);
+        assertFalse(result);
+
+        rawCollection = new ArrayList();
+        result = hugeSet.retainAll(rawCollection);
+        assertFalse(result);
+
+        rawCollection.add(HugeEnum.a);
+        result = hugeSet.retainAll(rawCollection);
+        assertFalse(result);
+
+        rawCollection.add(HugeEnumWithInnerClass.a);
+        result = hugeSet.retainAll(rawCollection);
+        assertFalse(result);
+        assertEquals(0, set.size());
+
+        rawCollection.remove(HugeEnum.a);
+        result = set.retainAll(rawCollection);
+        assertFalse(result);
+
+        Set<HugeEnum> anotherHugeSet = EnumSet.allOf(HugeEnum.class);
+        result = hugeSet.retainAll(anotherHugeSet);
+        assertFalse(result);
+        assertEquals(0, hugeSet.size());
+
+        Set<HugeEnumWithInnerClass> hugeSetWithInnerClass = EnumSet
+                .allOf(HugeEnumWithInnerClass.class);
+        result = hugeSet.retainAll(hugeSetWithInnerClass);
+        assertTrue(result);
+        assertEquals(0, hugeSet.size());
+
+        hugeSetWithInnerClass = EnumSet.noneOf(HugeEnumWithInnerClass.class);
+        result = hugeSet.retainAll(hugeSetWithInnerClass);
+        assertTrue(result);
+
+        Set<HugeEnumWithInnerClass> hugeSetWithAllInnerClass = EnumSet
+                .allOf(HugeEnumWithInnerClass.class);
+        result = hugeSet.retainAll(hugeSetWithAllInnerClass);
+        assertTrue(result);
+
+        hugeSet.add(HugeEnum.a);
+        result = hugeSet.retainAll(hugeSetWithInnerClass);
+        assertTrue(result);
+        assertEquals(0, hugeSet.size());
+
+        hugeSetWithInnerClass = EnumSet.allOf(HugeEnumWithInnerClass.class);
+        hugeSetWithInnerClass.remove(HugeEnumWithInnerClass.f);
+        Set<HugeEnumWithInnerClass> anotherHugeSetWithInnerClass = EnumSet
+                .noneOf(HugeEnumWithInnerClass.class);
+        anotherHugeSetWithInnerClass.add(HugeEnumWithInnerClass.e);
+        anotherHugeSetWithInnerClass.add(HugeEnumWithInnerClass.f);
+
+        result = hugeSetWithInnerClass.retainAll(anotherHugeSetWithInnerClass);
+        assertTrue(result);
+        result = hugeSetWithInnerClass.contains(HugeEnumWithInnerClass.e);
+        assertTrue("Should contain HugeEnumWithInnerClass.e", result); //$NON-NLS-1$
+        result = hugeSetWithInnerClass.contains(HugeEnumWithInnerClass.b);
+        assertFalse("Should not contain HugeEnumWithInnerClass.b", result); //$NON-NLS-1$
+        assertEquals("Size of hugeSet should be 1:", 1, hugeSetWithInnerClass.size()); //$NON-NLS-1$
+
+        anotherHugeSetWithInnerClass = EnumSet.allOf(HugeEnumWithInnerClass.class);
+        result = hugeSetWithInnerClass.retainAll(anotherHugeSetWithInnerClass);
+
+        assertFalse("Return value should be false", result); //$NON-NLS-1$
+
+        rawCollection = new ArrayList();
+        rawCollection.add(HugeEnumWithInnerClass.e);
+        rawCollection.add(HugeEnumWithInnerClass.f);
+        result = hugeSetWithInnerClass.retainAll(rawCollection);
+        assertFalse(result);
+
+        hugeSet = EnumSet.allOf(HugeEnum.class);
+        hugeSet.remove(HugeEnum.a);
+        anotherHugeSet = EnumSet.noneOf(HugeEnum.class);
+        anotherHugeSet.add(HugeEnum.a);
+        result = hugeSet.retainAll(anotherHugeSet);
+        assertTrue(result);
+        assertEquals(0, hugeSet.size());
     }
     
     /**
@@ -920,6 +1453,98 @@ public class EnumSetTest extends TestCase {
         // RI's bug, EnumFoo.b should not exist at the moment.
         assertFalse("Should return false", set.contains(EnumFoo.b)); //$NON-NLS-1$
         
+        // test enum type with more than 64 elements
+        Set<HugeEnum> hugeSet = EnumSet.noneOf(HugeEnum.class);
+        hugeSet.add(HugeEnum.a);
+        hugeSet.add(HugeEnum.b);
+
+        Iterator<HugeEnum> hIterator = hugeSet.iterator();
+        Iterator<HugeEnum> anotherHugeIterator = hugeSet.iterator();
+        assertNotSame(hIterator, anotherHugeIterator);
+        try {
+            hIterator.remove();
+            fail("Should throw IllegalStateException"); //$NON-NLS-1$
+        } catch (IllegalStateException e) {
+            // expectedd
+        }
+
+        assertTrue(hIterator.hasNext());
+        assertSame(HugeEnum.a, hIterator.next());
+        hIterator.remove();
+        assertTrue(hIterator.hasNext());
+        assertSame(HugeEnum.b, hIterator.next());
+        assertFalse(hIterator.hasNext());
+        assertFalse(hIterator.hasNext());
+
+        assertEquals(1, hugeSet.size());
+
+        try {
+            hIterator.next();
+            fail("Should throw NoSuchElementException"); //$NON-NLS-1$
+        } catch (NoSuchElementException e) {
+            // expected
+        }
+
+        Set<HugeEnumWithInnerClass> hugeSetWithSubclass = EnumSet
+                .allOf(HugeEnumWithInnerClass.class);
+        hugeSetWithSubclass.remove(HugeEnumWithInnerClass.e);
+        Iterator<HugeEnumWithInnerClass> hugeIteratorWithSubclass = hugeSetWithSubclass
+                .iterator();
+        assertSame(HugeEnumWithInnerClass.a, hugeIteratorWithSubclass.next());
+
+        assertTrue(hugeIteratorWithSubclass.hasNext());
+        assertSame(HugeEnumWithInnerClass.b, hugeIteratorWithSubclass.next());
+
+        setWithSubclass.remove(HugeEnumWithInnerClass.c);
+        assertTrue(hugeIteratorWithSubclass.hasNext());
+        assertSame(HugeEnumWithInnerClass.c, hugeIteratorWithSubclass.next());
+
+        assertTrue(hugeIteratorWithSubclass.hasNext());
+        assertSame(HugeEnumWithInnerClass.d, hugeIteratorWithSubclass.next());
+
+        hugeSetWithSubclass.add(HugeEnumWithInnerClass.e);
+        assertTrue(hugeIteratorWithSubclass.hasNext());
+        assertSame(HugeEnumWithInnerClass.f, hugeIteratorWithSubclass.next());
+
+        hugeSet = EnumSet.noneOf(HugeEnum.class);
+        hIterator = hugeSet.iterator();
+        try {
+            hIterator.next();
+            fail("Should throw NoSuchElementException"); //$NON-NLS-1$
+        } catch (NoSuchElementException e) {
+            // expected
+        }
+
+        hugeSet.add(HugeEnum.a);
+        hIterator = hugeSet.iterator();
+        assertEquals(HugeEnum.a, hIterator.next());
+        assertEquals(1, hugeSet.size());
+        hIterator.remove();
+        assertEquals(0, hugeSet.size());
+        assertFalse(hugeSet.contains(HugeEnum.a));
+
+        hugeSet.add(HugeEnum.a);
+        hugeSet.add(HugeEnum.b);
+        hIterator = hugeSet.iterator();
+        hIterator.next();
+        hIterator.remove();
+
+        assertTrue(hIterator.hasNext());
+        try {
+            hIterator.remove();
+            fail("Should throw IllegalStateException"); //$NON-NLS-1$
+        } catch (IllegalStateException e) {
+            // expected
+        }
+        assertEquals(1, hugeSet.size());
+        assertTrue(hIterator.hasNext());
+        assertEquals(HugeEnum.b, hIterator.next());
+        hugeSet.remove(HugeEnum.b);
+        assertEquals(0, hugeSet.size());
+        hIterator.remove();
+        assertFalse(hugeSet.contains(HugeEnum.a));
+        // RI's bug, EnumFoo.b should not exist at the moment.
+        assertFalse("Should return false", set.contains(EnumFoo.b)); //$NON-NLS-1$
     }
     
     /**
@@ -938,6 +1563,12 @@ public class EnumSetTest extends TestCase {
         } catch (NullPointerException npe) {
             // expected
         }
+        
+        // test enum type with more than 64 elements
+        EnumSet<HugeEnumWithInnerClass> hugeEnumSet = EnumSet.of(HugeEnumWithInnerClass.a);
+        assertEquals(1, hugeEnumSet.size());
+
+        assertTrue(hugeEnumSet.contains(HugeEnumWithInnerClass.a));
     }
     
     /**
@@ -977,6 +1608,38 @@ public class EnumSetTest extends TestCase {
         enumSet = EnumSet.of(EnumWithInnerClass.a, EnumWithInnerClass.a);
         assertEquals("Size of enumSet should be 1", //$NON-NLS-1$
                 1, enumSet.size());
+        
+        // test enum type with more than 64 elements
+        EnumSet<HugeEnumWithInnerClass> hugeEnumSet = EnumSet.of(HugeEnumWithInnerClass.a,
+                HugeEnumWithInnerClass.b);
+        assertEquals(2, hugeEnumSet.size());
+
+        assertTrue(hugeEnumSet.contains(HugeEnumWithInnerClass.a));
+        assertTrue(hugeEnumSet.contains(HugeEnumWithInnerClass.b));
+
+        try {
+            EnumSet.of((HugeEnumWithInnerClass) null, HugeEnumWithInnerClass.a);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException npe) {
+            // expected
+        }
+        
+        try {
+            EnumSet.of( HugeEnumWithInnerClass.a, (HugeEnumWithInnerClass) null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException npe) {
+            // expected
+        }
+        
+        try {
+            EnumSet.of( (HugeEnumWithInnerClass) null, (HugeEnumWithInnerClass) null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException npe) {
+            // expected
+        }
+
+        hugeEnumSet = EnumSet.of(HugeEnumWithInnerClass.a, HugeEnumWithInnerClass.a);
+        assertEquals(1, hugeEnumSet.size());
     }
     
     /**
@@ -1001,6 +1664,25 @@ public class EnumSetTest extends TestCase {
         enumSet = EnumSet.of(EnumWithInnerClass.a, EnumWithInnerClass.b,
                 EnumWithInnerClass.b);
         assertEquals("enumSet should contain 2 elements:", 2, enumSet.size()); //$NON-NLS-1$
+        
+        // test enum type with more than 64 elements
+        EnumSet<HugeEnumWithInnerClass> hugeEnumSet = EnumSet.of(HugeEnumWithInnerClass.a,
+                HugeEnumWithInnerClass.b, HugeEnumWithInnerClass.c);
+        assertEquals(3, hugeEnumSet.size());
+
+        assertTrue(hugeEnumSet.contains(HugeEnumWithInnerClass.a));
+        assertTrue(hugeEnumSet.contains(HugeEnumWithInnerClass.c));
+
+        try {
+            EnumSet.of((HugeEnumWithInnerClass) null, null, null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException npe) {
+            // expected
+        }
+
+        hugeEnumSet = EnumSet.of(HugeEnumWithInnerClass.a, HugeEnumWithInnerClass.b,
+                HugeEnumWithInnerClass.b);
+        assertEquals(2, hugeEnumSet.size());
     }
     
     /**
@@ -1023,6 +1705,22 @@ public class EnumSetTest extends TestCase {
         } catch (NullPointerException npe) {
             // expected
         }
+        
+        // test enum type with more than 64 elements
+        EnumSet<HugeEnumWithInnerClass> hugeEnumSet = EnumSet.of(HugeEnumWithInnerClass.a,
+                HugeEnumWithInnerClass.b, HugeEnumWithInnerClass.c,
+                HugeEnumWithInnerClass.d);
+        assertEquals(4, hugeEnumSet.size());
+
+        assertTrue(hugeEnumSet.contains(HugeEnumWithInnerClass.a));
+        assertTrue(hugeEnumSet.contains(HugeEnumWithInnerClass.d));
+
+        try {
+            EnumSet.of((HugeEnumWithInnerClass) null, null, null, null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException npe) {
+            // expected
+        }
     }
     
     /**
@@ -1039,6 +1737,22 @@ public class EnumSetTest extends TestCase {
 
         try {
             EnumSet.of((EnumWithInnerClass) null, null, null, null, null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException npe) {
+            // expected
+        }
+        
+        // test enum with more than 64 elements
+        EnumSet<HugeEnumWithInnerClass> hugeEnumSet = EnumSet.of(HugeEnumWithInnerClass.a,
+                HugeEnumWithInnerClass.b, HugeEnumWithInnerClass.c,
+                HugeEnumWithInnerClass.d, HugeEnumWithInnerClass.e);
+        assertEquals(5, hugeEnumSet.size());
+
+        assertTrue(hugeEnumSet.contains(HugeEnumWithInnerClass.a));
+        assertTrue(hugeEnumSet.contains(HugeEnumWithInnerClass.e));
+
+        try {
+            EnumSet.of((HugeEnumWithInnerClass) null, null, null, null, null);
             fail("Should throw NullPointerException"); //$NON-NLS-1$
         } catch (NullPointerException npe) {
             // expected
@@ -1071,6 +1785,30 @@ public class EnumSetTest extends TestCase {
         assertTrue("Should contain EnumFoo.a", set.contains(EnumFoo.a)); //$NON-NLS-1$
         assertTrue("Should contain EnumFoo.c", set.contains(EnumFoo.c)); //$NON-NLS-1$
         assertTrue("Should contain EnumFoo.d", set.contains(EnumFoo.d)); //$NON-NLS-1$
+        
+        // test enum type with more than 64 elements
+        HugeEnumWithInnerClass[] hugeEnumArray = new HugeEnumWithInnerClass[] {
+                HugeEnumWithInnerClass.b, HugeEnumWithInnerClass.c };
+        EnumSet<HugeEnumWithInnerClass> hugeEnumSet = EnumSet.of(HugeEnumWithInnerClass.a,
+                hugeEnumArray);
+        assertEquals(3, hugeEnumSet.size());
+
+        assertTrue(hugeEnumSet.contains(HugeEnumWithInnerClass.a));
+        assertTrue(hugeEnumSet.contains(HugeEnumWithInnerClass.c));
+
+        try {
+            EnumSet.of(HugeEnumWithInnerClass.a, (HugeEnumWithInnerClass[])null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException npe) {
+            // expected
+        }
+        
+        HugeEnumWithInnerClass[] huges = {HugeEnumWithInnerClass.a, HugeEnumWithInnerClass.c, HugeEnumWithInnerClass.d};
+        EnumSet<HugeEnumWithInnerClass> hugeSet = EnumSet.of(HugeEnumWithInnerClass.c, huges);
+        assertEquals(3, hugeSet.size());
+        assertTrue(hugeSet.contains(HugeEnumWithInnerClass.a));
+        assertTrue(hugeSet.contains(HugeEnumWithInnerClass.c));
+        assertTrue(hugeSet.contains(HugeEnumWithInnerClass.d));
     }
     
     /**
@@ -1108,6 +1846,99 @@ public class EnumSetTest extends TestCase {
         EnumSet<EnumWithInnerClass> enumSet = EnumSet.range(
                 EnumWithInnerClass.a, EnumWithInnerClass.a);
         assertEquals("Size of enumSet should be 1", 1, enumSet.size()); //$NON-NLS-1$
+        
+        enumSet = EnumSet.range(
+                EnumWithInnerClass.a, EnumWithInnerClass.c);
+        assertEquals("Size of enumSet should be 3", 3, enumSet.size()); //$NON-NLS-1$
+        
+        // test enum with more than 64 elements
+        try {
+            EnumSet.range(HugeEnumWithInnerClass.c, null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
 
+        try {
+            EnumSet.range(null, HugeEnumWithInnerClass.c);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            EnumSet.range(null, (HugeEnumWithInnerClass) null);
+            fail("Should throw NullPointerException"); //$NON-NLS-1$
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            EnumSet.range(HugeEnumWithInnerClass.b, HugeEnumWithInnerClass.a);
+            fail("Should throw IllegalArgumentException"); //$NON-NLS-1$
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        EnumSet<HugeEnumWithInnerClass> hugeEnumSet = EnumSet.range(
+                HugeEnumWithInnerClass.a, HugeEnumWithInnerClass.a);
+        assertEquals(1, hugeEnumSet.size());
+        
+        hugeEnumSet = EnumSet.range(
+                HugeEnumWithInnerClass.c, HugeEnumWithInnerClass.aa);
+        assertEquals(51, hugeEnumSet.size());
+        
+        hugeEnumSet = EnumSet.range(
+                HugeEnumWithInnerClass.a, HugeEnumWithInnerClass.mm);
+        assertEquals(65, hugeEnumSet.size());
+        
+        hugeEnumSet = EnumSet.range(
+                HugeEnumWithInnerClass.b, HugeEnumWithInnerClass.mm);
+        assertEquals(64, hugeEnumSet.size());
+    }
+    
+    /**
+     * @tests java.util.EnumSet#clone()
+     */
+    public void test_Clone() {
+        EnumSet<EnumFoo> enumSet = EnumSet.allOf(EnumFoo.class);
+        EnumSet<EnumFoo> clonedEnumSet = enumSet.clone();
+        assertEquals(enumSet, clonedEnumSet);
+        assertNotSame(enumSet, clonedEnumSet);
+        assertTrue(clonedEnumSet.contains(EnumFoo.a));
+        assertTrue(clonedEnumSet.contains(EnumFoo.b));
+        assertEquals(64, clonedEnumSet.size());
+        
+        // test enum type with more than 64 elements
+        EnumSet<HugeEnum> hugeEnumSet = EnumSet.allOf(HugeEnum.class);
+        EnumSet<HugeEnum> hugeClonedEnumSet = hugeEnumSet.clone();
+        assertEquals(hugeEnumSet, hugeClonedEnumSet);
+        assertNotSame(hugeEnumSet, hugeClonedEnumSet);
+        assertTrue(hugeClonedEnumSet.contains(HugeEnum.a));
+        assertTrue(hugeClonedEnumSet.contains(HugeEnum.b));
+        assertEquals(65, hugeClonedEnumSet.size());
+        
+        hugeClonedEnumSet.remove(HugeEnum.a);
+        assertEquals(64, hugeClonedEnumSet.size());
+        assertFalse(hugeClonedEnumSet.contains(HugeEnum.a));
+        assertEquals(65, hugeEnumSet.size());
+        assertTrue(hugeEnumSet.contains(HugeEnum.a));
+    }
+    
+    /**
+     * @tests java.util.EnumSet#Serialization()
+     */
+    public void test_serialization() throws Exception {
+        EnumSet<EnumFoo> set = EnumSet.allOf(EnumFoo.class);
+        SerializationTest.verifySelf(set);
+    }
+    
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    @SuppressWarnings( { "unchecked", "boxing" })
+    public void testSerializationCompatibility() throws Exception {
+        EnumSet<EnumFoo> set = EnumSet.allOf(EnumFoo.class);
+        SerializationTest.verifyGolden(this, set);
     }
 }
