@@ -22,13 +22,7 @@
 package org.apache.harmony.security.tests.java.security.cert.serialization;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
-import java.io.OutputStream;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 
@@ -81,13 +75,10 @@ public class CertificateTest extends TestCase {
     public final void testCertificateRep_readResolve() throws Exception {
         // Create object to be serialized
         Certificate c1 = new MyCertificate("DUMMY", new byte[] {(byte)0, (byte)1});
-        // This testcase uses ByteArray streams
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        // Serialize cert
-        serialize(c1, bos);
-        // try to deserialize it
+
+        // try to serialize/deserialize cert
         try {
-            deserialize(new ByteArrayInputStream(bos.toByteArray()));
+            SerializationTest.copySerializable(c1);
             fail("No expected ObjectStreamException");
         } catch (ObjectStreamException e) {
         }
@@ -101,56 +92,13 @@ public class CertificateTest extends TestCase {
                {
         // Create object to be serialized
         Certificate c1 = new MyCertificate("DUMMY", null);
-        // This testcase uses ByteArray streams
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
         // Try to serialize cert
         try {
-            serialize(c1, bos);
+            SerializationTest.copySerializable(c1);
             fail("No exception");
         } catch (ObjectStreamException e) {
         } catch (NullPointerException e) {
         }
     }
-
-    //
-    // private stuff
-    //
-
-    /**
-     * Test case start template - serialization
-     *
-     * @param c
-     * <code>Certificate</code> object to be serialized
-     * @param os
-     * Serialization <code>OutputStream</code> for <code>c</code>
-     */
-    private void serialize(Certificate c, OutputStream os)
-            throws IOException {
-        ObjectOutputStream oos = new ObjectOutputStream(os);
-        try {
-            // Serialize it to the os
-            oos.writeObject(c);
-            oos.flush();
-        } finally {
-            oos.close();
-        }
-    }
-    /**
-     * Test case end template - deserialization and checks
-     *
-     * @param is
-     * <code>Certificate</code> object deserialization <code>InputStream</code>
-     */
-    private Certificate deserialize(InputStream is)
-            throws IOException,
-                   ClassNotFoundException {
-        // deserialize our object
-        ObjectInputStream ois = new ObjectInputStream(is);
-        try {
-            return (Certificate)ois.readObject();
-        } finally {
-            ois.close();
-        }
-    }
-
 }

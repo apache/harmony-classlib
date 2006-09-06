@@ -21,15 +21,8 @@
 
 package org.apache.harmony.security.tests.java.security.cert.serialization;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
-import java.io.OutputStream;
 import java.security.cert.CertPath;
 import java.security.cert.CertificateFactory;
 
@@ -97,13 +90,10 @@ public class CertPathTest extends TestCase {
 
         // Create object to be serialized
         CertPath cp1 = new MyCertPath(new byte[] {(byte)0, (byte)1});
-        // This testcase uses ByteArray streams
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        // Serialize cert
-        serialize(cp1, bos);
-        // try to deserialize it
+
+        // try to serialize/deserialize cert
         try {
-            deserialize(new ByteArrayInputStream(bos.toByteArray()));
+            SerializationTest.copySerializable(cp1);
             fail("No expected ObjectStreamException");
         } catch (ObjectStreamException e) {
         }
@@ -117,57 +107,14 @@ public class CertPathTest extends TestCase {
         // Create object to be serialized
         // set encoded form to null
         CertPath cp1 = new MyCertPath(null);
-        // This testcase uses ByteArray streams
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
         // Try to serialize cert
         // writeReplace() must fail with exception
         // (both OSE and NPE are possible)
         try {
-            serialize(cp1, bos);
+            SerializationTest.copySerializable(cp1);
             fail("No exception");
         } catch (ObjectStreamException e) {
         } catch (NullPointerException e) {
-        }
-    }
-
-    //
-    // private stuff
-    //
-
-    /**
-     * Test case start template - serialization
-     *
-     * @param cp
-     * <code>CertPath</code> object to be serialized
-     * @param os
-     * Serialization <code>OutputStream</code> for <code>cp</code>
-     */
-    private void serialize(CertPath cp, OutputStream os)
-            throws IOException {
-        ObjectOutputStream oos = new ObjectOutputStream(os);
-        try {
-            // Serialize it to the os
-            oos.writeObject(cp);
-            oos.flush();
-        } finally {
-            oos.close();
-        }
-    }
-    /**
-     * Test case end template - deserialization and checks
-     *
-     * @param os
-     * <code>CertPath</code> deserialization <code>InputStream</code>
-     */
-    private CertPath deserialize(InputStream is)
-            throws IOException,
-                   ClassNotFoundException {
-        // deserialize our object
-        ObjectInputStream ois = new ObjectInputStream(is);
-        try {
-            return (CertPath)ois.readObject();
-        } finally {
-            ois.close();
         }
     }
 }
