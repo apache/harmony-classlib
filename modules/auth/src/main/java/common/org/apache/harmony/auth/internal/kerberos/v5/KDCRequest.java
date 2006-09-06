@@ -39,12 +39,12 @@ class KDCRequest {
     /**
      * Authentication Service request message type
      */
-    public final int AS_REQ = 10;
+    public static final int AS_REQ = 10;
 
     /**
      * Ticket-Granting Service request message type
      */
-    public final int TGS_REQ = 12;
+    public static final int TGS_REQ = 12;
 
     // type of a protocol message: AS_REQ or TGS_REQ
     private final int msgType;
