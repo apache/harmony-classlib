@@ -191,9 +191,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 			elementCount += size;
 			modCount++;
 			return true;
-		} else {
-            throw new ArrayIndexOutOfBoundsException(location);
-        }
+		}
+        throw new ArrayIndexOutOfBoundsException(location);
 	}
 
 	/**
@@ -686,9 +685,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
                 }
 			}
 			return -1;
-		} else {
-            throw new ArrayIndexOutOfBoundsException(location);
-        }
+		}
+        throw new ArrayIndexOutOfBoundsException(location);
 	}
 
 	/*
@@ -709,9 +707,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 			elementData[elementCount] = null;
 			modCount++;
 			return result;
-		} else {
-            throw new ArrayIndexOutOfBoundsException(location);
-        }
+		}
+        throw new ArrayIndexOutOfBoundsException(location);
 	}
 
 	/**
@@ -876,9 +873,8 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
 			E result = elementData[location];
 			elementData[location] = object;
 			return result;
-		} else {
-            throw new ArrayIndexOutOfBoundsException(location);
-        }
+		}
+        throw new ArrayIndexOutOfBoundsException(location);
 	}
 
 	/**

@@ -23,14 +23,13 @@ package java.util;
  */
 @SuppressWarnings("serial")
 final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
+    private static final int MAX_ELEMENTS = 64;
     
-    private int size = 0;
+    private int size;
     
-    final private E[] enums;
-
-    static final private int MAX_ELEMENTS = 64;
+    private final E[] enums;    
     
-    private long bits = 0;
+    private long bits;
     
     MiniEnumSet(Class<E> elementType) {
         super(elementType);
@@ -39,12 +38,12 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
     
     private class MiniEnumSetIterator implements Iterator<E> {
 
-        private long unProcessedBits = 0;
+        private long unProcessedBits;
 
         /*
          * Mask for current element.
          */
-        private long currentElementMask = 0;
+        private long currentElementMask;
 
         private boolean canProcess = true;
 
@@ -118,11 +117,11 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
             return false;
         }
         if (collection instanceof EnumSet) {
-            EnumSet set = (EnumSet) collection;
+            EnumSet<?> set = (EnumSet)collection;
             if (!isValidType(set.elementClass)) {
                 throw new ClassCastException();
             }
-            MiniEnumSet miniSet = (MiniEnumSet) set;
+            MiniEnumSet<?> miniSet = (MiniEnumSet<?>) set;
             long oldBits = bits;
             bits |= miniSet.bits;
             size = Long.bitCount(bits);
@@ -139,7 +138,7 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
         if (!isValidType(object.getClass())) {
             return false;
         }
-        Enum element = (Enum) object;
+        Enum<?> element = (Enum<?>) object;
         int ordinal = element.ordinal();
         return (bits & (1l << ordinal)) != 0;
     }
@@ -150,7 +149,7 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
             return true;
         }
         if (collection instanceof MiniEnumSet) {
-            MiniEnumSet set = (MiniEnumSet) collection;
+            MiniEnumSet<?> set = (MiniEnumSet<?>) collection;
             return isValidType(set.elementClass ) && ((bits & set.bits) == set.bits);
         }
         return !(collection instanceof EnumSet) && super.containsAll(collection);  
@@ -202,7 +201,7 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
         if (!contains(object)) {
             return false;
         }
-        Enum element = (Enum) object;
+        Enum<?> element = (Enum<?>) object;
         int ordinal = element.ordinal();
         bits -= (1l << ordinal);
         size--;
@@ -214,11 +213,11 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
         if (!(object instanceof EnumSet)) {
             return super.equals(object);
         }
-        EnumSet<E> set =(EnumSet<E>)object; 
+        EnumSet<?> set =(EnumSet<?>)object; 
         if( !isValidType(set.elementClass) ) {
             return size == 0 && set.size() == 0;
         }
-        return bits == ((MiniEnumSet<E>)set).bits;
+        return bits == ((MiniEnumSet<?>)set).bits;
     }
     
     @Override

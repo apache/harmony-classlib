@@ -38,7 +38,7 @@ import org.apache.harmony.luni.util.PriviAction;
  * @see SimpleTimeZone
  */
 
-abstract public class TimeZone implements Serializable, Cloneable {
+public abstract class TimeZone implements Serializable, Cloneable {
 	private static final long serialVersionUID = 3581463369166924961L;
 
 	/**
@@ -93,7 +93,8 @@ abstract public class TimeZone implements Serializable, Cloneable {
 	 * 
 	 * @see java.lang.Cloneable
 	 */
-	public Object clone() {
+	@Override
+    public Object clone() {
 		try {
 			TimeZone zone = (TimeZone) super.clone();
 			return zone;

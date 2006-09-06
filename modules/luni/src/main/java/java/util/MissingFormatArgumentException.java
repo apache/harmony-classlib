@@ -15,10 +15,12 @@
 
 package java.util;
 
+import org.apache.harmony.luni.util.Msg;
+
 /**
  * The unchecked exception will be thrown out if there no corresponding argument
- * with the specified conversion or an argument index that refers to an
- * unexisting argument.
+ * with the specified conversion or an argument index that refers to a
+ * missing argument.
  */
 public class MissingFormatArgumentException extends IllegalFormatException {
 	private static final long serialVersionUID = 19190115L;
@@ -53,7 +55,8 @@ public class MissingFormatArgumentException extends IllegalFormatException {
 	 * 
 	 * @return The message of the exception.
 	 */
-	public String getMessage() {
-        return org.apache.harmony.luni.util.Msg.getString("K0348", s);
+	@Override
+    public String getMessage() {
+        return Msg.getString("K0348", s);
     }
 }

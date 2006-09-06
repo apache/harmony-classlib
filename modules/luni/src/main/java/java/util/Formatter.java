@@ -418,6 +418,7 @@ public final class Formatter implements Closeable, Flushable {
      * @throws FormatterClosedException
      *             If the formatter has been closed.
      */
+    @Override
     public String toString() {
         checkClosed();
         return out.toString();
@@ -1597,7 +1598,7 @@ public final class Formatter implements Closeable, Flushable {
             } else {
                 Date date = null;
                 if (arg instanceof Long) {
-                    date = new Date((Long) arg);
+                    date = new Date(((Long)arg).longValue());
                 } else if (arg instanceof Date) {
                     date = (Date) arg;
                 } else {

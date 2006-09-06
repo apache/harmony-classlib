@@ -54,9 +54,10 @@ public class IllegalFormatFlagsException extends IllegalFormatException
 	/**
 	 * Return the message string of the IllegalFormatFlagsException.
 	 * 
-	 * @retun The message string of the IllegalFormatFlagsException.
+	 * @return The message string of the IllegalFormatFlagsException.
 	 */
-	public String getMessage() {
+	@Override
+    public String getMessage() {
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("Flags = '");
 		buffer.append(flags);

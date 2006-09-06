@@ -29,6 +29,8 @@ import java.lang.ref.WeakReference;
  */
 public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
 
+    private static final int DEFAULT_SIZE = 16;
+    
     private final ReferenceQueue<K> referenceQueue;
 
     int elementCount;
@@ -40,8 +42,6 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
     private int threshold;
 
     transient int modCount;
-
-    private static final int DEFAULT_SIZE = 16;
     
     //Simple utility method to isolate unchecked cast for array creation
     @SuppressWarnings("unchecked")
@@ -155,12 +155,10 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
                     // free the key
                     nextKey = null;
                     return result;
-                } else {
-                    throw new NoSuchElementException();
                 }
-            } else {
-                throw new ConcurrentModificationException();
+                throw new NoSuchElementException();
             }
+            throw new ConcurrentModificationException();
         }
 
         public void remove() {

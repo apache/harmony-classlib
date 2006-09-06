@@ -110,12 +110,10 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 					lastLink = link = next;
 					pos++;
 					return link.data;
-				} else {
-                    throw new NoSuchElementException();
-                }
-			} else {
-                throw new ConcurrentModificationException();
-            }
+				}
+                throw new NoSuchElementException();
+			}
+            throw new ConcurrentModificationException();
 		}
 
 		public int nextIndex() {
@@ -129,12 +127,10 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 					link = link.previous;
 					pos--;
 					return lastLink.data;
-				} else {
-                    throw new NoSuchElementException();
-                }
-			} else {
-                throw new ConcurrentModificationException();
-            }
+				}
+                throw new NoSuchElementException();
+			}
+            throw new ConcurrentModificationException();
 		}
 
 		public int previousIndex() {
@@ -431,9 +427,8 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
                 }
 			}
 			return link.data;
-		} else {
-            throw new IndexOutOfBoundsException();
-        }
+		}
+        throw new IndexOutOfBoundsException();
 	}
 
 	/**
@@ -581,9 +576,8 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 			size--;
 			modCount++;
 			return link.data;
-		} else {
-            throw new IndexOutOfBoundsException();
-        }
+		}
+        throw new IndexOutOfBoundsException();
 	}
 
 	@Override
@@ -627,9 +621,8 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 			size--;
 			modCount++;
 			return first.data;
-		} else {
-            throw new NoSuchElementException();
-        }
+		}
+        throw new NoSuchElementException();
 	}
 
 	/**
@@ -649,9 +642,8 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 			size--;
 			modCount++;
 			return last.data;
-		} else {
-            throw new NoSuchElementException();
-        }
+		}
+        throw new NoSuchElementException();
 	}
 
 	/**
@@ -683,9 +675,8 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 			E result = link.data;
 			link.data = object;
 			return result;
-		} else {
-            throw new IndexOutOfBoundsException();
-        }
+		}
+        throw new IndexOutOfBoundsException();
 	}
 
 	/**

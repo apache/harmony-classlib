@@ -70,7 +70,8 @@ public class IllegalFormatConversionException extends IllegalFormatException
 	 * 
 	 * @return The message string of the IllegalFormatConversionException.
 	 */
-	public String getMessage() {
+	@Override
+    public String getMessage() {
 		StringBuilder buffer = new StringBuilder();
 		buffer.append(c);
 		buffer.append(" is incompatible with ");

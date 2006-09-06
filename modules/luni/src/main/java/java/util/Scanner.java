@@ -1663,6 +1663,7 @@ public final class Scanner implements Iterator<String> {
      * 
      * @return a string to represent this scanner
      */
+    @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(this.getClass()).append(": ") //$NON-NLS-1$

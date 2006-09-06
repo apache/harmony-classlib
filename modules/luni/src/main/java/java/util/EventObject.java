@@ -40,10 +40,11 @@ public class EventObject implements Serializable {
 	 *            the object which fired the event
 	 */
 	public EventObject(Object source) {
-		if (source != null)
-			this.source = source;
-		else
-			throw new IllegalArgumentException();
+		if (source != null) {
+            this.source = source;
+        } else {
+            throw new IllegalArgumentException();
+        }
 	}
 
 	/**
@@ -60,7 +61,8 @@ public class EventObject implements Serializable {
 	 * 
 	 * @return the string representation of this EventObject
 	 */
-	public String toString() {
-		return getClass().getName() + "[source=" + String.valueOf(source) + ']'; //$NON-NLS-1$
+	@Override
+    public String toString() {
+		return getClass().getName() + "[source=" + source + ']'; //$NON-NLS-1$
 	}
 }

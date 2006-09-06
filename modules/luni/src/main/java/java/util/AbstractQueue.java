@@ -52,9 +52,8 @@ public abstract class AbstractQueue<E> extends AbstractCollection<E> implements
         }
         if (offer(o)) {
             return true;
-        } else {
-            throw new IllegalStateException();
         }
+        throw new IllegalStateException();
     }
 
     /**

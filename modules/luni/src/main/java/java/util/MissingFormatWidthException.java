@@ -54,7 +54,8 @@ public class MissingFormatWidthException extends IllegalFormatException {
 	 * 
 	 * @return The message of the exception.
 	 */
-	public String getMessage() {
+	@Override
+    public String getMessage() {
 		return s;
 	}
 

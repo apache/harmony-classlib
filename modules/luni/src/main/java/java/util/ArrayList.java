@@ -34,9 +34,11 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 
 	private static final long serialVersionUID = 8683452581122892189L;
 
-	transient private int firstIndex, lastIndex;
+	private transient int firstIndex;
+    
+    private transient int lastIndex;
 
-	transient private E[] array;
+	private transient E[] array;
 
 	/**
 	 * Constructs a new instance of ArrayList with zero capacity.
@@ -95,7 +97,8 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public void add(int location, E object) {
+	@Override
+    public void add(int location, E object) {
 		int size = size();
 		if (0 < location && location < size) {
 			if (firstIndex == 0 && lastIndex == array.length) {
@@ -112,15 +115,18 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 			}
 			array[location + firstIndex] = object;
 		} else if (location == 0) {
-			if (firstIndex == 0)
-				growAtFront(1);
+			if (firstIndex == 0) {
+                growAtFront(1);
+            }
 			array[--firstIndex] = object;
 		} else if (location == size) {
-			if (lastIndex == array.length)
-				growAtEnd(1);
+			if (lastIndex == array.length) {
+                growAtEnd(1);
+            }
 			array[lastIndex++] = object;
-		} else
-			throw new IndexOutOfBoundsException();
+		} else {
+            throw new IndexOutOfBoundsException();
+        }
 
 		modCount++;
 	}
@@ -132,9 +138,11 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 *            the object to add
 	 * @return true
 	 */
-	public boolean add(E object) {
-		if (lastIndex == array.length)
-			growAtEnd(1);
+	@Override
+    public boolean add(E object) {
+		if (lastIndex == array.length) {
+            growAtEnd(1);
+        }
 		array[lastIndex++] = object;
 		modCount++;
 		return true;
@@ -152,6 +160,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
      * @exception IndexOutOfBoundsException when
      *            <code>location < 0 || > size()</code>
      */
+    @Override
     public boolean addAll(int location, Collection<? extends E> collection) {
         int size = size();
         if (location < 0 || location > size) {
@@ -183,8 +192,9 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
             growAtFront(growSize);
             firstIndex -= growSize;
         } else if (location == size) {
-            if (lastIndex > array.length - growSize)
+            if (lastIndex > array.length - growSize) {
                 growAtEnd(growSize);
+            }
             lastIndex += growSize;
         }
 
@@ -192,8 +202,9 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
             Iterator<? extends E> it = collection.iterator();
             int index = location + firstIndex;
             int end = index + growSize;
-            while (index < end)
+            while (index < end) {
                 array[index++] = it.next();
+            }
             modCount++;
             return true;
         }
@@ -207,15 +218,18 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 *            the Collection of objects
 	 * @return true if this ArrayList is modified, false otherwise
 	 */
-	public boolean addAll(Collection<? extends E> collection) {
+	@Override
+    public boolean addAll(Collection<? extends E> collection) {
 		int growSize = collection.size();
 		if (growSize > 0) {
-			if (lastIndex > array.length - growSize)
-				growAtEnd(growSize);
+			if (lastIndex > array.length - growSize) {
+                growAtEnd(growSize);
+            }
 			Iterator<? extends E> it = collection.iterator();
 			int end = lastIndex + growSize;
-			while (lastIndex < end)
-				array[lastIndex++] = it.next();
+			while (lastIndex < end) {
+                array[lastIndex++] = it.next();
+            }
 			modCount++;
 			return true;
 		}
@@ -228,7 +242,8 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 * @see #isEmpty
 	 * @see #size
 	 */
-	public void clear() {
+	@Override
+    public void clear() {
 		if (firstIndex != lastIndex) {
 			Arrays.fill(array, firstIndex, lastIndex, null);
 			firstIndex = lastIndex = 0;
@@ -244,11 +259,12 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 * 
 	 * @see java.lang.Cloneable
 	 */
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
     public Object clone() {
 		try {
 			ArrayList<E> newList = (ArrayList<E>) super.clone();
-			newList.array = (E[]) array.clone();
+			newList.array = array.clone();
 			return newList;
 		} catch (CloneNotSupportedException e) {
 			return null;
@@ -263,15 +279,20 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 * @return true if <code>object</code> is an element of this ArrayList,
 	 *         false otherwise
 	 */
-	public boolean contains(Object object) {
+	@Override
+    public boolean contains(Object object) {
 		if (object != null) {
-			for (int i = firstIndex; i < lastIndex; i++)
-				if (object.equals(array[i]))
-					return true;
+			for (int i = firstIndex; i < lastIndex; i++) {
+                if (object.equals(array[i])) {
+                    return true;
+                }
+            }
 		} else {
-			for (int i = firstIndex; i < lastIndex; i++)
-				if (array[i] == null)
-					return true;
+			for (int i = firstIndex; i < lastIndex; i++) {
+                if (array[i] == null) {
+                    return true;
+                }
+            }
 		}
 		return false;
 	}
@@ -286,10 +307,11 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 */
 	public void ensureCapacity(int minimumCapacity) {
 		if (array.length < minimumCapacity) {
-			if (firstIndex > 0)
-				growAtFront(minimumCapacity - array.length);
-			else
-				growAtEnd(minimumCapacity - array.length);
+			if (firstIndex > 0) {
+                growAtFront(minimumCapacity - array.length);
+            } else {
+                growAtEnd(minimumCapacity - array.length);
+            }
 		}
 	}
 
@@ -303,9 +325,10 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public E get(int location) {
+	@Override
+    public E get(int location) {
 		if (0 <= location && location < size()) {
-			return (E)array[firstIndex + location];
+			return array[firstIndex + location];
         }
 		throw new IndexOutOfBoundsException();
 	}
@@ -323,13 +346,16 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 			lastIndex = newLast;
 		} else {
 			int increment = size / 2;
-			if (required > increment)
-				increment = required;
-			if (increment < 12)
-				increment = 12;
+			if (required > increment) {
+                increment = required;
+            }
+			if (increment < 12) {
+                increment = 12;
+            }
 			E[] newArray = newElementArray(size + increment);
-			if (size > 0)
-				System.arraycopy(array, firstIndex, newArray, firstIndex, size);
+			if (size > 0) {
+                System.arraycopy(array, firstIndex, newArray, firstIndex, size);
+            }
 			array = newArray;
 		}
 	}
@@ -348,14 +374,17 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 			lastIndex = array.length;
 		} else {
 			int increment = size / 2;
-			if (required > increment)
-				increment = required;
-			if (increment < 12)
-				increment = 12;
+			if (required > increment) {
+                increment = required;
+            }
+			if (increment < 12) {
+                increment = 12;
+            }
 			E[] newArray = newElementArray(size + increment);
-			if (size > 0)
-				System.arraycopy(array, firstIndex, newArray, newArray.length
+			if (size > 0) {
+                System.arraycopy(array, firstIndex, newArray, newArray.length
 						- size, size);
+            }
 			firstIndex = newArray.length - size;
 			lastIndex = newArray.length;
 			array = newArray;
@@ -364,10 +393,12 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 
 	private void growForInsert(int location, int required) {
 		int size = size(), increment = size / 2;
-		if (required > increment)
-			increment = required;
-		if (increment < 12)
-			increment = 12;
+		if (required > increment) {
+            increment = required;
+        }
+		if (increment < 12) {
+            increment = 12;
+        }
 		E[] newArray = newElementArray(size + increment);
 		if (location < size / 2) {
 			int newFirst = newArray.length - (size + required);
@@ -394,15 +425,20 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 *            the object to search for
 	 * @return the index of the first occurrence of the object
 	 */
-	public int indexOf(Object object) {
+	@Override
+    public int indexOf(Object object) {
 		if (object != null) {
-			for (int i = firstIndex; i < lastIndex; i++)
-				if (object.equals(array[i]))
-					return i - firstIndex;
+			for (int i = firstIndex; i < lastIndex; i++) {
+                if (object.equals(array[i])) {
+                    return i - firstIndex;
+                }
+            }
 		} else {
-			for (int i = firstIndex; i < lastIndex; i++)
-				if (array[i] == null)
-					return i - firstIndex;
+			for (int i = firstIndex; i < lastIndex; i++) {
+                if (array[i] == null) {
+                    return i - firstIndex;
+                }
+            }
 		}
 		return -1;
 	}
@@ -414,7 +450,8 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 * 
 	 * @see #size
 	 */
-	public boolean isEmpty() {
+	@Override
+    public boolean isEmpty() {
 		return lastIndex == firstIndex;
 	}
 
@@ -426,15 +463,20 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 *            the object to search for
 	 * @return the index of the last occurrence of the object
 	 */
-	public int lastIndexOf(Object object) {
+	@Override
+    public int lastIndexOf(Object object) {
 		if (object != null) {
-			for (int i = lastIndex - 1; i >= firstIndex; i--)
-				if (object.equals(array[i]))
-					return i - firstIndex;
+			for (int i = lastIndex - 1; i >= firstIndex; i--) {
+                if (object.equals(array[i])) {
+                    return i - firstIndex;
+                }
+            }
 		} else {
-			for (int i = lastIndex - 1; i >= firstIndex; i--)
-				if (array[i] == null)
-					return i - firstIndex;
+			for (int i = lastIndex - 1; i >= firstIndex; i--) {
+                if (array[i] == null) {
+                    return i - firstIndex;
+                }
+            }
 		}
 		return -1;
 	}
@@ -449,19 +491,20 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public E remove(int location) {
+	@Override
+    public E remove(int location) {
 		E result;
 		int size = size();
 		if (0 <= location && location < size) {
 			if (location == size - 1) {
-				result = (E)array[--lastIndex];
+				result = array[--lastIndex];
 				array[lastIndex] = null;
 			} else if (location == 0) {
-				result = (E)array[firstIndex];
+				result = array[firstIndex];
 				array[firstIndex++] = null;
 			} else {
 				int elementIndex = firstIndex + location;
-				result = (E)array[elementIndex];
+				result = array[elementIndex];
 				if (location < size / 2) {
 					System.arraycopy(array, firstIndex, array, firstIndex + 1,
 							location);
@@ -472,8 +515,9 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 					array[--lastIndex] = null;
 				}
 			}
-		} else
-			throw new IndexOutOfBoundsException();
+		} else {
+            throw new IndexOutOfBoundsException();
+        }
 
 		modCount++;
 		return result;
@@ -492,10 +536,12 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 *                when <code>start < 0, start > end</code> or
 	 *                <code>end > size()</code>
 	 */
-	protected void removeRange(int start, int end) {
+	@Override
+    protected void removeRange(int start, int end) {
 		if (start >= 0 && start <= end && end <= size()) {
-			if (start == end)
-				return;
+			if (start == end) {
+                return;
+            }
 			int size = size();
 			if (end == size) {
 				Arrays.fill(array, firstIndex + start, lastIndex, null);
@@ -511,8 +557,9 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 				lastIndex = newLast;
 			}
 			modCount++;
-		} else
-			throw new IndexOutOfBoundsException();
+		} else {
+            throw new IndexOutOfBoundsException();
+        }
 	}
 
 	/**
@@ -528,9 +575,10 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 * @exception IndexOutOfBoundsException
 	 *                when <code>location < 0 || >= size()</code>
 	 */
-	public E set(int location, E object) {
+	@Override
+    public E set(int location, E object) {
 		if (0 <= location && location < size()) {
-			E result = (E)array[firstIndex + location];
+			E result = array[firstIndex + location];
 			array[firstIndex + location] = object;
 			return result;
 		}
@@ -542,7 +590,8 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 * 
 	 * @return the number of elements in this ArrayList
 	 */
-	public int size() {
+	@Override
+    public int size() {
 		return lastIndex - firstIndex;
 	}
 
@@ -551,7 +600,8 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 * 
 	 * @return an array of the elements from this ArrayList
 	 */
-	public Object[] toArray() {
+	@Override
+    public Object[] toArray() {
 		int size = size();
 		Object[] result = new Object[size];
 		System.arraycopy(array, firstIndex, result, 0, size);
@@ -573,7 +623,8 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 *                when the type of an element in this ArrayList cannot be
 	 *                stored in the type of the specified array
 	 */
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
     public <T> T[] toArray(T[] contents) {
 		int size = size();
 		if (size > contents.length) {
@@ -581,8 +632,9 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 			contents = (T[]) Array.newInstance(ct, size);
         }
 		System.arraycopy(array, firstIndex, contents, 0, size);
-		if (size < contents.length)
-			contents[size] = null;
+		if (size < contents.length) {
+            contents[size] = null;
+        }
 		return contents;
 	}
 
@@ -609,8 +661,9 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 		stream.writeFields();
 		stream.writeInt(array.length);
 		Iterator<?> it = iterator();
-		while (it.hasNext())
-			stream.writeObject(it.next());
+		while (it.hasNext()) {
+            stream.writeObject(it.next());
+        }
 	}
 
 	@SuppressWarnings("unchecked")
@@ -619,7 +672,8 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 		ObjectInputStream.GetField fields = stream.readFields();
 		lastIndex = fields.get("size", 0); //$NON-NLS-1$
 		array = newElementArray(stream.readInt());
-		for (int i = 0; i < lastIndex; i++)
-			array[i] = (E)stream.readObject();
+		for (int i = 0; i < lastIndex; i++) {
+            array[i] = (E)stream.readObject();
+        }
 	}
 }

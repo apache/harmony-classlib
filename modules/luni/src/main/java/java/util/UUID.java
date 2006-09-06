@@ -97,8 +97,9 @@ public final class UUID implements Serializable, Comparable<UUID> {
         // setup version field
         version = (int) ((mostSigBits & 0x000000000000F000) >>> 12);
 
-        if (variant != 2 && version != 1)
+        if (variant != 2 && version != 1) {
             return;
+        }
 
         // setup timestamp field
         long timeLow = (mostSigBits & 0xFFFFFFFF00000000L) >>> 32;
@@ -162,8 +163,9 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * @return A UUID instance.
      */
     public static UUID nameUUIDFromBytes(byte[] name) {
-        if (name == null)
+        if (name == null) {
             throw new NullPointerException();
+        }
 
         byte[] hash;
         try {
@@ -207,26 +209,32 @@ public final class UUID implements Serializable, Comparable<UUID> {
      *         correctly.
      */
     public static UUID fromString(String uuid) {
-        if (uuid == null)
+        if (uuid == null) {
             throw new NullPointerException();
-        if (uuid.length() != 36)
+        }
+        if (uuid.length() != 36) {
             throw new IllegalArgumentException(
                     "The UUID String must be 36 chars long.");
+        }
 
         try {
             long m1 = Long.parseLong(uuid.substring(0, 8), 16);
-            if (uuid.charAt(8) != '-')
+            if (uuid.charAt(8) != '-') {
                 throw new IllegalArgumentException();
+            }
             long m2 = Long.parseLong(uuid.substring(9, 13), 16);
-            if (uuid.charAt(13) != '-')
+            if (uuid.charAt(13) != '-') {
                 throw new IllegalArgumentException();
+            }
             long m3 = Long.parseLong(uuid.substring(14, 18), 16);
-            if (uuid.charAt(18) != '-')
+            if (uuid.charAt(18) != '-') {
                 throw new IllegalArgumentException();
+            }
 
             long lsb1 = Long.parseLong(uuid.substring(19, 23), 16);
-            if (uuid.charAt(23) != '-')
+            if (uuid.charAt(23) != '-') {
                 throw new IllegalArgumentException();
+            }
             long lsb2 = Long.parseLong(uuid.substring(24), 16);
 
             long msb = (m1 << 32) | (m2 << 16) | m3;
@@ -309,8 +317,9 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * @throws UnsupportedOperationException if {@link #version()} is not 1.
      */
     public long timestamp() {
-        if (version != 1)
+        if (version != 1) {
             throw new UnsupportedOperationException();
+        }
         return timestamp;
     }
 
@@ -324,8 +333,9 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * @throws UnsupportedOperationException if {@link #version()} is not 1.
      */
     public int clockSequence() {
-        if (version != 1)
+        if (version != 1) {
             throw new UnsupportedOperationException();
+        }
         return clockSequence;
     }
 
@@ -339,15 +349,16 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * @throws UnsupportedOperationException if {@link #version()} is not 1.
      */
     public long node() {
-        if (version != 1)
+        if (version != 1) {
             throw new UnsupportedOperationException();
+        }
         return node;
     }
 
     /**
      * <p>
-     * Compares this UUID to the specificed UUID. The natural ordering of UUIDs
-     * is based upon the value of the bits from most significant ot least
+     * Compares this UUID to the specified UUID. The natural ordering of UUIDs
+     * is based upon the value of the bits from most significant to least
      * significant.
      * </p>
      * 
@@ -356,8 +367,9 @@ public final class UUID implements Serializable, Comparable<UUID> {
      *         greater than <code>uuid</code>.
      */
     public int compareTo(UUID uuid) {
-        if (uuid == this)
+        if (uuid == this) {
             return 0;
+        }
 
         if (this.mostSigBits != uuid.mostSigBits) {
             return this.mostSigBits < uuid.mostSigBits ? -1 : 1;
@@ -385,15 +397,19 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * @return A <code>true</code> if this UUID is equal to
      *         <code>object</code> or <code>false</code> if not.
      */
+    @Override
     public boolean equals(Object object) {
-        if (object == null)
+        if (object == null) {
             return false;
+        }
 
-        if (this == object)
+        if (this == object) {
             return true;
+        }
 
-        if (!(object instanceof UUID))
+        if (!(object instanceof UUID)) {
             return false;
+        }
 
         UUID that = (UUID) object;
 
@@ -409,6 +425,7 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * 
      * @return An int value.
      */
+    @Override
     public int hashCode() {
         return hash;
     }
@@ -439,6 +456,7 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * 
      * @return A String instance.
      */
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder(36);
         String msbStr = Long.toHexString(mostSigBits);

@@ -150,7 +150,7 @@ public abstract class Calendar implements Serializable, Cloneable,
 	/**
 	 * Answers if the Date specified by this Calendar instance is after the Date
 	 * specified by the parameter. The comparison is not dependent on the
-	 * timezones of the Calendars.
+	 * time zones of the Calendars.
 	 * 
 	 * @param calendar
 	 *            the Calendar instance to compare
@@ -161,15 +161,16 @@ public abstract class Calendar implements Serializable, Cloneable,
 	 *                from the current field values
 	 */
 	public boolean after(Object calendar) {
-		if (!(calendar instanceof Calendar))
-			return false;
+		if (!(calendar instanceof Calendar)) {
+            return false;
+        }
 		return getTimeInMillis() > ((Calendar) calendar).getTimeInMillis();
 	}
 
 	/**
 	 * Answers if the Date specified by this Calendar instance is before the
 	 * Date specified by the parameter. The comparison is not dependent on the
-	 * timezones of the Calendars.
+	 * time zones of the Calendars.
 	 * 
 	 * @param calendar
 	 *            the Calendar instance to compare
@@ -180,8 +181,9 @@ public abstract class Calendar implements Serializable, Cloneable,
 	 *                from the current field values
 	 */
 	public boolean before(Object calendar) {
-		if (!(calendar instanceof Calendar))
-			return false;
+		if (!(calendar instanceof Calendar)) {
+            return false;
+        }
 		return getTimeInMillis() < ((Calendar) calendar).getTimeInMillis();
 	}
 
@@ -217,11 +219,12 @@ public abstract class Calendar implements Serializable, Cloneable,
 	 * 
 	 * @see java.lang.Cloneable
 	 */
-	public Object clone() {
+	@Override
+    public Object clone() {
 		try {
 			Calendar clone = (Calendar) super.clone();
-			clone.fields = (int[]) fields.clone();
-			clone.isSet = (boolean[]) isSet.clone();
+			clone.fields = fields.clone();
+			clone.isSet = isSet.clone();
 			clone.zone = (TimeZone) zone.clone();
 			return clone;
 		} catch (CloneNotSupportedException e) {
@@ -273,11 +276,14 @@ public abstract class Calendar implements Serializable, Cloneable,
 	 * @return true if the specified object is equal to this Calendar, false
 	 *         otherwise
 	 */
-	public boolean equals(Object object) {
-		if (this == object)
-			return true;
-		if (!(object instanceof Calendar))
-			return false;
+	@Override
+    public boolean equals(Object object) {
+		if (this == object) {
+            return true;
+        }
+		if (!(object instanceof Calendar)) {
+            return false;
+        }
 		Calendar cal = (Calendar) object;
 		return getTimeInMillis() == cal.getTimeInMillis()
 				&& isLenient() == cal.isLenient()
@@ -313,8 +319,9 @@ public abstract class Calendar implements Serializable, Cloneable,
 	 */
 	public int getActualMaximum(int field) {
 		int value, next;
-		if (getMaximum(field) == (next = getLeastMaximum(field)))
-			return next;
+		if (getMaximum(field) == (next = getLeastMaximum(field))) {
+            return next;
+        }
 		complete();
 		long orgTime = time;
 		set(field, next);
@@ -337,8 +344,9 @@ public abstract class Calendar implements Serializable, Cloneable,
 	 */
 	public int getActualMinimum(int field) {
 		int value, next;
-		if (getMinimum(field) == (next = getGreatestMinimum(field)))
-			return next;
+		if (getMinimum(field) == (next = getGreatestMinimum(field))) {
+            return next;
+        }
 		complete();
 		long orgTime = time;
 		set(field, next);
@@ -514,7 +522,8 @@ public abstract class Calendar implements Serializable, Cloneable,
 	 * 
 	 * @see #equals
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return (isLenient() ? 1237 : 1231) + getFirstDayOfWeek()
 				+ getMinimalDaysInFirstWeek() + getTimeZone().hashCode();
 	}
@@ -565,8 +574,9 @@ public abstract class Calendar implements Serializable, Cloneable,
 	public void roll(int field, int value) {
 		boolean increment = value >= 0;
 		int count = increment ? value : -value;
-		for (int i = 0; i < count; i++)
-			roll(field, increment);
+		for (int i = 0; i < count; i++) {
+            roll(field, increment);
+        }
 	}
 
 	/**
@@ -594,10 +604,12 @@ public abstract class Calendar implements Serializable, Cloneable,
 		fields[field] = value;
 		isSet[field] = true;
 		areFieldsSet = isTimeSet = false;
-		if (field > MONTH && field < AM_PM)
-			lastDateFieldSet = field;
-		if (field == HOUR || field == HOUR_OF_DAY)
-			lastTimeFieldSet = field;
+		if (field > MONTH && field < AM_PM) {
+            lastDateFieldSet = field;
+        }
+		if (field == HOUR || field == HOUR_OF_DAY) {
+            lastTimeFieldSet = field;
+        }
 	}
 
 	/**
@@ -729,7 +741,8 @@ public abstract class Calendar implements Serializable, Cloneable,
 	 * 
 	 * @return the string representation of this Calendar
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		StringBuffer result = new StringBuffer(getClass().getName() + "[time=" //$NON-NLS-1$
 				+ (isTimeSet ? String.valueOf(time) : "?") + ",areFieldsSet="  //$NON-NLS-1$//$NON-NLS-2$
 				+ areFieldsSet +
@@ -741,10 +754,11 @@ public abstract class Calendar implements Serializable, Cloneable,
 			result.append(',');
 			result.append(fieldNames[i]);
 			result.append('=');
-			if (isSet[i])
-				result.append(fields[i]);
-			else
-				result.append('?');
+			if (isSet[i]) {
+                result.append(fields[i]);
+            } else {
+                result.append('?');
+            }
 		}
 		result.append(']');
 		return result.toString();

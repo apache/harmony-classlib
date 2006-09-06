@@ -442,7 +442,8 @@ public class Properties extends Hashtable<Object,Object> {
 	 * 
 	 * @deprecated Does not throw an IOException, use store()
 	 */
-	public void save(OutputStream out, String comment) {
+	@Deprecated
+    public void save(OutputStream out, String comment) {
 		try {
 			store(out, comment);
 		} catch (IOException e) {

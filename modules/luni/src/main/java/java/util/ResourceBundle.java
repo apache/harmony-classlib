@@ -44,11 +44,13 @@ public abstract class ResourceBundle {
 	private Locale locale;
 
 	static class MissingBundle extends ResourceBundle {
-		public Enumeration<String> getKeys() {
+		@Override
+        public Enumeration<String> getKeys() {
 			return null;
 		}
 
-		public Object handleGetObject(String name) {
+		@Override
+        public Object handleGetObject(String name) {
 			return null;
 		}
 	}
@@ -132,9 +134,8 @@ public abstract class ResourceBundle {
                 return bundle;
             }
 			throw new MissingResourceException(null, bundleName, ""); //$NON-NLS-1$
-		} else {
-            throw new NullPointerException();
-        }
+		}
+        throw new NullPointerException();
 	}
 
 	private static ResourceBundle getBundleImpl(String bundleName,
@@ -159,9 +160,8 @@ public abstract class ResourceBundle {
                 return bundle;
             }
 			throw new MissingResourceException(null, bundleName, ""); //$NON-NLS-1$
-		} else {
-            throw new NullPointerException();
-        }
+		}
+        throw new NullPointerException();
 	}
 
 	/**

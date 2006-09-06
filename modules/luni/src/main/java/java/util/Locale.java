@@ -240,7 +240,8 @@ public final class Locale implements Cloneable, Serializable {
 	 * 
 	 * @see java.lang.Cloneable
 	 */
-	public Object clone() {
+	@Override
+    public Object clone() {
 		try {
 			return super.clone();
 		} catch (CloneNotSupportedException e) {
@@ -260,7 +261,8 @@ public final class Locale implements Cloneable, Serializable {
 	 * 
 	 * @see #hashCode
 	 */
-	public boolean equals(Object object) {
+	@Override
+    public boolean equals(Object object) {
 		if (object == this) {
             return true;
         }
@@ -676,7 +678,8 @@ public final class Locale implements Cloneable, Serializable {
 	 * 
 	 * @see #equals
 	 */
-	public synchronized int hashCode() {
+	@Override
+    public synchronized int hashCode() {
 		return countryCode.hashCode() + languageCode.hashCode()
 				+ variantCode.hashCode();
 	}
@@ -708,7 +711,8 @@ public final class Locale implements Cloneable, Serializable {
 	 * 
 	 * @return the string representation of this Locale
 	 */
-	public final String toString() {
+	@Override
+    public final String toString() {
 		StringBuilder result = new StringBuilder();
 		result.append(languageCode);
 		if (countryCode.length() > 0) {

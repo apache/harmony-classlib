@@ -53,7 +53,8 @@ public class IllegalFormatCodePointException extends IllegalFormatException
 	 * 
 	 * @retun The message string of the IllegalFormatCodePointException.
 	 */
-	public String getMessage() {
+	@Override
+    public String getMessage() {
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("Code point is ");
 		char[] chars = Character.toChars(c);

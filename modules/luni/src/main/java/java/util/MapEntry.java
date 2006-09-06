@@ -37,7 +37,8 @@ class MapEntry<K,V> implements Map.Entry<K,V>, Cloneable {
 		value = theValue;
 	}
 
-	public Object clone() {
+	@Override
+    public Object clone() {
 		try {
 			return super.clone();
 		} catch (CloneNotSupportedException e) {
@@ -45,17 +46,19 @@ class MapEntry<K,V> implements Map.Entry<K,V>, Cloneable {
 		}
 	}
 
-	public boolean equals(Object object) {
-		if (this == object)
-			return true;
+	@Override
+    public boolean equals(Object object) {
+		if (this == object) {
+            return true;
+        }
 		if (object instanceof Map.Entry) {
 			Map.Entry<?, ?> entry = (Map.Entry<?, ?>) object;
 			return (key == null ? entry.getKey() == null : key.equals(entry
 					.getKey()))
 					&& (value == null ? entry.getValue() == null : value
 							.equals(entry.getValue()));
-		} else
-			return false;
+		}
+        return false;
 	}
 
 	public K getKey() {
@@ -66,7 +69,8 @@ class MapEntry<K,V> implements Map.Entry<K,V>, Cloneable {
 		return value;
 	}
 
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return (key == null ? 0 : key.hashCode())
 				^ (value == null ? 0 : value.hashCode());
 	}
@@ -77,6 +81,7 @@ class MapEntry<K,V> implements Map.Entry<K,V>, Cloneable {
 		return result;
 	}
     
+    @Override
     public String toString() {
         return key + "=" + value;
     }

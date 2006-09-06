@@ -25,11 +25,10 @@ public class DuplicateFormatFlagsException extends IllegalFormatException {
 	private String flags;
 
 	/**
-	 * Constructs a DuplicateFormatFlagsException which flags is specified.
-	 * 
-	 * @param f
-	 *            The format flags that contian a duplicate flag.
-	 */
+     * Constructs a DuplicateFormatFlagsException which flags is specified.
+     * 
+     * @param f The format flags that contain a duplicate flag.
+     */
 	public DuplicateFormatFlagsException(String f) {
 		if (null == f) {
 			throw new NullPointerException();
@@ -38,9 +37,9 @@ public class DuplicateFormatFlagsException extends IllegalFormatException {
 	}
 
 	/**
-	 * Returns the format flags that contian a duplicate flag.
+	 * Returns the format flags that contain a duplicate flag.
 	 * 
-	 * @return The format flags that contian a duplicate flag.
+	 * @return The format flags that contain a duplicate flag.
 	 */
 	public String getFlags() {
 		return flags;
@@ -51,7 +50,8 @@ public class DuplicateFormatFlagsException extends IllegalFormatException {
 	 * 
 	 * @return The message string of the DuplicateFormatFlagsException.
 	 */
-	public String getMessage() {
+	@Override
+    public String getMessage() {
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("Flags of the DuplicateFormatFlagsException is'");
 		buffer.append(flags);

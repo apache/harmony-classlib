@@ -48,11 +48,11 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 
 	private int threshold;
 
-	transient int firstSlot = 0;
+	transient int firstSlot;
 
 	transient int lastSlot = -1;
 
-	transient int modCount = 0;
+	transient int modCount;
 
 	private static final Enumeration<?> EMPTY_ENUMERATION = new Enumeration<Object>() {
         public boolean hasMoreElements() {
@@ -165,9 +165,8 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 					return type.get(lastEntry);
 				}
 				throw new NoSuchElementException();
-			} else {
-                throw new ConcurrentModificationException();
-            }
+			}
+            throw new ConcurrentModificationException();
 		}
 
 		public void remove() {
@@ -241,9 +240,8 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 				Object result = key ? entry.key : entry.value;
 				entry = entry.next;
 				return (E)result;
-			} else {
-                throw new NoSuchElementException();
-            }
+			}
+            throw new NoSuchElementException();
 		}
 	}
 
@@ -694,9 +692,8 @@ public class Hashtable<K,V> extends Dictionary<K,V> implements Map<K,V>, Cloneab
 			V result = entry.value;
 			entry.value = value;
 			return result;
-		} else {
-            throw new NullPointerException();
-        }
+		}
+        throw new NullPointerException();
 	}
 
 	/**

@@ -15,6 +15,8 @@
 
 package java.util;
 
+import org.apache.harmony.luni.util.Msg;
+
 /**
  * The unchecked exception will be thrown out if there is an unknown flag.
  * 
@@ -41,7 +43,7 @@ public class UnknownFormatFlagsException extends IllegalFormatException {
 	/**
 	 * Returns the flags associated with the exception.
 	 * 
-	 * @return The flags associated with the excepiton.
+	 * @return The flags associated with the exception.
 	 */
 	public String getFlags() {
 		return flags;
@@ -52,7 +54,8 @@ public class UnknownFormatFlagsException extends IllegalFormatException {
 	 * 
 	 * @return The message associated with the exception.
 	 */
-	public String getMessage() {
-        return org.apache.harmony.luni.util.Msg.getString("K034a", flags);
+	@Override
+    public String getMessage() {
+        return Msg.getString("K034a", flags);
     }
 }

@@ -15,11 +15,12 @@
 
 package java.util;
 
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamField;
+
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * SimpleTimeZone represents a local time zone and its daylight savings time
@@ -157,9 +158,9 @@ public class SimpleTimeZone extends TimeZone {
 			int startDay, int startDayOfWeek, int startTime, int endMonth,
 			int endDay, int endDayOfWeek, int endTime, int daylightSavings) {
 		this(offset, name);
-		if (daylightSavings <= 0)
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
-					"K00e9", daylightSavings)); //$NON-NLS-1$
+		if (daylightSavings <= 0) {
+            throw new IllegalArgumentException(Msg.getString("K00e9", daylightSavings)); //$NON-NLS-1$
+        }
 		dstSavings = daylightSavings;
 
 		setStartRule(startMonth, startDay, startDayOfWeek, startTime);
@@ -223,10 +224,12 @@ public class SimpleTimeZone extends TimeZone {
 	 * 
 	 * @see java.lang.Cloneable
 	 */
-	public Object clone() {
+	@Override
+    public Object clone() {
 		SimpleTimeZone zone = (SimpleTimeZone) super.clone();
-		if (daylightSavings != null)
-			zone.daylightSavings = (GregorianCalendar) daylightSavings.clone();
+		if (daylightSavings != null) {
+            zone.daylightSavings = (GregorianCalendar) daylightSavings.clone();
+        }
 		return zone;
 	}
 
@@ -242,9 +245,11 @@ public class SimpleTimeZone extends TimeZone {
 	 * 
 	 * @see #hashCode
 	 */
-	public boolean equals(Object object) {
-		if (!(object instanceof SimpleTimeZone))
-			return false;
+	@Override
+    public boolean equals(Object object) {
+		if (!(object instanceof SimpleTimeZone)) {
+            return false;
+        }
 		SimpleTimeZone tz = (SimpleTimeZone) object;
 		return getID().equals(tz.getID())
 				&& rawOffset == tz.rawOffset
@@ -266,9 +271,11 @@ public class SimpleTimeZone extends TimeZone {
 	 * 
 	 * @return the daylight savings offset in milliseconds
 	 */
-	public int getDSTSavings() {
-		if (!useDaylight)
-			return 0;
+	@Override
+    public int getDSTSavings() {
+		if (!useDaylight) {
+            return 0;
+        }
 		return dstSavings;
 	}
 
@@ -292,24 +299,29 @@ public class SimpleTimeZone extends TimeZone {
 	 *            the time of day in milliseconds
 	 * @return the offset from GMT in milliseconds
 	 */
-	public int getOffset(int era, int year, int month, int day, int dayOfWeek,
+	@Override
+    public int getOffset(int era, int year, int month, int day, int dayOfWeek,
 			int time) {
-		if (era != GregorianCalendar.BC && era != GregorianCalendar.AD)
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
-					"K00ea", era)); //$NON-NLS-1$
+		if (era != GregorianCalendar.BC && era != GregorianCalendar.AD) {
+            throw new IllegalArgumentException(Msg.getString("K00ea", era)); //$NON-NLS-1$
+        }
 		checkRange(month, dayOfWeek, time);
-		if (month != Calendar.FEBRUARY || day != 29 || !isLeapYear(year))
-			checkDay(month, day);
+		if (month != Calendar.FEBRUARY || day != 29 || !isLeapYear(year)) {
+            checkDay(month, day);
+        }
 
 		if (!useDaylightTime() || era != GregorianCalendar.AD
-				|| year < startYear)
-			return rawOffset;
+				|| year < startYear) {
+            return rawOffset;
+        }
 		if (endMonth < startMonth) {
-			if (month > endMonth && month < startMonth)
-				return rawOffset;
+			if (month > endMonth && month < startMonth) {
+                return rawOffset;
+            }
 		} else {
-			if (month < startMonth || month > endMonth)
-				return rawOffset;
+			if (month < startMonth || month > endMonth) {
+                return rawOffset;
+            }
 		}
 
 		int ruleDay = 0, daysInMonth, firstDayOfMonth = mod7(dayOfWeek - day);
@@ -324,8 +336,9 @@ public class SimpleTimeZone extends TimeZone {
 							+ (startDay - 1) * 7;
 				} else {
 					daysInMonth = GregorianCalendar.DaysInMonth[startMonth];
-					if (startMonth == Calendar.FEBRUARY && isLeapYear(year))
-						daysInMonth += 1;
+					if (startMonth == Calendar.FEBRUARY && isLeapYear(year)) {
+                        daysInMonth += 1;
+                    }
 					ruleDay = daysInMonth
 							+ 1
 							+ mod7(startDayOfWeek
@@ -342,12 +355,14 @@ public class SimpleTimeZone extends TimeZone {
 				ruleDay = startDay
 						+ mod7(startDayOfWeek
 								- (firstDayOfMonth + startDay - 1));
-				if (ruleDay != startDay)
-					ruleDay -= 7;
+				if (ruleDay != startDay) {
+                    ruleDay -= 7;
+                }
 				break;
 			}
-			if (ruleDay > day || ruleDay == day && time < startTime)
-				return rawOffset;
+			if (ruleDay > day || ruleDay == day && time < startTime) {
+                return rawOffset;
+            }
 		}
 
 		int ruleTime = endTime - dstSavings;
@@ -363,8 +378,9 @@ public class SimpleTimeZone extends TimeZone {
 							+ (endDay - 1) * 7;
 				} else {
 					daysInMonth = GregorianCalendar.DaysInMonth[endMonth];
-					if (endMonth == Calendar.FEBRUARY && isLeapYear(year))
-						daysInMonth++;
+					if (endMonth == Calendar.FEBRUARY && isLeapYear(year)) {
+                        daysInMonth++;
+                    }
 					ruleDay = daysInMonth
 							+ 1
 							+ mod7(endDayOfWeek
@@ -379,8 +395,9 @@ public class SimpleTimeZone extends TimeZone {
 			case DOW_LE_DOM_MODE:
 				ruleDay = endDay
 						+ mod7(endDayOfWeek - (firstDayOfMonth + endDay - 1));
-				if (ruleDay != endDay)
-					ruleDay -= 7;
+				if (ruleDay != endDay) {
+                    ruleDay -= 7;
+                }
 				break;
 			}
 
@@ -390,19 +407,23 @@ public class SimpleTimeZone extends TimeZone {
 				ruleTime = (ruleTime % 86400000) + 86400000;
 				ruleDay -= changeDays;
 				if (ruleDay <= 0) {
-					if (--ruleMonth < Calendar.JANUARY)
-						ruleMonth = Calendar.DECEMBER;
+					if (--ruleMonth < Calendar.JANUARY) {
+                        ruleMonth = Calendar.DECEMBER;
+                    }
 					ruleDay += GregorianCalendar.DaysInMonth[ruleMonth];
-					if (ruleMonth == Calendar.FEBRUARY && isLeapYear(year))
-						ruleDay++;
+					if (ruleMonth == Calendar.FEBRUARY && isLeapYear(year)) {
+                        ruleDay++;
+                    }
 				}
 			}
 
 			if (month == ruleMonth) {
-				if (ruleDay < day || ruleDay == day && time >= ruleTime)
-					return rawOffset;
-			} else if (nextMonth != ruleMonth)
-				return rawOffset;
+				if (ruleDay < day || ruleDay == day && time >= ruleTime) {
+                    return rawOffset;
+                }
+			} else if (nextMonth != ruleMonth) {
+                return rawOffset;
+            }
 		}
 		return rawOffset + dstSavings;
 	}
@@ -416,11 +437,14 @@ public class SimpleTimeZone extends TimeZone {
 	 *            the date in milliseconds since January 1, 1970 00:00:00 GMT
 	 * @return the offset from GMT in milliseconds
 	 */
-	public int getOffset(long time) {
-		if (!useDaylightTime())
-			return rawOffset;
-		if (daylightSavings == null)
-			daylightSavings = new GregorianCalendar(this);
+	@Override
+    public int getOffset(long time) {
+		if (!useDaylightTime()) {
+            return rawOffset;
+        }
+		if (daylightSavings == null) {
+            daylightSavings = new GregorianCalendar(this);
+        }
 		return daylightSavings.getOffset(time + rawOffset);
 	}
 
@@ -429,7 +453,8 @@ public class SimpleTimeZone extends TimeZone {
 	 * 
 	 * @return the offset from GMT of standard time in milliseconds
 	 */
-	public int getRawOffset() {
+	@Override
+    public int getRawOffset() {
 		return rawOffset;
 	}
 
@@ -441,12 +466,14 @@ public class SimpleTimeZone extends TimeZone {
 	 * 
 	 * @see #equals
 	 */
-	public synchronized int hashCode() {
+	@Override
+    public synchronized int hashCode() {
 		int hashCode = getID().hashCode() + rawOffset;
-		if (useDaylight)
-			hashCode += startYear + startMonth + startDay + startDayOfWeek
+		if (useDaylight) {
+            hashCode += startYear + startMonth + startDay + startDayOfWeek
 					+ startTime + startMode + endMonth + endDay + endDayOfWeek
 					+ endTime + endMode + dstSavings;
+        }
 		return hashCode;
 	}
 
@@ -459,14 +486,18 @@ public class SimpleTimeZone extends TimeZone {
 	 * @return true when the TimeZones have the same raw offset and daylight
 	 *         savings time rules, false otherwise
 	 */
-	public boolean hasSameRules(TimeZone zone) {
-		if (!(zone instanceof SimpleTimeZone))
-			return false;
+	@Override
+    public boolean hasSameRules(TimeZone zone) {
+		if (!(zone instanceof SimpleTimeZone)) {
+            return false;
+        }
 		SimpleTimeZone tz = (SimpleTimeZone) zone;
-		if (useDaylight != tz.useDaylight)
-			return false;
-		if (!useDaylight)
-			return rawOffset == tz.rawOffset;
+		if (useDaylight != tz.useDaylight) {
+            return false;
+        }
+		if (!useDaylight) {
+            return rawOffset == tz.rawOffset;
+        }
 		return rawOffset == tz.rawOffset && dstSavings == tz.dstSavings
 				&& startYear == tz.startYear && startMonth == tz.startMonth
 				&& startDay == tz.startDay && startMode == tz.startMode
@@ -485,21 +516,24 @@ public class SimpleTimeZone extends TimeZone {
 	 * @return true when the Date is in the daylight savings time period, false
 	 *         otherwise
 	 */
-	public boolean inDaylightTime(Date time) {
+	@Override
+    public boolean inDaylightTime(Date time) {
 		// check for null pointer
 		long millis = time.getTime();
-		if (!useDaylightTime())
-			return false;
-		if (daylightSavings == null)
-			daylightSavings = new GregorianCalendar(this);
+		if (!useDaylightTime()) {
+            return false;
+        }
+		if (daylightSavings == null) {
+            daylightSavings = new GregorianCalendar(this);
+        }
 		return daylightSavings.getOffset(millis + rawOffset) != rawOffset;
 	}
 
 	private boolean isLeapYear(int year) {
-		if (year > 1582)
-			return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
-		else
-			return year % 4 == 0;
+		if (year > 1582) {
+            return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
+        }
+        return year % 4 == 0;
 	}
 
 	private int mod7(int num1) {
@@ -514,56 +548,60 @@ public class SimpleTimeZone extends TimeZone {
 	 *            the daylight savings offset in milliseconds
 	 */
 	public void setDSTSavings(int milliseconds) {
-		if (milliseconds > 0)
-			dstSavings = milliseconds;
-		else
-			throw new IllegalArgumentException();
+		if (milliseconds > 0) {
+            dstSavings = milliseconds;
+        } else {
+            throw new IllegalArgumentException();
+        }
 	}
 
 	private void checkRange(int month, int dayOfWeek, int time) {
-		if (month < Calendar.JANUARY || month > Calendar.DECEMBER)
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
-					"K00e5", month)); //$NON-NLS-1$
-		if (dayOfWeek < Calendar.SUNDAY || dayOfWeek > Calendar.SATURDAY)
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
-					"K00e7", dayOfWeek)); //$NON-NLS-1$
-		if (time < 0 || time >= 24 * 3600000)
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
-					"K00e8", time)); //$NON-NLS-1$
-	}
+        if (month < Calendar.JANUARY || month > Calendar.DECEMBER) {
+            throw new IllegalArgumentException(Msg.getString("K00e5", month)); //$NON-NLS-1$
+        }
+        if (dayOfWeek < Calendar.SUNDAY || dayOfWeek > Calendar.SATURDAY) {
+            throw new IllegalArgumentException(Msg.getString("K00e7", dayOfWeek)); //$NON-NLS-1$
+        }
+        if (time < 0 || time >= 24 * 3600000) {
+            throw new IllegalArgumentException(Msg.getString("K00e8", time)); //$NON-NLS-1$
+        }
+    }
 
-	private void checkDay(int month, int day) {
-		if (day <= 0 || day > GregorianCalendar.DaysInMonth[month])
-			throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg.getString(
-					"K00e6", day)); //$NON-NLS-1$
-	}
+    private void checkDay(int month, int day) {
+        if (day <= 0 || day > GregorianCalendar.DaysInMonth[month]) {
+            throw new IllegalArgumentException(Msg.getString("K00e6", day)); //$NON-NLS-1$
+        }
+    }
 
 	private void setEndMode() {
-		if (endDayOfWeek == 0)
-			endMode = DOM_MODE;
-		else if (endDayOfWeek < 0) {
+		if (endDayOfWeek == 0) {
+            endMode = DOM_MODE;
+        } else if (endDayOfWeek < 0) {
 			endDayOfWeek = -endDayOfWeek;
 			if (endDay < 0) {
 				endDay = -endDay;
 				endMode = DOW_LE_DOM_MODE;
-			} else
-				endMode = DOW_GE_DOM_MODE;
-		} else
-			endMode = DOW_IN_MONTH_MODE;
+			} else {
+                endMode = DOW_GE_DOM_MODE;
+            }
+		} else {
+            endMode = DOW_IN_MONTH_MODE;
+        }
 		useDaylight = startDay != 0 && endDay != 0;
 		if (endDay != 0) {
 			checkRange(endMonth, endMode == DOM_MODE ? 1 : endDayOfWeek,
 					endTime);
-			if (endMode != DOW_IN_MONTH_MODE)
-				checkDay(endMonth, endDay);
-			else {
-				if (endDay < -5 || endDay > 5)
-					throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
-							.getString("K00f8", endDay)); //$NON-NLS-1$
+			if (endMode != DOW_IN_MONTH_MODE) {
+                checkDay(endMonth, endDay);
+            } else {
+				if (endDay < -5 || endDay > 5) {
+                    throw new IllegalArgumentException(Msg.getString("K00f8", endDay)); //$NON-NLS-1$
+                }
 			}
 		}
-		if (endMode != DOM_MODE)
-			endDayOfWeek--;
+		if (endMode != DOM_MODE) {
+            endDayOfWeek--;
+        }
 	}
 
 	/**
@@ -640,36 +678,40 @@ public class SimpleTimeZone extends TimeZone {
 	 * @param offset
 	 *            the offset from GMT of standard time in milliseconds
 	 */
-	public void setRawOffset(int offset) {
+	@Override
+    public void setRawOffset(int offset) {
 		rawOffset = offset;
 	}
 
 	private void setStartMode() {
-		if (startDayOfWeek == 0)
-			startMode = DOM_MODE;
-		else if (startDayOfWeek < 0) {
+		if (startDayOfWeek == 0) {
+            startMode = DOM_MODE;
+        } else if (startDayOfWeek < 0) {
 			startDayOfWeek = -startDayOfWeek;
 			if (startDay < 0) {
 				startDay = -startDay;
 				startMode = DOW_LE_DOM_MODE;
-			} else
-				startMode = DOW_GE_DOM_MODE;
-		} else
-			startMode = DOW_IN_MONTH_MODE;
+			} else {
+                startMode = DOW_GE_DOM_MODE;
+            }
+		} else {
+            startMode = DOW_IN_MONTH_MODE;
+        }
 		useDaylight = startDay != 0 && endDay != 0;
 		if (startDay != 0) {
 			checkRange(startMonth, startMode == DOM_MODE ? 1 : startDayOfWeek,
 					startTime);
-			if (startMode != DOW_IN_MONTH_MODE)
-				checkDay(startMonth, startDay);
-			else {
-				if (startDay < -5 || startDay > 5)
-					throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
-							.getString("K00f8", startDay)); //$NON-NLS-1$
+			if (startMode != DOW_IN_MONTH_MODE) {
+                checkDay(startMonth, startDay);
+            } else {
+				if (startDay < -5 || startDay > 5) {
+                    throw new IllegalArgumentException(Msg.getString("K00f8", startDay)); //$NON-NLS-1$
+                }
 			}
 		}
-		if (startMode != DOM_MODE)
-			startDayOfWeek--;
+		if (startMode != DOM_MODE) {
+            startDayOfWeek--;
+        }
 	}
 
 	/**
@@ -757,7 +799,8 @@ public class SimpleTimeZone extends TimeZone {
 	 * 
 	 * @return the string representation of this SimpleTimeZone
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		return getClass().getName()
 				+ "[id=" //$NON-NLS-1$
 				+ getID()
@@ -790,7 +833,8 @@ public class SimpleTimeZone extends TimeZone {
 	 * @return true if this time zone has a daylight savings time period, false
 	 *         otherwise
 	 */
-	public boolean useDaylightTime() {
+	@Override
+    public boolean useDaylightTime() {
 		return useDaylight;
 	}
 
@@ -821,15 +865,17 @@ public class SimpleTimeZone extends TimeZone {
 				cal.set(Calendar.MONTH, endMonth);
 				cal.set(Calendar.DATE, endDay);
 				sEndDay = cal.get(Calendar.DAY_OF_WEEK_IN_MONTH);
-				if (endMode == DOM_MODE)
-					sEndDayOfWeek = cal.getFirstDayOfWeek();
+				if (endMode == DOM_MODE) {
+                    sEndDayOfWeek = cal.getFirstDayOfWeek();
+                }
 			}
 			if (startMode != DOW_IN_MONTH_MODE) {
 				cal.set(Calendar.MONTH, startMonth);
 				cal.set(Calendar.DATE, startDay);
 				sStartDay = cal.get(Calendar.DAY_OF_WEEK_IN_MONTH);
-				if (startMode == DOM_MODE)
-					sStartDayOfWeek = cal.getFirstDayOfWeek();
+				if (startMode == DOM_MODE) {
+                    sStartDayOfWeek = cal.getFirstDayOfWeek();
+                }
 			}
 		}
 		ObjectOutputStream.PutField fields = stream.putFields();
@@ -890,12 +936,14 @@ public class SimpleTimeZone extends TimeZone {
 				if (length >= 4) {
 					startDay = values[0];
 					startDayOfWeek = values[1];
-					if (startMode != DOM_MODE)
-						startDayOfWeek--;
+					if (startMode != DOM_MODE) {
+                        startDayOfWeek--;
+                    }
 					endDay = values[2];
 					endDayOfWeek = values[3];
-					if (endMode != DOM_MODE)
-						endDayOfWeek--;
+					if (endMode != DOM_MODE) {
+                        endDayOfWeek--;
+                    }
 				}
 			}
 		}

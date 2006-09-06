@@ -2400,13 +2400,14 @@ public class Arrays {
       * @param toIndex -
       *            the index of the last element (exclusive) to be sorted.
       */
-     private static void mergeSort(Object[] in, Object[] out, int fromIndex,
+     @SuppressWarnings("unchecked")
+    private static void mergeSort(Object[] in, Object[] out, int fromIndex,
              int toIndex) {
          int len = toIndex - fromIndex;
          //use insertion sort for small arrays
          if (len <= SIMPLE_LENGTH) {
              for (int i = fromIndex + 1; i < toIndex; i++) {
-                 Comparable current = (Comparable) out[i];
+                 Comparable<Object> current = (Comparable<Object>)out[i];
                  Object prev = out[i - 1];
                  if (current.compareTo(prev) < 0) {
                      int j = i;
@@ -2426,7 +2427,7 @@ public class Arrays {
          // merging
 
          //if arrays are already sorted - no merge
-         if (((Comparable) in[med]).compareTo(in[med - 1]) >= 0) {
+         if (((Comparable<Object>)in[med]).compareTo(in[med - 1]) >= 0) {
              System.arraycopy(in, fromIndex, out, fromIndex, len);
              return;
          }
@@ -2434,8 +2435,8 @@ public class Arrays {
 
          // use merging with exponential search
          do {
-             Comparable fromVal = (Comparable) in[fromIndex];
-             Comparable rVal = (Comparable) in[r];
+             Comparable<Object> fromVal = (Comparable<Object>)in[fromIndex];
+             Comparable<Object> rVal = (Comparable<Object>) in[r];
              if (fromVal.compareTo(rVal) <= 0) {
                  int l_1 = find(in,rVal,-1,fromIndex+1,med-1);
                  int toCopy = l_1 - fromIndex + 1;
@@ -2486,7 +2487,8 @@ public class Arrays {
       * @param c -
       *            the comparator to determine the order of the array.
       */
-     private static void mergeSort(Object[] in, Object[] out, int fromIndex,
+     @SuppressWarnings("unchecked")
+    private static void mergeSort(Object[] in, Object[] out, int fromIndex,
              int toIndex, Comparator c) {
          int len = toIndex - fromIndex;
          //use insertion sort for small arrays
@@ -2567,7 +2569,8 @@ public class Arrays {
       * elements equals to val.
       *
       */
-     private static int find(Object[] arr, Comparable val, int bnd, int l, int r){
+     @SuppressWarnings("unchecked")
+    private static int find(Object[] arr, Comparable val, int bnd, int l, int r){
          int m = l ;
          int d = 1;
          while (m <= r) {
@@ -2611,7 +2614,8 @@ public class Arrays {
       * @param c -
       *            the comparator to determine the order of the array.
       */
-     private static int find(Object[] arr, Object val, int bnd, int l,
+     @SuppressWarnings("unchecked")
+    private static int find(Object[] arr, Object val, int bnd, int l,
              int r, Comparator c){
          int m = l ;
          int d = 1;
@@ -2747,7 +2751,7 @@ public class Arrays {
                  int end = toIndex - 1;
                  dst[fromIndex] = src[end--];
                  for (int i = fromIndex + 1; i < toIndex; i++, end--) {
-                     String current = (String) src[end];
+                     String current = src[end];
                      String prev;
                      int j = i;
                      while (j > fromIndex && current.compareTo(prev = dst[j - 1]) < 0) {

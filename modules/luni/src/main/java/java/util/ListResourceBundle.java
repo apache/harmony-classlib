@@ -48,7 +48,8 @@ public abstract class ListResourceBundle extends ResourceBundle {
 	 * 
 	 * @return an Enumeration of the resource names
 	 */
-	public Enumeration<String> getKeys() {
+	@Override
+    public Enumeration<String> getKeys() {
 		if (table == null) {
             initializeTable();
         }
@@ -106,7 +107,8 @@ public abstract class ListResourceBundle extends ResourceBundle {
 	 *            the name of the resource
 	 * @return the resource object
 	 */
-	public final Object handleGetObject(String key) {
+	@Override
+    public final Object handleGetObject(String key) {
 		if (table == null) {
             initializeTable();
         }

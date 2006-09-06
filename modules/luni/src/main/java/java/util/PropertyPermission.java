@@ -51,15 +51,17 @@ public final class PropertyPermission extends BasicPermission {
 				" \t\n\r,"); //$NON-NLS-1$
 		while (tokenizer.hasMoreTokens()) {
 			String token = tokenizer.nextToken();
-			if (token.equals("read")) //$NON-NLS-1$
-				read = true;
-			else if (token.equals("write")) //$NON-NLS-1$
-				write = true;
-			else
-				throw new IllegalArgumentException();
+			if (token.equals("read")) {
+                read = true;
+            } else if (token.equals("write")) {
+                write = true;
+            } else {
+                throw new IllegalArgumentException();
+            }
 		}
-		if (!read && !write)
-			throw new IllegalArgumentException();
+		if (!read && !write) {
+            throw new IllegalArgumentException();
+        }
 	}
 
 	/**
@@ -74,7 +76,8 @@ public final class PropertyPermission extends BasicPermission {
 	 *         <code>false</code> if it is different from this object
 	 * @see #hashCode
 	 */
-	public boolean equals(Object o) {
+	@Override
+    public boolean equals(Object o) {
 		if (super.equals(o)) {
 			PropertyPermission pp = (PropertyPermission) o;
 			return read == pp.read && write == pp.write;
@@ -88,7 +91,8 @@ public final class PropertyPermission extends BasicPermission {
 	 * 
 	 * @return String the actions associated with the receiver.
 	 */
-	public String getActions() {
+	@Override
+    public String getActions() {
 		return read ? (write ? "read,write" : "read") : "write";  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 	}
 
@@ -101,7 +105,8 @@ public final class PropertyPermission extends BasicPermission {
 	 * 
 	 * @see #equals
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return super.hashCode();
 	}
 
@@ -113,7 +118,8 @@ public final class PropertyPermission extends BasicPermission {
 	 * @param permission
 	 *            java.security.Permission the permission to check
 	 */
-	public boolean implies(Permission permission) {
+	@Override
+    public boolean implies(Permission permission) {
 		if (super.implies(permission)) {
 			PropertyPermission pp = (PropertyPermission) permission;
 			return (read || !pp.read) && (write || !pp.write);
@@ -129,7 +135,8 @@ public final class PropertyPermission extends BasicPermission {
 	 * 
 	 * see java.security.BasicPermissionCollection
 	 */
-	public PermissionCollection newPermissionCollection() {
+	@Override
+    public PermissionCollection newPermissionCollection() {
 		return new PropertyPermissionCollection();
 	}
 

@@ -41,7 +41,7 @@ public class PriorityQueue<E> extends AbstractQueue<E> implements Serializable {
 
     private static final int DEFAULT_CAPACITY_RATIO = 2;
 
-    private int size = 0;
+    private int size;
 
     private Comparator<? super E> comparator;
 
@@ -136,6 +136,7 @@ public class PriorityQueue<E> extends AbstractQueue<E> implements Serializable {
      * 
      * @return the iterator of the priority queue.
      */
+    @Override
     public Iterator<E> iterator() {
         return new PriorityIterator();
     }
@@ -146,6 +147,7 @@ public class PriorityQueue<E> extends AbstractQueue<E> implements Serializable {
      * 
      * @return the size of the priority queue.
      */
+    @Override
     public int size() {
         return size;
     }
@@ -153,6 +155,7 @@ public class PriorityQueue<E> extends AbstractQueue<E> implements Serializable {
     /**
      * Removes all the elements of the priority queue.
      */
+    @Override
     public void clear() {
         Arrays.fill(elements, null);
         size = 0;
@@ -220,6 +223,7 @@ public class PriorityQueue<E> extends AbstractQueue<E> implements Serializable {
      * @return true if the object is in the priority queue, false if the object
      *         is not in the priority queue.
      */
+    @Override
     @SuppressWarnings("unchecked")
     public boolean remove(Object o) {
         if (o == null) {
@@ -248,6 +252,7 @@ public class PriorityQueue<E> extends AbstractQueue<E> implements Serializable {
      *         queue.
      * @throws NullPointerExcepiton if the element is null.
      */
+    @Override
     public boolean add(E o) {
         return offer(o);
     }
@@ -331,9 +336,8 @@ public class PriorityQueue<E> extends AbstractQueue<E> implements Serializable {
     private int compare(E o1, E o2) {
         if (null != comparator) {
             return comparator.compare(o1, o2);
-        } else {
-            return ((Comparable<? super E>) o1).compareTo(o2);
         }
+        return ((Comparable<? super E>) o1).compareTo(o2);
     }
 
     private void siftUp(int childIndex) {

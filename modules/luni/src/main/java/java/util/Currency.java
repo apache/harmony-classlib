@@ -54,7 +54,7 @@ public final class Currency implements Serializable {
 	 *             code
 	 */
 	public static Currency getInstance(String currencyCode) {
-		Currency currency = (Currency) codesToCurrencies.get(currencyCode);
+		Currency currency = codesToCurrencies.get(currencyCode);
 
 		if (currency == null) {
 			ResourceBundle bundle = Locale.getBundle(
@@ -89,8 +89,9 @@ public final class Currency implements Serializable {
 	public static Currency getInstance(Locale locale) {
 		String country = locale.getCountry();
 		String variant = locale.getVariant();
-		if (!variant.equals("") && currencyVars.indexOf(variant) > -1) //$NON-NLS-1$
-			country = country + "_" + variant; //$NON-NLS-1$
+		if (!variant.equals("") && currencyVars.indexOf(variant) > -1) {
+            country = country + "_" + variant; //$NON-NLS-1$
+        }
 
 		ResourceBundle bundle = Locale.getBundle(
 				"ISO4Currencies", Locale.getDefault()); //$NON-NLS-1$
@@ -102,8 +103,9 @@ public final class Currency implements Serializable {
 					"K0323", locale.toString())); //$NON-NLS-1$
 		}
 
-		if (currencyCode.equals("None")) //$NON-NLS-1$
-			return null;
+		if (currencyCode.equals("None")) {
+            return null;
+        }
 
 		return getInstance(currencyCode);
 	}
@@ -153,13 +155,15 @@ public final class Currency implements Serializable {
 	 *         symbol in this locale
 	 */
 	public String getSymbol(Locale locale) {
-		if (locale.getCountry().equals("")) //$NON-NLS-1$
-			return currencyCode;
+		if (locale.getCountry().equals("")) {
+            return currencyCode;
+        }
 
 		// check in the Locale bundle first, if the local has the same currency
 		ResourceBundle bundle = Locale.getBundle("Locale", locale); //$NON-NLS-1$
-		if (((String) bundle.getObject("IntCurrencySymbol")).equals(currencyCode)) //$NON-NLS-1$
-			return (String) bundle.getObject("CurrencySymbol"); //$NON-NLS-1$
+		if (((String) bundle.getObject("IntCurrencySymbol")).equals(currencyCode)) {
+            return (String) bundle.getObject("CurrencySymbol"); //$NON-NLS-1$
+        }
 
 		// search for a Currency bundle
 		bundle = null;
@@ -171,16 +175,17 @@ public final class Currency implements Serializable {
 
 		// is the bundle found for a different country? (for instance the
 		// default locale's currency bundle)
-		if (!bundle.getLocale().getCountry().equals(locale.getCountry()))
-			return currencyCode;
+		if (!bundle.getLocale().getCountry().equals(locale.getCountry())) {
+            return currencyCode;
+        }
 
 		// check if the currency bundle for this locale
 		// has an entry for this currency
 		String result = (String) bundle.handleGetObject(currencyCode);
-		if (result != null)
-			return result;
-		else
-			return currencyCode;
+		if (result != null) {
+            return result;
+        }
+        return currencyCode;
 	}
 
     /**
@@ -200,7 +205,8 @@ public final class Currency implements Serializable {
      * 
      * @return this currency's ISO 4217 currency code
      */
-	public String toString() {
+	@Override
+    public String toString() {
 		return currencyCode;
 	}
 

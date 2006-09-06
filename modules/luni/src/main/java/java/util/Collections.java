@@ -42,15 +42,18 @@ public class Collections {
 			element = object;
 		}
 
-		public boolean contains(Object object) {
+		@Override
+        public boolean contains(Object object) {
 			return element == null ? object == null : element.equals(object);
 		}
 
-		public int size() {
+		@Override
+        public int size() {
 			return n;
 		}
 
-		public E get(int location) {
+		@Override
+        public E get(int location) {
 			if (0 <= location && location < n) {
                 return element;
             }
@@ -63,15 +66,18 @@ public class Collections {
 			Serializable {
 		private static final long serialVersionUID = 8842843931221139166L;
 
-		public boolean contains(Object object) {
+		@Override
+        public boolean contains(Object object) {
 			return false;
 		}
 
-		public int size() {
+		@Override
+        public int size() {
 			return 0;
 		}
 
-		public Object get(int location) {
+		@Override
+        public Object get(int location) {
 			throw new IndexOutOfBoundsException();
 		}
         
@@ -85,15 +91,18 @@ public class Collections {
 			Serializable {
 		private static final long serialVersionUID = 1582296315990362920L;
 
-		public boolean contains(Object object) {
+		@Override
+        public boolean contains(Object object) {
 			return false;
 		}
 
-		public int size() {
+		@Override
+        public int size() {
 			return 0;
 		}
 
-		public Iterator iterator() {
+		@Override
+        public Iterator iterator() {
 			return new Iterator() {
 				public boolean hasNext() {
 					return false;
@@ -119,27 +128,33 @@ public class Collections {
 			Serializable {
 		private static final long serialVersionUID = 6428348081105594320L;
 
-		public boolean containsKey(Object key) {
+		@Override
+        public boolean containsKey(Object key) {
 			return false;
 		}
 
-		public boolean containsValue(Object value) {
+		@Override
+        public boolean containsValue(Object value) {
 			return false;
 		}
 
-		public Set entrySet() {
+		@Override
+        public Set entrySet() {
 			return EMPTY_SET;
 		}
 
-		public Object get(Object key) {
+		@Override
+        public Object get(Object key) {
 			return null;
 		}
 
-		public Set keySet() {
+		@Override
+        public Set keySet() {
 			return EMPTY_SET;
 		}
 
-		public Collection values() {
+		@Override
+        public Collection values() {
 			return EMPTY_LIST;
 		}
         
@@ -192,15 +207,18 @@ public class Collections {
 			element = object;
 		}
 
-		public boolean contains(Object object) {
+		@Override
+        public boolean contains(Object object) {
 			return element == null ? object == null : element.equals(object);
 		}
 
-		public int size() {
+		@Override
+        public int size() {
 			return 1;
 		}
 
-		public Iterator<E> iterator() {
+		@Override
+        public Iterator<E> iterator() {
 			return new Iterator<E>() {
 				boolean hasNext = true;
 
@@ -212,9 +230,8 @@ public class Collections {
 					if (hasNext) {
 						hasNext = false;
 						return element;
-					} else {
-                        throw new NoSuchElementException();
-                    }
+					}
+                    throw new NoSuchElementException();
 				}
 
 				public void remove() {
@@ -234,18 +251,21 @@ public class Collections {
 			element = object;
 		}
 
-		public boolean contains(Object object) {
+		@Override
+        public boolean contains(Object object) {
 			return element == null ? object == null : element.equals(object);
 		}
 
-		public E get(int location) {
+		@Override
+        public E get(int location) {
 			if (location == 0) {
                 return element;
             }
 			throw new IndexOutOfBoundsException();
 		}
 
-		public int size() {
+		@Override
+        public int size() {
 			return 1;
 		}
 	}
@@ -262,28 +282,34 @@ public class Collections {
 			v = value;
 		}
 
-		public boolean containsKey(Object key) {
+		@Override
+        public boolean containsKey(Object key) {
 			return k == null ? key == null : k.equals(key);
 		}
 
-		public boolean containsValue(Object value) {
+		@Override
+        public boolean containsValue(Object value) {
 			return v == null ? value == null : v.equals(value);
 		}
 
-		public V get(Object key) {
+		@Override
+        public V get(Object key) {
 			if (containsKey(key)) {
                 return v;
             }
 			return null;
 		}
 
-		public int size() {
+		@Override
+        public int size() {
 			return 1;
 		}
 
-		public Set<Map.Entry<K, V>> entrySet() {
+		@Override
+        public Set<Map.Entry<K, V>> entrySet() {
 			return new AbstractSet<Map.Entry<K, V>>() {
-				public boolean contains(Object object) {
+				@Override
+                public boolean contains(Object object) {
 					if (object instanceof Map.Entry) {
 						Map.Entry<?, ?> entry = (Map.Entry) object;
 						return containsKey(entry.getKey())
@@ -292,11 +318,13 @@ public class Collections {
 					return false;
 				}
 
-				public int size() {
+				@Override
+                public int size() {
 					return 1;
 				}
 
-				public Iterator<Map.Entry<K, V>> iterator() {
+				@Override
+                public Iterator<Map.Entry<K, V>> iterator() {
 					return new Iterator<Map.Entry<K, V>>() {
 						boolean hasNext = true;
 
@@ -308,7 +336,8 @@ public class Collections {
 							if (hasNext) {
 								hasNext = false;
 								return new Map.Entry<K, V>() {
-									public boolean equals(Object object) {
+									@Override
+                                    public boolean equals(Object object) {
 										return contains(object);
 									}
 
@@ -320,7 +349,8 @@ public class Collections {
 										return v;
 									}
 
-									public int hashCode() {
+									@Override
+                                    public int hashCode() {
 										return (k == null ? 0 : k.hashCode())
 												^ (v == null ? 0 : v.hashCode());
 									}
@@ -329,9 +359,8 @@ public class Collections {
 										throw new UnsupportedOperationException();
 									}
 								};
-							} else {
-                                throw new NoSuchElementException();
-                            }
+							}
+                            throw new NoSuchElementException();
 						}
 
 						public void remove() {
@@ -431,7 +460,8 @@ public class Collections {
 			}
 		}
 
-		public String toString() {
+		@Override
+        public String toString() {
 			synchronized (mutex) {
 				return c.toString();
 			}
@@ -462,7 +492,8 @@ public class Collections {
 			super(l, mutex);
 		}
 
-		public List<E> subList(int start, int end) {
+		@Override
+        public List<E> subList(int start, int end) {
 			synchronized (mutex) {
 				return new SynchronizedRandomAccessList<E>(list
 						.subList(start, end), mutex);
@@ -512,7 +543,8 @@ public class Collections {
 			}
 		}
 
-		public boolean equals(Object object) {
+		@Override
+        public boolean equals(Object object) {
 			synchronized (mutex) {
 				return list.equals(object);
 			}
@@ -524,7 +556,8 @@ public class Collections {
 			}
 		}
 
-		public int hashCode() {
+		@Override
+        public int hashCode() {
 			synchronized (mutex) {
 				return list.hashCode();
 			}
@@ -595,9 +628,8 @@ public class Collections {
 		private Object readResolve() {
 			if (list instanceof RandomAccess) {
                 return new SynchronizedRandomAccessList<E>(list, mutex);
-            } else {
-                return this;
             }
+            return this;
 		}
 	}
 
@@ -641,7 +673,8 @@ public class Collections {
 			}
 		}
 
-		public boolean equals(Object object) {
+		@Override
+        public boolean equals(Object object) {
 			synchronized (mutex) {
 				return m.equals(object);
 			}
@@ -653,7 +686,8 @@ public class Collections {
 			}
 		}
 
-		public int hashCode() {
+		@Override
+        public int hashCode() {
 			synchronized (mutex) {
 				return m.hashCode();
 			}
@@ -701,7 +735,8 @@ public class Collections {
 			}
 		}
 
-		public String toString() {
+		@Override
+        public String toString() {
 			synchronized (mutex) {
 				return m.toString();
 			}
@@ -725,13 +760,15 @@ public class Collections {
 			super(set, mutex);
 		}
 
-		public boolean equals(Object object) {
+		@Override
+        public boolean equals(Object object) {
 			synchronized (mutex) {
 				return c.equals(object);
 			}
 		}
 
-		public int hashCode() {
+		@Override
+        public int hashCode() {
 			synchronized (mutex) {
 				return c.hashCode();
 			}
@@ -939,6 +976,7 @@ public class Collections {
             return c.toArray(array);
         }
 
+        @Override
         public String toString() {
             return c.toString();
         }
@@ -952,7 +990,8 @@ public class Collections {
 			super(l);
 		}
 
-		public List<E> subList(int start, int end) {
+		@Override
+        public List<E> subList(int start, int end) {
 			return new UnmodifiableRandomAccessList<E>(list.subList(start, end));
 		}
 
@@ -990,7 +1029,8 @@ public class Collections {
 			throw new UnsupportedOperationException();
 		}
 
-		public boolean equals(Object object) {
+		@Override
+        public boolean equals(Object object) {
 			return list.equals(object);
 		}
 
@@ -998,7 +1038,8 @@ public class Collections {
 			return list.get(location);
 		}
 
-		public int hashCode() {
+		@Override
+        public int hashCode() {
 			return list.hashCode();
 		}
 
@@ -1086,9 +1127,8 @@ public class Collections {
 		private Object readResolve() {
 			if (list instanceof RandomAccess) {
                 return new UnmodifiableRandomAccessList<E>(list);
-            } else {
-                return this;
             }
+            return this;
 		}
 	}
 
@@ -1107,7 +1147,8 @@ public class Collections {
 					mapEntry = entry;
 				}
 
-				public boolean equals(Object object) {
+				@Override
+                public boolean equals(Object object) {
 					return mapEntry.equals(object);
 				}
 
@@ -1119,7 +1160,8 @@ public class Collections {
 					return mapEntry.getValue();
 				}
 
-				public int hashCode() {
+				@Override
+                public int hashCode() {
 					return mapEntry.hashCode();
 				}
 
@@ -1127,7 +1169,8 @@ public class Collections {
 					throw new UnsupportedOperationException();
 				}
 
-				public String toString() {
+				@Override
+                public String toString() {
 					return mapEntry.toString();
 				}
 			}
@@ -1136,7 +1179,8 @@ public class Collections {
 				super(set);
 			}
 
-			public Iterator<Map.Entry<K, V>> iterator() {
+			@Override
+            public Iterator<Map.Entry<K, V>> iterator() {
 				return new Iterator<Map.Entry<K, V>>() {
 					Iterator<Map.Entry<K, V>> iterator = c.iterator();
 
@@ -1154,7 +1198,8 @@ public class Collections {
 				};
 			}
 
-			public Object[] toArray() {
+			@Override
+            public Object[] toArray() {
 				int length = c.size();
 				Object[] result = new Object[length];
 				Iterator<?> it = iterator();
@@ -1164,7 +1209,8 @@ public class Collections {
 				return result;
 			}
 
-			@SuppressWarnings("unchecked")
+			@Override
+            @SuppressWarnings("unchecked")
             public <T> T[] toArray(T[] contents) {
 				int size = c.size(), index = 0;
 				Iterator<Map.Entry<K, V>> it = iterator();
@@ -1202,7 +1248,8 @@ public class Collections {
 			return new UnmodifiableEntrySet<K, V>(m.entrySet());
 		}
 
-		public boolean equals(Object object) {
+		@Override
+        public boolean equals(Object object) {
 			return m.equals(object);
 		}
 
@@ -1210,7 +1257,8 @@ public class Collections {
 			return m.get(key);
 		}
 
-		public int hashCode() {
+		@Override
+        public int hashCode() {
 			return m.hashCode();
 		}
 
@@ -1242,7 +1290,8 @@ public class Collections {
 			return new UnmodifiableCollection<V>(m.values());
 		}
 
-		public String toString() {
+		@Override
+        public String toString() {
 		    return m.toString();
 		}
 	}
@@ -1255,11 +1304,13 @@ public class Collections {
 			super(set);
 		}
 
-		public boolean equals(Object object) {
+		@Override
+        public boolean equals(Object object) {
 			return c.equals(object);
 		}
 
-		public int hashCode() {
+		@Override
+        public int hashCode() {
 			return c.hashCode();
 		}
 	}
@@ -1368,9 +1419,8 @@ public class Collections {
 				if ((result = key.compareTo(it.next())) <= 0) {
                     if (result == 0) {
                         return it.previousIndex();
-                    } else {
-                        return -it.previousIndex() - 1;
                     }
+                    return -it.previousIndex() - 1;
                 }
 			}
 			return -list.size() - 1;
@@ -1421,9 +1471,8 @@ public class Collections {
 				if ((result = comparator.compare(object, it.next())) <= 0) {
                     if (result == 0) {
                         return it.previousIndex();
-                    } else {
-                        return -it.previousIndex() - 1;
                     }
+                    return -it.previousIndex() - 1;
                 }
 			}
 			return -list.size() - 1;
@@ -1992,13 +2041,12 @@ public class Collections {
 					Object element = sublistIt.next();
 					if (!listIt.hasNext()) {
                         return -1;
-                    } else {
-						if ((element == null) ? listIt.next() != null
-								: !element.equals(listIt.next())) {
-							difFound = true;
-							break;
-						}
-					}
+                    }
+                    if ((element == null) ? listIt.next() != null
+                    		: !element.equals(listIt.next())) {
+                    	difFound = true;
+                    	break;
+                    }
 				}
 				// All elements of sublist are found in main list
 				// starting from index.
@@ -2057,13 +2105,12 @@ public class Collections {
 					Object element = sublistIt.previous();
 					if (!listIt.hasPrevious()) {
                         return -1;
-                    } else {
-						if ((element == null) ? listIt.previous() != null
-								: !element.equals(listIt.previous())) {
-							difFound = true;
-							break;
-						}
-					}
+                    }
+                    if ((element == null) ? listIt.previous() != null
+                    		: !element.equals(listIt.previous())) {
+                    	difFound = true;
+                    	break;
+                    }
 				}
 				// All elements of sublist are found in main list
 				// starting from listIt.nextIndex().
@@ -2125,9 +2172,8 @@ public class Collections {
         }
 		if (list instanceof RandomAccess) {
             return new SynchronizedRandomAccessList<T>(list);
-        } else {
-            return new SynchronizedList<T>(list);
         }
+        return new SynchronizedList<T>(list);
 	}
 
 	/**
@@ -2223,9 +2269,8 @@ public class Collections {
         }
 		if (list instanceof RandomAccess) {
             return new UnmodifiableRandomAccessList<E>((List<E>)list);
-        } else {
-            return new UnmodifiableList<E>((List<E>)list);
         }
+        return new UnmodifiableList<E>((List<E>)list);
 	}
 
 	/**
@@ -2397,9 +2442,8 @@ public class Collections {
     public static <E> List<E> checkedList(List<E> list, Class<E> type) {
         if (list instanceof RandomAccess) {
             return new CheckedRandomAccessList<E>(list, type);
-        } else {
-            return new CheckedList<E>(list, type);
         }
+        return new CheckedList<E>(list, type);
     }
 
     /**
@@ -2639,6 +2683,7 @@ public class Collections {
         /**
          * @see java.lang.Object#toString()
          */
+        @Override
         public String toString() {
             return c.toString();
         }
@@ -2832,6 +2877,7 @@ public class Collections {
         /**
          * @see java.util.List#equals(Object)
          */
+        @Override
         public boolean equals(Object obj) {
             return l.equals(obj);
         }
@@ -2839,6 +2885,7 @@ public class Collections {
         /**
          * @see java.util.List#hashCode()
          */
+        @Override
         public int hashCode() {
             return l.hashCode();
         }
@@ -2885,6 +2932,7 @@ public class Collections {
         /**
          * @see java.util.Set#equals(Object)
          */
+        @Override
         public boolean equals(Object obj) {
             return c.equals(obj);
         }
@@ -2892,6 +2940,7 @@ public class Collections {
         /**
          * @see java.util.Set#hashCode()
          */
+        @Override
         public int hashCode() {
             return c.hashCode();
         }
@@ -3028,6 +3077,7 @@ public class Collections {
         /**
          * @see java.util.Map#equals(Object)
          */
+        @Override
         public boolean equals(Object obj) {
             return m.equals(obj);
         }
@@ -3035,6 +3085,7 @@ public class Collections {
         /**
          * @see java.util.Map#hashCode()
          */
+        @Override
         public int hashCode() {
             return m.hashCode();
         }
@@ -3042,6 +3093,7 @@ public class Collections {
         /**
          * @see java.lang.Object#toString()
          */
+        @Override
         public String toString() {
             return m.toString();
         }
@@ -3095,6 +3147,7 @@ public class Collections {
             /**
              * @see java.util.Map.Entry#equals(Object)
              */
+            @Override
             public boolean equals(Object obj) {
                 return e.equals(obj);
             }
@@ -3102,6 +3155,7 @@ public class Collections {
             /**
              * @see java.util.Map.Entry#hashCode()
              */
+            @Override
             public int hashCode() {
                 return e.hashCode();
             }
@@ -3242,6 +3296,7 @@ public class Collections {
             /**
              * @see java.util.Set#hashCode()
              */
+            @Override
             public int hashCode() {
                 return s.hashCode();
             }
@@ -3249,6 +3304,7 @@ public class Collections {
             /**
              * @see java.util.Set#equals(Object)
              */
+            @Override
             public boolean equals(Object object) {
                 return s.equals(object);
             }
