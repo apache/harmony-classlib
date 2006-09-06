@@ -15,7 +15,6 @@
 
 package org.apache.harmony.luni.internal.net.www.protocol.ftp;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
@@ -26,54 +25,62 @@ import java.net.Socket;
  */
 class FtpURLInputStream extends InputStream {
 
-	InputStream is; // Actual input stream
+    private InputStream is; // Actual input stream
 
-	java.net.Socket controlSocket;
+    private Socket controlSocket;
 
-	public FtpURLInputStream(InputStream is, Socket controlSocket) {
-		this.is = is;
-		this.controlSocket = controlSocket;
-	}
+    public FtpURLInputStream(InputStream is, Socket controlSocket) {
+        this.is = is;
+        this.controlSocket = controlSocket;
+    }
 
-	public int read() throws IOException {
-		return is.read();
-	}
+    @Override
+    public int read() throws IOException {
+        return is.read();
+    }
 
-	public int read(byte[] buf, int off, int nbytes) throws IOException {
-		return is.read(buf, off, nbytes);
-	}
+    @Override
+    public int read(byte[] buf, int off, int nbytes) throws IOException {
+        return is.read(buf, off, nbytes);
+    }
 
-	public synchronized void reset() throws IOException {
-		is.reset();
-	}
+    @Override
+    public synchronized void reset() throws IOException {
+        is.reset();
+    }
 
-	public synchronized void mark(int limit) {
-		is.mark(limit);
-	}
+    @Override
+    public synchronized void mark(int limit) {
+        is.mark(limit);
+    }
 
-	public boolean markSupported() {
-		return is.markSupported();
-	}
+    @Override
+    public boolean markSupported() {
+        return is.markSupported();
+    }
 
-	public void close() {
-		try {
-			is.close();
-		} catch (Exception e) {
-			// ignored
-		}
-		try {
-			controlSocket.close();
-		} catch (Exception e) {
-			//ignored
-		}
-	}
+    @Override
+    public void close() {
+        try {
+            is.close();
+        } catch (Exception e) {
+            // ignored
+        }
+        try {
+            controlSocket.close();
+        } catch (Exception e) {
+            // ignored
+        }
+    }
 
-	public int available() throws IOException {
-		return is.available();
-	}
+    @Override
+    public int available() throws IOException {
+        return is.available();
+    }
 
-	public long skip(long sbytes) throws IOException {
-		return is.skip(sbytes);
-	}
+    @Override
+    public long skip(long sbytes) throws IOException {
+        return is.skip(sbytes);
+    }
 
 }

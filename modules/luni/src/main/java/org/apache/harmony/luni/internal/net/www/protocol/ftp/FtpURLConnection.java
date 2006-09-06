@@ -15,7 +15,6 @@
 
 package org.apache.harmony.luni.internal.net.www.protocol.ftp;
 
-
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -44,436 +43,439 @@ import org.apache.harmony.luni.util.Msg;
 
 public class FtpURLConnection extends URLConnection {
 
-	Socket controlSocket, dataSocket;
+    private static final int FTP_PORT = 21;
 
-	ServerSocket acceptSocket;
+    // FTP Reply Constants
+    private static final int FTP_DATAOPEN = 125;
 
-	InputStream ctrlInput, inputStream;
+    private static final int FTP_OPENDATA = 150;
 
-	OutputStream ctrlOutput;
+    private static final int FTP_OK = 200;
 
-	private String replyCode, hostName;
+    private static final int FTP_USERREADY = 220;
 
-	int dataPort;
+    private static final int FTP_TRANSFEROK = 226;
 
-	private static final int FTP_PORT = 21;
+    // private static final int FTP_PASV = 227;
 
-	private String PASSWORD = "";
+    private static final int FTP_LOGGEDIN = 230;
 
-	private String USERNAME = "anonymous";
+    private static final int FTP_FILEOK = 250;
 
-	// FTP Reply Constants
-	private static final int FTP_DATAOPEN = 125;
+    private static final int FTP_PASWD = 331;
 
-	private static final int FTP_OPENDATA = 150;
+    // private static final int FTP_DATAERROR = 451;
 
-	private static final int FTP_OK = 200;
+    // private static final int FTP_ERROR = 500;
 
-	private static final int FTP_USERREADY = 220;
+    private static final int FTP_NOTFOUND = 550;
 
-	private static final int FTP_TRANSFEROK = 226;
+    private Socket controlSocket;
 
-	//private static final int FTP_PASV = 227;
+    private Socket dataSocket;
 
-	private static final int FTP_LOGGEDIN = 230;
+    private ServerSocket acceptSocket;
 
-	private static final int FTP_FILEOK = 250;
+    private InputStream ctrlInput;
 
-	private static final int FTP_PASWD = 331;
+    private InputStream inputStream;
 
-	//private static final int FTP_DATAERROR = 451;
+    private OutputStream ctrlOutput;
 
-	//private static final int FTP_ERROR = 500;
+    private int dataPort;
 
-	private static final int FTP_NOTFOUND = 550;
-	
-	private Proxy proxy = null;
-	
-	private Proxy currentProxy = null;
-	
-	private URI uri = null;
+    private String username = "anonymous";
 
-	/**
-	 * FtpURLConnection constructor comment.
-	 * 
-	 * @param url
-	 *            java.net.URL
-	 */
-	protected FtpURLConnection(URL url) {
-		super(url);
-		hostName = url.getHost();
-		String parse = url.getUserInfo();
-		if (parse != null) {
-			int split = parse.indexOf(':');
-			if (split >= 0) {
-				USERNAME = parse.substring(0, split);
-				PASSWORD = parse.substring(split + 1);
-			} else {
-                USERNAME = parse;
+    private String password = "";
+
+    private String replyCode;
+
+    private String hostName;
+
+    private Proxy proxy;
+
+    private Proxy currentProxy;
+
+    private URI uri;
+
+    /**
+     * FtpURLConnection constructor comment.
+     * 
+     * @param url
+     */
+    protected FtpURLConnection(URL url) {
+        super(url);
+        hostName = url.getHost();
+        String parse = url.getUserInfo();
+        if (parse != null) {
+            int split = parse.indexOf(':');
+            if (split >= 0) {
+                username = parse.substring(0, split);
+                password = parse.substring(split + 1);
+            } else {
+                username = parse;
             }
-		}
-		uri = null;
-		try {
-			uri = url.toURI();
-		} catch (URISyntaxException e) {
-			// do nothing.
-		}
-	}
+        }
+        uri = null;
+        try {
+            uri = url.toURI();
+        } catch (URISyntaxException e) {
+            // do nothing.
+        }
+    }
 
-	/**
-	 * FtpURLConnection constructor.
-	 * 
-	 * @param url
-	 *            java.net.URL
-	 * @param proxy
-	 *            java.net.Proxy
-	 */
-	protected FtpURLConnection(URL url, Proxy proxy) {
-		this(url);
-		this.proxy = proxy;
-	}
-	
-	/* Change the server directory to that specified in the URL */
-	private void cd() throws IOException {
-		int idx = url.getFile().lastIndexOf('/');
+    /**
+     * FtpURLConnection constructor.
+     * 
+     * @param url
+     * @param proxy
+     */
+    protected FtpURLConnection(URL url, Proxy proxy) {
+        this(url);
+        this.proxy = proxy;
+    }
 
-		if (idx > 0) {
-			String dir = url.getFile().substring(0, idx);
-			write("CWD " + dir + "\r\n");
-			int reply = getReply();
-			if (reply != FTP_FILEOK && dir.length() > 0 && dir.charAt(0) == '/') {
-				write("CWD " + dir.substring(1) + "\r\n");
-				reply = getReply();
-			}
-			if (reply != FTP_FILEOK) {
+    /**
+     * Change the server directory to that specified in the URL
+     */
+    private void cd() throws IOException {
+        int idx = url.getFile().lastIndexOf('/');
+
+        if (idx > 0) {
+            String dir = url.getFile().substring(0, idx);
+            write("CWD " + dir + "\r\n");
+            int reply = getReply();
+            if (reply != FTP_FILEOK && dir.length() > 0 && dir.charAt(0) == '/') {
+                write("CWD " + dir.substring(1) + "\r\n");
+                reply = getReply();
+            }
+            if (reply != FTP_FILEOK) {
                 throw new IOException(Msg.getString("K0094"));
             }
-		}
-	}
+        }
+    }
 
-	/**
-	 * Establishes the connection to the resource specified by this
-	 * <code>URL</code>
-	 * 
-	 * @see #connected
-	 * @see java.io.IOException
-	 * @see URLStreamHandler
-	 */
-	public void connect() throws IOException {
-		// Use system-wide ProxySelect to select proxy list,
-		// then try to connect via elements in the proxy list.
-		List<Proxy> proxyList = null;
-		if(null != proxy){
-			proxyList = new ArrayList<Proxy>(1);
-			proxyList.add(proxy);
-		}else{
-			proxyList = NetUtil.getProxyList(uri);
-		}
-		if(null == proxyList){
-			currentProxy = null;
-			connectInternal();
-		}else{
-			ProxySelector selector = ProxySelector.getDefault();
-			Iterator<Proxy> iter = proxyList.iterator();
-			boolean connectOK = false;
-			while(iter.hasNext() && !connectOK){
-				currentProxy = iter.next();
-				try{
-					connectInternal();
-					connectOK = true;
-				}catch(IOException ioe){
-					// If connect failed, callback "connectFailed" 
-					// should be invoked.
-					if(null != selector && Proxy.NO_PROXY != currentProxy){
-						selector.connectFailed(uri, currentProxy.address(), ioe);
-					}
-				}
-			}
-			if(!connectOK){
-				throw new IOException(Msg.getString("K0097"));
-			}
-		}
-	}
-	private void connectInternal() throws IOException {
-		int port = url.getPort();
+    /**
+     * Establishes the connection to the resource specified by this
+     * <code>URL</code>
+     * 
+     * @see #connected
+     * @see java.io.IOException
+     * @see URLStreamHandler
+     */
+    @Override
+    public void connect() throws IOException {
+        // Use system-wide ProxySelect to select proxy list,
+        // then try to connect via elements in the proxy list.
+        List<Proxy> proxyList = null;
+        if (null != proxy) {
+            proxyList = new ArrayList<Proxy>(1);
+            proxyList.add(proxy);
+        } else {
+            proxyList = NetUtil.getProxyList(uri);
+        }
+        if (null == proxyList) {
+            currentProxy = null;
+            connectInternal();
+        } else {
+            ProxySelector selector = ProxySelector.getDefault();
+            Iterator<Proxy> iter = proxyList.iterator();
+            boolean connectOK = false;
+            while (iter.hasNext() && !connectOK) {
+                currentProxy = iter.next();
+                try {
+                    connectInternal();
+                    connectOK = true;
+                } catch (IOException ioe) {
+                    // If connect failed, callback "connectFailed"
+                    // should be invoked.
+                    if (null != selector && Proxy.NO_PROXY != currentProxy) {
+                        selector.connectFailed(uri, currentProxy.address(), ioe);
+                    }
+                }
+            }
+            if (!connectOK) {
+                throw new IOException(Msg.getString("K0097"));
+            }
+        }
+    }
+
+    private void connectInternal() throws IOException {
+        int port = url.getPort();
         int connectTimeout = getConnectTimeout();
-		if (port <= 0) {
+        if (port <= 0) {
             port = FTP_PORT;
         }
-		if (null == currentProxy || Proxy.Type.HTTP == currentProxy.type()) {
+        if (null == currentProxy || Proxy.Type.HTTP == currentProxy.type()) {
             controlSocket = new Socket();
         } else {
             controlSocket = new Socket(currentProxy);
-        }		
+        }
         InetSocketAddress addr = new InetSocketAddress(hostName, port);
         controlSocket.connect(addr, connectTimeout);
-		connected = true;
-		ctrlOutput = controlSocket.getOutputStream();
-		ctrlInput = controlSocket.getInputStream();
-		login();
-		setType();
-		if (!getDoInput()) {
+        connected = true;
+        ctrlOutput = controlSocket.getOutputStream();
+        ctrlInput = controlSocket.getInputStream();
+        login();
+        setType();
+        if (!getDoInput()) {
             cd();
         }
 
-		try {
-			acceptSocket = new ServerSocket(0);
-			dataPort = acceptSocket.getLocalPort();
-			/* Cannot set REUSEADDR so we need to send a PORT command */
-			port();
+        try {
+            acceptSocket = new ServerSocket(0);
+            dataPort = acceptSocket.getLocalPort();
+            /* Cannot set REUSEADDR so we need to send a PORT command */
+            port();
             if (connectTimeout == 0) {
                 // set timeout rather than zero as before
                 connectTimeout = 3000;
             }
             acceptSocket.setSoTimeout(getConnectTimeout());
-			if (getDoInput()) {
+            if (getDoInput()) {
                 getFile();
             } else {
                 sendFile();
             }
-			dataSocket = acceptSocket.accept();
+            dataSocket = acceptSocket.accept();
             dataSocket.setSoTimeout(getReadTimeout());
-			acceptSocket.close();
-		} catch (InterruptedIOException e) {
-			throw new IOException(Msg.getString("K0095"));
-		}
-		if (getDoInput()) {
-            inputStream = new FtpURLInputStream(new BufferedInputStream(
-					dataSocket.getInputStream()), controlSocket);
+            acceptSocket.close();
+        } catch (InterruptedIOException e) {
+            throw new IOException(Msg.getString("K0095"));
+        }
+        if (getDoInput()) {
+            inputStream = new FtpURLInputStream(new BufferedInputStream(dataSocket
+                    .getInputStream()), controlSocket);
         }
 
-	}
+    }
 
-	/*
-	 * Answers the content type of the resource. Just takes a guess based on the
-	 * name.
-	 */
-	public String getContentType() {
-		String result = guessContentTypeFromName(url.getFile());
-		if (result == null) {
+    /**
+     * Answers the content type of the resource. Just takes a guess based on the
+     * name.
+     */
+    @Override
+    public String getContentType() {
+        String result = guessContentTypeFromName(url.getFile());
+        if (result == null) {
             return MimeTable.UNKNOWN;
         }
-		return result;
-	}
+        return result;
+    }
 
-	private void getFile() throws IOException {
-		int reply;
-		String file = url.getFile();
-		write("RETR " + file + "\r\n");
-		reply = getReply();
-		if (reply == FTP_NOTFOUND && file.length() > 0 && file.charAt(0) == '/') {
-			write("RETR " + file.substring(1) + "\r\n");
-			reply = getReply();
-		}
-		if (!(reply == FTP_OPENDATA || reply == FTP_TRANSFEROK)) {
+    private void getFile() throws IOException {
+        int reply;
+        String file = url.getFile();
+        write("RETR " + file + "\r\n");
+        reply = getReply();
+        if (reply == FTP_NOTFOUND && file.length() > 0 && file.charAt(0) == '/') {
+            write("RETR " + file.substring(1) + "\r\n");
+            reply = getReply();
+        }
+        if (!(reply == FTP_OPENDATA || reply == FTP_TRANSFEROK)) {
             throw new FileNotFoundException(Msg.getString("K0096", reply));
         }
-	}
+    }
 
-	/**
-	 * Creates a input stream for writing to this URL Connection.
-	 * 
-	 * @return InputStream The input stream to write to
-	 * @throws IOException
-	 *                Cannot read from URL or error creating InputStream
-	 * 
-	 * @see #getContent()
-	 * @see #getOutputStream()
-	 * @see java.io.InputStream
-	 * @see java.io.IOException
-	 * 
-	 */
-
-	public InputStream getInputStream() throws IOException {
-		if (!connected) {
+    /**
+     * Creates a input stream for writing to this URL Connection.
+     * 
+     * @return The input stream to write to
+     * @throws IOException Cannot read from URL or error creating InputStream
+     * 
+     * @see #getContent()
+     * @see #getOutputStream()
+     * @see java.io.InputStream
+     * @see java.io.IOException
+     * 
+     */
+    @Override
+    public InputStream getInputStream() throws IOException {
+        if (!connected) {
             connect();
         }
-		return inputStream;
-	}
+        return inputStream;
+    }
 
-	/**
-	 * Answers the permission object (in this case, SocketPermission) with the
-	 * host and the port number as the target name and "resolve, connect" as the
-	 * action list.
-	 * 
-	 * @return java.security.Permission the permission object required for this
-	 *         connection
-	 * @throws IOException
-	 *                thrown when an IO exception occurs during the creation of
-	 *                the permission object.
-	 */
-	public Permission getPermission() throws IOException {
-		int port = url.getPort();
-		if (port <= 0) {
+    /**
+     * Answers the permission object (in this case, SocketPermission) with the
+     * host and the port number as the target name and "resolve, connect" as the
+     * action list.
+     * 
+     * @return the permission object required for this connection
+     * @throws IOException thrown when an IO exception occurs during the
+     *         creation of the permission object.
+     */
+    @Override
+    public Permission getPermission() throws IOException {
+        int port = url.getPort();
+        if (port <= 0) {
             port = FTP_PORT;
         }
-		return new SocketPermission(hostName + ":" + port, "connect, resolve");
-	}
+        return new SocketPermission(hostName + ":" + port, "connect, resolve");
+    }
 
-	/**
-	 * Creates a output stream for writing to this URL Connection.
-	 * 
-	 * @return OutputStream The output stream to write to
-	 * @throws IOException
-	 *                Thrown when the OutputStream could not be created
-	 * 
-	 * @see #getContent()
-	 * @see #getInputStream()
-	 * @see java.io.IOException
-	 * 
-	 */
+    /**
+     * Creates a output stream for writing to this URL Connection.
+     * 
+     * @return The output stream to write to
+     * @throws when the OutputStream could not be created
+     * 
+     * @see #getContent()
+     * @see #getInputStream()
+     * @see java.io.IOException
+     * 
+     */
 
-	public OutputStream getOutputStream() throws IOException {
-		if (!connected) {
+    @Override
+    public OutputStream getOutputStream() throws IOException {
+        if (!connected) {
             connect();
         }
-		return dataSocket.getOutputStream();
-	}
+        return dataSocket.getOutputStream();
+    }
 
-	private int getReply() throws IOException {
-		byte[] code = new byte[3];
-		ctrlInput.read(code, 0, code.length);
-		replyCode = new String(code, "ISO8859_1");
-		boolean multiline = false;
-		if (ctrlInput.read() == '-') {
+    private int getReply() throws IOException {
+        byte[] code = new byte[3];
+        ctrlInput.read(code, 0, code.length);
+        replyCode = new String(code, "ISO8859_1");
+        boolean multiline = false;
+        if (ctrlInput.read() == '-') {
             multiline = true;
         }
-		readLine(); /* Skip the rest of the first line */
-		if (multiline) {
+        readLine(); /* Skip the rest of the first line */
+        if (multiline) {
             while (readMultiLine()) {/* Read all of a multiline reply */
-			}
+            }
         }
-		return Integer.parseInt(new String(code, "ISO8859_1"));
-	}
+        return Integer.parseInt(new String(code, "ISO8859_1"));
+    }
 
-	private void login() throws IOException {
-		int reply;
-		reply = getReply();
-		if (reply == FTP_USERREADY) {
-		} else {
-			throw new IOException(Msg.getString("K0097", url.getHost()));
-		}
-		write("USER " + USERNAME + "\r\n");
-		reply = getReply();
-		if (reply == FTP_PASWD || reply == FTP_LOGGEDIN) {
-		} else {
-			throw new IOException(Msg.getString("K0098", url.getHost()));
-		}
-		if (reply == FTP_PASWD) {
-			write("PASS " + PASSWORD + "\r\n");
-			reply = getReply();
-			if (!(reply == FTP_OK || reply == FTP_USERREADY || reply == FTP_LOGGEDIN)) {
+    private void login() throws IOException {
+        int reply;
+        reply = getReply();
+        if (reply == FTP_USERREADY) {
+        } else {
+            throw new IOException(Msg.getString("K0097", url.getHost()));
+        }
+        write("USER " + username + "\r\n");
+        reply = getReply();
+        if (reply == FTP_PASWD || reply == FTP_LOGGEDIN) {
+        } else {
+            throw new IOException(Msg.getString("K0098", url.getHost()));
+        }
+        if (reply == FTP_PASWD) {
+            write("PASS " + password + "\r\n");
+            reply = getReply();
+            if (!(reply == FTP_OK || reply == FTP_USERREADY || reply == FTP_LOGGEDIN)) {
                 throw new IOException(Msg.getString("K0098", url.getHost()));
             }
-		}
-	}
+        }
+    }
 
-	private void port() throws IOException {
-		write("PORT "
-				+ controlSocket.getLocalAddress().getHostAddress().replace('.',
-						',') + ',' + (dataPort >> 8) + ',' + (dataPort & 255)
-				+ "\r\n");
-		if (getReply() != FTP_OK) {
+    private void port() throws IOException {
+        write("PORT " + controlSocket.getLocalAddress().getHostAddress().replace('.', ',')
+                + ',' + (dataPort >> 8) + ',' + (dataPort & 255) + "\r\n");
+        if (getReply() != FTP_OK) {
             throw new IOException(Msg.getString("K0099"));
         }
-	}
+    }
 
-	/* Read a line of text and return it for possible parsing */
-	private String readLine() throws IOException {
-		StringBuffer sb = new StringBuffer();
-		int c;
-		while ((c = ctrlInput.read()) != '\n') {
-			sb.append((char) c);
-		}
-		return sb.toString();
-	}
+    /**
+     * Read a line of text and return it for possible parsing
+     */
+    private String readLine() throws IOException {
+        StringBuffer sb = new StringBuffer();
+        int c;
+        while ((c = ctrlInput.read()) != '\n') {
+            sb.append((char) c);
+        }
+        return sb.toString();
+    }
 
-	private boolean readMultiLine() throws IOException {
-		String line = readLine();
-		if (line.length() < 4) {
+    private boolean readMultiLine() throws IOException {
+        String line = readLine();
+        if (line.length() < 4) {
             return true;
         }
-		if (line.substring(0, 3).equals(replyCode)
-				&& (line.charAt(3) == (char) 32)) {
+        if (line.substring(0, 3).equals(replyCode) && (line.charAt(3) == (char) 32)) {
             return false;
         }
-		return true;
-	}
+        return true;
+    }
 
-	/*
-	 * Issue the STOR command to the server with the file as the parameter
-	 */
-	private void sendFile() throws IOException {
-		int reply;
-		write("STOR "
-				+ url.getFile().substring(url.getFile().lastIndexOf('/') + 1,
-						url.getFile().length()) + "\r\n");
-		reply = getReply();
-		if (!(reply == FTP_OPENDATA || reply == FTP_OK || reply == FTP_DATAOPEN)) {
+    /**
+     * Issue the STOR command to the server with the file as the parameter
+     */
+    private void sendFile() throws IOException {
+        int reply;
+        write("STOR "
+                + url.getFile().substring(url.getFile().lastIndexOf('/') + 1,
+                        url.getFile().length()) + "\r\n");
+        reply = getReply();
+        if (!(reply == FTP_OPENDATA || reply == FTP_OK || reply == FTP_DATAOPEN)) {
             throw new IOException(Msg.getString("K009a"));
         }
-	}
+    }
 
-	/**
-	 * Set the flag if this <code>URLConnection</code> supports input (read).
-	 * It cannot be set after the connection is made. FtpURLConnections cannot
-	 * support both input and output
-	 * 
-	 * @param newValue
-	 *            boolean
-	 * 
-	 * @throws IllegalAccessError
-	 *                Exception thrown when this method attempts to change the
-	 *                flag after connected
-	 * 
-	 * @see #doInput
-	 * @see #getDoInput()
-	 * @see java.lang.IllegalAccessError
-	 * @see #setDoInput(boolean)
-	 */
-	public void setDoInput(boolean newValue) {
-		if (connected) {
-			throw new IllegalAccessError();
-		}
-		this.doInput = newValue;
-		this.doOutput = !newValue;
-	}
+    /**
+     * Set the flag if this <code>URLConnection</code> supports input (read).
+     * It cannot be set after the connection is made. FtpURLConnections cannot
+     * support both input and output
+     * 
+     * @param newValue *
+     * @throws IllegalAccessError when this method attempts to change the flag
+     *         after connected
+     * 
+     * @see #doInput
+     * @see #getDoInput()
+     * @see java.lang.IllegalAccessError
+     * @see #setDoInput(boolean)
+     */
+    @Override
+    public void setDoInput(boolean newValue) {
+        if (connected) {
+            throw new IllegalAccessError();
+        }
+        this.doInput = newValue;
+        this.doOutput = !newValue;
+    }
 
-	/**
-	 * Set the flag if this <code>URLConnection</code> supports output(read).
-	 * It cannot be set after the connection is made.\ FtpURLConnections cannot
-	 * support both input and output.
-	 * 
-	 * @param newValue
-	 *            boolean
-	 * 
-	 * @throws IllegalAccessError
-	 *                Exception thrown when this method attempts to change the
-	 *                flag after connected
-	 * 
-	 * @see #doOutput
-	 * @see java.lang.IllegalAccessError
-	 * @see #setDoOutput(boolean)
-	 */
-	public void setDoOutput(boolean newValue) {
-		if (connected) {
-			throw new IllegalAccessError();
-		}
-		this.doOutput = newValue;
-		this.doInput = !newValue;
-	}
+    /**
+     * Set the flag if this <code>URLConnection</code> supports output(read).
+     * It cannot be set after the connection is made.\ FtpURLConnections cannot
+     * support both input and output.
+     * 
+     * @param newValue
+     *             
+     * @throws IllegalAccessError
+     *                when this method attempts to change the
+     *                flag after connected
+     * 
+     * @see #doOutput
+     * @see java.lang.IllegalAccessError
+     * @see #setDoOutput(boolean)
+     */
+    @Override
+    public void setDoOutput(boolean newValue) {
+        if (connected) {
+            throw new IllegalAccessError();
+        }
+        this.doOutput = newValue;
+        this.doInput = !newValue;
+    }
 
-	/*
-	 Set the type of the file transfer. Only Image is supported
-	 */
-	private void setType() throws IOException {
-		write("TYPE I\r\n");
-		if (getReply() != FTP_OK) {
+    /**
+     * Set the type of the file transfer. Only Image is supported
+     */
+    private void setType() throws IOException {
+        write("TYPE I\r\n");
+        if (getReply() != FTP_OK) {
             throw new IOException(Msg.getString("K009b"));
         }
-	}
+    }
 
-	private void write(String command) throws IOException {
-		ctrlOutput.write(command.getBytes("ISO8859_1"));
-	}
+    private void write(String command) throws IOException {
+        ctrlOutput.write(command.getBytes("ISO8859_1"));
+    }
 }
