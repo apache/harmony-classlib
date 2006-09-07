@@ -292,12 +292,8 @@ public class Timestamp extends Date {
      * @return A string representing the instant defined by the Timestamp, in
      *         JDBC Timestamp escape format
      */
+    @Override
     public String toString() {
-        // A SimpleDateFormat will lay out everything except the nanosecond
-        // value
-        SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss"); //$NON-NLS-1$
-
         /*
          * Use a DecimalFormat to lay out the nanosecond value as a simple
          * string of 9 integers, with leading Zeros
@@ -307,10 +303,29 @@ public class Timestamp extends Date {
         decimalFormat.setMaximumIntegerDigits(9);
         String theNanos = decimalFormat.format(nanos);
         theNanos = stripTrailingZeros(theNanos);
-        // Concatenate the nanosecond value with a dot - and return
-        return (dateFormat.format(this) + '.' + theNanos);
+        
+        String year = format((getYear() + 1900), 4);
+        String month = format((getMonth() + 1), 2);
+        String date = format(getDate(), 2);
+        String hours = format(getHours(), 2);
+        String minutes = format(getMinutes(), 2);
+        String seconds = format(getSeconds(), 2);
+
+        return year + '-' + month + '-' + date + ' ' + hours + ':' + minutes
+                + ':' + seconds + '.' + theNanos;
     }
 
+    /*
+     * Private method to format the time
+     */
+    private String format(int date, int digits) {
+        StringBuilder dateStringBuffer = new StringBuilder(String.valueOf(date));
+        while (dateStringBuffer.length() < digits) {
+            dateStringBuffer = dateStringBuffer.insert(0,'0');
+        }
+        return dateStringBuffer.toString();
+    }
+    
     /*
      * Private method to strip trailing '0' characters from a string. @param
      * inputString the starting string @return a string with the trailing zeros

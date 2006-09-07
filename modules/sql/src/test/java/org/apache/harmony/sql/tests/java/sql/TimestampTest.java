@@ -617,5 +617,23 @@ public class TimestampTest extends TestCase {
         Timestamp object = new Timestamp(100L);
         SerializationTest.verifyGolden(this, object);
     }
+    
+    /**
+     * @tests java.sql.Timestamp#toString()
+     */
+    public void test_toString() {
 
+        Timestamp t1 = new Timestamp(Long.MIN_VALUE);
+        assertEquals("292278994-08-17 07:12:55.192", t1.toString()); //$NON-NLS-1$
+
+        Timestamp t2 = new Timestamp(Long.MIN_VALUE + 1);
+        assertEquals("292278994-08-17 07:12:55.193", t2.toString()); //$NON-NLS-1$
+
+        Timestamp t3 = new Timestamp(Long.MIN_VALUE + 807);
+        assertEquals("292278994-08-17 07:12:55.999", t3.toString()); //$NON-NLS-1$
+
+        Timestamp t4 = new Timestamp(Long.MIN_VALUE + 808);
+        assertEquals("292269055-12-02 16:47:05.0", t4.toString()); //$NON-NLS-1$
+    }
+ 
 } // end class TimestampTest
