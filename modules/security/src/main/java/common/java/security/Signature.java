@@ -112,6 +112,9 @@ public abstract class Signature extends SignatureSpi {
      */
     public static Signature getInstance(String algorithm, String provider)
             throws NoSuchAlgorithmException, NoSuchProviderException {
+        if (algorithm == null) {
+            throw new NullPointerException("Algorithm is null");
+        }
         if ((provider == null) || (provider.length() == 0)) {
             throw new IllegalArgumentException(
                     "Provider is null or empty string");
@@ -121,7 +124,7 @@ public abstract class Signature extends SignatureSpi {
             throw new NoSuchProviderException("Provider " + provider
                     + " is not available");
         }
-        return getInstance(algorithm, p);
+        return getSignatureInstance(algorithm, p);
     }
 
     /**
@@ -130,12 +133,17 @@ public abstract class Signature extends SignatureSpi {
      */
     public static Signature getInstance(String algorithm, Provider provider)
             throws NoSuchAlgorithmException {
-        if (provider == null) {
-            throw new IllegalArgumentException("Provider is null");
-        }
         if (algorithm == null) {
             throw new NullPointerException("Algorithm is null");
         }
+        if (provider == null) {
+            throw new IllegalArgumentException("Provider is null");
+        }
+        return getSignatureInstance(algorithm, provider);
+    }
+    
+    private static Signature getSignatureInstance(String algorithm,
+            Provider provider) throws NoSuchAlgorithmException {
         Signature result;
         synchronized (engine) {
             engine.getInstance(algorithm, provider, null);
