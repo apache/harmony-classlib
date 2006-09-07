@@ -14,10 +14,6 @@
  *  limitations under the License.
  */
 
-/*
- * TODO to add writeObject(ObjectOutputStream) and readObject(ObjectInputStream) for optimal serialization
- */
-
 
 package org.apache.harmony.security.provider.crypto;
 
@@ -28,7 +24,9 @@ import org.apache.harmony.security.provider.crypto.RandomBitsSupplier;
 import org.apache.harmony.security.provider.crypto.SHA1Impl;
 
 import java.io.Serializable;
-
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.IOException;
 
 /**
  * This class extends the SecureRandomSpi class implementing all its abstract methods. <BR>
@@ -40,13 +38,10 @@ import java.io.Serializable;
  * The class implements the Serializable interface.
  */
 
-
-public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi 
-                                       implements Serializable, SHA1_Data {
-
+public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi implements
+        Serializable, SHA1_Data {
 
     private static final long serialVersionUID = 283736797212159675L;
-
 
     // constants to use in expressions operating on bytes in int and long variables:
     // END_FLAGS - final bytes in words to append to message; 
@@ -59,11 +54,13 @@ public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi
     private static final int[] END_FLAGS = { 0x80000000, 0x800000, 0x8000, 0x80 };
 
     private static final int[] RIGHT1 = { 0, 40, 48, 56 };
-    private static final int[] RIGHT2 = { 0,  8, 16, 24 };
-    private static final int[] LEFT   = { 0, 24, 16,  8 };
 
-    private static final int[] MASK   = { 0xFFFFFFFF, 0x00FFFFFF, 0x0000FFFF, 0x000000FF };
+    private static final int[] RIGHT2 = { 0, 8, 16, 24 };
 
+    private static final int[] LEFT = { 0, 24, 16, 8 };
+
+    private static final int[] MASK = { 0xFFFFFFFF, 0x00FFFFFF, 0x0000FFFF,
+            0x000000FF };
 
     // HASHBYTES_TO_USE defines # of bytes returned by "computeHash(byte[])"
     // to use to form byte array returning by the "nextBytes(byte[])" method
@@ -92,16 +89,19 @@ public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi
 
     private static final int COUNTER_BASE = 0;
 
-    private static final int   HASHCOPY_OFFSET = 0;
+    private static final int HASHCOPY_OFFSET = 0;
+
     private static final int EXTRAFRAME_OFFSET = 5;
-    private static final int      FRAME_OFFSET = 21;
+
+    private static final int FRAME_OFFSET = 21;
 
     private static final int MAX_BYTES = 48;
 
-    private static final int UNDEFINED  = 0;
-    private static final int SET_SEED   = 1;
-    private static final int NEXT_BYTES = 2;
+    private static final int UNDEFINED = 0;
 
+    private static final int SET_SEED = 1;
+
+    private static final int NEXT_BYTES = 2;
 
     private static SHA1PRNG_SecureRandomImpl myRandom;
 
@@ -152,25 +152,24 @@ public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi
     // - upon getting "setSeed(byte[])" invoked, single or first in row,
     //   remaining bytes are copied back. 
 
-
     /**
      *  Creates object and sets implementation variables to their initial values
-     */ 
+     */
     public SHA1PRNG_SecureRandomImpl() {
 
         seed = new int[HASH_OFFSET + EXTRAFRAME_OFFSET];
-        seed[HASH_OFFSET   ] = H0;
-        seed[HASH_OFFSET +1] = H1;
-        seed[HASH_OFFSET +2] = H2;
-        seed[HASH_OFFSET +3] = H3;
-        seed[HASH_OFFSET +4] = H4;
+        seed[HASH_OFFSET] = H0;
+        seed[HASH_OFFSET + 1] = H1;
+        seed[HASH_OFFSET + 2] = H2;
+        seed[HASH_OFFSET + 3] = H3;
+        seed[HASH_OFFSET + 4] = H4;
 
         seedLength = 0;
-        copies     = new int[2*FRAME_LENGTH + EXTRAFRAME_OFFSET];
-        nextBytes  = new byte[DIGEST_LENGTH];
+        copies = new int[2 * FRAME_LENGTH + EXTRAFRAME_OFFSET];
+        nextBytes = new byte[DIGEST_LENGTH];
         nextBIndex = HASHBYTES_TO_USE;
-        counter    = COUNTER_BASE;
-        state      = UNDEFINED; 
+        counter = COUNTER_BASE;
+        state = UNDEFINED;
     }
 
     /*
@@ -185,11 +184,10 @@ public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi
         // on call:   "seed" contains current bytes and current hash;
         // on return: "seed" contains new current bytes and possibly new current hash
         //            if after adding, seed bytes overfill its buffer
-        SHA1Impl.updateHash(seed, bytes, 0, bytes.length -1);
+        SHA1Impl.updateHash(seed, bytes, 0, bytes.length - 1);
 
         seedLength += bytes.length;
     }
-
 
     /**
      * Changes current seed by supplementing a seed argument to the current seed,
@@ -205,21 +203,21 @@ public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi
      */
     protected void engineSetSeed(byte[] seed) {
 
-        if ( seed == null ) {
-            throw new NullPointerException("null is passed to the 'seed' argument");
+        if (seed == null) {
+            throw new NullPointerException(
+                    "null is passed to the 'seed' argument");
         }
 
-        if ( state == NEXT_BYTES ) {       // first setSeed after NextBytes; restoring hash
-            System.arraycopy(copies, HASHCOPY_OFFSET, this.seed, HASH_OFFSET, 
-                             EXTRAFRAME_OFFSET);
+        if (state == NEXT_BYTES) { // first setSeed after NextBytes; restoring hash
+            System.arraycopy(copies, HASHCOPY_OFFSET, this.seed, HASH_OFFSET,
+                    EXTRAFRAME_OFFSET);
         }
         state = SET_SEED;
 
-        if ( seed.length != 0 ) {
+        if (seed.length != 0) {
             updateSeed(seed);
         }
     }
-
 
     /**
      * Returns a required number of random bytes. <BR>
@@ -235,18 +233,19 @@ public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi
      */
     protected byte[] engineGenerateSeed(int numBytes) {
 
-        byte[] myBytes;        // byte[] for bytes returned by "nextBytes()"
+        byte[] myBytes; // byte[] for bytes returned by "nextBytes()"
 
-        if ( numBytes < 0 ) {
+        if (numBytes < 0) {
             throw new NegativeArraySizeException("numBytes=" + numBytes);
         }
-        if ( numBytes == 0 ) {
+        if (numBytes == 0) {
             return new byte[0];
         }
 
-        if ( myRandom == null ) {
+        if (myRandom == null) {
             myRandom = new SHA1PRNG_SecureRandomImpl();
-            myRandom.engineSetSeed(RandomBitsSupplier.getRandomBits(DIGEST_LENGTH));
+            myRandom.engineSetSeed(RandomBitsSupplier
+                    .getRandomBits(DIGEST_LENGTH));
         }
 
         myBytes = new byte[numBytes];
@@ -254,7 +253,6 @@ public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi
 
         return myBytes;
     }
-
 
     /**
      * Writes random bytes into an array suppied.
@@ -276,16 +274,18 @@ public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi
 
         int i, n;
 
-        long bits;               // number of bits required by Secure Hash Standard
-        int nextByteToReturn;    // index of ready bytes in "bytes" array
-        int  lastWord;           // index of last word in frame containing bytes
+        long bits; // number of bits required by Secure Hash Standard
+        int nextByteToReturn; // index of ready bytes in "bytes" array
+        int lastWord; // index of last word in frame containing bytes
         final int extrabytes = 7;// # of bytes to add in order to computer # of 8 byte words
 
-        if ( bytes == null ) {
-            throw new NullPointerException("null is passed to the 'bytes' argument");
+        if (bytes == null) {
+            throw new NullPointerException(
+                    "null is passed to the 'bytes' argument");
         }
 
-        lastWord = seed[BYTES_OFFSET] == 0 ? 0 : (seed[BYTES_OFFSET] + extrabytes)>>3 -1 ;
+        lastWord = seed[BYTES_OFFSET] == 0 ? 0
+                : (seed[BYTES_OFFSET] + extrabytes) >> 3 - 1;
 
         if (state == UNDEFINED) {
 
@@ -295,7 +295,8 @@ public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi
 
         } else if (state == SET_SEED) {
 
-            System.arraycopy(seed, HASH_OFFSET, copies, HASHCOPY_OFFSET, EXTRAFRAME_OFFSET);
+            System.arraycopy(seed, HASH_OFFSET, copies, HASHCOPY_OFFSET,
+                    EXTRAFRAME_OFFSET);
 
             // possible cases for 64-byte frame:
             //
@@ -310,71 +311,72 @@ public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi
 
             // no need to set to "0" 3 words after "lastWord" and  
             // more than two words behind frame 
-            for ( i = lastWord +3; i < FRAME_LENGTH +2 ; i++ ) { 
-                seed[i] = 0;                                    
+            for (i = lastWord + 3; i < FRAME_LENGTH + 2; i++) {
+                seed[i] = 0;
             }
 
-            bits = seedLength<<3 + 64;    // transforming # of bytes into # of bits
+            bits = seedLength << 3 + 64; // transforming # of bytes into # of bits
 
             // putting # of bits into two last words (14,15) of 16 word frame in 
             // seed or copies array depending on total length after padding
-            if ( seed[BYTES_OFFSET] < MAX_BYTES ) {
-                seed[14] = (int)( bits >>>32 );
-                seed[15] = (int)( bits & 0xFFFFFFFF );
+            if (seed[BYTES_OFFSET] < MAX_BYTES) {
+                seed[14] = (int) (bits >>> 32);
+                seed[15] = (int) (bits & 0xFFFFFFFF);
             } else {
-                copies[EXTRAFRAME_OFFSET + 14] = (int)( bits >>>32 );
-                copies[EXTRAFRAME_OFFSET + 15] = (int)( bits & 0xFFFFFFFF );
+                copies[EXTRAFRAME_OFFSET + 14] = (int) (bits >>> 32);
+                copies[EXTRAFRAME_OFFSET + 15] = (int) (bits & 0xFFFFFFFF);
             }
 
-            nextBIndex = HASHBYTES_TO_USE;    // skipping remaining random bits
+            nextBIndex = HASHBYTES_TO_USE; // skipping remaining random bits
         }
         state = NEXT_BYTES;
 
-        if ( bytes.length == 0 ) {
+        if (bytes.length == 0) {
             return;
         }
 
         nextByteToReturn = 0;
 
         // possibly not all of HASHBYTES_TO_USE bytes were used previous time 
-        n = (HASHBYTES_TO_USE - nextBIndex) < (bytes.length - nextByteToReturn) ?
-             HASHBYTES_TO_USE - nextBIndex :
-             bytes.length - nextByteToReturn ;
-        if ( n > 0 ) {
+        n = (HASHBYTES_TO_USE - nextBIndex) < (bytes.length - nextByteToReturn) ? HASHBYTES_TO_USE
+                - nextBIndex
+                : bytes.length - nextByteToReturn;
+        if (n > 0) {
             System.arraycopy(nextBytes, nextBIndex, bytes, nextByteToReturn, n);
             nextBIndex += n;
             nextByteToReturn += n;
         }
 
-        if ( nextByteToReturn >= bytes.length ) {
-            return;                                // return because "bytes[]" are filled in
+        if (nextByteToReturn >= bytes.length) {
+            return; // return because "bytes[]" are filled in
         }
 
-        n = seed[BYTES_OFFSET] & 0x03 ;
-        for ( ; ; ) {
-            if ( n == 0 ) {
+        n = seed[BYTES_OFFSET] & 0x03;
+        for (;;) {
+            if (n == 0) {
 
-                seed[lastWord   ] = (int)( counter >>>32 );
-                seed[lastWord +1] = (int)( counter & 0xFFFFFFFF );
-                seed[lastWord +2] = END_FLAGS[0];
+                seed[lastWord] = (int) (counter >>> 32);
+                seed[lastWord + 1] = (int) (counter & 0xFFFFFFFF);
+                seed[lastWord + 2] = END_FLAGS[0];
 
             } else {
 
-                seed[lastWord   ] |= (int)( ( counter >>> RIGHT1[n] ) & MASK[n] );
-                seed[lastWord +1]  = (int)( ( counter >>> RIGHT2[n] ) & 0xFFFFFFFF );
-                seed[lastWord +2]  = (int)( ( counter <<  LEFT  [n] ) | END_FLAGS[n] ) ;
+                seed[lastWord] |= (int) ((counter >>> RIGHT1[n]) & MASK[n]);
+                seed[lastWord + 1] = (int) ((counter >>> RIGHT2[n]) & 0xFFFFFFFF);
+                seed[lastWord + 2] = (int) ((counter << LEFT[n]) | END_FLAGS[n]);
             }
             if (seed[BYTES_OFFSET] > MAX_BYTES) {
-                copies[EXTRAFRAME_OFFSET]   = seed[FRAME_LENGTH];
-                copies[EXTRAFRAME_OFFSET+1] = seed[FRAME_LENGTH+1];
+                copies[EXTRAFRAME_OFFSET] = seed[FRAME_LENGTH];
+                copies[EXTRAFRAME_OFFSET + 1] = seed[FRAME_LENGTH + 1];
             }
 
             SHA1Impl.computeHash(seed);
 
-            if ( seed[BYTES_OFFSET] > MAX_BYTES ) {
+            if (seed[BYTES_OFFSET] > MAX_BYTES) {
 
                 System.arraycopy(seed, 0, copies, FRAME_OFFSET, FRAME_LENGTH);
-                System.arraycopy(copies, EXTRAFRAME_OFFSET, seed, 0, FRAME_LENGTH);
+                System.arraycopy(copies, EXTRAFRAME_OFFSET, seed, 0,
+                        FRAME_LENGTH);
 
                 SHA1Impl.computeHash(seed);
                 System.arraycopy(copies, FRAME_OFFSET, seed, 0, FRAME_LENGTH);
@@ -382,19 +384,18 @@ public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi
             counter++;
 
             int j = 0;
-            for ( i = 0; i < EXTRAFRAME_OFFSET; i++ ) {
-                int k = seed[HASH_OFFSET +i];
-                nextBytes[j  ] = (byte)( k >>>24 );  // getting first  byte from left
-                nextBytes[j+1] = (byte)( k >>>16 );  // getting second byte from left
-                nextBytes[j+2] = (byte)( k >>> 8 );  // getting third  byte from left
-                nextBytes[j+3] = (byte)( k       );  // getting fourth byte from left
+            for (i = 0; i < EXTRAFRAME_OFFSET; i++) {
+                int k = seed[HASH_OFFSET + i];
+                nextBytes[j] = (byte) (k >>> 24); // getting first  byte from left
+                nextBytes[j + 1] = (byte) (k >>> 16); // getting second byte from left
+                nextBytes[j + 2] = (byte) (k >>> 8); // getting third  byte from left
+                nextBytes[j + 3] = (byte) (k); // getting fourth byte from left
                 j += 4;
             }
 
             nextBIndex = 0;
-            j = HASHBYTES_TO_USE < ( bytes.length -  nextByteToReturn ) ?
-                HASHBYTES_TO_USE  :
-                bytes.length - nextByteToReturn ;
+            j = HASHBYTES_TO_USE < (bytes.length - nextByteToReturn) ? HASHBYTES_TO_USE
+                    : bytes.length - nextByteToReturn;
 
             if (j > 0) {
                 System.arraycopy(nextBytes, 0, bytes, nextByteToReturn, j);
@@ -402,11 +403,133 @@ public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi
                 nextBIndex += j;
             }
 
-            if ( nextByteToReturn >= bytes.length ) {
+            if (nextByteToReturn >= bytes.length) {
                 break;
             }
         }
     }
 
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+
+        int[] intData = null;
+
+        final int only_hash = EXTRAFRAME_OFFSET;
+        final int hashes_and_frame = EXTRAFRAME_OFFSET * 2 + FRAME_LENGTH;
+        final int hashes_and_frame_extra = EXTRAFRAME_OFFSET * 2 + FRAME_LENGTH
+                * 2;
+
+        oos.writeLong(seedLength);
+        oos.writeLong(counter);
+        oos.writeInt(state);
+        oos.writeInt(seed[BYTES_OFFSET]);
+
+        int nRemaining = (seed[BYTES_OFFSET] + 3) >> 2; // converting bytes in words
+        // result may be 0
+        if (state != NEXT_BYTES) {
+
+            // either the state is UNDEFINED or previous method was "setSeed(..)" 
+            // so in "seed[]" to serialize are remaining bytes (seed[0-nRemaining]) and
+            // current hash (seed[82-86])
+
+            intData = new int[only_hash + nRemaining];
+
+            System.arraycopy(seed, 0, intData, 0, nRemaining);
+            System.arraycopy(seed, HASH_OFFSET, intData, nRemaining,
+                    EXTRAFRAME_OFFSET);
+
+        } else {
+            // previous method was "nextBytes(..)"
+            // so, data to serialize are all the above (two first are in "copies" array)
+            // and current words in both frame and extra frame (as if)
+
+            int offset = 0;
+            if (seed[BYTES_OFFSET] < MAX_BYTES) { // no extra frame
+
+                intData = new int[hashes_and_frame + nRemaining];
+
+            } else { // extra frame is used
+
+                intData = new int[hashes_and_frame_extra + nRemaining];
+
+                intData[offset] = seed[FRAME_LENGTH];
+                intData[offset + 1] = seed[FRAME_LENGTH + 1];
+                intData[offset + 2] = seed[FRAME_LENGTH + 14];
+                intData[offset + 3] = seed[FRAME_LENGTH + 15];
+                offset += 4;
+            }
+
+            System.arraycopy(seed, 0, intData, offset, FRAME_LENGTH);
+            offset += FRAME_LENGTH;
+
+            System.arraycopy(copies, FRAME_LENGTH + EXTRAFRAME_OFFSET, intData,
+                    offset, nRemaining);
+            offset += nRemaining;
+
+            System.arraycopy(copies, 0, intData, offset, EXTRAFRAME_OFFSET);
+            offset += EXTRAFRAME_OFFSET;
+
+            System.arraycopy(seed, HASH_OFFSET, intData, offset,
+                    EXTRAFRAME_OFFSET);
+        }
+        for (int i = 0; i < intData.length; i++) {
+            oos.writeInt(intData[i]);
+        }
+
+        oos.writeInt(nextBIndex);
+        oos.write(nextBytes, nextBIndex, HASHBYTES_TO_USE - nextBIndex);
+    }
+
+    private void readObject(ObjectInputStream ois) throws IOException,
+            ClassNotFoundException {
+
+        seed = new int[HASH_OFFSET + EXTRAFRAME_OFFSET];
+        copies = new int[2 * FRAME_LENGTH + EXTRAFRAME_OFFSET];
+        nextBytes = new byte[DIGEST_LENGTH];
+
+        seedLength = ois.readLong();
+        counter = ois.readLong();
+        state = ois.readInt();
+        seed[BYTES_OFFSET] = ois.readInt();
+
+        int nRemaining = (seed[BYTES_OFFSET] + 3) >> 2; // converting bytes in words
+
+        if (state != NEXT_BYTES) {
+
+            for (int i = 0; i < nRemaining; i++) {
+                seed[i] = ois.readInt();
+            }
+            for (int i = 0; i < EXTRAFRAME_OFFSET; i++) {
+                seed[HASH_OFFSET + i] = ois.readInt();
+            }
+        } else {
+            if (seed[BYTES_OFFSET] >= MAX_BYTES) {
+
+                // reading next bytes in seed extra frame
+                seed[FRAME_LENGTH] = ois.readInt();
+                seed[FRAME_LENGTH + 1] = ois.readInt();
+                seed[FRAME_LENGTH + 14] = ois.readInt();
+                seed[FRAME_LENGTH + 15] = ois.readInt();
+            }
+            // reading next bytes in seed frame
+            for (int i = 0; i < FRAME_LENGTH; i++) {
+                seed[i] = ois.readInt();
+            }
+            // reading remaining seed bytes 
+            for (int i = 0; i < nRemaining; i++) {
+                copies[FRAME_LENGTH + EXTRAFRAME_OFFSET + i] = ois.readInt();
+            }
+            // reading copy of current hash
+            for (int i = 0; i < EXTRAFRAME_OFFSET; i++) {
+                copies[i] = ois.readInt();
+            }
+            // reading current hash
+            for (int i = 0; i < EXTRAFRAME_OFFSET; i++) {
+                seed[HASH_OFFSET + i] = ois.readInt();
+            }
+        }
+
+        nextBIndex = ois.readInt();
+        ois.read(nextBytes, nextBIndex, HASHBYTES_TO_USE - nextBIndex);
+    }
 
 }
