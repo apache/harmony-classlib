@@ -90,6 +90,7 @@ EXPORTS
 	Java_java_lang_Math_cbrt
 	Java_java_lang_Math_ceil
 	Java_java_lang_Math_cos
+	Java_java_lang_Math_cosh
 	Java_java_lang_Math_exp
 	Java_java_lang_Math_floor
 	Java_java_lang_Math_IEEEremainder
@@ -97,8 +98,10 @@ EXPORTS
 	Java_java_lang_Math_pow
 	Java_java_lang_Math_rint
 	Java_java_lang_Math_sin
+	Java_java_lang_Math_sinh
 	Java_java_lang_Math_sqrt
 	Java_java_lang_Math_tan
+	Java_java_lang_Math_tanh
 	Java_java_lang_reflect_Proxy_defineClassImpl
 	Java_java_lang_StrictMath_acos
 	Java_java_lang_StrictMath_asin
@@ -107,6 +110,7 @@ EXPORTS
 	Java_java_lang_StrictMath_cbrt
 	Java_java_lang_StrictMath_ceil
 	Java_java_lang_StrictMath_cos
+	Java_java_lang_StrictMath_cosh
 	Java_java_lang_StrictMath_exp
 	Java_java_lang_StrictMath_floor
 	Java_java_lang_StrictMath_IEEEremainder
@@ -114,8 +118,10 @@ EXPORTS
 	Java_java_lang_StrictMath_pow
 	Java_java_lang_StrictMath_rint
 	Java_java_lang_StrictMath_sin
+	Java_java_lang_StrictMath_sinh
 	Java_java_lang_StrictMath_sqrt
 	Java_java_lang_StrictMath_tan
+	Java_java_lang_StrictMath_tanh
 	Java_java_net_InetAddress_getAliasesByNameImpl
 	Java_java_net_InetAddress_getHostByAddrImpl
 	Java_java_net_InetAddress_getHostByNameImpl

@@ -154,6 +154,17 @@ public final class StrictMath {
 	 * @return the ceiling of the argument.
 	 */
 	public static native double ceil(double d);
+    
+    
+    /**
+     * Answers the closest double approximation of the hyperbolic cosine of the
+     * argument.
+     * 
+     * @param d
+     *            the value to compute hyperbolic cosine of
+     * @return the hyperbolic cosine of the argument.
+     */
+    public static native double cosh(double d);
 
 	/**
 	 * Answers the closest double approximation of the cosine of the argument
@@ -424,6 +435,16 @@ public final class StrictMath {
 		return (int) Math.floor(f + 0.5f);
 	}
 
+    /**
+     * Answers the closest double approximation of the hyperbolic sine of the
+     * argument. 
+     * 
+     * @param d
+     *            the value to compute hyperbolic sine of
+     * @return the hyperbolic sine of the argument.
+     */
+    public static native double sinh(double d);
+    
 	/**
 	 * Answers the closest double approximation of the sine of the argument
 	 * 
@@ -452,6 +473,16 @@ public final class StrictMath {
 	 */
 	public static native double tan(double d);
 
+    /**
+     * Answers the closest double approximation of the hyperbolic tangent of the
+     * argument. The absolute value is always less than 1. 
+     * 
+     * @param d
+     *            the value to compute hyperbolic tangent of
+     * @return the hyperbolic tangent of the argument.
+     */
+    public static native double tanh(double d);
+    
 	/**
 	 * Returns the measure in degrees of the supplied radian angle
 	 * 

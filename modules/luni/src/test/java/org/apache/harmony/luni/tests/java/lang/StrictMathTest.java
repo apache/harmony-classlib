@@ -169,6 +169,40 @@ public class StrictMathTest extends junit.framework.TestCase {
 		assertTrue("Returned incorrect cosine", StrictMath.cos(StrictMath
 				.acos(ADJ / HYP)) == ADJ / HYP);
 	}
+    
+    /**
+     * @tests java.lang.StrictMath#cosh(double)
+     */
+    @SuppressWarnings("boxing")
+    public void test_cosh_D() {
+        // Test for special situations
+        assertEquals("Should return NaN", Double.NaN, StrictMath
+                .cosh(Double.NaN));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, StrictMath
+                        .cosh(Double.POSITIVE_INFINITY));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, StrictMath
+                        .cosh(Double.NEGATIVE_INFINITY));
+        assertEquals("Should return 1.0", 1.0, StrictMath.cosh(+0.0));
+        assertEquals("Should return 1.0", 1.0, StrictMath.cosh(-0.0));
+
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, StrictMath.cosh(1234.56));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, StrictMath.cosh(-1234.56));
+        assertEquals("Should return 1.0000000000005", 1.0000000000005,
+                StrictMath.cosh(0.000001));
+        assertEquals("Should return 1.0000000000005", 1.0000000000005,
+                StrictMath.cosh(-0.000001));
+        assertEquals("Should return 5.212214351945598", 5.212214351945598,
+                StrictMath.cosh(2.33482));
+
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, StrictMath.cosh(Double.MAX_VALUE));
+        assertEquals("Should return 1.0", 1.0, StrictMath
+                .cosh(Double.MIN_VALUE));
+    }
 
 	/**
 	 * @tests java.lang.StrictMath#exp(double)
@@ -380,6 +414,39 @@ public class StrictMathTest extends junit.framework.TestCase {
 				.asin(OPP / HYP)) == OPP / HYP);
 	}
 
+    /**
+     * @tests java.lang.StrictMath#sinh(double)
+     */
+    public void test_sinh_D() {
+        // Test for special situations
+        assertEquals("Should return NaN", Double.NaN, StrictMath
+                .sinh(Double.NaN));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, StrictMath
+                        .sinh(Double.POSITIVE_INFINITY));
+        assertEquals("Should return NEGATIVE_INFINITY",
+                Double.NEGATIVE_INFINITY, StrictMath
+                        .sinh(Double.NEGATIVE_INFINITY));
+        assertEquals("Should return 0.0", 0.0, StrictMath.sinh(0.0));
+        assertEquals("Should return +0.0", +0.0, StrictMath.sinh(+0.0));
+        assertEquals("Should return -0.0", -0.0, StrictMath.sinh(-0.0));
+
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, StrictMath.sinh(1234.56));
+        assertEquals("Should return NEGATIVE_INFINITY",
+                Double.NEGATIVE_INFINITY, StrictMath.sinh(-1234.56));
+        assertEquals("Should return 1.0000000000001666E-6",
+                1.0000000000001666E-6, StrictMath.sinh(0.000001));
+        assertEquals("Should return -1.0000000000001666E-6",
+                -1.0000000000001666E-6, StrictMath.sinh(-0.000001));
+        assertEquals("Should return 5.115386441963859", 5.115386441963859,
+                StrictMath.sinh(2.33482));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, StrictMath.sinh(Double.MAX_VALUE));
+        assertEquals("Should return 4.9E-324", 4.9E-324, StrictMath
+                .sinh(Double.MIN_VALUE));
+    }
+    
 	/**
 	 * @tests java.lang.StrictMath#sqrt(double)
 	 */
@@ -401,6 +468,33 @@ public class StrictMathTest extends junit.framework.TestCase {
 						|| StrictMath.tan(StrictMath.atan(1.0)) >= 9.9999999999999983E-1);
 	}
 
+    /**
+     * @tests java.lang.StrictMath#tanh(double)
+     */
+    public void test_tanh_D() {
+        // Test for special situations
+        assertEquals("Should return NaN", Double.NaN, StrictMath
+                .tanh(Double.NaN));
+        assertEquals("Should return +1.0", +1.0, StrictMath
+                .tanh(Double.POSITIVE_INFINITY));
+        assertEquals("Should return -1.0", -1.0, StrictMath
+                .tanh(Double.NEGATIVE_INFINITY));
+        assertEquals("Should return +0.0", +0.0, StrictMath.tanh(+0.0));
+        assertEquals("Should return -0.0", -0.0, StrictMath.tanh(-0.0));
+        assertEquals("Should return 0.0", 0.0, StrictMath.tanh(0.0));
+
+        assertEquals("Should return 1.0", 1.0, StrictMath.tanh(1234.56));
+        assertEquals("Should return -1.0", -1.0, StrictMath.tanh(-1234.56));
+        assertEquals("Should return 9.999999999996666E-7",
+                9.999999999996666E-7, StrictMath.tanh(0.000001));
+        assertEquals("Should return 0.981422884124941", 0.981422884124941,
+                StrictMath.tanh(2.33482));
+        assertEquals("Should return 1.0", 1.0, StrictMath
+                .tanh(Double.MAX_VALUE));
+        assertEquals("Should return 4.9E-324", 4.9E-324, StrictMath
+                .tanh(Double.MIN_VALUE));
+    }
+    
 	/**
 	 * @tests java.lang.StrictMath#random()
 	 */

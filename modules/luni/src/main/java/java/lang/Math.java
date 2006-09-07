@@ -132,8 +132,7 @@ public final class Math {
     
     /**
      * Answers the closest double approximation of the cube root of the
-     * argument. The final result should be within 1ulp of the one returned by
-     * StrictMath.
+     * argument. The final result should be within 1ulp of the real result.
      * 
      * @param d
      *            the value to compute cube root of
@@ -159,6 +158,16 @@ public final class Math {
 	 * @return the cosine of the argument.
 	 */
 	public static native double cos(double d);
+    
+    /**
+     * Answers the closest double approximation of the hyperbolic cosine of the
+     * argument. The final result should be within 2.5ulps of the real result.
+     * 
+     * @param d
+     *            the value to compute hyperbolic cosine of
+     * @return the hyperbolic cosine of the argument.
+     */
+    public static native double cosh(double d);
 
 	/**
 	 * Answers the closest double approximation of the raising "e" to the power
@@ -429,6 +438,16 @@ public final class Math {
 	 * @return the sine of the argument.
 	 */
 	public static native double sin(double d);
+    
+    /**
+     * Answers the closest double approximation of the hyperbolic sine of the
+     * argument. The final result should be within 2.5ulps of the real result.
+     * 
+     * @param d
+     *            the value to compute hyperbolic sine of
+     * @return the hyperbolic sine of the argument.
+     */
+    public static native double sinh(double d);
 
 	/**
 	 * Answers the closest double approximation of the square root of the
@@ -448,6 +467,18 @@ public final class Math {
 	 * @return the tangent of the argument.
 	 */
 	public static native double tan(double d);
+    
+    /**
+     * Answers the closest double approximation of the hyperbolic tangent of the
+     * argument. The absolute value is always less than 1. The final result
+     * should be within 2.5ulps of the real result. If the real result is 
+     * within 0.5ulp of 1 or -1, it should answer exactly +1 or -1.
+     * 
+     * @param d
+     *            the value to compute hyperbolic tangent of
+     * @return the hyperbolic tangent of the argument.
+     */
+    public static native double tanh(double d);
 
 	/**
 	 * Returns a pseudo-random number between 0.0 and 1.0.

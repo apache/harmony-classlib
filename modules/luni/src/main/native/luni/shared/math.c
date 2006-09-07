@@ -37,6 +37,9 @@ jdouble internal_tan (jdouble arg1);
 jdouble internal_sin (jdouble arg1);
 jdouble internal_rint (jdouble arg1);
 jdouble internal_cbrt (jdouble arg1);
+jdouble internal_sinh (jdouble arg1);
+jdouble internal_cosh (jdouble arg1);
+jdouble internal_tanh (jdouble arg1);
 
 extern scaleUpDouble (double *, int);
 
@@ -123,6 +126,16 @@ internal_cos (jdouble arg1)
 }
 
 jdouble
+internal_cosh (jdouble arg1)
+{
+  jdouble result;
+
+  result = fdlibm_cosh (arg1);
+
+  return result;
+}
+
+jdouble
 internal_exp (jdouble arg1)
 {
   jdouble result;
@@ -193,6 +206,16 @@ internal_sin (jdouble arg1)
 }
 
 jdouble
+internal_sinh (jdouble arg1)
+{
+  jdouble result;
+
+  result = fdlibm_sinh (arg1);
+
+  return result;
+}
+
+jdouble
 internal_sqrt (jdouble arg1)
 {
   jdouble result;
@@ -211,6 +234,17 @@ internal_tan (jdouble arg1)
 
   return result;
 }
+
+jdouble
+internal_tanh (jdouble arg1)
+{
+  jdouble result;
+
+  result = fdlibm_tanh (arg1);
+
+  return result;
+}
+
 
 jdouble JNICALL
 Java_java_lang_StrictMath_asin (JNIEnv * env, jclass jclazz, jdouble arg1)
@@ -284,6 +318,18 @@ jdouble JNICALL
 Java_java_lang_Math_cos (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_cos (arg1);
+}
+
+jdouble JNICALL
+Java_java_lang_StrictMath_cosh (JNIEnv * env, jclass jclazz, jdouble arg1)
+{
+  return internal_cosh (arg1);
+}
+
+jdouble JNICALL
+Java_java_lang_Math_cosh (JNIEnv * env, jclass jclazz, jdouble arg1)
+{
+  return internal_cosh (arg1);
 }
 
 jdouble JNICALL
@@ -375,6 +421,18 @@ Java_java_lang_Math_sin (JNIEnv * env, jclass jclazz, jdouble arg1)
 }
 
 jdouble JNICALL
+Java_java_lang_StrictMath_sinh (JNIEnv * env, jclass jclazz, jdouble arg1)
+{
+  return internal_sinh (arg1);
+}
+
+jdouble JNICALL
+Java_java_lang_Math_sinh (JNIEnv * env, jclass jclazz, jdouble arg1)
+{
+  return internal_sinh (arg1);
+}
+
+jdouble JNICALL
 Java_java_lang_StrictMath_sqrt (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_sqrt (arg1);
@@ -397,3 +455,16 @@ Java_java_lang_Math_tan (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_tan (arg1);
 }
+
+jdouble JNICALL
+Java_java_lang_StrictMath_tanh (JNIEnv * env, jclass jclazz, jdouble arg1)
+{
+  return internal_tanh (arg1);
+}
+
+jdouble JNICALL
+Java_java_lang_Math_tanh (JNIEnv * env, jclass jclazz, jdouble arg1)
+{
+  return internal_tanh (arg1);
+}
+

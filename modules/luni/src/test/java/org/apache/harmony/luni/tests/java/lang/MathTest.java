@@ -173,6 +173,36 @@ public class MathTest extends junit.framework.TestCase {
 		assertEquals("Incorrect answer", 0.5403023058681398, Math.cos(1));
 	}
 
+    /**
+     * @tests java.lang.Math#cosh(double)
+     */
+    @SuppressWarnings("boxing")
+    public void test_cosh_D() {
+        // Test for special situations
+        assertEquals("Should return NaN", Double.NaN, Math.cosh(Double.NaN));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, Math.cosh(Double.POSITIVE_INFINITY));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, Math.cosh(Double.NEGATIVE_INFINITY));
+        assertEquals("Should return 1.0", 1.0, Math.cosh(+0.0));
+        assertEquals("Should return 1.0", 1.0, Math.cosh(-0.0));
+
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, Math.cosh(1234.56));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, Math.cosh(-1234.56));
+        assertEquals("Should return 1.0000000000005", 1.0000000000005, Math
+                .cosh(0.000001));
+        assertEquals("Should return 1.0000000000005", 1.0000000000005, Math
+                .cosh(-0.000001));
+        assertEquals("Should return 5.212214351945598", 5.212214351945598, Math
+                .cosh(2.33482));
+
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, Math.cosh(Double.MAX_VALUE));
+        assertEquals("Should return 1.0", 1.0, Math.cosh(Double.MIN_VALUE));
+    }
+    
 	/**
 	 * @tests java.lang.Math#exp(double)
 	 */
@@ -378,6 +408,36 @@ public class MathTest extends junit.framework.TestCase {
 		assertEquals("Incorrect answer", 0.8414709848078965, Math.sin(1));
 	}
 
+    /**
+     * @tests java.lang.Math#sinh(double)
+     */
+    public void test_sinh_D() {
+        // Test for special situations
+        assertEquals("Should return NaN", Double.NaN, Math.sinh(Double.NaN));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, Math.sinh(Double.POSITIVE_INFINITY));
+        assertEquals("Should return NEGATIVE_INFINITY",
+                Double.NEGATIVE_INFINITY, Math.sinh(Double.NEGATIVE_INFINITY));
+        assertEquals("Should return 0.0", 0.0, Math.sinh(0.0));
+        assertEquals("Should return +0.0", +0.0, Math.sinh(+0.0));
+        assertEquals("Should return -0.0", -0.0, Math.sinh(-0.0));
+
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, Math.sinh(1234.56));
+        assertEquals("Should return NEGATIVE_INFINITY",
+                Double.NEGATIVE_INFINITY, Math.sinh(-1234.56));
+        assertEquals("Should return 1.0000000000001666E-6",
+                1.0000000000001666E-6, Math.sinh(0.000001));
+        assertEquals("Should return -1.0000000000001666E-6",
+                -1.0000000000001666E-6, Math.sinh(-0.000001));
+        assertEquals("Should return 5.115386441963859", 5.115386441963859, Math
+                .sinh(2.33482));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, Math.sinh(Double.MAX_VALUE));
+        assertEquals("Should return 4.9E-324", 4.9E-324, Math
+                .sinh(Double.MIN_VALUE));
+    }
+    
 	/**
 	 * @tests java.lang.Math#sqrt(double)
 	 */
@@ -396,6 +456,31 @@ public class MathTest extends junit.framework.TestCase {
 
 	}
 
+    /**
+     * @tests java.lang.Math#tanh(double)
+     */
+    public void test_tanh_D() {
+        // Test for special situations
+        assertEquals("Should return NaN", Double.NaN, Math.tanh(Double.NaN));
+        assertEquals("Should return +1.0", +1.0, Math
+                .tanh(Double.POSITIVE_INFINITY));
+        assertEquals("Should return -1.0", -1.0, Math
+                .tanh(Double.NEGATIVE_INFINITY));
+        assertEquals("Should return +0.0", +0.0, Math.tanh(+0.0));
+        assertEquals("Should return -0.0", -0.0, Math.tanh(-0.0));
+        assertEquals("Should return 0.0", 0.0, Math.tanh(0.0));
+
+        assertEquals("Should return 1.0", 1.0, Math.tanh(1234.56));
+        assertEquals("Should return -1.0", -1.0, Math.tanh(-1234.56));
+        assertEquals("Should return 9.999999999996666E-7",
+                9.999999999996666E-7, Math.tanh(0.000001));
+        assertEquals("Should return 0.981422884124941", 0.981422884124941, Math
+                .tanh(2.33482));
+        assertEquals("Should return 1.0", 1.0, Math.tanh(Double.MAX_VALUE));
+        assertEquals("Should return 4.9E-324", 4.9E-324, Math
+                .tanh(Double.MIN_VALUE));
+    }
+    
 	/**
 	 * @tests java.lang.Math#random()
 	 */
