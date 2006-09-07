@@ -15,7 +15,6 @@
 
 package org.apache.harmony.luni.util;
 
-
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -32,8 +31,7 @@ public class Inet6Util {
 			String ipAddressString) {
 
 		if (isValidIPV4Address(ipAddressString)) {
-			StringTokenizer tokenizer = new StringTokenizer(ipAddressString,
-					".");
+            StringTokenizer tokenizer = new StringTokenizer(ipAddressString, ".");
 			String token = "";
 			int tempInt = 0;
 			byte[] byteAddress = new byte[4];
@@ -47,24 +45,23 @@ public class Inet6Util {
 		}
 		
 		if (ipAddressString.charAt(0) == '[') {
-			ipAddressString = ipAddressString.substring(1, ipAddressString
-					.length() - 1);
-		}
+            ipAddressString = ipAddressString.substring(1, ipAddressString.length() - 1);
+        }
 
-		StringTokenizer tokenizer = new StringTokenizer(ipAddressString,
-				":.", true);
-		ArrayList<String> hexStrings = new ArrayList<String>();
-		ArrayList<String> decStrings = new ArrayList<String>();
-		String token = "";
-		String prevToken = "";
-		int doubleColonIndex = -1; // If a double colon exists, we need to
-									// insert 0s.
+        StringTokenizer tokenizer = new StringTokenizer(ipAddressString, ":.", true);
+        ArrayList<String> hexStrings = new ArrayList<String>();
+        ArrayList<String> decStrings = new ArrayList<String>();
+        String token = "";
+        String prevToken = "";
+        // If a double colon exists, we need to insert 0s.
+        int doubleColonIndex = -1;
 
-		// Go through the tokens, including the seperators ':' and '.'
-		// When we hit a : or . the previous token will be added to either
-		// the hex list or decimal list. In the case where we hit a ::
-		// we will save the index of the hexStrings so we can add zeros
-		// in to fill out the string
+        /*
+         * Go through the tokens, including the separators ':' and '.' When we
+         * hit a : or . the previous token will be added to either the hex list
+         * or decimal list. In the case where we hit a :: we will save the index
+         * of the hexStrings so we can add zeros in to fill out the string
+         */
 		while (tokenizer.hasMoreTokens()) {
 			prevToken = token;
 			token = tokenizer.nextToken();
@@ -112,14 +109,13 @@ public class Inet6Util {
 
 		// Finally convert these strings to bytes...
 		for (int i = 0; i < hexStrings.size(); i++) {
-			convertToBytes((String) hexStrings.get(i), ipByteArray, i * 2);
+			convertToBytes(hexStrings.get(i), ipByteArray, i * 2);
 		}
 
 		// Now if there are any decimal values, we know where they go...
 		for (int i = 0; i < decStrings.size(); i++) {
-			ipByteArray[i + 12] = (byte) (Integer
-					.parseInt((String) decStrings.get(i)) & 255);
-		}
+            ipByteArray[i + 12] = (byte) (Integer.parseInt(decStrings.get(i)) & 255);
+        }
 
 		// now check to see if this guy is actually and IPv4 address
 		// an ipV4 address is ::FFFF:d.d.d.d
@@ -161,19 +157,18 @@ public class Inet6Util {
 					ipv4ByteArray[i] = ipByteArray[i + 12];
 				}
 				return addressToString(bytesToInt(ipv4ByteArray, 0));
-			} else {
-				StringBuffer buffer = new StringBuffer();
-				for (int i = 0; i < ipByteArray.length; i++) {
-					int j = (ipByteArray[i] & 0xf0) >>> 4;
-					buffer.append(hexCharacters.charAt(j));
-					j = ipByteArray[i] & 0x0f;
-					buffer.append(hexCharacters.charAt(j));
-					if (i % 2 != 0 && (i + 1) < ipByteArray.length) {
-						buffer.append(":");
-					}
-				}
-				return buffer.toString();
 			}
+            StringBuilder buffer = new StringBuilder();
+            for (int i = 0; i < ipByteArray.length; i++) {
+            	int j = (ipByteArray[i] & 0xf0) >>> 4;
+            	buffer.append(hexCharacters.charAt(j));
+            	j = ipByteArray[i] & 0x0f;
+            	buffer.append(hexCharacters.charAt(j));
+            	if (i % 2 != 0 && (i + 1) < ipByteArray.length) {
+            		buffer.append(":");
+            	}
+            }
+            return buffer.toString();
 		}
 		return null;
 	}
@@ -306,10 +301,11 @@ public class Inet6Util {
 		String word = "";
 		char c = 0;
 		char prevChar = 0;
-		int offset = 0; // offset for [] ip addresses
+		int offset = 0; // offset for [] IP addresses
 
-		if (length < 2)
-			return false;
+		if (length < 2) {
+            return false;
+        }
 
 		for (int i = 0; i < length; i++) {
 			prevChar = c;
@@ -318,56 +314,69 @@ public class Inet6Util {
 
 			// case for an open bracket [x:x:x:...x]
 			case '[':
-				if (i != 0)
-					return false; // must be first character
-				if (ipAddress.charAt(length - 1) != ']')
-					return false; // must have a close ]
+				if (i != 0) {
+                    return false; // must be first character
+                }
+				if (ipAddress.charAt(length - 1) != ']') {
+                    return false; // must have a close ]
+                }
 				offset = 1;
-				if (length < 4)
-					return false;
+				if (length < 4) {
+                    return false;
+                }
 				break;
 
 			// case for a closed bracket at end of IP [x:x:x:...x]
 			case ']':
-				if (i != length - 1)
-					return false; // must be last charcter
-				if (ipAddress.charAt(0) != '[')
-					return false; // must have a open [
+				if (i != length - 1) {
+                    return false; // must be last character
+                }
+				if (ipAddress.charAt(0) != '[') {
+                    return false; // must have a open [
+                }
 				break;
 
 			// case for the last 32-bits represented as IPv4 x:x:x:x:x:x:d.d.d.d
 			case '.':
 				numberOfPeriods++;
-				if (numberOfPeriods > 3)
-					return false;
-				if (!isValidIP4Word(word))
-					return false;
-				if (numberOfColons != 6 && !doubleColon)
-					return false;
+				if (numberOfPeriods > 3) {
+                    return false;
+                }
+				if (!isValidIP4Word(word)) {
+                    return false;
+                }
+				if (numberOfColons != 6 && !doubleColon) {
+                    return false;
+                }
 				// a special case ::1:2:3:4:5:d.d.d.d allows 7 colons with an
 				// IPv4 ending, otherwise 7 :'s is bad
 				if (numberOfColons == 7 && ipAddress.charAt(0 + offset) != ':'
-						&& ipAddress.charAt(1 + offset) != ':')
-					return false;
+						&& ipAddress.charAt(1 + offset) != ':') {
+                    return false;
+                }
 				word = "";
 				break;
 
 			case ':':
 				numberOfColons++;
-				if (numberOfColons > 7)
-					return false;
-				if (numberOfPeriods > 0)
-					return false;
+				if (numberOfColons > 7) {
+                    return false;
+                }
+				if (numberOfPeriods > 0) {
+                    return false;
+                }
 				if (prevChar == ':') {
-					if (doubleColon)
-						return false;
+					if (doubleColon) {
+                        return false;
+                    }
 					doubleColon = true;
 				}
 				word = "";
 				break;
 			case '%':
-				if (numberOfColons == 0)
-					return false;
+				if (numberOfColons == 0) {
+                    return false;
+                }
 				numberOfPercent++;
 
 				// validate that the stuff after the % is valid
@@ -388,10 +397,12 @@ public class Inet6Util {
 
 			default:
 				if (numberOfPercent == 0) {
-					if (word.length() > 3)
-						return false;
-					if (!isValidHexChar(c))
-						return false;
+					if (word.length() > 3) {
+                        return false;
+                    }
+					if (!isValidHexChar(c)) {
+                        return false;
+                    }
 				}
 				word += c;
 			}
@@ -399,8 +410,9 @@ public class Inet6Util {
 
 		// Check if we have an IPv4 ending
 		if (numberOfPeriods > 0) {
-			if (numberOfPeriods != 3 || !isValidIP4Word(word))
-				return false;
+			if (numberOfPeriods != 3 || !isValidIP4Word(word)) {
+                return false;
+            }
 		} else {
 			// If we're at then end and we haven't had 7 colons then there is a
 			// problem unless we encountered a doubleColon
@@ -424,15 +436,18 @@ public class Inet6Util {
 
 	public static boolean isValidIP4Word(String word) {
 		char c;
-		if (word.length() < 1 || word.length() > 3)
-			return false;
+		if (word.length() < 1 || word.length() > 3) {
+            return false;
+        }
 		for (int i = 0; i < word.length(); i++) {
 			c = word.charAt(i);
-			if (!(c >= '0' && c <= '9'))
-				return false;
+			if (!(c >= '0' && c <= '9')) {
+                return false;
+            }
 		}
-		if (Integer.parseInt(word) > 255)
-			return false;
+		if (Integer.parseInt(word) > 255) {
+            return false;
+        }
 		return true;
 	}
 
@@ -454,34 +469,41 @@ public class Inet6Util {
 		int i = 0;
 		int length = value.length();
 
-		if (length > 15)
-			return false;
+		if (length > 15) {
+            return false;
+        }
 		char c = 0;
 		String word = "";
 		for (i = 0; i < length; i++) {
 			c = value.charAt(i);
 			if (c == '.') {
 				periods++;
-				if (periods > 3)
-					return false;
-				if (word == "")
-					return false;
-				if (Integer.parseInt(word) > 255)
-					return false;
+				if (periods > 3) {
+                    return false;
+                }
+				if (word == "") {
+                    return false;
+                }
+				if (Integer.parseInt(word) > 255) {
+                    return false;
+                }
 				word = "";
-			} else if (!(Character.isDigit(c)))
-				return false;
-			else {
-				if (word.length() > 2)
-					return false;
+			} else if (!(Character.isDigit(c))) {
+                return false;
+            } else {
+				if (word.length() > 2) {
+                    return false;
+                }
 				word += c;
 			}
 		}
 
-		if (word == "" || Integer.parseInt(word) > 255)
-			return false;
-		if (periods != 3)
-			return false;
+		if (word == "" || Integer.parseInt(word) > 255) {
+            return false;
+        }
+		if (periods != 3) {
+            return false;
+        }
 		return true;
 	}
 

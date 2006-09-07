@@ -24,24 +24,6 @@ import java.io.OutputStream;
  */
 public class SHAOutputStream extends OutputStream implements Cloneable {
 
-	// 5-word Array. Starts with well-known constants, ends with SHA
-	private int[] HConstants;
-
-	// 80-word Array.
-	private int[] WArray;
-
-	// 16-word Array. Input bit stream M is divided in chunks of MArray
-	private byte[] MArray;
-
-	// Number of bytes of input already processed towards SHA result
-	private long bytesProcessed;
-
-	// Number of bytes in WArray not processed yet
-	private int bytesToProcess;
-
-	// Optimization, for write
-	private byte[] oneByte = new byte[1];
-
 	/* Constants as in the specification */
 
 	// K in iterations 0..19, from spec
@@ -80,6 +62,24 @@ public class SHAOutputStream extends OutputStream implements Cloneable {
 
 	// 80 words
 	private static final int WArraySize = 80;
+    
+    // 5-word Array. Starts with well-known constants, ends with SHA
+    private int[] HConstants;
+
+    // 80-word Array.
+    private int[] WArray;
+
+    // 16-word Array. Input bit stream M is divided in chunks of MArray
+    private byte[] MArray;
+
+    // Number of bytes of input already processed towards SHA result
+    private long bytesProcessed;
+
+    // Number of bytes in WArray not processed yet
+    private int bytesToProcess;
+
+    // Optimization, for write
+    private byte[] oneByte = new byte[1];
 
 	/**
 	 * Constructs a new SHAOutputStream.
@@ -91,15 +91,13 @@ public class SHAOutputStream extends OutputStream implements Cloneable {
 	}
 
 	/**
-	 * Constructs a new MD5OutputStream with the given initial state.
-	 * 
-	 * @param state
-	 *            The initial state of the output stream. This is what will be
-	 *            returned by getHash() if write() is never called.
-	 * 
-	 * @exception IllegalArgumentException
-	 *                if state.length is less than 16.
-	 */
+     * Constructs a new MD5OutputStream with the given initial state.
+     * 
+     * @param state The initial state of the output stream. This is what will be
+     *        returned by getHash() if write() is never called.
+     * 
+     * @throws IllegalArgumentException if state.length is less than 16.
+     */
 	public SHAOutputStream(byte[] state) {
 		this();
 
@@ -116,39 +114,36 @@ public class SHAOutputStream extends OutputStream implements Cloneable {
 	}
 
 	/**
-	 * Answers a new instance of the same class as the receiver, whose slots
-	 * have been filled in with the values in the slots of the receiver.
-	 * <p>
-	 * Classes which wish to support cloning must specify that they implement
-	 * the Cloneable interface, since the native implementation checks for this.
-	 * 
-	 * @return a complete copy of this object
-	 * @exception CloneNotSupportedException
-	 *                if the component does not implement the interface
-	 *                Cloneable
-	 */
-	public Object clone() throws CloneNotSupportedException {
+     * Answers a new instance of the same class as the receiver, whose slots
+     * have been filled in with the values in the slots of the receiver.
+     * <p>
+     * Classes which wish to support cloning must specify that they implement
+     * the Cloneable interface, since the native implementation checks for this.
+     * 
+     * @return a complete copy of this object
+     * @throws CloneNotSupportedException if the component does not implement
+     *         the interface Cloneable
+     */
+	@Override
+    public Object clone() throws CloneNotSupportedException {
 		// Calling super takes care of primitive type slots
 		SHAOutputStream result = (SHAOutputStream) super.clone();
-		result.HConstants = (int[]) this.HConstants.clone();
-		result.WArray = (int[]) this.WArray.clone();
-		result.MArray = (byte[]) this.MArray.clone();
-		result.oneByte = (byte[]) this.oneByte.clone();
+		result.HConstants = this.HConstants.clone();
+		result.WArray = this.WArray.clone();
+		result.MArray = this.MArray.clone();
+		result.oneByte = this.oneByte.clone();
 		return result;
 	}
 
 	/**
-	 * Copies a byte array into the receiver's internal buffer, making the
-	 * adjustments as necessary and keeping the receiver in a consistent state.
-	 * 
-	 * @param buffer
-	 *            byte array representation of the bytes
-	 * @param off
-	 *            offset into the source buffer where to start the copying
-	 * @param len
-	 *            how many bytes in the source byte array to copy
-	 * 
-	 */
+     * Copies a byte array into the receiver's internal buffer, making the
+     * adjustments as necessary and keeping the receiver in a consistent state.
+     * 
+     * @param buffer byte array representation of the bytes
+     * @param off offset into the source buffer where to start the copying
+     * @param len how many bytes in the source byte array to copy
+     * 
+     */
 	private void copyToInternalBuffer(byte[] buffer, int off, int len) {
 		int index;
 		index = off;
@@ -160,16 +155,16 @@ public class SHAOutputStream extends OutputStream implements Cloneable {
 	}
 
 	/**
-	 * Returns an int array (length = 5) with the SHA value of the bytes written
-	 * to the receiver.
-	 * 
-	 * @return int[] The 5 ints that form the SHA value of the bytes written to
-	 *         the receiver
-	 */
+     * Returns an int array (length = 5) with the SHA value of the bytes written
+     * to the receiver.
+     * 
+     * @return The 5 ints that form the SHA value of the bytes written to
+     *         the receiver
+     */
 	public int[] getHash() {
 		this.padBuffer();
 		this.processBuffer();
-		int[] result = (int[]) HConstants.clone();
+		int[] result = HConstants.clone();
 		// After the user asks for the hash value, the stream is put back to the
 		// initial state
 		reset();
@@ -180,7 +175,7 @@ public class SHAOutputStream extends OutputStream implements Cloneable {
 	 * Returns a byte array (length = 20) with the SHA value of the bytes
 	 * written to the receiver.
 	 * 
-	 * @return byte[] The bytes that form the SHA value of the bytes written to
+	 * @return The bytes that form the SHA value of the bytes written to
 	 *         the receiver
 	 */
 	public byte[] getHashAsBytes() {
@@ -206,7 +201,7 @@ public class SHAOutputStream extends OutputStream implements Cloneable {
 	 * Returns a byte array (length = 20) with the SHA value of the bytes
 	 * written to the receiver.
 	 * 
-	 * @return byte[] The bytes that form the SHA value of the bytes written to
+	 * @return The bytes that form the SHA value of the bytes written to
 	 *         the receiver
 	 */
 	public byte[] getHashAsBytes(boolean pad) {
@@ -371,16 +366,10 @@ public class SHAOutputStream extends OutputStream implements Cloneable {
 		bytesToProcess = 0;
 	}
 
-	/**
-	 * Answers a string containing a concise, human-readable description of the
-	 * receiver.
-	 * 
-	 * @return a printable representation for the receiver.
-	 */
-	public String toString() {
-		return this.getClass().getName() + ':'
-				+ toStringBlock(getHashAsBytes());
-	}
+	@Override
+    public String toString() {
+        return this.getClass().getName() + ':' + toStringBlock(getHashAsBytes());
+    }
 
 	/**
 	 * Converts a block to a String representation.
@@ -405,12 +394,14 @@ public class SHAOutputStream extends OutputStream implements Cloneable {
 	 */
 	private static String toStringBlock(byte[] block, int off, int len) {
 		String hexdigits = "0123456789ABCDEF";
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
+        buf.append('[');
 		for (int i = off; i < off + len; ++i) {
 			buf.append(hexdigits.charAt((block[i] >>> 4) & 0xf));
 			buf.append(hexdigits.charAt(block[i] & 0xf));
 		}
-		return "[" + buf + "]";
+        buf.append(']');
+		return buf.toString();
 	}
 
 	/**
@@ -426,7 +417,8 @@ public class SHAOutputStream extends OutputStream implements Cloneable {
 	 * @param len
 	 *            number of bytes in buffer to write
 	 */
-	public void write(byte[] buffer, int off, int len) {
+	@Override
+    public void write(byte[] buffer, int off, int len) {
 		int spaceLeft;
 		int start;
 		int bytesLeft;
@@ -460,7 +452,8 @@ public class SHAOutputStream extends OutputStream implements Cloneable {
 	 * @param b
 	 *            the byte to be written
 	 */
-	public void write(int b) {
+	@Override
+    public void write(int b) {
 		// Not thread-safe because we use a shared one-byte buffer
 		oneByte[0] = (byte) b;
 		write(oneByte, 0, 1);

@@ -15,7 +15,6 @@
 
 package org.apache.harmony.luni.util;
 
-
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,76 +26,48 @@ import java.io.InputStream;
  */
 public class PasswordProtectedInputStream extends FilterInputStream {
 
-	private byte[] password; // Password to use to decrypt the input bytes
+    private byte[] password; // Password to use to decrypt the input bytes
 
-	private int pwdIndex = 0; // Index into the password array.
+    private int pwdIndex; // Index into the password array.
 
-	/**
-	 * Constructs a new instance of the receiver.
-	 * 
-	 * @param in
-	 *            java.io.InputStream The actual input stream where to read the
-	 *            bytes from.
-	 * @param password
-	 *            byte[] password bytes to use to decrypt the input bytes
-	 */
-	public PasswordProtectedInputStream(InputStream in, byte[] password) {
-		super(in);
-		this.password = password;
-	}
+    /**
+     * Constructs a new instance of the receiver.
+     * 
+     * @param in The actual input stream where to read the bytes from.
+     * @param password The password bytes to use to decrypt the input bytes
+     */
+    public PasswordProtectedInputStream(InputStream in, byte[] password) {
+        super(in);
+        this.password = password;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.io.InputStream#read()
-	 */
-	public int read() throws IOException {
-		int read = in.read();
-		if (read >= 0) {
-			read ^= password[pwdIndex];
-			pwdIndex = (pwdIndex + 1) % password.length;
-		}
-		return read;
-	}
+    @Override
+    public int read() throws IOException {
+        int read = in.read();
+        if (read >= 0) {
+            read ^= password[pwdIndex];
+            pwdIndex = (pwdIndex + 1) % password.length;
+        }
+        return read;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.io.InputStream#read(byte[], int, int)
-	 */
-	public int read(byte b[], int off, int len) throws IOException {
-		int read = in.read(b, off, len);
-		if (read > 0) {
-			int lastIndex = off + read;
-			for (int i = off; i < lastIndex; i++) {
-				b[i] ^= password[pwdIndex];
-				pwdIndex = (pwdIndex + 1) % password.length;
-			}
-		}
-		return read;
-	}
+    @Override
+    public int read(byte b[], int off, int len) throws IOException {
+        int read = in.read(b, off, len);
+        if (read > 0) {
+            int lastIndex = off + read;
+            for (int i = off; i < lastIndex; i++) {
+                b[i] ^= password[pwdIndex];
+                pwdIndex = (pwdIndex + 1) % password.length;
+            }
+        }
+        return read;
+    }
 
-	/**
-	 * Skips over and discards <code>n</code> bytes of data from the input
-	 * stream. The <code>skip</code> method may, for a variety of reasons, end
-	 * up skipping over some smaller number of bytes, possibly <code>0</code>.
-	 * The actual number of bytes skipped is returned.
-	 * <p>
-	 * The <code>skip </code>method of <code>FilterInputStream</code> calls
-	 * the <code>skip</code> method of its underlying input stream with the
-	 * same argument, and returns whatever value that method does.
-	 * 
-	 * @param n
-	 *            the number of bytes to be skipped.
-	 * @return the actual number of bytes skipped.
-	 * @exception IOException
-	 *                if an I/O error occurs.
-	 * @since JDK1.0
-	 */
-
-	public long skip(long n) throws IOException {
-		long skip = super.skip(n);
-		pwdIndex += skip;
-		return skip;
-	}
+    @Override
+    public long skip(long n) throws IOException {
+        long skip = super.skip(n);
+        pwdIndex += skip;
+        return skip;
+    }
 }

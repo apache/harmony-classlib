@@ -21,6 +21,7 @@ import java.util.Arrays;
  * Helper class with methods for sorting arrays.
  * @deprecated Use Comparator and Arrays.sort().
  */
+@Deprecated
 public final class Sorter {
 	public interface Comparator<T> extends java.util.Comparator<T> {
 	}
@@ -32,6 +33,7 @@ public final class Sorter {
 	 *            array of objects to be sorted
 	 * @param comp
 	 *            A Comparator to be used to sort the elements
+     * 
 	 */
 	public static <T> void sort(T[] objs, Comparator<T> comp) {
 		Arrays.sort(objs, comp);
