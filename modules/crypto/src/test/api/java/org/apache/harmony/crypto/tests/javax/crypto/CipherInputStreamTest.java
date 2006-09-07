@@ -16,7 +16,13 @@
 
 package org.apache.harmony.crypto.tests.javax.crypto;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 import junit.framework.TestCase;
+
+import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.NullCipher;
 
@@ -35,4 +41,26 @@ public class CipherInputStreamTest extends TestCase {
             // expected
         }
     }
+
+    /**
+     * @tests javax.crypto.CipherInputStream#close()
+     */
+    public void testClose() throws Exception {
+        // Regression for HARMONY-1087
+        try {
+            new CipherInputStream(new ByteArrayInputStream(new byte[] { 1 }),
+                    Cipher.getInstance("DES/CBC/PKCS5Padding")).close();
+            fail("IllegalStateException expected!");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+        try {
+            new CipherInputStream(new BufferedInputStream((InputStream) null),
+                    Cipher.getInstance("DES/CBC/PKCS5Padding")).close();
+            fail("IllegalStateException expected!");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+    }
+
 }

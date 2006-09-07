@@ -25,6 +25,7 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.crypto.NullCipher;
+import java.security.GeneralSecurityException;
 
 /**
  * @com.intel.drl.spec_ref
@@ -138,6 +139,12 @@ public class CipherInputStream extends FilterInputStream {
      */
     public void close() throws IOException {
         in.close();
+        try {
+            cipher.doFinal();
+        } catch (GeneralSecurityException e) {
+            throw (IOException) new IOException(e.getMessage()).initCause(e);
+        }
+
     }
 
     /**
