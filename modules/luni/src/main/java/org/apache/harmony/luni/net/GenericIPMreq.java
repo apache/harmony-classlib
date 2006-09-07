@@ -15,7 +15,6 @@
 
 package org.apache.harmony.luni.net;
 
-
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -29,20 +28,21 @@ import java.util.Enumeration;
  */
 final class GenericIPMreq {
 
-    // private members
     private InetAddress multiaddr;
 
+    @SuppressWarnings("unused")
     private InetAddress interfaceAddr;
 
+    @SuppressWarnings("unused")
     private boolean isIPV6Address;
 
+    @SuppressWarnings("unused")
     private int interfaceIdx;
 
     /**
      * This constructor is used to create an instance of the object
      * 
-     * @param addr
-     *            multicast address to join/leave
+     * @param addr multicast address to join/leave
      * 
      */
     GenericIPMreq(InetAddress addr) {
@@ -55,12 +55,9 @@ final class GenericIPMreq {
     /**
      * This constructor is used to create an instance of the object
      * 
-     * @param addr
-     *            multicast address to join/leave
-     * @param netInterface
-     *            the NetworkInterface object identifying the interface on which
-     *            to join/leave
-     * 
+     * @param addr multicast address to join/leave
+     * @param netInterface the NetworkInterface object identifying the interface
+     *        on which to join/leave
      */
     GenericIPMreq(InetAddress addr, NetworkInterface netInterface) {
         multiaddr = addr;
@@ -68,18 +65,18 @@ final class GenericIPMreq {
             // TODO  check if necessary
             //interfaceIdx = netInterface.getIndex();
 
-            // here we need to get the first IPV4 address as we only use it if
-            // we
-            // are settting the interface for an IPV4 multicast socket. For
-            // adds/drops on
-            // IPV6 addresses we use the index within the networkInterface
+            /*
+             * here we need to get the first IPV4 address as we only use it if
+             * we are setting the interface for an IPV4 multicast socket. For
+             * adds/drops on IPV6 addresses we use the index within the
+             * networkInterface
+             */
             interfaceAddr = null;
-            Enumeration theAddresses = netInterface.getInetAddresses();
+            Enumeration<InetAddress> theAddresses = netInterface.getInetAddresses();
             if ((addr instanceof Inet4Address) && (theAddresses != null)) {
                 boolean found = false;
                 while ((theAddresses.hasMoreElements()) && (found != true)) {
-                    InetAddress theAddress = (InetAddress) theAddresses
-                            .nextElement();
+                    InetAddress theAddress = theAddresses.nextElement();
                     if (theAddress instanceof Inet4Address) {
                         interfaceAddr = theAddress;
                         found = true;
@@ -87,9 +84,10 @@ final class GenericIPMreq {
                 }
             }
         } else {
-            // network interface is null so we just want to defer the decision
-            // to
-            // the system
+            /*
+             * network interface is null so we just want to defer the decision
+             * to the system
+             */
             interfaceIdx = 0;
             interfaceAddr = null;
         }
@@ -100,8 +98,10 @@ final class GenericIPMreq {
      * This method does any required initialization for the constructors
      */
     private void init() {
-        // set the flag indicating if the multicast address is an IPV6 address
-        // or not
+        /*
+         * set the flag indicating if the multicast address is an IPV6 address
+         * or not
+         */
         isIPV6Address = ((multiaddr != null) && (multiaddr instanceof Inet6Address));
     }
 }

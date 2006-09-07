@@ -20,36 +20,37 @@ import java.net.InetAddress;
 import java.net.Proxy;
 import java.net.SocketImpl;
 
-
 public class SocketImplProvider {
-    
-    public static SocketImpl getSocketImpl(){
+
+    public static SocketImpl getSocketImpl() {
         return new PlainSocketImpl2();
     }
-    /*
+
+    /**
      * gets a SocketImpl with specified proxy.
      */
-    public static SocketImpl getSocketImpl(Proxy proxy){
+    public static SocketImpl getSocketImpl(Proxy proxy) {
         return new PlainSocketImpl2(proxy);
     }
-    
-    public static SocketImpl getSocketImpl(FileDescriptor fd, int localport, InetAddress addr, int port){
+
+    public static SocketImpl getSocketImpl(FileDescriptor fd, int localport, InetAddress addr,
+            int port) {
         return new PlainSocketImpl2(fd, localport, addr, port);
-    }    
-    
-    public static SocketImpl getServerSocketImpl(){
+    }
+
+    public static SocketImpl getServerSocketImpl() {
         return new PlainServerSocketImpl();
     }
 
-    public static SocketImpl getServerSocketImpl(FileDescriptor fd){
+    public static SocketImpl getServerSocketImpl(FileDescriptor fd) {
         return new PlainServerSocketImpl(fd);
-    }    
-    
-    public static DatagramSocketImpl getDatagramSocketImpl(){
+    }
+
+    public static DatagramSocketImpl getDatagramSocketImpl() {
         return new PlainDatagramSocketImpl();
     }
-    
-    public static DatagramSocketImpl getMulticastSocketImpl(){
+
+    public static DatagramSocketImpl getMulticastSocketImpl() {
         return new PlainMulticastSocketImpl();
     }
 

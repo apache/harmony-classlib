@@ -20,96 +20,54 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketImpl;
 
+import org.apache.harmony.luni.util.Msg;
 
 class SocketOutputStream extends OutputStream {
 
-	private static final String ERRCODE_BUFFER_NULL = "K0047"; //$NON-NLS-1$
+    private PlainSocketImpl socket;
 
-	private static final String ERRCODE_OFFSET_OUTOFBOUND = "K002f"; //$NON-NLS-1$
+    /**
+     * Constructs a SocketOutputStream for the <code>socket</code>. Write
+     * operations are forwarded to the <code>socket</code>.
+     * 
+     * @param socket the socket to be written
+     * @see Socket
+     */
+    public SocketOutputStream(SocketImpl socket) {
+        super();
+        this.socket = (PlainSocketImpl) socket;
+    }
 
-	PlainSocketImpl socket;
+    @Override
+    public void close() throws IOException {
+        socket.close();
+    }
 
-	/**
-	 * Constructs a SocketOutputStream for the <code>socket</code>. Write
-	 * operations are forwarded to the <code>socket</code>.
-	 * 
-	 * @param socket
-	 *            the socket to be written
-	 * @see Socket
-	 */
+    @Override
+    public void write(byte[] buffer) throws IOException {
+        socket.write(buffer, 0, buffer.length);
+    }
 
-	public SocketOutputStream(SocketImpl socket) {
-		super();
-		this.socket = (PlainSocketImpl) socket;
-	}
+    @Override
+    public void write(byte[] buffer, int offset, int count) throws IOException {
+        // avoid int overflow
+        if (buffer != null) {
+            if (0 <= offset && offset <= buffer.length && 0 <= count
+                    && count <= buffer.length - offset) {
+                socket.write(buffer, offset, count);
+            } else {
+                throw new ArrayIndexOutOfBoundsException(Msg.getString("K002f"));//$NON-NLS-1$
+            }
+        } else {
+            throw new NullPointerException(Msg.getString("K0047"));//$NON-NLS-1$
+        }
+    }
 
-	/**
-	 * Close the stream and the underlying socket.
-	 * 
-	 * @exception IOException
-	 *                thrown if an error occurs during the close
-	 */
+    @Override
+    public void write(int oneByte) throws IOException {
+        byte[] buffer = new byte[1];
+        buffer[0] = (byte) (oneByte & 0xFF);
 
-	public void close() throws IOException {
-		socket.close();
-		super.close();
-	}
-
-	/**
-	 * Write the <code>buffer</code> to the socket.
-	 * 
-	 * @param buffer
-	 *            the buffer to write
-	 * @exception IOException
-	 *                thrown if an error occurs during the write
-	 */
-	public void write(byte[] buffer) throws IOException {
-		socket.write(buffer, 0, buffer.length);
-	}
-
-	/**
-	 * Write the <code>count</code> number of bytes from the
-	 * <code>buffer</code> to the socket, starting at <code>offset</code>.
-	 * 
-	 * @param buffer
-	 *            the buffer to write
-	 * @param offset
-	 *            the offset in buffer to start writing
-	 * @param count
-	 *            the number of bytes to write
-	 * @exception IOException,
-	 *                IndexOutOfBoundsException thrown if an error occurs during
-	 *                the write
-	 */
-	public void write(byte[] buffer, int offset, int count) throws IOException {
-		// avoid int overflow
-		if (buffer != null) {
-			if (0 <= offset && offset <= buffer.length && 0 <= count
-					&& count <= buffer.length - offset) {
-				socket.write(buffer, offset, count);
-			} else {
-				throw new ArrayIndexOutOfBoundsException(org.apache.harmony.luni.util.Msg
-						.getString(ERRCODE_OFFSET_OUTOFBOUND));
-			}
-		} else {
-			throw new NullPointerException(org.apache.harmony.luni.util.Msg
-					.getString(ERRCODE_BUFFER_NULL));
-		}
-	}
-
-	/**
-	 * Write a single byte, the lowest-order byte from an <code>int</code> to
-	 * the socket.
-	 * 
-	 * @param oneByte
-	 *            the value to write
-	 * @exception IOException
-	 *                thrown if an error occurs during the write
-	 */
-	public void write(int oneByte) throws IOException {
-		byte[] buffer = new byte[1];
-		buffer[0] = (byte) (oneByte & 0xFF);
-
-		socket.write(buffer, 0, 1);
-	}
+        socket.write(buffer, 0, 1);
+    }
 }

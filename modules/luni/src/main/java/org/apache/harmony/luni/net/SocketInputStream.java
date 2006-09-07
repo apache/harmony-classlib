@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.net.SocketImpl;
 
-
 import org.apache.harmony.luni.util.Msg;
 
 /**
@@ -30,139 +29,64 @@ import org.apache.harmony.luni.util.Msg;
  */
 class SocketInputStream extends InputStream {
 
-	private static final String ERRCODE_OFFSETCOUNT_OUTOFBOUND = "K002f"; //$NON-NLS-1$
+    private final PlainSocketImpl socket;
 
-	private static final String ERRCODE_OFFSET_OUTOFBOUND = "K002e"; //$NON-NLS-1$
+    /**
+     * Constructs a SocketInputStream for the <code>socket</code>. Read
+     * operations are forwarded to the <code>socket</code>.
+     * 
+     * @param socket the socket to be read
+     * @see Socket
+     */
+    public SocketInputStream(SocketImpl socket) {
+        super();
+        this.socket = (PlainSocketImpl) socket;
+    }
 
-	private static final String ERRCODE_BUFFER_NULL = "K0047"; //$NON-NLS-1$
+    @Override
+    public int available() throws IOException {
+        return socket.available();
+    }
 
-	PlainSocketImpl socket;
+    @Override
+    public void close() throws IOException {
+        socket.close();
+    }
 
-	/**
-	 * Constructs a SocketInputStream for the <code>socket</code>. Read
-	 * operations are forwarded to the <code>socket</code>.
-	 * 
-	 * @param socket
-	 *            the socket to be read
-	 * @see Socket
-	 */
-	public SocketInputStream(SocketImpl socket) {
-		super();
-		this.socket = (PlainSocketImpl) socket;
-	}
+    @Override
+    public int read() throws IOException {
+        byte[] buffer = new byte[1];
+        int result = socket.read(buffer, 0, 1);
+        return (-1 == result) ? result : buffer[0] & 0xFF;
+    }
 
-	/**
-	 * Answer the number of bytes that may be read without blocking. Zero
-	 * indicates a read operation would block. This call itself does not block,
-	 * but may throw an IOException.
-	 * 
-	 * @return int the number of bytes that may be read without blocking
-	 * @exception IOException
-	 *                thrown if an error occurs during the test
-	 */
-	public int available() throws IOException {
-		return socket.available();
-	}
+    @Override
+    public int read(byte[] buffer) throws IOException {
+        return read(buffer, 0, buffer.length);
+    }
 
-	/**
-	 * Close the stream and the underlying socket.
-	 * 
-	 * @exception IOException
-	 *                thrown if an error occurs during the close
-	 */
-	public void close() throws IOException {
-		socket.close();
-		super.close();
-	}
+    @Override
+    public int read(byte[] buffer, int offset, int count) throws IOException {
+        if (null == buffer) {
+            throw new IOException(Msg.getString("K0047"));//$NON-NLS-1$
+        }
 
-	/**
-	 * Read a single byte from the socket, answering the value as an
-	 * <code>int</code>. This call may block indefinitely, depending upon
-	 * whether data is available and whether the read timeout option has been
-	 * set on the socket. A value of -1 indicates 'end-of-file'.
-	 * 
-	 * @return int the value read
-	 * @exception IOException
-	 *                thrown if an error occurs during the read
-	 */
-	public int read() throws IOException {
-		byte[] buffer = new byte[1];
-		int result = socket.read(buffer, 0, 1);
-		return (-1 == result) ? result : buffer[0] & 0xFF;
-	}
+        if (0 == count) {
+            return 0;
+        }
 
-	/**
-	 * Read a buffer.length number of bytes from the socket, into the
-	 * <code>buffer</code>. This call may block indefinitely, depending upon
-	 * whether data is available and whether the read timeout option has been
-	 * set on the socket. The number of bytes actually read is returned; a value
-	 * of -1 indicates 'end-of-file'.
-	 * 
-	 * @param buffer
-	 *            the buffer to read into
-	 * @return int the number of bytes actually read
-	 * @exception IOException
-	 *                thrown if an error occurs during the read
-	 */
-	public int read(byte[] buffer) throws IOException {
-		return read(buffer, 0, buffer.length);
-	}
+        if (0 > offset || offset >= buffer.length) {
+            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e"));//$NON-NLS-1$
+        }
+        if (0 > count || offset + count > buffer.length) {
+            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002f"));//$NON-NLS-1$
+        }
 
-	/**
-	 * Read a <code>count</code> number of bytes from the socket, into the
-	 * <code>buffer</code> at an <code>offset</code>. This call may block
-	 * indefinitely, depending upon whether data is available and whether the
-	 * read timeout option has been set on the socket. The number of bytes
-	 * actually read is returned; a value of -1 indicates 'end-of-file'.
-	 * 
-	 * @param buffer
-	 *            the buffer to read into
-	 * @param offset
-	 *            the offset into the buffer to start filling
-	 * @param count
-	 *            the maximum number of bytes to read
-	 * @return int the number of bytes actually read
-	 * @exception IOException,
-	 *                ArrayIndexOutOfBoundsException thrown if the argument
-	 *                bounds are incorrect or an error occurs during the read
-	 */
-	public int read(byte[] buffer, int offset, int count) throws IOException {
-		if (null == buffer) {
-			throw new IOException(Msg.getString(ERRCODE_BUFFER_NULL));
-		}
+        return socket.read(buffer, offset, count);
+    }
 
-		if (0 == count) {
-			return 0;
-		}
-
-		if (0 > offset || offset >= buffer.length) {
-			throw new ArrayIndexOutOfBoundsException(Msg
-					.getString(ERRCODE_OFFSET_OUTOFBOUND));
-		}
-		if (0 > count || offset + count > buffer.length) {
-			throw new ArrayIndexOutOfBoundsException(Msg
-					.getString(ERRCODE_OFFSETCOUNT_OUTOFBOUND));
-		}
-
-		return socket.read(buffer, offset, count);
-	}
-
-	/**
-	 * Skips <code>n</code> number of bytes in this InputStream. Subsequent
-	 * <code>read()</code>'s will not return these bytes unless
-	 * <code>reset()</code> is used. This method may perform multiple reads to
-	 * read <code>n</code> bytes. This implementation reads <code>n</code>
-	 * bytes into a temporary buffer.
-	 * 
-	 * @param n
-	 *            the number of bytes to skip.
-	 * @return the number of bytes actually skipped.
-	 * 
-	 * @exception java.io.IOException
-	 *                If the stream is already closed or another IOException
-	 *                occurs.
-	 */
-	public long skip(long n) throws IOException {
-		return (0 == n) ? 0 : super.skip(n);
-	}
+    @Override
+    public long skip(long n) throws IOException {
+        return (0 == n) ? 0 : super.skip(n);
+    }
 }

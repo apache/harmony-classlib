@@ -18,25 +18,23 @@ import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.URI;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 
-import org.apache.harmony.luni.util.PriviAction;
-
 public class NetUtil {
-    
+
     /**
      * Answers whether to use a SOCKS proxy.
      * 
-     * @param proxy
-     *            java.net.Proxy <code>proxy</code> is used to determine
-     *            whether using SOCKS proxy.
+     * @param proxy java.net.Proxy <code>proxy</code> is used to determine
+     *        whether using SOCKS proxy.
      * @return true if only the type of <code>proxy</code> is
      *         Proxy.Type.SOCKS.
      */
     public static boolean usingSocks(Proxy proxy) {
-    	if(null != proxy && Proxy.Type.SOCKS == proxy.type()){
-    		return true;
-    	}
+        if (null != proxy && Proxy.Type.SOCKS == proxy.type()) {
+            return true;
+        }
         return false;
     }
 
@@ -46,9 +44,8 @@ public class NetUtil {
      * @return boolean
      */
     public static boolean preferIPv6Addresses() {
-    	String result = AccessController.doPrivileged(new PriviAction<String>(
-    			"java.net.preferIPv6Addresses")); //$NON-NLS-1$
-    	return "true".equals(result); //$NON-NLS-1$
+        final Action a = new Action("java.net.preferIPv6Addresses");//$NON-NLS-1$
+        return AccessController.doPrivileged(a).booleanValue();
     }
 
     /**
@@ -57,23 +54,62 @@ public class NetUtil {
      * @return boolean
      */
     public static boolean preferIPv4Stack() {
-    	String result = AccessController.doPrivileged(new PriviAction<String>(
-    			"java.net.preferIPv4Stack")); //$NON-NLS-1$
-        return "true".equals(result); //$NON-NLS-1$
+        final Action a = new Action("java.net.preferIPv4Stack");//$NON-NLS-1$
+        return AccessController.doPrivileged(a).booleanValue();
     }
 
     /**
-     * Gets proxy list according to the uri by system ProxySelector.
+     * Gets proxy list according to the URI by system ProxySelector.
+     * 
      * @param uri
-     * @return a list of proxy for the uri. Returns null if no proxy 
-     * 		   is available.
+     * @return a list of proxy for the URI. Returns null if no proxy is
+     *         available.
      */
-    public static List<Proxy> getProxyList(URI uri){
-		// use system default selector to get proxy list
-		ProxySelector selector = ProxySelector.getDefault();
-		if(null == selector){
-			return null;
-		}
-		return selector.select(uri);
+    public static List<Proxy> getProxyList(URI uri) {
+        // use system default selector to get proxy list
+        ProxySelector selector = ProxySelector.getDefault();
+        if (null == selector) {
+            return null;
+        }
+        return selector.select(uri);
+    }
+
+    private static final class Action implements PrivilegedAction<Boolean> {
+        private final String propertyName;
+
+        Action(String propertyName) {
+            super();
+            this.propertyName = propertyName;
+        }
+
+        public Boolean run() {
+            if (Boolean.getBoolean(propertyName)) {
+                return Boolean.TRUE;
+            }
+            return Boolean.FALSE;
+        }
+    }
+
+    static void intToBytes(int value, byte bytes[], int start) {
+        /*
+         * Shift the int so the current byte is right-most Use a byte mask of
+         * 255 to single out the last byte.
+         */
+        bytes[start] = (byte) ((value >> 24) & 255);
+        bytes[start + 1] = (byte) ((value >> 16) & 255);
+        bytes[start + 2] = (byte) ((value >> 8) & 255);
+        bytes[start + 3] = (byte) (value & 255);
+    }
+
+    static int bytesToInt(byte bytes[], int start) {
+        /*
+         * First mask the byte with 255, as when a negative signed byte converts
+         * to an integer, it has bits on in the first 3 bytes, we are only
+         * concerned about the right-most 8 bits. Then shift the rightmost byte
+         * to align with its position in the integer.
+         */
+        int value = ((bytes[start + 3] & 255)) | ((bytes[start + 2] & 255) << 8)
+                | ((bytes[start + 1] & 255) << 16) | ((bytes[start] & 255) << 24);
+        return value;
     }
 }

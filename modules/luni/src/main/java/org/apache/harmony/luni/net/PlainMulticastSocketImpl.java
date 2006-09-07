@@ -15,11 +15,9 @@
 
 package org.apache.harmony.luni.net;
 
-import java.io.FileDescriptor;
 import java.net.SocketException;
 
 import org.apache.harmony.luni.platform.Platform;
-
 
 /**
  * This class was added so we can create sockets with options that are needed
@@ -30,25 +28,9 @@ import org.apache.harmony.luni.platform.Platform;
  * used, for earlier versions the original PlainSocketImpl is used.
  */
 class PlainMulticastSocketImpl extends PlainDatagramSocketImpl {
-    
-	// /**
-	// * Answer the result of attempting to create a multicast socket in the IP
-	// * stack. Any special options required for server sockets will be set by
-	// * this method.
-	// *
-	// * @param aFD
-	// * the socket FileDescriptor
-	// * @exception SocketException
-	// * if an error occurs while creating the socket
-	// */
-	// static native void createMulticastSocketImpl(FileDescriptor aFD,
-	// boolean preferIPv4Stack) throws SocketException;
 
-    /**
-	 * Allocate the socket descriptor in the IP stack.
-	 */
-	public void create() throws SocketException {
-		Platform.getNetworkSystem()
-				.createMulticastSocket(fd, NetUtil.preferIPv4Stack());
-	}
+    @Override
+    public void create() throws SocketException {
+        Platform.getNetworkSystem().createMulticastSocket(fd, NetUtil.preferIPv4Stack());
+    }
 }

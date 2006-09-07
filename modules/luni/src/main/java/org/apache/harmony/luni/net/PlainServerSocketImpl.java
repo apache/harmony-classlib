@@ -21,7 +21,6 @@ import java.net.SocketException;
 import org.apache.harmony.luni.net.NetUtil;
 import org.apache.harmony.luni.net.PlainSocketImpl;
 
-
 /**
  * This class was added so we can create sockets with options that are needed
  * for server sockets. It just overrides create so that we call new natives
@@ -31,49 +30,23 @@ import org.apache.harmony.luni.net.PlainSocketImpl;
  * used, for earlier versions the original PlainSocketImpl is used.
  */
 class PlainServerSocketImpl extends PlainSocketImpl {
-    
-    public PlainServerSocketImpl(){
+
+    public PlainServerSocketImpl() {
         super();
     }
-    
-    public PlainServerSocketImpl(FileDescriptor fd){
+
+    public PlainServerSocketImpl(FileDescriptor fd) {
         super();
         this.fd = fd;
     }
 
-	/**
-	 * Answer the result of attempting to create a server stream socket in the
-	 * IP stack. Any special options required for server sockets will be set by
-	 * this method.
-	 * 
-	 * @param aFD
-	 *            the socket FileDescriptor
-	 * @exception SocketException
-	 *                if an error occurs while creating the socket
-	 */
-	// static native void createServerStreamSocketImpl(FileDescriptor aFD,
-	// boolean preferIPv4Stack) throws SocketException;
-	/**
-	 * Creates a new unconnected socket. If streaming is true, create a stream
-	 * socket, else a datagram socket. The deprecated datagram usage is not
-	 * supported and will throw an exception.
-	 * 
-	 * @param isStreaming
-	 *            true, if the socket is type streaming
-	 * @exception SocketException
-	 *                if an error occurs while creating the socket
-	 */
-	protected void create(boolean isStreaming) throws SocketException {
-		streaming = isStreaming;
-		// if (isStreaming) {
-		// createServerStreamSocketImpl(fd, Socket.preferIPv4Stack());
-		// } else {
-		// createDatagramSocketImpl(fd, Socket.preferIPv4Stack());
-		// }
-		if (isStreaming) {
-			netImpl.createServerStreamSocket(fd, NetUtil.preferIPv4Stack());
-		} else {
-			netImpl.createDatagramSocket(fd, NetUtil.preferIPv4Stack());
-		}
-	}
+    @Override
+    protected void create(boolean isStreaming) throws SocketException {
+        streaming = isStreaming;
+        if (isStreaming) {
+            netImpl.createServerStreamSocket(fd, NetUtil.preferIPv4Stack());
+        } else {
+            netImpl.createDatagramSocket(fd, NetUtil.preferIPv4Stack());
+        }
+    }
 }
