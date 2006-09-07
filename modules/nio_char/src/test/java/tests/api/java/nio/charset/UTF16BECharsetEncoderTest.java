@@ -86,8 +86,8 @@ public class UTF16BECharsetEncoderTest extends CharsetEncoderTest {
 	}
 
 	public void testSpecificDefaultValue() {
-		assertEquals(2, encoder.averageBytesPerChar());
-		assertEquals(2, encoder.maxBytesPerChar());
+		assertEquals(2, encoder.averageBytesPerChar(), 0.001);
+		assertEquals(2, encoder.maxBytesPerChar(), 0.001);
 	}
 
 	CharBuffer getMalformedCharBuffer() {
