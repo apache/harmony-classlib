@@ -195,7 +195,7 @@ public class LogManager {
 				}
 
 				// if global logger has been initialized, set root as its parent
-                Logger root = manager.getLogger("");
+                Logger root = manager.getLogger(""); //$NON-NLS-1$
 				if (null != Logger.global && null != root) {
 					Logger.global.setParent(root);
 				}
@@ -318,7 +318,7 @@ public class LogManager {
                 break;
             }
         }
-        if (parent == null && null != (parent = loggers.get(""))) {
+        if (parent == null && null != (parent = loggers.get(""))) { //$NON-NLS-1$
             logger.internalSetParent(parent);
         }
 
@@ -554,7 +554,7 @@ public class LogManager {
                 l.handlers = null;
             }
         }
-        Logger root = loggers.get("");
+        Logger root = loggers.get(""); //$NON-NLS-1$
         if (null != root) {
             root.setLevel(Level.INFO);
         }
