@@ -21,6 +21,8 @@ import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.io.UnsupportedEncodingException;
 
+import org.apache.harmony.logging.internal.nls.Messages;
+
 /**
  * A <code>Handler</code> object accepts a logging request and exports the
  * desired messages to a target, for example, a file, the console, etc. It can
@@ -118,7 +120,8 @@ public abstract class Handler {
 
     // print error message in some format
     void printInvalidPropMessage(String key, String value, Exception e) {
-        String msg = new StringBuffer().append("Invalid property value for ") //$NON-NLS-1$
+        // logging.12=Invalid property value for
+        String msg = new StringBuffer().append(Messages.getString("logging.12"))  //$NON-NLS-1$
                 .append(prefix).append(".").append(key).append(":").append( //$NON-NLS-1$//$NON-NLS-2$
                         value).toString();
         errorMan.error(msg, e, ErrorManager.GENERIC_FAILURE);
@@ -308,8 +311,10 @@ public abstract class Handler {
             if (Charset.isSupported(newEncoding)) {
                 this.encoding = newEncoding;
             } else {
-                throw new UnsupportedEncodingException("The encoding \"" //$NON-NLS-1$
-                        + newEncoding + "\" is not supported."); //$NON-NLS-1$
+                // logging.13=The encoding "{0}" is not supported.
+                throw new UnsupportedEncodingException(Messages.getString(
+                        "logging.13", //$NON-NLS-1$
+                        newEncoding));
             }
 
         }

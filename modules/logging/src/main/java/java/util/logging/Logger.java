@@ -25,6 +25,8 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
+import org.apache.harmony.logging.internal.nls.Messages;
+
 /**
  * Loggers are used to log records to certain outputs, including file, console,
  * etc. They use various handlers to actually do the output-dependent
@@ -285,9 +287,9 @@ public class Logger {
                 // Failed to load using the current class's classloader, ignore
             }
         }
-        throw new MissingResourceException(
-                "Failed to load the specified resource bundle \"" //$NON-NLS-1$
-                        + resourceBundleName + "\".", resourceBundleName, null); //$NON-NLS-1$
+        // logging.8=Failed to load the specified resource bundle "{0}".
+        throw new MissingResourceException(Messages.getString("logging.8", //$NON-NLS-1$
+                resourceBundleName), resourceBundleName, null);  
     }
 
     /**
@@ -349,11 +351,11 @@ public class Logger {
                  * are inconsistent with each other, i.e., different
                  * names
                  */
-                throw new IllegalArgumentException(
-                        "The specified resource bundle name \"" //$NON-NLS-1$
-                                + resourceBundleName
-                                + "\" is inconsistent with the existing one \"" //$NON-NLS-1$
-                                + l.getResourceBundleName() + "\"."); //$NON-NLS-1$
+                // logging.9=The specified resource bundle name "{0}" is 
+                // inconsistent with the existing one "{1}".
+                throw new IllegalArgumentException(Messages.getString(
+                        "logging.9", //$NON-NLS-1$
+                        resourceBundleName, l.getResourceBundleName())); 
             }
         }
     }
@@ -422,7 +424,8 @@ public class Logger {
      */
     public synchronized void addHandler(Handler handler) {
         if (null == handler) {
-            throw new NullPointerException("The 'handler' parameter is null."); //$NON-NLS-1$
+            // logging.A=The 'handler' parameter is null.
+            throw new NullPointerException(Messages.getString("logging.A")); //$NON-NLS-1$
         }
         // Anonymous loggers can always add handlers
         if (this.isNamed) {
@@ -439,7 +442,7 @@ public class Logger {
               return;
           }
           handlers = new ArrayList<Handler>();
-          String handlerStr = manager.getProperty("".equals(name)?"handlers":name+".handlers"); //$NON-NLS-1$
+          String handlerStr = manager.getProperty("".equals(name)?"handlers":name+".handlers"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
           if (null == handlerStr) {
               return;
           }
@@ -613,7 +616,8 @@ public class Logger {
      */
     public synchronized void setParent(Logger parent) {
         if (null == parent) {
-            throw new NullPointerException("The 'parent' parameter is null."); //$NON-NLS-1$
+            // logging.B=The 'parent' parameter is null.
+            throw new NullPointerException(Messages.getString("logging.B")); //$NON-NLS-1$
         }
         // even anonymous loggers are checked
         LogManager.getLogManager().checkAccess();

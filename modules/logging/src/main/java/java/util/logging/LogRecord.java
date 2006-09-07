@@ -23,6 +23,8 @@ import java.io.Serializable;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.apache.harmony.logging.internal.nls.Messages;
+
 /**
  * A <code>LogRecord</code> object represents a logging request. It is passed
  * between the logging framework and individual logging handlers. Client
@@ -176,7 +178,8 @@ public class LogRecord implements Serializable {
      */
     public LogRecord(Level level, String msg) {
         if (null == level) {
-            throw new NullPointerException("The 'level' parameter is null."); //$NON-NLS-1$
+            // logging.4=The 'level' parameter is null.
+            throw new NullPointerException(Messages.getString("logging.4")); //$NON-NLS-1$
         }
         this.level = level;
         this.message = msg;
@@ -225,7 +228,8 @@ public class LogRecord implements Serializable {
      */
     public void setLevel(Level level) {
         if (null == level) {
-            throw new NullPointerException("The 'level' parameter is null."); //$NON-NLS-1$
+            // logging.4=The 'level' parameter is null.
+            throw new NullPointerException(Messages.getString("logging.4")); //$NON-NLS-1$
         }
         this.level = level;
     }
@@ -501,7 +505,8 @@ public class LogRecord implements Serializable {
         byte minor = in.readByte();
         //only check MAJOR version
         if (major != MAJOR) {
-            throw new IOException("Different version - " + major + "." + minor);  //$NON-NLS-1$//$NON-NLS-2$
+            // logging.5=Different version - {0}.{1}
+            throw new IOException(Messages.getString("logging.5", major, minor)); //$NON-NLS-1$ 
         }
         
         int length = in.readInt();

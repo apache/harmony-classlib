@@ -90,14 +90,14 @@ public class ErrorManager {
             }
             synchronized (System.err) {
                 System.err.print(getClass().getName());
-                System.err.print(": Error Code - ");
+                System.err.print(": Error Code - "); //$NON-NLS-1$
                 System.err.print(errorCode);
                 if (message != null) {
-                    System.err.print(", Message - ");
+                    System.err.print(", Message - "); //$NON-NLS-1$
                     System.err.print(message);
                 }
                 if (exception != null) {
-                    System.err.print(", Exception - ");
+                    System.err.print(", Exception - "); //$NON-NLS-1$
                     exception.printStackTrace(System.err);
                 } else {
                     System.err.println();

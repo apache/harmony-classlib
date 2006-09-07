@@ -20,6 +20,8 @@ import java.io.Serializable;
 import java.security.BasicPermission;
 import java.security.Guard;
 
+import org.apache.harmony.logging.internal.nls.Messages;
+
 /**
  * The permission required to control the logging when run with a
  * <code>SecurityManager</code>.
@@ -51,11 +53,12 @@ public final class LoggingPermission extends BasicPermission implements Guard,
     public LoggingPermission(String name, String actions) {
         super(name, actions);
         if (!"control".equals(name)) { //$NON-NLS-1$
-            throw new IllegalArgumentException("Name must be \"control\"."); //$NON-NLS-1$
+            // logging.6=Name must be "control".
+            throw new IllegalArgumentException(Messages.getString("logging.6")); //$NON-NLS-1$
         }
         if (null != actions && !"".equals(actions)) { //$NON-NLS-1$
-            throw new IllegalArgumentException(
-                    "Actions must be either null or the empty string."); //$NON-NLS-1$
+            // logging.7=Actions must be either null or the empty string.
+            throw new IllegalArgumentException(Messages.getString("logging.7")); //$NON-NLS-1$
         }
     }
 

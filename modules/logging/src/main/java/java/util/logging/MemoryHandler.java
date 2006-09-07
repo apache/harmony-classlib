@@ -19,6 +19,8 @@ package java.util.logging;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 
+import org.apache.harmony.logging.internal.nls.Messages;
+
 
 /**
  * A <code>Handler</code> put the description of log events into a cycled memory 
@@ -118,8 +120,9 @@ public class MemoryHandler extends Handler {
             });
             target = (Handler) targetClass.newInstance();
         } catch (Exception e) {
-            throw new RuntimeException("Cannot load target handler:" //$NON-NLS-1$
-                    + targetName);
+            // logging.10=Cannot load target handler:{0}
+            throw new RuntimeException(Messages.getString("logging.10", //$NON-NLS-1$
+                    targetName));
         }
         //init size
         String sizeString = manager.getProperty(className+".size"); //$NON-NLS-1$
@@ -162,7 +165,8 @@ public class MemoryHandler extends Handler {
      */
     public MemoryHandler(Handler target, int size, Level pushLevel) {
         if (size <= 0) {
-            throw new IllegalArgumentException("Size must be positive."); //$NON-NLS-1$
+            // logging.11=Size must be positive.
+            throw new IllegalArgumentException(Messages.getString("logging.11")); //$NON-NLS-1$
         }
         target.getLevel();
         pushLevel.intValue();

@@ -20,6 +20,8 @@ import java.net.Socket;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 
+import org.apache.harmony.logging.internal.nls.Messages;
+
 /**
  * A handler that writes log messages to a socket connection.
  * <p>
@@ -135,24 +137,27 @@ public class SocketHandler extends StreamHandler {
     private void initSocket(String host, String port) throws IOException {
         // check the validity of the host name
         if (null == host || "".equals(host)) { //$NON-NLS-1$
-            throw new IllegalArgumentException("Illegal host argument."); //$NON-NLS-1$
+            // logging.C=Illegal host argument.
+            throw new IllegalArgumentException(Messages.getString("logging.C")); //$NON-NLS-1$
         }
         // check the validity of the port number
         int p = 0;
         try {
             p = Integer.parseInt(port);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Illegal port argument."); //$NON-NLS-1$
+            // logging.D=Illegal port argument.
+            throw new IllegalArgumentException(Messages.getString("logging.D")); //$NON-NLS-1$
         }
         if (p <= 0) {
-            throw new IllegalArgumentException("Illegal port argument."); //$NON-NLS-1$
+            // logging.D=Illegal port argument.
+            throw new IllegalArgumentException(Messages.getString("logging.D")); //$NON-NLS-1$
         }
         // establish the network connection
         try {
             this.socket = new Socket(host, p);
         } catch (IOException e) {
-            getErrorManager().error(
-                    "Failed to establish the network connection.", e, //$NON-NLS-1$
+            // logging.E=Failed to establish the network connection.
+            getErrorManager().error(Messages.getString("logging.E"), e, //$NON-NLS-1$
                     ErrorManager.OPEN_FAILURE);
             throw e;
         }
@@ -175,8 +180,8 @@ public class SocketHandler extends StreamHandler {
 	            this.socket = null;
             }
         } catch (Exception e) {
-            getErrorManager().error(
-                    "Exception occured when closing the socket handler.", e, //$NON-NLS-1$
+            // logging.F=Exception occured when closing the socket handler.
+            getErrorManager().error(Messages.getString("logging.F"), e, //$NON-NLS-1$
                     ErrorManager.CLOSE_FAILURE);
         }
     }

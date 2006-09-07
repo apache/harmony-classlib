@@ -21,6 +21,8 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
+import org.apache.harmony.logging.internal.nls.Messages;
+
 /**
  * A <code>StreamHandler</code> object writes log messages to an output
  * stream, that is, objects of the class <code>java.io.OutputStream</code>.
@@ -121,10 +123,12 @@ public class StreamHandler extends Handler {
     public StreamHandler(OutputStream os, Formatter formatter) {
         this();
         if (os == null) {
-            throw new NullPointerException("The OutputStream parameter is null");
+            // logging.2=The OutputStream parameter is null
+            throw new NullPointerException(Messages.getString("logging.2")); //$NON-NLS-1$
         }
         if (formatter == null) {
-            throw new NullPointerException("The Formatter parameter is null.");
+            // logging.3=The Formatter parameter is null.
+            throw new NullPointerException(Messages.getString("logging.3")); //$NON-NLS-1$
         }
         this.os = os;
         internalSetFormatter(formatter);
@@ -159,8 +163,8 @@ public class StreamHandler extends Handler {
         try {
             this.writer.write(s);
         } catch (Exception e) {
-            getErrorManager().error(
-                    "Exception occurred when writing to the output stream.", e, //$NON-NLS-1$
+            // logging.14=Exception occurred when writing to the output stream.
+            getErrorManager().error(Messages.getString("logging.14"), e, //$NON-NLS-1$
                     ErrorManager.WRITE_FAILURE);
         }
     }
@@ -253,8 +257,8 @@ public class StreamHandler extends Handler {
 	                this.os = null;
                 }
             } catch (Exception e) {
-                getErrorManager().error(
-                        "Exception occurred when closing the output stream.", e, //$NON-NLS-1$
+                // logging.15=Exception occurred when closing the output stream.
+                getErrorManager().error(Messages.getString("logging.15"), e, //$NON-NLS-1$
                         ErrorManager.CLOSE_FAILURE);
             }
         }
@@ -287,8 +291,8 @@ public class StreamHandler extends Handler {
                     this.os.flush();
                 }
             } catch (Exception e) {
-                getErrorManager().error(
-                        "Exception occurred while flushing the output stream.", //$NON-NLS-1$
+                // logging.16=Exception occurred while flushing the output stream.
+                getErrorManager().error(Messages.getString("logging.16"), //$NON-NLS-1$
                         e, ErrorManager.FLUSH_FAILURE);
             }
         }
@@ -321,16 +325,15 @@ public class StreamHandler extends Handler {
                 try {
                     msg = getFormatter().format(record);
                 } catch (Exception e) {
-                    getErrorManager()
-                            .error(
-                                    "Exception occurred while formatting the log record.", //$NON-NLS-1$
-                                    e, ErrorManager.FORMAT_FAILURE);
+                    // logging.17=Exception occurred while formatting the log record.
+                    getErrorManager().error(Messages.getString("logging.17"), //$NON-NLS-1$
+                            e, ErrorManager.FORMAT_FAILURE);
                 }
                 write(msg);
             }
         } catch (Exception e) {
-            getErrorManager().error(
-                    "Exception occurred while logging the record.", e, //$NON-NLS-1$
+            // logging.18=Exception occurred while logging the record.
+            getErrorManager().error(Messages.getString("logging.18"), e, //$NON-NLS-1$
                     ErrorManager.GENERIC_FAILURE);
         }
     }

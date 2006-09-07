@@ -30,6 +30,8 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.apache.harmony.logging.internal.nls.Messages;
+
 /**
  * <code>LogManager</code> is used to maintain configuration properties of the
  * logging framework, and to manage a hierarchical namespace of all named
@@ -148,10 +150,11 @@ public class LogManager {
     /**
      * <p>The String value of the {@link LoggingMXBean}'s ObjectName.</p>
      */
-    public static final String LOGGING_MXBEAN_NAME = "java.util.logging:type=Logging";
+    public static final String LOGGING_MXBEAN_NAME = "java.util.logging:type=Logging"; //$NON-NLS-1$
 
     public static LoggingMXBean getLoggingMXBean() {
-        throw new AssertionError("This method is not currently implemented.");
+        // logging.0=This method is not currently implemented.
+        throw new AssertionError(Messages.getString("logging.0")); //$NON-NLS-1$
     }
     /*
      * -------------------------------------------------------------------
@@ -288,14 +291,15 @@ public class LogManager {
 
     private void setLoggerLevel(Logger logger, String loggerName,
                                 boolean inherit) {
-        String configedLevel = getProperty(loggerName + ".level");
+        String configedLevel = getProperty(loggerName + ".level"); //$NON-NLS-1$
         if (null != configedLevel) {
             try {
                 logger.setLevel(Level.parse(configedLevel));
             } catch (IllegalArgumentException e) {
                 // Print invalid level setting to the screen
-                System.err.print("Invalid level name: " + configedLevel
-                        + ".");
+                // logging.1=Invalid level name: {0}.
+                System.err
+                        .print(Messages.getString("logging.1", configedLevel)); //$NON-NLS-1$
             }
         } else if (inherit) {
             logger.setLevel(null);
@@ -472,14 +476,14 @@ public class LogManager {
             String property = (String) enumeration.nextElement();
             if (property.endsWith(".level")) { //$NON-NLS-1$
                 String loggerName = property.substring(0,
-                        property.length() - ".level".length());
+                        property.length() - ".level".length()); //$NON-NLS-1$
                 Logger l = createLoggers?Logger.getLogger(loggerName):loggers.get(loggerName);
                 if (null != l) {
                     setLoggerLevel(l, loggerName, true);
                 }
             }else if(createLoggers && property.endsWith(".handlers")){ //$NON-NLS-1$
                 String loggerName = property.substring(0,
-                        property.length() - ".handlers".length());
+                        property.length() - ".handlers".length()); //$NON-NLS-1$
                 Logger.getLogger(loggerName);
                 //lazily load handlers because some of them are expensive
             }

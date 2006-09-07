@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.apache.harmony.logging.internal.nls.Messages;
+
 /**
  * <code>Level</code> objects are used to indicate the level of logging. There
  * are a set of predefined logging levels, each associated with an integer
@@ -193,7 +195,8 @@ public class Level implements Serializable {
      */
     protected Level(String name, int level, String resourceBundleName) {
         if (null == name) {
-            throw new NullPointerException("The 'name' parameter is null."); //$NON-NLS-1$
+            // logging.1C=The 'name' parameter is null.
+            throw new NullPointerException(Messages.getString("logging.1C")); //$NON-NLS-1$
         }
         this.name = name;
         this.value = level;
@@ -255,7 +258,8 @@ public class Level implements Serializable {
      */
     public static final Level parse(String name) {
         if (null == name) {
-            throw new NullPointerException("The 'name' parameter is null."); //$NON-NLS-1$
+            // logging.1C=The 'name' parameter is null.
+            throw new NullPointerException(Messages.getString("logging.1C")); //$NON-NLS-1$
         }
         // Check if the name is a predefined one
         Level result = levels.get(name);
@@ -268,8 +272,9 @@ public class Level implements Serializable {
             result = new Level(name, v);
             return result;
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Cannot parse this name: " //$NON-NLS-1$
-                    + name);
+            // logging.1D=Cannot parse this name: {0}
+            throw new IllegalArgumentException(Messages.getString("logging.1D", //$NON-NLS-1$
+                    name));
         }
     }
 
