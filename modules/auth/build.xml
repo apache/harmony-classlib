@@ -193,6 +193,10 @@
 
                     <!-- Not a test -->
                     <exclude name="org/apache/harmony/auth/internal/SecurityTest.java"/>
+                	
+                    <!-- The test is under development     -->
+                    <!-- excluded to avoid random failures -->
+                    <exclude name="org/apache/harmony/auth/tests/module/Krb5LoginModuleTest.java"/>
                 </fileset>
             </batchtest>
         </junit>

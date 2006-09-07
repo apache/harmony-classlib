@@ -1,0 +1,148 @@
+/*
+ *  Copyright 2006 The Apache Software Foundation or its licensors, as applicable.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+package org.apache.harmony.auth.tests.module;
+
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.util.TreeMap;
+
+import javax.security.auth.login.LoginException;
+
+import junit.framework.TestCase;
+
+import org.apache.harmony.auth.module.Krb5LoginModule;
+import org.apache.harmony.auth.tests.internal.kerberos.v5.KerberosErrorMessageTest;
+
+public class Krb5LoginModuleTest extends TestCase {
+
+    private KrbServer server;
+
+    private TreeMap<String, String> options = new TreeMap<String, String>();
+
+    protected void setUp() throws Exception {
+
+        String kdc = System.getProperty("java.security.krb5.kdc");
+        if (kdc == null) {
+            // run test with embedded server
+            server = new KrbServer();
+
+            server.start();
+            while (server.port == 0) {
+            }
+
+            options.put("kdc", "localhost:" + server.port);
+        } else {
+            // run test with external server
+            options.put("kdc", kdc);
+        }
+    }
+
+    protected void tearDown() throws Exception {
+        if (server != null) {
+            server.interrupt();
+        }
+    }
+
+    /**
+     * @tests request ticket for absent user
+     */
+    public void test_login() throws Exception {
+
+        if (server != null) {
+            server.respond = KerberosErrorMessageTest.err_resp;
+        }
+
+        Krb5LoginModule module = new Krb5LoginModule();
+
+        options.put("cname", "no_such_user");
+        options.put("realm", "MY.REALM");
+
+        module.initialize(null, null, null, options);
+
+        try {
+            module.login();
+            fail("No expected LoginException");
+        } catch (LoginException e) {
+            System.out.println(e);
+        }
+    }
+
+    /**
+     * Embedded test server
+     */
+    static class KrbServer extends Thread {
+
+        private static boolean debug = false;
+
+        private static final int BUF_SIZE = 1024;
+
+        public int port;
+
+        public byte[] respond;
+
+        public void run() {
+
+            try {
+                DatagramSocket socket = new DatagramSocket();
+
+                port = socket.getLocalPort();
+
+                byte[] request = new byte[BUF_SIZE];
+                DatagramPacket packet = new DatagramPacket(request,
+                        request.length);
+
+                int bytesRead = BUF_SIZE;
+                while (bytesRead == BUF_SIZE) {
+                    socket.receive(packet);
+                    bytesRead = packet.getLength();
+                }
+
+                printAsHex(10, "(byte)", ",", request);
+
+                if (respond != null) {
+                    packet = new DatagramPacket(respond, respond.length, packet
+                            .getAddress(), packet.getPort());
+                    socket.send(packet);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public static void printAsHex(int perLine, String prefix,
+                String delimiter, byte[] data) {
+
+            if (!debug) {
+                return;
+            }
+
+            for (int i = 0; i < data.length; i++) {
+                String tail = Integer.toHexString(0x000000ff & data[i]);
+                if (tail.length() == 1) {
+                    tail = "0" + tail;
+                }
+                System.out.print(prefix + "0x" + tail + delimiter);
+
+                if (((i + 1) % perLine) == 0) {
+                    System.out.println("");
+                }
+            }
+            System.out.println("");
+        }
+    }
+}

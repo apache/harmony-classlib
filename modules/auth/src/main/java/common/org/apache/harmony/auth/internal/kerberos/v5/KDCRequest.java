@@ -16,11 +16,16 @@
 
 package org.apache.harmony.auth.internal.kerberos.v5;
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Date;
 
 import org.apache.harmony.security.asn1.ASN1Any;
+import org.apache.harmony.security.asn1.ASN1Constants;
 import org.apache.harmony.security.asn1.ASN1Explicit;
 import org.apache.harmony.security.asn1.ASN1Integer;
 import org.apache.harmony.security.asn1.ASN1Sequence;
@@ -34,7 +39,7 @@ import org.apache.harmony.security.asn1.ASN1Type;
  * @see http://www.ietf.org/rfc/rfc3961.txt
  * @see http://www.ietf.org/rfc/rfc4120.txt
  */
-class KDCRequest {
+public class KDCRequest {
 
     /**
      * Authentication Service request message type
@@ -55,13 +60,38 @@ class KDCRequest {
 
     private final PrincipalName sname;
 
-    public KDCRequest(int msgType, PrincipalName cname, String realm,
+    private KDCRequest(int msgType, PrincipalName cname, String realm,
             PrincipalName sname) {
 
         this.msgType = msgType;
         this.cname = cname;
         this.realm = realm;
         this.sname = sname;
+    }
+
+    public static KDCRequest createASRequest(PrincipalName cname, String realm) {
+
+        PrincipalName krbtgt = new PrincipalName(PrincipalName.NT_SRV_XHST,
+                new String[] { "krbtgt", realm });
+
+        return new KDCRequest(AS_REQ, cname, realm, krbtgt);
+    }
+
+    public DatagramSocket send(InetAddress address, int port)
+            throws IOException {
+
+        if (msgType != AS_REQ) {
+            throw new RuntimeException("Not implemented");
+        }
+        
+        byte[] enc = AS_REQ_ASN1.encode(this);
+
+        DatagramPacket req = new DatagramPacket(enc, enc.length, address, port);
+        DatagramSocket socket = new DatagramSocket();
+
+        socket.send(req);
+
+        return socket;
     }
 
     // KDC-REQ-BODY    ::= SEQUENCE {
@@ -158,17 +188,15 @@ class KDCRequest {
     //     req-body        [4] KDC-REQ-BODY
     // }
     //
-    static final ASN1Sequence KDC_REQ = new ASN1Sequence(
-            new ASN1Type[] {
-            // pvno [1] INTEGER (5)
-                    new ASN1Explicit(1, ASN1Integer.getInstance()),
-                    // msg-type [2] INTEGER
-                    new ASN1Explicit(2, ASN1Integer.getInstance()),
-                    // padata [3] SEQUENCE OF PA-DATA OPTIONAL
-                    new ASN1Explicit(3, new ASN1SequenceOf(ASN1Any
-                            .getInstance())),
-                    // req-body [4] KDC-REQ-BODY
-                    new ASN1Explicit(4, KDC_REQ_BODY), }) {
+    static final ASN1Sequence KDC_REQ_ASN1 = new ASN1Sequence(new ASN1Type[] {
+    // pvno [1] INTEGER (5)
+            new ASN1Explicit(1, ASN1Integer.getInstance()),
+            // msg-type [2] INTEGER
+            new ASN1Explicit(2, ASN1Integer.getInstance()),
+            // padata [3] SEQUENCE OF PA-DATA OPTIONAL
+            new ASN1Explicit(3, new ASN1SequenceOf(ASN1Any.getInstance())),
+            // req-body [4] KDC-REQ-BODY
+            new ASN1Explicit(4, KDC_REQ_BODY), }) {
         {
             setOptional(2); // padata
         }
@@ -182,4 +210,7 @@ class KDCRequest {
             values[3] = request; // pass for further use
         }
     };
+
+    static final ASN1Explicit AS_REQ_ASN1 = new ASN1Explicit(
+            ASN1Constants.CLASS_APPLICATION, AS_REQ, KDC_REQ_ASN1);
 }

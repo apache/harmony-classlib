@@ -52,7 +52,7 @@ public class KerberosErrorMessageTest extends TestCase {
     }
 
     // testing array was created by hands according to RFC4120
-    private static byte[] err_resp = new byte[] {
+    public static byte[] err_resp = new byte[] {
     // KRB-ERROR ::= [APPLICATION 30]
             (byte) 0x7e,
             (byte) 0x81,

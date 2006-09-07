@@ -165,6 +165,6 @@ public class KerberosErrorMessage {
         }
     };
 
-    private static final ASN1Explicit ASN1 = new ASN1Explicit(
+    public static final ASN1Explicit ASN1 = new ASN1Explicit(
             ASN1Constants.CLASS_APPLICATION, 30, KRB_ERROR);
 }
