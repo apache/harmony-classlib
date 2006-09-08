@@ -130,12 +130,12 @@
             <src path="modules/swing/src/main/java/common" />
             <src path="modules/text/src/main/java" />
             <src path="modules/x-net/src/main/java/" />
-            <classpath location="${build.output}" />
-            <classpath>
+            <bootclasspath location="${build.output}" />
+            <bootclasspath>
                 <fileset dir="${depends.jars}">
                     <include name="**/*.jar" />
                 </fileset>
-            </classpath>
+            </bootclasspath>
         </javac>
 
         <mkdir dir="${hy.jdk}/jre/lib/boot" />
