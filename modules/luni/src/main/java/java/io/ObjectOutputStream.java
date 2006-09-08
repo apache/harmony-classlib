@@ -1874,8 +1874,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 					if (writeReplaceMethod != null) {
 						Object classBasedReplacement;
 						try {
-							classBasedReplacement = ((Method) writeReplaceMethod)
-									.invoke(object, null);
+							classBasedReplacement = ((Method) writeReplaceMethod).invoke(object, (Object[])null);
 						} catch (IllegalAccessException iae) {
 							classBasedReplacement = object; // WARNING - Not
 							// sure this is the

@@ -1943,8 +1943,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                 }
                 if (readResolveMethod != null) {
                     try {
-                        result = ((Method) readResolveMethod).invoke(result,
-                                null);
+                        result = ((Method) readResolveMethod).invoke(result, (Object[]) null);
                     } catch (IllegalAccessException iae) {
                     } catch (InvocationTargetException ite) {
                         Throwable target = ite.getTargetException();
