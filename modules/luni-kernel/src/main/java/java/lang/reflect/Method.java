@@ -167,7 +167,8 @@ public final class Method extends AccessibleObject implements GenericDeclaration
 	 *         otherwise
 	 * @see #hashCode
 	 */
-	public boolean equals(Object object) {
+	@Override
+    public boolean equals(Object object) {
 		return false;
 	}
 
@@ -199,7 +200,7 @@ public final class Method extends AccessibleObject implements GenericDeclaration
 	 * @return the modifiers
 	 * @see java.lang.reflect.Modifier
 	 */
-	public int getModifiers() {
+    public int getModifiers() {
 		return 0;
 	}
 
@@ -241,7 +242,8 @@ public final class Method extends AccessibleObject implements GenericDeclaration
 	 * @return the receiver's hash
 	 * @see #equals
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return 0;
 	}
 
@@ -288,19 +290,19 @@ public final class Method extends AccessibleObject implements GenericDeclaration
 	 * @param args
 	 *            the arguments to the method
 	 * @return the new, initialized, object
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the receiver is null for a non-static method
-	 * @exception java.lang.IllegalAccessException
+	 * @throws java.lang.IllegalAccessException
 	 *                if the modelled method is not accessible
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if an incorrect number of arguments are passed, the
 	 *                receiver is incompatible with the declaring class, or an
 	 *                argument could not be converted by a widening conversion
-	 * @exception java.lang.reflect.InvocationTargetException
+	 * @throws java.lang.reflect.InvocationTargetException
 	 *                if an exception was thrown by the invoked method
 	 * @see java.lang.reflect.AccessibleObject
 	 */
-	public Object invoke(Object receiver, Object args[])
+	public Object invoke(Object receiver, Object... args)
 			throws IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException {
 		return null;
@@ -316,7 +318,8 @@ public final class Method extends AccessibleObject implements GenericDeclaration
 	 * 
 	 * @return a printable representation for the receiver
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		return null;
 	}
 }

@@ -23,6 +23,13 @@ package java.lang.reflect;
  */
 public final class Field extends AccessibleObject implements Member {
 
+    /**
+     * <p>TODO Document this method. Is it used?</p>
+     * @return
+     * @see java.lang.reflect.AccessibleObject#getSignature()
+     */
+    native String getSignature();
+    
     public boolean isSynthetic() {
         return false;
     }
@@ -81,7 +88,8 @@ public final class Field extends AccessibleObject implements Member {
      *         otherwise
      * @see #hashCode
      */
-	public boolean equals(Object object) {
+	@Override
+    public boolean equals(Object object) {
 		return false;
 	}
 
@@ -351,8 +359,6 @@ public final class Field extends AccessibleObject implements Member {
 	public native short getShort(Object object) throws IllegalAccessException,
 			IllegalArgumentException;
 
-	native String getSignature();
-
 	/**
 	 * Return the {@link Class} associated with the type of this field.
 	 * 
@@ -371,7 +377,8 @@ public final class Field extends AccessibleObject implements Member {
 	 * @return the receiver's hash
 	 * @see #equals
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return 0;
 	}
 

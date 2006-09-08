@@ -36,130 +36,235 @@ import java.lang.annotation.Annotation;
  * @since 1.2
  */
 public class AccessibleObject implements AnnotatedElement {
-	static final Object[] emptyArgs = new Object[0];
+    /**
+     * TODO Is this necessary?
+     */
+    static final Object[] emptyArgs = new Object[0];
 
-	/**
-	 * AccessibleObject constructor. AccessibleObjects can only be created by
-	 * the Virtual Machine.
-	 */
-	protected AccessibleObject() {
-		super();
-	}
+    /**
+     * Attempts to set the value of the accessible flag for all the objects in
+     * the array provided. Only one security check is performed. Setting this
+     * flag to false will enable access checks, setting to true will disable
+     * them. If there is a security manager, checkPermission is called with a
+     * ReflectPermission("suppressAccessChecks").
+     * 
+     * @param objects the accessible objects
+     * @param flag the new value for the accessible flag
+     * @see #setAccessible(boolean)
+     * @see ReflectPermission
+     * @throws SecurityException if the request is denied
+     */
+    public static void setAccessible(AccessibleObject[] objects, boolean flag)
+            throws SecurityException {
+        return;
+    }
 
-	/**
-	 * Returns the value of the accessible flag. This is false if access checks
-	 * are performed, true if they are skipped.
-	 * 
-	 * @return the value of the accessible flag
-	 */
-	public boolean isAccessible() {
-		return false;
-	}
+    /**
+     * <p>
+     * TODO Document this method.
+     * </p>
+     * 
+     * @param parameterTypes
+     * @param args
+     * @return
+     * @throws IllegalArgumentException
+     */
+    static Object[] marshallArguments(Class[] parameterTypes, Object[] args)
+            throws IllegalArgumentException {
+        return null;
+    }
 
-	/**
-	 * Attempts to set the value of the accessible flag for all the objects in
-	 * the array provided. Only one security check is performed. Setting this
-	 * flag to false will enable access checks, setting to true will disable
-	 * them. If there is a security manager, checkPermission is called with a
-	 * ReflectPermission("suppressAccessChecks").
-	 * 
-	 * @param objects
-	 *            the accessible objects
-	 * @param flag
-	 *            the new value for the accessible flag
-	 * @see #setAccessible(boolean)
-	 * @see ReflectPermission
-	 * @throws SecurityException
-	 *             if the request is denied
-	 */
-	public static void setAccessible(AccessibleObject[] objects, boolean flag)
-			throws SecurityException {
-		return;
-	}
+    /**
+     * <p>
+     * TODO Document this method.
+     * </p>
+     * 
+     * @param clazz
+     */
+    static native void initializeClass(Class<?> clazz);
 
-	/**
-	 * Attempts to set the value of the accessible flag. Setting this flag to
-	 * false will enable access checks, setting to true will disable them. If
-	 * there is a security manager, checkPermission is called with a
-	 * ReflectPermission("suppressAccessChecks").
-	 * 
-	 * @param flag
-	 *            the new value for the accessible flag
-	 * @see ReflectPermission
-	 * @throws SecurityException
-	 *             if the request is denied
-	 */
-	public void setAccessible(boolean flag) throws SecurityException {
-		return;
-	}
-    
+    /**
+     * Answer the class at depth. Notes: 1) This method operates on the defining
+     * classes of methods on stack. NOT the classes of receivers. 2) The item at
+     * index zero describes the caller of this method.
+     */
+    static final native Class<?> getStackClass(int depth);
+
+    /**
+     * AccessibleObject constructor. AccessibleObjects can only be created by
+     * the Virtual Machine.
+     */
+    protected AccessibleObject() {
+        super();
+    }
+
+    /**
+     * <p>
+     * TODO Document this method.
+     * </p>
+     * 
+     * @return
+     */
+    native Class[] getParameterTypesImpl();
+
+    /**
+     * <p>
+     * TODO Document this method.
+     * </p>
+     * 
+     * @return
+     */
+    native int getModifiers();
+
+    /**
+     * <p>
+     * TODO Document this method.
+     * </p>
+     * 
+     * @return
+     */
+    native Class[] getExceptionTypesImpl();
+
+    /**
+     * <p>
+     * TODO Document this method.
+     * </p>
+     * 
+     * @return
+     */
+    native String getSignature();
+
+    /**
+     * <p>
+     * TODO Document this method.
+     * </p>
+     * 
+     * @param senderClass
+     * @param receiver
+     * @return
+     */
+    native boolean checkAccessibility(Class<?> senderClass, Object receiver);
+
+    /**
+     * Returns the value of the accessible flag. This is false if access checks
+     * are performed, true if they are skipped.
+     * 
+     * @return the value of the accessible flag
+     */
+    public boolean isAccessible() {
+        return false;
+    }
+
+    /**
+     * Attempts to set the value of the accessible flag. Setting this flag to
+     * false will enable access checks, setting to true will disable them. If
+     * there is a security manager, checkPermission is called with a
+     * ReflectPermission("suppressAccessChecks").
+     * 
+     * @param flag the new value for the accessible flag
+     * @see ReflectPermission
+     * @throws SecurityException if the request is denied
+     */
+    public void setAccessible(boolean flag) throws SecurityException {
+        return;
+    }
+
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
         return false;
     }
-    
+
     public Annotation[] getDeclaredAnnotations() {
         return new Annotation[0];
     }
-    
+
     public Annotation[] getAnnotations() {
         return new Annotation[0];
     }
-    
+
     public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
         return null;
     }
 
-	static Object[] marshallArguments(Class[] parameterTypes, Object[] args)
-			throws IllegalArgumentException {
-		return null;
-	}
+    /**
+     * <p>
+     * TODO Document this method.
+     * </p>
+     * 
+     * @param receiver
+     * @param args
+     * @throws InvocationTargetException
+     */
+    void invokeV(Object receiver, Object args[]) throws InvocationTargetException {
+        return;
+    }
 
-	void invokeV(Object receiver, Object args[])
-			throws InvocationTargetException {
-		return;
-	}
+    /**
+     * <p>
+     * TODO Document this method.
+     * </p>
+     * 
+     * @param receiver
+     * @param args
+     * @return
+     * @throws InvocationTargetException
+     */
+    Object invokeL(Object receiver, Object args[]) throws InvocationTargetException {
+        return null;
+    }
 
-	Object invokeL(Object receiver, Object args[])
-			throws InvocationTargetException {
-		return null;
-	}
+    /**
+     * <p>
+     * TODO Document this method.
+     * </p>
+     * 
+     * @param receiver
+     * @param args
+     * @return
+     * @throws InvocationTargetException
+     */
+    int invokeI(Object receiver, Object args[]) throws InvocationTargetException {
+        return 0;
+    }
 
-	int invokeI(Object receiver, Object args[])
-			throws InvocationTargetException {
-		return 0;
-	}
+    /**
+     * <p>
+     * TODO Document this method.
+     * </p>
+     * 
+     * @param receiver
+     * @param args
+     * @return
+     * @throws InvocationTargetException
+     */
+    long invokeJ(Object receiver, Object args[]) throws InvocationTargetException {
+        return 0L;
+    }
 
-	long invokeJ(Object receiver, Object args[])
-			throws InvocationTargetException {
-		return 0L;
-	}
+    /**
+     * <p>
+     * TODO Document this method.
+     * </p>
+     * 
+     * @param receiver
+     * @param args
+     * @return
+     * @throws InvocationTargetException
+     */
+    float invokeF(Object receiver, Object args[]) throws InvocationTargetException {
+        return 0.0F;
+    }
 
-	float invokeF(Object receiver, Object args[])
-			throws InvocationTargetException {
-		return 0.0F;
-	}
-
-	double invokeD(Object receiver, Object args[])
-			throws InvocationTargetException {
-		return 0.0D;
-	}
-
-	native Class[] getParameterTypesImpl();
-
-	native int getModifiers();
-
-	native Class[] getExceptionTypesImpl();
-
-	native String getSignature();
-
-	native boolean checkAccessibility(Class senderClass, Object receiver);
-
-	static native void initializeClass(Class clazz);
-
-	/**
-	 * Answer the class at depth. Notes: 1) This method operates on the defining
-	 * classes of methods on stack. NOT the classes of receivers. 2) The item at
-	 * index zero describes the caller of this method.
-	 */
-	static final native Class getStackClass(int depth);
+    /**
+     * <p>
+     * TODO Document this method.
+     * </p>
+     * 
+     * @param receiver
+     * @param args
+     * @return
+     * @throws InvocationTargetException
+     */
+    double invokeD(Object receiver, Object args[]) throws InvocationTargetException {
+        return 0.0D;
+    }
 }

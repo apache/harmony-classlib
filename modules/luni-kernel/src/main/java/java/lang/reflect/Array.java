@@ -16,12 +16,30 @@
 package java.lang.reflect;
 
 /**
- * This class must be implemented by the vm vendor. This class provides methods
+ * This class must be implemented by the VM vendor. This class provides methods
  * to dynamically create and access arrays.
- * 
  */
 public final class Array {
+    /**
+     * <p>TODO Document this method. Is it actually used?</p>
+     * @param componentType
+     * @param dimensions
+     * @param dimensionsArray
+     * @return
+     */
+    @SuppressWarnings("unused")
+    private static native Object multiNewArrayImpl(Class<?> componentType,
+            int dimensions, int[] dimensionsArray);
 
+    /**
+     * <p>TODO Document this method. Is it actually used?</p>
+     * @param componentType
+     * @param dimension
+     * @return
+     */
+    @SuppressWarnings("unused")
+    private static native Object newArrayImpl(Class<?> componentType, int dimension);
+    
 	/**
 	 * Return the element of the array at the specified index. This reproduces
 	 * the effect of <code>array[index]</code> If the array component is a
@@ -32,11 +50,11 @@ public final class Array {
 	 * @param index
 	 *            the index
 	 * @return the requested element, possibly wrapped
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the array is null
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if the array is not an array
-	 * @exception java.lang.ArrayIndexOutOfBoundsException
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 *                if the index is out of bounds -- negative or greater than
 	 *                or equal to the array length
 	 */
@@ -53,12 +71,12 @@ public final class Array {
 	 * @param index
 	 *            the index
 	 * @return the requested element
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the array is null
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if the array is not an array or the element cannot be
 	 *                converted to the requested type by a widening conversion
-	 * @exception java.lang.ArrayIndexOutOfBoundsException
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 *                if the index is out of bounds -- negative or greater than
 	 *                or equal to the array length
 	 */
@@ -74,12 +92,12 @@ public final class Array {
 	 * @param index
 	 *            the index
 	 * @return the requested element
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the array is null
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if the array is not an array or the element cannot be
 	 *                converted to the requested type by a widening conversion
-	 * @exception java.lang.ArrayIndexOutOfBoundsException
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 *                if the index is out of bounds -- negative or greater than
 	 *                or equal to the array length
 	 */
@@ -95,12 +113,12 @@ public final class Array {
 	 * @param index
 	 *            the index
 	 * @return the requested element
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the array is null
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if the array is not an array or the element cannot be
 	 *                converted to the requested type by a widening conversion
-	 * @exception java.lang.ArrayIndexOutOfBoundsException
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 *                if the index is out of bounds -- negative or greater than
 	 *                or equal to the array length
 	 */
@@ -117,12 +135,12 @@ public final class Array {
 	 * @param index
 	 *            the index
 	 * @return the requested element
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the array is null
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if the array is not an array or the element cannot be
 	 *                converted to the requested type by a widening conversion
-	 * @exception java.lang.ArrayIndexOutOfBoundsException
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 *                if the index is out of bounds -- negative or greater than
 	 *                or equal to the array length
 	 */
@@ -139,12 +157,12 @@ public final class Array {
 	 * @param index
 	 *            the index
 	 * @return the requested element
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the array is null
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if the array is not an array or the element cannot be
 	 *                converted to the requested type by a widening conversion
-	 * @exception java.lang.ArrayIndexOutOfBoundsException
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 *                if the index is out of bounds -- negative or greater than
 	 *                or equal to the array length
 	 */
@@ -160,12 +178,12 @@ public final class Array {
 	 * @param index
 	 *            the index
 	 * @return the requested element
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the array is null
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if the array is not an array or the element cannot be
 	 *                converted to the requested type by a widening conversion
-	 * @exception java.lang.ArrayIndexOutOfBoundsException
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 *                if the index is out of bounds -- negative or greater than
 	 *                or equal to the array length
 	 */
@@ -179,9 +197,9 @@ public final class Array {
 	 * @param array
 	 *            the array
 	 * @return the length
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the array is null
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if the array is not an array
 	 */
 	public static native int getLength(Object array)
@@ -196,12 +214,12 @@ public final class Array {
 	 * @param index
 	 *            the index
 	 * @return the requested element
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the array is null
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if the array is not an array or the element cannot be
 	 *                converted to the requested type by a widening conversion
-	 * @exception java.lang.ArrayIndexOutOfBoundsException
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 *                if the index is out of bounds -- negative or greater than
 	 *                or equal to the array length
 	 */
@@ -218,22 +236,17 @@ public final class Array {
 	 * @param index
 	 *            the index
 	 * @return the requested element
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the array is null
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if the array is not an array or the element cannot be
 	 *                converted to the requested type by a widening conversion
-	 * @exception java.lang.ArrayIndexOutOfBoundsException
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 *                if the index is out of bounds -- negative or greater than
 	 *                or equal to the array length
 	 */
 	public static native short getShort(Object array, int index)
 			throws IllegalArgumentException, ArrayIndexOutOfBoundsException;
-
-	private static native Object multiNewArrayImpl(Class<?> componentType,
-			int dimensions, int[] dimensionsArray);
-
-	private static native Object newArrayImpl(Class<?> componentType, int dimension);
 
 	/**
 	 * Return a new multidimensional array of the specified component type and
@@ -246,11 +259,11 @@ public final class Array {
 	 * @param dimensions
 	 *            the dimensions of the new array
 	 * @return the new array
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the component type is null
-	 * @exception java.lang.NegativeArraySizeException
+	 * @throws java.lang.NegativeArraySizeException
 	 *                if any of the dimensions are negative
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if the array of dimensions is of size zero, or exceeds the
 	 *                limit of the number of dimension for an array (currently
 	 *                255)
@@ -269,9 +282,9 @@ public final class Array {
 	 * @param size
 	 *            the length of the new array
 	 * @return the new array
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the component type is null
-	 * @exception java.lang.NegativeArraySizeException
+	 * @throws java.lang.NegativeArraySizeException
 	 *                if the size if negative
 	 */
 	public static Object newInstance(Class<?> componentType, int size)
@@ -290,12 +303,12 @@ public final class Array {
 	 *            the index
 	 * @param value
 	 *            the new value
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the array is null
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if the array is not an array or the value cannot be
 	 *                converted to the array type by a widening conversion
-	 * @exception java.lang.ArrayIndexOutOfBoundsException
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 *                if the index is out of bounds -- negative or greater than
 	 *                or equal to the array length
 	 */
@@ -312,12 +325,12 @@ public final class Array {
 	 *            the index
 	 * @param value
 	 *            the new value
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the array is null
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if the array is not an array or the value cannot be
 	 *                converted to the array type by a widening conversion
-	 * @exception java.lang.ArrayIndexOutOfBoundsException
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 *                if the index is out of bounds -- negative or greater than
 	 *                or equal to the array length
 	 */
@@ -334,12 +347,12 @@ public final class Array {
 	 *            the index
 	 * @param value
 	 *            the new value
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the array is null
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if the array is not an array or the value cannot be
 	 *                converted to the array type by a widening conversion
-	 * @exception java.lang.ArrayIndexOutOfBoundsException
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 *                if the index is out of bounds -- negative or greater than
 	 *                or equal to the array length
 	 */
@@ -356,12 +369,12 @@ public final class Array {
 	 *            the index
 	 * @param value
 	 *            the new value
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the array is null
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if the array is not an array or the value cannot be
 	 *                converted to the array type by a widening conversion
-	 * @exception java.lang.ArrayIndexOutOfBoundsException
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 *                if the index is out of bounds -- negative or greater than
 	 *                or equal to the array length
 	 */
@@ -378,12 +391,12 @@ public final class Array {
 	 *            the index
 	 * @param value
 	 *            the new value
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the array is null
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if the array is not an array or the value cannot be
 	 *                converted to the array type by a widening conversion
-	 * @exception java.lang.ArrayIndexOutOfBoundsException
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 *                if the index is out of bounds -- negative or greater than
 	 *                or equal to the array length
 	 */
@@ -400,12 +413,12 @@ public final class Array {
 	 *            the index
 	 * @param value
 	 *            the new value
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the array is null
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if the array is not an array or the value cannot be
 	 *                converted to the array type by a widening conversion
-	 * @exception java.lang.ArrayIndexOutOfBoundsException
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 *                if the index is out of bounds -- negative or greater than
 	 *                or equal to the array length
 	 */
@@ -422,12 +435,12 @@ public final class Array {
 	 *            the index
 	 * @param value
 	 *            the new value
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the array is null
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if the array is not an array or the value cannot be
 	 *                converted to the array type by a widening conversion
-	 * @exception java.lang.ArrayIndexOutOfBoundsException
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 *                if the index is out of bounds -- negative or greater than
 	 *                or equal to the array length
 	 */
@@ -444,12 +457,12 @@ public final class Array {
 	 *            the index
 	 * @param value
 	 *            the new value
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the array is null
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if the array is not an array or the value cannot be
 	 *                converted to the array type by a widening conversion
-	 * @exception java.lang.ArrayIndexOutOfBoundsException
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 *                if the index is out of bounds -- negative or greater than
 	 *                or equal to the array length
 	 */
@@ -466,12 +479,12 @@ public final class Array {
 	 *            the index
 	 * @param value
 	 *            the new value
-	 * @exception java.lang.NullPointerException
+	 * @throws java.lang.NullPointerException
 	 *                if the array is null
-	 * @exception java.lang.IllegalArgumentException
+	 * @throws java.lang.IllegalArgumentException
 	 *                if the array is not an array or the value cannot be
 	 *                converted to the array type by a widening conversion
-	 * @exception java.lang.ArrayIndexOutOfBoundsException
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 *                if the index is out of bounds -- negative or greater than
 	 *                or equal to the array length
 	 */
