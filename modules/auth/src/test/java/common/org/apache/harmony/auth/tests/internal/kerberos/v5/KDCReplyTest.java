@@ -17,9 +17,11 @@
 package org.apache.harmony.auth.tests.internal.kerberos.v5;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.auth.internal.kerberos.v5.EncryptedData;
 import org.apache.harmony.auth.internal.kerberos.v5.KDCReply;
 import org.apache.harmony.auth.internal.kerberos.v5.PrincipalName;
 import org.apache.harmony.auth.internal.kerberos.v5.Ticket;
@@ -35,20 +37,28 @@ public class KDCReplyTest extends TestCase {
         assertEquals("cname", new PrincipalName(1, new String[] { "me" }),
                 reply.getCname());
 
+        // ticket
         Ticket ticket = reply.getTicket();
         assertEquals("ticket's realm", "MY.REALM", ticket.getRealm());
         assertEquals("ticket's sname", new PrincipalName(0, new String[] {
                 "krbtgt", "MY.REALM" }), ticket.getSname());
+        
+        // enc-part
+        EncryptedData encPart = reply.getEncPart();
+        assertEquals("etype", 3, encPart.getEtype());
+        assertEquals("kvno", 1, encPart.getKvno());
+        assertTrue("cipher", Arrays.equals(new byte[] { 0x0f }, encPart
+                .getCipher()));
     }
 
     // testing array was created by hands according to RFC4120
     public static byte[] enc = new byte[] {
             // [APPLICATION 11] KDC-REP
             (byte) 0x6b,
-            (byte) 0x67,
+            (byte) 0x76,
             // KDC-REP ::= SEQUENCE 
             (byte) 0x30,
-            (byte) 0x65,
+            (byte) 0x74,
             // pvno [0] INTEGER (5)
             (byte) 0xa0,
             (byte) 0x03,
@@ -130,6 +140,13 @@ public class KDCReplyTest extends TestCase {
             (byte) 0xa3, (byte) 0x02, (byte) 0x00, (byte) 0x00,
 
             // enc-part [6] EncryptedData: empty for a while
-            (byte) 0xa6, (byte) 0x02, (byte) 0x00, (byte) 0x00, };
+            (byte) 0xa6, (byte) 0x11, (byte) 0x30, (byte) 0x0F,
+            // etype
+            (byte) 0xa0, (byte) 0x03, (byte) 0x02, (byte) 0x01, (byte) 0x03,
+            // kvno
+            (byte) 0xA1, (byte) 0x03, (byte) 0x02, (byte) 0x01, (byte) 0x01,
+            // cipher  
+            (byte) 0xa2, (byte) 0x03, (byte) 0x04, (byte) 0x01, (byte) 0x0F,
+    };
 
 }

@@ -54,12 +54,15 @@ public class KDCReply {
 
     private final Ticket ticket;
 
+    private final EncryptedData encPart;
+
     private KDCReply(int msgType, String crealm, PrincipalName cname,
-            Ticket ticket) {
+            Ticket ticket, EncryptedData encPart) {
         this.msgType = msgType;
         this.cname = cname;
         this.crealm = crealm;
         this.ticket = ticket;
+        this.encPart = encPart;
     }
 
     public int getMsgtype() {
@@ -76,6 +79,10 @@ public class KDCReply {
 
     public Ticket getTicket() {
         return ticket;
+    }
+
+    public EncryptedData getEncPart() {
+        return encPart;
     }
 
     //
@@ -100,8 +107,7 @@ public class KDCReply {
             new ASN1Explicit(3, ASN1StringType.GENERALSTRING), // crealm
             new ASN1Explicit(4, PrincipalName.ASN1), // cname
             new ASN1Explicit(5, Ticket.TICKET_ASN1), // ticket 
-            // FIXME ignored
-            new ASN1Explicit(6, ASN1Any.getInstance()), // enc-part 
+            new ASN1Explicit(6, EncryptedData.ASN1), // enc-part 
     }) {
         {
             setOptional(2); // padata
@@ -113,7 +119,7 @@ public class KDCReply {
 
             return new KDCReply(ASN1Integer.toIntValue(values[1]),
                     (String) values[3], (PrincipalName) values[4],
-                    (Ticket) values[5]);
+                    (Ticket) values[5], (EncryptedData) values[6]);
         }
 
         protected void getValues(Object object, Object[] values) {
