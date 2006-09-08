@@ -19,6 +19,7 @@ package org.apache.harmony.auth.internal.kerberos.v5;
 import java.io.IOException;
 
 import org.apache.harmony.security.asn1.ASN1Any;
+import org.apache.harmony.security.asn1.ASN1Constants;
 import org.apache.harmony.security.asn1.ASN1Explicit;
 import org.apache.harmony.security.asn1.ASN1Integer;
 import org.apache.harmony.security.asn1.ASN1Sequence;
@@ -58,7 +59,7 @@ public class Ticket {
     //     enc-part        [3] EncryptedData -- EncTicketPart
     // }
     //
-    static final ASN1Sequence TICKET_ASN1 = new ASN1Sequence(new ASN1Type[] {
+    static final ASN1Sequence ASN1 = new ASN1Sequence(new ASN1Type[] {
             new ASN1Explicit(0, ASN1Integer.getInstance()), // tkt-vno
             // TODO should we define Realm type?
             new ASN1Explicit(1, ASN1StringType.GENERALSTRING), // realm
@@ -78,4 +79,7 @@ public class Ticket {
             throw new RuntimeException(); //FIXME message
         }
     };
+
+    public static final ASN1Explicit TICKET_ASN1 = new ASN1Explicit(
+            ASN1Constants.CLASS_APPLICATION, 1, ASN1);
 }
