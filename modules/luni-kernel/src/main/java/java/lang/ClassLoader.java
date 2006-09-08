@@ -47,11 +47,68 @@ public abstract class ClassLoader {
 
     /**
      * <p>
-     * TODO Document this methods purpose.
+     * TODO Document this method.
      * </p>
      */
     static final void initializeClassLoaders() {
         return;
+    }
+
+    /**
+     * Returns the system class loader. This is the parent for new ClassLoader
+     * instances, and is typically the class loader used to start the
+     * application. If a security manager is present, and the caller's class
+     * loader is not null and the caller's class loader is not the same as or an
+     * ancestor of the system class loader, then this method calls the security
+     * manager's checkPermission method with a
+     * RuntimePermission("getClassLoader") permission to ensure it's ok to
+     * access the system class loader. If not, a SecurityException will be
+     * thrown.
+     * 
+     * @return The system classLoader.
+     * @throws SecurityException if a security manager exists and it does not
+     *         allow access to the system class loader.
+     */
+    public static ClassLoader getSystemClassLoader() {
+        return null;
+    }
+
+    /**
+     * Answers an URL specifying a resource which can be found by looking up
+     * resName using the system class loader's resource lookup algorithm.
+     * 
+     * @return A URL specifying a system resource or null.
+     * @param resName The name of the resource to find.
+     * @see Class#getResource
+     */
+    public static URL getSystemResource(String resName) {
+        return null;
+    }
+
+    /**
+     * Answers an Enumeration of URLs containing all resources which can be
+     * found by looking up resName using the system class loader's resource
+     * lookup algorithm.
+     * 
+     * @return An Enumeration of URLs containing the system resources
+     * @param resName String the name of the resource to find.
+     */
+    public static Enumeration<URL> getSystemResources(String resName) throws IOException {
+        return null;
+    }
+
+    /**
+     * Answers a stream on a resource found by looking up resName using the
+     * system class loader's resource lookup algorithm. Basically, the contents
+     * of the java.class.path are searched in order, looking for a path which
+     * matches the specified resource.
+     * 
+     * @return A stream on the resource or null.
+     * @param resName The name of the resource to find.
+     * @see Class#getResourceAsStream
+     */
+    public static InputStream getSystemResourceAsStream(String resName) {
+        return null;
     }
 
     /**
@@ -88,6 +145,7 @@ public abstract class ClassLoader {
      * @param length The length of the class file.
      * @deprecated Use defineClass(String, byte[], int, int)
      */
+    @Deprecated
     protected final Class<?> defineClass(byte[] classRep, int offset, int length)
             throws ClassFormatError {
         return null;
@@ -102,8 +160,8 @@ public abstract class ClassLoader {
      * @param offset The offset into the classRep
      * @param length The length of the class file
      */
-    protected final Class<?> defineClass(String className, byte[] classRep,
-            int offset, int length) throws ClassFormatError {
+    protected final Class<?> defineClass(String className, byte[] classRep, int offset,
+            int length) throws ClassFormatError {
         return null;
     }
 
@@ -119,9 +177,8 @@ public abstract class ClassLoader {
      * @param protectionDomain The protection domain this class should belongs
      *        to.
      */
-    protected final Class<?> defineClass(String className, byte[] classRep,
-            int offset, int length, ProtectionDomain protectionDomain)
-            throws java.lang.ClassFormatError {
+    protected final Class<?> defineClass(String className, byte[] classRep, int offset,
+            int length, ProtectionDomain protectionDomain) throws java.lang.ClassFormatError {
         return null;
     }
 
@@ -154,8 +211,7 @@ public abstract class ClassLoader {
      * @param className The name of the class to search for.
      * @throws ClassNotFoundException if the class cannot be found.
      */
-    protected Class<?> findClass(String className)
-            throws ClassNotFoundException {
+    protected Class<?> findClass(String className) throws ClassNotFoundException {
         return null;
     }
 
@@ -169,7 +225,7 @@ public abstract class ClassLoader {
      */
     protected final Class<?> findLoadedClass(String className) {
         return null;
-    };
+    }
 
     /**
      * Attempts to load a class using the system class loader. Note that the
@@ -179,8 +235,7 @@ public abstract class ClassLoader {
      * @param className The name of the class to search for.
      * @throws ClassNotFoundException if the class cannot be found.
      */
-    protected final Class<?> findSystemClass(String className)
-            throws ClassNotFoundException {
+    protected final Class<?> findSystemClass(String className) throws ClassNotFoundException {
         return null;
     }
 
@@ -230,64 +285,6 @@ public abstract class ClassLoader {
      * @see Class#getResourceAsStream
      */
     public InputStream getResourceAsStream(String resName) {
-        return null;
-    }
-
-    /**
-     * Returns the system class loader. This is the parent for new ClassLoader
-     * instances, and is typically the class loader used to start the
-     * application. If a security manager is present, and the caller's class
-     * loader is not null and the caller's class loader is not the same as or an
-     * ancestor of the system class loader, then this method calls the security
-     * manager's checkPermission method with a
-     * RuntimePermission("getClassLoader") permission to ensure it's ok to
-     * access the system class loader. If not, a SecurityException will be
-     * thrown.
-     * 
-     * @return The system classLoader.
-     * @throws SecurityException if a security manager exists and it does not
-     *         allow access to the system class loader.
-     */
-    public static ClassLoader getSystemClassLoader() {
-        return null;
-    }
-
-    /**
-     * Answers an URL specifying a resource which can be found by looking up
-     * resName using the system class loader's resource lookup algorithm.
-     * 
-     * @return A URL specifying a system resource or null.
-     * @param resName The name of the resource to find.
-     * @see Class#getResource
-     */
-    public static URL getSystemResource(String resName) {
-        return null;
-    }
-
-    /**
-     * Answers an Enumeration of URLs containing all resources which can be
-     * found by looking up resName using the system class loader's resource
-     * lookup algorithm.
-     * 
-     * @return An Enumeration of URLs containing the system resources
-     * @param resName String the name of the resource to find.
-     */
-    public static Enumeration<URL> getSystemResources(String resName)
-            throws IOException {
-        return null;
-    }
-
-    /**
-     * Answers a stream on a resource found by looking up resName using the
-     * system class loader's resource lookup algorithm. Basically, the contents
-     * of the java.class.path are searched in order, looking for a path which
-     * matches the specified resource.
-     * 
-     * @return A stream on the resource or null.
-     * @param resName The name of the resource to find.
-     * @see Class#getResourceAsStream
-     */
-    public static InputStream getSystemResourceAsStream(String resName) {
         return null;
     }
 
@@ -445,10 +442,9 @@ public abstract class ClassLoader {
      * @return The Package created
      * @throws IllegalArgumentException if the Package already exists
      */
-    protected Package definePackage(String name, String specTitle,
-            String specVersion, String specVendor, String implTitle,
-            String implVersion, String implVendor, URL sealBase)
-            throws IllegalArgumentException {
+    protected Package definePackage(String name, String specTitle, String specVersion,
+            String specVendor, String implTitle, String implVersion, String implVendor,
+            URL sealBase) throws IllegalArgumentException {
         return null;
     }
 
@@ -547,8 +543,7 @@ public abstract class ClassLoader {
      * @param libraryPath the library path to search, or null
      * @throws UnsatisfiedLinkError if the library could not be loaded
      */
-    static void loadLibraryWithPath(String libName, ClassLoader loader,
-            String libraryPath) {
+    static void loadLibraryWithPath(String libName, ClassLoader loader, String libraryPath) {
         return;
     }
 

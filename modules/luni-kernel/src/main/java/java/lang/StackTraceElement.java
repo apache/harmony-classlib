@@ -14,6 +14,7 @@
  */
 
 /*[INCLUDE-IF mJava14]*/
+
 package java.lang;
 
 import java.io.Serializable;
@@ -28,7 +29,7 @@ import java.io.Serializable;
  * @since 1.4
  */
 public final class StackTraceElement implements Serializable {
-    
+
     private static final long serialVersionUID = 6992337162326171013L;
 
     String declaringClass;
@@ -39,7 +40,7 @@ public final class StackTraceElement implements Serializable {
 
     int lineNumber;
 
-	/**
+    /**
      * <p>
      * Constructs a <code>StackTraceElement</code> for an execution point.
      * </p>
@@ -57,31 +58,32 @@ public final class StackTraceElement implements Serializable {
      * 
      * @since 1.5
      */
-	public StackTraceElement(String cls, String method, String file, int line) {
+    public StackTraceElement(String cls, String method, String file, int line) {
         super();
-		if (cls == null || method == null) {
+        if (cls == null || method == null) {
             throw new NullPointerException();
         }
-		declaringClass = cls;
-		methodName = method;
-		fileName = file;
-		lineNumber = line;
-	}
+        declaringClass = cls;
+        methodName = method;
+        fileName = file;
+        lineNumber = line;
+    }
 
-	/**
+    /**
      * <p>
      * Private, nullary constructor for VM use only.
      * </p>
      */
-	private StackTraceElement() {
-		super();
-	}
+    private StackTraceElement() {
+        super();
+    }
 
-	/**
-	 * Compare this object with the object passed in
-	 * 
-	 * @param obj Object to compare with
-	 */
+    /**
+     * Compare this object with the object passed in
+     * 
+     * @param obj Object to compare with
+     */
+    @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof StackTraceElement)) {
             return false;
@@ -119,58 +121,59 @@ public final class StackTraceElement implements Serializable {
         return true;
     }
 
-	/**
-	 * Returns the full name (i.e. including the package) of the class where
-	 * this stack trace element is executing.
-	 * 
-	 * @return the fully qualified type name of the class where this stack trace
-	 *         element is executing.
-	 */
-	public String getClassName() {
-		return (declaringClass == null) ? "<unknown class>" : declaringClass;
-	}
+    /**
+     * Returns the full name (i.e. including the package) of the class where
+     * this stack trace element is executing.
+     * 
+     * @return the fully qualified type name of the class where this stack trace
+     *         element is executing.
+     */
+    public String getClassName() {
+        return (declaringClass == null) ? "<unknown class>" : declaringClass;
+    }
 
-	/**
-	 * If available, returns the name of the file containing the Java code
-	 * source which was compiled into the class where this stack trace element
-	 * is executing.
-	 * 
-	 * @return if available, the name of the file containing the Java code
-	 *         source for the stack trace element's executing class. If no such
-	 *         detail is available, a <code>null</code> value is returned.
-	 */
-	public String getFileName() {
-		return fileName;
-	}
+    /**
+     * If available, returns the name of the file containing the Java code
+     * source which was compiled into the class where this stack trace element
+     * is executing.
+     * 
+     * @return if available, the name of the file containing the Java code
+     *         source for the stack trace element's executing class. If no such
+     *         detail is available, a <code>null</code> value is returned.
+     */
+    public String getFileName() {
+        return fileName;
+    }
 
-	/**
-	 * If available, returns the line number in the source for the class where
-	 * this stack trace element is executing.
-	 * 
-	 * @return if available, the line number in the source file for the class
-	 *         where this stack trace element is executing. If no such detail is
-	 *         available, a number less than <code>0</code>.
-	 */
-	public int getLineNumber() {
-		return lineNumber;
-	}
+    /**
+     * If available, returns the line number in the source for the class where
+     * this stack trace element is executing.
+     * 
+     * @return if available, the line number in the source file for the class
+     *         where this stack trace element is executing. If no such detail is
+     *         available, a number less than <code>0</code>.
+     */
+    public int getLineNumber() {
+        return lineNumber;
+    }
 
-	/**
-	 * Returns the name of the method where this stack trace element is
-	 * executing.
-	 * 
-	 * @return the name of the method where this stack trace element is
-	 *         executing.
-	 */
-	public String getMethodName() {
-		return (methodName == null) ? "<unknown method>" : methodName;
-	}
+    /**
+     * Returns the name of the method where this stack trace element is
+     * executing.
+     * 
+     * @return the name of the method where this stack trace element is
+     *         executing.
+     */
+    public String getMethodName() {
+        return (methodName == null) ? "<unknown method>" : methodName;
+    }
 
-	/**
-	 * Return this StackTraceElement objects hash code
-	 * 
-	 * @return This objects hash code
-	 */
+    /**
+     * Return this StackTraceElement objects hash code
+     * 
+     * @return This objects hash code
+     */
+    @Override
     public int hashCode() {
         /*
          * Either both methodName and declaringClass are null, or neither are
@@ -184,48 +187,49 @@ public final class StackTraceElement implements Serializable {
         return methodName.hashCode() ^ declaringClass.hashCode();
     }
 
-	/**
-	 * Returns <code>true</code> if the method name returned by
-	 * {@link #getMethodName()} is implemented as a native method.
-	 * 
-	 * @return if the method in which this stack trace element is executing is a
-	 *         native method
-	 */
-	public boolean isNativeMethod() {
-		return lineNumber == -2;
-	}
+    /**
+     * Returns <code>true</code> if the method name returned by
+     * {@link #getMethodName()} is implemented as a native method.
+     * 
+     * @return if the method in which this stack trace element is executing is a
+     *         native method
+     */
+    public boolean isNativeMethod() {
+        return lineNumber == -2;
+    }
 
-	/**
-	 * Return a String representating this StackTraceElement object
-	 * 
-	 * @return String representing this object
-	 */
+    /**
+     * Return a String representating this StackTraceElement object
+     * 
+     * @return String representing this object
+     */
+    @Override
     public String toString() {
-		StringBuilder buf = new StringBuilder(80);
+        StringBuilder buf = new StringBuilder(80);
 
-		buf.append(getClassName());
-		buf.append('.');
-		buf.append(getMethodName());
+        buf.append(getClassName());
+        buf.append('.');
+        buf.append(getMethodName());
 
-		if (isNativeMethod()) {
-			buf.append("(Native Method)");
-		} else {
-			String fName = getFileName();
+        if (isNativeMethod()) {
+            buf.append("(Native Method)");
+        } else {
+            String fName = getFileName();
 
-			if (fName == null) {
-				buf.append("(Unknown Source)");
-			} else {
-				int lineNum = getLineNumber();
+            if (fName == null) {
+                buf.append("(Unknown Source)");
+            } else {
+                int lineNum = getLineNumber();
 
-				buf.append('(');
-				buf.append(fName);
-				if (lineNum >= 0) {
-					buf.append(':');
-					buf.append(lineNum);
-				}
-				buf.append(')');
-			}
-		}
-		return buf.toString();
-	}
+                buf.append('(');
+                buf.append(fName);
+                if (lineNum >= 0) {
+                    buf.append(':');
+                    buf.append(lineNum);
+                }
+                buf.append(')');
+            }
+        }
+        return buf.toString();
+    }
 }

@@ -77,8 +77,7 @@ public class Package implements AnnotatedElement {
      * @since 1.5
      * @see java.lang.reflect.AnnotatedElement#isAnnotationPresent(java.lang.Class)
      */
-    public boolean isAnnotationPresent(
-            Class<? extends Annotation> annotationType) {
+    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
         return false;
     }
 
@@ -185,6 +184,7 @@ public class Package implements AnnotatedElement {
      * 
      * @return the receiver's hash
      */
+    @Override
     public int hashCode() {
         return 0;
     }
@@ -200,8 +200,7 @@ public class Package implements AnnotatedElement {
      * @throws NumberFormatException if the package's version string or the one
      *         provided is not in the correct format
      */
-    public boolean isCompatibleWith(String version)
-            throws NumberFormatException {
+    public boolean isCompatibleWith(String version) throws NumberFormatException {
         return false;
     }
 
@@ -231,6 +230,7 @@ public class Package implements AnnotatedElement {
      * 
      * @return a printable representation for the receiver.
      */
+    @Override
     public String toString() {
         return null;
     }
