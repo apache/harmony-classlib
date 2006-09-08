@@ -837,67 +837,127 @@ pollSelectRead (JNIEnv * env, jobject fileDescriptor, jint timeout,
   else if (0 > result)
     throwJavaNetSocketException (env, result);
 #else
-  PORT_ACCESS_FROM_ENV (env);
-  if (!poll)
-    {
-      /* A zero timeout means wait forever. If not polling, return success */
-      /* and call receive() or accept() to block. */
-      if (!timeout)
-        return 0;
-      hysocketP =
-        getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
-      if (!hysock_socketIsValid (hysocketP))
-        {
-          throwJavaNetSocketException (env, HYPORT_ERROR_SOCKET_BADSOCKET);
-          return (jint) - 1;
+    PORT_ACCESS_FROM_ENV (env);
+    
+    if (!poll) {
+        UDATA finishTime;
+            
+        /* 
+         * A zero timeout means wait forever. If not polling, return success
+         * and call receive() or accept() to block. 
+         */
+      
+        if (!timeout) {
+            return 0;
         }
-      result =
-        hysock_select_read (hysocketP, timeout / 1000,
+
+        finishTime = hytime_msec_clock() + (UDATA) timeout;
+    
+        SELECT_NOPOLL:
+              
+        hysocketP = getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
+      
+        if (!hysock_socketIsValid (hysocketP)) {
+            throwJavaNetSocketException (env, HYPORT_ERROR_SOCKET_BADSOCKET);
+            return (jint) - 1;
+        }
+        
+        result = hysock_select_read (hysocketP, timeout / 1000,
                             (timeout % 1000) * 1000, FALSE);
-      if (HYPORT_ERROR_SOCKET_TIMEOUT == result)
-        throwJavaIoInterruptedIOException (env, result);
-      else if (0 > result)
-        throwJavaNetSocketException (env, result);
+    
+        /*
+         *  if we time out, then throw the InterruptedIO exception
+         *  which gets converted by a caller into the appropriate thing
+         * 
+         *  if we are interrupted, recalculate our timeout and if we 
+         *  have time left or 0, try again.  If no time lest, throw InterruptedIO
+         *  Exception
+         * 
+         *  If some other error, just throw exceptionand bail
+         */
+        if (HYPORT_ERROR_SOCKET_TIMEOUT == result) {
+            throwJavaIoInterruptedIOException (env, result);
+        }
+        else if (HYPORT_ERROR_SOCKET_INTERRUPTED == result) {
+
+            timeout = finishTime - hytime_msec_clock();
+            
+            if (timeout < 0) {
+                throwJavaIoInterruptedIOException (env, result);
+            }
+            else { 
+                goto SELECT_NOPOLL;
+            }
+        }
+        else if (0 > result) {
+            throwJavaNetSocketException (env, result);
+        }
     }
-  else
+  else  /* we are polling */
     {
-      I_32 pollTimeout = 100000, pollMsec = 100;
+      I_32 pollTimeoutUSec = 100000, pollMsec = 100;
       UDATA finishTime;
       IDATA timeLeft = timeout;
       BOOLEAN hasTimeout = timeout > 0;
-      if (hasTimeout)
+      
+      if (hasTimeout) {
         finishTime = hytime_msec_clock () + (UDATA) timeout;
+      }
+      
     select:
-      /* Fetch the handle every time in case the socket is closed. */
+      
+      /* 
+       * Fetch the handle every time in case the socket is closed.
+       */
+       
       hysocketP =
         getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
+      
       if (!hysock_socketIsValid (hysocketP))
         {
           throwJavaNetSocketException (env, HYPORT_ERROR_SOCKET_INTERRUPTED);
           return (jint) - 1;
         }
+      
       if (hasTimeout)
         {
-          if (timeLeft - 10 < pollMsec)
-            pollTimeout = timeLeft <= 0 ? 0 : (timeLeft * 1000);
-          result = hysock_select_read (hysocketP, 0, pollTimeout, FALSE);
-          if (HYPORT_ERROR_SOCKET_TIMEOUT == result)
+          if (timeLeft - 10 < pollMsec) {
+            pollTimeoutUSec = timeLeft <= 0 ? 0 : (timeLeft * 1000);
+          }
+          
+          result = hysock_select_read (hysocketP, 0, pollTimeoutUSec, FALSE);
+
+          /*
+           *  because we are polling at a time smaller than timeout (presumably)
+           *  lets treat an interrupt and timeout the same - go see if we're done
+           *  timewise, and then just try again if not
+           */         
+          if (HYPORT_ERROR_SOCKET_TIMEOUT == result ||
+                HYPORT_ERROR_SOCKET_INTERRUPTED == result)
             {
               timeLeft = finishTime - hytime_msec_clock ();
-              if (timeLeft <= 0)
+              
+              if (timeLeft <= 0) {
                 throwJavaIoInterruptedIOException (env, result);
+              }                
               else
                 {
                   goto select;
                 }
-            }
-          else if (0 > result)
+            }   
+          else if (0 > result) {
             throwJavaNetSocketException (env, result);
+          }
         }
-      else
+      else  /* polling with no timeout (why would you do this?)*/
         {
-          result = hysock_select_read (hysocketP, 0, pollTimeout, FALSE);
-          if (HYPORT_ERROR_SOCKET_TIMEOUT == result)
+          result = hysock_select_read (hysocketP, 0, pollTimeoutUSec, FALSE);
+
+          /* 
+           *  if interrupted (or a timeout) just retry
+           */
+          if (HYPORT_ERROR_SOCKET_TIMEOUT == result ||
+                HYPORT_ERROR_SOCKET_INTERRUPTED == result)
             {
               goto select;
             }

@@ -2567,31 +2567,33 @@ hysock_select (struct HyPortLibrary * portLibrary, I_32 nfds,
                hyfdset_t readfds, hyfdset_t writefds, hyfdset_t exceptfds,
                hytimeval_t timeout)
 {
-  I_32 rc = 0;
-  I_32 result = 0;
+    I_32 rc = 0;
+    I_32 result = 0;
 
-  result =
-    select (nfds, readfds == NULL ? NULL : &readfds->handle,
-            writefds == NULL ? NULL : &writefds->handle,
-            exceptfds == NULL ? NULL : &exceptfds->handle,
-            timeout == NULL ? NULL : &timeout->time);
-  if (result == -1)
-    {
-      rc = errno;
-      HYSOCKDEBUG ("<select failed, err=%d>\n", rc);
-      rc =
-        portLibrary->error_set_last_error (portLibrary, rc,
-                                           HYPORT_ERROR_SOCKET_OPFAILED);
-    }
-  else
-    {
-      if (result)
-        {
-          rc = result;
+    result = select (nfds, 
+                        readfds == NULL ? NULL : &readfds->handle,
+                        writefds == NULL ? NULL : &writefds->handle,
+                        exceptfds == NULL ? NULL : &exceptfds->handle,
+                        timeout == NULL ? NULL : &timeout->time);
+
+    if (result == -1) {
+        HYSOCKDEBUG ("<select failed, err=%d>\n", errno);
+
+        if (errno == EINTR) {
+            rc = portLibrary->error_set_last_error(portLibrary, errno, 
+                                            HYPORT_ERROR_SOCKET_INTERRUPTED);
         }
-      else
-        {
-          rc = HYPORT_ERROR_SOCKET_TIMEOUT;
+        else {
+            rc = portLibrary->error_set_last_error (portLibrary, errno,
+                                            HYPORT_ERROR_SOCKET_OPFAILED);
+        }
+    }
+    else {
+        if (result) {
+            rc = result;
+        } 
+        else {
+            rc = HYPORT_ERROR_SOCKET_TIMEOUT;
         }
     }
   return rc;
