@@ -2057,6 +2057,9 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 
     private Object readObject(boolean unshared) throws OptionalDataException,
             ClassNotFoundException, IOException {
+        if (input == null) {
+            return null;
+        }
         boolean restoreInput = (primitiveData == input);
         if (restoreInput) {
             primitiveData = emptyStream;
@@ -2132,6 +2135,9 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      */
     protected Object readObjectOverride() throws OptionalDataException,
             ClassNotFoundException, IOException {
+        if (input == null) {
+        	return null;
+        }
         // Subclasses must override.
         throw new IOException();
     }

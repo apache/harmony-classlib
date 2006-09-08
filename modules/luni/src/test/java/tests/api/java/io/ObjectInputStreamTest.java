@@ -511,6 +511,24 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
                 out.toByteArray()));
         Object o = ois.readObject();
         assertEquals(C.class, o.getClass());
+
+		// Regression for HARMONY-846
+        assertNull(new ObjectInputStream() {}.readObject());
+    }
+
+    /**
+     * @tests java.io.ObjectInputStream#readObjectOverride()
+     */
+    public void test_readObjectOverride() throws Exception {
+        // Regression for HARMONY-846
+        assertNull(new ObjectInputStream() {
+
+            public Object readObjectOverride() throws IOException,
+                    ClassNotFoundException {
+                return super.readObjectOverride();
+            }
+
+        }.readObjectOverride());
     }
 
     public static class A implements Serializable {
