@@ -196,7 +196,7 @@ public abstract class Enum<E extends Enum<E>> implements Serializable,
                             return valsMethod;
                         }
                     });
-            return (T[]) values.invoke(enumType, null);
+            return (T[]) values.invoke(enumType, (Object[])null);
         } catch (Exception e) {
             return null;
         }
