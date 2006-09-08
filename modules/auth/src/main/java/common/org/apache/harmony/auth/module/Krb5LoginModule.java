@@ -32,17 +32,18 @@ import javax.security.auth.spi.LoginModule;
 import org.apache.harmony.auth.internal.kerberos.v5.KDCRequest;
 import org.apache.harmony.auth.internal.kerberos.v5.KerberosErrorMessage;
 import org.apache.harmony.auth.internal.kerberos.v5.PrincipalName;
+import org.apache.harmony.auth.internal.nls.Messages;
 import org.apache.harmony.security.asn1.DerInputStream;
 
 public class Krb5LoginModule implements LoginModule {
 
     private static final int BUF_SIZE = 1024;
 
-    private static final String PRINCIPAL = "cname";
+    private static final String PRINCIPAL = "cname"; //$NON-NLS-1$
 
-    private static final String REALM = "realm";
+    private static final String REALM = "realm"; //$NON-NLS-1$
 
-    private static final String KDC = "kdc";
+    private static final String KDC = "kdc"; //$NON-NLS-1$
 
     private Map<String, ?> options;
 
@@ -108,7 +109,8 @@ public class Krb5LoginModule implements LoginModule {
                 throw new RuntimeException();//FIXME
             } else if (in.tag == KerberosErrorMessage.ASN1.constrId) {
                 KerberosErrorMessage errMsg = KerberosErrorMessage.decode(in);
-                throw new LoginException("Error code: " + errMsg.getErrorCode());
+                // auth.52=Error code: {0}
+                throw new LoginException(Messages.getString("auth.52", errMsg.getErrorCode())); //$NON-NLS-1$
             } else {
                 new LoginException(); //FIXME message
             }

@@ -72,7 +72,7 @@ public class KDCRequest {
     public static KDCRequest createASRequest(PrincipalName cname, String realm) {
 
         PrincipalName krbtgt = new PrincipalName(PrincipalName.NT_SRV_XHST,
-                new String[] { "krbtgt", realm });
+                new String[] { "krbtgt", realm }); //$NON-NLS-1$
 
         return new KDCRequest(AS_REQ, cname, realm, krbtgt);
     }

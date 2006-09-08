@@ -90,14 +90,14 @@ public class PrincipalName {
     }
 
     public String toString() {
-        StringBuilder buf = new StringBuilder("Name: ");
+        StringBuilder buf = new StringBuilder("Name: "); //$NON-NLS-1$
 
         for (int i = 0; i < (name.length - 1); i++) {
             buf.append(name[i]);
             buf.append('/');
         }
         buf.append(name[name.length - 1]);
-        buf.append(", type: ");
+        buf.append(", type: "); //$NON-NLS-1$
         buf.append(type);
 
         return buf.toString();
