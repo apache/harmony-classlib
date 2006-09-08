@@ -29,6 +29,7 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
+import org.apache.harmony.auth.internal.kerberos.v5.KDCReply;
 import org.apache.harmony.auth.internal.kerberos.v5.KDCRequest;
 import org.apache.harmony.auth.internal.kerberos.v5.KerberosErrorMessage;
 import org.apache.harmony.auth.internal.kerberos.v5.PrincipalName;
@@ -105,7 +106,7 @@ public class Krb5LoginModule implements LoginModule {
 
             DerInputStream in = new DerInputStream(out.toByteArray());
 
-            if (in.tag == 0) { //TODO AS reply
+            if (in.tag == KDCReply.AS_REP_ASN1.constrId) { //TODO AS reply
                 throw new RuntimeException();//FIXME
             } else if (in.tag == KerberosErrorMessage.ASN1.constrId) {
                 KerberosErrorMessage errMsg = KerberosErrorMessage.decode(in);
