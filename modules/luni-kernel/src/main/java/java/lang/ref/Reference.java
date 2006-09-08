@@ -23,9 +23,17 @@ package java.lang.ref;
  * constructors, the vm vendor may elect to implement the subclasses as well.
  * Abstract class which describes behavior common to all reference objects.
  * 
- * @since JDK1.2
+ * @since 1.2
  */
-public abstract class Reference<T> extends Object {
+public abstract class Reference<T> {
+
+    /**
+     * Constructs a new instance of this class.
+     * 
+     */
+    Reference() {
+        super();
+    }
 
     /**
      * Make the referent null. This does not force the reference object to be
@@ -65,30 +73,11 @@ public abstract class Reference<T> extends Object {
     }
 
     /**
-     * Enqueue the reference object on the associated queue.
-     * 
-     * @return boolean true if the Reference was successfully enqueued. false
-     *         otherwise.
-     */
-    boolean enqueueImpl() {
-        return false;
-    }
-
-    /**
-     * Constructs a new instance of this class.
-     * 
-     */
-    Reference() {
-        super();
-    }
-
-    /**
      * Implement this method to support the provided subclass implementations.
      * Initialize a newly created reference object. Associate the reference
      * object with the referent.
      * 
-     * @param r
-     *            the referent
+     * @param r the referent
      */
     void initReference(Object r) {
         return;
@@ -99,13 +88,21 @@ public abstract class Reference<T> extends Object {
      * Initialize a newly created reference object. Associate the reference
      * object with the referent, and the specified ReferenceQueue.
      * 
-     * @param r
-     *            the referent
-     * @param q
-     *            the ReferenceQueue
+     * @param r the referent
+     * @param q the ReferenceQueue
      */
-    void initReference(Object r, ReferenceQueue q) {
+    void initReference(Object r, ReferenceQueue<? super T> q) {
         return;
+    }
+
+    /**
+     * Enqueue the reference object on the associated queue.
+     * 
+     * @return boolean true if the Reference was successfully enqueued. false
+     *         otherwise.
+     */
+    boolean enqueueImpl() {
+        return false;
     }
 
     /**

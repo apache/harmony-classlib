@@ -19,29 +19,28 @@ package java.lang.ref;
  * WeakReference objects are used to detect referents which are no longer
  * visible.
  * 
- * @since JDK1.2
+ * @since 1.2
  */
 public class WeakReference<T> extends Reference<T> {
 
     /**
      * Constructs a new instance of this class.
      * 
-     * @param r
-     *            referent to track.
-     * @param q
-     *            queue to register to the reference object with.
+     * @param r referent to track.
      */
-    public WeakReference(T r, ReferenceQueue<? super T> q) {
-        initReference(r, q);
+    public WeakReference(T r) {
+        super();
+        initReference(r);
     }
 
     /**
      * Constructs a new instance of this class.
      * 
-     * @param r
-     *            referent to track.
+     * @param r referent to track.
+     * @param q queue to register to the reference object with.
      */
-    public WeakReference(T r) {
-        initReference(r);
+    public WeakReference(T r, ReferenceQueue<? super T> q) {
+        super();
+        initReference(r, q);
     }
 }

@@ -19,9 +19,21 @@ package java.lang.ref;
  * PhantomReference objects are used to detect referents which are no longer
  * visible and are eligible to have their storage reclaimed.
  * 
- * @since JDK1.2
+ * @since 1.2
  */
 public class PhantomReference<T> extends Reference<T> {
+
+    /**
+     * Constructs a new instance of this class.
+     * 
+     * 
+     * @param r referent to track.
+     * @param q queue to register to the reference object with.
+     */
+    public PhantomReference(T r, ReferenceQueue<? super T> q) {
+        super();
+        initReference(r, q);
+    }
 
     /**
      * Return the referent of the reference object. Phantom reference objects
@@ -29,20 +41,8 @@ public class PhantomReference<T> extends Reference<T> {
      * 
      * @return Object Returns null.
      */
+    @Override
     public T get() {
-        return null;
-    }
-
-    /**
-     * Constructs a new instance of this class.
-     * 
-     * 
-     * @param r
-     *            referent to track.
-     * @param q
-     *            queue to register to the reference object with.
-     */
-    public PhantomReference(T r, ReferenceQueue<? super T> q) {
-        super();
+        return super.get();
     }
 }

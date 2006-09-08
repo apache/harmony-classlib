@@ -19,30 +19,29 @@ package java.lang.ref;
  * SoftReference objects are used to detect referents which are no longer
  * visible and who's memory is to be reclaimed.
  * 
- * @since JDK1.2
+ * @since 1.2
  */
 public class SoftReference<T> extends Reference<T> {
 
     /**
      * Constructs a new instance of this class.
      * 
-     * @param r
-     *            referent to track.
-     * @param q
-     *            queue to register to the reference object with.
+     * @param r referent to track.
      */
-    public SoftReference(T r, ReferenceQueue<? super T> q) {
-        initReference(r, q);
+    public SoftReference(T r) {
+        super();
+        initReference(r);
     }
-
+    
     /**
      * Constructs a new instance of this class.
      * 
-     * @param r
-     *            referent to track.
+     * @param r referent to track.
+     * @param q queue to register to the reference object with.
      */
-    public SoftReference(T r) {
-        initReference(r);
+    public SoftReference(T r, ReferenceQueue<? super T> q) {
+        super();
+        initReference(r, q);
     }
 
     /**
@@ -51,6 +50,7 @@ public class SoftReference<T> extends Reference<T> {
      * @return Object Referent to which reference refers, or null if object has
      *         been cleared.
      */
+    @Override
     public T get() {
         return super.get();
     }
