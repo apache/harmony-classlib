@@ -38,7 +38,7 @@ import javax.accessibility.AccessibleContext;
 public class Container extends Component {
     private static final long serialVersionUID = 4613797578919906343L;
 
-    private Vector children = new Vector();
+    private Vector<Component> children = new Vector<Component>();
 
     private final AWTListenerList containerListeners = new AWTListenerList(this);
 
@@ -48,7 +48,7 @@ public class Container extends Component {
     private Dimension minimumLayoutSize;
     private Dimension preferredLayoutSize;
 
-    Object layoutData = null;
+    Object layoutData;
 
     boolean focusCycleRoot;
 
@@ -89,6 +89,7 @@ public class Container extends Component {
         protected AccessibleAWTContainer() {
         }
 
+        @Override
         public void addPropertyChangeListener(PropertyChangeListener listener) {
             super.addPropertyChangeListener(listener);
             if (accessibleContainerHandler != null) {
@@ -98,6 +99,7 @@ public class Container extends Component {
             Container.this.addContainerListener(accessibleContainerHandler);
         }
 
+        @Override
         public Accessible getAccessibleAt(Point p) {
             toolkit.lockAWT();
             try {
@@ -126,6 +128,7 @@ public class Container extends Component {
             }
         }
 
+        @Override
         public Accessible getAccessibleChild(int index) {
             toolkit.lockAWT();
             try {
@@ -144,6 +147,7 @@ public class Container extends Component {
             }
         }
 
+        @Override
         public int getAccessibleChildrenCount() {
             toolkit.lockAWT();
             try {
@@ -249,7 +253,7 @@ public class Container extends Component {
     public void remove(int index) {
         toolkit.lockAWT();
         try {
-            Component comp = (Component) children.get(index);
+            Component comp = children.get(index);
 
             if (layout != null) {
                 layout.removeLayoutComponent(comp);
@@ -275,30 +279,33 @@ public class Container extends Component {
         }
     }
 
+    @Override
     public void list(PrintWriter out, int indent) {
         toolkit.lockAWT();
         try {
             super.list(out, indent);
             for (int i=0; i < children.size(); i++) {
-                ((Component) children.get(i)).list(out, 2 * indent);
+                children.get(i).list(out, 2 * indent);
             }
         } finally {
             toolkit.unlockAWT();
         }
     }
 
+    @Override
     public void list(PrintStream out, int indent) {
         toolkit.lockAWT();
         try {
             super.list(out, indent);
             for (int i=0; i < children.size(); i++) {
-                ((Component) children.get(i)).list(out, 2 * indent);
+                children.get(i).list(out, 2 * indent);
             }
         } finally {
             toolkit.unlockAWT();
         }
     }
 
+    @Override
     public void print(Graphics g) {
         toolkit.lockAWT();
         try {
@@ -319,6 +326,7 @@ public class Container extends Component {
         }
     }
 
+    @Override
     public void update(Graphics g) {
         toolkit.lockAWT();
         try {
@@ -348,7 +356,7 @@ public class Container extends Component {
     }
 
     private void removeFromContainer(int index) {
-        Component comp = (Component) children.get(index);
+        Component comp = children.get(index);
 
         comp.prepare4HierarchyChange();
 
@@ -415,18 +423,20 @@ public class Container extends Component {
         }
     }
 
+    @Override
     public void addNotify() {
         toolkit.lockAWT();
         try {
             super.addNotify();
             for (int i=0; i < children.size(); i++) {
-                ((Component) children.get(i)).addNotify();
+                children.get(i).addNotify();
             }
         } finally {
             toolkit.unlockAWT();
         }
     }
 
+    @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         toolkit.lockAWT();
         try {
@@ -436,6 +446,7 @@ public class Container extends Component {
         }
     }
 
+    @Override
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         toolkit.lockAWT();
         try {
@@ -445,18 +456,20 @@ public class Container extends Component {
         }
     }
 
+    @Override
     public void applyComponentOrientation(ComponentOrientation o) {
         toolkit.lockAWT();
         try {
             super.applyComponentOrientation(o);
             for (int i = 0; i < children.size(); i++) {
-                ((Component)children.get(i)).applyComponentOrientation(o);
+                children.get(i).applyComponentOrientation(o);
             }
         } finally {
             toolkit.unlockAWT();
         }
     }
 
+    @Override
     public boolean areFocusTraversalKeysSet(int id) {
         toolkit.lockAWT();
         try {
@@ -469,6 +482,7 @@ public class Container extends Component {
     /**
      * @deprecated
      */
+    @Deprecated
     public int countComponents() {
         toolkit.lockAWT();
         try {
@@ -481,6 +495,9 @@ public class Container extends Component {
     /**
      * @deprecated
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public void deliverEvent(Event evt) {
 
         Component comp = getComponentAt(evt.x, evt.y);
@@ -493,6 +510,7 @@ public class Container extends Component {
 
     }
 
+    @Override
     public void doLayout() {
         toolkit.lockAWT();
         try {
@@ -529,7 +547,7 @@ public class Container extends Component {
             //have to traverse children manually
 
             for (int i = 0; i <  children.size(); i++) {
-                c = (Component) children.get(i);
+                c = children.get(i);
                 if (!c.isVisible()) {
                     continue;
                 }
@@ -552,6 +570,7 @@ public class Container extends Component {
         }
     }
 
+    @Override
     public float getAlignmentX() {
         toolkit.lockAWT();
         try {
@@ -565,6 +584,7 @@ public class Container extends Component {
         }
     }
 
+    @Override
     public float getAlignmentY() {
         toolkit.lockAWT();
         try {
@@ -581,12 +601,13 @@ public class Container extends Component {
     public Component getComponent(int n) throws ArrayIndexOutOfBoundsException {
         toolkit.lockAWT();
         try {
-            return (Component) children.get(n);
+            return children.get(n);
         } finally {
             toolkit.unlockAWT();
         }
     }
 
+    @Override
     public Component getComponentAt(Point p) {
         toolkit.lockAWT();
         try {
@@ -596,6 +617,7 @@ public class Container extends Component {
         }
     }
 
+    @Override
     public Component getComponentAt(int x, int y) {
         toolkit.lockAWT();
         try {
@@ -617,13 +639,14 @@ public class Container extends Component {
     public Component[] getComponents() {
         toolkit.lockAWT();
         try {
-            return (Component[]) children.toArray(new Component[0]);
+            return children.toArray(new Component[0]);
         } finally {
             toolkit.unlockAWT();
         }
     }
 
-    public Set getFocusTraversalKeys(int id) {
+    @Override
+    public Set<?> getFocusTraversalKeys(int id) {
         toolkit.lockAWT();
         try {
             return super.getFocusTraversalKeys(id);
@@ -649,6 +672,7 @@ public class Container extends Component {
         }
     }
 
+    @Override
     public Insets getInsets() {
         toolkit.lockAWT();
         try {
@@ -682,6 +706,7 @@ public class Container extends Component {
                 h - insets.top - insets.bottom);
     }
 
+    @Override
     public Dimension getMinimumSize() {
         toolkit.lockAWT();
         try {
@@ -694,6 +719,9 @@ public class Container extends Component {
     /**
      * @deprecated
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public Dimension minimumSize() {
         toolkit.lockAWT();
         try {
@@ -703,6 +731,7 @@ public class Container extends Component {
         }
     }
 
+    @Override
     Dimension getDefaultMinimumSize() {
         if (layout == null) {
             return null;
@@ -713,6 +742,7 @@ public class Container extends Component {
         return minimumLayoutSize;
     }
 
+    @Override
     public Dimension getPreferredSize() {
         toolkit.lockAWT();
         try {
@@ -725,6 +755,9 @@ public class Container extends Component {
     /**
      * @deprecated
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public Dimension preferredSize() {
         toolkit.lockAWT();
         try {
@@ -734,6 +767,7 @@ public class Container extends Component {
         }
     }
 
+    @Override
     Dimension getDefaultPreferredSize() {
         if (layout == null) {
             return null;
@@ -744,25 +778,26 @@ public class Container extends Component {
         return preferredLayoutSize;
     }
 
+    @Override
     public Dimension getMaximumSize() {
         toolkit.lockAWT();
         try {
             if (!isMaximumSizeSet() && (layout != null) && (layout instanceof LayoutManager2)) {
                 return ((LayoutManager2) layout).maximumLayoutSize(this);
-            } else {
-                return super.getMaximumSize();
             }
+            return super.getMaximumSize();
         } finally {
             toolkit.unlockAWT();
         }
     }
 
+    @Override
     void resetDefaultSize() {
         minimumLayoutSize = null;
         preferredLayoutSize = null;
 
         for (int i=0; i < children.size(); i++) {
-            Component c = (Component)children.get(i);
+            Component c = children.get(i);
             c.resetDefaultSize();
         }
     }
@@ -771,6 +806,7 @@ public class Container extends Component {
     /**
      * @deprecated
      */
+    @Deprecated
     public Insets insets() {
         toolkit.lockAWT();
         try {
@@ -802,6 +838,7 @@ public class Container extends Component {
         }
     }
 
+    @Override
     public boolean isFocusCycleRoot(Container container) {
         toolkit.lockAWT();
         try {
@@ -835,6 +872,8 @@ public class Container extends Component {
     /**
      * @deprecated
      */
+    @Deprecated
+    @Override
     public void layout() {
         toolkit.lockAWT();
         try {
@@ -849,6 +888,8 @@ public class Container extends Component {
     /**
      * @deprecated
      */
+    @Deprecated
+    @Override
     public Component locate(int x, int y) {
         toolkit.lockAWT();
         try {
@@ -861,7 +902,7 @@ public class Container extends Component {
     Component locateImpl(int x, int y) {
 //        return topmost child containing point - search from index 0
         for (int i = 0; i <  children.size(); i++) {
-            Component c = (Component) children.get(i);
+            Component c = children.get(i);
             if ( c.contains(x-c.getX(), y-c.getY()) ) {
                 return c;
             }
@@ -872,13 +913,15 @@ public class Container extends Component {
         return null;
     }
 
+    @Override
     void setRedrawManager () {
         super.setRedrawManager();
         for (int i = 0; i < children.size(); i++) {
-            ((Component) children.get(i)).setRedrawManager();
+            children.get(i).setRedrawManager();
         }
     }
 
+    @Override
     public void paint(Graphics g) {
         toolkit.lockAWT();
         try {
@@ -890,7 +933,7 @@ public class Container extends Component {
 
     void propagateRepaint(long tm, int x, int y, int width, int height) {
         for (int i = 0; i < children.size(); i++) {
-            Component comp = (Component) children.get(i);
+            Component comp = children.get(i);
 
             if (comp.isLightweight()) {
                 comp.repaint(tm, x - comp.x, y - comp.y, width, height);
@@ -898,6 +941,7 @@ public class Container extends Component {
         }
     }
 
+    @Override
     protected String paramString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:
@@ -938,7 +982,7 @@ public class Container extends Component {
         Shape clip = g.getClip();
 
         for (int i = children.size() - 1; i >= 0; i--) {
-            Component comp = (Component) children.get(i);
+            Component comp = children.get(i);
 
             if (comp.isLightweight() && comp.isVisible()) {
                 if (!clip.intersects(comp.getBounds())) {
@@ -959,13 +1003,14 @@ public class Container extends Component {
         return g;
     }
 
+    @Override
     public void removeNotify() {
         toolkit.lockAWT();
         try {
             isRemoved = true;
 //            moveFocusOnHide();
             for (int i=0; i < children.size(); i++) {
-                ((Component) children.get(i)).removeNotify();
+                children.get(i).removeNotify();
             }
             super.removeNotify();
         } finally {
@@ -987,6 +1032,7 @@ public class Container extends Component {
                 focusCycleRoot);
     }
 
+    @Override
     public void setFocusTraversalKeys(int id, Set keystrokes) {
         toolkit.lockAWT();
         try {
@@ -1008,6 +1054,7 @@ public class Container extends Component {
         firePropertyChange("focusTraversalPolicy", oldPolicy, policy);
     }
 
+    @Override
     public void setFont(Font f) {
         toolkit.lockAWT();
         try {
@@ -1017,21 +1064,23 @@ public class Container extends Component {
         }
     }
 
+    @Override
     void setFontImpl(Font f) {
         super.setFontImpl(f);
 
         for (int i = 0; i < children.size(); i++) {
-            ((Component)children.get(i)).propagateFont();
+            children.get(i).propagateFont();
         }
     }
 
+    @Override
     boolean propagateFont() {
         if (!super.propagateFont()) {
             return false;
         }
 
         for (int i = 0; i < children.size(); i++) {
-            ((Component) children.get(i)).propagateFont();
+            children.get(i).propagateFont();
         }
         return true;
     }
@@ -1040,14 +1089,14 @@ public class Container extends Component {
         toolkit.lockAWT();
         try {
             if (layout != null) {
-                for (Iterator i = children.iterator(); i.hasNext(); ){
-                    layout.removeLayoutComponent((Component) i.next());
+                for (Component component : children) {
+                    layout.removeLayoutComponent(component);
                 }
             }
 
             if (mgr != null) {
-                for (Iterator i = children.iterator(); i.hasNext(); ){
-                    mgr.addLayoutComponent(null, (Component) i.next());
+                for (Component component : children) {
+                    mgr.addLayoutComponent(null, component);
                 }
             }
 
@@ -1058,6 +1107,7 @@ public class Container extends Component {
         }
     }
 
+    @Override
     public void transferFocusBackward() {
         toolkit.lockAWT();
         try {
@@ -1087,6 +1137,7 @@ public class Container extends Component {
         }
     }
 
+    @Override
     public void invalidate() {
         toolkit.lockAWT();
         try {
@@ -1099,6 +1150,7 @@ public class Container extends Component {
         }
     }
 
+    @Override
     public void validate() {
         toolkit.lockAWT();
         try {
@@ -1119,7 +1171,7 @@ public class Container extends Component {
         toolkit.lockAWT();
         try {
             for (int i = 0; i < children.size(); i++) {
-                Component c = (Component) children.get(i);
+                Component c = children.get(i);
                 if (!c.isValid()) {
                     c.validate();
                 }
@@ -1129,14 +1181,16 @@ public class Container extends Component {
         }
     }
 
+    @Override
     void mapToDisplay(boolean b) {
         super.mapToDisplay(b);
         //map to display from bottom to top, to get right initial Z-order
         for (int i = children.size() - 1; i >= 0 ; i--) {
-            ((Component) children.get(i)).mapToDisplay(b);
+            children.get(i).mapToDisplay(b);
         }
     }
 
+    @Override
     void moveFocusOnHide() {
         Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
         if (focusOwner != null && isAncestorOf(focusOwner)) {
@@ -1145,30 +1199,34 @@ public class Container extends Component {
         super.moveFocus();
     }
 
+    @Override
     void prepareChildren4HierarchyChange() {
         for (int i = 0; i < children.size(); i++) {
-            ((Component) children.get(i)).prepare4HierarchyChange();
+            children.get(i).prepare4HierarchyChange();
         }
     }
 
+    @Override
     void finishChildrenHierarchyChange(Component changed, Container changedParent,
             int ancestorFlags)
     {
         for (int i = 0; i < children.size(); i++) {
-            ((Component) children.get(i)).finishHierarchyChange(changed, changedParent,
+            children.get(i).finishHierarchyChange(changed, changedParent,
                     ancestorFlags);
         }
     }
 
+    @Override
     void postHierarchyBoundsEvents(Component changed, int id) {
         super.postHierarchyBoundsEvents(changed, id);
 
         spreadHierarchyBoundsEvents(changed, id);
     }
 
+    @Override
     void spreadHierarchyBoundsEvents(Component changed, int id) {
         for (int i = 0; i < children.size(); i++) {
-            ((Component) children.get(i)).postHierarchyBoundsEvents(changed, id);
+            children.get(i).postHierarchyBoundsEvents(changed, id);
         }
     }
 
@@ -1199,19 +1257,20 @@ public class Container extends Component {
 //        }
     }
 
-    public EventListener[] getListeners(Class listenerType) {
+    @Override
+    public EventListener[] getListeners(Class<?> listenerType) {
 //        toolkit.lockAWT();
 //        try {
             if (ContainerListener.class.isAssignableFrom(listenerType)) {
                 return getContainerListeners();
-            } else {
-                return super.getListeners(listenerType);
             }
+            return super.getListeners(listenerType);
 //        } finally {
 //            toolkit.unlockAWT();
 //        }
     }
 
+    @Override
     protected void processEvent(AWTEvent e) {
 //        toolkit.lockAWT();
 //        try {
@@ -1228,7 +1287,7 @@ public class Container extends Component {
     protected void processContainerEvent(ContainerEvent e) {
 //        toolkit.lockAWT();
 //        try {
-            for (Iterator i = containerListeners.getUserIterator(); i.hasNext();) {
+            for (Iterator<?> i = containerListeners.getUserIterator(); i.hasNext();) {
                 ContainerListener listener = (ContainerListener) i.next();
 
                 switch (e.getID()) {
@@ -1269,9 +1328,9 @@ public class Container extends Component {
                     return false;
                 }
 
-                Vector children = container.children;
+                Vector<Component> children = container.children;
                 for (int i = 0; i <  children.size(); i++) {
-                    c = (Component) children.get(i);
+                    c = children.get(i);
                     if (!c.isVisible()) {
                         continue;
                     }

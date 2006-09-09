@@ -49,7 +49,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
 
     private final AWTListenerList itemListeners = new AWTListenerList(this);
 
-    private ArrayList items = new ArrayList();
+    private ArrayList<String> items = new ArrayList<String>();
 
     int selectedIndex = -1;
 
@@ -68,9 +68,11 @@ public class Choice extends Component implements ItemSelectable, Accessible {
             // default constructor is public
         }
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.COMBO_BOX;
         }
+        @Override
         public AccessibleAction getAccessibleAction() {
             return this;
         }
@@ -136,11 +138,13 @@ public class Choice extends Component implements ItemSelectable, Accessible {
             return new ChoicePopupBox(Choice.this);
         }
 
+        @Override
         public void focusLost(FocusEvent fe) {
             super.focusLost(fe);
             popup.hide();
         }
 
+        @Override
         public void keyPressed(KeyEvent e) {
             boolean alt = e.isAltDown();
             int blockSize = ChoicePopupBox.PAGE_SIZE - 1;
@@ -190,6 +194,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
             selectAndFire(newSel);
         }
 
+        @Override
         public void keyReleased(KeyEvent e) {
             // don't call super here as in keyPressed
         }
@@ -197,6 +202,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         /**
          * Called on mouse release
          */
+        @Override
         protected void fireEvent() {
             popup();
         }
@@ -213,6 +219,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
             }
         }
 
+        @Override
         public void mousePressed(MouseEvent me) {
             super.mousePressed(me);
             // TODO: show/hide popup here
@@ -351,6 +358,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         }
     }
 
+    @Override
     public void addNotify() {
         toolkit.lockAWT();
         try {
@@ -361,6 +369,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         toolkit.lockAWT();
         try {
@@ -370,6 +379,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         }
     }
 
+    @Override
     protected String paramString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:
@@ -389,9 +399,8 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         try {
             if (items.size() > 0) {
                 return new Object[] {items.get(selectedIndex)};
-            } else {
-                return null;
             }
+            return null;
         } finally {
             toolkit.unlockAWT();
         }
@@ -400,7 +409,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
     public String getItem(int index) {
         toolkit.lockAWT();
         try {
-            return (String)items.get(index);
+            return items.get(index);
         } finally {
             toolkit.unlockAWT();
         }
@@ -418,6 +427,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
     /**
      * @deprecated
      */
+    @Deprecated
     public int countItems() {
         toolkit.lockAWT();
         try {
@@ -451,7 +461,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
             if (selectedIndex < 0) {
                 return null;
             }
-            return (String)items.get(selectedIndex);
+            return items.get(selectedIndex);
         } finally {
             toolkit.unlockAWT();
         }
@@ -483,12 +493,12 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         }
     }
 
+    @Override
     public EventListener[] getListeners(Class listenerType) {
         if (ItemListener.class.isAssignableFrom(listenerType)) {
             return getItemListeners();
-        } else {
-            return super.getListeners(listenerType);
         }
+        return super.getListeners(listenerType);
     }
 
     public void addItemListener(ItemListener l) {
@@ -503,6 +513,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         return (ItemListener[]) itemListeners.getUserListeners(new ItemListener[0]);
     }
 
+    @Override
     protected void processEvent(AWTEvent e) {
         if (toolkit.eventTypeLookup.getEventMask(e) == AWTEvent.ITEM_EVENT_MASK) {
             processItemEvent((ItemEvent) e);
@@ -512,7 +523,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
     }
 
     protected void processItemEvent(ItemEvent e) {
-        for (Iterator i = itemListeners.getUserIterator(); i.hasNext();) {
+        for (Iterator<?> i = itemListeners.getUserIterator(); i.hasNext();) {
             ItemListener listener = (ItemListener) i.next();
 
             switch (e.getID()) {
@@ -523,10 +534,12 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         }
     }
 
+    @Override
     ComponentBehavior createBehavior() {
         return new HWBehavior(this);
     }
 
+    @Override
     String autoName() {
         return ("choice" + toolkit.autoNumber.nextChoice++);
     }
@@ -535,6 +548,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
      * Widest list item must fit into Choice minimum
      * size
      */
+    @Override
     Dimension getDefaultMinimumSize() {
         Dimension minSize = new Dimension();
         if (!isDisplayable()) {
@@ -563,15 +577,18 @@ public class Choice extends Component implements ItemSelectable, Accessible {
     }
 
 
+    @Override
     boolean isPrepainter() {
         return true;
     }
 
+    @Override
     void prepaint(Graphics g) {
         toolkit.theme.drawChoice(g, state);
     }
 
 
+    @Override
     void setFontImpl(Font f) {
         super.setFontImpl(f);
         setSize(getWidth(), getDefaultMinimumSize().height);
@@ -609,6 +626,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         return Math.min(getItemCount() - 1, Math.max(0, idx));
     }
 
+    @Override
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTChoice();
     }

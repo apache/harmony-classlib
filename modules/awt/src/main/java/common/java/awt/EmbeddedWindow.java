@@ -42,6 +42,7 @@ class EmbeddedWindow extends Window {
         h = bounds.height;
     }
 
+    @Override
     ComponentBehavior createBehavior() {
         return new EmbeddedBehavior();
     }
@@ -56,6 +57,7 @@ class EmbeddedWindow extends Window {
             super(EmbeddedWindow.this);
         }
 
+        @Override
         protected NativeWindow createNativeWindow() {
             return toolkit.createEmbeddedNativeWindow(EmbeddedWindow.this);
         }

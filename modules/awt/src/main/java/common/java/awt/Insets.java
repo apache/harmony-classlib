@@ -40,6 +40,7 @@ public class Insets implements Cloneable, Serializable {
         setValues(top, left, bottom, right);
     }
 
+    @Override
     public int hashCode() {
         int hashCode = HashCode.EMPTY_HASH_CODE;
         hashCode = HashCode.combine(hashCode, top);
@@ -49,10 +50,12 @@ public class Insets implements Cloneable, Serializable {
         return hashCode;
     }
 
+    @Override
     public Object clone() {
         return new Insets(top, left, bottom, right);
     }
 
+    @Override
     public boolean equals(Object o) {
         if (o == this) {
             return true;
@@ -65,6 +68,7 @@ public class Insets implements Cloneable, Serializable {
         return false;
     }
 
+    @Override
     public String toString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:

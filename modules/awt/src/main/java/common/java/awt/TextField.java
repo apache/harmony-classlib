@@ -36,11 +36,11 @@ import javax.swing.event.ChangeListener;
 import javax.swing.text.View;
 
 import org.apache.harmony.awt.text.AWTTextAction;
+import org.apache.harmony.awt.text.ActionNames;
 import org.apache.harmony.awt.text.ActionSet;
 import org.apache.harmony.awt.text.PropertyNames;
 import org.apache.harmony.awt.text.TextFactory;
 import org.apache.harmony.awt.text.TextFieldKit;
-import org.apache.harmony.awt.text.TextKit;
 
 
 public class TextField extends TextComponent {
@@ -49,6 +49,7 @@ public class TextField extends TextComponent {
 
         private static final long serialVersionUID = 6219164359235943158L;
 
+        @Override
         public AccessibleStateSet getAccessibleStateSet() {
             AccessibleStateSet set = super.getAccessibleStateSet();
             set.add(AccessibleState.SINGLE_LINE);
@@ -153,6 +154,7 @@ public class TextField extends TextComponent {
             setTextFieldKit(new TextFieldKitImpl());            
             this.columns = Math.max(0, columns);
             addAWTKeyListener(new KeyAdapter() {
+                @Override
                 public void keyPressed(KeyEvent e) {
                     if ((e.getKeyCode() == KeyEvent.VK_ENTER) &&
                         !e.isAltDown() && !e.isControlDown()) {
@@ -166,6 +168,7 @@ public class TextField extends TextComponent {
         setText(text);
     }
 
+    @Override
     public void addNotify() {
         document.putProperty(PropertyNames.FILTER_NEW_LINES, Boolean.TRUE);
         setText(getText()); // remove all new lines in already existing text
@@ -177,6 +180,7 @@ public class TextField extends TextComponent {
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         toolkit.lockAWT();
         try {
@@ -195,6 +199,7 @@ public class TextField extends TextComponent {
         }
     }
 
+    @Override
     public Dimension getMinimumSize() {
         toolkit.lockAWT();
         try {
@@ -213,6 +218,7 @@ public class TextField extends TextComponent {
         }
     }
 
+    @Override
     public Dimension getPreferredSize() {
         toolkit.lockAWT();
         try {
@@ -234,6 +240,8 @@ public class TextField extends TextComponent {
     /**
      * @deprecated
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
     public Dimension minimumSize(int columns) {
         toolkit.lockAWT();
         try {
@@ -262,6 +270,9 @@ public class TextField extends TextComponent {
     /**
      * @deprecated
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public Dimension minimumSize() {
         toolkit.lockAWT();
         try {
@@ -275,6 +286,7 @@ public class TextField extends TextComponent {
         }
     }
 
+    @Override
     protected String paramString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:
@@ -299,6 +311,8 @@ public class TextField extends TextComponent {
     /**
      * @deprecated
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
     public Dimension preferredSize(int columns) {
         toolkit.lockAWT();
         try {
@@ -315,6 +329,9 @@ public class TextField extends TextComponent {
     /**
      * @deprecated
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public Dimension preferredSize() {
         toolkit.lockAWT();
         try {
@@ -340,6 +357,7 @@ public class TextField extends TextComponent {
         }
     }
 
+    @Override
     public void setText(String text) {
         super.setText(text); // no AWT lock here!
     }
@@ -379,12 +397,12 @@ public class TextField extends TextComponent {
         repaint();
     }
 
+    @Override
     public EventListener[] getListeners(Class listenerType) {
         if (ActionListener.class.isAssignableFrom(listenerType)) {
             return getActionListeners();
-        } else {
-            return super.getListeners(listenerType);
         }
+        return super.getListeners(listenerType);
     }
 
     public void addActionListener(ActionListener l) {
@@ -399,6 +417,7 @@ public class TextField extends TextComponent {
         return (ActionListener[]) actionListeners.getUserListeners(new ActionListener[0]);
     }
 
+    @Override
     protected void processEvent(AWTEvent e) {
         if (toolkit.eventTypeLookup.getEventMask(e) == AWTEvent.ACTION_EVENT_MASK) {
             processActionEvent((ActionEvent) e);
@@ -419,6 +438,7 @@ public class TextField extends TextComponent {
         }
     }
 
+    @Override
     boolean isPrepainter() {
         return true;
     }
@@ -427,16 +447,19 @@ public class TextField extends TextComponent {
      * Creates password view instead of default plain view.
      * Necessary to be able to set echo character.
      */
+    @Override
     View createView() {
         TextFactory factory = TextFactory.getTextFactory();
         View v = factory.createPasswordView(document.getDefaultRootElement());
         return v;
     }
 
+    @Override
     Dimension getDefaultMinimumSize() {
         return calcSize(getText().length());
     }
 
+    @Override
     Dimension getDefaultPreferredSize() {
         if (getFont() == null) {
             return null;
@@ -456,6 +479,7 @@ public class TextField extends TextComponent {
      * visible. Uses bounded range model value for
      * scrolling. Repaints TextField.
      */
+    @Override
     void scrollRectToVisible(Rectangle r) {
         int x = r.x;
         Insets insets = getTextFieldKit().getInsets();
@@ -478,6 +502,7 @@ public class TextField extends TextComponent {
      * Returns just the same rectangle as getClient().
      * Bounded range model takes care of actual text size.
      */
+    @Override
     Rectangle getModelRect() {
         return getClient();
     }
@@ -496,10 +521,12 @@ public class TextField extends TextComponent {
         return (diff >= 0) ? diff + 1 : 0;
     }
 
+    @Override
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTTextField();
     }
     
+    @Override
     String autoName() {        
         return ("textfield" + toolkit.autoNumber.nextTextField++);
     }
@@ -508,8 +535,9 @@ public class TextField extends TextComponent {
      * Handles text actions.
      * Ignores new line insertion into text.
      */
+    @Override
     void performTextAction(AWTTextAction action) {
-        if (action != ActionSet.actionMap.get(ActionSet.insertBreakAction)) {
+        if (action != ActionSet.actionMap.get(ActionNames.insertBreakAction)) {
             super.performTextAction(action);
         }
     }

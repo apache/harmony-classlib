@@ -44,7 +44,7 @@ public class BasicStroke implements Stroke {
     static final double CUBIC_ARC = 4.0 / 3.0 * (Math.sqrt(2.0) - 1);
 
     /**
-     * Strokw width
+     * Stroke width
      */
     float width;
     
@@ -54,7 +54,7 @@ public class BasicStroke implements Stroke {
     int cap;
     
     /**
-     * Strok join type
+     * Stroke join type
      */
     int join;
     
@@ -74,7 +74,7 @@ public class BasicStroke implements Stroke {
     float dashPhase;
 
     /**
-     * The tempopary pre-calculated values
+     * The temporary pre-calculated values
      */
     double curveDelta;
     double cornerDelta;
@@ -86,14 +86,14 @@ public class BasicStroke implements Stroke {
     double mx, my, cx, cy;
 
     /**
-     * The tempopary indicators
+     * The temporary indicators
      */
     boolean isMove;
     boolean isFirst;
     boolean checkMove;
     
     /**
-     * The tempopary and destination work paths
+     * The temporary and destination work paths
      */
     BufferedPath dst, lp, rp, sp;
     
@@ -182,6 +182,7 @@ public class BasicStroke implements Stroke {
         return dashPhase;
     }
 
+    @Override
     public int hashCode() {
         HashCode hash = new HashCode();
         hash.append(width);
@@ -190,13 +191,14 @@ public class BasicStroke implements Stroke {
         hash.append(miterLimit);
         if (dash != null) {
             hash.append(dashPhase);
-            for(int i = 0; i < dash.length; i++) {
-                hash.append(dash[i]);
+            for (float element : dash) {
+                hash.append(element);
             }
         }
         return hash.hashCode();
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -481,13 +483,12 @@ public class BasicStroke implements Stroke {
                     p.setLast(x3, y3);
                 }
                 return;
-            } else {
-                // Zero corner
-                if (-zeroDelta < sin0 && sin0 < zeroDelta) {
-                    p.lineTo(x2, y2);
-                }
-                return;
             }
+            // Zero corner
+            if (-zeroDelta < sin0 && sin0 < zeroDelta) {
+                p.lineTo(x2, y2);
+            }
+            return;
         }
 
         if (isLeft ^ (sin0 < 0.0)) {
@@ -1415,9 +1416,8 @@ public class BasicStroke implements Stroke {
                 if (visible) {
                     pos -= iter.length;
                     return true;
-                } else {
-                    close = pos == iter.length;
                 }
+                close = pos == iter.length;
             }
             return false;
         }
@@ -1454,6 +1454,7 @@ public class BasicStroke implements Stroke {
                 length = len;
             }
 
+            @Override
             double getNext(double dashPos) {
                 return dashPos / length;
             }
@@ -1482,8 +1483,6 @@ public class BasicStroke implements Stroke {
                 double ay = y1 + y3 - y2 - y2;
                 double bx = 2.0 * (x2 - x1);
                 double by = 2.0 * (y2 - y1);
-                double cx = x1;
-                double cy = y1;
 
                 double dx1 = step * (step * ax + bx);
                 double dy1 = step * (step * ay + by);
@@ -1515,6 +1514,7 @@ public class BasicStroke implements Stroke {
                 prevLen = 0.0;
             }
 
+            @Override
             double getNext(double dashPos) {
                 double t = 2.0;
                 while (curLen <= dashPos && valPos < valSize) {
@@ -1556,8 +1556,6 @@ public class BasicStroke implements Stroke {
                 double by = 3.0 * (y1 + y3 - y2 - y2);
                 double cx = 3.0 * (x2 - x1);
                 double cy = 3.0 * (y2 - y1);
-                double dx = x1;
-                double dy = y1;
 
                 double dx1 = step * (step * (step * ax + bx) + cx);
                 double dy1 = step * (step * (step * ay + by) + cy);
@@ -1593,6 +1591,7 @@ public class BasicStroke implements Stroke {
                 prevLen = 0.0;
             }
 
+            @Override
             double getNext(double dashPos) {
                 double t = 2.0;
                 while (curLen <= dashPos && valPos < valSize) {
@@ -1619,7 +1618,6 @@ public class BasicStroke implements Stroke {
     static class BufferedPath {
 
         private static final int bufCapacity = 10;
-        private static final int initBufSize = 10;
 
         static int pointShift[] = {
                 2,  // MOVETO

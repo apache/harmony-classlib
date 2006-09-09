@@ -31,7 +31,7 @@ public final class ComponentOrientation implements Serializable {
 
     public static final ComponentOrientation UNKNOWN = new ComponentOrientation(true, true);
 
-    private static HashSet rlLangs = new HashSet(); //RIGHT_TO_LEFT languages
+    private static final Set<String> rlLangs = new HashSet<String>(); //RIGHT_TO_LEFT languages
 
     private final boolean horizontal;
 
@@ -47,8 +47,8 @@ public final class ComponentOrientation implements Serializable {
     /**
      * @deprecated
      */
+    @Deprecated
     public static ComponentOrientation getOrientation(ResourceBundle bdl) {
-        ComponentOrientation co = null;
         Object obj = null;
         try {
             obj = bdl.getObject("Orientation");

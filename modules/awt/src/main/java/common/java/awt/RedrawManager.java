@@ -39,8 +39,8 @@ class RedrawManager {
     private boolean paintNeeded;
     private boolean updateNeeded;
 
-    private final Map paintRegions = new IdentityHashMap();
-    private final Map updateRegions = new IdentityHashMap();
+    private final Map<Component, MultiRectArea> paintRegions = new IdentityHashMap<Component, MultiRectArea>();
+    private final Map<Component, MultiRectArea> updateRegions = new IdentityHashMap<Component, MultiRectArea>();
 
 
     public RedrawManager(Window window) {
@@ -102,8 +102,8 @@ class RedrawManager {
         }
     }
 
-    private static void addRegion(Map map, Component c, Rectangle r) {
-        MultiRectArea area = (MultiRectArea)map.get(c);
+    private static void addRegion(Map<Component, MultiRectArea> map, Component c, Rectangle r) {
+        MultiRectArea area = map.get(c);
         if (area != null) {
             area.add(r);
         } else {
@@ -113,8 +113,8 @@ class RedrawManager {
 
     }
 
-    private static void addRegion(Map map, Component c, MultiRectArea r) {
-        MultiRectArea area = (MultiRectArea)map.get(c);
+    private static void addRegion(Map<Component, MultiRectArea> map, Component c, MultiRectArea r) {
+        MultiRectArea area = map.get(c);
         if (area != null) {
             area.add(r);
         } else {
@@ -140,11 +140,11 @@ class RedrawManager {
     }
 
     private void subtractPaintFromUpdate() {
-        for (Iterator it = paintRegions.entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Entry)it.next();
+        for (Object name : paintRegions.entrySet()) {
+            Map.Entry<?, ?> entry = (Entry<?, ?>)name;
             Component c = (Component) entry.getKey();
             MultiRectArea paint = (MultiRectArea) entry.getValue();
-            MultiRectArea update = (MultiRectArea) updateRegions.get(c);
+            MultiRectArea update = updateRegions.get(c);
             if (update == null) {
                 continue;
             }
@@ -162,9 +162,9 @@ class RedrawManager {
      *      regions that need to be painted
      * @param eventId - PaintEvent.PAINT or PaintEvent.UPDATE
      */
-    private static void postEvents(Map regions, int eventId) {
-        for (Iterator it = regions.entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Entry)it.next();
+    private static void postEvents(Map<Component, MultiRectArea> regions, int eventId) {
+        for (Object name : regions.entrySet()) {
+            Map.Entry<?, ?> entry = (Entry<?, ?>)name;
             Component c = (Component) entry.getKey();
             if (!c.visible || !c.behaviour.isDisplayable()) {
                 continue;
@@ -205,8 +205,8 @@ class RedrawManager {
 
         synchronized(this) {
             // Now c is heavyweight for sure
-            MultiRectArea paint = (MultiRectArea) paintRegions.get(c);
-            MultiRectArea update = (MultiRectArea) updateRegions.get(c);
+            MultiRectArea paint = paintRegions.get(c);
+            MultiRectArea update = updateRegions.get(c);
 
             if (paint == null && update == null) {
                 return mra;

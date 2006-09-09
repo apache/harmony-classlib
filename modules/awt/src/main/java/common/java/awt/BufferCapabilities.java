@@ -31,14 +31,16 @@ public class BufferCapabilities implements Cloneable {
 
     public BufferCapabilities(ImageCapabilities frontBufferCapabilities, 
             ImageCapabilities backBufferCapabilities, FlipContents flipContents) {
-        if (frontBufferCapabilities == null || backBufferCapabilities == null)
+        if (frontBufferCapabilities == null || backBufferCapabilities == null) {
             throw new IllegalArgumentException();
+        }
 
         this.frontBufferCapabilities = frontBufferCapabilities;
         this.backBufferCapabilities = backBufferCapabilities;
         this.flipContents = flipContents;
     }
 
+    @Override
     public Object clone() {
         return new BufferCapabilities(frontBufferCapabilities, backBufferCapabilities, flipContents);
     }
@@ -77,10 +79,12 @@ public class BufferCapabilities implements Cloneable {
 
         }
 
+        @Override
         public int hashCode() {
             return super.hashCode();
         }
 
+        @Override
         public String toString() {
             return super.toString();
         }

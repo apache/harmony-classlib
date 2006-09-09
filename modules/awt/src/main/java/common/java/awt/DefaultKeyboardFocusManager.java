@@ -24,6 +24,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -45,19 +46,19 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
     public DefaultKeyboardFocusManager() {
         toolkit.lockAWT();
         try {
-            Set forSet = new HashSet();
+            Set<AWTKeyStroke> forSet = new HashSet<AWTKeyStroke>();
             forSet.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB, 0));
             forSet.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB,
                                                     InputEvent.CTRL_DOWN_MASK));
             setDefaultFocusTraversalKeys(FORWARD_TRAVERSAL_KEYS, forSet);
-            Set backSet= new HashSet();
+            Set<AWTKeyStroke> backSet= new HashSet<AWTKeyStroke>();
             backSet.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB,
                                                      InputEvent.SHIFT_DOWN_MASK));
             backSet.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB,
                                                      InputEvent.SHIFT_DOWN_MASK |
                                                      InputEvent.CTRL_DOWN_MASK));
             setDefaultFocusTraversalKeys(BACKWARD_TRAVERSAL_KEYS, backSet);
-            Set emptySet = java.util.Collections.EMPTY_SET;
+            Set<AWTKeyStroke> emptySet = Collections.emptySet();
             setDefaultFocusTraversalKeys(UP_CYCLE_TRAVERSAL_KEYS, emptySet);
             setDefaultFocusTraversalKeys(DOWN_CYCLE_TRAVERSAL_KEYS, emptySet);
         } finally {
@@ -65,6 +66,7 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
         }
     }
 
+    @Override
     protected void dequeueKeyEvents(long a0, Component a1) {
         toolkit.lockAWT();
         try {
@@ -75,6 +77,7 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
         }
     }
 
+    @Override
     protected void discardKeyEvents(Component a0) {
         toolkit.lockAWT();
         try {
@@ -85,6 +88,7 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
         }
     }
 
+    @Override
     public boolean dispatchEvent(AWTEvent e) {
         if (e instanceof KeyEvent) {
             KeyEvent ke = (KeyEvent) e;
@@ -102,7 +106,7 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
     private boolean preProcessKeyEvent(KeyEvent ke) {
         // first pass event to every key event dispatcher:
         if (keyEventDispatchers != null) {
-            Iterator it = keyEventDispatchers.getUserIterator();
+            Iterator<?> it = keyEventDispatchers.getUserIterator();
             while (it.hasNext()) {
                 KeyEventDispatcher ked = (KeyEventDispatcher)it.next();
                 if (ked.dispatchKeyEvent(ke)) {
@@ -357,6 +361,7 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
 
     }
 
+    @Override
     public boolean dispatchKeyEvent(KeyEvent e) {
         boolean doRedispatch = false;
         toolkit.lockAWT();
@@ -376,6 +381,7 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
         return true; // no further dispatching
     }
 
+    @Override
     public void downFocusCycle(Container aContainer) {
         toolkit.lockAWT();
         try {
@@ -387,6 +393,7 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
         }
     }
 
+    @Override
     protected void enqueueKeyEvents(long a0, Component a1) {
         toolkit.lockAWT();
         try {
@@ -397,6 +404,7 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
         }
     }
 
+    @Override
     public void focusNextComponent(Component aComponent) {
         toolkit.lockAWT();
         try {
@@ -408,6 +416,7 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
         }
     }
 
+    @Override
     public void focusPreviousComponent(Component aComponent) {
         toolkit.lockAWT();
         try {
@@ -419,10 +428,11 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
         }
     }
 
+    @Override
     public boolean postProcessKeyEvent(KeyEvent ke) {
         // pass event to every key event postprocessor:
         if (keyEventPostProcessors != null) {
-            Iterator it = keyEventPostProcessors.getUserIterator();
+            Iterator<?> it = keyEventPostProcessors.getUserIterator();
             while (it.hasNext()) {
                 KeyEventPostProcessor kep = (KeyEventPostProcessor) it.next();
                 if (kep.postProcessKeyEvent(ke)) {
@@ -452,6 +462,7 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
         }
     }
 
+    @Override
     public void processKeyEvent(Component focusedComponent, KeyEvent e) {
         toolkit.lockAWT();
         try {
@@ -461,10 +472,10 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
             Container container = ((focusedComponent instanceof Container) ?
                                    (Container)focusedComponent :
                                    null);
-            Set back = focusedComponent.getFocusTraversalKeys(BACKWARD_TRAVERSAL_KEYS);
-            Set forward = focusedComponent.getFocusTraversalKeys(FORWARD_TRAVERSAL_KEYS);
-            Set up = focusedComponent.getFocusTraversalKeys(UP_CYCLE_TRAVERSAL_KEYS);
-            Set down = (((container != null) && container.isFocusCycleRoot()) ?
+            Set<?> back = focusedComponent.getFocusTraversalKeys(BACKWARD_TRAVERSAL_KEYS);
+            Set<?> forward = focusedComponent.getFocusTraversalKeys(FORWARD_TRAVERSAL_KEYS);
+            Set<?> up = focusedComponent.getFocusTraversalKeys(UP_CYCLE_TRAVERSAL_KEYS);
+            Set<?> down = (((container != null) && container.isFocusCycleRoot()) ?
                         container.getFocusTraversalKeys(DOWN_CYCLE_TRAVERSAL_KEYS) :
                         null);
 
@@ -498,7 +509,7 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
      * (i. e. not of type KEY_TYPED) from sets contains a keystroke
      * with same code (or char) & modifiers as e
      */
-    private void consume(KeyEvent e, Set[] sets) {
+    private void consume(KeyEvent e, Set<?>[] sets) {
         int keyCode = e.getKeyCode();
         int mod = (e.getModifiersEx() | e.getModifiers());
         boolean codeDefined = (keyCode != KeyEvent.VK_UNDEFINED);
@@ -512,13 +523,10 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
             }
             return;
         }
-        for (int i = 0; i < sets.length; i++) {
-            Set s = sets[i];
+        for (Set<?> s : sets) {
             if (s != null) {
-                AWTKeyStroke[] keys =
-                    (AWTKeyStroke[])s.toArray(new AWTKeyStroke[0]);
-                for (int j = 0; j < keys.length; j++) {
-                    AWTKeyStroke key = keys[j];
+                AWTKeyStroke[] keys = s.toArray(new AWTKeyStroke[0]);
+                for (AWTKeyStroke key : keys) {
                     if ( (key.getKeyCode() == keyCode) &&
                          (key.getModifiers() == mod) ) {
                         e.consume();
@@ -537,6 +545,7 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
         consumeKeyTyped = false;
     }
 
+    @Override
     public void upFocusCycle(Component aComponent) {
         toolkit.lockAWT();
         try {

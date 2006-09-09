@@ -67,9 +67,9 @@ public abstract class AWTEvent extends EventObject {
 
     public static final int RESERVED_ID_MAX = 1999;
 
-    private static final Hashtable eventsMap = new Hashtable();
+    private static final Hashtable<Integer, EventDescriptor> eventsMap = new Hashtable<Integer, EventDescriptor>();
 
-    private static EventConverter converter = null;
+    private static EventConverter converter;
 
     protected int id;
 
@@ -183,6 +183,7 @@ public abstract class AWTEvent extends EventObject {
         source = newSource;
     }
 
+    @Override
     public String toString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:
@@ -265,9 +266,9 @@ public abstract class AWTEvent extends EventObject {
 
         final long eventMask;
 
-        final Class listenerType;
+        final Class<?> listenerType;
 
-        EventDescriptor(long eventMask, Class listenerType) {
+        EventDescriptor(long eventMask, Class<?> listenerType) {
             this.eventMask = eventMask;
             this.listenerType = listenerType;
         }
@@ -281,7 +282,7 @@ public abstract class AWTEvent extends EventObject {
             synchronized (this) {
                 if (event != lastEvent) {
                     lastEvent = event;
-                    lastEventDescriptor = (EventDescriptor) eventsMap.get(new Integer(event.id));
+                    lastEventDescriptor = eventsMap.get(new Integer(event.id));
                 }
 
                 return lastEventDescriptor;

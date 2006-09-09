@@ -44,6 +44,7 @@ public class Dimension extends Dimension2D implements Serializable {
         setSize(width, height);
     }
 
+    @Override
     public int hashCode() {
         HashCode hash = new HashCode();
         hash.append(width);
@@ -51,6 +52,7 @@ public class Dimension extends Dimension2D implements Serializable {
         return hash.hashCode();
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -62,6 +64,7 @@ public class Dimension extends Dimension2D implements Serializable {
         return false;
     }
 
+    @Override
     public String toString() {
         // The output format based on 1.5 release behaviour. It could be obtained in the following way
         // System.out.println(new Dimension().toString())
@@ -77,6 +80,7 @@ public class Dimension extends Dimension2D implements Serializable {
         setSize(d.width, d.height);
     }
 
+    @Override
     public void setSize(double width, double height) {
         setSize((int)Math.round(width), (int)Math.round(height));
     }
@@ -85,10 +89,12 @@ public class Dimension extends Dimension2D implements Serializable {
         return new Dimension(width, height);
     }
 
+    @Override
     public double getHeight() {
         return height;
     }
 
+    @Override
     public double getWidth() {
         return width;
     }

@@ -99,15 +99,17 @@ public abstract class GraphicsDevice {
     }
 
     public void setDisplayMode(DisplayMode dm) {
-        if (!isDisplayChangeSupported())
+        if (!isDisplayChangeSupported()) {
             throw new UnsupportedOperationException("Does not support display mode changes");
+        }
 
         DisplayMode []dms = getDisplayModes();
-        for (int i = 0; i < dms.length; i++)
-            if (dms[i].equals(dm)) {
+        for (DisplayMode element : dms) {
+            if (element.equals(dm)) {
                 displayMode = dm;
                 return;
             }
+        }
         throw new IllegalArgumentException("Unsupported display mode: "+dm);
     }
 

@@ -31,6 +31,7 @@ public class Panel extends Container implements Accessible {
 
         private static final long serialVersionUID = -6409552226660031050L;
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             toolkit.lockAWT();
             try {
@@ -60,6 +61,7 @@ public class Panel extends Container implements Accessible {
         }
     }
 
+    @Override
     public void addNotify() {
         toolkit.lockAWT();
         try {
@@ -69,6 +71,7 @@ public class Panel extends Container implements Accessible {
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         toolkit.lockAWT();
         try {
@@ -78,14 +81,17 @@ public class Panel extends Container implements Accessible {
         }
     }
 
+    @Override
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTPanel();
     }
 
+    @Override
     ComponentBehavior createBehavior() {
         return new HWBehavior(this);
     }
 
+    @Override
     String autoName() {
         return ("panel" + toolkit.autoNumber.nextPanel++);
     }

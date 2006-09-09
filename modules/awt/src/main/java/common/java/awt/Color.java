@@ -99,14 +99,14 @@ public class Color implements Paint, Serializable {
     /**
      * Float sRGB value.
      */
-    private float[] frgbvalue = null;
+    private float[] frgbvalue;
 
     /**
      * Color in an arbitrary color space
      * with <code>float</code> components.
      * If null, other value should be used.
      */
-    private float fvalue[] = null;
+    private float fvalue[];
 
     /**
      * Float alpha value. If frgbvalue is null, this is not valid data.
@@ -116,7 +116,7 @@ public class Color implements Paint, Serializable {
     /**
      * The color's color space if applicable.
      */
-    private ColorSpace cs = null;
+    private ColorSpace cs;
 
     /*
      * The value of the SCALE_FACTOR is based on 1.5 release behavior which
@@ -146,17 +146,15 @@ public class Color implements Paint, Serializable {
                 throw new IllegalArgumentException(
                         "Color parameter outside of expected range: " +
                         "component " + i + ".");
-            } else {
-                fvalue[i] = components[i];
             }
+            fvalue[i] = components[i];
         }
 
         if (alpha < 0.0f || alpha > 1.0f) {
             throw new IllegalArgumentException(
                     "Alpha value outside of expected range.");
-        } else {
-            falpha = alpha;
         }
+        falpha = alpha;
 
         cs = cspace;
 
@@ -177,35 +175,18 @@ public class Color implements Paint, Serializable {
     }
 
     public Color(int r, int g, int b, int a) {
-        if((r & 0xFF) != r ||
-                (g & 0xFF) != g ||
-                (b & 0xFF) != b ||
-                (a & 0xFF) != a) {
-            throw new IllegalArgumentException(
-                    "Color parameter outside of expected range.");
-        } else {
-            value =
-                    b         |
-                    (g << 8)  |
-                    (r << 16) |
-                    (a << 24);
+        if ((r & 0xFF) != r || (g & 0xFF) != g || (b & 0xFF) != b || (a & 0xFF) != a) {
+            throw new IllegalArgumentException("Color parameter outside of expected range.");
         }
+        value = b | (g << 8) | (r << 16) | (a << 24);
     }
 
     public Color(int r, int g, int b) {
-        if((r & 0xFF) != r ||
-                (g & 0xFF) != g ||
-                (b & 0xFF) != b )
-        {
-            throw new IllegalArgumentException(
-                    "Color parameter outside of expected range.");
-        } else {
-            value =
-                    b         |
-                    (g << 8)  |
-                    (r << 16) |
-                    0xFF000000; // 0xFF for alpha channel
+        if ((r & 0xFF) != r || (g & 0xFF) != g || (b & 0xFF) != b) {
+            throw new IllegalArgumentException("Color parameter outside of expected range.");
         }
+        // 0xFF for alpha channel
+        value = b | (g << 8) | (r << 16) | 0xFF000000;
     }
 
     public Color(int rgb) {
@@ -238,12 +219,12 @@ public class Color implements Paint, Serializable {
     ) {
         if(currentPaintContext != null) {
             return currentPaintContext;
-        } else {
-            currentPaintContext = new Color.ColorPaintContext(value);
         }
+        currentPaintContext = new Color.ColorPaintContext(value);
         return currentPaintContext;
     }
 
+    @Override
     public String toString() {
         /*
            The format of the string is based on 1.5 release behavior which
@@ -260,6 +241,7 @@ public class Color implements Paint, Serializable {
                 "]";
     }
 
+    @Override
     public boolean equals(Object obj) {
         if(obj instanceof Color) {
             return ((Color)obj).value == this.value;
@@ -269,8 +251,9 @@ public class Color implements Paint, Serializable {
 
     public float[] getComponents(ColorSpace colorSpace, float[] components) {
         int nComps = colorSpace.getNumComponents();
-        if(components == null)
+        if(components == null) {
             components = new float[nComps+1];
+        }
 
         getColorComponents(colorSpace, components);
 
@@ -287,8 +270,9 @@ public class Color implements Paint, Serializable {
         float[] cieXYZComponents = getColorSpace().toCIEXYZ(getColorComponents(null));
         float[] csComponents = colorSpace.fromCIEXYZ(cieXYZComponents);
 
-        if(components == null)
+        if(components == null) {
             return csComponents;
+        }
 
         for(int i=0; i<csComponents.length; i++) {
             components[i] = csComponents[i];
@@ -298,8 +282,9 @@ public class Color implements Paint, Serializable {
     }
 
     public ColorSpace getColorSpace() {
-        if (cs == null)
+        if (cs == null) {
             cs = ColorSpace.getInstance(ColorSpace.CS_sRGB);
+        }
 
         return cs;
     }
@@ -317,26 +302,27 @@ public class Color implements Paint, Serializable {
         int b = getBlue();
         int g = getGreen();
 
-        if(r == 0 && b == 0 && g == 0)
+        if(r == 0 && b == 0 && g == 0) {
             return new Color(MIN_SCALABLE, MIN_SCALABLE, MIN_SCALABLE);
+        }
 
-        if(r < MIN_SCALABLE && r != 0)
+        if(r < MIN_SCALABLE && r != 0) {
             r = MIN_SCALABLE;
-        else {
+        } else {
             r = (int) (r/SCALE_FACTOR);
             r = (r > 255) ? 255 : r;
         }
 
-        if(b < MIN_SCALABLE && b != 0)
+        if(b < MIN_SCALABLE && b != 0) {
             b = MIN_SCALABLE;
-        else {
+        } else {
             b = (int) (b/SCALE_FACTOR);
             b = (b > 255) ? 255 : b;
         }
 
-        if(g < MIN_SCALABLE && g != 0)
+        if(g < MIN_SCALABLE && g != 0) {
             g = MIN_SCALABLE;
-        else {
+        } else {
             g = (int) (g/SCALE_FACTOR);
             g = (g > 255) ? 255 : g;
         }
@@ -385,8 +371,9 @@ public class Color implements Paint, Serializable {
 
         int nColorComps = fvalue.length;
 
-        if(components == null)
+        if(components == null) {
             components = new float[nColorComps+1];
+        }
 
         getColorComponents(components);
 
@@ -400,8 +387,9 @@ public class Color implements Paint, Serializable {
             return getRGBColorComponents(components);
         }
 
-        if(components == null)
+        if(components == null) {
             components = new float[fvalue.length];
+        }
 
         for(int i=0; i<fvalue.length; i++) {
             components[i] = fvalue[i];
@@ -410,6 +398,7 @@ public class Color implements Paint, Serializable {
         return components;
     }
 
+    @Override
     public int hashCode() {
         return value;
     }
@@ -485,8 +474,9 @@ public class Color implements Paint, Serializable {
     }
 
     public static float[] RGBtoHSB(int r, int g, int b, float[] hsbvals) {
-        if(hsbvals == null)
+        if(hsbvals == null) {
             hsbvals = new float[3];
+        }
 
         int V = Math.max(b, Math.max(r, g));
         int temp = Math.min(b, Math.min(r, g));
@@ -495,25 +485,27 @@ public class Color implements Paint, Serializable {
 
         B = V/255.f;
 
-        if(V == temp)
+        if(V == temp) {
             H = S = 0;
-        else {
+        } else {
             S = (V - temp)/((float)V);
 
             float Cr = (V - r) / (float)(V - temp);
             float Cg = (V - g) / (float)(V - temp);
             float Cb = (V - b) / (float)(V - temp);
 
-            if (r == V)
+            if (r == V) {
                 H = Cb - Cg;
-            else if (g == V)
+            } else if (g == V) {
                 H = 2 + Cr - Cb;
-            else
+            } else {
                 H = 4 + Cg - Cr;
+            }
 
             H /= 6.f;
-            if(H < 0)
+            if(H < 0) {
                 H++;
+            }
         }
 
         hsbvals[0] = H;
@@ -526,9 +518,9 @@ public class Color implements Paint, Serializable {
     public static int HSBtoRGB(float hue, float saturation, float brightness) {
         float fr, fg, fb;
 
-        if(saturation == 0)
+        if(saturation == 0) {
             fr = fg = fb = brightness;
-        else {
+        } else {
             float H = (hue - (float)Math.floor(hue)) * 6;
             int I = (int) Math.floor(H);
             float F = H - I;

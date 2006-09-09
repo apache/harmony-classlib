@@ -19,6 +19,7 @@
  */
 package java.awt;
 
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -115,6 +116,7 @@ class ChoicePopupBox extends PopupBox {
             return focusedItem;
         }
 
+        @Override
         public Dimension getSize() {
             return ChoicePopupBox.this.getSize();
         }
@@ -201,6 +203,7 @@ class ChoicePopupBox extends PopupBox {
         style = choice.popupStyle;
         vAdj = new ScrollPaneAdjustable(choice, Adjustable.VERTICAL) {
             private static final long serialVersionUID = 2280561825998835980L;
+            @Override
             void repaintComponent(Rectangle r) {
                 if (isVisible()) {
                     repaint(r);
@@ -260,6 +263,7 @@ class ChoicePopupBox extends PopupBox {
     /**
      * Paints popup list and vertical scrollbar(if necessary)
      */
+    @Override
     void paint(Graphics g) {
         toolkit.theme.drawList(g, listState, true);
         if (scroll) {
@@ -354,6 +358,7 @@ class ChoicePopupBox extends PopupBox {
     }
 
 
+    @Override
     void onKeyEvent(int eventId, int vKey, long when, int modifiers) {
         if (eventId == KeyEvent.KEY_PRESSED) {
             switch (vKey) {
@@ -413,6 +418,7 @@ class ChoicePopupBox extends PopupBox {
     /**
      * Handles all mouse events on popup window
      */
+    @Override
     void onMouseEvent(int eventId, Point where, int mouseButton, long when,
                       int modifiers, int wheelRotation) {
 
@@ -432,7 +438,7 @@ class ChoicePopupBox extends PopupBox {
             break;
         case MouseEvent.MOUSE_DRAGGED:
             // scroll on mouse drag
-            if ((modifiers & MouseEvent.BUTTON1_DOWN_MASK) != 0) {
+            if ((modifiers & InputEvent.BUTTON1_DOWN_MASK) != 0) {
                 dragScroll(y);
             }
         case MouseEvent.MOUSE_MOVED:
@@ -528,6 +534,7 @@ class ChoicePopupBox extends PopupBox {
         repaint(null);
     }
 
+    @Override
     boolean closeOnUngrab(Point start, Point end) {
         if (!getBounds().contains(end)) {
             // close on mouse ungrab only
@@ -539,6 +546,7 @@ class ChoicePopupBox extends PopupBox {
     }
 
 
+    @Override
     void hide() {
         // stop timer before closing:
         if (scroll && dragScrollTimer.isRunning()) {

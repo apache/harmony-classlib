@@ -37,7 +37,7 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
 
     private static final long serialVersionUID = -8809584163345499784L;
     final static int LAST_ELEMENT = Integer.MAX_VALUE;
-    private final ArrayList menuItems = new ArrayList();
+    private final ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
     private final Point location = new Point();
     private final Dimension size = new Dimension();
 
@@ -48,6 +48,7 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
 
         private static final long serialVersionUID = 5228160894980069094L;
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.MENU;
         }
@@ -58,27 +59,35 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
      * The internal menu's state utilized by the visual theme
      */
     final class State extends MenuComponent.State implements MenuState {
+        @Override
         public int getWidth() {
             return Menu.this.getWidth();
         }
+        @Override
         public int getHeight() {
             return Menu.this.getHeight();
         }
+        @Override
         public Font getFont() {
             return Menu.this.getFont();
         }
+        @Override
         public int getItemCount() {
             return Menu.this.getItemCount();
         }
+        @Override
         public int getSelectedItemIndex() {
             return Menu.this.getSelectedItemIndex();
         }
+        @Override
         public boolean isFontSet() {
             return Menu.this.isFontSet();
         }
+        @Override
         public FontMetrics getFontMetrics(Font f) {
             return Menu.this.toolkit.getFontMetrics(f);
         }
+        @Override
         public Point getLocation() {
             return Menu.this.location;
         }
@@ -156,7 +165,7 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
     }
 
     void removeImpl(int index) {
-        MenuComponent item = (MenuComponent)menuItems.remove(index);
+        MenuComponent item = menuItems.remove(index);
         item.setParent(null);
     }
 
@@ -209,6 +218,7 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
         }
     }
 
+    @Override
     public String paramString() {
         toolkit.lockAWT();
         try {
@@ -218,15 +228,17 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
         }
     }
 
+    @Override
     public MenuItem getItem(int index) {
         toolkit.lockAWT();
         try {
-            return (MenuItem)menuItems.get(index);
+            return menuItems.get(index);
         } finally {
             toolkit.unlockAWT();
         }
     }
 
+    @Override
     public void addNotify() {
         toolkit.lockAWT();
         try {
@@ -237,6 +249,7 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         toolkit.lockAWT();
         try {
@@ -246,6 +259,7 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
         }
     }
 
+    @Override
     public void removeNotify() {
         toolkit.lockAWT();
         try {
@@ -267,6 +281,7 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
         }
     }
 
+    @Override
     public int getItemCount() {
         toolkit.lockAWT();
         try {
@@ -298,6 +313,7 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
         return tearOff;
     }
 
+    @Override
     Point getLocation() {
         return location;
     }
@@ -306,14 +322,17 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
         return size;
     }
 
+    @Override
     int getWidth() {
         return size.width;
     }
 
+    @Override
     int getHeight() {
         return size.height;
     }
 
+    @Override
     void paint(Graphics gr) {
         toolkit.theme.drawMenu(menuState, gr);
     }
@@ -359,6 +378,7 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
         return null;
     }
 
+    @Override
     void hide() {
         super.hide();
         for (int i = 0; i < getItemCount(); i++) {
@@ -368,14 +388,17 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
         popupBox.hide();
     }
 
+    @Override
     boolean isVisible() {
         return popupBox.isVisible();
     }
 
+    @Override
     PopupBox getPopupBox() {
         return popupBox;
     }
 
+    @Override
     void onMouseEvent(int eventId, Point where, int mouseButton, long when, int modifiers) {
         if (eventId == MouseEvent.MOUSE_PRESSED ||
                 eventId == MouseEvent.MOUSE_MOVED ||
@@ -399,6 +422,7 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
         }
     }
 
+    @Override
     void onKeyEvent(int eventId, int vKey, long when, int modifiers) {
         if (eventId != KeyEvent.KEY_PRESSED) {
             return;
@@ -444,29 +468,34 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
         }
     }
 
+    @Override
     void itemSelected(long when, int modifiers) {
         // do nothing
     }
 
+    @Override
     Rectangle getItemRect(int index) {
         return menuState.getItem(index).getItemBounds();
     }
 
+    @Override
     Point getSubmenuLocation(int index) {
         return toolkit.theme.getMenuItemLocation(menuState, index);
     }
 
+    @Override
     Graphics getGraphics(MultiRectArea clip) {
         return popupBox.getGraphics(clip);
     }
 
+    @Override
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTMenu();
     }
 
-    void collectShortcuts(HashSet shortcuts) {
+    void collectShortcuts(HashSet<MenuShortcut> shortcuts) {
         for (int i=0; i<menuItems.size(); i++) {
-            MenuItem item = (MenuItem)menuItems.get(i);
+            MenuItem item = menuItems.get(i);
             if (item instanceof Menu) {
                 ((Menu)item).collectShortcuts(shortcuts);
             } else {

@@ -21,6 +21,7 @@ package java.awt;
 
 import java.awt.event.ComponentEvent;
 import java.awt.event.FocusEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.PaintEvent;
@@ -251,7 +252,7 @@ class Dispatcher {
                 if (focusProxyOwner == null) {
                     return false;
                 }
-                src = KeyboardFocusManager.getCurrentKeyboardFocusManager().actualFocusOwner;
+                src = KeyboardFocusManager.actualFocusOwner;
             }
 
             EventQueue eventQueue = toolkit.getSystemEventQueueImpl();
@@ -426,11 +427,11 @@ class Dispatcher {
                     syntheticGrabOwner = lastSyntheticGrabOwner;
                     syntheticGrabDepth = 0;
                     int mask = event.getInputModifiers();
-                    syntheticGrabDepth += (mask & MouseEvent.BUTTON1_DOWN_MASK) != 0 ? 1
+                    syntheticGrabDepth += (mask & InputEvent.BUTTON1_DOWN_MASK) != 0 ? 1
                             : 0;
-                    syntheticGrabDepth += (mask & MouseEvent.BUTTON2_DOWN_MASK) != 0 ? 1
+                    syntheticGrabDepth += (mask & InputEvent.BUTTON2_DOWN_MASK) != 0 ? 1
                             : 0;
-                    syntheticGrabDepth += (mask & MouseEvent.BUTTON3_DOWN_MASK) != 0 ? 1
+                    syntheticGrabDepth += (mask & InputEvent.BUTTON3_DOWN_MASK) != 0 ? 1
                             : 0;
                 }
             }

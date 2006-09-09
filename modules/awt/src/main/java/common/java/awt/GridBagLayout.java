@@ -48,8 +48,8 @@ public class GridBagLayout implements LayoutManager2, Serializable {
 
     private final Toolkit toolkit = Toolkit.getDefaultToolkit();
 
-    // Direct modification is forbiden
-    protected volatile Hashtable comptable;
+    // Direct modification is forbidden
+    protected volatile Hashtable<Component, GridBagConstraints> comptable;
     protected volatile GridBagConstraints defaultConstraints;
     protected volatile GridBagLayoutInfo layoutInfo;
 
@@ -63,7 +63,7 @@ public class GridBagLayout implements LayoutManager2, Serializable {
     public GridBagLayout() {
         toolkit.lockAWT();
         try {
-            comptable = new Hashtable();
+            comptable = new Hashtable<Component, GridBagConstraints>();
             defaultConstraints = new GridBagConstraints();
 
             columnWeights = rowWeights = null;
@@ -75,6 +75,7 @@ public class GridBagLayout implements LayoutManager2, Serializable {
         }
     }
 
+    @Override
     public String toString() {
         toolkit.lockAWT();
         try {
@@ -149,11 +150,11 @@ public class GridBagLayout implements LayoutManager2, Serializable {
     public GridBagConstraints getConstraints(Component comp) {
         toolkit.lockAWT();
         try {
-            GridBagConstraints cons = (GridBagConstraints) comptable.get(comp);
+            GridBagConstraints cons = comptable.get(comp);
 
             if (cons == null) {
                 cons = defaultConstraints;
-                comptable.put(comp, cons.clone());
+                comptable.put(comp, (GridBagConstraints)cons.clone());
             }
 
             return (GridBagConstraints) cons.clone();
@@ -178,7 +179,7 @@ public class GridBagLayout implements LayoutManager2, Serializable {
 
             ParentInfo info = getParentInfo(comp.getParent());
             if (info != null) {
-                GridBagConstraints cons = (GridBagConstraints) comptable.get(comp);
+                GridBagConstraints cons = comptable.get(comp);
                 info.allConstraints.remove(info.consTable.get(cons)); //?
                 info.consTable.remove(cons);
             }
@@ -369,10 +370,11 @@ public class GridBagLayout implements LayoutManager2, Serializable {
             if (sizeflag == PREFERREDSIZE) {
                 return new GridBagLayoutInfo(parentInfo.grid.lookupPrefWidths(),
                         parentInfo.grid.lookupPrefHeights());
-            } else { //MINSIZE
-                return new GridBagLayoutInfo(parentInfo.grid.lookupMinWidths(),
-                        parentInfo.grid.lookupMinHeights());
-            }
+            } 
+            // MINSIZE
+            return new GridBagLayoutInfo(parentInfo.grid.lookupMinWidths(), parentInfo.grid
+                    .lookupMinHeights());
+            
         } finally {
             toolkit.unlockAWT();
         }
@@ -401,7 +403,7 @@ public class GridBagLayout implements LayoutManager2, Serializable {
         toolkit.lockAWT();
         try {
             assert comp != null : "LookupConstraints: attempt to get constraints of null component";
-            GridBagConstraints cons = (GridBagConstraints) comptable.get(comp);
+            GridBagConstraints cons = comptable.get(comp);
 
             if (cons == null) {
                 // if comp is not in the layout, return a copy of default constraints
@@ -557,18 +559,17 @@ public class GridBagLayout implements LayoutManager2, Serializable {
             }
 
             return s;
-        } else {
-            float insetFactor = (float) (dispLength - compLength)
-                    / (float) (compSide.start_inset + compSide.end_inset);
-
-            return (dispStart + (int) (compSide.start_inset * insetFactor));
         }
+        float insetFactor = (float) (dispLength - compLength)
+                / (float) (compSide.start_inset + compSide.end_inset);
+
+        return (dispStart + (int) (compSide.start_inset * insetFactor));
     }
 
     private void initHorCompSide(ComponentSide side, GridBagConstraints cons,
             Dimension minSize, Dimension prefSize, ParentInfo info)
     {
-        MixedConstraints mixCons = (MixedConstraints) info.consTable.get(cons);
+        MixedConstraints mixCons = info.consTable.get(cons);
 
         side.gridStart = mixCons.mapped.x;
         side.gridLength = mixCons.mapped.width;
@@ -604,7 +605,7 @@ public class GridBagLayout implements LayoutManager2, Serializable {
     private void initVertCompSide(ComponentSide side, GridBagConstraints cons,
             Dimension minSize, Dimension prefSize, ParentInfo info)
     {
-        MixedConstraints mixCons = (MixedConstraints) info.consTable.get(cons);
+        MixedConstraints mixCons = info.consTable.get(cons);
 
         side.gridStart = mixCons.mapped.y;
         side.gridLength = mixCons.mapped.height;
@@ -696,10 +697,10 @@ public class GridBagLayout implements LayoutManager2, Serializable {
             Component comp = info.components[i];
 
             info.horCompSides[i] = new ComponentSide();
-            initHorCompSide(info.horCompSides[i], (GridBagConstraints) comptable.get(comp),
+            initHorCompSide(info.horCompSides[i], comptable.get(comp),
                     comp.getMinimumSize(), comp.getPreferredSize(), info);
             info.vertCompSides[i] = new ComponentSide();
-            initVertCompSide(info.vertCompSides[i], (GridBagConstraints) comptable.get(comp),
+            initVertCompSide(info.vertCompSides[i], comptable.get(comp),
                     comp.getMinimumSize(), comp.getPreferredSize(), info);
         }
     }
@@ -709,10 +710,10 @@ public class GridBagLayout implements LayoutManager2, Serializable {
         int maxH = 0;
         int i = 0;
 
-        for (Enumeration keys = comptable.keys(); keys.hasMoreElements();) {
-            Component comp = (Component) keys.nextElement();
+        for (Enumeration<Component> keys = comptable.keys(); keys.hasMoreElements();) {
+            Component comp = keys.nextElement();
 
-            GridBagConstraints cons = (GridBagConstraints) comptable.get(comp);
+            GridBagConstraints cons = comptable.get(comp);
 
             if ((comp.getParent() == parent) && comp.isVisible()) {
                 components[i++] = comp;
@@ -732,8 +733,8 @@ public class GridBagLayout implements LayoutManager2, Serializable {
     private int getComponentsNumber(Container parent) {
         int componentsNumber = 0;
 
-        for (Enumeration keys = comptable.keys(); keys.hasMoreElements();) {
-            Component comp = (Component) keys.nextElement();
+        for (Enumeration<Component> keys = comptable.keys(); keys.hasMoreElements();) {
+            Component comp = keys.nextElement();
 
             if ((comp.getParent() == parent) && comp.isVisible()) {
                 componentsNumber++;
@@ -770,8 +771,8 @@ public class GridBagLayout implements LayoutManager2, Serializable {
 
     private void updateParentInfo(Container parent) {
         Component[] comps = parent.getComponents();
-        for (int i = 0; i < comps.length; i++) {
-            GridBagConstraints gbc = (GridBagConstraints) comptable.get(comps[i]);
+        for (Component element : comps) {
+            GridBagConstraints gbc = comptable.get(element);
             updateParentInfo(parent, gbc);
         }
 
@@ -787,8 +788,6 @@ public class GridBagLayout implements LayoutManager2, Serializable {
         private boolean relHComp;
         private int relEndY;
         private int relEndX;
-        private int curYBackup;
-
         public RelativeTranslator(int maxW, int maxH) {
             this.maxW = maxW;
             this.maxH = maxH;
@@ -798,7 +797,6 @@ public class GridBagLayout implements LayoutManager2, Serializable {
             relHComp = false;
             relEndY = 0;
             relEndX = 0;
-            curYBackup = -1;
         }
 
         public void translate(ParentInfo info) {
@@ -807,10 +805,10 @@ public class GridBagLayout implements LayoutManager2, Serializable {
             applyOrientation(info);
         }
 
-        private void spreadComponents(ArrayList allConstraints) {
+        private void spreadComponents(ArrayList<MixedConstraints> allConstraints) {
             for (int i = 0; i < allConstraints.size(); i++) {
                 MixedConstraints mixCons =
-                    (MixedConstraints) allConstraints.get(i);
+                    allConstraints.get(i);
 
                 assert !((relWComp && (mixCons.initial.width != GridBagConstraints.REMAINDER))
                         || (relHComp && (mixCons.initial.height != GridBagConstraints.REMAINDER)))
@@ -833,7 +831,7 @@ public class GridBagLayout implements LayoutManager2, Serializable {
             if (!info.orientation.isLeftToRight()) {
                 for (int i = 0; i < info.allConstraints.size(); i++) {
                     MixedConstraints mixCons =
-                            (MixedConstraints) info.allConstraints.get(i);
+                            info.allConstraints.get(i);
 
                     if (mixCons.relative) {
                         mixCons.mapped.x = maxW - mixCons.mapped.x
@@ -843,19 +841,17 @@ public class GridBagLayout implements LayoutManager2, Serializable {
             }
         }
 
-        private int translateVert(MixedConstraints mixCons, int i, ArrayList allConstraints) {
+        private int translateVert(MixedConstraints mixCons, int i, ArrayList<MixedConstraints> allConstraints) {
             int endY;
 
             if (mixCons.initial.y != GridBagConstraints.RELATIVE) {
-                curYBackup = curY;
                 curY = mixCons.initial.y;
             }
             mixCons.mapped.y = curY;
             mixCons.mapped.height = Math.max(mixCons.initial.height, 1);
             if (mixCons.initial.height == GridBagConstraints.REMAINDER) {
                 if (relHComp) {
-                    mixCons.mapped.y = ((MixedConstraints)
-                            allConstraints.get(i - 1)).mapped.y + 1;
+                    mixCons.mapped.y = allConstraints.get(i - 1).mapped.y + 1;
                     relHComp = false;
                 }
                 endY = MAXGRIDSIZE;
@@ -885,8 +881,9 @@ public class GridBagLayout implements LayoutManager2, Serializable {
                     if (trueCurY == MAXGRIDSIZE) {
                         throw new RuntimeException("component is out of grid's range");
                     }
-                    if (curX[trueCurY] <= mixCons.initial.x)
+                    if (curX[trueCurY] <= mixCons.initial.x) {
                         break;
+                    }
                 }
                 mixCons.mapped.y = trueCurY;
                 mixCons.mapped.x = mixCons.initial.x;
@@ -927,9 +924,9 @@ public class GridBagLayout implements LayoutManager2, Serializable {
 //            }
         }
 
-        private void recalculateRemainders(ArrayList allConstraints) {
+        private void recalculateRemainders(ArrayList<MixedConstraints> allConstraints) {
             for (int i = 0; i < allConstraints.size(); i++) {
-                MixedConstraints mixCons = (MixedConstraints) allConstraints.get(i);
+                MixedConstraints mixCons = allConstraints.get(i);
 
                 if (mixCons.initial.width == GridBagConstraints.REMAINDER) {
                     mixCons.mapped.width = maxW - mixCons.mapped.x;
@@ -938,7 +935,7 @@ public class GridBagLayout implements LayoutManager2, Serializable {
                     if (reserve > 0) {
                         mixCons.mapped.width += reserve;
                         if ((i + 1) < allConstraints.size()) {
-                            ((MixedConstraints) allConstraints.get(i + 1)).mapped.x += reserve;
+                            allConstraints.get(i + 1).mapped.x += reserve;
                         }
                     }
                 }
@@ -949,7 +946,7 @@ public class GridBagLayout implements LayoutManager2, Serializable {
                     int reserve = maxH - mixCons.mapped.y - 2;
                     mixCons.mapped.height += reserve;
                     if ((i + 1) < allConstraints.size()) {
-                        ((MixedConstraints) allConstraints.get(i + 1)).mapped.y +=
+                        allConstraints.get(i + 1).mapped.y +=
                             reserve;
                     }
                 }
@@ -1228,25 +1225,25 @@ public class GridBagLayout implements LayoutManager2, Serializable {
             }
 
             private void spreadComponents(ComponentSide compSides[]) {
-                for (int i = 0; i < compSides.length; i++) {
-                    if (compSides[i].gridLength == 1) {
-                        int insets = compSides[i].start_inset
-                                + compSides[i].end_inset;
+                for (ComponentSide element : compSides) {
+                    if (element.gridLength == 1) {
+                        int insets = element.start_inset
+                                + element.end_inset;
 
-                        spreadUnicellularComponent(compSides[i].gridStart,
-                                compSides[i].minLength + insets, compSides[i].prefLength + insets,
-                                compSides[i].weight);
+                        spreadUnicellularComponent(element.gridStart,
+                                element.minLength + insets, element.prefLength + insets,
+                                element.weight);
                     }
                 }
 
-                for (int i = 0; i < compSides.length; i++) {
-                    if (compSides[i].gridLength > 1) {
-                        int insets = compSides[i].start_inset
-                                + compSides[i].end_inset;
+                for (ComponentSide element : compSides) {
+                    if (element.gridLength > 1) {
+                        int insets = element.start_inset
+                                + element.end_inset;
 
-                        spreadMulticellularComponent(compSides[i].gridStart, compSides[i].gridLength,
-                                compSides[i].minLength + insets, compSides[i].prefLength + insets,
-                                compSides[i].weight);
+                        spreadMulticellularComponent(element.gridStart, element.gridLength,
+                                element.minLength + insets, element.prefLength + insets,
+                                element.weight);
                     }
                 }
             }
@@ -1365,24 +1362,6 @@ public class GridBagLayout implements LayoutManager2, Serializable {
                 }
             }
 
-            private void divideExtraLength(Segment clientSide) {
-                int extraL = prefLength - clientSide.length;
-                int sharedExtraL = 0;
-                int accumL = 0;
-
-                for (int i = 0; i < MAXGRIDSIZE; i++) {
-                    if (weights[i] > 0.) {
-                        accumL += prefLengths[i];
-                        int curExtraL = (int) (extraL * ((float) accumL / (float) (prefLength - weightlessPrefLength)))
-                                - sharedExtraL;
-                        lengths[i] = prefLengths[i] - curExtraL;
-                        sharedExtraL += curExtraL;
-                    } else {
-                        lengths[i] = prefLengths[i];
-                    }
-                }
-            }
-
             private int centerSide(Segment clientSide) {
                 for (int i = 0; i < MAXGRIDSIZE; i++) {
                     lengths[i] = prefLengths[i];
@@ -1410,27 +1389,6 @@ public class GridBagLayout implements LayoutManager2, Serializable {
                             lengths[i] = minL - sharedL;
                             sharedL = 0;
                         }
-                    }
-                }
-            }
-
-            private void divideSufficientLength(Segment clientSide) {
-                int sharedL = 0;
-                int accumMinL = 0;
-                int accumPrefL = 0;
-
-                for (int i = 0; i < MAXGRIDSIZE; i++) {
-                    if (weights[i] > 0.) {
-                        lengths[i] = 0;
-                    } else {
-                        accumMinL += minLengths[i];
-                        accumPrefL += prefLengths[i];
-                        int curL = accumMinL
-                                + (int) ((clientSide.length - weightlessMinLength) *
-                                    ((float) (accumPrefL - accumMinL) / (float) (weightlessPrefLength - weightlessMinLength)))
-                                - sharedL;
-                        lengths[i] = curL;
-                        sharedL += curL;
                     }
                 }
             }
@@ -1477,8 +1435,8 @@ public class GridBagLayout implements LayoutManager2, Serializable {
 
     private class ParentInfo {
 
-        final HashMap consTable;            // Components' constraints to relative constraints
-        final ArrayList allConstraints;     // Only mapped rectangle is a part of cache
+        final HashMap<GridBagConstraints, MixedConstraints> consTable;            // Components' constraints to relative constraints
+        final ArrayList<MixedConstraints> allConstraints;     // Only mapped rectangle is a part of cache
 
         final Grid grid;
 
@@ -1492,8 +1450,8 @@ public class GridBagLayout implements LayoutManager2, Serializable {
 
         ParentInfo() {
             valid = false;
-            consTable = new HashMap();
-            allConstraints = new ArrayList();
+            consTable = new HashMap<GridBagConstraints, MixedConstraints>();
+            allConstraints = new ArrayList<MixedConstraints>();
             grid = new Grid();
             orientation = ComponentOrientation.LEFT_TO_RIGHT;
             horCompSides = vertCompSides = null;

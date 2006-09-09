@@ -101,6 +101,7 @@ public abstract class Graphics {
         fillPolygon(p.xpoints, p.ypoints, p.npoints);
     }
 
+    @Override
     public void finalize() {
     }
 
@@ -122,6 +123,7 @@ public abstract class Graphics {
     /**
      * @deprecated Use {@link #getClipBounds()}
      */
+    @Deprecated
     public Rectangle getClipRect() {
         return getClipBounds();
     }
@@ -135,6 +137,7 @@ public abstract class Graphics {
         return getClipBounds().intersects(new Rectangle(x, y, width, height));
     }
 
+    @Override
     public String toString() {
         // TODO: Think about string representation of Graphics.
         return "Graphics";

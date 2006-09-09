@@ -20,6 +20,8 @@
 package java.awt;
 
 
+import java.util.Set;
+
 import junit.framework.TestCase;
 
 
@@ -29,7 +31,7 @@ public class ContainerRTest extends TestCase {
     public final void testSetFocusTraversalKeys() {
         try {
         Button btn = new Button();
-        btn.setFocusTraversalKeys(KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS, new Container().getFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS));
+        btn.setFocusTraversalKeys(KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS, (Set<AWTKeyStroke>)new Container().getFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS));
         fail("IllegalArgumentException expected");
     }catch (IllegalArgumentException e) {
     }

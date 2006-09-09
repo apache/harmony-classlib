@@ -38,7 +38,7 @@ import org.apache.harmony.awt.wtk.NativeWindow;
 public class MenuBar extends MenuComponent implements MenuContainer, Accessible {
 
     private static final long serialVersionUID = -4930327919388951260L;
-    private final ArrayList menuList;
+    private final ArrayList<Menu> menuList;
     private Menu helpMenu; // one of the list items
     private boolean unfolded;
 
@@ -49,6 +49,7 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
 
         private static final long serialVersionUID = -8577604491830083815L;
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.MENU_BAR;
         }
@@ -67,6 +68,7 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
             return MenuBar.this.getScreenLocation();
         }
 
+        @Override
         void calculate() {
             Frame f = getFrame();
             Insets ins = f.getNativeInsets();
@@ -74,6 +76,7 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
             toolkit.theme.layoutMenuBar(this, width);
         }
 
+        @Override
         void reset() {
             super.reset();
         }
@@ -86,6 +89,7 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
      */
     private final class MenuBarBox extends MenuComponent.MenuPopupBox {
 
+        @Override
         boolean isMenuBar() {
             return true;
         }
@@ -94,24 +98,29 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
             return toolkit.dispatcher.popupDispatcher.isActive(this);
         }
 
+        @Override
         Dimension getSize() {
             size.setSize(menuBarState.getSize());
             return size;
         }
 
+        @Override
         Point getLocation () {
             location.setLocation(MenuBar.this.getLocation());
             return location;
         }
 
+        @Override
         Point getScreenLocation() {
             return MenuBar.this.getScreenLocation();
         }
 
+        @Override
         void paint(Graphics gr) {
             MenuBar.this.paint(gr);
         }
 
+        @Override
         Rectangle calculateBounds() {
             Dimension size = MenuBar.this.menuBarState.getSize();
             Point location = MenuBar.this.getLocation();
@@ -122,6 +131,7 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
             show((Frame)MenuBar.this.getParent());
         }
 
+        @Override
         void hide() {
             selectItem(-1);
             toolkit.dispatcher.popupDispatcher.deactivate(this);
@@ -147,7 +157,7 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
     public MenuBar() throws HeadlessException {
         toolkit.lockAWT();
         try {
-            menuList = new ArrayList();
+            menuList = new ArrayList<Menu>();
         } finally {
             toolkit.unlockAWT();
         }
@@ -190,7 +200,7 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
     public void remove(int index) {
         toolkit.lockAWT();
         try {
-            Menu menu = (Menu)menuList.get(index);
+            Menu menu = menuList.get(index);
             remove(menu);
         } finally {
             toolkit.unlockAWT();
@@ -207,6 +217,7 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         toolkit.lockAWT();
         try {
@@ -216,6 +227,7 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
         }
     }
 
+    @Override
     public void removeNotify() {
         toolkit.lockAWT();
         try {
@@ -246,10 +258,10 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
         }
     }
 
-    public Enumeration shortcuts() {
+    public Enumeration<MenuShortcut> shortcuts() {
         toolkit.lockAWT();
         try {
-            HashSet shortcuts = new HashSet();
+            HashSet<MenuShortcut> shortcuts = new HashSet<MenuShortcut>();
             collectShortcuts(shortcuts);
             return Collections.enumeration(shortcuts);
         } finally {
@@ -278,7 +290,7 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
     public Menu getMenu(int index) {
         toolkit.lockAWT();
         try {
-            return (Menu)menuList.get(index);
+            return menuList.get(index);
         } finally {
             toolkit.unlockAWT();
         }
@@ -309,6 +321,7 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
         }
     }
 
+    @Override
     boolean hasDefaultFont() {
         return true;
     }
@@ -323,22 +336,27 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
         f.validate();
     }
 
+    @Override
     MenuItem getItem(int index) {
-        return (MenuItem)menuList.get(index);
+        return menuList.get(index);
     }
 
+    @Override
     int getItemCount() {
         return menuList.size();
     }
 
+    @Override
     int getWidth() {
         return menuBarState.getWidth();
     }
 
+    @Override
     int getHeight() {
         return menuBarState.getHeight();
     }
 
+    @Override
     Point getLocation() {
         Frame f = (Frame)getParent();
         if (f == null) {
@@ -357,14 +375,17 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
         return new Point(f.x + ins.left, f.y + ins.top);
     }
 
+    @Override
     void paint(Graphics gr) {
         toolkit.theme.drawMenuBar(menuBarState, gr);
     }
 
+    @Override
     Rectangle getItemRect(int index) {
         return menuBarState.getItem(index).getItemBounds();
     }
 
+    @Override
     final void onMouseEvent(int eventId, Point where, int mouseButton, long when, int modifiers) {
         int index = toolkit.theme.getMenuBarItemIndex(menuBarState, where);
 
@@ -395,6 +416,7 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
         }
     }
 
+    @Override
     void onKeyEvent(int eventId, int vKey, long when, int modifiers) {
         if (eventId != KeyEvent.KEY_PRESSED) {
             return;
@@ -425,25 +447,31 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
         }
     }
 
+    @Override
     boolean isActive() {
         return box.isActive();
     }
 
+    @Override
     MenuBar getMenuBar() {
         return this;
     }
 
+    @Override
     PopupBox getPopupBox() {
         return box;
     }
 
+    @Override
     void hide() {
         // do nothing
     }
 
+    @Override
     void itemHidden(MenuComponent mc) {
         unfolded = false;
     }
+    @Override
     Point getSubmenuLocation(int index) {
         return toolkit.theme.getMenuBarItemLocation(menuBarState, index);
     }
@@ -452,11 +480,13 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
         super.selectNextItem(forward, unfolded);
     }
 
+    @Override
     void selectItem(int index) {
         unfolded = (index >= 0);
         super.selectItem(index, true);
     }
 
+    @Override
     void showSubMenu(int index) {
         unfolded = (index >= 0);
         super.showSubMenu(index);
@@ -467,10 +497,12 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
         box.updateBounds();
     }
 
+    @Override
     Graphics getGraphics(MultiRectArea clip) {
         return box.getGraphics(clip);
     }
 
+    @Override
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTMenuBar();
     }
@@ -484,9 +516,9 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
         }
     }
 
-    void collectShortcuts(HashSet shortcuts) {
+    void collectShortcuts(HashSet<MenuShortcut> shortcuts) {
         for (int i=0; i<menuList.size(); i++) {
-            ((Menu)menuList.get(i)).collectShortcuts(shortcuts);
+            menuList.get(i).collectShortcuts(shortcuts);
         }
     }
 }

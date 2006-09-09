@@ -30,6 +30,7 @@ public class Canvas extends Component implements Accessible {
     protected class AccessibleAWTCanvas extends AccessibleAWTComponent {
         private static final long serialVersionUID = -6325592262103146699L;
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.CANVAS;
         }
@@ -52,6 +53,7 @@ public class Canvas extends Component implements Accessible {
         }
     }
 
+    @Override
     public void update(Graphics g) {
         toolkit.lockAWT();
         try {
@@ -61,6 +63,7 @@ public class Canvas extends Component implements Accessible {
         }
     }
 
+    @Override
     public void addNotify() {
         toolkit.lockAWT();
         try {
@@ -76,7 +79,9 @@ public class Canvas extends Component implements Accessible {
         } finally {
             toolkit.unlockAWT();
         }
-        if (true) throw new RuntimeException("Method is not implemented"); //TODO: implement
+        if (true) {
+            throw new RuntimeException("Method is not implemented"); //TODO: implement
+        }
         return;
     }
 
@@ -86,10 +91,13 @@ public class Canvas extends Component implements Accessible {
         } finally {
             toolkit.unlockAWT();
         }
-        if (true) throw new RuntimeException("Method is not implemented"); //TODO: implement
+        if (true) {
+            throw new RuntimeException("Method is not implemented"); //TODO: implement
+        }
         return;
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         return super.getAccessibleContext();
     }
@@ -100,10 +108,13 @@ public class Canvas extends Component implements Accessible {
         } finally {
             toolkit.unlockAWT();
         }
-        if (true) throw new RuntimeException("Method is not implemented"); //TODO: implement
+        if (true) {
+            throw new RuntimeException("Method is not implemented"); //TODO: implement
+        }
         return null;
     }
 
+    @Override
     public void paint(Graphics g) {
         toolkit.lockAWT();
         try {
@@ -113,14 +124,17 @@ public class Canvas extends Component implements Accessible {
         }
     }
 
+    @Override
     ComponentBehavior createBehavior() {
         return new HWBehavior(this);
     }
 
+    @Override
     String autoName() {
         return ("canvas" + toolkit.autoNumber.nextCanvas++);
     }
 
+    @Override
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTCanvas();
     }

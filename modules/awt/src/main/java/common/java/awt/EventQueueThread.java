@@ -40,6 +40,7 @@ final class EventQueueThread extends Thread {
         setDaemon(false);
     }
 
+    @Override
     public void run() {
         while (!core.isEmpty(1000)) {
             try {

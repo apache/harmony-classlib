@@ -24,7 +24,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.InputMethodEvent;
 import java.awt.event.InvocationEvent;
 import java.awt.event.MouseEvent;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -32,8 +31,8 @@ import java.util.LinkedList;
  */
 final class EventQueueCore {
     
-    private final LinkedList queueStack = new LinkedList();
-    private final LinkedList events = new LinkedList();
+    private final LinkedList<EventQueue> queueStack = new LinkedList<EventQueue>();
+    private final LinkedList<AWTEvent> events = new LinkedList<AWTEvent>();
     
     private Toolkit toolkit;
     private EventQueue activeQueue;
@@ -102,19 +101,17 @@ final class EventQueueCore {
         while (events.isEmpty()) {
             wait();
         }
-        AWTEvent event = (AWTEvent)events.removeFirst();
+        AWTEvent event = events.removeFirst();
         // TODO: add event coalescing
         return event;
     }    
     
     synchronized AWTEvent peekEvent() {
-        return events.isEmpty() ? null : (AWTEvent)events.getFirst();
+        return events.isEmpty() ? null : events.getFirst();
     }
     
     synchronized AWTEvent peekEvent(int id) {
-        for (Iterator it = events.iterator(); it.hasNext(); ) {
-            AWTEvent event = (AWTEvent) it.next();
-
+        for (AWTEvent event : events) {
             if (event.getID() == id) {
                 return event;
             }
@@ -198,11 +195,11 @@ final class EventQueueCore {
     }
     
     synchronized void pop() {
-        EventQueue removed = (EventQueue)queueStack.removeLast();
+        EventQueue removed = queueStack.removeLast();
         if (removed != activeQueue) {
             throw new IllegalStateException("Event queue stack is broken");
         }
-        activeQueue = (EventQueue)queueStack.getLast();
+        activeQueue = queueStack.getLast();
         removed.setCore(null);
     }
 

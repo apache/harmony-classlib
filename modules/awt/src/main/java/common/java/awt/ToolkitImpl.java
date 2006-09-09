@@ -28,6 +28,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.ImageObserver;
 import java.awt.image.ImageProducer;
 import java.awt.peer.*;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.Hashtable;
 import java.util.Map;
@@ -40,8 +41,9 @@ import org.apache.harmony.awt.gl.image.*;
 
 class ToolkitImpl extends Toolkit {
 
-    static final Hashtable imageCache = new Hashtable();
+    static final Hashtable<Serializable, Image> imageCache = new Hashtable<Serializable, Image>();
 
+    @Override
     public void sync() {
         lockAWT();
         try {
@@ -50,6 +52,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     protected TextAreaPeer createTextArea(TextArea a0) throws HeadlessException {
         lockAWT();
         try {
@@ -60,6 +63,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     public int checkImage(Image image, int width, int height, ImageObserver observer) {
         lockAWT();
         try {
@@ -76,6 +80,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     public Image createImage(ImageProducer producer) {
         lockAWT();
         try {
@@ -85,6 +90,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     public Image createImage(byte[] imagedata, int imageoffset, int imagelength) {
         lockAWT();
         try {
@@ -95,6 +101,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     public Image createImage(URL url) {
         lockAWT();
         try {
@@ -104,6 +111,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     public Image createImage(String filename) {
         lockAWT();
         try {
@@ -113,6 +121,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     public ColorModel getColorModel() throws HeadlessException {
         lockAWT();
         try {
@@ -124,6 +133,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     public FontMetrics getFontMetrics(Font font) {
         lockAWT();
         try {
@@ -133,6 +143,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     public boolean prepareImage(Image image, int width, int height, ImageObserver observer) {
         lockAWT();
         try {
@@ -149,6 +160,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     public void beep() {
         lockAWT();
         try {
@@ -157,6 +169,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     protected ButtonPeer createButton(Button a0) throws HeadlessException {
         lockAWT();
         try {
@@ -167,6 +180,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     protected CanvasPeer createCanvas(Canvas a0) {
         lockAWT();
         try {
@@ -176,6 +190,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     protected CheckboxPeer createCheckbox(Checkbox a0) throws HeadlessException {
         lockAWT();
         try {
@@ -186,6 +201,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     protected CheckboxMenuItemPeer createCheckboxMenuItem(CheckboxMenuItem a0)
             throws HeadlessException
     {
@@ -198,6 +214,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     protected ChoicePeer createChoice(Choice a0) throws HeadlessException {
         lockAWT();
         try {
@@ -208,6 +225,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     protected DialogPeer createDialog(Dialog a0) throws HeadlessException {
         lockAWT();
         try {
@@ -218,11 +236,13 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     public DragSourceContextPeer createDragSourceContextPeer(
             DragGestureEvent dge) throws InvalidDnDOperationException {
         return dtk.createDragSourceContextPeer(dge);
     }
 
+    @Override
     protected FileDialogPeer createFileDialog(FileDialog a0)
             throws HeadlessException
     {
@@ -235,6 +255,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     protected FramePeer createFrame(Frame a0) throws HeadlessException {
         lockAWT();
         try {
@@ -245,6 +266,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     protected LabelPeer createLabel(Label a0) throws HeadlessException {
         lockAWT();
         try {
@@ -255,6 +277,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     protected ListPeer createList(List a0) throws HeadlessException {
         lockAWT();
         try {
@@ -265,6 +288,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     protected MenuPeer createMenu(Menu a0) throws HeadlessException {
         lockAWT();
         try {
@@ -275,6 +299,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     protected MenuBarPeer createMenuBar(MenuBar a0) throws HeadlessException {
         lockAWT();
         try {
@@ -285,6 +310,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     protected MenuItemPeer createMenuItem(MenuItem a0) throws HeadlessException {
         lockAWT();
         try {
@@ -295,6 +321,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     protected PanelPeer createPanel(Panel a0) {
         lockAWT();
         try {
@@ -304,6 +331,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     protected PopupMenuPeer createPopupMenu(PopupMenu a0)
             throws HeadlessException
     {
@@ -316,6 +344,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     protected ScrollPanePeer createScrollPane(ScrollPane a0)
             throws HeadlessException
     {
@@ -328,6 +357,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     protected ScrollbarPeer createScrollbar(Scrollbar a0)
             throws HeadlessException
     {
@@ -340,6 +370,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     protected TextFieldPeer createTextField(TextField a0)
             throws HeadlessException
     {
@@ -352,6 +383,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     protected WindowPeer createWindow(Window a0) throws HeadlessException {
         lockAWT();
         try {
@@ -362,6 +394,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     public String[] getFontList() {
         lockAWT();
         try {
@@ -371,6 +404,7 @@ class ToolkitImpl extends Toolkit {
         return null;
     }
 
+    @Override
     protected FontPeer getFontPeer(String a0, int a1) {
         lockAWT();
         try {
@@ -380,13 +414,14 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     public Image getImage(String filename) {
         return getImage(filename, this);
     }
 
     static Image getImage(String filename, Toolkit toolkit){
         synchronized(imageCache) {
-            Image im = (Image)imageCache.get(filename);
+            Image im = imageCache.get(filename);
             if(im == null){
                 try{
                     im = toolkit.createImage(filename);
@@ -399,13 +434,14 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     public Image getImage(URL url) {
         return getImage(url, this);
     }
 
     static Image getImage(URL url, Toolkit toolkit) {
         synchronized(imageCache) {
-            Image im = (Image)imageCache.get(url);
+            Image im = imageCache.get(url);
             if(im == null){
                 try{
                     im = toolkit.createImage(url);
@@ -418,6 +454,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     public PrintJob getPrintJob(Frame a0, String a1, Properties a2) {
         lockAWT();
         try {
@@ -427,6 +464,7 @@ class ToolkitImpl extends Toolkit {
         return null;
     }
 
+    @Override
     public int getScreenResolution() throws HeadlessException {
         lockAWT();
         try {
@@ -437,6 +475,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     public Dimension getScreenSize() throws HeadlessException {
         lockAWT();
         try {
@@ -448,6 +487,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     public Clipboard getSystemClipboard() throws HeadlessException {
         lockAWT();
         try {
@@ -469,7 +509,8 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
-    public Map mapInputMethodHighlight(InputMethodHighlight highlight)
+    @Override
+    public Map<?, ?> mapInputMethodHighlight(InputMethodHighlight highlight)
             throws HeadlessException {
         lockAWT();
         try {
@@ -479,6 +520,7 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @Override
     protected EventQueue getSystemEventQueueImpl() {
         return getSystemEventQueueCore().getActiveEventQueue();
     }

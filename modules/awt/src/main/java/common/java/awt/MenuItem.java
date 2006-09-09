@@ -49,6 +49,7 @@ public class MenuItem extends MenuComponent implements Accessible {
 
         private static final long serialVersionUID = -217847831945965825L;
 
+        @Override
         public String getAccessibleName() {
             String aName = super.getAccessibleName();
             if (aName == null) {
@@ -57,14 +58,17 @@ public class MenuItem extends MenuComponent implements Accessible {
             return aName;
         }
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.MENU_ITEM;
         }
 
+        @Override
         public AccessibleAction getAccessibleAction() {
             return this;
         }
 
+        @Override
         public AccessibleValue getAccessibleValue() {
             return this;
         }
@@ -233,14 +237,14 @@ public class MenuItem extends MenuComponent implements Accessible {
         try {
             if (ActionListener.class.isAssignableFrom(listenerType)) {
                 return getActionListeners();
-            } else {
-                return new EventListener[0];
             }
+            return new EventListener[0];
         } finally {
             toolkit.unlockAWT();
         }
     }
 
+    @Override
     public String paramString() {
         /* The format of paramString is based on 1.5 release behavior 
          * which can be revealed using the following code:
@@ -316,6 +320,7 @@ public class MenuItem extends MenuComponent implements Accessible {
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         toolkit.lockAWT();
         try {
@@ -334,6 +339,7 @@ public class MenuItem extends MenuComponent implements Accessible {
         }
     }
 
+    @Override
     protected void processEvent(AWTEvent event) {
         if (toolkit.eventTypeLookup.getEventMask(event) == AWTEvent.ACTION_EVENT_MASK) {
             processActionEvent((ActionEvent) event);
@@ -420,6 +426,7 @@ public class MenuItem extends MenuComponent implements Accessible {
         }
     }
 
+    @Override
     void itemSelected(long when, int modifiers) {
         AWTEvent event = createEvent(when, modifiers);
         toolkit.getSystemEventQueueImpl().postEvent(event);
@@ -432,6 +439,7 @@ public class MenuItem extends MenuComponent implements Accessible {
                 getActionCommand(), when, modifiers);
     }
 
+    @Override
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTMenuItem();
     }

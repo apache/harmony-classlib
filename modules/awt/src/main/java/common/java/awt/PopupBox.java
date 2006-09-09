@@ -238,8 +238,9 @@ abstract class PopupBox {
             activeChild.hide();
         }
 
-        if (nativeWindow != null)
+        if (nativeWindow != null) {
             nativeWindow.setVisible(false);
+        }
 
         if (parent != null) {
             parent.activeChild = null;

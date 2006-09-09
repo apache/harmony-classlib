@@ -18,6 +18,7 @@
  * @version $Revision$
  */
 package java.awt;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
@@ -31,21 +32,21 @@ import java.util.StringTokenizer;
 public class AWTKeyStroke implements Serializable {
     private static final long serialVersionUID = -6430539691155161871L;
 
-    private char keyChar;
-    private int keyCode;
-    private int modifiers;
-    private boolean onKeyRelease;
-    private static AWTKeyStroke cacheKey = new AWTKeyStroke();
-    private static Map cache = new HashMap(); //Map<AWTKeyStroke, ? extends AWTKeyStroke>
-    private static Map keyEventTypesMap = new HashMap(); //Map<int, String>
-    private static Constructor subConstructor;
+    private static final Map<AWTKeyStroke, AWTKeyStroke> cache = new HashMap<AWTKeyStroke, AWTKeyStroke>(); //Map<AWTKeyStroke, ? extends AWTKeyStroke>
+    private static final Map<Integer, String> keyEventTypesMap = new HashMap<Integer, String>(); //Map<int, String>
+    private static Constructor<?> subConstructor;
+    
     static {
         keyEventTypesMap.put(new Integer(KeyEvent.KEY_PRESSED), "pressed");
         keyEventTypesMap.put(new Integer(KeyEvent.KEY_RELEASED), "released");
         keyEventTypesMap.put(new Integer(KeyEvent.KEY_TYPED), "typed");
-
     }
 
+    private char keyChar;
+    private int keyCode;
+    private int modifiers;
+    private boolean onKeyRelease;
+    
     protected AWTKeyStroke(char keyChar, int keyCode, int modifiers,
             boolean onKeyRelease)
     {
@@ -64,6 +65,7 @@ public class AWTKeyStroke implements Serializable {
         this(KeyEvent.CHAR_UNDEFINED, KeyEvent.VK_UNDEFINED, 0, false);
     }
 
+    @Override
     public int hashCode() {
         return modifiers + ( keyCode != KeyEvent.VK_UNDEFINED ?
                 keyCode : keyChar) + (onKeyRelease ? -1 : 0);
@@ -73,6 +75,7 @@ public class AWTKeyStroke implements Serializable {
         return modifiers;
     }
 
+    @Override
     public final boolean equals(Object anObject) {
         if (anObject instanceof AWTKeyStroke) {
             AWTKeyStroke key = (AWTKeyStroke)anObject;
@@ -83,10 +86,11 @@ public class AWTKeyStroke implements Serializable {
         return false;
     }
 
+    @Override
     public String toString() {
         int type = getKeyEventType();
-        return KeyEvent.getModifiersExText(getModifiers()) + " " +
-            (String) keyEventTypesMap.get(new Integer(type)) +  " " +
+        return InputEvent.getModifiersExText(getModifiers()) + " " +
+            keyEventTypesMap.get(new Integer(type)) +  " " +
             (type == KeyEvent.KEY_TYPED ? new String(new char[] {keyChar}) :
                                           KeyEvent.getKeyText(keyCode));
     }
@@ -104,7 +108,7 @@ public class AWTKeyStroke implements Serializable {
                                                 boolean onKeyRelease) {
         AWTKeyStroke key = newInstance(keyChar, keyCode, modifiers, onKeyRelease);
 
-        AWTKeyStroke value = (AWTKeyStroke)cache.get(key);
+        AWTKeyStroke value = cache.get(key);
         if (value == null) {
             value = key;
             cache.put(key, value);
@@ -120,7 +124,7 @@ public class AWTKeyStroke implements Serializable {
             key = new AWTKeyStroke();
         } else {
             try {
-                key = (AWTKeyStroke) subConstructor.newInstance(null);
+                key = (AWTKeyStroke) subConstructor.newInstance();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -141,11 +145,11 @@ public class AWTKeyStroke implements Serializable {
      */
     static int getAllModifiers(int mod) {
         int allMod = mod;
-        int shift = (KeyEvent.SHIFT_MASK | KeyEvent.SHIFT_DOWN_MASK);
-        int ctrl = (KeyEvent.CTRL_MASK | KeyEvent.CTRL_DOWN_MASK);
-        int meta = (KeyEvent.META_MASK | KeyEvent.META_DOWN_MASK);
-        int alt = (KeyEvent.ALT_MASK | KeyEvent.ALT_DOWN_MASK);
-        int altGr = (KeyEvent.ALT_GRAPH_MASK | KeyEvent.ALT_GRAPH_DOWN_MASK);
+        int shift = (InputEvent.SHIFT_MASK | InputEvent.SHIFT_DOWN_MASK);
+        int ctrl = (InputEvent.CTRL_MASK | InputEvent.CTRL_DOWN_MASK);
+        int meta = (InputEvent.META_MASK | InputEvent.META_DOWN_MASK);
+        int alt = (InputEvent.ALT_MASK | InputEvent.ALT_DOWN_MASK);
+        int altGr = (InputEvent.ALT_GRAPH_MASK | InputEvent.ALT_GRAPH_DOWN_MASK);
         // button modifiers are not converted between old & new
 
         allMod = addMask(allMod, shift);
@@ -268,7 +272,7 @@ public class AWTKeyStroke implements Serializable {
                                this.modifiers, this.onKeyRelease);
     }
 
-    protected static void registerSubclass(Class subclass) {
+    protected static void registerSubclass(Class<?> subclass) {
         if (subclass == null) {
             throw new IllegalArgumentException("subclass cannot be null");
         }
@@ -276,7 +280,7 @@ public class AWTKeyStroke implements Serializable {
             throw new ClassCastException("subclass is not derived from AWTKeyStroke");
         }
         try {
-            subConstructor = subclass.getDeclaredConstructor(null);
+            subConstructor = subclass.getDeclaredConstructor();
             subConstructor.setAccessible(true);
         } catch (SecurityException e) {
             throw new RuntimeException(e);
@@ -289,21 +293,21 @@ public class AWTKeyStroke implements Serializable {
     private static long parseModifier(String strMod) {
         long modifiers = 0l;
         if (strMod.equals("shift")) {
-            modifiers |= KeyEvent.SHIFT_DOWN_MASK;
+            modifiers |= InputEvent.SHIFT_DOWN_MASK;
         } else if (strMod.equals("control") || strMod.equals("ctrl")) {
-            modifiers |= KeyEvent.CTRL_DOWN_MASK;
+            modifiers |= InputEvent.CTRL_DOWN_MASK;
         } else if (strMod.equals("meta")) {
-            modifiers |= KeyEvent.META_DOWN_MASK;
+            modifiers |= InputEvent.META_DOWN_MASK;
         } else if (strMod.equals("alt")) {
-            modifiers |= KeyEvent.ALT_DOWN_MASK;
+            modifiers |= InputEvent.ALT_DOWN_MASK;
         } else if (strMod.equals("altGraph")) {
-            modifiers |= KeyEvent.ALT_GRAPH_DOWN_MASK;
+            modifiers |= InputEvent.ALT_GRAPH_DOWN_MASK;
         } else if (strMod.equals("button1")) {
-            modifiers |= KeyEvent.BUTTON1_DOWN_MASK;
+            modifiers |= InputEvent.BUTTON1_DOWN_MASK;
         } else if (strMod.equals("button2")) {
-            modifiers |= KeyEvent.BUTTON2_DOWN_MASK;
+            modifiers |= InputEvent.BUTTON2_DOWN_MASK;
         } else if (strMod.equals("button3")) {
-            modifiers |= KeyEvent.BUTTON3_DOWN_MASK;
+            modifiers |= InputEvent.BUTTON3_DOWN_MASK;
         }
         return modifiers;
     }

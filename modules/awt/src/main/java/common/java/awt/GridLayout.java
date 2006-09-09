@@ -20,7 +20,6 @@
 package java.awt;
 
 import java.io.Serializable;
-import java.util.LinkedList;
 
 public class GridLayout implements LayoutManager, Serializable {
     private static final long serialVersionUID = -7411804673224730901L;   
@@ -74,6 +73,7 @@ public class GridLayout implements LayoutManager, Serializable {
         }
     }
 
+    @Override
     public String toString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:
@@ -317,10 +317,10 @@ public class GridLayout implements LayoutManager, Serializable {
         int maxWidth = 0;
         int maxHeight = 0;
 
-        for (int i = 0; i < components.length; i++) {
+        for (Component element : components) {
             Dimension compSize = (preferred ?
-                    components[i].getPreferredSize() :
-                    components[i].getMinimumSize());
+                    element.getPreferredSize() :
+                    element.getMinimumSize());
 
             maxWidth = Math.max(maxWidth, compSize.width);
             maxHeight = Math.max(maxHeight, compSize.height);

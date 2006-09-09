@@ -53,10 +53,12 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
             addItemListener(this);
         }
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.CHECK_BOX;
         }
 
+        @Override
         public AccessibleStateSet getAccessibleStateSet() {
             AccessibleStateSet aStateSet = super.getAccessibleStateSet();
             if (getState()) {
@@ -65,10 +67,12 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
             return aStateSet;
         }
 
+        @Override
         public AccessibleAction getAccessibleAction() {
             return this;
         }
 
+        @Override
         public AccessibleValue getAccessibleValue() {
             return this;
         }
@@ -150,6 +154,7 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
             return stateController.isPressed();
         }
 
+        @Override
         public void calculate() {
             toolkit.theme.calculateCheckbox(state);
         }
@@ -237,6 +242,7 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
         }
     }
 
+    @Override
     public void addNotify() {
         toolkit.lockAWT();
         try {
@@ -246,6 +252,7 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         toolkit.lockAWT();
         try {
@@ -255,6 +262,7 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
         }
     }
 
+    @Override
     protected String paramString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:
@@ -293,9 +301,8 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
         try {
             if (checked) {
                 return new Object[] { label };
-            } else {
-                return null;
             }
+            return null;
         } finally {
             toolkit.unlockAWT();
         }
@@ -361,14 +368,14 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
         repaint();
     }
 
+    @Override
     public EventListener[] getListeners(Class listenerType) {
         toolkit.lockAWT();
         try {
             if (ItemListener.class.isAssignableFrom(listenerType)) {
                 return getItemListeners();
-            } else {
-                return super.getListeners(listenerType);
             }
+            return super.getListeners(listenerType);
         } finally {
             toolkit.unlockAWT();
         }
@@ -401,6 +408,7 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
         }
     }
 
+    @Override
     protected void processEvent(AWTEvent e) {
         toolkit.lockAWT();
         try {
@@ -432,23 +440,28 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
         }
     }
 
+    @Override
     boolean isPrepainter() {
         return true;
     }
 
+    @Override
     void prepaint(Graphics g) {
         toolkit.theme.drawCheckbox(g, state);
     }
 
+    @Override
     void setEnabledImpl(boolean value) {
         super.setEnabledImpl(value);
         repaint();
     }
 
+    @Override
     String autoName() {
         return ("checkbox" + toolkit.autoNumber.nextCheckBox++);
     }
 
+    @Override
     Dimension getDefaultMinimumSize() {
         if (getFont() == null) {
             return new Dimension(0, 0);
@@ -456,10 +469,12 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
         return state.getDefaultMinimumSize();
     }
 
+    @Override
     void resetDefaultSize() {
         state.reset();
     }
 
+    @Override
     ComponentBehavior createBehavior() {
         return new HWBehavior(this);
     }
@@ -467,6 +482,7 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
     ButtonStateController createStateController() {
 
         return new ButtonStateController(this) {
+            @Override
             protected void fireEvent() {
                 generateEvent();
             }};
@@ -483,6 +499,7 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
     }
 
 
+    @Override
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTCheckbox();
     }

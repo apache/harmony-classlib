@@ -39,6 +39,7 @@ final class EventDispatchThread extends Thread  {
     /**
      * Initialise and run the main event loop
      */
+    @Override
     public void run() {
         nativeQueue = toolkit.getNativeEventQueue();
 

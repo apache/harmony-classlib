@@ -44,7 +44,7 @@ class FocusDispatcher {
     }
 
     boolean dispatch(Component src, NativeEvent event) {
-        int id = (int) event.getEventId();
+        int id = event.getEventId();
         long opositeId = event.getOtherWindowId();
         long srcId = event.getWindowId();
         boolean focusGained = (id == FocusEvent.FOCUS_GAINED);
@@ -127,12 +127,12 @@ class FocusDispatcher {
                                   Component other) {
         KeyboardFocusManager kfm =
             KeyboardFocusManager.getCurrentKeyboardFocusManager();
-        Component focusOwner = kfm.actualFocusOwner;
+        Component focusOwner = KeyboardFocusManager.actualFocusOwner;
 
         // change wnd/oppositeWnd to Java focused window
         // if focusProxy is losing focus:
 
-        Window focusedWindow = kfm.actualFocusedWindow;
+        Window focusedWindow = KeyboardFocusManager.actualFocusedWindow;
 
         if (!focusGained && isFocusProxy &&
             (focusedWindow != null)) {

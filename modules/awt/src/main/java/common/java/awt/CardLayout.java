@@ -30,8 +30,8 @@ public class CardLayout implements LayoutManager2, Serializable {
     private int vGap;
     private int hGap;
 
-    private Hashtable nameTable;        //Name to component
-    private Hashtable compTable;        //Component to name
+    private Hashtable<String, Component> nameTable;        //Name to component
+    private Hashtable<Component, String> compTable;        //Component to name
     private int curComponent;
 
     private final Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -42,8 +42,8 @@ public class CardLayout implements LayoutManager2, Serializable {
             vGap = vgap;
             hGap = hgap;
 
-            nameTable = new Hashtable();
-            compTable = new Hashtable();
+            nameTable = new Hashtable<String, Component>();
+            compTable = new Hashtable<Component, String>();
             curComponent = 0;
         } finally {
             toolkit.unlockAWT();
@@ -59,6 +59,7 @@ public class CardLayout implements LayoutManager2, Serializable {
         }
     }
 
+    @Override
     public String toString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:
@@ -175,7 +176,7 @@ public class CardLayout implements LayoutManager2, Serializable {
                 }
             }
 
-            String name = (String) compTable.get(comp);
+            String name = compTable.get(comp);
             if (name != null) {
                 nameTable.remove(name);
             }
@@ -327,7 +328,7 @@ public class CardLayout implements LayoutManager2, Serializable {
                 return;
             }
 
-            Component comp = (Component) nameTable.get(name);
+            Component comp = nameTable.get(name);
 
             if (comp == null) {
                 return;

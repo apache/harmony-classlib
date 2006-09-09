@@ -19,9 +19,15 @@
  */
 package java.awt;
 
-import java.io.*;
-import java.util.*;
-import java.lang.Math;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.harmony.awt.FieldsAccessor;
 
@@ -43,7 +49,7 @@ public class BorderLayout implements LayoutManager2, Serializable {
     public static final String EAST = "East";
     public static final String WEST = "West";
 
-    private static final HashSet supportedConstraints = new HashSet();
+    private static final Set<String> supportedConstraints = new HashSet<String>();
 
     private static final int DEFAULT_GAP = 0;
     private static final int MAX_COMPONENTS = 5;
@@ -58,9 +64,9 @@ public class BorderLayout implements LayoutManager2, Serializable {
 
     private final transient Toolkit toolkit;
 
-    private final LinkedList components;
-    private final HashMap components2Constraints;
-    private final HashMap constraints2Components;
+    private final LinkedList<Component> components;
+    private final Map<Component, Object> components2Constraints;
+    private final Map<Object, Component> constraints2Components;
 
     private int hGap;
     private int vGap;
@@ -91,9 +97,9 @@ public class BorderLayout implements LayoutManager2, Serializable {
 
         toolkit.lockAWT();
         try {
-            components = new LinkedList();
-            components2Constraints = new HashMap();
-            constraints2Components = new HashMap();
+            components = new LinkedList<Component>();
+            components2Constraints = new HashMap<Component, Object>();
+            constraints2Components = new HashMap<Object, Component>();
 
             hGap = hgap;
             vGap = vgap;
@@ -140,7 +146,7 @@ public class BorderLayout implements LayoutManager2, Serializable {
                 return;
             }
 
-            comp2Forget = (Component) constraints2Components.get(cons);
+            comp2Forget = constraints2Components.get(cons);
             if (comp2Forget != null) {
                 forgetComponent(comp2Forget, cons);
             }
@@ -190,7 +196,7 @@ public class BorderLayout implements LayoutManager2, Serializable {
                         "Unsupported constraints object: " + constraints);
             }
 
-            return (Component) constraints2Components.get(constraints);
+            return constraints2Components.get(constraints);
         } finally {
             toolkit.unlockAWT();
         }
@@ -207,18 +213,18 @@ public class BorderLayout implements LayoutManager2, Serializable {
         } else if (WEST.equals(constraints)) {
             return getComponent(l2r ? LINE_START : LINE_END, WEST);
         } else if (CENTER.equals(constraints)) {
-            return (Component) constraints2Components.get(CENTER);
+            return constraints2Components.get(CENTER);
         }
         throw new IllegalArgumentException("cannot get component: " +
                                            "invalid constraint: " + constraints);
     }
 
     private Component getComponent(Object relCons, Object absCons) {
-        Component comp = (Component) constraints2Components.get(relCons);
+        Component comp = constraints2Components.get(relCons);
         if (comp != null) {
             return comp;
         }
-        return (Component) constraints2Components.get(absCons);
+        return constraints2Components.get(absCons);
     }
     
     public Object getConstraints(Component comp) {
@@ -336,6 +342,7 @@ public class BorderLayout implements LayoutManager2, Serializable {
         }
     }
 
+    @Override
     public String toString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:
@@ -407,9 +414,7 @@ public class BorderLayout implements LayoutManager2, Serializable {
         Arrays.fill(visibleComponents, null);
         visibleComponentsNumber = 0;
 
-        for (Iterator i = components.iterator(); i.hasNext(); ) {
-            Component comp = (Component) i.next();
-
+        for (Component comp : components) {
             if (comp.isVisible()) {
                 int index = constraints2Index(components2Constraints.get(comp),
                         target.getComponentOrientation());

@@ -241,18 +241,22 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
         blockIncrement = 1;
         stateController = new ScrollbarStateController(state) {
 
+            @Override
             protected void fireEvent() {
                 generateEvent();
             }
 
+            @Override
             protected void repaint(Rectangle r) {
                 doRepaint(r);
             }
 
+            @Override
             protected void repaint() {
                doRepaint();
             }
 
+            @Override
             protected void requestFocus() {
                 // just don't do it
             }
@@ -262,6 +266,7 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
         comp.addAWTComponentListener(stateController);
     }
 
+    @Override
     public String toString() {
         return (getClass().getName() + "[" + paramString() + "]");
     }

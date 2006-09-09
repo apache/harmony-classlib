@@ -19,6 +19,7 @@
  */
 package java.awt;
 
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.Serializable;
 
@@ -40,6 +41,7 @@ public class MenuShortcut implements Serializable {
         shiftModifier = useShiftModifier;
     }
 
+    @Override
     public int hashCode() {
         int hashCode = HashCode.EMPTY_HASH_CODE;
         hashCode = HashCode.combine(hashCode, keyCode);
@@ -52,6 +54,7 @@ public class MenuShortcut implements Serializable {
                 (s.shiftModifier == shiftModifier);
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof MenuShortcut) {
             MenuShortcut s = (MenuShortcut)obj;
@@ -61,9 +64,10 @@ public class MenuShortcut implements Serializable {
         return false;
     }
 
+    @Override
     public String toString() {
-        int modifiers = KeyEvent.CTRL_DOWN_MASK |
-                (shiftModifier ? KeyEvent.SHIFT_DOWN_MASK : 0);
+        int modifiers = InputEvent.CTRL_DOWN_MASK |
+                (shiftModifier ? InputEvent.SHIFT_DOWN_MASK : 0);
 
         return KeyEvent.getKeyModifiersText(modifiers) +
                 "+" + KeyEvent.getKeyText(keyCode);

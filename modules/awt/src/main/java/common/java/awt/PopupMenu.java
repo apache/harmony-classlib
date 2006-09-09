@@ -33,6 +33,7 @@ public class PopupMenu extends Menu {
 
         private static final long serialVersionUID = -4282044795947239955L;
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.POPUP_MENU;
         }
@@ -57,6 +58,7 @@ public class PopupMenu extends Menu {
         }
     }
 
+    @Override
     public void addNotify() {
         toolkit.lockAWT();
         try {
@@ -66,6 +68,7 @@ public class PopupMenu extends Menu {
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         toolkit.lockAWT();
         try {
@@ -128,6 +131,7 @@ public class PopupMenu extends Menu {
         super.show(originLocation.x + x, originLocation.y + y, true);
     }
 
+    @Override
     void hide() {
         if (!isVisible()) {
             return;
@@ -136,10 +140,12 @@ public class PopupMenu extends Menu {
         super.hide();
     }
 
+    @Override
     boolean hasDefaultFont() {
         return true;
     }
 
+    @Override
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTPopupMenu();
     }

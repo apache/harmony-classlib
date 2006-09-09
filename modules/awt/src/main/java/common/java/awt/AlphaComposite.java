@@ -81,10 +81,12 @@ public final class AlphaComposite implements Composite {
     private float alpha;
 
     private AlphaComposite(int rule, float alpha){
-        if(rule < CLEAR || rule > XOR)
+        if(rule < CLEAR || rule > XOR) {
             throw new IllegalArgumentException("Unknown rule");
-        if(alpha < 0.0f || alpha > 1.0f)
+        }
+        if(alpha < 0.0f || alpha > 1.0f) {
             throw new IllegalArgumentException("Wrong alpha value");
+        }
 
         this.rule = rule;
         this.alpha = alpha;
@@ -99,12 +101,16 @@ public final class AlphaComposite implements Composite {
         return new ICompositeContext(this, srcColorModel, dstColorModel);
     }
 
+    @Override
     public boolean equals(Object obj) {
-        if(!(obj instanceof AlphaComposite)) return false;
+        if(!(obj instanceof AlphaComposite)) {
+            return false;
+        }
         AlphaComposite other = (AlphaComposite)obj;
         return (this.rule == other.getRule() && this.alpha == other.getAlpha());
     }
 
+    @Override
     public int hashCode() {
         int hash = Float.floatToIntBits(alpha);
         int tmp = hash >>> 24;
@@ -123,7 +129,9 @@ public final class AlphaComposite implements Composite {
     }
 
     public static AlphaComposite getInstance(int rule, float alpha) {
-        if(alpha == 1.0f) return getInstance(rule);
+        if(alpha == 1.0f) {
+            return getInstance(rule);
+        }
         return new AlphaComposite(rule, alpha);
     }
 

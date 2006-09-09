@@ -142,10 +142,12 @@ public final class SystemColor extends Color implements Serializable {
     private final transient Toolkit toolkit = Toolkit.getDefaultToolkit();
 
     private final int index;
+    @Override
     public String toString() {
         return getClass().getName() + "[index=" + index + "]";
     }
 
+    @Override
     public int getRGB() {
         return value = getARGB();
     }
@@ -160,6 +162,7 @@ public final class SystemColor extends Color implements Serializable {
         return toolkit.getWTK().getSystemProperties().getSystemColorARGB(index);
     }
 
+    @Override
     public PaintContext createContext(ColorModel cm, Rectangle r, Rectangle2D r2d, AffineTransform at, RenderingHints rh) {
         return new Color.ColorPaintContext(getRGB());
     }

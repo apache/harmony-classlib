@@ -63,6 +63,7 @@ public class ScrollPane extends Container implements Accessible {
         protected AccessibleAWTScrollPane() {
         }
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.SCROLL_PANE;
         }
@@ -86,6 +87,7 @@ public class ScrollPane extends Container implements Accessible {
             return getScrollPosition();
         }
 
+        @SuppressWarnings("deprecation")
         public void setLocation(Point p) {
             Component comp = ScrollPane.this.getComponent();
             if (comp != null) {
@@ -186,6 +188,7 @@ public class ScrollPane extends Container implements Accessible {
         }
     }
 
+    @Override
     public void addNotify() {
         toolkit.lockAWT();
         try {
@@ -195,6 +198,7 @@ public class ScrollPane extends Container implements Accessible {
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         toolkit.lockAWT();
         try {
@@ -204,6 +208,7 @@ public class ScrollPane extends Container implements Accessible {
         }
     }
 
+    @Override
     public String paramString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:
@@ -243,6 +248,7 @@ public class ScrollPane extends Container implements Accessible {
         }
     }
 
+    @Override
     public void doLayout() {
         toolkit.lockAWT();
         try {
@@ -263,6 +269,7 @@ public class ScrollPane extends Container implements Accessible {
 
     }
 
+    @Override
     public void layout() {
         toolkit.lockAWT();
         try {
@@ -291,6 +298,7 @@ public class ScrollPane extends Container implements Accessible {
     }
 
 
+    @Override
     protected void processMouseWheelEvent(MouseWheelEvent e) {
         toolkit.lockAWT();
         try {
@@ -301,6 +309,7 @@ public class ScrollPane extends Container implements Accessible {
         }
     }
 
+    @Override
     protected final void addImpl(Component comp, Object constraints, int index) {
         toolkit.lockAWT();
         try {
@@ -394,6 +403,7 @@ public class ScrollPane extends Container implements Accessible {
         }
     }
 
+    @Override
     public void printComponents(Graphics g) {
         toolkit.lockAWT();
         try {
@@ -405,6 +415,7 @@ public class ScrollPane extends Container implements Accessible {
         }       
     }
 
+    @Override
     public final void setLayout(LayoutManager mgr) {
         toolkit.lockAWT();
         try {
@@ -463,14 +474,17 @@ public class ScrollPane extends Container implements Accessible {
 
     }
 
+    @Override
     ComponentBehavior createBehavior() {
         return new HWBehavior(this);
     }
 
+    @Override
     boolean isPrepainter() {
         return true;
     }
 
+    @Override
     void prepaint(Graphics g) {
         g.setColor(getBackground());
         g.fillRect(0, 0, w, h);
@@ -488,6 +502,7 @@ public class ScrollPane extends Container implements Accessible {
         return null;
     }
 
+    @Override
     Insets getNativeInsets() {
         if (!isDisplayable()) {
             return super.getNativeInsets();
@@ -498,6 +513,7 @@ public class ScrollPane extends Container implements Accessible {
         return insets;
     }
 
+    @Override
     String autoName() {
         return ("scrollpane" + toolkit.autoNumber.nextScrollPane++);
     }
@@ -525,6 +541,7 @@ public class ScrollPane extends Container implements Accessible {
     }
 
 
+    @Override
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTScrollPane();
     }

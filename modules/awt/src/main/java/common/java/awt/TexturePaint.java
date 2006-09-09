@@ -68,27 +68,24 @@ public class TexturePaint implements Paint {
             {
                 if (bilinear) {
                     return new TexturePaintContext.IntBilinear(img, anchor, t);
-                } else {
-                    return new TexturePaintContext.IntSimple(img, anchor, t);
                 }
+                return new TexturePaintContext.IntSimple(img, anchor, t);
             }
         } else
         if (buf instanceof DataBufferByte) {
             if (type == BufferedImage.TYPE_BYTE_GRAY) {
                 if (bilinear) {
                     return new TexturePaintContext.ByteBilinear(img, anchor, t);
-                } else {
-                    return new TexturePaintContext.ByteSimple(img, anchor, t);
                 }
+                return new TexturePaintContext.ByteSimple(img, anchor, t);
             }
         } else
         if (buf instanceof DataBufferUShort) {
             if (type == BufferedImage.TYPE_USHORT_GRAY) {
                 if (bilinear) {
                     return new TexturePaintContext.ShortBilinear(img, anchor, t);
-                } else {
-                    return new TexturePaintContext.ShortSimple(img, anchor, t);
                 }
+                return new TexturePaintContext.ShortSimple(img, anchor, t);
             }
         }
         if (bilinear) {
@@ -169,7 +166,7 @@ class TexturePaintContext implements PaintContext {
     int srcHeight;
     
     /**
-     * The tempopary pre-calculated tempopary values
+     * The temporary pre-calculated temporary values
      */
     int sx, sy, hx, hy, vx, vy;
     int m00, m01, m10, m11;
@@ -182,7 +179,7 @@ class TexturePaintContext implements PaintContext {
     int[] weight = new int[4];
     
     /**
-     * The tempopary values  
+     * The temporary values  
      */
     int[] value = new int[4];
 
@@ -199,6 +196,7 @@ class TexturePaintContext implements PaintContext {
             super(img, anchor, t);
         }
 
+        @Override
         public Raster getRaster(int dstX, int dstY, int dstWidth, int dstHeight) {
             prepare(dstX, dstY, dstWidth, dstHeight);
             int[] src = access.getDataInt(srcBuf);
@@ -231,6 +229,7 @@ class TexturePaintContext implements PaintContext {
             super(img, anchor, t);
         }
 
+        @Override
         public Raster getRaster(int dstX, int dstY, int dstWidth, int dstHeight) {
             prepare(dstX, dstY, dstWidth, dstHeight);
             byte[] src = access.getDataByte(srcBuf);
@@ -263,6 +262,7 @@ class TexturePaintContext implements PaintContext {
             super(img, anchor, t);
         }
 
+        @Override
         public Raster getRaster(int dstX, int dstY, int dstWidth, int dstHeight) {
             prepare(dstX, dstY, dstWidth, dstHeight);
             short[] src = access.getDataUShort(srcBuf);
@@ -294,6 +294,7 @@ class TexturePaintContext implements PaintContext {
             super(img, anchor, t);
         }
 
+        @Override
         public Raster getRaster(int dstX, int dstY, int dstWidth, int dstHeight) {
             prepare(dstX, dstY, dstWidth, dstHeight);
             for(int j = 0; j < dstHeight; j++) {
@@ -323,6 +324,7 @@ class TexturePaintContext implements PaintContext {
             super(img, anchor, t);
         }
 
+        @Override
         public Raster getRaster(int dstX, int dstY, int dstWidth, int dstHeight) {
             prepare(dstX, dstY, dstWidth, dstHeight);
             int[] src = access.getDataInt(srcBuf);
@@ -388,6 +390,7 @@ class TexturePaintContext implements PaintContext {
             super(img, anchor, t);
         }
 
+        @Override
         public Raster getRaster(int dstX, int dstY, int dstWidth, int dstHeight) {
             prepare(dstX, dstY, dstWidth, dstHeight);
             byte[] src = access.getDataByte(srcBuf);
@@ -448,6 +451,7 @@ class TexturePaintContext implements PaintContext {
             super(img, anchor, t);
         }
 
+        @Override
         public Raster getRaster(int dstX, int dstY, int dstWidth, int dstHeight) {
             prepare(dstX, dstY, dstWidth, dstHeight);
             short[] src = access.getDataUShort(srcBuf);
@@ -512,6 +516,7 @@ class TexturePaintContext implements PaintContext {
             super(img, anchor, t);
         }
 
+        @Override
         public Raster getRaster(int dstX, int dstY, int dstWidth, int dstHeight) {
             prepare(dstX, dstY, dstWidth, dstHeight);
             for(int j = 0; j < dstHeight; j++) {
@@ -609,7 +614,7 @@ class TexturePaintContext implements PaintContext {
     }
 
     /**
-     * Checks point overrunning of texture anchor 
+     * Checks point overrun of texture anchor 
      */
     int check(int value, int max) {
         if (value >= max) {
@@ -619,7 +624,7 @@ class TexturePaintContext implements PaintContext {
     }
 
     /**
-     * Checks point overrunning of texture anchor 
+     * Checks point overrun of texture anchor 
      */
     int check2(int value, int max) {
         value = value % max;

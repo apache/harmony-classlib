@@ -56,10 +56,12 @@ public abstract class Graphics2D extends Graphics {
 
     public abstract void drawString(AttributedCharacterIterator iterator, float x, float y);
 
+    @Override
     public abstract void drawString(AttributedCharacterIterator iterator, int x, int y);
 
     public abstract void drawString(String s, float x, float y);
 
+    @Override
     public abstract void drawString(String str, int x, int y);
 
     public abstract void fill(Shape s);
@@ -110,5 +112,6 @@ public abstract class Graphics2D extends Graphics {
 
     public abstract void translate(double tx, double ty);
 
+    @Override
     public abstract void translate(int x, int y);
 }

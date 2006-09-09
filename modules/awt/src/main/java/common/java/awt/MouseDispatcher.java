@@ -221,9 +221,7 @@ class MouseDispatcher {
         {
             Component[] children = ((Container) info.src).getComponents();
 
-            for (int i = 0; i <  children.length; i++) {
-                Component child = children[i];
-
+            for (Component child : children) {
                 if (child.isShowing()) {
                     if (child.contains(x - child.getX(),
                             y - child.getY()))
@@ -293,10 +291,9 @@ class MouseDispatcher {
         final Point lastPos = lastPressPos[index];
         if (lastPos == null) {
             return true;
-        } else {
-            return ((Math.abs(lastPos.x - info.position.x) > clickDelta) ||
-                    (Math.abs(lastPos.y - info.position.y) > clickDelta));
         }
+        return ((Math.abs(lastPos.x - info.position.x) > clickDelta) ||
+                (Math.abs(lastPos.y - info.position.y) > clickDelta));
     }
 
     private void dispatchMotionEvent(PointerInfo info, NativeEvent event) {
@@ -357,7 +354,7 @@ class MouseDispatcher {
     }
 
     private PointerInfo propagateEvent(PointerInfo info, long mask,
-                                       Class type, boolean pierceHW) {
+                                       Class<?> type, boolean pierceHW) {
         Component src = info.src;
         while ((src != null) &&
                (src.isLightweight() || pierceHW) &&

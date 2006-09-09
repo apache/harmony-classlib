@@ -41,6 +41,7 @@ public class Point extends Point2D implements Serializable {
         setLocation(p.x, p.y);
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -52,14 +53,17 @@ public class Point extends Point2D implements Serializable {
         return false;
     }
 
+    @Override
     public String toString() {
         return getClass().getName() + "[x=" + x + ",y=" + y + "]";
     }
 
+    @Override
     public double getX() {
         return x;
     }
 
+    @Override
     public double getY() {
         return y;
     }
@@ -77,6 +81,7 @@ public class Point extends Point2D implements Serializable {
         this.y = y;
     }
 
+    @Override
     public void setLocation(double x, double y) {
         setLocation((int)Math.round(x), (int)Math.round(y));
     }

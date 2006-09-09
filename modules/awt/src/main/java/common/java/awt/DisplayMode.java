@@ -58,21 +58,27 @@ public final class DisplayMode {
     *
     ***************************************************************************/
 
+    @Override
     public boolean equals(Object dm) {
-        if (dm instanceof DisplayMode)
+        if (dm instanceof DisplayMode) {
             return equals((DisplayMode)dm);
+        }
         return false;
     }
 
     public boolean equals(DisplayMode dm) {
-        if (dm.bitDepth != bitDepth)
+        if (dm.bitDepth != bitDepth) {
             return false;
-        if (dm.refreshRate != refreshRate)
+        }
+        if (dm.refreshRate != refreshRate) {
             return false;
-        if (dm.width != width)
+        }
+        if (dm.width != width) {
             return false;
-        if (dm.height != height)
+        }
+        if (dm.height != height) {
             return false;
+        }
         return true;
     }
 

@@ -73,16 +73,18 @@ public abstract class GraphicsConfiguration {
     public VolatileImage createCompatibleVolatileImage(int width, int height,
             ImageCapabilities caps) throws AWTException {
         VolatileImage res = createCompatibleVolatileImage(width, height);
-        if (!res.getCapabilities().equals(caps))
+        if (!res.getCapabilities().equals(caps)) {
             throw new AWTException("Can not create VolatileImage with specified capabilities");
+        }
         return res;
     }
 
     public VolatileImage createCompatibleVolatileImage(int width, int height,
             ImageCapabilities caps, int transparency) throws AWTException {
         VolatileImage res = createCompatibleVolatileImage(width, height, transparency);
-        if (!res.getCapabilities().equals(caps))
+        if (!res.getCapabilities().equals(caps)) {
             throw new AWTException("Can not create VolatileImage with specified capabilities");
+        }
         return res;
     }
 

@@ -27,6 +27,7 @@ public class DefaultFocusTraversalPolicy
     public DefaultFocusTraversalPolicy() {
     }
 
+    @Override
     protected boolean accept(Component comp) {
         toolkit.lockAWT();
         try {

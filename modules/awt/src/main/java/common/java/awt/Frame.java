@@ -83,6 +83,7 @@ public class Frame extends Window implements MenuContainer {
     protected  class AccessibleAWTFrame extends AccessibleAWTWindow {
         private static final long serialVersionUID = -6172960752956030250L;
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             toolkit.lockAWT();
             try {
@@ -92,6 +93,7 @@ public class Frame extends Window implements MenuContainer {
             }
         }
 
+        @Override
         public AccessibleStateSet getAccessibleStateSet() {
             // do nothing(Window does everything already)
             return super.getAccessibleStateSet();
@@ -137,10 +139,12 @@ public class Frame extends Window implements MenuContainer {
         }
     }
 
+    @Override
     protected void finalize() throws Throwable {
         // do nothing
     }
 
+    @Override
     public void remove(MenuComponent popup) {
         toolkit.lockAWT();
         try {
@@ -161,6 +165,7 @@ public class Frame extends Window implements MenuContainer {
         }
     }
 
+    @Override
     public void addNotify() {
         toolkit.lockAWT();
         try {
@@ -173,6 +178,7 @@ public class Frame extends Window implements MenuContainer {
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         toolkit.lockAWT();
         try {
@@ -182,6 +188,7 @@ public class Frame extends Window implements MenuContainer {
         }
     }
 
+    @Override
     protected String paramString() {
         toolkit.lockAWT();
         try {
@@ -214,6 +221,7 @@ public class Frame extends Window implements MenuContainer {
         return str;
     }
 
+    @Override
     public void removeNotify() {
         toolkit.lockAWT();
         try {
@@ -229,6 +237,7 @@ public class Frame extends Window implements MenuContainer {
     /**
      * @deprecated
      */
+    @Deprecated
     public void setCursor(int cursorType) {
         toolkit.lockAWT();
         try {
@@ -241,6 +250,7 @@ public class Frame extends Window implements MenuContainer {
     /**
      * @deprecated
      */
+    @Deprecated
     public int getCursorType() {
         toolkit.lockAWT();
         try {
@@ -262,6 +272,7 @@ public class Frame extends Window implements MenuContainer {
     /**
      * Returns icon image of this frame. 
      */
+    @Override
     public Image getIconImage() {
         toolkit.lockAWT();
         try {
@@ -289,6 +300,7 @@ public class Frame extends Window implements MenuContainer {
         }
     }
 
+    @Override
     public String getTitle() {
         toolkit.lockAWT();
         try {
@@ -298,6 +310,7 @@ public class Frame extends Window implements MenuContainer {
         }
     }
 
+    @Override
     public boolean isResizable() {
         toolkit.lockAWT();
         try {
@@ -307,6 +320,7 @@ public class Frame extends Window implements MenuContainer {
         }
     }
 
+    @Override
     public boolean isUndecorated() {
         toolkit.lockAWT();
         try {
@@ -451,6 +465,7 @@ public class Frame extends Window implements MenuContainer {
         }
     }
 
+    @Override
     public void setResizable(boolean resizable) {
         toolkit.lockAWT();
         try {
@@ -469,10 +484,12 @@ public class Frame extends Window implements MenuContainer {
         }
     }
 
+    @Override
     public void setTitle(String title) {
         super.setTitle(title);
     }
 
+    @Override
     public void setUndecorated(boolean undecorated) {
         toolkit.lockAWT();
         try {
@@ -482,6 +499,7 @@ public class Frame extends Window implements MenuContainer {
         }
     }
 
+    @Override
     public Insets getInsets() {
         toolkit.lockAWT();
         try {
@@ -495,6 +513,7 @@ public class Frame extends Window implements MenuContainer {
         }
     }
 
+    @Override
     void setBounds(int x, int y, int w, int h, int bMask,
                    boolean updateBehavior) {
         boolean widthChanged =  (this.w != w);
@@ -504,17 +523,20 @@ public class Frame extends Window implements MenuContainer {
         }
     }
 
+    @Override
     void nativeWindowCreated(NativeWindow win) {
         super.nativeWindowCreated(win);
 
         win.setMaximizedBounds(getMaximizedBounds());
     }
 
+    @Override
     String autoName() {
         int number = toolkit.autoNumber.nextFrame++;
         return ("frame" + Integer.toString(number));
     }
 
+    @Override
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTFrame();
     }
@@ -538,6 +560,7 @@ public class Frame extends Window implements MenuContainer {
         }
     }
 
+    @Override
     void validateMenuBar() {
         if (menuBar != null) {
             menuBar.validate();
@@ -546,24 +569,24 @@ public class Frame extends Window implements MenuContainer {
 
 
     static final class AllFrames {
-        private final ArrayList frames = new ArrayList();
+        private final ArrayList<WeakReference<Frame>> frames = new ArrayList<WeakReference<Frame>>();
 
         void add(Frame f) {
-            frames.add(new WeakReference(f));
+            frames.add(new WeakReference<Frame>(f));
         }
 
         Frame[] getFrames() {
-            ArrayList aliveFrames = new ArrayList();
+            ArrayList<Frame> aliveFrames = new ArrayList<Frame>();
 
-            for(Iterator it = frames.iterator(); it.hasNext(); ) {
-                WeakReference ref = (WeakReference)it.next();
+            for(Iterator<WeakReference<Frame>> it = frames.iterator(); it.hasNext(); ) {
+                WeakReference<?> ref = it.next();
                 Frame f = (Frame)ref.get();
                 if (f != null) {
                     aliveFrames.add(f);
                 }
             }
 
-            return (Frame [])aliveFrames.toArray(new Frame[0]);
+            return aliveFrames.toArray(new Frame[0]);
         }
     }
 }

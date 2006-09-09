@@ -51,12 +51,12 @@ public abstract class Toolkit {
     NativeEventThread nativeThread;
     private final AWTEventsManager awtEventsManager;
     /* key = nativeWindow, value = Component, should be Map<NativeWindow, Component> */
-    private final Map windowComponentMap = new HashMap();
+    private final Map<NativeWindow, Object> windowComponentMap = new HashMap<NativeWindow, Object>();
     /* key = nativeWindow, value = MenuComponent */
 
-    private final Map windowPopupMap = new HashMap();
+    private final Map<NativeWindow, Object> windowPopupMap = new HashMap<NativeWindow, Object>();
 
-    private final Map windowFocusProxyMap = new HashMap();
+    private final Map<NativeWindow, Window> windowFocusProxyMap = new HashMap<NativeWindow, Window>();
 
     final Object awtTreeLock = new Object();
     private final Synchronizer synchronizer = ContextStorage.getSynchronizer();
@@ -80,9 +80,9 @@ public abstract class Toolkit {
     /**
      * The set of desktop properties that user set directly.
      */
-    private final HashSet userPropSet = new HashSet();
+    private final HashSet<String> userPropSet = new HashSet<String>();
 
-    protected final Map desktopProperties;
+    protected final Map<String, Object> desktopProperties;
 
     protected final PropertyChangeSupport desktopPropsSupport;
 
@@ -102,6 +102,7 @@ public abstract class Toolkit {
 
     private final class ComponentInternalsImpl extends ComponentInternals {
 
+        @Override
         public NativeWindow getNativeWindow(Component component) {
             lockAWT();
             try {
@@ -111,6 +112,7 @@ public abstract class Toolkit {
             }
         }
 
+        @Override
         public void startMouseGrab(Window grabWindow, Runnable whenCanceled) {
             lockAWT();
             try {
@@ -120,6 +122,7 @@ public abstract class Toolkit {
             }
         }
 
+        @Override
         public void endMouseGrab() {
             lockAWT();
             try {
@@ -129,6 +132,7 @@ public abstract class Toolkit {
             }
         }
 
+        @Override
         public Window attachNativeWindow(long nativeWindowId) {
             lockAWT();
             try {
@@ -141,6 +145,7 @@ public abstract class Toolkit {
             }
         }
 
+        @Override
         public void makePopup(Window window) {
             lockAWT();
             try {
@@ -150,6 +155,7 @@ public abstract class Toolkit {
             }
         }
 
+        @Override
         public void onDrawImage(Component comp, Image image, Point destLocation,
                 Dimension destSize, Rectangle source) {
             lockAWT();
@@ -160,15 +166,18 @@ public abstract class Toolkit {
             }
         }
 
+        @Override
         public void setCaretPos(Component c, int x, int y) {
             c.setCaretPos(x, y);
         }
 
+        @Override
         public void unsafeInvokeAndWait(Runnable runnable)
                 throws InterruptedException, InvocationTargetException {
             Toolkit.this.unsafeInvokeAndWait(runnable);
         }
 
+        @Override
         public TextKit getTextKit(Component comp) {
             lockAWT();
             try {
@@ -178,6 +187,7 @@ public abstract class Toolkit {
             }
         }
 
+        @Override
         public void setTextKit(Component comp, TextKit kit) {
             lockAWT();
             try {
@@ -187,6 +197,7 @@ public abstract class Toolkit {
             }
         }
 
+        @Override
         public TextFieldKit getTextFieldKit(Component comp)  {
             lockAWT();
             try {
@@ -196,6 +207,7 @@ public abstract class Toolkit {
             }
         }
 
+        @Override
         public void setTextFieldKit(Component comp, TextFieldKit kit) {
             lockAWT();
             try {
@@ -205,10 +217,12 @@ public abstract class Toolkit {
             }
         }
 
+        @Override
         public void shutdown() {
             dispatchThread.shutdown();
         }
 
+        @Override
         public void setMouseEventPreprocessor(
                 MouseEventPreprocessor preprocessor) {
             lockAWT();
@@ -219,10 +233,12 @@ public abstract class Toolkit {
             }
         }
 
+        @Override
         public Choice createCustomChoice(ChoiceStyle style) {
             return new Choice(style);
         }
 
+        @Override
         public Insets getNativeInsets(Window w) {
             lockAWT();
             try {
@@ -232,10 +248,12 @@ public abstract class Toolkit {
             }
         }
 
+        @Override
         public MultiRectArea getRepaintRegion(Component c) {
             return c.repaintRegion;
         }
 
+        @Override
         public MultiRectArea subtractPendingRepaintRegion(Component c, MultiRectArea mra) {
             lockAWT();
             try {
@@ -249,6 +267,7 @@ public abstract class Toolkit {
             }
         }
 
+        @Override
         public boolean wasPainted(Window w) {
             lockAWT();
             try {
@@ -258,22 +277,27 @@ public abstract class Toolkit {
             }
         }
 
+        @Override
         public MultiRectArea getObscuredRegion(Component c) {
             return c.getObscuredRegion(null);
         }
 
+        @Override
         public void setDesktopProperty(String name, Object value) {
             Toolkit.this.setDesktopProperty(name, value);            
         }
 
+        @Override
         public void runModalLoop(Dialog dlg) {
             dlg.runModalLoop();
         }
 
+        @Override
         public void endModalLoop(Dialog dlg) {
             dlg.endModalLoop();            
         }
 
+        @Override
         public void setVisibleFlag(Component comp, boolean visible) {
             comp.visible = visible;            
         }
@@ -305,10 +329,10 @@ public abstract class Toolkit {
         ContextStorage.getSynchronizer().unlock();
     }
 
-    /*
+    /**
      * InvokeAndWait under AWT lock. W/o this method system can hang up.
      * Added to support modality (Dialog.show() & PopupMenu.show()) from
-     * not event dispatch thread. Use in other cases is not recomended.
+     * not event dispatch thread. Use in other cases is not recommended.
      *
      * Still can be called only for whole API methods that
      * cannot be called from other classes API methods.
@@ -366,16 +390,17 @@ public abstract class Toolkit {
             Toolkit defToolkit = ContextStorage.getDefaultToolkit();
             if (defToolkit != null) {
                 return defToolkit;
-            } else {
-                staticLockAWT();
-                try {
-                    defToolkit = new ToolkitImpl();
-                    ContextStorage.setDefaultToolkit(defToolkit);
-                    return defToolkit;
-                } finally {
-                    staticUnlockAWT();
-                }
             }
+            staticLockAWT();
+            try {
+                defToolkit = new ToolkitImpl();
+                ContextStorage.setDefaultToolkit(defToolkit);
+                return defToolkit;
+            } finally {
+                staticUnlockAWT();
+            }
+            
+            
         //TODO: read system property named awt.toolkit
         //and create an instance of the specified class,
         //by default use ToolkitImpl
@@ -424,7 +449,7 @@ public abstract class Toolkit {
         if(id == 0) {
             return null;
         }
-        return (Window) windowFocusProxyMap.get(getWindowFactory().getWindowById(id));
+        return windowFocusProxyMap.get(getWindowFactory().getWindowById(id));
     }
 
     final WindowFactory getWindowFactory() {
@@ -439,11 +464,11 @@ public abstract class Toolkit {
         lockAWT();
         try {
             ComponentInternals.setComponentInternals(new ComponentInternalsImpl());
-            EventQueue eq = new EventQueue(this);
+            // EventQueue eq = new EventQueue(this);
             dispatcher = new Dispatcher(this);
             final String className = getWTKClassName();
 
-            desktopProperties = new HashMap();
+            desktopProperties = new HashMap<String, Object>();
             desktopPropsSupport = new PropertyChangeSupport(this);
 
             awtEventsManager = new AWTEventsManager();
@@ -551,12 +576,12 @@ public abstract class Toolkit {
 
     protected abstract EventQueue getSystemEventQueueImpl();
 
-    public abstract Map mapInputMethodHighlight(InputMethodHighlight highlight) throws HeadlessException;
+    public abstract Map<?, ?> mapInputMethodHighlight(InputMethodHighlight highlight) throws HeadlessException;
 
-    Map mapInputMethodHighlightImpl(InputMethodHighlight highlight)
+    Map<?, ?> mapInputMethodHighlightImpl(InputMethodHighlight highlight)
             throws HeadlessException {
         checkHeadless();
-        HashMap map = new HashMap();
+        HashMap<?, ?> map = new HashMap<Object, Object>();
         wtk.getSystemProperties().mapInputMethodHighlight(highlight, map);
         return Collections.unmodifiableMap(map);
     }
@@ -570,7 +595,7 @@ public abstract class Toolkit {
         } finally {
             unlockAWT();
         }
-        if (l != null) { // there is no garantee that null listener will not be added
+        if (l != null) { // there is no guarantee that null listener will not be added
             desktopPropsSupport.addPropertyChangeListener(propName, l);
         }
     }
@@ -585,7 +610,9 @@ public abstract class Toolkit {
         } finally {
             unlockAWT();
         }
-        if (true) throw new RuntimeException("Method is not implemented"); //TODO: implement
+        if (true) {
+            throw new RuntimeException("Method is not implemented"); //TODO: implement
+        }
         return null;
     }
 
@@ -631,7 +658,7 @@ public abstract class Toolkit {
     }
 
     public DragGestureRecognizer createDragGestureRecognizer(
-            Class recognizerAbstractClass, 
+            Class<?> recognizerAbstractClass, 
             DragSource ds, 
             Component c, 
             int srcActions, 
@@ -687,7 +714,9 @@ public abstract class Toolkit {
             unlockAWT();
         }
 
-        if (true) throw new RuntimeException("Method is not implemented"); //TODO: implement
+        if (true) {
+            throw new RuntimeException("Method is not implemented"); //TODO: implement
+        }
         return true;
     }
 
@@ -705,7 +734,7 @@ public abstract class Toolkit {
         lockAWT();
         try {
             checkHeadless();
-            return KeyEvent.CTRL_MASK;
+            return InputEvent.CTRL_MASK;
         } finally {
             unlockAWT();
         }
@@ -718,7 +747,9 @@ public abstract class Toolkit {
             unlockAWT();
         }
 
-        if (true) throw new RuntimeException("Method is not implemented"); //TODO: implement
+        if (true) {
+            throw new RuntimeException("Method is not implemented"); //TODO: implement
+        }
         return null;
     }
 
@@ -859,7 +890,9 @@ public abstract class Toolkit {
             unlockAWT();
         }
 
-        if (true) throw new RuntimeException("Method is not implemented"); //TODO: implement
+        if (true) {
+            throw new RuntimeException("Method is not implemented"); //TODO: implement
+        }
         return;
     }
 
@@ -873,7 +906,7 @@ public abstract class Toolkit {
             }
             shutdownWatchdog.setWindowListEmpty(true);
         } else {
-            for (Iterator i = windows.iterator(); i.hasNext();) {
+            for (Iterator<?> i = windows.iterator(); i.hasNext();) {
                 ((Window) i.next()).redrawAll();
             }
         }
@@ -898,7 +931,7 @@ public abstract class Toolkit {
      *
      * This is done this way because on Windows the native window gets a series of native
      * events before windowFactory.CreateWindow() returns, and the WinWindow object should be created
-     * to process them. The WM_CREATE message is garanteed to be first in the series, so that the
+     * to process them. The WM_CREATE message is guaranteed to be first in the series, so that the
      * the WM_CREATE handler creates the WinWindow object and calls nativeWindowCreated()
      * for it.
      *
@@ -985,12 +1018,15 @@ public abstract class Toolkit {
                 cp.iconified = (state & Frame.ICONIFIED) != 0;
 
                 cp.maximizedState = 0;
-                if ( (state & Frame.MAXIMIZED_BOTH) != 0)
+                if ( (state & Frame.MAXIMIZED_BOTH) != 0) {
                     cp.maximizedState |= cp.MAXIMIZED;
-                if ( (state & Frame.MAXIMIZED_HORIZ) != 0)
+                }
+                if ( (state & Frame.MAXIMIZED_HORIZ) != 0) {
                     cp.maximizedState |= cp.MAXIMIZED_HORIZ;
-                if ( (state & Frame.MAXIMIZED_VERT) != 0)
+                }
+                if ( (state & Frame.MAXIMIZED_VERT) != 0) {
                     cp.maximizedState |= cp.MAXIMIZED_VERT;
+                }
 
                 cp.decorType = CreationParams.DECOR_TYPE_FRAME;
 
@@ -1008,7 +1044,7 @@ public abstract class Toolkit {
             parent = c.getHWAncestor();
             cp.name = c.getName();
 
-            //set location relative to the nearest heavyweight ancestor
+            //set location relative to the nearest heavy weight ancestor
             location = MouseDispatcher.convertPoint(c, 0, 0, parent);
         }
 
@@ -1218,12 +1254,12 @@ public abstract class Toolkit {
         String osName = System.getProperty("os.name").toLowerCase();
         String packageBase = "org.apache.harmony.awt.theme", win = "windows", lin = "linux";
 
-        PrivilegedAction action = new PrivilegedAction() {
-            public Object run() {
+        PrivilegedAction<String> action = new PrivilegedAction<String>() {
+            public String run() {
                 return System.getProperty("awt.theme");
             }};
 
-        String className = (String)AccessController.doPrivileged(action);
+        String className = AccessController.doPrivileged(action);
 
         if (className == null) {
             if (osName.startsWith(lin)) {
@@ -1257,7 +1293,7 @@ public abstract class Toolkit {
 
         void removeAWTEventListener(AWTEventListener listener) {
             if (listener != null) {
-                for (Iterator i = listeners.getUserIterator(); i.hasNext();) {
+                for (Iterator<?> i = listeners.getUserIterator(); i.hasNext();) {
                     AWTEventListenerProxy proxy = (AWTEventListenerProxy) i.next();
 
                     if (listener == proxy.getListener()) {
@@ -1270,19 +1306,19 @@ public abstract class Toolkit {
         }
 
         AWTEventListener[] getAWTEventListeners() {
-            HashSet listenersSet = new HashSet();
+            HashSet<EventListener> listenersSet = new HashSet<EventListener>();
 
-            for (Iterator i = listeners.getUserIterator(); i.hasNext();) {
+            for (Iterator<?> i = listeners.getUserIterator(); i.hasNext();) {
                 listenersSet.add(((AWTEventListenerProxy) i.next()).getListener());
             }
 
-            return (AWTEventListener[]) listenersSet.toArray(new AWTEventListener[0]);
+            return listenersSet.toArray(new AWTEventListener[0]);
         }
 
         AWTEventListener[] getAWTEventListeners(long eventMask) {
-            HashSet listenersSet = new HashSet();
+            HashSet<EventListener> listenersSet = new HashSet<EventListener>();
 
-            for (Iterator i = listeners.getUserIterator(); i.hasNext();) {
+            for (Iterator<?> i = listeners.getUserIterator(); i.hasNext();) {
                 AWTEventListenerProxy listenerProxy = (AWTEventListenerProxy) i.next();
 
                 if ((listenerProxy.getEventMask() & eventMask) == eventMask) {
@@ -1290,7 +1326,7 @@ public abstract class Toolkit {
                 }
             }
 
-            return (AWTEventListener[]) listenersSet.toArray(new AWTEventListener[0]);
+            return listenersSet.toArray(new AWTEventListener[0]);
         }
 
         void dispatchAWTEvent(AWTEvent event) {
@@ -1300,7 +1336,7 @@ public abstract class Toolkit {
                 return;
             }
 
-            for (Iterator i = listeners.getUserIterator(); i.hasNext();) {
+            for (Iterator<?> i = listeners.getUserIterator(); i.hasNext();) {
                 AWTEventListenerProxy listenerProxy = (AWTEventListenerProxy) i.next();
 
                 if ((listenerProxy.getEventMask() & descriptor.eventMask) != 0) {
@@ -1341,32 +1377,34 @@ public abstract class Toolkit {
          * this set it is replaced to avoid the possible conflict
          * with concurrently running lock-free iterator loop
          */
-        private LinkedHashSet windows = new LinkedHashSet();
+        private LinkedHashSet<Component> windows = new LinkedHashSet<Component>();
         private final Object lock = new Object();
 
+        @SuppressWarnings("unchecked")
         void add(Component w) {
             synchronized (lock) {
                 if (isDispatchThread()) {
                     windows.add(w);
                 } else {
-                    windows = (LinkedHashSet)windows.clone();
+                    windows = (LinkedHashSet<Component>)windows.clone();
                     windows.add(w);
                 }
             }
         }
 
+        @SuppressWarnings("unchecked")
         void remove(Component w) {
             synchronized (lock) {
                 if (isDispatchThread()) {
                     windows.remove(w);
                 } else {
-                    windows = (LinkedHashSet)windows.clone();
+                    windows = (LinkedHashSet<Component>)windows.clone();
                     windows.remove(w);
                 }
             }
         }
 
-        Iterator iterator() {
+        Iterator<?> iterator() {
             synchronized (lock) {
                 return new ReadOnlyIterator(windows.iterator());
             }

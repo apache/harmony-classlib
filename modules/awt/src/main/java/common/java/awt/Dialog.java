@@ -42,6 +42,7 @@ public class Dialog extends Window {
             restoreActive = active;
             super.runModalLoop();
         }
+        @Override
         public void endModalLoop() {
             if (restoreActive != null) {
                 restoreActive.toFront();
@@ -54,6 +55,7 @@ public class Dialog extends Window {
     protected class AccessibleAWTDialog extends AccessibleAWTWindow {
         private static final long serialVersionUID = 4837230331833941201L;
 
+        @Override
         public AccessibleStateSet getAccessibleStateSet() {
             toolkit.lockAWT();
             try {
@@ -67,6 +69,7 @@ public class Dialog extends Window {
             }
         }
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             toolkit.lockAWT();
             try {
@@ -167,6 +170,7 @@ public class Dialog extends Window {
         }
     }
 
+    @Override
     protected String paramString() {
         toolkit.lockAWT();
         try {
@@ -176,6 +180,7 @@ public class Dialog extends Window {
         }
     }
 
+    @Override
     public void dispose() {
         toolkit.lockAWT();
         try {
@@ -188,6 +193,7 @@ public class Dialog extends Window {
         }
     }
 
+    @Override
     public void addNotify() {
         toolkit.lockAWT();
         try {
@@ -197,6 +203,7 @@ public class Dialog extends Window {
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         toolkit.lockAWT();
         try {
@@ -206,6 +213,7 @@ public class Dialog extends Window {
         }
     }
 
+    @Override
     public void hide() {
         toolkit.lockAWT();
         try {
@@ -224,6 +232,7 @@ public class Dialog extends Window {
         }
     }
     
+    @Override
     public void show() {
         showImpl();
     }
@@ -254,6 +263,7 @@ public class Dialog extends Window {
         }
     }
 
+    @Override
     public String getTitle() {
         toolkit.lockAWT();
         try {
@@ -272,6 +282,7 @@ public class Dialog extends Window {
         }
     }
 
+    @Override
     public boolean isResizable() {
         toolkit.lockAWT();
         try {
@@ -281,6 +292,7 @@ public class Dialog extends Window {
         }
     }
 
+    @Override
     public boolean isUndecorated() {
         toolkit.lockAWT();
         try {
@@ -297,8 +309,9 @@ public class Dialog extends Window {
                 return;
             }
 
-            if(isVisible())
+            if(isVisible()) {
                 throw new IllegalComponentStateException("Cannot change the modality while the dialog is visible");
+            }
 
             modalContext = modal ? new DialogModalContext() : null;
         } finally {
@@ -306,6 +319,7 @@ public class Dialog extends Window {
         }
     }
 
+    @Override
     public void setResizable(boolean resizable) {
         toolkit.lockAWT();
         try {
@@ -316,10 +330,12 @@ public class Dialog extends Window {
     }
 
 
+    @Override
     public void setTitle(String title) {
         super.setTitle(title);
     }
 
+    @Override
     public void setUndecorated(boolean undecorated) {
         toolkit.lockAWT();
         try {
@@ -330,7 +346,7 @@ public class Dialog extends Window {
     }
 
     private void showModal() {
-        Collection otherWindows;
+        Collection<Window> otherWindows;
         Window active;
         toolkit.lockAWT();
         try {
@@ -345,9 +361,9 @@ public class Dialog extends Window {
         enableOtherWindows(otherWindows);
     }
 
-    private Collection disableOtherWindows() {
-        Iterator i = toolkit.windows.iterator();
-        LinkedList result = new LinkedList();
+    private Collection<Window> disableOtherWindows() {
+        Iterator<?> i = toolkit.windows.iterator();
+        LinkedList<Window> result = new LinkedList<Window>();
         while(i.hasNext()) {
             Object obj = i.next();
             if(obj instanceof Window) {
@@ -362,23 +378,26 @@ public class Dialog extends Window {
         return result;
     }
 
-    private void enableOtherWindows(Collection disabledWindows) {
-        Iterator i = disabledWindows.iterator();
+    private void enableOtherWindows(Collection<Window> disabledWindows) {
+        Iterator<Window> i = disabledWindows.iterator();
         while (i.hasNext()) {
-            Window w = (Window)i.next();
+            Window w = i.next();
             w.setEnabled(true);
         }
     }
 
+    @Override
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTDialog();
     }
 
+    @Override
     String autoName() {
         int number = toolkit.autoNumber.nextDialog++;
         return "dialog" + Integer.toString(number);
     }
 
+    @Override
     Color getDefaultBackground() {
         return SystemColor.control;
     }

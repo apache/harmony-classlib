@@ -81,8 +81,9 @@ public class RenderingHints implements Map, Cloneable {
     public static final Object VALUE_TEXT_ANTIALIAS_OFF = new KeyValue(KEY_TEXT_ANTIALIASING);
 
     public RenderingHints(Map map) {
-        if (map != null)
+        if (map != null) {
             putAll(map);
+        }
     }
 
     public RenderingHints(Key key, Object value) {
@@ -94,18 +95,19 @@ public class RenderingHints implements Map, Cloneable {
     }
 
     public Object put(Object key, Object value) {
-        if (!((Key)key).isCompatibleValue(value))
+        if (!((Key)key).isCompatibleValue(value)) {
             throw new IllegalArgumentException();
+        }
 
         return map.put(key, value);
     }
 
     public Object remove(Object key) {
-        return map.remove((Key)key);
+        return map.remove(key);
     }
 
     public Object get(Object key) {
-        return map.get((Key)key);
+        return map.get(key);
     }
 
     public Set keySet() {
@@ -142,10 +144,11 @@ public class RenderingHints implements Map, Cloneable {
     }
 
     public boolean containsKey(Object key) {
-        if (key == null)
+        if (key == null) {
             throw new NullPointerException();
+        }
 
-        return map.containsKey((Key)key);
+        return map.containsKey(key);
     }
 
     public boolean isEmpty() {
@@ -160,34 +163,41 @@ public class RenderingHints implements Map, Cloneable {
         return map.size();
     }
 
+    @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Map))
+        if (!(o instanceof Map)) {
             return false;
+        }
 
         Map m = (Map)o;
         Set keys = keySet();
-        if (!keys.equals(m.keySet()))
+        if (!keys.equals(m.keySet())) {
             return false;
+        }
 
         Iterator it = keys.iterator();
         while (it.hasNext()) {
             Key key = (Key)it.next();
             Object v1 = get(key);
             Object v2 = m.get(key);
-            if (!(v1==null?v2==null:v1.equals(v2)))
+            if (!(v1==null?v2==null:v1.equals(v2))) {
                 return false;
+            }
         }
         return true;
     }
 
+    @Override
     public int hashCode() {
         return map.hashCode();
     }
 
+    @Override
     public Object clone() {
         return new RenderingHints(map);
     }
 
+    @Override
     public String toString() {
         return "RenderingHints["+map.toString()+"]";
     }
@@ -202,10 +212,12 @@ public class RenderingHints implements Map, Cloneable {
             this.key = key;
         }
 
+        @Override
         public final boolean equals(Object o) {
             return this == o;
         }
 
+        @Override
         public final int hashCode() {
             return System.identityHashCode(this);
         }
@@ -226,9 +238,11 @@ public class RenderingHints implements Map, Cloneable {
             super(key);
         }
 
+        @Override
         public boolean isCompatibleValue(Object val) {
-            if (!(val instanceof KeyValue))
+            if (!(val instanceof KeyValue)) {
                 return false;
+            }
 
             return ((KeyValue)val).key == this;
         }

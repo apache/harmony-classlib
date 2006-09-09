@@ -75,6 +75,7 @@ public class FlowLayout implements LayoutManager, Serializable {
         }
     }
 
+    @Override
     public String toString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:
@@ -156,16 +157,14 @@ public class FlowLayout implements LayoutManager, Serializable {
         Rectangle clientRect = target.getClient();
         Insets insets = target.getInsets();
         boolean l2r = target.getComponentOrientation().isLeftToRight();
-        ArrayList rowComponents = new ArrayList();
+        ArrayList<Component> rowComponents = new ArrayList<Component>();
         int initW = 2 * hGap;
         int w = initW;
         int y = insets.top + vGap;
         int maxH = 0;
         boolean first = true;
 
-        for (Iterator i = getComponentsZOrder(target).iterator(); i.hasNext(); ) {
-            Component component = (Component)i.next();
-
+        for (Component component : getComponentsZOrder(target)) {
             if ((component == null) || !component.isVisible()) {
                 continue;
             }
@@ -251,7 +250,7 @@ public class FlowLayout implements LayoutManager, Serializable {
         }
     }
 
-    private void layoutRow(ArrayList rowComponents, int freeW, int x, int y,
+    private void layoutRow(ArrayList<Component> rowComponents, int freeW, int x, int y,
                            int maxH, boolean l2r) {
         x += hGap;
         switch (alignment) {
@@ -274,7 +273,7 @@ public class FlowLayout implements LayoutManager, Serializable {
 
         int lastInd = rowComponents.size() - 1;
         for (int i = 0; i <= lastInd ; i++) {
-            Component c = (Component)rowComponents.get(l2r ? i : lastInd - i);
+            Component c = rowComponents.get(l2r ? i : lastInd - i);
             Dimension d = c.getPreferredSize();
             c.setBounds(x, y + (maxH - d.height) / 2, d.width, d.height);
             x += d.width + hGap;
@@ -298,9 +297,7 @@ public class FlowLayout implements LayoutManager, Serializable {
         int w = hGap;
         int maxH = 0;
 
-        for (int i = 0; i < components.length; i++) {
-            Component component = components[i];
-
+        for (Component component : components) {
             if (component.isVisible()) {
                 Dimension cd = preferred ?
                         component.getPreferredSize() :
@@ -313,17 +310,15 @@ public class FlowLayout implements LayoutManager, Serializable {
         return new Dimension(w, maxH + 2 * vGap);
     }
 
-    private ArrayList getComponentsZOrder(Container target) {
+    private ArrayList<Component> getComponentsZOrder(Container target) {
         int capacity = target.getComponentCount();
-        ArrayList zComponents = new ArrayList(capacity);
+        ArrayList<Component> zComponents = new ArrayList<Component>(capacity);
 
         for (int i = 0; i < capacity; i++) {
             zComponents.add(null);
         }
 
-        for (int i = 0; i < components.length; i++) {
-            Component component = components[i];
-
+        for (Component component : components) {
             if (component.getParent() == target) {
                 zComponents.set(target.getComponentZOrder(component), component);
             }

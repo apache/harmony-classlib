@@ -42,6 +42,7 @@ public class ContainerOrderFocusTraversalPolicy extends FocusTraversalPolicy
         }
     }
 
+    @Override
     public Component getComponentAfter(Container aContainer, Component aComponent) {
         toolkit.lockAWT();
         try {
@@ -76,6 +77,7 @@ public class ContainerOrderFocusTraversalPolicy extends FocusTraversalPolicy
         }
     }
 
+    @Override
     public Component getComponentBefore(Container aContainer, Component aComponent) {
         toolkit.lockAWT();
         try {
@@ -137,7 +139,7 @@ public class ContainerOrderFocusTraversalPolicy extends FocusTraversalPolicy
         }
         Component curComp = comp;
         while ((curComp != null)) {
-            Container parent = (Container) curComp.getRealParent();
+            Container parent = curComp.getRealParent();
             if ((parent != null) && parent.isFocusTraversalPolicyProvider()) {
                 return parent;
             }
@@ -146,6 +148,7 @@ public class ContainerOrderFocusTraversalPolicy extends FocusTraversalPolicy
         return null;
     }
 
+    @Override
     public Component getDefaultComponent(Container container) {
         toolkit.lockAWT();
         try {
@@ -155,6 +158,7 @@ public class ContainerOrderFocusTraversalPolicy extends FocusTraversalPolicy
         }
     }
 
+    @Override
     public Component getFirstComponent(Container container) {
         toolkit.lockAWT();
         try {
@@ -278,7 +282,7 @@ public class ContainerOrderFocusTraversalPolicy extends FocusTraversalPolicy
         if (root == null || comp == null) {
             return null;
         }
-        Container parent = (Container) comp.getRealParent();
+        Container parent = comp.getRealParent();
         if (parent == null) {
             parent = (Container) comp;
         }
@@ -380,7 +384,7 @@ public class ContainerOrderFocusTraversalPolicy extends FocusTraversalPolicy
     private Component getCompAfterContainer(Container container) {
         Container parent = container;
         while (parent != null) {
-            parent = (Container) container.getRealParent();
+            parent = container.getRealParent();
             Component nextComp = getComp(parent, container, true);
             if (nextComp != null) {
                 return nextComp;
@@ -425,6 +429,7 @@ public class ContainerOrderFocusTraversalPolicy extends FocusTraversalPolicy
         return ((idx >= 0) && (idx < container.getComponentCount()));
     }
 
+    @Override
     public Component getLastComponent(Container container) {
         toolkit.lockAWT();
         try {

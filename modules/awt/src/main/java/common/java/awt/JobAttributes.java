@@ -41,10 +41,6 @@ public final class JobAttributes implements Cloneable {
 
     /* section of the nested classes */
     public static final class DefaultSelectionType {
-        private final int value;
-        private final String name;
-        private static final String names[] = {"ALL", "RANGE", "SELECTION"};
-
         public static final DefaultSelectionType ALL
                                     = new DefaultSelectionType(0);
         public static final DefaultSelectionType RANGE
@@ -54,8 +50,6 @@ public final class JobAttributes implements Cloneable {
 
         private DefaultSelectionType(int i){
             super();
-            value = i;
-            name = names[i];
         }
 
         private DefaultSelectionType(){
@@ -64,17 +58,11 @@ public final class JobAttributes implements Cloneable {
     }
 
     public static final class DestinationType {
-        private final int value;
-        private final String name;
-        private static final String names[] = {"FILE", "PRINTER"};
-
         public static final DestinationType FILE = new DestinationType(0);
         public static final DestinationType PRINTER = new DestinationType(1);
 
         private DestinationType(int i) {
             super();
-            value = i;
-            name = names[i];
         }
         private DestinationType() {
             this(0);
@@ -82,18 +70,12 @@ public final class JobAttributes implements Cloneable {
     }
 
     public static final class DialogType{
-        private final int value;
-        private final String name;
-        private static final String names[] = {"COMMON", "NATIVE", "NONE"};
-
         public static final DialogType COMMON = new DialogType(0);
         public static final DialogType NATIVE = new DialogType(1);
         public static final DialogType NONE = new DialogType(2);
 
         private DialogType(int i){
             super();
-            value = i;
-            name = names[i];
         }
         private DialogType(){
             this(0);
@@ -102,12 +84,6 @@ public final class JobAttributes implements Cloneable {
     }
 
     public static final class MultipleDocumentHandlingType {
-        private final int value;
-        private final String name;
-        private static final String names[]
-                 = {"SEPARATE_DOCUMENTS_COLLATED_COPIES",
-                    "SEPARATE_DOCUMENTS_UNCOLLATED_COPIES"};
-
         public static final MultipleDocumentHandlingType
                             SEPARATE_DOCUMENTS_COLLATED_COPIES
                                 = new MultipleDocumentHandlingType(0);
@@ -117,8 +93,6 @@ public final class JobAttributes implements Cloneable {
 
         private MultipleDocumentHandlingType(int i){
             super();
-            value = i;
-            name = names[i];
         }
 
         private MultipleDocumentHandlingType(){
@@ -127,19 +101,12 @@ public final class JobAttributes implements Cloneable {
     }
 
     public static final class SidesType{
-        private final int value;
-        private final String name;
-        private static final String names[] = {"ONE_SIDED",
-                "TWO_SIDED_LONG_EDGE",  "TWO_SIDED_SHORT_EDGE"};
-
         public static final SidesType ONE_SIDED = new SidesType(0);
         public static final SidesType TWO_SIDED_LONG_EDGE  = new SidesType(1);
         public static final SidesType TWO_SIDED_SHORT_EDGE = new SidesType(2);
 
         private SidesType(int i){
             super();
-            value = i;
-            name = names[i];
         }
 
         private SidesType(){
@@ -208,9 +175,8 @@ public final class JobAttributes implements Cloneable {
     public void setCopies(int copies) {
         if(copies <= 0) {
             throw new IllegalArgumentException("Invalid number of copies");
-        } else {
-            this.copies = copies;
         }
+        this.copies = copies;
     }
 
     public int getMaxPage(){
@@ -220,9 +186,8 @@ public final class JobAttributes implements Cloneable {
     public void setMaxPage(int imaxPage) {
         if (imaxPage <= 0 || imaxPage < minPage) {
             throw new IllegalArgumentException("Invalid value for maxPage");
-        } else {
-            maxPage = imaxPage;
         }
+        maxPage = imaxPage;
     }
 
     public int getMinPage(){
@@ -232,18 +197,20 @@ public final class JobAttributes implements Cloneable {
     public void setMinPage(int iminPage) {
         if (iminPage <= 0 || iminPage > maxPage) {
             throw new IllegalArgumentException("Invalid value for minPage");
-        } else {
-            minPage = iminPage;
         }
+        minPage = iminPage;
     }
 
     public int getFromPage() {
-        if (fromPage != 0)
+        if (fromPage != 0) {
             return fromPage;
-        if (toPage != 0)
+        }
+        if (toPage != 0) {
             return getMinPage();
-        if (pageRanges != null)
+        }
+        if (pageRanges != null) {
             return firstPage;
+        }
         return getMinPage();
     }
 
@@ -251,18 +218,20 @@ public final class JobAttributes implements Cloneable {
         if (ifromPage <= 0 || ifromPage > toPage
                 || ifromPage < minPage || ifromPage > maxPage) {
             throw new IllegalArgumentException("Invalid value for fromPage");
-        } else {
-            fromPage = ifromPage;
         }
+        fromPage = ifromPage;
     }
 
     public int getToPage() {
-        if (toPage != 0)
+        if (toPage != 0) {
             return toPage;
-        if (fromPage != 0)
+        }
+        if (fromPage != 0) {
             return fromPage;
-        if (pageRanges != null)
+        }
+        if (pageRanges != null) {
             return lastPage;
+        }
         return getMinPage();
     }
 
@@ -271,9 +240,8 @@ public final class JobAttributes implements Cloneable {
                 || itoPage < minPage
                 || itoPage > maxPage) {
             throw new IllegalArgumentException("Invalid value for toPage");
-        } else {
-            toPage = itoPage;
         }
+        toPage = itoPage;
     }
 
     public String getPrinter(){
@@ -320,21 +288,25 @@ public final class JobAttributes implements Cloneable {
         int n2 = 0;
         int prl = pr.length;
 
-        if(pr == null)
+        if(pr == null) {
             throw new IllegalArgumentException(msg);
+        }
 
         for(int k = 0; k < prl; k++) {
             if(pr[k] == null || pr[k].length != 2
-                    || pr[k][0] <= n2 || pr[k][1] < pr[k][0])
+                    || pr[k][0] <= n2 || pr[k][1] < pr[k][0]) {
                 throw new IllegalArgumentException(msg);
+            }
 
             n2 = pr[k][1];
-            if(n1 == 0)
+            if(n1 == 0) {
                 n1 = pr[k][0];
+            }
         }
 
-        if(n1 < minPage || n2 > maxPage)
+        if(n1 < minPage || n2 > maxPage) {
             throw new IllegalArgumentException(msg);
+        }
 
         pageRanges = new int[prl][2];
 
@@ -353,9 +325,8 @@ public final class JobAttributes implements Cloneable {
     public void setDestination(JobAttributes.DestinationType destination) {
         if(destination == null){
             throw new IllegalArgumentException("Invalid value for destination");
-        } else {
-            this.destination = destination;
         }
+        this.destination = destination;
     }
 
     public DialogType getDialog() {
@@ -365,9 +336,8 @@ public final class JobAttributes implements Cloneable {
     public void setDialog(JobAttributes.DialogType dialog) {
         if(dialog == null) {
             throw new IllegalArgumentException("Invalid value for dialog");
-        } else {
-            this.dialog = dialog;
         }
+        this.dialog = dialog;
     }
 
 
@@ -380,9 +350,8 @@ public final class JobAttributes implements Cloneable {
         if (a_defaultSelection == null) {
             throw new IllegalArgumentException(
                     "Invalid value for defaultSelection");
-        } else {
-            this.defaultSelection = a_defaultSelection;
         }
+        this.defaultSelection = a_defaultSelection;
     }
 
     public JobAttributes.MultipleDocumentHandlingType
@@ -396,9 +365,8 @@ public final class JobAttributes implements Cloneable {
         if(multipleDocumentHandling == null) {
             throw new IllegalArgumentException
                         ("Invalid value for multipleDocumentHandling");
-        } else {
-            multiDocHandling = multipleDocumentHandling;
         }
+        multiDocHandling = multipleDocumentHandling;
     }
 
     public JobAttributes.SidesType getSides(){
@@ -410,9 +378,8 @@ public final class JobAttributes implements Cloneable {
         if(sides == null) {
             throw new IllegalArgumentException
                         ("Invalid value for attribute sides");
-        } else {
-            this.sides = sides;
         }
+        this.sides = sides;
     }
 
     public void set(JobAttributes obj) {
@@ -437,6 +404,7 @@ public final class JobAttributes implements Cloneable {
         }
     }
 
+    @Override
     public String toString(){
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:
@@ -465,16 +433,19 @@ public final class JobAttributes implements Cloneable {
         return s;
     }
 
+    @Override
     public int hashCode() {
         int hash = this.toString().hashCode();
         return hash;
     }
 
+    @Override
     public Object clone() {
         JobAttributes ja = new JobAttributes(this);
-        return (Object)ja;
+        return ja;
     }
 
+    @Override
     public boolean equals(Object obj){
         if(!(obj instanceof JobAttributes)){
             return false;
@@ -482,11 +453,13 @@ public final class JobAttributes implements Cloneable {
         JobAttributes ja = (JobAttributes)obj;
 
         if(fileName == null){
-            if(ja.fileName != null)
+            if(ja.fileName != null) {
                 return false;
+            }
         } else {
-            if(!fileName.equals(ja.fileName))
+            if(!fileName.equals(ja.fileName)) {
                 return false;
+            }
         }
 
         if(printer == null) {
@@ -500,8 +473,9 @@ public final class JobAttributes implements Cloneable {
         }
 
         if(pageRanges == null) {
-            if(ja.pageRanges != null)
+            if(ja.pageRanges != null) {
                 return false;
+            }
         } else {
             if(ja.pageRanges == null){
                 return false;
@@ -509,9 +483,9 @@ public final class JobAttributes implements Cloneable {
             if(pageRanges.length != ja.pageRanges.length){
                 return false;
             }
-            for(int i = 0; i < pageRanges.length; i++){
-                if(pageRanges[i][0] != ja.pageRanges[i][0]
-                || pageRanges[i][1] != ja.pageRanges[i][1]){
+            for (int[] element : pageRanges) {
+                if(element[0] != element[0]
+                || element[1] != element[1]){
                     return false;
                 }
             }

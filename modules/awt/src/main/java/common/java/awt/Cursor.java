@@ -65,7 +65,7 @@ public class Cursor implements Serializable {
     /**
      * A mapping from names to system custom cursors
      */
-    static Map/*<String, Cursor>*/ systemCustomCursors;
+    static Map<String, Cursor> systemCustomCursors;
     static Properties cursorProps;
 
     static final String[] predefinedNames = {
@@ -112,6 +112,7 @@ public class Cursor implements Serializable {
         image = img;
     }
 
+    @Override
     protected void finalize() throws Throwable {
         if (nativeCursor != null) {
             nativeCursor.destroyCursor();
@@ -122,6 +123,7 @@ public class Cursor implements Serializable {
         return name;
     }
 
+    @Override
     public String toString() {
         return getClass().getName() + "[" + name + "]";
     }
@@ -154,9 +156,9 @@ public class Cursor implements Serializable {
     throws AWTException {
         loadCursorProps();
         if (systemCustomCursors == null) {
-            systemCustomCursors = new HashMap();
+            systemCustomCursors = new HashMap<String, Cursor>();
         }
-        Cursor cursor = (Cursor) systemCustomCursors.get(name);
+        Cursor cursor = systemCustomCursors.get(name);
         if (cursor != null) {
             return cursor;
         }

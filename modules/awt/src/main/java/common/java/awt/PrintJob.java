@@ -31,6 +31,7 @@ public abstract class PrintJob {
 
     public abstract void end();
 
+    @Override
     public void finalize(){
         end();
     }

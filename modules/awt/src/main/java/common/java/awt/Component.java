@@ -20,9 +20,34 @@
 package java.awt;
 
 import java.awt.dnd.DropTarget;
-import java.awt.event.*;
-import java.awt.im.*;
-import java.awt.image.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.HierarchyBoundsListener;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
+import java.awt.event.InputMethodEvent;
+import java.awt.event.InputMethodListener;
+import java.awt.event.InvocationEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.awt.event.PaintEvent;
+import java.awt.event.WindowEvent;
+import java.awt.im.InputContext;
+import java.awt.im.InputMethodRequests;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
+import java.awt.image.VolatileImage;
+import java.awt.image.WritableRaster;
 import java.awt.peer.ComponentPeer;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -34,9 +59,23 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EventListener;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
-import javax.accessibility.*;
+import javax.accessibility.Accessible;
+import javax.accessibility.AccessibleComponent;
+import javax.accessibility.AccessibleContext;
+import javax.accessibility.AccessibleRole;
+import javax.accessibility.AccessibleState;
+import javax.accessibility.AccessibleStateSet;
 
 import org.apache.harmony.awt.ClipRegion;
 import org.apache.harmony.awt.FieldsAccessor;
@@ -61,13 +100,12 @@ public abstract class Component
 
     public static final float RIGHT_ALIGNMENT = 1.0f;
 
-    private static final Class componentClass = Component.class;
-    private static final Hashtable childClassesFlags = new Hashtable();
+    private static final Class<Component> componentClass = Component.class;
+    private static final Hashtable<Class<?>, Boolean> childClassesFlags = new Hashtable<Class<?>, Boolean>();
 
     private static final ComponentPeer peer = new ComponentPeer(){
     };
 
-    private static final int imageUpdateRate;
     private static final boolean incrementalImageUpdate;
 
     final transient Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -144,6 +182,7 @@ public abstract class Component
             Component.this.addFocusListener(l);
         }
 
+        @Override
         public void addPropertyChangeListener(PropertyChangeListener listener) {
             toolkit.lockAWT();
             try {
@@ -300,6 +339,7 @@ public abstract class Component
             Component.this.removeFocusListener(l);
         }
 
+        @Override
         public void removePropertyChangeListener(PropertyChangeListener listener) {
             toolkit.lockAWT();
             try {
@@ -408,6 +448,7 @@ public abstract class Component
             }
         }
 
+        @Override
         public Accessible getAccessibleParent() {
             toolkit.lockAWT();
             try {
@@ -423,6 +464,7 @@ public abstract class Component
             }
         }
 
+        @Override
         public Accessible getAccessibleChild(int i) {
             toolkit.lockAWT();
             try {
@@ -432,6 +474,7 @@ public abstract class Component
             }
         }
 
+        @Override
         public int getAccessibleChildrenCount() {
             toolkit.lockAWT();
             try {
@@ -441,14 +484,17 @@ public abstract class Component
             }
         }
 
+        @Override
         public AccessibleComponent getAccessibleComponent() {
             return this;
         }
 
+        @Override
         public String getAccessibleDescription() {
             return super.getAccessibleDescription(); // why override?
         }
 
+        @Override
         public int getAccessibleIndexInParent() {
             toolkit.lockAWT();
             try {
@@ -472,6 +518,7 @@ public abstract class Component
             }
         }
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             toolkit.lockAWT();
             try {
@@ -481,6 +528,7 @@ public abstract class Component
             }
         }
 
+        @Override
         public AccessibleStateSet getAccessibleStateSet() {
             toolkit.lockAWT();
             try {
@@ -509,6 +557,7 @@ public abstract class Component
             }
         }
 
+        @Override
         public Locale getLocale() throws IllegalComponentStateException {
             toolkit.lockAWT();
             try {
@@ -528,31 +577,50 @@ public abstract class Component
         protected boolean validatedContents;
 
         protected BltBufferStrategy(int numBuffers, BufferCapabilities caps) {
-            if (true) throw new RuntimeException("Method is not implemented");
+            if (true) {
+                throw new RuntimeException("Method is not implemented");
+            }
         }
+        @Override
         public boolean contentsLost() {
-            if (true) throw new RuntimeException("Method is not implemented");
+            if (true) {
+                throw new RuntimeException("Method is not implemented");
+            }
             return false;
         }
+        @Override
         public boolean contentsRestored() {
-            if (true) throw new RuntimeException("Method is not implemented");
+            if (true) {
+                throw new RuntimeException("Method is not implemented");
+            }
             return false;
         }
         protected void createBackBuffers(int numBuffers) {
-            if (true) throw new RuntimeException("Method is not implemented");
+            if (true) {
+                throw new RuntimeException("Method is not implemented");
+            }
         }
+        @Override
         public BufferCapabilities getCapabilities() {
             return (BufferCapabilities)caps.clone();
         }
+        @Override
         public Graphics getDrawGraphics() {
-            if (true) throw new RuntimeException("Method is not implemented");
+            if (true) {
+                throw new RuntimeException("Method is not implemented");
+            }
             return null;
         }
         protected void revalidate() {
-            if (true) throw new RuntimeException("Method is not implemented");
+            if (true) {
+                throw new RuntimeException("Method is not implemented");
+            }
         }
+        @Override
         public void show() {
-            if (true) throw new RuntimeException("Method is not implemented");
+            if (true) {
+                throw new RuntimeException("Method is not implemented");
+            }
         }
     }
 
@@ -573,12 +641,18 @@ public abstract class Component
             this.numBuffers = numBuffers;
             this.caps = (BufferCapabilities)caps.clone();
         }
+        @Override
         public boolean contentsLost() {
-            if (true) throw new RuntimeException("Method is not implemented");
+            if (true) {
+                throw new RuntimeException("Method is not implemented");
+            }
             return false;
         }
+        @Override
         public boolean contentsRestored() {
-            if (true) throw new RuntimeException("Method is not implemented");
+            if (true) {
+                throw new RuntimeException("Method is not implemented");
+            }
             return false;
         }
         protected void createBuffers(int numBuffers, BufferCapabilities caps)
@@ -596,30 +670,47 @@ public abstract class Component
                         "Component should be displayable");
             }
             // TODO: throw new AWTException("Capabilities are not supported");
-            if (true) throw new RuntimeException("Method is not implemented");
+            if (true) {
+                throw new RuntimeException("Method is not implemented");
+            }
         }
         protected  void destroyBuffers() {
-            if (true) throw new RuntimeException("Method is not implemented");
+            if (true) {
+                throw new RuntimeException("Method is not implemented");
+            }
         }
         protected void flip(BufferCapabilities.FlipContents flipAction) {
-            if (true) throw new RuntimeException("Method is not implemented");
+            if (true) {
+                throw new RuntimeException("Method is not implemented");
+            }
         }
         protected Image getBackBuffer() {
-            if (true) throw new RuntimeException("Method is not implemented");
+            if (true) {
+                throw new RuntimeException("Method is not implemented");
+            }
             return null;
         }
+        @Override
         public BufferCapabilities getCapabilities() {
             return (BufferCapabilities)caps.clone();
         }
+        @Override
         public Graphics getDrawGraphics() {
-            if (true) throw new RuntimeException("Method is not implemented");
+            if (true) {
+                throw new RuntimeException("Method is not implemented");
+            }
             return null;
         }
         protected void revalidate() {
-            if (true) throw new RuntimeException("Method is not implemented");
+            if (true) {
+                throw new RuntimeException("Method is not implemented");
+            }
         }
+        @Override
         public void show() {
-            if (true) throw new RuntimeException("Method is not implemented");
+            if (true) {
+                throw new RuntimeException("Method is not implemented");
+            }
         }
     }
 
@@ -753,7 +844,7 @@ public abstract class Component
     private boolean focusTraversalKeysEnabled = true;
     /**  Possible keys are: FORWARD_TRAVERSAL_KEYS, 
      * BACKWARD_TRAVERSAL_KEYS, UP_CYCLE_TRAVERSAL_KEYS */
-    private HashMap/*<int, Set<AWTKeyStroke>>*/ traversalKeys = new HashMap();
+    private Map<Integer, Set<? extends AWTKeyStroke>> traversalKeys = new HashMap<Integer, Set<? extends AWTKeyStroke>>();
     int[] traversalIDs;
 
     private Locale locale;
@@ -761,14 +852,14 @@ public abstract class Component
 
     private PropertyChangeSupport propertyChangeSupport;
 
-    private ArrayList popups;
+    private ArrayList<PopupMenu> popups;
 
     private boolean coalescer;
-    private Hashtable eventsTable;
+    private Hashtable<Integer, LinkedList<AWTEvent>> eventsTable;
     /** Cashed reference used during EventQueue.postEvent() */
-    private LinkedList eventsList;
+    private LinkedList<AWTEvent> eventsList;
 
-    private int hierarchyChangingCounter = 0;
+    private int hierarchyChangingCounter;
     private boolean wasShowing;
     private boolean wasDisplayable;
 
@@ -781,7 +872,7 @@ public abstract class Component
     transient RedrawManager redrawManager;
     private boolean valid;
 
-    private HashMap updatedImages;
+    private HashMap<Image, ImageParameters> updatedImages;
 
     /** 
      * The lock object for private component's data
@@ -790,8 +881,8 @@ public abstract class Component
     private final transient Object componentLock = new Object();
 
     static {
-        PrivilegedAction action = new PrivilegedAction() {
-            public Object run() {
+        PrivilegedAction<String[]> action = new PrivilegedAction<String[]>() {
+            public String[] run() {
                 String properties [] = new String[2];
                 properties[0] = 
                     System.getProperty("awt.image.redrawrate", "100");
@@ -800,7 +891,7 @@ public abstract class Component
                 return properties;
             }};
 
-        String properties[] = (String[])AccessController.doPrivileged(action);
+        String properties[] = AccessController.doPrivileged(action);
 
         int rate;
 
@@ -809,7 +900,6 @@ public abstract class Component
         } catch (NumberFormatException e) {
             rate = 100;
         }
-        imageUpdateRate = rate;
         incrementalImageUpdate = properties[1].equals("true");
     }
 
@@ -821,8 +911,8 @@ public abstract class Component
             traversalIDs = this instanceof Container ?
                     KeyboardFocusManager.contTraversalIDs : 
                         KeyboardFocusManager.compTraversalIDs;
-            for (int i = 0; i < traversalIDs.length; i++) {
-                traversalKeys.put(new Integer(traversalIDs[i]), null);
+            for (int element : traversalIDs) {
+                traversalKeys.put(new Integer(element), null);
             }
 
             behaviour = createBehavior();
@@ -839,16 +929,16 @@ public abstract class Component
      *
      */
     private void deriveCoalescerFlag() {
-        Class thisClass = getClass();
+        Class<?> thisClass = getClass();
         boolean flag = true;
 
         synchronized(childClassesFlags) {
-            Boolean flagWrapper = (Boolean) childClassesFlags.get(thisClass);
+            Boolean flagWrapper = childClassesFlags.get(thisClass);
 
             if (flagWrapper == null) {
                 Method coalesceMethod = null;
 
-                for (Class c = thisClass; c != componentClass; c = c.getSuperclass()) {
+                for (Class<?> c = thisClass; c != componentClass; c = c.getSuperclass()) {
                     try {
                         coalesceMethod = c.getDeclaredMethod("coalesceEvents",
                                 new Class[] {Class.forName("java.awt.AWTEvent"), 
@@ -870,7 +960,7 @@ public abstract class Component
 
         coalescer = flag;
         if (flag) {
-            eventsTable = new Hashtable();
+            eventsTable = new Hashtable<Integer, LinkedList<AWTEvent>>();
         } else {
             eventsTable = null;
         }
@@ -915,6 +1005,7 @@ public abstract class Component
         return name;
     }
 
+    @Override
     public String toString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:
@@ -938,7 +1029,7 @@ public abstract class Component
                 return;
             }
             if (popups == null) {
-                popups = new ArrayList();
+                popups = new ArrayList<PopupMenu>();
             }
             popup.setParent(this);
             popups.add(popup);
@@ -968,6 +1059,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public Dimension size() {
         toolkit.lockAWT();
         try {
@@ -1002,14 +1094,18 @@ public abstract class Component
     Component getHWSurface() {
         Component parent;
 
-        for (parent = this; (parent != null) && (parent.isLightweight()); parent = parent.getParent());
+        for (parent = this; (parent != null) && (parent.isLightweight()); parent = parent.getParent()) {
+            ;
+        }
 
         return parent;
     }
 
     Window getWindowAncestor() {
         Component par;
-        for ( par = this; par != null && !(par instanceof Window); par = par.getParent());
+        for ( par = this; par != null && !(par instanceof Window); par = par.getParent()) {
+            ;
+        }
 
         return (Window) par;
     }
@@ -1065,7 +1161,9 @@ public abstract class Component
 
     String getIndentStr(int indent) {
         char[] ind = new char[indent];
-        for (int i=0; i < indent; ind[i++] = ' ');
+        for (int i=0; i < indent; ind[i++] = ' ') {
+            ;
+        }
         return new String(ind);
     }
 
@@ -1127,6 +1225,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public void resize(int width, int height) {
         toolkit.lockAWT();
         try {
@@ -1140,6 +1239,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public void resize(Dimension size) {
         toolkit.lockAWT();
         try {
@@ -1161,6 +1261,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public void disable() {
         toolkit.lockAWT();
         try {
@@ -1174,6 +1275,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public void enable() {
         toolkit.lockAWT();
         try {
@@ -1187,6 +1289,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public void enable(boolean b) {
         toolkit.lockAWT();
         try {
@@ -1205,8 +1308,9 @@ public abstract class Component
     public Point getLocation(Point rv) {
         toolkit.lockAWT();
         try {
-            if (rv == null)
+            if (rv == null) {
                 rv = new Point();
+            }
             rv.setLocation(getX(), getY());
             return rv;
         } finally {
@@ -1235,7 +1339,9 @@ public abstract class Component
     public Dimension getSize(Dimension rv) {
         toolkit.lockAWT();
         try {
-            if (rv == null) rv = new Dimension();
+            if (rv == null) {
+                rv = new Dimension();
+            }
             rv.setSize(getWidth(), getHeight());
             return rv;
         } finally {
@@ -1255,6 +1361,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public Point location() {
         toolkit.lockAWT();
         try {
@@ -1321,6 +1428,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public boolean action(Event evt, Object what) {
         //to be overridden: do nothing,
         //just return false to propagate event up to the parent container
@@ -1369,6 +1477,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public Rectangle bounds() {
         toolkit.lockAWT();
         try {
@@ -1415,20 +1524,18 @@ public abstract class Component
 
     AWTEvent getRelativeEvent(int id) {
         Integer idWrapper = new Integer(id);
-        eventsList = (LinkedList) eventsTable.get(idWrapper);
+        eventsList = eventsTable.get(idWrapper);
 
         if (eventsList == null) {
-            eventsList = new LinkedList();
+            eventsList = new LinkedList<AWTEvent>();
             eventsTable.put(idWrapper, eventsList);
 
             return null;
-        } else {
-            if (eventsList.isEmpty()) {
-                return null;
-            } else {
-                return (AWTEvent) eventsList.getLast();
-            }
         }
+        if (eventsList.isEmpty()) {
+            return null;
+        }
+        return eventsList.getLast();
     }
 
     void addNewEvent(AWTEvent event) {
@@ -1440,7 +1547,7 @@ public abstract class Component
     }
 
     void removeNextEvent(int id) {
-        ((LinkedList) eventsTable.get(new Integer(id))).removeFirst();
+        eventsTable.get(new Integer(id)).removeFirst();
     }
 
     public Image createImage(ImageProducer producer) {
@@ -1455,11 +1562,14 @@ public abstract class Component
     public Image createImage(int width, int height) {
         toolkit.lockAWT();
         try {
-            if(!isDisplayable()) return null;
+            if(!isDisplayable()) {
+                return null;
+            }
 
             GraphicsConfiguration gc = getGraphicsConfiguration();
-            if (gc == null)
+            if (gc == null) {
                 return null;
+            }
             
             ColorModel cm = gc.getColorModel(Transparency.OPAQUE);
             WritableRaster wr = cm.createCompatibleWritableRaster(width, height);
@@ -1481,8 +1591,9 @@ public abstract class Component
             }
             
             GraphicsConfiguration gc = getGraphicsConfiguration();
-            if (gc == null)
+            if (gc == null) {
                 return null;
+            }
             
             VolatileImage image = gc.createCompatibleVolatileImage(width, height, caps);
 
@@ -1501,8 +1612,9 @@ public abstract class Component
             }
             
             GraphicsConfiguration gc = getGraphicsConfiguration();
-            if (gc == null)
+            if (gc == null) {
                 return null;
+            }
             
             VolatileImage image = gc.createCompatibleVolatileImage(width, height);
 
@@ -1528,6 +1640,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public void deliverEvent(Event evt) {
         postEvent(evt);
     }
@@ -1746,7 +1859,7 @@ public abstract class Component
         try {
             Integer kId = new Integer(id);
             KeyboardFocusManager.checkTraversalKeysID(traversalKeys, kId);
-            Set keys = null;
+            Set<?> keys = null;
             Object value = traversalKeys.get(kId);
             keys = value instanceof Set ? (Set) value :
                 parent != null ? parent.getFocusTraversalKeys(id) : null;
@@ -1892,6 +2005,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public ComponentPeer getPeer() {
         toolkit.lockAWT();
         try {
@@ -1942,6 +2056,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public boolean gotFocus(Event evt, Object what) {
 
         //to be overridden: do nothing,
@@ -1953,6 +2068,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public boolean handleEvent(Event evt) {
         switch (evt.id) {
         case Event.ACTION_EVENT:
@@ -1996,6 +2112,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public void hide() {
         toolkit.lockAWT();
         try {
@@ -2023,6 +2140,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public boolean inside(int x, int y) {
         toolkit.lockAWT();
         try {
@@ -2144,6 +2262,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public boolean isFocusTraversable() {
         toolkit.lockAWT();
         try {
@@ -2210,6 +2329,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public boolean keyDown(Event evt, int key) {
 
         //to be overridden: do nothing,
@@ -2221,6 +2341,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public boolean keyUp(Event evt, int key) {
         //to be overridden: do nothing,
         //just return false to propagate event up to the parent container
@@ -2230,6 +2351,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public void layout() {
         toolkit.lockAWT();
         try {
@@ -2242,6 +2364,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public Component locate(int x, int y) {
         toolkit.lockAWT();
         try {
@@ -2257,6 +2380,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public boolean lostFocus(Event evt, Object what) {
 
         //to be overridden: do nothing,
@@ -2268,6 +2392,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public boolean mouseDown(Event evt, int x, int y) {
 
         //to be overridden: do nothing,
@@ -2279,6 +2404,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public boolean mouseDrag(Event evt, int x, int y) {
 
         //to be overridden: do nothing,
@@ -2290,6 +2416,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public boolean mouseEnter(Event evt, int x, int y) {
         //to be overridden: do nothing,
         //just return false to propagate event up to the parent container
@@ -2300,6 +2427,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public boolean mouseExit(Event evt, int x, int y) {
         //to be overridden: do nothing,
         //just return false to propagate event up to the parent container
@@ -2310,6 +2438,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public boolean mouseMove(Event evt, int x, int y) {
         //to be overridden: do nothing,
         //just return false to propagate event up to the parent container
@@ -2320,6 +2449,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public boolean mouseUp(Event evt, int x, int y) {
         //to be overridden: do nothing,
         //just return false to propagate event up to the parent container
@@ -2329,6 +2459,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public void move(int x, int y) {
         toolkit.lockAWT();
         try {
@@ -2342,6 +2473,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public void nextFocus() {
         toolkit.lockAWT();
         try {
@@ -2371,6 +2503,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public boolean postEvent(Event evt) {
 
         boolean handled = handleEvent(evt);
@@ -2640,6 +2773,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public void reshape(int x, int y, int w, int h) {
         toolkit.lockAWT();
         try {
@@ -2871,28 +3005,25 @@ public abstract class Component
         }
     }
 
-    public void setFocusTraversalKeys(int id, Set keystrokes) {
-        Set oldTraversalKeys;
+    public void setFocusTraversalKeys(int id, Set<? extends AWTKeyStroke> keystrokes) {
+        Set<? extends AWTKeyStroke> oldTraversalKeys;
         String propName = "FocusTraversalKeys";
         toolkit.lockAWT();
         try {
             Integer kId = new Integer(id);
             KeyboardFocusManager.checkTraversalKeysID(traversalKeys, kId);
-            HashMap keys = new HashMap();
-            // fill the map with actual keystrokes
-            // which may be stored in ancestor's maps
-            for (int i=0; i < traversalIDs.length; i++) {
-                int kid = traversalIDs[i];
+            Map<Integer, Set<AWTKeyStroke>> keys = new HashMap<Integer, Set<AWTKeyStroke>>();
+            for (int kid : traversalIDs) {
                 Integer key = new Integer(kid);
                 keys.put(key, getFocusTraversalKeys(kid));
             }
             KeyboardFocusManager.checkKeyStrokes(traversalIDs, keys,
-                                                 kId, keystrokes);
-            oldTraversalKeys = (Set) traversalKeys.get(new Integer(id));
+                                                 kId, (Set<AWTKeyStroke>)keystrokes);
+            oldTraversalKeys = traversalKeys.get(new Integer(id));
             //put a copy of keystrokes object into map:
-            Set newKeys = keystrokes;
+            Set<? extends AWTKeyStroke> newKeys = keystrokes;
             if (keystrokes != null) {
-                newKeys = new HashSet(keystrokes);
+                newKeys = new HashSet<AWTKeyStroke>(keystrokes);
             }
             traversalKeys.put(kId, newKeys);
             String direction = "";
@@ -3072,6 +3203,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public void show() {
         toolkit.lockAWT();
         try {
@@ -3100,6 +3232,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public void show(boolean b) {
         if (b) {
             show();
@@ -3266,6 +3399,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public Dimension minimumSize() {
         toolkit.lockAWT();
         try {
@@ -3295,6 +3429,7 @@ public abstract class Component
     /**
      * @deprecated
      */
+    @Deprecated
     public Dimension preferredSize() {
         toolkit.lockAWT();
         try {
@@ -3628,7 +3763,7 @@ public abstract class Component
         processInputMethodEventImpl(e, inputMethodListeners.getSystemIterator());
     }
 
-    private void processInputMethodEventImpl(InputMethodEvent e, Iterator i) {
+    private void processInputMethodEventImpl(InputMethodEvent e, Iterator<?> i) {
         while(i.hasNext()) {
             InputMethodListener listener = (InputMethodListener) i.next();
             switch (e.getID()) {
@@ -3646,11 +3781,11 @@ public abstract class Component
         processMouseWheelEventImpl(e, mouseWheelListeners.getSystemIterator());
     }
 
-    private void processMouseWheelEventImpl(MouseWheelEvent e, Iterator i) {
+    private void processMouseWheelEventImpl(MouseWheelEvent e, Iterator<?> i) {
         while(i.hasNext()) {
             MouseWheelListener listener = (MouseWheelListener) i.next();
             switch (e.getID()) {
-            case MouseWheelEvent.MOUSE_WHEEL:
+            case MouseEvent.MOUSE_WHEEL:
                 listener.mouseWheelMoved(e);
                 break;
             }
@@ -3702,7 +3837,7 @@ public abstract class Component
         }
     }
 
-    public EventListener[] getListeners(Class listenerType) {
+    public EventListener[] getListeners(Class<?> listenerType) {
         if (ComponentListener.class.isAssignableFrom(listenerType)) {
             return getComponentListeners();
         } else if (FocusListener.class.isAssignableFrom(listenerType)) {
@@ -3839,7 +3974,7 @@ public abstract class Component
         processComponentEventImpl(e, componentListeners.getUserIterator());
     }
 
-    private void processComponentEventImpl(ComponentEvent e, Iterator i) {
+    private void processComponentEventImpl(ComponentEvent e, Iterator<?> i) {
 
         while (i.hasNext()) {
             ComponentListener listener = (ComponentListener) i.next();
@@ -3883,7 +4018,7 @@ public abstract class Component
         processFocusEventImpl(e, focusListeners.getUserIterator());
     }
 
-    private void processFocusEventImpl(FocusEvent e, Iterator i) {
+    private void processFocusEventImpl(FocusEvent e, Iterator<?> i) {
         while (i.hasNext()) {
             FocusListener listener = (FocusListener) i.next();
 
@@ -3911,7 +4046,7 @@ public abstract class Component
     }
 
     protected void processHierarchyEvent(HierarchyEvent e) {
-        for (Iterator i = hierarchyListeners.getUserIterator(); i.hasNext();) {
+        for (Iterator<?> i = hierarchyListeners.getUserIterator(); i.hasNext();) {
             HierarchyListener listener = (HierarchyListener) i.next();
 
             switch (e.getID()) {
@@ -3936,7 +4071,7 @@ public abstract class Component
     }
 
     protected void processHierarchyBoundsEvent(HierarchyEvent e) {
-        for (Iterator i = hierarchyBoundsListeners.getUserIterator(); i.hasNext();) {
+        for (Iterator<?> i = hierarchyBoundsListeners.getUserIterator(); i.hasNext();) {
             HierarchyBoundsListener listener = (HierarchyBoundsListener) i.next();
 
             switch (e.getID()) {
@@ -3971,7 +4106,7 @@ public abstract class Component
         processKeyEventImpl(e, keyListeners.getUserIterator());
     }
 
-    private void processKeyEventImpl(KeyEvent e, Iterator i) {
+    private void processKeyEventImpl(KeyEvent e, Iterator<?> i) {
         while (i.hasNext()) {
             KeyListener listener = (KeyListener) i.next();
 
@@ -4030,7 +4165,7 @@ public abstract class Component
         processMouseEventImpl(e,  mouseListeners.getUserIterator());
     }
 
-    private void processMouseEventImpl(MouseEvent e, Iterator i) {
+    private void processMouseEventImpl(MouseEvent e, Iterator<?> i) {
         while(i.hasNext()) {
             MouseListener listener = (MouseListener) i.next();
 
@@ -4054,7 +4189,7 @@ public abstract class Component
         }
     }
 
-    private void processMouseMotionEventImpl(MouseEvent e, Iterator i) {
+    private void processMouseMotionEventImpl(MouseEvent e, Iterator<?> i) {
         while (i.hasNext()) {
             MouseMotionListener listener = (MouseMotionListener) i.next();
 
@@ -4117,7 +4252,7 @@ public abstract class Component
     }
 
     protected void processInputMethodEvent(InputMethodEvent e) {
-        for (Iterator i = inputMethodListeners.getUserIterator(); i.hasNext();) {
+        for (Iterator<?> i = inputMethodListeners.getUserIterator(); i.hasNext();) {
             InputMethodListener listener = (InputMethodListener) i.next();
 
             switch (e.getID()) {
@@ -4275,9 +4410,9 @@ public abstract class Component
         ImageParameters imageParams;
 
         if (updatedImages == null) {
-            updatedImages = new HashMap();
+            updatedImages = new HashMap<Image, ImageParameters>();
         }
-        imageParams = (ImageParameters) updatedImages.get(image);
+        imageParams = updatedImages.get(image);
         if (imageParams == null) {
             imageParams = new ImageParameters();
             updatedImages.put(image, imageParams);
@@ -4295,7 +4430,9 @@ public abstract class Component
             done = true;
           }
 
-          if(done) repaint();
+          if(done) {
+            repaint();
+        }
           return (infoflags & (ABORT | ALLBITS)) == 0;
         } finally {
             toolkit.unlockAWT();
@@ -4312,7 +4449,7 @@ public abstract class Component
 
     private class ImageParameters {
 
-        private LinkedList drawingParams = new LinkedList();
+        private LinkedList<DrawingParameters> drawingParams = new LinkedList<DrawingParameters>();
 
         Dimension size = new Dimension(Component.this.w, Component.this.h);
 
@@ -4320,7 +4457,7 @@ public abstract class Component
             drawingParams.add(new DrawingParameters(destLocation, destSize, source));
         }
 
-        Iterator drawingParametersIterator() {
+        Iterator<DrawingParameters> drawingParametersIterator() {
             return drawingParams.iterator();
         }
 

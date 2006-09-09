@@ -100,6 +100,7 @@ public class FileDialog extends Dialog {
         }
     }
 
+    @Override
     protected String paramString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:
@@ -116,6 +117,7 @@ public class FileDialog extends Dialog {
         }
     }
 
+    @Override
     public void addNotify() {
         toolkit.lockAWT();
         try {
@@ -193,20 +195,24 @@ public class FileDialog extends Dialog {
     }
 
 
+    @Override
     void showImpl() {
         if (toolkit.theme.showFileDialog(this)) {
             super.showImpl();
         }
     }
 
+    @Override
     void hideImpl() {
         if (toolkit.theme.hideFileDialog(this)) {        
             super.hideImpl();
         }
     }
     
+    @Override
     ComponentBehavior createBehavior() {
         return new HWBehavior(this) {
+            @Override
             public void removeNotify() {
                 super.removeNotify();
                 hideImpl();                
@@ -214,6 +220,7 @@ public class FileDialog extends Dialog {
         };
     }
     
+    @Override
     String autoName() {
         return "filedlg" + toolkit.autoNumber.nextFileDialog++;
     }

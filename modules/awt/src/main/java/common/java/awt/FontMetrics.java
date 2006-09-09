@@ -34,6 +34,7 @@ public abstract class FontMetrics implements Serializable {
         this.font = fnt;
     }
 
+    @Override
     public String toString() {
         return this.getClass().getName() +
                 "[font=" + this.getFont() +

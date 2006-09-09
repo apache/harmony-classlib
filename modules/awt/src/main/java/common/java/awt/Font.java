@@ -86,7 +86,7 @@ public class Font implements Serializable {
     private boolean transformed;
     
     // Set of font attributes 
-    private Hashtable fRequestedAttributes;
+    private Hashtable<Attribute, Object> fRequestedAttributes;
 
     // font peer object corresponding to this Font
     private transient FontPeerImpl fontPeer;
@@ -96,9 +96,6 @@ public class Font implements Serializable {
 
     // code for missing glyph for this Font     
     private transient int missingGlyphCode = -1;
-
-    // flag, true if this Font was created from InputStream
-    private boolean createdFromStream;
 
     /**
      * Writes object to ObjectOutputStream.
@@ -125,11 +122,10 @@ public class Font implements Serializable {
 
         numGlyphs = -1;
         missingGlyphCode = -1;
-        createdFromStream = false;
 
     }
 
-    public Font(Map attributes) {
+    public Font(Map<Attribute, Object> attributes) {
         Object currAttr;
 
         // Default values are taken from the documentation of the Font class. 
@@ -142,7 +138,7 @@ public class Font implements Serializable {
 
         if (attributes != null){
 
-            fRequestedAttributes = new Hashtable(attributes);
+            fRequestedAttributes = new Hashtable<Attribute, Object>(attributes);
 
             currAttr = attributes.get(TextAttribute.SIZE);
             if ( currAttr != null){
@@ -173,7 +169,7 @@ public class Font implements Serializable {
             }
 
         } else {
-            fRequestedAttributes = new Hashtable(5);
+            fRequestedAttributes = new Hashtable<Attribute, Object>(5);
             fRequestedAttributes.put(TextAttribute.TRANSFORM, IDENTITY_TRANSFORM);
 
             this.transformed = false;
@@ -206,7 +202,7 @@ public class Font implements Serializable {
         this.style = (style & ~0x03) == 0 ? style : Font.PLAIN;
         this.pointSize = this.size;
 
-        fRequestedAttributes = new Hashtable(5);
+        fRequestedAttributes = new Hashtable<Attribute, Object>(5);
 
         fRequestedAttributes.put(TextAttribute.TRANSFORM, IDENTITY_TRANSFORM);
 
@@ -244,10 +240,11 @@ public class Font implements Serializable {
             st++;
         }
 
-        if (st == limit)
+        if (st == limit) {
             result = -1;
-        else
+        } else {
             result = st;
+        }
 
         return result;
     }
@@ -261,10 +258,11 @@ public class Font implements Serializable {
             st++;
             c = iter.next();
         }
-        if (st == limit)
+        if (st == limit) {
             result = -1;
-        else
+        } else {
             result = st;
+        }
 
         return result;
     }
@@ -299,7 +297,9 @@ public class Font implements Serializable {
     public GlyphVector createGlyphVector(FontRenderContext frc,
             int[] glyphCodes) {
         // TODO : to find out, how to operate with glyphcodes
-        if (true) throw new RuntimeException("Method is not implemented");
+        if (true) {
+            throw new RuntimeException("Method is not implemented");
+        }
         return null;
     }
 
@@ -384,13 +384,14 @@ public class Font implements Serializable {
         return new Font(fontName, fontStyle, fontSize);
     }
 
+    @SuppressWarnings("unchecked")
     public Font deriveFont(AffineTransform trans) {
 
         if (trans == null) {
             throw new IllegalArgumentException("transform must not be null");
         }
 
-        Hashtable derivefRequestedAttributes = (Hashtable)fRequestedAttributes.clone();
+        Hashtable<Attribute, Object> derivefRequestedAttributes = (Hashtable<Attribute, Object>)fRequestedAttributes.clone();
 
         derivefRequestedAttributes.put(TextAttribute.TRANSFORM,
                 new TransformAttribute(trans));
@@ -399,14 +400,16 @@ public class Font implements Serializable {
 
     }
 
+    @SuppressWarnings("unchecked")
     public Font deriveFont(float size) {
-        Hashtable derivefRequestedAttributes = (Hashtable)fRequestedAttributes.clone();
+        Hashtable<Attribute, Object> derivefRequestedAttributes = (Hashtable<Attribute, Object>)fRequestedAttributes.clone();
         derivefRequestedAttributes.put(TextAttribute.SIZE, new Float(size));
         return new Font(derivefRequestedAttributes);
     }
 
+    @SuppressWarnings("unchecked")
     public Font deriveFont(int style) {
-        Hashtable derivefRequestedAttributes = (Hashtable)fRequestedAttributes.clone();
+        Hashtable<Attribute, Object> derivefRequestedAttributes = (Hashtable<Attribute, Object>)fRequestedAttributes.clone();
 
         if ((style & Font.BOLD) != 0){
             derivefRequestedAttributes.put(TextAttribute.WEIGHT,
@@ -425,12 +428,13 @@ public class Font implements Serializable {
         return new Font(derivefRequestedAttributes);
     }
 
+    @SuppressWarnings("unchecked")
     public Font deriveFont(int style, AffineTransform trans) {
 
         if (trans == null) {
             throw new IllegalArgumentException("transform must not be null");
         }
-        Hashtable derivefRequestedAttributes = (Hashtable)fRequestedAttributes.clone();
+        Hashtable<Attribute, Object> derivefRequestedAttributes = (Hashtable<Attribute, Object>)fRequestedAttributes.clone();
 
         if ((style & BOLD) != 0){
             derivefRequestedAttributes.put(TextAttribute.WEIGHT,
@@ -451,8 +455,9 @@ public class Font implements Serializable {
         return new Font(derivefRequestedAttributes);
     }
 
+    @SuppressWarnings("unchecked")
     public Font deriveFont(int style, float size) {
-        Hashtable derivefRequestedAttributes = (Hashtable)fRequestedAttributes.clone();
+        Hashtable<Attribute, Object> derivefRequestedAttributes = (Hashtable<Attribute, Object>)fRequestedAttributes.clone();
 
         if ((style & BOLD) != 0){
             derivefRequestedAttributes.put(TextAttribute.WEIGHT,
@@ -473,20 +478,22 @@ public class Font implements Serializable {
 
     }
 
-    public Font deriveFont(Map attributes) {
+    @SuppressWarnings("unchecked")
+    public Font deriveFont(Map<?, ?> attributes) {
         Attribute[] avalAttributes = this.getAvailableAttributes();
 
-        Hashtable derivefRequestedAttributes = (Hashtable)fRequestedAttributes.clone();
+        Hashtable<Attribute, Object> derivefRequestedAttributes = (Hashtable<Attribute, Object>)fRequestedAttributes.clone();
         Object currAttribute;
-        for (int i = 0; i < avalAttributes.length; i++){
-            currAttribute = attributes.get(avalAttributes[i]);
+        for (Attribute element : avalAttributes) {
+            currAttribute = attributes.get(element);
             if (currAttribute != null){
-                derivefRequestedAttributes.put(avalAttributes[i], currAttribute);
+                derivefRequestedAttributes.put(element, currAttribute);
             }
         }
         return new Font(derivefRequestedAttributes);
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj == this){
             return true;
@@ -508,8 +515,9 @@ public class Font implements Serializable {
         return false;
     }
 
-    public Map getAttributes() {
-        return (Map)fRequestedAttributes.clone();
+    @SuppressWarnings("unchecked")
+    public Map<Attribute, Object> getAttributes() {
+        return (Map<Attribute, Object>)fRequestedAttributes.clone();
     }
 
     public Attribute[] getAvailableAttributes() {
@@ -541,13 +549,12 @@ public class Font implements Serializable {
     }
 
 
-    public static Font getFont(Map attributes) {
+    public static Font getFont(Map<Attribute, Object> attributes) {
         Font fnt = (Font)attributes.get(TextAttribute.FONT);
         if (fnt != null){
             return fnt;
-        } else {
-            return new Font(attributes);
         }
+        return new Font(attributes);
     }
 
     public static Font getFont(String sp, Font f) {
@@ -753,6 +760,7 @@ public class Font implements Serializable {
         return new CommonGlyphVector(out, frc, this, flags);
     }
 
+    @Override
     public String toString() {
         String stl = "plain";
         String result;
@@ -798,10 +806,9 @@ public class Font implements Serializable {
         if (transform != null) {
             if (transform instanceof TransformAttribute) {
                 return ((TransformAttribute) transform).getTransform();
-            } else {
-                if (transform instanceof AffineTransform) {
-                    return new AffineTransform((AffineTransform) transform);
-                }
+            }
+            if (transform instanceof AffineTransform) {
+                return new AffineTransform((AffineTransform) transform);
             }
         } else {
             transform = new AffineTransform();
@@ -831,6 +838,7 @@ public class Font implements Serializable {
         return peer.hasUniformLineMetrics();
     }
 
+    @Override
     public int hashCode() {
         HashCode hash = new HashCode();
 

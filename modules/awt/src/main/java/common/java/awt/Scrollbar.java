@@ -45,10 +45,12 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
 
         private static final long serialVersionUID = -344337268523697807L;
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.SCROLL_BAR;
         }
 
+        @Override
         public AccessibleStateSet getAccessibleStateSet() {
             toolkit.lockAWT();
             try {
@@ -71,6 +73,7 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
             }
         }
 
+        @Override
         public AccessibleValue getAccessibleValue() {
             return this;
         }
@@ -139,18 +142,22 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
             setBlockIncrement(10);
             stateController = new ScrollbarStateController(state) {
 
+                @Override
                 protected void fireEvent() {
                     generateEvent();
                 }
 
+                @Override
                 protected void repaint(Rectangle r) {
                     doRepaint(r);
                 }
 
+                @Override
                 protected void repaint() {
                    doRepaint();
                 }
 
+                @Override
                 protected void requestFocus() {
                     if (isFocusable()) {
                         Scrollbar.this.requestFocus(false);
@@ -290,6 +297,7 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
             }
         }
 
+        @Override
         public void calculate() {
             toolkit.theme.calculateScrollbar(state);
         }
@@ -314,6 +322,7 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
         }
     }
 
+    @Override
     public void addNotify() {
         toolkit.lockAWT();
         try {
@@ -323,6 +332,7 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         toolkit.lockAWT();
         try {
@@ -344,6 +354,7 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
     /**
      * @deprecated
      */
+    @Deprecated
     public int getLineIncrement() {
         toolkit.lockAWT();
         try {
@@ -383,6 +394,7 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
     /**
      * @deprecated
      */
+    @Deprecated
     public int getPageIncrement() {
         toolkit.lockAWT();
         try {
@@ -413,6 +425,7 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
     /**
      * @deprecated
      */
+    @Deprecated
     public int getVisible() {
         toolkit.lockAWT();
         try {
@@ -431,6 +444,7 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
         }
     }
 
+    @Override
     protected String paramString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:
@@ -464,6 +478,7 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
     /**
      * @deprecated
      */
+    @Deprecated
     public void setLineIncrement(int v) {
         toolkit.lockAWT();
         try {
@@ -515,6 +530,7 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
     /**
      * @deprecated
      */
+    @Deprecated
     public void setPageIncrement(int v) {
         toolkit.lockAWT();
         try {
@@ -560,12 +576,12 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
         }
     }
 
+    @Override
     public EventListener[] getListeners(Class listenerType) {
         if (AdjustmentListener.class.isAssignableFrom(listenerType)) {
             return getAdjustmentListeners();
-        } else {
-            return super.getListeners(listenerType);
         }
+        return super.getListeners(listenerType);
     }
 
     public void addAdjustmentListener(AdjustmentListener l) {
@@ -581,6 +597,7 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
         getUserListeners(new AdjustmentListener[0]);
     }
 
+    @Override
     protected void processEvent(AWTEvent e) {
         if (toolkit.eventTypeLookup.getEventMask(e) ==
             AWTEvent.ADJUSTMENT_EVENT_MASK) {
@@ -603,14 +620,17 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
         }
     }
 
+    @Override
     String autoName() {
         return ("scrollbar" + toolkit.autoNumber.nextScrollbar++);
     }
 
+    @Override
     void prepaint(Graphics g) {
         toolkit.theme.drawScrollbar(g, state);
     }
 
+    @Override
     boolean isPrepainter() {
         return true;
     }
@@ -629,15 +649,18 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
         doRepaint(new Rectangle(new Point(), getSize()));
     }
 
+    @Override
     void setEnabledImpl(boolean value) {
         super.setEnabledImpl(value);
         doRepaint();
     }
 
+    @Override
     ComponentBehavior createBehavior() {
         return new HWBehavior(this);
     }
 
+    @Override
     void validateImpl() {
         super.validateImpl();
         toolkit.theme.calculateScrollbar(state);
@@ -655,10 +678,12 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
                 getValueIsAdjusting()));
     }
 
+    @Override
     Dimension getDefaultMinimumSize() {
         return state.getDefaultMinimumSize();
     }
 
+    @Override
     void resetDefaultSize() {
         state.reset();
     }
@@ -687,6 +712,7 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
         }
     }
 
+    @Override
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTScrollBar();
     }

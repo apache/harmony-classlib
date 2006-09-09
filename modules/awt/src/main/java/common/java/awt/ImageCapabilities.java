@@ -30,6 +30,7 @@ public class ImageCapabilities implements Cloneable {
         this.accelerated = accelerated;
     }
 
+    @Override
     public Object clone() {
         return new ImageCapabilities(accelerated);
     }

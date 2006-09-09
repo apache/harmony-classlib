@@ -31,7 +31,6 @@ public final class PageAttributes implements Cloneable {
 
 /*----------------- section of the nested classes --------------------*/
     public static final class ColorType {
-        private final int value;
         private final String name;
         public static final ColorType COLOR
                                         = new ColorType(0, "COLOR");
@@ -40,7 +39,6 @@ public final class PageAttributes implements Cloneable {
 
         private ColorType(int i, String n){
             super();
-            value = i;
             name = n;
         }
 
@@ -50,7 +48,6 @@ public final class PageAttributes implements Cloneable {
     }
 
     public static final class MediaType {
-        private final int value;
         private final String name;
 
         public static final MediaType ISO_4A0 = new MediaType(71, "ISO_4A0");
@@ -249,7 +246,6 @@ public final class PageAttributes implements Cloneable {
 
         private MediaType(int i, String n){
             super();
-            value = i;
             name = n;
         }
         private MediaType(){
@@ -258,7 +254,6 @@ public final class PageAttributes implements Cloneable {
     }
 
     public static final class OrientationRequestedType {
-        private final int value;
         private final String name;
 
         public static final OrientationRequestedType PORTRAIT
@@ -268,7 +263,6 @@ public final class PageAttributes implements Cloneable {
 
         private OrientationRequestedType(int i, String n){
             super();
-            value = i;
             name = n;
         }
         private OrientationRequestedType(){
@@ -277,7 +271,6 @@ public final class PageAttributes implements Cloneable {
     }
 
     public static final class OriginType {
-        private final int value;
         private final String name;
 
         public static final OriginType PHYSICAL
@@ -287,7 +280,6 @@ public final class PageAttributes implements Cloneable {
 
         private OriginType(int i, String n){
             super();
-            value = i;
             name = n;
         }
         private OriginType(){
@@ -296,7 +288,6 @@ public final class PageAttributes implements Cloneable {
     }
 
     public static final class PrintQualityType {
-        private final int value;
         private final String name;
 
         public static final PrintQualityType HIGH = new PrintQualityType(5,
@@ -307,7 +298,6 @@ public final class PageAttributes implements Cloneable {
                 "DRAFT");
 
         private PrintQualityType(int i, String n){
-            value = i;
             name = n;
         }
 
@@ -345,11 +335,13 @@ public final class PageAttributes implements Cloneable {
         set(pageAttributes);
     }
 
+    @Override
     public Object clone() {
         PageAttributes pa = new PageAttributes(this);
         return pa;
     }
 
+    @Override
     public boolean equals(Object obj) {
         PageAttributes pa;
 
@@ -383,6 +375,7 @@ public final class PageAttributes implements Cloneable {
         return true;
     }
 
+    @Override
     public String toString(){
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:
@@ -399,6 +392,7 @@ public final class PageAttributes implements Cloneable {
         return s;
     }
 
+    @Override
     public int hashCode() {
         int hash = this.toString().hashCode();
         return hash;

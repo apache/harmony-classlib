@@ -77,18 +77,22 @@ public class Button extends Component implements Accessible {
             return new Integer(0);
         }
 
+        @Override
         public AccessibleAction getAccessibleAction() {
             return this;
         }
 
+        @Override
         public String getAccessibleName() {
             return getLabel();
         }
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.PUSH_BUTTON;
         }
 
+        @Override
         public AccessibleValue getAccessibleValue() {
             return this;
         }
@@ -114,6 +118,7 @@ public class Button extends Component implements Accessible {
             return stateController.isPressed();
         }
 
+        @Override
         public void calculate() {
             toolkit.theme.calculateButton(state);
         }
@@ -168,6 +173,7 @@ public class Button extends Component implements Accessible {
         }
     }
 
+    @Override
     void setFontImpl(Font f) {
         super.setFontImpl(f);
         if (isDisplayable()) {
@@ -175,6 +181,7 @@ public class Button extends Component implements Accessible {
         }
     }
 
+    @Override
     boolean hasDefaultFont() {
         return true;
     }
@@ -188,6 +195,7 @@ public class Button extends Component implements Accessible {
         }
     }
 
+    @Override
     public void addNotify() {
         toolkit.lockAWT();
         try {
@@ -217,12 +225,12 @@ public class Button extends Component implements Accessible {
         }
     }
 
+    @Override
     public EventListener[] getListeners(Class listenerType) {
         if (ActionListener.class.isAssignableFrom(listenerType)) {
             return getActionListeners();
-        } else {
-            return super.getListeners(listenerType);
         }
+        return super.getListeners(listenerType);
     }
 
     public void addActionListener(ActionListener l) {
@@ -238,6 +246,7 @@ public class Button extends Component implements Accessible {
         return (ActionListener[]) actionListeners.getUserListeners(new ActionListener[0]);
     }
 
+    @Override
     protected void processEvent(AWTEvent e) {
         if (toolkit.eventTypeLookup.getEventMask(e) == AWTEvent.ACTION_EVENT_MASK) {
             processActionEvent((ActionEvent) e);
@@ -258,6 +267,7 @@ public class Button extends Component implements Accessible {
         }
     }
 
+    @Override
     protected String paramString() {
         toolkit.lockAWT();
         try {
@@ -272,10 +282,12 @@ public class Button extends Component implements Accessible {
         return labelSize;
     }
 
+    @Override
     void prepaint(Graphics g) {
         toolkit.theme.drawButton(g, state);
     }
 
+    @Override
     boolean isPrepainter() {
         return true;
     }
@@ -284,6 +296,7 @@ public class Button extends Component implements Accessible {
         return stateController.isPressed();
     }
 
+    @Override
     void setEnabledImpl(boolean value) {
         super.setEnabledImpl(value);
         repaint();
@@ -294,10 +307,12 @@ public class Button extends Component implements Accessible {
                 getActionCommand(), timestamp, modifiers));
     }
 
+    @Override
     String autoName() {
         return ("button" + Integer.toString(toolkit.autoNumber.nextButton++));
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         toolkit.lockAWT();
         try {
@@ -307,6 +322,7 @@ public class Button extends Component implements Accessible {
         }
     }
 
+    @Override
     Dimension getDefaultMinimumSize() {
         if (getFont() == null) {
             return new Dimension(0, 0);
@@ -317,10 +333,12 @@ public class Button extends Component implements Accessible {
         return state.getDefaultMinimumSize();
     }
 
+    @Override
     void resetDefaultSize() {
         state.reset();
     }
 
+    @Override
     ComponentBehavior createBehavior() {
         return new HWBehavior(this);
     }
@@ -328,6 +346,7 @@ public class Button extends Component implements Accessible {
     ButtonStateController createStateController() {
 
         return new ButtonStateController(this) {
+            @Override
             protected void fireEvent() {
                 generateEvent(getWhen(), getMod());
             }};
@@ -343,6 +362,7 @@ public class Button extends Component implements Accessible {
         accessor.set("state", new State());
     }
 
+    @Override
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTButton();
     }

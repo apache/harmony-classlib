@@ -180,22 +180,27 @@ public abstract class MenuComponent implements Serializable {
         public void selectAllAccessibleSelection() {
         }
 
+        @Override
         public Accessible getAccessibleChild(int index) {
             return null;
         }
 
+        @Override
         public int getAccessibleChildrenCount() {
             return 0;
         }
 
+        @Override
         public AccessibleComponent getAccessibleComponent() {
             return this;
         }
 
+        @Override
         public String getAccessibleDescription() {
             return super.getAccessibleDescription();
         }
 
+        @Override
         public int getAccessibleIndexInParent() {
             toolkit.lockAWT();
             try {
@@ -221,10 +226,12 @@ public abstract class MenuComponent implements Serializable {
             }
         }
 
+        @Override
         public String getAccessibleName() {
             return super.getAccessibleName();
         }
 
+        @Override
         public Accessible getAccessibleParent() {
             toolkit.lockAWT();
             try {
@@ -242,18 +249,22 @@ public abstract class MenuComponent implements Serializable {
             }
         }
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.AWT_COMPONENT;
         }
 
+        @Override
         public AccessibleSelection getAccessibleSelection() {
             return this;
         }
 
+        @Override
         public AccessibleStateSet getAccessibleStateSet() {
             return new AccessibleStateSet();
         }
 
+        @Override
         public Locale getLocale() {
             return Locale.getDefault();
         }
@@ -327,18 +338,22 @@ public abstract class MenuComponent implements Serializable {
 
         private final Point lastMousePos = new Point();
 
+        @Override
         boolean isMenu() {
             return true;
         }
 
+        @Override
         void paint(Graphics gr) {
             MenuComponent.this.paint(gr);
         }
 
+        @Override
         void onKeyEvent(int eventId, int vKey, long when, int modifiers) {
             MenuComponent.this.onKeyEvent(eventId, vKey, when, modifiers);
         }
 
+        @Override
         void onMouseEvent(int eventId, Point where, int mouseButton, long when,
                 int modifiers, int wheelRotation) {
 
@@ -375,6 +390,7 @@ public abstract class MenuComponent implements Serializable {
         }
     }
 
+    @Override
     public String toString() {
         toolkit.lockAWT();
         try {
@@ -428,7 +444,9 @@ public abstract class MenuComponent implements Serializable {
         } finally {
             toolkit.unlockAWT();
         }
-        if (true) throw new RuntimeException("Method is not implemented"); //TODO: implement
+        if (true) {
+            throw new RuntimeException("Method is not implemented"); //TODO: implement
+        }
         return null;
     }
 

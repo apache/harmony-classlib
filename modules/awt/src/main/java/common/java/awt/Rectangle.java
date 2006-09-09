@@ -59,22 +59,27 @@ public class Rectangle extends Rectangle2D implements Shape, Serializable {
         setBounds(0, 0, d.width, d.height);
     }
 
+    @Override
     public double getX() {
         return x;
     }
 
+    @Override
     public double getY() {
         return y;
     }
 
+    @Override
     public double getHeight() {
         return height;
     }
 
+    @Override
     public double getWidth() {
         return width;
     }
 
+    @Override
     public boolean isEmpty() {
         return width <= 0 || height <= 0;
     }
@@ -109,6 +114,7 @@ public class Rectangle extends Rectangle2D implements Shape, Serializable {
         setLocation(x, y);
     }
 
+    @Override
     public void setRect(double x, double y, double width, double height) {
         int x1 = (int)Math.floor(x);
         int y1 = (int)Math.floor(y);
@@ -125,10 +131,12 @@ public class Rectangle extends Rectangle2D implements Shape, Serializable {
         setBounds(x, y, width, height);
     }
 
+    @Override
     public Rectangle getBounds() {
         return new Rectangle(x, y, width, height);
     }
 
+    @Override
     public Rectangle2D getBounds2D() {
         return getBounds();
     }
@@ -204,6 +212,7 @@ public class Rectangle extends Rectangle2D implements Shape, Serializable {
         return contains(px, py);
     }
 
+    @Override
     public Rectangle2D createIntersection(Rectangle2D r) {
         if (r instanceof Rectangle) {
             return intersection((Rectangle) r);
@@ -225,6 +234,7 @@ public class Rectangle extends Rectangle2D implements Shape, Serializable {
         return !intersection(r).isEmpty();
     }
 
+    @Override
     public int outcode(double px, double py) {
         int code = 0;
 
@@ -251,6 +261,7 @@ public class Rectangle extends Rectangle2D implements Shape, Serializable {
         return code;
     }
 
+    @Override
     public Rectangle2D createUnion(Rectangle2D r) {
         if (r instanceof Rectangle) {
             return union((Rectangle)r);
@@ -266,6 +277,7 @@ public class Rectangle extends Rectangle2D implements Shape, Serializable {
         return dst;
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -277,6 +289,7 @@ public class Rectangle extends Rectangle2D implements Shape, Serializable {
         return false;
     }
 
+    @Override
     public String toString() {
         // The output format based on 1.5 release behaviour. It could be obtained in the following way
         // System.out.println(new Rectangle().toString())

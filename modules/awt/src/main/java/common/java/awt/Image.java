@@ -50,10 +50,11 @@ public abstract class Image {
 
     public Image getScaledInstance(int width, int height, int hints) {
         ImageFilter filter;
-        if ((hints & (SCALE_SMOOTH | SCALE_AREA_AVERAGING)) != 0)
+        if ((hints & (SCALE_SMOOTH | SCALE_AREA_AVERAGING)) != 0) {
             filter = new AreaAveragingScaleFilter(width, height);
-        else
+        } else {
             filter = new ReplicateScaleFilter(width, height);
+        }
         ImageProducer producer = new FilteredImageSource(getSource(), filter);
         return Toolkit.getDefaultToolkit().createImage(producer);
     }

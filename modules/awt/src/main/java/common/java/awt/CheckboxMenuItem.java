@@ -34,42 +34,52 @@ public class CheckboxMenuItem extends MenuItem implements ItemSelectable, Access
             implements AccessibleAction, AccessibleValue {
         private static final long serialVersionUID = -1122642964303476L;
 
+        @Override
         public boolean doAccessibleAction(int i) {
             return false; //do nothing
         }
 
+        @Override
         public AccessibleAction getAccessibleAction() {
             return this;
         }
 
+        @Override
         public int getAccessibleActionCount() {
             return 0; // no accessible actions
         }
 
+        @Override
         public String getAccessibleActionDescription(int i) {
             return null;
         }
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.CHECK_BOX;
         }
 
+        @Override
         public AccessibleValue getAccessibleValue() {
             return this;
         }
 
+        @Override
         public Number getCurrentAccessibleValue() {
             return null;
         }
 
+        @Override
         public Number getMaximumAccessibleValue() {
             return null;
         }
 
+        @Override
         public Number getMinimumAccessibleValue() {
             return null;
         }
 
+        @Override
         public boolean setCurrentAccessibleValue(Number n) {
             return false;
         }
@@ -112,6 +122,7 @@ public class CheckboxMenuItem extends MenuItem implements ItemSelectable, Access
         }
     }
 
+    @Override
     public void addNotify() {
         toolkit.lockAWT();
         try {
@@ -121,6 +132,7 @@ public class CheckboxMenuItem extends MenuItem implements ItemSelectable, Access
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         toolkit.lockAWT();
         try {
@@ -130,6 +142,7 @@ public class CheckboxMenuItem extends MenuItem implements ItemSelectable, Access
         }
     }
 
+    @Override
     public String paramString() {
         /* The format of paramString is based on 1.5 release behavior 
          * which can be revealed using the following code:
@@ -164,12 +177,12 @@ public class CheckboxMenuItem extends MenuItem implements ItemSelectable, Access
         }
     }
 
+    @Override
     public EventListener[] getListeners(Class listenerType) {
         if (ItemListener.class.isAssignableFrom(listenerType)) {
             return getItemListeners();
-        } else {
-            return super.getListeners(listenerType);
         }
+        return super.getListeners(listenerType);
     }
 
     public void addItemListener(ItemListener l) {
@@ -184,6 +197,7 @@ public class CheckboxMenuItem extends MenuItem implements ItemSelectable, Access
         return (ItemListener[]) itemListeners.getUserListeners(new ItemListener[0]);
     }
 
+    @Override
     protected void processEvent(AWTEvent e) {
         if (toolkit.eventTypeLookup.getEventMask(e) == AWTEvent.ITEM_EVENT_MASK) {
             processItemEvent((ItemEvent) e);
@@ -204,16 +218,19 @@ public class CheckboxMenuItem extends MenuItem implements ItemSelectable, Access
         }
     }
 
+    @Override
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTCheckboxMenuItem();
     }
 
+    @Override
     void itemSelected(long when, int modifiers) {
         checked = !checked;
 
         super.itemSelected(when, modifiers);
     }
 
+    @Override
     AWTEvent createEvent(long when, int modifiers) {
         int state = checked ? ItemEvent.SELECTED : ItemEvent.DESELECTED;
         return new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED, getLabel(), state);

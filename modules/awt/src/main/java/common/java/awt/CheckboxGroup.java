@@ -36,6 +36,7 @@ public class CheckboxGroup implements Serializable {
         }
     }
 
+    @Override
     public String toString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:
@@ -84,6 +85,7 @@ public class CheckboxGroup implements Serializable {
     /**
      * @deprecated
      */
+    @Deprecated
     public Checkbox getCurrent() {
         toolkit.lockAWT();
         try {

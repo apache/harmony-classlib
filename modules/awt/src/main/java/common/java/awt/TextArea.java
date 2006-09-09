@@ -45,6 +45,7 @@ public class TextArea extends TextComponent {
 
         private static final long serialVersionUID = 3472827823632144419L;
 
+        @Override
         public AccessibleStateSet getAccessibleStateSet() {
             AccessibleStateSet set = super.getAccessibleStateSet();
             set.add(AccessibleState.MULTI_LINE);
@@ -406,6 +407,7 @@ public class TextArea extends TextComponent {
 //        }
     }
 
+    @Override
     public void addNotify() {
         toolkit.lockAWT();
         try {
@@ -418,10 +420,12 @@ public class TextArea extends TextComponent {
     /**
      * @deprecated
      */
+    @Deprecated
     public void appendText(String str) {
         append(str);
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         toolkit.lockAWT();
         try {
@@ -440,6 +444,7 @@ public class TextArea extends TextComponent {
         }
     }
 
+    @Override
     public Dimension getMinimumSize() {
         toolkit.lockAWT();
         try {
@@ -467,6 +472,7 @@ public class TextArea extends TextComponent {
         }
     }
 
+    @Override
     public Dimension getPreferredSize() {
         toolkit.lockAWT();
         try {
@@ -497,6 +503,7 @@ public class TextArea extends TextComponent {
     /**
      * @deprecated
      */
+    @Deprecated
     public void insertText(String str, int pos) {
         insert(str, pos);
     }
@@ -504,6 +511,9 @@ public class TextArea extends TextComponent {
     /**
      * @deprecated
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public Dimension minimumSize() {
         toolkit.lockAWT();
         try {
@@ -520,6 +530,8 @@ public class TextArea extends TextComponent {
     /**
      * @deprecated
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
     public Dimension minimumSize(int rows, int columns) {
         toolkit.lockAWT();
         try {
@@ -533,6 +545,7 @@ public class TextArea extends TextComponent {
         }
     }
 
+    @Override
     protected String paramString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:
@@ -567,6 +580,9 @@ public class TextArea extends TextComponent {
     /**
      * @deprecated
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public Dimension preferredSize() {
         toolkit.lockAWT();
         try {
@@ -584,6 +600,8 @@ public class TextArea extends TextComponent {
     /**
      * @deprecated
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
     public Dimension preferredSize(int rows, int columns) {
         toolkit.lockAWT();
         try {
@@ -626,6 +644,7 @@ public class TextArea extends TextComponent {
     /**
      * @deprecated
      */
+    @Deprecated
     public void replaceText(String str, int start, int end) {
         replaceRange(str, start, end);
     }
@@ -654,14 +673,17 @@ public class TextArea extends TextComponent {
         }
     }
 
+    @Override
     boolean isPrepainter() {
         return true;
     }
 
+    @Override
     Dimension getDefaultMinimumSize() {
         return calcSize(10, 60);
     }
 
+    @Override
     Dimension getDefaultPreferredSize() {
         if (getFont() == null) {
             return null;
@@ -692,6 +714,7 @@ public class TextArea extends TextComponent {
      * x scroll coordinate of point is changed to 0
      * before setting the position.
      */
+    @Override
     void setViewPosition(Point point) {
         if (noHorizontalScroll()) {
             point.x = 0; // don't allow horizontal scrolling
@@ -704,6 +727,7 @@ public class TextArea extends TextComponent {
      * Also updates necessary scrollbar values.
      * @see TextComponent.scrollRectToVisible(Rectangle)
      */
+    @Override
     void scrollRectToVisible(Rectangle r) {
         super.scrollRectToVisible(r);
         // update scrollbar positions:
@@ -715,6 +739,7 @@ public class TextArea extends TextComponent {
         }
     }
 
+    @Override
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTTextArea();
     }
@@ -744,6 +769,7 @@ public class TextArea extends TextComponent {
         vAdjustable.addAWTAdjustmentListener(stateController);
     }
 
+    @Override
     void prepaint(Graphics g) {
         super.prepaint(g);
         Shape oldClip = g.getClip();
@@ -764,6 +790,7 @@ public class TextArea extends TextComponent {
     /**
      * Adds scrollbar area to default insets
      */
+    @Override
     Insets getInsets() {
         Insets ins = super.getInsets();
         if (scrollable == null) {
@@ -783,6 +810,7 @@ public class TextArea extends TextComponent {
      * Re-calculates internal layout of TextArea:
      * lays out scrollbars and sets their values
      */
+    @Override
     void revalidate() {
         stateController.layoutScrollbars();
         super.revalidate();
@@ -793,6 +821,7 @@ public class TextArea extends TextComponent {
      * visible part(which is component's bounds),
      * relative to TextArea origin
      */
+    @Override
     Rectangle getModelRect() {
         Rectangle mRect = super.getModelRect();
         if (noHorizontalScroll()) {
@@ -813,6 +842,7 @@ public class TextArea extends TextComponent {
         return filter;
     }
 
+    @Override
     MouseMotionListener getMotionHandler() {
         if (filter == null) {
             filter = createFilter();
@@ -820,6 +850,7 @@ public class TextArea extends TextComponent {
         return filter;
     }
 
+    @Override
     MouseListener getMouseHandler() {
         if (filter == null) {
             filter = createFilter();
@@ -827,6 +858,7 @@ public class TextArea extends TextComponent {
         return filter;
     }
     
+    @Override
     String autoName() {        
         return ("text" + toolkit.autoNumber.nextTextArea++);
     }

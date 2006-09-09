@@ -56,7 +56,7 @@ public class Window extends Container implements Accessible {
     private final AWTListenerList windowFocusListeners = new AWTListenerList(this);
     private final AWTListenerList windowListeners = new AWTListenerList(this);
     private final AWTListenerList windowStateListeners = new AWTListenerList(this);
-    private ArrayList ownedWindows = new ArrayList();
+    private ArrayList<Window> ownedWindows = new ArrayList<Window>();
     private transient Component focusOwner;
     private boolean focusableWindowState = true;//By default, all Windows have a focusable Window state of true
 
@@ -100,6 +100,7 @@ public class Window extends Container implements Accessible {
 
         private static final long serialVersionUID = 4215068635060671780L;
 
+        @Override
         public AccessibleStateSet getAccessibleStateSet() {
             toolkit.lockAWT();
             try {
@@ -116,6 +117,7 @@ public class Window extends Container implements Accessible {
             }
         }
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             toolkit.lockAWT();
             try {
@@ -192,10 +194,12 @@ public class Window extends Container implements Accessible {
         }
     }
 
+    @Override
     protected void finalize() throws Throwable {
         // do nothing
     }
 
+    @Override
     public void addNotify() {
         toolkit.lockAWT();
         try {
@@ -207,6 +211,7 @@ public class Window extends Container implements Accessible {
         }
     }
 
+    @Override
     public void removeNotify() {
         toolkit.lockAWT();
         try {
@@ -218,6 +223,7 @@ public class Window extends Container implements Accessible {
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         toolkit.lockAWT();
         try {
@@ -227,10 +233,12 @@ public class Window extends Container implements Accessible {
         }
     }
 
+    @Override
     public Toolkit getToolkit() {
         return toolkit;
     }
 
+    @Override
     public void setCursor(Cursor cursor) {
         toolkit.lockAWT();
         try {
@@ -242,6 +250,7 @@ public class Window extends Container implements Accessible {
         }
     }
 
+    @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         toolkit.lockAWT();
         try {
@@ -251,6 +260,7 @@ public class Window extends Container implements Accessible {
         }
     }
 
+    @Override
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         toolkit.lockAWT();
         try {
@@ -266,7 +276,9 @@ public class Window extends Container implements Accessible {
         } finally {
             toolkit.unlockAWT();
         }
-        if (true) throw new RuntimeException("Method is not implemented");
+        if (true) {
+            throw new RuntimeException("Method is not implemented");
+        }
         return;
     }
 
@@ -276,7 +288,9 @@ public class Window extends Container implements Accessible {
         } finally {
             toolkit.unlockAWT();
         }
-        if (true) throw new RuntimeException("Method is not implemented"); //TODO: implement
+        if (true) {
+            throw new RuntimeException("Method is not implemented"); //TODO: implement
+        }
         return;
     }
 
@@ -327,7 +341,7 @@ public class Window extends Container implements Accessible {
      */
     private void disposeOwnedWindows() {
         for (int i=0; i < ownedWindows.size(); i++) {
-            Window win = (Window) ownedWindows.get(i);
+            Window win = ownedWindows.get(i);
             if (win != null) {
                 win.dispose();
             }
@@ -341,10 +355,13 @@ public class Window extends Container implements Accessible {
         } finally {
             toolkit.unlockAWT();
         }
-        if (true) throw new RuntimeException("Method is not implemented"); //TODO: implement
+        if (true) {
+            throw new RuntimeException("Method is not implemented"); //TODO: implement
+        }
         return null;
     }
 
+    @Override
     public final Container getFocusCycleRootAncestor() {
         toolkit.lockAWT();
         try {
@@ -364,7 +381,8 @@ public class Window extends Container implements Accessible {
         }
     }
 
-    public Set getFocusTraversalKeys(int id) {
+    @Override
+    public Set<?> getFocusTraversalKeys(int id) {
         //why override?
         toolkit.lockAWT();
         try {
@@ -374,6 +392,7 @@ public class Window extends Container implements Accessible {
         }
     }
 
+    @Override
     public GraphicsConfiguration getGraphicsConfiguration() {
         toolkit.lockAWT();
         try {
@@ -391,6 +410,7 @@ public class Window extends Container implements Accessible {
         }
     }
 
+    @Override
     public InputContext getInputContext() {
         toolkit.lockAWT();
         try {
@@ -403,6 +423,7 @@ public class Window extends Container implements Accessible {
         }
     }
 
+    @Override
     public Locale getLocale() {
         toolkit.lockAWT();
         try {
@@ -412,6 +433,8 @@ public class Window extends Container implements Accessible {
         }
     }
 
+    @SuppressWarnings("deprecation")
+    @Override
     public void hide() {
         toolkit.lockAWT();
         try {
@@ -419,7 +442,7 @@ public class Window extends Container implements Accessible {
             painted = false;
             // hide all owned windows explicitly:
             for (int i = 0; i < ownedWindows.size(); i++) {
-                Window w = (Window) ownedWindows.get(i);
+                Window w = ownedWindows.get(i);
                 if (w != null) {
                     w.hide();
                 }
@@ -430,6 +453,7 @@ public class Window extends Container implements Accessible {
         }
     }
 
+    @Override
     public final boolean isFocusCycleRoot() {
         toolkit.lockAWT();
         try {
@@ -472,6 +496,7 @@ public class Window extends Container implements Accessible {
         }
     }
 
+    @Override
     public boolean isShowing() {
         toolkit.lockAWT();
         try {
@@ -484,6 +509,9 @@ public class Window extends Container implements Accessible {
     /**
      * @deprecated
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public boolean postEvent(Event evt) {
         toolkit.lockAWT();
         try {
@@ -494,6 +522,8 @@ public class Window extends Container implements Accessible {
         }
     }
 
+    @SuppressWarnings("deprecation")
+    @Override
     public void show() {
         toolkit.lockAWT();
         try {
@@ -532,6 +562,7 @@ public class Window extends Container implements Accessible {
         focusOwner = owner;
     }
 
+    @Override
     public final void setFocusCycleRoot(boolean value) {
         toolkit.lockAWT();
         try {
@@ -557,6 +588,8 @@ public class Window extends Container implements Accessible {
     /**
      * @deprecated
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
     public void applyResourceBundle(ResourceBundle rb) {
         toolkit.lockAWT();
         try {
@@ -569,6 +602,7 @@ public class Window extends Container implements Accessible {
     /**
      * @deprecated
      */
+    @Deprecated
     public void applyResourceBundle(String rbName) {
         toolkit.lockAWT();
         try {
@@ -590,7 +624,7 @@ public class Window extends Container implements Accessible {
     public Window[] getOwnedWindows() {
         toolkit.lockAWT();
         try {
-            return (Window[]) ownedWindows.toArray(new Window[0]);
+            return ownedWindows.toArray(new Window[0]);
         } finally {
             toolkit.unlockAWT();
         }
@@ -619,12 +653,12 @@ public class Window extends Container implements Accessible {
             return null;
         }
 
-        PrivilegedAction action = new PrivilegedAction() {
-            public Object run() {
+        PrivilegedAction<String> action = new PrivilegedAction<String>() {
+            public String run() {
                 return System.getProperty("awt.appletWarning", "Warning: Java window");
             }};
 
-        return (String)AccessController.doPrivileged(action);
+        return AccessController.doPrivileged(action);
     }
 
     public boolean isActive() {
@@ -718,10 +752,12 @@ public class Window extends Container implements Accessible {
         // do nothing, override in Frame to do useful work
     }
 
+    @Override
     Insets getNativeInsets() {
         return (Insets)nativeInsets.clone();
     }
 
+    @Override
     void setBounds(int x, int y, int w, int h, int bMask, boolean updateBehavior) {
         boolean resized = ((w != this.w) || (h != this.h));
         super.setBounds(x, y, w, h, bMask, updateBehavior);
@@ -731,6 +767,7 @@ public class Window extends Container implements Accessible {
         }
     }
 
+    @Override
     public void setBounds(int x, int y, int width, int height) {
         locationByPlatform = false;
         super.setBounds(x, y, width, height);
@@ -902,8 +939,9 @@ public class Window extends Container implements Accessible {
         if (this.undecorated == undecorated) {
             return;
         }
-        if(isDisplayable())
+        if(isDisplayable()) {
             throw new IllegalComponentStateException("Cannot change the decorations while the window is visible");
+        }
 
         this.undecorated = undecorated;
     }
@@ -913,8 +951,9 @@ public class Window extends Container implements Accessible {
     }
 
     void setPopup(boolean popup) {
-        if(isDisplayable())
+        if(isDisplayable()) {
             throw new IllegalComponentStateException("Cannot change the decorations while the window is visible");
+        }
         this.popup = popup;
     }
 
@@ -943,6 +982,7 @@ public class Window extends Container implements Accessible {
         firePropertyChange("title", oldTitle, title);
     }
 
+    @Override
     RedrawManager getRedrawManager() {
         return redrawManager;
     }
@@ -962,6 +1002,7 @@ public class Window extends Container implements Accessible {
         return requestedFocus;
     }
 
+    @Override
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTWindow();
     }
@@ -972,10 +1013,12 @@ public class Window extends Container implements Accessible {
      * @return actual Cursor to be displayed
      * @see Component.getRealCursor()
      */
+    @Override
     Cursor getRealCursor() {
        return isEnabled() ? getCursor() : Cursor.getDefaultCursor();
     }
 
+    @Override
     String autoName() {
         int number = toolkit.autoNumber.nextWindow++;
         return "window" + Integer.toString(number);
@@ -1019,7 +1062,8 @@ public class Window extends Container implements Accessible {
         windowStateListeners.removeUserListener(l);
     }
 
-    public EventListener[] getListeners(Class listenerType) {
+    @Override
+    public EventListener[] getListeners(Class<?> listenerType) {
         if (WindowFocusListener.class.isAssignableFrom(listenerType)) {
             return getWindowFocusListeners();
         } else if (WindowStateListener.class.isAssignableFrom(listenerType)) {
@@ -1031,6 +1075,7 @@ public class Window extends Container implements Accessible {
         }
     }
 
+    @Override
     protected void processEvent(AWTEvent e) {
         long eventMask = toolkit.eventTypeLookup.getEventMask(e);
 
@@ -1046,7 +1091,7 @@ public class Window extends Container implements Accessible {
     }
 
     protected void processWindowEvent(WindowEvent e) {
-        for (Iterator i = windowListeners.getUserIterator(); i.hasNext();) {
+        for (Iterator<?> i = windowListeners.getUserIterator(); i.hasNext();) {
             WindowListener listener = (WindowListener) i.next();
 
             switch (e.getID()) {
@@ -1076,7 +1121,7 @@ public class Window extends Container implements Accessible {
     }
 
     protected void processWindowFocusEvent(WindowEvent e) {
-        for (Iterator i = windowFocusListeners.getUserIterator(); i.hasNext();) {
+        for (Iterator<?> i = windowFocusListeners.getUserIterator(); i.hasNext();) {
             WindowFocusListener listener = (WindowFocusListener) i.next();
 
             switch (e.getID()) {
@@ -1091,7 +1136,7 @@ public class Window extends Container implements Accessible {
     }
 
     protected void processWindowStateEvent(WindowEvent e) {
-        for (Iterator i = windowStateListeners.getUserIterator(); i.hasNext();) {
+        for (Iterator<?> i = windowStateListeners.getUserIterator(); i.hasNext();) {
             WindowStateListener listener = (WindowStateListener) i.next();
 
             switch (e.getID()) {
@@ -1102,6 +1147,7 @@ public class Window extends Container implements Accessible {
         }
     }
 
+    @Override
     void moveFocusOnHide() {
         // let native system move focus itself
         // if native focused window is the same as
@@ -1111,6 +1157,7 @@ public class Window extends Container implements Accessible {
         }
     }
 
+    @Override
     ComponentBehavior createBehavior() {
         return new HWBehavior(this);
     }
@@ -1133,18 +1180,22 @@ public class Window extends Container implements Accessible {
         return gc;
     }
 
+    @Override
     Color getDefaultBackground() {
         return SystemColor.window;
     }
 
+    @Override
     Color getDefaultForeground() {
         return SystemColor.windowText;
     }
 
+    @Override
     boolean isPrepainter() {
         return true;
     }
 
+    @Override
     void prepaint(Graphics g) {
         Color back = getBackground();
         if (back == null) {
@@ -1161,6 +1212,7 @@ public class Window extends Container implements Accessible {
      * & properties to make them correspond to Java
      * Window state/properties
      */
+    @Override
     void nativeWindowCreated(NativeWindow win) {
         win.setFocusable(getFocusableWindowState());
         nativeInsets = win.getInsets();
@@ -1186,6 +1238,7 @@ public class Window extends Container implements Accessible {
         }
     }
 
+    @Override
     MultiRectArea getObscuredRegion(Rectangle part) {
         if (!visible || behaviour.getNativeWindow() == null) {
             return null;
@@ -1214,6 +1267,7 @@ public class Window extends Container implements Accessible {
         redrawManager = new RedrawManager(this);
     }
     
+    @Override
     void notifyInputMethod(Rectangle bounds) {
         InputContext ic = getInputContext();
         if (ic instanceof InputMethodContext) {

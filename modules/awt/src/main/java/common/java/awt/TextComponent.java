@@ -21,6 +21,7 @@ package java.awt;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -53,6 +54,7 @@ import javax.swing.text.Position.Bias;
 
 import org.apache.harmony.awt.state.TextComponentState;
 import org.apache.harmony.awt.text.AWTTextAction;
+import org.apache.harmony.awt.text.ActionNames;
 import org.apache.harmony.awt.text.ActionSet;
 import org.apache.harmony.awt.text.RootViewContext;
 import org.apache.harmony.awt.text.TextCaret;
@@ -68,56 +70,56 @@ public class TextComponent extends Component implements Accessible {
      */
     static class KeyMap {
 
-        private static final HashMap actions = new HashMap();
+        private static final HashMap<AWTKeyStroke, Object> actions = new HashMap<AWTKeyStroke, Object>();
 
         static {
-            add(KeyEvent.VK_ENTER, 0, ActionSet.insertBreakAction);
-            add(KeyEvent.VK_TAB, 0, ActionSet.insertTabAction);
-            add(KeyEvent.VK_DELETE, 0, ActionSet.deleteNextCharAction);
-            add(KeyEvent.VK_BACK_SPACE, 0, ActionSet.deletePrevCharAction);
+            add(KeyEvent.VK_ENTER, 0, ActionNames.insertBreakAction);
+            add(KeyEvent.VK_TAB, 0, ActionNames.insertTabAction);
+            add(KeyEvent.VK_DELETE, 0, ActionNames.deleteNextCharAction);
+            add(KeyEvent.VK_BACK_SPACE, 0, ActionNames.deletePrevCharAction);
 
-            add(KeyEvent.VK_LEFT, 0, ActionSet.backwardAction);
-            add(KeyEvent.VK_RIGHT, 0, ActionSet.forwardAction);
-            add(KeyEvent.VK_UP, 0, ActionSet.upAction);
-            add(KeyEvent.VK_DOWN, 0, ActionSet.downAction);
+            add(KeyEvent.VK_LEFT, 0, ActionNames.backwardAction);
+            add(KeyEvent.VK_RIGHT, 0, ActionNames.forwardAction);
+            add(KeyEvent.VK_UP, 0, ActionNames.upAction);
+            add(KeyEvent.VK_DOWN, 0, ActionNames.downAction);
 
-            add(KeyEvent.VK_HOME, 0, ActionSet.beginLineAction);
-            add(KeyEvent.VK_END, 0, ActionSet.endLineAction);
-            add(KeyEvent.VK_PAGE_UP, 0, ActionSet.pageUpAction);
-            add(KeyEvent.VK_PAGE_DOWN, 0, ActionSet.pageDownAction);
+            add(KeyEvent.VK_HOME, 0, ActionNames.beginLineAction);
+            add(KeyEvent.VK_END, 0, ActionNames.endLineAction);
+            add(KeyEvent.VK_PAGE_UP, 0, ActionNames.pageUpAction);
+            add(KeyEvent.VK_PAGE_DOWN, 0, ActionNames.pageDownAction);
 
-            add(KeyEvent.VK_RIGHT, KeyEvent.CTRL_MASK, ActionSet.nextWordAction);
-            add(KeyEvent.VK_LEFT, KeyEvent.CTRL_MASK, ActionSet.previousWordAction);
-            add(KeyEvent.VK_PAGE_UP, KeyEvent.CTRL_MASK, ActionSet.beginAction);
-            add(KeyEvent.VK_PAGE_DOWN, KeyEvent.CTRL_MASK, ActionSet.endAction);
-            add(KeyEvent.VK_HOME, KeyEvent.CTRL_MASK, ActionSet.beginAction);
-            add(KeyEvent.VK_END, KeyEvent.CTRL_MASK, ActionSet.endAction);
+            add(KeyEvent.VK_RIGHT, InputEvent.CTRL_MASK, ActionNames.nextWordAction);
+            add(KeyEvent.VK_LEFT, InputEvent.CTRL_MASK, ActionNames.previousWordAction);
+            add(KeyEvent.VK_PAGE_UP, InputEvent.CTRL_MASK, ActionNames.beginAction);
+            add(KeyEvent.VK_PAGE_DOWN, InputEvent.CTRL_MASK, ActionNames.endAction);
+            add(KeyEvent.VK_HOME, InputEvent.CTRL_MASK, ActionNames.beginAction);
+            add(KeyEvent.VK_END, InputEvent.CTRL_MASK, ActionNames.endAction);
 
-            add(KeyEvent.VK_LEFT, KeyEvent.SHIFT_MASK, ActionSet.selectionBackwardAction);
-            add(KeyEvent.VK_RIGHT, KeyEvent.SHIFT_MASK, ActionSet.selectionForwardAction);
-            add(KeyEvent.VK_UP, KeyEvent.SHIFT_MASK, ActionSet.selectionUpAction);
-            add(KeyEvent.VK_DOWN, KeyEvent.SHIFT_MASK, ActionSet.selectionDownAction);
+            add(KeyEvent.VK_LEFT, InputEvent.SHIFT_MASK, ActionNames.selectionBackwardAction);
+            add(KeyEvent.VK_RIGHT, InputEvent.SHIFT_MASK, ActionNames.selectionForwardAction);
+            add(KeyEvent.VK_UP, InputEvent.SHIFT_MASK, ActionNames.selectionUpAction);
+            add(KeyEvent.VK_DOWN, InputEvent.SHIFT_MASK, ActionNames.selectionDownAction);
 
-            add(KeyEvent.VK_HOME, KeyEvent.SHIFT_MASK, ActionSet.selectionBeginLineAction);
-            add(KeyEvent.VK_END, KeyEvent.SHIFT_MASK, ActionSet.selectionEndLineAction);
-            add(KeyEvent.VK_PAGE_UP, KeyEvent.SHIFT_MASK, ActionSet.selectionPageUpAction);
-            add(KeyEvent.VK_PAGE_DOWN, KeyEvent.SHIFT_MASK, ActionSet.selectionPageDownAction);
+            add(KeyEvent.VK_HOME, InputEvent.SHIFT_MASK, ActionNames.selectionBeginLineAction);
+            add(KeyEvent.VK_END, InputEvent.SHIFT_MASK, ActionNames.selectionEndLineAction);
+            add(KeyEvent.VK_PAGE_UP, InputEvent.SHIFT_MASK, ActionNames.selectionPageUpAction);
+            add(KeyEvent.VK_PAGE_DOWN, InputEvent.SHIFT_MASK, ActionNames.selectionPageDownAction);
 
-            add(KeyEvent.VK_LEFT, KeyEvent.CTRL_MASK|KeyEvent.SHIFT_MASK,
-                    ActionSet.selectionPreviousWordAction);
-            add(KeyEvent.VK_RIGHT, KeyEvent.CTRL_MASK|KeyEvent.SHIFT_MASK,
-                    ActionSet.selectionNextWordAction);
-            add(KeyEvent.VK_PAGE_UP, KeyEvent.CTRL_MASK|KeyEvent.SHIFT_MASK,
-                    ActionSet.selectionBeginAction);
-            add(KeyEvent.VK_PAGE_DOWN, KeyEvent.CTRL_MASK|KeyEvent.SHIFT_MASK,
-                    ActionSet.selectionEndAction);
-            add(KeyEvent.VK_A, KeyEvent.CTRL_MASK, ActionSet.selectAllAction);
+            add(KeyEvent.VK_LEFT, InputEvent.CTRL_MASK|InputEvent.SHIFT_MASK,
+                    ActionNames.selectionPreviousWordAction);
+            add(KeyEvent.VK_RIGHT, InputEvent.CTRL_MASK|InputEvent.SHIFT_MASK,
+                    ActionNames.selectionNextWordAction);
+            add(KeyEvent.VK_PAGE_UP, InputEvent.CTRL_MASK|InputEvent.SHIFT_MASK,
+                    ActionNames.selectionBeginAction);
+            add(KeyEvent.VK_PAGE_DOWN, InputEvent.CTRL_MASK|InputEvent.SHIFT_MASK,
+                    ActionNames.selectionEndAction);
+            add(KeyEvent.VK_A, InputEvent.CTRL_MASK, ActionNames.selectAllAction);
 
-            add(KeyEvent.VK_INSERT, KeyEvent.SHIFT_MASK, ActionSet.pasteAction);
-            add(KeyEvent.VK_V, KeyEvent.CTRL_MASK, ActionSet.pasteAction);
-            add(KeyEvent.VK_INSERT, KeyEvent.CTRL_MASK, ActionSet.copyAction);
-            add(KeyEvent.VK_C, KeyEvent.CTRL_MASK, ActionSet.copyAction);
-            add(KeyEvent.VK_X, KeyEvent.CTRL_MASK, ActionSet.cutAction);
+            add(KeyEvent.VK_INSERT, InputEvent.SHIFT_MASK, ActionNames.pasteAction);
+            add(KeyEvent.VK_V, InputEvent.CTRL_MASK, ActionNames.pasteAction);
+            add(KeyEvent.VK_INSERT, InputEvent.CTRL_MASK, ActionNames.copyAction);
+            add(KeyEvent.VK_C, InputEvent.CTRL_MASK, ActionNames.copyAction);
+            add(KeyEvent.VK_X, InputEvent.CTRL_MASK, ActionNames.cutAction);
 
         }
 
@@ -141,10 +143,12 @@ public class TextComponent extends Component implements Accessible {
             TextComponent.this.addTextListener(this);
         }
 
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.TEXT;
         }
 
+        @Override
         public AccessibleStateSet getAccessibleStateSet() {
             AccessibleStateSet result = super.getAccessibleStateSet();
             if (isEditable()) {
@@ -153,6 +157,7 @@ public class TextComponent extends Component implements Accessible {
             return result;
         }
 
+        @Override
         public AccessibleText getAccessibleText() {
             return this;
         }
@@ -499,6 +504,7 @@ public class TextComponent extends Component implements Accessible {
             textSize.setSize(size);
         }
 
+        @Override
         public boolean isEnabled() {
             return super.isEnabled() && isEditable();
         }
@@ -617,10 +623,12 @@ public class TextComponent extends Component implements Accessible {
         return c;
     }
 
+    @Override
     ComponentBehavior createBehavior() {
         return new HWBehavior(this);
     }
 
+    @Override
     public void addNotify() {
 //        toolkit.lockAWT();
 //        try {
@@ -637,6 +645,7 @@ public class TextComponent extends Component implements Accessible {
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         toolkit.lockAWT();
         try {
@@ -657,6 +666,7 @@ public class TextComponent extends Component implements Accessible {
         }
     }
 
+    @Override
     protected String paramString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:
@@ -674,6 +684,7 @@ public class TextComponent extends Component implements Accessible {
         }
     }
 
+    @Override
     public void enableInputMethods(boolean enable) {
         toolkit.lockAWT();
         try {
@@ -684,6 +695,7 @@ public class TextComponent extends Component implements Accessible {
         }
     }
 
+    @Override
     public Color getBackground() {
         toolkit.lockAWT();
         try {
@@ -746,6 +758,7 @@ public class TextComponent extends Component implements Accessible {
         }
     }
 
+    @Override
     public void removeNotify() {
         toolkit.lockAWT();
         try {
@@ -774,6 +787,7 @@ public class TextComponent extends Component implements Accessible {
         }
     }
 
+    @Override
     public void setBackground(Color c) {
         toolkit.lockAWT();
         try {
@@ -863,12 +877,12 @@ public class TextComponent extends Component implements Accessible {
         }
     }
 
-    public EventListener[] getListeners(Class listenerType) {
+    @Override
+    public EventListener[] getListeners(Class<?> listenerType) {
         if (TextListener.class.isAssignableFrom(listenerType)) {
             return getTextListeners();
-        } else {
-            return super.getListeners(listenerType);
         }
+        return super.getListeners(listenerType);
     }
 
     public void addTextListener(TextListener l) {
@@ -888,6 +902,7 @@ public class TextComponent extends Component implements Accessible {
         return (TextListener[]) textListeners.getUserListeners(new TextListener[0]);
     }
 
+    @Override
     protected void processEvent(AWTEvent e) {
         if (toolkit.eventTypeLookup.getEventMask(e) == AWTEvent.TEXT_EVENT_MASK) {
             processTextEvent((TextEvent) e);
@@ -897,7 +912,7 @@ public class TextComponent extends Component implements Accessible {
     }
 
     protected void processTextEvent(TextEvent e) {
-        for (Iterator i = textListeners.getUserIterator(); i.hasNext();) {
+        for (Iterator<?> i = textListeners.getUserIterator(); i.hasNext();) {
             TextListener listener = (TextListener) i.next();
 
             switch (e.getID()) {
@@ -1014,6 +1029,7 @@ public class TextComponent extends Component implements Accessible {
         postEvent(new TextEvent(this, TextEvent.TEXT_VALUE_CHANGED));
     }
 
+    @Override
     void prepaint(Graphics g) {
 
         toolkit.theme.drawTextComponentBackground(g, state);
@@ -1033,15 +1049,18 @@ public class TextComponent extends Component implements Accessible {
         g.setClip(oldClip);
     }
 
+    @Override
     Insets getNativeInsets() {
         return (Insets) BORDER.clone();
     }
 
+    @Override
     Insets getInsets() {
         // to be overridden by TextArea
         return getNativeInsets();
     }
 
+    @Override
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTTextComponent();
     }
@@ -1123,6 +1142,7 @@ public class TextComponent extends Component implements Accessible {
         throw new BadLocationException(s, i);
     }
 
+    @Override
     void setEnabledImpl(boolean value) {        
         super.setEnabledImpl(value);
         if (isShowing()) {
@@ -1130,6 +1150,7 @@ public class TextComponent extends Component implements Accessible {
         }
     }
     
+    @Override
     void postprocessEvent(AWTEvent e, long eventMask) {
         // have to call system listeners without AWT lock
         // to avoid deadlocks in code common with UI text

@@ -56,8 +56,8 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
                                            UP_CYCLE_TRAVERSAL_KEYS,
                                            DOWN_CYCLE_TRAVERSAL_KEYS };
 
-    private HashMap/*<int, Set<AWTKeyStroke>>*/ defaultFocusTraversalKeys =
-        new HashMap();
+    private Map<Integer, Set<AWTKeyStroke>> defaultFocusTraversalKeys =
+        new HashMap<Integer, Set<AWTKeyStroke>>();
 
     private FocusTraversalPolicy defaultFocusTraversalPolicy =
         new DefaultFocusTraversalPolicy();
@@ -96,8 +96,8 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
 //    private final Toolkit toolkit = Toolkit.getDefaultToolkit();
 
     public KeyboardFocusManager() {
-        for (int i = 0; i < contTraversalIDs.length; i++) {
-            defaultFocusTraversalKeys.put(new Integer(contTraversalIDs[i]),
+        for (int element : contTraversalIDs) {
+            defaultFocusTraversalKeys.put(new Integer(element),
                     null);
         }
     }
@@ -202,10 +202,10 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
         }
     }
 
-    public Set getDefaultFocusTraversalKeys(int id) {
-        Integer kId = new Integer(id);
+    public Set<?> getDefaultFocusTraversalKeys(int id) {
+        Integer kId = Integer.valueOf(id);
         checkTraversalKeysID(defaultFocusTraversalKeys, kId);
-        return (Set) defaultFocusTraversalKeys.get(kId);
+        return defaultFocusTraversalKeys.get(kId);
     }
 
     public FocusTraversalPolicy getDefaultFocusTraversalPolicy() {
@@ -272,11 +272,11 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
         return permanentFocusOwner;
     }
 
-    protected List getKeyEventDispatchers() {
+    protected List<?> getKeyEventDispatchers() {
         return keyEventDispatchers.getUserListeners();
     }
 
-    protected List getKeyEventPostProcessors() {
+    protected List<?> getKeyEventPostProcessors() {
         return keyEventPostProcessors.getUserListeners();
     }
 
@@ -367,9 +367,9 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
         newManager.firePropertyChange(propName, Boolean.FALSE, Boolean.TRUE);
     }
 
-    public void setDefaultFocusTraversalKeys(int id, Set keystrokes) {
-        Integer kId = new Integer(id);
-        Set oldKeyStrokes = (Set) defaultFocusTraversalKeys.get(kId);
+    public void setDefaultFocusTraversalKeys(int id, Set<AWTKeyStroke> keystrokes) {
+        Integer kId = Integer.valueOf(id);
+        Set<AWTKeyStroke> oldKeyStrokes = defaultFocusTraversalKeys.get(kId);
         checkTraversalKeysID(defaultFocusTraversalKeys, kId);
         checkKeyStrokes(contTraversalIDs, defaultFocusTraversalKeys, kId,
                         keystrokes);
@@ -406,7 +406,7 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
     protected void setGlobalActiveWindow(Window activeWindow) {
         String propName = "activeWindow";
         // fire Vetoable change[before it is reflected in Java focus state],
-        // catch vetoe exception
+        // catch veto exception
         try {
             fireVetoableChange(propName, KeyboardFocusManager.activeWindow,
                                activeWindow);
@@ -433,7 +433,7 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
         String propName = "focusOwner";
 
         // fire Vetoable change[before it is reflected in Java focus state],
-        // catch vetoe exception
+        // catch veto exception
 
         try {
             fireVetoableChange(propName, KeyboardFocusManager.focusOwner,
@@ -469,7 +469,7 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
         String propName = "focusedWindow";
 
         // fire Vetoable change[before it is reflected in Java focus state],
-        // catch vetoe exception
+        // catch veto exception
 
         try {
             fireVetoableChange(propName, KeyboardFocusManager.focusedWindow,
@@ -495,7 +495,7 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
         String propName = "permanentFocusOwner";
 
         // fire Vetoable change[before it is reflected in Java focus state],
-        // catch vetoe exception
+        // catch veto exception
 
         try {
             fireVetoableChange(propName, KeyboardFocusManager.permanentFocusOwner,
@@ -523,20 +523,20 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
 
     public abstract void upFocusCycle(Component a0);
 
-    static void checkTraversalKeysID(Map keysMap, Integer id) {
+    static void checkTraversalKeysID(Map<?, ?> keysMap, Integer id) {
         if (!keysMap.containsKey(id)) {
             throw new IllegalArgumentException(
                     "invalid focus traversal key identifier");
         }
     }
 
-    static void checkKeyStrokes(int[] traversalIDs, Map traversalKeys,
-                                Integer kId, Set keystrokes) {
+    static void checkKeyStrokes(int[] traversalIDs, Map<Integer, Set<AWTKeyStroke>> traversalKeys,
+                                Integer kId, Set<AWTKeyStroke> keystrokes) {
         if (keystrokes == null) {
             return;
         }
 
-        Iterator i = keystrokes.iterator();
+        Iterator<AWTKeyStroke> i = keystrokes.iterator();
         while (i.hasNext()) {
             Object o = i.next();
             AWTKeyStroke key = o instanceof AWTKeyStroke ? (AWTKeyStroke) o
@@ -555,8 +555,8 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
             // throw exception if such a KeyStroke is already present for
             // another id
 
-            for (int k = 0; k < traversalIDs.length; k++) {
-                Integer theID = new Integer(traversalIDs[k]);
+            for (int element : traversalIDs) {
+                Integer theID = new Integer(element);
                 Object val = traversalKeys.get(theID);
                 if ((!theID.equals(kId)) &&
                     (val instanceof Set) &&
@@ -658,7 +658,9 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
     Frame getOwningFrame(Window w) {
         Window wnd;
         for (wnd = w; (wnd != null) && !(wnd instanceof Frame);
-             wnd = wnd.getOwner());
+             wnd = wnd.getOwner()) {
+            ;
+        }
         return (Frame)wnd;
     }
 

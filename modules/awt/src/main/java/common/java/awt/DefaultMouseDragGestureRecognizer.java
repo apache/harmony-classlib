@@ -38,10 +38,12 @@ class DefaultMouseDragGestureRecognizer extends
         events = new ArrayList();
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
         events.add(e);
     }
 
+    @Override
     public void mouseDragged(MouseEvent e) {
         if (active) {
             return;
@@ -57,6 +59,7 @@ class DefaultMouseDragGestureRecognizer extends
         }
     }
     
+    @Override
     public void mouseReleased(MouseEvent e) {
         active = false;
     }
