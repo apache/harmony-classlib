@@ -310,7 +310,6 @@ gpProtectedMain (struct haCmdlineOptions *args)
     {
       if (!versionWritten)
         {
-          dumpVersionInfo (PORTLIB);
           hyfile_printf (PORTLIB, HYPORT_TTY_OUT, HY_COPYRIGHT_STRING "\n");
           copyrightWritten = 1;
           versionWritten = 1;
@@ -907,8 +906,7 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
     {
       if (('-' == argv[i][0]) && (strncmp (argv[i], "-jar", 4) != 0) &&
           (strncmp (argv[i], "-vmdir:", 7) != 0)
-          && (strncmp (argv[i], "-vm:", 4) != 0)
-          && (strncmp (argv[i], "-showversion", 12) != 0))
+          && (strncmp (argv[i], "-vm:", 4) != 0))
         {
           /* special coding for -classpath and -cp */
           /* they get passed to the vm as -Djava.class.path */
