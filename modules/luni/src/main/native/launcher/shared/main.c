@@ -176,6 +176,10 @@ gpProtectedMain (struct haCmdlineOptions *args)
   if (genericLauncher) {
 	/* The generic launcher needs at least one argument, otherwise
 	 * print out a usage message.
+     * 
+     *  $$$ GMJ : TODO - rethink this - if a user types "java", they should
+     *  get the standard java help dump, not some stuff about a launcher, as
+     *  they thought they were running Java...
 	 */
 	if (argc <= 1) {
       hyfile_printf (PORTLIB, HYPORT_TTY_OUT, "Harmony Java launcher\n");
