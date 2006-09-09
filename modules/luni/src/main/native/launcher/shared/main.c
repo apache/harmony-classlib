@@ -26,7 +26,7 @@
 
 #define PORT_LIB_OPTION "_org.apache.harmony.vmi.portlib"
 
-#define HY_COPYRIGHT_STRING "(c) Copyright 1991, 2006 The Apache Software Foundation or its licensors, as applicable."
+#define HY_COPYRIGHT_STRING "Apache Harmony Launcher : (c) Copyright 1991, 2006 The Apache Software Foundation or its licensors, as applicable."
 
 #define HY_PATH_SLASH DIR_SEPARATOR
 
@@ -126,6 +126,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
   char defaultDirName[] = "default";
   int rc = -1;
   int showVersion = 0;
+  int versionFlag = 0;
   int genericLauncher = 0;
   char *str;
   char *knownGenericNames[] = { "java", "java.exe", "javaw.exe", NULL };
@@ -200,10 +201,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
 			isStandaloneJar = 1;
 		}
 		if (0 == strcmp ("-version", argv[i])) {
-			/* We are being asked to print our version, and quit */
-			dumpVersionInfo (PORTLIB);
-			hyfile_printf (PORTLIB, HYPORT_TTY_OUT, HY_COPYRIGHT_STRING "\n");
-			goto bail;
+            versionFlag = 1;
 		}
 		if (0 == strcmp ("-showversion", argv[i])) {
 			/* We are being asked to print our version and continue */
@@ -318,6 +316,13 @@ gpProtectedMain (struct haCmdlineOptions *args)
           versionWritten = 1;
         }
     }
+    
+  if (versionFlag == 1) {
+    /* 
+     * We are being asked to print our version, and quit 
+     */
+    hyfile_printf (PORTLIB, HYPORT_TTY_OUT, HY_COPYRIGHT_STRING "\n");    
+  }
   /* set up the properties file */
   propertiesFileName = hymem_allocate_memory (strlen (vmiPath) + 12);
   if (propertiesFileName == NULL)
