@@ -30,10 +30,6 @@
         <excludesfile name="${hy.hdk}/build/patternsets/luni-kernel.txt" />
         <excludesfile name="${hy.hdk}/build/patternsets/security-kernel.txt" />
     </fileset>
-                               
-    <!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
-         use the Eclipse Java compiler. -->
-    <property name="build.compiler" value="modern" />
 
     <target name="build" depends="compile.java, copy.resources, build.jar" />
 
@@ -74,7 +70,9 @@
         <javac sourcepath=""
                srcdir="${hy.prefs.src.main.java}"
                destdir="${hy.build}"
-               source="${hy.javac.source}"
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}" 
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
 
@@ -113,7 +111,9 @@
         <javac srcdir="${hy.prefs.src.test.java}"
                destdir="${hy.prefs.bin.test}"
                sourcepath=""
-               source="${hy.javac.source}"
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}" 
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
 
@@ -141,8 +141,6 @@
             showoutput="on"
             dir="${basedir}"
             jvm="${test.jre.home}/bin/java">
-
-            <jvmarg value="-showversion"/>
 
             <env key="JAVA_HOME" value="${test.jre.home}"/>
 

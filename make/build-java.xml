@@ -20,25 +20,17 @@
      ====================================================================== -->
 <project name="build-java-source" default="default" basedir="..">
     <description>
-		Compile the Java source and package in component archives.
+        Compile the Java source and package in component archives.
     </description>
 
     <!-- import common properties -->
     <import file="${basedir}/make/properties.xml" />
 
-    <!-- Users need to set this property to use a different compiler -->
-    <!-- To use the eclipse compiler set the value of the below      -->
-    <!-- property to be "org.eclipse.jdt.core.JDTCompilerAdapter"    -->
-    <!-- This requires that the CLASSPATH of the environment where   -->
-    <!-- this Ant is running includes the Eclipse archives           -->
-    <!-- jdtCompilerAdapter.jar and org.eclipse.jdt.core_3.1.0.jar   -->
-    <property name="build.compiler" value="modern" />
-
     <property name="build.output" location="build/classes" />
     <property name="depends.jars" location="depends/jars" />
     <property name="depends.manifests" location="depends/manifests" />
     <property name="depends.files" location="depends/files" />
-	<property name="hy.hdk" location="deploy" />
+    <property name="hy.hdk" location="deploy" />
     <property name="hy.jdk" location="${hy.hdk}/jdk" />
     <property file="make/depends.properties" />
 
@@ -93,9 +85,12 @@
             description="Compile the source">
         <mkdir dir="${build.output}" />
 
-        <javac fork="yes" memoryMaximumSize="${hy.javac.maxmem}"
+        <javac fork="yes" 
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
                destdir="${build.output}"
-               source="${hy.javac.source}" target="${hy.javac.target}"
+               source="${hy.javac.source}" 
+               target="${hy.javac.target}"
                debug="${hy.javac.debug}">
             <src path="modules/accessibility/src/main/java/" />
             <src path="modules/annotation/src/main/java/" />
@@ -209,15 +204,15 @@
         <delete includeemptydirs="true" failonerror="false">
             <fileset dir="${hy.jdk}">
                 <exclude name="jre/bin/default/**" />
-            	<exclude name="jre/bin/**" />
+                <exclude name="jre/bin/**" />
                 <exclude name="jre/lib/ext/**" />
             </fileset>
         </delete>
     </target>
 
     <target name="prepare-depends"
-    	    description="Check for jars required to compile prefs">
-    	
+            description="Check for jars required to compile prefs">
+        
       <ant antfile="make/depends.xml" inheritall="false" target="check"/>
 
     </target>

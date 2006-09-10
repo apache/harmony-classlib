@@ -30,10 +30,6 @@
         <excludesfile name="${hy.hdk}/build/patternsets/luni-kernel.txt" />
         <excludesfile name="${hy.hdk}/build/patternsets/security-kernel.txt" />
     </fileset>
-                               
-    <!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
-         use the Eclipse Java compiler. -->
-    <property name="build.compiler" value="modern" />
 
     <property file="../../make/depends.properties" />
 
@@ -56,9 +52,11 @@
         <javac sourcepath=""
             srcdir="${hy.x-net.src.main.java}"
             destdir="${hy.build}"
-            source="${hy.javac.source}"
-            target="${hy.javac.target}"
-            debug="${hy.javac.debug}">
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}" 
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
 
             <bootclasspath>
                 <fileset dir="${hy.jdk}/jre/lib/boot">
@@ -203,9 +201,11 @@
             <mkdir dir="@{destdir}" />
             
             <javac destdir="@{destdir}"
-                   source="${hy.javac.source}"
-                   target="${hy.javac.target}"
-                   debug="${hy.javac.debug}">
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}" 
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
 
                 <javac-elements />
 
@@ -238,8 +238,6 @@
                    showoutput="on"
                    dir="${basedir}"
                    jvm="${test.jre.home}/bin/java">
-
-                <jvmarg value="-showversion"/>
 
                 <env key="JAVA_HOME" value="${test.jre.home}"/>
                 <junit-elements />

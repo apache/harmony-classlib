@@ -31,10 +31,6 @@
         <excludesfile name="${hy.hdk}/build/patternsets/security-kernel.txt" />
     </fileset>
 
-    <!-- Set build.compiler to "org.eclipse.jdt.core.JDTCompilerAdapter" to
-         use the Eclipse Java compiler. -->
-    <property name="build.compiler" value="modern" />
-
     <target name="build" depends="compile.java, copy.resources, build.jar" />
 
     <target name="test" depends="build, compile.tests, run.tests" />
@@ -54,7 +50,9 @@
         <javac sourcepath=""
                srcdir="${hy.misc.src.main.java}"
                destdir="${hy.build}"
-               source="${hy.javac.source}"
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}" 
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
 
@@ -110,7 +108,9 @@
         <javac srcdir="${hy.misc.src.test.java}"
                destdir="${hy.misc.bin.test}"
                sourcepath=""
-               source="${hy.javac.source}"
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}" 
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
 
@@ -137,8 +137,6 @@
                showoutput="on"
                dir="${basedir}"
                jvm="${test.jre.home}/bin/java">
-
-            <jvmarg value="-showversion"/>
 
             <env key="JAVA_HOME" value="${test.jre.home}"/>
 

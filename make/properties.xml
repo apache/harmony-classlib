@@ -20,6 +20,8 @@
 <project name="Common Platform definitions" default="echo" basedir="..">
 
     <!-- Javac properties -->
+    <!-- Set compiler to org.eclipse.jdt.core.JDTCompilerAdapter to use ECJ. -->
+    <property name="hy.javac.compiler" value="modern" />
     <property name="hy.javac.source" value="1.5" />
     <property name="hy.javac.target" value="1.5" />
     <property name="hy.javac.debug" value="on" />
@@ -88,7 +90,7 @@
         </and>
     </condition>
     <property name="hy.arch" value="${os.arch}" />
-	
+    
     <condition property="hy.arch.define" value="HYX86">
         <equals arg1="${hy.arch}" arg2="x86"/>
     </condition>
@@ -98,8 +100,8 @@
     <condition property="hy.cflags" value="-fpic">
         <equals arg1="${hy.arch}" arg2="x86_64"/>
     </condition>
-	<property name="hy.cflags" value="-march=pentium3"/>
-	
+    <property name="hy.cflags" value="-march=pentium3"/>
+    
     <!-- Normalized platform name -->
     <property name="hy.platform" value="${hy.os}.${hy.arch}"/>
     <property name="hy.platform.path" value="${hy.os}/${hy.arch}"/>
