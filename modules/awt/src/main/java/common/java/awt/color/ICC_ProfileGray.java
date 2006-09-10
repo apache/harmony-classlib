@@ -30,6 +30,7 @@ public class ICC_ProfileGray extends ICC_Profile {
         return super.getTRC(icSigGrayTRCTag);
     }
 
+    @Override
     public float[] getMediaWhitePoint() {
         return super.getMediaWhitePoint();
     }

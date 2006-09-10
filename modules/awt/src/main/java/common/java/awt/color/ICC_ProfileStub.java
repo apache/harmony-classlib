@@ -44,6 +44,7 @@ final class ICC_ProfileStub extends ICC_Profile {
         colorspace = csSpecifier;
     }
 
+    @Override
     public void write(String fileName) throws IOException {
         throw new UnsupportedOperationException("Stub cannot perform this operation");
     }
@@ -57,33 +58,41 @@ final class ICC_ProfileStub extends ICC_Profile {
         return loadProfile();
     }
 
+    @Override
     public void write(OutputStream s) throws IOException {
         throw new UnsupportedOperationException("Stub cannot perform this operation");
     }
 
+    @Override
     public void setData(int tagSignature, byte[] tagData) {
         throw new UnsupportedOperationException("Stub cannot perform this operation");
     }
 
+    @Override
     public byte[] getData(int tagSignature) {
         throw new UnsupportedOperationException("Stub cannot perform this operation");
     }
 
+    @Override
     public byte[] getData() {
         throw new UnsupportedOperationException("Stub cannot perform this operation");
     }
 
+    @Override
     protected void finalize() {
     }
 
+    @Override
     public int getProfileClass() {
         return CLASS_COLORSPACECONVERSION;
     }
 
+    @Override
     public int getPCSType() {
         throw new UnsupportedOperationException("Stub cannot perform this operation");
     }
 
+    @Override
     public int getNumComponents() {
         switch (colorspace) {
             case ColorSpace.CS_sRGB:
@@ -98,14 +107,17 @@ final class ICC_ProfileStub extends ICC_Profile {
         }
     }
 
+    @Override
     public int getMinorVersion() {
         throw new UnsupportedOperationException("Stub cannot perform this operation");
     }
 
+    @Override
     public int getMajorVersion() {
         throw new UnsupportedOperationException("Stub cannot perform this operation");
     }
 
+    @Override
     public int getColorSpaceType() {
         switch (colorspace) {
             case ColorSpace.CS_sRGB:

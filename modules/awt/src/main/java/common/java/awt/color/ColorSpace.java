@@ -103,11 +103,12 @@ public abstract class ColorSpace implements Serializable {
     }
 
     public String getName(int idx) {
-        if (idx < 0 || idx > numComponents - 1)
-          throw new IllegalArgumentException(
-                    "Invalid component index: " + idx);
+        if (idx < 0 || idx > numComponents - 1) {
+            throw new IllegalArgumentException(
+                        "Invalid component index: " + idx);
+        }
 
-      return new String("Unnamed color component #" + idx);
+      return "Unnamed color component #" + idx;
     }
 
     public abstract float[] toRGB(float[] colorvalue);
@@ -119,16 +120,18 @@ public abstract class ColorSpace implements Serializable {
     public abstract float[] fromCIEXYZ(float[] colorvalue);
 
     public float getMinValue(int component) {
-        if (component < 0 || component > numComponents - 1)
+        if (component < 0 || component > numComponents - 1) {
             throw new IllegalArgumentException(
                     "Invalid component index: " + component);
+        }
         return 0;
     }
 
     public float getMaxValue(int component) {
-        if (component < 0 || component > numComponents - 1)
+        if (component < 0 || component > numComponents - 1) {
             throw new IllegalArgumentException(
                     "Invalid component index: " + component);
+        }
         return 1;
     }
 

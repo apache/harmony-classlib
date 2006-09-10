@@ -36,6 +36,7 @@ public class ICC_ProfileRGB extends ICC_Profile {
         "Unknown component. Must be REDCOMPONENT, " +
         "GREENCOMPONENT or BLUECOMPONENT.";
 
+    @Override
     public short[] getTRC(int component) {
         switch (component) {
             case REDCOMPONENT:
@@ -50,6 +51,7 @@ public class ICC_ProfileRGB extends ICC_Profile {
         throw new IllegalArgumentException(UNKNOWN_COMPONENT_MSG);
     }
 
+    @Override
     public float getGamma(int component) {
         switch (component) {
             case REDCOMPONENT:
@@ -86,6 +88,7 @@ public class ICC_ProfileRGB extends ICC_Profile {
         return m;
     }
 
+    @Override
     public float[] getMediaWhitePoint() {
         return super.getMediaWhitePoint();
     }

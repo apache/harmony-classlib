@@ -96,6 +96,7 @@ public class ICC_ColorSpace extends ColorSpace {
         return profile;
     }
 
+    @Override
     public float[] toRGB(float[] colorvalue) {
         if (toRGBTransform == null) {
             ICC_Profile sRGBProfile =
@@ -118,13 +119,14 @@ public class ICC_ColorSpace extends ColorSpace {
         // unscale to sRGB
         float[] res = new float[3];
 
-        res[0] = ((float) (converted[0] & 0xFFFF)) * INV_MAX_SHORT;
-        res[1] = ((float) (converted[1] & 0xFFFF)) * INV_MAX_SHORT;
-        res[2] = ((float) (converted[2] & 0xFFFF)) * INV_MAX_SHORT;
+        res[0] = ((converted[0] & 0xFFFF)) * INV_MAX_SHORT;
+        res[1] = ((converted[1] & 0xFFFF)) * INV_MAX_SHORT;
+        res[2] = ((converted[2] & 0xFFFF)) * INV_MAX_SHORT;
 
         return res;
     }
 
+    @Override
     public float[] toCIEXYZ(float[] colorvalue) {
         if (toXYZTransform == null) {
             ICC_Profile xyzProfile =
@@ -155,13 +157,14 @@ public class ICC_ColorSpace extends ColorSpace {
         // unscale to XYZ
         float[] res = new float[3];
 
-        res[0] = ((float) (converted[0] & 0xFFFF)) * SHORT2XYZ_FACTOR;
-        res[1] = ((float) (converted[1] & 0xFFFF)) * SHORT2XYZ_FACTOR;
-        res[2] = ((float) (converted[2] & 0xFFFF)) * SHORT2XYZ_FACTOR;
+        res[0] = ((converted[0] & 0xFFFF)) * SHORT2XYZ_FACTOR;
+        res[1] = ((converted[1] & 0xFFFF)) * SHORT2XYZ_FACTOR;
+        res[2] = ((converted[2] & 0xFFFF)) * SHORT2XYZ_FACTOR;
 
         return res;
     }
 
+    @Override
     public float[] fromRGB(float[] rgbvalue) {
         if (fromRGBTransform == null) {
             ICC_Profile sRGBProfile =
@@ -190,6 +193,7 @@ public class ICC_ColorSpace extends ColorSpace {
         return res;
     }
 
+    @Override
     public float[] fromCIEXYZ(float[] xyzvalue) {
         if (fromXYZTransform == null) {
             ICC_Profile xyzProfile =
@@ -226,6 +230,7 @@ public class ICC_ColorSpace extends ColorSpace {
         return res;
     }
 
+    @Override
     public float getMinValue(int component) {
         if ((component < 0) || (component > this.getNumComponents() - 1)) {
             throw new IllegalArgumentException("Component index out of range");
@@ -234,6 +239,7 @@ public class ICC_ColorSpace extends ColorSpace {
         return minValues[component];
     }
 
+    @Override
     public float getMaxValue(int component) {
         if ((component < 0) || (component > this.getNumComponents() - 1)) {
             throw new IllegalArgumentException("Component index out of range");

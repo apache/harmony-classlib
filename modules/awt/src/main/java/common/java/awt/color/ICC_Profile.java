@@ -382,8 +382,9 @@ public class ICC_Profile implements Serializable {
     public void setData(int tagSignature, byte[] tagData) {
         NativeCMM.cmmSetProfileElement(profileHandle, tagSignature, tagData);
         // Remove cached header data if header is modified
-        if (tagSignature == icSigHead)
+        if (tagSignature == icSigHead) {
             headerData = null;
+        }
     }
 
     public byte[] getData(int tagSignature) {
@@ -411,9 +412,11 @@ public class ICC_Profile implements Serializable {
         return data;
     }
 
+    @Override
     protected void finalize() {
-        if (profileHandle!=0 && !handleStolen)
+        if (profileHandle!=0 && !handleStolen) {
             NativeCMM.cmmCloseProfile(profileHandle);
+        }
 
         // Always remove because key no more exist
         // when object is destroyed
@@ -527,8 +530,9 @@ public class ICC_Profile implements Serializable {
     private static FileInputStream tryPath(String path, String fileName) {
         FileInputStream fiStream = null;
 
-        if (path == null)
+        if (path == null) {
             return null;
+        }
 
         StringTokenizer st = new StringTokenizer(path, File.pathSeparator);
 
@@ -536,8 +540,9 @@ public class ICC_Profile implements Serializable {
             String pathEntry = st.nextToken();
             try {
                 fiStream = new FileInputStream(pathEntry + File.separatorChar + fileName);
-                if (fiStream != null)
+                if (fiStream != null) {
                     return fiStream;
+                }
             } catch (FileNotFoundException e) {}
         }
 
@@ -547,42 +552,47 @@ public class ICC_Profile implements Serializable {
     public static ICC_Profile getInstance(String fileName) throws IOException {
         final String fName = fileName; // to use in the privileged block
 
-        FileInputStream fiStream = (FileInputStream) AccessController.doPrivileged(
-                new PrivilegedAction() {
-                    public Object run() {
+        FileInputStream fiStream = AccessController.doPrivileged(
+                new PrivilegedAction<FileInputStream>() {
+                    public FileInputStream run() {
                         FileInputStream fiStream = null;
 
                         // Open absolute path
                         try {
                             fiStream = new FileInputStream(fName);
-                            if (fiStream != null)
+                            if (fiStream != null) {
                                 return fiStream;
+                            }
                         } catch (FileNotFoundException e) {}
 
                         // Check java.iccprofile.path entries
                         fiStream = tryPath(System.getProperty("java.iccprofile.path"), fName);
-                        if (fiStream != null)
+                        if (fiStream != null) {
                             return fiStream;
+                        }
 
                         // Check java.class.path entries
                         fiStream = tryPath(System.getProperty("java.class.path"), fName);
-                        if (fiStream != null)
+                        if (fiStream != null) {
                             return fiStream;
+                        }
 
                         // Check directory with java sample profiles
                         String home = System.getProperty("java.home");
-                        if (home != null)
+                        if (home != null) {
                             fiStream = tryPath(
                                     home + File.separatorChar +
                                     "lib" + File.separatorChar + "cmm", fName
                             );
+                        }
 
                         return fiStream;
                     }
                 });
 
-        if (fiStream == null)
+        if (fiStream == null) {
             throw new IOException("Unable to open file " + fileName);
+        }
 
         ICC_Profile pf = getInstance(fiStream);
         fiStream.close();
@@ -663,28 +673,33 @@ public class ICC_Profile implements Serializable {
       switch (cspace) {
 
       case ColorSpace.CS_sRGB:
-        if (sRGBProfile == null)
-          sRGBProfile = getInstance("sRGB.pf");
+        if (sRGBProfile == null) {
+            sRGBProfile = getInstance("sRGB.pf");
+        }
         return sRGBProfile;
 
       case ColorSpace.CS_CIEXYZ:
-        if (xyzProfile == null)
-          xyzProfile = getInstance("CIEXYZ.pf");
+        if (xyzProfile == null) {
+            xyzProfile = getInstance("CIEXYZ.pf");
+        }
         return xyzProfile;
 
       case ColorSpace.CS_GRAY:
-        if (grayProfile == null)
-          grayProfile = getInstance("GRAY.pf");
+        if (grayProfile == null) {
+            grayProfile = getInstance("GRAY.pf");
+        }
         return grayProfile;
 
       case ColorSpace.CS_PYCC:
-        if (pyccProfile == null)
-          pyccProfile = getInstance("PYCC.pf");
+        if (pyccProfile == null) {
+            pyccProfile = getInstance("PYCC.pf");
+        }
         return pyccProfile;
 
       case ColorSpace.CS_LINEAR_RGB:
-        if (linearRGBProfile == null)
-          linearRGBProfile = getInstance("LINEAR_RGB.pf");
+        if (linearRGBProfile == null) {
+            linearRGBProfile = getInstance("LINEAR_RGB.pf");
+        }
         return linearRGBProfile;
       }
 
@@ -841,12 +856,14 @@ public class ICC_Profile implements Serializable {
 
         dataTRC = null;
 
-        if (trcSize == 0)
+        if (trcSize == 0) {
             return 1.0f;
+        }
 
-        if (trcSize == 1)
+        if (trcSize == 1) {
             // Cast from ICC u8Fixed8Number to float
             return ICC_ProfileHelper.getShortFromByteArray(data, icCurveData) / 256.f;
+        }
 
         // TRC is a table
         dataTRC = new short[trcSize];
@@ -860,20 +877,20 @@ public class ICC_Profile implements Serializable {
         short[] dataTRC = null;
         float gamma = getGammaOrTRC(tagSignature, dataTRC);
 
-        if (dataTRC == null)
+        if (dataTRC == null) {
             return gamma;
-        else
-            throw new ProfileDataException("TRC is not a simple gamma value.");
+        }
+        throw new ProfileDataException("TRC is not a simple gamma value.");
     }
 
     short[] getTRC(int tagSignature) {
         short[] dataTRC = null;
         getGammaOrTRC(tagSignature, dataTRC);
 
-        if (dataTRC == null)
+        if (dataTRC == null) {
             throw new ProfileDataException("TRC is a gamma value, not a table.");
-        else
-            return dataTRC;
+        }
+        return dataTRC;
     }
 }
 
