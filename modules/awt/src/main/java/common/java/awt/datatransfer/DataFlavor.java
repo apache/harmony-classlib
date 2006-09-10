@@ -34,6 +34,7 @@ public class DataFlavor implements Externalizable, Cloneable {
     /**
      * @deprecated
      */
+    @Deprecated
     public static final DataFlavor plainTextFlavor =
             new DataFlavor("text/plain; charset=unicode; class=java.io.InputStream",
                     "Plain Text");
@@ -81,7 +82,7 @@ public class DataFlavor implements Externalizable, Cloneable {
     private static DataFlavor plainUnicodeFlavor = null;
 
     private String humanPresentableName;
-    private Class representationClass;
+    private Class<?> representationClass;
     private MimeTypeProcessor.MimeType mimeInfo;
 
     public static final DataFlavor getTextPlainUnicodeFlavor() {
@@ -95,7 +96,7 @@ public class DataFlavor implements Externalizable, Cloneable {
         return plainUnicodeFlavor;
     }
 
-    protected static final Class tryToLoadClass(String className, ClassLoader fallback)
+    protected static final Class<?> tryToLoadClass(String className, ClassLoader fallback)
             throws ClassNotFoundException
     {
         try {
@@ -132,7 +133,7 @@ public class DataFlavor implements Externalizable, Cloneable {
         representationClass = null;
     }
 
-    public DataFlavor(Class representationClass, String humanPresentableName) {
+    public DataFlavor(Class<?> representationClass, String humanPresentableName) {
         mimeInfo = new MimeTypeProcessor.MimeType("application", "x-java-serialized-object");
 
         if (humanPresentableName != null) {
@@ -193,19 +194,17 @@ public class DataFlavor implements Externalizable, Cloneable {
     private String getCharset() {
         if (isCharsetRedundant()) {
             return "";
-        } else {
-            String charset = mimeInfo.getParameter("charset");
-
-            if (isCharsetRequired() && ((charset == null) || (charset.length() == 0))) {
-                return DTK.getDTK().getDefaultCharset();
-            } else {
-                if (charset == null) {
-                    return "";
-                }
-
-                return charset;
-            }
         }
+        String charset = mimeInfo.getParameter("charset");
+
+        if (isCharsetRequired() && ((charset == null) || (charset.length() == 0))) {
+            return DTK.getDTK().getDefaultCharset();
+        }
+        if (charset == null) {
+            return "";
+        }
+
+        return charset;
     }
 
     private boolean isCharsetRequired() {
@@ -255,9 +254,8 @@ public class DataFlavor implements Externalizable, Cloneable {
 
         if (lowerName.equals("humanpresentablename")) {
             return humanPresentableName;
-        } else {
-            return mimeInfo.getParameter(lowerName);
         }
+        return mimeInfo.getParameter(lowerName);
     }
 
     public String getHumanPresentableName() {
@@ -268,11 +266,11 @@ public class DataFlavor implements Externalizable, Cloneable {
         this.humanPresentableName = humanPresentableName;
     }
 
-    public Class getRepresentationClass() {
+    public Class<?> getRepresentationClass() {
         return representationClass;
     }
 
-    public final Class getDefaultRepresentationClass() {
+    public final Class<?> getDefaultRepresentationClass() {
         return InputStream.class;
     }
 
@@ -309,6 +307,7 @@ public class DataFlavor implements Externalizable, Cloneable {
     /**
      * @deprecated
      */
+    @Deprecated
     protected String normalizeMimeTypeParameter(String parameterName, String parameterValue) {
         return parameterValue;
     }
@@ -316,6 +315,7 @@ public class DataFlavor implements Externalizable, Cloneable {
     /**
      * @deprecated
      */
+    @Deprecated
     protected String normalizeMimeType(String mimeType) {
         return mimeType;
     }
@@ -347,6 +347,7 @@ public class DataFlavor implements Externalizable, Cloneable {
                 Class.forName(mimeInfo.getParameter("class")) : null;
     }
 
+    @Override
     public Object clone() throws CloneNotSupportedException {
         DataFlavor clone = new DataFlavor();
 
@@ -357,6 +358,7 @@ public class DataFlavor implements Externalizable, Cloneable {
         return clone;
     }
 
+    @Override
     public String toString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:
@@ -373,12 +375,12 @@ public class DataFlavor implements Externalizable, Cloneable {
         return isMimeTypeEqual(javaSerializedObjectMimeType);
     }
 
+    @Override
     public boolean equals(Object o) {
         if ((o == null) || !(o instanceof DataFlavor)) {
             return false;
-        } else {
-            return equals((DataFlavor) o);
         }
+        return equals((DataFlavor) o);
     }
 
     public boolean equals(DataFlavor that) {
@@ -405,9 +407,8 @@ public class DataFlavor implements Externalizable, Cloneable {
 
         if (!isCharsetSupported(charset1) || !isCharsetSupported(charset2)) {
             return charset1.equalsIgnoreCase(charset2);
-        } else {
-            return (Charset.forName(charset1).equals(Charset.forName(charset2)));
         }
+        return (Charset.forName(charset1).equals(Charset.forName(charset2)));
 
     }
 
@@ -423,6 +424,7 @@ public class DataFlavor implements Externalizable, Cloneable {
         return equals(that);
     }
 
+    @Override
     public int hashCode() {
         return getKeyInfo().hashCode();
     }
@@ -510,9 +512,8 @@ public class DataFlavor implements Externalizable, Cloneable {
 
             if (charset.length() == 0) {
                 return new InputStreamReader(stream);
-            } else {
-                return new InputStreamReader(stream, charset);
             }
+            return new InputStreamReader(stream, charset);
         }
     }
 
@@ -521,50 +522,49 @@ public class DataFlavor implements Externalizable, Cloneable {
             return null;
         }
 
-        List sorted = sortTextFlavorsByType(new LinkedList(Arrays.asList(availableFlavors)));
+        List<List<DataFlavor>> sorted = sortTextFlavorsByType(new LinkedList<DataFlavor>(Arrays.asList(availableFlavors)));
 
         if (sorted.isEmpty()) {
             return null;
         }
 
-        List bestSorted = (List) sorted.get(0);
+        List<DataFlavor> bestSorted = sorted.get(0);
 
         if (bestSorted.size() == 1) {
-            return (DataFlavor) bestSorted.get(0);
+            return bestSorted.get(0);
         }
 
-        if (((DataFlavor) bestSorted.get(0)).getCharset().length() == 0) {
+        if (bestSorted.get(0).getCharset().length() == 0) {
             return selectBestFlavorWOCharset(bestSorted);
-        } else {
-            return selectBestFlavorWCharset(bestSorted);
         }
+        return selectBestFlavorWCharset(bestSorted);
     }
 
-    private static DataFlavor selectBestFlavorWCharset(List list) {
-        List best;
+    private static DataFlavor selectBestFlavorWCharset(List<DataFlavor> list) {
+        List<DataFlavor> best;
 
         best = getFlavors(list, Reader.class);
         if (best != null) {
-            return (DataFlavor) best.get(0);
+            return best.get(0);
         }
         best = getFlavors(list, String.class);
         if (best != null) {
-            return (DataFlavor) best.get(0);
+            return best.get(0);
         }
         best = getFlavors(list, CharBuffer.class);
         if (best != null) {
-            return (DataFlavor) best.get(0);
+            return best.get(0);
         }
         best = getFlavors(list, char[].class);
         if (best != null) {
-            return (DataFlavor) best.get(0);
+            return best.get(0);
         }
 
         return selectBestByCharset(list);
     }
 
-    private static DataFlavor selectBestByCharset(List list) {
-        List best;
+    private static DataFlavor selectBestByCharset(List<DataFlavor> list) {
+        List<DataFlavor> best;
 
         best = getFlavors(list, new String[] {"UTF-16", "UTF-8", "UTF-16BE", "UTF-16LE"});
         if (best == null) {
@@ -579,26 +579,25 @@ public class DataFlavor implements Externalizable, Cloneable {
 
         if (best != null) {
             if (best.size() == 1) {
-                return (DataFlavor) best.get(0);
-            } else {
-                return selectBestFlavorWOCharset(best);
+                return best.get(0);
             }
+            return selectBestFlavorWOCharset(best);
         }
 
         return null;
     }
 
-    private static List selectBestByAlphabet(List list) {
+    private static List<DataFlavor> selectBestByAlphabet(List<DataFlavor> list) {
         String charsets[] = new String[list.size()];
-        LinkedList best = new LinkedList();
+        LinkedList<DataFlavor> best = new LinkedList<DataFlavor>();
 
         for (int i = 0; i < charsets.length; i++) {
-            charsets[i] = ((DataFlavor) list.get(i)).getCharset();
+            charsets[i] = list.get(i).getCharset();
         }
         Arrays.sort(charsets, String.CASE_INSENSITIVE_ORDER);
 
-        for (Iterator i = list.iterator(); i.hasNext();) {
-            DataFlavor flavor = (DataFlavor) i.next();
+        for (Iterator<DataFlavor> i = list.iterator(); i.hasNext();) {
+            DataFlavor flavor = i.next();
 
             if (charsets[0].equalsIgnoreCase(flavor.getCharset())) {
                 best.add(flavor);
@@ -608,15 +607,15 @@ public class DataFlavor implements Externalizable, Cloneable {
         return best.isEmpty() ? null : best;
     }
 
-    private static List getFlavors(List list, String[] charset) {
-        LinkedList sublist = new LinkedList();
+    private static List<DataFlavor> getFlavors(List<DataFlavor> list, String[] charset) {
+        LinkedList<DataFlavor> sublist = new LinkedList<DataFlavor>();
 
-        for (Iterator i = list.iterator(); i.hasNext();) {
-            DataFlavor flavor = (DataFlavor) i.next();
+        for (Iterator<DataFlavor> i = list.iterator(); i.hasNext();) {
+            DataFlavor flavor = i.next();
 
             if (isCharsetSupported(flavor.getCharset())) {
-                for (int j = 0; j < charset.length; j++) {
-                    if (Charset.forName(charset[j]).equals(Charset.forName(flavor.getCharset()))) {
+                for (String element : charset) {
+                    if (Charset.forName(element).equals(Charset.forName(flavor.getCharset()))) {
                         sublist.add(flavor);
                     }
                 }
@@ -628,30 +627,30 @@ public class DataFlavor implements Externalizable, Cloneable {
         return sublist.isEmpty() ? null : list;
     }
 
-    private static DataFlavor selectBestFlavorWOCharset(List list) {
-        List best;
+    private static DataFlavor selectBestFlavorWOCharset(List<DataFlavor> list) {
+        List<DataFlavor> best;
 
         best = getFlavors(list, InputStream.class);
         if (best != null) {
-            return (DataFlavor) best.get(0);
+            return best.get(0);
         }
         best = getFlavors(list, ByteBuffer.class);
         if (best != null) {
-            return (DataFlavor) best.get(0);
+            return best.get(0);
         }
         best = getFlavors(list, byte[].class);
         if (best != null) {
-            return (DataFlavor) best.get(0);
+            return best.get(0);
         }
 
-        return (DataFlavor) list.get(0);
+        return list.get(0);
     }
 
-    private static List getFlavors(List list, Class klass) {
-        LinkedList sublist = new LinkedList();
+    private static List<DataFlavor> getFlavors(List<DataFlavor> list, Class<?> klass) {
+        LinkedList<DataFlavor> sublist = new LinkedList<DataFlavor>();
 
-        for (Iterator i = list.iterator(); i.hasNext();) {
-            DataFlavor flavor = (DataFlavor) i.next();
+        for (Iterator<DataFlavor> i = list.iterator(); i.hasNext();) {
+            DataFlavor flavor = i.next();
 
             if (flavor.representationClass.equals(klass)) {
                 sublist.add(flavor);
@@ -661,11 +660,11 @@ public class DataFlavor implements Externalizable, Cloneable {
         return sublist.isEmpty() ? null : list;
     }
 
-    private static List sortTextFlavorsByType(List availableFlavors) {
-        LinkedList list = new LinkedList();
+    private static List<List<DataFlavor>> sortTextFlavorsByType(List<DataFlavor> availableFlavors) {
+        LinkedList<List<DataFlavor>> list = new LinkedList<List<DataFlavor>>();
 
-        for (int i = 0; i < sortedTextFlavors.length; i++) {
-            List subList = fetchTextFlavors(availableFlavors, sortedTextFlavors[i]);
+        for (String element : sortedTextFlavors) {
+            List<DataFlavor> subList = fetchTextFlavors(availableFlavors, element);
 
             if (subList != null) {
                 list.addLast(subList);
@@ -678,11 +677,11 @@ public class DataFlavor implements Externalizable, Cloneable {
         return list;
     }
 
-    private static List fetchTextFlavors(List availableFlavors, String mimeType) {
-        LinkedList list = new LinkedList();
+    private static List<DataFlavor> fetchTextFlavors(List<DataFlavor> availableFlavors, String mimeType) {
+        LinkedList<DataFlavor> list = new LinkedList<DataFlavor>();
 
-        for (Iterator i = availableFlavors.iterator(); i.hasNext();) {
-            DataFlavor flavor = (DataFlavor) i.next();
+        for (Iterator<DataFlavor> i = availableFlavors.iterator(); i.hasNext();) {
+            DataFlavor flavor = i.next();
 
             if (flavor.isFlavorTextType()) {
                 if (flavor.mimeInfo.getFullType().equals(mimeType)) {

@@ -13,14 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt.datatransfer;
 
 public interface ClipboardOwner {
-
-    public void lostOwnership(Clipboard clipboard, Transferable contents);
-
+    void lostOwnership(Clipboard clipboard, Transferable contents);
 }

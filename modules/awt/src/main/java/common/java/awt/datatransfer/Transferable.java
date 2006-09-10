@@ -13,21 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt.datatransfer;
 
 import java.io.IOException;
 
 public interface Transferable {
+    Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException;
 
-    public Object getTransferData(DataFlavor flavor)
-            throws UnsupportedFlavorException, IOException;
+    boolean isDataFlavorSupported(DataFlavor flavor);
 
-    public boolean isDataFlavorSupported(DataFlavor flavor);
-
-    public DataFlavor[] getTransferDataFlavors();
-
+    DataFlavor[] getTransferDataFlavors();
 }

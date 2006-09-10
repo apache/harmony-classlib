@@ -13,10 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt.datatransfer;
 
 import java.util.EventObject;
@@ -28,5 +25,4 @@ public class FlavorEvent extends EventObject {
     public FlavorEvent(Clipboard source) {
         super(source);
     }
-
 }

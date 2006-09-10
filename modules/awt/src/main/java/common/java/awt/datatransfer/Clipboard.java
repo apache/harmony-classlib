@@ -13,10 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt.datatransfer;
 
 import java.awt.*;
@@ -36,14 +33,14 @@ public class Clipboard {
     private final String name;
     private final FlavorEventProcessor processor;
     private final ListenerList listeners;
-    private HashSet flavors;
+    private HashSet<DataFlavor> flavors;
     private Synchronizer awtSynchronizer;
 
     public Clipboard(String name) {
         this.name = name;
         listeners = new ListenerList();
         processor = new FlavorEventProcessor();
-        flavors = new HashSet();
+        flavors = new HashSet<DataFlavor>();
         awtSynchronizer = ContextStorage.getSynchronizer();
     }
 
@@ -65,11 +62,11 @@ public class Clipboard {
         try {
             boolean ownershipLost = (this.owner != owner);
             boolean flavorsChanged;
-            HashSet newFlavorsSet = new HashSet();
+            HashSet<DataFlavor> newFlavorsSet = new HashSet<DataFlavor>();
             DataFlavor[] newFlavorsArray = contents.getTransferDataFlavors();
 
-            for (int i = 0; i < newFlavorsArray.length; i ++) {
-                newFlavorsSet.add(newFlavorsArray[i]);
+            for (DataFlavor element : newFlavorsArray) {
+                newFlavorsSet.add(element);
             }
             flavorsChanged = !flavors.equals(newFlavorsSet);
 
@@ -114,9 +111,8 @@ public class Clipboard {
         try {
             if (contents == null) {
                 throw new UnsupportedFlavorException(flavor);
-            } else {
-                return contents.getTransferData(flavor);
             }
+            return contents.getTransferData(flavor);
         } finally {
             awtSynchronizer.unlock();
         }
@@ -135,7 +131,7 @@ public class Clipboard {
     }
 
     private void processFlavorEvent(FlavorEvent e) {
-        for (Iterator i = listeners.getUserIterator(); i.hasNext();) {
+        for (Iterator<?> i = listeners.getUserIterator(); i.hasNext();) {
             ((FlavorListener) i.next()).flavorsChanged(e);
         }
     }

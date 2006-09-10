@@ -13,16 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt.datatransfer;
 
 import java.util.EventListener;
 
 public interface FlavorListener extends EventListener {
-
-    public void flavorsChanged(FlavorEvent e);
-
+    void flavorsChanged(FlavorEvent e);
 }

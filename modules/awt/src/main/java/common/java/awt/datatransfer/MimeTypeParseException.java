@@ -13,14 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt.datatransfer;
 
 public class MimeTypeParseException extends Exception {
-
     private static final long serialVersionUID = -5604407764691570741L;
 
     public MimeTypeParseException(String s) {
@@ -30,5 +26,4 @@ public class MimeTypeParseException extends Exception {
     public MimeTypeParseException() {
         super();
     }
-
 }

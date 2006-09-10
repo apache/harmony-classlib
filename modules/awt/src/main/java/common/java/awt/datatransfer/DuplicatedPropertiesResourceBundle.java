@@ -30,45 +30,49 @@ final class DuplicatedPropertiesResourceBundle extends ResourceBundle {
         properties = new Properties() {
             private static final long serialVersionUID = -4869518800983843099L;
 
+            @SuppressWarnings("unchecked")
+            @Override
             public Object put(Object key, Object value) {
                 Object oldValue = get(key);
 
                 if (oldValue == null) {
                     return super.put(key, value);
-                } else {
-                    List list;
-
-                    if (oldValue instanceof String) {
-                        list = new LinkedList();
-                        list.add(oldValue);
-                    } else {
-                        list = (List) oldValue;
-                    }
-                    list.add(value);
-
-                    return super.put(key, list);
                 }
+                List<Object> list;
+
+                if (oldValue instanceof String) {
+                    list = new LinkedList<Object>();
+                    list.add(oldValue);
+                } else {
+                    list = (List<Object>) oldValue;
+                }
+                list.add(value);
+
+                return super.put(key, list);
             }
         };
         properties.load(stream);
     }
 
+    @Override
     public Object handleGetObject(String key) {
         return properties.get(key);
     }
 
-    public Enumeration getKeys() {
-        Enumeration result = properties.propertyNames();
+    @SuppressWarnings("unchecked")
+    @Override
+    public Enumeration<String> getKeys() {
+        Enumeration<String> result = (Enumeration<String>)properties.propertyNames();
 
         if (parent == null) {
             return result;
         }
 
-        ArrayList keys = Collections.list(result);
-        Enumeration e = parent.getKeys();
+        ArrayList<String> keys = Collections.list(result);
+        Enumeration<String> e = parent.getKeys();
 
         while (e.hasMoreElements()) {
-            Object key = e.nextElement();
+            String key = e.nextElement();
 
             if (!keys.contains(key)) {
                 keys.add(key);

@@ -13,18 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt.datatransfer;
 
 import java.util.Map;
 
 public interface FlavorMap {
+    Map<String, DataFlavor> getFlavorsForNatives(String[] natives);
 
-    public Map getFlavorsForNatives(String[] natives);
-
-    public Map getNativesForFlavors(DataFlavor[] flavors);
-
+    Map<DataFlavor, String> getNativesForFlavors(DataFlavor[] flavors);
 }

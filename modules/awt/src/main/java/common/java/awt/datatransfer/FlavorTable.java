@@ -13,18 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt.datatransfer;
 
 import java.util.List;
 
 public interface FlavorTable extends FlavorMap {
+    List<DataFlavor> getFlavorsForNative(String nat);
 
-    public List getFlavorsForNative(String nat);
-
-    public List getNativesForFlavor(DataFlavor flav);
-
+    List<String> getNativesForFlavor(DataFlavor flav);
 }

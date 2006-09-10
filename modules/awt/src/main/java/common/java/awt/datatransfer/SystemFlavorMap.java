@@ -35,10 +35,8 @@ public final class SystemFlavorMap implements FlavorMap, FlavorTable {
     private static final String SERIALIZED_PREFIX = 
         "org.apache.harmony.awt.datatransfer:";
 
-    private final HashMap flavor2Native = new HashMap();
-    private final HashMap native2Flavor = new HashMap();
-
-    private final DTK dtk;
+    private final HashMap<DataFlavor, List<String>> flavor2Native = new HashMap<DataFlavor, List<String>>();
+    private final HashMap<String, List<DataFlavor>> native2Flavor = new HashMap<String, List<DataFlavor>>();
 
     public static boolean isJavaMIMEType(String str) {
         return ((str != null) && str.startsWith(SERIALIZED_PREFIX));
@@ -47,34 +45,30 @@ public final class SystemFlavorMap implements FlavorMap, FlavorTable {
     public static String encodeJavaMIMEType(String mimeType) {
         if (mimeType == null) {
             return null;
-        } else {
-            return (SERIALIZED_PREFIX + mimeType);
         }
+        return (SERIALIZED_PREFIX + mimeType);
     }
 
     public static String decodeJavaMIMEType(String nat) {
         if (isJavaMIMEType(nat)) {
             return nat.substring(SERIALIZED_PREFIX.length());
-        } else {
-            return null;
         }
+        return null;
     }
 
     public static String encodeDataFlavor(DataFlavor flav) {
         if (flav == null) {
             return null;
-        } else {
-            return (SERIALIZED_PREFIX + flav.getMimeType());
         }
+        return (SERIALIZED_PREFIX + flav.getMimeType());
     }
 
     public static DataFlavor decodeDataFlavor(String nat)
             throws ClassNotFoundException {
         if (isJavaMIMEType(nat)) {
             return new DataFlavor(nat.substring(SERIALIZED_PREFIX.length()));
-        } else {
-            return null;
         }
+        return null;
     }
 
     public static FlavorMap getDefaultFlavorMap() {
@@ -93,50 +87,49 @@ public final class SystemFlavorMap implements FlavorMap, FlavorTable {
     }
 
     private SystemFlavorMap(DTK dtk) {
-        this.dtk = dtk;
         dtk.initSystemFlavorMap(this);
     }
 
-    public synchronized List getFlavorsForNative(String nat) {
+    public synchronized List<DataFlavor> getFlavorsForNative(String nat) {
         if (nat == null) {
-            return new ArrayList(flavor2Native.keySet());
+            return new ArrayList<DataFlavor>(flavor2Native.keySet());
         }
 
-        List list = (List) native2Flavor.get(nat);
+        List<DataFlavor> list = native2Flavor.get(nat);
         if ((list == null || list.isEmpty()) && isJavaMIMEType(nat)) {
             String decodedNat = decodeJavaMIMEType(nat);
             try {
                 DataFlavor flavor = new DataFlavor(decodedNat);
                 addMapping(nat, flavor);
-                list = (List) native2Flavor.get(nat);
+                list = native2Flavor.get(nat);
             } catch (ClassNotFoundException e) {}
         }
-        return (list != null) ? new ArrayList(list) : new ArrayList();
+        return (list != null) ? new ArrayList<DataFlavor>(list) : new ArrayList<DataFlavor>();
     }
 
-    public synchronized List getNativesForFlavor(DataFlavor flav) {
+    public synchronized List<String> getNativesForFlavor(DataFlavor flav) {
         if (flav == null) {
-            return new ArrayList(native2Flavor.keySet());
+            return new ArrayList<String>(native2Flavor.keySet());
         }
         
-        List list = (List) flavor2Native.get(flav);
+        List<String> list = flavor2Native.get(flav);
         if ((list == null || list.isEmpty()) 
                 && flav.isFlavorSerializedObjectType()) {
             String nat = encodeDataFlavor(flav);
             addMapping(nat, flav);
-            list = (List) flavor2Native.get(flav);
+            list = flavor2Native.get(flav);
         }
-        return (list != null) ? new ArrayList(list) : new ArrayList();
+        return (list != null) ? new ArrayList<String>(list) : new ArrayList<String>();
     }
 
-    public synchronized Map getFlavorsForNatives(String[] natives) {
-        HashMap map = new HashMap();
-        Iterator it = (natives != null) ? 
+    public synchronized Map<String, DataFlavor> getFlavorsForNatives(String[] natives) {
+        HashMap<String, DataFlavor> map = new HashMap<String, DataFlavor>();
+        Iterator<String> it = (natives != null) ? 
                 Arrays.asList(natives).iterator() : 
                     native2Flavor.keySet().iterator();
         while (it.hasNext()) {
-            String nat = (String)it.next();
-            List list = getFlavorsForNative(nat);
+            String nat = it.next();
+            List<DataFlavor> list = getFlavorsForNative(nat);
             if (list.size() > 0) {
                 map.put(nat, list.get(0));
             }
@@ -144,14 +137,14 @@ public final class SystemFlavorMap implements FlavorMap, FlavorTable {
         return map;
     }
 
-    public synchronized Map getNativesForFlavors(DataFlavor[] flavors) {
-        HashMap map = new HashMap();
-        Iterator it = (flavors != null) ? 
+    public synchronized Map<DataFlavor, String> getNativesForFlavors(DataFlavor[] flavors) {
+        HashMap<DataFlavor, String> map = new HashMap<DataFlavor, String>();
+        Iterator<DataFlavor> it = (flavors != null) ? 
                 Arrays.asList(flavors).iterator() : 
                     flavor2Native.keySet().iterator();
         while (it.hasNext()) {
-            DataFlavor flavor = (DataFlavor)it.next();
-            List list = getNativesForFlavor(flavor);
+            DataFlavor flavor = it.next();
+            List<String> list = getNativesForFlavor(flavor);
             if (list.size() > 0) {
                 map.put(flavor, list.get(0));
             }
@@ -161,11 +154,9 @@ public final class SystemFlavorMap implements FlavorMap, FlavorTable {
 
     public synchronized void setNativesForFlavor(
             DataFlavor flav, String[] natives) {
-        LinkedList list = new LinkedList();
+        LinkedList<String> list = new LinkedList<String>();
 
-        for (int i = 0; i < natives.length; i++) {
-            String nat = natives[i];
-
+        for (String nat : natives) {
             if (!list.contains(nat)) {
                 list.add(nat);
             }
@@ -180,11 +171,9 @@ public final class SystemFlavorMap implements FlavorMap, FlavorTable {
 
     public synchronized void setFlavorsForNative(
             String nat, DataFlavor[] flavors) {
-        LinkedList list = new LinkedList();
+        LinkedList<DataFlavor> list = new LinkedList<DataFlavor>();
 
-        for (int i = 0; i < flavors.length; i++) {
-            DataFlavor flav = flavors[i];
-
+        for (DataFlavor flav : flavors) {
             if (!list.contains(flav)) {
                 list.add(flav);
             }
@@ -199,10 +188,10 @@ public final class SystemFlavorMap implements FlavorMap, FlavorTable {
 
     public synchronized void addUnencodedNativeForFlavor(
             DataFlavor flav, String nat) {
-        List natives = (List) flavor2Native.get(flav);
+        List<String> natives = flavor2Native.get(flav);
 
         if (natives == null) {
-            natives = new LinkedList();
+            natives = new LinkedList<String>();
             flavor2Native.put(flav, natives);
         }
         if (!natives.contains(nat)) {
@@ -212,10 +201,10 @@ public final class SystemFlavorMap implements FlavorMap, FlavorTable {
 
     public synchronized void addFlavorForUnencodedNative(
             String nat, DataFlavor flav) {
-        List flavors = (List) native2Flavor.get(nat);
+        List<DataFlavor> flavors = native2Flavor.get(nat);
 
         if (flavors == null) {
-            flavors = new LinkedList();
+            flavors = new LinkedList<DataFlavor>();
             native2Flavor.put(nat, flavors);
         }
         if (!flavors.contains(flav)) {

@@ -52,7 +52,7 @@ public class StringSelection implements Transferable, ClipboardOwner {
     }
 
     public DataFlavor[] getTransferDataFlavors() {
-        return (DataFlavor[]) supportedFlavors.clone();
+        return supportedFlavors.clone();
     }
 
     public void lostOwnership(Clipboard clipboard, Transferable contents) {

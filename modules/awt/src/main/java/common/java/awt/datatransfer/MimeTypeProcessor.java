@@ -13,10 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt.datatransfer;
 
 import java.io.Serializable;
@@ -25,9 +22,10 @@ import java.util.Hashtable;
 
 final class MimeTypeProcessor {
 
-    private static MimeTypeProcessor instance = null;
+    private static MimeTypeProcessor instance;
 
     private MimeTypeProcessor() {
+        super();
     }
 
     static MimeType parse(String str) {
@@ -49,14 +47,18 @@ final class MimeTypeProcessor {
     }
 
     static String assemble(MimeType type) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
         buf.append(type.getFullType());
-        for (Enumeration keys = type.parameters.keys(); keys.hasMoreElements();) {
-            String name = (String) keys.nextElement();
-            String value = (String) type.parameters.get(name);
+        for (Enumeration<String> keys = type.parameters.keys(); keys.hasMoreElements();) {
+            String name = keys.nextElement();
+            String value = type.parameters.get(name);
 
-            buf.append("; " + name + "=\"" + value + '"');
+            buf.append("; ");
+            buf.append(name);
+            buf.append("=\"");
+            buf.append(value);
+            buf.append('"');
         }
 
         return buf.toString();
@@ -73,20 +75,18 @@ final class MimeTypeProcessor {
     }
 
     private static void retrieveParams(String str, MimeType res, StringPosition pos) {
-        res.parameters = new Hashtable();
-        res.systemParameters = new Hashtable();
+        res.parameters = new Hashtable<String, String>();
+        res.systemParameters = new Hashtable<String, Object>();
         do {
             pos.i = getNextMeaningfulIndex(str, pos.i);
             if (pos.i >= str.length()) {
                 return;
-            } else {
-                if (str.charAt(pos.i) != ';') {
-                    throw new IllegalArgumentException();
-                } else {
-                    pos.i++;
-                    retrieveParam(str, res, pos);
-                }
             }
+            if (str.charAt(pos.i) != ';') {
+                throw new IllegalArgumentException();
+            }
+            pos.i++;
+            retrieveParam(str, res, pos);
         } while (true);
     }
 
@@ -101,20 +101,19 @@ final class MimeTypeProcessor {
         pos.i = getNextMeaningfulIndex(str, pos.i);
         if ((pos.i >= str.length())) {
             throw new IllegalArgumentException();
-        } else {
-            String value;
-
-            if (str.charAt(pos.i) == '"') {
-                value = retrieveQuoted(str, pos);
-            } else {
-                value = retrieveToken(str, pos);
-            }
-            res.parameters.put(name, value);
         }
+        String value;
+
+        if (str.charAt(pos.i) == '"') {
+            value = retrieveQuoted(str, pos);
+        } else {
+            value = retrieveToken(str, pos);
+        }
+        res.parameters.put(name, value);
     }
 
     private static String retrieveQuoted(String str, StringPosition pos) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         boolean check = true;
 
         pos.i++;
@@ -139,18 +138,17 @@ final class MimeTypeProcessor {
     }
 
     private static String retrieveToken(String str, StringPosition pos) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
         pos.i = getNextMeaningfulIndex(str, pos.i);
         if ((pos.i >= str.length()) || isTSpecialChar(str.charAt(pos.i))) {
             throw new IllegalArgumentException();
-        } else {
-            do {
-                buf.append(str.charAt(pos.i++));
-            } while ((pos.i < str.length())
-                    && isMeaningfulChar(str.charAt(pos.i))
-                    && !isTSpecialChar(str.charAt(pos.i)));
         }
+        do {
+            buf.append(str.charAt(pos.i++));
+        } while ((pos.i < str.length())
+                && isMeaningfulChar(str.charAt(pos.i))
+                && !isTSpecialChar(str.charAt(pos.i)));
 
         return buf.toString();
     }
@@ -182,10 +180,10 @@ final class MimeTypeProcessor {
     static final class MimeType implements Cloneable, Serializable {
 
         private static final long serialVersionUID = -6693571907475992044L;
-        private String primaryType = null;
-        private String subType = null;
-        private Hashtable parameters = null;
-        private Hashtable systemParameters = null;
+        private String primaryType;
+        private String subType;
+        private Hashtable<String, String> parameters;
+        private Hashtable<String, Object> systemParameters;
 
         MimeType() {
             primaryType = null;
@@ -197,16 +195,15 @@ final class MimeTypeProcessor {
         MimeType(String primaryType, String subType) {
             this.primaryType = primaryType;
             this.subType = subType;
-            parameters = new Hashtable();
-            systemParameters = new Hashtable();
+            parameters = new Hashtable<String, String>();
+            systemParameters = new Hashtable<String, Object>();
         }
 
         boolean equals(MimeType that) {
             if (that == null) {
                 return false;
-            } else {
-                return getFullType().equals(that.getFullType());
             }
+            return getFullType().equals(that.getFullType());
         }
 
         String getPrimaryType() {
@@ -222,7 +219,7 @@ final class MimeTypeProcessor {
         }
 
         String getParameter(String name) {
-            return (String) parameters.get(name);
+            return parameters.get(name);
         }
 
         void addParameter(String name, String value) {
@@ -251,23 +248,14 @@ final class MimeTypeProcessor {
             systemParameters.put(name, value);
         }
 
+        @SuppressWarnings("unchecked")
+        @Override
         public Object clone() {
             MimeType clone = new MimeType(primaryType, subType);
-
-            copyParameters(parameters, clone.parameters);
-            copyParameters(systemParameters, clone.systemParameters);
-
+            clone.parameters = (Hashtable<String, String>)parameters.clone();
+            clone.systemParameters = (Hashtable<String, Object>)systemParameters.clone();
             return clone;
         }
-
-        private void copyParameters(Hashtable from, Hashtable to) {
-            for (Enumeration keys = from.keys(); keys.hasMoreElements();) {
-                String name = (String) keys.nextElement();
-
-                to.put(name, from.get(name));
-            }
-        }
-
     }
 
 }
