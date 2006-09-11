@@ -56,7 +56,7 @@ public class Window extends Container implements Accessible {
     private final AWTListenerList windowFocusListeners = new AWTListenerList(this);
     private final AWTListenerList windowListeners = new AWTListenerList(this);
     private final AWTListenerList windowStateListeners = new AWTListenerList(this);
-    private ArrayList<Window> ownedWindows = new ArrayList<Window>();
+    private final ArrayList<Window> ownedWindows = new ArrayList<Window>();
     private transient Component focusOwner;
     private boolean focusableWindowState = true;//By default, all Windows have a focusable Window state of true
 

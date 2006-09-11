@@ -46,17 +46,17 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
     private int blockIncrement;
     private boolean valueIsAdjusting;
     private ScrollbarStateController stateController;
-    private Rectangle bounds = new Rectangle();
+    private final Rectangle bounds = new Rectangle();
     final transient State state = new State();
     private boolean callAWTListener = false;
 
     class State implements ScrollbarState {
-        private Rectangle decreaseRect = new Rectangle();
-        private Rectangle increaseRect = new Rectangle();
-        private Rectangle sliderRect = new Rectangle();
-        private Rectangle trackRect = new Rectangle();
-        private Rectangle upperTrackRect = new Rectangle();
-        private Rectangle lowerTrackRect = new Rectangle();
+        private final Rectangle decreaseRect = new Rectangle();
+        private final Rectangle increaseRect = new Rectangle();
+        private final Rectangle sliderRect = new Rectangle();
+        private final Rectangle trackRect = new Rectangle();
+        private final Rectangle upperTrackRect = new Rectangle();
+        private final Rectangle lowerTrackRect = new Rectangle();
         private int trackSize;
 
         public Adjustable getAdjustable() {

@@ -596,9 +596,7 @@ public class DataFlavor implements Externalizable, Cloneable {
         }
         Arrays.sort(charsets, String.CASE_INSENSITIVE_ORDER);
 
-        for (Iterator<DataFlavor> i = list.iterator(); i.hasNext();) {
-            DataFlavor flavor = i.next();
-
+        for (DataFlavor flavor : list) {
             if (charsets[0].equalsIgnoreCase(flavor.getCharset())) {
                 best.add(flavor);
             }
@@ -649,9 +647,7 @@ public class DataFlavor implements Externalizable, Cloneable {
     private static List<DataFlavor> getFlavors(List<DataFlavor> list, Class<?> klass) {
         LinkedList<DataFlavor> sublist = new LinkedList<DataFlavor>();
 
-        for (Iterator<DataFlavor> i = list.iterator(); i.hasNext();) {
-            DataFlavor flavor = i.next();
-
+        for (DataFlavor flavor : list) {
             if (flavor.representationClass.equals(klass)) {
                 sublist.add(flavor);
             }

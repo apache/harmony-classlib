@@ -56,7 +56,7 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
                                            UP_CYCLE_TRAVERSAL_KEYS,
                                            DOWN_CYCLE_TRAVERSAL_KEYS };
 
-    private Map<Integer, Set<AWTKeyStroke>> defaultFocusTraversalKeys =
+    private final Map<Integer, Set<AWTKeyStroke>> defaultFocusTraversalKeys =
         new HashMap<Integer, Set<AWTKeyStroke>>();
 
     private FocusTraversalPolicy defaultFocusTraversalPolicy =

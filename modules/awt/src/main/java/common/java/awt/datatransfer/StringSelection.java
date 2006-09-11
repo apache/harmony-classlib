@@ -13,20 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt.datatransfer;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.StringBufferInputStream;
 
+@SuppressWarnings("deprecation")
 public class StringSelection implements Transferable, ClipboardOwner {
 
-    private static final DataFlavor[] supportedFlavors = {
-            DataFlavor.stringFlavor,
-            DataFlavor.plainTextFlavor
-    };
+    private static final DataFlavor[] supportedFlavors = { DataFlavor.stringFlavor,
+            DataFlavor.plainTextFlavor };
 
     private String string;
 
@@ -34,9 +31,8 @@ public class StringSelection implements Transferable, ClipboardOwner {
         string = data;
     }
 
-    public Object getTransferData(DataFlavor flavor)
-            throws UnsupportedFlavorException, IOException
-    {
+    public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException,
+            IOException {
         if (flavor.equals(DataFlavor.stringFlavor)) {
             return string;
         } else if (flavor.equals(DataFlavor.plainTextFlavor)) {
@@ -47,8 +43,8 @@ public class StringSelection implements Transferable, ClipboardOwner {
     }
 
     public boolean isDataFlavorSupported(DataFlavor flavor) {
-        return (flavor.equals(DataFlavor.stringFlavor)
-                || flavor.equals(DataFlavor.plainTextFlavor));
+        return (flavor.equals(DataFlavor.stringFlavor) || flavor
+                .equals(DataFlavor.plainTextFlavor));
     }
 
     public DataFlavor[] getTransferDataFlavors() {
@@ -57,5 +53,4 @@ public class StringSelection implements Transferable, ClipboardOwner {
 
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
     }
-
 }

@@ -13,16 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt.dnd;
 
+import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.io.Serializable;
-import java.util.*;
-import java.awt.*;
+import java.util.ArrayList;
+import java.util.TooManyListenersException;
 
 public abstract class DragGestureRecognizer implements Serializable {
 
@@ -34,7 +33,7 @@ public abstract class DragGestureRecognizer implements Serializable {
 
     protected Component component;
 
-    protected ArrayList events;
+    protected ArrayList<InputEvent> events;
 
     protected transient DragGestureListener dragGestureListener;
 
@@ -97,7 +96,7 @@ public abstract class DragGestureRecognizer implements Serializable {
         }
 
         if (events == null) {
-            events = new ArrayList();
+            events = new ArrayList<InputEvent>();
         }
 
         events.add(awtie);
@@ -108,7 +107,7 @@ public abstract class DragGestureRecognizer implements Serializable {
             return null;
         }
 
-        return (InputEvent) events.get(0);
+        return events.get(0);
     }
 
     public void resetRecognizer() {
@@ -116,8 +115,7 @@ public abstract class DragGestureRecognizer implements Serializable {
     }
 
     public synchronized void addDragGestureListener(DragGestureListener dgl)
-            throws TooManyListenersException
-    {
+            throws TooManyListenersException {
         if (dgl == null) {
             return;
         }

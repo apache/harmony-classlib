@@ -38,7 +38,7 @@ import javax.accessibility.AccessibleContext;
 public class Container extends Component {
     private static final long serialVersionUID = 4613797578919906343L;
 
-    private Vector<Component> children = new Vector<Component>();
+    private final Vector<Component> children = new Vector<Component>();
 
     private final AWTListenerList containerListeners = new AWTListenerList(this);
 

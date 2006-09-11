@@ -13,13 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt.dnd;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Image;
+import java.awt.Point;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.InputEvent;
 import java.util.EventObject;
@@ -29,13 +29,18 @@ import java.util.List;
 public class DragGestureEvent extends EventObject {
 
     private static final long serialVersionUID = 9080172649166731306L;
+
     private final DragGestureRecognizer recognizer;
+
     private final Point origin;
-    private final List eventList;
+
+    private final List<InputEvent> eventList;
+
     private final int action;
 
-    public DragGestureEvent(DragGestureRecognizer dgr, 
-                            int act, Point ori, List evs) {
+    @SuppressWarnings("unchecked")
+    public DragGestureEvent(DragGestureRecognizer dgr, int act, Point ori,
+            List<? extends InputEvent> evs) {
         super(dgr);
 
         if (dgr.getComponent() == null) {
@@ -60,7 +65,7 @@ public class DragGestureEvent extends EventObject {
         recognizer = dgr;
         action = act;
         origin = ori;
-        eventList = evs;
+        eventList = (List<InputEvent>) evs;
     }
 
     public DragSource getDragSource() {
@@ -91,7 +96,7 @@ public class DragGestureEvent extends EventObject {
         return eventList.toArray();
     }
 
-    public Iterator iterator() {
+    public Iterator<InputEvent> iterator() {
         return eventList.iterator();
     }
 
@@ -100,33 +105,25 @@ public class DragGestureEvent extends EventObject {
     }
 
     public void startDrag(Cursor dragCursor, Transferable transferable)
-            throws InvalidDnDOperationException
-    {
-        DragSourceListener[] listeners = 
-            recognizer.dragSource.getDragSourceListeners();
-        DragSourceListener dsl = 
-            listeners.length > 0 ? new DragSourceMulticaster(listeners) : null;
+            throws InvalidDnDOperationException {
+        DragSourceListener[] listeners = recognizer.dragSource.getDragSourceListeners();
+        DragSourceListener dsl = listeners.length > 0 ? new DragSourceMulticaster(listeners)
+                : null;
         startDrag(dragCursor, transferable, dsl);
     }
 
-    public void startDrag(Cursor dragCursor, 
-                          Image dragImage, 
-                          Point imageOffset,
-                          Transferable transferable, 
-                          DragSourceListener dsl) 
+    public void startDrag(Cursor dragCursor, Image dragImage, Point imageOffset,
+            Transferable transferable, DragSourceListener dsl)
             throws InvalidDnDOperationException {
 
-        recognizer.getDragSource().startDrag(this, dragCursor, dragImage, 
-                                             imageOffset, transferable, dsl);
+        recognizer.getDragSource().startDrag(this, dragCursor, dragImage, imageOffset,
+                transferable, dsl);
     }
 
-    public void startDrag(Cursor dragCursor, 
-                          Transferable transferable, 
-                          DragSourceListener dsl)
+    public void startDrag(Cursor dragCursor, Transferable transferable, DragSourceListener dsl)
             throws InvalidDnDOperationException {
 
-        recognizer.getDragSource().startDrag(
-                this, dragCursor, transferable, dsl);
+        recognizer.getDragSource().startDrag(this, dragCursor, transferable, dsl);
     }
 
 }

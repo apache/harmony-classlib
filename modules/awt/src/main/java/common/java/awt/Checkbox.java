@@ -161,7 +161,7 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
     }
 
 
-    private AWTListenerList itemListeners = new AWTListenerList(this);
+    private final AWTListenerList itemListeners = new AWTListenerList(this);
     private String label = null;
     private CheckboxGroup group = null;
     boolean checked = false;

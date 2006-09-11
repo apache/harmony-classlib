@@ -13,14 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt.dnd;
 
-import java.awt.*;
-import java.awt.datatransfer.*;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.GraphicsEnvironment;
+import java.awt.HeadlessException;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.datatransfer.FlavorMap;
+import java.awt.datatransfer.SystemFlavorMap;
+import java.awt.datatransfer.Transferable;
 import java.awt.dnd.peer.DragSourceContextPeer;
 import java.io.Serializable;
 import java.util.EventListener;
@@ -45,8 +50,8 @@ public class DragSource implements Serializable {
 
     public static final Cursor DefaultLinkNoDrop;
 
-    private static DragSource defaultSource = null;
-    private static DragSourceContext curContext = null;
+    private static DragSource defaultSource;
+    private static DragSourceContext curContext;
 
     private final ListenerList dragSourceListeners;
     private final ListenerList dragSourceMotionListeners;
@@ -129,15 +134,16 @@ public class DragSource implements Serializable {
         dragSourceMotionListeners.removeUserListener(dsml);
     }
 
-    public EventListener[] getListeners(Class listenerType) {
+    @SuppressWarnings("unchecked")
+    public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         if (DragSourceListener.class.isAssignableFrom(listenerType)) {
-            return getDragSourceListeners();
+            return (T[])getDragSourceListeners();
         } else if (DragSourceMotionListener.class.isAssignableFrom(
                 listenerType)) {
-            return getDragSourceMotionListeners();
+            return (T[])getDragSourceMotionListeners();
         }
 
-        return new EventListener[0];
+        return (T[])new EventListener[0];
     }
 
     protected DragSourceContext createDragSourceContext(
@@ -208,15 +214,12 @@ public class DragSource implements Serializable {
         startDrag(trigger, dragCursor, transferable, dsl, null);
     }
 
-    public DragGestureRecognizer createDragGestureRecognizer(
-                            Class recognizerAbstractClass, 
-                            Component c, 
-                            int actions, 
-                            DragGestureListener dgl) {
+    @SuppressWarnings("unchecked")
+    public <T extends DragGestureRecognizer> T createDragGestureRecognizer(
+            Class<T> recognizerAbstractClass, Component c, int actions, DragGestureListener dgl) {
 
         Toolkit t = Toolkit.getDefaultToolkit();
-        return t.createDragGestureRecognizer(
-                    recognizerAbstractClass, this, c, actions, dgl);
+        return t.createDragGestureRecognizer(recognizerAbstractClass, this, c, actions, dgl);
     }
 
     public DragGestureRecognizer createDefaultDragGestureRecognizer(

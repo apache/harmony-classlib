@@ -13,10 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt.dnd;
 
 import java.awt.Point;
@@ -28,12 +25,12 @@ public class DropTargetDragEvent extends DropTargetEvent {
 
     private static final long serialVersionUID = -8422265619058953682L;
 
-    public DropTargetDragEvent(DropTargetContext dtc, Point cursorLocn,
-            int dropAction, int srcActions)
-    {
+    public DropTargetDragEvent(DropTargetContext dtc, Point cursorLocn, int dropAction,
+            int srcActions) {
         super(dtc, cursorLocn, dropAction, srcActions);
     }
 
+    @Override
     public Point getLocation() {
         return super.getLocation();
     }
@@ -54,7 +51,7 @@ public class DropTargetDragEvent extends DropTargetEvent {
         context.rejectDrag();
     }
 
-    public List getCurrentDataFlavorsAsList() {
+    public List<DataFlavor> getCurrentDataFlavorsAsList() {
         return context.getCurrentDataFlavorsAsList();
     }
 

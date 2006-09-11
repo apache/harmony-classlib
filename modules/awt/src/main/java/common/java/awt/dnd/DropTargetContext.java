@@ -13,10 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov, Pavel Dolgov
- * @version $Revision$
- */
+
 package java.awt.dnd;
 
 import java.awt.Component;
@@ -37,27 +34,28 @@ import java.util.List;
 public class DropTargetContext implements Serializable {
 
     private static final long serialVersionUID = -634158968993743371L;
-    
+
     protected class TransferableProxy implements Transferable {
-        
+
         protected boolean isLocal;
+
         protected Transferable transferable;
-        
+
         TransferableProxy(boolean isLocal, Transferable transferable) {
             this.isLocal = isLocal;
             this.transferable = transferable;
         }
 
-        public Object getTransferData(DataFlavor flavor) 
-                throws UnsupportedFlavorException, IOException {
-            
+        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException,
+                IOException {
+
             if (isLocal && flavor.isMimeTypeSerializedObject()) {
                 Object data = transferable.getTransferData(flavor);
                 if (data instanceof Serializable) {
-                    return getSerializedCopy((Serializable)data);
+                    return getSerializedCopy((Serializable) data);
                 }
             }
-            
+
             return transferable.getTransferData(flavor);
         }
 
@@ -66,8 +64,7 @@ public class DropTargetContext implements Serializable {
                 ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
                 ObjectOutputStream objOut = new ObjectOutputStream(byteOut);
                 objOut.writeObject(data);
-                ByteArrayInputStream byteIn = 
-                    new ByteArrayInputStream(byteOut.toByteArray());
+                ByteArrayInputStream byteIn = new ByteArrayInputStream(byteOut.toByteArray());
                 ObjectInputStream objIn = new ObjectInputStream(byteIn);
                 return objIn.readObject();
             } catch (Exception e) {
@@ -85,23 +82,22 @@ public class DropTargetContext implements Serializable {
     }
 
     final DropTarget target;
-    
+
     DropTargetContextPeer peer;
-    
+
     DropTargetContext(DropTarget target) {
         this.target = target;
     }
 
-    protected Transferable createTransferableProxy(
-            Transferable t, boolean local) {
+    protected Transferable createTransferableProxy(Transferable t, boolean local) {
         return new TransferableProxy(local, t);
     }
 
-    protected List getCurrentDataFlavorsAsList() {
+    protected List<DataFlavor> getCurrentDataFlavorsAsList() {
         if (peer != null) {
             return Arrays.asList(peer.getTransferDataFlavors());
         }
-        return new ArrayList();
+        return new ArrayList<DataFlavor>();
     }
 
     public void addNotify(DropTargetContextPeer peer) {
@@ -112,21 +108,18 @@ public class DropTargetContext implements Serializable {
         return target;
     }
 
-    protected Transferable getTransferable() 
-            throws InvalidDnDOperationException {
+    protected Transferable getTransferable() throws InvalidDnDOperationException {
         if (peer == null) {
-            throw new InvalidDnDOperationException(
-                "Transfer data is not available");
+            throw new InvalidDnDOperationException("Transfer data is not available");
         }
-        return new TransferableProxy(
-                peer.isTransferableJVMLocal(), peer.getTransferable());
+        return new TransferableProxy(peer.isTransferableJVMLocal(), peer.getTransferable());
     }
 
     protected boolean isDataFlavorSupported(DataFlavor flavor) {
         if (peer != null) {
             DataFlavor[] df = peer.getTransferDataFlavors();
-            for (int i=0; i<df.length; i++) {
-                if (df[i].equals(flavor)) {
+            for (DataFlavor element : df) {
+                if (element.equals(flavor)) {
                     return true;
                 }
             }
@@ -145,8 +138,7 @@ public class DropTargetContext implements Serializable {
         return target.getComponent();
     }
 
-    public void dropComplete(boolean success) 
-            throws InvalidDnDOperationException {
+    public void dropComplete(boolean success) throws InvalidDnDOperationException {
         if (peer != null) {
             peer.dropComplete(success);
         }
@@ -193,5 +185,4 @@ public class DropTargetContext implements Serializable {
         }
         return target.getDefaultActions();
     }
-
 }

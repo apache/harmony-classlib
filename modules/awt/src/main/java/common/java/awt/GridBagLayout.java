@@ -975,8 +975,8 @@ public class GridBagLayout implements LayoutManager2, Serializable {
 
     private class Grid {
 
-        private GridSide cols = new GridSide();
-        private GridSide rows = new GridSide();
+        private final GridSide cols = new GridSide();
+        private final GridSide rows = new GridSide();
 
         public void validate(ParentInfo info) {
             cols.validate(info.horCompSides, columnWidths, columnWeights);
@@ -1069,15 +1069,15 @@ public class GridBagLayout implements LayoutManager2, Serializable {
 
         private class GridSide {
 
-            private int coordinates[] = new int[MAXGRIDSIZE];
-            private int lengths[] = new int[MAXGRIDSIZE];
+            private final int coordinates[] = new int[MAXGRIDSIZE];
+            private final int lengths[] = new int[MAXGRIDSIZE];
 
             /*Cashed data. Validation controlled by parent class*/
-            private int minLengths[] = new int[MAXGRIDSIZE];
+            private final int minLengths[] = new int[MAXGRIDSIZE];
             private int minLength = 0;
-            private int prefLengths[] = new int[MAXGRIDSIZE];
+            private final int prefLengths[] = new int[MAXGRIDSIZE];
             private int prefLength = 0;
-            private double weights[] = new double[MAXGRIDSIZE];
+            private final double weights[] = new double[MAXGRIDSIZE];
             private double weight = 0.;
             private int weightlessPrefLength = 0;
             private int weightlessMinLength = 0;

@@ -13,14 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt.dnd.peer;
 
-import java.awt.*;
-import java.awt.dnd.*;
+import java.awt.Cursor;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.dnd.DragSourceContext;
+import java.awt.dnd.InvalidDnDOperationException;
 
 public interface DragSourceContextPeer {
 

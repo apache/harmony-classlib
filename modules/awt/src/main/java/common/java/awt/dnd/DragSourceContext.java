@@ -45,8 +45,6 @@ public class DragSourceContext implements DragSourceListener,
     private final DragGestureEvent trigger;
     private final Transferable transferable;
     private final Component component;
-    private final Image image;
-    private final Point imageOffset;
     private final DragSourceContextPeer peer;
 
     private int sourceAction;
@@ -93,8 +91,6 @@ public class DragSourceContext implements DragSourceListener,
         dragSource = trigger.getDragSource();
         sourceAction = trigger.getDragAction();
         component = trigger.getComponent();
-        image = dragImage;
-        imageOffset = offset;
         peer = dscp;
 
         try {
@@ -260,8 +256,8 @@ public class DragSourceContext implements DragSourceListener,
     public void dragMouseMoved(DragSourceDragEvent dsde) {
         DragSourceMotionListener[] listeners = dragSource.getDragSourceMotionListeners();
 
-        for (int i = 0; i < listeners.length; i++) {
-            listeners[i].dragMouseMoved(dsde);
+        for (DragSourceMotionListener element : listeners) {
+            element.dragMouseMoved(dsde);
         }
     }
 

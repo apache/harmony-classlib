@@ -49,7 +49,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
 
     private final AWTListenerList itemListeners = new AWTListenerList(this);
 
-    private ArrayList<String> items = new ArrayList<String>();
+    private final ArrayList<String> items = new ArrayList<String>();
 
     int selectedIndex = -1;
 

@@ -13,38 +13,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt.dnd;
 
 import java.awt.Point;
-import java.awt.datatransfer.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.util.List;
 
 public class DropTargetDropEvent extends DropTargetEvent {
 
-    private static final long serialVersionUID = -1721911170440459322L
-;
+    private static final long serialVersionUID = -1721911170440459322L;
+
     private final boolean local;
 
     public DropTargetDropEvent(DropTargetContext dtc, Point cursorLocn, int dropAction,
-            int srcActions)
-    {
+            int srcActions) {
         super(dtc, cursorLocn, dropAction, srcActions);
 
         local = false;
     }
 
     public DropTargetDropEvent(DropTargetContext dtc, Point cursorLocn, int dropAction,
-            int srcActions, boolean isLocal)
-    {
+            int srcActions, boolean isLocal) {
         super(dtc, cursorLocn, dropAction, srcActions);
 
         local = isLocal;
     }
 
+    @Override
     public Point getLocation() {
         return super.getLocation();
     }
@@ -61,7 +58,7 @@ public class DropTargetDropEvent extends DropTargetEvent {
         return local;
     }
 
-    public List getCurrentDataFlavorsAsList() {
+    public List<DataFlavor> getCurrentDataFlavorsAsList() {
         return context.getCurrentDataFlavorsAsList();
     }
 
@@ -88,5 +85,4 @@ public class DropTargetDropEvent extends DropTargetEvent {
     public void rejectDrop() {
         context.rejectDrop();
     }
-
 }

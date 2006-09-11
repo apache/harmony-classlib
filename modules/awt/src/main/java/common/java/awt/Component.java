@@ -844,7 +844,7 @@ public abstract class Component
     private boolean focusTraversalKeysEnabled = true;
     /**  Possible keys are: FORWARD_TRAVERSAL_KEYS, 
      * BACKWARD_TRAVERSAL_KEYS, UP_CYCLE_TRAVERSAL_KEYS */
-    private Map<Integer, Set<? extends AWTKeyStroke>> traversalKeys = new HashMap<Integer, Set<? extends AWTKeyStroke>>();
+    private final Map<Integer, Set<? extends AWTKeyStroke>> traversalKeys = new HashMap<Integer, Set<? extends AWTKeyStroke>>();
     int[] traversalIDs;
 
     private Locale locale;
@@ -4449,7 +4449,7 @@ public abstract class Component
 
     private class ImageParameters {
 
-        private LinkedList<DrawingParameters> drawingParams = new LinkedList<DrawingParameters>();
+        private final LinkedList<DrawingParameters> drawingParams = new LinkedList<DrawingParameters>();
 
         Dimension size = new Dimension(Component.this.w, Component.this.h);
 

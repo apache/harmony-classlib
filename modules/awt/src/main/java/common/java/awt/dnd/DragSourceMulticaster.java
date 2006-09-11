@@ -13,10 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Pavel Dolgov
- * @version $Revision$
- */
+
 package java.awt.dnd;
 
 /**
@@ -24,39 +21,39 @@ package java.awt.dnd;
  */
 class DragSourceMulticaster implements DragSourceListener {
 
-    final DragSourceListener[] listeners;
-    
+    private final DragSourceListener[] listeners;
+
     DragSourceMulticaster(DragSourceListener[] listeners) {
         this.listeners = listeners;
     }
 
     public void dragExit(DragSourceEvent dsde) {
-        for (int i=0; i<listeners.length; i++) {
-            listeners[i].dragExit(dsde);
+        for (DragSourceListener element : listeners) {
+            element.dragExit(dsde);
         }
     }
 
     public void dragDropEnd(DragSourceDropEvent dsde) {
-        for (int i=0; i<listeners.length; i++) {
-            listeners[i].dragDropEnd(dsde);
+        for (DragSourceListener element : listeners) {
+            element.dragDropEnd(dsde);
         }
     }
 
     public void dropActionChanged(DragSourceDragEvent dsde) {
-        for (int i=0; i<listeners.length; i++) {
-            listeners[i].dropActionChanged(dsde);
+        for (DragSourceListener element : listeners) {
+            element.dropActionChanged(dsde);
         }
     }
 
     public void dragOver(DragSourceDragEvent dsde) {
-        for (int i=0; i<listeners.length; i++) {
-            listeners[i].dragOver(dsde);
+        for (DragSourceListener element : listeners) {
+            element.dragOver(dsde);
         }
     }
 
     public void dragEnter(DragSourceDragEvent dsde) {
-        for (int i=0; i<listeners.length; i++) {
-            listeners[i].dragEnter(dsde);
+        for (DragSourceListener element : listeners) {
+            element.dragEnter(dsde);
         }
     }
 

@@ -13,30 +13,86 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Pavel Dolgov, Michael Danilov
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.datatransfer.Clipboard;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragGestureRecognizer;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.InvalidDnDOperationException;
+import java.awt.dnd.MouseDragGestureRecognizer;
 import java.awt.dnd.peer.DragSourceContextPeer;
+import java.awt.event.AWTEventListener;
+import java.awt.event.AWTEventListenerProxy;
+import java.awt.event.InputEvent;
 import java.awt.im.InputMethodHighlight;
+import java.awt.image.ColorModel;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
+import java.awt.peer.ButtonPeer;
+import java.awt.peer.CanvasPeer;
+import java.awt.peer.CheckboxMenuItemPeer;
+import java.awt.peer.CheckboxPeer;
+import java.awt.peer.ChoicePeer;
+import java.awt.peer.DialogPeer;
+import java.awt.peer.FileDialogPeer;
+import java.awt.peer.FontPeer;
+import java.awt.peer.FramePeer;
+import java.awt.peer.LabelPeer;
+import java.awt.peer.LightweightPeer;
+import java.awt.peer.ListPeer;
+import java.awt.peer.MenuBarPeer;
+import java.awt.peer.MenuItemPeer;
+import java.awt.peer.MenuPeer;
+import java.awt.peer.MouseInfoPeer;
+import java.awt.peer.PanelPeer;
+import java.awt.peer.PopupMenuPeer;
+import java.awt.peer.ScrollPanePeer;
+import java.awt.peer.ScrollbarPeer;
+import java.awt.peer.TextAreaPeer;
+import java.awt.peer.TextFieldPeer;
+import java.awt.peer.WindowPeer;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.security.*;
-import java.awt.image.*;
-import java.awt.peer.*;
-import java.beans.*;
-import java.util.*;
-import java.awt.dnd.*;
-import java.awt.event.*;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.Collections;
+import java.util.EventListener;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.Properties;
+import java.util.ResourceBundle;
 
-import org.apache.harmony.awt.*;
-import org.apache.harmony.awt.datatransfer.*;
+import org.apache.harmony.awt.ChoiceStyle;
+import org.apache.harmony.awt.ComponentInternals;
+import org.apache.harmony.awt.ContextStorage;
+import org.apache.harmony.awt.MouseEventPreprocessor;
+import org.apache.harmony.awt.ReadOnlyIterator;
+import org.apache.harmony.awt.Theme;
+import org.apache.harmony.awt.datatransfer.DTK;
+import org.apache.harmony.awt.datatransfer.NativeClipboard;
 import org.apache.harmony.awt.gl.MultiRectArea;
-import org.apache.harmony.awt.text.*;
-import org.apache.harmony.awt.wtk.*;
+import org.apache.harmony.awt.text.TextFieldKit;
+import org.apache.harmony.awt.text.TextKit;
+import org.apache.harmony.awt.wtk.CreationParams;
+import org.apache.harmony.awt.wtk.GraphicsFactory;
+import org.apache.harmony.awt.wtk.NativeCursor;
+import org.apache.harmony.awt.wtk.NativeEventQueue;
+import org.apache.harmony.awt.wtk.NativeEventThread;
+import org.apache.harmony.awt.wtk.NativeMouseInfo;
+import org.apache.harmony.awt.wtk.NativeWindow;
+import org.apache.harmony.awt.wtk.ShutdownWatchdog;
+import org.apache.harmony.awt.wtk.Synchronizer;
+import org.apache.harmony.awt.wtk.WTK;
+import org.apache.harmony.awt.wtk.WindowFactory;
 
 
 public abstract class Toolkit {
@@ -657,17 +713,15 @@ public abstract class Toolkit {
         }
     }
 
-    public DragGestureRecognizer createDragGestureRecognizer(
-            Class<?> recognizerAbstractClass, 
-            DragSource ds, 
-            Component c, 
-            int srcActions, 
+    @SuppressWarnings("unchecked")
+    public <T extends DragGestureRecognizer> T createDragGestureRecognizer(
+            Class<T> recognizerAbstractClass, DragSource ds, Component c, int srcActions,
             DragGestureListener dgl) {
         if (recognizerAbstractClass == null) {
             return null;
         }
         if (recognizerAbstractClass.isAssignableFrom(MouseDragGestureRecognizer.class)) {
-            return new DefaultMouseDragGestureRecognizer(ds, c, srcActions, dgl);
+            return (T) new DefaultMouseDragGestureRecognizer(ds, c, srcActions, dgl);
         }
         return null;
     }
@@ -1283,7 +1337,7 @@ public abstract class Toolkit {
 
         AWTPermission permission = new AWTPermission("listenToAllAWTEvents");
 
-        private AWTListenerList listeners = new AWTListenerList(null);
+        private final AWTListenerList listeners = new AWTListenerList(null);
 
         void addAWTEventListener(AWTEventListener listener, long eventMask) {
             if (listener != null) {

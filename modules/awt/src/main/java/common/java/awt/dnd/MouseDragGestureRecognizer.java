@@ -46,6 +46,7 @@ public abstract class MouseDragGestureRecognizer extends DragGestureRecognizer
         super(ds);
     }
 
+    @Override
     protected void registerListeners() {
         if (component != null) {
             component.addMouseListener(this);
@@ -53,6 +54,7 @@ public abstract class MouseDragGestureRecognizer extends DragGestureRecognizer
         }
     }
 
+    @Override
     protected void unregisterListeners() {
         if (component != null) {
             component.removeMouseListener(this);

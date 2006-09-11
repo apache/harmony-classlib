@@ -41,7 +41,7 @@ class MouseDispatcher {
 
     // Fields for mouse entered/exited support
     private Component lastUnderPointer = null;
-    private Point lastScreenPos = new Point(-1, -1);
+    private final Point lastScreenPos = new Point(-1, -1);
 
     // Fields for redundant mouse moved/dragged filtering
     private Component lastUnderMotion = null;

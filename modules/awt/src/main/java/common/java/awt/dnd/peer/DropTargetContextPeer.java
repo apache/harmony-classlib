@@ -13,18 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt.dnd.peer;
 
-import java.awt.dnd.*;
-import java.awt.datatransfer.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.InvalidDnDOperationException;
 
 public interface DropTargetContextPeer {
 
-    int  getTargetActions();
+    int getTargetActions();
 
     void setTargetActions(int actions);
 

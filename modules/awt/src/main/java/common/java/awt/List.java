@@ -59,8 +59,8 @@ public class List extends Component implements ItemSelectable, Accessible {
 
     private boolean multipleMode;
 
-    private ArrayList<String> items = new ArrayList<String>();
-    private ArrayList<Integer> selection = new ArrayList<Integer>();
+    private final ArrayList<String> items = new ArrayList<String>();
+    private final ArrayList<Integer> selection = new ArrayList<Integer>();
 
     private int visibleIndex = -1;
     private int currentIndex; // "focused" item index

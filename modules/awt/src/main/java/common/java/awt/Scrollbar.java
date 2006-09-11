@@ -176,12 +176,12 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
 
     class State extends Component.ComponentState implements ScrollbarState {
 
-        private Rectangle decreaseRect = new Rectangle();
-        private Rectangle increaseRect = new Rectangle();
-        private Rectangle sliderRect = new Rectangle();
-        private Rectangle trackRect = new Rectangle();
-        private Rectangle upperTrackRect = new Rectangle();
-        private Rectangle lowerTrackRect = new Rectangle();
+        private final Rectangle decreaseRect = new Rectangle();
+        private final Rectangle increaseRect = new Rectangle();
+        private final Rectangle sliderRect = new Rectangle();
+        private final Rectangle trackRect = new Rectangle();
+        private final Rectangle upperTrackRect = new Rectangle();
+        private final Rectangle lowerTrackRect = new Rectangle();
         private int trackSize;
 
         public boolean isDecreasePressed() {
