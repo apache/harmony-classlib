@@ -82,7 +82,6 @@ done <<EOF
   include/jpeglib.h jpeglib.h
   include/jmorecfg.h jmorecfg.h
   include/jerror.h jerror.h
-  include/jpegint.h jpegint.h
 EOF
 
 exit
