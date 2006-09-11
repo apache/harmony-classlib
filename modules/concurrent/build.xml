@@ -48,14 +48,14 @@
         <mkdir dir="${hy.build}" />
 
         <javac sourcepath=""
-               srcdir="${hy.concurrent.src.main.java}"
                destdir="${hy.build}"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
                source="${hy.javac.source}" 
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
-
+            <src path="src/main/java" />
+            <src path="standard/src/main/java" />
             <bootclasspath>
                 <fileset dir="${hy.jdk}/jre/lib/boot">
                     <include name="**/*.jar" />
@@ -87,7 +87,8 @@
                source="${hy.javac.source}" 
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
-
+            <src path="src/test/java" />
+            <src path="standard/src/test/java" />
             <bootclasspath>
                 <fileset dir="${hy.jdk}/jre/lib/boot">
                     <include name="**/*.jar" />
