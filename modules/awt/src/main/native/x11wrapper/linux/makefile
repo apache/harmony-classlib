@@ -19,6 +19,7 @@ CFLAGS += -fpic -I$(SHARED)common -I/usr/X11R6/include
 
 BUILDFILES = \
   org_apache_harmony_awt_nativebridge_linux_ErrorHandler.o \
+  org_apache_harmony_awt_nativebridge_linux_GLX.o \
   org_apache_harmony_awt_nativebridge_linux_X11.o \
   org_apache_harmony_awt_nativebridge_linux_Xft.o
 
