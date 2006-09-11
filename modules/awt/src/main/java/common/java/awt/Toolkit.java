@@ -520,7 +520,7 @@ public abstract class Toolkit {
         lockAWT();
         try {
             ComponentInternals.setComponentInternals(new ComponentInternalsImpl());
-            // EventQueue eq = new EventQueue(this);
+            new EventQueue(this); // create the system EventQueue
             dispatcher = new Dispatcher(this);
             final String className = getWTKClassName();
 
