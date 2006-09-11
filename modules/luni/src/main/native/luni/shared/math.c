@@ -40,6 +40,10 @@ jdouble internal_cbrt (jdouble arg1);
 jdouble internal_sinh (jdouble arg1);
 jdouble internal_cosh (jdouble arg1);
 jdouble internal_tanh (jdouble arg1);
+jdouble internal_expm1(jdouble arg1);
+jdouble internal_hypot(jdouble arg1, jdouble arg2);
+jdouble internal_log1p(jdouble arg1);
+jdouble internal_log10(jdouble arg1);
 
 extern scaleUpDouble (double *, int);
 
@@ -146,11 +150,31 @@ internal_exp (jdouble arg1)
 }
 
 jdouble
+internal_expm1 (jdouble arg1)
+{
+  jdouble result;
+
+  result = fdlibm_expm1 (arg1);
+
+  return result;
+}
+
+jdouble
 internal_floor (jdouble arg1)
 {
   jdouble result;
 
   result = fdlibm_floor (arg1);
+
+  return result;
+}
+
+jdouble
+internal_hypot (jdouble arg1, jdouble arg2)
+{
+  jdouble result;
+
+  result = fdlibm_hypot (arg1, arg2);
 
   return result;
 }
@@ -171,6 +195,26 @@ internal_log (jdouble arg1)
   jdouble result;
 
   result = fdlibm_log (arg1);
+
+  return result;
+}
+
+jdouble
+internal_log10 (jdouble arg1)
+{
+  jdouble result;
+
+  result = fdlibm_log10 (arg1);
+
+  return result;
+}
+
+jdouble
+internal_log1p (jdouble arg1)
+{
+  jdouble result;
+
+  result = fdlibm_log1p (arg1);
 
   return result;
 }
@@ -345,6 +389,18 @@ Java_java_lang_Math_exp (JNIEnv * env, jclass jclazz, jdouble arg1)
 }
 
 jdouble JNICALL
+Java_java_lang_StrictMath_expm1 (JNIEnv * env, jclass jclazz, jdouble arg1)
+{
+  return internal_expm1 (arg1);
+}
+
+jdouble JNICALL
+Java_java_lang_Math_expm1 (JNIEnv * env, jclass jclazz, jdouble arg1)
+{
+  return internal_expm1 (arg1);
+}
+
+jdouble JNICALL
 Java_java_lang_StrictMath_floor (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_floor (arg1);
@@ -354,6 +410,20 @@ jdouble JNICALL
 Java_java_lang_Math_floor (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_floor (arg1);
+}
+
+jdouble JNICALL
+Java_java_lang_StrictMath_hypot (JNIEnv * env, jclass jclazz,
+                                         jdouble arg1, jdouble arg2)
+{
+  return internal_hypot (arg1, arg2);
+}
+
+jdouble JNICALL
+Java_java_lang_Math_hypot (JNIEnv * env, jclass jclazz, jdouble arg1,
+                                   jdouble arg2)
+{
+  return internal_hypot (arg1, arg2);
 }
 
 jdouble JNICALL
@@ -381,6 +451,26 @@ Java_java_lang_Math_log (JNIEnv * env, jclass jclazz, jdouble arg1)
 {
   return internal_log (arg1);
 }
+
+jdouble JNICALL
+Java_java_lang_StrictMath_log10 (JNIEnv * env, jclass jclazz, jdouble arg1)
+{
+  return internal_log10 (arg1);
+}
+
+
+jdouble JNICALL
+Java_java_lang_StrictMath_log1p (JNIEnv * env, jclass jclazz, jdouble arg1)
+{
+  return internal_log1p (arg1);
+}
+
+jdouble JNICALL
+Java_java_lang_Math_log1p(JNIEnv * env, jclass jclazz, jdouble arg1)
+{
+  return internal_log1p (arg1);
+}
+
 
 jdouble JNICALL
 Java_java_lang_StrictMath_pow (JNIEnv * env, jclass jclazz, jdouble arg1,

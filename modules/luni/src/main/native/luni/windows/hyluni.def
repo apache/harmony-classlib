@@ -92,9 +92,12 @@ EXPORTS
 	Java_java_lang_Math_cos
 	Java_java_lang_Math_cosh
 	Java_java_lang_Math_exp
+	Java_java_lang_Math_expm1
 	Java_java_lang_Math_floor
+	Java_java_lang_Math_hypot
 	Java_java_lang_Math_IEEEremainder
 	Java_java_lang_Math_log
+	Java_java_lang_Math_log1p
 	Java_java_lang_Math_pow
 	Java_java_lang_Math_rint
 	Java_java_lang_Math_sin
@@ -112,9 +115,13 @@ EXPORTS
 	Java_java_lang_StrictMath_cos
 	Java_java_lang_StrictMath_cosh
 	Java_java_lang_StrictMath_exp
+	Java_java_lang_StrictMath_expm1	
 	Java_java_lang_StrictMath_floor
+	Java_java_lang_StrictMath_hypot	
 	Java_java_lang_StrictMath_IEEEremainder
 	Java_java_lang_StrictMath_log
+	Java_java_lang_StrictMath_log10	
+	Java_java_lang_StrictMath_log1p	
 	Java_java_lang_StrictMath_pow
 	Java_java_lang_StrictMath_rint
 	Java_java_lang_StrictMath_sin

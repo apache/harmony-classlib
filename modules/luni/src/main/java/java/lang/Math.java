@@ -178,6 +178,21 @@ public final class Math {
 	 * @return the exponential of the argument.
 	 */
 	public static native double exp(double d);
+    
+    /**
+     * Answers the closest double approximation of <i>e</i><sup>d</sup> - 1.
+     * If the argument is very close to 0, it is much more accurate to use
+     * expm1(d)+1 than exp(d).
+     * 
+     * The final result should be within 1 ulp of the real result. For any
+     * finite input, the result should be no less than -1.0. If the real result
+     * is within 0.5 ulp of -1, -1.0 should be answered.
+     * 
+     * @param d
+     *            the value to compute the <i>e</i><sup>d</sup> - 1 of
+     * @return the <i>e</i><sup>d</sup> - 1 value of the argument.
+     */
+    public static native double expm1(double d);
 
 	/**
 	 * Answers the double conversion of the most positive (i.e. closest to
@@ -188,6 +203,22 @@ public final class Math {
 	 * @return the ceiling of the argument.
 	 */
 	public static native double floor(double d);
+    
+    /**
+     * Answers sqrt(<i>x</i><sup>2</sup>+<i>y</i><sup>2</sup>). The
+     * final result is without medium underflow or overflow.
+     * 
+     * The final result should be within 1 ulp of the real result. If one
+     * parameter remains constant, the result should be semi-monotonic.
+     * 
+     * @param x
+     *            a double number
+     * @param y
+     *            a double number
+     * @return the sqrt(<i>x</i><sup>2</sup>+<i>y</i><sup>2</sup>) value
+     *         of the arguments.
+     */
+    public static native double hypot(double x, double y);
 
 	/**
 	 * Answers the remainder of dividing the first argument by the second using
@@ -223,6 +254,20 @@ public final class Math {
         //TODO: this is a stub to integrate HARMONY-935
         return log(d)/log(10);
     }
+    
+    /**
+     * Answers the closest double approximation of the natural logarithm of the
+     * sum of the argument and 1. If the argument is very close to 0, it is much
+     * more accurate to use log1p(d) than log(1.0+d).
+     * 
+     * The final result should be within 1 ulp of the real result and be
+     * semi-monotonic.
+     * 
+     * @param d
+     *            the value to compute the ln(1+d) of
+     * @return the natural logarithm of the sum of the argument and 1.
+     */
+    public static native double log1p(double d);
 
 	/**
 	 * Answers the most positive (i.e. closest to positive infinity) of the two

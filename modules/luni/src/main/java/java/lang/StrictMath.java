@@ -184,6 +184,17 @@ public final class StrictMath {
 	 * @return the exponential of the argument.
 	 */
 	public static native double exp(double d);
+    
+    /**
+     * Answers the closest double approximation of <i>e</i><sup>d</sup> - 1.
+     * If the argument is very close to 0, it is much more accurate to use
+     * expm1(d)+1 than exp(d).
+     * 
+     * @param d
+     *            the value to compute the <i>e</i><sup>d</sup> - 1 of
+     * @return the <i>e</i><sup>d</sup> - 1 value of the argument.
+     */
+    public static native double expm1(double d);
 
 	/**
 	 * Answers the double conversion of the most positive (i.e. closest to
@@ -195,6 +206,19 @@ public final class StrictMath {
 	 * @return the ceiling of the argument.
 	 */
 	public static native double floor(double d);
+    
+    /**
+     * Answers sqrt(<i>x</i><sup>2</sup>+<i>y</i><sup>2</sup>). The
+     * final result is without medium underflow or overflow.
+     * 
+     * @param x
+     *            a double number
+     * @param y
+     *            a double number
+     * @return the sqrt(<i>x</i><sup>2</sup>+<i>y</i><sup>2</sup>) value
+     *         of the arguments.
+     */
+    public static native double hypot(double x, double y);
 
 	/**
 	 * Answers the remainder of dividing the first argument by the second using
@@ -217,6 +241,26 @@ public final class StrictMath {
 	 * @return the natural logarithm of the argument.
 	 */
 	public static native double log(double d);
+    
+    /**
+     * Answers the logarithm of the argument and the base is 10.
+     * 
+     * @param d
+     *            the value to compute the base 10 log of
+     * @return the base 10 logarithm of the argument.
+     */
+    public static native double log10(double d);
+    
+    /**
+     * Answers the closest double approximation of the natural logarithm of the
+     * sum of the argument and 1. If the argument is very close to 0, it is much
+     * more accurate to use log1p(d) than log(1.0+d).
+     * 
+     * @param d
+     *            the value to compute the ln(1+d) of
+     * @return the natural logarithm of the sum of the argument and 1.
+     */
+    public static native double log1p(double d);
 
 	/**
 	 * Answers the most positive (i.e. closest to positive infinity) of the two

@@ -214,10 +214,38 @@ public class MathTest extends junit.framework.TestCase {
 		assertTrue("Incorrect answer returned for larger power", Math.log(Math
 				.abs(Math.exp(5.5D)) - 5.5D) < 10.0D);
 	}
+    
+    /**
+     * @tests java.lang.Math#expm1(double)
+     */
+    @SuppressWarnings("boxing")
+    public void test_expm1_D() {
+        // Test for special cases
+        assertEquals("Should return NaN", Double.NaN, Math.expm1(Double.NaN));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, Math.expm1(Double.POSITIVE_INFINITY));
+        assertEquals("Should return -1.0", -1.0, Math
+                .expm1(Double.NEGATIVE_INFINITY));
+        assertEquals("Should return 0.0", 0.0, Math.expm1(0.0));
+        assertEquals("Should return +0.0", +0.0, Math.expm1(+0.0));
+        assertEquals("Should return -0.0", -0.0, Math.expm1(-0.0));
 
-	/**
-	 * @tests java.lang.Math#floor(double)
-	 */
+        assertEquals("Should return -9.999950000166666E-6",
+                -9.999950000166666E-6, Math.expm1(-0.00001));
+        assertEquals("Should return 1.0145103074469635E60",
+                1.0145103074469635E60, Math.expm1(138.16951162));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, Math
+                        .expm1(123456789123456789123456789.4521584223));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, Math.expm1(Double.MAX_VALUE));
+        assertEquals("Should return MIN_VALUE", Double.MIN_VALUE, Math
+                .expm1(Double.MIN_VALUE));
+    }
+
+    /**
+     * @tests java.lang.Math#floor(double)
+     */
 	public void test_floorD() {
 		// Test for method double java.lang.Math.floor(double)
                 assertEquals("Incorrect floor for double",
@@ -225,6 +253,45 @@ public class MathTest extends junit.framework.TestCase {
 		assertEquals("Incorrect floor for double",
                              -79, Math.floor(-78.89), 0);
 	}
+    
+    /**
+     * @tests java.lang.Math#hypot(double, double)
+     */
+    @SuppressWarnings("boxing")
+    public void test_hypot_DD() {
+        // Test for special cases
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, Math.hypot(Double.POSITIVE_INFINITY,
+                        1.0));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, Math.hypot(Double.NEGATIVE_INFINITY,
+                        123.324));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, Math.hypot(-758.2587,
+                        Double.POSITIVE_INFINITY));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, Math.hypot(5687.21,
+                        Double.NEGATIVE_INFINITY));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, Math.hypot(Double.POSITIVE_INFINITY,
+                        Double.NEGATIVE_INFINITY));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, Math.hypot(Double.NEGATIVE_INFINITY,
+                        Double.POSITIVE_INFINITY));
+        assertEquals("Should return NaN", Double.NaN, Math.hypot(Double.NaN,
+                2342301.89843));
+        assertEquals("Should return NaN", Double.NaN, Math.hypot(-345.2680,
+                Double.NaN));
+
+        assertEquals("Should return 2396424.905416697", 2396424.905416697, Math
+                .hypot(12322.12, -2396393.2258));
+        assertEquals("Should return 138.16958070558556", 138.16958070558556,
+                Math.hypot(-138.16951162, 0.13817035864));
+        assertEquals("Should return 1.7976931348623157E308",
+                1.7976931348623157E308, Math.hypot(Double.MAX_VALUE, 211370.35));
+        assertEquals("Should return 5413.7185", 5413.7185, Math.hypot(
+                -5413.7185, Double.MIN_VALUE));
+    }
 
 	/**
 	 * @tests java.lang.Math#IEEEremainder(double, double)
@@ -250,6 +317,32 @@ public class MathTest extends junit.framework.TestCase {
 					.abs(d * 0.00000001));
 		}
 	}
+    
+    /**
+     * @tests java.lang.Math#log1p(double)
+     */
+    @SuppressWarnings("boxing")
+    public void test_log1p_D() {
+        // Test for special cases
+        assertEquals("Should return NaN", Double.NaN, Math.log1p(Double.NaN));
+        assertEquals("Should return NaN", Double.NaN, Math.log1p(-32.0482175));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, Math.log1p(Double.POSITIVE_INFINITY));
+        assertEquals("Should return 0.0", 0.0, Math.log1p(0.0));
+        assertEquals("Should return +0.0", +0.0, Math.log1p(+0.0));
+        assertEquals("Should return -0.0", -0.0, Math.log1p(-0.0));
+
+        assertEquals("Should return -0.2941782295312541", -0.2941782295312541,
+                Math.log1p(-0.254856327));
+        assertEquals("Should return 7.368050685564151", 7.368050685564151, Math
+                .log1p(1583.542));
+        assertEquals("Should return 0.4633708685409921", 0.4633708685409921,
+                Math.log1p(0.5894227));
+        assertEquals("Should return 709.782712893384", 709.782712893384, Math
+                .log1p(Double.MAX_VALUE));
+        assertEquals("Should return Double.MIN_VALUE", Double.MIN_VALUE, Math
+                .log1p(Double.MIN_VALUE));
+    }
 
 	/**
 	 * @tests java.lang.Math#max(double, double)

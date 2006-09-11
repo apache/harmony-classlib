@@ -215,6 +215,35 @@ public class StrictMathTest extends junit.framework.TestCase {
 		assertTrue("Incorrect answer returned for larger power", StrictMath
 				.log(StrictMath.abs(StrictMath.exp(5.5D)) - 5.5D) < 10.0D);
 	}
+    
+    /**
+     * @tests java.lang.StrictMath#expm1(double)
+     */
+    @SuppressWarnings("boxing")
+    public void test_expm1_D() {
+        //Test for special cases
+        assertEquals("Should return NaN", Double.NaN, StrictMath.expm1(Double.NaN));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, StrictMath.expm1(Double.POSITIVE_INFINITY));
+        assertEquals("Should return -1.0", -1.0, StrictMath
+                .expm1(Double.NEGATIVE_INFINITY));
+        assertEquals("Should return 0.0", 0.0, StrictMath.expm1(0.0));
+        assertEquals("Should return +0.0", +0.0, StrictMath.expm1(+0.0));
+        assertEquals("Should return -0.0", -0.0, StrictMath.expm1(-0.0));
+
+        assertEquals("Should return -9.999950000166666E-6",
+                -9.999950000166666E-6, StrictMath.expm1(-0.00001));
+        assertEquals("Should return 1.0145103074469635E60",
+                1.0145103074469635E60, StrictMath.expm1(138.16951162));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, StrictMath
+                        .expm1(123456789123456789123456789.4521584223));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, StrictMath.expm1(Double.MAX_VALUE));
+        assertEquals("Should return MIN_VALUE", Double.MIN_VALUE, StrictMath
+                .expm1(Double.MIN_VALUE));
+       
+    }    
 
 	/**
 	 * @tests java.lang.StrictMath#floor(double)
@@ -226,6 +255,46 @@ public class StrictMathTest extends junit.framework.TestCase {
 		assertEquals("Incorrect floor for double",
                              -79, StrictMath.floor(-78.89), 0.0);
 	}
+    
+    /**
+     * @tests java.lang.StrictMath#hypot(double, double)
+     */
+    @SuppressWarnings("boxing")
+    public void test_hypot_DD() {
+        // Test for special cases
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, StrictMath.hypot(Double.POSITIVE_INFINITY,
+                        1.0));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, StrictMath.hypot(Double.NEGATIVE_INFINITY,
+                        123.324));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, StrictMath.hypot(-758.2587,
+                        Double.POSITIVE_INFINITY));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, StrictMath.hypot(5687.21,
+                        Double.NEGATIVE_INFINITY));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, StrictMath.hypot(Double.POSITIVE_INFINITY,
+                        Double.NEGATIVE_INFINITY));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, StrictMath.hypot(Double.NEGATIVE_INFINITY,
+                        Double.POSITIVE_INFINITY));
+        assertEquals("Should return NaN", Double.NaN, StrictMath.hypot(Double.NaN,
+                2342301.89843));
+        assertEquals("Should return NaN", Double.NaN, StrictMath.hypot(-345.2680,
+                Double.NaN));
+
+        assertEquals("Should return 2396424.905416697", 2396424.905416697, StrictMath
+                .hypot(12322.12, -2396393.2258));
+        assertEquals("Should return 138.16958070558556", 138.16958070558556,
+                StrictMath.hypot(-138.16951162, 0.13817035864));
+        assertEquals("Should return 1.7976931348623157E308",
+                1.7976931348623157E308, StrictMath.hypot(Double.MAX_VALUE, 211370.35));
+        assertEquals("Should return 5413.7185", 5413.7185, StrictMath.hypot(
+                -5413.7185, Double.MIN_VALUE));
+
+    }
 
 	/**
 	 * @tests java.lang.StrictMath#IEEEremainder(double, double)
@@ -254,10 +323,72 @@ public class StrictMathTest extends junit.framework.TestCase {
 							.abs(d * 0.00000001));
 		}
 	}
+    
+    /**
+     * @tests java.lang.StrictMath#log10(double)
+     */
+    @SuppressWarnings("boxing")
+    public void test_log10_D() {
+        // Test for special cases
+        assertEquals("Should return NaN", Double.NaN, StrictMath
+                .log10(Double.NaN));
+        assertEquals("Should return NaN", Double.NaN, StrictMath
+                .log10(-2541.05745687234187532));
+        assertEquals("Should return NaN", Double.POSITIVE_INFINITY, StrictMath
+                .log10(Double.POSITIVE_INFINITY));
+        assertEquals("Should return NEGATIVE_INFINITY",
+                Double.NEGATIVE_INFINITY, StrictMath.log10(0.0));
+        assertEquals("Should return NEGATIVE_INFINITY",
+                Double.NEGATIVE_INFINITY, StrictMath.log10(+0.0));
+        assertEquals("Should return NEGATIVE_INFINITY",
+                Double.NEGATIVE_INFINITY, StrictMath.log10(-0.0));
+        assertEquals("Should return 14.0", 14.0, StrictMath.log10(StrictMath
+                .pow(10, 14)));
 
-	/**
-	 * @tests java.lang.StrictMath#max(double, double)
-	 */
+        assertEquals("Should return 3.7389561269540406", 3.7389561269540406,
+                StrictMath.log10(5482.2158));
+        assertEquals("Should return 14.661551142893833", 14.661551142893833,
+                StrictMath.log10(458723662312872.125782332587));
+        assertEquals("Should return -0.9083828622192334", -0.9083828622192334,
+                StrictMath.log10(0.12348583358871));
+        assertEquals("Should return 308.25471555991675", 308.25471555991675,
+                StrictMath.log10(Double.MAX_VALUE));
+        assertEquals("Should return -323.3062153431158", -323.3062153431158,
+                StrictMath.log10(Double.MIN_VALUE));
+    }
+
+    /**
+     * @tests java.lang.StrictMath#log1p(double)
+     */
+    @SuppressWarnings("boxing")
+    public void test_log1p_D() {
+        // Test for special cases
+        assertEquals("Should return NaN", Double.NaN, StrictMath
+                .log1p(Double.NaN));
+        assertEquals("Should return NaN", Double.NaN, StrictMath
+                .log1p(-32.0482175));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, StrictMath
+                        .log1p(Double.POSITIVE_INFINITY));
+        assertEquals("Should return 0.0", 0.0, StrictMath.log1p(0.0));
+        assertEquals("Should return +0.0", +0.0, StrictMath.log1p(+0.0));
+        assertEquals("Should return -0.0", -0.0, StrictMath.log1p(-0.0));
+
+        assertEquals("Should return -0.2941782295312541", -0.2941782295312541,
+                StrictMath.log1p(-0.254856327));
+        assertEquals("Should return 7.368050685564151", 7.368050685564151,
+                StrictMath.log1p(1583.542));
+        assertEquals("Should return 0.4633708685409921", 0.4633708685409921,
+                StrictMath.log1p(0.5894227));
+        assertEquals("Should return 709.782712893384", 709.782712893384,
+                StrictMath.log1p(Double.MAX_VALUE));
+        assertEquals("Should return Double.MIN_VALUE", Double.MIN_VALUE,
+                StrictMath.log1p(Double.MIN_VALUE));
+    }
+
+    /**
+     * @tests java.lang.StrictMath#max(double, double)
+     */
 	public void test_maxDD() {
 		// Test for method double java.lang.StrictMath.max(double, double)
 		assertEquals("Incorrect double max value", 1908897.6000089, StrictMath.max(
