@@ -21,7 +21,24 @@
 #include <X11/Xft/Xft.h>
 #include <freetype/tttables.h>
 #include <freetype/t1tables.h>
+
+#if (FREETYPE_MAJOR >= 2 && FREETYPE_MINOR >= 2)
+
+#undef HAS_FREETYPE_INTERNAL
+#include <freetype/ftsizes.h>
+#include <freetype/ftglyph.h>
+#ifndef FALSE
+#define FALSE (0)
+#define TRUE (1)
+#endif /* FALSE */
+
+#else /* FREETYPE_MAJOR ... */
+
+#define HAS_FREETYPE_INTERNAL 1
 #include <freetype/internal/tttypes.h>
+
+#endif /* FREETYPE_MAJOR ... */
+
 #include <freetype/ftsnames.h>
 
 #include <stdio.h>
@@ -750,8 +767,10 @@ JNIEXPORT jfloat JNICALL
     jfloat italicAngle = 0.0;
     XftFont *xftFnt = (XftFont *)(long)fnt;
     FT_Face face;
+#if HAS_FREETYPE_INTERNAL
     TT_Face tt_face;
-    TT_HoriHeader hh;
+#endif
+    TT_HoriHeader* hh;
     float rise;
     float run;
     PS_FontInfoRec afont_info;
@@ -767,10 +786,14 @@ JNIEXPORT jfloat JNICALL
         return 0;
     }
     if (fontType == FONT_TYPE_TT){
-           tt_face = (TT_Face)face;
-            hh = tt_face->horizontal;
-            rise = (float)hh.caret_Slope_Rise;
-            run = (float)hh.caret_Slope_Run;
+#if HAS_FREETYPE_INTERNAL
+            tt_face = (TT_Face)face;
+            hh = &(tt_face->horizontal);
+#else
+            hh = (TT_HoriHeader*)FT_Get_Sfnt_Table(face, ft_sfnt_hhea);
+#endif
+            rise = (float)hh->caret_Slope_Rise;
+            run = (float)hh->caret_Slope_Run;
             italicAngle = run / rise ;
     } else {
         err =  FT_Get_PS_Font_Info( face, &afont_info);
@@ -937,8 +960,10 @@ JNIEXPORT jfloatArray JNICALL
 
     XftFont *xftFnt = (XftFont *)(long)fnt;
     FT_Face face;
-    TT_OS2 os2;
+    TT_OS2* os2;
+#if HAS_FREETYPE_INTERNAL
     TT_Face tt_face;
+#endif
     int units_per_EM;
     FT_Size_Metrics size_metrics;
     FT_Size size;
@@ -975,10 +1000,14 @@ JNIEXPORT jfloatArray JNICALL
     values[4] = (float)(face->underline_position) * mltpl;  // Underline position value
 
     if (fontType == FONT_TYPE_TT){
+#if HAS_FREETYPE_INTERNAL
         tt_face = (TT_Face)face;
-        os2 = tt_face->os2;
-        values[5] = (float)(os2.yStrikeoutSize) * mltpl;    // Strikeout size value
-        values[6] = (float)(os2.yStrikeoutPosition) * mltpl;    // Strikeout position value
+        os2 = &(tt_face->os2);
+#else
+        os2 = (TT_OS2*)FT_Get_Sfnt_Table(face, ft_sfnt_os2);
+#endif
+        values[5] = (float)(os2->yStrikeoutSize) * mltpl;    // Strikeout size value
+        values[6] = (float)(os2->yStrikeoutPosition) * mltpl;    // Strikeout position value
     } else {
         values[5] = values[3];
         // !!Workaround: for Type1 fonts strikethrough position = (-ascent+descent)/2
@@ -1646,8 +1675,10 @@ JNIEXPORT jfloatArray JNICALL
 
     XftFont *xftFnt = (XftFont *)(long)fnt;
     FT_Face face;
-    TT_OS2 os2;
-    TT_Face tt_face;
+    TT_OS2* os2;
+#if HAS_FREETYPE_INTERNAL
+     TT_Face tt_face;
+#endif
     int units_per_EM;
     float mltpl;
     
@@ -1670,18 +1701,22 @@ JNIEXPORT jfloatArray JNICALL
     mltpl = (float)fontHeight / units_per_EM;
     
     if (fontType == FONT_TYPE_TT){
+#if HAS_FREETYPE_INTERNAL
         tt_face = (TT_Face)face;
-        os2 = tt_face->os2;
+        os2 = &(tt_face->os2);
+#else
+        os2 = (TT_OS2*)FT_Get_Sfnt_Table(face, ft_sfnt_os2);
+#endif
 
-        values[0] = (float)(os2.xAvgCharWidth) * mltpl; // the average width of characters in the font
-        values[1] = (float)(os2.ySubscriptXSize) * mltpl; // horizontal size for subscripts 
-        values[2] = (float)(os2.ySubscriptYSize) * mltpl; // vertical size for subscripts 
-        values[3] = (float)(os2.ySubscriptXOffset) * mltpl; // horizontal offset for subscripts
-        values[4] = (float)(os2.ySubscriptYOffset) * mltpl; // vertical offset value for subscripts
-        values[5] = (float)(os2.ySuperscriptXSize) * mltpl; // horizontal size for superscripts
-        values[6] = (float)(os2.ySuperscriptYSize) * mltpl; // vertical size for superscripts
-        values[7] = (float)(os2.ySuperscriptXOffset) * mltpl; // horizontal offset for superscripts 
-        values[8] = (float)(os2.ySuperscriptYOffset) * mltpl; // vertical offset for superscripts 
+        values[0] = (float)(os2->xAvgCharWidth) * mltpl; // the average width of characters in the font
+        values[1] = (float)(os2->ySubscriptXSize) * mltpl; // horizontal size for subscripts 
+        values[2] = (float)(os2->ySubscriptYSize) * mltpl; // vertical size for subscripts 
+        values[3] = (float)(os2->ySubscriptXOffset) * mltpl; // horizontal offset for subscripts
+        values[4] = (float)(os2->ySubscriptYOffset) * mltpl; // vertical offset value for subscripts
+        values[5] = (float)(os2->ySuperscriptXSize) * mltpl; // horizontal size for superscripts
+        values[6] = (float)(os2->ySuperscriptYSize) * mltpl; // vertical size for superscripts
+        values[7] = (float)(os2->ySuperscriptXOffset) * mltpl; // horizontal offset for superscripts 
+        values[8] = (float)(os2->ySuperscriptYOffset) * mltpl; // vertical offset for superscripts 
     } else {
         values[0] = 0.0f; // the average width of characters in the font
         values[1] = 0.7f * fontHeight; // horizontal size for subscripts 
