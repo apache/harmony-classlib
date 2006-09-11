@@ -141,8 +141,8 @@ public class CipherInputStream extends FilterInputStream {
         in.close();
         try {
             cipher.doFinal();
-        } catch (GeneralSecurityException e) {
-            throw (IOException) new IOException(e.getMessage()).initCause(e);
+        } catch (GeneralSecurityException ignore) {
+            //do like RI does
         }
 
     }
