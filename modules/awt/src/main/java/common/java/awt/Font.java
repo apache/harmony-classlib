@@ -13,10 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Ilya S. Okomin
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.font.FontRenderContext;
@@ -28,6 +25,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,6 +63,8 @@ public class Font implements Serializable {
     public static final int HANGING_BASELINE = 2;
 
     public static final int TRUETYPE_FONT = 0;
+    
+    public static final int TYPE1_FONT = 1;
 
     public static final int LAYOUT_LEFT_TO_RIGHT = 0;
 
@@ -125,7 +125,7 @@ public class Font implements Serializable {
 
     }
 
-    public Font(Map<Attribute, Object> attributes) {
+    public Font(Map<? extends Attribute, ?> attributes) {
         Object currAttr;
 
         // Default values are taken from the documentation of the Font class. 
@@ -231,6 +231,14 @@ public class Font implements Serializable {
     public boolean canDisplay(char c) {
         FontPeerImpl peer = (FontPeerImpl)this.getPeer();
         return peer.canDisplay(c);
+    }
+    
+    public boolean canDisplay(int i) {
+        if (!Character.isValidCodePoint(i)) {
+            throw new IllegalArgumentException();
+        }
+        //TODO implement true code point support 
+        return canDisplay((char)i);
     }
 
     public int canDisplayUpTo(char[] text, int start, int limit) {
@@ -478,8 +486,9 @@ public class Font implements Serializable {
 
     }
 
+
     @SuppressWarnings("unchecked")
-    public Font deriveFont(Map<?, ?> attributes) {
+    public Font deriveFont(Map<? extends Attribute, ?> attributes) {
         Attribute[] avalAttributes = this.getAvailableAttributes();
 
         Hashtable<Attribute, Object> derivefRequestedAttributes = (Hashtable<Attribute, Object>)fRequestedAttributes.clone();
@@ -516,8 +525,8 @@ public class Font implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public Map<Attribute, Object> getAttributes() {
-        return (Map<Attribute, Object>)fRequestedAttributes.clone();
+    public Map<TextAttribute, Object> getAttributes() {
+        return (Map<TextAttribute, Object>)fRequestedAttributes.clone();
     }
 
     public Attribute[] getAvailableAttributes() {
@@ -549,7 +558,7 @@ public class Font implements Serializable {
     }
 
 
-    public static Font getFont(Map<Attribute, Object> attributes) {
+    public static Font getFont(Map<? extends Attribute, ?> attributes) {
         Font fnt = (Font)attributes.get(TextAttribute.FONT);
         if (fnt != null){
             return fnt;
@@ -882,6 +891,16 @@ public class Font implements Serializable {
         return peer.getItalicAngle();
     }
 
+    public static Font createFont(int fontFormat, File fontFile) throws FontFormatException,
+            IOException {
+        InputStream is = new FileInputStream(fontFile);
+        try {
+            return createFont(fontFormat, is);
+        } finally {
+            is.close();
+        }
+    }
+    
     public static Font createFont(int fontFormat, InputStream fontStream)
             throws FontFormatException, IOException {
 

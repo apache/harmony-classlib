@@ -29,12 +29,7 @@ import java.util.Set;
  * RenderingHints
  *
  */
-public class RenderingHints implements Map, Cloneable {
-    private final HashMap map = new HashMap();
-
-    /*
-     * Keys and values
-     */
+public class RenderingHints implements Map<Object, Object>, Cloneable {
     public static final Key KEY_ALPHA_INTERPOLATION = new KeyImpl(1);
     public static final Object VALUE_ALPHA_INTERPOLATION_DEFAULT = new KeyValue(KEY_ALPHA_INTERPOLATION);
     public static final Object VALUE_ALPHA_INTERPOLATION_SPEED = new KeyValue(KEY_ALPHA_INTERPOLATION);
@@ -80,18 +75,22 @@ public class RenderingHints implements Map, Cloneable {
     public static final Object VALUE_TEXT_ANTIALIAS_ON = new KeyValue(KEY_TEXT_ANTIALIASING);
     public static final Object VALUE_TEXT_ANTIALIAS_OFF = new KeyValue(KEY_TEXT_ANTIALIASING);
 
-    public RenderingHints(Map map) {
+    private HashMap<Object, Object> map = new HashMap<Object, Object>();
+    
+    public RenderingHints(Map<Key, ?> map) {
+        super();
         if (map != null) {
             putAll(map);
         }
     }
 
     public RenderingHints(Key key, Object value) {
+        super();
         put(key, value);
     }
 
     public void add(RenderingHints hints) {
-        map.putAll(hints);
+        map.putAll(hints.map);
     }
 
     public Object put(Object key, Object value) {
@@ -110,32 +109,31 @@ public class RenderingHints implements Map, Cloneable {
         return map.get(key);
     }
 
-    public Set keySet() {
+    public Set<Object> keySet() {
         return map.keySet();
     }
 
-    public Set entrySet() {
+    public Set<Map.Entry<Object, Object>> entrySet() {
         return map.entrySet();
     }
 
-    public void putAll(Map m) {
+    public void putAll(Map<?, ?> m) {
         if (m instanceof RenderingHints) {
-            map.putAll(((RenderingHints)m).map);
-            return;
-        }
+            map.putAll(((RenderingHints) m).map);
+        } else {
+            Set<?> entries = m.entrySet();
 
-        Set entries = m.entrySet();
-
-        Iterator it = entries.iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry)it.next();
-            Key key = (Key)entry.getKey();
-            Object val = entry.getValue();
-            put(key, val);
+            Iterator<?> it = entries.iterator();
+            while (it.hasNext()) {
+                Map.Entry<?, ?> entry = (Map.Entry<?, ?>) it.next();
+                Key key = (Key) entry.getKey();
+                Object val = entry.getValue();
+                put(key, val);
+            }
         }
     }
 
-    public Collection values() {
+    public Collection<Object> values() {
         return map.values();
     }
 
@@ -169,13 +167,13 @@ public class RenderingHints implements Map, Cloneable {
             return false;
         }
 
-        Map m = (Map)o;
-        Set keys = keySet();
+        Map<?, ?> m = (Map<?, ?>)o;
+        Set<?> keys = keySet();
         if (!keys.equals(m.keySet())) {
             return false;
         }
 
-        Iterator it = keys.iterator();
+        Iterator<?> it = keys.iterator();
         while (it.hasNext()) {
             Key key = (Key)it.next();
             Object v1 = get(key);
@@ -192,9 +190,12 @@ public class RenderingHints implements Map, Cloneable {
         return map.hashCode();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Object clone() {
-        return new RenderingHints(map);
+        RenderingHints clone = new RenderingHints(null);
+        clone.map = (HashMap<Object, Object>)this.map.clone();
+        return clone;
     }
 
     @Override
@@ -206,7 +207,7 @@ public class RenderingHints implements Map, Cloneable {
      * Key
      */
     public abstract static class Key {
-        private int key;
+        private final int key;
 
         protected Key(int key) {
             this.key = key;
