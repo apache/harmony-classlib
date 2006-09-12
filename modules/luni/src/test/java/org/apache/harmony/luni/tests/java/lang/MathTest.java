@@ -275,9 +275,9 @@ public class MathTest extends junit.framework.TestCase {
                 Double.POSITIVE_INFINITY, Math.hypot(Double.NEGATIVE_INFINITY,
                         Double.POSITIVE_INFINITY), 0D);
         assertEquals("Should return NaN", Double.NaN, Math.hypot(Double.NaN,
-                2342301.89843), 0D);
+                2342301.89843));
         assertEquals("Should return NaN", Double.NaN, Math.hypot(-345.2680,
-                Double.NaN), 0D);
+                Double.NaN));
 
         assertEquals("Should return 2396424.905416697", 2396424.905416697, Math
                 .hypot(12322.12, -2396393.2258), 0D);
@@ -320,7 +320,7 @@ public class MathTest extends junit.framework.TestCase {
     public void test_log1p_D() {
         // Test for special cases
         assertTrue("Should return NaN", Double.isNaN(Math.log1p(Double.NaN)));
-        assertEquals("Should return NaN", Double.NaN, Math.log1p(-32.0482175), 0D);
+        assertEquals("Should return NaN", Double.NaN, Math.log1p(-32.0482175));
         assertEquals("Should return POSITIVE_INFINITY",
                 Double.POSITIVE_INFINITY, Math.log1p(Double.POSITIVE_INFINITY), 0D);
         assertEquals("Should return 0.0", 0.0, Math.log1p(0.0), 0D);
