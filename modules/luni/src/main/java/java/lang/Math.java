@@ -458,7 +458,7 @@ public final class Math {
 		// check for NaN
 		if (d != d)
 			return 0L;
-		return (long) Math.floor(d + 0.5d);
+		return (long) floor(d + 0.5d);
 	}
 
 	/**
@@ -472,7 +472,7 @@ public final class Math {
 		// check for NaN
 		if (f != f)
 			return 0;
-		return (int) Math.floor(f + 0.5f);
+		return (int) floor(f + 0.5f);
 	}
 
 	/**
@@ -558,4 +558,50 @@ public final class Math {
 	public static double toDegrees(double angrad) {
 		return angrad * 180d / PI;
 	}
+	
+	/**
+     * Answers the argument's ulp. The size of a ulp of a double value is the
+     * positive distance between this value and the double value next larger
+     * in magnitude. For non-NaN x, ulp(-x) == ulp(x).
+     * 
+     * @param d
+     *            the floating-point value to compute ulp of
+     * @return the size of a ulp of the argument.
+     */
+    public static double ulp(double d) {
+        // special cases
+        if (Double.isInfinite(d)) {
+            return Double.POSITIVE_INFINITY;
+        } else if (d == Double.MAX_VALUE || d == -Double.MAX_VALUE) {
+            return pow(2, 971);
+        }
+        d = abs(d);
+        return nextafter(d, Double.MAX_VALUE) - d;
+    }
+
+    /**
+     * Answers the argument's ulp. The size of a ulp of a float value is the
+     * positive distance between this value and the float value next larger
+     * in magnitude. For non-NaN x, ulp(-x) == ulp(x).
+     * 
+     * @param f
+     *            the floating-point value to compute ulp of
+     * @return the size of a ulp of the argument.
+     */
+    public static float ulp(float f) {
+        // special cases
+        if (Float.isNaN(f)) {
+            return Float.NaN;
+        } else if (Float.isInfinite(f)) {
+            return Float.POSITIVE_INFINITY;
+        } else if (f == Float.MAX_VALUE || f == -Float.MAX_VALUE) {
+            return (float) pow(2, 104);
+        }
+        f = abs(f);
+        return nextafterf(f, Float.MAX_VALUE) - f;
+    }
+
+    private native static double nextafter(double x, double y);
+
+    private native static float nextafterf(float x, float y); 
 }

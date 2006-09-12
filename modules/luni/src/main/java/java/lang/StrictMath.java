@@ -548,4 +548,50 @@ public final class StrictMath {
 	public static double toRadians(double angdeg) {
 		return angdeg / 180d * PI;
 	}
+	
+	/**
+     * Answers the argument's ulp. The size of a ulp of a double value is the
+     * positive distance between this value and the double value next larger
+     * in magnitude. For non-NaN x, ulp(-x) == ulp(x).
+     * 
+     * @param d
+     *            the floating-point value to compute ulp of
+     * @return the size of a ulp of the argument.
+     */
+    public static double ulp(double d) {
+        // special cases
+        if (Double.isInfinite(d)) {
+            return Double.POSITIVE_INFINITY;
+        } else if (d == Double.MAX_VALUE || d == -Double.MAX_VALUE) {
+            return pow(2, 971);
+        }
+        d = Math.abs(d);
+        return nextafter(d, Double.MAX_VALUE) - d;
+    }
+
+    /**
+     * Answers the argument's ulp. The size of a ulp of a float value is the
+     * positive distance between this value and the float value next larger
+     * in magnitude. For non-NaN x, ulp(-x) == ulp(x).
+     * 
+     * @param f
+     *            the floating-point value to compute ulp of
+     * @return the size of a ulp of the argument.
+     */
+    public static float ulp(float f) {
+        // special cases
+        if (Float.isNaN(f)) {
+            return Float.NaN;
+        } else if (Float.isInfinite(f)) {
+            return Float.POSITIVE_INFINITY;
+        } else if (f == Float.MAX_VALUE || f == -Float.MAX_VALUE) {
+            return (float) pow(2, 104);
+        }
+        f = Math.abs(f);
+        return nextafterf(f, Float.MAX_VALUE) - f;
+    }
+
+    private native static double nextafter(double x, double y);
+
+    private native static float nextafterf(float x, float y); 
 }

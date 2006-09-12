@@ -607,4 +607,91 @@ public class MathTest extends junit.framework.TestCase {
 					converted >= d * 0.99999999 && converted <= d * 1.00000001);
 		}
 	}
+	
+	/**
+     * @tests java.lang.Math#ulp(double)
+     */
+    @SuppressWarnings("boxing")
+    public void test_ulp_D() {
+		// Test for special cases
+		assertTrue("Should return NaN", Double.isNaN(Math.ulp(Double.NaN)));
+		assertEquals("Returned incorrect value", Double.POSITIVE_INFINITY, Math
+				.ulp(Double.POSITIVE_INFINITY), 0D);
+		assertEquals("Returned incorrect value", Double.POSITIVE_INFINITY, Math
+				.ulp(Double.NEGATIVE_INFINITY), 0D);
+		assertEquals("Returned incorrect value", Double.MIN_VALUE, Math
+				.ulp(0.0), 0D);
+		assertEquals("Returned incorrect value", Double.MIN_VALUE, Math
+				.ulp(+0.0), 0D);
+		assertEquals("Returned incorrect value", Double.MIN_VALUE, Math
+				.ulp(-0.0), 0D);
+		assertEquals("Returned incorrect value", Math.pow(2, 971), Math
+				.ulp(Double.MAX_VALUE), 0D);
+		assertEquals("Returned incorrect value", Math.pow(2, 971), Math
+				.ulp(-Double.MAX_VALUE), 0D);
+
+		assertEquals("Returned incorrect value", Double.MIN_VALUE, Math
+				.ulp(Double.MIN_VALUE), 0D);
+		assertEquals("Returned incorrect value", Double.MIN_VALUE, Math
+				.ulp(-Double.MIN_VALUE), 0D);
+
+		assertEquals("Returned incorrect value", 2.220446049250313E-16, Math
+				.ulp(1.0), 0D);
+		assertEquals("Returned incorrect value", 2.220446049250313E-16, Math
+				.ulp(-1.0), 0D);
+		assertEquals("Returned incorrect value", 2.2737367544323206E-13, Math
+				.ulp(1153.0), 0D);
+	}
+
+	/**
+	 * @tests java.lang.Math#ulp(float)
+	 */
+	@SuppressWarnings("boxing")
+	public void test_ulp_f() {
+		// Test for special cases
+		assertTrue("Should return NaN", Float.isNaN(Math.ulp(Float.NaN)));
+		assertEquals("Returned incorrect value", Float.POSITIVE_INFINITY, Math
+				.ulp(Float.POSITIVE_INFINITY), 0f);
+		assertEquals("Returned incorrect value", Float.POSITIVE_INFINITY, Math
+				.ulp(Float.NEGATIVE_INFINITY), 0f);
+		assertEquals("Returned incorrect value", Float.MIN_VALUE, Math
+				.ulp(0.0f), 0f);
+		assertEquals("Returned incorrect value", Float.MIN_VALUE, Math
+				.ulp(+0.0f), 0f);
+		assertEquals("Returned incorrect value", Float.MIN_VALUE, Math
+				.ulp(-0.0f), 0f);
+		assertEquals("Returned incorrect value", 2.028241E31f, Math
+				.ulp(Float.MAX_VALUE), 0f);
+		assertEquals("Returned incorrect value", 2.028241E31f, Math
+				.ulp(-Float.MAX_VALUE), 0f);
+
+		assertEquals("Returned incorrect value", 1.4E-45f, Math
+				.ulp(Float.MIN_VALUE), 0f);
+		assertEquals("Returned incorrect value", 1.4E-45f, Math
+				.ulp(-Float.MIN_VALUE), 0f);
+
+		assertEquals("Returned incorrect value", 1.1920929E-7f, Math.ulp(1.0f),
+				0f);
+		assertEquals("Returned incorrect value", 1.1920929E-7f,
+				Math.ulp(-1.0f), 0f);
+		assertEquals("Returned incorrect value", 1.2207031E-4f, Math
+				.ulp(1153.0f), 0f);
+		assertEquals("Returned incorrect value", 5.6E-45f, Math
+				.ulp(9.403954E-38f), 0f);
+    }
+
+	/**
+	 * Sets up the fixture, for example, open a network connection. This method
+	 * is called before a test is executed.
+	 */
+	protected void setUp() {
+	}
+
+	/**
+	 * Tears down the fixture, for example, close a network connection. This
+	 * method is called after a test is executed.
+	 */
+	protected void tearDown() {
+	}
+
 }

@@ -44,6 +44,8 @@ jdouble internal_expm1(jdouble arg1);
 jdouble internal_hypot(jdouble arg1, jdouble arg2);
 jdouble internal_log1p(jdouble arg1);
 jdouble internal_log10(jdouble arg1);
+jdouble internal_nextafter(jdouble arg1,jdouble arg2);
+jfloat  internal_nextafterf(jfloat arg1,jfloat arg2);
 
 extern scaleUpDouble (double *, int);
 
@@ -52,7 +54,7 @@ internal_acos (jdouble arg1)
 {
   jdouble result;
 
-  result = fdlibm_acos (arg1);
+  result = acos (arg1);
 
   return result;
 }
@@ -74,7 +76,7 @@ internal_asin (jdouble arg1)
 {
   jdouble result;
 
-  result = fdlibm_asin (arg1);
+  result = asin (arg1);
 
   return result;
 }
@@ -84,7 +86,7 @@ internal_atan (jdouble arg1)
 {
   jdouble result;
 
-  result = fdlibm_atan (arg1);
+  result = atan (arg1);
 
   return result;
 }
@@ -94,7 +96,7 @@ internal_atan2 (jdouble arg1, jdouble arg2)
 {
   jdouble result;
 
-  result = fdlibm_atan2 (arg1, arg2);
+  result = atan2 (arg1, arg2);
 
   return result;
 }
@@ -104,7 +106,7 @@ internal_cbrt (jdouble arg1)
 {
   jdouble result;
 
-  result = fdlibm_cbrt (arg1);
+  result = cbrt (arg1);
 
   return result;
 }
@@ -114,7 +116,7 @@ internal_ceil (jdouble arg1)
 {
   jdouble result;
 
-  result = fdlibm_ceil (arg1);
+  result = ceil (arg1);
 
   return result;
 }
@@ -124,7 +126,7 @@ internal_cos (jdouble arg1)
 {
   jdouble result;
 
-  result = fdlibm_cos (arg1);
+  result = cos (arg1);
 
   return result;
 }
@@ -134,7 +136,7 @@ internal_cosh (jdouble arg1)
 {
   jdouble result;
 
-  result = fdlibm_cosh (arg1);
+  result = cosh (arg1);
 
   return result;
 }
@@ -144,7 +146,7 @@ internal_exp (jdouble arg1)
 {
   jdouble result;
 
-  result = fdlibm_exp (arg1);
+  result = exp (arg1);
 
   return result;
 }
@@ -154,7 +156,7 @@ internal_expm1 (jdouble arg1)
 {
   jdouble result;
 
-  result = fdlibm_expm1 (arg1);
+  result = expm1 (arg1);
 
   return result;
 }
@@ -164,7 +166,7 @@ internal_floor (jdouble arg1)
 {
   jdouble result;
 
-  result = fdlibm_floor (arg1);
+  result = floor (arg1);
 
   return result;
 }
@@ -174,7 +176,7 @@ internal_hypot (jdouble arg1, jdouble arg2)
 {
   jdouble result;
 
-  result = fdlibm_hypot (arg1, arg2);
+  result = hypot (arg1, arg2);
 
   return result;
 }
@@ -184,7 +186,7 @@ internal_IEEEremainder (jdouble arg1, jdouble arg2)
 {
   jdouble result;
 
-  result = fdlibm_remainder (arg1, arg2);
+  result = remainder (arg1, arg2);
 
   return result;
 }
@@ -194,7 +196,7 @@ internal_log (jdouble arg1)
 {
   jdouble result;
 
-  result = fdlibm_log (arg1);
+  result = log (arg1);
 
   return result;
 }
@@ -204,7 +206,7 @@ internal_log10 (jdouble arg1)
 {
   jdouble result;
 
-  result = fdlibm_log10 (arg1);
+  result = log10 (arg1);
 
   return result;
 }
@@ -214,9 +216,41 @@ internal_log1p (jdouble arg1)
 {
   jdouble result;
 
-  result = fdlibm_log1p (arg1);
+  result = log1p (arg1);
 
   return result;
+}
+
+jdouble
+internal_nextafter(jdouble arg1,jdouble arg2){
+  jdouble result;
+
+  result = nextafter (arg1,arg2);
+
+  return result;
+}
+
+/*
+ * Please note: this method is just for Float.ulp() use, not necessarilly
+ * has same behavior with nextafter(double, double)
+ */
+jfloat
+internal_nextafterf(jfloat arg1,jfloat arg2){
+	jint hx = *(jint*)&arg1;		
+	jint hy = *(jint*)&arg2;		
+
+	if (!(hx&0x7fffffff)){        /* arg1 == 0 */
+      *(jint*)&arg1 = (hy & 0x80000000) | 0x1;
+      return arg1;
+    }
+
+	if((hx > 0) ^ (hx > hy)){          /* |arg1| < |arg2| */
+        hx += 1;
+	}else{
+        hx -= 1;
+    }
+    *(jint*)&arg1 = hx;
+	return arg1;
 }
 
 jdouble
@@ -224,7 +258,7 @@ internal_pow (jdouble arg1, jdouble arg2)
 {
   jdouble result;
 
-  result = fdlibm_pow (arg1, arg2);
+  result = pow (arg1, arg2);
 
   return result;
 }
@@ -234,7 +268,7 @@ internal_rint (jdouble arg1)
 {
   jdouble result;
 
-  result = fdlibm_rint (arg1);
+  result = rint (arg1);
 
   return result;
 }
@@ -244,7 +278,7 @@ internal_sin (jdouble arg1)
 {
   jdouble result;
 
-  result = fdlibm_sin (arg1);
+  result = sin (arg1);
 
   return result;
 }
@@ -254,7 +288,7 @@ internal_sinh (jdouble arg1)
 {
   jdouble result;
 
-  result = fdlibm_sinh (arg1);
+  result = sinh (arg1);
 
   return result;
 }
@@ -264,7 +298,7 @@ internal_sqrt (jdouble arg1)
 {
   jdouble result;
 
-  result = fdlibm_sqrt (arg1);
+  result = sqrt (arg1);
 
   return result;
 }
@@ -274,7 +308,7 @@ internal_tan (jdouble arg1)
 {
   jdouble result;
 
-  result = fdlibm_tan (arg1);
+  result = tan (arg1);
 
   return result;
 }
@@ -284,7 +318,7 @@ internal_tanh (jdouble arg1)
 {
   jdouble result;
 
-  result = fdlibm_tanh (arg1);
+  result = tanh (arg1);
 
   return result;
 }
@@ -471,6 +505,29 @@ Java_java_lang_Math_log1p(JNIEnv * env, jclass jclazz, jdouble arg1)
   return internal_log1p (arg1);
 }
 
+jdouble JNICALL
+Java_java_lang_StrictMath_nextafter (JNIEnv * env, jclass jclazz, jdouble arg1, jdouble arg2)
+{
+  return internal_nextafter(arg1, arg2);
+}
+
+jdouble JNICALL
+Java_java_lang_Math_nextafter (JNIEnv * env, jclass jclazz, jdouble arg1, jdouble arg2)
+{
+  return internal_nextafter(arg1, arg2);
+}
+
+jfloat JNICALL
+Java_java_lang_StrictMath_nextafterf (JNIEnv * env, jclass jclazz, jfloat arg1, jfloat arg2)
+{
+  return internal_nextafterf(arg1, arg2);
+}
+
+jfloat JNICALL
+Java_java_lang_Math_nextafterf (JNIEnv * env, jclass jclazz, jfloat arg1, jfloat arg2)
+{
+  return internal_nextafterf(arg1, arg2);
+}
 
 jdouble JNICALL
 Java_java_lang_StrictMath_pow (JNIEnv * env, jclass jclazz, jdouble arg1,

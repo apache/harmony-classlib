@@ -98,6 +98,8 @@ EXPORTS
 	Java_java_lang_Math_IEEEremainder
 	Java_java_lang_Math_log
 	Java_java_lang_Math_log1p
+	Java_java_lang_Math_nextafter
+	Java_java_lang_Math_nextafterf
 	Java_java_lang_Math_pow
 	Java_java_lang_Math_rint
 	Java_java_lang_Math_sin
@@ -122,6 +124,8 @@ EXPORTS
 	Java_java_lang_StrictMath_log
 	Java_java_lang_StrictMath_log10	
 	Java_java_lang_StrictMath_log1p	
+	Java_java_lang_StrictMath_nextafter
+    Java_java_lang_StrictMath_nextafterf
 	Java_java_lang_StrictMath_pow
 	Java_java_lang_StrictMath_rint
 	Java_java_lang_StrictMath_sin
