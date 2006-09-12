@@ -116,34 +116,33 @@ public class MathTest extends junit.framework.TestCase {
      /**
      * @tests java.lang.Math#cbrt(double)
      */
-    @SuppressWarnings("boxing")
     public void test_cbrt_D() {
         //Test for special situations
-        assertEquals("Should return Double.NaN", Double.NaN, Math
-                .cbrt(Double.NaN));
+        assertTrue("Should return Double.NaN", Double.isNaN(Math
+                .cbrt(Double.NaN)));
         assertEquals("Should return Double.POSITIVE_INFINITY",
                 Double.POSITIVE_INFINITY, Math
-                        .cbrt(Double.POSITIVE_INFINITY));
+                        .cbrt(Double.POSITIVE_INFINITY), 0D);
         assertEquals("Should return Double.NEGATIVE_INFINITY",
                 Double.NEGATIVE_INFINITY, Math
-                        .cbrt(Double.NEGATIVE_INFINITY));
-        assertEquals("Should return 0.0", 0.0, Math.cbrt(0.0));
-        assertEquals("Should return +0.0", +0.0, Math.cbrt(+0.0));
-        assertEquals("Should return -0.0", -0.0, Math.cbrt(-0.0));
+                        .cbrt(Double.NEGATIVE_INFINITY), 0D);
+        assertEquals("Should return 0.0", 0.0, Math.cbrt(0.0), 0D);
+        assertEquals("Should return +0.0", +0.0, Math.cbrt(+0.0), 0D);
+        assertEquals("Should return -0.0", -0.0, Math.cbrt(-0.0), 0D);
 
-        assertEquals("Should return 3.0", 3.0, Math.cbrt(27.0));
+        assertEquals("Should return 3.0", 3.0, Math.cbrt(27.0), 0D);
         assertEquals("Should return 23.111993172558684", 23.111993172558684,
-                Math.cbrt(12345.6));
+                Math.cbrt(12345.6), 0D);
         assertEquals("Should return 5.643803094122362E102",
-                5.643803094122362E102, Math.cbrt(Double.MAX_VALUE));
-        assertEquals("Should return 0.01", 0.01, Math.cbrt(0.000001));
+                5.643803094122362E102, Math.cbrt(Double.MAX_VALUE), 0D);
+        assertEquals("Should return 0.01", 0.01, Math.cbrt(0.000001), 0D);
 
-        assertEquals("Should return -3.0", -3.0, Math.cbrt(-27.0));
+        assertEquals("Should return -3.0", -3.0, Math.cbrt(-27.0), 0D);
         assertEquals("Should return -23.111993172558684", -23.111993172558684,
-                Math.cbrt(-12345.6));
+                Math.cbrt(-12345.6), 0D);
         assertEquals("Should return 1.7031839360032603E-108",
-                1.7031839360032603E-108, Math.cbrt(Double.MIN_VALUE));
-        assertEquals("Should return -0.01", -0.01, Math.cbrt(-0.000001));
+                1.7031839360032603E-108, Math.cbrt(Double.MIN_VALUE), 0D);
+        assertEquals("Should return -0.01", -0.01, Math.cbrt(-0.000001), 0D);
         
         try{
             Math.cbrt((Double)null);
@@ -169,38 +168,37 @@ public class MathTest extends junit.framework.TestCase {
 	 */
 	public void test_cosD() {
 		// Test for method double java.lang.Math.cos(double)
-		assertEquals("Incorrect answer", 1.0, Math.cos(0));
-		assertEquals("Incorrect answer", 0.5403023058681398, Math.cos(1));
+		assertEquals("Incorrect answer", 1.0, Math.cos(0), 0D);
+		assertEquals("Incorrect answer", 0.5403023058681398, Math.cos(1), 0D);
 	}
 
     /**
      * @tests java.lang.Math#cosh(double)
      */
-    @SuppressWarnings("boxing")
     public void test_cosh_D() {
         // Test for special situations
-        assertEquals("Should return NaN", Double.NaN, Math.cosh(Double.NaN));
+        assertTrue(Double.isNaN(Math.cosh(Double.NaN)));
         assertEquals("Should return POSITIVE_INFINITY",
-                Double.POSITIVE_INFINITY, Math.cosh(Double.POSITIVE_INFINITY));
+                Double.POSITIVE_INFINITY, Math.cosh(Double.POSITIVE_INFINITY), 0D);
         assertEquals("Should return POSITIVE_INFINITY",
-                Double.POSITIVE_INFINITY, Math.cosh(Double.NEGATIVE_INFINITY));
-        assertEquals("Should return 1.0", 1.0, Math.cosh(+0.0));
-        assertEquals("Should return 1.0", 1.0, Math.cosh(-0.0));
+                Double.POSITIVE_INFINITY, Math.cosh(Double.NEGATIVE_INFINITY), 0D);
+        assertEquals("Should return 1.0", 1.0, Math.cosh(+0.0), 0D);
+        assertEquals("Should return 1.0", 1.0, Math.cosh(-0.0), 0D);
 
         assertEquals("Should return POSITIVE_INFINITY",
-                Double.POSITIVE_INFINITY, Math.cosh(1234.56));
+                Double.POSITIVE_INFINITY, Math.cosh(1234.56), 0D);
         assertEquals("Should return POSITIVE_INFINITY",
-                Double.POSITIVE_INFINITY, Math.cosh(-1234.56));
+                Double.POSITIVE_INFINITY, Math.cosh(-1234.56), 0D);
         assertEquals("Should return 1.0000000000005", 1.0000000000005, Math
-                .cosh(0.000001));
+                .cosh(0.000001), 0D);
         assertEquals("Should return 1.0000000000005", 1.0000000000005, Math
-                .cosh(-0.000001));
+                .cosh(-0.000001), 0D);
         assertEquals("Should return 5.212214351945598", 5.212214351945598, Math
-                .cosh(2.33482));
+                .cosh(2.33482), 0D);
 
         assertEquals("Should return POSITIVE_INFINITY",
-                Double.POSITIVE_INFINITY, Math.cosh(Double.MAX_VALUE));
-        assertEquals("Should return 1.0", 1.0, Math.cosh(Double.MIN_VALUE));
+                Double.POSITIVE_INFINITY, Math.cosh(Double.MAX_VALUE), 0D);
+        assertEquals("Should return 1.0", 1.0, Math.cosh(Double.MIN_VALUE), 0D);
     }
     
 	/**
@@ -218,29 +216,28 @@ public class MathTest extends junit.framework.TestCase {
     /**
      * @tests java.lang.Math#expm1(double)
      */
-    @SuppressWarnings("boxing")
     public void test_expm1_D() {
         // Test for special cases
-        assertEquals("Should return NaN", Double.NaN, Math.expm1(Double.NaN));
+        assertTrue("Should return NaN", Double.isNaN(Math.expm1(Double.NaN)));
         assertEquals("Should return POSITIVE_INFINITY",
-                Double.POSITIVE_INFINITY, Math.expm1(Double.POSITIVE_INFINITY));
+                Double.POSITIVE_INFINITY, Math.expm1(Double.POSITIVE_INFINITY), 0D);
         assertEquals("Should return -1.0", -1.0, Math
-                .expm1(Double.NEGATIVE_INFINITY));
-        assertEquals("Should return 0.0", 0.0, Math.expm1(0.0));
-        assertEquals("Should return +0.0", +0.0, Math.expm1(+0.0));
-        assertEquals("Should return -0.0", -0.0, Math.expm1(-0.0));
+                .expm1(Double.NEGATIVE_INFINITY), 0D);
+        assertEquals("Should return 0.0", 0.0, Math.expm1(0.0), 0D);
+        assertEquals("Should return +0.0", +0.0, Math.expm1(+0.0), 0D);
+        assertEquals("Should return -0.0", -0.0, Math.expm1(-0.0), 0D);
 
         assertEquals("Should return -9.999950000166666E-6",
-                -9.999950000166666E-6, Math.expm1(-0.00001));
+                -9.999950000166666E-6, Math.expm1(-0.00001), 0D);
         assertEquals("Should return 1.0145103074469635E60",
-                1.0145103074469635E60, Math.expm1(138.16951162));
+                1.0145103074469635E60, Math.expm1(138.16951162), 0D);
         assertEquals("Should return POSITIVE_INFINITY",
                 Double.POSITIVE_INFINITY, Math
-                        .expm1(123456789123456789123456789.4521584223));
+                        .expm1(123456789123456789123456789.4521584223), 0D);
         assertEquals("Should return POSITIVE_INFINITY",
-                Double.POSITIVE_INFINITY, Math.expm1(Double.MAX_VALUE));
+                Double.POSITIVE_INFINITY, Math.expm1(Double.MAX_VALUE), 0D);
         assertEquals("Should return MIN_VALUE", Double.MIN_VALUE, Math
-                .expm1(Double.MIN_VALUE));
+                .expm1(Double.MIN_VALUE), 0D);
     }
 
     /**
@@ -257,40 +254,39 @@ public class MathTest extends junit.framework.TestCase {
     /**
      * @tests java.lang.Math#hypot(double, double)
      */
-    @SuppressWarnings("boxing")
     public void test_hypot_DD() {
         // Test for special cases
         assertEquals("Should return POSITIVE_INFINITY",
                 Double.POSITIVE_INFINITY, Math.hypot(Double.POSITIVE_INFINITY,
-                        1.0));
+                        1.0), 0D);
         assertEquals("Should return POSITIVE_INFINITY",
                 Double.POSITIVE_INFINITY, Math.hypot(Double.NEGATIVE_INFINITY,
-                        123.324));
+                        123.324), 0D);
         assertEquals("Should return POSITIVE_INFINITY",
                 Double.POSITIVE_INFINITY, Math.hypot(-758.2587,
-                        Double.POSITIVE_INFINITY));
+                        Double.POSITIVE_INFINITY), 0D);
         assertEquals("Should return POSITIVE_INFINITY",
                 Double.POSITIVE_INFINITY, Math.hypot(5687.21,
-                        Double.NEGATIVE_INFINITY));
+                        Double.NEGATIVE_INFINITY), 0D);
         assertEquals("Should return POSITIVE_INFINITY",
                 Double.POSITIVE_INFINITY, Math.hypot(Double.POSITIVE_INFINITY,
-                        Double.NEGATIVE_INFINITY));
+                        Double.NEGATIVE_INFINITY), 0D);
         assertEquals("Should return POSITIVE_INFINITY",
                 Double.POSITIVE_INFINITY, Math.hypot(Double.NEGATIVE_INFINITY,
-                        Double.POSITIVE_INFINITY));
+                        Double.POSITIVE_INFINITY), 0D);
         assertEquals("Should return NaN", Double.NaN, Math.hypot(Double.NaN,
-                2342301.89843));
+                2342301.89843), 0D);
         assertEquals("Should return NaN", Double.NaN, Math.hypot(-345.2680,
-                Double.NaN));
+                Double.NaN), 0D);
 
         assertEquals("Should return 2396424.905416697", 2396424.905416697, Math
-                .hypot(12322.12, -2396393.2258));
+                .hypot(12322.12, -2396393.2258), 0D);
         assertEquals("Should return 138.16958070558556", 138.16958070558556,
-                Math.hypot(-138.16951162, 0.13817035864));
+                Math.hypot(-138.16951162, 0.13817035864), 0D);
         assertEquals("Should return 1.7976931348623157E308",
-                1.7976931348623157E308, Math.hypot(Double.MAX_VALUE, 211370.35));
+                1.7976931348623157E308, Math.hypot(Double.MAX_VALUE, 211370.35), 0D);
         assertEquals("Should return 5413.7185", 5413.7185, Math.hypot(
-                -5413.7185, Double.MIN_VALUE));
+                -5413.7185, Double.MIN_VALUE), 0D);
     }
 
 	/**
@@ -299,7 +295,7 @@ public class MathTest extends junit.framework.TestCase {
 	public void test_IEEEremainderDD() {
 		// Test for method double java.lang.Math.IEEEremainder(double, double)
 		assertEquals("Incorrect remainder returned",
-				0.0, Math.IEEEremainder(1.0, 1.0));
+				0.0, Math.IEEEremainder(1.0, 1.0), 0D);
 		assertTrue("Incorrect remainder returned", Math.IEEEremainder(1.32,
 				89.765) >= 1.4705063220631647E-2
 				|| Math.IEEEremainder(1.32, 89.765) >= 1.4705063220631649E-2);
@@ -321,27 +317,26 @@ public class MathTest extends junit.framework.TestCase {
     /**
      * @tests java.lang.Math#log1p(double)
      */
-    @SuppressWarnings("boxing")
     public void test_log1p_D() {
         // Test for special cases
-        assertEquals("Should return NaN", Double.NaN, Math.log1p(Double.NaN));
-        assertEquals("Should return NaN", Double.NaN, Math.log1p(-32.0482175));
+        assertTrue("Should return NaN", Double.isNaN(Math.log1p(Double.NaN)));
+        assertEquals("Should return NaN", Double.NaN, Math.log1p(-32.0482175), 0D);
         assertEquals("Should return POSITIVE_INFINITY",
-                Double.POSITIVE_INFINITY, Math.log1p(Double.POSITIVE_INFINITY));
-        assertEquals("Should return 0.0", 0.0, Math.log1p(0.0));
-        assertEquals("Should return +0.0", +0.0, Math.log1p(+0.0));
-        assertEquals("Should return -0.0", -0.0, Math.log1p(-0.0));
+                Double.POSITIVE_INFINITY, Math.log1p(Double.POSITIVE_INFINITY), 0D);
+        assertEquals("Should return 0.0", 0.0, Math.log1p(0.0), 0D);
+        assertEquals("Should return +0.0", +0.0, Math.log1p(+0.0), 0D);
+        assertEquals("Should return -0.0", -0.0, Math.log1p(-0.0), 0D);
 
         assertEquals("Should return -0.2941782295312541", -0.2941782295312541,
-                Math.log1p(-0.254856327));
+                Math.log1p(-0.254856327), 0D);
         assertEquals("Should return 7.368050685564151", 7.368050685564151, Math
-                .log1p(1583.542));
+                .log1p(1583.542), 0D);
         assertEquals("Should return 0.4633708685409921", 0.4633708685409921,
-                Math.log1p(0.5894227));
+                Math.log1p(0.5894227), 0D);
         assertEquals("Should return 709.782712893384", 709.782712893384, Math
-                .log1p(Double.MAX_VALUE));
+                .log1p(Double.MAX_VALUE), 0D);
         assertEquals("Should return Double.MIN_VALUE", Double.MIN_VALUE, Math
-                .log1p(Double.MIN_VALUE));
+                .log1p(Double.MIN_VALUE), 0D);
     }
 
 	/**
@@ -350,11 +345,11 @@ public class MathTest extends junit.framework.TestCase {
 	public void test_maxDD() {
 		// Test for method double java.lang.Math.max(double, double)
 		assertEquals("Incorrect double max value", 1908897.6000089, Math.max(-1908897.6000089,
-				1908897.6000089));
+				1908897.6000089), 0D);
 		assertEquals("Incorrect double max value",
-				1908897.6000089, Math.max(2.0, 1908897.6000089));
+				1908897.6000089, Math.max(2.0, 1908897.6000089), 0D);
 		assertEquals("Incorrect double max value", -2.0, Math.max(-2.0,
-				-1908897.6000089));
+				-1908897.6000089), 0D);
 
 	}
 
@@ -402,11 +397,11 @@ public class MathTest extends junit.framework.TestCase {
 	public void test_minDD() {
 		// Test for method double java.lang.Math.min(double, double)
 		assertEquals("Incorrect double min value", -1908897.6000089, Math.min(-1908897.6000089,
-				1908897.6000089));
+				1908897.6000089), 0D);
 		assertEquals("Incorrect double min value",
-				2.0, Math.min(2.0, 1908897.6000089));
+				2.0, Math.min(2.0, 1908897.6000089), 0D);
 		assertEquals("Incorrect double min value", -1908897.6000089, Math.min(-2.0,
-				-1908897.6000089));
+				-1908897.6000089), 0D);
 	}
 
 	/**
@@ -467,11 +462,11 @@ public class MathTest extends junit.framework.TestCase {
 	public void test_rintD() {
 		// Test for method double java.lang.Math.rint(double)
 		assertEquals("Failed to round properly - up to odd",
-				3.0, Math.rint(2.9));
+				3.0, Math.rint(2.9), 0D);
 		assertTrue("Failed to round properly - NaN", Double.isNaN(Math
 				.rint(Double.NaN)));
 		assertEquals("Failed to round properly down  to even",
-				2.0, Math.rint(2.1));
+				2.0, Math.rint(2.1), 0D);
 		assertTrue("Failed to round properly " + 2.5 + " to even", Math
 				.rint(2.5) == 2.0);
 	}
@@ -497,8 +492,8 @@ public class MathTest extends junit.framework.TestCase {
 	 */
 	public void test_sinD() {
 		// Test for method double java.lang.Math.sin(double)
-		assertEquals("Incorrect answer", 0.0, Math.sin(0));
-		assertEquals("Incorrect answer", 0.8414709848078965, Math.sin(1));
+		assertEquals("Incorrect answer", 0.0, Math.sin(0), 0D);
+		assertEquals("Incorrect answer", 0.8414709848078965, Math.sin(1), 0D);
 	}
 
     /**
@@ -506,29 +501,29 @@ public class MathTest extends junit.framework.TestCase {
      */
     public void test_sinh_D() {
         // Test for special situations
-        assertEquals("Should return NaN", Double.NaN, Math.sinh(Double.NaN));
+        assertTrue("Should return NaN", Double.isNaN(Math.sinh(Double.NaN)));
         assertEquals("Should return POSITIVE_INFINITY",
-                Double.POSITIVE_INFINITY, Math.sinh(Double.POSITIVE_INFINITY));
+                Double.POSITIVE_INFINITY, Math.sinh(Double.POSITIVE_INFINITY), 0D);
         assertEquals("Should return NEGATIVE_INFINITY",
-                Double.NEGATIVE_INFINITY, Math.sinh(Double.NEGATIVE_INFINITY));
-        assertEquals("Should return 0.0", 0.0, Math.sinh(0.0));
-        assertEquals("Should return +0.0", +0.0, Math.sinh(+0.0));
-        assertEquals("Should return -0.0", -0.0, Math.sinh(-0.0));
+                Double.NEGATIVE_INFINITY, Math.sinh(Double.NEGATIVE_INFINITY), 0D);
+        assertEquals("Should return 0.0", 0.0, Math.sinh(0.0), 0D);
+        assertEquals("Should return +0.0", +0.0, Math.sinh(+0.0), 0D);
+        assertEquals("Should return -0.0", -0.0, Math.sinh(-0.0), 0D);
 
         assertEquals("Should return POSITIVE_INFINITY",
-                Double.POSITIVE_INFINITY, Math.sinh(1234.56));
+                Double.POSITIVE_INFINITY, Math.sinh(1234.56), 0D);
         assertEquals("Should return NEGATIVE_INFINITY",
-                Double.NEGATIVE_INFINITY, Math.sinh(-1234.56));
+                Double.NEGATIVE_INFINITY, Math.sinh(-1234.56), 0D);
         assertEquals("Should return 1.0000000000001666E-6",
-                1.0000000000001666E-6, Math.sinh(0.000001));
+                1.0000000000001666E-6, Math.sinh(0.000001), 0D);
         assertEquals("Should return -1.0000000000001666E-6",
-                -1.0000000000001666E-6, Math.sinh(-0.000001));
+                -1.0000000000001666E-6, Math.sinh(-0.000001), 0D);
         assertEquals("Should return 5.115386441963859", 5.115386441963859, Math
-                .sinh(2.33482));
+                .sinh(2.33482), 0D);
         assertEquals("Should return POSITIVE_INFINITY",
-                Double.POSITIVE_INFINITY, Math.sinh(Double.MAX_VALUE));
+                Double.POSITIVE_INFINITY, Math.sinh(Double.MAX_VALUE), 0D);
         assertEquals("Should return 4.9E-324", 4.9E-324, Math
-                .sinh(Double.MIN_VALUE));
+                .sinh(Double.MIN_VALUE), 0D);
     }
     
 	/**
@@ -544,8 +539,8 @@ public class MathTest extends junit.framework.TestCase {
 	 */
 	public void test_tanD() {
 		// Test for method double java.lang.Math.tan(double)
-		assertEquals("Incorrect answer", 0.0, Math.tan(0));
-		assertEquals("Incorrect answer", 1.5574077246549023, Math.tan(1));
+		assertEquals("Incorrect answer", 0.0, Math.tan(0), 0D);
+		assertEquals("Incorrect answer", 1.5574077246549023, Math.tan(1), 0D);
 
 	}
 
@@ -554,24 +549,24 @@ public class MathTest extends junit.framework.TestCase {
      */
     public void test_tanh_D() {
         // Test for special situations
-        assertEquals("Should return NaN", Double.NaN, Math.tanh(Double.NaN));
+        assertTrue("Should return NaN", Double.isNaN(Math.tanh(Double.NaN)));
         assertEquals("Should return +1.0", +1.0, Math
-                .tanh(Double.POSITIVE_INFINITY));
+                .tanh(Double.POSITIVE_INFINITY), 0D);
         assertEquals("Should return -1.0", -1.0, Math
-                .tanh(Double.NEGATIVE_INFINITY));
-        assertEquals("Should return +0.0", +0.0, Math.tanh(+0.0));
-        assertEquals("Should return -0.0", -0.0, Math.tanh(-0.0));
-        assertEquals("Should return 0.0", 0.0, Math.tanh(0.0));
+                .tanh(Double.NEGATIVE_INFINITY), 0D);
+        assertEquals("Should return +0.0", +0.0, Math.tanh(+0.0), 0D);
+        assertEquals("Should return -0.0", -0.0, Math.tanh(-0.0), 0D);
+        assertEquals("Should return 0.0", 0.0, Math.tanh(0.0), 0D);
 
-        assertEquals("Should return 1.0", 1.0, Math.tanh(1234.56));
-        assertEquals("Should return -1.0", -1.0, Math.tanh(-1234.56));
+        assertEquals("Should return 1.0", 1.0, Math.tanh(1234.56), 0D);
+        assertEquals("Should return -1.0", -1.0, Math.tanh(-1234.56), 0D);
         assertEquals("Should return 9.999999999996666E-7",
-                9.999999999996666E-7, Math.tanh(0.000001));
+                9.999999999996666E-7, Math.tanh(0.000001), 0D);
         assertEquals("Should return 0.981422884124941", 0.981422884124941, Math
-                .tanh(2.33482));
-        assertEquals("Should return 1.0", 1.0, Math.tanh(Double.MAX_VALUE));
+                .tanh(2.33482), 0D);
+        assertEquals("Should return 1.0", 1.0, Math.tanh(Double.MAX_VALUE), 0D);
         assertEquals("Should return 4.9E-324", 4.9E-324, Math
-                .tanh(Double.MIN_VALUE));
+                .tanh(Double.MIN_VALUE), 0D);
     }
     
 	/**
@@ -611,19 +606,5 @@ public class MathTest extends junit.framework.TestCase {
 			assertTrue("Converted number not equal to original. d = " + d,
 					converted >= d * 0.99999999 && converted <= d * 1.00000001);
 		}
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
 	}
 }

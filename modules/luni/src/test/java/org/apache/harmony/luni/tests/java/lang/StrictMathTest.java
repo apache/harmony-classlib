@@ -303,7 +303,7 @@ public class StrictMathTest extends junit.framework.TestCase {
 		// Test for method double java.lang.StrictMath.IEEEremainder(double,
 		// double)
 		assertEquals("Incorrect remainder returned", 0.0, StrictMath.IEEEremainder(
-				1.0, 1.0));
+				1.0, 1.0), 0.0);
 		assertTrue(
 				"Incorrect remainder returned",
 				StrictMath.IEEEremainder(1.32, 89.765) >= 1.4705063220631647E-2
@@ -392,11 +392,11 @@ public class StrictMathTest extends junit.framework.TestCase {
 	public void test_maxDD() {
 		// Test for method double java.lang.StrictMath.max(double, double)
 		assertEquals("Incorrect double max value", 1908897.6000089, StrictMath.max(
-				-1908897.6000089, 1908897.6000089));
+				-1908897.6000089, 1908897.6000089), 0D);
 		assertEquals("Incorrect double max value", 1908897.6000089, StrictMath.max(2.0,
-				1908897.6000089));
+				1908897.6000089), 0D);
 		assertEquals("Incorrect double max value", -2.0, StrictMath.max(-2.0,
-				-1908897.6000089));
+				-1908897.6000089), 0D);
 
 	}
 
@@ -445,11 +445,11 @@ public class StrictMathTest extends junit.framework.TestCase {
 	public void test_minDD() {
 		// Test for method double java.lang.StrictMath.min(double, double)
 		assertEquals("Incorrect double min value", -1908897.6000089, StrictMath.min(
-				-1908897.6000089, 1908897.6000089));
+				-1908897.6000089, 1908897.6000089), 0D);
 		assertEquals("Incorrect double min value", 2.0, StrictMath.min(2.0,
-				1908897.6000089));
+				1908897.6000089), 0D);
 		assertEquals("Incorrect double min value", -1908897.6000089, StrictMath.min(-2.0,
-				-1908897.6000089));
+				-1908897.6000089), 0D);
 	}
 
 	/**
@@ -509,11 +509,11 @@ public class StrictMathTest extends junit.framework.TestCase {
 	public void test_rintD() {
 		// Test for method double java.lang.StrictMath.rint(double)
 		assertEquals("Failed to round properly - up to odd",
-				3.0, StrictMath.rint(2.9));
+				3.0, StrictMath.rint(2.9), 0D);
 		assertTrue("Failed to round properly - NaN", Double.isNaN(StrictMath
 				.rint(Double.NaN)));
 		assertEquals("Failed to round properly down  to even", 2.0, StrictMath
-				.rint(2.1));
+				.rint(2.1), 0D);
 		assertTrue("Failed to round properly " + 2.5 + " to even", StrictMath
 				.rint(2.5) == 2.0);
 	}
@@ -550,32 +550,31 @@ public class StrictMathTest extends junit.framework.TestCase {
      */
     public void test_sinh_D() {
         // Test for special situations
-        assertEquals("Should return NaN", Double.NaN, StrictMath
-                .sinh(Double.NaN));
+        assertTrue(Double.isNaN(StrictMath.sinh(Double.NaN)));
         assertEquals("Should return POSITIVE_INFINITY",
                 Double.POSITIVE_INFINITY, StrictMath
-                        .sinh(Double.POSITIVE_INFINITY));
+                        .sinh(Double.POSITIVE_INFINITY), 0D);
         assertEquals("Should return NEGATIVE_INFINITY",
                 Double.NEGATIVE_INFINITY, StrictMath
-                        .sinh(Double.NEGATIVE_INFINITY));
-        assertEquals("Should return 0.0", 0.0, StrictMath.sinh(0.0));
-        assertEquals("Should return +0.0", +0.0, StrictMath.sinh(+0.0));
-        assertEquals("Should return -0.0", -0.0, StrictMath.sinh(-0.0));
+                        .sinh(Double.NEGATIVE_INFINITY), 0D);
+        assertEquals("Should return 0.0", 0.0, StrictMath.sinh(0.0), 0D);
+        assertEquals("Should return +0.0", +0.0, StrictMath.sinh(+0.0), 0D);
+        assertEquals("Should return -0.0", -0.0, StrictMath.sinh(-0.0), 0D);
 
         assertEquals("Should return POSITIVE_INFINITY",
-                Double.POSITIVE_INFINITY, StrictMath.sinh(1234.56));
+                Double.POSITIVE_INFINITY, StrictMath.sinh(1234.56), 0D);
         assertEquals("Should return NEGATIVE_INFINITY",
-                Double.NEGATIVE_INFINITY, StrictMath.sinh(-1234.56));
+                Double.NEGATIVE_INFINITY, StrictMath.sinh(-1234.56), 0D);
         assertEquals("Should return 1.0000000000001666E-6",
-                1.0000000000001666E-6, StrictMath.sinh(0.000001));
+                1.0000000000001666E-6, StrictMath.sinh(0.000001), 0D);
         assertEquals("Should return -1.0000000000001666E-6",
-                -1.0000000000001666E-6, StrictMath.sinh(-0.000001));
+                -1.0000000000001666E-6, StrictMath.sinh(-0.000001), 0D);
         assertEquals("Should return 5.115386441963859", 5.115386441963859,
-                StrictMath.sinh(2.33482));
+                StrictMath.sinh(2.33482), 0D);
         assertEquals("Should return POSITIVE_INFINITY",
-                Double.POSITIVE_INFINITY, StrictMath.sinh(Double.MAX_VALUE));
+                Double.POSITIVE_INFINITY, StrictMath.sinh(Double.MAX_VALUE), 0D);
         assertEquals("Should return 4.9E-324", 4.9E-324, StrictMath
-                .sinh(Double.MIN_VALUE));
+                .sinh(Double.MIN_VALUE), 0D);
     }
     
 	/**
@@ -604,26 +603,25 @@ public class StrictMathTest extends junit.framework.TestCase {
      */
     public void test_tanh_D() {
         // Test for special situations
-        assertEquals("Should return NaN", Double.NaN, StrictMath
-                .tanh(Double.NaN));
+        assertTrue(Double.isNaN(StrictMath.tanh(Double.NaN)));
         assertEquals("Should return +1.0", +1.0, StrictMath
-                .tanh(Double.POSITIVE_INFINITY));
+                .tanh(Double.POSITIVE_INFINITY), 0D);
         assertEquals("Should return -1.0", -1.0, StrictMath
-                .tanh(Double.NEGATIVE_INFINITY));
-        assertEquals("Should return +0.0", +0.0, StrictMath.tanh(+0.0));
-        assertEquals("Should return -0.0", -0.0, StrictMath.tanh(-0.0));
-        assertEquals("Should return 0.0", 0.0, StrictMath.tanh(0.0));
+                .tanh(Double.NEGATIVE_INFINITY), 0D);
+        assertEquals("Should return +0.0", +0.0, StrictMath.tanh(+0.0), 0D);
+        assertEquals("Should return -0.0", -0.0, StrictMath.tanh(-0.0), 0D);
+        assertEquals("Should return 0.0", 0.0, StrictMath.tanh(0.0), 0D);
 
-        assertEquals("Should return 1.0", 1.0, StrictMath.tanh(1234.56));
-        assertEquals("Should return -1.0", -1.0, StrictMath.tanh(-1234.56));
+        assertEquals("Should return 1.0", 1.0, StrictMath.tanh(1234.56), 0D);
+        assertEquals("Should return -1.0", -1.0, StrictMath.tanh(-1234.56), 0D);
         assertEquals("Should return 9.999999999996666E-7",
-                9.999999999996666E-7, StrictMath.tanh(0.000001));
+                9.999999999996666E-7, StrictMath.tanh(0.000001), 0D);
         assertEquals("Should return 0.981422884124941", 0.981422884124941,
-                StrictMath.tanh(2.33482));
+                StrictMath.tanh(2.33482), 0D);
         assertEquals("Should return 1.0", 1.0, StrictMath
-                .tanh(Double.MAX_VALUE));
+                .tanh(Double.MAX_VALUE), 0D);
         assertEquals("Should return 4.9E-324", 4.9E-324, StrictMath
-                .tanh(Double.MIN_VALUE));
+                .tanh(Double.MIN_VALUE), 0D);
     }
     
 	/**
@@ -663,19 +661,5 @@ public class StrictMathTest extends junit.framework.TestCase {
 			assertTrue("Converted number not equal to original. d = " + d,
 					converted >= d * 0.99999999 && converted <= d * 1.00000001);
 		}
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
 	}
 }
