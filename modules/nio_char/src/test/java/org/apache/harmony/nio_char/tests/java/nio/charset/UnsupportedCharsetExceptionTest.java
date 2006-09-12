@@ -13,64 +13,62 @@
  * limitations under the License.
  */
 
-package tests.api.java.nio.charset;
+package org.apache.harmony.nio_char.tests.java.nio.charset;
 
-import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
 
 import junit.framework.TestCase;
 import tests.util.SerializationTester;
 
 /**
- * Test class IllegalCharsetNameException.
+ * Test class UnsupportedCharsetException.
  */
-public class IllegalCharsetNameExceptionTest extends TestCase {
+public class UnsupportedCharsetExceptionTest extends TestCase {
 
 	public void testConstructor() {
-		IllegalCharsetNameException ex = new IllegalCharsetNameException(
+		UnsupportedCharsetException ex = new UnsupportedCharsetException(
 				"impossible");
 		assertTrue(ex instanceof IllegalArgumentException);
 		assertNull(ex.getCause());
 		assertEquals(ex.getCharsetName(), "impossible");
 		assertTrue(ex.getMessage().indexOf("impossible") != -1);
 
-		ex = new IllegalCharsetNameException("ascii");
+		ex = new UnsupportedCharsetException("ascii");
 		assertNull(ex.getCause());
 		assertEquals(ex.getCharsetName(), "ascii");
 		assertTrue(ex.getMessage().indexOf("ascii") != -1);
 
-		ex = new IllegalCharsetNameException("");
+		ex = new UnsupportedCharsetException("");
 		assertNull(ex.getCause());
 		assertEquals(ex.getCharsetName(), "");
 		ex.getMessage();
 
-		ex = new IllegalCharsetNameException(null);
+		ex = new UnsupportedCharsetException(null);
 		assertNull(ex.getCause());
 		assertEquals(ex.getCharsetName(), null);
 		assertTrue(ex.getMessage().indexOf("null") != -1);
-
 	}
 
 	/*
 	 * Test serialization/deserialization.
 	 */
 	public void testSerialization() throws Exception {
-		IllegalCharsetNameException ex = new IllegalCharsetNameException(
+		UnsupportedCharsetException ex = new UnsupportedCharsetException(
 				"charsetName");
 
-		IllegalCharsetNameException deEx = (IllegalCharsetNameException) SerializationTester
+		UnsupportedCharsetException deEx = (UnsupportedCharsetException) SerializationTester
 				.getDeserilizedObject(ex);
 	}
 
 	/*
-	 * Test serialization/deserialization
+	 * Test serialization/deserialization.
 	 */
 	public void testSerializationCompatibility() throws Exception {
-		IllegalCharsetNameException ex = new IllegalCharsetNameException(
+		UnsupportedCharsetException ex = new UnsupportedCharsetException(
 				"charsetName");
 
-		IllegalCharsetNameException deEx = (IllegalCharsetNameException) SerializationTester
+		UnsupportedCharsetException deEx = (UnsupportedCharsetException) SerializationTester
 				.readObject(ex,
-						"tests/api/java/nio/charset/IllegalCharsetNameException.ser");
+						"tests/api/java/nio/charset/UnsupportedCharsetException.ser");
 	}
-
 }

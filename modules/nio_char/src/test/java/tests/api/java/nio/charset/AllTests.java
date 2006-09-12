@@ -26,13 +26,7 @@ public class AllTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Test for tests.api.java.nio.charset");
 		// $JUnit-BEGIN$
-		suite.addTestSuite(CharacterCodingExceptionTest.class);
-		suite.addTestSuite(MalformedInputExceptionTest.class);
-		suite.addTestSuite(IllegalCharsetNameExceptionTest.class);
 		suite.addTestSuite(CodingErrorActionTest.class);
-		suite.addTestSuite(UnmappableCharacterExceptionTest.class);
-		suite.addTestSuite(UnsupportedCharsetExceptionTest.class);
-		suite.addTestSuite(CoderMalfunctionErrorTest.class);
 		suite.addTestSuite(CoderResultTest.class);
 		suite.addTestSuite(CharsetTest.class);
 		suite.addTestSuite(ASCCharsetTest.class);

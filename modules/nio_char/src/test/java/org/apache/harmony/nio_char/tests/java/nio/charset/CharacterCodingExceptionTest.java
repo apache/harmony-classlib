@@ -13,55 +13,44 @@
  * limitations under the License.
  */
 
-package tests.api.java.nio.charset;
+package org.apache.harmony.nio_char.tests.java.nio.charset;
 
-import java.nio.charset.CoderMalfunctionError;
+import java.io.IOException;
+import java.nio.charset.CharacterCodingException;
 
 import junit.framework.TestCase;
 import tests.util.SerializationTester;
 
 /**
- * Test java.nio.CoderMalfunctionError.
+ * Test CharacterCodingException
  */
-public class CoderMalfunctionErrorTest extends TestCase {
+public class CharacterCodingExceptionTest extends TestCase {
 
-	/*
-	 * Test constructor with normal param.
-	 */
-	public void testConstructor_Normal() {
-		Exception ex = new Exception();
-		CoderMalfunctionError e = new CoderMalfunctionError(ex);
-		assertSame(ex, e.getCause());
-	}
-
-	/*
-	 * Test constructor with null param.
-	 */
-	public void testConstructor_Null() {
-		CoderMalfunctionError e = new CoderMalfunctionError(null);
-		assertNull(e.getCause());
+	public void testConstructor() {
+		CharacterCodingException ex = new CharacterCodingException();
+		assertTrue(ex instanceof IOException);
+		assertNull(ex.getCause());
+		assertNull(ex.getMessage());
 	}
 
 	/*
 	 * Test serialization/deserialization.
 	 */
 	public void testSerialization() throws Exception {
-		CoderMalfunctionError ex = new CoderMalfunctionError(null);
+		CharacterCodingException ex = new CharacterCodingException();
 
-		CoderMalfunctionError deEx = (CoderMalfunctionError) SerializationTester
+		CharacterCodingException deEx = (CharacterCodingException) SerializationTester
 				.getDeserilizedObject(ex);
-		assertEquals(null, deEx.getCause());
 	}
 
 	/*
 	 * Test serialization/deserialization.
 	 */
 	public void testSerializationCompatibility() throws Exception {
-		CoderMalfunctionError ex = new CoderMalfunctionError(null);
+		CharacterCodingException ex = new CharacterCodingException();
 
-		CoderMalfunctionError deEx = (CoderMalfunctionError) SerializationTester
+		CharacterCodingException deEx = (CharacterCodingException) SerializationTester
 				.readObject(ex,
-						"tests/api/java/nio/charset/CoderMalfunctionError.ser");
-		assertEquals(null, deEx.getCause());
+						"tests/api/java/nio/charset/CharacterCodingException.ser");
 	}
 }
