@@ -1824,9 +1824,6 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 	private Integer writeObjectInternal(Object object, boolean unshared,
 			boolean computeClassBasedReplacement,
 			boolean computeStreamReplacement) throws IOException {
-        if (object != null && !ObjectStreamClass.isSerializable(object.getClass())) {
-            throw new NotSerializableException(object.getClass().getName());
-        }
 		if (object == null) {
 			writeNull();
 			return null;
@@ -1854,7 +1851,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 				return writeClassDesc((ObjectStreamClass) object, unshared);
 			}
 
-			if (computeClassBasedReplacement) {
+			if (ObjectStreamClass.isSerializable(object.getClass()) && computeClassBasedReplacement) {
 				Object writeReplaceMethod = writeReplaceCache.get(objClass);
 				if (writeReplaceMethod != this) {
 					if (writeReplaceMethod == null) {

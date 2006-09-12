@@ -470,6 +470,21 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 		}
 	}
 
+    private static class ObjectOutputStreamWithReplace extends ObjectOutputStream {
+        public ObjectOutputStreamWithReplace(OutputStream out) throws IOException {
+            super(out);
+            enableReplaceObject(true);
+        }
+
+        protected Object replaceObject(Object obj) throws IOException {
+            if (obj instanceof NotSerializable) {
+                return new Long(10);
+            } else {
+                return obj;
+            }
+        }
+    }
+
 	protected static final String MODE_XLOAD = "xload";
 
 	protected static final String MODE_XDUMP = "xdump";
@@ -1151,5 +1166,22 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
         } finally {
             oos.close();
         }
+    }
+
+    /**
+     * @tests java.io.ObjectOutputStream#replaceObject(java.lang.Object)
+     */
+    public void test_replaceObject() throws Exception {
+        //Regression for HARMONY-1429
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStreamWithReplace oos = new ObjectOutputStreamWithReplace(baos);
+
+        oos.writeObject(new NotSerializable());
+        oos.flush();
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream (baos.toByteArray()));
+        Object obj = ois.readObject();
+        oos.close();
+        ois.close();
+        assertTrue("replaceObject has not been called", (obj instanceof Long));
     }
 }
