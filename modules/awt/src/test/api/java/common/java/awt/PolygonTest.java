@@ -51,13 +51,26 @@ public class PolygonTest extends ShapeTestCase {
     }
 
     public void testCreate2() {
-        Polygon pg = new Polygon(new int[]{1, 2, 3, 4, 5, 6}, new int[]{7, 8, 9, 10, 11, 12}, 0);
+        int[] x = new int[]{1, 2, 3, 4, 5, 6};
+        int[] y = new int[]{7, 8, 9, 10, 11, 12};
+        
+        Polygon pg = new Polygon(x, y, 0);
         assertEquals(0, pg.npoints);
+        assertEquals(0, pg.xpoints.length);
+        assertEquals(0, pg.ypoints.length);
 
-        pg = new Polygon(new int[]{1, 2, 3, 4, 5, 6}, new int[]{7, 8, 9, 10, 11, 12}, 3);
+        pg = new Polygon(x, y, 3);
         assertEquals(3, pg.npoints);
         assertEquals(new int[]{1, 2, 3}, pg.xpoints, 3);
         assertEquals(new int[]{7, 8, 9}, pg.ypoints, 3);
+        assertEquals(3, pg.xpoints.length);
+        assertEquals(3, pg.ypoints.length);
+        
+        // Regression for HARMONY-1445
+        x[1] = 99;
+        y[2] = 77;
+        assertTrue(pg.xpoints[1] != 99);       
+        assertTrue(pg.ypoints[2] != 77);
     }
 
     public void testCreate3() {

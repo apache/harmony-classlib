@@ -131,9 +131,11 @@ public class Polygon implements Shape, Serializable {
         if (npoints < 0) {
             throw new NegativeArraySizeException("Negative number of points");
         }
-        this.xpoints = xpoints;
-        this.ypoints = ypoints;
         this.npoints = npoints;
+        this.xpoints = new int[npoints];
+        this.ypoints = new int[npoints];
+        System.arraycopy(xpoints, 0, this.xpoints, 0, npoints);
+        System.arraycopy(ypoints, 0, this.ypoints, 0, npoints);
     }
 
     public void reset() {
