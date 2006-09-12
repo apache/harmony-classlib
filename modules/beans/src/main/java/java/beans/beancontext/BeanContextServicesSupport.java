@@ -427,6 +427,10 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
      */
     public Iterator getCurrentServiceSelectors(Class serviceClass) {
 
+        if (serviceClass == null) {
+            return null;
+        }
+
         synchronized (BeanContext.globalHierarchyLock) {
             synchronized (this.services) {
                 BCSSServiceProvider bcsp = this.services.get(serviceClass);
