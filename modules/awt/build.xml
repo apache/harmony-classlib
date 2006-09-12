@@ -305,11 +305,25 @@
                     <exclude name="java/awt/WinWindowRTest.java"/>
                     <exclude name="org/apache/harmony/awt/gl/render/JavaBlitterTest.java"/>
                     <exclude name="org/apache/harmony/awt/wtk/ShutdownWatchdogTest.java"/>
+
+                    <exclude name="java/awt/AccessibleAWTButtonTest.java"/>
+                    <exclude name="java/awt/AccessibleAWTDialogTest.java"/>
+                    <exclude name="java/awt/AccessibleAWTFrameTest.java"/>
+                    <exclude name="java/awt/FrameRTest.java"/>
+                    <exclude name="java/awt/KeyboardFocusManagerTest.java"/>
+                    <exclude name="java/awt/event/WindowEventTest.java"/>
+                    <exclude name="java/awt/font/LineBreakMeasurerTest.java"/>
+                    <exclude name="java/awt/font/TextLayoutTest.java"/>
+                    <exclude name="java/awt/font/TextMeasurerTest.java"/>
+                    <exclude name="org/apache/harmony/awt/gl/MultiRectAreaLineCashTest.java"/>
+                    <exclude name="org/apache/harmony/awt/gl/MultiRectAreaRectCashTest.java"/>
+
                 </fileset>
                 <fileset dir="${hy.awt.src.test.api.java.platform}">
                     <include name="**/*Test*.java"/>
 
                     <exclude name="java/awt/WinWindowRTest.java"/>
+                    <exclude name="org/apache/harmony/awt/gl/linux/XGraphics2DRTest.java"/>
                 </fileset>
             </batchtest>  
         </junit>
