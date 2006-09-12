@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.harmony.luni.util.BinarySearch;
+
+import com.ibm.icu.lang.UCharacter;
 
 /**
  * <p>
@@ -2591,6 +2593,19 @@ public final class Character implements Serializable, Comparable<Character> {
 	public static boolean isDefined(char c) {
 		return getType(c) != UNASSIGNED;
 	}
+    
+    /**
+     * Answers whether the specified character is defined in the Unicode
+     * specification.
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @return true if the general Unicode category of the character is not
+     *         UNASSIGNED, false otherwise
+     */
+    public static boolean isDefined(int codePoint) {
+        return UCharacter.isDefined(codePoint);
+    }
 
 	/**
 	 * Answers whether the character is a digit.
@@ -2609,6 +2624,17 @@ public final class Character implements Serializable, Comparable<Character> {
         }
 		return getType(c) == DECIMAL_DIGIT_NUMBER;
 	}
+    
+    /**
+     * Answers whether the character is a digit.
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @return true when the character is a digit, false otherwise
+     */
+    public static boolean isDigit(int codePoint) {
+        return UCharacter.isDigit(codePoint);
+    }
 
 	/**
 	 * Answers whether the specified character is ignorable in a Java or Unicode
@@ -2639,7 +2665,7 @@ public final class Character implements Serializable, Comparable<Character> {
 	 * Answers whether the character is an ISO control character.
 	 * 
 	 * @param c
-	 *            the character,, including supplementary characters
+	 *            the character, including supplementary characters
 	 * @return <code>true</code> if <code>c</code> is an ISO control
 	 *         character, otherwise <code>false</code>
 	 */
@@ -2728,6 +2754,17 @@ public final class Character implements Serializable, Comparable<Character> {
 		int type = getType(c);
 		return type >= UPPERCASE_LETTER && type <= OTHER_LETTER;
 	}
+    
+    /**
+     * Answers whether the character is a letter.
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @return true when the character is a letter, false otherwise
+     */
+    public static boolean isLetter(int codePoint) {
+        return UCharacter.isLetter(codePoint);
+    }
 
 	/**
 	 * Answers whether the character is a letter or a digit.
@@ -2741,6 +2778,17 @@ public final class Character implements Serializable, Comparable<Character> {
 		return (type >= UPPERCASE_LETTER && type <= OTHER_LETTER)
 				|| type == DECIMAL_DIGIT_NUMBER;
 	}
+    
+    /**
+     * Answers whether the character is a letter or a digit.
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @return true when the character is a letter or a digit, false otherwise
+     */
+    public static boolean isLetterOrDigit(int codePoint) {
+        return UCharacter.isLetterOrDigit(codePoint);
+    }
 
 	/**
 	 * Answers whether the character is a lower case letter.
@@ -2760,6 +2808,17 @@ public final class Character implements Serializable, Comparable<Character> {
 
 		return getType(c) == LOWERCASE_LETTER;
 	}
+    
+    /**
+     * Answers whether the character is a lower case letter.
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @return true when the character is a lower case letter, false otherwise
+     */
+    public static boolean isLowerCase(int codePoint) {
+        return UCharacter.isLowerCase(codePoint);
+    }
 
 	/**
 	 * Answers whether the character is a Java space.
@@ -2866,6 +2925,17 @@ public final class Character implements Serializable, Comparable<Character> {
 
 		return getType(c) == UPPERCASE_LETTER;
 	}
+    
+    /**
+     * Answers whether the character is an upper case letter.
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @return true when the character is a upper case letter, false otherwise
+     */
+    public static boolean isUpperCase(int codePoint) {
+        return UCharacter.isUpperCase(codePoint);
+    }
 
 	/**
 	 * Answers whether the character is a whitespace character in Java.

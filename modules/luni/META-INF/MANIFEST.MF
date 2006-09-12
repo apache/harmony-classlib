@@ -7,7 +7,8 @@ Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Eclipse-ExtensibleAPI: true
 Specification-Title: Java Platform API Specification
-Import-Package: java.lang.annotation,
+Import-Package: com.ibm.icu.lang,
+ java.lang.annotation,
  java.math,
  java.nio,
  java.nio.channels,
@@ -22,11 +23,11 @@ Import-Package: java.lang.annotation,
  javax.net.ssl,
  javax.xml.parsers,
  org.apache.harmony.nio,
+ org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional,
  org.w3c.dom,
  org.xml.sax,
  tests.support;hy_usage=test;resolution:=optional,
  tests.support.resource;hy_usage=test;resolution:=optional,
- org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional,
  tests.util;hy_usage=test;resolution:=optional
 Export-Package: java.io,
  java.lang,

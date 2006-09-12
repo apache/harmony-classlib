@@ -774,10 +774,23 @@ public class CharacterTest extends TestCase {
     public void test_isDefinedC() {
         // Test for method boolean java.lang.Character.isDefined(char)
         assertTrue("Defined character returned false", Character.isDefined('v'));
-        assertTrue("Undefined character returned true", Character
+        assertTrue("Defined character returned false", Character
                 .isDefined('\u6039'));
     }
 
+    /**
+     * @tests java.lang.Character#isDefined(int)
+     */
+    public void test_isDefined_I(){
+        assertTrue(Character.isDefined((int)'v'));
+        assertTrue(Character.isDefined((int)'\u6039'));
+        assertTrue(Character.isDefined(0x10300));
+        
+        assertFalse(Character.isDefined(0x30000));
+        assertFalse(Character.isDefined(0x3FFFF));
+        assertFalse(Character.isDefined(0x110000));
+    }
+    
     /**
      * @tests java.lang.Character#isDigit(char)
      */
@@ -785,6 +798,41 @@ public class CharacterTest extends TestCase {
         // Test for method boolean java.lang.Character.isDigit(char)
         assertTrue("Digit returned false", Character.isDigit('1'));
         assertTrue("Non-Digit returned false", !Character.isDigit('A'));
+    }
+    
+    /**
+     * @tests java.lang.Character#isDigit(int)
+     */
+    public void test_isDigit_I() {
+        assertTrue(Character.isDigit((int) '1'));
+        assertFalse(Character.isDigit((int) 'A'));
+        
+        assertTrue(Character.isDigit(0x0030));
+        assertTrue(Character.isDigit(0x0035));
+        assertTrue(Character.isDigit(0x0039));
+        
+        assertTrue(Character.isDigit(0x0660));
+        assertTrue(Character.isDigit(0x0665));
+        assertTrue(Character.isDigit(0x0669));
+        
+        assertTrue(Character.isDigit(0x06F0));
+        assertTrue(Character.isDigit(0x06F5));
+        assertTrue(Character.isDigit(0x06F9));
+        
+        assertTrue(Character.isDigit(0x0966));
+        assertTrue(Character.isDigit(0x096A));
+        assertTrue(Character.isDigit(0x096F));
+        
+        assertTrue(Character.isDigit(0xFF10));
+        assertTrue(Character.isDigit(0xFF15));
+        assertTrue(Character.isDigit(0xFF19));
+        
+        assertTrue(Character.isDigit(0x1D7CE));
+        assertTrue(Character.isDigit(0x1D7D8));
+        
+        assertFalse(Character.isDigit(0x2F800));
+        assertFalse(Character.isDigit(0x10FFFD));
+        assertFalse(Character.isDigit(0x110000));
     }
 
     /**
@@ -920,6 +968,22 @@ public class CharacterTest extends TestCase {
         assertTrue("Letter returned false", Character.isLetter('L'));
         assertTrue("Non-Letter returned true", !Character.isLetter('9'));
     }
+    
+    /**
+     * @tests java.lang.Character#isLetter(int)
+     */
+    public void test_isLetter_I() {
+        assertTrue(Character.isLetter((int)'L'));
+        assertFalse(Character.isLetter((int)'9'));
+        
+        assertTrue(Character.isLetter(0x1FA9));
+        assertTrue(Character.isLetter(0x1D400));
+        assertTrue(Character.isLetter(0x1D622));
+        assertTrue(Character.isLetter(0x10000));
+        
+        assertFalse(Character.isLetter(0x1012C));
+        assertFalse(Character.isLetter(0x110000));
+    }
 
     /**
      * @tests java.lang.Character#isLetterOrDigit(char)
@@ -931,6 +995,28 @@ public class CharacterTest extends TestCase {
         assertTrue("Control returned true", !Character.isLetterOrDigit('\n'));
         assertTrue("Puncutation returned true", !Character.isLetterOrDigit('?'));
     }
+    
+    /**
+     * @tests java.lang.Character#isLetterOrDigit(int)
+     */
+    public void test_isLetterOrDigit_I() {
+        assertTrue(Character.isLetterOrDigit((int)'9'));
+        assertTrue(Character.isLetterOrDigit((int)'K'));
+        assertFalse(Character.isLetterOrDigit((int)'\n'));
+        assertFalse(Character.isLetterOrDigit((int)'?'));
+        
+        assertTrue(Character.isLetterOrDigit(0x1FA9));
+        assertTrue(Character.isLetterOrDigit(0x1D400));
+        assertTrue(Character.isLetterOrDigit(0x1D622));
+        assertTrue(Character.isLetterOrDigit(0x10000));
+
+        assertTrue(Character.isLetterOrDigit(0x1D7CE));
+        assertTrue(Character.isLetterOrDigit(0x1D7D8));
+
+        assertFalse(Character.isLetterOrDigit(0x10FFFD));     
+        assertFalse(Character.isLetterOrDigit(0x1012C));
+        assertFalse(Character.isLetterOrDigit(0x110000));
+    }
 
     /**
      * @tests java.lang.Character#isLowerCase(char)
@@ -939,6 +1025,21 @@ public class CharacterTest extends TestCase {
         // Test for method boolean java.lang.Character.isLowerCase(char)
         assertTrue("lower returned false", Character.isLowerCase('a'));
         assertTrue("upper returned true", !Character.isLowerCase('T'));
+    }
+    
+    /**
+     * @tests java.lang.Character#isLowerCase(int)
+     */
+    public void test_isLowerCase_I() {
+        assertTrue(Character.isLowerCase((int)'a'));
+        assertFalse(Character.isLowerCase((int)'T'));
+        
+        assertTrue(Character.isLowerCase(0x10428));
+        assertTrue(Character.isLowerCase(0x1D4EA));
+        
+        assertFalse(Character.isLowerCase(0x1D504));
+        assertFalse(Character.isLowerCase(0x30000));
+        assertFalse(Character.isLowerCase(0x110000));
     }
 
     /**
@@ -1021,6 +1122,21 @@ public class CharacterTest extends TestCase {
         // Test for method boolean java.lang.Character.isUpperCase(char)
         assertTrue("Incorrect case value", !Character.isUpperCase('t'));
         assertTrue("Incorrect case value", Character.isUpperCase('T'));
+    }
+    
+    /**
+     * @tests java.lang.Character#isUpperCase(int)
+     */
+    public void test_isUpperCase_I() {
+        assertFalse(Character.isUpperCase((int)'t'));
+        assertTrue(Character.isUpperCase((int)'T'));
+        
+        assertTrue(Character.isUpperCase(0x1D504));
+        assertTrue(Character.isUpperCase(0x1D608));
+        
+        assertFalse(Character.isUpperCase(0x1D656));
+        assertFalse(Character.isUpperCase(0x10FFFD));
+        assertFalse(Character.isUpperCase(0x110000));
     }
 
     /**
