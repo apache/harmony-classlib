@@ -161,7 +161,6 @@
                     <exclude name="javax/swing/SpringTest.java"/>
                     <exclude name="javax/swing/SwingWaitTestCase.java"/>
                     <exclude name="javax/swing/TestBundle.java"/>
-                    <exclude name="javax/swing/event/SwingPropertyChangeSupportTest.java"/>
                     <exclude name="javax/swing/plaf/basic/BasicDesktopPaneUIActionsTest.java"/>
                     <exclude name="javax/swing/plaf/basic/BasicMenuUI_MultithreadedTest.java"/>
                     <exclude name="javax/swing/plaf/basic/BasicOptionPaneUITest.java"/>
