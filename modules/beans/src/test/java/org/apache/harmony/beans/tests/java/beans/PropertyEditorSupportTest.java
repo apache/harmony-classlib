@@ -27,8 +27,8 @@ import junit.framework.TestCase;
  */
 public class PropertyEditorSupportTest extends TestCase {
 
-    /*
-     * Class under test for void PropertyEditorSupport()
+    /**
+     * @tests java.beans.PropertyEditorSupport#PropertyEditorSupport()
      */
     public void testPropertyEditorSupport() {
         // Regression for HARMONY-516
@@ -41,14 +41,16 @@ public class PropertyEditorSupportTest extends TestCase {
         assertNull(support.getTags());
         assertFalse(support.supportsCustomEditor());
         assertFalse(support.isPaintable());
+        assertSame(support, support.getSource());
 
         Object value = new String[] { "java.awt.Color.orange" };
         support.setValue(value);
         assertEquals(value.toString(), support.getAsText());
     }
 
-    /*
-     * Class under test for void PropertyEditorSupport(Object)
+    /**
+     * @tests java.beans.PropertyEditorSupport#PropertyEditorSupport(
+     *        java.lang.Object)
      */
     public void testPropertyEditorSupportObject() {
         MockSource source = new MockSource();
@@ -62,6 +64,7 @@ public class PropertyEditorSupportTest extends TestCase {
         assertNull(support.getTags());
         assertFalse(support.supportsCustomEditor());
         assertFalse(support.isPaintable());
+        assertSame(source, support.getSource());
     }
 
     /*
@@ -269,6 +272,27 @@ public class PropertyEditorSupportTest extends TestCase {
         assertFalse(support.isPaintable());
     }
 
+    /**
+     * @tests java.beans.PropertyEditorSupport#setSource(Object)
+     * @tests java.beans.PropertyEditorSupport#getSource()
+     */
+    public void test_setSourceLjava_lang_Object() {
+
+        // Regression for HARMONY-1409
+        PropertyEditorSupport support = new PropertyEditorSupport();
+
+        Object source = new Object();
+
+        support.setSource(source);
+        assertSame(source, support.getSource());
+
+        try {
+            support.setSource(null);
+            fail("No expected NullPointerException");
+        } catch (NullPointerException e) {
+        }
+    }
+    
     public static class MockSource {
 
         String id;
