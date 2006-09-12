@@ -122,6 +122,9 @@ public class LogStream extends PrintStream {
      */
     @Deprecated
     public synchronized void setOutputStream(OutputStream out) {
+        if (out == null) {
+            throw new NullPointerException();
+        }
         this.out = out;
     }
 

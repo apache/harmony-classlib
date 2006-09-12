@@ -30,4 +30,16 @@ public class LogStreamTest extends TestCase {
         //regression test for HARMONY-994
         LogStream.log("tst").write(0);
     }
+    
+    public void testSetOutputStreamBad() throws Exception {
+        // Regression test HARMONY-1198
+        try {
+            LogStream ls = LogStream.log("proba");
+            ls.setOutputStream(null);
+            fail("Expected NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+    
 }
