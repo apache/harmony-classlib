@@ -36,16 +36,19 @@ public final class DefaultPersistenceDelegatesFactory {
 
     private static PersistenceDelegate createPersistenceDelegate(Class type) {
         PersistenceDelegate pd = null;
+
         try {
             String className = createDefaultNameForPersistenceDelegateClass(type);
+
             pd = (PersistenceDelegate) Class.forName(className, true,
                     type.getClassLoader()).newInstance();
         } catch (Exception e) {
             Class ancestor = type.getSuperclass();
 
-            while (ancestor != null) {
+            while (pd == null && ancestor != null) {
                 try {
                     String className = createDefaultNameForPersistenceDelegateClass(ancestor);
+
                     pd = (PersistenceDelegate) Class.forName(className, true,
                             type.getClassLoader()).newInstance();
                 } catch (Exception e2) {

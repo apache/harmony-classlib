@@ -133,9 +133,7 @@ public class Statement {
 
                 result = method.invoke(null, ama);
             } else if (methodName.equals("newInstance") //$NON-NLS-1$
-                    && target instanceof Class
-                    && ((Class) target).getName().equals(
-                            "java.lang.reflect.Array")) { //$NON-NLS-1$
+                    && target instanceof Class && target == Array.class) {
                 Class<?> componentType = (Class) arguments[0];
                 int length = ((Integer) arguments[1]).intValue();
 
@@ -154,31 +152,56 @@ public class Statement {
                 }
             } else if (target instanceof Class) {
                 Method method = null;
+                boolean found = false;
 
                 try {
-                    // try to look for static method at first
-                    method = findMethod((Class) target, methodName, arguments,
-                            true);
-                    result = method.invoke(null, arguments);
-                } catch (NoSuchMethodException e) {
+                    // try to look for a static method of class
+                    // described by the given Class object at first
+
+                    // process only if the class differs from Class itself
+                    if (target != Class.class) {
+                        method = findMethod((Class) target, methodName,
+                                arguments, true);
+                        result = method.invoke(null, arguments);
+                        found = true;
+                    }
+                } catch (NoSuchMethodException e) {}
+
+                if (!found) {
                     // static method was not found
-                    // try to invoke non-static method of Class object
-                    method = findMethod(target.getClass(), methodName,
-                            arguments, false);
-                    result = method.invoke(target, arguments);
+                    // try to invoke method of Class object
+
+                    if (methodName.equals("forName") //$NON-NLS-1$
+                            && arguments.length == 1
+                            && arguments[0] instanceof String) {
+                        // special handling of Class.forName(String)
+
+                        try {
+                            result = Class.forName((String) arguments[0]);
+                        } catch (ClassNotFoundException e2) {
+                            result = Class.forName((String) arguments[0], true,
+                                    Thread.currentThread()
+                                            .getContextClassLoader());
+                        }
+                    } else {
+                        method = findMethod(target.getClass(), methodName,
+                                arguments, false);
+                        result = method.invoke(target, arguments);
+                    }
                 }
             } else {
                 Method method = findMethod(target.getClass(), methodName,
                         arguments, false);
 
                 // XXX investigate: do we really need this?
-//              AccessController.doPrivileged(new PrivilegedAction<Object>() {
-//      
-//                  public Object run() {
-//                      mtd.setAccessible(true);
-//                      return null;
-//                  }
-//              });
+                // AccessController.doPrivileged(new PrivilegedAction<Object>()
+                // {
+                //      
+                // public Object run() {
+                // mtd.setAccessible(true);
+                // return null;
+                // }
+                // });
 
                 result = method.invoke(target, arguments);
             }
@@ -191,19 +214,18 @@ public class Statement {
     }
 
     private Method findArrayMethod() throws NoSuchMethodException {
-        // the code below reproduces exact RI exception throwing behavior 
+        // the code below reproduces exact RI exception throwing behavior
         if (!methodName.equals("set") && !methodName.equals("get")) { //$NON-NLS-1$ //$NON-NLS-2$
             throw new NoSuchMethodException(Messages.getString("beans.3C")); //$NON-NLS-1$
         } else if (arguments.length > 0
                 && arguments[0].getClass() != Integer.class) {
-            throw new ClassCastException(
-                    Messages.getString("beans.3D")); //$NON-NLS-1$
+            throw new ClassCastException(Messages.getString("beans.3D")); //$NON-NLS-1$
         } else if (methodName.equals("get") && (arguments.length != 1)) { //$NON-NLS-1$
-            throw new ArrayIndexOutOfBoundsException(
-                    Messages.getString("beans.3E")); //$NON-NLS-1$
+            throw new ArrayIndexOutOfBoundsException(Messages
+                    .getString("beans.3E")); //$NON-NLS-1$
         } else if (methodName.equals("set") && (arguments.length != 2)) { //$NON-NLS-1$
-            throw new ArrayIndexOutOfBoundsException(
-                    Messages.getString("beans.3F")); //$NON-NLS-1$
+            throw new ArrayIndexOutOfBoundsException(Messages
+                    .getString("beans.3F")); //$NON-NLS-1$
         }
 
         if (methodName.equals("get")) { //$NON-NLS-1$
@@ -262,7 +284,8 @@ public class Statement {
         }
 
         if (result == null) {
-            throw new NoSuchMethodException(Messages.getString("beans.40", targetClass.getName())); //$NON-NLS-1$
+            throw new NoSuchMethodException(Messages.getString(
+                    "beans.40", targetClass.getName())); //$NON-NLS-1$
         }
 
         return result;
@@ -318,7 +341,8 @@ public class Statement {
         }
 
         if (foundMethods.size() == 0) {
-            throw new NoSuchMethodException(Messages.getString("beans.41", methodName)); //$NON-NLS-1$
+            throw new NoSuchMethodException(Messages.getString(
+                    "beans.41", methodName)); //$NON-NLS-1$
         }
 
         foundMethodsArr = foundMethods.toArray(new Method[foundMethods.size()]);
@@ -337,8 +361,8 @@ public class Statement {
         }
 
         try {
-            Statement.findMethod((Class) target, mName,
-                                 stmt.getArguments(), true);
+            Statement.findMethod((Class) target, mName, stmt.getArguments(),
+                    true);
             return true;
         } catch (NoSuchMethodException e) {
             return false;
@@ -350,31 +374,30 @@ public class Statement {
      * objects. Not necessary reflects to real methods.
      */
     private static String[][] pdConstructorSignatures = {
-        {"java.lang.Class", "new", "java.lang.Boolean", "", "", ""},  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-        {"java.lang.Class", "new", "java.lang.Byte", "", "", ""},  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-        {"java.lang.Class", "new", "java.lang.Character", "", "", ""},  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-        {"java.lang.Class", "new", "java.lang.Double", "", "", ""},  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-        {"java.lang.Class", "new", "java.lang.Float", "", "", ""},  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-        {"java.lang.Class", "new", "java.lang.Integer", "", "", ""},  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-        {"java.lang.Class", "new", "java.lang.Long", "", "", ""},  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-        {"java.lang.Class", "new", "java.lang.Short", "", "", ""},  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-        {"java.lang.Class", "new", "java.lang.String", "", "", ""},  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-        {"java.lang.Class", "forName", "java.lang.String", "", "", ""}, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-        {"java.lang.Class", "newInstance", "java.lang.Class", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                "java.lang.Integer", "", ""}, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        {"java.lang.reflect.Field", "get", "null", "", "", ""}, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-        {"java.lang.Class", "forName", "java.lang.String", "", "", ""} //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+            { "java.lang.Class", "new", "java.lang.Boolean", "", "", "" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+            { "java.lang.Class", "new", "java.lang.Byte", "", "", "" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+            { "java.lang.Class", "new", "java.lang.Character", "", "", "" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+            { "java.lang.Class", "new", "java.lang.Double", "", "", "" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+            { "java.lang.Class", "new", "java.lang.Float", "", "", "" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+            { "java.lang.Class", "new", "java.lang.Integer", "", "", "" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+            { "java.lang.Class", "new", "java.lang.Long", "", "", "" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+            { "java.lang.Class", "new", "java.lang.Short", "", "", "" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+            { "java.lang.Class", "new", "java.lang.String", "", "", "" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+            { "java.lang.Class", "forName", "java.lang.String", "", "", "" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+            { "java.lang.Class", "newInstance", "java.lang.Class", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    "java.lang.Integer", "", "" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            { "java.lang.reflect.Field", "get", "null", "", "", "" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+            { "java.lang.Class", "forName", "java.lang.String", "", "", "" } //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
     };
-    
+
     static boolean isPDConstructor(Statement stmt) {
         Object target = stmt.getTarget();
         String methodName = stmt.getMethodName();
         Object[] args = stmt.getArguments();
         String[] sig = new String[pdConstructorSignatures[0].length];
 
-        if (target == null || methodName == null || args == null ||
-                args.length == 0)
-        {
+        if (target == null || methodName == null || args == null
+                || args.length == 0) {
             // not a constructor for sure
             return false;
         }
@@ -384,23 +407,23 @@ public class Statement {
 
         for (int i = 2; i < sig.length; i++) {
             if (args.length > i - 2) {
-                sig[i] = args[i - 2] != null ?
-                        args[i - 2].getClass().getName() : "null";  //$NON-NLS-1$
+                sig[i] = args[i - 2] != null ? args[i - 2].getClass().getName()
+                        : "null"; //$NON-NLS-1$
             } else {
                 sig[i] = ""; //$NON-NLS-1$
             }
 
         }
-        
+
         for (int i = 0; i < pdConstructorSignatures.length; i++) {
             if (Arrays.equals(sig, pdConstructorSignatures[i])) {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     private static boolean isPrimitiveWrapper(Class<?> wrapper, Class<?> base) {
         return (base == boolean.class) && (wrapper == Boolean.class)
                 || (base == byte.class) && (wrapper == Byte.class)
@@ -490,7 +513,7 @@ public class Statement {
 
     /**
      * Comparator to determine which of two methods is "closer" to the reference
-     * method.  
+     * method.
      */
     static class MethodComparator implements Comparator<Method> {
 
@@ -526,6 +549,7 @@ public class Statement {
         /**
          * Returns the norm for given method. The norm is the "distance" from
          * the reference method to the given method.
+         * 
          * @param m the method to calculate the norm for
          * @return norm of given method
          */
@@ -566,11 +590,12 @@ public class Statement {
         }
 
         /**
-         * Returns a "hierarchy distance" between two classes. 
+         * Returns a "hierarchy distance" between two classes.
+         * 
          * @param clz1
          * @param clz2 should be superclass or superinterface of clz1
          * @return hierarchy distance from clz1 to clz2, Integer.MAX_VALUE if
-         * clz2 is not assignable from clz1.
+         *         clz2 is not assignable from clz1.
          */
         private static int getDistance(Class<?> clz1, Class<?> clz2) {
             Class superClz;
