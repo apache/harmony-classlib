@@ -13,11 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.3.6.3 $
- */
 package java.beans;
 
 import java.awt.Component;
@@ -29,44 +24,28 @@ import java.util.List;
 
 import org.apache.harmony.beans.internal.nls.Messages;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.3.6.3 $
- */
-
 public class PropertyEditorSupport implements PropertyEditor {
     
     Object source = null;
-    List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
+    List<PropertyChangeListener> listeners =
+            new ArrayList<PropertyChangeListener>();
     Object oldValue = null;
     Object newValue = null;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public PropertyEditorSupport(Object source) {
-        if( source == null ) {
+        if (source == null) {
             throw new NullPointerException(Messages.getString("beans.0C")); //$NON-NLS-1$
         }
         this.source = source;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public PropertyEditorSupport() {
         source = this;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void paintValue(Graphics gfx, Rectangle box) {
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setAsText(String text) throws IllegalArgumentException {
         if (newValue instanceof String){
             setValue(text);
@@ -75,93 +54,73 @@ public class PropertyEditorSupport implements PropertyEditor {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String[] getTags() {
         return null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getJavaInitializationString() {
         return "???"; //$NON-NLS-1$
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getAsText() {
         return newValue == null ? "null" : newValue.toString(); //$NON-NLS-1$
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setValue(Object value) {
         this.oldValue = this.newValue;
         this.newValue = value;
         firePropertyChange();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Object getValue() {
         return newValue;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    public void setSource(Object source) {
+        if (source == null) {
+            throw new NullPointerException(Messages.getString("beans.0C")); //$NON-NLS-1$
+        }
+        this.source = source;
+    }
+
+    public Object getSource() {
+        return source;
+    }
+
     public synchronized void removePropertyChangeListener(
             PropertyChangeListener listener) {
-        if(listeners != null) {
+        if (listeners != null) {
             listeners.remove(listener);
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public synchronized void addPropertyChangeListener(
             PropertyChangeListener listener) {
         listeners.add(listener);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Component getCustomEditor() {
         return null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean supportsCustomEditor() {
         return false;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean isPaintable() {
         return false;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void firePropertyChange() {
-        if(listeners.size() > 0) {
+        if (listeners.size() > 0) {
             PropertyChangeEvent event = new PropertyChangeEvent(
                     source, null, oldValue, newValue);
             Iterator<PropertyChangeListener> iterator = listeners.iterator();
+
             while (iterator.hasNext()) {
                 PropertyChangeListener listener =
                         (PropertyChangeListener) iterator.next();
+
                 listener.propertyChange(event);
             }
         }
