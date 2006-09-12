@@ -18,13 +18,6 @@ package org.apache.harmony.luni.tests.java.lang;
 public class NumberTest extends junit.framework.TestCase {
 
 	/**
-	 * @tests java.lang.Number#Number()
-	 */
-	public void test_Constructor() {
-		assertTrue("Nothing to test", true);
-	}
-
-	/**
 	 * @tests java.lang.Number#byteValue()
 	 */
 	public void test_byteValue() {
@@ -67,11 +60,5 @@ public class NumberTest extends junit.framework.TestCase {
 				((short) new Integer(number).intValue()) == new Integer(number)
 						.shortValue());
 
-	}
-
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
 	}
 }

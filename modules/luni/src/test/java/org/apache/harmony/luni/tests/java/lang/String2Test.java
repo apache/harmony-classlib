@@ -60,7 +60,8 @@ public class String2Test extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.String#String(byte[], int)
 	 */
-	public void test_Constructor$BI() {
+	@SuppressWarnings("deprecation")
+    public void test_Constructor$BI() {
 		// Test for method java.lang.String(byte [], int)
 		String s = new String(new byte[] { 65, 66, 67, 68, 69 }, 0);
 		assertTrue("Incorrect string returned: " + s, s.equals("ABCDE"));
@@ -88,7 +89,8 @@ public class String2Test extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.String#String(byte[], int, int, int)
 	 */
-	public void test_Constructor$BIII() {
+	@SuppressWarnings("deprecation")
+    public void test_Constructor$BIII() {
 		// Test for method java.lang.String(byte [], int, int, int)
 		String s = new String(new byte[] { 65, 66, 67, 68, 69 }, 0, 1, 3);
 		assertTrue("Incorrect string returned: " + s, s.equals("BCD"));
@@ -416,14 +418,14 @@ public class String2Test extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.String#getBytes(int, int, byte[], int)
 	 */
-	public void test_getBytesII$BI() {
+	@SuppressWarnings("deprecation")
+    public void test_getBytesII$BI() {
 		// Test for method void java.lang.String.getBytes(int, int, byte [],
 		// int)
 		byte[] buf = new byte[5];
 		"Hello World".getBytes(6, 11, buf, 0);
 		assertEquals("Returned incorrect bytes", "World", new String(buf));
 
-		Exception exception = null;
 		try {
 			"Hello World".getBytes(-1, 1, null, 0);
 			fail("Expected StringIndexOutOfBoundsException");
@@ -483,7 +485,7 @@ public class String2Test extends junit.framework.TestCase {
 		final int hwLength = hw1.length();
 		int powerOfThirtyOne = 1;
 		for (int counter = hwLength - 1; counter >= 0; counter--) {
-			hwHashCode += ((int) hw1.charAt(counter)) * powerOfThirtyOne;
+			hwHashCode += hw1.charAt(counter) * powerOfThirtyOne;
 			powerOfThirtyOne *= 31;
 		}
 		assertTrue("String did not hash to correct value--got: "
@@ -734,24 +736,6 @@ public class String2Test extends junit.framework.TestCase {
 				new Locale("tr", "")));
 	}
 
-	private static String writeString(String in) {
-		StringBuffer result = new StringBuffer();
-		result.append("\"");
-		for (int i = 0; i < in.length(); i++) {
-			result.append(" 0x" + Integer.toHexString(in.charAt(i)));
-		}
-		result.append("\"");
-		return result.toString();
-	}
-
-	/**
-	 * @tests java.lang.String#toLowerCase(java.util.Locale)
-	 */
-	public void test_toLowerCaseLjava_util_Locale_subtest0() {
-		// Test for method java.lang.String
-		// java.lang.String.toLowerCase(java.util.Locale)
-	}
-
 	/**
 	 * @tests java.lang.String#toString()
 	 */
@@ -917,22 +901,5 @@ public class String2Test extends junit.framework.TestCase {
 		String.format(null);
 		fail("NPE is expected on null format");
 	    } catch (NullPointerException ok){}
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
-
-	protected void doneSuite() {
 	}
 }

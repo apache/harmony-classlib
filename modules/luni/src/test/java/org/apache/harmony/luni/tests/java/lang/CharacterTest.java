@@ -119,6 +119,7 @@ public class CharacterTest extends TestCase {
         assertEquals(0x00010FFFF, result);
     }
 
+    @SuppressWarnings("cast")
     public void test_codePointAtLjava_lang_CharSequenceI() {
 
         assertEquals('a', Character.codePointAt((CharSequence) "abc", 0));
@@ -220,6 +221,7 @@ public class CharacterTest extends TestCase {
         }
     }
 
+    @SuppressWarnings("cast")
     public void test_codePointBeforeLjava_lang_CharSequenceI() {
 
         assertEquals('a', Character.codePointBefore((CharSequence) "abc", 1));
@@ -933,6 +935,7 @@ public class CharacterTest extends TestCase {
     /**
      * @tests java.lang.Character#isJavaLetter(char)
      */
+    @SuppressWarnings("deprecation")
     public void test_isJavaLetterC() {
         // Test for method boolean java.lang.Character.isJavaLetter(char)
         assertTrue("letter returned false", Character.isJavaLetter('l'));
@@ -941,7 +944,7 @@ public class CharacterTest extends TestCase {
                 .isJavaLetter('_'));
 
         assertTrue("digit returned true", !Character.isJavaLetter('9'));
-        assertTrue("ignirable control returned true", !Character
+        assertTrue("ignored control returned true", !Character
                 .isJavaLetter('\u200b'));
         assertTrue("semi returned true", !Character.isJavaLetter(';'));
     }
@@ -949,6 +952,7 @@ public class CharacterTest extends TestCase {
     /**
      * @tests java.lang.Character#isJavaLetterOrDigit(char)
      */
+    @SuppressWarnings("deprecation")
     public void test_isJavaLetterOrDigitC() {
         // Test for method boolean java.lang.Character.isJavaLetterOrDigit(char)
         assertTrue("letter returned false", Character.isJavaLetterOrDigit('l'));
@@ -993,7 +997,7 @@ public class CharacterTest extends TestCase {
         assertTrue("Digit returned false", Character.isLetterOrDigit('9'));
         assertTrue("Letter returned false", Character.isLetterOrDigit('K'));
         assertTrue("Control returned true", !Character.isLetterOrDigit('\n'));
-        assertTrue("Puncutation returned true", !Character.isLetterOrDigit('?'));
+        assertTrue("Punctuation returned true", !Character.isLetterOrDigit('?'));
     }
     
     /**
@@ -1045,6 +1049,7 @@ public class CharacterTest extends TestCase {
     /**
      * @tests java.lang.Character#isSpace(char)
      */
+    @SuppressWarnings("deprecation")
     public void test_isSpaceC() {
         // Test for method boolean java.lang.Character.isSpace(char)
         assertTrue("space returned false", Character.isSpace('\n'));

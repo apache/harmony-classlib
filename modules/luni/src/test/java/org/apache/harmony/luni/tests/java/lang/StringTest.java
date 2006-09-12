@@ -23,9 +23,9 @@ import junit.framework.TestCase;
 
 public class StringTest extends TestCase {
 
-    private static final Constructor UNSAFE_CONSTRUCTOR;
+    private static final Constructor<String> UNSAFE_CONSTRUCTOR;
     static {
-        Constructor uc;
+        Constructor<String> uc;
         try {
             uc = String.class.getDeclaredConstructor(new Class[] { int.class,
                     int.class, char[].class });
@@ -42,8 +42,8 @@ public class StringTest extends TestCase {
         }
 
         try {
-            return (String) UNSAFE_CONSTRUCTOR.newInstance(new Object[] {
-                    Integer.valueOf(start), Integer.valueOf(len), data });
+            return UNSAFE_CONSTRUCTOR.newInstance(Integer.valueOf(start), Integer.valueOf(len),
+                    data);
         } catch (Exception e) {
             throw new AssertionError(e);
         }
@@ -67,6 +67,7 @@ public class StringTest extends TestCase {
     /**
      * @tests java.lang.String#String(byte[], int)
      */
+    @SuppressWarnings("deprecation")
     public void test_Constructor$BI() {
         String s = new String(new byte[] { 65, 66, 67, 68, 69 }, 0);
         assertEquals("Incorrect string returned: " + s, "ABCDE", s);
@@ -92,6 +93,7 @@ public class StringTest extends TestCase {
     /**
      * @tests java.lang.String#String(byte[], int, int, int)
      */
+    @SuppressWarnings("deprecation")
     public void test_Constructor$BIII() {
         String s = new String(new byte[] { 65, 66, 67, 68, 69 }, 0, 1, 3);
         assertEquals("Incorrect string returned: " + s, "BCD", s);
@@ -249,6 +251,7 @@ public class StringTest extends TestCase {
     /**
      * @tests java.lang.String#contains(CharSequence)
      */
+    @SuppressWarnings("cast")
     public void test_containsLjava_lang_CharSequence() {
         String s = "abcdefghijklmnopqrstuvwxyz";
         assertTrue(s.contains((CharSequence) new StringBuffer("abc")));

@@ -267,15 +267,14 @@ public class SystemTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.System#runFinalizersOnExit(boolean)
 	 */
-	public void test_runFinalizersOnExitZ() {
-		// Test for method void java.lang.System.runFinalizersOnExit(boolean)
+	@SuppressWarnings("deprecation")
+    public void test_runFinalizersOnExitZ() {
 		// Can we call the method at least?
 		try {
 			System.runFinalizersOnExit(false);
 		} catch (Throwable t) {
 			fail("Failed to set runFinalizersOnExit");
 		}
-		assertTrue("Passed runFinalizersOnExit", true);
 	}
 
 	/**
@@ -299,37 +298,18 @@ public class SystemTest extends junit.framework.TestCase {
 		}
 	}
 
-	/**
-	 * @tests java.lang.System#setSecurityManager(java.lang.SecurityManager)
-	 */
-	public void test_setSecurityManagerLjava_lang_SecurityManager() {
-		// Test for method void
-		// java.lang.System.setSecurityManager(java.lang.SecurityManager)
-		// tested in System_Destructive ??
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 		flag = false;
 		ranFinalize = false;
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-		// System.setProperties(orgProps);
 	}
 
 	protected SystemTest createInstance() {
 		return new SystemTest("FT");
 	}
 
-	protected void finalize() {
+	@Override
+    protected void finalize() {
 		if (flag)
 			ranFinalize = true;
 	}

@@ -54,7 +54,7 @@ public class ObjectTest extends junit.framework.TestCase {
 		// Test for method java.lang.Class java.lang.Object.getClass()
 		String classNames[] = { "java.lang.Object", "java.lang.Throwable",
 				"java.lang.StringBuffer" };
-		Class classToTest = null;
+		Class<?> classToTest = null;
 		Object instanceToTest = null;
 
 		status = 0;
@@ -386,19 +386,5 @@ public class ObjectTest extends junit.framework.TestCase {
 			}
 		}
 
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
 	}
 }

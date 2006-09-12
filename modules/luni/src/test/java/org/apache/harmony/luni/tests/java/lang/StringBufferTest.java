@@ -79,6 +79,7 @@ public class StringBufferTest extends TestCase {
     /**
      * @tests java.lang.StringBuffer.append(CharSequence, int, int)
      */
+    @SuppressWarnings("cast")
     public void test_appendLjava_lang_CharSequenceII() {
         StringBuffer sb = new StringBuffer();
         assertSame(sb, sb.append((CharSequence) "ab", 0, 2));
@@ -103,7 +104,7 @@ public class StringBufferTest extends TestCase {
     public void test_append$CII_2() {
         StringBuffer obj = new StringBuffer();
         try {
-            obj.append(new char[0], (int) -1, (int) -1);
+            obj.append(new char[0], -1, -1);
             fail("ArrayIndexOutOfBoundsException expected");
         } catch (ArrayIndexOutOfBoundsException e) {
             // expected
@@ -116,7 +117,7 @@ public class StringBufferTest extends TestCase {
     public void test_append$CII_3() throws Exception {
         StringBuffer obj = new StringBuffer();
         try {
-            obj.append((char[]) null, (int) -1, (int) -1);
+            obj.append((char[]) null, -1, -1);
             fail("NullPointerException expected");
         } catch (NullPointerException e) {
             // expected
@@ -168,6 +169,7 @@ public class StringBufferTest extends TestCase {
     /**
      * @tests java.lang.StringBuffer.insert(int, CharSequence, int, int)
      */
+    @SuppressWarnings("cast")
     public void test_insertILjava_lang_CharSequenceII() {
         final String fixture = "0000";
         StringBuffer sb = new StringBuffer(fixture);
@@ -252,7 +254,7 @@ public class StringBufferTest extends TestCase {
     public void test_insertIC() {
         StringBuffer obj = new StringBuffer();
         try {
-            obj.insert((int) -1, ' ');
+            obj.insert(-1, ' ');
             fail("ArrayIndexOutOfBoundsException expected");
         } catch (ArrayIndexOutOfBoundsException e) {
             // expected
@@ -383,7 +385,7 @@ public class StringBufferTest extends TestCase {
     public void test_getCharsII$CI() {
         StringBuffer obj = new StringBuffer();
         try {
-            obj.getChars((int) 0, (int) 0,  new char[0], (int) -1);
+            obj.getChars(0, 0,  new char[0], -1);
             fail("ArrayIndexOutOfBoundsException expected");
         } catch (ArrayIndexOutOfBoundsException e) {
             // expected

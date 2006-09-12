@@ -40,7 +40,7 @@ public class ClassLoaderTest extends TestCase {
         try {
             Policy.setPolicy(plc);
 
-            Class a = new Ldr().define();
+            Class<?> a = new Ldr().define();
 
             Permission p = new SecurityPermission("abc");
             assertFalse("impossible! misconfiguration?", a.getProtectionDomain().implies(p));
@@ -121,14 +121,17 @@ class DynamicPolicy extends Policy {
 
     public PermissionCollection pc;
 
+    @Override
     public PermissionCollection getPermissions(ProtectionDomain pd) {
         return pc;
     }
 
+    @Override
     public PermissionCollection getPermissions(CodeSource codesource) {
         return pc;
     }
 
+    @Override
     public void refresh() {
     }
 }
@@ -137,7 +140,8 @@ class A {
 }
 
 class Ldr extends ClassLoader {
-    public Class define() throws Exception {
+    @SuppressWarnings("deprecation")
+    public Class<?> define() throws Exception {
         Package p = getClass().getPackage();
         String path = p == null ? "" : p.getName().replace('.', File.separatorChar)
                 + File.separator;

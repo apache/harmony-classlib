@@ -568,6 +568,7 @@ public class Character_UnicodeBlockTest extends TestCase {
         }
     }
     
+    @SuppressWarnings("deprecation")
     public void test_forNameLjava_lang_String() {
         assertEquals(Character.UnicodeBlock.SURROGATES_AREA, Character.UnicodeBlock.forName("SURROGATES_AREA"));
         assertEquals(Character.UnicodeBlock.BASIC_LATIN, Character.UnicodeBlock.forName("BASIC_LATIN"));

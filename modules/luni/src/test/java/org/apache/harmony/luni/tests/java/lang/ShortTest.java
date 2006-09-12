@@ -19,7 +19,6 @@ import junit.framework.TestCase;
 
 public class ShortTest extends TestCase {
     private Short sp = new Short((short) 18000);
-    private Short sp2 = new Short((short) 18000);
     private Short sn = new Short((short) -19000);
 
     /**

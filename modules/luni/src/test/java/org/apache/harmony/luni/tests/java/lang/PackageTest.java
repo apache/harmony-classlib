@@ -44,7 +44,7 @@ public class PackageTest extends junit.framework.TestCase {
 
 		// All attributes in the package entry
 		java.net.URL[] urls = new java.net.URL[1];
-		Class c = null;
+		Class<?> c = null;
 		java.net.URLClassLoader ucl = null;
 		Support_Resources.copyFile(resources, "Package",
 				"hyts_all_attributes.jar");
@@ -198,7 +198,7 @@ public class PackageTest extends junit.framework.TestCase {
 		for (int i = 0; i < parameters.length; i++) {
 			types[i] = parameters[i].getClass();
 		}
-		Class c = null;
+		Class<?> c = null;
 		if (obj instanceof Class)
 			c = (Class) obj;
 		else
@@ -222,7 +222,7 @@ public class PackageTest extends junit.framework.TestCase {
 	 */
 	public void test_getName() {
 		java.net.URL[] urls = new java.net.URL[1];
-		Class c = null;
+		Class<?> c = null;
 		java.net.URLClassLoader ucl = null;
 		Support_Resources.copyFile(resources, "Package", "hyts_pq.jar");
 		try {
@@ -309,7 +309,7 @@ public class PackageTest extends junit.framework.TestCase {
 		// Test for method boolean
 		// java.lang.Package.isCompatibleWith(java.lang.String)
 		java.net.URL[] urls = new java.net.URL[1];
-		Class c = null;
+		Class<?> c = null;
 		java.net.URLClassLoader ucl = null;
 		Support_Resources.copyFile(resources, "Package", "hyts_c.jar");
 		try {
@@ -338,7 +338,7 @@ public class PackageTest extends junit.framework.TestCase {
 	public void test_isSealed() {
 		// Test for method boolean java.lang.Package.isSealed()
 		java.net.URL[] urls = new java.net.URL[1];
-		Class c = null;
+		Class<?> c = null;
 		java.net.URLClassLoader ucl = null;
 		Support_Resources.copyFile(resources, "Package", "hyts_pq.jar");
 		try {
@@ -362,7 +362,7 @@ public class PackageTest extends junit.framework.TestCase {
 	public void test_isSealedLjava_net_URL() {
 		// Test for method boolean java.lang.Package.isSealed(java.net.URL)
 		java.net.URL[] urls = new java.net.URL[1];
-		Class c = null;
+		Class<?> c = null;
 		java.net.URLClassLoader ucl = null;
 		Support_Resources.copyFile(resources, "Package", "hyts_c.jar");
 		try {
@@ -390,7 +390,7 @@ public class PackageTest extends junit.framework.TestCase {
 	public void test_toString() {
 		// Test for method java.lang.String java.lang.Package.toString()
 		java.net.URL[] urls = new java.net.URL[1];
-		Class c = null;
+		Class<?> c = null;
 		java.net.URLClassLoader ucl = null;
 		Support_Resources.copyFile(resources, "Package", "hyts_c.jar");
 		try {
@@ -406,22 +406,11 @@ public class PackageTest extends junit.framework.TestCase {
 		}
 	}
 
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 		resources = Support_Resources.createTempFolder();
 		resPath = resources.toString();
 		if (resPath.charAt(0) == '/' || resPath.charAt(0) == '\\')
 			resPath = resPath.substring(1);
-
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
 	}
 }

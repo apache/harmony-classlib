@@ -746,7 +746,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.ThreadGroup#stop()
 	 */
-	public void test_stop() throws OutOfMemoryError {
+	@SuppressWarnings("deprecation")
+    public void test_stop() throws OutOfMemoryError {
 		// Test for method void java.lang.ThreadGroup.stop()
 
 		final ThreadGroup originalCurrent = getInitialThreadGroup();
@@ -810,7 +811,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.ThreadGroup#suspend()
 	 */
-	public void test_suspend() throws OutOfMemoryError {
+	@SuppressWarnings("deprecation")
+    public void test_suspend() throws OutOfMemoryError {
 		// Test for method void java.lang.ThreadGroup.suspend()
 
 		final ThreadGroup originalCurrent = getInitialThreadGroup();
@@ -901,7 +903,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 	 * @tests java.lang.ThreadGroup#uncaughtException(java.lang.Thread,
 	 *        java.lang.Throwable)
 	 */
-	public void test_uncaughtExceptionLjava_lang_ThreadLjava_lang_Throwable() {
+	@SuppressWarnings("deprecation")
+    public void test_uncaughtExceptionLjava_lang_ThreadLjava_lang_Throwable() {
 		// Test for method void
 		// java.lang.ThreadGroup.uncaughtException(java.lang.Thread,
 		// java.lang.Throwable)
@@ -925,14 +928,15 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 		// Our own exception class
 		class TestException extends RuntimeException {
+            private static final long serialVersionUID = 1L;
 		}
-		;
 
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		// - - - - - - -
 		testRoot = new ThreadGroup(originalCurrent,
 				"Test killing a Thread, forcing it to throw ThreadDeath") {
-			public void uncaughtException(Thread t, Throwable e) {
+			@Override
+            public void uncaughtException(Thread t, Throwable e) {
 				if (e instanceof ThreadDeath) {
                     passed[TEST_KILLING] = true;
                 }
@@ -943,7 +947,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 		// Test if a Thread tells its ThreadGroup about ThreadDeath
 		thread = new Thread(testRoot, null, "victim thread (to be killed)") {
-			public void run() {
+			@Override
+            public void run() {
 				while (true) {
 					Thread.yield();
 				}
@@ -981,7 +986,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		// - - - - - - -
 		testRoot = new ThreadGroup(originalCurrent,
 				"Test Forcing a throw of ThreadDeath") {
-			public void uncaughtException(Thread t, Throwable e) {
+			@Override
+            public void uncaughtException(Thread t, Throwable e) {
 				if (e instanceof ThreadDeath) {
                     passed[TEST_FORCING_THROW_THREAD_DEATH] = true;
                 }
@@ -992,7 +998,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 		// Test if a Thread tells its ThreadGroup about ThreadDeath
 		thread = new Thread(testRoot, null, "suicidal thread") {
-			public void run() {
+			@Override
+            public void run() {
 				throw new ThreadDeath();
 			}
 		};
@@ -1011,7 +1018,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		// - - - - - - -
 
 		testRoot = new ThreadGroup(originalCurrent, "Test ThreadDeath") {
-			public void uncaughtException(Thread t, Throwable e) {
+			@Override
+            public void uncaughtException(Thread t, Throwable e) {
 				passed[TEST_DEATH] = false;
 				// always forward, any exception
 				super.uncaughtException(t, e);
@@ -1035,7 +1043,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		// - - - - - - -
 
 		testRoot = new ThreadGroup(originalCurrent, "Test other Exception") {
-			public void uncaughtException(Thread t, Throwable e) {
+			@Override
+            public void uncaughtException(Thread t, Throwable e) {
 				if (e instanceof TestException) {
                     passed[TEST_OTHER] = true;
                 } else {
@@ -1047,7 +1056,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 		// Test if a Thread tells its ThreadGroup about an Exception
 		thread = new Thread(testRoot, null, "no-op thread") {
-			public void run() {
+			@Override
+            public void run() {
 				throw new TestException();
 			}
 		};
@@ -1067,28 +1077,29 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 		// Our own uncaught exception class
 		class UncaughtException extends TestException {
+            private static final long serialVersionUID = 1L;
 		}
-		;
 
 		testRoot = new ThreadGroup(originalCurrent,
 				"Test Exception in uncaught exception") {
-			public void uncaughtException(Thread t, Throwable e) {
+			@Override
+            public void uncaughtException(Thread t, Throwable e) {
 				if (e instanceof TestException) {
 					passed[TEST_EXCEPTION_IN_UNCAUGHT] = true;
 					// Let's simulate an error inside our uncaughtException
 					// method.
 					// This should be no-op according to the spec
 					throw new UncaughtException();
-				} else {
-                    // only forward exceptions other than our test
-					super.uncaughtException(t, e);
-                }
+				}
+                // only forward exceptions other than our test
+                super.uncaughtException(t, e);
 			}
 		};
 
 		// Test if an Exception in uncaughtException is really a no-op
 		thread = new Thread(testRoot, null, "no-op thread") {
-			public void run() {
+			@Override
+            public void run() {
 				try {
 					throw new TestException();
 				} catch (UncaughtException ue) {
@@ -1120,7 +1131,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		// (so that a ThreadGroup can know its Thread died)
 		testRoot = new ThreadGroup(originalCurrent,
 				"Test Uncaught followed by ThreadDeath") {
-			public void uncaughtException(Thread t, Throwable e) {
+			@Override
+            public void uncaughtException(Thread t, Throwable e) {
 				if (e instanceof ThreadDeath) {
                     passed[TEST_DEATH_AFTER_UNCAUGHT] = true;
                 }
@@ -1136,7 +1148,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		// Test if a Thread tells its ThreadGroup about an Exception and also
 		// ThreadDeath
 		thread = new Thread(testRoot, null, "no-op thread") {
-			public void run() {
+			@Override
+            public void run() {
 				throw new TestException();
 			}
 		};
@@ -1229,17 +1242,6 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 	}
 
-	private boolean wipeAllThreads(final Vector<?> threads) {
-		boolean ok = true;
-		for (int i = 0; i < threads.size(); i++) {
-			Thread t = (Thread) threads.elementAt(i);
-			ok = ok && wipeThread(t);
-		}
-
-		return ok;
-
-	}
-
 	private boolean wipeSideEffectThreads(ThreadGroup aGroup) {
 		boolean ok = true;
 		Thread[] threads = threads(aGroup);
@@ -1292,7 +1294,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 			// Use concurrency to maximize chance of exposing concurrency bugs
 			// in ThreadGroups
 			Thread t = new Thread(aGroup, name) {
-				public void run() {
+				@Override
+                public void run() {
 					ThreadGroup newGroup = new ThreadGroup(aGroup, name);
 					allCreated.addElement(newGroup);
 					asyncBuildRandomTreeUnder(newGroup, depth - 1, allCreated);
@@ -1334,51 +1337,10 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 		return true;
 	}
 
-	private boolean allNotSuspended(Vector<?> threads) {
-		for (int i = 0; i < threads.size(); i++) {
-			MyThread t = (MyThread) threads.elementAt(i);
-			if (!t.isActivelyRunning()) {
-                return false;
-            }
-		}
-
-		return true;
-
-	}
-
 	private boolean allSuspended(Vector<MyThread> threads) {
 		for (int i = 0; i < threads.size(); i++) {
 			MyThread t = threads.elementAt(i);
 			if (t.isActivelyRunning()) {
-                return false;
-            }
-		}
-
-		return true;
-
-	}
-
-	private boolean sameThreads(Thread[] allThreads, Vector<?> threads) {
-		if (allThreads.length != threads.size()) {
-            return false;
-        }
-
-		// The complexity of this method is N2, and we do it twice !!
-
-		// First make sure that all threads in @threads are also in @allThreads
-		for (int i = 0; i < allThreads.length; i++) {
-			Thread t = (Thread) threads.elementAt(i);
-			if (!arrayIncludes(allThreads, t)) {
-                return false;
-            }
-		}
-
-		// Now make sure that all threads in @allThreads are also in @threads
-		Thread[] vectorThreads = new Thread[threads.size()];
-		threads.copyInto(vectorThreads);
-		for (int i = 0; i < vectorThreads.length; i++) {
-			Thread t = allThreads[i];
-			if (!arrayIncludes(vectorThreads, t)) {
                 return false;
             }
 		}
@@ -1444,19 +1406,8 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 	}
 
-	private boolean parentOfAll(ThreadGroup parentCandidate,
-			ThreadGroup[] childrenCandidates) {
-		for (ThreadGroup element : childrenCandidates) {
-			if (!parentCandidate.parentOf(element)) {
-                return false;
-            }
-		}
-
-		return true;
-
-	}
-
-	private boolean wipeThread(Thread t) {
+	@SuppressWarnings("deprecation")
+    private boolean wipeThread(Thread t) {
 		t.stop();
 		try {
 			t.join(1000);

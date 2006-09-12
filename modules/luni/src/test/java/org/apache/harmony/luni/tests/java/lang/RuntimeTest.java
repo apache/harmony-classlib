@@ -38,12 +38,14 @@ public class RuntimeTest extends junit.framework.TestCase {
 			internalString = s;
 		}
 
-		protected void finalize() {
+		@Override
+        protected void finalize() {
 			internalString = "hit";
 		}
 	}
 
-	protected void finalize() {
+	@Override
+    protected void finalize() {
 		if (flag)
 			ranFinalize = true;
 	}
@@ -94,7 +96,7 @@ public class RuntimeTest extends junit.framework.TestCase {
 			r.gc(); // ensure all garbage objects have been collected
 			r.gc(); // two GCs force collection phase to complete
 			long firstRead = r.totalMemory() - r.freeMemory();
-			Vector v = new Vector();
+			Vector<StringBuffer> v = new Vector<StringBuffer>();
 			for (int i = 1; i < 10; i++)
 				v.addElement(new StringBuffer(10000));
 			long secondRead = r.totalMemory() - r.freeMemory();
@@ -144,22 +146,6 @@ public class RuntimeTest extends junit.framework.TestCase {
 		// Test for method long java.lang.Runtime.totalMemory()
 		assertTrue("totalMemory returned nonsense value", r.totalMemory() >= r
 				.freeMemory());
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-		flag = false;
-		ranFinalize = false;
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
 	}
 
 	public RuntimeTest() {

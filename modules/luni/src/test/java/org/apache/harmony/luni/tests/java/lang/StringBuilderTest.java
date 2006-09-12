@@ -57,7 +57,8 @@ public class StringBuilderTest extends TestCase {
 	/**
 	 * @tests java.lang.StringBuilder.StringBuilder(CharSequence)
 	 */
-	public void test_ConstructorLjava_lang_CharSequence() {
+	@SuppressWarnings("cast")
+    public void test_ConstructorLjava_lang_CharSequence() {
 		StringBuilder sb = new StringBuilder((CharSequence) "fixture");
 		assertEquals("fixture", sb.toString());
 		assertEquals("fixture".length() + 16, sb.capacity());
@@ -201,7 +202,8 @@ public class StringBuilderTest extends TestCase {
 	/**
 	 * @tests java.lang.StringBuilder.append(CharSequence, int, int)
 	 */
-	public void test_appendLjava_lang_CharSequenceII() {
+	@SuppressWarnings("cast")
+    public void test_appendLjava_lang_CharSequenceII() {
 		StringBuilder sb = new StringBuilder();
 		assertSame(sb, sb.append((CharSequence) "ab", 0, 2));
 		assertEquals("ab", sb.toString());
@@ -840,7 +842,7 @@ public class StringBuilderTest extends TestCase {
     public void test_insertIC_2() {
         StringBuilder obj = new StringBuilder();
         try {
-            obj.insert((int) -1, '?');
+            obj.insert(-1, '?');
             fail("ArrayIndexOutOfBoundsException expected");
         } catch (ArrayIndexOutOfBoundsException e) {
             // expected
@@ -1033,7 +1035,8 @@ public class StringBuilderTest extends TestCase {
 	/**
 	 * @tests java.lang.StringBuilder.insert(int, CharSequence, int, int)
 	 */
-	public void test_insertILjava_lang_CharSequenceII() {
+	@SuppressWarnings("cast")
+    public void test_insertILjava_lang_CharSequenceII() {
 		final String fixture = "0000";
 		StringBuilder sb = new StringBuilder(fixture);
 		assertSame(sb, sb.insert(0, (CharSequence) "ab", 0, 2));
@@ -1811,7 +1814,8 @@ public class StringBuilderTest extends TestCase {
 			super();
 		}
 
-		public String toString() {
+		@Override
+        public String toString() {
 			return "fixture";
 		}
 	}
