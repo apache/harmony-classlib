@@ -199,7 +199,7 @@ public class SHA1Impl implements SHA1_Data {
                     wordIndex = 0;
                 }
             }
-            if ( i >= toByte ) {                 // all input bytes appended
+            if ( i > toByte ) {                 // all input bytes appended
                 return ;
             }
         }
