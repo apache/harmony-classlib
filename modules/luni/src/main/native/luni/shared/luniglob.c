@@ -19,34 +19,19 @@
  * @ingroup HarmonyNatives
  * @brief Harmony LUNI natives initialization API.
  */
-
+#include <search.h>
 #include <string.h>
 #include "vmi.h"
 #include "jclglob.h"
+#include "hyport.h"
+#include "strhelp.h"
 
 static UDATA keyInitCount = 0;
 
 void *JCL_ID_CACHE = NULL;
 
-/* props_file_entry */
-
-#include "hypool.h"
-
-/**
-  * A structure that captures a single key-value setting from the properties file.
-  */
-typedef struct props_file_entry
-{
-  char *key;                            /** The key as it appears in the properties file */
-  char *value;                          /** The value as it appears in the properties file */
-} props_file_entry;
-
-static jint readClassPathFromPropertiesFile (JavaVM * vm);
-static jint decodeProperty (HyPortLibrary * portLibrary, char **scanCursor,
-                            HyPool * properties);
-static jint readPropertiesFile (HyPortLibrary * portLibrary, char *filename,
-                                HyPool * properties);
-static char *concat (HyPortLibrary * portLibrary, ...);
+static int props_compare(const void *arg1, const void *arg2);
+static jint readClassPathFromPropertiesFile (VMInterface *vmInterface);
 static void freeReferences (JNIEnv * env);
 
 /**
@@ -60,12 +45,8 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
   JNIEnv *env;
   void *keyInitCountPtr = GLOBAL_DATA (keyInitCount);
   void **jclIdCache = GLOBAL_DATA (JCL_ID_CACHE);
-  jint rcBpInit;
   VMInterface *vmInterface;
-  JavaVMInitArgs *vmArgs;
-  JavaVMOption *currentOption;
-  int i;
-  int bootClassPathSet = 0;
+  char *bootPath = NULL;
 
 #if defined(LINUX)
   /* all UNIX platforms */
@@ -106,36 +87,44 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
         {
           goto fail2;
         }
-      /* Grab the VM command line arguments */  
-      vmArgs = (*vmInterface)->GetInitArgs (vmInterface);
-      if (!vmArgs)
-        {
-          return JNI_ERR;
-        }
-  
-      /* Before we try to set the bootclasspath, check that it has not been specified
-         explicitly on the command line */
-      for ( i = 0; i < vmArgs->nOptions; i++ ) 
-        {
-          currentOption = &(vmArgs->options[i]);
-          if ( strstr( currentOption->optionString, "-Xbootclasspath:" ) )
-            { 
-              bootClassPathSet = 1;
-            }
-        }
-    
-      /* Only read bootsclasspath.properties if -Xbootclasspath: has not been specified */
-      if (0 == bootClassPathSet) 
-        {
-          /* Initialize bootstrap classpath */
-          rcBpInit = readClassPathFromPropertiesFile (vm);
-          if (JNI_OK != rcBpInit)
-            {
-              goto fail2;
-            }
-        }
 
-      return JNI_VERSION_1_2;
+       /* Should we check if bootclasspath is already set to avoid unexpected overriding? */
+       /* But this seems to conflict with default IBM VME settings...
+       /* (*vmInterface)->GetSystemProperty (vmInterface, BOOTCLASSPATH_PROPERTY, &bootPath);*/
+       if (!bootPath) 
+       {
+           int i;
+           int bootClassPathSet = 0;
+
+            /* Grab the VM command line arguments */  
+           JavaVMInitArgs *vmArgs = (*vmInterface)->GetInitArgs (vmInterface);
+           if (!vmArgs) {
+               goto fail2;
+           }
+      
+           /* Before we try to set the bootclasspath, check that it has not been specified
+            explicitly on the command line */
+           for ( i = 0; i < vmArgs->nOptions; i++ ) 
+           {
+                JavaVMOption *currentOption = &(vmArgs->options[i]);
+                if ( strstr( currentOption->optionString, "-Xbootclasspath:" ) )
+                { 
+                    bootClassPathSet = 1;
+                    break;
+                }
+           }
+        
+           /* Only read bootsclasspath.properties if -Xbootclasspath: has not been specified */
+           if (0 == bootClassPathSet) 
+           {
+               /* Initialize bootstrap classpath */
+               if (JNI_OK != readClassPathFromPropertiesFile (vmInterface))
+               {
+                   goto fail2;
+               }
+           }
+       }
+       return JNI_VERSION_1_2;
     }
 
 fail2:
@@ -201,265 +190,17 @@ JNI_OnUnload (JavaVM * vm, void *reserved)
     }
 }
 
-/**
- * Concatenates a variable number of null-terminated strings into a single string
- * using the specified port library to allocate memory.  The variable number of
- * strings arguments must be terminated by a single NULL value.
- *
- * @param portLibrary - The port library used to allocate memory.
- * @return The concatenated string.
- */
-
-static char *
-concat (HyPortLibrary * portLibrary, ...)
+static int props_compare(const void *arg1, const void *arg2)
 {
-  PORT_ACCESS_FROM_PORT (portLibrary);
-  va_list argp;
-  char *concatenated;
-  UDATA concatenatedSize = 0;
-
-  /* Walk the variable arguments once to compute the final size */
-  va_start (argp, portLibrary);
-  while (1)
-    {
-      char *chunk = va_arg (argp, char *);
-      if (chunk)
-        {
-          concatenatedSize += strlen (chunk);
-        }
-      else
-        {
-          break;
-        }
-    }
-  va_end (argp);
-
-  /* Allocate concatenated space */
-  concatenated =
-    hymem_allocate_memory (concatenatedSize + 1 /* for null terminator */ );
-  if (!concatenated)
-    {
-      return NULL;
-    }
-  concatenated[0] = '\0';
-
-  /* Walk again concatenating the pieces */
-  va_start (argp, portLibrary);
-  while (1)
-    {
-      char *chunk = va_arg (argp, char *);
-      if (chunk)
-        {
-          strcat (concatenated, chunk);
-        }
-      else
-        {
-          break;
-        }
-    }
-  va_end (argp);
-
-  return concatenated;
-}
-
-/**
-  * Read the properties file specified by <tt>filename</tt> into the pool of <tt>properties</tt>.
-  *
-  * @param portLibrary - The port library used to interact with the platform.
-  * @param filename - The file from which to read data using hyfile* functions.
-  * @param properties - A pool that will contain property file entries.
-  *
-  * @return JNI_OK on success, or a JNI error code on failure.
-  */
-static jint
-readPropertiesFile (HyPortLibrary * portLibrary, char *filename,
-                    HyPool * properties)
-{
-  PORT_ACCESS_FROM_PORT (portLibrary);
-  IDATA propsFD = -1;
-  I_64 seekResult;
-  IDATA fileSize;
-  IDATA bytesRemaining;
-  jint returnCode = JNI_OK;
-  char *fileContents = NULL;
-  char *writeCursor;
-  char *scanCursor, *scanLimit;
-
-  /* Determine the file size, fail if > 2G */
-  seekResult = hyfile_length (filename);
-  if ((seekResult <= 0) || (seekResult > 0x7FFFFFFF))
-    {
-      return JNI_ERR;
-    }
-  fileSize = (IDATA) seekResult;
-
-  /* Open the properties file */
-  propsFD = hyfile_open (filename, (I_32) HyOpenRead, (I_32) 0);
-  if (propsFD == -1)
-    {
-      /* Could not open the file */
-      return JNI_ERR;
-    }
-
-  /* Allocate temporary storage */
-  fileContents = hymem_allocate_memory (fileSize);
-  if (!fileContents)
-    {
-      return JNI_ENOMEM;
-    }
-
-  /* Initialize the read state */
-  bytesRemaining = fileSize;
-  writeCursor = fileContents;
-
-  /* Suck the file into memory */
-  while (bytesRemaining > 0)
-    {
-      IDATA bytesRead = hyfile_read (propsFD, writeCursor, bytesRemaining);
-      if (bytesRead == -1)
-        {
-          /* Read failed */
-          returnCode = JNI_ERR;
-          goto bail;
-        }
-
-      /* Advance the read state */
-      bytesRemaining -= bytesRead;
-      writeCursor += bytesRead;
-    }
-
-  /* Set up scan and limit points */
-  scanCursor = fileContents;
-  scanLimit = fileContents + fileSize;
-
-  /* Now crack the properties */
-  while (scanCursor < scanLimit)
-    {
-
-      /* Decode a property and advance the scan cursor */
-      int numberDecoded = decodeProperty (PORTLIB, &scanCursor, properties);
-
-      /* Bail if we encounter an error */
-      if (numberDecoded < 0)
-        {
-          returnCode = JNI_ENOMEM;
-          break;
-        }
-    }
-
-bail:
-  if (propsFD != -1)
-    {
-      hyfile_close (propsFD);
-    }
-  if (fileContents)
-    {
-      hymem_free_memory (fileContents);
-    }
-
-  return returnCode;
-}
-
-/**
-   * Scans the buffer specified by scanCursor and attempts to locate the next
-  *  key-value pair separated by the '=' sign, and terminated by the platform line
-  * delimiter.
-  * 
-  * If a key-value pair is located a new props_file_entry structure will be allocated in
-  * the <tt>properties</tt> pool, and the key and value will be copied.  The scanCursor
-  * will be advanced past the entire property entry on success.
-  *
-  *
-  * @param portLibrary - The port library used to interact with the platform.
-  * @param scanCursor - A null-terminated string containing one or more (or partial) properties.
-  * @param properties - A pool from which props_file_entry structures are allocated.
-  *
-  * @return The number of properties read, -1 on error.
-  * @note This function modifies the buffer as properties are consumed.
-  */
-static jint
-decodeProperty (HyPortLibrary * portLibrary, char **scanCursor,
-                HyPool * properties)
-{
-  PORT_ACCESS_FROM_PORT (portLibrary);
-  props_file_entry *property;
-  int keyLength, valueLength;
-  char *equalSign;
-  char *lineDelimiter;
-  char *propertyBuffer = *scanCursor;
-
-  lineDelimiter = strstr (propertyBuffer, PLATFORM_LINE_DELIMITER);
-  if (lineDelimiter)
-    {
-      /* Hammer the line delimiter to be a null */
-      *lineDelimiter = '\0';
-      *scanCursor = lineDelimiter + strlen (PLATFORM_LINE_DELIMITER);
-    }
-  else
-    {
-      /* Assume the entire text is a single token */
-      *scanCursor = propertyBuffer + strlen (propertyBuffer) - 1;
-    }
-
-  /* Now find the '=' character */
-  equalSign = strchr (propertyBuffer, '=');
-  if (!equalSign)
-    {
-      /* Malformed, assume it's a comment and move on */
-      return 0;
-    }
-
-  /* Allocate a new pool entry */
-  property = pool_newElement (properties);
-  if (!property)
-    {
-      return 0;
-    }
-
-  /* Compute the key length and allocate memory */
-  keyLength = equalSign - propertyBuffer;
-  property->key =
-    hymem_allocate_memory (keyLength + 1 /* for null terminator */ );
-  if (!property->key)
-    {
-      goto bail;
-    }
-
-  /* Compute the value length and allocate memory */
-  memcpy (property->key, propertyBuffer, keyLength);
-  property->key[keyLength] = '\0';
-
-  /* Compute the value length and allocate memory */
-  valueLength = strlen (propertyBuffer) - keyLength - 1 /* for equal sign */ ;
-  property->value =
-    hymem_allocate_memory (valueLength + 1 /* for null terminator */ );
-  if (!property->value)
-    {
-      goto bail;
-    }
-
-  /* Compute the value length and allocate memory */
-  memcpy (property->value, equalSign + 1, valueLength);
-  property->value[valueLength] = '\0';
-
-  /* Advance the scan cursor */
-  return 1;
-
-bail:
-  if (property != NULL)
-    {
-      if (property->key)
-        {
-          hymem_free_memory (property->key);
-        }
-      if (property->value)
-        {
-          hymem_free_memory (property->value);
-        }
-      pool_removeElement (properties, property);
-    }
-
-  return -1;
+    key_value_pair p1 = *(key_value_pair*)arg1;
+    key_value_pair p2 = *(key_value_pair*)arg2;
+    size_t l1 = strlen(p1.key);
+    size_t l2 = strlen(p2.key);
+    if (l1 < l2)
+        return -1;
+    if (l2 < l1)
+        return 1;
+    return strcmp(p1.key, p2.key);
 }
 
 /**
@@ -467,164 +208,116 @@ bail:
  * class library configuration.  Stores the result into a system property named
  * 'org.apache.harmony.boot.class.path'.
  *
- * Reads the bootclasspath.properties file a line at a time 
+ * @param vmInterface - the VMI interface pointer.
  *
- * @param vm - The JavaVM from which port library and VMI interfaces can be obtained.
- *
- * @return - JNI_OK on success.
+ * @return - JNI_OK on success, or a JNI error code on failure.
  */
 static jint
-readClassPathFromPropertiesFile (JavaVM * vm)
+readClassPathFromPropertiesFile (VMInterface *vmInterface)
 {
-  VMInterface *vmInterface;
-  HyPortLibrary *privatePortLibrary;
-  char *javaHome;
-  char bootDirectory[HyMaxPath];
-  char propsFile[HyMaxPath];
-  char cpSeparator[2];
-  char *bootstrapClassPath = NULL;
-  vmiError rcGetProperty;
-  jint returnCode = JNI_OK;
-  IDATA propsFD = -1;
-  HyPool *properties;
+    HyPortLibrary *privatePortLibrary;
+    char *javaHome;
+    char *bootDirectory;
+    char *propsFile;
+    char *bootstrapClassPath = NULL;
+    vmiError rcGetProperty;
+    jint returnCode;
+    key_value_pair * props;
+    U_32 number;
 
-  /* Query the VM interface */
-  vmInterface = VMI_GetVMIFromJavaVM (vm);
-  if (!vmInterface)
+    /* Extract the port library */
+    privatePortLibrary = (*vmInterface)->GetPortLibrary (vmInterface);
+    if (!privatePortLibrary)
     {
-      return JNI_ERR;
+        return JNI_ERR;
     }
 
-  /* Extract the port library */
-  privatePortLibrary = (*vmInterface)->GetPortLibrary (vmInterface);
-  if (!privatePortLibrary)
+    /* Load the java.home system property */
+    rcGetProperty =
+        (*vmInterface)->GetSystemProperty (vmInterface, "java.home", &javaHome);
+    if (VMI_ERROR_NONE != rcGetProperty)
     {
-      return JNI_ERR;
+        return JNI_ERR;
     }
 
-  /* Make a string version of the CP separator */
-  cpSeparator[0] = (char)hysysinfo_get_classpathSeparator ();
-  cpSeparator[1] = '\0';
-
-  /* Load the java.home system property */
-  rcGetProperty =
-    (*vmInterface)->GetSystemProperty (vmInterface, "java.home", &javaHome);
-  if (VMI_ERROR_NONE != rcGetProperty)
+    /* Locate the boot directory in ${java.home}\lib\boot */
+    bootDirectory = str_concat(PORTLIB, javaHome, DIR_SEPARATOR_STR, "lib", 
+        DIR_SEPARATOR_STR, "boot", DIR_SEPARATOR_STR, NULL);
+    if (!bootDirectory) 
     {
-      return JNI_ERR;
+        return JNI_ENOMEM;
     }
 
-  /* Locate the boot directory in ${java.home}\lib\boot */
-  strcpy (bootDirectory, javaHome);
-
-  /* Tack on a trailing separator if needed */
-  if (bootDirectory[strlen (javaHome) - 1] != DIR_SEPARATOR)
+    /* Build up the location of the properties file relative to java.home */
+    propsFile = str_concat(PORTLIB, bootDirectory, "bootclasspath.properties", NULL);
+    if (!propsFile) 
     {
-      strcat (bootDirectory, DIR_SEPARATOR_STR);
+        returnCode = JNI_ENOMEM;
+        goto cleanup;
     }
 
-  /* Now tack on the lib/boot portion */
-  strcat (bootDirectory, "lib");
-  strcat (bootDirectory, DIR_SEPARATOR_STR);
-  strcat (bootDirectory, "boot");
-  strcat (bootDirectory, DIR_SEPARATOR_STR);
+    returnCode = properties_load(PORTLIB, propsFile, &props, &number);
 
-  /* Build up the location of the properties file relative to java.home */
-  propsFile[0] = '\0';
-  strcat (propsFile, bootDirectory);
-  strcat (propsFile, "bootclasspath.properties");
-
-  /* Create a pool to hold onto properties */
-  properties =
-    pool_new (sizeof (props_file_entry), 0, 0, 0, POOL_FOR_PORT (PORTLIB));
-  if (!properties)
+    if (JNI_OK == returnCode && number != 0)
     {
-      returnCode = JNI_ENOMEM;
-      goto cleanup;
-    }
+        unsigned i = 0;
+        /* Make a string version of the CP separator */
+        char cpSeparator[] = {(char)hysysinfo_get_classpathSeparator (), '\0'};
+        bootstrapClassPath = "";
 
-  /* Pull the properties into the pool */
-  if (JNI_OK == readPropertiesFile (PORTLIB, propsFile, properties))
-    {
-      pool_state poolState;
+        qsort(props, number, sizeof(key_value_pair), props_compare);
 
-      props_file_entry *property = pool_startDo (properties, &poolState);
-      while (property)
+        for (;i < number; i++) 
         {
-          int digit;
-          int tokensScanned =
-            sscanf (property->key, "bootclasspath.%d", &digit);
-
-          /* Ignore anything except bootclasspath.<digit> */
-          if (tokensScanned == 1)
+            int digit;
+            int tokensScanned =
+                sscanf (props[i].key, "bootclasspath.%d", &digit);
+            /* Ignore anything except bootclasspath.<digit> */
+            if (tokensScanned == 1)
             {
-
-              /* The first and subsequent entries are handled slightly differently */
-              if (bootstrapClassPath)
+                char *oldPath = bootstrapClassPath;
+                bootstrapClassPath = str_concat (PORTLIB, 
+                    bootstrapClassPath, cpSeparator,
+                    bootDirectory, props[i].value, NULL);
+                if (i != 0) 
                 {
-                  char *oldPath = bootstrapClassPath;
-                  bootstrapClassPath =
-                    concat (PORTLIB, bootstrapClassPath, cpSeparator,
-                            bootDirectory, property->value, NULL);
-                  hymem_free_memory (oldPath);
-                }
-              else
-                {
-                  bootstrapClassPath =
-                    concat (PORTLIB, "", bootDirectory, property->value,
-                            NULL);
+                    hymem_free_memory (oldPath);
                 }
 
-              if (!bootstrapClassPath)
+                if (!bootstrapClassPath)
                 {
-                  returnCode = JNI_ENOMEM;      /* bail - memory allocate must have failed */
-                  break;
+                    returnCode = JNI_ENOMEM;      /* bail - memory allocate must have failed */
+                    break;
                 }
             }
-
-          /* Advance to next element */
-          property = (props_file_entry *) pool_nextDo (&poolState);
         }
     }
-
+    
 cleanup:
-
-  /* Free the properties pool (remember to free structure elements) */
-  if (properties)
-    {
-      pool_state poolState;
-      props_file_entry *property = pool_startDo (properties, &poolState);
-
-      while (property)
-        {
-          if (property->key)
-            {
-              hymem_free_memory (property->key);
-            }
-          if (property->value)
-            {
-              hymem_free_memory (property->value);
-            }
-          property = (props_file_entry *) pool_nextDo (&poolState);
-        }
-      pool_kill (properties);
+    if (props) {
+        properties_free(PORTLIB, props);
+    }
+    if (bootDirectory) {
+        hymem_free_memory(bootDirectory);
+    }
+    if (propsFile) {
+        hymem_free_memory(propsFile);
     }
 
-  /* Commit the full bootstrap class path into the VMI */
-  if (bootstrapClassPath)
+    /* Commit the full bootstrap class path into the VMI */
+    if (bootstrapClassPath)
     {
-      vmiError rcSetProperty = (*vmInterface)->SetSystemProperty (vmInterface,
-                                                                  "org.apache.harmony.boot.class.path",
-                                                                  bootstrapClassPath);
-      if (VMI_ERROR_NONE != rcSetProperty)
+        vmiError rcSetProperty = (*vmInterface)->SetSystemProperty (vmInterface,
+            BOOTCLASSPATH_PROPERTY,
+            bootstrapClassPath);
+        if (VMI_ERROR_NONE != rcSetProperty)
         {
-          returnCode = JNI_ERR;
+            returnCode = JNI_ERR;
         }
-      hymem_free_memory (bootstrapClassPath);
+        hymem_free_memory (bootstrapClassPath);
     }
 
-  return returnCode;
-
+    return returnCode;
 }
 
 /**

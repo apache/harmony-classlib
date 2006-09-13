@@ -51,6 +51,7 @@
                 <include name="iohelp.h" />
                 <include name="exceptions.h" />
                 <include name="libglob.h" />
+                <include name="strhelp.h" />            	
                 <include name="fdlibm.h" />
                 <include name="hymagic.h" />
                 <include name="jsig.h" />

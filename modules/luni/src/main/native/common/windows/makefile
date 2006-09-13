@@ -22,7 +22,7 @@ LIBNAME=$(LIBPATH)hycommon.lib
 
 BUILDFILES = \
 	$(SHAREDSUB)libglob.obj $(SHAREDSUB)iohelp.obj \
-	$(SHAREDSUB)exceptions.obj \
+	$(SHAREDSUB)exceptions.obj $(SHAREDSUB)strhelp.obj \
 	locklbl.obj lock386.obj \
 	$(SHAREDSUB)utf8decode.obj $(SHAREDSUB)utf8encode.obj
 

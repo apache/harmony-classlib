@@ -210,6 +210,12 @@ extern "C"
  */
   JavaVMInitArgs *JNICALL GetInitArgs (VMInterface * vmi);
 
+
+/**
+ * Name of the property holding bootclasspath string.
+ */
+#define BOOTCLASSPATH_PROPERTY "org.apache.harmony.boot.class.path"
+
  /**
   * @fn VMInterfaceFunctions_::GetSystemProperty(VMInterface * vmi, char *key, char **valuePtr)
   * Retrieve the value of a VM system property. 
