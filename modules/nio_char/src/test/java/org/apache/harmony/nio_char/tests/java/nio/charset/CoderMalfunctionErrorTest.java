@@ -18,7 +18,8 @@ package org.apache.harmony.nio_char.tests.java.nio.charset;
 import java.nio.charset.CoderMalfunctionError;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * Test java.nio.CoderMalfunctionError.
@@ -42,26 +43,19 @@ public class CoderMalfunctionErrorTest extends TestCase {
 		assertNull(e.getCause());
 	}
 
-	/*
-	 * Test serialization/deserialization.
-	 */
-	public void testSerialization() throws Exception {
-		CoderMalfunctionError ex = new CoderMalfunctionError(null);
+    /**
+     * @tests serialization/deserialization compatibility.
+     */
+    public void testSerializationSelf() throws Exception {
 
-		CoderMalfunctionError deEx = (CoderMalfunctionError) SerializationTester
-				.getDeserilizedObject(ex);
-		assertEquals(null, deEx.getCause());
-	}
+        SerializationTest.verifySelf(new CoderMalfunctionError(null));
+    }
 
-	/*
-	 * Test serialization/deserialization.
-	 */
-	public void testSerializationCompatibility() throws Exception {
-		CoderMalfunctionError ex = new CoderMalfunctionError(null);
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+        SerializationTest.verifyGolden(this, new CoderMalfunctionError(null));
 
-		CoderMalfunctionError deEx = (CoderMalfunctionError) SerializationTester
-				.readObject(ex,
-						"tests/api/java/nio/charset/CoderMalfunctionError.ser");
-		assertEquals(null, deEx.getCause());
-	}
+    }
 }

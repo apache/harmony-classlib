@@ -19,7 +19,8 @@ import java.io.IOException;
 import java.nio.charset.CharacterCodingException;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * Test CharacterCodingException
@@ -33,24 +34,19 @@ public class CharacterCodingExceptionTest extends TestCase {
 		assertNull(ex.getMessage());
 	}
 
-	/*
-	 * Test serialization/deserialization.
-	 */
-	public void testSerialization() throws Exception {
-		CharacterCodingException ex = new CharacterCodingException();
+    /**
+     * @tests serialization/deserialization compatibility.
+     */
+    public void testSerializationSelf() throws Exception {
 
-		CharacterCodingException deEx = (CharacterCodingException) SerializationTester
-				.getDeserilizedObject(ex);
-	}
+        SerializationTest.verifySelf(new CharacterCodingException());
+    }
 
-	/*
-	 * Test serialization/deserialization.
-	 */
-	public void testSerializationCompatibility() throws Exception {
-		CharacterCodingException ex = new CharacterCodingException();
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+        SerializationTest.verifyGolden(this, new CharacterCodingException());
 
-		CharacterCodingException deEx = (CharacterCodingException) SerializationTester
-				.readObject(ex,
-						"tests/api/java/nio/charset/CharacterCodingException.ser");
-	}
+    }
 }

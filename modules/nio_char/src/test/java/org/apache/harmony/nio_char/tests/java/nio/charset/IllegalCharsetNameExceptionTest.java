@@ -15,10 +15,13 @@
 
 package org.apache.harmony.nio_char.tests.java.nio.charset;
 
+import java.io.Serializable;
 import java.nio.charset.IllegalCharsetNameException;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 /**
  * Test class IllegalCharsetNameException.
@@ -50,27 +53,41 @@ public class IllegalCharsetNameExceptionTest extends TestCase {
 
 	}
 
-	/*
-	 * Test serialization/deserialization.
-	 */
-	public void testSerialization() throws Exception {
-		IllegalCharsetNameException ex = new IllegalCharsetNameException(
-				"charsetName");
+    // comparator for IllegalCharsetNameException objects
+    private static final SerializableAssert COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
 
-		IllegalCharsetNameException deEx = (IllegalCharsetNameException) SerializationTester
-				.getDeserilizedObject(ex);
-	}
+            // FIXME?: getMessage() returns more helpful string but
+            // this leads to incompatible message in serial form
+            //
+            // do common checks for all throwable objects
+            // SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(initial,
+            //        deserialized);
 
-	/*
-	 * Test serialization/deserialization
-	 */
-	public void testSerializationCompatibility() throws Exception {
-		IllegalCharsetNameException ex = new IllegalCharsetNameException(
-				"charsetName");
+            IllegalCharsetNameException initEx = (IllegalCharsetNameException) initial;
+            IllegalCharsetNameException desrEx = (IllegalCharsetNameException) deserialized;
 
-		IllegalCharsetNameException deEx = (IllegalCharsetNameException) SerializationTester
-				.readObject(ex,
-						"tests/api/java/nio/charset/IllegalCharsetNameException.ser");
-	}
+            assertEquals("CharsetName", initEx.getCharsetName(), desrEx
+                    .getCharsetName());
+        }
+    };
 
+    /**
+     * @tests serialization/deserialization compatibility.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new IllegalCharsetNameException(
+                "charsetName"), COMPARATOR);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new IllegalCharsetNameException(
+                "charsetName"), COMPARATOR);
+    }
 }

@@ -15,11 +15,14 @@
 
 package org.apache.harmony.nio_char.tests.java.nio.charset;
 
+import java.io.Serializable;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.MalformedInputException;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 /**
  * Test class MalformedInputException.
@@ -44,28 +47,38 @@ public class MalformedInputExceptionTest extends TestCase {
 		assertTrue(ex.getMessage().indexOf("0") != -1);
 	}
 
-	/*
-	 * Test serialization/deserialization.
-	 */
-	public void testSerialization() throws Exception {
-		MalformedInputException ex = new MalformedInputException(11);
+    // comparator for MalformedInputException objects
+    private static final SerializableAssert COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
 
-		MalformedInputException deEx = (MalformedInputException) SerializationTester
-				.getDeserilizedObject(ex);
-		assertEquals(11, deEx.getInputLength());
-	}
+            // do common checks for all throwable objects
+            SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(initial,
+                    deserialized);
 
-	/*
-	 * Test serialization/deserialization compatibility with reference
-	 * implementation.
-	 */
-	public void testSerializationCompatibility() throws Exception {
-		MalformedInputException ex = new MalformedInputException(11);
+            MalformedInputException initEx = (MalformedInputException) initial;
+            MalformedInputException desrEx = (MalformedInputException) deserialized;
 
-		MalformedInputException deEx = (MalformedInputException) SerializationTester
-				.readObject(ex,
-						"tests/api/java/nio/charset/MalformedInputException.ser");
-		assertEquals(11, deEx.getInputLength());
-	}
+            assertEquals("InputLength", initEx.getInputLength(), desrEx
+                    .getInputLength());
+        }
+    };
 
+    /**
+     * @tests serialization/deserialization compatibility.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new MalformedInputException(11),
+                COMPARATOR);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new MalformedInputException(11),
+                COMPARATOR);
+    }
 }

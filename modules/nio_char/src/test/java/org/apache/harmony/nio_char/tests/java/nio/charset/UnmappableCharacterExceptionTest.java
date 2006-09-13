@@ -15,11 +15,14 @@
 
 package org.apache.harmony.nio_char.tests.java.nio.charset;
 
+import java.io.Serializable;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.UnmappableCharacterException;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 /**
  * Test class UnmappableCharacterException.
@@ -45,28 +48,38 @@ public class UnmappableCharacterExceptionTest extends TestCase {
 
 	}
 
-	/*
-	 * Test serialization/deserialization.
-	 */
-	public void testSerialization() throws Exception {
-		UnmappableCharacterException ex = new UnmappableCharacterException(11);
+    // comparator for UnmappableCharacterException objects
+    private static final SerializableAssert COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
 
-		UnmappableCharacterException deEx = (UnmappableCharacterException) SerializationTester
-				.getDeserilizedObject(ex);
-		assertEquals(11, deEx.getInputLength());
-	}
+            // do common checks for all throwable objects
+            SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(initial,
+                    deserialized);
 
-	/*
-	 * Test serialization/deserialization compatibility with reference
-	 * implementation.
-	 */
-	public void testSerializationCompatibility() throws Exception {
-		UnmappableCharacterException ex = new UnmappableCharacterException(11);
+            UnmappableCharacterException initEx = (UnmappableCharacterException) initial;
+            UnmappableCharacterException desrEx = (UnmappableCharacterException) deserialized;
 
-		UnmappableCharacterException deEx = (UnmappableCharacterException) SerializationTester
-				.readObject(ex,
-						"tests/api/java/nio/charset/UnmappableCharacterException.ser");
-		assertEquals(11, deEx.getInputLength());
-	}
+            assertEquals("InputLength", initEx.getInputLength(), desrEx
+                    .getInputLength());
+        }
+    };
 
+    /**
+     * @tests serialization/deserialization compatibility.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new UnmappableCharacterException(11),
+                COMPARATOR);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new UnmappableCharacterException(
+                11), COMPARATOR);
+    }
 }

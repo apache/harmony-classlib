@@ -15,10 +15,13 @@
 
 package org.apache.harmony.nio_char.tests.java.nio.charset;
 
+import java.io.Serializable;
 import java.nio.charset.UnsupportedCharsetException;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 /**
  * Test class UnsupportedCharsetException.
@@ -49,26 +52,41 @@ public class UnsupportedCharsetExceptionTest extends TestCase {
 		assertTrue(ex.getMessage().indexOf("null") != -1);
 	}
 
-	/*
-	 * Test serialization/deserialization.
-	 */
-	public void testSerialization() throws Exception {
-		UnsupportedCharsetException ex = new UnsupportedCharsetException(
-				"charsetName");
+    // comparator for UnsupportedCharsetException objects
+    private static final SerializableAssert COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
 
-		UnsupportedCharsetException deEx = (UnsupportedCharsetException) SerializationTester
-				.getDeserilizedObject(ex);
-	}
+            // FIXME?: getMessage() returns more helpful string but
+            // this leads to incompatible message in serial form
+            //
+            // do common checks for all throwable objects
+            // SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(initial,
+            //        deserialized);
 
-	/*
-	 * Test serialization/deserialization.
-	 */
-	public void testSerializationCompatibility() throws Exception {
-		UnsupportedCharsetException ex = new UnsupportedCharsetException(
-				"charsetName");
+            UnsupportedCharsetException initEx = (UnsupportedCharsetException) initial;
+            UnsupportedCharsetException desrEx = (UnsupportedCharsetException) deserialized;
 
-		UnsupportedCharsetException deEx = (UnsupportedCharsetException) SerializationTester
-				.readObject(ex,
-						"tests/api/java/nio/charset/UnsupportedCharsetException.ser");
-	}
+            assertEquals("CharsetName", initEx.getCharsetName(), desrEx
+                    .getCharsetName());
+        }
+    };
+
+    /**
+     * @tests serialization/deserialization compatibility.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new UnsupportedCharsetException(
+                "charsetName"), COMPARATOR);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new UnsupportedCharsetException(
+                "charsetName"), COMPARATOR);
+    }
 }
