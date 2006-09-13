@@ -20,6 +20,7 @@
 package java.awt.geom;
 
 import java.awt.Rectangle;
+import java.awt.geom.Arc2D;
 
 public class Arc2DFloatTest extends GeomTestCase {
 
@@ -45,10 +46,28 @@ public class Arc2DFloatTest extends GeomTestCase {
 
     public void testCreate2() {
         assertEquals(new Arc2D.Float(0, 0, 0, 0, 0, 0, Arc2D.CHORD), new Arc2D.Float(Arc2D.CHORD));
+        
+        // Regression for HARMONY-1403
+        try {
+            // Invalid type
+            new Arc2D.Float(-13);
+            fail("Expected IAE");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
     }
 
     public void testCreate3() {
         assertEquals(new Arc2D.Float(1, 2, 3, 4, 5, 6, Arc2D.CHORD), new Arc2D.Float(new Rectangle(1, 2, 3, 4), 5, 6, Arc2D.PIE));
+        
+        // Regression for HARMONY-1403
+        try {
+            // Invalid type
+            new Arc2D.Float(new Rectangle(1, 2, 3, 4), 5, 6, 8);
+            fail("Expected IAE");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
     }
 
     public void testGetX() {

@@ -486,6 +486,9 @@ public abstract class Arc2D extends RectangularShape {
     }
 
     public void setArcType(int type) {
+        if (type != OPEN && type != CHORD && type != PIE) {
+            throw new IllegalArgumentException("Invalid type of Arc: " + type);
+        }
         this.type = type;
     }
 

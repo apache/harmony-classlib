@@ -22,6 +22,7 @@ package java.awt.geom;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.Arc2D;
 import java.awt.geom.ShapeTestCase;
 
 public class Arc2DTest extends ShapeTestCase {
@@ -188,6 +189,15 @@ public class Arc2DTest extends ShapeTestCase {
     public void testSetArcType() {
         a.setArcType(Arc2D.CHORD);
         assertEquals("Arc type", Arc2D.CHORD, a.getArcType());
+        
+        // Regression for HARMONY-1403
+        try {
+            // Invalid type
+            a.setArcType(17);
+            fail("Expected IAE");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
     }
 
     public void testGetStartPoint() {
