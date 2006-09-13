@@ -22,7 +22,6 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.archive.internal.pack200.BHSDCodec;
 import org.apache.harmony.archive.internal.pack200.Codec;
 import org.apache.harmony.archive.internal.pack200.Pack200Exception;
 import org.apache.harmony.archive.internal.pack200.PopulationCodec;

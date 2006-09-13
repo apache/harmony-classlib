@@ -27,7 +27,7 @@ import java.io.InputStream;
  * @author Alex Blewitt
  * 
  */
-public class BHSDCodec extends Codec {
+public final class BHSDCodec extends Codec {
 
 	/**
 	 * The maximum number of bytes in each coding word
@@ -156,7 +156,7 @@ public class BHSDCodec extends Codec {
 		// When s=0, {1,2,3,4} is mapped to {1,2,3,4}
 		// When s=1, {1,2,3,4} is mapped to {-1,1,-2,2...}
 		// When s=2, {1,2,3,4} is mapped to {1,2,3,-1...}
-		if (s > 0) {
+		if (isSigned()) {
 			int u = ((1 << s) - 1);
 			if ((z & u) == u) {
 				z = z >>> s ^ -1L;
@@ -164,7 +164,7 @@ public class BHSDCodec extends Codec {
 				z = z - (z >>> s);
 			}
 		}
-		if (d == 1)
+		if (isDelta())
 			z += last;
 		return z;
 	}
@@ -181,13 +181,32 @@ public class BHSDCodec extends Codec {
 	}
 
 	/**
+	 * Returns true if this codec is a delta codec
+	 * @return true if this codec is a delta codec
+	 */
+	public boolean isDelta() {
+		return d != 0;
+	}
+
+	/**
+	 * Returns true if this codec is a signed codec
+	 * @return true if this codec is a signed codec
+	 */
+	public boolean isSigned() {
+		return s != 0;
+	}
+
+	/**
 	 * Returns the largest value that this codec can represent.
 	 * 
 	 * @eturn the largest value that this codec can represent.
 	 */
 	public long largest() {
 		long result;
-		if (d == 0) {
+		if (isDelta()) {
+			result = Long.MAX_VALUE;
+		} else {
+			// TODO This can probably be optimised into a better mathematical statement
 			if (s == 0) {
 				result = cardinality() - 1;
 			} else if (s == 1) {
@@ -197,13 +216,10 @@ public class BHSDCodec extends Codec {
 			} else {
 				throw new Error("Unknown s value");
 			}
-		} else {
-			result = Long.MAX_VALUE;
 		}
 		return Math.min((s == 0 ? ((long) Integer.MAX_VALUE) << 1
 				: Integer.MAX_VALUE) - 1, result);
 	}
-
 	/**
 	 * Returns the smallest value that this codec can represent.
 	 * 
@@ -211,18 +227,17 @@ public class BHSDCodec extends Codec {
 	 */
 	public long smallest() {
 		long result;
-		if (d == 0) {
-			if (s == 0) {
-				result = 0;
-			} else {
-				result = -cardinality() / (1 << s);
-			}
-		} else {
+		if (isDelta()) {
 			result = Integer.MIN_VALUE;
+		} else {
+			if (isSigned()) {
+				result = -cardinality() / (1 << s);
+			} else {
+				result = 0;
+			}
 		}
 		return Math.max(Integer.MIN_VALUE, result);
 	}
-
 	/**
 	 * Returns the codec in the form (1,256) or (1,64,1,1). Note that trailing
 	 * zero fields are not shown.
@@ -245,4 +260,24 @@ public class BHSDCodec extends Codec {
 		return buffer.toString();
 	}
 
+	/**
+	 * @return the b
+	 */
+	public int getB() {
+		return b;
+	}
+
+	/**
+	 * @return the h
+	 */
+	public int getH() {
+		return h;
+	}
+
+	/**
+	 * @return the l
+	 */
+	public int getL() {
+		return l;
+	}
 }

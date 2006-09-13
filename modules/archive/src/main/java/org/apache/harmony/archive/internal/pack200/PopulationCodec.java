@@ -19,7 +19,6 @@ package org.apache.harmony.archive.internal.pack200;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 public class PopulationCodec extends Codec {
 	private Codec favouredCodec;

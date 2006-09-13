@@ -101,53 +101,53 @@ public abstract class Codec {
 	/**
 	 * BCI5 = (5,4): Used for storing branching information in bytecode.
 	 */
-	public static Codec BCI5 = new BHSDCodec(5, 4);
+	public static final BHSDCodec BCI5 = new BHSDCodec(5, 4);
 
 	/**
 	 * BRANCH5 = (5,4,2): Used for storing branching information in bytecode.
 	 */
-	public static final Codec BRANCH5 = new BHSDCodec(5, 4, 2);
+	public static final BHSDCodec BRANCH5 = new BHSDCodec(5, 4, 2);
 
 	/**
 	 * BYTE1 = (1,256): Used for storing plain bytes.
 	 */
-	public static final Codec BYTE1 = new BHSDCodec(1, 256);
+	public static final BHSDCodec BYTE1 = new BHSDCodec(1, 256);
 
 	/**
 	 * CHAR3 = (3,128): Used for storing text (UTF-8) strings. NB This isn't
 	 * quite the same as UTF-8, but has similar properties; ASCII characters
 	 * &lt; 127 are stored in a single byte.
 	 */
-	public static final Codec CHAR3 = new BHSDCodec(3, 128);
+	public static final BHSDCodec CHAR3 = new BHSDCodec(3, 128);
 
 	/**
 	 * DELTA5 = (5,64,1,1): Used for the majority of numerical codings where
 	 * there is a correlated sequence of signed values.
 	 */
-	public static final Codec DELTA5 = new BHSDCodec(5, 64, 1, 1);
+	public static final BHSDCodec DELTA5 = new BHSDCodec(5, 64, 1, 1);
 
 	/**
 	 * DELTA5 = (5,64,2,1): Used for the majority of numerical codings where
 	 * there is a correlated sequence of signed values, but where most of them
 	 * are expected to be non-negative.
 	 */
-	public static final Codec MDELTA5 = new BHSDCodec(5, 64, 2, 1);
+	public static final BHSDCodec MDELTA5 = new BHSDCodec(5, 64, 2, 1);
 
 	/**
 	 * SIGNED5 = (5,64,1): Used for small signed values.
 	 */
-	public static final Codec SIGNED5 = new BHSDCodec(5, 64, 1);
+	public static final BHSDCodec SIGNED5 = new BHSDCodec(5, 64, 1);
 
 	/**
 	 * UDELTA5 = (5,64,0,1): Used for the majority of numerical codings where
 	 * there is a correlated sequence of unsigned values.
 	 */
-	public static final Codec UDELTA5 = new BHSDCodec(5, 64, 0, 1);
+	public static final BHSDCodec UDELTA5 = new BHSDCodec(5, 64, 0, 1);
 
 	/**
 	 * USIGNED5 = (5,64): Used for small unsigned values.
 	 */
-	public static final Codec UNSIGNED5 = new BHSDCodec(5, 64);
+	public static final BHSDCodec UNSIGNED5 = new BHSDCodec(5, 64);
 
 	/**
 	 * Decode a sequence of bytes from the given input stream, returning the

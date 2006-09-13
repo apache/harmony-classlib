@@ -16,6 +16,7 @@
  */
 package org.apache.harmony.archive.internal.pack200;
 
+import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -119,17 +120,27 @@ public class Segment {
 
 	private int attributeDefinitionCount;
 
-	private byte[] attributeDefinitionHeader;
+	private int[] attributeDefinitionHeader;
 
 	private String[] attributeDefinitionLayout;
 
 	private String[] attributeDefinitionName;
 
-	private byte[] bandHeadersData;
+	private InputStream bandHeadersInputStream;
 
 	private int bandHeadersSize;
 
 	private int classCount;
+
+	private int[] classFieldCount;
+
+	private String[][] classInterfaces;
+
+	private int[] classMethodCount;
+
+	private String[] classSuper;
+
+	private String[] classThis;
 
 	private String[] cpClass;
 
@@ -189,9 +200,13 @@ public class Segment {
 
 	private int defaultClassMinorVersion;
 
-	private byte[][] fileBits;
+	private int fieldAttrCount;
 
-	private int numberOfFiles;
+	private String[][] fieldDescr;
+
+	private long[][] fieldFlags;
+
+	private byte[][] fileBits;
 
 	private long[] fileModtime;
 
@@ -201,39 +216,182 @@ public class Segment {
 
 	private long[] fileSize;
 
+	private int[] icFlags;
+
+	private Object icName;
+
+	private String[] icOuterClass;
+
+	private String[] icThisClass;
+
 	private int innerClassCount;
 
 	private int major;
 
+	private int methodAttrCount;
+
+	private String[][] methodDescr;
+
+	private long[][] methodFlags;
+
 	private int minor;
+
+	private int numberOfFiles;
 
 	private SegmentOptions options;
 
 	private int segmentsRemaining;
 
-	private String[] icThisClass;
+	private int classAttrCount;
 
-	private int[] icFlags;
+	private long[] classFlags;
 
-	private String[] icOuterClass;
+	/**
+	 * This is a local debugging message to aid the developer in writing this
+	 * class. It will be removed before going into production. If the property
+	 * 'debug.pack200' is set, this will generate messages to stderr; otherwise,
+	 * it will be silent.
+	 * 
+	 * @param message
+	 * @deprecated this should be removed from production code
+	 */
+	private void debug(String message) {
+		if (System.getProperty("debug.pack200") != null) {
+			System.err.println(message);
+		}
+	}
 
-	private Object icName;
+	/**
+	 * Decode a band and return an array of <code>int[]</code> values
+	 * 
+	 * @param name
+	 *            the name of the band (primarily for logging/debugging
+	 *            purposes)
+	 * @param in
+	 *            the InputStream to decode from
+	 * @param defaultCodec
+	 *            the default codec for this band
+	 * @param count
+	 *            the number of elements to read
+	 * @return an array of decoded <code>int[]</code> values
+	 * @throws IOException
+	 *             if there is a problem reading from the underlying input
+	 *             stream
+	 * @throws Pack200Exception
+	 *             if there is a problem decoding the value or that the value is
+	 *             invalid
+	 */
+	private int[] decodeBandInt(String name, InputStream in,
+			BHSDCodec defaultCodec, int count) throws IOException,
+			Pack200Exception {
+		// TODO Might be able to improve this directly.
+		int[] result = new int[count];
 
-	private String[] classThis;
+		// TODO We need to muck around in the scenario where the first value
+		// read indicates
+		// an uber-codec
+		long[] longResult = decodeBandLong(name, in, defaultCodec, count);
+		for (int i = 0; i < count; i++) {
+			result[i] = (int) longResult[i];
+		}
+		return result;
+	}
 
-	private String[] classSuper;
+	/**
+	 * Decode a band and return an array of <code>long[]</code> values
+	 * 
+	 * @param name
+	 *            the name of the band (primarily for logging/debugging
+	 *            purposes)
+	 * @param in
+	 *            the InputStream to decode from
+	 * @param codec
+	 *            the default codec for this band
+	 * @param count
+	 *            the number of elements to read
+	 * @return an array of decoded <code>long[]</code> values
+	 * @throws IOException
+	 *             if there is a problem reading from the underlying input
+	 *             stream
+	 * @throws Pack200Exception
+	 *             if there is a problem decoding the value or that the value is
+	 *             invalid
+	 */
+	private long[] decodeBandLong(String name, InputStream in, BHSDCodec codec,
+			int count) throws IOException, Pack200Exception {
+		long[] result = codec.decode(count, in);
+		if (result.length > 0) {
+			int first = (int) result[0];
+			if (codec.isSigned() && first >= -256 && first <= -1) {
+				// TODO Well, switch codecs then ...
+				Codec weShouldHaveUsed = CodecEncoding.getCodec(-1 - first,
+						getBandHeadersInputStream(), codec);
+				throw new Error("Bugger. We should have switched codec to "
+						+ weShouldHaveUsed);
+			} else if (!codec.isSigned() && first >= codec.getL()
+					&& first <= codec.getL() + 255) {
+				Codec weShouldHaveUsed = CodecEncoding.getCodec(first
+						- codec.getL(), getBandHeadersInputStream(), codec);
+				// TODO Well, switch codecs then ...
+				throw new Error("Bugger. We should have switched codec to "
+						+ weShouldHaveUsed);
+			}
+		}
+		// TODO Remove debugging code
+		debug("Parsed *" + name + " (" + result.length + ")");
+		return result;
+	}
 
-	private String[][] classInterfaces;
+	/**
+	 * Decode a scalar from the band file. A scalar is like a band, but does not
+	 * perform any band code switching.
+	 * 
+	 * @param name
+	 *            the name of the scalar (primarily for logging/debugging
+	 *            purposes)
+	 * @param in
+	 *            the input stream to read from
+	 * @param codec
+	 *            the codec for this scalar
+	 * @return the decoded value
+	 * @throws IOException
+	 *             if there is a problem reading from the underlying input
+	 *             stream
+	 * @throws Pack200Exception
+	 *             if there is a problem decoding the value or that the value is
+	 *             invalid
+	 */
+	private long decodeScalar(String name, InputStream in, BHSDCodec codec)
+			throws IOException, Pack200Exception {
+		debug("Parsed #" + name + " (1)");
+		return codec.decode(in);
+	}
 
-	private int[] classFieldCount;
-
-	private int[] classMethodCount;
-
-	private String[][] fieldDescr;
-
-	private long[][] fieldFlags;
-
-	private int fieldAttrCount;
+	/**
+	 * Decode a number of scalars from the band file. A scalar is like a band,
+	 * but does not perform any band code switching.
+	 * 
+	 * @param name
+	 *            the name of the scalar (primarily for logging/debugging
+	 *            purposes)
+	 * @param in
+	 *            the input stream to read from
+	 * @param codec
+	 *            the codec for this scalar
+	 * @return an array of decoded <code>long[]</code> values
+	 * @throws IOException
+	 *             if there is a problem reading from the underlying input
+	 *             stream
+	 * @throws Pack200Exception
+	 *             if there is a problem decoding the value or that the value is
+	 *             invalid
+	 */
+	private long[] decodeScalar(String name, InputStream in, BHSDCodec codec,
+			int n) throws IOException, Pack200Exception {
+		// TODO Remove debugging code
+		debug("Parsed #" + name + " (" + n + ")");
+		return codec.decode(n, in);
+	}
 
 	public long getArchiveModtime() {
 		return archiveModtime;
@@ -241,6 +399,25 @@ public class Segment {
 
 	public long getArchiveSize() {
 		return archiveSize;
+	}
+
+	/**
+	 * Obtain the band headers data as an input stream. If no band headers are
+	 * present, this will return an empty input stream to prevent any further
+	 * reads taking place.
+	 * 
+	 * Note that as a stream, data consumed from this input stream can't be
+	 * re-used. Data is only read from this stream if the encoding is such that
+	 * additional information needs to be decoded from the stream itself.
+	 * 
+	 * @return the band headers input stream
+	 */
+	public InputStream getBandHeadersInputStream() {
+		if (bandHeadersInputStream == null) {
+			bandHeadersInputStream = new ByteArrayInputStream(new byte[0]);
+		}
+		return bandHeadersInputStream;
+
 	}
 
 	public int getNumberOfFiles() {
@@ -258,19 +435,23 @@ public class Segment {
 	private void parseArchiveFileCounts(InputStream in) throws IOException,
 			Pack200Exception {
 		if (getOptions().hasArchiveFileCounts()) {
-			setArchiveSize(Codec.UNSIGNED5.decode(in) << 32
-					| Codec.UNSIGNED5.decode(in));
-			setSegmentsRemaining(Codec.UNSIGNED5.decode(in));
-			setArchiveModtime(Codec.UNSIGNED5.decode(in));
-			setNumberOfFiles(Codec.UNSIGNED5.decode(in));
+			setArchiveSize(decodeScalar("archive_size_hi", in, Codec.UNSIGNED5) << 32
+					| decodeScalar("archive_size_lo", in, Codec.UNSIGNED5));
+			setSegmentsRemaining(decodeScalar("archive_next_count", in,
+					Codec.UNSIGNED5));
+			setArchiveModtime(decodeScalar("archive_modtime", in,
+					Codec.UNSIGNED5));
+			setNumberOfFiles(decodeScalar("file_count", in, Codec.UNSIGNED5));
 		}
 	}
 
 	private void parseArchiveSpecialCounts(InputStream in) throws IOException,
 			Pack200Exception {
 		if (getOptions().hasSpecialFormats()) {
-			setBandHeadersSize(Codec.UNSIGNED5.decode(in));
-			setAttributeDefinitionCount(Codec.UNSIGNED5.decode(in));
+			setBandHeadersSize(decodeScalar("band_headers_size", in,
+					Codec.UNSIGNED5));
+			setAttributeDefinitionCount(decodeScalar("attr_definition_count",
+					in, Codec.UNSIGNED5));
 		}
 	}
 
@@ -291,100 +472,112 @@ public class Segment {
 	 */
 	private void parseAttributeDefinition(InputStream in) throws IOException,
 			Pack200Exception {
-		attributeDefinitionHeader = new byte[attributeDefinitionCount];
-		for (int i = 0; i < attributeDefinitionCount; i++) {
-			attributeDefinitionHeader[i] = (byte) Codec.BYTE1.decode(in);
-		}
-		attributeDefinitionName = parseReferences(in, Codec.UNSIGNED5,
-				attributeDefinitionCount, cpUTF8);
-		attributeDefinitionLayout = parseReferences(in, Codec.UNSIGNED5,
-				attributeDefinitionCount, cpUTF8);
+		attributeDefinitionHeader = decodeBandInt("attr_definition_headers",
+				in, Codec.BYTE1, attributeDefinitionCount);
+		attributeDefinitionName = parseReferences("attr_definition_name", in,
+				Codec.UNSIGNED5, attributeDefinitionCount, cpUTF8);
+		attributeDefinitionLayout = parseReferences("attr_definition_layout",
+				in, Codec.UNSIGNED5, attributeDefinitionCount, cpUTF8);
 		if (attributeDefinitionCount > 0)
 			throw new Error("No idea what the adc is for yet");
 	}
 
 	private void parseBcBands(InputStream in) {
-		System.err.println("Not yet implemented");
+		debug("Unimplemented bc_bands");
+	}
+
+	private void parseClassAttrBands(InputStream in) throws IOException,
+			Pack200Exception {
+		classFlags = parseFlags("class_flags", in, classCount, Codec.UNSIGNED5,
+				options.hasClassFlagsHi());
+		for (int i = 0; i < classCount; i++) {
+			long flag = classFlags[i];
+			if ((flag & (1 << 16)) != 0)
+				classAttrCount++;
+		}
+		if (classAttrCount > 0)
+			throw new Error(
+					"There are attribute flags, and I don't know what to do with them");
+		debug("unimplemented class_attr_count");
+		debug("unimplemented class_attr_indexes");
+		debug("unimplemented class_attr_calls");
+		debug("unimplemented class_SourceFile_RUN");
+		debug("unimplemented class_EnclosingMethod_RC");
+		debug("unimplemented class_EnclosingMethod_RDN");
+		debug("unimplemented class_Signature_RS");
+		parseMetadataBands("class");
+		debug("unimplemented class_InnerClasses_N");
+		debug("unimplemented class_InnerClasses_RC");
+		debug("unimplemented class_InnerClasses_F");
+		debug("unimplemented class_InnerClasses_outer_RCN");
+		debug("unimplemented class_InnerClasses_inner_RCN");
+		debug("unimplemented class_file_version_minor_H");
+		debug("unimplemented class_file_version_major_H");
 	}
 
 	private void parseClassBands(InputStream in) throws IOException,
 			Pack200Exception {
-		classThis = parseReferences(in, Codec.DELTA5, classCount, cpClass);
-		classSuper = parseReferences(in, Codec.DELTA5, classCount, cpClass);
+		classThis = parseReferences("class_this", in, Codec.DELTA5, classCount,
+				cpClass);
+		classSuper = parseReferences("class_super", in, Codec.DELTA5,
+				classCount, cpClass);
 		classInterfaces = new String[classCount][];
-		int[] classInterfaceLengths = new int[classCount];
-		long last = 0;
+		int[] classInterfaceLengths = decodeBandInt("class_interface_count",
+				in, Codec.DELTA5, classCount);
 		for (int i = 0; i < classCount; i++) {
-			classInterfaceLengths[i] = (int) (last = Codec.DELTA5.decode(in,
-					last));
+			classInterfaces[i] = parseReferences("class_interface", in,
+					Codec.DELTA5, classInterfaceLengths[i], cpClass);
 		}
-		for (int i = 0; i < classCount; i++) {
-			classInterfaces[i] = parseReferences(in, Codec.DELTA5,
-					classInterfaceLengths[i], cpClass);
-		}
-		classFieldCount = new int[classCount];
-		last = 0;
-		for (int i = 0; i < classCount; i++) {
-			classFieldCount[i] = (int) (last = Codec.DELTA5.decode(in, last));
-		}
-		classMethodCount = new int[classCount];
-		last = 0;
-		for (int i = 0; i < classCount; i++) {
-			classMethodCount[i] = (int) (last = Codec.DELTA5.decode(in, last));
-		}
+		classFieldCount = decodeBandInt("class_field_count", in, Codec.DELTA5,
+				classCount);
+		classMethodCount = decodeBandInt("class_method_count", in,
+				Codec.DELTA5, classCount);
 		parseFieldBands(in);
 		parseMethodBands(in);
 		parseClassAttrBands(in);
 		parseCodeBands(in);
 	}
 
-	private void parseCodeBands(InputStream in) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void parseClassAttrBands(InputStream in) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void parseMethodBands(InputStream in) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void parseFieldBands(InputStream in) throws IOException,
-			Pack200Exception {
-		long last;
-		fieldDescr = new String[classCount][];
-		last = 0;
-		for (int i = 0; i < classCount; i++) {
-			fieldDescr[i] = parseReferences(in, Codec.DELTA5,
-					classFieldCount[i], cpClass);
-		}
-		fieldFlags = new long[classCount][];
-		for (int i = 0; i < classCount; i++) {
-			fieldFlags[i] = parseFlags(in, classFieldCount[i], Codec.UNSIGNED5,
-					options.hasFieldFlagsHi());
-		}
-		for (int i = 0; i < classCount; i++) {
-			for (int j = 0; i < fieldFlags[i].length; j++) {
-				long flag = fieldFlags[i][j];
-				if ((flag & (1 << 16)) != 0)
-					fieldAttrCount++;
-			}
-		}
-		if (fieldAttrCount > 0)
-			throw new Error("There are attribute flags, and I don't know what to do with them");
-		// TODO if we have fieldAttrcount then we ought to do other parsing
-	}
-
 	private void parseClassCounts(InputStream in) throws IOException,
 			Pack200Exception {
-		setInnerClassCount(Codec.UNSIGNED5.decode(in));
-		setDefaultClassMinorVersion(Codec.UNSIGNED5.decode(in));
-		setDefaultClassMajorVersion(Codec.UNSIGNED5.decode(in));
-		setClassCount(Codec.UNSIGNED5.decode(in));
+		setInnerClassCount(decodeScalar("ic_count", in, Codec.UNSIGNED5));
+		setDefaultClassMinorVersion(decodeScalar("default_class_minver", in,
+				Codec.UNSIGNED5));
+		setDefaultClassMajorVersion(decodeScalar("default_class_majver", in,
+				Codec.UNSIGNED5));
+		setClassCount(decodeScalar("class_count", in, Codec.UNSIGNED5));
+	}
+
+	private void parseCodeBands(InputStream in) {
+		debug("unimplemented code_headers");
+		debug("unimplemented code_max_stack");
+		debug("unimplemented code_max_na_locals");
+		debug("unimplemented code_hander_count");
+		debug("unimplemented code_hander_start_P");
+		debug("unimplemented code_hander_end_PO");
+		debug("unimplemented code_hander_catch_PO");
+		debug("unimplemented code_hander_class_RC");
+		parseCodeAttrBands(in);
+	}
+
+	private void parseCodeAttrBands(InputStream in) {
+		debug("unimplemented code_flags");
+		debug("unimplemented code_attr_count");
+		debug("unimplemented code_attr_indexes");
+		debug("unimplemented code_attr_calls");
+		debug("unimplemented code_LineNumberTable_N");
+		debug("unimplemented code_LineNumberTable_bci_P");
+		debug("unimplemented code_LineNumberTable_line");
+		String[] types = { "LocalVariableTable", "LocalVariableTypeTable" };
+		for (int i = 0; i < types.length; i++) {
+			String type = types[i];
+			debug("unimplemented code_" + type + "_N");
+			debug("unimplemented code_" + type + "_bci_P");
+			debug("unimplemented code_" + type + "_span_O");
+			debug("unimplemented code_" + type + "_name_RU");
+			debug("unimplemented code_" + type + "_type_RS");
+			debug("unimplemented code_" + type + "_slot");
+		}
 	}
 
 	/**
@@ -401,25 +594,28 @@ public class Segment {
 	 */
 	private void parseCpClass(InputStream in) throws IOException,
 			Pack200Exception {
-		cpClass = parseReferences(in, Codec.UDELTA5, cpClassCount, cpUTF8);
+		cpClass = parseReferences("cp_Class", in, Codec.UDELTA5, cpClassCount,
+				cpUTF8);
 	}
 
 	private void parseCpCounts(InputStream in) throws IOException,
 			Pack200Exception {
-		setCPUtf8Count(Codec.UNSIGNED5.decode(in));
+		setCPUtf8Count(decodeScalar("cp_Utf8_count", in, Codec.UNSIGNED5));
 		if (getOptions().hasCPNumberCounts()) {
-			setCPIntCount(Codec.UNSIGNED5.decode(in));
-			setCPFloatCount(Codec.UNSIGNED5.decode(in));
-			setCPLongCount(Codec.UNSIGNED5.decode(in));
-			setCPDoubleCount(Codec.UNSIGNED5.decode(in));
+			setCPIntCount(decodeScalar("cp_Int_count", in, Codec.UNSIGNED5));
+			setCPFloatCount(decodeScalar("cp_Float_count", in, Codec.UNSIGNED5));
+			setCPLongCount(decodeScalar("cp_Long_count", in, Codec.UNSIGNED5));
+			setCPDoubleCount(decodeScalar("cp_Double_count", in,
+					Codec.UNSIGNED5));
 		}
-		setCPStringCount(Codec.UNSIGNED5.decode(in));
-		setCPClassCount(Codec.UNSIGNED5.decode(in));
-		setCPSignatureCount(Codec.UNSIGNED5.decode(in));
-		setCPDescriptorCount(Codec.UNSIGNED5.decode(in));
-		setCPFieldCount(Codec.UNSIGNED5.decode(in));
-		setCPMethodCount(Codec.UNSIGNED5.decode(in));
-		setCPIMethodCount(Codec.UNSIGNED5.decode(in));
+		setCPStringCount(decodeScalar("cp_String_count", in, Codec.UNSIGNED5));
+		setCPClassCount(decodeScalar("cp_Class_count", in, Codec.UNSIGNED5));
+		setCPSignatureCount(decodeScalar("cp_Signature_count", in,
+				Codec.UNSIGNED5));
+		setCPDescriptorCount(decodeScalar("cp_Descr_count", in, Codec.UNSIGNED5));
+		setCPFieldCount(decodeScalar("cp_Field_count", in, Codec.UNSIGNED5));
+		setCPMethodCount(decodeScalar("cp_Method_count", in, Codec.UNSIGNED5));
+		setCPIMethodCount(decodeScalar("cp_Imethod_count", in, Codec.UNSIGNED5));
 	}
 
 	/**
@@ -440,10 +636,10 @@ public class Segment {
 	 */
 	private void parseCpDescriptor(InputStream in) throws IOException,
 			Pack200Exception {
-		String[] cpDescriptorNames = parseReferences(in, Codec.DELTA5,
-				cpDescriptorCount, cpUTF8);
-		String[] cpDescriptorTypes = parseReferences(in, Codec.UDELTA5,
-				cpDescriptorCount, cpSignature);
+		String[] cpDescriptorNames = parseReferences("cp_Descr_name", in,
+				Codec.DELTA5, cpDescriptorCount, cpUTF8);
+		String[] cpDescriptorTypes = parseReferences("cp_Descr_type", in,
+				Codec.UDELTA5, cpDescriptorCount, cpSignature);
 		cpDescriptor = new String[cpDescriptorCount];
 		for (int i = 0; i < cpDescriptorCount; i++) {
 			cpDescriptor[i] = cpDescriptorNames[i] + ":" + cpDescriptorTypes[i];
@@ -453,16 +649,12 @@ public class Segment {
 	private void parseCpDouble(InputStream in) throws IOException,
 			Pack200Exception {
 		cpDouble = new double[cpDoubleCount];
-		long[] lastBits = new long[cpDoubleCount];
-		long last = 0;
+		long[] hiBits = decodeBandLong("cp_Double_hi", in, Codec.UDELTA5,
+				cpDoubleCount);
+		long[] loBits = decodeBandLong("cp_Double_lo", in, Codec.DELTA5,
+				cpDoubleCount);
 		for (int i = 0; i < cpDoubleCount; i++) {
-			last = Codec.UDELTA5.decode(in, last);
-			lastBits[i] = last << 32;
-		}
-		for (int i = 0; i < cpDoubleCount; i++) {
-			last = Codec.DELTA5.decode(in, last);
-			lastBits[i] = lastBits[i] | last;
-			cpDouble[i] = Double.longBitsToDouble(lastBits[i]);
+			cpDouble[i] = Double.longBitsToDouble(hiBits[i] << 32 | loBits[i]);
 		}
 	}
 
@@ -480,18 +672,19 @@ public class Segment {
 	 */
 	private void parseCpField(InputStream in) throws IOException,
 			Pack200Exception {
-		cpFieldClass = parseReferences(in, Codec.DELTA5, cpFieldCount, cpClass);
-		cpFieldDescriptor = parseReferences(in, Codec.UDELTA5, cpFieldCount,
-				cpDescriptor);
+		cpFieldClass = parseReferences("cp_Field_class", in, Codec.DELTA5,
+				cpFieldCount, cpClass);
+		cpFieldDescriptor = parseReferences("cp_Field_desc", in, Codec.UDELTA5,
+				cpFieldCount, cpDescriptor);
 	}
 
 	private void parseCpFloat(InputStream in) throws IOException,
 			Pack200Exception {
 		cpFloat = new float[cpFloatCount];
-		long last = 0;
+		int floatBits[] = decodeBandInt("cp_Float", in, Codec.UDELTA5,
+				cpFloatCount);
 		for (int i = 0; i < cpFloatCount; i++) {
-			last = Codec.UDELTA5.decode(in, last);
-			cpFloat[i] = Float.intBitsToFloat((int) last);
+			cpFloat[i] = Float.intBitsToFloat(floatBits[i]);
 		}
 	}
 
@@ -510,10 +703,10 @@ public class Segment {
 	 */
 	private void parseCpIMethod(InputStream in) throws IOException,
 			Pack200Exception {
-		cpIMethodClass = parseReferences(in, Codec.DELTA5, cpIMethodCount,
-				cpClass);
-		cpIMethodDescriptor = parseReferences(in, Codec.UDELTA5,
-				cpIMethodCount, cpDescriptor);
+		cpIMethodClass = parseReferences("cp_Imethod_class", in, Codec.DELTA5,
+				cpIMethodCount, cpClass);
+		cpIMethodDescriptor = parseReferences("cp_Imethod_desc", in,
+				Codec.UDELTA5, cpIMethodCount, cpDescriptor);
 	}
 
 	private void parseCpInt(InputStream in) throws IOException,
@@ -528,32 +721,8 @@ public class Segment {
 
 	private void parseCpLong(InputStream in) throws IOException,
 			Pack200Exception {
-		cpLong = parseFlags(in, cpLongCount, Codec.UDELTA5, Codec.DELTA5);
-	}
-
-	private long[] parseFlags(InputStream in, int count, Codec codec,
-			boolean hasHi) throws IOException, Pack200Exception {
-		return parseFlags(in, count, (hasHi ? codec : null), codec);
-	}
-
-	private long[] parseFlags(InputStream in, int count, Codec codec)
-			throws IOException, Pack200Exception {
-		return parseFlags(in, count, codec, true);
-	}
-
-	private long[] parseFlags(InputStream in, int count, Codec hiCodec,
-			Codec loCodec) throws IOException, Pack200Exception {
-		long[] result = new long[count];
-		long last = 0;
-		for (int i = 0; i < count && hiCodec != null; i++) {
-			last = hiCodec.decode(in, last);
-			result[i] = last << 32;
-		}
-		for (int i = 0; i < count; i++) {
-			last = loCodec.decode(in, last);
-			result[i] = result[i] | last;
-		}
-		return result;
+		cpLong = parseFlags("cp_Long", in, cpLongCount, Codec.UDELTA5,
+				Codec.DELTA5);
 	}
 
 	/**
@@ -570,10 +739,10 @@ public class Segment {
 	 */
 	private void parseCpMethod(InputStream in) throws IOException,
 			Pack200Exception {
-		cpMethodClass = parseReferences(in, Codec.DELTA5, cpMethodCount,
-				cpClass);
-		cpMethodDescriptor = parseReferences(in, Codec.UDELTA5, cpMethodCount,
-				cpDescriptor);
+		cpMethodClass = parseReferences("cp_Method_class", in, Codec.DELTA5,
+				cpMethodCount, cpClass);
+		cpMethodDescriptor = parseReferences("cp_Method_desc", in,
+				Codec.UDELTA5, cpMethodCount, cpDescriptor);
 	}
 
 	/**
@@ -600,8 +769,8 @@ public class Segment {
 	 */
 	private void parseCpSignature(InputStream in) throws IOException,
 			Pack200Exception {
-		String[] cpSignatureForm = parseReferences(in, Codec.DELTA5,
-				cpSignatureCount, cpUTF8);
+		String[] cpSignatureForm = parseReferences("cp_Signature_form", in,
+				Codec.DELTA5, cpSignatureCount, cpUTF8);
 		cpSignature = new String[cpSignatureCount];
 		long last = 0;
 		for (int i = 0; i < cpSignatureCount; i++) {
@@ -647,6 +816,7 @@ public class Segment {
 
 	private void parseCpUtf8(InputStream in) throws IOException,
 			Pack200Exception {
+		// TODO Update codec.decode -> decodeScalar
 		cpUTF8 = new String[(int) cpUTF8Count];
 		cpUTF8[0] = "";
 		int[] prefix = new int[cpUTF8Count];
@@ -709,6 +879,35 @@ public class Segment {
 		}
 	}
 
+	private void parseFieldBands(InputStream in) throws IOException,
+			Pack200Exception {
+		fieldDescr = new String[classCount][];
+		for (int i = 0; i < classCount; i++) {
+			fieldDescr[i] = parseReferences("field_descr", in, Codec.DELTA5,
+					classFieldCount[i], cpDescriptor);
+		}
+		fieldFlags = new long[classCount][];
+		for (int i = 0; i < classCount; i++) {
+			fieldFlags[i] = parseFlags("field_flags", in, classFieldCount[i],
+					Codec.UNSIGNED5, options.hasFieldFlagsHi());
+		}
+		for (int i = 0; i < classCount; i++) {
+			for (int j = 0; j < fieldFlags[i].length; j++) {
+				long flag = fieldFlags[i][j];
+				if ((flag & (1 << 16)) != 0)
+					fieldAttrCount++;
+			}
+		}
+		if (fieldAttrCount > 0)
+			throw new Error(
+					"There are attribute flags, and I don't know what to do with them");
+		debug("unimplemented field_attr_indexes");
+		debug("unimplemented field_attr_calls");
+		debug("unimplemented field_ConstantValueKQ");
+		debug("unimplemented field_Signature_RS");
+		parseMetadataBands("field");
+	}
+
 	/**
 	 * Parses the file band headers (not including the actual bits themselves).
 	 * At the end of this parse call, the input stream will be positioned at the
@@ -728,7 +927,8 @@ public class Segment {
 	private void parseFileBands(InputStream in) throws IOException,
 			Pack200Exception {
 		long last;
-		fileName = parseReferences(in, Codec.UNSIGNED5, numberOfFiles, cpUTF8);
+		fileName = parseReferences("file_name", in, Codec.UNSIGNED5,
+				numberOfFiles, cpUTF8);
 		fileSize = new long[numberOfFiles];
 		if (options.hasFileSizeHi()) {
 			last = 0;
@@ -756,20 +956,119 @@ public class Segment {
 		}
 	}
 
+	private long[] parseFlags(String name, InputStream in, int count,
+			Codec codec) throws IOException, Pack200Exception {
+		return parseFlags(name, in, count, codec, true);
+	}
+
+	private long[] parseFlags(String name, InputStream in, int count,
+			Codec codec, boolean hasHi) throws IOException, Pack200Exception {
+		return parseFlags(name, in, count, (hasHi ? codec : null), codec);
+	}
+
+	private long[] parseFlags(String name, InputStream in, int count,
+			Codec hiCodec, Codec loCodec) throws IOException, Pack200Exception {
+		long[] result = new long[count];
+		// TODO Refactor into band parsing
+		long last = 0;
+		for (int i = 0; i < count && hiCodec != null; i++) {
+			last = hiCodec.decode(in, last);
+			result[i] = last << 32;
+		}
+		for (int i = 0; i < count; i++) {
+			last = loCodec.decode(in, last);
+			result[i] = result[i] | last;
+		}
+		// TODO Remove debugging code
+		debug("Parsed *" + name + " (" + result.length + ")");
+		return result;
+	}
+
 	private void parseIcBands(InputStream in) throws IOException,
 			Pack200Exception {
-		icThisClass = parseReferences(in, Codec.UDELTA5, innerClassCount,
-				cpClass);
+		icThisClass = parseReferences("ic_this_class", in, Codec.UDELTA5,
+				innerClassCount, cpClass);
 		icFlags = new int[innerClassCount];
 		long last = 0;
 		int outerClasses = 0;
+		// ic_flags
 		for (int i = 0; i < innerClassCount; i++) {
 			icFlags[i] = (int) (last = Codec.UNSIGNED5.decode(in, last));
 			if ((icFlags[i] & 1 << 16) != 0)
 				outerClasses++;
 		}
-		icOuterClass = parseReferences(in, Codec.DELTA5, outerClasses, cpClass);
-		icName = parseReferences(in, Codec.DELTA5, outerClasses, cpUTF8);
+		icOuterClass = parseReferences("ic_outer_class", in, Codec.DELTA5,
+				outerClasses, cpClass);
+		icName = parseReferences("ic_name", in, Codec.DELTA5, outerClasses,
+				cpUTF8);
+	}
+
+	private void parseMethodBands(InputStream in) throws IOException,
+			Pack200Exception {
+		methodDescr = new String[classCount][];
+		for (int i = 0; i < classCount; i++) {
+			methodDescr[i] = parseReferences("method_descr", in, Codec.MDELTA5,
+					classMethodCount[i], cpDescriptor);
+		}
+		methodFlags = new long[classCount][];
+		for (int i = 0; i < classCount; i++) {
+			methodFlags[i] = parseFlags("method_flags", in,
+					classMethodCount[i], Codec.UNSIGNED5, options
+							.hasMethodFlagsHi());
+		}
+		for (int i = 0; i < classCount; i++) {
+			for (int j = 0; j < methodFlags[i].length; j++) {
+				long flag = methodFlags[i][j];
+				if ((flag & (1 << 16)) != 0)
+					methodAttrCount++;
+			}
+		}
+		if (methodAttrCount > 0)
+			throw new Error(
+					"There are method attribute flags, and I don't know what to do with them");
+		debug("unimplemented method_attr_count");
+		debug("unimplemented method_attr_indexes");
+		debug("unimplemented method_attr_calls");
+		debug("unimplemented method_Exceptions_N");
+		debug("unimplemented method_Exceptions_RC");
+		debug("unimplemented method_Signature_RS");
+		parseMetadataBands("method");
+	}
+
+	private void parseMetadataBands(String unit) throws Pack200Exception {
+		String[] RxA;
+		if ("method".equals(unit)) {
+			RxA = new String[] { "RVA", "RIA", "RVPA", "RIPA", "AD" };
+		} else if ("field".equals(unit) || "class".equals(unit)) {
+			RxA = new String[] { "RVA", "RIA" };
+		} else {
+			throw new Pack200Exception("Unknown type of metadata unit " + unit);
+		}
+		for (int i = 0; i < RxA.length; i++) {
+			String rxa = RxA[i];
+			if (rxa.indexOf("P") >= 0) {
+				debug("unimplemented " + unit + "_" + rxa + "_param_NB");
+			}
+			if (!rxa.equals("AD")) {
+				debug("unimplemented " + unit + "_" + rxa + "_anno_N");
+				debug("unimplemented " + unit + "_" + rxa + "_type_RS");
+				debug("unimplemented " + unit + "_" + rxa + "_pair_N");
+				debug("unimplemented " + unit + "_" + rxa + "_name_RU");
+			}
+			debug("unimplemented " + unit + "_" + rxa + "_T");
+			debug("unimplemented " + unit + "_" + rxa + "_caseI_KI");
+			debug("unimplemented " + unit + "_" + rxa + "_caseD_KD");
+			debug("unimplemented " + unit + "_" + rxa + "_caseF_KF");
+			debug("unimplemented " + unit + "_" + rxa + "_caseJ_KJ");
+			debug("unimplemented " + unit + "_" + rxa + "_casec_RS");
+			debug("unimplemented " + unit + "_" + rxa + "_caseet_RS");
+			debug("unimplemented " + unit + "_" + rxa + "_caseec_RU");
+			debug("unimplemented " + unit + "_" + rxa + "_cases_RU");
+			debug("unimplemented " + unit + "_" + rxa + "_casearray_N");
+			debug("unimplemented " + unit + "_" + rxa + "_nesttype_RS");
+			debug("unimplemented " + unit + "_" + rxa + "_nestpair_N");
+			debug("unimplemented " + unit + "_" + rxa + "_nestname_RU");
+		}
 	}
 
 	/**
@@ -779,6 +1078,8 @@ public class Segment {
 	 * exception is thrown if a decoded index falls outside the range
 	 * [0..reference.length-1].
 	 * 
+	 * @param name
+	 *            TODO
 	 * @param in
 	 *            the input stream to read from
 	 * @param codec
@@ -788,19 +1089,21 @@ public class Segment {
 	 * @param reference
 	 *            the array of values to use for the indexes; often
 	 *            {@link #cpUTF8}
+	 * 
 	 * @throws IOException
 	 *             if a problem occurs during reading from the underlying stream
 	 * @throws Pack200Exception
 	 *             if a problem occurs with an unexpected value or unsupported
 	 *             codec
 	 */
-	private String[] parseReferences(InputStream in, Codec codec, int count,
-			String[] reference) throws IOException, Pack200Exception {
+	private String[] parseReferences(String name, InputStream in,
+			BHSDCodec codec, int count, String[] reference) throws IOException,
+			Pack200Exception {
 		String[] result = new String[count];
-		long last = 0;
+		int[] decode = decodeBandInt(name, in, codec, count);
 		for (int i = 0; i < count; i++) {
-			int index = (int) (last = codec.decode(in, last));
-			if (index < 0 || index > reference.length)
+			int index = decode[i];
+			if (index < 0 || index >= reference.length)
 				throw new Pack200Exception(
 						"Something has gone wrong during parsing references");
 			result[i] = reference[index];
@@ -822,6 +1125,7 @@ public class Segment {
 	 */
 	private void parseSegment(InputStream in) throws IOException,
 			Pack200Exception {
+		debug("-------");
 		parseSegmentHeader(in);
 		if (bandHeadersSize > 0) {
 			byte[] bandHeaders = new byte[(int) bandHeadersSize];
@@ -842,8 +1146,8 @@ public class Segment {
 		parseCpIMethod(in);
 		parseAttributeDefinition(in);
 		parseIcBands(in);
-		parseClassBands(in); // Not yet implemented
-		parseBcBands(in); // Not yet implemented
+		parseClassBands(in);
+		parseBcBands(in);
 		// TODO Re-enable these after completing class/bytecode bands
 		// parseFileBands(in);
 		// processFileBits(in); // this just caches them in file_bits; it should
@@ -852,12 +1156,17 @@ public class Segment {
 
 	private void parseSegmentHeader(InputStream in) throws IOException,
 			Pack200Exception, Error, Pack200Exception {
+		long word[] = decodeScalar("archive_magic_word", in, Codec.BYTE1,
+				magic.length);
 		for (int m = 0; m < magic.length; m++)
-			if (in.read() != magic[m])
+			if (word[m] != magic[m])
 				throw new Error("Bad header");
-		setMinorVersion((int) Codec.UNSIGNED5.decode(in));
-		setMajorVersion((int) Codec.UNSIGNED5.decode(in));
-		setOptions(new SegmentOptions((int) Codec.UNSIGNED5.decode(in, 0)));
+		setMinorVersion((int) decodeScalar("archive_minver", in,
+				Codec.UNSIGNED5));
+		setMajorVersion((int) decodeScalar("archive_majver", in,
+				Codec.UNSIGNED5));
+		setOptions(new SegmentOptions((int) decodeScalar("archive_options", in,
+				Codec.UNSIGNED5)));
 		parseArchiveFileCounts(in);
 		parseArchiveSpecialCounts(in);
 		parseCpCounts(in);
@@ -893,7 +1202,7 @@ public class Segment {
 	}
 
 	private void setBandHeadersData(byte[] bandHeaders) {
-		this.bandHeadersData = bandHeaders;
+		this.bandHeadersInputStream = new ByteArrayInputStream(bandHeaders);
 	}
 
 	private void setBandHeadersSize(long value) {
