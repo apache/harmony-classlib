@@ -29,6 +29,9 @@ public class AllTests {
                 "Test for org.apache.harmony.nio_char.tests.java.nio.charset");
         //$JUnit-BEGIN$
         suite.addTestSuite(CharacterCodingExceptionTest.class);
+        suite.addTestSuite(CharsetEncoderTest.class);
+        suite.addTestSuite(CharsetTest.class);
+        suite.addTestSuite(CharsetDecoderTest.class);
         suite.addTestSuite(MalformedInputExceptionTest.class);
         suite.addTestSuite(IllegalCharsetNameExceptionTest.class);
         suite.addTestSuite(UnmappableCharacterExceptionTest.class);

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.tests.java.nio.charset;
+package org.apache.harmony.nio_char.tests.java.nio.charset;
 
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
