@@ -273,11 +273,11 @@ public class MathTest extends junit.framework.TestCase {
                         Double.NEGATIVE_INFINITY), 0D);
         assertEquals("Should return POSITIVE_INFINITY",
                 Double.POSITIVE_INFINITY, Math.hypot(Double.NEGATIVE_INFINITY,
-                        Double.POSITIVE_INFINITY), 0D);
-        assertEquals("Should return NaN", Double.NaN, Math.hypot(Double.NaN,
-                2342301.89843));
-        assertEquals("Should return NaN", Double.NaN, Math.hypot(-345.2680,
-                Double.NaN));
+                        Double.POSITIVE_INFINITY), 0D);        
+        assertTrue("Should be NaN", Double.isNaN(Math.hypot(Double.NaN,
+                2342301.89843)));
+        assertTrue("Should be NaN", Double.isNaN(Math.hypot(-345.2680,
+                Double.NaN)));        
 
         assertEquals("Should return 2396424.905416697", 2396424.905416697, Math
                 .hypot(12322.12, -2396393.2258), 0D);
@@ -320,7 +320,7 @@ public class MathTest extends junit.framework.TestCase {
     public void test_log1p_D() {
         // Test for special cases
         assertTrue("Should return NaN", Double.isNaN(Math.log1p(Double.NaN)));
-        assertEquals("Should return NaN", Double.NaN, Math.log1p(-32.0482175));
+        assertTrue("Should return NaN", Double.isNaN(Math.log1p(-32.0482175)));
         assertEquals("Should return POSITIVE_INFINITY",
                 Double.POSITIVE_INFINITY, Math.log1p(Double.POSITIVE_INFINITY), 0D);
         assertEquals("Should return 0.0", 0.0, Math.log1p(0.0), 0D);
@@ -486,16 +486,67 @@ public class MathTest extends junit.framework.TestCase {
 		// Test for method int java.lang.Math.round(float)
 		assertEquals("Incorrect rounding of a float", -91, Math.round(-90.89f));
 	}
+    
+    /**
+     * @tests java.lang.Math#signum(double)
+     */
+    public void test_signum_D() {
+        assertTrue(Double.isNaN(Math.signum(Double.NaN)));
+        assertTrue(Double.isNaN(Math.signum(Double.NaN)));
+        assertEquals(Double.doubleToLongBits(0.0), Double.doubleToLongBits(Math
+                .signum(0.0)));
+        assertEquals(Double.doubleToLongBits(+0.0), Double
+                .doubleToLongBits(Math.signum(+0.0)));
+        assertEquals(Double.doubleToLongBits(-0.0), Double
+                .doubleToLongBits(Math.signum(-0.0)));
+
+        assertEquals(1.0, Math.signum(253681.2187962), 0D);
+        assertEquals(-1.0, Math.signum(-125874693.56), 0D);
+        assertEquals(1.0, Math.signum(1.2587E-308), 0D);
+        assertEquals(-1.0, Math.signum(-1.2587E-308), 0D);
+
+        assertEquals(1.0, Math.signum(Double.MAX_VALUE), 0D);
+        assertEquals(1.0, Math.signum(Double.MIN_VALUE), 0D);
+        assertEquals(-1.0, Math.signum(-Double.MAX_VALUE), 0D);
+        assertEquals(-1.0, Math.signum(-Double.MIN_VALUE), 0D);
+        assertEquals(1.0, Math.signum(Double.POSITIVE_INFINITY), 0D);
+        assertEquals(-1.0, Math.signum(Double.NEGATIVE_INFINITY), 0D);
+    }
+
+    /**
+     * @tests java.lang.Math#signum(float)
+     */
+    public void test_signum_F() {
+        assertTrue(Float.isNaN(Math.signum(Float.NaN)));
+        assertEquals(Float.floatToIntBits(0.0f), Float
+                .floatToIntBits(Math.signum(0.0f)));
+        assertEquals(Float.floatToIntBits(+0.0f), Float
+                .floatToIntBits(Math.signum(+0.0f)));
+        assertEquals(Float.floatToIntBits(-0.0f), Float
+                .floatToIntBits(Math.signum(-0.0f)));
+
+        assertEquals(1.0f, Math.signum(253681.2187962f), 0f);
+        assertEquals(-1.0f, Math.signum(-125874693.56f), 0f);
+        assertEquals(1.0f, Math.signum(1.2587E-11f), 0f);
+        assertEquals(-1.0f, Math.signum(-1.2587E-11f), 0f);
+
+        assertEquals(1.0f, Math.signum(Float.MAX_VALUE), 0f);
+        assertEquals(1.0f, Math.signum(Float.MIN_VALUE), 0f);
+        assertEquals(-1.0f, Math.signum(-Float.MAX_VALUE), 0f);
+        assertEquals(-1.0f, Math.signum(-Float.MIN_VALUE), 0f);
+        assertEquals(1.0f, Math.signum(Float.POSITIVE_INFINITY), 0f);
+        assertEquals(-1.0f, Math.signum(Float.NEGATIVE_INFINITY), 0f);
+    }
 
 	/**
-	 * @tests java.lang.Math#sin(double)
-	 */
+     * @tests java.lang.Math#sin(double)
+     */
 	public void test_sinD() {
 		// Test for method double java.lang.Math.sin(double)
 		assertEquals("Incorrect answer", 0.0, Math.sin(0), 0D);
 		assertEquals("Incorrect answer", 0.8414709848078965, Math.sin(1), 0D);
 	}
-
+    
     /**
      * @tests java.lang.Math#sinh(double)
      */

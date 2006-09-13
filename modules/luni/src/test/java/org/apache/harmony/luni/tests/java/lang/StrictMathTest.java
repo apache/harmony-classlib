@@ -115,8 +115,8 @@ public class StrictMathTest extends junit.framework.TestCase {
     @SuppressWarnings("boxing")
     public void test_cbrt_D() {
         // Test for special situations
-        assertEquals("Should return Double.NaN", Double.NaN, StrictMath
-                .cbrt(Double.NaN));
+        assertTrue("Should return Double.NaN", Double.isNaN(StrictMath
+                .cbrt(Double.NaN)));
         assertEquals("Should return Double.POSITIVE_INFINITY",
                 Double.POSITIVE_INFINITY, StrictMath
                         .cbrt(Double.POSITIVE_INFINITY));
@@ -175,9 +175,9 @@ public class StrictMathTest extends junit.framework.TestCase {
      */
     @SuppressWarnings("boxing")
     public void test_cosh_D() {
-        // Test for special situations
-        assertEquals("Should return NaN", Double.NaN, StrictMath
-                .cosh(Double.NaN));
+        // Test for special situations        
+        assertTrue("Should return NaN", Double.isNaN(StrictMath
+                .cosh(Double.NaN)));
         assertEquals("Should return POSITIVE_INFINITY",
                 Double.POSITIVE_INFINITY, StrictMath
                         .cosh(Double.POSITIVE_INFINITY));
@@ -221,8 +221,8 @@ public class StrictMathTest extends junit.framework.TestCase {
      */
     @SuppressWarnings("boxing")
     public void test_expm1_D() {
-        //Test for special cases
-        assertEquals("Should return NaN", Double.NaN, StrictMath.expm1(Double.NaN));
+        //Test for special cases        
+        assertTrue("Should return NaN", Double.isNaN(StrictMath.expm1(Double.NaN)));
         assertEquals("Should return POSITIVE_INFINITY",
                 Double.POSITIVE_INFINITY, StrictMath.expm1(Double.POSITIVE_INFINITY));
         assertEquals("Should return -1.0", -1.0, StrictMath
@@ -329,13 +329,14 @@ public class StrictMathTest extends junit.framework.TestCase {
      */
     @SuppressWarnings("boxing")
     public void test_log10_D() {
-        // Test for special cases
-        assertEquals("Should return NaN", Double.NaN, StrictMath
-                .log10(Double.NaN));
-        assertEquals("Should return NaN", Double.NaN, StrictMath
-                .log10(-2541.05745687234187532));
-        assertEquals("Should return NaN", Double.POSITIVE_INFINITY, StrictMath
-                .log10(Double.POSITIVE_INFINITY));
+        // Test for special cases        
+        assertTrue("Should return NaN", Double.isNaN(StrictMath
+                .log10(Double.NaN)));
+        assertTrue("Should return NaN", Double.isNaN(StrictMath
+                .log10(-2541.05745687234187532)));
+        assertEquals("Should return POSITIVE_INFINITY",
+                Double.POSITIVE_INFINITY, StrictMath
+                        .log10(Double.POSITIVE_INFINITY));
         assertEquals("Should return NEGATIVE_INFINITY",
                 Double.NEGATIVE_INFINITY, StrictMath.log10(0.0));
         assertEquals("Should return NEGATIVE_INFINITY",
@@ -363,10 +364,10 @@ public class StrictMathTest extends junit.framework.TestCase {
     @SuppressWarnings("boxing")
     public void test_log1p_D() {
         // Test for special cases
-        assertEquals("Should return NaN", Double.NaN, StrictMath
-                .log1p(Double.NaN));
-        assertEquals("Should return NaN", Double.NaN, StrictMath
-                .log1p(-32.0482175));
+        assertTrue("Should return NaN", Double.isNaN(StrictMath
+                .log1p(Double.NaN)));
+        assertTrue("Should return NaN", Double.isNaN(StrictMath
+                .log1p(-32.0482175)));
         assertEquals("Should return POSITIVE_INFINITY",
                 Double.POSITIVE_INFINITY, StrictMath
                         .log1p(Double.POSITIVE_INFINITY));
@@ -535,10 +536,61 @@ public class StrictMathTest extends junit.framework.TestCase {
 		assertEquals("Incorrect rounding of a float",
 				-91, StrictMath.round(-90.89f));
 	}
+    
+    /**
+     * @tests java.lang.StrictMath#signum(double)
+     */
+    public void test_signum_D() {
+        assertTrue(Double.isNaN(StrictMath.signum(Double.NaN)));
+        assertEquals(Double.doubleToLongBits(0.0), Double
+                .doubleToLongBits(StrictMath.signum(0.0)));
+        assertEquals(Double.doubleToLongBits(+0.0), Double
+                .doubleToLongBits(StrictMath.signum(+0.0)));
+        assertEquals(Double.doubleToLongBits(-0.0), Double
+                .doubleToLongBits(StrictMath.signum(-0.0)));
+
+        assertEquals(1.0, StrictMath.signum(253681.2187962), 0D);
+        assertEquals(-1.0, StrictMath.signum(-125874693.56), 0D);
+        assertEquals(1.0, StrictMath.signum(1.2587E-308), 0D);
+        assertEquals(-1.0, StrictMath.signum(-1.2587E-308), 0D);
+
+        assertEquals(1.0, StrictMath.signum(Double.MAX_VALUE), 0D);
+        assertEquals(1.0, StrictMath.signum(Double.MIN_VALUE), 0D);
+        assertEquals(-1.0, StrictMath.signum(-Double.MAX_VALUE), 0D);
+        assertEquals(-1.0, StrictMath.signum(-Double.MIN_VALUE), 0D);
+        assertEquals(1.0, StrictMath.signum(Double.POSITIVE_INFINITY), 0D);
+        assertEquals(-1.0, StrictMath.signum(Double.NEGATIVE_INFINITY), 0D);
+
+    }
+    
+    /**
+     * @tests java.lang.StrictMath#signum(float)
+     */
+    public void test_signum_F() {
+        assertTrue(Float.isNaN(StrictMath.signum(Float.NaN)));
+        assertEquals(Float.floatToIntBits(0.0f), Float
+                .floatToIntBits(StrictMath.signum(0.0f)));
+        assertEquals(Float.floatToIntBits(+0.0f), Float
+                .floatToIntBits(StrictMath.signum(+0.0f)));
+        assertEquals(Float.floatToIntBits(-0.0f), Float
+                .floatToIntBits(StrictMath.signum(-0.0f)));
+
+        assertEquals(1.0f, StrictMath.signum(253681.2187962f), 0f);
+        assertEquals(-1.0f, StrictMath.signum(-125874693.56f), 0f);
+        assertEquals(1.0f, StrictMath.signum(1.2587E-11f), 0f);
+        assertEquals(-1.0f, StrictMath.signum(-1.2587E-11f), 0f);
+
+        assertEquals(1.0f, StrictMath.signum(Float.MAX_VALUE), 0f);
+        assertEquals(1.0f, StrictMath.signum(Float.MIN_VALUE), 0f);
+        assertEquals(-1.0f, StrictMath.signum(-Float.MAX_VALUE), 0f);
+        assertEquals(-1.0f, StrictMath.signum(-Float.MIN_VALUE), 0f);
+        assertEquals(1.0f, StrictMath.signum(Float.POSITIVE_INFINITY), 0f);
+        assertEquals(-1.0f, StrictMath.signum(Float.NEGATIVE_INFINITY), 0f);
+    }
 
 	/**
-	 * @tests java.lang.StrictMath#sin(double)
-	 */
+     * @tests java.lang.StrictMath#sin(double)
+     */
 	public void test_sinD() {
 		// Test for method double java.lang.StrictMath.sin(double)
 		assertTrue("Returned incorrect sine", StrictMath.sin(StrictMath

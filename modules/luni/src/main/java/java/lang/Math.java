@@ -474,6 +474,32 @@ public final class Math {
 			return 0;
 		return (int) floor(f + 0.5f);
 	}
+    
+    /**
+     * Answers the signum function of the argument. If the argument is less than
+     * zero, it answers -1.0. If greater than zero, 1.0 is returned. It returns
+     * zero if the argument is also zero.
+     * 
+     * @param d
+     *            the value to compute signum function of
+     * @return the value of the signum function.
+     */
+    public static double signum(double d) {
+        return StrictMath.signum(d);
+    }
+    
+    /**
+     * Answers the signum function of the argument. If the argument is less than
+     * zero, it answers -1.0. If greater than zero, 1.0 is returned. It returns
+     * zero if the argument is also zero.
+     * 
+     * @param f
+     *            the value to compute signum function of
+     * @return the value of the signum function.
+     */
+    public static float signum(float f) {
+        return StrictMath.signum(f);
+    }
 
 	/**
 	 * Answers the closest double approximation of the sine of the argument

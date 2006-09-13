@@ -478,6 +478,50 @@ public final class StrictMath {
 			return 0;
 		return (int) Math.floor(f + 0.5f);
 	}
+    
+    /**
+     * Answers the signum function of the argument. If the argument is less than
+     * zero, it answers -1.0. If greater than zero, 1.0 is returned. It returns
+     * zero if the argument is also zero.
+     * 
+     * @param d
+     *            the value to compute signum function of
+     * @return the value of the signum function.
+     */
+    public static double signum(double d){
+        if(Double.isNaN(d)){
+            return Double.NaN;
+        }
+        double sig = d;
+        if(d > 0){
+            sig = 1.0;
+        }else if (d < 0){
+            sig = -1.0;
+        }
+        return sig;
+    }
+    
+    /**
+     * Answers the signum function of the argument. If the argument is less than
+     * zero, it answers -1.0. If greater than zero, 1.0 is returned. It returns
+     * zero if the argument is also zero.
+     * 
+     * @param f
+     *            the value to compute signum function of
+     * @return the value of the signum function.
+     */
+    public static float signum(float f){
+        if(Float.isNaN(f)){
+            return Float.NaN;
+        }
+        float sig = f;
+        if(f > 0){
+            sig = 1.0f;
+        }else if (f < 0){
+            sig = -1.0f;
+        }
+        return sig;
+    }
 
     /**
      * Answers the closest double approximation of the hyperbolic sine of the
