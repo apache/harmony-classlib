@@ -13,6 +13,7 @@ Import-Package: java.io,
  java.security,
  java.util,
  org.apache.harmony.kernel.vm,
+ org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional,
  tests.util;resolution:=optional;hy_usage=test
 Export-Package: java.nio.charset,
  java.nio.charset.spi
