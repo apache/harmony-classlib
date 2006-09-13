@@ -31,7 +31,6 @@ public class AllTests {
 		TestSuite suite = new TestSuite("All NIO_Char test suites");
 		// $JUnit-BEGIN$
 		suite.addTest(tests.api.java.nio.charset.AllTests.suite());
-		suite.addTest(tests.api.java.nio.charset.spi.AllTests.suite());
 		// $JUnit-END$
 		return suite;
 	}

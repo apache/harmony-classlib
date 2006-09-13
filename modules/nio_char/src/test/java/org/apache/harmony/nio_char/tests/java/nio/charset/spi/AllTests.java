@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package tests.api.java.nio.charset.spi;
+package org.apache.harmony.nio_char.tests.java.nio.charset.spi;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
