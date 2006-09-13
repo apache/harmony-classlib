@@ -2399,12 +2399,14 @@ public final class Character implements Serializable, Comparable<Character> {
     }
 
 	/**
-     * Convenience method to determine the value of character <code>c</code>
-     * in the supplied radix. The value of <code>radix</code> is must be
-     * between MIN_RADIX and MAX_RADIX inclusive.
+     * Convenient method to determine the value of character <code>c</code> in
+     * the supplied radix. The value of <code>radix</code> must be between
+     * MIN_RADIX and MAX_RADIX.
      * 
-     * @param c the character
-     * @param radix the radix
+     * @param c
+     *            the character
+     * @param radix
+     *            the radix
      * @return if <code>radix</code> lies between {@link #MIN_RADIX} and
      *         {@link #MAX_RADIX} then the value of the character in the radix,
      *         otherwise -1.
@@ -2434,6 +2436,23 @@ public final class Character implements Serializable, Comparable<Character> {
 		}
 		return -1;
 	}
+    
+    /**
+     * Convenient method to determine the value of character
+     * <code>codePoint</code> in the supplied radix. The value of
+     * <code>radix</code> must be between MIN_RADIX and MAX_RADIX.
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @param radix
+     *            the radix
+     * @return if <code>radix</code> lies between {@link #MIN_RADIX} and
+     *         {@link #MAX_RADIX} then the value of the character in the radix,
+     *         otherwise -1.
+     */
+    public static int digit(int codePoint, int radix) {
+        return UCharacter.digit(codePoint, radix);
+    }
 
 	/**
 	 * Compares the argument to the receiver, and answers true if they represent
@@ -2552,12 +2571,12 @@ public final class Character implements Serializable, Comparable<Character> {
 	}
 
 	/**
-	 * Gets the Unicode directionality of the specified character.
-	 * 
-	 * @param c
-	 *            the character
-	 * @return the Unicode directionality
-	 */
+     * Answers whether the specified character is mirrored
+     * 
+     * @param c
+     *            the character
+     * @return true if the character is mirrored, false otherwise
+     */
 	public static boolean isMirrored(char c) {
 		int value = c / 16;
 		if (value >= mirrored.length) {
@@ -2566,6 +2585,17 @@ public final class Character implements Serializable, Comparable<Character> {
 		int bit = 1 << (c % 16);
 		return (mirrored[value] & bit) != 0;
 	}
+    
+    /**
+     * Answers whether the specified character is mirrored
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @return true if the character is mirrored, false otherwise
+     */
+    public static boolean isMirrored(int codePoint) {
+        return UCharacter.isMirrored(codePoint);
+    }
 
 	/**
 	 * Answers an integer hash code for the receiver. Any two objects which
@@ -2648,6 +2678,18 @@ public final class Character implements Serializable, Comparable<Character> {
 		return (c >= 0 && c <= 8) || (c >= 0xe && c <= 0x1b)
 				|| (c >= 0x7f && c <= 0x9f) || getType(c) == FORMAT;
 	}
+    
+    /**
+     * Answers whether the specified character is ignorable in a Java or Unicode
+     * identifier.
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @return true when the character is ignorable, false otherwise
+     */
+    public static boolean isIdentifierIgnorable(int codePoint) {
+        return UCharacter.isIdentifierIgnorable(codePoint);
+    }
 
 	/**
 	 * Answers whether the character is an ISO control character.
@@ -2850,13 +2892,27 @@ public final class Character implements Serializable, Comparable<Character> {
 		return c <= 0x200b || c == 0x2028 || c == 0x2029 || c == 0x202f
 				|| c == 0x3000;
 	}
+    
+    /**
+     * Answers whether the character is a Unicode space character. A member of
+     * one of the Unicode categories Space Separator, Line Separator, or
+     * Paragraph Separator.
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @return true when the character is a Unicode space character, false
+     *         otherwise
+     */
+    public static boolean isSpaceChar(int codePoint) {
+        return UCharacter.isSpaceChar(codePoint);
+    }
 
 	/**
-	 * Answers whether the character is an title case character.
+	 * Answers whether the character is a titlecase character.
 	 * 
 	 * @param c
 	 *            the character
-	 * @return true when the character is a title case character, false
+	 * @return true when the character is a titlecase character, false
 	 *         otherwise
 	 */
 	public static boolean isTitleCase(char c) {
@@ -2873,6 +2929,18 @@ public final class Character implements Serializable, Comparable<Character> {
 		}
 		return false;
 	}
+    
+    /**
+     * Answers whether the character is a titlecase character.
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @return true when the character is a titlecase character, false
+     *         otherwise
+     */
+    public static boolean isTitleCase(int codePoint) {
+        return UCharacter.isTitleCase(codePoint);
+    }
 
 	/**
 	 * Answers whether the character is valid as any character except the first
@@ -2938,13 +3006,13 @@ public final class Character implements Serializable, Comparable<Character> {
     }
 
 	/**
-	 * Answers whether the character is a whitespace character in Java.
-	 * 
-	 * @param c
-	 *            the character
-	 * @return <code>true</code> if the supplied <code>c</code> is a
-	 *         whitespace character in Java, otherwise <code>false</code>.
-	 */
+     * Answers whether the character is a whitespace character in Java.
+     * 
+     * @param c
+     *            the character
+     * @return true if the supplied <code>c</code> is a whitespace character
+     *         in Java, otherwise false.
+     */
 	public static boolean isWhitespace(char c) {
 		// Optimized case for ASCII
 		if ((c >= 0x1c && c <= 0x20) || (c >= 0x9 && c <= 0xd)) {
@@ -2958,6 +3026,20 @@ public final class Character implements Serializable, Comparable<Character> {
         }
 		return c <= 0x200b || c == 0x2028 || c == 0x2029 || c == 0x3000;
 	}
+    
+    /**
+     * Answers whether the character is a whitespace character in Java.
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @return true if the supplied <code>c</code> is a whitespace character
+     *         in Java, otherwise false.
+     */
+    public static boolean isWhitespace(int codePoint) {
+        //FIXME depends on ICU when the codePoint is '\u2007'
+        return UCharacter.isWhitespace(codePoint);
+        
+    }
 
 	/**
 	 * Reverse the order of the first and second bytes in character

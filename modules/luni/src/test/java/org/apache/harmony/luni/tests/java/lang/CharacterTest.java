@@ -676,6 +676,22 @@ public class CharacterTest extends TestCase {
         assertEquals("Returned incorrect digit", 1, Character.digit('1', 10));
         assertEquals("Returned incorrect digit", 15, Character.digit('F', 16));
     }
+    
+    /**
+     * @tests java.lang.Character#digit(int, int)
+     */
+    public void test_digit_II() {
+        assertEquals(1, Character.digit((int)'1', 10));
+        assertEquals(15, Character.digit((int)'F', 16));
+        
+        assertEquals(-1, Character.digit(0x0000, 37));
+        assertEquals(-1, Character.digit(0x0045, 10));
+        
+        assertEquals(10, Character.digit(0x0041, 20));
+        assertEquals(10, Character.digit(0x0061, 20));
+        
+        assertEquals(-1, Character.digit(0x110000, 20));       
+    }
 
     /**
      * @tests java.lang.Character#equals(java.lang.Object)
@@ -861,6 +877,50 @@ public class CharacterTest extends TestCase {
 
         assertTrue("Non-Ignorable returned true", !Character
                 .isIdentifierIgnorable('\u0065'));
+    }
+    
+    /**
+     * @tests java.lang.Character#isIdentifierIgnorable(int)
+     */
+    public void test_isIdentifierIgnorable_I() {
+        assertTrue(Character.isIdentifierIgnorable(0x0000));
+        assertTrue(Character.isIdentifierIgnorable(0x0004));
+        assertTrue(Character.isIdentifierIgnorable(0x0008));
+        
+        assertTrue(Character.isIdentifierIgnorable(0x000E));
+        assertTrue(Character.isIdentifierIgnorable(0x0013));
+        assertTrue(Character.isIdentifierIgnorable(0x001B));
+        
+        assertTrue(Character.isIdentifierIgnorable(0x007F));
+        assertTrue(Character.isIdentifierIgnorable(0x008F));
+        assertTrue(Character.isIdentifierIgnorable(0x009F));
+
+        assertTrue(Character.isIdentifierIgnorable(0x202b));
+        assertTrue(Character.isIdentifierIgnorable(0x206c));
+        assertTrue(Character.isIdentifierIgnorable(0xfeff));
+        assertFalse(Character.isIdentifierIgnorable(0x0065)); 
+        
+        assertTrue(Character.isIdentifierIgnorable(0x1D173));
+        
+        assertFalse(Character.isIdentifierIgnorable(0x10FFFD));
+        assertFalse(Character.isIdentifierIgnorable(0x110000));
+    }
+    
+    /**
+     * @tests java.lang.Character#isMirrored(char)
+     */
+    public void test_isMirrored_C() {
+        assertTrue(Character.isMirrored('\u0028'));
+        assertFalse(Character.isMirrored('\uFFFF'));
+    }
+    
+    /**
+     * @tests java.lang.Character#isMirrored(int)
+     */
+    public void test_isMirrored_I() {
+        assertTrue(Character.isMirrored(0x0028));
+        assertFalse(Character.isMirrored(0xFFFF));     
+        assertFalse(Character.isMirrored(0x110000));
     }
 
     /**
@@ -1064,6 +1124,22 @@ public class CharacterTest extends TestCase {
         assertTrue("space returned false", Character.isSpaceChar('\u0020'));
         assertTrue("non-space returned true", !Character.isSpaceChar('\n'));
     }
+    
+    /**
+     * @tests java.lang.Character#isSpaceChar(int)
+     */
+    public void test_isSpaceChar_I() {
+        assertTrue(Character.isSpaceChar((int)'\u0020'));
+        assertFalse(Character.isSpaceChar((int)'\n'));
+        
+        assertTrue(Character.isSpaceChar(0x2000));
+        assertTrue(Character.isSpaceChar(0x200A));
+        
+        assertTrue(Character.isSpaceChar(0x2028));      
+        assertTrue(Character.isSpaceChar(0x2029));
+        
+        assertFalse(Character.isSpaceChar(0x110000));
+    }
 
     /**
      * @tests java.lang.Character#isTitleCase(char)
@@ -1093,6 +1169,24 @@ public class CharacterTest extends TestCase {
             }
         }
         assertTrue("Failed to find all Title Case chars", tnum == tChars.length);
+    }
+    
+    /**
+     * @tests java.lang.Character#isTitleCase(int)
+     */
+    public void test_isTitleCase_I() {
+        //all the titlecase characters
+        int[] titleCaseCharacters = { 0x01c5, 0x01c8, 0x01cb, 0x01f2, 0x1f88,
+                0x1f89, 0x1f8a, 0x1f8b, 0x1f8c, 0x1f8d, 0x1f8e, 0x1f8f, 0x1f98,
+                0x1f99, 0x1f9a, 0x1f9b, 0x1f9c, 0x1f9d, 0x1f9e, 0x1f9f, 0x1fa8,
+                0x1fa9, 0x1faa, 0x1fab, 0x1fac, 0x1fad, 0x1fae, 0x1faf, 0x1fbc,
+                0x1fcc, 0x1ffc };
+        
+        for (int i = 0; i < titleCaseCharacters.length; i++) {
+            assertTrue(Character.isTitleCase(titleCaseCharacters[i]));
+        }
+        
+        assertFalse(Character.isTitleCase(0x110000));
     }
 
     /**
@@ -1151,6 +1245,40 @@ public class CharacterTest extends TestCase {
         // Test for method boolean java.lang.Character.isWhitespace(char)
         assertTrue("space returned false", Character.isWhitespace('\n'));
         assertTrue("non-space returned true", !Character.isWhitespace('T'));
+    }
+    
+    /**
+     * @tests java.lang.Character#isWhitespace(int)
+     */
+    public void test_isWhitespace_I() {
+        assertTrue(Character.isWhitespace((int)'\n'));
+        assertFalse(Character.isWhitespace((int)'T'));
+        
+        assertTrue(Character.isWhitespace(0x0009));
+        assertTrue(Character.isWhitespace(0x000A));
+        assertTrue(Character.isWhitespace(0x000B));
+        assertTrue(Character.isWhitespace(0x000C));
+        assertTrue(Character.isWhitespace(0x000D));
+        assertTrue(Character.isWhitespace(0x001C));
+        assertTrue(Character.isWhitespace(0x001D));
+        assertTrue(Character.isWhitespace(0x001F));
+        assertTrue(Character.isWhitespace(0x001E));
+        
+        assertTrue(Character.isWhitespace(0x2000));
+        assertTrue(Character.isWhitespace(0x200A));
+        
+        assertTrue(Character.isWhitespace(0x2028));      
+        assertTrue(Character.isWhitespace(0x2029));
+        
+        assertFalse(Character.isWhitespace(0x00A0));
+        assertFalse(Character.isWhitespace(0x202F));
+        assertFalse(Character.isWhitespace(0x110000));
+        
+        assertFalse(Character.isWhitespace(0xFEFF));
+        
+        //FIXME depend on ICU4J
+        //assertFalse(Character.isWhitespace(0x2007));
+        
     }
 
     /**
