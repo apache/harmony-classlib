@@ -17,6 +17,7 @@ Import-Package: java.io,
  org.apache.harmony.luni.net,
  org.apache.harmony.luni.platform,
  org.apache.harmony.luni.util,
+ org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional,
  tests.support;hy_usage=test;resolution:=optional,
  tests.util;hy_usage=test;resolution:=optional
 Export-Package: java.nio,
