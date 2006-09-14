@@ -118,6 +118,10 @@ public class ICC_Profile implements Serializable {
 
     public static final int icSigAbstractClass = 1633842036;
 
+    public static final int icSigColorantOrderTag = 1668051567;
+
+    public static final int icSigColorantTableTag = 1668051572;
+
     public static final int icSigColorSpaceClass = 1936744803;
 
     public static final int icSigNamedColorClass = 1852662636;
@@ -139,6 +143,8 @@ public class ICC_Profile implements Serializable {
     public static final int icSigAToB2Tag = 1093812786;
 
     public static final int icSigBlueColorantTag = 1649957210;
+
+    public static final int icSigBlueMatrixColumnTag = 1649957210;
 
     public static final int icSigBlueTRCTag = 1649693251;
 
@@ -167,6 +173,8 @@ public class ICC_Profile implements Serializable {
     public static final int icSigGrayTRCTag = 1800688195;
 
     public static final int icSigGreenColorantTag = 1733843290;
+
+    public static final int icSigGreenMatrixColumnTag = 1733843290;
 
     public static final int icSigGreenTRCTag = 1733579331;
 
@@ -206,6 +214,8 @@ public class ICC_Profile implements Serializable {
 
     public static final int icSigRedColorantTag = 1918392666;
 
+    public static final int icSigRedMatrixColumnTag = 1918392666;
+
     public static final int icSigRedTRCTag = 1918128707;
 
     public static final int icSigScreeningDescTag = 1935897188;
@@ -219,6 +229,8 @@ public class ICC_Profile implements Serializable {
     public static final int icSigViewingCondDescTag = 1987405156;
 
     public static final int icSigViewingConditionsTag = 1986618743;
+
+    public static final int icSigChromaticAdaptationTag = 1667785060;
 
     public static final int icSigChromaticityTag = 1667789421;
 
@@ -240,6 +252,8 @@ public class ICC_Profile implements Serializable {
 
     public static final int icHdrPlatform = 40;
 
+    public static final int icHdrProfileID = 84;
+
     public static final int icHdrFlags = 44;
 
     public static final int icHdrManufacturer = 48;
@@ -253,6 +267,10 @@ public class ICC_Profile implements Serializable {
     public static final int icHdrIlluminant = 68;
 
     public static final int icHdrCreator = 80;
+
+    public static final int icICCAbsoluteColorimetric = 3;
+
+    public static final int icMediaRelativeColorimetric = 1;
 
     public static final int icTagType = 0;
 
