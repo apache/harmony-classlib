@@ -66,55 +66,27 @@ public class Support_Exec extends TestCase {
 		boolean onUnix = File.separatorChar == '/';
 		String classPathString = "";
 		if (classpath != null)
-			for (int i = 0; i < classpath.length; i++)
-				classPathString += File.pathSeparator + classpath[i];
-		if (vendor.indexOf("Sun") != -1) {
-			baseArgs = 3;
-			execArgs = new String[baseArgs + args.length];
-			String executable = System.getProperty("java.home");
-			if (!executable.endsWith(File.separator))
-				executable += File.separator;
-			executable += "bin" + File.separator;
-			execArgs[0] = executable + "java";
-			execArgs[1] = "-cp";
-			execArgs[2] = "\"" + System.getProperty("java.class.path")
-					+ classPathString + "\"";
-		} else if (vendor.indexOf("IBM") != -1) {
-			baseArgs = 5;
-			String full = System.getProperty("java.fullversion");
-			if (full != null && full.indexOf("(JIT disabled") >= 0)
-				baseArgs++;
-			execArgs = new String[baseArgs + args.length];
-			execArgs[0] = System.getProperty("com.ibm.oti.vm.exe");
-			// stop passing -jcl:null into the VM
-            // WARNING: empty string in args array may confuse
-            // Process.exec(String[] cmdarray) on Linux so
-            // Process.exec(String command) is used instead
-			execArgs[1] = "";
-			if (onUnix) {
-				execArgs[2] = "-Xbootclasspath:"
-						+ System.getProperty("org.apache.harmony.boot.class.path");
-				execArgs[3] = "-cp";
-				execArgs[4] = System.getProperty("java.class.path")
-						+ classPathString;
-			} else {
-				execArgs[2] = "\"-Xbootclasspath:"
-						+ System.getProperty("org.apache.harmony.boot.class.path")
-						+ "\"";
-				execArgs[3] = "-cp";
-				execArgs[4] = "\"" + System.getProperty("java.class.path")
-						+ classPathString + "\"";
-			}
-			if (baseArgs > 5)
-				execArgs[5] = "-Xint";
-		}
-		for (int i = 0; i < args.length; i++)
-			execArgs[baseArgs + i] = args[i];
-		StringBuffer command = new StringBuffer(execArgs[0]);
-		for (int i = 1; i < execArgs.length; i++)
-			command.append(" " + execArgs[i]);
-		System.out.println();
-		System.out.println("Exec: " + command.toString());
+            for (int i = 0; i < classpath.length; i++)
+                classPathString += File.pathSeparator + classpath[i];
+
+        baseArgs = 3;
+        execArgs = new String[baseArgs + args.length];
+        String executable = System.getProperty("java.home");
+        if (!executable.endsWith(File.separator))
+            executable += File.separator;
+        executable += "bin" + File.separator;
+        execArgs[0] = executable + "java";
+        execArgs[1] = "-cp";
+        execArgs[2] = "\"" + System.getProperty("java.class.path")
+                + classPathString + "\"";
+
+        for (int i = 0; i < args.length; i++)
+            execArgs[baseArgs + i] = args[i];
+        StringBuffer command = new StringBuffer(execArgs[0]);
+        for (int i = 1; i < execArgs.length; i++)
+            command.append(" " + execArgs[i]);
+        System.out.println();
+        System.out.println("Exec: " + command.toString());
 
 		final Process proc = Runtime.getRuntime().exec(command.toString());
 		final StringBuffer errBuf = new StringBuffer();
