@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.tests.nio;
+package org.apache.harmony.nio.tests;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
