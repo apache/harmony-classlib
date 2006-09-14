@@ -14,11 +14,11 @@
  */
 package org.apache.harmony.nio.tests.java.nio.channels;
 
-import java.io.IOException;
 import java.nio.channels.UnsupportedAddressTypeException;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * Tests for UnsupportedAddressTypeException
@@ -28,22 +28,17 @@ public class UnsupportedAddressTypeExceptionTest extends TestCase {
     /**
      * @tests serialization/deserialization compatibility.
      */
-    public void test_serialization() throws IOException, ClassNotFoundException {
-        UnsupportedAddressTypeException object = new UnsupportedAddressTypeException();
-        UnsupportedAddressTypeException deObject = (UnsupportedAddressTypeException) SerializationTester
-                .getDeserilizedObject(object);
-        assertNotNull(deObject);
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new UnsupportedAddressTypeException());
     }
 
     /**
      * @tests serialization/deserialization compatibility with RI.
      */
-    public void test_compatibilitySerialization() throws Exception {
-        UnsupportedAddressTypeException object = new UnsupportedAddressTypeException();
-        UnsupportedAddressTypeException deObject = (UnsupportedAddressTypeException) SerializationTester
-                .readObject(
-                        object,
-                        "serialization/java/nio/channels/UnsupportedAddressTypeExceptionTest.golden.ser");
-        assertNotNull(deObject);
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this,
+                new UnsupportedAddressTypeException());
     }
 }

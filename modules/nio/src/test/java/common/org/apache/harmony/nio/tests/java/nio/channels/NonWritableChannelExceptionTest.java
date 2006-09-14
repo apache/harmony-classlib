@@ -14,11 +14,11 @@
  */
 package org.apache.harmony.nio.tests.java.nio.channels;
 
-import java.io.IOException;
 import java.nio.channels.NonWritableChannelException;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * Tests for NonWritableChannelException
@@ -28,21 +28,16 @@ public class NonWritableChannelExceptionTest extends TestCase {
     /**
      * @tests serialization/deserialization compatibility.
      */
-    public void test_serialization() throws IOException, ClassNotFoundException {
-        NonWritableChannelException object = new NonWritableChannelException();
-        NonWritableChannelException deObject = (NonWritableChannelException) SerializationTester
-                .getDeserilizedObject(object);
-        assertNotNull(deObject);
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new NonWritableChannelException());
     }
 
     /**
      * @tests serialization/deserialization compatibility with RI.
      */
-    public void test_compatibilitySerialization() throws Exception {
-        NonWritableChannelException object = new NonWritableChannelException();
-        NonWritableChannelException deObject = (NonWritableChannelException) SerializationTester
-                .readObject(object,
-                        "serialization/java/nio/channels/NonWritableChannelExceptionTest.golden.ser");
-        assertNotNull(deObject);
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new NonWritableChannelException());
     }
 }

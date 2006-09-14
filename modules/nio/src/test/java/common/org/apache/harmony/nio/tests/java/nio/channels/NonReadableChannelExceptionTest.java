@@ -14,11 +14,11 @@
  */
 package org.apache.harmony.nio.tests.java.nio.channels;
 
-import java.io.IOException;
 import java.nio.channels.NonReadableChannelException;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * Tests for NonReadableChannelException
@@ -28,21 +28,16 @@ public class NonReadableChannelExceptionTest extends TestCase {
     /**
      * @tests serialization/deserialization compatibility.
      */
-    public void test_serialization() throws IOException, ClassNotFoundException {
-        NonReadableChannelException object = new NonReadableChannelException();
-        NonReadableChannelException deObject = (NonReadableChannelException) SerializationTester
-                .getDeserilizedObject(object);
-        assertNotNull(deObject);
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new NonReadableChannelException());
     }
 
     /**
      * @tests serialization/deserialization compatibility with RI.
      */
-    public void test_compatibilitySerialization() throws Exception {
-        NonReadableChannelException object = new NonReadableChannelException();
-        NonReadableChannelException deObject = (NonReadableChannelException) SerializationTester
-                .readObject(object,
-                        "serialization/java/nio/channels/NonReadableChannelExceptionTest.golden.ser");
-        assertNotNull(deObject);
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new NonReadableChannelException());
     }
 }

@@ -14,11 +14,11 @@
  */
 package org.apache.harmony.nio.tests.java.nio.channels;
 
-import java.io.IOException;
 import java.nio.channels.OverlappingFileLockException;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * Tests for OverlappingFileLockException
@@ -28,21 +28,17 @@ public class OverlappingFileLockExceptionTest extends TestCase {
     /**
      * @tests serialization/deserialization compatibility.
      */
-    public void test_serialization() throws IOException, ClassNotFoundException {
-        OverlappingFileLockException object = new OverlappingFileLockException();
-        OverlappingFileLockException deObject = (OverlappingFileLockException) SerializationTester
-                .getDeserilizedObject(object);
-        assertNotNull(deObject);
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new OverlappingFileLockException());
     }
 
     /**
      * @tests serialization/deserialization compatibility with RI.
      */
-    public void test_compatibilitySerialization() throws Exception {
-        OverlappingFileLockException object = new OverlappingFileLockException();
-        OverlappingFileLockException deObject = (OverlappingFileLockException) SerializationTester
-                .readObject(object,
-                        "serialization/java/nio/channels/OverlappingFileLockExceptionTest.golden.ser");
-        assertNotNull(deObject);
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest
+                .verifyGolden(this, new OverlappingFileLockException());
     }
 }

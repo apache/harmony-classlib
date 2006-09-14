@@ -14,11 +14,11 @@
  */
 package org.apache.harmony.nio.tests.java.nio.channels;
 
-import java.io.IOException;
 import java.nio.channels.IllegalSelectorException;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * Tests for IllegalSelectorException
@@ -28,21 +28,16 @@ public class IllegalSelectorExceptionTest extends TestCase {
     /**
      * @tests serialization/deserialization compatibility.
      */
-    public void test_serialization() throws IOException, ClassNotFoundException {
-        IllegalSelectorException object = new IllegalSelectorException();
-        IllegalSelectorException deObject = (IllegalSelectorException) SerializationTester
-                .getDeserilizedObject(object);
-        assertNotNull(deObject);
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new IllegalSelectorException());
     }
 
     /**
      * @tests serialization/deserialization compatibility with RI.
      */
-    public void test_compatibilitySerialization() throws Exception {
-        IllegalSelectorException object = new IllegalSelectorException();
-        IllegalSelectorException deObject = (IllegalSelectorException) SerializationTester
-                .readObject(object,
-                        "serialization/java/nio/channels/IllegalSelectorExceptionTest.golden.ser");
-        assertNotNull(deObject);
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new IllegalSelectorException());
     }
 }

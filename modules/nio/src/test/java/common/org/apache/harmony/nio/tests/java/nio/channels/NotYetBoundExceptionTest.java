@@ -14,11 +14,11 @@
  */
 package org.apache.harmony.nio.tests.java.nio.channels;
 
-import java.io.IOException;
 import java.nio.channels.NotYetBoundException;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * Tests for NotYetBoundException
@@ -28,21 +28,16 @@ public class NotYetBoundExceptionTest extends TestCase {
     /**
      * @tests serialization/deserialization compatibility.
      */
-    public void test_serialization() throws IOException, ClassNotFoundException {
-        NotYetBoundException object = new NotYetBoundException();
-        NotYetBoundException deObject = (NotYetBoundException) SerializationTester
-                .getDeserilizedObject(object);
-        assertNotNull(deObject);
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new NotYetBoundException());
     }
 
     /**
      * @tests serialization/deserialization compatibility with RI.
      */
-    public void test_compatibilitySerialization() throws Exception {
-        NotYetBoundException object = new NotYetBoundException();
-        NotYetBoundException deObject = (NotYetBoundException) SerializationTester
-                .readObject(object,
-                        "serialization/java/nio/channels/NotYetBoundExceptionTest.golden.ser");
-        assertNotNull(deObject);
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new NotYetBoundException());
     }
 }

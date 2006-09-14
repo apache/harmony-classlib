@@ -14,11 +14,11 @@
  */
 package org.apache.harmony.nio.tests.java.nio.channels;
 
-import java.io.IOException;
 import java.nio.channels.AsynchronousCloseException;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * Tests for AsynchronousCloseException
@@ -28,21 +28,16 @@ public class AsynchronousCloseExceptionTest extends TestCase {
     /**
      * @tests serialization/deserialization compatibility.
      */
-    public void test_serialization() throws IOException, ClassNotFoundException {
-        AsynchronousCloseException object = new AsynchronousCloseException();
-        AsynchronousCloseException deObject = (AsynchronousCloseException) SerializationTester
-                .getDeserilizedObject(object);
-        assertNotNull(deObject);
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new AsynchronousCloseException());
     }
 
     /**
      * @tests serialization/deserialization compatibility with RI.
      */
-    public void test_compatibilitySerialization() throws Exception {
-        AsynchronousCloseException object = new AsynchronousCloseException();
-        AsynchronousCloseException deObject = (AsynchronousCloseException) SerializationTester
-                .readObject(object,
-                        "serialization/java/nio/channels/AsynchronousCloseExceptionTest.golden.ser");
-        assertNotNull(deObject);
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new AsynchronousCloseException());
     }
 }

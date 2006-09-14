@@ -14,11 +14,11 @@
  */
 package org.apache.harmony.nio.tests.java.nio.channels;
 
-import java.io.IOException;
 import java.nio.channels.FileLockInterruptionException;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * Tests for FileLockInterruptionException
@@ -28,21 +28,17 @@ public class FileLockInterruptionExceptionTest extends TestCase {
     /**
      * @tests serialization/deserialization compatibility.
      */
-    public void test_serialization() throws IOException, ClassNotFoundException {
-        FileLockInterruptionException object = new FileLockInterruptionException();
-        FileLockInterruptionException deObject = (FileLockInterruptionException) SerializationTester
-                .getDeserilizedObject(object);
-        assertNotNull(deObject);
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new FileLockInterruptionException());
     }
 
     /**
      * @tests serialization/deserialization compatibility with RI.
      */
-    public void test_compatibilitySerialization() throws Exception {
-        FileLockInterruptionException object = new FileLockInterruptionException();
-        FileLockInterruptionException deObject = (FileLockInterruptionException) SerializationTester
-                .readObject(object,
-                        "serialization/java/nio/channels/FileLockInterruptionExceptionTest.golden.ser");
-        assertNotNull(deObject);
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this,
+                new FileLockInterruptionException());
     }
 }

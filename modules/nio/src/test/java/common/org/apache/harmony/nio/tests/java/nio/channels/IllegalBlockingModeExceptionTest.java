@@ -14,11 +14,11 @@
  */
 package org.apache.harmony.nio.tests.java.nio.channels;
 
-import java.io.IOException;
 import java.nio.channels.IllegalBlockingModeException;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * Tests for IllegalBlockingModeException
@@ -28,21 +28,17 @@ public class IllegalBlockingModeExceptionTest extends TestCase {
     /**
      * @tests serialization/deserialization compatibility.
      */
-    public void test_serialization() throws IOException, ClassNotFoundException {
-        IllegalBlockingModeException object = new IllegalBlockingModeException();
-        IllegalBlockingModeException deObject = (IllegalBlockingModeException) SerializationTester
-                .getDeserilizedObject(object);
-        assertNotNull(deObject);
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new IllegalBlockingModeException());
     }
 
     /**
      * @tests serialization/deserialization compatibility with RI.
      */
-    public void test_compatibilitySerialization() throws Exception {
-        IllegalBlockingModeException object = new IllegalBlockingModeException();
-        IllegalBlockingModeException deObject = (IllegalBlockingModeException) SerializationTester
-                .readObject(object,
-                        "serialization/java/nio/channels/IllegalBlockingModeExceptionTest.golden.ser");
-        assertNotNull(deObject);
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest
+                .verifyGolden(this, new IllegalBlockingModeException());
     }
 }
