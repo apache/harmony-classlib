@@ -31,7 +31,7 @@ import java.util.logging.MemoryHandler;
 import java.util.logging.SimpleFormatter;
 
 import junit.framework.TestCase;
-import org.apache.harmony.logging.tests.java.util.logging.util.DefaultPropertyHelper;
+
 import org.apache.harmony.logging.tests.java.util.logging.util.EnvironmentHelper;
 
 /**
@@ -54,18 +54,6 @@ public class MemoryHandlerTest extends TestCase {
 	Handler target = new MockHandler();
 
 	private static File bak = null;
-
-	static {
-		try {
-			bak = DefaultPropertyHelper.init();
-		} catch (Exception e) {
-		}
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			public void run() {
-				DefaultPropertyHelper.reset(bak);
-			}
-		});
-	}
 
 	/*
 	 * @see TestCase#setUp()

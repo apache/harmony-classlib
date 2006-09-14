@@ -16,7 +16,6 @@
 package org.apache.harmony.logging.tests.java.util.logging;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -36,8 +35,9 @@ import java.util.logging.SocketHandler;
 import java.util.logging.XMLFormatter;
 
 import junit.framework.TestCase;
-import org.apache.harmony.logging.tests.java.util.logging.util.DefaultPropertyHelper;
+
 import org.apache.harmony.logging.tests.java.util.logging.util.EnvironmentHelper;
+
 import tests.util.CallVerificationStack;
 
 /**
@@ -45,25 +45,15 @@ import tests.util.CallVerificationStack;
  */
 public class SocketHandlerTest extends TestCase {
 
-	private final static String INVALID_LEVEL = "impossible_level";
+	private static final LogManager LOG_MANAGER = LogManager.getLogManager();
+
+    private final static String INVALID_LEVEL = "impossible_level";
 
 	private static String className = SocketHandlerTest.class.getName();
 
-	private static File bakPropFile;
-
 	private SocketHandler h = null;
 
-	static {
-		try {
-			bakPropFile = DefaultPropertyHelper.init();
-		} catch (Exception e) {
-		}
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			public void run() {
-				DefaultPropertyHelper.reset(bakPropFile);
-			}
-		});
-	}
+    private Properties props;
 
 	/*
 	 * @see TestCase#setUp()
@@ -77,29 +67,51 @@ public class SocketHandlerTest extends TestCase {
 	 */
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		LogManager.getLogManager().reset();
+        initProps();
+		LOG_MANAGER.reset();
+        LOG_MANAGER.readConfiguration(EnvironmentHelper
+                .PropertiesToInputStream(props));
 		CallVerificationStack.getInstance().clear();
 		if (null != h) {
 			h.close();
 			h = null;
 		}
 	}
+    
+
+    private void initProps() throws Exception {
+        props = new Properties();
+        props.put("handlers", className + "$MockHandler " + className
+                + "$MockHandler");
+        props.put("java.util.logging.FileHandler.pattern", "%h/java%u.log");
+        props.put("java.util.logging.FileHandler.limit", "50000");
+        props.put("java.util.logging.FileHandler.count", "5");
+        props.put("java.util.logging.FileHandler.formatter",
+                "java.util.logging.XMLFormatter");
+        props.put(".level", "FINE");
+        props.put("java.util.logging.ConsoleHandler.level", "OFF");
+        props.put("java.util.logging.ConsoleHandler.formatter",
+                "java.util.logging.SimpleFormatter");
+        props.put("foo.handlers", "java.util.logging.ConsoleHandler");
+        props.put("foo.level", "WARNING");
+        props.put("com.xyz.foo.level", "SEVERE");
+    }
 
 	/*
 	 * Test the constructor with no relevant log manager properties are set.
 	 */
 	public void testConstructor_NoProperties() throws Exception {
-		assertNull(LogManager.getLogManager().getProperty(
+		assertNull(LOG_MANAGER.getProperty(
 				"java.util.logging.SocketHandler.level"));
-		assertNull(LogManager.getLogManager().getProperty(
+		assertNull(LOG_MANAGER.getProperty(
 				"java.util.logging.SocketHandler.filter"));
-		assertNull(LogManager.getLogManager().getProperty(
+		assertNull(LOG_MANAGER.getProperty(
 				"java.util.logging.SocketHandler.formatter"));
-		assertNull(LogManager.getLogManager().getProperty(
+		assertNull(LOG_MANAGER.getProperty(
 				"java.util.logging.SocketHandler.encoding"));
-		assertNull(LogManager.getLogManager().getProperty(
+		assertNull(LOG_MANAGER.getProperty(
 				"java.util.logging.SocketHandler.host"));
-		assertNull(LogManager.getLogManager().getProperty(
+		assertNull(LOG_MANAGER.getProperty(
 				"java.util.logging.SocketHandler.port"));
 
 		try {
@@ -164,18 +176,18 @@ public class SocketHandlerTest extends TestCase {
 	 * except host and port.
 	 */
 	public void testConstructor_NoBasicProperties() throws Exception {
-		assertNull(LogManager.getLogManager().getProperty(
+		assertNull(LOG_MANAGER.getProperty(
 				"java.util.logging.SocketHandler.level"));
-		assertNull(LogManager.getLogManager().getProperty(
+		assertNull(LOG_MANAGER.getProperty(
 				"java.util.logging.SocketHandler.filter"));
-		assertNull(LogManager.getLogManager().getProperty(
+		assertNull(LOG_MANAGER.getProperty(
 				"java.util.logging.SocketHandler.formatter"));
-		assertNull(LogManager.getLogManager().getProperty(
+		assertNull(LOG_MANAGER.getProperty(
 				"java.util.logging.SocketHandler.encoding"));
 		Properties p = new Properties();
 		p.put("java.util.logging.SocketHandler.host", "127.0.0.1");
 		p.put("java.util.logging.SocketHandler.port", "6666");
-		LogManager.getLogManager().readConfiguration(
+		LOG_MANAGER.readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
 		// start the server to be ready to accept log messages
@@ -213,7 +225,7 @@ public class SocketHandlerTest extends TestCase {
 		p.put("java.util.logging.SocketHandler.encoding", "utf-8");
 		p.put("java.util.logging.SocketHandler.host", "127.0.0.1");
 		p.put("java.util.logging.SocketHandler.port", "6666");
-		LogManager.getLogManager().readConfiguration(
+		LOG_MANAGER.readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
 		oldMan = System.getSecurityManager();
@@ -248,7 +260,7 @@ public class SocketHandlerTest extends TestCase {
 		p.put("java.util.logging.SocketHandler.encoding", "iso-8859-1");
 		p.put("java.util.logging.SocketHandler.host", "127.0.0.1");
 		p.put("java.util.logging.SocketHandler.port", "6666");
-		LogManager.getLogManager().readConfiguration(
+		LOG_MANAGER.readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
 		// start the server to be ready to accept log messages
@@ -292,7 +304,7 @@ public class SocketHandlerTest extends TestCase {
 		p.put("java.util.logging.SocketHandler.encoding", "XXXX");
 		p.put("java.util.logging.SocketHandler.host", "127.0.0.1");
 		p.put("java.util.logging.SocketHandler.port", "6666");
-		LogManager.getLogManager().readConfiguration(
+		LOG_MANAGER.readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
 		// start the server to be ready to accept log messages
@@ -342,7 +354,7 @@ public class SocketHandlerTest extends TestCase {
 		p.put("java.util.logging.SocketHandler.encoding", "iso-8859-1");
 		p.put("java.util.logging.SocketHandler.host", "127.0.0.1");
 		p.put("java.util.logging.SocketHandler.port", "6666i");
-		LogManager.getLogManager().readConfiguration(
+		LOG_MANAGER.readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
 		try {
@@ -367,7 +379,7 @@ public class SocketHandlerTest extends TestCase {
 		p.put("java.util.logging.SocketHandler.encoding", "iso-8859-1");
 		p.put("java.util.logging.SocketHandler.host", "127.0.0.1");
 		p.put("java.util.logging.SocketHandler.port", "6665");
-		LogManager.getLogManager().readConfiguration(
+		LOG_MANAGER.readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
 		try {
@@ -399,7 +411,7 @@ public class SocketHandlerTest extends TestCase {
 		p.put("java.util.logging.SocketHandler.encoding", "iso-8859-1");
 		p.put("java.util.logging.SocketHandler.host", " 34345 #$#%$%$");
 		p.put("java.util.logging.SocketHandler.port", "6666");
-		LogManager.getLogManager().readConfiguration(
+		LOG_MANAGER.readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
 		try {
@@ -427,7 +439,7 @@ public class SocketHandlerTest extends TestCase {
 				+ "$MockFormatter");
 		p.put("java.util.logging.SocketHandler.host", "127.0.0.1");
 		p.put("java.util.logging.SocketHandler.port", "6666");
-		LogManager.getLogManager().readConfiguration(
+		LOG_MANAGER.readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
 		// start the server to be ready to accept log messages
@@ -455,7 +467,7 @@ public class SocketHandlerTest extends TestCase {
 				+ "$MockFormatter");
 		p.put("java.util.logging.SocketHandler.host", "127.0.0.1");
 		p.put("java.util.logging.SocketHandler.port", "6666");
-		LogManager.getLogManager().readConfiguration(
+		LOG_MANAGER.readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
 		// start the server to be ready to accept log messages
@@ -480,7 +492,7 @@ public class SocketHandlerTest extends TestCase {
 				+ "$MockFormatter");
 		p.put("java.util.logging.SocketHandler.host", "127.0.0.1");
 		p.put("java.util.logging.SocketHandler.port", "6666");
-		LogManager.getLogManager().readConfiguration(
+		LOG_MANAGER.readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
 		// start the server to be ready to accept log messages
@@ -514,7 +526,7 @@ public class SocketHandlerTest extends TestCase {
 				+ "$MockFormatter");
 		p.put("java.util.logging.SocketHandler.host", "127.0.0.1");
 		p.put("java.util.logging.SocketHandler.port", "6666");
-		LogManager.getLogManager().readConfiguration(
+		LOG_MANAGER.readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
 		// start the server to be ready to accept log messages
@@ -553,7 +565,7 @@ public class SocketHandlerTest extends TestCase {
 				+ "$MockFormatter");
 		p.put("java.util.logging.SocketHandler.host", "127.0.0.1");
 		p.put("java.util.logging.SocketHandler.port", "6666");
-		LogManager.getLogManager().readConfiguration(
+		LOG_MANAGER.readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
 		// start the server to be ready to accept log messages
@@ -583,7 +595,7 @@ public class SocketHandlerTest extends TestCase {
 				+ "$MockFormatter");
 		p.put("java.util.logging.SocketHandler.host", "127.0.0.1");
 		p.put("java.util.logging.SocketHandler.port", "6666");
-		LogManager.getLogManager().readConfiguration(
+		LOG_MANAGER.readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
 		// start the server to be ready to accept log messages
@@ -610,7 +622,7 @@ public class SocketHandlerTest extends TestCase {
 				+ "$MockFormatter");
 		p.put("java.util.logging.SocketHandler.host", "127.0.0.1");
 		p.put("java.util.logging.SocketHandler.port", "6666");
-		LogManager.getLogManager().readConfiguration(
+		LOG_MANAGER.readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
 		// start the server to be ready to accept log messages
@@ -635,7 +647,7 @@ public class SocketHandlerTest extends TestCase {
 				+ "$MockFormatter");
 		p.put("java.util.logging.SocketHandler.host", "127.0.0.1");
 		p.put("java.util.logging.SocketHandler.port", "6666");
-		LogManager.getLogManager().readConfiguration(
+		LOG_MANAGER.readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
 		// start the server to be ready to accept log messages
@@ -660,7 +672,7 @@ public class SocketHandlerTest extends TestCase {
 				+ "$MockFormatter");
 		p.put("java.util.logging.SocketHandler.host", "127.0.0.1");
 		p.put("java.util.logging.SocketHandler.port", "6666");
-		LogManager.getLogManager().readConfiguration(
+		LOG_MANAGER.readConfiguration(
 				EnvironmentHelper.PropertiesToInputStream(p));
 
 		// start the server to be ready to accept log messages

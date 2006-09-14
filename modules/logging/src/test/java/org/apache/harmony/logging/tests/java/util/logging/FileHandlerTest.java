@@ -39,14 +39,14 @@ import java.util.logging.LoggingPermission;
 import java.util.logging.XMLFormatter;
 
 import junit.framework.TestCase;
-import org.apache.harmony.logging.tests.java.util.logging.util.DefaultPropertyHelper;
+
 import org.apache.harmony.logging.tests.java.util.logging.util.EnvironmentHelper;
 
 /**
  */
 public class FileHandlerTest extends TestCase {
 
-	static LogManager manager;
+	static LogManager manager=LogManager.getLogManager();
 
 	final static Properties props = new Properties();
 
@@ -62,20 +62,6 @@ public class FileHandlerTest extends TestCase {
 
 	final static String SEP = File.separator;
 
-	private static File bakPropFile = null;
-
-	static {
-		try {
-			bakPropFile = DefaultPropertyHelper.init();
-		} catch (Exception e) {
-		}
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			public void run() {
-				DefaultPropertyHelper.reset(bakPropFile);
-			}
-		});
-	}
-
 	FileHandler handler;
 
 	LogRecord r;
@@ -85,7 +71,6 @@ public class FileHandlerTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		manager = LogManager.getLogManager();
 		manager.reset();
 		initProps();
 		File file = new File(TEMPPATH + SEP + "log");

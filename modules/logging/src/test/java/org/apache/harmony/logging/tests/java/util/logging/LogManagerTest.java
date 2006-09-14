@@ -17,7 +17,6 @@ package org.apache.harmony.logging.tests.java.util.logging;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.Permission;
@@ -32,7 +31,7 @@ import java.util.logging.Logger;
 import java.util.logging.LoggingPermission;
 
 import junit.framework.TestCase;
-import org.apache.harmony.logging.tests.java.util.logging.util.DefaultPropertyHelper;
+
 import org.apache.harmony.logging.tests.java.util.logging.util.EnvironmentHelper;
 
 /**
@@ -62,40 +61,14 @@ public class LogManagerTest extends TestCase {
 
 	static final SecurityManager securityManager = System.getSecurityManager();
 
-	static final String classpath = System.getProperty("java.class.path");
-
-	// FIXME awaiting a completed regex package implementation
-	// static final String configFilePath =
-	// LogManagerTest.class.getClassLoader()
-	// .getResource("logging.config").getPath().replaceAll("%20", " ");
-
-	// should be replaced by the one upper
-	static final String configFilePath = LogManagerTest.class.getClassLoader()
-			.getResource("config/java/util/logging/logging.config")
-			.getPath();
-
 	static final String clearPath = System.getProperty("clearpath");
 
-	private static File bakPropFile = null;
-
-	static {
-		try {
-			bakPropFile = DefaultPropertyHelper.init();
-		} catch (Exception e) {
-		}
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			public void run() {
-				DefaultPropertyHelper.reset(bakPropFile);
-			}
-		});
-	}
 
 	/*
 	 * @see TestCase#setUp()
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		System.setSecurityManager(securityManager);
 		mockManager = new MockLogManager();
 		listener = new MockPropertyChangeListener();
 		handler = new MockHandler();
@@ -218,10 +191,6 @@ public class LogManagerTest extends TestCase {
 		assertTrue(manager.addLogger(grandson));
 		assertSame(foo, otherChild.getParent());
 		assertSame(otherChild, grandson.getParent());
-	}
-
-	public void testAddGetLogger_nameWithDot() {
-		// TODO
 	}
 
 	public void testAddLoggerReverseOrder() {
@@ -376,33 +345,6 @@ public class LogManagerTest extends TestCase {
 
 	}
 
-	// public void testOtherPermission() throws Exception {
-	// System.setSecurityManager(new MockSecurityManagerOtherPermission());
-	//
-	// mockManager.addLogger(new MockLogger("abc", null));
-	// // mockManager.addPropertyChangeListener(new
-	// MockPropertyChangeListener());
-	// mockManager.checkAccess();
-	// mockManager.getLogger("");
-	// mockManager.getLoggerNames();
-	// mockManager.getProperty(".level");
-	// try {
-	// mockManager.readConfiguration();
-	// fail("should throw securityException");
-	// } catch (SecurityException e) {
-	// }
-	// mockManager.readConfiguration(new ByteArrayInputStream(new byte[0]));
-	// mockManager.removePropertyChangeListener(null);
-	// mockManager.reset();
-	// LogManager.getLogManager();
-	// try {
-	// mockManager = new MockLogManager();
-	// fail("should throw securityException");
-	// } catch (SecurityException e) {
-	// }
-	// System.setSecurityManager(securityManager);
-	// }
-
 	public void testLoggingPermission() throws IOException {
 		System.setSecurityManager(new MockSecurityManagerLogPermission());
 		mockManager.addLogger(new MockLogger("abc", null));
@@ -464,8 +406,8 @@ public class LogManagerTest extends TestCase {
 		checkPropertyNull(mockManager);
 		assertEquals(0, root.getHandlers().length);
 		assertEquals(null, root.getLevel());
-		mockManager.readConfiguration();
-		assertEquals(Level.INFO, root.getLevel());
+		mockManager.readConfiguration(EnvironmentHelper.PropertiesToInputStream(props));
+		assertEquals(Level.FINE, root.getLevel());
 		checkProperty(mockManager);
 		mockManager.reset();
 		checkPropertyNull(mockManager);
@@ -476,14 +418,15 @@ public class LogManagerTest extends TestCase {
 	public void testGetProperty() throws SecurityException, IOException {
 		// but non-mock manager DO read it from the very beginning
 		Logger root = manager.getLogger("");
-		checkProperty(manager);
+        //FIXME: move it to exec
+//		checkProperty(manager);
 		assertEquals(Level.INFO, root.getLevel());
 		assertEquals(1, root.getHandlers().length);
 
-		manager.readConfiguration();
+		manager.readConfiguration(EnvironmentHelper.PropertiesToInputStream(props));
 		checkProperty(manager);
-		assertEquals(1, root.getHandlers().length);
-		assertEquals(Level.INFO, root.getLevel());
+		assertEquals(2, root.getHandlers().length);
+		assertEquals(Level.FINE, root.getLevel());
 
 		manager.reset();
 		checkPropertyNull(manager);
@@ -523,48 +466,42 @@ public class LogManagerTest extends TestCase {
 				"java.util.logging.SimpleFormatter");
 		// assertEquals(m.getProperty("handlers"),
 		// "java.util.logging.ConsoleHandler");
-		assertEquals(m.getProperty("java.util.logging.FileHandler.count"), "1");
-		assertEquals(m.getProperty("com.xyz.foo.level"), "SEVERE");
+		assertEquals(m.getProperty("java.util.logging.FileHandler.count"), "5");
+		assertEquals(m.getProperty("foo.level"), "WARNING");
 		assertEquals(m.getProperty("java.util.logging.FileHandler.formatter"),
 				"java.util.logging.XMLFormatter");
 		assertEquals(m.getProperty("java.util.logging.ConsoleHandler.level"),
-				"INFO");
+				"OFF");
 		assertEquals(m.getProperty("java.util.logging.FileHandler.pattern"),
 				"%h/java%u.log");
 	}
 
-	public void testReadConfiguration() throws SecurityException, IOException {
-		File bakFile = DefaultPropertyHelper.init(props);
-
-		try {
-			Logger foo = new MockLogger("foo", null);
-			assertEquals(null, foo.getLevel());
-			assertTrue(mockManager.addLogger(foo));
-
-			Logger fo = new MockLogger("foo2", null);
-			fo.setLevel(Level.ALL);
-			assertTrue(mockManager.addLogger(fo));
-
-			Handler h = new ConsoleHandler();
-			Level l = h.getLevel();
-			assertNotSame(Level.OFF, h.getLevel());
-
-			// read configuration
-			mockManager.readConfiguration();
-			// level DO has effect
-			assertEquals(Level.WARNING, foo.getLevel());
-			// for non specifed logger, level is reset to null
-			assertEquals(null, fo.getLevel());
-
-			// read properties don't affect handler
-			assertNotSame(Level.OFF, h.getLevel());
-			assertSame(l, h.getLevel());
-
-		} finally {
-			DefaultPropertyHelper.reset(bakFile);
-		}
-
-	}
+//	public void testReadConfiguration() throws SecurityException, IOException {
+//          FIXME: move the support_exec
+//			Logger foo = new MockLogger("foo", null);
+//			assertEquals(null, foo.getLevel());
+//			assertTrue(mockManager.addLogger(foo));
+//
+//			Logger fo = new MockLogger("foo2", null);
+//			fo.setLevel(Level.ALL);
+//			assertTrue(mockManager.addLogger(fo));
+//
+//			Handler h = new ConsoleHandler();
+//			Level l = h.getLevel();
+//			assertNotSame(Level.OFF, h.getLevel());
+//
+//			// read configuration
+//			mockManager.readConfiguration();
+//			// level DO has effect
+//			assertEquals(Level.WARNING, foo.getLevel());
+//			// for non specifed logger, level is reset to null
+//			assertEquals(null, fo.getLevel());
+//
+//			// read properties don't affect handler
+//			assertNotSame(Level.OFF, h.getLevel());
+//			assertSame(l, h.getLevel());
+//
+//	}
 
 	/*
 	 * Class under test for void readConfiguration(InputStream)
