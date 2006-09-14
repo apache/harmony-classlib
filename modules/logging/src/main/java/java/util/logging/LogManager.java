@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -195,10 +196,8 @@ public class LogManager {
 				}
 
 				// if global logger has been initialized, set root as its parent
-                Logger root = manager.getLogger(""); //$NON-NLS-1$
-				if (null != Logger.global && null != root) {
-					Logger.global.setParent(root);
-				}
+                Logger root = Logger.getLogger(""); //$NON-NLS-1$
+                Logger.global.setParent(root);
 				return null;
 			}
 		});
@@ -283,28 +282,10 @@ public class LogManager {
         }
         addToFamilyTree(logger, name);
         loggers.put(name, logger);
-
-        setLoggerLevel(logger, name, false);
-        logger.manager = this;
+        logger.setManager(this);
         return true;
     }
 
-    private void setLoggerLevel(Logger logger, String loggerName,
-                                boolean inherit) {
-        String configedLevel = getProperty(loggerName + ".level"); //$NON-NLS-1$
-        if (null != configedLevel) {
-            try {
-                logger.setLevel(Level.parse(configedLevel));
-            } catch (IllegalArgumentException e) {
-                // Print invalid level setting to the screen
-                // logging.1=Invalid level name: {0}.
-                System.err
-                        .print(Messages.getString("logging.1", configedLevel)); //$NON-NLS-1$
-            }
-        } else if (inherit) {
-            logger.setLevel(null);
-        }
-    }
 
     private void addToFamilyTree(Logger logger, String name) {
         Logger parent = null;
@@ -323,8 +304,8 @@ public class LogManager {
         }
 
         // find children
-        Logger[] values = loggers.values().toArray(new Logger[0]);
-        for (Logger child : values) {
+        Collection<Logger> allLoggers = loggers.values();
+        for (Logger child : allLoggers) {
             Logger oldParent = child.getParent();
             if (parent == oldParent
                     && (name.length() == 0 || child.getName().startsWith(
@@ -477,9 +458,11 @@ public class LogManager {
             if (property.endsWith(".level")) { //$NON-NLS-1$
                 String loggerName = property.substring(0,
                         property.length() - ".level".length()); //$NON-NLS-1$
-                Logger l = createLoggers?Logger.getLogger(loggerName):loggers.get(loggerName);
+                Logger l = loggers.get(loggerName);
                 if (null != l) {
-                    setLoggerLevel(l, loggerName, true);
+                    l.setManager(this);
+                } else if (createLoggers) {
+                    Logger.getLogger(loggerName);
                 }
             }else if(createLoggers && property.endsWith(".handlers")){ //$NON-NLS-1$
                 String loggerName = property.substring(0,
@@ -540,19 +523,7 @@ public class LogManager {
         Iterator<Logger> it = loggers.values().iterator();
         while (it.hasNext()) {
             Logger l = (Logger) it.next();
-            l.setLevel(null);
-            if(l.handlers != null){
-                for (Handler element : l.handlers) {
-                    // close all handlers, when unknown exceptions happen,
-                    // ignore them and go on
-                    try {
-                        element.close();
-                    } catch (Exception e) {
-                        // Ignored.
-                    }
-                }
-                l.handlers = null;
-            }
+            l.reset();
         }
         Logger root = loggers.get(""); //$NON-NLS-1$
         if (null != root) {

@@ -41,7 +41,9 @@ import org.apache.harmony.logging.tests.java.util.logging.util.EnvironmentHelper
  */
 public class LogManagerTest extends TestCase {
 
-	LogManager mockManager;
+	private static final String FOO = "LogManagerTestFoo";
+
+    LogManager mockManager;
 
 	LogManager manager = LogManager.getLogManager();
 
@@ -88,8 +90,8 @@ public class LogManagerTest extends TestCase {
 		props.put("java.util.logging.ConsoleHandler.level", "OFF");
 		props.put("java.util.logging.ConsoleHandler.formatter",
 				"java.util.logging.SimpleFormatter");
-		props.put("foo.handlers", "java.util.logging.ConsoleHandler");
-		props.put("foo.level", "WARNING");
+		props.put("LogManagerTestFoo.handlers", "java.util.logging.ConsoleHandler");
+		props.put("LogManagerTestFoo.level", "WARNING");
 	}
 
 	/*
@@ -101,11 +103,11 @@ public class LogManagerTest extends TestCase {
 	}
 
 	public void testAddGetLogger() {
-		Logger log = new MockLogger("foo", null);
-		Logger foo = mockManager.getLogger("foo");
+		Logger log = new MockLogger(FOO, null);
+		Logger foo = mockManager.getLogger(FOO);
 		assertNull(foo);
 		assertTrue(mockManager.addLogger(log));
-		foo = mockManager.getLogger("foo");
+		foo = mockManager.getLogger(FOO);
 		assertSame(foo, log);
 		assertNull(foo.getParent());
 
@@ -128,19 +130,19 @@ public class LogManagerTest extends TestCase {
 		while (enumar.hasMoreElements()) {
 			String name = (String) enumar.nextElement();
 			i++;
-			assertEquals("foo", name);
+			assertEquals(FOO, name);
 		}
 		assertEquals(i, 1);
 	}
 
 	public void testAddGetLogger_duplicateName() {
 		// add logger with duplicate name has no effect
-		Logger foo = new MockLogger("foo", null);
-		Logger foo2 = new MockLogger("foo", null);
+		Logger foo = new MockLogger(FOO, null);
+		Logger foo2 = new MockLogger(FOO, null);
 		assertTrue(mockManager.addLogger(foo));
-		assertSame(foo, mockManager.getLogger("foo"));
+		assertSame(foo, mockManager.getLogger(FOO));
 		assertFalse(mockManager.addLogger(foo2));
-		assertSame(foo, mockManager.getLogger("foo"));
+		assertSame(foo, mockManager.getLogger(FOO));
 		Enumeration<String> enumar = mockManager.getLoggerNames();
 		int i = 0;
 		while (enumar.hasMoreElements()) {
@@ -263,24 +265,24 @@ public class LogManagerTest extends TestCase {
 	}
 
 	public void testAddGetLogger_nameWithSpace() {
-		Logger foo = new MockLogger("foo", null);
-		Logger fooBeforeSpace = new MockLogger("foo ", null);
-		Logger fooAfterSpace = new MockLogger(" foo", null);
-		Logger fooWithBothSpace = new MockLogger(" foo ", null);
+		Logger foo = new MockLogger(FOO, null);
+		Logger fooBeforeSpace = new MockLogger(FOO+" ", null);
+		Logger fooAfterSpace = new MockLogger(" "+FOO, null);
+		Logger fooWithBothSpace = new MockLogger(" "+FOO+" ", null);
 		assertTrue(mockManager.addLogger(foo));
 		assertTrue(mockManager.addLogger(fooBeforeSpace));
 		assertTrue(mockManager.addLogger(fooAfterSpace));
 		assertTrue(mockManager.addLogger(fooWithBothSpace));
 
-		assertSame(foo, mockManager.getLogger("foo"));
-		assertSame(fooBeforeSpace, mockManager.getLogger("foo "));
-		assertSame(fooAfterSpace, mockManager.getLogger(" foo"));
-		assertSame(fooWithBothSpace, mockManager.getLogger(" foo "));
+		assertSame(foo, mockManager.getLogger(FOO));
+		assertSame(fooBeforeSpace, mockManager.getLogger(FOO+" "));
+		assertSame(fooAfterSpace, mockManager.getLogger(" "+FOO));
+		assertSame(fooWithBothSpace, mockManager.getLogger(" "+FOO+" "));
 	}
 
-	public void testAddGetLogger_addRoot() {
-		Logger foo = new MockLogger("foo", null);
-		Logger fooChild = new MockLogger("foo.child", null);
+	public void testAddGetLogger_addRoot() throws IOException {
+		Logger foo = new MockLogger(FOO, null);
+		Logger fooChild = new MockLogger(FOO+".child", null);
 		Logger other = new MockLogger("other", null);
 		Logger root = new MockLogger("", null);
 		assertNull(foo.getParent());
@@ -321,7 +323,7 @@ public class LogManagerTest extends TestCase {
 		}
 	}
 	
-	public void testDefaultLoggerProperties() {
+	public void testDefaultLoggerProperties() throws Exception{
 		// mock LogManager has no default logger
 		assertNull(mockManager.getLogger(""));
 		assertNull(mockManager.getLogger("global"));
@@ -334,9 +336,10 @@ public class LogManagerTest extends TestCase {
 		assertSame(root, global.getParent());
 
 		// root properties
+        manager.readConfiguration(EnvironmentHelper.PropertiesToInputStream(props));
 		assertNull(root.getFilter());
-		assertEquals(1, root.getHandlers().length);
-		assertEquals(root.getLevel(), Level.INFO);
+		assertEquals(2, root.getHandlers().length);
+		assertEquals(Level.FINE, root.getLevel());
 		assertEquals("", root.getName());
 		assertSame(root.getParent(), null);
 		assertNull(root.getResourceBundle());
@@ -416,13 +419,15 @@ public class LogManagerTest extends TestCase {
 	}
 
 	public void testGetProperty() throws SecurityException, IOException {
-		// but non-mock manager DO read it from the very beginning
-		Logger root = manager.getLogger("");
-        //FIXME: move it to exec
-//		checkProperty(manager);
-		assertEquals(Level.INFO, root.getLevel());
-		assertEquals(1, root.getHandlers().length);
+//      //FIXME: move it to exec
+        //        manager.readConfiguration(EnvironmentHelper.PropertiesToInputStream(props));
+//		Logger root = manager.getLogger("");
+////		checkProperty(manager);
+//		assertEquals(Level.FINE, root.getLevel());
+//		assertEquals(2, root.getHandlers().length);
 
+        // but non-mock manager DO read it from the very beginning
+        Logger root = manager.getLogger("");
 		manager.readConfiguration(EnvironmentHelper.PropertiesToInputStream(props));
 		checkProperty(manager);
 		assertEquals(2, root.getHandlers().length);
@@ -432,7 +437,7 @@ public class LogManagerTest extends TestCase {
 		checkPropertyNull(manager);
 		assertEquals(0, root.getHandlers().length);
 		assertEquals(Level.INFO, root.getLevel());
-		manager.readConfiguration();
+		manager.readConfiguration(EnvironmentHelper.PropertiesToInputStream(props));
 	}
 
 	public void testReadConfiguration_null() throws SecurityException,
@@ -467,7 +472,7 @@ public class LogManagerTest extends TestCase {
 		// assertEquals(m.getProperty("handlers"),
 		// "java.util.logging.ConsoleHandler");
 		assertEquals(m.getProperty("java.util.logging.FileHandler.count"), "5");
-		assertEquals(m.getProperty("foo.level"), "WARNING");
+		assertEquals(m.getProperty("LogManagerTestFoo.level"), "WARNING");
 		assertEquals(m.getProperty("java.util.logging.FileHandler.formatter"),
 				"java.util.logging.XMLFormatter");
 		assertEquals(m.getProperty("java.util.logging.ConsoleHandler.level"),
@@ -510,11 +515,11 @@ public class LogManagerTest extends TestCase {
 		// mock LogManager
 		InputStream stream = EnvironmentHelper.PropertiesToInputStream(props);
 
-		Logger foo = new MockLogger("foo", null);
+		Logger foo = new MockLogger(FOO, null);
 		assertEquals(null, foo.getLevel());
 		assertTrue(mockManager.addLogger(foo));
 
-		Logger fo = new MockLogger("foo2", null);
+		Logger fo = new MockLogger("LogManagerTestFoo2", null);
 		fo.setLevel(Level.ALL);
 		assertTrue(mockManager.addLogger(fo));
 
@@ -549,7 +554,7 @@ public class LogManagerTest extends TestCase {
 
 	public void testReadConfigurationInputStream_root() throws IOException {
 		InputStream stream = EnvironmentHelper.PropertiesToInputStream(props);
-		manager.readConfiguration();
+		manager.readConfiguration(EnvironmentHelper.PropertiesToInputStream(props));
 
 		Logger logger = new MockLogger(
 				"testReadConfigurationInputStream_root.foo", null);
@@ -566,8 +571,8 @@ public class LogManagerTest extends TestCase {
 		assertEquals(0, logger2.getHandlers().length);
 		assertSame(root, logger2.getParent());
 		// if (!hasConfigClass) {
-		assertEquals(Level.INFO, root.getLevel());
-		assertEquals(1, root.getHandlers().length);
+		assertEquals(Level.FINE, root.getLevel());
+		assertEquals(2, root.getHandlers().length);
 		// }
 
 		// after read stream
@@ -589,7 +594,7 @@ public class LogManagerTest extends TestCase {
 
 		assertNull(listener1.getEvent());
 		assertNull(listener2.getEvent());
-		mockManager.readConfiguration();
+		mockManager.readConfiguration(EnvironmentHelper.PropertiesToInputStream(props));
 		// if (!hasConfigClass) {
 		assertNotNull(listener1.getEvent());
 		assertNotNull(listener2.getEvent());
@@ -620,7 +625,7 @@ public class LogManagerTest extends TestCase {
 		assertNull(listener2.getEvent());
 
 		mockManager.removePropertyChangeListener(listener2);
-		mockManager.readConfiguration();
+		mockManager.readConfiguration(EnvironmentHelper.PropertiesToInputStream(props));
 		assertNull(listener1.getEvent());
 		assertNull(listener2.getEvent());
 	}
@@ -637,15 +642,16 @@ public class LogManagerTest extends TestCase {
 
 	public void testReset() throws SecurityException, IOException {
 		// mock LogManager
-		mockManager.readConfiguration();
+		mockManager.readConfiguration(EnvironmentHelper.PropertiesToInputStream(props));
 		assertNotNull(mockManager.getProperty("handlers"));
-		Logger foo = new MockLogger("foo", null);
+		Logger foo = new MockLogger(FOO, null);
 		assertEquals(null, foo.getLevel());
+        assertEquals(0, foo.getHandlers().length);
 		foo.setLevel(Level.ALL);
 		foo.addHandler(new ConsoleHandler());
 		assertTrue(mockManager.addLogger(foo));
-		assertEquals(Level.ALL, foo.getLevel());
-		assertEquals(1, foo.getHandlers().length);
+		assertEquals(Level.WARNING, foo.getLevel());
+		assertEquals(2, foo.getHandlers().length);
 
 		// reset
 		mockManager.reset();

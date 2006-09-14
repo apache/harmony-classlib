@@ -129,7 +129,7 @@ public class Logger {
     private ResourceBundle resBundle;
 
     // the handlers attached to this logger
-    List<Handler> handlers = null;
+    private List<Handler> handlers = null;
 
     /*
      * flag indicating whether to notify parent's handlers on receiving a log
@@ -142,7 +142,9 @@ public class Logger {
 
     private List<Logger> childs;
     
-    LogManager manager = null;
+    private LogManager manager = null;
+
+    private boolean handlerInited = false;
 
     /*
      * -------------------------------------------------------------------
@@ -436,12 +438,14 @@ public class Logger {
     }
     
     private void initHandler() {
-      if(handlers == null){
-          if(manager == null){
+      if(!handlerInited){
+          handlerInited = true;
+          if(handlers == null){
               handlers = new ArrayList<Handler>();
+          }
+          if(manager == null){
               return;
           }
-          handlers = new ArrayList<Handler>();
           String handlerStr = manager.getProperty("".equals(name)?"handlers":name+".handlers"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
           if (null == handlerStr) {
               return;
@@ -1389,5 +1393,38 @@ public class Logger {
         }
     }
 
+    void setManager(LogManager manager) {
+        if(this.manager != manager){
+            this.manager = manager;
+            handlerInited  = false;
+        }
+        //init level here, but let handlers be for lazy loading
+        String configedLevel = manager.getProperty(name+ ".level"); //$NON-NLS-1$
+        if (null != configedLevel) {
+            try {
+                setLevel(Level.parse(configedLevel));
+            } catch (IllegalArgumentException e) {
+                //ignore
+            }
+        }        
+    }
+
+    void reset() {
+        levelObjVal = null;
+        levelIntVal = Level.INFO.intValue();
+        if(handlers != null){
+            for (Handler element : handlers) {
+                // close all handlers, when unknown exceptions happen,
+                // ignore them and go on
+                try {
+                    element.close();
+                } catch (Exception e) {
+                    // Ignored.
+                }
+            }
+            handlers.clear();
+            handlerInited = false;
+        }
+    }
 }
 
