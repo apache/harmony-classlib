@@ -204,6 +204,10 @@ public class Polygon implements Shape, Serializable {
         return bounds = new Rectangle(bx1, by1, bx2 - bx1, by2 - by1);
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public Rectangle getBoundingBox() {
         return getBounds();
     }
@@ -222,6 +226,10 @@ public class Polygon implements Shape, Serializable {
         }
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public boolean inside(int x, int y) {
         return contains((double) x, (double) y);
     }

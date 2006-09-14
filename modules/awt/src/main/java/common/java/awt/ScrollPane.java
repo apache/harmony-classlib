@@ -269,6 +269,10 @@ public class ScrollPane extends Container implements Accessible {
 
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     @Override
     public void layout() {
         toolkit.lockAWT();

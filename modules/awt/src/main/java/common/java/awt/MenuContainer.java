@@ -26,6 +26,10 @@ public interface MenuContainer {
 
     public Font getFont();
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public boolean postEvent(Event e);
 
 }

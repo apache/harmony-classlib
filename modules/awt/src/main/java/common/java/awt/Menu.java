@@ -272,6 +272,10 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
         }
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public int countItems() {
         toolkit.lockAWT();
         try {

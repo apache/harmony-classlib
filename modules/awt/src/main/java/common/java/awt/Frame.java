@@ -35,32 +35,46 @@ import org.apache.harmony.awt.wtk.NativeWindow;
 public class Frame extends Window implements MenuContainer {
     private static final long serialVersionUID = 2673458971256075116L;
 
+    @Deprecated
     public static final int DEFAULT_CURSOR = 0;
 
+    @Deprecated
     public static final int CROSSHAIR_CURSOR = 1;
 
+    @Deprecated
     public static final int TEXT_CURSOR = 2;
 
+    @Deprecated
     public static final int WAIT_CURSOR = 3;
 
+    @Deprecated
     public static final int SW_RESIZE_CURSOR = 4;
 
+    @Deprecated
     public static final int SE_RESIZE_CURSOR = 5;
 
+    @Deprecated
     public static final int NW_RESIZE_CURSOR = 6;
 
+    @Deprecated
     public static final int NE_RESIZE_CURSOR = 7;
 
+    @Deprecated
     public static final int N_RESIZE_CURSOR = 8;
 
+    @Deprecated
     public static final int S_RESIZE_CURSOR = 9;
 
+    @Deprecated
     public static final int W_RESIZE_CURSOR = 10;
 
+    @Deprecated
     public static final int E_RESIZE_CURSOR = 11;
 
+    @Deprecated
     public static final int HAND_CURSOR = 12;
 
+    @Deprecated
     public static final int MOVE_CURSOR = 13;
 
     public static final int NORMAL = 0;

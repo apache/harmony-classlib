@@ -568,6 +568,10 @@ public abstract class Toolkit {
 
     public abstract ColorModel getColorModel() throws HeadlessException;
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public abstract FontMetrics getFontMetrics(Font font);
 
     public abstract boolean prepareImage(Image a0, int a1, int a2, ImageObserver a3);
@@ -614,8 +618,16 @@ public abstract class Toolkit {
 
     protected abstract WindowPeer createWindow(Window a0) throws HeadlessException;
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public abstract String[] getFontList();
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     protected abstract FontPeer getFontPeer(String a0, int a1);
 
     public abstract Image getImage(String a0);

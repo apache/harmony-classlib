@@ -213,6 +213,10 @@ public class Dialog extends Window {
         }
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     @Override
     public void hide() {
         toolkit.lockAWT();
@@ -232,6 +236,10 @@ public class Dialog extends Window {
         }
     }
     
+    /**
+     * @deprecated
+     */
+    @Deprecated
     @Override
     public void show() {
         showImpl();

@@ -381,10 +381,6 @@ public class TextField extends TextComponent {
     }
 
     public void setEchoChar(char ch) {
-        setEchoCharacter(ch);
-    }
-
-    public void setEchoCharacter(char ch) {
         toolkit.lockAWT();
         try {
             if (echoChar == ch) {
@@ -395,6 +391,14 @@ public class TextField extends TextComponent {
             toolkit.unlockAWT();
         }
         repaint();
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public void setEchoCharacter(char ch) {
+        setEchoChar(ch);
     }
 
     @Override

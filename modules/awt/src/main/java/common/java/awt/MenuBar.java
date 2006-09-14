@@ -269,6 +269,10 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
         }
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public int countMenus() {
         toolkit.lockAWT();
         try {

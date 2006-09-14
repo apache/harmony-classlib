@@ -438,6 +438,10 @@ public abstract class MenuComponent implements Serializable {
         }
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public MenuComponentPeer getPeer() {
         toolkit.lockAWT();
         try {
@@ -454,6 +458,10 @@ public abstract class MenuComponent implements Serializable {
         return toolkit.awtTreeLock;
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public boolean postEvent(Event e) {
         toolkit.lockAWT();
         try {

@@ -95,6 +95,10 @@ public class CheckboxGroup implements Serializable {
         }
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public void setCurrent(Checkbox box) {
         toolkit.lockAWT();
         try {

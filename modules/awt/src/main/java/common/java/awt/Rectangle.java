@@ -110,6 +110,10 @@ public class Rectangle extends Rectangle2D implements Shape, Serializable {
         setLocation(p.x, p.y);
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public void move(int x, int y) {
         setLocation(x, y);
     }
@@ -123,10 +127,18 @@ public class Rectangle extends Rectangle2D implements Shape, Serializable {
         setBounds(x1, y1, x2 - x1, y2 - y1);
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public void resize(int width, int height) {
         setBounds(x, y, width, height);
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public void reshape(int x, int y, int width, int height) {
         setBounds(x, y, width, height);
     }
@@ -208,6 +220,10 @@ public class Rectangle extends Rectangle2D implements Shape, Serializable {
         return contains(r.x, r.y, r.width, r.height);
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public boolean inside(int px, int py) {
         return contains(px, py);
     }

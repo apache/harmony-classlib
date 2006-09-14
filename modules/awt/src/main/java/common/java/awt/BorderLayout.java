@@ -125,6 +125,10 @@ public class BorderLayout implements LayoutManager2, Serializable {
         }
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public void addLayoutComponent(String name, Component comp) {
         toolkit.lockAWT();
         try {

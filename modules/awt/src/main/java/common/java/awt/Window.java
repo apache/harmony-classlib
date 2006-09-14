@@ -433,6 +433,10 @@ public class Window extends Container implements Accessible {
         }
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     @SuppressWarnings("deprecation")
     @Override
     public void hide() {
@@ -522,6 +526,10 @@ public class Window extends Container implements Accessible {
         }
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     @SuppressWarnings("deprecation")
     @Override
     public void show() {

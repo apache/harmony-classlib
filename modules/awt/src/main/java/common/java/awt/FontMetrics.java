@@ -168,6 +168,10 @@ public abstract class FontMetrics implements Serializable {
         return 0;
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public int getMaxDecent() {
         return 0;
     }

@@ -802,6 +802,10 @@ public class Font implements Serializable {
         return (this.name);
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public FontPeer getPeer() {
         if (fontPeer == null){
             fontPeer = (FontPeerImpl)Toolkit.getDefaultToolkit().getGraphicsFactory().getFontPeer(this);

@@ -205,6 +205,10 @@ public class MenuItem extends MenuComponent implements Accessible {
         }
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public void disable() {
         toolkit.lockAWT();
         try {
@@ -214,6 +218,10 @@ public class MenuItem extends MenuComponent implements Accessible {
         }
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public void enable(boolean b) {
         toolkit.lockAWT();
         try {
@@ -223,6 +231,10 @@ public class MenuItem extends MenuComponent implements Accessible {
         }
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public void enable() {
         toolkit.lockAWT();
         try {
