@@ -12,25 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.harmony.nio.tests.java.nio;
 
-package org.apache.harmony.tests.nio;
+import java.nio.ShortBuffer;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+public class ReadOnlyHeapShortBufferTest extends ReadOnlyShortBufferTest {
+    protected void setUp() throws Exception {
+        super.setUp();
+        buf = ShortBuffer.allocate(BUFFER_LENGTH);
+        super.loadTestData1(buf);
+        buf = buf.asReadOnlyBuffer();
+        baseBuf = buf;
+    }
 
-public class AllTests {
-
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.suite());
-	}
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for org.apache.harmony.tests.nio");
-		// $JUnit-BEGIN$
-		suite.addTest(org.apache.harmony.nio.tests.java.nio.AllTests.suite());
-		suite.addTest(org.apache.harmony.nio.tests.java.nio.channels.AllTests.suite());
-		// $JUnit-END$
-		return suite;
-	}
-
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
 }
