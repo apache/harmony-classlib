@@ -1411,6 +1411,10 @@ public class Collections {
 		if (list == null) {
             throw new NullPointerException();
         }
+		if(list.isEmpty()){
+			return -1;
+		}
+		
 		Comparable<T> key = (Comparable<T>)object;
 		if (!(list instanceof RandomAccess)) {
 			ListIterator<T> it = (ListIterator<T>)list.listIterator();

@@ -61,6 +61,23 @@ public class CollectionsTest extends TestCase {
 		int index = Collections.binarySearch(lst, new Integer(2), null);
 		assertEquals(-1, index);
 	} 
+	
+	/**
+	 * @tests java.util.Collections#binarySearch(java.util.List,
+	 *        java.lang.Object)
+	 */
+	public void test_binarySearchLjava_util_ListLjava_lang_Object() {
+		// regression for Harmony-1367
+		List localList = new LinkedList();
+		assertEquals(-1, Collections.binarySearch(localList, new Object()));
+		localList.add(new Object());
+		try {
+			Collections.binarySearch(localList, new Integer(1));
+			fail("Should throw ClassCastException");
+		} catch (ClassCastException e) {
+			// expected
+		}
+	}
 	   
 	/**
 	 * @tests java.util.Collections#rotate(java.util.List, int)
