@@ -43,18 +43,36 @@ public class FlatteningPathIteratorTest extends TestCase {
         super.tearDown();
     }
 
-    public void testCreate() {
+    public void testCreateInvalid() {
         try {
             new FlatteningPathIterator(p, -1, 5);
-            fail("FlatteningPathIterator should throw exception IllegalArgumentException");
+            fail("expected IllegalArgumentException");
         } catch(IllegalArgumentException e) {
+            // expected
         }
 
         try {
             new FlatteningPathIterator(p, 1, -5);
-            fail("FlatteningPathIterator should throw exception IllegalArgumentException");
+            fail("expected IllegalArgumentException");
         } catch(IllegalArgumentException e) {
+            // expected
         }
+        
+        // Regression test HARMONY-1419
+        try {
+            new FlatteningPathIterator(null, -1, 5);
+            fail("expected IllegalArgumentException");
+        } catch(IllegalArgumentException e) {
+            // expected
+        }
+        
+        try {
+            new FlatteningPathIterator(null, 1, 5);
+            fail("expected NPE");
+        } catch(NullPointerException e) {
+            // expected
+        }
+        
     }
 
     public void testGetFlatness() {

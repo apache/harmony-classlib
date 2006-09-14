@@ -114,6 +114,9 @@ public class FlatteningPathIterator implements PathIterator {
         if (limit < 0) {
             throw new IllegalArgumentException("Limit is less then zero");
         }
+        if (path == null) {
+            throw new NullPointerException("Path is null");
+        }
         this.p = path;
         this.flatness = flatness;
         this.flatness2 = flatness * flatness;
