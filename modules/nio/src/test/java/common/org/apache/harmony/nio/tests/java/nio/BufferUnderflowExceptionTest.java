@@ -15,11 +15,11 @@
 
 package org.apache.harmony.nio.tests.java.nio;
 
-import java.io.IOException;
 import java.nio.BufferUnderflowException;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * Tests for BufferUnderflowException
@@ -29,20 +29,16 @@ public class BufferUnderflowExceptionTest extends TestCase {
     /**
      * @tests serialization/deserialization compatibility.
      */
-    public void test_serialization() throws IOException, ClassNotFoundException {
-        BufferUnderflowException object = new BufferUnderflowException();
-        BufferUnderflowException deObject = (BufferUnderflowException) SerializationTester
-                .getDeserilizedObject(object);
-        assertNotNull(deObject);
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new BufferUnderflowException());
     }
 
     /**
      * @tests serialization/deserialization compatibility with RI.
      */
-    public void test_compatibilitySerialization() throws Exception {
-        BufferUnderflowException object = new BufferUnderflowException();
-        BufferUnderflowException deObject = (BufferUnderflowException)SerializationTester.readObject(object,
-                "serialization/java/nio/BufferUnderflowExceptionTest.golden.ser");
-        assertNotNull(deObject);
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new BufferUnderflowException());
     }
 }

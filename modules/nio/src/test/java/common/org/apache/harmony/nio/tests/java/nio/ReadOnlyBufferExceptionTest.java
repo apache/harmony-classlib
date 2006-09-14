@@ -14,32 +14,27 @@
  */
 package org.apache.harmony.nio.tests.java.nio;
 
-import java.io.IOException;
 import java.nio.ReadOnlyBufferException;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class ReadOnlyBufferExceptionTest extends TestCase {
 
     /**
      * @tests serialization/deserialization compatibility.
      */
-    public void test_serialization() throws IOException, ClassNotFoundException {
-        ReadOnlyBufferException object = new ReadOnlyBufferException();
-        ReadOnlyBufferException deObject = (ReadOnlyBufferException) SerializationTester
-                .getDeserilizedObject(object);
-        assertNotNull(deObject);
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new ReadOnlyBufferException());
     }
 
     /**
      * @tests serialization/deserialization compatibility with RI.
      */
-    public void test_compatibilitySerialization() throws Exception {
-        ReadOnlyBufferException object = new ReadOnlyBufferException();
-        ReadOnlyBufferException deObject = (ReadOnlyBufferException) SerializationTester
-                .readObject(object,
-                        "serialization/java/nio/ReadOnlyBufferExceptionTest.golden.ser");
-        assertNotNull(deObject);
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new ReadOnlyBufferException());
     }
 }

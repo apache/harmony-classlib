@@ -15,31 +15,27 @@
 
 package org.apache.harmony.nio.tests.java.nio;
 
-import java.io.IOException;
 import java.nio.BufferOverflowException;
 
 import junit.framework.TestCase;
-import tests.util.SerializationTester;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class BufferOverflowExceptionTest extends TestCase {
 
     /**
-     * @tests serialization/deserilazation compatibility.
+     * @tests serialization/deserialization compatibility.
      */
-    public void test_serialization() throws IOException, ClassNotFoundException {
-        BufferOverflowException object = new BufferOverflowException();
-        BufferOverflowException deObject = (BufferOverflowException) SerializationTester
-                .getDeserilizedObject(object);
-        assertEquals(deObject.getMessage(),object.getMessage());
+    public void testSerializationSelf() throws Exception {
+
+        SerializationTest.verifySelf(new BufferOverflowException());
     }
 
     /**
-     * @tests serialization/deserilazation compatibility with RI.
+     * @tests serialization/deserialization compatibility with RI.
      */
-    public void test_compatibilitySerialization() throws Exception {
-        BufferOverflowException object = new BufferOverflowException();
-        BufferOverflowException deObject = (BufferOverflowException)SerializationTester.readObject(object,
-                "serialization/java/nio/BufferOverflowException.golden.ser");
-        assertEquals(deObject.getMessage(),object.getMessage());
+    public void testSerializationCompatibility() throws Exception {
+
+        SerializationTest.verifyGolden(this, new BufferOverflowException());
     }
 }
