@@ -35,6 +35,9 @@ public class Area implements Shape, Cloneable {
     }
 
     public Area(Shape s) {
+        if (s == null) {
+            throw new NullPointerException();
+        }
         this.s = s;
     }
 
@@ -47,10 +50,16 @@ public class Area implements Shape, Cloneable {
     }
 
     public boolean contains(Point2D p) {
+        if (p == null) {
+            throw new NullPointerException();
+        }
         return s == null ? false : s.contains(p);
     }
 
     public boolean contains(Rectangle2D r) {
+        if (r == null) {
+            throw new NullPointerException();
+        }
         return s == null ? false : s.contains(r);
     }
 
@@ -63,6 +72,9 @@ public class Area implements Shape, Cloneable {
     }
 
     public boolean intersects(Rectangle2D r) {
+        if (r == null) {
+            throw new NullPointerException();
+        }
         return s == null ? false : s.intersects(r);
     }
 
