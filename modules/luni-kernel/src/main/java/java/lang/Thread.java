@@ -232,6 +232,19 @@ public class Thread implements Runnable {
     }
 
     /**
+     * Set the action to be executed when interruption, which is probably be
+     * used to implement the interruptible channel. The action is null by
+     * default. And if this method is invoked by passing in a non-null value,
+     * this action's run() method will be invoked in <code>interrupt()</code>.
+     * 
+     * @param action the action to be executed when interruption
+     */
+    @SuppressWarnings("unused")
+    private void setInterruptAction(Runnable action) {
+        this.action = action;
+    }
+
+    /**
      * Returns the number of active threads in the running thread's ThreadGroup
      * 
      * @return Number of Threads
