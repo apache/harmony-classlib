@@ -29,8 +29,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Vector;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 import org.apache.harmony.beans.internal.nls.Messages;
 
@@ -133,7 +131,7 @@ public class Statement {
 
                 result = method.invoke(null, ama);
             } else if (methodName.equals("newInstance") //$NON-NLS-1$
-                    && target instanceof Class && target == Array.class) {
+                    && target == Array.class) {
                 Class<?> componentType = (Class) arguments[0];
                 int length = ((Integer) arguments[1]).intValue();
 
