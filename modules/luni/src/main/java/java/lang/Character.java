@@ -32,7 +32,7 @@ import com.ibm.icu.lang.UCharacter;
  * 
  * <p>
  * Character data is based upon the Unicode Standard, 4.0. The Unicode
- * specification, character tables and other information is available at <a
+ * specification, character tables and other information are available at <a
  * href="http://www.unicode.org/">http://www.unicode.org/</a>.
  * </p>
  * 
@@ -424,7 +424,7 @@ public final class Character implements Serializable, Comparable<Character> {
 
     /**
      * <p>
-     * Minimum value of a supplementary code point - <code>U+0010000</code>.
+     * Minimum value of a supplementary code point - <code>U+010000</code>.
      * </p>
      * 
      * @since 1.5
@@ -523,16 +523,16 @@ public final class Character implements Serializable, Comparable<Character> {
 		}
 
 		/**
-		 * Compares the specified object to this Subset and answer if they are
-		 * equal. The object must be the same instance of Subset.
-		 * 
-		 * @param object
-		 *            the object to compare
-		 * @return true if the specified object is equal to this Subset, false
-		 *         otherwise
-		 * 
-		 * @see #hashCode
-		 */
+         * Compares the specified object to this Subset and answers true if they
+         * are equal. The object must be the same instance of Subset.
+         * 
+         * @param object
+         *            the object to compare
+         * @return true if the specified object is equal to this Subset, false
+         *         otherwise
+         * 
+         * @see #hashCode
+         */
 		@Override
         public final boolean equals(Object object) {
 			return super.equals(object);
@@ -569,7 +569,7 @@ public final class Character implements Serializable, Comparable<Character> {
     public static final class UnicodeBlock extends Subset {
         /**
          * The &quot;Surrogates Area&quot; Unicode Block. 
-         * @deprecated As of Java 5, this block as been replaced by {@link #HIGH_SURROGATES}, {@link #HIGH_PRIVATE_USE_SURROGATES} and {@link #LOW_SURROGATES}.
+         * @deprecated As of Java 5, this block has been replaced by {@link #HIGH_SURROGATES}, {@link #HIGH_PRIVATE_USE_SURROGATES} and {@link #LOW_SURROGATES}.
          */
         @Deprecated
         public static final UnicodeBlock SURROGATES_AREA = new UnicodeBlock("SURROGATES_AREA", 0x0, 0x0);
@@ -1665,17 +1665,18 @@ public final class Character implements Serializable, Comparable<Character> {
 	}
 
 	/**
-	 * Compare the receiver to the specified Character to determine the relative
-	 * ordering.
-	 * 
-	 * @param c
-	 *            the Character
-	 * @return an int < 0 if this Character is less than the specified
-	 *         Character, 0 if they are equal, and > 0 if this Character is
-	 *         greater
-     * @throws NullPointerException if <code>c</code> is <code>null</code>.
+     * Compares the receiver to the specified Character to determine the
+     * relative ordering.
+     * 
+     * @param c
+     *            the Character
+     * @return an int < 0 if this Character is less than the specified
+     *         Character, 0 if they are equal, and > 0 if this Character is
+     *         greater
+     * @throws NullPointerException
+     *             if <code>c</code> is <code>null</code>.
      * @since 1.2
-	 */
+     */
 	public int compareTo(Character c) {
 		return value - c.value;
 	}
@@ -2716,14 +2717,14 @@ public final class Character implements Serializable, Comparable<Character> {
 	}
 
 	/**
-	 * Answers whether the character is valid as any character except the first
-	 * in a Java identifier.
-	 * 
-	 * @param c
-	 *            the character
-	 * @return true when the character is valid as part of a Java identifier,
-	 *         false otherwise
-	 */
+     * Answers whether the character is a valid part of a Unicode identifier as
+     * other than the first character.
+     * 
+     * @param c
+     *            the character
+     * @return true when the character is valid as part of a Java identifier,
+     *         false otherwise
+     */
 	public static boolean isJavaIdentifierPart(char c) {
 		// Optimized case for ASCII
 		if (c < 128) {
@@ -2739,8 +2740,8 @@ public final class Character implements Serializable, Comparable<Character> {
 	}
 
 	/**
-	 * Answers whether the character is a valid initial character for a Java
-	 * identifier.
+     * Answers whether the character is a valid part of a Unicode identifier as
+     * other than the first character.
 	 * 
 	 * @param c
 	 *            the character
@@ -2943,14 +2944,14 @@ public final class Character implements Serializable, Comparable<Character> {
     }
 
 	/**
-	 * Answers whether the character is valid as any character except the first
-	 * in a Unicode identifier.
-	 * 
-	 * @param c
-	 *            the character
-	 * @return true when the character is valid as part of a Unicode identifier,
-	 *         false otherwise
-	 */
+     * Answers whether the character is valid as part of a Unicode identifier as
+     * other than the first character.
+     * 
+     * @param c
+     *            the character
+     * @return true when the character is valid as part of a Unicode identifier,
+     *         false otherwise
+     */
 	public static boolean isUnicodeIdentifierPart(char c) {
 		int type = getType(c);
 		return (type >= UPPERCASE_LETTER && type <= OTHER_LETTER)
@@ -2959,6 +2960,19 @@ public final class Character implements Serializable, Comparable<Character> {
 				|| type == NON_SPACING_MARK || type == COMBINING_SPACING_MARK
 				|| isIdentifierIgnorable(c);
 	}
+    
+    /**
+     * Answers whether the character is valid as part of a Unicode identifier as
+     * other than the first character.
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @return true when the character is valid as part of a Unicode identifier,
+     *         false otherwise
+     */
+    public static boolean isUnicodeIdentifierPart(int codePoint) {
+        return UCharacter.isUnicodeIdentifierPart(codePoint);
+    }
 
 	/**
 	 * Answers whether the character is a valid initial character for a Unicode
@@ -2974,6 +2988,19 @@ public final class Character implements Serializable, Comparable<Character> {
 		return (type >= UPPERCASE_LETTER && type <= OTHER_LETTER)
 				|| type == LETTER_NUMBER;
 	}
+    
+    /**
+     * Answers whether the character is a valid initial character for a Unicode
+     * identifier.
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @return true when the character is a valid start of a Unicode identifier,
+     *         false otherwise
+     */
+    public static boolean isUnicodeIdentifierStart(int codePoint) {
+        return UCharacter.isUnicodeIdentifierStart(codePoint);
+    }
 
 	/**
 	 * Answers whether the character is an upper case letter.
@@ -3052,14 +3079,14 @@ public final class Character implements Serializable, Comparable<Character> {
 	}
 
 	/**
-	 * Answers the lower case equivalent for the character when the character is
-	 * an upper case letter, otherwise answer the character.
-	 * 
-	 * @param c
-	 *            the character
-	 * @return if <code>c</code> is <b>not</b> a lower case character then
-	 *         its lower case counterpart, otherwise just <code>c</code>
-	 */
+     * Answers the lower case equivalent for the character when the character is
+     * an upper case letter, otherwise answers the character.
+     * 
+     * @param c
+     *            the character
+     * @return if c is not a lower case character then its lower case
+     *         counterpart, otherwise just c
+     */
 	public static char toLowerCase(char c) {
 		// Optimized case for ASCII
 		if ('A' <= c && c <= 'Z') {
@@ -3088,6 +3115,19 @@ public final class Character implements Serializable, Comparable<Character> {
 		}
 		return c;
 	}
+    
+    /**
+     * Answers the lower case equivalent for the character when the character is
+     * an upper case letter, otherwise answers the character.
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @return if codePoint is not a lower case character then its lower case
+     *         counterpart, otherwise just codePoint
+     */
+    public static int toLowerCase(int codePoint) {
+        return UCharacter.toLowerCase(codePoint);
+    }
 
 	/**
 	 * Answers a string containing a concise, human-readable description of the
@@ -3112,7 +3152,7 @@ public final class Character implements Serializable, Comparable<Character> {
 	}
 
 	/**
-	 * Answers the title case equivalent for the character, otherwise answer the
+	 * Answers the title case equivalent for the character, otherwise answers the
 	 * character.
 	 * 
 	 * @param c
@@ -3129,16 +3169,28 @@ public final class Character implements Serializable, Comparable<Character> {
         }
 		return toUpperCase(c);
 	}
+    
+    /**
+     * Answers the title case equivalent for the character, otherwise answers the
+     * character.
+     * 
+     * @param codePoint
+     *            the character
+     * @return the title case equivalent of the character
+     */
+    public static int toTitleCase(int codePoint) {
+        return UCharacter.toTitleCase(codePoint);
+    }
 
 	/**
-	 * Answers the upper case equivalent for the character when the character is
-	 * a lower case letter, otherwise answer the character.
-	 * 
-	 * @param c
-	 *            the character
-	 * @return if <code>c</code> is <b>not</b> an upper case character then
-	 *         its upper case counterpart, otherwise just <code>c</code>
-	 */
+     * Answers the upper case equivalent for the character when the character is
+     * a lower case letter, otherwise answers the character.
+     * 
+     * @param c
+     *            the character
+     * @return if c is not an upper case character then its upper case
+     *         counterpart, otherwise just c
+     */
 	public static char toUpperCase(char c) {
 		// Optimized case for ASCII
 		if ('a' <= c && c <= 'z') {
@@ -3167,4 +3219,18 @@ public final class Character implements Serializable, Comparable<Character> {
 		}
 		return c;
 	}
+    
+    /**
+     * Answers the upper case equivalent for the character when the character is
+     * a lower case letter, otherwise answers the character.
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @return if codePoint is not an upper case character then its upper case
+     *         counterpart, otherwise just codePoint
+     */
+    public static int toUpperCase(int codePoint) {
+        return UCharacter.toUpperCase(codePoint);
+    }
+
 }

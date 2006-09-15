@@ -1199,6 +1199,53 @@ public class CharacterTest extends TestCase {
         assertTrue("'2' returned false", Character.isUnicodeIdentifierPart('2'));
         assertTrue("'+' returned true", !Character.isUnicodeIdentifierPart('+'));
     }
+    
+    /**
+     * @tests java.lang.Character#isUnicodeIdentifierPart(int)
+     */
+    public void test_isUnicodeIdentifierPart_I() {
+        assertTrue(Character.isUnicodeIdentifierPart((int)'a'));
+        assertTrue(Character.isUnicodeIdentifierPart((int)'2'));
+        assertFalse(Character.isUnicodeIdentifierPart((int)'+'));
+        
+        assertTrue(Character.isUnicodeIdentifierPart(0x1FA9));
+        assertTrue(Character.isUnicodeIdentifierPart(0x1D400));
+        assertTrue(Character.isUnicodeIdentifierPart(0x1D622));
+        assertTrue(Character.isUnicodeIdentifierPart(0x10000));
+        
+        assertTrue(Character.isUnicodeIdentifierPart(0x0030));
+        assertTrue(Character.isUnicodeIdentifierPart(0x0035));
+        assertTrue(Character.isUnicodeIdentifierPart(0x0039));
+        
+        assertTrue(Character.isUnicodeIdentifierPart(0x0660));
+        assertTrue(Character.isUnicodeIdentifierPart(0x0665));
+        assertTrue(Character.isUnicodeIdentifierPart(0x0669));
+        
+        assertTrue(Character.isUnicodeIdentifierPart(0x06F0));
+        assertTrue(Character.isUnicodeIdentifierPart(0x06F5));
+        assertTrue(Character.isUnicodeIdentifierPart(0x06F9));
+        
+        assertTrue(Character.isUnicodeIdentifierPart(0x0966));
+        assertTrue(Character.isUnicodeIdentifierPart(0x096A));
+        assertTrue(Character.isUnicodeIdentifierPart(0x096F));
+        
+        assertTrue(Character.isUnicodeIdentifierPart(0xFF10));
+        assertTrue(Character.isUnicodeIdentifierPart(0xFF15));
+        assertTrue(Character.isUnicodeIdentifierPart(0xFF19));
+        
+        assertTrue(Character.isUnicodeIdentifierPart(0x1D7CE));
+        assertTrue(Character.isUnicodeIdentifierPart(0x1D7D8));
+        
+        assertTrue(Character.isUnicodeIdentifierPart(0x16EE));
+        assertTrue(Character.isUnicodeIdentifierPart(0xFE33));
+        assertTrue(Character.isUnicodeIdentifierPart(0xFF10));
+        assertTrue(Character.isUnicodeIdentifierPart(0x1D165));
+        assertTrue(Character.isUnicodeIdentifierPart(0x1D167));
+        assertTrue(Character.isUnicodeIdentifierPart(0x1D173));
+        
+        assertFalse(Character.isUnicodeIdentifierPart(0x10FFFF));
+        assertFalse(Character.isUnicodeIdentifierPart(0x110000));
+    }
 
     /**
      * @tests java.lang.Character#isUnicodeIdentifierStart(char)
@@ -1212,6 +1259,34 @@ public class CharacterTest extends TestCase {
                 .isUnicodeIdentifierStart('2'));
         assertTrue("'+' returned true", !Character
                 .isUnicodeIdentifierStart('+'));
+    }
+    
+    /**
+     * @tests java.lang.Character#isUnicodeIdentifierStart(int)
+     */
+    public void test_isUnicodeIdentifierStart_I() {
+       
+        assertTrue(Character.isUnicodeIdentifierStart((int) 'a'));
+        assertFalse(Character.isUnicodeIdentifierStart((int) '2'));
+        assertFalse(Character.isUnicodeIdentifierStart((int) '+'));
+
+        assertTrue(Character.isUnicodeIdentifierStart(0x1FA9));
+        assertTrue(Character.isUnicodeIdentifierStart(0x1D400));
+        assertTrue(Character.isUnicodeIdentifierStart(0x1D622));
+        assertTrue(Character.isUnicodeIdentifierStart(0x10000));
+        
+        assertTrue(Character.isUnicodeIdentifierStart(0x16EE));
+
+        // number is not a valid start of a Unicode identifier
+        assertFalse(Character.isUnicodeIdentifierStart(0x0030));
+        assertFalse(Character.isUnicodeIdentifierStart(0x0039));
+        assertFalse(Character.isUnicodeIdentifierStart(0x0660));
+        assertFalse(Character.isUnicodeIdentifierStart(0x0669));
+        assertFalse(Character.isUnicodeIdentifierStart(0x06F0));
+        assertFalse(Character.isUnicodeIdentifierStart(0x06F9));
+        
+        assertFalse(Character.isUnicodeIdentifierPart(0x10FFFF));
+        assertFalse(Character.isUnicodeIdentifierPart(0x110000));
     }
 
     /**
@@ -1307,6 +1382,20 @@ public class CharacterTest extends TestCase {
         // Test for method char java.lang.Character.toLowerCase(char)
         assertEquals("Failed to change case", 't', Character.toLowerCase('T'));
     }
+    
+    /**
+     * @tests java.lang.Character#toLowerCase(int)
+     */
+    public void test_toLowerCase_I() {
+        assertEquals((int)'t', Character.toLowerCase((int)'T'));
+        
+        assertEquals(0x10428, Character.toLowerCase(0x10400));
+        assertEquals(0x10428, Character.toLowerCase(0x10428));
+        
+        assertEquals(0x1D504, Character.toLowerCase(0x1D504));
+        assertEquals(0x10FFFD, Character.toLowerCase(0x10FFFD));
+        assertEquals(0x110000, Character.toLowerCase(0x110000));
+    }
 
     /**
      * @tests java.lang.Character#toString()
@@ -1329,6 +1418,21 @@ public class CharacterTest extends TestCase {
         assertEquals("Incorrect title case for 1",
                 '1', Character.toTitleCase('1'));
     }
+    
+    /**
+     * @tests java.lang.Character#toTitleCase(int)
+     */
+    public void test_toTitleCase_I() {
+        assertEquals((int)'A', Character.toTitleCase((int)'a'));
+        assertEquals((int)'A', Character.toTitleCase((int)'A'));
+        assertEquals((int)'1', Character.toTitleCase((int)'1'));
+        
+        assertEquals(0x10400, Character.toTitleCase(0x10428));
+        assertEquals(0x10400, Character.toTitleCase(0x10400));
+        
+        assertEquals(0x10FFFF, Character.toTitleCase(0x10FFFF));
+        assertEquals(0x110000, Character.toTitleCase(0x110000));
+    }
 
     /**
      * @tests java.lang.Character#toUpperCase(char)
@@ -1341,5 +1445,20 @@ public class CharacterTest extends TestCase {
                 'A', Character.toUpperCase('A'));
         assertEquals("Incorrect upper case for 1",
                 '1', Character.toUpperCase('1'));
+    }
+    
+    /**
+     * @tests java.lang.Character#toUpperCase(int)
+     */
+    public void test_toUpperCase_I() {
+        assertEquals((int)'A', Character.toUpperCase((int)'a'));
+        assertEquals((int)'A', Character.toUpperCase((int)'A'));
+        assertEquals((int)'1', Character.toUpperCase((int)'1'));
+        
+        assertEquals(0x10400, Character.toUpperCase(0x10428));
+        assertEquals(0x10400, Character.toUpperCase(0x10400));
+        
+        assertEquals(0x10FFFF, Character.toUpperCase(0x10FFFF));
+        assertEquals(0x110000, Character.toUpperCase(0x110000));
     }
 }
