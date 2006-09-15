@@ -68,6 +68,36 @@ public abstract class GraphicsEnvironment {
         return new Point(mwb.width >> 1, mwb.height >> 1);
     }
 
+    public void preferLocaleFonts() {
+        // Note: API specification says following:
+        // "The actual change in font rendering behavior resulting
+        // from a call to this method is implementation dependent;
+        // it may have no effect at all." So, doing nothing is an
+        // acceptable behavior for this method.
+
+        // For now FontManager uses 1.4 font.properties scheme for font mapping, so
+        // this method doesn't make any sense. The implementation of this method
+        // which will influence font mapping is postponed until
+        // 1.5 mapping scheme not implemented.
+
+        // todo - Implement non-default behavior with 1.5 font mapping scheme
+    }
+
+    public void preferProportionalFonts() {
+        // Note: API specification says following:
+        // "The actual change in font rendering behavior resulting
+        // from a call to this method is implementation dependent;
+        // it may have no effect at all." So, doing nothing is an
+        // acceptable behavior for this method.
+
+        // For now FontManager uses 1.4 font.properties scheme for font mapping, so
+        // this method doesn't make any sense. The implementation of this method
+        // which will influence font mapping is postponed until
+        // 1.5 mapping scheme not implemented.
+
+        // todo - Implement non-default behavior with 1.5 font mapping scheme
+    }
+
     public abstract Graphics2D createGraphics(BufferedImage bufferedImage);
 
     public abstract Font[] getAllFonts();

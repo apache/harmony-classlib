@@ -40,6 +40,10 @@ public abstract class Image {
 
     public static final int SCALE_AREA_AVERAGING = 16;
 
+    protected float accelerationPriority = 0.5f;
+
+    private static ImageCapabilities capabilities = new ImageCapabilities(false);
+
     public abstract Object getProperty(String name, ImageObserver observer);
 
     public abstract ImageProducer getSource();
@@ -63,5 +67,20 @@ public abstract class Image {
 
     public abstract void flush();
 
+    public float getAccelerationPriority() {
+        return accelerationPriority;
+    }
+
+    public void setAccelerationPriority(float priority) {
+        if (priority < 0 || priority > 1) {
+            throw new IllegalArgumentException("Priority must be a value between 0 and 1, inclusive");
+        }
+        accelerationPriority = priority;
+    }
+
+    public ImageCapabilities getCapabilities(GraphicsConfiguration gc) {
+        // Note: common image is not accelerated.
+        return capabilities;
+    }
 }
 
