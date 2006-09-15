@@ -53,7 +53,6 @@ public class KeyStoreCertPrinter {
      * @throws NoSuchAlgorithmException
      * @throws NoSuchProviderException
      * @throws UnrecoverableKeyException
-     * @throws KeytoolException 
      * @throws IOException 
      * @throws FileNotFoundException 
      * @throws CertificateException 
@@ -61,7 +60,7 @@ public class KeyStoreCertPrinter {
     static void list(KeytoolParameters param) throws KeyStoreException,
             NoSuchAlgorithmException, NoSuchProviderException,
             UnrecoverableKeyException, CertificateException,
-            FileNotFoundException, IOException, KeytoolException {
+            FileNotFoundException, IOException {
         Enumeration aliases;
         KeyStore keyStore = param.getKeyStore();
         String alias = param.getAlias();

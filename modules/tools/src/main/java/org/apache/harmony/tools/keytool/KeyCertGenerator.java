@@ -145,6 +145,8 @@ public class KeyCertGenerator {
                 sigAlgName = "SHA1withDSA";
             } else if (keyAlg.equalsIgnoreCase("RSA")) {
                 sigAlgName = "MD5withRSA";
+            }else {
+                sigAlgName = keyAlg;
             }
         } else {
             String issuerKeyAlg = issuerPrivateKey.getAlgorithm();
@@ -153,10 +155,7 @@ public class KeyCertGenerator {
             } else if (issuerKeyAlg.equalsIgnoreCase("RSA")) {
                 sigAlgName = "MD5withRSA";
             } else {
-                // FIXME: can a kind of search be done?
-                throw new KeytoolException(
-                        "Cannot find signature algorithm for issuer's key algorithm "
-                                + issuerKeyAlg);
+                sigAlgName = issuerKeyAlg;
             }
         }
         // set the certificate validity period
@@ -511,7 +510,7 @@ public class KeyCertGenerator {
     private static void generateSecretKey(KeytoolParameters param)
             throws NoSuchAlgorithmException, NoSuchProviderException,
             KeyStoreException, CertificateException, FileNotFoundException,
-            IOException, KeytoolException {
+            IOException {
 
         String keyAlg = param.getKeyAlg();
         int keySize = param.getKeySize();

@@ -50,12 +50,11 @@ public class CertReader {
      * @return
      * @throws NoSuchProviderException 
      * @throws CertificateException 
-     * @throws KeytoolException 
      * @throws IOException 
      */
     static Collection readCerts(String fileName, boolean readOnlyFirst,
             String providerName) throws CertificateException,
-            NoSuchProviderException, IOException, KeytoolException {
+            NoSuchProviderException, IOException {
 
         InputStream input = getInputStream(fileName);
         CertificateFactory factory = getCertificateFactory(providerName);
@@ -73,7 +72,7 @@ public class CertReader {
         // if the file is empty or nothing was entered
         // FIXME: remove available. Try to read and catch exception?
         if (input.available() <= 0) {
-            throw new KeytoolException("Empty input");
+            throw new IOException("Empty input");
         }
 
         Collection certCollection;
@@ -105,14 +104,13 @@ public class CertReader {
      * @return
      * @throws NoSuchProviderException
      * @throws CertificateException
-     * @throws KeytoolException
      * @throws IOException
      * @throws CRLException
      * 
      */
     static Collection readCRLs(String fileName, String providerName)
             throws CertificateException, NoSuchProviderException, IOException,
-            KeytoolException, CRLException {
+            CRLException {
 
         InputStream input = getInputStream(fileName);
         CertificateFactory factory = getCertificateFactory(providerName);
@@ -130,7 +128,7 @@ public class CertReader {
         // if the file is empty or nothing was entered
         // FIXME: remove available. Try to read and catch exception?
         if (input.available() <= 0) {
-            throw new KeytoolException("Empty input");
+            throw new IOException("Empty input");
         }
 
         try {

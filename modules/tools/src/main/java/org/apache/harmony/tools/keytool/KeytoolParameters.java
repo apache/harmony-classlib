@@ -229,7 +229,6 @@ public class KeytoolParameters {
     // getters and setters down here.
     /**
      * @return Returns the keystore to work with.
-     * @throws KeytoolException 
      * @throws IOException 
      * @throws NoSuchProviderException 
      * @throws KeyStoreException 
@@ -239,7 +238,7 @@ public class KeytoolParameters {
      */
     KeyStore getKeyStore() throws NoSuchAlgorithmException,
             CertificateException, FileNotFoundException, KeyStoreException,
-            NoSuchProviderException, IOException, KeytoolException {
+            NoSuchProviderException, IOException {
         if (keyStore == null){
             KeyStoreLoaderSaver.loadStore(this);
         }
@@ -879,7 +878,6 @@ public class KeytoolParameters {
     /**
      * @return cacerts keystore containing the certificates from root
      *         certificate authorities (usually self-signed)
-     * @throws KeytoolException 
      * @throws IOException 
      * @throws NoSuchProviderException 
      * @throws CertificateException 
@@ -889,7 +887,7 @@ public class KeytoolParameters {
      */
     KeyStore getCacerts() throws FileNotFoundException, KeyStoreException,
             NoSuchAlgorithmException, CertificateException,
-            NoSuchProviderException, IOException, KeytoolException {
+            NoSuchProviderException, IOException {
         if (cacerts == null) {
             String keyStoreProv = (ksProvider != null) ? ksProvider : provider;
             cacerts = KeyStoreLoaderSaver.loadStore(getCacertsPath(),

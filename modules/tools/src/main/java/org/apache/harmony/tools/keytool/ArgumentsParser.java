@@ -172,6 +172,8 @@ class ArgumentsParser {
      *         is null or empty, an unknown option is found or an expected
      *         option value is not given or not of an expected type.
      * @throws IOException
+     * @throws NumberFormatException
+     * @throws KeytoolException
      */
 
     static KeytoolParameters parseArgs(String[] args)

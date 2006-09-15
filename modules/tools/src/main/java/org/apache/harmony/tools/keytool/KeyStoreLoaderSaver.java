@@ -46,13 +46,12 @@ public class KeyStoreLoaderSaver {
      * @throws FileNotFoundException
      * @throws IOException
      * @throws KeyStoreException
-     * @throws KeytoolException
      * @throws NoSuchProviderException
      */
     static void loadStore(KeytoolParameters param)
             throws NoSuchAlgorithmException, CertificateException,
             FileNotFoundException, IOException, KeyStoreException,
-            NoSuchProviderException, KeytoolException {
+            NoSuchProviderException {
 
         // If the path to the store is not specified, try to open
         // the store using the default path.
@@ -93,19 +92,18 @@ public class KeyStoreLoaderSaver {
      * @throws CertificateException
      * @throws IOException
      * @throws NoSuchProviderException
-     * @throws KeytoolException
      */
     static KeyStore loadStore(String path, String storeType, char[] storePass,
             String providerName) throws FileNotFoundException,
             KeyStoreException, NoSuchAlgorithmException, CertificateException,
-            IOException, NoSuchProviderException, KeytoolException {
+            IOException, NoSuchProviderException {
 
         BufferedInputStream bis;
         // if the path is given, make a FileInputStream on it
         if (path != null) {
             File ksFile = new File(path);
             if (ksFile.length() == 0) {
-                throw new KeytoolException("Keystore file exists but is empty");
+                throw new IOException("Keystore file exists but is empty");
             }
             bis = new BufferedInputStream(new FileInputStream(ksFile));
         } else { // if the path is not given, a new keystore will be created
@@ -156,12 +154,11 @@ public class KeyStoreLoaderSaver {
      * @throws NoSuchAlgorithmException
      * @throws CertificateException
      * @throws IOException
-     * @throws KeytoolException 
      * @throws NoSuchProviderException 
      */
     static void saveStore(KeytoolParameters param) throws KeyStoreException,
             NoSuchAlgorithmException, CertificateException, IOException,
-            NoSuchProviderException, KeytoolException {
+            NoSuchProviderException {
         saveStore(param.getKeyStore(), param.getStorePath(), param
                 .getStorePass(), param.isVerbose());
     }

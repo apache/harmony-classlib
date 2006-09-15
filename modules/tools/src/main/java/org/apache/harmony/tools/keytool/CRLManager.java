@@ -39,7 +39,6 @@ public class CRLManager {
      * 
      * @return true if found at least one revoked certifiacte
      * @param param
-     * @throws KeytoolException
      * @throws IOException
      * @throws CRLException
      * @throws NoSuchProviderException
@@ -50,7 +49,7 @@ public class CRLManager {
     static boolean checkRevoked(KeytoolParameters param)
             throws FileNotFoundException, CertificateException,
             NoSuchProviderException, CRLException, IOException,
-            KeytoolException, NoSuchAlgorithmException {
+            NoSuchAlgorithmException {
 
         String provider = param.getProvider();
         String certProvider = (param.getCertProvider() != null) ? param

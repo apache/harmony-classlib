@@ -698,14 +698,13 @@ public class CertChainVerifier {
      * @throws NoSuchAlgorithmException
      * @throws CertificateException
      * @throws IOException
-     * @throws KeytoolException
      * @throws KeyStoreException
      * @throws NoSuchProviderException
      */
     static boolean isTrusted(KeytoolParameters param, X509Certificate cert)
             throws FileNotFoundException, NoSuchAlgorithmException,
-            CertificateException, IOException, KeytoolException,
-            KeyStoreException, NoSuchProviderException {
+            CertificateException, IOException, KeyStoreException,
+            NoSuchProviderException {
         // check the main keyStore
         KeyStore keyStore = param.getKeyStore();
         String alias = keyStore.getCertificateAlias(cert);

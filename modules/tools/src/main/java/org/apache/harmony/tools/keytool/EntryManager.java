@@ -76,7 +76,6 @@ public class EntryManager {
      * 
      * @param param
      * @throws KeyStoreException
-     * @throws KeytoolException 
      * @throws IOException 
      * @throws NoSuchProviderException 
      * @throws FileNotFoundException 
@@ -85,8 +84,7 @@ public class EntryManager {
      */
     static void delete(KeytoolParameters param) throws KeyStoreException,
             NoSuchAlgorithmException, CertificateException,
-            FileNotFoundException, NoSuchProviderException, IOException,
-            KeytoolException {
+            FileNotFoundException, NoSuchProviderException, IOException {
         param.getKeyStore().deleteEntry(param.getAlias());
         param.setNeedSaveKS(true);
     }
@@ -98,7 +96,6 @@ public class EntryManager {
      * @throws KeyStoreException
      * @throws NoSuchAlgorithmException
      * @throws UnrecoverableKeyException
-     * @throws KeytoolException 
      * @throws IOException 
      * @throws NoSuchProviderException 
      * @throws FileNotFoundException 
@@ -107,7 +104,7 @@ public class EntryManager {
     static void keyPasswd(KeytoolParameters param) throws KeyStoreException,
             NoSuchAlgorithmException, UnrecoverableKeyException,
             CertificateException, FileNotFoundException,
-            NoSuchProviderException, IOException, KeytoolException {
+            NoSuchProviderException, IOException {
         KeyStore keyStore = param.getKeyStore();
         String alias = param.getAlias();
         Key key;

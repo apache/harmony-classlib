@@ -39,12 +39,11 @@ public class KeyStoreConverter {
      * @throws CertificateException
      * @throws NoSuchProviderException
      * @throws IOException
-     * @throws KeytoolException
      */
     static void convertKeyStore(KeytoolParameters param)
             throws KeyStoreException, FileNotFoundException,
             NoSuchAlgorithmException, CertificateException,
-            NoSuchProviderException, IOException, KeytoolException {
+            NoSuchProviderException, IOException {
 
         // get the main keystore
         KeyStore mainKS = param.getKeyStore();
