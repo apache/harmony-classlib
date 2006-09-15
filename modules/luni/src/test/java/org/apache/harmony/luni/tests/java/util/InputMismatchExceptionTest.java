@@ -29,6 +29,7 @@ public class InputMismatchExceptionTest extends TestCase {
     /**
      * @tests java.util.InputMismatchException#InputMismatchException()
      */
+    @SuppressWarnings("cast")
     public void test_Constructor() {
         InputMismatchException exception = new InputMismatchException();
         assertNotNull(exception);

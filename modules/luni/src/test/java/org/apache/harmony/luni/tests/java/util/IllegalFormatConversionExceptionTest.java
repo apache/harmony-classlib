@@ -43,7 +43,7 @@ public class IllegalFormatConversionExceptionTest extends TestCase {
      */
     public void test_getArgumentClass() {
         char c = '*';
-        Class argClass = String.class;
+        Class<String> argClass = String.class;
         IllegalFormatConversionException illegalFormatConversionException = new IllegalFormatConversionException(
                 c, argClass);
         assertEquals(argClass, illegalFormatConversionException
@@ -56,7 +56,7 @@ public class IllegalFormatConversionExceptionTest extends TestCase {
      */
     public void test_getConversion() {
         char c = '*';
-        Class argClass = String.class;
+        Class<String> argClass = String.class;
         IllegalFormatConversionException illegalFormatConversionException = new IllegalFormatConversionException(
                 c, argClass);
         assertEquals(c, illegalFormatConversionException.getConversion());
@@ -68,7 +68,7 @@ public class IllegalFormatConversionExceptionTest extends TestCase {
      */
     public void test_getMessage() {
         char c = '*';
-        Class argClass = String.class;
+        Class<String> argClass = String.class;
         IllegalFormatConversionException illegalFormatConversionException = new IllegalFormatConversionException(
                 c, argClass);
         assertTrue(null != illegalFormatConversionException.getMessage());

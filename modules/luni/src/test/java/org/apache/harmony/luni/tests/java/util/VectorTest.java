@@ -26,10 +26,10 @@ public class VectorTest extends TestCase {
 	 */
 	public void test_toString() {
 		// Ensure toString works with self-referencing elements.
-		Vector vec = new Vector(3);
+		Vector<Object> vec = new Vector<Object>(3);
 		vec.add(null);
 		vec.add(new Object());
 		vec.add(vec);
-		vec.toString();
+		assertNotNull(vec.toString());
 	}
 }

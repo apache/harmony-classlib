@@ -117,12 +117,13 @@ public class ArraysTest extends TestCase {
 	public void test_sort$D() {
 		// Test a basic sort
 		double[] reversedArray = new double[100];
-		for (int counter = 0; counter < reversedArray.length; counter ++)
-			reversedArray[counter] = (double)(reversedArray.length - counter - 1);
+		for (int counter = 0; counter < reversedArray.length; counter ++) {
+            reversedArray[counter] = (reversedArray.length - counter - 1);
+        }
 		Arrays.sort(reversedArray);
 		for (int counter = 0; counter < reversedArray.length; counter ++) {
 			assertTrue("Assert 0: Resulting array not sorted",
-					reversedArray[counter] == (double)counter);
+					reversedArray[counter] == counter);
 		}
 
 		// These have to sort as per the Double compare ordering
@@ -140,8 +141,9 @@ public class ArraysTest extends TestCase {
 
 		Arrays.sort(specials2);
 		Object[] print2 = new Object[specials2.length];
-		for (int i = 0; i < specials2.length; i++)
-			print2[i] = new Double(specials2[i]);
+		for (int i = 0; i < specials2.length; i++) {
+            print2[i] = new Double(specials2[i]);
+        }
 		assertTrue("Assert 2: specials sort incorrectly " + Arrays.asList(print2), 
 				Arrays.equals(specials2, answer));
 	}
@@ -153,12 +155,12 @@ public class ArraysTest extends TestCase {
 		// Test a basic sort
 		float[] reversedArray = new float[100];
 		for (int counter = 0; counter < reversedArray.length; counter ++) {
-			reversedArray[counter] = (float)(reversedArray.length - counter - 1);
+			reversedArray[counter] = (reversedArray.length - counter - 1);
 		}
 		Arrays.sort(reversedArray);
 		for (int counter = 0; counter < reversedArray.length; counter ++) {
 			assertTrue("Assert 0: Resulting array not sorted",
-					reversedArray[counter] == (float)counter);
+					reversedArray[counter] == counter);
 		}
 
 		float[] specials1 = new float[]{Float.NaN, Float.MAX_VALUE, Float.MIN_VALUE, 0f, -0f, Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY};

@@ -26,7 +26,7 @@ public class IdentityHashMapTest extends TestCase {
 	 * @tests java.util.IdentityHashMap#put(java.lang.Object, java.lang.Object)
 	 */
 	public void test_putLjava_lang_ObjectLjava_lang_Object() {
-		IdentityHashMap map = new IdentityHashMap();
+		IdentityHashMap<Object, Object> map = new IdentityHashMap<Object, Object>();
 		
 		// Test null as a key.
 		Object value = "Some value";
@@ -44,7 +44,7 @@ public class IdentityHashMapTest extends TestCase {
 	 */
 	public void test_removeLjava_lang_Object() {
 		// Regression for HARMONY-37
-		IdentityHashMap hashMap = new IdentityHashMap();
+		IdentityHashMap<String, String> hashMap = new IdentityHashMap<String, String>();
 		hashMap.remove("absent");
 		assertEquals("Assert 0: Size is incorrect", 0, hashMap.size());
 

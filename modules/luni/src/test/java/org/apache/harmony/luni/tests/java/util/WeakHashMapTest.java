@@ -34,7 +34,7 @@ public class WeakHashMapTest extends TestCase {
 	 * @tests java.util.WeakHashMap#entrySet()
 	 */
 	public void test_entrySet() {
-		WeakHashMap weakMap = new WeakHashMap();
+		WeakHashMap<Object, Object> weakMap = new WeakHashMap<Object, Object>();
 		KEY_ARRAY = new Object[100];
 		VALUE_ARRAY = new Object[100];
 		for (int i = 0; i < 100; i++) {
@@ -43,16 +43,16 @@ public class WeakHashMapTest extends TestCase {
 			weakMap.put(KEY_ARRAY[i], VALUE_ARRAY[i]);
 		}
 
-		List keys = Arrays.asList(KEY_ARRAY);
-		List values = Arrays.asList(VALUE_ARRAY);
+		List<Object> keys = Arrays.asList(KEY_ARRAY);
+		List<Object> values = Arrays.asList(VALUE_ARRAY);
 
 		// Check the entry set has correct size & content
-		Set entrySet = weakMap.entrySet();
+		Set<Map.Entry<Object, Object>> entrySet = weakMap.entrySet();
 		assertEquals("Assert 0: Incorrect number of entries returned", 100,
 				entrySet.size());
-		Iterator it = entrySet.iterator();
+		Iterator<Map.Entry<Object, Object>> it = entrySet.iterator();
 		while (it.hasNext()) {
-			Map.Entry entry = (Map.Entry) it.next();
+			Map.Entry<Object, Object> entry = it.next();
 			assertTrue("Assert 1: Invalid map entry key returned", keys
 					.contains(entry.getKey()));
 			assertTrue("Assert 2: Invalid map entry value returned", values
@@ -93,8 +93,9 @@ public class WeakHashMapTest extends TestCase {
 			it.next();
 			it.remove();
 			size--;
-			if (it.hasNext())
-				it.next();
+			if (it.hasNext()) {
+                it.next();
+            }
 
 		}
 		assertEquals("Assert 6: entry set count mismatch", size, entrySet

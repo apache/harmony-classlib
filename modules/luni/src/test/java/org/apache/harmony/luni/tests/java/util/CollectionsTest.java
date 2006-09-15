@@ -55,7 +55,7 @@ public class CollectionsTest extends TestCase {
 	 */
 	public void test_binarySearchLjava_util_ListLjava_lang_ObjectLjava_util_Comparator() {
 		// Regression for HARMONY-94
-		LinkedList lst = new LinkedList();
+		LinkedList<Integer> lst = new LinkedList<Integer>();
 		lst.add(new Integer(30));
 		Collections.sort(lst, null);
 		int index = Collections.binarySearch(lst, new Integer(2), null);
@@ -66,7 +66,8 @@ public class CollectionsTest extends TestCase {
 	 * @tests java.util.Collections#binarySearch(java.util.List,
 	 *        java.lang.Object)
 	 */
-	public void test_binarySearchLjava_util_ListLjava_lang_Object() {
+	@SuppressWarnings("unchecked")
+    public void test_binarySearchLjava_util_ListLjava_lang_Object() {
 		// regression for Harmony-1367
 		List localList = new LinkedList();
 		assertEquals(-1, Collections.binarySearch(localList, new Object()));
@@ -84,10 +85,10 @@ public class CollectionsTest extends TestCase {
 	 */
 	public void test_rotateLjava_util_ListI() {
 		// Regression for HARMONY-19 Rotate an *empty* list
-		Collections.rotate(new ArrayList(), 25);
+		Collections.rotate(new ArrayList<Object>(), 25);
 
 		// Regression for HARMONY-20
-		List list = new ArrayList();
+		List<String> list = new ArrayList<String>();
 		list.add(0, "zero");
 		list.add(1, "one");
 		list.add(2, "two");
@@ -96,15 +97,15 @@ public class CollectionsTest extends TestCase {
 
 		Collections.rotate(list, Integer.MIN_VALUE);
 		assertEquals("Rotated incorrectly at position 0, ", "three",
-				(String) list.get(0));
+				list.get(0));
 		assertEquals("Rotated incorrectly at position 1, ", "four",
-				(String) list.get(1));
+				list.get(1));
 		assertEquals("Rotated incorrectly at position 2, ", "zero",
-				(String) list.get(2));
+				list.get(2));
 		assertEquals("Rotated incorrectly at position 3, ", "one",
-				(String) list.get(3));
+				list.get(3));
 		assertEquals("Rotated incorrectly at position 4, ", "two",
-				(String) list.get(4));
+				list.get(4));
 	}
 
 	/**
@@ -246,7 +247,7 @@ public class CollectionsTest extends TestCase {
             fail("Assert 0: frequency(null,<any>) must throw NPE");
         } catch (NullPointerException e) {}
 
-        List strings = Arrays.asList(new String[] { "1", "2", "3", "1", "1" });
+        List<String> strings = Arrays.asList(new String[] { "1", "2", "3", "1", "1" });
 
         assertEquals("Assert 1: did not find three \"1\" strings", 3,
                 Collections.frequency(strings, "1"));
@@ -260,7 +261,7 @@ public class CollectionsTest extends TestCase {
         assertEquals("Assert 4: matched on null when there are none", 0,
                 Collections.frequency(strings, null));
 
-        List objects = Arrays.asList(new Object[] { new Integer(1), null, null,
+        List<Object> objects = Arrays.asList(new Object[] { new Integer(1), null, null,
                 new Long(1) });
 
         assertEquals("Assert 5: did not find one Integer(1)", 1, Collections
@@ -277,7 +278,7 @@ public class CollectionsTest extends TestCase {
      * @tests java.util.Collections#reverseOrder()
      */
     public void test_reverseOrder() {
-        Comparator roc = Collections.reverseOrder();
+        Comparator<String> roc = Collections.reverseOrder();
         assertNotNull("Assert 0: comparator must not be null", roc);
 
         assertTrue("Assert 1: comparator must implement Serializable",
@@ -294,7 +295,7 @@ public class CollectionsTest extends TestCase {
      * @tests java.util.Collections#reverseOrder(java.util.Comparator)
      */
     public void test_reverseOrderLjava_util_Comparator() {
-        Comparator roc = Collections
+        Comparator<String> roc = Collections
                 .reverseOrder(String.CASE_INSENSITIVE_ORDER);
         assertNotNull("Assert 0: comparator must not be null", roc);
 
@@ -320,7 +321,7 @@ public class CollectionsTest extends TestCase {
     }
 
     public void test_AddAll() {
-        List l = new ArrayList();
+        List<Object> l = new ArrayList<Object>();
         assertFalse(Collections.addAll(l, new Object[] {}));
         assertTrue(l.isEmpty());
         assertTrue(Collections.addAll(l, new Object[] { new Integer(1),
@@ -339,48 +340,48 @@ public class CollectionsTest extends TestCase {
         for (int i = 0; i < arr2.length; i++) {
             arr2[i] = new Integer(100 + i);
         }
-        Collection c1 = new ArrayList();
-        Collection c2 = new ArrayList();
+        Collection<Object> c1 = new ArrayList<Object>();
+        Collection<Object> c2 = new ArrayList<Object>();
         Collections.addAll(c1, arr1);
         Collections.addAll(c2, arr2);
         assertTrue(Collections.disjoint(c1, c2));
         c1.add(arr2[10]);
         assertFalse(Collections.disjoint(c1, c2));
 
-        c1 = new LinkedList();
-        c2 = new LinkedList();
+        c1 = new LinkedList<Object>();
+        c2 = new LinkedList<Object>();
         Collections.addAll(c1, arr1);
         Collections.addAll(c2, arr2);
         assertTrue(Collections.disjoint(c1, c2));
         c1.add(arr2[10]);
         assertFalse(Collections.disjoint(c1, c2));
 
-        c1 = new TreeSet();
-        c2 = new TreeSet();
+        c1 = new TreeSet<Object>();
+        c2 = new TreeSet<Object>();
         Collections.addAll(c1, arr1);
         Collections.addAll(c2, arr2);
         assertTrue(Collections.disjoint(c1, c2));
         c1.add(arr2[10]);
         assertFalse(Collections.disjoint(c1, c2));
 
-        c1 = new HashSet();
-        c2 = new HashSet();
+        c1 = new HashSet<Object>();
+        c2 = new HashSet<Object>();
         Collections.addAll(c1, arr1);
         Collections.addAll(c2, arr2);
         assertTrue(Collections.disjoint(c1, c2));
         c1.add(arr2[10]);
         assertFalse(Collections.disjoint(c1, c2));
 
-        c1 = new LinkedList();
-        c2 = new TreeSet();
+        c1 = new LinkedList<Object>();
+        c2 = new TreeSet<Object>();
         Collections.addAll(c1, arr1);
         Collections.addAll(c2, arr2);
         assertTrue(Collections.disjoint(c1, c2));
         c1.add(arr2[10]);
         assertFalse(Collections.disjoint(c1, c2));
 
-        c1 = new Vector();
-        c2 = new HashSet();
+        c1 = new Vector<Object>();
+        c2 = new HashSet<Object>();
         Collections.addAll(c1, arr1);
         Collections.addAll(c2, arr2);
         assertTrue(Collections.disjoint(c1, c2));

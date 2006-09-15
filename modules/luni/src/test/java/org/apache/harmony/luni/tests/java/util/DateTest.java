@@ -24,7 +24,8 @@ public class DateTest extends TestCase {
 	/**
 	 * @tests java.util.Date#parse(String)
 	 */
-	public void test_parseLjava_lang_String() {
+	@SuppressWarnings("deprecation")
+    public void test_parseLjava_lang_String() {
 		// Regression for HARMONY-102
 		assertEquals("Assert 0: parse failure",
 				-5400000, Date.parse("Sat, 1 Jan 1970 +0130 00:00:00"));
