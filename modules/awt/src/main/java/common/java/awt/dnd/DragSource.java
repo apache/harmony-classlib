@@ -50,6 +50,8 @@ public class DragSource implements Serializable {
 
     public static final Cursor DefaultLinkNoDrop;
 
+    private static final int DEFAULT_DRAG_THRESHOLD = 5;
+
     private static DragSource defaultSource;
     private static DragSourceContext curContext;
 
@@ -96,6 +98,26 @@ public class DragSource implements Serializable {
     public static boolean isDragImageSupported() {
         // TODO: implement
         return true;
+    }
+
+    public static int getDragThreshold() {
+        int threshold = Integer.getInteger("awt.dnd.drag.threshold", -1);
+
+        if (threshold <= 0) {
+            Object val = Toolkit.getDefaultToolkit().getDesktopProperty(
+                    "DnD.gestureMotionThreshold"
+            );
+
+            if (val != null && val instanceof Integer) {
+                threshold = ((Integer) val).intValue();
+            }
+
+            if (threshold <= 0) {
+                threshold = DEFAULT_DRAG_THRESHOLD;
+            }
+        }
+
+        return threshold;
     }
 
     public DragSource() throws HeadlessException {
