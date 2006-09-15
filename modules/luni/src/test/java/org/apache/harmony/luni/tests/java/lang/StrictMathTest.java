@@ -123,9 +123,12 @@ public class StrictMathTest extends junit.framework.TestCase {
         assertEquals("Should return Double.NEGATIVE_INFINITY",
                 Double.NEGATIVE_INFINITY, StrictMath
                         .cbrt(Double.NEGATIVE_INFINITY));
-        assertEquals("Should return 0.0", 0.0, StrictMath.cbrt(0.0));
-        assertEquals("Should return +0.0", +0.0, StrictMath.cbrt(+0.0));
-        assertEquals("Should return -0.0", -0.0, StrictMath.cbrt(-0.0));
+        assertEquals(Double.doubleToLongBits(0.0), Double
+				.doubleToLongBits(StrictMath.cbrt(0.0)));
+		assertEquals(Double.doubleToLongBits(+0.0), Double
+				.doubleToLongBits(StrictMath.cbrt(+0.0)));
+		assertEquals(Double.doubleToLongBits(-0.0), Double
+				.doubleToLongBits(StrictMath.cbrt(-0.0)));
 
         assertEquals("Should return 3.0", 3.0, StrictMath.cbrt(27.0));
         assertEquals("Should return 23.111993172558684", 23.111993172558684,
@@ -227,9 +230,12 @@ public class StrictMathTest extends junit.framework.TestCase {
                 Double.POSITIVE_INFINITY, StrictMath.expm1(Double.POSITIVE_INFINITY));
         assertEquals("Should return -1.0", -1.0, StrictMath
                 .expm1(Double.NEGATIVE_INFINITY));
-        assertEquals("Should return 0.0", 0.0, StrictMath.expm1(0.0));
-        assertEquals("Should return +0.0", +0.0, StrictMath.expm1(+0.0));
-        assertEquals("Should return -0.0", -0.0, StrictMath.expm1(-0.0));
+        assertEquals(Double.doubleToLongBits(0.0), Double
+				.doubleToLongBits(StrictMath.expm1(0.0)));
+		assertEquals(Double.doubleToLongBits(+0.0), Double
+				.doubleToLongBits(StrictMath.expm1(+0.0)));
+		assertEquals(Double.doubleToLongBits(-0.0), Double
+				.doubleToLongBits(StrictMath.expm1(-0.0)));
 
         assertEquals("Should return -9.999950000166666E-6",
                 -9.999950000166666E-6, StrictMath.expm1(-0.00001));
@@ -371,9 +377,12 @@ public class StrictMathTest extends junit.framework.TestCase {
         assertEquals("Should return POSITIVE_INFINITY",
                 Double.POSITIVE_INFINITY, StrictMath
                         .log1p(Double.POSITIVE_INFINITY));
-        assertEquals("Should return 0.0", 0.0, StrictMath.log1p(0.0));
-        assertEquals("Should return +0.0", +0.0, StrictMath.log1p(+0.0));
-        assertEquals("Should return -0.0", -0.0, StrictMath.log1p(-0.0));
+        assertEquals(Double.doubleToLongBits(0.0), Double
+				.doubleToLongBits(StrictMath.log1p(0.0)));
+		assertEquals(Double.doubleToLongBits(+0.0), Double
+				.doubleToLongBits(StrictMath.log1p(+0.0)));
+		assertEquals(Double.doubleToLongBits(-0.0), Double
+				.doubleToLongBits(StrictMath.log1p(-0.0)));
 
         assertEquals("Should return -0.2941782295312541", -0.2941782295312541,
                 StrictMath.log1p(-0.254856327));
@@ -609,9 +618,12 @@ public class StrictMathTest extends junit.framework.TestCase {
         assertEquals("Should return NEGATIVE_INFINITY",
                 Double.NEGATIVE_INFINITY, StrictMath
                         .sinh(Double.NEGATIVE_INFINITY), 0D);
-        assertEquals("Should return 0.0", 0.0, StrictMath.sinh(0.0), 0D);
-        assertEquals("Should return +0.0", +0.0, StrictMath.sinh(+0.0), 0D);
-        assertEquals("Should return -0.0", -0.0, StrictMath.sinh(-0.0), 0D);
+        assertEquals(Double.doubleToLongBits(0.0), Double
+				.doubleToLongBits(StrictMath.sinh(0.0)));
+		assertEquals(Double.doubleToLongBits(+0.0), Double
+				.doubleToLongBits(StrictMath.sinh(+0.0)));
+		assertEquals(Double.doubleToLongBits(-0.0), Double
+				.doubleToLongBits(StrictMath.sinh(-0.0)));
 
         assertEquals("Should return POSITIVE_INFINITY",
                 Double.POSITIVE_INFINITY, StrictMath.sinh(1234.56), 0D);
@@ -660,9 +672,12 @@ public class StrictMathTest extends junit.framework.TestCase {
                 .tanh(Double.POSITIVE_INFINITY), 0D);
         assertEquals("Should return -1.0", -1.0, StrictMath
                 .tanh(Double.NEGATIVE_INFINITY), 0D);
-        assertEquals("Should return +0.0", +0.0, StrictMath.tanh(+0.0), 0D);
-        assertEquals("Should return -0.0", -0.0, StrictMath.tanh(-0.0), 0D);
-        assertEquals("Should return 0.0", 0.0, StrictMath.tanh(0.0), 0D);
+        assertEquals(Double.doubleToLongBits(0.0), Double
+				.doubleToLongBits(StrictMath.tanh(0.0)));
+		assertEquals(Double.doubleToLongBits(+0.0), Double
+				.doubleToLongBits(StrictMath.tanh(+0.0)));
+		assertEquals(Double.doubleToLongBits(-0.0), Double
+				.doubleToLongBits(StrictMath.tanh(-0.0)));
 
         assertEquals("Should return 1.0", 1.0, StrictMath.tanh(1234.56), 0D);
         assertEquals("Should return -1.0", -1.0, StrictMath.tanh(-1234.56), 0D);
