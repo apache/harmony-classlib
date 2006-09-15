@@ -114,4 +114,22 @@ public abstract class Graphics2D extends Graphics {
 
     @Override
     public abstract void translate(int x, int y);
+
+    public void fill3DRect(int x, int y, int width, int height, boolean raised) {
+        // According to the spec, color should be used instead of paint,
+        // so Graphics.fill3DRect resets paint and
+        // it should be restored after the call
+        Paint savedPaint = getPaint();
+        super.fill3DRect(x, y, width, height, raised);
+        setPaint(savedPaint);
+    }
+
+    public void draw3DRect(int x, int y, int width, int height, boolean raised) {
+        // According to the spec, color should be used instead of paint,
+        // so Graphics.draw3DRect resets paint and
+        // it should be restored after the call
+        Paint savedPaint = getPaint();
+        super.draw3DRect(x, y, width, height, raised);
+        setPaint(savedPaint);
+    }
 }

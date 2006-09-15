@@ -39,24 +39,29 @@ public abstract class Graphics {
     }
 
     public void draw3DRect(int x, int y, int width, int height, boolean raised) {
-        Color colorUp = getColor();
-        Color colorDown = colorUp.darker();
+        // Note: lighter/darker colors should be used to draw 3d rect.
+        // The resulting rect is (width+1)x(height+1). Stroke and paint attributes of
+        // the Graphics2D should be reset to the default values.
+        // fillRect is used instead of drawLine to bypass stroke
+        // reset/set and rasterization.
 
-        int []xpoints1 = {x, x, x+width+1};
-        int []ypoints1 = {y+width+1, y, y};
-        int []xpoints2 = {x+width+1, x+width+1, x};
-        int []ypoints2 = {y, y+width+1, y+width+1};
+        Color color = getColor();
+        Color colorUp, colorDown;
         if (raised) {
-            drawPolyline(xpoints1, ypoints1, 3);
-            setColor(colorDown);
-            drawPolyline(xpoints2, ypoints2, 3);
-            setColor(colorUp);
+            colorUp = color.brighter();
+            colorDown = color.darker();
         } else {
-            drawPolyline(xpoints2, ypoints2, 3);
-            setColor(colorDown);
-            drawPolyline(xpoints1, ypoints1, 3);
-            setColor(colorUp);
+            colorUp = color.darker();
+            colorDown = color.brighter();
         }
+
+        setColor(colorUp);
+        fillRect(x, y, width, 1);
+        fillRect(x, y+1, 1, height);
+
+        setColor(colorDown);
+        fillRect(x+width, y, 1, height);
+        fillRect(x+1, y+height, width, 1);
     }
 
     public void drawBytes(byte[] bytes, int off, int len, int x, int y) {
@@ -79,22 +84,35 @@ public abstract class Graphics {
     }
 
     public void fill3DRect(int x, int y, int width, int height, boolean raised) {
-        Color colorUp = getColor();
-        Color colorDown = colorUp.darker();
+        // Note: lighter/darker colors should be used to draw 3d rect.
+        // The resulting rect is (width)x(height), same as fillRect.
+        // Stroke and paint attributes of the Graphics2D should be reset
+        // to the default values. fillRect is used instead of drawLine to
+        // bypass stroke reset/set and line rasterization.
 
-        int []xpoints = {x+width+1, x+width+1, x};
-        int []ypoints = {y, y+width+1, y+width+1};
+        Color color = getColor();
+        Color colorUp, colorDown;
         if (raised) {
-            fillRect(x, y, width, height);
-            setColor(colorDown);
-            drawPolyline(xpoints, ypoints, 3);
-            setColor(colorUp);
+            colorUp = color.brighter();
+            colorDown = color.darker();
+            setColor(color);
         } else {
-            setColor(colorDown);
-            fillRect(x, y, width, height);
+            colorUp = color.darker();
+            colorDown = color.brighter();
             setColor(colorUp);
-            drawPolyline(xpoints, ypoints, 3);
         }
+
+        width--;
+        height--;
+        fillRect(x+1, y+1, width-1, height-1);
+
+        setColor(colorUp);
+        fillRect(x, y, width, 1);
+        fillRect(x, y+1, 1, height);
+
+        setColor(colorDown);
+        fillRect(x+width, y, 1, height);
+        fillRect(x+1, y+height, width, 1);
     }
 
     public void fillPolygon(Polygon p) {
