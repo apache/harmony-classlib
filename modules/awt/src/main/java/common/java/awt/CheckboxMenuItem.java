@@ -178,9 +178,9 @@ public class CheckboxMenuItem extends MenuItem implements ItemSelectable, Access
     }
 
     @Override
-    public EventListener[] getListeners(Class listenerType) {
+    public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         if (ItemListener.class.isAssignableFrom(listenerType)) {
-            return getItemListeners();
+            return (T[]) getItemListeners();
         }
         return super.getListeners(listenerType);
     }

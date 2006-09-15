@@ -41,7 +41,7 @@ public interface ImageConsumer {
 
     public static final int IMAGEABORTED = 4;
 
-    public void setProperties(Hashtable props);
+    public void setProperties(Hashtable<?, ?> props);
 
     public void setColorModel(ColorModel model);
 

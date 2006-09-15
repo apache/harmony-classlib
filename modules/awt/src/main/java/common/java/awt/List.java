@@ -1332,11 +1332,11 @@ public class List extends Component implements ItemSelectable, Accessible {
     }
 
     @Override
-    public EventListener[] getListeners(Class<?> listenerType) {
+    public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         if (ActionListener.class.isAssignableFrom(listenerType)) {
-            return getActionListeners();
+            return (T[]) getActionListeners();
         } else if (ItemListener.class.isAssignableFrom(listenerType)) {
-            return getItemListeners();
+            return (T[]) getItemListeners();
         } else {
             return super.getListeners(listenerType);
         }

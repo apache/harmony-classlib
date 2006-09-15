@@ -76,7 +76,11 @@ public final class TextLayout implements Cloneable {
         caretManager = new CaretManager(breaker);
     }
 
-    public TextLayout(String string, Map attributes, FontRenderContext frc) {
+    public TextLayout(
+            String string,
+            Map<? extends java.text.AttributedCharacterIterator.Attribute, ?> attributes,
+            FontRenderContext frc
+    ) {
         AttributedString as = new AttributedString(string);
         as.addAttributes(attributes, 0, string.length());
         this.breaker = new TextRunBreaker(as.getIterator(), frc);

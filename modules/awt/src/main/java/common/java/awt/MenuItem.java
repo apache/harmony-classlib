@@ -244,13 +244,13 @@ public class MenuItem extends MenuComponent implements Accessible {
         }
     }
 
-    public EventListener[] getListeners(Class listenerType) {
+    public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         toolkit.lockAWT();
         try {
             if (ActionListener.class.isAssignableFrom(listenerType)) {
-                return getActionListeners();
+                return (T[]) getActionListeners();
             }
-            return new EventListener[0];
+            return (T[]) java.lang.reflect.Array.newInstance(listenerType, 0);
         } finally {
             toolkit.unlockAWT();
         }

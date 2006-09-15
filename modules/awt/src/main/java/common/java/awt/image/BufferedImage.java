@@ -110,7 +110,7 @@ Image implements WritableRenderedImage, Transparency{
     private final ImageSurface imageSurf;
 
     public BufferedImage(ColorModel cm, WritableRaster raster,
-            boolean isRasterPremultiplied, Hashtable properties) {
+            boolean isRasterPremultiplied, Hashtable<?, ?> properties) {
         if (!cm.isCompatibleRaster(raster))
             throw new IllegalArgumentException("The raster is" +
                     " incompatible with this ColorModel");
@@ -121,6 +121,7 @@ Image implements WritableRenderedImage, Transparency{
 
         this.cm  = cm;
         this.raster = raster;
+        this.properties = properties;
 
         coerceData(isRasterPremultiplied);
 
@@ -404,7 +405,7 @@ Image implements WritableRenderedImage, Transparency{
         return outr;
     }
 
-    public Vector getSources() {
+    public Vector<RenderedImage> getSources() {
         return null;
     }
 

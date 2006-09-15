@@ -38,7 +38,7 @@ public abstract class Graphics2D extends Graphics {
 
     // Abstract methods
 
-    public abstract void addRenderingHints(Map hints);
+    public abstract void addRenderingHints(Map<?,?> hints);
 
     public abstract void clip(Shape s);
 
@@ -100,7 +100,7 @@ public abstract class Graphics2D extends Graphics {
 
     public abstract void setRenderingHint(RenderingHints.Key key, Object value);
 
-    public abstract void setRenderingHints(Map hints);
+    public abstract void setRenderingHints(Map<?,?> hints);
 
     public abstract void setStroke(Stroke s);
 

@@ -26,6 +26,7 @@ import java.io.ObjectOutputStream;
 
 import java.util.EventListener;
 import java.util.LinkedList;
+import java.lang.reflect.Array;
 
 public class AWTEventMulticaster implements
         ComponentListener, ContainerListener, FocusListener, KeyListener,
@@ -65,16 +66,16 @@ public class AWTEventMulticaster implements
         s.writeObject(l);
     }
 
-    public static EventListener[] getListeners(EventListener l, Class<?> listenerType)
+    public static <T extends EventListener> T[] getListeners(EventListener l, Class<T> listenerType)
             throws ClassCastException {
         if (l == null) {
-            return new EventListener[0];
+            return (T[]) java.lang.reflect.Array.newInstance(listenerType, 0);
         }
-        return addListeners(l, listenerType, new LinkedList<EventListener>()).toArray(
-                (EventListener[]) java.lang.reflect.Array.newInstance(listenerType, 0));
+        return addListeners(l, listenerType, new LinkedList<T>()).toArray(
+                (T[]) java.lang.reflect.Array.newInstance(listenerType, 0));
     }
 
-    private static LinkedList<EventListener> addListeners(EventListener l, Class<?> listenerType, LinkedList<EventListener> list) {
+    private static <T extends EventListener> LinkedList<T> addListeners(EventListener l, Class<T> listenerType, LinkedList<T> list) {
         if (l instanceof AWTEventMulticaster) {
             AWTEventMulticaster ml = (AWTEventMulticaster) l;
 
@@ -82,7 +83,7 @@ public class AWTEventMulticaster implements
             addListeners(ml.b, listenerType, list);
         } else {
             if (l.getClass().isAssignableFrom(listenerType)) {
-                list.add(l);
+                list.add((T)l);
             }
         }
 

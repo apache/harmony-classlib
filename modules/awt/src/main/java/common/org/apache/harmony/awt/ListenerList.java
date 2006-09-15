@@ -34,13 +34,13 @@ import java.util.List;
  * 2. To ensure call for all listeners as atomic operation
  * 3. To support system listeners that are needed for built-in AWT components
  */
-public class ListenerList implements Serializable {
+public class ListenerList<T> implements Serializable {
     private static final long serialVersionUID = 9180703263299648154L;
 
     private static final Iterator dummyIterator = new ArrayList().iterator();
 
     private transient ArrayList systemList = null;
-    private transient ArrayList userList = null;
+    private transient ArrayList<T> userList = null;
 
     /**
      * Adds system listener to this list.
@@ -59,18 +59,18 @@ public class ListenerList implements Serializable {
      *
      * @param listener - listener to be added.
      */
-    public void addUserListener(Object listener) {
+    public void addUserListener(T listener) {
         if (listener == null) {
             return;
         }
         // transactionally replace old list
         synchronized (this) {
             if (userList == null) {
-                userList = new ArrayList();
+                userList = new ArrayList<T>();
                 userList.add(listener);
                 return;
             }
-            ArrayList newList = new ArrayList(userList);
+            ArrayList<T> newList = new ArrayList<T>(userList);
             newList.add(listener);
             userList = newList;
         }
@@ -90,7 +90,7 @@ public class ListenerList implements Serializable {
             if (userList == null || !userList.contains(listener)) {
                 return;
             }
-            ArrayList newList = new ArrayList(userList);
+            ArrayList<T> newList = new ArrayList<T>(userList);
             newList.remove(listener);
             userList = (newList.size() > 0 ? newList : null);
         }
@@ -115,9 +115,9 @@ public class ListenerList implements Serializable {
      *
      * @return list of all user listeners.
      */
-    public List getUserListeners() {
+    public List<T> getUserListeners() {
         synchronized (this) {
-            return new ArrayList(userList);
+            return new ArrayList<T>(userList);
         }
     }
 
@@ -175,7 +175,7 @@ public class ListenerList implements Serializable {
         stream.defaultReadObject();
 
         systemList = (ArrayList)stream.readObject();
-        userList = (ArrayList)stream.readObject();
+        userList = (ArrayList<T>)stream.readObject();
     }
 
 }

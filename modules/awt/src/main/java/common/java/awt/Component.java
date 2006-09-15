@@ -1854,12 +1854,12 @@ public abstract class Component
         }
     }
 
-    public Set getFocusTraversalKeys(int id) {
+    public Set<AWTKeyStroke> getFocusTraversalKeys(int id) {
         toolkit.lockAWT();
         try {
             Integer kId = new Integer(id);
             KeyboardFocusManager.checkTraversalKeysID(traversalKeys, kId);
-            Set<?> keys = null;
+            Set<AWTKeyStroke> keys = null;
             Object value = traversalKeys.get(kId);
             keys = value instanceof Set ? (Set) value :
                 parent != null ? parent.getFocusTraversalKeys(id) : null;
@@ -3837,30 +3837,30 @@ public abstract class Component
         }
     }
 
-    public EventListener[] getListeners(Class<?> listenerType) {
+    public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         if (ComponentListener.class.isAssignableFrom(listenerType)) {
-            return getComponentListeners();
+            return (T[]) getComponentListeners();
         } else if (FocusListener.class.isAssignableFrom(listenerType)) {
-            return getFocusListeners();
+            return (T[]) getFocusListeners();
         } else if (HierarchyBoundsListener.class.isAssignableFrom(listenerType)) {
-            return getHierarchyBoundsListeners();
+            return (T[]) getHierarchyBoundsListeners();
         } else if (HierarchyListener.class.isAssignableFrom(listenerType)) {
-            return getHierarchyListeners();
+            return (T[]) getHierarchyListeners();
         } else if (InputMethodListener.class.isAssignableFrom(listenerType)) {
-            return getInputMethodListeners();
+            return (T[]) getInputMethodListeners();
         } else if (KeyListener.class.isAssignableFrom(listenerType)) {
-            return getKeyListeners();
+            return (T[]) getKeyListeners();
         } else if (MouseWheelListener.class.isAssignableFrom(listenerType)) {
-            return getMouseWheelListeners();
+            return (T[]) getMouseWheelListeners();
         } else if (MouseMotionListener.class.isAssignableFrom(listenerType)) {
-            return getMouseMotionListeners();
+            return (T[]) getMouseMotionListeners();
         } else if (MouseListener.class.isAssignableFrom(listenerType)) {
-            return getMouseListeners();
+            return (T[]) getMouseListeners();
         } else if (PropertyChangeListener.class.isAssignableFrom(listenerType)) {
-            return getPropertyChangeListeners();
+            return (T[]) getPropertyChangeListeners();
         }
 
-        return new EventListener[0];
+        return (T[]) java.lang.reflect.Array.newInstance(listenerType, 0);
     }
 
     private void processPaintEvent(PaintEvent event) {

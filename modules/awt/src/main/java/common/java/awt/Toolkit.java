@@ -644,7 +644,7 @@ public abstract class Toolkit {
 
     protected abstract EventQueue getSystemEventQueueImpl();
 
-    public abstract Map<?, ?> mapInputMethodHighlight(InputMethodHighlight highlight) throws HeadlessException;
+    public abstract Map<java.awt.font.TextAttribute, ?> mapInputMethodHighlight(InputMethodHighlight highlight) throws HeadlessException;
 
     Map<?, ?> mapInputMethodHighlightImpl(InputMethodHighlight highlight)
             throws HeadlessException {

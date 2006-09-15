@@ -878,9 +878,9 @@ public class TextComponent extends Component implements Accessible {
     }
 
     @Override
-    public EventListener[] getListeners(Class<?> listenerType) {
+    public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         if (TextListener.class.isAssignableFrom(listenerType)) {
-            return getTextListeners();
+            return (T[]) getTextListeners();
         }
         return super.getListeners(listenerType);
     }

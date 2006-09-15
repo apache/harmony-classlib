@@ -31,7 +31,7 @@ public class MemoryImageSource implements ImageProducer {
     int iData[];
     int offset;
     int scanline;
-    Hashtable properties;
+    Hashtable<?, ?> properties;
     Vector consumers;
     boolean animated;
     boolean fullbuffers;
@@ -41,17 +41,17 @@ public class MemoryImageSource implements ImageProducer {
     static final int DATA_TYPE_INT = 1;
 
     public MemoryImageSource(int w, int h, ColorModel cm, int pix[],
-            int off, int scan, Hashtable props) {
+            int off, int scan, Hashtable<?, ?> props) {
         init(w, h, cm, pix, off, scan, props);
     }
 
     public MemoryImageSource(int w, int h, ColorModel cm, byte pix[],
-            int off, int scan, Hashtable props) {
+            int off, int scan, Hashtable<?, ?> props) {
         init(w, h, cm, pix, off, scan, props);
     }
 
     public MemoryImageSource(int w, int h, int pix[], int off, int scan,
-            Hashtable props) {
+            Hashtable<?, ?> props) {
         init(w, h, ColorModel.getRGBdefault(), pix, off, scan, props);
     }
 

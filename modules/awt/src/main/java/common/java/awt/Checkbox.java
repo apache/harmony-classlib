@@ -369,11 +369,11 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
     }
 
     @Override
-    public EventListener[] getListeners(Class listenerType) {
+    public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         toolkit.lockAWT();
         try {
             if (ItemListener.class.isAssignableFrom(listenerType)) {
-                return getItemListeners();
+                return (T[]) getItemListeners();
             }
             return super.getListeners(listenerType);
         } finally {

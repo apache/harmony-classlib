@@ -84,9 +84,9 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
 
     private static Window prevFocusedWindow;
 
-    final ListenerList keyEventDispatchers = new ListenerList();
+    final ListenerList<KeyEventDispatcher> keyEventDispatchers = new ListenerList<KeyEventDispatcher>();
 
-    final ListenerList keyEventPostProcessors = new ListenerList();
+    final ListenerList<KeyEventPostProcessor> keyEventPostProcessors = new ListenerList<KeyEventPostProcessor>();
 
     private PropertyChangeSupport propertyChangeSupport;
 
@@ -202,7 +202,7 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
         }
     }
 
-    public Set<?> getDefaultFocusTraversalKeys(int id) {
+    public Set<AWTKeyStroke> getDefaultFocusTraversalKeys(int id) {
         Integer kId = Integer.valueOf(id);
         checkTraversalKeysID(defaultFocusTraversalKeys, kId);
         return defaultFocusTraversalKeys.get(kId);
@@ -272,11 +272,11 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
         return permanentFocusOwner;
     }
 
-    protected List<?> getKeyEventDispatchers() {
+    protected List<KeyEventDispatcher> getKeyEventDispatchers() {
         return keyEventDispatchers.getUserListeners();
     }
 
-    protected List<?> getKeyEventPostProcessors() {
+    protected List<KeyEventPostProcessor> getKeyEventPostProcessors() {
         return keyEventPostProcessors.getUserListeners();
     }
 
@@ -367,13 +367,13 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
         newManager.firePropertyChange(propName, Boolean.FALSE, Boolean.TRUE);
     }
 
-    public void setDefaultFocusTraversalKeys(int id, Set<AWTKeyStroke> keystrokes) {
+    public void setDefaultFocusTraversalKeys(int id, Set<? extends AWTKeyStroke> keystrokes) {
         Integer kId = Integer.valueOf(id);
         Set<AWTKeyStroke> oldKeyStrokes = defaultFocusTraversalKeys.get(kId);
         checkTraversalKeysID(defaultFocusTraversalKeys, kId);
         checkKeyStrokes(contTraversalIDs, defaultFocusTraversalKeys, kId,
-                        keystrokes);
-        defaultFocusTraversalKeys.put(kId, keystrokes);
+                        (Set<AWTKeyStroke>) keystrokes);
+        defaultFocusTraversalKeys.put(kId, (Set<AWTKeyStroke>) keystrokes);
         String propName = null;
         switch (id) {
         case FORWARD_TRAVERSAL_KEYS:

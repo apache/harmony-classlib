@@ -577,9 +577,9 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
     }
 
     @Override
-    public EventListener[] getListeners(Class listenerType) {
+    public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         if (AdjustmentListener.class.isAssignableFrom(listenerType)) {
-            return getAdjustmentListeners();
+            return (T[]) getAdjustmentListeners();
         }
         return super.getListeners(listenerType);
     }

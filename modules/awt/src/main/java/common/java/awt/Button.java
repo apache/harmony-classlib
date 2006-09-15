@@ -226,9 +226,9 @@ public class Button extends Component implements Accessible {
     }
 
     @Override
-    public EventListener[] getListeners(Class listenerType) {
+    public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         if (ActionListener.class.isAssignableFrom(listenerType)) {
-            return getActionListeners();
+            return (T[]) getActionListeners();
         }
         return super.getListeners(listenerType);
     }

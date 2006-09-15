@@ -525,8 +525,8 @@ public class Font implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public Map<TextAttribute, Object> getAttributes() {
-        return (Map<TextAttribute, Object>)fRequestedAttributes.clone();
+    public Map<TextAttribute, ?> getAttributes() {
+        return (Map<TextAttribute, ?>)fRequestedAttributes.clone();
     }
 
     public Attribute[] getAvailableAttributes() {

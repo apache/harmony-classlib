@@ -28,16 +28,16 @@ public class ParameterBlock implements Cloneable, Serializable {
 
     private static final long serialVersionUID = -7577115551785240750L;
 
-    protected Vector sources = new Vector();
+    protected Vector<Object> sources = new Vector<Object>();
 
-    protected Vector parameters = new Vector();
+    protected Vector<Object> parameters = new Vector<Object>();
 
-    public ParameterBlock(Vector sources, Vector parameters) {
+    public ParameterBlock(Vector<Object> sources, Vector<Object> parameters) {
         setSources(sources);
         setParameters(parameters);
     }
 
-    public ParameterBlock(Vector sources) {
+    public ParameterBlock(Vector<Object> sources) {
         setSources(sources);
     }
 
@@ -69,19 +69,19 @@ public class ParameterBlock implements Cloneable, Serializable {
         return this;
     }
 
-    public void setSources(Vector sources) {
+    public void setSources(Vector<Object> sources) {
         this.sources = sources;
     }
 
-    public void setParameters(Vector parameters) {
+    public void setParameters(Vector<Object> parameters) {
         this.parameters = parameters;
     }
 
-    public Vector getSources() {
+    public Vector<Object> getSources() {
         return sources;
     }
 
-    public Vector getParameters() {
+    public Vector<Object> getParameters() {
         return parameters;
     }
 
@@ -109,10 +109,10 @@ public class ParameterBlock implements Cloneable, Serializable {
             return null;
         }
         if(sources != null){
-            replica.setSources((Vector)(sources.clone()));
+            replica.setSources((Vector<Object>)(sources.clone()));
         }
         if(parameters != null){
-            replica.setParameters((Vector)(parameters.clone()));
+            replica.setParameters((Vector<Object>)(parameters.clone()));
         }
         return replica;
     }

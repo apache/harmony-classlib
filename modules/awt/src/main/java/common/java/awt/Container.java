@@ -646,7 +646,7 @@ public class Container extends Component {
     }
 
     @Override
-    public Set<?> getFocusTraversalKeys(int id) {
+    public Set<AWTKeyStroke> getFocusTraversalKeys(int id) {
         toolkit.lockAWT();
         try {
             return super.getFocusTraversalKeys(id);
@@ -1033,7 +1033,7 @@ public class Container extends Component {
     }
 
     @Override
-    public void setFocusTraversalKeys(int id, Set keystrokes) {
+    public void setFocusTraversalKeys(int id, Set<? extends AWTKeyStroke> keystrokes) {
         toolkit.lockAWT();
         try {
             super.setFocusTraversalKeys(id, keystrokes);
@@ -1258,11 +1258,11 @@ public class Container extends Component {
     }
 
     @Override
-    public EventListener[] getListeners(Class<?> listenerType) {
+    public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
 //        toolkit.lockAWT();
 //        try {
             if (ContainerListener.class.isAssignableFrom(listenerType)) {
-                return getContainerListeners();
+                return (T[]) getContainerListeners();
             }
             return super.getListeners(listenerType);
 //        } finally {

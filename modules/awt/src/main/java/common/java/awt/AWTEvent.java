@@ -21,6 +21,7 @@ package java.awt;
 
 import java.util.EventObject;
 import java.util.Hashtable;
+import java.util.EventListener;
 
 import java.awt.event.*;
 
@@ -266,9 +267,9 @@ public abstract class AWTEvent extends EventObject {
 
         final long eventMask;
 
-        final Class<?> listenerType;
+        final Class<? extends EventListener> listenerType;
 
-        EventDescriptor(long eventMask, Class<?> listenerType) {
+        EventDescriptor(long eventMask, Class<? extends EventListener> listenerType) {
             this.eventMask = eventMask;
             this.listenerType = listenerType;
         }

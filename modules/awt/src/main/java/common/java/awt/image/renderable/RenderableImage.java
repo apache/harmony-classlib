@@ -33,7 +33,7 @@ public interface RenderableImage {
 
     public RenderedImage createScaledRendering(int w, int h, RenderingHints hints);
 
-    public Vector getSources();
+    public Vector<RenderableImage> getSources();
 
     public String[] getPropertyNames();
 

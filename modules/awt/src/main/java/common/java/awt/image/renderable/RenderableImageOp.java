@@ -57,7 +57,7 @@ public class RenderableImageOp implements RenderableImage {
         ParameterBlock rdParam = (ParameterBlock) paramBlock.clone();
 
         if(sources != null){
-            Vector rdSources = new Vector();
+            Vector<Object> rdSources = new Vector<Object>();
             int i = 0;
             while(i < sources.size()){
                 RenderContext newContext = CRIF.mapRenderContext(i, renderContext,
@@ -94,14 +94,14 @@ public class RenderableImageOp implements RenderableImage {
         return createRendering(context);
     }
 
-    public Vector getSources() {
+    public Vector<RenderableImage> getSources() {
         if(paramBlock.getNumSources() == 0) return null;
-        Vector v = new Vector();
+        Vector<RenderableImage> v = new Vector<RenderableImage>();
         int  i = 0;
         while(i < paramBlock.getNumSources()){
             Object o = paramBlock.getSource(i);
             if(o instanceof RenderableImage){
-                v.addElement(o);
+                v.addElement((RenderableImage) o);
             }
             i++;
         }

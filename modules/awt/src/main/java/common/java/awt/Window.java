@@ -382,7 +382,7 @@ public class Window extends Container implements Accessible {
     }
 
     @Override
-    public Set<?> getFocusTraversalKeys(int id) {
+    public Set<AWTKeyStroke> getFocusTraversalKeys(int id) {
         //why override?
         toolkit.lockAWT();
         try {
@@ -1071,13 +1071,13 @@ public class Window extends Container implements Accessible {
     }
 
     @Override
-    public EventListener[] getListeners(Class<?> listenerType) {
+    public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         if (WindowFocusListener.class.isAssignableFrom(listenerType)) {
-            return getWindowFocusListeners();
+            return (T[]) getWindowFocusListeners();
         } else if (WindowStateListener.class.isAssignableFrom(listenerType)) {
-            return getWindowStateListeners();
+            return (T[]) getWindowStateListeners();
         } else if (WindowListener.class.isAssignableFrom(listenerType)) {
-            return getWindowListeners();
+            return (T[]) getWindowListeners();
         } else {
             return super.getListeners(listenerType);
         }

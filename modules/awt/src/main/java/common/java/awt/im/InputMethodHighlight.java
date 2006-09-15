@@ -20,6 +20,7 @@
 package java.awt.im;
 
 import java.util.Map;
+import java.awt.font.TextAttribute;
 
 public class InputMethodHighlight {
 
@@ -44,14 +45,14 @@ public class InputMethodHighlight {
     private boolean selected;
     private int state;
     private int variation;
-    private Map style; // Map<TextAttribute,?>
+    private Map<TextAttribute,?> style;
 
     public InputMethodHighlight(boolean selected, int state, int variation) {
         this(selected, state, variation, null);
     }
 
     public InputMethodHighlight(boolean selected, int state,
-                                int variation, Map style) {
+                                int variation, Map<java.awt.font.TextAttribute, ?> style) {
         if ((state != RAW_TEXT) && (state != CONVERTED_TEXT)) {
             throw new IllegalArgumentException("unknown input method" +
                     " highlight state");
@@ -70,7 +71,7 @@ public class InputMethodHighlight {
         return state;
     }
 
-    public Map getStyle() {
+    public Map<java.awt.font.TextAttribute, ?> getStyle() {
         return style;
     }
 

@@ -30,7 +30,7 @@ public interface RenderedImage {
 
     public Raster getData(Rectangle rect);
 
-    public Vector getSources();
+    public Vector<RenderedImage> getSources();
 
     public String[] getPropertyNames();
 
