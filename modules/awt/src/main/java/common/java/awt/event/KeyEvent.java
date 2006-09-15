@@ -348,6 +348,10 @@ public class KeyEvent extends InputEvent {
 
     public static final int VK_FINAL = 24;
 
+    public static final int VK_WINDOWS = 524; 
+
+    public static final int VK_CONTEXT_MENU = 525;
+
     public static final int VK_CONVERT = 28;
 
     public static final int VK_NONCONVERT = 29;
@@ -407,6 +411,8 @@ public class KeyEvent extends InputEvent {
     public static final int VK_COMPOSE = 65312;
 
     public static final int VK_ALT_GRAPH = 65406;
+
+    public static final int VK_BEGIN = 65368;
 
     public static final int VK_UNDEFINED = 0;
 

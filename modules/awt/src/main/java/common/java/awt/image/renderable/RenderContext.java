@@ -56,6 +56,10 @@ public class RenderContext implements Cloneable {
         transform = (AffineTransform)newTransform.clone();
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated    
     public void preConcetenateTransform(AffineTransform modTransform) {
         preConcatenateTransform(modTransform);
     }
@@ -64,6 +68,10 @@ public class RenderContext implements Cloneable {
         transform.preConcatenate(modTransform);
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public void concetenateTransform(AffineTransform modTransform) {
         concatenateTransform(modTransform);
     }

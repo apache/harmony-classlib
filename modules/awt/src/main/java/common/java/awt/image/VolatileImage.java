@@ -50,6 +50,8 @@ public abstract class VolatileImage extends Image
         AwtImageBackdoorAccessorImpl.init();
     }
 
+    protected int transparency = OPAQUE;
+
     /***************************************************************************
     *
     *  Constructors
@@ -101,6 +103,6 @@ public abstract class VolatileImage extends Image
     }
 
     public int getTransparency() {
-        return OPAQUE;
+        return transparency;
     }
 }
