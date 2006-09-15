@@ -23,6 +23,14 @@ import junit.framework.TestCase;
 
 public class ToolkitRTest extends TestCase {
 
+    public void testGetScreenInsets() {
+        // regression test HARMONY-1339
+        Toolkit tlk = Toolkit.getDefaultToolkit();
+        GraphicsConfiguration gc = new Frame().getGraphicsConfiguration();
+        Insets screenInsets = tlk.getScreenInsets(gc);
+        assertNotNull("screen insets are not null", screenInsets);
+    }
+
     public void testGetScreenInsetsNull() {
         boolean npe = false;
         Toolkit tlk = Toolkit.getDefaultToolkit();

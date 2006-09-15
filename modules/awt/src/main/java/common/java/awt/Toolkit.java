@@ -825,7 +825,7 @@ public abstract class Toolkit {
         }
         lockAWT();
         try {
-            return null;
+            return new Insets(0, 0, 0, 0); //TODO: get real screen insets
         } finally {
             unlockAWT();
         }
