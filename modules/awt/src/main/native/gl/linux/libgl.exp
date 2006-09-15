@@ -10,6 +10,7 @@ HYGL_0.1 {
         Java_org_apache_harmony_awt_gl_ImageSurface_createStructCCM;
         Java_org_apache_harmony_awt_gl_ImageSurface_createStructDCM;
         Java_org_apache_harmony_awt_gl_ImageSurface_createStructICM;
+	Java_org_apache_harmony_awt_gl_ImageSurface_createSurfStruct;
         Java_org_apache_harmony_awt_gl_ImageSurface_dispose;
         Java_org_apache_harmony_awt_gl_ImageSurface_setImageSize;
         Java_org_apache_harmony_awt_gl_render_NativeImageBlitter_bltBG;
