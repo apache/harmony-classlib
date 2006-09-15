@@ -16,824 +16,628 @@
 package org.apache.harmony.luni.tests.java.lang;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.security.AccessControlContext;
+import java.security.AccessController;
+import java.security.BasicPermission;
+import java.security.DomainCombiner;
+import java.security.Permission;
+import java.security.PrivilegedAction;
+import java.security.ProtectionDomain;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Vector;
 
 import tests.support.resource.Support_Resources;
 
 public class ClassTest extends junit.framework.TestCase {
 
-	static class StaticMember$Class {
-		class Member2$A {
-		}
-	}
-
-	class Member$Class {
-		class Member3$B {
-		}
-	}
-
-	public static class TestClass {
-		private int privField = 1;
-
-		public int pubField = 2;
-
-		private Object cValue = null;
-
-		public Object ack = new Object();
-
-		private int privMethod() {
-			return 1;
-		}
-
-		public int pubMethod() {
-			return 2;
-		}
-
-		public Object cValue() {
-			return cValue;
-		}
-
-		public TestClass() {
-		}
-
-		private TestClass(Object o) {
-		}
-	}
-
-	public static class SubTestClass extends TestClass {
-	}
-
-	/**
-	 * @tests java.lang.Class#forName(java.lang.String)
-	 */
-	public void test_forNameLjava_lang_String() {
-		// Test for method java.lang.Class
-		// java.lang.Class.forName(java.lang.String)
-		try {
-			assertTrue("Class for name failed for java.lang.Object", Class
-					.forName("java.lang.Object") == java.lang.Object.class);
-		} catch (Exception e) {
-			fail("Unexpected exception " + e
-					+ " in Class.forName(java.lang.Object)");
-		}
-		try {
-			assertTrue(
-					"Class for name failed for [[Ljava.lang.Object;",
-					Class.forName("[[Ljava.lang.Object;") == java.lang.Object[][].class);
-		} catch (Exception e) {
-			fail("Unexpected exception " + e
-					+ " in Class.forName([[Ljava.lang.Object;)");
-		}
-		try {
-			assertTrue("Class for name failed for [I",
-					Class.forName("[I") == int[].class);
-		} catch (Exception e) {
-			fail("Unexpected exception " + e + " in Class.forName([I)");
-		}
-
-		try {
-			assertTrue("Class for name worked (but should not have) for int",
-					Class.forName("int") == null
-							|| Class.forName("int") != null);
-		} catch (Exception e) {
-			// Exception ok here.
-		}
-
-		boolean exception = false;
-		try {
-			Class.forName("int");
-		} catch (ClassNotFoundException e) {
-			exception = true;
-		}
-		assertTrue("Found class int", exception);
-
-		exception = false;
-		try {
-			Class.forName("byte");
-		} catch (ClassNotFoundException e) {
-			exception = true;
-		}
-		assertTrue("Found class byte", exception);
-
-		exception = false;
-		try {
-			Class.forName("char");
-		} catch (ClassNotFoundException e) {
-			exception = true;
-		}
-		assertTrue("Found class char", exception);
-
-		exception = false;
-		try {
-			Class.forName("void");
-		} catch (ClassNotFoundException e) {
-			exception = true;
-		}
-		assertTrue("Found class void", exception);
-
-		exception = false;
-		try {
-			Class.forName("short");
-		} catch (ClassNotFoundException e) {
-			exception = true;
-		}
-		assertTrue("Found class short", exception);
-
-		exception = false;
-		try {
-			Class.forName("long");
-		} catch (ClassNotFoundException e) {
-			exception = true;
-		}
-		assertTrue("Found class long", exception);
-
-		exception = false;
-		try {
-			Class.forName("boolean");
-		} catch (ClassNotFoundException e) {
-			exception = true;
-		}
-		assertTrue("Found class boolean", exception);
-
-		exception = false;
-		try {
-			Class.forName("float");
-		} catch (ClassNotFoundException e) {
-			exception = true;
-		}
-		assertTrue("Found class float", exception);
-
-		exception = false;
-		try {
-			Class.forName("double");
-		} catch (ClassNotFoundException e) {
-			exception = true;
-		}
-		assertTrue("Found class double", exception);
-	}
-
-	/**
-	 * @tests java.lang.Class#getClasses()
-	 */
-	public void test_getClasses() {
-		// Test for method java.lang.Class [] java.lang.Class.getClasses()
-		assertEquals("Incorrect class array returned", 2, ClassTest.class
-				.getClasses().length);
-	}
-
-	/**
-	 * @tests java.lang.Class#getClasses()
-	 */
-	public void test_getClasses_subtest0() {
-		final java.security.Permission privCheckPermission = new java.security.BasicPermission(
-				"Privilege check") {
-		};
-		class MyCombiner implements java.security.DomainCombiner {
-			boolean combine;
-
-			public java.security.ProtectionDomain[] combine(
-					java.security.ProtectionDomain[] executionDomains,
-					java.security.ProtectionDomain[] parentDomains) {
-				combine = true;
-				return new java.security.ProtectionDomain[0];
-			}
-
-			public boolean isPriviledged() {
-				combine = false;
-				try {
-					java.security.AccessController
-							.checkPermission(privCheckPermission);
-				} catch (SecurityException e) {
-				}
-				return !combine;
-			}
-		}
-		;
-		final MyCombiner combiner = new MyCombiner();
-		class SecurityManagerCheck extends SecurityManager {
-			String reason;
-
-			Class checkClass;
-
-			int checkType;
-
-			int checkPermission = 0;
-
-			int checkMemberAccess = 0;
-
-			int checkPackageAccess = 0;
-
-			public void setExpected(String reason, Class cls, int type) {
-				this.reason = reason;
-				checkClass = cls;
-				checkType = type;
-				checkPermission = 0;
-				checkMemberAccess = 0;
-				checkPackageAccess = 0;
-			}
-
-			public void checkPermission(java.security.Permission perm) {
-				if (combiner.isPriviledged())
-					return;
-				checkPermission++;
-			}
-
-			public void checkMemberAccess(Class cls, int type) {
-				if (combiner.isPriviledged())
-					return;
-				checkMemberAccess++;
-				assertTrue(reason + " unexpected class: " + cls,
-						cls == checkClass);
-				assertTrue(reason + "unexpected type: " + type,
-						type == checkType);
-			}
-
-			public void checkPackageAccess(String packageName) {
-				if (combiner.isPriviledged())
-					return;
-				checkPackageAccess++;
-				String name = checkClass.getName();
-				int index = name.lastIndexOf('.');
-				String checkPackage = name.substring(0, index);
-				assertTrue(reason + " unexpected package: " + packageName,
-						packageName.equals(checkPackage));
-			}
-
-			public void assertProperCalls() {
-				assertTrue(reason + " unexpected checkPermission count: "
-						+ checkPermission, checkPermission == 0);
-				assertTrue(reason + " unexpected checkMemberAccess count: "
-						+ checkMemberAccess, checkMemberAccess == 1);
-				assertTrue(reason + " unexpected checkPackageAccess count: "
-						+ checkPackageAccess, checkPackageAccess == 1);
-			}
-		}
-
-		java.security.AccessControlContext acc = new java.security.AccessControlContext(
-				new java.security.ProtectionDomain[0]);
-		java.security.AccessControlContext acc2 = new java.security.AccessControlContext(
-				acc, combiner);
-
-		java.security.PrivilegedAction action = new java.security.PrivilegedAction() {
-			public Object run() {
-				File resources = Support_Resources.createTempFolder();
-				try {
-					Support_Resources.copyFile(resources, null,
-							"hyts_security.jar");
-					File file = new File(resources.toString()
-							+ "/hyts_security.jar");
-					java.net.URL url = new java.net.URL("file:"
-							+ file.getPath());
-					ClassLoader loader = new java.net.URLClassLoader(
-							new java.net.URL[] { url }, null);
-					Class cls = Class.forName("packB.SecurityTestSub", false,
-							loader);
-					SecurityManagerCheck sm = new SecurityManagerCheck();
-					System.setSecurityManager(sm);
-					try {
-						sm.setExpected("getClasses", cls,
-								java.lang.reflect.Member.PUBLIC);
-						cls.getClasses();
-						sm.assertProperCalls();
-
-						sm.setExpected("getDeclaredClasses", cls,
-								java.lang.reflect.Member.DECLARED);
-						cls.getDeclaredClasses();
-						sm.assertProperCalls();
-
-						sm.setExpected("getConstructor", cls,
-								java.lang.reflect.Member.PUBLIC);
-						cls.getConstructor(new Class[0]);
-						sm.assertProperCalls();
-
-						sm.setExpected("getConstructors", cls,
-								java.lang.reflect.Member.PUBLIC);
-						cls.getConstructors();
-						sm.assertProperCalls();
-
-						sm.setExpected("getDeclaredConstructor", cls,
-								java.lang.reflect.Member.DECLARED);
-						cls.getDeclaredConstructor(new Class[0]);
-						sm.assertProperCalls();
-
-						sm.setExpected("getDeclaredConstructors", cls,
-								java.lang.reflect.Member.DECLARED);
-						cls.getDeclaredConstructors();
-						sm.assertProperCalls();
-
-						sm.setExpected("getField", cls,
-								java.lang.reflect.Member.PUBLIC);
-						cls.getField("publicField");
-						sm.assertProperCalls();
-
-						sm.setExpected("getFields", cls,
-								java.lang.reflect.Member.PUBLIC);
-						cls.getFields();
-						sm.assertProperCalls();
-
-						sm.setExpected("getDeclaredField", cls,
-								java.lang.reflect.Member.DECLARED);
-						cls.getDeclaredField("publicField");
-						sm.assertProperCalls();
-
-						sm.setExpected("getDeclaredFields", cls,
-								java.lang.reflect.Member.DECLARED);
-						cls.getDeclaredFields();
-						sm.assertProperCalls();
-
-						sm.setExpected("getDeclaredMethod", cls,
-								java.lang.reflect.Member.DECLARED);
-						cls.getDeclaredMethod("publicMethod", new Class[0]);
-						sm.assertProperCalls();
-
-						sm.setExpected("getDeclaredMethods", cls,
-								java.lang.reflect.Member.DECLARED);
-						cls.getDeclaredMethods();
-						sm.assertProperCalls();
-
-						sm.setExpected("getMethod", cls,
-								java.lang.reflect.Member.PUBLIC);
-						cls.getMethod("publicMethod", new Class[0]);
-						sm.assertProperCalls();
-
-						sm.setExpected("getMethods", cls,
-								java.lang.reflect.Member.PUBLIC);
-						cls.getMethods();
-						sm.assertProperCalls();
-
-						sm.setExpected("newInstance", cls,
-								java.lang.reflect.Member.PUBLIC);
-						cls.newInstance();
-						sm.assertProperCalls();
-					} finally {
-						System.setSecurityManager(null);
-					}
-				} catch (Exception e) {
-					if (e instanceof RuntimeException)
-						throw (RuntimeException) e;
-					fail("unexpected exception: " + e);
-				}
-				return null;
-			}
-		};
-		java.security.AccessController.doPrivileged(action, acc2);
-	}
-
-	/**
-	 * @tests java.lang.Class#getComponentType()
-	 */
-	public void test_getComponentType() {
-		// Test for method java.lang.Class java.lang.Class.getComponentType()
-		assertTrue("int array does not have int component type", int[].class
-				.getComponentType() == int.class);
-		assertTrue("Object array does not have Object component type",
-				Object[].class.getComponentType() == Object.class);
-		assertNull("Object has non-null component type", Object.class
-				.getComponentType());
-	}
-
-	/**
-	 * @tests java.lang.Class#getConstructor(java.lang.Class[])
-	 */
-	public void test_getConstructor$Ljava_lang_Class() {
-		// Test for method java.lang.reflect.Constructor
-		// java.lang.Class.getConstructor(java.lang.Class [])
-		try {
-			TestClass.class.getConstructor(new Class[0]);
-			try {
-				TestClass.class.getConstructor(new Class[] { Object.class });
-			} catch (NoSuchMethodException e) {
-				// Correct - constructor with obj is private
-				return;
-			}
-			fail("Found private constructor");
-		} catch (NoSuchMethodException e) {
-			fail("Exception during getConstructor test : " + e.getMessage());
-		}
-	}
-
-	/**
-	 * @tests java.lang.Class#getConstructors()
-	 */
-	public void test_getConstructors() {
-		// Test for method java.lang.reflect.Constructor []
-		// java.lang.Class.getConstructors()
-		try {
-			java.lang.reflect.Constructor[] c = TestClass.class
-					.getConstructors();
-			assertEquals("Incorrect number of constructors returned",
-					1, c.length);
-		} catch (Exception e) {
-			fail("Exception during getDeclaredConstructor test:"
-					+ e.toString());
-		}
-	}
-
-	/**
-	 * @tests java.lang.Class#getDeclaredClasses()
-	 */
-	public void test_getDeclaredClasses() {
-		// Test for method java.lang.Class []
-		// java.lang.Class.getDeclaredClasses()
-		assertEquals("Incorrect class array returned", 2, ClassTest.class
-				.getClasses().length);
-	}
-
-	/**
-	 * @tests java.lang.Class#getDeclaredConstructor(java.lang.Class[])
-	 */
-	public void test_getDeclaredConstructor$Ljava_lang_Class() {
-		// Test for method java.lang.reflect.Constructor
-		// java.lang.Class.getDeclaredConstructor(java.lang.Class [])
-		try {
-			java.lang.reflect.Constructor c = TestClass.class
-					.getDeclaredConstructor(new Class[0]);
-			assertNull("Incorrect constructor returned", ((TestClass) (c
-					.newInstance(new Object[0]))).cValue());
-			c = TestClass.class
-					.getDeclaredConstructor(new Class[] { Object.class });
-		} catch (NoSuchMethodException e) {
-			fail("Exception during getDeclaredConstructor test: "
-					+ e.toString());
-		} catch (Exception e) {
-			fail("Exception during getDeclaredConstructor test:"
-					+ e.toString());
-		}
-	}
-
-	/**
-	 * @tests java.lang.Class#getDeclaredConstructors()
-	 */
-	public void test_getDeclaredConstructors() {
-		// Test for method java.lang.reflect.Constructor []
-		// java.lang.Class.getDeclaredConstructors()
-		try {
-			java.lang.reflect.Constructor[] c = TestClass.class
-					.getDeclaredConstructors();
-			assertEquals("Incorrect number of constructors returned",
-					2, c.length);
-		} catch (Exception e) {
-			fail("Exception during getDeclaredConstructor test:"
-					+ e.toString());
-		}
-	}
-
-	/**
-	 * @tests java.lang.Class#getDeclaredField(java.lang.String)
-	 */
-	public void test_getDeclaredFieldLjava_lang_String() {
-		// Test for method java.lang.reflect.Field
-		// java.lang.Class.getDeclaredField(java.lang.String)
-		try {
-			java.lang.reflect.Field f = TestClass.class
-					.getDeclaredField("pubField");
-			assertEquals("Returned incorrect field",
-					2, f.getInt(new TestClass()));
-		} catch (Exception e) {
-			fail("Exception getting fields : " + e.getMessage());
-		}
-	}
-
-	/**
-	 * @tests java.lang.Class#getDeclaredFields()
-	 */
-	public void test_getDeclaredFields() {
-		// Test for method java.lang.reflect.Field []
-		// java.lang.Class.getDeclaredFields()
-		try {
-			java.lang.reflect.Field[] f = TestClass.class.getDeclaredFields();
-			assertEquals("Returned incorrect number of fields", 4, f.length);
-			f = SubTestClass.class.getDeclaredFields();
-			// Declared fields do not include inherited
-			assertEquals("Returned incorrect number of fields", 0, f.length);
-		} catch (Exception e) {
-			fail("Exception getting fields : " + e.getMessage());
-		}
-	}
-
-	/**
-	 * @tests java.lang.Class#getDeclaredMethod(java.lang.String,
-	 *        java.lang.Class[])
-	 */
-	public void test_getDeclaredMethodLjava_lang_String$Ljava_lang_Class() {
-		// Test for method java.lang.reflect.Method
-		// java.lang.Class.getDeclaredMethod(java.lang.String, java.lang.Class
-		// [])
-		try {
-			java.lang.reflect.Method m = TestClass.class.getDeclaredMethod(
-					"pubMethod", new Class[0]);
-			assertEquals("Returned incorrect method", 2, ((Integer) (m.invoke(
-					new TestClass(), new Class[0]))).intValue());
-			m = TestClass.class.getDeclaredMethod("privMethod", new Class[0]);
-			try {
-				// Invoking private non-sub, non-package
-				m.invoke(new TestClass(), new Class[0]);
-			} catch (IllegalAccessException e) {
-				// Correct
-				return;
-			}
-		} catch (Exception e) {
-			fail("Exception getting methods : " + e.getMessage());
-		}
-	}
-
-	/**
-	 * @tests java.lang.Class#getDeclaredMethods()
-	 */
-	public void test_getDeclaredMethods() {
-		// Test for method java.lang.reflect.Method []
-		// java.lang.Class.getDeclaredMethods()
-		try {
-			java.lang.reflect.Method[] m = TestClass.class.getDeclaredMethods();
-			assertEquals("Returned incorrect number of methods", 3, m.length);
-			m = SubTestClass.class.getDeclaredMethods();
-			assertEquals("Returned incorrect number of methods", 0, m.length);
-		} catch (Exception e) {
-			fail("Exception getting methods : " + e.getMessage());
-		}
-	}
-
-	/**
-	 * @tests java.lang.Class#getDeclaringClass()
-	 */
-	public void test_getDeclaringClass() {
-		// Test for method java.lang.Class java.lang.Class.getDeclaringClass()
-		assertTrue(TestClass.class.getDeclaringClass().equals(ClassTest.class));
-	}
-
-	/**
-	 * @tests java.lang.Class#getField(java.lang.String)
-	 */
-	public void test_getFieldLjava_lang_String() {
-		// Test for method java.lang.reflect.Field
-		// java.lang.Class.getField(java.lang.String)
-		try {
-			java.lang.reflect.Field f = TestClass.class.getField("pubField");
-			assertEquals("Returned incorrect field",
-					2, f.getInt(new TestClass()));
-			try {
-				f = TestClass.class.getField("privField");
-			} catch (NoSuchFieldException e) {
-				// Correct
-				return;
-			}
-			fail("Private field access failed to throw exception");
-		} catch (Exception e) {
-			fail("Exception getting fields : " + e.getMessage());
-		}
-	}
-
-	/**
-	 * @tests java.lang.Class#getFields()
-	 */
-	public void test_getFields() {
-		// Test for method java.lang.reflect.Field []
-		// java.lang.Class.getFields()
-		try {
-			java.lang.reflect.Field[] f = TestClass.class.getFields();
-			assertTrue("Incorrect number of fields returned: " + f.length,
-					f.length == 2);
-			f = SubTestClass.class.getFields();
-			assertTrue("Incorrect number of fields returned: " + f.length,
-					f.length == 2);// Check inheritance of pub fields
-		} catch (Exception e) {
-			fail("Exception getting fields : " + e.getMessage());
-		}
-	}
-
-	/**
-	 * @tests java.lang.Class#getInterfaces()
-	 */
-	public void test_getInterfaces() {
-		// Test for method java.lang.Class [] java.lang.Class.getInterfaces()
-		Class[] interfaces;
-		List interfaceList;
-		interfaces = java.lang.Object.class.getInterfaces();
-		assertEquals("Incorrect interface list for Object",
-				0, interfaces.length);
-		interfaceList = Arrays.asList(java.util.Vector.class.getInterfaces());
-		assertTrue("Incorrect interface list for Vector", interfaceList
-				.contains(java.lang.Cloneable.class)
-				&& interfaceList.contains(java.io.Serializable.class)
-				&& interfaceList.contains(java.util.List.class));
-	}
-
-	/**
-	 * @tests java.lang.Class#getMethod(java.lang.String, java.lang.Class[])
-	 */
-	public void test_getMethodLjava_lang_String$Ljava_lang_Class() {
-		// Test for method java.lang.reflect.Method
-		// java.lang.Class.getMethod(java.lang.String, java.lang.Class [])
-		try {
-			java.lang.reflect.Method m = TestClass.class.getMethod("pubMethod",
-					new Class[0]);
-			assertEquals("Returned incorrect method", 2, ((Integer) (m.invoke(
-					new TestClass(), new Class[0]))).intValue());
-			try {
-				m = TestClass.class.getMethod("privMethod", new Class[0]);
-			} catch (NoSuchMethodException e) {
-				// Correct
-				return;
-			}
-			fail("Failed to throw exception accessing private method");
-		} catch (Exception e) {
-			fail("Exception getting methods : " + e.getMessage());
-		}
-	}
-
-	/**
-	 * @tests java.lang.Class#getMethods()
-	 */
-	public void test_getMethods() {
-		// Test for method java.lang.reflect.Method []
-		// java.lang.Class.getMethods()
-		try {
-			java.lang.reflect.Method[] m = TestClass.class.getMethods();
-			assertTrue("Returned incorrect number of methods: " + m.length,
-					m.length == 2 + Object.class.getMethods().length);
-			m = SubTestClass.class.getMethods();
-			assertTrue("Returned incorrect number of sub-class methods: "
-					+ m.length,
-					m.length == 2 + Object.class.getMethods().length);
-			// Number of inherited methods
-		} catch (Exception e) {
-			fail("Exception getting methods : " + e.getMessage());
-		}
-	}
-
-	/**
-	 * @tests java.lang.Class#getModifiers()
-	 */
-	public void test_getModifiers() {
-		// Test for method int java.lang.Class.getModifiers()
-
-		class defaultClass {
-		}
-		;
-
-		final int publicFlag = 0x0001;
-		final int privateFlag = 0x0002;
-		final int protectedFlag = 0x0004;
-		assertTrue("default class is public", (defaultClass.class
-				.getModifiers() & publicFlag) == 0);
-		assertTrue("default class is protected", (defaultClass.class
-				.getModifiers() & protectedFlag) == 0);
-		assertTrue("default class is private", (defaultClass.class
-				.getModifiers() & privateFlag) == 0);
-		assertTrue("public class is not public",
-				(Object.class.getModifiers() & publicFlag) != 0);
-		assertTrue("public class is protected",
-				(Object.class.getModifiers() & protectedFlag) == 0);
-		assertTrue("public class is private",
-				(Object.class.getModifiers() & privateFlag) == 0);
-	}
-
-	/**
-	 * @tests java.lang.Class#getName()
-	 */
-	public void test_getName() {
-		// Test for method java.lang.String java.lang.Class.getName()
-		String className = null;
-		try {
-			className = Class.forName("java.lang.Object").getName();
-		} catch (ClassNotFoundException e) {
-			fail("Should be able to find java.lang.Object");
-			return;
-		}
-		assertTrue("Class getName printed wrong value:" + className, className
-				.equals("java.lang.Object"));
-		assertTrue("Class getName printed wrong value:" + int.class.getName(),
-				int.class.getName().equals("int"));
-		try {
-			className = Class.forName("[I").getName();
-		} catch (ClassNotFoundException e) {
-			fail("Should be able to find class [I");
-			return;
-		}
-		assertTrue("Class getName printed wrong value:" + className, className
-				.equals("[I"));
-
-		try {
-			className = Class.forName("[Ljava.lang.Object;").getName();
-		} catch (ClassNotFoundException e) {
-			fail("Should be able to find [Ljava.lang.Object;");
-			return;
-		}
-
-		assertTrue("Class getName printed wrong value:" + className, className
-				.equals("[Ljava.lang.Object;"));
-	}
-
-	/**
-	 * @tests java.lang.Class#getResource(java.lang.String)
-	 */
-	public void test_getResourceLjava_lang_String() {
-		final String name = "/org/apache/harmony/luni/tests/test_resource.txt";
-
-        java.net.URL res = getClass().getResource(name);
-        assertNotNull(res);
-	}
-
-	/**
-	 * @tests java.lang.Class#getResourceAsStream(java.lang.String)
-	 */
-	public void test_getResourceAsStreamLjava_lang_String() {
-		// Test for method java.io.InputStream
-		// java.lang.Class.getResourceAsStream(java.lang.String)
-
+    static class StaticMember$Class {
+        class Member2$A {
+        }
+    }
+
+    class Member$Class {
+        class Member3$B {
+        }
+    }
+
+    public static class TestClass {
+        @SuppressWarnings("unused")
+        private int privField = 1;
+
+        public int pubField = 2;
+
+        private Object cValue = null;
+
+        public Object ack = new Object();
+
+        @SuppressWarnings("unused")
+        private int privMethod() {
+            return 1;
+        }
+
+        public int pubMethod() {
+            return 2;
+        }
+
+        public Object cValue() {
+            return cValue;
+        }
+
+        public TestClass() {
+        }
+
+        @SuppressWarnings("unused")
+        private TestClass(Object o) {
+        }
+    }
+
+    public static class SubTestClass extends TestClass {
+    }
+
+    /**
+     * @tests java.lang.Class#forName(java.lang.String)
+     */
+    public void test_forNameLjava_lang_String() throws Exception {
+        assertSame("Class for name failed for java.lang.Object", Object.class, Class
+                .forName("java.lang.Object"));
+        assertSame("Class for name failed for [[Ljava.lang.Object;", Object[][].class, Class
+                .forName("[[Ljava.lang.Object;"));
+
+        assertSame("Class for name failed for [I", int[].class, Class.forName("[I"));
+
+        try {
+            Class.forName("int");
+            fail();
+        } catch (ClassNotFoundException e) {
+        }
+
+        try {
+            Class.forName("byte");
+            fail();
+        } catch (ClassNotFoundException e) {
+        }
+        try {
+            Class.forName("char");
+            fail();
+        } catch (ClassNotFoundException e) {
+        }
+
+        try {
+            Class.forName("void");
+            fail();
+        } catch (ClassNotFoundException e) {
+        }
+
+        try {
+            Class.forName("short");
+            fail();
+        } catch (ClassNotFoundException e) {
+        }
+        try {
+            Class.forName("long");
+            fail();
+        } catch (ClassNotFoundException e) {
+        }
+
+        try {
+            Class.forName("boolean");
+            fail();
+        } catch (ClassNotFoundException e) {
+        }
+        try {
+            Class.forName("float");
+            fail();
+        } catch (ClassNotFoundException e) {
+        }
+        try {
+            Class.forName("double");
+            fail();
+        } catch (ClassNotFoundException e) {
+        }
+    }
+
+    /**
+     * @tests java.lang.Class#getClasses()
+     */
+    public void test_getClasses() {
+        assertEquals("Incorrect class array returned", 2, ClassTest.class.getClasses().length);
+    }
+
+    /**
+     * @tests java.lang.Class#getClasses()
+     */
+    public void test_getClasses_subtest0() {
+        final Permission privCheckPermission = new BasicPermission("Privilege check") {
+            private static final long serialVersionUID = 1L;
+        };
+
+        class MyCombiner implements DomainCombiner {
+            boolean combine;
+
+            public ProtectionDomain[] combine(ProtectionDomain[] executionDomains,
+                    ProtectionDomain[] parentDomains) {
+                combine = true;
+                return new ProtectionDomain[0];
+            }
+
+            public boolean isPriviledged() {
+                combine = false;
+                try {
+                    AccessController.checkPermission(privCheckPermission);
+                } catch (SecurityException e) {
+                }
+                return !combine;
+            }
+        }
+
+        final MyCombiner combiner = new MyCombiner();
+        class SecurityManagerCheck extends SecurityManager {
+            String reason;
+
+            Class<?> checkClass;
+
+            int checkType;
+
+            int checkPermission;
+
+            int checkMemberAccess;
+
+            int checkPackageAccess;
+
+            public void setExpected(String reason, Class<?> cls, int type) {
+                this.reason = reason;
+                checkClass = cls;
+                checkType = type;
+                checkPermission = 0;
+                checkMemberAccess = 0;
+                checkPackageAccess = 0;
+            }
+
+            @Override
+            public void checkPermission(Permission perm) {
+                if (combiner.isPriviledged())
+                    return;
+                checkPermission++;
+            }
+
+            @Override
+            public void checkMemberAccess(Class<?> cls, int type) {
+                if (combiner.isPriviledged())
+                    return;
+                checkMemberAccess++;
+                assertTrue(reason + " unexpected class: " + cls, cls == checkClass);
+                assertTrue(reason + "unexpected type: " + type, type == checkType);
+            }
+
+            @Override
+            public void checkPackageAccess(String packageName) {
+                if (combiner.isPriviledged())
+                    return;
+                checkPackageAccess++;
+                String name = checkClass.getName();
+                int index = name.lastIndexOf('.');
+                String checkPackage = name.substring(0, index);
+                assertTrue(reason + " unexpected package: " + packageName, packageName
+                        .equals(checkPackage));
+            }
+
+            public void assertProperCalls() {
+                assertTrue(reason + " unexpected checkPermission count: " + checkPermission,
+                        checkPermission == 0);
+                assertTrue(
+                        reason + " unexpected checkMemberAccess count: " + checkMemberAccess,
+                        checkMemberAccess == 1);
+                assertTrue(reason + " unexpected checkPackageAccess count: "
+                        + checkPackageAccess, checkPackageAccess == 1);
+            }
+        }
+
+        AccessControlContext acc = new AccessControlContext(new ProtectionDomain[0]);
+        AccessControlContext acc2 = new AccessControlContext(acc, combiner);
+
+        PrivilegedAction<?> action = new PrivilegedAction<Object>() {
+            public Object run() {
+                File resources = Support_Resources.createTempFolder();
+                try {
+                    Support_Resources.copyFile(resources, null, "hyts_security.jar");
+                    File file = new File(resources.toString() + "/hyts_security.jar");
+                    URL url = new URL("file:" + file.getPath());
+                    ClassLoader loader = new URLClassLoader(new URL[] { url }, null);
+                    Class<?> cls = Class.forName("packB.SecurityTestSub", false, loader);
+                    SecurityManagerCheck sm = new SecurityManagerCheck();
+                    System.setSecurityManager(sm);
+                    try {
+                        sm.setExpected("getClasses", cls, Member.PUBLIC);
+                        cls.getClasses();
+                        sm.assertProperCalls();
+
+                        sm.setExpected("getDeclaredClasses", cls, Member.DECLARED);
+                        cls.getDeclaredClasses();
+                        sm.assertProperCalls();
+
+                        sm.setExpected("getConstructor", cls, Member.PUBLIC);
+                        cls.getConstructor(new Class[0]);
+                        sm.assertProperCalls();
+
+                        sm.setExpected("getConstructors", cls, Member.PUBLIC);
+                        cls.getConstructors();
+                        sm.assertProperCalls();
+
+                        sm.setExpected("getDeclaredConstructor", cls, Member.DECLARED);
+                        cls.getDeclaredConstructor(new Class[0]);
+                        sm.assertProperCalls();
+
+                        sm.setExpected("getDeclaredConstructors", cls, Member.DECLARED);
+                        cls.getDeclaredConstructors();
+                        sm.assertProperCalls();
+
+                        sm.setExpected("getField", cls, Member.PUBLIC);
+                        cls.getField("publicField");
+                        sm.assertProperCalls();
+
+                        sm.setExpected("getFields", cls, Member.PUBLIC);
+                        cls.getFields();
+                        sm.assertProperCalls();
+
+                        sm.setExpected("getDeclaredField", cls, Member.DECLARED);
+                        cls.getDeclaredField("publicField");
+                        sm.assertProperCalls();
+
+                        sm.setExpected("getDeclaredFields", cls, Member.DECLARED);
+                        cls.getDeclaredFields();
+                        sm.assertProperCalls();
+
+                        sm.setExpected("getDeclaredMethod", cls, Member.DECLARED);
+                        cls.getDeclaredMethod("publicMethod", new Class[0]);
+                        sm.assertProperCalls();
+
+                        sm.setExpected("getDeclaredMethods", cls, Member.DECLARED);
+                        cls.getDeclaredMethods();
+                        sm.assertProperCalls();
+
+                        sm.setExpected("getMethod", cls, Member.PUBLIC);
+                        cls.getMethod("publicMethod", new Class[0]);
+                        sm.assertProperCalls();
+
+                        sm.setExpected("getMethods", cls, Member.PUBLIC);
+                        cls.getMethods();
+                        sm.assertProperCalls();
+
+                        sm.setExpected("newInstance", cls, Member.PUBLIC);
+                        cls.newInstance();
+                        sm.assertProperCalls();
+                    } finally {
+                        System.setSecurityManager(null);
+                    }
+                } catch (Exception e) {
+                    if (e instanceof RuntimeException)
+                        throw (RuntimeException) e;
+                    fail("unexpected exception: " + e);
+                }
+                return null;
+            }
+        };
+        AccessController.doPrivileged(action, acc2);
+    }
+
+    /**
+     * @tests java.lang.Class#getComponentType()
+     */
+    public void test_getComponentType() {
+        assertSame("int array does not have int component type", int.class, int[].class
+                .getComponentType());
+        assertSame("Object array does not have Object component type", Object.class,
+                Object[].class.getComponentType());
+        assertNull("Object has non-null component type", Object.class.getComponentType());
+    }
+
+    /**
+     * @tests java.lang.Class#getConstructor(java.lang.Class[])
+     */
+    public void test_getConstructor$Ljava_lang_Class() {
+        try {
+            TestClass.class.getConstructor(new Class[0]);
+            try {
+                TestClass.class.getConstructor(Object.class);
+            } catch (NoSuchMethodException e) {
+                // Correct - constructor with obj is private
+                return;
+            }
+            fail("Found private constructor");
+        } catch (NoSuchMethodException e) {
+            fail("Exception during getConstructor test : " + e.getMessage());
+        }
+    }
+
+    /**
+     * @tests java.lang.Class#getConstructors()
+     */
+    public void test_getConstructors() {
+        try {
+            Constructor[] c = TestClass.class.getConstructors();
+            assertEquals("Incorrect number of constructors returned", 1, c.length);
+        } catch (Exception e) {
+            fail("Exception during getDeclaredConstructor test:" + e.toString());
+        }
+    }
+
+    /**
+     * @tests java.lang.Class#getDeclaredClasses()
+     */
+    public void test_getDeclaredClasses() {
+        assertEquals("Incorrect class array returned", 2, ClassTest.class.getClasses().length);
+    }
+
+    /**
+     * @tests java.lang.Class#getDeclaredConstructor(java.lang.Class[])
+     */
+    public void test_getDeclaredConstructor$Ljava_lang_Class() throws Exception {
+        Constructor<TestClass> c = TestClass.class.getDeclaredConstructor(new Class[0]);
+        assertNull("Incorrect constructor returned", c.newInstance().cValue());
+        c = TestClass.class.getDeclaredConstructor(Object.class);
+    }
+
+    /**
+     * @tests java.lang.Class#getDeclaredConstructors()
+     */
+    public void test_getDeclaredConstructors() throws Exception {
+        Constructor[] c = TestClass.class.getDeclaredConstructors();
+        assertEquals("Incorrect number of constructors returned", 2, c.length);
+    }
+
+    /**
+     * @tests java.lang.Class#getDeclaredField(java.lang.String)
+     */
+    public void test_getDeclaredFieldLjava_lang_String() throws Exception {
+        Field f = TestClass.class.getDeclaredField("pubField");
+        assertEquals("Returned incorrect field", 2, f.getInt(new TestClass()));
+    }
+
+    /**
+     * @tests java.lang.Class#getDeclaredFields()
+     */
+    public void test_getDeclaredFields() throws Exception {
+        Field[] f = TestClass.class.getDeclaredFields();
+        assertEquals("Returned incorrect number of fields", 4, f.length);
+        f = SubTestClass.class.getDeclaredFields();
+        // Declared fields do not include inherited
+        assertEquals("Returned incorrect number of fields", 0, f.length);
+
+    }
+
+    /**
+     * @tests java.lang.Class#getDeclaredMethod(java.lang.String,
+     *        java.lang.Class[])
+     */
+    public void test_getDeclaredMethodLjava_lang_String$Ljava_lang_Class() throws Exception {
+        Method m = TestClass.class.getDeclaredMethod("pubMethod", new Class[0]);
+        assertEquals("Returned incorrect method", 2, ((Integer) (m.invoke(new TestClass())))
+                .intValue());
+        m = TestClass.class.getDeclaredMethod("privMethod", new Class[0]);
+        try {
+            // Invoking private non-sub, non-package
+            m.invoke(new TestClass());
+        } catch (IllegalAccessException e) {
+            // Correct
+            return;
+        }
+    }
+
+    /**
+     * @tests java.lang.Class#getDeclaredMethods()
+     */
+    public void test_getDeclaredMethods() throws Exception {
+        Method[] m = TestClass.class.getDeclaredMethods();
+        assertEquals("Returned incorrect number of methods", 3, m.length);
+        m = SubTestClass.class.getDeclaredMethods();
+        assertEquals("Returned incorrect number of methods", 0, m.length);
+    }
+
+    /**
+     * @tests java.lang.Class#getDeclaringClass()
+     */
+    public void test_getDeclaringClass() {
+        assertEquals(ClassTest.class, TestClass.class.getDeclaringClass());
+    }
+
+    /**
+     * @tests java.lang.Class#getField(java.lang.String)
+     */
+    public void test_getFieldLjava_lang_String() throws Exception {
+        Field f = TestClass.class.getField("pubField");
+        assertEquals("Returned incorrect field", 2, f.getInt(new TestClass()));
+        try {
+            f = TestClass.class.getField("privField");
+            fail("Private field access failed to throw exception");
+        } catch (NoSuchFieldException e) {
+            // Correct
+            return;
+        }
+    }
+
+    /**
+     * @tests java.lang.Class#getFields()
+     */
+    public void test_getFields() throws Exception {
+        Field[] f = TestClass.class.getFields();
+        assertTrue("Incorrect number of fields returned: " + f.length, f.length == 2);
+        f = SubTestClass.class.getFields();
+        // Check inheritance of pub fields
+        assertTrue("Incorrect number of fields returned: " + f.length, f.length == 2);
+    }
+
+    /**
+     * @tests java.lang.Class#getInterfaces()
+     */
+    public void test_getInterfaces() {
+        Class[] interfaces;
+        List<?> interfaceList;
+        interfaces = Object.class.getInterfaces();
+        assertEquals("Incorrect interface list for Object", 0, interfaces.length);
+        interfaceList = Arrays.asList(Vector.class.getInterfaces());
+        assertTrue("Incorrect interface list for Vector", interfaceList
+                .contains(Cloneable.class)
+                && interfaceList.contains(Serializable.class)
+                && interfaceList.contains(List.class));
+    }
+
+    /**
+     * @tests java.lang.Class#getMethod(java.lang.String, java.lang.Class[])
+     */
+    public void test_getMethodLjava_lang_String$Ljava_lang_Class() throws Exception {
+        Method m = TestClass.class.getMethod("pubMethod", new Class[0]);
+        assertEquals("Returned incorrect method", 2, ((Integer) (m.invoke(new TestClass())))
+                .intValue());
+        try {
+            m = TestClass.class.getMethod("privMethod", new Class[0]);
+            fail("Failed to throw exception accessing private method");
+        } catch (NoSuchMethodException e) {
+            // Correct
+            return;
+        }
+    }
+
+    /**
+     * @tests java.lang.Class#getMethods()
+     */
+    public void test_getMethods() throws Exception {
+        Method[] m = TestClass.class.getMethods();
+        assertTrue("Returned incorrect number of methods: " + m.length,
+                m.length == 2 + Object.class.getMethods().length);
+        m = SubTestClass.class.getMethods();
+        assertTrue("Returned incorrect number of sub-class methods: " + m.length,
+                m.length == 2 + Object.class.getMethods().length);
+        // Number of inherited methods
+    }
+
+    private static final class PrivateClass {
+    }
+    /**
+     * @tests java.lang.Class#getModifiers()
+     */
+    public void test_getModifiers() {
+        int dcm = PrivateClass.class.getModifiers();
+        assertFalse("default class is public", Modifier.isPublic(dcm));
+        assertFalse("default class is protected", Modifier.isProtected(dcm));
+        assertTrue("default class is not private", Modifier.isPrivate(dcm));
+
+        int ocm = Object.class.getModifiers();
+        assertTrue("public class is not public", Modifier.isPublic(ocm));
+        assertFalse("public class is protected", Modifier.isProtected(ocm));
+        assertFalse("public class is private", Modifier.isPrivate(ocm));
+    }
+
+    /**
+     * @tests java.lang.Class#getName()
+     */
+    public void test_getName() throws Exception {
+        String className = Class.forName("java.lang.Object").getName();
+        assertNotNull(className);
+
+        assertEquals("Class getName printed wrong value", "java.lang.Object", className);
+        assertEquals("Class getName printed wrong value", "int", int.class.getName());
+        className = Class.forName("[I").getName();
+        assertNotNull(className);
+        assertEquals("Class getName printed wrong value", "[I", className);
+
+        className = Class.forName("[Ljava.lang.Object;").getName();
+        assertNotNull(className);
+
+        assertEquals("Class getName printed wrong value", "[Ljava.lang.Object;", className);
+    }
+
+    /**
+     * @tests java.lang.Class#getResource(java.lang.String)
+     */
+    public void test_getResourceLjava_lang_String() {
         final String name = "/org/apache/harmony/luni/tests/test_resource.txt";
-		assertNotNull("the file " + name + " can not be found in this directory",
-				getClass().getResourceAsStream(name));
+        URL res = getClass().getResource(name);
+        assertNotNull(res);
+    }
 
-		final String nameBadURI = "org/apache/harmony/luni/tests/test_resource.txt";
-		assertNull("the file " + nameBadURI
-				+ " should not be found in this directory", getClass()
-				.getResourceAsStream(nameBadURI));
+    /**
+     * @tests java.lang.Class#getResourceAsStream(java.lang.String)
+     */
+    public void test_getResourceAsStreamLjava_lang_String() throws Exception {
+        final String name = "/org/apache/harmony/luni/tests/test_resource.txt";
+        assertNotNull("the file " + name + " can not be found in this directory", getClass()
+                .getResourceAsStream(name));
 
-		InputStream str = Object.class.getResourceAsStream("Class.class");
-		assertNotNull(
-				"java.lang.Object couldn't find its class with getResource...",
-				str);
-		try {
-			assertTrue("Cannot read single byte", str.read() != -1);
-			assertEquals("Cannot read multiple bytes", 5, str.read(new byte[5]));
-			str.close();
-		} catch (IOException e) {
-			fail("Exception while closing resource stream 1.");
-		}
+        final String nameBadURI = "org/apache/harmony/luni/tests/test_resource.txt";
+        assertNull("the file " + nameBadURI + " should not be found in this directory",
+                getClass().getResourceAsStream(nameBadURI));
 
-		InputStream str2 = getClass().getResourceAsStream("ClassTest.class");
-		assertNotNull("Can't find resource", str2);
-		try {
-			assertTrue("Cannot read single byte", str2.read() != -1);
-			assertEquals("Cannot read multiple bytes",
-					5, str2.read(new byte[5]));
-			str2.close();
-		} catch (IOException e) {
-			fail("IOException while closing resource stream 2 : "
-					+ e.getMessage());
-		}
+        InputStream str = Object.class.getResourceAsStream("Class.class");
+        assertNotNull("java.lang.Object couldn't find its class with getResource...", str);
 
-	}
+        assertTrue("Cannot read single byte", str.read() != -1);
+        assertEquals("Cannot read multiple bytes", 5, str.read(new byte[5]));
+        str.close();
 
-	/**
-	 * @tests java.lang.Class#getSuperclass()
-	 */
-	public void test_getSuperclass() {
-		// Test for method java.lang.Class java.lang.Class.getSuperclass()
+        InputStream str2 = getClass().getResourceAsStream("ClassTest.class");
+        assertNotNull("Can't find resource", str2);
+        assertTrue("Cannot read single byte", str2.read() != -1);
+        assertEquals("Cannot read multiple bytes", 5, str2.read(new byte[5]));
+        str2.close();
+    }
 
-		assertNull("Object has a superclass???",
-				Object.class.getSuperclass());
-		assertTrue(
-				"Normal class has bogus superclass",
-				java.io.FileInputStream.class.getSuperclass() == java.io.InputStream.class);
-		assertTrue("Array class has bogus superclass",
-				java.io.FileInputStream[].class.getSuperclass() == Object.class);
-		assertNull("Base class has a superclass",
-				int.class.getSuperclass());
-		assertNull("Interface class has a superclass", Cloneable.class
-				.getSuperclass());
-	}
+    /**
+     * @tests java.lang.Class#getSuperclass()
+     */
+    public void test_getSuperclass() {
+        assertNull("Object has a superclass???", Object.class.getSuperclass());
+        assertSame("Normal class has bogus superclass", InputStream.class,
+                FileInputStream.class.getSuperclass());
+        assertSame("Array class has bogus superclass", Object.class, FileInputStream[].class
+                .getSuperclass());
+        assertNull("Base class has a superclass", int.class.getSuperclass());
+        assertNull("Interface class has a superclass", Cloneable.class.getSuperclass());
+    }
 
-	/**
-	 * @tests java.lang.Class#isArray()
-	 */
-	public void test_isArray() {
-		// Test for method boolean java.lang.Class.isArray()
-		assertTrue("Non-array type claims to be.", !int.class.isArray());
-		Class clazz = null;
-		try {
-			clazz = Class.forName("[I");
-		} catch (ClassNotFoundException e) {
-			fail("Should be able to find the class [I");
-		}
-		assertTrue("int Array type claims not to be.", clazz.isArray());
+    /**
+     * @tests java.lang.Class#isArray()
+     */
+    public void test_isArray() {
+        assertTrue("Non-array type claims to be.", !int.class.isArray());
+        Class<?> clazz = null;
+        try {
+            clazz = Class.forName("[I");
+        } catch (ClassNotFoundException e) {
+            fail("Should be able to find the class [I");
+        }
+        assertTrue("int Array type claims not to be.", clazz.isArray());
 
-		try {
-			clazz = Class.forName("[Ljava.lang.Object;");
-		} catch (ClassNotFoundException e) {
-			fail("Should be able to find the class [Ljava.lang.Object;");
-		}
+        try {
+            clazz = Class.forName("[Ljava.lang.Object;");
+        } catch (ClassNotFoundException e) {
+            fail("Should be able to find the class [Ljava.lang.Object;");
+        }
 
-		assertTrue("Object Array type claims not to be.", clazz.isArray());
+        assertTrue("Object Array type claims not to be.", clazz.isArray());
 
-		try {
-			clazz = Class.forName("java.lang.Object");
-		} catch (ClassNotFoundException e) {
-			fail("Should be able to find the class java.lang.Object");
-		}
-		assertTrue("Non-array Object type claims to be.", !clazz.isArray());
-	}
+        try {
+            clazz = Class.forName("java.lang.Object");
+        } catch (ClassNotFoundException e) {
+            fail("Should be able to find the class java.lang.Object");
+        }
+        assertTrue("Non-array Object type claims to be.", !clazz.isArray());
+    }
 
-	/**
+    /**
      * @tests java.lang.Class#isAssignableFrom(java.lang.Class)
      */
     public void test_isAssignableFromLjava_lang_Class() {
-        // Test for method boolean
-        // java.lang.Class.isAssignableFrom(java.lang.Class)
         Class<?> clazz1 = null;
         Class<?> clazz2 = null;
 
@@ -849,144 +653,126 @@ public class ClassTest extends junit.framework.TestCase {
         assertTrue("returned false for implemented interface", clazz1.isAssignableFrom(clazz2));
     }
 
-	/**
-	 * @tests java.lang.Class#isInterface()
-	 */
-	public void test_isInterface() {
-		// Test for method boolean java.lang.Class.isInterface()
-		assertTrue("Prim type claims to be interface.", !int.class
-				.isInterface());
-		Class clazz = null;
-		try {
-			clazz = Class.forName("[I");
-		} catch (ClassNotFoundException e) {
-			fail("Should be able to find the class [I");
-		}
-		assertTrue("Prim Array type claims to be interface.", !clazz
-				.isInterface());
+    /**
+     * @tests java.lang.Class#isInterface()
+     */
+    public void test_isInterface() {
+        assertTrue("Prim type claims to be interface.", !int.class.isInterface());
+        Class<?> clazz = null;
+        try {
+            clazz = Class.forName("[I");
+        } catch (ClassNotFoundException e) {
+            fail("Should be able to find the class [I");
+        }
+        assertTrue("Prim Array type claims to be interface.", !clazz.isInterface());
 
-		try {
-			clazz = Class.forName("java.lang.Runnable");
-		} catch (ClassNotFoundException e) {
-			fail("Should be able to find the class java.lang.Runnable");
-		}
-		assertTrue("Interface type claims not to be interface.", clazz
-				.isInterface());
+        try {
+            clazz = Class.forName("java.lang.Runnable");
+        } catch (ClassNotFoundException e) {
+            fail("Should be able to find the class java.lang.Runnable");
+        }
+        assertTrue("Interface type claims not to be interface.", clazz.isInterface());
 
-		try {
-			clazz = Class.forName("java.lang.Object");
-		} catch (ClassNotFoundException e) {
-			fail("Should be able to find the class java.lang.Object");
-		}
-		assertTrue("Object type claims to be interface.", !clazz.isInterface());
+        try {
+            clazz = Class.forName("java.lang.Object");
+        } catch (ClassNotFoundException e) {
+            fail("Should be able to find the class java.lang.Object");
+        }
+        assertTrue("Object type claims to be interface.", !clazz.isInterface());
 
-		try {
-			clazz = Class.forName("[Ljava.lang.Object;");
-		} catch (ClassNotFoundException e) {
-			fail("Should be able to find the class [Ljava.lang.Object;");
-		}
-		assertTrue("Array type claims to be interface.", !clazz.isInterface());
-	}
+        try {
+            clazz = Class.forName("[Ljava.lang.Object;");
+        } catch (ClassNotFoundException e) {
+            fail("Should be able to find the class [Ljava.lang.Object;");
+        }
+        assertTrue("Array type claims to be interface.", !clazz.isInterface());
+    }
 
-	/**
-	 * @tests java.lang.Class#isPrimitive()
-	 */
-	public void test_isPrimitive() {
-		// Test for method boolean java.lang.Class.isPrimitive()
-		assertTrue("Interface type claims to be primitive.", !Runnable.class
-				.isPrimitive());
-		assertTrue("Object type claims to be primitive.", !Object.class
-				.isPrimitive());
-		assertTrue("Prim Array type claims to be primitive.", !int[].class
-				.isPrimitive());
-		assertTrue("Array type claims to be primitive.", !Object[].class
-				.isPrimitive());
-		assertTrue("Prim type claims not to be primitive.", int.class
-				.isPrimitive());
-		assertTrue("Object type claims to be primitive.", !Object.class
-				.isPrimitive());
-	}
+    /**
+     * @tests java.lang.Class#isPrimitive()
+     */
+    public void test_isPrimitive() {
+        assertFalse("Interface type claims to be primitive.", Runnable.class.isPrimitive());
+        assertFalse("Object type claims to be primitive.", Object.class.isPrimitive());
+        assertFalse("Prim Array type claims to be primitive.", int[].class.isPrimitive());
+        assertFalse("Array type claims to be primitive.", Object[].class.isPrimitive());
+        assertTrue("Prim type claims not to be primitive.", int.class.isPrimitive());
+        assertFalse("Object type claims to be primitive.", Object.class.isPrimitive());
+    }
 
-	/**
-	 * @tests java.lang.Class#newInstance()
-	 */
-	public void test_newInstance() {
-		// Test for method java.lang.Object java.lang.Class.newInstance()
+    /**
+     * @tests java.lang.Class#newInstance()
+     */
+    public void test_newInstance() {
+        Class<?> clazz = null;
+        try {
+            try {
+                clazz = Class.forName("java.lang.Object");
+            } catch (ClassNotFoundException e) {
+                fail("Should be able to find the class java.lang.Object");
+            }
+            assertNotNull("new object instance was null", clazz.newInstance());
+        } catch (Exception e) {
+            fail("Unexpected exception " + e + " in newInstance()");
+        }
+        try {
+            try {
+                clazz = Class.forName("java.lang.Throwable");
+            } catch (ClassNotFoundException e) {
+                fail("Should be able to find the class java.lang.Throwable");
+            }
+            assertTrue("new Throwable instance was not a throwable", clazz.newInstance()
+                    .getClass() == clazz);
+        } catch (Exception e) {
+            fail("Unexpected exception " + e + " in newInstance()");
+        }
+        int r = 0;
+        try {
+            try {
+                clazz = Class.forName("java.lang.Integer");
+            } catch (ClassNotFoundException e) {
+                fail("Should be able to find the class java.lang.Integer");
+            }
+            assertTrue("Allowed to do newInstance, when no default constructor", clazz
+                    .newInstance() != null
+                    || clazz.newInstance() == null);
+        } catch (Exception e) {
+            r = 1;
+        }
+        assertEquals(
+                "Exception for instantiating a newInstance with no default constructor is not thrown",
+                1, r);
+    }
 
-		Class clazz = null;
-		try {
-			try {
-				clazz = Class.forName("java.lang.Object");
-			} catch (ClassNotFoundException e) {
-				fail("Should be able to find the class java.lang.Object");
-			}
-			assertNotNull("new object instance was null",
-					clazz.newInstance());
-		} catch (Exception e) {
-			fail("Unexpected exception " + e + " in newInstance()");
-		}
-		try {
-			try {
-				clazz = Class.forName("java.lang.Throwable");
-			} catch (ClassNotFoundException e) {
-				fail(
-						"Should be able to find the class java.lang.Throwable");
-			}
-			assertTrue("new Throwable instance was not a throwable", clazz
-					.newInstance().getClass() == clazz);
-		} catch (Exception e) {
-			fail("Unexpected exception " + e + " in newInstance()");
-		}
-		int r = 0;
-		try {
-			try {
-				clazz = Class.forName("java.lang.Integer");
-			} catch (ClassNotFoundException e) {
-				fail(
-						"Should be able to find the class java.lang.Integer");
-			}
-			assertTrue(
-					"Allowed to do newInstance, when no default constructor",
-					clazz.newInstance() != null || clazz.newInstance() == null);
-		} catch (Exception e) {
-			r = 1;
-		}
-		assertEquals("Exception for instantiating a newInstance with no default constructor is not thrown",
-				1, r);
-		// There needs to be considerably more testing here.
-	}
+    /**
+     * @tests java.lang.Class#toString()
+     */
+    public void test_toString() {
+        assertTrue("Class toString printed wrong value:" + int.class.toString(), int.class
+                .toString().equals("int"));
+        Class<?> clazz = null;
+        try {
+            clazz = Class.forName("[I");
+        } catch (ClassNotFoundException e) {
+            fail("Should be able to find the class [I");
+        }
+        assertTrue("Class toString printed wrong value:" + clazz.toString(), clazz.toString()
+                .equals("class [I"));
 
-	/**
-	 * @tests java.lang.Class#toString()
-	 */
-	public void test_toString() {
-		// Test for method java.lang.String java.lang.Class.toString()
-		assertTrue(
-				"Class toString printed wrong value:" + int.class.toString(),
-				int.class.toString().equals("int"));
-		Class clazz = null;
-		try {
-			clazz = Class.forName("[I");
-		} catch (ClassNotFoundException e) {
-			fail("Should be able to find the class [I");
-		}
-		assertTrue("Class toString printed wrong value:" + clazz.toString(),
-				clazz.toString().equals("class [I"));
+        try {
+            clazz = Class.forName("java.lang.Object");
+        } catch (ClassNotFoundException e) {
+            fail("Should be able to find the class java.lang.Object");
+        }
+        assertTrue("Class toString printed wrong value:" + clazz.toString(), clazz.toString()
+                .equals("class java.lang.Object"));
 
-		try {
-			clazz = Class.forName("java.lang.Object");
-		} catch (ClassNotFoundException e) {
-			fail("Should be able to find the class java.lang.Object");
-		}
-		assertTrue("Class toString printed wrong value:" + clazz.toString(),
-				clazz.toString().equals("class java.lang.Object"));
-
-		try {
-			clazz = Class.forName("[Ljava.lang.Object;");
-		} catch (ClassNotFoundException e) {
-			fail("Should be able to find the class [Ljava.lang.Object;");
-		}
-		assertTrue("Class toString printed wrong value:" + clazz.toString(),
-				clazz.toString().equals("class [Ljava.lang.Object;"));
-	}
+        try {
+            clazz = Class.forName("[Ljava.lang.Object;");
+        } catch (ClassNotFoundException e) {
+            fail("Should be able to find the class [Ljava.lang.Object;");
+        }
+        assertTrue("Class toString printed wrong value:" + clazz.toString(), clazz.toString()
+                .equals("class [Ljava.lang.Object;"));
+    }
 }
