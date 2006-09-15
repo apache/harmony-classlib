@@ -22,10 +22,12 @@ import junit.framework.TestCase;
 public class LongTest extends TestCase {
     private Properties orgProps;
     
+    @Override
     protected void setUp() {
         orgProps = System.getProperties();
     }
 
+    @Override
     protected void tearDown() {
         System.setProperties(orgProps);
     }
@@ -1028,11 +1030,11 @@ public class LongTest extends TestCase {
      */
     public void test_signumJ() {
         for (int i = -128; i<0; i++) {
-            assertEquals(-1, Long.signum((long)i));
+            assertEquals(-1, Long.signum(i));
         }
-        assertEquals(0, Long.signum((long)0));
+        assertEquals(0, Long.signum(0));
         for (int i = 1; i<=127; i++) {
-            assertEquals(1, Long.signum((long)i));
+            assertEquals(1, Long.signum(i));
         }
     }
 }

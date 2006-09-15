@@ -22,10 +22,12 @@ import junit.framework.TestCase;
 public class IntegerTest extends TestCase {
     private Properties orgProps;
     
+    @Override
     protected void setUp() {
         orgProps = System.getProperties();
     }
 
+    @Override
     protected void tearDown() {
         System.setProperties(orgProps);
     }

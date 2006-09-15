@@ -15,15 +15,11 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-import java.util.Vector;
-
 import junit.framework.TestCase;
 
 public class FloatTest extends TestCase {
 
-    private Vector compareResults;
-
-    private static int rawBitsFor3_4eN38To38[] = { 0x1394470, 0x2e7958c, 0x490bd77, 0x634ecd5,
+    private static final int rawBitsFor3_4eN38To38[] = { 0x1394470, 0x2e7958c, 0x490bd77, 0x634ecd5,
             0x7e2280b, 0x98d5907, 0xb30af48, 0xcdcdb1a, 0xe8a08f0, 0x102c8b2d, 0x11d7adf8,
             0x1386ccbb, 0x15287fe9, 0x16d29fe4, 0x1883a3ee, 0x1a248cea, 0x1bcdb025, 0x1d808e17,
             0x1f20b19d, 0x20c8de04, 0x227b1585, 0x241ced73, 0x25c428d0, 0x27753303, 0x29193fe2,
@@ -36,7 +32,7 @@ public class FloatTest extends TestCase {
             0x7089705f, 0x722bcc76, 0x73d6bf94, 0x758637bc, 0x7727c5ac, 0x78d1b717, 0x7a83126e,
             0x7c23d70a, 0x7dcccccc, 0x7f7fffff };
 
-    private static String expectedStringFor3_4eN38To38[] = { "3.4028235E-38", "3.4028235E-37",
+    private static final String expectedStringFor3_4eN38To38[] = { "3.4028235E-38", "3.4028235E-37",
             "3.4028233E-36", "3.4028234E-35", "3.4028236E-34", "3.4028236E-33",
             "3.4028234E-32", "3.4028234E-31", "3.4028233E-30", "3.4028236E-29",
             "3.4028235E-28", "3.4028235E-27", "3.4028233E-26", "3.4028235E-25",
@@ -54,7 +50,7 @@ public class FloatTest extends TestCase {
             "3.4028236E29", "3.4028233E30", "3.4028235E31", "3.4028233E32", "3.4028236E33",
             "3.4028236E34", "3.4028234E35", "3.4028236E36", "3.4028235E37", "3.4028235E38" };
 
-    private static int rawBitsFor1_17eN38To38[] = { 0x80800000, 0x82200000, 0x83c80000,
+    private static final int rawBitsFor1_17eN38To38[] = { 0x80800000, 0x82200000, 0x83c80000,
             0x857a0000, 0x871c4000, 0x88c35000, 0x8a742400, 0x8c189680, 0x8dbebc20, 0x8f6e6b28,
             0x911502f9, 0x92ba43b7, 0x9468d4a5, 0x961184e7, 0x97b5e621, 0x99635fa9, 0x9b0e1bca,
             0x9cb1a2bc, 0x9e5e0b6b, 0xa00ac723, 0xa1ad78ec, 0xa358d727, 0xa5078678, 0xa6a96816,
@@ -67,7 +63,7 @@ public class FloatTest extends TestCase {
             0xee17edd8, 0xefbde94f, 0xf16d63a2, 0xf3145e45, 0xf4b975d7, 0xf667d34c, 0xf810e410,
             0xf9b51d14, 0xfb626459, 0xfd0d7eb7, 0xfeb0de65 };
 
-    private static String expectedStringFor1_17eN38To38[] = { "-1.17549435E-38",
+    private static final String expectedStringFor1_17eN38To38[] = { "-1.17549435E-38",
             "-1.1754944E-37", "-1.17549435E-36", "-1.17549435E-35", "-1.1754944E-34",
             "-1.17549435E-33", "-1.17549435E-32", "-1.1754944E-31", "-1.17549435E-30",
             "-1.17549435E-29", "-1.1754944E-28", "-1.1754943E-27", "-1.17549435E-26",
@@ -87,25 +83,14 @@ public class FloatTest extends TestCase {
             "-1.1754943E31", "-1.1754944E32", "-1.1754943E33", "-1.1754944E34",
             "-1.1754944E35", "-1.1754944E36", "-1.1754943E37", "-1.1754943E38" };
 
-    private static String toHex(int i) {
-        return Integer.toHexString(i);
-    }
-
     private void doTestCompareRawBits(String originalFloatString, int expectedRawBits,
             String expectedString) {
         int rawBits;
-        String convertedString;
         float result = Float.parseFloat(originalFloatString);
         rawBits = Float.floatToIntBits(result);
-        convertedString = Float.toString(result);
-        if (expectedRawBits != rawBits) {
-            if (compareResults == null) {
-                compareResults = new Vector();
-            }
-            compareResults.addElement("Original float(" + originalFloatString
-                    + ") Converted float(" + result + ") Expecting:" + toHex(expectedRawBits)
-                    + " Got: " + toHex(rawBits));
-        }
+        assertEquals("Original float(" + originalFloatString + ") Converted float(" + result
+                + ") Expecting:" + Integer.toHexString(expectedRawBits) + " Got: "
+                + Integer.toHexString(rawBits), expectedRawBits, rawBits);
     }
 
     /**
@@ -185,8 +170,6 @@ public class FloatTest extends TestCase {
      * @tests java.lang.Float#floatToIntBits(float)
      */
     public void test_floatToIntBitsF() {
-        // Test for method int java.lang.Float.floatToIntBits(float)
-        // TODO : Enhance test ??
         float f = 9876.2345f;
         int bits = Float.floatToIntBits(f);
         float r = Float.intBitsToFloat(bits);
@@ -236,12 +219,10 @@ public class FloatTest extends TestCase {
      * @tests java.lang.Float#intBitsToFloat(int)
      */
     public void test_intBitsToFloatI() {
-        // Test for method float java.lang.Float.intBitsToFloat(int)
-        // TODO : Enhance test ??
         float f = 9876.2345f;
         int bits = Float.floatToIntBits(f);
         float r = Float.intBitsToFloat(bits);
-        assertTrue("Incorrect intBits returned", f == r);
+        assertEquals("Incorrect intBits returned", f, r, 0F);
     }
 
     /**
@@ -259,7 +240,7 @@ public class FloatTest extends TestCase {
      */
     public void test_isInfinite() {
         // Test for method boolean java.lang.Float.isInfinite()
-        assertTrue("Ininifty check failed",
+        assertTrue("Infinity check failed",
                 (new Float(Float.POSITIVE_INFINITY).isInfinite() && new Float(
                         Float.NEGATIVE_INFINITY).isInfinite())
                         && !(new Float(0.13131414f).isInfinite()));
@@ -320,8 +301,8 @@ public class FloatTest extends TestCase {
 
         /* Test a set of regular floats with exponents from -38 to +38 */
         for (int i = 38; i > 3; i--) {
-            String testString, expectedString;
-            testString = expectedString = "3.4028234663852886e-" + i;
+            String testString;
+            testString = "3.4028234663852886e-" + i;
             doTestCompareRawBits(testString, rawBitsFor3_4eN38To38[38 - i],
                     expectedStringFor3_4eN38To38[38 - i]);
         }
@@ -347,16 +328,16 @@ public class FloatTest extends TestCase {
                 expectedStringFor3_4eN38To38[38 + 6]);
 
         for (int i = 7; i < 39; i++) {
-            String testString, expectedString;
-            testString = expectedString = "3.4028234663852886e+" + i;
+            String testString;
+            testString = "3.4028234663852886e+" + i;
             doTestCompareRawBits(testString, rawBitsFor3_4eN38To38[38 + i],
                     expectedStringFor3_4eN38To38[38 + i]);
         }
 
         /* Test another set of regular floats with exponents from -38 to +38 */
         for (int i = 38; i > 3; i--) {
-            String testString, expectedString;
-            testString = expectedString = "-1.1754943508222875e-" + i;
+            String testString;
+            testString = "-1.1754943508222875e-" + i;
             doTestCompareRawBits(testString, rawBitsFor1_17eN38To38[38 - i],
                     expectedStringFor1_17eN38To38[38 - i]);
         }
@@ -382,8 +363,8 @@ public class FloatTest extends TestCase {
                 expectedStringFor1_17eN38To38[38 + 6]);
 
         for (int i = 7; i < 39; i++) {
-            String testString, expectedString;
-            testString = expectedString = "-1.1754943508222875e+" + i;
+            String testString;
+            testString = "-1.1754943508222875e+" + i;
             doTestCompareRawBits(testString, rawBitsFor1_17eN38To38[38 + i],
                     expectedStringFor1_17eN38To38[38 + i]);
         }
@@ -420,15 +401,6 @@ public class FloatTest extends TestCase {
         doTestCompareRawBits("-3.42E+38", 0xff800000, "-Infinity");
         doTestCompareRawBits("1.0E+39", 0x7f800000, "Infinity");
         doTestCompareRawBits("-1.0E+39", 0xff800000, "-Infinity");
-
-        if (compareResults != null) {
-            StringBuffer failString = new StringBuffer();
-            for (int i = 0; i < compareResults.size(); i++) {
-                failString.append(compareResults.elementAt(i));
-                failString.append("\n");
-            }
-            fail(failString.toString());
-        }
     }
 
     /**
@@ -471,8 +443,6 @@ public class FloatTest extends TestCase {
         answer = "3.4028235E38";
         assertTrue("Incorrect String representation want " + answer + ", got "
                 + Float.toString(ff), Float.toString(ff).equals(answer));
-        // TODO : There is a known problem with floating point printing. So
-        // this is not included
     }
 
     /**
@@ -565,7 +535,8 @@ public class FloatTest extends TestCase {
         for (int i = 0; i < values.length; i++) {
             float f1 = values[i];
 
-            // Test that each value compares equal to itself; and each object is equal to another object
+            // Test that each value compares equal to itself; and each object is
+            // equal to another object
             // like itself
             assertTrue("Assert 0: compare() should be equal: " + f1, Float.compare(f1, f1) == 0);
             Float objFloat = new Float(f1);
@@ -621,7 +592,7 @@ public class FloatTest extends TestCase {
      * @tests java.lang.Float#toHexString(float)
      */
     public void test_toHexStringF() {
-        //the follow values comes from the Float Javadoc/Spec
+        // the follow values comes from the Float Javadoc/Spec
         assertEquals("0x0.0p0", Float.toHexString(0.0F));
         assertEquals("-0x0.0p0", Float.toHexString(-0.0F));
         assertEquals("0x1.0p0", Float.toHexString(1.0F));
@@ -633,12 +604,12 @@ public class FloatTest extends TestCase {
         assertEquals("0x1.fffffep127", Float.toHexString(Float.MAX_VALUE));
         assertEquals("0x0.000002p-126", Float.toHexString(Float.MIN_VALUE));
 
-        //test edge cases
+        // test edge cases
         assertEquals("NaN", Float.toHexString(Float.NaN));
         assertEquals("-Infinity", Float.toHexString(Float.NEGATIVE_INFINITY));
         assertEquals("Infinity", Float.toHexString(Float.POSITIVE_INFINITY));
 
-        //test various numbers
+        // test various numbers
         assertEquals("-0x1.da8p6", Float.toHexString(-118.625F));
         assertEquals("0x1.295788p23", Float.toHexString(9743299.65F));
         assertEquals("0x1.295788p23", Float.toHexString(9743299.65000F));

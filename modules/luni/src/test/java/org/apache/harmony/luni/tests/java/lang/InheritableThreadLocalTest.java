@@ -15,30 +15,25 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-public class InheritableThreadLocalTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class InheritableThreadLocalTest extends TestCase {
 
 	/**
 	 * @tests java.lang.InheritableThreadLocal#InheritableThreadLocal()
 	 */
 	public void test_Constructor() {
-		// Test for method java.lang.InheritableThreadLocal()
-
-		InheritableThreadLocal l = new InheritableThreadLocal();
-		assertTrue("Failed to create InheritableThreadLocal",
-				l instanceof InheritableThreadLocal);
+	    InheritableThreadLocal<String> itl = new InheritableThreadLocal<String>();
+        assertNull(itl.get());
 	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    
+    public void test_initialValue() {
+        InheritableThreadLocal<String> itl = new InheritableThreadLocal<String>() {
+            @Override
+            protected String initialValue() {
+                return "initial";
+            }
+        };
+        assertEquals("initial", itl.get());
+    }
 }

@@ -15,10 +15,12 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
+import java.util.Locale;
+
 import junit.framework.TestCase;
 
 public class DoubleTest extends TestCase {
-    private static long rawBitsFor3_4en324ToN1[] = { 0x1L, 0x7L, 0x45L, 0x2b0L, 0x1ae2L,
+    private static final long rawBitsFor3_4en324ToN1[] = { 0x1L, 0x7L, 0x45L, 0x2b0L, 0x1ae2L,
             0x10cd1L, 0xa8028L, 0x69018dL, 0x41a0f7eL, 0x29049aedL, 0x19a2e0d44L,
             0x1005cc84acL, 0xa039fd2ebdL, 0x64243e3d361L, 0x3e96a6e641c6L, 0x271e284fe91b8L,
             0x1872d931f1b131L, 0x4e8f8f7e6e1d7dL, 0x8319b9af04d26eL, 0xb7e0281ac6070aL,
@@ -100,7 +102,7 @@ public class DoubleTest extends TestCase {
             0x3f364840e1719f80L, 0x3f6bda5119ce075fL, 0x3fa16872b020c49cL, 0x3fd5c28f5c28f5c3L,
             0x400B333333333333L };
 
-    private static long rawBitsFor1_2e0To309[] = { 0x3ff3333333333333L, 0x4028000000000000L,
+    private static final long rawBitsFor1_2e0To309[] = { 0x3ff3333333333333L, 0x4028000000000000L,
             0x405e000000000000L, 0x4092c00000000000L, 0x40c7700000000000L, 0x40fd4c0000000000L,
             0x41324f8000000000L, 0x4166e36000000000L, 0x419c9c3800000000L, 0x41d1e1a300000000L,
             0x42065a0bc0000000L, 0x423bf08eb0000000L, 0x427176592e000000L, 0x42a5d3ef79800000L,
@@ -179,12 +181,6 @@ public class DoubleTest extends TestCase {
             0x7ea665f8bf806e42L, 0x7edbff76ef6089d2L, 0x7f117faa559c5623L, 0x7f45df94eb036bacL,
             0x7f7b577a25c44697L, 0x7fb116ac579aac1fL, 0x7fe55c576d815726L, 0x7ff0000000000000L };
 
-    private static String toHex(long l) {
-        return Long.toHexString(l);
-    }
-
-    private boolean pass = true;
-
     private void doTestCompareRawBits(String originalDoubleString, long expectedRawBits,
             String expectedString) {
         double result;
@@ -193,63 +189,34 @@ public class DoubleTest extends TestCase {
         result = Double.parseDouble(originalDoubleString);
         rawBits = Double.doubleToLongBits(result);
         convertedString = new Double(result).toString();
-        if (expectedRawBits != rawBits) {
-            pass = false;
-            System.out.println("Original double(" + originalDoubleString
-                    + ") Converted double(" + result + ") Expecting:" + toHex(expectedRawBits)
-                    + " Got: " + toHex(rawBits));
-        }
-        if (!convertedString.equalsIgnoreCase(expectedString)) {
-            pass = false;
-            System.out.println("Expecting(" + expectedString + ") Got(" + convertedString
-                    + ") rawBits(" + toHex(Double.doubleToLongBits(result)) + ")");
-        }
+        assertEquals(expectedRawBits, rawBits);
+        assertEquals(expectedString.toLowerCase(Locale.US), convertedString
+                .toLowerCase(Locale.US));
     }
 
     private void test_toString(double dd, String answer) {
-        // Test for method java.lang.String java.lang.Double.toString(double)
-        if (!Double.toString(dd).equals(answer)) {
-            System.out.println("Incorrect String representation "
-                    + toHex(Double.doubleToLongBits(dd)) + " want " + answer + ", got ("
-                    + Double.toString(dd) + ")");
-            pass = false;
-        } else {
-            Double d = new Double(dd);
-            if (!Double.toString(d.doubleValue()).equals(answer)) {
-                System.out.println("Incorrect String representation want " + answer + ", got ("
-                        + Double.toString(d.doubleValue()) + ")");
-                pass = false;
-            } else if (!d.toString().equals(answer)) {
-                System.out.println("Incorrect String representation want " + answer + ", got ("
-                        + d.toString() + ")");
-                pass = false;
-            }
-        }
-    }
-
-    private void verifyStaticTests() {
-        assertTrue("test(s) failed, check test output", pass);
+        assertEquals(answer, Double.toString(dd));
+        Double d = new Double(dd);
+        assertEquals(answer, Double.toString(d.doubleValue()));
+        assertEquals(answer, d.toString());
     }
 
     /**
      * @tests java.lang.Double#Double(double)
      */
     public void test_ConstructorD() {
-        // Test for method java.lang.Double(double)
         Double d = new Double(39089.88888888888888888888888888888888);
         assertEquals("Created incorrect double", 39089.88888888888888888888888888888888, d
-                .doubleValue());
+                .doubleValue(), 0D);
     }
 
     /**
      * @tests java.lang.Double#Double(java.lang.String)
      */
     public void test_ConstructorLjava_lang_String() {
-        // Test for method java.lang.Double(java.lang.String)
-
         Double d = new Double("39089.88888888888888888888888888888888");
         assertEquals("Created incorrect double", 39089.88888888888888888888888888888888, d
-                .doubleValue());
+                .doubleValue(), 0D);
 
         // REGRESSION for HARMONY-489
         try {
@@ -264,9 +231,8 @@ public class DoubleTest extends TestCase {
      * @tests java.lang.Double#byteValue()
      */
     public void test_byteValue() {
-        // Test for method byte java.lang.Double.byteValue()
         Double d = new Double(1923311.47712);
-        assertTrue("Returned incorrect byte value", d.byteValue() == (byte) -17);
+        assertEquals("Returned incorrect byte value", (byte) -17, d.byteValue());
     }
 
     /**
@@ -328,9 +294,8 @@ public class DoubleTest extends TestCase {
      * @tests java.lang.Double#doubleValue()
      */
     public void test_doubleValue() {
-        // Test for method double java.lang.Double.doubleValue()
         assertEquals("Incorrect double value returned", 999999999999999.9999999999999,
-                new Double(999999999999999.9999999999999).doubleValue());
+                new Double(999999999999999.9999999999999).doubleValue(), 0D);
     }
 
     /**
@@ -350,8 +315,8 @@ public class DoubleTest extends TestCase {
     public void test_hashCode() {
         // Test for method int java.lang.Double.hashCode()
         for (int i = -1000; i < 1000; i++) {
-            Double d = new Double((double) i);
-            Double dd = new Double((double) i);
+            Double d = new Double(i);
+            Double dd = new Double(i);
             assertTrue("Should not be identical ", d != dd);
             assertTrue("Should be equals 1 ", d.equals(dd));
             assertTrue("Should be equals 2 ", dd.equals(d));
@@ -586,8 +551,6 @@ public class DoubleTest extends TestCase {
         doTestCompareRawBits(
                 "-0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000055595409854908458349204328908234982349050934129878452378432452458968024357823490509341298784523784324524589680243578234905093412987845237843245245896802435782349050934129878452378432452458968024357868024357823490509341298784523784324524589680243578234905093412987845237843245245896802435786802435782349050934129878452378432452458968024357823490509341298784523784324524589680243578",
                 0x8000000000000001L, "-4.9E-324");
-
-        verifyStaticTests();
     }
 
     /**
@@ -606,7 +569,6 @@ public class DoubleTest extends TestCase {
         // Test for method java.lang.String java.lang.Double.toString()
         test_toString(1.7976931348623157E308, "1.7976931348623157E308");
         test_toString(5.0E-4, "5.0E-4");
-        verifyStaticTests();
     }
 
     /**
@@ -694,8 +656,6 @@ public class DoubleTest extends TestCase {
         test_toString(d, "-3.3846065602060826E125");
         d = Double.longBitsToDouble(0xda0000000000000eL);
         test_toString(d, "-3.384606560206083E125");
-
-        verifyStaticTests();
     }
 
     /**
@@ -724,6 +684,7 @@ public class DoubleTest extends TestCase {
         }
 
         Double pi = Double.valueOf("3.141592654");
+        assertEquals(3.141592654, pi.doubleValue(), 0D);
 
         Double posZero = Double.valueOf("+0.0");
         Double negZero = Double.valueOf("-0.0");
@@ -821,7 +782,7 @@ public class DoubleTest extends TestCase {
      * @tests java.lang.Double#toHexString(double)
      */
     public void test_toHexStringF() {
-        //the follow values come from the Double Javadoc/Spec
+        // the follow values come from the Double Javadoc/Spec
         assertEquals("0x0.0p0", Double.toHexString(0.0D));
         assertEquals("-0x0.0p0", Double.toHexString(-0.0D));
         assertEquals("0x1.0p0", Double.toHexString(1.0D));
@@ -833,12 +794,12 @@ public class DoubleTest extends TestCase {
         assertEquals("0x1.fffffffffffffp1023", Double.toHexString(Double.MAX_VALUE));
         assertEquals("0x0.0000000000001p-1022", Double.toHexString(Double.MIN_VALUE));
 
-        //test edge cases
+        // test edge cases
         assertEquals("NaN", Double.toHexString(Double.NaN));
         assertEquals("-Infinity", Double.toHexString(Double.NEGATIVE_INFINITY));
         assertEquals("Infinity", Double.toHexString(Double.POSITIVE_INFINITY));
 
-        //test various numbers
+        // test various numbers
         assertEquals("-0x1.da8p6", Double.toHexString(-118.625D));
         assertEquals("0x1.2957874cccccdp23", Double.toHexString(9743299.65D));
         assertEquals("0x1.2957874cccccdp23", Double.toHexString(9743299.65000D));

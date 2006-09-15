@@ -143,13 +143,6 @@ public class MathTest extends junit.framework.TestCase {
         assertEquals("Should return 1.7031839360032603E-108",
                 1.7031839360032603E-108, Math.cbrt(Double.MIN_VALUE), 0D);
         assertEquals("Should return -0.01", -0.01, Math.cbrt(-0.000001), 0D);
-        
-        try{
-            Math.cbrt((Double)null);
-            fail("Should throw NullPointerException");
-        }catch(NullPointerException e){
-            //expected
-        }
     }
 
 	/**
@@ -730,19 +723,4 @@ public class MathTest extends junit.framework.TestCase {
 		assertEquals("Returned incorrect value", 5.6E-45f, Math
 				.ulp(9.403954E-38f), 0f);
     }
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
-
 }
