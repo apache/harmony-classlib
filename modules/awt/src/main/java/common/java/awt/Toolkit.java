@@ -646,12 +646,12 @@ public abstract class Toolkit {
 
     public abstract Map<java.awt.font.TextAttribute, ?> mapInputMethodHighlight(InputMethodHighlight highlight) throws HeadlessException;
 
-    Map<?, ?> mapInputMethodHighlightImpl(InputMethodHighlight highlight)
+    Map<java.awt.font.TextAttribute, ?> mapInputMethodHighlightImpl(InputMethodHighlight highlight)
             throws HeadlessException {
         checkHeadless();
-        HashMap<?, ?> map = new HashMap<Object, Object>();
+        HashMap<java.awt.font.TextAttribute, ?> map = new HashMap<java.awt.font.TextAttribute, Object>();
         wtk.getSystemProperties().mapInputMethodHighlight(highlight, map);
-        return Collections.unmodifiableMap(map);
+        return Collections.<java.awt.font.TextAttribute, Object>unmodifiableMap(map);
     }
 
     public void addPropertyChangeListener(String propName, PropertyChangeListener l) {

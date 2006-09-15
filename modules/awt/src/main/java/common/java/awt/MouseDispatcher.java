@@ -25,6 +25,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.Dispatcher.MouseGrabManager;
+import java.util.EventListener;
 
 import org.apache.harmony.awt.wtk.NativeEvent;
 import org.apache.harmony.awt.wtk.NativeWindow;
@@ -354,7 +355,7 @@ class MouseDispatcher {
     }
 
     private PointerInfo propagateEvent(PointerInfo info, long mask,
-                                       Class<?> type, boolean pierceHW) {
+                                       Class<? extends EventListener> type, boolean pierceHW) {
         Component src = info.src;
         while ((src != null) &&
                (src.isLightweight() || pierceHW) &&

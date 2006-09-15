@@ -135,7 +135,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
         setTransform(getTransform());
     }
 
-    public void addRenderingHints(Map hints) {
+    public void addRenderingHints(Map<?,?> hints) {
         super.addRenderingHints(hints);
         Object value = this.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
         if (value == RenderingHints.VALUE_ANTIALIAS_ON) 
@@ -519,7 +519,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
             NativeFont.setAntialiasing(gi,false);
     }
 
-    public void setRenderingHints(Map hints) {
+    public void setRenderingHints(Map<?,?> hints) {
         super.setRenderingHints(hints);
         Object value = this.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
         if (value == RenderingHints.VALUE_ANTIALIAS_ON) 

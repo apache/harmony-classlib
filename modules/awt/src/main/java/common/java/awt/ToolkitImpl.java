@@ -510,7 +510,7 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    public Map<?, ?> mapInputMethodHighlight(InputMethodHighlight highlight)
+    public Map<java.awt.font.TextAttribute, ?> mapInputMethodHighlight(InputMethodHighlight highlight)
             throws HeadlessException {
         lockAWT();
         try {

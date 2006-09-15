@@ -174,7 +174,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
     }
 
     // Public methods
-    public void addRenderingHints(Map hints) {
+    public void addRenderingHints(Map<?,?> hints) {
         this.hints.putAll(hints);
     }
 
@@ -887,7 +887,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
         hints.put(key, value);
     }
 
-    public void setRenderingHints(Map hints) {
+    public void setRenderingHints(Map<?,?> hints) {
         this.hints.clear();
         this.hints.putAll(hints);
     }
