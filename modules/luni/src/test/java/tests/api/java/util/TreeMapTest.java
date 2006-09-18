@@ -324,7 +324,19 @@ public class TreeMapTest extends junit.framework.TestCase {
 		Object o = new Object();
 		tm.put("Hello", o);
 		assertTrue("Failed to put mapping", tm.get("Hello") == o);
-
+		
+		// regression for Harmony-780
+		tm = new TreeMap();
+		assertNull(tm.put(new Object(), new Object()));
+		try {
+			tm.put(new Integer(1), new Object());
+			fail("should throw ClassCastException");
+		} catch (ClassCastException e) {
+			// expected
+		}
+		
+		tm = new TreeMap();
+		assertNull(tm.put(new Integer(1), new Object()));
 	}
 
 	/**

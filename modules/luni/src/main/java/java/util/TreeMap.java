@@ -1267,19 +1267,22 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>,
 
 	private Entry<K, V> rbInsert(K object) {
 		int result = 0;
-		Comparable<K> key = null;
-		if (comparator == null) {
-            key = toComparable(object);
-        }
-		Entry<K, V> y = null, x = root;
-		while (x != null) {
-			y = x;
-			result = key != null ? key.compareTo(x.key) : comparator.compare(
-					object, x.key);
-			if (result == 0) {
-                return x;
-            }
-			x = result < 0 ? x.left : x.right;
+		Entry<K, V> y = null;
+		if (size != 0) {
+			Comparable<K> key = null;
+			if (comparator == null) {
+				key = toComparable(object);
+			}
+			Entry<K, V> x = root;
+			while (x != null) {
+				y = x;
+				result = key != null ? key.compareTo(x.key) : comparator
+						.compare(object, x.key);
+				if (result == 0) {
+					return x;
+				}
+				x = result < 0 ? x.left : x.right;
+			}
 		}
 
 		size++;
