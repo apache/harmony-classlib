@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -201,6 +201,241 @@ public class DataInputStreamTest extends junit.framework.TestCase {
 			fail("IOException during readFully test : " + e.getMessage());
 		}
 	}
+    
+    /**
+     * @tests java.io.DataInputStream#readFully(byte[], int, int)
+     */
+    public void test_readFully$BII_Exception() throws IOException {
+        DataInputStream is =  new DataInputStream(new ByteArrayInputStream(new byte[fileString.length()]));
+
+        byte[] byteArray = new byte[fileString.length()]; 
+        
+        try {
+            is.readFully(byteArray, -1, -1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        
+        try {
+            is.readFully(byteArray, 0, -1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        
+        try {
+            is.readFully(byteArray, 1, -1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+
+        is.readFully(byteArray, -1, 0);
+        is.readFully(byteArray, 0, 0);
+        is.readFully(byteArray, 1, 0);
+        
+        try {
+            is.readFully(byteArray, -1, 1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        
+        is.readFully(byteArray, 0, 1);
+        is.readFully(byteArray, 1, 1);
+        try {
+            is.readFully(byteArray, 0, Integer.MAX_VALUE);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests java.io.DataInputStream#readFully(byte[], int, int)
+     */
+    public void test_readFully$BII_NullArray() throws IOException {
+        DataInputStream is =  new DataInputStream(new ByteArrayInputStream(new byte[fileString.length()]));
+        
+        byte[] nullByteArray = null;
+       
+        try {
+            is.readFully(nullByteArray, -1, -1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        
+        try {
+            is.readFully(nullByteArray, 0, -1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        
+        try {
+            is.readFully(nullByteArray, 1, -1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+
+        is.readFully(nullByteArray, -1, 0);
+        is.readFully(nullByteArray, 0, 0);
+        is.readFully(nullByteArray, 1, 0);
+        
+        try {
+            is.readFully(nullByteArray, -1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            is.readFully(nullByteArray, 0, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            is.readFully(nullByteArray, 1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            is.readFully(nullByteArray, 0, Integer.MAX_VALUE);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests java.io.DataInputStream#readFully(byte[], int, int)
+     */
+    public void test_readFully$BII_NullStream() throws IOException {
+        DataInputStream is = new DataInputStream(null);
+        byte[] byteArray = new byte[fileString.length()]; 
+           
+        try {
+            is.readFully(byteArray, -1, -1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        
+        try {
+            is.readFully(byteArray, 0, -1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        
+        try {
+            is.readFully(byteArray, 1, -1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+
+        is.readFully(byteArray, -1, 0);
+        is.readFully(byteArray, 0, 0);
+        is.readFully(byteArray, 1, 0);
+        
+        try {
+            is.readFully(byteArray, -1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            is.readFully(byteArray, 0, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            is.readFully(byteArray, 1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            is.readFully(byteArray, 0, Integer.MAX_VALUE);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests java.io.DataInputStream#readFully(byte[], int, int)
+     */
+    public void test_readFully$BII_NullStream_NullArray() throws IOException {
+        DataInputStream is = new DataInputStream(null);
+        byte[] nullByteArray = null;
+        
+        try {
+            is.readFully(nullByteArray, -1, -1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        
+        try {
+            is.readFully(nullByteArray, 0, -1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        
+        try {
+            is.readFully(nullByteArray, 1, -1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+
+        is.readFully(nullByteArray, -1, 0);
+        is.readFully(nullByteArray, 0, 0);
+        is.readFully(nullByteArray, 1, 0);
+        
+        try {
+            is.readFully(nullByteArray, -1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            is.readFully(nullByteArray, 0, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            is.readFully(nullByteArray, 1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            is.readFully(nullByteArray, 0, Integer.MAX_VALUE);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+    }
 
 	/**
 	 * @tests java.io.DataInputStream#readInt()
@@ -385,8 +620,11 @@ public class DataInputStreamTest extends junit.framework.TestCase {
 	protected void tearDown() {
 		try {
 			os.close();
-			dis.close();
 		} catch (Exception e) {
 		}
+        try {
+            dis.close();
+        } catch (Exception e) {
+        }
 	}
 }

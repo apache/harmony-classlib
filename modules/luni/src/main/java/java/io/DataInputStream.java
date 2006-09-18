@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -189,33 +189,52 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 		readFully(buffer, 0, buffer.length);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.io.DataInput#readFully(byte[], int, int)
-	 */
-	public final void readFully(byte[] buffer, int offset, int length)
-			throws IOException {
-		if (buffer != null) {
-			// avoid int overflow
-			if (0 <= offset && offset <= buffer.length && 0 <= length
-					&& length <= buffer.length - offset) {
-				while (length > 0) {
-					int result = in.read(buffer, offset, length);
-					if (result >= 0) {
-						offset += result;
-						length -= result;
-					} else {
-                        throw new EOFException();
-                    }
-				}
-			} else {
-                throw new IndexOutOfBoundsException();
-            }
-		} else {
+    /**
+     * Reads bytes from this stream and stores them in the byte array
+     * <code>buffer</code> starting at the position <code>offset</code>.
+     * This method blocks until <code>count</code> bytes have been read.
+     * 
+     * @param buffer
+     *            the byte array into which the data is read
+     * @param offset
+     *            the offset the operation start at
+     * @param count
+     *            the maximum number of bytes to read
+     * 
+     * @throws IOException
+     *             if a problem occurs while reading from this stream
+     * @throws EOFException
+     *             if reaches the end of the stream before enough bytes have
+     *             been read
+     * @see java.io.DataInput#readFully(byte[], int, int)
+     */
+    public final void readFully(byte[] buffer, int offset, int length)
+            throws IOException {
+        if (length < 0) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (length == 0) {
+            return;
+        }
+        if (in == null) {
+            throw new NullPointerException(Msg.getString("KA00b")); //$NON-NLS-1$
+        }
+        if (buffer == null) {
             throw new NullPointerException(Msg.getString("K0047")); //$NON-NLS-1$
         }
-	}
+        if (offset < 0 || offset > buffer.length - length) {
+            throw new IndexOutOfBoundsException();
+        }
+        while (length > 0) {
+            int result = in.read(buffer, offset, length);
+            if (result >= 0) {
+                offset += result;
+                length -= result;
+            } else {
+                throw new EOFException();
+            }
+        }
+    }
 
 	/**
 	 * Reads a 32-bit integer value from this stream.
