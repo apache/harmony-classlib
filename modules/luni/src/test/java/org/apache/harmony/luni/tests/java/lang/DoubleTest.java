@@ -552,6 +552,74 @@ public class DoubleTest extends TestCase {
                 "-0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000055595409854908458349204328908234982349050934129878452378432452458968024357823490509341298784523784324524589680243578234905093412987845237843245245896802435782349050934129878452378432452458968024357868024357823490509341298784523784324524589680243578234905093412987845237843245245896802435786802435782349050934129878452378432452458968024357823490509341298784523784324524589680243578",
                 0x8000000000000001L, "-4.9E-324");
     }
+    
+    /**
+     * @tests java.lang.Double#parseDouble(java.lang.String)
+     */
+    public void test_parseDouble_LString_Hexadecimal() {
+        try {
+            Double.parseDouble("0.0p0D");
+            fail("Should throw NumberFormatException.");
+        } catch (NumberFormatException e) {
+            // expected
+        }
+
+        try {
+            Double.parseDouble("+0x.p1d");
+            fail("Should throw NumberFormatException.");
+        } catch (NumberFormatException e) {
+            // expected
+        }
+
+        try {
+            Double.parseDouble("0Xg.gp1D");
+            fail("Should throw NumberFormatException.");
+        } catch (NumberFormatException e) {
+            // expected
+        }
+
+        try {
+            Double.parseDouble("-0x1.1p");
+            fail("Should throw NumberFormatException.");
+        } catch (NumberFormatException e) {
+            // expected
+        }
+
+        try {
+            Double.parseDouble("+0x 1.1 p2d");
+            fail("Should throw NumberFormatException.");
+        } catch (NumberFormatException e) {
+            // expected
+        }
+
+        try {
+            Double.parseDouble("x1.1p2d");
+            fail("Should throw NumberFormatException.");
+        } catch (NumberFormatException e) {
+            // expected
+        }
+
+        try {
+            Double.parseDouble(" 0x-2.1p2");
+            fail("Should throw NumberFormatException.");
+        } catch (NumberFormatException e) {
+            // expected
+        }
+
+        try {
+            Double.parseDouble(" 0x2.1pad");
+            fail("Should throw NumberFormatException.");
+        } catch (NumberFormatException e) {
+            // expected
+        }
+
+        try {
+            Double.parseDouble(" 0x111.222p 22d");
+            fail("Should throw NumberFormatException.");
+        } catch (NumberFormatException e) {
+            // expected
+        }
+    }
 
     /**
      * @tests java.lang.Double#shortValue()
