@@ -64,8 +64,20 @@ public class PropertyDescriptor extends FeatureDescriptor {
         this.setName(propertyName);
         this.setDisplayName(propertyName);
 
-        setWriteMethod(beanClass, setterName);
-        setReadMethod(beanClass, getterName);
+        if (setterName != null) {
+            if (hasMethod(beanClass, setterName)) {
+                setWriteMethod(beanClass, setterName);
+            } else {
+                throw new IntrospectionException(Messages.getString("beans.20"));
+            }
+        }
+        if (getterName != null) {
+            if (hasMethod(beanClass, getterName)) {
+                setReadMethod(beanClass, getterName);
+            } else {
+                throw new IntrospectionException(Messages.getString("beans.1F"));
+            }
+        }
     }
 
     /**
@@ -112,11 +124,15 @@ public class PropertyDescriptor extends FeatureDescriptor {
             getterName = createDefaultMethodName(propertyName, "get"); //$NON-NLS-1$
             if(hasMethod(beanClass, getterName)) {
                 setReadMethod(beanClass, getterName);
+            } else {
+                throw new IntrospectionException(Messages.getString("beans.1F"));
             }
         }
         String setterName = createDefaultMethodName(propertyName, "set"); //$NON-NLS-1$
         if(hasMethod(beanClass, setterName)) {
             setWriteMethod(beanClass, setterName);
+        } else {
+            throw new IntrospectionException(Messages.getString("beans.20"));
         }
     }
         
@@ -166,6 +182,9 @@ public class PropertyDescriptor extends FeatureDescriptor {
             }
             
             Class<?> returnType = getter.getReturnType();
+            if (returnType.equals(Void.TYPE)) {
+                throw new IntrospectionException(Messages.getString("beans.33")); //$NON-NLS-1$
+            }
             Class<?> propertyType = getPropertyType();
             if((propertyType != null) && !returnType.equals(propertyType)) {
                 throw new IntrospectionException(

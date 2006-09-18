@@ -393,9 +393,33 @@ class BeanInfoImpl implements BeanInfo {
                 try {
                     propertyDescriptor = new PropertyDescriptor(propertyName,
                             beanClass);
-                    hmPropertyDescriptors.put(propertyName, propertyDescriptor);
                 } catch (IntrospectionException ie) {
-                    System.out.println(ie.getClass() + ": " + ie.getMessage()); //$NON-NLS-1$
+                    //no setter or getter
+                    if (methodName.startsWith("set")) {
+                        try {
+                            propertyDescriptor = new PropertyDescriptor(
+                                    propertyName, beanClass, null, methodName);
+                        } catch (IntrospectionException e) {
+                            //no getter
+                        }
+                    } else if (methodName.startsWith("get")
+                            || methodName.startsWith("is")) {
+                        try {
+                            propertyDescriptor = new PropertyDescriptor(
+                                    propertyName, beanClass, methodName, null);
+                        } catch (IntrospectionException e) {
+                            //no setter
+                        }
+                    } else {
+                        try {
+                            propertyDescriptor = new PropertyDescriptor(
+                                    propertyName, beanClass, null, null);
+                        } catch (IntrospectionException e) {
+                        }
+                    }
+                }
+                if (propertyDescriptor != null) {
+                    hmPropertyDescriptors.put(propertyName, propertyDescriptor);
                 }
             }
         }
@@ -418,7 +442,7 @@ class BeanInfoImpl implements BeanInfo {
                     hmPropertyDescriptors.put(propertyName,
                             indexedPropertyDescriptor);
                 } catch (IntrospectionException ie) {
-                    System.out.println(ie.getClass() + ": " + ie.getMessage()); //$NON-NLS-1$
+                    //System.out.println(ie.getClass() + ": " + ie.getMessage()); //$NON-NLS-1$
                 }
             }
         }

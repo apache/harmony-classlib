@@ -231,7 +231,6 @@
                     <exclude name="org/apache/harmony/beans/tests/java/beans/IntrospectorTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/PersistenceDelegateTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/PropertyChangeSupportTest.java" />
-                    <exclude name="org/apache/harmony/beans/tests/java/beans/PropertyDescriptorTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/PropertyEditorManagerTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/VetoableChangeListenerProxyTest.java" />
                     <exclude name="org/apache/harmony/beans/tests/java/beans/VetoableChangeSupportTest.java" />
