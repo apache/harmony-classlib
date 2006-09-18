@@ -23,7 +23,7 @@ import java.util.Vector;
 
 public class Book implements Pageable {
 
-    private Vector bookPages;
+    private Vector<innerPage> bookPages;
 
     // innerPage -  class to describe inner structure of Book
     private class innerPage {
@@ -54,7 +54,7 @@ public class Book implements Pageable {
     }
 
     public Book() {
-        bookPages = new Vector();
+        bookPages = new Vector<innerPage>();
     }
 
     public void append(Printable painter, PageFormat page) {
@@ -82,7 +82,7 @@ public class Book implements Pageable {
             throw new IndexOutOfBoundsException(
                     "pageIndex is more than book size");
         }
-        return ((innerPage) bookPages.elementAt(pageIndex)).getPageFormat();
+        return bookPages.elementAt(pageIndex).getPageFormat();
     }
 
     public Printable getPrintable(int pageIndex)
@@ -92,7 +92,7 @@ public class Book implements Pageable {
             throw new IndexOutOfBoundsException(
                     "pageIndex is more than book size");
         }
-        return ((innerPage) bookPages.elementAt(pageIndex)).getPrintable();
+        return bookPages.elementAt(pageIndex).getPrintable();
     }
 
     public void setPage(int pageIndex, Printable painter, PageFormat page)

@@ -33,6 +33,7 @@ public class PageFormat implements Cloneable {
         pagePaper= new Paper();
     }
 
+    @Override
     public Object clone(){
         PageFormat clonedPage;
         try {

@@ -40,6 +40,7 @@ public class Paper implements Cloneable {
                                     paperWidth - INCH2, paperHeight - INCH2);
     }
 
+    @Override
     public Object clone(){
         Paper clonedPaper;
         try {

@@ -25,18 +25,19 @@ public class PrinterIOException extends PrinterException {
 
     private static final long serialVersionUID = 5850870712125932846L;
 
-    private IOException printerIOException;
+    private IOException mException;
 
     public PrinterIOException(IOException exception) {
         initCause(null);
-        printerIOException = exception;
+        mException = exception;
     }
 
+    @Override
     public Throwable getCause() {
-        return printerIOException;
+        return mException;
     }
 
     public IOException getIOException() {
-        return printerIOException;
+        return mException;
     }
 }
