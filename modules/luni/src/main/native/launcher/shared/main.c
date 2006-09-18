@@ -36,6 +36,8 @@
 #define HY_TOOLS_PATH "tools.jar"
 #define HY_TOOLS_PROP "-Dorg.apache.harmony.tool=true"
 
+#define HARMONY_JARRUNNER_CLASSNAME  "org.apache.harmony.vm.JarRunner"
+
 #if defined(WIN32)
 #define PLATFORM_STRNICMP strnicmp
 #endif
@@ -56,7 +58,7 @@ PROTOTYPE ((HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
             jint (JNICALL ** CreateJavaVM) (JavaVM **, JNIEnv **,
                                             JavaVMInitArgs *),
             int isJvmSubDir, UDATA classArg, char *propertiesFileName,
-            int isStandaloneJar, char *mainClassJar, char *vmdllsubdir));
+            int isStandaloneJar, char **mainClassJar, char *vmdllsubdir));
 char *VMCALL vmdll_parseCmdLine
 PROTOTYPE ((HyPortLibrary * portLibrary, UDATA lastLegalArg, char **argv));
 char *VMCALL vmdlldir_parseCmdLine
@@ -602,20 +604,14 @@ invocation (HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
   jint (JNICALL * CreateJavaVM) (JavaVM **, JNIEnv **, JavaVMInitArgs *);
   PORT_ACCESS_FROM_PORT (portLibrary);
 
-  mainClassJar = hymem_allocate_memory (50);
-  if (mainClassJar == NULL)
-    {
-      /* HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY=Internal VM error: Out of memory\n */
-      PORTLIB->nls_printf (PORTLIB, HYNLS_ERROR,
-                           HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY);
-      return 1;
-    }
-  if (createVMArgs
-      (portLibrary, argc, argv, handle, version, ignoreUnrecognized, &vm_args,
-       &CreateJavaVM, isJvmSubDir, classArg, propertiesFileName,
-       isStandaloneJar, mainClassJar, vmdllsubdir))
-    return 1;
-
+  mainClassJar = NULL;
+  
+  if (createVMArgs(portLibrary, argc, argv, handle, version, ignoreUnrecognized, &vm_args,
+                        &CreateJavaVM, isJvmSubDir, classArg, propertiesFileName,
+                        isStandaloneJar, &mainClassJar, vmdllsubdir)) {
+     return 1;
+   }
+       
   if (CreateJavaVM (&jvm, &env, &vm_args))
     {
       /* HYNLS_EXELIB_INTERNAL_VM_ERR_FAILED_CREATE_JAVA_VM=Internal VM error\: Failed to create Java VM\n */
@@ -637,6 +633,7 @@ invocation (HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
           mainClass = mainClassJar;
 
           jStrObject = (*env)->NewStringUTF (env, mainClass);
+          
           if (!jStrObject)
             {
               (*env)->ExceptionDescribe (env);
@@ -665,14 +662,23 @@ invocation (HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
               //goto cleanup;
             }
 
-          /* should not spawn an exception */
-          jarRunner =
+          /* ensure that the jar is the first arg passed to the jar runner */
+          
+          classArg--;
+
+            
+/*
+     $$$ GMJ - removed this as it causes DRLVM to crash.  Need to fix
+        DRLVM, but also have no idea why this is important - just seems
+        to be a test
+    
+    jarRunner =
             (*env)->CallStaticObjectMethod (env, clazz, mID, jStrObject);
 
           if (jarRunner)
             {
               (*env)->DeleteLocalRef (env, jarRunner);
-              classArg -= 1;    /* make sure that the JAR is the first argument */
+              classArg -= 1;    // make sure that the JAR is the first argument 
             }
           else
             {
@@ -681,6 +687,7 @@ invocation (HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
               rc = 3;
               //goto cleanup;
             }
+            */
         }
 
       javaRc =
@@ -734,7 +741,7 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
               jint (JNICALL ** CreateJavaVM) (JavaVM **, JNIEnv **,
                                               JavaVMInitArgs *),
               int isJvmSubDir, UDATA classArg, char *propertiesFileName,
-              int isStandaloneJar, char *mainClassJar, char *vmdllsubdir)
+              int isStandaloneJar, char **mainClassJar, char *vmdllsubdir)
 {
   JavaVMOption *options;
   char *exeName;
@@ -790,7 +797,9 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
             {
               if (strncmp (startOfLine, "jarMainClass", 12) == 0)
                 {
-                  strcpy (mainClassJar, startOfLine + 13);
+                  *mainClassJar = hymem_allocate_memory (strlen(startOfLine + 13) + 1);
+                    
+                  strcpy (*mainClassJar, startOfLine + 13);
                   useDefaultJarRunner = 1;
                 }
             }
@@ -851,19 +860,20 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
           //printf ("expandedLineStr[l] = %s\n", expandedLineStr[l]);
         }
     }
+    
   if (isStandaloneJar)
     {
       if (useDefaultJarRunner == 0)
         {
-          mainClassJar = hymem_allocate_memory (50);
-          if (mainClassJar == NULL)
+          *mainClassJar = hymem_allocate_memory (sizeof(HARMONY_JARRUNNER_CLASSNAME) + 1);
+          if (*mainClassJar == NULL)
             {
               /* HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY=Internal VM error: Out of memory\n */
               PORTLIB->nls_printf (PORTLIB, HYNLS_ERROR,
                                    HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY);
               return 1;
             }
-          strcpy (mainClassJar, "org.apache.harmony.kernel.vm.JarRunner");
+          strcpy (*mainClassJar, HARMONY_JARRUNNER_CLASSNAME);
         }
     }
   /* entries from command line, properties file, 3 defaults plus the port library option */
