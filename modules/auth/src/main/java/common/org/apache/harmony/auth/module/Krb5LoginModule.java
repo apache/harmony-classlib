@@ -30,11 +30,14 @@ import org.apache.harmony.auth.internal.kerberos.v5.Ticket;
 
 public class Krb5LoginModule implements LoginModule {
 
-    private static final String PRINCIPAL = "cname"; //$NON-NLS-1$
+    // default kdc server
+    private static final String DEFAULT_KDC = "java.security.krb5.kdc"; //$NON-NLS-1$
 
-    private static final String REALM = "realm"; //$NON-NLS-1$
+    // default realm
+    private static final String DEFAULT_REALM = "java.security.krb5.realm"; //$NON-NLS-1$
 
-    private static final String KDC = "kdc"; //$NON-NLS-1$
+    // client's principal identifier name
+    private static final String PRINCIPAL = "principal";//$NON-NLS-1$
 
     private Map<String, ?> options;
 
@@ -56,11 +59,21 @@ public class Krb5LoginModule implements LoginModule {
     }
 
     public boolean login() throws LoginException {
-        String kdc = (String) options.get(KDC);
-        String name = (String) options.get(PRINCIPAL);
-        String realm = (String) options.get(REALM);
 
-        if (name == null || realm == null || kdc == null) {
+        //TODO put in doPrivileged
+        String kdc = System.getProperty(DEFAULT_KDC);
+        String realm = System.getProperty(DEFAULT_REALM);
+        if (kdc == null && realm != null || kdc != null && realm == null) {
+            // both properties should be set or unset together
+            throw new LoginException();//FIXME message
+        } else if (kdc == null && realm == null) {
+            // reading config from configuration file 'krb5.conf'
+            throw new LoginException();//FIXME not yet implemented
+        }
+
+        String name = (String) options.get(PRINCIPAL);
+
+        if (name == null) {
             throw new LoginException();//FIXME check params
         }
 
@@ -80,7 +93,7 @@ public class Krb5LoginModule implements LoginModule {
         try {
             Ticket ticket = KrbClient.doAS(InetAddress.getByName(kdc), port,
                     cname, realm, krbtgt);
-            
+
             return true; //FIXME 
         } catch (Exception e) {
             LoginException ex = new LoginException();

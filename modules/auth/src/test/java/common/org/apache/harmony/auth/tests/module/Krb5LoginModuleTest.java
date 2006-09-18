@@ -21,41 +21,102 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.TreeMap;
 
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.login.LoginException;
 
 import junit.framework.TestCase;
 
 import org.apache.harmony.auth.module.Krb5LoginModule;
 import org.apache.harmony.auth.tests.internal.kerberos.v5.KerberosErrorMessageTest;
+import org.apache.harmony.auth.tests.support.TestUtils;
 
 public class Krb5LoginModuleTest extends TestCase {
 
+    // default kdc server
+    private static final String ENV_KDC = "java.security.krb5.kdc";
+
+    // default realm
+    private static final String ENV_REALM = "java.security.krb5.realm";
+
+    // old value of 'java.security.krb5.kdc' system property
+    private String kdc;
+
+    // old value of 'java.security.krb5.realm' system property
+    private String realm;
+
+    // embedded server
     private KrbServer server;
 
+    // module options
     private TreeMap<String, String> options = new TreeMap<String, String>();
 
+    /**
+     * Sets system env. properties and optionaly starts local mock server
+     */
     protected void setUp() throws Exception {
 
-        String kdc = System.getProperty("java.security.krb5.kdc");
+        // save old system properties
+        kdc = System.getProperty(ENV_KDC);
+        realm = System.getProperty(ENV_REALM);
+
         if (kdc == null) {
             // run test with embedded server
             server = new KrbServer();
 
             server.start();
             while (server.port == 0) {
+                // wait until server open datagram socket 
             }
 
-            options.put("kdc", "localhost:" + server.port);
-        } else {
-            // run test with external server
-            options.put("kdc", kdc);
-        }
+            System.setProperty(ENV_KDC, "localhost:" + server.port);
+        } // else: run test with external server
+
+        System.setProperty(ENV_REALM, "MY.REALM");
     }
 
+    /**
+     * Shuts down local server and restore system env. properties
+     */
     protected void tearDown() throws Exception {
         if (server != null) {
+            // shut down local server
             server.interrupt();
         }
+
+        // restore env. variables
+        TestUtils.setSystemProperty(ENV_KDC, kdc);
+        TestUtils.setSystemProperty(ENV_REALM, realm);
+    }
+
+    /**
+     * TODO
+     */
+    public void test_Config() throws Exception {
+
+        // create loging module for testing
+        Krb5LoginModule module = new Krb5LoginModule();
+        module.initialize(null, new MockCallbackHandler(), null, options);
+
+        // case 1: unset 'kdc' and set 'real' sys.props
+        TestUtils.setSystemProperty(ENV_KDC, null);
+        TestUtils.setSystemProperty(ENV_REALM, "some_value");
+        try {
+            module.login();
+            fail("No expected LoginException");
+        } catch (LoginException e) {
+        }
+
+        // case 2: set 'kdc' and unset 'real' sys.props
+        TestUtils.setSystemProperty(ENV_KDC, "some_value");
+        TestUtils.setSystemProperty(ENV_REALM, null);
+        try {
+            module.login();
+            fail("No expected LoginException");
+        } catch (LoginException e) {
+        }
+
+        //TODO: test reading config from configuration file 'krb5.conf'
     }
 
     /**
@@ -69,16 +130,26 @@ public class Krb5LoginModuleTest extends TestCase {
 
         Krb5LoginModule module = new Krb5LoginModule();
 
-        options.put("cname", "no_such_user");
-        options.put("realm", "MY.REALM");
+        options.put("principal", "no_such_user");
 
         module.initialize(null, null, null, options);
-
         try {
             module.login();
             fail("No expected LoginException");
         } catch (LoginException e) {
             System.out.println(e);
+        }
+    }
+
+    /**
+     * Mock callback handler
+     */
+    static class MockCallbackHandler implements CallbackHandler {
+
+        public MockCallbackHandler() {
+        }
+
+        public void handle(Callback[] callbacks) {
         }
     }
 
