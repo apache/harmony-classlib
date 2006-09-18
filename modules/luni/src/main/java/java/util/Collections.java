@@ -2568,7 +2568,7 @@ public class Collections {
          *        constructed.
          */
         public CheckedCollection(Collection<E> c, Class<E> type) {
-            if (c == null) {
+            if (c == null || type == null) {
                 throw new NullPointerException();
             }
             this.c = c;
@@ -2971,7 +2971,7 @@ public class Collections {
          *        constructed.
          */
         private CheckedMap(Map<K, V> m, Class<K> keyType, Class<V> valueType) {
-            if (m == null) {
+            if (m == null || keyType == null || valueType == null) {
                 throw new NullPointerException();
             }
             this.m = m;
