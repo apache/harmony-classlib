@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -357,6 +357,9 @@ public class Arrays {
      */
     @SuppressWarnings("unchecked")
     public static int binarySearch(Object[] array, Object object) {
+        if (array.length == 0) {
+			return -1;
+		}
         Comparable<Object> key = (Comparable<Object>) object;
         int low = 0, mid = 0, high = array.length - 1, result = 0;
         while (low <= high) {

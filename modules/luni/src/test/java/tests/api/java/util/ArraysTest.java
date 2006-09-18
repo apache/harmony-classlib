@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -248,6 +248,12 @@ public class ArraysTest extends junit.framework.TestCase {
 	public void test_binarySearch$Ljava_lang_ObjectLjava_lang_Object() {
 		// Test for method int java.util.Arrays.binarySearch(java.lang.Object
 		// [], java.lang.Object)
+		assertEquals(
+				"Binary search succeeded for non-comparable value in empty array",
+				-1, Arrays.binarySearch(new Object[] {}, new Object()));
+		assertEquals(
+				"Binary search succeeded for comparable value in empty array",
+				-1, Arrays.binarySearch(new Object[] {}, new Integer(-1)));
 		for (int counter = 0; counter < arraySize; counter++)
 			assertTrue(
 					"Binary search on Object[] answered incorrect position",
