@@ -29,7 +29,15 @@ import tests.support.Support_MapTest2;
 import tests.support.Support_UnmodifiableCollectionTest;
 
 public class HashMapTest extends junit.framework.TestCase {
-
+    class MockMap extends AbstractMap {
+        public Set entrySet() {
+            return null;
+        }
+        public int size(){
+            return 0;
+        }
+    }
+    
 	HashMap hm;
 
 	final static int hmSize = 1000;
@@ -111,6 +119,14 @@ public class HashMapTest extends junit.framework.TestCase {
 		for (int counter = 0; counter < hmSize; counter++)
 			assertTrue("Failed to construct correct HashMap", hm
 					.get(objArray2[counter]) == hm2.get(objArray2[counter]));
+        
+        try {
+            Map mockMap = new MockMap();
+            hm = new HashMap(mockMap);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            //empty
+        }
 	}
 
 	/**
@@ -123,7 +139,7 @@ public class HashMapTest extends junit.framework.TestCase {
 		for (int i = 0; i < hmSize; i++)
 			assertNull("Failed to clear all elements",
 					hm.get(objArray2[i]));
-
+        
 	}
 
 	/**
@@ -329,6 +345,11 @@ public class HashMapTest extends junit.framework.TestCase {
 		for (int i = 0; i < 1000; i++)
 			assertTrue("Failed to clear all elements", hm2.get(
 					new Integer(i).toString()).equals((new Integer(i))));
+        
+        Map mockMap = new MockMap();
+        hm2 = new HashMap();
+        hm2.putAll(mockMap);
+        assertEquals("Size should be 0", 0, hm2.size());
 	}
 
 	/**

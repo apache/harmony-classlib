@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -267,7 +267,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      */
     public HashMap(Map<? extends K, ? extends V> map) {
         this(map.size() < 6 ? 11 : map.size() * 2);
-        putAll(map);
+        super.putAll(map);
     }
 
     /**
@@ -537,14 +537,20 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
 
     /**
-     * Copies every mapping in the specified Map to this HashMap.
+     * Copies all the mappings in the given map to this map. These mappings will
+     * replace all mappings that this map had for any of the keys currently in
+     * the given map.
      * 
      * @param map
      *            the Map to copy mappings from
+     * @throws NullPointerException
+     *             if the given map is null
      */
     @Override
     public void putAll(Map<? extends K, ? extends V> map) {
-        super.putAll(map);
+        if (map.entrySet() != null) {
+            super.putAll(map);
+        }
     }
 
     void rehash() {
@@ -692,4 +698,5 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             createEntry(key, index, (V)stream.readObject());
         }
     }
+    
 }

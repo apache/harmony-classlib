@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -239,15 +239,15 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
      */
     public WeakHashMap(Map<? extends K, ? extends V> map) {
         this(map.size() < 6 ? 11 : map.size() * 2);
-        putAll(map);
+        putAllImpl(map);
     }
 
     /**
-     * Removes all mappings from this WeakHashMap, leaving it empty.
-     * 
-     * @see #isEmpty
-     * @see #size
-     */
+	 * Removes all mappings from this WeakHashMap, leaving it empty.
+	 * 
+	 * @see #isEmpty
+	 * @see #size
+	 */
     @Override
     public void clear() {
         if (elementCount > 0) {
@@ -621,6 +621,21 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
         elementData = newData;
         computeMaxSize();
     }
+    
+    /**
+     * Copies all the mappings in the given map to this map. These mappings will
+     * replace all mappings that this map had for any of the keys currently in
+     * the given map.
+     * 
+     * @param map
+     *            the Map to copy mappings from
+     * @throws NullPointerException
+     *             if the given map is null
+     */
+    @Override
+    public void putAll(Map<? extends K, ? extends V> map) {
+        putAllImpl(map);
+    }
 
     /**
      * Removes a mapping with the specified key from this WeakHashMap.
@@ -671,5 +686,11 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
     public int size() {
         poll();
         return elementCount;
+    }
+    
+    private void putAllImpl(Map<? extends K, ? extends V> map) {
+        if (map.entrySet() != null) {
+            super.putAll(map);
+        }
     }
 }

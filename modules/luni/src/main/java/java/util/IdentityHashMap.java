@@ -285,7 +285,7 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
      */
     public IdentityHashMap(Map<? extends K, ? extends V> map) {
         this(map.size() < 6 ? 11 : map.size() * 2);
-        putAll(map);
+        putAllImpl(map);
     }
 
     @SuppressWarnings("unchecked")
@@ -473,6 +473,21 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
         elementData[index + 1] = _value;
 
         return massageValue(result);
+    }
+    
+    /**
+     * Copies all the mappings in the given map to this map. These mappings will
+     * replace all mappings that this map had for any of the keys currently in
+     * the given map.
+     * 
+     * @param map
+     *            the Map to copy mappings from
+     * @throws NullPointerException
+     *             if the given map is null
+     */
+    @Override
+    public void putAll(Map<? extends K, ? extends V> map) {
+        putAllImpl(map);
     }
 
     private void rehash() {
@@ -772,5 +787,11 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
             put(key, (V) stream.readObject());
         }
         size = savedSize;
+    }
+    
+    private void putAllImpl(Map<? extends K, ? extends V> map) {
+        if (map.entrySet() != null) {
+            super.putAll(map);
+        }
     }
 }

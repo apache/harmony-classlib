@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 
 package tests.api.java.util;
 
+import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -26,6 +27,14 @@ import java.util.WeakHashMap;
 import tests.support.Support_MapTest2;
 
 public class WeakHashMapTest extends junit.framework.TestCase {
+	class MockMap extends AbstractMap {
+		public Set entrySet() {
+			return null;
+		}
+		public int size(){
+			return 0;
+		}
+	}
 
 	Object[] keyArray = new Object[100];
 
@@ -83,6 +92,15 @@ public class WeakHashMapTest extends junit.framework.TestCase {
 		assertNull("Empty hashtable access", empty.get("nothing"));
 		empty.put("something", "here");
 		assertTrue("cannot get element", empty.get("something") == "here");
+	}
+	
+	/**
+	 * @tests java.util.WeakHashMap#WeakHashMap(java.util.Map)
+	 */
+	public void test_ConstructorLjava_util_Map() {
+        Map mockMap = new MockMap();
+        WeakHashMap map = new WeakHashMap(mockMap);
+        assertEquals("Size should be 0", 0, map.size());
 	}
 
 	/**
@@ -205,6 +223,16 @@ public class WeakHashMapTest extends junit.framework.TestCase {
 		map.remove("nothing"); // Cause objects in queue to be removed
 		assertEquals("null key was removed", 1, map.size());
 	}
+    
+    /**
+     * @tests java.util.WeakHashMap#putAll(java.util.Map)
+     */
+    public void test_putAllLjava_util_Map() {
+        Map mockMap=new MockMap();
+        WeakHashMap map = new WeakHashMap();
+        map.putAll(mockMap);
+        assertEquals("Size should be 0", 0, map.size());
+    }
 
 	/**
 	 * @tests java.util.WeakHashMap#remove(java.lang.Object)

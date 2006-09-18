@@ -1,4 +1,4 @@
-/* Copyright 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,14 @@ import java.util.TreeMap;
 import tests.support.Support_MapTest2;
 
 public class IdentityHashMapTest extends junit.framework.TestCase {
-
+	class MockMap extends AbstractMap {
+		public Set entrySet() {
+			return null;
+		}
+		public int size(){
+			return 0;
+		}
+	}
 	/*
 	 * TODO: change all the statements testing the keys and values with equals()
 	 * method to check for reference equality instead
@@ -95,6 +102,10 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
 		for (int counter = 0; counter < hmSize; counter++)
 			assertTrue("Failed to construct correct IdentityHashMap", hm
 					.get(objArray2[counter]) == hm2.get(objArray2[counter]));
+		
+        Map mockMap = new MockMap();
+        hm2 = new IdentityHashMap(mockMap);
+        assertEquals("Size should be 0", 0, hm2.size());
 	}
 
 	/**
@@ -307,6 +318,11 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
 		for (int i = 0; i < 1000; i++)
 			assertTrue("Failed to clear all elements", hm2.get(objArray2[i])
 					.equals((new Integer(i))));
+        
+        hm2 = new IdentityHashMap();
+        Map mockMap = new MockMap();
+        hm2.putAll(mockMap);
+        assertEquals("Size should be 0", 0, hm2.size());
 	}
 
 	/**
