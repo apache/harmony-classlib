@@ -67,7 +67,7 @@ public class PixelGrabber implements ImageConsumer {
         initialize(img.getSource(), x, y, w, h, null, 0, 0, forceRGB);
     }
 
-    public void setProperties(Hashtable props) {
+    public void setProperties(Hashtable<?, ?> props) {
         return;
     }
 
@@ -90,7 +90,9 @@ public class PixelGrabber implements ImageConsumer {
             ColorModel model, byte[] pixels, int srcOff, int srcScan) {
         if(srcY < Y){
             int delta = Y - srcY;
-            if(delta >= height) return;
+            if(delta >= height) {
+                return;
+            }
             srcY += delta;
             srcH -= delta;
             srcOff += srcScan * delta;
@@ -98,12 +100,16 @@ public class PixelGrabber implements ImageConsumer {
 
         if(srcY + srcH > Y + height){
             srcH = Y + height - srcY;
-            if(srcH <= 0) return;
+            if(srcH <= 0) {
+                return;
+            }
         }
 
         if(srcX < X){
             int delta = X - srcX;
-            if(delta >= width) return;
+            if(delta >= width) {
+                return;
+            }
             srcW -= delta;
             srcX += delta;
             srcOff += delta;
@@ -111,9 +117,13 @@ public class PixelGrabber implements ImageConsumer {
 
         if(srcX + srcW > X + width){
             srcW = X + width - srcX;
-            if(srcW <= 0) return;
+            if(srcW <= 0) {
+                return;
+            }
         }
-        if(scanline == 0) scanline = width;
+        if(scanline == 0) {
+            scanline = width;
+        }
         int realOff = offset + (srcY - Y) * scanline + (srcX - X);
         switch(dataType){
         case DATA_TYPE_UNDEFINED:
@@ -155,7 +165,9 @@ public class PixelGrabber implements ImageConsumer {
 
         if(srcY < Y){
             int delta = Y - srcY;
-            if(delta >= height) return;
+            if(delta >= height) {
+                return;
+            }
             srcY += delta;
             srcH -= delta;
             srcOff += srcScan * delta;
@@ -163,12 +175,16 @@ public class PixelGrabber implements ImageConsumer {
 
         if(srcY + srcH > Y + height){
             srcH = Y + height - srcY;
-            if(srcH <= 0) return;
+            if(srcH <= 0) {
+                return;
+            }
         }
 
         if(srcX < X){
             int delta = X - srcX;
-            if(delta >= width) return;
+            if(delta >= width) {
+                return;
+            }
             srcW -= delta;
             srcX += delta;
             srcOff += delta;
@@ -176,9 +192,13 @@ public class PixelGrabber implements ImageConsumer {
 
         if(srcX + srcW > X + width){
             srcW = X + width - srcX;
-            if(srcW <= 0) return;
+            if(srcW <= 0) {
+                return;
+            }
         }
-        if(scanline == 0) scanline = width;
+        if(scanline == 0) {
+            scanline = width;
+        }
         int realOff = offset + (srcY - Y) * scanline + (srcX - X);
 
         switch(dataType){
@@ -186,8 +206,11 @@ public class PixelGrabber implements ImageConsumer {
             cm = model;
             iData = new int[width * height];
             dataType = DATA_TYPE_INT;
-            if(cm == ColorModel.getRGBdefault()) isRGB = true;
-            else isRGB = false;
+            if(cm == ColorModel.getRGBdefault()) {
+                isRGB = true;
+            } else {
+                isRGB = false;
+            }
 
         case DATA_TYPE_INT:
             if(cm == model){
@@ -231,7 +254,9 @@ public class PixelGrabber implements ImageConsumer {
         while((grabberStatus & GRABBING_STOP) == 0){
             if(ms != 0){
                 ms = start + ms - System.currentTimeMillis();
-                if(ms <= 0) break;
+                if(ms <= 0) {
+                    break;
+                }
             }
             wait(ms);
         }
@@ -240,8 +265,12 @@ public class PixelGrabber implements ImageConsumer {
     }
 
     public void setDimensions(int w, int h) {
-        if(width < 0) width = w - X;
-        if(height < 0) height = h - Y;
+        if(width < 0) {
+            width = w - X;
+        }
+        if(height < 0) {
+            height = h - Y;
+        }
 
         grabberStatus |= ImageObserver.WIDTH | ImageObserver.HEIGHT;
 
@@ -308,7 +337,9 @@ public class PixelGrabber implements ImageConsumer {
     }
 
     public synchronized int getWidth() {
-        if(width < 0) return -1;
+        if(width < 0) {
+            return -1;
+        }
         return width;
     }
 
@@ -317,7 +348,9 @@ public class PixelGrabber implements ImageConsumer {
     }
 
     public synchronized int getHeight() {
-        if(height < 0) return -1;
+        if(height < 0) {
+            return -1;
+        }
         return height;
     }
 
@@ -368,4 +401,3 @@ public class PixelGrabber implements ImageConsumer {
     }
 
 }
-

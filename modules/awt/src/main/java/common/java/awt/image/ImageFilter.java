@@ -25,7 +25,9 @@ public class ImageFilter implements ImageConsumer, Cloneable {
 
     protected ImageConsumer consumer;
 
-    public ImageFilter() {}
+    public ImageFilter() {
+        super();
+    }
 
     public ImageFilter getFilterInstance(ImageConsumer ic) {
         ImageFilter filter = (ImageFilter) clone();
@@ -33,24 +35,29 @@ public class ImageFilter implements ImageConsumer, Cloneable {
         return filter;
     }
 
-    public void setProperties(Hashtable props) {
-        Hashtable fprops;
-        if(props == null) fprops = new Hashtable();
-        else fprops = (Hashtable) props.clone();
+    @SuppressWarnings("unchecked")
+    public void setProperties(Hashtable<?, ?> props) {
+        Hashtable<Object, Object> fprops;
+        if (props == null) {
+            fprops = new Hashtable<Object, Object>();
+        } else {
+            fprops = (Hashtable<Object, Object>) props.clone();
+        }
         String propName = "Filters";
-        String prop = "Null filter" ;
+        String prop = "Null filter";
         Object o = fprops.get(propName);
-        if(o != null){
-            if(o instanceof String){
-                prop = (String)o + "; " + prop;
-            }else{
-                prop =  o.toString() + "; " + prop;
+        if (o != null) {
+            if (o instanceof String) {
+                prop = (String) o + "; " + prop;
+            } else {
+                prop = o.toString() + "; " + prop;
             }
         }
         fprops.put(propName, prop);
         consumer.setProperties(fprops);
     }
 
+    @Override
     public Object clone() {
         try {
             return super.clone();
@@ -67,15 +74,13 @@ public class ImageFilter implements ImageConsumer, Cloneable {
         consumer.setColorModel(model);
     }
 
-    public void setPixels(int x, int y, int w, int h, ColorModel model, 
-            int[] pixels, int off, int scansize) {
-        
+    public void setPixels(int x, int y, int w, int h, ColorModel model, int[] pixels, int off,
+            int scansize) {
         consumer.setPixels(x, y, w, h, model, pixels, off, scansize);
     }
 
-    public void setPixels(int x, int y, int w, int h, ColorModel model, 
-            byte[] pixels, int off, int scansize) {
-        
+    public void setPixels(int x, int y, int w, int h, ColorModel model, byte[] pixels, int off,
+            int scansize) {
         consumer.setPixels(x, y, w, h, model, pixels, off, scansize);
     }
 
@@ -92,4 +97,3 @@ public class ImageFilter implements ImageConsumer, Cloneable {
     }
 
 }
-
