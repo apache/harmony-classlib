@@ -107,6 +107,7 @@ class PlainDatagramSocketImpl extends DatagramSocketImpl {
 
     public PlainDatagramSocketImpl() {
         super();
+        fd = new FileDescriptor();
     }
 
     @Override

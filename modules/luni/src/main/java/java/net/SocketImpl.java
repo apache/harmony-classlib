@@ -73,7 +73,6 @@ public abstract class SocketImpl implements SocketOptions {
 	 * @see SocketImplFactory
 	 */
 	public SocketImpl() {
-		initializeSocket();
         this.netImpl = Platform.getNetworkSystem();        
 	}
 
@@ -224,14 +223,6 @@ public abstract class SocketImpl implements SocketOptions {
 	 */
 	protected int getPort() {
 		return port;
-	}
-
-	/**
-	 * Initialize the socket. By default, read & accept operations are blocking.
-	 * The port fields are created with -1 values, to flag them as unset.
-	 */
-	void initializeSocket() {
-		fd = new FileDescriptor();
 	}
 
 	/**

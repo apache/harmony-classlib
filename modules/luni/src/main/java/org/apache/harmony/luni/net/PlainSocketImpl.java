@@ -82,6 +82,11 @@ class PlainSocketImpl extends SocketImpl {
 
     Proxy proxy;
 
+    public PlainSocketImpl() {
+        super();
+        fd = new FileDescriptor();
+    }
+
     @Override
     protected void accept(SocketImpl newImpl) throws IOException {
         if (NetUtil.usingSocks(proxy)) {

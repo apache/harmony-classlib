@@ -37,7 +37,8 @@ public abstract class DatagramSocketImpl implements SocketOptions {
 	 * Constructs an unbound datagram socket implementation.
 	 */
 	public DatagramSocketImpl() {
-		initializeSocket();
+        localPort = -1;
+        receiveTimeout = 0;
 	}
 
 	/**
@@ -126,16 +127,6 @@ public abstract class DatagramSocketImpl implements SocketOptions {
 	 *                The exception description.
 	 */
 	protected abstract int getTimeToLive() throws IOException;
-
-	/**
-	 * Allocate a FileDescriptor and flag the localPort, so that a lookup to the
-	 * IP stack is forced in <code>getLocalPort</code>.
-	 */
-	void initializeSocket() {
-		fd = new FileDescriptor();
-		localPort = -1;
-		receiveTimeout = 0;
-	}
 
 	/**
 	 * Add this socket to the multicast group. A socket must join a group before

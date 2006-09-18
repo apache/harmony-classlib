@@ -36,6 +36,7 @@ public class AllTests {
 		suite.addTestSuite(ConnectExceptionTest.class);
 		suite.addTestSuite(DatagramPacketTest.class);
 		suite.addTestSuite(DatagramSocketTest.class);
+        suite.addTestSuite(DatagramSocketImplTest.class);
 		suite.addTestSuite(HttpURLConnectionTest.class);
 		suite.addTestSuite(Inet4AddressTest.class);
 		suite.addTestSuite(Inet6AddressTest.class);

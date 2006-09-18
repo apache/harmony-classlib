@@ -15,6 +15,7 @@
 
 package tests.api.java.net;
 
+import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -68,6 +69,12 @@ public class SocketImplTest extends junit.framework.TestCase {
 		}
 	}
 	
+    public void test_Constructor_fd() throws Exception {
+        // regression test for Harmony-1117
+        MockSocketImpl mockSocketImpl = new MockSocketImpl();
+        assertNull(mockSocketImpl.getFileDescriptor());
+    }
+    
 	/*
 	* @tests java.net.SocketImpl#setPerformancePreference()
 	*/
@@ -131,6 +138,10 @@ public class SocketImplTest extends junit.framework.TestCase {
                 int bandwidth){
 			super.setPerformancePreferences(connectionTime, latency, bandwidth);
 		}
+
+        public FileDescriptor getFileDescriptor() {
+            return super.getFileDescriptor();
+        }
 	}
 
 	protected void setUp() {
