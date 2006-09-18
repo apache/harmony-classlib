@@ -395,15 +395,15 @@ class BeanInfoImpl implements BeanInfo {
                             beanClass);
                 } catch (IntrospectionException ie) {
                     //no setter or getter
-                    if (methodName.startsWith("set")) {
+                    if (methodName.startsWith("set")) { //$NON-NLS-1$
                         try {
                             propertyDescriptor = new PropertyDescriptor(
                                     propertyName, beanClass, null, methodName);
                         } catch (IntrospectionException e) {
                             //no getter
                         }
-                    } else if (methodName.startsWith("get")
-                            || methodName.startsWith("is")) {
+                    } else if (methodName.startsWith("get") //$NON-NLS-1$
+                            || methodName.startsWith("is")) { //$NON-NLS-1$
                         try {
                             propertyDescriptor = new PropertyDescriptor(
                                     propertyName, beanClass, methodName, null);
