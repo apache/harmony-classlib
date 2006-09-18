@@ -35,6 +35,7 @@ import org.apache.harmony.awt.gl.font.BasicMetrics;
 import org.apache.harmony.awt.gl.font.CaretManager;
 import org.apache.harmony.awt.gl.font.TextMetricsCalculator;
 import org.apache.harmony.awt.gl.font.TextRunBreaker;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 public final class TextLayout implements Cloneable {
 
@@ -70,6 +71,18 @@ public final class TextLayout implements Cloneable {
     float justificationWidth = -1;
 
     public TextLayout(String string, Font font, FontRenderContext frc) {
+        if (string == null){
+            throw new IllegalArgumentException(Messages.getString("awt.01", "string")); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        
+        if (font == null){
+            throw new IllegalArgumentException(Messages.getString("awt.01", "font")); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+
+        if (string.length() == 0){
+            throw new IllegalArgumentException(Messages.getString("awt.02", "string")); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+
         AttributedString as = new AttributedString(string);
         as.addAttribute(TextAttribute.FONT, font);
         this.breaker = new TextRunBreaker(as.getIterator(), frc);
@@ -88,6 +101,14 @@ public final class TextLayout implements Cloneable {
     }
 
     public TextLayout(AttributedCharacterIterator text, FontRenderContext frc) {
+        if (text == null){
+            throw new IllegalArgumentException(Messages.getString("awt.03", "text")); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        
+        if (text.getBeginIndex() == text.getEndIndex()){
+            throw new IllegalArgumentException(Messages.getString("awt.04", "text")); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+
         this.breaker = new TextRunBreaker(text, frc);
         caretManager = new CaretManager(breaker);
     }

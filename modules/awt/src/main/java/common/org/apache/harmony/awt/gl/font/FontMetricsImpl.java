@@ -76,7 +76,8 @@ public class FontMetricsImpl extends FontMetrics  {
 
         }
 
-        LineMetricsImpl lm = (LineMetricsImpl)font.getLineMetrics("", null);
+        LineMetricsImpl lm = (LineMetricsImpl)peer.getLineMetrics("", null, at);
+        
         this.ascent = lm.getLogicalAscent();
         this.descent = lm.getLogicalDescent();
         this.leading = lm.getLogicalLeading();

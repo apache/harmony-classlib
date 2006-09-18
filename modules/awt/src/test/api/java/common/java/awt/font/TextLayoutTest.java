@@ -29,6 +29,9 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.text.AttributedString;
 import java.text.AttributedCharacterIterator;
+import java.text.AttributedCharacterIterator.Attribute;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TextLayoutTest extends TestCase
 {
@@ -640,6 +643,76 @@ public class TextLayoutTest extends TestCase
     {
         TextHitInfo i = TextLayout.DEFAULT_CARET_POLICY.getStrongCaret(TextHitInfo.trailing(4), TextHitInfo.leading(5), tl);
         assertEquals(TextHitInfo.leading(5), i);
+    }
+
+    public void testTextLayoutConstructorConstraints() throws Exception{
+        // regression test for Harmony-1464
+        try{
+            new TextLayout(null, (Font)null, null);
+        } catch (IllegalArgumentException e) {
+                // expected
+        }
+
+        try{
+            new TextLayout(null, f, null);
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+        
+        try{
+            new TextLayout("", f, null);
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        try{
+            new TextLayout("aa", f, null);
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try{
+            new TextLayout(null, null);
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        AttributedString as = new AttributedString("test");
+        as.addAttribute(TextAttribute.FONT, f, 0, 2 );
+
+        try{
+            new TextLayout(as.getIterator(), null);
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            new TextLayout(null, (Map<? extends Attribute,?>)null, (FontRenderContext) null);
+        } catch (IllegalArgumentException e) {
+            System.out.println("success: " + e.getMessage());
+            // as expected
+        }
+
+        try {
+            new TextLayout(null, (Map<? extends Attribute,?>)new HashMap(), (FontRenderContext) null);
+        } catch (IllegalArgumentException e) {
+            // as expected
+        }
+
+        try {
+            new TextLayout("aa", (Map<? extends Attribute,?>)new HashMap(), (FontRenderContext) null);
+        } catch (NullPointerException e) {
+            // as expected
+        }
+
+        
+        try{
+            new TextLayout("", (Map<? extends Attribute,?>)new HashMap(), (FontRenderContext) null);
+        } catch (IllegalArgumentException e) {
+            // as expected
+            System.out.println("success: " + e.getMessage());
+        }
+        
     }
 
     public static Test suite()

@@ -41,6 +41,7 @@ import java.awt.peer.FontPeer;
 
 import org.apache.harmony.awt.gl.font.CommonGlyphVector;
 import org.apache.harmony.awt.gl.font.FontPeerImpl;
+import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.misc.HashCode;
 
 
@@ -131,7 +132,7 @@ public class Font implements Serializable {
         // Default values are taken from the documentation of the Font class. 
         // See Font constructor, decode and getFont sections.
   
-        this.name = "default";
+        this.name = "default"; //$NON-NLS-1$
         this.size = 12;
         this.pointSize = 12;
         this.style = Font.PLAIN;
@@ -197,7 +198,7 @@ public class Font implements Serializable {
     }
 
     public Font(String name, int style, int size) {
-        this.name = (name != null) ? name : "Default";
+        this.name = (name != null) ? name : "Default"; //$NON-NLS-1$
         this.size = (size >= 0) ? size : 0;
         this.style = (style & ~0x03) == 0 ? style : Font.PLAIN;
         this.pointSize = this.size;
@@ -330,11 +331,11 @@ public class Font implements Serializable {
     private static int getFontStyle(String fontStyleName){
         int result = Font.PLAIN;
 
-        if (fontStyleName.toUpperCase().equals("BOLDITALIC")) {
+        if (fontStyleName.toUpperCase().equals("BOLDITALIC")) { //$NON-NLS-1$
             result = Font.BOLD | Font.ITALIC;
-        } else if (fontStyleName.toUpperCase().equals("BOLD")) {
+        } else if (fontStyleName.toUpperCase().equals("BOLD")) { //$NON-NLS-1$
             result = Font.BOLD;
-        } else if (fontStyleName.toUpperCase().equals("ITALIC")) {
+        } else if (fontStyleName.toUpperCase().equals("ITALIC")) { //$NON-NLS-1$
             result = Font.ITALIC;
         }
 
@@ -349,12 +350,12 @@ public class Font implements Serializable {
         // with spaces.
         
         StringTokenizer strTokens;
-        String delim = "-";
+        String delim = "-"; //$NON-NLS-1$
         String substr;
 
         int fontSize = 12;
         int fontStyle = Font.PLAIN;
-        String fontName = "dialog";
+        String fontName = "dialog"; //$NON-NLS-1$
 
         if (str == null) {
             return new Font(fontName, fontStyle, fontSize);
@@ -596,6 +597,10 @@ public class Font implements Serializable {
     public LineMetrics getLineMetrics(char[] chars, int start,
             int end, FontRenderContext frc) {
 
+        if (frc == null){
+            throw new NullPointerException(Messages.getString("awt.00")); //$NON-NLS-1$
+        }
+
         FontPeerImpl peer = (FontPeerImpl)this.getPeer();
 
         return peer.getLineMetrics((new String(chars)).substring(start, end),
@@ -604,12 +609,17 @@ public class Font implements Serializable {
 
     public LineMetrics getLineMetrics(CharacterIterator iter, int start,
             int end, FontRenderContext frc) {
+
+        if (frc == null){
+            throw new NullPointerException(Messages.getString("awt.00")); //$NON-NLS-1$
+        }
+
         String resultString;
         int iterCount;
 
         iterCount = end - start;
         if (iterCount < 0){
-            resultString = "";
+            resultString = ""; //$NON-NLS-1$
         } else{
             char[] chars = new char[iterCount];
             int i = 0;
@@ -625,6 +635,11 @@ public class Font implements Serializable {
     }
 
     public LineMetrics getLineMetrics(String str, FontRenderContext frc) {
+        
+        if (frc == null){
+            throw new NullPointerException(Messages.getString("awt.00")); //$NON-NLS-1$
+        }
+        
         FontPeerImpl peer = (FontPeerImpl)this.getPeer();
         return peer.getLineMetrics(str, frc, getTransform());
     }
@@ -771,25 +786,25 @@ public class Font implements Serializable {
 
     @Override
     public String toString() {
-        String stl = "plain";
+        String stl = "plain"; //$NON-NLS-1$
         String result;
 
         if (this.isBold() && this.isItalic()){
-            stl = "bolditalic";
+            stl = "bolditalic"; //$NON-NLS-1$
         }
         if (this.isBold() && !this.isItalic()){
-            stl = "bold";
+            stl = "bold"; //$NON-NLS-1$
         }
 
         if (!this.isBold() && this.isItalic()){
-            stl = "italic";
+            stl = "italic"; //$NON-NLS-1$
         }
 
         result = this.getClass().getName() +
-                "[family=" + this.getFamily() +
-                ",name="+ this.name +
-                ",style=" + stl +
-                ",size=" + this.size + "]";
+                "[family=" + this.getFamily() + //$NON-NLS-1$
+                ",name="+ this.name + //$NON-NLS-1$
+                ",style=" + stl + //$NON-NLS-1$
+                ",size=" + this.size + "]"; //$NON-NLS-1$ //$NON-NLS-2$
         return result;
     }
 
