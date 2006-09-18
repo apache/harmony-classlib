@@ -53,31 +53,33 @@ public class RenderableImageOp implements RenderableImage {
 
     public RenderedImage createRendering(RenderContext renderContext) {
 
-        Vector sources = getSources();
+        Vector<RenderableImage> sources = getSources();
         ParameterBlock rdParam = (ParameterBlock) paramBlock.clone();
 
-        if(sources != null){
+        if (sources != null) {
             Vector<Object> rdSources = new Vector<Object>();
             int i = 0;
-            while(i < sources.size()){
-                RenderContext newContext = CRIF.mapRenderContext(i, renderContext,
-                        paramBlock, this);
-                RenderedImage rdim =
-                    ((RenderableImage) sources.elementAt(i)).createRendering(newContext);
+            while (i < sources.size()) {
+                RenderContext newContext = CRIF.mapRenderContext(i, renderContext, paramBlock,
+                        this);
+                RenderedImage rdim = sources.elementAt(i).createRendering(newContext);
 
-                if(rdim != null) rdSources.addElement(rdim);
+                if (rdim != null) {
+                    rdSources.addElement(rdim);
+                }
                 i++;
             }
-            if(rdSources.size() > 0){
+            if (rdSources.size() > 0) {
                 rdParam.setSources(rdSources);
             }
         }
-        return CRIF.create(renderContext,rdParam);
+        return CRIF.create(renderContext, rdParam);
     }
 
     public RenderedImage createScaledRendering(int w, int h, RenderingHints hints) {
-        if(w == 0 && h == 0)
+        if(w == 0 && h == 0) {
             throw new IllegalArgumentException("Width and Height mustn't be equal zero both");
+        }
         if(w == 0){
             w = Math.round(h*(getWidth()/getHeight()));
         }
@@ -95,7 +97,9 @@ public class RenderableImageOp implements RenderableImage {
     }
 
     public Vector<RenderableImage> getSources() {
-        if(paramBlock.getNumSources() == 0) return null;
+        if(paramBlock.getNumSources() == 0) {
+            return null;
+        }
         Vector<RenderableImage> v = new Vector<RenderableImage>();
         int  i = 0;
         while(i < paramBlock.getNumSources()){

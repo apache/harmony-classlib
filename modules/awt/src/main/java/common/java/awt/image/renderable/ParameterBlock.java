@@ -101,6 +101,8 @@ public class ParameterBlock implements Cloneable, Serializable {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
     public Object clone() {
         ParameterBlock replica;
         try{
@@ -234,6 +236,4 @@ public class ParameterBlock implements Cloneable, Serializable {
     public int getNumParameters() {
         return parameters.size();
     }
-
 }
-

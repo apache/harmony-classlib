@@ -33,7 +33,6 @@ public class RenderContext implements Cloneable {
         this.transform = (AffineTransform)usr2dev.clone();
         this.aoi = aoi;
         this.hints = hints;
-
     }
 
     public RenderContext(AffineTransform usr2dev, Shape aoi) {
@@ -48,6 +47,7 @@ public class RenderContext implements Cloneable {
         this(usr2dev, null, null);
     }
 
+    @Override
     public Object clone() {
         return new RenderContext(transform, aoi, hints);
     }
@@ -99,6 +99,4 @@ public class RenderContext implements Cloneable {
     public RenderingHints getRenderingHints() {
         return hints;
     }
-
 }
-

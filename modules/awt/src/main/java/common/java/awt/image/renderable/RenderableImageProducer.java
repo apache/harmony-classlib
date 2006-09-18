@@ -24,14 +24,13 @@ import java.awt.image.ImageConsumer;
 import java.awt.image.ImageProducer;
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
-import java.util.Enumeration;
 import java.util.Vector;
 
 public class RenderableImageProducer implements ImageProducer, Runnable {
 
     RenderableImage rbl;
     RenderContext rc;
-    Vector consumers = new Vector();
+    Vector<ImageConsumer> consumers = new Vector<ImageConsumer>();
 
     public RenderableImageProducer(RenderableImage rdblImage, RenderContext rc) {
         this.rbl = rdblImage;
@@ -55,7 +54,9 @@ public class RenderableImageProducer implements ImageProducer, Runnable {
     public void requestTopDownLeftRightResend(ImageConsumer ic) {}
 
     public synchronized void removeConsumer(ImageConsumer ic) {
-        if(ic != null) consumers.removeElement(ic);
+        if(ic != null) {
+            consumers.removeElement(ic);
+        }
     }
 
     public synchronized void addConsumer(ImageConsumer ic) {
@@ -65,21 +66,27 @@ public class RenderableImageProducer implements ImageProducer, Runnable {
     }
 
     public void run() {
-        if(rbl == null) return;
+        if(rbl == null) {
+            return;
+        }
 
         RenderedImage rd;
-        if(rc != null) rd = rbl.createRendering(rc);
-        else rd = rbl.createDefaultRendering();
+        if(rc != null) {
+            rd = rbl.createRendering(rc);
+        } else {
+            rd = rbl.createDefaultRendering();
+        }
 
         ColorModel cm = rd.getColorModel();
-        if(cm == null) cm = ColorModel.getRGBdefault();
+        if(cm == null) {
+            cm = ColorModel.getRGBdefault();
+        }
 
         Raster r = rd.getData();
         int w = r.getWidth();
         int h = r.getHeight();
 
-        for(Enumeration e = consumers.elements(); e.hasMoreElements();){
-            ImageConsumer c = (ImageConsumer) e.nextElement();
+        for (ImageConsumer c : consumers) {
             c.setDimensions(w, h);
             c.setHints(ImageConsumer.TOPDOWNLEFTRIGHT |
                     ImageConsumer.COMPLETESCANLINES |
@@ -96,14 +103,12 @@ public class RenderableImageProducer implements ImageProducer, Runnable {
                 scanLine[x] = cm.getDataElement(pixel, 0);
             }
 
-            for(Enumeration e = consumers.elements(); e.hasMoreElements();){
-                ImageConsumer c = (ImageConsumer) e.nextElement();
+            for (ImageConsumer c : consumers) {
                 c.setPixels(0, y, w, 1, cm, scanLine, 0, w);
             }
         }
 
-        for(Enumeration e = consumers.elements(); e.hasMoreElements();){
-            ImageConsumer c = (ImageConsumer) e.nextElement();
+        for (ImageConsumer c : consumers) {
             c.imageComplete(ImageConsumer.STATICIMAGEDONE);
         }
     }
