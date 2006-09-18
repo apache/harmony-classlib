@@ -504,6 +504,9 @@ public class AttributedString {
     }
 
     public void addAttribute(AttributedCharacterIterator.Attribute attribute, Object value) {
+        if(null == attribute){
+            throw new NullPointerException();
+        }
         if (text.length() == 0) {
             throw new IllegalArgumentException();
         }
@@ -520,6 +523,9 @@ public class AttributedString {
 
     public void addAttribute(AttributedCharacterIterator.Attribute attribute, Object value,
             int start, int end) {
+        if(null == attribute){
+            throw new NullPointerException();
+        }
         if (start < 0 || end > text.length() || start >= end) {
             throw new IllegalArgumentException();
         }

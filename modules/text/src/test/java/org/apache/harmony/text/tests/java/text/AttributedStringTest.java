@@ -19,6 +19,8 @@ import java.text.AttributedString;
 import java.text.CharacterIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.WeakHashMap;
 
 public class AttributedStringTest extends junit.framework.TestCase {
 
@@ -134,6 +136,42 @@ public class AttributedStringTest extends junit.framework.TestCase {
             fail("Expected IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // Expected
+        }
+        
+        // regression for Harmony-1244
+        as = new AttributedString("123", new WeakHashMap());
+        try {
+            as.addAttribute(null, new TreeSet(), 0, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            as.addAttribute(null, new TreeSet(), -1, 1);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        } 
+    }
+    
+    /**
+     * @tests java.text.AttributedString.addAttribute(AttributedCharacterIterator, Object)
+     */
+    public void test_addAttributeLjava_text_AttributedCharacterIterator$AttributeLjava_lang_Object() {
+        //regression for Harmony-1244
+        AttributedString as = new AttributedString("123", new WeakHashMap());
+        try {
+            as.addAttribute(null, new TreeSet());
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            as.addAttribute(null, null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
         }
     }
 }
