@@ -60,21 +60,13 @@ public class KDCRequest {
 
     private final PrincipalName sname;
 
-    private KDCRequest(int msgType, PrincipalName cname, String realm,
+    KDCRequest(int msgType, PrincipalName cname, String realm,
             PrincipalName sname) {
 
         this.msgType = msgType;
         this.cname = cname;
         this.realm = realm;
         this.sname = sname;
-    }
-
-    public static KDCRequest createASRequest(PrincipalName cname, String realm) {
-
-        PrincipalName krbtgt = new PrincipalName(PrincipalName.NT_SRV_XHST,
-                new String[] { "krbtgt", realm }); //$NON-NLS-1$
-
-        return new KDCRequest(AS_REQ, cname, realm, krbtgt);
     }
 
     public DatagramSocket send(InetAddress address, int port)

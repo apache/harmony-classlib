@@ -16,12 +16,7 @@
 
 package org.apache.harmony.auth.module;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Map;
 
 import javax.security.auth.Subject;
@@ -29,16 +24,11 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
-import org.apache.harmony.auth.internal.kerberos.v5.KDCReply;
-import org.apache.harmony.auth.internal.kerberos.v5.KDCRequest;
-import org.apache.harmony.auth.internal.kerberos.v5.KerberosErrorMessage;
+import org.apache.harmony.auth.internal.kerberos.v5.KrbClient;
 import org.apache.harmony.auth.internal.kerberos.v5.PrincipalName;
-import org.apache.harmony.auth.internal.nls.Messages;
-import org.apache.harmony.security.asn1.DerInputStream;
+import org.apache.harmony.auth.internal.kerberos.v5.Ticket;
 
 public class Krb5LoginModule implements LoginModule {
-
-    private static final int BUF_SIZE = 1024;
 
     private static final String PRINCIPAL = "cname"; //$NON-NLS-1$
 
@@ -84,48 +74,19 @@ public class Krb5LoginModule implements LoginModule {
         PrincipalName cname = new PrincipalName(PrincipalName.NT_UNKNOWN,
                 new String[] { name });
 
-        KDCRequest request = KDCRequest.createASRequest(cname, realm);
+        PrincipalName krbtgt = new PrincipalName(PrincipalName.NT_SRV_XHST,
+                new String[] { "krbtgt", realm }); //$NON-NLS-1$
 
         try {
-            DatagramSocket socket = request.send(InetAddress.getByName(kdc),
-                    port);
-
-            ByteArrayOutputStream out = new ByteArrayOutputStream(BUF_SIZE);
-
-            byte[] buf = new byte[BUF_SIZE];
-
-            DatagramPacket resp = new DatagramPacket(buf, buf.length);
-
-            int bytesRead = BUF_SIZE;
-            while (bytesRead == BUF_SIZE) {
-                socket.receive(resp);
-
-                bytesRead = resp.getLength();
-                out.write(buf, resp.getOffset(), bytesRead);
-            }
-
-            DerInputStream in = new DerInputStream(out.toByteArray());
-
-            if (in.tag == KDCReply.AS_REP_ASN1.constrId) { //TODO AS reply
-                throw new RuntimeException();//FIXME
-            } else if (in.tag == KerberosErrorMessage.ASN1.constrId) {
-                KerberosErrorMessage errMsg = KerberosErrorMessage.decode(in);
-                // auth.52=Error code: {0}
-                throw new LoginException(Messages.getString("auth.52", errMsg.getErrorCode())); //$NON-NLS-1$
-            } else {
-                new LoginException(); //FIXME message
-            }
-
-        } catch (UnknownHostException e) {
-            LoginException ex = new LoginException();
-            ex.initCause(e);
-            throw ex;
-        } catch (IOException e) {
+            Ticket ticket = KrbClient.doAS(InetAddress.getByName(kdc), port,
+                    cname, realm, krbtgt);
+            
+            return true; //FIXME 
+        } catch (Exception e) {
             LoginException ex = new LoginException();
             ex.initCause(e);
             throw ex;
         }
-        return false;
     }
 
     public boolean logout() throws LoginException {
