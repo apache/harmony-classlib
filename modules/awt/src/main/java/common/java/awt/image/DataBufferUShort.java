@@ -26,12 +26,12 @@ public final class DataBufferUShort extends DataBuffer {
 
     public DataBufferUShort(short dataArrays[][], int size, int offsets[]) {
         super(TYPE_USHORT, size, dataArrays.length, offsets);
-        data = (short[][])dataArrays.clone();
+        data = dataArrays.clone();
     }
 
     public DataBufferUShort(short dataArrays[][], int size) {
         super(TYPE_USHORT, size, dataArrays.length);
-        data = (short[][])dataArrays.clone();
+        data = dataArrays.clone();
     }
 
     public DataBufferUShort(short dataArray[], int size, int offset) {
@@ -61,18 +61,21 @@ public final class DataBufferUShort extends DataBuffer {
         data[0] = new short[size];
     }
 
+    @Override
     public void setElem(int bank, int i, int val) {
         data[bank][offsets[bank] + i] = (short)val;
         notifyChanged();
     }
 
+    @Override
     public void setElem(int i, int val) {
         data[0][offset + i] = (short)val;
         notifyChanged();
     }
 
+    @Override
     public int getElem(int bank, int i) {
-        return (int)(data[bank][offsets[bank] + i]) & 0xffff;
+        return (data[bank][offsets[bank] + i]) & 0xffff;
     }
 
     public short[] getData(int bank) {
@@ -80,13 +83,14 @@ public final class DataBufferUShort extends DataBuffer {
         return data[bank];
     }
 
+    @Override
     public int getElem(int i) {
-        return (int)(data[0][offset + i]) & 0xffff;
+        return (data[0][offset + i]) & 0xffff;
     }
 
     public short[][] getBankData() {
         notifyTaken();
-        return (short[][])data.clone();
+        return data.clone();
     }
 
     public short[] getData() {

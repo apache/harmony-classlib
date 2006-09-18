@@ -29,49 +29,60 @@ public class PixelInterleavedSampleModel extends ComponentSampleModel {
         int maxOffset = bandOffsets[0];
         int minOffset = bandOffsets[0];
         for (int i = 1; i < bandOffsets.length; i++) {
-            if (bandOffsets[i] > maxOffset)
+            if (bandOffsets[i] > maxOffset) {
                 maxOffset = bandOffsets[i];
-            if (bandOffsets[i] < minOffset)
+            }
+            if (bandOffsets[i] < minOffset) {
                 minOffset = bandOffsets[i];
+            }
         }
 
         maxOffset -= minOffset;
 
-        if (maxOffset > scanlineStride)
+        if (maxOffset > scanlineStride) {
             throw new IllegalArgumentException("Any offset between bands " +
                     "is greater than the Scanline stride");
+        }
 
-        if (maxOffset > pixelStride)
+        if (maxOffset > pixelStride) {
             throw new IllegalArgumentException("Pixel stride is less than " +
                     "any offset between bands");
+        }
 
-        if (pixelStride * w > scanlineStride)
+        if (pixelStride * w > scanlineStride) {
             throw new IllegalArgumentException("Product of Pixel stride and " +
                     "w is greater than Scanline stride ");
+        }
 
     }
 
+    @Override
     public SampleModel createSubsetSampleModel(int bands[]) {
         int newOffsets[] = new int[bands.length];
-        for (int i = 0; i < bands.length; i++)
+        for (int i = 0; i < bands.length; i++) {
             newOffsets[i] = bandOffsets[bands[i]];
+        }
 
         return new PixelInterleavedSampleModel(dataType, width, height,
                 pixelStride, scanlineStride, newOffsets);
     }
 
+    @Override
     public SampleModel createCompatibleSampleModel(int w, int h) {
         int newOffsets[];
         int minOffset = bandOffsets[0];
 
-        for (int i = 1; i < numBands; i++)
-            if (bandOffsets[i] < minOffset)
+        for (int i = 1; i < numBands; i++) {
+            if (bandOffsets[i] < minOffset) {
                 minOffset = bandOffsets[i];
+            }
+        }
 
         if (minOffset > 0) {
             newOffsets = new int[numBands];
-            for (int i = 0; i < numBands; i++)
+            for (int i = 0; i < numBands; i++) {
                 newOffsets[i] = bandOffsets[i] - minOffset;
+            }
         } else {
             newOffsets = bandOffsets;
         }
@@ -80,6 +91,7 @@ public class PixelInterleavedSampleModel extends ComponentSampleModel {
                 pixelStride * w, newOffsets);
     }
 
+    @Override
     public int hashCode() {
         int hash = super.hashCode();
         int tmp = hash >>> 8;

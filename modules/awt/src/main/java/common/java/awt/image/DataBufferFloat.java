@@ -25,12 +25,12 @@ public final class DataBufferFloat extends DataBuffer {
 
     public DataBufferFloat(float dataArrays[][], int size, int offsets[]) {
         super(TYPE_FLOAT, size, dataArrays.length, offsets);
-        data = (float[][]) dataArrays.clone();
+        data = dataArrays.clone();
     }
 
     public DataBufferFloat(float dataArrays[][], int size) {
         super(TYPE_FLOAT, size, dataArrays.length);
-        data = (float[][]) dataArrays.clone();
+        data = dataArrays.clone();
     }
 
     public DataBufferFloat(float dataArray[], int size, int offset) {
@@ -60,43 +60,52 @@ public final class DataBufferFloat extends DataBuffer {
         data[0] = new float[size];
     }
 
+    @Override
     public void setElem(int bank, int i, int val) {
-        data[bank][offsets[bank] + i] = (float) val;
+        data[bank][offsets[bank] + i] = val;
         notifyChanged();
     }
 
+    @Override
     public void setElemFloat(int bank, int i, float val) {
         data[bank][offsets[bank] + i] = val;
         notifyChanged();
     }
 
+    @Override
     public void setElemDouble(int bank, int i, double val) {
         data[bank][offsets[bank] + i] = (float) val;
         notifyChanged();
     }
 
+    @Override
     public void setElem(int i, int val) {
-        data[0][offset + i] = (float) val;
+        data[0][offset + i] = val;
         notifyChanged();
     }
 
+    @Override
     public int getElem(int bank, int i) {
         return (int) (data[bank][offsets[bank] + i]);
     }
 
+    @Override
     public float getElemFloat(int bank, int i) {
         return data[bank][offsets[bank] + i];
     }
 
+    @Override
     public double getElemDouble(int bank, int i) {
-        return (double) data[bank][offsets[bank] + i];
+        return data[bank][offsets[bank] + i];
     }
 
+    @Override
     public void setElemFloat(int i, float val) {
         data[0][offset + i] = val;
         notifyChanged();
     }
 
+    @Override
     public void setElemDouble(int i, double val) {
         data[0][offset + i] = (float) val;
         notifyChanged();
@@ -107,21 +116,24 @@ public final class DataBufferFloat extends DataBuffer {
         return data[bank];
     }
 
+    @Override
     public int getElem(int i) {
         return (int) (data[0][offset + i]);
     }
 
+    @Override
     public float getElemFloat(int i) {
         return data[0][offset + i];
     }
 
+    @Override
     public double getElemDouble(int i) {
-        return (double) data[0][offset + i];
+        return data[0][offset + i];
     }
 
     public float[][] getBankData() {
         notifyTaken();
-        return (float[][]) data.clone();
+        return data.clone();
     }
 
     public float[] getData() {

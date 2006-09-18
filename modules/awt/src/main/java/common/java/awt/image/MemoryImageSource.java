@@ -32,7 +32,7 @@ public class MemoryImageSource implements ImageProducer {
     int offset;
     int scanline;
     Hashtable<?, ?> properties;
-    Vector consumers;
+    Vector<ImageConsumer> consumers;
     boolean animated;
     boolean fullbuffers;
     int dataType;
@@ -74,7 +74,9 @@ public class MemoryImageSource implements ImageProducer {
     }
 
     public void startProduction(ImageConsumer ic) {
-        if(!isConsumer(ic) && ic != null) consumers.addElement(ic);
+        if(!isConsumer(ic) && ic != null) {
+            consumers.addElement(ic);
+        }
         try{
             setHeader(ic);
             setPixels(ic, 0, 0, width, height);
@@ -82,11 +84,17 @@ public class MemoryImageSource implements ImageProducer {
                 ic.imageComplete(ImageConsumer.SINGLEFRAMEDONE);
             }else{
                 ic.imageComplete(ImageConsumer.STATICIMAGEDONE);
-                if(isConsumer(ic)) removeConsumer(ic);
+                if(isConsumer(ic)) {
+                    removeConsumer(ic);
+                }
             }
         }catch(Exception e){
-            if(isConsumer(ic)) ic.imageComplete(ImageConsumer.IMAGEERROR);
-            if(isConsumer(ic)) removeConsumer(ic);
+            if(isConsumer(ic)) {
+                ic.imageComplete(ImageConsumer.IMAGEERROR);
+            }
+            if(isConsumer(ic)) {
+                removeConsumer(ic);
+            }
         }
     }
 
@@ -98,7 +106,9 @@ public class MemoryImageSource implements ImageProducer {
     }
 
     public synchronized void addConsumer(ImageConsumer ic) {
-        if(ic == null || consumers.contains(ic)) return;
+        if(ic == null || consumers.contains(ic)) {
+            return;
+        }
         consumers.addElement(ic);
     }
 
@@ -123,12 +133,14 @@ public class MemoryImageSource implements ImageProducer {
     }
 
     public synchronized void setFullBufferUpdates(boolean fullbuffers) {
-        if(this.fullbuffers == fullbuffers) return;
+        if(this.fullbuffers == fullbuffers) {
+            return;
+        }
         this.fullbuffers = fullbuffers;
         if(animated){
             Object consAr[] = consumers.toArray();
-            for(int i = 0; i < consAr.length; i++){
-                ImageConsumer con = (ImageConsumer)consAr[i];
+            for (Object element : consAr) {
+                ImageConsumer con = (ImageConsumer)element;
                 try{
                     if(fullbuffers){
                         con.setHints(ImageConsumer.TOPDOWNLEFTRIGHT |
@@ -137,25 +149,30 @@ public class MemoryImageSource implements ImageProducer {
                         con.setHints(ImageConsumer.RANDOMPIXELORDER);
                     }
                 }catch(Exception e){
-                    if(isConsumer(con))
+                    if(isConsumer(con)) {
                         con.imageComplete(ImageConsumer.IMAGEERROR);
-                    if(isConsumer(con))
+                    }
+                    if(isConsumer(con)) {
                         removeConsumer(con);
+                    }
                 }
             }
         }
     }
 
     public synchronized void setAnimated(boolean animated) {
-        if(this.animated == animated) return;
+        if(this.animated == animated) {
+            return;
+        }
         Object consAr[] = consumers.toArray();
-        for(int i = 0; i < consAr.length; i++){
-            ImageConsumer con = (ImageConsumer)consAr[i];
+        for (Object element : consAr) {
+            ImageConsumer con = (ImageConsumer)element;
             try{
                 con.imageComplete(ImageConsumer.STATICIMAGEDONE);
             }catch(Exception e){
-                if(isConsumer(con))
+                if(isConsumer(con)) {
                     con.imageComplete(ImageConsumer.IMAGEERROR);
+                }
             }
             if(isConsumer(con)){
                 removeConsumer(con);
@@ -177,25 +194,34 @@ public class MemoryImageSource implements ImageProducer {
                     w += x;
                     x = 0;
                 }
-                if(w > width) w = width - x;
+                if(w > width) {
+                    w = width - x;
+                }
                 if(y < 0){
                     h += y;
                     y = 0;
                 }
             }
-            if(h > height) h = height - y;
+            if(h > height) {
+                h = height - y;
+            }
             Object consAr[] = consumers.toArray();
-            for(int i = 0; i < consAr.length; i++){
-                ImageConsumer con = (ImageConsumer)consAr[i];
+            for (Object element : consAr) {
+                ImageConsumer con = (ImageConsumer)element;
                 try{
-                    if(w > 0 && h > 0) setPixels(con, x, y, w, h);
-                    if(framenotify)
+                    if(w > 0 && h > 0) {
+                        setPixels(con, x, y, w, h);
+                    }
+                    if(framenotify) {
                         con.imageComplete(ImageConsumer.SINGLEFRAMEDONE);
+                    }
                 }catch(Exception ex){
-                    if(isConsumer(con))
+                    if(isConsumer(con)) {
                         con.imageComplete(ImageConsumer.IMAGEERROR);
-                    if(isConsumer(con))
+                    }
+                    if(isConsumer(con)) {
                         removeConsumer(con);
+                    }
                 }
             }
         }
@@ -210,7 +236,7 @@ public class MemoryImageSource implements ImageProducer {
     }
 
     private void init(int width, int height, ColorModel model, byte pixels[],
-            int off, int scan, Hashtable prop){
+            int off, int scan, Hashtable<?, ?> prop){
 
         this.width = width;
         this.height = height;
@@ -220,12 +246,12 @@ public class MemoryImageSource implements ImageProducer {
         this.scanline = scan;
         this.properties = prop;
         this.dataType = DATA_TYPE_BYTE;
-        this.consumers = new Vector();
+        this.consumers = new Vector<ImageConsumer>();
 
     }
 
     private void init(int width, int height, ColorModel model, int pixels[],
-            int off, int scan, Hashtable prop){
+            int off, int scan, Hashtable<?, ?> prop){
 
         this.width = width;
         this.height = height;
@@ -235,7 +261,7 @@ public class MemoryImageSource implements ImageProducer {
         this.scanline = scan;
         this.properties = prop;
         this.dataType = DATA_TYPE_INT;
-        this.consumers = new Vector();
+        this.consumers = new Vector<ImageConsumer>();
     }
 
     private void setPixels(ImageConsumer con, int x, int y, int w, int h){

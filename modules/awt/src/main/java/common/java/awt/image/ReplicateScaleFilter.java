@@ -38,17 +38,23 @@ public class ReplicateScaleFilter extends ImageFilter {
     protected Object outpixbuf;
 
     public ReplicateScaleFilter(int width, int height) {
-        if(width == 0 || height == 0)
+        if(width == 0 || height == 0) {
             throw new IllegalArgumentException("Width or Height equals zero");
+        }
 
         this.destWidth = width;
         this.destHeight = height;
     }
 
-    public void setProperties(Hashtable props) {
-        Hashtable fprops;
-        if(props == null) fprops = new Hashtable();
-        else fprops = (Hashtable) props.clone();
+    @SuppressWarnings("unchecked")
+    @Override
+    public void setProperties(Hashtable<?, ?> props) {
+        Hashtable<Object, Object> fprops;
+        if(props == null) {
+            fprops = new Hashtable<Object, Object>();
+        } else {
+            fprops = (Hashtable<Object, Object>) props.clone();
+        }
         String propName = "Rescale Filters";
         String prop = "destWidth=" + destWidth + "; " + 
         "destHeight=" + destHeight;
@@ -65,10 +71,13 @@ public class ReplicateScaleFilter extends ImageFilter {
      }
 
     // setPixels methods produce pixels according to Java API Spacification
+    @Override
     public void setPixels(int x, int y, int w, int h, 
             ColorModel model, int[] pixels, int off, int scansize) {
         
-        if(srccols == null) initArrays();
+        if(srccols == null) {
+            initArrays();
+        }
         int buff[];
         if(outpixbuf == null || !(outpixbuf instanceof int[])){
             buff = new int[destWidth];
@@ -98,10 +107,13 @@ public class ReplicateScaleFilter extends ImageFilter {
         }
     }
 
+    @Override
     public void setPixels(int x, int y, int w, int h, 
             ColorModel model, byte[] pixels, int off, int scansize) {
         
-        if(srccols == null) initArrays();
+        if(srccols == null) {
+            initArrays();
+        }
         byte buff[];
         if(outpixbuf == null || !(outpixbuf instanceof byte[])){
             buff = new byte[destWidth];
@@ -131,6 +143,7 @@ public class ReplicateScaleFilter extends ImageFilter {
         }
     }
 
+    @Override
     public void setDimensions(int w, int h) {
         srcWidth = w;
         srcHeight = h;

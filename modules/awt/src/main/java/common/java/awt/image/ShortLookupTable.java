@@ -46,8 +46,9 @@ public class ShortLookupTable extends LookupTable {
     }
 
     public short[] lookupPixel(short[] src, short[] dst) {
-        if (dst == null)
+        if (dst == null) {
             dst = new short[src.length];
+        }
 
         int offset = getOffset();
         if (getNumComponents() == 1) {
@@ -63,9 +64,11 @@ public class ShortLookupTable extends LookupTable {
         return dst;
     }
 
+    @Override
     public int[] lookupPixel(int[] src, int[] dst) {
-        if (dst == null)
+        if (dst == null) {
             dst = new int[src.length];
+        }
 
         int offset = getOffset();
         if (getNumComponents() == 1) {

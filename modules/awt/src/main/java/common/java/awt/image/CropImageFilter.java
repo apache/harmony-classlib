@@ -32,10 +32,15 @@ public class CropImageFilter extends ImageFilter {
         HEIGHT = h;
     }
 
-    public void setProperties(Hashtable props) {
-        Hashtable fprops;
-        if(props == null) fprops = new Hashtable();
-        else fprops = (Hashtable) props.clone();
+    @SuppressWarnings("unchecked")
+    @Override
+    public void setProperties(Hashtable<?, ?> props) {
+        Hashtable<Object, Object> fprops;
+        if(props == null) {
+            fprops = new Hashtable<Object, Object>();
+        } else {
+            fprops = (Hashtable<Object, Object>) props.clone();
+        }
         String propName = "Crop Filters";
         String prop = "x=" + X + "; y=" + Y + "; width=" +
         WIDTH + "; height=" + HEIGHT;
@@ -51,10 +56,13 @@ public class CropImageFilter extends ImageFilter {
         consumer.setProperties(fprops);
     }
 
+    @Override
     public void setPixels(int x, int y, int w, int h, ColorModel model, int[] pixels, int off, int scansize) {
 
         if(x + w < X || X + WIDTH < x ||
-                y + h < Y || Y + HEIGHT < y) return;
+                y + h < Y || Y + HEIGHT < y) {
+            return;
+        }
 
         int destX, destY, destWidth, destHeight, endX, endY,
         srcEndX, srcEndY;
@@ -104,10 +112,13 @@ public class CropImageFilter extends ImageFilter {
         consumer.setPixels(destX, destY, destWidth, destHeight, model, pixels, newOffset, scansize);
     }
 
+    @Override
     public void setPixels(int x, int y, int w, int h, ColorModel model, byte[] pixels, int off, int scansize) {
 
         if(x + w < X || X + WIDTH < x ||
-                y + h < Y || Y + HEIGHT < y) return;
+                y + h < Y || Y + HEIGHT < y) {
+            return;
+        }
 
         int destX, destY, destWidth, destHeight, endX, endY,
         srcEndX, srcEndY;
@@ -157,6 +168,7 @@ public class CropImageFilter extends ImageFilter {
         consumer.setPixels(destX, destY, destWidth, destHeight, model, pixels, newOffset, scansize);
     }
 
+    @Override
     public void setDimensions(int w, int h) {
         consumer.setDimensions(WIDTH, HEIGHT);
     }

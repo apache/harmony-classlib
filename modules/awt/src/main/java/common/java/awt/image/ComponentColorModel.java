@@ -77,9 +77,6 @@ public class ComponentColorModel extends ColorModel {
     private boolean is_LINEAR_RGB;       // Color Model has Linear RGB Color 
                                          // Space 
 
-    private boolean is_LINEAR_GRAY;      // Color Model has Linear Gray Color
-                                         // Space
-
     public ComponentColorModel(ColorSpace colorSpace, int bits[],
             boolean hasAlpha, boolean isAlphaPremultiplied, int transparency,
             int transferType) {
@@ -99,8 +96,9 @@ public class ComponentColorModel extends ColorModel {
             scaleFactors = new float[numComponents];
             for (int i = 0; i < numColorComponents; i++) {
                 scaleFactors[i] = 1.0f / maxValues[i];
-                if (cs.getMinValue(i) != 0.0f || cs.getMaxValue(i) != 1.0f)
+                if (cs.getMinValue(i) != 0.0f || cs.getMaxValue(i) != 1.0f) {
                     donotSupportUnnormalized = true;
+                }
             }
             if (hasAlpha) {
                 maxValues[numColorComponents] =
@@ -117,8 +115,9 @@ public class ComponentColorModel extends ColorModel {
             for (int i = 0; i < numComponents; i++) {
                 maxValues[i] = Short.MAX_VALUE;
                 scaleFactors[i] = 1.0f / maxValues[i];
-                if (cs.getMinValue(i) != 0.0f || cs.getMaxValue(i) != 1.0f)
+                if (cs.getMinValue(i) != 0.0f || cs.getMaxValue(i) != 1.0f) {
                     needScale = true;
+                }
             }
             if (needScale) {
                 minVals = new float[numColorComponents];
@@ -159,12 +158,14 @@ public class ComponentColorModel extends ColorModel {
 
     private static int[] validateBits(int bits[], ColorSpace colorSpace,
             boolean hasAlpha, int transferType) {
-        if (bits != null)
+        if (bits != null) {
             return bits;
+        }
 
         int numComponents = colorSpace.getNumComponents();
-        if (hasAlpha)
+        if (hasAlpha) {
             numComponents++;
+        }
         bits = new int[numComponents];
 
         int componentLength = DataBuffer.getDataTypeSize(transferType);
@@ -179,8 +180,9 @@ public class ComponentColorModel extends ColorModel {
     private static int createPixelBits(ColorSpace colorSpace, boolean hasAlpha,
             int transferType) {
         int numComponents = colorSpace.getNumComponents();
-        if (hasAlpha)
+        if (hasAlpha) {
             numComponents++;
+        }
         int componentLength = DataBuffer.getDataTypeSize(transferType);
         return numComponents * componentLength;
     }
@@ -189,8 +191,9 @@ public class ComponentColorModel extends ColorModel {
             boolean hasAlpha, int transferType) {
         
         int numComponents = colorSpace.getNumComponents();
-        if (hasAlpha)
+        if (hasAlpha) {
             numComponents++;
+        }
 
         int bits[] = new int[numComponents];
         for(int i = 0; i < numComponents; i++){
@@ -199,42 +202,48 @@ public class ComponentColorModel extends ColorModel {
         return bits;
     }
 
+    @Override
     public Object getDataElements(int components[], int offset, Object obj) {
-        if (donotSupportUnnormalized)
+        if (donotSupportUnnormalized) {
             throw new IllegalArgumentException("This ComponentColorModel " +
                     "does not support the unnormalized form");
+        }
 
-        if (offset + numComponents > components.length)
+        if (offset + numComponents > components.length) {
             throw new IllegalArgumentException("The components array is not " +
                     "large enough to hold all the color and alpha components ");
+        }
 
         switch (transferType) {
         case DataBuffer.TYPE_BYTE:
             byte ba[];
-            if (obj == null)
+            if (obj == null) {
                 ba = new byte[numComponents];
-            else
+            } else {
                 ba = (byte[]) obj;
+            }
             for (int i = 0, idx = offset; i < numComponents; i++, idx++) {
                 ba[i] = (byte) components[idx];
             }
             return ba;
         case DataBuffer.TYPE_USHORT:
             short sa[];
-            if (obj == null)
+            if (obj == null) {
                 sa = new short[numComponents];
-            else
+            } else {
                 sa = (short[]) obj;
+            }
             for (int i = 0, idx = offset; i < numComponents; i++, idx++) {
                 sa[i] = (short) components[idx];
             }
             return sa;
         case DataBuffer.TYPE_INT:
             int ia[];
-            if (obj == null)
+            if (obj == null) {
                 ia = new int[numComponents];
-            else
+            } else {
                 ia = (int[]) obj;
+            }
             for (int i = 0, idx = offset; i < numComponents; i++, idx++) {
                 ia[i] = components[idx];
             }
@@ -248,6 +257,7 @@ public class ComponentColorModel extends ColorModel {
         }
     }
 
+    @Override
     public Object getDataElements(float normComponents[], int normOffset,
             Object obj) {
         if (needScale) {
@@ -260,10 +270,11 @@ public class ComponentColorModel extends ColorModel {
         switch (transferType) {
         case DataBuffer.TYPE_BYTE:
             byte ba[];
-            if (obj == null)
+            if (obj == null) {
                 ba = new byte[numComponents];
-            else
+            } else {
                 ba = (byte[]) obj;
+            }
 
             if (needAlphaDivide) {
                 float alpha = normComponents[normOffset + numColorComponents];
@@ -286,10 +297,11 @@ public class ComponentColorModel extends ColorModel {
 
         case DataBuffer.TYPE_USHORT:
             short usa[];
-            if (obj == null)
+            if (obj == null) {
                 usa = new short[numComponents];
-            else
+            } else {
                 usa = (short[]) obj;
+            }
 
             if (needAlphaDivide) {
                 float alpha = normComponents[normOffset + numColorComponents];
@@ -310,10 +322,11 @@ public class ComponentColorModel extends ColorModel {
 
         case DataBuffer.TYPE_INT:
             int ia[];
-            if (obj == null)
+            if (obj == null) {
                 ia = new int[numComponents];
-            else
+            } else {
                 ia = (int[]) obj;
+            }
 
             if (needAlphaDivide) {
                 float alpha = normComponents[normOffset + numColorComponents];
@@ -333,10 +346,11 @@ public class ComponentColorModel extends ColorModel {
 
         case DataBuffer.TYPE_SHORT:
             short sa[];
-            if (obj == null)
+            if (obj == null) {
                 sa = new short[numComponents];
-            else
+            } else {
                 sa = (short[]) obj;
+            }
 
             if (needAlphaDivide) {
                 float alpha = normComponents[normOffset + numColorComponents];
@@ -357,10 +371,11 @@ public class ComponentColorModel extends ColorModel {
 
         case DataBuffer.TYPE_FLOAT:
             float fa[];
-            if (obj == null)
+            if (obj == null) {
                 fa = new float[numComponents];
-            else
+            } else {
                 fa = (float[]) obj;
+            }
 
             if (needAlphaDivide) {
                 float alpha = normComponents[normOffset + numColorComponents];
@@ -378,10 +393,11 @@ public class ComponentColorModel extends ColorModel {
 
         case DataBuffer.TYPE_DOUBLE:
             double da[];
-            if (obj == null)
+            if (obj == null) {
                 da = new double[numComponents];
-            else
+            } else {
                 da = (double[]) obj;
+            }
 
             if (needAlphaDivide) {
                 double alpha = normComponents[normOffset + numColorComponents];
@@ -392,7 +408,7 @@ public class ComponentColorModel extends ColorModel {
             } else {
                 for (int i = 0, idx = normOffset; i < numComponents;
                     i++, idx++) {
-                    da[i] = (double) normComponents[idx];
+                    da[i] = normComponents[idx];
                 }
             }
             return da;
@@ -404,6 +420,7 @@ public class ComponentColorModel extends ColorModel {
         }
     }
 
+    @Override
     public Object getDataElements(int rgb, Object pixel) {
         float normComp[];
         float comp[];
@@ -426,13 +443,13 @@ public class ComponentColorModel extends ColorModel {
                     blue = to_LINEAR_16RGB_LUT[blue] & 0xffff;
                 }
             }
-            comp[0] = (float) red / fFactor;
-            comp[1] = (float) green / fFactor;
-            comp[2] = (float) blue / fFactor;
-            if (!hasAlpha)
+            comp[0] = red / fFactor;
+            comp[1] = green / fFactor;
+            comp[2] = blue / fFactor;
+            if (!hasAlpha) {
                 normComp = comp;
-            else {
-                float normAlpha = (float) alpha / 255.0f;
+            } else {
+                float normAlpha = alpha / 255.0f;
                 normComp = new float[numComponents];
                 for (int i = 0; i < numColorComponents; i++) {
                     normComp[i] = comp[i];
@@ -440,14 +457,14 @@ public class ComponentColorModel extends ColorModel {
                 normComp[numColorComponents] = normAlpha;
             }
         } else {
-            comp[0] = (float) red / fFactor;
-            comp[1] = (float) green / fFactor;
-            comp[2] = (float) blue / fFactor;
+            comp[0] = red / fFactor;
+            comp[1] = green / fFactor;
+            comp[2] = blue / fFactor;
             float[] defComp = cs.fromRGB(comp);
-            if (!hasAlpha)
+            if (!hasAlpha) {
                 normComp = defComp;
-            else {
-                float normAlpha = (float) alpha / 255.0f;
+            } else {
+                float normAlpha = alpha / 255.0f;
                 normComp = new float[numComponents];
                 for (int i = 0; i < numColorComponents; i++) {
                     normComp[i] = defComp[i];
@@ -464,8 +481,11 @@ public class ComponentColorModel extends ColorModel {
         return getDataElements(normComp, 0, pixel);
     }
 
+    @Override
     public WritableRaster getAlphaRaster(WritableRaster raster) {
-        if(!hasAlpha) return null;
+        if(!hasAlpha) {
+            return null;
+        }
 
         int x = raster.getMinX();
         int y = raster.getMinY();
@@ -476,10 +496,12 @@ public class ComponentColorModel extends ColorModel {
                 raster.getHeight(), x, y, bandList);
     }
 
+    @Override
     public ColorModel coerceData(WritableRaster raster,
             boolean isAlphaPremultiplied) {
-        if (!hasAlpha || this.isAlphaPremultiplied == isAlphaPremultiplied)
+        if (!hasAlpha || this.isAlphaPremultiplied == isAlphaPremultiplied) {
             return this;
+        }
 
         int minX = raster.getMinX();
         int minY = raster.getMinY();
@@ -491,18 +513,18 @@ public class ComponentColorModel extends ColorModel {
             case DataBuffer.TYPE_BYTE:
             case DataBuffer.TYPE_USHORT:
             case DataBuffer.TYPE_INT:
-                float alphaFactor = (float) maxValues[numColorComponents];
+                float alphaFactor = maxValues[numColorComponents];
                 int iComponents[] = null;
                 int iTransparentComponents[] = new int[numComponents];
                 for (int i = 0; i < h; i++, minY++) {
                     for (int j = 0, x = minX; j < w; j++, x++) {
-                        iComponents = (int[]) raster.getPixel(x, minY,
+                        iComponents = raster.getPixel(x, minY,
                                 iComponents);
                         if (iComponents[numColorComponents] == 0) {
                             raster.setPixel(x, minY, iTransparentComponents);
                         } else {
                             float alpha =
-                                (float) iComponents[numColorComponents] /
+                                iComponents[numColorComponents] /
                                     alphaFactor;
                             for (int n = 0; n < numColorComponents; n++) {
                                 iComponents[n] =
@@ -516,7 +538,7 @@ public class ComponentColorModel extends ColorModel {
                 break;
 
             case DataBuffer.TYPE_SHORT:
-                float sAlphaFactor = (float) maxValues[numColorComponents];
+                float sAlphaFactor = maxValues[numColorComponents];
                 short sComponents[] = null;
                 short sTransparentComponents[] = new short[numComponents];
                 for (int i = 0; i < h; i++, minY++) {
@@ -528,7 +550,7 @@ public class ComponentColorModel extends ColorModel {
                                     sTransparentComponents);
                         } else {
                             float alpha =
-                                (float) sComponents[numColorComponents] /
+                                sComponents[numColorComponents] /
                                 sAlphaFactor;
                             for (int n = 0; n < numColorComponents; n++) {
                                 sComponents[n] =
@@ -591,22 +613,22 @@ public class ComponentColorModel extends ColorModel {
             case DataBuffer.TYPE_BYTE:
             case DataBuffer.TYPE_USHORT:
             case DataBuffer.TYPE_INT:
-                float alphaFactor = (float) maxValues[numColorComponents];
+                float alphaFactor = maxValues[numColorComponents];
                 int iComponents[] = null;
                 int iTransparentComponents[] = new int[numComponents];
                 for (int i = 0; i < h; i++, minY++) {
                     for (int j = 0, x = minX; j < w; j++, x++) {
-                        iComponents = (int[]) raster.getPixel(x, minY,
+                        iComponents = raster.getPixel(x, minY,
                                 iComponents);
                         if (iComponents[numColorComponents] == 0) {
                             raster.setPixel(x, minY, iTransparentComponents);
                         } else {
                             float alpha =
-                                (float) iComponents[numColorComponents] /
+                                iComponents[numColorComponents] /
                                     alphaFactor;
                             for (int n = 0; n < numColorComponents; n++) {
                                 iComponents[n] =
-                                    (int) ((float) iComponents[n] /
+                                    (int) (iComponents[n] /
                                             alpha + 0.5f);
                             }
                             raster.setPixel(x, minY, iComponents);
@@ -617,7 +639,7 @@ public class ComponentColorModel extends ColorModel {
                 break;
 
             case DataBuffer.TYPE_SHORT:
-                float sAlphaFactor = (float) maxValues[numColorComponents];
+                float sAlphaFactor = maxValues[numColorComponents];
                 short sComponents[] = null;
                 short sTransparentComponents[] = new short[numComponents];
                 for (int i = 0; i < h; i++, minY++) {
@@ -629,11 +651,11 @@ public class ComponentColorModel extends ColorModel {
                                     sTransparentComponents);
                         } else {
                             float alpha =
-                                (float) sComponents[numColorComponents] /
+                                sComponents[numColorComponents] /
                                     sAlphaFactor;
                             for (int n = 0; n < numColorComponents; n++) {
                                 sComponents[n] =
-                                    (byte) ((float) sComponents[n] /
+                                    (byte) (sComponents[n] /
                                             alpha + 0.5f);
                             }
                             raster.setDataElements(x, minY, sComponents);
@@ -689,24 +711,28 @@ public class ComponentColorModel extends ColorModel {
             }
         }
 
-        if (!signed)
+        if (!signed) {
             return new ComponentColorModel(cs, bits, hasAlpha,
                     isAlphaPremultiplied, transparency, transferType);
+        }
 
         return new ComponentColorModel(cs, null, hasAlpha,
                 isAlphaPremultiplied, transparency, transferType);
     }
 
+    @Override
     public int[] getComponents(Object pixel, int[] components, int offset) {
-        if (donotSupportUnnormalized)
+        if (donotSupportUnnormalized) {
             throw new IllegalArgumentException("This ComponentColorModel " +
                     "does not support the unnormalized form");
+        }
 
-        if (components == null)
+        if (components == null) {
             components = new int[offset + numComponents];
-        else if (offset + numComponents > components.length)
+        } else if (offset + numComponents > components.length) {
             throw new IllegalArgumentException("The components array is not " +
                     "large enough to hold all the color and alpha components ");
+        }
 
         switch (transferType) {
         case DataBuffer.TYPE_BYTE:
@@ -740,24 +766,26 @@ public class ComponentColorModel extends ColorModel {
 
     }
 
+    @Override
     public float[] getNormalizedComponents(Object pixel,
             float normComponents[], int normOffset) {
 
-        if (normComponents == null)
+        if (normComponents == null) {
             normComponents = new float[numComponents + normOffset];
+        }
 
         switch (transferType) {
         case DataBuffer.TYPE_BYTE:
             byte ba[] = (byte[]) pixel;
             for (int i = 0, idx = normOffset; i < numComponents; i++, idx++) {
-                normComponents[idx] = (float) (ba[i] & 0xff) * scaleFactors[i];
+                normComponents[idx] = (ba[i] & 0xff) * scaleFactors[i];
             }
             break;
 
         case DataBuffer.TYPE_USHORT:
             short usa[] = (short[]) pixel;
             for (int i = 0, idx = normOffset; i < numComponents; i++, idx++) {
-                normComponents[idx] = (float) (usa[i] & 0xffff)
+                normComponents[idx] = (usa[i] & 0xffff)
                         * scaleFactors[i];
             }
             break;
@@ -765,14 +793,14 @@ public class ComponentColorModel extends ColorModel {
         case DataBuffer.TYPE_INT:
             int ia[] = (int[]) pixel;
             for (int i = 0, idx = normOffset; i < numComponents; i++, idx++) {
-                normComponents[idx] = (float) ia[i] * scaleFactors[i];
+                normComponents[idx] = ia[i] * scaleFactors[i];
             }
             break;
 
         case DataBuffer.TYPE_SHORT:
             short sa[] = (short[]) pixel;
             for (int i = 0, idx = normOffset; i < numComponents; i++, idx++) {
-                normComponents[idx] = (float) sa[i] * scaleFactors[i];
+                normComponents[idx] = sa[i] * scaleFactors[i];
             }
             break;
 
@@ -813,16 +841,20 @@ public class ComponentColorModel extends ColorModel {
         return normComponents;
     }
 
+    @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof ComponentColorModel))
+        if (!(obj instanceof ComponentColorModel)) {
             return false;
+        }
         return super.equals(obj);
     }
 
+    @Override
     public int getRed(Object inData) {
         return getRGBComponent(inData, 0);
     }
 
+    @Override
     public int getRGB(Object inData) {
         int alpha = getAlpha(inData);
         if (cs.getType() == ColorSpace.TYPE_GRAY) {
@@ -833,82 +865,93 @@ public class ComponentColorModel extends ColorModel {
                 getBlue(inData));
     }
 
+    @Override
     public int getGreen(Object inData) {
         return getRGBComponent(inData, 1);
     }
 
+    @Override
     public int getBlue(Object inData) {
         return getRGBComponent(inData, 2);
     }
 
+    @Override
     public int getAlpha(Object inData) {
-        if (!hasAlpha)
+        if (!hasAlpha) {
             return 255;
+        }
         int alpha = 0;
 
         switch (transferType) {
-        case DataBuffer.TYPE_BYTE:
+        case DataBuffer.TYPE_BYTE: {
             byte ba[] = (byte[]) inData;
             alpha = ba[numColorComponents] & 0xff;
-            if (bits[numColorComponents] != 8)
+            if (bits[numColorComponents] != 8) {
                 return alphaLUT[alpha] & 0xff;
-            else
-                return alpha;
-
-        case DataBuffer.TYPE_USHORT:
+            }
+            return alpha;
+        }
+        case DataBuffer.TYPE_USHORT: {
             short usa[] = (short[]) inData;
             alpha = usa[numColorComponents] & 0xffff;
-            if (bits[numColorComponents] != 8)
+            if (bits[numColorComponents] != 8) {
                 return alphaLUT[alpha] & 0xff;
-            else
-                return alpha;
-
-        case DataBuffer.TYPE_INT:
+            }
+            return alpha;
+        }
+        case DataBuffer.TYPE_INT: {
             int ia[] = (int[]) inData;
             alpha = ia[numColorComponents];
-            if (bits[numColorComponents] != 8)
+            if (bits[numColorComponents] != 8) {
                 return alphaLUT[alpha] & 0xff;
-            else
-                return alpha;
-
-        case DataBuffer.TYPE_SHORT:
+            }
+            return alpha;
+        }
+        case DataBuffer.TYPE_SHORT: {
             short sa[] = (short[]) inData;
             alpha = sa[numColorComponents];
-            if (bits[numColorComponents] != 8)
+            if (bits[numColorComponents] != 8) {
                 return alphaLUT[alpha] & 0xff;
-            else
-                return alpha;
-
-        case DataBuffer.TYPE_FLOAT:
+            }
+            return alpha;
+        }
+        case DataBuffer.TYPE_FLOAT: {
             float fa[] = (float[]) inData;
             return (int) (fa[numColorComponents] * 255.0f + 0.5f);
-
-        case DataBuffer.TYPE_DOUBLE:
+        }
+        case DataBuffer.TYPE_DOUBLE: {
             double da[] = (double[]) inData;
             return (int) (da[numColorComponents] * 255.0 + 0.5);
-
-        default:
+        }
+        default: {
             throw new UnsupportedOperationException("This Color Model " +
                     "doesn't support this transferType");
         }
+        }
     }
 
+    @Override
     public WritableRaster createCompatibleWritableRaster(int w, int h) {
         SampleModel sm = createCompatibleSampleModel(w, h);
         DataBuffer db = sm.createDataBuffer();
         return Raster.createWritableRaster(sm, db, null);
     }
 
+    @Override
     public boolean isCompatibleSampleModel(SampleModel sm) {
-        if (!(sm instanceof ComponentSampleModel))
+        if (!(sm instanceof ComponentSampleModel)) {
             return false;
-        if (numComponents != sm.getNumBands())
+        }
+        if (numComponents != sm.getNumBands()) {
             return false;
-        if (transferType != sm.getTransferType())
+        }
+        if (transferType != sm.getTransferType()) {
             return false;
+        }
         return true;
     }
 
+    @Override
     public SampleModel createCompatibleSampleModel(int w, int h) {
         int bandOffsets[] = new int[numComponents];
         for (int i = 0; i < numComponents; i++) {
@@ -927,67 +970,83 @@ public class ComponentColorModel extends ColorModel {
         }
     }
 
+    @Override
     public boolean isCompatibleRaster(Raster raster) {
         SampleModel sm = raster.getSampleModel();
-        if (!(sm instanceof ComponentSampleModel))
+        if (!(sm instanceof ComponentSampleModel)) {
             return false;
+        }
 
-        if (sm.getNumBands() != numComponents)
+        if (sm.getNumBands() != numComponents) {
             return false;
-        if (raster.getTransferType() != transferType)
+        }
+        if (raster.getTransferType() != transferType) {
             return false;
+        }
 
         int sampleSizes[] = sm.getSampleSize();
         for (int i = 0; i < numComponents; i++) {
-            if (bits[i] != sampleSizes[i])
+            if (bits[i] != sampleSizes[i]) {
                 return false;
+            }
         }
         return true;
     }
 
+    @Override
     public float[] getNormalizedComponents(int components[], int offset,
             float normComponents[], int normOffset) {
-        if (donotSupportUnnormalized)
+        if (donotSupportUnnormalized) {
             throw new IllegalArgumentException("This ComponentColorModel " +
                     "does not support the unnormalized form");
+        }
 
         return super.getNormalizedComponents(components, offset,
                 normComponents, normOffset);
     }
 
+    @Override
     public int getDataElement(int[] components, int offset) {
-        if (numComponents > 1)
+        if (numComponents > 1) {
             throw new IllegalArgumentException("There is more than one " +
                     "component in this ColorModel");
-        if (donotSupportUnnormalized)
+        }
+        if (donotSupportUnnormalized) {
             throw new IllegalArgumentException("This ComponentColorModel " +
                     "does not support the unnormalized form");
+        }
         return components[offset];
     }
 
+    @Override
     public int[] getUnnormalizedComponents(float[] normComponents,
             int normOffset, int[] components, int offset) {
 
-        if (donotSupportUnnormalized)
+        if (donotSupportUnnormalized) {
             throw new IllegalArgumentException("This ComponentColorModel " +
                     "does not support the unnormalized form ");
+        }
 
-        if (normComponents.length - normOffset < numComponents)
+        if (normComponents.length - normOffset < numComponents) {
             throw new IllegalArgumentException("The length of " +
                     "normComponents minus normOffset is less than" + 
                     " numComponents");
+        }
 
         return super.getUnnormalizedComponents(normComponents, normOffset,
                 components, offset);
     }
 
+    @Override
     public int getDataElement(float normComponents[], int normOffset) {
-        if (numComponents > 1)
+        if (numComponents > 1) {
             throw new IllegalArgumentException("There is more than one " +
                     "component in this ColorModel");
-        if (signed)
+        }
+        if (signed) {
             throw new IllegalArgumentException("The component value for " +
                     "this ColorModel is signed");
+        }
 
         Object pixel = getDataElements(normComponents, normOffset, null);
 
@@ -1008,52 +1067,63 @@ public class ComponentColorModel extends ColorModel {
         }
     }
 
+    @Override
     public int[] getComponents(int pixel, int components[], int offset) {
-        if (numComponents > 1)
+        if (numComponents > 1) {
             throw new IllegalArgumentException("There is more than one " +
                     "component in this ColorModel");
-        if (donotSupportUnnormalized)
+        }
+        if (donotSupportUnnormalized) {
             throw new IllegalArgumentException("This ComponentColorModel " +
                     "does not support the unnormalized form");
+        }
 
-        if (components == null)
+        if (components == null) {
             components = new int[offset + 1];
+        }
 
         components[offset] = pixel & maxValues[0];
         return components;
     }
 
+    @Override
     public int getRed(int pixel) {
         float rgb[] = toRGB(pixel);
         return (int) (rgb[0] * 255.0f + 0.5f);
     }
 
+    @Override
     public int getRGB(int pixel) {
         return (getAlpha(pixel) << 24) | (getRed(pixel) << 16) |
                (getGreen(pixel) << 8) | getBlue(pixel);
     }
 
+    @Override
     public int getGreen(int pixel) {
         float rgb[] = toRGB(pixel);
         return (int) (rgb[1] * 255.0f + 0.5f);
     }
 
+    @Override
     public int getBlue(int pixel) {
         float rgb[] = toRGB(pixel);
         return (int) (rgb[2] * 255.0f + 0.5f);
     }
 
+    @Override
     public int getAlpha(int pixel) {
 
         // This method throw IllegalArgumentException according to 
         // Java API Spacification
-        if (signed)
+        if (signed) {
             throw new IllegalArgumentException("The component value " +
                     "for this ColorModel is signed");
+        }
 
-        if (numComponents > 1)
+        if (numComponents > 1) {
             throw new IllegalArgumentException("There is more than one " +
                     "component in this ColorModel");
+        }
 
         return 255;
     }
@@ -1064,8 +1134,6 @@ public class ComponentColorModel extends ColorModel {
     private void initLUTs() {
         is_sRGB = cs.isCS_sRGB();
         is_LINEAR_RGB = (cs == LUTColorConverter.LINEAR_RGB_CS);
-
-        boolean needDivide = hasAlpha && isAlphaPremultiplied;
 
         if (hasAlpha && bits[numColorComponents] != 8 && integral) {
             alphaLUT = new byte[maxValues[numColorComponents] + 1];
@@ -1089,7 +1157,7 @@ public class ComponentColorModel extends ColorModel {
                 to_LINEAR_8RGB_LUT =
                     LUTColorConverter.getFromsRGBto8lRGB_LUT();
             }
-            fFactor = (float) ((1 << LINEAR_RGB_Length) - 1);
+            fFactor = ((1 << LINEAR_RGB_Length) - 1);
         } else {
             fFactor = 255.0f;
         }
@@ -1151,13 +1219,15 @@ public class ComponentColorModel extends ColorModel {
         
         // This method throw IllegalArgumentException according to 
         // Java API Spacification
-        if (signed)
+        if (signed) {
             throw new IllegalArgumentException("The component value " +
                     "for this ColorModel is signed");
+        }
 
-        if (numComponents > 1)
+        if (numComponents > 1) {
             throw new IllegalArgumentException("There is more than " +
                     "one component in this ColorModel");
+        }
 
         Object obj = null;
 
@@ -1176,7 +1246,7 @@ public class ComponentColorModel extends ColorModel {
 
         case DataBuffer.TYPE_INT:
             int ia[] = new int[1];
-            ia[0] = (int) pixel;
+            ia[0] = pixel;
             obj = ia;
             break;
 
@@ -1193,16 +1263,16 @@ public class ComponentColorModel extends ColorModel {
     private int getRGBComponent(Object pixel, int idx) {
         if (is_sRGB) {
             int comp = getDefComponent(pixel, idx);
-            if (calcValue || bits[idx] == 8)
+            if (calcValue || bits[idx] == 8) {
                 return comp;
-            else
-                return colorLUTs[idx][comp] & 0xff;
+            }
+            return colorLUTs[idx][comp] & 0xff;
         } else if (is_LINEAR_RGB) {
             int comp = getDefComponent(pixel, idx);
-            if (calcValue || bits[idx] == LINEAR_RGB_Length)
+            if (calcValue || bits[idx] == LINEAR_RGB_Length) {
                 return from_LINEAR_RGB_LUT[comp] & 0xff;
-            else
-                return colorLUTs[idx][comp] & 0xff;
+            }
+            return colorLUTs[idx][comp] & 0xff;
         }
 
         float normComp[] = getNormalizedComponents(pixel, null, 0);
@@ -1229,7 +1299,7 @@ public class ComponentColorModel extends ColorModel {
                     comp = 0;
                 } else {
                     float normAlpha = scaleFactors[numColorComponents] * alpha;
-                    comp = (int) ((float) comp * fFactor / normAlpha + 0.5f);
+                    comp = (int) (comp * fFactor / normAlpha + 0.5f);
                 }
                 calcValue = true;
             }
@@ -1244,7 +1314,7 @@ public class ComponentColorModel extends ColorModel {
                     comp = 0;
                 } else {
                     float normAlpha = scaleFactors[numColorComponents] * alpha;
-                    comp = (int) ((float) comp * fFactor / normAlpha + 0.5f);
+                    comp = (int) (comp * fFactor / normAlpha + 0.5f);
                 }
                 calcValue = true;
             }
@@ -1259,7 +1329,7 @@ public class ComponentColorModel extends ColorModel {
                     comp = 0;
                 } else {
                     float normAlpha = scaleFactors[numColorComponents] * alpha;
-                    comp = (int) ((float) comp * fFactor / normAlpha + 0.5f);
+                    comp = (int) (comp * fFactor / normAlpha + 0.5f);
                 }
                 calcValue = true;
             }
@@ -1274,7 +1344,7 @@ public class ComponentColorModel extends ColorModel {
                     comp = 0;
                 } else {
                     float normAlpha = scaleFactors[numColorComponents] * alpha;
-                    comp = (int) ((float) comp * fFactor / normAlpha + 0.5f);
+                    comp = (int) (comp * fFactor / normAlpha + 0.5f);
                 }
                 calcValue = true;
             }

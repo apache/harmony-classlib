@@ -40,29 +40,34 @@ public class ComponentSampleModel extends SampleModel {
 
         super(dataType, w, h, bandOffsets.length);
 
-        if (pixelStride < 0)
+        if (pixelStride < 0) {
             throw new IllegalArgumentException("Pixel stride must be >= 0");
+        }
 
-        if (scanlineStride < 0)
+        if (scanlineStride < 0) {
             throw new IllegalArgumentException("Scanline stride must be >= 0");
+        }
 
-        if (bankIndices.length != bandOffsets.length)
+        if (bankIndices.length != bandOffsets.length) {
             throw new IllegalArgumentException("Bank Indices length must be " +
                     "equal Bank Offsets length");
+        }
 
         this.pixelStride = pixelStride;
         this.scanlineStride = scanlineStride;
-        this.bandOffsets = (int[]) bandOffsets.clone();
-        this.bankIndices = (int[]) bankIndices.clone();
+        this.bandOffsets = bandOffsets.clone();
+        this.bankIndices = bankIndices.clone();
         this.numBands = bandOffsets.length;
 
         int maxBank = 0;
         for (int i = 0; i < bankIndices.length; i++) {
-            if (bankIndices[i] < 0)
+            if (bankIndices[i] < 0) {
                 throw new IllegalArgumentException("Index of " + i
                         + "bank must be >= 0");
-            if (bankIndices[i] > maxBank)
+            }
+            if (bankIndices[i] > maxBank) {
                 maxBank = bankIndices[i];
+            }
         }
         this.numBanks = maxBank + 1;
 
@@ -72,133 +77,155 @@ public class ComponentSampleModel extends SampleModel {
             int scanlineStride, int bandOffsets[]) {
 
         super(dataType, w, h, bandOffsets.length);
-        if (pixelStride < 0)
+        if (pixelStride < 0) {
             throw new IllegalArgumentException("Pixel stride must be >= 0");
+        }
 
-        if (scanlineStride < 0)
+        if (scanlineStride < 0) {
             throw new IllegalArgumentException("Scanline stride must be >= 0");
+        }
 
         this.pixelStride = pixelStride;
         this.scanlineStride = scanlineStride;
-        this.bandOffsets = (int[]) bandOffsets.clone();
+        this.bandOffsets = bandOffsets.clone();
         this.numBands = bandOffsets.length;
         this.numBanks = 1;
 
         this.bankIndices = new int[numBands];
-        for (int i = 0; i < numBands; i++)
+        for (int i = 0; i < numBands; i++) {
             bankIndices[i] = 0;
+        }
     }
 
+    @Override
     public Object getDataElements(int x, int y, Object obj, DataBuffer data) {
         switch (dataType) {
         case DataBuffer.TYPE_BYTE:
             byte bdata[];
-            if (obj == null)
+            if (obj == null) {
                 bdata = new byte[numBands];
-            else
+            } else {
                 bdata = (byte[]) obj;
+            }
 
-            for (int i = 0; i < numBands; i++)
+            for (int i = 0; i < numBands; i++) {
                 bdata[i] = (byte) getSample(x, y, i, data);
+            }
 
-            obj = (Object) bdata;
+            obj = bdata;
             break;
 
         case DataBuffer.TYPE_SHORT:
         case DataBuffer.TYPE_USHORT:
             short sdata[];
-            if (obj == null)
+            if (obj == null) {
                 sdata = new short[numBands];
-            else
+            } else {
                 sdata = (short[]) obj;
+            }
 
-            for (int i = 0; i < numBands; i++)
+            for (int i = 0; i < numBands; i++) {
                 sdata[i] = (short) getSample(x, y, i, data);
+            }
 
-            obj = (Object) sdata;
+            obj = sdata;
             break;
 
         case DataBuffer.TYPE_INT:
             int idata[];
-            if (obj == null)
+            if (obj == null) {
                 idata = new int[numBands];
-            else
+            } else {
                 idata = (int[]) obj;
+            }
 
-            for (int i = 0; i < numBands; i++)
+            for (int i = 0; i < numBands; i++) {
                 idata[i] = getSample(x, y, i, data);
+            }
 
-            obj = (Object) idata;
+            obj = idata;
             break;
 
         case DataBuffer.TYPE_FLOAT:
             float fdata[];
-            if (obj == null)
+            if (obj == null) {
                 fdata = new float[numBands];
-            else
+            } else {
                 fdata = (float[]) obj;
+            }
 
-            for (int i = 0; i < numBands; i++)
+            for (int i = 0; i < numBands; i++) {
                 fdata[i] = getSampleFloat(x, y, i, data);
+            }
 
-            obj = (Object) fdata;
+            obj = fdata;
             break;
 
         case DataBuffer.TYPE_DOUBLE:
             double ddata[];
-            if (obj == null)
+            if (obj == null) {
                 ddata = new double[numBands];
-            else
+            } else {
                 ddata = (double[]) obj;
+            }
 
-            for (int i = 0; i < numBands; i++)
+            for (int i = 0; i < numBands; i++) {
                 ddata[i] = getSampleDouble(x, y, i, data);
+            }
 
-            obj = (Object) ddata;
+            obj = ddata;
             break;
         }
 
         return obj;
     }
 
+    @Override
     public void setDataElements(int x, int y, Object obj, DataBuffer data) {
         switch (dataType) {
         case DataBuffer.TYPE_BYTE:
             byte barr[] = (byte[]) obj;
-            for (int i = 0; i < numBands; i++)
+            for (int i = 0; i < numBands; i++) {
                 setSample(x, y, i, barr[i] & 0xff, data);
+            }
             break;
 
         case DataBuffer.TYPE_SHORT:
         case DataBuffer.TYPE_USHORT:
             short sarr[] = (short[]) obj;
-            for (int i = 0; i < numBands; i++)
+            for (int i = 0; i < numBands; i++) {
                 setSample(x, y, i, sarr[i] & 0xffff, data);
+            }
             break;
 
         case DataBuffer.TYPE_INT:
             int iarr[] = (int[]) obj;
-            for (int i = 0; i < numBands; i++)
+            for (int i = 0; i < numBands; i++) {
                 setSample(x, y, i, iarr[i], data);
+            }
             break;
 
         case DataBuffer.TYPE_FLOAT:
             float farr[] = (float[]) obj;
-            for (int i = 0; i < numBands; i++)
+            for (int i = 0; i < numBands; i++) {
                 setSample(x, y, i, farr[i], data);
+            }
             break;
 
         case DataBuffer.TYPE_DOUBLE:
             double darr[] = (double[]) obj;
-            for (int i = 0; i < numBands; i++)
+            for (int i = 0; i < numBands; i++) {
                 setSample(x, y, i, darr[i], data);
+            }
             break;
         }
     }
 
+    @Override
     public boolean equals(Object o) {
-        if ((o == null) || !(o instanceof ComponentSampleModel))
+        if ((o == null) || !(o instanceof ComponentSampleModel)) {
             return false;
+        }
         ComponentSampleModel model = (ComponentSampleModel) o;
         return this.width == model.width && this.height == model.height &&
                this.numBands == model.numBands &&
@@ -211,11 +238,13 @@ public class ComponentSampleModel extends SampleModel {
                this.pixelStride == model.pixelStride;
     }
 
+    @Override
     public SampleModel createSubsetSampleModel(int bands[]) {
-        if (bands.length > this.numBands)
+        if (bands.length > this.numBands) {
             throw new RasterFormatException("The number of the bands " +
                     "in the subset is greater than the number of bands " +
                     "in the sample model");
+        }
 
         int indices[] = new int[bands.length];
         int offsets[] = new int[bands.length];
@@ -230,155 +259,196 @@ public class ComponentSampleModel extends SampleModel {
 
     }
 
+    @Override
     public SampleModel createCompatibleSampleModel(int w, int h) {
         return new ComponentSampleModel(dataType, w, h, pixelStride,
                 pixelStride * w, bankIndices, bandOffsets);
     }
 
+    @Override
     public int[] getPixel(int x, int y, int iArray[], DataBuffer data) {
         int pixel[];
 
-        if (iArray == null)
+        if (iArray == null) {
             pixel = new int[numBands];
-        else
+        } else {
             pixel = iArray;
+        }
 
-        for (int i = 0; i < numBands; i++)
+        for (int i = 0; i < numBands; i++) {
             pixel[i] = getSample(x, y, i, data);
+        }
 
         return pixel;
     }
 
+    @Override
     public void setPixel(int x, int y, int iArray[], DataBuffer data) {
-        for (int i = 0; i < numBands; i++)
+        for (int i = 0; i < numBands; i++) {
             setSample(x, y, i, iArray[i], data);
+        }
     }
 
+    @Override
     public int getSample(int x, int y, int b, DataBuffer data) {
-        if (x < 0 || y < 0 || x >= this.width || y >= this.height)
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
+        }
 
         return data.getElem(bankIndices[b], y * scanlineStride +
                 x * pixelStride + bandOffsets[b]);
     }
 
+    @Override
     public float getSampleFloat(int x, int y, int b, DataBuffer data) {
-        if (x < 0 || y < 0 || x >= this.width || y >= this.height)
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
+        }
 
         return data.getElemFloat(bankIndices[b], y * scanlineStride +
                 x * pixelStride + bandOffsets[b]);
     }
 
+    @Override
     public double getSampleDouble(int x, int y, int b, DataBuffer data) {
-        if (x < 0 || y < 0 || x >= this.width || y >= this.height)
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
+        }
 
         return data.getElemDouble(bankIndices[b], y * scanlineStride +
                 x * pixelStride + bandOffsets[b]);
     }
 
+    @Override
     public int[] getPixels(int x, int y, int w, int h, int iArray[],
             DataBuffer data) {
-        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height)
+        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
+        }
         int pixels[] = null;
         int idx = 0;
 
-        if (iArray == null)
+        if (iArray == null) {
             pixels = new int[w * h * numBands];
-        else
+        } else {
             pixels = iArray;
+        }
 
-        for (int i = y; i < y + h; i++)
-            for (int j = x; j < x + w; j++)
-                for (int n = 0; n < numBands; n++)
+        for (int i = y; i < y + h; i++) {
+            for (int j = x; j < x + w; j++) {
+                for (int n = 0; n < numBands; n++) {
                     pixels[idx++] = getSample(j, i, n, data);
+                }
+            }
+        }
 
         return pixels;
     }
 
+    @Override
     public void setPixels(int x, int y, int w, int h, int iArray[],
             DataBuffer data) {
-        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height)
+        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
+        }
         int idx = 0;
-        for (int i = y; i < y + h; i++)
-            for (int j = x; j < x + w; j++)
-                for (int n = 0; n < numBands; n++)
+        for (int i = y; i < y + h; i++) {
+            for (int j = x; j < x + w; j++) {
+                for (int n = 0; n < numBands; n++) {
                     setSample(j, i, n, iArray[idx++], data);
+                }
+            }
+        }
     }
 
+    @Override
     public void setSample(int x, int y, int b, int s, DataBuffer data) {
-        if (x < 0 || y < 0 || x >= this.width || y >= this.height)
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
+        }
 
         data.setElem(bankIndices[b], y * scanlineStride + x * pixelStride
                 + bandOffsets[b], s);
     }
 
+    @Override
     public int[] getSamples(int x, int y, int w, int h, int b, int iArray[],
             DataBuffer data) {
-        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height)
+        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
+        }
         int samples[];
         int idx = 0;
 
-        if (iArray == null)
+        if (iArray == null) {
             samples = new int[w * h];
-        else
+        } else {
             samples = iArray;
+        }
 
-        for (int i = y; i < y + h; i++)
-            for (int j = x; j < x + w; j++)
+        for (int i = y; i < y + h; i++) {
+            for (int j = x; j < x + w; j++) {
                 samples[idx++] = getSample(j, i, b, data);
+            }
+        }
 
         return samples;
     }
 
+    @Override
     public void setSamples(int x, int y, int w, int h, int b, int iArray[],
             DataBuffer data) {
-        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height)
+        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
+        }
         int idx = 0;
-        for (int i = y; i < y + h; i++)
-            for (int j = x; j < x + w; j++)
+        for (int i = y; i < y + h; i++) {
+            for (int j = x; j < x + w; j++) {
                 setSample(j, i, b, iArray[idx++], data);
+            }
+        }
     }
 
+    @Override
     public void setSample(int x, int y, int b, float s, DataBuffer data) {
-        if (x < 0 || y < 0 || x >= this.width || y >= this.height)
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
+        }
 
         data.setElemFloat(bankIndices[b], y * scanlineStride +
                 x * pixelStride + bandOffsets[b], s);
     }
 
+    @Override
     public void setSample(int x, int y, int b, double s, DataBuffer data) {
-        if (x < 0 || y < 0 || x >= this.width || y >= this.height)
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
+        }
 
         data.setElemDouble(bankIndices[b], y * scanlineStride +
                 x * pixelStride + bandOffsets[b], s);
     }
 
+    @Override
     public DataBuffer createDataBuffer() {
         DataBuffer data = null;
 
         int maxOffset = bandOffsets[0];
-        for (int i = 1; i < bandOffsets.length; i++)
-            if (bandOffsets[i] > maxOffset)
+        for (int i = 1; i < bandOffsets.length; i++) {
+            if (bandOffsets[i] > maxOffset) {
                 maxOffset = bandOffsets[i];
+            }
+        }
         int size = (height - 1) * scanlineStride +
         (width - 1) * pixelStride + maxOffset + 1;
 
@@ -415,27 +485,31 @@ public class ComponentSampleModel extends SampleModel {
         return y * scanlineStride + x * pixelStride + bandOffsets[0];
     }
 
+    @Override
     public final int getSampleSize(int band) {
         return DataBuffer.getDataTypeSize(dataType);
     }
 
+    @Override
     public final int[] getSampleSize() {
         int sampleSizes[] = new int[numBands];
         int size = DataBuffer.getDataTypeSize(dataType);
 
-        for (int i = 0; i < numBands; i++)
+        for (int i = 0; i < numBands; i++) {
             sampleSizes[i] = size;
+        }
         return sampleSizes;
     }
 
     public final int[] getBankIndices() {
-        return (int[]) bankIndices.clone();
+        return bankIndices.clone();
     }
 
     public final int[] getBandOffsets() {
-        return (int[]) bandOffsets.clone();
+        return bandOffsets.clone();
     }
 
+    @Override
     public int hashCode() {
         int hash = 0;
         int tmp = 0;
@@ -456,14 +530,14 @@ public class ComponentSampleModel extends SampleModel {
         tmp = hash >>> 24;
         hash <<= 8;
         hash |= tmp;
-        for (int i = 0; i < bandOffsets.length; i++) {
-            hash ^= bandOffsets[i];
+        for (int element : bandOffsets) {
+            hash ^= element;
             tmp = hash >>> 24;
             hash <<= 8;
             hash |= tmp;
         }
-        for (int i = 0; i < bankIndices.length; i++) {
-            hash ^= bankIndices[i];
+        for (int element : bankIndices) {
+            hash ^= element;
             tmp = hash >>> 24;
             hash <<= 8;
             hash |= tmp;
@@ -485,6 +559,7 @@ public class ComponentSampleModel extends SampleModel {
         return pixelStride;
     }
 
+    @Override
     public final int getNumDataElements() {
         return numBands;
     }

@@ -59,7 +59,7 @@ public abstract class DataBuffer {
         this.dataType = dataType;
         this.size = size;
         this.banks = numBanks;
-        this.offsets = (int[]) offsets.clone();
+        this.offsets = offsets.clone();
         this.offset = offsets[0];
     }
 
@@ -108,11 +108,11 @@ public abstract class DataBuffer {
     public abstract int getElem(int bank, int i);
 
     public float getElemFloat(int bank, int i) {
-        return (float) getElem(bank, i);
+        return getElem(bank, i);
     }
 
     public double getElemDouble(int bank, int i) {
-        return (double) getElem(bank, i);
+        return getElem(bank, i);
     }
 
     public void setElemFloat(int i, float val) {
@@ -128,11 +128,11 @@ public abstract class DataBuffer {
     }
 
     public float getElemFloat(int i) {
-        return (float) getElem(0, i);
+        return getElem(0, i);
     }
 
     public double getElemDouble(int i) {
-        return (double) getElem(i);
+        return getElem(i);
     }
 
     public int[] getOffsets() {

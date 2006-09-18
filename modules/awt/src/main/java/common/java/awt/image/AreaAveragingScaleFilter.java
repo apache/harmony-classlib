@@ -49,16 +49,25 @@ public class AreaAveragingScaleFilter extends ReplicateScaleFilter {
         super(width, height);
     }
 
+    @Override
     public void setPixels(int x, int y, int w, int h, ColorModel model, int[] pixels, int off, int scansize) {
-        if(reset) super.setPixels(x, y, w, h, model, pixels, off, scansize);
-        else setFilteredPixels(x, y, w, h, model, pixels, off, scansize);
+        if(reset) {
+            super.setPixels(x, y, w, h, model, pixels, off, scansize);
+        } else {
+            setFilteredPixels(x, y, w, h, model, pixels, off, scansize);
+        }
     }
 
+    @Override
     public void setPixels(int x, int y, int w, int h, ColorModel model, byte[] pixels, int off, int scansize) {
-        if(reset) super.setPixels(x, y, w, h, model, pixels, off, scansize);
-        else setFilteredPixels(x, y, w, h, model, pixels, off, scansize);
+        if(reset) {
+            super.setPixels(x, y, w, h, model, pixels, off, scansize);
+        } else {
+            setFilteredPixels(x, y, w, h, model, pixels, off, scansize);
+        }
     }
 
+    @Override
     public void setHints(int hints) {
         super.setHints(hints);
         reset = ((hints & averagingFlags) != averagingFlags);
@@ -105,16 +114,22 @@ public class AreaAveragingScaleFilter extends ReplicateScaleFilter {
 
         int srcOff = off;
         while (srcY < y + h) {
-            if (svRest < dvRest) vDif = svRest;
-            else vDif = dvRest;
+            if (svRest < dvRest) {
+                vDif = svRest;
+            } else {
+                vDif = dvRest;
+            }
 
             srcX = 0;
             dx = 0;
             shRest = destWidth;
             dhRest = srcWidth;
             while (srcX < w) {
-                if (shRest < dhRest) hDif = shRest;
-                else hDif = dhRest;
+                if (shRest < dhRest) {
+                    hDif = shRest;
+                } else {
+                    hDif = dhRest;
+                }
                 int avg = hDif * vDif; // calculation of contribution factor
 
                 int rgb, pix;

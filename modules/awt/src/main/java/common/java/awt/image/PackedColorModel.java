@@ -39,18 +39,21 @@ public abstract class PackedColorModel extends ColorModel {
                 (alphaMask == 0 ? false : true), isAlphaPremultiplied, trans,
                 validateTransferType(transferType));
 
-        if (pixel_bits < 1 || pixel_bits > 32)
+        if (pixel_bits < 1 || pixel_bits > 32) {
             throw new IllegalArgumentException("The bits is less than 1 or " +
                     "greater than 32");
+        }
 
         componentMasks = new int[numComponents];
-        for (int i = 0; i < numColorComponents; i++)
+        for (int i = 0; i < numColorComponents; i++) {
             componentMasks[i] = colorMaskArray[i];
+        }
 
         if (hasAlpha) {
             componentMasks[numColorComponents] = alphaMask;
-            if (this.bits[numColorComponents] == 1)
+            if (this.bits[numColorComponents] == 1) {
                 transparency = Transparency.BITMASK;
+            }
         }
 
         parseComponents();
@@ -64,18 +67,21 @@ public abstract class PackedColorModel extends ColorModel {
                 (amask == 0 ? false : true), isAlphaPremultiplied, trans,
                 validateTransferType(transferType));
 
-        if (pixel_bits < 1 || pixel_bits > 32)
+        if (pixel_bits < 1 || pixel_bits > 32) {
             throw new IllegalArgumentException("The bits is less than 1 or " +
                     "greater than 32");
+        }
 
-        if (cs.getType() != ColorSpace.TYPE_RGB)
+        if (cs.getType() != ColorSpace.TYPE_RGB) {
             throw new IllegalArgumentException("The space is not a TYPE_RGB " +
                     "space");
+        }
 
         for (int i = 0; i < numColorComponents; i++) {
-            if (cs.getMinValue(i) != 0.0f || cs.getMaxValue(i) != 1.0f)
+            if (cs.getMinValue(i) != 0.0f || cs.getMaxValue(i) != 1.0f) {
                 throw new IllegalArgumentException("The min/max normalized " +
                         "component values are not 0.0/1.0");
+            }
         }
         componentMasks = new int[numComponents];
         componentMasks[0] = rmask;
@@ -84,15 +90,19 @@ public abstract class PackedColorModel extends ColorModel {
 
         if (hasAlpha) {
             componentMasks[3] = amask;
-            if (this.bits[3] == 1)
+            if (this.bits[3] == 1) {
                 transparency = Transparency.BITMASK;
+            }
         }
 
         parseComponents();
     }
 
+    @Override
     public WritableRaster getAlphaRaster(WritableRaster raster) {
-        if(!hasAlpha) return null;
+        if(!hasAlpha) {
+            return null;
+        }
 
         int x = raster.getMinX();
         int y = raster.getMinY();
@@ -103,11 +113,14 @@ public abstract class PackedColorModel extends ColorModel {
         return raster.createWritableChild(x, y, w, h, x, y, band);
     }
 
+    @Override
     public boolean equals(Object obj) {
-        if (obj == null)
+        if (obj == null) {
             return false;
-        if (!(obj instanceof PackedColorModel))
+        }
+        if (!(obj instanceof PackedColorModel)) {
             return false;
+        }
         PackedColorModel cm = (PackedColorModel) obj;
 
         return (pixel_bits == cm.getPixelSize() &&
@@ -122,11 +135,14 @@ public abstract class PackedColorModel extends ColorModel {
                 Arrays.equals(componentMasks, cm.getMasks()));
     }
 
+    @Override
     public boolean isCompatibleSampleModel(SampleModel sm) {
-        if (sm == null)
+        if (sm == null) {
             return false;
-        if (!(sm instanceof SinglePixelPackedSampleModel))
+        }
+        if (!(sm instanceof SinglePixelPackedSampleModel)) {
             return false;
+        }
         SinglePixelPackedSampleModel esm = (SinglePixelPackedSampleModel) sm;
 
         return ((esm.getNumBands() == numComponents) &&
@@ -134,6 +150,7 @@ public abstract class PackedColorModel extends ColorModel {
                 Arrays.equals(esm.getBitMasks(), componentMasks));
     }
 
+    @Override
     public SampleModel createCompatibleSampleModel(int w, int h) {
         return new SinglePixelPackedSampleModel(transferType, w, h,
                 componentMasks);
@@ -144,32 +161,35 @@ public abstract class PackedColorModel extends ColorModel {
     }
 
     public final int[] getMasks() {
-        return (int[]) (componentMasks.clone());
+        return (componentMasks.clone());
     }
 
     private static int[] createBits(int colorMaskArray[], int alphaMask) {
         int bits[];
         int numComp;
-        if (alphaMask == 0)
+        if (alphaMask == 0) {
             numComp = colorMaskArray.length;
-        else
+        } else {
             numComp = colorMaskArray.length + 1;
+        }
 
         bits = new int[numComp];
         int i = 0;
         for (; i < colorMaskArray.length; i++) {
             bits[i] = countCompBits(colorMaskArray[i]);
-            if (bits[i] < 0)
+            if (bits[i] < 0) {
                 throw new IllegalArgumentException("The mask of the " + i
                         + " component is not contiguous");
+            }
         }
 
         if (i < numComp) {
             bits[i] = countCompBits(alphaMask);
 
-            if (bits[i] < 0)
+            if (bits[i] < 0) {
                 throw new IllegalArgumentException("The mask of the alpha " +
                         "component is not contiguous");
+            }
         }
 
         return bits;
@@ -179,32 +199,37 @@ public abstract class PackedColorModel extends ColorModel {
             int amask) {
 
         int numComp;
-        if (amask == 0)
+        if (amask == 0) {
             numComp = 3;
-        else
+        } else {
             numComp = 4;
+        }
         int bits[] = new int[numComp];
 
         bits[0] = countCompBits(rmask);
-        if (bits[0] < 0)
+        if (bits[0] < 0) {
             throw new IllegalArgumentException("The mask of the red " +
                     "component is not contiguous");
+        }
 
         bits[1] = countCompBits(gmask);
-        if (bits[1] < 0)
+        if (bits[1] < 0) {
             throw new IllegalArgumentException("The mask of the green " +
                     "component is not contiguous");
+        }
 
         bits[2] = countCompBits(bmask);
-        if (bits[2] < 0)
+        if (bits[2] < 0) {
             throw new IllegalArgumentException("The mask of the blue " +
                     "component is not contiguous");
+        }
 
         if (amask != 0) {
             bits[3] = countCompBits(amask);
-            if (bits[3] < 0)
+            if (bits[3] < 0) {
                 throw new IllegalArgumentException("The mask of the alpha " +
                         "component is not contiguous");
+            }
         }
 
         return bits;
@@ -224,8 +249,9 @@ public abstract class PackedColorModel extends ColorModel {
             }
         }
 
-        if (compMask != 0)
+        if (compMask != 0) {
             return -1;
+        }
 
         return bits;
     }
@@ -233,10 +259,11 @@ public abstract class PackedColorModel extends ColorModel {
     private static int validateTransferType(int transferType) {
         if (transferType != DataBuffer.TYPE_BYTE &&
                 transferType != DataBuffer.TYPE_USHORT &&
-                transferType != DataBuffer.TYPE_INT)
+                transferType != DataBuffer.TYPE_INT) {
             throw new IllegalArgumentException("The transferType is not " +
                     "one of DataBuffer.TYPE_BYTE, DataBuffer.TYPE_USHORT " +
                     "or DataBuffer.TYPE_INT");
+        }
         return transferType;
     }
 

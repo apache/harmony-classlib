@@ -45,9 +45,11 @@ public class ByteLookupTable extends LookupTable {
         return data;
     }
 
+    @Override
     public int[] lookupPixel(int[] src, int[] dst) {
-        if (dst == null)
+        if (dst == null) {
             dst = new int[src.length];
+        }
 
         int offset = getOffset();
         if (getNumComponents() == 1) {
@@ -64,8 +66,9 @@ public class ByteLookupTable extends LookupTable {
     }
 
     public byte[] lookupPixel(byte[] src, byte[] dst) {
-        if (dst == null)
+        if (dst == null) {
             dst = new byte[src.length];
+        }
 
         int offset = getOffset();
         if (getNumComponents() == 1) {

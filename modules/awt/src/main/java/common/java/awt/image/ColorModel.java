@@ -54,42 +54,49 @@ public abstract class ColorModel implements Transparency {
             boolean hasAlpha, boolean isAlphaPremultiplied, int transparency,
             int transferType) {
 
-        if (pixel_bits < 1)
+        if (pixel_bits < 1) {
             throw new IllegalArgumentException("The number of bits" +
                     " in the pixel values is less than 1");
-
-        if (bits == null)
-            throw new NullPointerException("bits is null");
-
-        int sum = 0;
-        for (int i = 0; i < bits.length; i++) {
-            if (bits[i] < 0)
-                throw new IllegalArgumentException("The elements in" +
-                        " bits is less than 0");
-            sum += bits[i];
         }
 
-        if (sum < 1)
+        if (bits == null) {
+            throw new NullPointerException("bits is null");
+        }
+
+        int sum = 0;
+        for (int element : bits) {
+            if (element < 0) {
+                throw new IllegalArgumentException("The elements in" +
+                        " bits is less than 0");
+            }
+            sum += element;
+        }
+
+        if (sum < 1) {
             throw new NullPointerException("The sum of the number" +
                     " of bits in bits is less than 1");
+        }
 
-        if (cspace == null)
+        if (cspace == null) {
             throw new IllegalArgumentException("The cspace is null");
+        }
 
         if (transparency < Transparency.OPAQUE ||
-               transparency > Transparency.TRANSLUCENT)
+               transparency > Transparency.TRANSLUCENT) {
             throw new IllegalArgumentException("The transparency " +
                     "is not a valid value");
+        }
 
         this.pixel_bits = pixel_bits;
-        this.bits = (int[]) bits.clone();
+        this.bits = bits.clone();
 
         maxValues = new int[bits.length];
         maxBitLength = 0;
         for (int i = 0; i < maxValues.length; i++) {
             maxValues[i] = (1 << bits[i]) - 1;
-            if (bits[i] > maxBitLength)
+            if (bits[i] > maxBitLength) {
                 maxBitLength = bits[i];
+            }
         }
 
         cs = cspace;
@@ -97,10 +104,11 @@ public abstract class ColorModel implements Transparency {
         this.isAlphaPremultiplied = isAlphaPremultiplied;
         numColorComponents = cs.getNumComponents();
 
-        if (hasAlpha)
+        if (hasAlpha) {
             numComponents = numColorComponents + 1;
-        else
+        } else {
             numComponents = numColorComponents;
+        }
 
         this.transparency = transparency;
         this.transferType = transferType;
@@ -109,9 +117,10 @@ public abstract class ColorModel implements Transparency {
 
     public ColorModel(int bits) {
 
-        if (bits < 1)
+        if (bits < 1) {
             throw new IllegalArgumentException("The number of " +
                     "bits in bits is less than 1");
+        }
 
         pixel_bits = bits;
         transferType = getTransferType(bits);
@@ -153,6 +162,7 @@ public abstract class ColorModel implements Transparency {
                 "supported by this ColorModel");
     }
 
+    @Override
     public String toString() {
         // The output format based on 1.5 release behaviour. 
         // It could be reveled such way:
@@ -179,9 +189,11 @@ public abstract class ColorModel implements Transparency {
                 normOffset);
     }
 
+    @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof ColorModel))
+        if (!(obj instanceof ColorModel)) {
             return false;
+        }
         ColorModel cm = (ColorModel) obj;
 
         return (pixel_bits == cm.getPixelSize() &&
@@ -242,20 +254,23 @@ public abstract class ColorModel implements Transparency {
 
     public float[] getNormalizedComponents(int[] components, int offset,
             float normComponents[], int normOffset) {
-        if (bits == null)
+        if (bits == null) {
             throw new UnsupportedOperationException("The bits is null");
+        }
 
-        if (components.length - offset < numComponents)
+        if (components.length - offset < numComponents) {
             throw new IllegalArgumentException("The length of components " +
                     "minus offset is less than numComponents ");
+        }
 
         if (normComponents == null) {
             normComponents = new float[numComponents + offset];
         } else {
-            if (normComponents.length - normOffset < numComponents)
+            if (normComponents.length - normOffset < numComponents) {
                 throw new IllegalArgumentException("The length of " +
                         "normComponents minus normOffset is " +
                         "less than numComponents ");
+            }
         }
 
         if (hasAlpha && isAlphaPremultiplied) {
@@ -265,7 +280,7 @@ public abstract class ColorModel implements Transparency {
             if (normAlpha != 0.0f) {
                 for (int i = 0; i < numColorComponents; i++) {
                     normComponents[normOffset + i] =
-                        (float) components[offset + i] /
+                        components[offset + i] /
                             (normAlpha * maxValues[i]);
                 }
                 normComponents[normOffset + numColorComponents] = normAlpha;
@@ -293,19 +308,22 @@ public abstract class ColorModel implements Transparency {
     public int[] getUnnormalizedComponents(float normComponents[],
             int normOffset, int components[], int offset) {
 
-        if (bits == null)
+        if (bits == null) {
             throw new UnsupportedOperationException("The bits is null");
+        }
 
-        if (normComponents.length - normOffset < numComponents)
+        if (normComponents.length - normOffset < numComponents) {
             throw new IllegalArgumentException("The length of normComponents " +
                     "minus normOffset is less than numComponents ");
+        }
 
         if (components == null) {
             components = new int[numComponents + offset];
         } else {
-            if (components.length - offset < numComponents)
+            if (components.length - offset < numComponents) {
                 throw new IllegalArgumentException("The length of components " +
                         "minus offset is less than numComponents ");
+            }
         }
 
         if (hasAlpha && isAlphaPremultiplied) {
@@ -349,13 +367,15 @@ public abstract class ColorModel implements Transparency {
     public abstract int getGreen(int pixel);
 
     public int getComponentSize(int componentIdx) {
-        if (bits == null)
+        if (bits == null) {
             throw new NullPointerException("The number of bits array is null");
+        }
 
-        if (componentIdx < 0 || componentIdx >= bits.length)
+        if (componentIdx < 0 || componentIdx >= bits.length) {
             throw new ArrayIndexOutOfBoundsException(
                     "componentIdx is greater than the number of components " +
                     "or less than zero");
+        }
 
         return bits[componentIdx];
     }
@@ -365,10 +385,10 @@ public abstract class ColorModel implements Transparency {
     public abstract int getAlpha(int pixel);
 
     public int[] getComponentSize() {
-        if (bits != null)
-            return (int[]) bits.clone();
-        else
-            return null;
+        if (bits != null) {
+            return bits.clone();
+        }
+        return null;
     }
 
     public final boolean isAlphaPremultiplied() {
@@ -379,9 +399,7 @@ public abstract class ColorModel implements Transparency {
         return hasAlpha;
     }
 
-    public void finalize() {
-    }
-
+    @Override
     public int hashCode() {
         int hash = 0;
         int tmp;
@@ -422,9 +440,9 @@ public abstract class ColorModel implements Transparency {
 
         if (bits != null) {
 
-            for (int i = 0; i < bits.length; i++) {
+            for (int element : bits) {
                 tmp = hash >>> 24;
-                hash ^= bits[i];
+                hash ^= element;
                 hash <<= 8;
                 hash |= tmp;
             }
@@ -455,9 +473,10 @@ public abstract class ColorModel implements Transparency {
     }
 
     public static ColorModel getRGBdefault() {
-        if (RGBdefault == null)
+        if (RGBdefault == null) {
             RGBdefault = new DirectColorModel(32, 0x00ff0000, 0x0000ff00,
                     0x000000ff, 0xff000000);
+        }
         return RGBdefault;
     }
 
@@ -474,25 +493,28 @@ public abstract class ColorModel implements Transparency {
 
         case DataBuffer.TYPE_BYTE:
             byte[] bPixel = (byte[]) obj;
-            if(bPixel.length > 1)
+            if(bPixel.length > 1) {
                 throw new UnsupportedOperationException("This pixel " +
                         "representation is not suuported by tis Color Model");
+            }
             pixel = bPixel[0] & 0xff;
             break;
 
         case DataBuffer.TYPE_USHORT:
             short[] sPixel = (short[]) obj;
-            if(sPixel.length > 1)
+            if(sPixel.length > 1) {
                 throw new UnsupportedOperationException("This pixel " +
                     "representation is not suuported by tis Color Model");
+            }
             pixel = sPixel[0] & 0xffff;
             break;
 
         case DataBuffer.TYPE_INT:
             int[] iPixel = (int[]) obj;
-            if(iPixel.length > 1)
+            if(iPixel.length > 1) {
                 throw new UnsupportedOperationException("This pixel " +
                     "representation is not suuported by tis Color Model");
+            }
             pixel = iPixel[0];
             break;
 
@@ -505,16 +527,14 @@ public abstract class ColorModel implements Transparency {
     }
 
     static int getTransferType(int bits) {
-        if (bits <= 8)
+        if (bits <= 8) {
             return DataBuffer.TYPE_BYTE;
-        else if (bits <= 16)
+        } else if (bits <= 16) {
             return DataBuffer.TYPE_USHORT;
-        else if (bits <= 32)
+        } else if (bits <= 32) {
             return DataBuffer.TYPE_INT;
-        else
+        } else {
             return DataBuffer.TYPE_UNDEFINED;
-
+        }
     }
-
 }
-

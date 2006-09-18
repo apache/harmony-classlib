@@ -25,12 +25,12 @@ public final class DataBufferInt extends DataBuffer {
 
     public DataBufferInt(int dataArrays[][], int size, int offsets[]) {
         super(TYPE_INT, size, dataArrays.length, offsets);
-        data = (int[][]) dataArrays.clone();
+        data = dataArrays.clone();
     }
 
     public DataBufferInt(int dataArrays[][], int size) {
         super(TYPE_INT, size, dataArrays.length);
-        data = (int[][]) dataArrays.clone();
+        data = dataArrays.clone();
     }
 
     public DataBufferInt(int dataArray[], int size, int offset) {
@@ -60,16 +60,19 @@ public final class DataBufferInt extends DataBuffer {
         data[0] = new int[size];
     }
 
+    @Override
     public void setElem(int bank, int i, int val) {
         data[bank][offsets[bank] + i] = val;
         notifyChanged();
     }
 
+    @Override
     public void setElem(int i, int val) {
         data[0][offset + i] = val;
         notifyChanged();
     }
 
+    @Override
     public int getElem(int bank, int i) {
         return data[bank][offsets[bank] + i];
     }
@@ -79,13 +82,14 @@ public final class DataBufferInt extends DataBuffer {
         return data[bank];
     }
 
+    @Override
     public int getElem(int i) {
         return data[0][offset + i];
     }
 
     public int[][] getBankData() {
         notifyTaken();
-        return (int[][]) data.clone();
+        return data.clone();
     }
 
     public int[] getData() {

@@ -27,7 +27,7 @@ public class FilteredImageSource implements ImageProducer {
     private ImageProducer source;
     private ImageFilter filter;
 
-    private Hashtable consTable = new Hashtable();
+    private Hashtable<ImageConsumer, ImageConsumer> consTable = new Hashtable<ImageConsumer, ImageConsumer>();
 
     public FilteredImageSource(ImageProducer orig, ImageFilter imgf) {
         source = orig;
@@ -41,7 +41,7 @@ public class FilteredImageSource implements ImageProducer {
 
     public void startProduction(ImageConsumer ic) {
         addConsumer(ic);
-        ImageConsumer fic = (ImageConsumer) consTable.get(ic);
+        ImageConsumer fic = consTable.get(ic);
         source.startProduction(fic);
     }
 
@@ -54,7 +54,7 @@ public class FilteredImageSource implements ImageProducer {
 
     public synchronized void removeConsumer(ImageConsumer ic) {
         if(ic != null && isConsumer(ic)){
-            ImageConsumer fic = (ImageConsumer) consTable.get(ic);
+            ImageConsumer fic = consTable.get(ic);
             source.removeConsumer(fic);
             consTable.remove(ic);
         }
@@ -67,6 +67,4 @@ public class FilteredImageSource implements ImageProducer {
             consTable.put(ic, fic);
         }
     }
-
 }
-

@@ -31,10 +31,10 @@ public class Kernel implements Cloneable {
 
     public Kernel(int width, int height, float[] data) {
         int dataLength = width*height;
-        if (data.length < dataLength)
+        if (data.length < dataLength) {
             throw new IllegalArgumentException(
-                    "Length of data should not be less than width*height"
-            );
+                    "Length of data should not be less than width*height");
+        }
 
         this.width = width;
         this.height = height;
@@ -71,8 +71,8 @@ public class Kernel implements Cloneable {
         return yOrigin;
     }
 
+    @Override
     public Object clone() {
         return new Kernel(width, height, data);
     }
 }
-

@@ -45,12 +45,13 @@ public class SinglePixelPackedSampleModel extends SampleModel {
 
         if (dataType != DataBuffer.TYPE_BYTE &&
                 dataType != DataBuffer.TYPE_USHORT &&
-                dataType != DataBuffer.TYPE_INT)
+                dataType != DataBuffer.TYPE_INT) {
             throw new IllegalArgumentException("Unsupported data type:"
                     + dataType);
+        }
 
         this.scanlineStride = scanlineStride;
-        this.bitMasks = (int[]) bitMasks.clone();
+        this.bitMasks = bitMasks.clone();
         this.bitOffsets = new int[this.numBands];
         this.bitSizes = new int[this.numBands];
 
@@ -72,64 +73,73 @@ public class SinglePixelPackedSampleModel extends SampleModel {
                     size++;
                 }
 
-                if (mask != 0)
+                if (mask != 0) {
                     throw new IllegalArgumentException("Wrong mask :"
                             + bitMasks[i]);
+                }
             }
 
             this.bitOffsets[i] = offset;
             this.bitSizes[i] = size;
 
-            if (this.maxBitSize < size)
+            if (this.maxBitSize < size) {
                 this.maxBitSize = size;
+            }
 
         }
 
     }
 
+    @Override
     public Object getDataElements(int x, int y, Object obj, DataBuffer data) {
-        if (x < 0 || y < 0 || x >= this.width || y >= this.height)
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
+        }
         switch (getTransferType()) {
         case DataBuffer.TYPE_BYTE:
             byte bdata[];
-            if (obj == null)
+            if (obj == null) {
                 bdata = new byte[1];
-            else
+            } else {
                 bdata = (byte[]) obj;
+            }
 
             bdata[0] = (byte) data.getElem(y * scanlineStride + x);
-            obj = (Object) bdata;
+            obj = bdata;
             break;
         case DataBuffer.TYPE_USHORT:
             short sdata[];
-            if (obj == null)
+            if (obj == null) {
                 sdata = new short[1];
-            else
+            } else {
                 sdata = (short[]) obj;
+            }
 
             sdata[0] = (short) data.getElem(y * scanlineStride + x);
-            obj = (Object) sdata;
+            obj = sdata;
             break;
         case DataBuffer.TYPE_INT:
             int idata[];
-            if (obj == null)
+            if (obj == null) {
                 idata = new int[1];
-            else
+            } else {
                 idata = (int[]) obj;
+            }
 
             idata[0] = data.getElem(y * scanlineStride + x);
-            obj = (Object) idata;
+            obj = idata;
             break;
         }
         return obj;
     }
 
+    @Override
     public void setDataElements(int x, int y, Object obj, DataBuffer data) {
-        if (x < 0 || y < 0 || x >= this.width || y >= this.height)
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
+        }
         switch (getTransferType()) {
         case DataBuffer.TYPE_BYTE:
             data.setElem(y * scanlineStride + x, ((byte[]) obj)[0] & 0xff);
@@ -143,9 +153,11 @@ public class SinglePixelPackedSampleModel extends SampleModel {
         }
     }
 
+    @Override
     public boolean equals(Object o) {
-        if ((o == null) || !(o instanceof SinglePixelPackedSampleModel))
+        if ((o == null) || !(o instanceof SinglePixelPackedSampleModel)) {
             return false;
+        }
 
         SinglePixelPackedSampleModel model = (SinglePixelPackedSampleModel) o;
         return this.width == model.width &&
@@ -158,137 +170,171 @@ public class SinglePixelPackedSampleModel extends SampleModel {
                 this.scanlineStride == model.scanlineStride;
     }
 
+    @Override
     public SampleModel createSubsetSampleModel(int bands[]) {
-        if (bands.length > this.numBands)
+        if (bands.length > this.numBands) {
             throw new RasterFormatException("The number of the bands " +
                     "in the subset is greater than the number of bands " +
                     "in the sample model");
+        }
 
         int masks[] = new int[bands.length];
-        for (int i = 0; i < bands.length; i++)
+        for (int i = 0; i < bands.length; i++) {
             masks[i] = this.bitMasks[bands[i]];
+        }
         return new SinglePixelPackedSampleModel(this.dataType, this.width,
                 this.height, this.scanlineStride, masks);
     }
 
+    @Override
     public SampleModel createCompatibleSampleModel(int w, int h) {
         return new SinglePixelPackedSampleModel(this.dataType, w, h,
                 this.bitMasks);
     }
 
+    @Override
     public int[] getPixel(int x, int y, int iArray[], DataBuffer data) {
-        if (x < 0 || y < 0 || x >= this.width || y >= this.height)
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
+        }
         int pixel[];
-        if (iArray == null)
+        if (iArray == null) {
             pixel = new int[this.numBands];
-        else
+        } else {
             pixel = iArray;
+        }
 
-        for (int i = 0; i < this.numBands; i++)
+        for (int i = 0; i < this.numBands; i++) {
             pixel[i] = getSample(x, y, i, data);
+        }
 
         return pixel;
     }
 
+    @Override
     public void setPixel(int x, int y, int iArray[], DataBuffer data) {
-        if (x < 0 || y < 0 || x >= this.width || y >= this.height)
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
-        for (int i = 0; i < this.numBands; i++)
+        }
+        for (int i = 0; i < this.numBands; i++) {
             setSample(x, y, i, iArray[i], data);
+        }
     }
 
+    @Override
     public int getSample(int x, int y, int b, DataBuffer data) {
-        if (x < 0 || y < 0 || x >= this.width || y >= this.height)
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
+        }
         int sample = data.getElem(y * scanlineStride + x);
         return ((sample & this.bitMasks[b]) >>> this.bitOffsets[b]);
     }
 
+    @Override
     public int[] getPixels(int x, int y, int w, int h, int iArray[],
             DataBuffer data) {
-        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height)
+        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
+        }
 
         int pixels[];
 
-        if (iArray == null)
+        if (iArray == null) {
             pixels = new int[w * h * this.numBands];
-        else
+        } else {
             pixels = iArray;
+        }
 
         int idx = 0;
 
         for (int i = y; i < y + h; i++) {
-            for (int j = x; j < x + w; j++)
-                for (int n = 0; n < this.numBands; n++)
+            for (int j = x; j < x + w; j++) {
+                for (int n = 0; n < this.numBands; n++) {
                     pixels[idx++] = getSample(j, i, n, data);
+                }
+            }
         }
         return pixels;
     }
 
+    @Override
     public void setPixels(int x, int y, int w, int h, int iArray[],
             DataBuffer data) {
-        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height)
+        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
+        }
 
         int idx = 0;
 
         for (int i = y; i < y + h; i++) {
-            for (int j = x; j < x + w; j++)
-                for (int n = 0; n < this.numBands; n++)
+            for (int j = x; j < x + w; j++) {
+                for (int n = 0; n < this.numBands; n++) {
                     setSample(j, i, n, iArray[idx++], data);
+                }
+            }
         }
     }
 
+    @Override
     public void setSample(int x, int y, int b, int s, DataBuffer data) {
-        if (x < 0 || y < 0 || x >= this.width || y >= this.height)
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
+        }
         int tmp = data.getElem(y * scanlineStride + x);
         tmp &= ~this.bitMasks[b];
         tmp |= (s << this.bitOffsets[b]) & this.bitMasks[b];
         data.setElem(y * scanlineStride + x, tmp);
     }
 
+    @Override
     public int[] getSamples(int x, int y, int w, int h, int b, int iArray[],
             DataBuffer data) {
-        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height)
+        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
+        }
 
         int samples[];
         int idx = 0;
 
-        if (iArray == null)
+        if (iArray == null) {
             samples = new int[w * h];
-        else
+        } else {
             samples = iArray;
+        }
 
-        for (int i = y; i < y + h; i++)
-            for (int j = x; j < x + w; j++)
+        for (int i = y; i < y + h; i++) {
+            for (int j = x; j < x + w; j++) {
                 samples[idx++] = getSample(j, i, b, data);
+            }
+        }
 
         return samples;
     }
 
+    @Override
     public void setSamples(int x, int y, int w, int h, int b, int iArray[],
             DataBuffer data) {
-        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height)
+        if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
+        }
 
         int idx = 0;
-        for (int i = y; i < y + h; i++)
-            for (int j = x; j < x + w; j++)
+        for (int i = y; i < y + h; i++) {
+            for (int j = x; j < x + w; j++) {
                 setSample(x + j, y + i, b, iArray[idx++], data);
+            }
+        }
     }
 
+    @Override
     public DataBuffer createDataBuffer() {
         DataBuffer data = null;
         int size = (this.height - 1) * scanlineStride + width;
@@ -311,22 +357,25 @@ public class SinglePixelPackedSampleModel extends SampleModel {
         return (y * scanlineStride + x);
     }
 
+    @Override
     public int getSampleSize(int band) {
         return bitSizes[band];
     }
 
+    @Override
     public int[] getSampleSize() {
-        return (int[]) bitSizes.clone();
+        return bitSizes.clone();
     }
 
     public int[] getBitOffsets() {
-        return (int[]) bitOffsets.clone();
+        return bitOffsets.clone();
     }
 
     public int[] getBitMasks() {
-        return (int[]) bitMasks.clone();
+        return bitMasks.clone();
     }
 
+    @Override
     public int hashCode() {
         int hash = 0;
         int tmp = 0;
@@ -347,20 +396,20 @@ public class SinglePixelPackedSampleModel extends SampleModel {
         tmp = hash >>> 24;
         hash <<= 8;
         hash |= tmp;
-        for (int i = 0; i < bitMasks.length; i++) {
-            hash ^= bitMasks[i];
+        for (int element : bitMasks) {
+            hash ^= element;
             tmp = hash >>> 24;
             hash <<= 8;
             hash |= tmp;
         }
-        for (int i = 0; i < bitOffsets.length; i++) {
-            hash ^= bitOffsets[i];
+        for (int element : bitOffsets) {
+            hash ^= element;
             tmp = hash >>> 24;
             hash <<= 8;
             hash |= tmp;
         }
-        for (int i = 0; i < bitSizes.length; i++) {
-            hash ^= bitSizes[i];
+        for (int element : bitSizes) {
+            hash ^= element;
             tmp = hash >>> 24;
             hash <<= 8;
             hash |= tmp;
@@ -373,6 +422,7 @@ public class SinglePixelPackedSampleModel extends SampleModel {
         return this.scanlineStride;
     }
 
+    @Override
     public int getNumDataElements() {
         return 1;
     }

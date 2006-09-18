@@ -91,13 +91,16 @@ public abstract class VolatileImage extends Image
     *
     ***************************************************************************/
 
+    @Override
     public void flush() {
     }
 
+    @Override
     public Graphics getGraphics() {
         return createGraphics();
     }
 
+    @Override
     public ImageProducer getSource() {
         return getSnapshot().getSource();
     }

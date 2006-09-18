@@ -36,23 +36,23 @@ import org.apache.harmony.awt.gl.color.ICC_Transform;
 
 public class ColorConvertOp implements BufferedImageOp, RasterOp {
     // Unused but required by interfaces
-    RenderingHints renderingHints = null;
+    RenderingHints renderingHints;
         
     // Sequence consisting of ColorSpace and ICC_Profile elements
     Object conversionSequence[] = new ICC_Profile[0]; // To eliminate checks for null
     
     // Not null if ColorConvertOp is constructed from the array of ICC profiles
-    private ICC_Profile midProfiles[] = null;   
+    private ICC_Profile midProfiles[];   
 
-    private ColorConverter cc = new ColorConverter();
-    private ICC_TransfomCreator tCreator = new ICC_TransfomCreator();
+    private final ColorConverter cc = new ColorConverter();
+    private final ICC_TransfomCreator tCreator = new ICC_TransfomCreator();
     private boolean isICC = true;
     
     
     // Cached ICC_Transform
     private class ICC_TransfomCreator {
-        private ICC_Transform transform = null;
-        private int maxComponents = 0;
+        private ICC_Transform transform;
+        private int maxComponents;
         
         /**
          * For the full ICC case
@@ -64,19 +64,22 @@ public class ColorConvertOp implements BufferedImageOp, RasterOp {
         public ICC_Transform getTransform(ICC_Profile src, ICC_Profile dst, ICC_Profile convSeq[]) {
             if (transform != null &&
                src == transform.getSrc() && 
-               dst == transform.getDst()) // Cached value is up-to-date
+               dst == transform.getDst()) {
                 return transform;
+            }
             
             int length = convSeq.length;
             int srcFlg = 0, dstFlg = 0;
             
             if (length == 0 || src != convSeq[0]) {
-                if (src != null)
+                if (src != null) {
                     srcFlg = 1; // need src profile
+                }
             }
             if (length == 0 || dst != convSeq[length-1]) {
-                if (dst != null)
+                if (dst != null) {
                     dstFlg = 1; // need dst profile
+                }
             }
             
             ICC_Profile profiles[];
@@ -86,13 +89,15 @@ public class ColorConvertOp implements BufferedImageOp, RasterOp {
             } else {
                 profiles = new ICC_Profile[nProfiles];
                 int pos = 0;
-                if (srcFlg != 0)
+                if (srcFlg != 0) {
                     profiles[pos++] = src;
+                }
                 for (int i=0; i<length; i++) {
                     profiles[pos++] = convSeq[i];
                 }
-                if (dstFlg != 0)
+                if (dstFlg != 0) {
                     profiles[pos++] = dst;
+                }
             }
             
             return transform = new ICC_Transform(profiles);
@@ -107,8 +112,8 @@ public class ColorConvertOp implements BufferedImageOp, RasterOp {
          * @return
          */
         public Object[] getSequence(Object src, Object dst) {
-            ArrayList profiles = new ArrayList(10);
-            ArrayList sequence = new ArrayList(10);         
+            ArrayList<Object> profiles = new ArrayList<Object>(10);
+            ArrayList<Object> sequence = new ArrayList<Object>(10);         
 
             // We need this profile anyway
             ICC_Profile xyzProfile = ICC_Profile.getInstance(ColorSpace.CS_CIEXYZ);
@@ -155,9 +160,7 @@ public class ColorConvertOp implements BufferedImageOp, RasterOp {
                     // If only one profile left we skip the transform -
                     // it can be only CIEXYZ
                     if (profiles.size() > 1) {
-                        sequence.add(new ICC_Transform(
-                                (ICC_Profile[])profiles.toArray(new ICC_Profile[0])
-                        ));
+                        sequence.add(new ICC_Transform(profiles.toArray(new ICC_Profile[0])));
 
                         // Add non-ICC color space to the sequence
                         sequence.add(conversionSequence[i]);
@@ -183,11 +186,10 @@ public class ColorConvertOp implements BufferedImageOp, RasterOp {
             }
             
             if (iccSequenceStarted) { // Make last transform if needed
-                sequence.add(
-                        new ICC_Transform((ICC_Profile[])profiles.toArray(new ICC_Profile[0]))
-                );
+                sequence.add(new ICC_Transform(profiles.toArray(new ICC_Profile[0])));
                 if (dst != null && !(dst instanceof ICC_Profile)) {
-                    sequence.add(dst); // Add last non-ICC color space to the sequence
+                    sequence.add(dst); // Add last non-ICC color space to the
+                                        // sequence
                 }
             }
 
@@ -392,8 +394,9 @@ public class ColorConvertOp implements BufferedImageOp, RasterOp {
         
         int nSpaces = conversionSequence.length;
         
-        if (nSpaces < 1)
+        if (nSpaces < 1) {
             throw new IllegalArgumentException("Destination color space is undefined");
+        }
         
         // Get destination color space
         Object destination = conversionSequence[nSpaces-1];
@@ -416,8 +419,9 @@ public class ColorConvertOp implements BufferedImageOp, RasterOp {
     }
 
     public final BufferedImage filter(BufferedImage src, BufferedImage dst) {
-        if (dst == null && conversionSequence.length < 1)
+        if (dst == null && conversionSequence.length < 1) {
             throw new IllegalArgumentException("Destionation color space should be defined");
+        }
 
         ColorModel srcCM = src.getColorModel();
         // First handle index color model
@@ -540,7 +544,6 @@ public class ColorConvertOp implements BufferedImageOp, RasterOp {
         
         int numPixels = tmpData.length;
         
-        ColorScaler scaler = new ColorScaler();
         // First transform...
         if (sequence[0] instanceof ICC_Transform) { // ICC
             ICC_Transform t = (ICC_Transform)sequence[0];
@@ -552,12 +555,12 @@ public class ColorConvertOp implements BufferedImageOp, RasterOp {
             cc.loadScalingData(xyzCS); // prepare for scaling XYZ
         }
         
-        for (int i=1, length=sequence.length; i<length-1; i++) {
-            if (sequence[i] instanceof ICC_Transform) {
-                ICC_Transform t = (ICC_Transform)sequence[i];
+        for (Object element : sequence) {
+            if (element instanceof ICC_Transform) {
+                ICC_Transform t = (ICC_Transform)element;
                 cc.translateColor(t, tmpData, null, null, numPixels);
             } else {
-                ColorSpace cs = (ColorSpace) sequence[i];
+                ColorSpace cs = (ColorSpace) element;
                 for (int k=0; k<numPixels; k++) {
                     tmpData[k] = cs.fromCIEXYZ(tmpData[k]);
                     tmpData[k] = cs.toCIEXYZ(tmpData[k]); 
@@ -580,16 +583,17 @@ public class ColorConvertOp implements BufferedImageOp, RasterOp {
         if (dstPt != null) {
             dstPt.setLocation(srcPt);
             return dstPt;
-        } else 
-            return new Point2D.Float((float) srcPt.getX(), (float) srcPt.getY());
+        }
+        return new Point2D.Float((float) srcPt.getX(), (float) srcPt.getY());
     }
 
     public WritableRaster createCompatibleDestRaster(Raster src) {
         int nComps = 0;
         int nSpaces = conversionSequence.length;
         
-        if (nSpaces < 2)
+        if (nSpaces < 2) {
             throw new IllegalArgumentException("Destination color space is undefined");
+        }
         
         Object lastCS = conversionSequence[nSpaces-1];
         if (lastCS instanceof ColorSpace) {
@@ -623,14 +627,13 @@ public class ColorConvertOp implements BufferedImageOp, RasterOp {
     }
 
     public final ICC_Profile[] getICC_Profiles() {
-        if (midProfiles != null)
+        if (midProfiles != null) {
             return midProfiles;
-        else
-            return null;
+        }
+        return null;
     }
 
     public final RenderingHints getRenderingHints() {
         return renderingHints;
     }    
 }
-

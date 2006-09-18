@@ -103,7 +103,7 @@ Image implements WritableRenderedImage, Transparency{
 
     private final int imageType;
 
-    private Hashtable properties;
+    private Hashtable<?, ?> properties;
 
     // Surface of the Buffered Image - used for blitting one Buffered Image 
     // on the other one or on the Component
@@ -111,13 +111,15 @@ Image implements WritableRenderedImage, Transparency{
 
     public BufferedImage(ColorModel cm, WritableRaster raster,
             boolean isRasterPremultiplied, Hashtable<?, ?> properties) {
-        if (!cm.isCompatibleRaster(raster))
+        if (!cm.isCompatibleRaster(raster)) {
             throw new IllegalArgumentException("The raster is" +
                     " incompatible with this ColorModel");
+        }
 
-        if (raster.getMinX() != 0 || raster.getMinY() != 0)
+        if (raster.getMinX() != 0 || raster.getMinY() != 0) {
             throw new IllegalArgumentException("minX or minY of" +
                     " this raster not equal to zero");
+        }
 
         this.cm  = cm;
         this.raster = raster;
@@ -134,21 +136,23 @@ Image implements WritableRenderedImage, Transparency{
             IndexColorModel cm) {
         switch (imageType) {
         case TYPE_BYTE_BINARY:
-            if (cm.hasAlpha())
+            if (cm.hasAlpha()) {
                 throw new IllegalArgumentException("This image type" +
                         " can't have alpha");
+            }
             int pixel_bits = 0;
             int mapSize = cm.getMapSize();
-            if (mapSize <= 2)
+            if (mapSize <= 2) {
                 pixel_bits = 1;
-            else if (mapSize <= 4)
+            } else if (mapSize <= 4) {
                 pixel_bits = 2;
-            else if (mapSize <= 16)
+            } else if (mapSize <= 16) {
                 pixel_bits = 4;
-            else
+            } else {
                 throw new IllegalArgumentException("The imageType is" +
                         " TYPE_BYTE_BINARY and the color map has more" +
                         " than 16 entries");
+            }
 
             raster = Raster.createPackedRaster(DataBuffer.TYPE_BYTE, width,
                     height, 1, pixel_bits, null);
@@ -165,9 +169,10 @@ Image implements WritableRenderedImage, Transparency{
 
         }
 
-        if (!cm.isCompatibleRaster(raster))
+        if (!cm.isCompatibleRaster(raster)) {
             throw new IllegalArgumentException("The imageType is" +
                     " not compatible with ColorModel");
+        }
 
         this.cm = cm;
         this.imageType = imageType;
@@ -353,18 +358,22 @@ Image implements WritableRenderedImage, Transparency{
         imageSurf = createImageSurface(imageType);
     }
 
+    @Override
     public Object getProperty(String name, ImageObserver observer) {
         return getProperty(name);
     }
 
     public Object getProperty(String name) {
-        if(name == null)
+        if(name == null) {
             throw new NullPointerException("Property name is null");
-        if (properties == null)
+        }
+        if (properties == null) {
             return null;
+        }
         Object property = properties.get(name);
-        if (property == null)
+        if (property == null) {
             property = Image.UndefinedProperty;
+        }
         return property;
     }
 
@@ -410,10 +419,11 @@ Image implements WritableRenderedImage, Transparency{
     }
 
     public String[] getPropertyNames() {
-        if (properties == null)
+        if (properties == null) {
             return null;
-        Vector v = new Vector();
-        for (Enumeration e = properties.keys(); e.hasMoreElements();) {
+        }
+        Vector<String> v = new Vector<String>();
+        for (Enumeration<?> e = properties.keys(); e.hasMoreElements();) {
             try {
                 v.add((String) e.nextElement());
             } catch (ClassCastException ex) {
@@ -423,21 +433,23 @@ Image implements WritableRenderedImage, Transparency{
         if (size > 0) {
             String names[] = new String[size];
             for (int i = 0; i < size; i++) {
-                names[i] = (String) v.elementAt(i);
+                names[i] = v.elementAt(i);
             }
             return names;
         }
         return null;
     }
 
+    @Override
     public String toString() {
         return "BufferedImage@" + Integer.toHexString(hashCode()) +
             ": type = " + imageType + " " + cm + " " + raster;
     }
 
     public WritableRaster getWritableTile(int tileX, int tileY) {
-        if (tileX == 0 && tileY == 0)
+        if (tileX == 0 && tileY == 0) {
             return raster;
+        }
         throw new ArrayIndexOutOfBoundsException("Both tileX and" +
                 " tileY are not equal to 0");
     }
@@ -478,8 +490,9 @@ Image implements WritableRenderedImage, Transparency{
     }
 
     public Raster getTile(int tileX, int tileY) {
-        if (tileX == 0 && tileY == 0)
+        if (tileX == 0 && tileY == 0) {
             return raster;
+        }
         throw new ArrayIndexOutOfBoundsException("Both tileX and" +
                 " tileY are not equal to 0");
     }
@@ -503,14 +516,17 @@ Image implements WritableRenderedImage, Transparency{
         return outr;
     }
 
+    @Override
     public ImageProducer getSource() {
         return new BufferedImageSource(this, properties);
     }
 
+    @Override
     public int getWidth(ImageObserver observer) {
         return raster.getWidth();
     }
 
+    @Override
     public int getHeight(ImageObserver observer) {
         return raster.getHeight();
     }
@@ -536,6 +552,7 @@ Image implements WritableRenderedImage, Transparency{
         return ge.createGraphics(this);
     }
 
+    @Override
     public Graphics getGraphics() {
         return createGraphics();
     }
@@ -549,8 +566,9 @@ Image implements WritableRenderedImage, Transparency{
 
     public int[] getRGB(int startX, int startY, int w, int h, int[] rgbArray,
             int offset, int scansize) {
-        if (rgbArray == null)
+        if (rgbArray == null) {
             rgbArray = new int[offset + h * scansize];
+        }
 
         int off = offset;
         for (int y = startY; y < startY + h; y++, off += scansize) {
@@ -579,8 +597,9 @@ Image implements WritableRenderedImage, Transparency{
     }
 
     public boolean isTileWritable(int tileX, int tileY) {
-        if (tileX == 0 && tileY == 0)
+        if (tileX == 0 && tileY == 0) {
             return true;
+        }
         throw new ArrayIndexOutOfBoundsException("Both tileX and tileY" +
                 " are not equal to 0");
     }
@@ -600,6 +619,7 @@ Image implements WritableRenderedImage, Transparency{
         return true;
     }
 
+    @Override
     public void flush() {
         imageSurf.dispose();
     }

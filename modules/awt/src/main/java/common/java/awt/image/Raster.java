@@ -53,32 +53,38 @@ public class Raster {
             int w, int h, int scanlineStride, int bankIndices[],
             int bandOffsets[], Point location) {
 
-        if (w <= 0 || h <= 0)
+        if (w <= 0 || h <= 0) {
             throw new RasterFormatException("w or h is less than or "
                     + "equal to zero");
+        }
 
-        if (location == null)
+        if (location == null) {
             location = new Point(0, 0);
+        }
 
         if ((long) location.x + w > Integer.MAX_VALUE
-                || (long) location.y + h > Integer.MAX_VALUE)
+                || (long) location.y + h > Integer.MAX_VALUE) {
             throw new RasterFormatException("location.x + w or "
                     + "location.y + h results in integer overflow");
+        }
 
-        if (bankIndices == null || bandOffsets == null)
+        if (bankIndices == null || bandOffsets == null) {
             throw new ArrayIndexOutOfBoundsException("bankIndices or "
                     + "bandOffsets is null");
+        }
 
-        if (dataBuffer == null)
+        if (dataBuffer == null) {
             throw new NullPointerException("dataBuffer is null");
+        }
 
         int dataType = dataBuffer.getDataType();
 
         if (dataType != DataBuffer.TYPE_BYTE
                 && dataType != DataBuffer.TYPE_USHORT
-                && dataType != DataBuffer.TYPE_INT)
+                && dataType != DataBuffer.TYPE_INT) {
             throw new IllegalArgumentException("dataType is not one "
                     + "of the supported data types");
+        }
 
         BandedSampleModel sampleModel = new BandedSampleModel(dataType, w, h,
                 scanlineStride, bankIndices, bandOffsets);
@@ -90,36 +96,43 @@ public class Raster {
             int scanlineStride, int bankIndices[], int bandOffsets[],
             Point location) {
 
-        if (w <= 0 || h <= 0)
+        if (w <= 0 || h <= 0) {
             throw new RasterFormatException("w or h is less than or "
                     + "equal to zero");
+        }
 
-        if (location == null)
+        if (location == null) {
             location = new Point(0, 0);
+        }
 
         if ((long) location.x + w > Integer.MAX_VALUE
-                || (long) location.y + h > Integer.MAX_VALUE)
+                || (long) location.y + h > Integer.MAX_VALUE) {
             throw new RasterFormatException("location.x + w or location.y + "
                     + "h results in integer overflow");
+        }
 
-        if (bankIndices == null || bandOffsets == null)
+        if (bankIndices == null || bandOffsets == null) {
             throw new ArrayIndexOutOfBoundsException("bankIndices or "
                     + "bandOffsets is null");
+        }
 
         if (dataType != DataBuffer.TYPE_BYTE
                 && dataType != DataBuffer.TYPE_USHORT
-                && dataType != DataBuffer.TYPE_INT)
+                && dataType != DataBuffer.TYPE_INT) {
             throw new IllegalArgumentException("dataType is not one of "
                     + "the supported data types");
+        }
 
         int maxOffset = bandOffsets[0];
         int maxBank = bankIndices[0];
 
         for (int i = 0; i < bankIndices.length; i++) {
-            if (bandOffsets[i] > maxOffset)
+            if (bandOffsets[i] > maxOffset) {
                 maxOffset = bandOffsets[i];
-            if (bankIndices[i] > maxBank)
+            }
+            if (bankIndices[i] > maxBank) {
                 maxBank = bankIndices[i];
+            }
         }
 
         int numBanks = maxBank + 1;
@@ -145,20 +158,24 @@ public class Raster {
     public static WritableRaster createBandedRaster(int dataType, int w, int h,
             int bands, Point location) {
 
-        if (w <= 0 || h <= 0)
+        if (w <= 0 || h <= 0) {
             throw new RasterFormatException("w or h is less than "
                     + "or equal to zero");
+        }
 
-        if (location == null)
+        if (location == null) {
             location = new Point(0, 0);
+        }
 
         if ((long) location.x + w > Integer.MAX_VALUE
-                || (long) location.y + h > Integer.MAX_VALUE)
+                || (long) location.y + h > Integer.MAX_VALUE) {
             throw new RasterFormatException("location.x + w or location.y + "
                     + "h results in integer overflow");
+        }
 
-        if (bands < 1)
+        if (bands < 1) {
             throw new ArrayIndexOutOfBoundsException("bands is less than 1");
+        }
 
         int bandOffsets[] = new int[bands];
         int bankIndices[] = new int[bands];
@@ -175,33 +192,40 @@ public class Raster {
             int w, int h, int scanlineStride, int pixelStride,
             int bandOffsets[], Point location) {
 
-        if (w <= 0 || h <= 0)
+        if (w <= 0 || h <= 0) {
             throw new RasterFormatException("w or h is less than or "
                     + "equal to zero");
+        }
 
-        if (location == null)
+        if (location == null) {
             location = new Point(0, 0);
+        }
 
         if ((long) location.x + w > Integer.MAX_VALUE
-                || (long) location.y + h > Integer.MAX_VALUE)
+                || (long) location.y + h > Integer.MAX_VALUE) {
             throw new RasterFormatException("location.x + w or location.y "
                     + "+ h results in integer overflow");
+        }
 
-        if (dataBuffer == null)
+        if (dataBuffer == null) {
             throw new NullPointerException("dataBuffer is null");
+        }
 
         int dataType = dataBuffer.getDataType();
         if (dataType != DataBuffer.TYPE_BYTE
-                && dataType != DataBuffer.TYPE_USHORT)
+                && dataType != DataBuffer.TYPE_USHORT) {
             throw new IllegalArgumentException("dataType is not one of "
                     + "the supported data types");
+        }
 
-        if (dataBuffer.getNumBanks() > 1)
+        if (dataBuffer.getNumBanks() > 1) {
             throw new RasterFormatException("dataBuffer has more "
                     + "than one bank");
+        }
 
-        if (bandOffsets == null)
+        if (bandOffsets == null) {
             throw new NullPointerException("bandOffsets is null");
+        }
 
         PixelInterleavedSampleModel sampleModel = 
             new PixelInterleavedSampleModel(dataType, w, h, 
@@ -214,30 +238,37 @@ public class Raster {
             int h, int scanlineStride, int pixelStride, int bandOffsets[],
             Point location) {
 
-        if (w <= 0 || h <= 0)
+        if (w <= 0 || h <= 0) {
             throw new RasterFormatException("w or h is less than or "
                     + "equal to zero");
+        }
 
-        if (location == null)
+        if (location == null) {
             location = new Point(0, 0);
+        }
 
         if ((long) location.x + w > Integer.MAX_VALUE
-                || (long) location.y + h > Integer.MAX_VALUE)
+                || (long) location.y + h > Integer.MAX_VALUE) {
             throw new RasterFormatException("location.x + w or location.y + "
                     + "h results in integer overflow");
+        }
 
         if (dataType != DataBuffer.TYPE_BYTE
-                && dataType != DataBuffer.TYPE_USHORT)
+                && dataType != DataBuffer.TYPE_USHORT) {
             throw new IllegalArgumentException("dataType is not one of "
                     + "the supported data types");
+        }
 
-        if (bandOffsets == null)
+        if (bandOffsets == null) {
             throw new NullPointerException("bandOffsets is null");
+        }
 
         int minOffset = bandOffsets[0];
-        for (int i = 1; i < bandOffsets.length; i++)
-            if (bandOffsets[i] < minOffset)
+        for (int i = 1; i < bandOffsets.length; i++) {
+            if (bandOffsets[i] < minOffset) {
                 minOffset = bandOffsets[i];
+            }
+        }
         int size = (h - 1) * scanlineStride + w * pixelStride + minOffset;
         DataBuffer data = null;
 
@@ -257,26 +288,31 @@ public class Raster {
     public static WritableRaster createInterleavedRaster(int dataType, int w,
             int h, int bands, Point location) {
 
-        if (w <= 0 || h <= 0)
+        if (w <= 0 || h <= 0) {
             throw new RasterFormatException("w or h is less than or "
                     + "equal to zero");
+        }
 
-        if (location == null)
+        if (location == null) {
             location = new Point(0, 0);
+        }
 
         if ((long) location.x + w > Integer.MAX_VALUE
-                || (long) location.y + h > Integer.MAX_VALUE)
+                || (long) location.y + h > Integer.MAX_VALUE) {
             throw new RasterFormatException("location.x + w or location.y + "
                     + "h results in integer overflow");
+        }
 
         if (dataType != DataBuffer.TYPE_BYTE
-                && dataType != DataBuffer.TYPE_USHORT)
+                && dataType != DataBuffer.TYPE_USHORT) {
             throw new IllegalArgumentException("dataType is not one of "
                     + "the supported data types");
+        }
 
         int bandOffsets[] = new int[bands];
-        for (int i = 0; i < bands; i++)
+        for (int i = 0; i < bands; i++) {
             bandOffsets[i] = i;
+        }
 
         return createInterleavedRaster(dataType, w, h, w * bands, bands,
                 bandOffsets, location);
@@ -285,33 +321,40 @@ public class Raster {
     public static WritableRaster createPackedRaster(DataBuffer dataBuffer,
             int w, int h, int scanlineStride, int bandMasks[], Point location) {
 
-        if (w <= 0 || h <= 0)
+        if (w <= 0 || h <= 0) {
             throw new RasterFormatException("w or h is less than or "
                     + "equal to zero");
+        }
 
-        if (location == null)
+        if (location == null) {
             location = new Point(0, 0);
+        }
 
         if ((long) location.x + w > Integer.MAX_VALUE
-                || (long) location.y + h > Integer.MAX_VALUE)
+                || (long) location.y + h > Integer.MAX_VALUE) {
             throw new RasterFormatException("location.x + w or location.y + "
                     + "h results in integer overflow");
+        }
 
-        if (bandMasks == null)
+        if (bandMasks == null) {
             throw new RasterFormatException("bandMasks is null");
+        }
 
-        if (dataBuffer == null)
+        if (dataBuffer == null) {
             throw new NullPointerException("dataBuffer is null");
+        }
 
-        if (dataBuffer.getNumBanks() > 1)
+        if (dataBuffer.getNumBanks() > 1) {
             throw new RasterFormatException("dataBuffer has more than one bank");
+        }
 
         int dataType = dataBuffer.getDataType();
         if (dataType != DataBuffer.TYPE_BYTE
                 && dataType != DataBuffer.TYPE_USHORT
-                && dataType != DataBuffer.TYPE_INT)
+                && dataType != DataBuffer.TYPE_INT) {
             throw new IllegalArgumentException("dataType is not one of "
                     + "the supported data types");
+        }
 
         SinglePixelPackedSampleModel sampleModel = 
             new SinglePixelPackedSampleModel(dataType, w, h, 
@@ -323,30 +366,36 @@ public class Raster {
     public static WritableRaster createPackedRaster(DataBuffer dataBuffer,
             int w, int h, int bitsPerPixel, Point location) {
 
-        if (w <= 0 || h <= 0)
+        if (w <= 0 || h <= 0) {
             throw new RasterFormatException("w or h is less than or "
                     + "equal to zero");
+        }
 
-        if (location == null)
+        if (location == null) {
             location = new Point(0, 0);
+        }
 
         if ((long) location.x + w > Integer.MAX_VALUE
-                || (long) location.y + h > Integer.MAX_VALUE)
+                || (long) location.y + h > Integer.MAX_VALUE) {
             throw new RasterFormatException("location.x + w or location.y "
                     + "+ h results in integer overflow");
+        }
 
-        if (dataBuffer == null)
+        if (dataBuffer == null) {
             throw new NullPointerException("dataBuffer is null");
+        }
 
-        if (dataBuffer.getNumBanks() > 1)
+        if (dataBuffer.getNumBanks() > 1) {
             throw new RasterFormatException("dataBuffer has more than one bank");
+        }
 
         int dataType = dataBuffer.getDataType();
         if (dataType != DataBuffer.TYPE_BYTE
                 && dataType != DataBuffer.TYPE_USHORT
-                && dataType != DataBuffer.TYPE_INT)
+                && dataType != DataBuffer.TYPE_INT) {
             throw new IllegalArgumentException("dataType is not one of "
                     + "the supported data types");
+        }
 
         MultiPixelPackedSampleModel sampleModel = 
             new MultiPixelPackedSampleModel(dataType, w, h, bitsPerPixel);
@@ -357,32 +406,38 @@ public class Raster {
     public static WritableRaster createPackedRaster(int dataType, int w, int h,
             int bands, int bitsPerBand, Point location) {
 
-        if (w <= 0 || h <= 0)
+        if (w <= 0 || h <= 0) {
             throw new RasterFormatException("w or h is less than or "
                     + "equal to zero");
+        }
 
-        if (location == null)
+        if (location == null) {
             location = new Point(0, 0);
+        }
 
         if ((long) location.x + w > Integer.MAX_VALUE
-                || (long) location.y + h > Integer.MAX_VALUE)
+                || (long) location.y + h > Integer.MAX_VALUE) {
             throw new RasterFormatException("location.x + w or location.y + "
                     + "h results in integer overflow");
+        }
 
-        if (bands < 1 || bitsPerBand < 1)
+        if (bands < 1 || bitsPerBand < 1) {
             throw new IllegalArgumentException("bitsPerBand or bands is "
                     + "not greater than zero");
+        }
 
         if (dataType != DataBuffer.TYPE_BYTE
                 && dataType != DataBuffer.TYPE_USHORT
-                && dataType != DataBuffer.TYPE_INT)
+                && dataType != DataBuffer.TYPE_INT) {
             throw new IllegalArgumentException("dataType is not one of "
                     + "the supported data types");
+        }
 
-        if (bitsPerBand * bands > DataBuffer.getDataTypeSize(dataType))
+        if (bitsPerBand * bands > DataBuffer.getDataTypeSize(dataType)) {
             throw new IllegalArgumentException("The product of bitsPerBand "
                     + "and bands is greater than the number of bits held by "
                     + "dataType ");
+        }
 
         if (bands > 1) {
 
@@ -394,51 +449,54 @@ public class Raster {
             }
 
             return createPackedRaster(dataType, w, h, bandMasks, location);
-        } else {
-
-            DataBuffer data = null;
-            int size = ((bitsPerBand * w + 
-                    DataBuffer.getDataTypeSize(dataType) - 1) / 
-                    DataBuffer.getDataTypeSize(dataType)) * h;
-
-            switch (dataType) {
-            case DataBuffer.TYPE_BYTE:
-                data = new DataBufferByte(size);
-                break;
-            case DataBuffer.TYPE_USHORT:
-                data = new DataBufferUShort(size);
-                break;
-            case DataBuffer.TYPE_INT:
-                data = new DataBufferInt(size);
-                break;
-            }
-            return createPackedRaster(data, w, h, bitsPerBand, location);
         }
+        DataBuffer data = null;
+        int size = ((bitsPerBand * w + 
+                DataBuffer.getDataTypeSize(dataType) - 1) / 
+                DataBuffer.getDataTypeSize(dataType)) * h;
+
+        switch (dataType) {
+        case DataBuffer.TYPE_BYTE:
+            data = new DataBufferByte(size);
+            break;
+        case DataBuffer.TYPE_USHORT:
+            data = new DataBufferUShort(size);
+            break;
+        case DataBuffer.TYPE_INT:
+            data = new DataBufferInt(size);
+            break;
+        }
+        return createPackedRaster(data, w, h, bitsPerBand, location);
     }
 
     public static WritableRaster createPackedRaster(int dataType, int w, int h,
             int bandMasks[], Point location) {
 
-        if (w <= 0 || h <= 0)
+        if (w <= 0 || h <= 0) {
             throw new RasterFormatException("w or h is less than or "
                     + "equal to zero");
+        }
 
-        if (location == null)
+        if (location == null) {
             location = new Point(0, 0);
+        }
 
         if ((long) location.x + w > Integer.MAX_VALUE
-                || (long) location.y + h > Integer.MAX_VALUE)
+                || (long) location.y + h > Integer.MAX_VALUE) {
             throw new RasterFormatException("location.x + w or location.y + "
                     + "h results in integer overflow");
+        }
 
-        if (bandMasks == null)
+        if (bandMasks == null) {
             throw new RasterFormatException("bandMasks is null");
+        }
 
         if (dataType != DataBuffer.TYPE_BYTE
                 && dataType != DataBuffer.TYPE_USHORT
-                && dataType != DataBuffer.TYPE_INT)
+                && dataType != DataBuffer.TYPE_INT) {
             throw new IllegalArgumentException("dataType is not one of "
                     + "the supported data types");
+        }
 
         DataBuffer data = null;
 
@@ -460,11 +518,13 @@ public class Raster {
     public static Raster createRaster(SampleModel sm, DataBuffer db,
             Point location) {
 
-        if (sm == null || db == null)
+        if (sm == null || db == null) {
             throw new NullPointerException("SampleModel or DataBuffer is null");
+        }
 
-        if (location == null)
+        if (location == null) {
             location = new Point(0, 0);
+        }
 
         return new Raster(sm, db, location);
     }
@@ -472,11 +532,13 @@ public class Raster {
     public static WritableRaster createWritableRaster(SampleModel sm,
             DataBuffer db, Point location) {
 
-        if (sm == null || db == null)
+        if (sm == null || db == null) {
             throw new NullPointerException("SampleModel or DataBuffer is null");
+        }
 
-        if (location == null)
+        if (location == null) {
             location = new Point(0, 0);
+        }
 
         return new OrdinaryWritableRaster(sm, db, location);
     }
@@ -484,11 +546,13 @@ public class Raster {
     public static WritableRaster createWritableRaster(SampleModel sm,
             Point location) {
 
-        if (sm == null)
+        if (sm == null) {
             throw new NullPointerException("SampleModel is null");
+        }
 
-        if (location == null)
+        if (location == null) {
             location = new Point(0, 0);
+        }
 
         return createWritableRaster(sm, sm.createDataBuffer(), location);
     }
@@ -504,19 +568,23 @@ public class Raster {
             Rectangle aRegion, Point sampleModelTranslate, Raster parent) {
 
         if (sampleModel == null || dataBuffer == null || aRegion == null
-                || sampleModelTranslate == null)
+                || sampleModelTranslate == null) {
             throw new NullPointerException("sampleModel, dataBuffer, "
                     + "aRegion or sampleModelTranslate is null");
+        }
 
-        if (aRegion.width <= 0 || aRegion.height <= 0)
+        if (aRegion.width <= 0 || aRegion.height <= 0) {
             throw new RasterFormatException("aRegion has width or height "
                     + "less than or equal to zero");
+        }
 
-        if ((long) aRegion.x + (long) aRegion.width > (long) Integer.MAX_VALUE)
+        if ((long) aRegion.x + (long) aRegion.width > Integer.MAX_VALUE) {
             throw new RasterFormatException("Overflow X coordinate of Raster");
+        }
 
-        if ((long) aRegion.y + (long) aRegion.height > (long) Integer.MAX_VALUE)
+        if ((long) aRegion.y + (long) aRegion.height > Integer.MAX_VALUE) {
             throw new RasterFormatException("Overflow Y coordinate of Raster");
+        }
 
         this.sampleModel = sampleModel;
         this.dataBuffer = dataBuffer;
@@ -540,38 +608,46 @@ public class Raster {
 
     public Raster createChild(int parentX, int parentY, int width, int height,
             int childMinX, int childMinY, int bandList[]) {
-        if (width <= 0 || height <= 0)
+        if (width <= 0 || height <= 0) {
             throw new RasterFormatException("Width or Height of child "
                     + "Raster is less than or equal to zero");
+        }
 
-        if (parentX < this.minX || parentX + width > this.minX + this.width)
+        if (parentX < this.minX || parentX + width > this.minX + this.width) {
             throw new RasterFormatException("parentX disposes outside Raster");
+        }
 
-        if (parentY < this.minY || parentY + height > this.minY + this.height)
+        if (parentY < this.minY || parentY + height > this.minY + this.height) {
             throw new RasterFormatException("parentY disposes outside Raster");
+        }
 
-        if ((long) parentX + width > Integer.MAX_VALUE)
+        if ((long) parentX + width > Integer.MAX_VALUE) {
             throw new RasterFormatException("parentX + width results in "
                     + "integer overflow");
+        }
 
-        if ((long) parentY + height > Integer.MAX_VALUE)
+        if ((long) parentY + height > Integer.MAX_VALUE) {
             throw new RasterFormatException("parentY + height results in "
                     + "integer overflow");
+        }
 
-        if ((long) childMinX + width > Integer.MAX_VALUE)
+        if ((long) childMinX + width > Integer.MAX_VALUE) {
             throw new RasterFormatException("childMinX + width results in "
                     + "integer overflow");
+        }
 
-        if ((long) childMinY + height > Integer.MAX_VALUE)
+        if ((long) childMinY + height > Integer.MAX_VALUE) {
             throw new RasterFormatException("childMinY + height results in "
                     + "integer overflow");
+        }
 
         SampleModel childModel;
 
-        if (bandList == null)
+        if (bandList == null) {
             childModel = sampleModel;
-        else
+        } else {
             childModel = sampleModel.createSubsetSampleModel(bandList);
+        }
 
         int childTranslateX = childMinX - parentX;
         int childTranslateY = childMinY - parentY;
@@ -601,8 +677,9 @@ public class Raster {
     }
 
     public WritableRaster createCompatibleWritableRaster(Rectangle rect) {
-        if (rect == null)
+        if (rect == null) {
             throw new NullPointerException("Rect is null");
+        }
 
         return createCompatibleWritableRaster(rect.x, rect.y, rect.width,
                 rect.height);
