@@ -30,7 +30,7 @@ class PosCompositeGroupQuantifierSet extends CompositeGroupQuantifierSet {
     public PosCompositeGroupQuantifierSet(Quantifier quant,
             AbstractSet innerSet, AbstractSet next, int type, int setCounter) {
         super(quant, innerSet, next, type, setCounter);
-        ((JointSet) innerSet).setNext(FSet.posFSet);
+        innerSet.setNext(FSet.posFSet);
     }
 
     public int matches(int stringIndex, CharSequence testString,
