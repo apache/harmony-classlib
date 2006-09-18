@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
 
 package org.apache.harmony.luni.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Used to parse a string and return either a single or double precision
@@ -259,6 +261,12 @@ public final class FloatingPointParser {
 		if ((last == 'y') || (last == 'N')) {
 			return parseDblName(s, length);
 		}
+        
+        // See if it could be a hexadecimal representation
+        if (s.toLowerCase().indexOf("0x") != -1) { //$NON-NLS-1$
+            return HexStringParser.parseDouble(s);
+        }
+        
 		StringExponentPair info = initialParse(s, length);
 
 		double result = parseDblImpl(info.s, info.e);
@@ -299,4 +307,56 @@ public final class FloatingPointParser {
 
 		return result;
 	}
+}
+
+/*
+ * Parses hex string to a single or double precision floating point number.
+ */
+final class HexStringParser {
+
+    private static final String HEX_SIGNIFICANT = "0[xX](\\p{XDigit}+\\.?|\\p{XDigit}*\\.\\p{XDigit}+)"; //$NON-NLS-1$
+
+    private static final String BINARY_EXPONENT = "[pP]([+-]?\\d+)"; //$NON-NLS-1$
+
+    private static final String FLOAT_TYPE_SUFFIX = "[fFdD]?"; //$NON-NLS-1$
+
+    // HexFloatingPointLiteral = HexSignificand + BinaryExponent + FloatTypeSuffixopt
+    private static final String HEX_PATTERN = "[\\x00-\\x20]*([+-]?)" + HEX_SIGNIFICANT //$NON-NLS-1$
+            + BINARY_EXPONENT + FLOAT_TYPE_SUFFIX + "[\\x00-\\x20]*"; //$NON-NLS-1$
+
+    private HexStringParser() {
+        // Prevents this class from being instantiated.
+    }
+
+    /*
+     * Analyzes the hex string and extracts the sign and digit segments.
+     */
+    private static String[] getSegmentsFromHexString(String hexString) {
+        Matcher matcher = Pattern.compile(HEX_PATTERN).matcher(hexString);
+        if (!matcher.matches()) {
+            throw new NumberFormatException();
+        }
+
+        String[] hexSegments = new String[3];
+        hexSegments[0] = matcher.group(1);
+        hexSegments[1] = matcher.group(2);
+        hexSegments[2] = matcher.group(3);
+
+        return hexSegments;
+    }
+
+    /*
+     * Parses the hex string and returns the double result.
+     */
+    static double parseDouble(String hexString) {
+        String[] hexSegments = getSegmentsFromHexString(hexString);
+        String signStr = hexSegments[0];
+        String significantStr = hexSegments[1];
+        String exponentStr = hexSegments[2];
+
+        // TODO
+        // To complete the function here.
+
+        return 0d;
+    }
 }
