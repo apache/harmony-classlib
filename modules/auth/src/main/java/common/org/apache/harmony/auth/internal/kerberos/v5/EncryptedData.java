@@ -18,6 +18,10 @@ package org.apache.harmony.auth.internal.kerberos.v5;
 
 import java.io.IOException;
 
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+
 import org.apache.harmony.security.asn1.ASN1Explicit;
 import org.apache.harmony.security.asn1.ASN1Integer;
 import org.apache.harmony.security.asn1.ASN1OctetString;
@@ -32,13 +36,28 @@ import org.apache.harmony.security.asn1.BerInputStream;
  */
 public class EncryptedData {
 
+    /**
+     * DES in CBC mode with CRC-based checksum
+     */
+    public static final int DES_CBC_CRC = 1;
+
+    /**
+     * DES in CBC mode with CRC-based checksum
+     */
+    public static final int DES_CBC_MD4 = 2;
+
+    /**
+     * DES in CBC mode with CRC-based checksum
+     */
+    public static final int DES_CBC_MD5 = 3;
+
     private final int etype;
 
     private final int kvno;
 
     private final byte[] cipher;
 
-    private EncryptedData(int etype, int kvno, byte[] cipher) {
+    public EncryptedData(int etype, int kvno, byte[] cipher) {
         this.etype = etype;
         this.kvno = kvno;
         this.cipher = cipher;
@@ -54,6 +73,48 @@ public class EncryptedData {
 
     public byte[] getCipher() {
         return cipher;
+    }
+
+    public byte[] decrypt(SecretKey key) {
+
+        int offset;
+
+        IvParameterSpec initCipherState;
+        switch (etype) {
+        case DES_CBC_CRC:
+            offset = 12;// confounder(8)+CRC-32 checksum(4)
+            // copy of original key
+            initCipherState = new IvParameterSpec(key.getEncoded());
+            break;
+        case DES_CBC_MD4:
+        case DES_CBC_MD5:
+            offset = 24;// confounder(8)+ MD4/5 checksum(16)
+            // all-zero
+            initCipherState = new IvParameterSpec(new byte[] { 0, 0, 0, 0, 0,
+                    0, 0, 0, });
+            break;
+        default:
+            throw new RuntimeException();//FIXME not implemented yet
+        }
+
+        try {
+            Cipher dcipher = Cipher.getInstance("DES/CBC/NoPadding");
+            
+            dcipher.init(Cipher.DECRYPT_MODE, key, initCipherState);
+            
+            byte[] tmp = dcipher.doFinal(cipher);
+            
+            // TODO: verify checksum
+
+            // cat out: confounder and checksum bytes
+            // TODO: how to do the same for padding bytes?
+            byte[] result = new byte[tmp.length-offset];
+            System.arraycopy(tmp, offset, result, 0, result.length);
+            
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //
