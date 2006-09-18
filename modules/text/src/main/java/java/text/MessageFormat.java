@@ -506,9 +506,12 @@ public class MessageFormat extends Format {
             }
 		}
 		if (maxOffset + 1 < strings.length) {
-            hashCode += strings[maxOffset + 1].hashCode();
+			hashCode += strings[maxOffset + 1].hashCode();
         }
-		return hashCode + locale.hashCode();
+		if (locale != null) {
+            return hashCode + locale.hashCode();
+		}
+		return hashCode;
 	}
 
 	/**

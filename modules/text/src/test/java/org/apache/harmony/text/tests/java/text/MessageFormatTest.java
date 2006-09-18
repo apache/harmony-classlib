@@ -346,6 +346,15 @@ public class MessageFormatTest extends TestCase {
     }
 
     /**
+     * @tests java.text.MessageFormat#hashCode()
+     */
+    public void test_hashCode() {
+        // Test for method
+        // int java.text.MessageFormat.hashCode()
+        assertEquals("Should be equal", 3648, new MessageFormat("rr", null).hashCode());
+    }
+
+    /**
      * @tests java.text.MessageFormat#formatToCharacterIterator(java.lang.Object)
      */
     //FIXME This test fails on Harmony ClassLibrary
