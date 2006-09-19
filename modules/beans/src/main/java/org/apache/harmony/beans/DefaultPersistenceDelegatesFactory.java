@@ -35,8 +35,11 @@ public final class DefaultPersistenceDelegatesFactory {
     private static HashMap<String, PersistenceDelegate> persistenceDelegates = new HashMap<String, PersistenceDelegate>();
 
     private static PersistenceDelegate createPersistenceDelegate(Class type) {
-        PersistenceDelegate pd = null;
+        if (type == null) {
+            return new NullPersistenceDelegate();
+        }
 
+        PersistenceDelegate pd = null;
         try {
             String className = createDefaultNameForPersistenceDelegateClass(type);
 
@@ -64,11 +67,11 @@ public final class DefaultPersistenceDelegatesFactory {
     }
 
     public static PersistenceDelegate getPersistenceDelegate(Class type) {
-        String className = type.getName();
+        String className = (type == null) ? null : type.getName();
         PersistenceDelegate result = persistenceDelegates.get(className);
 
         if (result == null) {
-            if (type.isArray()) {
+            if (type != null && type.isArray()) {
                 result = org.apache.harmony.beans.ArrayPersistenceDelegate
                         .getInstance();
             } else {

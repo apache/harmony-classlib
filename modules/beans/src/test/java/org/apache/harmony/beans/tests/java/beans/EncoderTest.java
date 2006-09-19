@@ -346,10 +346,9 @@ public class EncoderTest extends TestCase {
 	}
 
 	public void testGetPersistenceDelegate_Null() {
-		// TODO different behavior
-		// MockEncoder enc = new MockEncoder();
-		// PersistenceDelegate pd = enc.getPersistenceDelegate(null);
-		// assertNotNull(pd);
+		MockEncoder enc = new MockEncoder();
+		PersistenceDelegate pd = enc.getPersistenceDelegate(null);
+		assertNotNull(pd);
 	}
 
 	public void testGetPersistenceDelegate_ArrayClass() {
