@@ -13,11 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.14.6.4 $
- */
 package java.beans;
 
 import java.io.InputStream;
@@ -33,11 +28,6 @@ import org.xml.sax.SAXException;
 
 import org.apache.harmony.beans.Handler;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.14.6.4 $
- */
-
 public class XMLDecoder {
 
     private InputStream is = null;
@@ -49,10 +39,17 @@ public class XMLDecoder {
     private Vector<Object> objects = new Vector<Object>();
 
     private Iterator<Object> iterator = null;
+    
+    private ClassLoader classLoader = null;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    public XMLDecoder(InputStream is, Object owner,
+            ExceptionListener exceptionListener, ClassLoader cl) {
+        this.is = is;
+        this.owner = owner;
+        this.exceptionListener = exceptionListener;
+        this.classLoader = cl;
+    }
+
     public XMLDecoder(InputStream is, Object owner,
             ExceptionListener exceptionListener) {
         this.is = is;
@@ -60,31 +57,19 @@ public class XMLDecoder {
         this.exceptionListener = exceptionListener;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public XMLDecoder(InputStream is, Object owner) {
         this.is = is;
         this.owner = owner;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public XMLDecoder(InputStream is) {
         this.is = is;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setOwner(Object owner) {
         this.owner = owner;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Object readObject() {
         try {
             if (iterator == null) {
@@ -96,30 +81,18 @@ public class XMLDecoder {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Object getOwner() {
         return owner;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setExceptionListener(ExceptionListener exceptionListener) {
         this.exceptionListener = exceptionListener;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public ExceptionListener getExceptionListener() {
         return exceptionListener;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void close() {
         try {
             is.close();
@@ -135,6 +108,8 @@ public class XMLDecoder {
     }
 
     private void initialize() {
+        ClassLoader oldCL = null;
+        
         try {
             String saxParserClassName = System
                     .getProperty("org.xml.sax.driver"); //$NON-NLS-1$
@@ -145,7 +120,14 @@ public class XMLDecoder {
             XMLReader xmlReader = XMLReaderFactory
                     .createXMLReader(saxParserClassName);
             xmlReader.setContentHandler(new Handler(this, objects));
+            if (classLoader != null) {
+                oldCL = Thread.currentThread().getContextClassLoader();
+                Thread.currentThread().setContextClassLoader(classLoader);
+            }
             xmlReader.parse(new InputSource(is));
+            if (classLoader != null) {
+                Thread.currentThread().setContextClassLoader(oldCL);
+            }
         } catch (SAXException saxe) {
             saxe.printStackTrace();
             handleException(saxe);

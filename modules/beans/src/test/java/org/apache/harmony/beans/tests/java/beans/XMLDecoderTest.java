@@ -22,6 +22,7 @@ import java.beans.Introspector;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Vector;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -53,6 +54,45 @@ public class XMLDecoderTest extends TestCase {
         enc.writeObject(Integer.valueOf("3"));
         enc.close();
         xml123bytes = byteout.toByteArray();
+    }
+
+    static class MockClassLoader extends ClassLoader {
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            throw new ClassNotFoundException();
+        }
+        
+        protected Class<?> findClass(String name)
+                throws ClassNotFoundException {
+            throw new ClassNotFoundException();
+        }
+
+    }
+
+    public void testConstructor_ClassLoader() {
+        XMLDecoder dec;
+        final Vector<Exception> exceptions = new Vector<Exception>();
+
+        ExceptionListener el = new ExceptionListener() {
+            public void exceptionThrown(Exception e) {
+                exceptions.addElement(e);
+            }
+        };
+        
+        dec = new XMLDecoder(new ByteArrayInputStream(xml123bytes), this,
+              el, Thread.currentThread().getContextClassLoader());
+        assertEquals(Integer.valueOf("1"), dec.readObject());
+        assertEquals(0, exceptions.size());
+        dec.close();
+        
+        dec = new XMLDecoder(new ByteArrayInputStream(xml123bytes), this,
+              el, new MockClassLoader());
+        try {
+            dec.readObject();
+            assertTrue(exceptions.size() > 0);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // also valid
+        }
+        dec.close();
     }
 
     public void testClose() {
