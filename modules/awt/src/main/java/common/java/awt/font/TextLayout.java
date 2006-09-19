@@ -91,8 +91,20 @@ public final class TextLayout implements Cloneable {
     public TextLayout(
             String string,
             Map<? extends java.text.AttributedCharacterIterator.Attribute, ?> attributes,
-            FontRenderContext frc
-    ) {
+            FontRenderContext frc ) {
+        if (string == null){
+            throw new IllegalArgumentException(Messages.getString("awt.01", "string")); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        
+        if (attributes == null){
+            throw new IllegalArgumentException(Messages.getString("awt.01", "attributes")); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        
+        if (string.length() == 0){
+            throw new IllegalArgumentException(Messages.getString("awt.02", "string")); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        
+        
         AttributedString as = new AttributedString(string);
         as.addAttributes(attributes, 0, string.length());
         this.breaker = new TextRunBreaker(as.getIterator(), frc);
