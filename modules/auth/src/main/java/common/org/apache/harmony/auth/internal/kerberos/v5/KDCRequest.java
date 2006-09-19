@@ -139,7 +139,10 @@ public class KDCRequest {
             KDCRequest request = (KDCRequest) object;
 
             // FIXME: hardcoded - no KDCoptions are set
-            values[0] = new byte[] { (byte) 0x03, (byte) 0x01, (byte) 0x00, };
+            // note: number of bits should be >= 32
+            // (see RFC 4120, 5.2.8. KerberosFlags)
+            values[0] = new byte[] { (byte) 0x03, (byte) 0x05, (byte) 0x00,
+                    (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, };
 
             values[1] = request.cname;
             values[2] = request.realm;
