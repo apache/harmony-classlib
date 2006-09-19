@@ -44,7 +44,7 @@ import org.apache.harmony.luni.platform.FileDescriptorHandler;
 import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
 import org.apache.harmony.luni.util.ErrorCodeException;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.nio.internal.nls.Messages;
 
 
 /*
@@ -644,8 +644,6 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         // Class Variables
         // ----------------------------------------------------
 
-        private static final String ERRCODE_CHANNEL_CLOSED = "K003d"; //$NON-NLS-1$
-
         SocketChannelImpl channel;
 
         SocketImpl socketImpl;
@@ -822,13 +820,16 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
          */
         public OutputStream getOutputStream() throws IOException {
             if (!channel.isOpen()) {
-                throw new SocketException(Msg.getString("K003d"));
+                // nio.00=Socket is closed
+                throw new SocketException(Messages.getString("nio.00")); //$NON-NLS-1$
             }
             if (!channel.isConnected()) {
-                throw new SocketException(Msg.getString("K0320"));
+                // nio.01=Socket is not connected
+                throw new SocketException(Messages.getString("nio.01")); //$NON-NLS-1$
             }             
             if (isOutputShutdown()) {
-                throw new SocketException(Msg.getString("KA00f"));
+                // nio.02=Socket output is shutdown
+                throw new SocketException(Messages.getString("nio.02")); //$NON-NLS-1$
             }
             return new SocketChannelOutputStream(channel);
         }
@@ -839,13 +840,16 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
          */
         public InputStream getInputStream() throws IOException {
             if (!channel.isOpen()) {
-                throw new SocketException(Msg.getString("K003d"));
+                // nio.00=Socket is closed
+                throw new SocketException(Messages.getString("nio.00")); //$NON-NLS-1$
             }
             if (!channel.isConnected()) {
-                throw new SocketException(Msg.getString("K0320"));
+                // nio.01=Socket is not connected
+                throw new SocketException(Messages.getString("nio.01")); //$NON-NLS-1$
             }             
             if (isInputShutdown()) {
-                throw new SocketException(Msg.getString("K0321"));
+                // nio.03=Socket input is shutdown
+                throw new SocketException(Messages.getString("nio.03")); //$NON-NLS-1$
             }
             return new SocketChannelInputStream(channel);
         }
@@ -855,7 +859,8 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
          */
         private void checkOpen() throws SocketException {
             if (isClosed()) {
-                throw new SocketException(Msg.getString(ERRCODE_CHANNEL_CLOSED));
+                // nio.00=Socket is closed
+                throw new SocketException(Messages.getString("nio.00")); //$NON-NLS-1$
             }
         }
 

@@ -18,6 +18,7 @@ package java.nio;
 import org.apache.harmony.luni.platform.PlatformAddress;
 import org.apache.harmony.luni.platform.PlatformAddressFactory;
 import org.apache.harmony.nio.internal.DirectBuffer;
+import org.apache.harmony.nio.internal.nls.Messages;
 
 
 /**
@@ -199,8 +200,9 @@ abstract class DirectByteBuffer extends BaseByteBuffer implements DirectBuffer {
 
 	public final void addressValidityCheck() {
 		if (!isAddressValid()) {
+            // nio.08=Cannot use the direct byte buffer after it has been explicitly freed.
 			throw new IllegalStateException(
-					"Cannot use the direct byte buffer after it has been explicitly freed."); //$NON-NLS-1$
+					Messages.getString("nio.08"));  //$NON-NLS-1$
 		}
 	}
 

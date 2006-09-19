@@ -46,7 +46,7 @@ public abstract class AbstractInterruptibleChannel implements Channel,
 					.doPrivileged(new PrivilegedExceptionAction<Method>() {
 						public Method run() throws Exception {
 							return Thread.class.getDeclaredMethod(
-									"setInterruptAction",
+									"setInterruptAction", //$NON-NLS-1$
 									new Class[] { Runnable.class });
 
 						}

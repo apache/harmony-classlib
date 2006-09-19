@@ -31,6 +31,7 @@ import org.apache.harmony.luni.platform.IFileSystem;
 import org.apache.harmony.luni.platform.Platform;
 import org.apache.harmony.luni.platform.PlatformAddress;
 import org.apache.harmony.luni.platform.PlatformAddressFactory;
+import org.apache.harmony.nio.internal.nls.Messages;
 
 /*
  * The file channel impl class is the bridge between the logical channels
@@ -102,8 +103,9 @@ public abstract class FileChannelImpl extends FileChannel {
 	protected FileLock basicLock(long position, long size, boolean shared,
 			boolean wait) throws IOException {
 		if ((position < 0) || (size < 0)) {
+            // nio.0A=Lock position and size must be non-negative.
 			throw new IllegalArgumentException(
-					"Lock position and size must be non-negative."); //$NON-NLS-1$
+					Messages.getString("nio.0A"));  //$NON-NLS-1$
 		}
         int lockType = shared ? IFileSystem.SHARED_LOCK_TYPE
                 : IFileSystem.EXCLUSIVE_LOCK_TYPE;
@@ -211,8 +213,9 @@ public abstract class FileChannelImpl extends FileChannel {
 	public FileChannel position(long newPosition) throws IOException {
         openCheck();
 		if (newPosition < 0) {
+            // nio.0B=New position must be non-negative.
 			throw new IllegalArgumentException(
-					"New position must be non-negative."); //$NON-NLS-1$
+					Messages.getString("nio.0B"));  //$NON-NLS-1$
 		}		
 
 		synchronized (repositioningLock) {

@@ -21,6 +21,7 @@ import java.nio.channels.FileChannel;
 import org.apache.harmony.nio.internal.ReadOnlyFileChannel;
 import org.apache.harmony.nio.internal.ReadWriteFileChannel;
 import org.apache.harmony.nio.internal.WriteOnlyFileChannel;
+import org.apache.harmony.nio.internal.nls.Messages;
 import org.apache.harmony.luni.platform.IFileSystem;
 
 /**
@@ -41,7 +42,8 @@ public class FileChannelFactory {
         case IFileSystem.O_APPEND:
             return new WriteOnlyFileChannel(stream, fd, true);
         default:
-            throw new RuntimeException("Unknown file channel type: "+mode); //$NON-NLS-1$
+            // nio.09=Unknown file channel type: {0}
+            throw new RuntimeException(Messages.getString("nio.09", mode));  //$NON-NLS-1$
         }
 	}
 }

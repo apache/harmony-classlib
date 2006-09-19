@@ -15,7 +15,7 @@
 
 package org.apache.harmony.nio;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.nio.internal.nls.Messages;
 
 /*
  * Static methods. Used by io and nio packages.
@@ -46,82 +46,100 @@ public final class Util {
      */
     public static void assertArrayIndex(Object[] array, int offset, int length) {
         if (offset < 0 || length < 0) {
-            throw new IndexOutOfBoundsException(Msg.getString("K0006"));
+            // nio.05=Negative index specified
+            throw new IndexOutOfBoundsException(Messages.getString("nio.05")); //$NON-NLS-1$
         }
         if ((long) offset + (long) length > array.length) {
-            throw new IndexOutOfBoundsException(Msg.getString("K00ae"));
+            // nio.04=Size mismatch
+            throw new IndexOutOfBoundsException(Messages.getString("nio.04")); //$NON-NLS-1$
         }
     }
 
     public static void assertArrayIndex(boolean[] array, int offset, int length) {
         if (offset < 0 || length < 0) {
-            throw new IndexOutOfBoundsException(Msg.getString("K0006"));
+            // nio.05=Negative index specified
+            throw new IndexOutOfBoundsException(Messages.getString("nio.05")); //$NON-NLS-1$
         }
         if ((long) offset + (long) length > array.length) {
-            throw new IndexOutOfBoundsException(Msg.getString("K00ae"));
+            // nio.04=Size mismatch
+            throw new IndexOutOfBoundsException(Messages.getString("nio.04")); //$NON-NLS-1$
         }
     }
 
     public static void assertArrayIndex(byte[] array, int offset, int length) {
         if (offset < 0 || length < 0) {
-            throw new IndexOutOfBoundsException(Msg.getString("K0006"));
+            // nio.05=Negative index specified
+            throw new IndexOutOfBoundsException(Messages.getString("nio.05")); //$NON-NLS-1$
         }
         if ((long) offset + (long) length > array.length) {
-            throw new IndexOutOfBoundsException(Msg.getString("K00ae"));
+            // nio.04=Size mismatch
+            throw new IndexOutOfBoundsException(Messages.getString("nio.04")); //$NON-NLS-1$
         }
     }
 
     public static void assertArrayIndex(short[] array, int offset, int length) {
         if (offset < 0 || length < 0) {
-            throw new IndexOutOfBoundsException(Msg.getString("K0006"));
+            // nio.05=Negative index specified
+            throw new IndexOutOfBoundsException(Messages.getString("nio.05")); //$NON-NLS-1$
         }
         if ((long) offset + (long) length > array.length) {
-            throw new IndexOutOfBoundsException(Msg.getString("K00ae"));
+            // nio.04=Size mismatch
+            throw new IndexOutOfBoundsException(Messages.getString("nio.04")); //$NON-NLS-1$
         }
     }
 
     public static void assertArrayIndex(int[] array, int offset, int length) {
         if (offset < 0 || length < 0) {
-            throw new IndexOutOfBoundsException(Msg.getString("K0006"));
+            // nio.05=Negative index specified
+            throw new IndexOutOfBoundsException(Messages.getString("nio.05")); //$NON-NLS-1$
         }
         if ((long) offset + (long) length > array.length) {
-            throw new IndexOutOfBoundsException(Msg.getString("K00ae"));
+            // nio.04=Size mismatch
+            throw new IndexOutOfBoundsException(Messages.getString("nio.04")); //$NON-NLS-1$
         }
     }
 
     public static void assertArrayIndex(long[] array, int offset, int length) {
         if (offset < 0 || length < 0) {
-            throw new IndexOutOfBoundsException(Msg.getString("K0006"));
+            // nio.05=Negative index specified
+            throw new IndexOutOfBoundsException(Messages.getString("nio.05")); //$NON-NLS-1$
         }
         if ((long) offset + (long) length > array.length) {
-            throw new IndexOutOfBoundsException(Msg.getString("K00ae"));
+            // nio.04=Size mismatch
+            throw new IndexOutOfBoundsException(Messages.getString("nio.04")); //$NON-NLS-1$
         }
     }
 
     public static void assertArrayIndex(float[] array, int offset, int length) {
         if (offset < 0 || length < 0) {
-            throw new IndexOutOfBoundsException(Msg.getString("K0006"));
+            // nio.05=Negative index specified
+            throw new IndexOutOfBoundsException(Messages.getString("nio.05")); //$NON-NLS-1$
         }
         if ((long) offset + (long) length > array.length) {
-            throw new IndexOutOfBoundsException(Msg.getString("K00ae"));
+            // nio.04=Size mismatch
+            throw new IndexOutOfBoundsException(Messages.getString("nio.04")); //$NON-NLS-1$
         }
     }
 
     public static void assertArrayIndex(double[] array, int offset, int length) {
         if (offset < 0 || length < 0) {
-            throw new IndexOutOfBoundsException(Msg.getString("K0006"));
+            // nio.05=Negative index specified
+            throw new IndexOutOfBoundsException(Messages.getString("nio.05")); //$NON-NLS-1$
         }
         if ((long) offset + (long) length > array.length) {
-            throw new IndexOutOfBoundsException(Msg.getString("K00ae"));
+            // nio.04=Size mismatch
+            throw new IndexOutOfBoundsException(Messages.getString("nio.04")); //$NON-NLS-1$
         }
     }
 
     public static void assertArrayIndex(char[] array, int offset, int length) {
         if (offset < 0 || length < 0) {
-            throw new IndexOutOfBoundsException(Msg.getString("K0006"));
+            // nio.05=Negative index specified
+            throw new IndexOutOfBoundsException(Messages.getString("nio.05")); //$NON-NLS-1$
         }
         if ((long) offset + (long) length > array.length) {
-            throw new IndexOutOfBoundsException(Msg.getString("K00ae"));
+            // nio.04=Size mismatch
+            throw new IndexOutOfBoundsException(Messages.getString("nio.04")); //$NON-NLS-1$
         }
     }
 
@@ -132,10 +150,12 @@ public final class Util {
      */
     public static void assertArrayIndex(int arrayLength, int offset, int length) {
         if (offset < 0 || length < 0) {
-            throw new IndexOutOfBoundsException(Msg.getString("K0006"));
+            // nio.05=Negative index specified
+            throw new IndexOutOfBoundsException(Messages.getString("nio.05")); //$NON-NLS-1$
         }
         if ((long) offset + (long) length > arrayLength) {
-            throw new IndexOutOfBoundsException(Msg.getString("K00ae"));
+            // nio.04=Size mismatch
+            throw new IndexOutOfBoundsException(Messages.getString("nio.04")); //$NON-NLS-1$
         }
     }
 }

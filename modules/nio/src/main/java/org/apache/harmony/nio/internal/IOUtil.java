@@ -23,8 +23,8 @@ import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
 
-import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.nio.Util;
+import org.apache.harmony.nio.internal.nls.Messages;
 
 
 /*
@@ -70,7 +70,8 @@ public final class IOUtil {
 				}
 				return chars.get();
 			}
-			throw new IOException(Msg.getString("K0070")); //$NON-NLS-1$
+            // nio.06=InputStreamReader is closed.
+			throw new IOException(Messages.getString("nio.06")); //$NON-NLS-1$
 		}
 	}
 
@@ -115,7 +116,8 @@ public final class IOUtil {
 				chars.position(chars.position() + needChars);
 				return length;
 			}
-            throw new IOException(Msg.getString("K0070")); //$NON-NLS-1$
+            // nio.06=InputStreamReader is closed.
+            throw new IOException(Messages.getString("nio.06")); //$NON-NLS-1$
 		}
 	}
 
@@ -165,7 +167,8 @@ public final class IOUtil {
 			throws IOException {
 		synchronized (lock) {
 			if (encoder == null) {
-                throw new IOException(Msg.getString("K005d")); //$NON-NLS-1$
+                // nio.07=Writer is closed.
+                throw new IOException(Messages.getString("nio.07")); //$NON-NLS-1$
 			}
 			CharBuffer chars = CharBuffer.wrap(new char[] { (char) oneChar });
 			convert(lock, encoder, bytes, chars, out);
@@ -191,7 +194,8 @@ public final class IOUtil {
 			throws IOException {
 		synchronized (lock) {
 			if (encoder == null) {
-                throw new IOException(Msg.getString("K005d")); //$NON-NLS-1$
+                // nio.07=Writer is closed.
+                throw new IOException(Messages.getString("nio.07")); //$NON-NLS-1$
 			}
 			int position;
 			if ((position = bytes.position()) > 0) {
@@ -211,7 +215,8 @@ public final class IOUtil {
 			throws IOException {
 		synchronized (lock) {
 			if (encoder == null) {
-                throw new IOException(Msg.getString("K005d")); //$NON-NLS-1$
+                // nio.07=Writer is closed.
+                throw new IOException(Messages.getString("nio.07")); //$NON-NLS-1$
 			}
 			CoderResult result = encoder.encode(chars, bytes, true);
 			while (true) {
