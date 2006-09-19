@@ -96,7 +96,7 @@ public abstract class Surface implements Transparency{
      * Caches may check if they are still valid using isCacheValid method.
      * When cache gets data from the surface, it should call addValidCache method of the surface.
      */
-    private ArrayList validCaches = new ArrayList();
+    private final ArrayList<Object> validCaches = new ArrayList<Object>();
 
     public abstract ColorModel getColorModel();
     public abstract WritableRaster getRaster();
@@ -108,7 +108,7 @@ public abstract class Surface implements Transparency{
     public abstract long lock();     
     
     /**
-     * Unloc Native Surface data 
+     * Unlock Native Surface data 
      */
     public abstract void unlock();
     
@@ -194,17 +194,14 @@ public abstract class Surface implements Transparency{
                             dcm.getBlueMask() == BLUE_MASK) {
                         if (!hasAlpha) {
                             return BufferedImage.TYPE_INT_RGB;
-                        } else {
-                            if (dcm.getAlphaMask() == ALPHA_MASK) {
-                                if (dcm.isAlphaPremultiplied()) {
-                                    return BufferedImage.TYPE_INT_ARGB_PRE;
-                                }else{
-                                    return BufferedImage.TYPE_INT_ARGB;
-                                }
-                            }else{
-                                return BufferedImage.TYPE_CUSTOM;
-                            }
                         }
+                        if (dcm.getAlphaMask() == ALPHA_MASK) {
+                            if (dcm.isAlphaPremultiplied()) {
+                                return BufferedImage.TYPE_INT_ARGB_PRE;
+                            }
+                            return BufferedImage.TYPE_INT_ARGB;
+                        }
+                        return BufferedImage.TYPE_CUSTOM;
                     } else if (dcm.getRedMask() == RED_BGR_MASK &&
                             dcm.getGreenMask() == GREEN_BGR_MASK &&
                             dcm.getBlueMask() == BLUE_BGR_MASK) {
@@ -282,9 +279,8 @@ public abstract class Surface implements Transparency{
                 }else{
                     return BufferedImage.TYPE_CUSTOM;
                 }
-            }else{
-                return BufferedImage.TYPE_CUSTOM;
             }
+            return BufferedImage.TYPE_CUSTOM;
         }
         return BufferedImage.TYPE_CUSTOM;
     }
@@ -293,6 +289,7 @@ public abstract class Surface implements Transparency{
         return AwtImageBackdoorAccessor.getInstance().getImageSurface(image);
     }
 
+    @Override
     protected void finalize() throws Throwable{
         dispose();
     }

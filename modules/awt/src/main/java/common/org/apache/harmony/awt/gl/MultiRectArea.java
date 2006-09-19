@@ -114,10 +114,9 @@ public class MultiRectArea implements Shape {
                         pointIndex += 2;
                         bottomIndex++;
                         continue;
-                    } else {
-                        deleteRect = pointX2 >= bottomX1;
-                        appendRect = pointX1 <= bottomX2;
                     }
+                    deleteRect = pointX2 >= bottomX1;
+                    appendRect = pointX1 <= bottomX2;
                 }
 
                 if (deleteRect) {
@@ -406,18 +405,18 @@ public class MultiRectArea implements Shape {
      */
     public MultiRectArea(Rectangle[] buf) {
         this();
-        for(int i = 0; i < buf.length; i++) {
-            add(buf[i]);
+        for (Rectangle element : buf) {
+            add(element);
         }
     }
 
     /**
      * Constructs a new MultiRectArea and append rectangle from array
      */
-    public MultiRectArea(ArrayList buf) {
+    public MultiRectArea(ArrayList<Rectangle> buf) {
         this();
         for(int i = 0; i < buf.size(); i++) {
-            add((Rectangle)buf.get(i));
+            add(buf.get(i));
         }
     }
 
@@ -451,6 +450,7 @@ public class MultiRectArea implements Shape {
     /**
      * Tests equals with another object
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -506,11 +506,13 @@ public class MultiRectArea implements Shape {
         }
 
         // Check override
-        for(int i = 0; i < r.length; i++)
-            for(int j = i + 1; j < r.length; j++)
+        for(int i = 0; i < r.length; i++) {
+            for(int j = i + 1; j < r.length; j++) {
                 if (r[i].intersects(r[j])) {
                     return i;
                 }
+            }
+        }
 
         return -1;
     }
@@ -608,12 +610,12 @@ public class MultiRectArea implements Shape {
         } else {
             Rectangle[] rects = mra.getRectangles();
             System.out.println(msg + "(" + rects.length + ")");
-            for(int i = 0; i < rects.length; i++) {
+            for (Rectangle element : rects) {
                 System.out.println(
-                        rects[i].x + "," +
-                        rects[i].y + "," +
-                        (rects[i].x + rects[i].width - 1) + "," +
-                        (rects[i].y + rects[i].height - 1));
+                        element.x + "," +
+                        element.y + "," +
+                        (element.x + element.width - 1) + "," +
+                        (element.y + element.height - 1));
             }
         }
     }
@@ -634,8 +636,8 @@ public class MultiRectArea implements Shape {
         }
 
         if (rectangles != null) {
-            for(int i = 0; i < rectangles.length; i++) {
-                rectangles[i].translate(x, y);
+            for (Rectangle element : rectangles) {
+                element.translate(x, y);
             }
         }
     }
@@ -811,6 +813,7 @@ public class MultiRectArea implements Shape {
     /**
      * Returns MultiRectArea object converted to string 
      */
+    @Override
     public String toString() {
         int cnt = getRectCount();
         StringBuffer sb = new StringBuffer((cnt << 5) + 128);

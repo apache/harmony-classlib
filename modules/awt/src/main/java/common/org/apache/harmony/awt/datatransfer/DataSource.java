@@ -44,7 +44,7 @@ public class DataSource implements DataProvider {
 
     // Cached data from transferable object
     private DataFlavor[] flavors;
-    private List nativeFormats;
+    private List<String> nativeFormats;
     
     protected final Transferable contents;
     
@@ -64,10 +64,10 @@ public class DataSource implements DataProvider {
     }
     
     public String[] getNativeFormats() {
-        return (String[])getNativeFormatsList().toArray(new String[0]);
+        return getNativeFormatsList().toArray(new String[0]);
     }
     
-    public List getNativeFormatsList() {
+    public List<String> getNativeFormatsList() {
         if (nativeFormats == null) {
             DataFlavor[] flavors = getDataFlavors();
             nativeFormats = getNativesForFlavors(flavors);
@@ -76,16 +76,16 @@ public class DataSource implements DataProvider {
         return nativeFormats;
     }
     
-    private static List getNativesForFlavors(DataFlavor[] flavors) {
-        ArrayList natives = new ArrayList();
+    private static List<String> getNativesForFlavors(DataFlavor[] flavors) {
+        ArrayList<String> natives = new ArrayList<String>();
         
         SystemFlavorMap flavorMap = 
             (SystemFlavorMap)SystemFlavorMap.getDefaultFlavorMap();
         
         for (int i = 0; i < flavors.length; i++) {
-            List list = flavorMap.getNativesForFlavor(flavors[i]);
-            for (Iterator it = list.iterator(); it.hasNext(); ) {
-                String nativeFormat = (String)it.next();
+            List<String> list = flavorMap.getNativesForFlavor(flavors[i]);
+            for (Iterator<String> it = list.iterator(); it.hasNext(); ) {
+                String nativeFormat = it.next();
                 if (!natives.contains(nativeFormat)) {
                     natives.add(nativeFormat);
                 }
@@ -95,8 +95,7 @@ public class DataSource implements DataProvider {
     }
     
     private String getTextFromReader(Reader r) throws IOException {
-        // TODO: use StringBuilder here
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         char chunk[] = new char[1024];
         int len;
         while ((len = r.read(chunk)) > 0) {
@@ -133,9 +132,8 @@ public class DataSource implements DataProvider {
 
     public String[] getFileList() {
         try {
-            List list = (List)contents.getTransferData(
-                    DataFlavor.javaFileListFlavor);
-            return (String[])list.toArray(new String[0]);
+            List<?> list = (List<?>) contents.getTransferData(DataFlavor.javaFileListFlavor);
+            return list.toArray(new String[list.size()]);
         } catch (Exception e) {
             return null;
         }
@@ -166,7 +164,7 @@ public class DataSource implements DataProvider {
 
         for (int i = 0; i < flavors.length; i++) {
             DataFlavor f = flavors[i];
-            Class c = f.getRepresentationClass();
+            Class<?> c = f.getRepresentationClass();
             if (c != null && Image.class.isAssignableFrom(c) && 
                     (f.isMimeTypeEqual(DataFlavor.imageFlavor) || 
                             f.isFlavorSerializedObjectType())) {
@@ -217,7 +215,7 @@ public class DataSource implements DataProvider {
                 32, 0xFF0000, 0xFF00, 0xFF, buffer);
     }
 
-    public byte[] getSerializedObject(Class clazz) {
+    public byte[] getSerializedObject(Class<?> clazz) {
         try {
             DataFlavor f = new DataFlavor(clazz, null);
             Serializable s = (Serializable)contents.getTransferData(f);

@@ -50,18 +50,21 @@ public class ICompositeContext implements CompositeContext {
 
     public void compose(Raster srcIn, Raster dstIn, WritableRaster dstOut) {
 
-        if(!srcCM.isCompatibleRaster(srcIn))
+        if(!srcCM.isCompatibleRaster(srcIn)) {
             throw new IllegalArgumentException("The srcIn raster is " +
                     "incompatible with src ColorModel");
+        }
 
-        if(!dstCM.isCompatibleRaster(dstIn))
+        if(!dstCM.isCompatibleRaster(dstIn)) {
             throw new IllegalArgumentException("The dstIn raster is " +
                     "incompatible with dst ColorModel");
+        }
 
         if(dstIn != dstOut){
-            if(!dstCM.isCompatibleRaster(dstOut))
+            if(!dstCM.isCompatibleRaster(dstOut)) {
                 throw new IllegalArgumentException("The dstOut raster is " +
                         "incompatible with dst ColorModel");
+            }
             dstOut.setDataElements(0, 0, dstIn);
         }
         WritableRaster src;

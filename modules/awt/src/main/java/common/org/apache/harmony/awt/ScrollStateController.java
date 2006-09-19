@@ -110,6 +110,7 @@ public class ScrollStateController extends ComponentAdapter implements
      * Recalculates internal scrollable layout
      * on component resize
      */
+    @Override
     public void componentResized(ComponentEvent e) {
         if (!component.isDisplayable()) {
             return;

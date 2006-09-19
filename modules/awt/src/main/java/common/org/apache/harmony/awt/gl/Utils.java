@@ -55,10 +55,10 @@ public class Utils {
             }else{
                 offImg = new OffscreenImage(img.getSource());
             }
-            if(offImg.prepareImage(null))
+            if(offImg.prepareImage(null)) {
                 return offImg.getBufferedImage();
-            else
-                return null;
+            }
+            return null;
         }
     }
 }

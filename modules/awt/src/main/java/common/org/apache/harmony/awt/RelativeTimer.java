@@ -19,7 +19,8 @@
  */
 package org.apache.harmony.awt;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * Relative timer class. Basic class for PeriodicTimer and SingleShotTimer.
@@ -124,13 +125,12 @@ public abstract class RelativeTimer {
 
     private static class DeltaList {
 
-        private final LinkedList list;
-
+        private final LinkedList<DeltaListEntry> list;
         private DeltaThread thread;
         private long time;
 
         DeltaList() {
-            list = new LinkedList();
+            list = new LinkedList<DeltaListEntry>();
             time = 0;
             thread = null;
         }
@@ -173,7 +173,7 @@ public abstract class RelativeTimer {
                 if (index == 0) {
                     firstRemoved();
                 } else {
-                    ((DeltaListEntry) list.get(index)).time += entry.time;
+                    list.get(index).time += entry.time;
                 }
             }
         }
@@ -204,8 +204,8 @@ public abstract class RelativeTimer {
             long curTime = System.currentTimeMillis();
 
             if (time <= curTime) {
-                while (((DeltaListEntry) list.getFirst()).time <= curTime) {
-                    DeltaListEntry first = (DeltaListEntry) list.removeFirst();
+                while (list.getFirst().time <= curTime) {
+                    DeltaListEntry first = list.removeFirst();
 
                     if (!list.isEmpty()) {
                         firstRemoved();
@@ -225,7 +225,7 @@ public abstract class RelativeTimer {
         }
 
         private void firstRemoved() {
-            DeltaListEntry nextFirst = (DeltaListEntry) list.getFirst();
+            DeltaListEntry nextFirst = list.getFirst();
 
             time += nextFirst.time;
             nextFirst.time = time;
@@ -233,39 +233,35 @@ public abstract class RelativeTimer {
 
         private void insert(DeltaListEntry entry, boolean interrupt) {
             long oldTime = list.isEmpty() ? Long.MAX_VALUE : time;
-            Iterator i = list.iterator();
+            Iterator<DeltaListEntry> i = list.iterator();
 
             do {
                 if (!i.hasNext()) {
                     list.addLast(entry);
                     break;
-                } else {
-                    DeltaListEntry next = (DeltaListEntry) i.next();
+                }
+                DeltaListEntry next = i.next();
 
-                    if (next.time <= entry.time) {
-                        entry.time -= next.time;
-                    } else {
-                        next.time -= entry.time;
-                        list.add(list.indexOf(next), entry);
-                        break;
-                    }
+                if (next.time <= entry.time) {
+                    entry.time -= next.time;
+                } else {
+                    next.time -= entry.time;
+                    list.add(list.indexOf(next), entry);
+                    break;
                 }
             } while (true);
 
-            time = ((DeltaListEntry) list.getFirst()).time;
+            time = list.getFirst().time;
             if ((time < oldTime) && interrupt) {
                 thread.interrupt();
             }
         }
 
         private class DeltaThread extends Thread {
-
+            @Override
             public void run() {
                 loop();
             }
-
         };
-
     }
-
 }

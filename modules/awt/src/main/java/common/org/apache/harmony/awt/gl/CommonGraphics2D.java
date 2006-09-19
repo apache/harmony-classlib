@@ -174,10 +174,12 @@ public abstract class CommonGraphics2D extends Graphics2D {
     }
 
     // Public methods
+    @Override
     public void addRenderingHints(Map<?,?> hints) {
         this.hints.putAll(hints);
     }
 
+    @Override
     public void clearRect(int x, int y, int width, int height) {
         Color c = getColor();
         Paint p = getPaint();
@@ -185,15 +187,18 @@ public abstract class CommonGraphics2D extends Graphics2D {
         fillRect(x, y, width, height);
         setColor(c);
         setPaint(p);
-        if (debugOutput)
+        if (debugOutput) {
             System.err.println("CommonGraphics2D.clearRect("+x+", "+y+", "+width+", "+height+")");
+        }
     }
 
+    @Override
     public void clipRect(int x, int y, int width, int height) {
         clip(new Rectangle(x, y, width, height));
     }
 
 
+    @Override
     public void clip(Shape s) {
         if (s == null) {
             clip = null;
@@ -209,14 +214,15 @@ public abstract class CommonGraphics2D extends Graphics2D {
             mra = jsr.rasterize(s, 0.5);
         }
 
-        if (clip == null)
+        if (clip == null) {
             setTransformedClip(mra);
-        else {
+        } else {
             clip.intersect(mra);
             setTransformedClip(clip);
         }
     }
 
+    @Override
     public void dispose() {
         // Do nothing for Java only classes
     }
@@ -230,6 +236,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
      *
      ***************************************************************************/
 
+    @Override
     public void draw(Shape s) {
         if (stroke instanceof BasicStroke && ((BasicStroke)stroke).getLineWidth() <= 1) {
             //TODO: Think about drawing the shape in one fillMultiRectArea call
@@ -273,6 +280,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
         }
     }
 
+    @Override
     public void drawArc(int x, int y, int width, int height, int sa, int ea) {
         if (stroke instanceof BasicStroke && ((BasicStroke)stroke).getLineWidth() <= 1 &&
                 ((BasicStroke)stroke).getDashArray() == null && 
@@ -287,17 +295,22 @@ public abstract class CommonGraphics2D extends Graphics2D {
     }
 
 
+    @Override
     public boolean drawImage(Image image, int x, int y, Color bgcolor,
             ImageObserver imageObserver) {
 
-        if(image == null) return true;
+        if(image == null) {
+            return true;
+        }
 
         boolean done = false;
         boolean somebits = false;
         Surface srcSurf = null;
         if(image instanceof OffscreenImage){
             OffscreenImage oi = (OffscreenImage) image;
-            if((oi.getState() & ImageObserver.ERROR) != 0) return false;
+            if((oi.getState() & ImageObserver.ERROR) != 0) {
+                return false;
+            }
             done = oi.prepareImage(imageObserver);
             somebits = (oi.getState() & ImageObserver.SOMEBITS) != 0;
             srcSurf = oi.getImageSurface();
@@ -315,15 +328,21 @@ public abstract class CommonGraphics2D extends Graphics2D {
         return done;
     }
 
+    @Override
     public boolean drawImage(Image image, int x, int y, ImageObserver imageObserver) {
         return drawImage(image, x, y, null, imageObserver);
     }
 
+    @Override
     public boolean drawImage(Image image, int x, int y, int width, int height,
             Color bgcolor, ImageObserver imageObserver) {
 
-        if(image == null) return true;
-        if(width == 0 || height == 0) return true;
+        if(image == null) {
+            return true;
+        }
+        if(width == 0 || height == 0) {
+            return true;
+        }
 
         boolean done = false;
         boolean somebits = false;
@@ -331,7 +350,9 @@ public abstract class CommonGraphics2D extends Graphics2D {
 
         if(image instanceof OffscreenImage){
             OffscreenImage oi = (OffscreenImage) image;
-            if((oi.getState() & ImageObserver.ERROR) != 0) return false;
+            if((oi.getState() & ImageObserver.ERROR) != 0) {
+                return false;
+            }
             done = oi.prepareImage(imageObserver);
             somebits = (oi.getState() & ImageObserver.SOMEBITS) != 0;
             srcSurf = oi.getImageSurface();
@@ -358,25 +379,32 @@ public abstract class CommonGraphics2D extends Graphics2D {
         return done;
     }
 
+    @Override
     public boolean drawImage(Image image, int x, int y, int width, int height,
             ImageObserver imageObserver) {
         return drawImage(image, x, y, width, height, null, imageObserver);
     }
 
+    @Override
     public boolean drawImage(Image image, int dx1, int dy1, int dx2, int dy2,
             int sx1, int sy1, int sx2, int sy2, Color bgcolor,
             ImageObserver imageObserver) {
 
-        if(image == null) return true;
-        if(dx1 == dx2 || dy1 == dy2 || sx1 == sx2 || sy1 == sy2)
+        if(image == null) {
             return true;
+        }
+        if(dx1 == dx2 || dy1 == dy2 || sx1 == sx2 || sy1 == sy2) {
+            return true;
+        }
 
         boolean done = false;
         boolean somebits = false;
         Surface srcSurf = null;
         if(image instanceof OffscreenImage){
             OffscreenImage oi = (OffscreenImage) image;
-            if((oi.getState() & ImageObserver.ERROR) != 0) return false;
+            if((oi.getState() & ImageObserver.ERROR) != 0) {
+                return false;
+            }
             done = oi.prepareImage(imageObserver);
             somebits = (oi.getState() & ImageObserver.SOMEBITS) != 0;
             srcSurf = oi.getImageSurface();
@@ -412,6 +440,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
         return done;
     }
 
+    @Override
     public boolean drawImage(Image image, int dx1, int dy1, int dx2, int dy2,
             int sx1, int sy1, int sx2, int sy2, ImageObserver imageObserver) {
 
@@ -419,10 +448,13 @@ public abstract class CommonGraphics2D extends Graphics2D {
                 imageObserver);
      }
 
+    @Override
     public void drawImage(BufferedImage bufImage, BufferedImageOp op,
             int x, int y) {
 
-        if(bufImage == null) return;
+        if(bufImage == null) {
+            return;
+        }
 
         if(op == null) {
             drawImage(bufImage, x, y, null);
@@ -446,10 +478,13 @@ public abstract class CommonGraphics2D extends Graphics2D {
         }
     }
 
+    @Override
     public boolean drawImage(Image image, AffineTransform trans,
             ImageObserver imageObserver) {
 
-        if(image == null) return true;
+        if(image == null) {
+            return true;
+        }
         if(trans == null || trans.isIdentity()) {
             return drawImage(image, 0, 0, imageObserver);
         }
@@ -459,7 +494,9 @@ public abstract class CommonGraphics2D extends Graphics2D {
         Surface srcSurf = null;
         if(image instanceof OffscreenImage){
             OffscreenImage oi = (OffscreenImage) image;
-            if((oi.getState() & ImageObserver.ERROR) != 0) return false;
+            if((oi.getState() & ImageObserver.ERROR) != 0) {
+                return false;
+            }
             done = oi.prepareImage(imageObserver);
             somebits = (oi.getState() & ImageObserver.SOMEBITS) != 0;
             srcSurf = oi.getImageSurface();
@@ -479,9 +516,11 @@ public abstract class CommonGraphics2D extends Graphics2D {
         return done;
     }
 
+    @Override
     public void drawLine(int x1, int y1, int x2, int y2) {
-        if (debugOutput)
+        if (debugOutput) {
             System.err.println("CommonGraphics2D.drawLine("+x1+", "+y1+", "+x2+", "+y2+")");
+        }
 
         if (stroke instanceof BasicStroke && ((BasicStroke)stroke).getLineWidth() <= 1) {
             BasicStroke bstroke = (BasicStroke)stroke;
@@ -497,6 +536,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
         draw(new Line2D.Float(x1, y1, x2, y2));
     }
 
+    @Override
     public void drawOval(int x, int y, int width, int height) {
         if (stroke instanceof BasicStroke && ((BasicStroke)stroke).getLineWidth() <= 1 &&
                 ((BasicStroke)stroke).getDashArray() == null && 
@@ -510,22 +550,28 @@ public abstract class CommonGraphics2D extends Graphics2D {
         draw(new Ellipse2D.Float(x, y, width, height));
     }
 
+    @Override
     public void drawPolygon(int[] xpoints, int[] ypoints, int npoints) {
         draw(new Polygon(xpoints, ypoints, npoints));
     }
 
+    @Override
     public void drawPolygon(Polygon polygon) {
         draw(polygon);
     }
 
+    @Override
     public void drawPolyline(int[] xpoints, int[] ypoints, int npoints) {
-        for (int i = 0; i < npoints-1; i++)
+        for (int i = 0; i < npoints-1; i++) {
             drawLine(xpoints[i], ypoints[i], xpoints[i+1], ypoints[i+1]);
+        }
     }
 
+    @Override
     public void drawRenderableImage(RenderableImage img, AffineTransform xform) {
-        if (img == null)
+        if (img == null) {
             return;
+        }
 
         double scaleX = xform.getScaleX();
         double scaleY = xform.getScaleY();
@@ -540,9 +586,11 @@ public abstract class CommonGraphics2D extends Graphics2D {
         }
     }
 
+    @Override
     public void drawRenderedImage(RenderedImage rimg, AffineTransform xform) {
-        if (rimg == null)
+        if (rimg == null) {
             return;
+        }
 
         Image img = null;
 
@@ -556,9 +604,11 @@ public abstract class CommonGraphics2D extends Graphics2D {
         drawImage(img, xform, null);
     }
 
+    @Override
     public void drawRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight) {
-        if (debugOutput)
+        if (debugOutput) {
             System.err.println("CommonGraphics2D.drawRoundRect("+x+", "+y+", "+width+", "+height+","+arcWidth+", "+arcHeight+")");
+        }
 
         draw(new RoundRectangle2D.Float(x, y, width, height, arcWidth, arcHeight));
     }
@@ -573,22 +623,27 @@ public abstract class CommonGraphics2D extends Graphics2D {
      *
      ***************************************************************************/
 
+    @Override
     public void drawString(AttributedCharacterIterator iterator, float x, float y) {
         GlyphVector gv = font.createGlyphVector(frc, iterator);
         drawGlyphVector(gv, x, y);
     }
 
+    @Override
     public void drawString(AttributedCharacterIterator iterator, int x, int y) {
         drawString(iterator, (float)x, (float)y);
     }
 
+    @Override
     public void drawString(String str, int x, int y) {
         drawString(str, (float)x, (float)y);
     }
 
+    @Override
     public void drawString(String str, float x, float y) {
-        if (debugOutput)
+        if (debugOutput) {
             System.err.println("CommonGraphics2D.drawString("+str+", "+x+", "+y+")");
+        }
 
         AffineTransform at = (AffineTransform)this.getTransform().clone();
         AffineTransform fontTransform = font.getTransform();
@@ -619,6 +674,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
 
     }
 
+    @Override
     public void drawGlyphVector(GlyphVector gv, float x, float y) {
 
         AffineTransform at = gv.getFont().getTransform();
@@ -660,38 +716,47 @@ public abstract class CommonGraphics2D extends Graphics2D {
      *
      ***************************************************************************/
 
+    @Override
     public void fill(Shape s) {
         s = transform.createTransformedShape(s);
         MultiRectArea mra = jsr.rasterize(s, 0.5);
         fillMultiRectArea(mra);
     }
 
+    @Override
     public void fillArc(int x, int y, int width, int height, int sa, int ea) {
         fill(new Arc2D.Float(x, y, width, height, sa, ea, Arc2D.PIE));
     }
 
+    @Override
     public void fillOval(int x, int y, int width, int height) {
         fill(new Ellipse2D.Float(x, y, width, height));
     }
 
+    @Override
     public void fillPolygon(int[] xpoints, int[] ypoints, int npoints) {
         fill(new Polygon(xpoints, ypoints, npoints));
     }
 
+    @Override
     public void fillPolygon(Polygon polygon) {
         fill(polygon);
     }
 
+    @Override
     public void fillRect(int x, int y, int width, int height) {
-        if (debugOutput)
+        if (debugOutput) {
             System.err.println("CommonGraphics2D.fillRect("+x+", "+y+", "+width+", "+height+")");
+        }
 
         fill(new Rectangle(x, y, width, height));
     }
 
+    @Override
     public void fillRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight) {
-        if (debugOutput)
+        if (debugOutput) {
             System.err.println("CommonGraphics2D.fillRoundRect("+x+", "+y+", "+width+", "+height+","+arcWidth+", "+arcHeight+")");
+        }
 
         fill(new RoundRectangle2D.Float(x, y, width, height, arcWidth, arcHeight));
     }
@@ -705,68 +770,85 @@ public abstract class CommonGraphics2D extends Graphics2D {
      *
      ***************************************************************************/
 
+    @Override
     public Color getBackground() {
         return bgColor;
     }
 
+    @Override
     public Shape getClip() {
-        if (clip == null)
+        if (clip == null) {
             return null;
+        }
 
         MultiRectArea res = new MultiRectArea(clip);
         res.translate(-Math.round((float)transform.getTranslateX()), -Math.round((float)transform.getTranslateY()));
         return res;
     }
 
+    @Override
     public Rectangle getClipBounds() {
-        if (clip == null)
+        if (clip == null) {
             return null;
+        }
 
         Rectangle res = (Rectangle) clip.getBounds().clone();
         res.translate(-Math.round((float)transform.getTranslateX()), -Math.round((float)transform.getTranslateY()));
         return res;
     }
 
+    @Override
     public Color getColor() {
         return fgColor;
     }
 
+    @Override
     public Composite getComposite() {
         return composite;
     }
 
+    @Override
     public Font getFont() {
         return font;
     }
 
+    @SuppressWarnings("deprecation")
+    @Override
     public FontMetrics getFontMetrics(Font font) {
         return Toolkit.getDefaultToolkit().getFontMetrics(font);
     }
 
+    @Override
     public FontRenderContext getFontRenderContext() {
         return frc;
     }
 
+    @Override
     public Paint getPaint() {
         return paint;
     }
 
+    @Override
     public Object getRenderingHint(RenderingHints.Key key) {
         return hints.get(key);
     }
 
+    @Override
     public RenderingHints getRenderingHints() {
         return hints;
     }
 
+    @Override
     public Stroke getStroke() {
         return stroke;
     }
 
+    @Override
     public AffineTransform getTransform() {
         return (AffineTransform)transform.clone();
     }
 
+    @Override
     public boolean hit(Rectangle rect, Shape s, boolean onStroke) {
         //TODO: Implement method....
         return false;
@@ -781,42 +863,51 @@ public abstract class CommonGraphics2D extends Graphics2D {
      *
      ***************************************************************************/
 
+    @Override
     public void rotate(double theta) {
         transform.rotate(theta);
         transform.getMatrix(matrix);
     }
 
+    @Override
     public void rotate(double theta, double x, double y) {
         transform.rotate(theta, x, y);
         transform.getMatrix(matrix);
     }
 
+    @Override
     public void scale(double sx, double sy) {
         transform.scale(sx, sy);
         transform.getMatrix(matrix);
     }
 
+    @Override
     public void shear(double shx, double shy) {
         transform.shear(shx, shy);
         transform.getMatrix(matrix);
     }
 
+    @Override
     public void transform(AffineTransform at) {
         transform.concatenate(at);
         transform.getMatrix(matrix);
     }
 
+    @Override
     public void translate(double tx, double ty) {
-        if (debugOutput)
+        if (debugOutput) {
             System.err.println("CommonGraphics2D.translate("+tx+", "+ty+")");
+        }
 
         transform.translate(tx, ty);
         transform.getMatrix(matrix);
     }
 
+    @Override
     public void translate(int tx, int ty) {
-        if (debugOutput)
+        if (debugOutput) {
             System.err.println("CommonGraphics2D.translate("+tx+", "+ty+")");
+        }
 
         transform.translate(tx, ty);
         transform.getMatrix(matrix);
@@ -831,24 +922,29 @@ public abstract class CommonGraphics2D extends Graphics2D {
      *
      ***************************************************************************/
 
+    @Override
     public void setBackground(Color color) {
         bgColor = color;
     }
 
+    @Override
     public void setClip(int x, int y, int width, int height) {
         setClip(new Rectangle(x, y, width, height));
     }
 
+    @Override
     public void setClip(Shape s) {
         if (s == null) {
             setTransformedClip(null);
-            if (debugOutput)
+            if (debugOutput) {
                 System.err.println("CommonGraphics2D.setClip(null)");
+            }
             return;
         }
 
-        if (debugOutput)
+        if (debugOutput) {
             System.err.println("CommonGraphics2D.setClip("+s.getBounds()+")");
+        }
 
         if (s instanceof MultiRectArea) {
             MultiRectArea nclip = new MultiRectArea((MultiRectArea)s);
@@ -860,48 +956,59 @@ public abstract class CommonGraphics2D extends Graphics2D {
         }
     }
 
+    @Override
     public void setColor(Color color) {
         fgColor = color;
         paint = color;
     }
 
+    @Override
     public void setComposite(Composite composite) {
         this.composite = composite;
     }
 
+    @Override
     public void setFont(Font font) {
         this.font = font;
     }
 
+    @Override
     public void setPaint(Paint paint) {
         this.paint = paint;
-        if (paint instanceof Color)
+        if (paint instanceof Color) {
             fgColor = (Color)paint;
+        }
     }
 
+    @Override
     public void setPaintMode() {
         composite = AlphaComposite.SrcOver;
     }
 
+    @Override
     public void setRenderingHint(RenderingHints.Key key, Object value) {
         hints.put(key, value);
     }
 
+    @Override
     public void setRenderingHints(Map<?,?> hints) {
         this.hints.clear();
         this.hints.putAll(hints);
     }
 
+    @Override
     public void setStroke(Stroke stroke) {
         this.stroke = stroke;
     }
 
+    @Override
     public void setTransform(AffineTransform transform) {
         this.transform = transform;
 
         transform.getMatrix(matrix);
     }
 
+    @Override
     public void setXORMode(Color color) {
         composite = new XORComposite(color);
     }
@@ -919,15 +1026,18 @@ public abstract class CommonGraphics2D extends Graphics2D {
      * @param mra MultiRectArea to fill
      */
     protected void fillMultiRectArea(MultiRectArea mra) {
-        if (clip != null)
+        if (clip != null) {
             mra.intersect(clip);
+        }
 
         // Return if all stuff is clipped
-        if (mra.rect[0] < 5)
+        if (mra.rect[0] < 5) {
             return;
+        }
 
-        if (debugOutput)
+        if (debugOutput) {
             System.err.println("CommonGraphics2D.fillMultiRectArea("+mra+")");
+        }
 
         if (paint instanceof Color){
             fillMultiRectAreaColor(mra);
@@ -954,7 +1064,9 @@ public abstract class CommonGraphics2D extends Graphics2D {
         int y = rec.y;
         int w = rec.width;
         int h = rec.height;
-        if(w <= 0 || h <= 0) return;
+        if(w <= 0 || h <= 0) {
+            return;
+        }
         PaintContext pc = paint.createContext(null, rec, rec, transform, hints);
         Raster r = pc.getRaster(x, y, w, h);
         WritableRaster wr;
@@ -977,10 +1089,11 @@ public abstract class CommonGraphics2D extends Graphics2D {
      * @param copy Graphics class to copy
      */
     protected void copyInternalFields(CommonGraphics2D copy) {
-        if (clip == null)
+        if (clip == null) {
             copy.setTransformedClip(null);
-        else
+        } else {
             copy.setTransformedClip(new MultiRectArea(clip));
+        }
         copy.setBackground(bgColor);
         copy.setColor(fgColor);
         copy.setPaint(paint);

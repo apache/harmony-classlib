@@ -40,7 +40,7 @@ import org.apache.harmony.awt.gl.image.DataBufferListener;
 
 
 /**
- * This class represent Surface for differnt types of Images (BufferedImage, 
+ * This class represent Surface for different types of Images (BufferedImage, 
  * OffscreenImage and so on) 
  */
 public class ImageSurface extends Surface implements DataBufferListener {
@@ -63,9 +63,10 @@ public class ImageSurface extends Surface implements DataBufferListener {
     }
 
     public ImageSurface(ColorModel cm, WritableRaster raster, int type){
-        if (!cm.isCompatibleRaster(raster))
+        if (!cm.isCompatibleRaster(raster)) {
             throw new IllegalArgumentException("The raster is" +
                     " incompatible with this ColorModel");
+        }
         this.cm = cm;
         this.raster = raster;
         surfaceType = type;
@@ -77,7 +78,7 @@ public class ImageSurface extends Surface implements DataBufferListener {
         width = raster.getWidth();
         height = raster.getHeight();
 
-        // For the moment we can blit natively only images which have 
+        // For the moment we can build natively only images which have 
         // sRGB, Linear_RGB, Linear_Gray Color Space and type different
         // from BufferedImage.TYPE_CUSTOM
         if(cs == LUTColorConverter.sRGB_CS){
@@ -96,14 +97,17 @@ public class ImageSurface extends Surface implements DataBufferListener {
         }
     }
 
+    @Override
     public ColorModel getColorModel() {
         return cm;
     }
 
+    @Override
     public WritableRaster getRaster() {
         return raster;
     }
 
+    @Override
     public long getSurfaceDataPtr() {
         if(surfaceDataPtr == 0L && nativeDrawable){
             createSufaceStructure();
@@ -111,14 +115,17 @@ public class ImageSurface extends Surface implements DataBufferListener {
         return surfaceDataPtr;
     }
 
+    @Override
     public Object getData(){
         return data;
     }
 
+    @Override
     public boolean isNativeDrawable(){
         return nativeDrawable;
     }
 
+    @Override
     public int getSurfaceType() {
         return surfaceType;
     }
@@ -208,6 +215,7 @@ public class ImageSurface extends Surface implements DataBufferListener {
                 offset, hasAlpha, isAlphaPre, transparency);
     }
 
+    @Override
     public void dispose() {
         if(surfaceDataPtr != 0L){
             dispose(surfaceDataPtr);
@@ -254,15 +262,18 @@ public class ImageSurface extends Surface implements DataBufferListener {
         this.height = r.getHeight();
     }
 
+    @Override
     public long lock() {
         // TODO
         return 0;
     }
 
+    @Override
     public void unlock() {
         //TODO
     }
 
+    @Override
     public Surface getImageSurface() {
         return this;
     }
@@ -284,13 +295,17 @@ public class ImageSurface extends Surface implements DataBufferListener {
         clearValidCaches();
     }
     
+    @Override
     public void invalidate(){
         needToRefresh = true;
         clearValidCaches();
     }
     
+    @Override
     public void validate(){
-        if(!needToRefresh) return;
+        if(!needToRefresh) {
+            return;
+        }
         if(!dataTaken){
             needToRefresh = false;
             AwtImageBackdoorAccessor ba = AwtImageBackdoorAccessor.getInstance();
@@ -299,6 +314,7 @@ public class ImageSurface extends Surface implements DataBufferListener {
         
     }
     
+    @Override
     public boolean invalidated(){
         return needToRefresh;
     }

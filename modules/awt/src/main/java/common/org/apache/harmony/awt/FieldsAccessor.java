@@ -28,7 +28,7 @@ import org.apache.harmony.misc.accessors.ObjectAccessor;
  */
 public class FieldsAccessor {
 
-    private final Class clazz;
+    private final Class<?> clazz;
     private final Object object;
     private final ObjectAccessor accessor;
 
@@ -39,7 +39,7 @@ public class FieldsAccessor {
      *  Bad example: <code>this.getClass()</code>
      * @param object - object being modified
      */
-    public FieldsAccessor(Class clazz, Object object) {
+    public FieldsAccessor(Class<?> clazz, Object object) {
         accessor = AccessorFactory.getObjectAccessor();
         this.clazz = clazz;
         this.object = object;

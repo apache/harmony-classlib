@@ -32,6 +32,7 @@ public class DataTransferThread extends Thread {
         this.dtk = dtk;
     }
     
+    @Override
     public void run() {
         synchronized (this) {
             try {
@@ -43,6 +44,7 @@ public class DataTransferThread extends Thread {
         dtk.runEventLoop();
     }
     
+    @Override
     public void start() {
         synchronized (this) {
             super.start();

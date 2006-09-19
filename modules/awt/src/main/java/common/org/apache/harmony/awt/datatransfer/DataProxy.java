@@ -103,19 +103,19 @@ public final class DataProxy implements Transferable {
     }
 
     public DataFlavor[] getTransferDataFlavors() {
-        ArrayList result = new ArrayList();
+        ArrayList<DataFlavor> result = new ArrayList<DataFlavor>();
         String[] natives = data.getNativeFormats();
         
         for (int i = 0; i < natives.length; i++) {
-            List flavors = flavorMap.getFlavorsForNative(natives[i]);
-            for (Iterator it = flavors.iterator(); it.hasNext(); ) {
-                DataFlavor f = (DataFlavor)it.next();
+            List<DataFlavor> flavors = flavorMap.getFlavorsForNative(natives[i]);
+            for (Iterator<DataFlavor> it = flavors.iterator(); it.hasNext(); ) {
+                DataFlavor f = it.next();
                 if (!result.contains(f)) {
                     result.add(f);
                 }
             }
         }
-        return (DataFlavor[])result.toArray(new DataFlavor[0]);
+        return result.toArray(new DataFlavor[result.size()]);
     }
     
     public boolean isDataFlavorSupported(DataFlavor flavor) {

@@ -25,13 +25,9 @@ import java.util.Comparator;
 /**
  * Flavors comparator. Used for sorting text flavors.
  */
-public class FlavorsComparator implements Comparator {
+public class FlavorsComparator implements Comparator<DataFlavor> {
 
-    private final DataFlavor[] arr = new DataFlavor[2];
-
-    public int compare(Object o1, Object o2) {
-        DataFlavor flav1 = (DataFlavor) o1;
-        DataFlavor flav2 = (DataFlavor) o2;
+    public int compare(DataFlavor flav1, DataFlavor flav2) {
 
         if (!flav1.isFlavorTextType() && !flav2.isFlavorTextType()) {
             return 0;
@@ -40,10 +36,8 @@ public class FlavorsComparator implements Comparator {
         } else if (flav1.isFlavorTextType() && !flav2.isFlavorTextType()) {
             return 1;
         } else {
-            arr[0] = flav1;
-            arr[1] = flav2;
-
-            return (DataFlavor.selectBestTextFlavor(arr) == flav1) ? -1 : 1;
+            DataFlavor df = DataFlavor.selectBestTextFlavor(new DataFlavor[] { flav1, flav2 });
+            return (df == flav1) ? -1 : 1;
         }
     }
 

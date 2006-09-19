@@ -24,8 +24,6 @@ import java.awt.Rectangle;
 
 import org.apache.harmony.awt.gl.MultiRectArea;
 
-
-
 public class ClipRegion extends Rectangle {
     private final MultiRectArea clip;
 
@@ -38,6 +36,7 @@ public class ClipRegion extends Rectangle {
         return clip;
     }
 
+    @Override
     public String toString() {
         String str = clip.toString();
         int i = str.indexOf('[');
@@ -57,6 +56,7 @@ public class ClipRegion extends Rectangle {
         clip.intersect(rect);
     }
 
+    @Override
     public boolean isEmpty() {
         return clip.isEmpty();
     }

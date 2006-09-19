@@ -39,7 +39,7 @@ public class DataSnapshot implements DataProvider {
     
     private final String[] nativeFormats;
     /** Class -> byte[] */
-    private final Map serializedObjects;
+    private final Map<Class<?>, byte[]> serializedObjects;
     
     /**
      * @param dataObject
@@ -52,7 +52,7 @@ public class DataSnapshot implements DataProvider {
         html = data.getHTML();
         rawBitmap = data.getRawBitmap();
         
-        serializedObjects = Collections.synchronizedMap(new HashMap());
+        serializedObjects = Collections.synchronizedMap(new HashMap<Class<?>, byte[]>());
         
         for (int i = 0; i < nativeFormats.length; i++) {
             DataFlavor df = null;
@@ -60,7 +60,7 @@ public class DataSnapshot implements DataProvider {
                 df = SystemFlavorMap.decodeDataFlavor(nativeFormats[i]);
             } catch (ClassNotFoundException e) {}
             if (df != null) {
-                Class clazz = df.getRepresentationClass();
+                Class<?> clazz = df.getRepresentationClass();
                 byte[] bytes = data.getSerializedObject(clazz);
                 if (bytes != null) {
                     serializedObjects.put(clazz, bytes);
@@ -136,8 +136,8 @@ public class DataSnapshot implements DataProvider {
                 (int[])rawBitmap.buffer : null;
     }
     
-    public byte[] getSerializedObject(Class clazz) {
-        return (byte[])serializedObjects.get(clazz);
+    public byte[] getSerializedObject(Class<?> clazz) {
+        return serializedObjects.get(clazz);
     }
 
     public byte[] getSerializedObject(String nativeFormat) {

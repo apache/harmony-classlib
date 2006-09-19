@@ -24,11 +24,11 @@ import java.util.Iterator;
 /**
  * ReadOnlyIterator
  */
-public final class ReadOnlyIterator implements Iterator {
+public final class ReadOnlyIterator<E> implements Iterator<E> {
 
-    private final Iterator it;
+    private final Iterator<E> it;
 
-    public ReadOnlyIterator(Iterator it) {
+    public ReadOnlyIterator(Iterator<E> it) {
         if (it == null) {
             throw new NullPointerException();
         }
@@ -43,7 +43,7 @@ public final class ReadOnlyIterator implements Iterator {
         return it.hasNext();
     }
 
-    public Object next() {
+    public E next() {
         return it.next();
     }
 }

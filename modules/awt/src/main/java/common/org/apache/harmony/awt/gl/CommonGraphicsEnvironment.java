@@ -28,36 +28,38 @@ import java.util.Locale;
 
 import org.apache.harmony.awt.gl.image.BufferedImageGraphics2D;
 
-
 /**
  * Common GraphicsEnvironment implementation
  *
  */
 public abstract class CommonGraphicsEnvironment extends GraphicsEnvironment {
 
+    @Override
     public Graphics2D createGraphics(BufferedImage bufferedImage) {
         return new BufferedImageGraphics2D(bufferedImage);
     }
 
+    @Override
     public String[] getAvailableFontFamilyNames(Locale locale) {
         Font[] fonts = getAllFonts();
-        ArrayList familyNames = new ArrayList();
+        ArrayList<String> familyNames = new ArrayList<String>();
 
-        for (int i=0;i<fonts.length;i++) {
-            String name = fonts[i].getFamily(locale);
+        for (Font element : fonts) {
+            String name = element.getFamily(locale);
             if (!familyNames.contains(name)) {
                 familyNames.add(name);
             }
         }
 
-        String res[] = new String[familyNames.size()];
-        return (String[]) familyNames.toArray(res);
+        return familyNames.toArray(new String[familyNames.size()]);
     }
 
+    @Override
     public Font[] getAllFonts() {
         return CommonGraphics2DFactory.inst.getFontManager().getAllFonts();
     }
 
+    @Override
     public String[] getAvailableFontFamilyNames() {
         return CommonGraphics2DFactory.inst.getFontManager().getAllFamilies();
     }

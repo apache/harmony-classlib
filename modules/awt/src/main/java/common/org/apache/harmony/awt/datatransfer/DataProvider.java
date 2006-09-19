@@ -71,5 +71,5 @@ public interface DataProvider {
     
     public RawBitmap getRawBitmap();
     
-    public byte[] getSerializedObject(Class clazz);
+    public byte[] getSerializedObject(Class<?> clazz);
 }

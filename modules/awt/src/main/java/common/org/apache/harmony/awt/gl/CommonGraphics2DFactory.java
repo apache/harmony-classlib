@@ -19,15 +19,12 @@
  */
 package org.apache.harmony.awt.gl;
 
-
-import java.awt.*;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.peer.FontPeer;
-import java.io.IOException;
 
 import org.apache.harmony.awt.gl.font.FontMetricsImpl;
-import org.apache.harmony.awt.gl.font.FontProperty;
 import org.apache.harmony.awt.wtk.GraphicsFactory;
-
 
 /**
  * Common GraphicsFactory implementation
@@ -35,8 +32,8 @@ import org.apache.harmony.awt.wtk.GraphicsFactory;
  */
 public abstract class CommonGraphics2DFactory implements GraphicsFactory {
     
-    // static instanse of CommonGraphics2DFactory
-    public static CommonGraphics2DFactory inst = null;
+    // static instance of CommonGraphics2DFactory
+    public static CommonGraphics2DFactory inst;
 
     /**
      * Returns FontMetrics object that keeps metrics of the specified font.
@@ -46,8 +43,8 @@ public abstract class CommonGraphics2DFactory implements GraphicsFactory {
      */
     public FontMetrics getFontMetrics(Font font) {
         FontMetrics fm;
-        for (int i=0; i < cacheFM.length; i++){
-            fm = cacheFM[i];
+        for (FontMetrics element : cacheFM) {
+            fm = element;
             if (fm == null){
                 break;
             }

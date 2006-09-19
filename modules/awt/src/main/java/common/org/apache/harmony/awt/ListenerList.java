@@ -24,6 +24,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EventListener;
 import java.util.Iterator;
 import java.util.List;
@@ -37,10 +38,8 @@ import java.util.List;
 public class ListenerList<T> implements Serializable {
     private static final long serialVersionUID = 9180703263299648154L;
 
-    private static final Iterator dummyIterator = new ArrayList().iterator();
-
-    private transient ArrayList systemList = null;
-    private transient ArrayList<T> userList = null;
+    private transient ArrayList<EventListener> systemList;
+    private transient ArrayList<T> userList;
 
     /**
      * Adds system listener to this list.
@@ -49,7 +48,7 @@ public class ListenerList<T> implements Serializable {
      */
     public void addSystemListener(EventListener listener) {
         if (systemList == null) {
-            systemList = new ArrayList();
+            systemList = new ArrayList<EventListener>();
         }
         systemList.add(listener);
     }
@@ -104,8 +103,7 @@ public class ListenerList<T> implements Serializable {
      */
     public EventListener[] getUserListeners(EventListener[] emptyArray){
         synchronized (this) {
-            return (EventListener[])
-                (userList != null ? userList.toArray(emptyArray) : emptyArray);
+            return (userList != null ? userList.toArray(emptyArray) : emptyArray);
 
         }
     }
@@ -126,13 +124,13 @@ public class ListenerList<T> implements Serializable {
      *
      * @return iterator for user listeners.
      */
-    public Iterator getUserIterator() {
+    public Iterator<T> getUserIterator() {
         synchronized (this) {
             if (userList == null) {
-                return dummyIterator;
-            } else {
-                return new ReadOnlyIterator(userList.iterator());
+                List<T> emptyList = Collections.emptyList();
+                return emptyList.iterator();
             }
+            return new ReadOnlyIterator<T>(userList.iterator());
         }
     }
 
@@ -141,17 +139,17 @@ public class ListenerList<T> implements Serializable {
      *
      * @return iterator for system listeners.
      */
-    public Iterator getSystemIterator() {
+    public Iterator<EventListener> getSystemIterator() {
         return systemList.iterator();
     }
 
-    private static ArrayList getOnlySerializable(ArrayList list) {
+    private static ArrayList<?> getOnlySerializable(ArrayList<?> list) {
         if (list == null) {
             return null;
         }
 
-        ArrayList result = new ArrayList();
-        for (Iterator it = list.iterator(); it.hasNext();) {
+        ArrayList<Object> result = new ArrayList<Object>();
+        for (Iterator<?> it = list.iterator(); it.hasNext();) {
             Object obj = it.next();
             if (obj instanceof Serializable) {
                 result.add(obj);
@@ -169,12 +167,13 @@ public class ListenerList<T> implements Serializable {
         stream.writeObject(getOnlySerializable(userList));
     }
 
+    @SuppressWarnings("unchecked")
     private void readObject(ObjectInputStream stream)
             throws IOException, ClassNotFoundException {
 
         stream.defaultReadObject();
 
-        systemList = (ArrayList)stream.readObject();
+        systemList = (ArrayList<EventListener>)stream.readObject();
         userList = (ArrayList<T>)stream.readObject();
     }
 

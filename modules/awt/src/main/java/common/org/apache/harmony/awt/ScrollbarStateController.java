@@ -164,6 +164,7 @@ public abstract class ScrollbarStateController implements MouseListener,
             return dragged;
         }
 
+        @Override
         boolean mouseReleased(Point pt) {
            boolean result = super.mouseReleased(pt);
 
@@ -173,6 +174,7 @@ public abstract class ScrollbarStateController implements MouseListener,
             return result;
         }
 
+        @Override
         boolean mouseDragged(Point pt) {
             boolean result = super.mouseDragged(pt);
 
@@ -258,6 +260,7 @@ public abstract class ScrollbarStateController implements MouseListener,
             super(dir);
         }
 
+        @Override
         void scroll() {
             int dir = getBlockDir(new Point(curMouseX, curMouseY));
             if (this.dir != dir) {
@@ -296,7 +299,6 @@ public abstract class ScrollbarStateController implements MouseListener,
         boolean incrPressed = incr.mousePressed(pt);
         boolean decrPressed = decr.mousePressed(pt);
         slider.mousePressed(pt);
-        boolean block = false;
         if (incrPressed || decrPressed) {
             int dir = (incrPressed ? 1 : -1);
             scrollByUnit(dir);

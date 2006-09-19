@@ -44,6 +44,7 @@ public class SingleShotTimer extends RelativeTimer {
         return interval;
     }
 
+    @Override
     void handle() {
         super.handle();
         stop();

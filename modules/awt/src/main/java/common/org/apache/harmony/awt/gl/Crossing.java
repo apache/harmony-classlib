@@ -40,7 +40,7 @@ public class Crossing {
     public static final int CROSSING = 255;
     
     /**
-     * Unknown crossing reult
+     * Unknown crossing result
      */
     static final int UNKNOWN = 254;
 
@@ -172,7 +172,6 @@ public class Crossing {
 
         int cross(double res[], int rc, double py1, double py2) {
             int cross = 0;
-            double edge;
 
             for (int i = 0; i < rc; i++) {
                 double t = res[i];
@@ -183,14 +182,14 @@ public class Crossing {
                 }
                 // CURVE-START
                 if (t < DELTA) {
-                    if (py1 < 0.0 && (edge = bx != 0.0 ? bx : ax - bx) < 0.0) {
+                    if (py1 < 0.0 && (bx != 0.0 ? bx : ax - bx) < 0.0) {
                         cross--;
                     }
                     continue;
                 }
                 // CURVE-END
                 if (t > 1 - DELTA) {
-                    if (py1 < ay && (edge = ax != bx ? ax - bx : bx) > 0.0) {
+                    if (py1 < ay && (ax != bx ? ax - bx : bx) > 0.0) {
                         cross++;
                     }
                     continue;
@@ -279,8 +278,6 @@ public class Crossing {
 
         int cross(double res[], int rc, double py1, double py2) {
             int cross = 0;
-            double edge;
-
             for (int i = 0; i < rc; i++) {
                 double t = res[i];
 
@@ -290,14 +287,14 @@ public class Crossing {
                 }
                 // CURVE-START
                 if (t < DELTA) {
-                    if (py1 < 0.0 && (edge = bx != 0.0 ? bx : (cx != bx ? cx - bx : ax - cx)) < 0.0) {
+                    if (py1 < 0.0 && (bx != 0.0 ? bx : (cx != bx ? cx - bx : ax - cx)) < 0.0) {
                         cross--;
                     }
                     continue;
                 }
                 // CURVE-END
                 if (t > 1 - DELTA) {
-                    if (py1 < ay && (edge = ax != cx ? ax - cx : (cx != bx ? cx - bx : bx)) > 0.0) {
+                    if (py1 < ay && (ax != cx ? ax - cx : (cx != bx ? cx - bx : bx)) > 0.0) {
                         cross++;
                     }
                     continue;
@@ -314,9 +311,8 @@ public class Crossing {
                         if (rxt < -DELTA || rxt > DELTA) {
                             // Inflection point
                             continue;
-                        } else {
-                            rxt = ax;
                         }
+                        rxt = ax;
                     }
                     cross += rxt > 0.0 ? 1 : -1;
                 }
@@ -417,9 +413,8 @@ public class Crossing {
         if (y < y1 && y < cy && y < y2 && x != x1 && x != x2) {
             if (x1 < x2) {
                 return x1 < x && x < x2 ? 1 : 0;
-            } else {
-                return x2 < x && x < x1 ? -1 : 0;
             }
+            return x2 < x && x < x1 ? -1 : 0;
         }
 
         // INSIDE
@@ -450,9 +445,8 @@ public class Crossing {
         if (y < y1 && y < cy1 && y < cy2 && y < y2 && x != x1 && x != x2) {
             if (x1 < x2) {
                 return x1 < x && x < x2 ? 1 : 0;
-            } else {
-                return x2 < x && x < x1 ? -1 : 0;
             }
+            return x2 < x && x < x1 ? -1 : 0;
         }
 
         // INSIDE
@@ -468,42 +462,39 @@ public class Crossing {
      * Returns how many times ray from point (x,y) cross path
      */
     public static int crossPath(PathIterator p, double x, double y) {
-
-        int count;
         int cross = 0;
         double mx, my, cx, cy;
         mx = my = cx = cy = 0.0;
         double coords[] = new double[6];
 
         while (!p.isDone()) {
-            count = 0;
             switch (p.currentSegment(coords)) {
             case PathIterator.SEG_MOVETO:
                 if (cx != mx || cy != my) {
-                    cross += count = crossLine(cx, cy, mx, my, x, y);
+                    cross += crossLine(cx, cy, mx, my, x, y);
                 }
                 mx = cx = coords[0];
                 my = cy = coords[1];
                 break;
             case PathIterator.SEG_LINETO:
-                cross += count = crossLine(cx, cy, cx = coords[0], cy = coords[1], x, y);
+                cross += crossLine(cx, cy, cx = coords[0], cy = coords[1], x, y);
                 break;
             case PathIterator.SEG_QUADTO:
-                cross += count = crossQuad(cx, cy, coords[0], coords[1], cx = coords[2], cy = coords[3], x, y);
+                cross += crossQuad(cx, cy, coords[0], coords[1], cx = coords[2], cy = coords[3], x, y);
                 break;
             case PathIterator.SEG_CUBICTO:
-                cross += count = crossCubic(cx, cy, coords[0], coords[1], coords[2], coords[3], cx = coords[4], cy = coords[5], x, y);
+                cross += crossCubic(cx, cy, coords[0], coords[1], coords[2], coords[3], cx = coords[4], cy = coords[5], x, y);
                 break;
             case PathIterator.SEG_CLOSE:
                 if (cy != my || cx != mx) {
-                    cross += count = crossLine(cx, cy, cx = mx, cy = my, x, y);
+                    cross += crossLine(cx, cy, cx = mx, cy = my, x, y);
                 }
                 break;
             }
             p.next();
         }
         if (cy != my) {
-            cross += count = crossLine(cx, cy, mx, my, x, y);
+            cross += crossLine(cx, cy, mx, my, x, y);
         }
         return cross;
     }
@@ -531,10 +522,11 @@ public class Crossing {
     static void sortBound(double bound[], int bc) {
         for(int i = 0; i < bc - 4; i += 4) {
             int k = i;
-            for(int j = i + 4; j < bc; j += 4)
+            for(int j = i + 4; j < bc; j += 4) {
                 if (bound[k] > bound[j]) {
                     k = j;
                 }
+            }
             if (k != i) {
                 double tmp = bound[i];
                 bound[i] = bound[k];
@@ -661,9 +653,8 @@ public class Crossing {
 
         if (x1 < x2) {
             return x1 < rx1 && rx1 < x2 ? 1 : 0;
-        } else {
-            return x2 < rx1 && rx1 < x1 ? -1 : 0;
         }
+        return x2 < rx1 && rx1 < x1 ? -1 : 0;
 
     }
 
@@ -684,9 +675,8 @@ public class Crossing {
         if (ry2 < y1 && ry2 < cy && ry2 < y2 && rx1 != x1 && rx1 != x2) {
             if (x1 < x2) {
                 return x1 < rx1 && rx1 < x2 ? 1 : 0;
-            } else {
-                return x2 < rx1 && rx1 < x1 ? -1 : 0;
             }
+            return x2 < rx1 && rx1 < x1 ? -1 : 0;
         }
 
         // INSIDE -------------------------------------------------------------
@@ -756,9 +746,8 @@ public class Crossing {
         if (ry2 < y1 && ry2 < cy1 && ry2 < cy2 && ry2 < y2 && rx1 != x1 && rx1 != x2) {
             if (x1 < x2) {
                 return x1 < rx1 && rx1 < x2 ? 1 : 0;
-            } else {
-                return x2 < rx1 && rx1 < x1 ? -1 : 0;
             }
+            return x2 < rx1 && rx1 < x1 ? -1 : 0;
         }
 
         // INSIDE
@@ -792,7 +781,7 @@ public class Crossing {
         bc = c.addBound(bound, bc, res2, rc2, minX, maxX, true, 2);
         rc2 = c.solveExtremY(res2);
         bc = c.addBound(bound, bc, res2, rc2, minX, maxX, true, 4);
-        // Add strat and end
+        // Add start and end
         if (rx1 < x1 && x1 < rx2) {
             bound[bc++] = 0.0;
             bound[bc++] = 0.0;
@@ -896,5 +885,4 @@ public class Crossing {
     public static boolean isInsideEvenOdd(int cross) {
         return (cross & 1) != 0;
     }
-
 }
