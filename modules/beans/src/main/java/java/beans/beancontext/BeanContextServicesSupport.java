@@ -422,6 +422,24 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
         }
     }
 
+    private class BCSIterator implements Iterator {
+    	private Iterator it;
+    	public BCSIterator(Iterator it) {
+    		this.it = it;
+    	}
+    	
+    	public boolean hasNext() {
+    		return it.hasNext();
+    	}
+
+    	public Object next() {
+    		return it.next();
+    	}
+
+    	public void remove() {
+    		//do nothing
+    	}
+    }
     /**
      * @com.intel.drl.spec_ref
      */
@@ -434,9 +452,12 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
         synchronized (BeanContext.globalHierarchyLock) {
             synchronized (this.services) {
                 BCSSServiceProvider bcsp = this.services.get(serviceClass);
+                if (bcsp == null) {
+                    return null;
+                }
 
-                return bcsp.getServiceProvider().getCurrentServiceSelectors(
-                        getBeanContextServicesPeer(), serviceClass);
+                return new BCSIterator(bcsp.getServiceProvider().getCurrentServiceSelectors(
+                        getBeanContextServicesPeer(), serviceClass));
             }
         }
     }

@@ -670,6 +670,14 @@ public class BeanContextServicesSupportTest extends TestCase {
         MockBeanContextServicesSupport support = new MockBeanContextServicesSupport();
         Iterator iter = support.getCurrentServiceSelectors(Collection.class);
         assertNull(iter);
+        //Regression for HARMONY-1397
+        class TestServiceProvider implements BeanContextServiceProvider {
+            public Object getService(BeanContextServices p0, Object p1, Class p2, Object p3) {return null;}
+            public void releaseService(BeanContextServices p0, Object p1, Object p2) {}
+            public Iterator getCurrentServiceSelectors(BeanContextServices p0, Class p1) {return null;}
+        }
+        support.addService(BeanContextServicesSupportTest.class, new TestServiceProvider());
+        assertNotNull(support.getCurrentServiceSelectors(BeanContextServicesSupportTest.class));
     }
 
     public void testGetCurrentServiceSelectors() {
