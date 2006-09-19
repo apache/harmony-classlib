@@ -29,6 +29,7 @@ import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import org.apache.harmony.luni.util.Base64;
+import org.apache.harmony.prefs.internal.nls.Messages;
 
 /**
  * This class is partly implementation of <code>Preferences</code>, which can be 
@@ -58,7 +59,7 @@ public abstract class AbstractPreferences extends Preferences {
     //the unhandled events collection
     static final List<EventObject> events = new LinkedList<EventObject>();
     //the event dispatcher thread
-    private final static EventDispatcher dispatcher = new EventDispatcher("Preference Event Dispatcher");
+    private final static EventDispatcher dispatcher = new EventDispatcher("Preference Event Dispatcher"); //$NON-NLS-1$
 
     /*
      * -----------------------------------------------------------
@@ -368,7 +369,8 @@ public abstract class AbstractPreferences extends Preferences {
     public void exportNode(OutputStream ostream) throws IOException,
             BackingStoreException {
         if(ostream == null) {
-            throw new AssertionError("Stream is null"); //$NON-NLS-1$
+            // prefs.5=Stream is null
+            throw new AssertionError(Messages.getString("prefs.5"));  //$NON-NLS-1$
         }
         checkState();
         XMLParser.exportPrefs(this, ostream, false);
@@ -382,7 +384,8 @@ public abstract class AbstractPreferences extends Preferences {
     public void exportSubtree(OutputStream ostream) throws IOException,
             BackingStoreException {
         if(ostream == null) {
-            throw new AssertionError("Stream is null"); //$NON-NLS-1$
+            // prefs.5=Stream is null
+            throw new AssertionError(Messages.getString("prefs.5"));  //$NON-NLS-1$
         }
 
         checkState();
@@ -597,11 +600,13 @@ public abstract class AbstractPreferences extends Preferences {
 
     private void validateName(String name) {
         if (name.endsWith("/") && name.length() > 1) { //$NON-NLS-1$
-            throw new IllegalArgumentException("Name cannot end with '/'!"); //$NON-NLS-1$
+            // prefs.6=Name cannot end with '/'\!
+            throw new IllegalArgumentException(Messages.getString("prefs.6"));  //$NON-NLS-1$
         }
         if (name.indexOf("//") >= 0) { //$NON-NLS-1$
+            // prefs.7=Name cannot contains consecutive '/'\!
             throw new IllegalArgumentException(
-                    "Name cannot contains consecutive '/'!"); //$NON-NLS-1$
+                    Messages.getString("prefs.7"));  //$NON-NLS-1$
         }
     }
 
@@ -629,8 +634,9 @@ public abstract class AbstractPreferences extends Preferences {
             throws BackingStoreException {
         AbstractPreferences temp;
         if (name.length() > MAX_NAME_LENGTH) {
-            throw new IllegalArgumentException("Name length is too long: " //$NON-NLS-1$
-                    + name);
+            // prefs.8=Name length is too long: {0}
+            throw new IllegalArgumentException(Messages.getString("prefs.8",  //$NON-NLS-1$
+                    name));
         }
         if (createNew) {
             temp = currentNode.childSpi(name);
@@ -655,7 +661,8 @@ public abstract class AbstractPreferences extends Preferences {
                 if ("".equals(name)) { //$NON-NLS-1$
                     return false;
                 }
-                throw new IllegalStateException("This node has been removed!"); //$NON-NLS-1$
+                // prefs.9=This node has been removed\!
+                throw new IllegalStateException(Messages.getString("prefs.9"));  //$NON-NLS-1$
             }
             validateName(name);
             if ("".equals(name) || "/".equals(name)) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -687,7 +694,8 @@ public abstract class AbstractPreferences extends Preferences {
 
     private void checkState() {
         if (isRemoved()) {
-            throw new IllegalStateException("This node has been removed!"); //$NON-NLS-1$
+            // prefs.9=This node has been removed\!
+            throw new IllegalStateException(Messages.getString("prefs.9"));  //$NON-NLS-1$
         }
     }
 
@@ -784,7 +792,8 @@ public abstract class AbstractPreferences extends Preferences {
      */
     public void removeNode() throws BackingStoreException {
         if (root == this) {
-            throw new UnsupportedOperationException("Cannot remove root node!"); //$NON-NLS-1$
+            // prefs.A=Cannot remove root node\!
+            throw new UnsupportedOperationException(Messages.getString("prefs.A"));  //$NON-NLS-1$
         }
         synchronized (parentPref.lock) {
             removeNodeImpl();

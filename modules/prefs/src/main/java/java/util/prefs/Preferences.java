@@ -23,6 +23,8 @@ import java.net.MalformedURLException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import org.apache.harmony.prefs.internal.nls.Messages;
+
 
 
 /**
@@ -133,7 +135,8 @@ public abstract class Preferences {
 	        Class<?> factoryClass = loader.loadClass(factoryClassName);
 	        factory = (PreferencesFactory) factoryClass.newInstance();
         } catch (Exception e) {
-            throw new InternalError("Cannot initiate PreferencesFactory: "+factoryClassName+". Caused by "+ e);  //$NON-NLS-1$//$NON-NLS-2$
+            // prefs.10=Cannot initiate PreferencesFactory: {0}. Caused by {1}
+            throw new InternalError(Messages.getString("prefs.10", factoryClassName, e));   //$NON-NLS-1$
         }
 	    
 	}
@@ -438,7 +441,8 @@ public abstract class Preferences {
 	public static void importPreferences (InputStream istream) throws InvalidPreferencesFormatException, IOException {
 	    checkSecurity();
 	    if(null == istream){
-	        throw new MalformedURLException("Inputstream cannot be null!");
+            // prefs.0=Inputstream cannot be null\!
+	        throw new MalformedURLException(Messages.getString("prefs.0")); //$NON-NLS-1$
 	    }
 	    XMLParser.importPrefs(istream);
 	}

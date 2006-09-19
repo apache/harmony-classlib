@@ -41,6 +41,7 @@ import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.harmony.prefs.internal.nls.Messages;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -131,8 +132,9 @@ class XMLParser {
                     result.setSystemId(PREFS_DTD_NAME);
                     return result;
                 }
+                // prefs.1=Invalid DOCTYPE declaration: {0}
                 throw new SAXException(
-                        "Invalid DOCTYPE declaration: " + systemId); //$NON-NLS-1$
+                        Messages.getString("prefs.1", systemId));  //$NON-NLS-1$
             }
         });
         builder.setErrorHandler(new ErrorHandler() {
@@ -357,8 +359,9 @@ class XMLParser {
             preferences = doc.getDocumentElement();
             String version = preferences.getAttribute("EXTERNAL_XML_VERSION"); //$NON-NLS-1$
             if (version != null && Float.parseFloat(version) > XML_VERSION) {
+                // prefs.2=This preferences exported version is not supported:{0}
                 throw new InvalidPreferencesFormatException(
-                        "This preferences exported version is not supported:" + version); //$NON-NLS-1$
+                        Messages.getString("prefs.2", version));  //$NON-NLS-1$
             }
 
             // check preferences root's type

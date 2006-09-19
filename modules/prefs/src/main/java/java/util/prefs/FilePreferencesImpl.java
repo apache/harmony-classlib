@@ -25,6 +25,8 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.harmony.prefs.internal.nls.Messages;
+
 /**
  * TODO some sync mechanism wich backend, Performance - check file edit date
  */
@@ -157,8 +159,9 @@ class FilePreferencesImpl extends AbstractPreferences {
                     }
                 });
         if (null == names) {// file is not a directory, exception case
+            // prefs.3=Cannot get children names for {0}!
             throw new BackingStoreException(
-                    "Cannot get children names for " + toString() + "!"); //$NON-NLS-1$ //$NON-NLS-2$
+                    Messages.getString("prefs.3", toString()));  //$NON-NLS-1$
         }
         return names;
     }
@@ -255,7 +258,8 @@ class FilePreferencesImpl extends AbstractPreferences {
             }
         })).booleanValue();
         if (!removeSucceed) {
-            throw new BackingStoreException("Cannot remove " + toString() + "!"); //$NON-NLS-1$ //$NON-NLS-2$
+            // prefs.4=Cannot remove {0}!
+            throw new BackingStoreException(Messages.getString("prefs.4", toString()));  //$NON-NLS-1$
         }
     }
 

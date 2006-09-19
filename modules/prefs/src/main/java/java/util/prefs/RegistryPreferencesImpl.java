@@ -16,6 +16,8 @@
 
 package java.util.prefs;
 
+import org.apache.harmony.prefs.internal.nls.Messages;
+
 /*
  * Default implementation of <code>AbstractPreferences</code> for windows platform,
  * using windows registry as back end. 
@@ -25,7 +27,7 @@ package java.util.prefs;
 class RegistryPreferencesImpl extends AbstractPreferences {
     
     static {
-		System.loadLibrary("hyprefs");
+		System.loadLibrary("hyprefs"); //$NON-NLS-1$
 	}
 
     /*
@@ -94,7 +96,8 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         int[] error = new int[1];
         byte[][] names = getChildNames(path, userNode, error);
         if (error[ERROR_CODE] != RETURN_SUCCESS) {
-            throw new BackingStoreException("Enumerate child nodes error!"); //$NON-NLS-1$
+            // prefs.B=Enumerate child nodes error\!
+            throw new BackingStoreException(Messages.getString("prefs.B"));  //$NON-NLS-1$
         }
         String[] result = new String[names.length];
         for (int i = 0; i < result.length; i++) {
@@ -118,7 +121,8 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         int[] error = new int[1];
         flushPrefs(path, userNode, error);
         if (error[ERROR_CODE] != RETURN_SUCCESS) {
-            throw new BackingStoreException("Flush error!"); //$NON-NLS-1$
+            // prefs.C=Flush error\!
+            throw new BackingStoreException(Messages.getString("prefs.C"));  //$NON-NLS-1$
         }
     }
 
@@ -135,7 +139,8 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         int[] errorCode = new int[1];
         byte[][] keys = keys(path, userNode, errorCode);
         if (errorCode[ERROR_CODE] != RETURN_SUCCESS) {
-            throw new BackingStoreException("Enumerate keys error!"); //$NON-NLS-1$
+            // prefs.D=Enumerate keys error\!
+            throw new BackingStoreException(Messages.getString("prefs.D"));  //$NON-NLS-1$
         }
         String[] result = new String[keys.length];
         for (int i = 0; i < result.length; i++) {
@@ -148,7 +153,8 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         int[] errorCode = new int[1];
         putValue(path, encodeWindowsStr(name).getBytes(), value.getBytes(), userNode, errorCode);
         if (errorCode[ERROR_CODE] == RETURN_ACCESS_DENIED) {
-            throw new SecurityException("Access denied!"); //$NON-NLS-1$
+            // prefs.E=Access denied\!
+            throw new SecurityException(Messages.getString("prefs.E"));  //$NON-NLS-1$
         }
     }
 
@@ -157,7 +163,8 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         removeNode(((RegistryPreferencesImpl) parent()).path,
                 encodeWindowsStr(name()).getBytes(), userNode, error);
         if (error[ERROR_CODE] != RETURN_SUCCESS) {
-            throw new BackingStoreException("Remove node error!"); //$NON-NLS-1$
+            // prefs.F=Remove node error\!
+            throw new BackingStoreException(Messages.getString("prefs.F"));  //$NON-NLS-1$
         }
     }
 
@@ -165,7 +172,8 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         int[] errorCode = new int[1];
         removeKey(path, encodeWindowsStr(key).getBytes(), userNode, errorCode);
         if (errorCode[ERROR_CODE] == RETURN_ACCESS_DENIED) {
-            throw new SecurityException("Access denied!"); //$NON-NLS-1$
+            // prefs.E=Access denied\!
+            throw new SecurityException(Messages.getString("prefs.E"));  //$NON-NLS-1$
         }
     }
 
