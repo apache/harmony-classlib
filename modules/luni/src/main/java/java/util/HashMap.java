@@ -549,16 +549,18 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     @Override
     public void putAll(Map<? extends K, ? extends V> map) {
         if (map.entrySet() != null) {
+            int capacity = elementCount + map.size();
+            if (capacity > threshold) {
+                rehash(capacity);
+            }
             super.putAll(map);
         }
     }
 
-    void rehash() {
-        int length = elementData.length << 1;
-        if (length == 0) {
-            length = 1;
-        }
-        Entry<K,V>[] newData = newElementArray(length);
+    void rehash(int capacity) {
+        int length = (capacity == 0 ? 1 : capacity << 1);
+
+        Entry<K, V>[] newData = newElementArray(length);
         for (int i = 0; i < elementData.length; i++) {
             Entry<K,V> entry = elementData[i];
             while (entry != null) {
@@ -573,6 +575,10 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         }
         elementData = newData;
         computeMaxSize();
+    }
+
+    void rehash() {
+        rehash(elementData.length);
     }
 
     /**
