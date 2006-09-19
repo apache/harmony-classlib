@@ -55,6 +55,9 @@ public class EventSetDescriptor extends FeatureDescriptor {
 
         super();
 
+        if (eventSetName == null) {
+        	throw new NullPointerException();
+        }
         setName(eventSetName);
         setDisplayName(eventSetName);
 
