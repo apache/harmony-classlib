@@ -389,7 +389,7 @@ public final class NumericShaper implements Serializable {
      */
     private int getIndexFromRange(int range){
         if (range == 0){
-            throw new IllegalArgumentException("illigal range argument value:"+
+            throw new IllegalArgumentException("Illegal range argument value:"+
                     range);
         }
 
@@ -401,7 +401,7 @@ public final class NumericShaper implements Serializable {
             index++;
         }
 
-        throw new IllegalArgumentException("illigal range argument value:" + 
+        throw new IllegalArgumentException("Illegal range argument value:" + 
                 range);
 
     }
@@ -414,7 +414,7 @@ public final class NumericShaper implements Serializable {
      */
     private int getRangeFromIndex(int index){
         if (index < 0 || index >= MAX_INDEX){
-            throw new IllegalArgumentException("illigal range argument value:"+
+            throw new IllegalArgumentException("Illegal range argument value:"+
                     index);
         }
 
@@ -422,6 +422,7 @@ public final class NumericShaper implements Serializable {
     }
 
 
+    @Override
     public int hashCode() {
         HashCode hash = new HashCode();
 
@@ -433,6 +434,7 @@ public final class NumericShaper implements Serializable {
 
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -453,6 +455,7 @@ public final class NumericShaper implements Serializable {
         return false;
     }
 
+    @Override
     public String toString() {
         /* !! There is no description in the documentation what this method must
          * return. Thus format of toString method is based on 1.5 release 

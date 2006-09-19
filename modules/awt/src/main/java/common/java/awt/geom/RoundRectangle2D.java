@@ -39,30 +39,37 @@ public abstract class RoundRectangle2D extends RectangularShape {
             setRoundRect(x, y, width, height, arcwidth, archeight);
         }
 
+        @Override
         public double getX() {
             return x;
         }
 
+        @Override
         public double getY() {
             return y;
         }
 
+        @Override
         public double getWidth() {
             return width;
         }
 
+        @Override
         public double getHeight() {
             return height;
         }
 
+        @Override
         public double getArcWidth() {
             return arcwidth;
         }
 
+        @Override
         public double getArcHeight() {
             return archeight;
         }
 
+        @Override
         public boolean isEmpty() {
             return width <= 0.0f || height <= 0.0f;
         }
@@ -76,6 +83,7 @@ public abstract class RoundRectangle2D extends RectangularShape {
             this.archeight = archeight;
         }
 
+        @Override
         public void setRoundRect(double x, double y, double width, double height, double arcwidth, double archeight) {
             this.x = (float)x;
             this.y = (float)y;
@@ -85,6 +93,7 @@ public abstract class RoundRectangle2D extends RectangularShape {
             this.archeight = (float)archeight;
         }
 
+        @Override
         public void setRoundRect(RoundRectangle2D rr) {
             this.x = (float)rr.getX();
             this.y = (float)rr.getY();
@@ -115,34 +124,42 @@ public abstract class RoundRectangle2D extends RectangularShape {
             setRoundRect(x, y, width, height, arcwidth, archeight);
         }
 
+        @Override
         public double getX() {
             return x;
         }
 
+        @Override
         public double getY() {
             return y;
         }
 
+        @Override
         public double getWidth() {
             return width;
         }
 
+        @Override
         public double getHeight() {
             return height;
         }
 
+        @Override
         public double getArcWidth() {
             return arcwidth;
         }
 
+        @Override
         public double getArcHeight() {
             return archeight;
         }
 
+        @Override
         public boolean isEmpty() {
             return width <= 0.0 || height <= 0.0;
         }
 
+        @Override
         public void setRoundRect(double x, double y, double width, double height, double arcwidth, double archeight) {
             this.x = x;
             this.y = y;
@@ -152,6 +169,7 @@ public abstract class RoundRectangle2D extends RectangularShape {
             this.archeight = archeight;
         }
 
+        @Override
         public void setRoundRect(RoundRectangle2D rr) {
             this.x = rr.getX();
             this.y = rr.getY();
@@ -343,6 +361,7 @@ public abstract class RoundRectangle2D extends RectangularShape {
                 .getArcWidth(), rr.getArcHeight());
     }
 
+    @Override
     public void setFrame(double x, double y, double width, double height) {
         setRoundRect(x, y, width, height, getArcWidth(), getArcHeight());
     }

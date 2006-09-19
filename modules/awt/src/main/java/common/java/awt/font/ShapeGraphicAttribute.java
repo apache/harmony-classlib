@@ -71,6 +71,7 @@ public final class ShapeGraphicAttribute extends GraphicAttribute {
         this.fShapeHeight = (float)fBounds.getHeight();
     }
 
+    @Override
     public int hashCode() {
         HashCode hash = new HashCode();
 
@@ -94,6 +95,7 @@ public final class ShapeGraphicAttribute extends GraphicAttribute {
 
     }
 
+    @Override
     public boolean equals(Object obj) {
         try {
             return equals((ShapeGraphicAttribute) obj);
@@ -103,6 +105,7 @@ public final class ShapeGraphicAttribute extends GraphicAttribute {
         }
     }
 
+    @Override
     public void draw(Graphics2D g2, float x, float y) {
         AffineTransform at = AffineTransform.getTranslateInstance(x, y);
         if (fStroke == STROKE){
@@ -116,18 +119,22 @@ public final class ShapeGraphicAttribute extends GraphicAttribute {
 
     }
 
+    @Override
     public float getAdvance() {
         return Math.max(0, fShapeWidth + fOriginX);
     }
 
+    @Override
     public float getAscent() {
         return Math.max(0, -fOriginY);
     }
 
+    @Override
     public Rectangle2D getBounds() {
         return (Rectangle2D)fBounds.clone();
     }
 
+    @Override
     public float getDescent() {
         return Math.max(0, fShapeHeight + fOriginY);
     }

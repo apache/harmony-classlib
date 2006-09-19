@@ -132,7 +132,7 @@ public final class GeneralPath implements Shape, Cloneable {
 
         public int currentSegment(double[] coords) {
             if (isDone()) {
-                throw new NoSuchElementException("Iiterator out of bounds");
+                throw new NoSuchElementException("Iterator out of bounds");
             }
             int type = p.types[typeIndex];
             int count = GeneralPath.pointShift[type];
@@ -148,7 +148,7 @@ public final class GeneralPath implements Shape, Cloneable {
 
         public int currentSegment(float[] coords) {
             if (isDone()) {
-                throw new NoSuchElementException("Iiterator out of bounds");
+                throw new NoSuchElementException("Iterator out of bounds");
             }
             int type = p.types[typeIndex];
             int count = GeneralPath.pointShift[type];
@@ -195,7 +195,7 @@ public final class GeneralPath implements Shape, Cloneable {
     }
 
     /**
-     * Checks points and types buffer size to add pointCount points. If necessary realloc bufers to enlarge size.   
+     * Checks points and types buffer size to add pointCount points. If necessary realloc buffers to enlarge size.   
      * @param pointCount - the point count to be added in buffer
      */
     void checkBuf(int pointCount, boolean checkMove) {
@@ -311,9 +311,8 @@ public final class GeneralPath implements Shape, Cloneable {
                 int type = types[i];
                 if (type == PathIterator.SEG_MOVETO) {
                     break;
-                } else {
-                    j -= pointShift[type];
                 }
+                j -= pointShift[type];
             }
         }
         return new Point2D.Float(points[j], points[j + 1]);
@@ -371,14 +370,13 @@ public final class GeneralPath implements Shape, Cloneable {
     /**
      * Checks cross count according to path rule to define is it point inside shape or not. 
      * @param cross - the point cross count
-     * @return true if point is inside path, or false otherwiseh 
+     * @return true if point is inside path, or false otherwise 
      */
     boolean isInside(int cross) {
         if (rule == WIND_NON_ZERO) {
             return Crossing.isInsideNonZero(cross);
-        } else {
-            return Crossing.isInsideEvenOdd(cross);
         }
+        return Crossing.isInsideEvenOdd(cross);
     }
 
     public boolean contains(double px, double py) {
@@ -415,11 +413,12 @@ public final class GeneralPath implements Shape, Cloneable {
         return new FlatteningPathIterator(getPathIterator(t), flatness);
     }
 
+    @Override
     public Object clone() {
         try {
             GeneralPath p = (GeneralPath) super.clone();
-            p.types = (byte[])types.clone();
-            p.points = (float[])points.clone();
+            p.types = types.clone();
+            p.points = points.clone();
             return p;
         } catch (CloneNotSupportedException e) {
             throw new InternalError();

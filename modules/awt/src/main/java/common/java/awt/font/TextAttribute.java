@@ -28,20 +28,20 @@ public final class TextAttribute extends Attribute {
     private static final long serialVersionUID = 7744112784117861702L;
 
     // set of available text attributes
-    private static final Map attrMap = new HashMap();
+    private static final Map<String, TextAttribute> attrMap = new HashMap<String, TextAttribute>();
 
     protected TextAttribute(String name) {
         super(name);
         attrMap.put(name, this);
     }
 
+    @Override
     protected Object readResolve() throws InvalidObjectException {
-        TextAttribute result = (TextAttribute) attrMap.get(this.getName());
+        TextAttribute result = attrMap.get(this.getName());
         if (result != null) {
             return result;
-        } else {
-            throw new InvalidObjectException("Unknown attribute name");
         }
+        throw new InvalidObjectException("Unknown attribute name");
     }
 
     public static final TextAttribute BACKGROUND = new TextAttribute("background");
@@ -56,9 +56,11 @@ public final class TextAttribute extends Attribute {
 
     public static final TextAttribute FOREGROUND = new TextAttribute("foreground");
 
-    public static final TextAttribute INPUT_METHOD_HIGHLIGHT = new TextAttribute("input method highlight");
+    public static final TextAttribute INPUT_METHOD_HIGHLIGHT = new TextAttribute(
+            "input method highlight");
 
-    public static final TextAttribute INPUT_METHOD_UNDERLINE = new TextAttribute("input method underline");
+    public static final TextAttribute INPUT_METHOD_UNDERLINE = new TextAttribute(
+            "input method underline");
 
     public static final TextAttribute JUSTIFICATION = new TextAttribute("justification");
 
@@ -148,6 +150,4 @@ public final class TextAttribute extends Attribute {
 
     public static final Float WIDTH_EXTENDED = new Float(1.5f);
 
-
 }
-

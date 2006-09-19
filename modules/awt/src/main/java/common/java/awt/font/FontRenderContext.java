@@ -45,29 +45,28 @@ public class FontRenderContext {
     protected FontRenderContext() {
     }
 
+    @Override
     public boolean equals(Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
+        }
 
         if (obj != null) {
-          try {
-            return equals((FontRenderContext)obj);
-          }
-          catch (ClassCastException e) {
-            return false;
-          }
-        } else {
-            return false;
+            try {
+                return equals((FontRenderContext) obj);
+            } catch (ClassCastException e) {
+                return false;
+            }
         }
+        return false;
 
     }
 
     public AffineTransform getTransform() {
         if (transform != null){
             return new AffineTransform(transform);
-        } else {
-            return new AffineTransform();
         }
+        return new AffineTransform();
     }
 
     public boolean equals(FontRenderContext frc) {
@@ -95,6 +94,7 @@ public class FontRenderContext {
         return this.fAntiAliased;
     }
 
+    @Override
     public int hashCode() {
         return this.getTransform().hashCode() ^
                 new Boolean(this.fFractionalMetrics).hashCode() ^

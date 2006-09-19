@@ -54,9 +54,8 @@ public final class TextLayout implements Cloneable {
 
             if (level1 == level2) {
                 return (hit2.isLeadingEdge() && (!hit1.isLeadingEdge())) ? hit2 : hit1;
-            } else {
-                return level1 > level2 ? hit1 : hit2;
             }
+            return level1 > level2 ? hit1 : hit2;
         }
 
     }
@@ -118,30 +117,35 @@ public final class TextLayout implements Cloneable {
         caretManager = new CaretManager(this.breaker);
     }
 
+    @Override
     public int hashCode() {
         return breaker.hashCode();
     }
 
+    @Override
     protected Object clone() {
         TextLayout res = new TextLayout((TextRunBreaker) breaker.clone());
 
-        if (justificationWidth >= 0)
+        if (justificationWidth >= 0) {
             res.handleJustify(justificationWidth);
+        }
 
         return res;
     }
 
     public boolean equals(TextLayout layout) {
-        if (layout == null) // Need to check for null
+        if (layout == null) {
             return false;
-        else
-            return this.breaker.equals(layout.breaker);
+        }
+        return this.breaker.equals(layout.breaker);
     }
 
+    @Override
     public boolean equals(Object obj) {
         return obj instanceof TextLayout ? equals((TextLayout) obj) : false;
     }
 
+    @Override
     public String toString() { // what for?
         return super.toString();
     }
@@ -182,10 +186,10 @@ public final class TextLayout implements Cloneable {
 
     public Shape getBlackBoxBounds(int firstEndpoint, int secondEndpoint) {
         updateMetrics();
-        if (firstEndpoint < secondEndpoint)
+        if (firstEndpoint < secondEndpoint) {
             return breaker.getBlackBoxBounds(firstEndpoint, secondEndpoint);
-        else
-            return breaker.getBlackBoxBounds(secondEndpoint, firstEndpoint);
+        }
+        return breaker.getBlackBoxBounds(secondEndpoint, firstEndpoint);
     }
 
     public Rectangle2D getBounds() {
@@ -235,10 +239,10 @@ public final class TextLayout implements Cloneable {
     }
 
     public byte getCharacterLevel(int index) {
-        if (index == -1 || index == getCharacterCount())
+        if (index == -1 || index == getCharacterCount()) {
             return (byte) breaker.getBaseLevel();
-        else
-            return breaker.getLevel(index);
+        }
+        return breaker.getLevel(index);
     }
 
     public float getDescent() {
@@ -287,17 +291,16 @@ public final class TextLayout implements Cloneable {
                     bounds,
                     this
             );
-        } else {
-            if (firstEndpoint < 0 || secondEndpoint > breaker.getCharCount()) {
-                throw new IllegalArgumentException("Endpoints are out of range");
-            }
-            return caretManager.getLogicalHighlightShape(
-                    firstEndpoint,
-                    secondEndpoint,
-                    bounds,
-                    this
-            );
         }
+        if (firstEndpoint < 0 || secondEndpoint > breaker.getCharCount()) {
+            throw new IllegalArgumentException("Endpoints are out of range");
+        }
+        return caretManager.getLogicalHighlightShape(
+                firstEndpoint,
+                secondEndpoint,
+                bounds,
+                this
+        );
     }
 
     public int[] getLogicalRangesForVisualSelection(TextHitInfo hit1, TextHitInfo hit2) {
@@ -324,9 +327,8 @@ public final class TextLayout implements Cloneable {
 
         if (nextLeftHit != null) {
             return policy.getStrongCaret(getVisualOtherHit(nextLeftHit), nextLeftHit, this);
-        } else {
-            return null;
         }
+        return null;
     }
 
     public TextHitInfo getNextRightHit(TextHitInfo hitInfo) {
@@ -349,9 +351,8 @@ public final class TextLayout implements Cloneable {
 
         if (nextRightHit != null) {
             return policy.getStrongCaret(getVisualOtherHit(nextRightHit), nextRightHit, this);
-        } else {
-            return null;
         }
+        return null;
     }
 
     public Shape getOutline(AffineTransform xform) {
@@ -359,8 +360,9 @@ public final class TextLayout implements Cloneable {
 
         GeneralPath outline = breaker.getOutline();
 
-        if (outline != null && xform != null)
+        if (outline != null && xform != null) {
             outline.transform(xform);
+        }
 
         return outline;
     }
@@ -373,11 +375,11 @@ public final class TextLayout implements Cloneable {
         // in logical representation. We use this fact.
         int lastNonWhitespace = breaker.getLastNonWhitespace();
 
-        if (lastNonWhitespace < 0)
+        if (lastNonWhitespace < 0) {
             return 0;
-        else if (lastNonWhitespace == getCharacterCount()-1)
+        } else if (lastNonWhitespace == getCharacterCount()-1) {
             return getAdvance();
-        else if (justificationWidth >= 0) { // Layout is justified
+        } else if (justificationWidth >= 0) { // Layout is justified
             return justificationWidth;
         } else {
             breaker.pushSegments(
@@ -430,13 +432,15 @@ public final class TextLayout implements Cloneable {
     }
 
     public TextHitInfo hitTestChar(float x, float y, Rectangle2D bounds) {
-        if (x > bounds.getMaxX())
+        if (x > bounds.getMaxX()) {
             return breaker.isLTR() ?
                     TextHitInfo.trailing(breaker.getCharCount() - 1) : TextHitInfo.leading(0);
+        }
 
-        if (x < bounds.getMinX())
+        if (x < bounds.getMinX()) {
             return breaker.isLTR() ?
                     TextHitInfo.leading(0) : TextHitInfo.trailing(breaker.getCharCount() - 1);
+        }
 
         return breaker.hitTest(x, y);
     }

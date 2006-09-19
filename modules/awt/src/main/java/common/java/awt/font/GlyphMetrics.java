@@ -101,17 +101,17 @@ public final class GlyphMetrics {
     }
 
     public float getRSB() {
-        if (this.horizontal)
+        if (this.horizontal) {
             return this.advanceX - this.bounds.x - (float)this.bounds.getWidth();
-        else
-            return this.advanceY - this.bounds.y - (float)this.bounds.getHeight();
+        }
+        return this.advanceY - this.bounds.y - (float)this.bounds.getHeight();
     }
 
     public float getLSB() {
-        if (this.horizontal)
+        if (this.horizontal) {
             return this.bounds.x;
-        else
-            return this.bounds.y;
+        }
+        return this.bounds.y;
     }
 
     public float getAdvanceY() {
@@ -123,10 +123,10 @@ public final class GlyphMetrics {
     }
 
     public float getAdvance() {
-        if (this.horizontal)
+        if (this.horizontal) {
             return this.advanceX;
-        else
-            return this.advanceY;
+        }
+        return this.advanceY;
     }
 
 }

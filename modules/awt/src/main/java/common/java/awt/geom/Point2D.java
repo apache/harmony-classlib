@@ -36,10 +36,12 @@ public abstract class Point2D implements Cloneable {
             this.y = y;
         }
 
+        @Override
         public double getX() {
             return x;
         }
 
+        @Override
         public double getY() {
             return y;
         }
@@ -49,11 +51,13 @@ public abstract class Point2D implements Cloneable {
             this.y = y;
         }
 
+        @Override
         public void setLocation(double x, double y) {
             this.x = (float)x;
             this.y = (float)y;
         }
 
+        @Override
         public String toString() {
             return getClass().getName() + "[x=" + x + ",y=" + y + "]";
         }
@@ -72,19 +76,23 @@ public abstract class Point2D implements Cloneable {
             this.y = y;
         }
 
+        @Override
         public double getX() {
             return x;
         }
 
+        @Override
         public double getY() {
             return y;
         }
 
+        @Override
         public void setLocation(double x, double y) {
             this.x = x;
             this.y = y;
         }
 
+        @Override
         public String toString() {
             return getClass().getName() + "[x=" + x + ",y=" + y + "]";
         }
@@ -129,6 +137,7 @@ public abstract class Point2D implements Cloneable {
         return Math.sqrt(distanceSq(p));
     }
 
+    @Override
     public Object clone() {
         try {
             return super.clone();
@@ -137,6 +146,7 @@ public abstract class Point2D implements Cloneable {
         }
     }
 
+    @Override
     public int hashCode() {
         HashCode hash = new HashCode();
         hash.append(getX());
@@ -144,6 +154,7 @@ public abstract class Point2D implements Cloneable {
         return hash.hashCode();
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

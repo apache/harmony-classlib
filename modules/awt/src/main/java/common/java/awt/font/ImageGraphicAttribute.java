@@ -60,6 +60,7 @@ public final class ImageGraphicAttribute extends GraphicAttribute {
         this(image, alignment, 0, 0);
     }
 
+    @Override
     public int hashCode() {
         HashCode hash = new HashCode();
 
@@ -83,6 +84,7 @@ public final class ImageGraphicAttribute extends GraphicAttribute {
                 fImage.equals(iga.fImage));
     }
 
+    @Override
     public boolean equals(Object obj) {
         try {
             return equals((ImageGraphicAttribute) obj);
@@ -93,22 +95,27 @@ public final class ImageGraphicAttribute extends GraphicAttribute {
 
     }
 
+    @Override
     public void draw(Graphics2D g2, float x, float y) {
         g2.drawImage(fImage, (int)(x - fOriginX), (int)(y - fOriginY), null);
     }
 
+    @Override
     public float getAdvance() {
         return Math.max(0, fImgWidth - fOriginX);
     }
 
+    @Override
     public float getAscent() {
         return Math.max(0, fOriginY);
     }
 
+    @Override
     public Rectangle2D getBounds() {
         return new Rectangle2D.Float(-fOriginX, -fOriginY, fImgWidth, fImgHeight);
     }
 
+    @Override
     public float getDescent() {
         return Math.max(0, fImgHeight - fOriginY);
     }

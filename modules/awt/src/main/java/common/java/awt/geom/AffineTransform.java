@@ -535,6 +535,7 @@ public class AffineTransform implements Cloneable, Serializable {
         return dst;
     }
 
+    @Override
     public String toString() {
         return
             getClass().getName() +
@@ -542,6 +543,7 @@ public class AffineTransform implements Cloneable, Serializable {
                 + m10 + ", " + m11 + ", " + m12 + "]]";
     }
 
+    @Override
     public Object clone() {
         try {
             return super.clone();
@@ -550,6 +552,7 @@ public class AffineTransform implements Cloneable, Serializable {
         }
     }
 
+    @Override
     public int hashCode() {
         HashCode hash = new HashCode();
         hash.append(m00);
@@ -561,6 +564,7 @@ public class AffineTransform implements Cloneable, Serializable {
         return hash.hashCode();
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

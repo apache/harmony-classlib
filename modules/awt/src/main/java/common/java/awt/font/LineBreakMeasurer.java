@@ -68,18 +68,18 @@ public final class LineBreakMeasurer {
     }
 
     public TextLayout nextLayout(float wrappingWidth, int offsetLimit, boolean requireNextWord) {
-        if (position == maxpos)
+        if (position == maxpos) {
             return null;
+        }
 
         int nextPosition = nextOffset(wrappingWidth, offsetLimit, requireNextWord);
 
         if (nextPosition == position) {
             return null;
-        } else {
-            TextLayout layout = tm.getLayout(position, nextPosition);
-            position = nextPosition;
-            return layout;
         }
+        TextLayout layout = tm.getLayout(position, nextPosition);
+        position = nextPosition;
+        return layout;
     }
 
     public TextLayout nextLayout(float wrappingWidth) {
@@ -91,13 +91,15 @@ public final class LineBreakMeasurer {
     }
 
     public int nextOffset(float wrappingWidth, int offsetLimit, boolean requireNextWord) {
-        if (offsetLimit <= position)
+        if (offsetLimit <= position) {
             throw new IllegalArgumentException(
                     "Offset limit should be greater than current position."
             );
+        }
 
-        if (position == maxpos) // Reached end of the paragraph
+        if (position == maxpos) {
             return position;
+        }
 
         int breakPos = tm.getLineBreakIndex(position, wrappingWidth);
         int correctedPos = breakPos;
@@ -123,10 +125,10 @@ public final class LineBreakMeasurer {
     }
 
     public void setPosition(int pos) {
-        if (tm.aci.getBeginIndex() > pos || maxpos < pos)
+        if (tm.aci.getBeginIndex() > pos || maxpos < pos) {
             throw new IllegalArgumentException("Index is out of range");
-        else
-            position = pos;
+        }
+        position = pos;
     }
 }
 

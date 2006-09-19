@@ -32,6 +32,7 @@ public final class TextHitInfo {
         this.isTrailing = isTrailing;
     }
 
+    @Override
     public String toString() {
         return new String(
                 "TextHitInfo[" + charIdx + ", " +
@@ -39,11 +40,12 @@ public final class TextHitInfo {
         );
     }
 
+    @Override
     public boolean equals(Object obj) {
-        if (obj instanceof TextHitInfo)
+        if (obj instanceof TextHitInfo) {
             return equals((TextHitInfo) obj);
-        else
-            return false;
+        }
+        return false;
     }
 
     public boolean equals(TextHitInfo thi) {
@@ -67,6 +69,7 @@ public final class TextHitInfo {
         return !isTrailing;
     }
 
+    @Override
     public int hashCode() {
         return HashCode.combine(charIdx, isTrailing);
     }
@@ -95,4 +98,3 @@ public final class TextHitInfo {
         return new TextHitInfo(offset, false);
     }
 }
-

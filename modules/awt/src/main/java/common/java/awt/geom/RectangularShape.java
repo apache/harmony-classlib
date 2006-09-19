@@ -132,6 +132,7 @@ public abstract class RectangularShape implements Shape, Cloneable {
         return new FlatteningPathIterator(getPathIterator(t), flatness);
     }
 
+    @Override
     public Object clone() {
         try {
             return super.clone();

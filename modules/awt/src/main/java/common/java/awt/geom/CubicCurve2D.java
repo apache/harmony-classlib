@@ -45,54 +45,67 @@ public abstract class CubicCurve2D implements Shape, Cloneable {
             setCurve(x1, y1, ctrlx1, ctrly1, ctrlx2, ctrly2, x2, y2);
         }
 
+        @Override
         public double getX1() {
             return x1;
         }
 
+        @Override
         public double getY1() {
             return y1;
         }
 
+        @Override
         public double getCtrlX1() {
             return ctrlx1;
         }
 
+        @Override
         public double getCtrlY1() {
             return ctrly1;
         }
 
+        @Override
         public double getCtrlX2() {
             return ctrlx2;
         }
 
+        @Override
         public double getCtrlY2() {
             return ctrly2;
         }
 
+        @Override
         public double getX2() {
             return x2;
         }
 
+        @Override
         public double getY2() {
             return y2;
         }
 
+        @Override
         public Point2D getP1() {
             return new Point2D.Float(x1, y1);
         }
 
+        @Override
         public Point2D getCtrlP1() {
             return new Point2D.Float(ctrlx1, ctrly1);
         }
 
+        @Override
         public Point2D getCtrlP2() {
             return new Point2D.Float(ctrlx2, ctrly2);
         }
 
+        @Override
         public Point2D getP2() {
             return new Point2D.Float(x2, y2);
         }
 
+        @Override
         public void setCurve(double x1, double y1, double ctrlx1, double ctrly1,
                 double ctrlx2, double ctrly2, double x2, double y2)
         {
@@ -147,54 +160,67 @@ public abstract class CubicCurve2D implements Shape, Cloneable {
             setCurve(x1, y1, ctrlx1, ctrly1, ctrlx2, ctrly2, x2, y2);
         }
 
+        @Override
         public double getX1() {
             return x1;
         }
 
+        @Override
         public double getY1() {
             return y1;
         }
 
+        @Override
         public double getCtrlX1() {
             return ctrlx1;
         }
 
+        @Override
         public double getCtrlY1() {
             return ctrly1;
         }
 
+        @Override
         public double getCtrlX2() {
             return ctrlx2;
         }
 
+        @Override
         public double getCtrlY2() {
             return ctrly2;
         }
 
+        @Override
         public double getX2() {
             return x2;
         }
 
+        @Override
         public double getY2() {
             return y2;
         }
 
+        @Override
         public Point2D getP1() {
             return new Point2D.Double(x1, y1);
         }
 
+        @Override
         public Point2D getCtrlP1() {
             return new Point2D.Double(ctrlx1, ctrly1);
         }
 
+        @Override
         public Point2D getCtrlP2() {
             return new Point2D.Double(ctrlx2, ctrly2);
         }
 
+        @Override
         public Point2D getP2() {
             return new Point2D.Double(x2, y2);
         }
 
+        @Override
         public void setCurve(double x1, double y1, double ctrlx1, double ctrly1,
                 double ctrlx2, double ctrly2, double x2, double y2)
         {
@@ -545,6 +571,7 @@ public abstract class CubicCurve2D implements Shape, Cloneable {
         return new FlatteningPathIterator(getPathIterator(at), flatness);
     }
 
+    @Override
     public Object clone() {
         try {
             return super.clone();

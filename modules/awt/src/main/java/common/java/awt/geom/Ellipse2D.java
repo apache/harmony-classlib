@@ -37,22 +37,27 @@ public abstract class Ellipse2D extends RectangularShape {
             setFrame(x, y, width, height);
         }
 
+        @Override
         public double getX() {
             return x;
         }
 
+        @Override
         public double getY() {
             return y;
         }
 
+        @Override
         public double getWidth() {
             return width;
         }
 
+        @Override
         public double getHeight() {
             return height;
         }
 
+        @Override
         public boolean isEmpty() {
             return width <= 0.0 || height <= 0.0;
         }
@@ -64,6 +69,7 @@ public abstract class Ellipse2D extends RectangularShape {
             this.height = height;
         }
 
+        @Override
         public void setFrame(double x, double y, double width, double height) {
             this.x = (float)x;
             this.y = (float)y;
@@ -90,26 +96,32 @@ public abstract class Ellipse2D extends RectangularShape {
             setFrame(x, y, width, height);
         }
 
+        @Override
         public double getX() {
             return x;
         }
 
+        @Override
         public double getY() {
             return y;
         }
 
+        @Override
         public double getWidth() {
             return width;
         }
 
+        @Override
         public double getHeight() {
             return height;
         }
 
+        @Override
         public boolean isEmpty() {
             return width <= 0.0 || height <= 0.0;
         }
 
+        @Override
         public void setFrame(double x, double y, double width, double height) {
             this.x = x;
             this.y = y;

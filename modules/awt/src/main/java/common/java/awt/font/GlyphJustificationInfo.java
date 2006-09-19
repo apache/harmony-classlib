@@ -47,60 +47,51 @@ public final class GlyphJustificationInfo {
 
     public final float weight;
 
-    public GlyphJustificationInfo(float weight, boolean growAbsorb, 
-            int growPriority, float growLeftLimit, float growRightLimit, 
-            boolean shrinkAbsorb, int shrinkPriority, float shrinkLeftLimit, 
-            float shrinkRightLimit) {
+    public GlyphJustificationInfo(float weight, boolean growAbsorb, int growPriority,
+            float growLeftLimit, float growRightLimit, boolean shrinkAbsorb,
+            int shrinkPriority, float shrinkLeftLimit, float shrinkRightLimit) {
 
+        if (weight < 0) {
+            throw new IllegalArgumentException("weight must be a " + "positive number");
+        }
+        this.weight = weight;
 
-        if (weight < 0 ){
-            throw new IllegalArgumentException("weight must be a " +
-                    "positive number");
-        } else
-            this.weight = weight;
+        if (growLeftLimit < 0) {
+            throw new IllegalArgumentException("growLeftLimit must be a " + "positive number");
+        }
+        this.growLeftLimit = growLeftLimit;
 
-        if (growLeftLimit < 0 ){
-            throw new IllegalArgumentException("growLeftLimit must be a " +
-                    "positive number");
-        } else
-            this.growLeftLimit = growLeftLimit;
+        if (growRightLimit < 0) {
+            throw new IllegalArgumentException("growRightLimit must be a " + "positive number");
+        }
+        this.growRightLimit = growRightLimit;
 
-        if (growRightLimit < 0 ){
-            throw new IllegalArgumentException("growRightLimit must be a " +
-                    "positive number");
-        } else
-            this.growRightLimit = growRightLimit;
+        if ((shrinkPriority < 0) || (shrinkPriority > PRIORITY_NONE)) {
+            throw new IllegalArgumentException("incorrect value for "
+                    + "shrinkPriority, more than PRIORITY_NONE or less than "
+                    + "PRIORITY_KASHIDA value");
+        }
+        this.shrinkPriority = shrinkPriority;
 
-        if ((shrinkPriority < 0 ) || (shrinkPriority > PRIORITY_NONE)){
-            throw new IllegalArgumentException("incorrect value for " +
-                    "shrinkPriority, more than PRIORITY_NONE or less than " +
-                    "PRIORITY_KASHIDA value");
-        } else
-            this.shrinkPriority = shrinkPriority;
+        if ((growPriority < 0) || (growPriority > PRIORITY_NONE)) {
+            throw new IllegalArgumentException("incorrect value for "
+                    + "growPriority, more than PRIORITY_NONE or less than "
+                    + "PRIORITY_KASHIDA value");
+        }
+        this.growPriority = growPriority;
 
-        if ((growPriority < 0 ) || (growPriority > PRIORITY_NONE)){
-            throw new IllegalArgumentException("incorrect value for " +
-                    "growPriority, more than PRIORITY_NONE or less than " +
-                    "PRIORITY_KASHIDA value");
-        } else
-            this.growPriority = growPriority;
+        if (shrinkLeftLimit < 0) {
+            throw new IllegalArgumentException("shrinkLeftLimit must be a " + "positive number");
+        }
+        this.shrinkLeftLimit = shrinkLeftLimit;
 
-        if (shrinkLeftLimit < 0 ){
-            throw new IllegalArgumentException("shrinkLeftLimit must be a " +
-                    "positive number");
-        } else
-            this.shrinkLeftLimit = shrinkLeftLimit;
-
-        if (shrinkRightLimit  < 0 ){
-            throw new IllegalArgumentException("shrinkRightLimit must be a " +
-                    "positive number");
-        } else
-            this.shrinkRightLimit = shrinkRightLimit;
+        if (shrinkRightLimit < 0) {
+            throw new IllegalArgumentException("shrinkRightLimit must be a "
+                    + "positive number");
+        }
+        this.shrinkRightLimit = shrinkRightLimit;
 
         this.shrinkAbsorb = shrinkAbsorb;
         this.growAbsorb = growAbsorb;
     }
-
-
 }
-

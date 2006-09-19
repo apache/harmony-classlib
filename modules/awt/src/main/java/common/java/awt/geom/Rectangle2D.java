@@ -44,22 +44,27 @@ public abstract class Rectangle2D extends RectangularShape {
             setRect(x, y, width, height);
         }
 
+        @Override
         public double getX() {
             return x;
         }
 
+        @Override
         public double getY() {
             return y;
         }
 
+        @Override
         public double getWidth() {
             return width;
         }
 
+        @Override
         public double getHeight() {
             return height;
         }
 
+        @Override
         public boolean isEmpty() {
             return width <= 0.0f || height <= 0.0f;
         }
@@ -71,6 +76,7 @@ public abstract class Rectangle2D extends RectangularShape {
             this.height = height;
         }
 
+        @Override
         public void setRect(double x, double y, double width, double height) {
             this.x = (float)x;
             this.y = (float)y;
@@ -78,6 +84,7 @@ public abstract class Rectangle2D extends RectangularShape {
             this.height = (float)height;
         }
 
+        @Override
         public void setRect(Rectangle2D r) {
             this.x = (float)r.getX();
             this.y = (float)r.getY();
@@ -85,6 +92,7 @@ public abstract class Rectangle2D extends RectangularShape {
             this.height = (float)r.getHeight();
         }
 
+        @Override
         public int outcode(double px, double py) {
             int code = 0;
 
@@ -111,10 +119,12 @@ public abstract class Rectangle2D extends RectangularShape {
             return code;
         }
 
+        @Override
         public Rectangle2D getBounds2D() {
             return new Float(x, y, width, height);
         }
 
+        @Override
         public Rectangle2D createIntersection(Rectangle2D r) {
             Rectangle2D dst;
             if (r instanceof Double) {
@@ -126,6 +136,7 @@ public abstract class Rectangle2D extends RectangularShape {
             return dst;
         }
 
+        @Override
         public Rectangle2D createUnion(Rectangle2D r) {
             Rectangle2D dst;
             if (r instanceof Double) {
@@ -137,6 +148,7 @@ public abstract class Rectangle2D extends RectangularShape {
             return dst;
         }
 
+        @Override
         public String toString() {
             // The output format based on 1.5 release behaviour. It could be obtained in the following way
             // System.out.println(new Rectangle2D.Float().toString())
@@ -158,26 +170,32 @@ public abstract class Rectangle2D extends RectangularShape {
             setRect(x, y, width, height);
         }
 
+        @Override
         public double getX() {
             return x;
         }
 
+        @Override
         public double getY() {
             return y;
         }
 
+        @Override
         public double getWidth() {
             return width;
         }
 
+        @Override
         public double getHeight() {
             return height;
         }
 
+        @Override
         public boolean isEmpty() {
             return width <= 0.0 || height <= 0.0;
         }
 
+        @Override
         public void setRect(double x, double y, double width, double height) {
             this.x = x;
             this.y = y;
@@ -185,6 +203,7 @@ public abstract class Rectangle2D extends RectangularShape {
             this.height = height;
         }
 
+        @Override
         public void setRect(Rectangle2D r) {
             this.x = r.getX();
             this.y = r.getY();
@@ -192,6 +211,7 @@ public abstract class Rectangle2D extends RectangularShape {
             this.height = r.getHeight();
         }
 
+        @Override
         public int outcode(double px, double py) {
             int code = 0;
 
@@ -218,22 +238,26 @@ public abstract class Rectangle2D extends RectangularShape {
             return code;
         }
 
+        @Override
         public Rectangle2D getBounds2D() {
             return new Double(x, y, width, height);
         }
 
+        @Override
         public Rectangle2D createIntersection(Rectangle2D r) {
             Rectangle2D dst = new Rectangle2D.Double();
             Rectangle2D.intersect(this, r, dst);
             return dst;
         }
 
+        @Override
         public Rectangle2D createUnion(Rectangle2D r) {
             Rectangle2D dest = new Rectangle2D.Double();
             Rectangle2D.union(this, r, dest);
             return dest;
         }
 
+        @Override
         public String toString() {
             // The output format based on 1.5 release behaviour. It could be obtained in the following way
             // System.out.println(new Rectangle2D.Double().toString())
@@ -400,6 +424,7 @@ public abstract class Rectangle2D extends RectangularShape {
         setRect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
     }
 
+    @Override
     public void setFrame(double x, double y, double width, double height) {
         setRect(x, y, width, height);
     }
@@ -509,10 +534,12 @@ public abstract class Rectangle2D extends RectangularShape {
         return new Iterator(this, t);
     }
 
+    @Override
     public PathIterator getPathIterator(AffineTransform t, double flatness) {
         return new Iterator(this, t);
     }
 
+    @Override
     public int hashCode() {
         HashCode hash = new HashCode();
         hash.append(getX());
@@ -522,6 +549,7 @@ public abstract class Rectangle2D extends RectangularShape {
         return hash.hashCode();
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

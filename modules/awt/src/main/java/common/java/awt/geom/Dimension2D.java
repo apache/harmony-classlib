@@ -34,6 +34,7 @@ public abstract class Dimension2D implements Cloneable {
         setSize(d.getWidth(), d.getHeight());
     }
 
+    @Override
     public Object clone() {
         try {
             return super.clone();

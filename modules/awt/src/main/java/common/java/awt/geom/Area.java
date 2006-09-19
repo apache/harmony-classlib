@@ -127,9 +127,8 @@ public class Area implements Shape, Cloneable {
             points[1] == points[3] && points[3] == points[9] && points[5] == points[7])
         {
             return new Rectangle2D.Float(points[0], points[1], points[2] - points[0], points[7] - points[1]);
-        } else {
-            return null;
         }
+        return null;
     }
     
     public void intersect(Area area) {
@@ -172,6 +171,7 @@ public class Area implements Shape, Cloneable {
         return new Area(t.createTransformedShape(s));
     }
 
+    @Override
     public Object clone() {
         return new Area(this);
     }

@@ -43,42 +43,52 @@ public abstract class QuadCurve2D implements Shape, Cloneable {
             setCurve(x1, y1, ctrlx, ctrly, x2, y2);
         }
 
+        @Override
         public double getX1() {
             return x1;
         }
 
+        @Override
         public double getY1() {
             return y1;
         }
 
+        @Override
         public double getCtrlX() {
             return ctrlx;
         }
 
+        @Override
         public double getCtrlY() {
             return ctrly;
         }
 
+        @Override
         public double getX2() {
             return x2;
         }
 
+        @Override
         public double getY2() {
             return y2;
         }
 
+        @Override
         public Point2D getP1() {
             return new Point2D.Float(x1, y1);
         }
 
+        @Override
         public Point2D getCtrlPt() {
             return new Point2D.Float(ctrlx, ctrly);
         }
 
+        @Override
         public Point2D getP2() {
             return new Point2D.Float(x2, y2);
         }
 
+        @Override
         public void setCurve(double x1, double y1, double ctrlx, double ctrly, double x2, double y2) {
             this.x1 = (float)x1;
             this.y1 = (float)y1;
@@ -122,42 +132,52 @@ public abstract class QuadCurve2D implements Shape, Cloneable {
             setCurve(x1, y1, ctrlx, ctrly, x2, y2);
         }
 
+        @Override
         public double getX1() {
             return x1;
         }
 
+        @Override
         public double getY1() {
             return y1;
         }
 
+        @Override
         public double getCtrlX() {
             return ctrlx;
         }
 
+        @Override
         public double getCtrlY() {
             return ctrly;
         }
 
+        @Override
         public double getX2() {
             return x2;
         }
 
+        @Override
         public double getY2() {
             return y2;
         }
 
+        @Override
         public Point2D getP1() {
             return new Point2D.Double(x1, y1);
         }
 
+        @Override
         public Point2D getCtrlPt() {
             return new Point2D.Double(ctrlx, ctrly);
         }
 
+        @Override
         public Point2D getP2() {
             return new Point2D.Double(x2, y2);
         }
 
+        @Override
         public void setCurve(double x1, double y1, double ctrlx, double ctrly, double x2, double y2) {
             this.x1 = x1;
             this.y1 = y1;
@@ -457,6 +477,7 @@ public abstract class QuadCurve2D implements Shape, Cloneable {
         return new FlatteningPathIterator(getPathIterator(t), flatness);
     }
 
+    @Override
     public Object clone() {
         try {
             return super.clone();

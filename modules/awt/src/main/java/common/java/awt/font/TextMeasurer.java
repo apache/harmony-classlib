@@ -63,6 +63,7 @@ public final class TextMeasurer implements Cloneable {
         }
     }
 
+    @Override
     protected Object clone() {
         return new TextMeasurer((AttributedCharacterIterator) aci.clone(), frc);
     }
