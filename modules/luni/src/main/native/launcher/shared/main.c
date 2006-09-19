@@ -625,7 +625,7 @@ invocation (HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
     {
       if (isStandaloneJar)
         {
-          jclass jarRunner;
+          //jclass jarRunner;
           jclass clazz;
           jmethodID mID;
           jstring jStrObject;
