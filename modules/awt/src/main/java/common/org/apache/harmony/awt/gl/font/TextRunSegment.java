@@ -159,5 +159,6 @@ public abstract class TextRunSegment implements Cloneable {
      */    
     abstract float doJustification(TextRunBreaker.JustificationInfo jInfos[]);
 
+    @Override
     public abstract Object clone();
 }

@@ -20,6 +20,8 @@
 package org.apache.harmony.awt.gl.color;
 
 import java.awt.color.ICC_Profile;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashMap;
 
 /**
@@ -31,9 +33,9 @@ public class NativeCMM {
      * Storage for profile handles, since they are private
      * in ICC_Profile, but we need access to them.
      */
-    private static HashMap profileHandles = new HashMap();
+    private static HashMap<ICC_Profile, Long> profileHandles = new HashMap<ICC_Profile, Long>();
 
-    private static boolean isCMMLoaded = false;
+    private static boolean isCMMLoaded;
 
     public static void addHandle(ICC_Profile key, long handle) {
         profileHandles.put(key, new Long(handle));
@@ -44,7 +46,7 @@ public class NativeCMM {
     }
 
     public static long getHandle(ICC_Profile key) {
-        return ((Long) profileHandles.get(key)).longValue();
+        return profileHandles.get(key).longValue();
     }
 
     /* ICC profile management */
@@ -71,9 +73,9 @@ public class NativeCMM {
 
     static void loadCMM() {
         if (!isCMMLoaded) {
-            java.security.AccessController.doPrivileged(
-                  new java.security.PrivilegedAction() {
-                    public Object run() {
+            AccessController.doPrivileged(
+                  new PrivilegedAction<Void>() {
+                    public Void run() {
                         System.loadLibrary("lcmm");
                         return null;
                     }

@@ -93,6 +93,7 @@ public class CommonGlyphVector extends GlyphVector {
      * @param fnt Font object
      * @param flags layout flags
      */
+    @SuppressWarnings("deprecation")
     public CommonGlyphVector(char[] chars, FontRenderContext frc, Font fnt,
             int flags) {
         int len = chars.length;
@@ -210,6 +211,7 @@ public class CommonGlyphVector extends GlyphVector {
      * @param y specified y coordinate value
      * @return a Rectangle that bounds pixels of this GlyphVector
      */
+    @Override
     public Rectangle getPixelBounds(FontRenderContext frc, float x, float y) {
 
         double xM, yM, xm, ym;
@@ -256,6 +258,7 @@ public class CommonGlyphVector extends GlyphVector {
      * this GlyphVector.
      * @return a Rectangle2D that id the visual bounds of this GlyphVector
      */
+    @Override
     public Rectangle2D getVisualBounds() {
         float xM, yM, xm, ym;
         float minX = 0;
@@ -306,6 +309,7 @@ public class CommonGlyphVector extends GlyphVector {
     /**
      * Sets new position to the specified glyph.
      */
+    @Override
     public void setGlyphPosition(int glyphIndex, Point2D newPos) {
         if ((glyphIndex > vector.length) || (glyphIndex < 0)) {
             throw new IndexOutOfBoundsException(
@@ -328,6 +332,7 @@ public class CommonGlyphVector extends GlyphVector {
      * this GlyphVector
      * @return a Point2D that the origin of the glyph with specified index
      */
+    @Override
     public Point2D getGlyphPosition(int glyphIndex) {
         if ((glyphIndex > vector.length) || (glyphIndex < 0)) {
             throw new IndexOutOfBoundsException(
@@ -357,6 +362,7 @@ public class CommonGlyphVector extends GlyphVector {
      * @param glyphIndex specified index of the glyph
      * @param trans AffineTransform of the glyph with specified index
      */
+    @Override
     public void setGlyphTransform(int glyphIndex, AffineTransform trans) {
         if ((glyphIndex >= vector.length) || (glyphIndex < 0)) {
             throw new IndexOutOfBoundsException(
@@ -377,6 +383,7 @@ public class CommonGlyphVector extends GlyphVector {
      * @param glyphIndex specified index of the glyph
      * @return an AffineTransform of the glyph with specified index
      */
+    @Override
     public AffineTransform getGlyphTransform(int glyphIndex) {
         if ((glyphIndex >= this.vector.length) || (glyphIndex < 0)) {
             throw new IndexOutOfBoundsException(
@@ -390,6 +397,7 @@ public class CommonGlyphVector extends GlyphVector {
      * 
      * @param glyphIndex specified index of the glyph
      */
+    @Override
     public GlyphMetrics getGlyphMetrics(int glyphIndex) {
 
         if ((glyphIndex < 0) || ((glyphIndex) >= this.getNumGlyphs())) {
@@ -409,15 +417,19 @@ public class CommonGlyphVector extends GlyphVector {
      * @return a GlyphJustificationInfo object that contains glyph justification 
      * properties of the specified glyph
      */
+    @Override
     public GlyphJustificationInfo getGlyphJustificationInfo(int glyphIndex) {
         // TODO : Find out the source of Justification info
-        if (true) throw new RuntimeException("Method is not implemented");
+        if (true) {
+            throw new RuntimeException("Method is not implemented");
+        }
         return null;
     }
 
     /**
      * Returns the FontRenderContext parameter of this GlyphVector.
      */
+    @Override
     public FontRenderContext getFontRenderContext() {
         return this.vectorFRC;
     }
@@ -427,6 +439,7 @@ public class CommonGlyphVector extends GlyphVector {
      * 
      * @param glyphIndex specified index of the glyph
      */
+    @Override
     public Shape getGlyphVisualBounds(int glyphIndex) {
         if ((glyphIndex < 0) || (glyphIndex >= this.getNumGlyphs())) {
             throw new IndexOutOfBoundsException(
@@ -467,6 +480,7 @@ public class CommonGlyphVector extends GlyphVector {
      * @param y specified y coordinate value
      * @return a Rectangle that bounds pixels of the specified glyph
      */
+    @Override
     public Rectangle getGlyphPixelBounds(int glyphIndex, FontRenderContext frc,
             float x, float y) {
         // TODO : need to be implemented with FontRenderContext
@@ -504,6 +518,7 @@ public class CommonGlyphVector extends GlyphVector {
      * 
      * @param glyphIndex specified index of the glyph
      */
+    @Override
     public Shape getGlyphOutline(int glyphIndex) {
         if ((glyphIndex < 0) || (glyphIndex >= this.getNumGlyphs())) {
             throw new IndexOutOfBoundsException(
@@ -542,6 +557,7 @@ public class CommonGlyphVector extends GlyphVector {
      * @return a Shape object that is the outline of this GlyphVector
      * at the specified coordinates.
      */
+    @Override
     public Shape getOutline(float x, float y) {
         GeneralPath gp = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
         for (int i = 0; i < this.vector.length; i++) {
@@ -560,6 +576,7 @@ public class CommonGlyphVector extends GlyphVector {
      * 
      * @return a Shape object that is the outline of this GlyphVector
      */
+    @Override
     public Shape getOutline() {
         return this.getOutline(0, 0);
     }
@@ -572,6 +589,7 @@ public class CommonGlyphVector extends GlyphVector {
      * @param codeReturn the array that receives glyph codes' values
      * @return an array that receives glyph codes' values
      */
+    @Override
     public int[] getGlyphCodes(int beginGlyphIndex, int numEntries,
             int[] codeReturn) {
 
@@ -604,6 +622,7 @@ public class CommonGlyphVector extends GlyphVector {
      * @param codeReturn the array that receives glyph codes' values
      * @return an array that receives glyph char indices
      */
+    @Override
     public int[] getGlyphCharIndices(int beginGlyphIndex, int numEntries,
             int[] codeReturn) {
         if ((beginGlyphIndex < 0) || (beginGlyphIndex >= this.getNumGlyphs())) {
@@ -636,6 +655,7 @@ public class CommonGlyphVector extends GlyphVector {
      * @param positionReturn the array that receives glyphs' positions
      * @return an array of floats that receives glyph char indices
      */
+    @Override
     public float[] getGlyphPositions(int beginGlyphIndex, int numEntries,
             float[] positionReturn) {
 
@@ -716,6 +736,7 @@ public class CommonGlyphVector extends GlyphVector {
      * 
      * @param glyphIndex specified index of the glyph
      */
+    @Override
     public int getGlyphCode(int glyphIndex) {
         if (glyphIndex >= this.vector.length || glyphIndex < 0) {
             throw new IndexOutOfBoundsException(
@@ -729,6 +750,7 @@ public class CommonGlyphVector extends GlyphVector {
      * 
      * @param glyphIndex specified index of the glyph
      */
+    @Override
     public int getGlyphCharIndex(int glyphIndex) {
 
         if ((glyphIndex < 0) || (glyphIndex >= this.getNumGlyphs())) {
@@ -760,6 +782,7 @@ public class CommonGlyphVector extends GlyphVector {
     /**
      * Assigns default positions to each glyph in this GlyphVector.
      */
+    @Override
     public void performDefaultLayout() {
 
         System.arraycopy(logicalPositions, 0, visualPositions, 0, logicalPositions.length);
@@ -771,6 +794,7 @@ public class CommonGlyphVector extends GlyphVector {
     /**
      * Returns the number of glyphs in this Glyph Vector
      */
+    @Override
     public int getNumGlyphs() {
         return vector.length;
     }
@@ -778,6 +802,7 @@ public class CommonGlyphVector extends GlyphVector {
     /**
      * Returns the logical bounds of this GlyphVector
      */
+    @Override
     public Rectangle2D getLogicalBounds(){
         // XXX: for transforms where an angle between basis vectors is not 90 degrees
         // Rectanlge2D class doesn't fit as Logical bounds. For this reason we use
@@ -797,6 +822,7 @@ public class CommonGlyphVector extends GlyphVector {
      * Checks whether given GlyphVector equals to this GlyphVector.
      * @param glyphVector GlyphVector object to compare
      */
+    @Override
     public boolean equals(GlyphVector glyphVector){
         if (glyphVector == this){
             return true;
@@ -844,6 +870,7 @@ public class CommonGlyphVector extends GlyphVector {
     /**
      * Returns flags describing the state of the GlyphVector.
      */
+    @Override
     public int getLayoutFlags() {
         return layoutFlags;
     }
@@ -875,6 +902,7 @@ public class CommonGlyphVector extends GlyphVector {
      * @param glyphIndex index of the glyph to get it's logical bounds
      * @return logical bounds of the specified glyph
      */
+    @Override
     public Shape getGlyphLogicalBounds(int glyphIndex){
         if ((glyphIndex < 0) || (glyphIndex >= this.getNumGlyphs())){
             throw new IndexOutOfBoundsException("glyphIndex is out of vector's range");
@@ -911,6 +939,7 @@ public class CommonGlyphVector extends GlyphVector {
     /**
      * Returns the Font parameter of this GlyphVector
      */
+    @Override
     public Font getFont(){
         return this.font;
     }

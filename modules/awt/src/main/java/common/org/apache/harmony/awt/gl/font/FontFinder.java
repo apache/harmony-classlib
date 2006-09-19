@@ -22,9 +22,10 @@
 
 package org.apache.harmony.awt.gl.font;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.awt.*;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class chooses the default font for the given text.
@@ -48,7 +49,7 @@ public class FontFinder {
     private static final int BLOCK_SHIFT = 8;
 
     // Maps characters into the fonts array
-    private static int blocks[][] = new int[NUM_BLOCKS][];
+    private static final int blocks[][] = new int[NUM_BLOCKS][];
 
     /**
      * Finds the font which is able to display the given character
@@ -100,20 +101,19 @@ public class FontFinder {
      * @param runStarts - starts of the resulting font runs
      * @param fonts - mapping of the font run starts to the fonts
      */
-    static void findFonts(
-            char text[], int runStart, int runLimit,
-            ArrayList runStarts, HashMap fonts
-    ) {
+    static void findFonts(char text[], int runStart, int runLimit, List<Integer> runStarts,
+            Map<Integer, Font> fonts) {
         Font prevFont = null;
         Font currFont;
-        for (int i = runStart; i<runLimit; i++) {
+        for (int i = runStart; i < runLimit; i++) {
             currFont = findFontForChar(text[i]);
             if (currFont != prevFont) {
                 prevFont = currFont;
                 Integer idx = new Integer(i);
                 fonts.put(idx, currFont);
-                if (i != runStart)
+                if (i != runStart) {
                     runStarts.add(idx);
+                }
             }
         }
     }

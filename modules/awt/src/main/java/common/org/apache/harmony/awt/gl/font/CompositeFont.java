@@ -140,6 +140,7 @@ public class CompositeFont extends FontPeerImpl{
      *   
      * @param chr specified character
      */
+    @Override
     public boolean canDisplay(char chr){
         return (getCharFontIndex(chr) != -1);
     }
@@ -147,6 +148,7 @@ public class CompositeFont extends FontPeerImpl{
     /**
      * Returns logical ascent (in pixels)
      */
+    @Override
     public int getAscent(){
         return nlm.getLogicalAscent();
     }
@@ -158,7 +160,8 @@ public class CompositeFont extends FontPeerImpl{
      * @param frc specified FontRenderContext 
      * @param at specified AffineTransform
      */
-     public LineMetrics getLineMetrics(String str, FontRenderContext frc , AffineTransform at){
+     @Override
+    public LineMetrics getLineMetrics(String str, FontRenderContext frc , AffineTransform at){
         LineMetricsImpl lm = (LineMetricsImpl)(this.nlm.clone());
         lm.setNumChars(str.length());
 
@@ -173,6 +176,7 @@ public class CompositeFont extends FontPeerImpl{
      * Returns cached LineMetrics instance for the null string or creates it if
      * it wasn't cached yet.
      */
+    @Override
     public LineMetrics getLineMetrics(){
         if (nlm == null){
             setDefaultLineMetrics("", null);
@@ -277,6 +281,7 @@ public class CompositeFont extends FontPeerImpl{
     /**
      * Returns the number of glyphs in this CompositeFont object.
      */
+    @Override
     public int getNumGlyphs(){
         if (this.cachedNumGlyphs == -1){
 
@@ -293,6 +298,7 @@ public class CompositeFont extends FontPeerImpl{
     /**
      * Returns the italic angle of this object.
      */
+    @Override
     public float getItalicAngle(){
         // !! only first physical font used to get this value
         return fPhysicalFonts[0].getItalicAngle();
@@ -307,8 +313,6 @@ public class CompositeFont extends FontPeerImpl{
      * @param frc specified FontRenderContext
      */
     public Rectangle2D getStringBounds(char[] chars, int start, int end, FontRenderContext frc){
-
-        int finish = chars.length;
 
         LineMetrics lm = getLineMetrics();
         float minY = -lm.getAscent();
@@ -331,6 +335,7 @@ public class CompositeFont extends FontPeerImpl{
      *  
      * @param frc specified FontRenderContext
      */
+    @Override
     public Rectangle2D getMaxCharBounds(FontRenderContext frc){
 
         Rectangle2D rect2D = fPhysicalFonts[0].getMaxCharBounds(frc);
@@ -368,6 +373,7 @@ public class CompositeFont extends FontPeerImpl{
     /**
      * Returns font name.
      */
+    @Override
     public String getFontName(){
         return face;
     }
@@ -375,6 +381,7 @@ public class CompositeFont extends FontPeerImpl{
     /**
      * Returns font postscript name.
      */
+    @Override
     public String getPSName(){
         return psName;
     }
@@ -382,6 +389,7 @@ public class CompositeFont extends FontPeerImpl{
     /**
      * Returns font family name.
      */
+    @Override
     public String getFamily(){
         return family;
     }
@@ -389,6 +397,7 @@ public class CompositeFont extends FontPeerImpl{
     /**
      * Returns the code of the missing glyph.
      */
+    @Override
     public int getMissingGlyphCode(){
         // !! only first physical font used to get this value
         return fPhysicalFonts[0].getMissingGlyphCode();
@@ -399,6 +408,7 @@ public class CompositeFont extends FontPeerImpl{
      * 
      * @param ch specified char
      */
+    @Override
     public Glyph getGlyph(char ch){
         for (int i = 0; i < numFonts; i++){
             if (fontProperties[i].isCharExcluded(ch)){
@@ -418,6 +428,7 @@ public class CompositeFont extends FontPeerImpl{
      * 
      * @param ind specified index of the character 
      */
+    @Override
     public int charWidth(int ind){
         return charWidth((char)ind);
     }
@@ -427,6 +438,7 @@ public class CompositeFont extends FontPeerImpl{
      * 
      * @param c specified character 
      */
+    @Override
     public int charWidth(char c){
         Glyph gl = this.getGlyph(c);
         return (int)gl.getGlyphPointMetrics().getAdvanceX();
@@ -435,6 +447,7 @@ public class CompositeFont extends FontPeerImpl{
     /**
      * Returns debug information about this class.
      */
+    @Override
     public String toString(){
     return new String(this.getClass().getName() +
             "[name=" + this.name +
@@ -445,6 +458,7 @@ public class CompositeFont extends FontPeerImpl{
     /**
      * Returns Glyph object corresponding to the default glyph.
      */
+    @Override
     public Glyph getDefaultGlyph(){
         // !! only first physical font used to get this value
         return fPhysicalFonts[0].getDefaultGlyph();
@@ -454,6 +468,7 @@ public class CompositeFont extends FontPeerImpl{
      * Returns FontExtraMetrics object with extra metrics
      * related to this CompositeFont.
      */
+    @Override
     public FontExtraMetrics getExtraMetrics(){
         // Returns FontExtraMetrics instanse of the first physical 
         // Font from the array of fonts.
@@ -463,6 +478,7 @@ public class CompositeFont extends FontPeerImpl{
     /**
      * Disposes CompositeFont object's resources.
      */
+    @Override
     public void dispose() {
         // Nothing to dispose
     }

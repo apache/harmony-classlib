@@ -103,6 +103,7 @@ public class FontMetricsImpl extends FontMetrics  {
     /**
      * Returns the ascent of the Font describing this FontMetricsImpl object.
      */
+    @Override
     public int getAscent() {
         return this.ascent;
     }
@@ -110,6 +111,7 @@ public class FontMetricsImpl extends FontMetrics  {
     /**
      * Returns the descent of the Font describing this FontMetricsImpl object.
      */
+    @Override
     public int getDescent() {
         return this.descent;
     }
@@ -117,6 +119,7 @@ public class FontMetricsImpl extends FontMetrics  {
     /**
      * Returns the leading of the Font describing this FontMetricsImpl object.
      */
+    @Override
     public int getLeading() {
         return this.leading;
     }
@@ -129,6 +132,7 @@ public class FontMetricsImpl extends FontMetrics  {
      * @return the advance width of the specified char of the Font 
      * describing this FontMetricsImpl object
      */
+    @Override
     public int charWidth(int ch) {
         if (ch < 256){
             return widths[ch];
@@ -145,6 +149,7 @@ public class FontMetricsImpl extends FontMetrics  {
      * @return the advance width of the specified char of the Font 
      * describing this FontMetricsImpl object
      */
+    @Override
     public int charWidth(char ch) {
         if (ch < 256){
             return widths[ch];
@@ -157,6 +162,7 @@ public class FontMetricsImpl extends FontMetrics  {
      * Returns the maximum advance of the Font describing this 
      * FontMetricsImpl object.
      */
+    @Override
     public int getMaxAdvance() {
         return this.maxAdvance;
     }
@@ -165,6 +171,7 @@ public class FontMetricsImpl extends FontMetrics  {
      * Returns the maximum ascent of the Font describing this 
      * FontMetricsImpl object.
      */
+    @Override
     public int getMaxAscent() {
         return this.maxAscent;
     }
@@ -173,6 +180,7 @@ public class FontMetricsImpl extends FontMetrics  {
      * Returns the maximum descent of the Font describing this 
      * FontMetricsImpl object.
      */
+    @Override
     public int getMaxDecent() {
         return this.maxDescent;
     }
@@ -181,6 +189,7 @@ public class FontMetricsImpl extends FontMetrics  {
      * Returns the maximum descent of the Font describing this 
      * FontMetricsImpl object.
      */
+    @Override
     public int getMaxDescent() {
         return this.maxDescent;
     }
@@ -189,6 +198,7 @@ public class FontMetricsImpl extends FontMetrics  {
      * Returns the advance widths of the first 256 characters in the Font 
      * describing this FontMetricsImpl object.
      */
+    @Override
     public int[] getWidths() {
         return this.widths;
     }
@@ -201,6 +211,7 @@ public class FontMetricsImpl extends FontMetrics  {
      * @return the total advance width of the specified string in the metrics 
      * of the Font describing this FontMetricsImpl object
      */
+    @Override
     public int stringWidth(String str) {
         int width = 0;
         char chr;
@@ -222,6 +233,7 @@ public class FontMetricsImpl extends FontMetrics  {
      * @return a FontPeer object, that is the platform dependent FontPeer 
      * implementation for the Font describing this FontMetricsImpl object.
      */
+    @SuppressWarnings("deprecation")
     public FontPeerImpl getFontPeer(){
         if (peer == null){
             peer = (FontPeerImpl)font.getPeer();

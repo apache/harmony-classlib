@@ -24,7 +24,6 @@ import java.awt.peer.FontPeer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.util.Enumeration;
@@ -129,14 +128,14 @@ public abstract class FontManager {
      * Logical font styles names table where font styles names used 
      * as the key and the value is the index of this style name.
      */
-    private static Hashtable style_keys = new Hashtable(4);
+    private static final Hashtable<String, Integer> style_keys = new Hashtable<String, Integer>(4);
 
     /**
      * Initialize font styles keys table.
      */
     static {
         for (int i = 0; i < STYLE_NAMES.length; i++){
-            style_keys.put(STYLE_NAMES[i], new Integer(i));
+            style_keys.put(STYLE_NAMES[i], Integer.valueOf(i));
         }
     }
 
@@ -146,7 +145,7 @@ public abstract class FontManager {
      * @param lName style name of the logical face
      */
     public static int getLogicalStyle(String lName){
-        Integer value = (Integer) style_keys.get(lName);
+        Integer value = style_keys.get(lName);
         return value != null ? value.intValue(): -1;
     }
 
@@ -220,7 +219,7 @@ public abstract class FontManager {
      * Hash table that contains FontPeers instances.
      */
 
-    public Hashtable fontsTable = new Hashtable();
+    public Hashtable<String, HashMapReference> fontsTable = new Hashtable<String, HashMapReference>();
     
     /**
      * ReferenceQueue for HashMapReference objects to check
@@ -279,7 +278,7 @@ public abstract class FontManager {
                     concat(String.valueOf(size));
         }
         
-        Reference hmr   = (Reference)fontsTable.get(key);
+        HashMapReference hmr   = fontsTable.get(key);
         if (hmr != null) {
             peer = (FontPeer)hmr.get();
         }
@@ -296,7 +295,7 @@ public abstract class FontManager {
     }
     
     /**
-     * Returns instanse of font peer (logical or physical) according to the 
+     * Returns instance of font peer (logical or physical) according to the 
      * specified parameters.
      * 
      * @param name font face name
@@ -353,7 +352,7 @@ public abstract class FontManager {
                 String key = name.concat(String.valueOf(fpStyle)).
                     concat(String.valueOf(size));
                 
-                Reference hmr   = (Reference)fontsTable.get(key);
+                HashMapReference hmr   = fontsTable.get(key);
                 if (hmr != null) {
                     physicalFonts[i] = (FontPeerImpl)hmr.get();
                 }
@@ -403,7 +402,7 @@ public abstract class FontManager {
         String key = DEFAULT_NAME.concat(String.valueOf(style)).
                     concat(String.valueOf(size));
         
-        Reference hmr   = (Reference)fontsTable.get(key);
+        HashMapReference hmr   = fontsTable.get(key);
         if (hmr != null) {
             peer = (FontPeer)hmr.get();
         }
@@ -514,14 +513,15 @@ public abstract class FontManager {
      */
     private class DisposeNativeHook extends Thread {
 
+        @Override
         public void run() {
             try{
                 /* Disposing native font peer's resources */
-                Enumeration kEnum = fontsTable.keys();
+                Enumeration<String> kEnum = fontsTable.keys();
 
                 while(kEnum.hasMoreElements()){
                     Object key = kEnum.nextElement();
-                    HashMapReference hmr = (HashMapReference)fontsTable.remove(key);
+                    HashMapReference hmr = fontsTable.remove(key);
                     FontPeerImpl delPeer = (FontPeerImpl)hmr.get();
                     
                     if ((delPeer != null) && (delPeer.getClass() != CompositeFont.class)){

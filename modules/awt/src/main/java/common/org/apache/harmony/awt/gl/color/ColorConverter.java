@@ -149,7 +149,7 @@ public class ColorConverter {
         int nDstChannels = t.getNumOutputChannels();
         int bufferSize = buffer[0].length;
         if (bufferSize < nDstChannels + 1) { // Re-allocate buffer if needed
-            for (int i=0, dstDataPos = 0; i<nPixels; i++) {
+            for (int i=0; i<nPixels; i++) {
                 // One extra element reserved for alpha
                 buffer[i] = new float[nDstChannels + 1];
             }

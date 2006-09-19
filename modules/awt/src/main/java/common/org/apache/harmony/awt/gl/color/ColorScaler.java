@@ -194,8 +194,7 @@ public class ColorScaler {
                 for (int col=r.getMinY(); col<height; col++) {
                     for (int chan = 0; chan < nColorChannels; chan++) {
                         sample = r.getSample(row, col, chan);
-                        result[pos][chan] =
-                            (float) (sample * normMultipliers[chan]);
+                        result[pos][chan] = (sample * normMultipliers[chan]);
                     }
                     pos++;
                 }
@@ -348,7 +347,7 @@ public class ColorScaler {
      */
     public void unscale(float[] pixelData, short[] chanData, int chanDataOffset) {
         for (int chan = 0; chan < nColorChannels; chan++) {
-            pixelData[chan] = ((float) (chanData[chanDataOffset + chan] & 0xFFFF))
+            pixelData[chan] = (chanData[chanDataOffset + chan] & 0xFFFF)
                 * invChannelMulipliers[chan] + channelMinValues[chan];
         }
     }

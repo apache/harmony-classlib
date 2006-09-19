@@ -37,7 +37,7 @@ import java.util.Map;
  * underline, strikethrough, text with background, etc.
  */
 public class TextDecorator {
-    private static TextDecorator inst = new TextDecorator();
+    private static final TextDecorator inst = new TextDecorator();
     private TextDecorator() {}
     static TextDecorator getInstance() {
         return inst;
@@ -156,8 +156,9 @@ public class TextDecorator {
      * @return Decoration object
      */
     static Decoration getDecoration(Map attributes) {
-        if (attributes == null)
+        if (attributes == null) {
             return null; // It is for plain text
+        }
 
         Object underline = attributes.get(TextAttribute.UNDERLINE);
         boolean hasStandardUnderline = underline == TextAttribute.UNDERLINE_ON;
@@ -188,22 +189,18 @@ public class TextDecorator {
         ) {
             return null;
         }
-        else {
-            return new Decoration(
-                    imUl, swapBgFg, strikeThrough,
-                    bg, fg, hasStandardUnderline
-            );
-        }
+        return new Decoration(imUl, swapBgFg, strikeThrough, bg, fg, hasStandardUnderline);
     }
 
     /**
      * Fills the background before drawing if needed.
+     * 
      * @param trs - text segment
      * @param g2d - graphics to draw to
-     * @param xOffset - offset in X direction to the upper left corner
-     * of the layout from the origin of the graphics
-     * @param yOffset - offset in Y direction to the upper left corner
-     * of the layout from the origin of the graphics
+     * @param xOffset - offset in X direction to the upper left corner of the
+     *        layout from the origin of the graphics
+     * @param yOffset - offset in Y direction to the upper left corner of the
+     *        layout from the origin of the graphics
      */
     static void prepareGraphics(
             TextRunSegment trs, Graphics2D g2d,
@@ -217,8 +214,9 @@ public class TextDecorator {
 
         d.graphicsPaint = g2d.getPaint();
 
-        if (d.fg == null)
+        if (d.fg == null) {
             d.fg = d.graphicsPaint;
+        }
 
         if (d.swapBfFg) {
             // Fill background area
@@ -282,8 +280,9 @@ public class TextDecorator {
     ) {
         Decoration d = trs.decoration;
 
-        if (!d.ulOn && d.imUlStroke == null && !d.strikeThrough)
+        if (!d.ulOn && d.imUlStroke == null && !d.strikeThrough) {
             return; // Nothing to do
+        }
 
         float left = xOffset + (float) trs.getLogicalBounds().getMinX();
         float right = xOffset + (float) trs.getLogicalBounds().getMaxX();
@@ -331,48 +330,48 @@ public class TextDecorator {
             Rectangle2D segmentBounds,
             Decoration d
     ) {
-        if (d == null)
+        if (d == null) {
             return segmentBounds;
-        else {
-            double minx = segmentBounds.getMinX();
-            double miny = segmentBounds.getMinY();
-            double maxx = segmentBounds.getMaxX();
-            double maxy = segmentBounds.getMaxY();
-
-            Rectangle2D lb = trs.getLogicalBounds();
-
-            if (d.swapBfFg || d.bg != null) {
-                minx = Math.min(lb.getMinX() - trs.x, minx);
-                miny = Math.min(lb.getMinY() - trs.y, miny);
-                maxx = Math.max(lb.getMaxX() - trs.x, maxx);
-                maxy = Math.max(lb.getMaxY() - trs.y, maxy);
-            }
-
-            if (d.ulOn || d.imUlStroke != null || d.strikeThrough) {
-                minx = Math.min(lb.getMinX() - trs.x, minx);
-                maxx = Math.max(lb.getMaxX() - trs.x, maxx);
-
-                d.getStrokes(trs.metrics);
-
-                if (d.ulStroke != null)
-                    maxy = Math.max(
-                            maxy,
-                            trs.metrics.underlineOffset +
-                            d.ulStroke.getLineWidth()
-                    );
-
-                if (d.imUlStroke != null) {
-                    maxy = Math.max(
-                            maxy,
-                            trs.metrics.underlineOffset +
-                            d.imUlStroke.getLineWidth() +
-                            (d.imUlStroke2 == null ? 0 : d.imUlStroke2.getLineWidth())
-                    );
-                }
-            }
-
-            return new Rectangle2D.Double(minx, miny, maxx-minx, maxy-miny);
         }
+        double minx = segmentBounds.getMinX();
+        double miny = segmentBounds.getMinY();
+        double maxx = segmentBounds.getMaxX();
+        double maxy = segmentBounds.getMaxY();
+
+        Rectangle2D lb = trs.getLogicalBounds();
+
+        if (d.swapBfFg || d.bg != null) {
+            minx = Math.min(lb.getMinX() - trs.x, minx);
+            miny = Math.min(lb.getMinY() - trs.y, miny);
+            maxx = Math.max(lb.getMaxX() - trs.x, maxx);
+            maxy = Math.max(lb.getMaxY() - trs.y, maxy);
+        }
+
+        if (d.ulOn || d.imUlStroke != null || d.strikeThrough) {
+            minx = Math.min(lb.getMinX() - trs.x, minx);
+            maxx = Math.max(lb.getMaxX() - trs.x, maxx);
+
+            d.getStrokes(trs.metrics);
+
+            if (d.ulStroke != null) {
+                maxy = Math.max(
+                        maxy,
+                        trs.metrics.underlineOffset +
+                        d.ulStroke.getLineWidth()
+                );
+            }
+
+            if (d.imUlStroke != null) {
+                maxy = Math.max(
+                        maxy,
+                        trs.metrics.underlineOffset +
+                        d.imUlStroke.getLineWidth() +
+                        (d.imUlStroke2 == null ? 0 : d.imUlStroke2.getLineWidth())
+                );
+            }
+        }
+
+        return new Rectangle2D.Double(minx, miny, maxx-minx, maxy-miny);
     }
 
     /**
@@ -388,8 +387,9 @@ public class TextDecorator {
             Shape segmentOutline,
             Decoration d
     ) {
-        if (d == null || !d.ulOn && d.imUlStroke == null && !d.strikeThrough)
+        if (d == null || !d.ulOn && d.imUlStroke == null && !d.strikeThrough) {
             return segmentOutline; // Nothing to do
+        }
 
         Area res = new Area(segmentOutline);
 

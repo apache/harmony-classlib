@@ -48,8 +48,9 @@ public class CaretManager {
     private void checkHit(TextHitInfo info) {
         int idx = info.getInsertionIndex();
 
-        if (idx < 0 || idx > breaker.getCharCount())
+        if (idx < 0 || idx > breaker.getCharCount()) {
             throw new IllegalArgumentException("TextHitInfo out of range");
+        }
     }
 
     /**
@@ -115,14 +116,14 @@ public class CaretManager {
         if (visual < breaker.getCharCount()) {
             int logIdx = breaker.getLogicalFromVisual(visual);
             int segmentIdx = breaker.logical2segment[logIdx];
-            seg = (TextRunSegment) breaker.runSegments.get(segmentIdx);
+            seg = breaker.runSegments.get(segmentIdx);
             advance = seg.x + seg.getAdvanceDelta(seg.getStart(), logIdx);
             angle = seg.metrics.italicAngle;
 
         } else { // Last character
             int logIdx = breaker.getLogicalFromVisual(visual-1);
             int segmentIdx = breaker.logical2segment[logIdx];
-            seg = (TextRunSegment) breaker.runSegments.get(segmentIdx);
+            seg = breaker.runSegments.get(segmentIdx);
             advance = seg.x + seg.getAdvanceDelta(seg.getStart(), logIdx+1);
         }
 
@@ -143,8 +144,9 @@ public class CaretManager {
         checkHit(hitInfo);
         int visual = getVisualFromHitInfo(hitInfo);
 
-        if (visual == breaker.getCharCount())
+        if (visual == breaker.getCharCount()) {
             return null;
+        }
 
         TextHitInfo newInfo;
 
@@ -165,10 +167,8 @@ public class CaretManager {
                 }
             }
 
-            TextRunSegment seg =
-                    (TextRunSegment) breaker.runSegments.get(
-                            breaker.logical2segment[newInfo.getCharIndex()]
-                    );
+            TextRunSegment seg = breaker.runSegments.get(breaker.logical2segment[newInfo
+                    .getCharIndex()]);
             if (!seg.charHasZeroAdvance(newInfo.getCharIndex())) {
                 return newInfo;
             }
@@ -186,8 +186,9 @@ public class CaretManager {
         checkHit(hitInfo);
         int visual = getVisualFromHitInfo(hitInfo);
 
-        if (visual == 0)
+        if (visual == 0) {
             return null;
+        }
 
         TextHitInfo newInfo;
 
@@ -209,10 +210,8 @@ public class CaretManager {
                 }
             }
 
-            TextRunSegment seg =
-                    (TextRunSegment) breaker.runSegments.get(
-                            breaker.logical2segment[newInfo.getCharIndex()]
-                    );
+            TextRunSegment seg = breaker.runSegments.get(breaker.logical2segment[newInfo
+                    .getCharIndex()]);
             if (!seg.charHasZeroAdvance(newInfo.getCharIndex())) {
                 return newInfo;
             }
@@ -252,10 +251,11 @@ public class CaretManager {
                     }
                 } else {
                     resIdx = breaker.getLogicalFromVisual(visual);
-                    if ((breaker.getLevel(resIdx) & 0x1) == 0x0)
+                    if ((breaker.getLevel(resIdx) & 0x1) == 0x0) {
                         resIsLeading = true;
-                    else
+                    } else {
                         resIsLeading = false;
+                    }
                 }
             } else {
                 visual--;
@@ -269,10 +269,11 @@ public class CaretManager {
                     }
                 } else {
                     resIdx = breaker.getLogicalFromVisual(visual);
-                    if ((breaker.getLevel(resIdx) & 0x1) == 0x0)
+                    if ((breaker.getLevel(resIdx) & 0x1) == 0x0) {
                         resIsLeading = false;
-                    else
+                    } else {
                         resIsLeading = true;
+                    }
                 }
             }
         } else if (idx < 0) { // before "start"
@@ -321,10 +322,7 @@ public class CaretManager {
         int charIdx = hitInfo.getCharIndex();
 
         if (charIdx >= 0 && charIdx < breaker.getCharCount()) {
-            TextRunSegment segment =
-                    (TextRunSegment) breaker.runSegments.get(
-                            breaker.logical2segment[charIdx]
-                    );
+            TextRunSegment segment = breaker.runSegments.get(breaker.logical2segment[charIdx]);
             y1 = segment.metrics.descent;
             y2 = - segment.metrics.ascent - segment.metrics.leading;
 
@@ -358,10 +356,12 @@ public class CaretManager {
             y1 = (float) bounds.getMaxY();
             y2 = (float) bounds.getMinY();
 
-            if (x2 > bounds.getMaxX())
+            if (x2 > bounds.getMaxX()) {
                 x1 = x2 = (float) bounds.getMaxX();
-            if (x1 < bounds.getMinX())
+            }
+            if (x1 < bounds.getMinX()) {
                 x1 = x2 = (float) bounds.getMinX();
+            }
         }
 
         return new Line2D.Float(x1, y1, x2, y2);
@@ -388,14 +388,13 @@ public class CaretManager {
 
         if (getVisualFromHitInfo(hit1) == getVisualFromHitInfo(hit2)) {
             return new Shape[] {caret1, null};
-        } else {
-            Shape caret2 = getCaretShape(hit2, layout);
-
-            TextHitInfo strongHit = policy.getStrongCaret(hit1, hit2, layout);
-            return strongHit.equals(hit1) ?
-                    new Shape[] {caret1, caret2} :
-                    new Shape[] {caret2, caret1};
         }
+        Shape caret2 = getCaretShape(hit2, layout);
+
+        TextHitInfo strongHit = policy.getStrongCaret(hit1, hit2, layout);
+        return strongHit.equals(hit1) ?
+                new Shape[] {caret1, caret2} :
+                new Shape[] {caret2, caret1};
     }
 
     /**

@@ -169,9 +169,11 @@ public abstract class Glyph{
     /**
      * Returns true if this Glyph and specified object are equal.
      */
+    @Override
     public boolean equals(Object obj){
-         if (obj == this)
+         if (obj == this) {
             return true;
+        }
 
         if (obj != null) {
           try {

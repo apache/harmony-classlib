@@ -264,7 +264,7 @@ public abstract class FontPeerImpl implements FontPeer{
 
         char i = uFirst;
         int len = uLast - uFirst;
-        ArrayList lst = new ArrayList(len);
+        ArrayList<Glyph> lst = new ArrayList<Glyph>(len);
 
         if (size < 0) {
             throw new IllegalArgumentException(
@@ -462,6 +462,7 @@ public abstract class FontPeerImpl implements FontPeer{
      * 
      * @param newType new type value
      */
+    @Override
     protected void finalize() throws Throwable {
       super.finalize();
       

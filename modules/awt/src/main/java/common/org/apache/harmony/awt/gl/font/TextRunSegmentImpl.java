@@ -90,8 +90,9 @@ public class TextRunSegmentImpl {
             // XXX - todo - check support bidi
             i.flags &= ~0x09; // Clear bidi flags
 
-            if ((i.level & 0x1) != 0)
+            if ((i.level & 0x1) != 0) {
                 i.flags |= Font.LAYOUT_RIGHT_TO_LEFT;
+            }
 
             info = i;
             this.decoration = d;
@@ -107,6 +108,7 @@ public class TextRunSegmentImpl {
             }
         }
 
+        @Override
         public Object clone() {
             return new TextRunSegmentCommon(info, decoration);
         }
@@ -116,7 +118,7 @@ public class TextRunSegmentImpl {
          * @return glyph vector
          */
         private GlyphVector getGlyphVector() {
-            if (gv==null)
+            if (gv==null) {
                 gv = info.font.layoutGlyphVector(
                         info.frc,
                         info.text,
@@ -126,6 +128,7 @@ public class TextRunSegmentImpl {
                                                // not limit as spec states
                         info.flags
                 );
+            }
 
             return gv;
         }
@@ -138,6 +141,7 @@ public class TextRunSegmentImpl {
          * @param yOffset - Y offset from the graphics origin to the
          * origin of the text layout
          */
+        @Override
         void draw(Graphics2D g2d, float xOffset, float yOffset) {
             if (decoration == null) {
                 g2d.drawGlyphVector(getGlyphVector(), xOffset + x, yOffset + y);
@@ -153,6 +157,7 @@ public class TextRunSegmentImpl {
          * Returns visual bounds of this segment
          * @return visual bounds
          */
+        @Override
         Rectangle2D getVisualBounds() {
             if (visualBounds == null) {
                 visualBounds =
@@ -177,6 +182,7 @@ public class TextRunSegmentImpl {
          * Returns logical bounds of this segment
          * @return logical bounds
          */
+        @Override
         Rectangle2D getLogicalBounds() {
             if (logicalBounds == null) {
                 logicalBounds = getGlyphVector().getLogicalBounds();
@@ -192,6 +198,7 @@ public class TextRunSegmentImpl {
             return (Rectangle2D) logicalBounds.clone();
         }
 
+        @Override
         float getAdvance() {
             return (float) getLogicalBounds().getWidth();
         }
@@ -215,18 +222,22 @@ public class TextRunSegmentImpl {
          * @param end - 2nd position
          * @return advance increment between specified positions
          */
+        @Override
         float getAdvanceDelta(int start, int end) {
             // Get coordinates in the segment context
             start -= info.start;
             end -= info.start;
 
-            if (advanceIncrements == null)
+            if (advanceIncrements == null) {
                 initAdvanceMapping();
+            }
 
-            if (start < 0)
+            if (start < 0) {
                 start = 0;
-            if (end > info.length)
+            }
+            if (end > info.length) {
                 end = info.length;
+            }
 
             float sum = 0;
             for (int i=start; i<end; i++) {
@@ -244,37 +255,44 @@ public class TextRunSegmentImpl {
          * @param start - character, from which to start measuring advance
          * @return character index
          */
+        @Override
         int getCharIndexFromAdvance(float advance, int start) {
             // XXX - todo - probably, possible to optimize
             // Add check if the given advance is greater then
             // the segment advance in the beginning. In this case
             // we don't need to run through all increments
-            if (advanceIncrements == null)
+            if (advanceIncrements == null) {
                 initAdvanceMapping();
+            }
 
             start -= info.start;
 
-            if (start < 0)
+            if (start < 0) {
                 start = 0;
+            }
 
             int i = start;
             for (; i<info.length; i++) {
                 advance -= advanceIncrements[i];
-                if (advance < 0)
+                if (advance < 0) {
                     break;
+                }
             }
 
             return i + info.start;
         }
 
+        @Override
         int getStart() {
             return info.start;
         }
 
+        @Override
         int getEnd() {
             return info.end;
         }
 
+        @Override
         int getLength() {
             return info.length;
         }
@@ -299,10 +317,11 @@ public class TextRunSegmentImpl {
                 // Suppose that these characters are going all together
                 int currIndex = 0;
                 for (int i=0; i<char2glyph.length; i++) {
-                    if (char2glyph[i] < 0)
+                    if (char2glyph[i] < 0) {
                         char2glyph[i] = currIndex;
-                    else
+                    } else {
                         currIndex = char2glyph[i];
+                    }
                 }
             }
 
@@ -315,12 +334,14 @@ public class TextRunSegmentImpl {
          * @param limit - range end
          * @return black box bounds shape
          */
+        @Override
         Shape getCharsBlackBoxBounds(int start, int limit) {
             start -= info.start;
             limit -= info.start;
 
-            if (limit > info.length)
+            if (limit > info.length) {
                 limit = info.length;
+            }
 
             GeneralPath result = new GeneralPath();
 
@@ -342,15 +363,17 @@ public class TextRunSegmentImpl {
          * @param index - character index
          * @return X coordinate of the character position
          */
+        @Override
         float getCharPosition(int index) {
             index -= info.start;
 
-            if (index > info.length)
+            if (index > info.length) {
                 index = info.length;
+            }
 
             float result = 0;
 
-            int glyphIndex = glyphIndex = getChar2Glyph()[index];
+            int glyphIndex = getChar2Glyph()[index];
             result = (float) getGlyphVector().getGlyphPosition(glyphIndex).getX();
 
             // Shift to the segment's coordinates
@@ -364,9 +387,11 @@ public class TextRunSegmentImpl {
          * @param index - character index
          * @return character advance
          */
+        @Override
         float getCharAdvance(int index) {
-            if (advanceIncrements == null)
+            if (advanceIncrements == null) {
                 initAdvanceMapping();
+            }
 
             return advanceIncrements[index - this.getStart()];
         }
@@ -375,6 +400,7 @@ public class TextRunSegmentImpl {
          * Returns the outline shape
          * @return outline
          */
+        @Override
         Shape getOutline() {
             AffineTransform t = AffineTransform.getTranslateInstance(x, y);
             return t.createTransformedShape(
@@ -391,9 +417,11 @@ public class TextRunSegmentImpl {
          * @param index - character index
          * @return true if the character has zero advance
          */
+        @Override
         boolean charHasZeroAdvance(int index) {
-            if (advanceIncrements == null)
+            if (advanceIncrements == null) {
                 initAdvanceMapping();
+            }
 
             return advanceIncrements[index - this.getStart()] == 0;
         }
@@ -404,6 +432,7 @@ public class TextRunSegmentImpl {
          * @param hitY - Y coordinate relative to the origin of the layout
          * @return hit info
          */
+        @Override
         TextHitInfo hitTest(float hitX, float hitY) {
             hitX -= x;
 
@@ -422,8 +451,9 @@ public class TextRunSegmentImpl {
                 }
             }
 
-            if (glyphIdx == info.length) // We passed the end of the segment
+            if (glyphIdx == info.length) {
                 glyphIdx--;
+            }
 
             int charIdx = getGlyphVector().getGlyphCharIndex(glyphIdx);
 
@@ -477,6 +507,7 @@ public class TextRunSegmentImpl {
          * Collects justification information into JustificationInfo object
          * @param jInfo - JustificationInfo object
          */
+        @Override
         void updateJustificationInfo(TextRunBreaker.JustificationInfo jInfo) {
             int lastChar = Math.min(jInfo.lastIdx, info.end) - info.start;
             boolean haveFirst = info.start <= jInfo.firstIdx;
@@ -491,36 +522,37 @@ public class TextRunSegmentImpl {
 
                     if (currGlyphIdx == prevGlyphIdx) {
                         // Several chars could be represented by one glyph,
-                        // suppose they are contigous
+                        // suppose they are contiguous
                         continue;
-                    } else {
-                        prevGlyphIdx = currGlyphIdx;
                     }
+                    prevGlyphIdx = currGlyphIdx;
 
                     GlyphJustificationInfo gji = getGlyphJustificationInfos()[currGlyphIdx];
                     if (gji.growPriority == jInfo.priority) {
                         jInfo.weight += gji.weight * 2;
                         jInfo.growLimit += gji.growLeftLimit;
                         jInfo.growLimit += gji.growRightLimit;
-                        if (gji.growAbsorb)
+                        if (gji.growAbsorb) {
                             jInfo.absorbedWeight += gji.weight * 2;
+                        }
                     }
                 }
             } else {
                 for (int i=0; i<lastChar; i++) {
                     currGlyphIdx = getChar2Glyph()[i];
-                    if (currGlyphIdx == prevGlyphIdx)
+                    if (currGlyphIdx == prevGlyphIdx) {
                         continue;
-                    else
-                        prevGlyphIdx = currGlyphIdx;
+                    }
+                    prevGlyphIdx = currGlyphIdx;
 
                     GlyphJustificationInfo gji = getGlyphJustificationInfos()[currGlyphIdx];
                     if (gji.shrinkPriority == jInfo.priority) {
                         jInfo.weight += gji.weight * 2;
                         jInfo.growLimit -= gji.shrinkLeftLimit;
                         jInfo.growLimit -= gji.shrinkRightLimit;
-                        if (gji.shrinkAbsorb)
+                        if (gji.shrinkAbsorb) {
                             jInfo.absorbedWeight += gji.weight * 2;
+                        }
                     }
                 }
             }
@@ -530,12 +562,14 @@ public class TextRunSegmentImpl {
                 jInfo.weight -= gji.weight;
                 if (jInfo.grow) {
                     jInfo.growLimit -= gji.growLeftLimit;
-                    if (gji.growAbsorb)
+                    if (gji.growAbsorb) {
                         jInfo.absorbedWeight -= gji.weight;
+                    }
                 } else {
                     jInfo.growLimit += gji.shrinkLeftLimit;
-                    if (gji.shrinkAbsorb)
+                    if (gji.shrinkAbsorb) {
                         jInfo.absorbedWeight -= gji.weight;
+                    }
                 }
             }
 
@@ -545,12 +579,14 @@ public class TextRunSegmentImpl {
                 jInfo.weight -= gji.weight;
                 if (jInfo.grow) {
                     jInfo.growLimit -= gji.growRightLimit;
-                    if (gji.growAbsorb)
+                    if (gji.growAbsorb) {
                         jInfo.absorbedWeight -= gji.weight;
+                    }
                 } else {
                     jInfo.growLimit += gji.shrinkRightLimit;
-                    if (gji.shrinkAbsorb)
+                    if (gji.shrinkAbsorb) {
                         jInfo.absorbedWeight -= gji.weight;
+                    }
                 }
             }
         }
@@ -561,6 +597,7 @@ public class TextRunSegmentImpl {
          * @param jInfos - justification information, gathered by the previous passes
          * @return amount of growth or shrink of the segment
          */
+        @Override
         float doJustification(TextRunBreaker.JustificationInfo jInfos[]) {
             int lastPriority =
                     jInfos[jInfos.length-1] == null ?
@@ -569,12 +606,14 @@ public class TextRunSegmentImpl {
             // Get the highest priority
             int highestPriority = 0;
             for (; highestPriority<jInfos.length; highestPriority++) {
-                if (jInfos[highestPriority] != null)
+                if (jInfos[highestPriority] != null) {
                     break;
+                }
             }
 
-            if (highestPriority == jInfos.length) // Nothing to do - no justification infos
+            if (highestPriority == jInfos.length) {
                 return 0;
+            }
 
             TextRunBreaker.JustificationInfo firstInfo = jInfos[highestPriority];
             TextRunBreaker.JustificationInfo lastInfo =
@@ -591,8 +630,9 @@ public class TextRunSegmentImpl {
             int lastGlyph = haveLast ?
                     getChar2Glyph()[firstInfo.lastIdx - info.start] :
                     getChar2Glyph()[info.length - 1];
-            if (haveLast)
+            if (haveLast) {
                 lastGlyph--;
+            }
 
             TextRunBreaker.JustificationInfo currInfo;
             float glyphOffset = 0;
@@ -762,11 +802,13 @@ public class TextRunSegmentImpl {
             fullAdvance = ga.getAdvance() * length;
         }
 
+        @Override
         public Object clone() {
             return new TextRunSegmentGraphic(ga, length, start);
         }
 
         // Renders this text run segment
+        @Override
         void draw(Graphics2D g2d, float xOffset, float yOffset) {
             if (decoration != null) {
                 TextDecorator.prepareGraphics(this, g2d, xOffset, yOffset);
@@ -787,6 +829,7 @@ public class TextRunSegmentImpl {
         }
 
         // Returns visual bounds of this segment
+        @Override
         Rectangle2D getVisualBounds() {
             if (visualBounds == null) {
                 Rectangle2D bounds = ga.getBounds();
@@ -805,6 +848,7 @@ public class TextRunSegmentImpl {
             return (Rectangle2D) visualBounds.clone();
         }
 
+        @Override
         Rectangle2D getLogicalBounds() {
             if (logicalBounds == null) {
                 logicalBounds =
@@ -817,46 +861,55 @@ public class TextRunSegmentImpl {
             return (Rectangle2D) logicalBounds.clone();
         }
 
+        @Override
         float getAdvance() {
             return fullAdvance;
         }
 
+        @Override
         float getAdvanceDelta(int start, int end) {
             return ga.getAdvance() * (end - start);
         }
 
+        @Override
         int getCharIndexFromAdvance(float advance, int start) {
             start -= this.start;
 
-            if (start < 0)
+            if (start < 0) {
                 start = 0;
+            }
 
             int charOffset = (int) (advance/ga.getAdvance());
 
-            if (charOffset + start > length)
+            if (charOffset + start > length) {
                 return length + this.start;
-            else
-                return charOffset + start + this.start;
+            }
+            return charOffset + start + this.start;
         }
 
+        @Override
         int getStart() {
             return start;
         }
 
+        @Override
         int getEnd() {
             return start + length;
         }
 
+        @Override
         int getLength() {
             return length;
         }
 
+        @Override
         Shape getCharsBlackBoxBounds(int start, int limit) {
             start -= this.start;
             limit -= this.start;
 
-            if (limit > length)
+            if (limit > length) {
                 limit = length;
+            }
 
             Rectangle2D charBounds = ga.getBounds();
             charBounds.setRect(
@@ -869,18 +922,22 @@ public class TextRunSegmentImpl {
             return charBounds;
         }
 
+        @Override
         float getCharPosition(int index) {
             index -= start;
-            if (index > length)
+            if (index > length) {
                 index = length;
+            }
 
             return ga.getAdvance() * index + x;
         }
 
+        @Override
         float getCharAdvance(int index) {
             return ga.getAdvance();
         }
 
+        @Override
         Shape getOutline() {
             AffineTransform t = AffineTransform.getTranslateInstance(x, y);
             return t.createTransformedShape(
@@ -888,26 +945,30 @@ public class TextRunSegmentImpl {
             );
         }
 
+        @Override
         boolean charHasZeroAdvance(int index) {
             return false;
         }
 
+        @Override
         TextHitInfo hitTest(float hitX, float hitY) {
             hitX -= x;
 
             float tmp = hitX / ga.getAdvance();
             int hitIndex = Math.round(tmp);
 
-            if (tmp > hitIndex)
+            if (tmp > hitIndex) {
                 return TextHitInfo.leading(hitIndex + this.start);
-            else
-                return TextHitInfo.trailing(hitIndex + this.start);
+            }
+            return TextHitInfo.trailing(hitIndex + this.start);
         }
 
+        @Override
         void updateJustificationInfo(TextRunBreaker.JustificationInfo jInfo) {
             // Do nothing
         }
 
+        @Override
         float doJustification(TextRunBreaker.JustificationInfo jInfos[]) {
             // Do nothing
             return 0;

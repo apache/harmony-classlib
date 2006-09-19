@@ -33,7 +33,7 @@ import org.apache.harmony.awt.gl.AwtImageBackdoorAccessor;
 
 /**
  * This class converts java color/sample models to the LCMS pixel formats.
- * It also incapsulates all the information about the image format, which native CMM
+ * It also encapsulates all the information about the image format, which native CMM
  * needs to have in order to read/write data.
  *
  * At present planar formats (multiple bands) are not supported
@@ -195,22 +195,12 @@ class NativeImageFormat {
      * @param nRows - number of scanlines in the image
      * @param nCols - number of pixels in one row of the image
      */
-    public NativeImageFormat(
-            Object imgData,
-            int nChannels,
-            int nRows,
-            int nCols
-    ) {
-
-        int dataSize = 0;
-
+    public NativeImageFormat(Object imgData, int nChannels, int nRows, int nCols) {
         if (imgData instanceof short[]) {
             cmmFormat |= bytesSh(2);
-            dataSize = 2;
         }
         else if (imgData instanceof byte[]) {
             cmmFormat |= bytesSh(1);
-            dataSize = 1;
         }
         else
             throw new IllegalArgumentException(
@@ -232,9 +222,7 @@ class NativeImageFormat {
      * @param bi - image
      * @return image format object
      */
-    public static NativeImageFormat createNativeImageFormat(
-            BufferedImage bi
-    ) {
+    public static NativeImageFormat createNativeImageFormat(BufferedImage bi) {
         NativeImageFormat fmt = new NativeImageFormat();
 
         switch (bi.getType()) {
@@ -362,10 +350,7 @@ class NativeImageFormat {
      * @param hasAlpha - true if there's an alpha channel
      * @return LCMS format
      */
-    private static int getFormatFromComponentModel(
-            ComponentSampleModel sm,
-            boolean hasAlpha) {
-
+    private static int getFormatFromComponentModel(ComponentSampleModel sm, boolean hasAlpha) {
         // Multiple data arrays (banks) not supported
         int bankIndex = sm.getBankIndices()[0];
         for (int i=1; i < sm.getNumBands(); i++) {
@@ -463,10 +448,8 @@ class NativeImageFormat {
      * @param hasAlpha - true if there's an alpha channel
      * @return LCMS format
      */
-    private static int getFormatFromSPPSampleModel(
-            SinglePixelPackedSampleModel sm,
-            boolean hasAlpha
-        ) {
+    private static int getFormatFromSPPSampleModel(SinglePixelPackedSampleModel sm,
+            boolean hasAlpha) {
         // Can we extract bytes?
         int mask = sm.getBitMasks()[0] >>> sm.getBitOffsets()[0];
         if (!(mask == 0xFF || mask == 0xFFFF || mask == 0xFFFFFFFF))
@@ -508,7 +491,7 @@ class NativeImageFormat {
         extra +=  pixelSize/bytes - sm.getNumBands(); // Unused bytes?
 
         // Form an ArrayList containing offset for each band
-        ArrayList offsetsLst = new ArrayList();
+        ArrayList<Integer> offsetsLst = new ArrayList<Integer>();
         for (int k=0; k < sm.getNumBands(); k++) {
             offsetsLst.add(new Integer(sm.getBitOffsets()[k]/(bytes*8)));
         }
@@ -521,7 +504,7 @@ class NativeImageFormat {
 
         int offsets[] = new int[pixelSize/bytes];
         for (int i=0; i<offsetsLst.size(); i++) {
-            offsets[i] = ((Integer)offsetsLst.get(i)).intValue();
+            offsets[i] = offsetsLst.get(i).intValue();
         }
 
         int doSwap = 0;
@@ -616,8 +599,8 @@ class NativeImageFormat {
         if (csm.getScanlineStride() != csm.getPixelStride()*csm.getWidth()) {
             int dataTypeSize = DataBuffer.getDataTypeSize(r.getDataBuffer().getDataType()) / 8;
             return csm.getScanlineStride()*dataTypeSize;
-        } else
-            return -1;
+        }
+        return -1;
     }
 
     /**
@@ -630,8 +613,8 @@ class NativeImageFormat {
         if (sppsm.getScanlineStride() != sppsm.getWidth()) {
             int dataTypeSize = DataBuffer.getDataTypeSize(r.getDataBuffer().getDataType()) / 8;
             return sppsm.getScanlineStride()*dataTypeSize;
-        } else
-            return -1;
+        }
+        return -1;
     }
 
     /**

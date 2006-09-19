@@ -28,11 +28,6 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 /**
- * Date: Apr 26, 2005
- * Time: 4:32:20 PM
- */
-
-/**
  * This class operates with an arbitrary text string which can include
  * any number of style, font and direction runs. It is responsible for computation
  * of the text metrics, such as ascent, descent, leading and advance. Actually,
@@ -64,14 +59,15 @@ public class TextMetricsCalculator {
      * @return baseline offset
      */
     float getBaselineOffset(int baselineIndex) {
-        if (baselineIndex >= 0)
+        if (baselineIndex >= 0) {
             return baselineOffsets[baselineIndex];
-        else if (baselineIndex == GraphicAttribute.BOTTOM_ALIGNMENT)
+        } else if (baselineIndex == GraphicAttribute.BOTTOM_ALIGNMENT) {
             return descent;
-        else if (baselineIndex == GraphicAttribute.TOP_ALIGNMENT)
+        } else if (baselineIndex == GraphicAttribute.TOP_ALIGNMENT) {
             return -ascent;
-        else
+        } else {
             throw new IllegalArgumentException("Invalid baseline index");
+        }
     }
 
     public float[] getBaselineOffsets() {
@@ -122,8 +118,9 @@ public class TextMetricsCalculator {
         // Normalize offsets if needed
         if (baselineOffsets[baselineIndex] != 0) {
             float baseOffset = baselineOffsets[baselineIndex];
-            for (int i = 0; i < baselineOffsets.length; i++)
+            for (int i = 0; i < baselineOffsets.length; i++) {
                 baselineOffsets[i] -= baseOffset;
+            }
         }
     }
 
@@ -132,13 +129,13 @@ public class TextMetricsCalculator {
      */
     void computeMetrics() {
 
-        ArrayList segments = breaker.runSegments;
+        ArrayList<TextRunSegment> segments = breaker.runSegments;
 
         float maxHeight = 0;
         float maxHeightLeading = 0;
 
         for (int i = 0; i < segments.size(); i++) {
-            TextRunSegment segment = (TextRunSegment) segments.get(i);
+            TextRunSegment segment = segments.get(i);
             BasicMetrics metrics = segment.metrics;
             int baseline = metrics.baseLineIndex;
 
@@ -170,13 +167,11 @@ public class TextMetricsCalculator {
         float currAdvance = 0;
 
         for (int i = 0; i < segments.size(); i++) {
-            TextRunSegment segment =
-                    (TextRunSegment) segments.get(breaker.getSegmentFromVisualOrder(i));
+            TextRunSegment segment = segments.get(breaker.getSegmentFromVisualOrder(i));
             currMetrics = segment.metrics;
 
-            segment.y =
-                    getBaselineOffset(currMetrics.baseLineIndex) +
-                    currMetrics.superScriptOffset;
+            segment.y = getBaselineOffset(currMetrics.baseLineIndex)
+                    + currMetrics.superScriptOffset;
             segment.x = currAdvance;
 
             currAdvance += segment.getAdvance();
@@ -200,11 +195,9 @@ public class TextMetricsCalculator {
      * @param metrics - metrics with outdated advance which should be corrected 
      */
     public void correctAdvance(BasicMetrics metrics) {
-        ArrayList segments = breaker.runSegments;
-        TextRunSegment segment =
-                (TextRunSegment) segments.get(
-                        breaker.getSegmentFromVisualOrder(segments.size()-1)
-                );
+        ArrayList<TextRunSegment> segments = breaker.runSegments;
+        TextRunSegment segment = segments.get(breaker
+                .getSegmentFromVisualOrder(segments.size() - 1));
 
         advance = segment.x + segment.getAdvance();
         metrics.advance = advance;

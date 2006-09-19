@@ -255,6 +255,7 @@ public class LineMetricsImpl extends LineMetrics implements Cloneable{
     /**
      * Returns offset of the baseline.
      */
+    @Override
     public float[] getBaselineOffsets() {
         // XXX: at the moment there only horizontal metrics are taken into
         // account. If there is no baseline information in TrueType font
@@ -266,6 +267,7 @@ public class LineMetricsImpl extends LineMetrics implements Cloneable{
     /**
      * Returns a number of chars in specified text
      */
+    @Override
     public int getNumChars() {
         return numChars;
     }
@@ -273,6 +275,7 @@ public class LineMetricsImpl extends LineMetrics implements Cloneable{
     /**
      * Returns index of the baseline, one of predefined constants.
      */
+    @Override
     public int getBaselineIndex() {
         // Baseline index is the deafult baseline index value
         // taken from the TrueType table "BASE".
@@ -282,6 +285,7 @@ public class LineMetricsImpl extends LineMetrics implements Cloneable{
     /**
      * Returns thickness of the Underline.
      */
+    @Override
     public float getUnderlineThickness() {
         return underlineThickness;
     }
@@ -289,6 +293,7 @@ public class LineMetricsImpl extends LineMetrics implements Cloneable{
     /**
      * Returns offset of the Underline.
      */
+    @Override
     public float getUnderlineOffset() {
         return underlineOffset;
     }
@@ -296,6 +301,7 @@ public class LineMetricsImpl extends LineMetrics implements Cloneable{
     /**
      * Returns thickness of the Strikethrough line.
      */
+    @Override
     public float getStrikethroughThickness() {
         return strikethroughThickness;
     }
@@ -303,6 +309,7 @@ public class LineMetricsImpl extends LineMetrics implements Cloneable{
     /**
      * Returns offset of the Strikethrough line.
      */
+    @Override
     public float getStrikethroughOffset() {
         return strikethroughOffset;
     }
@@ -310,6 +317,7 @@ public class LineMetricsImpl extends LineMetrics implements Cloneable{
     /**
      * Returns the leading.
      */
+    @Override
     public float getLeading() {
         return leading;
     }
@@ -317,6 +325,7 @@ public class LineMetricsImpl extends LineMetrics implements Cloneable{
     /**
      * Returns the height of the font.
      */
+    @Override
     public float getHeight() {
         return height; // equals to (ascent + descent + leading);
     }
@@ -324,6 +333,7 @@ public class LineMetricsImpl extends LineMetrics implements Cloneable{
     /**
      * Returns the descent.
      */
+    @Override
     public float getDescent() {
         return descent;
     }
@@ -331,6 +341,7 @@ public class LineMetricsImpl extends LineMetrics implements Cloneable{
     /**
      * Returns the ascent.
      */
+    @Override
     public float getAscent() {
         return ascent;
     }
@@ -414,6 +425,7 @@ public class LineMetricsImpl extends LineMetrics implements Cloneable{
         numChars = num;
     }
 
+    @Override
     public Object clone(){
         try{
             return super.clone();

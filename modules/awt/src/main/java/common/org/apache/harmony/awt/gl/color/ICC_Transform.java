@@ -24,15 +24,15 @@ import java.awt.color.ICC_Profile;
 import org.apache.harmony.awt.gl.color.NativeCMM;
 
 /**
- * This class incapsulates native ICC transform object, is responsible for its
+ * This class encapsulates native ICC transform object, is responsible for its
  * creation, destruction and passing its handle to the native CMM.
  */
 public class ICC_Transform {
-    private long transformHandle = 0;
-    private int numInputChannels = 0;
-    private int numOutputChannels = 0;
-    private ICC_Profile src = null;
-    private ICC_Profile dst = null;
+    private long transformHandle;
+    private int numInputChannels;
+    private int numOutputChannels;
+    private ICC_Profile src;
+    private ICC_Profile dst;
 
 
     /**
@@ -72,8 +72,9 @@ public class ICC_Transform {
         int numProfiles = profiles.length;
 
         long[] profileHandles = new long[numProfiles];
-        for (int i=0; i<numProfiles; i++)
+        for (int i=0; i<numProfiles; i++) {
             profileHandles[i] = NativeCMM.getHandle(profiles[i]);
+        }
 
         transformHandle = NativeCMM.cmmCreateMultiprofileTransform(
                 profileHandles,
@@ -97,8 +98,9 @@ public class ICC_Transform {
         int currRenderingIntent = ICC_Profile.icPerceptual;
 
         // render as colorimetric for output device
-        if (profiles[0].getProfileClass() == ICC_Profile.CLASS_OUTPUT)
+        if (profiles[0].getProfileClass() == ICC_Profile.CLASS_OUTPUT) {
             currRenderingIntent = ICC_Profile.icRelativeColorimetric;
+        }
 
         // get the transforms from each profile
         for (int i = 0; i < numProfiles; i++) {
@@ -121,8 +123,9 @@ public class ICC_Transform {
 
         // Get the profile handles and go ahead
         long[] profileHandles = new long[numProfiles];
-        for (int i=0; i<numProfiles; i++)
+        for (int i=0; i<numProfiles; i++) {
             profileHandles[i] = NativeCMM.getHandle(profiles[i]);
+        }
 
         transformHandle = NativeCMM.cmmCreateMultiprofileTransform(
                 profileHandles,
@@ -134,9 +137,11 @@ public class ICC_Transform {
         numOutputChannels = dst.getNumComponents();
     }
 
+    @Override
     protected void finalize() {
-        if (transformHandle != 0)
+        if (transformHandle != 0) {
             NativeCMM.cmmDeleteTransform(transformHandle);
+        }
     }
 
     /**
