@@ -17,6 +17,8 @@ package org.apache.harmony.beans.tests.java.beans;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.beans.PropertyEditorSupport;
+import java.beans.PropertyEditor;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
@@ -960,6 +962,55 @@ public class PropertyDescriptorTest extends TestCase {
             assertEquals("bad property name", e.getMessage());
         }
     }
+    
+    public void testCreatePropertyEditor() throws IntrospectionException {
+        PropertyDescriptor pd =
+                new PropertyDescriptor("propertyOne", MockJavaBean.class);
+        PropertyEditor pe;
+
+        pe = pd.createPropertyEditor(this);
+        assertNull(pe);
+
+        pd.setPropertyEditorClass(CoolPropertyEditor.class);
+        pe = pd.createPropertyEditor(this);
+        assertNotNull(pe);
+        pe.setAsText("Harmony");
+        assertEquals("Harmony is cool", pe.getAsText());
+
+        pd.setPropertyEditorClass(VeryCoolPropertyEditor.class);
+        pe = pd.createPropertyEditor(this);
+        assertNotNull(pe);
+        pe.setAsText("Harmony");
+        assertEquals("Harmony is really cool", pe.getAsText());
+
+        pd.setPropertyEditorClass(null);
+        pe = pd.createPropertyEditor(this);
+        assertNull(pe);
+
+    }
+
+    public void testCreatePropertyEditor_Invalid() throws
+            IntrospectionException {
+        PropertyDescriptor pd =
+                new PropertyDescriptor("propertyOne", MockJavaBean.class);
+
+        try {
+            pd.setPropertyEditorClass(InvalidPropertyEditor.class);
+            pd.createPropertyEditor(this);
+            fail("RuntimeException expected");
+        } catch (RuntimeException e) {
+            // valid
+        }
+
+        try {
+            pd.setPropertyEditorClass(InvalidPropertyEditor2.class);
+            pd.createPropertyEditor(this);
+            fail("ClassCastException expected");
+        } catch (ClassCastException e) {
+            // valid
+        }
+    }
+
 
     static class FakeFox01 {
 
@@ -1003,4 +1054,47 @@ public class PropertyDescriptorTest extends TestCase {
         private static final long serialVersionUID = 7423254295680570566L;
         //
     }
+    
+
+    public static class CoolPropertyEditor extends PropertyEditorSupport {
+        String str;
+        String suffix;
+
+        public CoolPropertyEditor() {
+            suffix = " is cool";
+        }
+
+        public void setAsText(String newVal) {
+            str = newVal + suffix;
+        }
+
+        public String getAsText() {
+            return str;
+        }
+    };
+
+    public static class VeryCoolPropertyEditor extends CoolPropertyEditor {
+        public VeryCoolPropertyEditor() {
+            super();
+        }
+
+        public VeryCoolPropertyEditor(Object obj) {
+            suffix = " is really cool";
+        }
+    }
+
+
+    public static class InvalidPropertyEditor extends PropertyEditorSupport {
+        // there is no valid constructors
+        public InvalidPropertyEditor(Object arg1, Object arg2) {
+        }
+    }
+
+
+    public static class InvalidPropertyEditor2 {
+        // is not assignable from PropertyEditor
+        public InvalidPropertyEditor2() {
+        }
+    }
+
 }

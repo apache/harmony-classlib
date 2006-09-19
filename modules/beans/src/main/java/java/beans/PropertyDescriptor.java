@@ -14,22 +14,14 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.9.4.3 $
- */
 package java.beans;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Constructor;
 import java.util.Vector;
 
 import org.apache.harmony.beans.internal.nls.Messages;
-
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.9.4.3 $
- */
 
 public class PropertyDescriptor extends FeatureDescriptor {
 
@@ -44,9 +36,6 @@ public class PropertyDescriptor extends FeatureDescriptor {
     boolean constrained = false;
     boolean bound = false;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public PropertyDescriptor(String propertyName, Class<?> beanClass,
             String getterName, String setterName) throws IntrospectionException {
 
@@ -80,9 +69,6 @@ public class PropertyDescriptor extends FeatureDescriptor {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public PropertyDescriptor(String propertyName, Method getter, Method setter)
             throws IntrospectionException {
         super();
@@ -99,9 +85,6 @@ public class PropertyDescriptor extends FeatureDescriptor {
         setReadMethod(getter);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public PropertyDescriptor(String propertyName, Class<?> beanClass)
             throws IntrospectionException {
         super();
@@ -136,9 +119,6 @@ public class PropertyDescriptor extends FeatureDescriptor {
         }
     }
         
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setWriteMethod(Method setter) throws IntrospectionException {
         if (setter != null) {
             int modifiers = setter.getModifiers();
@@ -164,9 +144,6 @@ public class PropertyDescriptor extends FeatureDescriptor {
         this.setter = setter;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setReadMethod(Method getter) throws IntrospectionException {
         if (getter != null) {
             int modifiers = getter.getModifiers();
@@ -195,23 +172,14 @@ public class PropertyDescriptor extends FeatureDescriptor {
         this.getter = getter;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Method getWriteMethod() {
         return setter;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Method getReadMethod() {
         return getter;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean equals(Object object) {
         boolean result = (object != null);
         if (result) {
@@ -243,16 +211,10 @@ public class PropertyDescriptor extends FeatureDescriptor {
         return result;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setPropertyEditorClass(Class<?> propertyEditorClass) {
         this.propertyEditorClass = propertyEditorClass;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Class<?> getPropertyType() {
         Class<?> result = null;
         if (getter != null) {
@@ -264,37 +226,22 @@ public class PropertyDescriptor extends FeatureDescriptor {
         return result;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Class<?> getPropertyEditorClass() {
         return propertyEditorClass;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setConstrained(boolean constrained) {
         this.constrained = constrained;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setBound(boolean bound) {
         this.bound = bound;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean isConstrained() {
         return constrained;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean isBound() {
         return bound;
     }
@@ -366,5 +313,39 @@ public class PropertyDescriptor extends FeatureDescriptor {
                 break;
             }
         }
+    }
+    
+    public PropertyEditor createPropertyEditor(Object bean) {
+        PropertyEditor editor;
+
+        if (propertyEditorClass == null) {
+            return null;
+        }
+
+        if (!PropertyEditor.class.isAssignableFrom(propertyEditorClass)) {
+            // beans.48=Property editor is not assignable from the PropertyEditor interface
+            throw new ClassCastException(Messages.getString("beans.48")); //$NON-NLS-1$
+        }
+
+        try {
+            Constructor constr;
+
+            try {
+                // try to look for the constructor with single Object argument
+                constr = propertyEditorClass.getConstructor(Object.class);
+                editor = (PropertyEditor) constr.newInstance(bean);
+            } catch (NoSuchMethodException e) {
+                // try no-argument constructor
+                constr = propertyEditorClass.getConstructor();
+                editor = (PropertyEditor) constr.newInstance();
+            }
+        } catch (Exception e) {
+            // beans.47=Unable to instantiate property editor
+            RuntimeException re = new RuntimeException(
+                    Messages.getString("beans.47"), e); //$NON-NLS-1$
+
+            throw re;
+        }
+        return editor;
     }
 }
