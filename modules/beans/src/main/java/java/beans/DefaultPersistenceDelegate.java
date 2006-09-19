@@ -14,42 +14,41 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.7.6.3 $
- */
 package java.beans;
 
 import java.lang.reflect.Method;
 
 import org.apache.harmony.beans.internal.nls.Messages;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.7.6.3 $
- */
-
 public class DefaultPersistenceDelegate extends PersistenceDelegate {
 
     private String[] constructorPropertyNames;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public DefaultPersistenceDelegate(String[] constructorPropertyNames) {
-        this.constructorPropertyNames = constructorPropertyNames;
+        String[] arr = null;
+
+        // convert first letters of property names to lower case
+        if (constructorPropertyNames != null) {
+            arr = new String[constructorPropertyNames.length];
+            for (int i = 0; i < constructorPropertyNames.length; i++) {
+                if (constructorPropertyNames[i] != null &&
+                    constructorPropertyNames[i].length() > 0) {
+                        arr[i] = constructorPropertyNames[i].substring(0,1)
+                                 .toLowerCase() +
+                                 constructorPropertyNames[i].substring(1);
+                } else {
+                    arr[i] = constructorPropertyNames[i];
+                }
+            }
+        }
+
+        this.constructorPropertyNames = arr;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public DefaultPersistenceDelegate() {
         this.constructorPropertyNames = null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     protected void initialize(Class<?> type, Object oldInstance,
             Object newInstance, Encoder out) {
         try {
@@ -96,9 +95,6 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Object[] args = null;
 
@@ -150,9 +146,6 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
         return new Expression(oldInstance, oldInstance.getClass(), "new", args); //$NON-NLS-1$
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
         if (oldInstance != null) {
             try {

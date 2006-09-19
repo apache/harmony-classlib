@@ -893,7 +893,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
 			return super.instantiate(oldInstance, out);
 		}
 
-		public void initialize(Class type, Object oldInstance,
+		public void initialize(Class<?> type, Object oldInstance,
 				Object newInstance, Encoder enc) {
 			super.initialize(type, oldInstance, newInstance, enc);
 		}
@@ -917,7 +917,8 @@ public class DefaultPersistenceDelegateTest extends TestCase {
 			return super.getExceptionListener();
 		}
 
-		public PersistenceDelegate getPersistenceDelegate(Class type) {
+		public PersistenceDelegate getPersistenceDelegate(
+                  Class<?> type) {
 			return super.getPersistenceDelegate(type);
 		}
 
@@ -925,7 +926,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
 			super.setExceptionListener(exceptionListener);
 		}
 
-		public void setPersistenceDelegate(Class type,
+		public void setPersistenceDelegate(Class<?> type,
 				PersistenceDelegate persistenceDelegate) {
 			super.setPersistenceDelegate(type, persistenceDelegate);
 		}
