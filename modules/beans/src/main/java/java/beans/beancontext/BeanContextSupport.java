@@ -656,6 +656,11 @@ public class BeanContextSupport extends BeanContextChildSupport implements
             return null;
         }
 
+        if (child instanceof BeanContextChild && child instanceof BeanContextProxy) {
+            // beans.49=Child cannot implement both BeanContextChild and BeanContextProxy
+            throw new IllegalArgumentException(Messages.getString("beans.49")); //$NON-NLS-1$
+        } 
+
         // See if the child implements BeanContextChild or BeanContextProxy. 
         // Cast it to appropriate class or simply return null
         if (child instanceof BeanContextChild) {

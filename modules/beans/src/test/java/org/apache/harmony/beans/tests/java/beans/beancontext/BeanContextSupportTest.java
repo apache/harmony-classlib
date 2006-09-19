@@ -22,6 +22,7 @@ import java.beans.VetoableChangeListener;
 import java.beans.Visibility;
 import java.beans.beancontext.BeanContext;
 import java.beans.beancontext.BeanContextChild;
+import java.beans.beancontext.BeanContextChildSupport;
 import java.beans.beancontext.BeanContextMembershipEvent;
 import java.beans.beancontext.BeanContextMembershipListener;
 import java.beans.beancontext.BeanContextProxy;
@@ -933,6 +934,21 @@ public class BeanContextSupportTest extends TestCase {
         BeanContextChild result = MockBeanContextSupport
                 .publicGetChildBeanContextChild(child);
         assertSame(child, result);
+
+        //Regression for HARMONY-1393
+		class TestBeanException extends BeanContextChildSupport implements BeanContextProxy {
+			private BeanContextChildSupport childSupport = new BeanContextChildSupport();
+			public BeanContextChild getBeanContextProxy() {
+				return childSupport;
+			}
+		}
+		TestBeanException bean = new TestBeanException();
+		try {
+			MockBeanContextSupport.publicGetChildBeanContextChild(bean);
+			fail("IllegalArgumentException expected");
+		} catch (IllegalArgumentException e) {
+			//expected
+		}
     }
 
     public void testGetChildBeanContextChild_BeanContextProxy() {
