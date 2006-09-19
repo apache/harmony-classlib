@@ -492,6 +492,24 @@ public final class Character implements Serializable, Comparable<Character> {
 
 	private static final char[] typeTags = "\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0000\u0000\u0000\u0000\u0000\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0000\u0000\u0000\u0000\u0003\u0000\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0000\u0000\u0000\u0000\u0002"
 			.getValue();
+    
+    private static final byte[] DIRECTIONALITY = new byte[] {
+            DIRECTIONALITY_LEFT_TO_RIGHT, DIRECTIONALITY_RIGHT_TO_LEFT,
+            DIRECTIONALITY_EUROPEAN_NUMBER,
+            DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR,
+            DIRECTIONALITY_EUROPEAN_NUMBER_TERMINATOR,
+            DIRECTIONALITY_ARABIC_NUMBER,
+            DIRECTIONALITY_COMMON_NUMBER_SEPARATOR,
+            DIRECTIONALITY_PARAGRAPH_SEPARATOR,
+            DIRECTIONALITY_SEGMENT_SEPARATOR, DIRECTIONALITY_WHITESPACE,
+            DIRECTIONALITY_OTHER_NEUTRALS,
+            DIRECTIONALITY_LEFT_TO_RIGHT_EMBEDDING,
+            DIRECTIONALITY_LEFT_TO_RIGHT_OVERRIDE,
+            DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC,
+            DIRECTIONALITY_RIGHT_TO_LEFT_EMBEDDING,
+            DIRECTIONALITY_RIGHT_TO_LEFT_OVERRIDE,
+            DIRECTIONALITY_POP_DIRECTIONAL_FORMAT,
+            DIRECTIONALITY_NONSPACING_MARK, DIRECTIONALITY_BOUNDARY_NEUTRAL };
 
 	private static final int ISJAVASTART = 1;
 
@@ -2530,6 +2548,18 @@ public final class Character implements Serializable, Comparable<Character> {
 		}
 		return -1;
 	}
+    
+    /**
+     * Gets the numeric value of the Unicode character.
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @return a numeric int value which is not negative, -1 if there is no numeric value, -2 if
+     *         the numeric value is negative
+     */
+    public static int getNumericValue(int codePoint) {
+        return UCharacter.getNumericValue(codePoint);
+    }
 
 	/**
 	 * Gets the general Unicode category of the specified character.
@@ -2550,6 +2580,25 @@ public final class Character implements Serializable, Comparable<Character> {
 		}
 		return UNASSIGNED;
 	}
+    
+    /**
+     * Gets the general Unicode category of the specified character.
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @return the Unicode category
+     */
+    public static int getType(int codePoint) {
+        int type = UCharacter.getType(codePoint);
+
+        // the type values returned by UCharacter are not compatible with what
+        // the spec says.RI's Character type values skip the value 17.
+        if (type <= Character.FORMAT) {
+            return type;
+        } else {
+            return (type + 1);
+        }
+    }
 
 	/**
 	 * Gets the Unicode directionality of the specified character.
@@ -2570,6 +2619,26 @@ public final class Character implements Serializable, Comparable<Character> {
 		}
 		return DIRECTIONALITY_UNDEFINED;
 	}
+    
+    /**
+     * Gets the Unicode directionality of the specified character.
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @return the Unicode directionality
+     */
+    public static byte getDirectionality(int codePoint) {
+        if (getType(codePoint) == Character.UNASSIGNED) {
+            return Character.DIRECTIONALITY_UNDEFINED;
+        }
+        
+        byte UCDirectionality = UCharacter.getDirectionality(codePoint);       
+        if (UCDirectionality == -1) {
+            return -1;
+        } else {
+            return DIRECTIONALITY[UCDirectionality];
+        }
+    }
 
 	/**
      * Answers whether the specified character is mirrored
@@ -2742,6 +2811,23 @@ public final class Character implements Serializable, Comparable<Character> {
 	/**
      * Answers whether the character is a valid part of a Unicode identifier as
      * other than the first character.
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @return true when the character is valid as part of a Java identifier,
+     *         false otherwise
+     */
+    public static boolean isJavaIdentifierPart(int codePoint) {
+        int type = getType(codePoint);
+        return (type >= UPPERCASE_LETTER && type <= OTHER_LETTER)
+                || type == CURRENCY_SYMBOL || type == CONNECTOR_PUNCTUATION
+                || (type >= DECIMAL_DIGIT_NUMBER && type <= LETTER_NUMBER)
+                || type == COMBINING_SPACING_MARK || type == NON_SPACING_MARK 
+                || isIdentifierIgnorable(codePoint);
+    }
+
+	/**
+     * Answers whether the character is a valid start of a Unicode identifier
 	 * 
 	 * @param c
 	 *            the character
@@ -2759,6 +2845,20 @@ public final class Character implements Serializable, Comparable<Character> {
 				|| type == CURRENCY_SYMBOL || type == CONNECTOR_PUNCTUATION
 				|| type == LETTER_NUMBER;
 	}
+    
+    /**
+     * Answers whether the character is a valid start of a Unicode identifier
+     * 
+     * @param codePoint
+     *            the character, including supplementary characters
+     * @return true when the character is a valid start of a Java identifier,
+     *         false otherwise
+     */
+    public static boolean isJavaIdentifierStart(int codePoint) {
+        int type = getType(codePoint);
+        return isLetter(codePoint) || type == CURRENCY_SYMBOL
+                || type == CONNECTOR_PUNCTUATION || type == LETTER_NUMBER;
+    }
 
 	/**
 	 * Answers whether the character is a Java letter.
