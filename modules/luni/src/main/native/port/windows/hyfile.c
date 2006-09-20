@@ -299,28 +299,17 @@ hyfile_lastmod (struct HyPortLibrary * portLibrary, const char *path)
 I_64 VMCALL
 hyfile_length (struct HyPortLibrary * portLibrary, const char *path)
 {
-  WIN32_FIND_DATA myStat;
-  HANDLE newHandle;
-  I_64 result;
-  I_32 error;
-
-  newHandle = FindFirstFile (path, &myStat);
-  if (newHandle == INVALID_HANDLE_VALUE)
-    {
-      error = GetLastError ();
-      return portLibrary->error_set_last_error (portLibrary, error,
-						findError (error));
+    I_64 result;
+    I_32 error;
+    WIN32_FILE_ATTRIBUTE_DATA myStat;
+    int ret = GetFileAttributesEx(path,GetFileExInfoStandard,&myStat);
+    if(ret == 0) {
+        error = GetLastError ();
+        return portLibrary->error_set_last_error (portLibrary, error, findError (error));
     }
-
-  result = ((I_64) myStat.nFileSizeHigh) << 32;
-  result += (I_64) myStat.nFileSizeLow;
-  if (0 == FindClose (newHandle))
-    {
-      error = GetLastError ();
-      portLibrary->error_set_last_error (portLibrary, error, findError (error));	/* continue */
-    }
-
-  return result;
+    result = ((I_64) myStat.nFileSizeHigh) << 32;
+    result += (I_64) myStat.nFileSizeLow;
+    return result;
 }
 
 #undef CDEV_CURRENT_FUNCTION

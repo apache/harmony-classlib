@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -768,10 +769,8 @@ public class FileTest extends junit.framework.TestCase {
 			assertEquals("Test 3: Incorrect File Returned.", 0, f2
 					.getCanonicalFile().compareTo(f.getCanonicalFile()));
 
-			// Test for when long directory/file names in Windows
-			String osName = System.getProperty("os.name", "unknown");
+			// Test for when long directory/file names in Windows	
 			boolean onWindows = File.separatorChar == '\\';
-			boolean createdDir = false;
 			// String userDir = System.getProperty("user.dir");
 			if (onWindows) {
 				File testdir = new File(base, "long-" + platformId);
@@ -1149,7 +1148,7 @@ public class FileTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.File#length()
 	 */
-	public void test_length() {
+	public void test_length() throws Exception {
 		// Test for method long java.io.File.length()
 		try {
 			File f = new File(System.getProperty("user.dir"), platformId
@@ -1164,6 +1163,13 @@ public class FileTest extends junit.framework.TestCase {
 		} catch (IOException e) {
 			fail("Unexpected IOException during test : " + e.getMessage());
 		}
+        
+        // regression test for Harmony-1497
+        File f = File.createTempFile("test", "tmp");
+        f.deleteOnExit();
+        RandomAccessFile raf = new RandomAccessFile(f, "rwd");
+        raf.write(0x41);
+        assertEquals(1, f.length());
 	}
 
 	/**
