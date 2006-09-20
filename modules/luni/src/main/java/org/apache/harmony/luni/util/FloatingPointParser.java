@@ -314,25 +314,81 @@ public final class FloatingPointParser {
  */
 final class HexStringParser {
 
+    private static final int DOUBLE_EXPONENT_WIDTH = 11;
+
+    private static final int DOUBLE_MANTISSA_WIDTH = 52;
+
+    private static final int FLOAT_EXPONENT_WIDTH = 8;
+
+    private static final int FLOAT_MANTISSA_WIDTH = 23;
+
     private static final String HEX_SIGNIFICANT = "0[xX](\\p{XDigit}+\\.?|\\p{XDigit}*\\.\\p{XDigit}+)"; //$NON-NLS-1$
 
     private static final String BINARY_EXPONENT = "[pP]([+-]?\\d+)"; //$NON-NLS-1$
 
     private static final String FLOAT_TYPE_SUFFIX = "[fFdD]?"; //$NON-NLS-1$
 
-    // HexFloatingPointLiteral = HexSignificand + BinaryExponent + FloatTypeSuffixopt
     private static final String HEX_PATTERN = "[\\x00-\\x20]*([+-]?)" + HEX_SIGNIFICANT //$NON-NLS-1$
             + BINARY_EXPONENT + FLOAT_TYPE_SUFFIX + "[\\x00-\\x20]*"; //$NON-NLS-1$
 
-    private HexStringParser() {
-        // Prevents this class from being instantiated.
+    private static final Pattern PATTERN = Pattern.compile(HEX_PATTERN);
+
+    private final int EXPONENT_WIDTH;
+
+    private final int MANTISSA_WIDTH;
+
+    private long sign;
+
+    private long exponent;
+
+    private long mantissa;
+
+    public HexStringParser(int exponent_width, int mantissa_width) {
+        this.EXPONENT_WIDTH = exponent_width;
+        this.MANTISSA_WIDTH = mantissa_width;
+
+    }
+
+    /*
+     * Parses the hex string to a double number.
+     */
+    public static double parseDouble(String hexString) {
+        HexStringParser parser = new HexStringParser(DOUBLE_EXPONENT_WIDTH,
+                DOUBLE_MANTISSA_WIDTH);
+        long result = parser.parse(hexString);
+        return Double.longBitsToDouble(result);
+    }
+
+    /*
+     * Parses the hex string to a float number.
+     */
+    public static float parseFloat(String hexString) {
+        HexStringParser parser = new HexStringParser(FLOAT_EXPONENT_WIDTH,
+                FLOAT_MANTISSA_WIDTH);
+        int result = (int) parser.parse(hexString);
+        return Float.intBitsToFloat(result);
+    }
+
+    private long parse(String hexString) {
+        String[] hexSegments = getSegmentsFromHexString(hexString);
+        String signStr = hexSegments[0];
+        String significantStr = hexSegments[1];
+        String exponentStr = hexSegments[2];
+
+        parseHexSign(signStr);
+        parseExponent(exponentStr);
+        parseMantissa(significantStr);
+
+        sign <<= (MANTISSA_WIDTH + EXPONENT_WIDTH);
+        exponent <<= MANTISSA_WIDTH;
+        return sign | exponent | mantissa;
     }
 
     /*
      * Analyzes the hex string and extracts the sign and digit segments.
      */
     private static String[] getSegmentsFromHexString(String hexString) {
-        Matcher matcher = Pattern.compile(HEX_PATTERN).matcher(hexString);
+        Matcher matcher = PATTERN.matcher(hexString);
         if (!matcher.matches()) {
             throw new NumberFormatException();
         }
@@ -345,18 +401,18 @@ final class HexStringParser {
         return hexSegments;
     }
 
-    /*
-     * Parses the hex string and returns the double result.
-     */
-    static double parseDouble(String hexString) {
-        String[] hexSegments = getSegmentsFromHexString(hexString);
-        String signStr = hexSegments[0];
-        String significantStr = hexSegments[1];
-        String exponentStr = hexSegments[2];
-
+    // Parses the sign field
+    private void parseHexSign(String signStr) {
         // TODO
-        // To complete the function here.
+    }
 
-        return 0d;
+    // Parses the exponent field
+    private void parseExponent(String exponentStr) {
+        // TODO
+    }
+
+    // Parses the mantissa field
+    private void parseMantissa(String significantStr) {
+        // TODO
     }
 }
