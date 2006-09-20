@@ -222,7 +222,7 @@ readClassPathFromPropertiesFile (VMInterface *vmInterface)
     char *bootstrapClassPath = NULL;
     vmiError rcGetProperty;
     jint returnCode;
-    key_value_pair * props;
+    key_value_pair * props = NULL;
     U_32 number;
 
     /* Extract the port library */
