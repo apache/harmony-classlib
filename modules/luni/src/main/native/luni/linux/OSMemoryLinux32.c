@@ -60,9 +60,9 @@ int getPageSize()
 
 JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_loadImpl
   (JNIEnv * env, jobject thiz, jlong addr, jlong size){
-   if(mlock((void *)addr, size)!=-1)
+   if(mlock((void *)((IDATA)addr), size)!=-1)
    {
-      if(munlock((void *)addr,size)!=-1)
+      if(munlock((void *)((IDATA)addr),size)!=-1)
 	      return 0;  /*normally*/
    }
    else{
@@ -100,7 +100,7 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLoad
 
 JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_flushImpl
   (JNIEnv * env, jobject thiz, jlong addr, jlong size){
-  return msync((void *)addr, size, MS_SYNC);
+  return msync((void *)((IDATA)addr), size, MS_SYNC);
 };
 
 /*
@@ -111,7 +111,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_flushImpl
 JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_unmapImpl
   (JNIEnv * env, jobject thiz, jlong addr, jlong size)
 {
-    munmap((void *)addr, (size_t)size); 
+    munmap((void *)((IDATA)addr), (size_t)size); 
 }
 
 /*
@@ -150,6 +150,6 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mmapImpl
     {
       return -1;
     }
-  return (jlong) mapAddress;
+  return (jlong) ((IDATA)mapAddress);
 }
 

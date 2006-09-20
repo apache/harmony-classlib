@@ -676,7 +676,6 @@ JNIEXPORT jstring JNICALL
     FT_Face face;
     const int BUF_SIZE = 64;
     char name[BUF_SIZE];
-    char fStr[6] = "%s %s";
 
     if(!xftFnt){
         return 0;
@@ -686,7 +685,7 @@ JNIEXPORT jstring JNICALL
     if(!face)
         return 0;
     
-    snprintf(name, BUF_SIZE, &fStr, face->family_name, face->style_name);
+    snprintf(name, BUF_SIZE, "%s %s", face->family_name, face->style_name);
 
 #ifdef DEBUG
         printf("Face name = %s\n", name);

@@ -35,7 +35,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_nio_AddressUtil_getFDAddress
 	if (NULL == descriptorFID){
 		return 0;
 	}
-	hysocketP = (hysocket_t) ((*env)->GetLongField (env, fd, descriptorFID));
+	hysocketP = (hysocket_t) ((IDATA)((*env)->GetLongField (env, fd, descriptorFID)));
 	return SOCKET_CAST(hysocketP);
 }
 

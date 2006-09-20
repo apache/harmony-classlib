@@ -33,7 +33,9 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_readD
   (JNIEnv * env, jobject thiz, jlong fd, jlong buf, jint offset, jint nbytes)
 {
   PORT_ACCESS_FROM_ENV (env);
-  return (jlong) hyfile_read ((IDATA) fd, (void *) (buf+offset), (IDATA) nbytes);
+  return (jlong) hyfile_read ((IDATA) fd,
+                              (void *) ((IDATA)(buf+offset)),
+                              (IDATA) nbytes);
 }
 
 /*
@@ -45,7 +47,8 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_write
   (JNIEnv * env, jobject thiz, jlong fd, jlong buf, jint offset, jint nbytes)
 {
   PORT_ACCESS_FROM_ENV (env);
-  return (jlong) hyfile_write ((IDATA) fd, (const void *) (buf+offset),
+  return (jlong) hyfile_write ((IDATA) fd,
+                               (const void *) ((IDATA)(buf+offset)),
                                (IDATA) nbytes);
 }
 

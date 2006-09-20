@@ -1747,7 +1747,7 @@ setJavaIoFileDescriptorContents (JNIEnv * env, jobject fd,
   jfieldID fid = getJavaIoFileDescriptorDescriptor (env);
   if (NULL != fid)
     {
-      (*env)->SetLongField (env, fd, fid, (jlong) value);
+      (*env)->SetLongField (env, fd, fid, (jlong) ((IDATA)value));
     }
 }
 
@@ -1759,7 +1759,7 @@ getJavaIoFileDescriptorContentsAsAPointer (JNIEnv * env, jobject fd)
     {
       return (void *) -1;
     }
-  return (void *) ((*env)->GetLongField (env, fd, descriptorFID));
+  return (void *) ((IDATA)((*env)->GetLongField (env, fd, descriptorFID)));
 }
 
 jobject getJavaNioChannelsSocketChannelImplObj(JNIEnv * env, jclass channel_class){

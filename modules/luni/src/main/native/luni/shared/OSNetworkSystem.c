@@ -186,7 +186,7 @@ setConnectContext(JNIEnv *env,jobject longclass,U_8 * context){
   jfieldID descriptorFID;
   descriptorCLS	= (*env)->FindClass (env, "java/lang/Long");
   descriptorFID	= (*env)->GetFieldID (env, descriptorCLS, "value","J");	
-  (*env)->SetLongField(env,  longclass,	descriptorFID,(jlong)context);
+  (*env)->SetLongField(env,  longclass,	descriptorFID,(jlong)((IDATA)context));
 };
 
 /**
@@ -201,7 +201,7 @@ getConnectContext(JNIEnv *env,jobject longclass){
   jfieldID descriptorFID;
   descriptorCLS	= (*env)->FindClass (env, "java/lang/Long");
   descriptorFID	= (*env)->GetFieldID (env, descriptorCLS, "value", "J");
-  return  (void	*) ((*env)->GetLongField (env, longclass, descriptorFID));
+  return (void*) ((IDATA)((*env)->GetLongField(env, longclass, descriptorFID)));
 };
 
 /**

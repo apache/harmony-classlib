@@ -15,6 +15,7 @@
 #include <string.h>
 #include <vmi.h>
 #include "hyenv.h"
+#include <stdlib.h>
 
 JNIEXPORT jbyteArray JNICALL Java_org_apache_harmony_luni_platform_Environment_getEnvBytes
   (JNIEnv *env, jclass obj){

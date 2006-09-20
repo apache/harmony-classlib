@@ -145,10 +145,10 @@ JNIEXPORT jobjectArray JNICALL Java_org_apache_harmony_text_BidiWrapper_ubidi_1g
   
   runs = (*env)->NewObjectArray(env, runCount,run_clazz, NULL);  
   for (i = 0; i < runCount; i++) {
-      ubidi_getLogicalRun ((const UBiDi *)pBiDi, start, &limit, &level);
-	  run = (*env)->NewObject (env, run_clazz, initID, start, limit, level);
+      ubidi_getLogicalRun((const UBiDi *)((IDATA)pBiDi), start, &limit, &level);
+      run = (*env)->NewObject (env, run_clazz, initID, start, limit, level);
       (*env)->SetObjectArrayElement(env, runs, i, run);
-	  start = limit;	  
+      start = limit;	  
   }
   return runs;
 }

@@ -157,7 +157,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_readv
   offsets = (*env)->GetIntArrayElements(env, joffsets, &offsetsCopied);
   lengths = (*env)->GetIntArrayElements(env, jlengths, &lengthsCopied);
   while(i < size){
-    vectors[i].iov_base = (void *)(bufs[i]+offsets[i]);
+    vectors[i].iov_base = (void *)((IDATA)(bufs[i]+offsets[i]));
     vectors[i].iov_len = lengths[i];
     i++;
   }
@@ -199,7 +199,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_write
   offsets = (*env)->GetIntArrayElements(env, joffsets, &offsetsCopied);
   lengths = (*env)->GetIntArrayElements(env, jlengths, &lengthsCopied);
   while(i < size){
-    vectors[i].iov_base = (void *)(bufs[i]+offsets[i]);
+    vectors[i].iov_base = (void *)((IDATA)(bufs[i]+offsets[i]));
     vectors[i].iov_len = lengths[i];
     i++;
   }

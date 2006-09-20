@@ -35,6 +35,7 @@
 #include "hythread.h"		/* for synchronization */
 #include "hyport.h"			/* for port library */
 #include "vmi.h"			/* for VMI functions */
+#include <string.h>			/* for memset */
 
 /* A constant that bounds the number of keys available. */
 #define VMLS_MAX_KEYS 256
