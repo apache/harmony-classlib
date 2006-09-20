@@ -675,6 +675,12 @@ public class CharacterTest extends TestCase {
         // Test for method int java.lang.Character.digit(char, int)
         assertEquals("Returned incorrect digit", 1, Character.digit('1', 10));
         assertEquals("Returned incorrect digit", 15, Character.digit('F', 16));
+        
+        assertEquals(-1, Character.digit('\u0000', 37));
+        assertEquals(-1, Character.digit('\u0045', 10));
+        
+        assertEquals(10, Character.digit('\u0041', 20));
+        assertEquals(10, Character.digit('\u0061', 20));
     }
     
     /**
@@ -744,6 +750,20 @@ public class CharacterTest extends TestCase {
                 .getNumericValue('\u2182'));
         assertEquals("Returned incorrect numeric value 6", 2, Character
                 .getNumericValue('\uff12'));
+        
+        assertEquals(50, Character.getNumericValue('\u216C'));
+        
+        assertEquals(10, Character.getNumericValue('\u0041'));
+        assertEquals(35, Character.getNumericValue('\u005A'));
+        assertEquals(10, Character.getNumericValue('\u0061'));
+        assertEquals(35, Character.getNumericValue('\u007A'));
+        assertEquals(10, Character.getNumericValue('\uFF21'));       
+        
+        //FIXME depends on ICU4J
+        //assertEquals(35, Character.getNumericValue('\uFF3A'));
+        
+        assertEquals(10, Character.getNumericValue('\uFF41'));
+        assertEquals(35, Character.getNumericValue('\uFF5A'));
     }
     
     /**
@@ -758,7 +778,6 @@ public class CharacterTest extends TestCase {
         assertEquals(2, Character.getNumericValue((int)'\uff12'));
         assertEquals(-1, Character.getNumericValue(0xFFFF));
         
-        assertEquals(-1, Character.getNumericValue(0xFFFF));
         assertEquals(0, Character.getNumericValue(0x1D7CE));
         assertEquals(0, Character.getNumericValue(0x1D7D8));
         assertEquals(-1, Character.getNumericValue(0x2F800));
@@ -809,6 +828,80 @@ public class CharacterTest extends TestCase {
         assertEquals("Wrong constant for FORMAT", 16, Character.FORMAT);
         assertEquals("Wrong constant for PRIVATE_USE",
                 18, Character.PRIVATE_USE);
+        
+        assertEquals(Character.UNASSIGNED, Character.getType('\u9FFF'));
+
+        assertEquals(Character.UPPERCASE_LETTER, Character.getType('\u0041'));
+
+        assertEquals(Character.LOWERCASE_LETTER, Character.getType('\u0061'));
+
+        assertEquals(Character.TITLECASE_LETTER, Character.getType('\u01C5'));
+        assertEquals(Character.TITLECASE_LETTER, Character.getType('\u1FFC'));
+
+        assertEquals(Character.MODIFIER_LETTER, Character.getType('\u02B0'));
+        assertEquals(Character.MODIFIER_LETTER, Character.getType('\uFF9F'));
+
+        assertEquals(Character.OTHER_LETTER, Character.getType('\u01BB'));
+
+        assertEquals(Character.NON_SPACING_MARK, Character.getType('\u0F82'));
+
+        assertEquals(Character.ENCLOSING_MARK, Character.getType('\u0488'));
+        assertEquals(Character.ENCLOSING_MARK, Character.getType('\u20DE'));
+
+        assertEquals(Character.COMBINING_SPACING_MARK, Character.getType('\u1938'));
+
+        assertEquals(Character.DECIMAL_DIGIT_NUMBER, Character.getType('\u194D'));
+
+        assertEquals(Character.LETTER_NUMBER, Character.getType('\u2160'));
+
+        assertEquals(Character.OTHER_NUMBER, Character.getType('\u00B2'));
+
+        assertEquals(Character.SPACE_SEPARATOR, Character.getType('\u0020'));
+        assertEquals(Character.SPACE_SEPARATOR, Character.getType('\u3000'));
+
+        assertEquals(Character.LINE_SEPARATOR, Character.getType('\u2028'));
+
+        assertEquals(Character.PARAGRAPH_SEPARATOR, Character.getType('\u2029'));
+
+        assertEquals(Character.CONTROL, Character.getType('\u0000'));
+        assertEquals(Character.CONTROL, Character.getType('\u009F'));
+
+        assertEquals(Character.FORMAT, Character.getType('\u00AD'));
+
+        assertEquals(Character.PRIVATE_USE, Character.getType('\uE000'));
+
+        assertEquals(Character.SURROGATE, Character.getType('\uD800'));
+        assertEquals(Character.SURROGATE, Character.getType('\uDFFF'));
+
+        assertEquals(Character.DASH_PUNCTUATION, Character.getType('\uFE31'));
+        assertEquals(Character.DASH_PUNCTUATION, Character.getType('\uFF0D'));
+
+        assertEquals(Character.START_PUNCTUATION, Character.getType('\u0028'));
+        assertEquals(Character.START_PUNCTUATION, Character.getType('\uFF62'));
+
+        assertEquals(Character.END_PUNCTUATION, Character.getType('\u0029'));
+        assertEquals(Character.END_PUNCTUATION, Character.getType('\uFF63'));
+
+        assertEquals(Character.CONNECTOR_PUNCTUATION, Character.getType('\u005F'));
+        assertEquals(Character.CONNECTOR_PUNCTUATION, Character.getType('\uFF3F'));
+
+        assertEquals(Character.OTHER_PUNCTUATION, Character.getType('\u2034'));
+
+        assertEquals(Character.MATH_SYMBOL, Character.getType('\u002B'));
+
+        assertEquals(Character.CURRENCY_SYMBOL, Character.getType('\u0024'));
+        assertEquals(Character.CURRENCY_SYMBOL, Character.getType('\uFFE6'));
+
+        assertEquals(Character.MODIFIER_SYMBOL, Character.getType('\u005E'));
+        assertEquals(Character.MODIFIER_SYMBOL, Character.getType('\uFFE3'));
+
+        assertEquals(Character.OTHER_SYMBOL, Character.getType('\u00A6'));
+
+        assertEquals(Character.INITIAL_QUOTE_PUNCTUATION, Character.getType('\u00AB'));
+        assertEquals(Character.INITIAL_QUOTE_PUNCTUATION, Character.getType('\u2039'));
+
+        assertEquals(Character.FINAL_QUOTE_PUNCTUATION, Character.getType('\u00BB'));
+        assertEquals(Character.FINAL_QUOTE_PUNCTUATION, Character.getType('\u203A'));   
     }
     
     /**
@@ -1051,6 +1144,7 @@ public class CharacterTest extends TestCase {
     public void test_isMirrored_C() {
         assertTrue(Character.isMirrored('\u0028'));
         assertFalse(Character.isMirrored('\uFFFF'));
+        assertFalse(Character.isMirrored('\u0000'));
     }
     
     /**
@@ -1108,9 +1202,10 @@ public class CharacterTest extends TestCase {
         assertTrue("digit returned false", Character.isJavaIdentifierPart('9'));
         assertTrue("connecting char returned false", Character
                 .isJavaIdentifierPart('_'));
-        assertTrue("ignorable control returned true", !Character
-                .isJavaIdentifierPart('\u200b'));
         assertTrue("semi returned true", !Character.isJavaIdentifierPart(';'));
+        
+        // RI fails because 0x200B changes category in Unicode 4.1
+        assertTrue(Character.isJavaIdentifierPart('\u200b'));
     }
     
     /**
@@ -1310,6 +1405,9 @@ public class CharacterTest extends TestCase {
         // Test for method boolean java.lang.Character.isLowerCase(char)
         assertTrue("lower returned false", Character.isLowerCase('a'));
         assertTrue("upper returned true", !Character.isLowerCase('T'));
+        
+        assertTrue(Character.isLowerCase('z'));
+        assertFalse(Character.isLowerCase('Z'));
     }
     
     /**
@@ -1344,6 +1442,8 @@ public class CharacterTest extends TestCase {
         // Test for method boolean java.lang.Character.isSpaceChar(char)
         assertTrue("space returned false", Character.isSpaceChar('\u0020'));
         assertTrue("non-space returned true", !Character.isSpaceChar('\n'));
+        
+        assertTrue(Character.isSpaceChar('\u2000'));
     }
     
     /**
@@ -1419,6 +1519,11 @@ public class CharacterTest extends TestCase {
         assertTrue("'a' returned false", Character.isUnicodeIdentifierPart('a'));
         assertTrue("'2' returned false", Character.isUnicodeIdentifierPart('2'));
         assertTrue("'+' returned true", !Character.isUnicodeIdentifierPart('+'));
+        
+        assertTrue(Character.isUnicodeIdentifierPart('\u1FA9'));
+        assertTrue(Character.isUnicodeIdentifierPart('\u0030'));
+        assertTrue(Character.isUnicodeIdentifierPart('\uFF10'));
+
     }
     
     /**
@@ -1480,6 +1585,11 @@ public class CharacterTest extends TestCase {
                 .isUnicodeIdentifierStart('2'));
         assertTrue("'+' returned true", !Character
                 .isUnicodeIdentifierStart('+'));
+        
+        assertTrue(Character.isUnicodeIdentifierStart('\u1FA9'));     
+        assertTrue(Character.isUnicodeIdentifierStart('\u16EE'));
+
+        assertFalse(Character.isUnicodeIdentifierStart('\u06F9'));
     }
     
     /**
@@ -1517,6 +1627,12 @@ public class CharacterTest extends TestCase {
         // Test for method boolean java.lang.Character.isUpperCase(char)
         assertTrue("Incorrect case value", !Character.isUpperCase('t'));
         assertTrue("Incorrect case value", Character.isUpperCase('T'));
+        
+        assertTrue(Character.isUpperCase('A'));
+        assertTrue(Character.isUpperCase('Z'));
+        
+        assertFalse(Character.isUpperCase('a'));
+        assertFalse(Character.isUpperCase('z'));
     }
     
     /**
@@ -1541,6 +1657,19 @@ public class CharacterTest extends TestCase {
         // Test for method boolean java.lang.Character.isWhitespace(char)
         assertTrue("space returned false", Character.isWhitespace('\n'));
         assertTrue("non-space returned true", !Character.isWhitespace('T'));
+        
+        assertTrue(Character.isWhitespace('\u0009'));
+        
+        assertTrue(Character.isWhitespace('\u2000'));
+        assertTrue(Character.isWhitespace('\u200A'));
+        
+        assertTrue(Character.isWhitespace('\u2028'));      
+        assertTrue(Character.isWhitespace('\u2029'));
+        
+        assertFalse(Character.isWhitespace('\u00A0'));
+        assertFalse(Character.isWhitespace('\u202F'));
+        
+        assertFalse(Character.isWhitespace('\uFEFF'));
     }
     
     /**
@@ -1602,6 +1731,14 @@ public class CharacterTest extends TestCase {
     public void test_toLowerCaseC() {
         // Test for method char java.lang.Character.toLowerCase(char)
         assertEquals("Failed to change case", 't', Character.toLowerCase('T'));
+        
+        assertEquals('a', Character.toLowerCase('A'));
+        assertEquals('a', Character.toLowerCase('a'));
+        assertEquals('z', Character.toLowerCase('Z'));
+        assertEquals('z', Character.toLowerCase('z'));
+        
+        assertEquals('\u0000', Character.toLowerCase('\u0000'));
+        assertEquals('\uFFFF', Character.toLowerCase('\uFFFF'));
     }
     
     /**
@@ -1638,6 +1775,9 @@ public class CharacterTest extends TestCase {
                 'A', Character.toTitleCase('A'));
         assertEquals("Incorrect title case for 1",
                 '1', Character.toTitleCase('1'));
+        
+        assertEquals('Z', Character.toTitleCase('z'));
+        assertEquals('Z', Character.toTitleCase('Z'));
     }
     
     /**
@@ -1666,6 +1806,12 @@ public class CharacterTest extends TestCase {
                 'A', Character.toUpperCase('A'));
         assertEquals("Incorrect upper case for 1",
                 '1', Character.toUpperCase('1'));
+        
+        assertEquals('\u0000', Character.toUpperCase('\u0000'));
+        assertEquals('\u0041', Character.toUpperCase('\u0061'));
+        assertEquals('\u005A', Character.toUpperCase('\u007A'));
+        assertEquals('\u0041', Character.toUpperCase('\u0041'));
+        assertEquals('\uFFFF', Character.toUpperCase('\uFFFF'));
     }
     
     /**
@@ -1682,12 +1828,91 @@ public class CharacterTest extends TestCase {
         assertEquals(0x10FFFF, Character.toUpperCase(0x10FFFF));
         assertEquals(0x110000, Character.toUpperCase(0x110000));
     }
+    
+    /**
+     * @tests java.lang.Character#getDirectionality(char)
+     */
+    public void test_getDirectionaliy_C(){
+        assertEquals(Character.DIRECTIONALITY_UNDEFINED, Character
+                .getDirectionality('\uFFFE'));
+        
+        assertEquals(Character.DIRECTIONALITY_LEFT_TO_RIGHT, Character
+                .getDirectionality('\u0041'));
+        
+        assertEquals(Character.DIRECTIONALITY_RIGHT_TO_LEFT, Character
+                .getDirectionality('\uFB4F'));
+        
+        assertEquals(Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC, Character
+                .getDirectionality('\u0600'));
+        assertEquals(Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC, Character
+                .getDirectionality('\uFEFC'));
+        
+        assertEquals(Character.DIRECTIONALITY_EUROPEAN_NUMBER, Character
+                .getDirectionality('\u2070'));
+        
+        assertEquals(Character.DIRECTIONALITY_EUROPEAN_NUMBER_TERMINATOR, Character
+                .getDirectionality('\u0023'));
+        assertEquals(Character.DIRECTIONALITY_EUROPEAN_NUMBER_TERMINATOR, Character
+                .getDirectionality('\u17DB'));
+        
+        assertEquals(Character.DIRECTIONALITY_ARABIC_NUMBER, Character
+                .getDirectionality('\u0660'));
+        assertEquals(Character.DIRECTIONALITY_ARABIC_NUMBER, Character
+                .getDirectionality('\u066C'));
+        
+        assertEquals(Character.DIRECTIONALITY_COMMON_NUMBER_SEPARATOR, Character
+                .getDirectionality('\u002C'));
+        assertEquals(Character.DIRECTIONALITY_COMMON_NUMBER_SEPARATOR, Character
+                .getDirectionality('\uFF1A'));
+        
+        assertEquals(Character.DIRECTIONALITY_NONSPACING_MARK, Character
+                .getDirectionality('\u17CE'));
+        
+        assertEquals(Character.DIRECTIONALITY_BOUNDARY_NEUTRAL, Character
+                .getDirectionality('\u0000'));
+        
+        assertEquals(Character.DIRECTIONALITY_PARAGRAPH_SEPARATOR, Character
+                .getDirectionality('\u2029'));
+        
+        assertEquals(Character.DIRECTIONALITY_SEGMENT_SEPARATOR, Character
+                .getDirectionality('\u0009'));
+        assertEquals(Character.DIRECTIONALITY_SEGMENT_SEPARATOR, Character
+                .getDirectionality('\u001F'));
+        
+        assertEquals(Character.DIRECTIONALITY_WHITESPACE, Character
+                .getDirectionality('\u0020'));
+        assertEquals(Character.DIRECTIONALITY_WHITESPACE, Character
+                .getDirectionality('\u3000'));
+        
+        assertEquals(Character.DIRECTIONALITY_OTHER_NEUTRALS, Character
+                .getDirectionality('\u2FF0'));
+        
+        assertEquals(Character.DIRECTIONALITY_LEFT_TO_RIGHT_EMBEDDING, Character
+                .getDirectionality('\u202A'));
+        
+        assertEquals(Character.DIRECTIONALITY_LEFT_TO_RIGHT_OVERRIDE, Character
+                .getDirectionality('\u202D'));
+
+        assertEquals(Character.DIRECTIONALITY_RIGHT_TO_LEFT_EMBEDDING, Character
+                .getDirectionality('\u202B'));
+        
+        assertEquals(Character.DIRECTIONALITY_RIGHT_TO_LEFT_OVERRIDE, Character
+                .getDirectionality('\u202E'));
+        
+        assertEquals(Character.DIRECTIONALITY_POP_DIRECTIONAL_FORMAT, Character
+                .getDirectionality('\u202C'));
+        
+        // RI fails ,this is non-bug difference between Unicode 4.0 and 4.1
+        assertEquals(Character.DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR,
+                Character.getDirectionality('\u002B'));
+        assertEquals(Character.DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR,
+                Character.getDirectionality('\uFF0B'));
+    }
 
     /**
      * @tests java.lang.Character#getDirectionality(int)
      */
-    public void test_isDirectionaliy_I(){
-        //assertTrue(false);
+    public void test_getDirectionaliy_I(){
         assertEquals(Character.DIRECTIONALITY_UNDEFINED, Character
                 .getDirectionality(0xFFFE));
         assertEquals(Character.DIRECTIONALITY_UNDEFINED, Character
@@ -1718,12 +1943,6 @@ public class CharacterTest extends TestCase {
                 .getDirectionality(0x2070));
         assertEquals(Character.DIRECTIONALITY_EUROPEAN_NUMBER, Character
                 .getDirectionality(0x1D7FF));
-        
-        //RI fails ,this is non-bug difference between Unicode 4.0 and 4.1
-        assertEquals(Character.DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR, Character
-                .getDirectionality(0x002B));
-        assertEquals(Character.DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR, Character
-                .getDirectionality(0xFF0B));
         
         assertEquals(Character.DIRECTIONALITY_EUROPEAN_NUMBER_TERMINATOR, Character
                 .getDirectionality(0x0023));
@@ -1783,6 +2002,13 @@ public class CharacterTest extends TestCase {
                 .getDirectionality(0x202E));
         
         assertEquals(Character.DIRECTIONALITY_POP_DIRECTIONAL_FORMAT, Character
-                .getDirectionality(0x202C));     
+                .getDirectionality(0x202C));
+        
+
+        // RI fails ,this is non-bug difference between Unicode 4.0 and 4.1
+        assertEquals(Character.DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR,
+                Character.getDirectionality(0x002B));
+        assertEquals(Character.DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR,
+                Character.getDirectionality(0xFF0B));
     }
 }
