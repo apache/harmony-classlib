@@ -548,7 +548,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      */
     @Override
     public void putAll(Map<? extends K, ? extends V> map) {
-        if (map.entrySet() != null) {
+        if (!map.isEmpty()) {
             int capacity = elementCount + map.size();
             if (capacity > threshold) {
                 rehash(capacity);

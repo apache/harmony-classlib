@@ -38,6 +38,16 @@ public class HashMapTest extends junit.framework.TestCase {
         }
     }
     
+    private static class MockMapNull extends AbstractMap {
+        public Set entrySet() {
+            return null;
+        }
+
+        public int size() {
+            return 10;
+        }
+    }
+    
 	HashMap hm;
 
 	final static int hmSize = 1000;
@@ -351,6 +361,26 @@ public class HashMapTest extends junit.framework.TestCase {
         hm2.putAll(mockMap);
         assertEquals("Size should be 0", 0, hm2.size());
 	}
+    
+    /**
+     * @tests java.util.HashMap#putAll(java.util.Map)
+     */
+    public void test_putAllLjava_util_Map_Null() {
+        HashMap hashMap = new HashMap();
+        try {
+            hashMap.putAll(new MockMapNull());
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected.
+        }
+
+        try {
+            hashMap = new HashMap(new MockMapNull());
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected.
+        }
+    } 
 
 	/**
 	 * @tests java.util.HashMap#remove(java.lang.Object)
