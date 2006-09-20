@@ -79,25 +79,72 @@ command line.  For example, to run only the luni tests:
          ================================= -->
     <target name="default" depends="build" />
 
-    <target name="build">
+    <target name="build" depends="build-java,build-native">
+        <ant antfile="make/build-test.xml" inheritall="false"
+             target="support.jar"/>
+    </target>
+
+
+    <!-- ================================
+	 target : rebuild-java
+	     
+	 builds java source with a clean first
+	 ================================= -->
+    <target name="rebuild-java" depends="clean-java,build-java" />
+
+    <!-- ================================= 
+          target: build-java              
+
+          runs the build target in build-java.xml
+         ================================= -->
+    <target name="build-java">
         <echo>
 ========================================
 Building Java component archives...
 ========================================
-</echo>
+        </echo>
         <ant antfile="make/build-java.xml" inheritall="false" target="build"/>
+    </target>
 
+    <!-- ================================= 
+          target: clean-java              
+
+          runs the clean target in build-java.xml
+         ================================= -->
+    <target name="clean-java">
+        <ant antfile="make/build-java.xml" inheritall="false" target="clean" />
+    </target>
+
+    <!-- ================================
+	 target : rebuild-native
+	     
+	 builds native source with a clean first
+	 ================================= -->
+    <target name="rebuild-native" depends="clean-native,build-native" />
+
+    <!-- ================================= 
+          target: build-native             
+
+          runs the build target in build-native.xml
+         ================================= -->
+    <target name="build-native">
         <echo>
 ========================================
 Building native libs and executables...
 ========================================
-</echo>
+        </echo>
         <ant antfile="make/build-native.xml" inheritall="false" target="build"/>
-
-        <ant antfile="make/build-test.xml" inheritall="false"
-             target="support.jar"/>
     </target>
- 
+
+    <!-- ================================= 
+          target: clean-native              
+
+          runs the clean target in build-native.xml
+         ================================= -->
+    <target name="clean-native">
+        <ant antfile="make/build-native.xml" inheritall="false" target="clean" />
+    </target>
+
     <target name="test">
         <echo>
 ========================================
@@ -123,9 +170,7 @@ Generating HTML using Doxygen...
     <!-- ================================= 
           target: clean
          ================================= -->
-    <target name="clean">
-        <ant antfile="make/build-java.xml" inheritall="false" target="clean" />
-        <ant antfile="make/build-native.xml" inheritall="false" target="clean" />
+    <target name="clean" depends="clean-java,clean-native">
         <!-- Removed this for now since svn diff complains with
              svn: Working copy 'doc/kernel_doc' is missing or not locked
              if we run it.  We shouldn't really clean things that are in the
