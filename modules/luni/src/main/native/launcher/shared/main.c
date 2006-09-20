@@ -71,8 +71,8 @@ int arrangeToolsArgs
 PROTOTYPE ((HyPortLibrary * portLibrary, int *pargc, char ***pargv, char *mainClass));
 int augmentToolsArgs
 PROTOTYPE ((HyPortLibrary * portLibrary, int *argc, char ***argv));
-static IDATA addJreDirToPath
-PROTOTYPE ((HyPortLibrary * portLibrary, char *newPathToAdd, char **argv));
+static IDATA addDirsToPath
+PROTOTYPE ((HyPortLibrary * portLibrary, int count, char *newPathToAdd[], char **argv));
 int main_runJavaMain
 PROTOTYPE ((JNIEnv * env, char *mainClassName, int nameIsUTF, int java_argc,
             char **java_argv, HyPortLibrary * portLibrary));
@@ -280,13 +280,16 @@ gpProtectedMain (struct haCmdlineOptions *args)
   /* jvm dlls are located in a subdirectory off of jre/bin */
   /* setup path to dll named in -vm argument                      */
     endPathPtr[0] = '\0';
+
     newPathToAdd = hymem_allocate_memory (strlen (exeName) + strlen (vmdllsubdir) + 1);
+    
     if (newPathToAdd == NULL) {
         /* HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY=Internal VM error: Out of memory\n */
         PORTLIB->nls_printf (PORTLIB, HYNLS_ERROR,
                             HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY);
         goto bail;
     }
+        
     vmiPath =
     hymem_allocate_memory (strlen (exeName) + strlen (vmdllsubdir) +
                             strlen (vmdll) +
@@ -305,10 +308,16 @@ gpProtectedMain (struct haCmdlineOptions *args)
     strcat (vmiPath, DIR_SEPERATOR_STRING);
     strcat (vmiPath, vmdll);
 
-    rc = addJreDirToPath (PORTLIB, newPathToAdd, argv);
+    char *dirs[2];
+    
+    dirs[0] = newPathToAdd;
+    dirs[1] = exeName;
+    
+    rc = addDirsToPath(PORTLIB, 2, dirs, argv);
+    
     if (rc == -1)
     {
-        hytty_printf (PORTLIB, "addJreDirToPath Failed\n");
+        hytty_printf (PORTLIB, "addDirsToPath Failed\n");
         goto bail;
     }
 
@@ -998,9 +1007,11 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
 * @param[in] newPathToAdd The directory to add to the PATH environment variable 
 * @param[in] argv The commandline argv for linux 
 * 
+* return 0 on success, -1 on failure
+* 
 */
 static IDATA
-addJreDirToPath (HyPortLibrary * portLibrary, char *newPathToAdd, char **argv)
+addDirsToPath (HyPortLibrary * portLibrary, int count, char *newPathToAdd[], char **argv)
 {
   char *oldPath = NULL;
   char *variableName = NULL;
@@ -1026,30 +1037,72 @@ addJreDirToPath (HyPortLibrary * portLibrary, char *newPathToAdd, char **argv)
   if (!oldPath) {
     oldPath = "";
   }
+  
+  /*
+   *  see if we can find all paths in the current path
+   */
+    
+  int found = 0;
+  int i=0;
 
-  newPathLength = strlen (oldPath) + strlen (newPathToAdd) + strlen (variableName) + 3;        /* 3 = separator + equals + EOL */
-  newPath = hymem_allocate_memory (newPathLength);
+  for (i=0; i < count; i++) { 
+    if (newPathToAdd[i] != NULL && strstr(oldPath, newPathToAdd[i]) != 0) {
+        found++;
+    }
+  }
 
-  if (!newPath)
-    return -1;
+  /* 
+   *  if we found them all, we're done
+   */   
+  if (found == count) {
+    return 0;
+  }
+
+  /*
+   *  now add the ones that the oldPath doesn't have.  First figure out the
+   *  size overall, and then add what we want on the front (keep the search
+   *  short) and then add the old path on the end
+   */
+   
+  int strLen = strlen(variableName) + strlen("=") + strlen(oldPath);
+  
+  for (i=0; i < count; i++) {
+    if (newPathToAdd[i] != NULL && strstr(oldPath, newPathToAdd[i]) == 0) {
+        strLen += strlen(newPathToAdd[i]);
+        strLen++; // for each separator
+    }
+  }
+
+  newPath = hymem_allocate_memory(strLen + 1);
+
   strcpy (newPath, variableName);
   strcat (newPath, "=");
-  strcat (newPath, newPathToAdd);
-  strcat (newPath, separator);
-  strcat (newPath, oldPath);
+  
+  for (i=0; i < count; i++) { 
+    if (newPathToAdd[i] != NULL && strstr(oldPath, newPathToAdd[i]) == 0) {
+        if (i != 0) {
+            strcat(newPath, separator);
+        }
+        strcat(newPath, newPathToAdd[i]);
+    }
+  }
+  
+  strcat(newPath, separator);
+  strcat(newPath, oldPath);
 
+  /* 
+   *  now set the new path, and in case of !Windows, execv() to 
+   *  restart.  Don't free newPath, as the docs say that the 
+   *  string becomes part of the environment, which sounds nutty
+   *  but at worst, it's a leak of of one string under windows
+   */
+     
 #if defined(WIN32)
   rc = _putenv (newPath);
 #else
-  if (strstr (oldPath, newPathToAdd) == NULL)
-    {
-      rc = putenv (newPath);
-      execv (exeName, argv);
-    }
+  rc = putenv (newPath);
+  execv (exeName, argv);
 #endif
-
-  /* putenv still uses the memory */
-  //hymem_free_memory(newPath);
 
   return rc;
 }
