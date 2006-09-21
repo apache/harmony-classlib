@@ -132,6 +132,8 @@ gpProtectedMain (struct haCmdlineOptions *args)
   int genericLauncher = 0;
   char *str;
   char *knownGenericNames[] = { "java", "java.exe", "javaw.exe", NULL };
+  char *dirs[2];
+    
 
   PORT_ACCESS_FROM_PORT (args->portLibrary);
 
@@ -299,7 +301,6 @@ gpProtectedMain (struct haCmdlineOptions *args)
         /* HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY=Internal VM error: Out of memory\n */
         PORTLIB->nls_printf (PORTLIB, HYNLS_ERROR,
                             HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY);
-        goto bail;
     }
     vmiPath[0] = '\0';
     strcpy (newPathToAdd, exeName);
@@ -308,8 +309,6 @@ gpProtectedMain (struct haCmdlineOptions *args)
     strcat (vmiPath, DIR_SEPERATOR_STRING);
     strcat (vmiPath, vmdll);
 
-    char *dirs[2];
-    
     dirs[0] = newPathToAdd;
     dirs[1] = exeName;
     
@@ -1016,10 +1015,12 @@ addDirsToPath (HyPortLibrary * portLibrary, int count, char *newPathToAdd[], cha
   char *oldPath = NULL;
   char *variableName = NULL;
   char *separator = NULL;
-  UDATA newPathLength;
   char *newPath;
   int rc = 0;
   char *exeName;
+  int found = 0;
+  int i=0;
+  int strLen;
 
   PORT_ACCESS_FROM_PORT (portLibrary);
 
@@ -1042,9 +1043,6 @@ addDirsToPath (HyPortLibrary * portLibrary, int count, char *newPathToAdd[], cha
    *  see if we can find all paths in the current path
    */
     
-  int found = 0;
-  int i=0;
-
   for (i=0; i < count; i++) { 
     if (newPathToAdd[i] != NULL && strstr(oldPath, newPathToAdd[i]) != 0) {
         found++;
@@ -1064,7 +1062,7 @@ addDirsToPath (HyPortLibrary * portLibrary, int count, char *newPathToAdd[], cha
    *  short) and then add the old path on the end
    */
    
-  int strLen = strlen(variableName) + strlen("=") + strlen(oldPath);
+  strLen = strlen(variableName) + strlen("=") + strlen(oldPath);
   
   for (i=0; i < count; i++) {
     if (newPathToAdd[i] != NULL && strstr(oldPath, newPathToAdd[i]) == 0) {
