@@ -122,6 +122,7 @@ public class Binding extends NameClassPair {
      *
      * @return the class name
      */
+    @Override
     public String getClassName() {
         if (super.getClassName() != null) {
             return super.getClassName();
@@ -166,6 +167,7 @@ public class Binding extends NameClassPair {
      * 
      * @return a string representation of this <code>Binding</code>
      */
+    @Override
     public String toString() {
         return super.toString() + ":" + boundObj; //$NON-NLS-1$
     }

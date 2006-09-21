@@ -13,36 +13,17 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 import java.util.Arrays;
 
 /**
  * A <code>BinaryRefAddr</code> refers to an address which is represented by a
- * binary address. 
- *
- * 
+ * binary address.
  */
 public class BinaryRefAddr extends RefAddr {
 
-    /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
-     */
-
-    /*
-     * This constant is used during deserialization to check the J2SE version
-     * which created the serialized object.
-     */
-    static final long serialVersionUID = -3415254970957330361L; //J2SE 1.4.2
-
-    /*
-     * -------------------------------------------------------------------
-     * Instance variables
-     * -------------------------------------------------------------------
-     */
+    private static final long serialVersionUID = -3415254970957330361L;
 
     /**
      * The buffer for the binary address itself.
@@ -51,41 +32,33 @@ public class BinaryRefAddr extends RefAddr {
      */
     private byte[] buf;
 
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
-
     /**
-     * Constructs a <code>BinaryRefAddr</code> using the specified address type
-     * and the full details of the supplied byte array.
+     * Constructs a <code>BinaryRefAddr</code> using the specified address
+     * type and the full details of the supplied byte array.
      * 
-     * @param type     the address type which cannot be null
-     * @param address  the address itself which cannot be null
+     * @param type the address type which cannot be null
+     * @param address the address itself which cannot be null
      */
     public BinaryRefAddr(String type, byte[] address) {
         this(type, address, 0, address.length);
     }
 
     /**
-     * Constructs a <code>BinaryRefAddr</code> using the specified address type
-     * and part of the supplied byte array.
-     * The number of bytes to be taken is specified by <code>size</code>. 
-     * Additionally these bytes are taken from a starting point specified by 
-     * <code>index</code>.  
-     *
-     * @param type      the address type. It cannot be null.
-     * @param address   the address itself. It cannot be null.
-     * @param index     the starting point to copy bytes from. It must be 
-     *                  greater than or equal to zero and must be less than or 
-     *                  equal to the size of the byte array.
-     * @param size      the number of bytes to copy. It must be greater than or 
-     *                  equal to zero and must be less than or equal to the 
-     *                  size of the byte array less the starting position.
-     * @throws ArrayIndexOutOfBoundsException
-     *                  If <code>size</code> or <code>index</code> does not meet
-     *                  the constraints.
+     * Constructs a <code>BinaryRefAddr</code> using the specified address
+     * type and part of the supplied byte array. The number of bytes to be taken
+     * is specified by <code>size</code>. Additionally these bytes are taken
+     * from a starting point specified by <code>index</code>.
+     * 
+     * @param type the address type. It cannot be null.
+     * @param address the address itself. It cannot be null.
+     * @param index the starting point to copy bytes from. It must be greater
+     *        than or equal to zero and must be less than or equal to the size
+     *        of the byte array.
+     * @param size the number of bytes to copy. It must be greater than or equal
+     *        to zero and must be less than or equal to the size of the byte
+     *        array less the starting position.
+     * @throws ArrayIndexOutOfBoundsException If <code>size</code> or
+     *         <code>index</code> does not meet the constraints.
      */
     public BinaryRefAddr(String type, byte[] address, int index, int size) {
         super(type);
@@ -93,75 +66,62 @@ public class BinaryRefAddr extends RefAddr {
         System.arraycopy(address, index, this.buf, 0, size);
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods override parent class RefAddr
-     * -------------------------------------------------------------------
-     */
-
     /**
      * Gets the content of this address.
      * 
-     * @return          an array of bytes containing the address. 
-     *                  It cannot be null.
+     * @return an array of bytes containing the address. It cannot be null.
      */
+    @Override
     public Object getContent() {
         return buf;
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods override parent class Object
-     * -------------------------------------------------------------------
-     */
-
     /**
-     * Returns true if this address is equal to the supplied object 
-     * <code>o</code>.
-     * They are considered equal if the address types are equal and the data in
-     * the buffers is of the same length and contains the same bytes.
-     *
-     * @param o         the object to compare with
-     * @return          true if this address is equal to <code>o</code>,
-     *                  otherwise false
+     * Returns true if this address is equal to the supplied object
+     * <code>o</code>. They are considered equal if the address types are
+     * equal and the data in the buffers is of the same length and contains the
+     * same bytes.
+     * 
+     * @param o the object to compare with
+     * @return true if this address is equal to <code>o</code>, otherwise
+     *         false
      */
+    @Override
     public boolean equals(Object o) {
         if (o instanceof BinaryRefAddr) {
             BinaryRefAddr a = (BinaryRefAddr) o;
-            return this.addrType.equals(a.addrType)
-                && Arrays.equals(this.buf, a.buf);
+            return this.addrType.equals(a.addrType) && Arrays.equals(this.buf, a.buf);
         }
         return false;
     }
 
     /**
-     * Returns the hashcode of this address.
-     * The result is the hashcode of the address type added to each byte 
-     * from the data buffer.
+     * Returns the hashcode of this address. The result is the hashcode of the
+     * address type added to each byte from the data buffer.
      * 
-     * @return          the hashcode of this address
+     * @return the hashcode of this address
      */
+    @Override
     public int hashCode() {
         int i = this.addrType.hashCode();
 
-        for (int j = 0; j < this.buf.length; j++) {
-            i += this.buf[j];
+        for (byte element : this.buf) {
+            i += element;
         }
         return i;
     }
 
     /**
-     * Returns the string representation of this address. 
-     * The string includes the address type and a maximum of 128 bytes address
-     * content expressed in hexical form. 
+     * Returns the string representation of this address. The string includes
+     * the address type and a maximum of 128 bytes address content expressed in
+     * hexadecimal form.
      * 
-     * @return          the string representation of this address
+     * @return the string representation of this address
      */
+    @Override
     public String toString() {
-        String s =
-            "The type of the address is: " //$NON-NLS-1$
-                + this.addrType
-                + "\nThe content of the address is: "; //$NON-NLS-1$
+        String s = "The type of the address is: " //$NON-NLS-1$
+                + this.addrType + "\nThe content of the address is: "; //$NON-NLS-1$
         int max = this.buf.length > 128 ? 128 : this.buf.length;
 
         for (int i = 0; i < max; i++) {
@@ -171,7 +131,4 @@ public class BinaryRefAddr extends RefAddr {
 
         return s;
     }
-
 }
-
-

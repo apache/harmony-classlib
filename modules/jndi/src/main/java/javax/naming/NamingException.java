@@ -278,6 +278,7 @@ public class NamingException extends Exception {
      * <p>
      * The output from this goes to <code>System.err</code>.</p>
      */
+    @Override
     public void printStackTrace() {
         if (null != rootException) {
             System.err.print(super.toString());
@@ -295,6 +296,7 @@ public class NamingException extends Exception {
      * @param p the <code>PrintStream</code> to which the stack trace is 
      * printed.
      */
+    @Override
     public void printStackTrace(PrintStream p) {
         if (null != rootException) {
             p.print(super.toString());
@@ -312,6 +314,7 @@ public class NamingException extends Exception {
      * @param p the <code>PrintWrite</code> to which the stack trace is 
      * printed.
      */
+    @Override
     public void printStackTrace(PrintWriter p) {
         if (null != rootException) {
             p.print(super.toString());
@@ -326,7 +329,8 @@ public class NamingException extends Exception {
      *  (non-Javadoc)
      * @see java.lang.Throwable#getCause()
      */
-	public Throwable getCause() {
+	@Override
+    public Throwable getCause() {
 		return super.getCause();
 	}
 
@@ -334,7 +338,8 @@ public class NamingException extends Exception {
      *  (non-Javadoc)
      * @see java.lang.Throwable#initCause(Throwable)
      */
-	public Throwable initCause(Throwable cause) {
+	@Override
+    public Throwable initCause(Throwable cause) {
 		return super.initCause(cause);
 	}
 
@@ -354,6 +359,7 @@ public class NamingException extends Exception {
      * 
      * @return the string
      */
+    @Override
     public String toString() {
         return this.toStringImpl(false);
     }

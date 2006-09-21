@@ -78,6 +78,7 @@ public class StringRefAddr extends RefAddr {
      * 
      * @return          a string containing this address which may be null
      */
+    @Override
     public Object getContent() {
         return contents;
     }

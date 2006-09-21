@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 import java.util.Hashtable;
@@ -93,12 +92,6 @@ import org.apache.harmony.jndi.internal.EnvironmentReader;
  */
 public class InitialContext implements Context {
 
-    /*
-     * -------------------------------------------------------------------
-     * Instance variables
-     * -------------------------------------------------------------------
-     */
-
     /**
      * Set to the result of the first successful invocation of <code>
      * NamingManager.getInitialContext</code> by <code>getDefaultInitCtx
@@ -173,19 +166,14 @@ public class InitialContext implements Context {
         }
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
-    /*
-     * Does private initilaziation.
+    /**
+     * Does private initialization.
      * 
      * @param env               the JNDI environment properties used to create
      *                          the context 
      * @throws NamingException  If failed to create an InitialContext.
      */
+    @SuppressWarnings("unchecked")
     private void internalInit(Hashtable<?, ?> env) throws NamingException {
 
         // 1. Read the environment parameter used to create this Context
@@ -342,12 +330,6 @@ public class InitialContext implements Context {
         return null == ctx ? getDefaultInitCtx() : ctx;
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods of Interface Context
-     * -------------------------------------------------------------------
-     */
-
     public Object lookup(Name name) throws NamingException {
         return getURLOrDefaultInitCtx(name).lookup(name);
     }
@@ -489,7 +471,4 @@ public class InitialContext implements Context {
     public String getNameInNamespace() throws NamingException {
         return getDefaultInitCtx().getNameInNamespace();
     }
-
 }
-
-

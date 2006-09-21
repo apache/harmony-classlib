@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 import java.io.IOException;
@@ -21,7 +20,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OptionalDataException;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -123,35 +121,19 @@ import java.util.Vector;
  */
 public class CompositeName implements Name {
 
-    /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
-     */
-
-    // J2SE 1.4.2
     private static final long serialVersionUID = 1667768148915813118L;
-    
+
     // status used by parse()
     private static final int OUT_OF_QUOTE = 0;
-    private static final int IN_SINGLE_QUOTE = 1;
-    private static final int IN_DOUBLE_QUOTE = 2;
-    private static final int QUOTE_ENDED = 3;
 
-    /*
-     * -------------------------------------------------------------------
-     * Instance variables
-     * -------------------------------------------------------------------
-     */
+    private static final int IN_SINGLE_QUOTE = 1;
+
+    private static final int IN_DOUBLE_QUOTE = 2;
+
+    private static final int QUOTE_ENDED = 3;
 
     /* a list holding elements */
     private transient Vector<String> elems;
-
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
 
     /**
      * Private copy constructor.
@@ -159,6 +141,7 @@ public class CompositeName implements Name {
      * @param elements  a list of name elements
      */
     private CompositeName(List<String> elements) {
+        super();
         elems = new Vector<String>(elements);
     }
 
@@ -168,16 +151,18 @@ public class CompositeName implements Name {
      * @param elements  an enumeration of name elements
      */
     protected CompositeName(Enumeration<String> elements) {
+        super();
         elems = new Vector<String>();
         while (elements.hasMoreElements()) {
             elems.add(elements.nextElement());
         }
     }
-    
+
     /**
      * Default constructor, creates an empty name with zero elements.
      */
     public CompositeName() {
+        super();
         elems = new Vector<String>();
     }
 
@@ -189,16 +174,11 @@ public class CompositeName implements Name {
      * @throws InvalidNameException if the supplied name is invalid
      */
     public CompositeName(String name) throws InvalidNameException {
+        super();
         elems = parseName(name);
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
-    /*
+    /**
      * Parse string name elements. Delimiter is "/".
      * Escape is "\" and both single quote and double quote are supported.
      */
@@ -215,9 +195,7 @@ public class CompositeName implements Name {
         }
 
         // general simple case, without escape and quote
-        if (name.indexOf('"') < 0
-            && name.indexOf('\'') < 0
-            && name.indexOf('\\') < 0) {
+        if (name.indexOf('"') < 0 && name.indexOf('\'') < 0 && name.indexOf('\\') < 0) {
             int i = 0, j = 0;
             while ((j = name.indexOf('/', i)) >= 0) {
                 l.add(name.substring(i, j));
@@ -230,7 +208,7 @@ public class CompositeName implements Name {
         // general complicated case, consider escape and quote
         char c;
         char chars[] = name.toCharArray();
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         int status = OUT_OF_QUOTE;
         for (int i = 0; i < chars.length; i++) {
             c = chars[i];
@@ -243,7 +221,7 @@ public class CompositeName implements Name {
                     status = OUT_OF_QUOTE;
                     continue;
                 }
-				throw new InvalidNameException("End quote is not at the end of element"); //$NON-NLS-1$
+                throw new InvalidNameException("End quote is not at the end of element"); //$NON-NLS-1$
             }
 
             if (c == '\\') {
@@ -304,11 +282,11 @@ public class CompositeName implements Name {
     /*
      * Format name elements to its string representation.
      */
-    private static String formatName(Vector elems) {
+    private static String formatName(Vector<String> elems) {
 
         // special case: all empty elements
         if (isAllEmptyElements(elems)) {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             for (int i = 0; i < elems.size(); i++) {
                 buf.append("/"); //$NON-NLS-1$
             }
@@ -316,21 +294,18 @@ public class CompositeName implements Name {
         }
 
         // general case
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (int i = 0; i < elems.size(); i++) {
-            String elem = (String) elems.get(i);
+            String elem = elems.get(i);
             if (i > 0) {
                 buf.append("/"); //$NON-NLS-1$
             }
-            if (elem.indexOf('/') < 0
-                && elem.indexOf('\\') < 0
-                && elem.indexOf('\'') < 0
-                && elem.indexOf('"') < 0) {
+            if (elem.indexOf('/') < 0 && elem.indexOf('\\') < 0 && elem.indexOf('\'') < 0
+                    && elem.indexOf('"') < 0) {
                 buf.append(elem);
             } else {
                 char chars[] = elem.toCharArray();
-                for (int j = 0; j < chars.length; j++) {
-                    char c = chars[j];
+                for (char c : chars) {
                     if (c == '/' || c == '\\' || c == '\'' || c == '"') {
                         buf.append('\\');
                     }
@@ -341,9 +316,9 @@ public class CompositeName implements Name {
         return buf.toString();
     }
 
-    private static boolean isAllEmptyElements(Vector elems) {
+    private static boolean isAllEmptyElements(Vector<String> elems) {
         for (int i = 0; i < elems.size(); i++) {
-            String elem = (String) elems.get(i);
+            String elem = elems.get(i);
             if (elem.length() > 0) {
                 return false;
             }
@@ -351,18 +326,12 @@ public class CompositeName implements Name {
         return true;
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods of interface Name
-     * -------------------------------------------------------------------
-     */
-
     public Enumeration<String> getAll() {
         return elems.elements();
     }
 
     public String get(int index) {
-        return (String) elems.get(index);
+        return elems.get(index);
     }
 
     public Name getPrefix(int index) {
@@ -451,8 +420,8 @@ public class CompositeName implements Name {
         }
 
         // compare 1 by 1
-        Enumeration enumeration = name.getAll();
-        Object me, he;
+        Enumeration<String> enumeration = name.getAll();
+        String me, he;
         for (int i = 0; enumeration.hasMoreElements(); i++) {
             me = elems.get(i);
             he = enumeration.nextElement();
@@ -474,8 +443,8 @@ public class CompositeName implements Name {
         }
 
         // compare 1 by 1
-        Enumeration enumeration = name.getAll();
-        Object me, he;
+        Enumeration<String> enumeration = name.getAll();
+        String me, he;
         for (int i = elems.size() - name.size(); enumeration.hasMoreElements(); i++) {
             me = elems.get(i);
             he = enumeration.nextElement();
@@ -506,7 +475,7 @@ public class CompositeName implements Name {
             CompositeName he = (CompositeName) o;
             int r;
             for (int i = 0; i < elems.size() && i < he.elems.size(); i++) {
-                r = ((String) elems.get(i)).compareTo((String)he.elems.get(i));
+                r = (elems.get(i)).compareTo(he.elems.get(i));
                 if (r != 0) {
                     return r;
                 }
@@ -522,33 +491,14 @@ public class CompositeName implements Name {
         throw new ClassCastException();
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods override parent class Object
-     * -------------------------------------------------------------------
-     */
-
     /**
      * Create a copy of this composite name, a complete (deep) copy of the object.
      *
      * @return a complete (deep) copy of the object.
      */
+    @Override
     public Object clone() {
-        // Object.clone()
-        CompositeName copy = null;
-        try {
-            copy = (CompositeName) super.clone();
-        } catch (CloneNotSupportedException e) {
-            // should never happen
-            throw new InternalError(
-                "Failed to clone object of " //$NON-NLS-1$
-                    + this.getClass().getName()
-                    + " class."); //$NON-NLS-1$
-        }
-
-        // replicate fields
-        copy.elems = new Vector<String>(elems);
-        return copy;
+        return new CompositeName(elems);
     }
 
     /**
@@ -561,49 +511,40 @@ public class CompositeName implements Name {
      *
      * @return the string representation of this composite name.
      */
+    @Override
     public String toString() {
         return formatName(elems);
     }
 
     /**
-     * Check if this <code>Name</code> is equal to the supplied object.
+     * Check if this <code>CompositeName</code> is equal to the supplied object.
      *
      * @param o the <code>CompositeName</code> to compare - can be null but 
      *          then returns false.
      * @return  true if they have the same number of elements all of
      *          which are equal. false if they are not equal.
      */
+    @Override
     public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
         // check type
         if (!(o instanceof CompositeName)) {
             return false;
         }
 
-        // check size
-        Name name = (Name) o;
-        if (elems.size() != name.size()) {
-            return false;
-        }
-
-        // compare 1 by 1
-        Enumeration enumeration = name.getAll();
-        Object me, he;
-        for (int i = 0; enumeration.hasMoreElements(); i++) {
-            me = elems.get(i);
-            he = enumeration.nextElement();
-            if (!(null == me ? null == he : me.equals(he))) {
-                return false;
-            }
-        }
-        return true;
+        return this.elems.equals(((CompositeName) o).elems);
     }
 
     /**
-     * Calculate the hashcode of this <code>CompositeName</code> by summing 
-     * the hashcodes of all of its elements.
-     *
+     * Calculate the hashcode of this <code>CompositeName</code> by summing
+     * the hash codes of all of its elements.
+     * 
      * @return the hashcode of this object.
      */
+    @Override
     public int hashCode() {
         int sum = 0;
         for (int i = 0; i < elems.size(); i++) {
@@ -612,41 +553,38 @@ public class CompositeName implements Name {
         return sum;
     }
 
-    /*
+    /**
      * Writes a serialized representation of the CompositeName. It starts with
      * an int which is the number of elements in the name, and is followed by a
      * String for each element.
      * 
      * @param oos
-     * @throws java.io.IOException if an error is encountered writing to the stream.
+     * @throws IOException if an error is encountered writing to the stream.
      */
     private void writeObject(ObjectOutputStream oos) throws IOException {
         oos.defaultWriteObject();
 
         oos.writeInt(elems.size());
-        for (Iterator iter = elems.iterator(); iter.hasNext();) {
-            oos.writeObject(iter.next());
+        for (Object element : elems) {
+            oos.writeObject(element);
         }
     }
 
-    /*
+    /**
      * Recreate a CompositeName from the data in the supplied stream.
      * 
      * @param ois
-     * @throws java.io.IOException if an error is encountered reading from the stream.
+     * @throws IOException if an error is encountered reading from the stream.
      * @throws ClassNotFoundException.
      */
-    private void readObject(ObjectInputStream ois)
-        throws OptionalDataException, ClassNotFoundException, IOException {
+    private void readObject(ObjectInputStream ois) throws OptionalDataException,
+            ClassNotFoundException, IOException {
         ois.defaultReadObject();
 
         int size = ois.readInt();
         elems = new Vector<String>();
         for (int i = 0; i < size; i++) {
-            elems.add((String)ois.readObject());
+            elems.add((String) ois.readObject());
         }
     }
-
 }
-
-

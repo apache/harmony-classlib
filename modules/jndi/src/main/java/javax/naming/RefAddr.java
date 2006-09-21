@@ -111,6 +111,7 @@ public abstract class RefAddr implements Serializable {
      * @return      true if this address is equal to <code>o</code>,
      *              otherwise false
      */
+    @Override
     public boolean equals(Object o) {
         if (o instanceof RefAddr) {
             RefAddr a = (RefAddr) o;
@@ -128,6 +129,7 @@ public abstract class RefAddr implements Serializable {
      * 
      * @return      the hashcode of this address
      */
+    @Override
     public int hashCode() {
         return this.addrType.hashCode()
             + (null == this.getContent() ? 0 : this.getContent().hashCode());
@@ -140,6 +142,7 @@ public abstract class RefAddr implements Serializable {
      *  
      * @return      the string representation of this address
      */
+    @Override
     public String toString() {
         return "The type of the address is: " //$NON-NLS-1$
             + this.addrType

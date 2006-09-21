@@ -90,6 +90,7 @@ public class LinkException extends NamingException {
      * @return the string representation of this <code>NamingException</code> 
      * together with the details of the remaining name.
      */
+    @Override
     public String toString() {
         return toStringImpl(false);
     }
@@ -118,6 +119,7 @@ public class LinkException extends NamingException {
      * @return  the string representation of this <code>NamingException</code> 
      * together with the details of the remaining name.
      */
+    @Override
     public String toString(boolean b) {
         return toStringImpl(b);
     }

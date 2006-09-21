@@ -13,13 +13,11 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
@@ -211,21 +209,11 @@ import java.util.Vector;
 public class CompoundName implements Name {
 
     /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
-     */
-
-    /*
-     *=============
-     *Serialization
-     *=============
-     *
      *Note: For serialization purposes, the specified serialVersionUID must be used.
      *This class does not have serializable fields specified. Instead the readObject
-     *and writeObject methods are overidden.
+     *and writeObject methods are overridden.
      */
-    static final long serialVersionUID = 3513100557083972036L; // J2SE 1.4.2
+    private static final long serialVersionUID = 3513100557083972036L; // J2SE 1.4.2
 
     //const for property key
     private static final String SEPARATOR = "jndi.syntax.separator"; //$NON-NLS-1$
@@ -273,11 +261,6 @@ public class CompoundName implements Name {
 
     private static final int QUOTEEND_STATUS = 4;
 
-    /*
-     * ============
-     * Variables
-     * ============ 
-     */
     //properties variables
     private transient String separatorString;
 
@@ -313,16 +296,10 @@ public class CompoundName implements Name {
     
     /*
      * The specification calls for a protected variable called 'impl' which is of a non-API
-     * type.  I believe this is an error in the spec, but to be compliant we have implemented
+     * type.  I believe this is an error in the spec, but to be complaint we have implemented
      * this as a useless class (below).
      */
     protected transient javax.naming.NameImpl impl = new NameImpl();
-
-    /*
-     *============
-     *Constructors
-     *============ 
-     */
 
     /**
      * Constructs a <code>CompoundName</code> with supplied <code>Enumeration</code> 
@@ -364,7 +341,7 @@ public class CompoundName implements Name {
         parseName(s);
     }
 
-    /*
+    /**
      * init instance variables
      */
     private void init(Properties props) {
@@ -439,7 +416,7 @@ public class CompoundName implements Name {
 
         //init variables
         int status = INIT_STATUS;
-        StringBuffer element = new StringBuffer();
+        StringBuilder element = new StringBuilder();
         int pos = 0;
         int length = s.length();
         boolean hasNotNullElement = false;
@@ -485,13 +462,11 @@ public class CompoundName implements Name {
                 pos += escapeString.length();
                 if (pos == s.length()) {
                     //if this escape char is last character, throw exception
-                    throw new InvalidNameException(new StringBuffer(50).append(
-                            "The ") //$NON-NLS-1$
-                            .append(escapeString).append(
-                                    " cannot be at end of the component") //$NON-NLS-1$
-                            .toString());
+                    throw new InvalidNameException("The " + escapeString //$NON-NLS-1$
+                            + " cannot be at end of the component"); //$NON-NLS-1$
                 }
-                //if one escape char followed by a special char, append the special char to current element
+                // if one escape char followed by a special char, append the
+                // special char to current element
                 String str = extractEscapedString(s, pos, status);
                 if (null == str) {
                     pos -= escapeString.length();
@@ -533,9 +508,9 @@ public class CompoundName implements Name {
     }
 
     /*
-     * add des parameter to stringbuffer if include is true
+     * add des parameter to StringBuilder if include is true
      */
-    private int addBuffer(StringBuffer buffer, String des, boolean include) {
+    private int addBuffer(StringBuilder buffer, String des, boolean include) {
         if (include) {
             buffer.append(des);
         }
@@ -546,7 +521,7 @@ public class CompoundName implements Name {
      * add current content of supplied string buffer as one element of this 
      * CompoundName and reset the string buffer to empty
      */
-    private void addElement(StringBuffer element) {
+    private void addElement(StringBuilder element) {
         if (LEFT_TO_RIGHT == direction) {
             elem.add(element.toString());
         } else {
@@ -618,7 +593,7 @@ public class CompoundName implements Name {
 
     public String get(int index) {
         validateIndex(index, false);
-        return (String) elem.elementAt(index);
+        return elem.elementAt(index);
     }
 
     /*
@@ -707,6 +682,7 @@ public class CompoundName implements Name {
         return elem.remove(index);
     }
 
+    @Override
     public Object clone() {
         return new CompoundName(getAll(), mySyntax);
     }
@@ -734,7 +710,7 @@ public class CompoundName implements Name {
                 .size());
     }
 
-    /*
+    /**
      * preprocess string according to trimblank and ignorecase properties
      */
     private String preProcess(String string, boolean caseInsensitive,
@@ -747,7 +723,7 @@ public class CompoundName implements Name {
         return result;
     }
 
-    /*
+    /**
      * Writes a serialized representation of the CompoundName. It starts with
      * the properties, followed by an int which is the number of elements 
      * in the name, and is followed by a String for each element. 
@@ -758,12 +734,12 @@ public class CompoundName implements Name {
         oos.writeObject(mySyntax);
         oos.writeInt(elem.size());
         for (int i = 0; i < elem.size(); i++) {
-            String element = (String) elem.elementAt(i);
+            String element = elem.elementAt(i);
             oos.writeObject(element);
         }
     }
 
-    /*
+    /**
      * Recreate a CompoundName from the data in the supplied stream.
      * Additionally there are 2 protected fields which are not serializable.
      * One of them is of a type which is a private class and cannot therefore
@@ -812,17 +788,15 @@ public class CompoundName implements Name {
         }
         int result = -1;
         CompoundName otherName = (CompoundName) o;
-        Enumeration otherEnum = otherName.getAll();
+        Enumeration<String> otherEnum = otherName.getAll();
         String thisElement;
         String otherElement;
         int i;
         for (i = 0; i < size() && otherEnum.hasMoreElements(); i++) {
-            thisElement = preProcess((String) elem.get(i), ignoreCase,
-                    trimBlanks);
-            otherElement = preProcess((String) otherEnum.nextElement(),
-                    ignoreCase, trimBlanks);
-            result = (null == thisElement ? (null == otherElement ? 0 : -1)
-                    : thisElement.compareTo(otherElement));
+            thisElement = preProcess(elem.get(i), ignoreCase, trimBlanks);
+            otherElement = preProcess(otherEnum.nextElement(), ignoreCase, trimBlanks);
+            result = (null == thisElement ? (null == otherElement ? 0 : -1) : thisElement
+                    .compareTo(otherElement));
             if (0 != result) {
                 return result;
             }
@@ -834,12 +808,6 @@ public class CompoundName implements Name {
         }
         return result;
     }
-
-    /*
-     * -------------------------------------------------------------------
-     * Methods override parent class Object
-     * -------------------------------------------------------------------
-     */
 
     /**
      * Calculate the hashcode of this <code>CompoundName</code> by summing 
@@ -853,12 +821,12 @@ public class CompoundName implements Name {
      * 
      * @return 				the hashcode of this object.
      */
+    @Override
     public int hashCode() {
         int result = 0;
-        Enumeration enumeration = elem.elements();
+        Enumeration<String> enumeration = elem.elements();
         while (enumeration.hasMoreElements()) {
-            result += preProcess((String) enumeration.nextElement(),
-                    ignoreCase, trimBlanks).hashCode();
+            result += preProcess(enumeration.nextElement(), ignoreCase, trimBlanks).hashCode();
         }
         return result;
     }
@@ -866,16 +834,18 @@ public class CompoundName implements Name {
     /**
      * Gets the string representation of this <code>CompoundName</code>.
      * <p>
-     * This is generated by concatenating the elements together with the 
-     * separator string added as the separator between each of them. It may be 
-     * necessary to add quotes and escape string to preserve the meaning. 
-     * The resulting string should produce an equivalent <code>CompoundName</code> 
-     * when used to create a new instance.</p>
+     * This is generated by concatenating the elements together with the
+     * separator string added as the separator between each of them. It may be
+     * necessary to add quotes and escape string to preserve the meaning. The
+     * resulting string should produce an equivalent <code>CompoundName</code>
+     * when used to create a new instance.
+     * </p>
      * 
-     * @return the string representation of this <code>CompoundName</code>. 
+     * @return the string representation of this <code>CompoundName</code>.
      */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String begin = NULL_STRING.equals(beginQuoteString) ? beginQuoteString2
                 : beginQuoteString;
         String end = NULL_STRING.equals(endQuoteString) ? endQuoteString2
@@ -898,7 +868,7 @@ public class CompoundName implements Name {
         return sb.toString();
     }
 
-    private void addElement(StringBuffer sb, int index, String separator, String begin, String end) {
+    private void addElement(StringBuilder sb, int index, String separator, String begin, String end) {
         String elemString = elem.get(index);
         if (0 == elemString.length()) {
             // if empty element, append a separator and continue
@@ -979,6 +949,7 @@ public class CompoundName implements Name {
      * @return true if supplied object <code>o</code> is equals to this
      *         <code>CompoundName</code>, false otherwise
      */
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof CompoundName)) {
             return false;
@@ -995,7 +966,7 @@ public class CompoundName implements Name {
         return equals(otherName, 0, size);
     }
 
-    /*
+    /**
      * compare this name to the supplied <code>name</code> from position 
      * <code>start</code> to position <code>start</code>+
      * <code>length</code>-1 
@@ -1006,13 +977,13 @@ public class CompoundName implements Name {
             return false;
         }
         CompoundName otherName = (CompoundName) name;
-        Enumeration otherEnum = otherName.getAll();
+        Enumeration<String> otherEnum = otherName.getAll();
         String thisElement;
         String otherElement;
         for (int i = 0; i < length; i++) {
-            thisElement = preProcess((String) elem.get(i + start), ignoreCase,
+            thisElement = preProcess(elem.get(i + start), ignoreCase,
                     trimBlanks);
-            otherElement = preProcess((String) otherEnum.nextElement(),
+            otherElement = preProcess(otherEnum.nextElement(),
                     ignoreCase, trimBlanks);
             if (!(null == thisElement ? null == otherElement : thisElement
                     .equals(otherElement))) {
@@ -1023,8 +994,8 @@ public class CompoundName implements Name {
     }
 }
 
-/*
- * A useless class requied to satisfy the requirement for an 'impl'
+/**
+ * A useless class required to satisfy the requirement for an 'impl'
  * field (see above).
  */
 class NameImpl {

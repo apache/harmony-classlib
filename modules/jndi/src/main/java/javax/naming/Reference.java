@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 import java.io.Serializable;
@@ -35,23 +34,7 @@ import java.util.Vector;
  */
 public class Reference implements Cloneable, Serializable {
 
-    /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
-     */
-
-    /*
-     * This constant is used during deserialization to check the J2SE version which
-     * created the serialized object.
-     */
-    static final long serialVersionUID = -1673475790065791735L; //J2SE 1.4.2
-
-    /*
-     * -------------------------------------------------------------------
-     * Instance variables
-     * -------------------------------------------------------------------
-     */
+    private static final long serialVersionUID = -1673475790065791735L; //J2SE 1.4.2
 
     /**
      * The class of the object which is referenced.
@@ -86,12 +69,6 @@ public class Reference implements Cloneable, Serializable {
      * @serial
      */
     protected String classFactoryLocation;
-
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
 
     /**
      * Constructs a <code>Reference</code> instance with an empty list of 
@@ -128,10 +105,8 @@ public class Reference implements Cloneable, Serializable {
      * @param classFactoryLocation
      *                      the location of the class file. It may be null.
      */
-    public Reference(
-        String className,
-        String classFactory,
-        String classFactoryLocation) {
+    public Reference(String className, String classFactory, String classFactoryLocation) {
+        super();
         this.className = className;
         this.classFactory = classFactory;
         this.classFactoryLocation = classFactoryLocation;
@@ -142,35 +117,25 @@ public class Reference implements Cloneable, Serializable {
      * Constructs a <code>Reference</code> instance with one entry of address
      * using the supplied class name, factory class and factory location.
      * 
-     * @param className     the class of the object which is referenced. It 
-     *                      cannot be null. 
-     * @param addr          the object's address. It cannot be null.
-     * @param classFactory  the class in a factory which is used to create 
-     *                      an object of the type which is referenced. It may
-     *                      be null.
-     * @param classFactoryLocation
-     *                      the location of the class file. It may be null.
+     * @param className the class of the object which is referenced. It cannot
+     *        be null.
+     * @param addr the object's address. It cannot be null.
+     * @param classFactory the class in a factory which is used to create an
+     *        object of the type which is referenced. It may be null.
+     * @param classFactoryLocation the location of the class file. It may be
+     *        null.
      */
-    public Reference(
-        String className,
-        RefAddr addr,
-        String classFactory,
-        String classFactoryLocation) {
+    public Reference(String className, RefAddr addr, String classFactory,
+            String classFactoryLocation) {
         this(className, classFactory, classFactoryLocation);
         this.addrs.add(addr);
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
     /**
-     * Gets the class of the object which is referenced.
-     * The result cannot be null.
+     * Gets the class of the object which is referenced. The result cannot be
+     * null.
      * 
-     * @return              the class of the object which is referenced
+     * @return the class of the object which is referenced
      */
     public String getClassName() {
         return this.className;
@@ -216,11 +181,11 @@ public class Reference implements Cloneable, Serializable {
      * @return              the first address whose type matches the string
      */
     public RefAddr get(String type) {
-        Enumeration elements = addrs.elements();
+        Enumeration<RefAddr> elements = addrs.elements();
         RefAddr refAddr = null;
 
         while (elements.hasMoreElements()) {
-            refAddr = (RefAddr) elements.nextElement();
+            refAddr = elements.nextElement();
             if (type.equals(refAddr.getType())) {
                 return refAddr;
             }
@@ -239,7 +204,7 @@ public class Reference implements Cloneable, Serializable {
      *                      If the index is invalid.
      */
     public RefAddr get(int index) {
-        return (RefAddr) addrs.get(index);
+        return addrs.get(index);
     }
 
     /**
@@ -295,24 +260,20 @@ public class Reference implements Cloneable, Serializable {
         addrs.clear();
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods override parent class Object
-     * -------------------------------------------------------------------
-     */
-
     /**
      * Returns a deep clone of this <code>Reference</code> instance.
      * 
      * @return              a deep clone of this object
      */
+    @SuppressWarnings("unchecked")
+    @Override
     public Object clone() {
         try {
             Reference r = (Reference) super.clone();
             r.addrs = (Vector<RefAddr>) this.addrs.clone();
             return r;
         } catch (CloneNotSupportedException e) {
-            throw new InternalError("Failed to clone object of Reference class."); //$NON-NLS-1$
+            throw new AssertionError("Failed to clone object of Reference class."); //$NON-NLS-1$
         }
     }
 
@@ -328,6 +289,7 @@ public class Reference implements Cloneable, Serializable {
      * @return              true if this object is equal to <code>o</code>,
      *                      otherwise false
      */
+    @Override
     public boolean equals(Object o) {
         if (o instanceof Reference) {
             Reference r = (Reference) o;
@@ -340,13 +302,14 @@ public class Reference implements Cloneable, Serializable {
     /**
      * Returns the hashcode for this <code>Reference</code> instance.
      * The result is calculated by summing the hashcode of the class name and 
-     * the hascodes of each of the addresses in the address list.
+     * the hash codes of each of the addresses in the address list.
      * 
      * @return              the hashcode of this <code>Reference</code> instance
      */
+    @Override
     public int hashCode() {
         int i = this.className.hashCode();
-        Enumeration e = this.addrs.elements();
+        Enumeration<RefAddr> e = this.addrs.elements();
 
         while (e.hasMoreElements()) {
             i += e.nextElement().hashCode();
@@ -360,9 +323,10 @@ public class Reference implements Cloneable, Serializable {
      * 
      * @return              the string representation of this object
      */
+    @Override
     public String toString() {
         String s = "Reference class name: " + this.className; //$NON-NLS-1$
-        Enumeration e = this.addrs.elements();
+        Enumeration<RefAddr> e = this.addrs.elements();
 
         s += "\nReference addresses:"; //$NON-NLS-1$
         while (e.hasMoreElements()) {
@@ -370,7 +334,4 @@ public class Reference implements Cloneable, Serializable {
         }
         return s + "\n"; //$NON-NLS-1$
     }
-
 }
-
-

@@ -217,6 +217,7 @@ public class NameClassPair implements Serializable {
      * 
      * @return a string representation of this object
      */
+    @Override
     public String toString() {
         StringBuffer buf = new StringBuffer();
         if (!isRel) {
