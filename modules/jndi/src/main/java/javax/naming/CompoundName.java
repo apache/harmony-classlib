@@ -370,7 +370,7 @@ public class CompoundName implements Name {
     private void init(Properties props) {
         trimBlanks = false;
         ignoreCase = false;
-        this.mySyntax = (Properties) props.clone();
+        this.mySyntax = props;
         String property;
 
         //read property settings
@@ -708,15 +708,7 @@ public class CompoundName implements Name {
     }
 
     public Object clone() {
-        CompoundName newName = null;
-        try {
-            newName = (CompoundName) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new Error("Failed to clone object of CompoundName class"); //$NON-NLS-1$
-        }
-        newName.mySyntax = (Properties) mySyntax.clone();
-        newName.elem = (Vector<String>) elem.clone();
-        return newName;
+        return new CompoundName(getAll(), mySyntax);
     }
 
     public int size() {

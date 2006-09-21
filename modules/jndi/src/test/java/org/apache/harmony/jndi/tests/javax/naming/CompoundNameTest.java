@@ -28,6 +28,7 @@ import javax.naming.Name;
 
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
+
 import org.apache.harmony.jndi.tests.javax.naming.util.Log;
 
 public class CompoundNameTest extends TestCase {
@@ -681,6 +682,15 @@ public class CompoundNameTest extends TestCase {
 		testBehavior("'a<b>c'", props);
 	}
 
+	public void testConstructor_WithIrregularProps() throws InvalidNameException {
+		log.setMethod("testConstructor_WithIrregularProps()");
+		try{
+		    new CompoundName("name", new UncloneableProperties());
+		}catch(UnsupportedOperationException e){
+		    fail("unexpected UnsupportedOperationException");
+		}
+	}
+
 	public void testConstructor_Advanced() throws InvalidNameException {
 		log.setMethod("testConstructor_Advanced()");
 
@@ -1211,6 +1221,24 @@ public class CompoundNameTest extends TestCase {
 		assertNameEquals(name2, "b");
 	}
 
+	public void testClone_1() throws InvalidNameException {
+		log.setMethod("testClone_1()");
+		CompoundName name = null, name2 = null;
+
+		try{
+		    name = new CompoundName("name", new UncloneableProperties());
+		}catch(UnsupportedOperationException e){
+		    fail("unexpected UnsupportedOperationException");
+		}
+
+		try{
+		    name2 = (CompoundName)name.clone();
+		}catch(UnsupportedOperationException e){
+		    fail("unexpected UnsupportedOperationException");
+		}
+		assertEquals(name, name2);
+	}
+
 	public void testCompareTo() throws InvalidNameException {
 		log.setMethod("testCompareTo()");
 
@@ -1730,4 +1758,13 @@ public class CompoundNameTest extends TestCase {
 		name = new CompoundName("||", synt);
 		assertEquals("||", name.toString());
 	}
+    
+    private static class UncloneableProperties extends Properties {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public Object clone() {
+            throw new UnsupportedOperationException();
+        }
+    }
 }
