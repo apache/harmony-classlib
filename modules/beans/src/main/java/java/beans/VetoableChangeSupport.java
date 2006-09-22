@@ -344,11 +344,15 @@ public class VetoableChangeSupport implements Serializable {
             PropertyChangeEvent revertEvent = createPropertyChangeEvent(
                     propName, newValue, oldValue);
             for (VetoableChangeListener listener : listensToAll) {
-                listener.vetoableChange(revertEvent);
+                try {
+                        listener.vetoableChange(revertEvent);
+                } catch (PropertyVetoException ignored){}
             }
             if (listensToOne != null) {
                 for (VetoableChangeListener listener : listensToOne) {
-                    listener.vetoableChange(revertEvent);
+                        try {
+                                listener.vetoableChange(revertEvent);
+                        } catch (PropertyVetoException ignored){}
                 }
             }
             throw pve;

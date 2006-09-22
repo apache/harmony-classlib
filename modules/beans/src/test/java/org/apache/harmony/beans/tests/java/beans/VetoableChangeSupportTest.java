@@ -1130,6 +1130,44 @@ public class VetoableChangeSupportTest extends TestCase {
         assertEquals("text.default", source.getText());
     }
 
+    public void testFireVetoableChangeException_revert_event() {
+	        final VetoableChangeSupport support = new VetoableChangeSupport(new Object());
+		final StringBuffer sb = new StringBuffer();
+		final String A_IN = "a", B_IN="b", A_THROW="A", B_THROW="B";
+
+                support.addVetoableChangeListener(new VetoableChangeListener() {
+                        public void vetoableChange(PropertyChangeEvent e) throws PropertyVetoException {
+                      		sb.append(A_IN);
+                                if(sb.length() == 4) {
+					sb.append(A_THROW);
+                                        throw new PropertyVetoException(A_THROW, e);
+                                }
+                        }
+                });
+
+                
+                support.addVetoableChangeListener(new VetoableChangeListener() {
+                        public void vetoableChange(PropertyChangeEvent e) throws PropertyVetoException {
+				sb.append(B_IN);
+                                if(sb.length() == 2) {
+					sb.append(B_THROW);
+                                        throw new PropertyVetoException(B_THROW, e);
+                                }
+                        }
+                });
+
+
+                try {
+			support.fireVetoableChange("propName", 0, 1);
+                } catch(PropertyVetoException pve) {
+			assertTrue("Illegal sequence:"+sb, sb.toString().equals("abBaAb"));
+			String message = pve.getMessage();
+			assertTrue("Illegal exception:"+message, message.equals(B_THROW));
+			return;
+                }
+		assertFalse("Unreachable path:"+sb, true);
+    }
+
     /*
      * Class under test for void removeVetoableChangeListener(String,
      * VetoableChangeListener)
