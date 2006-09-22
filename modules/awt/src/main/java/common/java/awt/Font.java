@@ -166,7 +166,11 @@ public class Font implements Serializable {
 
             currAttr = attributes.get(TextAttribute.TRANSFORM);
             if ( currAttr != null){
-                this.transformed = !((TransformAttribute)currAttr).getTransform().isIdentity();
+                if (currAttr instanceof TransformAttribute) {
+                    this.transformed = !((TransformAttribute)currAttr).getTransform().isIdentity();
+                } else if (currAttr instanceof AffineTransform) {
+                    this.transformed = !((AffineTransform)currAttr).isIdentity();
+                }
             }
 
         } else {
@@ -535,7 +539,9 @@ public class Font implements Serializable {
                              TextAttribute.POSTURE,
                              TextAttribute.SIZE,
                              TextAttribute.TRANSFORM,
-                             TextAttribute.WEIGHT};
+                             TextAttribute.WEIGHT,
+                             TextAttribute.SUPERSCRIPT,
+                             TextAttribute.WIDTH};
         return attrs;
     }
 
