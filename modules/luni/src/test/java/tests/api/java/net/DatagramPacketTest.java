@@ -1,4 +1,4 @@
-/* Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 1998, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,15 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Exception during Constructor test: " + e.toString());
 		}
+        //regression for Harmony-890
+        dp = new DatagramPacket(new byte[942],4);
+        assertEquals(-1, dp.getPort());
+        try{
+            dp.getSocketAddress();
+            fail("Should throw IllegalArgumentException");            
+        }catch(IllegalArgumentException e){
+            //expected
+        }
 	}
 
 	/**
