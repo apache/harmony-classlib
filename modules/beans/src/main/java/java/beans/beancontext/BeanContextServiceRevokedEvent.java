@@ -75,6 +75,9 @@ public class BeanContextServiceRevokedEvent extends BeanContextEvent {
      * @com.intel.drl.spec_ref
      */
     public boolean isServiceClass(Class service) {
+    	if (service == null) {
+            return false;
+        }
         return service.equals(this.serviceClass);
     }
 }

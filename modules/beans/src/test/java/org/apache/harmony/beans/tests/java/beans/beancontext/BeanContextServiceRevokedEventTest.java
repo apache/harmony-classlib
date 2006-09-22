@@ -112,6 +112,9 @@ public class BeanContextServiceRevokedEventTest extends TestCase {
                 services, BeanContext.class, true);
         assertTrue(event.isServiceClass(BeanContext.class));
         assertFalse(event.isServiceClass(Integer.class));
+
+        //Regression for HARMONY-1516
+        assertFalse(event.isServiceClass(null));
     }
 
     public void testIsCurrentServiceInvalidNow() {
