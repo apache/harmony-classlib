@@ -336,6 +336,8 @@ final class HexStringParser {
     private final int EXPONENT_WIDTH;
 
     private final int MANTISSA_WIDTH;
+    
+    private final long EXPONENT_BASE;
 
     private long sign;
 
@@ -346,6 +348,8 @@ final class HexStringParser {
     public HexStringParser(int exponent_width, int mantissa_width) {
         this.EXPONENT_WIDTH = exponent_width;
         this.MANTISSA_WIDTH = mantissa_width;
+        
+        this.EXPONENT_BASE = ~(-1L << (exponent_width - 1));
 
     }
 
@@ -403,12 +407,22 @@ final class HexStringParser {
 
     // Parses the sign field
     private void parseHexSign(String signStr) {
-        // TODO
+        this.sign = signStr.equals("-") ? 1 : 0; //$NON-NLS-1$
     }
 
     // Parses the exponent field
     private void parseExponent(String exponentStr) {
-        // TODO
+        char leadingChar = exponentStr.charAt(0);
+        int sign = (leadingChar == '-' ? -1 : 1);
+        if (!Character.isDigit(leadingChar)) {
+            exponentStr = exponentStr.substring(1);
+        }
+
+        try {
+            exponent = sign * Long.parseLong(exponentStr) + EXPONENT_BASE;
+        } catch (NumberFormatException e) {
+            exponent = sign * Long.MAX_VALUE;
+        }
     }
 
     // Parses the mantissa field
