@@ -36,6 +36,10 @@ public class Base64 {
     public static byte[] decode(byte[] in, int len) {
         // approximate output length
         int length = len / 4 * 3;
+        // return an empty array on emtpy or short input without padding
+        if (length == 0) {
+            return new byte[0];
+        }
         // temporary array
         byte[] out = new byte[length];
         // number of padding characters ('=')
