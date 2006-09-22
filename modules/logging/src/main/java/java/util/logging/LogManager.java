@@ -181,6 +181,7 @@ public class LogManager {
 		AccessController.doPrivileged(new PrivilegedAction<Object>() {
 			public Object run() {
 				String className = System.getProperty("java.util.logging.manager"); //$NON-NLS-1$
+                
 				if (null != className) {
 					manager = (LogManager) getInstanceByClass(className);
 				}
@@ -197,8 +198,11 @@ public class LogManager {
 
 				// if global logger has been initialized, set root as its parent
                 Logger root = Logger.getLogger(""); //$NON-NLS-1$
-                Logger.global.setParent(root);
-				return null;
+                
+                Logger global = (Logger.global == null ? Logger.getLogger("global") : Logger.global);
+                global.setParent(root);
+
+                return null;
 			}
 		});
 	}
