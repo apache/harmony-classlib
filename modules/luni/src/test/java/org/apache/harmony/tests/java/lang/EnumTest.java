@@ -104,7 +104,7 @@ public class EnumTest extends TestCase {
      * @tests java.lang.Enum#toString()
      */
     public void test_toString() {
-        assertTrue(moe.toString().contains("MOE"));
+        assertTrue(moe.toString().equals("MOE"));
     }
 
     /**

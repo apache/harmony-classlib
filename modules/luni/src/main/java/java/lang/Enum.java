@@ -76,7 +76,7 @@ public abstract class Enum<E extends Enum<E>> implements Serializable,
      */
     @Override
     public String toString() {
-        return "Enum:" + name;
+        return name;
     }
 
     /**
