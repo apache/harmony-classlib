@@ -50,12 +50,11 @@ import org.apache.harmony.security.asn1.BerInputStream;
  *   KeyIdentifier ::= OCTET STRING
  * </pre>
  */
-public class AuthorityKeyIdentifier {
+public class AuthorityKeyIdentifier extends ExtensionValue {
    
     private final byte[] keyIdentifier;
     private final GeneralNames authorityCertIssuer;
     private final BigInteger authorityCertSerialNumber;
-    private byte[] encoding;
     
     public AuthorityKeyIdentifier(byte[] keyIdentifier, 
             GeneralNames authorityCertIssuer, 
@@ -64,6 +63,14 @@ public class AuthorityKeyIdentifier {
         this.authorityCertIssuer = authorityCertIssuer;
         this.authorityCertSerialNumber = authorityCertSerialNumber;
     }
+    
+    public static AuthorityKeyIdentifier decode(byte[] encoding) 
+            throws IOException {
+        AuthorityKeyIdentifier aki =
+            (AuthorityKeyIdentifier) ASN1.decode(encoding);
+        aki.encoding = encoding;
+        return aki;
+    } 
 
     public byte[] getEncoded() {
         if (encoding == null) {
@@ -71,7 +78,7 @@ public class AuthorityKeyIdentifier {
         }
         return encoding;
     }
-    
+
     public static ASN1Type ASN1 = new ASN1Sequence(
             new ASN1Type[] {
                 new ASN1Implicit(0, ASN1OctetString.getInstance()),

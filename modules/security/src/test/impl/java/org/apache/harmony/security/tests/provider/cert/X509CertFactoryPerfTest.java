@@ -153,31 +153,23 @@ public class X509CertFactoryPerfTest extends TestCase {
                 ASN1BitString.getInstance()
                 .encode(new BitString(extnKeyUsage))),  
         // Basic Constraints    
-        new Extension("2.5.29.19", true, 
-                Extension.BasicConstraints.ASN1.encode(
-                    new Object[] 
-                    {Boolean.TRUE, BigInteger.valueOf(extnBCLen)})),
+        new Extension("2.5.29.19", true, new BasicConstraints(true, extnBCLen)),
         // Certificate Policies with ANY policy
         new Extension("2.5.29.32", true, 
-                new CertificatePolicies(Arrays.asList(new Object[] {
-                    new PolicyInformation("2.5.29.32.0")}))
-                .getEncoded()),//extValEncoding),
+                new CertificatePolicies()
+                .addPolicyInformation(new PolicyInformation("2.5.29.32.0"))),
         // Subject Alternative Name
         new Extension("2.5.29.17", true, 
-                GeneralNames.ASN1.encode(extnSANames)),
+                new AlternativeName(AlternativeName.SUBJECT, extnSANames)),
         // Name Constraints
         new Extension("2.5.29.30", true, 
                 new NameConstraints().getEncoded()),
         // Policy Constraints
-        new Extension("2.5.29.36", true, 
-                new PolicyConstraints().getEncoded()),
+        new Extension("2.5.29.36", true, new PolicyConstraints(1, 2)),
         // Extended Key Usage
-        new Extension("2.5.29.37", true, 
-                Extension.ExtendedKeyUsage.ASN1.encode(
-                    extnExtendedKeyUsage)),             
+        new Extension("2.5.29.37", true, new ExtendedKeyUsage(extnExtendedKeyUsage)),
         // Inhibit Any-Policy
-        new Extension("2.5.29.54", true,
-                ASN1Integer.getInstance().encode(ASN1Integer.fromIntValue(1))),
+        new Extension("2.5.29.54", true, new InhibitAnyPolicy(1)),
 
         // Unsupported critical extensions:
         new Extension("1.2.77.777", true, extValEncoding),
@@ -187,7 +179,7 @@ public class X509CertFactoryPerfTest extends TestCase {
  
         // Issuer Alternative Name
         new Extension("2.5.29.18", false, 
-                GeneralNames.ASN1.encode(extnSANames)),
+                new AlternativeName(AlternativeName.ISSUER, extnSANames)),
         // CRL Distribution Points
         new Extension("2.5.29.31", false, 
                 new ASN1Sequence(new ASN1Type[] {}) {
@@ -195,9 +187,14 @@ public class X509CertFactoryPerfTest extends TestCase {
                     }
                 }.encode(null)),
         // Authority Key Identifier
-        new Extension("2.5.29.35", false, extValEncoding),
+        new Extension("2.5.29.35", false, 
+                new AuthorityKeyIdentifier(
+                    // random value for key identifier
+                    new byte[] {1, 2, 3, 4, 5}, extnSANames, serialNumber)),
         // Subject Key Identifier
-        new Extension("2.5.29.14", false, extValEncoding),
+        new Extension("2.5.29.14", false,
+                // random value for key identifier
+                new SubjectKeyIdentifier(new byte[] {1, 2, 3, 4, 5})),
         // Policy Mappings
         new Extension("2.5.29.33", false, extValEncoding),
     };

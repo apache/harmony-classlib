@@ -21,6 +21,7 @@
 
 package org.apache.harmony.security.x509;
 
+import java.io.IOException;
 import java.math.BigInteger;
 
 import org.apache.harmony.security.asn1.ASN1Implicit;
@@ -52,7 +53,7 @@ import org.apache.harmony.security.asn1.BerInputStream;
  * @see org.apache.harmony.security.x509.GeneralSubtree
  * @see org.apache.harmony.security.x509.GeneralName
  */
-public class PolicyConstraints {
+public class PolicyConstraints extends ExtensionValue {
 
     // the value of requireExplicitPolicy field of the structure
     private final BigInteger requireExplicitPolicy;
@@ -77,6 +78,24 @@ public class PolicyConstraints {
             BigInteger inhibitPolicyMapping) {
         this.requireExplicitPolicy = requireExplicitPolicy;
         this.inhibitPolicyMapping = inhibitPolicyMapping;
+    }
+
+    /**
+     * TODO
+     * @param   requireExplicitPolicy:  GeneralSubtrees
+     * @param   inhibitPolicyMapping:   GeneralSubtrees
+     */
+    public PolicyConstraints(int requireExplicitPolicy,
+            int inhibitPolicyMapping) {
+        this.requireExplicitPolicy = BigInteger.valueOf(requireExplicitPolicy);
+        this.inhibitPolicyMapping = BigInteger.valueOf(inhibitPolicyMapping);
+    }
+
+    public PolicyConstraints(byte[] encoding) throws IOException {
+        super(encoding);
+        PolicyConstraints pc = (PolicyConstraints) ASN1.decode(encoding);
+        this.requireExplicitPolicy = pc.requireExplicitPolicy;
+        this.inhibitPolicyMapping = pc.inhibitPolicyMapping;
     }
 
     //
@@ -132,8 +151,8 @@ public class PolicyConstraints {
 
             PolicyConstraints pc = (PolicyConstraints) object;
 
-            values[0] = pc.requireExplicitPolicy;
-            values[1] = pc.inhibitPolicyMapping;
+            values[0] = pc.requireExplicitPolicy.toByteArray();
+            values[1] = pc.inhibitPolicyMapping.toByteArray();
         }
     };
 }

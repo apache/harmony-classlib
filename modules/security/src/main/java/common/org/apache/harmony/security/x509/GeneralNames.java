@@ -50,7 +50,7 @@ import org.apache.harmony.security.asn1.BerInputStream;
 public class GeneralNames {
 
     // the values of GeneralName
-    private List generalNames;
+    protected List generalNames;
     // the ASN.1 encoded form of GeneralNames
     private byte[] encoding;
     

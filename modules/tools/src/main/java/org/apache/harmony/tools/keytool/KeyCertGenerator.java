@@ -46,6 +46,7 @@ import org.apache.harmony.crypto.utils.AlgNameMapper;
 import org.apache.harmony.security.provider.cert.X509CertImpl;
 import org.apache.harmony.security.x501.Name;
 import org.apache.harmony.security.x509.AlgorithmIdentifier;
+import org.apache.harmony.security.x509.BasicConstraints;
 import org.apache.harmony.security.x509.Extension;
 import org.apache.harmony.security.x509.Extensions;
 import org.apache.harmony.security.x509.SubjectPublicKeyInfo;
@@ -434,12 +435,9 @@ public class KeyCertGenerator {
         
         if (version == 1 || version == 2) {
             // generate extensions
-            ArrayList<Object> basicConstraints = new ArrayList<Object>(2);
-            basicConstraints.add(new Boolean(isCA));
-            basicConstraints.add(BigInteger.valueOf(Integer.MAX_VALUE));
             extensions = new Extensions(Collections
-                    .singletonList(new Extension.BasicConstraints(
-                            basicConstraints, false)));
+                    .singletonList(new Extension("2.5.29.19", false,
+                            new BasicConstraints(isCA, Integer.MAX_VALUE))));
         }       
         // generate the TBSCertificate to put it into the X.509 cert
         TBSCertificate tbsCertificate = new TBSCertificate(

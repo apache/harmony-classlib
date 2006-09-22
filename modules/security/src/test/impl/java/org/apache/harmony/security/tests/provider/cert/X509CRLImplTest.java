@@ -48,11 +48,14 @@ import org.apache.harmony.security.x501.Name;
 import org.apache.harmony.security.x509.AlgorithmIdentifier;
 import org.apache.harmony.security.x509.AuthorityKeyIdentifier;
 import org.apache.harmony.security.x509.Certificate;
+import org.apache.harmony.security.x509.CertificateIssuer;
 import org.apache.harmony.security.x509.CertificateList;
 import org.apache.harmony.security.x509.Extension;
 import org.apache.harmony.security.x509.Extensions;
 import org.apache.harmony.security.x509.GeneralName;
 import org.apache.harmony.security.x509.GeneralNames;
+import org.apache.harmony.security.x509.InvalidityDate;
+import org.apache.harmony.security.x509.ReasonCode;
 import org.apache.harmony.security.x509.SubjectPublicKeyInfo;
 import org.apache.harmony.security.x509.TBSCertList;
 import org.apache.harmony.security.x509.TBSCertificate;
@@ -90,11 +93,13 @@ public class X509CRLImplTest extends TestCase {
     private static Extensions crlEntryExtensions = new Extensions();
     static {
         // Reason Code
-        crlEntryExtensions.addExtension(new Extension.ReasonCode(1));
+        crlEntryExtensions.addExtension(
+                new Extension("2.5.29.21", Extension.NON_CRITICAL,
+                    new ReasonCode(ReasonCode.KEY_COMPROMISE)));
         // Invalidity Date Extension
         crlEntryExtensions.addExtension(
-                new Extension.InvalidityDate(new Date())
-                );
+                new Extension("2.5.29.24", Extension.NON_CRITICAL,
+                    new InvalidityDate(new Date())));
         // add the Certificate Issuer Extension to check if implementation
         // support indirect CRLs. As says rfc 3280 (p.62):
         // "If used by conforming CRL issuers, this extension MUST always be
@@ -103,9 +108,10 @@ public class X509CRLImplTest extends TestCase {
         // RECOMMENDS that implementations recognize this extension."
         try {
             crlEntryExtensions.addExtension(
-                        new Extension.CertificateIssuer(
+                    new Extension("2.5.29.29", true,
+                        new CertificateIssuer(
                             new GeneralName(new Name(certIssuerName))
-                            )
+                            ))
             );
         } catch (Exception e) {
             e.printStackTrace();
@@ -132,14 +138,17 @@ public class X509CRLImplTest extends TestCase {
                             ASN1Integer.getInstance().encode(
                                 BigInteger.valueOf(4444).toByteArray())),
                     // Authority Key Identifier
-                    new Extension.AuthKeyId(
+                    new Extension("2.5.29.35", false, 
                         new AuthorityKeyIdentifier(
-                            new byte[] {1, 2, 3, 4, 5}, // keyIdentifier (random value)
-                            new GeneralNames(Arrays.asList(new GeneralName[] {
-                                new GeneralName(new Name(certIssuerName))
-                            })), // authorityCertIssuer
-                            certSerialNumber2 // authorityCertSerialNumber
-                            ))
+                            // keyIdentifier (random value)
+                            new byte[] {1, 2, 3, 4, 5},
+                            // authorityCertIssuer
+                            new GeneralNames(
+                                Arrays.asList(new GeneralName[] {
+                                    new GeneralName(new Name(certIssuerName))
+                            })), 
+                            // authorityCertSerialNumber
+                            certSerialNumber2)),
                 }));
         } catch (Exception e) {
             e.printStackTrace();

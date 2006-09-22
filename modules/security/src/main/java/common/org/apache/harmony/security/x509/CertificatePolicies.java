@@ -21,6 +21,7 @@
 
 package org.apache.harmony.security.x509;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -43,7 +44,7 @@ import org.apache.harmony.security.asn1.BerInputStream;
  * 
  */
 
-public class CertificatePolicies {
+public class CertificatePolicies extends ExtensionValue {
 
     // the values of policyInformation field of the structure
     private List policyInformations;
@@ -61,6 +62,13 @@ public class CertificatePolicies {
      */
     public CertificatePolicies(List policyInformations) {
         this.policyInformations = policyInformations;
+    }
+
+    public static CertificatePolicies decode(byte[] encoding) 
+            throws IOException {
+        CertificatePolicies cps = ((CertificatePolicies) ASN1.decode(encoding));
+        cps.encoding = encoding;
+        return cps;
     }
     
     // 
@@ -86,12 +94,14 @@ public class CertificatePolicies {
      * @param   policyInformation:  PolicyInformation
      * @return
      */
-    public void addPolicyInformation(PolicyInformation policyInformation) {
+    public CertificatePolicies addPolicyInformation(
+            PolicyInformation policyInformation) {
         encoding = null;
         if (policyInformations == null) {
             policyInformations = new ArrayList();
         }
         policyInformations.add(policyInformation);
+        return this;
     }
 
     /**

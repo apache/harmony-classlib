@@ -64,7 +64,7 @@ import org.apache.harmony.security.asn1.BerInputStream;
  *  }
  * </pre>
  */
-public class CRLDistributionPoints {
+public class CRLDistributionPoints extends ExtensionValue {
     
     private List distributionPoints;
     private byte[] encoding;

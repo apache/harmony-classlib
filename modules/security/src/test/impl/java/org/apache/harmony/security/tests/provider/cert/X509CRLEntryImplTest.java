@@ -28,6 +28,7 @@ import javax.security.auth.x500.X500Principal;
 import org.apache.harmony.security.provider.cert.X509CRLEntryImpl;
 import org.apache.harmony.security.x509.Extension;
 import org.apache.harmony.security.x509.Extensions;
+import org.apache.harmony.security.x509.ReasonCode;
 import org.apache.harmony.security.x509.TBSCertList;
 
 import junit.framework.Test;
@@ -52,7 +53,9 @@ public class X509CRLEntryImplTest extends TestCase {
         Extensions crlEntryExtensions = new Extensions();
         // add reason code extension which OID is 2.5.29.21
         // see RFC 3280 http://www.ietf.org/rfc/rfc3280.txt
-        crlEntryExtensions.addExtension(new Extension.ReasonCode(1));
+        crlEntryExtensions.addExtension(
+                new Extension("2.5.29.21", Extension.NON_CRITICAL,
+                    new ReasonCode(ReasonCode.KEY_COMPROMISE)));
         // crl entry
         X509CRLEntryImpl crlEntry = new X509CRLEntryImpl(
                 new TBSCertList.RevokedCertificate(

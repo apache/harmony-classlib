@@ -58,7 +58,7 @@ public class Extensions {
                 "2.5.29.30", "2.5.29.36", "2.5.29.37", "2.5.29.54"});
     
     // the values of extensions of the structure
-    private List extensions;
+    private List<Extension> extensions;
     private Set critical;
     private Set noncritical;
     // the flag showing is there any unsupported critical extension
@@ -200,10 +200,11 @@ public class Extensions {
      */
     public boolean[] valueOfKeyUsage() {
         Extension extn = getExtensionByOID("2.5.29.15");
-        if (extn == null) {
+        KeyUsage kUsage = null;
+        if ((extn == null) || ((kUsage = extn.getKeyUsageValue()) == null)) {
             return null;
         }
-        return ((Extension.KeyUsage) extn).getKeyUsage();
+        return kUsage.getKeyUsage();
     }
    
     /**
@@ -228,7 +229,8 @@ public class Extensions {
         if (extn == null) {
             return null;
         }
-        return (List) Extension.ExtendedKeyUsage.ASN1.decode(extn.getExtnValue());
+        return ((ExtendedKeyUsage) 
+                extn.getDecodedExtensionValue()).getExtendedKeyUsage();
     }
     
     /**
@@ -250,10 +252,12 @@ public class Extensions {
      */
     public int valueOfBasicConstrains() {
         Extension extn = getExtensionByOID("2.5.29.19");
-        if (extn == null) {
+        BasicConstraints bc = null;
+        if ((extn == null) 
+                || ((bc = extn.getBasicConstraintsValue()) == null)) {
             return Integer.MAX_VALUE;
         }
-        return ((Extension.BasicConstraints) extn).getPathLenConstraint();
+        return bc.getPathLenConstraint();
     }
     
     /**
@@ -300,8 +304,8 @@ public class Extensions {
         if (extn == null) {
             return null;
         }
-        return ((GeneralNames) GeneralNames.ASN1.decode(extn.getExtnValue()))
-                .getPairsList();
+        return ((GeneralNames) 
+                GeneralNames.ASN1.decode(extn.getExtnValue())).getPairsList();
     }
    
     /**
@@ -323,8 +327,8 @@ public class Extensions {
         if (extn == null) {
             return null;
         }
-        return (X500Principal)
-            Extension.CertificateIssuer.ASN1.decode(extn.getExtnValue());
+        return ((CertificateIssuer) 
+                extn.getDecodedExtensionValue()).getIssuer();
     }
     
     /**
