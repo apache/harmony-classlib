@@ -39,9 +39,9 @@
     <property name="hy.awt.src.test.api.java.platform"
               value="${hy.awt.src.test.api}/java/${hy.os}" />
 
-    <target name="build" depends="compile.java, copy.resources, build.jar" />
+    <target name="build" depends="compile-java, copy-resources, build-jar" />
 
-    <target name="test" depends="build, compile.tests, run.tests" />
+    <target name="test" depends="build, compile-tests, run-tests" />
 
     <target name="clean">
         <delete failonerror="false">
@@ -50,7 +50,7 @@
         </delete>
     </target>
 
-    <target name="compile.java">
+    <target name="compile-java">
         <echo message="Compiling AWT classes" />
 
         <mkdir dir="${hy.build}" />
@@ -76,7 +76,7 @@
         </javac>
     </target>
 
-    <target name="copy.resources">
+    <target name="copy-resources">
         <mkdir dir="${hy.build}" />
         <copy todir="${hy.build}" includeemptydirs="false">
             <fileset dir="${hy.awt.src.main.java}">
@@ -85,7 +85,7 @@
         </copy>
     </target>
 
-    <target name="build.jar" depends="svn-info">
+    <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/awt.jar"
              manifest="${hy.awt}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
@@ -95,8 +95,8 @@
         </jar>
     </target>
 
-    <target name="build.native"
-        depends="-build.native.linux,-build.native.windows"
+    <target name="build-native"
+        depends="-build-native-linux,-build-native-windows"
         if="with.awt.swing">
 
         <make dir="${hy.awt.src.main.native}/lcmm/${hy.os}" />
@@ -125,7 +125,7 @@
 
     </target>
 
-    <target name="-build.native.linux" if="is.linux">
+    <target name="-build-native-linux" if="is.linux">
         <make dir="${hy.awt.src.main.native}/x11wrapper/${hy.os}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -143,7 +143,7 @@
         </copy>
     </target>
 
-    <target name="-build.native.windows" if="is.windows">
+    <target name="-build-native-windows" if="is.windows">
         <make dir="${hy.awt.src.main.native}/win32wrapper/${hy.os}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -161,8 +161,8 @@
         </copy>
     </target>
 
-    <target name="clean.native"
-            depends="-clean.native.linux,-clean.native.windows">
+    <target name="clean-native"
+            depends="-clean-native-linux,-clean-native-windows">
         <make dir="${hy.awt.src.main.native}/lcmm/${hy.os}"
               target="clean"/>
         <make dir="${hy.awt.src.main.native}/jpegdecoder/${hy.os}"
@@ -171,21 +171,21 @@
               target="clean"/>
     </target>
 
-    <target name="-clean.native.linux" if="is.linux">
+    <target name="-clean-native-linux" if="is.linux">
         <make dir="${hy.awt.src.main.native}/x11wrapper/${hy.os}"
               target="clean"/>
         <make dir="${hy.awt.src.main.native}/linuxfont/${hy.os}"
               target="clean"/>
     </target>
 
-    <target name="-clean.native.windows" if="is.windows">
+    <target name="-clean-native-windows" if="is.windows">
         <make dir="${hy.awt.src.main.native}/win32wrapper/${hy.os}"
               target="clean"/>
         <make dir="${hy.awt.src.main.native}/winfont/${hy.os}"
               target="clean"/>
     </target>
 
-    <target name="compile.tests">
+    <target name="compile-tests">
         <echo message="Compiling AWT tests" />
 
         <mkdir dir="${hy.awt.bin.test}" />
@@ -232,7 +232,7 @@
         </copy>    
     </target>
 
-    <target name="run.tests" if="with.awt.swing">
+    <target name="run-tests" if="with.awt.swing">
 
         <mkdir dir="${hy.tests.reports}" />
 

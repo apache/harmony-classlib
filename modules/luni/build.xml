@@ -34,9 +34,9 @@
     <property file="../../make/depends.properties" />
     <property name="fdlibm.zip" location="${depends.oss}/fdlibm_5.2.zip" />
 
-    <target name="build" depends="compile.java, copy.resources, build.jar" />
+    <target name="build" depends="compile-java, copy-resources, build-jar" />
 
-    <target name="copy.native.includes">
+    <target name="copy-native-includes">
         <copy todir="${hy.hdk}/include" overwrite="yes">
             <fileset dir="${hy.luni.src.main.native}/include/shared">
                 <include name="vmi.h" />
@@ -65,11 +65,11 @@
             </fileset>
         </copy>
 
-        <antcall target="copy.native.includes.windows" />
-        <antcall target="copy.native.includes.linux" />
+        <antcall target="copy-native-includes-windows" />
+        <antcall target="copy-native-includes-linux" />
     </target>
 
-    <target name="copy.native.includes.windows" if="is.windows">
+    <target name="copy-native-includes-windows" if="is.windows">
         <copy todir="${hy.hdk}/include" overwrite="yes">
             <fileset dir="${hy.luni.src.main.native}/include/windows">
                 <include name="hymutex.h" />
@@ -80,7 +80,7 @@
         </copy>
     </target>
 
-    <target name="copy.native.includes.linux" if="is.linux">
+    <target name="copy-native-includes-linux" if="is.linux">
         <copy todir="${hy.hdk}/include" overwrite="yes">
             <fileset dir="${hy.luni.src.main.native}/include/linux">
                 <include name="hymutex.h" />
@@ -92,11 +92,11 @@
     </target>
 
     <!-- Build native code -->
-    <target name="build.native"
-            depends="build.native.core, build.native.secondary" />
+    <target name="build-native"
+            depends="build-native-core, build-native-secondary" />
 
     <!-- Build the core luni native components -->
-    <target name="build.native.core" >
+    <target name="build-native-core" >
 
         <!-- Build sig dll -->
         <make dir="${hy.luni.src.main.native}/sig/${hy.os}" />
@@ -151,7 +151,7 @@
     </target>
 
     <!-- Build secondary native luni components -->
-    <target name="build.native.secondary" >
+    <target name="build-native-secondary" >
         <!-- Build luni dll -->
         <make dir="${hy.luni.src.main.native}/luni/${hy.os}" />
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -191,7 +191,7 @@
     </target>
 
     <!-- Clean natives -->
-    <target name="clean.native">
+    <target name="clean-native">
         <make dir="${hy.luni.src.main.native}/sig/${hy.os}" target="clean" />
         <make dir="${hy.luni.src.main.native}/common/${hy.os}" target="clean" />
         <make dir="${hy.luni.src.main.native}/pool/${hy.os}" target="clean" />
@@ -205,17 +205,17 @@
               target="clean" />
     </target>
 
-    <target name="test" depends="build, compile.tests, run.tests" />
+    <target name="test" depends="build, compile-tests, run-tests" />
 
     <target name="clean">
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.luni.bin.test}" />
         </delete>
-        <antcall target="clean.native.includes" />
+        <antcall target="clean-native-includes" />
     </target>
 
-    <target name="clean.native.includes">
+    <target name="clean-native-includes">
         <delete failonerror="false">
             <fileset dir="${hy.hdk}/include">
                 <include name="vmi.h" />
@@ -248,7 +248,7 @@
         </delete>
     </target>
 
-    <target name="compile.java">
+    <target name="compile-java">
         <echo message="Compiling LUNI classes" />
 
         <javac sourcepath=""
@@ -268,7 +268,7 @@
         </javac>
     </target>
 
-    <target name="build.jar" depends="svn-info">
+    <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/luni.jar"
              manifest="${hy.luni}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
@@ -278,7 +278,7 @@
         </jar>
     </target>
 
-    <target name="compile.tests">
+    <target name="compile-tests">
         <compile-tests description="JUnit Tests" destdir="${hy.luni.bin.test}">
             <javac-elements>
                 <src>
@@ -289,7 +289,7 @@
         </compile-tests>
     </target>
 
-    <target name="run.tests">
+    <target name="run-tests">
         <run-tests description="JUnit Tests">
             <junit-elements>
                 <classpath>
@@ -339,7 +339,7 @@
             append="true">luni${line.separator}</echo>
     </target>
 
-    <target name="copy.resources">
+    <target name="copy-resources">
         <mkdir dir="${hy.build}" />
         <copy todir="${hy.build}" includeemptydirs="false">
             <fileset dir="${hy.luni.src.main.java}">

@@ -46,7 +46,7 @@
         <delete file="${hy.hdk}/build/test/support.jar" />
     </target>
 
-    <target name="test-modules" depends="support.jar">
+    <target name="test-modules" depends="support-jar">
         <call-modules target="test" />
     </target>
 
@@ -63,7 +63,7 @@
     <echo message="The test report is in ${display-location}"/>
     </target>
 
-    <target name="support.jar" depends="compile-support">
+    <target name="support-jar" depends="compile-support">
         <mkdir dir="${hy.hdk}/build/test" />
         <jar destfile="${hy.hdk}/build/test/support.jar"
              manifest="support/META-INF/MANIFEST.MF">

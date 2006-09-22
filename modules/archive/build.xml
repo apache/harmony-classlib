@@ -33,9 +33,9 @@
 
     <property name="zlib.zip" location="${depends.oss}/zlib_1.2.3.zip" />
 
-    <target name="build" depends="compile.java, copy.resources, build.jar" />
+    <target name="build" depends="compile-java, copy-resources, build-jar" />
     
-    <target name="copy.native.includes" depends="overlay-oss">
+    <target name="copy-native-includes" depends="overlay-oss">
     <copy todir="${hy.hdk}/include" overwrite="yes">
         <fileset dir="${hy.archive.src.main.native}/include/shared">
         <include name="zipsup.h" />
@@ -58,7 +58,7 @@
     </target>
     
     <!-- Build native code -->
-    <target name="build.native" >
+    <target name="build-native" >
         <make dir="${hy.archive.src.main.native}/zip/${hy.os}" />
         
         <make dir="${hy.archive.src.main.native}/zlib/${hy.os}" />
@@ -77,7 +77,7 @@
     </target>
     
     <!-- Clean natives -->
-    <target name="clean.native">
+    <target name="clean-native">
         <make dir="${hy.archive.src.main.native}/zip/${hy.os}" target="clean" />
         <make dir="${hy.archive.src.main.native}/zlib/${hy.os}"
               target="clean" />
@@ -85,17 +85,17 @@
               target="clean" />
     </target>
 
-    <target name="test" depends="build, compile.tests, run.tests" />
+    <target name="test" depends="build, compile-tests, run-tests" />
 
     <target name="clean">
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.archive.bin.test}" />
         </delete>
-        <antcall target="clean.native.includes" />
+        <antcall target="clean-native-includes" />
     </target>
 
-    <target name="clean.native.includes">
+    <target name="clean-native-includes">
     <delete failonerror="false">
         <fileset dir="${hy.hdk}/include">
         <include name="zipsup.h" />
@@ -103,7 +103,7 @@
     </delete>
     </target>
 
-    <target name="compile.java">
+    <target name="compile-java">
         <echo message="Compiling ARCHIVE classes" />
 
         <mkdir dir="${hy.build}" />
@@ -125,7 +125,7 @@
         </javac>
     </target>
 
-    <target name="copy.resources">
+    <target name="copy-resources">
         <mkdir dir="${hy.build}" />
         <copy todir="${hy.build}" includeemptydirs="false">
             <fileset dir="${hy.archive.src.main.java}">
@@ -134,7 +134,7 @@
         </copy>
     </target>
 
-    <target name="build.jar" depends="svn-info">
+    <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/archive.jar"
              manifest="${hy.archive}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
@@ -144,7 +144,7 @@
         </jar>
     </target>
 
-    <target name="compile.tests" depends="copy.test.resources">
+    <target name="compile-tests" depends="copy-test-resources">
         <echo message="Compiling ARCHIVE tests" />
 
         <mkdir dir="${hy.archive.bin.test}" />
@@ -167,7 +167,7 @@
         </javac>
     </target>
 
-    <target name="run.tests">
+    <target name="run-tests">
 
         <mkdir dir="${hy.tests.reports}" />
 
@@ -217,7 +217,7 @@
             append="true">archive${line.separator}</echo>
     </target>
 
-    <target name="copy.test.resources">
+    <target name="copy-test-resources">
         <mkdir dir="${hy.archive.bin.test}" />
         <copy todir="${hy.archive.bin.test}" includeemptydirs="false">
             <fileset dir="${hy.archive.src.test.resources}">

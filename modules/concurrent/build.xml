@@ -31,9 +31,9 @@
         <excludesfile name="${hy.hdk}/build/patternsets/security-kernel.txt" />
     </fileset>
 
-    <target name="build" depends="compile.java, build.jar" />
+    <target name="build" depends="compile-java, build-jar" />
 
-    <target name="test" ><!-- depends="build, compile.tests, run.tests" --></target>
+    <target name="test" ><!-- depends="build, compile-tests, run-tests" --></target>
 
     <target name="clean">
         <delete failonerror="false">
@@ -42,7 +42,7 @@
         </delete>
     </target>
 
-    <target name="compile.java">
+    <target name="compile-java">
         <echo message="Compiling CONCURRENT classes" />
 
         <mkdir dir="${hy.build}" />
@@ -64,7 +64,7 @@
         </javac>
     </target>
 
-    <target name="build.jar" depends="svn-info">
+    <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/${hy.concurrent.packaging.jarname}.jar"
              manifest="${hy.concurrent}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
@@ -74,7 +74,7 @@
         </jar>
     </target>
 
-    <target name="compile.tests">
+    <target name="compile-tests">
         <echo message="Compiling CONCURRENT tests" />
 
         <mkdir dir="${hy.concurrent.bin.test}" />
@@ -99,7 +99,7 @@
         </javac>
     </target>
 
-    <target name="run.tests">
+    <target name="run-tests">
 
         <mkdir dir="${hy.tests.reports}" />
 

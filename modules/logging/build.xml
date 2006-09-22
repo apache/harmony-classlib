@@ -31,9 +31,9 @@
         <excludesfile name="${hy.hdk}/build/patternsets/security-kernel.txt" />
     </fileset>
 
-    <target name="build" depends="compile.java, copy.jar.resources, build.jar, copy.resources" />
+    <target name="build" depends="compile-java, copy-jar-resources, build-jar, copy-resources" />
 
-    <target name="test" depends="build, compile.tests, run.tests" />
+    <target name="test" depends="build, compile-tests, run-tests" />
 
     <target name="clean">
         <delete failonerror="false">
@@ -42,7 +42,7 @@
         </delete>
     </target>
 
-    <target name="compile.java">
+    <target name="compile-java">
         <echo message="Compiling LOGGING classes" />
 
         <mkdir dir="${hy.build}" />
@@ -64,7 +64,7 @@
         </javac>
     </target>
 
-    <target name="build.jar" depends="svn-info">
+    <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/logging.jar"
              manifest="${hy.logging}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
@@ -74,7 +74,7 @@
         </jar>
     </target>
 
-    <target name="compile.tests" depends="copy.test.resources" >
+    <target name="compile-tests" depends="copy-test-resources" >
         <echo message="Compiling LOGGING tests" />
 
         <mkdir dir="${hy.logging.bin.internal}" />
@@ -117,7 +117,7 @@
         </javac>
     </target>
 
-    <target name="run.tests">
+    <target name="run-tests">
 
         <mkdir dir="${hy.tests.reports}" />
 
@@ -182,7 +182,7 @@
             append="true">logging${line.separator}</echo>
     </target>
 
-    <target name="copy.jar.resources">
+    <target name="copy-jar-resources">
         <mkdir dir="${hy.build}" />
         <copy todir="${hy.build}" includeemptydirs="false">
             <fileset dir="${hy.logging.src.main.java}">
@@ -192,7 +192,7 @@
         </copy>
     </target>
 
-    <target name="copy.resources">
+    <target name="copy-resources">
         <copy todir="${hy.jdk}/jre/lib" overwrite="yes" flatten="yes">
             <fileset dir="${hy.logging.src.main.java}">
                 <include name="**/logging.properties" />
@@ -200,7 +200,7 @@
         </copy>
     </target>
 
-    <target name="copy.test.resources">
+    <target name="copy-test-resources">
         <mkdir dir="${hy.logging.bin.test}" />
         <copy todir="${hy.logging.bin.test}" includeemptydirs="false">
             <fileset dir="${hy.logging.src.test.resources}">

@@ -34,12 +34,12 @@
         <property name="hy.nio.src.test.java.platform"
                   value="${hy.nio.src.test.java}/../${hy.os}" />
 
-    <target name="build" depends="compile.java, copy.resources, build.jar" />
+    <target name="build" depends="compile-java, copy-resources, build-jar" />
 
-    <target name="test" depends="build, compile.tests, run.tests" />
+    <target name="test" depends="build, compile-tests, run-tests" />
 
     <!-- Build natives.-->
-    <target name="build.native">
+    <target name="build-native">
         <make dir="${hy.nio.src.main.native}/nio/${hy.os}" />
 
         <!-- Copy the built shared libs over to the jre/bin dir -->
@@ -58,13 +58,13 @@
     </target>
 
     <!-- Clean natives. -->
-    <target name="clean.native">
+    <target name="clean-native">
         <make dir="${hy.nio.src.main.native}/nio/${hy.os}"
                       target="clean" />
     </target>
 
 
-    <target name="compile.java">
+    <target name="compile-java">
         <echo message="Compiling NIO classes" />
 
         <mkdir dir="${hy.build}" />
@@ -86,7 +86,7 @@
         </javac>
     </target>
 
-    <target name="copy.resources">
+    <target name="copy-resources">
         <mkdir dir="${hy.build}" />
         <copy todir="${hy.build}" includeemptydirs="false">
             <fileset dir="${hy.nio.src.main.java}">
@@ -95,7 +95,7 @@
         </copy>
     </target>
 
-    <target name="build.jar" depends="svn-info">
+    <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/nio.jar"
             manifest="${hy.nio}/META-INF/MANIFEST.MF">
 
@@ -106,7 +106,7 @@
         </jar>
     </target>
 
-    <target name="compile.tests" depends="copy.test.resources">
+    <target name="compile-tests" depends="copy-test-resources">
         <echo message="Compiling NIO tests" />
 
         <mkdir dir="${hy.nio.bin.test}" />
@@ -133,7 +133,7 @@
         </javac>
     </target>
 
-    <target name="run.tests">
+    <target name="run-tests">
         <mkdir dir="${hy.tests.reports}" />
 
         <property name="test.jre.home" value="${hy.jdk}/jre" />
@@ -179,7 +179,7 @@
         <echo file="${hy.tests.reports}/test.errors" append="true">nio${line.separator}</echo>
     </target>
 
-    <target name="copy.test.resources">
+    <target name="copy-test-resources">
         <mkdir dir="${hy.nio.bin.test}" />
         <copy todir="${hy.nio.bin.test}" includeemptydirs="false">
             <fileset dir="${hy.nio.src.test.resources}">

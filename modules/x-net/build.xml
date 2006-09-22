@@ -33,9 +33,9 @@
 
     <property file="../../make/depends.properties" />
 
-    <target name="build" depends="compile.java, copy.resources, build.jar" />
+    <target name="build" depends="compile-java, copy-resources, build-jar" />
 
-    <target name="test" depends="build, compile.tests, run.tests" />
+    <target name="test" depends="build, compile-tests, run-tests" />
 
     <target name="clean">
         <delete failonerror="false">
@@ -44,7 +44,7 @@
         </delete>
     </target>
 
-    <target name="compile.java">
+    <target name="compile-java">
         <echo message="Compiling X-NET classes" />
 
         <mkdir dir="${hy.build}" />
@@ -66,7 +66,7 @@
         </javac>
     </target>
 
-    <target name="copy.resources">
+    <target name="copy-resources">
         <mkdir dir="${hy.build}" />
         <copy todir="${hy.build}" includeemptydirs="false">
             <fileset dir="${hy.x-net.src.main.java}">
@@ -75,7 +75,7 @@
         </copy>
     </target>
 
-    <target name="build.jar" depends="svn-info">
+    <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/${hy.x-net.packaging.jarname}.jar"
             manifest="${hy.x-net}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
@@ -85,7 +85,7 @@
         </jar>
     </target>
 
-    <target name="compile.tests">
+    <target name="compile-tests">
 
         <compile-tests description="test support files" destdir="../../build/tests">
             <javac-elements>
@@ -121,9 +121,9 @@
         </compile-tests>
     </target>
 
-    <target name="run.tests" depends="run.tests.api, run.tests.impl" />
+    <target name="run-tests" depends="run-tests-api, run-tests-impl" />
 
-    <target name="run.tests.api">
+    <target name="run-tests-api">
 
         <run-tests description="api tests">
             <junit-elements>
@@ -147,7 +147,7 @@
         <antcall target="touch-errors-file" />
     </target>
 
-    <target name="run.tests.impl" unless="test.noimpl">
+    <target name="run-tests-impl" unless="test.noimpl">
         <run-tests description="impl tests">
             <junit-elements>
                 <classpath>

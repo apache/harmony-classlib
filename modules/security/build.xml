@@ -40,16 +40,16 @@
     <property name="hy.security.src.test.java.platform"
               value="${hy.security.src.test.java}/../${hy.os}" />
 
-    <target name="build" depends="compile.java, copy.resources, build.jar" />
+    <target name="build" depends="compile-java, copy-resources, build-jar" />
 
-    <target name="test" depends="build, compile.tests, run.tests" />
+    <target name="test" depends="build, compile-tests, run-tests" />
 
 
     <!-- Build native code -->
     <available file="${hy.security.src.main.native}/security/${hy.os}" property="native.present" />
 
 
-    <target name="build.native" if="native.present" >
+    <target name="build-native" if="native.present" >
     <make dir="${hy.security.src.main.native}/security/${hy.os}" />
 
         <!-- Copy the built shared libs over to the jre/bin dir -->
@@ -61,7 +61,7 @@
     </target>
     
     <!-- Clean natives -->
-    <target name="clean.native" if="native.present" >
+    <target name="clean-native" if="native.present" >
         <make dir="${hy.security.src.main.native}/security/${hy.os}" target="clean" />
     </target>
 
@@ -73,7 +73,7 @@
         </delete>
     </target>
 
-    <target name="compile.java">
+    <target name="compile-java">
         <echo message="Compiling SECURITY classes" />
 
         <mkdir dir="${hy.build}" />
@@ -99,7 +99,7 @@
         </javac>
     </target>
 
-    <target name="copy.resources">
+    <target name="copy-resources">
         <mkdir dir="${hy.build}" />
         <copy todir="${hy.build}" includeemptydirs="false">
             <fileset dir="${hy.security.src.main.java}">
@@ -108,7 +108,7 @@
         </copy>
     </target>
 
-    <target name="build.jar" depends="svn-info">
+    <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/${hy.security.packaging.jarname}.jar"
              manifest="${hy.security}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
@@ -118,7 +118,7 @@
         </jar>
     </target>
 
-    <target name="compile.tests">
+    <target name="compile-tests">
 
         <compile-tests description="test support files" destdir="../../build/tests">
             <javac-elements>
@@ -168,9 +168,9 @@
         </compile-tests>
     </target>
 
-    <target name="run.tests" depends="run.tests.api, run.tests.impl" />
+    <target name="run-tests" depends="run-tests-api, run-tests-impl" />
 
-    <target name="run.tests.api">
+    <target name="run-tests-api">
 
         <run-tests description="api tests">
             <junit-elements>
@@ -223,7 +223,7 @@
         <antcall target="touch-errors-file" />
     </target>
 
-    <target name="run.tests.impl" unless="test.noimpl">
+    <target name="run-tests-impl" unless="test.noimpl">
         <run-tests description="impl tests">
             <junit-elements>
                 <!-- Required for running the serialization unit tests -->

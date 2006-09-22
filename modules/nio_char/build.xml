@@ -31,9 +31,9 @@
         <excludesfile name="${hy.hdk}/build/patternsets/security-kernel.txt" />
     </fileset>
 
-    <target name="build" depends="compile.java, copy.resources, build.jar" />
+    <target name="build" depends="compile-java, copy-resources, build-jar" />
 
-    <target name="test" depends="build, compile.tests, run.tests" />
+    <target name="test" depends="build, compile-tests, run-tests" />
 
     <target name="clean">
         <delete failonerror="false">
@@ -42,7 +42,7 @@
         </delete>
     </target>
 
-    <target name="compile.java">
+    <target name="compile-java">
         <echo message="Compiling NIO_CHAR classes" />
 
         <mkdir dir="${hy.build}" />
@@ -64,7 +64,7 @@
         </javac>
     </target>
 
-    <target name="copy.resources">
+    <target name="copy-resources">
         <mkdir dir="${hy.build}" />
         <copy todir="${hy.build}" includeemptydirs="false">
             <fileset dir="${hy.nio_char.src.main.java}">
@@ -73,7 +73,7 @@
         </copy>
     </target>
 
-    <target name="build.jar" depends="svn-info">
+    <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/${hy.nio_char.packaging.jarname}.jar"
              manifest="${hy.nio_char}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
@@ -83,7 +83,7 @@
         </jar>
     </target>
 
-    <target name="compile.tests" depends="copy.test.resources">
+    <target name="compile-tests" depends="copy-test-resources">
         <echo message="Compiling NIO_CHAR tests" />
 
         <mkdir dir="${hy.nio_char.bin.test}" />
@@ -107,7 +107,7 @@
         </javac>
     </target>
 
-    <target name="run.tests">
+    <target name="run-tests">
 
         <mkdir dir="${hy.tests.reports}" />
 
@@ -171,7 +171,7 @@
             append="true">nio_char${line.separator}</echo>
     </target>
 
-    <target name="copy.test.resources">
+    <target name="copy-test-resources">
         <mkdir dir="${hy.nio_char.bin.test}" />
         <copy todir="${hy.nio_char.bin.test}" includeemptydirs="false">
             <fileset dir="${hy.nio_char.src.test.resources}">

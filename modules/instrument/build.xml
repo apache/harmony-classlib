@@ -33,9 +33,9 @@
     
     <property name="iculib.zip" location="${depends.oss}/icu4c-3.4-harmony.zip" />
 
-    <target name="build" depends="compile.java, copy.resources, build.jar" />
+    <target name="build" depends="compile-java, copy-resources, build-jar" />
 
-    <target name="test" depends="build, compile.tests, run.tests" />
+    <target name="test" depends="build, compile-tests, run-tests" />
     
     <target name="overlay-oss">
     <mkdir dir="${hy.instrument.src.main.native}/icu4c/unicode" />
@@ -48,7 +48,7 @@
     </target>
     
     <!-- Build native code -->
-    <target name="build.native" >
+    <target name="build-native" >
     <make dir="${hy.instrument.src.main.native}/instrument/${hy.os}" />
 
     <!-- Copy the built shared libs over to the jre/bin dir -->
@@ -60,7 +60,7 @@
     </target>
     
     <!-- Clean natives -->
-    <target name="clean.native">
+    <target name="clean-native">
     <make dir="${hy.instrument.src.main.native}/instrument/${hy.os}" target="clean" />
     </target>
 
@@ -71,7 +71,7 @@
         </delete>
     </target>
 
-    <target name="compile.java">
+    <target name="compile-java">
         <echo message="Compiling INSTRUMENT classes" />
 
         <mkdir dir="${hy.build}" />
@@ -93,7 +93,7 @@
         </javac>
     </target>
 
-    <target name="copy.resources">
+    <target name="copy-resources">
         <mkdir dir="${hy.build}" />
         <copy todir="${hy.build}" includeemptydirs="false">
             <fileset dir="${hy.instrument.src.main.java}">
@@ -102,7 +102,7 @@
         </copy>
     </target>
 
-    <target name="build.jar" depends="svn-info">
+    <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/instrument.jar"
              manifest="${hy.instrument}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
@@ -112,7 +112,7 @@
         </jar>
     </target>
 
-    <target name="compile.tests" depends="copy.test.resources">
+    <target name="compile-tests" depends="copy-test-resources">
         <echo message="Compiling INSTRUMENT tests" />
 
         <mkdir dir="${hy.instrument.bin.test}" />
@@ -135,7 +135,7 @@
         </javac>
     </target>
 
-    <target name="run.tests">
+    <target name="run-tests">
 
         <mkdir dir="${hy.tests.reports}" />
 
@@ -185,7 +185,7 @@
             append="true">instrument${line.separator}</echo>
     </target>
 
-    <target name="copy.test.resources">
+    <target name="copy-test-resources">
         <mkdir dir="${hy.instrument.bin.test}" />
         <copy todir="${hy.instrument.bin.test}" includeemptydirs="false">
             <fileset dir="${hy.instrument.src.test.resources}">

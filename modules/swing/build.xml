@@ -39,9 +39,9 @@
     <property name="hy.swing.src.test.java.platform"
               value="${hy.swing.src.test.java}/../${hy.os}" />
 
-    <target name="build" depends="compile.java, copy.resources, build.jar" />
+    <target name="build" depends="compile-java, copy-resources, build-jar" />
 
-    <target name="test" depends="build, run.tests" />
+    <target name="test" depends="build, run-tests" />
 
     <target name="clean">
         <delete failonerror="false">
@@ -50,7 +50,7 @@
         </delete>
     </target>
 
-    <target name="compile.java">
+    <target name="compile-java">
         <echo message="Compiling SWING classes" />
 
         <mkdir dir="${hy.build}" />
@@ -76,7 +76,7 @@
         </javac>
     </target>
 
-    <target name="copy.resources">
+    <target name="copy-resources">
         <mkdir dir="${hy.build}" />
         <copy todir="${hy.build}" includeemptydirs="false">
             <fileset dir="${hy.swing.src.main.java}">
@@ -85,7 +85,7 @@
         </copy>
     </target>
 
-    <target name="build.jar" depends="svn-info">
+    <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/${hy.swing.packaging.jarname}.jar"
              manifest="${hy.swing}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
@@ -95,7 +95,7 @@
         </jar>
     </target>
 
-    <target name="compile.tests">
+    <target name="compile-tests">
         <echo message="Compiling SWING tests" />
 
         <mkdir dir="${hy.swing.bin.test}" />
@@ -119,7 +119,7 @@
         </javac>
     </target>
 
-    <target name="run.tests" depends="compile.tests,copy.test.resources"
+    <target name="run-tests" depends="compile-tests,copy-test-resources"
             if="with.awt.swing">
 
         <mkdir dir="${hy.tests.reports}" />
@@ -313,7 +313,7 @@
             append="true">swing${line.separator}</echo>
     </target>
 
-    <target name="copy.test.resources">
+    <target name="copy-test-resources">
         <mkdir dir="${hy.swing.bin.test}" />
         <copy todir="${hy.swing.bin.test}" includeemptydirs="false">
             <fileset dir="${hy.swing.src.test.resources}">

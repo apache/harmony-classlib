@@ -81,7 +81,7 @@ command line.  For example, to run only the luni tests:
 
     <target name="build" depends="build-java,build-native">
         <ant antfile="make/build-test.xml" inheritall="false"
-             target="support.jar"/>
+             target="support-jar"/>
     </target>
 
 

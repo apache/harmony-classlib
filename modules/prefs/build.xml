@@ -31,13 +31,13 @@
         <excludesfile name="${hy.hdk}/build/patternsets/security-kernel.txt" />
     </fileset>
 
-    <target name="build" depends="compile.java, copy.resources, build.jar" />
+    <target name="build" depends="compile-java, copy-resources, build-jar" />
 
-    <target name="test" depends="build, compile.tests, run.tests" />
+    <target name="test" depends="build, compile-tests, run-tests" />
 
     <!-- Build natives. Currently there are only windows natives for
      prefs, so we check if we are on a windows platform -->
-    <target name="build.native" if="is.windows">
+    <target name="build-native" if="is.windows">
     <make dir="${hy.prefs.src.main.native}/prefs/${hy.os}" />
 
     <!-- Copy the built shared libs over to the jre/bin dir -->
@@ -57,12 +57,12 @@
 
     <!-- Clean natives. Currently there are only windows natives for
      prefs, so we check if we are on a windows platform -->
-    <target name="clean.native" if="is.windows">
+    <target name="clean-native" if="is.windows">
     <make dir="${hy.prefs.src.main.native}/prefs/${hy.os}" target="clean" />
     </target>
 
 
-    <target name="compile.java">
+    <target name="compile-java">
         <echo message="Compiling PREFS classes" />
 
         <mkdir dir="${hy.build}" />
@@ -84,7 +84,7 @@
         </javac>
     </target>
 
-    <target name="copy.resources">
+    <target name="copy-resources">
         <mkdir dir="${hy.build}" />
         <copy todir="${hy.build}" includeemptydirs="false">
             <fileset dir="${hy.prefs.src.main.java}">
@@ -93,7 +93,7 @@
         </copy>
     </target>
 
-    <target name="build.jar" depends="svn-info">
+    <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/prefs.jar"
              manifest="${hy.prefs}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
@@ -103,7 +103,7 @@
         </jar>
     </target>
 
-    <target name="compile.tests" depends="copy.test.resources">
+    <target name="compile-tests" depends="copy-test-resources">
         <echo message="Compiling PREFS tests" />
 
         <mkdir dir="${hy.prefs.bin.test}" />
@@ -127,7 +127,7 @@
         </javac>
     </target>
 
-    <target name="run.tests">
+    <target name="run-tests">
 
         <mkdir dir="${hy.tests.reports}" />
 
@@ -178,7 +178,7 @@
             append="true">prefs${line.separator}</echo>
     </target>
 
-    <target name="copy.test.resources">
+    <target name="copy-test-resources">
         <mkdir dir="${hy.prefs.bin.test}" />
         <copy todir="${hy.prefs.bin.test}" includeemptydirs="false">
             <fileset dir="${hy.prefs.src.test.resources}">
