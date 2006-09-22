@@ -303,6 +303,13 @@ public final class SocketPermission extends Permission implements Serializable {
 		if ((lastIdx > -1) && (lastIdx > endOfIPv6Addr)) {
 			try {
 				len = hostString.length();
+                // if hostString ends with ":*", such as "localhost:*"
+                // the port range should be 0-65535
+                if (hostString.endsWith(":*")) { //$NON-NLS-1$
+                    portMin = 0;
+                    portMax = 65535;
+                    return;
+                }
 				// look for a '-' after the colon
 				negidx = hostString.indexOf('-', lastIdx);
 				if (negidx == lastIdx + 1) {

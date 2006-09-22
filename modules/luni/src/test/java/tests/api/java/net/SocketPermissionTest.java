@@ -54,6 +54,15 @@ public class SocketPermissionTest extends junit.framework.TestCase {
 		assertEquals("Wrong name1", "localhost", sp1.getName());
 		SocketPermission sp2 = new SocketPermission(":80", "connect");
 		assertEquals("Wrong name2", ":80", sp2.getName());
+        
+		// regression for HARMONY-1462
+        SocketPermission sp3 = new SocketPermission("localhost:*", "listen");
+        assertEquals("Wrong name3", "localhost:*", sp3.getName());
+        // for all ports
+        SocketPermission spAllPorts = new SocketPermission("localhost:0-65535",
+                "listen");
+        assertTrue("Port range error", sp3.implies(spAllPorts));
+        assertTrue("Port range error", spAllPorts.implies(sp3));
 	}
 
 	/**
