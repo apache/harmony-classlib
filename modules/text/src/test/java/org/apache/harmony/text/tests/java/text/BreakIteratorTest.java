@@ -288,6 +288,10 @@ public class BreakIteratorTest extends TestCase {
         assertEquals(2, iterator.next());
 	}
 
+    /**
+     * @tests java.text.BreakIterator.getShort(byte[], int)
+     * 
+     */
 	public void test_getShort() {
 		try {
 			MockBreakIterator.publicGetShort(null, 0);
@@ -316,8 +320,29 @@ public class BreakIteratorTest extends TestCase {
 		assertEquals(1, MockBreakIterator.publicGetShort(new byte[] { 0, 0, 1, 0 }, 1));
 		assertEquals(1, MockBreakIterator.publicGetShort(new byte[] { 0, 0, 1, 1 }, 1));
 		assertEquals(257, MockBreakIterator.publicGetShort(new byte[] { 0, 1, 1 }, 1));
+        
+        // regression for Harmony-944
+        try {
+            MockBreakIterator.publicGetShort(new byte[] { 0, 0 },
+                    Integer.MAX_VALUE);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+
+        try {
+            MockBreakIterator.publicGetShort(new byte[] { 0, 0 },
+                    Short.MAX_VALUE);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            //expected
+        }
 	}
 	
+    /**
+     * @tests java.text.BreakIterator.getInt(byte[], int)
+     * 
+     */
 	public void test_getInt() {
 		try {
 			MockBreakIterator.publicGetInt(null, 0);
@@ -346,8 +371,21 @@ public class BreakIteratorTest extends TestCase {
 		assertEquals(1, MockBreakIterator.publicGetInt(new byte[] { 0, 0, 0, 0, 1, 0 }, 1));
 		assertEquals(1, MockBreakIterator.publicGetInt(new byte[] { 0, 0, 0, 0, 1, 1 }, 1));
 		assertEquals(257, MockBreakIterator.publicGetInt(new byte[] { 0, 0, 0, 1, 1 }, 1));
+        
+        // regression for Harmony-944
+        try {
+            MockBreakIterator.publicGetInt(new byte[] { 0, 0 },
+                    Integer.MAX_VALUE);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
 	}
 	
+    /**
+     * @tests java.text.BreakIterator.getLong(byte[], int)
+     * 
+     */
 	public void test_getLong() {
 		try {
 			MockBreakIterator.publicGetLong(null, 0);
@@ -376,6 +414,15 @@ public class BreakIteratorTest extends TestCase {
 		assertEquals(1, MockBreakIterator.publicGetLong(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 }, 1));
 		assertEquals(1, MockBreakIterator.publicGetLong(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1 }, 1));
 		assertEquals(257, MockBreakIterator.publicGetLong(new byte[] { 0, 0, 0, 0, 0, 0, 0, 1, 1 }, 1));
+        
+        // regression for Harmony-944
+        try {
+            MockBreakIterator.publicGetLong(new byte[] { 0, 1 },
+                    Integer.MAX_VALUE);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
 	}
     
 	/**

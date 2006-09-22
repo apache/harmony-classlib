@@ -1,4 +1,4 @@
-/* Copyright 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -393,7 +393,7 @@ public abstract class BreakIterator implements Cloneable {
 		if(null == buf){
 			throw new NullPointerException();
 		}
-		if(offset < 0 || offset + LONG_LENGTH > buf.length){
+		if(offset < 0 || buf.length - offset < LONG_LENGTH){
 			throw new ArrayIndexOutOfBoundsException();
 		}
 		long result = 0;
@@ -414,7 +414,7 @@ public abstract class BreakIterator implements Cloneable {
 		if(null == buf){
 			throw new NullPointerException();
 		}
-		if(offset < 0 || offset + INT_LENGTH > buf.length){
+		if(offset < 0 || buf.length - INT_LENGTH < offset){
 			throw new ArrayIndexOutOfBoundsException();
 		}
 		int result = 0;
@@ -431,11 +431,11 @@ public abstract class BreakIterator implements Cloneable {
 	 * @param offset	the start position of conversion
 	 * @return	the converted short value
 	 */
-	protected static short getShort(byte[] buf, int offset) {
+	protected static short getShort(byte[] buf, int offset) {        
 		if(null == buf){
 			throw new NullPointerException();
 		}
-		if(offset < 0 || offset + SHORT_LENGTH > buf.length){
+		if(offset < 0 || buf.length - SHORT_LENGTH < offset){
 			throw new ArrayIndexOutOfBoundsException();
 		}
 		short result = 0;
