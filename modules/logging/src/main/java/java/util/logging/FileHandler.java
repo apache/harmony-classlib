@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-
 package java.util.logging;
 
 import java.io.BufferedOutputStream;
@@ -121,7 +120,7 @@ public class FileHandler extends StreamHandler {
      * ---------------------------------------------
      */
     //maintain all file locks hold by this process
-    private static Hashtable<String, FileLock> allLocks = new Hashtable<String, FileLock>();
+    private static final Hashtable<String, FileLock> allLocks = new Hashtable<String, FileLock>();
 
     /*
      * ---------------------------------------------
@@ -560,6 +559,7 @@ public class FileHandler extends StreamHandler {
      * 				and other permission like <code>FilePermission("write")</code>, 
      * 				etc.
      */
+    @Override
     public void close() {
         //release locks
         super.close();
@@ -576,6 +576,7 @@ public class FileHandler extends StreamHandler {
      * 
      * @param record the log record to be published
      */
+    @Override
     public void publish(LogRecord record) {
         super.publish(record);
         flush();
@@ -608,25 +609,30 @@ public class FileHandler extends StreamHandler {
             this(stream, 0);
         }
 
+        @Override
         public void write(int oneByte) throws IOException {
             wrapped.write(oneByte);
             length++;
         }
 
+        @Override
         public void write(byte[] bytes) throws IOException {
             wrapped.write(bytes);
             length += bytes.length;
         }
 
+        @Override
         public void write(byte[] b, int off, int len) throws IOException {
             wrapped.write(b, off, len);
             length += len;
         }
 
+        @Override
         public void close() throws IOException {
             wrapped.close();
         }
 
+        @Override
         public void flush() throws IOException {
             wrapped.flush();
         }
@@ -642,5 +648,3 @@ public class FileHandler extends StreamHandler {
     }
 
 }
-
-

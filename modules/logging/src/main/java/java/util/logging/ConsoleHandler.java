@@ -55,6 +55,7 @@ public class ConsoleHandler extends StreamHandler {
      * Closes this handler. The <code>System.err</code> is flushed but not
      * closed.
      */
+    @Override
     public void close() {
         super.close(false);
     }
@@ -64,6 +65,7 @@ public class ConsoleHandler extends StreamHandler {
      * 
      * @param record the log record to be logged
      */
+    @Override
     public void publish(LogRecord record) {
         super.publish(record);
         super.flush();

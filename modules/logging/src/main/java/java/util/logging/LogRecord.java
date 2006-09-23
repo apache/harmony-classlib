@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-
 package java.util.logging;
 
 import java.io.IOException;
@@ -45,24 +44,12 @@ import org.apache.harmony.logging.internal.nls.Messages;
 public class LogRecord implements Serializable {
 
     private static final long serialVersionUID = 5372048053134512534L;
-    
-    /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
-     */
 
     // The major byte used in serialization.
     private static final int MAJOR = 1;
 
     // The minor byte used in serialization.
     private static final int MINOR = 4;
-
-    /*
-     * ------------------------------------------------------------------- Class
-     * variables
-     * -------------------------------------------------------------------
-     */
 
     // Store the current value for the sequence number.
     private static long currentSequenceNumber = 0;
@@ -72,12 +59,6 @@ public class LogRecord implements Serializable {
 
     // The base id as the starting point for thread ID allocation.
     private static int initThreadId = 0;
-
-    /*
-     * -------------------------------------------------------------------
-     * Instance variables
-     * -------------------------------------------------------------------
-     */
 
     /**
      * The logging level.
@@ -156,13 +137,7 @@ public class LogRecord implements Serializable {
     private transient Object[] parameters;
 
     // If the source method and source class has been initialized
-    private transient boolean sourceInited = false;
-
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
+    private transient boolean sourceInited;
 
     /**
      * Constructs a <code>LogRecord</code> object using the supplied the
@@ -187,12 +162,12 @@ public class LogRecord implements Serializable {
 
         synchronized (LogRecord.class) {
             this.sequenceNumber = currentSequenceNumber++;
-            Object id = currentThreadId.get();
+            Integer id = currentThreadId.get();
             if (null == id) {
                 this.threadID = initThreadId;
-                currentThreadId.set(new Integer(initThreadId++));
+                currentThreadId.set(Integer.valueOf(initThreadId++));
             } else {
-                this.threadID = ((Integer) id).intValue();
+                this.threadID = id.intValue();
             }
         }
 
@@ -204,12 +179,6 @@ public class LogRecord implements Serializable {
         this.resourceBundleName = null;
         this.thrown = null;
     }
-
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
 
     /**
      * Gets the logging level.
@@ -526,4 +495,3 @@ public class LogRecord implements Serializable {
         }
     }
 }
-

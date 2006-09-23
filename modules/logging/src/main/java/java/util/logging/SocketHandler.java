@@ -57,33 +57,14 @@ import org.apache.harmony.logging.internal.nls.Messages;
  * 
  */
 public class SocketHandler extends StreamHandler {
-
-    /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
-     */
-
     // default level
     private static final String DEFAULT_LEVEL = "ALL"; //$NON-NLS-1$
 
     // default formatter
     private static final String DEFAULT_FORMATTER = "java.util.logging.XMLFormatter"; //$NON-NLS-1$
 
-    /*
-     * -------------------------------------------------------------------
-     * Instance variables
-     * -------------------------------------------------------------------
-     */
-
     // the socket connection
     private Socket socket;
-
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
 
     /**
      * Constructs a <code>SocketHandler</code> object using the properties
@@ -127,12 +108,6 @@ public class SocketHandler extends StreamHandler {
         initSocket(host, String.valueOf(port));
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
     // Initialize the socket connection and prepare the output stream
     private void initSocket(String host, String port) throws IOException {
         // check the validity of the host name
@@ -172,6 +147,7 @@ public class SocketHandler extends StreamHandler {
      *             If a security manager determines that the caller does not
      *             have the required permission to control this handler.
      */
+    @Override
     public void close() {
         try {
             super.close();
@@ -180,7 +156,7 @@ public class SocketHandler extends StreamHandler {
 	            this.socket = null;
             }
         } catch (Exception e) {
-            // logging.F=Exception occured when closing the socket handler.
+            // logging.F=Exception occurred when closing the socket handler.
             getErrorManager().error(Messages.getString("logging.F"), e, //$NON-NLS-1$
                     ErrorManager.CLOSE_FAILURE);
         }
@@ -192,11 +168,10 @@ public class SocketHandler extends StreamHandler {
      * @param record
      *            the log record to be logged
      */
+    @Override
     public void publish(LogRecord record) {
         super.publish(record);
         super.flush();
     }
 
 }
-
-

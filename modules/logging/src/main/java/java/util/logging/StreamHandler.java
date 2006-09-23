@@ -51,13 +51,6 @@ import org.apache.harmony.logging.internal.nls.Messages;
  * 
  */
 public class StreamHandler extends Handler {
-
-    /*
-     * -------------------------------------------------------------------
-     * Instance variables
-     * -------------------------------------------------------------------
-     */
-
     // the output stream this handler writes to
     private OutputStream os;
 
@@ -66,12 +59,6 @@ public class StreamHandler extends Handler {
 
     // the flag indicating whether the writer has been initialized
     private boolean writerNotInitialized;
-
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
 
     /**
      * Constructs a <code>StreamHandler</code> object. The new stream handler
@@ -97,7 +84,7 @@ public class StreamHandler extends Handler {
         this.os = os;
     }
 
-    /*
+    /**
      * Constructs a <code>StreamHandler</code> object. Specified default
      * values will be used if the corresponding properties are found in log
      * manager's properties.
@@ -133,12 +120,6 @@ public class StreamHandler extends Handler {
         this.os = os;
         internalSetFormatter(formatter);
     }
-
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
 
     // initialize the writer
     private void initializeWritter() {
@@ -214,6 +195,7 @@ public class StreamHandler extends Handler {
      * @throws UnsupportedEncodingException
      *             If the specified encoding is not supported by the runtime.
      */
+    @Override
     public void setEncoding(String encoding) throws SecurityException,
             UnsupportedEncodingException {
 		//flush first before set new encoding
@@ -231,6 +213,7 @@ public class StreamHandler extends Handler {
                      * Should not happen because it's checked in
                      * super.initProperties().
                      */
+                    throw new AssertionError(e);
                 }
             }
         }
@@ -274,6 +257,7 @@ public class StreamHandler extends Handler {
      *             If a security manager determines that the caller does not
      *             have the required permission.
      */
+    @Override
     public void close() {
         LogManager.getLogManager().checkAccess();
         close(true);
@@ -282,6 +266,7 @@ public class StreamHandler extends Handler {
     /**
      * Flushes any buffered output.
      */
+    @Override
     public void flush() {
         if (null != this.os) {
             try {
@@ -315,6 +300,7 @@ public class StreamHandler extends Handler {
      * @param record
      *            the log record to be logged
      */
+    @Override
     public void publish(LogRecord record) {
         try {
             if (this.isLoggable(record)) {
@@ -348,6 +334,7 @@ public class StreamHandler extends Handler {
      * @return <code>true</code> if the supplied log record need to be logged,
      *         otherwise <code>false</code>
      */
+    @Override
     public boolean isLoggable(LogRecord record) {
     	if (null == record) {
 			return false;
@@ -359,5 +346,3 @@ public class StreamHandler extends Handler {
     }
 
 }
-
-

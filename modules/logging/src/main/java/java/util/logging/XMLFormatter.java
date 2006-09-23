@@ -32,22 +32,10 @@ import java.util.ResourceBundle;
  */
 public class XMLFormatter extends Formatter {
 
-    /*
-     * ---------------------------------------
-     * Constants
-     * ---------------------------------------
-     */
-
     private static final String lineSeperator = LogManager
             .getSystemLineSeparator();
 
     private static final String indent = "    "; //$NON-NLS-1$
-
-    /*
-     * ---------------------------------------
-     * Constructor
-     * ---------------------------------------
-     */
 
     /**
      * Default constructor
@@ -56,17 +44,13 @@ public class XMLFormatter extends Formatter {
         super();
     }
 
-    /*
-     * ---------------------------------------
-     * Abstract method implementation of Formatter  
-     * ---------------------------------------
-     */
     /**
      * Format a <code>LogRecord</code> into string which represents XML 
      * 
      * @param r the given LogRecord instance to be formatted
      * @return string which represents XML 
      */
+    @Override
     public String format(LogRecord r) {
         //call a method of LogRecord to ensure not null
         long time = r.getMillis();
@@ -74,7 +58,7 @@ public class XMLFormatter extends Formatter {
         String date = MessageFormat.format("{0, date} {0, time}", //$NON-NLS-1$
                 new Object[] { new Date(time) });
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(("<record>")).append(lineSeperator); //$NON-NLS-1$
         sb.append(indent).append(("<date>")).append(date).append(("</date>")) //$NON-NLS-1$ //$NON-NLS-2$
                 .append(lineSeperator);
@@ -103,8 +87,8 @@ public class XMLFormatter extends Formatter {
         formatMessages(r, sb);
         Object[] params;
         if ((params = r.getParameters()) != null) {
-            for (int i = 0; i < params.length; i++) {
-                sb.append(indent).append(("<param>")).append(params[i]).append( //$NON-NLS-1$
+            for (Object element : params) {
+                sb.append(indent).append(("<param>")).append(element).append( //$NON-NLS-1$
                         ("</param>")).append(lineSeperator); //$NON-NLS-1$
             }
         }
@@ -113,13 +97,7 @@ public class XMLFormatter extends Formatter {
         return sb.toString();
     }
 
-    /*
-     * ---------------------------------------
-     * Methods override Formatter 
-     * ---------------------------------------
-     */
-
-    private void formatMessages(LogRecord r, StringBuffer sb) {
+    private void formatMessages(LogRecord r, StringBuilder sb) {
         //get localized message if has, but don't call Formatter.formatMessage to parse pattern string
         ResourceBundle rb = r.getResourceBundle();
         String pattern = r.getMessage();
@@ -152,7 +130,7 @@ public class XMLFormatter extends Formatter {
         }
     }
 
-    private void formatThrowable(LogRecord r, StringBuffer sb) {
+    private void formatThrowable(LogRecord r, StringBuilder sb) {
         Throwable t;
         if ((t = r.getThrown()) != null) {
             sb.append(indent).append("<exception>").append(lineSeperator); //$NON-NLS-1$
@@ -160,8 +138,7 @@ public class XMLFormatter extends Formatter {
                     t.toString()).append("</message>").append(lineSeperator); //$NON-NLS-1$
             //format throwable's stack trace
             StackTraceElement[] elements = t.getStackTrace();
-            for (int i = 0; i < elements.length; i++) {
-                StackTraceElement e = elements[i];
+            for (StackTraceElement e : elements) {
                 sb.append(indent).append(indent).append("<frame>").append( //$NON-NLS-1$
                         lineSeperator);
                 sb.append(indent).append(indent).append(indent).append(
@@ -187,6 +164,7 @@ public class XMLFormatter extends Formatter {
      * @param h the given handler
      * @return the header string for XML
      */
+    @Override
     public String getHead(Handler h) {
         String encoding = null;
         if(null != h) {
@@ -195,7 +173,7 @@ public class XMLFormatter extends Formatter {
         if (null == encoding) {
             encoding = getSystemProperty("file.encoding"); //$NON-NLS-1$
         }
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"").append(encoding).append( //$NON-NLS-1$
                 "\" standalone=\"no\"?>").append(lineSeperator); //$NON-NLS-1$
         sb.append("<!DOCTYPE log SYSTEM \"logger.dtd\">").append(lineSeperator); //$NON-NLS-1$
@@ -209,13 +187,14 @@ public class XMLFormatter extends Formatter {
      * @param h the given handler
      * @return the tail string for XML
      */
+    @Override
     public String getTail(Handler h) {
         return "</log>"; //$NON-NLS-1$
     }
 
     //use privilege code to get system property
     private static String getSystemProperty(final String key) {
-        return (String) AccessController.doPrivileged(
+        return AccessController.doPrivileged(
           new PrivilegedAction<String>() {
             public String run() {
                 return System.getProperty(key);

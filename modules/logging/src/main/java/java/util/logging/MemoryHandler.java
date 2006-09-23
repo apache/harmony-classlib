@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-
 package java.util.logging;
 
 import java.security.AccessController;
@@ -66,38 +65,25 @@ import org.apache.harmony.logging.internal.nls.Messages;
  */
 public class MemoryHandler extends Handler {
 
-    /*
-     * ------------------------------------
-     * consts
-     * ------------------------------------
-     */
     //default maximum buffered number of LogRecord 
     private static final int DEFAULT_SIZE = 1000;
-    //default push level
-    private static final Level DEFAULT_PUSH = Level.SEVERE;
-    
-    /*
-     * ------------------------------------
-     * instance variables
-     * ------------------------------------
-     */
     //target handler
-    private Handler target = null;
+    private Handler target;
     
     //buffer size
     private int size = DEFAULT_SIZE;
     
     //push level
-    private Level push = DEFAULT_PUSH;
+    private Level push = Level.SEVERE;
 
     //LogManager instance for convenience
-    private LogManager manager = LogManager.getLogManager();
+    private final LogManager manager = LogManager.getLogManager();
     
     //buffer
-    private LogRecord[] buffer = null;
+    private LogRecord[] buffer;
     
     //current position in buffer
-    private int cursor = 0;
+    private int cursor;
     
     /**
      * Default constructor, construct and init a <code>MemoryHandler</code> using 
@@ -184,6 +170,7 @@ public class MemoryHandler extends Handler {
      * 				if security manager exists and it determines that caller 
      * 				does not have the required permissions to control this handler
      */
+    @Override
     public void close() {
         manager.checkAccess();
         target.close();
@@ -196,6 +183,7 @@ public class MemoryHandler extends Handler {
      * Note that this doesn't cause this <code>MemoryHandler</code> to push.
      * 
      */
+    @Override
     public void flush() {
         target.flush();
     }
@@ -210,6 +198,7 @@ public class MemoryHandler extends Handler {
      * 
      * @param record the log record.
      */
+    @Override
     public void publish(LogRecord record) {
         if (!isLoggable(record)) {
             return;
@@ -248,6 +237,7 @@ public class MemoryHandler extends Handler {
      * 				the given <code>LogRecord</code>
      * @return 		if the given <code>LogRecord</code> should be logged
      */
+    @Override
     public boolean isLoggable(LogRecord record) {
         return super.isLoggable(record);
     }
