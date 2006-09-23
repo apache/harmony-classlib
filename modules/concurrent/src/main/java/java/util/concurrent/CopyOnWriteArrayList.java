@@ -1,9 +1,10 @@
 /*
- * Copyright 2006 The Apache Software Foundation or its licensors, as applicable
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
  * http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -32,143 +33,152 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 
     public CopyOnWriteArrayList() {
         super();
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public CopyOnWriteArrayList(Collection<? extends E> c) {
         super();
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public CopyOnWriteArrayList(E[] array) {
         super();
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public boolean add(E e) {
-        return false;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public void add(int index, E e) {
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public boolean addAll(Collection<? extends E> c) {
-        return false;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public boolean addAll(int index, Collection<? extends E> c) {
-        return false;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public int addAllAbsent(Collection<? extends E> c) {
-        return 0;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public boolean addIfAbsent(E e) {
-        return false;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public void clear() {
+        throw new RuntimeException("Not yet implemented.");
     }
 
+    @Override
     public Object clone() {
-        return null;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public boolean contains(Object o) {
-        return false;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public boolean containsAll(Collection<?> c) {
-        return false;
+        throw new RuntimeException("Not yet implemented.");
     }
 
+    @Override
     public boolean equals(Object o) {
-        return false;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public E get(int index) {
-        return null;
+        throw new RuntimeException("Not yet implemented.");
     }
 
+    @Override
     public int hashCode() {
-        return 0;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public int indexOf(E e, int index) {
-        return 0;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public int indexOf(Object o) {
-        return 0;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public boolean isEmpty() {
-        return false;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public Iterator<E> iterator() {
-        return null;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public int lastIndexOf(E e, int index) {
-        return 0;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public int lastIndexOf(Object o) {
-        return 0;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public ListIterator<E> listIterator() {
-        return null;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public ListIterator<E> listIterator(int index) {
-        return null;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public E remove(int index) {
-        return null;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public boolean remove(Object o) {
-        return false;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public boolean removeAll(Collection<?> c) {
-        return false;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public boolean retainAll(Collection<?> c) {
-        return false;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public E set(int index, E e) {
-        return null;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public int size() {
-        return 0;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public List<E> subList(int fromIndex, int toIndex) {
-        return null;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public Object[] toArray() {
-        return null;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     public <T> T[] toArray(T[] arg0) {
-        return null;
+        throw new RuntimeException("Not yet implemented.");
     }
 
+    @Override
     public String toString() {
-        return null;
+        throw new RuntimeException("Not yet implemented.");
     }
 
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
-
+        throw new RuntimeException("Not yet implemented.");
     }
 
     private void writeObject(ObjectOutputStream s) throws IOException {
-
+        throw new RuntimeException("Not yet implemented.");
     }
 }
