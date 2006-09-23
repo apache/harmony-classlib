@@ -191,17 +191,17 @@ public class LogManager {
 
 				// read configuration
 				try {
-					manager.readConfigurationImpl(true);
+					manager.readConfiguration();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 
 				// if global logger has been initialized, set root as its parent
-                Logger root = Logger.getLogger(""); //$NON-NLS-1$
+                Logger root = new Logger("", null); //$NON-NLS-1$
+                Logger.global.setParent(root);
                 
-                Logger global = (Logger.global == null ? Logger.getLogger("global") : Logger.global);
-                global.setParent(root);
-
+                manager.addLogger(root);
+                manager.addLogger(Logger.global);
                 return null;
 			}
 		});
@@ -219,9 +219,10 @@ public class LogManager {
         listeners = new PropertyChangeSupport(this);
         // add shutdown hook to ensure that the associated resource will be
         // freed when JVM exits
-        AccessController.doPrivileged(new PrivilegedAction<Object>() {
-            public Object run() {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            public Void run() {
                 Runtime.getRuntime().addShutdownHook(new Thread() {
+                    @Override
                     public void run() {
                         reset();
                     }
@@ -377,7 +378,7 @@ public class LogManager {
      *             not have the required permissions to perform this action
      */
     public void readConfiguration() throws IOException {
-        readConfigurationImpl(false);
+        readConfigurationImpl();
     }
 
     // use privilege code to get system property
@@ -403,7 +404,7 @@ public class LogManager {
     }
 
     // actual default initialization process
-    private synchronized void readConfigurationImpl(boolean createLoggers) throws IOException {
+    private synchronized void readConfigurationImpl() throws IOException {
         checkAccess();
         boolean needInit = true;
 
@@ -429,7 +430,7 @@ public class LogManager {
             InputStream input = null;
             try {
                 input = new BufferedInputStream(new FileInputStream(configFile));
-                readConfigurationImpl(input, createLoggers);
+                readConfigurationImpl(input);
             } finally {
                 try {
                     input.close();
@@ -440,7 +441,7 @@ public class LogManager {
     }
 
     // actual initialization process from a given input stream
-    private synchronized void readConfigurationImpl(InputStream ins, boolean createLoggers)
+    private synchronized void readConfigurationImpl(InputStream ins)
             throws IOException {
         reset();
         props.load(ins);
@@ -449,12 +450,12 @@ public class LogManager {
         parseConfigProp();
 
         // set levels for logger
-        initLoggers(createLoggers);
+        initLoggers();
         listeners.firePropertyChange(null, null, null);
     }
 
     // init "level" properties for all registered loggers
-    private void initLoggers(boolean createLoggers) {
+    private void initLoggers() {
         Enumeration<?> enumeration = props.propertyNames();
         while (enumeration.hasMoreElements()) {
             // search for all properties whose name is ended with ".level"
@@ -465,10 +466,8 @@ public class LogManager {
                 Logger l = loggers.get(loggerName);
                 if (null != l) {
                     l.setManager(this);
-                } else if (createLoggers) {
-                    Logger.getLogger(loggerName);
                 }
-            }else if(createLoggers && property.endsWith(".handlers")){ //$NON-NLS-1$
+            }else if(property.endsWith(".handlers")){ //$NON-NLS-1$
                 String loggerName = property.substring(0,
                         property.length() - ".handlers".length()); //$NON-NLS-1$
                 Logger.getLogger(loggerName);
@@ -506,7 +505,7 @@ public class LogManager {
      */
     public void readConfiguration(InputStream ins) throws IOException {
         checkAccess();
-        readConfigurationImpl(ins, false);
+        readConfigurationImpl(ins);
     }
 
     /**
@@ -526,7 +525,7 @@ public class LogManager {
         props.clear();
         Iterator<Logger> it = loggers.values().iterator();
         while (it.hasNext()) {
-            Logger l = (Logger) it.next();
+            Logger l = it.next();
             l.reset();
         }
         Logger root = loggers.get(""); //$NON-NLS-1$

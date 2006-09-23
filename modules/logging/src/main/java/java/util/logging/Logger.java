@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-
 package java.util.logging;
 
 import java.security.AccessController;
@@ -73,39 +72,10 @@ import org.apache.harmony.logging.internal.nls.Messages;
  */
 public class Logger {
 
-    /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
-     */
-
-    // message of "entering" series methods
-    private final static String MSG_ENTERING = "ENTRY"; //$NON-NLS-1$
-
-    // message of "exiting" series methods
-    private final static String MSG_EXITING = "RETURN"; //$NON-NLS-1$
-
-    // message of "throwing" series methods
-    private final static String MSG_THROWING = "THROW"; //$NON-NLS-1$
-
-    private final static int OFF_VALUE = Level.OFF.intValue();
-
-    /*
-     * --------------------------------------------------------------------
-     * Class variables
-     * --------------------------------------------------------------------
-     */
-
     /**
      * The global logger is provided as convenience for casual use.
      */
-    public final static Logger global = Logger.getLogger("global"); //$NON-NLS-1$
-
-    /*
-     * -------------------------------------------------------------------
-     * Instance variables
-     * -------------------------------------------------------------------
-     */
+    public final static Logger global = new Logger("global", null); //$NON-NLS-1$
 
     // the name of this logger
     private volatile String name;
@@ -129,7 +99,7 @@ public class Logger {
     private ResourceBundle resBundle;
 
     // the handlers attached to this logger
-    private List<Handler> handlers = null;
+    private List<Handler> handlers;
 
     /*
      * flag indicating whether to notify parent's handlers on receiving a log
@@ -142,9 +112,9 @@ public class Logger {
 
     private List<Logger> childs;
     
-    private LogManager manager = null;
+    private LogManager manager;
 
-    private boolean handlerInited = false;
+    private boolean handlerInited;
 
     /*
      * -------------------------------------------------------------------
@@ -675,12 +645,11 @@ public class Logger {
      */
     private boolean internalIsLoggable(Level l) {
         int effectiveLevel = levelIntVal;
-        if (effectiveLevel == OFF_VALUE) {
+        if (effectiveLevel == Level.OFF.intValue()) {
             // always return false if the effective level is off
             return false;
-        } else {
-            return l.intValue() >= effectiveLevel;
         }
+        return l.intValue() >= effectiveLevel;
     }
 
     /**
@@ -739,7 +708,7 @@ public class Logger {
      */
     public void entering(String sourceClass, String sourceMethod) {
         if (internalIsLoggable(Level.FINER)) {
-            LogRecord record = new LogRecord(Level.FINER, MSG_ENTERING);
+            LogRecord record = new LogRecord(Level.FINER, "ENTRY");
             record.setLoggerName(this.name);
             record.setSourceClassName(sourceClass);
             record.setSourceMethodName(sourceMethod);
@@ -763,7 +732,7 @@ public class Logger {
      */
     public void entering(String sourceClass, String sourceMethod, Object param) {
         if (internalIsLoggable(Level.FINER)) {
-            LogRecord record = new LogRecord(Level.FINER, MSG_ENTERING + " {0}"); //$NON-NLS-1$
+            LogRecord record = new LogRecord(Level.FINER, "ENTRY" + " {0}"); //$NON-NLS-1$
             record.setLoggerName(this.name);
             record.setSourceClassName(sourceClass);
             record.setSourceMethodName(sourceMethod);
@@ -789,9 +758,9 @@ public class Logger {
     public void entering(String sourceClass, String sourceMethod,
             Object[] params) {
         if (internalIsLoggable(Level.FINER)) {
-        	String msg = MSG_ENTERING;
+        	String msg = "ENTRY";
 			if (null != params) {
-				StringBuffer msgBuffer = new StringBuffer(MSG_ENTERING);
+				StringBuffer msgBuffer = new StringBuffer("ENTRY");
 				for (int i = 0; i < params.length; i++) {
 					msgBuffer.append(" {" + i + "}"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
@@ -819,7 +788,7 @@ public class Logger {
      */
     public void exiting(String sourceClass, String sourceMethod) {
         if (internalIsLoggable(Level.FINER)) {
-            LogRecord record = new LogRecord(Level.FINER, MSG_EXITING);
+            LogRecord record = new LogRecord(Level.FINER, "RETURN");
             record.setLoggerName(this.name);
             record.setSourceClassName(sourceClass);
             record.setSourceMethodName(sourceMethod);
@@ -843,7 +812,7 @@ public class Logger {
      */
     public void exiting(String sourceClass, String sourceMethod, Object result) {
         if (internalIsLoggable(Level.FINER)) {
-            LogRecord record = new LogRecord(Level.FINER, MSG_EXITING + " {0}"); //$NON-NLS-1$
+            LogRecord record = new LogRecord(Level.FINER, "RETURN" + " {0}"); //$NON-NLS-1$
             record.setLoggerName(this.name);
             record.setSourceClassName(sourceClass);
             record.setSourceMethodName(sourceMethod);
@@ -869,7 +838,7 @@ public class Logger {
     public void throwing(String sourceClass, String sourceMethod,
             Throwable thrown) {
         if (internalIsLoggable(Level.FINER)) {
-            LogRecord record = new LogRecord(Level.FINER, MSG_THROWING);
+            LogRecord record = new LogRecord(Level.FINER, "THROW");
             record.setLoggerName(this.name);
             record.setSourceClassName(sourceClass);
             record.setSourceMethodName(sourceMethod);
