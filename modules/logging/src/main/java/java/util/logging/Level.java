@@ -13,12 +13,14 @@
  * limitations under the License.
  */
 
-
 package java.util.logging;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.apache.harmony.logging.internal.nls.Messages;
@@ -37,104 +39,110 @@ import org.apache.harmony.logging.internal.nls.Messages;
  * 
  */
 public class Level implements Serializable {
-    
-    
-    //for serialization compatibility
-    private static final long serialVersionUID = -8176160795706313070L;    
 
-    /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
-     */
+    private static final long serialVersionUID = -8176160795706313070L;
 
-	/*
-     * -------------------------------------------------------------------
-     * Class variables
-     * -------------------------------------------------------------------
-     */
-    private static Map<String, Level> levels = new HashMap<String, Level>();
-	
-    // The following string constants define the name of all predefined levels.
-    private static final String SEVERESTR = "SEVERE"; //$NON-NLS-1$
-
-    private static final String WARNINGSTR = "WARNING"; //$NON-NLS-1$
-
-    private static final String INFOSTR = "INFO"; //$NON-NLS-1$
-
-    private static final String CONFIGSTR = "CONFIG"; //$NON-NLS-1$
-
-    private static final String FINESTR = "FINE"; //$NON-NLS-1$
-
-    private static final String FINERSTR = "FINER"; //$NON-NLS-1$
-
-    private static final String FINESTSTR = "FINEST"; //$NON-NLS-1$
-
-    private static final String OFFSTR = "OFF"; //$NON-NLS-1$
-
-    private static final String ALLSTR = "ALL"; //$NON-NLS-1$
-
-    /**
-     * The SEVERE level indicates a severe failure.
-     */
-    public static final Level SEVERE = new Level(SEVERESTR, 1000);
-
-    /**
-     * The WARNING level indicates a warning.
-     */
-    public static final Level WARNING = new Level(WARNINGSTR, 900);
-
-    /**
-     * The INFO level indicates an informative message.
-     */
-    public static final Level INFO = new Level(INFOSTR, 800);
-
-    /**
-     * The CONFIG level indicates a static configuration message.
-     */
-    public static final Level CONFIG = new Level(CONFIGSTR, 700);
-
-    /**
-     * The FINE level provides tracing messages.
-     */
-    public static final Level FINE = new Level(FINESTR, 500);
-
-    /**
-     * The FINER level provides more detailed tracing messages.
-     */
-    public static final Level FINER = new Level(FINERSTR, 400);
-
-    /**
-     * The FINEST level provides highly detailed tracing messages.
-     */
-    public static final Level FINEST = new Level(FINESTSTR, 300);
+    private static final List<Level> levels = new ArrayList<Level>(9);
 
     /**
      * The OFF level provides no logging messages.
      */
-    public static final Level OFF = new Level(OFFSTR, Integer.MAX_VALUE);
+    public static final Level OFF = new Level("OFF", Integer.MAX_VALUE);
+
+    /**
+     * The SEVERE level indicates a severe failure.
+     */
+    public static final Level SEVERE = new Level("SEVERE", 1000);
+
+    /**
+     * The WARNING level indicates a warning.
+     */
+    public static final Level WARNING = new Level("WARNING", 900);
+
+    /**
+     * The INFO level indicates an informative message.
+     */
+    public static final Level INFO = new Level("INFO", 800);
+
+    /**
+     * The CONFIG level indicates a static configuration message.
+     */
+    public static final Level CONFIG = new Level("CONFIG", 700);
+
+    /**
+     * The FINE level provides tracing messages.
+     */
+    public static final Level FINE = new Level("FINE", 500);
+
+    /**
+     * The FINER level provides more detailed tracing messages.
+     */
+    public static final Level FINER = new Level("FINER", 400);
+
+    /**
+     * The FINEST level provides highly detailed tracing messages.
+     */
+    public static final Level FINEST = new Level("FINEST", 300);
 
     /**
      * The ALL level provides all logging messages.
      */
-    public static final Level ALL = new Level(ALLSTR, Integer.MIN_VALUE);
+    public static final Level ALL = new Level("ALL", Integer.MIN_VALUE);
 
-
-    /*
-     * -------------------------------------------------------------------
-     * Global initialization
-     * -------------------------------------------------------------------
+    /**
+     * Parses a level name into a <code>Level</code> object.
+     * 
+     * @param name
+     *            the name of the desired level, which cannot be null
+     * @return a <code>Level</code> object with the specified name
+     * @throws NullPointerException
+     *             if <code>name</code> is <code>null</code>.
+     * @throws IllegalArgumentException
+     *             if <code>name</code> is not valid.
      */
+    public static final Level parse(String name) {
+        if (name == null) {
+            // logging.1C=The 'name' parameter is null.
+            throw new NullPointerException(Messages.getString("logging.1C")); //$NON-NLS-1$
+        }
 
-    static {
-		levels.remove(null);
+        boolean isNameAnInt;
+        int nameAsInt;
+        try {
+            nameAsInt = Integer.parseInt(name);
+            isNameAnInt = true;
+        } catch (NumberFormatException e) {
+            nameAsInt = 0;
+            isNameAnInt = false;
+        }
+
+        synchronized (levels) {
+            for (Level level : levels) {
+                if (name.equals(level.getName())) {
+                    return level;
+                }
+            }
+
+            if (isNameAnInt) {
+                /*
+                 * Loop through levels a second time, so that the
+                 * returned instance will be passed on the order of construction.
+                 */
+                for (Level level : levels) {
+                    if (nameAsInt == level.intValue()) {
+                        return level;
+                    }
+                }
+            }
+        }
+
+        if (!isNameAnInt) {
+            // logging.1D=Cannot parse this name: {0}
+            throw new IllegalArgumentException(Messages.getString("logging.1D", name)); //$NON-NLS-1$
+        }
+
+        return new Level(name, nameAsInt);
     }
-
-    /*
-     * -------------------------------------------------------------------
-     * Instance variables
-     * -------------------------------------------------------------------
-     */
 
     /**
      * The name of this Level.
@@ -157,26 +165,19 @@ public class Level implements Serializable {
      */
     private final String resourceBundleName;
 
-    /*
+    /**
      * The resource bundle associated with this level, used to localize the
      * level name.
      */
     private transient ResourceBundle rb;
 
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
-
     /**
      * Constructs an instance of <code>Level</code> taking the supplied name
      * and level value.
      * 
-     * @param name
-     *            name of the level
-     * @param level
-     *            an integer value indicating the level
+     * @param name name of the level
+     * @param level an integer value indicating the level
+     * @throws NullPointerException if <code>name</code> is <code>null</code>.
      */
     protected Level(String name, int level) {
         this(name, level, null);
@@ -186,35 +187,30 @@ public class Level implements Serializable {
      * Constructs an instance of <code>Level</code> taking the supplied name
      * and level value.
      * 
-     * @param name
-     *            name of the level
-     * @param level
-     *            an integer value indicating the level
-     * @param resourceBundleName
-     *            the name of the resource bundle to use
+     * @param name name of the level
+     * @param level an integer value indicating the level
+     * @param resourceBundleName the name of the resource bundle to use
+     * @throws NullPointerException if <code>name</code> is <code>null</code>.
      */
     protected Level(String name, int level, String resourceBundleName) {
-        if (null == name) {
+        if (name == null) {
             // logging.1C=The 'name' parameter is null.
             throw new NullPointerException(Messages.getString("logging.1C")); //$NON-NLS-1$
         }
         this.name = name;
         this.value = level;
         this.resourceBundleName = resourceBundleName;
-		//put value into known values list in Constructor
-		if(null==levels.get(name)){
-			levels.put(name,this);
-		}
-		if(null==levels.get(String.valueOf(level))){
-			levels.put(String.valueOf(this.intValue()), this);
-		}
+        if (resourceBundleName != null) {
+            try {
+                rb = ResourceBundle.getBundle(resourceBundleName);
+            } catch (MissingResourceException e) {
+                rb = null;
+            }
+        }
+        synchronized (levels) {
+            levels.add(this);
+        }
     }
-
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
 
     /**
      * Gets the name of this <code>Level</code>.
@@ -246,35 +242,49 @@ public class Level implements Serializable {
     }
 
     /**
-     * Parses a level name into a <code>Level</code> object.
+     * <p>
+     * Serialization helper method to maintain singletons and add any new
+     * levels.
+     * </p>
      * 
-     * @param name
-     *            the name of the desired level, which cannot be null
-     * @return a <code>Level</code> object with the specified name
-     * @throws NullPointerException
-     *             If <code>name</code> is null.
-     * @throws IllegalArgumentException
-     *             When <code>name</code> cannot be parsed.
+     * @return The resolved instance.
      */
-    public static final Level parse(String name) {
-        if (null == name) {
-            // logging.1C=The 'name' parameter is null.
-            throw new NullPointerException(Messages.getString("logging.1C")); //$NON-NLS-1$
+    private Object readResolve() {
+        synchronized (levels) {
+            for (Level level : levels) {
+                if (value != level.value) {
+                    continue;
+                }
+                if (!name.equals(name)) {
+                    continue;
+                }
+                if (resourceBundleName == level.resourceBundleName) {
+                    return level;
+                } else if (resourceBundleName != null
+                        && resourceBundleName.equals(level.resourceBundleName)) {
+                    return level;
+                }
+            }
+            // This is a new value, so add it.
+            levels.add(this);
+            return this;
         }
-        // Check if the name is a predefined one
-        Level result = levels.get(name);
-        if (null != result) {
-            return result;
-        }
-        // Try to parse the name as an integer
-        try {
-            int v = Integer.parseInt(name);
-            result = new Level(name, v);
-            return result;
-        } catch (NumberFormatException e) {
-            // logging.1D=Cannot parse this name: {0}
-            throw new IllegalArgumentException(Messages.getString("logging.1D", //$NON-NLS-1$
-                    name));
+    }
+
+    /**
+     * <p>Serialization helper to setup transient resource bundle instance.</p>
+     * @param in The input stream to read the instance data from.
+     * @throws IOException if an IO error occurs.
+     * @throws ClassNotFoundException if a class is not found. 
+     */
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        if (resourceBundleName != null) {
+            try {
+                rb = ResourceBundle.getBundle(resourceBundleName);
+            } catch (MissingResourceException e) {
+                rb = null;
+            }
         }
     }
 
@@ -286,62 +296,35 @@ public class Level implements Serializable {
      * @return the localized name of this level
      */
     public String getLocalizedName() {
-        String result = name;
-        if (null != resourceBundleName && null == rb) {
-            try {
-                rb = ResourceBundle.getBundle(resourceBundleName);
-            } catch (Exception e) {
-                rb = null;
-            }
+        if (rb == null) {
+            return name;
         }
-        if (null != rb) {
-            try {
-                result = rb.getString(name);
-            } catch (Exception e) {
-                result = name;
-            }
+
+        try {
+            return rb.getString(name);
+        } catch (MissingResourceException e) {
+            return name;
         }
-        return result;
     }
-
-    /*
-     * Maintains the Object uniqueness property across serialization.
-     */
-    private Object readResolve() {
-        String levelName = this.getName();
-        Level result = levels.get(levelName);
-
-        if (null != result) {
-            boolean sameResourceBundle = (this.resourceBundleName == null ? result
-                    .getResourceBundleName() == null
-                    : this.resourceBundleName.equals(result
-                            .getResourceBundleName()));
-            if (result.intValue() == this.value && sameResourceBundle) {
-                return result;
-            }
-        }
-        return this;
-    }
-
-    /*
-     * -------------------------------------------------------------------
-     * Methods overriding parent class Object
-     * -------------------------------------------------------------------
-     */
 
     /**
      * Compares two <code>Level</code> objects for equality. They are
      * considered to be equal if they have the same value.
      * 
-     * @param o
-     *            the other object to be compared with
+     * @param o the other object to be compared with
      * @return <code>true</code> if this object equals to the supplied object,
      *         otherwise <code>false</code>
      */
+    @Override
     public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
         if (!(o instanceof Level)) {
             return false;
         }
+
         return ((Level) o).intValue() == this.value;
     }
 
@@ -350,6 +333,7 @@ public class Level implements Serializable {
      * 
      * @return the hash code of this <code>Level</code> object
      */
+    @Override
     public int hashCode() {
         return this.value;
     }
@@ -360,9 +344,8 @@ public class Level implements Serializable {
      * 
      * @return the string representation of this <code>Level</code> object
      */
+    @Override
     public final String toString() {
         return this.name;
     }
-
 }
-

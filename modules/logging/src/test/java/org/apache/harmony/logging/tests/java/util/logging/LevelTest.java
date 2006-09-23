@@ -24,25 +24,15 @@ import junit.framework.TestCase;
 import org.apache.harmony.testframework.serialization.SerializationTest;
 import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
-/**
- * Test the class java.util.logging.Level.
- * 
+/*
+ * This class implements Serializable, so that the non-static inner class
+ * MockLevel can be Serializable.
  */
 public class LevelTest extends TestCase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	transient ResourceBundle rb;
-
-	/*
-	 * @see TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-		rb = ResourceBundle.getBundle("bundles/java/util/logging/res");
-	}
-
-	/*
+	/**
 	 * Test the constructor without resource bundle parameter using normal
 	 * values. As byproducts, getName & intValue are also tested.
 	 */
@@ -53,7 +43,7 @@ public class LevelTest extends TestCase implements Serializable {
 		assertNull(l.getResourceBundleName());
 	}
 
-	/*
+	/**
 	 * Test the constructor without resource bundle parameter using null name.
 	 * As byproducts, getName & intValue are also tested.
 	 */
@@ -69,12 +59,13 @@ public class LevelTest extends TestCase implements Serializable {
 	 * Test the constructor without resource bundle parameter using empty name.
 	 * As byproducts, getName & intValue are also tested.
 	 */
-	// public void testConstructorNoResBundle_EmptyName() {
-	// MockLevel l = new MockLevel("", -3);
-	// assertEquals(l.getName(), "");
-	// assertEquals(l.intValue(), -3);
-	// assertNull(l.getResourceBundleName());
-	// }
+	 public void testConstructorNoResBundle_EmptyName() {
+	 MockLevel l = new MockLevel("", -3);
+	 assertEquals(l.getName(), "");
+	 assertEquals(l.intValue(), -3);
+	 assertNull(l.getResourceBundleName());
+	 }
+     
 	/*
 	 * Test the constructor having resource bundle parameter using normal
 	 * values. As byproducts, getName & intValue are also tested.
@@ -98,17 +89,17 @@ public class LevelTest extends TestCase implements Serializable {
         }
     }
 
-	// /*
-	// * Test the constructor having resource bundle parameter using empty
-	// names.
-	// * As byproducts, getName & intValue are also tested.
-	// */
-	// public void testConstructorHavingResBundle_EmptyName() {
-	// MockLevel l = new MockLevel("", -1000, "");
-	// assertEquals(l.getName(), "");
-	// assertEquals(l.intValue(), -1000);
-	// assertEquals(l.getResourceBundleName(), "");
-	// }
+	 /*
+	 * Test the constructor having resource bundle parameter using empty
+	 names.
+	 * As byproducts, getName & intValue are also tested.
+	 */
+	 public void testConstructorHavingResBundle_EmptyName() {
+	 MockLevel l = new MockLevel("", -1000, "");
+	 assertEquals(l.getName(), "");
+	 assertEquals(l.intValue(), -1000);
+	 assertEquals(l.getResourceBundleName(), "");
+	 }
 
 	/*
 	 * Test method parse, with the pre-defined string consts.
@@ -134,18 +125,6 @@ public class LevelTest extends TestCase implements Serializable {
 			fail("Should throw IllegalArgumentException if undefined string.");
 		} catch (IllegalArgumentException e) {
 		}
-	}
-
-	/*
-	 * Test method parse, with an empty string.
-	 */
-	public void testParse_EmptyString() {
-		try {
-			Level.parse("");
-			fail("Should throw IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-		}
-
 	}
 
 	/*
@@ -322,12 +301,7 @@ public class LevelTest extends TestCase implements Serializable {
     public void testSerialization_InstanceLevel() throws Exception {
 
         // tests that objects are the same
-        Level[] objectsToTest = new Level[] { Level.parse("550"),
-        // FIXME: this value was tested before refactoring
-        // but it doesn't work after. it seems that there is a bug:
-        // "" value is not valid integer and should be rejected
-        // Level.parse("")
-        };
+        Level[] objectsToTest = new Level[] { Level.parse("550")};
 
         SerializationTest.verifySelf(objectsToTest,
                 SerializationTest.SAME_COMPARATOR);
@@ -350,6 +324,7 @@ public class LevelTest extends TestCase implements Serializable {
     }
 
 	public void testGetLocalName() {
+        ResourceBundle rb = ResourceBundle.getBundle("bundles/java/util/logging/res");
 		Level l = new MockLevel("level1", 120,
 				"bundles/java/util/logging/res");
 		assertEquals(rb.getString("level1"), l.getLocalizedName());
@@ -362,9 +337,6 @@ public class LevelTest extends TestCase implements Serializable {
 
 		l = new MockLevel("level1", 1120);
 		assertEquals("level1", l.getLocalizedName());
-
-		// System.out.println(Level.SEVERE.getResourceBundleName());
-		// assertEquals("SEVERE", Level.SEVERE.getLocalizedName());
 	}
 
 	/*
@@ -372,7 +344,7 @@ public class LevelTest extends TestCase implements Serializable {
 	 */
 	public void testSubclassNewLevel() {
 		MyLevel.DUPLICATENAME.getName();// just to load MyLevel class
-
+        
 		// test duplicated name and num
 		assertEquals(MyLevel.parse("800").getName(), "INFO");
 		assertEquals(MyLevel.parse("INFO").intValue(), 800);
