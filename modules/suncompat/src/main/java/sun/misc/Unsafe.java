@@ -1,6 +1,11 @@
 package sun.misc;
 
 import java.lang.reflect.Field;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
+import org.apache.harmony.kernel.vm.Objects;
+import org.apache.harmony.kernel.vm.Threads;
 
 /**
  * <p>The Unsafe service.</p>
@@ -8,6 +13,8 @@ import java.lang.reflect.Field;
  */
 public class Unsafe {
 
+    private static final Unsafe INSTANCE = new Unsafe();
+    
     /**
      * <p>
      * Retrieves an instance of this service.
@@ -16,7 +23,19 @@ public class Unsafe {
      * @return An instance of Unsafe.
      */
     public static Unsafe getUnsafe() {
-        return null;
+        return AccessController.doPrivileged(new PrivilegedAction<Unsafe>() {
+            public Unsafe run() {
+                return INSTANCE;
+            }
+        });
+    }
+    
+    private Objects objects;
+    private Threads threads;
+    
+    private Unsafe() {
+        super();
+        this.objects = Objects.getInstance();
     }
 
     /**
@@ -29,7 +48,7 @@ public class Unsafe {
      * @return The offset value.
      */
     public long objectFieldOffset(Field field) {
-        return 0L;
+        return objects.getFieldOffset(field);
     }
 
     /**
@@ -45,7 +64,7 @@ public class Unsafe {
      *         otherwise.
      */
     public boolean compareAndSwapInt(Object object, long fieldOffset, int expected, int update) {
-        return false;
+        return objects.compareAndSwapInt(object, fieldOffset, expected, update);
     }
 
     /**
@@ -62,7 +81,7 @@ public class Unsafe {
      */
     public boolean compareAndSwapLong(Object object, long fieldOffset, long expected,
             long update) {
-        return false;
+        return objects.compareAndSwapLong(object, fieldOffset, expected, update);
     }
 
     /**
@@ -80,7 +99,7 @@ public class Unsafe {
      */
     public boolean compareAndSwapObject(Object object, long fieldOffset, Object expected,
             Object update) {
-        return false;
+        return objects.compareAndSwapObject(object, fieldOffset, expected, update);
     }
 
     /**
@@ -94,7 +113,7 @@ public class Unsafe {
      * @return The base offset value.
      */
     public int arrayBaseOffset(Class<?> clazz) {
-        return 0;
+        return objects.getArrayBaseOffset(clazz);
     }
 
     /**
@@ -127,7 +146,7 @@ public class Unsafe {
      * @return The index scale value.
      */
     public int arrayIndexScale(Class<?> clazz) {
-        return 0;
+        return objects.getArrayIndexScale(clazz);
     }
 
     /**
@@ -141,7 +160,7 @@ public class Unsafe {
      * @param newValue The value to write.
      */
     public void putIntVolatile(Object object, long fieldOffset, int newValue) {
-        return;
+        objects.putIntVolatile(object, fieldOffset, newValue);
     }
 
     /**
@@ -155,7 +174,7 @@ public class Unsafe {
      * @return The value that was read.
      */
     public int getIntVolatile(Object object, long fieldOffset) {
-        return 0;
+        return objects.getIntVolatile(object, fieldOffset);
     }
 
     /**
@@ -169,7 +188,7 @@ public class Unsafe {
      * @param newValue The value to write.
      */
     public void putLongVolatile(Object object, long fieldOffset, long newValue) {
-        return;
+        objects.putLongVolatile(object, fieldOffset, newValue);
     }
 
     /**
@@ -183,7 +202,7 @@ public class Unsafe {
      * @return The value that was read.
      */
     public long getLongVolatile(Object object, long fieldOffset) {
-        return 0;
+        return objects.getLongVolatile(object, fieldOffset);
     }
 
     /**
@@ -197,7 +216,7 @@ public class Unsafe {
      * @param newValue The value to write.
      */
     public void putObjectVolatile(Object object, long fieldOffset, Object newValue) {
-        return;
+        objects.putObjectVolatile(object, fieldOffset, newValue);
     }
 
     /**
@@ -211,7 +230,7 @@ public class Unsafe {
      * @param newValue The value to write.
      */
     public Object getObjectVolatile(Object object, long fieldOffset) {
-        return null;
+        return objects.getObjectVolatile(object, fieldOffset);
     }
 
     /**
@@ -224,7 +243,7 @@ public class Unsafe {
      * @param newValue The value to write.
      */
     public void putLong(Object object, long fieldOffset, long newValue) {
-        return;
+        objects.putLong(object, fieldOffset, newValue);
     }
 
     /**
@@ -237,7 +256,7 @@ public class Unsafe {
      * @return The value that was read.
      */
     public long getLong(Object object, long fieldOffset) {
-        return 0L;
+        return objects.getLong(object, fieldOffset);
     }
 
     /**
@@ -248,7 +267,7 @@ public class Unsafe {
      * @param thread The {@link Thread} to unpark.
      */
     public void unpark(Thread thread) {
-        return;
+        threads.unpark(thread);
     }
 
     /**
@@ -269,6 +288,10 @@ public class Unsafe {
      *        {@link System#currentTimeMillis()}.
      */
     public void park(boolean timestamp, long nanosOrTimestamp) {
-
+        if (timestamp) {
+            threads.parkFor(nanosOrTimestamp);
+        } else {
+            threads.parkUntil(nanosOrTimestamp);
+        }
     }
 }

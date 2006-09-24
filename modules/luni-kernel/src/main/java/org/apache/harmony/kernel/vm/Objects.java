@@ -16,6 +16,8 @@
 package org.apache.harmony.kernel.vm;
 
 import java.lang.reflect.Field;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 /**
  * <p>
@@ -23,7 +25,28 @@ import java.lang.reflect.Field;
  * </p>
  */
 public class Objects {
+    private static final Objects INSTANCE = new Objects();
 
+    /**
+     * <p>
+     * Retrieves an instance of the Objects service.
+     * </p>
+     * 
+     * @return An instance of Objects.
+     */
+    public static Objects getInstance() {
+        // TODO add class loader check
+        return AccessController.doPrivileged(new PrivilegedAction<Objects>() {
+            public Objects run() {
+                return INSTANCE;
+            }
+        });
+    }
+    
+    private Objects() {
+        super();
+    }
+    
     /**
      * <p>
      * Retrieves the offset value of the {@link Field} for use by other methods
@@ -33,10 +56,68 @@ public class Objects {
      * @param field The {@link Field} to retrieve the offset for.
      * @return The offset value.
      */
-    public static long objectFieldOffset(Field field) {
+    public  long getFieldOffset(Field field) {
         return 0L;
     }
 
+
+    /**
+     * <p>
+     * Retrieves the base offset for the array Class given. The Class passed
+     * MUST me an array type, such that the method {@link Class#isArray()}
+     * returns <code>true</code>. For example, <code>int[].class</code>.
+     * </p>
+     * 
+     * @param clazz The array Class object.
+     * @return The base offset value.
+     * @throws NullPointerException if <code>clazz</code> is <code>null</code>.
+     * @throws IllegalArgumentException if <code>clazz</code> is not an array type.
+     */
+    public  int getArrayBaseOffset(Class<?> clazz) {
+        if (!clazz.isArray()) {
+            throw new IllegalArgumentException();
+        }
+        return 0;
+    }
+
+    /**
+     * <p>
+     * Retrieves the array index scale for the array Class given. The index
+     * scale is the value used to determine the offset of a particular element
+     * in the array given the array's base offset and an index. The following
+     * code snippet illustrates the usage.
+     * </p>
+     * 
+     * <pre>
+     * int base = Objects.getArrayBaseOffset(int[].class);
+     * 
+     * int scale = Objects.getArrayIndexScale(int[].class);
+     * 
+     * int elementIdx = 1;
+     * 
+     * int[] array = { 0, 1, 2 };
+     * 
+     * long offsetForIdx = base + (elementIdx * scale);
+     * </pre>
+     * 
+     * <p>
+     * The Class passed MUST me an array type, such that the method
+     * {@link Class#isArray()} returns <code>true</code>. For example,
+     * <code>int[].class</code>.
+     * </p>
+     * 
+     * @param clazz The array Class object.
+     * @return The index scale value.
+     * @throws NullPointerException if <code>clazz</code> is <code>null</code>.
+     * @throws IllegalArgumentException if <code>clazz</code> is not an array type.
+     */
+    public  int getArrayIndexScale(Class<?> clazz) {
+        if (!clazz.isArray()) {
+            throw new IllegalArgumentException();
+        }
+        return 0;
+    }
+    
     /**
      * <p>
      * Compares and swaps the value of an int-typed field on an Object instance.
@@ -49,7 +130,7 @@ public class Objects {
      * @return <code>true</code> if the field was updated, <code>false</code>
      *         otherwise.
      */
-    public static boolean compareAndSwapInt(Object object, long fieldOffset, int expected,
+    public  boolean compareAndSwapInt(Object object, long fieldOffset, int expected,
             int update) {
         return false;
     }
@@ -66,7 +147,7 @@ public class Objects {
      * @return <code>true</code> if the field was updated, <code>false</code>
      *         otherwise.
      */
-    public static boolean compareAndSwapLong(Object object, long fieldOffset, long expected,
+    public  boolean compareAndSwapLong(Object object, long fieldOffset, long expected,
             long update) {
         return false;
     }
@@ -84,56 +165,9 @@ public class Objects {
      * @return <code>true</code> if the field was updated, <code>false</code>
      *         otherwise.
      */
-    public static boolean compareAndSwapObject(Object object, long fieldOffset,
+    public  boolean compareAndSwapObject(Object object, long fieldOffset,
             Object expected, Object update) {
         return false;
-    }
-
-    /**
-     * <p>
-     * Retrieves the base offset for the array Class given. The Class passed
-     * MUST me any array type, such that the method {@link Class#isArray()}
-     * returns <code>true</code>. For example, <code>int[].class</code>.
-     * </p>
-     * 
-     * @param clazz The array Class object.
-     * @return The base offset value.
-     */
-    public static int arrayBaseOffset(Class<?> clazz) {
-        return 0;
-    }
-
-    /**
-     * <p>
-     * Retrieves the array index scale for the array Class given. The index
-     * scale is the value used to determine the offset of a particular element
-     * in the array given the array's base offset and an index. The following
-     * code snippet illustrates the usage.
-     * </p>
-     * 
-     * <pre>
-     * int base = Objects.arrayBaseOffset(int[].class);
-     * 
-     * int scale = Objects.arrayIndexScale(int[].class);
-     * 
-     * int elementIdx = 1;
-     * 
-     * int[] array = { 0, 1, 2 };
-     * 
-     * long offsetForIdx = base + (elementIdx * scale);
-     * </pre>
-     * 
-     * <p>
-     * The Class passed MUST me any array type, such that the method
-     * {@link Class#isArray()} returns <code>true</code>. For example,
-     * <code>int[].class</code>.
-     * </p>
-     * 
-     * @param clazz The array Class object.
-     * @return The index scale value.
-     */
-    public static int arrayIndexScale(Class<?> clazz) {
-        return 0;
     }
 
     /**
@@ -146,7 +180,7 @@ public class Objects {
      * @param fieldOffset The offset of the field to write to.
      * @param newValue The value to write.
      */
-    public static void putIntVolatile(Object object, long fieldOffset, int newValue) {
+    public  void putIntVolatile(Object object, long fieldOffset, int newValue) {
         return;
     }
 
@@ -160,7 +194,7 @@ public class Objects {
      * @param fieldOffset The offset of the field to read from.
      * @return The value that was read.
      */
-    public static int getIntVolatile(Object object, long fieldOffset) {
+    public  int getIntVolatile(Object object, long fieldOffset) {
         return 0;
     }
 
@@ -174,7 +208,7 @@ public class Objects {
      * @param fieldOffset The offset of the field to write to.
      * @param newValue The value to write.
      */
-    public static void putLongVolatile(Object object, long fieldOffset, long newValue) {
+    public  void putLongVolatile(Object object, long fieldOffset, long newValue) {
         return;
     }
 
@@ -188,7 +222,7 @@ public class Objects {
      * @param fieldOffset The offset of the field to read from.
      * @return The value that was read.
      */
-    public static long getLongVolatile(Object object, long fieldOffset) {
+    public  long getLongVolatile(Object object, long fieldOffset) {
         return 0;
     }
 
@@ -202,7 +236,7 @@ public class Objects {
      * @param fieldOffset The offset of the field to write to.
      * @param newValue The value to write.
      */
-    public static void putObjectVolatile(Object object, long fieldOffset, Object newValue) {
+    public  void putObjectVolatile(Object object, long fieldOffset, Object newValue) {
         return;
     }
 
@@ -216,7 +250,7 @@ public class Objects {
      * @param fieldOffset The offset of the field to write to.
      * @param newValue The value to write.
      */
-    public static Object getObjectVolatile(Object object, long fieldOffset) {
+    public  Object getObjectVolatile(Object object, long fieldOffset) {
         return null;
     }
 
@@ -229,7 +263,7 @@ public class Objects {
      * @param fieldOffset The offset of the field to write to.
      * @param newValue The value to write.
      */
-    public static void putLong(Object object, long fieldOffset, long newValue) {
+    public  void putLong(Object object, long fieldOffset, long newValue) {
         return;
     }
 
@@ -242,10 +276,7 @@ public class Objects {
      * @param fieldOffset The offset of the field to read from.
      * @return The value that was read.
      */
-    public static long getLong(Object object, long fieldOffset) {
+    public  long getLong(Object object, long fieldOffset) {
         return 0L;
-    }
-
-    private Objects() {
     }
 }

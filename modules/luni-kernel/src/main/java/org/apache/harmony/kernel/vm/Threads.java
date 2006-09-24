@@ -15,12 +15,38 @@
 
 package org.apache.harmony.kernel.vm;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 /**
  * <p>
  * This class must be implemented by the VM to support the Threading subsystem.
  * </p>
  */
 public class Threads {
+    
+    private static final Threads INSTANCE = new Threads();
+
+    /**
+     * <p>
+     * Retrieves an instance of the Threads service.
+     * </p>
+     * 
+     * @return An instance of Threads.
+     */
+    public static Threads getInstance() {
+        // TODO add class loader check
+        return AccessController.doPrivileged(new PrivilegedAction<Threads>() {
+            public Threads run() {
+                return INSTANCE;
+            }
+        });
+    }
+    
+    private Threads() {
+        super();
+    }
+    
     /**
      * <p>
      * Unparks the {@link Thread} that's passed.
@@ -28,31 +54,31 @@ public class Threads {
      * 
      * @param thread The {@link Thread} to unpark.
      */
-    public static void unpark(Thread thread) {
+    public void unpark(Thread thread) {
         return;
+    }
+    
+    /**
+     * <p>
+     * Park the {@link Thread#currentThread() current thread} for the specified
+     * number of nanoseconds.
+     * </p>
+     * 
+     * @param nanoseconds The number of nanoseconds to park the current thread.
+     */
+    public void parkFor(long nanoseconds) {
+
     }
 
     /**
      * <p>
-     * Parks the {@link Thread#currentThread() current thread} either for a set
-     * number of nanoseconds or until a future point in time.
+     * Park the {@link Thread#currentThread() current thread} until the
+     * specified time, as defined by {@link System#currentTimeMillis()}.
      * </p>
      * 
-     * @param timestamp If <code>true</code> <code>nanosOrTimestamp</code>
-     *        should be consider as a timestamp based on
-     *        {@link System#currentTimeMillis()}. If <code>false</code>,
-     *        then <code>nanosOrTimestamp</code> should be considered as a
-     *        relative number of nanoseconds from when this method was called;
-     *        the value <code>0L</code> can be used in conjunction with this
-     *        to indicate that time is not a factor when parking the thread.
-     * @param nanosOrTimestamp Either a relative number of nanoseconds or a
-     *        timestamp in milliseconds as defined by
-     *        {@link System#currentTimeMillis()}.
+     * @param time The absolute time to park the current thread until.
      */
-    public static void park(boolean timestamp, long nanosOrTimestamp) {
+    public void parkUntil(long time) {
 
-    }
-
-    private Threads() {
     }
 }
