@@ -158,7 +158,7 @@ public class BasicAttribute implements Attribute {
      * Determine whether two values belonging to the two array classes
      * respectively are possible to be equal.
      */
-    private boolean compareValueClasses(Class c1, Class c2) {
+    private boolean compareValueClasses(Class<? extends Object> c1, Class<? extends Object> c2) {
         if ((c1.getName().startsWith("[L") || c1.getName().startsWith("[[")) && //$NON-NLS-1$ //$NON-NLS-2$
             (c2.getName().startsWith("[L") || c2.getName().startsWith("[["))) { //$NON-NLS-1$ //$NON-NLS-2$
             /*
@@ -292,13 +292,15 @@ public class BasicAttribute implements Attribute {
         values.clear();
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
     public Object clone() {
         try {
             BasicAttribute attr = (BasicAttribute) super.clone();
             attr.values = (Vector<Object>) this.values.clone();
             return attr;
         } catch (CloneNotSupportedException e) {
-            throw new InternalError("Failed to clone object of BasicAttribute class."); //$NON-NLS-1$
+            throw new AssertionError("Failed to clone object of BasicAttribute class."); //$NON-NLS-1$
         }
     }
 
@@ -325,7 +327,7 @@ public class BasicAttribute implements Attribute {
     }
 
     public NamingEnumeration<?> getAll() throws NamingException {
-        return new BasicNamingEnumeration(values.elements());
+        return new BasicNamingEnumeration<Object>(values.elements());
     }
 
     public DirContext getAttributeDefinition() throws NamingException {
@@ -406,8 +408,8 @@ public class BasicAttribute implements Attribute {
     private void writeObject(ObjectOutputStream oos) throws IOException {
         oos.defaultWriteObject();
         oos.writeInt(this.values.size());
-        for (Enumeration<Object> e = this.values.elements(); e.hasMoreElements();) {
-            oos.writeObject(e.nextElement());
+        for (Object object : this.values) {
+            oos.writeObject(object);
         }
     }
 
@@ -425,6 +427,7 @@ public class BasicAttribute implements Attribute {
      * @return              true if this object is equal to <code>obj</code>,
      *                      otherwise false
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof BasicAttribute) {
             BasicAttribute a = (BasicAttribute) obj;
@@ -440,8 +443,8 @@ public class BasicAttribute implements Attribute {
                 return false;
             } else if (this.ordered) {
                 // Otherwise, if both ordered, compare each value
-                Enumeration e1 = this.values.elements();
-                Enumeration e2 = a.values.elements();
+                Enumeration<?> e1 = this.values.elements();
+                Enumeration<?> e2 = a.values.elements();
 
                 while (e1.hasMoreElements()) {
                     if (!compareValues(e1.nextElement(), e2.nextElement())) {
@@ -479,6 +482,7 @@ public class BasicAttribute implements Attribute {
      * @return              the hashcode of this <code>BasicAttribute</code>
      *                      instance
      */
+    @Override
     public int hashCode() {
         Object o;
         int i = attrID.hashCode();
@@ -501,6 +505,7 @@ public class BasicAttribute implements Attribute {
      * 
      * @return              the string representation of this object
      */
+    @Override
     public String toString() {
         Enumeration<Object> e = this.values.elements();
         String s = "Attribute ID: " + this.attrID; //$NON-NLS-1$

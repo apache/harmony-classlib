@@ -235,13 +235,15 @@ public class BasicAttributes implements Attributes {
      *
      * @return              a deep copy of this attribute collection
      */
+    @SuppressWarnings("unchecked")
+    @Override
     public Object clone() {
         try {
             BasicAttributes c = (BasicAttributes) super.clone();
             c.attrMap = (Hashtable<String,Attribute>) this.attrMap.clone();
             return c;
         } catch (CloneNotSupportedException e) {
-            throw new InternalError("Failed to clone object of BasicAttributes class."); //$NON-NLS-1$
+            throw new AssertionError("Failed to clone object of BasicAttributes class."); //$NON-NLS-1$
         }
     }
 
@@ -256,6 +258,7 @@ public class BasicAttributes implements Attributes {
      * @return              true if this object is equal to <code>obj</code>,
      *                      otherwise false
      */
+    @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Attributes)) {
             return false;
@@ -287,6 +290,7 @@ public class BasicAttributes implements Attributes {
      * @return              the hashcode of this <code>BasicAttributes</code>
      *                      instance
      */
+    @Override
     public int hashCode() {
         Enumeration<Attribute> e = attrMap.elements();
         int i = (ignoreCase ? 1 : 0);
@@ -306,6 +310,7 @@ public class BasicAttributes implements Attributes {
      * 
      * @return              the string representation of this object
      */
+    @Override
     public String toString() {
         String s = null;
         Iterator<Map.Entry<String,Attribute>> it = attrMap.entrySet().iterator();

@@ -34,6 +34,7 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
 
 import javax.naming.spi.DirectoryManager;
 import javax.naming.spi.ResolveResult;
@@ -66,7 +67,7 @@ public abstract class GenericURLDirContext
      * @param   environment
      *          Environment to copy.
      */
-    protected GenericURLDirContext(Hashtable environment) {
+    protected GenericURLDirContext(Hashtable<?, ?> environment) {
         super(environment);
     }
 
@@ -158,14 +159,12 @@ public abstract class GenericURLDirContext
 
         if (name.size() == 1) {
             return createSubcontext(name.get(0), attrs);
-        } else {
-            DirContext context = getContinuationDirContext(name);
-
-            try {
-                return context.createSubcontext(name.getSuffix(1), attrs);
-            } finally {
-                context.close();
-            }
+        }
+        DirContext context = getContinuationDirContext(name);
+        try {
+            return context.createSubcontext(name.getSuffix(1), attrs);
+        } finally {
+            context.close();
         }
     }
 
@@ -195,14 +194,12 @@ public abstract class GenericURLDirContext
 
         if (name.size() == 1) {
             return getAttributes(name.get(0));
-        } else {
-            DirContext context = getContinuationDirContext(name);
-
-            try {
-                return context.getAttributes(name.getSuffix(1));
-            } finally {
-                context.close();
-            }
+        }
+        DirContext context = getContinuationDirContext(name);
+        try {
+            return context.getAttributes(name.getSuffix(1));
+        } finally {
+            context.close();
         }
     }
 
@@ -232,14 +229,12 @@ public abstract class GenericURLDirContext
 
         if (name.size() == 1) {
             return getAttributes(name.get(0), attrIds);
-        } else {
-            DirContext context = getContinuationDirContext(name);
-
-            try {
-                return context.getAttributes(name.getSuffix(1), attrIds);
-            } finally {
-                context.close();
-            }
+        }
+        DirContext context = getContinuationDirContext(name);
+        try {
+            return context.getAttributes(name.getSuffix(1), attrIds);
+        } finally {
+            context.close();
         }
     }
 
@@ -345,14 +340,12 @@ public abstract class GenericURLDirContext
 
         if (name.size() == 1) {
             return getSchema(name.get(0));
-        } else {
-            DirContext context = getContinuationDirContext(name);
-
-            try {
-                return context.getSchema(name.getSuffix(1));
-            } finally {
-                context.close();
-            }
+        }
+        DirContext context = getContinuationDirContext(name);
+        try {
+            return context.getSchema(name.getSuffix(1));
+        } finally {
+            context.close();
         }
     }
 
@@ -382,14 +375,12 @@ public abstract class GenericURLDirContext
 
         if (name.size() == 1) {
             return getSchemaClassDefinition(name.get(0));
-        } else {
-            DirContext context = getContinuationDirContext(name);
-
-            try {
-                return context.getSchemaClassDefinition(name.getSuffix(1));
-            } finally {
-                context.close();
-            }
+        }
+        DirContext context = getContinuationDirContext(name);
+        try {
+            return context.getSchemaClassDefinition(name.getSuffix(1));
+        } finally {
+            context.close();
         }
     }
 
@@ -411,7 +402,7 @@ public abstract class GenericURLDirContext
     /**
      * {@inheritDoc}
      */
-    public NamingEnumeration search(Name name, Attributes matchingAttributes)
+    public NamingEnumeration<SearchResult> search(Name name, Attributes matchingAttributes)
             throws NamingException {
         if (!(name instanceof CompositeName)) {
             throw new InvalidNameException(
@@ -420,21 +411,20 @@ public abstract class GenericURLDirContext
 
         if (name.size() == 1) {
             return search(name.get(0), matchingAttributes);
-        } else {
-            DirContext context = getContinuationDirContext(name);
+        }
+        DirContext context = getContinuationDirContext(name);
 
-            try {
-                return context.search(name.getSuffix(1), matchingAttributes);
-            } finally {
-                context.close();
-            }
+        try {
+            return context.search(name.getSuffix(1), matchingAttributes);
+        } finally {
+            context.close();
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public NamingEnumeration search(String name, Attributes matchingAttributes)
+    public NamingEnumeration<SearchResult> search(String name, Attributes matchingAttributes)
             throws NamingException {
         ResolveResult result = getRootURLContext(name, environment);
         DirContext context = (DirContext) result.getResolvedObj();
@@ -450,7 +440,7 @@ public abstract class GenericURLDirContext
     /**
      * {@inheritDoc}
      */
-    public NamingEnumeration search(Name name, Attributes matchingAttributes,
+    public NamingEnumeration<SearchResult> search(Name name, Attributes matchingAttributes,
             String[] attributesToReturn) throws NamingException {
         if (!(name instanceof CompositeName)) {
             throw new InvalidNameException(
@@ -459,22 +449,21 @@ public abstract class GenericURLDirContext
 
         if (name.size() == 1) {
             return search(name.get(0), matchingAttributes, attributesToReturn);
-        } else {
-            DirContext context = getContinuationDirContext(name);
+        }
+        DirContext context = getContinuationDirContext(name);
 
-            try {
-                return context.search(name.getSuffix(1),
-                        matchingAttributes, attributesToReturn);
-            } finally {
-                context.close();
-            }
+        try {
+            return context.search(name.getSuffix(1),
+                    matchingAttributes, attributesToReturn);
+        } finally {
+            context.close();
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public NamingEnumeration search(String name, Attributes matchingAttributes,
+    public NamingEnumeration<SearchResult> search(String name, Attributes matchingAttributes,
             String[] attributesToReturn) throws NamingException {
         ResolveResult result = getRootURLContext(name, environment);
         DirContext context = (DirContext) result.getResolvedObj();
@@ -490,7 +479,7 @@ public abstract class GenericURLDirContext
     /**
      * {@inheritDoc}
      */
-    public NamingEnumeration search(Name name, String filter,
+    public NamingEnumeration<SearchResult> search(Name name, String filter,
             SearchControls cons) throws NamingException {
         if (!(name instanceof CompositeName)) {
             throw new InvalidNameException(
@@ -499,21 +488,19 @@ public abstract class GenericURLDirContext
 
         if (name.size() == 1) {
             return search(name.get(0), filter, cons);
-        } else {
-            DirContext context = getContinuationDirContext(name);
-
-            try {
-                return context.search(name.getSuffix(1), filter, cons);
-            } finally {
-                context.close();
-            }
+        }
+        DirContext context = getContinuationDirContext(name);
+        try {
+            return context.search(name.getSuffix(1), filter, cons);
+        } finally {
+            context.close();
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public NamingEnumeration search(String name, String filter,
+    public NamingEnumeration<SearchResult> search(String name, String filter,
             SearchControls cons) throws NamingException {
         ResolveResult result = getRootURLContext(name, environment);
         DirContext context = (DirContext) result.getResolvedObj();
@@ -528,7 +515,7 @@ public abstract class GenericURLDirContext
     /**
      * {@inheritDoc}
      */
-    public NamingEnumeration search(Name name, String filterExpr,
+    public NamingEnumeration<SearchResult> search(Name name, String filterExpr,
             Object[] filterArgs, SearchControls cons) throws NamingException {
         if (!(name instanceof CompositeName)) {
             throw new InvalidNameException(
@@ -537,22 +524,20 @@ public abstract class GenericURLDirContext
 
         if (name.size() == 1) {
             return search(name.get(0), filterExpr, filterArgs, cons);
-        } else {
-            DirContext context = getContinuationDirContext(name);
-
-            try {
-                return context.search(name.getSuffix(1),
-                        filterExpr, filterArgs, cons);
-            } finally {
-                context.close();
-            }
+        }
+        DirContext context = getContinuationDirContext(name);
+        try {
+            return context.search(name.getSuffix(1),
+                    filterExpr, filterArgs, cons);
+        } finally {
+            context.close();
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public NamingEnumeration search(String name, String filterExpr,
+    public NamingEnumeration<SearchResult> search(String name, String filterExpr,
             Object[] filterArgs, SearchControls cons) throws NamingException {
         ResolveResult result = getRootURLContext(name, environment);
         DirContext context = (DirContext) result.getResolvedObj();

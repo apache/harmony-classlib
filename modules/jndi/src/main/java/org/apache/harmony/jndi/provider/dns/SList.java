@@ -44,17 +44,17 @@ class SList {
     public static int UNKNOWN = 0;
 
     // Hash with vectors; one vector of server entries per zone
-    private Hashtable zones;
+    private Hashtable<String, Vector<Entry>> zones;
     
     // the array with known DNS servers information
-    private Vector servers;
+    private Vector<Server> servers;
     
     /**
      * @see #getInstance()
      */
     private SList() {
-        zones = new Hashtable();
-        servers = new Vector();
+        zones = new Hashtable<String, Vector<Entry>>();
+        servers = new Vector<Server>();
     }
 
     private static SList instance = null;
@@ -83,15 +83,15 @@ class SList {
     void updateEntry(String zone, Server server, int responseTime)
     {
         String normZoneName = ProviderMgr.normalizeName(zone); 
-        Vector vect;
+        Vector<Entry> vect;
         Entry entryToAdd =
                 new Entry(normZoneName, getServerNum(server), responseTime);
 
         synchronized (zones) {
             vect =
-                (Vector) zones.get(ProviderMgr.normalizeName(normZoneName));
+                zones.get(ProviderMgr.normalizeName(normZoneName));
             if (vect == null) {
-                vect = new Vector();
+                vect = new Vector<Entry>();
                 vect.addElement(entryToAdd);
                 zones.put(normZoneName, vect);
             }
@@ -100,7 +100,7 @@ class SList {
     
                 // delete previous occurrence of given server
                 for (int i = 0; i < vect.size(); i++) {
-                    Entry curEntry = (Entry) vect.elementAt(i);
+                    Entry curEntry = vect.elementAt(i);
     
                     if (server.equals(serverAtNum(curEntry.getServerNum()))) {
                         vect.removeElementAt(i);
@@ -110,7 +110,7 @@ class SList {
     
                 // and insert a new one with updated response time
                 for (int i = 0; i < vect.size(); i++) {
-                    Entry curEntry = (Entry) vect.elementAt(i);
+                    Entry curEntry = vect.elementAt(i);
     
                     if (responseTime < curEntry.getResponseTime()) {
                         vect.insertElementAt(entryToAdd, i);
@@ -133,14 +133,14 @@ class SList {
      * @return best guess - a <code>SList.Server</code> object;
      *  <code>null</code> if the information is not found
      */
-    Server getBestGuess(String zone, Hashtable serversToIgnore) {
-        Vector vect;
+    Server getBestGuess(String zone, Hashtable<Server, ?> serversToIgnore) {
+        Vector<Entry> vect;
 
         synchronized (zones) {
-            vect = (Vector) zones.get(ProviderMgr.normalizeName(zone));
+            vect = zones.get(ProviderMgr.normalizeName(zone));
             if (vect != null && vect.size() > 0) {
                 for (int i = 0; i < vect.size(); i++) {
-                    Entry entry = (Entry) vect.elementAt(i);
+                    Entry entry = vect.elementAt(i);
     
                     if (serversToIgnore != null) {
                         if (serversToIgnore.get(
@@ -162,13 +162,13 @@ class SList {
      * @param server the server to remove
      */
     void dropServer(String zone, Server server) {
-        Vector vect;
+        Vector<Entry> vect;
 
         synchronized (zones) {
-            vect = (Vector) zones.get(ProviderMgr.normalizeName(zone));
+            vect = zones.get(ProviderMgr.normalizeName(zone));
             if (vect != null) {
                 for (int i = 0; i < vect.size(); i++) {
-                    Entry entry = (Entry) vect.elementAt(i);
+                    Entry entry = vect.elementAt(i);
     
                     if (server.equals(serverAtNum(entry.getServerNum()))) {
                         vect.removeElementAt(i);
@@ -186,13 +186,13 @@ class SList {
      * server & zone combination; <code>false</code> otherwise
      */
     boolean hasServer(String zone, Server server) {
-        Vector vect;
+        Vector<Entry> vect;
 
         synchronized (zones) {
-            vect = (Vector) zones.get(ProviderMgr.normalizeName(zone));
+            vect = zones.get(ProviderMgr.normalizeName(zone));
             if (vect != null) {
                 for (int i = 0; i < vect.size(); i++) {
-                    Entry entry = (Entry) vect.elementAt(i);
+                    Entry entry = vect.elementAt(i);
     
                     if (server.equals(serverAtNum(entry.getServerNum()))) {
                         return true;
@@ -210,13 +210,13 @@ class SList {
      * @return <code>Server</code> object with specified attributes
      */
     Server getServerByName(String zone, String name, int port) {
-        Vector vect;
+        Vector<Entry> vect;
 
         synchronized (zones) {
-            vect = (Vector) zones.get(ProviderMgr.normalizeName(zone));
+            vect = zones.get(ProviderMgr.normalizeName(zone));
             if (vect != null) {
                 for (int i = 0; i < vect.size(); i++) {
-                    Entry entry = (Entry) vect.elementAt(i);
+                    Entry entry = vect.elementAt(i);
         
                     if (ProviderMgr.namesAreEqual(name,
                             serverAtNum(entry.getServerNum()).getName())
@@ -238,13 +238,13 @@ class SList {
      * @return <code>Server</code> object with specified attributes
      */
     Server getServerByIP(String zone, String ip, int port) {
-        Vector vect;
+        Vector<Entry> vect;
 
         synchronized (zones) {
-            vect = (Vector) zones.get(ProviderMgr.normalizeName(zone));
+            vect = zones.get(ProviderMgr.normalizeName(zone));
             if (vect != null) {
                 for (int i = 0; i < vect.size(); i++) {
-                    Entry entry = (Entry) vect.elementAt(i);
+                    Entry entry = vect.elementAt(i);
     
                     if (ip.equals(serverAtNum(entry.getServerNum()).getIP()) &&
                             port == serverAtNum(entry.getServerNum()).getPort())
@@ -266,16 +266,18 @@ class SList {
      * @see SList.Server#equals(SList.Server)
      */
     Server getServerByServer(String zone, Server server) {
-        Vector vect;
+        Vector<Entry> vect;
         
         synchronized (zones) {
-            vect = (Vector) zones.get(ProviderMgr.normalizeName(zone));
+            vect = zones.get(ProviderMgr.normalizeName(zone));
     
             if (vect != null) {
                 for (int i = 0; i < vect.size(); i++) {
-                    Entry entry = (Entry) vect.elementAt(i);
+                    Entry entry = vect.elementAt(i);
     
-                    if (server.equals(serverAtNum(entry.getServerNum())));
+                    if (server.equals(serverAtNum(entry.getServerNum()))) {
+                        ;
+                    }
                     {
                         return serverAtNum(entry.getServerNum());
                     }
@@ -290,7 +292,7 @@ class SList {
      */
     void clear() {
         synchronized (zones) {
-            zones = new Hashtable();
+            zones = new Hashtable<String, Vector<Entry>>();
         }
     }
 
@@ -307,11 +309,9 @@ class SList {
         if (servers.contains(server)) {
             return servers.indexOf(server);
         }
-        else {
-            synchronized (servers) {
-                servers.addElement(server);
-                return servers.size() - 1;
-            }
+        synchronized (servers) {
+            servers.addElement(server);
+            return servers.size() - 1;
         }
     }
 
@@ -321,11 +321,9 @@ class SList {
      */
     private Server serverAtNum(int num) {
         if (num < servers.size()) {
-            return (Server) servers.elementAt(num);
+            return servers.elementAt(num);
         }
-        else {
-            return null;
-        }
+        return null;
     }
 
     /**
@@ -344,14 +342,14 @@ class SList {
      * @param name hostname
      * @return found server object or <code>null</code> if not found
      */
-    Enumeration getServersByName(String name) {
-        Vector result = new Vector();
+    Enumeration<Server> getServersByName(String name) {
+        Vector<Server> result = new Vector<Server>();
         
         if (name == null) {
             throw new NullPointerException("hostname is null");
         }
         for (int i = 0; i < servers.size(); i++) {
-            Server curServ = (Server) servers.get(i);
+            Server curServ = servers.get(i);
             
             if (curServ.getName() != null &&
                     ProviderMgr.namesAreEqual(name, curServ.getName()))
@@ -372,7 +370,7 @@ class SList {
         String nameNorm = ProviderMgr.normalizeName(hostname);
         
         for (int i = 0; i < servers.size(); i++) {
-            SList.Server serv = (Server) servers.elementAt(i);
+            SList.Server serv = servers.elementAt(i);
 
             if (nameNorm.equals(serv.getName()) &&
                 serv.getIP() == null)
@@ -474,6 +472,7 @@ class SList {
          * @param obj a <code>Server</code> object to compare with
          * @return <code>true</code> or <code>false</code>
          */
+        @Override
         public boolean equals(Object obj) {
             SList.Server srv = null;
 
@@ -488,10 +487,9 @@ class SList {
                 return ProviderMgr.namesAreEqual(
                                 this.getName(), srv.getName()) &&
                        this.getPort() == srv.getPort();
-            } else {
-                return this.getIP().equals(srv.getIP()) &&
-                       this.getPort() == srv.getPort();
             }
+            return this.getIP().equals(srv.getIP()) &&
+                   this.getPort() == srv.getPort();
         }
         
         /**
@@ -531,13 +529,12 @@ class SList {
             this.serverPort = serverPort;
         }
 
+        @Override
         public String toString() {
             if (this.serverName != null) {
                 return serverName + ":" + serverPort; 
             }
-            else {
-                return serverIP + ":" + serverPort;
-            }
+            return serverIP + ":" + serverPort;
         }
     }
 

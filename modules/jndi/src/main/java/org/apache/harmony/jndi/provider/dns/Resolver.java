@@ -38,6 +38,8 @@ import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.naming.ServiceUnavailableException;
 
+import org.apache.harmony.jndi.provider.dns.SList.Server;
+
 //import org.apache.harmony.util.logging.LogConst;
 
 /**
@@ -73,8 +75,6 @@ import javax.naming.ServiceUnavailableException;
 public class Resolver implements Runnable {
     
     private static final int MSG_MAX_BYTES = 512;
-    private static final int MAX_THREADS = 5;
-
     /**
      * Entry of the resolver thread list.
      * @author Alexei Zakharov
@@ -86,7 +86,7 @@ public class Resolver implements Runnable {
     }
 
     
-    private static Random rndGen = new Random();
+    private static final Random rndGen = new Random();
 
     // resolver configuration
     private int initialTimeout;
@@ -97,11 +97,11 @@ public class Resolver implements Runnable {
     private int threadNumberLimit;
     
     // vector with currently running Resolver threads 
-    private Vector resolverThreads = new Vector();
+    private final Vector<ThreadListEntry> resolverThreads = new Vector<ThreadListEntry>();
     // the list of host names that should be resolved
-    private Vector hostnamesToResolve = new Vector();
+    private final Vector<ThreadListEntry> hostnamesToResolve = new Vector<ThreadListEntry>();
     // semaphore that controls access to both lists above
-    private Object threadListSemaphore = new Object();
+    private final Object threadListSemaphore = new Object();
     
     // <---- Constructor's section
     
@@ -232,7 +232,7 @@ public class Resolver implements Runnable {
      * desired name was found or all servers are dead or malfunction   
      * @throws DomainProtocolException if some DNS specific error has occured 
      */
-    public Enumeration lookup(String name, int[] types, int[] classes)
+    public Enumeration<ResourceRecord> lookup(String name, int[] types, int[] classes)
            throws SecurityException,
                   NameNotFoundException,
                   ServiceUnavailableException,
@@ -267,8 +267,8 @@ public class Resolver implements Runnable {
         //SList slist = SList.getInstance();
         ResolverCache cache = ResolverCache.getInstance();
         
-        Vector questions = new Vector();
-        Vector answers = new Vector(); 
+        Vector<QuestionRecord> questions = new Vector<QuestionRecord>();
+        Vector<ResourceRecord> answers = new Vector<ResourceRecord>(); 
 
         
         if (name == null) {
@@ -280,24 +280,23 @@ public class Resolver implements Runnable {
         if (classes == null) {
             throw new NullPointerException("classes is null");
         }
-        // construct a set of question records
-        for (int i = 0; i < classes.length; i++) {
-            for (int j = 0; j < types.length; j++) {
-                QuestionRecord quest = new QuestionRecord(name, types[j],
-                        classes[i]);
+        for (int element : classes) {
+            for (int element0 : types) {
+                QuestionRecord quest = new QuestionRecord(name, element0,
+                        element);
                 questions.addElement(quest);
             }
         }
         // iterate over question records
         for (int i = 0; i < questions.size(); i++) {
             QuestionRecord curQuestion =
-                    (QuestionRecord) questions.elementAt(i);
+                    questions.elementAt(i);
             String qName = curQuestion.getQName();
             Message mesToSend = null;
             Message receivedMes = null;
             AnalysisReport report = null;
             String workZone;
-            Hashtable visitedServers = new Hashtable();
+            Hashtable<Server, Object> visitedServers = new Hashtable<Server, Object>();
 
             //if (LogConst.DEBUG) {
             //    ProviderMgr.logger.fine("Current question: " +
@@ -307,7 +306,7 @@ public class Resolver implements Runnable {
             if (curQuestion.getQType() != ProviderConstants.ANY_QTYPE &&
                     curQuestion.getQClass() != ProviderConstants.ANY_QCLASS)
             {
-                Enumeration recEnum = cache.get(curQuestion);
+                Enumeration<ResourceRecord> recEnum = cache.get(curQuestion);
 
                 if (recEnum.hasMoreElements()) {
                     while (recEnum.hasMoreElements()) {
@@ -365,8 +364,7 @@ public class Resolver implements Runnable {
                             for (int k = 0; k < report.extraRecords.size();
                                      k++)
                             {
-                                ResourceRecord rec = (ResourceRecord)
-                                        report.extraRecords.elementAt(k);
+                                ResourceRecord rec = report.extraRecords.elementAt(k);
     
                                 cache.put(rec);
                             }
@@ -384,8 +382,7 @@ public class Resolver implements Runnable {
                             //          "Lookup: a complete answer was received");
                             //}
                             for (int k = 0; k < report.records.size(); k++) {
-                                ResourceRecord rec = (ResourceRecord)
-                                        report.records.elementAt(k); 
+                                ResourceRecord rec = report.records.elementAt(k); 
                                 answers.addElement(rec);
                                 // we are sure that the answer section has not
                                 // been truncated so we can put the record
@@ -419,7 +416,7 @@ public class Resolver implements Runnable {
                                 curQuestion.getQClass() !=
                                         ProviderConstants.ANY_QCLASS)
                             {
-                                Enumeration recEnum = cache.get(curQuestion);
+                                Enumeration<ResourceRecord> recEnum = cache.get(curQuestion);
 
                                 if (recEnum.hasMoreElements()) {
                                     while (recEnum.hasMoreElements()) {
@@ -440,7 +437,7 @@ public class Resolver implements Runnable {
                             else {
                                 workZone = ".";
                             }
-                            visitedServers = new Hashtable();
+                            visitedServers = new Hashtable<Server, Object>();
                             for (int k = 0; k < report.records.size(); k++) {
                                 answers.addElement(report.records.elementAt(k));
                             }
@@ -473,8 +470,7 @@ public class Resolver implements Runnable {
                             for (int k = 0; k < report.delegationZones.size();
                                     k++)
                             {
-                                String curZone = (String)
-                                        report.delegationZones.elementAt(k);
+                                String curZone = report.delegationZones.elementAt(k);
                                 int tmpMatchingCount = ProviderMgr.
                                         getMatchingCount(qName, curZone);
     
@@ -486,8 +482,7 @@ public class Resolver implements Runnable {
                             }
                             if (k17 != -1) {
                                 // better delegation was received
-                                workZone = (String)
-                                        report.delegationZones.elementAt(k17);
+                                workZone = report.delegationZones.elementAt(k17);
                                 //if (LogConst.DEBUG) {                            
                                 //    ProviderMgr.logger.fine(
                                 //         "Lookup: better delegation was found");
@@ -557,18 +552,18 @@ public class Resolver implements Runnable {
      * transfers   
      * @throws DomainProtocolException if some DNS specific error has occured 
      */
-    public Enumeration list(String name) throws NamingException {
+    public Enumeration<ResourceRecord> list(String name) throws NamingException {
         final int OUT_BUF_SIZE = 512;
         final int IN_BUF_SIZE = 65536;
         
-        Vector answerVect = new Vector(); 
+        Vector<ResourceRecord> answerVect = new Vector<ResourceRecord>(); 
         Message mesToSend = null;
         Message receivedMes = null;
-        Enumeration enum1;
+        Enumeration<ResourceRecord> enum1;
         //String zoneMasterServer = null;
         //Vector authoritativeServerIPs = new Vector();
-        HashSet authoritativeServers = new HashSet();
-        Iterator authServersIter;
+        HashSet<Object> authoritativeServers = new HashSet<Object>();
+        Iterator<Object> authServersIter;
         int qClassArr[] = new int[1];
         byte outBuf[] = new byte[OUT_BUF_SIZE];
         int outLen;
@@ -608,10 +603,10 @@ public class Resolver implements Runnable {
         outLen = mesToSend.writeBytes(outBuf, 0);
         // determine the list of zone authoritative servers
         while (enum1.hasMoreElements()) {
-            ResourceRecord rr = (ResourceRecord) enum1.nextElement();
+            ResourceRecord rr = enum1.nextElement();
 
             if (rr.getRRType() == ProviderConstants.NS_TYPE) {
-                authoritativeServers.add((String) rr.getRData());
+                authoritativeServers.add(rr.getRData());
                 // assertion: all authoritative servers should have the same
                 // DNS class
                 qClassArr[0] = rr.getRRClass();
@@ -623,8 +618,6 @@ public class Resolver implements Runnable {
                     authoritativeServers.add(st.nextToken());
                     qClassArr[0] = rr.getRRClass();
                     break;
-                } else {
-                    //ProviderMgr.logger.warning("Invalid SOA record");
                 }
             }
         }
@@ -633,20 +626,19 @@ public class Resolver implements Runnable {
       authServersLoop:
         while (authServersIter.hasNext()) {
             String authServerName = (String) authServersIter.next();
-            Enumeration addrEnum = lookup(authServerName,
+            Enumeration<ResourceRecord> addrEnum = lookup(authServerName,
                     new int[] {ProviderConstants.A_TYPE}, qClassArr);
             
             while (addrEnum.hasMoreElements()) {
-                ResourceRecord curRR = (ResourceRecord) addrEnum.nextElement();
+                ResourceRecord curRR = addrEnum.nextElement();
                 String ip = (String) curRR.getRData();
-                int n;
 
                 try {
                     //if (LogConst.DEBUG) {                            
                     //    ProviderMgr.logger.fine(
                     //            "Initiating zone transfer, IP=" + ip);
                     //}
-                    n = TransportMgr.sendReceiveTCP(ip,
+                    TransportMgr.sendReceiveTCP(ip,
                             ProviderConstants.DEFAULT_DNS_PORT,
                             outBuf, outLen, inBuf, IN_BUF_SIZE,
                             this.initialTimeout * this.timeoutRetries);
@@ -684,8 +676,7 @@ public class Resolver implements Runnable {
                                     break;
                                 }
                                 while (enum1.hasMoreElements()) {
-                                    ResourceRecord rr = (ResourceRecord)
-                                            enum1.nextElement();
+                                    ResourceRecord rr = enum1.nextElement();
     
                                     cache.put(rr);
                                     if (k == 0) {
@@ -727,11 +718,10 @@ public class Resolver implements Runnable {
         // SRV _Proto prefix support - filter all records that don't have given
         // _Proto field
         if (proto != null) {
-            Vector answerVect2 = new Vector();
+            Vector<ResourceRecord> answerVect2 = new Vector<ResourceRecord>();
 
             for (int i = 0; i < answerVect.size(); i++) {
-                ResourceRecord rr = (ResourceRecord)
-                        answerVect.elementAt(i);
+                ResourceRecord rr = answerVect.elementAt(i);
                 StringTokenizer st = new StringTokenizer(rr.getName(),
                         ".");
                 String token = null;
@@ -812,7 +802,7 @@ public class Resolver implements Runnable {
      *  to use sockets
      */
     Message queryServers(Message request, String workZone,
-            Hashtable visitedServers, boolean tcpOnly)
+            Hashtable<Server, Object> visitedServers, boolean tcpOnly)
             throws DomainProtocolException, SecurityException
     {
         QuestionRecord qRecord;
@@ -822,7 +812,6 @@ public class Resolver implements Runnable {
         byte[] outBuf = new byte[MSG_MAX_BYTES];
         int outBufLen;
         byte[] inBuf = new byte[MSG_MAX_BYTES];
-        Message mes = new Message();
         Message receivedMes = null;
         int idx = 0;
         int curTimeout = this.initialTimeout;
@@ -836,18 +825,16 @@ public class Resolver implements Runnable {
         if (!request.getQuestionRecords().hasMoreElements()) {
             throw new IllegalArgumentException("no question record");
         }
-        qRecord = (QuestionRecord) request.getQuestionRecords().nextElement();
+        qRecord = request.getQuestionRecords().nextElement();
         // preparing a domain protocol message
         outBufLen = request.writeBytes(outBuf, 0);
 
         // sending message and trying to receive an answer
         for (int round = 0; round < this.timeoutRetries; round++) {
-            Set queriedServers = new HashSet();
+            Set<Server> queriedServers = new HashSet<Server>();
 
             // start of round
             while (true) {
-                String srvStr = null;
-                long timeBeforeSending;
                 int responseTime = 0;
 
                 received = false;
@@ -912,9 +899,6 @@ public class Resolver implements Runnable {
                 // parse the message
                 if (received) {
                     try {
-                        String errMsg = "SERVER: " + srvStr + ":" +
-                                curServer.getPort() + " QNAME: " +
-                                qRecord.getQName();
                         boolean answerSectionIsTruncated = false;
 
                         receivedMes = new Message();
@@ -1016,19 +1000,18 @@ public class Resolver implements Runnable {
                                 //            "Return name error to user");
                                 //}
                                 break;
-                            } else {
-                                // This server is not authoritative server for
-                                // this zone. It should not answer with a 
-                                // name error. Probably it is misconfigured.
-                                slist.updateEntry(workZone, curServer,
-                                        SList.SERVER_FAILURE);
-                                visitedServers.put(curServer, new Object());
-                                //if (LogConst.DEBUG) {                            
-                                //    ProviderMgr.logger.fine(
-                                //            "Not authoritative answer. " +
-                                //            "Skip it.");
-                                //}
                             }
+                            // This server is not authoritative server for
+                            // this zone. It should not answer with a 
+                            // name error. Probably it is misconfigured.
+                            slist.updateEntry(workZone, curServer,
+                                    SList.SERVER_FAILURE);
+                            visitedServers.put(curServer, new Object());
+                            //if (LogConst.DEBUG) {                            
+                            //    ProviderMgr.logger.fine(
+                            //            "Not authoritative answer. " +
+                            //            "Skip it.");
+                            //}
                         } else if (rCode == ProviderConstants.NOT_IMPLEMENTED) {
                             //ProviderMgr.logger.warning("Not implemented. " +
                             //        errMsg);
@@ -1080,10 +1063,10 @@ public class Resolver implements Runnable {
     AnalysisReport analyzeAnswer(Message request, Message answer)
             throws DomainProtocolException
     {
-        Enumeration questions = request.getQuestionRecords();
-        Enumeration answerRRs = answer.getAnswerRRs();
-        Enumeration authorityRRs = answer.getAuthorityRRs();
-        Enumeration additionalRRs;
+        Enumeration<QuestionRecord> questions = request.getQuestionRecords();
+        Enumeration<ResourceRecord> answerRRs = answer.getAnswerRRs();
+        Enumeration<ResourceRecord> authorityRRs = answer.getAuthorityRRs();
+        Enumeration<ResourceRecord> additionalRRs;
         QuestionRecord question;
         Resolver.AnalysisReport report = new AnalysisReport(); 
 
@@ -1095,11 +1078,11 @@ public class Resolver implements Runnable {
         
         // Determine a question.
         if (questions.hasMoreElements()) {
-            question = (QuestionRecord) questions.nextElement();
+            question = questions.nextElement();
         } else {
             throw new IllegalArgumentException("no question record");
         }
-        // If name error occured - no extra processing needed.
+        // If name error occurred - no extra processing needed.
         if (answer.getRCode() == ProviderConstants.NAME_ERROR) {
             report.nameError = true;
             return report;
@@ -1110,7 +1093,7 @@ public class Resolver implements Runnable {
         }
         // Analyze answer section.
         while (answerRRs.hasMoreElements()) {
-            ResourceRecord curRec = (ResourceRecord) answerRRs.nextElement();
+            ResourceRecord curRec = answerRRs.nextElement();
 
             if (question.getQClass() == curRec.getRRClass() ||
                     question.getQClass() == ProviderConstants.ANY_QCLASS)
@@ -1175,8 +1158,8 @@ public class Resolver implements Runnable {
                     // from the SLIST with this new name.   
                     
                     // TODO this is not effective
-                    Enumeration answerRRs2 = answer.getAnswerRRs();
-                    Enumeration additionalRRs2 = answer.getAdditionalRRs();
+                    Enumeration<ResourceRecord> answerRRs2 = answer.getAnswerRRs();
+                    Enumeration<ResourceRecord> additionalRRs2 = answer.getAdditionalRRs();
                         
                     report.aliasInfoWasReceived = true;
                     report.newName = (String) curRec.getRData();
@@ -1192,8 +1175,7 @@ public class Resolver implements Runnable {
                         // Try to look for info about newly received name 
                         // in ANSWER section.
 
-                        ResourceRecord tmpRec = (ResourceRecord)
-                                answerRRs2.nextElement();
+                        ResourceRecord tmpRec = answerRRs2.nextElement();
 
                         //if (LogConst.DEBUG) {                            
                         //    ProviderMgr.logger.fine(
@@ -1217,8 +1199,7 @@ public class Resolver implements Runnable {
                         // Try to look for info about newly received name 
                         // in ADDITIONAL section.
 
-                        ResourceRecord tmpRec = (ResourceRecord)
-                                additionalRRs2.nextElement();
+                        ResourceRecord tmpRec = additionalRRs2.nextElement();
 
                         //if (LogConst.DEBUG) {                            
                         //    ProviderMgr.logger.fine("Look for an answer in " +
@@ -1276,7 +1257,7 @@ public class Resolver implements Runnable {
         //   section
         // TODO current implementation isn't effective
         while (authorityRRs.hasMoreElements()) {
-            ResourceRecord curRec = (ResourceRecord) authorityRRs.nextElement();
+            ResourceRecord curRec = authorityRRs.nextElement();
             SList slist = SList.getInstance();
 
             // save record for future use
@@ -1300,8 +1281,7 @@ public class Resolver implements Runnable {
                     // try to search additional records to obtain server's IP
                     additionalRRs = answer.getAdditionalRRs();
                     while (additionalRRs.hasMoreElements()) {
-                        ResourceRecord addRec = (ResourceRecord)
-                                additionalRRs.nextElement();
+                        ResourceRecord addRec = additionalRRs.nextElement();
 
                         if (ProviderMgr.namesAreEqual(
                                 addRec.getName(), serverName) &&
@@ -1327,8 +1307,7 @@ public class Resolver implements Runnable {
         // analyze additional section
         additionalRRs = answer.getAdditionalRRs();
         while (additionalRRs.hasMoreElements()) {
-            ResourceRecord addRec = (ResourceRecord)
-                    additionalRRs.nextElement();
+            ResourceRecord addRec = additionalRRs.nextElement();
 
             report.extraRecords.addElement(addRec);
             //if (LogConst.DEBUG) {                            
@@ -1344,8 +1323,8 @@ public class Resolver implements Runnable {
         
         // checking report.records and report.extraRecords
         for (int k = 0; k < 2; k++) {
-            Vector records = null;
-            HashSet processed = new HashSet();
+            Vector<ResourceRecord> records = null;
+            HashSet<String> processed = new HashSet<String>();
 
             switch (k) {
                 case 0:
@@ -1356,11 +1335,11 @@ public class Resolver implements Runnable {
                     break;
             }
             for (int i = 0; i < records.size(); i++) {
-                ResourceRecord rr = (ResourceRecord) records.elementAt(i);
+                ResourceRecord rr = records.elementAt(i);
                 String key = rr.getName() + " " + rr.getRRClass() + " " +
                         rr.getRRType();
                 long ttl = rr.getTtl();
-                Vector objToUpdateTTL = new Vector();
+                Vector<ResourceRecord> objToUpdateTTL = new Vector<ResourceRecord>();
                 
                 if (processed.contains(key)) {
                     continue;
@@ -1368,7 +1347,7 @@ public class Resolver implements Runnable {
                 objToUpdateTTL.addElement(rr);
                 // look forward for records with the same NAME CLASS TYPE
                 for (int j = i; j < records.size(); j++) {
-                    ResourceRecord rr2 = (ResourceRecord) records.elementAt(j);
+                    ResourceRecord rr2 = records.elementAt(j);
                     String key2 = rr2.getName() + " " + rr2.getRRClass() + " " +
                             rr2.getRRType();
                     long ttl2 = rr2.getTtl();
@@ -1385,8 +1364,7 @@ public class Resolver implements Runnable {
                 }
                 // update TTL if necessary
                 for (int j = 0; j < objToUpdateTTL.size(); j++) {
-                    ResourceRecord rr2 = (ResourceRecord)
-                            objToUpdateTTL.elementAt(j);
+                    ResourceRecord rr2 = objToUpdateTTL.elementAt(j);
     
                     if (rr2.getTtl() != ttl) {
                         rr2.setTtl(ttl);
@@ -1432,16 +1410,13 @@ public class Resolver implements Runnable {
      */
     void startResolvingThread(String hostname, int dnsClass) {
         Thread newThread;
-        Resolver newResolver;
         Resolver.ThreadListEntry newEntry;
-        int types[] = {ProviderConstants.A_TYPE};
         int classes[] = new int[1];
         
         synchronized (threadListSemaphore) {
             // check that no currently running thread looks for this hostname 
             for (int i = 0; i < resolverThreads.size(); i++) {
-                Resolver.ThreadListEntry entry = (Resolver.ThreadListEntry)
-                        resolverThreads.elementAt(i);
+                Resolver.ThreadListEntry entry = resolverThreads.elementAt(i);
                 if (ProviderMgr.namesAreEqual(hostname,
                                               entry.serverNameToResolve) &&
                     entry.dnsClass == dnsClass)
@@ -1453,8 +1428,7 @@ public class Resolver implements Runnable {
             }
             // check if the hostname is already scheduled for resolving
             for (int i = 0; i < hostnamesToResolve.size(); i++) {
-                Resolver.ThreadListEntry entry = (Resolver.ThreadListEntry)
-                        hostnamesToResolve.elementAt(i);
+                Resolver.ThreadListEntry entry = hostnamesToResolve.elementAt(i);
                 if (ProviderMgr.namesAreEqual(hostname,
                                               entry.serverNameToResolve) &&
                     entry.dnsClass == dnsClass)
@@ -1490,15 +1464,14 @@ public class Resolver implements Runnable {
      */
     public void run() {
         SList slist = SList.getInstance();
-        Enumeration foundRecords;
+        Enumeration<ResourceRecord> foundRecords;
         Resolver.ThreadListEntry entryToProcess;
         int [] classes = new int[1];
 
         // update lists
         synchronized (threadListSemaphore) {
             if (hostnamesToResolve.size() > 0) {
-                entryToProcess = (Resolver.ThreadListEntry)
-                        hostnamesToResolve.elementAt(0);
+                entryToProcess = hostnamesToResolve.elementAt(0);
                 hostnamesToResolve.remove(0);
                 entryToProcess.thread = Thread.currentThread();
                 resolverThreads.addElement(entryToProcess);
@@ -1516,8 +1489,7 @@ public class Resolver implements Runnable {
                     classes);
             while (foundRecords != null && foundRecords.hasMoreElements()) {
                 // we will take all A records and store all of them in SLIST
-                ResourceRecord rr = (ResourceRecord)
-                        foundRecords.nextElement();
+                ResourceRecord rr = foundRecords.nextElement();
 
                 if (rr.getRRType() == ProviderConstants.A_TYPE) {
                     slist.setServerIP(entryToProcess.serverNameToResolve,
@@ -1531,8 +1503,7 @@ public class Resolver implements Runnable {
         // update resolver threads list, remove info about current thread
         synchronized (threadListSemaphore) {
             for (int i = 0; i < resolverThreads.size(); i++) {
-                Resolver.ThreadListEntry entry = (Resolver.ThreadListEntry)
-                        resolverThreads.elementAt(i);
+                Resolver.ThreadListEntry entry = resolverThreads.elementAt(i);
 
                 if (ProviderMgr.namesAreEqual(
                         entryToProcess.serverNameToResolve,
@@ -1560,15 +1531,15 @@ public class Resolver implements Runnable {
         boolean delegationArrived = false;
         boolean aliasInfoWasReceived = false;
         boolean messageWasTruncated = false;
-        Vector records;
-        Vector delegationZones;
+        Vector<ResourceRecord> records;
+        Vector<String> delegationZones;
         String newName = null;
-        Vector extraRecords;
+        Vector<ResourceRecord> extraRecords;
 
         AnalysisReport() {
-            records = new Vector();
-            delegationZones = new Vector();
-            extraRecords = new Vector();
+            records = new Vector<ResourceRecord>();
+            delegationZones = new Vector<String>();
+            extraRecords = new Vector<ResourceRecord>();
         }
 
     }

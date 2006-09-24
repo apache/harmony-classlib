@@ -30,54 +30,33 @@ import java.util.Enumeration;
  * @author Alexei Zakharov
  * @version $Revision: 1.1.2.4 $
  */
-public class BasicNamingEnumerator implements NamingEnumeration {
+public class BasicNamingEnumerator<T> implements NamingEnumeration<T> {
     
-    private Enumeration enum1 = null;
+    private final Enumeration<T> enumeration;
     
     /**
      * Constructs new enumerator from existing <code>Enumeration</code>.
-     * @param enum1 enumeration 
+     * @param enumeration enumeration 
      */
-    public BasicNamingEnumerator(Enumeration newEnum) {
-        this.enum1 = newEnum;
+    public BasicNamingEnumerator(Enumeration<T> newEnum) {
+        this.enumeration = newEnum;
     }
 
-    /**
-     * @return next element of enumeration
-     * @see javax.naming.NamingEnumeration#next()
-     */
-    public Object next() {
-        return enum1.nextElement();
+    public T next() {
+        return enumeration.nextElement();
     }
 
-    /**
-     * @return <code>true</code> if the enumeration has more elements
-     * @see javax.naming.NamingEnumeration#hasMore()
-     */
     public boolean hasMore() {
-        return enum1.hasMoreElements();
+        return enumeration.hasMoreElements();
     }
 
-    /**
-     * Do nothing in current implementation.
-     * @see javax.naming.NamingEnumeration#close()
-     */
     public void close() throws NamingException {}
 
-    /**
-     * @return next element of enumeration
-     * @see java.util.Enumeration#nextElement()
-     */
-    public Object nextElement() {
-        return enum1.nextElement();
+    public T nextElement() {
+        return enumeration.nextElement();
     }
 
-    /**
-     * @return <code>true</code> if the enumeration has more elements
-     * @see java.util.Enumeration#hasMoreElements()
-     */
     public boolean hasMoreElements() {
-        return enum1.hasMoreElements();
+        return enumeration.hasMoreElements();
     }
-
 }

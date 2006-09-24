@@ -81,6 +81,7 @@ public class InitialLdapContext
      * @param cs                the connection controls which may be null
      * @throws NamingException  If an error is encountered.
      */
+    @SuppressWarnings("unchecked")
     public InitialLdapContext(Hashtable<?, ?> h, Control[] cs)
         throws NamingException {
         super(true);

@@ -24,7 +24,9 @@ package org.apache.harmony.jndi.provider.dns;
 
 import java.util.Hashtable;
 
+import javax.naming.Binding;
 import javax.naming.Context;
+import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
@@ -43,7 +45,7 @@ public class dnsURLContext extends DNSContext {
      * @param env environment
      * @throws NamingException if such exception was encountered
      */
-    public dnsURLContext(Hashtable env) throws NamingException {
+    public dnsURLContext(Hashtable<?, ?> env) throws NamingException {
         super(env);
     }
 
@@ -55,6 +57,7 @@ public class dnsURLContext extends DNSContext {
      * @throws NullPointerException if <code>name</code> is null
      * @see DNSContext#getAttributes(String, String[])
      */
+    @Override
     public Attributes getAttributes(String name, String[] attrNames)
             throws NamingException
     {
@@ -69,6 +72,7 @@ public class dnsURLContext extends DNSContext {
      * @throws NullPointerException if <code>name</code> is null
      * @see DNSContext#getAttributes(String) 
      */
+    @Override
     public Attributes getAttributes(String name) throws NamingException {
         return getAttributes(name, null);
     }
@@ -80,7 +84,8 @@ public class dnsURLContext extends DNSContext {
      * @throws NullPointerException if <code>name</code> is null
      * @see DNSContext#list(String)
      */
-    public NamingEnumeration list(String name) throws NamingException {
+    @Override
+    public NamingEnumeration<NameClassPair> list(String name) throws NamingException {
         process(name);
         return super.list(new DNSName());
     }
@@ -92,7 +97,8 @@ public class dnsURLContext extends DNSContext {
      * @throws NullPointerException if <code>name</code> is null
      * @see DNSContext#listBindings(String)
      */
-    public NamingEnumeration listBindings(String name) throws NamingException {
+    @Override
+    public NamingEnumeration<Binding> listBindings(String name) throws NamingException {
         process(name);
         return super.listBindings(new DNSName());
     }
@@ -104,6 +110,7 @@ public class dnsURLContext extends DNSContext {
      * @throws NullPointerException if <code>name</code> is null
      * @see DNSContext#lookup(String)
      */
+    @Override
     public Object lookup(String name) throws NamingException {
         process(name);
         return super.lookup(new DNSName());
@@ -116,6 +123,7 @@ public class dnsURLContext extends DNSContext {
      * @throws NullPointerException if <code>name</code> is null
      * @see DNSContext#lookupLink(String)
      */
+    @Override
     public Object lookupLink(String name) throws NamingException {
         return lookup(name);
     }

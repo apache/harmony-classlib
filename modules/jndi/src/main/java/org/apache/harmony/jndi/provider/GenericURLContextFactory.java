@@ -46,7 +46,9 @@ public abstract class GenericURLContextFactory implements ObjectFactory {
     /**
      * Default constructor for subclasses.
      */
-    protected GenericURLContextFactory() {}
+    protected GenericURLContextFactory() {
+        super();
+    }
 
     /**
      * Lookups the specified object in the underlying context.
@@ -93,7 +95,7 @@ public abstract class GenericURLContextFactory implements ObjectFactory {
      *          If lookup attempt failed.
      */
     public Object getObjectInstance(Object obj, Name name, Context nameCtx,
-            Hashtable environment) throws NamingException {
+            Hashtable<?, ?> environment) throws NamingException {
         Context context = createURLContext(environment);
 
         if (obj == null) {
@@ -118,10 +120,10 @@ public abstract class GenericURLContextFactory implements ObjectFactory {
 
                 NamingException exception = null;
 
-                for (int i = 0; i < strings.length; i++) {
+                for (String element : strings) {
                     try {
                         // If the valid object is found - return it.
-                        return context.lookup(strings[i]);
+                        return context.lookup(element);
                     } catch (NamingException e) {
                         // Invalid object, store the exception
                         // to throw it later if no valid object is found.
@@ -152,5 +154,5 @@ public abstract class GenericURLContextFactory implements ObjectFactory {
      *
      * @return  New context instance.
      */
-    protected abstract Context createURLContext(Hashtable environment);
+    protected abstract Context createURLContext(Hashtable<?, ?> environment);
 }

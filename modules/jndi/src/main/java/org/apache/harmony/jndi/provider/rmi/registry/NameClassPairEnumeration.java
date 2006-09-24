@@ -30,15 +30,14 @@ import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
-
 /**
- * Enumeration of {@link NameClassPair} objects,
- * used by {@link RegistryContext#list(Name)} method.
- *
- * @author  Vasily Zakharov
+ * Enumeration of {@link NameClassPair} objects, used by
+ * {@link RegistryContext#list(Name)} method.
+ * 
+ * @author Vasily Zakharov
  * @version $Revision: 1.1.2.2 $
  */
-class NameClassPairEnumeration implements NamingEnumeration {
+class NameClassPairEnumeration implements NamingEnumeration<NameClassPair> {
 
     /**
      * Binding names returned from {@link Registry#list()} method.
@@ -52,25 +51,18 @@ class NameClassPairEnumeration implements NamingEnumeration {
 
     /**
      * Creates this enumeration.
-     *
-     * @param   names
-     *          Binding names returned from {@link Registry#list()} method.
+     * 
+     * @param names Binding names returned from {@link Registry#list()} method.
      */
     public NameClassPairEnumeration(String[] names) {
         this.names = names;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean hasMore() {
         return (index < names.length);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public Object next() throws NamingException, NoSuchElementException {
+    public NameClassPair next() throws NamingException, NoSuchElementException {
         if (!hasMore()) {
             throw new NoSuchElementException();
         }
@@ -81,28 +73,18 @@ class NameClassPairEnumeration implements NamingEnumeration {
         return pair;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean hasMoreElements() {
         return hasMore();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public Object nextElement() {
+    public NameClassPair nextElement() {
         try {
             return next();
         } catch (NamingException e) {
-            throw (NoSuchElementException)
-                    new NoSuchElementException().initCause(e);
+            throw (NoSuchElementException) new NoSuchElementException().initCause(e);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void close() {
         index = names.length;
     }

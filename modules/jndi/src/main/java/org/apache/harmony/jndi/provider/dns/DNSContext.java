@@ -51,6 +51,7 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InvalidAttributeIdentifierException;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
 import javax.naming.spi.DirectoryManager;
 import javax.naming.spi.NamingManager;
 
@@ -79,14 +80,14 @@ public class DNSContext implements DirContext, Cloneable {
             "org.apache.harmony.jndi.provider.dns.threads.max";
 
     // used in internal methods
-    private static int NAME_CLASS_SWT = 1;
-    private static int BINDING_SWT = 2;
+    private static final int NAME_CLASS_SWT = 1;
+    private static final int BINDING_SWT = 2;
     
-    private DNSNameParser nameParser = null;
-    private Hashtable environment = null;
-    private Resolver resolver = null;
+    private DNSNameParser nameParser;
+    private Hashtable<Object, Object> environment;
+    private Resolver resolver;
 
-    private DNSName contextName = null;
+    private DNSName contextName;
 
     // default values for properties that has been read from the environment
     private boolean authoritative = ProviderConstants.DEFAULT_AUTHORITATIVE;
@@ -105,19 +106,20 @@ public class DNSContext implements DirContext, Cloneable {
      * will make a clone of given hash table.
      * @throws InvalidNameException something wrong with domain names given in
      * <code>java.naming.provider.url</code> property
-     * @throws ConfigurationException if some error occured during parsing of
+     * @throws ConfigurationException if some error occurred during parsing of
      * configuration parameters
-     * @throws NamingException if some parse error occured
+     * @throws NamingException if some parse error occurred
      * @throws NullPointerException if the environment is null
      *  
      */
-    DNSContext(Hashtable env) throws NamingException
+    @SuppressWarnings("unchecked")
+    DNSContext(Hashtable<?, ?> env) throws NamingException
     {
         nameParser = new DNSNameParser();
         if (env == null) {
            throw new NullPointerException("environment is null");
         }
-        this.environment = (Hashtable) env.clone();
+        this.environment = (Hashtable<Object, Object>) env.clone();
         parseBoolProp(Context.AUTHORITATIVE);
         parseLookupProp();
         if (environment.containsKey(RECURSION)) {
@@ -290,10 +292,11 @@ public class DNSContext implements DirContext, Cloneable {
      * @param ancestorCtx an ancestor context to read all internal properties from
      * @param name name of newly created context in the ancestor context
      */
+    @SuppressWarnings("unchecked")
     DNSContext(DNSContext ancestorCtx, DNSName name) {
         this.contextName = (DNSName) name.clone();
         this.nameParser = ancestorCtx.nameParser;
-        this.environment = (Hashtable) ancestorCtx.environment.clone();
+        this.environment = (Hashtable<Object, Object>) ancestorCtx.environment.clone();
         this.resolver = ancestorCtx.resolver;
         this.authoritative = ancestorCtx.authoritative;
         this.lookupAttrType = ancestorCtx.lookupAttrType;
@@ -475,7 +478,7 @@ public class DNSContext implements DirContext, Cloneable {
      * This method is not supported.
      * @see javax.naming.directory.DirContext#search(java.lang.String, javax.naming.directory.Attributes)
      */
-    public NamingEnumeration search(String arg0, Attributes arg1)
+    public NamingEnumeration<SearchResult> search(String arg0, Attributes arg1)
             throws NamingException
     {
         Object obj = lookup(arg0);
@@ -493,7 +496,7 @@ public class DNSContext implements DirContext, Cloneable {
      * This method is not supported.
      * @see javax.naming.directory.DirContext#search(javax.naming.Name, javax.naming.directory.Attributes)
      */
-    public NamingEnumeration search(Name arg0, Attributes arg1)
+    public NamingEnumeration<SearchResult> search(Name arg0, Attributes arg1)
             throws NamingException
     {
         Object obj = lookup(arg0);
@@ -669,9 +672,7 @@ public class DNSContext implements DirContext, Cloneable {
                     DirectoryManager.getContinuationDirContext(cpe);
 
             attrs = nnsContext.getAttributes(remainingName, attrNames);
-        } else {
-            DNSContext resolvedCtx = new DNSContext(this, nameToLookFor);
-                
+        } else {                
             // analyze given attrNames object
             if (attrNames == null) {
                 // this means that all attributes should be obtained
@@ -681,19 +682,19 @@ public class DNSContext implements DirContext, Cloneable {
                 classes[0] = ProviderConstants.ANY_QCLASS;
             }
             else {
-                HashSet classesSet = new HashSet();
-                HashSet typesSet = new HashSet();
-                Iterator iter;
+                HashSet<Integer> classesSet = new HashSet<Integer>();
+                HashSet<Integer> typesSet = new HashSet<Integer>();
+                Iterator<Integer> iter;
                 int j;
 
-                for (int i = 0; i < attrNames.length; i++) {
-                    int k = attrNames[i].indexOf(' ');
+                for (String element : attrNames) {
+                    int k = element.indexOf(' ');
                     String typeStr = null;
                     int classInt;
                     int typesInt;
     
                     if (k > 0) {
-                        String classStr = attrNames[i].substring(0, k);
+                        String classStr = element.substring(0, k);
 
                         classInt =
                                 ProviderMgr.getRecordClassNumber(classStr); 
@@ -702,13 +703,13 @@ public class DNSContext implements DirContext, Cloneable {
                                     "Unknown record class: " + classStr);
                         }
                         classesSet.add(new Integer(classInt));
-                        typeStr = attrNames[i].substring(k, attrNames[i].length())
+                        typeStr = element.substring(k, element.length())
                                 .trim();
                     } 
                     else {
                         classesSet.add(new Integer(
                                 ProviderConstants.IN_CLASS));
-                        typeStr = attrNames[i].trim();
+                        typeStr = element.trim();
                     }
                     typesInt = ProviderMgr.getRecordTypeNumber(typeStr);
                     if (typesInt == -1) {
@@ -722,7 +723,7 @@ public class DNSContext implements DirContext, Cloneable {
                 iter = classesSet.iterator();
                 j = 0;
                 while (iter.hasNext()) {
-                    Integer n = (Integer) iter.next();
+                    Integer n = iter.next();
 
                     classes[j++] = n.intValue();
                 }
@@ -731,7 +732,7 @@ public class DNSContext implements DirContext, Cloneable {
                 iter = typesSet.iterator();
                 j = 0;
                 while (iter.hasNext()) {
-                    Integer n = (Integer) iter.next();
+                    Integer n = iter.next();
 
                     types[j++] = n.intValue();
                 }
@@ -740,7 +741,7 @@ public class DNSContext implements DirContext, Cloneable {
             // we should have correct nameToLookFor, classes and types at this point
             // let's look for attributes
             try {
-                Enumeration records = resolver.lookup(nameToLookFor.toString(),
+                Enumeration<ResourceRecord> records = resolver.lookup(nameToLookFor.toString(),
                         types, classes);
 
                 attrs = createAttributesFromRecords(records);
@@ -787,16 +788,15 @@ public class DNSContext implements DirContext, Cloneable {
         }
         if (pair.context instanceof DirContext) {
             return ((DirContext) pair.context).createSubcontext(pair.name, arg1);
-        } else {
-            throw new NotContextException("found object is not a DirContext"); 
         }
+        throw new NotContextException("found object is not a DirContext");
     }
 
     /** 
      * This method is not supported.
      * @see javax.naming.directory.DirContext#search(java.lang.String, javax.naming.directory.Attributes, java.lang.String[])
      */
-    public NamingEnumeration search(String arg0, Attributes arg1, String[] arg2)
+    public NamingEnumeration<SearchResult> search(String arg0, Attributes arg1, String[] arg2)
             throws NamingException
     {
         Object obj = lookup(arg0);
@@ -814,7 +814,7 @@ public class DNSContext implements DirContext, Cloneable {
      * This method is not supported.
      * @see javax.naming.directory.DirContext#search(javax.naming.Name, javax.naming.directory.Attributes, java.lang.String[])
      */
-    public NamingEnumeration search(Name arg0, Attributes arg1, String[] arg2)
+    public NamingEnumeration<SearchResult> search(Name arg0, Attributes arg1, String[] arg2)
             throws NamingException
     {
         Object obj = lookup(arg0);
@@ -832,7 +832,7 @@ public class DNSContext implements DirContext, Cloneable {
      * This method is not supported.
      * @see javax.naming.directory.DirContext#search(java.lang.String, java.lang.String, javax.naming.directory.SearchControls)
      */
-    public NamingEnumeration search(String arg0, String arg1,
+    public NamingEnumeration<SearchResult> search(String arg0, String arg1,
             SearchControls arg2) throws NamingException
     {
         Object obj = lookup(arg0);
@@ -850,7 +850,7 @@ public class DNSContext implements DirContext, Cloneable {
      * This method is not supported.
      * @see javax.naming.directory.DirContext#search(javax.naming.Name, java.lang.String, javax.naming.directory.SearchControls)
      */
-    public NamingEnumeration search(Name arg0, String arg1, SearchControls arg2)
+    public NamingEnumeration<SearchResult> search(Name arg0, String arg1, SearchControls arg2)
             throws NamingException
     {
         Object obj = lookup(arg0);
@@ -868,7 +868,7 @@ public class DNSContext implements DirContext, Cloneable {
      * This method is not supported.
      * @see javax.naming.directory.DirContext#search(java.lang.String, java.lang.String, java.lang.Object[], javax.naming.directory.SearchControls)
      */
-    public NamingEnumeration search(String arg0, String arg1, Object[] arg2,
+    public NamingEnumeration<SearchResult> search(String arg0, String arg1, Object[] arg2,
             SearchControls arg3) throws NamingException
     {
         Object obj = lookup(arg0);
@@ -886,7 +886,7 @@ public class DNSContext implements DirContext, Cloneable {
      * This method is not supported.
      * @see javax.naming.directory.DirContext#search(javax.naming.Name, java.lang.String, java.lang.Object[], javax.naming.directory.SearchControls)
      */
-    public NamingEnumeration search(Name arg0, String arg1, Object[] arg2,
+    public NamingEnumeration<SearchResult> search(Name arg0, String arg1, Object[] arg2,
             SearchControls arg3) throws NamingException
     {
         Object obj = lookup(arg0);
@@ -937,8 +937,8 @@ public class DNSContext implements DirContext, Cloneable {
      * @return a hash table with the context's environment
      * @see javax.naming.Context#getEnvironment()
      */
-    public Hashtable getEnvironment() throws NamingException {
-        return (Hashtable) environment.clone();
+    public Hashtable<?, ?> getEnvironment() throws NamingException {
+        return (Hashtable<?, ?>) environment.clone();
     }
 
     /** 
@@ -1144,7 +1144,7 @@ public class DNSContext implements DirContext, Cloneable {
         } else {
             try {
                 DNSContext resolvedCtx = new DNSContext(this, nameToLookFor);
-                Enumeration records = resolver.lookup(nameToLookFor.toString(),
+                Enumeration<ResourceRecord> records = resolver.lookup(nameToLookFor.toString(),
                         types, classes);
                 Attributes attrs = createAttributesFromRecords(records);
 
@@ -1192,6 +1192,7 @@ public class DNSContext implements DirContext, Cloneable {
             
             DNSContext context = (DNSContext) resolvedCtx.clone();
             
+            @Override
             public Object getContent() {
                 return context;
             }
@@ -1238,11 +1239,11 @@ public class DNSContext implements DirContext, Cloneable {
      * @param recs enumeration of resource records received from the resolver
      * @return corresponding instance of <code>Attributes</code>
      */
-    private static Attributes createAttributesFromRecords(Enumeration recs) {
+    private static Attributes createAttributesFromRecords(Enumeration<ResourceRecord> recs) {
         Attributes attrs = new BasicAttributes(true);
         
         while (recs.hasMoreElements()) {
-            ResourceRecord curRec = (ResourceRecord) recs.nextElement();
+            ResourceRecord curRec = recs.nextElement();
             String clssTypeStr = null;
             Attribute oldAttr = null;
             
@@ -1351,9 +1352,8 @@ public class DNSContext implements DirContext, Cloneable {
         }
         if (pair.context instanceof Context) {
             return ((Context) pair.context).createSubcontext(pair.name);
-        } else {
-            throw new NotContextException("found object is not a Context"); 
         }
+        throw new NotContextException("found object is not a Context");
     }
 
     /** 
@@ -1444,7 +1444,7 @@ public class DNSContext implements DirContext, Cloneable {
      * @throws NamingException if an error was encountered
      * @see javax.naming.Context#list(javax.naming.Name)
      */
-    public NamingEnumeration list(String name) throws NamingException {
+    public NamingEnumeration<NameClassPair> list(String name) throws NamingException {
         return list_common(convertNameFromStringForm(name), NAME_CLASS_SWT);
     }
 
@@ -1456,7 +1456,7 @@ public class DNSContext implements DirContext, Cloneable {
      * @throws NamingException if an error was encountered
      * @see javax.naming.Context#listBindings(java.lang.String)
      */
-    public NamingEnumeration listBindings(String name) throws NamingException {
+    public NamingEnumeration<Binding> listBindings(String name) throws NamingException {
         return list_common(convertNameFromStringForm(name), BINDING_SWT);
     }
 
@@ -1470,11 +1470,11 @@ public class DNSContext implements DirContext, Cloneable {
      * @throws NameNotFoundException if authoritative server(s) was not found
      * @throws ServiceUnavailableException if none of found servers permits zone
      * transfers   
-     * @throws DomainProtocolException if some DNS specific error has occured
-     * @throws NamingException if other type of error has occured 
+     * @throws DomainProtocolException if some DNS specific error has occurred
+     * @throws NamingException if other type of error has occurred 
      * @see javax.naming.Context#list(javax.naming.Name)
      */
-    public NamingEnumeration list(Name name) throws NamingException {
+    public NamingEnumeration<NameClassPair> list(Name name) throws NamingException {
         return list_common(name, NAME_CLASS_SWT);
     }
 
@@ -1496,13 +1496,14 @@ public class DNSContext implements DirContext, Cloneable {
      * resolver's cache since we are sure the cache is up to date and contains
      * absolutely all records from target zone
      */
-    private NamingEnumeration list_common(Name name, int contentSwt)
+    @SuppressWarnings("unchecked")
+    private <T> NamingEnumeration<T> list_common(Name name, int contentSwt)
             throws NamingException
     {
         DNSName nameToList = null;
         DNSName altName = null;
         CompositeName remainingName = null;
-        NamingEnumeration result = null;
+        NamingEnumeration<T> result = null;
 
         if (contentSwt != 1 && contentSwt != 2) {
             throw new IllegalArgumentException(
@@ -1548,17 +1549,17 @@ public class DNSContext implements DirContext, Cloneable {
                     altName, remainingName);
             Context nnsContext = DirectoryManager.getContinuationContext(cpe);
 
-            result = nnsContext.list(remainingName);
+            result = (NamingEnumeration<T>)nnsContext.list(remainingName);
         } else {
             // do the job
             try {
-                Enumeration resEnum = resolver.list(nameToList.toString());
-                Hashtable entries = new Hashtable();
+                Enumeration<ResourceRecord> resEnum = resolver.list(nameToList.toString());
+                Hashtable<String, T> entries = new Hashtable<String, T>();
                 DNSContext targetCtx = new DNSContext(this, nameToList); 
                 
                 // collecting direct children
                 while (resEnum.hasMoreElements()) {
-                    ResourceRecord rr = (ResourceRecord) resEnum.nextElement();
+                    ResourceRecord rr = resEnum.nextElement();
                     // fullName is an full name of current record
                     Name curName = nameParser.parse(rr.getName());
 
@@ -1572,7 +1573,7 @@ public class DNSContext implements DirContext, Cloneable {
                         // if we don't have such child yet 
                         if (!entries.containsKey(elNameStr)) {
                             Object elObj;
-                            Object objToPut = null;
+                            T objToPut = null;
                             // absolute name of direct child
                             DNSName elNameAbs = null;
                             // relative name of direct child
@@ -1584,25 +1585,25 @@ public class DNSContext implements DirContext, Cloneable {
                             elNameRel.add(elNameStr);
                             elNameAbs = (DNSName) nameToList.clone();
                             elNameAbs.add(elNameStr);
-                            elCtx = new DNSContext(this, (DNSName) elNameAbs);
+                            elCtx = new DNSContext(this, elNameAbs);
                             elObj = DirectoryManager.getObjectInstance(elCtx,
                                     elNameRel, targetCtx, environment, null);
                             switch (contentSwt) {
                             case 1:
                                 // NameClassPair
-                                objToPut = new NameClassPair(elNameStr,
+                                objToPut = (T)new NameClassPair(elNameStr,
                                         elObj.getClass().getName(), true);
                                 break;
                             case 2:
                                 // Binding
-                                objToPut = new Binding(elNameStr, elObj, true);
+                                objToPut = (T)new Binding(elNameStr, elObj, true);
                                 break;
                             }
                             entries.put(elNameStr, objToPut);
                         }
                     }
                 }
-                result = new BasicNamingEnumerator(entries.elements());
+                result = new BasicNamingEnumerator<T>(entries.elements());
             } catch (SecurityException e) {
                 throw e;
             } catch (NamingException e) {
@@ -1626,7 +1627,7 @@ public class DNSContext implements DirContext, Cloneable {
      * @throws NamingException if an error was encountered
      * @see javax.naming.Context#listBindings(javax.naming.Name)
      */
-    public NamingEnumeration listBindings(Name name) throws NamingException {
+    public NamingEnumeration<Binding> listBindings(Name name) throws NamingException {
         return list_common(name, BINDING_SWT);
     }
 
@@ -1887,6 +1888,7 @@ public class DNSContext implements DirContext, Cloneable {
      * Constructs the clone of this DNS context.
      * @see Object#clone()
      */
+    @Override
     public Object clone() {
         return new DNSContext(this, contextName);
     }
@@ -1899,6 +1901,7 @@ public class DNSContext implements DirContext, Cloneable {
      * @return <code>true</code> if given object is equal to this one;
      *  <code>false</code> otherwise
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj != null && obj instanceof DNSContext &&
                 contextName.equals(((DNSContext) obj).contextName)) {

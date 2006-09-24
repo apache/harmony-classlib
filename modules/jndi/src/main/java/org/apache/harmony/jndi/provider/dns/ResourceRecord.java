@@ -126,9 +126,8 @@ public class ResourceRecord {
 
             // RDLENGTH
             idx = ProviderMgr.write16Int(ipBytes.length, buffer, idx);
-            // RDATA
-            for (int i = 0; i < ipBytes.length; i++) {
-                buffer[idx++] = ipBytes[i];
+            for (byte element : ipBytes) {
+                buffer[idx++] = element;
             }
         }
         else if (rrType == ProviderConstants.SOA_TYPE) {
@@ -144,10 +143,10 @@ public class ResourceRecord {
             // RDATA
             // MNAME
             token = st.nextToken();
-            idx = ProviderMgr.writeName((String) token, buffer, idx);
+            idx = ProviderMgr.writeName(token, buffer, idx);
             // RNAME
             token = st.nextToken();
-            idx = ProviderMgr.writeName((String) token, buffer, idx);
+            idx = ProviderMgr.writeName(token, buffer, idx);
             // SERIAL
             // REFRESH
             // RETRY
@@ -278,9 +277,8 @@ public class ResourceRecord {
             bytes = (byte[]) rData;
             // RDLENGTH
             idx = ProviderMgr.write16Int(bytes.length, buffer, idx);
-            // RDATA
-            for (int i = 0; i < bytes.length; i++) {
-                buffer[idx++] = bytes[i];
+            for (byte element : bytes) {
+                buffer[idx++] = element;
             }
         }
         return idx;
@@ -442,6 +440,7 @@ public class ResourceRecord {
         return idx;
     }
 
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append(name);

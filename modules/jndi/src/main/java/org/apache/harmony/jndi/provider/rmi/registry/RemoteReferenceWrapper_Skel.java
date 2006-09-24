@@ -27,7 +27,7 @@
  */
 package org.apache.harmony.jndi.provider.rmi.registry;
 
-
+@SuppressWarnings("deprecation")
 public final class RemoteReferenceWrapper_Skel implements java.rmi.server.Skeleton {
 
     private static final long interfaceHash = 2534274963554139942L;
@@ -37,7 +37,7 @@ public final class RemoteReferenceWrapper_Skel implements java.rmi.server.Skelet
     };
 
     public java.rmi.server.Operation[] getOperations() {
-        return (java.rmi.server.Operation[]) operations.clone();
+        return operations.clone();
     }
 
     public void dispatch(java.rmi.Remote obj, java.rmi.server.RemoteCall call, int opnum, long hash) throws java.lang.Exception {

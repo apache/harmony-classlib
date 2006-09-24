@@ -37,7 +37,9 @@ public class DNSContextFactory implements InitialContextFactory {
     /**
      * Empty constructor.
      */
-    public DNSContextFactory() {}
+    public DNSContextFactory() {
+        super();
+    }
 
     /**
      * Creates a new instance of DNS context.
@@ -46,7 +48,7 @@ public class DNSContextFactory implements InitialContextFactory {
      * @return new instance of <code>DNSContext</code>
      * @see javax.naming.spi.InitialContextFactory#getInitialContext(java.util.Hashtable)
      */
-    public Context getInitialContext(Hashtable env) throws NamingException {
+    public Context getInitialContext(Hashtable<?, ?> env) throws NamingException {
         return new DNSContext(env);
     }
 

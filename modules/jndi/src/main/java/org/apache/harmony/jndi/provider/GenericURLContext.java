@@ -23,16 +23,17 @@ package org.apache.harmony.jndi.provider;
 
 import java.util.Hashtable;
 
+import javax.naming.Binding;
 import javax.naming.CannotProceedException;
 import javax.naming.CompositeName;
 import javax.naming.Context;
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
+import javax.naming.NameClassPair;
 import javax.naming.NameParser;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.OperationNotSupportedException;
-
 import javax.naming.spi.NamingManager;
 import javax.naming.spi.ResolveResult;
 
@@ -53,7 +54,7 @@ public abstract class GenericURLContext implements Context {
     /**
      * Local environment.
      */
-    protected Hashtable environment;
+    protected Hashtable<Object, Object> environment;
 
     /**
      * Creates instance of this context with empty environment.
@@ -68,10 +69,14 @@ public abstract class GenericURLContext implements Context {
      * @param   environment
      *          Environment to copy.
      */
-    protected GenericURLContext(Hashtable environment) {
-        this.environment = ((environment != null)
-                ? (Hashtable) environment.clone()
-                : new Hashtable());
+    @SuppressWarnings("unchecked")
+    protected GenericURLContext(Hashtable<?, ?> environment) {
+        super();
+        if (environment == null) {
+            this.environment = new Hashtable<Object, Object>();
+        } else {
+            this.environment = (Hashtable<Object, Object>) environment.clone();
+        }
     }
 
     /**
@@ -85,14 +90,12 @@ public abstract class GenericURLContext implements Context {
 
         if (name.size() == 1) {
             return lookup(name.get(0));
-        } else {
-            Context context = getContinuationContext(name);
-
-            try {
-                return context.lookup(name.getSuffix(1));
-            } finally {
-                context.close();
-            }
+        }
+        Context context = getContinuationContext(name);
+        try {
+            return context.lookup(name.getSuffix(1));
+        } finally {
+            context.close();
         }
     }
 
@@ -121,14 +124,12 @@ public abstract class GenericURLContext implements Context {
 
         if (name.size() == 1) {
             return lookupLink(name.get(0));
-        } else {
-            Context context = getContinuationContext(name);
-
-            try {
-                return context.lookupLink(name.getSuffix(1));
-            } finally {
-                context.close();
-            }
+        }
+        Context context = getContinuationContext(name);
+        try {
+            return context.lookupLink(name.getSuffix(1));
+        } finally {
+            context.close();
         }
     }
 
@@ -265,14 +266,12 @@ public abstract class GenericURLContext implements Context {
 
         if (name.size() == 1) {
             return createSubcontext(name.get(0));
-        } else {
-            Context context = getContinuationContext(name);
-
-            try {
-                return context.createSubcontext(name.getSuffix(1));
-            } finally {
-                context.close();
-            }
+        }
+        Context context = getContinuationContext(name);
+        try {
+            return context.createSubcontext(name.getSuffix(1));
+        } finally {
+            context.close();
         }
     }
 
@@ -399,7 +398,7 @@ public abstract class GenericURLContext implements Context {
     /**
      * {@inheritDoc}
      */
-    public NamingEnumeration list(Name name) throws NamingException {
+    public NamingEnumeration<NameClassPair> list(Name name) throws NamingException {
         if (!(name instanceof CompositeName)) {
             throw new InvalidNameException(
                     "URL context can't accept non-composite name: " + name);
@@ -407,21 +406,20 @@ public abstract class GenericURLContext implements Context {
 
         if (name.size() == 1) {
             return list(name.get(0));
-        } else {
-            Context context = getContinuationContext(name);
+        }
+        Context context = getContinuationContext(name);
 
-            try {
-                return context.list(name.getSuffix(1));
-            } finally {
-                context.close();
-            }
+        try {
+            return context.list(name.getSuffix(1));
+        } finally {
+            context.close();
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public NamingEnumeration list(String name) throws NamingException {
+    public NamingEnumeration<NameClassPair> list(String name) throws NamingException {
         ResolveResult result = getRootURLContext(name, environment);
         Context context = (Context) result.getResolvedObj();
 
@@ -435,7 +433,7 @@ public abstract class GenericURLContext implements Context {
     /**
      * {@inheritDoc}
      */
-    public NamingEnumeration listBindings(Name name) throws NamingException {
+    public NamingEnumeration<Binding> listBindings(Name name) throws NamingException {
         if (!(name instanceof CompositeName)) {
             throw new InvalidNameException(
                     "URL context can't accept non-composite name: " + name);
@@ -443,21 +441,20 @@ public abstract class GenericURLContext implements Context {
 
         if (name.size() == 1) {
             return listBindings(name.get(0));
-        } else {
-            Context context = getContinuationContext(name);
+        }
+        Context context = getContinuationContext(name);
 
-            try {
-                return context.listBindings(name.getSuffix(1));
-            } finally {
-                context.close();
-            }
+        try {
+            return context.listBindings(name.getSuffix(1));
+        } finally {
+            context.close();
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public NamingEnumeration listBindings(String name) throws NamingException {
+    public NamingEnumeration<Binding> listBindings(String name) throws NamingException {
         ResolveResult result = getRootURLContext(name, environment);
         Context context = (Context) result.getResolvedObj();
 
@@ -479,14 +476,12 @@ public abstract class GenericURLContext implements Context {
 
         if (name.size() == 1) {
             return getNameParser(name.get(0));
-        } else {
-            Context context = getContinuationContext(name);
-
-            try {
-                return context.getNameParser(name.getSuffix(1));
-            } finally {
-                context.close();
-            }
+        }
+        Context context = getContinuationContext(name);
+        try {
+            return context.getNameParser(name.getSuffix(1));
+        } finally {
+            context.close();
         }
     }
 
@@ -530,8 +525,8 @@ public abstract class GenericURLContext implements Context {
     /**
      * {@inheritDoc}
      */
-    public Hashtable getEnvironment() {
-        return (Hashtable) environment.clone();
+    public Hashtable<?, ?> getEnvironment() {
+        return (Hashtable<?, ?>) environment.clone();
     }
 
     /**
@@ -630,7 +625,7 @@ public abstract class GenericURLContext implements Context {
      *          If some naming error occurs.
      */
     protected abstract ResolveResult getRootURLContext(
-            String url, Hashtable environment) throws NamingException;
+            String url, Hashtable<?, ?> environment) throws NamingException;
 
     /**
      * Compares two URLs for equality.

@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -85,7 +84,7 @@ public class TransportMgr {
         }
         try {
             dSocket = new DatagramSocket();
-            srvAddr = Inet4Address.getByAddress(srvAddrArr);
+            srvAddr = InetAddress.getByAddress(srvAddrArr);
             dSocket.connect(srvAddr, serverPort);
             outPacket = new DatagramPacket(
                     outBuf, outBufLen, srvAddr, serverPort);
@@ -108,9 +107,8 @@ public class TransportMgr {
         }
         if (inPacket != null) {
             return inPacket.getLength();
-        } else {
-            throw new DomainProtocolException("unknown error");
         }
+        throw new DomainProtocolException("unknown error");
     }
 
     /**
@@ -160,7 +158,7 @@ public class TransportMgr {
                     "Unable to connect: bad IP address");
         }
         try {
-            srvAddr = Inet4Address.getByAddress(srvAddrArr);
+            srvAddr = InetAddress.getByAddress(srvAddrArr);
             socket = new Socket(srvAddr, serverPort);
             socket.setSoTimeout(timeout);
             oStream = new BufferedOutputStream(socket.getOutputStream());
@@ -207,7 +205,7 @@ public class TransportMgr {
         InetAddress addr = null;
 
         try {
-            addr = Inet4Address.getByName(hostname);
+            addr = InetAddress.getByName(hostname);
         } catch (UnknownHostException e) {
             // ignore it
         }

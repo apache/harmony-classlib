@@ -51,7 +51,9 @@ public abstract class GenericURLDirContextFactory
     /**
      * Default constructor for subclasses.
      */
-    protected GenericURLDirContextFactory() {}
+    protected GenericURLDirContextFactory() {
+        super();
+    }
 
     /**
      * Lookups the specified object in the underlying context.
@@ -105,7 +107,7 @@ public abstract class GenericURLDirContextFactory
      *          If lookup attempt failed.
      */
     public Object getObjectInstance(Object obj, Name name, Context nameCtx,
-            Hashtable environment, Attributes attrs) throws Exception {
+            Hashtable<?, ?> environment, Attributes attrs) throws Exception {
         return getObjectInstance(obj, name, nameCtx, environment);
     }
 
@@ -114,7 +116,8 @@ public abstract class GenericURLDirContextFactory
      *
      * This implementation just calls {@link #createURLDirContext(Hashtable)}.
      */
-    protected final Context createURLContext(Hashtable environment) {
+    @Override
+    protected final Context createURLContext(Hashtable<?, ?> environment) {
         return createURLDirContext(environment);
     }
 
@@ -130,5 +133,5 @@ public abstract class GenericURLDirContextFactory
      *
      * @return  New context instance.
      */
-    protected abstract DirContext createURLDirContext(Hashtable environment);
+    protected abstract DirContext createURLDirContext(Hashtable<?, ?> environment);
 }

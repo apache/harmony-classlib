@@ -36,14 +36,14 @@ import java.util.Vector;
 class ResolverCache {
 
     /** keys - zone & host names; values - vectors with RRs */
-    Hashtable names = new Hashtable();
+    Hashtable<String, Vector<CacheEntry>> names = new Hashtable<String, Vector<CacheEntry>>();
 
     /** 
      * Since <code>ResolverCache</code> is singleton class its constructor
      *  should be hidden.
      */
     private ResolverCache() {
-        names = new Hashtable();
+        names = new Hashtable<String, Vector<CacheEntry>>();
     }
 
     private static ResolverCache instance = null;
@@ -65,17 +65,17 @@ class ResolverCache {
      *  to get from the cache
      * @return Enumeration of found Resource Records.
      */
-    synchronized Enumeration get(QuestionRecord question)
+    synchronized Enumeration<ResourceRecord> get(QuestionRecord question)
     {
         String name = question.getQName().toLowerCase();
-        Vector vect = (Vector) names.get(name);
+        Vector<CacheEntry> vect = names.get(name);
         int qClass = question.getQClass();
         int qType = question.getQType();
-        Vector resVect = new Vector();
+        Vector<ResourceRecord> resVect = new Vector<ResourceRecord>();
 
         if (vect != null) {
             for (int i = 0; i < vect.size(); i++) {
-                CacheEntry curEntry = (CacheEntry) vect.elementAt(i);
+                CacheEntry curEntry = vect.elementAt(i);
                 ResourceRecord curRR = curEntry.getRR();
 
                 if (curEntry.getBestBefore() < System.currentTimeMillis()) {
@@ -105,12 +105,12 @@ class ResolverCache {
     synchronized void put(ResourceRecord record)
     {
         String name = record.getName().toLowerCase();
-        Vector vect = (Vector) names.get(name);
+        Vector<CacheEntry> vect = names.get(name);
         long curTime = System.currentTimeMillis();
         CacheEntry entry = null;
 
         if (vect == null) {
-            vect = new Vector();
+            vect = new Vector<CacheEntry>();
             names.put(name, vect);
         }
         // TTL should be between 0 and 2^31; if greater - should be set to 0
@@ -123,7 +123,7 @@ class ResolverCache {
             entry = new CacheEntry(record, curTime + record.getTtl());
             // remove old occurence if any
             for (int i = 0; i < vect.size(); i++) {
-                CacheEntry exEntry = (CacheEntry) vect.elementAt(i);
+                CacheEntry exEntry = vect.elementAt(i);
                 ResourceRecord exRec = exEntry.rr;
 
                 if (ProviderMgr.namesAreEqual(record.getName(), exRec.getName())
@@ -145,7 +145,7 @@ class ResolverCache {
      * Removes all cached entries.
      */
     synchronized void clear() {
-        names = new Hashtable();
+        names = new Hashtable<String, Vector<CacheEntry>>();
     }
 
     // additional class

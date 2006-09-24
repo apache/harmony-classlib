@@ -40,7 +40,9 @@ public class rmiURLContextFactory extends GenericURLContextFactory {
     /**
      * Default constructor.
      */
-    public rmiURLContextFactory() {}
+    public rmiURLContextFactory() {
+        super();
+    }
 
     /**
      * Returns new {@link rmiURLContext}. Used by
@@ -51,7 +53,8 @@ public class rmiURLContextFactory extends GenericURLContextFactory {
      *
      * @return  New {@link rmiURLContext}.
      */
-    protected Context createURLContext(Hashtable environment) {
+    @Override
+    protected Context createURLContext(Hashtable<?, ?> environment) {
         return new rmiURLContext(environment);
     }
 }

@@ -102,6 +102,7 @@ public class DNSNameParser implements NameParser {
      * @return <code>true</code> if and only if the given object is instance of
      * class <code>DNSParser</code>; otherwise returns <code>false</code>.
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj != null && obj instanceof DNSNameParser) {
             return true;

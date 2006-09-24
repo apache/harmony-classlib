@@ -41,13 +41,14 @@ public class DNSName implements Name, Cloneable {
 
     private static final long serialVersionUID = -5931312723719884197L;
     
-    Vector components = null;
+    private Vector<String> components;
     
     /**
      * Constructs an empty DNS name.
      */
     public DNSName() {
-        components = new Vector();
+        super();
+        components = new Vector<String>();
     }
 
     /**
@@ -55,7 +56,7 @@ public class DNSName implements Name, Cloneable {
      * 
      * @param compVect the vector of name components
      */
-    DNSName(Vector compVect) {
+    DNSName(Vector<String> compVect) {
         components = compVect;
     }
 
@@ -81,7 +82,7 @@ public class DNSName implements Name, Cloneable {
      */
     public boolean isAbsolute() {
         if (components.size() > 0) {
-            String el0 = (String) components.get(0);
+            String el0 = components.get(0);
 
             if (el0 != null && el0.length() == 0) {
                 return true;
@@ -94,9 +95,10 @@ public class DNSName implements Name, Cloneable {
      * Returns clone of the current name.
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
-        Vector compClone = new Vector();
-        Enumeration compEnum = this.components.elements();
+        Vector<String> compClone = new Vector<String>();
+        Enumeration<String> compEnum = this.components.elements();
 
         while (compEnum.hasMoreElements()) {
             compClone.addElement(compEnum.nextElement());
@@ -133,8 +135,8 @@ public class DNSName implements Name, Cloneable {
      */
     public int compareTo(Object name) {
         DNSName nameToCompareWith = null;
-        Enumeration enum1;
-        Enumeration enum2;
+        Enumeration<String> enum1;
+        Enumeration<String> enum2;
 
         if (name == null) {
             throw new NullPointerException("The name is null");
@@ -147,14 +149,14 @@ public class DNSName implements Name, Cloneable {
         enum1 = this.getAll();
         enum2 = nameToCompareWith.getAll();
         while (enum1.hasMoreElements()) {
-            String comp1 = (String) enum1.nextElement();
+            String comp1 = enum1.nextElement();
             String comp2;
             int k;
 
             if (!enum2.hasMoreElements()) {
                 return 1;
             }
-            comp2 = (String) enum2.nextElement();
+            comp2 = enum2.nextElement();
             k = comp1.compareToIgnoreCase(comp2);
             if (k != 0) {
                 return k;
@@ -174,7 +176,7 @@ public class DNSName implements Name, Cloneable {
      * @see javax.naming.Name#get(int)
      */
     public String get(int posn) {
-        return (String) components.elementAt(posn); 
+        return components.elementAt(posn); 
     }
 
     /**
@@ -182,7 +184,7 @@ public class DNSName implements Name, Cloneable {
      * @return enumeration of strings
      * @see javax.naming.Name#getAll()
      */
-    public Enumeration getAll() {
+    public Enumeration<String> getAll() {
         return components.elements();
     }
 
@@ -196,7 +198,7 @@ public class DNSName implements Name, Cloneable {
      * @see javax.naming.Name#getPrefix(int)
      */
     public Name getPrefix(int posn) {
-        Vector prefix = new Vector();
+        Vector<String> prefix = new Vector<String>();
 
         for (int i = 0; i < posn; i++) {
             prefix.addElement(components.elementAt(i));
@@ -214,7 +216,7 @@ public class DNSName implements Name, Cloneable {
      * @see javax.naming.Name#getSuffix(int)
      */
     public Name getSuffix(int posn) {
-        Vector prefix = new Vector();
+        Vector<String> prefix = new Vector<String>();
 
         for (int i = posn; i < components.size(); i++) {
             prefix.addElement(components.elementAt(i));
@@ -344,7 +346,7 @@ public class DNSName implements Name, Cloneable {
      * @see javax.naming.Name#addAll(int, javax.naming.Name)
      */
     public Name addAll(int posn, Name name) throws InvalidNameException {
-        Vector newComps;
+        Vector<String> newComps;
 
         if (!(name instanceof DNSName)) {
             throw new InvalidNameException("Given name is not an instance of " +
@@ -364,7 +366,7 @@ public class DNSName implements Name, Cloneable {
      * @see javax.naming.Name#addAll(javax.naming.Name)
      */
     public Name addAll(Name name) throws InvalidNameException {
-        Vector newComps;
+        Vector<String> newComps;
 
         if (!(name instanceof DNSName)) {
             throw new InvalidNameException("Given name is not an instance of " +
@@ -379,12 +381,13 @@ public class DNSName implements Name, Cloneable {
      * Returns the string representation of this DNS name.
      * @return DNS name in string form
      */
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
 
         
         for (int i = components.size() - 1; i >= 0; i--) {
-            String comp = (String) components.elementAt(i);
+            String comp = components.elementAt(i);
             if (sb.length() > 0 || i == 0) {
                 sb.append('.');
             }

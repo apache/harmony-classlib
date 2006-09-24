@@ -33,7 +33,6 @@ import javax.naming.NotContextException;
 import javax.naming.RefAddr;
 import javax.naming.Reference;
 import javax.naming.StringRefAddr;
-
 import javax.naming.spi.InitialContextFactory;
 import javax.naming.spi.ObjectFactory;
 
@@ -57,7 +56,7 @@ public class RegistryContextFactory
     /**
      * {@inheritDoc}
      */
-    public Context getInitialContext(Hashtable environment)
+    public Context getInitialContext(Hashtable<?, ?> environment)
             throws NamingException {
         String url = null;
 
@@ -74,17 +73,16 @@ public class RegistryContextFactory
 
         if (obj instanceof Context) {
             return (Context) obj;
-        } else {
-            throw new NotContextException("Object instantiated using the "
-                    + "URL specified in environment is not a context: " + url);
         }
+        throw new NotContextException("Object instantiated using the "
+                + "URL specified in environment is not a context: " + url);
     }
 
     /**
      * {@inheritDoc}
      */
     public Object getObjectInstance(Object obj, Name name, Context nameCtx,
-            Hashtable environment) throws Exception {
+            Hashtable<?, ?> environment) throws Exception {
         if (!(obj instanceof Reference)) {
             return null;
         }
@@ -99,10 +97,10 @@ public class RegistryContextFactory
         if (size < 1) {
             throw new ConfigurationException("Reference is empty");
         }
-        Vector urls = new Vector(size);
+        Vector<Object> urls = new Vector<Object>(size);
 
-        for (Enumeration e = reference.getAll(); e.hasMoreElements(); ) {
-            RefAddr refAddr = (RefAddr) e.nextElement();
+        for (Enumeration<RefAddr> e = reference.getAll(); e.hasMoreElements(); ) {
+            RefAddr refAddr = e.nextElement();
 
             if ((refAddr instanceof StringRefAddr)
                     && refAddr.getType().equals(RegistryContext.ADDRESS_TYPE)) {

@@ -29,6 +29,7 @@ import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -42,24 +43,11 @@ import javax.naming.ldap.LdapContext;
  * 
  */
 public final class EnvironmentReader {
-
-    /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
-     */
-
     // The name of application resource files
     private static final String APPLICATION_RESOURCE_FILE = "jndi.properties"; //$NON-NLS-1$
 
     // The name of provider resource file
     private static final String PROVIDER_RESOURCE_FILE = "jndiprovider.properties"; //$NON-NLS-1$
-
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
 
     // Not allowed to create an instance
     private EnvironmentReader() {
@@ -74,13 +62,13 @@ public final class EnvironmentReader {
      * @param valueAddToList - whether to add new values of C-type properties
      */
     public static void mergeEnvironment(
-        final Hashtable src,
-        final Hashtable dst,
+        final Hashtable<?, ?> src,
+        final Hashtable<Object, Object> dst,
         final boolean valueAddToList) {
 
         Object key = null;
         String val = null;
-        Enumeration keys = src.keys();
+        Enumeration<?> keys = src.keys();
 
         while (keys.hasMoreElements()) {
             key = keys.nextElement();
@@ -102,9 +90,9 @@ public final class EnvironmentReader {
                  */
 
                 // Read the original value
-                val = (String) dst.get(key);
+                val = (String)dst.get(key);
                 // Values are combined into a single list separated by colons. 
-                val = val + ":" + (String) src.get(key); //$NON-NLS-1$
+                val = val + ":" + src.get(key); //$NON-NLS-1$
                 // The final value becomes the resulting value of that property
                 dst.put(key, val);
             } else {
@@ -122,9 +110,9 @@ public final class EnvironmentReader {
      * 
      * @return a hashtable holding the required properties.
      */
-    static Hashtable filterProperties(final JNDIPropertiesSource source) {
-        final Hashtable filteredProperties = new Hashtable();
-        Object propValue = null;
+    static Hashtable<Object, Object> filterProperties(final JNDIPropertiesSource source) {
+        final Hashtable<Object, Object> filteredProperties = new Hashtable<Object, Object>();
+        String propValue = null;
 
         propValue = source.getProperty(Context.INITIAL_CONTEXT_FACTORY);
         if (null != propValue) {
@@ -171,18 +159,18 @@ public final class EnvironmentReader {
      * 
      * @param existingProps - existing properties
      */
-    public static void readSystemProperties(final Hashtable existingProps) {
+    public static void readSystemProperties(final Hashtable<Object, Object> existingProps) {
         /*
          * Privileged code is used to access system properties. This is 
          * required if JNDI is run in Applet or other applications which 
          * only have limited permissions to access certain resources.
          */
-        Hashtable systemProperties =
-            (Hashtable) AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
-                return filterProperties(new SystemPropertiesSource());
-            }
-        });
+        Hashtable<Object, Object> systemProperties = AccessController
+                .doPrivileged(new PrivilegedAction<Hashtable<Object, Object>>() {
+                    public Hashtable<Object, Object> run() {
+                        return filterProperties(new SystemPropertiesSource());
+                    }
+                });
         mergeEnvironment(systemProperties, existingProps, false);
     }
 
@@ -194,9 +182,9 @@ public final class EnvironmentReader {
      * @param applet - the applet object
      * @param existingProps - existing properties
      */
-    public static void readAppletParameters(Object applet, Hashtable existingProps) {
+    public static void readAppletParameters(Object applet, Hashtable<Object, Object> existingProps) {
         if (null != applet) {
-            Hashtable appletParameters =
+            Hashtable<Object, Object> appletParameters =
                 filterProperties(new AppletParametersSource((Applet) applet));
             mergeEnvironment(appletParameters, existingProps, false);
         }
@@ -211,9 +199,9 @@ public final class EnvironmentReader {
      * @param existingProps - existing properties, cannot be null
      * @param filter - to filter properties
      */
-    static Hashtable readMultipleResourceFiles(
+    static Hashtable<Object, Object> readMultipleResourceFiles(
         final String name,
-        final Hashtable existingProps,
+        final Hashtable<Object, Object> existingProps,
         ClassLoader cl)
         throws NamingException {
 
@@ -221,7 +209,7 @@ public final class EnvironmentReader {
             cl = ClassLoader.getSystemClassLoader();
         }
 
-        Enumeration e = null;
+        Enumeration<URL> e = null;
         try {
             // Load all resource files
             e = cl.getResources(name);
@@ -238,7 +226,7 @@ public final class EnvironmentReader {
         InputStream is = null;
         final Properties p = new Properties();
         while (e.hasMoreElements()) {
-            url = (URL) e.nextElement();
+            url = e.nextElement();
             try {
                 if (null != (is = url.openStream())) {
                     p.load(is);
@@ -271,12 +259,12 @@ public final class EnvironmentReader {
      * 
      * @param existingProps - existing properties, cannot be null.
      */
-    public static Hashtable readApplicationResourceFiles(final Hashtable existingProps)
+    public static Hashtable<Object, Object> readApplicationResourceFiles(final Hashtable<Object, Object> existingProps)
         throws NamingException {
         // Use privileged code to read the application resource files
         try {
-            AccessController.doPrivileged(new PrivilegedExceptionAction() {
-                public Object run() throws NamingException {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                public Void run() throws NamingException {
                     readMultipleResourceFiles(
                         APPLICATION_RESOURCE_FILE,
                         existingProps,
@@ -305,7 +293,7 @@ public final class EnvironmentReader {
      * 
      * @param existingProps - existing properties, cannot be null.
      */
-    public static Hashtable readLibraryResourceFile(final Hashtable existingProps)
+    public static Hashtable<Object, Object> readLibraryResourceFile(final Hashtable<Object, Object> existingProps)
         throws NamingException {
         final String sep = System.getProperty("file.separator"); //$NON-NLS-1$
 
@@ -322,25 +310,22 @@ public final class EnvironmentReader {
         final File resFile = new File(resPath);
         final Properties p = new Properties();
         // Use privileged code to determine whether the file exists
-        Boolean resFileExists =
-            (Boolean) AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
-                return new Boolean(resFile.exists());
+        boolean resFileExists = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            public Boolean run() {
+                return Boolean.valueOf(resFile.exists());
             }
-        });
-        if (resFileExists.booleanValue()) {
+        }).booleanValue();
+        if (resFileExists) {
             try {
                 // Use privileged code to read the file
-                is =
-                    (
-                        FileInputStream) AccessController
-                            .doPrivileged(new PrivilegedExceptionAction() {
-                    public Object run() throws IOException {
-                        InputStream localInputStream = new FileInputStream(resFile);
-                        p.load(localInputStream);
-                        return localInputStream;
-                    }
-                });
+                is = AccessController
+                        .doPrivileged(new PrivilegedExceptionAction<FileInputStream>() {
+                            public FileInputStream run() throws IOException {
+                                FileInputStream localInputStream = new FileInputStream(resFile);
+                                p.load(localInputStream);
+                                return localInputStream;
+                            }
+                        });
                 mergeEnvironment(p, existingProps, true);
             } catch (PrivilegedActionException e) {
                 // Can't read "java.home"/lib/jndi.properties
@@ -367,9 +352,9 @@ public final class EnvironmentReader {
      * @param context - the context
      * @param existingProps - existing properties, cannot be null.
      */
-    public static Hashtable readProviderResourceFiles(
+    public static Hashtable<Object, Object> readProviderResourceFiles(
         final Context context,
-        final Hashtable existingProps)
+        final Hashtable<Object, Object> existingProps)
         throws NamingException {
 
         String factory = context.getClass().getName();
@@ -390,8 +375,8 @@ public final class EnvironmentReader {
         // Use privileged code to read the provider resource files
         try {
             final String finalResPath = resPath;
-            AccessController.doPrivileged(new PrivilegedExceptionAction() {
-                public Object run() throws NamingException {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
+                public String run() throws NamingException {
                     readMultipleResourceFiles(
                         finalResPath,
                         existingProps,
@@ -407,6 +392,7 @@ public final class EnvironmentReader {
                 throw (RuntimeException) rootCause;
             } else {
                 // This should not happen.
+                throw new AssertionError(rootCause);
             }
         }
         return existingProps;
@@ -424,16 +410,16 @@ public final class EnvironmentReader {
      * resource files.
      */
     public static String[] getFactoryNamesFromEnvironmentAndProviderResource(
-        Hashtable envmt,
+        Hashtable<?, ?> envmt,
         Context ctx,
         String key)
         throws NamingException {
 
-        ArrayList fnames = new ArrayList();
+        List<String> fnames = new ArrayList<String>();
 
         // collect tokens from envmt with key
         if (null != envmt) {
-            String str = (String) envmt.get(key);
+            String str = (String)envmt.get(key);
             if (null != str) {
                 StringTokenizer st = new StringTokenizer(str, ":"); //$NON-NLS-1$
                 while (st.hasMoreTokens()) {
@@ -443,10 +429,10 @@ public final class EnvironmentReader {
         }
         // collect tokens from ctx's provider resource file
         if (null != ctx) {
-            Hashtable h = new Hashtable();
+            Hashtable<Object, Object> h = new Hashtable<Object, Object>();
             // read provider resource file from ctx's package
             EnvironmentReader.readProviderResourceFiles(ctx, h);
-            String str = (String) h.get(key);
+            String str = (String)h.get(key);
             if (null != str) {
                 StringTokenizer st = new StringTokenizer(str, ":"); //$NON-NLS-1$
                 while (st.hasMoreTokens()) {
@@ -459,7 +445,7 @@ public final class EnvironmentReader {
             fnames.add("com.sun.jndi.url"); //$NON-NLS-1$
         }
         // return factory names
-        return (String[]) fnames.toArray(new String[fnames.size()]);
+        return fnames.toArray(new String[fnames.size()]);
     }
 
     /*
@@ -467,7 +453,7 @@ public final class EnvironmentReader {
      */
     private interface JNDIPropertiesSource {
         // Get a JNDI property with the specified name
-        Object getProperty(final String propName);
+        String getProperty(final String propName);
     }
 
     /*
@@ -479,7 +465,7 @@ public final class EnvironmentReader {
         	super();
         }
 
-        public Object getProperty(final String propName) {
+        public String getProperty(final String propName) {
             return System.getProperty(propName);
         }
     }
@@ -495,11 +481,9 @@ public final class EnvironmentReader {
             this.applet = applet;
         }
 
-        public Object getProperty(final String propName) {
+        public String getProperty(final String propName) {
             return applet.getParameter(propName);
         }
     }
 
 }
-
-

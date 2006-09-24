@@ -135,6 +135,7 @@ public class ModificationItem implements Serializable {
      * @return 				a concatenation of string values for the operation 
      * 						and the attribute
      */
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
         switch (mod_op) {

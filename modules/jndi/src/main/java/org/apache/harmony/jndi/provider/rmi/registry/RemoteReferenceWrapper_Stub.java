@@ -27,7 +27,7 @@
  */
 package org.apache.harmony.jndi.provider.rmi.registry;
 
-
+@SuppressWarnings("deprecation")
 public final class RemoteReferenceWrapper_Stub extends java.rmi.server.RemoteStub
         implements org.apache.harmony.jndi.provider.rmi.registry.RemoteReference, java.rmi.Remote {
 
@@ -70,26 +70,25 @@ public final class RemoteReferenceWrapper_Stub extends java.rmi.server.RemoteStu
             if (useNewInvoke) {
                 java.lang.Object $result = ref.invoke(this, $method_getReference_0, null, 3529874867989176284L);
                 return ((javax.naming.Reference) $result);
-            } else {
-                java.rmi.server.RemoteCall call = ref.newCall((java.rmi.server.RemoteObject) this, operations, 0, interfaceHash);
-
-                ref.invoke(call);
-
-                javax.naming.Reference $result;
-
-                try {
-                    java.io.ObjectInput in = call.getInputStream();
-                    $result = (javax.naming.Reference) in.readObject();
-                } catch (java.io.IOException e) {
-                    throw new java.rmi.UnmarshalException("Error unmarshalling return value", e);
-                } catch (java.lang.ClassNotFoundException e) {
-                    throw new java.rmi.UnmarshalException("Error unmarshalling return value", e);
-                } finally {
-                    ref.done(call);
-                }
-
-                return $result;
             }
+            java.rmi.server.RemoteCall call = ref.newCall(this, operations, 0, interfaceHash);
+
+            ref.invoke(call);
+
+            javax.naming.Reference $result;
+
+            try {
+                java.io.ObjectInput in = call.getInputStream();
+                $result = (javax.naming.Reference) in.readObject();
+            } catch (java.io.IOException e) {
+                throw new java.rmi.UnmarshalException("Error unmarshalling return value", e);
+            } catch (java.lang.ClassNotFoundException e) {
+                throw new java.rmi.UnmarshalException("Error unmarshalling return value", e);
+            } finally {
+                ref.done(call);
+            }
+
+            return $result;
         } catch (java.lang.RuntimeException e) {
             throw e;
         } catch (java.rmi.RemoteException e) {

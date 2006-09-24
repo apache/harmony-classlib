@@ -214,6 +214,7 @@ public class SearchResult extends Binding {
      * 
      * @return 				string representation of this search result
      */
+    @Override
     public String toString() {
         return new StringBuffer(super.toString())
             .append(":") //$NON-NLS-1$

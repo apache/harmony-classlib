@@ -54,7 +54,7 @@ public class rmiURLContext extends GenericURLContext {
      * @param   environment
      *          Environment to copy.
      */
-    public rmiURLContext(Hashtable environment) {
+    public rmiURLContext(Hashtable<?, ?> environment) {
         super(environment);
     }
 
@@ -75,8 +75,9 @@ public class rmiURLContext extends GenericURLContext {
      * @throws  NamingException
      *          If some naming error occurs.
      */
+    @Override
     protected ResolveResult getRootURLContext(
-            String url, Hashtable environment) throws NamingException {
+            String url, Hashtable<?, ?> environment) throws NamingException {
         if (!url.startsWith(RegistryContext.RMI_URL_PREFIX)) {
             throw new IllegalArgumentException(
                     "Not an RMI URL, incorrect prefix: " + url);

@@ -35,19 +35,14 @@ import java.rmi.ServerException;
 import java.rmi.StubNotFoundException;
 import java.rmi.UnknownHostException;
 import java.rmi.UnmarshalException;
-
 import java.rmi.activation.ActivateFailedException;
-
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-
 import java.rmi.server.ExportException;
 import java.rmi.server.RMIClientSocketFactory;
-import java.rmi.server.SkeletonMismatchException;
-import java.rmi.server.SkeletonNotFoundException;
-
 import java.util.Hashtable;
 
+import javax.naming.Binding;
 import javax.naming.CommunicationException;
 import javax.naming.CompositeName;
 import javax.naming.ConfigurationException;
@@ -55,6 +50,7 @@ import javax.naming.Context;
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
 import javax.naming.NameAlreadyBoundException;
+import javax.naming.NameClassPair;
 import javax.naming.NameNotFoundException;
 import javax.naming.NameParser;
 import javax.naming.NamingEnumeration;
@@ -66,7 +62,6 @@ import javax.naming.Reference;
 import javax.naming.Referenceable;
 import javax.naming.ServiceUnavailableException;
 import javax.naming.StringRefAddr;
-
 import javax.naming.spi.NamingManager;
 
 
@@ -125,7 +120,7 @@ public class RegistryContext implements Context, Referenceable {
     /**
      * Local environment.
      */
-    protected Hashtable environment;
+    protected Hashtable<Object, Object> environment;
 
     /**
      * RMI Registry.
@@ -156,14 +151,15 @@ public class RegistryContext implements Context, Referenceable {
      * @throws  NamingException
      *          If some naming error occurs.
      */
-    public RegistryContext(String host, int port, Hashtable environment)
+    @SuppressWarnings("unchecked")
+    public RegistryContext(String host, int port, Hashtable<?, ?> environment)
             throws NamingException {
         this.host = host;
         this.port = port;
 
         this.environment = ((environment != null)
-                ? (Hashtable) environment.clone()
-                : new Hashtable());
+                ? (Hashtable<Object, Object>) environment.clone()
+                : new Hashtable<Object, Object>());
 
         if (this.environment.get(SECURITY_MANAGER) != null) {
             installSecurityManager();
@@ -203,11 +199,12 @@ public class RegistryContext implements Context, Referenceable {
      * @param   context
      *          Context to copy.
      */
+    @SuppressWarnings("unchecked")
     protected RegistryContext(RegistryContext context) {
         host = context.host;
         port = context.port;
         csf = context.csf;
-        environment = (Hashtable) context.environment.clone();
+        environment = (Hashtable<Object, Object>) context.environment.clone();
         registry = context.registry;
         reference = context.reference;
     }
@@ -376,7 +373,7 @@ public class RegistryContext implements Context, Referenceable {
     /**
      * {@inheritDoc}
      */
-    public NamingEnumeration list(Name name) throws NamingException {
+    public NamingEnumeration<NameClassPair> list(Name name) throws NamingException {
         if (name.isEmpty()) {
             try {
                 return new NameClassPairEnumeration(registry.list());
@@ -384,32 +381,31 @@ public class RegistryContext implements Context, Referenceable {
                 throw (NamingException)
                         newNamingException(e).fillInStackTrace();
             }
-        } else {
-            Object obj = lookup(name);
-
-            if (obj instanceof Context) {
-                try {
-                    return ((Context) obj).list("");
-                } finally {
-                    ((Context) obj).close();
-                }
-            }
-            throw new NotContextException(
-                    "Name specifies an object that is not a context: " + name);
         }
+        Object obj = lookup(name);
+
+        if (obj instanceof Context) {
+            try {
+                return ((Context) obj).list("");
+            } finally {
+                ((Context) obj).close();
+            }
+        }
+        throw new NotContextException(
+                "Name specifies an object that is not a context: " + name);
     }
 
     /**
      * {@inheritDoc}
      */
-    public NamingEnumeration list(String name) throws NamingException {
+    public NamingEnumeration<NameClassPair> list(String name) throws NamingException {
         return list(new CompositeName(name));
     }
 
     /**
      * {@inheritDoc}
      */
-    public NamingEnumeration listBindings(Name name) throws NamingException {
+    public NamingEnumeration<Binding> listBindings(Name name) throws NamingException {
         if (name.isEmpty()) {
             try {
                 return new BindingEnumeration(registry.list(), this);
@@ -417,25 +413,24 @@ public class RegistryContext implements Context, Referenceable {
                 throw (NamingException)
                         newNamingException(e).fillInStackTrace();
             }
-        } else {
-            Object obj = lookup(name);
-
-            if (obj instanceof Context) {
-                try {
-                    return ((Context) obj).listBindings("");
-                } finally {
-                    ((Context) obj).close();
-                }
-            }
-            throw new NotContextException(
-                    "Name specifies an object that is not a context: " + name);
         }
+        Object obj = lookup(name);
+
+        if (obj instanceof Context) {
+            try {
+                return ((Context) obj).listBindings("");
+            } finally {
+                ((Context) obj).close();
+            }
+        }
+        throw new NotContextException(
+                "Name specifies an object that is not a context: " + name);
     }
 
     /**
      * {@inheritDoc}
      */
-    public NamingEnumeration listBindings(String name) throws NamingException {
+    public NamingEnumeration<Binding> listBindings(String name) throws NamingException {
         return listBindings(new CompositeName(name));
     }
 
@@ -479,8 +474,8 @@ public class RegistryContext implements Context, Referenceable {
     /**
      * {@inheritDoc}
      */
-    public Hashtable getEnvironment() {
-        return (Hashtable) environment.clone();
+    public Hashtable<?, ?> getEnvironment() {
+        return (Hashtable<?, ?>) environment.clone();
     }
 
     /**
@@ -565,9 +560,8 @@ public class RegistryContext implements Context, Referenceable {
     protected String getMyComponents(Name name) {
         if (name instanceof CompositeName) {
             return name.get(0);
-        } else {
-            return name.toString();
         }
+        return name.toString();
     }
 
     /**
@@ -681,6 +675,7 @@ public class RegistryContext implements Context, Referenceable {
      *
      * @return  Generated {@link NamingException} exception.
      */
+    @SuppressWarnings("deprecation")
     protected NamingException newNamingException(Throwable e) {
         NamingException ret =
                   (e instanceof AccessException)
@@ -694,8 +689,8 @@ public class RegistryContext implements Context, Referenceable {
                         ? new CommunicationException()
                 : (e instanceof ActivateFailedException)
                || (e instanceof NoSuchObjectException)
-               || (e instanceof SkeletonMismatchException)
-               || (e instanceof SkeletonNotFoundException)
+               || (e instanceof java.rmi.server.SkeletonMismatchException)
+               || (e instanceof java.rmi.server.SkeletonNotFoundException)
                || (e instanceof StubNotFoundException)
                || (e instanceof UnknownHostException)
                         ? new ConfigurationException()

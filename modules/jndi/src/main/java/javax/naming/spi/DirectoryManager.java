@@ -24,9 +24,11 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 
+import javax.naming.Binding;
 import javax.naming.CannotProceedException;
 import javax.naming.Context;
 import javax.naming.Name;
+import javax.naming.NameClassPair;
 import javax.naming.NameParser;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -38,6 +40,7 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
 import javax.naming.spi.DirStateFactory.Result;
 
 import org.apache.harmony.jndi.internal.EnvironmentReader;
@@ -57,24 +60,8 @@ import org.apache.harmony.jndi.internal.UrlParser;
  */
 public class DirectoryManager extends NamingManager {
 
-    /*
-     * -------------------------------------------------------------------
-     * Class variables
-     * -------------------------------------------------------------------
-     */
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
     private DirectoryManager(){//private to prevent it being instanced        
     }
-
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
 
     /**
      * Create an object using an object factory.
@@ -103,13 +90,8 @@ public class DirectoryManager extends NamingManager {
      * @throws NamingException if one is encountered
      * @throws Exception if any other exception is encountered
      */
-    public static Object getObjectInstance(
-        Object o,
-        Name n,
-        Context c,
-        Hashtable<?, ?> h,
-        Attributes a)
-        throws NamingException, Exception {
+    public static Object getObjectInstance(Object o, Name n, Context c, Hashtable<?, ?> h,
+            Attributes a) throws NamingException, Exception {
 
         // 1. try ObjectFactoryBuilder, if it is set
         if (null != ofb) {
@@ -151,7 +133,7 @@ public class DirectoryManager extends NamingManager {
         return o;
     }
 
-    /*
+    /**
      * Check the type of factory, DirObjectFactory or ObjectFactory, and
      * call getObjectInstance() on the property type.
      */
@@ -160,7 +142,7 @@ public class DirectoryManager extends NamingManager {
         Object o,
         Name n,
         Context c,
-        Hashtable h,
+        Hashtable<?, ?> h,
         Attributes a) throws Exception {
         if (factory instanceof DirObjectFactory) {
             return ((DirObjectFactory) factory).getObjectInstance(o, n, c, h, a);
@@ -168,25 +150,20 @@ public class DirectoryManager extends NamingManager {
 		return factory.getObjectInstance(o, n, c, h);
     }
 
-    private static Object getObjectInstanceByObjectFactory(
-        Object o,
-        Name n,
-        Context c,
-        Hashtable h,
-        Attributes a)
-        throws NamingException, Exception {
-        // obtain object factories from hashtable and service provider resource file
+    private static Object getObjectInstanceByObjectFactory(Object o, Name n, Context c,
+            Hashtable<?, ?> h, Attributes a) throws NamingException, Exception {
+        // obtain object factories from hashtable and service provider resource
+        // file
         String fnames[] =
             EnvironmentReader.getFactoryNamesFromEnvironmentAndProviderResource(
                 h,
                 c,
                 Context.OBJECT_FACTORIES);
-        // for each object factory
-        for (int i = 0; i < fnames.length; i++) {
+        for (String element : fnames) {
             // new factory instance by its class name
             ObjectFactory factory = null;
             try {
-                factory = (ObjectFactory) classForName(fnames[i]).newInstance();
+                factory = (ObjectFactory) classForName(element).newInstance();
             } catch (Exception e) {
                 continue;
             }
@@ -200,12 +177,8 @@ public class DirectoryManager extends NamingManager {
         return null;
     }
 
-    private static Object getObjectInstanceByUrlRefAddr(
-        Name n,
-        Context c,
-        Hashtable h,
-        Reference ref)
-        throws NamingException {
+    private static Object getObjectInstanceByUrlRefAddr(Name n, Context c, Hashtable<?, ?> h,
+            Reference ref) throws NamingException {
         // obtain pkg prefixes from hashtable and service provider resource file
         String pkgPrefixes[] =
             EnvironmentReader.getFactoryNamesFromEnvironmentAndProviderResource(
@@ -240,26 +213,19 @@ public class DirectoryManager extends NamingManager {
         return null;
     }
 
-    private static Object getObjectInstanceByUrlContextFactory(
-        String url,
-        Name n,
-        Context c,
-        Hashtable h,
-        String pkgPrefixes[],
-        String schema)
-        throws NamingException {
+    private static Object getObjectInstanceByUrlContextFactory(String url, Name n, Context c,
+            Hashtable<?, ?> h, String pkgPrefixes[], String schema) throws NamingException {
         // if schema is empty or null, fail, return null
         if (null == schema || 0 == schema.length()) {
             return null;
         }
 
-        // for each pkg prefix
-        for (int i = 0; i < pkgPrefixes.length; i++) {
+        for (String element : pkgPrefixes) {
             ObjectFactory factory = null;
             try {
                 // create url context factory instance
                 String clsName =
-                    pkgPrefixes[i] + "." + schema + "." + schema + "URLContextFactory"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    element + "." + schema + "." + schema + "URLContextFactory"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 factory = (ObjectFactory) classForName(clsName).newInstance();
             } catch (Exception e) {
                 // failed to create factory, continue trying
@@ -291,14 +257,8 @@ public class DirectoryManager extends NamingManager {
         return null;
     }
 
-    private static Object getObjectInstanceByFactoryInReference(
-        Reference ref,
-        Object o,
-        Name n,
-        Context c,
-        Hashtable h,
-        Attributes a)
-        throws Exception {
+    private static Object getObjectInstanceByFactoryInReference(Reference ref, Object o,
+            Name n, Context c, Hashtable<?, ?> h, Attributes a) throws Exception {
         ObjectFactory factory = null;
 
         // try load the factory by its class name
@@ -392,12 +352,11 @@ public class DirectoryManager extends NamingManager {
                 c,
                 Context.STATE_FACTORIES);
 
-        // for each state factory
-        for (int i = 0; i < fnames.length; i++) {
+        for (String element : fnames) {
             // new factory instance by its class name
             StateFactory factory = null;
             try {
-                factory = (StateFactory) classForName(fnames[i]).newInstance();
+                factory = (StateFactory) classForName(element).newInstance();
             } catch (Exception e) {
                 continue;
             }
@@ -455,7 +414,7 @@ public class DirectoryManager extends NamingManager {
         if (nextContext instanceof DirContext) {
             // return as DirContext
             return (DirContext) nextContext;
-        } else if (nextContext instanceof Context) {
+        } else if (nextContext != null) {
             // in case it's Context but not DirContext, wrap it as DirContext and return
             return new Context2DirContextWrapper(nextContext, cpe);
         } else {
@@ -464,11 +423,11 @@ public class DirectoryManager extends NamingManager {
         }
     }
 
-    private static Class classForName(final String className)
+    private static Class<?> classForName(final String className)
         throws ClassNotFoundException {
 
-        Class cls = (Class) AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
+        Class<?> cls = AccessController.doPrivileged(new PrivilegedAction<Class<?>>() {
+            public Class<?> run() {
                 // try thread context class loader first
                 try {
                     return Class.forName(
@@ -505,21 +464,22 @@ public class DirectoryManager extends NamingManager {
      */
     private static class Context2DirContextWrapper implements DirContext {
         private Context ctx;
+
         private CannotProceedException cpe;
-        
+
         public Context2DirContextWrapper(Context ctx, CannotProceedException cpe) {
             this.ctx = ctx;
             this.cpe = cpe;
         }
-        
+
         private Context getContext() throws CannotProceedException {
-            if (ctx instanceof Context) {
+            if (ctx != null) {
                 return ctx;
             }
             cpe.fillInStackTrace();
             throw cpe;
         }
-        
+
         private DirContext getDirContext() throws CannotProceedException {
             if (ctx instanceof DirContext) {
                 return (DirContext) ctx;
@@ -527,65 +487,32 @@ public class DirectoryManager extends NamingManager {
             cpe.fillInStackTrace();
             throw cpe;
         }
-        
-        /**
-         * @param s
-         * @return
-         * @throws NamingException
-         */
-        public NamingEnumeration listBindings(String s) throws NamingException {
+
+        public NamingEnumeration<Binding> listBindings(String s) throws NamingException {
             return getContext().listBindings(s);
         }
 
-        /**
-         * @param s
-         * @return
-         * @throws NamingException
-         */
         public Object removeFromEnvironment(String s) throws NamingException {
             return getContext().removeFromEnvironment(s);
         }
 
-        /**
-         * @param s
-         * @return
-         * @throws NamingException
-         */
         public Object lookupLink(String s) throws NamingException {
             return getContext().lookupLink(s);
         }
 
-        /**
-         * @param n
-         * @return
-         * @throws NamingException
-         */
-        public NamingEnumeration list(Name n) throws NamingException {
+        public NamingEnumeration<NameClassPair> list(Name n) throws NamingException {
             return getContext().list(n);
         }
 
-        /**
-         * @param s
-         * @return
-         * @throws NamingException
-         */
         public Object lookup(String s) throws NamingException {
             return getContext().lookup(s);
         }
 
-        /**
-         * @param s
-         * @param o
-         * @return
-         * @throws NamingException
-         */
         public Object addToEnvironment(String s, Object o) throws NamingException {
             return getContext().addToEnvironment(s, o);
         }
 
-        /* (non-Javadoc)
-         * @see java.lang.Object#toString()
-         */
+        @Override
         public String toString() {
             try {
                 return getContext().toString();
@@ -594,27 +521,15 @@ public class DirectoryManager extends NamingManager {
             }
         }
 
-        /**
-         * @param s
-         * @return
-         * @throws NamingException
-         */
         public Context createSubcontext(String s) throws NamingException {
             return getContext().createSubcontext(s);
         }
 
-        /**
-         * @param nOld
-         * @param nNew
-         * @throws NamingException
-         */
         public void rename(Name nOld, Name nNew) throws NamingException {
             getContext().rename(nOld, nNew);
         }
 
-        /* (non-Javadoc)
-         * @see java.lang.Object#hashCode()
-         */
+        @Override
         public int hashCode() {
             try {
                 return getContext().hashCode();
@@ -623,176 +538,83 @@ public class DirectoryManager extends NamingManager {
             }
         }
 
-        /**
-         * @param n
-         * @param o
-         * @throws NamingException
-         */
         public void rebind(Name n, Object o) throws NamingException {
             getContext().rebind(n, o);
         }
 
-        /**
-         * @param sOld
-         * @param sNew
-         * @throws NamingException
-         */
         public void rename(String sOld, String sNew) throws NamingException {
             getContext().rename(sOld, sNew);
         }
 
-        /**
-         * @param n
-         * @return
-         * @throws NamingException
-         */
         public Context createSubcontext(Name n) throws NamingException {
             return getContext().createSubcontext(n);
         }
 
-        /**
-         * @param s
-         * @return
-         * @throws NamingException
-         */
         public NameParser getNameParser(String s) throws NamingException {
             return getContext().getNameParser(s);
         }
 
-        /**
-         * @param s
-         * @param o
-         * @throws NamingException
-         */
         public void rebind(String s, Object o) throws NamingException {
             getContext().rebind(s, o);
         }
 
-        /**
-         * @param n
-         * @return
-         * @throws NamingException
-         */
-        public NamingEnumeration listBindings(Name n) throws NamingException {
+        public NamingEnumeration<Binding> listBindings(Name n) throws NamingException {
             return getContext().listBindings(n);
         }
 
-        /**
-         * @param n
-         * @return
-         * @throws NamingException
-         */
         public NameParser getNameParser(Name n) throws NamingException {
             return getContext().getNameParser(n);
         }
 
-        /**
-         * @param s
-         * @return
-         * @throws NamingException
-         */
-        public NamingEnumeration list(String s) throws NamingException {
+        public NamingEnumeration<NameClassPair> list(String s) throws NamingException {
             return getContext().list(s);
         }
 
-        /**
-         * @return
-         * @throws NamingException
-         */
         public String getNameInNamespace() throws NamingException {
             return getContext().getNameInNamespace();
         }
 
-        /**
-         * @param n
-         * @throws NamingException
-         */
         public void unbind(Name n) throws NamingException {
             getContext().unbind(n);
         }
 
-        /**
-         * @param n
-         * @param pfx
-         * @return
-         * @throws NamingException
-         */
         public Name composeName(Name n, Name pfx) throws NamingException {
             return getContext().composeName(n, pfx);
         }
 
-        /**
-         * @param n
-         * @param o
-         * @throws NamingException
-         */
         public void bind(Name n, Object o) throws NamingException {
             getContext().bind(n, o);
         }
 
-        /**
-         * @param s
-         * @throws NamingException
-         */
         public void unbind(String s) throws NamingException {
             getContext().unbind(s);
         }
 
-        /**
-         * @throws NamingException
-         */
         public void close() throws NamingException {
             getContext().close();
         }
 
-        /**
-         * @param n
-         * @return
-         * @throws NamingException
-         */
         public Object lookupLink(Name n) throws NamingException {
             return getContext().lookupLink(n);
         }
 
-        /**
-         * @param n
-         * @throws NamingException
-         */
         public void destroySubcontext(Name n) throws NamingException {
             getContext().destroySubcontext(n);
         }
 
-        /**
-         * @param s
-         * @param pfx
-         * @return
-         * @throws NamingException
-         */
         public String composeName(String s, String pfx) throws NamingException {
             return getContext().composeName(s, pfx);
         }
 
-        /**
-         * @param s
-         * @param o
-         * @throws NamingException
-         */
         public void bind(String s, Object o) throws NamingException {
             getContext().bind(s, o);
         }
 
-        /**
-         * @param n
-         * @return
-         * @throws NamingException
-         */
         public Object lookup(Name n) throws NamingException {
             return getContext().lookup(n);
         }
 
-        /* (non-Javadoc)
-         * @see java.lang.Object#equals(java.lang.Object)
-         */
+        @Override
         public boolean equals(Object arg0) {
             try {
                 return getContext().equals(arg0);
@@ -801,316 +623,130 @@ public class DirectoryManager extends NamingManager {
             }
         }
 
-        /**
-         * @param s
-         * @throws NamingException
-         */
         public void destroySubcontext(String s) throws NamingException {
             getContext().destroySubcontext(s);
         }
 
-        /**
-         * @return
-         * @throws NamingException
-         */
-        public Hashtable getEnvironment() throws NamingException {
+        public Hashtable<?, ?> getEnvironment() throws NamingException {
             return getContext().getEnvironment();
         }
 
-        /**
-         * @param name
-         * @param obj
-         * @param attributes
-         * @throws NamingException
-         */
-        public void bind(Name name, Object obj, Attributes attributes)
-            throws NamingException {
+        public void bind(Name name, Object obj, Attributes attributes) throws NamingException {
             getDirContext().bind(name, obj, attributes);
         }
 
-        /**
-         * @param s
-         * @param obj
-         * @param attributes
-         * @throws NamingException
-         */
-        public void bind(String s, Object obj, Attributes attributes)
-            throws NamingException {
+        public void bind(String s, Object obj, Attributes attributes) throws NamingException {
             getDirContext().bind(s, obj, attributes);
         }
 
-        /**
-         * @param name
-         * @param attributes
-         * @return
-         * @throws NamingException
-         */
         public DirContext createSubcontext(Name name, Attributes attributes)
-            throws NamingException {
+                throws NamingException {
             return getDirContext().createSubcontext(name, attributes);
         }
 
-        /**
-         * @param s
-         * @param attributes
-         * @return
-         * @throws NamingException
-         */
         public DirContext createSubcontext(String s, Attributes attributes)
-            throws NamingException {
+                throws NamingException {
             return getDirContext().createSubcontext(s, attributes);
         }
 
-        /**
-         * @param name
-         * @return
-         * @throws NamingException
-         */
         public Attributes getAttributes(Name name) throws NamingException {
             return getDirContext().getAttributes(name);
         }
 
-        /**
-         * @param name
-         * @param as
-         * @return
-         * @throws NamingException
-         */
         public Attributes getAttributes(Name name, String[] as) throws NamingException {
             return getDirContext().getAttributes(name, as);
         }
 
-        /**
-         * @param s
-         * @return
-         * @throws NamingException
-         */
         public Attributes getAttributes(String s) throws NamingException {
             return getDirContext().getAttributes(s);
         }
 
-        /**
-         * @param s
-         * @param as
-         * @return
-         * @throws NamingException
-         */
         public Attributes getAttributes(String s, String[] as) throws NamingException {
             return getDirContext().getAttributes(s, as);
         }
 
-        /**
-         * @param name
-         * @return
-         * @throws NamingException
-         */
         public DirContext getSchema(Name name) throws NamingException {
             return getDirContext().getSchema(name);
         }
 
-        /**
-         * @param s
-         * @return
-         * @throws NamingException
-         */
         public DirContext getSchema(String s) throws NamingException {
             return getDirContext().getSchema(s);
         }
 
-        /**
-         * @param name
-         * @return
-         * @throws NamingException
-         */
         public DirContext getSchemaClassDefinition(Name name) throws NamingException {
             return getDirContext().getSchemaClassDefinition(name);
         }
 
-        /**
-         * @param s
-         * @return
-         * @throws NamingException
-         */
         public DirContext getSchemaClassDefinition(String s) throws NamingException {
             return getDirContext().getSchemaClassDefinition(s);
         }
 
-        /**
-         * @param name
-         * @param i
-         * @param attributes
-         * @throws NamingException
-         */
         public void modifyAttributes(Name name, int i, Attributes attributes)
-            throws NamingException {
+                throws NamingException {
             getDirContext().modifyAttributes(name, i, attributes);
         }
 
-        /**
-         * @param name
-         * @param modificationItems
-         * @throws NamingException
-         */
         public void modifyAttributes(Name name, ModificationItem[] modificationItems)
-            throws NamingException {
+                throws NamingException {
             getDirContext().modifyAttributes(name, modificationItems);
         }
 
-        /**
-         * @param s
-         * @param i
-         * @param attributes
-         * @throws NamingException
-         */
         public void modifyAttributes(String s, int i, Attributes attributes)
-            throws NamingException {
+                throws NamingException {
             getDirContext().modifyAttributes(s, i, attributes);
         }
 
-        /**
-         * @param s
-         * @param modificationItems
-         * @throws NamingException
-         */
         public void modifyAttributes(String s, ModificationItem[] modificationItems)
-            throws NamingException {
+                throws NamingException {
             getDirContext().modifyAttributes(s, modificationItems);
         }
 
-        /**
-         * @param name
-         * @param obj
-         * @param attributes
-         * @throws NamingException
-         */
-        public void rebind(Name name, Object obj, Attributes attributes)
-            throws NamingException {
+        public void rebind(Name name, Object obj, Attributes attributes) throws NamingException {
             getDirContext().rebind(name, obj, attributes);
         }
 
-        /**
-         * @param s
-         * @param obj
-         * @param attributes
-         * @throws NamingException
-         */
-        public void rebind(String s, Object obj, Attributes attributes)
-            throws NamingException {
+        public void rebind(String s, Object obj, Attributes attributes) throws NamingException {
             getDirContext().rebind(s, obj, attributes);
         }
 
-        /**
-         * @param name
-         * @param attributes
-         * @return
-         * @throws NamingException
-         */
-        public NamingEnumeration search(Name name, Attributes attributes)
-            throws NamingException {
+        public NamingEnumeration<SearchResult> search(Name name, Attributes attributes)
+                throws NamingException {
             return getDirContext().search(name, attributes);
         }
 
-        /**
-         * @param name
-         * @param attributes
-         * @param as
-         * @return
-         * @throws NamingException
-         */
-        public NamingEnumeration search(Name name, Attributes attributes, String[] as)
-            throws NamingException {
+        public NamingEnumeration<SearchResult> search(Name name, Attributes attributes,
+                String[] as) throws NamingException {
             return getDirContext().search(name, attributes, as);
         }
 
-        /**
-         * @param name
-         * @param filter
-         * @param objs
-         * @param searchControls
-         * @return
-         * @throws NamingException
-         */
-        public NamingEnumeration search(
-            Name name,
-            String filter,
-            Object[] objs,
-            SearchControls searchControls)
-            throws NamingException {
+        public NamingEnumeration<SearchResult> search(Name name, String filter, Object[] objs,
+                SearchControls searchControls) throws NamingException {
             return getDirContext().search(name, filter, objs, searchControls);
         }
 
-        /**
-         * @param name
-         * @param filter
-         * @param searchControls
-         * @return
-         * @throws NamingException
-         */
-        public NamingEnumeration search(
-            Name name,
-            String filter,
-            SearchControls searchControls)
-            throws NamingException {
+        public NamingEnumeration<SearchResult> search(Name name, String filter,
+                SearchControls searchControls) throws NamingException {
             return getDirContext().search(name, filter, searchControls);
         }
 
-        /**
-         * @param name
-         * @param attributes
-         * @return
-         * @throws NamingException
-         */
-        public NamingEnumeration search(String name, Attributes attributes)
-            throws NamingException {
+        public NamingEnumeration<SearchResult> search(String name, Attributes attributes)
+                throws NamingException {
             return getDirContext().search(name, attributes);
         }
 
-        /**
-         * @param name
-         * @param attributes
-         * @param as
-         * @return
-         * @throws NamingException
-         */
-        public NamingEnumeration search(String name, Attributes attributes, String[] as)
-            throws NamingException {
+        public NamingEnumeration<SearchResult> search(String name, Attributes attributes,
+                String[] as) throws NamingException {
             return getDirContext().search(name, attributes, as);
         }
 
-        /**
-         * @param name
-         * @param filter
-         * @param objs
-         * @param searchControls
-         * @return
-         * @throws NamingException
-         */
-        public NamingEnumeration search(
-            String name,
-            String filter,
-            Object[] objs,
-            SearchControls searchControls)
-            throws NamingException {
+        public NamingEnumeration<SearchResult> search(String name, String filter,
+                Object[] objs, SearchControls searchControls) throws NamingException {
             return getDirContext().search(name, filter, objs, searchControls);
         }
 
-        /**
-         * @param name
-         * @param filter
-         * @param searchControls
-         * @return
-         * @throws NamingException
-         */
-        public NamingEnumeration search(
-            String name,
-            String filter,
-            SearchControls searchControls)
-            throws NamingException {
+        public NamingEnumeration<SearchResult> search(String name, String filter,
+                SearchControls searchControls) throws NamingException {
             return getDirContext().search(name, filter, searchControls);
         }
-
     }
-
 }
-
-

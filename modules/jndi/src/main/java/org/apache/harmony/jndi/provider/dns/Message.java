@@ -76,17 +76,17 @@ public class Message {
     /** ARCOUNT, number of records in additional section */
     private int arCount = 0;
 
-    private Vector questionRecords = null;
-    private Vector answerRRs = null;
-    private Vector authorityRRs = null;
-    private Vector additionalRRs = null;
+    private Vector<QuestionRecord> questionRecords = null;
+    private Vector<ResourceRecord> answerRRs = null;
+    private Vector<ResourceRecord> authorityRRs = null;
+    private Vector<ResourceRecord> additionalRRs = null;
 
     /** */
     public Message() {
-        questionRecords = new Vector();
-        answerRRs = new Vector();
-        authorityRRs = new Vector();
-        additionalRRs = new Vector();
+        questionRecords = new Vector<QuestionRecord>();
+        answerRRs = new Vector<ResourceRecord>();
+        authorityRRs = new Vector<ResourceRecord>();
+        additionalRRs = new Vector<ResourceRecord>();
     }
 
     /** 
@@ -131,10 +131,10 @@ public class Message {
         this.anCount = anCount;
         this.nsCount = nsCount;
         this.arCount = arCount;
-        questionRecords = new Vector();
-        answerRRs = new Vector();
-        authorityRRs = new Vector();
-        additionalRRs = new Vector();
+        questionRecords = new Vector<QuestionRecord>();
+        answerRRs = new Vector<ResourceRecord>();
+        authorityRRs = new Vector<ResourceRecord>();
+        additionalRRs = new Vector<ResourceRecord>();
     }
     
     /**
@@ -187,25 +187,25 @@ public class Message {
         idx = ProviderMgr.write16Int(arCount, buffer, idx);
         // question section
         for (int i = 0; i < questionRecords.size(); i++) {
-            QuestionRecord qr = (QuestionRecord) questionRecords.elementAt(i);
+            QuestionRecord qr = questionRecords.elementAt(i);
 
             idx = qr.writeBytes(buffer, idx);
         }
         // answer section
         for (int i = 0; i < answerRRs.size(); i++) {
-            ResourceRecord rr = (ResourceRecord) answerRRs.elementAt(i);
+            ResourceRecord rr = answerRRs.elementAt(i);
 
             idx = rr.writeBytes(buffer, idx);
         }
         // authority section
         for (int i = 0; i < authorityRRs.size(); i++) {
-            ResourceRecord rr = (ResourceRecord) answerRRs.elementAt(i);
+            ResourceRecord rr = answerRRs.elementAt(i);
 
             idx = rr.writeBytes(buffer, idx);
         }
         // additional section
         for (int i = 0; i < additionalRRs.size(); i++) {
-            ResourceRecord rr = (ResourceRecord) answerRRs.elementAt(i);
+            ResourceRecord rr = answerRRs.elementAt(i);
 
             idx = rr.writeBytes(buffer, idx);
         }
@@ -307,6 +307,7 @@ public class Message {
     /**
      * @return string representation of this message 
      */
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
 
@@ -505,7 +506,7 @@ public class Message {
     /**
      * @return question records that are contained by the current message.
      */
-    public Enumeration getQuestionRecords() {
+    public Enumeration<QuestionRecord> getQuestionRecords() {
         return questionRecords.elements();
     }
     
@@ -520,7 +521,7 @@ public class Message {
     /**
      * @return available answer resource records
      */
-    public Enumeration getAnswerRRs() {
+    public Enumeration<ResourceRecord> getAnswerRRs() {
         return answerRRs.elements();
     }
 
@@ -535,7 +536,7 @@ public class Message {
     /**
      * @return available authority resource records
      */
-    public Enumeration getAuthorityRRs() {
+    public Enumeration<ResourceRecord> getAuthorityRRs() {
         return authorityRRs.elements();
     }
 
@@ -550,7 +551,7 @@ public class Message {
     /**
      * @return available additional resource records
      */
-    public Enumeration getAdditionalRRs() {
+    public Enumeration<ResourceRecord> getAdditionalRRs() {
         return additionalRRs.elements();
     }
 

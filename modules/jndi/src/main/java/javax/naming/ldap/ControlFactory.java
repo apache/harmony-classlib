@@ -34,25 +34,12 @@ import org.apache.harmony.jndi.internal.EnvironmentReader;
  * 
  */
 public abstract class ControlFactory {
-
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
-
     /**
      * Constructs a <code>ControlFactory</code> instance with no parameters.
      */
     protected ControlFactory() {
     	super();
     }
-
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
 
     /**
      * Uses this control factory to create a particular type of <code>Control
@@ -98,20 +85,15 @@ public abstract class ControlFactory {
         throws NamingException {
 
         // obtain control factories from hashtable and provider resource file
-        String fnames[] =
-            EnvironmentReader
-                .getFactoryNamesFromEnvironmentAndProviderResource(
-                h,
-                ctx,
-                LdapContext.CONTROL_FACTORIES);
+        String fnames[] = EnvironmentReader.getFactoryNamesFromEnvironmentAndProviderResource(
+                h, ctx, LdapContext.CONTROL_FACTORIES);
 
-        // for each control factory
-        for (int i = 0; i < fnames.length; i++) {
+        for (String element : fnames) {
             // new factory instance by its class name
             ControlFactory factory = null;
             try {
                 factory =
-                    (ControlFactory) classForName(fnames[i]).newInstance();
+                    (ControlFactory) classForName(element).newInstance();
             } catch (Exception e) {
                 continue;
             }
@@ -131,29 +113,23 @@ public abstract class ControlFactory {
      * Use the context class loader or the system class loader to load the
      * specified class, in a privileged manner.
      */
-    private static Class classForName(final String className)
+    private static Class<?> classForName(final String className)
         throws ClassNotFoundException {
 
-        Class cls =
-            (Class) AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
+        Class<?> cls = AccessController.doPrivileged(new PrivilegedAction<Class<?>>() {
+            public Class<?> run() {
                 // try thread context class loader first
                 try {
-                    return Class.forName(
-                        className,
-                        true,
-                        Thread.currentThread().getContextClassLoader());
+                    return Class.forName(className, true, Thread.currentThread()
+                            .getContextClassLoader());
                 } catch (ClassNotFoundException e) {
-                	// Ignored
+                    // Ignored
                 }
                 // try system class loader second
                 try {
-                    return Class.forName(
-                        className,
-                        true,
-                        ClassLoader.getSystemClassLoader());
-                } catch (ClassNotFoundException e1) {
-                	// Ignored
+                    return Class.forName(className, true, ClassLoader.getSystemClassLoader());
+                } catch (ClassNotFoundException e) {
+                    // Ignored
                 }
                 // return null, if fail to load class
                 return null;

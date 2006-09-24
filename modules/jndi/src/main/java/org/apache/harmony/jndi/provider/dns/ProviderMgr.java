@@ -145,25 +145,23 @@ public class ProviderMgr {
                 parseName(mesBytes, namePtr, result);
                 break;
             }
-            else {
-                // plain label
-                if (n > ProviderConstants.LABEL_MAX_CHARS) {
-                    throw new DomainProtocolException("Domain label is too " +
-                            " long");
-                }
-                if (idx + n > mesBytes.length) {
-                    throw new DomainProtocolException("Truncated data while " +
-                            " parsing the domain name");
-                }
-                // append parsed label
-                if (firstTime) {
-                    firstTime = false;                
-                } else {
-                    result.append('.');
-                }
-                result.append(new String(mesBytes, idx, n));
-                idx += n;
+            // plain label
+            if (n > ProviderConstants.LABEL_MAX_CHARS) {
+                throw new DomainProtocolException("Domain label is too " +
+                        " long");
             }
+            if (idx + n > mesBytes.length) {
+                throw new DomainProtocolException("Truncated data while " +
+                        " parsing the domain name");
+            }
+            // append parsed label
+            if (firstTime) {
+                firstTime = false;                
+            } else {
+                result.append('.');
+            }
+            result.append(new String(mesBytes, idx, n));
+            idx += n;
         }
         return idx;
     }
@@ -259,7 +257,7 @@ public class ProviderMgr {
      * @return parsed integer value
      */
     public static int parse8Int(byte[] buffer, int idx) {
-        return ((int) buffer[idx]) & 0xff;
+        return (buffer[idx]) & 0xff;
     }
 
     /**
@@ -270,8 +268,8 @@ public class ProviderMgr {
      * @return parsed integer value
      */
     public static int parse16Int(byte[] buffer, int idx) {
-        int a = (((int) buffer[idx]) & 0xff) << 8;
-        int b = ((int) buffer[idx + 1]) & 0xff;
+        int a = ((buffer[idx]) & 0xff) << 8;
+        int b = (buffer[idx + 1]) & 0xff;
 
         return (a | b);
     }
@@ -315,8 +313,8 @@ public class ProviderMgr {
         }
         bytes = value.getBytes();
         buffer[idx++] = (byte) bytes.length; 
-        for (int i = 0; i < bytes.length; i++) {
-            buffer[idx++] = bytes[i];
+        for (byte element : bytes) {
+            buffer[idx++] = element;
         }
         return idx;
     }
@@ -368,9 +366,8 @@ public class ProviderMgr {
     public static boolean checkBit(int value, int mask) {
         if ((value & mask) == 0) {
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
     /**
@@ -432,10 +429,8 @@ public class ProviderMgr {
         if (zone == null) {
             return zone;
         }
-        else {
-            return zone.endsWith(".") ? zone.toLowerCase() :
-                    zone.toLowerCase() + ".";
-        }
+        return zone.endsWith(".") ? zone.toLowerCase() :
+                zone.toLowerCase() + ".";
     }
     
 
@@ -458,7 +453,7 @@ public class ProviderMgr {
             if (i > 0) {
                 sb.append(".");
             }
-            sb.append("" + (((int) ip[i]) & 0xff));
+            sb.append("" + ((ip[i]) & 0xff));
         }
         return sb.toString();
     }

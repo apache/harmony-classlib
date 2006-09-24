@@ -123,6 +123,7 @@ public class AttributeModificationException extends NamingException {
      * 
      * @return text detailing the exception location and the failing modification.
      */
+    @Override
     public String toString() {
         return toStringImpl(false);
     }
@@ -133,6 +134,7 @@ public class AttributeModificationException extends NamingException {
      * @param flag Indicates if the resolved object need to be returned. 
      * @return text detailing the exception location and the failing modification.
      */
+    @Override
     public String toString(boolean flag) {
         return toStringImpl(flag);
     }
@@ -141,8 +143,8 @@ public class AttributeModificationException extends NamingException {
         StringBuffer sb = new StringBuffer(super.toString(flag));
         if (null != unexecs && unexecs.length > 0) {
             sb.append(". The unexecuted modification items are: \""); //$NON-NLS-1$
-            for (int i = 0; i < unexecs.length; i++) {
-                sb.append(unexecs[i].toString()).append(";"); //$NON-NLS-1$
+            for (ModificationItem element : unexecs) {
+                sb.append(element.toString()).append(";"); //$NON-NLS-1$
             }
             sb.append("\""); //$NON-NLS-1$
         }

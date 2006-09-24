@@ -50,18 +50,19 @@ public class dnsURLContextFactory implements ObjectFactory {
      * @throws NamingException if such exception was encountered 
      * @see ObjectFactory#getObjectInstance(Object, Name, Context, Hashtable)
      */
+    @SuppressWarnings("unchecked")
     public Object getObjectInstance(Object obj, Name name, Context nameCtx,
-            Hashtable environment) throws NamingException
+            Hashtable<?, ?> environment) throws NamingException
     {
         if (obj == null) {
             return new dnsURLContext(environment);
         } else if (obj instanceof String) {
-            Hashtable newEnv = (Hashtable) environment.clone();
+            Hashtable<Object, Object> newEnv = (Hashtable<Object, Object>) environment.clone();
 
             newEnv.put(Context.PROVIDER_URL, obj);
             return new DNSContext(newEnv);
         } else if (obj instanceof String[]) {
-            Hashtable newEnv = (Hashtable) environment.clone();
+            Hashtable<Object, Object> newEnv = (Hashtable<Object, Object>) environment.clone();
             StringBuffer sb = new StringBuffer();
             String urlArr[] = (String[]) obj;
 

@@ -94,43 +94,21 @@ import javax.naming.StringRefAddr;
 
 public class NamingManager {
 
-    /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
-     */
-
     /**
      * The property name of <code>CannotProceedException</code> in a context's
      * environment.
      */
     public static final String CPE = "java.naming.spi.CannotProceedException"; //$NON-NLS-1$
 
-    /*
-     * ------------------------------------------------------------------- 
-     * Class variables
-     * -------------------------------------------------------------------
-     */
+    static InitialContextFactoryBuilder icfb;
 
-    static InitialContextFactoryBuilder icfb = null;
+    static ObjectFactoryBuilder ofb;
 
-    static ObjectFactoryBuilder ofb = null;
-
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
     NamingManager() {
+        super();
         // package private to prevent it being instanced but make it can be
         // subclassed by DirectoryManager
     }
-
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
 
     /**
      * Install an <code>InitialContextFactoryBuilder</code>. Once this has
@@ -245,7 +223,7 @@ public class NamingManager {
             String factoryClassName =
                 (String) h.get(Context.INITIAL_CONTEXT_FACTORY);
             // new factory instance
-            Class factoryClass = classForName(factoryClassName);
+            Class<?> factoryClass = classForName(factoryClassName);
             InitialContextFactory factory = (InitialContextFactory) factoryClass
                     .newInstance();
             // create initial context instance using the factory
@@ -384,7 +362,7 @@ public class NamingManager {
     }
 
     private static Object getObjectInstanceByObjectFactory(Object o, Name n,
-            Context c, Hashtable h) throws NamingException, Exception {
+            Context c, Hashtable<?, ?> h) throws NamingException, Exception {
         // obtain object factories from hashtable and service provider resource
         // file
         String fnames[] = EnvironmentReader
@@ -409,7 +387,7 @@ public class NamingManager {
     }
 
     private static Object getObjectInstanceByUrlRefAddr(Name n, Context c,
-            Hashtable h, Reference ref) throws NamingException {
+            Hashtable<?, ?> h, Reference ref) throws NamingException {
         // obtain pkg prefixes from hashtable and service provider resource file
         String pkgPrefixes[] = EnvironmentReader
                 .getFactoryNamesFromEnvironmentAndProviderResource(h, c,
@@ -438,7 +416,7 @@ public class NamingManager {
     }
 
     private static Object getObjectInstanceByUrlContextFactory(String url,
-            Name n, Context c, Hashtable h, String pkgPrefixes[], String schema)
+            Name n, Context c, Hashtable<?, ?> h, String pkgPrefixes[], String schema)
             throws NamingException {
         // if schema is empty or null, fail, return null
         if (null == schema || 0 == schema.length()) {
@@ -480,7 +458,7 @@ public class NamingManager {
     }
 
     private static Object getObjectInstanceByFactoryInReference(Reference ref,
-            Object o, Name n, Context c, Hashtable h) throws Exception {
+            Object o, Name n, Context c, Hashtable<?, ?> h) throws Exception {
         ObjectFactory factory = null;
 
         // try load the factory by its class name
@@ -734,6 +712,7 @@ public class NamingManager {
      *             if the resolved object is null or if a context cannot be
      *             obtained from it either directly or indirectly.
      */
+    @SuppressWarnings("unchecked")
     public static Context getContinuationContext(CannotProceedException cpe)
             throws NamingException {
 
@@ -743,8 +722,7 @@ public class NamingManager {
         if (cpe.getEnvironment() == null) {
             cpe.setEnvironment(new Hashtable<String, CannotProceedException>());
         }
-        ((Hashtable<String, CannotProceedException>) cpe.getEnvironment()).put(
-                CPE, cpe);
+        ((Hashtable<String, CannotProceedException>) cpe.getEnvironment()).put(CPE, cpe);
 
         // if resolved object is null
         if (null == cpe.getResolvedObj()) {
@@ -779,12 +757,12 @@ public class NamingManager {
         return ctx;
     }
 
-    private static Class classForName(final String className)
+    private static Class<?> classForName(final String className)
             throws ClassNotFoundException {
 
-        Class cls = AccessController
-                .doPrivileged(new PrivilegedAction<Class>() {
-                    public Class run() {
+        Class<?> cls = AccessController
+                .doPrivileged(new PrivilegedAction<Class<?>>() {
+                    public Class<?> run() {
                         // try thread context class loader first
                         try {
                             return Class.forName(className, true, Thread

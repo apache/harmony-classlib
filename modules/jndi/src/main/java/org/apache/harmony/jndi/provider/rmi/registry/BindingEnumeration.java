@@ -27,17 +27,27 @@ import java.util.NoSuchElementException;
 
 import javax.naming.Binding;
 import javax.naming.Name;
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
-
 /**
- * Enumeration of {@link Binding} objects,
- * used by {@link RegistryContext#listBindings(Name)} method.
- *
- * @author  Vasily Zakharov
+ * Enumeration of {@link Binding} objects, used by
+ * {@link RegistryContext#listBindings(Name)} method.
+ * 
+ * @author Vasily Zakharov
  * @version $Revision: 1.1.2.2 $
  */
-class BindingEnumeration extends NameClassPairEnumeration {
+class BindingEnumeration implements NamingEnumeration<Binding> {
+
+    /**
+     * Binding names returned from {@link Registry#list()} method.
+     */
+    protected final String[] names;
+
+    /**
+     * Index of the next name to return.
+     */
+    protected int index = 0;
 
     /**
      * Registry context.
@@ -46,34 +56,30 @@ class BindingEnumeration extends NameClassPairEnumeration {
 
     /**
      * Creates this enumeration.
-     *
-     * @param   names
-     *          Binding names returned from {@link Registry#list()} method.
-     *
-     * @param   context
-     *          RegistryContext to extract bindings from.
+     * 
+     * @param names Binding names returned from {@link Registry#list()} method.
+     * 
+     * @param context RegistryContext to extract bindings from.
      */
     public BindingEnumeration(String[] names, RegistryContext context) {
-        super(names);
+        super();
+        this.names = names;
         this.context = context.cloneContext();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean hasMore() {
-        if (super.hasMore()) {
+        if (index < names.length) {
             return true;
-        } else {
-            close();
-            return false;
         }
+        close();
+        return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public Object next() throws NoSuchElementException, NamingException {
+    public boolean hasMoreElements() {
+        return hasMore();
+    }
+
+    public Binding next() throws NoSuchElementException, NamingException {
         if (!hasMore()) {
             throw new NoSuchElementException();
         }
@@ -84,18 +90,16 @@ class BindingEnumeration extends NameClassPairEnumeration {
         return binding;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void close() {
-        super.close();
-        finalize();
+    public Binding nextElement() {
+        try {
+            return next();
+        } catch (NamingException e) {
+            throw (NoSuchElementException) new NoSuchElementException().initCause(e);
+        }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected void finalize() {
+    public void close() {
+        index = names.length;
         context.close();
     }
 }
