@@ -51,6 +51,12 @@
 	<check-one-file src="${mx4j.remote.url}" dest="${mx4j.remote.jar}" />
 
 	<check-one-file src="${ecj.url}" dest="${ecj.jar}" />
+	
+	<check-one-file src="${jetty.url}" dest="${jetty.jar}" /> 
+	
+    <check-one-file src="${jetty-util.url}" dest="${jetty-util.jar}" /> 
+  
+    <check-one-file src="${servlet-api.url}" dest="${servlet-api.jar}" /> 
 
 	<uptodate property="bcprov.uptodate"
                   srcfile="${signed.bcprov.jar}"
@@ -109,6 +115,16 @@
 	<mkdir dir="${ecj.dir}" />
 	<download-one-file src="${ecj.url}" dest="${ecj.jar}"
                            md5="${ecj.md5}" />
+        
+        <mkdir dir="${jetty.dir}" />
+	<download-one-file src="${jetty.url}" dest="${jetty.jar}"
+                           md5="${jetty.md5}" />
+ 
+	<download-one-file src="${jetty-util.url}" dest="${jetty-util.jar}"
+                           md5="${jetty-util.md5}" />
+                           
+        <download-one-file src="${servlet-api.url}" dest="${servlet-api.jar}"
+                           md5="${servlet-api.md5}" />
 
         <antcall target="download-win" />
 
