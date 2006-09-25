@@ -240,7 +240,7 @@ public class KeytoolParameters {
             CertificateException, FileNotFoundException, KeyStoreException,
             NoSuchProviderException, IOException {
         if (keyStore == null){
-            KeyStoreLoaderSaver.loadStore(this);
+            KeytoolKSLoaderSaver.loadStore(this);
         }
         return keyStore;
     }
@@ -890,7 +890,7 @@ public class KeytoolParameters {
             NoSuchProviderException, IOException {
         if (cacerts == null) {
             String keyStoreProv = (ksProvider != null) ? ksProvider : provider;
-            cacerts = KeyStoreLoaderSaver.loadStore(getCacertsPath(),
+            cacerts = KeytoolKSLoaderSaver.loadStore(getCacertsPath(),
                     storeType, getCacertsPass(), keyStoreProv);
         }
         return cacerts;

@@ -47,7 +47,7 @@ public class Main {
                 EntryManager.delete(param);
                 break;
             case STOREPASSWD:
-                KeyStoreLoaderSaver.storePasswd(param);
+                KeytoolKSLoaderSaver.storePasswd(param);
                 break;
             case KEYPASSWD:
                 EntryManager.keyPasswd(param);
@@ -126,7 +126,7 @@ public class Main {
 
         if (param.isNeedSaveKS()) {
             // save the store
-            KeyStoreLoaderSaver.saveStore(param);
+            KeytoolKSLoaderSaver.saveStore(param);
         }
     }
 

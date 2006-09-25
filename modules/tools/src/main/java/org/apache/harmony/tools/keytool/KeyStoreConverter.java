@@ -50,7 +50,7 @@ public class KeyStoreConverter {
         String ksProvider = (param.getConvKsProvider() != null) ? param
                 .getConvKsProvider() : param.getProvider();
         // creating a new keystore
-        KeyStore convertedKS = KeyStoreLoaderSaver.loadStore(null, param
+        KeyStore convertedKS = KeytoolKSLoaderSaver.loadStore(null, param
                 .getConvertedKeyStoreType(), param.getConvertedKeyStorePass(),
                 ksProvider);
 
@@ -120,7 +120,7 @@ public class KeyStoreConverter {
         }
             
         // save the converted keystore
-        KeyStoreLoaderSaver.saveStore(convertedKS, param
+        KeytoolKSLoaderSaver.saveStore(convertedKS, param
                 .getConvertedKeyStorePath(), param.getConvertedKeyStorePass(),
                 param.isVerbose());
     }
