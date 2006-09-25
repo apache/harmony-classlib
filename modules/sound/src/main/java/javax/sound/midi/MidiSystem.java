@@ -16,127 +16,804 @@
 
 package javax.sound.midi;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 
+import javax.sound.midi.spi.MidiDeviceProvider;
+import javax.sound.midi.spi.MidiFileReader;
+import javax.sound.midi.spi.MidiFileWriter;
+import javax.sound.midi.spi.SoundbankReader;
+
+import org.apache.harmony.sound.utils.ProviderService;
+
 public class MidiSystem {
+    //path to javax.sound.midi.spi.MidiDeviceProvider file in the jar-file
+    private final static String midiDeviceProviderPath = 
+        "META-INF/services/javax.sound.midi.spi.MidiDeviceProvider";
+    
+    //path to javax.sound.midi.spi.MidiFileReader file in the jar-file
+    private final static String midiFileReaderPath =
+        "META-INF/services/javax.sound.midi.spi.MidiFileReader";
+    
+    //path to javax.sound.midi.spi.MidiFileWriter file in the jar-file
+    private final static String midiFileWriterPath =
+        "META-INF/services/javax.sound.midi.spi.MidiFileWriter";
+    
+    //path to javax.sound.midi.spi.SoundbankReader file in the jar-file
+    private final static String soundbankReaderPath =
+        "META-INF/services/javax.sound.midi.spi.SoundbankReader";
+    
+    //key to find default receiver in the sound.properties file
+    private final static String receiverName = "javax.sound.midi.Receiver";
+    
+    //key to find default sequencer in the sound.properties file
+    private final static String sequencerName = "javax.sound.midi.Sequencer";
+    
+    //key to find default synthesizer in the sound.properties file
+    private final static String synthesizerName = "javax.sound.midi.Synthesizer";
+    
+    //key to find default transmitter in the sound.properties file
+    private final static String transmitterName = "javax.sound.midi.Transmitter";
+    
     public static MidiDevice getMidiDevice(MidiDevice.Info info)
             throws MidiUnavailableException {
-        //TODO
-        throw new Error("not yet implemented");
+        //FIXME
+        /*
+         * this method must to throw out MidiUnavailableException if requested device
+         * is not available
+         */
+        
+        /* 
+         * obtain the list of MidiDeviceProviders
+         */
+        List deviceProviders = ProviderService.getProviders(midiDeviceProviderPath);
+        /*
+         * find device that describes by parametr info and return it
+         */
+        for (int i = 0; i < deviceProviders.size(); i++) {
+            MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(i)).getDeviceInfo();
+            for (int j = 0; j < deviceInfo.length; j++) {
+                if (deviceInfo[j].equals(info)) {
+                    return ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(info);
+                }
+            }
+        }
+        /*
+         * if we can't find device with requested info, we throw out IllegalArgumentException
+         */
+        throw new IllegalArgumentException("Requested device not installed: " + info.getName());
     }
 
     public static MidiDevice.Info[] getMidiDeviceInfo() {
-        //TODO
-        throw new Error("not yet implemented");
+        /*
+         * obtain the list of MidiDeviceProviders
+         */
+        List deviceProviders = ProviderService.getProviders(midiDeviceProviderPath);
+        //variable to save MidiDevice.Info
+        List<MidiDevice.Info> infos = new ArrayList<MidiDevice.Info>();
+        /*
+         * look through list of providers and save info of devices
+         */
+        for (int i = 0; i < deviceProviders.size(); i++) {
+            MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(i)).getDeviceInfo();
+            for (int j = 0; j < deviceInfo.length; j++) {
+                infos.add(deviceInfo[j]);
+            }
+        }
+        
+        MidiDevice.Info[] temp = new MidiDevice.Info[infos.size()];
+        return infos.toArray(temp);
     }
 
     public static MidiFileFormat getMidiFileFormat(File file) throws InvalidMidiDataException,
             IOException {
-        //TODO
-        throw new Error("not yet implemented");
+        /*
+         * obtain the list of MidiFileReaderProviders
+         */
+        List fileReaderProviders = ProviderService.getProviders(midiFileReaderPath);
+        if (fileReaderProviders.size() == 0) {
+            //FIXME
+            /*
+             * I don't understand what type of exception we should throw out if we haven't
+             * appropriate providers...
+             * Maybe here is should be MidiUnavailableException
+             */
+            throw new Error("There is no MidiFileReaderProviders on your system!!!");
+        }
+        /*
+         * It's not determine what provider for this service I should to use, and so
+         * I use the first one
+         */
+        return ((MidiFileReader) fileReaderProviders.get(0)).getMidiFileFormat(file);
     }
 
-    public static MidiFileFormat getMidiFileFormat(InputStream stream)
-            throws InvalidMidiDataException, IOException {
-        //TODO
-        throw new Error("not yet implemented");
+    public static MidiFileFormat getMidiFileFormat(InputStream stream) throws InvalidMidiDataException, 
+            IOException {
+        /*
+         * obtain the list of MidiFileReaderProviders
+         */
+        List fileReaderProviders = ProviderService.getProviders(midiFileReaderPath);
+        if (fileReaderProviders.size() == 0) {
+            //FIXME
+            /*
+             * I don't understand what type of exception we should throw out if we haven't
+             * appropriate providers...
+             * Maybe here is should be MidiUnavailableException
+             */
+            throw new Error("There is no MidiFileReaderProviders on your system!!!");
+        }
+        /*
+         * It's not determine what provider for this service I should to use, and so
+         * I use the first one
+         */
+        return ((MidiFileReader) fileReaderProviders.get(0)).getMidiFileFormat(stream);
     }
 
     public static MidiFileFormat getMidiFileFormat(URL url) throws InvalidMidiDataException,
             IOException {
-        //TODO
-        throw new Error("not yet implemented");
+        /*
+         * obtain the list of MidiFileReaderProviders
+         */
+        List fileReaderProviders = ProviderService.getProviders(midiFileReaderPath);
+        if (fileReaderProviders.size() == 0) {
+            //FIXME
+            /*
+             * I don't understand what type of exception we should throw out if we haven't
+             * appropriate providers...
+             * Maybe here is should be MidiUnavailableException
+             */
+            throw new Error("There is no MidiFileReaderProviders on your system!!!");
+        }
+        /*
+         * It's not determine what provider for this service I should to use, and so
+         * I use the first one
+         */
+        return ((MidiFileReader) fileReaderProviders.get(0)).getMidiFileFormat(url);
     }
 
     public static int[] getMidiFileTypes() {
-        //TODO
-        throw new Error("not yet implemented");
+        /*
+         * obtain the list of MidiFileWriterProviders
+         */
+        List fileWriterProviders = ProviderService.getProviders(midiFileWriterPath);
+        if (fileWriterProviders.size() == 0) {
+            //FIXME
+            /*
+             * I don't understand what type of exception we should throw out if we haven't
+             * appropriate providers...
+             * Maybe here is should be MidiUnavailableException
+             */
+            throw new Error("There is no MidiFileWriterProviders on your system!!!");
+        }
+        /*
+         * It's not determine what provider for this service I should to use, and so
+         * I use the first one
+         */
+        return ((MidiFileWriter) fileWriterProviders.get(0)).getMidiFileTypes();
     }
 
     public static int[] getMidiFileTypes(Sequence sequence) {
-        //TODO
-        throw new Error("not yet implemented");
+        /*
+         * obtain the list of MidiFileWriterProviders
+         */
+        List fileWriterProviders = ProviderService.getProviders(midiFileWriterPath);
+        if (fileWriterProviders.size() == 0) {
+            //FIXME
+            /*
+             * I don't understand what type of exception we should throw out if we haven't
+             * appropriate providers...
+             * Maybe here is should be MidiUnavailableException
+             */
+            throw new Error("There is no MidiFileWriterProviders on your system!!!");
+        }
+        /*
+         * It's not determine what provider for this service I should to use, and so
+         * I use the first one
+         */
+        return ((MidiFileWriter) fileWriterProviders.get(0)).getMidiFileTypes(sequence);
     }
 
     public static Receiver getReceiver() throws MidiUnavailableException {
-        //TODO
-        throw new Error("not yet implemented");
+        /*
+         * description of the default device for javax.sound.midi.Receiver
+         */
+        List<String> defaultDevice = ProviderService.getDefaultDeviceDescription(receiverName);
+        /*
+         * obtain the list of MidiDeviceProviders
+         */
+        List deviceProviders = ProviderService.getProviders(midiDeviceProviderPath);
+        String provName;
+        int deviceNum = -1;
+        /*
+         * defaultDevice.get(0) --> provider
+         * defaultDevice.get(1) --> name
+         */      
+        if (defaultDevice.size() != 0) {
+            /*
+             * obtain the provider number in the list of deviceProviders that is provider for default device
+             */
+            for (int i = 0; i < deviceProviders.size(); i++) {
+                provName = deviceProviders.get(i).toString();
+                if (provName.substring(0, provName.indexOf("@")).equals(defaultDevice.get(0))) {
+                    deviceNum = i;
+                    break;
+                }
+            }
+            /*
+             * the first case: find the same provider and name that describes by default device
+             */
+            if (deviceNum != -1) {
+                MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDeviceInfo();
+                for (int i = 0; i < deviceInfo.length; i++) {
+                    if (deviceInfo[i].getName().equals(defaultDevice.get(1))) {
+                        try {
+                            return ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]).getReceiver();
+                        } catch (MidiUnavailableException e) {}
+                    }
+                }
+            /*
+             * if we don't find the same provider and name, find any receiver describe by provider
+             */
+                for (int i = 0; i < deviceInfo.length; i++) {
+                    try {
+                        return ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]).getReceiver();
+                    } catch (MidiUnavailableException e) {}
+                }
+            }
+            /*
+             * if we don't find again, find any receivers describe by name
+             */
+            for (int i = 0; i < deviceProviders.size(); i++) {
+                MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(i)).getDeviceInfo();
+                for (int j = 0; j < deviceInfo.length; j++) {
+                    if (deviceInfo[j].getName().equals(defaultDevice.get(1))) {
+                        try {
+                            return ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]).getReceiver();
+                        } catch (MidiUnavailableException e) {}
+                    }
+                }
+            }
+        }
+        /*
+         * in the last case we look throw all providers and find any receiver
+         */
+        for (int i = 0; i < deviceProviders.size(); i++) {
+            MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(i)).getDeviceInfo();
+            for (int j = 0; j < deviceInfo.length; j++) {
+                try {
+                    return ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]).getReceiver();
+                } catch (MidiUnavailableException e) {}
+            }
+        }
+        /*
+         * if we don't find anyway, we throw out MidiUnavailableException
+         */
+        throw new MidiUnavailableException("There are no Recivers installed on your system!");
     }
 
     public static Sequence getSequence(File file) throws InvalidMidiDataException, IOException {
-        //TODO
-        throw new Error("not yet implemented");
+        /*
+         * obtain the list of MidiFileReaderProviders
+         */
+        List fileReaderProviders = ProviderService.getProviders(midiFileReaderPath);
+        if (fileReaderProviders.size() == 0) {
+            //FIXME
+            /*
+             * I don't understand what type of exception we should throw out if we haven't
+             * appropriate providers...
+             * Maybe here is should be MidiUnavailableException
+             */
+            throw new Error("There is no MidiFileReaderProviders on your system!!!");
+        }
+        /*
+         * It's not determine what provider for this service I should to use, and so
+         * I use the first one
+         */
+        return ((MidiFileReader) fileReaderProviders.get(0)).getSequence(file);
     }
 
     public static Sequence getSequence(InputStream stream) throws InvalidMidiDataException,
             IOException {
-        //TODO
-        throw new Error("not yet implemented");
+        /*
+         * obtain the list of MidiFileReaderProviders
+         */
+        List fileReaderProviders = ProviderService.getProviders(midiFileReaderPath);
+        if (fileReaderProviders.size() == 0) {
+            //FIXME
+            /*
+             * I don't understand what type of exception we should throw out if we haven't
+             * appropriate providers...
+             * Maybe here is should be MidiUnavailableException
+             */
+            throw new Error("There is no MidiFileReaderProviders on your system!!!");
+        }
+        /*
+         * It's not determine what provider for this service I should to use, and so
+         * I use the first one
+         */
+        return ((MidiFileReader) fileReaderProviders.get(0)).getSequence(stream);
     }
 
     public static Sequence getSequence(URL url) throws InvalidMidiDataException, IOException {
-        //TODO
-        throw new Error("not yet implemented");
+        /*
+         * obtain the list of MidiFileReaderProviders
+         */
+        List fileReaderProviders = ProviderService.getProviders(midiFileReaderPath);
+        if (fileReaderProviders.size() == 0) {
+            //FIXME
+            /*
+             * I don't understand what type of exception we should throw out if we haven't
+             * appropriate providers...
+             * Maybe here is should be MidiUnavailableException
+             */
+            throw new Error("There is no MidiFileReaderProviders on your system!!!");
+        }
+        /*
+         * It's not determine what provider for this service I should to use, and so
+         * I use the first one
+         */
+        return ((MidiFileReader) fileReaderProviders.get(0)).getSequence(url);
     }
 
     public static Sequencer getSequencer() throws MidiUnavailableException {
-        //TODO
-        throw new Error("not yet implemented");
+        /*
+         * this method is equals to method MidiSystem.getSequencer(true)
+         */
+        return getSequencer(true);
     }
 
     public static Sequencer getSequencer(boolean connected) throws MidiUnavailableException {
-        //TODO
-        throw new Error("not yet implemented");
+        /*
+         * description of the default device for javax.sound.midi.Sequencer
+         */
+        List<String> defaultDevice = ProviderService.getDefaultDeviceDescription(sequencerName);
+        /*
+         * obtain the list of MidiDeviceProviders
+         */
+        List  deviceProviders = ProviderService.getProviders(midiDeviceProviderPath);
+        
+        Sequencer sequencer;
+        Transmitter seqTrans;
+        Synthesizer synth;
+        Receiver recv;
+        String provName;
+        int deviceNum = -1;
+        /*
+         * defaultDevice.get(0) --> provider
+         * defaultDevice.get(1) --> name
+         */      
+        if (defaultDevice.size() != 0) {
+            /*
+             * obtain the provider number in the list of deviceProviders that is provider for default device
+             */
+            for (int i = 0; i < deviceProviders.size(); i++) {
+                provName = deviceProviders.get(i).toString();
+                if (provName.substring(0, provName.indexOf("@")).equals(defaultDevice.get(0))) {
+                    deviceNum = i;
+                    break;
+                }
+            }
+            /*
+             * the first case: find the same provider and name that describes by default device
+             */
+            if (deviceNum != -1) {
+                MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDeviceInfo();
+                for (int i = 0; i < deviceInfo.length; i++) {
+                    if (deviceInfo[i].getName().equals(defaultDevice.get(1))) {
+                        if (((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]) instanceof Sequencer) {
+                            if (connected) {
+                                sequencer = (Sequencer) ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]);
+                                seqTrans = sequencer.getTransmitter();
+                                try {
+                                    synth = MidiSystem.getSynthesizer();
+                                    recv = synth.getReceiver();                                    
+                                } catch (MidiUnavailableException e) {
+                                    /*
+                                     * if we haven't Synthesizer in the system, we use default receiver
+                                     */
+                                    recv = MidiSystem.getReceiver();
+                                }
+                                seqTrans.setReceiver(recv);
+                                return sequencer;
+                            }
+                            return (Sequencer) ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]);
+                        }
+                    }
+                }
+                /*
+                 * if we don't find the same provider and name, find any receiver describe by provider
+                 */
+                for (int i = 0; i < deviceInfo.length; i++) {
+                    if (((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]) instanceof Sequencer) {
+                        if (connected) {
+                            sequencer = (Sequencer) ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]);
+                            seqTrans = sequencer.getTransmitter();
+                            try {
+                                synth = MidiSystem.getSynthesizer();
+                                recv = synth.getReceiver();                                    
+                            } catch (MidiUnavailableException e) {
+                                /*
+                                 * if we haven't Synthesizer in the system, we use default receiver
+                                 */
+                                recv = MidiSystem.getReceiver();
+                            }
+                            seqTrans.setReceiver(recv);
+                            return sequencer;
+                        }
+                        return (Sequencer) ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]);
+                    }
+                }
+            }
+            /*
+             * if we don't find again, find any receivers describe by name
+             */
+            for (int i = 0; i < deviceProviders.size(); i++) {
+                MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(i)).getDeviceInfo();
+                for (int j = 0; j < deviceInfo.length; j++) {
+                    if (deviceInfo[j].getName().equals(defaultDevice.get(1))) {
+                        if (((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]) instanceof Sequencer) {
+                            if (connected) {
+                                sequencer = (Sequencer) ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]);
+                                seqTrans = sequencer.getTransmitter();
+                                try {
+                                    synth = MidiSystem.getSynthesizer();
+                                    recv = synth.getReceiver();                                    
+                                } catch (MidiUnavailableException e) {
+                                    /*
+                                     * if we haven't Synthesizer in the system, we use default receiver
+                                     */
+                                    recv = MidiSystem.getReceiver();
+                                }
+                                seqTrans.setReceiver(recv);
+                                return sequencer;
+                            }
+                            return (Sequencer) ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]);
+                        }
+                    }
+                }
+            }
+        }
+        /*
+         * in the last case we look throw all providers and find any receiver
+         */
+        for (int i = 0; i < deviceProviders.size(); i++) {
+            MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(i)).getDeviceInfo();
+            for (int j = 0; j < deviceInfo.length; j++) {
+                if (((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]) instanceof Sequencer) {
+                    if (connected) {
+                        sequencer = (Sequencer) ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]);
+                        seqTrans = sequencer.getTransmitter();
+                        try {
+                            synth = MidiSystem.getSynthesizer();
+                            recv = synth.getReceiver();                                    
+                        } catch (MidiUnavailableException e) {
+                            /*
+                             * if we haven't Synthesizer in the system, we use default receiver
+                             */
+                            recv = MidiSystem.getReceiver();
+                        }
+                        seqTrans.setReceiver(recv);
+                        return sequencer;
+                    }
+                    return (Sequencer) ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]);
+                }
+            }
+        }
+        /*
+         * if we don't find anyway, we throw out MidiUnavailableException
+         */
+        throw new MidiUnavailableException("There are no Synthesizers installed on your system!");
     }
 
     public static Soundbank getSoundbank(File file) throws InvalidMidiDataException,
             IOException {
-        //TODO
-        throw new Error("not yet implemented");
+        /*
+         * obtain the list of SoundbankReaderProviders
+         */
+        List soundbankReaderProviders = ProviderService.getProviders(soundbankReaderPath);
+        if (soundbankReaderProviders.size() == 0) {
+            //FIXME
+            /*
+             * I don't understand what type of exception we should throw out if we haven't
+             * appropriate providers...
+             * Maybe here is should be MidiUnavailableException
+             */
+            throw new Error("There is no SoundbankReaderProviders on your system!!!");
+        }
+        /*
+         * It's not determine what provider for this service I should to use, and so
+         * I use the first one
+         */
+        return ((SoundbankReader) soundbankReaderProviders.get(0)).getSoundbank(file);
     }
 
-    public static Soundbank getSoundbank(InputStream stream) throws InvalidMidiDataException,
-            IOException {
-        //TODO
-        throw new Error("not yet implemented");
+    public static Soundbank getSoundbank(InputStream stream) throws InvalidMidiDataException, IOException {
+        /*
+         * obtain the list of SoundbankReaderProviders
+         */
+        List soundbankReaderProviders = ProviderService.getProviders(soundbankReaderPath);
+        if (soundbankReaderProviders.size() == 0) {
+            //FIXME
+            /*
+             * I don't understand what type of exception we should throw out if we haven't
+             * appropriate providers...
+             * Maybe here is should be MidiUnavailableException
+             */
+            throw new Error("There is no SoundbankReaderProviders on your system!!!");
+        }
+        /*
+         * It's not determine what provider for this service I should to use, and so
+         * I use the first one
+         */
+        return ((SoundbankReader) soundbankReaderProviders.get(0)).getSoundbank(stream);
     }
 
     public static Soundbank getSoundbank(URL url) throws InvalidMidiDataException, IOException {
-        //TODO
-        throw new Error("not yet implemented");
+        /*
+         * obtain the list of SoundbankReaderProviders
+         */
+        List soundbankReaderProviders = ProviderService.getProviders(soundbankReaderPath);
+        if (soundbankReaderProviders.size() == 0) {
+            //FIXME
+            /*
+             * I don't understand what type of exception we should throw out if we haven't
+             * appropriate providers...
+             * Maybe here is should be MidiUnavailableException
+             */
+            throw new Error("There is no SoundbankReaderProviders on your system!!!");
+        }
+        /*
+         * It's not determine what provider for this service I should to use, and so
+         * I use the first one
+         */
+        return ((SoundbankReader) soundbankReaderProviders.get(0)).getSoundbank(url);
     }
 
     public static Synthesizer getSynthesizer() throws MidiUnavailableException {
-        //TODO
-        throw new Error("not yet implemented");
+        /*
+         * description of the default device for javax.sound.midi.Synthesizer
+         */
+        List<String> defaultDevice = ProviderService.getDefaultDeviceDescription(synthesizerName);
+        /*
+         * obtain the list of MidiDeviceProviders
+         */
+        List deviceProviders = ProviderService.getProviders(midiDeviceProviderPath);
+        String provName;
+        int deviceNum = -1;
+        
+        /*
+         * defaultDevice.get(0) --> provider
+         * defaultDevice.get(1) --> name
+         */      
+        if (defaultDevice.size() != 0) {
+            /*
+             * obtain the provider number in the list of deviceProviders that is provider for default device
+             */
+            for (int i = 0; i < deviceProviders.size(); i++) {
+                provName = deviceProviders.get(i).toString();
+                if (provName.substring(0, provName.indexOf("@")).equals(defaultDevice.get(0))) {
+                    deviceNum = i;
+                    break;
+                }
+            }
+            /*
+             * the first case: find the same provider and name that describes by default device
+             */
+            if (deviceNum != -1) {
+                MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDeviceInfo();
+                for (int i = 0; i < deviceInfo.length; i++) {
+                    if (deviceInfo[i].getName().equals(defaultDevice.get(1))) {
+                        if (((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]) instanceof Synthesizer) {
+                            return (Synthesizer) ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]);
+                        }
+                    }
+                }
+                /*
+                 * if we don't find the same provider and name, find any receiver describe by provider
+                 */
+                for (int i = 0; i < deviceInfo.length; i++) {
+                    if (((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]) instanceof Synthesizer) {
+                        return (Synthesizer) ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]);
+                    }
+                }
+            }
+            /*
+             * if we don't find again, find any receivers describe by name
+             */
+            for (int i = 0; i < deviceProviders.size(); i++) {
+                MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(i)).getDeviceInfo();
+                for (int j = 0; j < deviceInfo.length; j++) {
+                    if (deviceInfo[j].getName().equals(defaultDevice.get(1))) {
+                        if (((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]) instanceof Synthesizer) {
+                            return (Synthesizer) ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]);
+                        }
+                    }
+                }
+            }
+        }
+        /*
+         * in the last case we look throw all providers and find any receiver
+         */
+        for (int i = 0; i < deviceProviders.size(); i++) {
+            MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(i)).getDeviceInfo();
+            for (int j = 0; j < deviceInfo.length; j++) {
+                if (((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]) instanceof Synthesizer) {
+                    return (Synthesizer) ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]);
+                }
+            }
+        }
+        /*
+         * if we don't find anyway, we throw out MidiUnavailableException
+         */
+        throw new MidiUnavailableException("There are no Synthesizers installed on your system!");
     }
 
     public static Transmitter getTransmitter() throws MidiUnavailableException {
-        //TODO
-        throw new Error("not yet implemented");
+        /*
+         * description of the default device for javax.sound.midi.Transmitter
+         */
+        List<String> defaultDevice = ProviderService.getDefaultDeviceDescription(transmitterName);
+        /*
+         * obtain the list of MidiDeviceProviders
+         */
+        List deviceProviders = ProviderService.getProviders(midiDeviceProviderPath);
+        String provName;
+        int deviceNum = -1;
+        /*
+         * defaultDevice.get(0) --> provider
+         * defaultDevice.get(1) --> name
+         */      
+        if (defaultDevice.size() != 0) {
+            /*
+             * obtain the provider number in the list of deviceProviders that is provider for default device
+             */
+            for (int i = 0; i < deviceProviders.size(); i++) {
+                provName = deviceProviders.get(i).toString();
+                if (provName.substring(0, provName.indexOf("@")).equals(defaultDevice.get(0))) {
+                    deviceNum = i;
+                    break;
+                }
+            }
+            /*
+             * the first case: find the same provider and name that describes by default device
+             */
+            if (deviceNum != -1) {
+                MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDeviceInfo();
+                for (int i = 0; i < deviceInfo.length; i++) {
+                    if (deviceInfo[i].getName().equals(defaultDevice.get(1))) {
+                        try {
+                            return ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]).getTransmitter();
+                        } catch (MidiUnavailableException e) {}
+                    }
+                }
+                /*
+                 * if we don't find the same provider and name, find any receiver describe by provider
+                 */
+                for (int i = 0; i < deviceInfo.length; i++) {
+                    try {
+                        return ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]).getTransmitter();
+                    } catch (MidiUnavailableException e) {}
+                }
+            }
+            /*
+             * if we don't find again, find any receivers describe by name
+             */
+            for (int i = 0; i < deviceProviders.size(); i++) {
+                MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(i)).getDeviceInfo();
+                for (int j = 0; j < deviceInfo.length; j++) {
+                    if (deviceInfo[j].getName().equals(defaultDevice.get(1))) {
+                        try {
+                            return ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]).getTransmitter();
+                        } catch (MidiUnavailableException e) {}
+                    }
+                }
+            }
+        }
+        /*
+         * in the last case we look throw all providers and find any receiver
+         */
+        for (int i = 0; i < deviceProviders.size(); i++) {
+            MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(i)).getDeviceInfo();
+            for (int j = 0; j < deviceInfo.length; j++) {
+                try {
+                    return ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]).getTransmitter();
+                } catch (MidiUnavailableException e) {}
+            }
+        }
+        /*
+         * if we don't find anyway, we throw out MidiUnavailableException
+         */
+        throw new MidiUnavailableException("There are no Transmitters installed on your system!");
     }
 
     public static boolean isFileTypeSupported(int fileType) {
-        //TODO
-        throw new Error("not yet implemented");
+        /*
+         * obtain the list of MidiFileWriterProviders;
+         * if we already obtain the list of providers, we don't obtain it again
+         */
+        List fileWriterProviders = ProviderService.getProviders(midiFileWriterPath);
+        if (fileWriterProviders.size() == 0) {
+            //FIXME
+            /*
+             * I don't understand what type of exception we should throw out if we haven't
+             * appropriate providers...
+             * Maybe here is should be MidiUnavailableException
+             */
+            throw new Error("There is no MidiFileWriterProviders on your system!!!");
+        }
+        /*
+         * It's not determine what provider for this service I should to use, and so
+         * I use the first one
+         */
+        return ((MidiFileWriter) fileWriterProviders.get(0)).isFileTypeSupported(fileType);
     }
 
     public static boolean isFileTypeSupported(int fileType, Sequence sequence) {
-        //TODO
-        throw new Error("not yet implemented");
+        /*
+         * obtain the list of MidiFileWriterProviders
+         */
+        List fileWriterProviders = ProviderService.getProviders(midiFileWriterPath);
+        if (fileWriterProviders.size() == 0) {
+            //FIXME
+            /*
+             * I don't understand what type of exception we should throw out if we haven't
+             * appropriate providers...
+             * Maybe here is should be MidiUnavailableException
+             */
+            throw new Error("There is no MidiFileWriterProviders on your system!!!");
+        }
+        /*
+         * It's not determine what provider for this service I should to use, and so
+         * I use the first one
+         */
+        return ((MidiFileWriter) fileWriterProviders.get(0)).isFileTypeSupported(fileType, sequence);
     }
 
     public static int write(Sequence in, int type, File out) throws IOException {
-        //TODO
-        throw new Error("not yet implemented");
+        /*
+         * obtain the list of MidiFileWriterProviders
+         */
+        List  fileWriterProviders = ProviderService.getProviders(midiFileWriterPath);
+        if (fileWriterProviders.size() == 0) {
+            //FIXME
+            /*
+             * I don't understand what type of exception we should throw out if we haven't
+             * appropriate providers...
+             * Maybe here is should be MidiUnavailableException
+             */
+            throw new Error("There is no MidiFileWriterProviders on your system!!!");
+        }
+        /*
+         * It's not determine what provider for this service I should to use, and so
+         * I use the first one
+         */
+        return ((MidiFileWriter) fileWriterProviders.get(0)).write(in, type, out);
     }
 
     public static int write(Sequence in, int fileType, OutputStream out) throws IOException {
-        //TODO
-        throw new Error("not yet implemented");
+        /*
+         * obtain the list of MidiFileWriterProviders
+         */
+        List  fileWriterProviders = ProviderService.getProviders(midiFileWriterPath);
+        if (fileWriterProviders.size() == 0) {
+            //FIXME
+            /*
+             * I don't understand what type of exception we should throw out if we haven't
+             * appropriate providers...
+             * Maybe here is should be MidiUnavailableException
+             */
+            throw new Error("There is no MidiFileWriterProviders on your system!!!");
+        }
+        /*
+         * It's not determine what provider for this service I should to use, and so
+         * I use the first one
+         */
+        return ((MidiFileWriter) fileWriterProviders.get(0)).write(in, fileType, out);
     }
 }

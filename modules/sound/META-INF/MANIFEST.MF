@@ -5,11 +5,13 @@ Bundle-SymbolicName: org.apache.harmony.sound
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Import-Package: java.lang,
- java.util,
- java.io,
+Import-Package: java.io,
+ java.lang,
  java.net,
  java.security,
+ java.util,
+ java.util.jar,
+ java.util.zip,
  org.apache.harmony.kernel.vm
 Export-Package: javax.sound.midi,
  javax.sound.midi.spi
