@@ -15,9 +15,11 @@
 
 package tests.api.java.util;
 
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 
 public class AbstractCollectionTest extends junit.framework.TestCase {
 
@@ -167,6 +169,33 @@ public class AbstractCollectionTest extends junit.framework.TestCase {
             assertTrue("Duplicate found at i = " + i, !duplicates
                     .contains(intArray[i]));
             duplicates.add(intArray[i]);
+        }
+    }
+
+    /**
+     * @tests java.util.AbstractCollection#toString()
+     */
+    public void test_toString() {
+        // see HARMONY-1522
+        // collection that returns null iterator(this is against the spec.)
+        AbstractCollection c = new AbstractCollection() {
+            public int size() {
+                // return not zero to pass 'is empty' check
+                return 1;
+            }
+
+            public Iterator iterator() {
+                // this violates the spec.
+                return null;
+            }
+        };
+
+        try {
+            // AbstractCollection.toString() doesn't verify
+            // whether iterator() returns null value or not
+            c.toString();
+            fail("No expected NullPointerException");
+        } catch (NullPointerException e) {
         }
     }
 
