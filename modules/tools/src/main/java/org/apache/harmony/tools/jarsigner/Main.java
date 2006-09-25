@@ -16,6 +16,8 @@
 
 package org.apache.harmony.tools.jarsigner;
 
+import java.io.OutputStream;
+
 
 /**
  * The main class that bundles command line parsing, interaction with the user,
@@ -39,8 +41,12 @@ public class Main {
      * @param args -
      *            command line with options.
      */
-    public static void run(String[] args) throws Exception {
+    public static void run(String[] args, OutputStream out) throws Exception {
         // TODO
+        if (out != System.out){
+            UserInteractor.setOutputStream(out);
+        }
+        
     }
 
     
@@ -52,7 +58,7 @@ public class Main {
      */
     public static void main(String[] args) {
         try {
-            run(args);
+            run(args, System.out);
         } catch (Exception e) {
             // System.out.println("JarSigner error: " + e);
             e.printStackTrace();
