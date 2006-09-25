@@ -32,7 +32,6 @@ public class AllTests {
 		// $JUnit-BEGIN$
 		suite.addTestSuite(ConcurrentModTest.class);
 
-		suite.addTestSuite(AbstractCollectionTest.class);
 		suite.addTestSuite(AbstractListTest.class);
 		suite.addTestSuite(AbstractMapTest.class);
         suite.addTestSuite(AbstractQueueTest.class);
