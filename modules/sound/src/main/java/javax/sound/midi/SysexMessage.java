@@ -31,6 +31,7 @@ public class SysexMessage extends MidiMessage {
         super(data);
     }
 
+    @Override
     public Object clone() {
         return new SysexMessage(this.getMessage());
     }
@@ -43,6 +44,7 @@ public class SysexMessage extends MidiMessage {
         return bt;
     }
 
+    @Override
     public void setMessage(byte[] data, int length) throws InvalidMidiDataException {
         //FIXME
         /*

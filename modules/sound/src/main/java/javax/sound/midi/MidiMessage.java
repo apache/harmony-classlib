@@ -33,6 +33,7 @@ public abstract class MidiMessage implements Cloneable {
         }
     }
 
+    @Override
     public abstract Object clone();
 
     public int getLength() {
@@ -49,9 +50,8 @@ public abstract class MidiMessage implements Cloneable {
     public int getStatus() {
         if ((data == null) || (length == 0)) {
             return 0;
-        } else {
-            return data[0] & 0xFF;
         }
+        return data[0] & 0xFF;
     }
 
     protected void setMessage(byte[] data, int length) throws InvalidMidiDataException {

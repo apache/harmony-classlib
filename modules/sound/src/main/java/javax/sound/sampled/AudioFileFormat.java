@@ -35,6 +35,7 @@ public class AudioFileFormat {
          * 
          * @see java.lang.Object#equals(java.lang.Object)
          */
+        @Override
         public final boolean equals(Object another) {
             if (this == another) {
                 return true;
@@ -54,10 +55,12 @@ public class AudioFileFormat {
             return extension;
         }
 
+        @Override
         public final int hashCode() {
             return name.hashCode() + extension.hashCode();
         }
 
+        @Override
         public final String toString() {
             throw new Error("not yet implemented");
         }

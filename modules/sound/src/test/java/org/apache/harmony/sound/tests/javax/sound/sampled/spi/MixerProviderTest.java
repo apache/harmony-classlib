@@ -31,11 +31,13 @@ public class MixerProviderTest extends TestCase {
     public void testIsMixerSupported() {
         MixerProvider myProvider = new MixerProvider() {
 
+            @Override
             public Mixer getMixer(Mixer.Info info) {
                 fail("what are doing here?");
                 return null;
             }
 
+            @Override
             public Mixer.Info[] getMixerInfo() {
                 return recorded;
             }

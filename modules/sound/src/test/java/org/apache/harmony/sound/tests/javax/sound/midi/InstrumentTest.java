@@ -67,6 +67,7 @@ public class InstrumentTest extends TestCase {
             super(soundbank, patch, name, dataClass);
         }
 
+        @Override
         public Object getData() {
             return null;
         }

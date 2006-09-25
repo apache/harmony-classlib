@@ -35,22 +35,26 @@ public class AudioFileWriterTest extends TestCase {
     public void testIsFileTypeSupported1() {
         AudioFileWriter writer = new AudioFileWriter() {
 
+            @Override
             public AudioFileFormat.Type[] getAudioFileTypes() {
                 return recorded;
             }
 
+            @Override
             public AudioFileFormat.Type[] getAudioFileTypes(
                     AudioInputStream stream) {
                 fail("what are doing here?");
                 return null;
             }
 
+            @Override
             public int write(AudioInputStream stream,
                     AudioFileFormat.Type fileType, File out) {
                 fail("what are doing here?");
                 return 0;
             }
 
+            @Override
             public int write(AudioInputStream stream,
                     AudioFileFormat.Type fileType, OutputStream out) {
                 fail("what are doing here?");
@@ -84,22 +88,26 @@ public class AudioFileWriterTest extends TestCase {
     public void testIsFileTypeSupported2() {
         AudioFileWriter writer = new AudioFileWriter() {
 
+            @Override
             public AudioFileFormat.Type[] getAudioFileTypes() {
                 fail("what are doing here?");
                 return null;
             }
 
+            @Override
             public AudioFileFormat.Type[] getAudioFileTypes(
                     AudioInputStream stream) {
                 return recorded;
             }
 
+            @Override
             public int write(AudioInputStream stream,
                     AudioFileFormat.Type fileType, File out) {
                 fail("what are doing here?");
                 return 0;
             }
 
+            @Override
             public int write(AudioInputStream stream,
                     AudioFileFormat.Type fileType, OutputStream out) {
                 fail("what are doing here?");

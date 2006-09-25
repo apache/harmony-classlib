@@ -22,8 +22,6 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Track;
 
-import org.apache.harmony.sound.tests.javax.sound.midi.TrackTest.MidiMessage1;
-
 import junit.framework.TestCase;
 
 public class SequenceTest extends TestCase {
@@ -31,11 +29,11 @@ public class SequenceTest extends TestCase {
      * test constants
      */
     public void test_constants() {
-        assertEquals(0.0f, Sequence.PPQ);
-        assertEquals(24.0f, Sequence.SMPTE_24);
-        assertEquals(25.0f, Sequence.SMPTE_25);
-        assertEquals(30.0f, Sequence.SMPTE_30);
-        assertEquals(29.969999313354492f, Sequence.SMPTE_30DROP);
+        assertEquals(0.0f, Sequence.PPQ, 0f);
+        assertEquals(24.0f, Sequence.SMPTE_24, 0f);
+        assertEquals(25.0f, Sequence.SMPTE_25, 0f);
+        assertEquals(30.0f, Sequence.SMPTE_30, 0f);
+        assertEquals(29.969999313354492f, Sequence.SMPTE_30DROP, 0f);
     }
     /**
      * test constructor Sequence(float, int)
@@ -45,18 +43,18 @@ public class SequenceTest extends TestCase {
         Sequence seq0 = new Sequence(Sequence.PPQ, 10, 2);
         seq0.getTracks();
         
-        Sequence seq1 = new Sequence(Sequence.PPQ, 10);
+        new Sequence(Sequence.PPQ, 10);
         Sequence seq2 = new Sequence(Sequence.SMPTE_24, -10);
-        Sequence seq3 = new Sequence(Sequence.SMPTE_25, 9854);
-        Sequence seq4 = new Sequence(Sequence.SMPTE_30, -82534);
-        Sequence seq5 = new Sequence(Sequence.SMPTE_30DROP, 0);
+        new Sequence(Sequence.SMPTE_25, 9854);
+        new Sequence(Sequence.SMPTE_30, -82534);
+        new Sequence(Sequence.SMPTE_30DROP, 0);
         
         try {
-            Sequence test = new Sequence(32.0f, 16);
+            new Sequence(32.0f, 16);
             fail("InvalidMidiDataException expected");
         } catch (InvalidMidiDataException e) {}
         
-        assertEquals(24.0f, seq2.getDivisionType());
+        assertEquals(24.0f, seq2.getDivisionType(), 0f);
         assertEquals(0, seq2.getMicrosecondLength());
         assertEquals(-10, seq2.getResolution());
         assertEquals(0, seq2.getTickLength());
@@ -68,18 +66,18 @@ public class SequenceTest extends TestCase {
      * test constructor Sequence(float, int, int)
      */
     public void test_constructor2() throws Exception {
-        Sequence seq1 = new Sequence(Sequence.PPQ, 10, 0);
+        new Sequence(Sequence.PPQ, 10, 0);
         Sequence seq2 = new Sequence(Sequence.SMPTE_24, -10, 8762);
         Sequence seq3 = new Sequence(Sequence.SMPTE_25, 9854, -18);
-        Sequence seq4 = new Sequence(Sequence.SMPTE_30, -82534, 34);
+        new Sequence(Sequence.SMPTE_30, -82534, 34);
         Sequence seq5 = new Sequence(Sequence.SMPTE_30DROP, 0);
         
         try {
-            Sequence test = new Sequence(-9.1f, 16, 54);
+            new Sequence(-9.1f, 16, 54);
             fail("InvalidMidiDataException expected");
         } catch (InvalidMidiDataException e) {}
         
-        assertEquals(25.0f, seq3.getDivisionType());
+        assertEquals(25.0f, seq3.getDivisionType(), 0f);
         assertEquals(0, seq3.getMicrosecondLength());
         assertEquals(9854, seq3.getResolution());
         assertEquals(0, seq3.getTickLength());
@@ -288,7 +286,7 @@ public class SequenceTest extends TestCase {
      */
     public void test_getTracks() throws Exception {
         Sequence seq = new Sequence(Sequence.SMPTE_24, 67, 9);
-        Track tr = seq.createTrack();
+        seq.createTrack();
         Track tr1 = seq.createTrack();
         
         Track[] tracks = seq.getTracks();
@@ -315,6 +313,7 @@ public class SequenceTest extends TestCase {
             super(data);
         }
         
+        @Override
         public Object clone() {
             return null;
         }

@@ -251,10 +251,12 @@ public class MidiMessageTest extends TestCase {
             super(data);
         }
 
+        @Override
         public Object clone() {
             return null;
         }
 
+        @Override
         public void setMessage(byte[] data, int length)
                 throws InvalidMidiDataException {
             super.setMessage(data, length);

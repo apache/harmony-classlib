@@ -36,12 +36,14 @@ public class MetaMessage extends MidiMessage {
         }
         if (super.length > 3) {
             int n = 3;
-            while ((n <= super.length) && (super.data[n - 1] < 0))
+            while ((n <= super.length) && (super.data[n - 1] < 0)) {
                 n++;
+            }
             dsp = n;
         }
     }
 
+    @Override
     public Object clone() {
         return new MetaMessage(this.getMessage());
     }
@@ -53,17 +55,15 @@ public class MetaMessage extends MidiMessage {
                 bt[i - dsp] = super.data[i];
             }
             return bt;
-        } else {
-            return new byte[0];
         }
+        return new byte[0];
     }
 
     public int getType() {
         if ((super.data != null) && (super.length >= 2)) {
             return super.data[1] & 0xFF;
-        } else {
-            return 0;
         }
+        return 0;
     }
 
     public void setMessage(int type, byte[] data, int length) throws InvalidMidiDataException {

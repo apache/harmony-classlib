@@ -31,11 +31,13 @@ public class MidiDeviceProviderTest extends TestCase {
     public void testIsDeviceSupported() {
         MidiDeviceProvider myProvider = new MidiDeviceProvider() {
 
+            @Override
             public MidiDevice getDevice(MidiDevice.Info info) {
                 fail("what are doing here?");
                 return null;
             }
 
+            @Override
             public MidiDevice.Info[] getDeviceInfo() {
                 return recorded;
             }

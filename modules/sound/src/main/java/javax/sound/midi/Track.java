@@ -74,11 +74,10 @@ public class Track {
                 event.getMessage().getMessage()[2] == 0 ) {
             if (events.size() == 0) {
                 return events.add(event);
-            } else {
-                byte[] bt = events.get(events.size() - 1).getMessage().getMessage();
-                if ((bt[0] != -1) && (bt[1] != 47) && (bt[2] != 0)) {
-                    return events.add(event);
-                }
+            }
+            byte[] bt = events.get(events.size() - 1).getMessage().getMessage();
+            if ((bt[0] != -1) && (bt[1] != 47) && (bt[2] != 0)) {
+                return events.add(event);
             }         
             return true;
         }
@@ -92,11 +91,10 @@ public class Track {
             badEvent = event;
             // sounds.01=-1
             throw new ArrayIndexOutOfBoundsException(Messages.getString("sound.01")); //$NON-NLS-1$
-        } else {
-            byte[] bt = events.get(events.size() - 1).getMessage().getMessage();
-            if ((bt[0] != -1) && (bt[1] != 47) && (bt[2] != 0)) {
-                events.add(new MidiEvent(new MetaMessage(new byte[] {-1, 47, 0}), 0));
-            }
+        }
+        byte[] bt = events.get(events.size() - 1).getMessage().getMessage();
+        if ((bt[0] != -1) && (bt[1] != 47) && (bt[2] != 0)) {
+            events.add(new MidiEvent(new MetaMessage(new byte[] {-1, 47, 0}), 0));
         }
         
         if (events.contains(event)) {
@@ -112,10 +110,9 @@ public class Track {
         for (int i = 0; i < events.size() - 1; i++ ) {
             if (events.get(i).getTick() <= event.getTick()) {
                 continue;
-            } else {
-                events.add(i, event);
-                break;
             }
+            events.add(i, event);
+            break;
         }
         /*
          * method Track.ticks() return the biggest value of tick of all events

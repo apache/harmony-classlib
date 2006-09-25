@@ -34,20 +34,24 @@ public class MidiFileWriterTest extends TestCase {
     public void testIsFileTypeSupported1() {
         MidiFileWriter writer = new MidiFileWriter() {
 
+            @Override
             public int[] getMidiFileTypes() {
                 return recorded;
             }
 
+            @Override
             public int[] getMidiFileTypes(Sequence sequence) {
                 fail("what are doing here?");
                 return null;
             }
 
+            @Override
             public int write(Sequence in, int fileType, File out) {
                 fail("what are doing here?");
                 return 0;
             }
 
+            @Override
             public int write(Sequence in, int fileType, OutputStream out) {
                 fail("what are doing here?");
                 return 0;
@@ -73,20 +77,24 @@ public class MidiFileWriterTest extends TestCase {
     public void testIsFileTypeSupported2() {
         MidiFileWriter writer = new MidiFileWriter() {
 
+            @Override
             public int[] getMidiFileTypes() {
                 fail("what are doing here?");
                 return null;
             }
 
+            @Override
             public int[] getMidiFileTypes(Sequence sequence) {
                 return recorded;
             }
 
+            @Override
             public int write(Sequence in, int fileType, File out) {
                 fail("what are doing here?");
                 return 0;
             }
 
+            @Override
             public int write(Sequence in, int fileType, OutputStream out) {
                 fail("what are doing here?");
                 return 0;

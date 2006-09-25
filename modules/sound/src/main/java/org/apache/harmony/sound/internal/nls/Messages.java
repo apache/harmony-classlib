@@ -57,8 +57,9 @@ public class Messages {
      * @return String the message for that key in the system message bundle.
      */
     static public String getString(String msg) {
-        if (bundle == null)
+        if (bundle == null) {
             return msg;
+        }
         try {
             return bundle.getString(msg);
         } catch (MissingResourceException e) {
@@ -163,18 +164,20 @@ public class Messages {
                 + (args.length * 20));
         String[] argStrings = new String[args.length];
         for (int i = 0; i < args.length; ++i) {
-            if (args[i] == null)
+            if (args[i] == null) {
                 argStrings[i] = "<null>";	//$NON-NLS-1$
-            else
+            } else {
                 argStrings[i] = args[i].toString();
+            }
         }
         int lastI = 0;
         for (int i = format.indexOf('{', 0); i >= 0; i = format.indexOf('{',
                 lastI)) {
             if (i != 0 && format.charAt(i - 1) == '\\') {
                 // It's escaped, just print and loop.
-                if (i != 1)
+                if (i != 1) {
                     answer.append(format.substring(lastI, i - 1));
+                }
                 answer.append('{');
                 lastI = i + 1;
             } else {
@@ -193,17 +196,19 @@ public class Messages {
                     } else {
                         // Got a good one!
                         answer.append(format.substring(lastI, i));
-                        if (argnum >= argStrings.length)
+                        if (argnum >= argStrings.length) {
                             answer.append("<missing argument>");	//$NON-NLS-1$
-                        else
+                        } else {
                             answer.append(argStrings[argnum]);
+                        }
 						lastI = i + 3;
                     }
                 }
             }
         }
-        if (lastI < format.length())
+        if (lastI < format.length()) {
             answer.append(format.substring(lastI, format.length()));
+        }
         return answer.toString();
     }
 

@@ -22,6 +22,7 @@ import java.io.OutputStream;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioFileFormat.Type;
 
 public abstract class AudioFileWriter {
 
@@ -31,8 +32,8 @@ public abstract class AudioFileWriter {
 
     public boolean isFileTypeSupported(AudioFileFormat.Type fileType) {
         AudioFileFormat.Type[] supported = getAudioFileTypes();
-        for (int i = 0; i < supported.length; i++) {
-            if (fileType.equals(supported[i])) {
+        for (Type element : supported) {
+            if (fileType.equals(element)) {
                 return true;
             }
         }
@@ -41,8 +42,8 @@ public abstract class AudioFileWriter {
 
     public boolean isFileTypeSupported(AudioFileFormat.Type fileType, AudioInputStream stream) {
         AudioFileFormat.Type[] supported = getAudioFileTypes(stream);
-        for (int i = 0; i < supported.length; i++) {
-            if (fileType.equals(supported[i])) {
+        for (Type element : supported) {
+            if (fileType.equals(element)) {
                 return true;
             }
         }

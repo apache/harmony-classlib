@@ -33,6 +33,7 @@ public interface Line {
             throw new Error("not yet implemented");
         }
         
+        @Override
         public String toString() {
             throw new Error("not yet implemented");
         }

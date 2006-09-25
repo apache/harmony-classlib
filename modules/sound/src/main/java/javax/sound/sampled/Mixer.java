@@ -30,6 +30,7 @@ public interface Mixer extends Line {
             this.version = version;
         }
         
+        @Override
         public final boolean equals(Object another) {
             return this == another;
         }
@@ -50,10 +51,12 @@ public interface Mixer extends Line {
             return version;
         }
         
+        @Override
         public final int hashCode() {
             return name.hashCode() + vendor.hashCode() + description.hashCode() + version.hashCode();
         }
         
+        @Override
         public String toString() {
             throw new Error("not yet implemented");
         }

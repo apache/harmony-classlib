@@ -64,6 +64,7 @@ public class ShortMessage extends MidiMessage {
         super(data);
     }
 
+    @Override
     public Object clone() {
         return new ShortMessage(this.getMessage());
     }
@@ -74,9 +75,8 @@ public class ShortMessage extends MidiMessage {
          */
         if ((data == null) || (data.length == 0)) {
             return 0;
-        } else {
-            return data[0] & 0x0F;
         }
+        return data[0] & 0x0F;
     }
 
     public int getCommand() {
@@ -85,9 +85,8 @@ public class ShortMessage extends MidiMessage {
         */
         if ((data == null) || (data.length == 0)) {
             return 0;
-        } else {
-            return (data[0] & 0xFF) - getChannel();
         }
+        return (data[0] & 0xFF) - getChannel();
     }
 
     public int getData1() {

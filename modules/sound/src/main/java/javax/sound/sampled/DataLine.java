@@ -63,10 +63,12 @@ public interface DataLine extends Line {
             return maxBufferSize;
         }
 
+        @Override
         public boolean matches(Line.Info info) {
             throw new Error("not yet implemented");
         }
         
+        @Override
         public String toString() {
             throw new Error("not yet implemented");
         }

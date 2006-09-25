@@ -59,6 +59,7 @@ public class SoundbankResourceTest extends TestCase
             super( soundbank, name, dataClass );
         }
         
+        @Override
         public Object getData()
         {
             return null;

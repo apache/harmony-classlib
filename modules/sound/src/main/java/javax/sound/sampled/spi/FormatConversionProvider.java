@@ -18,6 +18,7 @@ package javax.sound.sampled.spi;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioFormat.Encoding;
 
 public abstract class FormatConversionProvider {
 
@@ -33,8 +34,8 @@ public abstract class FormatConversionProvider {
     public boolean isConversionSupported(AudioFormat.Encoding targetEncoding,
             AudioFormat sourceFormat) {
         AudioFormat.Encoding[] encodings = getTargetEncodings(sourceFormat);
-        for (int i = 0; i < encodings.length; i++) {
-            if (targetEncoding.equals(encodings[i])) {
+        for (Encoding element : encodings) {
+            if (targetEncoding.equals(element)) {
                 return true;
             }
         }
@@ -48,8 +49,8 @@ public abstract class FormatConversionProvider {
             AudioFormat sourceFormat) {
         AudioFormat[] formats = getTargetFormats(targetFormat.getEncoding(),
                 sourceFormat);
-        for (int i = 0; i < formats.length; i++) {
-            if (targetFormat.equals(formats[i])) {
+        for (AudioFormat element : formats) {
+            if (targetFormat.equals(element)) {
                 return true;
             }
         }
@@ -60,8 +61,8 @@ public abstract class FormatConversionProvider {
 
     public boolean isSourceEncodingSupported(AudioFormat.Encoding sourceEncoding) {
         AudioFormat.Encoding[] encodings = getSourceEncodings();
-        for (int i = 0; i < encodings.length; i++) {
-            if (sourceEncoding.equals(encodings[i])) {
+        for (Encoding element : encodings) {
+            if (sourceEncoding.equals(element)) {
                 return true;
             }
         }
@@ -72,8 +73,8 @@ public abstract class FormatConversionProvider {
 
     public boolean isTargetEncodingSupported(AudioFormat.Encoding targetEncoding) {
         AudioFormat.Encoding[] encodings = getTargetEncodings();
-        for (int i = 0; i < encodings.length; i++) {
-            if (targetEncoding.equals(encodings[i])) {
+        for (Encoding element : encodings) {
+            if (targetEncoding.equals(element)) {
                 return true;
             }
         }

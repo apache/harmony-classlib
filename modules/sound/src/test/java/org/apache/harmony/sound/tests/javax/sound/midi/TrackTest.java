@@ -280,6 +280,7 @@ public class TrackTest extends TestCase {
             super(data);
         }
         
+        @Override
         public Object clone() {
             return null;
         }

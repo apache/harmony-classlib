@@ -64,6 +64,7 @@ public class MidiEventTest extends TestCase {
             super(data);
         }
         
+        @Override
         public Object clone() {
             return null;
         }

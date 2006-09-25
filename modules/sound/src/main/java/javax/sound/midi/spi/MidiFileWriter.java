@@ -30,8 +30,8 @@ public abstract class MidiFileWriter {
 
     public boolean isFileTypeSupported(int fileType) {
         int[] supported = getMidiFileTypes();
-        for (int i = 0; i < supported.length; i++) {
-            if (fileType == supported[i]) {
+        for (int element : supported) {
+            if (fileType == element) {
                 return true;
             }
         }
@@ -40,8 +40,8 @@ public abstract class MidiFileWriter {
 
     public boolean isFileTypeSupported(int fileType, Sequence sequence) {
         int[] supported = getMidiFileTypes(sequence);
-        for (int i = 0; i < supported.length; i++) {
-            if (fileType == supported[i]) {
+        for (int element : supported) {
+            if (fileType == element) {
                 return true;
             }
         }

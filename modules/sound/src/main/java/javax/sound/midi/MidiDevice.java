@@ -40,6 +40,7 @@ public interface MidiDevice {
          * 
          * @see java.lang.Object#equals(java.lang.Object)
          */
+        @Override
         public final boolean equals(Object obj) {
             return this == obj;
         }
@@ -60,6 +61,7 @@ public interface MidiDevice {
             return version;
         }
 
+        @Override
         public final int hashCode() {
             final int PRIME = 31;
             int result = super.hashCode();
@@ -70,6 +72,7 @@ public interface MidiDevice {
             return result;
         }
 
+        @Override
         public final String toString() {
             return name;
         }

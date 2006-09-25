@@ -172,11 +172,8 @@ public class ProviderService {
          * Obtain the list of files that contains in the directory 'parent'
          */
         String[] listFiles = parent.list();
-        /*
-         * look through all file names
-         */
-        for (int i = 0; i < listFiles.length; i++) {
-            File file = new File(parent, listFiles[i]);
+        for (String element : listFiles) {
+            File file = new File(parent, element);
             /*
              * if new file is directory, than recursively go in it...
              */
@@ -187,8 +184,8 @@ public class ProviderService {
                  * else if it's file, we check up that it's jar-file. If it's true
                  * we save it
                  */
-                if (listFiles[i].endsWith(".jar")) {
-                    jarFiles.add(parent.toString() + File.separator + listFiles[i]);
+                if (element.endsWith(".jar")) {
+                    jarFiles.add(parent.toString() + File.separator + element);
                 }
             }
         }

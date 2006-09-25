@@ -17,6 +17,7 @@
 package javax.sound.sampled.spi;
 
 import javax.sound.sampled.Mixer;
+import javax.sound.sampled.Mixer.Info;
 
 public abstract class MixerProvider {
 
@@ -26,8 +27,8 @@ public abstract class MixerProvider {
 
     public boolean isMixerSupported(Mixer.Info info) {
         Mixer.Info[] devices = getMixerInfo();
-        for (int i = 0; i < devices.length; i++) {
-            if (info.equals(devices[i])) {
+        for (Info element : devices) {
+            if (info.equals(element)) {
                 return true;
             }
         }

@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 
+import javax.sound.midi.MidiDevice.Info;
 import javax.sound.midi.spi.MidiDeviceProvider;
 import javax.sound.midi.spi.MidiFileReader;
 import javax.sound.midi.spi.MidiFileWriter;
@@ -72,14 +73,14 @@ public class MidiSystem {
         /* 
          * obtain the list of MidiDeviceProviders
          */
-        List deviceProviders = ProviderService.getProviders(midiDeviceProviderPath);
+        List<?> deviceProviders = ProviderService.getProviders(midiDeviceProviderPath);
         /*
-         * find device that describes by parametr info and return it
+         * find device that describes by parameter info and return it
          */
         for (int i = 0; i < deviceProviders.size(); i++) {
             MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(i)).getDeviceInfo();
-            for (int j = 0; j < deviceInfo.length; j++) {
-                if (deviceInfo[j].equals(info)) {
+            for (Info element : deviceInfo) {
+                if (element.equals(info)) {
                     return ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(info);
                 }
             }
@@ -94,7 +95,7 @@ public class MidiSystem {
         /*
          * obtain the list of MidiDeviceProviders
          */
-        List deviceProviders = ProviderService.getProviders(midiDeviceProviderPath);
+        List<?> deviceProviders = ProviderService.getProviders(midiDeviceProviderPath);
         //variable to save MidiDevice.Info
         List<MidiDevice.Info> infos = new ArrayList<MidiDevice.Info>();
         /*
@@ -102,8 +103,8 @@ public class MidiSystem {
          */
         for (int i = 0; i < deviceProviders.size(); i++) {
             MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(i)).getDeviceInfo();
-            for (int j = 0; j < deviceInfo.length; j++) {
-                infos.add(deviceInfo[j]);
+            for (Info element : deviceInfo) {
+                infos.add(element);
             }
         }
         
@@ -116,7 +117,7 @@ public class MidiSystem {
         /*
          * obtain the list of MidiFileReaderProviders
          */
-        List fileReaderProviders = ProviderService.getProviders(midiFileReaderPath);
+        List<?> fileReaderProviders = ProviderService.getProviders(midiFileReaderPath);
         if (fileReaderProviders.size() == 0) {
             //FIXME
             /*
@@ -138,7 +139,7 @@ public class MidiSystem {
         /*
          * obtain the list of MidiFileReaderProviders
          */
-        List fileReaderProviders = ProviderService.getProviders(midiFileReaderPath);
+        List<?> fileReaderProviders = ProviderService.getProviders(midiFileReaderPath);
         if (fileReaderProviders.size() == 0) {
             //FIXME
             /*
@@ -160,7 +161,7 @@ public class MidiSystem {
         /*
          * obtain the list of MidiFileReaderProviders
          */
-        List fileReaderProviders = ProviderService.getProviders(midiFileReaderPath);
+        List<?> fileReaderProviders = ProviderService.getProviders(midiFileReaderPath);
         if (fileReaderProviders.size() == 0) {
             //FIXME
             /*
@@ -181,7 +182,7 @@ public class MidiSystem {
         /*
          * obtain the list of MidiFileWriterProviders
          */
-        List fileWriterProviders = ProviderService.getProviders(midiFileWriterPath);
+        List<?> fileWriterProviders = ProviderService.getProviders(midiFileWriterPath);
         if (fileWriterProviders.size() == 0) {
             //FIXME
             /*
@@ -202,7 +203,7 @@ public class MidiSystem {
         /*
          * obtain the list of MidiFileWriterProviders
          */
-        List fileWriterProviders = ProviderService.getProviders(midiFileWriterPath);
+        List<?> fileWriterProviders = ProviderService.getProviders(midiFileWriterPath);
         if (fileWriterProviders.size() == 0) {
             //FIXME
             /*
@@ -227,7 +228,7 @@ public class MidiSystem {
         /*
          * obtain the list of MidiDeviceProviders
          */
-        List deviceProviders = ProviderService.getProviders(midiDeviceProviderPath);
+        List<?> deviceProviders = ProviderService.getProviders(midiDeviceProviderPath);
         String provName;
         int deviceNum = -1;
         /*
@@ -250,19 +251,16 @@ public class MidiSystem {
              */
             if (deviceNum != -1) {
                 MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDeviceInfo();
-                for (int i = 0; i < deviceInfo.length; i++) {
-                    if (deviceInfo[i].getName().equals(defaultDevice.get(1))) {
+                for (Info element : deviceInfo) {
+                    if (element.getName().equals(defaultDevice.get(1))) {
                         try {
-                            return ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]).getReceiver();
+                            return ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(element).getReceiver();
                         } catch (MidiUnavailableException e) {}
                     }
                 }
-            /*
-             * if we don't find the same provider and name, find any receiver describe by provider
-             */
-                for (int i = 0; i < deviceInfo.length; i++) {
+            for (Info element : deviceInfo) {
                     try {
-                        return ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]).getReceiver();
+                        return ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(element).getReceiver();
                     } catch (MidiUnavailableException e) {}
                 }
             }
@@ -271,10 +269,10 @@ public class MidiSystem {
              */
             for (int i = 0; i < deviceProviders.size(); i++) {
                 MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(i)).getDeviceInfo();
-                for (int j = 0; j < deviceInfo.length; j++) {
-                    if (deviceInfo[j].getName().equals(defaultDevice.get(1))) {
+                for (Info element : deviceInfo) {
+                    if (element.getName().equals(defaultDevice.get(1))) {
                         try {
-                            return ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]).getReceiver();
+                            return ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(element).getReceiver();
                         } catch (MidiUnavailableException e) {}
                     }
                 }
@@ -285,9 +283,9 @@ public class MidiSystem {
          */
         for (int i = 0; i < deviceProviders.size(); i++) {
             MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(i)).getDeviceInfo();
-            for (int j = 0; j < deviceInfo.length; j++) {
+            for (Info element : deviceInfo) {
                 try {
-                    return ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]).getReceiver();
+                    return ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(element).getReceiver();
                 } catch (MidiUnavailableException e) {}
             }
         }
@@ -301,7 +299,7 @@ public class MidiSystem {
         /*
          * obtain the list of MidiFileReaderProviders
          */
-        List fileReaderProviders = ProviderService.getProviders(midiFileReaderPath);
+        List<?> fileReaderProviders = ProviderService.getProviders(midiFileReaderPath);
         if (fileReaderProviders.size() == 0) {
             //FIXME
             /*
@@ -323,7 +321,7 @@ public class MidiSystem {
         /*
          * obtain the list of MidiFileReaderProviders
          */
-        List fileReaderProviders = ProviderService.getProviders(midiFileReaderPath);
+        List<?> fileReaderProviders = ProviderService.getProviders(midiFileReaderPath);
         if (fileReaderProviders.size() == 0) {
             //FIXME
             /*
@@ -344,7 +342,7 @@ public class MidiSystem {
         /*
          * obtain the list of MidiFileReaderProviders
          */
-        List fileReaderProviders = ProviderService.getProviders(midiFileReaderPath);
+        List<?> fileReaderProviders = ProviderService.getProviders(midiFileReaderPath);
         if (fileReaderProviders.size() == 0) {
             //FIXME
             /*
@@ -376,7 +374,7 @@ public class MidiSystem {
         /*
          * obtain the list of MidiDeviceProviders
          */
-        List  deviceProviders = ProviderService.getProviders(midiDeviceProviderPath);
+        List<?>  deviceProviders = ProviderService.getProviders(midiDeviceProviderPath);
         
         Sequencer sequencer;
         Transmitter seqTrans;
@@ -404,11 +402,11 @@ public class MidiSystem {
              */
             if (deviceNum != -1) {
                 MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDeviceInfo();
-                for (int i = 0; i < deviceInfo.length; i++) {
-                    if (deviceInfo[i].getName().equals(defaultDevice.get(1))) {
-                        if (((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]) instanceof Sequencer) {
+                for (Info element : deviceInfo) {
+                    if (element.getName().equals(defaultDevice.get(1))) {
+                        if (((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(element) instanceof Sequencer) {
                             if (connected) {
-                                sequencer = (Sequencer) ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]);
+                                sequencer = (Sequencer) ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(element);
                                 seqTrans = sequencer.getTransmitter();
                                 try {
                                     synth = MidiSystem.getSynthesizer();
@@ -422,17 +420,14 @@ public class MidiSystem {
                                 seqTrans.setReceiver(recv);
                                 return sequencer;
                             }
-                            return (Sequencer) ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]);
+                            return (Sequencer) ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(element);
                         }
                     }
                 }
-                /*
-                 * if we don't find the same provider and name, find any receiver describe by provider
-                 */
-                for (int i = 0; i < deviceInfo.length; i++) {
-                    if (((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]) instanceof Sequencer) {
+                for (Info element : deviceInfo) {
+                    if (((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(element) instanceof Sequencer) {
                         if (connected) {
-                            sequencer = (Sequencer) ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]);
+                            sequencer = (Sequencer) ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(element);
                             seqTrans = sequencer.getTransmitter();
                             try {
                                 synth = MidiSystem.getSynthesizer();
@@ -446,7 +441,7 @@ public class MidiSystem {
                             seqTrans.setReceiver(recv);
                             return sequencer;
                         }
-                        return (Sequencer) ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]);
+                        return (Sequencer) ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(element);
                     }
                 }
             }
@@ -455,11 +450,11 @@ public class MidiSystem {
              */
             for (int i = 0; i < deviceProviders.size(); i++) {
                 MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(i)).getDeviceInfo();
-                for (int j = 0; j < deviceInfo.length; j++) {
-                    if (deviceInfo[j].getName().equals(defaultDevice.get(1))) {
-                        if (((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]) instanceof Sequencer) {
+                for (Info element : deviceInfo) {
+                    if (element.getName().equals(defaultDevice.get(1))) {
+                        if (((MidiDeviceProvider) deviceProviders.get(i)).getDevice(element) instanceof Sequencer) {
                             if (connected) {
-                                sequencer = (Sequencer) ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]);
+                                sequencer = (Sequencer) ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(element);
                                 seqTrans = sequencer.getTransmitter();
                                 try {
                                     synth = MidiSystem.getSynthesizer();
@@ -473,7 +468,7 @@ public class MidiSystem {
                                 seqTrans.setReceiver(recv);
                                 return sequencer;
                             }
-                            return (Sequencer) ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]);
+                            return (Sequencer) ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(element);
                         }
                     }
                 }
@@ -484,10 +479,10 @@ public class MidiSystem {
          */
         for (int i = 0; i < deviceProviders.size(); i++) {
             MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(i)).getDeviceInfo();
-            for (int j = 0; j < deviceInfo.length; j++) {
-                if (((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]) instanceof Sequencer) {
+            for (Info element : deviceInfo) {
+                if (((MidiDeviceProvider) deviceProviders.get(i)).getDevice(element) instanceof Sequencer) {
                     if (connected) {
-                        sequencer = (Sequencer) ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]);
+                        sequencer = (Sequencer) ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(element);
                         seqTrans = sequencer.getTransmitter();
                         try {
                             synth = MidiSystem.getSynthesizer();
@@ -501,7 +496,7 @@ public class MidiSystem {
                         seqTrans.setReceiver(recv);
                         return sequencer;
                     }
-                    return (Sequencer) ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]);
+                    return (Sequencer) ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(element);
                 }
             }
         }
@@ -516,7 +511,7 @@ public class MidiSystem {
         /*
          * obtain the list of SoundbankReaderProviders
          */
-        List soundbankReaderProviders = ProviderService.getProviders(soundbankReaderPath);
+        List<?> soundbankReaderProviders = ProviderService.getProviders(soundbankReaderPath);
         if (soundbankReaderProviders.size() == 0) {
             //FIXME
             /*
@@ -537,7 +532,7 @@ public class MidiSystem {
         /*
          * obtain the list of SoundbankReaderProviders
          */
-        List soundbankReaderProviders = ProviderService.getProviders(soundbankReaderPath);
+        List<?> soundbankReaderProviders = ProviderService.getProviders(soundbankReaderPath);
         if (soundbankReaderProviders.size() == 0) {
             //FIXME
             /*
@@ -558,7 +553,7 @@ public class MidiSystem {
         /*
          * obtain the list of SoundbankReaderProviders
          */
-        List soundbankReaderProviders = ProviderService.getProviders(soundbankReaderPath);
+        List<?> soundbankReaderProviders = ProviderService.getProviders(soundbankReaderPath);
         if (soundbankReaderProviders.size() == 0) {
             //FIXME
             /*
@@ -583,7 +578,7 @@ public class MidiSystem {
         /*
          * obtain the list of MidiDeviceProviders
          */
-        List deviceProviders = ProviderService.getProviders(midiDeviceProviderPath);
+        List<?> deviceProviders = ProviderService.getProviders(midiDeviceProviderPath);
         String provName;
         int deviceNum = -1;
         
@@ -607,19 +602,16 @@ public class MidiSystem {
              */
             if (deviceNum != -1) {
                 MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDeviceInfo();
-                for (int i = 0; i < deviceInfo.length; i++) {
-                    if (deviceInfo[i].getName().equals(defaultDevice.get(1))) {
-                        if (((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]) instanceof Synthesizer) {
-                            return (Synthesizer) ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]);
+                for (Info element : deviceInfo) {
+                    if (element.getName().equals(defaultDevice.get(1))) {
+                        if (((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(element) instanceof Synthesizer) {
+                            return (Synthesizer) ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(element);
                         }
                     }
                 }
-                /*
-                 * if we don't find the same provider and name, find any receiver describe by provider
-                 */
-                for (int i = 0; i < deviceInfo.length; i++) {
-                    if (((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]) instanceof Synthesizer) {
-                        return (Synthesizer) ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]);
+                for (Info element : deviceInfo) {
+                    if (((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(element) instanceof Synthesizer) {
+                        return (Synthesizer) ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(element);
                     }
                 }
             }
@@ -628,10 +620,10 @@ public class MidiSystem {
              */
             for (int i = 0; i < deviceProviders.size(); i++) {
                 MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(i)).getDeviceInfo();
-                for (int j = 0; j < deviceInfo.length; j++) {
-                    if (deviceInfo[j].getName().equals(defaultDevice.get(1))) {
-                        if (((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]) instanceof Synthesizer) {
-                            return (Synthesizer) ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]);
+                for (Info element : deviceInfo) {
+                    if (element.getName().equals(defaultDevice.get(1))) {
+                        if (((MidiDeviceProvider) deviceProviders.get(i)).getDevice(element) instanceof Synthesizer) {
+                            return (Synthesizer) ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(element);
                         }
                     }
                 }
@@ -642,9 +634,9 @@ public class MidiSystem {
          */
         for (int i = 0; i < deviceProviders.size(); i++) {
             MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(i)).getDeviceInfo();
-            for (int j = 0; j < deviceInfo.length; j++) {
-                if (((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]) instanceof Synthesizer) {
-                    return (Synthesizer) ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]);
+            for (Info element : deviceInfo) {
+                if (((MidiDeviceProvider) deviceProviders.get(i)).getDevice(element) instanceof Synthesizer) {
+                    return (Synthesizer) ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(element);
                 }
             }
         }
@@ -662,7 +654,7 @@ public class MidiSystem {
         /*
          * obtain the list of MidiDeviceProviders
          */
-        List deviceProviders = ProviderService.getProviders(midiDeviceProviderPath);
+        List<?> deviceProviders = ProviderService.getProviders(midiDeviceProviderPath);
         String provName;
         int deviceNum = -1;
         /*
@@ -685,19 +677,16 @@ public class MidiSystem {
              */
             if (deviceNum != -1) {
                 MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDeviceInfo();
-                for (int i = 0; i < deviceInfo.length; i++) {
-                    if (deviceInfo[i].getName().equals(defaultDevice.get(1))) {
+                for (Info element : deviceInfo) {
+                    if (element.getName().equals(defaultDevice.get(1))) {
                         try {
-                            return ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]).getTransmitter();
+                            return ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(element).getTransmitter();
                         } catch (MidiUnavailableException e) {}
                     }
                 }
-                /*
-                 * if we don't find the same provider and name, find any receiver describe by provider
-                 */
-                for (int i = 0; i < deviceInfo.length; i++) {
+                for (Info element : deviceInfo) {
                     try {
-                        return ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(deviceInfo[i]).getTransmitter();
+                        return ((MidiDeviceProvider) deviceProviders.get(deviceNum)).getDevice(element).getTransmitter();
                     } catch (MidiUnavailableException e) {}
                 }
             }
@@ -706,10 +695,10 @@ public class MidiSystem {
              */
             for (int i = 0; i < deviceProviders.size(); i++) {
                 MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(i)).getDeviceInfo();
-                for (int j = 0; j < deviceInfo.length; j++) {
-                    if (deviceInfo[j].getName().equals(defaultDevice.get(1))) {
+                for (Info element : deviceInfo) {
+                    if (element.getName().equals(defaultDevice.get(1))) {
                         try {
-                            return ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]).getTransmitter();
+                            return ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(element).getTransmitter();
                         } catch (MidiUnavailableException e) {}
                     }
                 }
@@ -720,9 +709,9 @@ public class MidiSystem {
          */
         for (int i = 0; i < deviceProviders.size(); i++) {
             MidiDevice.Info[] deviceInfo = ((MidiDeviceProvider) deviceProviders.get(i)).getDeviceInfo();
-            for (int j = 0; j < deviceInfo.length; j++) {
+            for (Info element : deviceInfo) {
                 try {
-                    return ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(deviceInfo[j]).getTransmitter();
+                    return ((MidiDeviceProvider) deviceProviders.get(i)).getDevice(element).getTransmitter();
                 } catch (MidiUnavailableException e) {}
             }
         }
@@ -737,7 +726,7 @@ public class MidiSystem {
          * obtain the list of MidiFileWriterProviders;
          * if we already obtain the list of providers, we don't obtain it again
          */
-        List fileWriterProviders = ProviderService.getProviders(midiFileWriterPath);
+        List<?> fileWriterProviders = ProviderService.getProviders(midiFileWriterPath);
         if (fileWriterProviders.size() == 0) {
             //FIXME
             /*
@@ -758,7 +747,7 @@ public class MidiSystem {
         /*
          * obtain the list of MidiFileWriterProviders
          */
-        List fileWriterProviders = ProviderService.getProviders(midiFileWriterPath);
+        List<?> fileWriterProviders = ProviderService.getProviders(midiFileWriterPath);
         if (fileWriterProviders.size() == 0) {
             //FIXME
             /*
@@ -779,7 +768,7 @@ public class MidiSystem {
         /*
          * obtain the list of MidiFileWriterProviders
          */
-        List  fileWriterProviders = ProviderService.getProviders(midiFileWriterPath);
+        List<?>  fileWriterProviders = ProviderService.getProviders(midiFileWriterPath);
         if (fileWriterProviders.size() == 0) {
             //FIXME
             /*
@@ -800,7 +789,7 @@ public class MidiSystem {
         /*
          * obtain the list of MidiFileWriterProviders
          */
-        List  fileWriterProviders = ProviderService.getProviders(midiFileWriterPath);
+        List<?>  fileWriterProviders = ProviderService.getProviders(midiFileWriterPath);
         if (fileWriterProviders.size() == 0) {
             //FIXME
             /*
