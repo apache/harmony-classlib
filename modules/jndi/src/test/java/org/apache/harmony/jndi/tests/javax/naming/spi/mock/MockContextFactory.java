@@ -28,7 +28,7 @@ public class MockContextFactory implements InitialContextFactory {
 	 * 
 	 * @see javax.naming.spi.InitialContextFactory#getInitialContext(java.util.Hashtable)
 	 */
-	public Context getInitialContext(Hashtable envmt) throws NamingException {
+	public Context getInitialContext(Hashtable<?, ?> envmt) throws NamingException {
 		envmt.remove("url.schema");
 		return new MockContext(envmt);
 	}

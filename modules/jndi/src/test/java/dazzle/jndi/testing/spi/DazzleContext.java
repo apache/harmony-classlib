@@ -34,23 +34,39 @@ import javax.naming.OperationNotSupportedException;
 
 public class DazzleContext implements Context {
 
-	class BindingsEnum extends NamesEnum {
+	class BindingsEnum implements NamingEnumeration<Binding> {
 
-		BindingsEnum(Enumeration keysEnum) {
-			super(keysEnum);
-		}
+        Enumeration<String> keysEnum;
 
-		public Object nextElement() {
-			String key = (String) super.keysEnum.nextElement();
+        BindingsEnum(Enumeration<String> keysEnum) {
+            this.keysEnum = keysEnum;
+        }
+        public void close() throws NamingException {
+        }
+
+        public boolean hasMore() throws NamingException {
+            return hasMoreElements();
+        }
+
+        public boolean hasMoreElements() {
+            return keysEnum.hasMoreElements();
+        }
+
+        public Binding next() throws NamingException {
+            return nextElement();
+        }
+        
+        public Binding nextElement() {
+			String key = keysEnum.nextElement();
 			return new Binding(key, namespace.get(key));
 		}
 	}
 
-	class NamesEnum implements NamingEnumeration {
+	class NamesEnum implements NamingEnumeration<NameClassPair> {
 
-		Enumeration keysEnum;
+		Enumeration<String> keysEnum;
 
-		NamesEnum(Enumeration keysEnum) {
+		NamesEnum(Enumeration<String> keysEnum) {
 			this.keysEnum = keysEnum;
 		}
 
@@ -65,27 +81,28 @@ public class DazzleContext implements Context {
 			return keysEnum.hasMoreElements();
 		}
 
-		public Object next() throws NamingException {
+		public NameClassPair next() throws NamingException {
 			return nextElement();
 		}
 
-		public Object nextElement() {
-			String key = (String) keysEnum.nextElement();
+		public NameClassPair nextElement() {
+			String key = keysEnum.nextElement();
 			return new NameClassPair(key, namespace.get(key).getClass()
 					.getName());
 		}
 	}
 
-	private static NameParser nameParser = new DazzleParser();
+	private static final NameParser nameParser = new DazzleParser();
 
-	Hashtable environment;
+	Hashtable<Object, Object> environment;
 
-	Hashtable namespace;
+	Hashtable<String, Object> namespace;
 
-	DazzleContext(Hashtable environment) {
-		this.environment = new Hashtable();
-		namespace = new Hashtable();
-		this.environment = (Hashtable) environment.clone();
+	@SuppressWarnings("unchecked")
+    DazzleContext(Hashtable<?, ?> environment) {
+		this.environment = new Hashtable<Object, Object>();
+		namespace = new Hashtable<String, Object>();
+		this.environment = (Hashtable<Object, Object>) environment.clone();
 	}
 
 	public Object addToEnvironment(String propertyName, Object propertyValue)
@@ -103,14 +120,14 @@ public class DazzleContext implements Context {
 		}
 		if (namespace.get(strName) != null) {
 			throw new NameAlreadyBoundException();
-		} else {
-			namespace.put(strName, target);
-			return;
 		}
+        namespace.put(strName, target);
+        return;
 	}
 
 	public void close() throws NamingException {
-		environment = namespace = null;
+		environment = null;
+        namespace = null;
 	}
 
 	public Name composeName(Name name, Name prefix) throws NamingException {
@@ -121,8 +138,8 @@ public class DazzleContext implements Context {
 
 	public String composeName(String strName, String strPrefix)
 			throws NamingException {
-		return composeName(((Name) (new CompositeName(strName))),
-				((Name) (new CompositeName(strPrefix)))).toString();
+		return composeName(((new CompositeName(strName))),
+				((new CompositeName(strPrefix)))).toString();
 	}
 
 	public Context createSubcontext(Name name) throws NamingException {
@@ -141,8 +158,8 @@ public class DazzleContext implements Context {
 		throw new OperationNotSupportedException();
 	}
 
-	public Hashtable getEnvironment() throws NamingException {
-		return (Hashtable) environment.clone();
+	public Hashtable<?, ?> getEnvironment() throws NamingException {
+		return (Hashtable<?, ?>) environment.clone();
 	}
 
 	public String getNameInNamespace() throws NamingException {
@@ -157,27 +174,26 @@ public class DazzleContext implements Context {
 		return nameParser;
 	}
 
-	public NamingEnumeration list(Name name) throws NamingException {
+	public NamingEnumeration<NameClassPair> list(Name name) throws NamingException {
 		return list(name.toString());
 	}
 
-	public NamingEnumeration list(String strName) throws NamingException {
+	public NamingEnumeration<NameClassPair> list(String strName) throws NamingException {
 		if (strName.length() == 0) {
 			return new NamesEnum(namespace.keys());
 		}
 		Object target = namespace.get(strName);
 		if (target instanceof Context) {
 			return ((Context) target).list("");
-		} else {
-			throw new NotContextException();
 		}
+        throw new NotContextException();
 	}
 
-	public NamingEnumeration listBindings(Name name) throws NamingException {
+	public NamingEnumeration<Binding> listBindings(Name name) throws NamingException {
 		return listBindings(name.toString());
 	}
 
-	public NamingEnumeration listBindings(String strName)
+	public NamingEnumeration<Binding> listBindings(String strName)
 			throws NamingException {
 		if (strName.length() == 0) {
 			return new BindingsEnum(namespace.keys());
@@ -185,9 +201,8 @@ public class DazzleContext implements Context {
 		Object target = namespace.get(strName);
 		if (target instanceof Context) {
 			return ((Context) target).listBindings("");
-		} else {
-			throw new NotContextException();
 		}
+        throw new NotContextException();
 	}
 
 	public Object lookup(Name name) throws NamingException {
@@ -201,9 +216,8 @@ public class DazzleContext implements Context {
 		Object result = namespace.get(strName);
 		if (result == null) {
 			throw new NameNotFoundException();
-		} else {
-			return result;
 		}
+        return result;
 	}
 
 	public Object lookupLink(Name name) throws NamingException {
@@ -221,10 +235,9 @@ public class DazzleContext implements Context {
 	public void rebind(String strName, Object target) throws NamingException {
 		if (strName.length() == 0) {
 			throw new InvalidNameException("Name cannot be empty!");
-		} else {
-			namespace.put(strName, target);
-			return;
 		}
+        namespace.put(strName, target);
+        return;
 	}
 
 	public Object removeFromEnvironment(String propertyName)
@@ -247,10 +260,9 @@ public class DazzleContext implements Context {
 		Object target = namespace.remove(fromStrName);
 		if (target == null) {
 			throw new NameNotFoundException();
-		} else {
-			namespace.put(toStrName, target);
-			return;
 		}
+        namespace.put(toStrName, target);
+        return;
 	}
 
 	public void unbind(Name name) throws NamingException {
@@ -260,9 +272,8 @@ public class DazzleContext implements Context {
 	public void unbind(String strName) throws NamingException {
 		if (strName.length() == 0) {
 			throw new InvalidNameException("Name cannot be empty!");
-		} else {
-			namespace.remove(strName);
-			return;
 		}
+        namespace.remove(strName);
+        return;
 	}
 }

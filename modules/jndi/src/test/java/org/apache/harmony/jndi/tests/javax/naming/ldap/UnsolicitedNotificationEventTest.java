@@ -29,11 +29,13 @@ import junit.framework.TestCase;
 
 public class UnsolicitedNotificationEventTest extends TestCase {
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 
@@ -62,7 +64,7 @@ public class UnsolicitedNotificationEventTest extends TestCase {
 				referral, exception);
 		Object src = null;
 		try {
-			UnsolicitedNotificationEvent event = new UnsolicitedNotificationEvent(
+			new UnsolicitedNotificationEvent(
 					src, notification);
 		} catch (IllegalArgumentException e) {
 		}
@@ -92,7 +94,12 @@ public class UnsolicitedNotificationEventTest extends TestCase {
 	}
 
 	class MockUnsolicitedNotification implements UnsolicitedNotification {
-		String[] referrals;
+		/**
+         * <p></p>
+         */
+        private static final long serialVersionUID = 1L;
+
+        String[] referrals;
 
 		NamingException exception;
 
@@ -123,7 +130,8 @@ public class UnsolicitedNotificationEventTest extends TestCase {
 			return null;
 		}
 
-		public boolean equals(Object arg0) {
+		@Override
+        public boolean equals(Object arg0) {
 			if (arg0 instanceof MockUnsolicitedNotification) {
 				MockUnsolicitedNotification a = (MockUnsolicitedNotification) arg0;
 				return this.exception.equals(a.exception)
@@ -135,10 +143,10 @@ public class UnsolicitedNotificationEventTest extends TestCase {
 
 	class MockUnsolicitedNotificationListener implements
 			UnsolicitedNotificationListener {
-		Vector events;
+		Vector<UnsolicitedNotificationEvent> events;
 
 		public MockUnsolicitedNotificationListener() {
-			events = new Vector();
+			events = new Vector<UnsolicitedNotificationEvent>();
 		}
 
 		public void notificationReceived(UnsolicitedNotificationEvent e) {

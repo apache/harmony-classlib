@@ -16,7 +16,6 @@ package org.apache.harmony.jndi.tests.javax.naming.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.text.SimpleDateFormat;
 
 public class Log {
 
@@ -32,7 +31,7 @@ public class Log {
 		}
 
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			// _out =
 			// new PrintStream(
 			// new FileOutputStream(
@@ -54,8 +53,6 @@ public class Log {
 		_out = null;
 	}
 
-	private Class clz;
-
 	private String clzname;
 
 	private String method;
@@ -65,9 +62,7 @@ public class Log {
 	 * 
 	 * @param clz
 	 */
-	public Log(Class clz) {
-		this.clz = clz;
-
+	public Log(Class<?> clz) {
 		if (null != clz) {
 			clzname = clz.getName();
 			int dot = clzname.lastIndexOf('.');

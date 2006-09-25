@@ -21,7 +21,12 @@ import javax.naming.ldap.HasControls;
 
 public class MockHasControls implements HasControls {
 
-	/*
+	/**
+     * <p></p>
+     */
+    private static final long serialVersionUID = 1L;
+
+    /*
 	 * (non-Javadoc)
 	 * 
 	 * @see javax.naming.ldap.HasControls#getControls()

@@ -27,16 +27,7 @@ import junit.framework.TestCase;
 
 public class CannotProceedExceptionTest extends TestCase {
 
-	static private Log log = new Log(CannotProceedExceptionTest.class);
-
-	/**
-	 * Constructor for TestCannotProceedException.
-	 * 
-	 * @param arg0
-	 */
-	public CannotProceedExceptionTest(String arg0) {
-		super(arg0);
-	}
+	private static final Log log = new Log(CannotProceedExceptionTest.class);
 
 	public void testConstructorAndGetterSetter() throws InvalidNameException {
 		log.setMethod("testConstructorAndGetterSetter()");
@@ -44,7 +35,7 @@ public class CannotProceedExceptionTest extends TestCase {
 		CannotProceedException cpe = new CannotProceedException();
 		Name altName = new CompositeName("1");
 		Context altContext = null;
-		Hashtable h = new Hashtable();
+		Hashtable<?, ?> h = new Hashtable<Object, Object>();
 		Name newName = new CompositeName("2");
 
 		cpe.setAltName(altName);

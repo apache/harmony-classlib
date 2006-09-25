@@ -24,17 +24,16 @@ import javax.naming.ldap.Control;
 import javax.naming.ldap.ControlFactory;
 import javax.naming.ldap.LdapContext;
 
-import org.apache.harmony.jndi.tests.javax.naming.ldap.ctx1.MockContextOne;
-import org.apache.harmony.jndi.tests.javax.naming.ldap.ctx2.MockContextTwo;
-
 import junit.framework.TestCase;
 
 public class ControlFactoryTest extends TestCase {
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 
 	}
 
-	protected void tearDown() {
+	@Override
+    protected void tearDown() {
 
 	}
 
@@ -47,13 +46,13 @@ public class ControlFactoryTest extends TestCase {
 	public void testGetControlInstance_NoFactory() throws NamingException {
 		Control control = new MockControl("Original control", new byte[] { 1,
 				2, 3, 4 }, true);
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockContextFactory");
 		Context context = new InitialContext(env);
 
 		Control newControl = ControlFactory.getControlInstance(control,
-				context, new Hashtable());
+				context, new Hashtable<Object, Object>());
 
 		assertEquals(control, newControl);
 		assertSame(control, newControl);
@@ -68,7 +67,7 @@ public class ControlFactoryTest extends TestCase {
 	public void testGetControlInstance_HashtableNull() throws NamingException {
 		Control control = new MockControl("Original control", new byte[] { 1,
 				2, 3, 4 }, true);
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockContextFactory");
 		Context context = new InitialContext(env);
@@ -88,12 +87,12 @@ public class ControlFactoryTest extends TestCase {
 	public void testGetControlInstance_ContextNull() throws NamingException {
 		Control control = new MockControl("Original control", new byte[] { 1,
 				2, 3, 4 }, true);
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockContextFactory");
 
 		Control newControl = ControlFactory.getControlInstance(control, null,
-				new Hashtable());
+				new Hashtable<Object, Object>());
 
 		assertEquals(control, newControl);
 		assertSame(control, newControl);
@@ -106,13 +105,13 @@ public class ControlFactoryTest extends TestCase {
 	 * 4. Input Context == null Expected: return value == input control
 	 */
 	public void testGetControlInstance_ControlNull() throws NamingException {
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockContextFactory");
 
 		Context context = new InitialContext(env);
 		Control newControl = ControlFactory.getControlInstance(null, context,
-				new Hashtable());
+				new Hashtable<Object, Object>());
 
 		assertEquals(null, newControl);
 		assertSame(null, newControl);
@@ -128,12 +127,12 @@ public class ControlFactoryTest extends TestCase {
 			throws NamingException {
 		MockControl control = new MockControl("Original control", new byte[] {
 				1, 2, 3, 4 }, true);
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockContextFactory");
 		Context context = new InitialContext(env);
 
-		Hashtable controlEnv = new Hashtable();
+		Hashtable<String, String> controlEnv = new Hashtable<String, String>();
 		controlEnv.put(LdapContext.CONTROL_FACTORIES,
 				"org.apache.harmony.jndi.tests.javax.naming.ldap.MockControlFactory");
 		Control newControl = ControlFactory.getControlInstance(control,
@@ -154,17 +153,17 @@ public class ControlFactoryTest extends TestCase {
 			throws NamingException {
 		MockControl control = new MockControl("Original control", new byte[] {
 				1, 2, 3, 4 }, true);
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockContextFactory");
 		Context context = new InitialContext(env);
 
-		Hashtable controlEnv = new Hashtable();
+		Hashtable<String, String> controlEnv = new Hashtable<String, String>();
 		controlEnv
 				.put(LdapContext.CONTROL_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.ldap.ControlFactoryTest$MockInvalidControlFactory");
 		try {
-			Control newControl = ControlFactory.getControlInstance(control,
+			ControlFactory.getControlInstance(control,
 					context, controlEnv);
 			fail("Should throw a exception as designed.");
 		} catch (NamingException e) {
@@ -182,12 +181,12 @@ public class ControlFactoryTest extends TestCase {
 	public void testGetControlInstance_InvalidFactory() throws NamingException {
 		MockControl control = new MockControl("Original control", new byte[] {
 				1, 2, 3, 4 }, true);
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockContextFactory");
 		Context context = new InitialContext(env);
 
-		Hashtable controlEnv = new Hashtable();
+		Hashtable<String, String> controlEnv = new Hashtable<String, String>();
 		controlEnv.put(LdapContext.CONTROL_FACTORIES, "");
 		Control newControl = ControlFactory.getControlInstance(control,
 				context, controlEnv);
@@ -206,12 +205,12 @@ public class ControlFactoryTest extends TestCase {
 			throws NamingException {
 		MockControl control = new MockControl("Original control", new byte[] {
 				1, 2, 3, 4 }, true);
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockContextFactory");
 		Context context = new InitialContext(env);
 
-		Hashtable controlEnv = new Hashtable();
+		Hashtable<Object, Object> controlEnv = new Hashtable<Object, Object>();
 		controlEnv
 				.put(
 						LdapContext.CONTROL_FACTORIES,
@@ -271,7 +270,8 @@ public class ControlFactoryTest extends TestCase {
 
 	public static class MockInvalidControlFactory extends ControlFactory {
 
-		public Control getControlInstance(Control c) throws NamingException {
+		@Override
+        public Control getControlInstance(Control c) throws NamingException {
 			throw new NamingException(
 					"Throw Exception as designed for test ControlFactory.");
 		}

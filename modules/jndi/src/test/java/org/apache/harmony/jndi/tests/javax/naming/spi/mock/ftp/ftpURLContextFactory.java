@@ -28,10 +28,10 @@ import org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest;
  * Allways succeed.
  */
 public class ftpURLContextFactory implements ObjectFactory {
-	public Object getObjectInstance(Object o, Name n, Context c, Hashtable h)
+	public Object getObjectInstance(Object o, Name n, Context c, Hashtable<?, ?> h)
 			throws Exception {
 
-		Hashtable r = new Hashtable();
+		Hashtable<String, Object> r = new Hashtable<String, Object>();
 		if (null != o) {
 			r.put("o", o);
 		}

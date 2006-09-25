@@ -28,13 +28,7 @@ public class dir2URLContextFactory implements DirObjectFactory {
 
 	Log log = new Log(dir2URLContextFactory.class);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.naming.spi.ObjectFactory#getObjectInstance(java.lang.Object,
-	 *      javax.naming.Name, javax.naming.Context, java.util.Hashtable)
-	 */
-	public Object getObjectInstance(Object o, Name n, Context c, Hashtable h)
+	public Object getObjectInstance(Object o, Name n, Context c, Hashtable<?, ?> h)
 			throws Exception {
 		log.setMethod("getObjectInstance");
 		log.log("wrong method call");
@@ -51,9 +45,9 @@ public class dir2URLContextFactory implements DirObjectFactory {
 
 		private Context c;
 
-		private Hashtable envmt;
+		private Hashtable<?, ?> envmt;
 
-		public MockObject(Object o, Name n, Context c, Hashtable envmt,
+		public MockObject(Object o, Name n, Context c, Hashtable<?, ?> envmt,
 				Attributes a) {
 			this.o = o;
 			this.n = n;
@@ -62,7 +56,8 @@ public class dir2URLContextFactory implements DirObjectFactory {
 			this.a = a;
 		}
 
-		public String toString() {
+		@Override
+        public String toString() {
 			String s = "MockObject {";
 
 			s += "Object= " + o + "\n";
@@ -75,7 +70,8 @@ public class dir2URLContextFactory implements DirObjectFactory {
 			return s;
 		}
 
-		public boolean equals(Object obj) {
+		@Override
+        public boolean equals(Object obj) {
 			if (obj instanceof MockObject) {
 				MockObject theOther = (MockObject) obj;
 				if (o != theOther.o) {
@@ -98,24 +94,17 @@ public class dir2URLContextFactory implements DirObjectFactory {
 					return false;
 				}
 
-				boolean attrEqual = (null == a ? null == theOther.a : a
-						.equals(theOther.a));
-
+                // This comparison is ignored, why??
+                // DirectoryManagerTest fails if this is enabled
+				//boolean attrEqual = (null == a ? null == theOther.a : a.equals(theOther.a));
+                
 				return true;
-			} else {
-				return false;
 			}
+            return false;
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.naming.spi.DirObjectFactory#getObjectInstance(java.lang.Object,
-	 *      javax.naming.Name, javax.naming.Context, java.util.Hashtable,
-	 *      javax.naming.directory.Attributes)
-	 */
-	public Object getObjectInstance(Object o, Name n, Context c, Hashtable h,
+	public Object getObjectInstance(Object o, Name n, Context c, Hashtable<?, ?> h,
 			Attributes a) throws Exception {
 		NamingManagerTest.issueIndicatedExceptions(h);
 		if (NamingManagerTest.returnNullIndicated(h)) {

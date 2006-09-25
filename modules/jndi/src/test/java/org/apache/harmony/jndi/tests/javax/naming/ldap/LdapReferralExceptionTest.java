@@ -27,34 +27,8 @@ import junit.framework.TestCase;
 
 public class LdapReferralExceptionTest extends TestCase {
 
-	/*
-	 * -------------------------------------------------------------------
-	 * Constants
-	 * -------------------------------------------------------------------
-	 */
 
-	private static Log log = new Log(LdapReferralExceptionTest.class);
-
-	/*
-	 * -------------------------------------------------------------------
-	 * Constructors
-	 * -------------------------------------------------------------------
-	 */
-
-	/**
-	 * Constructor for LdapReferralExceptionTest.
-	 * 
-	 * @param arg0
-	 */
-	public LdapReferralExceptionTest(String arg0) {
-		super(arg0);
-	}
-
-	/*
-	 * -------------------------------------------------------------------
-	 * Methods
-	 * -------------------------------------------------------------------
-	 */
+	private static final Log log = new Log(LdapReferralExceptionTest.class);
 
 	public void testAllCoveragePurpose() throws NamingException {
 		log.setMethod("testAllCoveragePurpose()");
@@ -70,73 +44,43 @@ public class LdapReferralExceptionTest extends TestCase {
 	}
 
 	public static class MockLdapReferralException extends LdapReferralException {
+        private static final long serialVersionUID = 1L;
 
-		/**
-		 * 
-		 */
 		public MockLdapReferralException() {
 			super();
 		}
 
-		/**
-		 * @param s
-		 */
 		public MockLdapReferralException(String s) {
 			super(s);
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see javax.naming.ldap.LdapReferralException#getReferralContext()
-		 */
-		public Context getReferralContext() {
+		@Override
+        public Context getReferralContext() {
 			return null;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see javax.naming.ldap.LdapReferralException#getReferralContext(java.util.Hashtable)
-		 */
-		public Context getReferralContext(Hashtable h) {
+		@Override
+        public Context getReferralContext(Hashtable<?, ?> h) {
 			return null;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see javax.naming.ldap.LdapReferralException#getReferralContext(java.util.Hashtable,
-		 *      javax.naming.ldap.Control[])
-		 */
-		public Context getReferralContext(Hashtable h, Control[] cs) {
+		@Override
+        public Context getReferralContext(Hashtable<?, ?> h, Control[] cs) {
 			return null;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see javax.naming.ReferralException#getReferralInfo()
-		 */
-		public Object getReferralInfo() {
+		@Override
+        public Object getReferralInfo() {
 			return null;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see javax.naming.ReferralException#skipReferral()
-		 */
-		public boolean skipReferral() {
+		@Override
+        public boolean skipReferral() {
 			return false;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see javax.naming.ReferralException#retryReferral()
-		 */
-		public void retryReferral() {
+		@Override
+        public void retryReferral() {
 
 		}
 

@@ -18,13 +18,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
 
+import javax.naming.Binding;
 import javax.naming.CannotProceedException;
 import javax.naming.CompositeName;
 import javax.naming.Context;
 import javax.naming.Name;
+import javax.naming.NameClassPair;
 import javax.naming.NameParser;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -39,10 +40,11 @@ import javax.naming.spi.ObjectFactoryBuilder;
 import javax.naming.spi.StateFactory;
 
 import junit.framework.TestCase;
+
 import org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirContext;
 import org.apache.harmony.jndi.tests.javax.naming.util.Log;
-import com.sun.jndi.url.nntp.nntpURLContextFactory;
 
+import com.sun.jndi.url.nntp.nntpURLContextFactory;
 
 import dazzle.jndi.testing.spi.DazzleContext;
 
@@ -74,7 +76,7 @@ public class NamingManagerTest extends TestCase {
 	 * Instance variables (Should be private)
 	 * -------------------------------------------------------------------
 	 */
-	Hashtable props1 = new Hashtable();
+	Hashtable<String, String> props1 = new Hashtable<String, String>();
 
 	/**
 	 * Constructor for NamingManagerTest.
@@ -85,10 +87,8 @@ public class NamingManagerTest extends TestCase {
 		super(arg0);
 	}
 
-	/*
-	 * @see TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 
 		props1.put(Context.INITIAL_CONTEXT_FACTORY,
@@ -97,93 +97,91 @@ public class NamingManagerTest extends TestCase {
 				.put(Context.STATE_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MockStateFactory");
 
-		Hashtable env = new Hashtable();
+		Hashtable<String, Object> env = new Hashtable<String, Object>();
 		env
 				.put(Context.STATE_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MagicMockStateFactory");
-		writeProviderResource(MockContext.class.getName(), new Hashtable());
+		writeProviderResource(MockContext.class.getName(), new Hashtable<String, Object>());
 		writeProviderResource(MockDirContext.class.getName(), env);
 	}
 
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		deleteProviderResource(MockContext.class.getName());
 		deleteProviderResource(MockDirContext.class.getName());
 	}
 
-	public static boolean actionIndicated(Hashtable env, String indicationName) {
+	@SuppressWarnings("unchecked")
+    public static boolean actionIndicated(Hashtable<?, ?> env, String indicationName) {
 		if (null == env) {
 			return false;
-		} else {
-			Integer occurLevel = (Integer) env.get(indicationName);
-			if (null != occurLevel) {
-				if (occurLevel.intValue() <= 1) {
-					env.remove(indicationName);
-					return true;
-				} else {
-					env.put(indicationName, new Integer(
-							occurLevel.intValue() - 1));
-					return false;
-				}
-			} else {
-				return false;
-			}
 		}
+        Integer occurLevel = (Integer) env.get(indicationName);
+        if (null != occurLevel) {
+        	if (occurLevel.intValue() <= 1) {
+        		env.remove(indicationName);
+        		return true;
+        	}
+            ((Hashtable<Object, Object>)env).put(indicationName, new Integer(
+            		occurLevel.intValue() - 1));
+            return false;
+        }
+        return false;
 	}
 
-	public static void indicateReturnNull(Hashtable env) {
+	public static void indicateReturnNull(Hashtable<Object, Object> env) {
 		indicateReturnNull(env, 1);
 	}
 
-	public static void indicateReturnNull(Hashtable env, int occurLevel) {
+	public static void indicateReturnNull(Hashtable<Object, Object> env, int occurLevel) {
 		env.put(INDICATION_RETURN_NULL, new Integer(occurLevel));
 	}
 
-	public static boolean returnNullIndicated(Hashtable env) {
+	public static boolean returnNullIndicated(Hashtable<?, ?> env) {
 		return actionIndicated(env, INDICATION_RETURN_NULL);
 	}
 
-	public static void indicateRuntimeException(Hashtable env) {
+	public static void indicateRuntimeException(Hashtable<Object, Object> env) {
 		indicateRuntimeException(env, 1);
 	}
 
-	public static void indicateRuntimeException(Hashtable env, int occurLevel) {
+	public static void indicateRuntimeException(Hashtable<Object, Object> env, int occurLevel) {
 		env.put(INDICATION_RUNTIME_EXCEPTION, new Integer(occurLevel));
 	}
 
-	public static boolean runtimeExceptionIndicated(Hashtable env) {
+	public static boolean runtimeExceptionIndicated(Hashtable<?, ?> env) {
 		return actionIndicated(env, INDICATION_RUNTIME_EXCEPTION);
 	}
 
-	public static void indicateNullPointerException(Hashtable env) {
+	public static void indicateNullPointerException(Hashtable<?, ?> env) {
 		indicateNullPointerException(env, 1);
 	}
 
-	public static void indicateNullPointerException(Hashtable env,
+	@SuppressWarnings("unchecked")
+    public static void indicateNullPointerException(Hashtable<?, ?> env,
 			int occurLevel) {
-		env.put(INDICATION_NULL_POINTER_EXCEPTION, new Integer(occurLevel));
+		((Hashtable<Object, Object>)env).put(INDICATION_NULL_POINTER_EXCEPTION, new Integer(occurLevel));
 	}
 
-	public static boolean nullPointerExceptionIndicated(Hashtable env) {
+	public static boolean nullPointerExceptionIndicated(Hashtable<?, ?> env) {
 		return actionIndicated(env, INDICATION_NULL_POINTER_EXCEPTION);
 	}
 
-	public static void indicateNamingException(Hashtable env) {
+	public static void indicateNamingException(Hashtable<?, ?> env) {
 		indicateNamingException(env, 1);
 	}
 
-	public static void indicateNamingException(Hashtable env, int occurLevel) {
-		env.put(INDICATION_NAMING_EXCEPTION, new Integer(occurLevel));
+	@SuppressWarnings("unchecked")
+    public static void indicateNamingException(Hashtable<?, ?> env, int occurLevel) {
+        ((Hashtable<Object, Object>)env).put(INDICATION_NAMING_EXCEPTION, new Integer(occurLevel));
 	}
 
-	public static boolean namingExceptionIndicated(Hashtable env) {
+	public static boolean namingExceptionIndicated(Hashtable<?, ?> env) {
 		return actionIndicated(env, INDICATION_NAMING_EXCEPTION);
 	}
 
-	public static void issueIndicatedExceptions(Hashtable env)
+	public static void issueIndicatedExceptions(Hashtable<?, ?> env)
 			throws NamingException {
 		if (nullPointerExceptionIndicated(env)) {
 			throw new NullPointerException("Simulated NullPointerException.");
@@ -225,9 +223,9 @@ public class NamingManagerTest extends TestCase {
 	public void testGetInitialContext_NoBuilder_NullFactory()
 			throws NamingException {
 		log.setMethod("testGetInitialContext_NoBuilder_NullFactory()");
-		Hashtable envWithNoFac = new Hashtable();
+		Hashtable<String, String> envWithNoFac = new Hashtable<String, String>();
 		try {
-			Context context = NamingManager.getInitialContext(envWithNoFac);
+			NamingManager.getInitialContext(envWithNoFac);
 			fail("Should throw NoInitialContextException.");
 		} catch (NoInitialContextException e) {
 		}
@@ -240,10 +238,10 @@ public class NamingManagerTest extends TestCase {
 	public void testGetInitialContext_NoBuilder_EmptyFactory()
 			throws NamingException {
 		log.setMethod("testGetInitialContext_NoBuilder_EmptyFactory()");
-		Hashtable envWithEmptyFac = new Hashtable();
+		Hashtable<String, String> envWithEmptyFac = new Hashtable<String, String>();
 		envWithEmptyFac.put(Context.INITIAL_CONTEXT_FACTORY, "");
 		try {
-			Context context = NamingManager.getInitialContext(envWithEmptyFac);
+			NamingManager.getInitialContext(envWithEmptyFac);
 			fail("Should throw NoInitialContextException.");
 		} catch (NoInitialContextException e) {
 		}
@@ -256,14 +254,13 @@ public class NamingManagerTest extends TestCase {
 	public void testGetInitialContext_NoBuilder_InvalidFactory()
 			throws NamingException {
 		log.setMethod("testGetInitialContext_NoBuilder_InvalidFactory()");
-		Hashtable envWithInvalidFac = new Hashtable();
+		Hashtable<String, String> envWithInvalidFac = new Hashtable<String, String>();
 		envWithInvalidFac.put(Context.INITIAL_CONTEXT_FACTORY, "junk.Factory");
 		try {
-			Context context = NamingManager
-					.getInitialContext(envWithInvalidFac);
-			fail("Should throw NoInitialContextException.");
-		} catch (NoInitialContextException e) {
-		}
+            NamingManager.getInitialContext(envWithInvalidFac);
+            fail("Should throw NoInitialContextException.");
+        } catch (NoInitialContextException e) {
+        }
 	}
 
 	/**
@@ -277,7 +274,7 @@ public class NamingManagerTest extends TestCase {
 			throws Exception {
 		log
 				.setMethod("testGetObjectInstance_NoBuilder_ReferenceValidFactory()");
-		Hashtable env = new Hashtable();
+		Hashtable<String, Object> env = new Hashtable<String, Object>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		Reference r = new Reference(
@@ -309,7 +306,7 @@ public class NamingManagerTest extends TestCase {
 			throws Exception {
 		log
 				.setMethod("testGetObjectInstance_NoBuilder_ReferenceInvalidFactory()");
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		Reference r = new Reference(null, "junk.factory", null);
@@ -332,7 +329,7 @@ public class NamingManagerTest extends TestCase {
 	public void testGetObjectInstance_NoBuilder_ReferenceException()
 			throws Exception {
 		log.setMethod("testGetObjectInstance_NoBuilder_ReferenceException()");
-		Hashtable env = new Hashtable();
+		Hashtable<String, Object> env = new Hashtable<String, Object>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		Reference r = new Reference(
@@ -341,7 +338,7 @@ public class NamingManagerTest extends TestCase {
 				null);
 		indicateNullPointerException(env);
 		try {
-			Object obj = NamingManager.getObjectInstance(r, null, null, env);
+			NamingManager.getObjectInstance(r, null, null, env);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 			// log.log(e);
@@ -351,7 +348,7 @@ public class NamingManagerTest extends TestCase {
 		MockReferenceable mr = new MockReferenceable(r);
 		indicateNamingException(env);
 		try {
-			Object obj = NamingManager.getObjectInstance(mr, null, null, env);
+			NamingManager.getObjectInstance(mr, null, null, env);
 			fail("Should throw NamingException.");
 		} catch (NamingException e) {
 			// log.log(e);
@@ -367,7 +364,7 @@ public class NamingManagerTest extends TestCase {
 	public void testGetObjectInstance_NoBuilder_ReferenceReturnNull()
 			throws Exception {
 		log.setMethod("testGetObjectInstance_NoBuilder_ReferenceReturnNull()");
-		Hashtable env = new Hashtable();
+		Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		Reference r = new Reference(
@@ -395,7 +392,7 @@ public class NamingManagerTest extends TestCase {
 			throws Exception {
 		log
 				.setMethod("testGetObjectInstance_NoBuilder_ReferenceNullTypedNonStrAddr()");
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		env.put(Context.URL_PKG_PREFIXES, "org.apache.harmony.jndi.tests.javax.naming.spi.mock");
@@ -406,7 +403,7 @@ public class NamingManagerTest extends TestCase {
 		r.add(mockAddr);
 
 		Object obj = NamingManager.getObjectInstance(r, new CompositeName(
-				"compositename"), new MockContext(new Hashtable()), env);
+				"compositename"), new MockContext(new Hashtable<String, Object>()), env);
 		assertSame(obj, r);
 	}
 
@@ -419,7 +416,7 @@ public class NamingManagerTest extends TestCase {
 			throws Exception {
 		log
 				.setMethod("testGetObjectInstance_NoBuilder_ReferenceNullTypedStrAddr()");
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		env.put(Context.URL_PKG_PREFIXES, "org.apache.harmony.jndi.tests.javax.naming.spi.mock");
@@ -429,8 +426,8 @@ public class NamingManagerTest extends TestCase {
 		r.add(nullTypeAddr);
 
 		try {
-			Object obj = NamingManager.getObjectInstance(r, new CompositeName(
-					"compositename"), new MockContext(new Hashtable()), env);
+			NamingManager.getObjectInstance(r, new CompositeName(
+					"compositename"), new MockContext(new Hashtable<String, Object>()), env);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 			// log.log(e);
@@ -439,8 +436,8 @@ public class NamingManagerTest extends TestCase {
 		// test Referenceable
 		MockReferenceable mr = new MockReferenceable(r);
 		try {
-			Object obj = NamingManager.getObjectInstance(mr, new CompositeName(
-					"compositename"), new MockContext(new Hashtable()), env);
+			NamingManager.getObjectInstance(mr, new CompositeName(
+					"compositename"), new MockContext(new Hashtable<String, Object>()), env);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 			// log.log(e);
@@ -465,7 +462,7 @@ public class NamingManagerTest extends TestCase {
 	 */
 	private void myTestGetObjectInstance_NoBuilder_ReferenceValidURL(String url)
 			throws Exception {
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		env.put(Context.URL_PKG_PREFIXES, "org.apache.harmony.jndi.tests.javax.naming.spi.mock");
@@ -487,7 +484,7 @@ public class NamingManagerTest extends TestCase {
 
 		MockContext ctx = (MockContext) NamingManager.getObjectInstance(r,
 				new CompositeName("compositename"), new MockContext(
-						new Hashtable()), env);
+						new Hashtable<String, Object>()), env);
 		// if (null != ctx) {
 		// log.log(ctx.getEnvironment().toString());
 		// } else {
@@ -495,16 +492,16 @@ public class NamingManagerTest extends TestCase {
 		// }
 		assertTrue(ctx.parameterEquals(validFactoryAddr.getContent(),
 				new CompositeName("compositename"), new MockContext(
-						new Hashtable()), env));
+						new Hashtable<String, Object>()), env));
 
 		// test Referenceable
 		MockReferenceable mr = new MockReferenceable(r);
 		ctx = (MockContext) NamingManager.getObjectInstance(mr,
 				new CompositeName("compositename"), new MockContext(
-						new Hashtable()), env);
+						new Hashtable<String, Object>()), env);
 		assertTrue(ctx.parameterEquals(validFactoryAddr.getContent(),
 				new CompositeName("compositename"), new MockContext(
-						new Hashtable()), env));
+						new Hashtable<String, Object>()), env));
 	}
 
 	public void testGetObjectInstance_NoBuilder_ReferenceValidURL_URL()
@@ -527,7 +524,7 @@ public class NamingManagerTest extends TestCase {
 	public void testGetObjectInstance_NoBuilder_ReferenceDefaultURL()
 			throws Exception {
 		log.setMethod("testGetObjectInstance_NoBuilder_ReferenceDefaultURL()");
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		env.put(Context.URL_PKG_PREFIXES, "org.apache.harmony.jndi.tests.javax.naming.spi.mock");
@@ -572,7 +569,7 @@ public class NamingManagerTest extends TestCase {
 			String url) throws Exception {
 		try {
 			// testGetStateToBind_obj_name_ctx_empty();
-			Hashtable env = new Hashtable();
+			Hashtable<String, Object> env = new Hashtable<String, Object>();
 
 			Reference r = new Reference(null);
 			StringRefAddr exceptionalFactoryAddr = new StringRefAddr(url,
@@ -582,7 +579,7 @@ public class NamingManagerTest extends TestCase {
 					"ftp://www.apache.org/");
 			r.add(validFactoryAddr);
 
-			Hashtable ctxEnv = new Hashtable();
+			Hashtable<String, Object> ctxEnv = new Hashtable<String, Object>();
 			/*
 			 * ctxEnv.put( Context.INITIAL_CONTEXT_FACTORY,
 			 * "dazzle.jndi.testing.spi.DazzleContextFactory");
@@ -620,14 +617,13 @@ public class NamingManagerTest extends TestCase {
 			}
 		} finally {
 			writeProviderResource("org.apache.harmony.jndi.tests.javax.naming.spi.dummy",
-					new Hashtable());
+					new Hashtable<String, Object>());
 		}
 	}
 
 	private void myTestGetObjectInstance_NoBuilder_ReferenceExceptionalURL2(
 			String url) throws Exception {
 		try {
-			Hashtable env = new Hashtable();
 
 			Reference r = new Reference(null);
 			StringRefAddr exceptionalFactoryAddr = new StringRefAddr(url,
@@ -637,7 +633,7 @@ public class NamingManagerTest extends TestCase {
 					"ftp://www.apache.org/");
 			r.add(validFactoryAddr);
 
-			Hashtable ctxEnv = new Hashtable();
+			Hashtable<String, Object> ctxEnv = new Hashtable<String, Object>();
 
 			ctxEnv.put(Context.INITIAL_CONTEXT_FACTORY,
 					"dazzle.jndi.testing.spi.DazzleContextFactory");
@@ -648,7 +644,7 @@ public class NamingManagerTest extends TestCase {
 			writeProviderResource("org.apache.harmony.jndi.tests.javax.naming.spi.dummy", ctxEnv);
 			try {
 				indicateNullPointerException(ctxEnv);
-				Object ctx = NamingManager.getObjectInstance(r,
+				NamingManager.getObjectInstance(r,
 						new CompositeName("compositename"), new MockContext(
 								ctxEnv), ctxEnv);
 				fail("Should throw NamingException with root cause - null pointer.");
@@ -660,7 +656,7 @@ public class NamingManagerTest extends TestCase {
 			MockReferenceable mr = new MockReferenceable(r);
 			try {
 				indicateNamingException(ctxEnv);
-				MockContext ctx = (MockContext) NamingManager
+				NamingManager
 						.getObjectInstance(mr, new CompositeName(
 								"compositename"), new MockContext(ctxEnv),
 								ctxEnv);
@@ -670,7 +666,7 @@ public class NamingManagerTest extends TestCase {
 			}
 		} finally {
 			writeProviderResource("org.apache.harmony.jndi.tests.javax.naming.spi.dummy",
-					new Hashtable());
+					new Hashtable<String, Object>());
 		}
 	}
 
@@ -708,14 +704,14 @@ public class NamingManagerTest extends TestCase {
 		try {
 			log
 					.setMethod("testGetObjectInstance_NoBuilder_NotRef_ValidFactory");
-			Hashtable env = new Hashtable();
+			Hashtable<String, Object> env = new Hashtable<String, Object>();
 			env.put(Context.INITIAL_CONTEXT_FACTORY,
 					"dazzle.jndi.testing.spi.DazzleContextFactory");
 			env
 					.put(Context.OBJECT_FACTORIES,
 							"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MockObjectFactory");
 
-			Hashtable ctxEnv = new Hashtable();
+			Hashtable<String, Object> ctxEnv = new Hashtable<String, Object>();
 			ctxEnv
 					.put(Context.OBJECT_FACTORIES,
 							"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MockObjectFactoryNoException");
@@ -730,7 +726,7 @@ public class NamingManagerTest extends TestCase {
 					"compositename"), ctx, env), obj);
 		} finally {
 			writeProviderResource("org.apache.harmony.jndi.tests.javax.naming.spi.dummy",
-					new Hashtable());
+					new Hashtable<String, Object>());
 		}
 	}
 
@@ -755,7 +751,7 @@ public class NamingManagerTest extends TestCase {
 		try {
 			log
 					.setMethod("testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull");
-			Hashtable ctxEnv = new Hashtable();
+			Hashtable<String, Object> ctxEnv = new Hashtable<String, Object>();
 			ctxEnv
 					.put(
 							Context.OBJECT_FACTORIES,
@@ -766,7 +762,7 @@ public class NamingManagerTest extends TestCase {
 			// writeProviderResource("org.apache.harmony.jndi.tests.javax.naming.spi.dummy",
 			// ctxEnv);
 
-			Hashtable env = new Hashtable();
+			Hashtable<String, Object> env = new Hashtable<String, Object>();
 			env
 					.put(
 							Context.OBJECT_FACTORIES,
@@ -811,7 +807,7 @@ public class NamingManagerTest extends TestCase {
 					ctx, env), obj);
 		} finally {
 			writeProviderResource("org.apache.harmony.jndi.tests.javax.naming.spi.dummy",
-					new Hashtable());
+					new Hashtable<String, Object>());
 		}
 	}
 
@@ -822,12 +818,12 @@ public class NamingManagerTest extends TestCase {
 		try {
 			log
 					.setMethod("testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull_1");
-			Hashtable ctxEnv = new Hashtable();
+			Hashtable<String, Object> ctxEnv = new Hashtable<String, Object>();
 			writeProviderResource("org.apache.harmony.jndi.tests.javax.naming.spi.dummy", ctxEnv);
 
 			Context ctx = new MockContext(ctxEnv);
 
-			Hashtable env = new Hashtable();
+			Hashtable<String, String> env = new Hashtable<String, String>();
 			env
 					.put(Context.URL_PKG_PREFIXES,
 							"org.apache.harmony.jndi.tests.javax.naming.spi.mock");
@@ -861,7 +857,7 @@ public class NamingManagerTest extends TestCase {
 			assertEquals(r, obj);
 		} finally {
 			writeProviderResource("org.apache.harmony.jndi.tests.javax.naming.spi.dummy",
-					new Hashtable());
+					new Hashtable<String, Object>());
 		}
 	}
 
@@ -872,12 +868,12 @@ public class NamingManagerTest extends TestCase {
 		try {
 			log
 					.setMethod("testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull_2");
-			Hashtable ctxEnv = new Hashtable();
+			Hashtable<String, Object> ctxEnv = new Hashtable<String, Object>();
 			writeProviderResource("org.apache.harmony.jndi.tests.javax.naming.spi.dummy", ctxEnv);
 
 			Context ctx = new MockContext(ctxEnv);
 
-			Hashtable env = new Hashtable();
+			Hashtable<String, Object> env = new Hashtable<String, Object>();
 			env.put(Context.INITIAL_CONTEXT_FACTORY,
 					"dazzle.jndi.testing.spi.DazzleContextFactory");
 			env
@@ -917,7 +913,7 @@ public class NamingManagerTest extends TestCase {
 					ctx, env), obj);
 		} finally {
 			writeProviderResource("org.apache.harmony.jndi.tests.javax.naming.spi.dummy",
-					new Hashtable());
+					new Hashtable<String, Object>());
 		}
 	}
 
@@ -945,7 +941,7 @@ public class NamingManagerTest extends TestCase {
 			throws Exception {
 		log
 				.setMethod("testGetObjectInstance_NoBuilder_NotRef_InvalidFactory()");
-		Hashtable env = new Hashtable();
+		Hashtable<String, Object> env = new Hashtable<String, Object>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		env
@@ -971,7 +967,7 @@ public class NamingManagerTest extends TestCase {
 			throws Exception {
 		log
 				.setMethod("testGetObjectInstance_NoBuilder_NotRef_ExceptionalFactory()");
-		Hashtable env = new Hashtable();
+		Hashtable<String, Object> env = new Hashtable<String, Object>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		env
@@ -982,14 +978,14 @@ public class NamingManagerTest extends TestCase {
 
 		try {
 			indicateNullPointerException(env);
-			Object obj = NamingManager.getObjectInstance(null, null, null, env);
+			NamingManager.getObjectInstance(null, null, null, env);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}
 
 		try {
 			indicateNamingException(env);
-			Object obj = NamingManager.getObjectInstance(null, null, null, env);
+			NamingManager.getObjectInstance(null, null, null, env);
 			fail("Should throw NamingException.");
 		} catch (NamingException e) {
 		}
@@ -1006,7 +1002,7 @@ public class NamingManagerTest extends TestCase {
 			throws Exception {
 		log
 				.setMethod("testGetObjectInstance_NoBuilder_NotRef_FactoryWithNull()");
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		env.put(Context.OBJECT_FACTORIES,
@@ -1024,10 +1020,10 @@ public class NamingManagerTest extends TestCase {
 		Object o = null;
 		Name n = null;
 		Context c = null;
-		Hashtable h = null;
+		Hashtable<?, ?> h = null;
 
 		try {
-			Object r = (Object) NamingManager.getStateToBind(o, n, c, h);
+			Object r = NamingManager.getStateToBind(o, n, c, h);
 			assertNull(r);
 		} catch (NamingException e) {
 			fail("should throw NullPointerException");
@@ -1039,13 +1035,13 @@ public class NamingManagerTest extends TestCase {
 		Object o = null;
 		Name n = null;
 		Context c = null;
-		Hashtable h = new Hashtable();
+		Hashtable<String, String> h = new Hashtable<String, String>();
 		h
 				.put(Context.STATE_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MagicMockStateFactory");
 
 		try {
-			Hashtable r = (Hashtable) NamingManager.getStateToBind(o, n, c, h);
+			Hashtable<?, ?> r = (Hashtable<?, ?>) NamingManager.getStateToBind(o, n, c, h);
 			assertEquals(r.get("o"), o);
 			assertEquals(r.get("n"), n);
 			assertEquals(r.get("c"), c);
@@ -1100,8 +1096,8 @@ public class NamingManagerTest extends TestCase {
 		log.setMethod("testGetStateToBind_null_null_ctx_empty2()");
 		Object o = null;
 		Name n = null;
-		Context c = new MockContext(new Hashtable()); // no state factory
-		Hashtable h = new Hashtable();
+		Context c = new MockContext(new Hashtable<String, Object>()); // no state factory
+		Hashtable<?, ?> h = new Hashtable<Object, Object>();
 
 		try {
 			Object r = NamingManager.getStateToBind(o, n, c, h);
@@ -1116,15 +1112,15 @@ public class NamingManagerTest extends TestCase {
 		log.setMethod("testGetStateToBind_null_name_ctx_hash()");
 		Object o = null;
 		Name n = new CompositeName();
-		Context c = new MockDirContext(new Hashtable());
+		Context c = new MockDirContext(new Hashtable<Object, Object>());
 		// lead to state factory
-		Hashtable h = new Hashtable();
+		Hashtable<String, String> h = new Hashtable<String, String>();
 		h
 				.put(Context.STATE_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MagicMockStateFactory");
 
 		try {
-			Hashtable r = (Hashtable) NamingManager.getStateToBind(o, n, c, h);
+			Hashtable<?, ?> r = (Hashtable<?, ?>) NamingManager.getStateToBind(o, n, c, h);
 			assertEquals(r.get("o"), o);
 			assertEquals(r.get("n"), n);
 			assertEquals(r.get("c"), c);
@@ -1159,8 +1155,8 @@ public class NamingManagerTest extends TestCase {
 		log.setMethod("testGetStateToBind_obj_name_ctx_empty2()");
 		Object o = "object";
 		Name n = new CompositeName();
-		Context c = new MockContext(new Hashtable()); // no state factory
-		Hashtable h = new Hashtable();
+		Context c = new MockContext(new Hashtable<String, Object>()); // no state factory
+		Hashtable<Object, Object> h = new Hashtable<Object, Object>();
 
 		try {
 			Object r = NamingManager.getStateToBind(o, n, c, h);
@@ -1175,15 +1171,15 @@ public class NamingManagerTest extends TestCase {
 		log.setMethod("testGetStateToBind_obj_name_ctx_hash()");
 		Object o = "object";
 		Name n = new CompositeName();
-		Context c = new MockDirContext(new Hashtable());
+		Context c = new MockDirContext(new Hashtable<Object, Object>());
 		// lead to state factory
-		Hashtable h = new Hashtable();
+		Hashtable<String, String> h = new Hashtable<String, String>();
 		h
 				.put(Context.STATE_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MagicMockStateFactory");
 
 		try {
-			Hashtable r = (Hashtable) NamingManager.getStateToBind(o, n, c, h);
+			Hashtable<?, ?> r = (Hashtable<?, ?>) NamingManager.getStateToBind(o, n, c, h);
 			assertEquals(r.get("o"), o);
 			assertEquals(r.get("n"), n);
 			assertEquals(r.get("c"), c);
@@ -1198,17 +1194,12 @@ public class NamingManagerTest extends TestCase {
 		log.setMethod("testGetStateToBind_f1BadClassName_Success()");
 		Object o = "object";
 		Name n = new CompositeName();
-		Context c = new MockContext(new Hashtable()); // no state factory
-		Hashtable h = new Hashtable();
-		h
-				.put(
-						Context.STATE_FACTORIES,
-						"bad.class.Name"
-								+ ":"
-								+ "org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MagicMockStateFactory");
+		Context c = new MockContext(new Hashtable<String, Object>()); // no state factory
+		Hashtable<Object, Object> h = new Hashtable<Object, Object>();
+		h.put(Context.STATE_FACTORIES,"bad.class.Name:org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MagicMockStateFactory");
 
-		try {
-			Hashtable r = (Hashtable) NamingManager.getStateToBind(o, n, c, h);
+        try {
+			Hashtable<?, ?> r = (Hashtable<?, ?>) NamingManager.getStateToBind(o, n, c, h);
 			assertEquals(r.get("o"), o);
 			assertEquals(r.get("n"), n);
 			assertEquals(r.get("c"), c);
@@ -1266,16 +1257,16 @@ public class NamingManagerTest extends TestCase {
 		log.setMethod("testGetStateToBind_f1NamingException_f2Success()");
 		Object o = "object";
 		Name n = new CompositeName();
-		Context c = new MockDirContext(new Hashtable());
+		Context c = new MockDirContext(new Hashtable<Object, Object>());
 		// lead to state factory
-		Hashtable h = new Hashtable();
+		Hashtable<String, Object> h = new Hashtable<String, Object>();
 		h
 				.put(Context.STATE_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MagicMockStateFactory");
 		indicateNamingException(h);
 
 		try {
-			Hashtable r = (Hashtable) NamingManager.getStateToBind(o, n, c, h);
+			NamingManager.getStateToBind(o, n, c, h);
 		} catch (NamingException e) {
 			assertTrue(e.getMessage().indexOf("Simulated") >= 0);
 		} catch (Throwable e) {
@@ -1287,16 +1278,16 @@ public class NamingManagerTest extends TestCase {
 		log.setMethod("testGetStateToBind_f1RuntimeException_f2Success()");
 		Object o = "object";
 		Name n = new CompositeName();
-		Context c = new MockDirContext(new Hashtable());
+		Context c = new MockDirContext(new Hashtable<Object, Object>());
 		// lead to state factory
-		Hashtable h = new Hashtable();
+		Hashtable<Object, Object> h = new Hashtable<Object, Object>();
 		h
 				.put(Context.STATE_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MagicMockStateFactory");
 		indicateRuntimeException(h);
 
 		try {
-			Hashtable r = (Hashtable) NamingManager.getStateToBind(o, n, c, h);
+			NamingManager.getStateToBind(o, n, c, h);
 		} catch (RuntimeException e) {
 			assertTrue(e.getMessage().indexOf("Simulated") >= 0);
 		} catch (Throwable e) {
@@ -1304,12 +1295,13 @@ public class NamingManagerTest extends TestCase {
 		}
 	}
 
-	public void testGetStateToBind_f1ReturnNull_Success() {
+	@SuppressWarnings("unchecked")
+    public void testGetStateToBind_f1ReturnNull_Success() {
 		log.setMethod("testGetStateToBind_f1ReturnNull_Success()");
 		Object o = "object";
 		Name n = new CompositeName();
-		Context c = new MockContext(new Hashtable()); // no state factory
-		Hashtable h = new Hashtable();
+		Context c = new MockContext(new Hashtable<String, Object>()); // no state factory
+		Hashtable<Object, Object> h = new Hashtable<Object, Object>();
 		h
 				.put(
 						Context.STATE_FACTORIES,
@@ -1319,7 +1311,7 @@ public class NamingManagerTest extends TestCase {
 		indicateReturnNull(h);
 
 		try {
-			Hashtable r = (Hashtable) NamingManager.getStateToBind(o, n, c, h);
+			Hashtable<Object, Object> r = (Hashtable<Object, Object>) NamingManager.getStateToBind(o, n, c, h);
 			assertEquals(r.get("o"), o);
 			assertEquals(r.get("n"), n);
 			assertEquals(r.get("c"), c);
@@ -1359,16 +1351,16 @@ public class NamingManagerTest extends TestCase {
 		log.setMethod("testGetStateToBind_f1Success_f2Success()");
 		Object o = "object";
 		Name n = new CompositeName();
-		Context c = new MockDirContext(new Hashtable());
+		Context c = new MockDirContext(new Hashtable<Object, Object>());
 		// lead to state factory
-		Hashtable h = new Hashtable();
+		Hashtable<Object, Object> h = new Hashtable<Object, Object>();
 		h
 				.put(Context.STATE_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MagicSuccessMockStateFactory");
 		indicateRuntimeException(h);
 
 		try {
-			Hashtable r = (Hashtable) NamingManager.getStateToBind(o, n, c, h);
+            Hashtable<?, ?> r = (Hashtable<?, ?>) NamingManager.getStateToBind(o, n, c, h);
 			assertEquals(r.get("o"), o);
 			assertEquals(r.get("n"), n);
 			assertEquals(r.get("c"), c);
@@ -1383,8 +1375,8 @@ public class NamingManagerTest extends TestCase {
 		log.setMethod("testGetStateToBind_f1ReturnNull()");
 		Object o = "object";
 		Name n = new CompositeName();
-		Context c = new MockContext(new Hashtable()); // no state factory
-		Hashtable h = new Hashtable();
+		Context c = new MockContext(new Hashtable<String, Object>()); // no state factory
+		Hashtable<Object, Object> h = new Hashtable<Object, Object>();
 		h
 				.put(Context.STATE_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MagicMockStateFactory");
@@ -1403,8 +1395,8 @@ public class NamingManagerTest extends TestCase {
 		log.setMethod("testGetStateToBind_f1BadClassName()");
 		Object o = "object";
 		Name n = new CompositeName();
-		Context c = new MockContext(new Hashtable()); // no state factory
-		Hashtable h = new Hashtable();
+		Context c = new MockContext(new Hashtable<String, Object>()); // no state factory
+		Hashtable<String, String> h = new Hashtable<String, String>();
 		h.put(Context.STATE_FACTORIES, "bad.class.Name");
 
 		try {
@@ -1420,15 +1412,15 @@ public class NamingManagerTest extends TestCase {
 		log.setMethod("testGetStateToBind_f1NamingException()");
 		Object o = "object";
 		Name n = new CompositeName();
-		Context c = new MockContext(new Hashtable()); // no state factory
-		Hashtable h = new Hashtable();
+		Context c = new MockContext(new Hashtable<String, Object>()); // no state factory
+		Hashtable<String, Object> h = new Hashtable<String, Object>();
 		h
 				.put(Context.STATE_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MagicMockStateFactory");
 		indicateNamingException(h);
 
 		try {
-			Object r = NamingManager.getStateToBind(o, n, c, h);
+			NamingManager.getStateToBind(o, n, c, h);
 		} catch (NamingException e) {
 			assertTrue(e.getMessage().indexOf("Simulated") >= 0);
 		} catch (Throwable e) {
@@ -1440,15 +1432,15 @@ public class NamingManagerTest extends TestCase {
 		log.setMethod("testGetStateToBind_f1RuntimeException()");
 		Object o = "object";
 		Name n = new CompositeName();
-		Context c = new MockContext(new Hashtable()); // no state factory
-		Hashtable h = new Hashtable();
+		Context c = new MockContext(new Hashtable<String, Object>()); // no state factory
+		Hashtable<Object, Object> h = new Hashtable<Object, Object>();
 		h
 				.put(Context.STATE_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MagicMockStateFactory");
 		indicateRuntimeException(h);
 
 		try {
-			Object r = NamingManager.getStateToBind(o, n, c, h);
+			NamingManager.getStateToBind(o, n, c, h);
 		} catch (RuntimeException e) {
 			assertTrue(e.getMessage().indexOf("Simulated") >= 0);
 		} catch (Throwable e) {
@@ -1459,7 +1451,7 @@ public class NamingManagerTest extends TestCase {
 	public void testGetURLContext_null_null() {
 		log.setMethod("testGetURLContext_null_null()");
 		String schema = null;
-		Hashtable h = null;
+        Hashtable<Object, Object> h = null;
 
 		try {
 			Context ctx = NamingManager.getURLContext(schema, h);
@@ -1473,7 +1465,7 @@ public class NamingManagerTest extends TestCase {
 	public void testGetURLContext_empty_null() {
 		log.setMethod("testGetURLContext_empty_null()");
 		String schema = "";
-		Hashtable h = null;
+        Hashtable<Object, Object> h = null;
 
 		try {
 			Context ctx = NamingManager.getURLContext(schema, h);
@@ -1487,7 +1479,7 @@ public class NamingManagerTest extends TestCase {
 	public void testGetURLContext_http_null() {
 		log.setMethod("testGetURLContext_http_null()");
 		String schema = "http";
-		Hashtable h = null;
+        Hashtable<Object, Object> h = null;
 
 		try {
 			Context ctx = NamingManager.getURLContext(schema, h);
@@ -1501,7 +1493,7 @@ public class NamingManagerTest extends TestCase {
 	public void testGetURLContext_http_empty() {
 		log.setMethod("testGetURLContext_http_empty()");
 		String schema = "http";
-		Hashtable h = new Hashtable();
+        Hashtable<Object, Object> h = new Hashtable<Object, Object>();
 
 		try {
 			Context ctx = NamingManager.getURLContext(schema, h);
@@ -1515,7 +1507,7 @@ public class NamingManagerTest extends TestCase {
 	public void testGetURLContext_http_f1Success() {
 		log.setMethod("testGetURLContext_http_f1Success()");
 		String schema = "http";
-		Hashtable h = new Hashtable();
+		Hashtable<String, String> h = new Hashtable<String, String>();
 		h.put(Context.URL_PKG_PREFIXES,
 				"org.apache.harmony.jndi.tests.javax.naming.spi.mocksuccess");
 
@@ -1534,7 +1526,7 @@ public class NamingManagerTest extends TestCase {
 	public void testGetURLContext_http_f1BadClassName_f2Success() {
 		log.setMethod("testGetURLContext_http_f1BadClassName_f2Success()");
 		String schema = "http";
-		Hashtable h = new Hashtable();
+		Hashtable<String, String> h = new Hashtable<String, String>();
 		h.put(Context.URL_PKG_PREFIXES,
 				"bad.class.name:org.apache.harmony.jndi.tests.javax.naming.spi.mocksuccess");
 
@@ -1553,14 +1545,14 @@ public class NamingManagerTest extends TestCase {
 	public void testGetURLContext_http_f1NamingException_f2Success() {
 		log.setMethod("testGetURLContext_http_f1NamingException_f2Success()");
 		String schema = "http";
-		Hashtable h = new Hashtable();
+		Hashtable<String, Object> h = new Hashtable<String, Object>();
 		h
 				.put(Context.URL_PKG_PREFIXES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.mock:org.apache.harmony.jndi.tests.javax.naming.spi.mocksuccess");
 		indicateNamingException(h);
 
 		try {
-			Context ctx = NamingManager.getURLContext(schema, h);
+			NamingManager.getURLContext(schema, h);
 			fail("NamingException expected");
 		} catch (NamingException e) {
 		} catch (Throwable e) {
@@ -1572,14 +1564,14 @@ public class NamingManagerTest extends TestCase {
 	public void testGetURLContext_http_f1RuntimeException_f2Success() {
 		log.setMethod("testGetURLContext_http_f1RuntimeException_f2Success()");
 		String schema = "http";
-		Hashtable h = new Hashtable();
+		Hashtable<Object, Object> h = new Hashtable<Object, Object>();
 		h
 				.put(Context.URL_PKG_PREFIXES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.mock:org.apache.harmony.jndi.tests.javax.naming.spi.mocksuccess");
 		indicateRuntimeException(h);
 
 		try {
-			Context ctx = NamingManager.getURLContext(schema, h);
+			NamingManager.getURLContext(schema, h);
 			fail("NamingException expected");
 		} catch (NamingException e) {
 		} catch (Throwable e) {
@@ -1591,7 +1583,7 @@ public class NamingManagerTest extends TestCase {
 	public void testGetURLContext_http_f1ReturnNull_f2Success() {
 		log.setMethod("testGetURLContext_http_f1ReturnNull_f2Success()");
 		String schema = "http";
-		Hashtable h = new Hashtable();
+		Hashtable<Object, Object> h = new Hashtable<Object, Object>();
 		h
 				.put(Context.URL_PKG_PREFIXES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.mock:org.apache.harmony.jndi.tests.javax.naming.spi.mocksuccess");
@@ -1609,7 +1601,7 @@ public class NamingManagerTest extends TestCase {
 	public void testGetURLContext_http_f1Success_f2RuntimeException() {
 		log.setMethod("testGetURLContext_http_f1Success_f2RuntimeException()");
 		String schema = "http";
-		Hashtable h = new Hashtable();
+		Hashtable<Object, Object> h = new Hashtable<Object, Object>();
 		h
 				.put(Context.URL_PKG_PREFIXES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.mocksuccess:org.apache.harmony.jndi.tests.javax.naming.spi.mock");
@@ -1630,7 +1622,7 @@ public class NamingManagerTest extends TestCase {
 	public void testGetURLContext_http_f1ReturnNull_f2ReturnNull() {
 		log.setMethod("testGetURLContext_http_f1ReturnNull_f2ReturnNull()");
 		String schema = "http";
-		Hashtable h = new Hashtable();
+		Hashtable<Object, Object> h = new Hashtable<Object, Object>();
 		h
 				.put(Context.URL_PKG_PREFIXES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.mock:org.apache.harmony.jndi.tests.javax.naming.spi.mock");
@@ -1649,14 +1641,14 @@ public class NamingManagerTest extends TestCase {
 		log
 				.setMethod("testGetURLContext_http_f1NamingException_f2NamingException()");
 		String schema = "http";
-		Hashtable h = new Hashtable();
+		Hashtable<String, Object> h = new Hashtable<String, Object>();
 		h
 				.put(Context.URL_PKG_PREFIXES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.mock:org.apache.harmony.jndi.tests.javax.naming.spi.mock");
 		indicateNamingException(h);
 
 		try {
-			Context ctx = NamingManager.getURLContext(schema, h);
+			NamingManager.getURLContext(schema, h);
 			fail("NamingException expected");
 		} catch (NamingException e) {
 		} catch (Throwable e) {
@@ -1669,14 +1661,14 @@ public class NamingManagerTest extends TestCase {
 		log
 				.setMethod("testGetURLContext_http_f1RuntimeException_f2RuntimeException()");
 		String schema = "http";
-		Hashtable h = new Hashtable();
+		Hashtable<Object, Object> h = new Hashtable<Object, Object>();
 		h
 				.put(Context.URL_PKG_PREFIXES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.mock:org.apache.harmony.jndi.tests.javax.naming.spi.mock");
 		indicateRuntimeException(h);
 
 		try {
-			Context ctx = NamingManager.getURLContext(schema, h);
+			NamingManager.getURLContext(schema, h);
 			fail("NamingException expected");
 		} catch (NamingException e) {
 		} catch (Throwable e) {
@@ -1688,7 +1680,7 @@ public class NamingManagerTest extends TestCase {
 	public void testGetURLContext_http_f1BadClassName_f2BadClassName() {
 		log.setMethod("testGetURLContext_http_f1BadClassName_f2BadClassName()");
 		String schema = "http";
-		Hashtable h = new Hashtable();
+		Hashtable<String, String> h = new Hashtable<String, String>();
 		h.put(Context.URL_PKG_PREFIXES, "bad.class.name:bad.class.name");
 
 		try {
@@ -1705,7 +1697,7 @@ public class NamingManagerTest extends TestCase {
 		log
 				.setMethod("testGetContinuationContext_MockContext_null_null_null()");
 		CannotProceedException cpe = new CannotProceedException();
-		Object resolvedObj = new MockContext(new Hashtable());
+		Object resolvedObj = new MockContext(new Hashtable<String, Object>());
 		cpe.setResolvedObj(resolvedObj);
 		Context r = NamingManager.getContinuationContext(cpe);
 		assertSame(resolvedObj, r);
@@ -1718,8 +1710,8 @@ public class NamingManagerTest extends TestCase {
 		CannotProceedException cpe = new CannotProceedException();
 		cpe.setResolvedObj("resolved object");
 		cpe.setAltName(new CompositeName("abc/abc"));
-		cpe.setAltNameCtx(new MockContext(new Hashtable()));
-		Hashtable h = new Hashtable();
+		cpe.setAltNameCtx(new MockContext(new Hashtable<String, Object>()));
+		Hashtable<String, String> h = new Hashtable<String, String>();
 		h
 				.put(Context.OBJECT_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MockContextObjectFactory");
@@ -1736,13 +1728,13 @@ public class NamingManagerTest extends TestCase {
 		cpe.setResolvedObj(obj);
 		CompositeName altName = new CompositeName("abc/abc");
 		cpe.setAltName(altName);
-		MockContext context = new MockContext(new Hashtable());
+		MockContext context = new MockContext(new Hashtable<String, Object>());
 		cpe.setAltNameCtx(context);
-		Hashtable h = new Hashtable();
+		Hashtable<String, String> h = new Hashtable<String, String>();
 		h.put(Context.OBJECT_FACTORIES, "bad name:asdfa");
 		cpe.setEnvironment(h);
 		try {
-			Context r = NamingManager.getContinuationContext(cpe);
+			NamingManager.getContinuationContext(cpe);
 			fail();
 		} catch (CannotProceedException e) {
 			assertCPE(cpe, altName, context, h, e, obj);
@@ -1750,7 +1742,7 @@ public class NamingManagerTest extends TestCase {
 	}
 
 	private void assertCPE(CannotProceedException cpe, CompositeName altName,
-			MockContext context, Hashtable h, CannotProceedException e,
+			MockContext context, Hashtable<String, String> h, CannotProceedException e,
 			Object obj) {
 		assertNull(e.getExplanation());
 		assertNull(e.getMessage());
@@ -1778,15 +1770,15 @@ public class NamingManagerTest extends TestCase {
 
 		CompositeName altName = new CompositeName("abc/abc");
 		cpe.setAltName(altName);
-		MockContext context = new MockContext(new Hashtable());
+		MockContext context = new MockContext(new Hashtable<String, Object>());
 		cpe.setAltNameCtx(context);
-		Hashtable h = new Hashtable();
+		Hashtable<String, String> h = new Hashtable<String, String>();
 		h
 				.put(Context.OBJECT_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MockObjectFactory");
 		cpe.setEnvironment(h);
 		try {
-			Context r = NamingManager.getContinuationContext(cpe);
+			NamingManager.getContinuationContext(cpe);
 			fail();
 		} catch (CannotProceedException e) {
 			assertCPE(cpe, altName, context, h, e, obj);
@@ -1799,15 +1791,13 @@ public class NamingManagerTest extends TestCase {
 		CannotProceedException cpe = new CannotProceedException();
 		CompositeName altName = new CompositeName("abc/abc");
 		cpe.setAltName(altName);
-		MockContext context = new MockContext(new Hashtable());
+		MockContext context = new MockContext(new Hashtable<String, Object>());
 		cpe.setAltNameCtx(context);
-		Hashtable h = new Hashtable();
-		h
-				.put(Context.OBJECT_FACTORIES,
-						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MockContextObjectFactory");
-		cpe.setEnvironment(h);
+		Hashtable<String, String> h = new Hashtable<String, String>();
+		h.put(Context.OBJECT_FACTORIES,"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MockContextObjectFactory");
+        cpe.setEnvironment(h);
 		try {
-			Context r = NamingManager.getContinuationContext(cpe);
+		    NamingManager.getContinuationContext(cpe);
 			fail();
 		} catch (CannotProceedException e) {
 			assertCPE(cpe, altName, context, h, e, null);
@@ -1819,8 +1809,8 @@ public class NamingManagerTest extends TestCase {
 		log.setMethod("testGetContinuationContext_OBJ_null_ctx_h()");
 		CannotProceedException cpe = new CannotProceedException();
 		cpe.setResolvedObj("resolved object");
-		cpe.setAltNameCtx(new MockContext(new Hashtable()));
-		Hashtable h = new Hashtable();
+		cpe.setAltNameCtx(new MockContext(new Hashtable<String, Object>()));
+		Hashtable<String, String> h = new Hashtable<String, String>();
 		h
 				.put(Context.OBJECT_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MockContextObjectFactory");
@@ -1835,7 +1825,7 @@ public class NamingManagerTest extends TestCase {
 		CannotProceedException cpe = new CannotProceedException();
 		cpe.setResolvedObj("resolved object");
 		cpe.setAltName(new CompositeName("abc/abc"));
-		Hashtable h = new Hashtable();
+		Hashtable<String, String> h = new Hashtable<String, String>();
 		h
 				.put(Context.OBJECT_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MockContextObjectFactory");
@@ -1852,17 +1842,17 @@ public class NamingManagerTest extends TestCase {
 		cpe.setResolvedObj(obj);
 		CompositeName altName = new CompositeName("abc/abc");
 		cpe.setAltName(altName);
-		MockContext context = new MockContext(new Hashtable());
+		MockContext context = new MockContext(new Hashtable<String, Object>());
 		cpe.setAltNameCtx(context);
 		try {
-			Context r = NamingManager.getContinuationContext(cpe);
+			NamingManager.getContinuationContext(cpe);
 			fail();
 		} catch (CannotProceedException e) {
 			assertCPE(cpe, altName, context, null, e, obj);
 		}
 	}
 
-	public static void writeProviderResource(String ctxClassName, Hashtable res) {
+	public static void writeProviderResource(String ctxClassName, Hashtable<?, ?> res) {
 		try {
 			int dot = ctxClassName.lastIndexOf('.');
 			String pkg = dot >= 0 ? ctxClassName.substring(0, dot) : "";
@@ -1872,8 +1862,7 @@ public class NamingManagerTest extends TestCase {
 			f.getParentFile().mkdirs();
 
 			PrintStream out = new PrintStream(new FileOutputStream(f));
-			for (Iterator iter = res.entrySet().iterator(); iter.hasNext();) {
-				Map.Entry e = (Map.Entry) iter.next();
+			for (Map.Entry<?, ?> e : res.entrySet()) {
 				out.println(e.getKey() + "=" + e.getValue());
 			}
 			out.close();
@@ -1901,13 +1890,13 @@ public class NamingManagerTest extends TestCase {
 	public static class MockObjectFactoryBuilder implements
 			ObjectFactoryBuilder {
 
-		private static MockObjectFactoryBuilder _builder = new MockObjectFactoryBuilder();
+		private static final MockObjectFactoryBuilder _builder = new MockObjectFactoryBuilder();
 
 		public static MockObjectFactoryBuilder getInstance() {
 			return _builder;
 		}
 
-		public ObjectFactory createObjectFactory(Object o, Hashtable envmt)
+		public ObjectFactory createObjectFactory(Object o, Hashtable<?, ?> envmt)
 				throws NamingException {
 			issueIndicatedExceptions(envmt);
 			if (returnNullIndicated(envmt)) {
@@ -1918,10 +1907,10 @@ public class NamingManagerTest extends TestCase {
 	}
 
 	public static class MockObjectFactory implements ObjectFactory {
-		Hashtable ht = null;
+		Hashtable<?, ?> ht = null;
 
 		public Object getObjectInstance(Object o, Name n, Context c,
-				Hashtable envmt) throws Exception {
+				Hashtable<?, ?> envmt) throws Exception {
 			issueIndicatedExceptions(envmt);
 			if (returnNullIndicated(envmt)) {
 				return null;
@@ -1929,7 +1918,7 @@ public class NamingManagerTest extends TestCase {
 			return new MockObject(o, n, c, envmt);
 		}
 
-		public MockObjectFactory(Hashtable envmt) {
+		public MockObjectFactory(Hashtable<?, ?> envmt) {
 			ht = envmt;
 		}
 
@@ -1944,16 +1933,17 @@ public class NamingManagerTest extends TestCase {
 
 		private Context c;
 
-		private Hashtable envmt;
+		private Hashtable<?, ?> envmt;
 
-		public MockObject(Object o, Name n, Context c, Hashtable envmt) {
+		public MockObject(Object o, Name n, Context c, Hashtable<?, ?> envmt) {
 			this.o = o;
 			this.n = n;
 			this.c = c;
 			this.envmt = envmt;
 		}
 
-		public String toString() {
+		@Override
+        public String toString() {
 			String s = "MockObject {";
 
 			s += "Object= " + o + "\n";
@@ -1966,7 +1956,8 @@ public class NamingManagerTest extends TestCase {
 			return s;
 		}
 
-		public boolean equals(Object obj) {
+		@Override
+        public boolean equals(Object obj) {
 			if (obj instanceof MockObject) {
 				MockObject theOther = (MockObject) obj;
 				if (o != theOther.o) {
@@ -1990,28 +1981,29 @@ public class NamingManagerTest extends TestCase {
 				}
 
 				return true;
-			} else {
-				return false;
 			}
+            return false;
 		}
 	}
 
 	public static class MockObjectFactoryNoException implements ObjectFactory {
 
 		public Object getObjectInstance(Object o, Name n, Context c,
-				Hashtable envmt) throws Exception {
+				Hashtable<?, ?> envmt) throws Exception {
 			return "MockObjectNoException";
 		}
 	}
 
 	public static class MockContext implements Context {
-		Hashtable prop = null;
+		Hashtable<Object, Object> prop = null;
 
-		public MockContext(Hashtable prop) {
-			this.prop = prop;
+		@SuppressWarnings("unchecked")
+        public MockContext(Hashtable<?, ?> prop) {
+			this.prop = (Hashtable<Object, Object>)prop;
 		}
 
-		public boolean equals(Object obj) {
+		@Override
+        public boolean equals(Object obj) {
 			if (obj instanceof MockContext) {
 				MockContext theOther = (MockContext) obj;
 				boolean envmtEqual = (null == prop ? null == theOther.prop
@@ -2021,13 +2013,12 @@ public class NamingManagerTest extends TestCase {
 				}
 
 				return true;
-			} else {
-				return false;
 			}
+            return false;
 		}
 
-		public boolean parameterEquals(Object o, Name n, Context c, Hashtable h) {
-			Hashtable r = new Hashtable();
+		public boolean parameterEquals(Object o, Name n, Context c, Hashtable<?, ?> h) {
+			Hashtable<String, Object> r = new Hashtable<String, Object>();
 			if (null != o) {
 				r.put("o", o);
 			}
@@ -2079,7 +2070,7 @@ public class NamingManagerTest extends TestCase {
 		public void destroySubcontext(String s) throws NamingException {
 		}
 
-		public Hashtable getEnvironment() throws NamingException {
+		public Hashtable<?, ?> getEnvironment() throws NamingException {
 			return prop;
 		}
 
@@ -2095,19 +2086,19 @@ public class NamingManagerTest extends TestCase {
 			return null;
 		}
 
-		public NamingEnumeration list(Name n) throws NamingException {
+		public NamingEnumeration<NameClassPair> list(Name n) throws NamingException {
 			return null;
 		}
 
-		public NamingEnumeration list(String s) throws NamingException {
+		public NamingEnumeration<NameClassPair> list(String s) throws NamingException {
 			return null;
 		}
 
-		public NamingEnumeration listBindings(Name n) throws NamingException {
+		public NamingEnumeration<Binding> listBindings(Name n) throws NamingException {
 			return null;
 		}
 
-		public NamingEnumeration listBindings(String s) throws NamingException {
+		public NamingEnumeration<Binding> listBindings(String s) throws NamingException {
 			return null;
 		}
 
@@ -2152,7 +2143,7 @@ public class NamingManagerTest extends TestCase {
 
 	public static class MagicMockStateFactory implements StateFactory {
 
-		public Object getStateToBind(Object o, Name n, Context c, Hashtable h)
+		public Object getStateToBind(Object o, Name n, Context c, Hashtable<?, ?> h)
 				throws NamingException {
 
 			issueIndicatedExceptions(h);
@@ -2160,7 +2151,7 @@ public class NamingManagerTest extends TestCase {
 				return null;
 			}
 
-			Hashtable r = new Hashtable();
+			Hashtable<String, Object> r = new Hashtable<String, Object>();
 			if (null != o) {
 				r.put("o", o);
 			}
@@ -2179,10 +2170,10 @@ public class NamingManagerTest extends TestCase {
 
 	public static class MagicSuccessMockStateFactory implements StateFactory {
 
-		public Object getStateToBind(Object o, Name n, Context c, Hashtable h)
+		public Object getStateToBind(Object o, Name n, Context c, Hashtable<?, ?> h)
 				throws NamingException {
 
-			Hashtable r = new Hashtable();
+			Hashtable<String, Object> r = new Hashtable<String, Object>();
 			if (null != o) {
 				r.put("o", o);
 			}
@@ -2215,27 +2206,30 @@ public class NamingManagerTest extends TestCase {
 	}
 
 	public static class MockRefAddr extends RefAddr {
-		private String content;
+        private static final long serialVersionUID = 1L;
+        private String content;
 
 		public MockRefAddr(String type, String content) {
 			super(type);
 			this.content = content;
 		}
 
-		public Object getContent() {
+		@Override
+        public Object getContent() {
 			return content;
 		}
 	}
 
 	public static class MockContextObjectFactory extends MockObjectFactory {
-		Hashtable ht = null;
+		Hashtable<?, ?> ht = null;
 
-		public Object getObjectInstance(Object o, Name n, Context c,
-				Hashtable envmt) throws Exception {
+		@Override
+        public Object getObjectInstance(Object o, Name n, Context c,
+				Hashtable<?, ?> envmt) throws Exception {
 			return new MockContext(envmt);
 		}
 
-		public MockContextObjectFactory(Hashtable envmt) {
+		public MockContextObjectFactory(Hashtable<?, ?> envmt) {
 			ht = envmt;
 		}
 

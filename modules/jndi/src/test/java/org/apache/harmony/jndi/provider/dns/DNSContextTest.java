@@ -41,6 +41,7 @@ public class DNSContextTest extends TestCase {
 
     private DNSNameParser nameParser = null;
     
+    @Override
     protected void setUp() {
         nameParser = new DNSNameParser();
     }
@@ -49,7 +50,7 @@ public class DNSContextTest extends TestCase {
         Context ctx;
         String propStr1 = "dns://localhost/example.com";
         String propStr2 = "dns://localhost";
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
 
         env.put(Context.PROVIDER_URL, propStr1);
         ctx = new DNSContextFactory().getInitialContext(env);
@@ -65,7 +66,7 @@ public class DNSContextTest extends TestCase {
         Name result = null;
         String resultStr = null;
         String propStr1 = "dns://localhost/example.com";
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
         Context ctx;
 
         env.put(Context.PROVIDER_URL, propStr1);
@@ -127,11 +128,8 @@ public class DNSContextTest extends TestCase {
     public void testConstructor() throws NoSuchFieldException,
             IllegalArgumentException, SecurityException, NamingException
     {
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
         DNSContext context = null;
-        SList slist = null;
-        SList.Server serv = null;
-        
         env.put(Context.AUTHORITATIVE, "true");
         env.put(DNSContext.LOOKUP_ATTR, "IN A");
         env.put(DNSContext.RECURSION, "true");
@@ -191,7 +189,7 @@ public class DNSContextTest extends TestCase {
         } catch (NumberFormatException e) {}
         env.put(DNSContext.TIMEOUT_RETRIES, "5");
 
-        env.put(DNSContext.PROVIDER_URL,
+        env.put(Context.PROVIDER_URL,
                 "dns://dnsserver1.com/super.zone.ru. " +
                 "dns://123.456.78.90/super.zone.ru");
         context = (DNSContext)new DNSContextFactory().getInitialContext(env);
@@ -206,7 +204,7 @@ public class DNSContextTest extends TestCase {
             fail("DNS server has not been added");
         }
         */
-        env.put(DNSContext.PROVIDER_URL, "file:/etc/passwd");
+        env.put(Context.PROVIDER_URL, "file:/etc/passwd");
         try {
             context = (DNSContext)new DNSContextFactory().getInitialContext(env);
             fail("NamingException has not been thrown");
@@ -221,8 +219,8 @@ public class DNSContextTest extends TestCase {
      */
     public void testEnvironment() throws NamingException {
         DNSContext context = null;
-        Hashtable env = new Hashtable();
-        Hashtable env2 = null;
+        Hashtable<String, String> env = new Hashtable<String, String>();
+        Hashtable<?, ?> env2 = null;
 
         // no side effect
         env.put(DNSContext.TIMEOUT_INITIAL, "2000");
@@ -251,6 +249,7 @@ public class DNSContextTest extends TestCase {
 //        // TODO
 //    }
 
+    @Override
     protected void tearDown() {
         nameParser = null;
     }

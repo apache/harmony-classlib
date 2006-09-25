@@ -27,7 +27,7 @@ public class DazzleContextFactory implements InitialContextFactory {
 		super();
 	}
 
-	public Context getInitialContext(Hashtable environment)
+	public Context getInitialContext(Hashtable<?, ?> environment)
 			throws NamingException {
 		return new DazzleContext(environment);
 	}

@@ -27,12 +27,10 @@ import junit.framework.TestCase;
 import org.apache.harmony.jndi.tests.javax.naming.util.Log;
 
 public class InitialContextEnvTest extends TestCase {
-	private static Log log = new Log(InitialContextEnvTest.class);
+	private static final Log log = new Log(InitialContextEnvTest.class);
 
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		Log.close();
 	}
@@ -42,7 +40,7 @@ public class InitialContextEnvTest extends TestCase {
 		/*
 		 * set properties for environment parameter
 		 */
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		// C type
@@ -115,9 +113,9 @@ public class InitialContextEnvTest extends TestCase {
 
 		InitialContext context = new InitialContext(env);
 
-		Hashtable props = context.getEnvironment();
+		Hashtable<?, ?> props = context.getEnvironment();
 		// printHashtable(props);
-		Hashtable expected = InitialContextLibTest.readAllProps(env);
+		Hashtable<?, ?> expected = InitialContextLibTest.readAllProps(env);
 		assertEquals(expected, props);
 	}
 
@@ -126,7 +124,7 @@ public class InitialContextEnvTest extends TestCase {
 		/*
 		 * set properties for environment parameter
 		 */
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		// C type
@@ -201,15 +199,15 @@ public class InitialContextEnvTest extends TestCase {
 
 		InitialContext context = new InitialContext(env);
 
-		Hashtable props = context.getEnvironment();
+		Hashtable<?, ?> props = context.getEnvironment();
 		// printHashtable(props);
-		Hashtable expected = InitialContextLibTest.readAllProps(env);
+		Hashtable<?, ?> expected = InitialContextLibTest.readAllProps(env);
 		assertEquals(expected, props);
 	}
 
-	void printHashtable(Hashtable env) {
+	void printHashtable(Hashtable<?, ?> env) {
 		// TO DO: Need to remove
-		Enumeration keys = env.keys();
+		Enumeration<?> keys = env.keys();
 		while (keys.hasMoreElements()) {
 			Object key = keys.nextElement();
 			log.log(key + "=" + env.get(key));

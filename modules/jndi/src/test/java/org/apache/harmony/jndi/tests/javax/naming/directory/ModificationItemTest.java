@@ -27,29 +27,6 @@ public class ModificationItemTest extends TestCase {
 
 	BasicAttribute attr = new BasicAttribute("id_sample", "value_sample");
 
-	/**
-	 * Constructor for ModificationItemTest.
-	 * 
-	 * @param arg0
-	 */
-	public ModificationItemTest(String arg0) {
-		super(arg0);
-	}
-
-	/*
-	 * @see TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
 	public void testModificationItem() {
 		log.setMethod("testModificationItem()");
 		ModificationItem item;
@@ -61,10 +38,9 @@ public class ModificationItemTest extends TestCase {
 
 	public void testModificationItem_InvalidOp() {
 		log.setMethod("testModificationItem_InvalidOp()");
-		ModificationItem item;
 
 		try {
-			item = new ModificationItem(-255, attr);
+			new ModificationItem(-255, attr);
 			fail("Should throw IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 		}
@@ -72,10 +48,9 @@ public class ModificationItemTest extends TestCase {
 
 	public void testModificationItem_NullAttribute() {
 		log.setMethod("testModificationItem_NullAttribute()");
-		ModificationItem item;
 
 		try {
-			item = new ModificationItem(DirContext.ADD_ATTRIBUTE, null);
+			new ModificationItem(DirContext.ADD_ATTRIBUTE, null);
 			fail("Should throw IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 		}

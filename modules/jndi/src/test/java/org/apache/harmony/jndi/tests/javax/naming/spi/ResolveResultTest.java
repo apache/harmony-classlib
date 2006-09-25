@@ -37,7 +37,8 @@ public class ResolveResultTest extends TestCase {
 
 	private CompositeName name;
 
-	protected void setUp() throws InvalidNameException {
+	@Override
+    protected void setUp() throws InvalidNameException {
 		strObj = "String object";
 		strName = "www.eclipse.org/org/index.html";
 		name = new CompositeName(strName);
@@ -60,7 +61,7 @@ public class ResolveResultTest extends TestCase {
 	public void testConstructor_SimpleNull() {
 		strName = null;
 		try {
-			ResolveResult resolveResult = new ResolveResult(null, strName);
+			new ResolveResult(null, strName);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}
@@ -415,7 +416,12 @@ public class ResolveResultTest extends TestCase {
 	}
 
 	class MyResolveResult extends ResolveResult {
-		public MyResolveResult() {
+		/**
+         * <p></p>
+         */
+        private static final long serialVersionUID = 1L;
+
+        public MyResolveResult() {
 			super();
 		}
 	}

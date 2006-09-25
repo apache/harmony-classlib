@@ -20,13 +20,13 @@ import java.util.Hashtable;
 import javax.naming.NamingException;
 
 public class MockActionController implements DazzleActionController {
-	private Hashtable env;
+	private Hashtable<String, String> env;
 
 	public MockActionController() {
-		this.env = new Hashtable();
+		this.env = new Hashtable<String, String>();
 	}
 
-	public MockActionController(Hashtable env) {
+	public MockActionController(Hashtable<String, String> env) {
 		this.env = env;
 	}
 
@@ -34,8 +34,9 @@ public class MockActionController implements DazzleActionController {
 		this.env.put(action, value);
 	}
 
-	public Object doActions() throws NamingException {
-		Hashtable actions = (Hashtable) this.env.clone();
+	@SuppressWarnings("unchecked")
+    public Object doActions() throws NamingException {
+		Hashtable<String, String> actions = (Hashtable<String, String>) this.env.clone();
 		this.env.clear();
 
 		if (actions == null) {

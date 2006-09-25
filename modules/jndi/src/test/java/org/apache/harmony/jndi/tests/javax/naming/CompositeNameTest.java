@@ -40,7 +40,7 @@ public class CompositeNameTest extends TestCase {
 	 * Constants
 	 * -------------------------------------------------------------------
 	 */
-	private static Log log = new Log(CompositeNameTest.class);
+	private static final Log log = new Log(CompositeNameTest.class);
 
 	private static final char SEPARATOR = '/';
 
@@ -51,7 +51,7 @@ public class CompositeNameTest extends TestCase {
 	 */
 	private CompositeName name;
 
-	private String[] elements = { "www.apache.org", "gbank" };
+	private final String[] elements = { "www.apache.org", "gbank" };
 
 	private String initName;
 
@@ -65,8 +65,8 @@ public class CompositeNameTest extends TestCase {
 	public CompositeNameTest(String arg0) {
 		super(arg0);
 		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < elements.length; i++) {
-			sb.append(elements[i]).append(SEPARATOR);
+		for (String element : elements) {
+			sb.append(element).append(SEPARATOR);
 		}
 		initName = sb.toString();
 	}
@@ -77,10 +77,8 @@ public class CompositeNameTest extends TestCase {
 	 * -------------------------------------------------------------------
 	 */
 
-	/*
-	 * @see TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		name = new CompositeName(initName);
 		props = new Properties();
@@ -95,10 +93,8 @@ public class CompositeNameTest extends TestCase {
 		props.put("jndi.syntax.trimblanks", "false");
 	}
 
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 
@@ -160,9 +156,9 @@ public class CompositeNameTest extends TestCase {
 	 */
 	public void testGetAll() {
 		log.setMethod("testGetAll()");
-		Enumeration enumeration = name.getAll();
-		for (int j = 0; j < elements.length; j++) {
-			assertTrue(elements[j].equals(enumeration.nextElement()));
+		Enumeration<?> enumeration = name.getAll();
+		for (String element : elements) {
+			assertTrue(element.equals(enumeration.nextElement()));
 		}
 		assertTrue("".equals(enumeration.nextElement()));
 	}
@@ -368,10 +364,11 @@ public class CompositeNameTest extends TestCase {
 	 * 
 	 * @throws InvalidNameException
 	 */
+    @SuppressWarnings("unused")
 	public void testIsEmpty() throws InvalidNameException {
 		log.setMethod("testIsEmpty()");
 		assertFalse(name.isEmpty());
-		for (int i = 0; i < elements.length; i++) {
+		for (String element : elements) {
 			name.remove(0);
 		}
 		name.remove(0);
@@ -441,7 +438,7 @@ public class CompositeNameTest extends TestCase {
 		// The name "a//a" has 3 elements. The middle element is empty and the
 		// first & third elements are both "a".
 		name = new CompositeName("a//a");
-		Enumeration enumeration = name.getAll();
+		Enumeration<?> enumeration = name.getAll();
 		assertEquals("a", enumeration.nextElement());
 		assertEquals("", enumeration.nextElement());
 		assertEquals("a", enumeration.nextElement());
@@ -591,7 +588,7 @@ public class CompositeNameTest extends TestCase {
 			}
 
 			int i = 0;
-			Enumeration enumeration = n.getAll();
+			Enumeration<?> enumeration = n.getAll();
 			while (enumeration.hasMoreElements()) {
 				assertEquals(elems[i++], enumeration.nextElement());
 			}
@@ -652,7 +649,7 @@ public class CompositeNameTest extends TestCase {
 		CompositeName name2 = new MockCompositeName(name.getAll());
 		assertEquals(name2, name);
 		try {
-			name2 = new MockCompositeName((Enumeration) null);
+			name2 = new MockCompositeName((Enumeration<String>) null);
 			fail();
 		} catch (NullPointerException e) {
 		}
@@ -660,7 +657,9 @@ public class CompositeNameTest extends TestCase {
 
 	// mock class to test protected methods
 	public class MockCompositeName extends CompositeName {
-		public MockCompositeName(Enumeration enumeration) {
+        private static final long serialVersionUID = 1L;
+
+        public MockCompositeName(Enumeration<String> enumeration) {
 			super(enumeration);
 		}
 	}

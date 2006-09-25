@@ -18,14 +18,13 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import junit.framework.TestCase;
 import org.apache.harmony.jndi.tests.javax.naming.util.Log;
 
 public class InitialContextAppTest extends TestCase {
-	private static Log log = new Log(InitialContextAppTest.class);
+	private static final Log log = new Log(InitialContextAppTest.class);
 
 	public void testConstructor_App() throws NamingException, IOException {
 		//Comment this test case out because this test case 
@@ -39,9 +38,9 @@ public class InitialContextAppTest extends TestCase {
 //		assertEquals(expected, props);
 	}
 
-	void printHashtable(Hashtable env) {
+	void printHashtable(Hashtable<?, ?> env) {
 		// TO DO: Need to remove
-		Enumeration keys = env.keys();
+		Enumeration<?> keys = env.keys();
 		while (keys.hasMoreElements()) {
 			Object key = keys.nextElement();
 			log.log(key + "=" + env.get(key));

@@ -20,9 +20,9 @@ import org.apache.harmony.jndi.tests.javax.naming.util.Log;
 
 public class InvokeRecord {
 
-	private static Log log = new Log(null);
+	private static final Log log = new Log(null);
 
-	private static ArrayList params = new ArrayList();
+	private static final ArrayList<Object> params = new ArrayList<Object>();
 
 	private static String urlSchema = null;
 
@@ -72,20 +72,20 @@ public class InvokeRecord {
 	}
 
 	public static boolean equals(String s, Object p1) {
-		ArrayList tmp = new ArrayList();
+		ArrayList<Object> tmp = new ArrayList<Object>();
 		tmp.add(p1);
 		return equals(s, tmp);
 	}
 
 	public static boolean equals(String s, Object p1, Object p2) {
-		ArrayList tmp = new ArrayList();
+		ArrayList<Object> tmp = new ArrayList<Object>();
 		tmp.add(p1);
 		tmp.add(p2);
 		return equals(s, tmp);
 	}
 
 	public static boolean equals(String s, Object p1, Object p2, Object p3) {
-		ArrayList tmp = new ArrayList();
+		ArrayList<Object> tmp = new ArrayList<Object>();
 		tmp.add(p1);
 		tmp.add(p2);
 		tmp.add(p3);
@@ -94,7 +94,7 @@ public class InvokeRecord {
 
 	public static boolean equals(String s, Object p1, Object p2, Object p3,
 			Object p4) {
-		ArrayList tmp = new ArrayList();
+		ArrayList<Object> tmp = new ArrayList<Object>();
 		tmp.add(p1);
 		tmp.add(p2);
 		tmp.add(p3);
@@ -104,7 +104,7 @@ public class InvokeRecord {
 
 	public static boolean equals(String s, Object p1, Object p2, Object p3,
 			Object p4, Object p5) {
-		ArrayList tmp = new ArrayList();
+		ArrayList<Object> tmp = new ArrayList<Object>();
 		tmp.add(p1);
 		tmp.add(p2);
 		tmp.add(p3);
@@ -113,7 +113,7 @@ public class InvokeRecord {
 		return equals(s, tmp);
 	}
 
-	private static boolean equals(String s, ArrayList tmp) {
+	private static boolean equals(String s, ArrayList<Object> tmp) {
 		boolean r = (urlSchema == null ? s == null : urlSchema.equals(s))
 				&& tmp.equals(params);
 		if (!r) {

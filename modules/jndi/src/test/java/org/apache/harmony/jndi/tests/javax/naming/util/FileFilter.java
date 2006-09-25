@@ -81,9 +81,8 @@ public class FileFilter {
 						if (junitStartsWith(pre, "at ")) {
 							if (nxt == null) {
 								break;
-							} else {
-								pre = nxt;
 							}
+                            pre = nxt;
 							continue;
 						}
 					}
@@ -97,9 +96,8 @@ public class FileFilter {
 									|| null == nxt) {
 								if (nxt == null) {
 									break;
-								} else {
-									pre = nxt;
 								}
+                                pre = nxt;
 								continue;
 							}
 						}
@@ -110,9 +108,8 @@ public class FileFilter {
 
 				if (null == nxt) {
 					break;
-				} else {
-					pre = nxt;
 				}
+                pre = nxt;
 			}
 		} catch (Exception e) {
 			System.out.println("Filter exception: " + e.getMessage());

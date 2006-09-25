@@ -15,9 +15,6 @@
 
 package org.apache.harmony.jndi.tests.javax.naming;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -25,16 +22,15 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import junit.framework.TestCase;
 import org.apache.harmony.jndi.tests.javax.naming.util.Log;
 
 public class InitialContextLibTest extends TestCase {
-	private static Log log = new Log(InitialContextLibTest.class);
+	private static final Log log = new Log(InitialContextLibTest.class);
 
-	private static String jndiProp = "jndi.properties";
+	private static final String jndiProp = "jndi.properties";
 
 	public void testConstructor_Lib() throws NamingException, IOException {
 		//Comment this test case out because this test case 
@@ -47,16 +43,16 @@ public class InitialContextLibTest extends TestCase {
 //		assertEquals(expected, props);
 	}
 
-	void printHashtable(Hashtable env) {
+	void printHashtable(Hashtable<?, ?> env) {
 		// TO DO: Need to remove
-		Enumeration keys = env.keys();
+		Enumeration<?> keys = env.keys();
 		while (keys.hasMoreElements()) {
 			Object key = keys.nextElement();
 			log.log(key + "=" + env.get(key));
 		}
 	}
 
-	static Properties readAllProps(Hashtable env) throws IOException {
+	static Properties readAllProps(Hashtable<?, ?> env) throws IOException {
 		// env param
 		Properties props = new Properties();
 		if (env != null) {
@@ -70,7 +66,7 @@ public class InitialContextLibTest extends TestCase {
 		// ClassLoader classLoader = ClassLoader.getSystemClassLoader();
 		ClassLoader classLoader = Thread.currentThread()
 				.getContextClassLoader();
-		Enumeration resources = classLoader.getResources(jndiProp);
+		Enumeration<?> resources = classLoader.getResources(jndiProp);
 		while (resources.hasMoreElements()) {
 			URL url = (URL) resources.nextElement();
 			InputStream fis = url.openStream();
@@ -91,19 +87,19 @@ public class InitialContextLibTest extends TestCase {
 		return props;
 	}
 
-	static Properties mergProps(Properties props, Hashtable env) {
+	static Properties mergProps(Properties props, Hashtable<?, ?> env) {
 		Properties resource = new Properties();
 		resource.putAll(props);
 
-		Hashtable items = getItemsType();
-		Enumeration keys = env.keys();
+		Hashtable<String, String> items = getItemsType();
+		Enumeration<?> keys = env.keys();
 		while (keys.hasMoreElements()) {
 			Object key = keys.nextElement();
-			String type = (String) items.get(key);
+			String type = items.get(key);
 			Object oldObj = resource.get(key);
 			Object newObj = env.get(key);
 			if (type == null) {
-				resource.put(key, (String) newObj);
+				resource.put(key, newObj);
 				continue;
 			}
 
@@ -115,7 +111,7 @@ public class InitialContextLibTest extends TestCase {
 				if ((oldObj != null) && (newObj != null)) {
 					resource.put(key, (String) oldObj + ":" + (String) newObj);
 				} else if ((oldObj == null) && (newObj != null)) {
-					resource.put(key, (String) newObj);
+					resource.put(key, newObj);
 				}
 			}
 		}
@@ -123,15 +119,15 @@ public class InitialContextLibTest extends TestCase {
 		return resource;
 	}
 
-	static Properties mergSysProps(Properties props, Hashtable env) {
+	static Properties mergSysProps(Properties props, Hashtable<?, ?> env) {
 		Properties resource = new Properties();
 		resource.putAll(props);
 
-		Hashtable items = getSystemItemsType();
-		Enumeration keys = items.keys();
+		Hashtable<String, String> items = getSystemItemsType();
+		Enumeration<String> keys = items.keys();
 		while (keys.hasMoreElements()) {
 			Object key = keys.nextElement();
-			String type = (String) items.get(key);
+			String type = items.get(key);
 			Object oldObj = resource.get(key);
 			Object newObj = env.get(key);
 
@@ -148,8 +144,8 @@ public class InitialContextLibTest extends TestCase {
 		return resource;
 	}
 
-	static Hashtable getItemsType() {
-		Hashtable hashtable = new Hashtable();
+	static Hashtable<String, String> getItemsType() {
+		Hashtable<String, String> hashtable = new Hashtable<String, String>();
 		hashtable.put("java.naming.factory.initial", "F");
 		hashtable.put("java.naming.provider.url", "F");
 		hashtable.put("java.naming.factory.control", "C");
@@ -169,8 +165,8 @@ public class InitialContextLibTest extends TestCase {
 		return hashtable;
 	}
 
-	static Hashtable getSystemItemsType() {
-		Hashtable hashtable = new Hashtable();
+	static Hashtable<String, String> getSystemItemsType() {
+		Hashtable<String, String> hashtable = new Hashtable<String, String>();
 		hashtable.put("java.naming.factory.initial", "F");
 		hashtable.put("java.naming.provider.url", "F");
 		hashtable.put("java.naming.factory.control", "C");

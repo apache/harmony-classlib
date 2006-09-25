@@ -106,7 +106,7 @@ public class StringRefAddrTest extends TestCase {
 		StringRefAddr addr0 = new StringRefAddr(null, address);
 		StringRefAddr addr1 = new StringRefAddr(null, address);
 		try {
-			boolean result = addr0.equals(addr1);
+			addr0.equals(addr1);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}
@@ -123,7 +123,7 @@ public class StringRefAddrTest extends TestCase {
 		String content = "null";
 		StringRefAddr addr0 = new StringRefAddr(null, content);
 		try {
-			int hashcode = addr0.hashCode();
+			addr0.hashCode();
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}
@@ -161,8 +161,6 @@ public class StringRefAddrTest extends TestCase {
 	public void testToString_typeNull() {
 		String address = "this is a simple object with null type";
 		StringRefAddr stringRefAddr = new StringRefAddr(null, address);
-		String str = "The type of the address is: null"
-				+ "\nThe content of the address is: " + address + "\n";
 		// assertEquals(str, stringRefAddr.toString());
 		assertNotNull(stringRefAddr.toString());
 	}

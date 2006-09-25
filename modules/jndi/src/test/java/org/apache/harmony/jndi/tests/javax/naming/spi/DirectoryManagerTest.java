@@ -31,30 +31,25 @@ import javax.naming.spi.DirStateFactory;
 import javax.naming.spi.DirectoryManager;
 
 import junit.framework.TestCase;
+
+import org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest.MockRefAddr;
+import org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest.MockReferenceable;
 import org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockContext;
 import org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirContext2;
 import org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirContext3;
-import org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest.MockRefAddr;
-import org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest.MockReferenceable;
-import org.apache.harmony.jndi.tests.javax.naming.util.Log;
+
 import com.sun.jndi.url.dir2.dir2URLContextFactory;
 
 
 public class DirectoryManagerTest extends TestCase {
-    /*
-     * -------------------------------------------------------------------
-     * Instance variables (Should be private)
-     * -------------------------------------------------------------------
-     */
-    private static Log log = new Log(DirectoryManagerTest.class);
 
-    /*
-     * @see TestCase#setUp()
-     */
+
+
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.STATE_FACTORIES,
                 "org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirStateFactory");
         // env.put(
@@ -64,12 +59,6 @@ public class DirectoryManagerTest extends TestCase {
                 MockDirContext2.class.getName(), env);
     }
 
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
 
     /*
      * -------------------------------------------------------------------
@@ -77,7 +66,7 @@ public class DirectoryManagerTest extends TestCase {
      * -------------------------------------------------------------------
      */
     // public void testDefaultConstructor() {
-    // log.setMethod("testDefaultConstructor()");
+    // 
     // // for coverage only, no meaning!
     // try {
     // DirectoryManager manager = new DirectoryManager();
@@ -98,9 +87,8 @@ public class DirectoryManagerTest extends TestCase {
      */
     public void testGetObjectInstance_NoBuilder_ReferenceValidFactory()
             throws NamingException {
-        log
-                .setMethod("testGetObjectInstance_NoBuilder_ReferenceValidFactory()");
-        Hashtable env = new Hashtable();
+        
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY,
                 "dazzle.jndi.testing.spi.DazzleContextFactory");
         Reference r = new Reference(null,
@@ -123,16 +111,16 @@ public class DirectoryManagerTest extends TestCase {
      * @return
      */
     private void assertGetObjectResult(Object o, Name n, Context c,
-            Hashtable h, Attributes a) throws NamingException {
+            Hashtable<String, String> h, Attributes a) throws NamingException {
         Object obj = null;
         try {
-            obj = (Object) DirectoryManager.getObjectInstance(o, n, c, h, a);
+            obj = DirectoryManager.getObjectInstance(o, n, c, h, a);
         } catch (Exception e) {
-            log.log(e);
+            
             fail();
         }
 
-        Hashtable t = (Hashtable) obj;
+        Hashtable<?, ?> t = (Hashtable<?, ?>) obj;
         if (o instanceof Referenceable) {
             assertSame(t.get("o"), ((Referenceable) o).getReference());
         } else {
@@ -153,9 +141,8 @@ public class DirectoryManagerTest extends TestCase {
      */
     public void testGetObjectInstance_NoBuilder_ReferenceInvalidFactory()
             throws Exception {
-        log
-                .setMethod("testGetObjectInstance_NoBuilder_ReferenceInvalidFactory()");
-        Hashtable env = new Hashtable();
+        
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY,
                 "dazzle.jndi.testing.spi.DazzleContextFactory");
         Reference r = new Reference(null, "junk.factory", null);
@@ -178,8 +165,8 @@ public class DirectoryManagerTest extends TestCase {
      */
     public void testGetObjectInstance_NoBuilder_ReferenceException()
             throws Exception {
-        log.setMethod("testGetObjectInstance_NoBuilder_ReferenceException()");
-        Hashtable env = new Hashtable();
+        
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY,
                 "dazzle.jndi.testing.spi.DazzleContextFactory");
         Reference r = new Reference(null,
@@ -187,22 +174,22 @@ public class DirectoryManagerTest extends TestCase {
         NamingManagerTest.indicateNullPointerException(env);
         Attributes a = new BasicAttributes();
         try {
-            Object obj = DirectoryManager.getObjectInstance(r, null, null, env,
+            DirectoryManager.getObjectInstance(r, null, null, env,
                     a);
             fail("Should throw NullPointerException.");
         } catch (NullPointerException e) {
-            // log.log(e);
+            // 
         }
 
         // test Referenceable
         MockReferenceable mr = new MockReferenceable(r);
         NamingManagerTest.indicateNamingException(env);
         try {
-            Object obj = DirectoryManager.getObjectInstance(mr, null, null,
+            DirectoryManager.getObjectInstance(mr, null, null,
                     env, a);
             fail("Should throw NamingException.");
         } catch (NamingException e) {
-            // log.log(e);
+            // 
         }
     }
 
@@ -214,8 +201,8 @@ public class DirectoryManagerTest extends TestCase {
      */
     public void testGetObjectInstance_NoBuilder_ReferenceReturnNull()
             throws Exception {
-        log.setMethod("testGetObjectInstance_NoBuilder_ReferenceReturnNull()");
-        Hashtable env = new Hashtable();
+        
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
         env.put(Context.INITIAL_CONTEXT_FACTORY,
                 "dazzle.jndi.testing.spi.DazzleContextFactory");
         Reference r = new Reference(null,
@@ -240,9 +227,7 @@ public class DirectoryManagerTest extends TestCase {
      */
     public void testGetObjectInstance_NoBuilder_ReferenceNullTypedNonStrAddr()
             throws Exception {
-        log
-                .setMethod("testGetObjectInstance_NoBuilder_ReferenceNullTypedNonStrAddr()");
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY,
                 "dazzle.jndi.testing.spi.DazzleContextFactory");
         env.put(Context.URL_PKG_PREFIXES, "org.apache.harmony.jndi.tests.javax.naming.spi.mock");
@@ -254,7 +239,7 @@ public class DirectoryManagerTest extends TestCase {
         Attributes a = new BasicAttributes();
 
         Object obj = DirectoryManager.getObjectInstance(r, new CompositeName(
-                "compositename"), new MockContext(new Hashtable()), env, a);
+                "compositename"), new MockContext(new Hashtable<String, String>()), env, a);
         assertSame(obj, r);
     }
 
@@ -265,9 +250,7 @@ public class DirectoryManagerTest extends TestCase {
      */
     public void testGetObjectInstance_NoBuilder_ReferenceNullTypedStrAddr()
             throws Exception {
-        log
-                .setMethod("testGetObjectInstance_NoBuilder_ReferenceNullTypedStrAddr()");
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY,
                 "dazzle.jndi.testing.spi.DazzleContextFactory");
         env.put(Context.URL_PKG_PREFIXES, "org.apache.harmony.jndi.tests.javax.naming.spi.mock");
@@ -278,23 +261,23 @@ public class DirectoryManagerTest extends TestCase {
         Attributes a = new BasicAttributes();
 
         try {
-            Object obj = DirectoryManager.getObjectInstance(r,
+            DirectoryManager.getObjectInstance(r,
                     new CompositeName("compositename"), new MockContext(
-                            new Hashtable()), env, a);
+                            new Hashtable<String, String>()), env, a);
             fail("Should throw NullPointerException.");
         } catch (NullPointerException e) {
-            // log.log(e);
+            // 
         }
 
         // test Referenceable
         MockReferenceable mr = new MockReferenceable(r);
         try {
-            Object obj = DirectoryManager.getObjectInstance(mr,
+            DirectoryManager.getObjectInstance(mr,
                     new CompositeName("compositename"), new MockContext(
-                            new Hashtable()), env, a);
+                            new Hashtable<String, String>()), env, a);
             fail("Should throw NullPointerException.");
         } catch (NullPointerException e) {
-            // log.log(e);
+            // 
         }
     }
 
@@ -316,7 +299,7 @@ public class DirectoryManagerTest extends TestCase {
      */
     private void myTestGetObjectInstance_NoBuilder_ReferenceValidURL(String url)
             throws Exception {
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY,
                 "dazzle.jndi.testing.spi.DazzleContextFactory");
         env.put(Context.URL_PKG_PREFIXES, "org.apache.harmony.jndi.tests.javax.naming.spi.mock");
@@ -346,14 +329,14 @@ public class DirectoryManagerTest extends TestCase {
                 "dire://www.apache.org/");
         r.add(validFactoryAddr);
         Attributes a = new BasicAttributes();
-        Hashtable temp = new Hashtable();
+        Hashtable<String, String> temp = new Hashtable<String, String>();
         temp.put("mockkey", "mockobj");
         MockContext c = new MockContext(temp);
         Name n = new CompositeName("compositename");
 
         MockDirContext3 ctx = (MockDirContext3) DirectoryManager
                 .getObjectInstance(r, n, c, env, a);
-        log.log(ctx.getEnvironment().toString());
+
         boolean equals = ctx.parameterEquals(validFactoryAddr.getContent(), n,
                 c, env, null); // it's NOT a!!
         assertTrue(equals);
@@ -362,7 +345,7 @@ public class DirectoryManagerTest extends TestCase {
         MockReferenceable mr = new MockReferenceable(r);
         ctx = (MockDirContext3) DirectoryManager.getObjectInstance(mr, n, c,
                 env, a);
-        log.log(ctx.getEnvironment().toString());
+
         assertTrue(ctx.parameterEquals(validFactoryAddr.getContent(), n, c,
                 env, null)); // it's NOT a!!
     }
@@ -373,15 +356,11 @@ public class DirectoryManagerTest extends TestCase {
      */
     public void testGetObjectInstance_NoBuilder_ReferenceValidURL_URL()
             throws Exception {
-        log
-                .setMethod("testGetObjectInstance_NoBuilder_ReferenceValidURL_URL()");
         myTestGetObjectInstance_NoBuilder_ReferenceValidURL("URL");
     }
 
     public void testGetObjectInstance_NoBuilder_ReferenceValidURL_url()
             throws Exception {
-        log
-                .setMethod("testGetObjectInstance_NoBuilder_ReferenceValidURL_url()");
         myTestGetObjectInstance_NoBuilder_ReferenceValidURL("url");
     }
 
@@ -390,8 +369,8 @@ public class DirectoryManagerTest extends TestCase {
      */
     public void testGetObjectInstance_NoBuilder_ReferenceDefaultURL()
             throws Exception {
-        log.setMethod("testGetObjectInstance_NoBuilder_ReferenceDefaultURL()");
-        Hashtable env = new Hashtable();
+        
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY,
                 "dazzle.jndi.testing.spi.DazzleContextFactory");
         env.put(Context.URL_PKG_PREFIXES, "org.apache.harmony.jndi.tests.javax.naming.spi.mock");
@@ -402,8 +381,7 @@ public class DirectoryManagerTest extends TestCase {
         Attributes a = new BasicAttributes();
 
         dir2URLContextFactory.MockObject obj = (dir2URLContextFactory.MockObject) DirectoryManager
-                .getObjectInstance(r, new CompositeName("compositename"), null,
-                        env, a);
+                .getObjectInstance(r, new CompositeName("compositename"), null, env, a);
 
         assertEquals(obj,
                 new dir2URLContextFactory.MockObject(addr.getContent(),
@@ -438,7 +416,7 @@ public class DirectoryManagerTest extends TestCase {
     private void myTestGetObjectInstance_NoBuilder_ReferenceExceptionalURL(
             String url) throws Exception {
         try {
-            Hashtable env = new Hashtable();
+            Hashtable<String, String> env = new Hashtable<String, String>();
 
             Reference r = new Reference(null);
             StringRefAddr exceptionalFactoryAddr = new StringRefAddr(url,
@@ -448,7 +426,7 @@ public class DirectoryManagerTest extends TestCase {
                     "dire://www.apache.org/");
             r.add(validFactoryAddr);
 
-            Hashtable ctxEnv = new Hashtable();
+            Hashtable<String, String> ctxEnv = new Hashtable<String, String>();
             /*
              * ctxEnv.put( Context.INITIAL_CONTEXT_FACTORY,
              * "dazzle.jndi.testing.spi.DazzleContextFactory");
@@ -464,7 +442,7 @@ public class DirectoryManagerTest extends TestCase {
             // ctxEnv);
             try {
                 NamingManagerTest.indicateNullPointerException(env);
-                Object ctx = DirectoryManager.getObjectInstance(r,
+                DirectoryManager.getObjectInstance(r,
                         new CompositeName("compositename"), new MockContext(
                                 ctxEnv), env, a);
                 fail("Should throw NamingException.");
@@ -476,7 +454,7 @@ public class DirectoryManagerTest extends TestCase {
             MockReferenceable mr = new MockReferenceable(r);
             try {
                 NamingManagerTest.indicateNamingException(env);
-                MockContext ctx = (MockContext) DirectoryManager
+                DirectoryManager
                         .getObjectInstance(mr, new CompositeName(
                                 "compositename"), new MockContext(ctxEnv), env,
                                 a);
@@ -487,14 +465,13 @@ public class DirectoryManagerTest extends TestCase {
             }
         } finally {
             NamingManagerTest.writeProviderResource(
-                    "org.apache.harmony.jndi.tests.javax.naming.spi.dummy", new Hashtable());
+                    "org.apache.harmony.jndi.tests.javax.naming.spi.dummy", new Hashtable<Object, Object>());
         }
     }
 
     private void myTestGetObjectInstance_NoBuilder_ReferenceExceptionalURL2(
             String url) throws Exception {
         try {
-            Hashtable env = new Hashtable();
 
             Reference r = new Reference(null);
             StringRefAddr exceptionalFactoryAddr = new StringRefAddr(url,
@@ -504,7 +481,7 @@ public class DirectoryManagerTest extends TestCase {
                     "dire://www.apache.org/");
             r.add(validFactoryAddr);
 
-            Hashtable ctxEnv = new Hashtable();
+            Hashtable<String, String> ctxEnv = new Hashtable<String, String>();
 
             ctxEnv.put(Context.INITIAL_CONTEXT_FACTORY,
                     "dazzle.jndi.testing.spi.DazzleContextFactory");
@@ -517,7 +494,7 @@ public class DirectoryManagerTest extends TestCase {
             Attributes a = new BasicAttributes();
             try {
                 NamingManagerTest.indicateNullPointerException(ctxEnv);
-                Object ctx = DirectoryManager.getObjectInstance(r,
+                DirectoryManager.getObjectInstance(r,
                         new CompositeName("compositename"), new MockContext(
                                 ctxEnv), ctxEnv, a);
                 fail("Should throw NamingException.");
@@ -529,7 +506,7 @@ public class DirectoryManagerTest extends TestCase {
             MockReferenceable mr = new MockReferenceable(r);
             try {
                 NamingManagerTest.indicateNamingException(ctxEnv);
-                MockContext ctx = (MockContext) DirectoryManager
+                DirectoryManager
                         .getObjectInstance(mr, new CompositeName(
                                 "compositename"), new MockContext(ctxEnv),
                                 ctxEnv, a);
@@ -539,28 +516,23 @@ public class DirectoryManagerTest extends TestCase {
             }
         } finally {
             NamingManagerTest.writeProviderResource(
-                    "org.apache.harmony.jndi.tests.javax.naming.spi.dummy", new Hashtable());
+                    "org.apache.harmony.jndi.tests.javax.naming.spi.dummy", new Hashtable<Object, Object>());
         }
     }
 
     public void testGetObjectInstance_NoBuilder_ReferenceExceptionalURL_URL()
             throws Exception {
-        log
-                .setMethod("testGetObjectInstance_NoBuilder_ReferenceExceptionalURL_URL()");
+
         myTestGetObjectInstance_NoBuilder_ReferenceExceptionalURL("URL");
     }
 
     public void testGetObjectInstance_NoBuilder_ReferenceExceptionalURL_URL2()
             throws Exception {
-        log
-                .setMethod("testGetObjectInstance_NoBuilder_ReferenceExceptionalURL_URL2()");
         myTestGetObjectInstance_NoBuilder_ReferenceExceptionalURL2("URL");
     }
 
     public void testGetObjectInstance_NoBuilder_ReferenceExceptionalURL_url()
             throws Exception {
-        log
-                .setMethod("testGetObjectInstance_NoBuilder_ReferenceExceptionalURL_url()");
         myTestGetObjectInstance_NoBuilder_ReferenceExceptionalURL("url");
     }
 
@@ -573,17 +545,16 @@ public class DirectoryManagerTest extends TestCase {
      */
     public void testGetObjectInstance_NoBuilder_NotRef_ValidFactory()
             throws NamingException, Throwable {
-        log.setMethod("testGetObjectInstance_NoBuilder_NotRef_ValidFactory()");
+        
         try {
-            log
-                    .setMethod("testGetObjectInstance_NoBuilder_NotRef_ValidFactory");
-            Hashtable env = new Hashtable();
+
+            Hashtable<String, String> env = new Hashtable<String, String>();
             env.put(Context.INITIAL_CONTEXT_FACTORY,
                     "dazzle.jndi.testing.spi.DazzleContextFactory");
             env.put(Context.OBJECT_FACTORIES,
                     "org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirObjectFactory");
 
-            Hashtable ctxEnv = new Hashtable();
+            Hashtable<String, String> ctxEnv = new Hashtable<String, String>();
 
             ctxEnv
                     .put(Context.OBJECT_FACTORIES,
@@ -598,7 +569,7 @@ public class DirectoryManagerTest extends TestCase {
                     ctx, env, a);
         } finally {
             NamingManagerTest.writeProviderResource(
-                    "org.apache.harmony.jndi.tests.javax.naming.spi.dummy", new Hashtable());
+                    "org.apache.harmony.jndi.tests.javax.naming.spi.dummy", new Hashtable<Object, Object>());
         }
     }
 
@@ -618,12 +589,10 @@ public class DirectoryManagerTest extends TestCase {
      */
     public void testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull()
             throws Throwable {
-        log
-                .setMethod("testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull()");
+
         try {
-            log
-                    .setMethod("testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull");
-            Hashtable ctxEnv = new Hashtable();
+
+            Hashtable<String, String> ctxEnv = new Hashtable<String, String>();
             ctxEnv
                     .put(
                             Context.OBJECT_FACTORIES,
@@ -636,7 +605,7 @@ public class DirectoryManagerTest extends TestCase {
             Attributes a = new BasicAttributes();
             Context ctx = new MockContext(ctxEnv);
 
-            Hashtable env = new Hashtable();
+            Hashtable<String, String> env = new Hashtable<String, String>();
             /*
              * env.put( Context.INITIAL_CONTEXT_FACTORY,
              * "dazzle.jndi.testing.spi.DazzleContextFactory");
@@ -670,29 +639,22 @@ public class DirectoryManagerTest extends TestCase {
             // ctx,
             // env,
             // a);
-        } catch (Throwable t) {
-            log.log("throwable occured", t);
-            throw t;
         } finally {
             NamingManagerTest.writeProviderResource(
-                    "org.apache.harmony.jndi.tests.javax.naming.spi.dummy", new Hashtable());
+                    "org.apache.harmony.jndi.tests.javax.naming.spi.dummy", new Hashtable<Object, Object>());
         }
     }
 
     public void testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull_1()
             throws Exception {
-        log
-                .setMethod("testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull_1()");
         try {
-            log
-                    .setMethod("testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull_1");
-            Hashtable ctxEnv = new Hashtable();
+            Hashtable<String, String> ctxEnv = new Hashtable<String, String>();
             NamingManagerTest.writeProviderResource(
                     "org.apache.harmony.jndi.tests.javax.naming.spi.dummy", ctxEnv);
 
             Context ctx = new MockContext(ctxEnv);
 
-            Hashtable env = new Hashtable();
+            Hashtable<String, String> env = new Hashtable<String, String>();
             env
                     .put(Context.URL_PKG_PREFIXES,
                             "org.apache.harmony.jndi.tests.javax.naming.spi.mock");
@@ -722,24 +684,20 @@ public class DirectoryManagerTest extends TestCase {
             assertEquals(r, obj);
         } finally {
             NamingManagerTest.writeProviderResource(
-                    "org.apache.harmony.jndi.tests.javax.naming.spi.dummy", new Hashtable());
+                    "org.apache.harmony.jndi.tests.javax.naming.spi.dummy", new Hashtable<Object, Object>());
         }
     }
 
     public void testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull_2()
             throws InvalidNameException, Throwable {
-        log
-                .setMethod("testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull_2()");
         try {
-            log
-                    .setMethod("testGetObjectInstance_NoBuilder_NotRef_ValidFactoryWithNull_2");
-            Hashtable ctxEnv = new Hashtable();
+            Hashtable<?, ?> ctxEnv = new Hashtable<Object, Object>();
             NamingManagerTest.writeProviderResource(
                     "org.apache.harmony.jndi.tests.javax.naming.spi.dummy", ctxEnv);
 
             DirContext ctx = new MockDirContext2(ctxEnv);
 
-            Hashtable env = new Hashtable();
+            Hashtable<String, String> env = new Hashtable<String, String>();
             env.put(Context.INITIAL_CONTEXT_FACTORY,
                     "dazzle.jndi.testing.spi.DazzleContextFactory");
             env
@@ -772,7 +730,7 @@ public class DirectoryManagerTest extends TestCase {
                     env, a);
         } finally {
             NamingManagerTest.writeProviderResource(
-                    "org.apache.harmony.jndi.tests.javax.naming.spi.dummy", new Hashtable());
+                    "org.apache.harmony.jndi.tests.javax.naming.spi.dummy", new Hashtable<Object, Object>());
         }
     }
 
@@ -781,7 +739,7 @@ public class DirectoryManagerTest extends TestCase {
      * return the original object.
      */
     public void testGetObjectInstance_NoBuilder_AllNull() throws Exception {
-        log.setMethod("testGetObjectInstance_NoBuilder_AllNull()");
+        
         Object obj = DirectoryManager.getObjectInstance(null, null, null, null,
                 null);
         assertNull(obj);
@@ -800,9 +758,7 @@ public class DirectoryManagerTest extends TestCase {
      */
     public void testGetObjectInstance_NoBuilder_NotRef_InvalidFactory()
             throws Throwable {
-        log
-                .setMethod("testGetObjectInstance_NoBuilder_NotRef_InvalidFactory()");
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY,
                 "dazzle.jndi.testing.spi.DazzleContextFactory");
         env.put(Context.OBJECT_FACTORIES, "junk.factory:"
@@ -821,9 +777,7 @@ public class DirectoryManagerTest extends TestCase {
      */
     public void testGetObjectInstance_NoBuilder_NotRef_ExceptionalFactory()
             throws Exception {
-        log
-                .setMethod("testGetObjectInstance_NoBuilder_NotRef_ExceptionalFactory()");
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY,
                 "dazzle.jndi.testing.spi.DazzleContextFactory");
         env
@@ -835,7 +789,7 @@ public class DirectoryManagerTest extends TestCase {
 
         try {
             NamingManagerTest.indicateNullPointerException(env);
-            Object obj = DirectoryManager.getObjectInstance(null, null, null,
+            DirectoryManager.getObjectInstance(null, null, null,
                     env, a);
             fail("Should throw NullPointerException.");
         } catch (NullPointerException e) {
@@ -843,7 +797,7 @@ public class DirectoryManagerTest extends TestCase {
 
         try {
             NamingManagerTest.indicateNamingException(env);
-            Object obj = DirectoryManager.getObjectInstance(null, null, null,
+            DirectoryManager.getObjectInstance(null, null, null,
                     env, a);
             fail("Should throw NamingException.");
         } catch (NamingException e) {
@@ -859,9 +813,7 @@ public class DirectoryManagerTest extends TestCase {
      */
     public void testGetObjectInstance_NoBuilder_NotRef_FactoryWithNull()
             throws Exception {
-        log
-                .setMethod("testGetObjectInstance_NoBuilder_NotRef_FactoryWithNull()");
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY,
                 "dazzle.jndi.testing.spi.DazzleContextFactory");
         env.put(Context.OBJECT_FACTORIES,
@@ -884,11 +836,11 @@ public class DirectoryManagerTest extends TestCase {
 
     public void testGetStateToBind_null_null_null_null_null()
             throws NamingException {
-        log.setMethod("testGetStateToBind_null_null_null_null_null()");
+        
         Object o = null;
         Name n = null;
         Context c = null;
-        Hashtable h = null;
+        Hashtable<?, ?> h = null;
         Attributes a = null;
         DirStateFactory.Result r = DirectoryManager.getStateToBind(o, n, c, h,
                 a);
@@ -898,11 +850,11 @@ public class DirectoryManagerTest extends TestCase {
 
     public void testGetStateToBind_null_null_null_null_attr()
             throws NamingException {
-        log.setMethod("testGetStateToBind_null_null_null_null_attr()");
+        
         Object o = null;
         Name n = null;
         Context c = null;
-        Hashtable h = null;
+        Hashtable<?, ?> h = null;
         Attributes a = new BasicAttributes();
         DirStateFactory.Result r = DirectoryManager.getStateToBind(o, n, c, h,
                 a);
@@ -911,11 +863,11 @@ public class DirectoryManagerTest extends TestCase {
     }
 
     public void testGetStateToBind_null_null_null_hash_null() {
-        log.setMethod("testGetStateToBind_null_null_null_hash_null()");
+        
         Object o = null;
         Name n = null;
         Context c = null;
-        Hashtable h = new Hashtable();
+        Hashtable<Object, Object> h = new Hashtable<Object, Object>();
         Attributes a = null;
         h.put(Context.STATE_FACTORIES,
                 "org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirStateFactory");
@@ -927,11 +879,11 @@ public class DirectoryManagerTest extends TestCase {
     }
 
     public void testGetStateToBind_null_null_null_hash_attr() {
-        log.setMethod("testGetStateToBind_null_null_null_hash_attr()");
+        
         Object o = null;
         Name n = null;
         Context c = null;
-        Hashtable h = new Hashtable();
+        Hashtable<Object, Object> h = new Hashtable<Object, Object>();
         Attributes a = new BasicAttributes();
         h.put(Context.STATE_FACTORIES,
                 "org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirStateFactory");
@@ -943,10 +895,10 @@ public class DirectoryManagerTest extends TestCase {
     }
 
     private void assertGetStateResults(Object o, Name n, Context c,
-            Hashtable h, Attributes a) throws NamingException {
+            Hashtable<Object, Object> h, Attributes a) throws NamingException {
         DirStateFactory.Result r = DirectoryManager.getStateToBind(o, n, c, h,
                 a);
-        Hashtable t = (Hashtable) r.getObject();
+        Hashtable<?, ?> t = (Hashtable<?, ?>) r.getObject();
         assertEquals(a, r.getAttributes());
         assertEquals(t.get("o"), o);
         assertEquals(t.get("n"), n);
@@ -956,10 +908,10 @@ public class DirectoryManagerTest extends TestCase {
     }
 
     // public void testGetStateToBind_null_null_ctx_null_null() {
-    // log.setMethod("testGetStateToBind_null_null_ctx_null_null()");
+    // 
     // Object o = null;
     // Name n = null;
-    // Context c = new MockDirContext2(new Hashtable());
+    // Context c = new MockDirContext2(new Hashtable<Object, Object>());
     // Hashtable h = null;
     // Attributes a = null;
     // try {
@@ -970,10 +922,10 @@ public class DirectoryManagerTest extends TestCase {
     // }
 
     // public void testGetStateToBind_null_null_ctx_null_attr() {
-    // log.setMethod("testGetStateToBind_null_null_ctx_null_attr()");
+    // 
     // Object o = null;
     // Name n = null;
-    // Context c = new MockDirContext2(new Hashtable());
+    // Context c = new MockDirContext2(new Hashtable<Object, Object>());
     // Hashtable h = null;
     // Attributes a = new BasicAttributes();
     // try {
@@ -984,12 +936,12 @@ public class DirectoryManagerTest extends TestCase {
     // }
 
     // public void testGetStateToBind_null_null_ctx_empty_null() {
-    // log.setMethod("testGetStateToBind_null_null_ctx_empty_null()");
+    // 
     // Object o = null;
     // Name n = null;
-    // Context c = new MockDirContext2(new Hashtable());
+    // Context c = new MockDirContext2(new Hashtable<Object, Object>());
     // // lead to state factory
-    // Hashtable h = new Hashtable();
+    // Hashtable h = new Hashtable<Object, Object>();
     // Attributes a = null;
     //
     // try {
@@ -1000,12 +952,12 @@ public class DirectoryManagerTest extends TestCase {
     // }
 
     // public void testGetStateToBind_null_null_ctx_empty_attr() {
-    // log.setMethod("testGetStateToBind_null_null_ctx_empty_attr()");
+    // 
     // Object o = null;
     // Name n = null;
-    // Context c = new MockDirContext2(new Hashtable());
+    // Context c = new MockDirContext2(new Hashtable<Object, Object>());
     // // lead to state factory
-    // Hashtable h = new Hashtable();
+    // Hashtable h = new Hashtable<Object, Object>();
     // Attributes a = new BasicAttributes();
     //
     // try {
@@ -1016,12 +968,12 @@ public class DirectoryManagerTest extends TestCase {
     // }
 
     public void testGetStateToBind_null_name_ctx_hash_null() {
-        log.setMethod("testGetStateToBind_null_name_ctx_hash_null()");
+        
         Object o = null;
         Name n = new CompositeName();
-        Context c = new MockDirContext2(new Hashtable());
+        Context c = new MockDirContext2(new Hashtable<Object, Object>());
         // lead to state factory
-        Hashtable h = new Hashtable();
+        Hashtable<Object, Object> h = new Hashtable<Object, Object>();
         Attributes a = null;
         h.put(Context.STATE_FACTORIES,
                 "org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirStateFactory");
@@ -1033,12 +985,12 @@ public class DirectoryManagerTest extends TestCase {
     }
 
     public void testGetStateToBind_null_name_ctx_hash_attr() {
-        log.setMethod("testGetStateToBind_null_name_ctx_hash_attr()");
+        
         Object o = null;
         Name n = new CompositeName();
-        Context c = new MockDirContext2(new Hashtable());
+        Context c = new MockDirContext2(new Hashtable<Object, Object>());
         // lead to state factory
-        Hashtable h = new Hashtable();
+        Hashtable<Object, Object> h = new Hashtable<Object, Object>();
         Attributes a = new BasicAttributes();
         h.put(Context.STATE_FACTORIES,
                 "org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirStateFactory");
@@ -1050,12 +1002,12 @@ public class DirectoryManagerTest extends TestCase {
     }
 
     // public void testGetStateToBind_obj_name_ctx_empty_null() {
-    // log.setMethod("testGetStateToBind_obj_name_ctx_empty_null()");
+    // 
     // Object o = "object";
     // Name n = new CompositeName();
-    // Context c = new MockDirContext2(new Hashtable());
+    // Context c = new MockDirContext2(new Hashtable<Object, Object>());
     // // lead to state factory
-    // Hashtable h = new Hashtable();
+    // Hashtable h = new Hashtable<Object, Object>();
     // Attributes a = null;
     //
     // try {
@@ -1066,12 +1018,12 @@ public class DirectoryManagerTest extends TestCase {
     // }
 
     // public void testGetStateToBind_obj_name_ctx_empty_attr() {
-    // log.setMethod("testGetStateToBind_obj_name_ctx_empty_attr()");
+    // 
     // Object o = "object";
     // Name n = new CompositeName();
-    // Context c = new MockDirContext2(new Hashtable());
+    // Context c = new MockDirContext2(new Hashtable<Object, Object>());
     // // lead to state factory
-    // Hashtable h = new Hashtable();
+    // Hashtable h = new Hashtable<Object, Object>();
     // Attributes a = new BasicAttributes();
     //
     // try {
@@ -1082,11 +1034,11 @@ public class DirectoryManagerTest extends TestCase {
     // }
 
     // public void testGetStateToBind_obj_name_ctx_empty2_null() {
-    // log.setMethod("testGetStateToBind_obj_name_ctx_empty2_null()");
+    // 
     // Object o = "object";
     // Name n = new CompositeName();
-    // Context c = new MockContext(new Hashtable()); // no state factory
-    // Hashtable h = new Hashtable();
+    // Context c = new MockContext(new Hashtable<Object, Object>()); // no state factory
+    // Hashtable h = new Hashtable<Object, Object>();
     // Attributes a = null;
     //
     // try {
@@ -1097,11 +1049,11 @@ public class DirectoryManagerTest extends TestCase {
     // }
 
     // public void testGetStateToBind_obj_name_ctx_empty2_attr() {
-    // log.setMethod("testGetStateToBind_obj_name_ctx_empty2_attr()");
+    // 
     // Object o = "object";
     // Name n = new CompositeName();
-    // Context c = new MockContext(new Hashtable()); // no state factory
-    // Hashtable h = new Hashtable();
+    // Context c = new MockContext(new Hashtable<Object, Object>()); // no state factory
+    // Hashtable h = new Hashtable<Object, Object>();
     // Attributes a = new BasicAttributes();
     //
     // try {
@@ -1112,12 +1064,12 @@ public class DirectoryManagerTest extends TestCase {
     // }
 
     public void testGetStateToBind_obj_name_ctx_hash_null() {
-        log.setMethod("testGetStateToBind_obj_name_ctx_hash_null()");
+        
         Object o = "object";
         Name n = new CompositeName();
-        Context c = new MockDirContext2(new Hashtable());
+        Context c = new MockDirContext2(new Hashtable<Object, Object>());
         // lead to state factory
-        Hashtable h = new Hashtable();
+        Hashtable<Object, Object> h = new Hashtable<Object, Object>();
         Attributes a = null;
         h.put(Context.STATE_FACTORIES,
                 "org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirStateFactory");
@@ -1130,12 +1082,12 @@ public class DirectoryManagerTest extends TestCase {
     }
 
     public void testGetStateToBind_obj_name_ctx_hash_attr() {
-        log.setMethod("testGetStateToBind_obj_name_ctx_hash_attr()");
+        
         Object o = "object";
         Name n = new CompositeName();
-        Context c = new MockDirContext2(new Hashtable());
+        Context c = new MockDirContext2(new Hashtable<Object, Object>());
         // lead to state factory
-        Hashtable h = new Hashtable();
+        Hashtable<Object, Object> h = new Hashtable<Object, Object>();
         Attributes a = new BasicAttributes();
         h.put(Context.STATE_FACTORIES,
                 "org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirStateFactory");
@@ -1148,11 +1100,11 @@ public class DirectoryManagerTest extends TestCase {
     }
 
     public void testGetStateToBind_f1BadClassName_Success() {
-        log.setMethod("testGetStateToBind_f1BadClassName_Success()");
+        
         Object o = "object";
         Name n = new CompositeName();
-        Context c = new MockContext(new Hashtable()); // no state factory
-        Hashtable h = new Hashtable();
+        Context c = new MockContext(new Hashtable<String, String>()); // no state factory
+        Hashtable<Object, Object> h = new Hashtable<Object, Object>();
         Attributes a = null;
         h.put(Context.STATE_FACTORIES, "bad.class.Name" + ":"
                 + "org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirStateFactory");
@@ -1165,12 +1117,12 @@ public class DirectoryManagerTest extends TestCase {
     }
 
     // public void testGetStateToBind_f2Success() {
-    // log.setMethod("testGetStateToBind_f2Success()");
+    // 
     // Object o = "object";
     // Name n = new CompositeName();
-    // Context c = new MockDirContext2(new Hashtable());
+    // Context c = new MockDirContext2(new Hashtable<Object, Object>());
     // // lead to state factory
-    // Hashtable h = new Hashtable();
+    // Hashtable h = new Hashtable<Object, Object>();
     // Attributes a = null;
     // try {
     // Object ro = DirectoryManager.getStateToBind(o, n, c, h, a);
@@ -1181,12 +1133,12 @@ public class DirectoryManagerTest extends TestCase {
     // }
 
     // public void testGetStateToBind_f1BadClassName_f2Success() {
-    // log.setMethod("testGetStateToBind_f1BadClassName_f2Success()");
+    // 
     // Object o = "object";
     // Name n = new CompositeName();
-    // Context c = new MockDirContext2(new Hashtable());
+    // Context c = new MockDirContext2(new Hashtable<Object, Object>());
     // // lead to state factory
-    // Hashtable h = new Hashtable();
+    // Hashtable h = new Hashtable<Object, Object>();
     // h.put(Context.STATE_FACTORIES, "bad.class.Name");
     // Attributes a = null;
     // try {
@@ -1198,12 +1150,12 @@ public class DirectoryManagerTest extends TestCase {
     // }
 
     public void testGetStateToBind_f1NamingException_f2Success() {
-        log.setMethod("testGetStateToBind_f1NamingException_f2Success()");
+        
         Object o = "object";
         Name n = new CompositeName();
-        Context c = new MockDirContext2(new Hashtable());
+        Context c = new MockDirContext2(new Hashtable<Object, Object>());
         // lead to state factory
-        Hashtable h = new Hashtable();
+        Hashtable<Object, Object> h = new Hashtable<Object, Object>();
         Attributes a = null;
         h.put(Context.STATE_FACTORIES,
                 "org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirStateFactory");
@@ -1217,12 +1169,12 @@ public class DirectoryManagerTest extends TestCase {
     }
 
     public void testGetStateToBind_f1RuntimeException_f2Success() {
-        log.setMethod("testGetStateToBind_f1RuntimeException_f2Success()");
+        
         Object o = "object";
         Name n = new CompositeName();
-        Context c = new MockDirContext2(new Hashtable());
+        Context c = new MockDirContext2(new Hashtable<Object, Object>());
         // lead to state factory
-        Hashtable h = new Hashtable();
+        Hashtable<Object, Object> h = new Hashtable<Object, Object>();
         Attributes a = null;
         h.put(Context.STATE_FACTORIES,
                 "org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirStateFactory");
@@ -1239,11 +1191,11 @@ public class DirectoryManagerTest extends TestCase {
     }
 
     public void testGetStateToBind_f1ReturnNull_Success() {
-        log.setMethod("testGetStateToBind_f1ReturnNull_Success()");
+        
         Object o = "object";
         Name n = new CompositeName();
-        Context c = new MockContext(new Hashtable()); // no state factory
-        Hashtable h = new Hashtable();
+        Context c = new MockContext(new Hashtable<String, String>()); // no state factory
+        Hashtable<Object, Object> h = new Hashtable<Object, Object>();
         Attributes a = null;
         h
                 .put(
@@ -1260,19 +1212,19 @@ public class DirectoryManagerTest extends TestCase {
     }
 
     public void testGetStateToBind_f1ReturnNull_f2Success() {
-        log.setMethod("testGetStateToBind_f1ReturnNull_f2Success()");
+        
         Object o = "object";
         Name n = new CompositeName();
-        Context c = new MockDirContext2(new Hashtable());
+        Context c = new MockDirContext2(new Hashtable<Object, Object>());
         // lead to state factory
-        Hashtable h = new Hashtable();
+        Hashtable<Object, Object> h = new Hashtable<Object, Object>();
         Attributes a = null;
         h.put(Context.STATE_FACTORIES,
                 "org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirStateFactory");
         NamingManagerTest.indicateReturnNull(h);
 
         try {
-            Object ro = DirectoryManager.getStateToBind(o, n, c, h, a);
+            DirectoryManager.getStateToBind(o, n, c, h, a);
             assertGetStateResults(o, n, c, h, a);
         } catch (NamingException e) {
             fail("NamingException occured");
@@ -1280,12 +1232,12 @@ public class DirectoryManagerTest extends TestCase {
     }
 
     public void testGetStateToBind_f1Success_f2Success() {
-        log.setMethod("testGetStateToBind_f1Success_f2Success()");
+        
         Object o = "object";
         Name n = new CompositeName();
-        Context c = new MockDirContext2(new Hashtable());
+        Context c = new MockDirContext2(new Hashtable<Object, Object>());
         // lead to state factory
-        Hashtable h = new Hashtable();
+        Hashtable<Object, Object> h = new Hashtable<Object, Object>();
         Attributes a = null;
         h.put(Context.STATE_FACTORIES,
                 "org.apache.harmony.jndi.tests.javax.naming.spi.mock.SuccessMockDirStateFactory");
@@ -1299,26 +1251,26 @@ public class DirectoryManagerTest extends TestCase {
     }
 
     public void testGetStateToBind_f1ReturnNull() throws NamingException {
-        log.setMethod("testGetStateToBind_f1ReturnNull()");
+        
         Object o = "object";
         Name n = new CompositeName();
-        Context c = new MockContext(new Hashtable()); // no state factory
-        Hashtable h = new Hashtable();
+        Context c = new MockContext(new Hashtable<String, String>()); // no state factory
+        Hashtable<Object, Object> h = new Hashtable<Object, Object>();
         Attributes a = null;
         h.put(Context.STATE_FACTORIES,
                 "org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirStateFactory");
         NamingManagerTest.indicateReturnNull(h);
-        DirStateFactory.Result result = DirectoryManager.getStateToBind(o, n,
+        DirectoryManager.getStateToBind(o, n,
                 c, h, a);
         assertGetStateResults(o, n, c, h, a);
     }
 
     // public void testGetStateToBind_f1BadClassName() {
-    // log.setMethod("testGetStateToBind_f1BadClassName()");
+    // 
     // Object o = "object";
     // Name n = new CompositeName();
-    // Context c = new MockContext(new Hashtable()); // no state factory
-    // Hashtable h = new Hashtable();
+    // Context c = new MockContext(new Hashtable<Object, Object>()); // no state factory
+    // Hashtable h = new Hashtable<Object, Object>();
     // Attributes a = null;
     // h.put(Context.STATE_FACTORIES, "bad.class.Name");
     //
@@ -1330,18 +1282,18 @@ public class DirectoryManagerTest extends TestCase {
     // }
 
     public void testGetStateToBind_f1NamingException() {
-        log.setMethod("testGetStateToBind_f1NamingException()");
+        
         Object o = "object";
         Name n = new CompositeName();
-        Context c = new MockContext(new Hashtable()); // no state factory
-        Hashtable h = new Hashtable();
+        Context c = new MockContext(new Hashtable<String, String>()); // no state factory
+        Hashtable<String, String> h = new Hashtable<String, String>();
         Attributes a = null;
         h.put(Context.STATE_FACTORIES,
                 "org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirStateFactory");
         NamingManagerTest.indicateNamingException(h);
 
         try {
-            Object r = DirectoryManager.getStateToBind(o, n, c, h, a);
+            DirectoryManager.getStateToBind(o, n, c, h, a);
             fail();
         } catch (NamingException e) {
             assertTrue(e.getMessage().indexOf("Simulated") >= 0);
@@ -1349,18 +1301,18 @@ public class DirectoryManagerTest extends TestCase {
     }
 
     public void testGetStateToBind_f1RuntimeException() {
-        log.setMethod("testGetStateToBind_f1RuntimeException()");
+        
         Object o = "object";
         Name n = new CompositeName();
-        Context c = new MockContext(new Hashtable()); // no state factory
-        Hashtable h = new Hashtable();
+        Context c = new MockContext(new Hashtable<String, String>()); // no state factory
+        Hashtable<Object, Object> h = new Hashtable<Object, Object>();
         Attributes a = null;
         h.put(Context.STATE_FACTORIES,
                 "org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirStateFactory");
         NamingManagerTest.indicateRuntimeException(h);
 
         try {
-            Object r = DirectoryManager.getStateToBind(o, n, c, h, a);
+            DirectoryManager.getStateToBind(o, n, c, h, a);
             fail("should throw RuntimeException");
         } catch (RuntimeException e) {
             assertTrue(e.getMessage().indexOf("Simulated") >= 0);
@@ -1374,7 +1326,7 @@ public class DirectoryManagerTest extends TestCase {
     // "testGetContinuationContext_MockDirContext2_null_null_null()");
     //
     // CannotProceedException cpe = new CannotProceedException();
-    // Object resolvedObj = new MockDirContext2(new Hashtable());
+    // Object resolvedObj = new MockDirContext2(new Hashtable<Object, Object>());
     // cpe.setResolvedObj(resolvedObj);
     //
     // try {
@@ -1389,8 +1341,8 @@ public class DirectoryManagerTest extends TestCase {
     // }
     //
     // public void testGetContinuationContext_null_null_null_h() {
-    // log.setMethod("testGetContinuationContext_null_null_null_h()");
-    // Hashtable h = new Hashtable();
+    // 
+    // Hashtable h = new Hashtable<Object, Object>();
     // CannotProceedException cpe = new CannotProceedException();
     // h.put(
     // Context.OBJECT_FACTORIES,
@@ -1407,7 +1359,7 @@ public class DirectoryManagerTest extends TestCase {
     // }
     //
     // public void testGetContinuationContext_null_null_null_null() {
-    // log.setMethod("testGetContinuationContext_null_null_null_null()");
+    // 
     // CannotProceedException cpe = new CannotProceedException();
     // try {
     // DirContext r = DirectoryManager.getContinuationDirContext(cpe);
@@ -1419,9 +1371,9 @@ public class DirectoryManagerTest extends TestCase {
     // }
     //
     // public void testGetContinuationContext_null_null_null_wrongh() {
-    // log.setMethod("testGetContinuationContext_null_null_null_wrongh()");
+    // 
     // CannotProceedException cpe = new CannotProceedException();
-    // Hashtable h = new Hashtable();
+    // Hashtable h = new Hashtable<Object, Object>();
     // h.put(
     // Context.OBJECT_FACTORIES,
     // "tests.api.javax.naming.spi.NamingManagerTest$MockObjectFactory");
@@ -1435,9 +1387,9 @@ public class DirectoryManagerTest extends TestCase {
     // }
     //
     // public void testGetContinuationContext_null_null_null_badnameh() {
-    // log.setMethod("testGetContinuationContext_null_null_null_badnameh()");
+    // 
     // CannotProceedException cpe = new CannotProceedException();
-    // Hashtable h = new Hashtable();
+    // Hashtable h = new Hashtable<Object, Object>();
     // h.put(Context.OBJECT_FACTORIES, "bad name: javax.naming.spi.Test");
     // cpe.setEnvironment(h);
     // try {

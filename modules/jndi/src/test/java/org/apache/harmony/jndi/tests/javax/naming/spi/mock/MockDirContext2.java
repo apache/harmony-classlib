@@ -23,10 +23,11 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
 
 public class MockDirContext2 extends MockContext implements DirContext {
 
-	public MockDirContext2(Hashtable h) {
+	public MockDirContext2(Hashtable<?, ?> h) {
 		super(h);
 	}
 
@@ -254,7 +255,7 @@ public class MockDirContext2 extends MockContext implements DirContext {
 	 * @see javax.naming.directory.DirContext#search(javax.naming.Name,
 	 *      javax.naming.directory.Attributes)
 	 */
-	public NamingEnumeration search(Name name, Attributes attributes)
+	public NamingEnumeration<SearchResult> search(Name name, Attributes attributes)
 			throws NamingException {
 		InvokeRecord.set((String) getEnvironment().get("url.schema"), "search",
 				name, attributes);
@@ -267,7 +268,7 @@ public class MockDirContext2 extends MockContext implements DirContext {
 	 * @see javax.naming.directory.DirContext#search(javax.naming.Name,
 	 *      javax.naming.directory.Attributes, java.lang.String[])
 	 */
-	public NamingEnumeration search(Name name, Attributes attributes,
+	public NamingEnumeration<SearchResult> search(Name name, Attributes attributes,
 			String[] as) throws NamingException {
 		InvokeRecord.set((String) getEnvironment().get("url.schema"), "search",
 				name, attributes, as);
@@ -281,7 +282,7 @@ public class MockDirContext2 extends MockContext implements DirContext {
 	 *      java.lang.String, java.lang.Object[],
 	 *      javax.naming.directory.SearchControls)
 	 */
-	public NamingEnumeration search(Name name, String s, Object[] aobj,
+	public NamingEnumeration<SearchResult> search(Name name, String s, Object[] aobj,
 			SearchControls searchcontrols) throws NamingException {
 		InvokeRecord.set((String) getEnvironment().get("url.schema"), "search",
 				name, s, aobj, searchcontrols);
@@ -294,7 +295,7 @@ public class MockDirContext2 extends MockContext implements DirContext {
 	 * @see javax.naming.directory.DirContext#search(javax.naming.Name,
 	 *      java.lang.String, javax.naming.directory.SearchControls)
 	 */
-	public NamingEnumeration search(Name name, String s,
+	public NamingEnumeration<SearchResult> search(Name name, String s,
 			SearchControls searchcontrols) throws NamingException {
 		InvokeRecord.set((String) getEnvironment().get("url.schema"), "search",
 				name, s, searchcontrols);
@@ -307,7 +308,7 @@ public class MockDirContext2 extends MockContext implements DirContext {
 	 * @see javax.naming.directory.DirContext#search(java.lang.String,
 	 *      javax.naming.directory.Attributes)
 	 */
-	public NamingEnumeration search(String s, Attributes attributes)
+	public NamingEnumeration<SearchResult> search(String s, Attributes attributes)
 			throws NamingException {
 		InvokeRecord.set((String) getEnvironment().get("url.schema"), "search",
 				s, attributes);
@@ -320,7 +321,7 @@ public class MockDirContext2 extends MockContext implements DirContext {
 	 * @see javax.naming.directory.DirContext#search(java.lang.String,
 	 *      javax.naming.directory.Attributes, java.lang.String[])
 	 */
-	public NamingEnumeration search(String s, Attributes attributes, String[] as)
+	public NamingEnumeration<SearchResult> search(String s, Attributes attributes, String[] as)
 			throws NamingException {
 		InvokeRecord.set((String) getEnvironment().get("url.schema"), "search",
 				s, attributes, as);
@@ -334,7 +335,7 @@ public class MockDirContext2 extends MockContext implements DirContext {
 	 *      java.lang.String, java.lang.Object[],
 	 *      javax.naming.directory.SearchControls)
 	 */
-	public NamingEnumeration search(String s, String s1, Object[] aobj,
+	public NamingEnumeration<SearchResult> search(String s, String s1, Object[] aobj,
 			SearchControls searchcontrols) throws NamingException {
 		InvokeRecord.set((String) getEnvironment().get("url.schema"), "search",
 				s, s1, aobj, searchcontrols);
@@ -347,7 +348,7 @@ public class MockDirContext2 extends MockContext implements DirContext {
 	 * @see javax.naming.directory.DirContext#search(java.lang.String,
 	 *      java.lang.String, javax.naming.directory.SearchControls)
 	 */
-	public NamingEnumeration search(String s, String s1,
+	public NamingEnumeration<SearchResult> search(String s, String s1,
 			SearchControls searchcontrols) throws NamingException {
 		InvokeRecord.set((String) getEnvironment().get("url.schema"), "search",
 				s, s1, searchcontrols);
@@ -359,7 +360,8 @@ public class MockDirContext2 extends MockContext implements DirContext {
 	 * 
 	 * @see javax.naming.Context#close()
 	 */
-	public void close() throws NamingException {
+	@Override
+    public void close() throws NamingException {
 		InvokeRecord.set((String) getEnvironment().get("url.schema"), "close");
 	}
 

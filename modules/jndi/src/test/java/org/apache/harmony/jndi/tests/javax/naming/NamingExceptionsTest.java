@@ -23,9 +23,9 @@ import junit.framework.TestCase;
 
 public class NamingExceptionsTest extends TestCase {
 
-	static private Log log = new Log(NamingExceptionsTest.class);
+	private static final Log log = new Log(NamingExceptionsTest.class);
 
-	static private Class nexClasses[] = {
+	private static final Class nexClasses[] = {
 			javax.naming.directory.SchemaViolationException.class,
 			javax.naming.directory.AttributeInUseException.class,
 			javax.naming.directory.AttributeModificationException.class,
@@ -75,16 +75,16 @@ public class NamingExceptionsTest extends TestCase {
 	public void testDefaultConstructor() {
 		log.setMethod("testDefaultConstructor()");
 
-		for (int i = 0; i < nexClasses.length; i++) {
+		for (Class<?> element : nexClasses) {
 			try {
-				if (Modifier.isAbstract(nexClasses[i].getModifiers())) {
+				if (Modifier.isAbstract(element.getModifiers())) {
 					continue;
 				}
-				NamingException nex = (NamingException) nexClasses[i]
+				NamingException nex = (NamingException) element
 						.newInstance();
 				assertNull(nex.getMessage());
 			} catch (Throwable e) {
-				log.log("Failed at " + nexClasses[i]);
+				log.log("Failed at " + element);
 				log.log(e);
 			}
 		}
@@ -93,17 +93,17 @@ public class NamingExceptionsTest extends TestCase {
 	public void testStringConstructor() {
 		log.setMethod("testStringConstructor()");
 
-		for (int i = 0; i < nexClasses.length; i++) {
+		for (Class<?> element : nexClasses) {
 			try {
-				if (Modifier.isAbstract(nexClasses[i].getModifiers())) {
+				if (Modifier.isAbstract(element.getModifiers())) {
 					continue;
 				}
-				NamingException nex = (NamingException) nexClasses[i]
+				NamingException nex = (NamingException) element
 						.getConstructor(new Class[] { String.class })
 						.newInstance(new Object[] { "sample text" });
 				assertEquals("sample text", nex.getMessage());
 			} catch (Throwable e) {
-				log.log("Failed at " + nexClasses[i]);
+				log.log("Failed at " + element);
 				log.log(e);
 			}
 		}

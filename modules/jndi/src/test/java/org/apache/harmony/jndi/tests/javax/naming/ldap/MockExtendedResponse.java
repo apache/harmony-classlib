@@ -18,7 +18,12 @@ import javax.naming.ldap.ExtendedResponse;
 
 public class MockExtendedResponse implements ExtendedResponse {
 
-	/*
+	/**
+     * <p></p>
+     */
+    private static final long serialVersionUID = 1L;
+
+    /*
 	 * (non-Javadoc)
 	 * 
 	 * @see javax.naming.ldap.ExtendedResponse#getID()

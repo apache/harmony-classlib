@@ -32,6 +32,7 @@ import javax.naming.spi.ObjectFactory;
 import javax.naming.spi.ObjectFactoryBuilder;
 
 import junit.framework.TestCase;
+
 import org.apache.harmony.jndi.tests.javax.naming.util.Log;
 
 public class DirectoryManagerBuilderTest extends TestCase {
@@ -102,7 +103,7 @@ public class DirectoryManagerBuilderTest extends TestCase {
 		obj = DirectoryManager.getObjectInstance(null, null, cxt, null, a);
 		assertSame(OBJ, obj);
 
-		Hashtable env = new Hashtable();
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		env.put(Context.STATE_FACTORIES,
@@ -119,7 +120,7 @@ public class DirectoryManagerBuilderTest extends TestCase {
 			throws Exception {
 		log
 				.setMethod("myTestGetObjectInstance_HasBuilder_BuilderNullPointerException");
-		Hashtable env = new Hashtable();
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		NamingManagerTest.indicateNullPointerException(env, 1);
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
@@ -127,7 +128,7 @@ public class DirectoryManagerBuilderTest extends TestCase {
 				"org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirObjectFactoryNoException");
 		Attributes a = new BasicAttributes();
 		try {
-			Object obj = DirectoryManager.getObjectInstance(null, null, null,
+			DirectoryManager.getObjectInstance(null, null, null,
 					env, a);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
@@ -142,7 +143,7 @@ public class DirectoryManagerBuilderTest extends TestCase {
 			throws Exception {
 		log
 				.setMethod("myTestGetObjectInstance_HasBuilder_BuilderNamingException");
-		Hashtable env = new Hashtable();
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		NamingManagerTest.indicateNamingException(env, 1);
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
@@ -150,7 +151,7 @@ public class DirectoryManagerBuilderTest extends TestCase {
 				"org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirObjectFactoryNoException");
 		Attributes a = new BasicAttributes();
 		try {
-			Object obj = DirectoryManager.getObjectInstance(null, null, null,
+			DirectoryManager.getObjectInstance(null, null, null,
 					env, a);
 			fail("Should throw NamingException.");
 		} catch (NamingException e) {
@@ -165,7 +166,7 @@ public class DirectoryManagerBuilderTest extends TestCase {
 			throws Exception {
 		log
 				.setMethod("myTestGetObjectInstance_HasBuilder_FactoryRuntimeException");
-		Hashtable env = new Hashtable();
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		NamingManagerTest.indicateRuntimeException(env, 2);
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
@@ -173,7 +174,7 @@ public class DirectoryManagerBuilderTest extends TestCase {
 				"org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirObjectFactoryNoException");
 		Attributes a = new BasicAttributes();
 		try {
-			Object obj = DirectoryManager.getObjectInstance(null, null, null,
+			DirectoryManager.getObjectInstance(null, null, null,
 					env, a);
 			fail("Should throw RuntimeException.");
 		} catch (RuntimeException e) {
@@ -188,7 +189,7 @@ public class DirectoryManagerBuilderTest extends TestCase {
 			throws Exception {
 		log
 				.setMethod("myTestGetObjectInstance_HasBuilder_FactoryNamingException");
-		Hashtable env = new Hashtable();
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		NamingManagerTest.indicateNamingException(env, 2);
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
@@ -196,7 +197,7 @@ public class DirectoryManagerBuilderTest extends TestCase {
 				"org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirObjectFactoryNoException");
 		Attributes a = new BasicAttributes();
 		try {
-			Object obj = DirectoryManager.getObjectInstance(null, null, null,
+			DirectoryManager.getObjectInstance(null, null, null,
 					env, a);
 			fail("Should throw NamingException.");
 		} catch (NamingException e) {
@@ -210,7 +211,7 @@ public class DirectoryManagerBuilderTest extends TestCase {
 	public void myTestGetObjectInstance_HasBuilder_BuilderReturnNull()
 			throws Exception {
 		log.setMethod("myTestGetObjectInstance_HasBuilder_BuilderReturnNull");
-		Hashtable env = new Hashtable();
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		NamingManagerTest.indicateReturnNull(env, 1);
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
@@ -218,7 +219,7 @@ public class DirectoryManagerBuilderTest extends TestCase {
 				"org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirObjectFactoryNoException");
 		Attributes a = new BasicAttributes();
 		try {
-			Object obj = DirectoryManager.getObjectInstance(null, null, null,
+			DirectoryManager.getObjectInstance(null, null, null,
 					env, a);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
@@ -232,7 +233,7 @@ public class DirectoryManagerBuilderTest extends TestCase {
 	public void myTestGetObjectInstance_HasBuilder_FactoryReturnNull()
 			throws Exception {
 		log.setMethod("myTestGetObjectInstance_HasBuilder_FactoryReturnNull");
-		Hashtable env = new Hashtable();
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		NamingManagerTest.indicateReturnNull(env, 2);
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
@@ -254,7 +255,7 @@ public class DirectoryManagerBuilderTest extends TestCase {
 		log.setMethod("myTestSetObjectFactoryBuilder_SetNormal");
 		ObjectFactoryBuilder objectFactoryBuilder = MockObjectFactoryBuilder
 				.getInstance();
-		DirectoryManager.setObjectFactoryBuilder(objectFactoryBuilder);
+		NamingManager.setObjectFactoryBuilder(objectFactoryBuilder);
 		// NamingManager.setObjectFactoryBuilder(objectFactoryBuilder);
 	}
 
@@ -283,13 +284,13 @@ public class DirectoryManagerBuilderTest extends TestCase {
 	public static class MockObjectFactoryBuilder implements
 			ObjectFactoryBuilder {
 
-		private static MockObjectFactoryBuilder _builder = new MockObjectFactoryBuilder();
+		private static final MockObjectFactoryBuilder _builder = new MockObjectFactoryBuilder();
 
 		public static MockObjectFactoryBuilder getInstance() {
 			return _builder;
 		}
 
-		public ObjectFactory createObjectFactory(Object o, Hashtable envmt)
+		public ObjectFactory createObjectFactory(Object o, Hashtable<?, ?> envmt)
 				throws NamingException {
 			NamingManagerTest.issueIndicatedExceptions(envmt);
 			if (NamingManagerTest.returnNullIndicated(envmt)) {
@@ -302,7 +303,7 @@ public class DirectoryManagerBuilderTest extends TestCase {
 	public static class MockDirObjectFactory implements DirObjectFactory {
 
 		public Object getObjectInstance(Object o, Name n, Context c,
-				Hashtable envmt, Attributes a) throws Exception {
+				Hashtable<?, ?> envmt, Attributes a) throws Exception {
 			NamingManagerTest.issueIndicatedExceptions(envmt);
 			if (NamingManagerTest.returnNullIndicated(envmt)) {
 				return null;
@@ -310,14 +311,8 @@ public class DirectoryManagerBuilderTest extends TestCase {
 			return OBJ;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see javax.naming.spi.ObjectFactory#getObjectInstance(java.lang.Object,
-		 *      javax.naming.Name, javax.naming.Context, java.util.Hashtable)
-		 */
 		public Object getObjectInstance(Object o, Name n, Context c,
-				Hashtable envmt) throws Exception {
+				Hashtable<?, ?> envmt) throws Exception {
 			log.setMethod("getObjectInstance");
 			log.log("wrong method call");
 			return getObjectInstance(o, n, c, envmt, null);

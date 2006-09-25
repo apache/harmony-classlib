@@ -15,6 +15,7 @@
 
 package org.apache.harmony.jndi.tests.javax.naming.spi;
 
+import javax.naming.Context;
 import javax.naming.Name;
 import javax.naming.NamingException;
 import javax.naming.spi.ResolveResult;
@@ -28,7 +29,7 @@ public class MockResolver implements Resolver {
 	 * @see javax.naming.spi.Resolver#resolveToClass(javax.naming.Name,
 	 *      java.lang.Class)
 	 */
-	public ResolveResult resolveToClass(Name n, Class c) throws NamingException {
+	public ResolveResult resolveToClass(Name n, Class<? extends Context> c) throws NamingException {
 		return null;
 	}
 
@@ -38,7 +39,7 @@ public class MockResolver implements Resolver {
 	 * @see javax.naming.spi.Resolver#resolveToClass(java.lang.String,
 	 *      java.lang.Class)
 	 */
-	public ResolveResult resolveToClass(String n, Class c)
+	public ResolveResult resolveToClass(String n, Class<? extends Context> c)
 			throws NamingException {
 		return null;
 	}

@@ -39,11 +39,12 @@ public class InitialContextMockTest extends TestCase {
 
     private Context gContext;
 
-    private String urlSchema = "http";
+    private final String urlSchema = "http";
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY,
                 "org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockContextFactory");
         env.put(Context.URL_PKG_PREFIXES,
@@ -601,7 +602,7 @@ public class InitialContextMockTest extends TestCase {
     public void testInvalidFactory() throws NamingException {
         log.setMethod("testInvalidFactory");
 
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY,
                     "org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockContext");
         try {

@@ -22,7 +22,7 @@ import javax.naming.spi.InitialContextFactory;
 
 public class MockLdapContextFactory implements InitialContextFactory {
 
-	public Context getInitialContext(Hashtable envmt) throws NamingException {
+	public Context getInitialContext(Hashtable<?, ?> envmt) throws NamingException {
 		envmt.remove("url.schema");
 		return new MockLdapContext(envmt);
 	}

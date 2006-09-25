@@ -20,7 +20,12 @@ import javax.naming.ldap.UnsolicitedNotification;
 
 public class MockUnsolicitedNotification implements UnsolicitedNotification {
 
-	/*
+	/**
+     * <p></p>
+     */
+    private static final long serialVersionUID = 1L;
+
+    /*
 	 * (non-Javadoc)
 	 * 
 	 * @see javax.naming.ldap.UnsolicitedNotification#getReferrals()

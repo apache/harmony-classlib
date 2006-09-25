@@ -29,7 +29,7 @@ public class MockDirContextObjectFactory implements DirObjectFactory {
 	Log log = new Log(MockDirContextObjectFactory.class);
 
 	public static final DirContext DIR_CONTEXT = new MockDirContext(
-			new Hashtable());
+			new Hashtable<String, Object>());
 
 	/*
 	 * (non-Javadoc)
@@ -39,7 +39,7 @@ public class MockDirContextObjectFactory implements DirObjectFactory {
 	 *      javax.naming.directory.Attributes)
 	 */
 	public Object getObjectInstance(Object o, Name n, Context c,
-			Hashtable envmt, Attributes a) throws Exception {
+			Hashtable<?, ?> envmt, Attributes a) throws Exception {
 		log.setMethod("getObjectInstance");
 		log.log("wrong method call");
 		return DIR_CONTEXT;
@@ -51,7 +51,7 @@ public class MockDirContextObjectFactory implements DirObjectFactory {
 	 * @see javax.naming.spi.ObjectFactory#getObjectInstance(java.lang.Object,
 	 *      javax.naming.Name, javax.naming.Context, java.util.Hashtable)
 	 */
-	public Object getObjectInstance(Object o, Name n, Context c, Hashtable envmt)
+	public Object getObjectInstance(Object o, Name n, Context c, Hashtable<?, ?> envmt)
 			throws Exception {
 		return DIR_CONTEXT;
 	}

@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 
 public class AttributeModificationExceptionTest extends TestCase {
 
-	private static Log log = new Log(AttributeModificationExceptionTest.class);
+	private static final Log log = new Log(AttributeModificationExceptionTest.class);
 
 	/*
 	 * -------------------------------------------------------------------

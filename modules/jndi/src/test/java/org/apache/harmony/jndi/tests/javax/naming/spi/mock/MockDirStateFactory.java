@@ -40,13 +40,13 @@ public class MockDirStateFactory implements DirStateFactory {
 	 *      javax.naming.Name, javax.naming.Context, java.util.Hashtable,
 	 *      javax.naming.directory.Attributes)
 	 */
-	public Result getStateToBind(Object o, Name n, Context c, Hashtable h,
+	public Result getStateToBind(Object o, Name n, Context c, Hashtable<?, ?> h,
 			Attributes a) throws NamingException {
 		NamingManagerTest.issueIndicatedExceptions(h);
 		if (NamingManagerTest.returnNullIndicated(h)) {
 			return null;
 		}
-		Hashtable r = new Hashtable();
+		Hashtable<String, Object> r = new Hashtable<String, Object>();
 		if (null != o) {
 			r.put("o", o);
 		}
@@ -72,7 +72,7 @@ public class MockDirStateFactory implements DirStateFactory {
 	 * @see javax.naming.spi.StateFactory#getStateToBind(java.lang.Object,
 	 *      javax.naming.Name, javax.naming.Context, java.util.Hashtable)
 	 */
-	public Object getStateToBind(Object o, Name n, Context c, Hashtable h)
+	public Object getStateToBind(Object o, Name n, Context c, Hashtable<?, ?> h)
 			throws NamingException {
 		return getStateToBind(o, n, c, h, null);
 	}

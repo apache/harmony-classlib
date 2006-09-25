@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 import org.apache.harmony.jndi.tests.javax.naming.util.Log;
 
 public class InitialContextSysTest extends TestCase {
-	private Log log = new Log(InitialContextSysTest.class);
+	private final Log log = new Log(InitialContextSysTest.class);
 
 	public void testConstructor_sys() throws NamingException, IOException {
 		log.setMethod("testConstructor_sys");
@@ -71,15 +71,15 @@ public class InitialContextSysTest extends TestCase {
 		System.setProperty("sys.type", "sys.type.sys");
 
 		InitialContext context = new InitialContext();
-		Hashtable props = context.getEnvironment();
+		Hashtable<?, ?> props = context.getEnvironment();
 		// printHashtable(props);
-		Hashtable expected = InitialContextLibTest.readAllProps(null);
+		Hashtable<?, ?> expected = InitialContextLibTest.readAllProps(null);
 		assertEquals(expected, props);
 	}
 
-	void printHashtable(Hashtable env) {
+	void printHashtable(Hashtable<?, ?> env) {
 		// TO DO: Need to remove
-		Enumeration keys = env.keys();
+		Enumeration<?> keys = env.keys();
 		while (keys.hasMoreElements()) {
 			Object key = keys.nextElement();
 			log.log(key + "=" + env.get(key));

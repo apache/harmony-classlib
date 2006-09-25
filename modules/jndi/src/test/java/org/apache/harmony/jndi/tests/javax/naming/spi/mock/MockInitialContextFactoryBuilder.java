@@ -31,13 +31,13 @@ import org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest;
 public class MockInitialContextFactoryBuilder implements
 		InitialContextFactoryBuilder {
 
-	private static MockInitialContextFactoryBuilder _builder = new MockInitialContextFactoryBuilder();
+	private static final MockInitialContextFactoryBuilder _builder = new MockInitialContextFactoryBuilder();
 
 	public static MockInitialContextFactoryBuilder getInstance() {
 		return MockInitialContextFactoryBuilder._builder;
 	}
 
-	public InitialContextFactory createInitialContextFactory(Hashtable envmt)
+	public InitialContextFactory createInitialContextFactory(Hashtable<?,?> envmt)
 			throws NamingException {
 		NamingManagerTest.issueIndicatedExceptions(envmt);
 		if (NamingManagerTest.returnNullIndicated(envmt)) {
@@ -48,9 +48,7 @@ public class MockInitialContextFactoryBuilder implements
 
 	public static class MockInitialContextFactory implements
 			InitialContextFactory {
-		private Hashtable ht;
-
-		public Context getInitialContext(Hashtable envmt)
+		public Context getInitialContext(Hashtable<?, ?> envmt)
 				throws NamingException {
 			NamingManagerTest.issueIndicatedExceptions(envmt);
 			if (NamingManagerTest.returnNullIndicated(envmt)) {
@@ -59,8 +57,7 @@ public class MockInitialContextFactoryBuilder implements
 			return new MockContext(envmt);
 		}
 
-		public MockInitialContextFactory(Hashtable envmt) {
-			ht = envmt;
+		public MockInitialContextFactory(Hashtable<?,?> envmt) {
 		}
 
 		public MockInitialContextFactory() {

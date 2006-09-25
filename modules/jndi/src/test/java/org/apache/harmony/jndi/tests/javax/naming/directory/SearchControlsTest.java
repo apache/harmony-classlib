@@ -25,29 +25,6 @@ public class SearchControlsTest extends TestCase {
 
 	static Log log = new Log(SearchControlsTest.class);
 
-	/**
-	 * Constructor for SearchControlsTest.
-	 * 
-	 * @param arg0
-	 */
-	public SearchControlsTest(String arg0) {
-		super(arg0);
-	}
-
-	/*
-	 * @see TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
 	/*
 	 * Test for void SearchControls()
 	 */
@@ -84,27 +61,21 @@ public class SearchControlsTest extends TestCase {
 
 	public void testSearchControls_Illegal_Scope() {
 		log.setMethod("testSearchControls_Illegal_Scope()");
-		SearchControls ctrl;
-
-		ctrl = new SearchControls(-1, 100, 200, new String[] { "id1", "id2" },
+		new SearchControls(-1, 100, 200, new String[] { "id1", "id2" },
 				true, true);
 
 	}
 
 	public void testSearchControls_Illegal_CountLimit() {
 		log.setMethod("testSearchControls_Illegal_CountLimit()");
-		SearchControls ctrl;
-
-		ctrl = new SearchControls(SearchControls.OBJECT_SCOPE, -1, 200,
+		new SearchControls(SearchControls.OBJECT_SCOPE, -1, 200,
 				new String[] { "id1", "id2" }, true, true);
 
 	}
 
 	public void testSearchControls_Illegal_TimeLimit() {
 		log.setMethod("testSearchControls_Illegal_TimeLimit()");
-		SearchControls ctrl;
-
-		ctrl = new SearchControls(SearchControls.OBJECT_SCOPE, 100, -1,
+		new SearchControls(SearchControls.OBJECT_SCOPE, 100, -1,
 				new String[] { "id1", "id2" }, true, true);
 
 	}

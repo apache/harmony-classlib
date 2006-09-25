@@ -15,13 +15,7 @@
 
 package org.apache.harmony.jndi.tests.javax.naming;
 
-import java.util.Hashtable;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockApplet;
 
 import junit.framework.TestCase;
 

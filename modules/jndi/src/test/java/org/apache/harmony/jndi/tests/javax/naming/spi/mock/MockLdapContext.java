@@ -24,14 +24,15 @@ import javax.naming.ldap.ExtendedResponse;
 import javax.naming.ldap.LdapContext;
 
 public class MockLdapContext extends MockDirContext implements LdapContext {
-	Hashtable ldapProps;
+	Hashtable<String, Object> ldapProps;
 
-	public MockLdapContext(Hashtable h) {
+	@SuppressWarnings("unchecked")
+    public MockLdapContext(Hashtable<?, ?> h) {
 		super(h);
-		this.ldapProps = (Hashtable) h.clone();
+		this.ldapProps = (Hashtable<String, Object>) h.clone();
 	}
 
-	public Hashtable getProps() {
+	public Hashtable<String, Object> getProps() {
 		return this.ldapProps;
 	}
 

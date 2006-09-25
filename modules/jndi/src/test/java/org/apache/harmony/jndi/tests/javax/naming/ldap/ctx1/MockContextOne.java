@@ -17,8 +17,10 @@ package org.apache.harmony.jndi.tests.javax.naming.ldap.ctx1;
 
 import java.util.Hashtable;
 
+import javax.naming.Binding;
 import javax.naming.Context;
 import javax.naming.Name;
+import javax.naming.NameClassPair;
 import javax.naming.NameParser;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -126,7 +128,7 @@ public class MockContextOne implements Context {
 	 * 
 	 * @see javax.naming.Context#getEnvironment()
 	 */
-	public Hashtable getEnvironment() throws NamingException {
+	public Hashtable<?,?> getEnvironment() throws NamingException {
 
 		return null;
 	}
@@ -166,7 +168,7 @@ public class MockContextOne implements Context {
 	 * 
 	 * @see javax.naming.Context#list(javax.naming.Name)
 	 */
-	public NamingEnumeration list(Name n) throws NamingException {
+	public NamingEnumeration<NameClassPair> list(Name n) throws NamingException {
 
 		return null;
 	}
@@ -176,7 +178,7 @@ public class MockContextOne implements Context {
 	 * 
 	 * @see javax.naming.Context#list(java.lang.String)
 	 */
-	public NamingEnumeration list(String s) throws NamingException {
+	public NamingEnumeration<NameClassPair> list(String s) throws NamingException {
 
 		return null;
 	}
@@ -186,7 +188,7 @@ public class MockContextOne implements Context {
 	 * 
 	 * @see javax.naming.Context#listBindings(javax.naming.Name)
 	 */
-	public NamingEnumeration listBindings(Name n) throws NamingException {
+	public NamingEnumeration<Binding> listBindings(Name n) throws NamingException {
 
 		return null;
 	}
@@ -196,7 +198,7 @@ public class MockContextOne implements Context {
 	 * 
 	 * @see javax.naming.Context#listBindings(java.lang.String)
 	 */
-	public NamingEnumeration listBindings(String s) throws NamingException {
+	public NamingEnumeration<Binding> listBindings(String s) throws NamingException {
 
 		return null;
 	}

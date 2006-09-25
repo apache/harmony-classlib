@@ -22,9 +22,10 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 
 public class SuccessMockDirStateFactory extends MockDirStateFactory {
-	public Result getStateToBind(Object o, Name n, Context c, Hashtable h,
+	@Override
+    public Result getStateToBind(Object o, Name n, Context c, Hashtable<?, ?> h,
 			Attributes a) throws NamingException {
-		Hashtable r = new Hashtable();
+		Hashtable<String, Object> r = new Hashtable<String, Object>();
 		if (null != o) {
 			r.put("o", o);
 		}

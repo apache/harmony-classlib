@@ -26,13 +26,15 @@ public class MockControlFactory extends ControlFactory {
 
 	public static String ID_PREFIX_SPI2 = "LDAPv3 Control(SPI2):";
 
-	public Control getControlInstance(Control c) throws NamingException {
+	@Override
+    public Control getControlInstance(Control c) throws NamingException {
 		return new MockControl(ID_PREFIX + c.getID(), c.getEncodedValue(), c
 				.isCritical());
 	}
 
 	public static class ControlFactorySPI1 extends ControlFactory {
-		public Control getControlInstance(Control c) throws NamingException {
+		@Override
+        public Control getControlInstance(Control c) throws NamingException {
 			return new MockControl(ID_PREFIX_SPI1 + c.getID(), c
 					.getEncodedValue(), c.isCritical());
 		}
@@ -40,7 +42,8 @@ public class MockControlFactory extends ControlFactory {
 	}
 
 	public static class ControlFactorySPI2 extends ControlFactory {
-		public Control getControlInstance(Control c) throws NamingException {
+		@Override
+        public Control getControlInstance(Control c) throws NamingException {
 			return new MockControl(ID_PREFIX_SPI2 + c.getID(), c
 					.getEncodedValue(), c.isCritical());
 		}

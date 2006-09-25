@@ -42,13 +42,13 @@ public class MockDirObjectFactory implements DirObjectFactory {
 	 *      javax.naming.Name, javax.naming.Context, java.util.Hashtable,
 	 *      javax.naming.directory.Attributes)
 	 */
-	public Object getObjectInstance(Object o, Name n, Context c, Hashtable h,
+	public Object getObjectInstance(Object o, Name n, Context c, Hashtable<?, ?> h,
 			Attributes a) throws Exception {
 		NamingManagerTest.issueIndicatedExceptions(h);
 		if (NamingManagerTest.returnNullIndicated(h)) {
 			return null;
 		}
-		Hashtable r = new Hashtable();
+		Hashtable<String, Object> r = new Hashtable<String, Object>();
 		if (null != o) {
 			r.put("o", o);
 		}
@@ -73,7 +73,7 @@ public class MockDirObjectFactory implements DirObjectFactory {
 	 * @see javax.naming.spi.ObjectFactory#getObjectInstance(java.lang.Object,
 	 *      javax.naming.Name, javax.naming.Context, java.util.Hashtable)
 	 */
-	public Object getObjectInstance(Object o, Name n, Context c, Hashtable h)
+	public Object getObjectInstance(Object o, Name n, Context c, Hashtable<?, ?> h)
 			throws Exception {
 		log.setMethod("getObjectInstance");
 		log.log("wrong method call");

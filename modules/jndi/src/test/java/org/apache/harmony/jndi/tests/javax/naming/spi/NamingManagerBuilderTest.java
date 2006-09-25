@@ -86,7 +86,7 @@ public class NamingManagerBuilderTest extends TestCase {
 		assertTrue(context instanceof MockContext);
 		assertEquals(context, new MockContext(null));
 
-		Hashtable env = new Hashtable();
+		Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		context = NamingManager.getInitialContext(env);
@@ -101,12 +101,12 @@ public class NamingManagerBuilderTest extends TestCase {
 			throws NamingException {
 		log
 				.setMethod("myTestGetInitialContext_HasBuilder_BuilderNullPointerException");
-		Hashtable env = new Hashtable();
+		Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		NamingManagerTest.indicateNullPointerException(env, 1);
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		try {
-			Context context = NamingManager.getInitialContext(env);
+			NamingManager.getInitialContext(env);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 			// log.log(e);
@@ -120,12 +120,12 @@ public class NamingManagerBuilderTest extends TestCase {
 			throws NamingException {
 		log
 				.setMethod("myTestGetInitialContext_HasBuilder_BuilderNamingException");
-		Hashtable env = new Hashtable();
+		Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		NamingManagerTest.indicateNamingException(env, 1);
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		try {
-			Context context = NamingManager.getInitialContext(env);
+			NamingManager.getInitialContext(env);
 			fail("Should throw NamingException.");
 		} catch (NamingException e) {
 			// log.log(e);
@@ -139,12 +139,12 @@ public class NamingManagerBuilderTest extends TestCase {
 			throws NamingException {
 		log
 				.setMethod("myTestGetInitialContext_HasBuilder_FactoryRuntimeException");
-		Hashtable env = new Hashtable();
+		Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		NamingManagerTest.indicateRuntimeException(env, 2);
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		try {
-			Context context = NamingManager.getInitialContext(env);
+			NamingManager.getInitialContext(env);
 			fail("Should throw RuntimeException.");
 		} catch (RuntimeException e) {
 			// log.log(e);
@@ -158,12 +158,12 @@ public class NamingManagerBuilderTest extends TestCase {
 			throws NamingException {
 		log
 				.setMethod("myTestGetInitialContext_HasBuilder_FactoryNamingException");
-		Hashtable env = new Hashtable();
+		Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		NamingManagerTest.indicateNamingException(env, 2);
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		try {
-			Context context = NamingManager.getInitialContext(env);
+			NamingManager.getInitialContext(env);
 			fail("Should throw NamingException.");
 		} catch (NamingException e) {
 			// log.log(e);
@@ -177,12 +177,12 @@ public class NamingManagerBuilderTest extends TestCase {
 	public void myTestGetInitialContext_HasBuilder_BuilderReturnNull()
 			throws NamingException {
 		log.setMethod("myTestGetInitialContext_HasBuilder_BuilderReturnNull");
-		Hashtable env = new Hashtable();
+		Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		NamingManagerTest.indicateReturnNull(env, 1);
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		try {
-			Context context = NamingManager.getInitialContext(env);
+			NamingManager.getInitialContext(env);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 			// log.log(e);
@@ -196,7 +196,7 @@ public class NamingManagerBuilderTest extends TestCase {
 	public void myTestGetInitialContext_HasBuilder_FactoryReturnNull()
 			throws NamingException {
 		log.setMethod("myTestGetInitialContext_HasBuilder_FactoryReturnNull");
-		Hashtable env = new Hashtable();
+		Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		NamingManagerTest.indicateReturnNull(env, 2);
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
@@ -313,7 +313,7 @@ public class NamingManagerBuilderTest extends TestCase {
 		assertEquals(new NamingManagerTest.MockObject(null, null, cxt, null),
 				obj);
 
-		Hashtable env = new Hashtable();
+		Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
 		env
@@ -331,7 +331,7 @@ public class NamingManagerBuilderTest extends TestCase {
 			throws Exception {
 		log
 				.setMethod("myTestGetObjectInstance_HasBuilder_BuilderNullPointerException");
-		Hashtable env = new Hashtable();
+		Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		NamingManagerTest.indicateNullPointerException(env, 1);
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
@@ -339,7 +339,7 @@ public class NamingManagerBuilderTest extends TestCase {
 				.put(Context.STATE_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MockObjectFactoryNoException");
 		try {
-			Object obj = NamingManager.getObjectInstance(null, null, null, env);
+			NamingManager.getObjectInstance(null, null, null, env);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 			// log.log(e);
@@ -353,7 +353,7 @@ public class NamingManagerBuilderTest extends TestCase {
 			throws Exception {
 		log
 				.setMethod("myTestGetObjectInstance_HasBuilder_BuilderNamingException");
-		Hashtable env = new Hashtable();
+		Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		NamingManagerTest.indicateNamingException(env, 1);
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
@@ -361,7 +361,7 @@ public class NamingManagerBuilderTest extends TestCase {
 				.put(Context.STATE_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MockObjectFactoryNoException");
 		try {
-			Object obj = NamingManager.getObjectInstance(null, null, null, env);
+			NamingManager.getObjectInstance(null, null, null, env);
 			fail("Should throw NamingException.");
 		} catch (NamingException e) {
 			// log.log(e);
@@ -375,7 +375,7 @@ public class NamingManagerBuilderTest extends TestCase {
 			throws Exception {
 		log
 				.setMethod("myTestGetObjectInstance_HasBuilder_FactoryRuntimeException");
-		Hashtable env = new Hashtable();
+		Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		NamingManagerTest.indicateRuntimeException(env, 2);
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
@@ -383,7 +383,7 @@ public class NamingManagerBuilderTest extends TestCase {
 				.put(Context.STATE_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MockObjectFactoryNoException");
 		try {
-			Object obj = NamingManager.getObjectInstance(null, null, null, env);
+			NamingManager.getObjectInstance(null, null, null, env);
 			fail("Should throw RuntimeException.");
 		} catch (RuntimeException e) {
 			// log.log(e);
@@ -397,7 +397,7 @@ public class NamingManagerBuilderTest extends TestCase {
 			throws Exception {
 		log
 				.setMethod("myTestGetObjectInstance_HasBuilder_FactoryNamingException");
-		Hashtable env = new Hashtable();
+		Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		NamingManagerTest.indicateNamingException(env, 2);
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
@@ -405,7 +405,7 @@ public class NamingManagerBuilderTest extends TestCase {
 				.put(Context.STATE_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MockObjectFactoryNoException");
 		try {
-			Object obj = NamingManager.getObjectInstance(null, null, null, env);
+			NamingManager.getObjectInstance(null, null, null, env);
 			fail("Should throw NamingException.");
 		} catch (NamingException e) {
 			// log.log(e);
@@ -419,7 +419,7 @@ public class NamingManagerBuilderTest extends TestCase {
 	public void myTestGetObjectInstance_HasBuilder_BuilderReturnNull()
 			throws Exception {
 		log.setMethod("myTestGetObjectInstance_HasBuilder_BuilderReturnNull");
-		Hashtable env = new Hashtable();
+		Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		NamingManagerTest.indicateReturnNull(env, 1);
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");
@@ -427,7 +427,7 @@ public class NamingManagerBuilderTest extends TestCase {
 				.put(Context.STATE_FACTORIES,
 						"org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest$MockObjectFactoryNoException");
 		try {
-			Object obj = NamingManager.getObjectInstance(null, null, null, env);
+			NamingManager.getObjectInstance(null, null, null, env);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 			// log.log(e);
@@ -441,7 +441,7 @@ public class NamingManagerBuilderTest extends TestCase {
 	public void myTestGetObjectInstance_HasBuilder_FactoryReturnNull()
 			throws Exception {
 		log.setMethod("myTestGetObjectInstance_HasBuilder_FactoryReturnNull");
-		Hashtable env = new Hashtable();
+		Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		NamingManagerTest.indicateReturnNull(env, 2);
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"dazzle.jndi.testing.spi.DazzleContextFactory");

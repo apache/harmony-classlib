@@ -17,8 +17,10 @@ package org.apache.harmony.jndi.tests.javax.naming.event;
 
 import java.util.Hashtable;
 
+import javax.naming.Binding;
 import javax.naming.Context;
 import javax.naming.Name;
+import javax.naming.NameClassPair;
 import javax.naming.NameParser;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -31,62 +33,11 @@ import junit.framework.TestCase;
 
 public class NamingExceptionEventTest extends TestCase {
 
-	/*
-	 * ------------------------------------------------------------------- 
-	 * Class Variables
-	 * -------------------------------------------------------------------
-	 */
-
 	static Log log = new Log(NamingExceptionEventTest.class);
 
 	static NamingException ex = new NamingException("sample");
 
 	static EventContext ctx = new EventContextMockUp();
-
-	/*
-	 * -------------------------------------------------------------------
-	 * Constructors
-	 * -------------------------------------------------------------------
-	 */
-
-	/**
-	 * Constructor for NamingExceptionEventTest.
-	 * 
-	 * @param arg0
-	 */
-	public NamingExceptionEventTest(String arg0) {
-		super(arg0);
-	}
-
-	/*
-	 * -------------------------------------------------------------------
-	 * Methods override parent class TestCase
-	 * -------------------------------------------------------------------
-	 */
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see junit.framework.TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
-	/*
-	 * -------------------------------------------------------------------
-	 * Methods
-	 * -------------------------------------------------------------------
-	 */
 
 	public void testConstructorAndGetters() {
 		log.setMethod("testConstructorAndGetters()");
@@ -277,7 +228,7 @@ public class NamingExceptionEventTest extends TestCase {
 		 * 
 		 * @see javax.naming.Context#getEnvironment()
 		 */
-		public Hashtable getEnvironment() throws NamingException {
+		public Hashtable<?, ?> getEnvironment() throws NamingException {
 			throw new UnsupportedOperationException("in EventContextMockUp");
 		}
 
@@ -313,7 +264,7 @@ public class NamingExceptionEventTest extends TestCase {
 		 * 
 		 * @see javax.naming.Context#list(javax.naming.Name)
 		 */
-		public NamingEnumeration list(Name n) throws NamingException {
+		public NamingEnumeration<NameClassPair> list(Name n) throws NamingException {
 			throw new UnsupportedOperationException("in EventContextMockUp");
 		}
 
@@ -322,7 +273,7 @@ public class NamingExceptionEventTest extends TestCase {
 		 * 
 		 * @see javax.naming.Context#list(java.lang.String)
 		 */
-		public NamingEnumeration list(String s) throws NamingException {
+		public NamingEnumeration<NameClassPair> list(String s) throws NamingException {
 			throw new UnsupportedOperationException("in EventContextMockUp");
 		}
 
@@ -331,7 +282,7 @@ public class NamingExceptionEventTest extends TestCase {
 		 * 
 		 * @see javax.naming.Context#listBindings(javax.naming.Name)
 		 */
-		public NamingEnumeration listBindings(Name n) throws NamingException {
+		public NamingEnumeration<Binding> listBindings(Name n) throws NamingException {
 			throw new UnsupportedOperationException("in EventContextMockUp");
 		}
 
@@ -340,7 +291,7 @@ public class NamingExceptionEventTest extends TestCase {
 		 * 
 		 * @see javax.naming.Context#listBindings(java.lang.String)
 		 */
-		public NamingEnumeration listBindings(String s) throws NamingException {
+		public NamingEnumeration<Binding> listBindings(String s) throws NamingException {
 			throw new UnsupportedOperationException("in EventContextMockUp");
 		}
 

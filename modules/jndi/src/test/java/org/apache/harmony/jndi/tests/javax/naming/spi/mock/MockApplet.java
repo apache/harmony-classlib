@@ -19,21 +19,26 @@ import java.applet.Applet;
 import java.util.Hashtable;
 
 public class MockApplet extends Applet {
-	private Hashtable props;
+	/**
+     * <p></p>
+     */
+    private static final long serialVersionUID = 1L;
+    private Hashtable<Object, Object> props;
 
 	public MockApplet() {
-		this.props = new Hashtable();
+		this.props = new Hashtable<Object, Object>();
 	}
 
 	public void setParameter(Object param, Object value) {
 		this.props.put(param, value);
 	}
 
-	public String getParameter(String param) {
+	@Override
+    public String getParameter(String param) {
 		return (String) this.props.get(param);
 	}
 
-	public Hashtable getAllParams() {
+	public Hashtable<Object, Object> getAllParams() {
 		return this.props;
 	}
 }

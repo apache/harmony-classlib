@@ -18,15 +18,13 @@ package org.apache.harmony.jndi.tests.javax.naming;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import junit.framework.TestCase;
 import org.apache.harmony.jndi.tests.javax.naming.util.Log;
 
 public class InitialContextSPITest extends TestCase {
-	private Log log = new Log(InitialContextSPITest.class);
+	private final Log log = new Log(InitialContextSPITest.class);
 
 	public void testConstructor_SPI() throws NamingException {
 		// log.setMethod("testConstructor_SPI");
@@ -44,9 +42,9 @@ public class InitialContextSPITest extends TestCase {
 		// //printHashtable(props);
 	}
 
-	void printHashtable(Hashtable env) {
+	void printHashtable(Hashtable<?, ?> env) {
 		// TO DO: Need to remove
-		Enumeration keys = env.keys();
+		Enumeration<?> keys = env.keys();
 		while (keys.hasMoreElements()) {
 			Object key = keys.nextElement();
 			log.log(key + "=" + env.get(key));

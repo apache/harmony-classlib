@@ -17,10 +17,12 @@ package org.apache.harmony.jndi.tests.javax.naming.spi;
 
 import java.util.Hashtable;
 
+import javax.naming.Binding;
 import javax.naming.CannotProceedException;
 import javax.naming.Context;
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
+import javax.naming.NameClassPair;
 import javax.naming.NameParser;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -28,6 +30,7 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
 import javax.naming.ldap.Control;
 import javax.naming.ldap.ExtendedRequest;
 import javax.naming.ldap.ExtendedResponse;
@@ -37,11 +40,8 @@ import javax.naming.spi.InitialContextFactory;
 import javax.naming.spi.ObjectFactory;
 
 import junit.framework.TestCase;
-import org.apache.harmony.jndi.tests.javax.naming.util.Log;
 
 public class DirectoryManagerJCKTest extends TestCase {
-
-	private static Log log = new Log(DirectoryManagerJCKTest.class);
 
 	public void testGetContinuationDirContext() throws NamingException {
 		// Step 1: Write a simple class which implements
@@ -99,7 +99,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		}
 
 		try {
-			Attributes attributes = newContext.getAttributes("test");
+			newContext.getAttributes("test");
 		} catch (Exception e) {
 			// System.out.println(e);
 		}
@@ -112,7 +112,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		CannotProceedException cpe = new CannotProceedException(
 				"TestGetContinuationDirContext3");
 		DirContext ctx = DirectoryManager.getContinuationDirContext(cpe);
-		// System.out.println(ctx instanceof DirContext);
+		assertNotNull(ctx);
 	}
 
 	/*
@@ -186,66 +186,34 @@ public class DirectoryManagerJCKTest extends TestCase {
 
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see javax.naming.spi.InitialContextFactory#getInitialContext(java.util.Hashtable)
-		 */
-		public Context getInitialContext(Hashtable envmt)
+		public Context getInitialContext(Hashtable<?, ?> envmt)
 				throws NamingException {
 			return null;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see javax.naming.directory.DirContext#bind(javax.naming.Name,
-		 *      java.lang.Object, javax.naming.directory.Attributes)
-		 */
 		public void bind(Name name, Object obj, Attributes attributes)
 				throws NamingException {
 
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see javax.naming.directory.DirContext#bind(java.lang.String,
-		 *      java.lang.Object, javax.naming.directory.Attributes)
-		 */
 		public void bind(String s, Object obj, Attributes attributes)
 				throws NamingException {
 
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see javax.naming.directory.DirContext#createSubcontext(javax.naming.Name,
-		 *      javax.naming.directory.Attributes)
-		 */
+
 		public DirContext createSubcontext(Name name, Attributes attributes)
 				throws NamingException {
 			return null;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see javax.naming.directory.DirContext#createSubcontext(java.lang.String,
-		 *      javax.naming.directory.Attributes)
-		 */
+
 		public DirContext createSubcontext(String s, Attributes attributes)
 				throws NamingException {
 
 			return null;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see javax.naming.directory.DirContext#getAttributes(javax.naming.Name)
-		 */
 		public Attributes getAttributes(Name name) throws NamingException {
 
 			return null;
@@ -399,7 +367,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		 * @see javax.naming.directory.DirContext#search(javax.naming.Name,
 		 *      javax.naming.directory.Attributes)
 		 */
-		public NamingEnumeration search(Name name, Attributes attributes)
+		public NamingEnumeration<SearchResult> search(Name name, Attributes attributes)
 				throws NamingException {
 
 			return null;
@@ -411,7 +379,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		 * @see javax.naming.directory.DirContext#search(javax.naming.Name,
 		 *      javax.naming.directory.Attributes, java.lang.String[])
 		 */
-		public NamingEnumeration search(Name name, Attributes attributes,
+		public NamingEnumeration<SearchResult> search(Name name, Attributes attributes,
 				String[] as) throws NamingException {
 
 			return null;
@@ -424,7 +392,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		 *      java.lang.String, java.lang.Object[],
 		 *      javax.naming.directory.SearchControls)
 		 */
-		public NamingEnumeration search(Name name, String filter,
+		public NamingEnumeration<SearchResult> search(Name name, String filter,
 				Object[] objs, SearchControls searchControls)
 				throws NamingException {
 
@@ -437,7 +405,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		 * @see javax.naming.directory.DirContext#search(javax.naming.Name,
 		 *      java.lang.String, javax.naming.directory.SearchControls)
 		 */
-		public NamingEnumeration search(Name name, String filter,
+		public NamingEnumeration<SearchResult> search(Name name, String filter,
 				SearchControls searchControls) throws NamingException {
 
 			return null;
@@ -449,7 +417,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		 * @see javax.naming.directory.DirContext#search(java.lang.String,
 		 *      javax.naming.directory.Attributes)
 		 */
-		public NamingEnumeration search(String name, Attributes attributes)
+		public NamingEnumeration<SearchResult> search(String name, Attributes attributes)
 				throws NamingException {
 
 			return null;
@@ -461,7 +429,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		 * @see javax.naming.directory.DirContext#search(java.lang.String,
 		 *      javax.naming.directory.Attributes, java.lang.String[])
 		 */
-		public NamingEnumeration search(String name, Attributes attributes,
+		public NamingEnumeration<SearchResult> search(String name, Attributes attributes,
 				String[] as) throws NamingException {
 
 			return null;
@@ -474,7 +442,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		 *      java.lang.String, java.lang.Object[],
 		 *      javax.naming.directory.SearchControls)
 		 */
-		public NamingEnumeration search(String name, String filter,
+		public NamingEnumeration<SearchResult> search(String name, String filter,
 				Object[] objs, SearchControls searchControls)
 				throws NamingException {
 
@@ -487,7 +455,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		 * @see javax.naming.directory.DirContext#search(java.lang.String,
 		 *      java.lang.String, javax.naming.directory.SearchControls)
 		 */
-		public NamingEnumeration search(String name, String filter,
+		public NamingEnumeration<SearchResult> search(String name, String filter,
 				SearchControls searchControls) throws NamingException {
 
 			return null;
@@ -597,7 +565,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		 * 
 		 * @see javax.naming.Context#getEnvironment()
 		 */
-		public Hashtable getEnvironment() throws NamingException {
+		public Hashtable<?, ?> getEnvironment() throws NamingException {
 
 			return null;
 		}
@@ -637,7 +605,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		 * 
 		 * @see javax.naming.Context#list(javax.naming.Name)
 		 */
-		public NamingEnumeration list(Name n) throws NamingException {
+		public NamingEnumeration<NameClassPair> list(Name n) throws NamingException {
 
 			return null;
 		}
@@ -647,7 +615,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		 * 
 		 * @see javax.naming.Context#list(java.lang.String)
 		 */
-		public NamingEnumeration list(String s) throws NamingException {
+		public NamingEnumeration<NameClassPair> list(String s) throws NamingException {
 
 			return null;
 		}
@@ -657,7 +625,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		 * 
 		 * @see javax.naming.Context#listBindings(javax.naming.Name)
 		 */
-		public NamingEnumeration listBindings(Name n) throws NamingException {
+		public NamingEnumeration<Binding> listBindings(Name n) throws NamingException {
 
 			return null;
 		}
@@ -667,7 +635,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		 * 
 		 * @see javax.naming.Context#listBindings(java.lang.String)
 		 */
-		public NamingEnumeration listBindings(String s) throws NamingException {
+		public NamingEnumeration<Binding> listBindings(String s) throws NamingException {
 
 			return null;
 		}
@@ -876,7 +844,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		 * 
 		 * @see javax.naming.Context#getEnvironment()
 		 */
-		public Hashtable getEnvironment() throws NamingException {
+		public Hashtable<?, ?> getEnvironment() throws NamingException {
 			return null;
 		}
 
@@ -912,7 +880,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		 * 
 		 * @see javax.naming.Context#list(javax.naming.Name)
 		 */
-		public NamingEnumeration list(Name n) throws NamingException {
+		public NamingEnumeration<NameClassPair> list(Name n) throws NamingException {
 			return null;
 		}
 
@@ -921,7 +889,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		 * 
 		 * @see javax.naming.Context#list(java.lang.String)
 		 */
-		public NamingEnumeration list(String s) throws NamingException {
+		public NamingEnumeration<NameClassPair> list(String s) throws NamingException {
 			return null;
 		}
 
@@ -930,7 +898,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		 * 
 		 * @see javax.naming.Context#listBindings(javax.naming.Name)
 		 */
-		public NamingEnumeration listBindings(Name n) throws NamingException {
+		public NamingEnumeration<Binding> listBindings(Name n) throws NamingException {
 			return null;
 		}
 
@@ -939,7 +907,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		 * 
 		 * @see javax.naming.Context#listBindings(java.lang.String)
 		 */
-		public NamingEnumeration listBindings(String s) throws NamingException {
+		public NamingEnumeration<Binding> listBindings(String s) throws NamingException {
 			return null;
 		}
 
@@ -1052,7 +1020,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		 * 
 		 * @see javax.naming.spi.InitialContextFactory#getInitialContext(java.util.Hashtable)
 		 */
-		public Context getInitialContext(Hashtable envmt)
+		public Context getInitialContext(Hashtable<?, ?> envmt)
 				throws NamingException {
 			return null;
 		}
@@ -1064,7 +1032,7 @@ public class DirectoryManagerJCKTest extends TestCase {
 		 *      javax.naming.Name, javax.naming.Context, java.util.Hashtable)
 		 */
 		public Object getObjectInstance(Object o, Name n, Context c,
-				Hashtable envmt) throws Exception {
+				Hashtable<?, ?> envmt) throws Exception {
 			return null;
 		}
 

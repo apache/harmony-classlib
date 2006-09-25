@@ -28,10 +28,8 @@ import javax.naming.NamingException;
 import javax.naming.StringRefAddr;
 
 import junit.framework.TestCase;
-import org.apache.harmony.jndi.tests.javax.naming.util.Log;
 
 public class LinkRefTest extends TestCase {
-	private static Log log = new Log(LinkRefTest.class);
 
 	public void testConstructor_ByName() throws NamingException {
 		Name name = new CompositeName("www.apache.org/index.html");
@@ -43,7 +41,7 @@ public class LinkRefTest extends TestCase {
 	public void testConstrcutor_ByNameNull() {
 		Name name = null;
 		try {
-			LinkRef linkRef = new LinkRef(name);
+			new LinkRef(name);
 			fail("It should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}
@@ -85,10 +83,8 @@ public class LinkRefTest extends TestCase {
 		String name = "www.apache.org/index.html";
 		LinkRef linkRef = new LinkRef(name);
 		linkRef.clear();
-		StringRefAddr stringRefAddr = new StringRefAddr("illegal type name",
-				name);
 		try {
-			String link = linkRef.getLinkName();
+			linkRef.getLinkName();
 			fail("It should throw a MalformedLinkException");
 		} catch (MalformedLinkException e1) {
 		}
@@ -99,7 +95,7 @@ public class LinkRefTest extends TestCase {
 		MyLinkRef linkRef = new MyLinkRef(name);
 		linkRef.setClassName("Invalid Class name");
 		try {
-			String link = linkRef.getLinkName();
+			linkRef.getLinkName();
 			fail("Should throw MalformedLinkException");
 		} catch (MalformedLinkException e) {
 		}
@@ -146,7 +142,6 @@ public class LinkRefTest extends TestCase {
 	public void testToString_Simple() {
 		String name = "www.apache.org/index.html";
 		LinkRef linkRef = new LinkRef(name);
-		StringRefAddr addr0 = new StringRefAddr("LinkAddress", name);
 		StringRefAddr addr1 = new StringRefAddr("LinkAddress", "www.apache.org");
 		linkRef.add(addr1);
 
@@ -202,8 +197,9 @@ public class LinkRefTest extends TestCase {
 	}
 
 	class MyLinkRef extends LinkRef {
+        private static final long serialVersionUID = 1L;
 
-		public MyLinkRef(String s) {
+        public MyLinkRef(String s) {
 			super(s);
 		}
 

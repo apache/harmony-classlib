@@ -53,11 +53,11 @@ public class NSLookup {
      *  as an argument 
      */
     public static void main(String[] args) throws NamingException {
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
         DirContext ctx = null;
         Attributes attrs = null;
         String[] attrNames = new String[1];
-        NamingEnumeration attrEnum;
+        NamingEnumeration<?> attrEnum;
 
         if (args.length == 0) {
             System.out.println("USAGE: java " + 
@@ -75,7 +75,7 @@ public class NSLookup {
         attrEnum = attrs.getAll();
         while (attrEnum.hasMoreElements()) {
             Attribute attr = (Attribute) attrEnum.nextElement();
-            NamingEnumeration vals = attr.getAll();
+            NamingEnumeration<?> vals = attr.getAll();
 
             while (vals.hasMoreElements()) {
                 System.out.println(attr.getID() + " " + vals.nextElement());

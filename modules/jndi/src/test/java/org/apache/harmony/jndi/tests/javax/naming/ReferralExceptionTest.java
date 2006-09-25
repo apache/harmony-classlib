@@ -32,7 +32,7 @@ public class ReferralExceptionTest extends TestCase {
 	 * -------------------------------------------------------------------
 	 */
 
-	private static Log log = new Log(ReferralExceptionTest.class);
+	private static final Log log = new Log(ReferralExceptionTest.class);
 
 	/*
 	 * -------------------------------------------------------------------
@@ -69,65 +69,39 @@ public class ReferralExceptionTest extends TestCase {
 
 	public static class MockReferralException extends ReferralException {
 
-		/**
-		 * 
-		 */
+        private static final long serialVersionUID = 1L;
+
 		public MockReferralException() {
 			super();
 		}
 
-		/**
-		 * @param s
-		 */
 		public MockReferralException(String s) {
 			super(s);
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see javax.naming.ReferralException#getReferralContext()
-		 */
-		public Context getReferralContext() throws NamingException {
+		@Override
+        public Context getReferralContext() throws NamingException {
 			return null;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see javax.naming.ReferralException#getReferralContext(java.util.Hashtable)
-		 */
-		public Context getReferralContext(Hashtable h) throws NamingException {
+		@Override
+        public Context getReferralContext(Hashtable<?, ?> h) throws NamingException {
 			return null;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see javax.naming.ReferralException#getReferralInfo()
-		 */
-		public Object getReferralInfo() {
+		@Override
+        public Object getReferralInfo() {
 			return null;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see javax.naming.ReferralException#skipReferral()
-		 */
-		public boolean skipReferral() {
+		@Override
+        public boolean skipReferral() {
 			return false;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see javax.naming.ReferralException#retryReferral()
-		 */
-		public void retryReferral() {
+		@Override
+        public void retryReferral() {
 
 		}
-
 	}
-
 }

@@ -27,9 +27,9 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.OperationNotSupportedException;
 import javax.naming.directory.BasicAttribute;
-import javax.naming.directory.DirContext;
 
 import junit.framework.TestCase;
+
 import org.apache.harmony.jndi.tests.javax.naming.util.Person;
 
 public class BasicAttributeTest extends TestCase {
@@ -38,13 +38,10 @@ public class BasicAttributeTest extends TestCase {
 
 	private BasicAttribute unorderedAttribute;
 
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 		orderedAttribute = new BasicAttribute("Ordered_Attribute", true);
 		unorderedAttribute = new BasicAttribute("Unordered_Attribute", false);
-	}
-
-	protected void tearDown() {
-
 	}
 
 	/**
@@ -520,7 +517,7 @@ public class BasicAttributeTest extends TestCase {
 
 	public void testGet_unordered_noValue() throws NamingException {
 		try {
-			Object obj = unorderedAttribute.get();
+			unorderedAttribute.get();
 			fail("No value, throw NoSuchElementException.");
 			// return -> throw.
 		} catch (NoSuchElementException e) {
@@ -544,7 +541,7 @@ public class BasicAttributeTest extends TestCase {
 
 	public void testGet_ordered_noValue() throws NamingException {
 		try {
-			Object obj = orderedAttribute.get();
+			orderedAttribute.get();
 			fail("No value, throw NoSuchElementException.");
 			// return -> throw.
 		} catch (NoSuchElementException e) {
@@ -560,7 +557,7 @@ public class BasicAttributeTest extends TestCase {
 		Person person = Person.getInstance();
 		unorderedAttribute.add(person);
 		try {
-			Object obj = unorderedAttribute.get(-1);
+			unorderedAttribute.get(-1);
 			fail("get(-1), throw IndexOutOfBoundsException.");
 		} catch (IndexOutOfBoundsException e) {
 		}
@@ -570,7 +567,7 @@ public class BasicAttributeTest extends TestCase {
 		Person person = Person.getInstance();
 		unorderedAttribute.add(person);
 		try {
-			Object obj = unorderedAttribute.get(unorderedAttribute.size());
+			unorderedAttribute.get(unorderedAttribute.size());
 			fail("get(size()), throw IndexOutOfBoundsException.");
 		} catch (IndexOutOfBoundsException e) {
 		}
@@ -584,7 +581,7 @@ public class BasicAttributeTest extends TestCase {
 			orderedAttribute.add(persons[i]);
 		}
 
-		NamingEnumeration enumeration = orderedAttribute.getAll();
+		NamingEnumeration<?> enumeration = orderedAttribute.getAll();
 		int i = 0;
 		while (enumeration.hasMore()) {
 			assertEquals(persons[i++], enumeration.next());
@@ -592,7 +589,7 @@ public class BasicAttributeTest extends TestCase {
 	}
 
 	public void testGetAll_ordered_noValue() throws NamingException {
-		NamingEnumeration enumeration = orderedAttribute.getAll();
+		NamingEnumeration<?> enumeration = orderedAttribute.getAll();
 		int count = 0;
 		while (enumeration.hasMore()) {
 			count++;
@@ -608,7 +605,7 @@ public class BasicAttributeTest extends TestCase {
 			unorderedAttribute.add(persons[i]);
 		}
 
-		NamingEnumeration enumeration = unorderedAttribute.getAll();
+		NamingEnumeration<?> enumeration = unorderedAttribute.getAll();
 		int i = 0;
 		while (enumeration.hasMore()) {
 			assertEquals(persons[i++], enumeration.next());
@@ -616,7 +613,7 @@ public class BasicAttributeTest extends TestCase {
 	}
 
 	public void testGetAll_unordered_noValue() throws NamingException {
-		NamingEnumeration enumeration = unorderedAttribute.getAll();
+		NamingEnumeration<?> enumeration = unorderedAttribute.getAll();
 		int count = 0;
 		while (enumeration.hasMore()) {
 			count++;
@@ -626,20 +623,19 @@ public class BasicAttributeTest extends TestCase {
 
 	public void testGetAttributeDefinition() throws NamingException {
 		try {
-			DirContext context = orderedAttribute.getAttributeDefinition();
+			orderedAttribute.getAttributeDefinition();
 			fail("Should throw OperationNotSupportedException");
 		} catch (OperationNotSupportedException e) {
 		}
 	}
 
 	public void testGetAttributeSyntaxDefinition() throws NamingException {
-		try {
-			DirContext context = orderedAttribute
-					.getAttributeSyntaxDefinition();
-			fail("Should throw OperationNotSupportedException");
-		} catch (OperationNotSupportedException e) {
-		}
-	}
+        try {
+            orderedAttribute.getAttributeSyntaxDefinition();
+            fail("Should throw OperationNotSupportedException");
+        } catch (OperationNotSupportedException e) {
+        }
+    }
 
 	public void testGetID() {
 		String ID = "attribute ID";
@@ -684,7 +680,7 @@ public class BasicAttributeTest extends TestCase {
 
 	public void testRemove_novalue() {
 		try {
-			Object obj = orderedAttribute.remove(0);
+			orderedAttribute.remove(0);
 			fail("Should throw IndexOutOfBoundsException.");
 		} catch (IndexOutOfBoundsException e) {
 		}
@@ -693,7 +689,7 @@ public class BasicAttributeTest extends TestCase {
 	public void testRemove_tooSmall() {
 		orderedAttribute.add("value one");
 		try {
-			Object obj = orderedAttribute.remove(-1);
+			orderedAttribute.remove(-1);
 			fail("Should throw IndexOutOfBoundsException.");
 		} catch (IndexOutOfBoundsException e) {
 		}
@@ -702,7 +698,7 @@ public class BasicAttributeTest extends TestCase {
 	public void testRemove_tooLarge() {
 		orderedAttribute.add("value one");
 		try {
-			Object obj = orderedAttribute.remove(orderedAttribute.size());
+			orderedAttribute.remove(orderedAttribute.size());
 			fail("Should throw IndexOutOfBoundsException.");
 		} catch (IndexOutOfBoundsException e) {
 		}
@@ -770,7 +766,6 @@ public class BasicAttributeTest extends TestCase {
 	public void testSet_ordered_NewValueNull() throws NamingException {
 		Person person = Person.getInstance();
 		orderedAttribute.add(person);
-		Person person2 = Person.getInstance();
 
 		assertEquals(person, orderedAttribute.set(0, null));
 		assertNull(orderedAttribute.get(0));
@@ -787,7 +782,7 @@ public class BasicAttributeTest extends TestCase {
 	public void testSet_ordered_IndexTooSmall() {
 		orderedAttribute.add("value");
 		try {
-			Object obj = orderedAttribute.remove(-1);
+			orderedAttribute.remove(-1);
 			fail("Should throw IndexOutOfBoundsException.");
 		} catch (IndexOutOfBoundsException e) {
 		}
@@ -796,7 +791,7 @@ public class BasicAttributeTest extends TestCase {
 	public void testSet_ordered_IndexTooLarge() {
 		orderedAttribute.add("value");
 		try {
-			Object obj = orderedAttribute.remove(orderedAttribute.size());
+			orderedAttribute.remove(orderedAttribute.size());
 			fail("Should throw IndexOutOfBoundsException.");
 		} catch (IndexOutOfBoundsException e) {
 		}
@@ -813,7 +808,7 @@ public class BasicAttributeTest extends TestCase {
 		Person person = Person.getInstance();
 		unorderedAttribute.add(person);
 		try {
-			Object obj = unorderedAttribute.set(0, person);
+			unorderedAttribute.set(0, person);
 			fail("Should throw IllegalStateException.");
 		} catch (IllegalStateException e) {
 		}
@@ -830,7 +825,7 @@ public class BasicAttributeTest extends TestCase {
 
 		unorderedAttribute.add(persons);
 		try {
-			Object obj = unorderedAttribute.set(0, newPersons);
+			unorderedAttribute.set(0, newPersons);
 			fail("Should throw IllegalStateException.");
 		} catch (IllegalStateException e) {
 		}
@@ -930,7 +925,7 @@ public class BasicAttributeTest extends TestCase {
 		BasicAttribute attribute0 = new BasicAttribute(null, strObj);
 		BasicAttribute attribute1 = new BasicAttribute(null, strObj);
 		try {
-			boolean result = attribute0.equals(attribute1);
+			attribute0.equals(attribute1);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}
@@ -1028,9 +1023,9 @@ public class BasicAttributeTest extends TestCase {
 		String id = "Array Attribute";
 		BasicAttribute attribute = new BasicAttribute(id, strs);
 		int hashCode = id.hashCode();
-		for (int i = 0; i < strs.length; i++) {
-			if (strs[i] != null) {
-				hashCode += strs[i].hashCode();
+		for (String element : strs) {
+			if (element != null) {
+				hashCode += element.hashCode();
 			}
 		}
 
@@ -1047,8 +1042,8 @@ public class BasicAttributeTest extends TestCase {
 		Person person = Person.getInstance();
 		attribute.add(person);
 		int hashCode = id.hashCode() + person.hashCode();
-		for (int i = 0; i < numbers.length; i++) {
-			hashCode += numbers[i];
+		for (int element : numbers) {
+			hashCode += element;
 		}
 
 		assertEquals(hashCode, attribute.hashCode());
@@ -1063,8 +1058,8 @@ public class BasicAttributeTest extends TestCase {
 		String id = "double-Array";
 		BasicAttribute attribute = new BasicAttribute(id, doubles);
 		int hashCode = id.hashCode();
-		for (int i = 0; i < doubles.length; i++) {
-			hashCode += new Double(doubles[i]).hashCode();
+		for (double element : doubles) {
+			hashCode += new Double(element).hashCode();
 		}
 		assertEquals(hashCode, attribute.hashCode());
 	}
@@ -1072,7 +1067,7 @@ public class BasicAttributeTest extends TestCase {
 	public void testHashCode_IDnull() {
 		BasicAttribute attribute = new BasicAttribute(null, "ID==NULL");
 		try {
-			int hashCode = attribute.hashCode();
+			attribute.hashCode();
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}
@@ -1093,9 +1088,6 @@ public class BasicAttributeTest extends TestCase {
 		for (int i = 0; i < count; i++) {
 			orderedAttribute.add("Value: " + i);
 		}
-		String str = "Attribute ID: Ordered_Attribute\n"
-				+ "Attribute values: Value: 0,Value: 1,Value: 2,Value: 3,Value: 4\n";
-		// assertEquals(str, orderedAttribute.toString());
 		assertNotNull(orderedAttribute.toString());
 	}
 
@@ -1160,16 +1152,13 @@ public class BasicAttributeTest extends TestCase {
 		for (int i = 0; i < 5; i++) {
 			attribute.add(null);
 		}
-		String str = "Attribute ID: nulls\nAttribute values: null,null,null,null,null\n";
-		// assertEquals(str, attribute.toString());
+
 		assertNotNull(attribute.toString());
 	}
 
 	public void testToString_IDNull() {
 		// TO DO: explore behavior
 		BasicAttribute attribute = new BasicAttribute(null, "ID==NULL");
-		String str = "Attribute ID: null\nAttribute values: ID==NULL\n";
-		// assertEquals(str, attribute.toString());
 		assertNotNull(attribute.toString());
 	}
 

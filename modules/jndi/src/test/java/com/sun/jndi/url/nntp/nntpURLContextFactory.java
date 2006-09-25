@@ -25,13 +25,7 @@ import org.apache.harmony.jndi.tests.javax.naming.spi.NamingManagerTest;
 
 public class nntpURLContextFactory implements ObjectFactory {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.naming.spi.ObjectFactory#getObjectInstance(java.lang.Object,
-	 *      javax.naming.Name, javax.naming.Context, java.util.Hashtable)
-	 */
-	public Object getObjectInstance(Object o, Name n, Context c, Hashtable h)
+	public Object getObjectInstance(Object o, Name n, Context c, Hashtable<?, ?> h)
 			throws Exception {
 
 		NamingManagerTest.issueIndicatedExceptions(h);
@@ -49,16 +43,17 @@ public class nntpURLContextFactory implements ObjectFactory {
 
 		private Context c;
 
-		private Hashtable envmt;
+		private Hashtable<?, ?> envmt;
 
-		public MockObject(Object o, Name n, Context c, Hashtable envmt) {
+		public MockObject(Object o, Name n, Context c, Hashtable<?, ?> envmt) {
 			this.o = o;
 			this.n = n;
 			this.c = c;
 			this.envmt = envmt;
 		}
 
-		public String toString() {
+		@Override
+        public String toString() {
 			String s = "MockObject {";
 
 			s += "Object= " + o + "\n";
@@ -71,7 +66,8 @@ public class nntpURLContextFactory implements ObjectFactory {
 			return s;
 		}
 
-		public boolean equals(Object obj) {
+		@Override
+        public boolean equals(Object obj) {
 			if (obj instanceof MockObject) {
 				MockObject theOther = (MockObject) obj;
 				if (o != theOther.o) {
@@ -95,9 +91,8 @@ public class nntpURLContextFactory implements ObjectFactory {
 				}
 
 				return true;
-			} else {
-				return false;
 			}
+            return false;
 		}
 	}
 }

@@ -37,21 +37,10 @@ public class CompoundNameTest extends TestCase {
 
 	static Log log = new Log(CompoundNameTest.class);
 
-	private Properties props = new Properties();
+	private final Properties props = new Properties();
 
-	/**
-	 * Constructor for TestCompoundName.
-	 * 
-	 * @param arg0
-	 */
-	public CompoundNameTest(String arg0) {
-		super(arg0);
-	}
-
-	/*
-	 * @see TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		props.clear();
 		props.put("jndi.syntax.direction", "left_to_right");
@@ -66,13 +55,6 @@ public class CompoundNameTest extends TestCase {
 		props.put("jndi.syntax.separator.ava", ",");
 		props.put("jndi.syntax.separator.typeval", "=");
 		props2 = (Properties) props.clone();
-	}
-
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
 	}
 
 	public void testConstructor_Simple() throws InvalidNameException {
@@ -891,7 +873,7 @@ public class CompoundNameTest extends TestCase {
 	public void testGetAll() throws InvalidNameException {
 		log.setMethod("testGetAll()");
 		CompoundName name;
-		Enumeration enumeration;
+		Enumeration<?> enumeration;
 
 		// has more than one elements
 		name = new CompoundName("a/b/c", props);
@@ -1658,7 +1640,7 @@ public class CompoundNameTest extends TestCase {
 			}
 
 			int i = 0;
-			Enumeration enumeration = n.getAll();
+			Enumeration<?> enumeration = n.getAll();
 			while (enumeration.hasMoreElements()) {
 				assertEquals(elems[i++], enumeration.nextElement());
 			}

@@ -34,9 +34,10 @@ import junit.framework.TestCase;
 public class InitialLdapContextTest extends TestCase {
 	InitialLdapContext ldapContext;
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockLdapContextFactory");
 		Control[] cs = { new MyControl("c1", new byte[] { 1, 2, 3, 4 }, false),
@@ -45,7 +46,8 @@ public class InitialLdapContextTest extends TestCase {
 
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 
@@ -60,7 +62,7 @@ public class InitialLdapContextTest extends TestCase {
 	}
 
 	public void testConstructor_Controls() throws NamingException {
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockLdapContextFactory");
 		Control[] cs = { new MyControl("c1", new byte[] { 1, 2, 3, 4 }, false),
@@ -71,7 +73,7 @@ public class InitialLdapContextTest extends TestCase {
 		Object objCs = defaultCtx.getProps().get(
 				"java.naming.ldap.control.connect");
 		Object version = defaultCtx.getProps().get("java.naming.ldap.version");
-
+		assertNotNull(version);
 		Control[] cs2 = (Control[]) objCs;
 
 		for (int i = 0; i < cs.length; i++) {
@@ -84,7 +86,7 @@ public class InitialLdapContextTest extends TestCase {
 	}
 
 	public void testConstructor_notldapContext() throws NamingException {
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockContextFactory");
 		Control[] cs = { new MyControl("c1", new byte[] { 1, 2, 3, 4 }, false),
@@ -104,6 +106,7 @@ public class InitialLdapContextTest extends TestCase {
 		}
 
 		Context defaultContext = ctx.getDefaultContext();
+        assertNotNull(defaultContext);
 	}
 
 	public void testExtendedOperation() throws NamingException {
@@ -177,7 +180,7 @@ public class InitialLdapContextTest extends TestCase {
 
 	class MyInitialLdapContext extends InitialLdapContext {
 
-		public MyInitialLdapContext(Hashtable h, Control[] cs)
+		public MyInitialLdapContext(Hashtable<String, String> h, Control[] cs)
 				throws NamingException {
 			super(h, cs);
 		}
@@ -188,7 +191,9 @@ public class InitialLdapContextTest extends TestCase {
 	}
 
 	class MyControl implements Control {
-		boolean isCritical;
+        private static final long serialVersionUID = 1L;
+
+        boolean isCritical;
 
 		byte[] encodedValue;
 
@@ -214,7 +219,8 @@ public class InitialLdapContextTest extends TestCase {
 			return this.isCritical;
 		}
 
-		public boolean equals(Object arg0) {
+		@Override
+        public boolean equals(Object arg0) {
 			if (arg0 instanceof MyControl) {
 				MyControl a = (MyControl) arg0;
 				return this.id.equals(a.getID())
@@ -227,7 +233,9 @@ public class InitialLdapContextTest extends TestCase {
 	}
 
 	class MyExtendedRequest implements ExtendedRequest {
-		byte[] encodedValue;
+        private static final long serialVersionUID = 1L;
+
+        byte[] encodedValue;
 
 		String id;
 

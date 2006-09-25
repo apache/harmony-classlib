@@ -35,7 +35,8 @@ public class ReferenceTest extends TestCase {
 
 	private byte[] buffer;
 
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 		int bufferLen = 50;
 		buffer = new byte[bufferLen];
 		Random random = new Random();
@@ -180,7 +181,7 @@ public class ReferenceTest extends TestCase {
 		byte[] buffer1 = { 1, 2, 3, 4 };
 		BinaryRefAddr refAddr1 = new BinaryRefAddr(type, buffer1);
 		byte[] buffer2 = { 1, 2, 3, 4, 5 };
-		BinaryRefAddr refAddr2 = new BinaryRefAddr(type, buffer1);
+		BinaryRefAddr refAddr2 = new BinaryRefAddr(type, buffer2);
 
 		ref.add(0, refAddr0);
 		ref.add(1, refAddr1);
@@ -217,7 +218,7 @@ public class ReferenceTest extends TestCase {
 		ref.add(refAddr);
 
 		try {
-			RefAddr refAddr2 = ref.get(ref.size());
+			ref.get(ref.size());
 			fail("This should throw a ArrayIndexOutOfBoundsException");
 		} catch (ArrayIndexOutOfBoundsException e) {
 		}
@@ -229,7 +230,7 @@ public class ReferenceTest extends TestCase {
 		ref.add(refAddr);
 
 		try {
-			RefAddr refAddr2 = ref.get(-1);
+			ref.get(-1);
 			fail("This should throw a ArrayIndexOutOfBoundsException");
 		} catch (ArrayIndexOutOfBoundsException e) {
 		}
@@ -248,7 +249,7 @@ public class ReferenceTest extends TestCase {
 		}
 
 		for (int i = 0; i < types.length; i++) {
-			assertEquals(refAddrs[i], (BinaryRefAddr) ref.get(types[i]));
+			assertEquals(refAddrs[i], ref.get(types[i]));
 		}
 	}
 
@@ -265,7 +266,7 @@ public class ReferenceTest extends TestCase {
 		BinaryRefAddr refAddr = new BinaryRefAddr(type, buffer);
 		ref.add(refAddr);
 		try {
-			RefAddr addr = ref.get(null);
+			ref.get(null);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}
@@ -276,13 +277,13 @@ public class ReferenceTest extends TestCase {
 		BinaryRefAddr refAddr = new BinaryRefAddr(type, buffer);
 		ref.add(refAddr);
 
-		Enumeration allAddrs = ref.getAll();
+		Enumeration<?> allAddrs = ref.getAll();
 		assertTrue(allAddrs.hasMoreElements());
 		assertEquals(refAddr, allAddrs.nextElement());
 	}
 
 	public void testGetAll_Empty() {
-		Enumeration allAddrs = ref.getAll();
+		Enumeration<?> allAddrs = ref.getAll();
 		assertFalse(allAddrs.hasMoreElements());
 	}
 
@@ -414,16 +415,14 @@ public class ReferenceTest extends TestCase {
 	}
 
 	public void testEquals_NullClassName() {
-		String className = "java.lang.String";
 		String classFactory = "class factory";
 		String location = "/home/neuser";
 
 		Reference reference0 = new Reference(null, classFactory, location);
 		Reference reference1 = new Reference(null, classFactory, location);
-		Reference reference2 = new Reference(className, classFactory, location);
 
 		try {
-			boolean result = reference0.equals(reference1);
+			reference0.equals(reference1);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}
@@ -435,7 +434,6 @@ public class ReferenceTest extends TestCase {
 		String location = "/home/neuser";
 
 		Reference reference0 = new Reference(null, classFactory, location);
-		Reference reference1 = new Reference(null, classFactory, location);
 		Reference reference2 = new Reference(className, classFactory, location);
 
 		// try {
@@ -451,11 +449,10 @@ public class ReferenceTest extends TestCase {
 		String location = "/home/neuser";
 
 		Reference reference0 = new Reference(null, classFactory, location);
-		Reference reference1 = new Reference(null, classFactory, location);
 		Reference reference2 = new Reference(className, classFactory, location);
 
 		try {
-			boolean result = reference2.equals(reference0);
+			reference2.equals(reference0);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}

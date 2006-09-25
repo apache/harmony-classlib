@@ -21,7 +21,12 @@ import javax.naming.Referenceable;
 import javax.naming.StringRefAddr;
 
 public class Person implements Serializable, Cloneable, Referenceable {
-	private static int maxId = 0;
+	/**
+     * <p></p>
+     */
+    private static final long serialVersionUID = 1L;
+
+    private static int maxId = 0;
 
 	int id;
 
@@ -99,7 +104,8 @@ public class Person implements Serializable, Cloneable, Referenceable {
 		name = string;
 	}
 
-	public String toString() {
+	@Override
+    public String toString() {
 		StringBuffer buffer = new StringBuffer(100);
 		buffer.append(this.getClass().getName()).append(" : ");
 		buffer.append("id=").append(id);
@@ -114,7 +120,8 @@ public class Person implements Serializable, Cloneable, Referenceable {
 	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
-	public boolean equals(Object o) {
+	@Override
+    public boolean equals(Object o) {
 		boolean result = false;
 		if (o instanceof Person) {
 			Person p = (Person) o;
@@ -136,7 +143,8 @@ public class Person implements Serializable, Cloneable, Referenceable {
 	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		int result = 17;
 		result = 37 * result + id;
 		result = 37 * result + gender;
@@ -149,7 +157,8 @@ public class Person implements Serializable, Cloneable, Referenceable {
 		return result;
 	}
 
-	public Object clone() throws CloneNotSupportedException {
+	@Override
+    public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
 

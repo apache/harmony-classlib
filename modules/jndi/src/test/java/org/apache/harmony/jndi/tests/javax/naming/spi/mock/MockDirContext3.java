@@ -16,8 +16,10 @@ package org.apache.harmony.jndi.tests.javax.naming.spi.mock;
 
 import java.util.Hashtable;
 
+import javax.naming.Binding;
 import javax.naming.Context;
 import javax.naming.Name;
+import javax.naming.NameClassPair;
 import javax.naming.NameParser;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -25,15 +27,16 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
 
 /**
  * 
  */
 public class MockDirContext3 implements DirContext {
 
-	private Hashtable prop;
+	private Hashtable<String, Object> prop;
 
-	public MockDirContext3(Hashtable h) {
+	public MockDirContext3(Hashtable<String, Object> h) {
 		this.prop = h;
 	}
 
@@ -248,7 +251,7 @@ public class MockDirContext3 implements DirContext {
 	 * @see javax.naming.directory.DirContext#search(javax.naming.Name,
 	 *      javax.naming.directory.Attributes)
 	 */
-	public NamingEnumeration search(Name name, Attributes attributes)
+	public NamingEnumeration<SearchResult> search(Name name, Attributes attributes)
 			throws NamingException {
 		// Auto-generated method stub
 		return null;
@@ -260,7 +263,7 @@ public class MockDirContext3 implements DirContext {
 	 * @see javax.naming.directory.DirContext#search(javax.naming.Name,
 	 *      javax.naming.directory.Attributes, java.lang.String[])
 	 */
-	public NamingEnumeration search(Name name, Attributes attributes,
+	public NamingEnumeration<SearchResult> search(Name name, Attributes attributes,
 			String[] as) throws NamingException {
 		// Auto-generated method stub
 		return null;
@@ -273,7 +276,7 @@ public class MockDirContext3 implements DirContext {
 	 *      java.lang.String, java.lang.Object[],
 	 *      javax.naming.directory.SearchControls)
 	 */
-	public NamingEnumeration search(Name name, String s, Object[] aobj,
+	public NamingEnumeration<SearchResult> search(Name name, String s, Object[] aobj,
 			SearchControls searchcontrols) throws NamingException {
 		// Auto-generated method stub
 		return null;
@@ -285,7 +288,7 @@ public class MockDirContext3 implements DirContext {
 	 * @see javax.naming.directory.DirContext#search(javax.naming.Name,
 	 *      java.lang.String, javax.naming.directory.SearchControls)
 	 */
-	public NamingEnumeration search(Name name, String s,
+	public NamingEnumeration<SearchResult> search(Name name, String s,
 			SearchControls searchcontrols) throws NamingException {
 		// Auto-generated method stub
 		return null;
@@ -297,7 +300,7 @@ public class MockDirContext3 implements DirContext {
 	 * @see javax.naming.directory.DirContext#search(java.lang.String,
 	 *      javax.naming.directory.Attributes)
 	 */
-	public NamingEnumeration search(String s, Attributes attributes)
+	public NamingEnumeration<SearchResult> search(String s, Attributes attributes)
 			throws NamingException {
 		// Auto-generated method stub
 		return null;
@@ -309,7 +312,7 @@ public class MockDirContext3 implements DirContext {
 	 * @see javax.naming.directory.DirContext#search(java.lang.String,
 	 *      javax.naming.directory.Attributes, java.lang.String[])
 	 */
-	public NamingEnumeration search(String s, Attributes attributes, String[] as)
+	public NamingEnumeration<SearchResult> search(String s, Attributes attributes, String[] as)
 			throws NamingException {
 		// Auto-generated method stub
 		return null;
@@ -322,7 +325,7 @@ public class MockDirContext3 implements DirContext {
 	 *      java.lang.String, java.lang.Object[],
 	 *      javax.naming.directory.SearchControls)
 	 */
-	public NamingEnumeration search(String s, String s1, Object[] aobj,
+	public NamingEnumeration<SearchResult> search(String s, String s1, Object[] aobj,
 			SearchControls searchcontrols) throws NamingException {
 		// Auto-generated method stub
 		return null;
@@ -334,7 +337,7 @@ public class MockDirContext3 implements DirContext {
 	 * @see javax.naming.directory.DirContext#search(java.lang.String,
 	 *      java.lang.String, javax.naming.directory.SearchControls)
 	 */
-	public NamingEnumeration search(String s, String s1,
+	public NamingEnumeration<SearchResult> search(String s, String s1,
 			SearchControls searchcontrols) throws NamingException {
 		// Auto-generated method stub
 		return null;
@@ -447,7 +450,7 @@ public class MockDirContext3 implements DirContext {
 	 * 
 	 * @see javax.naming.Context#getEnvironment()
 	 */
-	public Hashtable getEnvironment() throws NamingException {
+	public Hashtable<String, Object> getEnvironment() throws NamingException {
 		// Auto-generated method stub
 		return this.prop;
 	}
@@ -487,7 +490,7 @@ public class MockDirContext3 implements DirContext {
 	 * 
 	 * @see javax.naming.Context#list(javax.naming.Name)
 	 */
-	public NamingEnumeration list(Name n) throws NamingException {
+	public NamingEnumeration<NameClassPair> list(Name n) throws NamingException {
 		// Auto-generated method stub
 		return null;
 	}
@@ -497,7 +500,7 @@ public class MockDirContext3 implements DirContext {
 	 * 
 	 * @see javax.naming.Context#list(java.lang.String)
 	 */
-	public NamingEnumeration list(String s) throws NamingException {
+	public NamingEnumeration<NameClassPair> list(String s) throws NamingException {
 		// Auto-generated method stub
 		return null;
 	}
@@ -507,7 +510,7 @@ public class MockDirContext3 implements DirContext {
 	 * 
 	 * @see javax.naming.Context#listBindings(javax.naming.Name)
 	 */
-	public NamingEnumeration listBindings(Name n) throws NamingException {
+	public NamingEnumeration<Binding> listBindings(Name n) throws NamingException {
 		// Auto-generated method stub
 		return null;
 	}
@@ -517,7 +520,7 @@ public class MockDirContext3 implements DirContext {
 	 * 
 	 * @see javax.naming.Context#listBindings(java.lang.String)
 	 */
-	public NamingEnumeration listBindings(String s) throws NamingException {
+	public NamingEnumeration<Binding> listBindings(String s) throws NamingException {
 		// Auto-generated method stub
 		return null;
 	}
@@ -640,9 +643,9 @@ public class MockDirContext3 implements DirContext {
 	 * @param a
 	 * @return
 	 */
-	public boolean parameterEquals(Object o, Name n, Context c, Hashtable h,
+	public boolean parameterEquals(Object o, Name n, Context c, Hashtable<?, ?> h,
 			Attributes a) {
-		Hashtable r = new Hashtable();
+		Hashtable<String, Object> r = new Hashtable<String, Object>();
 		if (null != o) {
 			r.put("o", o);
 		}
@@ -661,7 +664,8 @@ public class MockDirContext3 implements DirContext {
 		return r.equals(this.prop);
 	}
 
-	public boolean equals(Object obj) {
+	@Override
+    public boolean equals(Object obj) {
 		if (!(obj instanceof MockDirContext3)) {
 			return false;
 		}

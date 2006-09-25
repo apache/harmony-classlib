@@ -21,7 +21,9 @@ import javax.naming.ldap.Control;
 
 public class MockControl implements Control {
 
-	boolean isCritical;
+    private static final long serialVersionUID = 1L;
+
+    boolean isCritical;
 
 	byte[] encodedValue;
 
@@ -57,7 +59,8 @@ public class MockControl implements Control {
 		return this.isCritical;
 	}
 
-	public boolean equals(Object arg0) {
+	@Override
+    public boolean equals(Object arg0) {
 		if (arg0 instanceof MockControl) {
 			MockControl a = (MockControl) arg0;
 			return this.id.equals(a.getID())

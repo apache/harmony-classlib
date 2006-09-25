@@ -72,7 +72,7 @@ public final class Util {
 			Properties p = new Properties();
 			p.load(Util.class.getClassLoader().getResourceAsStream(
 					"jndi.properties"));
-			Hashtable ht = new Hashtable();
+			Hashtable<String, String> ht = new Hashtable<String, String>();
 			ht.put(Context.INITIAL_CONTEXT_FACTORY,
 					"dazzle.jndi.testing.spi.DazzleContextFactory");
 			return new InitialDirContext(p);
@@ -145,22 +145,21 @@ public final class Util {
 		try {
 			if (as.size() == 0) {
 				return "{}";
-			} else {
-				StringBuffer buf = new StringBuffer();
-				buf.append("{ ");
-				NamingEnumeration enumeration = as.getAll();
-				int i = 0;
-				while (enumeration.hasMoreElements()) {
-					Attribute a = (Attribute) enumeration.nextElement();
-					if (i != 0) {
-						buf.append(", ");
-					}
-					buf.append(toString(a));
-					i++;
-				}
-				buf.append(" }");
-				return buf.toString();
 			}
+            StringBuffer buf = new StringBuffer();
+            buf.append("{ ");
+            NamingEnumeration<? extends Attribute> enumeration = as.getAll();
+            int i = 0;
+            while (enumeration.hasMoreElements()) {
+            	Attribute a = enumeration.nextElement();
+            	if (i != 0) {
+            		buf.append(", ");
+            	}
+            	buf.append(toString(a));
+            	i++;
+            }
+            buf.append(" }");
+            return buf.toString();
 		} catch (Throwable e) {
 			e.printStackTrace();
 			return "NULL";
@@ -230,9 +229,9 @@ public final class Util {
 		space(buf, i);
 		buf.append(ctx + " {").append("\n");
 
-		NamingEnumeration enumeration = ctx.listBindings("");
+		NamingEnumeration<Binding> enumeration = ctx.listBindings("");
 		while (enumeration.hasMoreElements()) {
-			Binding r = (Binding) enumeration.nextElement();
+			Binding r = enumeration.nextElement();
 			space(buf, j);
 			if (r.getName() != null) {
 				buf.append(r.getName());

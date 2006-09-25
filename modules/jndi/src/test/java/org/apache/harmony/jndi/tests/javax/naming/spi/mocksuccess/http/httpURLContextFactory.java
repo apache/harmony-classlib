@@ -30,10 +30,10 @@ public class httpURLContextFactory implements ObjectFactory {
 	 * @see javax.naming.spi.ObjectFactory#getObjectInstance(java.lang.Object,
 	 *      javax.naming.Name, javax.naming.Context, java.util.Hashtable)
 	 */
-	public Object getObjectInstance(Object o, Name n, Context c, Hashtable h)
+	public Object getObjectInstance(Object o, Name n, Context c, Hashtable<?, ?> h)
 			throws Exception {
 
-		Hashtable r = new Hashtable();
+		Hashtable<String, Object> r = new Hashtable<String, Object>();
 		if (null != o) {
 			r.put("o", o);
 		}

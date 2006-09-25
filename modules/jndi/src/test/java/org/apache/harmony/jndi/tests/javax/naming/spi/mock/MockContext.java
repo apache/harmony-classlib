@@ -14,31 +14,34 @@
  */
 package org.apache.harmony.jndi.tests.javax.naming.spi.mock;
 
-import java.util.Enumeration;
 import java.util.Hashtable;
 
+import javax.naming.Binding;
 import javax.naming.Context;
 import javax.naming.Name;
+import javax.naming.NameClassPair;
 import javax.naming.NameParser;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
 public class MockContext implements Context {
-	protected Hashtable props;
+	protected Hashtable<String, Object> props;
 
 	static protected DazzleActionController actions;
 
 	public MockContext() {
-		this.props = new Hashtable();
+		this.props = new Hashtable<String, Object>();
 	}
 
-	public MockContext(Hashtable props) {
+	@SuppressWarnings("unchecked")
+    public MockContext(Hashtable<?, ?> props) {
 		if (null != props) {
-			this.props = (Hashtable) props.clone();
+			this.props = (Hashtable<String, Object>) props.clone();
 		}
 	}
 
-	public boolean equals(Object obj) {
+	@Override
+    public boolean equals(Object obj) {
 		if (obj instanceof MockContext) {
 			MockContext theOther = (MockContext) obj;
 			boolean envmtEqual = (null == props ? null == theOther.props
@@ -48,9 +51,8 @@ public class MockContext implements Context {
 			}
 
 			return true;
-		} else {
-			return false;
 		}
+        return false;
 	}
 
 	public static void setActionController(
@@ -61,10 +63,9 @@ public class MockContext implements Context {
 	Object takeActions() throws NamingException {
 		if (actions == null) {
 			return DazzleActionController.RETURN_NORMAL;
-		} else {
-			Object obj = actions.doActions();
-			return obj;
 		}
+        Object obj = actions.doActions();
+        return obj;
 	}
 
 	/*
@@ -178,7 +179,7 @@ public class MockContext implements Context {
 	 * 
 	 * @see javax.naming.Context#getEnvironment()
 	 */
-	public Hashtable getEnvironment() throws NamingException {
+	public Hashtable<String, Object> getEnvironment() throws NamingException {
 		return this.props;
 	}
 
@@ -218,7 +219,7 @@ public class MockContext implements Context {
 	 * 
 	 * @see javax.naming.Context#list(javax.naming.Name)
 	 */
-	public NamingEnumeration list(Name n) throws NamingException {
+	public NamingEnumeration<NameClassPair> list(Name n) throws NamingException {
 		InvokeRecord.set((String) this.props.get("url.schema"), n);
 		return null;
 	}
@@ -228,7 +229,7 @@ public class MockContext implements Context {
 	 * 
 	 * @see javax.naming.Context#list(java.lang.String)
 	 */
-	public NamingEnumeration list(String s) throws NamingException {
+	public NamingEnumeration<NameClassPair> list(String s) throws NamingException {
 		InvokeRecord.set((String) this.props.get("url.schema"), s);
 		return null;
 	}
@@ -238,7 +239,7 @@ public class MockContext implements Context {
 	 * 
 	 * @see javax.naming.Context#listBindings(javax.naming.Name)
 	 */
-	public NamingEnumeration listBindings(Name n) throws NamingException {
+	public NamingEnumeration<Binding> listBindings(Name n) throws NamingException {
 		InvokeRecord.set((String) this.props.get("url.schema"), n);
 		return null;
 	}
@@ -248,7 +249,7 @@ public class MockContext implements Context {
 	 * 
 	 * @see javax.naming.Context#listBindings(java.lang.String)
 	 */
-	public NamingEnumeration listBindings(String s) throws NamingException {
+	public NamingEnumeration<Binding> listBindings(String s) throws NamingException {
 		InvokeRecord.set((String) this.props.get("url.schema"), s);
 		return null;
 	}

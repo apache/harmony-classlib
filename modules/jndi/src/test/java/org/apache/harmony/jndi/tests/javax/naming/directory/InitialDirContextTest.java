@@ -92,26 +92,20 @@ public class InitialDirContextTest extends TestCase {
 		super(arg0);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
+
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				"org.apache.harmony.jndi.tests.javax.naming.spi.mock.MockDirContextFactory");
 		env.put(Context.URL_PKG_PREFIXES, "org.apache.harmony.jndi.tests.javax.naming.spi.mock");
 		ctx = new InitialDirContext(env);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see junit.framework.TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
+
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 

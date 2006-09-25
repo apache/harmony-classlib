@@ -21,7 +21,7 @@ import org.apache.harmony.jndi.tests.javax.naming.util.Log;
 
 public class BindingTest extends TestCase {
 
-	private static Log log = new Log(BindingTest.class);
+	private static final Log log = new Log(BindingTest.class);
 
 	/**
 	 * Constructor for TestBinding.
@@ -35,14 +35,16 @@ public class BindingTest extends TestCase {
 	/*
 	 * @see TestCase#setUp()
 	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 	}
 
 	/*
 	 * @see TestCase#tearDown()
 	 */
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 

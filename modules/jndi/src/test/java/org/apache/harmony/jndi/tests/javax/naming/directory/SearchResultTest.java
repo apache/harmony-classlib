@@ -26,29 +26,6 @@ public class SearchResultTest extends TestCase {
 
 	BasicAttributes attrs = new BasicAttributes("id_sample", "value_sample");
 
-	/**
-	 * Constructor for SearchResultTest.
-	 * 
-	 * @param arg0
-	 */
-	public SearchResultTest(String arg0) {
-		super(arg0);
-	}
-
-	/*
-	 * @see TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
 	/*
 	 * Test for void SearchResult(String, Object, Attributes)
 	 */
@@ -111,10 +88,10 @@ public class SearchResultTest extends TestCase {
 
 	public void testSearchResult_NullAttributes() {
 		log.setMethod("testSearchResult_NullAttributes()");
-		SearchResult r;
 
 		try {
-			r = new SearchResult(null, null, null);
+			 new SearchResult(null, null, null);
+             fail("no illegal argument exception");
 		} 
 		catch (IllegalArgumentException e) {
 			// Expected, name cannot be null

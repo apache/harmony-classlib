@@ -37,7 +37,8 @@ public class BasicAttributesTest extends TestCase {
 
 	static Log log = new Log(BasicAttributesTest.class);
 
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 		ignoreCaseAttributes = new BasicAttributes(true);
 		caseSensitiveAttributes = new BasicAttributes(false);
 	}
@@ -73,7 +74,7 @@ public class BasicAttributesTest extends TestCase {
 		String id = null;
 		Person person = Person.getInstance();
 		try {
-			BasicAttributes attributes = new BasicAttributes(id, person);
+			new BasicAttributes(id, person);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}
@@ -125,8 +126,8 @@ public class BasicAttributesTest extends TestCase {
 
 		assertEquals(cloneAttributes, ignoreCaseAttributes);
 
-		for (int i = 0; i < attributes.length; i++) {
-			String id = attributes[i].getID();
+		for (Attribute element : attributes) {
+			element.getID();
 		}
 		cloneAttributes.put("newID", "new Obj");
 		assertEquals(ignoreCaseAttributes.size() + 1, cloneAttributes.size());
@@ -146,8 +147,8 @@ public class BasicAttributesTest extends TestCase {
 
 		assertEquals(cloneAttributes, caseSensitiveAttributes);
 
-		for (int i = 0; i < attributes.length; i++) {
-			String id = attributes[i].getID();
+		for (Attribute element : attributes) {
+			element.getID();
 		}
 		cloneAttributes.put("newID", "new Obj");
 		assertEquals(caseSensitiveAttributes.size() + 1, cloneAttributes.size());
@@ -178,7 +179,7 @@ public class BasicAttributesTest extends TestCase {
 
 	public void testGet_IgnoreCase_IDNull() {
 		try {
-			Attribute attribute = ignoreCaseAttributes.get(null);
+			ignoreCaseAttributes.get(null);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}
@@ -209,7 +210,7 @@ public class BasicAttributesTest extends TestCase {
 
 	public void testGet_CaseSensitive_IDNull() {
 		try {
-			Attribute attribute = caseSensitiveAttributes.get(null);
+			caseSensitiveAttributes.get(null);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}
@@ -220,7 +221,7 @@ public class BasicAttributesTest extends TestCase {
 		Attribute attribute = new BasicAttribute(person.getName(), person);
 		caseSensitiveAttributes.put(attribute);
 
-		NamingEnumeration enumeration = caseSensitiveAttributes.getAll();
+		NamingEnumeration<?> enumeration = caseSensitiveAttributes.getAll();
 		int count = 0;
 		while (enumeration.hasMore()) {
 			count++;
@@ -230,7 +231,7 @@ public class BasicAttributesTest extends TestCase {
 	}
 
 	public void testGetAll_caseSensitive_NoValue() throws NamingException {
-		NamingEnumeration enumeration = caseSensitiveAttributes.getAll();
+		NamingEnumeration<?> enumeration = caseSensitiveAttributes.getAll();
 		int count = 0;
 		while (enumeration.hasMore()) {
 			count++;
@@ -244,7 +245,7 @@ public class BasicAttributesTest extends TestCase {
 		Attribute attribute = new BasicAttribute(person.getName(), person);
 		ignoreCaseAttributes.put(attribute);
 
-		NamingEnumeration enumeration = ignoreCaseAttributes.getAll();
+		NamingEnumeration<?> enumeration = ignoreCaseAttributes.getAll();
 		int count = 0;
 		while (enumeration.hasMore()) {
 			count++;
@@ -254,7 +255,7 @@ public class BasicAttributesTest extends TestCase {
 	}
 
 	public void testGetAll_IgnoreCase_NoValue() throws NamingException {
-		NamingEnumeration enumeration = ignoreCaseAttributes.getAll();
+		NamingEnumeration<?> enumeration = ignoreCaseAttributes.getAll();
 		int count = 0;
 		while (enumeration.hasMore()) {
 			count++;
@@ -266,7 +267,7 @@ public class BasicAttributesTest extends TestCase {
 		String id = "Ignore case ID";
 		Attribute attribute = new BasicAttribute(id, "IgnoreCase value");
 		ignoreCaseAttributes.put(attribute);
-		NamingEnumeration enumeration = ignoreCaseAttributes.getIDs();
+		NamingEnumeration<?> enumeration = ignoreCaseAttributes.getIDs();
 		int count = 0;
 		while (enumeration.hasMore()) {
 			count++;
@@ -279,7 +280,7 @@ public class BasicAttributesTest extends TestCase {
 		String id = "Ignore case ID";
 		Attribute attribute = new BasicAttribute(id, "IgnoreCase value");
 		caseSensitiveAttributes.put(attribute);
-		NamingEnumeration enumeration = caseSensitiveAttributes.getIDs();
+		NamingEnumeration<?> enumeration = caseSensitiveAttributes.getIDs();
 		int count = 0;
 		while (enumeration.hasMore()) {
 			count++;
@@ -450,7 +451,7 @@ public class BasicAttributesTest extends TestCase {
 
 	public void testRemove_IgnoreCase_Null() {
 		try {
-			Object obj = ignoreCaseAttributes.remove(null);
+			ignoreCaseAttributes.remove(null);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}
@@ -472,7 +473,7 @@ public class BasicAttributesTest extends TestCase {
 
 	public void testRemove_CaseSensitive_Null() {
 		try {
-			Object obj = caseSensitiveAttributes.remove(null);
+			caseSensitiveAttributes.remove(null);
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}
@@ -549,16 +550,6 @@ public class BasicAttributesTest extends TestCase {
 			attribute[i] = new BasicAttribute("ID:" + i, "Value: " + i);
 			ignoreCaseAttributes.put(attribute[i]);
 		}
-		String str = "{\nid:9=Attribute ID: ID:9\nAttribute values: Value: 9\n"
-				+ "; id:8=Attribute ID: ID:8\nAttribute values: Value: 8\n"
-				+ "; id:7=Attribute ID: ID:7\nAttribute values: Value: 7\n"
-				+ "; id:6=Attribute ID: ID:6\nAttribute values: Value: 6\n"
-				+ "; id:5=Attribute ID: ID:5\nAttribute values: Value: 5\n"
-				+ "; id:4=Attribute ID: ID:4\nAttribute values: Value: 4\n"
-				+ "; id:3=Attribute ID: ID:3\nAttribute values: Value: 3\n"
-				+ "; id:2=Attribute ID: ID:2\nAttribute values: Value: 2\n"
-				+ "; id:1=Attribute ID: ID:1\nAttribute values: Value: 1\n"
-				+ "; id:0=Attribute ID: ID:0\nAttribute values: Value: 0\n}\n";
 		// assertEquals(str, ignoreCaseAttributes.toString());
 		assertNotNull(ignoreCaseAttributes.toString());
 	}
@@ -585,16 +576,6 @@ public class BasicAttributesTest extends TestCase {
 			attribute[i] = new BasicAttribute("ID:" + i, "Value: " + i);
 			caseSensitiveAttributes.put(attribute[i]);
 		}
-		String str = "{\nID:9=Attribute ID: ID:9\nAttribute values: Value: 9\n"
-				+ "; ID:8=Attribute ID: ID:8\nAttribute values: Value: 8\n"
-				+ "; ID:7=Attribute ID: ID:7\nAttribute values: Value: 7\n"
-				+ "; ID:6=Attribute ID: ID:6\nAttribute values: Value: 6\n"
-				+ "; ID:5=Attribute ID: ID:5\nAttribute values: Value: 5\n"
-				+ "; ID:4=Attribute ID: ID:4\nAttribute values: Value: 4\n"
-				+ "; ID:3=Attribute ID: ID:3\nAttribute values: Value: 3\n"
-				+ "; ID:2=Attribute ID: ID:2\nAttribute values: Value: 2\n"
-				+ "; ID:1=Attribute ID: ID:1\nAttribute values: Value: 1\n"
-				+ "; ID:0=Attribute ID: ID:0\nAttribute values: Value: 0\n}\n";
 		// assertEquals(str, caseSensitiveAttributes.toString());
 		assertNotNull(caseSensitiveAttributes.toString());
 	}

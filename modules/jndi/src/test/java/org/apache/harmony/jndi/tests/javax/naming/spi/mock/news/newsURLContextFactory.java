@@ -26,7 +26,7 @@ import javax.naming.spi.ObjectFactory;
  * Always return null.
  */
 public class newsURLContextFactory implements ObjectFactory {
-	public Object getObjectInstance(Object o, Name n, Context c, Hashtable h)
+	public Object getObjectInstance(Object o, Name n, Context c, Hashtable<?, ?> h)
 			throws Exception {
 		return null;
 	}

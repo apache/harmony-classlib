@@ -46,7 +46,7 @@ public class NamingManagerExploreTest extends TestCase {
 					.setInitialContextFactoryBuilder(contextFactoryBuilder);
 		}
 
-		Hashtable env = new Hashtable();
+		Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		env.put(Context.URL_PKG_PREFIXES, "org.apache.harmony.jndi.tests.javax.naming.spi.mock");
 
 		MyInitialContext context = new MyInitialContext(env);
@@ -75,7 +75,7 @@ public class NamingManagerExploreTest extends TestCase {
 					.setInitialContextFactoryBuilder(contextFactoryBuilder);
 		}
 
-		Hashtable env = new Hashtable();
+		Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 		env.put(Context.URL_PKG_PREFIXES, "org.apache.harmony.jndi.tests.javax.naming.spi.mock");
 
 		MyInitialContext context = new MyInitialContext(env);
@@ -95,7 +95,7 @@ public class NamingManagerExploreTest extends TestCase {
 
 	class MyInitialContext extends InitialContext {
 
-		public MyInitialContext(Hashtable environment) throws NamingException {
+		public MyInitialContext(Hashtable<?, ?> environment) throws NamingException {
 			super(environment);
 		}
 

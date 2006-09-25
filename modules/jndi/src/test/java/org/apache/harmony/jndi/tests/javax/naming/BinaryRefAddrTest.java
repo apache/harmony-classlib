@@ -24,32 +24,10 @@ import java.util.Random;
 import javax.naming.BinaryRefAddr;
 import javax.naming.RefAddr;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class BinaryRefAddrTest extends TestCase {
-
-	/**
-	 * Constructor for BinaryRefAddr.
-	 * 
-	 * @param arg0
-	 */
-	public BinaryRefAddrTest(String arg0) {
-		super(arg0);
-	}
-
-	/*
-	 * @see TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
 
 	public void testBinaryRefAddr_SimpleNormale() {
 		byte[] ab = new byte[] { 1, 2, 3 };
@@ -57,12 +35,12 @@ public class BinaryRefAddrTest extends TestCase {
 
 		// Test normal condition
 		BinaryRefAddr addr = new BinaryRefAddr("binary", ab);
-		TestCase.assertNotNull(addr);
-		TestCase.assertEquals("binary", addr.getType());
+		Assert.assertNotNull(addr);
+		Assert.assertEquals("binary", addr.getType());
 		ab2 = (byte[]) addr.getContent();
-		TestCase.assertEquals(ab.length, ab2.length);
+		Assert.assertEquals(ab.length, ab2.length);
 		for (int i = ab2.length - 1; i >= 0; i--) {
-			TestCase.assertEquals(ab[i], ab2[i]);
+			Assert.assertEquals(ab[i], ab2[i]);
 		}
 		assertNotSame(ab, ab2);
 	}
@@ -73,12 +51,12 @@ public class BinaryRefAddrTest extends TestCase {
 
 		// Test null "type" parameter
 		BinaryRefAddr addr = new BinaryRefAddr(null, ab);
-		TestCase.assertNotNull(addr);
-		TestCase.assertNull(addr.getType());
+		Assert.assertNotNull(addr);
+		Assert.assertNull(addr.getType());
 		ab2 = (byte[]) addr.getContent();
-		TestCase.assertEquals(ab.length, ab2.length);
+		Assert.assertEquals(ab.length, ab2.length);
 		for (int i = ab2.length - 1; i >= 0; i--) {
-			TestCase.assertEquals(ab[i], ab2[i]);
+			Assert.assertEquals(ab[i], ab2[i]);
 		}
 	}
 
@@ -91,7 +69,7 @@ public class BinaryRefAddrTest extends TestCase {
 			fail("Should throw NullPointerException here.");
 		} catch (NullPointerException e) {
 		}
-		TestCase.assertNull(addr);
+		Assert.assertNull(addr);
 	}
 
 	public void testBinaryRefAddr_ComplexNormal() {
@@ -100,12 +78,12 @@ public class BinaryRefAddrTest extends TestCase {
 
 		// Test normal condition
 		BinaryRefAddr addr = new BinaryRefAddr("binary", ab, 1, 1);
-		TestCase.assertNotNull(addr);
-		TestCase.assertEquals("binary", addr.getType());
+		Assert.assertNotNull(addr);
+		Assert.assertEquals("binary", addr.getType());
 		ab2 = (byte[]) addr.getContent();
-		TestCase.assertEquals(ab2.length, 1);
+		Assert.assertEquals(ab2.length, 1);
 		for (int i = ab2.length - 1; i >= 0; i--) {
-			TestCase.assertEquals(ab[i + 1], ab2[i]);
+			Assert.assertEquals(ab[i + 1], ab2[i]);
 		}
 		assertNotSame(ab, ab2);
 	}
@@ -116,12 +94,12 @@ public class BinaryRefAddrTest extends TestCase {
 
 		// Test null "type" parameter
 		BinaryRefAddr addr = new BinaryRefAddr(null, ab, 1, 1);
-		TestCase.assertNotNull(addr);
-		TestCase.assertNull(addr.getType());
+		Assert.assertNotNull(addr);
+		Assert.assertNull(addr.getType());
 		ab2 = (byte[]) addr.getContent();
-		TestCase.assertEquals(ab2.length, 1);
+		Assert.assertEquals(ab2.length, 1);
 		for (int i = ab2.length - 1; i >= 0; i--) {
-			TestCase.assertEquals(ab[i + 1], ab2[i]);
+			Assert.assertEquals(ab[i + 1], ab2[i]);
 		}
 	}
 
@@ -134,7 +112,7 @@ public class BinaryRefAddrTest extends TestCase {
 			fail("Should throw NullPointerException here.");
 		} catch (NullPointerException e) {
 		}
-		TestCase.assertNull(addr);
+		Assert.assertNull(addr);
 	}
 
 	public void testBinaryRefAddr_TooSmallIndex() {
@@ -146,7 +124,7 @@ public class BinaryRefAddrTest extends TestCase {
 			fail("Should throw ArrayIndexOutOfBoundsException here.");
 		} catch (ArrayIndexOutOfBoundsException e) {
 		}
-		TestCase.assertNull(addr);
+		Assert.assertNull(addr);
 	}
 
 	public void testBinaryRefAddr_TooBigIndex() {
@@ -158,7 +136,7 @@ public class BinaryRefAddrTest extends TestCase {
 			fail("Should throw ArrayIndexOutOfBoundsException here.");
 		} catch (ArrayIndexOutOfBoundsException e) {
 		}
-		TestCase.assertNull(addr);
+		Assert.assertNull(addr);
 	}
 
 	public void testBinaryRefAddr_ComplexZeroSize() {
@@ -168,8 +146,8 @@ public class BinaryRefAddrTest extends TestCase {
 		// Test zero size
 		addr = new BinaryRefAddr("binary", new byte[] { 2, 3 }, 0, 0);
 		ab = (byte[]) addr.getContent();
-		TestCase.assertEquals(ab.length, 0);
-		TestCase.assertNotNull(addr);
+		Assert.assertEquals(ab.length, 0);
+		Assert.assertNotNull(addr);
 	}
 
 	public void testBinaryRefAddr_TooSmallSize() {
@@ -181,7 +159,7 @@ public class BinaryRefAddrTest extends TestCase {
 			fail("Should throw NegativeArraySizeException here.");
 		} catch (NegativeArraySizeException e) {
 		}
-		TestCase.assertNull(addr);
+		Assert.assertNull(addr);
 	}
 
 	public void testBinaryRefAddr_TooBigSize() {
@@ -193,14 +171,14 @@ public class BinaryRefAddrTest extends TestCase {
 			fail("Should throw ArrayIndexOutOfBoundsException here.");
 		} catch (ArrayIndexOutOfBoundsException e) {
 		}
-		TestCase.assertNull(addr);
+		Assert.assertNull(addr);
 
 	}
 
 	public void testGetType() {
 		// Test empty type
 		BinaryRefAddr addr = new BinaryRefAddr("", new byte[] { 1 });
-		TestCase.assertEquals("", addr.getType());
+		Assert.assertEquals("", addr.getType());
 
 		// Other conditions are tested in testBinaryRefAddr_XXX
 	}
@@ -236,7 +214,7 @@ public class BinaryRefAddrTest extends TestCase {
 		BinaryRefAddr addr0 = new BinaryRefAddr(null, address0);
 		BinaryRefAddr addr1 = new BinaryRefAddr(null, address1);
 		try {
-			boolean result = addr0.equals(addr1);
+			addr0.equals(addr1);
 			fail("Should throw NullPoinerException.");
 		} catch (NullPointerException e) {
 		}
@@ -262,20 +240,19 @@ public class BinaryRefAddrTest extends TestCase {
 		}
 
 		int hashCode = type.hashCode();
-		for (int i = 0; i < address.length; i++) {
-			hashCode += address[i];
+		for (byte element : address) {
+			hashCode += element;
 		}
 		BinaryRefAddr addr = new BinaryRefAddr(type, address);
 		assertEquals(hashCode, addr.hashCode());
 	}
 
 	public void testHashcode_TypeNull() {
-		int count = 10;
 		byte[] address = { 1, 2, 3, };
 
 		BinaryRefAddr addr = new BinaryRefAddr(null, address);
 		try {
-			int hashCode = addr.hashCode();
+			addr.hashCode();
 			fail("Should throw NullPointerException.");
 		} catch (NullPointerException e) {
 		}
@@ -298,8 +275,8 @@ public class BinaryRefAddrTest extends TestCase {
 
 		String str = "The type of the address is: " + type
 				+ "\nThe content of the address is:";
-		for (int i = 0; i < address.length; i++) {
-			str += " " + Integer.toHexString(address[i]);
+		for (byte element : address) {
+			str += " " + Integer.toHexString(element);
 		}
 		str += "\n";
 		// assertEquals(str, addr.toString());
@@ -309,8 +286,6 @@ public class BinaryRefAddrTest extends TestCase {
 	public void testToString_TypeNull() {
 		byte[] address = { 1, 2, 3, };
 		BinaryRefAddr addr = new BinaryRefAddr(null, address);
-		String str = "The type of the address is: null"
-				+ "\nThe content of the address is: 1 2 3\n";
 		// assertEquals(str, addr.toString());
 		assertNotNull(addr.toString());
 	}
@@ -364,7 +339,8 @@ public class BinaryRefAddrTest extends TestCase {
 	}
 
 	class MyRefAddr extends RefAddr {
-		byte[] address;
+        private static final long serialVersionUID = 1L;
+        byte[] address;
 
 		public MyRefAddr(String type, byte[] address) {
 			super(type);
@@ -372,7 +348,8 @@ public class BinaryRefAddrTest extends TestCase {
 			System.arraycopy(address, 0, this.address, 0, address.length);
 		}
 
-		public Object getContent() {
+		@Override
+        public Object getContent() {
 			return address;
 		}
 	}
