@@ -17,6 +17,8 @@
 
 package java.lang.annotation;
 
+import org.apache.harmony.annotation.internal.nls.Messages;
+
 /**
  * <p>
  * Indicates that an element of an annotation type was accessed that was added
@@ -45,9 +47,7 @@ public class IncompleteAnnotationException extends RuntimeException {
      */
     public IncompleteAnnotationException(
             Class<? extends Annotation> annotationType, String elementName) {
-        super("The element, " + elementName
-                + ", is not complete for the annotation " + annotationType
-                + ".");
+        super(Messages.getString("annotation.0", elementName, annotationType)); //$NON-NLS-1$
         this.annotationType = annotationType;
         this.elementName = elementName;
     }

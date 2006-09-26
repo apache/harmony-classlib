@@ -19,6 +19,8 @@ package java.lang.annotation;
 
 import java.lang.reflect.Method;
 
+import org.apache.harmony.annotation.internal.nls.Messages;
+
 /**
  * <p>
  * Indicates that an annotation type has changed since it was compiled or
@@ -44,8 +46,7 @@ public class AnnotationTypeMismatchException extends RuntimeException {
      * @param foundType The invalid type that was found.
      */
     public AnnotationTypeMismatchException(Method element, String foundType) {
-        super("The annotation element, " + element
-                + ", doesn't match the type " + foundType + ".");
+        super(Messages.getString("annotation.1", element, foundType)); //$NON-NLS-1$
         this.element = element;
         this.foundType = foundType;
     }
