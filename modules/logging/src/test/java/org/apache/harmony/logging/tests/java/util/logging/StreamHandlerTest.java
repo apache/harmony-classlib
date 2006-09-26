@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.apache.harmony.logging.tests.java.util.logging;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -37,6 +38,8 @@ import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
 import junit.framework.TestCase;
+
+import org.apache.harmony.logging.tests.java.util.logging.HandlerTest.NullOutputStream;
 import org.apache.harmony.logging.tests.java.util.logging.util.EnvironmentHelper;
 import tests.util.CallVerificationStack;
 
@@ -46,6 +49,10 @@ import tests.util.CallVerificationStack;
 public class StreamHandlerTest extends TestCase {
 
 	private final static String INVALID_LEVEL = "impossible_level";
+    
+    private final PrintStream err = System.err;
+
+    private OutputStream errSubstituteStream = null;     
 
 	private static String className = StreamHandlerTest.class.getName();
 
@@ -62,15 +69,18 @@ public class StreamHandlerTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
+        errSubstituteStream = new NullOutputStream();
+        System.setErr(new PrintStream(errSubstituteStream));          
 	}
 
 	/*
 	 * @see TestCase#tearDown()
 	 */
 	protected void tearDown() throws Exception {
-		super.tearDown();
 		LogManager.getLogManager().reset();
 		CallVerificationStack.getInstance().clear();
+        System.setErr(err);        
+        super.tearDown();
 	}
 
 	/*

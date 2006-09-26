@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,31 @@
 
 package org.apache.harmony.logging.tests.java.util.logging;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.logging.ErrorManager;
+
+import org.apache.harmony.logging.tests.java.util.logging.HandlerTest.NullOutputStream;
 
 import junit.framework.TestCase;
 
 public class ErrorManagerTest extends TestCase {
+    
+    
+    private final PrintStream err = System.err;
+
+    private OutputStream errSubstituteStream = null;        
+    
+    public void setUp() throws Exception{
+        super.setUp();
+        errSubstituteStream = new NullOutputStream();
+        System.setErr(new PrintStream(errSubstituteStream));           
+    }
+    
+    public void tearDown() throws Exception{
+        System.setErr(err);
+        super.tearDown();
+    }
 
     public void test_errorStringStringint() {
         ErrorManager em = new ErrorManager();

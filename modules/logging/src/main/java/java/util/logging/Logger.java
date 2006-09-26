@@ -760,7 +760,7 @@ public class Logger {
         if (internalIsLoggable(Level.FINER)) {
         	String msg = "ENTRY";
 			if (null != params) {
-				StringBuffer msgBuffer = new StringBuffer("ENTRY");
+				StringBuilder msgBuffer = new StringBuilder("ENTRY");
 				for (int i = 0; i < params.length; i++) {
 					msgBuffer.append(" {" + i + "}"); //$NON-NLS-1$ //$NON-NLS-2$
 				}

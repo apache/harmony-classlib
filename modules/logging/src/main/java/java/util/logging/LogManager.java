@@ -397,7 +397,6 @@ public class LogManager {
                     className);
             return clazz.newInstance();
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
 

@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  */
 
 package java.util.logging;
+
+import org.apache.harmony.logging.internal.nls.Messages;
 
 /**
  * <p>
@@ -56,6 +58,10 @@ public class ErrorManager {
      */
     public static final int FORMAT_FAILURE = 5;
 
+    private static final String[] FAILURES = new String[] { "GENERIC_FAILURE",
+            "WRITE_FAILURE", "FLUSH_FAILURE", "CLOSE_FAILURE", "OPEN_FAILURE",
+            "FORMAT_FAILURE" };
+
     /**
      * An indicator for determining if the error manager has been called at
      * least once before.
@@ -77,11 +83,14 @@ public class ErrorManager {
      * should override this method.
      * </p>
      * 
-     * @param message The error message, which may be <code>null</code>.
-     * @param exception The exception associated with the error, which may be
-     *        <code>null</code>.
-     * @param errorCode The error code that identifies the type of error; see
-     *        the constant fields on this class.
+     * @param message
+     *            The error message, which may be <code>null</code>.
+     * @param exception
+     *            The exception associated with the error, which may be
+     *            <code>null</code>.
+     * @param errorCode
+     *            The error code that identifies the type of error; see the
+     *            constant fields on this class.
      */
     public void error(String message, Exception exception, int errorCode) {
         synchronized (this) {
@@ -89,18 +98,14 @@ public class ErrorManager {
                 return;
             }
             synchronized (System.err) {
-                System.err.print(getClass().getName());
-                System.err.print(": Error Code - "); //$NON-NLS-1$
-                System.err.print(errorCode);
+                System.err.println(this.getClass().getName()+": "+FAILURES[errorCode]); //$NON-NLS-1$
                 if (message != null) {
-                    System.err.print(", Message - "); //$NON-NLS-1$
-                    System.err.print(message);
+                    //logging.1E=Error message - {0}
+                    System.err.println(Messages.getString("logging.1E", message)); //$NON-NLS-1$
                 }
                 if (exception != null) {
-                    System.err.print(", Exception - "); //$NON-NLS-1$
-                    exception.printStackTrace(System.err);
-                } else {
-                    System.err.println();
+                    //logging.1F=Exception - {0}
+                    System.err.println(Messages.getString("logging.1F", exception)); //$NON-NLS-1$
                 }
             }
             called = true;

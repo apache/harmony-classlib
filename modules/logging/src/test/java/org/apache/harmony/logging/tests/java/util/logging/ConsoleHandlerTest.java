@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,9 @@ import java.util.logging.LoggingPermission;
 import java.util.logging.SimpleFormatter;
 
 import junit.framework.TestCase;
+
 import org.apache.harmony.logging.tests.java.util.logging.util.EnvironmentHelper;
+
 import tests.util.CallVerificationStack;
 
 /**
@@ -44,7 +46,7 @@ public class ConsoleHandlerTest extends TestCase {
 
 	private final PrintStream err = System.err;
 
-	private ByteArrayOutputStream errSubstituteStream = null;
+	private OutputStream errSubstituteStream = null;
 
 	private static String className = ConsoleHandlerTest.class.getName();
 

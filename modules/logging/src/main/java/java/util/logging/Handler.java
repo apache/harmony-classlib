@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,8 +121,8 @@ public abstract class Handler {
     // print error message in some format
     void printInvalidPropMessage(String key, String value, Exception e) {
         // logging.12=Invalid property value for
-        String msg = new StringBuffer().append(Messages.getString("logging.12"))  //$NON-NLS-1$
-                .append(prefix).append(".").append(key).append(":").append( //$NON-NLS-1$//$NON-NLS-2$
+        String msg = new StringBuilder().append(Messages.getString("logging.12"))  //$NON-NLS-1$
+                .append(prefix).append(":").append(key).append("/").append( //$NON-NLS-1$//$NON-NLS-2$
                         value).toString();
         errorMan.error(msg, e, ErrorManager.GENERIC_FAILURE);
     }

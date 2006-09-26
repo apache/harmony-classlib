@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import java.io.FilePermission;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.security.Permission;
@@ -40,6 +41,7 @@ import java.util.logging.XMLFormatter;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.logging.tests.java.util.logging.HandlerTest.NullOutputStream;
 import org.apache.harmony.logging.tests.java.util.logging.util.EnvironmentHelper;
 
 /**
@@ -61,6 +63,10 @@ public class FileHandlerTest extends TestCase {
 	final static String TEMPPATH = System.getProperty("java.io.tmpdir");
 
 	final static String SEP = File.separator;
+    
+    private final PrintStream err = System.err;
+
+    private OutputStream errSubstituteStream = null;        
 
 	FileHandler handler;
 
@@ -79,7 +85,8 @@ public class FileHandlerTest extends TestCase {
 				.PropertiesToInputStream(props));
 		handler = new FileHandler();
 		r = new LogRecord(Level.CONFIG, "msg");
-
+        errSubstituteStream = new NullOutputStream();
+        System.setErr(new PrintStream(errSubstituteStream));        
 	}
 
 	/**
@@ -112,6 +119,7 @@ public class FileHandlerTest extends TestCase {
 			handler.close();
 		}
 		reset(TEMPPATH + SEP + "log", "");
+        System.setErr(err);         
 		super.tearDown();
 	}
 

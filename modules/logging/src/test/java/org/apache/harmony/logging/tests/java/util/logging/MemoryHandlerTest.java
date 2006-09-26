@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,9 @@
 
 package org.apache.harmony.logging.tests.java.util.logging;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.StringWriter;
 import java.security.Permission;
 import java.util.Properties;
@@ -32,6 +33,7 @@ import java.util.logging.SimpleFormatter;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.logging.tests.java.util.logging.HandlerTest.NullOutputStream;
 import org.apache.harmony.logging.tests.java.util.logging.util.EnvironmentHelper;
 
 /**
@@ -48,12 +50,14 @@ public class MemoryHandlerTest extends TestCase {
 	final static StringWriter writer = new StringWriter();
 
 	final static SecurityManager securityManager = new MockSecurityManager();
+    
+    private final PrintStream err = System.err;
+
+    private OutputStream errSubstituteStream = null;    
 
 	MemoryHandler handler;
 
 	Handler target = new MockHandler();
-
-	private static File bak = null;
 
 	/*
 	 * @see TestCase#setUp()
@@ -65,6 +69,8 @@ public class MemoryHandlerTest extends TestCase {
 		manager.readConfiguration(EnvironmentHelper
 				.PropertiesToInputStream(props));
 		handler = new MemoryHandler();
+        errSubstituteStream = new NullOutputStream();
+        System.setErr(new PrintStream(errSubstituteStream));        
 	}
 
 	/**
@@ -89,6 +95,7 @@ public class MemoryHandlerTest extends TestCase {
 		super.tearDown();
 		manager.readConfiguration();
 		props.clear();
+        System.setErr(err);        
 	}
 
 	public void testSecurity() {

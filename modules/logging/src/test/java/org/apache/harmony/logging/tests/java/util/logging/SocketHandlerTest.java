@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ import java.util.logging.XMLFormatter;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.logging.tests.java.util.logging.HandlerTest.NullOutputStream;
 import org.apache.harmony.logging.tests.java.util.logging.util.EnvironmentHelper;
 
 import tests.util.CallVerificationStack;
@@ -48,7 +49,11 @@ public class SocketHandlerTest extends TestCase {
 	private static final LogManager LOG_MANAGER = LogManager.getLogManager();
 
     private final static String INVALID_LEVEL = "impossible_level";
+    
+    private final PrintStream err = System.err;
 
+    private OutputStream errSubstituteStream = null;    
+    
 	private static String className = SocketHandlerTest.class.getName();
 
 	private SocketHandler h = null;
@@ -60,13 +65,14 @@ public class SocketHandlerTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
+        errSubstituteStream = new NullOutputStream();
+        System.setErr(new PrintStream(errSubstituteStream));  
 	}
 
 	/*
 	 * @see TestCase#tearDown()
 	 */
 	protected void tearDown() throws Exception {
-		super.tearDown();
         initProps();
 		LOG_MANAGER.reset();
         LOG_MANAGER.readConfiguration(EnvironmentHelper
@@ -76,6 +82,8 @@ public class SocketHandlerTest extends TestCase {
 			h.close();
 			h = null;
 		}
+        System.setErr(err);
+        super.tearDown();
 	}
     
 

@@ -1,4 +1,4 @@
-/* Copyright 2004 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
 
 package org.apache.harmony.logging.tests.java.util.logging;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.Permission;
 import java.util.Properties;
@@ -580,7 +582,12 @@ public class HandlerTest extends TestCase {
 			CallVerificationStack.getInstance().push(ex);
 			CallVerificationStack.getInstance().push(errorCode);
 		}
-
 	}
+    
+    public static class NullOutputStream extends OutputStream{
+        @Override
+        public void write(int arg0) throws IOException {
+        }
+    }
 
 }
