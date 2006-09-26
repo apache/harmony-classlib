@@ -106,8 +106,9 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 			Support_Resources.copyFile(resources, "GZIPInputStream",
 					"hyts_gInput.txt.gz");
 			String resPath = resources.toString();
-			if (resPath.charAt(0) == '/' || resPath.charAt(0) == '\\')
-				resPath = resPath.substring(1);
+			if (resPath.charAt(0) == '/' || resPath.charAt(0) == '\\') {
+                resPath = resPath.substring(1);
+            }
 			final URL gInput = new URL("file:/" + resPath
 					+ "/GZIPInputStream/hyts_gInput.txt.gz");
 			TestGZIPInputStream inGZIP = new TestGZIPInputStream(gInput
@@ -141,10 +142,12 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 			// header),
 			// the size of the InflaterStream internal buffer
 			byte[] test = new byte[507];
-			for (int i = 0; i < 256; i++)
-				test[i] = (byte) i;
-			for (int i = 256; i < test.length; i++)
-				test[i] = (byte) (256 - i);
+			for (int i = 0; i < 256; i++) {
+                test[i] = (byte) i;
+            }
+			for (int i = 256; i < test.length; i++) {
+                test[i] = (byte) (256 - i);
+            }
 			ByteArrayOutputStream bout = new ByteArrayOutputStream();
 			GZIPOutputStream out = new GZIPOutputStream(bout);
 			out.write(test);
@@ -153,8 +156,9 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 			GZIPInputStream gin2 = new GZIPInputStream(
 					new ByteArrayInputStream(comp), 512);
 			int result, total = 0;
-			while ((result = gin2.read(test)) != -1)
-				total += result;
+			while ((result = gin2.read(test)) != -1) {
+                total += result;
+            }
 			assertEquals("Should return -1", -1, gin2.read());
 			gin2.close();
 			assertTrue("Incorrectly decompressed", total == test.length);
@@ -181,8 +185,9 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 			gin2 = new GZIPInputStream(new ByteArrayInputStream(comp), 512);
 			boolean exception = false;
 			try {
-				while (gin2.read(test) != -1)
-					;
+				while (gin2.read(test) != -1) {
+                    ;
+                }
 			} catch (IOException e) {
 				exception = true;
 			}
@@ -203,8 +208,9 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 			Support_Resources.copyFile(resources, "GZIPInputStream",
 					"hyts_gInput.txt.gz");
 			String resPath = resources.toString();
-			if (resPath.charAt(0) == '/' || resPath.charAt(0) == '\\')
-				resPath = resPath.substring(1);
+			if (resPath.charAt(0) == '/' || resPath.charAt(0) == '\\') {
+                resPath = resPath.substring(1);
+            }
 			final URL gInput = new URL("file:/" + resPath
 					+ "/GZIPInputStream/hyts_gInput.txt.gz");
 			TestGZIPInputStream inGZIP = new TestGZIPInputStream(gInput
@@ -229,11 +235,13 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
 		}
 	}
 
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 		resources = Support_Resources.createTempFolder();
 	}
 
-	protected void tearDown() {
+	@Override
+    protected void tearDown() {
 	}
 
 }

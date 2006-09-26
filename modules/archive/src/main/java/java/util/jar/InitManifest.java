@@ -31,7 +31,7 @@ import org.apache.harmony.luni.util.PriviAction;
 import org.apache.harmony.luni.util.Util;
 
 class InitManifest {
-    private byte[] inbuf = new byte[1024];
+    private final byte[] inbuf = new byte[1024];
 
     private int inbufCount = 0, inbufPos = 0;
 
@@ -39,15 +39,15 @@ class InitManifest {
 
     private char[] charbuf = new char[0];
 
-    private ByteArrayOutputStream out = new ByteArrayOutputStream(256);
+    private final ByteArrayOutputStream out = new ByteArrayOutputStream(256);
 
     private String encoding;
 
     private boolean usingUTF8 = true;
 
-    private Map<String, Attributes.Name> attributeNames = new HashMap<String, Attributes.Name>();
+    private final Map<String, Attributes.Name> attributeNames = new HashMap<String, Attributes.Name>();
 
-    private byte[] mainAttributesChunk;
+    private final byte[] mainAttributesChunk;
 
     InitManifest(InputStream is, Attributes main, Map<String, Attributes> entries, Map<String, byte[]> chunks,
             String verString) throws IOException {
@@ -152,11 +152,10 @@ class InitManifest {
                         addLine(pos, lines);
                     }
                     return out.toByteArray();
-                } else {
-                    if (inbufCount == inbuf.length && in.available() == 0) {
-                        /* KA000 = "line too long" */
-                        throw new IOException(Msg.getString("KA000"));
-                    }
+                }
+                if (inbufCount == inbuf.length && in.available() == 0) {
+                    /* KA000 = "line too long" */
+                    throw new IOException(Msg.getString("KA000"));
                 }
                 inbufPos = 0;
             }
@@ -222,11 +221,10 @@ class InitManifest {
                         addLine(pos, lines);
                     }
                     return lines.size() != 0;
-                } else {
-                    if (inbufCount == inbuf.length && in.available() == 0) {
-                        /* KA000 = "line too long" */
-                        throw new IOException(Msg.getString("KA000"));
-                    }
+                }
+                if (inbufCount == inbuf.length && in.available() == 0) {
+                    /* KA000 = "line too long" */
+                    throw new IOException(Msg.getString("KA000"));
                 }
                 inbufPos = 0;
             }

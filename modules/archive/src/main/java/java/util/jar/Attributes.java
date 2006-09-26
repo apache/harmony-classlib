@@ -30,7 +30,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
     protected Map<Object, Object> map;
 
     public static class Name {
-        private String name;
+        private final String name;
 
         private int hashCode;
 
@@ -100,10 +100,12 @@ public class Attributes implements Cloneable, Map<Object, Object> {
             name = s;
         }
 
+        @Override
         public String toString() {
             return name;
         }
 
+        @Override
         public boolean equals(Object an) {
             if (an == null) {
                 return false;
@@ -112,6 +114,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
                     && name.equalsIgnoreCase(((Name) an).name);
         }
 
+        @Override
         public int hashCode() {
             if (hashCode == 0) {
                 hashCode = name.toLowerCase().hashCode();
@@ -134,8 +137,9 @@ public class Attributes implements Cloneable, Map<Object, Object> {
      * @param attrib
      *            The Attributes to obtain entries from.
      */
+    @SuppressWarnings("unchecked")
     public Attributes(Attributes attrib) {
-        map = (Map<Object, Object>) ((HashMap) attrib.map).clone();
+        map = (Map<Object, Object>)((HashMap) attrib.map).clone();
     }
 
     /**
@@ -232,7 +236,13 @@ public class Attributes implements Cloneable, Map<Object, Object> {
      *                String
      */
     public Object put(Object key, Object value) {
-        return map.put((Name)key, (String)value);
+        if (!(key instanceof Name)) {
+            throw new ClassCastException();
+        }
+        if (!(value instanceof String)) {
+            throw new ClassCastException();
+        }
+        return map.put(key, value);
     }
 
     /**
@@ -242,10 +252,10 @@ public class Attributes implements Cloneable, Map<Object, Object> {
      *            the associations to store (must be of type Attributes).
      */
     public void putAll(Map<?, ?> attrib) {
-        if (attrib == null) {
+        if (attrib == null || !(attrib instanceof Attributes)) {
             throw new ClassCastException();
         }
-        this.map.putAll((Attributes)attrib);
+        this.map.putAll(attrib);
     }
 
     /**
@@ -277,6 +287,8 @@ public class Attributes implements Cloneable, Map<Object, Object> {
         return map.values();
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
     public Object clone() {
         Attributes clone;
         try {
@@ -284,7 +296,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
         } catch (CloneNotSupportedException e) {
             return null;
         }
-        clone.map = (Map<Object, Object>) ((HashMap) this.map).clone();
+        clone.map = (Map<Object, Object>) ((HashMap) map).clone();
         return clone;
     }
 
@@ -293,6 +305,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
      * 
      * @return the hashCode of this Object.
      */
+    @Override
     public int hashCode() {
         return map.hashCode();
     }
@@ -303,6 +316,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
      * 
      * @return true if the Attributes are equals, false otherwise
      */
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;

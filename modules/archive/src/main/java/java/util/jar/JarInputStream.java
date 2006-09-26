@@ -107,6 +107,7 @@ public class JarInputStream extends ZipInputStream {
         return (JarEntry) getNextEntry();
     }
 
+    @Override
     public int read(byte[] buffer, int offset, int length) throws IOException {
         if (mEntry != null) {
             return -1;
@@ -128,7 +129,7 @@ public class JarInputStream extends ZipInputStream {
                         }
                     } else {
                         verifier.verifySignatures(
-                                (JarVerifier.VerifierEntry) this.verStream,
+                                (JarVerifier.VerifierEntry) verStream,
                                 jarEntry);
                     }
                 }
@@ -147,6 +148,7 @@ public class JarInputStream extends ZipInputStream {
      * @exception java.io.IOException
      *                If an error occurs while reading the entry
      */
+    @Override
     public ZipEntry getNextEntry() throws IOException {
         if (mEntry != null) {
             jarEntry = mEntry;
@@ -171,6 +173,7 @@ public class JarInputStream extends ZipInputStream {
         return jarEntry;
     }
 
+    @Override
     protected ZipEntry createZipEntry(String name) {
         JarEntry entry = new JarEntry(name);
         if (manifest != null) {

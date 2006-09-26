@@ -25,7 +25,7 @@ public class ZipEntryTest extends junit.framework.TestCase {
 
 	java.util.zip.ZipFile zfile;
 
-	private static String platformId = System.getProperty(
+	private static final String platformId = System.getProperty(
 			"com.ibm.oti.configuration", "JDK")
 			+ System.getProperty("java.vm.version");
 
@@ -54,8 +54,9 @@ public class ZipEntryTest extends junit.framework.TestCase {
 		} catch (NullPointerException e) {
 		}
 		StringBuffer s = new StringBuffer();
-		for (int i = 0; i < 65535; i++)
-			s.append('a');
+		for (int i = 0; i < 65535; i++) {
+            s.append('a');
+        }
 		try {
 			zentry = new ZipEntry(s.toString());
 		} catch (IllegalArgumentException e) {
@@ -184,8 +185,9 @@ public class ZipEntryTest extends junit.framework.TestCase {
 		zentry.setComment(n);
 		assertNull("Comment not correctly set", zentry.getComment());
 		StringBuffer s = new StringBuffer();
-		for (int i = 0; i < 0xFFFF; i++)
-			s.append('a');
+		for (int i = 0; i < 0xFFFF; i++) {
+            s.append('a');
+        }
 		try {
 			zentry.setComment(s.toString());
 		} catch (IllegalArgumentException e) {
@@ -427,7 +429,8 @@ public class ZipEntryTest extends junit.framework.TestCase {
 	 * is called before a test is executed.
 	 */
 
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 		java.io.File f = null;
 		try {
 			byte[] rbuf = new byte[2000];
@@ -441,7 +444,7 @@ public class ZipEntryTest extends junit.framework.TestCase {
 			java.io.InputStream is = Support_Resources
 					.getStream("hyts_ZipFile.zip");
 			java.io.FileOutputStream fos = new java.io.FileOutputStream(f);
-			rbuf = new byte[(int) is.available()];
+			rbuf = new byte[is.available()];
 			is.read(rbuf, 0, rbuf.length);
 			fos.write(rbuf, 0, rbuf.length);
 			is.close();
@@ -465,10 +468,12 @@ public class ZipEntryTest extends junit.framework.TestCase {
 	 * method is called after a test is executed.
 	 */
 
-	protected void tearDown() {
+	@Override
+    protected void tearDown() {
 		try {
-			if (zfile != null)
-				zfile.close();
+			if (zfile != null) {
+                zfile.close();
+            }
 			java.io.File f = new java.io.File(tempFileName);
 			f.delete();
 		} catch (java.io.IOException e) {

@@ -74,8 +74,9 @@ public class DeflaterTest extends junit.framework.TestCase {
 		Deflater defl = new Deflater();
 		defl.setInput(byteArray);
 		defl.finish();
-		while (!defl.finished())
-			x += defl.deflate(outPutBuf);
+		while (!defl.finished()) {
+            x += defl.deflate(outPutBuf);
+        }
 		assertEquals("Deflater at end of stream, should return 0", 0, defl
 				.deflate(outPutBuf));
 		int totalOut = defl.getTotalOut();
@@ -92,8 +93,9 @@ public class DeflaterTest extends junit.framework.TestCase {
 		Inflater infl = new Inflater();
 		try {
 			infl.setInput(outPutBuf);
-			while (!infl.finished())
-				infl.inflate(outPutInf);
+			while (!infl.finished()) {
+                infl.inflate(outPutInf);
+            }
 		} catch (DataFormatException e) {
 			fail("Invalid input to be decompressed");
 		}
@@ -103,10 +105,11 @@ public class DeflaterTest extends junit.framework.TestCase {
 		assertTrue(
 				"Inflates getTotalIn() did not correspond with deflates getTotalOut()",
 				infl.getTotalIn() == totalOut);
-		for (int i = 0; i < byteArray.length; i++)
-			assertTrue(
+		for (int i = 0; i < byteArray.length; i++) {
+            assertTrue(
 					"Final decompressed data does not equal the original data",
 					byteArray[i] == outPutInf[i]);
+        }
 		assertEquals("Final decompressed data contained more bytes than original",
 				0, outPutInf[byteArray.length]);
 		infl.end();
@@ -127,8 +130,9 @@ public class DeflaterTest extends junit.framework.TestCase {
 		Deflater defl = new Deflater();
 		defl.setInput(byteArray);
 		defl.finish();
-		while (!defl.finished())
-			x += defl.deflate(outPutBuf, offSet, length);
+		while (!defl.finished()) {
+            x += defl.deflate(outPutBuf, offSet, length);
+        }
 		assertEquals("Deflater at end of stream, should return 0", 0, defl.deflate(
 				outPutBuf, offSet, length));
 		int totalOut = defl.getTotalOut();
@@ -144,8 +148,9 @@ public class DeflaterTest extends junit.framework.TestCase {
 		Inflater infl = new Inflater();
 		try {
 			infl.setInput(outPutBuf, offSet, length);
-			while (!infl.finished())
-				infl.inflate(outPutInf);
+			while (!infl.finished()) {
+                infl.inflate(outPutInf);
+            }
 		} catch (DataFormatException e) {
 			fail("Invalid input to be decompressed");
 		}
@@ -155,10 +160,11 @@ public class DeflaterTest extends junit.framework.TestCase {
 		assertTrue(
 				"inflates getTotalIn() did not correspond with deflates getTotalOut()",
 				infl.getTotalIn() == totalOut);
-		for (int i = 0; i < byteArray.length; i++)
-			assertTrue(
+		for (int i = 0; i < byteArray.length; i++) {
+            assertTrue(
 					"Final decompressed data does not equal the original data",
 					byteArray[i] == outPutInf[i]);
+        }
 		assertEquals("Final decompressed data contained more bytes than original",
 				0, outPutInf[byteArray.length]);
 		infl.end();
@@ -197,8 +203,9 @@ public class DeflaterTest extends junit.framework.TestCase {
 		Deflater defl = new Deflater();
 		defl.setInput(byteArray);
 		defl.finish();
-		while (!defl.finished())
-			defl.deflate(outPutBuf);
+		while (!defl.finished()) {
+            defl.deflate(outPutBuf);
+        }
 		defl.end();
 		helper_end_test(defl, "end");
 	}
@@ -229,13 +236,15 @@ public class DeflaterTest extends junit.framework.TestCase {
 		defl.finish();
 
 		// needsInput should never return true after finish() is called
-		if (System.getProperty("java.vendor").startsWith("IBM"))
-			assertTrue(
+		if (System.getProperty("java.vendor").startsWith("IBM")) {
+            assertTrue(
 					"needsInput() should return false after finish() is called",
 					!defl.needsInput());
+        }
 
-		while (!defl.finished())
-			x += defl.deflate(outPutBuf);
+		while (!defl.finished()) {
+            x += defl.deflate(outPutBuf);
+        }
 		int totalOut = defl.getTotalOut();
 		int totalIn = defl.getTotalIn();
 		assertTrue(
@@ -249,8 +258,9 @@ public class DeflaterTest extends junit.framework.TestCase {
 		Inflater infl = new Inflater();
 		try {
 			infl.setInput(outPutBuf);
-			while (!infl.finished())
-				infl.inflate(outPutInf);
+			while (!infl.finished()) {
+                infl.inflate(outPutInf);
+            }
 		} catch (DataFormatException e) {
 			fail("Invalid input to be decompressed");
 		}
@@ -260,10 +270,11 @@ public class DeflaterTest extends junit.framework.TestCase {
 		assertTrue(
 				"Inflates getTotalIn() did not correspond with deflates getTotalOut()",
 				infl.getTotalIn() == totalOut);
-		for (int i = 0; i < byteArray.length; i++)
-			assertTrue(
+		for (int i = 0; i < byteArray.length; i++) {
+            assertTrue(
 					"Final decompressed data does not equal the original data",
 					byteArray[i] == outPutInf[i]);
+        }
 		assertEquals("Final decompressed data contained more bytes than original",
 				0, outPutInf[byteArray.length]);
 		infl.end();
@@ -282,8 +293,9 @@ public class DeflaterTest extends junit.framework.TestCase {
 		assertTrue("Test 2: Deflater should not be finished.", !defl.finished());
 		defl.finish();
 		assertTrue("Test 3: Deflater should not be finished.", !defl.finished());
-		while (!defl.finished())
-			defl.deflate(outPutBuf);
+		while (!defl.finished()) {
+            defl.deflate(outPutBuf);
+        }
 		assertTrue("Test 4: Deflater should be finished.", defl.finished());
 		defl.end();
 		assertTrue("Test 5: Deflater should be finished.", defl.finished());
@@ -301,8 +313,9 @@ public class DeflaterTest extends junit.framework.TestCase {
 		// getting the checkSum value using the Adler
 		defl.setInput(byteArray);
 		defl.finish();
-		while (!defl.finished())
-			defl.deflate(outPutBuf);
+		while (!defl.finished()) {
+            defl.deflate(outPutBuf);
+        }
 		long checkSumD = defl.getAdler();
 		defl.end();
 
@@ -326,8 +339,9 @@ public class DeflaterTest extends junit.framework.TestCase {
 		Deflater defl = new Deflater();
 		defl.setInput(byteArray);
 		defl.finish();
-		while (!defl.finished())
-			defl.deflate(outPutBuf);
+		while (!defl.finished()) {
+            defl.deflate(outPutBuf);
+        }
 		assertTrue(
 				"The number of input byte from the array did not correspond with getTotalIn",
 				defl.getTotalIn() == byteArray.length);
@@ -339,8 +353,9 @@ public class DeflaterTest extends junit.framework.TestCase {
 		outPutBuf = new byte[5];
 		defl.setInput(byteArray, offSet, length);
 		defl.finish();
-		while (!defl.finished())
-			defl.deflate(outPutBuf);
+		while (!defl.finished()) {
+            defl.deflate(outPutBuf);
+        }
 		assertTrue(
 				"The number of input byte sent to setInputBII() did not corrsepond with getTotalIn",
 				defl.getTotalIn() == length);
@@ -359,8 +374,9 @@ public class DeflaterTest extends junit.framework.TestCase {
 		Deflater defl = new Deflater();
 		defl.setInput(byteArray);
 		defl.finish();
-		while (!defl.finished())
-			x += defl.deflate(outPutBuf);
+		while (!defl.finished()) {
+            x += defl.deflate(outPutBuf);
+        }
 		assertTrue(
 				"The total number of bytes from deflate() did not equal getTotalOut",
 				x == defl.getTotalOut());
@@ -373,8 +389,9 @@ public class DeflaterTest extends junit.framework.TestCase {
 		outPutBuf = new byte[5];
 		defl.setInput(byteArray, offSet, length);
 		defl.finish();
-		while (!defl.finished())
-			x += defl.deflate(outPutBuf);
+		while (!defl.finished()) {
+            x += defl.deflate(outPutBuf);
+        }
 		assertTrue(
 				"The total number of bytes from deflateBII() did not equal getTotalOut",
 				x == defl.getTotalOut());
@@ -395,8 +412,9 @@ public class DeflaterTest extends junit.framework.TestCase {
 				"needsInput give wrong boolean value as a result of a full input buffer",
 				!defl.needsInput());
 		byte[] outPutBuf = new byte[50];
-		while (!defl.needsInput())
-			defl.deflate(outPutBuf);
+		while (!defl.needsInput()) {
+            defl.deflate(outPutBuf);
+        }
 		byte emptyByteArray[] = new byte[0];
 		defl.setInput(emptyByteArray);
 		assertTrue(
@@ -404,14 +422,16 @@ public class DeflaterTest extends junit.framework.TestCase {
 				defl.needsInput());
 		defl.setInput(byteArray);
 		defl.finish();
-		while (!defl.finished())
-			defl.deflate(outPutBuf);
+		while (!defl.finished()) {
+            defl.deflate(outPutBuf);
+        }
 		// needsInput should NOT return true after finish() has been
 		// called.
-		if (System.getProperty("java.vendor").startsWith("IBM"))
-			assertTrue(
+		if (System.getProperty("java.vendor").startsWith("IBM")) {
+            assertTrue(
 					"needsInput gave wrong boolean value as a result of finish() being called",
 					!defl.needsInput());
+        }
 		defl.end();
 	}
 
@@ -430,53 +450,60 @@ public class DeflaterTest extends junit.framework.TestCase {
 		Deflater defl = new Deflater();
 
 		for (int i = 0; i < 3; i++) {
-			if (i == 0)
-				curArray = byteArray;
-			else if (i == 1)
-				curArray = byteArray2;
-			else
-				defl.reset();
+			if (i == 0) {
+                curArray = byteArray;
+            } else if (i == 1) {
+                curArray = byteArray2;
+            } else {
+                defl.reset();
+            }
 
 			defl.setInput(curArray);
 			defl.finish();
-			while (!defl.finished())
-				x += defl.deflate(outPutBuf);
+			while (!defl.finished()) {
+                x += defl.deflate(outPutBuf);
+            }
 
-			if (i == 0)
-				assertTrue(
+			if (i == 0) {
+                assertTrue(
 						"The total number of bytes from deflate did not equal getTotalOut",
 						x == defl.getTotalOut());
-			else if (i == 1)
-				assertTrue(
+            } else if (i == 1) {
+                assertTrue(
 						"The total number of bytes from deflate should still be the same ("
 								+ x + ")", x == orgValue);
-			else
-				assertTrue(
+            } else {
+                assertTrue(
 						"The total number of bytes from deflate should be doubled ("
 								+ orgValue * 2 + ")", x == orgValue * 2);
+            }
 
-			if (i == 0)
-				orgValue = x;
+			if (i == 0) {
+                orgValue = x;
+            }
 
 			try {
 				Inflater infl = new Inflater();
 				infl.setInput(outPutBuf);
-				while (!infl.finished())
-					infl.inflate(outPutInf);
+				while (!infl.finished()) {
+                    infl.inflate(outPutInf);
+                }
 				infl.end();
 			} catch (DataFormatException e) {
 				fail("Test " + i + ": Invalid input to be decompressed");
 			}
 
-			if (i == 1)
-				curArray = byteArray;
+			if (i == 1) {
+                curArray = byteArray;
+            }
 
-			for (int j = 0; j < curArray.length; j++)
-				assertTrue(
+			for (int j = 0; j < curArray.length; j++) {
+                assertTrue(
 						"Test "
 								+ i
 								+ ": Final decompressed data does not equal the original data",
 						curArray[j] == outPutInf[j]);
+            }
 			assertTrue(
 					"Test "
 							+ i
@@ -513,8 +540,9 @@ public class DeflaterTest extends junit.framework.TestCase {
 
 		defl.setInput(byteArray);
 		defl.finish();
-		while (!defl.finished())
-			defl.deflate(outPutBuf);
+		while (!defl.finished()) {
+            defl.deflate(outPutBuf);
+        }
 		deflAdler = defl.getAdler();
 		adl = new Adler32();
 		adl.update(byteArray);
@@ -557,8 +585,9 @@ public class DeflaterTest extends junit.framework.TestCase {
 				deflAdler == realAdler);
 
 		defl.setInput(byteArray);
-		while (!defl.needsInput())
-			defl.deflate(outPutBuf);
+		while (!defl.needsInput()) {
+            defl.deflate(outPutBuf);
+        }
 		deflAdler = defl.getAdler();
 		adl = new Adler32();
 		adl.update(byteArray);
@@ -609,22 +638,25 @@ public class DeflaterTest extends junit.framework.TestCase {
 		// false
 		defl.setInput(byteArray);
 		defl.finish();
-		while (!defl.finished())
-			defl.deflate(outPutBuf);
+		while (!defl.finished()) {
+            defl.deflate(outPutBuf);
+        }
 		defl.end();
 
 		Inflater infl = new Inflater();
 		try {
 			infl.setInput(outPutBuf);
-			while (!infl.finished())
-				infl.inflate(outPutInf);
+			while (!infl.finished()) {
+                infl.inflate(outPutInf);
+            }
 		} catch (DataFormatException e) {
 			fail("Invalid input to be decompressed");
 		}
-		for (int i = 0; i < byteArray.length; i++)
-			assertTrue(
+		for (int i = 0; i < byteArray.length; i++) {
+            assertTrue(
 					"Final decompressed data does not equal the original data",
 					byteArray[i] == outPutInf[i]);
+        }
 		assertTrue(
 				"Inflater.getTotalOut should have been equal to the length of the input",
 				infl.getTotalOut() == byteArray.length);
@@ -650,22 +682,25 @@ public class DeflaterTest extends junit.framework.TestCase {
 		// false
 		defl.setInput(byteArray, offSet, length);
 		defl.finish();
-		while (!defl.finished())
-			defl.deflate(outPutBuf);
+		while (!defl.finished()) {
+            defl.deflate(outPutBuf);
+        }
 		defl.end();
 
 		Inflater infl = new Inflater();
 		try {
 			infl.setInput(outPutBuf);
-			while (!infl.finished())
-				infl.inflate(outPutInf);
+			while (!infl.finished()) {
+                infl.inflate(outPutInf);
+            }
 		} catch (DataFormatException e) {
 			fail("Invalid input to be decompressed");
 		}
-		for (int i = 0; i < length; i++)
-			assertTrue(
+		for (int i = 0; i < length; i++) {
+            assertTrue(
 					"Final decompressed data does not equal the original data",
 					byteArray[i + offSet] == outPutInf[i]);
+        }
 		assertTrue(
 				"Inflater.getTotalOut should have been equal to the length of the input",
 				infl.getTotalOut() == length);
@@ -714,22 +749,26 @@ public class DeflaterTest extends junit.framework.TestCase {
 			defl.setLevel(i);
 			outPutBuf = new byte[500];
 			defl.setInput(byteArray);
-			while (!defl.needsInput())
-				defl.deflate(outPutBuf);
+			while (!defl.needsInput()) {
+                defl.deflate(outPutBuf);
+            }
 			defl.finish();
-			while (!defl.finished())
-				defl.deflate(outPutBuf);
+			while (!defl.finished()) {
+                defl.deflate(outPutBuf);
+            }
 			totalOut = defl.getTotalOut();
 			defl.end();
 
 			outPutBuf = new byte[500];
 			defl = new Deflater(i);
 			defl.setInput(byteArray);
-			while (!defl.needsInput())
-				defl.deflate(outPutBuf);
+			while (!defl.needsInput()) {
+                defl.deflate(outPutBuf);
+            }
 			defl.finish();
-			while (!defl.finished())
-				defl.deflate(outPutBuf);
+			while (!defl.finished()) {
+                defl.deflate(outPutBuf);
+            }
 			assertTrue(
 					"getTotalOut() not equal comparing two Deflaters with same compression level.",
 					defl.getTotalOut() == totalOut);
@@ -773,19 +812,22 @@ public class DeflaterTest extends junit.framework.TestCase {
 			byte outPutBuf[] = new byte[500];
 			MyDeflater mdefl = new MyDeflater();
 
-			if (i == 0)
-				mdefl.setStrategy(mdefl.getDefStrategy());
-			else if (i == 1)
-				mdefl.setStrategy(mdefl.getHuffman());
-			else
-				mdefl.setStrategy(mdefl.getFiltered());
+			if (i == 0) {
+                mdefl.setStrategy(mdefl.getDefStrategy());
+            } else if (i == 1) {
+                mdefl.setStrategy(mdefl.getHuffman());
+            } else {
+                mdefl.setStrategy(mdefl.getFiltered());
+            }
 
 			mdefl.setInput(byteArray);
-			while (!mdefl.needsInput())
-				mdefl.deflate(outPutBuf);
+			while (!mdefl.needsInput()) {
+                mdefl.deflate(outPutBuf);
+            }
 			mdefl.finish();
-			while (!mdefl.finished())
-				mdefl.deflate(outPutBuf);
+			while (!mdefl.finished()) {
+                mdefl.deflate(outPutBuf);
+            }
 
 			if (i == 0) {
 				// System.out.println(mdefl.getTotalOut());
@@ -837,11 +879,13 @@ public class DeflaterTest extends junit.framework.TestCase {
 		Deflater defl = new Deflater();
 		byte[] outPutBuf = new byte[500];
 		defl.setInput(byteArray);
-		while (!defl.needsInput())
-			defl.deflate(outPutBuf);
+		while (!defl.needsInput()) {
+            defl.deflate(outPutBuf);
+        }
 		defl.finish();
-		while (!defl.finished())
-			defl.deflate(outPutBuf);
+		while (!defl.finished()) {
+            defl.deflate(outPutBuf);
+        }
 		int totalOut = defl.getTotalOut();
 		defl.end();
 
@@ -850,11 +894,13 @@ public class DeflaterTest extends junit.framework.TestCase {
 		mdefl = new MyDeflater(mdefl.getDefCompression());
 		outPutBuf = new byte[500];
 		mdefl.setInput(byteArray);
-		while (!mdefl.needsInput())
-			mdefl.deflate(outPutBuf);
+		while (!mdefl.needsInput()) {
+            mdefl.deflate(outPutBuf);
+        }
 		mdefl.finish();
-		while (!mdefl.finished())
-			mdefl.deflate(outPutBuf);
+		while (!mdefl.finished()) {
+            mdefl.deflate(outPutBuf);
+        }
 		assertTrue(
 				"getTotalOut() not equal comparing two Deflaters with same compression level.",
 				mdefl.getTotalOut() == totalOut);
@@ -873,22 +919,26 @@ public class DeflaterTest extends junit.framework.TestCase {
 		byte outPutBuf[] = new byte[500];
 		defl.setLevel(2);
 		defl.setInput(byteArray);
-		while (!defl.needsInput())
-			defl.deflate(outPutBuf);
+		while (!defl.needsInput()) {
+            defl.deflate(outPutBuf);
+        }
 		defl.finish();
-		while (!defl.finished())
-			defl.deflate(outPutBuf);
+		while (!defl.finished()) {
+            defl.deflate(outPutBuf);
+        }
 		int totalOut = defl.getTotalOut();
 		defl.end();
 
 		outPutBuf = new byte[500];
 		defl = new Deflater(2, false);
 		defl.setInput(byteArray);
-		while (!defl.needsInput())
-			defl.deflate(outPutBuf);
+		while (!defl.needsInput()) {
+            defl.deflate(outPutBuf);
+        }
 		defl.finish();
-		while (!defl.finished())
-			defl.deflate(outPutBuf);
+		while (!defl.finished()) {
+            defl.deflate(outPutBuf);
+        }
 		assertTrue(
 				"getTotalOut() not equal comparing two Deflaters with same compression level.",
 				defl.getTotalOut() == totalOut);
@@ -897,11 +947,13 @@ public class DeflaterTest extends junit.framework.TestCase {
 		outPutBuf = new byte[500];
 		defl = new Deflater(2, true);
 		defl.setInput(byteArray);
-		while (!defl.needsInput())
-			defl.deflate(outPutBuf);
+		while (!defl.needsInput()) {
+            defl.deflate(outPutBuf);
+        }
 		defl.finish();
-		while (!defl.finished())
-			defl.deflate(outPutBuf);
+		while (!defl.finished()) {
+            defl.deflate(outPutBuf);
+        }
 		assertTrue(
 				"getTotalOut() should not be equal comparing two Deflaters with different header options.",
 				defl.getTotalOut() != totalOut);
@@ -911,18 +963,20 @@ public class DeflaterTest extends junit.framework.TestCase {
 		Inflater infl = new Inflater(true);
 		try {
 			while (!infl.finished()) {
-				if (infl.needsInput())
-					infl.setInput(outPutBuf);
+				if (infl.needsInput()) {
+                    infl.setInput(outPutBuf);
+                }
 				infl.inflate(outPutInf);
 			}
 		} catch (DataFormatException e) {
 			fail(
 					"invalid input to inflate - called in test constructorIZ");
 		}
-		for (int i = 0; i < byteArray.length; i++)
-			assertTrue(
+		for (int i = 0; i < byteArray.length; i++) {
+            assertTrue(
 					"Final decompressed data does not equal the original data",
 					byteArray[i] == outPutInf[i]);
+        }
 		assertEquals("final decompressed data contained more bytes than original - construcotrIZ",
 				0, outPutInf[byteArray.length]);
 		infl.end();
@@ -932,8 +986,9 @@ public class DeflaterTest extends junit.framework.TestCase {
 		int r = 0;
 		try {
 			while (!infl.finished()) {
-				if (infl.needsInput())
-					infl.setInput(outPutBuf);
+				if (infl.needsInput()) {
+                    infl.setInput(outPutBuf);
+                }
 				infl.inflate(outPutInf);
 			}
 		} catch (DataFormatException e) {
@@ -977,11 +1032,13 @@ public class DeflaterTest extends junit.framework.TestCase {
 		byte outPutBuf[] = new byte[500];
 		Deflater defl = new Deflater(3);
 		defl.setInput(byteArray);
-		while (!defl.needsInput())
-			defl.deflate(outPutBuf);
+		while (!defl.needsInput()) {
+            defl.deflate(outPutBuf);
+        }
 		defl.finish();
-		while (!defl.finished())
-			defl.deflate(outPutBuf);
+		while (!defl.finished()) {
+            defl.deflate(outPutBuf);
+        }
 		int totalOut = defl.getTotalOut();
 		defl.end();
 
@@ -991,11 +1048,13 @@ public class DeflaterTest extends junit.framework.TestCase {
 		defl = new Deflater();
 		defl.setLevel(3);
 		defl.setInput(byteArray);
-		while (!defl.needsInput())
-			defl.deflate(outPutBuf);
+		while (!defl.needsInput()) {
+            defl.deflate(outPutBuf);
+        }
 		defl.finish();
-		while (!defl.finished())
-			defl.deflate(outPutBuf);
+		while (!defl.finished()) {
+            defl.deflate(outPutBuf);
+        }
 		assertTrue(
 				"getTotalOut() not equal comparing two Deflaters with same compression level.",
 				defl.getTotalOut() == totalOut);
@@ -1132,12 +1191,6 @@ public class DeflaterTest extends junit.framework.TestCase {
         assertEquals(0, inf.getBytesRead());
         assertEquals(0, inf.getBytesWritten());
     }
-    
-	protected void setUp() {
-	}
-
-	protected void tearDown() {
-	}
 
     /**
      * @throws DataFormatException

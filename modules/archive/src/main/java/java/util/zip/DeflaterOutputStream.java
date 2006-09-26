@@ -74,10 +74,12 @@ public class DeflaterOutputStream extends FilterOutputStream {
 	 */
 	public DeflaterOutputStream(OutputStream os, Deflater def, int bsize) {
 		super(os);
-		if (os == null || def == null)
-			throw new NullPointerException();
-		if (bsize <= 0)
-			throw new IllegalArgumentException();
+		if (os == null || def == null) {
+            throw new NullPointerException();
+        }
+		if (bsize <= 0) {
+            throw new IllegalArgumentException();
+        }
 		this.def = def;
 		buf = new byte[bsize];
 	}
@@ -105,9 +107,11 @@ public class DeflaterOutputStream extends FilterOutputStream {
 	 * @exception java.io.IOException
 	 *                If an error occurs during close.
 	 */
-	public void close() throws IOException {
-		if (!def.finished())
-			finish();
+	@Override
+    public void close() throws IOException {
+		if (!def.finished()) {
+            finish();
+        }
 		def.end();
 		out.close();
 	}
@@ -121,20 +125,23 @@ public class DeflaterOutputStream extends FilterOutputStream {
 	 *                If an error occurs.
 	 */
 	public void finish() throws IOException {
-		if (done)
-			return;
+		if (done) {
+            return;
+        }
 		def.finish();
 		int x = 0;
 		while (!def.finished()) {
-			if (def.needsInput())
-				def.setInput(buf, 0, 0);
+			if (def.needsInput()) {
+                def.setInput(buf, 0, 0);
+            }
 			x = def.deflate(buf);
 			out.write(buf, 0, x);
 		}
 		done = true;
 	}
 
-	public void write(int i) throws IOException {
+	@Override
+    public void write(int i) throws IOException {
 		byte[] b = new byte[1];
 		b[0] = (byte) i;
 		write(b, 0, 1);
@@ -154,17 +161,21 @@ public class DeflaterOutputStream extends FilterOutputStream {
 	 * @exception java.io.IOException
 	 *                If an error occurs during writing.
 	 */
-	public void write(byte[] buffer, int off, int nbytes) throws IOException {
-		if (done)
-			throw new IOException(Msg.getString("K0007"));
+	@Override
+    public void write(byte[] buffer, int off, int nbytes) throws IOException {
+		if (done) {
+            throw new IOException(Msg.getString("K0007"));
+        }
 		// avoid int overflow, check null buf
 		if (off <= buffer.length && nbytes >= 0 && off >= 0
 				&& buffer.length - off >= nbytes) {
-			if (!def.needsInput())
-				throw new IOException();
+			if (!def.needsInput()) {
+                throw new IOException();
+            }
 			def.setInput(buffer, off, nbytes);
 			deflate();
-		} else
-			throw new ArrayIndexOutOfBoundsException();
+		} else {
+            throw new ArrayIndexOutOfBoundsException();
+        }
 	}
 }

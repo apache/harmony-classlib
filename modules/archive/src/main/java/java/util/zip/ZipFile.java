@@ -89,8 +89,9 @@ public class ZipFile implements ZipConstants {
 			}
 			this.mode = mode;
 			openZip(fileName);
-		} else
-			throw new IllegalArgumentException();
+		} else {
+            throw new IllegalArgumentException();
+        }
 	}
 
 	/**
@@ -122,7 +123,8 @@ public class ZipFile implements ZipConstants {
 		}
 	}
 
-	protected void finalize() throws IOException {
+	@Override
+    protected void finalize() throws IOException {
 		close();
 	}
 
@@ -182,7 +184,9 @@ public class ZipFile implements ZipConstants {
 			throw new IllegalStateException();
 		}
 		byte[] buf = inflateEntryImpl2(descriptor, entry.getName());
-		if (buf == null) return null;
+		if (buf == null) {
+            return null;
+        }
 		return new ByteArrayInputStream(buf);
 }
 
@@ -210,8 +214,9 @@ public class ZipFile implements ZipConstants {
 	 * @return Number of entries in this file
 	 */
 	public int size() {
-		if (size != -1)
-			return size;
+		if (size != -1) {
+            return size;
+        }
 
 		size = 0;
 		Enumeration<?> e = entries();
@@ -226,7 +231,7 @@ public class ZipFile implements ZipConstants {
 	private static native void ntvinit();
 
 	class ZFEnum<T extends ZipEntry> implements Enumeration<T> {
-		private long nextEntryPointer;
+		private final long nextEntryPointer;
 
 		private T current;
 
@@ -248,8 +253,9 @@ public class ZipFile implements ZipConstants {
 		}
 
 		public T nextElement() {
-			if (current == null)
-				throw new NoSuchElementException();
+			if (current == null) {
+                throw new NoSuchElementException();
+            }
 			T ze = current;
 			current = getNextEntry(descriptor, nextEntryPointer);
 			return ze;

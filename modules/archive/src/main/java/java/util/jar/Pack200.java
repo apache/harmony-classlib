@@ -58,8 +58,9 @@ public abstract class Pack200 {
 						return null;
 					}
 				});
-		if (null != packer)
-			return packer;
+		if (null != packer) {
+            return packer;
+        }
 		return PackFactory.newPacker();
 	}
 
@@ -87,8 +88,9 @@ public abstract class Pack200 {
 						return null;
 					}
 				});
-		if (null != unpacker)
-			return unpacker;
+		if (null != unpacker) {
+            return unpacker;
+        }
 		return PackFactory.newUnpacker();
 	}
 

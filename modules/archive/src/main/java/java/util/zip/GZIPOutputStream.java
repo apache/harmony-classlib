@@ -61,7 +61,8 @@ public class GZIPOutputStream extends DeflaterOutputStream {
 	 * Indicates to the stream that all data has been written out, and any GZIP
 	 * terminal data can now be output.
 	 */
-	public void finish() throws IOException {
+	@Override
+    public void finish() throws IOException {
 		super.finish();
 		writeLong(crc.getValue());
 		writeLong(crc.tbytes);
@@ -71,7 +72,8 @@ public class GZIPOutputStream extends DeflaterOutputStream {
 	 * Write up to nbytes of data from buf, starting at offset off, to the
 	 * underlying stream in GZIP format.
 	 */
-	public void write(byte[] buffer, int off, int nbytes) throws IOException {
+	@Override
+    public void write(byte[] buffer, int off, int nbytes) throws IOException {
 		super.write(buffer, off, nbytes);
 		crc.update(buffer, off, nbytes);
 	}

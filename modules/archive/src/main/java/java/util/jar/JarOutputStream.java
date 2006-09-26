@@ -73,6 +73,7 @@ public class JarOutputStream extends ZipOutputStream {
      * @exception IOException
      *                If an error occurs writing the entry
      */
+    @Override
     public void putNextEntry(ZipEntry ze) throws IOException {
         super.putNextEntry(ze);
     }

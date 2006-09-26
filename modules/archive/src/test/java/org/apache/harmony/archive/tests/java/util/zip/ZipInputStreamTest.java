@@ -16,7 +16,6 @@ package org.apache.harmony.archive.tests.java.util.zip;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -164,12 +163,14 @@ public class ZipInputStreamTest extends junit.framework.TestCase {
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
 	 */
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 		try {
 			java.io.InputStream is = Support_Resources
 					.getStream("hyts_ZipFile.zip");
-			if (is == null)
-				System.out.println("file hyts_ZipFile.zip can not be found");
+			if (is == null) {
+                System.out.println("file hyts_ZipFile.zip can not be found");
+            }
 			zis = new ZipInputStream(is);
             
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -190,12 +191,14 @@ public class ZipInputStreamTest extends junit.framework.TestCase {
 	 * Tears down the fixture, for example, close a network connection. This
 	 * method is called after a test is executed.
 	 */
-	protected void tearDown() {
+	@Override
+    protected void tearDown() {
 
-		if (zis != null)
-			try {
+		if (zis != null) {
+            try {
 				zis.close();
 			} catch (Exception e) {
 			}
+        }
 	}
 }

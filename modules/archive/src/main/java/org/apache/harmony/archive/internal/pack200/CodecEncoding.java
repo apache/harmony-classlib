@@ -163,12 +163,11 @@ public class CodecEncoding {
 				// number of items read from the fCodec. So we don't know in advance what
 				// the codec will be.
 				return new PopulationCodec(fCodec,l,uCodec);
-			} else {
-				Codec fCodec = (fdef ? defaultCodec : getCodec(in.read(),in,defaultCodec) );
-				Codec uCodec = (udef ? defaultCodec : getCodec(in.read(),in,defaultCodec) );
-				Codec tCodec = getCodec(in.read(),in,defaultCodec);
-				return new PopulationCodec(fCodec,uCodec,tCodec);
 			}
+            Codec fCodec = (fdef ? defaultCodec : getCodec(in.read(),in,defaultCodec) );
+            Codec uCodec = (udef ? defaultCodec : getCodec(in.read(),in,defaultCodec) );
+            Codec tCodec = getCodec(in.read(),in,defaultCodec);
+            return new PopulationCodec(fCodec,uCodec,tCodec);
 		} else {
 			throw new Pack200Exception("Invalid codec encoding byte (" + value + ") found" );
 		}

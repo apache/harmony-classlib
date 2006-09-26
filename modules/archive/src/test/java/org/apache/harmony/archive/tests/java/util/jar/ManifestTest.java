@@ -15,8 +15,8 @@
 package org.apache.harmony.archive.tests.java.util.jar;
 
 import java.io.File;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -24,17 +24,37 @@ import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
+import junit.framework.TestCase;
 import tests.support.resource.Support_Resources;
 
-public class ManifestTest extends junit.framework.TestCase {
+public class ManifestTest extends TestCase {
 
-	final String jarName = "hyts_patch.jar";
+	private final String jarName = "hyts_patch.jar";
 
-	final String attJarName = "hyts_att.jar";
+    private final String attJarName = "hyts_att.jar";
 
-	Manifest m, m2;
+    private Manifest m;
+    
+    private Manifest m2;
 
-	File resources;
+    private File resources;
+    
+    @Override
+    protected void setUp() {
+        resources = Support_Resources.createTempFolder();
+        try {
+            Support_Resources.copyFile(resources, null, jarName);
+            JarFile jarFile = new JarFile(new File(resources, jarName));
+            m = jarFile.getManifest();
+            jarFile.close();
+            Support_Resources.copyFile(resources, null, attJarName);
+            jarFile = new JarFile(new File(resources, attJarName));
+            m2 = jarFile.getManifest();
+            jarFile.close();
+        } catch (Exception e) {
+            fail("Exception during setup: " + e.toString());
+        }
+    }
 
 	/**
 	 * @tests java.util.jar.Manifest#Manifest()
@@ -134,10 +154,10 @@ public class ManifestTest extends junit.framework.TestCase {
 	 */
 	public void test_getEntries() {
 		// Test for method java.util.Map java.util.jar.Manifest.getEntries()
-		Map myMap = m2.getEntries();
+		Map<String, Attributes> myMap = m2.getEntries();
 		assertNull("Shouldn't exist", myMap.get("Doesn't exist"));
 		assertEquals("Should exist",
-				"OK", ((Attributes) myMap.get("HasAttributes.txt")).get(
+				"OK", myMap.get("HasAttributes.txt").get(
 						new Attributes.Name("MyAttribute")));
 
 	}
@@ -153,33 +173,6 @@ public class ManifestTest extends junit.framework.TestCase {
 				Attributes.Name.MANIFEST_VERSION));
 	}
 
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-		resources = Support_Resources.createTempFolder();
-		try {
-			Support_Resources.copyFile(resources, null, jarName);
-			JarFile jarFile = new JarFile(new File(resources, jarName));
-			m = jarFile.getManifest();
-			jarFile.close();
-			Support_Resources.copyFile(resources, null, attJarName);
-			jarFile = new JarFile(new File(resources, attJarName));
-			m2 = jarFile.getManifest();
-			jarFile.close();
-		} catch (Exception e) {
-			fail("Exception during setup: " + e.toString());
-		}
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
-    
     /**
      * @tests {@link java.util.jar.Manifest#read(java.io.InputStream)
      */
@@ -200,6 +193,7 @@ public class ManifestTest extends junit.framework.TestCase {
             super();
         }
 
+        @Override
         public int read() {
             return 0;
         }

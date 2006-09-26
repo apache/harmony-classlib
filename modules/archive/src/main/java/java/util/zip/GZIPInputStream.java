@@ -64,36 +64,44 @@ public class GZIPInputStream extends java.util.zip.InflaterInputStream {
 		super(is, new Inflater(true), size);
 		byte[] header = new byte[10];
 		readFully(header, 0, header.length);
-		if (getShort(header, 0) != GZIP_MAGIC)
-			throw new IOException(Msg.getString("K0020"));
+		if (getShort(header, 0) != GZIP_MAGIC) {
+            throw new IOException(Msg.getString("K0020"));
+        }
 		int flags = header[3];
 		boolean hcrc = (flags & FHCRC) != 0;
-		if (hcrc)
-			crc.update(header, 0, header.length);
+		if (hcrc) {
+            crc.update(header, 0, header.length);
+        }
 		if ((flags & FEXTRA) != 0) {
 			readFully(header, 0, 2);
-			if (hcrc)
-				crc.update(header, 0, 2);
+			if (hcrc) {
+                crc.update(header, 0, 2);
+            }
 			int length = getShort(header, 0);
 			while (length > 0) {
 				int max = length > buf.length ? buf.length : length;
 				int result = in.read(buf, 0, max);
-				if (result == -1)
-					throw new EOFException();
-				if (hcrc)
-					crc.update(buf, 0, result);
+				if (result == -1) {
+                    throw new EOFException();
+                }
+				if (hcrc) {
+                    crc.update(buf, 0, result);
+                }
 				length -= result;
 			}
 		}
-		if ((flags & FNAME) != 0)
-			readZeroTerminated(hcrc);
-		if ((flags & FCOMMENT) != 0)
-			readZeroTerminated(hcrc);
+		if ((flags & FNAME) != 0) {
+            readZeroTerminated(hcrc);
+        }
+		if ((flags & FCOMMENT) != 0) {
+            readZeroTerminated(hcrc);
+        }
 		if (hcrc) {
 			readFully(header, 0, 2);
 			int crc16 = getShort(header, 0);
-			if ((crc.getValue() & 0xffff) != crc16)
-				throw new IOException(Msg.getString("K0077"));
+			if ((crc.getValue() & 0xffff) != crc16) {
+                throw new IOException(Msg.getString("K0077"));
+            }
 			crc.reset();
 		}
 	}
@@ -121,14 +129,15 @@ public class GZIPInputStream extends java.util.zip.InflaterInputStream {
 	 * @param nbytes
 	 *            Number of bytes to read
 	 */
-	public int read(byte[] buffer, int off, int nbytes) throws IOException {
+	@Override
+    public int read(byte[] buffer, int off, int nbytes) throws IOException {
 		// avoid int overflow, check null buffer
 		if (off <= buffer.length && nbytes >= 0 && off >= 0
 				&& buffer.length - off >= nbytes) {
 			int val = super.read(buffer, off, nbytes);
-			if (val != -1)
-				crc.update(buffer, off, val);
-			else if (!eos) {
+			if (val != -1) {
+                crc.update(buffer, off, val);
+            } else if (!eos) {
 				eos = true;
 				// Get non-compressed bytes read by fill
 				int size = 0;
@@ -138,16 +147,19 @@ public class GZIPInputStream extends java.util.zip.InflaterInputStream {
 					int diff = inB % buf.length;
 					if (diff != 0 || len != buf.length) {
 						size = len - diff;
-						if (size > b.length)
-							size = b.length;
+						if (size > b.length) {
+                            size = b.length;
+                        }
 						System.arraycopy(buf, diff, b, 0, size);
 					}
 				}
 				readFully(b, size, b.length - size);
-				if (getLong(b, 0) != crc.getValue())
-					throw new IOException(Msg.getString("K0077"));
-				if ((int) getLong(b, 4) != inf.getTotalOut())
-					throw new IOException(Msg.getString("K00ae"));
+				if (getLong(b, 0) != crc.getValue()) {
+                    throw new IOException(Msg.getString("K0077"));
+                }
+				if ((int) getLong(b, 4) != inf.getTotalOut()) {
+                    throw new IOException(Msg.getString("K00ae"));
+                }
 			}
 			return val;
 		}
@@ -157,7 +169,8 @@ public class GZIPInputStream extends java.util.zip.InflaterInputStream {
 	/**
 	 * Closes this stream and any underlying streams.
 	 */
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		eos = true;
 		super.close();
 	}
@@ -167,8 +180,9 @@ public class GZIPInputStream extends java.util.zip.InflaterInputStream {
 		int result;
 		while (length > 0) {
 			result = in.read(buffer, offset, length);
-			if (result == -1)
-				throw new EOFException();
+			if (result == -1) {
+                throw new EOFException();
+            }
 			offset += result;
 			length -= result;
 		}
@@ -177,13 +191,16 @@ public class GZIPInputStream extends java.util.zip.InflaterInputStream {
 	private void readZeroTerminated(boolean hcrc) throws IOException {
 		int result;
 		while ((result = in.read()) > 0) {
-			if (hcrc)
-				crc.update(result);
+			if (hcrc) {
+                crc.update(result);
+            }
 		}
-		if (result == -1)
-			throw new EOFException();
+		if (result == -1) {
+            throw new EOFException();
+        }
 		// Add the zero
-		if (hcrc)
-			crc.update(result);
+		if (hcrc) {
+            crc.update(result);
+        }
 	}
 }

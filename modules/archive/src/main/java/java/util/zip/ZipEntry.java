@@ -52,10 +52,12 @@ public class ZipEntry implements ZipConstants, Cloneable {
 	 *            the name of the zip entry
 	 */
 	public ZipEntry(String name) {
-		if (name == null)
-			throw new NullPointerException();
-		if (name.length() > 0xFFFF)
-			throw new IllegalArgumentException();
+		if (name == null) {
+            throw new NullPointerException();
+        }
+		if (name.length() > 0xFFFF) {
+            throw new IllegalArgumentException();
+        }
 		this.name = name;
 	}
 
@@ -164,10 +166,11 @@ public class ZipEntry implements ZipConstants, Cloneable {
 	 *            the comment
 	 */
 	public void setComment(String string) {
-		if (string == null || string.length() <= 0xFFFF)
-			this.comment = string;
-		else
-			throw new IllegalArgumentException();
+		if (string == null || string.length() <= 0xFFFF) {
+            comment = string;
+        } else {
+            throw new IllegalArgumentException();
+        }
 	}
 
 	/**
@@ -190,10 +193,11 @@ public class ZipEntry implements ZipConstants, Cloneable {
 	 *             if value is < 0 or > 0xFFFFFFFFL
 	 */
 	public void setCrc(long value) {
-		if (value >= 0 && value <= 0xFFFFFFFFL)
-			crc = value;
-		else
-			throw new IllegalArgumentException();
+		if (value >= 0 && value <= 0xFFFFFFFFL) {
+            crc = value;
+        } else {
+            throw new IllegalArgumentException();
+        }
 	}
 
 	/**
@@ -206,10 +210,11 @@ public class ZipEntry implements ZipConstants, Cloneable {
 	 *             when the length of data is > 0xFFFF bytes
 	 */
 	public void setExtra(byte[] data) {
-		if (data == null || data.length <= 0xFFFF)
-			extra = data;
-		else
-			throw new IllegalArgumentException();
+		if (data == null || data.length <= 0xFFFF) {
+            extra = data;
+        } else {
+            throw new IllegalArgumentException();
+        }
 	}
 
 	/**
@@ -222,8 +227,9 @@ public class ZipEntry implements ZipConstants, Cloneable {
 	 *             when value is not DEFLATED or STORED
 	 */
 	public void setMethod(int value) {
-		if (value != STORED && value != DEFLATED)
-			throw new IllegalArgumentException();
+		if (value != STORED && value != DEFLATED) {
+            throw new IllegalArgumentException();
+        }
 		compressionMethod = value;
 	}
 
@@ -245,10 +251,11 @@ public class ZipEntry implements ZipConstants, Cloneable {
 	 *             if value is < 0 or > 0xFFFFFFFFL
 	 */
 	public void setSize(long value) {
-		if (value >= 0 && value <= 0xFFFFFFFFL)
-			size = value;
-		else
-			throw new IllegalArgumentException();
+		if (value >= 0 && value <= 0xFFFFFFFFL) {
+            size = value;
+        } else {
+            throw new IllegalArgumentException();
+        }
 	}
 
 	/**
@@ -280,7 +287,8 @@ public class ZipEntry implements ZipConstants, Cloneable {
 	 * 
 	 * @return the string representation of this ZipEntry
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		return name;
 	}
 
@@ -290,13 +298,13 @@ public class ZipEntry implements ZipConstants, Cloneable {
 		this.name = name;
 		this.comment = comment;
 		this.extra = extra;
-		this.time = (int) modTime;
+		time = (int) modTime;
 		this.size = size;
 		this.compressedSize = compressedSize;
 		this.crc = crc;
 		this.compressionMethod = compressionMethod;
 		this.modDate = (int) modDate;
-		this.dataOffset = offset;
+		dataOffset = offset;
 	}
 
 	/**
@@ -306,16 +314,16 @@ public class ZipEntry implements ZipConstants, Cloneable {
 	 *            ZipEntry from which to obtain values.
 	 */
 	public ZipEntry(ZipEntry ze) {
-		this.name = ze.name;
-		this.comment = ze.comment;
-		this.time = ze.time;
-		this.size = ze.size;
-		this.compressedSize = ze.compressedSize;
-		this.crc = ze.crc;
-		this.compressionMethod = ze.compressionMethod;
-		this.modDate = ze.modDate;
-		this.extra = ze.extra;
-		this.dataOffset = ze.dataOffset;
+		name = ze.name;
+		comment = ze.comment;
+		time = ze.time;
+		size = ze.size;
+		compressedSize = ze.compressedSize;
+		crc = ze.crc;
+		compressionMethod = ze.compressionMethod;
+		modDate = ze.modDate;
+		extra = ze.extra;
+		dataOffset = ze.dataOffset;
 	}
 
 	/**
@@ -323,7 +331,8 @@ public class ZipEntry implements ZipConstants, Cloneable {
 	 * 
 	 * @return a copy of this entry
 	 */
-	public Object clone() {
+	@Override
+    public Object clone() {
 		return new ZipEntry(this);
 	}
 
@@ -332,7 +341,8 @@ public class ZipEntry implements ZipConstants, Cloneable {
 	 * 
 	 * @return the hashCode of the entry
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return name.hashCode();
 	}
 }

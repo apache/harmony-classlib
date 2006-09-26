@@ -36,7 +36,7 @@ public class CodecEncodingTest extends TestCase {
 	public void testCanonicalEncodings() throws IOException, Pack200Exception { 
 		Codec defaultCodec = new BHSDCodec(2,16,0,0);
 		assertEquals(defaultCodec,CodecEncoding.getCodec(0,null, defaultCodec));
-		Map map = new HashMap();
+		Map<Integer, String> map = new HashMap<Integer, String>();
 		// These are the canonical encodings specified by the Pack200 spec
 		map.put(new Integer(1), "(1,256)");
 		map.put(new Integer(2), "(1,256,1)");

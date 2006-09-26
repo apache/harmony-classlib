@@ -172,11 +172,13 @@ public class CRC32Test extends junit.framework.TestCase {
 				2, r);
 	}
 
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 
 	}
 
-	protected void tearDown() {
+	@Override
+    protected void tearDown() {
 	}
 
 }

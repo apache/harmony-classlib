@@ -43,21 +43,25 @@ public class RunCodec extends Codec {
 		this.aCodec = aCodec;
 		this.bCodec = bCodec;
 	}
-	public long decode(InputStream in) throws IOException, Pack200Exception {
+    
+	@Override
+    public long decode(InputStream in) throws IOException, Pack200Exception {
 		return decode(in,this.last);
 	}
 
-	public long decode(InputStream in, long last) throws IOException, Pack200Exception {
+	@Override
+    public long decode(InputStream in, long last) throws IOException, Pack200Exception {
 		if(--k>=0) {
 			long value = aCodec.decode(in,last);
 			this.last = (k == 0 ? 0 : value);
 			return value;
-		} else {
-			this.last = bCodec.decode(in,last);
-			return this.last;			
 		}
+        this.last = bCodec.decode(in,last);
+        return this.last;
 	}
-	public String toString() {
+    
+	@Override
+    public String toString() {
 		return "RunCodec[k="+k+";aCodec="+aCodec+"bCodec="+bCodec+"]";
 	}
 }

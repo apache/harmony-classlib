@@ -59,7 +59,8 @@ public class Inflater {
 
 	private native synchronized void endImpl(long handle);
 
-	protected void finalize() {
+	@Override
+    protected void finalize() {
 		end();
 	}
 

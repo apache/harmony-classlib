@@ -15,6 +15,7 @@
 package org.apache.harmony.archive.tests.java.util.jar;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -28,20 +29,24 @@ import tests.support.resource.Support_Resources;
 
 public class JarInputStreamTest extends junit.framework.TestCase {
 	// a 'normal' jar file
-	String jarName;
+	private String jarName;
 
 	// same as patch.jar but without a manifest file
-	String jarName2;
+	private String jarName2;
 
-	final String entryName = "foo/bar/A.class";
+    private final String entryName = "foo/bar/A.class";
 
-	final String entryName2 = "Blah.txt";
+    private static final int indexofDSA = 2;
 
-    private static int indexofDSA = 2;
+    private static final int indexofTESTCLASS = 4;
 
-    private static int indexofTESTCLASS = 4;
-
-    private static int totalEntries = 4;
+    private static final int totalEntries = 4;
+    
+    @Override
+    protected void setUp() {
+        jarName = Support_Resources.getURL("morestuff/hyts_patch.jar");
+        jarName2 = Support_Resources.getURL("morestuff/hyts_patch2.jar");
+    }
 
 	/**
 	 * @tests java.util.jar.JarInputStream#JarInputStream(java.io.InputStream)
@@ -49,7 +54,7 @@ public class JarInputStreamTest extends junit.framework.TestCase {
 	public void test_ConstructorLjava_io_InputStream() {
 		// Test for method java.util.jar.JarInputStream(java.io.InputStream)
 		try {
-			java.io.InputStream is = new URL(jarName).openConnection()
+			InputStream is = new URL(jarName).openConnection()
 					.getInputStream();
 			boolean hasCorrectEntry = false;
 			JarInputStream jis = new JarInputStream(is);
@@ -57,8 +62,9 @@ public class JarInputStreamTest extends junit.framework.TestCase {
 					.getManifest());
 			JarEntry je = jis.getNextJarEntry();
 			while (je != null) {
-				if (je.getName().equals(entryName))
-					hasCorrectEntry = true;
+				if (je.getName().equals(entryName)) {
+                    hasCorrectEntry = true;
+                }
 				je = jis.getNextJarEntry();
 			}
 			assertTrue(
@@ -79,7 +85,7 @@ public class JarInputStreamTest extends junit.framework.TestCase {
 		try {
 			Manifest m;
 
-			java.io.InputStream is = new URL(jarName2).openConnection()
+			InputStream is = new URL(jarName2).openConnection()
 					.getInputStream();
 			JarInputStream jis = new JarInputStream(is);
 			m = jis.getManifest();
@@ -102,11 +108,11 @@ public class JarInputStreamTest extends junit.framework.TestCase {
 	public void test_getNextJarEntry() {
 		// Test for method java.util.jar.JarEntry
 		// java.util.jar.JarInputStream.getNextJarEntry()
-		final Set desired = new HashSet(Arrays.asList(new String[] { "foo/",
+		final Set<String> desired = new HashSet<String>(Arrays.asList(new String[] { "foo/",
 				"foo/bar/", "foo/bar/A.class", "Blah.txt" }));
-		Set actual = new HashSet();
+		Set<String> actual = new HashSet<String>();
 		try {
-			java.io.InputStream is = new URL(jarName).openConnection()
+			InputStream is = new URL(jarName).openConnection()
 					.getInputStream();
 			JarInputStream jis = new JarInputStream(is);
 			JarEntry je = jis.getNextJarEntry();
@@ -123,7 +129,7 @@ public class JarInputStreamTest extends junit.framework.TestCase {
     public void test_JarInputStream_Integrate_Jar_getNextEntry()
             throws IOException {
         String intJarName = Support_Resources.getURL("Integrate.jar");
-        java.io.InputStream is = new URL(intJarName).openConnection()
+        InputStream is = new URL(intJarName).openConnection()
                 .getInputStream();
         JarInputStream jin = new JarInputStream(is, true);
         ZipEntry entry = null;
@@ -139,7 +145,7 @@ public class JarInputStreamTest extends junit.framework.TestCase {
     public void test_JarInputStream_Modified_Class_getNextEntry()
             throws IOException {
         String modJarName = Support_Resources.getURL("Modified_Class.jar");
-        java.io.InputStream is = new URL(modJarName).openConnection()
+        InputStream is = new URL(modJarName).openConnection()
                 .getInputStream();
         JarInputStream jin = new JarInputStream(is, true);
         ZipEntry zipEntry = null;
@@ -149,11 +155,13 @@ public class JarInputStreamTest extends junit.framework.TestCase {
             count++;
             try {
                 zipEntry = jin.getNextEntry();
-                if (count == indexofTESTCLASS + 1)
+                if (count == indexofTESTCLASS + 1) {
                     fail("Should throw Security Exception");
+                }
             } catch (SecurityException e) {
-                if (count != indexofTESTCLASS + 1)
+                if (count != indexofTESTCLASS + 1) {
                     throw e;
+                }
 
             }
         }
@@ -164,7 +172,7 @@ public class JarInputStreamTest extends junit.framework.TestCase {
     public void test_JarInputStream_Modified_Manifest_MainAttributes_getNextEntry()
             throws IOException {
         String modJarName = Support_Resources.getURL("Modified_Manifest_MainAttributes.jar");
-        java.io.InputStream is = new URL(modJarName).openConnection()
+        InputStream is = new URL(modJarName).openConnection()
                 .getInputStream();
         JarInputStream jin = new JarInputStream(is, true);
         ZipEntry zipEntry = null;
@@ -176,11 +184,13 @@ public class JarInputStreamTest extends junit.framework.TestCase {
             count++;
             try {
                 zipEntry = jin.getNextEntry();
-                if (count == indexofDSA + 1)
+                if (count == indexofDSA + 1) {
                     fail("Should throw Security Exception");
+                }
             } catch (SecurityException e) {
-                if (count != indexofDSA + 1)
+                if (count != indexofDSA + 1) {
                     throw e;
+                }
             }
         }
         assertEquals(totalEntries + 2, count);
@@ -191,7 +201,7 @@ public class JarInputStreamTest extends junit.framework.TestCase {
             throws IOException {
         String modJarName = Support_Resources
                 .getURL("Modified_Manifest_EntryAttributes.jar");
-        java.io.InputStream is = new URL(modJarName).openConnection()
+        InputStream is = new URL(modJarName).openConnection()
                 .getInputStream();
         JarInputStream jin = new JarInputStream(is, true);
         ZipEntry zipEntry = null;
@@ -201,11 +211,13 @@ public class JarInputStreamTest extends junit.framework.TestCase {
             count++;
             try {
                 zipEntry = jin.getNextEntry();
-                if (count == indexofDSA + 1)
+                if (count == indexofDSA + 1) {
                     fail("Should throw Security Exception");
+                }
             } catch (SecurityException e) {
-                if (count != indexofDSA + 1)
+                if (count != indexofDSA + 1) {
                     throw e;
+                }
             }
         }
         assertEquals(totalEntries + 2, count);
@@ -216,7 +228,7 @@ public class JarInputStreamTest extends junit.framework.TestCase {
             throws IOException {
         String modJarName = Support_Resources
                 .getURL("Modified_SF_EntryAttributes.jar");
-        java.io.InputStream is = new URL(modJarName).openConnection()
+        InputStream is = new URL(modJarName).openConnection()
                 .getInputStream();
         JarInputStream jin = new JarInputStream(is, true);
         ZipEntry zipEntry = null;
@@ -226,11 +238,13 @@ public class JarInputStreamTest extends junit.framework.TestCase {
             count++;
             try {
                 zipEntry = jin.getNextEntry();
-                if (count == indexofDSA + 1)
+                if (count == indexofDSA + 1) {
                     fail("Should throw Security Exception");
+                }
             } catch (SecurityException e) {
-                if (count != indexofDSA + 1)
+                if (count != indexofDSA + 1) {
                     throw e;
+                }
             }
         }
         assertEquals(totalEntries + 2, count);
@@ -239,7 +253,7 @@ public class JarInputStreamTest extends junit.framework.TestCase {
 
     public void test_JarInputStream_Modified_Class_read() throws IOException {
         String modJarName = Support_Resources.getURL("Modified_Class.jar");
-        java.io.InputStream is = new URL(modJarName).openConnection()
+        InputStream is = new URL(modJarName).openConnection()
                 .getInputStream();
         JarInputStream jin = new JarInputStream(is, true);
         int count = 0;
@@ -253,11 +267,13 @@ public class JarInputStreamTest extends junit.framework.TestCase {
                 while (length >= 0) {
                     length = jin.read(buffer);
                 }
-                if (count == indexofTESTCLASS)
+                if (count == indexofTESTCLASS) {
                     fail("Should throw Security Exception");
+                }
             } catch (SecurityException e) {
-                if (count < indexofTESTCLASS)
+                if (count < indexofTESTCLASS) {
                     throw e;
+                }
             }
         }
         assertEquals(totalEntries + 1, count);
@@ -266,7 +282,7 @@ public class JarInputStreamTest extends junit.framework.TestCase {
 
     public void test_Integrate_Jar_read() throws IOException {
         String intJarName = Support_Resources.getURL("Integrate.jar");
-        java.io.InputStream is = new URL(intJarName).openConnection()
+        InputStream is = new URL(intJarName).openConnection()
                 .getInputStream();
         JarInputStream jin = new JarInputStream(is, true);
         int count = 0;
@@ -289,7 +305,7 @@ public class JarInputStreamTest extends junit.framework.TestCase {
             throws IOException {
         String modJarName = Support_Resources
                 .getURL("Modified_Manifest_MainAttributes.jar");
-        java.io.InputStream is = new URL(modJarName).openConnection()
+        InputStream is = new URL(modJarName).openConnection()
                 .getInputStream();
         JarInputStream jin = new JarInputStream(is, true);
         int count = 0;
@@ -303,11 +319,13 @@ public class JarInputStreamTest extends junit.framework.TestCase {
                 while (length >= 0) {
                     length = jin.read(buffer);
                 }
-                if (count == indexofDSA)
+                if (count == indexofDSA) {
                     fail("Should throw Security Exception");
+                }
             } catch (SecurityException e) {
-                if (count != indexofDSA)
+                if (count != indexofDSA) {
                     throw e;
+                }
             }
         }
         assertEquals(totalEntries + 1, count);
@@ -318,7 +336,7 @@ public class JarInputStreamTest extends junit.framework.TestCase {
             throws IOException {
         String modJarName = Support_Resources
                 .getURL("Modified_SF_EntryAttributes.jar");
-        java.io.InputStream is = new URL(modJarName).openConnection()
+        InputStream is = new URL(modJarName).openConnection()
                 .getInputStream();
         JarInputStream jin = new JarInputStream(is, true);
         int count = 0;
@@ -332,31 +350,17 @@ public class JarInputStreamTest extends junit.framework.TestCase {
                 while (length >= 0) {
                     length = jin.read(buffer);
                 }
-                if (count == indexofDSA)
+                if (count == indexofDSA) {
                     fail("Should throw Security Exception");
+                }
             } catch (SecurityException e) {
-                if (count != indexofDSA)
+                if (count != indexofDSA) {
                     throw e;
+                }
             }
         }
         assertEquals(totalEntries + 1, count);
         jin.close();
     }    
-    
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-		jarName = Support_Resources.getURL("morestuff/hyts_patch.jar");
-		jarName2 = Support_Resources.getURL("morestuff/hyts_patch2.jar");
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
 
 }

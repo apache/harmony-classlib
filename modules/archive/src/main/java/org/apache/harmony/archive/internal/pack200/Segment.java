@@ -255,7 +255,8 @@ public class Segment {
 	 * @param message
 	 * @deprecated this should be removed from production code
 	 */
-	private void debug(String message) {
+	@Deprecated
+    private void debug(String message) {
 		if (System.getProperty("debug.pack200") != null) {
 			System.err.println(message);
 		}
@@ -777,7 +778,7 @@ public class Segment {
 			String form = cpSignatureForm[i];
 			int len = form.length();
 			StringBuffer signature = new StringBuffer(64);
-			ArrayList list = new ArrayList();
+			ArrayList<String> list = new ArrayList<String>();
 			for (int j = 0; j < len; j++) {
 				char c = form.charAt(j);
 				signature.append(c);
@@ -817,7 +818,7 @@ public class Segment {
 	private void parseCpUtf8(InputStream in) throws IOException,
 			Pack200Exception {
 		// TODO Update codec.decode -> decodeScalar
-		cpUTF8 = new String[(int) cpUTF8Count];
+		cpUTF8 = new String[cpUTF8Count];
 		cpUTF8[0] = "";
 		int[] prefix = new int[cpUTF8Count];
 		int[] suffix = new int[cpUTF8Count];
@@ -1128,7 +1129,7 @@ public class Segment {
 		debug("-------");
 		parseSegmentHeader(in);
 		if (bandHeadersSize > 0) {
-			byte[] bandHeaders = new byte[(int) bandHeadersSize];
+			byte[] bandHeaders = new byte[bandHeadersSize];
 			readFully(in, bandHeaders);
 			setBandHeadersData(bandHeaders);
 		}

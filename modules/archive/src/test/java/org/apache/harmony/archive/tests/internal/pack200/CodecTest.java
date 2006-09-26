@@ -107,7 +107,7 @@ public class CodecTest extends TestCase {
 		decode(BYTE1S2,new byte[] { 11 }, -3, 0);
 	}
 	public void testCardinality() throws Exception {
-		BHSDCodec byte1 = (BHSDCodec) Codec.BYTE1;
+		BHSDCodec byte1 = Codec.BYTE1;
 		assertEquals(256,byte1.cardinality());
 		assertEquals(0,byte1.smallest());
 		assertEquals(255,byte1.largest());

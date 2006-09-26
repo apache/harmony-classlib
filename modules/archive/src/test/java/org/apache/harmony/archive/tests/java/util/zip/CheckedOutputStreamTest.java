@@ -86,8 +86,8 @@ public class CheckedOutputStreamTest extends junit.framework.TestCase {
 			FileOutputStream outFile = new FileOutputStream("chkOut.txt");
 			CheckedOutputStream chkOut = new CheckedOutputStream(outFile,
 					new CRC32());
-			for (int i = 0; i < byteArray.length; i++) {
-				chkOut.write(byteArray[i]);
+			for (byte element : byteArray) {
+				chkOut.write(element);
 			}
 			assertTrue(
 					"the checkSum value is zero, no bytes are written to the output file",
@@ -132,10 +132,12 @@ public class CheckedOutputStreamTest extends junit.framework.TestCase {
 		}
 	}
 
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 	}
 
-	protected void tearDown() {
+	@Override
+    protected void tearDown() {
 		try {
 			File deletedFile = new File("chkOut.txt");
 			deletedFile.delete();

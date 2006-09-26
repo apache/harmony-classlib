@@ -116,7 +116,8 @@ public class Manifest implements Cloneable {
 	 * @param man
 	 *            Manifest instance to obtain attributes from
 	 */
-	public Manifest(Manifest man) {
+	@SuppressWarnings("unchecked")
+    public Manifest(Manifest man) {
 		mainAttributes = (Attributes) man.mainAttributes.clone();
 		entryAttributes = (HashMap<String, Attributes>) man.entryAttributes.clone();
 	}
@@ -127,16 +128,17 @@ public class Manifest implements Cloneable {
 	 * 
 	 * @return A copy of the receiver.
 	 */
-	public Object clone() {
+	@Override
+    public Object clone() {
 		return new Manifest(this);
 	}
 
 	static class WriteManifest {
 		private static final int LIMIT = 70;
 
-		private static byte[] sepBuf = new byte[] { '\r', '\n' };
+		private static final byte[] sepBuf = new byte[] { '\r', '\n' };
 
-		private static Attributes.Name nameAttribute = new Attributes.Name(
+		private static final Attributes.Name nameAttribute = new Attributes.Name(
 				"Name", false);
 
 		byte[] oneByte = new byte[1];
@@ -145,7 +147,7 @@ public class Manifest implements Cloneable {
 
 		private Charset charset;
 
-		private byte[] outBuf = new byte[LIMIT];
+		private final byte[] outBuf = new byte[LIMIT];
 
 		OutputStream os;
 
@@ -291,7 +293,8 @@ public class Manifest implements Cloneable {
 	 * 
 	 * @return This Manifest's hashCode
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return mainAttributes.hashCode() ^ entryAttributes.hashCode();
 	}
 
@@ -305,7 +308,8 @@ public class Manifest implements Cloneable {
 	 * @return <code>true</code> if the manifests are equal,
 	 *         <code>false</code> otherwise
 	 */
-	public boolean equals(Object o) {
+	@Override
+    public boolean equals(Object o) {
 		if (o == null) {
             return false;
         }
@@ -328,6 +332,6 @@ public class Manifest implements Cloneable {
 	
 	byte[] getMainAttributesChunk()
 	{
-		return this.mainAttributesChunk;
+		return mainAttributesChunk;
 	}
 }

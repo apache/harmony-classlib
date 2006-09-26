@@ -189,8 +189,9 @@ public class ZipOutputStreamTest extends junit.framework.TestCase {
         byte[] b = new byte[data.length()];
         int r = 0;
         int count = 0;
-        while (count != b.length && (r = zis.read(b, count, b.length)) != -1)
+        while (count != b.length && (r = zis.read(b, count, b.length)) != -1) {
             count += r;
+        }
         zis.closeEntry();
         assertTrue("Write failed to write correct bytes", new String(b)
                 .equals(data));
@@ -256,17 +257,21 @@ public class ZipOutputStreamTest extends junit.framework.TestCase {
         }
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         zos = new ZipOutputStream(bos = new ByteArrayOutputStream());
     }
 
+    @Override
     protected void tearDown() throws Exception {
         try {
-            if (zos != null)
+            if (zos != null) {
                 zos.close();
-            if (zis != null)
+            }
+            if (zis != null) {
                 zis.close();
+            }
         } catch (Exception e) {}
         super.tearDown();
     }

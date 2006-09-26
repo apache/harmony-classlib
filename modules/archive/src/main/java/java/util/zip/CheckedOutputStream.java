@@ -25,7 +25,7 @@ import java.io.OutputStream;
  */
 public class CheckedOutputStream extends java.io.FilterOutputStream {
 
-	private Checksum check;
+	private final Checksum check;
 
 	/**
 	 * Constructs a new CheckedOutputStream on OutputStream os. The Checksum
@@ -60,7 +60,8 @@ public class CheckedOutputStream extends java.io.FilterOutputStream {
 	 * @throws IOException
 	 *             if an IO error has occured
 	 */
-	public void write(int val) throws IOException {
+	@Override
+    public void write(int val) throws IOException {
 		out.write(val);
 		check.update(val);
 	}
@@ -79,7 +80,8 @@ public class CheckedOutputStream extends java.io.FilterOutputStream {
 	 * @throws IOException
 	 *             if an IO error has occured
 	 */
-	public void write(byte[] buf, int off, int nbytes) throws IOException {
+	@Override
+    public void write(byte[] buf, int off, int nbytes) throws IOException {
 		out.write(buf, off, nbytes);
 		check.update(buf, off, nbytes);
 	}

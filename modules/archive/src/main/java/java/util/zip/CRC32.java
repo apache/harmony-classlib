@@ -76,8 +76,9 @@ public class CRC32 implements java.util.zip.Checksum {
 				&& buf.length - off >= nbytes) {
 			tbytes += nbytes;
 			crc = updateImpl(buf, off, nbytes, crc);
-		} else
-			throw new ArrayIndexOutOfBoundsException();
+		} else {
+            throw new ArrayIndexOutOfBoundsException();
+        }
 	}
 
 	private native long updateImpl(byte[] buf, int off, int nbytes, long crc1);

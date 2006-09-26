@@ -321,13 +321,15 @@ public class DeflaterOutputStreamTest extends junit.framework.TestCase {
 			File f1 = new File("writeI1.tst");
 			FileOutputStream fos = new FileOutputStream(f1);
 			DeflaterOutputStream dos = new DeflaterOutputStream(fos);
-			for (int i = 0; i < 3; i++)
-				dos.write(i);
+			for (int i = 0; i < 3; i++) {
+                dos.write(i);
+            }
 			dos.close();
 			FileInputStream fis = new FileInputStream(f1);
 			InflaterInputStream iis = new InflaterInputStream(fis);
-			for (int i = 0; i < 3; i++)
-				assertTrue("Incorrect Byte Returned.", iis.read() == i);
+			for (int i = 0; i < 3; i++) {
+                assertTrue("Incorrect Byte Returned.", iis.read() == i);
+            }
 			assertEquals("Incorrect Byte Returned (EOF).", -1, iis.read());
 			assertEquals("Incorrect Byte Returned (EOF).", -1, iis.read());
 			iis.close();
@@ -432,7 +434,8 @@ public class DeflaterOutputStreamTest extends junit.framework.TestCase {
 		}
 	}
 
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 		// setting up a deflater to be used
 		byte byteArray[] = { 1, 3, 4, 7, 8 };
 		int x = 0;
@@ -448,7 +451,8 @@ public class DeflaterOutputStreamTest extends junit.framework.TestCase {
 		deflate.end();
 	}
 
-	protected void tearDown() {
+	@Override
+    protected void tearDown() {
 
 	}
 

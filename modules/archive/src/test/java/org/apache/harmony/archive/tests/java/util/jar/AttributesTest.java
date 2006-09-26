@@ -90,16 +90,16 @@ public class AttributesTest extends junit.framework.TestCase {
 	 */
 	public void test_entrySet() {
 		// Test for method java.util.Set java.util.jar.Attributes.entrySet()
-		Set entrySet = a.entrySet();
-		Set keySet = new HashSet();
-		Set valueSet = new HashSet();
-		Iterator i;
+		Set<Map.Entry<Object, Object>> entrySet = a.entrySet();
+		Set<Object> keySet = new HashSet<Object>();
+		Set<Object> valueSet = new HashSet<Object>();
+		Iterator<?> i;
 		assertTrue("Wrong size--Wanted: 4, got: " + entrySet.size(), entrySet
 				.size() == 4);
 		i = entrySet.iterator();
 		while (i.hasNext()) {
-			java.util.Map.Entry e;
-			e = (Map.Entry) i.next();
+			java.util.Map.Entry<?, ?> e;
+			e = (Map.Entry<?, ?>) i.next();
 			keySet.add(e.getKey());
 			valueSet.add(e.getValue());
 		}
@@ -146,7 +146,7 @@ public class AttributesTest extends junit.framework.TestCase {
 	 */
 	public void test_keySet() {
 		// Test for method java.util.Set java.util.jar.Attributes.keySet()
-		Set s = a.keySet();
+		Set<?> s = a.keySet();
 		assertTrue("Wrong size--Wanted: 4, got: " + s.size(), s.size() == 4);
 		assertTrue("a) Should contain entry", s.contains(new Attributes.Name(
 				"1")));
@@ -210,10 +210,11 @@ public class AttributesTest extends junit.framework.TestCase {
         //verify that special care for null is done in the Attributes.putAll() method
         try {
             new Attributes() {
-                public void putAll(Map attrib) {
-                    map.putAll((Attributes) attrib);
+                @Override
+                public void putAll(Map<?, ?> attrib) {
+                    map.putAll(attrib);
                 }
-            }.putAll((Map) null);
+            }.putAll((Map<?, ?>) null);
             fail("NullPointerException expected");
         } catch (NullPointerException e) {
         }
@@ -249,7 +250,7 @@ public class AttributesTest extends junit.framework.TestCase {
 	public void test_values() {
 		// Test for method java.util.Collection
 		// java.util.jar.Attributes.values()
-		Collection valueCollection = a.values();
+		Collection<?> valueCollection = a.values();
 		assertTrue("a) Should contain entry", valueCollection.contains("one"));
 		assertTrue("b) Should contain entry", valueCollection.contains("two"));
 		assertTrue("c) Should contain entry", valueCollection.contains("three"));
@@ -287,19 +288,13 @@ public class AttributesTest extends junit.framework.TestCase {
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
 	 */
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 		a = new Attributes();
 		a.putValue("1", "one");
 		a.putValue("2", "two");
 		a.putValue("3", "three");
 		a.putValue("4", "four");
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
 	}
     
     /*

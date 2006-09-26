@@ -25,7 +25,7 @@ import java.io.InputStream;
  */
 public class CheckedInputStream extends java.io.FilterInputStream {
 
-	private Checksum check;
+	private final Checksum check;
 
 	/**
 	 * Constructs a new CheckedInputStream on InputStream is. The Checksum will
@@ -47,7 +47,8 @@ public class CheckedInputStream extends java.io.FilterInputStream {
 	 * 
 	 * @return -1 if end of stream, a single byte value otherwise
 	 */
-	public int read() throws IOException {
+	@Override
+    public int read() throws IOException {
 		int x = in.read();
 		if (x != -1) {
 			check.update(x);
@@ -61,10 +62,12 @@ public class CheckedInputStream extends java.io.FilterInputStream {
 	 * 
 	 * @return Number of bytes read, -1 if end of stream
 	 */
-	public int read(byte[] buf, int off, int nbytes) throws IOException {
+	@Override
+    public int read(byte[] buf, int off, int nbytes) throws IOException {
 		int x = in.read(buf, off, nbytes);
-		if (x != -1)
-			check.update(buf, off, x);
+		if (x != -1) {
+            check.update(buf, off, x);
+        }
 		return x;
 	}
 
@@ -85,7 +88,8 @@ public class CheckedInputStream extends java.io.FilterInputStream {
 	 *            long Number of bytes to skip
 	 * @return Number of bytes skipped
 	 */
-	public long skip(long nbytes) throws IOException {
+	@Override
+    public long skip(long nbytes) throws IOException {
 		if (nbytes < 1) {
 			return 0;
 		}

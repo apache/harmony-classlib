@@ -127,11 +127,11 @@ public class JarEntryTest extends junit.framework.TestCase {
 	    }
 	    CodeSigner[] codeSigners = jarEntry.getCodeSigners();
 	    assertEquals(2, codeSigners.length);
-	    List certs_bob = codeSigners[0].getSignerCertPath().getCertificates();
-	    List certs_alice = codeSigners[1].getSignerCertPath().getCertificates();
+	    List<?> certs_bob = codeSigners[0].getSignerCertPath().getCertificates();
+	    List<?> certs_alice = codeSigners[1].getSignerCertPath().getCertificates();
 	    if(1 == certs_bob.size())
 	    {
-	        List temp = certs_bob;
+	        List<?> temp = certs_bob;
 	        certs_bob = certs_alice;
 	        certs_alice = temp;
 	    }
@@ -147,7 +147,8 @@ public class JarEntryTest extends junit.framework.TestCase {
 	 * is called before a test is executed.
 	 */
 
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 		try {
 			resources = Support_Resources.createTempFolder();
 			Support_Resources.copyFile(resources, null, jarName);
@@ -163,10 +164,12 @@ public class JarEntryTest extends junit.framework.TestCase {
 	 * method is called after a test is executed.
 	 */
 
-	protected void tearDown() {
+	@Override
+    protected void tearDown() {
 		try {
-			if (jarFile != null)
-				jarFile.close();
+			if (jarFile != null) {
+                jarFile.close();
+            }
 		} catch (java.io.IOException e) {
 			System.out.println("Exception during tearDown");
 		}

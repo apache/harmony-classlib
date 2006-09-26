@@ -96,7 +96,8 @@ public class InflaterInputStream extends FilterInputStream {
 	 * @throws IOException
 	 *                If an error occurs reading
 	 */
-	public int read() throws IOException {
+	@Override
+    public int read() throws IOException {
 		byte[] b = new byte[1];
 		if (read(b, 0, 1) == -1) {
             return -1;
@@ -118,7 +119,8 @@ public class InflaterInputStream extends FilterInputStream {
 	 * @throws IOException
 	 *                If an error occurs reading
 	 */
-	public int read(byte[] buffer, int off, int nbytes) throws IOException {
+	@Override
+    public int read(byte[] buffer, int off, int nbytes) throws IOException {
 		/* [MSG "K0059", "Stream is closed"] */
 		if (closed) {
             throw new IOException(Msg.getString("K0059"));
@@ -191,7 +193,8 @@ public class InflaterInputStream extends FilterInputStream {
 	 * @throws IOException
 	 *                If an error occurs skipping
 	 */
-	public long skip(long nbytes) throws IOException {
+	@Override
+    public long skip(long nbytes) throws IOException {
 		if (nbytes >= 0) {
 			long count = 0, rem = 0;
 			while (count < nbytes) {
@@ -215,7 +218,8 @@ public class InflaterInputStream extends FilterInputStream {
 	 * @throws IOException
 	 *                If an error occurs
 	 */
-	public int available() throws IOException {
+	@Override
+    public int available() throws IOException {
 		if (closed) {
             throw new IOException(Msg.getString("K0059"));
         }
@@ -231,7 +235,8 @@ public class InflaterInputStream extends FilterInputStream {
 	 * @throws IOException
 	 *                If an error occurs closing the stream
 	 */
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		if (!closed) {
 			inf.end();
 			closed = true;
@@ -249,7 +254,8 @@ public class InflaterInputStream extends FilterInputStream {
 	 * @param readlimit
 	 *            of no use
 	 */
-	public void mark(int readlimit) {
+	@Override
+    public void mark(int readlimit) {
 		// do nothing
 	}
 
@@ -262,6 +268,7 @@ public class InflaterInputStream extends FilterInputStream {
 	 * @throws IOException
 	 *             if the method is called
 	 */
+    @Override
     public void reset() throws IOException{
         throw new IOException();
     }
@@ -271,7 +278,8 @@ public class InflaterInputStream extends FilterInputStream {
 	 * does not support mark, so always responds <code>false</code>.
 	 * @return false 
 	 */
-	public boolean markSupported() {
+	@Override
+    public boolean markSupported() {
 		return false;
 	}
 

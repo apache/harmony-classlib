@@ -156,10 +156,12 @@ public class GZIPOutputStreamTest extends junit.framework.TestCase {
 		}
 	}
 
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 	}
 
-	protected void tearDown() {
+	@Override
+    protected void tearDown() {
 
 		try {
 			File dFile = new File("GZIPOutCon.txt");

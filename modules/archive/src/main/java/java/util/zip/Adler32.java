@@ -73,10 +73,11 @@ public class Adler32 implements java.util.zip.Checksum {
 	public void update(byte[] buf, int off, int nbytes) {
 		// avoid int overflow, check null buf
 		if (off <= buf.length && nbytes >= 0 && off >= 0
-				&& buf.length - off >= nbytes)
-			adler = updateImpl(buf, off, nbytes, adler);
-		else
-			throw new ArrayIndexOutOfBoundsException();
+				&& buf.length - off >= nbytes) {
+            adler = updateImpl(buf, off, nbytes, adler);
+        } else {
+            throw new ArrayIndexOutOfBoundsException();
+        }
 	}
 
 	private native long updateImpl(byte[] buf, int off, int nbytes, long adler1);

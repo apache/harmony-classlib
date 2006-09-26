@@ -156,10 +156,12 @@ public class Adler32Test extends junit.framework.TestCase {
 
 	}
 
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 	}
 
-	protected void tearDown() {
+	@Override
+    protected void tearDown() {
 	}
 
 }

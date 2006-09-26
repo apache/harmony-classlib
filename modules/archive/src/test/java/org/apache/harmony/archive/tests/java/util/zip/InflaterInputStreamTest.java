@@ -283,12 +283,13 @@ public class InflaterInputStreamTest extends TestCase {
 		for (int i = 0; i < 11; i++) {
 			read = iis.read();
 			available = iis.available();
-			if (read == -1)
-				assertEquals("Bytes Available Should Return 0 ",
+			if (read == -1) {
+                assertEquals("Bytes Available Should Return 0 ",
 						0, available);
-			else
-				assertEquals("Bytes Available Should Return 1.",
+            } else {
+                assertEquals("Bytes Available Should Return 1.",
 						1, available);
+            }
 		}
 
 		iis.close();

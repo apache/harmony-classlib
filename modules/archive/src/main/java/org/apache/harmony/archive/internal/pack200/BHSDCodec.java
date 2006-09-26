@@ -127,9 +127,8 @@ public final class BHSDCodec extends Codec {
 	public long cardinality() {
 		if (h > 1) {
 			return (long) (l * Math.pow(1 - h, b) / (1 - h) + Math.pow(h, b));
-		} else {
-			return (b * 255) + 1;
 		}
+        return (b * 255) + 1;
 	}
 
 	@Override
@@ -242,7 +241,8 @@ public final class BHSDCodec extends Codec {
 	 * Returns the codec in the form (1,256) or (1,64,1,1). Note that trailing
 	 * zero fields are not shown.
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		StringBuffer buffer = new StringBuffer(11);
 		buffer.append('(');
 		buffer.append(b);

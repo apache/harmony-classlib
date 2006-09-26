@@ -43,7 +43,7 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 
 	private String comment;
 
-	private Vector<String> entries = new Vector<String>();
+	private final Vector<String> entries = new Vector<String>();
 
 	private int compressMethod = DEFLATED;
 
@@ -53,7 +53,7 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 
 	private ZipEntry currentEntry;
 
-	private CRC32 crc = new CRC32();
+	private final CRC32 crc = new CRC32();
 
 	private int offset = 0, curOffset = 0, nameLength;
 
@@ -76,7 +76,8 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 	 * @exception IOException
 	 *                If an error occurs closing the stream
 	 */
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		if (out != null) {
 			finish();
 			out.close();
@@ -92,20 +93,24 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 	 *                If an error occurs closing the entry
 	 */
 	public void closeEntry() throws IOException {
-		if (cDir == null)
-			throw new IOException(Msg.getString("K0059"));
-		if (currentEntry == null)
-			return;
+		if (cDir == null) {
+            throw new IOException(Msg.getString("K0059"));
+        }
+		if (currentEntry == null) {
+            return;
+        }
 		if (currentEntry.getMethod() == DEFLATED) {
 			super.finish();
 		}
 
 		// Verify values for STORED types
 		if (currentEntry.getMethod() == STORED) {
-			if (crc.getValue() != currentEntry.crc)
-				throw new ZipException(Msg.getString("K0077"));
-			if (currentEntry.size != crc.tbytes)
-				throw new ZipException(Msg.getString("K00ae"));
+			if (crc.getValue() != currentEntry.crc) {
+                throw new ZipException(Msg.getString("K0077"));
+            }
+			if (currentEntry.size != crc.tbytes) {
+                throw new ZipException(Msg.getString("K00ae"));
+            }
 		}
 		curOffset = LOCHDR;
 
@@ -135,26 +140,30 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 			writeLong(cDir, crc.tbytes);
 		}
 		curOffset += writeShort(cDir, nameLength);
-		if (currentEntry.extra != null)
-			curOffset += writeShort(cDir, currentEntry.extra.length);
-		else
-			writeShort(cDir, 0);
+		if (currentEntry.extra != null) {
+            curOffset += writeShort(cDir, currentEntry.extra.length);
+        } else {
+            writeShort(cDir, 0);
+        }
 		String c;
-		if ((c = currentEntry.getComment()) != null)
-			writeShort(cDir, c.length());
-		else
-			writeShort(cDir, 0);
+		if ((c = currentEntry.getComment()) != null) {
+            writeShort(cDir, c.length());
+        } else {
+            writeShort(cDir, 0);
+        }
 		writeShort(cDir, 0); // Disk Start
 		writeShort(cDir, 0); // Internal File Attributes
 		writeLong(cDir, 0); // External File Attributes
 		writeLong(cDir, offset);
 		cDir.write(nameBytes);
 		nameBytes = null;
-		if (currentEntry.extra != null)
-			cDir.write(currentEntry.extra);
+		if (currentEntry.extra != null) {
+            cDir.write(currentEntry.extra);
+        }
 		offset += curOffset;
-		if (c != null)
-			cDir.write(c.getBytes());
+		if (c != null) {
+            cDir.write(c.getBytes());
+        }
 		currentEntry = null;
 		crc.reset();
 		def.reset();
@@ -168,15 +177,20 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 	 * @exception IOException
 	 *                If an error occurs while finishing
 	 */
-	public void finish() throws IOException {
-		if (out == null)
-			throw new IOException(Msg.getString("K0059"));
-		if (cDir == null)
-			return;
-		if (entries.size() == 0)
-			throw new ZipException(Msg.getString("K00b6"));
-		if (currentEntry != null)
-			closeEntry();
+	@Override
+    public void finish() throws IOException {
+		if (out == null) {
+            throw new IOException(Msg.getString("K0059"));
+        }
+		if (cDir == null) {
+            return;
+        }
+		if (entries.size() == 0) {
+            throw new ZipException(Msg.getString("K00b6"));
+        }
+		if (currentEntry != null) {
+            closeEntry();
+        }
 		int cdirSize = cDir.size();
 		// Write Central Dir End
 		writeLong(cDir, ENDSIG);
@@ -189,8 +203,9 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 		if (comment != null) {
 			writeShort(cDir, comment.length());
 			cDir.write(comment.getBytes());
-		} else
-			writeShort(cDir, 0);
+		} else {
+            writeShort(cDir, 0);
+        }
 		// Write the central dir
 		out.write(cDir.toByteArray());
 		cDir = null;
@@ -210,52 +225,62 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 	 * @see #write
 	 */
 	public void putNextEntry(ZipEntry ze) throws java.io.IOException {
-        if (currentEntry != null)
+        if (currentEntry != null) {
             closeEntry();
+        }
 		if (ze.getMethod() == STORED
 				|| (compressMethod == STORED && ze.getMethod() == -1)) {
-			if (ze.crc == -1)
-				/* [MSG "K0077", "Crc mismatch"] */
+			if (ze.crc == -1) {
+                /* [MSG "K0077", "Crc mismatch"] */
 				throw new ZipException(Msg.getString("K0077"));
-			if (ze.size == -1 && ze.compressedSize == -1)
-				/* [MSG "K00ae", "Size mismatch"] */
+            }
+			if (ze.size == -1 && ze.compressedSize == -1) {
+                /* [MSG "K00ae", "Size mismatch"] */
 				throw new ZipException(Msg.getString("K00ae"));
+            }
 			if (ze.size != ze.compressedSize && ze.compressedSize != -1
-					&& ze.size != -1)
-				/* [MSG "K00ae", "Size mismatch"] */
+					&& ze.size != -1) {
+                /* [MSG "K00ae", "Size mismatch"] */
 				throw new ZipException(Msg.getString("K00ae"));
+            }
 		}
 		/* [MSG "K0059", "Stream is closed"] */
-		if (cDir == null)
-			throw new IOException(Msg.getString("K0059"));
-		if (entries.contains(ze.name))
-			/* [MSG "K0066", "Entry already exists: {0}"] */
+		if (cDir == null) {
+            throw new IOException(Msg.getString("K0059"));
+        }
+		if (entries.contains(ze.name)) {
+            /* [MSG "K0066", "Entry already exists: {0}"] */
 			throw new ZipException(Msg.getString("K0066", ze.name));
+        }
 		nameLength = utf8Count(ze.name);
-		if (nameLength > 0xffff)
-			/* [MSG "K01a7", "Name too long: {0}"] */
+		if (nameLength > 0xffff) {
+            /* [MSG "K01a7", "Name too long: {0}"] */
 			throw new IllegalArgumentException(Msg.getString("K01a7", ze.name));
+        }
 
 		def.setLevel(compressLevel);
 		currentEntry = ze;
 		entries.add(currentEntry.name);
-		if (currentEntry.getMethod() == -1)
-			currentEntry.setMethod(compressMethod);
+		if (currentEntry.getMethod() == -1) {
+            currentEntry.setMethod(compressMethod);
+        }
 		writeLong(out, LOCSIG); // Entry header
 		writeShort(out, ZIPLocalHeaderVersionNeeded); // Extraction version
 		writeShort(out, currentEntry.getMethod() == STORED ? 0
 				: ZIPDataDescriptorFlag);
 		writeShort(out, currentEntry.getMethod());
-		if (currentEntry.getTime() == -1)
-			currentEntry.setTime(System.currentTimeMillis());
+		if (currentEntry.getTime() == -1) {
+            currentEntry.setTime(System.currentTimeMillis());
+        }
 		writeShort(out, currentEntry.time);
 		writeShort(out, currentEntry.modDate);
 
 		if (currentEntry.getMethod() == STORED) {
-			if (currentEntry.size == -1)
-				currentEntry.size = currentEntry.compressedSize;
-			else if (currentEntry.compressedSize == -1)
-				currentEntry.compressedSize = currentEntry.size;
+			if (currentEntry.size == -1) {
+                currentEntry.size = currentEntry.compressedSize;
+            } else if (currentEntry.compressedSize == -1) {
+                currentEntry.compressedSize = currentEntry.size;
+            }
 			writeLong(out, currentEntry.crc);
 			writeLong(out, currentEntry.size);
 			writeLong(out, currentEntry.size);
@@ -265,14 +290,16 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 			writeLong(out, 0);
 		}
 		writeShort(out, nameLength);
-		if (currentEntry.extra != null)
-			writeShort(out, currentEntry.extra.length);
-		else
-			writeShort(out, 0);
+		if (currentEntry.extra != null) {
+            writeShort(out, currentEntry.extra.length);
+        } else {
+            writeShort(out, 0);
+        }
 		nameBytes = toUTF8Bytes(currentEntry.name, nameLength);
 		out.write(nameBytes);
-		if (currentEntry.extra != null)
-			out.write(currentEntry.extra);
+		if (currentEntry.extra != null) {
+            out.write(currentEntry.extra);
+        }
 	}
 
 	/**
@@ -280,8 +307,9 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 	 * 
 	 */
 	public void setComment(String comment) {
-		if (comment.length() > 0xFFFF)
-			throw new IllegalArgumentException(Msg.getString("K0068"));
+		if (comment.length() > 0xFFFF) {
+            throw new IllegalArgumentException(Msg.getString("K0068"));
+        }
 		this.comment = comment;
 	}
 
@@ -293,8 +321,9 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 	 */
 	public void setLevel(int level) {
 		if (level < Deflater.DEFAULT_COMPRESSION
-				|| level > Deflater.BEST_COMPRESSION)
-			throw new IllegalArgumentException();
+				|| level > Deflater.BEST_COMPRESSION) {
+            throw new IllegalArgumentException();
+        }
 		compressLevel = level;
 	}
 
@@ -306,8 +335,9 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 	 *            Compression method to use
 	 */
 	public void setMethod(int method) {
-		if (method != STORED && method != DEFLATED)
-			throw new IllegalArgumentException();
+		if (method != STORED && method != DEFLATED) {
+            throw new IllegalArgumentException();
+        }
 		compressMethod = method;
 
 	}
@@ -334,7 +364,8 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 	 * @exception IOException
 	 *                If an error occurs writing to the stream
 	 */
-	public void write(byte[] buffer, int off, int nbytes)
+	@Override
+    public void write(byte[] buffer, int off, int nbytes)
 			throws java.io.IOException {
 		// avoid int overflow, check null buf
 		if ((off > buffer.length) || (nbytes < 0) || (off < 0)
@@ -347,10 +378,11 @@ public class ZipOutputStream extends DeflaterOutputStream implements
             throw new ZipException(Msg.getString("K00ab"));
         }
 
-		if (currentEntry.getMethod() == STORED)
-			out.write(buffer, off, nbytes);
-		else
-			super.write(buffer, off, nbytes);
+		if (currentEntry.getMethod() == STORED) {
+            out.write(buffer, off, nbytes);
+        } else {
+            super.write(buffer, off, nbytes);
+        }
 		crc.update(buffer, off, nbytes);
 	}
 
@@ -358,12 +390,13 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 		int total = 0;
 		for (int i = value.length(); --i >= 0;) {
 			char ch = value.charAt(i);
-			if (ch < 0x80)
-				total++;
-			else if (ch < 0x800)
-				total += 2;
-			else
-				total += 3;
+			if (ch < 0x80) {
+                total++;
+            } else if (ch < 0x800) {
+                total += 2;
+            } else {
+                total += 3;
+            }
 		}
 		return total;
 	}
@@ -373,9 +406,9 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 		int pos = result.length;
 		for (int i = value.length(); --i >= 0;) {
 			char ch = value.charAt(i);
-			if (ch < 0x80)
-				result[--pos] = (byte) ch;
-			else if (ch < 0x800) {
+			if (ch < 0x80) {
+                result[--pos] = (byte) ch;
+            } else if (ch < 0x800) {
 				result[--pos] = (byte) (0x80 | (ch & 0x3f));
 				result[--pos] = (byte) (0xc0 | (ch >> 6));
 			} else {

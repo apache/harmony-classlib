@@ -124,7 +124,8 @@ public class Deflater {
 		}
 	}
 
-	protected void finalize() {
+	@Override
+    protected void finalize() {
 		end();
 	}
 

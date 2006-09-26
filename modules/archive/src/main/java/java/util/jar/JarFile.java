@@ -67,6 +67,7 @@ public class JarFile extends ZipFile {
             }
         }
 
+        @Override
         public int read() throws IOException {
             int r = super.read();
             if (entry != null) {
@@ -83,6 +84,7 @@ public class JarFile extends ZipFile {
             return r;
         }
 
+        @Override
         public int read(byte[] buf, int off, int nbytes) throws IOException {
             int r = super.read(buf, off, nbytes);
             if (entry != null) {
@@ -103,6 +105,7 @@ public class JarFile extends ZipFile {
             return r;
         }
 
+        @Override
         public long skip(long nbytes) throws IOException {
             long cnt = 0, rem = 0;
             byte[] buf = new byte[4096];
@@ -207,6 +210,7 @@ public class JarFile extends ZipFile {
      * @exception java.lang.IllegalStateException
      *                If this JarFile has been closed.
      */
+    @Override
     public Enumeration<JarEntry> entries() {
         class JarFileEnumerator implements Enumeration<JarEntry> {
             Enumeration<? extends ZipEntry> ze;
@@ -278,7 +282,7 @@ public class JarFile extends ZipFile {
     }
 
     private void readMetaEntries() throws IOException {
-        ZipEntry[] metaEntries = this.getMetaEntriesImpl(null);
+        ZipEntry[] metaEntries = getMetaEntriesImpl(null);
         int dirLength = META_DIR.length();
 
         boolean signed = false;
@@ -329,6 +333,7 @@ public class JarFile extends ZipFile {
      * @exception java.io.IOException
      *                If an error occured while creating the InputStream.
      */
+    @Override
     public InputStream getInputStream(ZipEntry ze) throws IOException {
         if (manifestEntry != null) {
             getManifest();
@@ -364,6 +369,7 @@ public class JarFile extends ZipFile {
      *            the name of the entry in the jar file
      * @return java.util.jar.JarEntry
      */
+    @Override
     public ZipEntry getEntry(String name) {
         ZipEntry ze = super.getEntry(name);
         if (ze == null) {

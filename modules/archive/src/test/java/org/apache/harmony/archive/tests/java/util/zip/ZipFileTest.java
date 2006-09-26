@@ -29,9 +29,9 @@ import tests.support.resource.Support_Resources;
 public class ZipFileTest extends junit.framework.TestCase {
 
 	// the file hyts_zipFile.zip in setup must be included as a resource
-	String tempFileName;
+	private String tempFileName;
 
-	private java.util.zip.ZipFile zfile;
+	private ZipFile zfile;
 
 	/**
 	 * @tests java.util.zip.ZipFile#ZipFile(java.io.File)
@@ -92,8 +92,9 @@ public class ZipFileTest extends junit.framework.TestCase {
 			OutputStream out = new FileOutputStream(file);
 			int result;
 			byte[] buf = new byte[4096];
-			while ((result = in.read(buf)) != -1)
-				out.write(buf, 0, result);
+			while ((result = in.read(buf)) != -1) {
+                out.write(buf, 0, result);
+            }
 			in.close();
 			out.close();
 			/*
@@ -133,7 +134,7 @@ public class ZipFileTest extends junit.framework.TestCase {
 	 */
 	public void test_entries() {
 		// Test for method java.util.Enumeration java.util.zip.ZipFile.entries()
-		java.util.Enumeration enumer = zfile.entries();
+		Enumeration<? extends ZipEntry> enumer = zfile.entries();
 		int c = 0;
 		while (enumer.hasMoreElements()) {
 			++c;
@@ -142,7 +143,7 @@ public class ZipFileTest extends junit.framework.TestCase {
 		assertTrue("Incorrect number of entries returned: " + c, c == 6);
 
 		try {
-			Enumeration enumeration = zfile.entries();
+			Enumeration<? extends ZipEntry> enumeration = zfile.entries();
 			zfile.close();
 			zfile = null;
 			boolean pass = false;
@@ -242,7 +243,8 @@ public class ZipFileTest extends junit.framework.TestCase {
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
 	 */
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 		try {
 			byte[] rbuf = new byte[2000];
 			// Create a local copy of the file since some tests want to alter
@@ -250,18 +252,19 @@ public class ZipFileTest extends junit.framework.TestCase {
 			tempFileName = System.getProperty("user.dir");
 			String separator = System.getProperty("file.separator");
 			if (tempFileName.charAt(tempFileName.length() - 1) == separator
-					.charAt(0))
-				tempFileName = Support_PlatformFile.getNewPlatformFile(
+					.charAt(0)) {
+                tempFileName = Support_PlatformFile.getNewPlatformFile(
 						tempFileName, "gabba.zip");
-			else
-				tempFileName = Support_PlatformFile.getNewPlatformFile(
+            } else {
+                tempFileName = Support_PlatformFile.getNewPlatformFile(
 						tempFileName + separator, "gabba.zip");
+            }
 
 			File f = new File(tempFileName);
 			f.delete();
 			InputStream is = Support_Resources.getStream("hyts_ZipFile.zip");
 			FileOutputStream fos = new FileOutputStream(f);
-			rbuf = new byte[(int) is.available()];
+			rbuf = new byte[is.available()];
 			is.read(rbuf, 0, rbuf.length);
 			fos.write(rbuf, 0, rbuf.length);
 			is.close();
@@ -277,12 +280,14 @@ public class ZipFileTest extends junit.framework.TestCase {
 	 * Tears down the fixture, for example, close a network connection. This
 	 * method is called after a test is executed.
 	 */
-	protected void tearDown() {
+	@Override
+    protected void tearDown() {
 		try {
-			if (zfile != null)
-				// Note zfile is a user-defined zip file used by other tests and
+			if (zfile != null) {
+                // Note zfile is a user-defined zip file used by other tests and
 				// should not be deleted
 				zfile.close();
+            }
 		} catch (Exception e) {
 		}
 	}

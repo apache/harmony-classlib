@@ -618,7 +618,8 @@ public class InflaterTest extends junit.framework.TestCase {
 		assertEquals("boundary check is not present for setInput", 1, r);
 	}
 
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 		try {
 			java.io.InputStream infile = Support_Resources
 					.getStream("hyts_compressD.txt");
@@ -643,7 +644,8 @@ public class InflaterTest extends junit.framework.TestCase {
 		}
 	}
 
-	protected void tearDown() {
+	@Override
+    protected void tearDown() {
 	}
     
     /**

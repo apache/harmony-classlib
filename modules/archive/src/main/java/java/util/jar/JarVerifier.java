@@ -53,19 +53,19 @@ import org.apache.harmony.security.utils.JarUtils;
  */
 class JarVerifier {
 
-    private String jarName;
+    private final String jarName;
 
     private Manifest man;
 
     private HashMap<String, byte[]> metaEntries = new HashMap<String, byte[]>(5);
 
-    private Hashtable<String, HashMap<String, Attributes>> signatures =
+    private final Hashtable<String, HashMap<String, Attributes>> signatures =
         new Hashtable<String, HashMap<String, Attributes>>(5);
 
-    private Hashtable<String, Certificate[]> certificates =
+    private final Hashtable<String, Certificate[]> certificates =
         new Hashtable<String, Certificate[]>(5);
 
-    private Hashtable<String, Certificate[]> verifiedEntries =
+    private final Hashtable<String, Certificate[]> verifiedEntries =
         new Hashtable<String, Certificate[]>();
 
     byte[] mainAttributesChunk;
@@ -93,6 +93,7 @@ class JarVerifier {
          * 
          * @see java.io.OutputStream#write(int)
          */
+        @Override
         public void write(int value) {
             digest.update((byte) value);
         }
@@ -102,6 +103,7 @@ class JarVerifier {
          * 
          * @see java.io.OutputStream#write(byte[], int, int)
          */
+        @Override
         public void write(byte[] buf, int off, int nbytes) {
             digest.update(buf, off, nbytes);
         }
@@ -268,7 +270,7 @@ class JarVerifier {
                     new ByteArrayInputStream(sfBytes),
                     new ByteArrayInputStream(sBlockBytes));
             if (signerCertChain != null) {
-                this.certificates.put(signatureFile, signerCertChain);
+                certificates.put(signatureFile, signerCertChain);
             }
         } catch (IOException e) {
             return;
@@ -299,9 +301,9 @@ class JarVerifier {
         // file, such as those created before java 1.5, then we ignore
         // such verification.
         // FIXME: The meaning of createdBySigntool
-        if (this.mainAttributesChunk != null && !createdBySigntool) {
+        if (mainAttributesChunk != null && !createdBySigntool) {
             String digestAttribute = "-Digest-Manifest-Main-Attributes";
-            if (!verify(attributes, digestAttribute, this.mainAttributesChunk,
+            if (!verify(attributes, digestAttribute, mainAttributesChunk,
                     false, true)) {
                 /* [MSG "K00eb", "{0} failed verification of {1}"] */
                 throw new SecurityException(

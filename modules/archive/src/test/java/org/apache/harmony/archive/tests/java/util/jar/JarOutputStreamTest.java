@@ -47,13 +47,13 @@ public class JarOutputStreamTest extends junit.framework.TestCase {
 		final String[] manifestMain = { "foo.bar.execjartest.MainClass",
 				"foo/bar/execjartest/MainClass" };
 
-		for (int i = 0; i < manifestMain.length; i++) {
+		for (String element : manifestMain) {
 
 			// create the manifest
 			Manifest newman = new Manifest();
 			Attributes att = newman.getMainAttributes();
 			att.put(Attributes.Name.MANIFEST_VERSION, "1.0");
-			att.put(Attributes.Name.MAIN_CLASS, manifestMain[i]);
+			att.put(Attributes.Name.MAIN_CLASS, element);
 
 			File outputJar = null;
 			JarOutputStream jout = null;
@@ -77,8 +77,9 @@ public class JarOutputStreamTest extends junit.framework.TestCase {
 
 				byte[] bytes = new byte[1024];
 				int len;
-				while ((len = jis.read(bytes)) != -1)
-					jout.write(bytes, 0, len);
+				while ((len = jis.read(bytes)) != -1) {
+                    jout.write(bytes, 0, len);
+                }
 
 				jout.flush();
 				jout.close();
@@ -99,17 +100,19 @@ public class JarOutputStreamTest extends junit.framework.TestCase {
 				fail("Exception executing test JAR: " + e);
 			}
 
-			assertTrue("Error executing JAR test on: " + manifestMain[i]
+			assertTrue("Error executing JAR test on: " + element
 					+ ". Result returned was incorrect.", res
 					.startsWith("TEST"));
 			outputJar.delete();
 		}
 	}
 
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 	}
 
-	protected void tearDown() {
+	@Override
+    protected void tearDown() {
 	}
 
 }

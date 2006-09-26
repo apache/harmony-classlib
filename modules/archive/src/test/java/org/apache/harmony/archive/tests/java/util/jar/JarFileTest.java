@@ -30,33 +30,30 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
+import junit.framework.TestCase;
 import tests.support.Support_PlatformFile;
 import tests.support.resource.Support_Resources;
 
-public class JarFileTest extends junit.framework.TestCase {
+public class JarFileTest extends TestCase {
 
-	java.util.zip.ZipEntry zipEntry;
+	private final String jarName = "hyts_patch.jar"; // a 'normal' jar file
 
-	java.util.jar.JarEntry jarEntry;
+    private final String jarName2 = "hyts_patch2.jar"; 
 
-	java.util.jar.JarFile jarFile;
+    private final String jarName3 = "hyts_manifest1.jar";
 
-	final String jarName = "hyts_patch.jar"; // a 'normal' jar file
+    private final String jarName4 = "hyts_signed.jar";
 
-	// same as patch.jar but without a manifest file
-	final String jarName2 = "hyts_patch2.jar"; 
+    private final String entryName = "foo/bar/A.class";
 
-	final String jarName3 = "hyts_manifest1.jar";
+    private final String entryName3 = "coucou/FileAccess.class";
 
-	final String jarName4 = "hyts_signed.jar";
-
-	final String entryName = "foo/bar/A.class";
-
-	final String entryName2 = "Blah.txt";
-
-	final String entryName3 = "coucou/FileAccess.class";
-
-	File resources;
+    private File resources;
+    
+    @Override
+    protected void setUp() {
+        resources = Support_Resources.createTempFolder();
+    }
 
 	/**
 	 * @tests java.util.jar.JarFile#JarFile(java.io.File)
@@ -98,7 +95,7 @@ public class JarFileTest extends junit.framework.TestCase {
 		try {
 			Support_Resources.copyFile(resources, null, jarName);
 			JarFile jarFile = new JarFile(new File(resources, jarName));
-			Enumeration e = jarFile.entries();
+			Enumeration<JarEntry> e = jarFile.entries();
 			int i = 0;
 			while (e.hasMoreElements()) {
 				i++;
@@ -113,7 +110,7 @@ public class JarFileTest extends junit.framework.TestCase {
 		try {
 			Support_Resources.copyFile(resources, null, jarName);
 			JarFile jarFile = new JarFile(new File(resources, jarName));
-			Enumeration enumeration = jarFile.entries();
+			Enumeration<JarEntry> enumeration = jarFile.entries();
 			jarFile.close();
 			boolean pass = false;
 			try {
@@ -158,7 +155,7 @@ public class JarFileTest extends junit.framework.TestCase {
 		// test all signed jars in the /Testres/Internal/SignedJars directory
 		String jarDirUrl = Support_Resources
 				.getResourceURL("/../internalres/signedjars");
-		Vector signedJars = new Vector();
+		Vector<String> signedJars = new Vector<String>();
 		try {
 			InputStream is = new URL(jarDirUrl + "/jarlist.txt").openStream();
 			while (is.available() > 0) {
@@ -195,15 +192,15 @@ public class JarFileTest extends junit.framework.TestCase {
 		}
 
 		for (int i = 0; i < signedJars.size(); i++) {
-			String jarName = (String) signedJars.get(i);
+			String jarName = signedJars.get(i);
 			try {
 				File file = Support_Resources.getExternalLocalFile(jarDirUrl
 						+ "/" + jarName);
 				JarFile jarFile = new JarFile(file, true);
 				boolean foundCerts = false;
-				Enumeration e = jarFile.entries();
+				Enumeration<JarEntry> e = jarFile.entries();
 				while (e.hasMoreElements()) {
-					JarEntry entry = (JarEntry) e.nextElement();
+					JarEntry entry = e.nextElement();
 					InputStream is = jarFile.getInputStream(entry);
 					is.skip(100000);
 					is.close();
@@ -398,9 +395,9 @@ public class JarFileTest extends junit.framework.TestCase {
         Support_Resources.copyFile(resources, null, modifiedJarName);
         JarFile jarFile = new JarFile(new File(resources, modifiedJarName),
                 true);
-        Enumeration entries = jarFile.entries();
+        Enumeration<JarEntry> entries = jarFile.entries();
         while (entries.hasMoreElements()) {
-            ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+            ZipEntry zipEntry = entries.nextElement();
             jarFile.getInputStream(zipEntry);
         }
     }
@@ -411,9 +408,9 @@ public class JarFileTest extends junit.framework.TestCase {
         Support_Resources.copyFile(resources, null, modifiedJarName);
         JarFile jarFile = new JarFile(new File(resources, modifiedJarName),
                 true);
-        Enumeration entries = jarFile.entries();
+        Enumeration<JarEntry> entries = jarFile.entries();
         while (entries.hasMoreElements()) {
-            ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+            ZipEntry zipEntry = entries.nextElement();
             jarFile.getInputStream(zipEntry);
         }
     }
@@ -427,11 +424,11 @@ public class JarFileTest extends junit.framework.TestCase {
         Support_Resources.copyFile(resources, null, modifiedJarName);
         JarFile jarFile = new JarFile(new File(resources, modifiedJarName),
                 true);
-        Enumeration entries = jarFile.entries();
+        Enumeration<JarEntry> entries = jarFile.entries();
         int count = 0;
         while (entries.hasMoreElements()) {
 
-            ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+            ZipEntry zipEntry = entries.nextElement();
             jarFile.getInputStream(zipEntry);
             count++;
         }
@@ -448,11 +445,11 @@ public class JarFileTest extends junit.framework.TestCase {
         Support_Resources.copyFile(resources, null, modifiedJarName);
         JarFile jarFile = new JarFile(new File(resources, modifiedJarName),
                 true);
-        Enumeration entries = jarFile.entries();
+        Enumeration<JarEntry> entries = jarFile.entries();
         int count = 0;
         while (entries.hasMoreElements()) {
 
-            ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+            ZipEntry zipEntry = entries.nextElement();
             jarFile.getInputStream(zipEntry);
             count++;
         }
@@ -469,9 +466,9 @@ public class JarFileTest extends junit.framework.TestCase {
         Support_Resources.copyFile(resources, null, modifiedJarName);
         JarFile jarFile = new JarFile(new File(resources, modifiedJarName),
                 true);
-        Enumeration entries = jarFile.entries();
+        Enumeration<JarEntry> entries = jarFile.entries();
         while (entries.hasMoreElements()) {
-            ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+            ZipEntry zipEntry = entries.nextElement();
             jarFile.getInputStream(zipEntry);
         }
         /* The content of Test.class has been tampered. */
@@ -499,9 +496,9 @@ public class JarFileTest extends junit.framework.TestCase {
         Support_Resources.copyFile(resources, null, modifiedJarName);
         JarFile jarFile = new JarFile(new File(resources, modifiedJarName),
                 true);
-        Enumeration entries = jarFile.entries();
+        Enumeration<JarEntry> entries = jarFile.entries();
         while (entries.hasMoreElements()) {
-            ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+            ZipEntry zipEntry = entries.nextElement();
             try {
                 jarFile.getInputStream(zipEntry);
                 fail("should throw Security Excetpion");
@@ -522,9 +519,9 @@ public class JarFileTest extends junit.framework.TestCase {
         Support_Resources.copyFile(resources, null, modifiedJarName);
         JarFile jarFile = new JarFile(new File(resources, modifiedJarName),
                 true);
-        Enumeration entries = jarFile.entries();
+        Enumeration<JarEntry> entries = jarFile.entries();
         while (entries.hasMoreElements()) {
-            ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+            ZipEntry zipEntry = entries.nextElement();
             try {
                 jarFile.getInputStream(zipEntry);
                 fail("should throw Security Excetpion");
@@ -543,9 +540,9 @@ public class JarFileTest extends junit.framework.TestCase {
         Support_Resources.copyFile(resources, null, modifiedJarName);
         JarFile jarFile = new JarFile(new File(resources, modifiedJarName),
                 true);
-        Enumeration entries = jarFile.entries();
+        Enumeration<JarEntry> entries = jarFile.entries();
         while (entries.hasMoreElements()) {
-            ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+            ZipEntry zipEntry = entries.nextElement();
             try {
                 jarFile.getInputStream(zipEntry);
                 fail("should throw Security Excetpion");
@@ -554,21 +551,4 @@ public class JarFileTest extends junit.framework.TestCase {
             }
         }
     }
-    
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-		resources = Support_Resources.createTempFolder();
-
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
-
 }
