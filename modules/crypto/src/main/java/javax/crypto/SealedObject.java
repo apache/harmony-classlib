@@ -36,6 +36,8 @@ import java.security.NoSuchProviderException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import org.apache.harmony.crypto.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  */
@@ -69,7 +71,7 @@ public class SealedObject implements Serializable {
     public SealedObject(Serializable object, Cipher c)
                 throws IOException, IllegalBlockSizeException {
         if (c == null) {
-            throw new NullPointerException("Cipher is null!");
+            throw new NullPointerException(Messages.getString("crypto.13")); //$NON-NLS-1$
         }
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -93,7 +95,7 @@ public class SealedObject implements Serializable {
      */
     protected SealedObject(SealedObject so) {
         if (so == null) {
-            throw new NullPointerException("Specified sealed object is null!");
+            throw new NullPointerException(Messages.getString("crypto.14")); //$NON-NLS-1$
         }
         this.encryptedContent = so.encryptedContent;
         this.encodedParams = so.encodedParams;
@@ -158,7 +160,7 @@ public class SealedObject implements Serializable {
                 throws IOException, ClassNotFoundException,
                        IllegalBlockSizeException, BadPaddingException {
         if (c == null) {
-            throw new NullPointerException("Cipher is null.");
+            throw new NullPointerException(Messages.getString("crypto.13")); //$NON-NLS-1$
         }
         byte[] serialized = c.doFinal(encryptedContent);
         ObjectInputStream ois =
@@ -176,7 +178,7 @@ public class SealedObject implements Serializable {
                        InvalidKeyException {
         if ((provider == null) || (provider.length() == 0)) {
             throw new IllegalArgumentException(
-                    "The provider name is empty or null");
+                    Messages.getString("crypto.15")); //$NON-NLS-1$
         }
         try {
             Cipher cipher = Cipher.getInstance(sealAlg, provider);

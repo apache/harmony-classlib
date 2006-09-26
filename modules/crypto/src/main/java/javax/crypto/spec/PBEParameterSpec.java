@@ -23,6 +23,8 @@ package javax.crypto.spec;
 
 import java.security.spec.AlgorithmParameterSpec;
 
+import org.apache.harmony.crypto.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  */
@@ -36,7 +38,7 @@ public class PBEParameterSpec implements AlgorithmParameterSpec {
      */
     public PBEParameterSpec(byte[] salt, int iterationCount) {
         if (salt == null) {
-            throw new NullPointerException("Specified salt is null.");
+            throw new NullPointerException(Messages.getString("crypto.3B")); //$NON-NLS-1$
         }
         this.salt = new byte[salt.length];
         System.arraycopy(salt, 0, this.salt, 0, salt.length);

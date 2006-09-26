@@ -22,6 +22,8 @@ package javax.crypto.spec;
 
 import java.security.spec.AlgorithmParameterSpec;
 
+import org.apache.harmony.crypto.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  */
@@ -34,7 +36,7 @@ public class IvParameterSpec implements AlgorithmParameterSpec {
      */
     public IvParameterSpec(byte[] iv) {
         if (iv == null) {
-            throw new NullPointerException("Specified IV is null.");
+            throw new NullPointerException(Messages.getString("crypto.38")); //$NON-NLS-1$
         }
         this.iv = new byte[iv.length];
         System.arraycopy(iv, 0, this.iv, 0, iv.length);
@@ -46,10 +48,10 @@ public class IvParameterSpec implements AlgorithmParameterSpec {
     public IvParameterSpec(byte[] iv, int offset, int len) {
         if ((iv == null) || (iv.length - offset < len)) {
             throw new IllegalArgumentException(
-                    "iv is null or (iv.length - offset < len)");
+                    Messages.getString("crypto.39")); //$NON-NLS-1$
         }
         if (offset < 0 || len < 0) {
-            throw new ArrayIndexOutOfBoundsException("offset < 0 or len < 0");
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("crypto.3A")); //$NON-NLS-1$
         }
         this.iv = new byte[len];
         System.arraycopy(iv, offset, this.iv, 0, len);

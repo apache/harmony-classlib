@@ -29,6 +29,7 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
 
+import org.apache.harmony.crypto.internal.nls.Messages;
 import org.apache.harmony.security.fortress.Engine;
 
 
@@ -40,7 +41,7 @@ import org.apache.harmony.security.fortress.Engine;
 public class KeyGenerator {
 
     // Store spi implementation service name
-    private static final String SERVICE = "KeyGenerator";
+    private static final String SERVICE = "KeyGenerator"; //$NON-NLS-1$
 
     // Used to access common engine functionality
     private static Engine engine = new Engine(SERVICE);
@@ -91,7 +92,7 @@ public class KeyGenerator {
     public static final KeyGenerator getInstance(String algorithm)
             throws NoSuchAlgorithmException {
         if (algorithm == null) {
-            throw new NullPointerException("Algorithm is null");
+            throw new NullPointerException(Messages.getString("crypto.02")); //$NON-NLS-1$
         }
         synchronized (engine) {
             engine.getInstance(algorithm, null);
@@ -108,7 +109,7 @@ public class KeyGenerator {
             String provider) throws NoSuchAlgorithmException,
             NoSuchProviderException {
         if ((provider == null) || (provider.length() == 0)) {
-            throw new IllegalArgumentException("Provider is null or empty");
+            throw new IllegalArgumentException(Messages.getString("crypto.03")); //$NON-NLS-1$
         }
         Provider impProvider = Security.getProvider(provider);
         if (impProvider == null) {
@@ -124,10 +125,10 @@ public class KeyGenerator {
     public static final KeyGenerator getInstance(String algorithm,
             Provider provider) throws NoSuchAlgorithmException {
         if (provider == null) {
-            throw new IllegalArgumentException("Provider is null");
+            throw new IllegalArgumentException(Messages.getString("crypto.04")); //$NON-NLS-1$
         }
         if (algorithm == null) {
-            throw new NullPointerException("Algorithm is null");
+            throw new NullPointerException(Messages.getString("crypto.02")); //$NON-NLS-1$
         }
         synchronized (engine) {
             engine.getInstance(algorithm, provider, null);

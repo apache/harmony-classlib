@@ -32,6 +32,7 @@ import java.security.Provider;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 
+import org.apache.harmony.crypto.internal.nls.Messages;
 import org.apache.harmony.crypto.utils.AlgNameMapper;
 import org.apache.harmony.security.asn1.ASN1Any;
 import org.apache.harmony.security.asn1.ASN1Implicit;
@@ -64,7 +65,7 @@ public class EncryptedPrivateKeyInfo {
     public EncryptedPrivateKeyInfo(byte[] encoded)
             throws IOException {
         if (encoded == null) {
-            throw new NullPointerException("the encoded parameter is null");
+            throw new NullPointerException(Messages.getString("crypto.22")); //$NON-NLS-1$
         }
         this.encoded = new byte[encoded.length];
         System.arraycopy(encoded, 0, this.encoded, 0, encoded.length);
@@ -107,18 +108,18 @@ public class EncryptedPrivateKeyInfo {
     public EncryptedPrivateKeyInfo(String encrAlgName, byte[] encryptedData)
         throws NoSuchAlgorithmException {
         if (encrAlgName == null) {
-            throw new NullPointerException("the algName parameter is null");
+            throw new NullPointerException(Messages.getString("crypto.23")); //$NON-NLS-1$
         }
         this.algName = encrAlgName;
         if (!mapAlgName()) {
-            throw new NoSuchAlgorithmException(this.algName + " not supported");
+            throw new NoSuchAlgorithmException(Messages.getString("crypto.24", this.algName)); //$NON-NLS-1$
         }
         if (encryptedData == null) {
             throw new NullPointerException(
-                    "the encryptedData parameter is null");
+                    Messages.getString("crypto.25")); //$NON-NLS-1$
         }
         if (encryptedData.length == 0) {
-            throw new IllegalArgumentException("the encryptedData is empty");
+            throw new IllegalArgumentException(Messages.getString("crypto.26")); //$NON-NLS-1$
         }
         this.encryptedData = new byte[encryptedData.length];
         System.arraycopy(encryptedData, 0,
@@ -133,22 +134,22 @@ public class EncryptedPrivateKeyInfo {
             byte[] encryptedData)
         throws NoSuchAlgorithmException {
         if (algParams == null) {
-            throw new NullPointerException("the algParams parameter is null");
+            throw new NullPointerException(Messages.getString("crypto.27")); //$NON-NLS-1$
         }
         this.algParameters = algParams;
         if (encryptedData == null) {
             throw new NullPointerException(
-                    "the encryptedData parameter is null");
+                    Messages.getString("crypto.25")); //$NON-NLS-1$
         }
         if (encryptedData.length == 0) {
-            throw new IllegalArgumentException("the encryptedData is empty");
+            throw new IllegalArgumentException(Messages.getString("crypto.26")); //$NON-NLS-1$
         }
         this.encryptedData = new byte[encryptedData.length];
         System.arraycopy(encryptedData, 0,
                 this.encryptedData, 0, encryptedData.length);
         this.algName = this.algParameters.getAlgorithm();
         if (!mapAlgName()) {
-            throw new NoSuchAlgorithmException(this.algName + " not supported");
+            throw new NoSuchAlgorithmException(Messages.getString("crypto.24", this.algName)); //$NON-NLS-1$
         }
     }
 
@@ -181,7 +182,7 @@ public class EncryptedPrivateKeyInfo {
     public PKCS8EncodedKeySpec getKeySpec(Cipher cipher)
         throws InvalidKeySpecException {
         if (cipher == null) {
-            throw new NullPointerException("the cipher parameter is null");
+            throw new NullPointerException(Messages.getString("crypto.28")); //$NON-NLS-1$
         }
         try {
             byte[] decryptedData = cipher.doFinal(encryptedData);
@@ -189,7 +190,7 @@ public class EncryptedPrivateKeyInfo {
                 ASN1PrivateKeyInfo.verify(decryptedData);
             } catch (IOException e1) {
                 throw new InvalidKeySpecException(
-                        "Decrypted data does not represent valid PKCS#8 PrivateKeyInfo");
+                        Messages.getString("crypto.29")); //$NON-NLS-1$
             }
             return new PKCS8EncodedKeySpec(decryptedData);
         } catch (IllegalStateException e) {
@@ -208,7 +209,7 @@ public class EncryptedPrivateKeyInfo {
         throws NoSuchAlgorithmException,
                InvalidKeyException {
         if (decryptKey == null) {
-            throw new NullPointerException("the decryptKey parameter is null");
+            throw new NullPointerException(Messages.getString("crypto.2A")); //$NON-NLS-1$
         }
         try {
             Cipher cipher = Cipher.getInstance(algName);
@@ -222,7 +223,7 @@ public class EncryptedPrivateKeyInfo {
                 ASN1PrivateKeyInfo.verify(decryptedData);
             } catch (IOException e1) {
                 throw new InvalidKeyException(
-                        "Decrypted data does not represent valid PKCS#8 PrivateKeyInfo");
+                        Messages.getString("crypto.29")); //$NON-NLS-1$
             }
             return new PKCS8EncodedKeySpec(decryptedData);
         } catch (NoSuchPaddingException e) {
@@ -246,11 +247,11 @@ public class EncryptedPrivateKeyInfo {
                NoSuchAlgorithmException,
                InvalidKeyException {
         if (decryptKey == null) {
-            throw new NullPointerException("the decryptKey parameter is null");
+            throw new NullPointerException(Messages.getString("crypto.2A")); //$NON-NLS-1$
         }
         if (providerName == null) {
             throw new NullPointerException(
-                    "the providerName parameter is null");
+                    Messages.getString("crypto.2B")); //$NON-NLS-1$
         }
         try {
             Cipher cipher = Cipher.getInstance(algName, providerName);
@@ -264,7 +265,7 @@ public class EncryptedPrivateKeyInfo {
                 ASN1PrivateKeyInfo.verify(decryptedData);
             } catch (IOException e1) {
                 throw new InvalidKeyException(
-                        "Decrypted data does not represent valid PKCS#8 PrivateKeyInfo");
+                        Messages.getString("crypto.29")); //$NON-NLS-1$
             }
             return new PKCS8EncodedKeySpec(decryptedData);
         } catch (NoSuchPaddingException e) {
@@ -287,10 +288,10 @@ public class EncryptedPrivateKeyInfo {
         throws NoSuchAlgorithmException,
                InvalidKeyException {
         if (decryptKey == null) {
-            throw new NullPointerException("the decryptKey parameter is null");
+            throw new NullPointerException(Messages.getString("crypto.2A")); //$NON-NLS-1$
         }
         if (provider == null) {
-            throw new NullPointerException("the provider parameter is null");
+            throw new NullPointerException(Messages.getString("crypto.2C")); //$NON-NLS-1$
         }
         try {
             Cipher cipher = Cipher.getInstance(algName, provider);
@@ -304,7 +305,7 @@ public class EncryptedPrivateKeyInfo {
                 ASN1PrivateKeyInfo.verify(decryptedData);
             } catch (IOException e1) {
                 throw new InvalidKeyException(
-                        "Decrypted data does not represent valid PKCS#8 PrivateKeyInfo");
+                        Messages.getString("crypto.29")); //$NON-NLS-1$
             }
             return new PKCS8EncodedKeySpec(decryptedData);
         } catch (NoSuchPaddingException e) {

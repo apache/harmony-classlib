@@ -21,6 +21,8 @@
 
 package javax.crypto.spec;
 
+import org.apache.harmony.crypto.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  */
@@ -35,7 +37,7 @@ public class PSource {
      */
     protected PSource(String pSrcName) {
         if (pSrcName == null) {
-            throw new NullPointerException("pSrcName is null!");
+            throw new NullPointerException(Messages.getString("crypto.42")); //$NON-NLS-1$
         }
         this.pSrcName = pSrcName;
     }
@@ -60,7 +62,7 @@ public class PSource {
         public static final PSpecified DEFAULT = new PSpecified();
 
         private PSpecified() {
-            super("PSpecified");
+            super("PSpecified"); //$NON-NLS-1$
             p = new byte[0];
         }
 
@@ -68,9 +70,9 @@ public class PSource {
          * @com.intel.drl.spec_ref
          */
         public PSpecified(byte[] p) {
-            super("PSpecified");
+            super("PSpecified"); //$NON-NLS-1$
             if (p == null) {
-                throw new NullPointerException("encoding input is null!");
+                throw new NullPointerException(Messages.getString("crypto.43")); //$NON-NLS-1$
             }
             //TODO: It is unknown which name should be used!
             //super("");

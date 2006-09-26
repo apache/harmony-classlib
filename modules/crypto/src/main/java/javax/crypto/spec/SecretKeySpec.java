@@ -26,6 +26,8 @@ import java.security.spec.KeySpec;
 import java.util.Arrays;
 import javax.crypto.SecretKey;
 
+import org.apache.harmony.crypto.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  */
@@ -38,20 +40,20 @@ public class SecretKeySpec implements SecretKey, KeySpec, Serializable {
 
     private final byte[] key;
     private final String algorithm;
-    private final String format = "RAW";
+    private final String format = "RAW"; //$NON-NLS-1$
 
     /**
      * @com.intel.drl.spec_ref
      */
     public SecretKeySpec(byte[] key, String algorithm) {
     	if (key == null) {
-    		throw new IllegalArgumentException("key is null");
+    		throw new IllegalArgumentException(Messages.getString("crypto.05")); //$NON-NLS-1$
     	}
     	if (key.length == 0) {
-    		throw new IllegalArgumentException("key is empty");
+    		throw new IllegalArgumentException(Messages.getString("crypto.35")); //$NON-NLS-1$
     	}
         if (algorithm == null) {
-            throw new IllegalArgumentException("algorithm is null");
+            throw new IllegalArgumentException(Messages.getString("crypto.02")); //$NON-NLS-1$
         }
 
         this.algorithm = algorithm;
@@ -64,19 +66,19 @@ public class SecretKeySpec implements SecretKey, KeySpec, Serializable {
      */
     public SecretKeySpec(byte[] key, int offset, int len, String algorithm) {
     	if (key == null) {
-    		throw new IllegalArgumentException("key is null");
+    		throw new IllegalArgumentException(Messages.getString("crypto.05")); //$NON-NLS-1$
     	}
     	if (key.length == 0) {
-    		throw new IllegalArgumentException("key is empty");
+    		throw new IllegalArgumentException(Messages.getString("crypto.35")); //$NON-NLS-1$
     	}
         if (len < 0) {
-            throw new ArrayIndexOutOfBoundsException("len is negative");
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("crypto.36")); //$NON-NLS-1$
         }
     	if ((key.length - offset < len)) {
-    		throw new IllegalArgumentException("key is too short");
+    		throw new IllegalArgumentException(Messages.getString("crypto.37")); //$NON-NLS-1$
     	}
         if (algorithm == null) {
-            throw new IllegalArgumentException("algorithm is null");
+            throw new IllegalArgumentException(Messages.getString("crypto.02")); //$NON-NLS-1$
         }
         this.algorithm = algorithm;
         this.key = new byte[len];

@@ -36,6 +36,8 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.ShortBufferException;
 
+import org.apache.harmony.crypto.internal.nls.Messages;
+
 /**
  * CipherSpi implementation for javax.crypto.NullCipher
  * 
@@ -149,7 +151,7 @@ public class NullCipherSpi extends CipherSpi {
         try {
             output.put(input);
         } catch (java.nio.BufferOverflowException e) {
-            throw new ShortBufferException("output buffer is too small " + e);
+            throw new ShortBufferException(Messages.getString("crypto.0F", e)); //$NON-NLS-1$
         }
         return result;
     }
@@ -190,7 +192,7 @@ public class NullCipherSpi extends CipherSpi {
      */
     public byte[] engineWrap(Key key) throws IllegalBlockSizeException,
             InvalidKeyException {
-        throw new UnsupportedOperationException("Wrap");
+        throw new UnsupportedOperationException(Messages.getString("crypto.44")); //$NON-NLS-1$
     }
 
     /**
@@ -199,13 +201,13 @@ public class NullCipherSpi extends CipherSpi {
     public Key engineUnwrap(byte[] wrappedKey, String wrappedKeyAlgorithm,
             int wrappedKeyType) throws InvalidKeyException,
             NoSuchAlgorithmException {
-        throw new UnsupportedOperationException("Unwrap");
+        throw new UnsupportedOperationException(Messages.getString("crypto.45")); //$NON-NLS-1$
     }
 
     /**
      * See javax.crypto.CipherSpi#engineGetKeySize(Key)
      */
     public int engineGetKeySize(Key key) throws InvalidKeyException {
-        throw new UnsupportedOperationException("GetKeySize");
+        throw new UnsupportedOperationException(Messages.getString("crypto.46")); //$NON-NLS-1$
     }
 }

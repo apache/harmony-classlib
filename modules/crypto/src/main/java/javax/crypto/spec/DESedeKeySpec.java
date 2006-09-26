@@ -23,6 +23,8 @@ package javax.crypto.spec;
 import java.security.InvalidKeyException;
 import java.security.spec.KeySpec;
 
+import org.apache.harmony.crypto.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  */
@@ -41,11 +43,11 @@ public class DESedeKeySpec implements KeySpec {
     public DESedeKeySpec(byte[] key)
                 throws InvalidKeyException {
         if (key == null) {
-            throw new NullPointerException("Specified key material is null.");
+            throw new NullPointerException(Messages.getString("crypto.2F")); //$NON-NLS-1$
         }
         if (key.length < DES_EDE_KEY_LEN) {
             throw new InvalidKeyException(
-                    "The key material is shorter than 24 bytes.");
+                    Messages.getString("crypto.30")); //$NON-NLS-1$
         }
         this.key = new byte[DES_EDE_KEY_LEN];
         System.arraycopy(key, 0, this.key, 0, DES_EDE_KEY_LEN);
@@ -57,11 +59,11 @@ public class DESedeKeySpec implements KeySpec {
     public DESedeKeySpec(byte[] key, int offset)
                 throws InvalidKeyException {
         if (key == null) {
-            throw new NullPointerException("Specified key material is null.");
+            throw new NullPointerException(Messages.getString("crypto.2F")); //$NON-NLS-1$
         }
         if (key.length - offset < DES_EDE_KEY_LEN) {
             throw new InvalidKeyException(
-                    "The key material is shorter than 24 bytes.");
+                    Messages.getString("crypto.30")); //$NON-NLS-1$
         }
         this.key = new byte[DES_EDE_KEY_LEN];
         System.arraycopy(key, offset, this.key, 0, DES_EDE_KEY_LEN);
@@ -83,7 +85,7 @@ public class DESedeKeySpec implements KeySpec {
                 throws InvalidKeyException {
         if (key.length - offset < DES_EDE_KEY_LEN) {
             throw new InvalidKeyException(
-                    "The key material is shorter than 24 bytes.");
+                    Messages.getString("crypto.30")); //$NON-NLS-1$
         }
         for (int i=offset; i<DES_EDE_KEY_LEN+offset; i++) {
             int b = key[i];

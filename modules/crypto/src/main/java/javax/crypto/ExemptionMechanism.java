@@ -27,18 +27,19 @@ import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.Arrays;
 
+import org.apache.harmony.crypto.internal.nls.Messages;
 import org.apache.harmony.security.fortress.Engine;
 
 public class ExemptionMechanism {
 
     // Store spi implementation service name
-    private static final String SERVICE = "ExemptionMechanism";
+    private static final String SERVICE = "ExemptionMechanism"; //$NON-NLS-1$
 
     // Used to access common engine functionality
     private static Engine engine = new Engine(SERVICE);
 
     // Warning for reporting about not initializes ExemptionMechanism
-    private static final String NOTINITEMECH = "ExemptionMechanism is not initialized";
+    private static final String NOTINITEMECH = Messages.getString("crypto.2D"); //$NON-NLS-1$
 
     // Store used provider
     private final Provider provider;
@@ -73,7 +74,7 @@ public class ExemptionMechanism {
     public static final ExemptionMechanism getInstance(String algorithm)
             throws NoSuchAlgorithmException {
         if (algorithm == null) {
-            throw new NullPointerException("Algorithm is null");
+            throw new NullPointerException(Messages.getString("crypto.02")); //$NON-NLS-1$
         }
         synchronized (engine) {
             engine.getInstance(algorithm, null);
@@ -86,14 +87,14 @@ public class ExemptionMechanism {
             String provider) throws NoSuchAlgorithmException,
             NoSuchProviderException {
         if (provider == null) {
-            throw new IllegalArgumentException("Provider is null");
+            throw new IllegalArgumentException(Messages.getString("crypto.04")); //$NON-NLS-1$
         }
         Provider impProvider = Security.getProvider(provider);
         if (impProvider == null) {
             throw new NoSuchProviderException(provider);
         }
         if (algorithm == null) {
-            throw new NullPointerException("Algorithm is null");
+            throw new NullPointerException(Messages.getString("crypto.02")); //$NON-NLS-1$
         }
         return getInstance(algorithm, impProvider);
     }
@@ -101,10 +102,10 @@ public class ExemptionMechanism {
     public static final ExemptionMechanism getInstance(String algorithm,
             Provider provider) throws NoSuchAlgorithmException {
         if (algorithm == null) {
-            throw new NullPointerException("Algorithm is null");
+            throw new NullPointerException(Messages.getString("crypto.02")); //$NON-NLS-1$
         }
         if (provider == null) {
-            throw new IllegalArgumentException("Provider is null");
+            throw new IllegalArgumentException(Messages.getString("crypto.04")); //$NON-NLS-1$
         }
         synchronized (engine) {
             engine.getInstance(algorithm, provider, null);

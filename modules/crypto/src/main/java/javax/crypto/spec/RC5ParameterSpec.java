@@ -24,6 +24,8 @@ package javax.crypto.spec;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.Arrays;
 
+import org.apache.harmony.crypto.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  */
@@ -49,11 +51,11 @@ public class RC5ParameterSpec implements AlgorithmParameterSpec {
      */
     public RC5ParameterSpec(int version, int rounds, int wordSize, byte[] iv) {
         if (iv == null) {
-            throw new IllegalArgumentException("iv is null");
+            throw new IllegalArgumentException(Messages.getString("crypto.31")); //$NON-NLS-1$
         }
         if (iv.length < 2 * (wordSize / 8)) {
             throw new IllegalArgumentException(
-                    "iv.length < 2 * (wordSize / 8)");
+                    Messages.getString("crypto.32")); //$NON-NLS-1$
         }
         this.version = version;
         this.rounds = rounds;
@@ -68,14 +70,14 @@ public class RC5ParameterSpec implements AlgorithmParameterSpec {
     public RC5ParameterSpec(int version, int rounds,
                                 int wordSize, byte[] iv, int offset) {
         if (iv == null) {
-            throw new IllegalArgumentException("iv is null");
+            throw new IllegalArgumentException(Messages.getString("crypto.31")); //$NON-NLS-1$
         }
         if (offset < 0) {
-            throw new ArrayIndexOutOfBoundsException("offset is negative");
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("crypto.33")); //$NON-NLS-1$
         }
         if (iv.length - offset < 2 * (wordSize / 8)) {
             throw new IllegalArgumentException(
-                    "iv.length - offset < 2 * (wordSize / 8)");
+                    Messages.getString("crypto.34")); //$NON-NLS-1$
         }
         this.version = version;
         this.rounds = rounds;

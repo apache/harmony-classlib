@@ -24,6 +24,8 @@ package javax.crypto.spec;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.Arrays;
 
+import org.apache.harmony.crypto.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  */
@@ -45,10 +47,10 @@ public class RC2ParameterSpec implements AlgorithmParameterSpec {
      */
     public RC2ParameterSpec(int effectiveKeyBits, byte[] iv) {
         if (iv == null) {
-            throw new IllegalArgumentException("iv is null");
+            throw new IllegalArgumentException(Messages.getString("crypto.31")); //$NON-NLS-1$
         }
         if (iv.length < 8) {
-            throw new IllegalArgumentException("iv is shorter than 8 bytes");
+            throw new IllegalArgumentException(Messages.getString("crypto.41")); //$NON-NLS-1$
         }
         this.effectiveKeyBits = effectiveKeyBits;
         this.iv = new byte[8];
@@ -60,10 +62,10 @@ public class RC2ParameterSpec implements AlgorithmParameterSpec {
      */
     public RC2ParameterSpec(int effectiveKeyBits, byte[] iv, int offset) {
         if (iv == null) {
-            throw new IllegalArgumentException("iv is null");
+            throw new IllegalArgumentException(Messages.getString("crypto.31")); //$NON-NLS-1$
         }
         if (iv.length - offset < 8) {
-            throw new IllegalArgumentException("iv is shorter than 8 bytes");
+            throw new IllegalArgumentException(Messages.getString("crypto.41")); //$NON-NLS-1$
         }
         this.effectiveKeyBits = effectiveKeyBits;
         this.iv = new byte[8];

@@ -24,6 +24,8 @@ package javax.crypto.spec;
 import java.security.spec.KeySpec;
 import java.util.Arrays;
 
+import org.apache.harmony.crypto.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  */
@@ -55,17 +57,17 @@ public class PBEKeySpec implements KeySpec {
     public PBEKeySpec(char[] password, byte[] salt, int iterationCount,
                       int keyLength) {
         if (salt == null) {
-            throw new NullPointerException("Salt is null.");
+            throw new NullPointerException(Messages.getString("crypto.3B")); //$NON-NLS-1$
         }
         if (salt.length == 0) {
-            throw new IllegalArgumentException("salt is empty");
+            throw new IllegalArgumentException(Messages.getString("crypto.3C")); //$NON-NLS-1$
         }
         if (iterationCount <= 0) {
             throw new IllegalArgumentException(
-                    "iterationCount is not positive.");
+                    Messages.getString("crypto.3D")); //$NON-NLS-1$
         }
         if (keyLength <= 0) {
-            throw new IllegalArgumentException("keyLength is not positive.");
+            throw new IllegalArgumentException(Messages.getString("crypto.3E")); //$NON-NLS-1$
         }
 
         if (password == null) {
@@ -85,14 +87,14 @@ public class PBEKeySpec implements KeySpec {
      */
     public PBEKeySpec(char[] password, byte[] salt, int iterationCount) {
         if (salt == null) {
-            throw new NullPointerException("Salt is null.");
+            throw new NullPointerException(Messages.getString("crypto.3B")); //$NON-NLS-1$
         }
         if (salt.length == 0) {
-            throw new IllegalArgumentException("salt is empty");
+            throw new IllegalArgumentException(Messages.getString("crypto.3C")); //$NON-NLS-1$
         }
         if (iterationCount <= 0) {
             throw new IllegalArgumentException(
-                    "iterationCount is not positive.");
+                    Messages.getString("crypto.3D")); //$NON-NLS-1$
         }
 
         if (password == null) {
@@ -120,7 +122,7 @@ public class PBEKeySpec implements KeySpec {
      */
     public final char[] getPassword() {
         if (password == null) {
-            throw new IllegalStateException("The password has been cleared.");
+            throw new IllegalStateException(Messages.getString("crypto.3F")); //$NON-NLS-1$
         }
         char[] result = new char[password.length];
         System.arraycopy(password, 0, result, 0, password.length);
