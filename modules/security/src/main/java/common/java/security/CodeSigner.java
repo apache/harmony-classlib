@@ -24,6 +24,8 @@ package java.security;
 import java.io.Serializable;
 import java.security.cert.CertPath;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref 
  */
@@ -53,7 +55,7 @@ public final class CodeSigner implements Serializable {
      */
     public CodeSigner(CertPath signerCertPath, Timestamp timestamp) {
         if (signerCertPath == null) {
-            throw new NullPointerException("signerCertPath cannot be null");
+            throw new NullPointerException(Messages.getString("security.10")); //$NON-NLS-1$
         }
         this.signerCertPath = signerCertPath;
         this.timestamp = timestamp;
@@ -111,11 +113,11 @@ public final class CodeSigner implements Serializable {
         StringBuffer buf = new StringBuffer(256);
         // The javadoc says nothing, and the others implementations behavior seems as 
         // dumping only the first certificate. Well, let's do the same.
-        buf.append("CodeSigner [").append(signerCertPath.getCertificates().get(0));
+        buf.append("CodeSigner [").append(signerCertPath.getCertificates().get(0)); //$NON-NLS-1$
         if( timestamp != null ) {
-            buf.append("; ").append(timestamp);
+            buf.append("; ").append(timestamp); //$NON-NLS-1$
         }
-        buf.append("]");
+        buf.append("]"); //$NON-NLS-1$
         return buf.toString();
     }
 }

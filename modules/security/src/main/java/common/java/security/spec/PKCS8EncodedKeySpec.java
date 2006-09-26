@@ -46,6 +46,6 @@ public class PKCS8EncodedKeySpec extends EncodedKeySpec {
      * @com.intel.drl.spec_ref
      */
     public final String getFormat() {
-        return "PKCS#8";
+        return "PKCS#8"; //$NON-NLS-1$
     }
 }

@@ -20,6 +20,8 @@ package org.apache.harmony.security.provider.crypto;
 import java.security.ProviderException;
 import java.security.AccessController;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 
 /**
  * The static class providing access on Windows paltform
@@ -82,12 +84,12 @@ public class RandomBitsSupplier implements SHA1_Data {
     public static synchronized byte[] getRandomBits(int numBytes) {
 
         if ( numBytes <= 0 ) {
-            throw new IllegalArgumentException("numBytes <= 0  : " + numBytes);
+            throw new IllegalArgumentException(Messages.getString("security.195", numBytes)); //$NON-NLS-1$
         }
 
         if ( !serviceAvailable ) {
             throw new ProviderException(
-                "ATTENTION: service is not available : native library is not linked" );
+                Messages.getString("security.197") ); //$NON-NLS-1$
         }
 
         byte[] myBytes = new byte[numBytes];
@@ -96,7 +98,7 @@ public class RandomBitsSupplier implements SHA1_Data {
 
             // it is unexpected result
             throw new ProviderException(
-                "ATTENTION: getWindowsRandom(myBytes, numBytes) returned false" );
+                Messages.getString("security.198") ); //$NON-NLS-1$
         }
 
         return myBytes;

@@ -136,7 +136,7 @@ public class DigestInputStream extends FilterInputStream {
 	 * @return String a printable representation for the receiver.
 	 */
     public String toString() {
-        return super.toString() + ", " + digest.toString() +
-            (isOn ? ", is on" : ", is off");
+        return super.toString() + ", " + digest.toString() + //$NON-NLS-1$
+            (isOn ? ", is on" : ", is off"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

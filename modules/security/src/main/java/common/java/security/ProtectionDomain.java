@@ -176,32 +176,32 @@ public class ProtectionDomain {
     public String toString() {
         //FIXME: 1.5 use StreamBuilder here
         StringBuffer buf = new StringBuffer(200);
-        buf.append("ProtectionDomain\n");
-        buf.append("CodeSource=").append(
-                codeSource == null ? "<null>" : codeSource.toString()).append(
-                "\n");
-        buf.append("ClassLoader=").append(
-                classLoader == null ? "<null>" : classLoader.toString())
-                .append("\n");
+        buf.append("ProtectionDomain\n"); //$NON-NLS-1$
+        buf.append("CodeSource=").append( //$NON-NLS-1$
+                codeSource == null ? "<null>" : codeSource.toString()).append( //$NON-NLS-1$
+                "\n"); //$NON-NLS-1$
+        buf.append("ClassLoader=").append( //$NON-NLS-1$
+                classLoader == null ? "<null>" : classLoader.toString()) //$NON-NLS-1$
+                .append("\n"); //$NON-NLS-1$
         if (principals == null || principals.length == 0) {
-            buf.append("<no principals>\n");
+            buf.append("<no principals>\n"); //$NON-NLS-1$
         } else {
-            buf.append("Principals: <\n");
+            buf.append("Principals: <\n"); //$NON-NLS-1$
             for (int i = 0; i < principals.length; i++) {
-                buf.append("\t").append(
-                        principals[i] == null ? "<null>" : principals[i]
-                                .toString()).append("\n");
+                buf.append("\t").append( //$NON-NLS-1$
+                        principals[i] == null ? "<null>" : principals[i] //$NON-NLS-1$
+                                .toString()).append("\n"); //$NON-NLS-1$
             }
-            buf.append(">");
+            buf.append(">"); //$NON-NLS-1$
         }
 
         //permissions here
-        buf.append("Permissions:\n");
+        buf.append("Permissions:\n"); //$NON-NLS-1$
         if (permissions == null) {
-            buf.append("\t\t<no static permissions>\n");
+            buf.append("\t\t<no static permissions>\n"); //$NON-NLS-1$
         } else {
-            buf.append("\t\tstatic: ").append(permissions.toString()).append(
-                    "\n");
+            buf.append("\t\tstatic: ").append(permissions.toString()).append( //$NON-NLS-1$
+                    "\n"); //$NON-NLS-1$
         }
 
         if (dynamicPerms) {
@@ -209,13 +209,13 @@ public class ProtectionDomain {
                 PermissionCollection perms;
                 perms = Policy.getAccessiblePolicy().getPermissions(this);
                 if (perms == null) {
-                    buf.append("\t\t<no dynamic permissions>\n");
+                    buf.append("\t\t<no dynamic permissions>\n"); //$NON-NLS-1$
                 } else {
-                    buf.append("\t\tdynamic: ").append(perms.toString())
-                            .append("\n");
+                    buf.append("\t\tdynamic: ").append(perms.toString()) //$NON-NLS-1$
+                            .append("\n"); //$NON-NLS-1$
                 }
             } else {
-                buf.append("\t\t<no dynamic permissions>\n");
+                buf.append("\t\t<no dynamic permissions>\n"); //$NON-NLS-1$
             }
         }
         return buf.toString();

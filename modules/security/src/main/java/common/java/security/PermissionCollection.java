@@ -119,10 +119,10 @@ public abstract class PermissionCollection implements Serializable {
         totalLength += esize * 4;
         //FIXME StringBuffer --> StringBuilder
         StringBuffer result = new StringBuffer(totalLength).append(superStr)
-            .append(" (");
+            .append(" ("); //$NON-NLS-1$
         for (int i = 0; i < esize; i++) {
-            result.append("\n  ").append(elist.get(i).toString());
+            result.append("\n  ").append(elist.get(i).toString()); //$NON-NLS-1$
         }
-        return result.append("\n)").toString();
+        return result.append("\n)").toString(); //$NON-NLS-1$
     }
 }

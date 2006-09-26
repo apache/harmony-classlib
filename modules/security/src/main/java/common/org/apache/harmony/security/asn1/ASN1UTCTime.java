@@ -112,11 +112,11 @@ public class ASN1UTCTime extends ASN1Time {
     // According to X.680 coordinated universal time format:
     // two digit year, seconds always presented,
     // no fractional-secons elements, 'Z' at the end
-    private final static String UTC_PATTERN = "yyMMddHHmmss'Z'";
+    private final static String UTC_PATTERN = "yyMMddHHmmss'Z'"; //$NON-NLS-1$
 
     public void setEncodingContent(BerOutputStream out) {
         SimpleDateFormat sdf = new SimpleDateFormat(UTC_PATTERN);
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC")); //$NON-NLS-1$
         out.content = sdf.format(out.content).getBytes();
         out.length = ((byte[]) out.content).length;
     }

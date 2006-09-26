@@ -85,19 +85,19 @@ public class ContentInfo {
     
     public String toString() {
         StringBuffer res = new StringBuffer();
-        res.append("==== ContentInfo:");
-        res.append("\n== ContentType (OID): ");
+        res.append("==== ContentInfo:"); //$NON-NLS-1$
+        res.append("\n== ContentType (OID): "); //$NON-NLS-1$
         for (int i = 0; i< oid.length; i++) {
             res.append(oid[i]);
             res.append(' ');
         }
-        res.append("\n== Content: ");       
+        res.append("\n== Content: ");        //$NON-NLS-1$
         if (content != null) {
-            res.append("\n");
+            res.append("\n"); //$NON-NLS-1$
             res.append(content.toString()); 
         }    
-        res.append("\n== Content End");
-        res.append("\n==== ContentInfo End\n");
+        res.append("\n== Content End"); //$NON-NLS-1$
+        res.append("\n==== ContentInfo End\n"); //$NON-NLS-1$
         return res.toString();
     }
 

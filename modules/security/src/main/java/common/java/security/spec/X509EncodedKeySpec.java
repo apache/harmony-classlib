@@ -46,6 +46,6 @@ public class X509EncodedKeySpec extends EncodedKeySpec {
      * @com.intel.drl.spec_ref
      */
     public final String getFormat() {
-        return "X.509";
+        return "X.509"; //$NON-NLS-1$
     }
 }

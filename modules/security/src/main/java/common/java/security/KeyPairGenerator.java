@@ -24,6 +24,7 @@ package java.security;
 import java.security.spec.AlgorithmParameterSpec;
 
 import org.apache.harmony.security.fortress.Engine;
+import org.apache.harmony.security.internal.nls.Messages;
 
 
 /**
@@ -34,7 +35,7 @@ import org.apache.harmony.security.fortress.Engine;
 public abstract class KeyPairGenerator extends KeyPairGeneratorSpi {
 
     // Store KeyPairGenerator SERVICE name
-    private static final String SERVICE = "KeyPairGenerator";
+    private static final String SERVICE = "KeyPairGenerator"; //$NON-NLS-1$
 
     // Used to access common engine functionality
     private static Engine engine = new Engine(SERVICE);
@@ -72,7 +73,7 @@ public abstract class KeyPairGenerator extends KeyPairGeneratorSpi {
     public static KeyPairGenerator getInstance(String algorithm)
             throws NoSuchAlgorithmException {
         if (algorithm == null) {
-            throw new NullPointerException("algorithm is null");
+            throw new NullPointerException(Messages.getString("security.01")); //$NON-NLS-1$
         }
         KeyPairGenerator result;
         synchronized (engine) {
@@ -100,7 +101,7 @@ public abstract class KeyPairGenerator extends KeyPairGeneratorSpi {
             throws NoSuchAlgorithmException, NoSuchProviderException {
         if ((provider == null) || (provider.length() == 0)) {
             throw new IllegalArgumentException(
-                    "Provider is null or empty string");
+                    Messages.getString("security.02")); //$NON-NLS-1$
         }
         Provider impProvider = Security.getProvider(provider);
         if (impProvider == null) {
@@ -118,10 +119,10 @@ public abstract class KeyPairGenerator extends KeyPairGeneratorSpi {
     public static KeyPairGenerator getInstance(String algorithm,
             Provider provider) throws NoSuchAlgorithmException {
         if (provider == null) {
-            throw new IllegalArgumentException("Provider is null");
+            throw new IllegalArgumentException(Messages.getString("security.04")); //$NON-NLS-1$
         }
         if (algorithm == null) {
-            throw new NullPointerException("algorithm is null");
+            throw new NullPointerException(Messages.getString("security.01")); //$NON-NLS-1$
         }
         KeyPairGenerator result;
         synchronized (engine) {

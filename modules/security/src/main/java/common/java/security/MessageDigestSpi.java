@@ -23,6 +23,8 @@ package java.security;
 
 import java.nio.ByteBuffer;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 
 /**
  * This class is a Service Provider Interface (therefore the Spi suffix) for
@@ -92,20 +94,20 @@ public abstract class MessageDigestSpi {
                     throws DigestException {
         if (len < engineGetDigestLength()) {
             engineReset();
-            throw new DigestException("The value of len parameter is less than the actual digest length"); 
+            throw new DigestException(Messages.getString("security.1B"));  //$NON-NLS-1$
         }
         if (offset < 0) {
             engineReset();
-            throw new DigestException("Invalid negative offset");
+            throw new DigestException(Messages.getString("security.1C")); //$NON-NLS-1$
         }
         if (offset + len > buf.length) {
             engineReset();
-            throw new DigestException("Incorrect offset or len value");
+            throw new DigestException(Messages.getString("security.1D")); //$NON-NLS-1$
         }
         byte tmp[] = engineDigest();
         if (tmp != null) {
             if (len < tmp.length ) {
-                throw new DigestException("The value of len parameter is less than the actual digest length.");
+                throw new DigestException(Messages.getString("security.1B")); //$NON-NLS-1$
             }
             System.arraycopy(tmp, 0, buf, offset, tmp.length);
             return tmp.length;            

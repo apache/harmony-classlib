@@ -23,6 +23,8 @@ package java.security.spec;
 
 import java.math.BigInteger;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -38,10 +40,10 @@ public class ECFieldFp implements ECField {
         this.p = p;
 
         if (this.p == null) {
-            throw new NullPointerException("the p is null");
+            throw new NullPointerException(Messages.getString("security.83", "p")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (this.p.signum() != 1) {
-            throw new IllegalArgumentException("the p is not positive");
+            throw new IllegalArgumentException(Messages.getString("security.86", "p")); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

@@ -23,6 +23,8 @@ package org.apache.harmony.security.asn1;
 
 import java.util.Arrays;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * Instance of this class represents ObjectIdentifier (OID).
  * 
@@ -124,27 +126,26 @@ public final class ObjectIdentifier {
     public static void validate(int[] oid) {
 
         if (oid == null) {
-            throw new IllegalArgumentException("OID's array is null");
+            throw new IllegalArgumentException(Messages.getString("security.98")); //$NON-NLS-1$
         }
 
         if (oid.length < 2) {
             throw new IllegalArgumentException(
-                    "OID MUST have at least 2 subidentifiers");
+                    Messages.getString("security.99")); //$NON-NLS-1$
         }
 
         if (oid[0] > 2) {
             throw new IllegalArgumentException(
-                    "Valid values for first subidentifier are 0, 1 and 2");
+                    Messages.getString("security.9A")); //$NON-NLS-1$
         } else if (oid[0] != 2 && oid[1] > 39) {
             throw new IllegalArgumentException(
-                    "If the first subidentifier has 0 or 1 value the second "
-                            + "subidentifier value MUST be less then 40.");
+                    Messages.getString("security.9B")); //$NON-NLS-1$
         }
 
         for (int i = 0; i < oid.length; i++) {
             if (oid[i] < 0) {
                 throw new IllegalArgumentException(
-                        "Subidentifier MUST have positive value.");
+                        Messages.getString("security.9C")); //$NON-NLS-1$
             }
         }
     }
@@ -266,12 +267,12 @@ public final class ObjectIdentifier {
 
         if (str == null) {
             throw new IllegalArgumentException(
-                    "ObjectIdentifier string is null");
+                    Messages.getString("security.9D")); //$NON-NLS-1$
         }
 
         int length = str.length();
         if (length == 0) {
-            throw new IllegalArgumentException("Incorrect syntax");
+            throw new IllegalArgumentException(Messages.getString("security.9E")); //$NON-NLS-1$
         }
 
         int count = 1; // number of subidentifiers
@@ -281,25 +282,25 @@ public final class ObjectIdentifier {
             c = str.charAt(i);
             if (c == '.') {
                 if (wasDot) {
-                    throw new IllegalArgumentException("Incorrect syntax");
+                    throw new IllegalArgumentException(Messages.getString("security.9E")); //$NON-NLS-1$
                 }
                 wasDot = true;
                 count++;
             } else if (c >= '0' && c <= '9') {
                 wasDot = false;
             } else {
-                throw new IllegalArgumentException("Incorrect syntax");
+                throw new IllegalArgumentException(Messages.getString("security.9E")); //$NON-NLS-1$
             }
         }
 
         if (wasDot) {
             // the last char is dot
-            throw new IllegalArgumentException("Incorrect syntax");
+            throw new IllegalArgumentException(Messages.getString("security.9E")); //$NON-NLS-1$
         }
 
         if (count < 2) {
             throw new IllegalArgumentException(
-                    "OID MUST have at least 2 subidentifiers");
+                    Messages.getString("security.99")); //$NON-NLS-1$
         }
 
         int[] oid = new int[count];
@@ -314,11 +315,10 @@ public final class ObjectIdentifier {
 
         if (oid[0] > 2) {
             throw new IllegalArgumentException(
-                    "Valid values for first subidentifier are 0, 1 and 2");
+                    Messages.getString("security.9A")); //$NON-NLS-1$
         } else if (oid[0] != 2 && oid[1] > 39) {
             throw new IllegalArgumentException(
-                    "If the first subidentifier has 0 or 1 value the second "
-                            + "subidentifier value MUST be less then 40.");
+                    Messages.getString("security.9B")); //$NON-NLS-1$
         }
 
         return oid;

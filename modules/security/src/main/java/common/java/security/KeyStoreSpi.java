@@ -27,6 +27,8 @@ import javax.crypto.SecretKey;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.PasswordCallback;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 public abstract class KeyStoreSpi {
 
     public abstract Key engineGetKey(String alias, char[] password)
@@ -67,7 +69,7 @@ public abstract class KeyStoreSpi {
 
     public void engineStore(KeyStore.LoadStoreParameter param)
             throws IOException, NoSuchAlgorithmException, CertificateException {
-        throw new UnsupportedOperationException("Not Supported operation");
+        throw new UnsupportedOperationException(Messages.getString("security.33")); //$NON-NLS-1$
     }
 
     public abstract void engineLoad(InputStream stream, char[] password)
@@ -83,7 +85,7 @@ public abstract class KeyStoreSpi {
         KeyStore.ProtectionParameter pp = param.getProtectionParameter();
         if (pp == null) {
             throw new IllegalArgumentException(
-                    "ProtectionParameter is not defined");
+                    Messages.getString("security.34")); //$NON-NLS-1$
         }
         if (pp instanceof KeyStore.PasswordProtection) {
             try {
@@ -104,7 +106,7 @@ public abstract class KeyStoreSpi {
             }
         }
         throw new UnsupportedOperationException(
-                "ProtectionParameter is neither PasswordProtection nor CallbackHandlerProtection");
+                Messages.getString("security.35")); //$NON-NLS-1$
     }
 
     public KeyStore.Entry engineGetEntry(String alias,
@@ -124,14 +126,14 @@ public abstract class KeyStoreSpi {
                     passW = ((KeyStore.PasswordProtection) protParam)
                             .getPassword();
                 } catch (IllegalStateException ee) {
-                    throw new KeyStoreException("Password was destroyed", ee);
+                    throw new KeyStoreException(Messages.getString("security.36"), ee); //$NON-NLS-1$
                 }
             } else if (protParam instanceof KeyStore.CallbackHandlerProtection) {
                 passW = getPasswordFromCallBack(protParam);
             } else {
                 throw new UnrecoverableEntryException(
-                        "ProtectionParameter object is not PasswordProtection: "
-                                + protParam.toString());
+                        Messages.getString("security.37", //$NON-NLS-1$
+                                protParam.toString()));
             }
         }
         if (engineIsKeyEntry(alias)) {
@@ -148,13 +150,13 @@ public abstract class KeyStoreSpi {
                 throw new KeyStoreException(e);
             }
         }
-        throw new NoSuchAlgorithmException("Unknown KeyStore.Entry object");
+        throw new NoSuchAlgorithmException(Messages.getString("security.38")); //$NON-NLS-1$
     }
 
     public void engineSetEntry(String alias, KeyStore.Entry entry,
             KeyStore.ProtectionParameter protParam) throws KeyStoreException {
         if (entry == null) {
-            throw new KeyStoreException("entry is null");
+            throw new KeyStoreException(Messages.getString("security.39")); //$NON-NLS-1$
         }
 
         if (engineContainsAlias(alias)) {
@@ -172,7 +174,7 @@ public abstract class KeyStoreSpi {
             try {
                 passW = ((KeyStore.PasswordProtection) protParam).getPassword();
             } catch (IllegalStateException ee) {
-                throw new KeyStoreException("Password was destroyed", ee);
+                throw new KeyStoreException(Messages.getString("security.36"), ee); //$NON-NLS-1$
             }
         } else {
             if (protParam instanceof KeyStore.CallbackHandlerProtection) {
@@ -183,7 +185,7 @@ public abstract class KeyStoreSpi {
                 }
             } else {
                 throw new KeyStoreException(
-                        "protParam should be PasswordProtection or CallbackHandlerProtection");
+                        Messages.getString("security.3A")); //$NON-NLS-1$
             }
         }
 
@@ -202,8 +204,7 @@ public abstract class KeyStoreSpi {
         }
 
         throw new KeyStoreException(
-                "Entry object is neither PrivateKeyObject nor SecretKeyEntry "
-                        + "nor TrustedCertificateEntry: " + entry.toString());
+                Messages.getString("security.3B", entry.toString())); //$NON-NLS-1$
     }
 
     public boolean engineEntryInstanceOf(String alias,
@@ -216,17 +217,17 @@ public abstract class KeyStoreSpi {
             if (engineIsCertificateEntry(alias)) {
                 return entryClass
                         .isAssignableFrom(Class
-                                .forName("java.security.KeyStore$TrustedCertificateEntry"));
+                                .forName("java.security.KeyStore$TrustedCertificateEntry")); //$NON-NLS-1$
             }
 
             if (engineIsKeyEntry(alias)) {
                 if (entryClass.isAssignableFrom(Class
-                        .forName("java.security.KeyStore$PrivateKeyEntry"))) {
+                        .forName("java.security.KeyStore$PrivateKeyEntry"))) { //$NON-NLS-1$
                     return engineGetCertificate(alias) != null;
                 }
 
                 if (entryClass.isAssignableFrom(Class
-                        .forName("java.security.KeyStore$SecretKeyEntry"))) {
+                        .forName("java.security.KeyStore$SecretKeyEntry"))) { //$NON-NLS-1$
                     return engineGetCertificate(alias) == null;
                 }
             }
@@ -249,21 +250,21 @@ public abstract class KeyStoreSpi {
 
         if (!(protParam instanceof KeyStore.CallbackHandlerProtection)) {
             throw new UnrecoverableEntryException(
-                    "Incorrect ProtectionParameter");
+                    Messages.getString("security.3C")); //$NON-NLS-1$
         }
 
         String clName = Security
-                .getProperty("auth.login.defaultCallbackHandler");
+                .getProperty("auth.login.defaultCallbackHandler"); //$NON-NLS-1$
         if (clName == null) {
             throw new UnrecoverableEntryException(
-                    "Default CallbackHandler was not defined");
+                    Messages.getString("security.3D")); //$NON-NLS-1$
 
         }
 
         try {
             Class<?> cl = Class.forName(clName);
             CallbackHandler cbHand = (CallbackHandler) cl.newInstance();
-            PasswordCallback[] pwCb = { new PasswordCallback("password: ", true) };
+            PasswordCallback[] pwCb = { new PasswordCallback("password: ", true) }; //$NON-NLS-1$
             cbHand.handle(pwCb);
             return pwCb[0].getPassword();
         } catch (Exception e) {

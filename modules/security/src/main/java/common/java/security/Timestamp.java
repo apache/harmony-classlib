@@ -25,6 +25,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.security.cert.CertPath;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref 
  */
@@ -48,10 +50,10 @@ public final class Timestamp implements Serializable {
      */
     public Timestamp(Date timestamp, CertPath signerCertPath) {
         if (timestamp == null) {
-            throw new NullPointerException("timestamp cannot be null");
+            throw new NullPointerException(Messages.getString("security.0F")); //$NON-NLS-1$
         }
         if (signerCertPath == null) {
-            throw new NullPointerException("signerCertPath cannot be null");
+            throw new NullPointerException(Messages.getString("security.10")); //$NON-NLS-1$
         }
         // Clone timestamp to prevent modifications
         this.timestamp = new Date(timestamp.getTime());
@@ -103,8 +105,8 @@ public final class Timestamp implements Serializable {
     public String toString() {
         StringBuffer buf = new StringBuffer(256);
         // Dump only the first certificate
-        buf.append("Timestamp [").append(timestamp).append(" certPath=");
-        buf.append(signerCertPath.getCertificates().get(0)).append("]");
+        buf.append("Timestamp [").append(timestamp).append(" certPath="); //$NON-NLS-1$ //$NON-NLS-2$
+        buf.append(signerCertPath.getCertificates().get(0)).append("]"); //$NON-NLS-1$
         return buf.toString();
     }
 }

@@ -34,6 +34,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * A heterogeneous collection of permissions.
  * 
@@ -47,8 +49,8 @@ public final class Permissions extends PermissionCollection implements
     private static final long serialVersionUID = 4858622370623524688L;
 
     private static final ObjectStreamField[] serialPersistentFields = {
-        new ObjectStreamField("perms", Hashtable.class),
-        new ObjectStreamField("allPermission", PermissionCollection.class), };
+        new ObjectStreamField("perms", Hashtable.class), //$NON-NLS-1$
+        new ObjectStreamField("allPermission", PermissionCollection.class), }; //$NON-NLS-1$
 
     // Hash to store PermissionCollection's
     private transient Map klasses = new HashMap();
@@ -68,11 +70,11 @@ public final class Permissions extends PermissionCollection implements
 	 */
     public void add(Permission permission) {
         if (isReadOnly()) {
-            throw new SecurityException("collection is read-only");
+            throw new SecurityException(Messages.getString("security.15")); //$NON-NLS-1$
         }
 
         if (permission == null) {
-            throw new NullPointerException("invalid null permission");
+            throw new NullPointerException(Messages.getString("security.20")); //$NON-NLS-1$
         }
 
         Class klass = permission.getClass();
@@ -162,7 +164,7 @@ public final class Permissions extends PermissionCollection implements
 
                 return next;
             }
-            throw new NoSuchElementException("no more elements");
+            throw new NoSuchElementException(Messages.getString("security.17")); //$NON-NLS-1$
         }
     }
 
@@ -180,7 +182,7 @@ public final class Permissions extends PermissionCollection implements
     public boolean implies(Permission permission) {
         if (permission == null) {
             // RI compartible
-            throw new NullPointerException("Null permission");
+            throw new NullPointerException(Messages.getString("security.21")); //$NON-NLS-1$
         }
         if (allEnabled) {
             return true;
@@ -228,21 +230,21 @@ public final class Permissions extends PermissionCollection implements
     private void readObject(java.io.ObjectInputStream in) throws IOException,
         ClassNotFoundException {
         ObjectInputStream.GetField fields = in.readFields();
-        Map perms = (Map)fields.get("perms", null);
+        Map perms = (Map)fields.get("perms", null); //$NON-NLS-1$
         klasses = new HashMap();
         synchronized (klasses) {
             for (Iterator iter = perms.keySet().iterator(); iter.hasNext();) {
                 Class key = (Class)iter.next();
                 PermissionCollection pc = (PermissionCollection)perms.get(key);
                 if (key != pc.elements().nextElement().getClass()) {
-                    throw new InvalidObjectException("collection is corrupted");
+                    throw new InvalidObjectException(Messages.getString("security.22")); //$NON-NLS-1$
                 }
                 klasses.put(key, pc);
             }
         }
-        allEnabled = fields.get("allPermission", null) != null;
+        allEnabled = fields.get("allPermission", null) != null; //$NON-NLS-1$
         if (allEnabled && !klasses.containsKey(AllPermission.class)) {
-            throw new InvalidObjectException("all-enabled flag is corrupted");
+            throw new InvalidObjectException(Messages.getString("security.23")); //$NON-NLS-1$
         }
     }
 
@@ -251,8 +253,8 @@ public final class Permissions extends PermissionCollection implements
      */
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {
         ObjectOutputStream.PutField fields = out.putFields();
-        fields.put("perms", new Hashtable(klasses));
-        fields.put("allPermission", allEnabled ? klasses
+        fields.put("perms", new Hashtable(klasses)); //$NON-NLS-1$
+        fields.put("allPermission", allEnabled ? klasses //$NON-NLS-1$
             .get(AllPermission.class) : null);
         out.writeFields();
     }

@@ -30,10 +30,10 @@ public final class AllPermission extends Permission {
     private static final long serialVersionUID = -2916474571451318075L;
 
     // Permission name
-    private static final String ALL_PERMISSIONS = "<all permissions>";
+    private static final String ALL_PERMISSIONS = "<all permissions>"; //$NON-NLS-1$
 
     // Actions name
-    private static final String ALL_ACTIONS = "<all actions>";
+    private static final String ALL_ACTIONS = "<all actions>"; //$NON-NLS-1$
 
 	/**
 	 * Constructs a new instance of this class. The two argument version is

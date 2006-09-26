@@ -23,6 +23,8 @@ package java.security.cert;
 
 import java.security.PublicKey;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -40,7 +42,7 @@ public class PKIXCertPathBuilderResult extends PKIXCertPathValidatorResult
         super(trustAnchor, policyTree, subjectPublicKey);
         this.certPath = certPath;
         if (this.certPath == null) {
-            throw new NullPointerException("the certPath parameter is null");
+            throw new NullPointerException(Messages.getString("security.55")); //$NON-NLS-1$
         }
     }
 
@@ -56,9 +58,9 @@ public class PKIXCertPathBuilderResult extends PKIXCertPathValidatorResult
      */
     public String toString() {
         StringBuffer sb = new StringBuffer(super.toString());
-        sb.append("\n Certification Path: ");
+        sb.append("\n Certification Path: "); //$NON-NLS-1$
         sb.append(certPath.toString());
-        sb.append("\n]");
+        sb.append("\n]"); //$NON-NLS-1$
         return sb.toString();
     }
 }

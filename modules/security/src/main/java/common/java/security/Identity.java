@@ -25,6 +25,8 @@ import java.io.Serializable;
 import java.util.Vector;
 import java.util.Arrays;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * 
  * @deprecated
@@ -36,7 +38,7 @@ public abstract class Identity implements Principal, Serializable {
 
     private PublicKey publicKey;
 
-    private String info = "no additional info";
+    private String info = "no additional info"; //$NON-NLS-1$
 
     private IdentityScope scope;
 
@@ -62,13 +64,12 @@ public abstract class Identity implements Principal, Serializable {
             throws KeyManagementException {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
-            sm.checkSecurityAccess("addIdentityCertificate");
+            sm.checkSecurityAccess("addIdentityCertificate"); //$NON-NLS-1$
         }
         PublicKey certPK = certificate.getPublicKey();
         if (publicKey != null) {
             if (!checkKeysEqual(publicKey, certPK)) {
-                throw new KeyManagementException("Cert's public key does not"
-                        + " match Identity's public key");
+                throw new KeyManagementException(Messages.getString("security.13")); //$NON-NLS-1$
             }
         } else {
             publicKey = certPK;
@@ -107,7 +108,7 @@ public abstract class Identity implements Principal, Serializable {
             throws KeyManagementException {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
-            sm.checkSecurityAccess("removeIdentityCertificate");
+            sm.checkSecurityAccess("removeIdentityCertificate"); //$NON-NLS-1$
         }
         if (certificates != null) {
             certificates.removeElement(certificate);
@@ -147,7 +148,7 @@ public abstract class Identity implements Principal, Serializable {
     public String toString(boolean detailed) {
         String s = toString();
         if (detailed) {
-            s += " " + info;
+            s += " " + info; //$NON-NLS-1$
         }
         return s;
     }
@@ -165,14 +166,14 @@ public abstract class Identity implements Principal, Serializable {
     public void setPublicKey(PublicKey key) throws KeyManagementException {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
-            sm.checkSecurityAccess("setIdentityPublicKey");
+            sm.checkSecurityAccess("setIdentityPublicKey"); //$NON-NLS-1$
         }
         // this check does not always work  
         if ((scope != null) && (key != null)) {
             Identity i = scope.getIdentity(key);
             //System.out.println("###DEBUG## Identity: "+i);
             if ((i != null) && (i != this)) {
-                throw new KeyManagementException("key already used in scope");
+                throw new KeyManagementException(Messages.getString("security.14")); //$NON-NLS-1$
             }
         }
         this.publicKey = key;
@@ -192,7 +193,7 @@ public abstract class Identity implements Principal, Serializable {
     public void setInfo(String info) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
-            sm.checkSecurityAccess("setIdentityInfo");
+            sm.checkSecurityAccess("setIdentityInfo"); //$NON-NLS-1$
         }
         this.info = info;
     }
@@ -249,11 +250,11 @@ public abstract class Identity implements Principal, Serializable {
     public String toString() {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
-            sm.checkSecurityAccess("printIdentity");
+            sm.checkSecurityAccess("printIdentity"); //$NON-NLS-1$
         }
         String s = this.name;
         if (scope != null) {
-            s += " [" + scope.getName() + "]";
+            s += " [" + scope.getName() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         return s;
     }

@@ -30,6 +30,8 @@ import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  */
@@ -42,7 +44,7 @@ public abstract class X509Certificate
      * @com.intel.drl.spec_ref
      */
     protected X509Certificate() {
-        super("X.509");
+        super("X.509"); //$NON-NLS-1$
     }
 
     /**
@@ -81,7 +83,7 @@ public abstract class X509Certificate
             // TODO if there is no X.509 certificate provider installed
             // should we try to access Harmony X509CertImpl via classForName?
             CertificateFactory factory = CertificateFactory
-                    .getInstance("X.509");
+                    .getInstance("X.509"); //$NON-NLS-1$
 
             X509Certificate cert = (X509Certificate) factory
                     .generateCertificate(new ByteArrayInputStream(getEncoded()));
@@ -89,7 +91,7 @@ public abstract class X509Certificate
             return cert.getIssuerX500Principal();
 
         } catch (Exception e) {
-            throw new RuntimeException("Failed to get X500Principal issuer", e);
+            throw new RuntimeException(Messages.getString("security.59"), e); //$NON-NLS-1$
         }
     }
 
@@ -107,7 +109,7 @@ public abstract class X509Certificate
             // TODO if there is no X.509 certificate provider installed
             // should we try to access Harmony X509CertImpl via classForName?
             CertificateFactory factory = CertificateFactory
-                    .getInstance("X.509");
+                    .getInstance("X.509"); //$NON-NLS-1$
 
             X509Certificate cert = (X509Certificate) factory
                     .generateCertificate(new ByteArrayInputStream(getEncoded()));
@@ -115,7 +117,7 @@ public abstract class X509Certificate
             return cert.getSubjectX500Principal();
 
         } catch (Exception e) {
-            throw new RuntimeException("Failed to get X500Principal subject", e);
+            throw new RuntimeException(Messages.getString("security.5A"), e); //$NON-NLS-1$
         }
     }
 

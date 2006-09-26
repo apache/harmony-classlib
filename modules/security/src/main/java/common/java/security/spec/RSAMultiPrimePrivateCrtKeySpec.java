@@ -23,6 +23,8 @@ package java.security.spec;
 
 import java.math.BigInteger;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -61,34 +63,34 @@ public class RSAMultiPrimePrivateCrtKeySpec extends RSAPrivateKeySpec {
 
         // Perform checks specified
         if (modulus == null) {
-            throw new NullPointerException("the modulus is null");
+            throw new NullPointerException(Messages.getString("security.83", "modulus")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (privateExponent == null) {
-            throw new NullPointerException("the privateExponent is null");
+            throw new NullPointerException(Messages.getString("security.83", "privateExponent")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (publicExponent == null) {
-            throw new NullPointerException("the publicExponent is null");
+            throw new NullPointerException(Messages.getString("security.83", "publicExponent")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (primeP == null) {
-            throw new NullPointerException("the primeP is null");
+            throw new NullPointerException(Messages.getString("security.83", "primeP")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (primeQ == null) {
-            throw new NullPointerException("the primeQ is null");
+            throw new NullPointerException(Messages.getString("security.83", "primeQ")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (primeExponentP == null) {
-            throw new NullPointerException("the primeExponentP is null");
+            throw new NullPointerException(Messages.getString("security.83", "primeExponentP")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (primeExponentQ == null) {
-            throw new NullPointerException("the primeExponentQ is null");
+            throw new NullPointerException(Messages.getString("security.83", "primeExponentQ")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (crtCoefficient == null) {
-            throw new NullPointerException("the crtCoefficient is null");
+            throw new NullPointerException(Messages.getString("security.83", "crtCoefficient")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         if (otherPrimeInfo != null) {
             if (otherPrimeInfo.length == 0) {
                 throw new IllegalArgumentException(
-                "the otherPrimeInfo length is 0");
+                Messages.getString("security.85")); //$NON-NLS-1$
             }
             // Clone array to prevent subsecuent modification
             this.otherPrimeInfo = new RSAOtherPrimeInfo[otherPrimeInfo.length];

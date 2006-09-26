@@ -41,6 +41,7 @@ import java.util.List;
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.harmony.security.fortress.PolicyUtils;
+import org.apache.harmony.security.internal.nls.Messages;
 
 public class CodeSource implements Serializable {
 
@@ -250,7 +251,7 @@ public class CodeSource implements Serializable {
     private CertPath makeCertPath(List<? extends Certificate> list) {
         if (factory == null) {
             try {
-                factory = CertificateFactory.getInstance("X.509");
+                factory = CertificateFactory.getInstance("X.509"); //$NON-NLS-1$
             } catch (CertificateException ex) {
                 //? throw new Error("X.509 is a 'must be'", ex);
                 return null;
@@ -364,8 +365,8 @@ public class CodeSource implements Serializable {
                 // if( !(thisIsLocalHost && thatIsLocalHost) &&
                 // !thisHost.equals(thatHost)) {
 
-                if (!((thisHost.length() == 0 || "localhost".equals(thisHost)) && (thatHost
-                        .length() == 0 || "localhost".equals(thatHost)))
+                if (!((thisHost.length() == 0 || "localhost".equals(thisHost)) && (thatHost //$NON-NLS-1$
+                        .length() == 0 || "localhost".equals(thatHost))) //$NON-NLS-1$
                         && !thisHost.equals(thatHost)) {
 
                     // Obvious, but veeery slooooow waaaaaaay....
@@ -381,11 +382,11 @@ public class CodeSource implements Serializable {
                     // let's cache it: 
 
                     if (this.sp == null) {
-                        this.sp = new SocketPermission(thisHost, "resolve");
+                        this.sp = new SocketPermission(thisHost, "resolve"); //$NON-NLS-1$
                     }
 
                     if (cs.sp == null) {
-                        cs.sp = new SocketPermission(thatHost, "resolve");
+                        cs.sp = new SocketPermission(thatHost, "resolve"); //$NON-NLS-1$
                     }
 
                     if (!this.sp.implies(cs.sp)) {
@@ -405,25 +406,25 @@ public class CodeSource implements Serializable {
             String thisFile = this.location.getFile();
             String thatFile = cs.location.getFile();
 
-            if (thisFile.endsWith("/-")) { //javadoc:3.6."/-"
+            if (thisFile.endsWith("/-")) { //javadoc:3.6."/-" //$NON-NLS-1$
                 if (!thatFile.startsWith(thisFile.substring(0, thisFile
                         .length() - 2))) {
                     return false;
                 }
-            } else if (thisFile.endsWith("/*")) { //javadoc:3.6."/*"
+            } else if (thisFile.endsWith("/*")) { //javadoc:3.6."/*" //$NON-NLS-1$
                 if (!thatFile.startsWith(thisFile.substring(0, thisFile
                         .length() - 2))) {
                     return false;
                 }
                 // no further separators(s) allowed
-                if (thatFile.indexOf("/", thisFile.length() - 1) != -1) {
+                if (thatFile.indexOf("/", thisFile.length() - 1) != -1) { //$NON-NLS-1$
                     return false;
                 }
             } else {
                 // javadoc:3.6."/"
                 if (!thisFile.equals(thatFile)) {
-                    if (!thisFile.endsWith("/")) {
-                        if (!thatFile.equals(thisFile + "/")) {
+                    if (!thisFile.endsWith("/")) { //$NON-NLS-1$
+                        if (!thatFile.equals(thisFile + "/")) { //$NON-NLS-1$
                             return false;
                         }
                     } else {
@@ -456,24 +457,24 @@ public class CodeSource implements Serializable {
 	 */
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        buf.append("CodeSource, url=");
-        buf.append(location == null ? "<null>" : location.toString());
+        buf.append("CodeSource, url="); //$NON-NLS-1$
+        buf.append(location == null ? "<null>" : location.toString()); //$NON-NLS-1$
 
         if (certs == null) {
-            buf.append(", <no certificates>");
+            buf.append(", <no certificates>"); //$NON-NLS-1$
         } else {
-            buf.append("\nCertificates [\n");
+            buf.append("\nCertificates [\n"); //$NON-NLS-1$
             for (int i = 0; i < certs.length; i++) {
-                buf.append(i + 1).append(") ").append(certs[i]).append("\n");
+                buf.append(i + 1).append(") ").append(certs[i]).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            buf.append("]\n");
+            buf.append("]\n"); //$NON-NLS-1$
         }
         if (signers != null) {
-            buf.append("\nCodeSigners [\n");
+            buf.append("\nCodeSigners [\n"); //$NON-NLS-1$
             for (int i = 0; i < signers.length; i++) {
-                buf.append(i + 1).append(") ").append(signers[i]).append("\n");
+                buf.append(i + 1).append(") ").append(signers[i]).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            buf.append("]\n");
+            buf.append("]\n"); //$NON-NLS-1$
         }
         return buf.toString();
     }
@@ -493,7 +494,7 @@ public class CodeSource implements Serializable {
                     oos.write(data);
                 } catch (CertificateEncodingException ex) {
                     throw (IOException) new IOException(
-                            "Could not store certificate").initCause(ex);
+                            Messages.getString("security.18")).initCause(ex); //$NON-NLS-1$
                 }
             }
         }
@@ -516,7 +517,7 @@ public class CodeSource implements Serializable {
                     factory = CertificateFactory.getInstance(type);
                 } catch (CertificateException ex) {
                     throw new ClassNotFoundException(
-                            "Could not find CertificateFactory of type " + type,
+                            Messages.getString("security.19", type), //$NON-NLS-1$
                             ex);
                 }
                 int dataLen = ois.readInt();
@@ -527,7 +528,7 @@ public class CodeSource implements Serializable {
                     certs[i] = factory.generateCertificate(bais);
                 } catch (CertificateException ex) {
                     throw (IOException) new IOException(
-                            "Could not generate certificate").initCause(ex);
+                            Messages.getString("security.1A")).initCause(ex); //$NON-NLS-1$
                 }
             }
         }

@@ -54,8 +54,8 @@ public class Extensions {
 
     // Supported critical extensions oids:
     private static List SUPPORTED_CRITICAL = Arrays.asList(
-            new String[] {"2.5.29.15", "2.5.29.19", "2.5.29.32", "2.5.29.17", 
-                "2.5.29.30", "2.5.29.36", "2.5.29.37", "2.5.29.54"});
+            new String[] {"2.5.29.15", "2.5.29.19", "2.5.29.32", "2.5.29.17",  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                "2.5.29.30", "2.5.29.36", "2.5.29.37", "2.5.29.54"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     
     // the values of extensions of the structure
     private List<Extension> extensions;
@@ -199,7 +199,7 @@ public class Extensions {
      * than 9.
      */
     public boolean[] valueOfKeyUsage() {
-        Extension extn = getExtensionByOID("2.5.29.15");
+        Extension extn = getExtensionByOID("2.5.29.15"); //$NON-NLS-1$
         KeyUsage kUsage = null;
         if ((extn == null) || ((kUsage = extn.getKeyUsageValue()) == null)) {
             return null;
@@ -225,7 +225,7 @@ public class Extensions {
      * @throws IOException if extension was incorrectly encoded.
      */
     public List valueOfExtendedKeyUsage() throws IOException {
-        Extension extn = getExtensionByOID("2.5.29.37");
+        Extension extn = getExtensionByOID("2.5.29.37"); //$NON-NLS-1$
         if (extn == null) {
             return null;
         }
@@ -251,7 +251,7 @@ public class Extensions {
      * and Integer.MAX_VALUE if does not.
      */
     public int valueOfBasicConstrains() {
-        Extension extn = getExtensionByOID("2.5.29.19");
+        Extension extn = getExtensionByOID("2.5.29.19"); //$NON-NLS-1$
         BasicConstraints bc = null;
         if ((extn == null) 
                 || ((bc = extn.getBasicConstraintsValue()) == null)) {
@@ -276,7 +276,7 @@ public class Extensions {
      * null if does not.
      */
     public List valueOfSubjectAlternativeName() throws IOException {
-        Extension extn = getExtensionByOID("2.5.29.17");
+        Extension extn = getExtensionByOID("2.5.29.17"); //$NON-NLS-1$
         if (extn == null) {
             return null;
         }
@@ -300,7 +300,7 @@ public class Extensions {
      * null if does not.
      */
     public List valueOfIssuerAlternativeName() throws IOException {
-        Extension extn = getExtensionByOID("2.5.29.18");
+        Extension extn = getExtensionByOID("2.5.29.18"); //$NON-NLS-1$
         if (extn == null) {
             return null;
         }
@@ -323,7 +323,7 @@ public class Extensions {
      */
     public X500Principal valueOfCertificateIssuerExtension() 
                                                         throws IOException {
-        Extension extn = getExtensionByOID("2.5.29.29");
+        Extension extn = getExtensionByOID("2.5.29.29"); //$NON-NLS-1$
         if (extn == null) {
             return null;
         }

@@ -58,7 +58,7 @@ public class PublicKeyImpl implements PublicKey {
     }
 
     public String getFormat() {
-        return "X.509";
+        return "X.509"; //$NON-NLS-1$
     }
 
     public byte[] getEncoded() {

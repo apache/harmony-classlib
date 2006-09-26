@@ -24,6 +24,8 @@ package java.security;
 import java.io.IOException;
 import java.io.Serializable;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * Superclass of permissions which have names but no action lists.
  * 
@@ -64,10 +66,10 @@ public abstract class BasicPermission extends Permission implements
      */ 
     private final void checkName(String name) {
         if (name == null) {
-            throw new NullPointerException("name must not be null");
+            throw new NullPointerException(Messages.getString("security.28")); //$NON-NLS-1$
         }
         if (name.length() == 0) {
-            throw new IllegalArgumentException("name must not be empty");
+            throw new IllegalArgumentException(Messages.getString("security.29")); //$NON-NLS-1$
         }
     }
 
@@ -113,7 +115,7 @@ public abstract class BasicPermission extends Permission implements
 	 * @return String the actions associated with the receiver.
 	 */
     public String getActions() {
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
 	/**

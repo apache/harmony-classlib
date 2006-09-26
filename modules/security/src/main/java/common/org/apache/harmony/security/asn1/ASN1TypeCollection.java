@@ -21,6 +21,8 @@
 
 package org.apache.harmony.security.asn1;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 
 /**
  * This abstract class represents ASN.1 type that is a collection of ASN.1 types.
@@ -90,7 +92,6 @@ public abstract class ASN1TypeCollection extends ASN1Constructured {
      * @param values - an array to store an object's values to be encoded
      */
     protected void getValues(Object object, Object[] values) {
-        throw new RuntimeException("ASN.1 type:" + getClass().getName()
-                + " is not designed to be encoded");
+        throw new RuntimeException(Messages.getString("security.101", getClass().getName())); //$NON-NLS-1$
     }
 }

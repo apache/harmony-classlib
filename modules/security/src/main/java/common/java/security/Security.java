@@ -39,6 +39,7 @@ import org.apache.harmony.security.fortress.Engine;
 import org.apache.harmony.security.fortress.PolicyUtils;
 import org.apache.harmony.security.fortress.SecurityAccess;
 import org.apache.harmony.security.fortress.Services;
+import org.apache.harmony.security.internal.nls.Messages;
 
 /**
  * For access to security providers and properties.
@@ -57,9 +58,9 @@ public final class Security {
         AccessController.doPrivileged(new java.security.PrivilegedAction() {
             public Object run() {
                 boolean loaded = false;
-                File f = new File(System.getProperty("java.home")
-                        + File.separator + "lib" + File.separator
-                        + "security" + File.separator + "java.security");
+                File f = new File(System.getProperty("java.home") //$NON-NLS-1$
+                        + File.separator + "lib" + File.separator //$NON-NLS-1$
+                        + "security" + File.separator + "java.security"); //$NON-NLS-1$ //$NON-NLS-2$
                 if (f.exists()) {
                     try {
                         FileInputStream fis = new FileInputStream(f);
@@ -73,10 +74,10 @@ public final class Security {
                     }
                 }
 
-                if ("true".equalsIgnoreCase(secprops.getProperty("security.allowCustomePropertiesFile", "true"))) {
-                    String securityFile = System.getProperty("java.security.properties");
+                if ("true".equalsIgnoreCase(secprops.getProperty("security.allowCustomePropertiesFile", "true"))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    String securityFile = System.getProperty("java.security.properties"); //$NON-NLS-1$
                     if (securityFile != null) {
-                        if (securityFile.startsWith("=")) { // overwrite
+                        if (securityFile.startsWith("=")) { // overwrite //$NON-NLS-1$
                             secprops = new Properties();
                             loaded = false;
                             securityFile = securityFile.substring(1);
@@ -140,7 +141,7 @@ public final class Security {
         if (algName == null || propName == null) {
             return null;
         }
-        String prop = propName + "." + algName;
+        String prop = propName + "." + algName; //$NON-NLS-1$
         Provider[] providers = getProviders();
         for (int i = 0; i < providers.length; i++) {
             for (Enumeration e = providers[i].propertyNames(); e
@@ -166,7 +167,7 @@ public final class Security {
         // one position for next providers; Note: The position is 1-based
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
-            sm.checkSecurityAccess("insertProvider." + provider.getName());
+            sm.checkSecurityAccess("insertProvider." + provider.getName()); //$NON-NLS-1$
         }
         if (getProvider(provider.getName()) != null) {
             return -1;
@@ -210,7 +211,7 @@ public final class Security {
         }
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
-            sm.checkSecurityAccess("removeProvider." + name);
+            sm.checkSecurityAccess("removeProvider." + name); //$NON-NLS-1$
         }
         Services.removeProvider(p.getProviderNumber());
         renumProviders();
@@ -248,20 +249,20 @@ public final class Security {
 	 */
     public static Provider[] getProviders(String filter) {
         if (filter == null) {
-            throw new NullPointerException("The filter is null");
+            throw new NullPointerException(Messages.getString("security.2A")); //$NON-NLS-1$
         }
         if (filter.length() == 0) {
             throw new InvalidParameterException(
-                    "The fillter is not in the required format");
+                    Messages.getString("security.2B")); //$NON-NLS-1$
         }
         HashMap hm = new HashMap();
-        int i = filter.indexOf(":");
+        int i = filter.indexOf(":"); //$NON-NLS-1$
         if ((i == filter.length() - 1) || (i == 0)) {
             throw new InvalidParameterException(
-                    "The fillter is not in the required format");
+                    Messages.getString("security.2B")); //$NON-NLS-1$
         }
         if (i < 1) {
-            hm.put(filter, "");
+            hm.put(filter, ""); //$NON-NLS-1$
         } else {
             hm.put(filter.substring(0, i), filter.substring(i + 1));
         }
@@ -274,7 +275,7 @@ public final class Security {
      */
     public static synchronized Provider[] getProviders(Map<String,String> filter) {
         if (filter == null) {
-            throw new NullPointerException("The filter is null");
+            throw new NullPointerException(Messages.getString("security.2A")); //$NON-NLS-1$
         }
         if (filter.isEmpty()) {
             return null;
@@ -287,26 +288,26 @@ public final class Security {
             String key = (String) entry.getKey();
             String val = (String) entry.getValue();
             String attribute = null;
-            int i = key.indexOf(" ");
-            int j = key.indexOf(".");
+            int i = key.indexOf(" "); //$NON-NLS-1$
+            int j = key.indexOf("."); //$NON-NLS-1$
             if (j == -1) {
                 throw new InvalidParameterException(
-                        "The fillter is not in the required format");
+                        Messages.getString("security.2B")); //$NON-NLS-1$
             }
             if (i == -1) { // <crypto_service>.<algorithm_or_type>
                 if (val.length() != 0) {
                     throw new InvalidParameterException(
-                            "The fillter is not in the required format");
+                            Messages.getString("security.2B")); //$NON-NLS-1$
                 }
             } else { // <crypto_service>.<algorithm_or_type> <attribute_name>
                 if (val.length() == 0) {
                     throw new InvalidParameterException(
-                            "The fillter is not in the required format");
+                            Messages.getString("security.2B")); //$NON-NLS-1$
                 }
                 attribute = key.substring(i + 1);
                 if (attribute.trim().length() == 0) {
                     throw new InvalidParameterException(
-                            "The fillter is not in the required format");
+                            Messages.getString("security.2B")); //$NON-NLS-1$
                 }
                 key = key.substring(0, i);
             }
@@ -314,7 +315,7 @@ public final class Security {
             String alg = key.substring(j + 1);
             if (serv.length() == 0 || alg.length() == 0) {
                 throw new InvalidParameterException(
-                        "The fillter is not in the required format");
+                        Messages.getString("security.2B")); //$NON-NLS-1$
             }
             Provider p;
             for (int k = 0; k < result.size(); k++) {
@@ -351,11 +352,11 @@ public final class Security {
 	 */
     public static String getProperty(String key) {
         if (key == null) {
-            throw new NullPointerException("The key is null");
+            throw new NullPointerException(Messages.getString("security.2C")); //$NON-NLS-1$
         }
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
-            sm.checkSecurityAccess("getProperty." + key);
+            sm.checkSecurityAccess("getProperty." + key); //$NON-NLS-1$
         }
         return secprops.getProperty(key);
     }
@@ -376,7 +377,7 @@ public final class Security {
     public static void setProperty(String key, String datnum) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
-            sm.checkSecurityAccess("setProperty." + key);
+            sm.checkSecurityAccess("setProperty." + key); //$NON-NLS-1$
         }
         secprops.put(key, datnum);
     }

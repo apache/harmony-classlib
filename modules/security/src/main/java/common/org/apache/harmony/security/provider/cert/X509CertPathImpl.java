@@ -37,6 +37,7 @@ import java.util.List;
 import org.apache.harmony.security.asn1.ASN1Any;
 import org.apache.harmony.security.asn1.ASN1SequenceOf;
 import org.apache.harmony.security.asn1.BerInputStream;
+import org.apache.harmony.security.internal.nls.Messages;
 import org.apache.harmony.security.pkcs7.ContentInfo;
 import org.apache.harmony.security.pkcs7.SignedData;
 import org.apache.harmony.security.x509.Certificate;
@@ -79,7 +80,7 @@ public class X509CertPathImpl extends CertPath {
 
     // supported encoding names
     private static final String[] encodingsArr =
-                                        new String[] {"PkiPath", "PKCS7"};
+                                        new String[] {"PkiPath", "PKCS7"}; //$NON-NLS-1$ //$NON-NLS-2$
     static final List encodings = Collections.unmodifiableList(
                                             Arrays.asList(encodingsArr));
     // the list of certificates representing this certification path
@@ -96,14 +97,14 @@ public class X509CertPathImpl extends CertPath {
      * is not an instance of subclass of X509Certificate.
      */
     public X509CertPathImpl(List certs) throws CertificateException {
-        super("X.509");
+        super("X.509"); //$NON-NLS-1$
         int size = certs.size();
         certificates = new ArrayList(size);
         for (int i=0; i<size; i++) {
             Object cert = certs.get(i);
             if (!(cert instanceof X509Certificate) ) {
                 throw new CertificateException(
-                        "One of provided certificates is not X509 certificate");
+                        Messages.getString("security.15D")); //$NON-NLS-1$
             }
             certificates.add(cert);
         }
@@ -119,7 +120,7 @@ public class X509CertPathImpl extends CertPath {
      * @param encoding - encoded form of certification path.
      */
     private X509CertPathImpl(List certs, int type, byte[] encoding) {
-        super("X.509");
+        super("X.509"); //$NON-NLS-1$
         if (type == PKI_PATH) {
             this.pkiPathEncoding = encoding;
         } else { // PKCS7
@@ -141,8 +142,8 @@ public class X509CertPathImpl extends CertPath {
         try {
             return (X509CertPathImpl) ASN1.decode(in);
         } catch (IOException e) {
-            throw new CertificateException("Incorrect encoded form: "
-                    + e.getMessage());
+            throw new CertificateException(Messages.getString("security.15E", //$NON-NLS-1$
+                    e.getMessage()));
         }
     }
 
@@ -157,7 +158,7 @@ public class X509CertPathImpl extends CertPath {
         throws CertificateException {
         if (!encodings.contains(encoding)) {
             throw new CertificateException(
-                    "Unsupported encoding: "+encoding);
+                    Messages.getString("security.15F", encoding)); //$NON-NLS-1$
         }
         try {
             if (encodingsArr[0].equals(encoding)) {
@@ -169,7 +170,7 @@ public class X509CertPathImpl extends CertPath {
                 SignedData sd = ci.getSignedData();
                 if (sd == null) {
                     throw new CertificateException(
-                        "Incorrect PKCS7 encoded form: missing signed data");
+                        Messages.getString("security.160")); //$NON-NLS-1$
                 }
                 List certs = sd.getCertificates();
                 if (certs == null) {
@@ -183,8 +184,8 @@ public class X509CertPathImpl extends CertPath {
                 return new X509CertPathImpl(result, PKCS7, ci.getEncoded());
             }
         } catch (IOException e) {
-            throw new CertificateException("Incorrect encoded form: "
-                    + e.getMessage());
+            throw new CertificateException(Messages.getString("security.15E", //$NON-NLS-1$
+                    e.getMessage()));
         }
     }
 
@@ -199,8 +200,8 @@ public class X509CertPathImpl extends CertPath {
         try {
             return (X509CertPathImpl) ASN1.decode(in);
         } catch (IOException e) {
-            throw new CertificateException("Incorrect encoded form: "
-                    + e.getMessage());
+            throw new CertificateException(Messages.getString("security.15E", //$NON-NLS-1$
+                    e.getMessage()));
         }
     }
 
@@ -215,7 +216,7 @@ public class X509CertPathImpl extends CertPath {
         throws CertificateException {
         if (!encodings.contains(encoding)) {
             throw new CertificateException(
-                    "Unsupported encoding: "+encoding);
+                    Messages.getString("security.15F", encoding)); //$NON-NLS-1$
         }
         try {
             if (encodingsArr[0].equals(encoding)) {
@@ -227,7 +228,7 @@ public class X509CertPathImpl extends CertPath {
                 SignedData sd = ci.getSignedData();
                 if (sd == null) {
                     throw new CertificateException(
-                        "Incorrect PKCS7 encoded form: missing signed data");
+                        Messages.getString("security.160")); //$NON-NLS-1$
                 }
                 List certs = sd.getCertificates();
                 if (certs == null) {
@@ -240,8 +241,8 @@ public class X509CertPathImpl extends CertPath {
                 return new X509CertPathImpl(result, PKCS7, ci.getEncoded());
             }
         } catch (IOException e) {
-            throw new CertificateException("Incorrect encoded form: "
-                    + e.getMessage());
+            throw new CertificateException(Messages.getString("security.15E", //$NON-NLS-1$
+                    e.getMessage()));
         }
     }
 
@@ -278,7 +279,7 @@ public class X509CertPathImpl extends CertPath {
         throws CertificateEncodingException {
         if (!encodings.contains(encoding)) {
             throw new CertificateEncodingException(
-                    "Unsupported encoding: "+encoding);
+                    Messages.getString("security.15F", encoding)); //$NON-NLS-1$
         }
         if (encodingsArr[0].equals(encoding)) {
             // PkiPath encoded form
@@ -358,7 +359,7 @@ public class X509CertPathImpl extends CertPath {
                                 cp.certificates.get(i)).getEncoded());
                 }
             } catch (CertificateEncodingException e) {
-                throw new IllegalArgumentException("Encoding Error occurred");
+                throw new IllegalArgumentException(Messages.getString("security.161")); //$NON-NLS-1$
             }
             return encodings;
         }

@@ -253,7 +253,7 @@ public class Cache {
             if (idx < 0) {
                 // it will never happen because we use saved hash value
                 // (hashes[index])
-                System.out.println("WARNING! "+idx);
+                System.out.println("WARNING! "+idx); //$NON-NLS-1$
                 idx = -(idx + 1);
             }
             long new_hash_idx = (hash | (index + 1));
@@ -263,8 +263,8 @@ public class Cache {
                 if (idx != new_idx) {
                     // it will never happen because we use the same
                     // hash and the same index in hash table
-                    System.out.println("WARNING: ");
-                    System.out.println(">> idx: "+idx+" new_idx: "+new_idx);
+                    System.out.println("WARNING: "); //$NON-NLS-1$
+                    System.out.println(">> idx: "+idx+" new_idx: "+new_idx); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             } else {
                 new_idx = -(new_idx + 1);

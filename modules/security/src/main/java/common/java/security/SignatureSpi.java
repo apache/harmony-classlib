@@ -23,6 +23,8 @@ package java.security;
 import java.nio.ByteBuffer;
 import java.security.spec.AlgorithmParameterSpec;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -124,14 +126,13 @@ public abstract class SignatureSpi {
             return 0;
         }
         if (len < tmp.length) {
-            throw new SignatureException(
-                    "The value of len parameter is less than the actual signature length");
+            throw new SignatureException(Messages.getString("security.2D")); //$NON-NLS-1$
         }
         if (offset < 0) {
-            throw new SignatureException("Invalid negative offset");
+            throw new SignatureException(Messages.getString("security.1C")); //$NON-NLS-1$
         }
         if (offset + len > outbuf.length) {
-            throw new SignatureException("Incorrect offset or len value");
+            throw new SignatureException(Messages.getString("security.05")); //$NON-NLS-1$
         }
         System.arraycopy(tmp, 0, outbuf, offset, tmp.length);
         return tmp.length;

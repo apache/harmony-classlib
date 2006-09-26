@@ -29,6 +29,8 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * An immutable certificate path that can be validated. All certificates in the
  * path are of the same type (i.e., X509).
@@ -113,18 +115,18 @@ public abstract class CertPath implements Serializable {
 	 */
     public String toString() {
         StringBuffer sb = new StringBuffer(getType());
-        sb.append(" Cert Path, len=");
+        sb.append(" Cert Path, len="); //$NON-NLS-1$
         sb.append(getCertificates().size());
-        sb.append(": [\n");
+        sb.append(": [\n"); //$NON-NLS-1$
         int n=1;
         for (Iterator i=getCertificates().iterator();
                       i.hasNext(); n++) {
-            sb.append("---------------certificate ");
+            sb.append("---------------certificate "); //$NON-NLS-1$
             sb.append(n);
-            sb.append("---------------\n");
+            sb.append("---------------\n"); //$NON-NLS-1$
             sb.append(((Certificate)i.next()).toString());
         }
-        sb.append("\n]");
+        sb.append("\n]"); //$NON-NLS-1$
         return sb.toString();
     }
 
@@ -175,7 +177,7 @@ public abstract class CertPath implements Serializable {
             return new CertPathRep(getType(), getEncoded());
         } catch (CertificateEncodingException e) {
             throw new NotSerializableException (
-                    "Could not create serialization object: " + e);
+                    Messages.getString("security.66", e)); //$NON-NLS-1$
         }
     }
 
@@ -195,8 +197,8 @@ public abstract class CertPath implements Serializable {
         // Force default serialization to use writeUnshared/readUnshared
         // for cert path data
         private static final ObjectStreamField[] serialPersistentFields = {
-             new ObjectStreamField("type", String.class),
-             new ObjectStreamField("data", byte[].class, true)
+             new ObjectStreamField("type", String.class), //$NON-NLS-1$
+             new ObjectStreamField("data", byte[].class, true) //$NON-NLS-1$
         };
 
         /**
@@ -216,7 +218,7 @@ public abstract class CertPath implements Serializable {
                 return cf.generateCertPath(new ByteArrayInputStream(data));
             } catch (Throwable t) {
                 throw new NotSerializableException(
-                        "Could not resolve cert path: " + t);
+                        Messages.getString("security.67", t)); //$NON-NLS-1$
             }
         }
     }

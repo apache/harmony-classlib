@@ -95,12 +95,12 @@ public class ASN1GeneralizedTime extends ASN1Time {
     // four digit year, seconds always presented
     // and fractional-secons elements without
     // trailing 0's (must be cut later from content)
-    private final static String GEN_PATTERN = "yyyyMMddHHmmss.S";
+    private final static String GEN_PATTERN = "yyyyMMddHHmmss.S"; //$NON-NLS-1$
 
     public void setEncodingContent(BerOutputStream out) {
 
         SimpleDateFormat sdf = new SimpleDateFormat(GEN_PATTERN);
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC")); //$NON-NLS-1$
         String temp = sdf.format(out.content);
         // cut off trailing 0s
         int nullId;
@@ -113,7 +113,7 @@ public class ASN1GeneralizedTime extends ASN1Time {
         if (temp.charAt(currLength) == '.') {
             temp = temp.substring(0, currLength);
         }
-        out.content = (temp + "Z").getBytes();
+        out.content = (temp + "Z").getBytes(); //$NON-NLS-1$
         out.length = ((byte[]) out.content).length;
     }
 }

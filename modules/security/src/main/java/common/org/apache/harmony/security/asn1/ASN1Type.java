@@ -24,6 +24,8 @@ package org.apache.harmony.security.asn1;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 
 /**
  * This abstract class is the super class for all ASN.1 types
@@ -65,13 +67,13 @@ public abstract class ASN1Type implements ASN1Constants {
     public ASN1Type(int tagClass, int tagNumber) {
 
         if (tagNumber < 0) {
-            throw new IllegalArgumentException("Negative tag number");
+            throw new IllegalArgumentException(Messages.getString("security.102")); //$NON-NLS-1$
         }
 
         if (tagClass != CLASS_UNIVERSAL && tagClass != CLASS_APPLICATION
                 && tagClass != CLASS_CONTEXTSPECIFIC
                 && tagClass != CLASS_PRIVATE) {
-            throw new IllegalArgumentException("Wrong tag class");
+            throw new IllegalArgumentException(Messages.getString("security.103")); //$NON-NLS-1$
         }
 
         if (tagNumber < 31) {
@@ -80,7 +82,7 @@ public abstract class ASN1Type implements ASN1Constants {
         } else {
             // long form
             throw new IllegalArgumentException(
-                    "Tag long form is not implemented");
+                    Messages.getString("security.104")); //$NON-NLS-1$
         }
         this.constrId = this.id + PC_CONSTRUCTED;
     }
@@ -205,7 +207,7 @@ public abstract class ASN1Type implements ASN1Constants {
     public String toString() {
         // TODO decide whether this method is necessary
         //FIXME fix performance
-        return this.getClass().getName() + "(tag: 0x"
-                + Integer.toHexString(0xff & this.id) + ")";
+        return this.getClass().getName() + "(tag: 0x" //$NON-NLS-1$
+                + Integer.toHexString(0xff & this.id) + ")"; //$NON-NLS-1$
     }
 }

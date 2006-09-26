@@ -33,6 +33,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -72,8 +74,7 @@ public class PKIXParameters implements CertPathParameters {
     public PKIXParameters(Set<TrustAnchor> trustAnchors)
         throws InvalidAlgorithmParameterException {
         if (trustAnchors == null) {
-            throw new NullPointerException(
-                    "the trustAnchors parameter is null");
+            throw new NullPointerException(Messages.getString("security.6F")); //$NON-NLS-1$
         }
         checkTrustAnchors(trustAnchors);
         this.trustAnchors = new HashSet<TrustAnchor>(trustAnchors);
@@ -86,13 +87,13 @@ public class PKIXParameters implements CertPathParameters {
         throws KeyStoreException,
                InvalidAlgorithmParameterException {
         if (keyStore == null) {
-            throw new NullPointerException("the keyStore parameter is null");
+            throw new NullPointerException(Messages.getString("security.41")); //$NON-NLS-1$
         }
         // Will throw KeyStoreException if
         // keyStore has not been initialized (loaded)
         if (keyStore.size() == 0) {
             throw new InvalidAlgorithmParameterException(
-                    "the keystore is empty");
+                    Messages.getString("security.6A")); //$NON-NLS-1$
         }
         // keyStore is not null and loaded
         trustAnchors = new HashSet<TrustAnchor>();
@@ -126,7 +127,7 @@ public class PKIXParameters implements CertPathParameters {
         throws InvalidAlgorithmParameterException {
         if (trustAnchors == null) {
             throw new NullPointerException(
-                    "the trustAnchors parameter is null");
+                    Messages.getString("security.6F")); //$NON-NLS-1$
         }
         checkTrustAnchors(trustAnchors);
         // make shallow copy
@@ -245,8 +246,7 @@ public class PKIXParameters implements CertPathParameters {
         // check that all elements are CertStore
         for (Iterator i = this.certStores.iterator(); i.hasNext();) {
             if (!(i.next() instanceof CertStore)) {
-                throw new ClassCastException(
-              "all list elements must be of type java.security.cert.CertStore");
+                throw new ClassCastException(Messages.getString("security.6B")); //$NON-NLS-1$
             }
         }
     }
@@ -332,8 +332,7 @@ public class PKIXParameters implements CertPathParameters {
         // check that all elements are String
         for (Iterator i = this.initialPolicies.iterator(); i.hasNext();) {
             if (!(i.next() instanceof String)) {
-                throw new ClassCastException(
-                        "all set elements must be of type java.lang.String");
+                throw new ClassCastException(Messages.getString("security.6C")); //$NON-NLS-1$
             }
         }
     }
@@ -435,34 +434,34 @@ public class PKIXParameters implements CertPathParameters {
      */
     public String toString() {
         StringBuffer sb =
-            new StringBuffer("[\n Trust Anchors: ");
+            new StringBuffer("[\n Trust Anchors: "); //$NON-NLS-1$
         sb.append(trustAnchors);
-        sb.append("\n Revocation Enabled: ");
+        sb.append("\n Revocation Enabled: "); //$NON-NLS-1$
         sb.append(revocationEnabled);
-        sb.append("\n Explicit Policy Required: ");
+        sb.append("\n Explicit Policy Required: "); //$NON-NLS-1$
         sb.append(explicitPolicyRequired);
-        sb.append("\n Policy Mapping Inhibited: ");
+        sb.append("\n Policy Mapping Inhibited: "); //$NON-NLS-1$
         sb.append(policyMappingInhibited);
-        sb.append("\n Any Policy Inhibited: ");
+        sb.append("\n Any Policy Inhibited: "); //$NON-NLS-1$
         sb.append(anyPolicyInhibited);
-        sb.append("\n Policy Qualifiers Rejected: ");
+        sb.append("\n Policy Qualifiers Rejected: "); //$NON-NLS-1$
         sb.append(policyQualifiersRejected);
-        sb.append("\n Initial Policy OIDs: ");
+        sb.append("\n Initial Policy OIDs: "); //$NON-NLS-1$
         sb.append((initialPolicies == null || initialPolicies.isEmpty())
-                ? "any" : initialPolicies.toString());
-        sb.append("\n Cert Stores: ");
+                ? "any" : initialPolicies.toString()); //$NON-NLS-1$
+        sb.append("\n Cert Stores: "); //$NON-NLS-1$
         sb.append((certStores==null||certStores.isEmpty())?
-                "no":certStores.toString());
-        sb.append("\n Validity Date: ");
+                "no":certStores.toString()); //$NON-NLS-1$
+        sb.append("\n Validity Date: "); //$NON-NLS-1$
         sb.append(date);
-        sb.append("\n Cert Path Checkers: ");
+        sb.append("\n Cert Path Checkers: "); //$NON-NLS-1$
         sb.append((certPathCheckers==null||certPathCheckers.isEmpty())?
-                "no":certPathCheckers.toString());
-        sb.append("\n Signature Provider: ");
+                "no":certPathCheckers.toString()); //$NON-NLS-1$
+        sb.append("\n Signature Provider: "); //$NON-NLS-1$
         sb.append(sigProvider);
-        sb.append("\n Target Certificate Constraints: ");
+        sb.append("\n Target Certificate Constraints: "); //$NON-NLS-1$
         sb.append(targetCertConstraints);
-        sb.append("\n]");
+        sb.append("\n]"); //$NON-NLS-1$
         return sb.toString();
     }
 
@@ -479,12 +478,12 @@ public class PKIXParameters implements CertPathParameters {
         throws InvalidAlgorithmParameterException {
         if (trustAnchors.isEmpty()) {
             throw new InvalidAlgorithmParameterException(
-                    "the trust anchors set is empty");
+                    Messages.getString("security.6D")); //$NON-NLS-1$
         }
         for (Iterator i = trustAnchors.iterator(); i.hasNext();) {
             if (!(i.next() instanceof TrustAnchor)) {
                 throw new ClassCastException(
-             "all set elements must be of type java.security.cert.TrustAnchor");
+             Messages.getString("security.6E")); //$NON-NLS-1$
             }
         }
     }

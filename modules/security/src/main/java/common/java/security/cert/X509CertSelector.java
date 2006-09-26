@@ -38,6 +38,7 @@ import java.util.Set;
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.harmony.security.asn1.ASN1OctetString;
+import org.apache.harmony.security.internal.nls.Messages;
 import org.apache.harmony.security.x509.AlgorithmIdentifier;
 import org.apache.harmony.security.x509.CertificatePolicies;
 import org.apache.harmony.security.x509.GeneralName;
@@ -354,17 +355,17 @@ public class X509CertSelector implements CertSelector {
             int comp = Integer.parseInt(oid.substring(beg, end));
             beg = end + 1;
             if ((comp < 0) || (comp > 2)) {
-                throw new IOException("The OID: \"" + oid + "\" is icorrect.");
+                throw new IOException(Messages.getString("security.56", oid)); //$NON-NLS-1$
             }
             end = oid.indexOf('.', beg);
             comp = Integer.parseInt(oid.substring(beg, end));
             if ((comp < 0) || (comp > 39)) {
-                throw new IOException("The OID: \"" + oid + "\" is icorrect.");
+                throw new IOException(Messages.getString("security.56", oid)); //$NON-NLS-1$
             }
         } catch (IndexOutOfBoundsException e) {
-            throw new IOException("The OID: \"" + oid + "\" is icorrect.");
+            throw new IOException(Messages.getString("security.56", oid)); //$NON-NLS-1$
         } catch (NumberFormatException e) {
-            throw new IOException("The OID: \"" + oid + "\" is icorrect.");
+            throw new IOException(Messages.getString("security.56", oid)); //$NON-NLS-1$
         }
     }
 
@@ -501,8 +502,7 @@ public class X509CertSelector implements CertSelector {
             } else if (value instanceof byte[]) {
                 addSubjectAlternativeName(tag, (byte[]) value);
             } else {
-                throw new IOException(
-                        "The name component is not a Stirng or a byte array.");
+                throw new IOException(Messages.getString("security.57")); //$NON-NLS-1$
             }
         }
     }
@@ -590,8 +590,7 @@ public class X509CertSelector implements CertSelector {
      */
     public void setBasicConstraints(int pathLen) {
         if (pathLen < -2) {
-            throw new IllegalArgumentException(
-                        "pathLen criteria should be >= -2");
+            throw new IllegalArgumentException(Messages.getString("security.58")); //$NON-NLS-1$
         }
         this.pathLen = pathLen;
     }
@@ -647,8 +646,7 @@ public class X509CertSelector implements CertSelector {
             } else if (value instanceof byte[]) {
                 addPathToName(tag, (byte[]) value);
             } else {
-                throw new IOException(
-                        "The name component is not a Stirng or a byte array.");
+                throw new IOException(Messages.getString("security.57")); //$NON-NLS-1$
             }
         }
     }
@@ -702,101 +700,101 @@ public class X509CertSelector implements CertSelector {
         // (http://www.ietf.org/rfc/rfc3280.txt).
 
         StringBuffer result = new StringBuffer();
-        result.append("X509CertSelector: \n[");
+        result.append("X509CertSelector: \n["); //$NON-NLS-1$
         if (this.certificateEquals != null) {
-            result.append("\n  certificateEquals: " + certificateEquals);
+            result.append("\n  certificateEquals: " + certificateEquals); //$NON-NLS-1$
         }
         if (this.serialNumber != null) {
             //FIXME: needs DRL's BigInteger.toString implementation
             //result.append("\n  serialNumber: " + serialNumber);
         }
         if (this.issuer != null) {
-            result.append("\n  issuer: " + issuer);
+            result.append("\n  issuer: " + issuer); //$NON-NLS-1$
         }
         if (this.subject != null) {
-            result.append("\n  subject: " + subject);
+            result.append("\n  subject: " + subject); //$NON-NLS-1$
         }
         if (this.subjectKeyIdentifier != null) {
-            result.append("\n  subjectKeyIdentifier: "
+            result.append("\n  subjectKeyIdentifier: " //$NON-NLS-1$
                     + getBytesAsString(subjectKeyIdentifier));
         }
         if (this.authorityKeyIdentifier != null) {
-            result.append("\n  authorityKeyIdentifier: "
+            result.append("\n  authorityKeyIdentifier: " //$NON-NLS-1$
                     + getBytesAsString(authorityKeyIdentifier));
         }
         if (this.certificateValid != null) {
-            result.append("\n  certificateValid: " + certificateValid);
+            result.append("\n  certificateValid: " + certificateValid); //$NON-NLS-1$
         }
         if (this.subjectPublicKeyAlgID != null) {
-            result.append("\n  subjectPublicKeyAlgID: "
+            result.append("\n  subjectPublicKeyAlgID: " //$NON-NLS-1$
                     + subjectPublicKeyAlgID);
         }
         if (this.privateKeyValid != null) {
-            result.append("\n  privateKeyValid: " + privateKeyValid);
+            result.append("\n  privateKeyValid: " + privateKeyValid); //$NON-NLS-1$
         }
         if (this.subjectPublicKey != null) {
-            result.append("\n  subjectPublicKey: "
+            result.append("\n  subjectPublicKey: " //$NON-NLS-1$
                     + getBytesAsString(subjectPublicKey));
         }
         if (this.keyUsage != null) {
-            result.append("\n  keyUsage: \n  [");
+            result.append("\n  keyUsage: \n  ["); //$NON-NLS-1$
             String[] kuNames = new String[] {
-                "digitalSignature", "nonRepudiation", "keyEncipherment",
-                "dataEncipherment", "keyAgreement", "keyCertSign", "cRLSign",
-                "encipherOnly", "decipherOnly"
+                "digitalSignature", "nonRepudiation", "keyEncipherment", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "dataEncipherment", "keyAgreement", "keyCertSign", "cRLSign", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                "encipherOnly", "decipherOnly" //$NON-NLS-1$ //$NON-NLS-2$
             };
             for (int i=0; i<9; i++) {
                 if (keyUsage[i]) {
-                    result.append("\n    " + kuNames[i]);
+                    result.append("\n    " + kuNames[i]); //$NON-NLS-1$
                 }
             }
-            result.append("\n  ]");
+            result.append("\n  ]"); //$NON-NLS-1$
         }
         if (this.extendedKeyUsage != null) {
-            result.append("\n  extendedKeyUsage: "
+            result.append("\n  extendedKeyUsage: " //$NON-NLS-1$
                     + extendedKeyUsage.toString());
         }
-        result.append("\n  matchAllNames: " + matchAllNames);
-        result.append("\n  pathLen: " + pathLen);
+        result.append("\n  matchAllNames: " + matchAllNames); //$NON-NLS-1$
+        result.append("\n  pathLen: " + pathLen); //$NON-NLS-1$
         if (this.subjectAltNames != null) {
-            result.append("\n  subjectAltNames:  \n  [");
+            result.append("\n  subjectAltNames:  \n  ["); //$NON-NLS-1$
             for (int i=0; i<9; i++) {
                 List names = this.subjectAltNames[i];
                 if (names != null) {
                     int size = names.size();
                     for (int j=0; j<size; j++) {
-                        result.append("\n    "
+                        result.append("\n    " //$NON-NLS-1$
                             + ((GeneralName)names.get(j)).toString());
                     }
                 }
             }
-            result.append("\n  ]");
+            result.append("\n  ]"); //$NON-NLS-1$
         }
         if (this.nameConstraints != null) {
         }
         if (this.policies != null) {
-            result.append("\n  policies: " + policies.toString());
+            result.append("\n  policies: " + policies.toString()); //$NON-NLS-1$
         }
         if (this.pathToNames != null) {
-            result.append("\n  pathToNames:  \n  [");
+            result.append("\n  pathToNames:  \n  ["); //$NON-NLS-1$
             int size = pathToNames.size();
             for (int i = 0; i < size; i++) {
-                result.append("\n    "
+                result.append("\n    " //$NON-NLS-1$
                     + ((GeneralName)pathToNames.get(i)).toString());
             }
         }
-        result.append("\n]");
+        result.append("\n]"); //$NON-NLS-1$
         return result.toString();
     }
 
     private String getBytesAsString(byte[] data) {
-        String result = "";
+        String result = ""; //$NON-NLS-1$
         for (int i=0; i<data.length; i++) {
             String tail = Integer.toHexString(0x00ff & data[i]);
             if (tail.length() == 1) {
-                tail = "0" + tail;
+                tail = "0" + tail; //$NON-NLS-1$
             }
-            result += tail + " ";
+            result += tail + " "; //$NON-NLS-1$
         }
         return result;
     }
@@ -842,12 +840,12 @@ public class X509CertSelector implements CertSelector {
             !Arrays.equals(subjectKeyIdentifier,
             // Here and later all of the extension OIDs 
             // are taken from rfc 3280 (http://www.ietf.org/rfc/rfc3280.txt)
-                           getExtensionValue(cert, "2.5.29.14"))) {
+                           getExtensionValue(cert, "2.5.29.14"))) { //$NON-NLS-1$
             return false;
         }
         if ((authorityKeyIdentifier != null) &&
             !Arrays.equals(authorityKeyIdentifier,
-                           getExtensionValue(cert, "2.5.29.35"))) {
+                           getExtensionValue(cert, "2.5.29.35"))) { //$NON-NLS-1$
             return false;
         }
         if (certificateValid != null) {
@@ -861,7 +859,7 @@ public class X509CertSelector implements CertSelector {
         }
         if (privateKeyValid != null) {
             try {
-                byte[] bytes = getExtensionValue(cert, "2.5.29.16");
+                byte[] bytes = getExtensionValue(cert, "2.5.29.16"); //$NON-NLS-1$
                 if (bytes == null) {
                     return false;
                 }
@@ -950,7 +948,7 @@ public class X509CertSelector implements CertSelector {
         if (subjectAltNames != null) {
             PASSED:
             try {
-                byte[] bytes = getExtensionValue(cert, "2.5.29.17");
+                byte[] bytes = getExtensionValue(cert, "2.5.29.17"); //$NON-NLS-1$
                 if (bytes == null) {
                     return false;
                 }
@@ -1003,7 +1001,7 @@ public class X509CertSelector implements CertSelector {
             }
         }
         if (policies != null) {
-            byte[] bytes = getExtensionValue(cert, "2.5.29.32");
+            byte[] bytes = getExtensionValue(cert, "2.5.29.32"); //$NON-NLS-1$
             if (bytes == null) {
                 return false;
             }
@@ -1031,7 +1029,7 @@ public class X509CertSelector implements CertSelector {
             }
         }
         if (pathToNames != null) {
-            byte[] bytes = getExtensionValue(cert, "2.5.29.30");
+            byte[] bytes = getExtensionValue(cert, "2.5.29.30"); //$NON-NLS-1$
             if (bytes != null) {
                 NameConstraints nameConstraints;
                 try {

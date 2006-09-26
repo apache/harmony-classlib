@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.apache.harmony.security.fortress.Engine;
 import org.apache.harmony.security.fortress.Services;
+import org.apache.harmony.security.internal.nls.Messages;
 
 import org.apache.harmony.security.provider.crypto.SHA1PRNG_SecureRandomImpl;
 
@@ -44,7 +45,7 @@ public class SecureRandom extends Random {
     private static final long serialVersionUID = 4940670005562187L;
     
     // The service name.
-    private static final transient String SERVICE = "SecureRandom";
+    private static final transient String SERVICE = "SecureRandom"; //$NON-NLS-1$
     
     // Used to access common engine functionality
     private static transient Engine engine = new Engine(SERVICE);
@@ -100,7 +101,7 @@ public class SecureRandom extends Random {
         if (service == null) {
             this.provider = null;
             this.secureRandomSpi = new SHA1PRNG_SecureRandomImpl();
-            this.algorithm = "SHA1PRNG";
+            this.algorithm = "SHA1PRNG"; //$NON-NLS-1$
         } else {
             try {
                 this.provider = service.getProvider();
@@ -132,7 +133,7 @@ public class SecureRandom extends Random {
         Set s;
         Provider.Service service;
         for (Iterator it1 = Services.getProvidersList().iterator(); it1.hasNext();) {
-            service = ((Provider)it1.next()).getService("SecureRandom");
+            service = ((Provider)it1.next()).getService("SecureRandom"); //$NON-NLS-1$
             if (service != null) {
                 return service;
             }
@@ -146,7 +147,7 @@ public class SecureRandom extends Random {
      */
     protected SecureRandom(SecureRandomSpi secureRandomSpi,
                            Provider provider) {
-        this(secureRandomSpi, provider, "unknown");
+        this(secureRandomSpi, provider, "unknown"); //$NON-NLS-1$
     }
     
     // Constructor
@@ -166,7 +167,7 @@ public class SecureRandom extends Random {
     public static SecureRandom getInstance(String algorithm)
                                 throws NoSuchAlgorithmException {
         if (algorithm == null) {
-            throw new NullPointerException("Algorithm is null");
+            throw new NullPointerException(Messages.getString("security.01")); //$NON-NLS-1$
         }
         synchronized (engine) {
             engine.getInstance(algorithm, null);
@@ -193,11 +194,11 @@ public class SecureRandom extends Random {
                                 throws NoSuchAlgorithmException, NoSuchProviderException {
         if ((provider == null) || (provider.length() == 0)) {
             throw new IllegalArgumentException(
-                    "Provider is null or empty string");
+                    Messages.getString("security.02")); //$NON-NLS-1$
         }
         Provider p = Security.getProvider(provider);
         if (p == null) {
-            throw new NoSuchProviderException("Provider "+ provider + " is not available"); 
+            throw new NoSuchProviderException(Messages.getString("security.03", provider));  //$NON-NLS-1$
         }
         return getInstance(algorithm, p);    
     }
@@ -209,10 +210,10 @@ public class SecureRandom extends Random {
     public static SecureRandom getInstance(String algorithm, Provider provider)
                                 throws NoSuchAlgorithmException {
         if (provider == null) {
-            throw new IllegalArgumentException("Provider is null");
+            throw new IllegalArgumentException(Messages.getString("security.04")); //$NON-NLS-1$
         }
         if (algorithm == null) {
-            throw new NullPointerException("Algorithm is null");
+            throw new NullPointerException(Messages.getString("security.01")); //$NON-NLS-1$
         }
         synchronized (engine) {
             engine.getInstance(algorithm, provider, null);

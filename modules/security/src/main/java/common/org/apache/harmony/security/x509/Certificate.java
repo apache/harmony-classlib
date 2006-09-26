@@ -112,17 +112,17 @@ public class Certificate {
 
     public String toString() {
         StringBuffer res = new StringBuffer();
-        res.append("X509 Certificate: \n[");
-        res.append("\n  tbsCertificate:\n  [");
+        res.append("X509 Certificate: \n["); //$NON-NLS-1$
+        res.append("\n  tbsCertificate:\n  ["); //$NON-NLS-1$
         res.append(tbsCertificate.toString());
-        res.append("\n  ]");
-        res.append("\n  signatureAlgorithm:\n  [");
+        res.append("\n  ]"); //$NON-NLS-1$
+        res.append("\n  signatureAlgorithm:\n  ["); //$NON-NLS-1$
         res.append(signatureAlgorithm.toString());
-        res.append("\n  ]");
-        res.append("\n  signatureValue:\n  [");
+        res.append("\n  ]"); //$NON-NLS-1$
+        res.append("\n  signatureValue:\n  ["); //$NON-NLS-1$
         //res.append(Arrays.toString(signatureValue));
-        res.append("\n  ]");
-        res.append("\n]");
+        res.append("\n  ]"); //$NON-NLS-1$
+        res.append("\n]"); //$NON-NLS-1$
         return res.toString();
     }
     

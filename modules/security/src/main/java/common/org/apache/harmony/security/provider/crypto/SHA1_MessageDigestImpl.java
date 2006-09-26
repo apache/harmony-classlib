@@ -23,6 +23,7 @@ import java.security.DigestException;
 
 import java.util.Arrays;
 
+import org.apache.harmony.security.internal.nls.Messages;
 import org.apache.harmony.security.provider.crypto.SHA1_Data;
 import org.apache.harmony.security.provider.crypto.SHA1Impl;
 
@@ -211,17 +212,17 @@ public class SHA1_MessageDigestImpl extends MessageDigestSpi
     protected int engineDigest(byte[] buf, int offset, int len) throws DigestException { 
 
         if ( buf == null ) {
-            throw new IllegalArgumentException("null is passed to 'buf' parameter"); 
+            throw new IllegalArgumentException(Messages.getString("security.162"));  //$NON-NLS-1$
         }
         if ( offset > buf.length || len > buf.length || (len + offset) > buf.length ) {
             throw new IllegalArgumentException(
-               "buf.lendth doesn't fit supplied offset and len");
+               Messages.getString("security.163")); //$NON-NLS-1$
         }
         if ( len < DIGEST_LENGTH ) {
-            throw new DigestException(" len < digest's length (which is 20 bytes) ");
+            throw new DigestException(Messages.getString("security.164")); //$NON-NLS-1$
         }
         if ( offset < 0 ) {
-            throw new ArrayIndexOutOfBoundsException("negative offset: " + offset);
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("security.165", offset)); //$NON-NLS-1$
         }
 
         processDigest(buf, offset);
@@ -303,17 +304,17 @@ public class SHA1_MessageDigestImpl extends MessageDigestSpi
     protected void engineUpdate(byte[] input, int offset, int len) {
 
         if ( input == null ) {
-            throw new IllegalArgumentException("no byte[] passed to 'input' parameter"); 
+            throw new IllegalArgumentException(Messages.getString("security.166"));  //$NON-NLS-1$
         }
         if ( len <= 0 ) {
             return;
         }
         if ( offset < 0 ) {
-            throw new ArrayIndexOutOfBoundsException("offset < 0 : " + offset);
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("security.165", offset)); //$NON-NLS-1$
         }
         if ( offset > input.length || len > input.length || (len + offset) > input.length ) {
             throw new IllegalArgumentException(
-               "input.lendth doesn't fit supplied offset and len");
+               Messages.getString("security.167")); //$NON-NLS-1$
         }
 
         SHA1Impl.updateHash(buffer, input, offset, offset + len -1 );

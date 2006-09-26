@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.harmony.security.internal.nls.Messages;
 import org.apache.harmony.security.x501.AttributeTypeAndValue;
 import org.apache.harmony.security.x501.AttributeValue;
 
@@ -94,7 +95,7 @@ public class DNParser {
         if (pos >= length) {
             // unexpected end of DN
             throw new IOException(
-                    "Invalid distinguished name string");
+                    Messages.getString("security.192")); //$NON-NLS-1$
         }
 
         // mark the end of attribute type
@@ -109,7 +110,7 @@ public class DNParser {
             if (chars[pos] != '=' || pos == length) {
                 // unexpected end of DN
                 throw new IOException(
-                        "Invalid distinguished name string");
+                        Messages.getString("security.192")); //$NON-NLS-1$
             }
         }
 
@@ -143,7 +144,7 @@ public class DNParser {
             if (pos == length) {
                 // unexpected end of DN
                 throw new IOException(
-                        "Invalid distinguished name string");
+                        Messages.getString("security.192")); //$NON-NLS-1$
             }
 
             if (chars[pos] == '"') {
@@ -174,7 +175,7 @@ public class DNParser {
         if (pos + 4 >= length) {
             // encoded byte array  must be not less then 4 c
             throw new IOException(
-                    "Invalid distinguished name string");
+                    Messages.getString("security.192")); //$NON-NLS-1$
         }
 
         beg = pos; // store '#' position
@@ -209,7 +210,7 @@ public class DNParser {
         int hexLen = end - beg; // skip first '#' char
         if (hexLen < 5 || (hexLen & 1) == 0) {
             throw new IOException(
-                    "Invalid distinguished name string");
+                    Messages.getString("security.192")); //$NON-NLS-1$
         }
 
         // get byte encoding from string representation
@@ -274,7 +275,7 @@ public class DNParser {
         pos++;
         if (pos == length) {
             throw new IOException(
-                    "Invalid distinguished name string");
+                    Messages.getString("security.192")); //$NON-NLS-1$
         }
 
         switch (chars[pos]) {
@@ -354,7 +355,7 @@ public class DNParser {
         if ((position + 1) >= length) {
             // to avoid ArrayIndexOutOfBoundsException
             throw new IOException(
-                    "Invalid distinguished name string");
+                    Messages.getString("security.192")); //$NON-NLS-1$
         }
 
         int b1, b2;
@@ -368,7 +369,7 @@ public class DNParser {
             b1 = b1 - 55; // 55 = 'A' - 10
         } else {
             throw new IOException(
-                    "Invalid distinguished name string");
+                    Messages.getString("security.192")); //$NON-NLS-1$
         }
 
         b2 = chars[position + 1];
@@ -380,7 +381,7 @@ public class DNParser {
             b2 = b2 - 55; // 55 = 'A' - 10
         } else {
             throw new IOException(
-                    "Invalid distinguished name string");
+                    Messages.getString("security.192")); //$NON-NLS-1$
         }
 
         return (b1 << 4) + b2;
@@ -409,7 +410,7 @@ public class DNParser {
 
                 //empty Attribute Value
                 atav.add(new AttributeTypeAndValue(attType, new AttributeValue(
-                        "", false)));
+                        "", false))); //$NON-NLS-1$
                 list.add(0, atav);
 
                 return list;
@@ -432,7 +433,7 @@ public class DNParser {
             case ';': // compatibility with RFC 1779: semicolon can separate RDNs
                 //empty attribute value
                 atav.add(new AttributeTypeAndValue(attType, new AttributeValue(
-                        "", false)));
+                        "", false))); //$NON-NLS-1$
                 break;
             default:
                 attValue = escapedAV();
@@ -450,14 +451,14 @@ public class DNParser {
                 atav = new ArrayList();
             } else if (chars[pos] != '+') {
                 throw new IOException(
-                        "Invalid distinguished name string");
+                        Messages.getString("security.192")); //$NON-NLS-1$
             }
 
             pos++;
             attType = nextAT();
             if (attType == null) {
                 throw new IOException(
-                        "Invalid distinguished name string");
+                        Messages.getString("security.192")); //$NON-NLS-1$
             }
         }
     }

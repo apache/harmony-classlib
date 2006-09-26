@@ -28,6 +28,8 @@ import java.security.PublicKey;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @see java.security.IdentityScope
  */
@@ -100,19 +102,17 @@ public class SystemScope extends IdentityScope {
     public synchronized void addIdentity(Identity identity)
             throws KeyManagementException {
         if (identity == null) {
-            throw new NullPointerException("identity is null");
+            throw new NullPointerException(Messages.getString("security.92")); //$NON-NLS-1$
         }
 
         String name = identity.getName();
         if (names.containsKey(name)) {
-            throw new KeyManagementException("name '" + name
-                    + "' is already used");
+            throw new KeyManagementException(Messages.getString("security.93", name)); //$NON-NLS-1$
         }
 
         PublicKey key = identity.getPublicKey();
         if (key != null && keys.containsKey(key)) {
-            throw new KeyManagementException("key '" + key
-                    + "' is already used");
+            throw new KeyManagementException(Messages.getString("security.94", key)); //$NON-NLS-1$
         }
 
         names.put(name, identity);
@@ -129,12 +129,12 @@ public class SystemScope extends IdentityScope {
 
         //Exception catched = null;
         if (identity == null) {
-            throw new NullPointerException("identity is null");
+            throw new NullPointerException(Messages.getString("security.92")); //$NON-NLS-1$
         }
 
         String name = identity.getName();
         if (name == null) {
-            throw new NullPointerException("invalid identity's name");
+            throw new NullPointerException(Messages.getString("security.95")); //$NON-NLS-1$
         }
 
         boolean contains = names.containsKey(name);
@@ -148,7 +148,7 @@ public class SystemScope extends IdentityScope {
         }
         
         if (!contains) {
-            throw new KeyManagementException("identity is not found");
+            throw new KeyManagementException(Messages.getString("security.96")); //$NON-NLS-1$
         }
     }
 

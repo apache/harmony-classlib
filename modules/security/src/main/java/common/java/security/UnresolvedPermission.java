@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.harmony.security.fortress.PolicyUtils;
+import org.apache.harmony.security.internal.nls.Messages;
 
 /**
  * Holds permissions which are of an unknown type when a policy file is read.
@@ -56,9 +57,9 @@ public final class UnresolvedPermission extends Permission
     private static final long serialVersionUID = -4821973115467008846L;
 
     private static final ObjectStreamField serialPersistentFields[] = {
-        new ObjectStreamField("type", String.class),
-        new ObjectStreamField("name", String.class),
-        new ObjectStreamField("actions", String.class), };
+        new ObjectStreamField("type", String.class), //$NON-NLS-1$
+        new ObjectStreamField("name", String.class), //$NON-NLS-1$
+        new ObjectStreamField("actions", String.class), }; //$NON-NLS-1$
 
     // Target name
     private transient String targetName;
@@ -108,7 +109,7 @@ public final class UnresolvedPermission extends Permission
     // Check type parameter
     private final void checkType(String type) {
         if (type == null) {
-            throw new NullPointerException("type cannot be null");
+            throw new NullPointerException(Messages.getString("security.2F")); //$NON-NLS-1$
         }
 
         // type is the class name of the Permission class.
@@ -181,7 +182,7 @@ public final class UnresolvedPermission extends Permission
 	 * @return the actions associated with the receiver.
 	 */
     public String getActions() {
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /** 
@@ -242,8 +243,8 @@ public final class UnresolvedPermission extends Permission
 	 * @return a printable representation for the receiver.
 	 */
     public String toString() {
-        return "(unresolved " + getName() + " " + targetName + " "
-            + targetActions + ")";
+        return "(unresolved " + getName() + " " + targetName + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            + targetActions + ")"; //$NON-NLS-1$
     }
 
 	/**
@@ -310,9 +311,9 @@ public final class UnresolvedPermission extends Permission
      */
     private void writeObject(ObjectOutputStream out) throws IOException {
         ObjectOutputStream.PutField fields = out.putFields();
-        fields.put("type", getUnresolvedType());
-        fields.put("name", getUnresolvedName());
-        fields.put("actions", getUnresolvedActions());
+        fields.put("type", getUnresolvedType()); //$NON-NLS-1$
+        fields.put("name", getUnresolvedName()); //$NON-NLS-1$
+        fields.put("actions", getUnresolvedActions()); //$NON-NLS-1$
         out.writeFields();
         if (targetCerts == null) {
             out.write(0);
@@ -326,8 +327,8 @@ public final class UnresolvedPermission extends Permission
                     out.write(enc);
                 } catch (CertificateEncodingException cee) {
                     throw ((IOException)new NotSerializableException(
-                        "Cannot encode certificate " 
-                        + targetCerts[i]).initCause(cee));
+                        Messages.getString("security.30",  //$NON-NLS-1$
+                        targetCerts[i])).initCause(cee));
                 }
             }
         }
@@ -342,11 +343,11 @@ public final class UnresolvedPermission extends Permission
         ClassNotFoundException {
         checkType(getUnresolvedType());
         ObjectInputStream.GetField fields = in.readFields();
-        if (!getUnresolvedType().equals(fields.get("type", null))) {
-            throw new InvalidObjectException("target type field is corrupted");
+        if (!getUnresolvedType().equals(fields.get("type", null))) { //$NON-NLS-1$
+            throw new InvalidObjectException(Messages.getString("security.31")); //$NON-NLS-1$
         }
-        targetName = (String)fields.get("name", null);
-        targetActions = (String)fields.get("actions", null);
+        targetName = (String)fields.get("name", null); //$NON-NLS-1$
+        targetActions = (String)fields.get("actions", null); //$NON-NLS-1$
         int certNumber = in.read();
         if (certNumber != 0) {
             targetCerts = new Certificate[certNumber];
@@ -360,7 +361,7 @@ public final class UnresolvedPermission extends Permission
                         .generateCertificate(new ByteArrayInputStream(enc));
                 } catch (CertificateException cee) {
                     throw ((IOException)new IOException(
-                        "Error decoding certificate").initCause(cee));
+                        Messages.getString("security.32")).initCause(cee)); //$NON-NLS-1$
                 }
             }
         }

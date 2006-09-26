@@ -31,6 +31,7 @@ import javax.security.auth.x500.X500Principal;
 
 import org.apache.harmony.security.asn1.ASN1Integer;
 import org.apache.harmony.security.asn1.ASN1OctetString;
+import org.apache.harmony.security.internal.nls.Messages;
 import org.apache.harmony.security.x501.Name;
 
 /**
@@ -98,7 +99,7 @@ public class X509CRLSelector implements CRLSelector {
                             X500Principal.CANONICAL));
             } else {
                 throw new IOException(
-                        "The name is not a String or byte array");
+                        Messages.getString("security.62")); //$NON-NLS-1$
             }
         }
     }
@@ -108,7 +109,7 @@ public class X509CRLSelector implements CRLSelector {
      */
     public void addIssuer(X500Principal issuer) {
         if (issuer == null) {
-            throw new NullPointerException("issuer");
+            throw new NullPointerException(Messages.getString("security.61")); //$NON-NLS-1$
         }
         if (issuerNames == null) {
             issuerNames = new ArrayList<String>();
@@ -137,7 +138,7 @@ public class X509CRLSelector implements CRLSelector {
         }
 
         if (iss_name == null) {
-            iss_name = "";
+            iss_name = ""; //$NON-NLS-1$
         }
 
         String name = new Name(iss_name).getName(X500Principal.CANONICAL);
@@ -151,7 +152,7 @@ public class X509CRLSelector implements CRLSelector {
      */
     public void addIssuerName(byte[] iss_name) throws IOException {
         if (iss_name == null) {
-            throw new NullPointerException("Provided parameter is null");
+            throw new NullPointerException(Messages.getString("security.63")); //$NON-NLS-1$
         }
         if (issuerNames == null) {
             issuerNames = new ArrayList<String>();
@@ -258,29 +259,29 @@ public class X509CRLSelector implements CRLSelector {
      */
     public String toString() {
         StringBuffer result = new StringBuffer();
-        result.append("X509CRLSelector:\n[");
+        result.append("X509CRLSelector:\n["); //$NON-NLS-1$
         if (issuerNames != null) {
-            result.append("\n  IssuerNames:\n  [");
+            result.append("\n  IssuerNames:\n  ["); //$NON-NLS-1$
             int size = issuerNames.size();
             for (int i=0; i<size; i++) {
-                result.append("\n    "
+                result.append("\n    " //$NON-NLS-1$
                     + issuerNames.get(i));
             }
-            result.append("\n  ]");
+            result.append("\n  ]"); //$NON-NLS-1$
         }
         if (minCRL != null) {
-            result.append("\n  minCRL: " + minCRL);
+            result.append("\n  minCRL: " + minCRL); //$NON-NLS-1$
         }
         if (maxCRL != null) {
-            result.append("\n  maxCRL: " + maxCRL);
+            result.append("\n  maxCRL: " + maxCRL); //$NON-NLS-1$
         }
         if (dateAndTime != -1) {
-            result.append("\n  dateAndTime: " + (new Date(dateAndTime)));
+            result.append("\n  dateAndTime: " + (new Date(dateAndTime))); //$NON-NLS-1$
         }
         if (certificateChecking != null) {
-            result.append("\n  certificateChecking: " + certificateChecking);
+            result.append("\n  certificateChecking: " + certificateChecking); //$NON-NLS-1$
         }
-        result.append("\n]");
+        result.append("\n]"); //$NON-NLS-1$
         return result.toString();
     }
 
@@ -303,7 +304,7 @@ public class X509CRLSelector implements CRLSelector {
             try {
                 // As specified in rfc 3280 (http://www.ietf.org/rfc/rfc3280.txt)
                 // CRL Number Extension's OID is 2.5.29.20 .
-                byte[] bytes = crlist.getExtensionValue("2.5.29.20");
+                byte[] bytes = crlist.getExtensionValue("2.5.29.20"); //$NON-NLS-1$
                 bytes = (byte[]) ASN1OctetString.getInstance().decode(bytes);
                 BigInteger crlNumber = new BigInteger((byte[])
                         ASN1Integer.getInstance().decode(bytes));

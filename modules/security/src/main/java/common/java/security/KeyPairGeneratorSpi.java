@@ -23,6 +23,8 @@ package java.security;
 
 import java.security.spec.AlgorithmParameterSpec;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -54,7 +56,6 @@ public abstract class KeyPairGeneratorSpi {
      */
     public void initialize(AlgorithmParameterSpec params, SecureRandom random)
             throws InvalidAlgorithmParameterException {
-        throw new UnsupportedOperationException(
-                "Method initialize(AlgorithmParameterSpec params, SecureRandom random)is not supported");
+        throw new UnsupportedOperationException(Messages.getString("security.2E")); //$NON-NLS-1$
     }
 }

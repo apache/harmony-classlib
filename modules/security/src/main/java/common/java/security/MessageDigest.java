@@ -24,6 +24,7 @@ package java.security;
 import java.nio.ByteBuffer;
 
 import org.apache.harmony.security.fortress.Engine;
+import org.apache.harmony.security.internal.nls.Messages;
 
 
 /**
@@ -34,7 +35,7 @@ import org.apache.harmony.security.fortress.Engine;
 public abstract class MessageDigest extends MessageDigestSpi {
     
     // The service name
-    private static final String SERVICE = "MessageDigest";
+    private static final String SERVICE = "MessageDigest"; //$NON-NLS-1$
 
     // Used to access common engine functionality
     private static Engine engine = new Engine(SERVICE);
@@ -60,7 +61,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
     public static MessageDigest getInstance(String algorithm)
             throws NoSuchAlgorithmException {
         if (algorithm == null) {
-            throw new NullPointerException("Algorithm is null");
+            throw new NullPointerException(Messages.getString("security.01")); //$NON-NLS-1$
         }
         MessageDigest result;
         synchronized (engine) {
@@ -85,13 +86,11 @@ public abstract class MessageDigest extends MessageDigestSpi {
     public static MessageDigest getInstance(String algorithm, String provider)
             throws NoSuchAlgorithmException, NoSuchProviderException {
         if ((provider == null) || (provider.length() == 0)) {
-            throw new IllegalArgumentException(
-                    "Provider is null or empty string");
+            throw new IllegalArgumentException(Messages.getString("security.02")); //$NON-NLS-1$
         }
         Provider p = Security.getProvider(provider);
         if (p == null) {
-            throw new NoSuchProviderException("Provider " + provider
-                    + " is not available");
+            throw new NoSuchProviderException(Messages.getString("security.03", provider)); //$NON-NLS-1$
         }
         return getInstance(algorithm, p);
     }
@@ -115,10 +114,10 @@ public abstract class MessageDigest extends MessageDigestSpi {
     public static MessageDigest getInstance(String algorithm, Provider provider)
             throws NoSuchAlgorithmException {
         if (provider == null) {
-            throw new IllegalArgumentException("Provider is null");
+            throw new IllegalArgumentException(Messages.getString("security.04")); //$NON-NLS-1$
         }
         if (algorithm == null) {
-            throw new NullPointerException("Algorithm is null");
+            throw new NullPointerException(Messages.getString("security.01")); //$NON-NLS-1$
         }
         MessageDigest result;
         synchronized (engine) {
@@ -166,8 +165,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
     public void update(byte[] input, int offset, int len) {
         if (input == null || offset < 0 || len < 0 ||
                 (long)offset + (long)len > input.length) {
-            throw new IllegalArgumentException(
-                    "Incorrect offset/len parameters");
+            throw new IllegalArgumentException(Messages.getString("security.05")); //$NON-NLS-1$
         }
         engineUpdate(input, offset, len);
     }
@@ -178,7 +176,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
      */
     public void update(byte[] input) {
         if (input == null) {
-            throw new NullPointerException("Null input parameter");
+            throw new NullPointerException(Messages.getString("security.06")); //$NON-NLS-1$
         }
         engineUpdate(input, 0, input.length);
     }
@@ -202,8 +200,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
     public int digest(byte[] buf, int offset, int len) throws DigestException {
         if (buf == null || offset < 0 || len < 0 ||
                 (long)offset + (long)len > buf.length) {
-            throw new IllegalArgumentException(
-                    "Incorrect offset/len parameters");
+            throw new IllegalArgumentException(Messages.getString("security.05")); //$NON-NLS-1$
         }
         return engineDigest(buf, offset, len);
     }
@@ -224,7 +221,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
      * @return a printable representation for the receiver.
      */
     public String toString() {
-        return "MESSAGE DIGEST " + algorithm;
+        return "MESSAGE DIGEST " + algorithm; //$NON-NLS-1$
     }
 
     /**

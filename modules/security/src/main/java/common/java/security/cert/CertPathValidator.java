@@ -29,6 +29,7 @@ import java.security.Provider;
 import java.security.Security;
 
 import org.apache.harmony.security.fortress.Engine;
+import org.apache.harmony.security.internal.nls.Messages;
 
 
 /**
@@ -38,17 +39,17 @@ import org.apache.harmony.security.fortress.Engine;
 
 public class CertPathValidator {
     // Store CertPathValidator implementation service name
-    private static final String SERVICE = "CertPathValidator";
+    private static final String SERVICE = "CertPathValidator"; //$NON-NLS-1$
 
     // Used to access common engine functionality
     private static Engine engine = new Engine(SERVICE);
 
     // Store default property name
-    private static final String PROPERTYNAME = "certpathvalidator.type";
+    private static final String PROPERTYNAME = "certpathvalidator.type"; //$NON-NLS-1$
 
     // Default value of CertPathBuilder type. It returns if certpathbuild.type
     // property is not defined in java.security file
-    private static final String DEFAULTPROPERTY = "PKIX";
+    private static final String DEFAULTPROPERTY = "PKIX"; //$NON-NLS-1$
 
     // Store used provider
     private final Provider provider;
@@ -94,7 +95,7 @@ public class CertPathValidator {
     public static CertPathValidator getInstance(String algorithm)
             throws NoSuchAlgorithmException {
         if (algorithm == null) {
-            throw new NullPointerException("algorithm is null");
+            throw new NullPointerException(Messages.getString("security.01")); //$NON-NLS-1$
         }
         synchronized (engine) {
             engine.getInstance(algorithm, null);
@@ -112,7 +113,7 @@ public class CertPathValidator {
             String provider) throws NoSuchAlgorithmException,
             NoSuchProviderException {
         if ((provider == null) || (provider.length() == 0)) {
-            throw new IllegalArgumentException("Provider is null or empty");
+            throw new IllegalArgumentException(Messages.getString("security.02")); //$NON-NLS-1$
         }
         Provider impProvider = Security.getProvider(provider);
         if (impProvider == null) {
@@ -129,10 +130,10 @@ public class CertPathValidator {
     public static CertPathValidator getInstance(String algorithm,
             Provider provider) throws NoSuchAlgorithmException {
         if (provider == null) {
-            throw new IllegalArgumentException("Provider is null");
+            throw new IllegalArgumentException(Messages.getString("security.04")); //$NON-NLS-1$
         }
         if (algorithm == null) {
-            throw new NullPointerException("algorithm is null");
+            throw new NullPointerException(Messages.getString("security.01")); //$NON-NLS-1$
         }
         synchronized (engine) {
             engine.getInstance(algorithm, provider, null);

@@ -20,6 +20,7 @@ package org.apache.harmony.security.provider.crypto;
 import java.security.InvalidParameterException;
 import java.security.SecureRandomSpi;
 
+import org.apache.harmony.security.internal.nls.Messages;
 import org.apache.harmony.security.provider.crypto.RandomBitsSupplier;
 import org.apache.harmony.security.provider.crypto.SHA1Impl;
 
@@ -205,7 +206,7 @@ public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi implements
 
         if (seed == null) {
             throw new NullPointerException(
-                    "null is passed to the 'seed' argument");
+                    Messages.getString("security.83", "seed")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         if (state == NEXT_BYTES) { // first setSeed after NextBytes; restoring hash
@@ -236,7 +237,7 @@ public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi implements
         byte[] myBytes; // byte[] for bytes returned by "nextBytes()"
 
         if (numBytes < 0) {
-            throw new NegativeArraySizeException("numBytes=" + numBytes);
+            throw new NegativeArraySizeException(Messages.getString("security.171", numBytes)); //$NON-NLS-1$
         }
         if (numBytes == 0) {
             return new byte[0];
@@ -281,7 +282,7 @@ public class SHA1PRNG_SecureRandomImpl extends SecureRandomSpi implements
 
         if (bytes == null) {
             throw new NullPointerException(
-                    "null is passed to the 'bytes' argument");
+                    Messages.getString("security.83", "bytes")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         lastWord = seed[BYTES_OFFSET] == 0 ? 0

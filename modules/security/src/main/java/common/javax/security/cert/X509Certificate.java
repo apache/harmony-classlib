@@ -41,6 +41,8 @@ import javax.security.cert.CertificateException;
 import javax.security.cert.CertificateExpiredException;
 import javax.security.cert.CertificateNotYetValidException;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  */
@@ -53,7 +55,7 @@ public abstract class X509Certificate extends Certificate {
             String classname = (String) AccessController.doPrivileged(
                 new java.security.PrivilegedAction() {
                     public Object run() {
-                        return Security.getProperty("cert.provider.x509v1");
+                        return Security.getProperty("cert.provider.x509v1"); //$NON-NLS-1$
                     }
                 }
             );
@@ -77,7 +79,7 @@ public abstract class X509Certificate extends Certificate {
     public static final X509Certificate getInstance(InputStream inStream)
                                              throws CertificateException {
         if (inStream == null) {
-            throw new CertificateException("The stream should not be null");
+            throw new CertificateException(Messages.getString("security.87")); //$NON-NLS-1$
         }
         if (constructor != null) {
             try {
@@ -90,7 +92,7 @@ public abstract class X509Certificate extends Certificate {
 
         final java.security.cert.X509Certificate cert;
         try {
-            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            CertificateFactory cf = CertificateFactory.getInstance("X.509"); //$NON-NLS-1$
             cert = (java.security.cert.X509Certificate)
                                             cf.generateCertificate(inStream);
         } catch (java.security.cert.CertificateException e) {
@@ -203,7 +205,7 @@ public abstract class X509Certificate extends Certificate {
     public static final X509Certificate getInstance(byte[] certData)
                                              throws CertificateException {
         if (certData == null) {
-            throw new CertificateException("The data should not be null");
+            throw new CertificateException(Messages.getString("security.88")); //$NON-NLS-1$
         }
         ByteArrayInputStream bais = new ByteArrayInputStream(certData);
         return getInstance(bais);

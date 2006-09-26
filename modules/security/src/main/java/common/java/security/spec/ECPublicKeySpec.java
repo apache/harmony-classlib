@@ -21,6 +21,8 @@
 
 package java.security.spec;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -39,15 +41,15 @@ public class ECPublicKeySpec implements KeySpec {
         this.params = params;
         // throw NullPointerException if w or params is null
         if (this.w == null) {
-            throw new NullPointerException("the w parameter is null");
+            throw new NullPointerException(Messages.getString("security.83", "w")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (this.params == null) {
-            throw new NullPointerException("the params parameter is null");
+            throw new NullPointerException(Messages.getString("security.83", "params")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         // throw IllegalArgumentException if w is point at infinity
         if (this.w.equals(ECPoint.POINT_INFINITY)) {
             throw new IllegalArgumentException(
-                "the w parameter is point at infinity");
+                Messages.getString("security.84")); //$NON-NLS-1$
         }
     }
 

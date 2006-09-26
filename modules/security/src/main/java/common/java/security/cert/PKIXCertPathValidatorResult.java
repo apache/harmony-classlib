@@ -23,6 +23,8 @@ package java.security.cert;
 
 import java.security.PublicKey;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -45,11 +47,11 @@ public class PKIXCertPathValidatorResult implements CertPathValidatorResult {
         this.policyTree = policyTree;
         this.subjectPublicKey = subjectPublicKey;
         if (this.trustAnchor == null) {
-            throw new NullPointerException("the trustAnchor parameter is null");
+            throw new NullPointerException(Messages.getString("security.64")); //$NON-NLS-1$
         }
         if (this.subjectPublicKey == null) {
             throw new NullPointerException(
-                    "the subjectPublicKey parameter is null");
+                    Messages.getString("security.65")); //$NON-NLS-1$
         }
     }
 
@@ -87,14 +89,14 @@ public class PKIXCertPathValidatorResult implements CertPathValidatorResult {
      */
     public String toString() {
         StringBuffer sb = new StringBuffer(super.toString());
-        sb.append(": [\n Trust Anchor: ");
+        sb.append(": [\n Trust Anchor: "); //$NON-NLS-1$
         sb.append(trustAnchor.toString());
-        sb.append("\n Policy Tree: ");
-        sb.append(policyTree == null ? "no valid policy tree\n"
+        sb.append("\n Policy Tree: "); //$NON-NLS-1$
+        sb.append(policyTree == null ? "no valid policy tree\n" //$NON-NLS-1$
                                      : policyTree.toString());
-        sb.append("\n Subject Public Key: ");
+        sb.append("\n Subject Public Key: "); //$NON-NLS-1$
         sb.append(subjectPublicKey.toString());
-        sb.append("\n]");
+        sb.append("\n]"); //$NON-NLS-1$
         return sb.toString();
     }
 }

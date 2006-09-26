@@ -23,6 +23,8 @@ import java.io.ObjectStreamField;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * Specific PermissionCollection for storing AllPermissions. All instances of
  * AllPermission are equivalent, so it is enough to store a single added
@@ -37,7 +39,7 @@ final class AllPermissionCollection extends PermissionCollection {
     private static final long serialVersionUID = -4023755556366636806L;
 
     private static final ObjectStreamField[] serialPersistentFields = { new ObjectStreamField(
-        "all_allowed", Boolean.TYPE), };
+        "all_allowed", Boolean.TYPE), }; //$NON-NLS-1$
 
     // Single element of collection.
     private transient Permission all;
@@ -47,11 +49,11 @@ final class AllPermissionCollection extends PermissionCollection {
      */
     public void add(Permission permission) {
         if (isReadOnly()) {
-            throw new SecurityException("collection is read-only");
+            throw new SecurityException(Messages.getString("security.15")); //$NON-NLS-1$
         }
         if (!(permission instanceof AllPermission)) {
-            throw new IllegalArgumentException("invalid permission: "
-                + permission);
+            throw new IllegalArgumentException(Messages.getString("security.16", //$NON-NLS-1$
+                permission));
         }
         all = permission;
     }
@@ -90,7 +92,7 @@ final class AllPermissionCollection extends PermissionCollection {
          */
         public E nextElement() {
             if (element == null) {
-                throw new NoSuchElementException("no more elements");
+                throw new NoSuchElementException(Messages.getString("security.17")); //$NON-NLS-1$
             }
             E last = element;
             element = null;
@@ -120,7 +122,7 @@ final class AllPermissionCollection extends PermissionCollection {
      */
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {
         ObjectOutputStream.PutField fields = out.putFields();
-        fields.put("all_allowed", all != null);
+        fields.put("all_allowed", all != null); //$NON-NLS-1$
         out.writeFields();
     }
 
@@ -130,7 +132,7 @@ final class AllPermissionCollection extends PermissionCollection {
     private void readObject(java.io.ObjectInputStream in) throws IOException,
         ClassNotFoundException {
         ObjectInputStream.GetField fields = in.readFields();
-        if (fields.get("all_allowed", false)) {
+        if (fields.get("all_allowed", false)) { //$NON-NLS-1$
             all = new AllPermission();
         }
     }

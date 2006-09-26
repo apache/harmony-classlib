@@ -21,6 +21,8 @@
 
 package java.security.spec;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -47,11 +49,11 @@ public class PSSParameterSpec implements AlgorithmParameterSpec {
      */
     public PSSParameterSpec(int saltLen) {
         if (saltLen < 0) {
-            throw new IllegalArgumentException("invalid saltLen");
+            throw new IllegalArgumentException(Messages.getString("security.7F")); //$NON-NLS-1$
         }
         this.saltLen = saltLen;
-        this.mdName = "SHA-1";
-        this.mgfName = "MGF1";
+        this.mdName = "SHA-1"; //$NON-NLS-1$
+        this.mgfName = "MGF1"; //$NON-NLS-1$
         this.mgfSpec = MGF1ParameterSpec.SHA1;
         this.trailerField = 1;
     }
@@ -63,16 +65,16 @@ public class PSSParameterSpec implements AlgorithmParameterSpec {
             AlgorithmParameterSpec mgfSpec, int saltLen, int trailerField) {
 
         if (mdName == null) {
-            throw new NullPointerException("mdName is null");
+            throw new NullPointerException(Messages.getString("security.80")); //$NON-NLS-1$
         }
         if (mgfName == null) {
-            throw new NullPointerException("mgfName is null");
+            throw new NullPointerException(Messages.getString("security.81")); //$NON-NLS-1$
         }
         if (saltLen < 0) {
-            throw new IllegalArgumentException("invalid saltLen");
+            throw new IllegalArgumentException(Messages.getString("security.7F")); //$NON-NLS-1$
         }
         if (trailerField < 0) {
-            throw new IllegalArgumentException("invalid trailerField");
+            throw new IllegalArgumentException(Messages.getString("security.82")); //$NON-NLS-1$
         }
         this.mdName = mdName;
         this.mgfName = mgfName;

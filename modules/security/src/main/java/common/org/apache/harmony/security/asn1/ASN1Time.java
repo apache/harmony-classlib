@@ -48,7 +48,7 @@ public abstract class ASN1Time extends ASN1StringType {
         
         // TODO optimize me:
         // It makes sense use calendar instance instead of times array
-        GregorianCalendar c = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+        GregorianCalendar c = new GregorianCalendar(TimeZone.getTimeZone("GMT")); //$NON-NLS-1$
         
         c.set(Calendar.YEAR, in.times[0]);
         c.set(Calendar.MONTH, in.times[1]-1);

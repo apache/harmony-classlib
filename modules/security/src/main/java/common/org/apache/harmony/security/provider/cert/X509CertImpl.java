@@ -45,6 +45,7 @@ import java.util.Set;
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.harmony.crypto.utils.AlgNameMapper;
+import org.apache.harmony.security.internal.nls.Messages;
 import org.apache.harmony.security.x509.Certificate;
 import org.apache.harmony.security.x509.Extension;
 import org.apache.harmony.security.x509.Extensions;
@@ -502,7 +503,7 @@ public class X509CertImpl extends X509Certificate {
         // compute and verify the signature
         signature.update(tbsCertificate, 0, tbsCertificate.length);
         if (!signature.verify(certificate.getSignatureValue())) {
-            throw new SignatureException("Signature was not verified.");
+            throw new SignatureException(Messages.getString("security.15C")); //$NON-NLS-1$
         }
     }
 
@@ -525,7 +526,7 @@ public class X509CertImpl extends X509Certificate {
         // compute and verify the signature
         signature.update(tbsCertificate, 0, tbsCertificate.length);
         if (!signature.verify(certificate.getSignatureValue())) {
-            throw new SignatureException("Signature was not verified.");
+            throw new SignatureException(Messages.getString("security.15C")); //$NON-NLS-1$
         }
     }
 

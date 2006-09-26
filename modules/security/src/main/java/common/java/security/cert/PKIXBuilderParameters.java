@@ -27,6 +27,8 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.util.Set;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -69,7 +71,7 @@ public class PKIXBuilderParameters extends PKIXParameters {
     public void setMaxPathLength(int maxPathLength) {
         if (maxPathLength < -1) {
             throw new InvalidParameterException(
-                    "the maxPathLength parameter is less than -1");
+                    Messages.getString("security.5B")); //$NON-NLS-1$
         }
         this.maxPathLength = maxPathLength;
     }
@@ -78,11 +80,11 @@ public class PKIXBuilderParameters extends PKIXParameters {
      * @com.intel.drl.spec_ref
      */
     public String toString() {
-        StringBuffer sb = new StringBuffer("[\n");
+        StringBuffer sb = new StringBuffer("[\n"); //$NON-NLS-1$
         sb.append(super.toString());
-        sb.append(" Max Path Length: ");
+        sb.append(" Max Path Length: "); //$NON-NLS-1$
         sb.append(maxPathLength);
-        sb.append("\n]");
+        sb.append("\n]"); //$NON-NLS-1$
         return sb.toString();
     }
 }

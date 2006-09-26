@@ -39,6 +39,7 @@ import java.util.List;
 import javax.security.auth.x500.X500Principal;
 
 import org.apache.harmony.security.asn1.BerInputStream;
+import org.apache.harmony.security.internal.nls.Messages;
 import org.apache.harmony.security.pkcs7.ContentInfo;
 import org.apache.harmony.security.pkcs7.SignedData;
 import org.apache.harmony.security.pkcs7.SignerInfo;
@@ -71,7 +72,7 @@ public class JarUtils {
         ContentInfo info = (ContentInfo)ContentInfo.ASN1.decode(bis);      
         SignedData signedData = info.getSignedData();
         if (signedData == null) {
-            throw new IOException("No SignedData found");
+            throw new IOException(Messages.getString("security.173")); //$NON-NLS-1$
         }
         Collection encCerts = signedData.getCertificates();
         if (encCerts.isEmpty()) {
@@ -111,7 +112,7 @@ public class JarUtils {
         }
 
         if (certs[issuerSertIndex].hasUnsupportedCriticalExtension()) {
-            throw new SecurityException("Can not recognize a critical extension");
+            throw new SecurityException(Messages.getString("security.174")); //$NON-NLS-1$
         }
 
         // Get Signature instance
@@ -120,7 +121,7 @@ public class JarUtils {
         String dea = sigInfo.getDigestEncryptionAlgorithm();
         String alg = null;
         if (da != null && dea != null) {
-            alg = da + "with" +  dea;
+            alg = da + "with" +  dea; //$NON-NLS-1$
             try{ 
                 sig = Signature.getInstance(alg);
             } catch (NoSuchAlgorithmException e) {}
@@ -164,13 +165,13 @@ public class JarUtils {
                 MessageDigest md = MessageDigest.getInstance(sigInfo.getDigestAlgorithm());
                 byte[] computedDigest = md.digest(sfBytes);
                 if (!Arrays.equals(existingDigest, computedDigest)) {
-                    throw new SecurityException("Incorrect MD");
+                    throw new SecurityException(Messages.getString("security.175")); //$NON-NLS-1$
                 }
             }
         }
 
         if (!sig.verify(sigInfo.getEncryptedDigest())) {
-            throw new SecurityException("Incorrect signature");
+            throw new SecurityException(Messages.getString("security.176")); //$NON-NLS-1$
         }
 
         return createChain(certs[issuerSertIndex], certs);

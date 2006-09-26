@@ -35,6 +35,7 @@ import org.apache.harmony.security.asn1.ASN1SequenceOf;
 import org.apache.harmony.security.asn1.ASN1SetOf;
 import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.asn1.DerInputStream;
+import org.apache.harmony.security.internal.nls.Messages;
 import org.apache.harmony.security.x509.DNParser;
 
 
@@ -69,7 +70,7 @@ public class Name {
         DerInputStream in = new DerInputStream(encoding);
 
         if (in.getEndOffset() != encoding.length) {
-            throw new IOException("Wrong content length");
+            throw new IOException(Messages.getString("security.111")); //$NON-NLS-1$
         }
 
         ASN1.decode(in);
@@ -163,7 +164,7 @@ public class Name {
             return canonicalString;
 
         } else {
-            throw new IllegalArgumentException("Illegal format: " + format);
+            throw new IllegalArgumentException(Messages.getString("security.177", format)); //$NON-NLS-1$
         }
     }
 
@@ -199,7 +200,7 @@ public class Name {
                 if (it.hasNext()) {
                     // multi-valued RDN
                     if (X500Principal.RFC1779 == format) {
-                        name.append(" + ");
+                        name.append(" + "); //$NON-NLS-1$
                     } else {
                         name.append('+');
                     }

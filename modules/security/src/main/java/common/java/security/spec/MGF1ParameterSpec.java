@@ -21,6 +21,8 @@
 
 package java.security.spec;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -30,22 +32,22 @@ public class MGF1ParameterSpec implements AlgorithmParameterSpec {
      * @com.intel.drl.spec_ref
      */
     public static final MGF1ParameterSpec SHA1 =
-        new MGF1ParameterSpec("SHA-1");
+        new MGF1ParameterSpec("SHA-1"); //$NON-NLS-1$
     /**
      * @com.intel.drl.spec_ref
      */
     public static final MGF1ParameterSpec SHA256 =
-        new MGF1ParameterSpec("SHA-256");
+        new MGF1ParameterSpec("SHA-256"); //$NON-NLS-1$
     /**
      * @com.intel.drl.spec_ref
      */
     public static final MGF1ParameterSpec SHA384 =
-        new MGF1ParameterSpec("SHA-384");
+        new MGF1ParameterSpec("SHA-384"); //$NON-NLS-1$
     /**
      * @com.intel.drl.spec_ref
      */
     public static final MGF1ParameterSpec SHA512 =
-        new MGF1ParameterSpec("SHA-512");
+        new MGF1ParameterSpec("SHA-512"); //$NON-NLS-1$
 
     //  Message digest algorithm name
     private final String mdName;
@@ -56,7 +58,7 @@ public class MGF1ParameterSpec implements AlgorithmParameterSpec {
     public MGF1ParameterSpec(String mdName) {
         this.mdName = mdName;
         if (this.mdName == null) {
-            throw new NullPointerException("the mdName parameter is null");
+            throw new NullPointerException(Messages.getString("security.80")); //$NON-NLS-1$
         }
     }
 

@@ -39,6 +39,7 @@ import java.util.List;
 import org.apache.harmony.luni.util.Base64;
 import org.apache.harmony.security.asn1.ASN1Constants;
 import org.apache.harmony.security.asn1.BerInputStream;
+import org.apache.harmony.security.internal.nls.Messages;
 import org.apache.harmony.security.pkcs7.ContentInfo;
 import org.apache.harmony.security.pkcs7.SignedData;
 import org.apache.harmony.security.x509.CertificateList;
@@ -84,7 +85,7 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
     public Certificate engineGenerateCertificate(InputStream inStream)
             throws CertificateException {
         if (inStream == null) {
-            throw new CertificateException("Input stream should not be null.");
+            throw new CertificateException(Messages.getString("security.15B")); //$NON-NLS-1$
         }
         try {
             if (!inStream.markSupported()) {
@@ -98,11 +99,11 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
             // read the prefix of the encoding
             if (inStream.read(buff) < 28) {
                 throw new CertificateException(
-                        "Input Stream contains not enought data.");
+                        Messages.getString("security.152")); //$NON-NLS-1$
             }
             // check whether the provided certificate is in PEM encoded form
-            if ("-----BEGIN CERTIFICATE-----".equals(new String(buff, 0, 27))) {
-                byte[] encoding = decodePEM(inStream, "CERTIFICATE");
+            if ("-----BEGIN CERTIFICATE-----".equals(new String(buff, 0, 27))) { //$NON-NLS-1$
+                byte[] encoding = decodePEM(inStream, "CERTIFICATE"); //$NON-NLS-1$
                 
                 long hash = CERT_CASHE.getHash(encoding);
                 if (CERT_CASHE.contains(hash)) {
@@ -163,7 +164,7 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
             engineGenerateCertificates(InputStream inStream)
                 throws CertificateException {
         if (inStream == null) {
-            throw new CertificateException("Input stream should not be null.");
+            throw new CertificateException(Messages.getString("security.153")); //$NON-NLS-1$
         }
         ArrayList result = new ArrayList();
         try {
@@ -179,7 +180,7 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
                 // check the boundary delimiter
                 byte[] delimiter = new byte[20];
                 inStream.read(delimiter);
-                if (new String(delimiter).startsWith("----BEGIN PKCS7-----")) {
+                if (new String(delimiter).startsWith("----BEGIN PKCS7-----")) { //$NON-NLS-1$
                     // this is PEM encoded PKCS7 structure
                     isPKCS7 = true;
                     isPEM = true;
@@ -201,13 +202,13 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
                 ContentInfo info;
                 if (isPEM) {
                     info = (ContentInfo) 
-                        ContentInfo.ASN1.decode(decodePEM(inStream, "PKCS7"));
+                        ContentInfo.ASN1.decode(decodePEM(inStream, "PKCS7")); //$NON-NLS-1$
                 } else {
                     info = (ContentInfo) ContentInfo.ASN1.decode(inStream);
                 }
                 SignedData data = info.getSignedData();
                 if (data == null) {
-                    throw new CertificateException("Invalid PKCS7 data provided");
+                    throw new CertificateException(Messages.getString("security.154")); //$NON-NLS-1$
                 }
                 List certificates = data.getCertificates();
                 if (certificates != null) {
@@ -239,7 +240,7 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
     public CRL engineGenerateCRL(InputStream inStream)
             throws CRLException {
         if (inStream == null) {
-            throw new CRLException("Input stream should not be null.");
+            throw new CRLException(Messages.getString("security.153")); //$NON-NLS-1$
         }
         try {
             if (!inStream.markSupported()) {
@@ -253,11 +254,11 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
             // read the prefix of the encoding
             if (inStream.read(buff) < 25) {
                 throw new CRLException(
-                        "Input Stream contains not enought data.");
+                        Messages.getString("security.155")); //$NON-NLS-1$
             }
             // check whether the provided crl is in PEM encoded form
-            if ("-----BEGIN X509 CRL-----".equals(new String(buff, 0, 24))) {
-                byte[] encoding = decodePEM(inStream, "X509 CRL");
+            if ("-----BEGIN X509 CRL-----".equals(new String(buff, 0, 24))) { //$NON-NLS-1$
+                byte[] encoding = decodePEM(inStream, "X509 CRL"); //$NON-NLS-1$
                 long hash = CRL_CASHE.getHash(encoding);
                 if (CRL_CASHE.contains(hash)) {
                     X509CRL res = (X509CRL) CRL_CASHE.get(hash, encoding);
@@ -300,7 +301,7 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
     public Collection<? extends CRL> engineGenerateCRLs(InputStream inStream)
             throws CRLException {
         if (inStream == null) {
-            throw new CRLException("Null input stream provided.");
+            throw new CRLException(Messages.getString("security.156")); //$NON-NLS-1$
         }
         ArrayList result = new ArrayList();
         try {
@@ -315,7 +316,7 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
                 // check the boundary delimiter
                 byte[] delimiter = new byte[20];
                 inStream.read(delimiter);
-                if (new String(delimiter).startsWith("----BEGIN PKCS7-----")) {
+                if (new String(delimiter).startsWith("----BEGIN PKCS7-----")) { //$NON-NLS-1$
                     // this is PEM encoded PKCS7 structure
                     isPKCS7 = true;
                     isPEM = true;
@@ -338,14 +339,14 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
                 ContentInfo info;
                 if (isPEM) {
                     info = (ContentInfo) 
-                        ContentInfo.ASN1.decode(decodePEM(inStream, "PKCS7"));
+                        ContentInfo.ASN1.decode(decodePEM(inStream, "PKCS7")); //$NON-NLS-1$
                 } else {
                     info = (ContentInfo) ContentInfo.ASN1.decode(inStream);
                 }
                 // retrieve SignedData
                 SignedData data = info.getSignedData();
                 if (data == null) {
-                    throw new CRLException("Invalid PKCS7 data provided");
+                    throw new CRLException(Messages.getString("security.154")); //$NON-NLS-1$
                 }
                 List crls = data.getCRLs();
                 if (crls != null) {
@@ -417,7 +418,7 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
         while ((ch = inStream.read()) != '-') {
             if (ch == -1) {
                 throw new IOException(
-                        "Incorrect Base64 encoding: unexpected EOF.");
+                        Messages.getString("security.157")); //$NON-NLS-1$
             }
             buff[index++] = (byte) ch;
             if (index == size) {
@@ -430,13 +431,12 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
         }
         // Check the boundary delimiter 
         // one '-' has been already read
-        String boundary_delimiter = "----END " + boundary_mark + "-----";
+        String boundary_delimiter = "----END " + boundary_mark + "-----"; //$NON-NLS-1$ //$NON-NLS-2$
         byte[] tmp = new byte[boundary_delimiter.length()];
         inStream.read(tmp);
         if (!new String(tmp).startsWith(boundary_delimiter)) {
             throw new IOException(
-                "Incorrect Base64 encoding: boundary delimiter expected '"
-                + boundary_delimiter + "'");
+                Messages.getString("security.158", boundary_delimiter));//$NON-NLS-1$
         }
         // skip trailing line breaks
         inStream.mark(1);
@@ -446,7 +446,7 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
         inStream.reset();
         buff = Base64.decode(buff, index);
         if (buff == null) {
-            throw new IOException("Incorrect Base64 encoding.");
+            throw new IOException(Messages.getString("security.159")); //$NON-NLS-1$
         }
         return buff;
     };
@@ -596,8 +596,7 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
             if (pos >= 0) {
                 pos = (end + 1) % BUFF_SIZE;
             } else {
-                throw new IOException("Could not reset the stream: "
-                    + "position became invalid or stream has not been marked.");
+                throw new IOException(Messages.getString("security.15A")); //$NON-NLS-1$
             }
         }
 

@@ -26,6 +26,7 @@ import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidParameterSpecException;
 
 import org.apache.harmony.security.fortress.Engine;
+import org.apache.harmony.security.internal.nls.Messages;
 
 
 /**
@@ -37,7 +38,7 @@ public class AlgorithmParameters {
     /**
      * The service name.
      */
-    private static final String SEVICE = "AlgorithmParameters";
+    private static final String SEVICE = "AlgorithmParameters"; //$NON-NLS-1$
 
     /**
      * Used to access common engine functionality
@@ -82,7 +83,7 @@ public class AlgorithmParameters {
     public static AlgorithmParameters getInstance(String algorithm)
             throws NoSuchAlgorithmException {
         if (algorithm == null) {
-            throw new NullPointerException("Algorithm is null");
+            throw new NullPointerException(Messages.getString("security.01")); //$NON-NLS-1$
         }
         synchronized (engine) {       
             engine.getInstance(algorithm, null);
@@ -99,13 +100,12 @@ public class AlgorithmParameters {
             String provider) throws NoSuchAlgorithmException,
             NoSuchProviderException {
         if ((provider == null) || (provider.length() == 0)) {
-            throw new IllegalArgumentException(
-                    "Provider is null or empty string");
+            throw new IllegalArgumentException(Messages.getString("security.02")); //$NON-NLS-1$
         }
         Provider p = Security.getProvider(provider);
         if (p == null) {
-            throw new NoSuchProviderException("Provider " + provider
-                    + " is not available");
+            throw new NoSuchProviderException(Messages.getString("security.03", //$NON-NLS-1$
+                    provider));
         }
         return getInstance(algorithm, p);
     }
@@ -117,10 +117,10 @@ public class AlgorithmParameters {
     public static AlgorithmParameters getInstance(String algorithm,
             Provider provider) throws NoSuchAlgorithmException {
         if (provider == null) {
-            throw new IllegalArgumentException("Provider is null");
+            throw new IllegalArgumentException(Messages.getString("security.04")); //$NON-NLS-1$
         }
         if (algorithm == null) {
-            throw new NullPointerException("Algorithm is null");
+            throw new NullPointerException(Messages.getString("security.01")); //$NON-NLS-1$
         }
         synchronized (engine) {
             engine.getInstance(algorithm, provider, null);
@@ -153,7 +153,7 @@ public class AlgorithmParameters {
             throws InvalidParameterSpecException {
         if (initialized) {
             throw new InvalidParameterSpecException(
-                    "Parameter has already been initialized");
+                    Messages.getString("security.1E")); //$NON-NLS-1$
         }
         spiImpl.engineInit(paramSpec);
         initialized = true;
@@ -165,7 +165,7 @@ public class AlgorithmParameters {
      */
     public final void init(byte[] params) throws IOException {
         if (initialized) {
-            throw new IOException("Parameter has already been initialized");
+            throw new IOException(Messages.getString("security.1E")); //$NON-NLS-1$
         }
         spiImpl.engineInit(params);
         initialized = true;
@@ -177,7 +177,7 @@ public class AlgorithmParameters {
      */
     public final void init(byte[] params, String format) throws IOException {
         if (initialized) {
-            throw new IOException("Parameter has already been initialized");
+            throw new IOException(Messages.getString("security.1E")); //$NON-NLS-1$
         }
         spiImpl.engineInit(params, format);
         initialized = true;
@@ -191,7 +191,7 @@ public class AlgorithmParameters {
             throws InvalidParameterSpecException {
         if (!initialized) {
             throw new InvalidParameterSpecException(
-                    "Parameter has not been initialized");
+                    Messages.getString("security.1F")); //$NON-NLS-1$
         }
         return spiImpl.engineGetParameterSpec(paramSpec);
     }
@@ -202,7 +202,7 @@ public class AlgorithmParameters {
      */
     public final byte[] getEncoded() throws IOException {
         if (!initialized) {
-            throw new IOException("Parameter has not been initialized");
+            throw new IOException(Messages.getString("security.1F")); //$NON-NLS-1$
         }
         return spiImpl.engineGetEncoded();
     }
@@ -213,7 +213,7 @@ public class AlgorithmParameters {
      */
     public final byte[] getEncoded(String format) throws IOException {
         if (!initialized) {
-            throw new IOException("Parameter has not been initialized");
+            throw new IOException(Messages.getString("security.1F")); //$NON-NLS-1$
         }
         return spiImpl.engineGetEncoded(format);
     }

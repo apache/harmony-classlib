@@ -23,6 +23,8 @@ package org.apache.harmony.security.asn1;
 
 import java.io.IOException;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 
 /**
  * Implicitly tagged ASN.1 type.
@@ -78,7 +80,7 @@ public class ASN1Implicit extends ASN1Type {
             // defined by "Type" is an untagged choice type or an 
             // untagged open type'
             throw new IllegalArgumentException(
-                    "Implicit tagging can not be used for ASN.1 ANY or CHOICE type");
+                    Messages.getString("security.9F")); //$NON-NLS-1$
         }
 
         this.type = type;
@@ -124,12 +126,9 @@ public class ASN1Implicit extends ASN1Type {
     public Object decode(BerInputStream in) throws IOException {
         if (!checkTag(in.tag)) {
             // FIXME need look for tagging type
-            throw new ASN1Exception(
-                    "ASN.1 implicitly tagged type is expected at ["
-                            + in.tagOffset + "]. Expected tag: "
-                            + Integer.toHexString(id)
-                            + ", but encountered tag "
-                            + Integer.toHexString(in.tag));
+            throw new ASN1Exception(Messages.getString("security.100", //$NON-NLS-1$
+                    new Object[] { in.tagOffset, Integer.toHexString(id),
+                            Integer.toHexString(in.tag) }));
         }
 
         // substitute indentifier for further decoding

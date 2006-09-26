@@ -75,7 +75,7 @@ public class PrivilegedActionException extends Exception {
 	 */
     public String toString() {
         String s = getClass().getName();
-        return exception == null ? s : s + ": " + exception;
+        return exception == null ? s : s + ": " + exception; //$NON-NLS-1$
     }
 
 }

@@ -26,6 +26,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * This class is a Service Provider Interface (therefore the Spi suffix) for
  * certificate factories to be supplied by providers.
@@ -113,7 +115,7 @@ public abstract class CertificateFactorySpi {
     public CertPath engineGenerateCertPath(InputStream inStream)
             throws CertificateException {
         throw new UnsupportedOperationException(
-                "Method engineGenerateCertPath(InputStream inStream) is not supported");
+                Messages.getString("security.70")); //$NON-NLS-1$
     }
 
     /**
@@ -137,7 +139,7 @@ public abstract class CertificateFactorySpi {
     public CertPath engineGenerateCertPath(InputStream inStream, String encoding)
             throws CertificateException {
         throw new UnsupportedOperationException(
-                "Method engineGenerateCertPath(InputStream inStream, String encoding) is not supported");
+                Messages.getString("security.71")); //$NON-NLS-1$
     }
 
     /**
@@ -158,7 +160,7 @@ public abstract class CertificateFactorySpi {
     public CertPath engineGenerateCertPath(List<? extends Certificate>  certificates) 
             throws CertificateException {
         throw new UnsupportedOperationException(
-                "Method engineGenerateCertPath(List certificates) is not supported");
+                Messages.getString("security.72")); //$NON-NLS-1$
     }
 
     /**
@@ -169,6 +171,6 @@ public abstract class CertificateFactorySpi {
      */
     public Iterator<String> engineGetCertPathEncodings() {
         throw new UnsupportedOperationException(
-                "Method engineGetCertPathEncodings() is not supported");
+                Messages.getString("security.73")); //$NON-NLS-1$
     }
 }

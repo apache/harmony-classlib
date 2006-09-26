@@ -34,15 +34,15 @@ import org.apache.harmony.security.fortress.PolicyUtils;
 public abstract class Policy {
     
     // Key to security properties, defining default policy provider.
-    private static final String POLICY_PROVIDER = "policy.provider";
+    private static final String POLICY_PROVIDER = "policy.provider"; //$NON-NLS-1$
 
     // The SecurityPermission required to set custom Policy.
     private static final SecurityPermission SET_POLICY = new SecurityPermission(
-            "setPolicy");
+            "setPolicy"); //$NON-NLS-1$
 
     // The SecurityPermission required to get current Policy.
     private static final SecurityPermission GET_POLICY = new SecurityPermission(
-            "getPolicy");
+            "getPolicy"); //$NON-NLS-1$
 
     // The policy currently in effect. 
     private static Policy activePolicy;

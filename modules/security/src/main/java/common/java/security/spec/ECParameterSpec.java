@@ -23,6 +23,8 @@ package java.security.spec;
 
 import java.math.BigInteger;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -48,22 +50,22 @@ public class ECParameterSpec implements AlgorithmParameterSpec {
         this.cofactor = cofactor;
         // throw NullPointerException if curve, generator or order is null
         if (this.curve == null) {
-            throw new NullPointerException("the curve parameter is null");
+            throw new NullPointerException(Messages.getString("security.83", "curve")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (this.generator == null) {
-            throw new NullPointerException("the generator parameter is null");
+            throw new NullPointerException(Messages.getString("security.83", "generator")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (this.order == null) {
-            throw new NullPointerException("the order parameter is null");
+            throw new NullPointerException(Messages.getString("security.83", "order")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         // throw IllegalArgumentException if order or cofactor is not positive
         if (!(this.order.compareTo(BigInteger.ZERO) > 0)) {
             throw new
-            IllegalArgumentException("the order parameter is not positive");
+            IllegalArgumentException(Messages.getString("security.86", "order")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (!(this.cofactor > 0)) {
             throw new
-            IllegalArgumentException("the cofactor parameter is not positive");
+            IllegalArgumentException(Messages.getString("security.86", "cofactor")); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

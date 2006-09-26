@@ -28,6 +28,8 @@ import java.security.ProviderException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 
 /**
  *  The static class providing access on Linux paltform
@@ -118,7 +120,7 @@ public class RandomBitsSupplier implements SHA1_Data {
                 //
                 if ( bytesRead == -1 ) {
                     throw new ProviderException(
-                        "ATTENTION: 'bytesRead == -1' in getLinuxRandomBits()" );
+                        Messages.getString("security.193") ); //$NON-NLS-1$
                 }
 
                 total  += bytesRead;
@@ -135,7 +137,7 @@ public class RandomBitsSupplier implements SHA1_Data {
             // device was removed in runtime, or something else
             //
             throw new ProviderException(
-                "ATTENTION: IOException in RandomBitsSupplier.getLinuxRandomBits()\n", e );
+                Messages.getString("security.194"), e ); //$NON-NLS-1$
         }
         return bytes; 
     }
@@ -155,12 +157,12 @@ public class RandomBitsSupplier implements SHA1_Data {
     public static byte[] getRandomBits(int numBytes) {
 
         if ( numBytes <= 0 ) {
-            throw new IllegalArgumentException("numBytes <= 0  : " + numBytes);
+            throw new IllegalArgumentException(Messages.getString("security.195", numBytes)); //$NON-NLS-1$
         }
 
         if ( !serviceAvailable ) {
             throw new ProviderException(
-                "ATTENTION: service is not available : no random devices");
+                Messages.getString("security.196")); //$NON-NLS-1$
         }
 
         return getLinuxRandomBits(numBytes);

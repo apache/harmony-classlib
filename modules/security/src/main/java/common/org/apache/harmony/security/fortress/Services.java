@@ -75,7 +75,7 @@ public class Services {
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         Provider p;
 
-        while ((providerClassName = Security.getProperty("security.provider."
+        while ((providerClassName = Security.getProperty("security.provider." //$NON-NLS-1$
                 + i++)) != null) {
             try {
                 p = (Provider) Class
@@ -167,7 +167,7 @@ public class Services {
             serv = it1.next();
             type = serv.getType();
             sb.delete(0, sb.length());
-            key = sb.append(type).append(".").append(
+            key = sb.append(type).append(".").append( //$NON-NLS-1$
                     serv.getAlgorithm().toUpperCase()).toString();
             if (!services.containsKey(key)) {
                 services.put(key, serv);
@@ -175,7 +175,7 @@ public class Services {
             for (Iterator<String> it2 = Engine.door.getAliases(serv); it2.hasNext();) {
                 alias = it2.next();
                 sb.delete(0, sb.length());
-                key = sb.append(type).append(".").append(alias.toUpperCase())
+                key = sb.append(type).append(".").append(alias.toUpperCase()) //$NON-NLS-1$
                         .toString();
                 if (!services.containsKey(key)) {
                     services.put(key, serv);
@@ -226,7 +226,7 @@ public class Services {
         Set<String> s = services.keySet();
         for (Iterator<String> i = s.iterator(); i.hasNext();) {
             String key = i.next();
-            System.out.println(key + "=" + services.get(key));
+            System.out.println(key + "=" + services.get(key)); //$NON-NLS-1$
         }
     }
 

@@ -69,7 +69,7 @@ public abstract class Signer extends Identity {
     public PrivateKey getPrivateKey() {
         SecurityManager sm = System.getSecurityManager();
         if (sm!=null) {
-            sm.checkSecurityAccess("getSignerPrivateKey");
+            sm.checkSecurityAccess("getSignerPrivateKey"); //$NON-NLS-1$
         }
         
         return privateKey;
@@ -82,7 +82,7 @@ public abstract class Signer extends Identity {
         if ((pair==null) || (pair.getPrivate()==null) || (pair.getPublic()==null)) throw new InvalidParameterException(); 
         SecurityManager sm = System.getSecurityManager();
         if (sm!=null) {
-            sm.checkSecurityAccess("setSignerKeyPair");
+            sm.checkSecurityAccess("setSignerKeyPair"); //$NON-NLS-1$
         }
         final PublicKey pk = pair.getPublic();
         try {
@@ -104,8 +104,8 @@ public abstract class Signer extends Identity {
      * @com.intel.drl.spec_ref 
      */    
     public String toString() {        
-        String s = "[Signer]"+getName();
-        if (getScope()!=null) s = s+"["+getScope().toString()+"]";
+        String s = "[Signer]"+getName(); //$NON-NLS-1$
+        if (getScope()!=null) s = s+"["+getScope().toString()+"]"; //$NON-NLS-1$ //$NON-NLS-2$
         return s;
     }
 }

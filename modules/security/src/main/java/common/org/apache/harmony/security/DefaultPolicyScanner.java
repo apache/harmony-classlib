@@ -28,6 +28,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * This is a basic high-level tokenizer of policy files. It takes in a stream,
  * analyzes data read from it and returns a set of structured tokens. <br>
@@ -124,13 +126,12 @@ public class DefaultPolicyScanner {
                 break parsing;
 
             case StreamTokenizer.TT_WORD:
-                if ("keystore".equalsIgnoreCase(st.sval)) {
+                if ("keystore".equalsIgnoreCase(st.sval)) { //$NON-NLS-1$
                     keystoreEntries.add(readKeystoreEntry(st));
-                } else if ("grant".equalsIgnoreCase(st.sval)) {
+                } else if ("grant".equalsIgnoreCase(st.sval)) { //$NON-NLS-1$
                     grantEntries.add(readGrantEntry(st));
                 } else {
-                    handleUnexpectedToken(st,
-                            "Expected entries are : \"grant\" or \"keystore\"");
+                    handleUnexpectedToken(st, Messages.getString("security.89")); //$NON-NLS-1$
                 }
                 break;
 
@@ -171,8 +172,7 @@ public class DefaultPolicyScanner {
                 st.pushBack();
             }
         } else {
-            handleUnexpectedToken(st,
-                    "Expected syntax is : keystore \"url\"[, \"type\"]");
+            handleUnexpectedToken(st, Messages.getString("security.8A")); //$NON-NLS-1$
         }
         return ke;
     }
@@ -207,21 +207,19 @@ public class DefaultPolicyScanner {
             switch (st.nextToken()) {
 
             case StreamTokenizer.TT_WORD:
-                if ("signedby".equalsIgnoreCase(st.sval)) {
+                if ("signedby".equalsIgnoreCase(st.sval)) { //$NON-NLS-1$
                     if (st.nextToken() == '"') {
                         ge.signers = st.sval;
                     } else {
-                        handleUnexpectedToken(st,
-                                "Expected syntax is : signedby \"name1,...,nameN\"");
+                        handleUnexpectedToken(st, Messages.getString("security.8B")); //$NON-NLS-1$
                     }
-                } else if ("codebase".equalsIgnoreCase(st.sval)) {
+                } else if ("codebase".equalsIgnoreCase(st.sval)) { //$NON-NLS-1$
                     if (st.nextToken() == '"') {
                         ge.codebase = st.sval;
                     } else {
-                        handleUnexpectedToken(st,
-                                "Expected syntax is : codebase \"url\"");
+                        handleUnexpectedToken(st, Messages.getString("security.8C")); //$NON-NLS-1$
                     }
-                } else if ("principal".equalsIgnoreCase(st.sval)) {
+                } else if ("principal".equalsIgnoreCase(st.sval)) { //$NON-NLS-1$
                     ge.addPrincipal(readPrincipalEntry(st));
                 } else {
                     handleUnexpectedToken(st);
@@ -277,8 +275,7 @@ public class DefaultPolicyScanner {
         } else if (st.ttype == '*') {
             pe.name = PrincipalEntry.WILDCARD;
         } else {
-            handleUnexpectedToken(st, "Expected syntax is : "
-                    + "principal [class_name] \"principal_name\"");
+            handleUnexpectedToken(st, Messages.getString("security.8D")); //$NON-NLS-1$
         }
         return pe;
     }
@@ -310,7 +307,7 @@ public class DefaultPolicyScanner {
             switch (st.nextToken()) {
 
             case StreamTokenizer.TT_WORD:
-                if ("permission".equalsIgnoreCase(st.sval)) {
+                if ("permission".equalsIgnoreCase(st.sval)) { //$NON-NLS-1$
                     PermissionEntry pe = new PermissionEntry();
                     if (st.nextToken() == StreamTokenizer.TT_WORD) {
                         pe.klass = st.sval;
@@ -328,7 +325,7 @@ public class DefaultPolicyScanner {
                             }
                         }
                         if (st.ttype == StreamTokenizer.TT_WORD
-                                && "signedby".equalsIgnoreCase(st.sval)) {
+                                && "signedby".equalsIgnoreCase(st.sval)) { //$NON-NLS-1$
                             if (st.nextToken() == '"') {
                                 pe.signers = st.sval;
                             } else {
@@ -341,9 +338,7 @@ public class DefaultPolicyScanner {
                         continue parsing;
                     }
                 }
-                handleUnexpectedToken(st, "Expected syntax is : permission"
-                        + " permission_class_name [\"target_name\"] [, "
-                        + "\"action_list\"] [, signedby \"name1,...,nameN\"]");
+                handleUnexpectedToken(st, Messages.getString("security.8E")); //$NON-NLS-1$
                 break;
 
             case ';': //just delimiter of entries
@@ -381,8 +376,8 @@ public class DefaultPolicyScanner {
      */
     protected final void handleUnexpectedToken(StreamTokenizer st,
             String message) throws InvalidFormatException {
-        throw new InvalidFormatException("Unexpected token encountered: "
-                + composeStatus(st) + ". " + message);
+        throw new InvalidFormatException(Messages.getString("security.8F", //$NON-NLS-1$
+                composeStatus(st), message));
     }
 
     /**
@@ -394,8 +389,8 @@ public class DefaultPolicyScanner {
      */
     protected final void handleUnexpectedToken(StreamTokenizer st)
             throws InvalidFormatException {
-        throw new InvalidFormatException("Unexpected token encountered: "
-                + composeStatus(st));
+        throw new InvalidFormatException(Messages.getString("security.90", //$NON-NLS-1$
+                composeStatus(st)));
     }
 
     /**
@@ -477,7 +472,7 @@ public class DefaultPolicyScanner {
          * Must be asterisk, for proper general expansion and 
          * PrivateCredentialsPermission wildcarding
          */
-        public static final String WILDCARD = "*";
+        public static final String WILDCARD = "*"; //$NON-NLS-1$
         
         /**
          * The classname part of principal clause.

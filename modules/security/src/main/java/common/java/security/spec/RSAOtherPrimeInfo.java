@@ -23,6 +23,8 @@ package java.security.spec;
 
 import java.math.BigInteger;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -41,13 +43,13 @@ public class RSAOtherPrimeInfo {
     public RSAOtherPrimeInfo(BigInteger prime,
             BigInteger primeExponent, BigInteger crtCoefficient) {
         if (prime == null) {
-            throw new NullPointerException("the prime is null");
+            throw new NullPointerException(Messages.getString("security.83", "prime")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (primeExponent == null) {
-            throw new NullPointerException("the primeExponent is null");
+            throw new NullPointerException(Messages.getString("security.83", "primeExponent")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (crtCoefficient == null) {
-            throw new NullPointerException("the crtCoefficient is null");
+            throw new NullPointerException(Messages.getString("security.83", "crtCoefficient")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         this.prime = prime;
         this.primeExponent = primeExponent;

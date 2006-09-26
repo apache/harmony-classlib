@@ -40,6 +40,7 @@ import org.apache.harmony.security.asn1.ASN1StringType;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.asn1.ObjectIdentifier;
+import org.apache.harmony.security.internal.nls.Messages;
 import org.apache.harmony.security.x501.Name;
 
 /**
@@ -146,15 +147,14 @@ public class GeneralName {
      */
     public GeneralName(int tag, String name) throws IOException {
         if (name == null) {
-            throw new IOException("The name should not be null.");
+            throw new IOException(Messages.getString("security.28")); //$NON-NLS-1$
         }
         this.tag = tag;
         switch (tag) {
             case OTHER_NAME :
             case X400_ADDR :
             case EDIP_NAME :
-                throw new IOException(
-                        "Unknown string representation for type ["+tag+"]");
+                throw new IOException( Messages.getString("security.180", tag )); //$NON-NLS-1$ //$NON-NLS-2$
             case DNS_NAME :
                 // according to RFC 3280 p.34 the DNS name should be 
                 // checked against the
@@ -181,7 +181,7 @@ public class GeneralName {
                 this.name = ipStrToBytes(name);
                 break;
             default:
-                throw new IOException("Unknown type: ["+tag+"]");
+                throw new IOException(Messages.getString("security.181", tag)); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
@@ -234,7 +234,7 @@ public class GeneralName {
         int length = name.length;
         if (length != 4 && length != 8 && length != 16 && length != 32) {
             throw new IllegalArgumentException(
-                    "Specified iPAddress is not correct.");
+                    Messages.getString("security.182")); //$NON-NLS-1$
         }
         this.tag = IP_ADDR;
         this.name = new byte[name.length];
@@ -250,10 +250,10 @@ public class GeneralName {
     public GeneralName(int tag, byte[] name) 
                                     throws IOException {
         if (name == null) {
-            throw new IOException("The name should not be null.");
+            throw new IOException(Messages.getString("security.28")); //$NON-NLS-1$
         }
         if ((tag < 0) || (tag > 8)) {
-            throw new IOException("GeneralName: unknown tag: " + tag);
+            throw new IOException(Messages.getString("security.183", tag)); //$NON-NLS-1$
         }
         this.tag = tag;
         this.name_encoding = new byte[name.length];
@@ -362,7 +362,7 @@ public class GeneralName {
                 if (dns.equalsIgnoreCase(_dns)) {
                     return true;
                 } else {
-                    return _dns.toLowerCase().endsWith("." + dns.toLowerCase());
+                    return _dns.toLowerCase().endsWith("." + dns.toLowerCase()); //$NON-NLS-1$
                 }
             case UR_ID:
                 // For URIs the constraint ".xyz.com" is satisfied by both 
@@ -372,18 +372,18 @@ public class GeneralName {
                 // specifies a host.
                 // Extract the host from URI:
                 String uri = (String) name;
-                int begin = uri.indexOf("://")+3;
+                int begin = uri.indexOf("://")+3; //$NON-NLS-1$
                 int end = uri.indexOf('/', begin);
                 String host = (end == -1) 
                                 ? uri.substring(begin)
                                 : uri.substring(begin, end);
                 uri = (String) gname.getName();
-                begin = uri.indexOf("://")+3;
+                begin = uri.indexOf("://")+3; //$NON-NLS-1$
                 end = uri.indexOf('/', begin);
                 String _host = (end == -1) 
                                 ? uri.substring(begin)
                                 : uri.substring(begin, end);
-                if (host.startsWith(".")) {
+                if (host.startsWith(".")) { //$NON-NLS-1$
                     return _host.toLowerCase().endsWith(host.toLowerCase());
                 } else {
                     return host.equalsIgnoreCase(_host);
@@ -482,13 +482,13 @@ public class GeneralName {
     // @return
     // 
     private String getBytesAsString(byte[] data) {
-        String result = "";
+        String result = ""; //$NON-NLS-1$
         for (int i=0; i<data.length; i++) {
             String tail = Integer.toHexString(0x00ff & data[i]);
             if (tail.length() == 1) {
-                tail = "0" + tail; 
+                tail = "0" + tail;  //$NON-NLS-1$
             }
-            result += tail + " ";
+            result += tail + " "; //$NON-NLS-1$
         }
         return result;
     }
@@ -498,38 +498,38 @@ public class GeneralName {
      * @return
      */
     public String toString() {
-        String result = "";
+        String result = ""; //$NON-NLS-1$
         switch (tag) {
             case OTHER_NAME:
-                result = "otherName[0]: " 
+                result = "otherName[0]: "  //$NON-NLS-1$
                          + getBytesAsString(getEncoded());
                 break;
             case RFC822_NAME:
-                result = "rfc822Name[1]: " + name;
+                result = "rfc822Name[1]: " + name; //$NON-NLS-1$
                 break;
             case DNS_NAME:
-                result = "dNSName[2]: " + name;
+                result = "dNSName[2]: " + name; //$NON-NLS-1$
                 break;
             case UR_ID:
-                result = "uniformResourceIdentifier[6]: " + name;
+                result = "uniformResourceIdentifier[6]: " + name; //$NON-NLS-1$
                 break;
             case REG_ID:
-                result = "registeredID[8]: " + ObjectIdentifier.toString((int[]) name);
+                result = "registeredID[8]: " + ObjectIdentifier.toString((int[]) name); //$NON-NLS-1$
                 break;
             case X400_ADDR:
-                result = "x400Address[3]: " 
+                result = "x400Address[3]: "  //$NON-NLS-1$
                          + getBytesAsString(getEncoded());
                 break;
             case DIR_NAME: 
-                result = "directoryName[4]: " 
+                result = "directoryName[4]: "  //$NON-NLS-1$
                          + ((Name) name).getName(X500Principal.RFC2253);
                 break;
             case EDIP_NAME:
-                result = "ediPartyName[5]: " 
+                result = "ediPartyName[5]: "  //$NON-NLS-1$
                          + getBytesAsString(getEncoded());
                 break;
             case IP_ADDR: 
-                result = "iPAddress[7]: " + ipBytesToStr((byte[]) name);
+                result = "iPAddress[7]: " + ipBytesToStr((byte[]) name); //$NON-NLS-1$
                 break;
             default:
                 // should never happen
@@ -572,22 +572,22 @@ public class GeneralName {
             byte ch = bytes[i];
             if (first_letter) {
                 if (ch > 'z' || ch < 'a') {
-                    throw new IOException("DNS name must start with a letter: "
-                            + "'" + (char)ch + "' " + dns);
+                    throw new IOException(Messages.getString("security.184", //$NON-NLS-1$
+                            (char)ch, dns));
                 }
                 first_letter = false;
                 continue;
             }
             if (!((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9')
                     || (ch == '-') || (ch == '.'))) {
-                throw new IOException("Incorrect DNS name: " + dns);
+                throw new IOException(Messages.getString("security.185", dns)); //$NON-NLS-1$
             }
             if (ch == '.') {
                 // check the end of the previous label, it should not
                 // be '-' sign
                 if (bytes[i-i] == '-') {
                     throw new IOException(
-                            "Incorrect DNS name: label ends with '-': " + dns);
+                            Messages.getString("security.186", dns)); //$NON-NLS-1$
                 }
                 first_letter = true;
             }
@@ -603,20 +603,15 @@ public class GeneralName {
             URI ur = new URI(uri);
             if ((ur.getScheme() == null) 
                     || (ur.getRawSchemeSpecificPart().length() == 0)) {
-                throw new IOException(
-                    "Bad representation of uniformResourceIdentifier. "
-                    + "It must include the scheme and a scheme-specific-part: "
-                    + uri);
+                throw new IOException(Messages.getString("security.187", uri)); //$NON-NLS-1$
             }
             if (!ur.isAbsolute()) {
-                throw new IOException(
-                    "Bad representation of uniformResourceIdentifier."
-                    + " It should not be relative: " + uri);
+                throw new IOException(Messages.getString("security.188", uri)); //$NON-NLS-1$
             }
         } catch (URISyntaxException e) {
             throw (IOException) new IOException(
-                    "Bad representation of uniformResourceIdentifier."
-                    + uri).initCause(e);
+                    Messages.getString("security.189", uri)).initCause(e);//$NON-NLS-1$
+                    
         }
     }
 
@@ -626,7 +621,7 @@ public class GeneralName {
     public static int[] oidStrToInts(String oid) throws IOException {
         byte[] bytes = oid.getBytes();
         if (bytes[bytes.length-1] == '.') {
-            throw new IOException("Incorrect OID: " + oid);
+            throw new IOException(Messages.getString("security.56", oid)); //$NON-NLS-1$
         }
         int[] result = new int[bytes.length/2+1]; // best case: a.b.c.d.e
         int number = 0; // the number of OID's components
@@ -639,19 +634,18 @@ public class GeneralName {
             }
             if (i == pos) {
                 // the number was not read
-                throw new IOException("Incorrect OID: " + oid);
+                throw new IOException(Messages.getString("security.56", oid)); //$NON-NLS-1$
             }
             result[number++] = value;
             if (i >= bytes.length) {
                 break;
             }
             if (bytes[i] != '.') {
-                throw new IOException("Incorrect OID: " + oid);
+                throw new IOException(Messages.getString("security.56", oid)); //$NON-NLS-1$
             }
         }
         if (number < 2) {
-            throw new IOException("OID should consist of "
-                    + "no less than 2 components:" + oid);
+            throw new IOException(Messages.getString("security.18A", oid));//$NON-NLS-1$
         }
         int[] res = new int[number];
         for (int i=0; i<number; i++) {
@@ -698,17 +692,14 @@ public class GeneralName {
                         && (ip_bytes[i] <= '9')) {
                     digits++;
                     if (digits > 3) {
-                        throw new IOException("Component of IPv4 address should"
-                                + "consist of no more than 3 decimal numbers: "
-                                + ip);
+                        throw new IOException(Messages.getString("security.18B", ip)); //$NON-NLS-1$
                     }
                     value = 10 * value + (ip_bytes[i] - 48);
                     i++;
                 }
                 if (digits == 0) {
                     // ip_bytes[i] is not a number
-                    throw new IOException("Incorrect IP representation: "
-                            + ip);
+                    throw new IOException(Messages.getString("security.18C", ip));//$NON-NLS-1$
                 }
                 result[component] = (byte) value;
                 component++;
@@ -718,33 +709,28 @@ public class GeneralName {
                 }
                 // check the reached delimiter
                 if ((ip_bytes[i] != '.' && ip_bytes[i] != '/')) {
-                    throw new IOException("Incorrect IP representation: "
-                            + ip);
+                    throw new IOException(Messages.getString("security.18C", ip)); //$NON-NLS-1$
                 }
                 // check the correctness of the range
                 if (ip_bytes[i] == '/') {
                     if (reading_second_bound) {
                         // more than 2 bounds in the range
-                        throw new IOException("Incorrect IP representation: "
-                                + ip);
+                        throw new IOException(Messages.getString("security.18C", ip)); //$NON-NLS-1$
                     }
                     if (component != 4) {
-                        throw new IOException("IPv4 address should consist "
-                                + "of 4 decimal numbers: " + ip);
+                        throw new IOException(Messages.getString("security.18D", ip)); //$NON-NLS-1$
                     }
                     reading_second_bound = true;
                 }
                 // check the number of the components
                 if (component > ((reading_second_bound) ? 7 : 3)) {
-                    throw new IOException("IPv4 address should consist "
-                            + "of 4 decimal numbers: " + ip);
+                    throw new IOException(Messages.getString("security.18D", ip)); //$NON-NLS-1$
                 }
                 i++;
             }
             // check the number of read components
             if (component != num_components) {
-                throw new IOException("IPv4 address should consist "
-                        + "of 4 decimal numbers: " + ip);
+                throw new IOException(Messages.getString("security.18D", ip)); //$NON-NLS-1$
             }
         } else {
             // IPv6 address is expected in the form of
@@ -754,8 +740,7 @@ public class GeneralName {
             // 010a:020b:3337:1000:FFFA:ABCD:9999:0000/010a:020b:3337:1000:FFFA:ABCD:9999:1111
             if (ip_bytes.length != 39 && ip_bytes.length != 79) {
                 // incorrect length of the string representation
-                throw new IOException("Incorrect IPv6 representation: '"
-                        + ip + "'");
+                throw new IOException(Messages.getString("security.18E", ip)); //$NON-NLS-1$
             }
             int value = 0;
             // indicates the reading of the second half of byte
@@ -773,37 +758,32 @@ public class GeneralName {
                 } else if (second_hex) {
                     // second hex value of a byte is expected but was not read
                     // (it is the situation like: ...ABCD:A:ABCD...)
-                    throw new IOException("Incorrect IPv6 representation: '"
-                            + ip + "'");
+                    throw new IOException(Messages.getString("security.18E", ip)); //$NON-NLS-1$
                 } else if ((bytik == ':') || (bytik == '/')) {
                     if (component % 2 == 1) {
                         // second byte of the component is omitted 
                         // (it is the situation like: ... ABDC:AB:ABCD ...)
-                        throw new IOException("Incorrect IPv6 representation: '"
-                                + ip + "'");
+                        throw new IOException(Messages.getString("security.18E", ip)); //$NON-NLS-1$
                     }
                     if (bytik == '/') {
                         if (reading_second_bound) {
                             // more than 2 bounds in the range
                             throw new IOException(
-                                    "Incorrect IPv6 representation: " + ip);
+                                    Messages.getString("security.18E", ip)); //$NON-NLS-1$
                         }
                         if (component != 16) {
                             // check the number of read components
-                            throw new IOException("IPv6 address should consist "
-                                    + "of 8 hexadecimal numbers: " + ip);
+                            throw new IOException(Messages.getString("security.18F", ip)); //$NON-NLS-1$
                         }
                         reading_second_bound = true;
                     }
                     expect_delimiter = false;
                     continue;
                 } else {
-                    throw new IOException("Incorrect IPv6 representation: '"
-                            + ip + "'");
+                    throw new IOException(Messages.getString("security.18E", ip)); //$NON-NLS-1$
                 }
                 if (expect_delimiter) { // delimiter is expected but was not read
-                    throw new IOException("Incorrect IPv6 representation: '"
-                            + ip + "'");
+                    throw new IOException(Messages.getString("security.18E", ip)); //$NON-NLS-1$
                 }
                 if (!second_hex) {
                     // first half of byte has been read
@@ -821,7 +801,7 @@ public class GeneralName {
             }
             // check the correctness of the read address:
             if (second_hex || (component % 2 == 1)) {
-                throw new IOException("Incorrect IPv6 representation: " + ip);
+                throw new IOException(Messages.getString("security.18E", ip)); //$NON-NLS-1$
             }
         }
         return result;
@@ -843,19 +823,19 @@ public class GeneralName {
      * @return  Stringe representation of ip address
      */
     public static String ipBytesToStr(byte[] ip) {
-        String result = "";
+        String result = ""; //$NON-NLS-1$
         if (ip.length < 9) { // IP v4
             for (int i=0; i<ip.length; i++) {
                 result += Integer.toString(ip[i] & 0xff);
                 if (i != ip.length-1) {
-                    result += (i == 3) ? "/": ".";
+                    result += (i == 3) ? "/": "."; //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
         } else {
             for (int i=0; i<ip.length; i++) {
                 result += Integer.toHexString(0x00ff & ip[i]);
                 if ((i % 2 != 0) && (i != ip.length-1)) {
-                    result += (i == 15) ? "/": ":";
+                    result += (i == 15) ? "/": ":"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
         }
@@ -902,9 +882,9 @@ public class GeneralName {
                     break;
                 case UR_ID: // uniformResourceIdentifier
                     String uri = (String) in.content;
-                    if (uri.indexOf(":") == -1) {
+                    if (uri.indexOf(":") == -1) { //$NON-NLS-1$
                         throw new IOException(
-                            "GeneralName: scheme is missing in URI: " + uri);
+                            Messages.getString("security.190", uri)); //$NON-NLS-1$
                     }
                     result = new GeneralName(in.choiceIndex, uri);
                     break;
@@ -916,7 +896,7 @@ public class GeneralName {
                             ObjectIdentifier.toString((int[]) in.content));
                     break;
                 default:
-                    throw new IOException("GeneralName: unknown tag: " + in.choiceIndex);
+                    throw new IOException(Messages.getString("security.191", in.choiceIndex)); //$NON-NLS-1$
             }
             result.encoding = in.getEncoded();
             return result;

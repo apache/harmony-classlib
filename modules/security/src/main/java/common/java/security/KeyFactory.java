@@ -25,6 +25,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
 import org.apache.harmony.security.fortress.Engine;
+import org.apache.harmony.security.internal.nls.Messages;
 
 
 /**
@@ -34,7 +35,7 @@ import org.apache.harmony.security.fortress.Engine;
 
 public class KeyFactory {
     // The service name.
-    private static final String SERVICE = "KeyFactory";
+    private static final String SERVICE = "KeyFactory"; //$NON-NLS-1$
     
     // The provider
     private Provider provider;
@@ -68,7 +69,7 @@ public class KeyFactory {
     public static KeyFactory getInstance(String algorithm)
                                 throws NoSuchAlgorithmException {
         if (algorithm == null) {
-            throw new NullPointerException("Algorithm is null");
+            throw new NullPointerException(Messages.getString("security.01")); //$NON-NLS-1$
         }
         synchronized (engine) {
             engine.getInstance(algorithm, null);
@@ -83,12 +84,11 @@ public class KeyFactory {
     public static KeyFactory getInstance(String algorithm, String provider)
                                 throws NoSuchAlgorithmException, NoSuchProviderException {
         if ((provider == null) || (provider.length() == 0)) {
-            throw new IllegalArgumentException(
-                    "Provider is null or empty string");
+            throw new IllegalArgumentException(Messages.getString("security.02")); //$NON-NLS-1$
         }
         Provider p = Security.getProvider(provider);
         if (p == null) {
-            throw new NoSuchProviderException("Provider "+ provider + " is not available"); 
+            throw new NoSuchProviderException(Messages.getString("security.03", provider));  //$NON-NLS-1$ //$NON-NLS-2$
         }
         return getInstance(algorithm, p);    
     }
@@ -100,10 +100,10 @@ public class KeyFactory {
     public static KeyFactory getInstance(String algorithm, Provider provider)
                                  throws NoSuchAlgorithmException {
         if (provider == null) {
-            throw new IllegalArgumentException("provider is null");
+            throw new IllegalArgumentException(Messages.getString("security.04")); //$NON-NLS-1$
         }
         if (algorithm == null) {
-            throw new NullPointerException("Algorithm is null");
+            throw new NullPointerException(Messages.getString("security.01")); //$NON-NLS-1$
         }
         synchronized (engine) {
             engine.getInstance(algorithm, provider, null);

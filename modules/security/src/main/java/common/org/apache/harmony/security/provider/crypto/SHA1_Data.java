@@ -84,11 +84,11 @@ public interface SHA1_Data {
     /**
      *  name of native library to use on Windows platform
      */
-    static final String LIBRARY_NAME = "hysecurity"; 
+    static final String LIBRARY_NAME = "hysecurity";  //$NON-NLS-1$
 
 
     /**
      *  names of random devices on Linux platform
      */
-    static final String DEVICE_NAMES[] = { "/dev/urandom", "/dev/random"};
+    static final String DEVICE_NAMES[] = { "/dev/urandom", "/dev/random"}; //$NON-NLS-1$ //$NON-NLS-2$
 }

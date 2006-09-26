@@ -68,7 +68,7 @@ public abstract class IdentityScope extends Identity {
     public static IdentityScope getSystemScope() {
 
         if (systemScope == null) {
-            systemScope = new SystemScope("System Scope");
+            systemScope = new SystemScope("System Scope"); //$NON-NLS-1$
         }
         return systemScope;
     }
@@ -79,7 +79,7 @@ public abstract class IdentityScope extends Identity {
     protected static void setSystemScope(IdentityScope scope) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
-            sm.checkSecurityAccess("setSystemScope");
+            sm.checkSecurityAccess("setSystemScope"); //$NON-NLS-1$
         }
         systemScope = scope;
     }
@@ -128,6 +128,6 @@ public abstract class IdentityScope extends Identity {
      */
     public String toString() {
         return new StringBuffer(super.toString())
-                .append("[").append(size()).append("]").toString();
+                .append("[").append(size()).append("]").toString(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

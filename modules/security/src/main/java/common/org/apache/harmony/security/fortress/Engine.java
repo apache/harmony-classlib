@@ -24,6 +24,8 @@ package org.apache.harmony.security.fortress;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 
 /**
  * 
@@ -82,7 +84,7 @@ public class Engine {
         Provider.Service serv;
 
         if (algorithm == null) {
-            throw new NoSuchAlgorithmException("Null algorithm name");
+            throw new NoSuchAlgorithmException(Messages.getString("security.149")); //$NON-NLS-1$
         }
         Services.refresh();
         if (returnedService != null
@@ -91,15 +93,15 @@ public class Engine {
             serv = returnedService;
         } else {
             if (Services.isEmpty()) {
-                throw new NoSuchAlgorithmException(serviceName + " "
-                        + algorithm + " implementation not found");
+                throw new NoSuchAlgorithmException(Messages.getString("security.14A", //$NON-NLS-1$
+                        serviceName, algorithm));
             }
             serv = Services.getService(new StringBuffer(128)
-                    .append(serviceName).append(".").append(
+                    .append(serviceName).append(".").append( //$NON-NLS-1$
                             algorithm.toUpperCase()).toString());
             if (serv == null) {
-                throw new NoSuchAlgorithmException(serviceName + " "
-                        + algorithm + " implementation not found");
+                throw new NoSuchAlgorithmException(Messages.getString("security.14A", //$NON-NLS-1$
+                        serviceName, algorithm));
             }
             returnedService = serv;
             lastAlgorithm = algorithm;
@@ -124,13 +126,13 @@ public class Engine {
 
         Provider.Service serv = null;
         if (algorithm == null) {
-            throw new NoSuchAlgorithmException(serviceName
-                    + " , algorithm is null");
+            throw new NoSuchAlgorithmException(
+                    Messages.getString("security.14B", serviceName)); //$NON-NLS-1$
         }
         serv = provider.getService(serviceName, algorithm);
         if (serv == null) {
-            throw new NoSuchAlgorithmException(serviceName + " " + algorithm
-                    + " implementation not found");
+            throw new NoSuchAlgorithmException(Messages.getString("security.14A", //$NON-NLS-1$
+                    serviceName, algorithm));
         }
         spi = serv.newInstance(param);
         this.provider = provider;

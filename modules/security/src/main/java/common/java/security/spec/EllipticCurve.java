@@ -24,6 +24,8 @@ package java.security.spec;
 import java.math.BigInteger;
 import java.util.Arrays;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -52,15 +54,15 @@ public class EllipticCurve {
     public EllipticCurve(ECField field, BigInteger a, BigInteger b, byte[] seed) {
         this.field = field;
         if (this.field == null) {
-            throw new NullPointerException("the field parameter is null");
+            throw new NullPointerException(Messages.getString("security.7A")); //$NON-NLS-1$
         }
         this.a = a;
         if (this.a == null) {
-            throw new NullPointerException("the a parameter is null");
+            throw new NullPointerException(Messages.getString("security.7B")); //$NON-NLS-1$
         }
         this.b = b;
         if (this.b == null) {
-            throw new NullPointerException("the b parameter is null");
+            throw new NullPointerException(Messages.getString("security.7C")); //$NON-NLS-1$
         }
         // make defensive copy
         if (seed == null) {
@@ -75,18 +77,18 @@ public class EllipticCurve {
         if (this.field instanceof ECFieldFp) {
             BigInteger p = ((ECFieldFp) this.field).getP();
             if (this.a.signum() < 0 || this.a.compareTo(p) >= 0) {
-                throw new IllegalArgumentException("the a is not in the field");
+                throw new IllegalArgumentException(Messages.getString("security.7D")); //$NON-NLS-1$
             }
             if (this.b.signum() < 0 || this.b.compareTo(p) >= 0) {
-                throw new IllegalArgumentException("the a is not in the field");
+                throw new IllegalArgumentException(Messages.getString("security.7E")); //$NON-NLS-1$
             }
         } else if (this.field instanceof ECFieldF2m) {
             int fieldSizeInBits = this.field.getFieldSize();
             if (!(this.a.bitLength() <= fieldSizeInBits)) {
-                throw new IllegalArgumentException("the a is not in the field");
+                throw new IllegalArgumentException(Messages.getString("security.7D")); //$NON-NLS-1$
             }
             if (!(this.b.bitLength() <= fieldSizeInBits)) {
-                throw new IllegalArgumentException("the b is not in the field");
+                throw new IllegalArgumentException(Messages.getString("security.7E")); //$NON-NLS-1$
             }
         }
     }

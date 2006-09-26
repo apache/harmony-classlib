@@ -24,6 +24,8 @@ package java.security.spec;
 import java.math.BigInteger;
 import java.util.Arrays;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -50,7 +52,7 @@ public class ECFieldF2m implements ECField {
     public ECFieldF2m(int m) {
         this.m = m;
         if (this.m <= 0) {
-            throw new IllegalArgumentException("the m is not positive");
+            throw new IllegalArgumentException(Messages.getString("security.75")); //$NON-NLS-1$
         }
         this.rp = null;
         this.ks = null;
@@ -62,11 +64,11 @@ public class ECFieldF2m implements ECField {
     public ECFieldF2m(int m, BigInteger rp) {
         this.m = m;
         if (this.m <= 0) {
-            throw new IllegalArgumentException("the m is not positive");
+            throw new IllegalArgumentException(Messages.getString("security.75")); //$NON-NLS-1$
         }
         this.rp = rp;
         if (this.rp == null) {
-            throw new NullPointerException("the rp is null");
+            throw new NullPointerException(Messages.getString("security.76")); //$NON-NLS-1$
         }
         // the leftmost bit must be (m+1)-th one,
         // set bits count must be 3 or 5,
@@ -75,7 +77,7 @@ public class ECFieldF2m implements ECField {
         if ((this.rp.bitLength() != (m+1)) ||
             (rp_bc != TPB_LEN && rp_bc != PPB_LEN) ||
             (!this.rp.testBit(0) || !this.rp.testBit(m)) ) {
-            throw new IllegalArgumentException("the rp is invalid");
+            throw new IllegalArgumentException(Messages.getString("security.77")); //$NON-NLS-1$
         }
 
         // setup ks using rp:
@@ -95,7 +97,7 @@ public class ECFieldF2m implements ECField {
     public ECFieldF2m(int m, int[] ks) {
         this.m = m;
         if (this.m <= 0) {
-            throw new IllegalArgumentException("the m is not positive");
+            throw new IllegalArgumentException(Messages.getString("security.75")); //$NON-NLS-1$
         }
         // Defensively copies array parameter
         // to prevent subsequent modification.
@@ -106,7 +108,7 @@ public class ECFieldF2m implements ECField {
         // no need to check for null already
         if (this.ks.length != TPB_MID_LEN && this.ks.length != PPB_MID_LEN) {
             // must be either trinomial or pentanomial basis
-            throw new IllegalArgumentException("the length of ks is invalid");
+            throw new IllegalArgumentException(Messages.getString("security.78")); //$NON-NLS-1$
         }
         // trinomial basis:
         // check that m > k >= 1, where k is ks[0]
@@ -125,7 +127,7 @@ public class ECFieldF2m implements ECField {
             break;
         }
         if (checkFailed || prev < 1) {
-            throw new IllegalArgumentException("the ks is invalid");
+            throw new IllegalArgumentException(Messages.getString("security.79")); //$NON-NLS-1$
         }
 
         // Setup rp using ks:

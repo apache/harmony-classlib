@@ -37,6 +37,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * Specific PermissionCollection for storing UnresolvedPermissions. Contained
  * elements are grouped by their target type.
@@ -50,7 +52,7 @@ final class UnresolvedPermissionCollection extends PermissionCollection {
     private static final long serialVersionUID = -7176153071733132400L;
 
     private static final ObjectStreamField[] serialPersistentFields = { 
-        new ObjectStreamField("permissions", Hashtable.class), };
+        new ObjectStreamField("permissions", Hashtable.class), }; //$NON-NLS-1$
 
     // elements of the collection.
     private transient Map klasses = new HashMap();
@@ -62,12 +64,12 @@ final class UnresolvedPermissionCollection extends PermissionCollection {
      */
     public void add(Permission permission) {
         if (isReadOnly()) {
-            throw new SecurityException("collection is read-only");
+            throw new SecurityException(Messages.getString("security.15")); //$NON-NLS-1$
         }
         if (permission == null
             || permission.getClass() != UnresolvedPermission.class) {
-            throw new IllegalArgumentException("invalid permission: "
-                + permission);
+            throw new IllegalArgumentException(Messages.getString("security.16", //$NON-NLS-1$
+                permission));
         }
         synchronized (klasses) {
             String klass = permission.getName();
@@ -163,7 +165,7 @@ final class UnresolvedPermissionCollection extends PermissionCollection {
             permissions.put(key, new Vector(((Collection)klasses.get(key))));
         }
         ObjectOutputStream.PutField fields = out.putFields();
-        fields.put("permissions", permissions);
+        fields.put("permissions", permissions); //$NON-NLS-1$
         out.writeFields();
     }
 
@@ -175,7 +177,7 @@ final class UnresolvedPermissionCollection extends PermissionCollection {
     private void readObject(java.io.ObjectInputStream in) throws IOException,
         ClassNotFoundException {
         ObjectInputStream.GetField fields = in.readFields();
-        Map permissions = (Map)fields.get("permissions", null);
+        Map permissions = (Map)fields.get("permissions", null); //$NON-NLS-1$
         klasses = new HashMap();
         synchronized (klasses) {
             for (Iterator iter = permissions.keySet().iterator(); iter
@@ -187,7 +189,7 @@ final class UnresolvedPermissionCollection extends PermissionCollection {
                         .next();
                     if (!element.getName().equals(key)) {
                         throw new InvalidObjectException(
-                            "collection is corrupted");
+                            Messages.getString("security.22")); //$NON-NLS-1$
                     }
                 }
                 klasses.put(key, new HashSet(values));

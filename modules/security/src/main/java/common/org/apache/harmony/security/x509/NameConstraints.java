@@ -32,6 +32,7 @@ import org.apache.harmony.security.asn1.ASN1OctetString;
 import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
+import org.apache.harmony.security.internal.nls.Messages;
 
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work 
@@ -86,14 +87,14 @@ public class NameConstraints {
             List ps = permittedSubtrees.getSubtrees();
             if ((ps == null) || (ps.size() == 0)) {
                 throw 
-                    new IllegalArgumentException("permittedSubtrees are empty");
+                    new IllegalArgumentException(Messages.getString("security.17D")); //$NON-NLS-1$
             }
         }
         if (excludedSubtrees != null) {
             List es = excludedSubtrees.getSubtrees();
             if ((es == null) || (es.size() == 0)) {
                 throw 
-                    new IllegalArgumentException("excludedSubtrees are empty");
+                    new IllegalArgumentException(Messages.getString("security.17E")); //$NON-NLS-1$
             }
         }
         this.permittedSubtrees = permittedSubtrees;
@@ -192,7 +193,7 @@ public class NameConstraints {
             prepareNames();
         }
 
-        byte[] bytes = getExtensionValue(cert, "2.5.29.17");
+        byte[] bytes = getExtensionValue(cert, "2.5.29.17"); //$NON-NLS-1$
         List names;
         try {
             names = (bytes == null) 

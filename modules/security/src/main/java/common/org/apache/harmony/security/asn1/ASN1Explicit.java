@@ -23,6 +23,8 @@ package org.apache.harmony.security.asn1;
 
 import java.io.IOException;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 
 /**
  * This class represents explicitly tagged ASN.1 type.
@@ -72,11 +74,9 @@ public final class ASN1Explicit extends ASN1Constructured {
     public Object decode(BerInputStream in) throws IOException {
         if (constrId != in.tag) {
             throw new ASN1Exception(
-                    "ASN.1 explicitly tagged type is expected at ["
-                            + in.tagOffset + "]. Expected tag: "
-                            + Integer.toHexString(constrId)
-                            + ", but encountered tag "
-                            + Integer.toHexString(in.tag));
+                    Messages.getString("security.13F", //$NON-NLS-1$
+                    new Object[] { in.tagOffset, Integer.toHexString(constrId),
+                            Integer.toHexString(in.tag) }));
         }
         in.next();
 
@@ -104,6 +104,6 @@ public final class ASN1Explicit extends ASN1Constructured {
 
     public String toString() {
         //FIXME fix performance
-        return super.toString() + " for type " + type;
+        return super.toString() + " for type " + type; //$NON-NLS-1$
     }
 }

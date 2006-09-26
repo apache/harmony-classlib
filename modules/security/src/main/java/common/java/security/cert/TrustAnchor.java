@@ -26,6 +26,7 @@ import java.security.PublicKey;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.apache.harmony.security.internal.nls.Messages;
 import org.apache.harmony.security.utils.Array;
 import org.apache.harmony.security.x509.NameConstraints;
 
@@ -52,7 +53,7 @@ public class TrustAnchor {
      */
     public TrustAnchor(X509Certificate trustedCert, byte[] nameConstraints) {
         if (trustedCert == null) {
-            throw new NullPointerException("the trustedCert parameter is null");
+            throw new NullPointerException(Messages.getString("security.5C")); //$NON-NLS-1$
         }
         this.trustedCert = trustedCert;
         // copy nameConstraints if not null
@@ -75,11 +76,11 @@ public class TrustAnchor {
     public TrustAnchor(String caName, PublicKey caPublicKey,
             byte[] nameConstraints) {
         if (caName == null) {
-            throw new NullPointerException("the caName parameter is null");
+            throw new NullPointerException(Messages.getString("security.5D")); //$NON-NLS-1$
         }
         this.caName = caName;
         if (caPublicKey == null) {
-            throw new NullPointerException("the caPublicKey parameter is null");
+            throw new NullPointerException(Messages.getString("security.5E")); //$NON-NLS-1$
         }
         this.caPublicKey = caPublicKey;
         // copy nameConstraints if not null
@@ -97,7 +98,7 @@ public class TrustAnchor {
         // X500Principal checks caName validity
         if (caName.length() == 0) {
             throw new IllegalArgumentException(
-                    "the caName parameter is empty string");
+                    Messages.getString("security.5F")); //$NON-NLS-1$
         }
         this.caPrincipal = new X500Principal(this.caName);
     }
@@ -108,11 +109,11 @@ public class TrustAnchor {
     public TrustAnchor(X500Principal caPrincipal,
             PublicKey caPublicKey, byte[] nameConstraints) {
         if (caPrincipal == null) {
-            throw new NullPointerException("the caPrincipal parameter is null");
+            throw new NullPointerException(Messages.getString("security.60")); //$NON-NLS-1$
         }
         this.caPrincipal = caPrincipal;
         if (caPublicKey == null) {
-            throw new NullPointerException("the caPublicKey parameter is null");
+            throw new NullPointerException(Messages.getString("security.5E")); //$NON-NLS-1$
         }
         this.caPublicKey = caPublicKey;
         // copy nameConstraints if not null
@@ -174,28 +175,28 @@ public class TrustAnchor {
      * @com.intel.drl.spec_ref
      */
     public String toString() {
-        StringBuffer sb = new StringBuffer("TrustAnchor: [\n");
+        StringBuffer sb = new StringBuffer("TrustAnchor: [\n"); //$NON-NLS-1$
         if (trustedCert != null) {
-            sb.append("Trusted CA certificate: ");
+            sb.append("Trusted CA certificate: "); //$NON-NLS-1$
             sb.append(trustedCert);
-            sb.append("\n");
+            sb.append("\n"); //$NON-NLS-1$
         }
         if (caPrincipal != null) {
-            sb.append("Trusted CA Name: ");
+            sb.append("Trusted CA Name: "); //$NON-NLS-1$
             sb.append(caPrincipal);
-            sb.append("\n");
+            sb.append("\n"); //$NON-NLS-1$
         }
         if (caPublicKey != null) {
-            sb.append("Trusted CA Public Key: ");
+            sb.append("Trusted CA Public Key: "); //$NON-NLS-1$
             sb.append(caPublicKey);
-            sb.append("\n");
+            sb.append("\n"); //$NON-NLS-1$
         }
         // FIXME if needed:
         if (nameConstraints != null) {
-            sb.append("Name Constraints:\n");
-            sb.append(Array.toString(nameConstraints, "    "));
+            sb.append("Name Constraints:\n"); //$NON-NLS-1$
+            sb.append(Array.toString(nameConstraints, "    ")); //$NON-NLS-1$
         }
-        sb.append("\n]");
+        sb.append("\n]"); //$NON-NLS-1$
         return sb.toString();
     }
 

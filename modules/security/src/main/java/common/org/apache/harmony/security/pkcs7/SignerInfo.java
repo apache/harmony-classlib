@@ -126,26 +126,26 @@ public class SignerInfo {
     
     public String toString() {
         StringBuffer res = new StringBuffer();
-        res.append("-- SignerInfo:");
-        res.append("\n version : ");
+        res.append("-- SignerInfo:"); //$NON-NLS-1$
+        res.append("\n version : "); //$NON-NLS-1$
         res.append(version);
-        res.append("\nissuerAndSerialNumber:  ");
+        res.append("\nissuerAndSerialNumber:  "); //$NON-NLS-1$
         res.append(issuer);
-        res.append("   ");
+        res.append("   "); //$NON-NLS-1$
         res.append(serialNumber);
-        res.append("\ndigestAlgorithm:  ");
+        res.append("\ndigestAlgorithm:  "); //$NON-NLS-1$
         res.append(digestAlgorithm.toString());
-        res.append("\nauthenticatedAttributes:  ");
+        res.append("\nauthenticatedAttributes:  "); //$NON-NLS-1$
         if (authenticatedAttributes != null) {
             res.append(authenticatedAttributes.toString());
         }
-        res.append("\ndigestEncryptionAlgorithm: ");
+        res.append("\ndigestEncryptionAlgorithm: "); //$NON-NLS-1$
         res.append(digestEncryptionAlgorithm.toString());
-        res.append("\nunauthenticatedAttributes: ");
+        res.append("\nunauthenticatedAttributes: "); //$NON-NLS-1$
         if (unauthenticatedAttributes != null) {
             res.append(unauthenticatedAttributes.toString());
         }
-        res.append("\n-- SignerInfo End\n");
+        res.append("\n-- SignerInfo End\n"); //$NON-NLS-1$
         return res.toString();
     }
 

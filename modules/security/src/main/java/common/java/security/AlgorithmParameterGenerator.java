@@ -24,6 +24,7 @@ package java.security;
 import java.security.spec.AlgorithmParameterSpec;
 
 import org.apache.harmony.security.fortress.Engine;
+import org.apache.harmony.security.internal.nls.Messages;
 
 
 /**
@@ -34,7 +35,7 @@ import org.apache.harmony.security.fortress.Engine;
 public class AlgorithmParameterGenerator {
 
     // Store spi service name
-    private static final String SERVICE = "AlgorithmParameterGenerator";
+    private static final String SERVICE = "AlgorithmParameterGenerator"; //$NON-NLS-1$
 
     // Used to access common engine functionality
     private static Engine engine = new Engine(SERVICE);
@@ -79,7 +80,7 @@ public class AlgorithmParameterGenerator {
     public static AlgorithmParameterGenerator getInstance(String algorithm)
             throws NoSuchAlgorithmException {
         if (algorithm == null) {
-            throw new NullPointerException("Algorithm is null");
+            throw new NullPointerException(Messages.getString("security.01")); //$NON-NLS-1$
         }
         synchronized (engine) {
             engine.getInstance(algorithm, null);
@@ -100,7 +101,7 @@ public class AlgorithmParameterGenerator {
             NoSuchProviderException {
         if ((provider == null) || (provider.length() == 0)) {
             throw new IllegalArgumentException(
-                    "Provider is null or empty string");
+                    Messages.getString("security.02")); //$NON-NLS-1$
         }
         Provider impProvider = Security.getProvider(provider);
         if (impProvider == null) {
@@ -118,10 +119,10 @@ public class AlgorithmParameterGenerator {
     public static AlgorithmParameterGenerator getInstance(String algorithm,
             Provider provider) throws NoSuchAlgorithmException {
         if (provider == null) {
-            throw new IllegalArgumentException("Provider is null");
+            throw new IllegalArgumentException(Messages.getString("security.04")); //$NON-NLS-1$
         }
         if (algorithm == null) {
-            throw new NullPointerException("Algorithm is null");
+            throw new NullPointerException(Messages.getString("security.01")); //$NON-NLS-1$
         }
         synchronized (engine) {
             engine.getInstance(algorithm, provider, null);

@@ -23,6 +23,8 @@ package java.security.spec;
 
 import java.math.BigInteger;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -41,10 +43,10 @@ public class ECPrivateKeySpec implements KeySpec {
         this.params = params;
         // throw NullPointerException if s or params is null
         if (this.s == null) {
-            throw new NullPointerException("the s parameter is null");
+            throw new NullPointerException(Messages.getString("security.83", "s")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (this.params == null) {
-            throw new NullPointerException("the params parameter is null");
+            throw new NullPointerException(Messages.getString("security.83", "params")); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

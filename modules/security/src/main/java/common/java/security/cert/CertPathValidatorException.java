@@ -23,6 +23,8 @@ package java.security.cert;
 
 import java.security.GeneralSecurityException;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -58,11 +60,11 @@ public class CertPathValidatorException extends GeneralSecurityException {
         // check certPath and index parameters
         if ((certPath == null) && (index != -1)) {
             throw new IllegalArgumentException(
-                    "Index should be -1 when CertPath is null");
+                    Messages.getString("security.53")); //$NON-NLS-1$
         }
         if ((certPath != null)
                 && ((index < -1) || (index >= certPath.getCertificates().size()))) {
-            throw new IndexOutOfBoundsException("Invalid index");
+            throw new IndexOutOfBoundsException(Messages.getString("security.54")); //$NON-NLS-1$
         }
         this.certPath = certPath;
         this.index = index;

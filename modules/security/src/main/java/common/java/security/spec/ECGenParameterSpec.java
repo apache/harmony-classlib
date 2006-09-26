@@ -21,6 +21,8 @@
 
 package java.security.spec;
 
+import org.apache.harmony.security.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -36,7 +38,7 @@ public class ECGenParameterSpec implements AlgorithmParameterSpec {
     public ECGenParameterSpec(String name) {
         this.name = name;
         if (this.name == null) {
-            throw new NullPointerException("the name parameter is null");
+            throw new NullPointerException(Messages.getString("security.83", "name")); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
