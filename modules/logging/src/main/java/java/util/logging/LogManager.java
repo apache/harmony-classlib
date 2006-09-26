@@ -198,6 +198,7 @@ public class LogManager {
 
 				// if global logger has been initialized, set root as its parent
                 Logger root = new Logger("", null); //$NON-NLS-1$
+                root.setLevel(Level.INFO);
                 Logger.global.setParent(root);
                 
                 manager.addLogger(root);
@@ -299,7 +300,12 @@ public class LogManager {
         String parentName = name;
         while ((lastSeparator = parentName.lastIndexOf('.')) != -1) {
             parentName = parentName.substring(0, lastSeparator);
-            if ((parent = loggers.get(parentName)) != null) {
+            parent = loggers.get(parentName);
+            if (parent != null) {
+                logger.internalSetParent(parent);
+                break;
+            }else if(getProperty(parentName+".level") != null || getProperty(parentName+".handlers") != null){//$NON-NLS-1$ //$NON-NLS-2$
+                parent = Logger.getLogger(parentName);
                 logger.internalSetParent(parent);
                 break;
             }
@@ -309,6 +315,7 @@ public class LogManager {
         }
 
         // find children
+        //TODO: performance can be improved here?
         Collection<Logger> allLoggers = loggers.values();
         for (Logger child : allLoggers) {
             Logger oldParent = child.getParent();
@@ -378,7 +385,30 @@ public class LogManager {
      *             not have the required permissions to perform this action
      */
     public void readConfiguration() throws IOException {
-        readConfigurationImpl();
+        checkAccess();
+        // check config class
+        String configClassName = System.getProperty("java.util.logging.config.class"); //$NON-NLS-1$
+        if (null == configClassName || null == getInstanceByClass(configClassName)) {
+            // if config class failed, check config file       
+            String configFile = System.getProperty("java.util.logging.config.file"); //$NON-NLS-1$
+            if (null == configFile) {
+                // if cannot find configFile, use default logging.properties
+                configFile = new StringBuilder().append(
+                        System.getProperty("java.home")).append(File.separator) //$NON-NLS-1$
+                        .append("lib").append(File.separator).append( //$NON-NLS-1$
+                                "logging.properties").toString(); //$NON-NLS-1$
+            }
+            InputStream input = null;
+            try {
+                input = new BufferedInputStream(new FileInputStream(configFile));
+                readConfigurationImpl(input);
+            } finally {
+                try {
+                    input.close();
+                } catch (Exception e) {// ignore
+                }
+            }
+        }
     }
 
     // use privilege code to get system property
@@ -402,8 +432,8 @@ public class LogManager {
                         className);
                 return clazz.newInstance();
             } catch (Exception innerE) {
-                //logging.20=Logging configuration class "{0}" failed
-                System.err.println(Messages.getString("logging.20", className));
+                //logging.20=Loading class "{0}" failed
+                System.err.println(Messages.getString("logging.20", className)); //$NON-NLS-1$
                 System.err.println(innerE);
                 return null;
             }
@@ -411,80 +441,13 @@ public class LogManager {
 
     }
 
-    // actual default initialization process
-    private synchronized void readConfigurationImpl() throws IOException {
-        checkAccess();
-        boolean needInit = true;
-
-        // check config class
-        String configClassName = System.getProperty("java.util.logging.config.class"); //$NON-NLS-1$
-        if (null != configClassName) {
-            if (null == getInstanceByClass(configClassName)) {
-                return;
-            }
-            needInit = false;
-        }
-        // if config class failed, check config file
-        if (needInit) {
-            String configFile = System.getProperty("java.util.logging.config.file"); //$NON-NLS-1$
-            if (null == configFile) {
-                // if cannot find configFile, use default logging.properties
-                configFile = new StringBuilder().append(
-                        System.getProperty("java.home")).append(File.separator) //$NON-NLS-1$
-                        .append("lib").append(File.separator).append( //$NON-NLS-1$
-                                "logging.properties").toString(); //$NON-NLS-1$
-            }
-            InputStream input = null;
-            try {
-                input = new BufferedInputStream(new FileInputStream(configFile));
-                readConfigurationImpl(input);
-            } finally {
-                try {
-                    input.close();
-                } catch (Exception e) {// ignore
-                }
-            }
-        }
-    }
-
     // actual initialization process from a given input stream
     private synchronized void readConfigurationImpl(InputStream ins)
             throws IOException {
         reset();
         props.load(ins);
-
-        // configs
-        parseConfigProp();
-
-        // set levels for logger
-        initLoggers();
-        listeners.firePropertyChange(null, null, null);
-    }
-
-    // init "level" properties for all registered loggers
-    private void initLoggers() {
-        Enumeration<?> enumeration = props.propertyNames();
-        while (enumeration.hasMoreElements()) {
-            // search for all properties whose name is ended with ".level"
-            String property = (String) enumeration.nextElement();
-            if (property.endsWith(".level")) { //$NON-NLS-1$
-                String loggerName = property.substring(0,
-                        property.length() - ".level".length()); //$NON-NLS-1$
-                Logger l = loggers.get(loggerName);
-                if (null != l) {
-                    l.setManager(this);
-                }
-            }else if(property.endsWith(".handlers")){ //$NON-NLS-1$
-                String loggerName = property.substring(0,
-                        property.length() - ".handlers".length()); //$NON-NLS-1$
-                Logger.getLogger(loggerName);
-                //lazily load handlers because some of them are expensive
-            }
-        }
-    }
-
-    // parse property "config" and apply setting
-    private void parseConfigProp() {
+        
+        // parse property "config" and apply setting
         String configs = props.getProperty("config"); //$NON-NLS-1$
         if (null != configs) {
             StringTokenizer st = new StringTokenizer(configs, " "); //$NON-NLS-1$
@@ -493,7 +456,18 @@ public class LogManager {
                 getInstanceByClass(configerName);
             }
         }
+        
+        // set levels for logger
+        Collection<Logger> allLoggers = loggers.values();
+        for(Logger logger : allLoggers){
+            String property = props.getProperty(logger.getName()+".level"); //$NON-NLS-1$
+            if(null != property){
+                logger.setLevel(Level.parse(property));
+            }
+        }
+        listeners.firePropertyChange(null, null, null);
     }
+
 
     /**
      * Re-initialize the properties and configuration from the given

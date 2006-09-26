@@ -47,47 +47,47 @@ public class Level implements Serializable {
     /**
      * The OFF level provides no logging messages.
      */
-    public static final Level OFF = new Level("OFF", Integer.MAX_VALUE);
+    public static final Level OFF = new Level("OFF", Integer.MAX_VALUE); //$NON-NLS-1$
 
     /**
      * The SEVERE level indicates a severe failure.
      */
-    public static final Level SEVERE = new Level("SEVERE", 1000);
+    public static final Level SEVERE = new Level("SEVERE", 1000); //$NON-NLS-1$
 
     /**
      * The WARNING level indicates a warning.
      */
-    public static final Level WARNING = new Level("WARNING", 900);
+    public static final Level WARNING = new Level("WARNING", 900); //$NON-NLS-1$
 
     /**
      * The INFO level indicates an informative message.
      */
-    public static final Level INFO = new Level("INFO", 800);
+    public static final Level INFO = new Level("INFO", 800); //$NON-NLS-1$
 
     /**
      * The CONFIG level indicates a static configuration message.
      */
-    public static final Level CONFIG = new Level("CONFIG", 700);
+    public static final Level CONFIG = new Level("CONFIG", 700); //$NON-NLS-1$
 
     /**
      * The FINE level provides tracing messages.
      */
-    public static final Level FINE = new Level("FINE", 500);
+    public static final Level FINE = new Level("FINE", 500); //$NON-NLS-1$
 
     /**
      * The FINER level provides more detailed tracing messages.
      */
-    public static final Level FINER = new Level("FINER", 400);
+    public static final Level FINER = new Level("FINER", 400); //$NON-NLS-1$
 
     /**
      * The FINEST level provides highly detailed tracing messages.
      */
-    public static final Level FINEST = new Level("FINEST", 300);
+    public static final Level FINEST = new Level("FINEST", 300); //$NON-NLS-1$
 
     /**
      * The ALL level provides all logging messages.
      */
-    public static final Level ALL = new Level("ALL", Integer.MIN_VALUE);
+    public static final Level ALL = new Level("ALL", Integer.MIN_VALUE); //$NON-NLS-1$
 
     /**
      * Parses a level name into a <code>Level</code> object.

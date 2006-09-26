@@ -515,9 +515,7 @@ public class Logger {
         if (this.isNamed) {
             LogManager.getLogManager().checkAccess();
         }
-        LogManager lm = LogManager.getLogManager();
-
-        synchronized (lm) {
+        synchronized (LogManager.getLogManager()) {
             setLevelImpl(newLevel);
         }
     }
@@ -708,7 +706,7 @@ public class Logger {
      */
     public void entering(String sourceClass, String sourceMethod) {
         if (internalIsLoggable(Level.FINER)) {
-            LogRecord record = new LogRecord(Level.FINER, "ENTRY");
+            LogRecord record = new LogRecord(Level.FINER, "ENTRY"); //$NON-NLS-1$
             record.setLoggerName(this.name);
             record.setSourceClassName(sourceClass);
             record.setSourceMethodName(sourceMethod);
@@ -732,7 +730,7 @@ public class Logger {
      */
     public void entering(String sourceClass, String sourceMethod, Object param) {
         if (internalIsLoggable(Level.FINER)) {
-            LogRecord record = new LogRecord(Level.FINER, "ENTRY" + " {0}"); //$NON-NLS-1$
+            LogRecord record = new LogRecord(Level.FINER, "ENTRY" + " {0}"); //$NON-NLS-1$ //$NON-NLS-2$
             record.setLoggerName(this.name);
             record.setSourceClassName(sourceClass);
             record.setSourceMethodName(sourceMethod);
@@ -758,9 +756,9 @@ public class Logger {
     public void entering(String sourceClass, String sourceMethod,
             Object[] params) {
         if (internalIsLoggable(Level.FINER)) {
-        	String msg = "ENTRY";
+        	String msg = "ENTRY"; //$NON-NLS-1$
 			if (null != params) {
-				StringBuilder msgBuffer = new StringBuilder("ENTRY");
+				StringBuilder msgBuffer = new StringBuilder("ENTRY"); //$NON-NLS-1$
 				for (int i = 0; i < params.length; i++) {
 					msgBuffer.append(" {" + i + "}"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
@@ -788,7 +786,7 @@ public class Logger {
      */
     public void exiting(String sourceClass, String sourceMethod) {
         if (internalIsLoggable(Level.FINER)) {
-            LogRecord record = new LogRecord(Level.FINER, "RETURN");
+            LogRecord record = new LogRecord(Level.FINER, "RETURN"); //$NON-NLS-1$
             record.setLoggerName(this.name);
             record.setSourceClassName(sourceClass);
             record.setSourceMethodName(sourceMethod);
@@ -812,7 +810,7 @@ public class Logger {
      */
     public void exiting(String sourceClass, String sourceMethod, Object result) {
         if (internalIsLoggable(Level.FINER)) {
-            LogRecord record = new LogRecord(Level.FINER, "RETURN" + " {0}"); //$NON-NLS-1$
+            LogRecord record = new LogRecord(Level.FINER, "RETURN" + " {0}"); //$NON-NLS-1$ //$NON-NLS-2$
             record.setLoggerName(this.name);
             record.setSourceClassName(sourceClass);
             record.setSourceMethodName(sourceMethod);
@@ -838,7 +836,7 @@ public class Logger {
     public void throwing(String sourceClass, String sourceMethod,
             Throwable thrown) {
         if (internalIsLoggable(Level.FINER)) {
-            LogRecord record = new LogRecord(Level.FINER, "THROW");
+            LogRecord record = new LogRecord(Level.FINER, "THROW"); //$NON-NLS-1$
             record.setLoggerName(this.name);
             record.setSourceClassName(sourceClass);
             record.setSourceMethodName(sourceMethod);

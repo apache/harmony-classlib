@@ -19,6 +19,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.security.Permission;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -32,6 +33,7 @@ import java.util.logging.LoggingPermission;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.logging.tests.java.util.logging.HandlerTest.NullOutputStream;
 import org.apache.harmony.logging.tests.java.util.logging.util.EnvironmentHelper;
 
 /**
@@ -74,11 +76,11 @@ public class LogManagerTest extends TestCase {
 		mockManager = new MockLogManager();
 		listener = new MockPropertyChangeListener();
 		handler = new MockHandler();
-		initProps();
+		props = initProps();
 	}
 
-	private void initProps() throws Exception {
-		props = new Properties();
+	static Properties initProps() throws Exception {
+		Properties props = new Properties();
 		props.put("handlers", className + "$MockHandler " + className
 				+ "$MockHandler");
 		props.put("java.util.logging.FileHandler.pattern", "%h/java%u.log");
@@ -92,6 +94,7 @@ public class LogManagerTest extends TestCase {
 				"java.util.logging.SimpleFormatter");
 		props.put("LogManagerTestFoo.handlers", "java.util.logging.ConsoleHandler");
 		props.put("LogManagerTestFoo.level", "WARNING");
+        return props;
 	}
 
 	/*
@@ -675,91 +678,133 @@ public class LogManagerTest extends TestCase {
 	}
 
 	public void testGlobalPropertyConfig() throws Exception {
-		// before add config property, root has two handler
-		manager.readConfiguration(EnvironmentHelper
-				.PropertiesToInputStream(props));
-		assertEquals(2, manager.getLogger("").getHandlers().length);
+        PrintStream err = System.err;
+        try {
+            System.setErr(new PrintStream(new NullOutputStream()));
+            // before add config property, root has two handler
+            manager.readConfiguration(EnvironmentHelper
+                    .PropertiesToInputStream(props));
+            assertEquals(2, manager.getLogger("").getHandlers().length);
 
-		// one valid config class
-		props.setProperty("config", className + "$MockValidConfig");
-		manager.readConfiguration(EnvironmentHelper
-				.PropertiesToInputStream(props));
-		assertEquals(3, manager.getLogger("").getHandlers().length);
+            // one valid config class
+            props.setProperty("config", className + "$MockValidConfig");
+            manager.readConfiguration(EnvironmentHelper
+                    .PropertiesToInputStream(props));
+            assertEquals(3, manager.getLogger("").getHandlers().length);
 
-		// two config class take effect orderly
-		props.setProperty("config", className + "$MockValidConfig " + className
-				+ "$MockValidConfig2");
-		manager.readConfiguration(EnvironmentHelper
-				.PropertiesToInputStream(props));
-		assertEquals(2, manager.getLogger("").getHandlers().length);
+            // two config class take effect orderly
+            props.setProperty("config", className + "$MockValidConfig "
+                    + className + "$MockValidConfig2");
+            manager.readConfiguration(EnvironmentHelper
+                    .PropertiesToInputStream(props));
+            assertEquals(2, manager.getLogger("").getHandlers().length);
 
-		props.setProperty("config", className + "$MockValidConfig2 "
-				+ className + "$MockValidConfig");
-		manager.readConfiguration(EnvironmentHelper
-				.PropertiesToInputStream(props));
-		assertEquals(3, manager.getLogger("").getHandlers().length);
+            props.setProperty("config", className + "$MockValidConfig2 "
+                    + className + "$MockValidConfig");
+            manager.readConfiguration(EnvironmentHelper
+                    .PropertiesToInputStream(props));
+            assertEquals(3, manager.getLogger("").getHandlers().length);
 
-		// invalid config class which throw exception, just pring exception and
-		// message
-		props.setProperty("config", className + "$MockInvalidConfigException");
-		manager.readConfiguration(EnvironmentHelper
-				.PropertiesToInputStream(props));
+            // invalid config class which throw exception, just pring exception
+            // and
+            // message
+            props.setProperty("config", className
+                    + "$MockInvalidConfigException");
+            manager.readConfiguration(EnvironmentHelper
+                    .PropertiesToInputStream(props));
 
-		// invalid config class without default constructor, just pring
-		// exception and message
-		props.setProperty("config", className
-				+ "$MockInvalidConfigNoDefaultConstructor");
-		manager.readConfiguration(EnvironmentHelper
-				.PropertiesToInputStream(props));
+            // invalid config class without default constructor, just pring
+            // exception and message
+            props.setProperty("config", className
+                    + "$MockInvalidConfigNoDefaultConstructor");
+            manager.readConfiguration(EnvironmentHelper
+                    .PropertiesToInputStream(props));
 
-		// bad config class name, just print exception and message
-		props.setProperty("config", "badname");
-		manager.readConfiguration(EnvironmentHelper
-				.PropertiesToInputStream(props));
+            // bad config class name, just print exception and message
+            props.setProperty("config", "badname");
+            manager.readConfiguration(EnvironmentHelper
+                    .PropertiesToInputStream(props));
 
-		// invalid separator, nothing happened
-		props.setProperty("config", className + "$MockValidConfig2;"
-				+ className + "$MockValidConfig");
-		manager.readConfiguration(EnvironmentHelper
-				.PropertiesToInputStream(props));
-		assertEquals(2, manager.getLogger("").getHandlers().length);
-		props.setProperty("config", className + "$MockValidConfig2;"
-				+ className + "$MockValidConfig " + className
-				+ "$MockValidConfig");
-		manager.readConfiguration(EnvironmentHelper
-				.PropertiesToInputStream(props));
-		assertEquals(3, manager.getLogger("").getHandlers().length);
+            // invalid separator, nothing happened
+            props.setProperty("config", className + "$MockValidConfig2;"
+                    + className + "$MockValidConfig");
+            manager.readConfiguration(EnvironmentHelper
+                    .PropertiesToInputStream(props));
+            assertEquals(2, manager.getLogger("").getHandlers().length);
+            props.setProperty("config", className + "$MockValidConfig2;"
+                    + className + "$MockValidConfig " + className
+                    + "$MockValidConfig");
+            manager.readConfiguration(EnvironmentHelper
+                    .PropertiesToInputStream(props));
+            assertEquals(3, manager.getLogger("").getHandlers().length);
 
-		// duplicate config class, take effect twice
-		props.setProperty("config", className + "$MockValidConfig " + className
-				+ "$MockValidConfig");
-		manager.readConfiguration(EnvironmentHelper
-				.PropertiesToInputStream(props));
-		assertEquals(4, manager.getLogger("").getHandlers().length);
+            // duplicate config class, take effect twice
+            props.setProperty("config", className + "$MockValidConfig "
+                    + className + "$MockValidConfig");
+            manager.readConfiguration(EnvironmentHelper
+                    .PropertiesToInputStream(props));
+            assertEquals(4, manager.getLogger("").getHandlers().length);
 
-		// invalid config classes mixed with valid config classes, valid config
-		// classes take effect
-		props.setProperty("config", "badname " + className
-				+ "$MockValidConfig " + className
-				+ "$MockInvalidConfigNoDefaultConstructor " + className
-				+ "$MockValidConfig");
-		manager.readConfiguration(EnvironmentHelper
-				.PropertiesToInputStream(props));
-		assertEquals(4, manager.getLogger("").getHandlers().length);
+            // invalid config classes mixed with valid config classes, valid
+            // config
+            // classes take effect
+            props.setProperty("config", "badname " + className
+                    + "$MockValidConfig " + className
+                    + "$MockInvalidConfigNoDefaultConstructor " + className
+                    + "$MockValidConfig");
+            manager.readConfiguration(EnvironmentHelper
+                    .PropertiesToInputStream(props));
+            assertEquals(4, manager.getLogger("").getHandlers().length);
 
-		// global property take effect before logger specified property
-		props.setProperty("config", className + "$MockValidConfig");
-		manager.readConfiguration(EnvironmentHelper
-				.PropertiesToInputStream(props));
-		assertEquals(Level.FINE, manager.getLogger("").getLevel());
+            // global property take effect before logger specified property
+            props.setProperty("config", className + "$MockValidConfig");
+            manager.readConfiguration(EnvironmentHelper
+                    .PropertiesToInputStream(props));
+            assertEquals(Level.FINE, manager.getLogger("").getLevel());
+        } finally {
+            System.setErr(err);
+        }
 
-	}
-
-
+    }
+    
+    public void testValidConfigClass() throws Exception{
+        String oldProperty = System.getProperty("java.util.logging.config.class");
+        try{
+//            System.setProperty("java.util.logging.config.class", "org.apache.harmony.logging.tests.java.util.logging.LogManagerTest$ConfigClass");
+            System.setProperty("java.util.logging.config.class", this.getClass().getName()+"$ConfigClass");            
+            assertNull(manager.getLogger("testConfigClass.foo"));
+            
+            manager.readConfiguration();
+            assertNull(manager.getLogger("testConfigClass.foo"));
+            Logger l = Logger.getLogger("testConfigClass.foo.child");
+            assertSame(Level.FINEST, manager.getLogger("").getLevel());
+            assertEquals(0, manager.getLogger("").getHandlers().length);            
+            assertEquals("testConfigClass.foo", l.getParent().getName());
+        }finally{
+            if(oldProperty != null){
+                System.setProperty("java.util.logging.config.class", oldProperty);
+            }
+        }
+    }
+    
 	/*
-	 * ---------------------------------------------------- mock classes
+	 * ---------------------------------------------------- 
+     * mock classes
 	 * ----------------------------------------------------
 	 */
+    public static class ConfigClass {
+        public ConfigClass() throws Exception{
+            LogManager man = LogManager.getLogManager();
+            Properties props = LogManagerTest.initProps();
+            props.put("testConfigClass.foo.level", "OFF");
+            props.put("testConfigClass.foo.handlers", "java.util.logging.ConsoleHandler");        
+            props.put(".level", "FINEST");
+            props.remove("handlers");
+            InputStream in = EnvironmentHelper.PropertiesToInputStream(props);
+            man.readConfiguration(in);
+        }
+    }
+    
 	public static class MockInvalidInitClass {
 		public MockInvalidInitClass() {
 			throw new RuntimeException();

@@ -101,7 +101,7 @@ import org.apache.harmony.logging.internal.nls.Messages;
  */
 public class FileHandler extends StreamHandler {
 
-    private static final String LCK_EXT = ".lck";
+    private static final String LCK_EXT = ".lck"; //$NON-NLS-1$
 
     /*
      * ---------------------------------------------

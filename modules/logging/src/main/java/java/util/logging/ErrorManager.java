@@ -58,6 +58,7 @@ public class ErrorManager {
      */
     public static final int FORMAT_FAILURE = 5;
 
+    @SuppressWarnings("nls")
     private static final String[] FAILURES = new String[] { "GENERIC_FAILURE",
             "WRITE_FAILURE", "FLUSH_FAILURE", "CLOSE_FAILURE", "OPEN_FAILURE",
             "FORMAT_FAILURE" };
