@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.nio.channels.FileChannel;
 import java.security.Permission;
 import java.util.Properties;
 import java.util.logging.FileHandler;
@@ -396,7 +397,12 @@ public class FileHandlerTest extends TestCase {
 		try {
 			System.setSecurityManager(new MockFileSecurityManager());
 			handler.publish(new LogRecord(Level.SEVERE, "msg"));
-			handler.close();
+            try {
+                handler.close();
+                fail("should throw security exception");
+            } catch (SecurityException e) {
+            }
+            
 			try {
 				handler = new FileHandler();
 				fail("should throw security exception");
@@ -672,5 +678,4 @@ public class FileHandlerTest extends TestCase {
 			super.setOutputStream(stream);
 		}
 	}
-
 }

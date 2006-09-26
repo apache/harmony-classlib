@@ -11,11 +11,12 @@ Import-Package: java.beans,
  java.net,
  java.nio;resolution:=optional,
  java.nio.channels,
+ java.nio.channels.spi,
  java.nio.charset,
  java.security,
  java.text,
  java.util,
  org.apache.harmony.kernel.vm,
- tests.util;hy_usage=test;resolution:=optional,
- org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional
+ org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional,
+ tests.util;hy_usage=test;resolution:=optional
 Export-Package: java.util.logging

@@ -101,6 +101,8 @@ import org.apache.harmony.logging.internal.nls.Messages;
  */
 public class FileHandler extends StreamHandler {
 
+    private static final String LCK_EXT = ".lck";
+
     /*
      * ---------------------------------------------
      * constants
@@ -191,8 +193,6 @@ public class FileHandler extends StreamHandler {
     }
 
     private void initOutputFiles() throws FileNotFoundException, IOException {
-        FileOutputStream fileStream = null;
-        FileChannel channel = null;
         while (true) {
             //try to find a unique file which is not locked by other process
             uniqueID++;
@@ -216,8 +216,8 @@ public class FileHandler extends StreamHandler {
                         files[i - 1].renameTo(files[i]);
                     }
                 }
-                fileStream = new FileOutputStream(fileName, append);
-                channel = fileStream.getChannel();
+                FileOutputStream fileStream = new FileOutputStream(fileName+LCK_EXT);
+                FileChannel channel = fileStream.getChannel();
                 /*
                  * if lock is unsupported and IOException thrown, just let the
                  * IOException throws out and exit otherwise it will go into an
@@ -236,7 +236,7 @@ public class FileHandler extends StreamHandler {
 				break;
             }
         }
-        output = new MeasureOutputStream(new BufferedOutputStream(fileStream),
+        output = new MeasureOutputStream(new BufferedOutputStream(new FileOutputStream(fileName, append)),
                 files[0].length());
         setOutputStream(output);
     }
@@ -565,7 +565,11 @@ public class FileHandler extends StreamHandler {
         super.close();
         allLocks.remove(fileName);
         try {
+            FileChannel channel = lock.channel();
             lock.release();
+            channel.close();
+            File file = new File(fileName+LCK_EXT);
+            file.delete();
         } catch (IOException e) {
             //ignore
         }
