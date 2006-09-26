@@ -26,14 +26,13 @@ import org.apache.harmony.auth.NTSidGroupPrincipal;
 import org.apache.harmony.auth.NTSidPrimaryGroupPrincipal;
 import org.apache.harmony.auth.NTSidUserPrincipal;
 
-
 /** 
  * A helper class which queries information about the current NT user.
  */
 public final class NTSystem {
 
     // Shows whether the hyauth library was loaded or not
-    private static boolean loadLibDone = false;
+    private static boolean loadLibDone;
 
     // User's sid, domain and name
     private NTSidUserPrincipal user;
@@ -51,25 +50,29 @@ public final class NTSystem {
     private long token;
 
     // May be used to trace the native library execution    
+    @SuppressWarnings("unused")
     private boolean debugNative;
 
     /**
-     * The default ctor. Loads hyauth library if necessary.
+     * The default constructor. Loads hyauth library if necessary.
      * @throws UnsatisfiedLinkError if library hyauth not found
      */
     public NTSystem() {
-        if (!loadLibDone) {
-            System.loadLibrary("hyauth"); //$NON-NLS-1$
-            initNatives();
-            loadLibDone = true;
+        super();
+        synchronized (NTSystem.class) {
+            if (!loadLibDone) {
+                System.loadLibrary("hyauth"); //$NON-NLS-1$
+                initNatives();
+                loadLibDone = true;
+            }
         }
     }
 
     /**
-     * The ctor which reveives options as a Map.
+     * Constructs an instance with options.
      * @param options
      */
-    public NTSystem(Map options) {
+    public NTSystem(Map<String, ?> options) {
         this();
         debugNative = "true".equalsIgnoreCase((String) options //$NON-NLS-1$
                 .get("debugNative")); //$NON-NLS-1$
@@ -86,7 +89,7 @@ public final class NTSystem {
     public native void load();
 
     /**
-     * Frees inetrnal data stored during login().
+     * Frees internal data stored during login().
      */
     public native void free();
 
@@ -149,6 +152,7 @@ public final class NTSystem {
     /**
      * Returns a String representation of this object.
      */
+    @Override
     public String toString() {
         String s = "NTSystem:\n"; //$NON-NLS-1$
         s += "   user         : " + user + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
