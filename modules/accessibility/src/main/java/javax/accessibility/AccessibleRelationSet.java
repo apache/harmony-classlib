@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 public class AccessibleRelationSet {
-    protected Vector relations;
+    protected Vector<AccessibleRelation> relations;
 
     public AccessibleRelationSet() {
         initStorage();
@@ -47,8 +47,8 @@ public class AccessibleRelationSet {
 
     public void addAll(final AccessibleRelation[] relations) {
         initStorage(relations.length);
-        for(int i = 0; i < relations.length; i++) {
-            add(relations[i]);
+        for (AccessibleRelation element : relations) {
+            add(element);
         }
     }
 
@@ -74,8 +74,7 @@ public class AccessibleRelationSet {
         if (relations == null) {
             return null;
         }
-        for (Iterator i = relations.iterator(); i.hasNext();) {
-            AccessibleRelation rel = (AccessibleRelation)i.next();
+        for (AccessibleRelation rel : relations) {
             if(key.equals(rel.key)) {
                 return rel;
             }
@@ -85,15 +84,16 @@ public class AccessibleRelationSet {
 
     public AccessibleRelation[] toArray() {
         return relations == null ? new AccessibleRelation[0] :
-            (AccessibleRelation[])relations.toArray(new AccessibleRelation[relations.size()]);
+            relations.toArray(new AccessibleRelation[relations.size()]);
     }
 
+    @Override
     public String toString() {
         if (relations == null) {
             return "";
         }
         StringBuffer result = new StringBuffer();
-        for (Iterator it = relations.iterator(); it.hasNext(); ) {
+        for (Iterator<AccessibleRelation> it = relations.iterator(); it.hasNext(); ) {
             result.append(it.next());
             if (it.hasNext()) {
                 result.append(",");
@@ -105,13 +105,13 @@ public class AccessibleRelationSet {
 
     private void initStorage(final int capacity) {
         if(relations == null) {
-            relations = new Vector(capacity);
+            relations = new Vector<AccessibleRelation>(capacity);
         }
     }
 
     private void initStorage() {
         if(relations == null) {
-            relations = new Vector();
+            relations = new Vector<AccessibleRelation>();
         }
     }
 }

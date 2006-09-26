@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 public class AccessibleStateSet {
-    protected Vector states;
+    protected Vector<AccessibleState> states;
 
     public AccessibleStateSet() {
         initStorage();
@@ -47,8 +47,8 @@ public class AccessibleStateSet {
 
     public void addAll(final AccessibleState[] states) {
         initStorage(states.length);
-        for (int i = 0; i < states.length; i++) {
-            add(states[i]);
+        for (AccessibleState element : states) {
+            add(element);
         }
     }
 
@@ -68,13 +68,16 @@ public class AccessibleStateSet {
 
     public AccessibleState[] toArray() {
         return states == null ? new AccessibleState[0] :
-            (AccessibleState[])states.toArray(new AccessibleState[states.size()]);
+            states.toArray(new AccessibleState[states.size()]);
     }
 
+    @Override
     public String toString() {
-        if (states == null) return "";
+        if (states == null) {
+            return "";
+        }
         StringBuffer str = new StringBuffer();
-        for (Iterator it = states.iterator(); it.hasNext(); ) {
+        for (Iterator<AccessibleState> it = states.iterator(); it.hasNext(); ) {
             str.append(it.next());
             if (it.hasNext()) {
                 str.append(",");
@@ -85,13 +88,13 @@ public class AccessibleStateSet {
 
     private void initStorage(final int capacity) {
         if (states == null) {
-            states = new Vector(capacity);
+            states = new Vector<AccessibleState>(capacity);
         }
     }
 
     private void initStorage() {
         if (states == null) {
-            states = new Vector();
+            states = new Vector<AccessibleState>();
         }
     }
 }

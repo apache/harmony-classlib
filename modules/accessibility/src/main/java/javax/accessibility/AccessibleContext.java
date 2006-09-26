@@ -56,7 +56,7 @@ public abstract class AccessibleContext{
     protected String accessibleDescription;
 
     private AccessibleRelationSet accessibleRelationSet;
-    private SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
+    private final SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(this);
 
     public String getAccessibleName() {
         return accessibleName;

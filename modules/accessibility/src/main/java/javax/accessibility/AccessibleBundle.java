@@ -41,6 +41,7 @@ public abstract class AccessibleBundle {
         return displayString(resourceBundleName, locale);
     }
 
+    @Override
     public String toString() {
         return toDisplayString();
     }
@@ -50,9 +51,8 @@ public abstract class AccessibleBundle {
         try {
             if (locale == null) {
                 return ResourceBundle.getBundle(bundleName).getString(key);
-            } else {
-                return ResourceBundle.getBundle(bundleName, locale).getString(key);
             }
+            return ResourceBundle.getBundle(bundleName, locale).getString(key);
         } catch (MissingResourceException e) {
             return key;
         }

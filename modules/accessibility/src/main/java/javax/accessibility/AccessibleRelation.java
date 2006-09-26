@@ -70,7 +70,7 @@ public class AccessibleRelation extends AccessibleBundle {
     }
 
     public Object[] getTarget() {
-        return (Object[])targets.clone();
+        return targets.clone();
     }
 
     public void setTarget(final Object target) {

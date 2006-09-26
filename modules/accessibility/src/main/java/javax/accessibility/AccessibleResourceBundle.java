@@ -132,6 +132,7 @@ public class AccessibleResourceBundle extends ListResourceBundle {
         {"truncated", "truncated"},
     };
 
+    @Override
     public Object[][] getContents() {
         return contents;
     }
