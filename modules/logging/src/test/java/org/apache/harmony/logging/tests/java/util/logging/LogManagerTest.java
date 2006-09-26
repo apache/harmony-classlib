@@ -1038,5 +1038,27 @@ public class LogManagerTest extends TestCase {
 			super.checkPermission(permission);
 		}
 	}
-
+    
+    /*
+     * Test config class loading
+     * java -Djava.util.logging.config.class=badConfigClassName ClassLoadingTest 
+     */
+    public static class ClassLoadingTest{
+        public static void main(String[] args) {
+            Thread.currentThread().setContextClassLoader(new MockErrorClassLoader());
+            try{
+                LogManager.getLogManager();
+                fail("Should throw mock error");
+            }catch(MockError e){
+            }
+        }
+        static class MockErrorClassLoader extends ClassLoader{
+            public Class<?> loadClass(String name){
+                throw new MockError();
+            }
+        }
+        static class MockError extends Error{
+        }
+    }    
+    
 }

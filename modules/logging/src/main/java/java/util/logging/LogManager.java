@@ -397,7 +397,16 @@ public class LogManager {
                     className);
             return clazz.newInstance();
         } catch (Exception e) {
-            return null;
+            try {
+                Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(
+                        className);
+                return clazz.newInstance();
+            } catch (Exception innerE) {
+                //logging.20=Logging configuration class "{0}" failed
+                System.err.println(Messages.getString("logging.20", className));
+                System.err.println(innerE);
+                return null;
+            }
         }
 
     }
@@ -411,8 +420,7 @@ public class LogManager {
         String configClassName = System.getProperty("java.util.logging.config.class"); //$NON-NLS-1$
         if (null != configClassName) {
             if (null == getInstanceByClass(configClassName)) {
-                throw new RuntimeException("Cannot instantiate " //$NON-NLS-1$
-                        + configClassName);
+                return;
             }
             needInit = false;
         }
