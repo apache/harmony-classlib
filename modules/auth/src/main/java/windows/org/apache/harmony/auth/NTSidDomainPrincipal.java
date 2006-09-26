@@ -24,10 +24,7 @@ package org.apache.harmony.auth;
  * A principal which holds information about NT domain.
  */
 public class NTSidDomainPrincipal extends NTSid {
-    
-    /**
-     * @serial
-     */
+
     private static final long serialVersionUID = -8278226353092135089L;
 
     /**

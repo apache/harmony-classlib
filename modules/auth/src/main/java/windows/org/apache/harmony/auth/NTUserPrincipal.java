@@ -30,9 +30,6 @@ import org.apache.harmony.auth.internal.nls.Messages;
  */
 public class NTUserPrincipal implements Serializable, Principal {
 
-    /**
-     * @serial
-     */
     private static final long serialVersionUID = 7585428904927483501L;
 
     // User name
@@ -59,6 +56,7 @@ public class NTUserPrincipal implements Serializable, Principal {
     /**
      * Returns String representation of this object.
      */
+    @Override
     public String toString() {
         return "NTUserPrincipal: name=" + name; //$NON-NLS-1$
     }
@@ -68,6 +66,7 @@ public class NTUserPrincipal implements Serializable, Principal {
      * Two objects are considered equal if they both represent NTUserPrincipal
      * and they have the same name.
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -81,6 +80,7 @@ public class NTUserPrincipal implements Serializable, Principal {
     /**
      * Returns hashCode for this object.
      */
+    @Override
     public int hashCode() {
         return name.hashCode();
     }

@@ -31,9 +31,6 @@ import org.apache.harmony.auth.internal.nls.Messages;
  */
 public class NTSid implements Serializable, Principal {
 
-    /**
-     * @serial
-     */
     private static final long serialVersionUID = 5589132933506948177L;
 
     // SID
@@ -68,8 +65,8 @@ public class NTSid implements Serializable, Principal {
      */
     public NTSid(String sid, String objName, String objDomain) {
         this(sid);
-        this.name = objName;
-        this.domain = objDomain;
+        name = objName;
+        domain = objDomain;
     }
 
     /**
@@ -103,6 +100,7 @@ public class NTSid implements Serializable, Principal {
     /**
      * Returns String representation of this object.
      */
+    @Override
     public String toString() {
         String str = getClass().getName();
         int dot = str.lastIndexOf('.');
@@ -117,6 +115,7 @@ public class NTSid implements Serializable, Principal {
      * Two objects are considered equal if they both represent 
      * NTSid and they both have the same sid value.
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -130,6 +129,7 @@ public class NTSid implements Serializable, Principal {
     /**
      * Returns hashCode for this object.
      */
+    @Override
     public int hashCode() {
         return sid.hashCode();
     }

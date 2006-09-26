@@ -30,16 +30,13 @@ import org.apache.harmony.auth.internal.nls.Messages;
  */
 public class NTDomainPrincipal implements Principal, Serializable {
 
-    /**
-     * @serial
-     */
     private static final long serialVersionUID = 7574453578624887003L;
 
     // Domain name
     private String name;
 
     /**
-     * The sole ctor.
+     * Construct an instance with the given domain name.
      * @throws NullPointerException is name is null
      */
     public NTDomainPrincipal(String name) {
@@ -61,6 +58,7 @@ public class NTDomainPrincipal implements Principal, Serializable {
      * Two objects are considered equal if they both represent NTDomainPrincipal
      * and they have the same domain name.
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -74,6 +72,7 @@ public class NTDomainPrincipal implements Principal, Serializable {
     /**
      * Returns hashCode that value is equal to getName().hashCode();
      */
+    @Override
     public int hashCode() {
         return name.hashCode();
     }
@@ -81,6 +80,7 @@ public class NTDomainPrincipal implements Principal, Serializable {
     /**
      * Returns String representation of this object.
      */
+    @Override
     public String toString() {
         return "NTDomainPrincipal: " + name; //$NON-NLS-1$
     }

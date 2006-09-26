@@ -20,6 +20,7 @@
  */
 package org.apache.harmony.auth.module;
 
+import java.security.Principal;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,12 +46,8 @@ public class NTLoginModule implements LoginModule {
 
     private Subject subject;
 
-    private Map options;
+    private Map<String, ?> options;
 
-    //
-    private boolean debug;
-
-    //
     private NTSystem sys;
 
     private NTUserPrincipal user;
@@ -67,11 +64,8 @@ public class NTLoginModule implements LoginModule {
 
     private NTNumericCredential credential;
 
-    /** 
-     * @throws NullPointerException if either subject or options is null  
-     */
     public void initialize(Subject subject, CallbackHandler cbHandler,
-            Map sharedState, Map options) {
+            Map<String, ?> sharedState, Map<String, ?> options) {
         if (subject == null) {
             throw new NullPointerException(Messages.getString("auth.03")); //$NON-NLS-1$
         }
@@ -82,7 +76,6 @@ public class NTLoginModule implements LoginModule {
         //cbHandler - unused in this version
         //sharedState - unused
         this.options = options;
-        debug = "true".equalsIgnoreCase((String) options.get("debug")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -116,7 +109,7 @@ public class NTLoginModule implements LoginModule {
         if (subject.isReadOnly()) {
             throw new LoginException(Messages.getString("auth.05")); //$NON-NLS-1$
         }
-        Set ps = subject.getPrincipals();
+        Set<Principal> ps = subject.getPrincipals();
 
         if (!ps.contains(user)) {
             ps.add(user);
@@ -138,12 +131,12 @@ public class NTLoginModule implements LoginModule {
             ps.add(mainGroupSid);
         }
 
-        for (int i = 0; i < groupsSids.length; i++) {
-            if (!ps.contains(groupsSids[i])) {
-                ps.add(groupsSids[i]);
+        for (NTSidGroupPrincipal element : groupsSids) {
+            if (!ps.contains(element)) {
+                ps.add(element);
             }
         }
-        Set creds = subject.getPrivateCredentials();
+        Set<Object> creds = subject.getPrivateCredentials();
         if (!creds.contains(credential)) {
             creds.add(credential);
         }
@@ -181,7 +174,7 @@ public class NTLoginModule implements LoginModule {
         if (subject.isReadOnly()) {
             throw new LoginException(Messages.getString("auth.05")); //$NON-NLS-1$
         }
-        Set ps = subject.getPrincipals();
+        Set<Principal> ps = subject.getPrincipals();
 
         if (user != null) {
             ps.remove(user);
@@ -199,13 +192,13 @@ public class NTLoginModule implements LoginModule {
             ps.remove(mainGroupSid);
         }
         if (groupsSids != null) {
-            for (int i = 0; i < groupsSids.length; i++) {
-                ps.remove(groupsSids[i]);
+            for (NTSidGroupPrincipal element : groupsSids) {
+                ps.remove(element);
             }
         }
 
         if (credential != null) {
-            Set creds = subject.getPrivateCredentials();
+            Set<Object> creds = subject.getPrivateCredentials();
             creds.remove(credential);
         }
 

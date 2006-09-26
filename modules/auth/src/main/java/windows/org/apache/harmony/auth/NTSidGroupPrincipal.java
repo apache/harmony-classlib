@@ -24,10 +24,7 @@ package org.apache.harmony.auth;
  * A principal which holds information about user's group basing on group's sid.
  */
 public class NTSidGroupPrincipal extends NTSid {
-    
-    /**
-     * @serial
-     */
+
     private static final long serialVersionUID = -1181422254891703071L;
 
     /**

@@ -21,15 +21,14 @@
 package org.apache.harmony.auth;
 
 /** 
- * A Credential which stores information about impersonation token. 
+ * A credential which stores information about impersonation token. 
  */
 public class NTNumericCredential {
 
-    //
     private long token;
 
     /**
-     * The sole ctor.
+     * Constructs an instance wit the token passed.
      */
     public NTNumericCredential(long token) {
         this.token = token;
@@ -40,6 +39,7 @@ public class NTNumericCredential {
      * Two objects are considered equal if they both represent 
      * NTNumericCredential and they both have the same token value.
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -60,6 +60,7 @@ public class NTNumericCredential {
     /**
      * Returns hashCode for this object.
      */
+    @Override
     public int hashCode() {
         return (int) token;
     }
@@ -67,6 +68,7 @@ public class NTNumericCredential {
     /**
      * Returns String representation of this object.
      */
+    @Override
     public String toString() {
         return "NTNumericCredential: 0x" + Long.toHexString(token); //$NON-NLS-1$
     }
