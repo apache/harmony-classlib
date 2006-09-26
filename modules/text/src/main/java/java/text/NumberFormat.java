@@ -25,7 +25,7 @@ import java.util.Currency;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.text.internal.nls.Messages;
 
 /**
  * NumberFormat is the abstract superclass of Formats which format and parse
@@ -226,7 +226,7 @@ public abstract class NumberFormat extends Format {
 	 * @return a NumberFormat
 	 */
 	public static NumberFormat getCurrencyInstance(Locale locale) {
-		return getInstance(locale, "Currency");
+		return getInstance(locale, "Currency"); //$NON-NLS-1$
 	}
 
 	/**
@@ -248,7 +248,7 @@ public abstract class NumberFormat extends Format {
 	 * @return a NumberFormat
 	 */
 	public static NumberFormat getIntegerInstance(Locale locale) {
-		NumberFormat format = getInstance(locale, "Integer");
+		NumberFormat format = getInstance(locale, "Integer"); //$NON-NLS-1$
 		format.setParseIntegerOnly(true);
 		return format;
 	}
@@ -341,7 +341,7 @@ public abstract class NumberFormat extends Format {
 	 * @return a NumberFormat
 	 */
 	public static NumberFormat getNumberInstance(Locale locale) {
-		return getInstance(locale, "Number");
+		return getInstance(locale, "Number"); //$NON-NLS-1$
 	}
 
 	static String getPattern(Locale locale, String type) {
@@ -368,7 +368,7 @@ public abstract class NumberFormat extends Format {
 	 * @return a NumberFormat
 	 */
 	public static NumberFormat getPercentInstance(Locale locale) {
-		return getInstance(locale, "Percent");
+		return getInstance(locale, "Percent"); //$NON-NLS-1$
 	}
 
 	/**
@@ -564,75 +564,75 @@ public abstract class NumberFormat extends Format {
 	}
 
 	private static final ObjectStreamField[] serialPersistentFields = {
-			new ObjectStreamField("groupingUsed", Boolean.TYPE),
-			new ObjectStreamField("maxFractionDigits", Byte.TYPE),
-			new ObjectStreamField("maximumFractionDigits", Integer.TYPE),
-			new ObjectStreamField("maximumIntegerDigits", Integer.TYPE),
-			new ObjectStreamField("maxIntegerDigits", Byte.TYPE),
-			new ObjectStreamField("minFractionDigits", Byte.TYPE),
-			new ObjectStreamField("minimumFractionDigits", Integer.TYPE),
-			new ObjectStreamField("minimumIntegerDigits", Integer.TYPE),
-			new ObjectStreamField("minIntegerDigits", Byte.TYPE),
-			new ObjectStreamField("parseIntegerOnly", Boolean.TYPE),
-			new ObjectStreamField("serialVersionOnStream", Integer.TYPE), };
+			new ObjectStreamField("groupingUsed", Boolean.TYPE), //$NON-NLS-1$
+			new ObjectStreamField("maxFractionDigits", Byte.TYPE), //$NON-NLS-1$
+			new ObjectStreamField("maximumFractionDigits", Integer.TYPE), //$NON-NLS-1$
+			new ObjectStreamField("maximumIntegerDigits", Integer.TYPE), //$NON-NLS-1$
+			new ObjectStreamField("maxIntegerDigits", Byte.TYPE), //$NON-NLS-1$
+			new ObjectStreamField("minFractionDigits", Byte.TYPE), //$NON-NLS-1$
+			new ObjectStreamField("minimumFractionDigits", Integer.TYPE), //$NON-NLS-1$
+			new ObjectStreamField("minimumIntegerDigits", Integer.TYPE), //$NON-NLS-1$
+			new ObjectStreamField("minIntegerDigits", Byte.TYPE), //$NON-NLS-1$
+			new ObjectStreamField("parseIntegerOnly", Boolean.TYPE), //$NON-NLS-1$
+			new ObjectStreamField("serialVersionOnStream", Integer.TYPE), }; //$NON-NLS-1$
 
 	private void writeObject(ObjectOutputStream stream) throws IOException {
 		ObjectOutputStream.PutField fields = stream.putFields();
-		fields.put("groupingUsed", groupingUsed);
+		fields.put("groupingUsed", groupingUsed); //$NON-NLS-1$
 		fields
 				.put(
-						"maxFractionDigits",
+						"maxFractionDigits", //$NON-NLS-1$
 						maximumFractionDigits < Byte.MAX_VALUE ? (byte) maximumFractionDigits
 								: Byte.MAX_VALUE);
-		fields.put("maximumFractionDigits", maximumFractionDigits);
-		fields.put("maximumIntegerDigits", maximumIntegerDigits);
+		fields.put("maximumFractionDigits", maximumFractionDigits); //$NON-NLS-1$
+		fields.put("maximumIntegerDigits", maximumIntegerDigits); //$NON-NLS-1$
 		fields
 				.put(
-						"maxIntegerDigits",
+						"maxIntegerDigits", //$NON-NLS-1$
 						maximumIntegerDigits < Byte.MAX_VALUE ? (byte) maximumIntegerDigits
 								: Byte.MAX_VALUE);
 		fields
 				.put(
-						"minFractionDigits",
+						"minFractionDigits", //$NON-NLS-1$
 						minimumFractionDigits < Byte.MAX_VALUE ? (byte) minimumFractionDigits
 								: Byte.MAX_VALUE);
-		fields.put("minimumFractionDigits", minimumFractionDigits);
-		fields.put("minimumIntegerDigits", minimumIntegerDigits);
+		fields.put("minimumFractionDigits", minimumFractionDigits); //$NON-NLS-1$
+		fields.put("minimumIntegerDigits", minimumIntegerDigits); //$NON-NLS-1$
 		fields
 				.put(
-						"minIntegerDigits",
+						"minIntegerDigits", //$NON-NLS-1$
 						minimumIntegerDigits < Byte.MAX_VALUE ? (byte) minimumIntegerDigits
 								: Byte.MAX_VALUE);
-		fields.put("parseIntegerOnly", parseIntegerOnly);
-		fields.put("serialVersionOnStream", 1);
+		fields.put("parseIntegerOnly", parseIntegerOnly); //$NON-NLS-1$
+		fields.put("serialVersionOnStream", 1); //$NON-NLS-1$
 		stream.writeFields();
 	}
 
 	private void readObject(ObjectInputStream stream) throws IOException,
 			ClassNotFoundException {
 		ObjectInputStream.GetField fields = stream.readFields();
-		groupingUsed = fields.get("groupingUsed", true);
-		parseIntegerOnly = fields.get("parseIntegerOnly", false);
-		if (fields.get("serialVersionOnStream", 0) == 0) {
-			maximumFractionDigits = fields.get("maxFractionDigits", (byte) 3);
-			maximumIntegerDigits = fields.get("maxIntegerDigits", (byte) 40);
-			minimumFractionDigits = fields.get("minFractionDigits", (byte) 0);
-			minimumIntegerDigits = fields.get("minIntegerDigits", (byte) 1);
+		groupingUsed = fields.get("groupingUsed", true); //$NON-NLS-1$
+		parseIntegerOnly = fields.get("parseIntegerOnly", false); //$NON-NLS-1$
+		if (fields.get("serialVersionOnStream", 0) == 0) { //$NON-NLS-1$
+			maximumFractionDigits = fields.get("maxFractionDigits", (byte) 3); //$NON-NLS-1$
+			maximumIntegerDigits = fields.get("maxIntegerDigits", (byte) 40); //$NON-NLS-1$
+			minimumFractionDigits = fields.get("minFractionDigits", (byte) 0); //$NON-NLS-1$
+			minimumIntegerDigits = fields.get("minIntegerDigits", (byte) 1); //$NON-NLS-1$
 		} else {
-			maximumFractionDigits = fields.get("maximumFractionDigits", 3);
-			maximumIntegerDigits = fields.get("maximumIntegerDigits", 40);
-			minimumFractionDigits = fields.get("minimumFractionDigits", 0);
-			minimumIntegerDigits = fields.get("minimumIntegerDigits", 1);
+			maximumFractionDigits = fields.get("maximumFractionDigits", 3); //$NON-NLS-1$
+			maximumIntegerDigits = fields.get("maximumIntegerDigits", 40); //$NON-NLS-1$
+			minimumFractionDigits = fields.get("minimumFractionDigits", 0); //$NON-NLS-1$
+			minimumIntegerDigits = fields.get("minimumIntegerDigits", 1); //$NON-NLS-1$
 		}
 		if (minimumIntegerDigits > maximumIntegerDigits
 				|| minimumFractionDigits > maximumFractionDigits) {
-            throw new InvalidObjectException(org.apache.harmony.luni.util.Msg
-					.getString("K00fa"));
+            // text.00=min digits greater than max digits
+            throw new InvalidObjectException(Messages.getString("text.00")); //$NON-NLS-1$
         }
 		if (minimumIntegerDigits < 0 || maximumIntegerDigits < 0
 				|| minimumFractionDigits < 0 || maximumFractionDigits < 0) {
-            throw new InvalidObjectException(org.apache.harmony.luni.util.Msg
-					.getString("K00fb"));
+            // text.01=min or max digits negative
+            throw new InvalidObjectException(Messages.getString("text.01")); //$NON-NLS-1$
         }
 	}
 
@@ -649,29 +649,29 @@ public abstract class NumberFormat extends Format {
         
         private static final long serialVersionUID = 7494728892700160890L;
 
-		public static final Field SIGN = new Field("sign");
+		public static final Field SIGN = new Field("sign"); //$NON-NLS-1$
 
-		public static final Field INTEGER = new Field("integer");
+		public static final Field INTEGER = new Field("integer"); //$NON-NLS-1$
 
-		public static final Field FRACTION = new Field("fraction");
+		public static final Field FRACTION = new Field("fraction"); //$NON-NLS-1$
 
-		public static final Field EXPONENT = new Field("exponent");
+		public static final Field EXPONENT = new Field("exponent"); //$NON-NLS-1$
 
-		public static final Field EXPONENT_SIGN = new Field("exponent sign");
+		public static final Field EXPONENT_SIGN = new Field("exponent sign"); //$NON-NLS-1$
 
-		public static final Field EXPONENT_SYMBOL = new Field("exponent symbol");
+		public static final Field EXPONENT_SYMBOL = new Field("exponent symbol"); //$NON-NLS-1$
 
 		public static final Field DECIMAL_SEPARATOR = new Field(
-				"decimal separator");
+				"decimal separator"); //$NON-NLS-1$
 
 		public static final Field GROUPING_SEPARATOR = new Field(
-				"grouping separator");
+				"grouping separator"); //$NON-NLS-1$
 
-		public static final Field PERCENT = new Field("percent");
+		public static final Field PERCENT = new Field("percent"); //$NON-NLS-1$
 
-		public static final Field PERMILLE = new Field("per mille");
+		public static final Field PERMILLE = new Field("per mille"); //$NON-NLS-1$
 
-		public static final Field CURRENCY = new Field("currency");
+		public static final Field CURRENCY = new Field("currency"); //$NON-NLS-1$
 
 		/**
 		 * Constructs a new instance of NumberFormat.Field with the given field
@@ -719,8 +719,8 @@ public abstract class NumberFormat extends Format {
 			if (this.equals(SIGN)) {
                 return SIGN;
             }
-
-			throw new InvalidObjectException(Msg.getString("K000d"));
+			// text.02=Unknown attribute
+			throw new InvalidObjectException(Messages.getString("text.02")); //$NON-NLS-1$
 		}
 	}
 

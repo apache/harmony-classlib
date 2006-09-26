@@ -23,6 +23,7 @@ import java.awt.font.NumericShaper;
 
 import org.apache.harmony.text.BidiRun;
 import org.apache.harmony.text.BidiWrapper;
+import org.apache.harmony.text.internal.nls.Messages;
 
 
 /**
@@ -92,7 +93,8 @@ public final class Bidi {
 	 */
 	public Bidi(AttributedCharacterIterator paragraph) {
         if (paragraph == null) {
-            throw new IllegalArgumentException("paragraph is null");
+            // text.14=paragraph is null
+            throw new IllegalArgumentException(Messages.getString("text.14")); //$NON-NLS-1$
         }
 
         int begin = paragraph.getBeginIndex();
@@ -189,13 +191,16 @@ public final class Bidi {
 	public Bidi(char[] text, int textStart, byte[] embeddings, int embStart,
 			int paragraphLength, int flags) {
 		if (textStart < 0) {
-			throw new IllegalArgumentException("Negative textStart value " + textStart);  
+            // text.0D=Negative textStart value {0}
+			throw new IllegalArgumentException(Messages.getString("text.0D", textStart));   //$NON-NLS-1$
 		}
 		if (embStart < 0) {
-			throw new IllegalArgumentException("Negative embStart value " + embStart);  
+            // text.10=Negative embStart value {0}
+			throw new IllegalArgumentException(Messages.getString("text.10", embStart));   //$NON-NLS-1$
 		}
 		if (paragraphLength < 0) {
-			throw new IllegalArgumentException("Negative paragraph length " + paragraphLength);  
+            // text.11=Negative paragraph length {0}
+			throw new IllegalArgumentException(Messages.getString("text.11", paragraphLength));   //$NON-NLS-1$
 		}
 		long pBidi = createUBiDi(text, textStart, embeddings, embStart,
 				paragraphLength, flags);
@@ -338,7 +343,9 @@ public final class Bidi {
 	 */
 	public Bidi createLineBidi(int lineStart, int lineLimit) {
 		if (lineStart < 0 || lineLimit < 0 || lineLimit > length || lineStart > lineLimit) {
-			throw new IllegalArgumentException("Invalid ranges (start=" + lineStart + ", limit=" + lineLimit + ", length=" + length + ")");
+			// text.12=Invalid ranges (start={0}, limit={1}, length={2})
+            throw new IllegalArgumentException(Messages.getString(
+                    "text.12", new Object[] { lineStart, lineLimit, length })); //$NON-NLS-1$
 		}
 		char[] text = new char[this.length];
 		Arrays.fill(text, 'a');
@@ -486,10 +493,10 @@ public final class Bidi {
         if (count < 0 || levelStart < 0 || objectStart < 0
                 || count > levels.length - levelStart
                 || count > objects.length - objectStart) {
-            throw new IllegalArgumentException("Invalid ranges (levels="
-                    + levels.length + ", levelStart=" + levelStart
-                    + ", objects=" + objects.length + ", objectStart="
-                    + objectStart + ", count=" + count + ")");
+            // text.13=Invalid ranges (levels={0}, levelStart={1}, objects={2}, objectStart={3}, count={4})
+            throw new IllegalArgumentException(Messages.getString("text.13", //$NON-NLS-1$
+                    new Object[] { levels.length, levelStart, objects.length,
+                            objectStart, count }));
         }
         byte[] realLevels = new byte[count];
         System.arraycopy(levels, levelStart, realLevels, 0, count);
@@ -531,7 +538,7 @@ public final class Bidi {
 	 * @return a string containing the internal message.
 	 */
 	public String toString() {
-		return super.toString() + "[direction: " + direction + " baselevel: " + baseLevel
-			 + " length: " + length + " runs: " + (unidirectional ? "null" : runs.toString()) + "]";
+		return super.toString() + "[direction: " + direction + " baselevel: " + baseLevel //$NON-NLS-1$ //$NON-NLS-2$
+			 + " length: " + length + " runs: " + (unidirectional ? "null" : runs.toString()) + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 	}
 }

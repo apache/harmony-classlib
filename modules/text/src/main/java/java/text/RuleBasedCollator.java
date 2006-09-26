@@ -15,7 +15,7 @@
 
 package java.text;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.text.internal.nls.Messages;
 
 
 /**
@@ -59,7 +59,8 @@ public class RuleBasedCollator extends Collator {
             throw new NullPointerException();
         }
         if (rules.length() == 0) {
-            throw new ParseException(Msg.getString("K034e"), 0);
+            // text.06=Build rules empty
+            throw new ParseException(Messages.getString("text.06"), 0); //$NON-NLS-1$
         }
 
         try {
@@ -149,7 +150,8 @@ public class RuleBasedCollator extends Collator {
 	 */
 	public int compare(String source, String target) {
         if (source == null || target == null) {
-            throw new NullPointerException("one of arguments is null");
+            // text.08=one of arguments is null
+            throw new NullPointerException(Messages.getString("text.08")); //$NON-NLS-1$
         }
 		return this.icuColl.compare(source, target);
 	}

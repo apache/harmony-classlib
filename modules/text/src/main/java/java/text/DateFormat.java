@@ -23,7 +23,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.text.internal.nls.Messages;
 
 /**
  * DateFormat is the abstract superclass of formats which format and parse
@@ -317,7 +317,7 @@ public abstract class DateFormat extends Format {
 	public final static DateFormat getDateInstance(int style, Locale locale) {
 		checkDateStyle(style);
 		ResourceBundle bundle = getBundle(locale);
-		String pattern = bundle.getString("Date_" + getStyleName(style));
+		String pattern = bundle.getString("Date_" + getStyleName(style)); //$NON-NLS-1$
 		return new SimpleDateFormat(pattern, locale);
 	}
 
@@ -366,8 +366,8 @@ public abstract class DateFormat extends Format {
 		checkTimeStyle(timeStyle);
 		checkDateStyle(dateStyle);
 		ResourceBundle bundle = getBundle(locale);
-		String pattern = bundle.getString("Date_" + getStyleName(dateStyle))
-				+ " " + bundle.getString("Time_" + getStyleName(timeStyle));
+		String pattern = bundle.getString("Date_" + getStyleName(dateStyle)) //$NON-NLS-1$
+				+ " " + bundle.getString("Time_" + getStyleName(timeStyle)); //$NON-NLS-1$ //$NON-NLS-2$
 		return new SimpleDateFormat(pattern, locale);
 	}
 
@@ -394,19 +394,19 @@ public abstract class DateFormat extends Format {
 		String styleName;
 		switch (style) {
 		case SHORT:
-			styleName = "SHORT";
+			styleName = "SHORT"; //$NON-NLS-1$
 			break;
 		case MEDIUM:
-			styleName = "MEDIUM";
+			styleName = "MEDIUM"; //$NON-NLS-1$
 			break;
 		case LONG:
-			styleName = "LONG";
+			styleName = "LONG"; //$NON-NLS-1$
 			break;
 		case FULL:
-			styleName = "FULL";
+			styleName = "FULL"; //$NON-NLS-1$
 			break;
 		default:
-			styleName = "";
+			styleName = ""; //$NON-NLS-1$
 		}
 		return styleName;
 	}
@@ -447,7 +447,7 @@ public abstract class DateFormat extends Format {
 	public final static DateFormat getTimeInstance(int style, Locale locale) {
 		checkTimeStyle(style);
 		ResourceBundle bundle = getBundle(locale);
-		String pattern = bundle.getString("Time_" + getStyleName(style));
+		String pattern = bundle.getString("Time_" + getStyleName(style)); //$NON-NLS-1$
 		return new SimpleDateFormat(pattern, locale);
 	}
 
@@ -592,49 +592,49 @@ public abstract class DateFormat extends Format {
         
 		private static Hashtable<Integer, Field> table = new Hashtable<Integer, Field>();
 
-		public final static Field ERA = new Field("era", Calendar.ERA);
+		public final static Field ERA = new Field("era", Calendar.ERA); //$NON-NLS-1$
 
-		public final static Field YEAR = new Field("year", Calendar.YEAR);
+		public final static Field YEAR = new Field("year", Calendar.YEAR); //$NON-NLS-1$
 
-		public final static Field MONTH = new Field("month", Calendar.MONTH);
+		public final static Field MONTH = new Field("month", Calendar.MONTH); //$NON-NLS-1$
 
-		public final static Field HOUR_OF_DAY0 = new Field("hour of day",
+		public final static Field HOUR_OF_DAY0 = new Field("hour of day", //$NON-NLS-1$
 				Calendar.HOUR_OF_DAY);
 
-		public final static Field HOUR_OF_DAY1 = new Field("hour of day 1", -1);
+		public final static Field HOUR_OF_DAY1 = new Field("hour of day 1", -1); //$NON-NLS-1$
 
-		public final static Field MINUTE = new Field("minute", Calendar.MINUTE);
+		public final static Field MINUTE = new Field("minute", Calendar.MINUTE); //$NON-NLS-1$
 
-		public final static Field SECOND = new Field("second", Calendar.SECOND);
+		public final static Field SECOND = new Field("second", Calendar.SECOND); //$NON-NLS-1$
 
-		public final static Field MILLISECOND = new Field("millisecond",
+		public final static Field MILLISECOND = new Field("millisecond", //$NON-NLS-1$
 				Calendar.MILLISECOND);
 
-		public final static Field DAY_OF_WEEK = new Field("day of week",
+		public final static Field DAY_OF_WEEK = new Field("day of week", //$NON-NLS-1$
 				Calendar.DAY_OF_WEEK);
 
-		public final static Field DAY_OF_MONTH = new Field("day of month",
+		public final static Field DAY_OF_MONTH = new Field("day of month", //$NON-NLS-1$
 				Calendar.DAY_OF_MONTH);
 
-		public final static Field DAY_OF_YEAR = new Field("day of year",
+		public final static Field DAY_OF_YEAR = new Field("day of year", //$NON-NLS-1$
 				Calendar.DAY_OF_YEAR);
 
 		public final static Field DAY_OF_WEEK_IN_MONTH = new Field(
-				"day of week in month", Calendar.DAY_OF_WEEK_IN_MONTH);
+				"day of week in month", Calendar.DAY_OF_WEEK_IN_MONTH); //$NON-NLS-1$
 
-		public final static Field WEEK_OF_YEAR = new Field("week of year",
+		public final static Field WEEK_OF_YEAR = new Field("week of year", //$NON-NLS-1$
 				Calendar.WEEK_OF_YEAR);
 
-		public final static Field WEEK_OF_MONTH = new Field("week of month",
+		public final static Field WEEK_OF_MONTH = new Field("week of month", //$NON-NLS-1$
 				Calendar.WEEK_OF_MONTH);
 
-		public final static Field AM_PM = new Field("am pm", Calendar.AM_PM);
+		public final static Field AM_PM = new Field("am pm", Calendar.AM_PM); //$NON-NLS-1$
 
-		public final static Field HOUR0 = new Field("hour", Calendar.HOUR);
+		public final static Field HOUR0 = new Field("hour", Calendar.HOUR); //$NON-NLS-1$
 
-		public final static Field HOUR1 = new Field("hour 1", -1);
+		public final static Field HOUR1 = new Field("hour 1", -1); //$NON-NLS-1$
 
-		public final static Field TIME_ZONE = new Field("time zone", -1);
+		public final static Field TIME_ZONE = new Field("time zone", -1); //$NON-NLS-1$
 
 		/**
 		 * The Calendar field that this Field represents.
@@ -690,7 +690,8 @@ public abstract class DateFormat extends Format {
                         return result;
                     }
 				} catch (IllegalArgumentException e) {
-					throw new InvalidObjectException(Msg.getString("K000d"));
+                    // text.02=Unknown attribute
+					throw new InvalidObjectException(Messages.getString("text.02")); //$NON-NLS-1$
 				}
 			} else {
 				if (this.equals(TIME_ZONE)) {
@@ -703,17 +704,19 @@ public abstract class DateFormat extends Format {
                     return HOUR_OF_DAY1;
                 }
 			}
-
-			throw new InvalidObjectException(Msg.getString("K000d"));
+			// text.02=Unknown attribute
+			throw new InvalidObjectException(Messages.getString("text.02")); //$NON-NLS-1$
 		}
 	}
 
 	private static void checkDateStyle(int style) {
 		if (!(style == SHORT || style == MEDIUM || style ==  LONG || style ==  FULL || style == DEFAULT))
-			throw new IllegalArgumentException("Illegal date style: " + style);
+            // text.0E=Illegal date style: {0}
+			throw new IllegalArgumentException(Messages.getString("text.0E", style)); //$NON-NLS-1$
 	}
 	private static void checkTimeStyle(int style) {
 		if (!(style == SHORT || style == MEDIUM || style ==  LONG || style ==  FULL || style == DEFAULT))
-			throw new IllegalArgumentException("Illegal time style: " + style);
+            // text.0F=Illegal time style: {0}
+			throw new IllegalArgumentException(Messages.getString("text.0F", style)); //$NON-NLS-1$
 	}
 }

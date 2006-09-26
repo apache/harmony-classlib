@@ -32,6 +32,6 @@ public class Annotation {
 	}
 
 	public String toString() {
-		return getClass().getName() + "[value=" + value + ']';
+		return getClass().getName() + "[value=" + value + ']'; //$NON-NLS-1$
 	}
 }

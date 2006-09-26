@@ -27,6 +27,8 @@ import java.security.PrivilegedAction;
 import java.util.Currency;
 import java.util.Locale;
 
+import org.apache.harmony.text.internal.nls.Messages;
+
 /**
  * DecimalFormat is used to format and parse numbers, both integers and
  * fractions, based on a pattern. The pattern characters used can be either
@@ -769,8 +771,7 @@ public class DecimalFormat extends NumberFormat {
         this.serialVersionOnStream = fields.get("serialVersionOnStream", 0); //$NON-NLS-1$
 
         Locale locale = (Locale) getInternalField("locale", symbols); //$NON-NLS-1$
-        dform = new com.ibm.icu.text.DecimalFormat("", // pattern,
-                // //$NON-NLS-1$
+        dform = new com.ibm.icu.text.DecimalFormat("", // pattern, //$NON-NLS-1$
                 new com.ibm.icu.text.DecimalFormatSymbols(locale));
         setInternalField("useExponentialNotation", dform, new Boolean( //$NON-NLS-1$
                 useExponentialNotation));
@@ -797,7 +798,8 @@ public class DecimalFormat extends NumberFormat {
                 || super.getMinimumIntegerDigits() > Integer.MAX_VALUE
                 || super.getMaximumFractionDigits() > Integer.MAX_VALUE
                 || super.getMinimumIntegerDigits() > Integer.MAX_VALUE) {
-            throw new InvalidObjectException("The deserialized date is invalid"); //$NON-NLS-1$
+            // text.09=The deserialized date is invalid
+            throw new InvalidObjectException(Messages.getString("text.09"));  //$NON-NLS-1$
         }
         if (serialVersionOnStream < 3) {
             setMaximumIntegerDigits(super.getMinimumIntegerDigits());

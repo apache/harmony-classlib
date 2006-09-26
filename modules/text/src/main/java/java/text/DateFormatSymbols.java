@@ -52,14 +52,14 @@ public class DateFormatSymbols implements Serializable, Cloneable {
 	 */
 	public DateFormatSymbols(Locale locale) {
 		ResourceBundle bundle = Format.getBundle(locale);
-		localPatternChars = bundle.getString("LocalPatternChars");
-		ampms = bundle.getStringArray("ampm");
-		eras = bundle.getStringArray("eras");
-		months = bundle.getStringArray("months");
-		shortMonths = bundle.getStringArray("shortMonths");
-		shortWeekdays = bundle.getStringArray("shortWeekdays");
-		weekdays = bundle.getStringArray("weekdays");
-		zoneStrings = (String[][]) bundle.getObject("timezones");
+		localPatternChars = bundle.getString("LocalPatternChars"); //$NON-NLS-1$
+		ampms = bundle.getStringArray("ampm"); //$NON-NLS-1$
+		eras = bundle.getStringArray("eras"); //$NON-NLS-1$
+		months = bundle.getStringArray("months"); //$NON-NLS-1$
+		shortMonths = bundle.getStringArray("shortMonths"); //$NON-NLS-1$
+		shortWeekdays = bundle.getStringArray("shortWeekdays"); //$NON-NLS-1$
+		weekdays = bundle.getStringArray("weekdays"); //$NON-NLS-1$
+		zoneStrings = (String[][]) bundle.getObject("timezones"); //$NON-NLS-1$
 	}
 
 	/**

@@ -109,7 +109,7 @@ public class ParsePosition {
 	 * @return the string representation of this FieldPosition
 	 */
 	public String toString() {
-		return getClass().getName() + "[index=" + currentPosition
-				+ ", errorIndex=" + errorIndex + "]";
+		return getClass().getName() + "[index=" + currentPosition //$NON-NLS-1$
+				+ ", errorIndex=" + errorIndex + "]"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }

@@ -22,7 +22,7 @@ import java.security.PrivilegedAction;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.text.internal.nls.Messages;
 
 /**
  * Format is the abstract superclass of classes which format and parse objects
@@ -58,7 +58,7 @@ public abstract class Format implements Serializable, Cloneable {
         return AccessController.doPrivileged(new PrivilegedAction<ResourceBundle>() {
             public ResourceBundle run() {
                 return ResourceBundle.getBundle(
-                        "org.apache.harmony.luni.internal.locale.Locale", locale);
+                        "org.apache.harmony.luni.internal.locale.Locale", locale); //$NON-NLS-1$
             }
         });
     }
@@ -80,12 +80,15 @@ public abstract class Format implements Serializable, Cloneable {
 			else if (check
 					&& !quote
 					&& ((next >= 'a' && next <= 'z') || (next >= 'A' && next <= 'Z')))
-				throw new IllegalArgumentException(Msg.getString("K001c", String.valueOf(next), template));
+                // text.05=Invalid pattern char {0} in {1}
+                throw new IllegalArgumentException(Messages.getString(
+                        "text.05", String.valueOf(next), template)); //$NON-NLS-1$
 			else
 				output.append(next);
 		}
 		if (quote)
-			throw new IllegalArgumentException(Msg.getString("K0019"));
+            // text.04=Unterminated quote
+			throw new IllegalArgumentException(Messages.getString("text.04")); //$NON-NLS-1$
 		return output.toString();
 	}
 
@@ -221,8 +224,8 @@ public abstract class Format implements Serializable, Cloneable {
 			}
 			buffer.append(ch);
 		}
-		// Unmatched braces in the pattern
-		throw new IllegalArgumentException(Msg.getString("K0346"));
+		// text.07=Unmatched braces in the pattern
+		throw new IllegalArgumentException(Messages.getString("text.07")); //$NON-NLS-1$
 	}
 
 	/**

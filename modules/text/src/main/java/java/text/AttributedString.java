@@ -28,7 +28,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.text.internal.nls.Messages;
 
 /**
  * AttributedString
@@ -400,7 +400,8 @@ public class AttributedString {
 
     public AttributedString(AttributedCharacterIterator iterator) {
         if (iterator.getBeginIndex() > iterator.getEndIndex()) {
-        	throw new IllegalArgumentException("Invalid substring range");
+            // text.0A=Invalid substring range
+        	throw new IllegalArgumentException(Messages.getString("text.0A")); //$NON-NLS-1$
         }
         StringBuffer buffer = new StringBuffer();
         for (int i = iterator.getBeginIndex(); i < iterator.getEndIndex(); i++) { 
@@ -490,7 +491,8 @@ public class AttributedString {
             throw new NullPointerException();
         }
         if (value.length() == 0 && !attributes.isEmpty()) {
-            throw new IllegalArgumentException(Msg.getString("K000e"));
+            // text.0B=Cannot add attributes to empty string
+            throw new IllegalArgumentException(Messages.getString("text.0B")); //$NON-NLS-1$
         }
         text = value;
         attributeMap = new HashMap<Attribute, List<Range>>((attributes.size() * 4 / 3) + 1);

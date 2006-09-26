@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.text.internal.nls.Messages;
 
 /**
  * AttributedCharacterIterator
@@ -33,11 +33,11 @@ public interface AttributedCharacterIterator extends CharacterIterator {
 		private static final long serialVersionUID = -9142742483513960612L;
 
 		public static final Attribute INPUT_METHOD_SEGMENT = new Attribute(
-				"input_method_segment");
+				"input_method_segment"); //$NON-NLS-1$
 
-		public static final Attribute LANGUAGE = new Attribute("language");
+		public static final Attribute LANGUAGE = new Attribute("language"); //$NON-NLS-1$
 
-		public static final Attribute READING = new Attribute("reading");
+		public static final Attribute READING = new Attribute("reading"); //$NON-NLS-1$
 
 		private String name;
 
@@ -61,14 +61,16 @@ public interface AttributedCharacterIterator extends CharacterIterator {
 
 		protected Object readResolve() throws InvalidObjectException {
 			if (this.getClass() != Attribute.class)
-				throw new InvalidObjectException(Msg.getString("K000c"));
+                // text.0C=cannot resolve subclasses
+				throw new InvalidObjectException(Messages.getString("text.0C")); //$NON-NLS-1$
 			if (this.equals(INPUT_METHOD_SEGMENT))
 				return INPUT_METHOD_SEGMENT;
 			if (this.equals(LANGUAGE))
 				return LANGUAGE;
 			if (this.equals(READING))
 				return READING;
-			throw new InvalidObjectException(Msg.getString("K000d"));
+            // text.02=Unknown attribute
+			throw new InvalidObjectException(Messages.getString("text.02")); //$NON-NLS-1$
 		}
 
 		public String toString() {

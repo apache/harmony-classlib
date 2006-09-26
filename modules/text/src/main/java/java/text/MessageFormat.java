@@ -27,7 +27,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Vector;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.text.internal.nls.Messages;
 
 /**
  * MessageFormat is used to format and parse arguments based on a pattern. The
@@ -106,8 +106,8 @@ public class MessageFormat extends Format {
 				if (offset >= length
 						|| (arg = (byte) Character.digit(template
 								.charAt(offset++), 10)) == -1) {
-                    throw new IllegalArgumentException(Msg
-							.getString("K001d"));
+                    // text.19=Invalid argument number
+                    throw new IllegalArgumentException(Messages.getString("text.19")); //$NON-NLS-1$
                 }
 				position.setIndex(offset);
 				localFormats.addElement(parseVariable(template, position));
@@ -654,18 +654,18 @@ public class MessageFormat extends Format {
 		char ch;
 		if (offset >= length
 				|| ((ch = string.charAt(offset++)) != '}' && ch != ',')) {
-            throw new IllegalArgumentException(Msg
-					.getString("K001e"));
+            // text.15=Missing element format
+            throw new IllegalArgumentException(Messages.getString("text.15")); //$NON-NLS-1$
         }
 		position.setIndex(offset);
 		if (ch == '}') {
             return null;
         }
-		int type = match(string, position, false, new String[] { "time",
-				"date", "number", "choice" });
+		int type = match(string, position, false, new String[] { "time", //$NON-NLS-1$
+				"date", "number", "choice" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		if (type == -1) {
-            throw new IllegalArgumentException(Msg
-					.getString("K001f"));
+            // text.16=Unknown element format
+            throw new IllegalArgumentException(Messages.getString("text.16")); //$NON-NLS-1$
         }
 		StringBuffer buffer = new StringBuffer();
 		ch = string.charAt(position.getIndex() - 1);
@@ -678,7 +678,7 @@ public class MessageFormat extends Format {
 						.getTimeInstance(DateFormat.DEFAULT, locale);
             }
 			int dateStyle = match(string, position, true, new String[] {
-					"full", "long", "medium", "short" });
+					"full", "long", "medium", "short" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			if (dateStyle == -1) {
 				Format.upToWithQuotes(string, position, buffer, '}', '{');
 				return new SimpleDateFormat(buffer.toString(), locale);
@@ -704,7 +704,7 @@ public class MessageFormat extends Format {
                 return NumberFormat.getInstance();
             }
 			int numberStyle = match(string, position, true, new String[] {
-					"currency", "percent", "integer" });
+					"currency", "percent", "integer" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			if (numberStyle == -1) {
 				Format.upToWithQuotes(string, position, buffer, '}', '{');
 				return new DecimalFormat(buffer.toString(),
@@ -777,15 +777,15 @@ public class MessageFormat extends Format {
 	}
 
 	private String decodeDecimalFormat(StringBuffer buffer, Format format) {
-		buffer.append(",number");
+		buffer.append(",number"); //$NON-NLS-1$
 		if (format.equals(NumberFormat.getNumberInstance(locale))) {
 			// Empty block
 		} else if (format.equals(NumberFormat.getIntegerInstance(locale))) {
-            buffer.append(",integer");
+            buffer.append(",integer"); //$NON-NLS-1$
         } else if (format.equals(NumberFormat.getCurrencyInstance(locale))) {
-            buffer.append(",currency");
+            buffer.append(",currency"); //$NON-NLS-1$
         } else if (format.equals(NumberFormat.getPercentInstance(locale))) {
-            buffer.append(",percent");
+            buffer.append(",percent"); //$NON-NLS-1$
         } else {
 			buffer.append(',');
 			return ((DecimalFormat) format).toPattern();
@@ -796,30 +796,30 @@ public class MessageFormat extends Format {
 	private String decodeSimpleDateFormat(StringBuffer buffer, Format format) {
 		if (format.equals(DateFormat
 				.getTimeInstance(DateFormat.DEFAULT, locale))) {
-            buffer.append(",time");
+            buffer.append(",time"); //$NON-NLS-1$
         } else if (format.equals(DateFormat.getDateInstance(DateFormat.DEFAULT,
 				locale))) {
-            buffer.append(",date");
+            buffer.append(",date"); //$NON-NLS-1$
         } else if (format.equals(DateFormat.getTimeInstance(DateFormat.SHORT,
 				locale))) {
-            buffer.append(",time,short");
+            buffer.append(",time,short"); //$NON-NLS-1$
         } else if (format.equals(DateFormat.getDateInstance(DateFormat.SHORT,
 				locale))) {
-            buffer.append(",date,short");
+            buffer.append(",date,short"); //$NON-NLS-1$
         } else if (format.equals(DateFormat.getTimeInstance(DateFormat.LONG,
 				locale))) {
-            buffer.append(",time,long");
+            buffer.append(",time,long"); //$NON-NLS-1$
         } else if (format.equals(DateFormat.getDateInstance(DateFormat.LONG,
 				locale))) {
-            buffer.append(",date,long");
+            buffer.append(",date,long"); //$NON-NLS-1$
         } else if (format.equals(DateFormat.getTimeInstance(DateFormat.FULL,
 				locale))) {
-            buffer.append(",time,full");
+            buffer.append(",time,full"); //$NON-NLS-1$
         } else if (format.equals(DateFormat.getDateInstance(DateFormat.FULL,
 				locale))) {
-            buffer.append(",date,full");
+            buffer.append(",date,full"); //$NON-NLS-1$
         } else {
-			buffer.append(",date,");
+			buffer.append(",date,"); //$NON-NLS-1$
 			return ((SimpleDateFormat) format).toPattern();
 		}
 		return null;
@@ -839,15 +839,15 @@ public class MessageFormat extends Format {
 			Format format = formats[i];
 			String pattern = null;
 			if (format instanceof ChoiceFormat) {
-				buffer.append(",choice,");
+				buffer.append(",choice,"); //$NON-NLS-1$
 				pattern = ((ChoiceFormat) format).toPattern();
 			} else if (format instanceof DecimalFormat) {
 				pattern = decodeDecimalFormat(buffer, format);
 			} else if (format instanceof SimpleDateFormat) {
 				pattern = decodeSimpleDateFormat(buffer, format);
 			} else if (format != null) {
-                throw new IllegalArgumentException(Msg
-						.getString("K0020"));
+                // text.17=Unknown format
+                throw new IllegalArgumentException(Messages.getString("text.17")); //$NON-NLS-1$
             }
 			if (pattern != null) {
 				boolean quote = false;
@@ -865,7 +865,7 @@ public class MessageFormat extends Format {
 							if (count > 0) {
                                 count--;
                             } else {
-								buffer.append("'}");
+								buffer.append("'}"); //$NON-NLS-1$
 								ch = '\'';
 							}
 						}
@@ -896,20 +896,20 @@ public class MessageFormat extends Format {
 	}
 
 	private static final ObjectStreamField[] serialPersistentFields = {
-			new ObjectStreamField("argumentNumbers", int[].class),
-			new ObjectStreamField("formats", Format[].class),
-			new ObjectStreamField("locale", Locale.class),
-			new ObjectStreamField("maxOffset", Integer.TYPE),
-			new ObjectStreamField("offsets", int[].class),
-			new ObjectStreamField("pattern", String.class), };
+			new ObjectStreamField("argumentNumbers", int[].class), //$NON-NLS-1$
+			new ObjectStreamField("formats", Format[].class), //$NON-NLS-1$
+			new ObjectStreamField("locale", Locale.class), //$NON-NLS-1$
+			new ObjectStreamField("maxOffset", Integer.TYPE), //$NON-NLS-1$
+			new ObjectStreamField("offsets", int[].class), //$NON-NLS-1$
+			new ObjectStreamField("pattern", String.class), }; //$NON-NLS-1$
 
 	private void writeObject(ObjectOutputStream stream) throws IOException {
 		ObjectOutputStream.PutField fields = stream.putFields();
-		fields.put("argumentNumbers", argumentNumbers);
+		fields.put("argumentNumbers", argumentNumbers); //$NON-NLS-1$
 		Format[] compatibleFormats = formats;
-		fields.put("formats", compatibleFormats);
-		fields.put("locale", locale);
-		fields.put("maxOffset", maxOffset);
+		fields.put("formats", compatibleFormats); //$NON-NLS-1$
+		fields.put("locale", locale); //$NON-NLS-1$
+		fields.put("maxOffset", maxOffset); //$NON-NLS-1$
 		int offset = 0;
 		int offsetsLength = maxOffset + 1;
 		int[] offsets = new int[offsetsLength];
@@ -922,20 +922,20 @@ public class MessageFormat extends Format {
 		if (maxOffset + 1 < strings.length) {
             pattern.append(strings[maxOffset + 1]);
         }
-		fields.put("offsets", offsets);
-		fields.put("pattern", pattern.toString());
+		fields.put("offsets", offsets); //$NON-NLS-1$
+		fields.put("pattern", pattern.toString()); //$NON-NLS-1$
 		stream.writeFields();
 	}
 
 	private void readObject(ObjectInputStream stream) throws IOException,
 			ClassNotFoundException {
 		ObjectInputStream.GetField fields = stream.readFields();
-		argumentNumbers = (int[]) fields.get("argumentNumbers", null);
-		formats = (Format[]) fields.get("formats", null);
-		locale = (Locale) fields.get("locale", null);
-		maxOffset = fields.get("maxOffset", 0);
-		int[] offsets = (int[]) fields.get("offsets", null);
-		String pattern = (String) fields.get("pattern", null);
+		argumentNumbers = (int[]) fields.get("argumentNumbers", null); //$NON-NLS-1$
+		formats = (Format[]) fields.get("formats", null); //$NON-NLS-1$
+		locale = (Locale) fields.get("locale", null); //$NON-NLS-1$
+		maxOffset = fields.get("maxOffset", 0); //$NON-NLS-1$
+		int[] offsets = (int[]) fields.get("offsets", null); //$NON-NLS-1$
+		String pattern = (String) fields.get("pattern", null); //$NON-NLS-1$
 		int length;
 		if (maxOffset < 0) {
             length = pattern.length() > 0 ? 1 : 0;
@@ -967,7 +967,7 @@ public class MessageFormat extends Format {
         
         private static final long serialVersionUID = 7899943957617360810L;
         
-		public static final Field ARGUMENT = new Field("message argument field");
+		public static final Field ARGUMENT = new Field("message argument field"); //$NON-NLS-1$
 
 		/**
 		 * Constructs a new instance of MessageFormat.Field with the given field
@@ -984,17 +984,17 @@ public class MessageFormat extends Format {
 		protected Object readResolve() throws InvalidObjectException {
 			String name = this.getName();
 			if (name == null) {
-                // "Not a valid {0}, subclass should override readResolve()"
-				throw new InvalidObjectException(
-						Msg.getString("K0344", "MessageFormat.Field"));
+                // text.18=Not a valid {0}, subclass should override readResolve()
+                throw new InvalidObjectException(Messages.getString(
+                        "text.18", "MessageFormat.Field")); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
-			if (name.equals(ARGUMENT.getName())) {
+            if (name.equals(ARGUMENT.getName())) {
                 return ARGUMENT;
             }
-
-			throw new InvalidObjectException(
-					Msg.getString("K0344", "MessageFormat.Field"));
+            // text.18=Not a valid {0}, subclass should override readResolve()
+            throw new InvalidObjectException(Messages.getString(
+                    "text.18", "MessageFormat.Field")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 

@@ -159,8 +159,8 @@ public class FieldPosition {
 	 * @return the string representation of this FieldPosition
 	 */
 	public String toString() {
-		return getClass().getName() + "[attribute=" + myAttribute + ", field="
-				+ myField + ", beginIndex=" + beginIndex + ", endIndex="
-				+ endIndex + "]";
+		return getClass().getName() + "[attribute=" + myAttribute + ", field=" //$NON-NLS-1$ //$NON-NLS-2$
+				+ myField + ", beginIndex=" + beginIndex + ", endIndex=" //$NON-NLS-1$ //$NON-NLS-2$
+				+ endIndex + "]"; //$NON-NLS-1$
 	}
 }
