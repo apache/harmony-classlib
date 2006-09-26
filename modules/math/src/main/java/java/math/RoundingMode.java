@@ -16,6 +16,8 @@
 
 package java.math;
 
+import org.apache.harmony.math.internal.nls.Messages;
+
 /**
  * @ar.org.fitc.spec_ref
  * @author Intel Middleware Product Division
@@ -75,7 +77,8 @@ public enum RoundingMode {
             case BigDecimal.ROUND_UP:
                 return UP;
             default:
-                throw new IllegalArgumentException("Invalid rounding mode");
+                // math.00=Invalid rounding mode
+                throw new IllegalArgumentException(Messages.getString("math.00")); //$NON-NLS-1$
         }
     }
 }

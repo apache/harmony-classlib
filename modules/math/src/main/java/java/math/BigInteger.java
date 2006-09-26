@@ -21,6 +21,8 @@ import java.io.ObjectOutputStream;
 import java.util.Random;
 import java.io.Serializable;
 
+import org.apache.harmony.math.internal.nls.Messages;
+
 /**
  * @author Intel Middleware Product Division
  * @author Instituto Tecnologico de Cordoba
@@ -97,7 +99,8 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     /** @ar.org.fitc.spec_ref */
     public BigInteger(int numBits, Random rnd) {
         if (numBits < 0) {
-            throw new IllegalArgumentException("numBits must be non-negative");
+            // math.1B=numBits must be non-negative
+            throw new IllegalArgumentException(Messages.getString("math.1B")); //$NON-NLS-1$
         }
         if (rnd == null) {
             throw new NullPointerException();
@@ -122,7 +125,8 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     /** @ar.org.fitc.spec_ref */
     public BigInteger(int bitLength, int certainty, Random rnd) {
         if (bitLength < 2) {
-            throw new ArithmeticException("bitLength < 2");
+            // math.1C=bitLength < 2
+            throw new ArithmeticException(Messages.getString("math.1C")); //$NON-NLS-1$
         }
         BigInteger me = Primality.consBigInteger(bitLength, certainty, rnd);
         sign = me.sign;
@@ -141,10 +145,12 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
             throw new NullPointerException();
         }
         if ((radix < Character.MIN_RADIX) || (radix > Character.MAX_RADIX)) {
-            throw new NumberFormatException("Radix out of range");
+            // math.11=Radix out of range
+            throw new NumberFormatException(Messages.getString("math.11")); //$NON-NLS-1$
         }
         if (val.length() == 0) {
-            throw new NumberFormatException("Zero length BigInteger");
+            // math.12=Zero length BigInteger
+            throw new NumberFormatException(Messages.getString("math.12")); //$NON-NLS-1$
         }
         BigInteger me = Conversion.string2BigInteger(val, radix);
         sign = me.sign;
@@ -158,12 +164,14 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
             throw new NullPointerException();
         }
         if ((signum < -1) || (signum > 1)) {
-            throw new NumberFormatException("Invalid signum value");
+            // math.13=Invalid signum value
+            throw new NumberFormatException(Messages.getString("math.13")); //$NON-NLS-1$
         }
         if (signum == 0) {
             for (int i = 0; i < magnitude.length; i++) {
                 if (magnitude[i] != 0) {
-                    throw new NumberFormatException("signum-magnitude mismatch");
+                    // math.14=signum-magnitude mismatch
+                    throw new NumberFormatException(Messages.getString("math.14")); //$NON-NLS-1$
                 }
             }
         }
@@ -181,7 +189,8 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     /** @ar.org.fitc.spec_ref */
     public BigInteger(byte[] val) {
         if (val.length == 0) {
-            throw new NumberFormatException("Zero length BigInteger");
+            // math.12=Zero length BigInteger
+            throw new NumberFormatException(Messages.getString("math.12")); //$NON-NLS-1$
         }
         if (val[0] < 0) {
             sign = -1;
@@ -374,7 +383,8 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
             return ((digits[0] & 1) != 0);
         }
         if (n < 0) {
-            throw new ArithmeticException("Negative bit address");
+            // math.15=Negative bit address
+            throw new ArithmeticException(Messages.getString("math.15")); //$NON-NLS-1$
         }
         int intCount = n >> 5;
         if (intCount >= numberLength) {
@@ -394,7 +404,8 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     /** @ar.org.fitc.spec_ref */
     public BigInteger setBit(int n) {
         if (n < 0) {
-            throw new ArithmeticException("Negative bit address");
+            // math.15=Negative bit address
+            throw new ArithmeticException(Messages.getString("math.15")); //$NON-NLS-1$
         }
         int intCount = n >> 5; // count of integers: count / 32
         return (((sign < 0) && (intCount >= numberLength)) ? this : BitLevel
@@ -404,7 +415,8 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     /** @ar.org.fitc.spec_ref */
     public BigInteger clearBit(int n) {
         if (n < 0) {
-            throw new ArithmeticException("Negative bit address");
+            // math.15=Negative bit address
+            throw new ArithmeticException(Messages.getString("math.15")); //$NON-NLS-1$
         }
         int intCount = n >> 5;
         return (((sign == 0) || ((sign > 0) && (intCount >= numberLength))) ? this
@@ -414,7 +426,8 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     /** @ar.org.fitc.spec_ref */
     public BigInteger flipBit(int n) {
         if (n < 0) {
-            throw new ArithmeticException("Negative bit address");
+            // math.15=Negative bit address
+            throw new ArithmeticException(Messages.getString("math.15")); //$NON-NLS-1$
         }
         return BitLevel.changeBit(this, n >> 5, n & 31, 1);
     }
@@ -586,7 +599,8 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         } else if (exp == 0) {
             return ONE;
         } else {// (exp < 0)
-            throw new ArithmeticException("Negative exponent");
+            // math.16=Negative exponent
+            throw new ArithmeticException(Messages.getString("math.16")); //$NON-NLS-1$
         }
     }
 
@@ -594,7 +608,8 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     public BigInteger[] divideAndRemainder(BigInteger divisor) {
         int divisorSign = divisor.sign;
         if (divisorSign == 0) {
-            throw new ArithmeticException("BigInteger divide by zero");
+            // math.17=BigInteger divide by zero
+            throw new ArithmeticException(Messages.getString("math.17")); //$NON-NLS-1$
         }
         int divisorLen = divisor.numberLength;
         int[] divisorDigits = divisor.digits;
@@ -631,7 +646,8 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     /** @ar.org.fitc.spec_ref */
     public BigInteger divide(BigInteger divisor) {
         if (divisor.sign == 0) {
-            throw new ArithmeticException("BigInteger divide by zero");
+            // math.17=BigInteger divide by zero
+            throw new ArithmeticException(Messages.getString("math.17")); //$NON-NLS-1$
         }
         int divisorSign = divisor.sign;
         if (divisor.isOne()) {
@@ -676,7 +692,8 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     /** @ar.org.fitc.spec_ref */
     public BigInteger remainder(BigInteger divisor) {
         if (divisor.sign == 0) {
-            throw new ArithmeticException("BigInteger divide by zero");
+            // math.17=BigInteger divide by zero
+            throw new ArithmeticException(Messages.getString("math.17")); //$NON-NLS-1$
         }
         int thisLen = numberLength;
         int divisorLen = divisor.numberLength;
@@ -702,11 +719,13 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     /** @ar.org.fitc.spec_ref */
     public BigInteger modInverse(BigInteger m) {
         if (m.sign <= 0) {
-            throw new ArithmeticException("BigInteger: modulus not positive");
+            // math.18=BigInteger: modulus not positive
+            throw new ArithmeticException(Messages.getString("math.18")); //$NON-NLS-1$
         }
         // If both are even, no inverse exists
         if (!(testBit(0) || m.testBit(0))) {
-            throw new ArithmeticException("BigInteger not invertible.");
+            // math.19=BigInteger not invertible.
+            throw new ArithmeticException(Messages.getString("math.19")); //$NON-NLS-1$
         }
         if (m.isOne()) {
             return ZERO;
@@ -714,7 +733,8 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         // From now on: (m > 1)
         BigInteger res = Division.modInverse(abs(), m);
         if (res.sign == 0) {
-            throw new ArithmeticException("BigInteger not invertible.");
+            // math.19=BigInteger not invertible.
+            throw new ArithmeticException(Messages.getString("math.19")); //$NON-NLS-1$
         }
         return ((sign < 0) ? m.subtract(res) : res);
     }
@@ -722,7 +742,8 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     /** @ar.org.fitc.spec_ref */
     public BigInteger modPow(BigInteger exponent, BigInteger m) {
         if (m.sign <= 0) {
-            throw new ArithmeticException("BigInteger: modulus not positive");
+            // math.18=BigInteger: modulus not positive
+            throw new ArithmeticException(Messages.getString("math.18")); //$NON-NLS-1$
         }
         BigInteger base = this;
         if (exponent.sign < 0) {
@@ -743,7 +764,8 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     /** @ar.org.fitc.spec_ref */
     public BigInteger mod(BigInteger m) {
         if (m.sign <= 0) {
-            throw new ArithmeticException("BigInteger: modulus not positive");
+            // math.18=BigInteger: modulus not positive
+            throw new ArithmeticException(Messages.getString("math.18")); //$NON-NLS-1$
         }
         BigInteger rem = remainder(m);
         return ((rem.sign < 0) ? rem.add(m) : rem);
@@ -757,7 +779,8 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     /** @ar.org.fitc.spec_ref */
     public BigInteger nextProbablePrime() {
         if (sign < 0) {
-            throw new ArithmeticException("start < 0: " + this);
+            // math.1A=start < 0: {0}
+            throw new ArithmeticException(Messages.getString("math.1A", this)); //$NON-NLS-1$
         }
         return Primality.nextProbablePrime(this);
     }

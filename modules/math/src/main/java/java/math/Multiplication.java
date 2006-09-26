@@ -16,6 +16,8 @@
 
 package java.math;
 
+import org.apache.harmony.math.internal.nls.Messages;
+
 /**
  * Static library that provides all multiplication of {@link BigInteger} methods.
  *
@@ -388,7 +390,8 @@ class Multiplication {
         long byteArraySize = 1 + (long)(exp / 2.4082399653118496);
         
         if (byteArraySize > Runtime.getRuntime().freeMemory()) {
-            throw new OutOfMemoryError("power of ten too big");
+            // math.01=power of ten too big
+            throw new OutOfMemoryError(Messages.getString("math.01")); //$NON-NLS-1$
         }
         if (exp <= Integer.MAX_VALUE) {
             // To calculate:    5^exp * 2^exp
