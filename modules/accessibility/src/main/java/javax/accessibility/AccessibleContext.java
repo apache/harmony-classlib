@@ -28,28 +28,28 @@ import java.util.Locale;
 import javax.swing.event.SwingPropertyChangeSupport;
 
 public abstract class AccessibleContext{
-    public static final String ACCESSIBLE_NAME_PROPERTY = "AccessibleName";
-    public static final String ACCESSIBLE_DESCRIPTION_PROPERTY = "AccessibleDescription";
-    public static final String ACCESSIBLE_STATE_PROPERTY = "AccessibleState";
-    public static final String ACCESSIBLE_VALUE_PROPERTY = "AccessibleValue";
-    public static final String ACCESSIBLE_SELECTION_PROPERTY = "AccessibleSelection";
-    public static final String ACCESSIBLE_CARET_PROPERTY = "AccessibleCaret";
-    public static final String ACCESSIBLE_VISIBLE_DATA_PROPERTY = "AccessibleVisibleData";
-    public static final String ACCESSIBLE_CHILD_PROPERTY = "AccessibleChild";
-    public static final String ACCESSIBLE_ACTIVE_DESCENDANT_PROPERTY = "AccessibleActiveDescendant";
-    public static final String ACCESSIBLE_TABLE_CAPTION_CHANGED = "accessibleTableCaptionChanged";
-    public static final String ACCESSIBLE_TABLE_SUMMARY_CHANGED = "accessibleTableSummaryChanged";
-    public static final String ACCESSIBLE_TABLE_MODEL_CHANGED = "accessibleTableModelChanged";
-    public static final String ACCESSIBLE_TABLE_ROW_HEADER_CHANGED = "accessibleTableRowHeaderChanged";
-    public static final String ACCESSIBLE_TABLE_ROW_DESCRIPTION_CHANGED = "accessibleTableRowDescriptionChanged";
-    public static final String ACCESSIBLE_TABLE_COLUMN_HEADER_CHANGED = "accessibleTableColumnHeaderChanged";
-    public static final String ACCESSIBLE_TABLE_COLUMN_DESCRIPTION_CHANGED = "accessibleTableColumnDescriptionChanged";
-    public static final String ACCESSIBLE_ACTION_PROPERTY = "accessibleActionProperty";
-    public static final String ACCESSIBLE_HYPERTEXT_OFFSET = "AccessibleHypertextOffset";
-    public static final String ACCESSIBLE_TEXT_PROPERTY = "AccessibleText";
-    public static final String ACCESSIBLE_INVALIDATE_CHILDREN = "accessibleInvalidateChildren";
-    public static final String ACCESSIBLE_TEXT_ATTRIBUTES_CHANGED = "accessibleTextAttributesChanged";
-    public static final String ACCESSIBLE_COMPONENT_BOUNDS_CHANGED = "accessibleComponentBoundsChanged";
+    public static final String ACCESSIBLE_NAME_PROPERTY = "AccessibleName"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_DESCRIPTION_PROPERTY = "AccessibleDescription"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_STATE_PROPERTY = "AccessibleState"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_VALUE_PROPERTY = "AccessibleValue"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_SELECTION_PROPERTY = "AccessibleSelection"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_CARET_PROPERTY = "AccessibleCaret"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_VISIBLE_DATA_PROPERTY = "AccessibleVisibleData"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_CHILD_PROPERTY = "AccessibleChild"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_ACTIVE_DESCENDANT_PROPERTY = "AccessibleActiveDescendant"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_TABLE_CAPTION_CHANGED = "accessibleTableCaptionChanged"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_TABLE_SUMMARY_CHANGED = "accessibleTableSummaryChanged"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_TABLE_MODEL_CHANGED = "accessibleTableModelChanged"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_TABLE_ROW_HEADER_CHANGED = "accessibleTableRowHeaderChanged"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_TABLE_ROW_DESCRIPTION_CHANGED = "accessibleTableRowDescriptionChanged"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_TABLE_COLUMN_HEADER_CHANGED = "accessibleTableColumnHeaderChanged"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_TABLE_COLUMN_DESCRIPTION_CHANGED = "accessibleTableColumnDescriptionChanged"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_ACTION_PROPERTY = "accessibleActionProperty"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_HYPERTEXT_OFFSET = "AccessibleHypertextOffset"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_TEXT_PROPERTY = "AccessibleText"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_INVALIDATE_CHILDREN = "accessibleInvalidateChildren"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_TEXT_ATTRIBUTES_CHANGED = "accessibleTextAttributesChanged"; //$NON-NLS-1$
+    public static final String ACCESSIBLE_COMPONENT_BOUNDS_CHANGED = "accessibleComponentBoundsChanged"; //$NON-NLS-1$
 
     protected Accessible accessibleParent;
     protected String accessibleName;

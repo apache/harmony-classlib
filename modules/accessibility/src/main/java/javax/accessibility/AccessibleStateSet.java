@@ -74,13 +74,13 @@ public class AccessibleStateSet {
     @Override
     public String toString() {
         if (states == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         StringBuffer str = new StringBuffer();
         for (Iterator<AccessibleState> it = states.iterator(); it.hasNext(); ) {
             str.append(it.next());
             if (it.hasNext()) {
-                str.append(",");
+                str.append(","); //$NON-NLS-1$
             }
         }
         return str.toString();

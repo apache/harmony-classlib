@@ -90,13 +90,13 @@ public class AccessibleRelationSet {
     @Override
     public String toString() {
         if (relations == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         StringBuffer result = new StringBuffer();
         for (Iterator<AccessibleRelation> it = relations.iterator(); it.hasNext(); ) {
             result.append(it.next());
             if (it.hasNext()) {
-                result.append(",");
+                result.append(","); //$NON-NLS-1$
             }
         }
         return result.toString();

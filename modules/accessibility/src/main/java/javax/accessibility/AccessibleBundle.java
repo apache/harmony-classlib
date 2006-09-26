@@ -27,7 +27,7 @@ import java.util.ResourceBundle;
 
 public abstract class AccessibleBundle {
     protected String key;
-    private final String ACCESSIBLE_RESOURSE_BUNDLE = "javax.accessibility.AccessibleResourceBundle";
+    private final String ACCESSIBLE_RESOURSE_BUNDLE = "javax.accessibility.AccessibleResourceBundle"; //$NON-NLS-1$
 
     public String toDisplayString() {
         return displayString(ACCESSIBLE_RESOURSE_BUNDLE, null);

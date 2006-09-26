@@ -22,9 +22,9 @@
 package javax.accessibility;
 
 public interface AccessibleAction {
-    static final String TOGGLE_EXPAND = "toggle expand";
-    static final String INCREMENT = "increment";
-    static final String DECREMENT = "decrement";
+    static final String TOGGLE_EXPAND = "toggle expand"; //$NON-NLS-1$
+    static final String INCREMENT = "increment"; //$NON-NLS-1$
+    static final String DECREMENT = "decrement"; //$NON-NLS-1$
     int getAccessibleActionCount();
     String getAccessibleActionDescription(int i);
     boolean doAccessibleAction(int i);

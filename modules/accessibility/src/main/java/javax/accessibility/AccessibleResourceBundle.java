@@ -27,109 +27,109 @@ import java.util.ListResourceBundle;
 public class AccessibleResourceBundle extends ListResourceBundle {
     // Localized values representing the accessible roles and states of the accessible components.
     private final Object[][] contents = {
-        {"alert", "alert"},
-        {"column_header", "column header"},
-        {"canvas", "canvas"},
-        {"combobox", "combobox"},
-        {"desktopIcon", "desktop icon"},
-        {"internalFrame", "internal frame"},
-        {"desktopPane", "desktop pane"},
-        {"optionPane", "option pane"},
-        {"window", "window"},
-        {"frame", "frame"},
-        {"dialog", "dialog"},
-        {"colorChooser", "color chooser"},
-        {"directoryPane", "directory pane"},
-        {"fileChooser", "file chooser"},
-        {"filler", "filler"},
-        {"hyperlink", "hyperlink"},
-        {"icon", "icon"},
-        {"label", "label"},
-        {"rootPane", "root pane"},
-        {"glassPane", "glass pane"},
-        {"layeredPane", "layered pane"},
-        {"list", "list"},
-        {"listItem", "list item"},
-        {"menuBar", "menu bar"},
-        {"popupMenu", "popup menu"},
-        {"menu", "menu"},
-        {"menuItem", "menu item"},
-        {"separator", "separator"},
-        {"pageTabList", "page tab list"},
-        {"pageTab", "page tab"},
-        {"panel", "panel"},
-        {"progressBar", "progress"},
-        {"passwordText", "password"},
-        {"pushButton", "push button"},
-        {"toggleButton", "toggle button"},
-        {"checkBox", "check box"},
-        {"radioButton", "radio button"},
-        {"rowHeader", "row header"},
-        {"scrollPane", "scroll pane"},
-        {"scrollBar", "scroller"},
-        {"viewport", "viewport"},
-        {"slider", "slider"},
-        {"splitPane", "split pane"},
-        {"table", "table"},
-        {"text", "text"},
-        {"tree", "tree"},
-        {"toolBar", "tool bar"},
-        {"toolTip", "tool tip"},
-        {"awtComponent", "AWT component"},
-        {"swingComponent", "Swing component"},
-        {"unknown", "unknown"},
-        {"statusBar", "status bar"},
-        {"dateEditor", "date editor"},
-        {"spinBox", "spinner"},
-        {"fontChooser", "font chooser"},
-        {"groupBox", "group"},
-        {"header", "header"},
-        {"footer", "footer"},
-        {"paragraph", "paragraph"},
-        {"ruler", "ruler"},
-        {"editBar", "edit bar"},
-        {"progressMonitor", "progress monitor"},
-        {"labelFor", "label for"},
-        {"labeledBy", "labeled by"},
-        {"memberOf", "member of"},
-        {"controllerFor", "controller for"},
-        {"controlledBy", "controlled by"},
-        {"flowsTo", "flows to"},
-        {"flowsFrom", "flows from"},
-        {"subwindowOf", "sub-window of"},
-        {"parentWindowOf", "parent window of"},
-        {"embeds", "embeds"},
-        {"embeddedBy", "embedded by"},
-        {"childNodeOf", "child node of"},
-        {"active", "active"},
-        {"pressed", "pressed"},
-        {"armed", "armed"},
-        {"busy", "busy"},
-        {"checked", "checked"},
-        {"editable", "editable"},
-        {"expandable", "expandable"},
-        {"collapsed", "collapsed"},
-        {"expanded", "expanded"},
-        {"enabled", "enabled"},
-        {"focusable", "focusable"},
-        {"focused", "focused"},
-        {"iconified", "iconified"},
-        {"modal", "modal"},
-        {"opaque", "opaque"},
-        {"resizable", "resizable"},
-        {"multiSelectable", "multi-selectable"},
-        {"selectable", "selectable"},
-        {"selected", "selected"},
-        {"showing", "showing"},
-        {"visible", "visible"},
-        {"vertical", "vertical"},
-        {"horizontal", "horizontal"},
-        {"singleLine", "singleLine"},
-        {"multiLine", "multi line"},
-        {"transient", "transient"},
-        {"managesDescendants", "manages descendants"},
-        {"indeterminate", "indeterminate"},
-        {"truncated", "truncated"},
+        {"alert", "alert"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"column_header", "column header"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"canvas", "canvas"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"combobox", "combobox"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"desktopIcon", "desktop icon"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"internalFrame", "internal frame"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"desktopPane", "desktop pane"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"optionPane", "option pane"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"window", "window"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"frame", "frame"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"dialog", "dialog"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"colorChooser", "color chooser"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"directoryPane", "directory pane"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"fileChooser", "file chooser"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"filler", "filler"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"hyperlink", "hyperlink"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"icon", "icon"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"label", "label"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"rootPane", "root pane"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"glassPane", "glass pane"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"layeredPane", "layered pane"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"list", "list"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"listItem", "list item"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"menuBar", "menu bar"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"popupMenu", "popup menu"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"menu", "menu"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"menuItem", "menu item"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"separator", "separator"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"pageTabList", "page tab list"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"pageTab", "page tab"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"panel", "panel"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"progressBar", "progress"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"passwordText", "password"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"pushButton", "push button"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"toggleButton", "toggle button"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"checkBox", "check box"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"radioButton", "radio button"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"rowHeader", "row header"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"scrollPane", "scroll pane"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"scrollBar", "scroller"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"viewport", "viewport"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"slider", "slider"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"splitPane", "split pane"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"table", "table"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"text", "text"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"tree", "tree"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"toolBar", "tool bar"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"toolTip", "tool tip"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"awtComponent", "AWT component"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"swingComponent", "Swing component"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"unknown", "unknown"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"statusBar", "status bar"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"dateEditor", "date editor"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"spinBox", "spinner"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"fontChooser", "font chooser"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"groupBox", "group"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"header", "header"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"footer", "footer"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"paragraph", "paragraph"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"ruler", "ruler"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"editBar", "edit bar"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"progressMonitor", "progress monitor"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"labelFor", "label for"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"labeledBy", "labeled by"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"memberOf", "member of"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"controllerFor", "controller for"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"controlledBy", "controlled by"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"flowsTo", "flows to"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"flowsFrom", "flows from"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"subwindowOf", "sub-window of"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"parentWindowOf", "parent window of"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"embeds", "embeds"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"embeddedBy", "embedded by"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"childNodeOf", "child node of"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"active", "active"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"pressed", "pressed"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"armed", "armed"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"busy", "busy"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"checked", "checked"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"editable", "editable"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"expandable", "expandable"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"collapsed", "collapsed"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"expanded", "expanded"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"enabled", "enabled"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"focusable", "focusable"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"focused", "focused"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"iconified", "iconified"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"modal", "modal"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"opaque", "opaque"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"resizable", "resizable"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"multiSelectable", "multi-selectable"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"selectable", "selectable"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"selected", "selected"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"showing", "showing"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"visible", "visible"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"vertical", "vertical"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"horizontal", "horizontal"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"singleLine", "singleLine"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"multiLine", "multi line"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"transient", "transient"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"managesDescendants", "manages descendants"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"indeterminate", "indeterminate"}, //$NON-NLS-1$ //$NON-NLS-2$
+        {"truncated", "truncated"}, //$NON-NLS-1$ //$NON-NLS-2$
     };
 
     @Override

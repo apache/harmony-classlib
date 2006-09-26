@@ -22,35 +22,35 @@
 package javax.accessibility;
 
 public class AccessibleState extends AccessibleBundle {
-    public static final AccessibleState ACTIVE = new AccessibleState("active");
-    public static final AccessibleState PRESSED = new AccessibleState("pressed");
-    public static final AccessibleState ARMED = new AccessibleState("armed");
-    public static final AccessibleState BUSY = new AccessibleState("busy");
-    public static final AccessibleState CHECKED = new AccessibleState("checked");
-    public static final AccessibleState EDITABLE = new AccessibleState("editable");
-    public static final AccessibleState EXPANDABLE = new AccessibleState("expandable");
-    public static final AccessibleState COLLAPSED = new AccessibleState("collapsed");
-    public static final AccessibleState EXPANDED = new AccessibleState("expanded");
-    public static final AccessibleState ENABLED = new AccessibleState("enabled");
-    public static final AccessibleState FOCUSABLE = new AccessibleState("focusable");
-    public static final AccessibleState FOCUSED = new AccessibleState("focused");
-    public static final AccessibleState ICONIFIED = new AccessibleState("iconified");
-    public static final AccessibleState MODAL = new AccessibleState("modal");
-    public static final AccessibleState OPAQUE = new AccessibleState("opaque");
-    public static final AccessibleState RESIZABLE = new AccessibleState("resizable");
-    public static final AccessibleState MULTISELECTABLE = new AccessibleState("multiSelectable");
-    public static final AccessibleState SELECTABLE = new AccessibleState("selectable");
-    public static final AccessibleState SELECTED = new AccessibleState("selected");
-    public static final AccessibleState SHOWING = new AccessibleState("showing");
-    public static final AccessibleState VISIBLE = new AccessibleState("visible");
-    public static final AccessibleState VERTICAL = new AccessibleState("vertical");
-    public static final AccessibleState HORIZONTAL = new AccessibleState("horizontal");
-    public static final AccessibleState SINGLE_LINE = new AccessibleState("singleLine");
-    public static final AccessibleState MULTI_LINE = new AccessibleState("multiLine");
-    public static final AccessibleState TRANSIENT = new AccessibleState("transient");
-    public static final AccessibleState MANAGES_DESCENDANTS = new AccessibleState("managesDescendants");
-    public static final AccessibleState INDETERMINATE = new AccessibleState("indeterminate");
-    public static final AccessibleState TRUNCATED = new AccessibleState("truncated");
+    public static final AccessibleState ACTIVE = new AccessibleState("active"); //$NON-NLS-1$
+    public static final AccessibleState PRESSED = new AccessibleState("pressed"); //$NON-NLS-1$
+    public static final AccessibleState ARMED = new AccessibleState("armed"); //$NON-NLS-1$
+    public static final AccessibleState BUSY = new AccessibleState("busy"); //$NON-NLS-1$
+    public static final AccessibleState CHECKED = new AccessibleState("checked"); //$NON-NLS-1$
+    public static final AccessibleState EDITABLE = new AccessibleState("editable"); //$NON-NLS-1$
+    public static final AccessibleState EXPANDABLE = new AccessibleState("expandable"); //$NON-NLS-1$
+    public static final AccessibleState COLLAPSED = new AccessibleState("collapsed"); //$NON-NLS-1$
+    public static final AccessibleState EXPANDED = new AccessibleState("expanded"); //$NON-NLS-1$
+    public static final AccessibleState ENABLED = new AccessibleState("enabled"); //$NON-NLS-1$
+    public static final AccessibleState FOCUSABLE = new AccessibleState("focusable"); //$NON-NLS-1$
+    public static final AccessibleState FOCUSED = new AccessibleState("focused"); //$NON-NLS-1$
+    public static final AccessibleState ICONIFIED = new AccessibleState("iconified"); //$NON-NLS-1$
+    public static final AccessibleState MODAL = new AccessibleState("modal"); //$NON-NLS-1$
+    public static final AccessibleState OPAQUE = new AccessibleState("opaque"); //$NON-NLS-1$
+    public static final AccessibleState RESIZABLE = new AccessibleState("resizable"); //$NON-NLS-1$
+    public static final AccessibleState MULTISELECTABLE = new AccessibleState("multiSelectable"); //$NON-NLS-1$
+    public static final AccessibleState SELECTABLE = new AccessibleState("selectable"); //$NON-NLS-1$
+    public static final AccessibleState SELECTED = new AccessibleState("selected"); //$NON-NLS-1$
+    public static final AccessibleState SHOWING = new AccessibleState("showing"); //$NON-NLS-1$
+    public static final AccessibleState VISIBLE = new AccessibleState("visible"); //$NON-NLS-1$
+    public static final AccessibleState VERTICAL = new AccessibleState("vertical"); //$NON-NLS-1$
+    public static final AccessibleState HORIZONTAL = new AccessibleState("horizontal"); //$NON-NLS-1$
+    public static final AccessibleState SINGLE_LINE = new AccessibleState("singleLine"); //$NON-NLS-1$
+    public static final AccessibleState MULTI_LINE = new AccessibleState("multiLine"); //$NON-NLS-1$
+    public static final AccessibleState TRANSIENT = new AccessibleState("transient"); //$NON-NLS-1$
+    public static final AccessibleState MANAGES_DESCENDANTS = new AccessibleState("managesDescendants"); //$NON-NLS-1$
+    public static final AccessibleState INDETERMINATE = new AccessibleState("indeterminate"); //$NON-NLS-1$
+    public static final AccessibleState TRUNCATED = new AccessibleState("truncated"); //$NON-NLS-1$
 
     protected AccessibleState(final String key) {
         this.key = key;
