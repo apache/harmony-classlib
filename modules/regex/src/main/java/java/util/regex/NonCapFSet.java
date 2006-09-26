@@ -42,7 +42,7 @@ class NonCapFSet extends FSet {
     }
 
     protected String getName() {
-        return "NonCapFSet";
+        return "NonCapFSet"; //$NON-NLS-1$
     }
 
     public boolean hasConsumed(MatchResultImpl mr) {

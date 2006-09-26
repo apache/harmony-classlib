@@ -22,6 +22,8 @@ package java.util.regex;
 
 import java.util.MissingResourceException;
 
+import org.apache.harmony.regex.internal.nls.Messages;
+
 /**
  * The purpose of this class is to break given pattern into RE tokens; 
  * 
@@ -540,8 +542,8 @@ class Lexer {
                         : -1;
                 switch (lookAhead) {
                 case -1:
-                    throw new PatternSyntaxException(I18n
-                            .getMessage("Trailing \\"), this.toString(), index);
+                    throw new PatternSyntaxException(
+                            Messages.getString("regex.10"), this.toString(), index); //$NON-NLS-1$
                 case 'P':
                 case 'p': {
                     String cs = parseCharClassName();
@@ -554,11 +556,9 @@ class Lexer {
                         lookAheadST = AbstractCharClass.getPredefinedClass(cs,
                                 negative);
                     } catch (MissingResourceException mre) {
-                        throw new PatternSyntaxException(I18n
-                                .getFormattedMessage(
-                                        "Character Class \\p'{'{0}'}'"
-                                                + "is not supported", cs), this
-                                .toString(), index);
+                        throw new PatternSyntaxException(
+                                        Messages.getString("regex.11" //$NON-NLS-1$
+                                                , cs), this.toString(), index);
                     }
                     lookAhead = 0;
                     break;
@@ -621,10 +621,10 @@ class Lexer {
                     lookAhead = readOctals();
                     break;
                 case 'x':
-                    lookAhead = readHex("hexadecimal", 2);
+                    lookAhead = readHex("hexadecimal", 2); //$NON-NLS-1$
                     break;
                 case 'u':
-                    lookAhead = readHex("Unicode", 4);
+                    lookAhead = readHex("Unicode", 4); //$NON-NLS-1$
                     break;
 
                 case 'b':
@@ -650,8 +650,8 @@ class Lexer {
                         lookAhead = (pattern[nextIndex()] & 0x1f);
                         break;
                     } else {
-                        throw new PatternSyntaxException("Illegal unsupported "
-                                + "control sequence", this.toString(), index);
+                        throw new PatternSyntaxException(Messages.getString("regex.12") //$NON-NLS-1$
+                                , this.toString(), index);
                     }
                 }
                 case 'C':
@@ -681,8 +681,8 @@ class Lexer {
                 case 'o':
                 case 'q':
                 case 'y':
-                    throw new PatternSyntaxException("Illegal unsupported "
-                            + "escape sequence", this.toString(), index);
+                    throw new PatternSyntaxException(Messages.getString("regex.13") //$NON-NLS-1$
+                            , this.toString(), index);
 
                 default:
                     break;
@@ -783,9 +783,8 @@ class Lexer {
                                     nextIndex();
                                     break;
                                 default:
-                                    throw new PatternSyntaxException("Unknown "
-                                            + "look behind", this.toString(),
-                                            index);
+                                    throw new PatternSyntaxException(Messages.getString("regex.14") //$NON-NLS-1$
+                                            , this.toString(), index);
                                 }
                             }
                         } while (behind);
@@ -853,7 +852,7 @@ class Lexer {
         if (index < pattern.length - 2) {
             // one symbol family
             if (pattern[index] != '{') {
-                return "Is" + new String(pattern, nextIndex(), 1);
+                return "Is" + new String(pattern, nextIndex(), 1); //$NON-NLS-1$
             }
 
             nextIndex();
@@ -863,21 +862,21 @@ class Lexer {
                 sb.append((char) ch);
             }
             if (ch != '}')
-                throw new PatternSyntaxException(I18n
-                        .getMessage("Unclosed character family"), this
+                throw new PatternSyntaxException(
+                        Messages.getString("regex.15"), this //$NON-NLS-1$
                         .toString(), index);
         }
 
         if (sb.length() == 0)
-            throw new PatternSyntaxException(I18n
-                    .getMessage("Empty character family"), this.toString(),
+            throw new PatternSyntaxException(
+                    Messages.getString("regex.16"), this.toString(), //$NON-NLS-1$
                     index);
 
         String res = sb.toString();
         if (res.length() == 1)
-            return "Is" + res;
-        return (res.length() > 3 && (res.startsWith("Is") || res
-                .startsWith("In"))) ? res.substring(2) : res;
+            return "Is" + res; //$NON-NLS-1$
+        return (res.length() > 3 && (res.startsWith("Is") || res //$NON-NLS-1$
+                .startsWith("In"))) ? res.substring(2) : res; //$NON-NLS-1$
     }
 
     /**
@@ -893,8 +892,8 @@ class Lexer {
                     min = Integer.parseInt(sb.toString(), 10);
                     sb.delete(0, sb.length());
                 } catch (NumberFormatException nfe) {
-                    throw new PatternSyntaxException(I18n
-                            .getMessage("Incorrect Quantifier Syntax"), this
+                    throw new PatternSyntaxException(
+                            Messages.getString("regex.17"), this //$NON-NLS-1$
                             .toString(), index);
                 }
             } else {
@@ -902,8 +901,8 @@ class Lexer {
             }
         }
         if (ch != '}') {
-            throw new PatternSyntaxException(I18n
-                    .getMessage("Incorrect Quantifier Syntax"),
+            throw new PatternSyntaxException(
+                    Messages.getString("regex.17"), //$NON-NLS-1$
                     this.toString(), index);
         }
         if (sb.length() > 0) {
@@ -912,18 +911,18 @@ class Lexer {
                 if (min < 0)
                     min = max;
             } catch (NumberFormatException nfe) {
-                throw new PatternSyntaxException(I18n
-                        .getMessage("Incorrect Quantifier Syntax"), this
+                throw new PatternSyntaxException(
+                        Messages.getString("regex.17"), this //$NON-NLS-1$
                         .toString(), index);
             }
         } else if (min < 0) {
-            throw new PatternSyntaxException(I18n
-                    .getMessage("Incorrect Quantifier Syntax"),
+            throw new PatternSyntaxException(
+                    Messages.getString("regex.17"), //$NON-NLS-1$
                     this.toString(), index);
         }
         if ((min | max | max - min) < 0) {
-            throw new PatternSyntaxException(I18n
-                    .getMessage("Incorrect Quantifier Syntax"),
+            throw new PatternSyntaxException(
+                    Messages.getString("regex.17"), //$NON-NLS-1$
                     this.toString(), index);
         }
 
@@ -992,8 +991,8 @@ class Lexer {
             }
         }
 
-        throw new PatternSyntaxException(I18n.getMessage("Invalid " + radixName
-                + "escape sequence"), this.toString(), index);
+        throw new PatternSyntaxException(Messages.getString("regex.18", radixName) //$NON-NLS-1$
+                , this.toString(), index);
     }
 
     /**
@@ -1009,8 +1008,8 @@ class Lexer {
 
         switch (first = Character.digit((ch = pattern[index]), 8)) {
         case -1:
-            throw new PatternSyntaxException(I18n.getMessage("Invalid "
-                    + "octal escape sequence"), this.toString(), index);
+            throw new PatternSyntaxException(Messages.getString("regex.19") //$NON-NLS-1$
+                    , this.toString(), index);
         default: {
             if (first > 3)
                 max--;
@@ -1042,8 +1041,8 @@ class Lexer {
             switch (ch) {
             case '-':
                 if (!pos) {
-                    throw new PatternSyntaxException("Illegal "
-                            + "inline construct", this.toString(), index);
+                    throw new PatternSyntaxException(Messages.getString("regex.1A") //$NON-NLS-1$
+                            , this.toString(), index);
                 }
                 pos = false;
                 break; 
@@ -1093,12 +1092,12 @@ class Lexer {
                 return res | (1 << 8);
                 
             default:
-                throw new PatternSyntaxException("Illegal inline construct",
+                throw new PatternSyntaxException(Messages.getString("regex.1A"), //$NON-NLS-1$
                                                this.toString(), index);
             }
             nextIndex();
         }
-        throw new PatternSyntaxException("Illegal inline construct", 
+        throw new PatternSyntaxException(Messages.getString("regex.1A"),  //$NON-NLS-1$
         		                       this.toString(), index);
     }
 

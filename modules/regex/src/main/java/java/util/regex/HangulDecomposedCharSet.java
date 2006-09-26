@@ -73,7 +73,7 @@ class HangulDecomposedCharSet extends JointSet {
     }
     
     protected String getName() {
-        return "decomposed Hangul syllable:" + getDecomposedChar();
+        return "decomposed Hangul syllable:" + getDecomposedChar(); //$NON-NLS-1$
     }
     
     public int matches(int strIndex, CharSequence testString, MatchResultImpl matchResult) {

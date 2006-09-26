@@ -66,11 +66,11 @@ class Quantifier extends SpecialToken implements Cloneable {
     }
 
     public String toString() {
-        return "{"
+        return "{" //$NON-NLS-1$
                 + min
-                + ","
-                + ((max == Integer.MAX_VALUE) ? "" : new Integer(max)
-                        .toString()) + "}";
+                + "," //$NON-NLS-1$
+                + ((max == Integer.MAX_VALUE) ? "" : new Integer(max) //$NON-NLS-1$
+                        .toString()) + "}"; //$NON-NLS-1$
     }
 
     public int getType() {

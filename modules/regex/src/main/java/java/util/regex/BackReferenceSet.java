@@ -104,6 +104,6 @@ class BackReferenceSet extends CIBackReferenceSet {
     }
 
     public String getName() {
-        return "back reference: " + this.groupIndex;
+        return "back reference: " + this.groupIndex; //$NON-NLS-1$
     }
 }

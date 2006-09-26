@@ -57,6 +57,6 @@ class UMultiLineEOLSet extends AbstractSet {
     }
 
     protected String getName() {
-        return "<Unix MultiLine $>";
+        return "<Unix MultiLine $>"; //$NON-NLS-1$
     }
 }

@@ -47,7 +47,7 @@ class AtomicFSet extends FSet {
     }
 
     protected String getName() {
-        return "AtomicFSet";
+        return "AtomicFSet"; //$NON-NLS-1$
     }
 
     public boolean hasConsumed(MatchResultImpl mr) {

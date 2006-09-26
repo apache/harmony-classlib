@@ -22,6 +22,8 @@ package java.util.regex;
 
 import java.util.ArrayList;
 
+import org.apache.harmony.regex.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -133,8 +135,8 @@ public final class Matcher implements MatchResult {
                         } catch (IndexOutOfBoundsException iob) {
                             throw iob;
                         } catch (Exception e) {
-                            throw new IllegalArgumentException(I18n
-                                    .getMessage("Illegal group reference"));
+                            throw new IllegalArgumentException(
+                                    Messages.getString("regex.00")); //$NON-NLS-1$
                         }
                     } else {
                         res.append(repl[index]);
@@ -157,7 +159,7 @@ public final class Matcher implements MatchResult {
      */
     public Matcher reset(CharSequence newSequence) {
         if (newSequence == null) {
-            throw new NullPointerException(I18n.getMessage("Incorrect input"));
+            throw new NullPointerException(Messages.getString("regex.01")); //$NON-NLS-1$
         }
         this.string = newSequence;
         return reset();
@@ -183,9 +185,8 @@ public final class Matcher implements MatchResult {
 
         if (leftBound > rightBound || leftBound < 0 || rightBound < 0
                 || leftBound > string.length() || rightBound > string.length()) {
-            throw new IndexOutOfBoundsException(I18n.getFormattedMessage(
-                    "Region indices out of bounds: " + "from {0} to {1}",
-                    Integer.toString(leftBound), Integer.toString(rightBound)));
+            throw new IndexOutOfBoundsException( Messages.getString("regex.02", //$NON-NLS-1$
+                            Integer.toString(leftBound), Integer.toString(rightBound)));
         }
 
         this.leftBound = leftBound;
@@ -277,9 +278,8 @@ public final class Matcher implements MatchResult {
     public boolean find(int startIndex) {
         int stringLength = string.length();
         if (startIndex < 0 || startIndex > stringLength)
-            throw new IndexOutOfBoundsException(I18n.getFormattedMessage(
-                    "Start index " + "out of bounds: {0}", new Integer(
-                            startIndex)));
+            throw new IndexOutOfBoundsException(Messages.getString("regex.03", //$NON-NLS-1$ 
+                    new Integer(startIndex)));
 
         startIndex = findAt(startIndex);
         if (startIndex >= 0 && matchResult.isValid()) {

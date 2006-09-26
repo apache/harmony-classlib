@@ -83,6 +83,6 @@ class MultiLineEOLSet extends AbstractSet {
     }
 
     protected String getName() {
-        return "<MultiLine $>";
+        return "<MultiLine $>"; //$NON-NLS-1$
     }
 }

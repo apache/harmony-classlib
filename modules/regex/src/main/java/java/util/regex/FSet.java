@@ -56,7 +56,7 @@ class FSet extends AbstractSet {
     }
 
     protected String getName() {
-        return "fSet";
+        return "fSet"; //$NON-NLS-1$
     }
 
     public boolean hasConsumed(MatchResultImpl mr) {
@@ -76,7 +76,7 @@ class FSet extends AbstractSet {
         }
 
         protected String getName() {
-            return "posFSet";
+            return "posFSet"; //$NON-NLS-1$
         }
 
         public boolean hasConsumed(MatchResultImpl mr) {

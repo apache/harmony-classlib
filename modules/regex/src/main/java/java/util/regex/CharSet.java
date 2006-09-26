@@ -82,7 +82,7 @@ class CharSet extends LeafSet {
     }
 
     protected String getName() {
-        return "" + ch;
+        return "" + ch; //$NON-NLS-1$
     }
 
     protected char getChar() {

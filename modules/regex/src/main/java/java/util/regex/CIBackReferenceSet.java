@@ -20,6 +20,8 @@
  */
 package java.util.regex;
 
+import org.apache.harmony.regex.internal.nls.Messages;
+
 
 /**
  * Case Insensitive back reference node;
@@ -42,7 +44,7 @@ class CIBackReferenceSet extends JointSet {
     }
 
     public int accepts(int strIndex, CharSequence testString) {
-        throw new PatternSyntaxException(I18n.getMessage("Internal error"), "",
+        throw new PatternSyntaxException(Messages.getString("regex.04"), "", //$NON-NLS-1$ //$NON-NLS-2$
                 0);
     }
 
@@ -81,7 +83,7 @@ class CIBackReferenceSet extends JointSet {
     }
 
     public String getName() {
-        return "CI back reference: " + this.groupIndex;
+        return "CI back reference: " + this.groupIndex; //$NON-NLS-1$
     }
 
     public boolean hasConsumed(MatchResultImpl matchResult) {

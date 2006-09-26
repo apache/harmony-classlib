@@ -57,7 +57,7 @@ class NonCapJointSet extends JointSet {
     }
 
     protected String getName() {
-        return "NonCapJointSet";
+        return "NonCapJointSet"; //$NON-NLS-1$
     }
 
     public boolean hasConsumed(MatchResultImpl matchResult) {

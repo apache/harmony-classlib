@@ -49,7 +49,7 @@ class RangeSet extends LeafSet {
     }
 
     protected String getName() {
-        return "range:" + (alt ? "^ " : " ") + chars.toString();
+        return "range:" + (alt ? "^ " : " ") + chars.toString(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public boolean first(AbstractSet set) {

@@ -45,6 +45,6 @@ class PreviousMatch extends AbstractSet {
     }
 
     protected String getName() {
-        return "PreviousMatch";
+        return "PreviousMatch"; //$NON-NLS-1$
     }
 }

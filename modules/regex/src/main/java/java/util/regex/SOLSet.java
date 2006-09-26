@@ -43,6 +43,6 @@ final class SOLSet extends AbstractSet {
     }
 
     protected String getName() {
-        return "<SOL>";
+        return "<SOL>"; //$NON-NLS-1$
     }
 }

@@ -52,6 +52,6 @@ class MultiLineSOLSet extends AbstractSet {
     }
 
     protected String getName() {
-        return "^";
+        return "^"; //$NON-NLS-1$
     }
 }

@@ -75,7 +75,7 @@ class JointSet extends AbstractSet {
     }
 
     protected String getName() {
-        return "JointSet";
+        return "JointSet"; //$NON-NLS-1$
     }
 
     public int getGroup() {

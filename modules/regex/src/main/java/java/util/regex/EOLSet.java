@@ -70,6 +70,6 @@ final class EOLSet extends AbstractSet {
     }
 
     protected String getName() {
-        return "<EOL>";
+        return "<EOL>"; //$NON-NLS-1$
     }
 }

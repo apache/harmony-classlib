@@ -205,7 +205,7 @@ class DecomposedCharSet extends JointSet {
     }
 
     protected String getName() {
-        return "decomposed char:" + getDecomposedChar();
+        return "decomposed char:" + getDecomposedChar(); //$NON-NLS-1$
     }
 
     /**

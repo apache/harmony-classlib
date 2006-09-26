@@ -156,7 +156,7 @@ abstract class AbstractSet {
     }
 
     protected String getQualifiedName() {
-        return "<" + index + ":" + getName() + ">";
+        return "<" + index + ":" + getName() + ">"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public String toString() {

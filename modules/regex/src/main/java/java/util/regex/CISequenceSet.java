@@ -52,6 +52,6 @@ class CISequenceSet extends LeafSet {
 	}
 
 	public String getName() {
-		return "CI sequence: " + string;
+		return "CI sequence: " + string; //$NON-NLS-1$
 	}
 }

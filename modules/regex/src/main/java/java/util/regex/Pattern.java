@@ -24,6 +24,8 @@ import java.io.Serializable;
 
 import java.util.ArrayList;
 
+import org.apache.harmony.regex.internal.nls.Messages;
+
 
 /**
  * Pattern implements a compiler for regular expressions as defined by the J2SE
@@ -143,7 +145,7 @@ public final class Pattern implements Serializable {
         int curPos = 0;       
         
         if (input.length() == 0) {
-            return new String [] {""};
+            return new String [] {""}; //$NON-NLS-1$
         } else {
             while (mat.find() && (index + 1 < limit || limit <= 0)) {
                   res.add(input.subSequence(curPos, mat.start()).toString());
@@ -278,8 +280,8 @@ public final class Pattern implements Serializable {
 
         start = processExpression(-1, this.flags, null);
         if (!lexemes.isEmpty()) {
-            throw new PatternSyntaxException(I18n
-                    .getMessage("Trailing characters"), lexemes.toString(),
+            throw new PatternSyntaxException(
+                    Messages.getString("regex.08"), lexemes.toString(), //$NON-NLS-1$
                     lexemes.getIndex());
         }
         finalizeCompile();
@@ -583,8 +585,8 @@ public final class Pattern implements Serializable {
             }
         } else if (lexemes.peek() == Lexer.CHAR_RIGHT_PARENTHESIS) {
         	if (last instanceof FinalSet) {
-        	    throw new PatternSyntaxException(I18n
-        	      .getMessage("unmatched )"), lexemes.toString(), 
+        	    throw new PatternSyntaxException(
+        	            Messages.getString("regex.09"), lexemes.toString(),  //$NON-NLS-1$
         	         lexemes.getIndex());
         	} else {
         	      cur = new EmptySet(last);
@@ -815,8 +817,8 @@ public final class Pattern implements Serializable {
                                  : flags;
                      term = processExpression(ch, newFlags, last);
                      if (lexemes.peek() != Lexer.CHAR_RIGHT_PARENTHESIS) {
-                         throw new PatternSyntaxException(I18n
-                                 .getMessage("unmatched ("), lexemes.toString(),
+                         throw new PatternSyntaxException(
+                                 Messages.getString("regex.0A"), lexemes.toString(), //$NON-NLS-1$
                                  lexemes.getIndex());
                      }
                      lexemes.next();
@@ -833,8 +835,8 @@ public final class Pattern implements Serializable {
 
                     term = processRange(negative, last);
                     if (lexemes.peek() != Lexer.CHAR_RIGHT_SQUARE_BRACKET)
-                        throw new PatternSyntaxException(I18n
-                                .getMessage("unmatched ["), lexemes.toString(),
+                        throw new PatternSyntaxException(
+                                Messages.getString("regex.0B"), lexemes.toString(), //$NON-NLS-1$
                                 lexemes.getIndex());
                     lexemes.setMode(Lexer.MODE_PATTERN);
                     lexemes.next();
@@ -947,10 +949,9 @@ public final class Pattern implements Serializable {
                         needsBackRefReplacement = true;
                         break;
                     } else {
-                        throw new PatternSyntaxException(I18n
-                                .getMessage("No such group yet exists at "
-                                        + "this point in the pattern"), lexemes
-                                .toString(), lexemes.getIndex());
+                        throw new PatternSyntaxException(
+                                Messages.getString("regex.0C") //$NON-NLS-1$
+                                        , lexemes.toString(), lexemes.getIndex());
                     }
                 }
 
@@ -988,19 +989,18 @@ public final class Pattern implements Serializable {
                     	term = new EmptySet(last);
                     } else if (ch == Lexer.CHAR_RIGHT_PARENTHESIS) {
                         if (last instanceof FinalSet) {
-                        	throw new PatternSyntaxException(I18n
-                    				.getMessage("unmatched )"), lexemes.toString(), 
+                        	throw new PatternSyntaxException(
+                    				Messages.getString("regex.09"), lexemes.toString(),  //$NON-NLS-1$
                     		    	lexemes.getIndex());
                         } else {
                     	    term = new EmptySet(last);
                         }
                     } else {
-                        throw new PatternSyntaxException(I18n
-                                .getMessage("Dangling meta construction")
-                                + ": "
-                                + (lexemes.isSpecial() ? lexemes.peekSpecial()
+                        throw new PatternSyntaxException(
+                                Messages.getString("regex.0D", //$NON-NLS-1$
+                                 (lexemes.isSpecial() ? lexemes.peekSpecial()
                                         .toString() : Character
-                                        .toString((char) ch)), lexemes
+                                        .toString((char) ch))), lexemes
                                 .toString(), lexemes.getIndex());
                     }
                 }
@@ -1097,15 +1097,15 @@ public final class Pattern implements Serializable {
                         try {
                             res.add(buffer, (char) lexemes.peek());
                         } catch (Exception e) {
-                            throw new PatternSyntaxException(I18n
-                                    .getMessage("Illegal character range"),
+                            throw new PatternSyntaxException(
+                                    Messages.getString("regex.0E"), //$NON-NLS-1$
                                     pattern(), lexemes.getIndex());
                         }
                         lexemes.next();
                         buffer = -1;
                     } else {
-                        throw new PatternSyntaxException(I18n
-                                .getMessage("Illegal character range"),
+                        throw new PatternSyntaxException(
+                                Messages.getString("regex.0E"), //$NON-NLS-1$
                                 pattern(), lexemes.getIndex());
                     }
                 }
@@ -1140,7 +1140,7 @@ public final class Pattern implements Serializable {
             firstInClass = false;
         }
         if (notClosed) {
-            throw new PatternSyntaxException(I18n.getMessage("Missing ']'"),
+            throw new PatternSyntaxException(Messages.getString("regex.0F"), //$NON-NLS-1$
                     pattern(), lexemes.getIndex() - 1);
         }
         if (buffer >= 0)
@@ -1178,15 +1178,15 @@ public final class Pattern implements Serializable {
     }
 
     public static String quote(String s) {
-        StringBuffer sb = new StringBuffer().append("\\Q");
+        StringBuffer sb = new StringBuffer().append("\\Q"); //$NON-NLS-1$
         int apos = 0;
         int k;
-        while ((k = s.indexOf("\\E", apos)) >= 0) {
-            sb.append(s.substring(apos, k + 2)).append("\\\\E\\Q");
+        while ((k = s.indexOf("\\E", apos)) >= 0) { //$NON-NLS-1$
+            sb.append(s.substring(apos, k + 2)).append("\\\\E\\Q"); //$NON-NLS-1$
             apos = k + 2;
         }
 
-        return sb.append(s.substring(apos)).append("\\E").toString();
+        return sb.append(s.substring(apos)).append("\\E").toString(); //$NON-NLS-1$
     }
 
     /**

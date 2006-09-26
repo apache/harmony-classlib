@@ -51,6 +51,6 @@ class GroupQuantifierSet extends QuantifierSet {
     }
 
     protected String getName() {
-        return "<GroupQuant>";
+        return "<GroupQuant>"; //$NON-NLS-1$
     }
 }

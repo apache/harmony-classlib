@@ -22,6 +22,8 @@ package java.util.regex;
 
 import java.util.Arrays;
 
+import org.apache.harmony.regex.internal.nls.Messages;
+
 /**
  * @com.intel.drl.spec_ref
  * 
@@ -58,15 +60,15 @@ public class PatternSyntaxException extends IllegalArgumentException {
      * @com.intel.drl.spec_ref
      */
     public String getMessage() {
-        String filler = "";
+        String filler = ""; //$NON-NLS-1$
         if (index >= 1) {
             char[] temp = new char[index];
             Arrays.fill(temp, ' ');
             filler = new String(temp);
         }
         return message
-                + ((pattern != null && pattern.length() != 0) ? " near index: "
-                        + index + "\n" + pattern + "\n" + filler + "^" : "");
+                + ((pattern != null && pattern.length() != 0) ? Messages.getString("regex.07", //$NON-NLS-1$
+                        new Object[]{index, pattern, filler}) : ""); //$NON-NLS-1$
     }
 
     /**

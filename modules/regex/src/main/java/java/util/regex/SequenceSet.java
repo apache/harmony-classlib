@@ -98,7 +98,7 @@ class SequenceSet extends LeafSet {
     }
 
     public String getName() {
-        return "secuence: " + string;
+        return "secuence: " + string; //$NON-NLS-1$
     }
 
     public boolean first(AbstractSet set) {

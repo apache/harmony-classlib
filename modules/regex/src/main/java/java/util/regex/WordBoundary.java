@@ -63,7 +63,7 @@ class WordBoundary extends AbstractSet {
     }
 
     protected String getName() {
-        return "WordBoundary";
+        return "WordBoundary"; //$NON-NLS-1$
     }
 
     private boolean isSpace(char ch, int index, int leftBound,

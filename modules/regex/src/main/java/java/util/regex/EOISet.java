@@ -49,6 +49,6 @@ class EOISet extends AbstractSet {
     }
 
     protected String getName() {
-        return "EOI";
+        return "EOI"; //$NON-NLS-1$
     }
 }

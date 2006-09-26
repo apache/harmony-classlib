@@ -59,6 +59,6 @@ class PositiveLookAhead extends AtomicJointSet {
     }
 
     protected String getName() {
-        return "PosLookaheadJointSet";
+        return "PosLookaheadJointSet"; //$NON-NLS-1$
     }
 }

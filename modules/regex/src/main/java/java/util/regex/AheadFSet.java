@@ -38,6 +38,6 @@ class AheadFSet extends FSet {
     }
 
     protected String getName() {
-        return "AheadFSet";
+        return "AheadFSet"; //$NON-NLS-1$
     }
 }

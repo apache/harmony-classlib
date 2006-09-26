@@ -22,6 +22,8 @@ package java.util.regex;
 
 import java.util.Arrays;
 
+import org.apache.harmony.regex.internal.nls.Messages;
+
 /**
  * Match result implementaion
  * Note: probably it might make sense to combine this class with Matcher.
@@ -175,12 +177,12 @@ class MatchResultImpl implements MatchResult {
 
     private void checkGroup(int group) {
         if (!valid) {
-            throw new IllegalStateException(I18n.getMessage("No match found"));
+            throw new IllegalStateException(Messages.getString("regex.05")); //$NON-NLS-1$
         }
 
         if (group < 0 || group > groupCount) {
-            throw new IndexOutOfBoundsException(I18n.getFormattedMessage(
-                    "Group index out of bounds: {0}", new Integer(group)));
+            throw new IndexOutOfBoundsException(
+                    Messages.getString("regex.06", group)); //$NON-NLS-1$
         }
     }
 

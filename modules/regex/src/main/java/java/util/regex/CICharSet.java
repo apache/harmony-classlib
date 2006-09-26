@@ -44,7 +44,7 @@ class CICharSet extends LeafSet {
     }
 
     protected String getName() {
-        return "CI " + ch;
+        return "CI " + ch; //$NON-NLS-1$
     }
 
     protected char getChar() {

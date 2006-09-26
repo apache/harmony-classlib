@@ -44,6 +44,6 @@ class FinalSet extends FSet {
     }
 
     protected String getName() {
-        return "FinalSet";
+        return "FinalSet"; //$NON-NLS-1$
     }
 }

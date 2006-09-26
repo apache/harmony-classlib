@@ -53,6 +53,6 @@ class UCISequenceSet extends LeafSet {
     }
 
     public String getName() {
-        return "UCI secuence: " + string;
+        return "UCI secuence: " + string; //$NON-NLS-1$
     }
 }

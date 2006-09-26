@@ -44,7 +44,7 @@ class EmptySet extends LeafSet {
      * @see java.util.regex.AbstractSet#getName()
      */
     protected String getName() {
-        return "<Empty set>";
+        return "<Empty set>"; //$NON-NLS-1$
     }
 
     public boolean hasConsumed(MatchResultImpl mr) {

@@ -20,6 +20,8 @@
  */
 package java.util.regex;
 
+import org.apache.harmony.regex.internal.nls.Messages;
+
 /**
  * @author Nikolay A. Kuznetsov
  * @version $Revision: 1.4.2.2 $
@@ -56,7 +58,7 @@ class LeafQuantifierSet extends QuantifierSet {
     }
 
     protected String getName() {
-        return "<Quant>";
+        return "<Quant>"; //$NON-NLS-1$
     }
 
     /**
@@ -66,7 +68,7 @@ class LeafQuantifierSet extends QuantifierSet {
      */
     public void setInnerSet(AbstractSet innerSet) {
         if (!(innerSet instanceof LeafSet))
-            throw new RuntimeException("Internal Error");
+            throw new RuntimeException(Messages.getString("regex.04")); //$NON-NLS-1$
         super.setInnerSet(innerSet);
         this.leaf = (LeafSet) innerSet;
     }

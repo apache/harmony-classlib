@@ -55,6 +55,6 @@ class UCIBackReferenceSet extends CIBackReferenceSet {
     }
 
     public String getName() {
-        return "UCI back reference: " + this.groupIndex;
+        return "UCI back reference: " + this.groupIndex; //$NON-NLS-1$
     }
 }

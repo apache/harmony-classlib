@@ -68,6 +68,6 @@ class AtomicJointSet extends NonCapJointSet {
     }
 
     protected String getName() {
-        return "NonCapJointSet";
+        return "NonCapJointSet"; //$NON-NLS-1$
     }
 }

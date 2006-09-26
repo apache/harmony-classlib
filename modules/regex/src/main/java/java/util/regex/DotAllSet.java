@@ -33,7 +33,7 @@ class DotAllSet extends LeafSet {
     }
 
     protected String getName() {
-        return "DotAll";
+        return "DotAll"; //$NON-NLS-1$
     }
 
     public int getType() {

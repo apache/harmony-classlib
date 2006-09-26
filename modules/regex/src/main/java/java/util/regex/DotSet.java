@@ -46,7 +46,7 @@ final class DotSet extends LeafSet {
     }
 
     protected String getName() {
-        return ".";
+        return "."; //$NON-NLS-1$
     }
 
     public int getType() {

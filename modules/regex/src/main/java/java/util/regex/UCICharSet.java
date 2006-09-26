@@ -41,7 +41,7 @@ class UCICharSet extends LeafSet {
     }
 
     protected String getName() {
-        return "UCI " + ch;
+        return "UCI " + ch; //$NON-NLS-1$
     }
 
     protected char getChar() {
