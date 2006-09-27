@@ -215,6 +215,27 @@ public class DriverManagerTest extends TestCase {
 			} // end try
 		} // end for
 	} // end method testGetConnectionString()
+    
+    /**
+     * @tests java.sql.DriverManager#getConnection(String, Properties)
+     */
+    public void test_getConnection_LStringLProperties() {
+        try {
+            DriverManager.getConnection("fff", //$NON-NLS-1$
+                    new Properties());
+            fail("Should throw SQLException.");
+        } catch (SQLException e) {
+            assertEquals("08001", e.getSQLState()); //$NON-NLS-1$
+        }
+        
+        try {
+            DriverManager.getConnection(null, 
+                    new Properties());
+            fail("Should throw SQLException.");
+        } catch (SQLException e) {
+            assertEquals("08001", e.getSQLState()); //$NON-NLS-1$
+        }
+    }
 
 	/*
 	 * Class under test for Connection getConnection(String, Properties)
@@ -352,15 +373,18 @@ public class DriverManagerTest extends TestCase {
 			try {
 				Driver invalidDriver = DriverManager.getDriver(invalidURLs[i]);
 			} catch (SQLException e) {
-				assertTrue(true);
-				// System.out.println("DriverManagerTest: getDriver failed for
-				// invalid driver");
-				// System.out.println("DriverManagerTest: exception message = "
-				// + e.getMessage() );
-				assertTrue(e.getMessage().equals(exceptionMsg1));
+                assertEquals("08001", e.getSQLState());
+				assertEquals(exceptionMsg1, e.getMessage());
 			} // end try
 		} // end for
 
+        try {
+            Driver invalidDriver = DriverManager.getDriver(null);
+        } catch (SQLException e) {
+            assertEquals("08001", e.getSQLState());
+            assertEquals(exceptionMsg1, e.getMessage());
+        } // end try
+        
 	} // end method testGetDriver()
 
 	public void testGetDrivers() {
