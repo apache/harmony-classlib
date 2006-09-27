@@ -321,6 +321,8 @@ final class HexStringParser {
     private static final int FLOAT_EXPONENT_WIDTH = 8;
 
     private static final int FLOAT_MANTISSA_WIDTH = 23;
+    
+    private static final int HEX_RADIX = 16;
 
     private static final String HEX_SIGNIFICANT = "0[xX](\\p{XDigit}+\\.?|\\p{XDigit}*\\.\\p{XDigit}+)"; //$NON-NLS-1$
 
@@ -338,6 +340,8 @@ final class HexStringParser {
     private final int MANTISSA_WIDTH;
     
     private final long EXPONENT_BASE;
+    
+    private final long MAX_EXPONENT;
 
     private long sign;
 
@@ -350,7 +354,7 @@ final class HexStringParser {
         this.MANTISSA_WIDTH = mantissa_width;
         
         this.EXPONENT_BASE = ~(-1L << (exponent_width - 1));
-
+        this.MAX_EXPONENT = ~(-1L << exponent_width);
     }
 
     /*
@@ -424,9 +428,93 @@ final class HexStringParser {
             exponent = sign * Long.MAX_VALUE;
         }
     }
-
+   
     // Parses the mantissa field
     private void parseMantissa(String significantStr) {
+        String[] strings = significantStr.split("\\."); //$NON-NLS-1$
+        String strIntegerPart = strings[0];
+        String strDecimalPart = strings.length > 1 ? strings[1] : ""; //$NON-NLS-1$
+
+        String significand = getNormalizedSignificand(strIntegerPart, strDecimalPart);
+        if(significand.equals("0")){ //$NON-NLS-1$
+            setZero();
+            return;
+        }
+        
+        int offset = getOffset(strIntegerPart, strDecimalPart);
+        boolean isOverFlow = checkedAddExponent(offset);
+        if (isOverFlow) {
+            return;
+        }
+
         // TODO
+    }
+
+    private void setInfinite() {
+        exponent = MAX_EXPONENT;
+        mantissa = 0;
+    }
+
+    private void setZero() {
+        exponent = 0;
+        mantissa = 0;
+    }
+
+    private boolean checkedAddExponent(long offset) {
+        double d = exponent;
+        boolean isOverFlow = false;
+        d += offset;
+        if (d >= Long.MAX_VALUE) {
+            setInfinite();
+            isOverFlow = true;
+        } else if (d <= -Long.MAX_VALUE) {
+            setZero();
+            isOverFlow = true;
+        } else {
+            exponent += offset;
+        }
+        return isOverFlow;
+    }
+
+    /*
+     * Returns the normalized significand after removing the leading zeros.
+     */
+    private String getNormalizedSignificand(String strIntegerPart, String strDecimalPart) {
+        String significand = strIntegerPart + strDecimalPart;
+        significand = significand.replaceFirst("^0+", ""); //$NON-NLS-1$//$NON-NLS-2$
+        if (significand.length() == 0) {
+            significand = "0"; //$NON-NLS-1$
+        }
+        return significand;
+    }
+
+    /*
+     * Calculates the offset between the normalized number and unnormalized
+     * number. In a normalized representation, significand is represented by the
+     * characters "0x1." followed by a lowercase hexadecimal representation of
+     * the rest of the significand as a fraction.
+     */
+    private int getOffset(String strIntegerPart, String strDecimalPart) {
+        strIntegerPart = strIntegerPart.replaceFirst("^0+", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        
+        //If the Interger part is a nonzero number.
+        if (strIntegerPart.length() != 0) {
+            String leadingNumber = strIntegerPart.substring(0, 1);
+            return (strIntegerPart.length() - 1) * 4 + countBitsLength(Long.parseLong(leadingNumber,HEX_RADIX)) - 1;
+        }
+        
+        //If the Interger part is a zero number.
+        int i;
+        for (i = 0; i < strDecimalPart.length() && strDecimalPart.charAt(i) == '0'; i++);   
+        if (i == strDecimalPart.length()) {
+            return 0;
+        }
+        String leadingNumber=strDecimalPart.substring(i,i + 1);
+        return (-i - 1) * 4 + countBitsLength(Long.parseLong(leadingNumber, HEX_RADIX)) - 1;
+    }
+
+    private int countBitsLength(long value) {
+        int leadingZeros = Long.numberOfLeadingZeros(value);
+        return Long.SIZE - leadingZeros;
     }
 }
