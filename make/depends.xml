@@ -28,7 +28,10 @@
     <property file="make/depends.properties" />
     <import file="${basedir}/make/properties.xml" />
 
-    <target name="check">
+    <target name="check" description="Check whether dependencies are available"
+            depends="-check,-create-unsigned-bcprov-jar,-check-win" />
+
+    <target name="-check">
 
 	<check-one-file src="${yoko.url}" dest="${yoko.jar}" />
 
@@ -54,26 +57,26 @@
 	
 	<check-one-file src="${jetty.url}" dest="${jetty.jar}" /> 
 	
-    <check-one-file src="${jetty-util.url}" dest="${jetty-util.jar}" /> 
+        <check-one-file src="${jetty-util.url}" dest="${jetty-util.jar}" /> 
   
-    <check-one-file src="${servlet-api.url}" dest="${servlet-api.jar}" /> 
+        <check-one-file src="${servlet-api.url}" dest="${servlet-api.jar}" /> 
 
 	<uptodate property="bcprov.uptodate"
                   srcfile="${signed.bcprov.jar}"
                   targetfile="${bcprov.jar}" />
-	<antcall target="create-unsigned-bcprov-jar" />
-
-        <antcall target="check-win" />
 
     </target>
 
-    <target name="check-win" if="is.windows">
+    <target name="-check-win" if="is.windows">
         
 	<check-one-file src="${msvcr71.url}" dest="${msvcr71.dll}" />
 
     </target>
 
-    <target name="download" description="Download required jars">
+    <target name="download" description="Download required jars"
+            depends="-download,-download-win" />
+
+    <target name="-download">
 
 	<mkdir dir="${yoko.dir}" />
 	<download-one-file src="${yoko.url}" dest="${yoko.jar}"
@@ -126,11 +129,9 @@
         <download-one-file src="${servlet-api.url}" dest="${servlet-api.jar}"
                            md5="${servlet-api.md5}" />
 
-        <antcall target="download-win" />
-
     </target>
 
-    <target name="download-win" if="is.windows">
+    <target name="-download-win" if="is.windows">
         
 	<mkdir dir="${msvcr71.dir}" />
 	<download-one-file src="${msvcr71.url}" dest="${msvcr71.dll}"
@@ -150,7 +151,7 @@
             <condition property="md5.verified" value="true">
                 <equals arg1="${new.md5}" arg2="@{md5}" />
             </condition>
-            <antcall target="remove-file-if-bad">
+            <antcall target="-remove-file-if-bad">
                 <param name="jar" value="@{dest}" />
             </antcall>
 	    <fail unless="md5.verified">
@@ -166,7 +167,7 @@ found:
         </sequential>
     </macrodef>
 
-    <target name="remove-file-if-bad" unless="md5.verified">
+    <target name="-remove-file-if-bad" unless="md5.verified">
         <delete file="${dest}" />
     </target>
 
@@ -200,7 +201,7 @@ than the Apache License v2.
         </sequential>
     </macrodef>
 
-    <target name="create-unsigned-bcprov-jar" unless="bcprov.uptodate">
+    <target name="-create-unsigned-bcprov-jar" unless="bcprov.uptodate">
         <echo>Removing signature from bcprov.jar</echo>
 	<delete dir="${bcprov.dir}/temp" />
 	<unzip src="${signed.bcprov.jar}" dest="${bcprov.dir}/temp">
