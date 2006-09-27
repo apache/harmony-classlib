@@ -144,9 +144,13 @@
         <attribute name="dest" />
         <attribute name="md5" />
         <sequential>
-            <echo>Fetching @{dest}</echo>
-	    <get src="@{src}" dest="@{dest}" usetimestamp="true"
-                 verbose="true" />
+            <echo>Checking @{dest}</echo>
+	    <available file="@{dest}" type="file"
+                       property="@{dest}.exists" />
+            <antcall target="-really-download">
+                <param name="src" value="@{src}" />
+                <param name="dest" value="@{dest}" />
+            </antcall>
             <checksum file="@{dest}" property="new.md5" />
             <condition property="md5.verified" value="true">
                 <equals arg1="${new.md5}" arg2="@{md5}" />
@@ -166,6 +170,11 @@ found:
             <echo>Checksum verified (${md5.verified})</echo>
         </sequential>
     </macrodef>
+
+    <target name="-really-download" unless="${dest}.exists">
+        <echo>Fetching ${dest}</echo>
+	<get src="${src}" dest="${dest}" usetimestamp="true" verbose="true" />
+    </target>
 
     <target name="-remove-file-if-bad" unless="md5.verified">
         <delete file="${dest}" />
