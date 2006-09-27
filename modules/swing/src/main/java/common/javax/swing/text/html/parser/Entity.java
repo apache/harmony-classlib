@@ -27,11 +27,10 @@ public final class Entity implements DTDConstants {
 
     public char[] data;
 
-    boolean isGeneral;
-
-    boolean isParameter;
-
-
+    private final static int GENERAL_MASK = DTDConstants.GENERAL;
+    
+    private final static int PARAMETER_MASK = DTDConstants.PARAMETER;
+    
     public Entity(final String name,
                   final int type,
                   final char[] data) {
@@ -45,21 +44,17 @@ public final class Entity implements DTDConstants {
            final String data,
            final boolean isGeneral,
            final boolean isParameter) {
-        this.name = name;
-        this.type = type;
-        this.data = data.toCharArray();
-        this.isGeneral = isGeneral;
-        this.isParameter = isParameter;
+        this (name, 
+                (type | 
+                        (isGeneral ? GENERAL_MASK : 0) | 
+                        (isParameter ? PARAMETER_MASK : 0)), 
+                data.toCharArray());
     }
 
     Entity(final String name,
            final char ch) {
-        this.name = name;
-        this.type = DTDConstants.CDATA;
-        this.data = new char[] {ch};
-        this.isGeneral = true;
+        this(name, DTDConstants.CDATA | GENERAL_MASK, new char[] {ch});
     }
-
 
     public String getString() {
         return String.valueOf(data);
@@ -70,17 +65,15 @@ public final class Entity implements DTDConstants {
     }
 
     public boolean isGeneral() {
-        // TODO: implement
-        return isGeneral;
+        return (type & GENERAL_MASK) != 0;
     }
 
     public boolean isParameter() {
-        // TODO: implement
-        return isParameter;
+        return (type & PARAMETER_MASK) != 0;
     }
 
     public int getType() {
-        return type;
+        return type & 0xFFFF;
     }
 
     public String getName() {
@@ -108,6 +101,5 @@ public final class Entity implements DTDConstants {
             return DTDConstants.CDATA;
         }
     }
-
 }
 

@@ -43,13 +43,28 @@ public class EntityTest extends TestCase {
     }
 
     //TODO Investigate how is it defined.
-    public void testIsGeneral() {
-
+    public void testIsGeneral() throws Exception{
+        Entity entity2 = new Entity("name", DTDConstants.GENERAL, new char[0]); //$NON-NLS-1$
+        assertTrue(entity2.isGeneral());
+        
+        entity2 = new Entity("name", DTDConstants.GENERAL | DTDConstants.CDATA, new char[0]); //$NON-NLS-1$
+        assertTrue(entity2.isGeneral());
+        
+        entity2 = new Entity("name", DTDConstants.CDATA, new char[0]); //$NON-NLS-1$
+        assertFalse(entity2.isGeneral());
     }
 
     //TODO Investigate how is it defined.
-    public void testIsParameter() {
-
+    public void testIsParameter() throws Exception{
+        //regression for HARMONY-1349
+        Entity entity2 = new Entity("name", DTDConstants.PARAMETER, new char[0]); //$NON-NLS-1$
+        assertTrue(entity2.isParameter());
+        
+        entity2 = new Entity("name", DTDConstants.PARAMETER | DTDConstants.CDATA, new char[0]); //$NON-NLS-1$
+        assertTrue(entity2.isParameter());
+        
+        entity2 = new Entity("name", DTDConstants.CDATA, new char[0]); //$NON-NLS-1$
+        assertFalse(entity2.isParameter());
     }
 
     public void testName2type() {
@@ -77,5 +92,16 @@ public class EntityTest extends TestCase {
                 assertEquals(DTDConstants.CDATA, value);
             }
         }
+    }
+    
+    /**
+     * @test javax.swing.text.html.parser.Entity#getType()
+     */
+    public void testType() throws Exception{
+        //regression for HARMONY-1349
+        DTD dtd = DTD.getDTD("dummy"); //$NON-NLS-1$
+        Entity space = dtd.getEntity("#SPACE"); //$NON-NLS-1$
+        assertEquals(65536, space.type);
+        assertEquals(0, space.getType()); 
     }
 }
