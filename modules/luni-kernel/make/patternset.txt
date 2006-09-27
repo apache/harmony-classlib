@@ -58,3 +58,8 @@ java/lang/ref/WeakReference$*.*
 org/apache/harmony/kernel/vm/VM.*
 org/apache/harmony/kernel/vm/VM$*.*
 
+org/apache/harmony/kernel/vm/Objects.*
+org/apache/harmony/kernel/vm/Objects$*.*
+
+org/apache/harmony/kernel/vm/Threads.*
+org/apache/harmony/kernel/vm/Threads$*.*
