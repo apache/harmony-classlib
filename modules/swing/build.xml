@@ -151,7 +151,6 @@
                     <exclude name="javax/swing/AccessibleJComponent_MultithreadedTest.java"/>
                     <exclude name="javax/swing/AccessibleJComponent_MultithreadedTest.java"/>
                     <exclude name="javax/swing/JComponent_MultithreadedTest.java"/>
-                    <exclude name="javax/swing/JEditorPaneTest.java"/>
                     <exclude name="javax/swing/JFormattedTextField_CommitActionRTest.java"/>
                     <exclude name="javax/swing/JInternalFrame_MultithreadedTest.java"/>
                     <exclude name="javax/swing/JTextField_NotifyActionRTest.java"/>

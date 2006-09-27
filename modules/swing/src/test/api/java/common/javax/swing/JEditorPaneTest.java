@@ -102,7 +102,6 @@ public class JEditorPaneTest extends SwingTestCase {
         c.add(new JScrollPane(jep1));
         c.add(jep);
         jf.setSize(200, 300);
-        jf.pack();
     }
 
     protected void tearDown() throws Exception {
