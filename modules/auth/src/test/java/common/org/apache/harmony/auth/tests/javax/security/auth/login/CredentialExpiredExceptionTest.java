@@ -55,6 +55,6 @@ public class CredentialExpiredExceptionTest extends TestCase {
     }
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(CredentialExpiredException.class);
+        junit.textui.TestRunner.run(CredentialExpiredExceptionTest.class);
     }
 }
