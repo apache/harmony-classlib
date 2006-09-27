@@ -29,6 +29,10 @@
     <property name="stub.jar"
               location="${hy.jdk}/jre/lib/boot/luni-kernel-stubs.jar" />
 
+    <fileset id="classes" dir="${hy.build}">
+        <includesfile name="make/patternset.txt" />
+    </fileset>
+
     <target name="warn">
         <fail>...
 
@@ -40,7 +44,7 @@ the top-level build.
 
     <target name="build" depends="svn-info">
         <jar destfile="${stub.jar}" manifest="META-INF/MANIFEST.MF">
-            <fileset dir="${hy.build}" includesfile="make/patternset.txt" />
+            <fileset refid="classes" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -49,6 +53,9 @@ the top-level build.
 
     <target name="clean">
         <delete file="${stub.jar}" />
+        <delete failonerror="false">
+            <fileset refid="classes" />
+        </delete>
     </target>
 
     <target name="test">
