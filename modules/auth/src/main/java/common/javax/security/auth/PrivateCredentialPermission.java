@@ -27,7 +27,6 @@ import java.io.Serializable;
 import java.security.Permission;
 import java.security.PermissionCollection;
 import java.security.Principal;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.harmony.auth.internal.nls.Messages;
@@ -52,16 +51,6 @@ public final class PrivateCredentialPermission extends Permission {
      */
     private String credentialClass;
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
-    private Set principals;
-
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
-    private boolean testing;
-    
     // current offset        
     private transient int offset;
     // owners set
@@ -87,7 +76,7 @@ public final class PrivateCredentialPermission extends Permission {
             throw new IllegalArgumentException(
                     Messages.getString("auth.10")); //$NON-NLS-1$
         }
-        this.credentialClass = name.substring(0, beg);
+        credentialClass = name.substring(0, beg);
 
         // get a number of pairs: PrincipalClass "PrincipalName"
         beg++;
@@ -167,14 +156,13 @@ public final class PrivateCredentialPermission extends Permission {
      * @param credentialClass - credential class name
      * @param principals - principal set
      */
-    PrivateCredentialPermission(String credentialClass, Set principals) {
+    PrivateCredentialPermission(String credentialClass, Set<Principal> principals) {
 
         super(credentialClass);
         this.credentialClass = credentialClass;
 
         set = new CredOwner[principals.size()];
-        for (Iterator i = principals.iterator(); i.hasNext();) {
-            Principal p = (Principal) i.next();
+        for (Principal p : principals) {
             CredOwner element = new CredOwner(p.getClass().getName(), p
                     .getName());
             // check for duplicate elements
@@ -208,6 +196,7 @@ public final class PrivateCredentialPermission extends Permission {
     /** 
      * @com.intel.drl.spec_ref 
      */
+    @Override
     public String getActions() {
         return READ;
     }
@@ -222,6 +211,7 @@ public final class PrivateCredentialPermission extends Permission {
     /** 
      * @com.intel.drl.spec_ref 
      */
+    @Override
     public int hashCode() {
         int hash = 0;
         for (int i = 0; i < offset; i++) {
@@ -233,6 +223,7 @@ public final class PrivateCredentialPermission extends Permission {
     /** 
      * @com.intel.drl.spec_ref 
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -244,14 +235,15 @@ public final class PrivateCredentialPermission extends Permission {
 
         PrivateCredentialPermission that = (PrivateCredentialPermission) obj;
 
-        return this.credentialClass.equals(that.credentialClass) &&
-                (this.offset == that.offset) &&
-                sameMembers(this.set, that.set, offset);
+        return credentialClass.equals(that.credentialClass) &&
+                (offset == that.offset) &&
+                sameMembers(set, that.set, offset);
     }
 
     /** 
      * @com.intel.drl.spec_ref 
      */
+    @Override
     public boolean implies(Permission permission) {
 
         if (permission == null || this.getClass() != permission.getClass()) {
@@ -260,7 +252,7 @@ public final class PrivateCredentialPermission extends Permission {
 
         PrivateCredentialPermission that = (PrivateCredentialPermission) permission;
 
-        if (!("*".equals(this.credentialClass) || this.credentialClass //$NON-NLS-1$
+        if (!("*".equals(credentialClass) || credentialClass //$NON-NLS-1$
                 .equals(that.getCredentialClass()))) {
             return false;
         }
@@ -289,6 +281,7 @@ public final class PrivateCredentialPermission extends Permission {
     /** 
      * @com.intel.drl.spec_ref 
      */
+    @Override
     public PermissionCollection newPermissionCollection() {
         return null;
     }
@@ -372,9 +365,9 @@ public final class PrivateCredentialPermission extends Permission {
             CredOwner co = (CredOwner) obj;
 
             if (isClassWildcard
-                    || this.principalClass.equals(co.principalClass)) {
+                    || principalClass.equals(co.principalClass)) {
                 if (isPNameWildcard
-                        || this.principalName.equals(co.principalName)) {
+                        || principalName.equals(co.principalName)) {
                     return true;
                 }
             }
@@ -382,13 +375,15 @@ public final class PrivateCredentialPermission extends Permission {
         }
 
         // Checks two CredOwner objects for equality. 
+        @Override
         public boolean equals(Object obj) {
-            return this.principalClass.equals(((CredOwner) obj).principalClass)
-                    && this.principalName
+            return principalClass.equals(((CredOwner) obj).principalClass)
+                    && principalName
                             .equals(((CredOwner) obj).principalName);
         }
 
         // Returns the hash code value for this object.
+        @Override
         public int hashCode() {
             return principalClass.hashCode() + principalName.hashCode();
         }

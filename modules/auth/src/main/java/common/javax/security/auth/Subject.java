@@ -14,11 +14,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Stepan M. Mishura
-* @version $Revision$
-*/
-
 package javax.security.auth;
 
 import java.io.IOException;
@@ -42,29 +37,10 @@ import java.util.Set;
 
 import org.apache.harmony.auth.internal.nls.Messages;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
-
 public final class Subject implements Serializable {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    private Set principals;
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    private boolean readOnly;
+    private static final long serialVersionUID = -8308522755600156056L;
     
-    // set of private credentials
-    private transient SecureSet privateCredentials;
-
-    // set of public credentials
-    private transient SecureSet publicCredentials;
-
     private static final AuthPermission _AS = new AuthPermission("doAs"); //$NON-NLS-1$
 
     private static final AuthPermission _AS_PRIVILEGED = new AuthPermission(
@@ -85,71 +61,64 @@ public final class Subject implements Serializable {
     private static final AuthPermission _READ_ONLY = new AuthPermission(
             "setReadOnly"); //$NON-NLS-1$
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    private static final long serialVersionUID = -8308522755600156056L;
+    private final Set<Principal> principals;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    private boolean readOnly;
+    
+    // set of private credentials
+    private transient SecureSet<Object> privateCredentials;
+
+    // set of public credentials
+    private transient SecureSet<Object> publicCredentials;
+    
     public Subject() {
-
-        principals = new SecureSet(_PRINCIPALS);
-        publicCredentials = new SecureSet(_PUBLIC_CREDENTIALS);
-        privateCredentials = new SecureSet(_PRIVATE_CREDENTIALS);
+        super();
+        principals = new SecureSet<Principal>(_PRINCIPALS);
+        publicCredentials = new SecureSet<Object>(_PUBLIC_CREDENTIALS);
+        privateCredentials = new SecureSet<Object>(_PRIVATE_CREDENTIALS);
 
         readOnly = false;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Subject(boolean readOnly, Set<? extends Principal> subjPrincipals,
             Set<?> pubCredentials, Set<?> privCredentials) {
 
-        if (subjPrincipals == null || pubCredentials == null
-                || privCredentials == null) {
+        if (subjPrincipals == null || pubCredentials == null || privCredentials == null) {
             throw new NullPointerException();
         }
 
-        principals = new SecureSet(_PRINCIPALS, subjPrincipals);
-        publicCredentials = new SecureSet(_PUBLIC_CREDENTIALS, pubCredentials);
-        privateCredentials = new SecureSet(_PRIVATE_CREDENTIALS,
-                privCredentials);
+        principals = new SecureSet<Principal>(_PRINCIPALS, subjPrincipals);
+        publicCredentials = new SecureSet<Object>(_PUBLIC_CREDENTIALS, pubCredentials);
+        privateCredentials = new SecureSet<Object>(_PRIVATE_CREDENTIALS, privCredentials);
 
         this.readOnly = readOnly;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @SuppressWarnings("unchecked")
     public static Object doAs(Subject subject, PrivilegedAction action) {
 
         checkPermission(_AS);
 
-        return doAs_PrivilegedAction(subject, action, AccessController
-                .getContext());
+        return doAs_PrivilegedAction(subject, action, AccessController.getContext());
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static Object doAsPrivileged(Subject subject,
-            PrivilegedAction action, AccessControlContext context) {
+    @SuppressWarnings("unchecked")
+    public static Object doAsPrivileged(Subject subject, PrivilegedAction action,
+            AccessControlContext context) {
 
         checkPermission(_AS_PRIVILEGED);
 
         if (context == null) {
-            return doAs_PrivilegedAction(subject, action,
-                    new AccessControlContext(new ProtectionDomain[0]));
+            return doAs_PrivilegedAction(subject, action, new AccessControlContext(
+                    new ProtectionDomain[0]));
         }
         return doAs_PrivilegedAction(subject, action, context);
     }
 
     // instantiates a new context and passes it to AccessController
-    private static Object doAs_PrivilegedAction(Subject subject,
-            PrivilegedAction action, final AccessControlContext context) {
+    @SuppressWarnings("unchecked")
+    private static Object doAs_PrivilegedAction(Subject subject, PrivilegedAction action,
+            final AccessControlContext context) {
 
         AccessControlContext newContext;
 
@@ -169,27 +138,21 @@ public final class Subject implements Serializable {
             }
         };
 
-        newContext = (AccessControlContext) AccessController
-                .doPrivileged(dccAction);
+        newContext = (AccessControlContext) AccessController.doPrivileged(dccAction);
 
         return AccessController.doPrivileged(action, newContext);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @SuppressWarnings("unchecked")
     public static Object doAs(Subject subject, PrivilegedExceptionAction action)
             throws PrivilegedActionException {
 
         checkPermission(_AS);
 
-        return doAs_PrivilegedExceptionAction(subject, action, AccessController
-                .getContext());
+        return doAs_PrivilegedExceptionAction(subject, action, AccessController.getContext());
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @SuppressWarnings("unchecked")
     public static Object doAsPrivileged(Subject subject,
             PrivilegedExceptionAction action, AccessControlContext context)
             throws PrivilegedActionException {
@@ -203,7 +166,8 @@ public final class Subject implements Serializable {
         return doAs_PrivilegedExceptionAction(subject, action, context);
     }
 
-    //  instantiates a new context and passes it to AccessController
+    // instantiates a new context and passes it to AccessController
+    @SuppressWarnings("unchecked")
     private static Object doAs_PrivilegedExceptionAction(Subject subject,
             PrivilegedExceptionAction action, final AccessControlContext context)
             throws PrivilegedActionException {
@@ -219,21 +183,18 @@ public final class Subject implements Serializable {
             combiner = new SubjectDomainCombiner(subject);
         }
 
-        PrivilegedAction dccAction = new PrivilegedAction() {
-            public Object run() {
+        PrivilegedAction<AccessControlContext> dccAction = new PrivilegedAction<AccessControlContext>() {
+            public AccessControlContext run() {
                 return new AccessControlContext(context, combiner);
             }
         };
 
-        newContext = (AccessControlContext) AccessController
-                .doPrivileged(dccAction);
+        newContext = AccessController.doPrivileged(dccAction);
 
         return AccessController.doPrivileged(action, newContext);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public boolean equals(Object obj) {
 
         if (this == obj) {
@@ -254,80 +215,52 @@ public final class Subject implements Serializable {
         return false;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Set<Principal> getPrincipals() {
         return principals;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public <T extends Principal> Set<T> getPrincipals(Class<T> c) {
-        return ((SecureSet) principals).get(c);
+        return ((SecureSet<Principal>) principals).get(c);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Set<Object> getPrivateCredentials() {
         return privateCredentials;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public <T> Set<T> getPrivateCredentials(Class<T> c) {
         return privateCredentials.get(c);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Set<Object> getPublicCredentials() {
         return publicCredentials;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public <T> Set<T> getPublicCredentials(Class<T> c) {
         return publicCredentials.get(c);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public int hashCode() {
         return principals.hashCode() + privateCredentials.hashCode()
                 + publicCredentials.hashCode();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setReadOnly() {
         checkPermission(_READ_ONLY);
 
         readOnly = true;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean isReadOnly() {
         return readOnly;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public String toString() {
 
         StringBuffer buf = new StringBuffer("Subject:\n"); //$NON-NLS-1$
 
-        Iterator it = principals.iterator();
+        Iterator<?> it = principals.iterator();
         while (it.hasNext()) {
             buf.append("\tPrincipal: "); //$NON-NLS-1$
             buf.append(it.next());
@@ -356,43 +289,32 @@ public final class Subject implements Serializable {
         return buf.toString();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private void readObject(ObjectInputStream in) throws IOException,
             ClassNotFoundException {
 
         in.defaultReadObject();
 
-        publicCredentials = new SecureSet(_PUBLIC_CREDENTIALS);
-        privateCredentials = new SecureSet(_PRIVATE_CREDENTIALS);
+        publicCredentials = new SecureSet<Object>(_PUBLIC_CREDENTIALS);
+        privateCredentials = new SecureSet<Object>(_PRIVATE_CREDENTIALS);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static Subject getSubject(final AccessControlContext context) {
         checkPermission(_SUBJECT);
         if (context == null) {
-        	throw new NullPointerException(Messages.getString("auth.09")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("auth.09")); //$NON-NLS-1$
         }
-        PrivilegedAction action = new PrivilegedAction() {
-            public Object run() {
+        PrivilegedAction<DomainCombiner> action = new PrivilegedAction<DomainCombiner>() {
+            public DomainCombiner run() {
                 return context.getDomainCombiner();
             }
         };
-        DomainCombiner combiner = (DomainCombiner) AccessController
-                .doPrivileged(action);
+        DomainCombiner combiner = AccessController.doPrivileged(action);
 
-        if ((combiner == null)
-                || !(combiner instanceof javax.security.auth.SubjectDomainCombiner)) {
+        if ((combiner == null) || !(combiner instanceof SubjectDomainCombiner)) {
             return null;
         }
         return ((SubjectDomainCombiner) combiner).getSubject();
@@ -413,23 +335,14 @@ public final class Subject implements Serializable {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     * 
-     */
-    private final class SecureSet extends AbstractSet implements Serializable {
+    private final class SecureSet<SST> extends AbstractSet<SST> implements Serializable {
 
         /**
-         * @com.intel.drl.spec_ref
-         * 
          * Compatibility issue: see comments for setType variable
          */
         private static final long serialVersionUID = 7911754171111800359L;
 
-        /**
-         * @com.intel.drl.spec_ref
-         */
-        private LinkedList elements;
+        private LinkedList<SST> elements;
 
         //
         // Is used to define a set type for serialization.
@@ -446,7 +359,7 @@ public final class Subject implements Serializable {
         // Also according to the serialization spec. adding new field is a
         // compatible change. So is ok for principal set (because the default
         // value for integer is zero). But priv. or pub. credential set
-        // it is not compatible because most probably other implmenetations
+        // it is not compatible because most probably other implementations
         // resolve this issue in other way
         //
         private int setType;
@@ -464,22 +377,22 @@ public final class Subject implements Serializable {
         private transient AuthPermission permission;
 
         protected SecureSet(AuthPermission perm) {
-            this.permission = perm;
-            this.elements = new LinkedList();
+            permission = perm;
+            elements = new LinkedList<SST>();
         }
 
         // creates set from specified collection with specified permission
         // all collection elements are verified before adding
-        protected SecureSet(AuthPermission perm, Collection s) {
+        protected SecureSet(AuthPermission perm, Collection<? extends SST> s) {
             this(perm);
 
             // Subject's constructor receives a Set, we can trusts if a set is from bootclasspath,
-            // and not to check whether it contains duplcates or not
+            // and not to check whether it contains duplicates or not
             boolean trust = s.getClass().getClassLoader() == null; 
             
-            Iterator it = s.iterator();
+            Iterator<? extends SST> it = s.iterator();
             while (it.hasNext()) {
-                Object o = it.next();
+                SST o = it.next();
                 verifyElement(o);
                 if (trust || !elements.contains(o)) {
                     elements.add(o);
@@ -493,17 +406,15 @@ public final class Subject implements Serializable {
             if (o == null) {
                 throw new NullPointerException();
             }
-            if (permission == _PRINCIPALS
-                    && !(java.security.Principal.class.isAssignableFrom(o
-                            .getClass()))) {
-                throw new IllegalArgumentException(
-                        Messages.getString("auth.0B")); //$NON-NLS-1$
+            if (permission == _PRINCIPALS && !(Principal.class.isAssignableFrom(o.getClass()))) {
+                throw new IllegalArgumentException(Messages.getString("auth.0B")); //$NON-NLS-1$
             }
         }
 
         // verifies specified element, checks set state,
         // and security permission to modify set before adding new element
-        public boolean add(Object o) {
+        @Override
+        public boolean add(SST o) {
 
             verifyElement(o);
 
@@ -518,7 +429,8 @@ public final class Subject implements Serializable {
         }
 
         // returns an instance of SecureIterator
-        public Iterator iterator() {
+        @Override
+        public Iterator<SST> iterator() {
 
             if (permission == _PRIVATE_CREDENTIALS) {
 
@@ -528,9 +440,10 @@ public final class Subject implements Serializable {
 
                     // checks permission to access next private credential
                     // moves to the next element even SecurityException was thrown
-                    public Object next() {
+                    @Override
+                    public SST next() {
 
-                        Object obj = iterator.next();
+                        SST obj = iterator.next();
 
                         checkPermission(new PrivateCredentialPermission(obj
                                 .getClass().getName(), principals));
@@ -542,8 +455,8 @@ public final class Subject implements Serializable {
             return new SecureIterator(elements.iterator());
         }
 
-        //@see java.util.Collection#retainAll(java.util.Collection)
-        public boolean retainAll(Collection c) {
+        @Override
+        public boolean retainAll(Collection<?> c) {
 
             if (c == null) {
                 throw new NullPointerException();
@@ -551,23 +464,24 @@ public final class Subject implements Serializable {
             return super.retainAll(c);
         }
 
-        // @see java.util.Collection#size()
+        @Override
         public int size() {
             return elements.size();
         }
 
         // return set with elements that are instances
         // or subclasses of the specified class
-        protected final Set get(final Class c) {
+        protected final <E> Set<E> get(final Class<E> c) {
 
             if (c == null) {
                 throw new NullPointerException();
             }
 
-            AbstractSet s = new AbstractSet() {
-                private LinkedList elements = new LinkedList();
+            AbstractSet<E> s = new AbstractSet<E>() {
+                private LinkedList<E> elements = new LinkedList<E>();
 
-                public boolean add(Object o) {
+                @Override
+                public boolean add(E o) {
 
                     if (!c.isAssignableFrom(o.getClass())) {
                         throw new IllegalArgumentException(
@@ -581,13 +495,13 @@ public final class Subject implements Serializable {
                     return true;
                 }
 
-                // @see java.util.Collection#iterator()
-                public Iterator iterator() {
+                @Override
+                public Iterator<E> iterator() {
                     return elements.iterator();
                 }
 
-                // @see java.util.Collection#retainAll(java.util.Collection)
-                public boolean retainAll(Collection c) {
+                @Override
+                public boolean retainAll(Collection<?> c) {
 
                     if (c == null) {
                         throw new NullPointerException();
@@ -595,25 +509,22 @@ public final class Subject implements Serializable {
                     return super.retainAll(c);
                 }
 
-                // @see java.util.Collection#size()
+                @Override
                 public int size() {
                     return elements.size();
                 }
             };
 
             // FIXME must have permissions for requested priv. credentials
-            for (Iterator it = iterator(); it.hasNext();) {
-                Object o = it.next();
+            for (Iterator<SST> it = iterator(); it.hasNext();) {
+                SST o = it.next();
                 if (c.isAssignableFrom(o.getClass())) {
-                    s.add(o);
+                    s.add(c.cast(o));
                 }
             }
             return s;
         }
 
-        /**
-         * @com.intel.drl.spec_ref
-         */
         private void readObject(ObjectInputStream in) throws IOException,
                 ClassNotFoundException {
             in.defaultReadObject();
@@ -632,20 +543,17 @@ public final class Subject implements Serializable {
                 throw new IllegalArgumentException();
             }
 
-            Iterator it = elements.iterator();
+            Iterator<SST> it = elements.iterator();
             while (it.hasNext()) {
                 verifyElement(it.next());
             }
         }
 
-        /**
-         * @com.intel.drl.spec_ref
-         */
         private void writeObject(ObjectOutputStream out) throws IOException {
 
             if (permission == _PRIVATE_CREDENTIALS) {
                 // does security check for each private credential
-                for (Iterator it = iterator(); it.hasNext();) {
+                for (Iterator<SST> it = iterator(); it.hasNext();) {
                     it.next();
                 }
                 setType = SET_PrivCred;
@@ -659,20 +567,18 @@ public final class Subject implements Serializable {
         }
 
         //Represents iterator for subject's secure set
-        private class SecureIterator implements Iterator {
-            protected Iterator iterator;
+        private class SecureIterator implements Iterator<SST> {
+            protected Iterator<SST> iterator;
 
-            protected SecureIterator(Iterator iterator) {
+            protected SecureIterator(Iterator<SST> iterator) {
                 this.iterator = iterator;
             }
 
-            // @see java.util.Iterator#hasNext()
             public boolean hasNext() {
                 return iterator.hasNext();
             }
 
-            // @see java.util.Iterator#next()
-            public Object next() {
+            public SST next() {
                 return iterator.next();
             }
 

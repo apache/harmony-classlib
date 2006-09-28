@@ -26,11 +26,6 @@ import java.security.Principal;
 import java.security.ProtectionDomain;
 import java.util.Set;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
-
 public class SubjectDomainCombiner implements DomainCombiner {
 
     // subject to be associated
@@ -40,18 +35,13 @@ public class SubjectDomainCombiner implements DomainCombiner {
     private static final AuthPermission _GET = new AuthPermission(
             "getSubjectFromDomainCombiner"); //$NON-NLS-1$
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public SubjectDomainCombiner(Subject subject) {
-        if (subject == null)
+        if (subject == null) {
             throw new NullPointerException();
+        }
         this.subject = subject;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Subject getSubject() {
 
         SecurityManager sm = System.getSecurityManager();
@@ -62,9 +52,6 @@ public class SubjectDomainCombiner implements DomainCombiner {
         return subject;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public ProtectionDomain[] combine(ProtectionDomain[] currentDomains,
             ProtectionDomain[] assignedDomains) {
 
@@ -86,23 +73,21 @@ public class SubjectDomainCombiner implements DomainCombiner {
         int cur = 0;
         if (currentDomains != null) {
 
-            Set s = subject.getPrincipals();
-            Principal[] p = new Principal[s.size()];
-            s.toArray(p);
+            Set<Principal> s = subject.getPrincipals();
+            Principal[] p = s.toArray(new Principal[s.size()]);
 
             for (cur = 0; cur < currentDomains.length; cur++) {
                 ProtectionDomain newPD;
-                newPD = new ProtectionDomain(currentDomains[cur]
-                        .getCodeSource(), currentDomains[cur].getPermissions(),
-                        currentDomains[cur].getClassLoader(), p);
+                newPD = new ProtectionDomain(currentDomains[cur].getCodeSource(),
+                        currentDomains[cur].getPermissions(), currentDomains[cur]
+                                .getClassLoader(), p);
                 pd[cur] = newPD;
             }
         }
 
         // copy assigned domains
         if (assignedDomains != null) {
-            System.arraycopy(assignedDomains, 0, pd, cur,
-                    assignedDomains.length);
+            System.arraycopy(assignedDomains, 0, pd, cur, assignedDomains.length);
         }
 
         return pd;

@@ -41,6 +41,7 @@ import org.apache.harmony.auth.internal.nls.Messages;
  *             ProtectionDomain(CodeSource, PermissionCollection, ClassLoader,
  *             Principal[]} to establish a policy's permissions for a principal.
  */
+@Deprecated
 public abstract class Policy 
 {
 
@@ -113,7 +114,7 @@ public abstract class Policy
     // In case of any exception, wraps it with SecurityException and throws
     // further.
     private static final Policy getDefaultProvider() {
-        final String defaultClass = (String) AccessController
+        final String defaultClass = AccessController
                 .doPrivileged(new PolicyUtils.SecurityPropertyAccessor(
                         POLICY_PROVIDER));
 
@@ -121,7 +122,7 @@ public abstract class Policy
             return new DefaultSubjectPolicy();
         }
 
-        Object policy = AccessController.doPrivileged(new PrivilegedAction() {
+        Object policy = AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
                 try {
                     return Class.forName(defaultClass, true,
