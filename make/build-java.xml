@@ -63,17 +63,45 @@
             depends="-copy-kernel-patternsets,
                      -modules-clean-bin,
                      -clean-kernel-patternsets,
+                     -clean-bin-catch-all-test,
                      -clean-bin-catch-all"/>
 
     <target name="-modules-clean-bin">
         <call-modules target="clean" />
     </target>
 
-    <target name="-clean-bin-catch-all">
+    <target name="-clean-bin-catch-all-test">
+        <!-- without this test the pathconvert in the catch all clean
+             target fails -->
+        <available property="catch.all.required"
+                   file="${build.output}" type="dir" />
+    </target>
+
+    <target name="-clean-bin-catch-all" if="catch.all.required">
+        <fileset id="built.files" dir="${build.output}">
+            <include name="**/**" />
+        </fileset>
+        <pathconvert property="built.files.list"
+                     refid="built.files"
+                     pathsep="${line.separator}" />
+        <condition property="built.files.exist">
+            <not>
+                <equals arg1="${built.files.list}" arg2="" />
+            </not>
+        </condition>
+        <fail if="built.files.exist">
+...
+
+Built files still exist after module clean targets have run.  This
+probably means that one or more patternsets are incomplete.  The
+remaining files are:
+
+${built.files.list}
+
+        </fail>
+        
         <delete includeemptydirs="true" failonerror="false">
-            <fileset dir="${build.output}">
-                <include name="**/**" />
-            </fileset>
+            <fileset refid="built.files" />
         </delete>
     </target>
 
