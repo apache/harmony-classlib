@@ -425,9 +425,11 @@ public class InputStreamReaderTest extends TestCase {
 			fail("Failed to close reader : " + e.getMessage());
 		}
 		try {
-			is.read();
-		} catch (IOException e) {
-		} // Exception means read failed due to close
+            is.read();
+            fail("Should throw IOException");
+        } catch (IOException e) {
+            // Exception means read failed due to close
+        } 
 
 	}
 

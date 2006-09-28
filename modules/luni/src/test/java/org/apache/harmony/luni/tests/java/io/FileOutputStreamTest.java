@@ -27,12 +27,14 @@ public class FileOutputStreamTest extends TestCase {
      */
     public void test_write$BII() throws Exception {
         // Regression test for HARMONY-285
+        File file = new File("FileOutputStream.tmp");
+        file.deleteOnExit();
+        FileOutputStream out = new FileOutputStream(file);
         try {
-            File file = new File("FileOutputStream.tmp");
-            file.deleteOnExit();
-            FileOutputStream out = new FileOutputStream(file);
             out.write(null, 0, 0);
+            fail("Should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
     }
 }

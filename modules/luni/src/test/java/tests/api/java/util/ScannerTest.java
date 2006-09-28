@@ -353,6 +353,7 @@ public class ScannerTest extends TestCase {
         // thrown out.
         try {
             fos.write(12);
+            fail("Should throw IOException");
         } catch (IOException e) {
             // expected
         }

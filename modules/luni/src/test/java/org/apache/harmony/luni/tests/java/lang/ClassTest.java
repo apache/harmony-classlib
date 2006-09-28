@@ -428,6 +428,7 @@ public class ClassTest extends junit.framework.TestCase {
         try {
             // Invoking private non-sub, non-package
             m.invoke(new TestClass());
+            fail("Should throw IllegalAccessException");
         } catch (IllegalAccessException e) {
             // Correct
             return;

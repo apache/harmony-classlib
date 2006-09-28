@@ -106,6 +106,7 @@ public class ObjectInputStreamTest extends TestCase {
     public void test_readClassDescriptor() throws ClassNotFoundException,IOException {
         try {
             new OIS().test();
+            fail("Should throw NullPointerException");
         } catch (NullPointerException e) {
             // expected
         }

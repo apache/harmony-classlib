@@ -356,11 +356,11 @@ public class LinkedListTest extends junit.framework.TestCase {
 		assertEquals("Failed to remove element", -1, ll.indexOf(objArray[10]));
 		try {
 			ll.remove(999);
+            fail("Failed to throw expected exception when index out of range");
 		} catch (IndexOutOfBoundsException e) {
 			// Correct
-			return;
 		}
-		fail("Failed to throw expected exception when index out of range");
+		
 		ll.add(20, null);
 		ll.remove(20);
 		assertNotNull("Should have removed null", ll.get(20));

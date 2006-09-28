@@ -54,6 +54,7 @@ public class EnumTest extends TestCase {
         assertTrue(0 > Sample.MOE.compareTo(Sample.CURLY));
         try {
             Sample.MOE.compareTo((Sample)null);
+            fail("Should throw NullPointerException");
         } catch (NullPointerException e) {
             // Expected
         }
@@ -122,6 +123,7 @@ public class EnumTest extends TestCase {
         }
         try {
             Sample.valueOf(null);
+            fail("Should throw NullPointerException");
         } catch (NullPointerException e) {
             // May be caused by some compilers' code
         } catch (IllegalArgumentException e) {

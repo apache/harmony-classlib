@@ -114,20 +114,17 @@ public class BufferedInputStreamTest extends junit.framework.TestCase {
 	}
 
 	/**
+	 * @throws IOException 
 	 * @tests java.io.BufferedInputStream#close()
 	 */
-	public void test_close() {
+	public void test_close() throws IOException {
 		// Test for method void java.io.BufferedInputStream.close()
 		new BufferedInputStream(isFile);
 		new BufferedInputStream(isFile);
 		
 		//regression for HARMONY-667
         BufferedInputStream buf = new BufferedInputStream(null, 5);
-        try {
-            buf.close();
-        } catch (IOException e) {
-            //expected
-        }                         
+        buf.close();                           
 	}
 
 	/**
@@ -397,6 +394,7 @@ public class BufferedInputStreamTest extends junit.framework.TestCase {
         BufferedInputStream buf = new BufferedInputStream(null, 5);
         try {
             buf.skip(10);
+            fail("Should throw IOException");
         } catch (IOException e) {
             //expected
         }                         

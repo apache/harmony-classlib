@@ -1586,11 +1586,10 @@ public class CollectionsTest extends junit.framework.TestCase {
 		
 		try {
 			c.remove(new Object());
+            fail("Allowed modification of collection");
 		} catch (UnsupportedOperationException e) {
 			// Correct
-			return;
-		}
-		fail("Allowed modification of collection");
+		}		
 
 		Collection myCollection = new ArrayList();
 		myCollection.add(new Integer(20));
@@ -1645,11 +1644,10 @@ public class CollectionsTest extends junit.framework.TestCase {
 		
 		try {
 			c.remove(new Object());
+            fail("Allowed modification of list");
 		} catch (UnsupportedOperationException e) {
 			// Correct
-			return;
-		}
-		fail("Allowed modification of list");
+		}		
 
 		// test with a Random Access List
 		List smallList = new ArrayList();
@@ -1788,11 +1786,10 @@ public class CollectionsTest extends junit.framework.TestCase {
 		}
 		try {
 			c.remove(new Object());
+            fail("Allowed modification of set");
 		} catch (UnsupportedOperationException e) {
 			// Correct
-			return;
-		}
-		fail("Allowed modification of set");
+		}		
 
 		Set mySet = Collections.unmodifiableSet(new HashSet());
 		assertTrue("Should not contain null", !mySet.contains(null));
