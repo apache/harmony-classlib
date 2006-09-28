@@ -89,6 +89,11 @@
                 <equals arg1="${built.files.list}" arg2="" />
             </not>
         </condition>
+
+        <delete includeemptydirs="true" failonerror="false">
+            <fileset refid="built.files" />
+        </delete>
+
         <fail if="built.files.exist">
 ...
 
@@ -99,10 +104,6 @@ remaining files are:
 ${built.files.list}
 
         </fail>
-        
-        <delete includeemptydirs="true" failonerror="false">
-            <fileset refid="built.files" />
-        </delete>
     </target>
 
     <target name="-copy-kernel-patternsets">
