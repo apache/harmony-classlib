@@ -15,7 +15,10 @@
 
 package tests.api.java.util;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 public class LocaleTest extends junit.framework.TestCase {
 
@@ -94,6 +97,10 @@ public class LocaleTest extends junit.framework.TestCase {
 		try {
 			Locale[] locales = Locale.getAvailableLocales();
 			assertTrue("Wrong number of locales: ", locales.length > 100);
+			// regression test for HARMONY-1514
+            // HashSet can filter duplicate locales
+            Set<Locale> localesSet = new HashSet<Locale>(Arrays.asList(locales));
+            assertEquals(localesSet.size(), locales.length);            
 		} catch (Exception e) {
 			fail("Exception during test : " + e.getMessage());
 		}
