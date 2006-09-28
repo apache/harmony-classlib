@@ -14,21 +14,9 @@
  *  limitations under the License.
  */
 
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.2.4.3 $
- */
 package java.beans.beancontext;
-
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.2.4.3 $
- */
 
 public interface BeanContextProxy {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public BeanContextChild getBeanContextProxy();
 }

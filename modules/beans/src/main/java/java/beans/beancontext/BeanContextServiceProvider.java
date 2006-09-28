@@ -14,36 +14,18 @@
  *  limitations under the License.
  */
 
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.2.4.3 $
- */
 package java.beans.beancontext;
 
 import java.util.Iterator;
 
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.2.4.3 $
- */
-
 public interface BeanContextServiceProvider {
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public Iterator getCurrentServiceSelectors(BeanContextServices bcs, 
-        Class serviceClass);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public Object getService(BeanContextServices bcs, Object requestor, 
-        Class serviceClass, Object serviceSelector);
+    public Iterator getCurrentServiceSelectors(BeanContextServices bcs,
+            Class serviceClass);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void releaseService(BeanContextServices bcs, Object requestor, 
-        Object service);
+    public Object getService(BeanContextServices bcs, Object requestor,
+            Class serviceClass, Object serviceSelector);
+
+    public void releaseService(BeanContextServices bcs, Object requestor,
+            Object service);
 }

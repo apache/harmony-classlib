@@ -14,10 +14,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.4.4.3 $
- */
 package java.beans.beancontext;
 
 import java.util.Collection;
@@ -26,23 +22,12 @@ import java.util.Vector;
 
 import org.apache.harmony.beans.internal.nls.Messages;
 
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.4.4.3 $
- */
-
 public class BeanContextMembershipEvent extends BeanContextEvent {
 
     static final long serialVersionUID = 3499346510334590959L;
 
-    /**
-     * 
-     */
     protected Collection children;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public BeanContextMembershipEvent(BeanContext bc, Collection changes) {
         super(bc);
 
@@ -53,9 +38,6 @@ public class BeanContextMembershipEvent extends BeanContextEvent {
         this.children = changes;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public BeanContextMembershipEvent(BeanContext bc, Object[] changes) {
         super(bc);
 
@@ -66,36 +48,23 @@ public class BeanContextMembershipEvent extends BeanContextEvent {
         // Initialize collection
         this.children = new Vector<Object>();
 
-        // Add all elements to it
-        for (int i = 0; i < changes.length; i++) {
-            this.children.add(changes[i]);
+        for (Object element : changes) {
+            this.children.add(element);
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean contains(Object child) {
         return this.children.contains(child);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Iterator iterator() {
         return this.children.iterator();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public int size() {
         return this.children.size();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Object[] toArray() {
         return this.children.toArray();
     }

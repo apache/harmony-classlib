@@ -14,36 +14,22 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
 package org.apache.harmony.beans.editors;
 
 import java.beans.PropertyEditorSupport;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
-
 public class StringEditor extends PropertyEditorSupport {
 
-    /**
-     * 
-     * @param source
-     */
     public StringEditor(Object source) {
         super(source);
     }
 
-    /**
-     */
     public StringEditor() {
         super();
     }
-    
-    public void setAsText(String text){
+
+    @Override
+    public void setAsText(String text) {
         setValue(text);
     }
 }

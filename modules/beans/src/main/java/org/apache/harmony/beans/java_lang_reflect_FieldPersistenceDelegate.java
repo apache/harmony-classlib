@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.harmony.beans;
 
 import java.lang.reflect.Field;
@@ -21,39 +22,41 @@ import java.beans.Expression;
 import java.beans.PersistenceDelegate;
 
 /**
- * This is a persistence delegate for the {@link java.lang.reflect.Field} class. 
+ * This is a persistence delegate for the {@link java.lang.reflect.Field} class.
  */
 public class java_lang_reflect_FieldPersistenceDelegate extends
         PersistenceDelegate {
 
+    @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         // should not be null or have a type other than Field
         assert oldInstance instanceof Field : oldInstance;
 
         Field oldField = (Field) oldInstance;
         Class declClass = oldField.getDeclaringClass();
-        
+
         return new Expression(oldField, declClass, "getDeclaredField", //$NON-NLS-1$
                 new Object[] { oldField.getName() });
     }
 
+    @Override
     protected void initialize(Class type, Object oldInstance,
-            Object newInstance, Encoder out)
-    {
+            Object newInstance, Encoder out) {
         // check for consistency
         assert oldInstance instanceof Field : oldInstance;
         assert newInstance instanceof Field : newInstance;
         assert newInstance.equals(oldInstance);
     }
 
+    @Override
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
         assert oldInstance instanceof Field : oldInstance;
-        
+
         if (!(newInstance instanceof Field)) {
             // if null or not a Field
             return false;
         }
-        
+
         return oldInstance.equals(newInstance);
     }
 }

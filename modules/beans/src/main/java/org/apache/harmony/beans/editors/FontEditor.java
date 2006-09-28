@@ -14,10 +14,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
 package org.apache.harmony.beans.editors;
 
 import java.awt.Component;
@@ -26,39 +22,31 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.beans.PropertyEditorSupport;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
-
 public class FontEditor extends PropertyEditorSupport {
-    
-    /**
-     * 
-     * @param source
-     */
+
     public FontEditor(Object source) {
         super(source);
     }
 
-    /**
-     */
     public FontEditor() {
         super();
     }
-    
+
+    @Override
     public Component getCustomEditor() {
         return null;
     }
-    
+
+    @Override
     public boolean supportsCustomEditor() {
         return true;
     }
-    
+
+    @Override
     public String getJavaInitializationString() {
         String result = null;
         Font font = (Font) getValue();
-        if(font != null) {
+        if (font != null) {
             String name = font.getName();
             int style = font.getStyle();
             int size = font.getSize();
@@ -66,24 +54,28 @@ public class FontEditor extends PropertyEditorSupport {
         }
         return result;
     }
-    
+
+    @Override
     public String[] getTags() {
         return null;
     }
-    
+
+    @Override
     public void setValue(Object value) {
-        if(value instanceof Font) {
+        if (value instanceof Font) {
             super.setValue(value);
         }
     }
-    
+
+    @Override
     public boolean isPaintable() {
         return true;
     }
-    
+
+    @Override
     public void paintValue(Graphics gfx, Rectangle box) {
         Font font = (Font) getValue();
-        if(font != null) {
+        if (font != null) {
             gfx.setFont(font);
             gfx.drawBytes("Hello".getBytes(), box.x, box.y, box.x + box.width, //$NON-NLS-1$
                     box.y + box.height);

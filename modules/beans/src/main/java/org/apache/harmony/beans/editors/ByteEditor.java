@@ -14,39 +14,26 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
 package org.apache.harmony.beans.editors;
 
 import java.beans.PropertyEditorSupport;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
-
 public class ByteEditor extends PropertyEditorSupport {
-    
-    /**
-     * 
-     * @param source
-     */
+
     public ByteEditor(Object source) {
         super(source);
     }
 
-    /**
-     */
     public ByteEditor() {
         super();
     }
-    
+
+    @Override
     public String getAsText() {
         return getValueAsText();
     }
-    
+
+    @Override
     public void setAsText(String text) throws IllegalArgumentException {
         try {
             setValue(new Byte(text));
@@ -54,25 +41,28 @@ public class ByteEditor extends PropertyEditorSupport {
             throw new IllegalArgumentException(nfe.toString());
         }
     }
-    
+
+    @Override
     public String getJavaInitializationString() {
         return getValueAsText();
     }
-    
+
+    @Override
     public String[] getTags() {
         return null;
     }
-    
+
+    @Override
     public void setValue(Object value) {
-        if(value instanceof Byte) {
+        if (value instanceof Byte) {
             super.setValue(value);
         }
     }
-    
+
     private String getValueAsText() {
         String result = null;
         Object value = getValue();
-        if(value != null) {
+        if (value != null) {
             Byte bValue = (Byte) value;
             result = bValue.toString();
         }

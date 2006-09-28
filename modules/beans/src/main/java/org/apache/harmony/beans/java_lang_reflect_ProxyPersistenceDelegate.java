@@ -12,15 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.harmony.beans;
 
-import java.beans.*;
-import java.lang.reflect.Proxy;
+import java.beans.Encoder;
+import java.beans.Expression;
+import java.beans.PersistenceDelegate;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 
 public class java_lang_reflect_ProxyPersistenceDelegate extends
         PersistenceDelegate {
 
+    @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         assert oldInstance instanceof Proxy : oldInstance;
 
@@ -32,6 +36,7 @@ public class java_lang_reflect_ProxyPersistenceDelegate extends
                         interfaces, handler });
     }
 
+    @Override
     protected void initialize(Class<?> type, Object oldInstance,
             Object newInstance, Encoder out) {
         // check for consistency
@@ -40,6 +45,7 @@ public class java_lang_reflect_ProxyPersistenceDelegate extends
         assert newInstance == oldInstance;
     }
 
+    @Override
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
         assert oldInstance instanceof Proxy : oldInstance;
 

@@ -14,18 +14,9 @@
  *  limitations under the License.
  */
 
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.2.4.3 $
- */
 package java.beans.beancontext;
 
 import java.util.Iterator;
-
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.2.4.3 $
- */
 
 public class BeanContextServiceAvailableEvent extends BeanContextEvent {
 
@@ -36,32 +27,20 @@ public class BeanContextServiceAvailableEvent extends BeanContextEvent {
      */
     protected Class serviceClass;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public BeanContextServiceAvailableEvent(BeanContextServices bcs, Class sc) {
         super(bcs);
         this.serviceClass = sc;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Iterator getCurrentServiceSelectors() {
         return ((BeanContextServices) super.source)
                 .getCurrentServiceSelectors(serviceClass);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Class getServiceClass() {
         return this.serviceClass;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public BeanContextServices getSourceAsBeanContextServices() {
         return (BeanContextServices) super.source;
     }

@@ -14,33 +14,28 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
 package org.apache.harmony.beans;
 
 import java.beans.Encoder;
 import java.beans.Expression;
 import java.beans.PersistenceDelegate;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
-
 public class java_lang_StringPersistenceDelegate extends PersistenceDelegate {
 
+    @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         String value = (String) oldInstance;
 
         return new Expression(oldInstance, String.class, "new", //$NON-NLS-1$
-                              new Object[] {new String(value)});
+                new Object[] { new String(value) });
     }
 
+    @Override
     protected void initialize(Class type, Object oldInstance,
-                              Object newInstance, Encoder out) {}
+            Object newInstance, Encoder out) {
+    }
 
+    @Override
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
         if (oldInstance instanceof String && newInstance instanceof String) {
             return newInstance.equals(oldInstance);

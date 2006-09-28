@@ -14,39 +14,26 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
 package org.apache.harmony.beans.editors;
 
 import java.beans.PropertyEditorSupport;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
-
 public class DoubleEditor extends PropertyEditorSupport {
-    
-    /**
-     * 
-     * @param source
-     */
+
     public DoubleEditor(Object source) {
         super(source);
     }
 
-    /**
-     */
     public DoubleEditor() {
         super();
     }
-    
+
+    @Override
     public String getAsText() {
         return getValueAsText();
     }
-    
+
+    @Override
     public void setAsText(String text) throws IllegalArgumentException {
         try {
             setValue(new Double(text));
@@ -54,25 +41,28 @@ public class DoubleEditor extends PropertyEditorSupport {
             throw new IllegalArgumentException(nfe.toString());
         }
     }
-    
+
+    @Override
     public String getJavaInitializationString() {
         return getValueAsText();
     }
-    
+
+    @Override
     public String[] getTags() {
         return null;
     }
-    
+
+    @Override
     public void setValue(Object value) {
-        if(value instanceof Double) {
+        if (value instanceof Double) {
             super.setValue(value);
         }
     }
-    
+
     private String getValueAsText() {
         String result = null;
         Object value = getValue();
-        if(value != null) {
+        if (value != null) {
             Double dValue = (Double) value;
             result = dValue.toString();
         }

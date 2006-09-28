@@ -14,39 +14,26 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
 package org.apache.harmony.beans.editors;
 
 import java.beans.PropertyEditorSupport;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
-
 public class FloatEditor extends PropertyEditorSupport {
-    
-    /**
-     * 
-     * @param source
-     */
+
     public FloatEditor(Object source) {
         super(source);
     }
 
-    /**
-     */
     public FloatEditor() {
         super();
     }
-    
+
+    @Override
     public String getAsText() {
         return getValueAsText();
     }
-    
+
+    @Override
     public void setAsText(String text) throws IllegalArgumentException {
         try {
             setValue(new Float(text));
@@ -54,25 +41,28 @@ public class FloatEditor extends PropertyEditorSupport {
             throw new IllegalArgumentException(nfe.toString());
         }
     }
-    
+
+    @Override
     public String getJavaInitializationString() {
         return getValueAsText();
     }
-    
+
+    @Override
     public String[] getTags() {
         return null;
     }
-    
+
+    @Override
     public void setValue(Object value) {
-        if(value instanceof Float) {
+        if (value instanceof Float) {
             super.setValue(value);
         }
     }
-    
+
     private String getValueAsText() {
         String result = null;
         Object value = getValue();
-        if(value != null) {
+        if (value != null) {
             Float fValue = (Float) value;
             result = fValue.toString();
         }

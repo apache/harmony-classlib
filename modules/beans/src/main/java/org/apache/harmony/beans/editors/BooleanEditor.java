@@ -14,61 +14,51 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
 package org.apache.harmony.beans.editors;
 
 import java.beans.PropertyEditorSupport;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
-
 public class BooleanEditor extends PropertyEditorSupport {
-    
-    /**
-     * 
-     * @param source
-     */
+
     public BooleanEditor(Object source) {
         super(source);
     }
 
-    /**
-     */
     public BooleanEditor() {
         super();
     }
-    
+
+    @Override
     public String getAsText() {
         return getValueAsString();
     }
-    
+
+    @Override
     public void setAsText(String text) throws IllegalArgumentException {
         setValue(new Boolean(text));
     }
-    
+
+    @Override
     public String getJavaInitializationString() {
         return getValueAsString();
     }
-    
+
+    @Override
     public String[] getTags() {
-        return new String[] {"true", "false"}; //$NON-NLS-1$ //$NON-NLS-2$
+        return new String[] { "true", "false" }; //$NON-NLS-1$ //$NON-NLS-2$
     }
-    
+
+    @Override
     public void setValue(Object value) {
-        if(value instanceof Boolean) {
+        if (value instanceof Boolean) {
             super.setValue(value);
         }
     }
-    
+
     private String getValueAsString() {
         String result = null;
         Object value = getValue();
-        if(value != null) {
+        if (value != null) {
             Boolean bValue = (Boolean) value;
             result = bValue.toString();
         }

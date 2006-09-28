@@ -14,11 +14,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @author Alexei Y. Zakharov
- * @version $Revision: 1.1.2.1 $
- */
 package org.apache.harmony.beans;
 
 import java.beans.Encoder;
@@ -26,14 +21,9 @@ import java.beans.Expression;
 import java.beans.PersistenceDelegate;
 import java.lang.reflect.Field;
 
-/**
- * @author Maxim V. Berkultsev
- * @author Alexei Y. Zakharov
- * @version $Revision: 1.1.2.1 $
- */
-
 public class java_lang_ClassPersistenceDelegate extends PersistenceDelegate {
 
+    @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Class value = (Class) oldInstance;
         Field fld = null;
@@ -65,7 +55,7 @@ public class java_lang_ClassPersistenceDelegate extends PersistenceDelegate {
         if (fld != null) {
             // we have primitive type
             result = new Expression(oldInstance, fld, "get", //$NON-NLS-1$
-                                    new Object[] {null});
+                    new Object[] { null });
         } else {
             result = new Expression(oldInstance, Class.class, "forName", //$NON-NLS-1$
                     new Object[] { new String(value.getName()) });
@@ -73,9 +63,12 @@ public class java_lang_ClassPersistenceDelegate extends PersistenceDelegate {
         return result;
     }
 
+    @Override
     protected void initialize(Class type, Object oldInstance,
-                              Object newInstance, Encoder out) {}
+            Object newInstance, Encoder out) {
+    }
 
+    @Override
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
         if (oldInstance instanceof Class && newInstance instanceof Class) {
             Class c1 = (Class) oldInstance;

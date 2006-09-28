@@ -14,21 +14,12 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
 package org.apache.harmony.beans;
 
 import java.beans.PersistenceDelegate;
 import java.beans.DefaultPersistenceDelegate;
 import java.util.StringTokenizer;
 import java.util.HashMap;
-
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
 
 public final class DefaultPersistenceDelegatesFactory {
 

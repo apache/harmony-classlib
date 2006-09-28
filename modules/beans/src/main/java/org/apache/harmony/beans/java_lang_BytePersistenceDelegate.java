@@ -14,30 +14,23 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
 package org.apache.harmony.beans;
 
 import java.beans.Encoder;
 import java.beans.Expression;
 import java.beans.PersistenceDelegate;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
-
 public class java_lang_BytePersistenceDelegate extends PersistenceDelegate {
-    
+
+    @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Byte value = (Byte) oldInstance;
         return new Expression(oldInstance, Byte.class, "new", //$NON-NLS-1$
                 new Object[] { new Byte(value.byteValue()) });
     }
-    
-    protected void initialize(
-            Class type, Object oldInstance, Object newInstance, Encoder out) {
+
+    @Override
+    protected void initialize(Class type, Object oldInstance,
+            Object newInstance, Encoder out) {
     }
 }

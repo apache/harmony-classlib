@@ -14,23 +14,11 @@
  *  limitations under the License.
  */
 
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.2.4.3 $
- */
 package java.beans.beancontext;
 
 import java.awt.Component;
 
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.2.4.3 $
- */
-
 public interface BeanContextChildComponentProxy {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Component getComponent();
 }

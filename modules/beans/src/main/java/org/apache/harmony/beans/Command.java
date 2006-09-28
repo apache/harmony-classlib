@@ -14,35 +14,24 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
 package org.apache.harmony.beans;
 
 import java.beans.BeanInfo;
+import java.beans.Expression;
 import java.beans.IndexedPropertyDescriptor;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.beans.Statement;
 import java.beans.XMLDecoder;
-import java.beans.Expression;
-
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
 import org.apache.harmony.beans.internal.nls.Messages;
 import org.xml.sax.Attributes;
-
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
 
 public class Command {
 
@@ -60,11 +49,14 @@ public class Command {
 
     private String data = null; // string data
 
-    private Vector<Command> commands = new Vector<Command>(); // inner commands
+    // inner commands
+    private Vector<Command> commands = new Vector<Command>();
 
-    private Vector<Command> arguments = new Vector<Command>(); // arguments
+    // arguments
+    private Vector<Command> arguments = new Vector<Command>();
 
-    private Vector<Command> operations = new Vector<Command>(); // operations
+    // operations
+    private Vector<Command> operations = new Vector<Command>();
 
     // additonal arguments placed before others
     private Vector<Argument> auxArguments = new Vector<Argument>();
@@ -81,7 +73,7 @@ public class Command {
 
     private XMLDecoder decoder;
 
-    //private int tabCount = 0;
+    // private int tabCount = 0;
 
     public Command(String tagName, HashMap attrs) {
         this.tagName = tagName;
@@ -102,9 +94,9 @@ public class Command {
     }
 
     // set tab count to display log messages
-    //    public void setTabCount(int tabCount) {
-    //        this.tabCount = tabCount;
-    //    }
+    // public void setTabCount(int tabCount) {
+    // this.tabCount = tabCount;
+    // }
 
     // set context - upper level command
     public void setContext(Command ctx) {
@@ -121,8 +113,9 @@ public class Command {
 
     // remove child command
     public void removeChild(Command cmd) {
-        if ((cmd != null) && commands.remove(cmd))
+        if ((cmd != null) && commands.remove(cmd)) {
             cmd.setContext(null);
+        }
     }
 
     // command status
@@ -134,45 +127,49 @@ public class Command {
     private boolean isResolved() {
         if (getStatus() < Command.CHILDREN_PROCESSED) {
             return false;
-        } else {
-            for (int i = 0; i < arguments.size(); ++i) {
-                Command arg = arguments.elementAt(i);
-
-                if (!arg.isResolved()) {
-                    return false;
-                }
-            }
-            for (int j = 0; j < operations.size(); ++j) {
-                Command opr = operations.elementAt(j);
-
-                if (!opr.isResolved()) {
-                    return false;
-                }
-            }
-            return true;
         }
+        for (int i = 0; i < arguments.size(); ++i) {
+            Command arg = arguments.elementAt(i);
+
+            if (!arg.isResolved()) {
+                return false;
+            }
+        }
+        for (int j = 0; j < operations.size(); ++j) {
+            Command opr = operations.elementAt(j);
+
+            if (!opr.isResolved()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     // execute command and return execution flags
     public int exec(HashMap references) throws Exception {
-        //System.out.println("in exec() status = " + translateStatus(status) + "...");
+        // System.out.println("in exec() status = " + translateStatus(status) +
+        // "...");
         if (status < Command.CHILDREN_PROCESSED) {
             if (status < Command.COMMAND_EXECUTED) {
                 if (status < Command.CHILDREN_FILTERED) {
                     status = doBeforeRun(references);
-                    //System.out.println("after doBeforeRun() status = " + translateStatus(status));
+                    // System.out.println("after doBeforeRun() status = " +
+                    // translateStatus(status));
                 }
                 if (status == Command.CHILDREN_FILTERED) {
                     status = doRun(references);
-                    //System.out.println("after doRun() status = " + translateStatus(status));
+                    // System.out.println("after doRun() status = " +
+                    // translateStatus(status));
                 }
             }
             if (status == Command.COMMAND_EXECUTED) {
                 status = doAfterRun(references);
-                //System.out.println("after doAfterRun() status = " + translateStatus(status));
+                // System.out.println("after doAfterRun() status = " +
+                // translateStatus(status));
             }
         }
-        //System.out.println("...out of exec() status = " + translateStatus(status));
+        // System.out.println("...out of exec() status = " +
+        // translateStatus(status));
         return status;
     }
 
@@ -180,12 +177,10 @@ public class Command {
     public boolean backtrack(HashMap references) throws Exception {
         for (int i = 0; i < arguments.size(); ++i) {
             Command arg = arguments.elementAt(i);
-
             arg.backtrack(references);
         }
         for (int i = 0; i < operations.size(); ++i) {
             Command opr = operations.elementAt(i);
-
             opr.backtrack(references);
         }
         if (status == Command.CHILDREN_FILTERED) {
@@ -194,9 +189,8 @@ public class Command {
         if (status == Command.COMMAND_EXECUTED) {
             status = doAfterRun(references);
             return (getStatus() == Command.CHILDREN_PROCESSED);
-        } else {
-            return false;
         }
+        return false;
     }
 
     // put command in one of two collections - arguments or operations
@@ -213,9 +207,8 @@ public class Command {
                 }
             }
             return Command.CHILDREN_FILTERED;
-        } else {
-            return status;
         }
+        return status;
     }
 
     // run command
@@ -223,69 +216,77 @@ public class Command {
         if (status == Command.CHILDREN_FILTERED) {
             if (isRoot()) {
                 result = new Argument(decoder);
-                //System.out.println("doRun(): result is decoder...");
+                // System.out.println("doRun(): result is decoder...");
                 return Command.COMMAND_EXECUTED;
             }
 
             if (isNull()) {
                 result = new Argument(null);
-                //System.out.println("doRun(): result is null...");
+                // System.out.println("doRun(): result is null...");
                 return Command.COMMAND_EXECUTED;
             }
 
             if (ctx != null && ctx.isArray() && (ctx.getResultValue() == null)
                     && !isExecutable()) {
-                //System.out.println("doRun(): context is array...");
+                // System.out.println("doRun(): context is array...");
                 return status;
             }
 
             Object target = getTarget(references);
             if (target == null) {
-                //System.out.println("doRun(): target is null...");
+                // System.out.println("doRun(): target is null...");
                 return status;
-            } else {
-                if (target instanceof Class) {
-                    //System.out.println("doRun(): target = " + ((Class)target).getName());
-                } else {
-                    //System.out.println("doRun(): target = " + target.getClass().getName());
-                }
-                if (isReference()) {
-                    result = getReferencedArgument(references);
-                    //System.out.println("doRun(): reference - result is " + result.getType());
-                } else {
-                    String methodName = getMethodName(references);
-                    //System.out.println("doRun(): methodName = " + methodName);
-                    Argument[] arguments = getArguments();
-                    if (arguments == null)
-                        return status;
-                    //System.out.println("doRun(): args number is " + arguments.length);
-                    for (int i = 0; i < arguments.length; ++i) {
-                        if (arguments[i] != null) {
-                            //System.out.println("doRun(): arg [" + i + "] = " + arguments[i].getType());
-                        } else {
-                            //System.out.println("doRun(): arg [" + i + "] = null");
-                        }
-                    }
-
-                    Expression expr = new Expression(target, methodName,
-                            getArgumentsValues());
-                    result = new Argument(expr.getValue());
-
-                    if (isPrimitiveClassName(getTagName()))
-                        result.setType(getPrimitiveClass(tagName));
-
-                    //System.out.println("doRun(): method call - result is " + result.getType());
-                }
-                return Command.COMMAND_EXECUTED;
             }
-        } else
-            return status;
+            // if (target instanceof Class) {
+            // System.out.println("doRun(): target = " +
+            // ((Class)target).getName());
+            // } else {
+            // System.out.println("doRun(): target = " +
+            // target.getClass().getName());
+            // }
+            if (isReference()) {
+                result = getReferencedArgument(references);
+                // System.out.println("doRun(): reference - result is " +
+                // result.getType());
+            } else {
+                String methodName = getMethodName(references);
+                // System.out.println("doRun(): methodName = " +
+                // methodName);
+                Argument[] arguments = getArguments();
+                if (arguments == null) {
+                    return status;
+                }
+                // for (Argument element : arguments) {
+                // if (element != null) {
+                // System.out.println("doRun(): arg [" + i + "] = "
+                // + arguments[i].getType());
+                // } else {
+                // System.out.println("doRun(): arg [" + i + "] =
+                // null");
+                // }
+                // }
+
+                Expression expr = new Expression(target, methodName,
+                        getArgumentsValues());
+                result = new Argument(expr.getValue());
+
+                if (isPrimitiveClassName(getTagName())) {
+                    result.setType(getPrimitiveClass(tagName));
+                }
+
+                // System.out.println("doRun(): method call - result is " +
+                // result.getType());
+            }
+            return Command.COMMAND_EXECUTED;
+        }
+        return status;
     }
 
     // run child commands
     private int doAfterRun(HashMap references) throws Exception {
         if (status == Command.COMMAND_EXECUTED) {
-            //System.out.println("doAfterRun(): command " + getResultType() + " processed...");            
+            // System.out.println("doAfterRun(): command " + getResultType() + "
+            // processed...");
             Vector<Command> toBeRemoved = new Vector<Command>();
             try {
                 Statement[] statements = null;
@@ -320,10 +321,12 @@ public class Command {
                         cmd.exec(references);
 
                         if (cmd.isResolved()) {
-                            //System.out.println("doAfterRun(): cmd = " + cmd.methodName + " is resolved");
+                            // System.out.println("doAfterRun(): cmd = " +
+                            // cmd.methodName + " is resolved");
                             toBeRemoved.add(cmd);
                         } else {
-                            //System.out.println("doAfterRun(): cmd = " + cmd.methodName + " is unresolved");
+                            // System.out.println("doAfterRun(): cmd = " +
+                            // cmd.methodName + " is unresolved");
                             break;
                         }
 
@@ -336,16 +339,18 @@ public class Command {
                 operations.removeAll(toBeRemoved);
             }
 
-            if (operations.size() == 0) {
-                //System.out.println("doAfterRun(): command " + getResultType() + " completely processed.");
-            } else {
-                //System.out.println("doAfterRun(): command " + getResultType() + " contains incomplete " + 
-                //operations.size() + " commands.");
-            }
+            // if (operations.size() == 0) {
+            // System.out.println("doAfterRun(): command " + getResultType()
+            // + " completely processed.");
+            // } else {
+            // System.out.println("doAfterRun(): command " + getResultType()
+            // + " contains incomplete " +
+            // operations.size() + " commands.");
+            // }
             return (operations.size() == 0) ? Command.CHILDREN_PROCESSED
                     : status;
-        } else
-            return status;
+        }
+        return status;
     }
 
     // Result accessors
@@ -487,10 +492,11 @@ public class Command {
                         target = ((Class) target).getField(fieldName);
                     }
                 } else {
-                    throw new Exception(Messages.getString("beans.42", className)); //$NON-NLS-1$
+                    throw new Exception(Messages.getString(
+                            "beans.42", className)); //$NON-NLS-1$
                 }
             } else if (ctx.isArray()) {
-                //target = ctx.getTarget(references);
+                // target = ctx.getTarget(references);
                 target = Class.forName("java.lang.reflect.Array"); //$NON-NLS-1$
             }
         }
@@ -513,12 +519,12 @@ public class Command {
             } else if (isPrimitive()) {
                 if (isTag("char")) { //$NON-NLS-1$
                     if (data.length() != 1) {
-                        throw new IntrospectionException(Messages.getString("beans.43", //$NON-NLS-1$
+                        throw new IntrospectionException(Messages.getString(
+                                "beans.43", //$NON-NLS-1$
                                 data));
-                    } else {
-                        addArgument(new Argument(char.class, new Character(data
-                                .charAt(0))), 0);
                     }
+                    addArgument(new Argument(char.class, new Character(data
+                            .charAt(0))), 0);
                 } else {
                     addArgument(new Argument(String.class, data), 0);
                 }
@@ -544,8 +550,7 @@ public class Command {
 
                 boolean methodFound = false;
                 Method method = null;
-                for (int i = 0; i < pds.length; ++i) {
-                    PropertyDescriptor pd = pds[i];
+                for (PropertyDescriptor pd : pds) {
                     if (propertyValue.equals(pd.getName())) {
                         int argsNum = getArgumentsNumber();
                         if (hasAttr("index")) { //$NON-NLS-1$
@@ -559,8 +564,9 @@ public class Command {
                             method = pd.getReadMethod();
                         }
 
-                        if (method != null)
+                        if (method != null) {
                             methodFound = matchMethodParams(method, references);
+                        }
 
                         if (methodFound == false) {
                             if (hasAttr("index")) { //$NON-NLS-1$
@@ -575,21 +581,23 @@ public class Command {
                             }
                         }
 
-                        if (method != null)
+                        if (method != null) {
                             methodFound = matchMethodParams(method, references);
+                        }
                     }
                 }
 
                 if (method == null) {
-                    throw new NoSuchMethodException(Messages.getString("beans.44", //$NON-NLS-1$
+                    throw new NoSuchMethodException(Messages.getString(
+                            "beans.44", //$NON-NLS-1$
                             propertyValue));
-                } else {
-                    methodValue = method.getName();
                 }
+                methodValue = method.getName();
             } else if (hasAttr("method")) { //$NON-NLS-1$
-                if (hasAttr("index")) //$NON-NLS-1$
+                if (hasAttr("index")) { //$NON-NLS-1$
                     addArgument(new Argument(int.class, Integer
                             .valueOf(getAttr("index"))), 0); //$NON-NLS-1$
+                }
                 methodValue = getAttr("method"); //$NON-NLS-1$
             } else if (hasAttr("index")) { //$NON-NLS-1$
                 addArgument(new Argument(int.class, Integer
@@ -615,15 +623,16 @@ public class Command {
     private Argument[] getArguments() {
         Argument[] args = new Argument[auxArguments.size() + arguments.size()];
 
-        for (int i = 0; i < auxArguments.size(); ++i)
+        for (int i = 0; i < auxArguments.size(); ++i) {
             args[i] = auxArguments.elementAt(i);
+        }
         for (int j = 0; j < arguments.size(); ++j) {
             Command cmd = arguments.elementAt(j);
 
             if (cmd.getStatus() >= Command.COMMAND_EXECUTED) {
                 args[auxArguments.size() + j] = cmd.getResult();
             } else {
-                //System.out.println("arg: " + cmd.getResultValue());
+                // System.out.println("arg: " + cmd.getResultValue());
                 args = null;
                 break;
             }
@@ -635,8 +644,9 @@ public class Command {
     private Object[] getArgumentsValues() {
         Argument[] args = getArguments();
         Object[] result = new Object[args.length];
-        for (int i = 0; i < args.length; ++i)
+        for (int i = 0; i < args.length; ++i) {
             result[i] = args[i].getValue();
+        }
         return result;
     }
 
@@ -657,9 +667,9 @@ public class Command {
     }
 
     // return number of commands
-    //    private int getOperationsNumber() {
-    //        return operations.size();
-    //    }
+    // private int getOperationsNumber() {
+    // return operations.size();
+    // }
 
     // add argument to the beginning of arguments
     private void addArgument(Argument argument, int idx) {
@@ -720,59 +730,61 @@ public class Command {
     private boolean matchMethodParams(Method method, HashMap references) {
         Class<?>[] paramTypes = method.getParameterTypes();
         Argument[] args = getArguments();
-        if (args == null)
+        if (args == null) {
             return false;
+        }
         boolean result = true;
         if (paramTypes.length == args.length) {
             for (int j = 0; j < paramTypes.length; ++j) {
-                //System.out.println("paramTypes[j] = " + paramTypes[j]);
-                //System.out.println("args[j] = " + args[j].getType());
+                // System.out.println("paramTypes[j] = " + paramTypes[j]);
+                // System.out.println("args[j] = " + args[j].getType());
 
                 boolean isAssignable = (args[j].getType() == null) ? !paramTypes[j]
                         .isPrimitive()
                         : paramTypes[j].isAssignableFrom(args[j].getType());
 
-                //System.out.println("args[j] = " + args[j].getType());
+                // System.out.println("args[j] = " + args[j].getType());
 
                 if (!isAssignable) {
                     result = false;
                     break;
                 }
             }
-        } else
+        } else {
             result = false;
+        }
         return result;
     }
 
     public static HashMap parseAttrs(String tagName, Attributes attrs) {
         HashMap<String, String> result = new HashMap<String, String>();
         if (tagName.equals("object")) { //$NON-NLS-1$
-            for (int i = 0; i < objectAttrNames.length; ++i) {
-                String name = objectAttrNames[i];
+            for (String name : objectAttrNames) {
                 String value = attrs.getValue(name);
-                if (value != null)
+                if (value != null) {
                     result.put(name, value);
+                }
             }
         } else if (tagName.equals("void")) { //$NON-NLS-1$
-            for (int i = 0; i < voidAttrNames.length; ++i) {
-                String name = voidAttrNames[i];
+            for (String name : voidAttrNames) {
                 String value = attrs.getValue(name);
-                if (value != null)
+                if (value != null) {
                     result.put(name, value);
+                }
             }
         } else if (tagName.equals("array")) { //$NON-NLS-1$
-            for (int i = 0; i < arrayAttrNames.length; ++i) {
-                String name = arrayAttrNames[i];
+            for (String name : arrayAttrNames) {
                 String value = attrs.getValue(name);
-                if (value != null)
+                if (value != null) {
                     result.put(name, value);
+                }
             }
         } else if (tagName.equals("java")) { //$NON-NLS-1$
-            for (int i = 0; i < javaAttrNames.length; ++i) {
-                String name = javaAttrNames[i];
+            for (String name : javaAttrNames) {
                 String value = attrs.getValue(name);
-                if (value != null)
+                if (value != null) {
                     result.put(name, value);
+                }
             }
         }
         return result;
@@ -780,27 +792,29 @@ public class Command {
 
     // Auxiliary logging with tabs functions
     public static void pr(String msg) {
-    //System.out.print(msg);
+        // System.out.print(msg);
     }
 
     public static void pr(int tabCount, String msg) {
         String result = ""; //$NON-NLS-1$
-        for (int i = 0; i < tabCount; ++i)
+        for (int i = 0; i < tabCount; ++i) {
             result += '\t';
+        }
         result += msg;
-        //System.out.print(result);
+        // System.out.print(result);
     }
 
     public static void prn(String msg) {
-    //System.out.println(msg);
+        // System.out.println(msg);
     }
 
     public static void prn(int tabCount, String msg) {
         String result = ""; //$NON-NLS-1$
-        for (int i = 0; i < tabCount; ++i)
+        for (int i = 0; i < tabCount; ++i) {
             result += '\t';
+        }
         result += msg;
-        //System.out.println(result);
+        // System.out.println(result);
     }
 
     public static void printAttrs(int tabCount, String tagName, Attributes attrs) {
@@ -814,23 +828,24 @@ public class Command {
     }
 
     private static int initializeStatus(String tagName) {
-        // return tagName.equals("java") ? Command.COMMAND_EXECUTED : Command.INITIALIZED;
+        // return tagName.equals("java") ? Command.COMMAND_EXECUTED :
+        // Command.INITIALIZED;
         return Command.INITIALIZED;
     }
 
-    //    private static String translateStatus(int status) {
-    //        String result = "unknown";
-    //        if(status == Command.INITIALIZED) {
-    //            result = "intialized";
-    //        } else if(status == Command.CHILDREN_FILTERED) {
-    //            result = "children filtered";
-    //        } else if(status == Command.COMMAND_EXECUTED) {
-    //            result = "executed";
-    //        } else if(status == Command.CHILDREN_PROCESSED) {
-    //            result = "children processed";
-    //        }
-    //        return result;
-    //    }
+    // private static String translateStatus(int status) {
+    // String result = "unknown";
+    // if(status == Command.INITIALIZED) {
+    // result = "intialized";
+    // } else if(status == Command.CHILDREN_FILTERED) {
+    // result = "children filtered";
+    // } else if(status == Command.COMMAND_EXECUTED) {
+    // result = "executed";
+    // } else if(status == Command.CHILDREN_PROCESSED) {
+    // result = "children processed";
+    // }
+    // return result;
+    // }
 
     private static final String[] objectAttrNames = { "id", "idref", "class", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             "field", "method", "property", "index" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$

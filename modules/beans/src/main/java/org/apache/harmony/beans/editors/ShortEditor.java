@@ -14,39 +14,26 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
 package org.apache.harmony.beans.editors;
 
 import java.beans.PropertyEditorSupport;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
-
 public class ShortEditor extends PropertyEditorSupport {
-    
-    /**
-     * 
-     * @param source
-     */
+
     public ShortEditor(Object source) {
         super(source);
     }
 
-    /**
-     */
     public ShortEditor() {
         super();
     }
-    
+
+    @Override
     public String getAsText() {
         return getValueAsText();
     }
-    
+
+    @Override
     public void setAsText(String text) throws IllegalArgumentException {
         try {
             setValue(new Short(text));
@@ -54,25 +41,28 @@ public class ShortEditor extends PropertyEditorSupport {
             throw new IllegalArgumentException(nfe.toString());
         }
     }
-    
+
+    @Override
     public String getJavaInitializationString() {
         return getValueAsText();
     }
-    
+
+    @Override
     public String[] getTags() {
         return null;
     }
-    
+
+    @Override
     public void setValue(Object value) {
-        if(value instanceof Short) {
+        if (value instanceof Short) {
             super.setValue(value);
         }
     }
-    
+
     private String getValueAsText() {
         String result = null;
         Object value = getValue();
-        if(value != null) {
+        if (value != null) {
             Short sValue = (Short) value;
             result = sValue.toString();
         }

@@ -14,18 +14,9 @@
  *  limitations under the License.
  */
 
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.4.4.3 $
- */
 package java.beans.beancontext;
 
 import java.util.EventObject;
-
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.4.4.3 $
- */
 
 public abstract class BeanContextEvent extends EventObject {
 
@@ -33,38 +24,23 @@ public abstract class BeanContextEvent extends EventObject {
      * @serial
      */
     protected BeanContext propagatedFrom;
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    protected BeanContextEvent(BeanContext bc) {   
+
+    protected BeanContextEvent(BeanContext bc) {
         super(bc);
     }
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     public BeanContext getBeanContext() {
         return (BeanContext) super.getSource();
     }
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     public synchronized BeanContext getPropagatedFrom() {
         return this.propagatedFrom;
     }
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     public synchronized boolean isPropagated() {
         return (this.propagatedFrom != null);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public synchronized void setPropagatedFrom(BeanContext bc) {
         this.propagatedFrom = bc;
     }

@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.harmony.beans;
 
 import java.beans.Encoder;
@@ -20,11 +21,12 @@ import java.beans.PersistenceDelegate;
 import java.lang.reflect.Method;
 
 /**
- * Persistence delegate for {@link java.lang.reflect.Method} class. 
+ * Persistence delegate for {@link java.lang.reflect.Method} class.
  */
 public class java_lang_reflect_MethodPersistenceDelegate extends
         PersistenceDelegate {
 
+    @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         // should not be null or have a type other than Method
         assert oldInstance instanceof Method : oldInstance;
@@ -37,6 +39,7 @@ public class java_lang_reflect_MethodPersistenceDelegate extends
                         oldMethod.getParameterTypes() });
     }
 
+    @Override
     protected void initialize(Class type, Object oldInstance,
             Object newInstance, Encoder out) {
         // check for consistency
@@ -45,6 +48,7 @@ public class java_lang_reflect_MethodPersistenceDelegate extends
         assert newInstance.equals(oldInstance);
     }
 
+    @Override
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
         assert oldInstance instanceof Method : oldInstance;
 

@@ -14,16 +14,7 @@
  *  limitations under the License.
  */
 
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.3.4.3 $
- */
 package java.beans.beancontext;
-
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.3.4.3 $
- */
 
 public class BeanContextServiceRevokedEvent extends BeanContextEvent {
 
@@ -39,9 +30,6 @@ public class BeanContextServiceRevokedEvent extends BeanContextEvent {
      */
     private boolean invalidateRefs;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public BeanContextServiceRevokedEvent(BeanContextServices bcs, Class sc,
             boolean invalidate) {
 
@@ -50,32 +38,20 @@ public class BeanContextServiceRevokedEvent extends BeanContextEvent {
         this.invalidateRefs = invalidate;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Class getServiceClass() {
         return this.serviceClass;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public BeanContextServices getSourceAsBeanContextServices() {
         return (BeanContextServices) super.propagatedFrom;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean isCurrentServiceInvalidNow() {
         return this.invalidateRefs;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean isServiceClass(Class service) {
-    	if (service == null) {
+        if (service == null) {
             return false;
         }
         return service.equals(this.serviceClass);

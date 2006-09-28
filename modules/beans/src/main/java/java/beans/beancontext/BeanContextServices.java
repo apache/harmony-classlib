@@ -14,74 +14,37 @@
  *  limitations under the License.
  */
 
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.2.4.3 $
- */
 package java.beans.beancontext;
 
 import java.util.Iterator;
 import java.util.TooManyListenersException;
 
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.2.4.3 $
- */
+public interface BeanContextServices extends BeanContext,
+        BeanContextServicesListener {
 
-public interface BeanContextServices 
-        extends BeanContext, BeanContextServicesListener {
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void addBeanContextServicesListener(
-            BeanContextServicesListener bcsl);
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean addService(Class serviceClass, 
-        BeanContextServiceProvider serviceProvider);
-        
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    public void addBeanContextServicesListener(BeanContextServicesListener bcsl);
+
+    public boolean addService(Class serviceClass,
+            BeanContextServiceProvider serviceProvider);
+
     public Iterator getCurrentServiceClasses();
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     public Iterator getCurrentServiceSelectors(Class serviceClass);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public Object getService(BeanContextChild child, Object requestor, 
-        Class serviceClass, Object serviceSelector, 
-        BeanContextServiceRevokedListener bcsrl)
+    public Object getService(BeanContextChild child, Object requestor,
+            Class serviceClass, Object serviceSelector,
+            BeanContextServiceRevokedListener bcsrl)
             throws TooManyListenersException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean hasService(Class serviceClass);
-        
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void releaseService(BeanContextChild child, Object requestor, 
-        Object service);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    public void releaseService(BeanContextChild child, Object requestor,
+            Object service);
+
     public void removeBeanContextServicesListener(
             BeanContextServicesListener bcsl);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void revokeService(Class serviceClass, 
-        BeanContextServiceProvider serviceProvider,
-        boolean revokeCurrentServicesNow);
+    public void revokeService(Class serviceClass,
+            BeanContextServiceProvider serviceProvider,
+            boolean revokeCurrentServicesNow);
 }

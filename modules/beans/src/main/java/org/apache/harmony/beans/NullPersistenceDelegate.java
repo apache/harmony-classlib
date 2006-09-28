@@ -14,32 +14,26 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
 package org.apache.harmony.beans;
 
 import java.beans.Encoder;
 import java.beans.Expression;
 import java.beans.PersistenceDelegate;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
-
 public class NullPersistenceDelegate extends PersistenceDelegate {
-    
+
+    @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         assert oldInstance == null;
         return new Expression(null, null, null, null);
     }
-    
-    protected void initialize(
-            Class type, Object oldInstance, Object newInstance, Encoder out) {
+
+    @Override
+    protected void initialize(Class type, Object oldInstance,
+            Object newInstance, Encoder out) {
     }
-    
+
+    @Override
     public void writeObject(Object oldInstance, Encoder out) {
         assert oldInstance == null;
         out.writeExpression(instantiate(null, out));

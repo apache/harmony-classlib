@@ -14,54 +14,27 @@
  *  limitations under the License.
  */
 
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.2.4.3 $
- */
 package java.beans.beancontext;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.2.4.3 $
- */
-
 public interface BeanContextChild {
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void addPropertyChangeListener(String name, 
-        PropertyChangeListener pcl);
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void addVetoableChangeListener(String name, 
-        VetoableChangeListener vcl);
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
+    public void addPropertyChangeListener(String name,
+            PropertyChangeListener pcl);
+
+    public void addVetoableChangeListener(String name,
+            VetoableChangeListener vcl);
+
     public BeanContext getBeanContext();
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void removePropertyChangeListener(String name, 
-        PropertyChangeListener pcl);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void removeVetoableChangeListener(String name, 
-        VetoableChangeListener vcl);
+    public void removePropertyChangeListener(String name,
+            PropertyChangeListener pcl);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    public void removeVetoableChangeListener(String name,
+            VetoableChangeListener vcl);
+
     public void setBeanContext(BeanContext bc) throws PropertyVetoException;
 }

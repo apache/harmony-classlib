@@ -14,10 +14,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
 package org.apache.harmony.beans;
 
 import java.util.HashMap;
@@ -30,11 +26,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.beans.XMLDecoder;
-
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
 
 public class Handler extends DefaultHandler {
 
@@ -59,12 +50,14 @@ public class Handler extends DefaultHandler {
     }
 
     // clear collections to prepare parsing document
+    @Override
     public void startDocument() {
         references.clear();
         tabCount = 0;
     }
 
     // create new command and put it on stack
+    @Override
     public void startElement(String namespaceURI, String localeName,
             String tagName, Attributes attrs) throws SAXException {
         Command.printAttrs(tabCount, tagName, attrs);
@@ -76,6 +69,7 @@ public class Handler extends DefaultHandler {
     }
 
     // add data to command
+    @Override
     public void characters(char[] text, int start, int length)
             throws SAXException {
         if (length > 0) {
@@ -91,10 +85,11 @@ public class Handler extends DefaultHandler {
     }
 
     // pop command from stack and put it to one of collections
+    @Override
     public void endElement(String namespaceURI, String localeName,
             String tagName) throws SAXException {
         Command cmd = stack.pop();
-        //cmd.setTabCount(tabCount);
+        // cmd.setTabCount(tabCount);
 
         // find if command works in context
         if (!stack.isEmpty()) {
@@ -126,6 +121,7 @@ public class Handler extends DefaultHandler {
     }
 
     // iterate over deferred commands and execute them again
+    @Override
     public void endDocument() throws SAXException {
         for (int i = 0; i < commands.size(); ++i) {
             Command cmd = commands.elementAt(i);
@@ -134,9 +130,9 @@ public class Handler extends DefaultHandler {
             } catch (Exception e) {
                 throw new SAXException(Messages.getString("beans.0B")); //$NON-NLS-1$
             }
-            //            if(!backtracked)
-            //                throw new SAXException("Command " + cmd.getTagName() +
-            //                        " is unresolved on second run() call.");
+            // if(!backtracked)
+            // throw new SAXException("Command " + cmd.getTagName() +
+            // " is unresolved on second run() call.");
         }
 
         for (int i = 0; i < commands.size(); ++i) {

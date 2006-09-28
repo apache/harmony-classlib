@@ -14,10 +14,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
 package org.apache.harmony.beans.editors;
 
 import java.awt.Color;
@@ -26,39 +22,31 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.beans.PropertyEditorSupport;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.1.2.1 $
- */
-
 public class ColorEditor extends PropertyEditorSupport {
-    
-    /**
-     * 
-     * @param source
-     */
+
     public ColorEditor(Object source) {
         super(source);
     }
 
-    /**
-     */
     public ColorEditor() {
         super();
     }
-    
+
+    @Override
     public Component getCustomEditor() {
         return null;
     }
-    
+
+    @Override
     public boolean supportsCustomEditor() {
         return true;
     }
-    
+
+    @Override
     public String getJavaInitializationString() {
         String result = null;
         Color color = (Color) getValue();
-        if(color != null) {
+        if (color != null) {
             int red = color.getRed();
             int green = color.getGreen();
             int blue = color.getBlue();
@@ -66,24 +54,28 @@ public class ColorEditor extends PropertyEditorSupport {
         }
         return result;
     }
-    
+
+    @Override
     public String[] getTags() {
         return null;
     }
-    
+
+    @Override
     public void setValue(Object value) {
-        if(value instanceof Color) {
+        if (value instanceof Color) {
             super.setValue(value);
         }
     }
-    
+
+    @Override
     public boolean isPaintable() {
         return true;
     }
-    
+
+    @Override
     public void paintValue(Graphics gfx, Rectangle box) {
         Color color = (Color) getValue();
-        if(color != null) {
+        if (color != null) {
             gfx.setColor(color);
             gfx.drawRect(box.x, box.y, box.x + box.width, box.y + box.height);
         }

@@ -14,22 +14,10 @@
  *  limitations under the License.
  */
 
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.2.4.3 $
- */
 package java.beans.beancontext;
 
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.2.4.3 $
- */
+public interface BeanContextServicesListener extends
+        BeanContextServiceRevokedListener {
 
-public interface BeanContextServicesListener 
-        extends BeanContextServiceRevokedListener {
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void serviceAvailable(BeanContextServiceAvailableEvent bcsae);
 }
