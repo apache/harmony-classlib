@@ -537,4 +537,9 @@ public abstract class ColorModel implements Transparency {
             return DataBuffer.TYPE_UNDEFINED;
         }
     }
+
+    public void finalize() {
+        // This method is added for the API compatibility
+        // Don't need to call super since Object's finalize is always empty
+    }
 }
