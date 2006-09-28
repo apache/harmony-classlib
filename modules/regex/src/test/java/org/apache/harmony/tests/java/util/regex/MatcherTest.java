@@ -1,9 +1,10 @@
 /*
- *  Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -14,20 +15,12 @@
  *  limitations under the License.
  */
 
-/**
- * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.10.2.2 $
- */
 package org.apache.harmony.tests.java.util.regex;
 
 import junit.framework.TestCase;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.10.2.2 $
- */
 public class MatcherTest extends TestCase {
 	String[] testPatterns = {
 			"(a|b)*abb",
