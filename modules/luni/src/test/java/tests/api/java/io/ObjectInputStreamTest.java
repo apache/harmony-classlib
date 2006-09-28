@@ -17,7 +17,6 @@ package tests.api.java.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.NotActiveException;
@@ -30,7 +29,8 @@ import java.security.Permission;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import tests.support.resource.Support_Resources;
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 public class ObjectInputStreamTest extends junit.framework.TestCase implements
         Serializable {
@@ -109,18 +109,12 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
      * @tests java.io.ObjectInputStream#readObject()
      */
     public void test_readObjectMissingClasses() throws Exception {
-        // To create or update the resource, uncomment the following, and
-        // the B1 class definition and references above.
-        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(
-                "hyts_missingclass.ser"));
-        out.writeObject(new tests.api.java.io.ObjectInputStreamTest.A1());
-        out.close();
-
-        ObjectInputStream in = new ObjectInputStream(Support_Resources
-                .getStream("hyts_missingclass.ser"));
-        in.readObject();
-        in.close();
-        // the serialized data should load without any exceptions.
+        SerializationTest.verifySelf(new A1(), new SerializableAssert() {
+            public void assertDeserialized(Serializable initial,
+                    Serializable deserialized) {
+                assertEquals(5, ((A1) deserialized).b1.i);
+            }
+        });
     }
 
     /**
