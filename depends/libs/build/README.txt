@@ -58,6 +58,11 @@ Further in the document, <EXTERNAL_LIBS_DIR> denotes the directory
 
 1.1 Building the IJG IPEG library
 
+
+    0. Source can be found here :
+   
+          http://www.ijg.org/files/
+
     System: Windows* IA-32
 
     1. Change the directory to the IJG JPEG library source directory;
@@ -97,6 +102,11 @@ Further in the document, <EXTERNAL_LIBS_DIR> denotes the directory
        directory.
 
 1.2 Building the Libpng library
+
+    0. Source can be found here : 
+
+        http://www.libpng.org/pub/png/libpng.html
+        http://www.zlib.net/
 
     System: Windows* IA-32
 
@@ -140,6 +150,11 @@ Further in the document, <EXTERNAL_LIBS_DIR> denotes the directory
 
 1.3 Building the Little CMS library
 
+
+   0. Source can be found here : 
+
+    http://www.littlecms.com/downloads.htm
+
    System: Windows* IA-32
 
    1. Change the working directory to the LCMS source directory.
@@ -153,6 +168,9 @@ Further in the document, <EXTERNAL_LIBS_DIR> denotes the directory
    7. Build the LCMS static library.
    8. Copy the file lcms114.lib to the <EXTERNAL_LIBS_DIR>/lcms directory.
 	    NOTE: Use the file lcms114d.lib for the debug configuration.
+
+      NOTE : v1.15 of lcms seems to only create lcms.lib
+
    9. Copy ./include/icc34.h and ./include/lcms.h to the
       <EXTERNAL_LIBS_DIR>/lcms directory.
 
