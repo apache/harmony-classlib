@@ -522,7 +522,7 @@ public class DatagramSocket {
 	 * @throws SocketException
 	 *             if a problem occurs creating or binding the socket
 	 */
-	public DatagramSocket(SocketAddress localAddr) throws SocketException {
+	public DatagramSocket(SocketAddress localAddr) throws SocketException {        
 		if (localAddr != null) {
 			if (!(localAddr instanceof InetSocketAddress))
 				throw new IllegalArgumentException(Msg.getString(
@@ -539,7 +539,9 @@ public class DatagramSocket {
 				close();
 				throw e;
 			}
-		}
+		} 
+        // SocketOptions.SO_BROADCAST is set by default for DatagramSocket
+        setBroadcast(true);
 	}
 
 	void checkClosedAndBind(boolean bind) throws SocketException {

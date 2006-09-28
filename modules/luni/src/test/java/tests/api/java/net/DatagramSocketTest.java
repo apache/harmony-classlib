@@ -1040,6 +1040,7 @@ public class DatagramSocketTest extends SocketTestCase {
 				int portNumber = Support_PortManager.getNextPort();
 				ds = new java.net.DatagramSocket(new InetSocketAddress(
 						InetAddress.getLocalHost(), portNumber));
+                assertTrue(ds.getBroadcast());
 				assertTrue("Created socket with incorrect port", ds
 						.getLocalPort() == portNumber);
 				assertTrue("Created socket with incorrect address", ds
@@ -1056,6 +1057,9 @@ public class DatagramSocketTest extends SocketTestCase {
 			} catch (IllegalArgumentException e) {
 
 			}
+            //regression for Harmony-894
+            ds = new DatagramSocket((SocketAddress)null);
+            assertTrue(ds.getBroadcast());
 		} catch (Exception ex) {
 			fail(
 					"unexpected exception when datagramSocket SocketAddress constructor test");
