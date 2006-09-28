@@ -328,13 +328,9 @@ public class XMLEncoderTest extends TestCase {
 		assertNull(enc.get(i));
 	}
 
-	public void testXMLEncoder_Null() {
-		try {
-			new XMLEncoder(null);
-		} catch (NullPointerException e) {
-			// expected
-		}
-	}
+        public void testXMLEncoder_Null() throws NullPointerException {
+                new XMLEncoder(null);
+        }
 
 	public void testGetOwner() {
 		XMLEncoder enc = new XMLEncoder(System.out);

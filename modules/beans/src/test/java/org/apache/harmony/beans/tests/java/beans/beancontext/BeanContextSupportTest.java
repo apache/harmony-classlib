@@ -1385,6 +1385,7 @@ public class BeanContextSupportTest extends TestCase {
         support.records.assertRecord("initialize", null);
         try {
             support.removeAll(Collections.EMPTY_LIST);
+            fail("UnsupportedOperationException expected");
         } catch (UnsupportedOperationException e) {
             // expected
         }

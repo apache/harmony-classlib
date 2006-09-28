@@ -736,6 +736,7 @@ public class BeanContextServicesSupportTest extends TestCase {
         try {
             support.getService(child, requestor, Collection.class, selector,
                     null);
+            fail("NPE expected");
         } catch (NullPointerException e) {
             // expected
         }
