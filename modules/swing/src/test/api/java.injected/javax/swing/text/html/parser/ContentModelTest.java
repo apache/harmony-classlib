@@ -261,20 +261,26 @@ public class ContentModelTest extends SwingTestCase {
     }
 
 
-    public void testFirst() {
-        if (!SwingTestCase.isHarmony()) {
-            return;
-        }
+    public void testFirst() throws Exception{
         initContentModels();
-        assertNull(contentModel1.first());
-        assertNull(contentModel2.first());
-        assertNull(contentModel3.first());
-        assertNull(contentModel4.first());
+        assertEquals(elements[1], contentModel1.first());
+        assertEquals(elements[2], contentModel2.first());
+        assertEquals(elements[3], contentModel3.first());
+        assertEquals(elements[1], contentModel4.first());
         assertNull(contentModel5.first());
-        assertEquals(elements[3], contentModel6.first());
-        assertEquals(elements[2], contentModel7.first());
-        assertEquals(elements[1], contentModel8.first());
+        assertNull(contentModel6.first());
+        assertEquals(elements[1], contentModel7.first());
+        assertNull(contentModel8.first());
         assertNull(contentModel9.first());
+    }
+    
+    public void testFirst2() throws Exception{
+        //regression for HARMONY-1350
+        DTD dtd = DTD.getDTD("tmp");
+        ContentModel model1 = new ContentModel (dtd.getElement(2));
+        ContentModel model2 = new ContentModel (dtd.getElement(3));
+        ContentModel model = new ContentModel ('&', model1, model2);
+        assertNull(model.first());
     }
 
 

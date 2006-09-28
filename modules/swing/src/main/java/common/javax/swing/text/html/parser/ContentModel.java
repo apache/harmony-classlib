@@ -137,26 +137,24 @@ public final class ContentModel implements Serializable {
     private String getBracket(final String s, final boolean need) {
         return need ? s : "";
     }
-
+    
     /**
-     *
-     * @return first Element from 'next' contentModel. if type equals one of
-     * unary operations that'll be null.
+     * Gets the <code>Element</code> that must be the first one to occur
+     * in the <code>ContentModel</code>.
+     * @return The first element that must appear in the
+     * <code>ContentModel</code>. Null if zero or more than one
+     * <code>Element</code> occurrence is possible.
      */
     public Element first() {
-        return isExtUnaryType(type) || next == null ? null
-                : next.getFirstElement();
-    }
-
-    private Element getFirstElement() {
-
-        if (content == null) {
-            return null;
+        Element element = null;
+        if (type == DEFAULT_TYPE) {
+            element = (Element)content;
+        } else if (type == PLUS_TYPE || type == COMMA_TYPE) {
+            element = ((ContentModel)content).first();
         }
-        return content instanceof Element ? (Element)content
-                : ((ContentModel)content).getFirstElement();
+        return element;
     }
-
+    
 
     /**
      * @return
