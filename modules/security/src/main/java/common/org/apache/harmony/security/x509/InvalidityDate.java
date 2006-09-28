@@ -34,7 +34,7 @@ import org.apache.harmony.security.asn1.ASN1Type;
 public class InvalidityDate extends ExtensionValue {
 
     // invalidity date value
-    private static Date date;
+    private final Date date;
 
     /**
      * Constructs the object on the base of the invalidity date value.
