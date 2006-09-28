@@ -1,4 +1,4 @@
-/* Copyright 2002, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2002, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -416,6 +416,14 @@ public class URITest extends junit.framework.TestCase {
 		} catch (URISyntaxException e) {
 			fail("Unexpected URISyntaxException:" + e);
 		}
+        
+        // regression for Harmony-1346
+        try {
+            uri = new URI("http", ":2:3:4:5:6:7:8", "/apath", "\u20ACfrag");
+            fail("Should throw URISyntaxException");
+        } catch (URISyntaxException e) {
+            // Expected
+        }
 	}
 
 	/**

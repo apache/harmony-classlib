@@ -1,4 +1,4 @@
-/* Copyright 2004, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -592,6 +592,10 @@ public final class URI implements Comparable<URI>, Serializable {
                     }
 					if (ipAddress.charAt(length - 1) != ']') {
                         return false; // must have a close ]
+                    }
+                    if ((ipAddress.charAt(1) == ':')
+                            && (ipAddress.charAt(2) != ':')) {
+                        return false;
                     }
 					offset = 1;
 					if (length < 4) {
