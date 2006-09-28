@@ -16,9 +16,9 @@
 
 package java.beans;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Constructor;
 import java.util.Vector;
 
 import org.apache.harmony.beans.internal.nls.Messages;
@@ -26,14 +26,17 @@ import org.apache.harmony.beans.internal.nls.Messages;
 public class PropertyDescriptor extends FeatureDescriptor {
 
     Class<?> beanClass = null;
+
     String propertyName = null;
-    
+
     Method getter = null;
+
     Method setter = null;
-    
+
     Class<?> propertyEditorClass = null;
-    
+
     boolean constrained = false;
+
     boolean bound = false;
 
     public PropertyDescriptor(String propertyName, Class<?> beanClass,
@@ -96,51 +99,48 @@ public class PropertyDescriptor extends FeatureDescriptor {
         }
 
         this.propertyName = propertyName;
-        
+
         this.setName(propertyName);
         this.setDisplayName(propertyName);
-        
+
         String getterName = createDefaultMethodName(propertyName, "is"); //$NON-NLS-1$
-        if(hasMethod(beanClass, getterName)) {
+        if (hasMethod(beanClass, getterName)) {
             setReadMethod(beanClass, getterName);
         } else {
             getterName = createDefaultMethodName(propertyName, "get"); //$NON-NLS-1$
-            if(hasMethod(beanClass, getterName)) {
+            if (hasMethod(beanClass, getterName)) {
                 setReadMethod(beanClass, getterName);
             } else {
                 throw new IntrospectionException(Messages.getString("beans.1F")); //$NON-NLS-1$
             }
         }
         String setterName = createDefaultMethodName(propertyName, "set"); //$NON-NLS-1$
-        if(hasMethod(beanClass, setterName)) {
+        if (hasMethod(beanClass, setterName)) {
             setWriteMethod(beanClass, setterName);
         } else {
             throw new IntrospectionException(Messages.getString("beans.20")); //$NON-NLS-1$
         }
     }
-        
+
     public void setWriteMethod(Method setter) throws IntrospectionException {
         if (setter != null) {
             int modifiers = setter.getModifiers();
             if (!Modifier.isPublic(modifiers)) {
-                throw new IntrospectionException(
-                        Messages.getString("beans.05")); //$NON-NLS-1$
+                throw new IntrospectionException(Messages.getString("beans.05")); //$NON-NLS-1$
             }
-            
+
             Class[] parameterTypes = setter.getParameterTypes();
             if (parameterTypes.length != 1) {
-                throw new IntrospectionException(
-                        Messages.getString("beans.06")); //$NON-NLS-1$
+                throw new IntrospectionException(Messages.getString("beans.06")); //$NON-NLS-1$
             }
-            
+
             Class<?> parameterType = parameterTypes[0];
             Class<?> propertyType = getPropertyType();
-            if(propertyType != null && !propertyType.equals(parameterType)) {
-                throw new IntrospectionException(
-                        Messages.getString("beans.07")); //$NON-NLS-1$
+            if (propertyType != null && !propertyType.equals(parameterType)) {
+                throw new IntrospectionException(Messages.getString("beans.07")); //$NON-NLS-1$
             }
         }
-        
+
         this.setter = setter;
     }
 
@@ -148,27 +148,24 @@ public class PropertyDescriptor extends FeatureDescriptor {
         if (getter != null) {
             int modifiers = getter.getModifiers();
             if (!Modifier.isPublic(modifiers)) {
-                throw new IntrospectionException(
-                        Messages.getString("beans.0A")); //$NON-NLS-1$
+                throw new IntrospectionException(Messages.getString("beans.0A")); //$NON-NLS-1$
             }
-            
+
             Class[] parameterTypes = getter.getParameterTypes();
             if (parameterTypes.length != 0) {
-                throw new IntrospectionException(
-                        Messages.getString("beans.08")); //$NON-NLS-1$
+                throw new IntrospectionException(Messages.getString("beans.08")); //$NON-NLS-1$
             }
-            
+
             Class<?> returnType = getter.getReturnType();
             if (returnType.equals(Void.TYPE)) {
                 throw new IntrospectionException(Messages.getString("beans.33")); //$NON-NLS-1$
             }
             Class<?> propertyType = getPropertyType();
-            if((propertyType != null) && !returnType.equals(propertyType)) {
-                throw new IntrospectionException(
-                        Messages.getString("beans.09")); //$NON-NLS-1$
+            if ((propertyType != null) && !returnType.equals(propertyType)) {
+                throw new IntrospectionException(Messages.getString("beans.09")); //$NON-NLS-1$
             }
         }
-        
+
         this.getter = getter;
     }
 
@@ -180,34 +177,32 @@ public class PropertyDescriptor extends FeatureDescriptor {
         return getter;
     }
 
+    @Override
     public boolean equals(Object object) {
         boolean result = (object != null);
         if (result) {
             PropertyDescriptor pd = (PropertyDescriptor) object;
-            
+
             boolean gettersAreEqual = (this.getter == null)
                     && (pd.getReadMethod() == null) || (this.getter != null)
                     && (this.getter.equals(pd.getReadMethod()));
-            
+
             boolean settersAreEqual = (this.setter == null)
                     && (pd.getWriteMethod() == null) || (this.setter != null)
                     && (this.setter.equals(pd.getWriteMethod()));
-            
-            boolean propertyTypesAreEqual =
-                    this.getPropertyType() == pd.getPropertyType();
-            boolean propertyEditorClassesAreEqual =
-                    this.getPropertyEditorClass() == pd.getPropertyEditorClass();
+
+            boolean propertyTypesAreEqual = this.getPropertyType() == pd
+                    .getPropertyType();
+            boolean propertyEditorClassesAreEqual = this
+                    .getPropertyEditorClass() == pd.getPropertyEditorClass();
             boolean boundPropertyAreEqual = this.isBound() == pd.isBound();
-            boolean constrainedPropertyAreEqual =
-                    this.isConstrained() == pd.isConstrained();
-            
-            result = gettersAreEqual
-                    && settersAreEqual
-                    && propertyTypesAreEqual
-                    && propertyEditorClassesAreEqual
-                    && boundPropertyAreEqual
-                    && constrainedPropertyAreEqual;
-        };
+            boolean constrainedPropertyAreEqual = this.isConstrained() == pd
+                    .isConstrained();
+
+            result = gettersAreEqual && settersAreEqual
+                    && propertyTypesAreEqual && propertyEditorClassesAreEqual
+                    && boundPropertyAreEqual && constrainedPropertyAreEqual;
+        }
         return result;
     }
 
@@ -245,12 +240,12 @@ public class PropertyDescriptor extends FeatureDescriptor {
     public boolean isBound() {
         return bound;
     }
-    
+
     boolean hasMethod(Class<?> beanClass, String methodName) {
         Method[] methods = findMethods(beanClass, methodName);
         return (methods.length > 0);
     }
-    
+
     String createDefaultMethodName(String propertyName, String prefix) {
         String result = null;
         if (propertyName != null) {
@@ -260,36 +255,35 @@ public class PropertyDescriptor extends FeatureDescriptor {
         }
         return result;
     }
-    
+
     Method[] findMethods(Class<?> aClass, String methodName) {
         Method[] allMethods = aClass.getMethods();
         Vector<Method> matchedMethods = new Vector<Method>();
-        for (int i = 0; i < allMethods.length; ++i) {
-            Method method = allMethods[i];
+        for (Method method : allMethods) {
             if (method.getName().equals(methodName)) {
                 matchedMethods.add(method);
             }
         }
-        
+
         Method[] result = new Method[matchedMethods.size()];
-        for(int j = 0; j < matchedMethods.size(); ++j) {
-            result[j] = (Method) matchedMethods.elementAt(j);
+        for (int j = 0; j < matchedMethods.size(); ++j) {
+            result[j] = matchedMethods.elementAt(j);
         }
         return result;
     }
-    
+
     private void setReadMethod(Class<?> beanClass, String getterName) {
         boolean result = false;
-        
+
         Method[] getters = findMethods(beanClass, getterName);
-        
-        for (int i = 0; i < getters.length; ++i) {
+
+        for (Method element : getters) {
             try {
-                setReadMethod(getters[i]);
+                setReadMethod(element);
                 result = true;
             } catch (IntrospectionException ie) {
             }
-            
+
             if (result) {
                 break;
             }
@@ -299,22 +293,22 @@ public class PropertyDescriptor extends FeatureDescriptor {
     private void setWriteMethod(Class<?> beanClass, String setterName)
             throws IntrospectionException {
         boolean result = false;
-        
+
         Method[] setters = findMethods(beanClass, setterName);
-        
-        for (int i = 0; i < setters.length; ++i) {
+
+        for (Method element : setters) {
             try {
-                setWriteMethod(setters[i]);
+                setWriteMethod(element);
                 result = true;
             } catch (IntrospectionException ie) {
             }
-            
+
             if (result) {
                 break;
             }
         }
     }
-    
+
     public PropertyEditor createPropertyEditor(Object bean) {
         PropertyEditor editor;
 
@@ -323,7 +317,8 @@ public class PropertyDescriptor extends FeatureDescriptor {
         }
 
         if (!PropertyEditor.class.isAssignableFrom(propertyEditorClass)) {
-            // beans.48=Property editor is not assignable from the PropertyEditor interface
+            // beans.48=Property editor is not assignable from the
+            // PropertyEditor interface
             throw new ClassCastException(Messages.getString("beans.48")); //$NON-NLS-1$
         }
 
@@ -341,8 +336,8 @@ public class PropertyDescriptor extends FeatureDescriptor {
             }
         } catch (Exception e) {
             // beans.47=Unable to instantiate property editor
-            RuntimeException re = new RuntimeException(
-                    Messages.getString("beans.47"), e); //$NON-NLS-1$
+            RuntimeException re = new RuntimeException(Messages
+                    .getString("beans.47"), e); //$NON-NLS-1$
 
             throw re;
         }

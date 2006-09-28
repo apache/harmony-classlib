@@ -14,23 +14,11 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
 package java.beans;
 
 import java.util.EventListener;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
-
 public interface PropertyChangeListener extends EventListener {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void propertyChange(PropertyChangeEvent event);
 }

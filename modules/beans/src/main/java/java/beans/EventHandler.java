@@ -14,10 +14,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.7.6.3 $
- */
 package java.beans;
 
 import java.lang.reflect.InvocationHandler;
@@ -38,9 +34,6 @@ public class EventHandler implements InvocationHandler {
 
     private String listenerMethodName;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public EventHandler(Object target, String action, String eventPropertyName,
             String listenerMethodName) {
         this.target = target;
@@ -49,13 +42,10 @@ public class EventHandler implements InvocationHandler {
         this.listenerMethodName = listenerMethodName;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Object invoke(Object proxy, Method method, Object[] arguments) {
         Class<?> proxyClass;
         Object result = null;
-        
+
         // XXX
         if (arguments == null) {
             arguments = new Object[0];
@@ -72,22 +62,20 @@ public class EventHandler implements InvocationHandler {
 
                 // if the method from the Object class is called
                 if (method.getDeclaringClass().equals(Object.class)) {
-                    if (method.getName().equals("hashCode") &&  //$NON-NLS-1$
+                    if (method.getName().equals("hashCode") && //$NON-NLS-1$
                             arguments.length == 0) {
                         result = hashCode();
                     } else if (method.getName().equals("equals") && //$NON-NLS-1$
-                            arguments.length == 1 &&
-                            arguments[0] != null) {
+                            arguments.length == 1 && arguments[0] != null) {
                         result = (proxy == arguments[0]);
                     } else if (method.getName().equals("toString") && //$NON-NLS-1$
                             arguments.length == 0) {
-                        result = proxy.getClass().getSimpleName() +
-                                toString().substring(
+                        result = proxy.getClass().getSimpleName()
+                                + toString().substring(
                                         getClass().getName().length());
                     }
                 } else if (isValidInvocation(method, arguments)) {
                     // if listener method
-
                     try {
                         // extract value from event property name
                         Object[] args = getArgs(arguments);
@@ -97,81 +85,57 @@ public class EventHandler implements InvocationHandler {
                         // we have a valid listener method at this point
                         result = m.invoke(target, args);
                     } catch (Throwable t) {
-                        System.out.println(t.getClass() + ": " + t.getMessage()); //$NON-NLS-1$
+                        System.out
+                                .println(t.getClass() + ": " + t.getMessage()); //$NON-NLS-1$
                     }
+                }
+            }
+        }
 
-                } // valid call
-
-            } // valid object
-
-        } // valid proxy
-        
         return result;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getListenerMethodName() {
         return listenerMethodName;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getEventPropertyName() {
         return eventPropertyName;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getAction() {
         return action;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Object getTarget() {
         return target;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static <T> T create(Class<T> listenerInterface, Object target,
             String action, String eventPropertyName, String listenerMethodName) {
         return (T) Proxy.newProxyInstance(target.getClass().getClassLoader(),
-                new Class[] { listenerInterface },
-                new EventHandler(target, action, eventPropertyName,
-                        listenerMethodName));
+                new Class[] { listenerInterface }, new EventHandler(target,
+                        action, eventPropertyName, listenerMethodName));
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static <T> T create(Class<T> listenerInterface, Object target,
             String action, String eventPropertyName) {
         return (T) Proxy.newProxyInstance(target.getClass().getClassLoader(),
-                new Class[] { listenerInterface },
-                new EventHandler(target, action, eventPropertyName, null));
+                new Class[] { listenerInterface }, new EventHandler(target,
+                        action, eventPropertyName, null));
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static <T> T create(Class<T> listenerInterface, Object target,
             String action) {
         return (T) Proxy.newProxyInstance(target.getClass().getClassLoader(),
-                new Class[] { listenerInterface },
-                new EventHandler(target, action, null, null));
+                new Class[] { listenerInterface }, new EventHandler(target,
+                        action, null, null));
     }
 
     private boolean isValidInvocation(Method method, Object[] arguments) {
         boolean result = false;
 
-        if (listenerMethodName == null) { // all listener methods are valid 
+        if (listenerMethodName == null) { // all listener methods are valid
             result = true;
         } else if (listenerMethodName.equals(method.getName())) {
             // method's name matches
@@ -214,8 +178,8 @@ public class EventHandler implements InvocationHandler {
                     if (getter != null) {
                         arg = getter.invoke(arg, new Object[] {});
                     } else {
-                        throw new IntrospectionException(
-                                Messages.getString("beans.11", propertyName)); //$NON-NLS-1$
+                        throw new IntrospectionException(Messages.getString(
+                                "beans.11", propertyName)); //$NON-NLS-1$
                     }
                 } else {
                     Method method = findStaticGetter(arg.getClass(),
@@ -224,8 +188,8 @@ public class EventHandler implements InvocationHandler {
                     if (method != null) {
                         arg = method.invoke(null, new Object[] {});
                     } else {
-                        throw new IntrospectionException(
-                                Messages.getString("beans.12", propertyName)); //$NON-NLS-1$
+                        throw new IntrospectionException(Messages.getString(
+                                "beans.12", propertyName)); //$NON-NLS-1$
                     }
                 }
             }
@@ -245,12 +209,10 @@ public class EventHandler implements InvocationHandler {
         if (listenerMethodName == null) {
             Class[] proxyInterfaces = proxy.getClass().getInterfaces();
 
-            for (int i = 0; i < proxyInterfaces.length; ++i) {
-                Method[] interfaceMethods = proxyInterfaces[i].getMethods();
+            for (Class element : proxyInterfaces) {
+                Method[] interfaceMethods = element.getMethods();
 
-                for (int k = 0; k < interfaceMethods.length; ++k) {
-                    Method listenerMethod = interfaceMethods[k];
-
+                for (Method listenerMethod : interfaceMethods) {
                     if (equalNames(listenerMethod, method)
                             && canInvokeWithArguments(listenerMethod, arguments)) {
                         found = true;
@@ -261,10 +223,9 @@ public class EventHandler implements InvocationHandler {
                 if (found) {
                     break;
                 }
-
             }
 
-            // can be invoked with a specified listener method    
+            // can be invoked with a specified listener method
         } else if (method.getName().equals(listenerMethodName)) {
             found = true;
         }
@@ -284,12 +245,11 @@ public class EventHandler implements InvocationHandler {
                     result = pd.getWriteMethod();
 
                     if (result == null) {
-                        throw new NoSuchMethodException(
-                                Messages.getString("beans.13", action)); //$NON-NLS-1$ //$NON-NLS-2$
+                        throw new NoSuchMethodException(Messages.getString(
+                                "beans.13", action)); //$NON-NLS-1$
                     }
                 } else {
-                    throw new Exception(
-                            Messages.getString("beans.14")); //$NON-NLS-1$
+                    throw new Exception(Messages.getString("beans.14")); //$NON-NLS-1$
                 }
             } else {
                 return result;
@@ -307,9 +267,9 @@ public class EventHandler implements InvocationHandler {
         BeanInfo beanInfo = Introspector.getBeanInfo(theClass);
         PropertyDescriptor[] pds = beanInfo.getPropertyDescriptors();
 
-        for (int i = 0; i < pds.length; ++i) {
-            if (pds[i].getName().equals(propertyName)) {
-                result = pds[i];
+        for (PropertyDescriptor element : pds) {
+            if (element.getName().equals(propertyName)) {
+                result = element;
                 break;
             }
         }
@@ -321,11 +281,11 @@ public class EventHandler implements InvocationHandler {
         Method result = null;
         Method[] methods = theClass.getMethods();
 
-        for (int i = 0; i < methods.length; ++i) {
-            int modifiers = methods[i].getModifiers();
+        for (Method element : methods) {
+            int modifiers = element.getModifiers();
 
             if (Modifier.isStatic(modifiers) && Modifier.isPublic(modifiers)) {
-                String methodName = methods[i].getName();
+                String methodName = element.getName();
                 String postfix = null;
 
                 if (methodName.startsWith("get")) { //$NON-NLS-1$
@@ -336,14 +296,14 @@ public class EventHandler implements InvocationHandler {
                     continue;
                 }
 
-                if ((methods[i].getParameterTypes().length != 0)
-                        || (methods[i].getReturnType() == void.class)) {
+                if ((element.getParameterTypes().length != 0)
+                        || (element.getReturnType() == void.class)) {
                     continue;
                 }
 
                 postfix = Introspector.decapitalize(postfix);
                 if (postfix.equals(propertyName)) {
-                    result = methods[i];
+                    result = element;
                     break;
                 }
             }
@@ -355,10 +315,10 @@ public class EventHandler implements InvocationHandler {
     private Method findMethod(Class<?> type, Object[] args) {
         Method[] methods = type.getMethods();
 
-        for (int i = 0; i < methods.length; ++i) {
-            if (action.equals(methods[i].getName())
-                    && canInvokeWithArguments(methods[i], args)) {
-                return methods[i];
+        for (Method element : methods) {
+            if (action.equals(element.getName())
+                    && canInvokeWithArguments(element, args)) {
+                return element;
             }
         }
 

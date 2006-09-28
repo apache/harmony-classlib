@@ -14,10 +14,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
 package java.beans;
 
 /**
@@ -30,9 +26,14 @@ public class PropertyVetoException extends Exception {
     private final PropertyChangeEvent evt;
 
     /**
-     * <p>Constructs an instance with a message and the change event.</p>
-     * @param message A description of the veto.
-     * @param event The event that was vetoed.
+     * <p>
+     * Constructs an instance with a message and the change event.
+     * </p>
+     * 
+     * @param message
+     *            A description of the veto.
+     * @param event
+     *            The event that was vetoed.
      */
     public PropertyVetoException(String message, PropertyChangeEvent event) {
         super(message);
@@ -40,7 +41,10 @@ public class PropertyVetoException extends Exception {
     }
 
     /**
-     * <p>Gets the property change event.</p>
+     * <p>
+     * Gets the property change event.
+     * </p>
+     * 
      * @return An instance of {@link PropertyChangeEvent}
      */
     public PropertyChangeEvent getPropertyChangeEvent() {

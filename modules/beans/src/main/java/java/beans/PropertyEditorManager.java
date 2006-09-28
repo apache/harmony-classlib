@@ -14,33 +14,20 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.6.6.4 $
- */
 package java.beans;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.6.6.4 $
- */
-
 public class PropertyEditorManager {
-    
-    private static String[] path = {"org.apache.harmony.beans.editors"}; //$NON-NLS-1$
+
+    private static String[] path = { "org.apache.harmony.beans.editors" }; //$NON-NLS-1$
+
     private static Map<Class<?>, Class<?>> registeredEditors = new HashMap<Class<?>, Class<?>>();
-    
-    /**
-     */
+
     public PropertyEditorManager() {
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static void registerEditor(Class<?> targetType, Class<?> editorClass) {
         if (targetType == null) {
             throw new NullPointerException();
@@ -57,9 +44,6 @@ public class PropertyEditorManager {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static synchronized PropertyEditor findEditor(Class<?> targetType) {
         if (targetType == null) {
             throw new NullPointerException();
@@ -90,43 +74,39 @@ public class PropertyEditorManager {
                             + shortEditorClassName.substring(1);
                 }
 
-                for (int i = 0; i < path.length; ++i) {
-                    editorClassName = path[i] + "." + shortEditorClassName; //$NON-NLS-1$
+                for (String element : path) {
+                    editorClassName = element + "." + shortEditorClassName; //$NON-NLS-1$
 
                     try {
                         editorClass = Class.forName(editorClassName, true,
                                 loader);
                         break;
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                    }
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
 
         if (editorClass != null) {
             try {
                 editor = (PropertyEditor) editorClass.newInstance();
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
 
         return editor;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static synchronized void setEditorSearchPath(String[] apath) {
         SecurityManager sm = System.getSecurityManager();
-        
         if (sm != null) {
             sm.checkPropertiesAccess();
         }
-        
+
         path = apath;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static synchronized String[] getEditorSearchPath() {
         return path;
     }

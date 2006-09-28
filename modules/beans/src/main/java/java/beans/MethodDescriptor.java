@@ -21,8 +21,6 @@ import java.lang.reflect.Method;
 
 /**
  * Describes a bean's method.
- * 
- * @author Maxim V. Berkultsev
  */
 public class MethodDescriptor extends FeatureDescriptor {
 
@@ -37,8 +35,10 @@ public class MethodDescriptor extends FeatureDescriptor {
      * of the <code>method</code> passed.
      * </p>
      * 
-     * @param method The Method to set.
-     * @param parameterDescriptors An array of parameter descriptors.
+     * @param method
+     *            The Method to set.
+     * @param parameterDescriptors
+     *            An array of parameter descriptors.
      */
     public MethodDescriptor(Method method,
             ParameterDescriptor[] parameterDescriptors) {
@@ -60,7 +60,8 @@ public class MethodDescriptor extends FeatureDescriptor {
      * passed.
      * </p>
      * 
-     * @param method The Method to set.
+     * @param method
+     *            The Method to set.
      */
     public MethodDescriptor(Method method) {
         super();

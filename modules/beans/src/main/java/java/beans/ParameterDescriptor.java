@@ -14,22 +14,10 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
 package java.beans;
-
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
 
 public class ParameterDescriptor extends FeatureDescriptor {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public ParameterDescriptor() {
     }
 }

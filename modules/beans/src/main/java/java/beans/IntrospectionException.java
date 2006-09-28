@@ -14,24 +14,12 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
 package java.beans;
-
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
 
 public class IntrospectionException extends Exception {
 
     static final long serialVersionUID = -3728150539969542619L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public IntrospectionException(String message) {
         super(message);
     }

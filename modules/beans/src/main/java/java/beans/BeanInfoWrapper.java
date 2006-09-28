@@ -25,29 +25,29 @@ import java.util.Iterator;
 import java.util.Map;
 
 class BeanInfoWrapper implements BeanInfo {
-    
+
     private BeanInfo info;
+
     private BeanInfoImpl impl;
+
     private BeanInfoWrapper parentBeanInfoWrapper;
-    
+
     public BeanInfoWrapper(BeanInfo info, BeanInfoImpl impl) {
         this.info = info;
         this.impl = impl;
     }
-    
+
     public PropertyDescriptor[] getPropertyDescriptors() {
         PropertyDescriptor[] result = null;
         PropertyDescriptor[] infoResult = null;
-        
+
         if (info != null) {
             BeanInfo[] infos = info.getAdditionalBeanInfo();
 
             infoResult = info.getPropertyDescriptors();
 
             if (infos != null) {
-                for (int i = 0; i < infos.length; ++i) {
-                    BeanInfo additionalInfo = infos[i];
-
+                for (BeanInfo additionalInfo : infos) {
                     if (infoResult == null) {
                         infoResult = additionalInfo.getPropertyDescriptors();
                     } else {
@@ -63,10 +63,10 @@ class BeanInfoWrapper implements BeanInfo {
 
             // merge with parent info
             if (parentBeanInfoWrapper != null) {
-                PropertyDescriptor[] parentResult =
-                        parentBeanInfoWrapper.getPropertyDescriptors();
-                Map<String, FeatureDescriptor> hm =
-                        concatArraysUniqueByName(implResult, parentResult);
+                PropertyDescriptor[] parentResult = parentBeanInfoWrapper
+                        .getPropertyDescriptors();
+                Map<String, FeatureDescriptor> hm = concatArraysUniqueByName(
+                        implResult, parentResult);
 
                 Collection<FeatureDescriptor> values = hm.values();
                 Iterator<FeatureDescriptor> iterator;
@@ -83,6 +83,8 @@ class BeanInfoWrapper implements BeanInfo {
                             PropertyDescriptor pd2) {
                         return pd1.getName().compareTo(pd2.getName());
                     }
+
+                    @Override
                     public boolean equals(Object o) {
                         return false;
                     }
@@ -93,23 +95,21 @@ class BeanInfoWrapper implements BeanInfo {
         } else {
             result = infoResult;
         }
-        
+
         return result;
     }
 
     public MethodDescriptor[] getMethodDescriptors() {
         MethodDescriptor[] result = null;
         MethodDescriptor[] infoResult = null;
-        
+
         if (info != null) {
             BeanInfo[] infos = info.getAdditionalBeanInfo();
 
             infoResult = info.getMethodDescriptors();
 
             if (infos != null) {
-                for (int i = 0; i < infos.length; ++i) {
-                    BeanInfo additionalInfo = infos[i];
-
+                for (BeanInfo additionalInfo : infos) {
                     if (infoResult == null) {
                         infoResult = additionalInfo.getMethodDescriptors();
                     } else {
@@ -125,8 +125,8 @@ class BeanInfoWrapper implements BeanInfo {
 
             // merge with parent info
             if (parentBeanInfoWrapper != null) {
-                MethodDescriptor[] parentResult =
-                        parentBeanInfoWrapper.getMethodDescriptors();
+                MethodDescriptor[] parentResult = parentBeanInfoWrapper
+                        .getMethodDescriptors();
 
                 result = concatArraysToOneArray(implResult, parentResult);
             } else {
@@ -141,12 +141,14 @@ class BeanInfoWrapper implements BeanInfo {
                 public int compare(MethodDescriptor md1, MethodDescriptor md2) {
                     return md1.getName().compareTo(md2.getName());
                 }
+
+                @Override
                 public boolean equals(Object o) {
                     return false;
                 }
             });
         }
-        
+
         return result;
     }
 
@@ -160,9 +162,7 @@ class BeanInfoWrapper implements BeanInfo {
             infoResult = info.getEventSetDescriptors();
 
             if (infos != null) {
-                for (int i = 0; i < infos.length; ++i) {
-                    BeanInfo additionalInfo = infos[i];
-
+                for (BeanInfo additionalInfo : infos) {
                     if (infoResult == null) {
                         infoResult = additionalInfo.getEventSetDescriptors();
                     } else {
@@ -178,26 +178,28 @@ class BeanInfoWrapper implements BeanInfo {
 
             // merge with parent info
             if (parentBeanInfoWrapper != null) {
-                EventSetDescriptor[] parentResult =
-                        parentBeanInfoWrapper.getEventSetDescriptors();
+                EventSetDescriptor[] parentResult = parentBeanInfoWrapper
+                        .getEventSetDescriptors();
                 Map<String, FeatureDescriptor> hm = concatArraysUniqueByName(
                         implResult, parentResult);
-                
+
                 Collection<FeatureDescriptor> values = hm.values();
                 Iterator<FeatureDescriptor> iterator;
                 int idx = 0;
-                
+
                 result = new EventSetDescriptor[values.size()];
                 iterator = values.iterator();
                 while (iterator.hasNext()) {
                     result[idx++] = (EventSetDescriptor) iterator.next();
                 }
-                
+
                 Arrays.sort(result, new Comparator<EventSetDescriptor>() {
                     public int compare(EventSetDescriptor esd1,
-                                       EventSetDescriptor esd2) {
+                            EventSetDescriptor esd2) {
                         return esd1.getName().compareTo(esd2.getName());
                     }
+
+                    @Override
                     public boolean equals(Object o) {
                         return false;
                     }
@@ -266,42 +268,39 @@ class BeanInfoWrapper implements BeanInfo {
         if (info != null) {
             result = info.getDefaultEventIndex();
         }
-        
+
         if (info == null || result == -1) {
             result = impl.getDefaultEventIndex();
         }
 
         return result;
     }
-    
+
     void merge(BeanInfoWrapper parentBeanInfoWrapper) {
         this.parentBeanInfoWrapper = parentBeanInfoWrapper;
     }
-    
-    private static Map<String, FeatureDescriptor>
-            concatArraysUniqueByName(FeatureDescriptor[] childs,
-                                     FeatureDescriptor[] parents)
-    {
-        Map<String, FeatureDescriptor> result =
-                new HashMap<String, FeatureDescriptor>();
+
+    private static Map<String, FeatureDescriptor> concatArraysUniqueByName(
+            FeatureDescriptor[] childs, FeatureDescriptor[] parents) {
+        Map<String, FeatureDescriptor> result = new HashMap<String, FeatureDescriptor>();
 
         if (childs != null) {
-            for (int i = 0; i < childs.length; ++i) {
-                result.put(childs[i].getName(), childs[i]);
+            for (FeatureDescriptor element : childs) {
+                result.put(element.getName(), element);
             }
         }
 
         if (parents != null) {
-            for (int j = 0; j < parents.length; ++j) {
-                if (result.get(parents[j].getName()) == null) {
-                    result.put(parents[j].getName(), parents[j]);
+            for (FeatureDescriptor element : parents) {
+                if (result.get(element.getName()) == null) {
+                    result.put(element.getName(), element);
                 }
             }
         }
 
         return result;
     }
-    
+
     private static PropertyDescriptor[] concatArraysToOneArray(
             PropertyDescriptor[] childs, PropertyDescriptor[] parents) {
         if (childs != null || parents != null) {
@@ -313,26 +312,26 @@ class BeanInfoWrapper implements BeanInfo {
             int idx = 0;
 
             while (iterator.hasNext()) {
-                String name = (String) iterator.next();
+                String name = iterator.next();
 
                 result[idx++] = (PropertyDescriptor) hm.get(name);
             }
 
             return result;
-        } else {
-            return null;
         }
+
+        return null;
     }
-    
+
     private static MethodDescriptor[] concatArraysToOneArray(
             MethodDescriptor[] childs, MethodDescriptor[] parents) {
         MethodDescriptor[] result = null;
-        
+
         if (childs != null || parents != null) {
             int resultLength = 0;
 
             if (childs != null) {
-                resultLength = childs.length; 
+                resultLength = childs.length;
             }
 
             if (parents != null) {
@@ -346,7 +345,7 @@ class BeanInfoWrapper implements BeanInfo {
                     result[i] = childs[i];
                 }
             }
-            
+
             if (parents != null) {
                 int shift = (childs == null) ? 0 : childs.length;
 
@@ -354,31 +353,31 @@ class BeanInfoWrapper implements BeanInfo {
                     result[shift + i] = parents[i];
                 }
             }
-            
+
         }
 
         return result;
     }
-    
+
     private static EventSetDescriptor[] concatArraysToOneArray(
             EventSetDescriptor[] childs, EventSetDescriptor[] parents) {
         if (childs != null || parents != null) {
-            Map<String, FeatureDescriptor> hm =
-                    concatArraysUniqueByName(childs, parents);
+            Map<String, FeatureDescriptor> hm = concatArraysUniqueByName(
+                    childs, parents);
             EventSetDescriptor[] result = new EventSetDescriptor[hm.size()];
 
             Iterator<String> iterator = hm.keySet().iterator();
             int idx = 0;
 
             while (iterator.hasNext()) {
-                String name = (String) iterator.next();
+                String name = iterator.next();
 
                 result[idx++] = (EventSetDescriptor) hm.get(name);
             }
 
             return result;
-        } else {
-            return null;
         }
+
+        return null;
     }
 }

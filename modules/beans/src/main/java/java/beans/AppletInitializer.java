@@ -14,29 +14,14 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.3.6.3 $
- */
 package java.beans;
 
 import java.applet.Applet;
 import java.beans.beancontext.BeanContext;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.3.6.3 $
- */
-
 public interface AppletInitializer {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void initialize(Applet newAppletBean, BeanContext bCtxt);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void activate(Applet newApplet);
 }

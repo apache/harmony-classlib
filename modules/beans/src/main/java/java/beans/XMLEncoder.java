@@ -14,27 +14,18 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.13.6.4 $
- */
 package java.beans;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Vector;
 
 import org.apache.harmony.beans.ObjectNode;
 import org.apache.harmony.beans.internal.nls.Messages;
-
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.13.6.4 $
- */
 
 public class XMLEncoder extends Encoder {
 
@@ -44,59 +35,38 @@ public class XMLEncoder extends Encoder {
 
     private Vector<ObjectNode> printed = new Vector<ObjectNode>();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public XMLEncoder(OutputStream out) {
         this.out = out;
         this.owner = null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public void writeObject(Object object) {
         super.writeObject(object);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setOwner(Object owner) {
         this.owner = owner;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Object getOwner() {
         return owner;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public void writeStatement(Statement oldStm) {
         super.writeStatement(oldStm);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public void writeExpression(Expression oldExp) {
         super.writeExpression(oldExp);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void flush() {
         writeAll();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void close() {
         try {
             flush();
@@ -142,7 +112,8 @@ public class XMLEncoder extends Encoder {
         try {
             nodeType = node.getObjectType();
         } catch (Exception e) {
-            Exception e2 = new Exception(Messages.getString("beans.3B", node.getInitializer())); //$NON-NLS-1$
+            Exception e2 = new Exception(Messages.getString(
+                    "beans.3B", node.getInitializer())); //$NON-NLS-1$
 
             e2.initCause(e);
             getExceptionListener().exceptionThrown(e2);
@@ -215,7 +186,7 @@ public class XMLEncoder extends Encoder {
                 // reference
                 printBytes(tabCount, tag.toStringShortForm());
             } else if (isArray(nodeType) && !node.statements().hasNext()) {
-                // if we have an empty array 
+                // if we have an empty array
                 printBytes(tabCount, tag.toStringShortForm());
             } else if (arguments.length == 0 && !node.statements().hasNext()
                     && !node.expressions().hasNext()) {
@@ -223,7 +194,7 @@ public class XMLEncoder extends Encoder {
                 printBytes(tabCount, tag.toStringShortForm());
             } else {
                 // the tag has not been printed and contains children,
-                // let's print them  
+                // let's print them
 
                 printBytes(tabCount, tag.toStringOnOpen());
 
@@ -242,11 +213,11 @@ public class XMLEncoder extends Encoder {
                     Iterator<Expression> i1;
                     Iterator<Statement> i2;
 
-                    for (int i = 0; i < arguments.length; ++i) {
-                        if (arguments[i] != null) {
-                            ObjectNode succNode = nodes.get(arguments[i]);
+                    for (Object element : arguments) {
+                        if (element != null) {
+                            ObjectNode succNode = nodes.get(element);
 
-                            printObjectTag(++tabCount, arguments[i], succNode);
+                            printObjectTag(++tabCount, element, succNode);
                         } else {
                             printNullTag(++tabCount);
                         }
@@ -302,8 +273,10 @@ public class XMLEncoder extends Encoder {
             node = nodes.get(exprValue);
 
             // find out, if this object has no references to be printed
-            // System.out.println("---- node.getReferencesNumber() = " + node.getReferencesNumber());
-            // System.out.println("---- node.getReferencedExpressionsNumber() = " + node.getReferencedExpressionsNumber());
+            // System.out.println("---- node.getReferencesNumber() = " +
+            // node.getReferencesNumber());
+            // System.out.println("---- node.getReferencedExpressionsNumber() =
+            // " + node.getReferencedExpressionsNumber());
 
             if (node.getReferencesNumber() == 0) {
                 return;
@@ -357,7 +330,7 @@ public class XMLEncoder extends Encoder {
 
             printed.add(node);
         } catch (Exception e) {
-            //TODO - signal problem with expr.getValue()
+            // TODO - signal problem with expr.getValue()
         }
 
     }
@@ -377,9 +350,8 @@ public class XMLEncoder extends Encoder {
             String propertyName = methodName.substring(3);
 
             if (propertyName.length() > 0) {
-                tag
-                        .addAttr("property", Introspector //$NON-NLS-1$
-                                .decapitalize(propertyName));
+                tag.addAttr("property", Introspector //$NON-NLS-1$
+                        .decapitalize(propertyName));
             }
 
             if (methodName.startsWith("get") && args.length == 1 //$NON-NLS-1$
@@ -431,8 +403,10 @@ public class XMLEncoder extends Encoder {
 
     /**
      * Escapes '&', '<', '>', '\'', '"' chars.
-     * @param input input string to be escaped
-     * @return string with escaped characters 
+     * 
+     * @param input
+     *            input string to be escaped
+     * @return string with escaped characters
      */
     static String escapeChars(String input) {
         StringBuffer sb = new StringBuffer();
@@ -465,7 +439,7 @@ public class XMLEncoder extends Encoder {
     }
 
     /**
-     * This class is used by XMLEncoder to store XML tag information. 
+     * This class is used by XMLEncoder to store XML tag information.
      */
     static class Tag {
 
@@ -524,6 +498,7 @@ public class XMLEncoder extends Encoder {
             return XMLEncoder.escapeChars(characters);
         }
 
+        @Override
         public String toString() {
             return toStringOnOpen() + toStringOnCharacters()
                     + toStringOnClose();
@@ -541,10 +516,8 @@ public class XMLEncoder extends Encoder {
         private static String getCompName(Class clz) {
             if (clz.isArray()) {
                 return getCompName(clz.getComponentType()) + "Array"; //$NON-NLS-1$
-            } else {
-                return clz.getName().substring(
-                        clz.getName().lastIndexOf(".") + 1); //$NON-NLS-1$
             }
+            return clz.getName().substring(clz.getName().lastIndexOf(".") + 1); //$NON-NLS-1$
         }
 
         public static String getInstanceName(Class type) {

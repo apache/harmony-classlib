@@ -14,36 +14,15 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
 package java.beans;
-
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
 
 public interface Visibility {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean needsGui();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean avoidingGui();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void okToUseGui();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void dontUseGui();
 }

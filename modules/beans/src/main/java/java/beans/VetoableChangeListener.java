@@ -14,24 +14,12 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.3.6.3 $
- */
 package java.beans;
 
 import java.util.EventListener;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.3.6.3 $
- */
-
 public interface VetoableChangeListener extends EventListener {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void vetoableChange(PropertyChangeEvent evt)
             throws PropertyVetoException;
 }

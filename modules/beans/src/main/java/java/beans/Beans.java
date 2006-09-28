@@ -14,10 +14,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.6.6.3 $
- */
 package java.beans;
 
 import java.applet.Applet;
@@ -30,24 +26,15 @@ import java.lang.reflect.Array;
 
 import org.apache.harmony.beans.internal.nls.Messages;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.6.6.3 $
- */
-
 public class Beans {
 
     private static boolean designTime = false;
 
     private static boolean guiAvailable = false;
 
-    /**
-     */
-    public Beans() {}
+    public Beans() {
+    }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static Object instantiate(ClassLoader cls, String beanName,
             BeanContext beanContext, AppletInitializer initializer)
             throws IOException, ClassNotFoundException {
@@ -60,9 +47,6 @@ public class Beans {
         return result;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static Object instantiate(ClassLoader cls, String beanName,
             BeanContext beanContext) throws IOException, ClassNotFoundException {
         Object result = instantiate(cls, beanName);
@@ -74,9 +58,6 @@ public class Beans {
         return result;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static Object instantiate(ClassLoader cls, String beanName)
             throws IOException, ClassNotFoundException {
         Object result = null;
@@ -128,16 +109,10 @@ public class Beans {
         return result;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static Object getInstanceOf(Object bean, Class<?> targetType) {
         return bean;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static boolean isInstanceOf(Object bean, Class<?> targetType) {
         if (bean == null) {
             throw new NullPointerException(Messages.getString("beans.1D")); //$NON-NLS-1$
@@ -146,34 +121,22 @@ public class Beans {
         return targetType == null ? false : targetType.isInstance(bean);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static void setGuiAvailable(boolean isGuiAvailable)
             throws SecurityException {
         checkPropertiesAccess();
         guiAvailable = isGuiAvailable;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static void setDesignTime(boolean isDesignTime)
             throws SecurityException {
         checkPropertiesAccess();
         designTime = isDesignTime;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static boolean isGuiAvailable() {
         return guiAvailable;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static boolean isDesignTime() {
         return designTime;
     }
@@ -193,8 +156,8 @@ public class Beans {
 }
 
 /**
- * Customized object input stream that allows
- * to read objects by specified class loader
+ * Customized object input stream that allows to read objects by specified class
+ * loader
  */
 class CustomizedObjectInputStream extends ObjectInputStream {
 
@@ -244,12 +207,13 @@ class CustomizedObjectInputStream extends ObjectInputStream {
                 componentType = cls.loadClass(postfix.substring(1, postfix
                         .length() - 1));
             } else {
-                throw new IllegalArgumentException(Messages.getString("beans.1E", className)); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString(
+                        "beans.1E", className)); //$NON-NLS-1$
             }
 
             return Array.newInstance(componentType, dimensions).getClass();
-        } else {
-            return Class.forName(className, true, cls);
         }
+        
+        return Class.forName(className, true, cls);
     }
 }

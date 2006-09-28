@@ -14,60 +14,35 @@
  *  limitations under the License.
  */
 
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.3.4.3 $
- */
 package java.beans.beancontext;
 
 import java.beans.DesignMode;
 import java.beans.Visibility;
-
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.net.URL;
-
 import java.util.Collection;
 
-/**
- * @author Sergei A. Krivenko
- * @version $Revision: 1.3.4.3 $
- */
-
-public interface BeanContext extends BeanContextChild, Collection, DesignMode, 
+public interface BeanContext extends BeanContextChild, Collection, DesignMode,
         Visibility {
 
-     /** @todo: find out what it should be initialized to **/
-    public static final Object globalHierarchyLock = new Object();
-    
     /**
-     * @com.intel.drl.spec_ref
+     * @todo: find out what it should be initialized to
      */
+    public static final Object globalHierarchyLock = new Object();
+
     public void addBeanContextMembershipListener(
             BeanContextMembershipListener bcml);
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public URL getResource(String name, BeanContextChild bcc) 
-        throws IllegalArgumentException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public InputStream getResourceAsStream(String name, BeanContextChild bcc) 
-        throws IllegalArgumentException;
+    public URL getResource(String name, BeanContextChild bcc)
+            throws IllegalArgumentException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public Object instantiateChild(String beanName) 
-        throws IOException, ClassNotFoundException;
+    public InputStream getResourceAsStream(String name, BeanContextChild bcc)
+            throws IllegalArgumentException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    public Object instantiateChild(String beanName) throws IOException,
+            ClassNotFoundException;
+
     public void removeBeanContextMembershipListener(
             BeanContextMembershipListener bcml);
 }

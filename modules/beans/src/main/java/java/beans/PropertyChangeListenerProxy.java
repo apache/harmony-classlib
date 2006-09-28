@@ -14,46 +14,27 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.3.6.3 $
- */
 package java.beans;
 
 import java.util.EventListenerProxy;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.3.6.3 $
- */
+public class PropertyChangeListenerProxy extends EventListenerProxy implements
+        PropertyChangeListener {
 
-public class PropertyChangeListenerProxy extends EventListenerProxy
-        implements PropertyChangeListener {
-    
     String propertyName;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public PropertyChangeListenerProxy(String propertyName,
             PropertyChangeListener listener) {
         super(listener);
         this.propertyName = propertyName;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getPropertyName() {
         return propertyName;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void propertyChange(PropertyChangeEvent event) {
-        PropertyChangeListener listener =
-            (PropertyChangeListener) getListener();
+        PropertyChangeListener listener = (PropertyChangeListener) getListener();
         listener.propertyChange(event);
     }
 }

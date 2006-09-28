@@ -14,31 +14,13 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.4.6.3 $
- */
 package java.beans;
-
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.4.6.3 $
- */
 
 public interface Customizer {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setObject(Object bean);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void removePropertyChangeListener(PropertyChangeListener listener);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void addPropertyChangeListener(PropertyChangeListener listener);
 }

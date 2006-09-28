@@ -14,10 +14,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.8.2.3 $
- */
 package java.beans;
 
 import java.io.IOException;
@@ -30,11 +26,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.8.2.3 $
- */
 
 public class VetoableChangeSupport implements Serializable {
 
@@ -51,9 +42,6 @@ public class VetoableChangeSupport implements Serializable {
 
     private int vetoableChangeSupportSerializedDataVersion = 1;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public VetoableChangeSupport(Object sourceBean) {
         if (sourceBean == null) {
             throw new NullPointerException();
@@ -61,9 +49,6 @@ public class VetoableChangeSupport implements Serializable {
         this.sourceBean = sourceBean;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void fireVetoableChange(String propertyName, Object oldValue,
             Object newValue) throws PropertyVetoException {
         PropertyChangeEvent event = createPropertyChangeEvent(propertyName,
@@ -71,9 +56,6 @@ public class VetoableChangeSupport implements Serializable {
         doFirePropertyChange(event);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public synchronized void removeVetoableChangeListener(String propertyName,
             VetoableChangeListener listener) {
         if ((propertyName != null) && (listener != null)) {
@@ -86,9 +68,6 @@ public class VetoableChangeSupport implements Serializable {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public synchronized void addVetoableChangeListener(String propertyName,
             VetoableChangeListener listener) {
         if (propertyName != null && listener != null) {
@@ -104,9 +83,6 @@ public class VetoableChangeSupport implements Serializable {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public synchronized VetoableChangeListener[] getVetoableChangeListeners(
             String propertyName) {
         List<VetoableChangeListener> listeners = null;
@@ -120,9 +96,6 @@ public class VetoableChangeSupport implements Serializable {
 
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void fireVetoableChange(String propertyName, boolean oldValue,
             boolean newValue) throws PropertyVetoException {
         PropertyChangeEvent event = createPropertyChangeEvent(propertyName,
@@ -130,9 +103,6 @@ public class VetoableChangeSupport implements Serializable {
         doFirePropertyChange(event);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void fireVetoableChange(String propertyName, int oldValue,
             int newValue) throws PropertyVetoException {
         PropertyChangeEvent event = createPropertyChangeEvent(propertyName,
@@ -140,9 +110,6 @@ public class VetoableChangeSupport implements Serializable {
         doFirePropertyChange(event);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public synchronized boolean hasListeners(String propertyName) {
         boolean result = allVetoableChangeListeners.size() > 0;
         if (!result && propertyName != null) {
@@ -155,9 +122,6 @@ public class VetoableChangeSupport implements Serializable {
         return result;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public synchronized void removeVetoableChangeListener(
             VetoableChangeListener listener) {
         if (listener != null) {
@@ -173,9 +137,6 @@ public class VetoableChangeSupport implements Serializable {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public synchronized void addVetoableChangeListener(
             VetoableChangeListener listener) {
         if (listener != null) {
@@ -183,9 +144,6 @@ public class VetoableChangeSupport implements Serializable {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public synchronized VetoableChangeListener[] getVetoableChangeListeners() {
         List<VetoableChangeListener> result = new ArrayList<VetoableChangeListener>(
                 allVetoableChangeListeners);
@@ -210,9 +168,6 @@ public class VetoableChangeSupport implements Serializable {
         return getAsVetoableChangeListenerArray(result);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private void writeObject(ObjectOutputStream oos) throws IOException {
         List<VetoableChangeListener> allSerializedVetoableChangeListeners = new ArrayList<VetoableChangeListener>();
         for (VetoableChangeListener vcl : allVetoableChangeListeners) {
@@ -255,9 +210,6 @@ public class VetoableChangeSupport implements Serializable {
         oos.writeInt(vetoableChangeSupportSerializedDataVersion);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private void readObject(ObjectInputStream ois) throws IOException,
             ClassNotFoundException {
 
@@ -275,9 +227,6 @@ public class VetoableChangeSupport implements Serializable {
         vetoableChangeSupportSerializedDataVersion = ois.readInt();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void fireVetoableChange(PropertyChangeEvent event)
             throws PropertyVetoException {
         doFirePropertyChange(event);
@@ -314,9 +263,9 @@ public class VetoableChangeSupport implements Serializable {
         /* Take note of who we are going to notify (and potentially un-notify) */
 
         VetoableChangeListener[] listensToAll; // Listeners to all property
-                                                // change events
+        // change events
         VetoableChangeListener[] listensToOne = null; // Listens to a given
-                                                        // property change
+        // property change
         synchronized (this) {
             listensToAll = allVetoableChangeListeners
                     .toArray(new VetoableChangeListener[allVetoableChangeListeners
@@ -345,14 +294,16 @@ public class VetoableChangeSupport implements Serializable {
                     propName, newValue, oldValue);
             for (VetoableChangeListener listener : listensToAll) {
                 try {
-                        listener.vetoableChange(revertEvent);
-                } catch (PropertyVetoException ignored){}
+                    listener.vetoableChange(revertEvent);
+                } catch (PropertyVetoException ignored) {
+                }
             }
             if (listensToOne != null) {
                 for (VetoableChangeListener listener : listensToOne) {
-                        try {
-                                listener.vetoableChange(revertEvent);
-                        } catch (PropertyVetoException ignored){}
+                    try {
+                        listener.vetoableChange(revertEvent);
+                    } catch (PropertyVetoException ignored) {
+                    }
                 }
             }
             throw pve;

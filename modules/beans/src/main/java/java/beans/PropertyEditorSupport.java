@@ -25,11 +25,13 @@ import java.util.List;
 import org.apache.harmony.beans.internal.nls.Messages;
 
 public class PropertyEditorSupport implements PropertyEditor {
-    
+
     Object source = null;
-    List<PropertyChangeListener> listeners =
-            new ArrayList<PropertyChangeListener>();
+
+    List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
+
     Object oldValue = null;
+
     Object newValue = null;
 
     public PropertyEditorSupport(Object source) {
@@ -47,7 +49,7 @@ public class PropertyEditorSupport implements PropertyEditor {
     }
 
     public void setAsText(String text) throws IllegalArgumentException {
-        if (newValue instanceof String){
+        if (newValue instanceof String) {
             setValue(text);
         } else {
             throw new IllegalArgumentException(text);
@@ -113,14 +115,12 @@ public class PropertyEditorSupport implements PropertyEditor {
 
     public void firePropertyChange() {
         if (listeners.size() > 0) {
-            PropertyChangeEvent event = new PropertyChangeEvent(
-                    source, null, oldValue, newValue);
+            PropertyChangeEvent event = new PropertyChangeEvent(source, null,
+                    oldValue, newValue);
             Iterator<PropertyChangeListener> iterator = listeners.iterator();
 
             while (iterator.hasNext()) {
-                PropertyChangeListener listener =
-                        (PropertyChangeListener) iterator.next();
-
+                PropertyChangeListener listener = iterator.next();
                 listener.propertyChange(event);
             }
         }

@@ -19,8 +19,6 @@ package java.beans;
 
 /**
  * Describes a bean's global information.
- * 
- * @author Maxim V. Berkultsev
  */
 public class BeanDescriptor extends FeatureDescriptor {
 
@@ -35,8 +33,10 @@ public class BeanDescriptor extends FeatureDescriptor {
      * unqualified name of the <code>beanClass</code>.
      * </p>
      * 
-     * @param beanClass The bean's Class.
-     * @param customizerClass The bean's customizer Class.
+     * @param beanClass
+     *            The bean's Class.
+     * @param customizerClass
+     *            The bean's customizer Class.
      */
     public BeanDescriptor(Class<?> beanClass, Class<?> customizerClass) {
         super();
@@ -55,7 +55,8 @@ public class BeanDescriptor extends FeatureDescriptor {
      * <code>beanClass</code>.
      * </p>
      * 
-     * @param beanClass The bean's Class.
+     * @param beanClass
+     *            The bean's Class.
      */
     public BeanDescriptor(Class<?> beanClass) {
         super();
@@ -94,7 +95,8 @@ public class BeanDescriptor extends FeatureDescriptor {
      * Utility method for getting the unqualified name of a {@link Class}.
      * </p>
      * 
-     * @param beanClass The Class to get the name from.
+     * @param beanClass
+     *            The Class to get the name from.
      * @return A String instance or <code>null</code>.
      */
     private String getShortClassName(Class<?> beanClass) {

@@ -14,71 +14,47 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.4.6.3 $
- */
 package java.beans;
 
 import java.util.EventObject;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.4.6.3 $
- */
-
 public class PropertyChangeEvent extends EventObject {
-    
+
     private static final long serialVersionUID = 7042693688939648123L;
-    
+
     String propertyName;
+
     Object oldValue;
+
     Object newValue;
+
     Object propagationId;
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     public PropertyChangeEvent(Object source, String propertyName,
             Object oldValue, Object newValue) {
         super(source);
-        
+
         this.propertyName = propertyName;
         this.oldValue = oldValue;
         this.newValue = newValue;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getPropertyName() {
         return propertyName;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setPropagationId(Object propagationId) {
         this.propagationId = propagationId;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Object getPropagationId() {
         return propagationId;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Object getOldValue() {
         return oldValue;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Object getNewValue() {
         return newValue;
     }

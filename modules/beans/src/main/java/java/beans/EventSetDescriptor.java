@@ -14,10 +14,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.9.6.3 $
- */
 package java.beans;
 
 import java.lang.reflect.Method;
@@ -29,8 +25,8 @@ import org.apache.harmony.beans.internal.nls.Messages;
 
 public class EventSetDescriptor extends FeatureDescriptor {
 
-    //XXX: never read
-    //private String eventSetName = null;
+    // XXX: never read
+    // private String eventSetName = null;
 
     private Class<?> listenerType = null;
 
@@ -46,9 +42,6 @@ public class EventSetDescriptor extends FeatureDescriptor {
 
     private boolean inDefaultEventSet = true;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public EventSetDescriptor(Class<?> sourceClass, String eventSetName,
             Class<?> listenerType, String listenerMethodName)
             throws IntrospectionException {
@@ -56,13 +49,13 @@ public class EventSetDescriptor extends FeatureDescriptor {
         super();
 
         if (eventSetName == null) {
-        	throw new NullPointerException();
+            throw new NullPointerException();
         }
         setName(eventSetName);
         setDisplayName(eventSetName);
 
-        //XXX: never read
-        //this.eventSetName = eventSetName;
+        // XXX: never read
+        // this.eventSetName = eventSetName;
 
         this.listenerType = listenerType;
 
@@ -75,20 +68,15 @@ public class EventSetDescriptor extends FeatureDescriptor {
                 "", listenerType); //$NON-NLS-1$
 
         if (addListenerMethod == null && removeListenerMethod == null) {
-            throw new IntrospectionException(
-                    Messages.getString("beans.38")); //$NON-NLS-1$
+            throw new IntrospectionException(Messages.getString("beans.38")); //$NON-NLS-1$
         }
 
         this.getListenerMethod = findMethodByPrefix(sourceClass, "get", "s", //$NON-NLS-1$ //$NON-NLS-2$
                 listenerType);
 
         this.unicast = isUnicastByDefault(addListenerMethod);
-
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public EventSetDescriptor(Class<?> sourceClass, String eventSetName,
             Class<?> listenerType, String[] listenerMethodNames,
             String addListenerMethodName, String removeListenerMethodName)
@@ -97,18 +85,17 @@ public class EventSetDescriptor extends FeatureDescriptor {
 
         setName(eventSetName);
         setDisplayName(eventSetName);
-        
-        //XXX: never read
-        //this.eventSetName = eventSetName;
+
+        // XXX: never read
+        // this.eventSetName = eventSetName;
 
         this.listenerType = listenerType;
 
         if (listenerMethodNames != null) {
-            for (int i = 0; i < listenerMethodNames.length; ++i) {
+            for (String element : listenerMethodNames) {
                 try {
                     listenerMethodDescriptors.add(new MethodDescriptor(
-                            findMethodByName(listenerType,
-                                    listenerMethodNames[i])));
+                            findMethodByName(listenerType, element)));
                 } catch (IntrospectionException ie) {
                     listenerMethodDescriptors.clear();
                     throw ie;
@@ -123,12 +110,8 @@ public class EventSetDescriptor extends FeatureDescriptor {
         this.getListenerMethod = null;
 
         this.unicast = isUnicastByDefault(addListenerMethod);
-
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public EventSetDescriptor(Class<?> sourceClass, String eventSetName,
             Class<?> listenerType, String[] listenerMethodNames,
             String addListenerMethodName, String removeListenerMethodName,
@@ -137,18 +120,17 @@ public class EventSetDescriptor extends FeatureDescriptor {
 
         setName(eventSetName);
         setDisplayName(eventSetName);
-        
-        //XXX: never read
-        //this.eventSetName = eventSetName;
+
+        // XXX: never read
+        // this.eventSetName = eventSetName;
 
         this.listenerType = listenerType;
 
         if (listenerMethodNames != null) {
-            for (int i = 0; i < listenerMethodNames.length; ++i) {
+            for (String element : listenerMethodNames) {
                 try {
                     listenerMethodDescriptors.add(new MethodDescriptor(
-                            findMethodByName(listenerType,
-                                    listenerMethodNames[i])));
+                            findMethodByName(listenerType, element)));
                 } catch (IntrospectionException ie) {
                     listenerMethodDescriptors.clear();
                     throw ie;
@@ -164,12 +146,8 @@ public class EventSetDescriptor extends FeatureDescriptor {
                 getListenerMethodName);
 
         this.unicast = isUnicastByDefault(addListenerMethod);
-
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public EventSetDescriptor(String eventSetName, Class<?> listenerType,
             Method[] listenerMethods, Method addListenerMethod,
             Method removeListenerMethod) throws IntrospectionException {
@@ -178,16 +156,16 @@ public class EventSetDescriptor extends FeatureDescriptor {
         setName(eventSetName);
         setDisplayName(eventSetName);
 
-        //XXX: never read
-        //this.eventSetName = eventSetName;
+        // XXX: never read
+        // this.eventSetName = eventSetName;
 
         this.listenerType = listenerType;
 
         if (listenerMethods != null) {
-            for (int i = 0; i < listenerMethods.length; ++i) {
-                if (checkMethod(listenerType, listenerMethods[i])) {
+            for (Method element : listenerMethods) {
+                if (checkMethod(listenerType, element)) {
                     this.listenerMethodDescriptors.add(new MethodDescriptor(
-                            listenerMethods[i]));
+                            element));
                 }
             }
         }
@@ -199,12 +177,8 @@ public class EventSetDescriptor extends FeatureDescriptor {
         this.getListenerMethod = null;
 
         this.unicast = isUnicastByDefault(addListenerMethod);
-
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public EventSetDescriptor(String eventSetName, Class<?> listenerType,
             Method[] listenerMethods, Method addListenerMethod,
             Method removeListenerMethod, Method getListenerMethod)
@@ -214,17 +188,17 @@ public class EventSetDescriptor extends FeatureDescriptor {
 
         setName(eventSetName);
         setDisplayName(eventSetName);
-        
-        //XXX: never read
-        //this.eventSetName = eventSetName;
+
+        // XXX: never read
+        // this.eventSetName = eventSetName;
 
         this.listenerType = listenerType;
 
         if (listenerMethods != null) {
-            for (int i = 0; i < listenerMethods.length; ++i) {
-                if (checkMethod(listenerType, listenerMethods[i])) {
+            for (Method element : listenerMethods) {
+                if (checkMethod(listenerType, element)) {
                     this.listenerMethodDescriptors.add(new MethodDescriptor(
-                            listenerMethods[i]));
+                            element));
                 }
             }
         }
@@ -237,12 +211,8 @@ public class EventSetDescriptor extends FeatureDescriptor {
                 getListenerMethod);
 
         this.unicast = isUnicastByDefault(addListenerMethod);
-
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public EventSetDescriptor(String eventSetName, Class<?> listenerType,
             MethodDescriptor[] listenerMethodDescriptors,
             Method addListenerMethod, Method removeListenerMethod)
@@ -251,18 +221,17 @@ public class EventSetDescriptor extends FeatureDescriptor {
 
         setName(eventSetName);
         setDisplayName(eventSetName);
-        
-        //XXX: never read
-        //this.eventSetName = eventSetName;
+
+        // XXX: never read
+        // this.eventSetName = eventSetName;
 
         this.listenerType = listenerType;
 
-        for (int i = 0; i < listenerMethodDescriptors.length; ++i) {
-            Method listenerMethod = listenerMethodDescriptors[i].getMethod();
+        for (MethodDescriptor element : listenerMethodDescriptors) {
+            Method listenerMethod = element.getMethod();
 
             if (checkMethod(listenerType, listenerMethod)) {
-                this.listenerMethodDescriptors
-                        .add(listenerMethodDescriptors[i]);
+                this.listenerMethodDescriptors.add(element);
             }
         }
 
@@ -275,9 +244,6 @@ public class EventSetDescriptor extends FeatureDescriptor {
         this.unicast = isUnicastByDefault(addListenerMethod);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Method[] getListenerMethods() {
         Method[] result = new Method[listenerMethodDescriptors.size()];
         Iterator<MethodDescriptor> i = listenerMethodDescriptors.iterator();
@@ -292,9 +258,6 @@ public class EventSetDescriptor extends FeatureDescriptor {
         return result;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public MethodDescriptor[] getListenerMethodDescriptors() {
         MethodDescriptor[] result = new MethodDescriptor[listenerMethodDescriptors
                 .size()];
@@ -308,58 +271,34 @@ public class EventSetDescriptor extends FeatureDescriptor {
         return result;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Method getRemoveListenerMethod() {
         return removeListenerMethod;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Method getGetListenerMethod() {
         return getListenerMethod;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Method getAddListenerMethod() {
         return addListenerMethod;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Class<?> getListenerType() {
         return listenerType;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setUnicast(boolean unicast) {
         this.unicast = unicast;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setInDefaultEventSet(boolean inDefaultEventSet) {
         this.inDefaultEventSet = inDefaultEventSet;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean isUnicast() {
         return unicast;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean isInDefaultEventSet() {
         return inDefaultEventSet;
     }
@@ -395,19 +334,18 @@ public class EventSetDescriptor extends FeatureDescriptor {
                     new Class[] { getEventType(listenerType) });
         } catch (NoSuchMethodException nsme) {
             throw new IntrospectionException(Messages.getString("beans.31", //$NON-NLS-1$
-                    listenerMethodName, listenerType.getName())); //$NON-NLS-1$
+                    listenerMethodName, listenerType.getName()));
         } catch (ClassNotFoundException cnfe) {
-            throw new IntrospectionException(Messages.getString("beans.32", listenerType.getName())); //$NON-NLS-1$
+            throw new IntrospectionException(Messages.getString(
+                    "beans.32", listenerType.getName())); //$NON-NLS-1$
         }
     }
 
     private Method findMethodByPrefix(Class<?> sourceClass, String prefix,
             String postfix, Class<?> listenerType) {
 
-        // com.drl.beans.SmthListener
         String fullName = listenerType.getName();
         int idx = fullName.lastIndexOf("."); //$NON-NLS-1$
-        // prefix(e.g., add) + SmthListener
         String methodName = prefix + fullName.substring(idx + 1) + postfix;
 
         try {
@@ -427,8 +365,8 @@ public class EventSetDescriptor extends FeatureDescriptor {
         if (addMethod != null) {
             Class[] exceptionTypes = addMethod.getExceptionTypes();
 
-            for (int i = 0; i < exceptionTypes.length; ++i) {
-                if (exceptionTypes[i].equals(TooManyListenersException.class)) {
+            for (Class element : exceptionTypes) {
+                if (element.equals(TooManyListenersException.class)) {
                     return true;
                 }
             }
@@ -445,17 +383,17 @@ public class EventSetDescriptor extends FeatureDescriptor {
             Class[] parameterTypes;
 
             if (returnType != void.class) {
-                throw new IntrospectionException(
-                        Messages.getString("beans.33", registrationMethod.getName())); //$NON-NLS-1$
+                throw new IntrospectionException(Messages.getString(
+                        "beans.33", registrationMethod.getName())); //$NON-NLS-1$
             }
 
             parameterTypes = registrationMethod.getParameterTypes();
             if (parameterTypes == null || parameterTypes.length != 1) {
-                throw new IntrospectionException(
-                        Messages.getString("beans.34", registrationMethod.getName())); //$NON-NLS-1$
+                throw new IntrospectionException(Messages.getString(
+                        "beans.34", registrationMethod.getName())); //$NON-NLS-1$
             } else if (parameterTypes[0] != listenerType) {
-                throw new IntrospectionException(
-                        Messages.getString("beans.35", listenerType.getName())); //$NON-NLS-1$
+                throw new IntrospectionException(Messages.getString(
+                        "beans.35", listenerType.getName())); //$NON-NLS-1$
             } else {
                 return registrationMethod;
             }
@@ -471,8 +409,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
             Class<?> returnType;
 
             if (parameterTypes.length != 0) {
-                throw new IntrospectionException(
-                        Messages.getString("beans.36")); //$NON-NLS-1$
+                throw new IntrospectionException(Messages.getString("beans.36")); //$NON-NLS-1$
             }
 
             returnType = getListenerMethod.getReturnType();
@@ -480,8 +417,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
                     && returnType.getComponentType() == listenerType) {
                 return getListenerMethod;
             } else {
-                throw new IntrospectionException(
-                        Messages.getString("beans.37")); //$NON-NLS-1$
+                throw new IntrospectionException(Messages.getString("beans.37")); //$NON-NLS-1$
             }
         }
     }

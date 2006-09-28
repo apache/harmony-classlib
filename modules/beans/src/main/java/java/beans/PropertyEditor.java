@@ -14,80 +14,35 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.3.6.3 $
- */
 package java.beans;
 
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.3.6.3 $
- */
-
 public interface PropertyEditor {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void paintValue(Graphics gfx, Rectangle box);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setAsText(String text) throws IllegalArgumentException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String[] getTags();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getJavaInitializationString();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getAsText();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setValue(Object value);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Object getValue();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void removePropertyChangeListener(PropertyChangeListener listener);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void addPropertyChangeListener(PropertyChangeListener listener);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Component getCustomEditor();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean supportsCustomEditor();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean isPaintable();
 }

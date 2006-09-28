@@ -14,18 +14,9 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
 package java.beans;
 
 import java.awt.Image;
-
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
- */
 
 public interface BeanInfo {
 
@@ -37,43 +28,19 @@ public interface BeanInfo {
 
     public static final int ICON_MONO_32x32 = 4;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public PropertyDescriptor[] getPropertyDescriptors();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public MethodDescriptor[] getMethodDescriptors();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public EventSetDescriptor[] getEventSetDescriptors();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public BeanInfo[] getAdditionalBeanInfo();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public BeanDescriptor getBeanDescriptor();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Image getIcon(int iconKind);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public int getDefaultPropertyIndex();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public int getDefaultEventIndex();
 }

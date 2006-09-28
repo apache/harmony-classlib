@@ -13,20 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package java.beans;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 
-import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.XMLReader;
+import org.apache.harmony.beans.Handler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import org.apache.harmony.beans.Handler;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 public class XMLDecoder {
 

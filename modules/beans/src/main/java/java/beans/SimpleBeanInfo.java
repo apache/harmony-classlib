@@ -14,10 +14,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.4.6.3 $
- */
 package java.beans;
 
 import java.awt.Image;
@@ -28,114 +24,78 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.4.6.3 $
- */
-
 public class SimpleBeanInfo implements BeanInfo {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public SimpleBeanInfo() {
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Image loadImage(String resourceName) {
         byte[] result = null;
-        InputStream is = FileInputStream.class.getResourceAsStream(
-                resourceName);
-        
-        if(is != null) {
+        InputStream is = FileInputStream.class
+                .getResourceAsStream(resourceName);
+
+        if (is != null) {
             ArrayList<Byte> byteArrayList = new ArrayList<Byte>();
-            
+
             byte b;
             try {
-                while((b = (byte) is.read()) != -1) {
+                while ((b = (byte) is.read()) != -1) {
                     byteArrayList.add(new Byte(b));
                 }
-                
+
                 result = new byte[byteArrayList.size()];
-                
+
                 Iterator<Byte> i = byteArrayList.iterator();
                 int idx = 0;
-                while(i.hasNext()) {
+                while (i.hasNext()) {
                     result[idx++] = i.next().byteValue();
                 }
-                
+
             } catch (IOException ioe) {
                 byteArrayList.clear();
                 System.out.println(ioe.getClass() + ": " + ioe.getMessage()); //$NON-NLS-1$
             } finally {
-                   try {
-                       is.close();
-                   } catch (IOException ioe) {
-                       System.out.println(ioe.getClass() + ": " //$NON-NLS-1$
-                               + ioe.getMessage());
-                   }
+                try {
+                    is.close();
+                } catch (IOException ioe) {
+                    System.out.println(ioe.getClass() + ": " //$NON-NLS-1$
+                            + ioe.getMessage());
+                }
             }
-            
+
             return Toolkit.getDefaultToolkit().createImage(result);
-        } else {
-            return null;
         }
+        return null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public PropertyDescriptor[] getPropertyDescriptors() {
         return null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public MethodDescriptor[] getMethodDescriptors() {
         return null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public EventSetDescriptor[] getEventSetDescriptors() {
         return null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public BeanInfo[] getAdditionalBeanInfo() {
         return null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public BeanDescriptor getBeanDescriptor() {
         return null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Image getIcon(int iconKind) {
         return null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public int getDefaultPropertyIndex() {
         return -1;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public int getDefaultEventIndex() {
         return -1;
     }

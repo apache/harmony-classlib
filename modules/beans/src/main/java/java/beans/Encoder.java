@@ -14,20 +14,14 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.14.6.4 $
- */
 package java.beans;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Vector;
 
+import org.apache.harmony.beans.DefaultPersistenceDelegatesFactory;
 import org.apache.harmony.beans.NullPersistenceDelegate;
 import org.apache.harmony.beans.ObjectNode;
-import org.apache.harmony.beans.DefaultPersistenceDelegatesFactory;
 import org.apache.harmony.beans.internal.nls.Messages;
 
 public class Encoder {
@@ -40,14 +34,10 @@ public class Encoder {
 
     HashMap<Object, ObjectNode> nodes = new HashMap<Object, ObjectNode>();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public Encoder() {}
+    public Encoder() {
+        super();
+    }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Object get(Object oldInstance) {
         if (oldInstance == null) {
             return null;
@@ -56,11 +46,8 @@ public class Encoder {
         return getValue(nodes.get(oldInstance));
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Object remove(Object oldInstance) {
-        //TODO - notify references on node deletion
+        // TODO - notify references on node deletion
         if (oldInstance == null) {
             return null;
         }
@@ -68,9 +55,6 @@ public class Encoder {
         return getValue(nodes.remove(oldInstance));
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public PersistenceDelegate getPersistenceDelegate(Class<?> type) {
         PersistenceDelegate result = persistenceDelegates.get(type);
 
@@ -82,17 +66,11 @@ public class Encoder {
         return result;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setPersistenceDelegate(Class<?> type,
             PersistenceDelegate persistenceDelegate) {
         persistenceDelegates.put(type, persistenceDelegate);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     protected void writeObject(Object object) {
         roots.add(object);
         doWriteObject(object);
@@ -110,9 +88,6 @@ public class Encoder {
         pd.writeObject(object, this);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void writeStatement(Statement oldStm) {
         ObjectNode node = nodes.get(oldStm.getTarget());
 
@@ -123,8 +98,8 @@ public class Encoder {
 
                 // FIXME add target processing here
                 write(oldArgs);
-                statement = new Statement(node.getObjectValue(),
-                        oldStm.getMethodName(), oldArgs);
+                statement = new Statement(node.getObjectValue(), oldStm
+                        .getMethodName(), oldArgs);
                 statement.execute();
                 node.addStatement(statement);
             } catch (Exception e) {
@@ -133,13 +108,11 @@ public class Encoder {
         } else {
             // FIXME incompatible with RI, default constructor should be
             // called instead
-            System.out.println(Messages.getString("beans.10", oldStm.getTarget())); //$NON-NLS-1$
+            System.out.println(Messages.getString(
+                    "beans.10", oldStm.getTarget())); //$NON-NLS-1$
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void writeExpression(Expression oldExp) {
         try {
             Object oldValue = oldExp.getValue();
@@ -148,14 +121,13 @@ public class Encoder {
             ObjectNode valueNode = null;
             Class<?> valueType = null;
 
-            // write target 
-            if (!Statement.isPDConstructor(oldExp) &&
-                !Statement.isStaticMethodCall(oldExp))
-            {
+            // write target
+            if (!Statement.isPDConstructor(oldExp)
+                    && !Statement.isStaticMethodCall(oldExp)) {
                 ObjectNode parent;
 
-                //XXX investigate
-                //write(oldTarget);
+                // XXX investigate
+                // write(oldTarget);
                 parent = nodes.get(oldTarget);
                 if (parent != null) {
                     parent.addExpression(oldExp);
@@ -163,7 +135,7 @@ public class Encoder {
             }
 
             // write value
-            
+
             if (oldValue != null) {
                 valueType = oldValue.getClass();
                 valueNode = nodes.get(oldValue);
@@ -172,8 +144,7 @@ public class Encoder {
             if (valueNode == null) {
 
                 if (isNull(valueType) || isPrimitive(valueType)
-                        || isString(valueType))
-                {
+                        || isString(valueType)) {
                     valueNode = new ObjectNode(oldExp);
                 } else {
                     write(oldExp.getArguments());
@@ -195,16 +166,10 @@ public class Encoder {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setExceptionListener(ExceptionListener exceptionListener) {
         this.exceptionListener = exceptionListener;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public ExceptionListener getExceptionListener() {
         if (exceptionListener == null) {
             exceptionListener = new ExceptionListener() {
@@ -247,9 +212,9 @@ public class Encoder {
         return null;
     }
 
-    /**
-     * @param node node to return the value for
-     * @return tentative object value for given node
+    /*
+     * @param node node to return the value for @return tentative object value
+     * for given node
      */
     private Object getValue(ObjectNode node) {
         if (node != null) {
@@ -287,7 +252,7 @@ public class Encoder {
     static boolean isArray(Class<?> type) {
         return type.isArray();
     }
-    
+
     static String getPrimitiveName(Class<?> type) {
         String result = null;
 

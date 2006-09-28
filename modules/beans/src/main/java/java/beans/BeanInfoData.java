@@ -19,8 +19,11 @@ package java.beans;
 class BeanInfoData {
 
     private Class<?> stopClass;
+
     private boolean ignoreBeanClassBeanInfo;
+
     private boolean ignoreSuperClassBeanInfo;
+
     private BeanInfoWrapper beanInfoWrapper;
 
     public BeanInfoData(BeanInfoWrapper beanInfo) {
@@ -31,8 +34,7 @@ class BeanInfoData {
     }
 
     public BeanInfoData(Class<?> stopClass, boolean ignoreBeanClassBeanInfo,
-        boolean ignoreSuperClassBeanInfo, BeanInfoWrapper beanInfoWrapper)
-    {
+            boolean ignoreSuperClassBeanInfo, BeanInfoWrapper beanInfoWrapper) {
         this.stopClass = stopClass;
         this.ignoreBeanClassBeanInfo = ignoreBeanClassBeanInfo;
         this.ignoreSuperClassBeanInfo = ignoreSuperClassBeanInfo;

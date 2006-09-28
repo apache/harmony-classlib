@@ -31,11 +31,11 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
         if (constructorPropertyNames != null) {
             arr = new String[constructorPropertyNames.length];
             for (int i = 0; i < constructorPropertyNames.length; i++) {
-                if (constructorPropertyNames[i] != null &&
-                    constructorPropertyNames[i].length() > 0) {
-                        arr[i] = constructorPropertyNames[i].substring(0,1)
-                                 .toLowerCase() +
-                                 constructorPropertyNames[i].substring(1);
+                if (constructorPropertyNames[i] != null
+                        && constructorPropertyNames[i].length() > 0) {
+                    arr[i] = constructorPropertyNames[i].substring(0, 1)
+                            .toLowerCase()
+                            + constructorPropertyNames[i].substring(1);
                 } else {
                     arr[i] = constructorPropertyNames[i];
                 }
@@ -49,15 +49,14 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
         this.constructorPropertyNames = null;
     }
 
+    @Override
     protected void initialize(Class<?> type, Object oldInstance,
             Object newInstance, Encoder out) {
         try {
             PropertyDescriptor[] pds = Introspector.getBeanInfo(type)
                     .getPropertyDescriptors();
 
-            for (int i = 0; i < pds.length; ++i) {
-                PropertyDescriptor pd = pds[i];
-
+            for (PropertyDescriptor pd : pds) {
                 if (!isTransient(pd)) {
                     Method getter = pd.getReadMethod();
 
@@ -95,6 +94,7 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
         }
     }
 
+    @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Object[] args = null;
 
@@ -112,29 +112,31 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
 
                     boolean found = false;
 
-                    for (int j = 0; j < pds.length; ++j) {
+                    for (PropertyDescriptor element : pds) {
 
-                        if (constructorPropertyNames[i]
-                                .equals(pds[j].getName())) {
-                            Method getter = pds[j].getReadMethod();
+                        if (constructorPropertyNames[i].equals(element
+                                .getName())) {
+                            Method getter = element.getReadMethod();
 
                             if (getter != null) {
                                 args[i] = getter.invoke(oldInstance,
                                         (Object[]) null);
                                 found = true;
                                 break;
-                            } else {
-                                throw new NoSuchMethodException(Messages.getString("beans.00", pds[j].getName())); //$NON-NLS-1$
                             }
 
-                        }
-                    } // for j
+                            throw new NoSuchMethodException(Messages.getString(
+                                    "beans.00", element.getName())); //$NON-NLS-1$
 
-                    if (found == false) {
-                        throw new NoSuchMethodException(Messages.getString("beans.01", constructorPropertyNames[i])); //$NON-NLS-1$
+                        }
                     }
 
-                } // for i
+                    if (found == false) {
+                        throw new NoSuchMethodException(Messages.getString(
+                                "beans.01", constructorPropertyNames[i])); //$NON-NLS-1$
+                    }
+
+                }
             } catch (RuntimeException e) {
                 throw e;
             } catch (Exception e) {
@@ -146,6 +148,7 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
         return new Expression(oldInstance, oldInstance.getClass(), "new", args); //$NON-NLS-1$
     }
 
+    @Override
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
         if (oldInstance != null) {
             try {
@@ -160,7 +163,8 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
                 }
             } catch (Exception e) {
                 // XXX bad style of logging
-                System.out.println(Messages.getString("beans.02", e.getClass(), e.getMessage())); //$NON-NLS-1$
+                System.out.println(Messages.getString(
+                        "beans.02", e.getClass(), e.getMessage())); //$NON-NLS-1$
 
                 return false;
             }
@@ -170,7 +174,6 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
 
     private static boolean isTransient(PropertyDescriptor pd) {
         Boolean isTransient = (Boolean) pd.getValue("transient"); //$NON-NLS-1$
-
         return (isTransient != null) && isTransient.equals(Boolean.TRUE);
     }
 }

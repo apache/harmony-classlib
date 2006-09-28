@@ -14,10 +14,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.18.6.3 $
- */
 package java.beans;
 
 import java.lang.reflect.Array;
@@ -32,11 +28,6 @@ import java.util.Vector;
 
 import org.apache.harmony.beans.internal.nls.Messages;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.18.6.3 $
- */
-
 public class Statement {
 
     private Object target;
@@ -45,9 +36,6 @@ public class Statement {
 
     private Object[] arguments;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Statement(Object target, String methodName, Object[] arguments) {
         this.target = target;
         this.methodName = methodName;
@@ -58,9 +46,6 @@ public class Statement {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String toString() {
         StringBuffer sb = new StringBuffer();
         String targetVar = target != null ? convertClassName(target.getClass())
@@ -93,37 +78,24 @@ public class Statement {
         return sb.toString();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getMethodName() {
         return methodName;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Object[] getArguments() {
         return arguments;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Object getTarget() {
         return target;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void execute() throws Exception {
         invokeMethod();
     }
 
     Object invokeMethod() throws Exception {
         Object result = null;
-
         try {
             if (target.getClass().isArray()) {
                 Method method = findArrayMethod();
@@ -163,7 +135,8 @@ public class Statement {
                         result = method.invoke(null, arguments);
                         found = true;
                     }
-                } catch (NoSuchMethodException e) {}
+                } catch (NoSuchMethodException e) {
+                }
 
                 if (!found) {
                     // static method was not found
@@ -229,10 +202,9 @@ public class Statement {
         if (methodName.equals("get")) { //$NON-NLS-1$
             return Array.class.getMethod("get", new Class[] { Object.class, //$NON-NLS-1$
                     int.class });
-        } else {
-            return Array.class.getMethod("set", new Class[] { Object.class, //$NON-NLS-1$
-                    int.class, Object.class });
         }
+        return Array.class.getMethod("set", new Class[] { Object.class, //$NON-NLS-1$
+                int.class, Object.class });
     }
 
     private Object[] getArrayMethodArguments() {
@@ -367,7 +339,7 @@ public class Statement {
         }
     }
 
-    /**
+    /*
      * The list of "method signatures" used by persistence delegates to create
      * objects. Not necessary reflects to real methods.
      */
@@ -499,14 +471,12 @@ public class Statement {
 
             if (!argsEqual) {
                 return false;
-            } else {
-                return (s.getTarget() == this.getTarget() && s.getMethodName()
-                        .equals(this.getMethodName()));
             }
+            return (s.getTarget() == this.getTarget() && s.getMethodName()
+                    .equals(this.getMethodName()));
 
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
@@ -548,7 +518,8 @@ public class Statement {
          * Returns the norm for given method. The norm is the "distance" from
          * the reference method to the given method.
          * 
-         * @param m the method to calculate the norm for
+         * @param m
+         *            the method to calculate the norm for
          * @return norm of given method
          */
         private int getNorm(Method m) {
@@ -566,10 +537,9 @@ public class Statement {
                 if (referenceMethodArgumentTypes[i] == null) {
                     if (argumentTypes[i].isPrimitive()) {
                         return INFINITY;
-                    } else {
-                        // doesn't affect the norm calculation if null
-                        continue;
                     }
+                    // doesn't affect the norm calculation if null
+                    continue;
                 }
 
                 if (referenceMethodArgumentTypes[i].isPrimitive()) {
@@ -591,7 +561,8 @@ public class Statement {
          * Returns a "hierarchy distance" between two classes.
          * 
          * @param clz1
-         * @param clz2 should be superclass or superinterface of clz1
+         * @param clz2
+         *            should be superclass or superinterface of clz1
          * @return hierarchy distance from clz1 to clz2, Integer.MAX_VALUE if
          *         clz2 is not assignable from clz1.
          */
@@ -626,9 +597,8 @@ public class Statement {
                     bestDist = superDist;
                 }
                 return (bestDist != INFINITY ? bestDist + 1 : INFINITY);
-            } else {
-                return (superDist != INFINITY ? superDist + 1 : INFINITY);
             }
+            return (superDist != INFINITY ? superDist + 1 : INFINITY);
         }
     }
 

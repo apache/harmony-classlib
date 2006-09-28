@@ -14,6 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package java.beans;
 
 import java.util.Collections;
@@ -24,8 +25,6 @@ import java.util.Map;
 
 /**
  * Common base class for Descriptors.
- * 
- * @author Maxim V. Berkultsev
  */
 public class FeatureDescriptor {
 
@@ -53,12 +52,15 @@ public class FeatureDescriptor {
      * Sets the value for the named attribute.
      * </p>
      * 
-     * @param attributeName The name of the attribute to set a value with.
-     * @param value The value to set.
+     * @param attributeName
+     *            The name of the attribute to set a value with.
+     * @param value
+     *            The value to set.
      */
     public void setValue(String attributeName, Object value) {
-        if (attributeName == null || value == null)
+        if (attributeName == null || value == null) {
             throw new NullPointerException();
+        }
         values.put(attributeName, value);
     }
 
@@ -67,7 +69,8 @@ public class FeatureDescriptor {
      * Gets the value associated with the named attribute.
      * </p>
      * 
-     * @param attributeName The name of the attribute to get a value for.
+     * @param attributeName
+     *            The name of the attribute to get a value for.
      * @return The attribute's value.
      */
     public Object getValue(String attributeName) {
@@ -86,7 +89,7 @@ public class FeatureDescriptor {
      * @return An instance of {@link Enumeration}.
      */
     public Enumeration<String> attributeNames() {
-        //Create a new list, so that the references are copied
+        // Create a new list, so that the references are copied
         return Collections.enumeration(new LinkedList<String>(values.keySet()));
     }
 
@@ -95,7 +98,8 @@ public class FeatureDescriptor {
      * Sets the short description.
      * </p>
      * 
-     * @param text The description to set.
+     * @param text
+     *            The description to set.
      */
     public void setShortDescription(String text) {
         this.shortDescription = text;
@@ -106,7 +110,8 @@ public class FeatureDescriptor {
      * Sets the name.
      * </p>
      * 
-     * @param name The name to set.
+     * @param name
+     *            The name to set.
      */
     public void setName(String name) {
         this.name = name;
@@ -117,7 +122,8 @@ public class FeatureDescriptor {
      * Sets the display name.
      * </p>
      * 
-     * @param displayName The display name to set.
+     * @param displayName
+     *            The display name to set.
      */
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
@@ -161,8 +167,9 @@ public class FeatureDescriptor {
      * Sets the preferred indicator.
      * </p>
      * 
-     * @param preferred <code>true</code> if preferred, <code>false</code>
-     *        otherwise.
+     * @param preferred
+     *            <code>true</code> if preferred, <code>false</code>
+     *            otherwise.
      */
     public void setPreferred(boolean preferred) {
         this.preferred = preferred;
@@ -173,8 +180,8 @@ public class FeatureDescriptor {
      * Sets the hidden indicator.
      * </p>
      * 
-     * @param hidden <code>true</code> if hidden, <code>false</code>
-     *        otherwise.
+     * @param hidden
+     *            <code>true</code> if hidden, <code>false</code> otherwise.
      */
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
@@ -185,8 +192,8 @@ public class FeatureDescriptor {
      * Sets the expert indicator.
      * </p>
      * 
-     * @param expert <code>true</code> if expert, <code>false</code>
-     *        otherwise.
+     * @param expert
+     *            <code>true</code> if expert, <code>false</code> otherwise.
      */
     public void setExpert(boolean expert) {
         this.expert = expert;

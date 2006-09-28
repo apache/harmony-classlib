@@ -14,53 +14,34 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.7.6.3 $
- */
 package java.beans;
 
 import org.apache.harmony.beans.internal.nls.Messages;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.7.6.3 $
- */
-
 public class Expression extends Statement {
-    
+
     boolean valueIsDefined = false;
+
     Object value;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public Expression(
-            Object value,
-            Object target,
-            String methodName,
+    public Expression(Object value, Object target, String methodName,
             Object[] arguments) {
         super(target, methodName, arguments);
         this.value = value;
         this.valueIsDefined = true;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Expression(Object target, String methodName, Object[] arguments) {
         super(target, methodName, arguments);
         this.value = null;
         this.valueIsDefined = false;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public String toString() {
         try {
             StringBuilder sb = new StringBuilder();
-            
+
             if (!valueIsDefined) {
                 sb.append("<unbound>"); //$NON-NLS-1$
             } else {
@@ -72,26 +53,20 @@ public class Expression extends Statement {
             }
             sb.append('=');
             sb.append(super.toString());
-            
+
             return sb.toString();
-        } catch(Exception e) {
+        } catch (Exception e) {
             return new String(Messages.getString("beans.0D", e.getClass())); //$NON-NLS-1$
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setValue(Object value) {
         this.value = value;
         this.valueIsDefined = true;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Object getValue() throws Exception {
-        if((value == null) && !valueIsDefined) {
+        if ((value == null) && !valueIsDefined) {
             value = invokeMethod();
         }
         return value;

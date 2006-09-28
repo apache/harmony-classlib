@@ -14,28 +14,13 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.3.6.3 $
- */
 package java.beans;
-
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.3.6.3 $
- */
 
 public interface DesignMode {
 
     public static final String PROPERTYNAME = "designTime"; //$NON-NLS-1$
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setDesignTime(boolean designTime);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean isDesignTime();
 }

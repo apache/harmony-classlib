@@ -14,47 +14,30 @@
  *  limitations under the License.
  */
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.3.6.3 $
- */
 package java.beans;
 
 import java.util.EventListenerProxy;
 
-/**
- * @author Maxim V. Berkultsev
- * @version $Revision: 1.3.6.3 $
- */
+public class VetoableChangeListenerProxy extends EventListenerProxy implements
+        VetoableChangeListener {
 
-public class VetoableChangeListenerProxy extends EventListenerProxy
-        implements VetoableChangeListener {
-    
     private String propertyName;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public VetoableChangeListenerProxy(
-            String propertyName, VetoableChangeListener listener) {
+    public VetoableChangeListenerProxy(String propertyName,
+            VetoableChangeListener listener) {
         super(listener);
         this.propertyName = propertyName;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getPropertyName() {
         return propertyName;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void vetoableChange(PropertyChangeEvent evt)
             throws PropertyVetoException {
-        VetoableChangeListener listener =
-                (VetoableChangeListener) getListener();
-        if(listener != null) listener.vetoableChange(evt);
+        VetoableChangeListener listener = (VetoableChangeListener) getListener();
+        if (listener != null) {
+            listener.vetoableChange(evt);
+        }
     }
 }
