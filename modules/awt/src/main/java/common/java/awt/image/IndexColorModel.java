@@ -48,10 +48,6 @@ public class IndexColorModel extends ColorModel {
 
     private int totalInserted = 0;  // Number of inserted values into Cache table
 
-    static {
-        AwtImageBackdoorAccessorImpl.init();
-    }
-
     public IndexColorModel(int bits, int size, int cmap[], int start,
             int transferType, BigInteger validBits) {
 

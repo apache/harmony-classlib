@@ -25,7 +25,6 @@ import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.awt.ImageCapabilities;
 import java.awt.Transparency;
-import java.awt.image.AwtImageBackdoorAccessorImpl;
 
 /**
  * Volatile image implementation
@@ -44,11 +43,6 @@ public abstract class VolatileImage extends Image
     public static final int IMAGE_OK = 0;
 
     public static final int IMAGE_RESTORED = 1;
-
-
-    static {
-        AwtImageBackdoorAccessorImpl.init();
-    }
 
     protected int transparency = OPAQUE;
 

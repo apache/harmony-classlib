@@ -26,6 +26,8 @@ package org.apache.harmony.awt.gl;
 import java.awt.Image;
 import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
+import java.awt.image.DataBufferInt;
+
 import org.apache.harmony.awt.gl.image.DataBufferListener;
 
 /**
@@ -39,6 +41,8 @@ public abstract class AwtImageBackdoorAccessor {
     static protected AwtImageBackdoorAccessor inst;
 
     public static AwtImageBackdoorAccessor getInstance(){
+        // First we need to run the static initializer in the DataBuffer class to resolve inst.
+        new DataBufferInt(0);
         return inst;
     }
 

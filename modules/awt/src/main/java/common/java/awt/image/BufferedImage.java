@@ -93,10 +93,6 @@ Image implements WritableRenderedImage, Transparency{
 
     private static final int BLUE_555_MASK = 0x001f;
 
-    static {
-        AwtImageBackdoorAccessorImpl.init();
-    }
-
     private ColorModel cm;
 
     private final WritableRaster raster;
