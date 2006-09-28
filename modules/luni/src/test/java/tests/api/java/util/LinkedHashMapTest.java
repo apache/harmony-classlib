@@ -1,4 +1,4 @@
-/* Copyright 2004, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,6 +54,18 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
 			return size() > 5;
 		}
 	}
+    
+    private static class MockMapNull extends AbstractMap {
+        @Override
+        public Set entrySet() {
+            return null;
+        }
+
+        @Override
+        public int size() {
+            return 10;
+        }
+    }
 
 	/**
 	 * @tests java.util.LinkedHashMap#LinkedHashMap()
@@ -171,6 +183,26 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
 			assertTrue("Failed to clear all elements", hm2.get(
 					new Integer(i).toString()).equals((new Integer(i))));
 	}
+
+    /**
+     * @tests java.util.LinkedHashMap#putAll(java.util.Map)
+     */
+    public void test_putAll_Ljava_util_Map_Null() {
+        LinkedHashMap linkedHashMap = new LinkedHashMap();
+        try {
+            linkedHashMap.putAll(new MockMapNull());
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected.
+        }
+
+        try {
+            linkedHashMap = new LinkedHashMap(new MockMapNull());
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected.
+        }
+    } 
 
 	/**
 	 * @tests java.util.LinkedHashMap#entrySet()

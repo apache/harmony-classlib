@@ -1,4 +1,4 @@
-/* Copyright 2004, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2004, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -362,19 +362,6 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
             tail = m;
         }
 
-    }
-
-    /**
-     * Put all entries from the given map into the LinkedHashMap
-     * 
-     * @param m
-     *            Input map
-     */
-    @Override
-    public void putAll(Map<? extends K, ? extends V> m) {
-        for (Map.Entry<? extends K, ? extends V> e : m.entrySet()) {
-            put(e.getKey(), e.getValue());
-        }
     }
 
     /**
