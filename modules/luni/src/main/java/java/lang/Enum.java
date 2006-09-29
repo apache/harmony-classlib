@@ -29,7 +29,7 @@ import org.apache.harmony.luni.util.Msg;
 public abstract class Enum<E extends Enum<E>> implements Serializable,
         Comparable<E> {
 
-    private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = -4300926546619394005L;
 
     private final String name;
 

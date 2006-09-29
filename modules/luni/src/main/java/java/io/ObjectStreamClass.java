@@ -207,7 +207,7 @@ public class ObjectStreamClass implements Serializable {
         if (computeSUID) {
             // Lazy computation, to save speed & space
             declaredFields = cl.getDeclaredFields();
-            result.setSerialVersionUID(cl.isEnum() ? 0
+            result.setSerialVersionUID((cl.isEnum() || (cl == Enum.class)) ? 0
                     : computeSerialVersionUID(cl, declaredFields));
         }
 
@@ -238,8 +238,8 @@ public class ObjectStreamClass implements Serializable {
 
 		return result;
 	}
-
-	/**
+    
+    /**
 	 * Builds the collection of field descriptors for the receiver
 	 * 
 	 * @param declaredFields
