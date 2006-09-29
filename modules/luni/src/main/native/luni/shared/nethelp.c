@@ -743,7 +743,7 @@ netGetJavaNetInetAddressValue (JNIEnv * env, jobject anInetAddress,
     (jbyteArray) ((*env)->GetObjectField (env, anInetAddress,
             getJavaNetInetAddressIpaddress(env)));
   *length = (*env)->GetArrayLength (env, byte_array);
-  (*env)->GetByteArrayRegion (env, byte_array, 0, *length, buffer);
+  (*env)->GetByteArrayRegion (env, byte_array, 0, *length, (jbyte *)buffer);
 }
 
 /**
@@ -804,9 +804,8 @@ jobjectArray
 createAliasArray (JNIEnv * env, jbyte ** addresses, I_32 * family, U_32 count,
       char *hName, U_32 * scope_id_array)
 {
-  PORT_ACCESS_FROM_ENV (env);
   U_32 i, length;
-  jobjectArray aliases;
+  jobjectArray aliases = NULL;
   jobject element;
   jclass tempClass = (*env)->FindClass (env, "java/net/InetAddress");
 
@@ -883,7 +882,7 @@ createAliasArrayFromAddrinfo (JNIEnv * env, hyaddrinfo_t addresses,
   for (i = 0; i < (U_32) length; i++)
     {
       memset (temp_address, 0, HYSOCK_INADDR6_LEN);
-      hysock_getaddrinfo_address (addresses, temp_address, i, &scope_id);
+      hysock_getaddrinfo_address (addresses, (U_8 *)temp_address, i, &scope_id);
 
       /* On some platforms we get duplicate addresses back for each protocol type, 
       we only want 1 per list, so we're filtering duplicates */
@@ -898,7 +897,7 @@ createAliasArrayFromAddrinfo (JNIEnv * env, hyaddrinfo_t addresses,
       if (!contains)
         {
           aliasList[count] =
-            (U_8 *) hymem_allocate_memory (HYSOCK_INADDR6_LEN);
+            (jbyte *) hymem_allocate_memory (HYSOCK_INADDR6_LEN);
           hysock_getaddrinfo_family (addresses, &family[count], i);
           scope_id_array[count] = scope_id;
           memcpy (aliasList[count++], temp_address, HYSOCK_INADDR6_LEN);
@@ -1832,7 +1831,6 @@ void setSocketLocalAddressContent(JNIEnv * env, jclass channel_class, jobject ch
 	jclass addr_class = (*env)->FindClass(env,"Ljava/net/InetAddress;");
 	jmethodID addr_new = (*env)->GetMethodID(env,addr_class,"<init>","()V");
 	jobject localAddr_object = (*env)->NewObject(env,addr_class,addr_new);
-	jclass socketaddr_class = (*env)->FindClass(env,"java/net/InetSocketAddress");
 	jfieldID socketaddr_field = (*env)->GetFieldID(env,channel_class,"connectAddress","Ljava/net/InetSocketAddress;");
 	jobject socketaddr_object = (*env)->GetObjectField(env,channel_object,socketaddr_field);
 	jbyteArray addr_array;

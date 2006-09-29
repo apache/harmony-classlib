@@ -232,7 +232,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_openI
 
       length = (*env)->GetArrayLength (env, path);
       length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-      ((*env)->GetByteArrayRegion (env, path, 0, length, pathCopy));
+      ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
       pathCopy[length] = '\0';
       ioh_convertToPlatform (pathCopy);
 

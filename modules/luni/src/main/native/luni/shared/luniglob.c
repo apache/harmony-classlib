@@ -21,10 +21,13 @@
  */
 #include <search.h>
 #include <string.h>
+#include <stdlib.h>
 #include "vmi.h"
 #include "jclglob.h"
 #include "hyport.h"
 #include "strhelp.h"
+#include "jsig.h"
+#include "hycomp.h"
 
 static UDATA keyInitCount = 0;
 
@@ -89,7 +92,7 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
         }
 
        /* Should we check if bootclasspath is already set to avoid unexpected overriding? */
-       /* But this seems to conflict with default IBM VME settings...
+       /*  But this seems to conflict with default IBM VME settings...*/
        /* (*vmInterface)->GetSystemProperty (vmInterface, BOOTCLASSPATH_PROPERTY, &bootPath);*/
        if (!bootPath) 
        {

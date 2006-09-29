@@ -60,10 +60,9 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
   struct sockaddr_in dest,source,local;
   struct icmp * send_buf = 0;
   struct ip * recv_buf = 0;
-  int size = sizeof(struct icmp);
   int result,ret=UNREACHABLE;
   struct timeval timeP;
-  fd_set * fdset_read;
+  fd_set * fdset_read = NULL;
   int sockadd_size = sizeof (source);
   jbyte host[HYSOCK_INADDR6_LEN];
   U_32 length =  (*env)->GetArrayLength (env,address);
@@ -120,7 +119,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
   }  
   result = recvfrom(sock, (char*)recv_buf,
             PACKET_SIZE, 0,
-            (struct sockaddr*)&source, &sockadd_size);
+            (struct sockaddr*)&source, (unsigned int *)&sockadd_size);
 
   if (SOCKET_ERROR == result){
   	goto cleanup;
@@ -267,25 +266,22 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
 
 JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_inheritedChannelImpl
   (JNIEnv * env , jobject clz){
-  	PORT_ACCESS_FROM_ENV (env);
-        int socket = 0;
-        int opt;
-	int length = sizeof(opt);
-        int socket_type;
-        struct sockaddr_in local_addr;
-        struct sockaddr_in remote_addr;
-        jclass channel_class,fd_class, addr_class, socketaddr_class,serverSocket_class,socketImpl_class;
-        jobject channel_object, socketaddr_object, addr_object,localAddr_object, serverSocket_object,socketImpl_object;
-	jfieldID port_field, addr_field, socketaddr_field,addrarray_field, localAddr_field, bound_field;
+    int socket = 0;
+    int opt;
+    int length = sizeof(opt);
+    int socket_type;
+    struct sockaddr_in local_addr;
+    struct sockaddr_in remote_addr;
+    jclass channel_class, socketaddr_class,serverSocket_class,socketImpl_class;
+    jobject channel_object = NULL, socketaddr_object, serverSocket_object,socketImpl_object;
+	jfieldID port_field, socketaddr_field, bound_field;
 	jfieldID serverSocket_field,socketImpl_field;
-	jmethodID addr_new,channel_new;
 	hysocket_t sock;
 	jbyte * address;
 	jbyte * localAddr;
-        jbyteArray addr_array;
 	jboolean jtrue = TRUE;
 
-	if(0 != getsockopt(socket,SOL_SOCKET,SO_TYPE,&opt,&length)){
+	if(0 != getsockopt(socket,SOL_SOCKET,SO_TYPE,&opt,(unsigned int *)&length)){
 		return NULL;
 	}
 	if(SOCK_STREAM !=opt && SOCK_DGRAM !=opt){
@@ -294,7 +290,7 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
 	socket_type = opt;
 
 	length  = sizeof(struct sockaddr);
-	if(0 != getsockname(socket,(struct sockaddr *)&local_addr,&length)){
+	if(0 != getsockname(socket,(struct sockaddr *)&local_addr,(unsigned int *)&length)){
 		return NULL;
 	} else {
 		if(AF_INET != local_addr.sin_family || length != sizeof(struct sockaddr)){
@@ -306,7 +302,7 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
 		}
 		memcpy (localAddr, &(local_addr.sin_addr.s_addr), 4); 
 	}
-	if(0 != getpeername(socket,(struct sockaddr *)&remote_addr,&length))	{
+	if(0 != getpeername(socket,(struct sockaddr *)&remote_addr,(unsigned int *)&length))	{
 		remote_addr.sin_port = 0;
                 remote_addr.sin_addr.s_addr = 0;
 		address = malloc(sizeof(jbyte)*4);

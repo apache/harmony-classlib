@@ -47,8 +47,6 @@ jdouble internal_log10(jdouble arg1);
 jdouble internal_nextafter(jdouble arg1,jdouble arg2);
 jfloat  internal_nextafterf(jfloat arg1,jfloat arg2);
 
-extern scaleUpDouble (double *, int);
-
 jdouble
 internal_acos (jdouble arg1)
 {

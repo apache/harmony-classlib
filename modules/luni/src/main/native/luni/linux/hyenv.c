@@ -21,7 +21,6 @@
 JNIEXPORT jbyteArray JNICALL Java_org_apache_harmony_luni_platform_Environment_getEnvBytes
   (JNIEnv *env, jclass obj){
   extern char** environ;
-  char* var;  
   jbyteArray byteArray;
   int bufsize=0,i=0,start=0,len=0;
   for(i=0;*(environ+i);i++){
@@ -30,7 +29,7 @@ JNIEXPORT jbyteArray JNICALL Java_org_apache_harmony_luni_platform_Environment_g
   byteArray = (*env)->NewByteArray(env,bufsize);
   for(i=0;*(environ+i);i++){
       len=strlen(environ[i])+1;
-      (*env)->SetByteArrayRegion(env,byteArray, start, len, environ[i]);
+      (*env)->SetByteArrayRegion(env,byteArray, start, len, (jbyte *)environ[i]);
       start+=len;
   }
   return byteArray;

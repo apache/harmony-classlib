@@ -190,7 +190,7 @@ Java_org_apache_harmony_math_util_BigInteger_divImpl (JNIEnv * env, jclass cls,
   /* ASSUME that bottomObject is nonzero, ie check and throw was done in java */
   IDATA topLength, bottomLength, topSize, bottomSize, resultLength,
     resultSize;
-  jlongArray resultObject;
+  jlongArray resultObject = NULL;
   U_32 *topStart = NULL, *bottomStart = NULL, *resultStart = NULL;
   IDATA topAt, bottomAt, resultAt;
   IDATA isNegative = 0;
@@ -467,7 +467,7 @@ Java_org_apache_harmony_math_util_BigInteger_mulImpl (JNIEnv * env, jclass cls,
                                                jlongArray src2)
 {
   IDATA len1, len2, lenR;
-  jlongArray resultObject;
+  jlongArray resultObject = NULL;
   U_32 *ar1 = NULL, *ar2 = NULL, *arR = NULL;
   IDATA isNegative = 0, tempNeg;
   IDATA shortAt, resultAt;
@@ -610,7 +610,7 @@ Java_org_apache_harmony_math_util_BigInteger_remImpl (JNIEnv * env, jclass cls,
   /* ASSUME that bottomObject is nonzero, ie check and throw was done in java */
   IDATA topLength, bottomLength, topSize, bottomSize, resultLength,
     resultSize;
-  jlongArray resultObject;
+  jlongArray resultObject = NULL;
   U_32 *topStart = NULL, *bottomStart = NULL, *resultStart = NULL;
   IDATA topAt, bottomAt, resultAt, i, topZeroAdded = 0, tempNeg;
   I_32 signedTemp;
@@ -930,7 +930,7 @@ Java_org_apache_harmony_math_util_BigInteger_shlImpl (JNIEnv * env, jclass cls,
                                                jlongArray src, jint shiftval)
 {
   IDATA len, lenR;
-  jlongArray resultObject;
+  jlongArray resultObject = NULL;
   U_64 *ar = NULL, *shifted = NULL;
   IDATA oldAt, newAt, shiftvalr, shortenedFlag = 0;
 

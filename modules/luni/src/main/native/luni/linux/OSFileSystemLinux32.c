@@ -225,7 +225,6 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_write
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_transferImpl
   (JNIEnv *env, jobject thiz, jlong fd, jobject sd, jlong offset, jlong count)
 {
-  PORT_ACCESS_FROM_ENV (env);
   OSSOCKET socket;
   //TODO IPV6
   hysocket_t hysocketP =

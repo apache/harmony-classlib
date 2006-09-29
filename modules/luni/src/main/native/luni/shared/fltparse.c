@@ -118,7 +118,6 @@ createFloat (JNIEnv * env, const char *s, jint e)
   jfloat result;
   IDATA index = 1;
   int unprocessedDigits = 0;
-  PORT_ACCESS_FROM_ENV (env);
 
   f = def;
   fNoOverflow = defBackup;

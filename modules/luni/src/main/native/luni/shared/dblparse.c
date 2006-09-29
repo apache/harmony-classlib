@@ -163,7 +163,6 @@ static const jdouble tens[] = {
  *have global data for use by bigIntDigitGenerator */
 #define RM_SIZE 21
 #define STemp_SIZE 22
-static U_64 R[RM_SIZE], S[STemp_SIZE], M[RM_SIZE], Temp[STemp_SIZE];
 
 jdouble
 createDouble (JNIEnv * env, const char *s, jint e)
@@ -177,7 +176,6 @@ createDouble (JNIEnv * env, const char *s, jint e)
   jdouble result;
   IDATA index = 1;
   int unprocessedDigits = 0;
-  PORT_ACCESS_FROM_ENV (env);
 
   f = def;
   fNoOverflow = defBackup;

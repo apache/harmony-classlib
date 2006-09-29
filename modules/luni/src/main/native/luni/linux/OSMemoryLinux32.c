@@ -85,7 +85,7 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLoad
 	  size   += align_offset;
 	  page_count = (size+PAGE_SIZE-1)/PAGE_SIZE;
 	  vec = (char *) hymem_allocate_memory(page_count*sizeof(char));
-	  if(mincore((void *)m_addr, size , vec)==0) //or else there is error about the mincore and return false;
+	  if(mincore((void *)m_addr, size , (unsigned char *)vec)==0) //or else there is error about the mincore and return false;
 	  {
 	  	  int i;
 		  for(i=0 ;i<page_count;i++)
@@ -122,7 +122,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_unmapImpl
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mmapImpl
   (JNIEnv * env, jobject thiz, jlong fd, jlong alignment, jlong size, jint mmode)
 {
-  PORT_ACCESS_FROM_ENV (env);
+  //PORT_ACCESS_FROM_ENV (env);
   void *mapAddress = NULL;
   int prot, flags;
 		  

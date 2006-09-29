@@ -70,7 +70,7 @@ Java_org_apache_harmony_luni_internal_process_SystemProcess_createImpl (JNIEnv *
           throwNewOutOfMemoryError (env, "");
           goto failed;
         }
-      (*env)->GetByteArrayRegion (env, element, 0, len, command[i]);
+      (*env)->GetByteArrayRegion (env, element, 0, len, (jbyte *)command[i]);
       command[i][len] = 0;
     }
   if (envLength)
@@ -84,7 +84,7 @@ Java_org_apache_harmony_luni_internal_process_SystemProcess_createImpl (JNIEnv *
             throwNewOutOfMemoryError (env, "");
             goto failed;
           }
-        (*env)->GetByteArrayRegion (env, envString, 0, len, envArray[i]);
+        (*env)->GetByteArrayRegion (env, envString, 0, len, (jbyte *)envArray[i]);
         envArray[i][len] = 0;
       }
   /* NULL terminate for UNIX (does work on windows too; in fact, it doesn't care) */
@@ -185,8 +185,6 @@ void JNICALL
 Java_org_apache_harmony_luni_internal_process_ProcessInputStream_closeImpl (JNIEnv * env,
                 jobject recv)
 {
-  PORT_ACCESS_FROM_ENV (env);
-
   new_ioh_close (env, recv,
      JCL_CACHE_GET (env,
         FID_org_apache_harmony_luni_internal_process_ProcessInputStream_fd));
@@ -196,7 +194,6 @@ void JNICALL
 Java_org_apache_harmony_luni_internal_process_ProcessOutputStream_closeImpl (JNIEnv * env,
                  jobject recv)
 {
-  PORT_ACCESS_FROM_ENV (env);
   new_ioh_close (env, recv,
      JCL_CACHE_GET (env,
         FID_org_apache_harmony_luni_internal_process_ProcessOutputStream_fd));

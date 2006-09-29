@@ -55,8 +55,6 @@ Java_java_net_NetworkInterface_getNetworkInterfacesImpl (JNIEnv * env,
   jobject element = NULL;
 
   /* misc variables needed for looping and determining inetAddress info */
-  U_32 length = 0;
-  I_32 family = 0;
   U_32 i = 0;
   U_32 j = 0;
   U_32 nameLength = 0;
@@ -131,7 +129,7 @@ Java_java_net_NetworkInterface_getNetworkInterfacesImpl (JNIEnv * env,
               return NULL;
             }
           (*env)->SetByteArrayRegion (env, bytearray, (jint) 0, nameLength,
-                                      networkInterfaceArray.elements[j].name);
+                                      (jbyte *)networkInterfaceArray.elements[j].name);
           name =
             (*env)->CallStaticObjectMethod (env, utilClass, utilMid,
                                             bytearray, (jint) 0, nameLength);
@@ -151,7 +149,7 @@ Java_java_net_NetworkInterface_getNetworkInterfacesImpl (JNIEnv * env,
               return NULL;
             }
           (*env)->SetByteArrayRegion (env, bytearray, (jint) 0, nameLength,
-                                      networkInterfaceArray.elements[j].
+                                      (jbyte *)networkInterfaceArray.elements[j].
                                       displayName);
           displayName =
             (*env)->CallStaticObjectMethod (env, utilClass, utilMid,
@@ -166,7 +164,7 @@ Java_java_net_NetworkInterface_getNetworkInterfacesImpl (JNIEnv * env,
       for (i = 0; i < networkInterfaceArray.elements[j].numberAddresses; i++)
         {
           element = newJavaNetInetAddressGenericB (env,
-                                                   networkInterfaceArray.
+                                                   (jbyte *)networkInterfaceArray.
                                                    elements[j].addresses[i].
                                                    addr.bytes,
                                                    networkInterfaceArray.

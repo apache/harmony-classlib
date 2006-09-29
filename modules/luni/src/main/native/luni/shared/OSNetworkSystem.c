@@ -267,7 +267,7 @@ updateSocket (JNIEnv * env,
   hysock_sockaddr_address6 (sockaddrP, nipAddress, &length, &scope_id);	
   nPort	= hysock_sockaddr_port (sockaddrP);
   anInetAddress	=
-    newJavaNetInetAddressGenericB (env,	nipAddress, length, scope_id);
+    newJavaNetInetAddressGenericB (env,	(jbyte *)nipAddress, length, scope_id);
 
   setJavaIoFileDescriptorContents (env,	fileDescriptorSocketImpl,
 	      socketNew);
@@ -275,7 +275,7 @@ updateSocket (JNIEnv * env,
   setSocketImplPort (env, socketImpl, hysock_ntohs (nPort));
 }
 
-/*----------------------former cache get/set ------------------------------------
+/*----------------------former cache get/set ------------------------------------*/
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    oneTimeInitializationDatagram
@@ -421,14 +421,14 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rea
     }
   else
     {
-      message =	internalBuffer;	
+      message =	(jbyte *)internalBuffer;	
     }
 
 
   result = hysock_read (hysocketP, (U_8 *) message, localCount, HYSOCK_NOFLAGS);
 
   if (result > 0)
-    (*env)->SetByteArrayRegion (env, data, offset, result, (U_8 *)message);
+    (*env)->SetByteArrayRegion (env, data, offset, result, (jbyte *)message);
 
   if (((U_8 *)message) != internalBuffer)
     {
@@ -482,7 +482,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_wri
     }
   else
     {
-      message =	internalBuffer;	
+      message =	(jbyte *)internalBuffer;	
     }
 
 
@@ -588,7 +588,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_con
     }
   else
     {
-      netGetJavaNetInetAddressValue (env, inetAddress, nAddrBytes, &length);
+      netGetJavaNetInetAddressValue (env, inetAddress, (U_8 *)nAddrBytes, (U_32 *)&length);
 
       nPort = hysock_htons ((U_16) remotePort);	
       if (length == HYSOCK_INADDR_LEN)
@@ -657,7 +657,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_con
       //length = (*env)->GetArrayLength	(env, byte_array);
       //(*env)->GetByteArrayRegion (env, byte_array, 0,	length,	nAddrBytes);
       */
-      netGetJavaNetInetAddressValue (env, inetAddr, nAddrBytes,	&length);
+      netGetJavaNetInetAddressValue (env, inetAddr, (U_8 *)nAddrBytes,	(U_32 *)&length);
       nPort = hysock_htons ((U_16) port);
       hysock_sockaddr_init6 (&sockaddrP,(U_8 *)	nAddrBytes, length,
 	    HYADDR_FAMILY_AFINET4, nPort, 0, scope_id,
@@ -738,20 +738,20 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_soc
     }
   else
     {
-      netGetJavaNetInetAddressValue (env, inetAddress, nlocalAddrBytes,	
-	&length);
+      netGetJavaNetInetAddressValue (env, inetAddress, (U_8 *)nlocalAddrBytes,	
+	(U_32 *)&length);
 
       nPort = hysock_htons ((U_16) localPort);
       if (length == HYSOCK_INADDR6_LEN)	
 	{
 	  netGetJavaNetInetAddressScopeId (env,	inetAddress, &scope_id);
-	  hysock_sockaddr_init6	(&sockaddrP, nlocalAddrBytes, length,
+	  hysock_sockaddr_init6	(&sockaddrP, (U_8 *)nlocalAddrBytes, length,
 	    HYADDR_FAMILY_AFINET6, nPort, 0, scope_id,
 	    socketP);
 	}
       else
 	{
-	  hysock_sockaddr_init6	(&sockaddrP, nlocalAddrBytes, length,
+	  hysock_sockaddr_init6	(&sockaddrP, (U_8 *)nlocalAddrBytes, length,
 	    HYADDR_FAMILY_AFINET4, nPort, 0, scope_id,
 	    socketP);
 	}
@@ -937,7 +937,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
   result = hysock_setflag (HYSOCK_MSG_OOB, &flags);
   if (!result)
     {
-      result = hysock_write (socketP, &data, 1,	flags);	
+      result = hysock_write (socketP, (U_8 *)&data, 1,	flags);	
     }
 
   /* Always throw an exception if all the data cannot be sent because Java methods
@@ -978,7 +978,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_con
       return;
     }
 
-  netGetJavaNetInetAddressValue	(env, inetAddress, nAddrBytes, &length);
+  netGetJavaNetInetAddressValue	(env, inetAddress, (U_8 *)nAddrBytes, (U_32 *)&length);
 
   nPort	= hysock_htons ((U_16) remotePort);
   if (length ==	HYSOCK_INADDR_LEN)
@@ -1075,20 +1075,20 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem
       return 0;
     }
 
-  netGetJavaNetInetAddressValue (env, inetAddress, nlocalAddrBytes,
-                                 &length);
+  netGetJavaNetInetAddressValue (env, inetAddress, (U_8 *)nlocalAddrBytes,
+                                 (U_32 *)&length);
 
   nPort = hysock_htons ((U_16) localPort);
   if (length == HYSOCK_INADDR6_LEN)
     {
       netGetJavaNetInetAddressScopeId (env, inetAddress, &scope_id);
-      hysock_sockaddr_init6 (&sockaddrP, nlocalAddrBytes, length,
+      hysock_sockaddr_init6 (&sockaddrP, (U_8 *)nlocalAddrBytes, length,
                              HYADDR_FAMILY_AFINET6, nPort, 0, scope_id,
                              socketP);
     }
   else
     {
-      hysock_sockaddr_init6 (&sockaddrP, nlocalAddrBytes, length,
+      hysock_sockaddr_init6 (&sockaddrP, (U_8 *)nlocalAddrBytes, length,
                              HYADDR_FAMILY_AFINET4, nPort, 0, scope_id,
                              socketP);
     }
@@ -1225,7 +1225,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
 	}
     }
   result =
-    hysock_readfrom (hysocketP,	message, localCount, flags, &sockaddrP);
+    hysock_readfrom (hysocketP,	(U_8 *)message, localCount, flags, &sockaddrP);
   if (result > 0)
     (*env)->SetByteArrayRegion (env, data, offset, result, message);
   hymem_free_memory (message);
@@ -1306,7 +1306,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
 
   /* read the data and copy it to the return array, then free the buffer as we
      no	longer need it */
-  result = hysock_read (hysocketP, message, localCount,	flags);	
+  result = hysock_read (hysocketP, (U_8 *)message, localCount,	flags);	
   if (result > 0)
     {
       (*env)->SetByteArrayRegion (env, data, offset, result, message);
@@ -1367,20 +1367,20 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
   int flags;
   U_32 scope_id	= 0;
 
-  netGetJavaNetInetAddressValue	(env, inetAddress, nhostAddrBytes, &length);
+  netGetJavaNetInetAddressValue	(env, inetAddress, (U_8 *)nhostAddrBytes, (U_32 *)&length);
   nPort	= hysock_htons ((U_16) targetPort);
 
   socketP = getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
   if (length ==	HYSOCK_INADDR6_LEN)
     {
       netGetJavaNetInetAddressScopeId (env, inetAddress, &scope_id);
-      hysock_sockaddr_init6 (&sockaddrP, nhostAddrBytes, length,
+      hysock_sockaddr_init6 (&sockaddrP, (U_8 *)nhostAddrBytes, length,
 	   HYADDR_FAMILY_AFINET6, nPort,
 	   (trafficClass & 0xFF) << 20,	scope_id, socketP);
     }
   else
     {
-      hysock_sockaddr_init6 (&sockaddrP, nhostAddrBytes, length,
+      hysock_sockaddr_init6 (&sockaddrP, (U_8 *)nhostAddrBytes, length,
 	   HYADDR_FAMILY_AFINET4, nPort, 0, scope_id,
 	   socketP);
     }
@@ -1409,7 +1409,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
 	  return (jint)	0;
 	}
       result =
-	hysock_writeto (socketP, message + sent, (I_32)	msgLength - sent,
+	hysock_writeto (socketP, (U_8 *)message + sent, (I_32)	msgLength - sent,
 	flags, &sockaddrP);
       if (result < 0)
 	break;
@@ -1481,7 +1481,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
 
       /* try to	send the next block of data */
       result =
-	hysock_write (socketP, message + sent, (I_32) msgLength	- sent,	
+	hysock_write (socketP, (U_8 *)message + sent, (I_32) msgLength	- sent,	
 	flags);	
       if (result < 0)
 	{
@@ -1624,7 +1624,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_con
     }
   else
     {
-      netGetJavaNetInetAddressValue (env, inetAddress, nAddrBytes, &length);
+      netGetJavaNetInetAddressValue (env, inetAddress, (U_8 *)nAddrBytes, (U_32 *)&length);
       nPort = hysock_htons ((U_16) remotePort);	
       if (length == HYSOCK_INADDR_LEN)
 	{
@@ -1782,8 +1782,8 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
 
   if (inetAddress != NULL)
     {
-      netGetJavaNetInetAddressValue (env, inetAddress, nhostAddrBytes,
-	&length);
+      netGetJavaNetInetAddressValue (env, inetAddress, (U_8 *)nhostAddrBytes,
+	(U_32 *)&length);
 
       socketP =	
 	(hysocket_t) getJavaIoFileDescriptorContentsAsAPointer (env,
@@ -1886,7 +1886,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
     }
   else
     {
-      message =	internalBuffer;	
+      message =	(jbyte *)internalBuffer;	
     }
 
   result =
@@ -1941,7 +1941,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
     }
   else
     {
-      message =	internalBuffer;	
+      message =	(jbyte *)internalBuffer;	
     }
 
 
@@ -2137,7 +2137,7 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
     }
   else
     {
-      hysock_sockaddr_address6 (&sockaddrP, byte_array,	&length, &scope_id);
+      hysock_sockaddr_address6 (&sockaddrP, (U_8 *)byte_array,	&length, &scope_id);
       /* Cannot	call gethostbyaddr since it is not reentrant on	some OS's */
       return newJavaNetInetAddressGenericB (env, byte_array, length,
 	      scope_id);
@@ -2489,7 +2489,6 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
  */
 JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_setInetAddressImpl	
   (JNIEnv *env,	jobject	thisClz, jobject sender, jbyteArray address){
-   PORT_ACCESS_FROM_ENV	(env);
    I_8 * passAddr = NULL;
    jbyteArray addr_array =
      (jbyteArray) ((*env)->GetObjectField (env,
@@ -2498,7 +2497,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_set
                                                           FID_java_net_InetAddress_address)));
    I_32	length = (*env)->GetArrayLength	(env, address);	
    addr_array =	(*env)->NewByteArray(env, (jsize) length);
-   (*env)->GetByteArrayRegion (env, address, 0,	length,	passAddr);
-   (*env)->SetByteArrayRegion (env, addr_array,	0, length, passAddr);
+   (*env)->GetByteArrayRegion (env, address, 0,	length,	(jbyte *)passAddr);
+   (*env)->SetByteArrayRegion (env, addr_array,	0, length, (jbyte *)passAddr);
 }
 

@@ -156,7 +156,7 @@ execProgram (JNIEnv * vmthread, jobject recv,
 		if (error == ENOMEM) {
 		    result = 1001;
 		}
-		else if (error = EAGAIN) { 
+		else if (error == EAGAIN) { 
 		    result = 1002;
 		}
 	
@@ -195,10 +195,6 @@ execProgram (JNIEnv * vmthread, jobject recv,
   else
     {
       /* in the child-thread (not the grand-child) */
-      int stat_val = -1;
-      jfieldID hid;
-      jmethodID mid;
-      jclass rcvClass;
       char dummy;
       int avail = 0;
       int noDataInThePipe;

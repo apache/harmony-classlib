@@ -80,7 +80,6 @@ I_32
 setPlatformLastModified (JNIEnv * env, char *path, I_64 time)
 {
 
-  PORT_ACCESS_FROM_ENV (env);
   struct stat statbuf;
   struct utimbuf timebuf;
   if (stat (path, &statbuf))

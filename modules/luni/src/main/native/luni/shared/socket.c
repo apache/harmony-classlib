@@ -188,7 +188,7 @@ getMcastInterface (JNIEnv * env, hysocket_t hysocketP)
       return NULL;
     }
   hysock_sockaddr_address6 (&sockaddrP, byte_array, &length, &scope_id);
-  return newJavaNetInetAddressGenericB (env, byte_array, length, scope_id);
+  return newJavaNetInetAddressGenericB (env, (jbyte *)byte_array, length, scope_id);
 
 }
 
@@ -352,7 +352,7 @@ mcastAddMembership (JNIEnv * env, hysocket_t hysocketP, jobject optVal,
             {
               result =
                 hysock_getopt_int (hysocketP, HY_IPPROTO_IPV6,
-                                   HY_MCAST_INTERFACE_2, &interfaceIndex);
+                                   HY_MCAST_INTERFACE_2, (I_32 *)&interfaceIndex);
               if (0 != result)
                 {
                   throwJavaNetSocketException (env, result);
@@ -555,7 +555,7 @@ mcastDropMembership (JNIEnv * env, hysocket_t hysocketP, jobject optVal,
             {
               result =
                 hysock_getopt_int (hysocketP, HY_IPPROTO_IPV6,
-                                   HY_MCAST_INTERFACE_2, &interfaceIndex);
+                                   HY_MCAST_INTERFACE_2, (I_32 *)&interfaceIndex);
               if (0 != result)
                 {
                   throwJavaNetSocketException (env, result);
@@ -709,7 +709,7 @@ setMcastInterface (JNIEnv * env, hysocket_t hysocketP, jobject optVal)
   U_8 address[HYSOCK_INADDR6_LEN];
   hysockaddr_struct sockaddrP;
 
-  netGetJavaNetInetAddressValue (env, optVal, address, &length);
+  netGetJavaNetInetAddressValue (env, optVal, address, (U_32 *)&length);
   hysock_sockaddr_init6 (&sockaddrP, address, length, HYADDR_FAMILY_AFINET4,
                          0, 0, 0, hysocketP);
   result =
@@ -896,7 +896,7 @@ pollSelectRead (JNIEnv * env, jobject fileDescriptor, jint timeout,
   else  /* we are polling */
     {
       I_32 pollTimeoutUSec = 100000, pollMsec = 100;
-      UDATA finishTime;
+      UDATA finishTime = 0;
       IDATA timeLeft = timeout;
       BOOLEAN hasTimeout = timeout > 0;
       
@@ -1137,7 +1137,7 @@ setIntegerSocketOption (JNIEnv * env, hysocket_t hysocketP, int level,
   U_32 value;
 
   value = intValue (env, optVal);
-  result = hysock_setopt_int (hysocketP, level, option, &value);
+  result = hysock_setopt_int (hysocketP, level, option, (I_32 *)&value);
   if (0 != result)
     {
       throwJavaNetSocketException (env, result);
@@ -1163,7 +1163,7 @@ getIntegerValue (JNIEnv * env, hysocket_t hysocketP, int level, int option)
   I_32 result;
   BOOLEAN optval;
 
-  result = hysock_getopt_int (hysocketP, level, option, &optval);
+  result = hysock_getopt_int (hysocketP, level, option, (I_32 *)&optval);
   if (0 != result)
     {
       throwJavaNetSocketException (env, result);
@@ -1197,11 +1197,11 @@ setReuseAddrAndReusePort (JNIEnv * env, hysocket_t hysocketP, jobject optVal)
 
   /* first set REUSEPORT.  Ignore the error as not all platforms will support this */
   result =
-    hysock_setopt_int (hysocketP, HY_SOL_SOCKET, HY_SO_REUSEPORT, &value);
+    hysock_setopt_int (hysocketP, HY_SOL_SOCKET, HY_SO_REUSEPORT, (I_32 *)&value);
 
   /* now set REUSEADDR.  We expect this to work */
   result =
-    hysock_setopt_int (hysocketP, HY_SOL_SOCKET, HY_SO_REUSEADDR, &value);
+    hysock_setopt_int (hysocketP, HY_SOL_SOCKET, HY_SO_REUSEADDR, (I_32 *)&value);
   if (0 != result)
     {
       throwJavaNetSocketException (env, result);

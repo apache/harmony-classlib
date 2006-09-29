@@ -174,4 +174,6 @@ jobject getJavaNioChannelsDatagramChannelImplObj(JNIEnv * env);
 
 void setServerSocketLocalAddressContent(JNIEnv * env, jclass socketImpl_class, jobject socketImpl_object, jbyte * localAddr);
 
+void setSocketLocalAddressContent(JNIEnv * env, jclass channel_class, jobject channel_object,jbyte * address);
+
 #endif /* nethelp_h */

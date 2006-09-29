@@ -29,7 +29,7 @@ Java_java_io_File_deleteFileImpl (JNIEnv * env, jobject recv, jbyteArray path)
   jsize length = (*env)->GetArrayLength (env, path);
   char pathCopy[HyMaxPath];
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  ((*env)->GetByteArrayRegion (env, path, 0, length, pathCopy));
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
   pathCopy[length] = '\0';
   ioh_convertToPlatform (pathCopy);
   result = hyfile_unlink (pathCopy);
@@ -44,7 +44,7 @@ Java_java_io_File_deleteDirImpl (JNIEnv * env, jobject recv, jbyteArray path)
   jsize length = (*env)->GetArrayLength (env, path);
   char pathCopy[HyMaxPath];
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  ((*env)->GetByteArrayRegion (env, path, 0, length, pathCopy));
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
   pathCopy[length] = '\0';
   ioh_convertToPlatform (pathCopy);
   result = hyfile_unlinkdir (pathCopy);
@@ -68,9 +68,11 @@ Java_java_io_File_listImpl (JNIEnv * env, jobject recv, jbyteArray path)
   I_32 numEntries = 0;
   UDATA findhandle;
   jarray answer = NULL;
+  dirList = NULL;
+  currentEntry = NULL;
 
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  ((*env)->GetByteArrayRegion (env, path, 0, length, pathCopy));
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
   if (length >= 1 && pathCopy[length - 1] != '\\'
       && pathCopy[length - 1] != '/')
     {
@@ -151,7 +153,7 @@ Java_java_io_File_isDirectoryImpl (JNIEnv * env, jobject recv,
   jsize length = (*env)->GetArrayLength (env, path);
   char pathCopy[HyMaxPath];
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  ((*env)->GetByteArrayRegion (env, path, 0, length, pathCopy));
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
   pathCopy[length] = '\0';
   ioh_convertToPlatform (pathCopy);
   result = hyfile_attr (pathCopy);
@@ -166,7 +168,7 @@ Java_java_io_File_existsImpl (JNIEnv * env, jobject recv, jbyteArray path)
   char pathCopy[HyMaxPath];
   jsize length = (*env)->GetArrayLength (env, path);
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  ((*env)->GetByteArrayRegion (env, path, 0, length, pathCopy));
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
   pathCopy[length] = '\0';
   ioh_convertToPlatform (pathCopy);
   result = hyfile_attr (pathCopy);
@@ -181,7 +183,7 @@ Java_java_io_File_isFileImpl (JNIEnv * env, jobject recv, jbyteArray path)
   jsize length = (*env)->GetArrayLength (env, path);
   char pathCopy[HyMaxPath];
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  ((*env)->GetByteArrayRegion (env, path, 0, length, pathCopy));
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
   pathCopy[length] = '\0';
   ioh_convertToPlatform (pathCopy);
   result = hyfile_attr (pathCopy);
@@ -197,7 +199,7 @@ Java_java_io_File_lastModifiedImpl (JNIEnv * env, jobject recv,
   jsize length = (*env)->GetArrayLength (env, path);
   char pathCopy[HyMaxPath];
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  ((*env)->GetByteArrayRegion (env, path, 0, length, pathCopy));
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
   pathCopy[length] = '\0';
   ioh_convertToPlatform (pathCopy);
   result = hyfile_lastmod (pathCopy);
@@ -213,7 +215,7 @@ Java_java_io_File_lengthImpl (JNIEnv * env, jobject recv, jbyteArray path)
   char pathCopy[HyMaxPath];
 
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  ((*env)->GetByteArrayRegion (env, path, 0, length, pathCopy));
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
   pathCopy[length] = '\0';
   ioh_convertToPlatform (pathCopy);
   result = hyfile_length (pathCopy);
@@ -262,7 +264,7 @@ Java_java_io_File_mkdirImpl (JNIEnv * env, jobject recv, jbyteArray path)
   jsize length = (*env)->GetArrayLength (env, path);
   char pathCopy[HyMaxPath];
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  ((*env)->GetByteArrayRegion (env, path, 0, length, pathCopy));
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
   pathCopy[length] = '\0';
   ioh_convertToPlatform (pathCopy);
   result = hyfile_mkdir (pathCopy);
@@ -279,11 +281,11 @@ Java_java_io_File_renameToImpl (JNIEnv * env, jobject recv,
   char pathExistCopy[HyMaxPath], pathNewCopy[HyMaxPath];
   length = (*env)->GetArrayLength (env, pathExist);
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  ((*env)->GetByteArrayRegion (env, pathExist, 0, length, pathExistCopy));
+  ((*env)->GetByteArrayRegion (env, pathExist, 0, length, (jbyte *)pathExistCopy));
   pathExistCopy[length] = '\0';
   length = (*env)->GetArrayLength (env, pathNew);
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  ((*env)->GetByteArrayRegion (env, pathNew, 0, length, pathNewCopy));
+  ((*env)->GetByteArrayRegion (env, pathNew, 0, length, (jbyte *)pathNewCopy));
   pathNewCopy[length] = '\0';
   ioh_convertToPlatform (pathExistCopy);
   ioh_convertToPlatform (pathNewCopy);
@@ -302,7 +304,7 @@ Java_java_io_File_getCanonImpl (JNIEnv * env, jobject recv, jbyteArray path)
   char pathCopy[HyMaxPath];
   U_32 length = (U_32) (*env)->GetArrayLength (env, path);
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  (*env)->GetByteArrayRegion (env, path, 0, length, pathCopy);
+  (*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy);
   pathCopy[length] = '\0';
   ioh_convertToPlatform (pathCopy);
 #if defined(WIN32)
@@ -324,7 +326,7 @@ Java_java_io_File_newFileImpl (JNIEnv * env, jobject recv, jbyteArray path)
   jsize length = (*env)->GetArrayLength (env, path);
   char pathCopy[HyMaxPath];
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  ((*env)->GetByteArrayRegion (env, path, 0, length, pathCopy));
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
   pathCopy[length] = '\0';
   ioh_convertToPlatform (pathCopy);
 
@@ -393,7 +395,7 @@ Java_java_io_File_isHiddenImpl (JNIEnv * env, jobject recv, jbyteArray path)
   char pathCopy[HyMaxPath];
   jsize length = (*env)->GetArrayLength (env, path);
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  ((*env)->GetByteArrayRegion (env, path, 0, length, pathCopy));
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
   pathCopy[length] = '\0';
   ioh_convertToPlatform (pathCopy);
   result = getPlatformIsHidden (env, pathCopy);
@@ -404,12 +406,11 @@ jboolean JNICALL
 Java_java_io_File_setLastModifiedImpl (JNIEnv * env, jobject recv,
                                        jbyteArray path, jlong time)
 {
-  PORT_ACCESS_FROM_ENV (env);
   I_32 result;
   jsize length = (*env)->GetArrayLength (env, path);
   char pathCopy[HyMaxPath];
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  ((*env)->GetByteArrayRegion (env, path, 0, length, pathCopy));
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
   pathCopy[length] = '\0';
   ioh_convertToPlatform (pathCopy);
 
@@ -422,11 +423,10 @@ jboolean JNICALL
 Java_java_io_File_setReadOnlyImpl (JNIEnv * env, jobject recv,
                                    jbyteArray path)
 {
-  PORT_ACCESS_FROM_ENV (env);
   jsize length = (*env)->GetArrayLength (env, path);
   char pathCopy[HyMaxPath];
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  ((*env)->GetByteArrayRegion (env, path, 0, length, pathCopy));
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
   pathCopy[length] = '\0';
   ioh_convertToPlatform (pathCopy);
   return setPlatformReadOnly (env, pathCopy);
@@ -458,7 +458,7 @@ Java_java_io_File_isReadOnlyImpl (JNIEnv * env, jobject recv, jbyteArray path)
   char pathCopy[HyMaxPath];
   jsize length = (*env)->GetArrayLength (env, path);
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  ((*env)->GetByteArrayRegion (env, path, 0, length, pathCopy));
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
   pathCopy[length] = '\0';
   ioh_convertToPlatform (pathCopy);
   result = getPlatformIsReadOnly (env, pathCopy);
@@ -473,7 +473,7 @@ Java_java_io_File_isWriteOnlyImpl (JNIEnv * env, jobject recv,
   char pathCopy[HyMaxPath];
   jsize length = (*env)->GetArrayLength (env, path);
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  ((*env)->GetByteArrayRegion (env, path, 0, length, pathCopy));
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
   pathCopy[length] = '\0';
   ioh_convertToPlatform (pathCopy);
   result = getPlatformIsWriteOnly (env, pathCopy);
@@ -488,7 +488,7 @@ Java_java_io_File_getLinkImpl (JNIEnv * env, jobject recv, jbyteArray path)
   char pathCopy[HyMaxPath];
   U_32 length = (U_32) (*env)->GetArrayLength (env, path);
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  (*env)->GetByteArrayRegion (env, path, 0, length, pathCopy);
+  (*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy);
   pathCopy[length] = '\0';
   ioh_convertToPlatform (pathCopy);
   if (platformReadLink (pathCopy))
