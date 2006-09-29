@@ -111,27 +111,10 @@ public class DateTest extends TestCase {
 		int init2[] = { 11, 0, 0, 0, 999, 0, 0, -111 };
 		int init3[] = { 31, 0, 0, 0, 0, 999, 0, -999 };
 
-		Exception theExceptions[] = { null, null, null, null, null, null, null,
-				null };
-
 		for (int i = 0; i < init1.length; i++) {
-			try {
-				Date theDate = new Date(init1[i], init2[i], init3[i]);
-
-				assertNotNull(theDate);
-				if (theExceptions[i] != null) {
-					fail(i + "Exception expected - none thrown.");
-				} // end if
-			} catch (Exception e) {
-				if (theExceptions[i] != null) {
-					assertEquals(i + "Incorrect exception generated: ",
-							theExceptions[i].getClass(), e.getClass());
-				} else {
-					fail(i + "Exception: " + e.getClass()
-							+ " not expected");
-				} // end if
-			} // end try
-		} // end for
+            Date theDate = new Date(init1[i], init2[i], init3[i]);
+            assertNotNull(theDate);
+        } // end for
 
 	} // end method testDateintintint
 
@@ -144,27 +127,10 @@ public class DateTest extends TestCase {
 				TIME_NEGATIVE, TIME_LOWERLIMIT, TIME_UPPERLIMIT, TIME_EPOCH,
 				TIME_NOW };
 
-		Exception theExceptions[] = { null, null, null, null, null, null, null,
-				null };
-
 		for (int i = 0; i < init1.length; i++) {
-			try {
-				Date theDate = new Date(init1[i]);
-
-				assertNotNull(theDate);
-				if (theExceptions[i] != null) {
-					fail(i + "Exception expected - none thrown.");
-				} // end if
-			} catch (Exception e) {
-				if (theExceptions[i] != null) {
-					assertEquals(i + "Incorrect exception generated: ",
-							theExceptions[i].getClass(), e.getClass());
-				} else {
-					fail(i + "Exception: " + e.getClass()
-							+ " not expected");
-				} // end if
-			} // end try
-		} // end for
+            Date theDate = new Date(init1[i]);
+            assertNotNull(theDate);
+        } // end for
 
 	} // end method testDatelong
 
@@ -174,18 +140,11 @@ public class DateTest extends TestCase {
 	 */
 	public void testGetHours() {
 		Date theDate = new Date(TIME_TESTDATE1);
-
 		try {
 			int theHours = theDate.getHours();
-
-			// If it worked, it should get the Hours setting
-			assertEquals(23, theHours);
-			assertTrue(false);
+            fail("Should throw IllegalArgumentException.");
 		} catch (IllegalArgumentException ie) {
-			/*
-			 * System.out.println("getHours: IllegalArgumentException thrown as
-			 * expected");
-			 */
+            //expected
 		} // end try
 	} // end method testGetHours()
 
@@ -195,18 +154,11 @@ public class DateTest extends TestCase {
 	 */
 	public void testGetMinutes() {
 		Date theDate = new Date(TIME_TESTDATE1);
-
 		try {
 			int theMinutes = theDate.getMinutes();
-
-			// If it worked, it should get the Hours setting
-			assertEquals(59, theMinutes);
-			assertTrue(false);
+            fail("Should throw IllegalArgumentException.");
 		} catch (IllegalArgumentException ie) {
-			/*
-			 * System.out.println("getMinutes: IllegalArgumentException thrown
-			 * as expected");
-			 */
+			//expected
 		} // end try
 	} // end method testGetMinutes()
 
@@ -216,18 +168,11 @@ public class DateTest extends TestCase {
 	 */
 	public void testGetSeconds() {
 		Date theDate = new Date(TIME_TESTDATE1);
-
 		try {
 			int theSeconds = theDate.getSeconds();
-
-			// If it worked, it should get the Hours setting
-			assertEquals(23, theSeconds);
-			assertTrue(false);
+            fail("Should throw IllegalArgumentException.");
 		} catch (IllegalArgumentException ie) {
-			/*
-			 * System.out.println("getSeconds: IllegalArgumentException thrown
-			 * as expected");
-			 */
+            //expected
 		} // end try
 	} // end method testGetSeconds()
 
@@ -237,17 +182,11 @@ public class DateTest extends TestCase {
 	 */
 	public void testSetHours() {
 		Date theDate = new Date(TIME_TESTDATE1);
-
 		try {
 			theDate.setHours(22);
-
-			// If it worked, this is incorrect
-			assertTrue(false);
+            fail("Should throw IllegalArgumentException.");
 		} catch (IllegalArgumentException ie) {
-			/*
-			 * System.out.println("setHours: IllegalArgumentException thrown as
-			 * expected");
-			 */
+            //expected
 		} // end try
 	} // end method testSetHours( int )
 
@@ -257,17 +196,11 @@ public class DateTest extends TestCase {
 	 */
 	public void testSetMinutes() {
 		Date theDate = new Date(TIME_TESTDATE1);
-
 		try {
 			theDate.setMinutes(54);
-
-			// If it worked, this is incorrect
-			assertTrue(false);
+            fail("Should throw IllegalArgumentException.");
 		} catch (IllegalArgumentException ie) {
-			/*
-			 * System.out.println("setMinutes: IllegalArgumentException thrown
-			 * as expected");
-			 */
+            //expected
 		} // end try
 
 	} // end method testSetMinutes( int )
@@ -278,17 +211,11 @@ public class DateTest extends TestCase {
 	 */
 	public void testSetSeconds() {
 		Date theDate = new Date(TIME_TESTDATE1);
-
 		try {
 			theDate.setSeconds(36);
-
-			// If it worked, this is incorrect
-			assertTrue(false);
+            fail("Should throw IllegalArgumentException.");
 		} catch (IllegalArgumentException ie) {
-			/*
-			 * System.out.println("setSeconds: IllegalArgumentException thrown
-			 * as expected");
-			 */
+            //expected
 		} // end try
 	} // end method testSetSeconds( int )
 
@@ -304,10 +231,7 @@ public class DateTest extends TestCase {
 
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Date theDate = new Date(TIME_ARRAY[i]);
-
-			String theString = theDate.toString();
-
-			assertTrue(theString.equals(SQL_DATEARRAY[i]));
+			assertEquals(SQL_DATEARRAY[i], theDate.toString());
 		} // end for
 
 	} // end method testToString()
@@ -333,10 +257,6 @@ public class DateTest extends TestCase {
 
 		if (timeZoneName != null) {
 			TimeZone.setDefault(TimeZone.getTimeZone(timeZoneName));
-			/*
-			 * System.out.println("Timezone set to: " +
-			 * TimeZone.getDefault().getDisplayName() );
-			 */
 		} // end if
 
 		Date theDate = new Date(TIME_TESTDATE1);
@@ -344,8 +264,7 @@ public class DateTest extends TestCase {
 		// Loop over the array of test times & dates
 		for (int i = 0; i < dateArray.length; i++) {
 			theDate.setTime(TIME_ARRAY[i]);
-			String theString = theDate.toString();
-			assertTrue(theString.equals(dateArray[i]));
+			assertEquals(dateArray[i], theDate.toString());
 		} // end for
 
 	} // end method testSetTimelong()
@@ -360,31 +279,22 @@ public class DateTest extends TestCase {
 		String SQL_NOTVALID3 = null; // Invalid date string
 		String[] SQL_INVALIDARRAY = { SQL_NOTVALID1, SQL_NOTVALID2,
 				SQL_NOTVALID3 };
-		Exception[] theExceptions = { new IllegalArgumentException(),
-				new IllegalArgumentException(), new IllegalArgumentException() };
 
 		Date theDate;
 
 		// Cases where the input date string is a valid format
 		for (int i = 0; i < SQL_DATEARRAY.length; i++) {
 			theDate = Date.valueOf(SQL_DATEARRAY[i]);
-
-			assertTrue(theDate.toString().equals(SQL_DATEARRAY[i]));
+            assertEquals(SQL_DATEARRAY[i], theDate.toString());
 		} // end for
 
 		// Cases where the input date string has an invalid format
 		for (int i = 0; i < SQL_INVALIDARRAY.length; i++) {
 			try {
 				theDate = Date.valueOf(SQL_INVALIDARRAY[i]);
-				// Shouldn't get here
-				assertTrue(false);
-			} catch (Exception e) {
-				// System.out.println("DateTest.testValueOf: Exception thrown: "
-				// + e.toString() );
-				// System.out.println("DateTest.testValueOf: Exception data: " +
-				// e.getMessage() );
-				assertTrue(e.getClass().equals(theExceptions[i].getClass()));
-				assertTrue(e.getMessage() == theExceptions[i].getMessage());
+                fail("Should throw IllegalArgumentException.");
+			} catch (IllegalArgumentException e) {
+                //expected
 			} // end try
 		} // end for
 
