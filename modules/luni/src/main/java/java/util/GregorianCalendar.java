@@ -61,8 +61,8 @@ public class GregorianCalendar extends Calendar {
     private static int[] minimums = new int[] { 0, 1, 0, 1, 0, 1, 1, 1, -1, 0,
             0, 0, 0, 0, 0, -13 * 3600 * 1000, 0 };
 
-    private static int[] leastMaximums = new int[] { 1, 292269054, 11, 52, 4,
-            28, 365, 7, 4, 1, 11, 23, 59, 59, 999, 14 * 3600 * 1000, 3600000 };
+    private static int[] leastMaximums = new int[] { 1, 292269054, 11, 50, 3,
+            28, 355, 7, 3, 1, 11, 23, 59, 59, 999, 50400000, 1200000 };
 
     private boolean isCached;
 
