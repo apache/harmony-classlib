@@ -1,4 +1,8 @@
 Manifest-Version: 1.0
+Implementation-Title: Apache Harmony
+Implementation-Vendor: The Apache Software Foundation
+Implementation-Vendor-Id: org.apache.harmony
+Implementation-URL: http://incubator.apache.org/harmony
 Bundle-ManifestVersion: 2
 Bundle-Name: Harmony MISC
 Bundle-SymbolicName: org.apache.harmony.misc

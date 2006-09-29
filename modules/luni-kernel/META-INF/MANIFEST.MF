@@ -1,4 +1,8 @@
 Manifest-Version: 1.0
+Implementation-Title: Apache Harmony
+Implementation-Vendor: The Apache Software Foundation
+Implementation-Vendor-Id: org.apache.harmony
+Implementation-URL: http://incubator.apache.org/harmony
 Bundle-ManifestVersion: 2
 Bundle-Name: Harmony LUNI Kernel
 Bundle-ClassPath: .
@@ -6,12 +10,13 @@ Fragment-Host: org.apache.harmony.luni;bundle-version="1.0.0"
 Eclipse-JREBundle: true
 Bundle-SymbolicName: org.apache.harmony.luni.kernel
 Bundle-Version: 1.0.0
+Import-Package: java.io,
+ java.lang.annotation,
+ java.nio,
+ java.security
 Export-Package: java.lang,
  java.lang.reflect,
  java.lang.ref,
  org.apache.harmony.kernel.vm,
  sun.misc
-Import-Package: java.io,
- java.lang.annotation,
- java.nio,
- java.security
+
