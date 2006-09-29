@@ -58,7 +58,9 @@ public class ObjectStreamClass implements Serializable {
 	private static final String UID_FIELD_NAME = "serialVersionUID"; //$NON-NLS-1$
 
 	private static final int CLASS_MODIFIERS_MASK;
-
+    private static final int FIELD_MODIFIERS_MASK;
+    private static final int METHOD_MODIFIERS_MASK;
+    
 	private static final Class[] READ_PARAM_TYPES;
 
 	private static final Class[] WRITE_PARAM_TYPES;
@@ -76,6 +78,14 @@ public class ObjectStreamClass implements Serializable {
 
 		CLASS_MODIFIERS_MASK = Modifier.PUBLIC | Modifier.FINAL
 				| Modifier.INTERFACE | Modifier.ABSTRACT;
+        FIELD_MODIFIERS_MASK= Modifier.PUBLIC | Modifier.PRIVATE
+                | Modifier.PROTECTED | Modifier.STATIC | Modifier.FINAL
+                | Modifier.VOLATILE | Modifier.TRANSIENT;
+        METHOD_MODIFIERS_MASK= Modifier.PUBLIC | Modifier.PRIVATE
+                | Modifier.PROTECTED | Modifier.STATIC | Modifier.FINAL
+                | Modifier.SYNCHRONIZED | Modifier.NATIVE
+                | Modifier.ABSTRACT | Modifier.STRICT;
+        
 		READ_PARAM_TYPES = new Class[1];
 		WRITE_PARAM_TYPES = new Class[1];
 		READ_PARAM_TYPES[0] = ObjectInputStream.class;
@@ -410,7 +420,8 @@ public class ObjectStreamClass implements Serializable {
 			// Dump them
 			for (int i = 0; i < fields.length; i++) {
 				Field field = fields[i];
-				int modifiers = field.getModifiers();
+				int modifiers = field.getModifiers() & FIELD_MODIFIERS_MASK;
+                
 				boolean skip = Modifier.isPrivate(modifiers)
 						&& (Modifier.isTransient(modifiers) || Modifier
 								.isStatic(modifiers));
@@ -437,7 +448,7 @@ public class ObjectStreamClass implements Serializable {
 				output.writeUTF(CLINIT_SIGNATURE);
 			}
 
-			// ------------------ Constructor information
+            // ------------------ Constructor information
 			Constructor<?>[] constructors = cl.getDeclaredConstructors();
 			if (constructors.length > 1) {
                 /*
@@ -458,7 +469,7 @@ public class ObjectStreamClass implements Serializable {
 			// Dump them
 			for (int i = 0; i < constructors.length; i++) {
 				Constructor<?> constructor = constructors[i];
-				int modifiers = constructor.getModifiers();
+				int modifiers = constructor.getModifiers() & METHOD_MODIFIERS_MASK;
 				boolean isPrivate = Modifier.isPrivate(modifiers);
 				if (!isPrivate) {
                     /*
@@ -471,7 +482,7 @@ public class ObjectStreamClass implements Serializable {
                     output.writeUTF("<init>"); //$NON-NLS-1$
                     output.writeInt(modifiers);
                     output.writeUTF(descriptorForSignature(
-                            getConstructorSignature(constructor)));
+                            getConstructorSignature(constructor)).replace('/','.'));
                 }
 			}
 
@@ -496,15 +507,15 @@ public class ObjectStreamClass implements Serializable {
 			// Dump them
 			for (int i = 0; i < methods.length; i++) {
 				Method method = methods[i];
-				int modifiers = method.getModifiers();
+				int modifiers = method.getModifiers() & METHOD_MODIFIERS_MASK;
 				boolean isPrivate = Modifier.isPrivate(modifiers);
 				if (!isPrivate) {
 					// write name, modifier & "descriptor" of all but private
 					// ones
 					output.writeUTF(method.getName());
 					output.writeInt(modifiers);
-					output.writeUTF(descriptorForSignature(
-                            getMethodSignature(method)));
+                    output.writeUTF(descriptorForSignature(
+                            getMethodSignature(method)).replace('/', '.'));
 				}
 			}
 		} catch (IOException e) {
@@ -513,6 +524,7 @@ public class ObjectStreamClass implements Serializable {
 
 		// now compute the UID based on the SHA
 		byte[] hash = digest.digest(sha.toByteArray());
+                
 		return littleEndianLongAt(hash, 0);
 
 	}
