@@ -106,7 +106,7 @@ public class TransferHandler implements Serializable {
 
             Method reader = descriptor.getReadMethod();
             try {
-                 value = reader.invoke(component, null);
+                 value = reader.invoke(component, (Object[])null);
             } catch (InvocationTargetException e) {
             } catch (IllegalAccessException e) {
             }
