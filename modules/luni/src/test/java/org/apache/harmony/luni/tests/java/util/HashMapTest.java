@@ -30,6 +30,10 @@ public class HashMapTest extends TestCase {
         HashMap<String, String> hm = new HashMap<String, String>();
         hm.put("key", "value");
 
+        SerializationTest.verifySelf(hm);        
+
+        //  regression for HARMONY-1583
+        hm.put(null, "null");
         SerializationTest.verifySelf(hm);
     }
 

@@ -700,7 +700,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         elementCount = stream.readInt();
         for (int i = elementCount; --i >= 0;) {
             K key = (K)stream.readObject();
-            int index = (key.hashCode() & 0x7FFFFFFF) % length;
+            int index = (null == key) ? 0 : (key.hashCode() & 0x7FFFFFFF) % length;
             createEntry(key, index, (V)stream.readObject());
         }
     }
