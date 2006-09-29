@@ -70,60 +70,31 @@ public class DriverManagerTest extends TestCase {
 
 	/**
 	 * Test for the method DriverManager.deregisterDriver
+	 * @throws SQLException 
 	 */
-	public void testDeregisterDriver() {
-		// First get one of the drivers loaded by the test
-		Driver aDriver;
-		try {
-			aDriver = DriverManager.getDriver(baseURL4);
-		} catch (SQLException e) {
-			fail(
-					"testDeregisterDriver: Got exception when getting valid driver.");
-			return;
-		} // end try
-
-		// printClassLoader( aDriver );
+	public void testDeregisterDriver() throws SQLException {
+	    // First get one of the drivers loaded by the test
+        Driver aDriver;
+        aDriver = DriverManager.getDriver(baseURL4);
 
 		// Deregister this driver
-		try {
-			DriverManager.deregisterDriver(aDriver);
-		} catch (Exception e) {
-			fail(
-					"testDeregisterDriver: Got exception when deregistering valid driver.");
-		} // end try
+        DriverManager.deregisterDriver(aDriver);
 
 		assertFalse("testDeregisterDriver: Driver was not deregistered.",
 				isDriverLoaded(aDriver));
 
 		// Re-register this driver (so subsequent tests have it available)
-		try {
-			DriverManager.registerDriver(aDriver);
-		} catch (Exception e) {
-			fail(
-					"testDeregisterDriver: Got exception when reregistering valid driver.");
-		} // end try
-
+        DriverManager.registerDriver(aDriver);
 		assertTrue("testDeregisterDriver: Driver did not reload.",
 				isDriverLoaded(aDriver));
 
 		// Test deregistering a null driver
-		try {
-			DriverManager.deregisterDriver(null);
-		} catch (SQLException e) {
-			fail(
-					"testDeregisterDriver: Got exception when deregistering null driver.");
-		} // end try
+        DriverManager.deregisterDriver(null);
 
 		// Test deregistering a driver which was not loaded by this test's
 		// classloader
 		// TODO - need to load a driver with a different classloader!!
-		try {
-			aDriver = DriverManager.getDriver(baseURL1);
-		} catch (SQLException e) {
-			fail(
-					"testDeregisterDriver: Got exception when getting valid driver1.");
-			return;
-		} // end try
+		aDriver = DriverManager.getDriver(baseURL1);
 
 		TestHelper_DriverManager testHelper;
 		try {
@@ -185,33 +156,20 @@ public class DriverManagerTest extends TestCase {
 	static String[] invalidConnectionURLs = { invalidConnectionURL1,
 			invalidConnectionURL2, invalidConnectionURL3 };
 
-	static String[] exceptionMessages = {
-			"Userid and/or password not supplied", "No suitable driver",
-			"The url cannot be null" };
-
-	public void testGetConnectionString() {
+	public void testGetConnectionString() throws SQLException {
 		Connection theConnection = null;
 		// validConnection - no user & password required
-		try {
-			theConnection = DriverManager.getConnection(validConnectionURL);
-			assertNotNull(theConnection);
-		} catch (SQLException e) {
-			assertTrue(false);
-		} // end try
+		theConnection = DriverManager.getConnection(validConnectionURL);
+		assertNotNull(theConnection);
 
 		// invalid connections
 		for (int i = 0; i < invalidConnectionURLs.length; i++) {
-			theConnection = null;
 			try {
 				theConnection = DriverManager
 						.getConnection(invalidConnectionURLs[i]);
-				assertFalse(theConnection != null);
+				fail("Should throw SQLException");
 			} catch (SQLException e) {
-				assertNull(theConnection);
-				// System.out.println("testGetConnectionString: exception
-				// message: " +
-				// e.getMessage() );
-				assertTrue(e.getMessage().equals(exceptionMessages[i]));
+                //expected
 			} // end try
 		} // end for
 	} // end method testGetConnectionString()
@@ -240,7 +198,7 @@ public class DriverManagerTest extends TestCase {
 	/*
 	 * Class under test for Connection getConnection(String, Properties)
 	 */
-	public void testGetConnectionStringProperties() {
+	public void testGetConnectionStringProperties() throws SQLException {
 		String validURL1 = "jdbc:mikes1:data2";
 		String validuser1 = "theuser";
 		String validpassword1 = "thepassword";
@@ -260,20 +218,11 @@ public class DriverManagerTest extends TestCase {
 				invalidURL2, invalidURL3 };
 		Properties[] invalidProps = { validProps, nullProps, invalidProps1,
 				validProps, validProps, validProps };
-		String[] excMessage = { "The url cannot be null",
-				"Properties bundle is null",
-				"Userid and/or password not valid", "No suitable driver",
-				"No suitable driver", "No suitable driver" };
 
 		Connection theConnection = null;
-		Properties theProperties = null;
 		// validConnection - user & password required
-		try {
-			theConnection = DriverManager.getConnection(validURL1, validProps);
-			assertNotNull(theConnection);
-		} catch (SQLException e) {
-			assertTrue(false);
-		} // end try
+        theConnection = DriverManager.getConnection(validURL1, validProps);
+        assertNotNull(theConnection);
 
 		// invalid Connections
 		for (int i = 0; i < invalidURLs.length; i++) {
@@ -281,12 +230,9 @@ public class DriverManagerTest extends TestCase {
 			try {
 				theConnection = DriverManager.getConnection(invalidURLs[i],
 						invalidProps[i]);
-				assertFalse(theConnection != null);
+				fail("Should throw SQLException");
 			} catch (SQLException e) {
-				// System.out.println("testGetConnectionStringStringString:
-				// exception message: " +
-				// e.getMessage() );
-				assertTrue(e.getMessage().equals(excMessage[i]));
+                //expected
 			} // end try
 		} // end for
 	} // end method testGetConnectionStringProperties()
@@ -294,7 +240,7 @@ public class DriverManagerTest extends TestCase {
 	/*
 	 * Class under test for Connection getConnection(String, String, String)
 	 */
-	public void testGetConnectionStringStringString() {
+	public void testGetConnectionStringStringString() throws SQLException {
 		String validURL1 = "jdbc:mikes1:data2";
 		String validuser1 = "theuser";
 		String validpassword1 = "thepassword";
@@ -309,21 +255,12 @@ public class DriverManagerTest extends TestCase {
 		String[] invalid6 = { validURL1, validuser1, invalidpassword1 };
 		String[][] invalid = { invalid1, invalid2, invalid3, invalid4,
 				invalid5, invalid6 };
-		String[] excMessage = { "The url cannot be null",
-				"Userid and/or password not supplied",
-				"Userid and/or password not supplied", "No suitable driver",
-				"Userid and/or password not valid",
-				"Userid and/or password not valid" };
 
 		Connection theConnection = null;
 		// validConnection - user & password required
-		try {
-			theConnection = DriverManager.getConnection(validURL1, validuser1,
-					validpassword1);
-			assertNotNull(theConnection);
-		} catch (SQLException e) {
-			assertTrue(false);
-		} // end try
+        theConnection = DriverManager.getConnection(validURL1, validuser1,
+                validpassword1);
+        assertNotNull(theConnection);
 
 		// invalid Connections
 		for (int i = 0; i < invalid.length; i++) {
@@ -332,12 +269,9 @@ public class DriverManagerTest extends TestCase {
 			try {
 				theConnection = DriverManager.getConnection(theData[0],
 						theData[1], theData[2]);
-				assertFalse(theConnection != null);
+				fail("Should throw SQLException.");
 			} catch (SQLException e) {
-				// System.out.println("testGetConnectionStringStringString:
-				// exception message: " +
-				// e.getMessage() );
-				assertTrue(e.getMessage().equals(excMessage[i]));
+                //expected
 			} // end try
 		} // end for
 	} // end method testGetConnectionStringStringString()
@@ -356,35 +290,23 @@ public class DriverManagerTest extends TestCase {
 
 	static String exceptionMsg1 = "No suitable driver";
 
-	public void testGetDriver() {
+	public void testGetDriver() throws SQLException {
 		// valid URLs
 		for (int i = 0; i < validURLs.length; i++) {
-			try {
-				Driver validDriver = DriverManager.getDriver(validURLs[i]);
-			} catch (SQLException e) {
-				fail(
-						"DriverManagerTest: getDriver failed for valid driver"
-								+ i);
-			} // end try
-		} // end for
+            Driver validDriver = DriverManager.getDriver(validURLs[i]);
+        } // end for
 
 		// invalid URLs
 		for (int i = 0; i < invalidURLs.length; i++) {
 			try {
 				Driver invalidDriver = DriverManager.getDriver(invalidURLs[i]);
+                fail("Should throw SQLException");
 			} catch (SQLException e) {
                 assertEquals("08001", e.getSQLState());
 				assertEquals(exceptionMsg1, e.getMessage());
 			} // end try
 		} // end for
 
-        try {
-            Driver invalidDriver = DriverManager.getDriver(null);
-        } catch (SQLException e) {
-            assertEquals("08001", e.getSQLState());
-            assertEquals(exceptionMsg1, e.getMessage());
-        } // end try
-        
 	} // end method testGetDriver()
 
 	public void testGetDrivers() {
@@ -406,17 +328,14 @@ public class DriverManagerTest extends TestCase {
 	public void testGetLoginTimeout() {
 		int theTimeout = DriverManager.getLoginTimeout();
 		// System.out.println("Default Login Timeout: " + theTimeout );
-
 		DriverManager.setLoginTimeout(timeout1);
-
-		assertTrue(DriverManager.getLoginTimeout() == timeout1);
+		assertEquals(timeout1, DriverManager.getLoginTimeout());
 	} // end method testGetLoginTimeout()
 
 	public void testGetLogStream() {
 		assertNull(DriverManager.getLogStream());
 
 		DriverManager.setLogStream(testPrintStream);
-
 		assertTrue(DriverManager.getLogStream() == testPrintStream);
 
 		DriverManager.setLogStream(null);
@@ -457,34 +376,27 @@ public class DriverManagerTest extends TestCase {
 		DriverManager.setLogStream(null);
 	} // end method testPrintln()
 
-	public void testRegisterDriver() {
-		String EXTRA_DRIVER_NAME = "org.apache.harmony.sql.tests.java.sql.TestHelper_Driver3";
+	public void testRegisterDriver() throws ClassNotFoundException,
+            SQLException, IllegalAccessException, InstantiationException {
+        String EXTRA_DRIVER_NAME = "org.apache.harmony.sql.tests.java.sql.TestHelper_Driver3";
 
-		try {
-			DriverManager.registerDriver(null);
-			fail(
-					"testRegisterDriver: Expected exception not thrown when registering null driver");
-		} catch (Exception e) {
+        try {
+            DriverManager.registerDriver(null);
+            fail("Should throw NullPointerException.");
+        } catch (NullPointerException e) {
+            // expected
+        } // end try
 
-		} // end try
+        Driver theDriver = null;
+        // Load another Driver that isn't in the basic set
+        Class driverClass = Class.forName(EXTRA_DRIVER_NAME);
+        theDriver = (Driver) driverClass.newInstance();
+        DriverManager.registerDriver(theDriver);
 
-		Driver theDriver = null;
-		// Load another Driver that isn't in the basic set
-		try {
-			Class driverClass = Class.forName(EXTRA_DRIVER_NAME);
-			theDriver = (Driver) driverClass.newInstance();
-			DriverManager.registerDriver(theDriver);
-		} catch (ClassNotFoundException cfe) {
-			fail("testRegisterDriver: Could not load extra driver");
-		} catch (Exception e) {
-			fail(
-					"testRegisterDriver: Exception while registering additional driver");
-		} // end try
+        assertTrue("testRegisterDriver: driver not in loaded set",
+                isDriverLoaded(theDriver));
 
-		assertTrue("testRegisterDriver: driver not in loaded set",
-				isDriverLoaded(theDriver));
-
-	} // end testRegisterDriver()
+    } // end testRegisterDriver()
 
 	static int validTimeout1 = 15;
 
@@ -499,16 +411,11 @@ public class DriverManagerTest extends TestCase {
 		for (int i = 0; i < validTimeouts.length; i++) {
 			DriverManager.setLoginTimeout(validTimeouts[i]);
 
-			assertTrue(DriverManager.getLoginTimeout() == validTimeouts[i]);
+			assertEquals(validTimeouts[i], DriverManager.getLoginTimeout());
 		} // end for
 		// Invalid timeouts
-		try {
-			DriverManager.setLoginTimeout(invalidTimeout1);
-			assertTrue(DriverManager.getLoginTimeout() == invalidTimeout1);
-		} catch (IllegalArgumentException e) {
-			System.out.println("DriverManagerTest: exception message = "
-					+ e.getMessage());
-		} // end try
+		DriverManager.setLoginTimeout(invalidTimeout1);
+        assertEquals(invalidTimeout1, DriverManager.getLoginTimeout());
 	} // end testSetLoginTimeout()
 
 	static ByteArrayOutputStream outputStream2 = new ByteArrayOutputStream();
@@ -519,7 +426,7 @@ public class DriverManagerTest extends TestCase {
 		// System.out.println("testSetLogStream");
 		DriverManager.setLogStream(testPrintStream);
 
-		assertTrue(DriverManager.getLogStream() == testPrintStream);
+		assertSame(testPrintStream, DriverManager.getLogStream());
 
 		DriverManager.setLogStream(null);
 
@@ -534,25 +441,14 @@ public class DriverManagerTest extends TestCase {
 
 		try {
 			DriverManager.setLogStream(testPrintStream);
-			fail("testSetLogStream: Did not get security exception ");
+			fail("Should throw SecurityException.");
 		} catch (SecurityException s) {
-
-		} catch (Throwable t) {
-			fail(
-					"testSetLogStream: Got exception but not get security exception ");
-		} // end try
+		    //expected
+		}
 
 		theSecManager.setLogAccess(true);
 
-		try {
-			DriverManager.setLogStream(testPrintStream);
-		} catch (SecurityException s) {
-			fail(
-					"testSetLogStream: Got security exception but should not have");
-		} catch (Throwable t) {
-			fail(
-					"testSetLogStream: Got exception but not get security exception ");
-		} // end try
+		DriverManager.setLogStream(testPrintStream);
 
 		System.setSecurityManager(null);
 	} // end method testSetLogStream()
@@ -568,8 +464,7 @@ public class DriverManagerTest extends TestCase {
 		// System.out.println("testSetLogWriter");
 		DriverManager.setLogWriter(testPrintWriter);
 
-		assertTrue("testDriverManager: Log writer not set:", DriverManager
-				.getLogWriter() == testPrintWriter);
+		assertSame(testPrintWriter, DriverManager.getLogWriter());
 
 		DriverManager.setLogWriter(null);
 
@@ -585,25 +480,13 @@ public class DriverManagerTest extends TestCase {
 
 		try {
 			DriverManager.setLogWriter(testPrintWriter);
-			fail("testSetLogWriter: Did not get security exception ");
+			fail("Should throw SecurityException.");
 		} catch (SecurityException s) {
-
-		} catch (Throwable t) {
-			fail(
-					"testSetLogWriter: Got exception but not get security exception ");
-		} // end try
+		    //expected
+		}
 
 		theSecManager.setLogAccess(true);
-
-		try {
-			DriverManager.setLogWriter(testPrintWriter);
-		} catch (SecurityException s) {
-			fail(
-					"testSetLogWriter: Got security exception but should not have");
-		} catch (Throwable t) {
-			fail(
-					"testSetLogWriter: Got exception but not get security exception ");
-		} // end try
+        DriverManager.setLogWriter(testPrintWriter);
 
 		System.setSecurityManager(null);
 	} // end method testSetLogWriter()
