@@ -287,6 +287,19 @@ public class ZipFileTest extends junit.framework.TestCase {
                 // Note zfile is a user-defined zip file used by other tests and
 				// should not be deleted
 				zfile.close();
+                tempFileName = System.getProperty("user.dir");
+                String separator = System.getProperty("file.separator");
+                if (tempFileName.charAt(tempFileName.length() - 1) == separator
+                        .charAt(0)) {
+                    tempFileName = Support_PlatformFile.getNewPlatformFile(
+                            tempFileName, "gabba.zip");
+                } else {
+                    tempFileName = Support_PlatformFile.getNewPlatformFile(
+                            tempFileName + separator, "gabba.zip");
+                }
+
+                File f = new File(tempFileName);
+                f.delete();
             }
 		} catch (Exception e) {
 		}

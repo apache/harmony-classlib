@@ -166,11 +166,12 @@ public class GZIPOutputStreamTest extends junit.framework.TestCase {
 		try {
 			File dFile = new File("GZIPOutCon.txt");
 			dFile.delete();
-			/*
-			 * File dFile2 = new File("GZIPOutFinish.txt"); dFile2.delete();
-			 * File dFile3 = new File("GZIPOutClose.txt"); dFile3.delete(); File
-			 * dFile4 = new File("GZIPOutWrite.txt"); dFile4.delete();
-			 */
+			File dFile2 = new File("GZIPOutFinish.txt"); 
+            dFile2.delete();
+            File dFile3 = new File("GZIPOutWrite.txt"); 
+            dFile3.delete();
+            File dFile4 = new File("GZIPOutClose2.txt"); 
+            dFile4.delete(); 
 		} catch (SecurityException e) {
 			fail("Cannot delete file for security reasons");		
 		}
