@@ -118,13 +118,9 @@ public class TimestampTest extends TestCase {
 	 * Constructor test
 	 */
 	public void testTimestampintintintintintintint() {
-		int[][] initParms = { { 99, 2, 14, 17, 52, 3, 213577212 }, // 0 valid
+		int[][] valid = { { 99, 2, 14, 17, 52, 3, 213577212 }, // 0 valid
 				{ 0, 0, 1, 0, 0, 0, 0 }, // 1 valid
 				{ 106, 11, 31, 23, 59, 59, 999999999 }, // 2 valid
-				{ 106, 11, 31, 23, 59, 59, 1999999999 }, // 3 invalid - Nanos
-															// out of range
-				{ 106, 11, 31, 23, 59, 59, -999999999 }, // 4 invalid - Nanos
-															// out of range
 				{ 106, 11, 31, 23, 59, 61, 999999999 }, // 5 Seconds out of
 														// range
 				{ 106, 11, 31, 23, 59, -1, 999999999 }, // 6 Seconds out of
@@ -145,24 +141,27 @@ public class TimestampTest extends TestCase {
 														// negative
 		};
 
-		Exception[] theExceptions = { null, null, null,
-				new IllegalArgumentException(), new IllegalArgumentException(),
-				null, null, null, null, null, null, null, null, null, null,
-				null };
-
-		for (int i = 0; i < initParms.length; i++) {
-			try {
-				Timestamp theTimestamp = new Timestamp(initParms[i][0],
-						initParms[i][1], initParms[i][2], initParms[i][3],
-						initParms[i][4], initParms[i][5], initParms[i][6]);
-				assertNotNull("Timestamp not generated: ", theTimestamp);
-				if (theExceptions[i] != null)
-					fail(i + ": Did not get exception");
-			} catch (Exception e) {
-				assertEquals(i + ": Incorrect exception generated: ",
-						theExceptions[i].getClass(), e.getClass());
-			} // end try
-		} // end for
+		for (int i = 0; i < valid.length; i++) {
+            Timestamp theTimestamp = new Timestamp(valid[i][0],
+                    valid[i][1], valid[i][2], valid[i][3],
+                    valid[i][4], valid[i][5], valid[i][6]);
+            assertNotNull("Timestamp not generated: ", theTimestamp);
+        } // end for
+        
+        int[][] invalid = {
+                { 106, 11, 31, 23, 59, 59, 1999999999 }, 
+                { 106, 11, 31, 23, 59, 59, -999999999 },
+        };
+        for (int i = 0; i < invalid.length; i++) {
+            try {
+                Timestamp theTimestamp = new Timestamp(invalid[i][0],
+                        invalid[i][1], invalid[i][2], invalid[i][3],
+                        invalid[i][4], invalid[i][5], invalid[i][6]);
+                fail("Should throw IllegalArgumentException");
+            } catch (IllegalArgumentException e) {
+                // expected
+            }
+        }
 
 	} // end method testTimestampintintintintintintint
 
@@ -178,8 +177,8 @@ public class TimestampTest extends TestCase {
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			theTimestamp.setTime(TIME_ARRAY[i]);
 
-			assertTrue(theTimestamp.getTime() == TIME_ARRAY[i]);
-			assertTrue(theTimestamp.getNanos() == NANOS_ARRAY[i]);
+			assertEquals(TIME_ARRAY[i], theTimestamp.getTime());
+            assertEquals(NANOS_ARRAY[i], theTimestamp.getNanos());
 		} // end for
 
 	} // end method testsetTimelong
@@ -193,8 +192,7 @@ public class TimestampTest extends TestCase {
 
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
-
-			assertTrue(theTimestamp.getTime() == TIME_ARRAY[i]);
+            assertEquals(TIME_ARRAY[i], theTimestamp.getTime());
 		} // end for
 
 	} // end method testgetTime
@@ -203,11 +201,9 @@ public class TimestampTest extends TestCase {
 	 * Method test for getYear
 	 */
 	public void testGetYear() {
-
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
-			int theYear = theTimestamp.getYear();
-			assertTrue(theYear == YEAR_ARRAY[i]);
+            assertEquals(YEAR_ARRAY[i], theTimestamp.getYear());
 		} // end for
 
 	} // end method testgetYear
@@ -218,8 +214,7 @@ public class TimestampTest extends TestCase {
 	public void testGetMonth() {
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
-			int theMonth = theTimestamp.getMonth();
-			assertTrue(theMonth == MONTH_ARRAY[i]);
+            assertEquals(MONTH_ARRAY[i], theTimestamp.getMonth());
 		} // end for
 
 	} // end method testgetMonth
@@ -230,8 +225,7 @@ public class TimestampTest extends TestCase {
 	public void testGetDate() {
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
-			int theDate = theTimestamp.getDate();
-			assertTrue(theDate == DATE_ARRAY[i]);
+            assertEquals(DATE_ARRAY[i], theTimestamp.getDate());
 		} // end for
 
 	} // end method testgetDate
@@ -242,8 +236,7 @@ public class TimestampTest extends TestCase {
 	public void testGetHours() {
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
-			int theHours = theTimestamp.getHours();
-			assertTrue(theHours == HOURS_ARRAY[i]);
+            assertEquals(HOURS_ARRAY[i], theTimestamp.getHours());
 		} // end for
 
 	} // end method testgetHours
@@ -254,8 +247,7 @@ public class TimestampTest extends TestCase {
 	public void testGetMinutes() {
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
-			int theMinutes = theTimestamp.getMinutes();
-			assertTrue(theMinutes == MINUTES_ARRAY[i]);
+            assertEquals(MINUTES_ARRAY[i], theTimestamp.getMinutes());
 		} // end for
 
 	} // end method testgetMinutes
@@ -266,8 +258,7 @@ public class TimestampTest extends TestCase {
 	public void testGetSeconds() {
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
-			int theSeconds = theTimestamp.getSeconds();
-			assertTrue(theSeconds == SECONDS_ARRAY[i]);
+            assertEquals(SECONDS_ARRAY[i], theTimestamp.getSeconds());
 		} // end for
 
 	} // end method testgetSeconds
@@ -281,9 +272,7 @@ public class TimestampTest extends TestCase {
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
 			Timestamp theTimestamp2 = Timestamp.valueOf(STRING_GMT_ARRAY[i]);
-			// System.out.println("testValueOfString: " +
-			// theTimestamp2.toString() );
-			assertTrue(theTimestamp2.equals(theTimestamp));
+            assertEquals(theTimestamp, theTimestamp2);
 		} // end for
 
 		// Test for a string in correct format but with number values out of
@@ -298,13 +287,9 @@ public class TimestampTest extends TestCase {
 		for (int i = 0; i < INVALID_STRINGS.length; i++) {
 			try {
 				Timestamp theTimestamp2 = Timestamp.valueOf(INVALID_STRINGS[i]);
-				assertTrue(false);
+				fail("Should throw IllegalArgumentException.");
 			} catch (IllegalArgumentException e) {
-				/*
-				 * System.out.println("testValueOfString: exception message: " +
-				 * e.getMessage() );
-				 */
-				assertTrue(e.getMessage().equals(theExceptionMessage));
+                //expected
 			} // end try
 
 		} // end for
@@ -319,60 +304,41 @@ public class TimestampTest extends TestCase {
 		Timestamp theReturn;
 		Timestamp[] theReturns = {};
 		long[] theReturnTime = { 38720231, 38720231, 80279000, -38720691,
-				38720000, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		int[] theReturnNanos = { 231000000, 231987654, 0, 309000000, 0, 0, 0,
-				0, 0, 0, 0, 0, 0, 0 };
-		String[] parm1 = { "1970-01-01 10:45:20.231",
-				"1970-01-01 10:45:20.231987654", "1970-01-01 22:17:59.0",
-				"1969-12-31 13:14:39.309", "1970-01-01 10:45:20", null,
-				"ABCDEFGHI", "233104", "1970-01-01 22:17:59.",
-				"1970-01-01 10:45:20.231987654690645322",
-				"1970-01-01 10:45:20&231987654",
-				"1970-01-01 10:45:20.-31987654",
-				"1970-01-01 10:45:20.ABCD87654", "21-43-48" };
-		Exception[] theExceptions = {
-				null,
-				null,
-				null,
-				null,
-				null,
-				new IllegalArgumentException("null string"),
-				new IllegalArgumentException(
-						"Timestamp format must be yyyy-mm-dd hh:mm:ss.fffffffff"),
-				new IllegalArgumentException(
-						"Timestamp format must be yyyy-mm-dd hh:mm:ss.fffffffff"),
-				new IllegalArgumentException(
-						"Timestamp format must be yyyy-mm-dd hh:mm:ss.fffffffff"),
-				new IllegalArgumentException(
-						"Timestamp format must be yyyy-mm-dd hh:mm:ss.fffffffff"),
-				new NumberFormatException("For input string \"20&231987654\""),
-				new IllegalArgumentException(
-						"Timestamp format must be yyyy-mm-dd hh:mm:ss.fffffffff"),
-				new IllegalArgumentException(
-						"Timestamp format must be yyyy-mm-dd hh:mm:ss.fffffffff"),
-				new IllegalArgumentException(
-						"Timestamp format must be yyyy-mm-dd hh:mm:ss.fffffffff") };
-
-		int loopCount = parm1.length;
-		for (int i = 0; i < loopCount; i++) {
-			try {
-				theReturn = Timestamp.valueOf(parm1[i]);
-				if (theExceptions[i] != null)
-					assertTrue(false);
-				assertEquals(i + " Times do not match: ", theReturn.getTime(),
-						theReturnTime[i]);
-				assertEquals(i + " Nanos do not match: ", theReturn.getNanos(),
-						theReturnNanos[i]);
-			} catch (Exception e) {
-				if (theExceptions[i] != null) {
-					assertEquals(i + " Unexpected exception: ", e.getClass(),
-							theExceptions[i].getClass());
-				} else {
-					assertEquals(i + " Exception when none expected: ", e
-							.getClass(), null);
-				} // end if
-			} // end try
+				38720000};
+		int[] theReturnNanos = { 231000000, 231987654, 0, 309000000, 0,};
+        
+		String[] valid = { 
+                "1970-01-01 10:45:20.231",
+				"1970-01-01 10:45:20.231987654", 
+                "1970-01-01 22:17:59.0",
+				"1969-12-31 13:14:39.309", 
+                "1970-01-01 10:45:20",  
+        };
+        String[] invalid = {
+                null,
+                "ABCDEFGHI", 
+                "233104", "1970-01-01 22:17:59.",
+                "1970-01-01 10:45:20.231987654690645322",
+                "1970-01-01 10:45:20&231987654",
+                "1970-01-01 10:45:20.-31987654",
+                "1970-01-01 10:45:20.ABCD87654", 
+                "21-43-48",
+        };
+		
+		for (int i = 0; i < valid.length; i++) {
+				theReturn = Timestamp.valueOf(valid[i]);
+				assertEquals(theReturnTime[i], theReturn.getTime());
+				assertEquals(theReturnNanos[i], theReturn.getNanos());
 		} // end for
+
+        for (int i = 0; i < invalid.length; i++) {
+            try {
+                theReturn = Timestamp.valueOf(invalid[i]);
+                fail("Should throw IllegalArgumentException.");
+            } catch (IllegalArgumentException e) {
+                //expected
+            }
+        }
 
 	} // end method testValueOfString
 
@@ -382,8 +348,7 @@ public class TimestampTest extends TestCase {
 	public void testToString() {
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
-			String theString = theTimestamp.toString();
-			assertTrue(theString.equals(STRING_GMT_ARRAY[i]));
+            assertEquals(STRING_GMT_ARRAY[i], theTimestamp.toString());
 		} // end for
 
 	} // end method testtoString
@@ -394,8 +359,7 @@ public class TimestampTest extends TestCase {
 	public void testGetNanos() {
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
-
-			assertTrue(theTimestamp.getNanos() == NANOS_ARRAY[i]);
+            assertEquals(NANOS_ARRAY[i], theTimestamp.getNanos());
 		} // end for
 
 	} // end method testgetNanos
@@ -405,19 +369,16 @@ public class TimestampTest extends TestCase {
 	 */
 	public void testSetNanosint() {
 		int[] NANOS_INVALID = { -137891990, 1635665198, -1 };
-		Exception[] theExceptions = { new IllegalArgumentException(),
-				new IllegalArgumentException(), new IllegalArgumentException() };
-
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
 
 			theTimestamp.setNanos(NANOS_ARRAY2[i]);
 
-			assertTrue(theTimestamp.getNanos() == NANOS_ARRAY2[i]);
+            assertEquals(NANOS_ARRAY2[i], theTimestamp.getNanos());
 			// Also check that these Timestamps with detailed nanos values
 			// convert to
 			// strings correctly
-			assertTrue(theTimestamp.toString().equals(STRING_NANOS_ARRAY[i]));
+            assertEquals(STRING_NANOS_ARRAY[i], theTimestamp.toString());
 		} // end for
 
 		for (int i = 0; i < NANOS_INVALID.length; i++) {
@@ -425,13 +386,12 @@ public class TimestampTest extends TestCase {
 			int originalNanos = theTimestamp.getNanos();
 			try {
 				theTimestamp.setNanos(NANOS_INVALID[i]);
-				fail("Should have got exception and did not");
-			} catch (Exception e) {
-				assertEquals("Exception mismatch: ", e.getClass(),
-						theExceptions[i].getClass());
+				fail("Should throw IllegalArgumentException");
+			} catch (IllegalArgumentException e) {
+                //expected
 			} // end try
 
-			assertTrue(theTimestamp.getNanos() == originalNanos);
+            assertEquals(originalNanos, theTimestamp.getNanos());
 		} // end for
 
 	} // end method testsetNanosint
@@ -442,7 +402,6 @@ public class TimestampTest extends TestCase {
 	public void testEqualsTimestamp() {
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
-
 			Timestamp theTimestamp2 = new Timestamp(TIME_ARRAY[i]);
 
 			assertTrue(theTimestamp.equals(theTimestamp2));
@@ -452,7 +411,6 @@ public class TimestampTest extends TestCase {
 
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
-
 			assertFalse(theTimestamp.equals(theTest));
 		} // end for
         
