@@ -337,7 +337,6 @@ public final class Locale implements Cloneable, Serializable {
 		Locale[] locales = new Locale[result.size()];
         int i = 0;
 		for (String name: result) {
-            System.out.println(name);
 			int index = name.indexOf('_');
 			int nextIndex = name.indexOf('_', index + 1);
 			if (nextIndex == -1) {
