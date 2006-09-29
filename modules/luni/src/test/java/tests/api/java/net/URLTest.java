@@ -661,27 +661,27 @@ public class URLTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @tests java.net.URL#URL(java.lang.String, java.lang.String,
-	 *        java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_StringLjava_lang_StringLjava_lang_String() {
-		// Test for method java.net.URL(java.lang.String, java.lang.String,
-		// java.lang.String)
-		try {
-			u = new URL("http", "www.yahoo.com:8080", "test.html#foo");
-			assertEquals("SSS returns a wrong protocol", 
-					"http", u.getProtocol());
-			assertTrue("SSS returns a wrong host: " + u.getHost(), u.getHost()
-					.equals("www.yahoo.com:8080"));
-			assertEquals("SSS returns a wrong port", -1, u.getPort());
-			assertEquals("SSS returns a wrong file", 
-					"test.html", u.getFile());
-			assertTrue("SSS returns a wrong anchor: " + u.getRef(), u.getRef()
-					.equals("foo"));
-		} catch (Exception e) {
-			fail("SSS Exception during test : " + e.getMessage());
-		}
-	}
+     * @tests java.net.URL#URL(java.lang.String, java.lang.String,
+     *        java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_StringLjava_lang_StringLjava_lang_String()
+            throws Exception {
+        // Test for method java.net.URL(java.lang.String, java.lang.String,
+        // java.lang.String)
+        u = new URL("http", "www.yahoo.com", "test.html#foo");
+        assertEquals("http", u.getProtocol());
+        assertEquals("www.yahoo.com", u.getHost());
+        assertEquals(-1, u.getPort());
+        assertEquals("test.html", u.getFile());
+        assertEquals("foo", u.getRef());
+
+        URL testURL = new URL("http", "www.yahoo.com:8080", "test.html#foo");
+        assertEquals("http", testURL.getProtocol());
+        assertEquals("[www.yahoo.com:8080]", testURL.getHost());
+        assertEquals(-1, testURL.getPort());
+        assertEquals("test.html", testURL.getFile());
+        assertEquals("foo", testURL.getRef());
+    }
 
 	/**
 	 * @tests java.net.URL#URL(java.lang.String, java.lang.String, int,
@@ -1032,34 +1032,36 @@ public class URLTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @tests java.net.URL#getAuthority()
-	 */
-	public void test_getAuthority() {
-		try {
-			URL url = new URL("http", "u:p@home", 80, "/java?q1#ref");
-			assertTrue("wrong authority: " + url.getAuthority(), url
-					.getAuthority().equals("u:p@home:80"));
-			assertEquals("wrong userInfo", "u:p", url.getUserInfo());
-			assertEquals("wrong host", "home", url.getHost());
-			assertEquals("wrong file", "/java?q1", url.getFile());
-			assertEquals("wrong path", "/java", url.getPath());
-			assertEquals("wrong query", "q1", url.getQuery());
-			assertEquals("wrong ref", "ref", url.getRef());
+     * @tests java.net.URL#getAuthority()
+     */
+    public void test_getAuthority() throws MalformedURLException {
+        URL testURL = new URL("http", "hostname", 80, "/java?q1#ref");
+        assertEquals("hostname:80", testURL.getAuthority());
+        assertEquals("hostname", testURL.getHost());
+        assertNull(testURL.getUserInfo());
+        assertEquals("/java?q1", testURL.getFile());
+        assertEquals("/java", testURL.getPath());
+        assertEquals("q1", testURL.getQuery());
+        assertEquals("ref", testURL.getRef());
 
-			url = new URL("http", "home", -1, "/java");
-			assertEquals("wrong authority2", "home", url.getAuthority());
-			assertNull("wrong userInfo2", url.getUserInfo());
-			assertEquals("wrong host2", "home", url.getHost());
-			assertEquals("wrong file2", "/java", url.getFile());
-			assertEquals("wrong path2", "/java", url.getPath());
-			assertNull("wrong query2", url.getQuery());
-			assertNull("wrong ref2", url.getRef());
-		} catch (MalformedURLException e) {
-			fail("Unexpected MalformedURLException : " + e.getMessage());
-		}
-		;
+        testURL = new URL("http", "u:p@home", 80, "/java?q1#ref");
+        assertEquals("[u:p@home]:80", testURL.getAuthority());
+        assertEquals("[u:p@home]", testURL.getHost());
+        assertNull(testURL.getUserInfo());
+        assertEquals("/java?q1", testURL.getFile());
+        assertEquals("/java", testURL.getPath());
+        assertEquals("q1", testURL.getQuery());
+        assertEquals("ref", testURL.getRef());
 
-	}
+        testURL = new URL("http", "home", -1, "/java");
+        assertEquals("wrong authority2", "home", testURL.getAuthority());
+        assertNull("wrong userInfo2", testURL.getUserInfo());
+        assertEquals("wrong host2", "home", testURL.getHost());
+        assertEquals("wrong file2", "/java", testURL.getFile());
+        assertEquals("wrong path2", "/java", testURL.getPath());
+        assertNull("wrong query2", testURL.getQuery());
+        assertNull("wrong ref2", testURL.getRef());
+    }
     
     /**
      * @tests java.net.URL#toURL()
