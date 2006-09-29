@@ -325,6 +325,8 @@ final class HexStringParser {
     private static final int FLOAT_MANTISSA_WIDTH = 23;
     
     private static final int HEX_RADIX = 16;
+    
+    private static final int MAX_SIGNIFICANT_LENGTH = 15;
 
     private static final String HEX_SIGNIFICANT = "0[xX](\\p{XDigit}+\\.?|\\p{XDigit}*\\.\\p{XDigit}+)"; //$NON-NLS-1$
 
@@ -344,12 +346,18 @@ final class HexStringParser {
     private final long EXPONENT_BASE;
     
     private final long MAX_EXPONENT;
+    
+    private final long MIN_EXPONENT;
+    
+    private final long MANTISSA_MASK;
 
     private long sign;
 
     private long exponent;
 
     private long mantissa;
+    
+    private String abandonedNumber=""; //$NON-NLS-1$
 
     public HexStringParser(int exponent_width, int mantissa_width) {
         this.EXPONENT_WIDTH = exponent_width;
@@ -357,6 +365,8 @@ final class HexStringParser {
         
         this.EXPONENT_BASE = ~(-1L << (exponent_width - 1));
         this.MAX_EXPONENT = ~(-1L << exponent_width);
+        this.MIN_EXPONENT = -(MANTISSA_WIDTH + 1);
+        this.MANTISSA_MASK = ~(-1L << mantissa_width);
     }
 
     /*
@@ -411,47 +421,73 @@ final class HexStringParser {
         return hexSegments;
     }
 
-    // Parses the sign field
+    /*
+     * Parses the sign field.
+     */
     private void parseHexSign(String signStr) {
         this.sign = signStr.equals("-") ? 1 : 0; //$NON-NLS-1$
     }
 
-    // Parses the exponent field
+    /*
+     * Parses the exponent field.
+     */
     private void parseExponent(String exponentStr) {
         char leadingChar = exponentStr.charAt(0);
-        int sign = (leadingChar == '-' ? -1 : 1);
+        int expSign = (leadingChar == '-' ? -1 : 1);
         if (!Character.isDigit(leadingChar)) {
             exponentStr = exponentStr.substring(1);
         }
 
         try {
-            exponent = sign * Long.parseLong(exponentStr) + EXPONENT_BASE;
+            exponent = expSign * Long.parseLong(exponentStr);
+            checkedAddExponent(EXPONENT_BASE);
         } catch (NumberFormatException e) {
-            exponent = sign * Long.MAX_VALUE;
+            exponent = expSign * Long.MAX_VALUE;
         }
     }
    
-    // Parses the mantissa field
+    /*
+     * Parses the mantissa field.
+     */
     private void parseMantissa(String significantStr) {
         String[] strings = significantStr.split("\\."); //$NON-NLS-1$
         String strIntegerPart = strings[0];
         String strDecimalPart = strings.length > 1 ? strings[1] : ""; //$NON-NLS-1$
 
-        String significand = getNormalizedSignificand(strIntegerPart, strDecimalPart);
-        if(significand.equals("0")){ //$NON-NLS-1$
+        String significand = getNormalizedSignificand(strIntegerPart,strDecimalPart);
+        if (significand.equals("0")) { //$NON-NLS-1$
             setZero();
             return;
         }
-        
+
         int offset = getOffset(strIntegerPart, strDecimalPart);
-        boolean isOverFlow = checkedAddExponent(offset);
-        if (isOverFlow) {
+        checkedAddExponent(offset);
+        
+        if (exponent >= MAX_EXPONENT) {
+            setInfinite();
+            return;
+        }
+        
+        if (exponent <= MIN_EXPONENT) {
+            setZero();
             return;
         }
 
-        // TODO
-    }
+        if (significand.length() > MAX_SIGNIFICANT_LENGTH) {
+            abandonedNumber = significand.substring(MAX_SIGNIFICANT_LENGTH);
+            significand = significand.substring(0, MAX_SIGNIFICANT_LENGTH);
+        }
 
+        mantissa = Long.parseLong(significand, HEX_RADIX);
+
+        if (exponent >= 1) {
+            processNormalNumber();
+        } else{
+            processSubNormalNumber();
+        }
+
+    }
+    
     private void setInfinite() {
         exponent = MAX_EXPONENT;
         mantissa = 0;
@@ -461,21 +497,81 @@ final class HexStringParser {
         exponent = 0;
         mantissa = 0;
     }
-
-    private boolean checkedAddExponent(long offset) {
-        double d = exponent;
-        boolean isOverFlow = false;
-        d += offset;
-        if (d >= Long.MAX_VALUE) {
-            setInfinite();
-            isOverFlow = true;
-        } else if (d <= -Long.MAX_VALUE) {
-            setZero();
-            isOverFlow = true;
+    
+    /*
+     * Sets the exponent variable to Long.MAX_VALUE or -Long.MAX_VALUE if
+     * overflow or underflow happens.
+     */
+    private void checkedAddExponent(long offset) {
+        long result = exponent + offset;
+        int expSign = Long.signum(exponent);
+        if (expSign * Long.signum(offset) > 0 && expSign * Long.signum(result) < 0) {
+            exponent = expSign * Long.MAX_VALUE;
         } else {
-            exponent += offset;
+            exponent = result;
         }
-        return isOverFlow;
+    }
+    
+    private void processNormalNumber(){
+        int desiredWidth = MANTISSA_WIDTH + 2;
+        fitMantissaInDesiredWidth(desiredWidth);
+        round();
+        mantissa = mantissa & MANTISSA_MASK;
+    }
+    
+    private void processSubNormalNumber(){
+        int desiredWidth = MANTISSA_WIDTH + 1;
+        desiredWidth += (int)exponent;//lends bit from mantissa to exponent
+        exponent = 0;
+        fitMantissaInDesiredWidth(desiredWidth);
+        round();
+        mantissa = mantissa & MANTISSA_MASK;
+    }
+    
+    /*
+     * Adjusts the mantissa to desired width for further analysis.
+     */
+    private void fitMantissaInDesiredWidth(int desiredWidth){
+        int bitLength = countBitsLength(mantissa);
+        if (bitLength > desiredWidth) {
+            discardTrailingBits(bitLength - desiredWidth);
+        } else {
+            mantissa <<= (desiredWidth - bitLength);
+        }
+    }
+    
+    /*
+     * Stores the discarded bits to abandonedNumber.
+     */
+    private void discardTrailingBits(long num) {
+        long mask = ~(-1L << num);
+        abandonedNumber += (mantissa & mask);
+        mantissa >>= num;
+    }
+
+    /*
+     * The value is rounded up or down to the nearest infinitely precise result.
+     * If the value is exactly halfway between two infinitely precise results,
+     * then it should be rounded up to the nearest infinitely precise even.
+     */
+    private void round() {
+        String result = abandonedNumber.replaceAll("0+", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        boolean moreThanZero = (result.length() > 0 ? true : false);
+
+        int lastDiscardedBit = (int) (mantissa & 1L);
+        mantissa >>= 1;
+        int tailBitInMantissa = (int) (mantissa & 1L);
+        
+        if (lastDiscardedBit == 1 && (moreThanZero || tailBitInMantissa == 1)) {
+            int oldLength = countBitsLength(mantissa);
+            mantissa += 1L;
+            int newLength = countBitsLength(mantissa);
+            
+            //Rounds up to exponent when whole bits of mantissa are one-bits.
+            if (oldLength >= MANTISSA_WIDTH && newLength > oldLength) {
+                checkedAddExponent(1);
+            }
+        }
     }
 
     /*
