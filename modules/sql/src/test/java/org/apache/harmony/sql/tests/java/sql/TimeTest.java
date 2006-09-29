@@ -85,7 +85,6 @@ public class TimeTest extends TestCase {
 	} // end method testTime()
 
 	public void testToString() {
-
 		// Loop through the timezones testing the String conversion for each
 		for (int i = 0; i < TIME_ARRAY.length; i++) {
 			testToString(TIMEZONES[i], TIME_ARRAY, STRING_ARRAYS[i]);
@@ -105,7 +104,7 @@ public class TimeTest extends TestCase {
 			Time theTime = new Time(theTimes[i]);
 			// Convert to a time string ... and compare
 			String JDBCString = theTime.toString();
-			assertTrue(JDBCString.equals(theTimeStrings[i]));
+			assertEquals(theTimeStrings[i], JDBCString);
 		} // end for
 
 	} // end testToString( String, long[], String[] )
@@ -114,47 +113,39 @@ public class TimeTest extends TestCase {
 	 * Method test for valueOf
 	 */
 	public void testValueOfString() {
-
 		TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
 
-		Time theReturn;
+		
 		Time[] theReturns = { new Time(38720000), new Time(80279000),
-				new Time(47680000), new Time(0), new Time(0), new Time(0),
-				new Time(0) };
-		String[] parm1 = { "10:45:20", "22:17:59", "13:14:40", null,
-				"ABCDEFGHI", "233104", "21-43-48" };
-		Exception[] theExceptions = { null, null, null,
-				new IllegalArgumentException(), new IllegalArgumentException(),
-				new IllegalArgumentException(), new IllegalArgumentException() };
-
-		int loopCount = parm1.length;
-		for (int i = 0; i < loopCount; i++) {
-			try {
-				theReturn = Time.valueOf(parm1[i]);
-				if (theExceptions[i] != null)
-					assertTrue(false);
-				assertTrue(theReturn.equals(theReturns[i]));
-			} catch (Exception e) {
-				assertTrue(e.getClass().equals(theExceptions[i].getClass()));
-				assertTrue(e.getMessage() == theExceptions[i].getMessage());
-			} // end try
+				new Time(47680000)};
+		String[] validTime = { "10:45:20", "22:17:59", "13:14:40", };
+        String[] invalidTime = { null, "ABCDEFGHI", "233104", "21-43-48" };
+        
+		for (int i = 0; i < validTime.length; i++) {
+            Time theReturn = Time.valueOf(validTime[i]);
+				assertEquals(theReturns[i], theReturn);
 		} // end for
+		
+        for (int i = 0; i < invalidTime.length; i++) {
+            try {
+                Time theReturn = Time.valueOf(invalidTime[i]);
+                fail("Should throw IllegalArgumentException");
+            } catch (IllegalArgumentException e) {
+                //expected
+            }
+        }
 
 	} // end method testValueOfString
 
 	public void testSetTime() {
-
 		// Ensure that the timezone is set to GMT
 		TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
 
 		Time theTime = new Time(TIME_TEST1);
-
-		assertTrue(theTime.toString().equals(STRING_TEST1));
+        assertEquals(STRING_TEST1, theTime.toString());
 
 		theTime.setTime(TIME_TEST2);
-
-		assertTrue(theTime.toString().equals(STRING_TEST2));
-
+        assertEquals(STRING_TEST2, theTime.toString());
 	} // end method testSetTime()
 
 	public void testSetDate() {
@@ -162,12 +153,9 @@ public class TimeTest extends TestCase {
 
 		try {
 			theTime.setDate(10);
-			assertTrue(false);
-		} catch (Exception e) {
-			/*
-			 * System.out.println("testSetDate: IllegalArgumentException thrown
-			 * as expected");
-			 */
+            fail("Should throw IllegalArgumentException.");
+		} catch (IllegalArgumentException e) {
+            //expected
 		} // end try
 	} // end method testSetDate()
 
@@ -176,12 +164,9 @@ public class TimeTest extends TestCase {
 
 		try {
 			theTime.setMonth(2);
-			assertTrue(false);
-		} catch (Exception e) {
-			/*
-			 * System.out.println("testSetMonth: IllegalArgumentException thrown
-			 * as expected");
-			 */
+            fail("Should throw IllegalArgumentException.");
+		} catch (IllegalArgumentException e) {
+            //expected
 		} // end try
 	} // end method testSetMonth()
 
@@ -190,12 +175,9 @@ public class TimeTest extends TestCase {
 
 		try {
 			theTime.setYear(99);
-			assertTrue(false);
-		} catch (Exception e) {
-			/*
-			 * System.out.println("testSetYear: IllegalArgumentException thrown
-			 * as expected");
-			 */
+            fail("Should throw IllegalArgumentException.");
+		} catch (IllegalArgumentException e) {
+		    //expected
 		} // end try
 	} // end method testSetYear()
 
@@ -204,12 +186,9 @@ public class TimeTest extends TestCase {
 
 		try {
 			int theDate = theTime.getDate();
-			assertTrue(false);
-		} catch (Exception e) {
-			/*
-			 * System.out.println("testGetDate: IllegalArgumentException thrown
-			 * as expected");
-			 */
+            fail("Should throw IllegalArgumentException.");
+		} catch (IllegalArgumentException e) {
+            //expected
 		} // end try
 	} // end method test
 
@@ -218,12 +197,9 @@ public class TimeTest extends TestCase {
 
 		try {
 			int theDay = theTime.getDay();
-			assertTrue(false);
-		} catch (Exception e) {
-			/*
-			 * System.out.println("testGetDay: IllegalArgumentException thrown
-			 * as expected");
-			 */
+            fail("Should throw IllegalArgumentException.");
+		} catch (IllegalArgumentException e) {
+            //expected
 		} // end try
 	} // end method test
 
@@ -232,12 +208,9 @@ public class TimeTest extends TestCase {
 
 		try {
 			int theDate = theTime.getMonth();
-			assertTrue(false);
-		} catch (Exception e) {
-			/*
-			 * System.out.println("testGetMonth: IllegalArgumentException thrown
-			 * as expected");
-			 */
+            fail("Should throw IllegalArgumentException.");
+		} catch (IllegalArgumentException e) {
+		    //expected
 		} // end try
 	} // end method test
 
@@ -246,12 +219,9 @@ public class TimeTest extends TestCase {
 
 		try {
 			int theDate = theTime.getYear();
-			assertTrue(false);
-		} catch (Exception e) {
-			/*
-			 * System.out.println("testGetYear: IllegalArgumentException thrown
-			 * as expected");
-			 */
+            fail("Should throw IllegalArgumentException.");
+		} catch (IllegalArgumentException e) {
+		    //expected
 		} // end try
 	} // end method test
     
