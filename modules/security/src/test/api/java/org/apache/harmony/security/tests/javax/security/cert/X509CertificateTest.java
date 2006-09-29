@@ -116,12 +116,14 @@ public class X509CertificateTest extends TestCase {
             // The requested certificate type is not available.
             // Test pass..
         }
+
         // Regression for HARMONY-756
-		try {
-			X509Certificate.getInstance((InputStream) null);
-		} catch (CertificateException e) {
-			//expected;
-		}
+        try {
+            X509Certificate.getInstance((InputStream) null);
+            fail("No expected CertificateException");
+        } catch (CertificateException e) {
+            //expected;
+        }
     }
 
     /**
@@ -142,12 +144,14 @@ public class X509CertificateTest extends TestCase {
             // The requested certificate type is not available.
             // Test pass..
         }
-   		// Regression for HARMONY-756
-		try {
-			X509Certificate.getInstance((byte[]) null);
-		} catch (CertificateException e) {
-			//expected;
-		}
+
+        // Regression for HARMONY-756
+        try {
+            X509Certificate.getInstance((byte[]) null);
+            fail("No expected CertificateException");
+        } catch (CertificateException e) {
+            //expected;
+        }
     }
 
     /**
