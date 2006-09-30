@@ -15,31 +15,16 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.security.sasl;
 
 import java.util.Map;
 import javax.security.auth.callback.CallbackHandler;
 
-/**
- * @com.intel.drl.spec_ref
- *  
- */
 public interface SaslClientFactory {
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public SaslClient createSaslClient(String[] mechanisms,
-            String authorizationId, String protocol, String serverName,
-            Map<String,?> props, CallbackHandler cbh) throws SaslException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public String[] getMechanismNames(Map<String,?> props);
+    SaslClient createSaslClient(String[] mechanisms, String authorizationId, String protocol,
+            String serverName, Map<String, ?> props, CallbackHandler cbh) throws SaslException;
+
+    String[] getMechanismNames(Map<String, ?> props);
 
 }

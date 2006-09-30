@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander V. Esin
-* @version $Revision$
-*/
-
 package javax.security.auth.x500;
 
 import java.security.cert.X509Certificate;
@@ -28,9 +23,6 @@ import javax.security.auth.Destroyable;
 
 import org.apache.harmony.auth.internal.nls.Messages;
 
-/**
- * @com.intel.drl.spec_ref
- */
 public final class X500PrivateCredential implements Destroyable {
 
     //X509 certificate
@@ -42,10 +34,8 @@ public final class X500PrivateCredential implements Destroyable {
     //Alias
     private String alias;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public X500PrivateCredential(X509Certificate cert, PrivateKey key) {
+        super();
         if (cert == null) {
             throw new IllegalArgumentException(Messages.getString("auth.28")); //$NON-NLS-1$
         }
@@ -56,11 +46,7 @@ public final class X500PrivateCredential implements Destroyable {
         this.key = key;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public X500PrivateCredential(X509Certificate cert, PrivateKey key,
-            String alias) {
+    public X500PrivateCredential(X509Certificate cert, PrivateKey key, String alias) {
         this(cert, key);
         if (alias == null) {
             throw new IllegalArgumentException(Messages.getString("auth.2A")); //$NON-NLS-1$
@@ -68,39 +54,24 @@ public final class X500PrivateCredential implements Destroyable {
         this.alias = alias;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public X509Certificate getCertificate() {
         return cert;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public PrivateKey getPrivateKey() {
         return key;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getAlias() {
         return alias;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void destroy() {
         cert = null;
         key = null;
         alias = null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean isDestroyed() {
         return (cert == null && key == null && alias == null);
     }

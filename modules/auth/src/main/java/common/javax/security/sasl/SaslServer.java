@@ -15,65 +15,23 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.security.sasl;
 
-/**
- * @com.intel.drl.spec_ref
- *  
- */
 public interface SaslServer {
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public void dispose() throws SaslException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public byte[] evaluateResponse(byte[] response) throws SaslException;
+    void dispose() throws SaslException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public String getAuthorizationID();
+    byte[] evaluateResponse(byte[] response) throws SaslException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public String getMechanismName();
+    String getAuthorizationID();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public Object getNegotiatedProperty(String propName);
+    String getMechanismName();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public boolean isComplete();
+    Object getNegotiatedProperty(String propName);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public byte[] unwrap(byte[] incoming, int offset, int len)
-            throws SaslException;
+    boolean isComplete();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public byte[] wrap(byte[] outgoing, int offset, int len)
-            throws SaslException;
+    byte[] unwrap(byte[] incoming, int offset, int len) throws SaslException;
+
+    byte[] wrap(byte[] outgoing, int offset, int len) throws SaslException;
 }

@@ -15,49 +15,27 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.security.sasl;
 
 import java.io.IOException;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 public class SaslException extends IOException {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private static final long serialVersionUID = 4579784287983423626L;
 
     /**
-     * @com.intel.drl.spec_ref
-     * 
      * Serialized field for storing initial cause
      */
     private Throwable _exception;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public SaslException() {
+        super();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public SaslException(String detail) {
         super(detail);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public SaslException(String detail, Throwable ex) {
         super(detail);
         if (ex != null) {
@@ -65,34 +43,26 @@ public class SaslException extends IOException {
             _exception = ex;
         }
     }
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public Throwable getCause() {
         return _exception;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public Throwable initCause(Throwable cause) {
         super.initCause(cause);
         _exception = cause;
         return this;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public String toString() {
         if (_exception == null) {
             return super.toString();
-        } else {
-            StringBuffer sb = new StringBuffer(super.toString());
-            sb.append(", caused by: "); //$NON-NLS-1$
-            sb.append(_exception.toString());
-            return sb.toString();
         }
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append(", caused by: "); //$NON-NLS-1$
+        sb.append(_exception.toString());
+        return sb.toString();
     }
 }

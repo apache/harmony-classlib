@@ -15,41 +15,20 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.security.sasl;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 public class AuthenticationException extends SaslException {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private static final long serialVersionUID = -3579708765071815007L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public AuthenticationException() {
         super();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public AuthenticationException(String detail) {
         super(detail);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public AuthenticationException(String detail, Throwable ex) {
         super(detail, ex);
     }

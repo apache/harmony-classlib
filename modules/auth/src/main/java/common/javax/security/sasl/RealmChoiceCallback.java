@@ -15,31 +15,16 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.security.sasl;
 
 import javax.security.auth.callback.ChoiceCallback;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
-
 public class RealmChoiceCallback extends ChoiceCallback {
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     private static final long serialVersionUID = -8588141348846281332L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public RealmChoiceCallback(String prompt, String[] choices,
-            int defaultChoice, boolean multiple) {
+    public RealmChoiceCallback(String prompt, String[] choices, int defaultChoice,
+            boolean multiple) {
         super(prompt, choices, defaultChoice, multiple);
     }
 }

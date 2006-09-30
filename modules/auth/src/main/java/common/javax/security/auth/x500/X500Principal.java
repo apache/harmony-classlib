@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander V. Esin
-* @version $Revision$
-*/
-
 package javax.security.auth.x500;
 
 import java.io.IOException;
@@ -32,41 +27,21 @@ import java.security.Principal;
 import org.apache.harmony.auth.internal.nls.Messages;
 import org.apache.harmony.security.x501.Name;
 
-
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 public final class X500Principal implements Serializable, Principal {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private static final long serialVersionUID = -500463348111345721L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static final String CANONICAL = "CANONICAL"; //$NON-NLS-1$
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static final String RFC1779 = "RFC1779"; //$NON-NLS-1$
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
 
     public static final String RFC2253 = "RFC2253"; //$NON-NLS-1$
 
     //Distinguished Name
     private transient Name dn;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public X500Principal(byte[] name) {
+        super();
         if (name == null) {
             throw new IllegalArgumentException(Messages.getString("auth.00")); //$NON-NLS-1$
         }
@@ -74,17 +49,15 @@ public final class X500Principal implements Serializable, Principal {
             // FIXME dn = new Name(name);
             dn = (Name) Name.ASN1.decode(name);
         } catch (IOException e) {
-            IllegalArgumentException iae = new IllegalArgumentException(
-                    Messages.getString("auth.2B")); //$NON-NLS-1$
+            IllegalArgumentException iae = new IllegalArgumentException(Messages
+                    .getString("auth.2B")); //$NON-NLS-1$
             iae.initCause(e);
             throw iae;
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public X500Principal(InputStream in) {
+        super();
         if (in == null) {
             throw new NullPointerException(Messages.getString("auth.2C")); //$NON-NLS-1$
         }
@@ -92,33 +65,29 @@ public final class X500Principal implements Serializable, Principal {
             // FIXME dn = new Name(is);
             dn = (Name) Name.ASN1.decode(in);
         } catch (IOException e) {
-            IllegalArgumentException iae = new IllegalArgumentException(
-                    Messages.getString("auth.2B")); //$NON-NLS-1$
+            IllegalArgumentException iae = new IllegalArgumentException(Messages
+                    .getString("auth.2B")); //$NON-NLS-1$
             iae.initCause(e);
             throw iae;
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public X500Principal(String name) {
+        super();
         if (name == null) {
             throw new NullPointerException(Messages.getString("auth.00")); //$NON-NLS-1$
         }
         try {
             dn = new Name(name);
         } catch (IOException e) {
-            IllegalArgumentException iae = new IllegalArgumentException(
-                    Messages.getString("auth.2D")); //$NON-NLS-1$
+            IllegalArgumentException iae = new IllegalArgumentException(Messages
+                    .getString("auth.2D")); //$NON-NLS-1$
             iae.initCause(e);
             throw iae;
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -127,13 +96,9 @@ public final class X500Principal implements Serializable, Principal {
             return false;
         }
         X500Principal principal = (X500Principal) o;
-        return dn.getName(CANONICAL).equals(
-                principal.dn.getName(CANONICAL));
+        return dn.getName(CANONICAL).equals(principal.dn.getName(CANONICAL));
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public byte[] getEncoded() {
         byte[] src = dn.getEncoded();
         byte[] dst = new byte[src.length];
@@ -141,46 +106,29 @@ public final class X500Principal implements Serializable, Principal {
         return dst;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getName() {
         return dn.getName(RFC2253);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getName(String format) {
         return dn.getName(format);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public int hashCode() {
         return dn.getName(CANONICAL).hashCode();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public String toString() {
         return dn.getName(RFC1779);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.writeObject(dn.getEncoded());
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    private void readObject(ObjectInputStream in) throws IOException,
-            ClassNotFoundException {
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 
         dn = (Name) Name.ASN1.decode((byte[]) in.readObject());
     }

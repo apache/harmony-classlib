@@ -15,37 +15,19 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.security.sasl;
 
 import javax.security.auth.callback.TextInputCallback;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 public class RealmCallback extends TextInputCallback {
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     private static final long serialVersionUID = -4342673378785456908L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public RealmCallback(String prompt) {
         super(prompt);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public RealmCallback(String prompt, String defaultRealmInfo) {
         super(prompt, defaultRealmInfo);
     }
-
 }
