@@ -43,6 +43,7 @@ public class SaslException extends IOException {
             _exception = ex;
         }
     }
+
     @Override
     public Throwable getCause() {
         return _exception;
