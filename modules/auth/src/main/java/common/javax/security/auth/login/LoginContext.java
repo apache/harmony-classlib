@@ -245,10 +245,6 @@ public class LoginContext {
      * appropriate doPrivileged calls in login().
      */
     private void loginImpl() throws LoginException {
-        if (loggedIn) {
-            return;
-        }
-
         if (subject == null) {
             subject = new Subject();
         }
