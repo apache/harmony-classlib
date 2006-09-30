@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander V. Astapchuk
-* @version $Revision$
-*/
-
 package javax.security.auth.spi;
 
 import java.util.Map;
@@ -28,33 +23,16 @@ import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.login.LoginException;
 
-/**
- * @com.intel.drl.spec_ref
- */
 public interface LoginModule {
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     void initialize(Subject subject, CallbackHandler callbackHandler,
             Map<String, ?> sharedState, Map<String, ?> options);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     boolean login() throws LoginException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     boolean commit() throws LoginException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     boolean abort() throws LoginException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     boolean logout() throws LoginException;
 }

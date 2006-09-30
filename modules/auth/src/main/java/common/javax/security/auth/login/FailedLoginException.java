@@ -15,34 +15,16 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth.login;
 
-/**
- * @com.intel.drl.spec_ref
- *
- */
 public class FailedLoginException extends LoginException {
 
-    /**
-	 * @com.intel.drl.spec_ref
-	 */
     private static final long serialVersionUID = 802556922354616286L;
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     public FailedLoginException() {
         super();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public FailedLoginException(String message) {
         super(message);
     }

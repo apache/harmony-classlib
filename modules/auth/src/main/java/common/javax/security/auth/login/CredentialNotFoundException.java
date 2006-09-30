@@ -15,34 +15,16 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth.login;
 
-/**
- * @com.intel.drl.spec_ref
- *
- */
 public class CredentialNotFoundException extends CredentialException {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private static final long serialVersionUID = -7779934467214319475L;
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     public CredentialNotFoundException() {
         super();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public CredentialNotFoundException(String message) {
         super(message);
     }

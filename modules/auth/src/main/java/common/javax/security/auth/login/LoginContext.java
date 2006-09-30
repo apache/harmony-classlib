@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander V. Astapchuk, Stepan M. Mishura
-* @version $Revision$
-*/
-
 package javax.security.auth.login;
 
 import java.io.IOException;
@@ -43,18 +38,15 @@ import javax.security.auth.login.AppConfigurationEntry.LoginModuleControlFlag;
 
 import org.apache.harmony.auth.internal.nls.Messages;
 
-/**
- * @com.intel.drl.spec_ref
- */
-
 public class LoginContext {
 
     private static final String DEFAULT_CALLBACK_HANDLER_PROPERTY = "auth.login.defaultCallbackHandler"; //$NON-NLS-1$
 
-    // Integer constants which serve as a replacement for 
-    // the corresponding LoginModuleControlFlag.* constants.
-    // These integers are used later as index in the arrays - see 
-    // loginImpl() and logoutImpl() methods
+    /*
+     * Integer constants which serve as a replacement for the corresponding
+     * LoginModuleControlFlag.* constants. These integers are used later as
+     * index in the arrays - see loginImpl() and logoutImpl() methods
+     */
     private static final int OPTIONAL = 0;
 
     private static final int REQUIRED = 1;
@@ -66,9 +58,10 @@ public class LoginContext {
     // Subject to be used for this LoginContext's operations
     private Subject subject;
 
-    // Shows whether the subject 
-    // was specified by user (true) or 
-    // was created by this LoginContext itself (false).
+    /*
+     * Shows whether the subject was specified by user (true) or was created by
+     * this LoginContext itself (false).
+     */
     private boolean userProvidedSubject;
 
     // Shows whether we use installed or user-provided Configuration
@@ -77,16 +70,20 @@ public class LoginContext {
     // An user's AccessControlContext, used when user specifies 
     private AccessControlContext userContext;
 
-    // Either a callback handler passed by the user or a wrapper for the 
-    // user's specified handler - see init() below.
+    /*
+     * Either a callback handler passed by the user or a wrapper for the user's
+     * specified handler - see init() below.
+     */
     private CallbackHandler callbackHandler;
 
-    // An array which keeps the instantiated and init()-ialized login 
-    // modules and their states
+    /*
+     * An array which keeps the instantiated and init()-ialized login modules
+     * and their states
+     */
     private Module[] modules;
 
     // Stores a shared state
-    private HashMap sharedState;
+    private Map<String, ?> sharedState;
 
     // A context class loader used to load [mainly] LoginModules
     private ClassLoader contextClassLoader;
@@ -94,39 +91,30 @@ public class LoginContext {
     // Shows overall status - whether this LoginContext was successfully logged 
     private boolean loggedIn;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public LoginContext(String name) throws LoginException {
+        super();
         init(name, null, null, null);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public LoginContext(String name, CallbackHandler cbHandler)
-            throws LoginException {
+    public LoginContext(String name, CallbackHandler cbHandler) throws LoginException {
+        super();
         if (cbHandler == null) {
             throw new LoginException(Messages.getString("auth.34")); //$NON-NLS-1$
         }
         init(name, null, cbHandler, null);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public LoginContext(String name, Subject subject) throws LoginException {
+        super();
         if (subject == null) {
             throw new LoginException(Messages.getString("auth.03")); //$NON-NLS-1$
         }
         init(name, subject, null, null);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public LoginContext(String name, Subject subject, CallbackHandler cbHandler)
             throws LoginException {
+        super();
         if (subject == null) {
             throw new LoginException(Messages.getString("auth.03")); //$NON-NLS-1$
         }
@@ -136,22 +124,15 @@ public class LoginContext {
         init(name, subject, cbHandler, null);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public LoginContext(String name, Subject subject,
-            CallbackHandler cbHandler, Configuration config)
-            throws LoginException {
+    public LoginContext(String name, Subject subject, CallbackHandler cbHandler,
+            Configuration config) throws LoginException {
+        super();
         init(name, subject, cbHandler, config);
     }
 
     // Does all the machinery needed for the initialization.
-    private void init(String name, Subject subject,
-            final CallbackHandler cbHandler, Configuration config)
-            throws LoginException {
-        //
-        //
-        //
+    private void init(String name, Subject subject, final CallbackHandler cbHandler,
+            Configuration config) throws LoginException {
         userProvidedSubject = (this.subject = subject) != null;
 
         //
@@ -170,16 +151,13 @@ public class LoginContext {
         SecurityManager sm = System.getSecurityManager();
 
         if (sm != null && !userProvidedConfig) {
-            sm
-                    .checkPermission(new AuthPermission("createLoginContext." //$NON-NLS-1$
-                            + name));
+            sm.checkPermission(new AuthPermission("createLoginContext." + name));//$NON-NLS-1$
         }
 
         AppConfigurationEntry[] entries = config.getAppConfigurationEntry(name);
         if (entries == null) {
             if (sm != null && !userProvidedConfig) {
-                sm.checkPermission(new AuthPermission(
-                        "createLoginContext.other")); //$NON-NLS-1$
+                sm.checkPermission(new AuthPermission("createLoginContext.other")); //$NON-NLS-1$
             }
             entries = config.getAppConfigurationEntry("other"); //$NON-NLS-1$
             if (entries == null) {
@@ -195,16 +173,16 @@ public class LoginContext {
         // Set CallbackHandler and this.contextClassLoader
         //
 
-        // as some of the operations to be executed (i.e. get*ClassLoader, 
-        // getProperty, class loading) are security-checked, then combine all 
-        // of them into a single doPrivileged() call.
-        //
+        /*
+         * as some of the operations to be executed (i.e. get*ClassLoader,
+         * getProperty, class loading) are security-checked, then combine all of
+         * them into a single doPrivileged() call.
+         */
         try {
-            AccessController.doPrivileged(new PrivilegedExceptionAction() {
-                public Object run() throws Exception {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                public Void run() throws Exception {
                     // First, set the 'contextClassLoader'
-                    contextClassLoader = Thread.currentThread()
-                            .getContextClassLoader();
+                    contextClassLoader = Thread.currentThread().getContextClassLoader();
                     if (contextClassLoader == null) {
                         contextClassLoader = ClassLoader.getSystemClassLoader();
                     }
@@ -216,8 +194,7 @@ public class LoginContext {
                         if (klassName == null || klassName.length() == 0) {
                             return null;
                         }
-                        Class klass = Class.forName(klassName, true,
-                                contextClassLoader);
+                        Class<?> klass = Class.forName(klassName, true, contextClassLoader);
                         callbackHandler = (CallbackHandler) klass.newInstance();
                     } else {
                         callbackHandler = cbHandler;
@@ -226,9 +203,8 @@ public class LoginContext {
                 }
             });
         } catch (PrivilegedActionException ex) {
-            throw (LoginException) new LoginException(
-                    Messages.getString("auth.36")).initCause(ex //$NON-NLS-1$
-                    .getCause());
+            Throwable cause = ex.getCause();
+            throw (LoginException) new LoginException(Messages.getString("auth.36")).initCause(cause);//$NON-NLS-1$
         }
 
         if (userProvidedConfig) {
@@ -239,9 +215,6 @@ public class LoginContext {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Subject getSubject() {
         if (userProvidedSubject || loggedIn) {
             return subject;
@@ -249,12 +222,9 @@ public class LoginContext {
         return null;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void login() throws LoginException {
-        PrivilegedExceptionAction action = new PrivilegedExceptionAction() {
-            public Object run() throws LoginException {
+        PrivilegedExceptionAction<Void> action = new PrivilegedExceptionAction<Void>() {
+            public Void run() throws LoginException {
                 loginImpl();
                 return null;
             }
@@ -270,8 +240,10 @@ public class LoginContext {
         }
     }
 
-    // The real implementation of login() method whose calls are wrapped into 
-    // appropriate doPrivileged calls in login().
+    /**
+     * The real implementation of login() method whose calls are wrapped into
+     * appropriate doPrivileged calls in login().
+     */
     private void loginImpl() throws LoginException {
         if (loggedIn) {
             return;
@@ -282,7 +254,7 @@ public class LoginContext {
         }
 
         if (sharedState == null) {
-            sharedState = new HashMap();
+            sharedState = new HashMap<String, Object>();
         }
 
         // PHASE 1: Calling login()-s
@@ -291,16 +263,16 @@ public class LoginContext {
         int[] logged = new int[4];
         int[] total = new int[4];
 
-        for (int i = 0; i < modules.length; i++) {
+        for (Module module : modules) {
             try {
                 // if a module fails during Class.forName(), then it breaks overall 
                 // attempt - see catch() below
-                modules[i].create(subject, callbackHandler, sharedState);
+                module.create(subject, callbackHandler, sharedState);
 
-                if (modules[i].module.login()) {
-                    ++total[modules[i].getFlag()];
-                    ++logged[modules[i].getFlag()];
-                    if (modules[i].getFlag() == SUFFICIENT) {
+                if (module.module.login()) {
+                    ++total[module.getFlag()];
+                    ++logged[module.getFlag()];
+                    if (module.getFlag() == SUFFICIENT) {
                         break;
                     }
                 }
@@ -308,21 +280,21 @@ public class LoginContext {
                 if (firstProblem == null) {
                     firstProblem = ex;
                 }
-                if (modules[i].klass == null) {
-                    // an exception occured during class lookup - overall 
-                    // attempt must fail
-                    // a little trick: increase the REQUIRED's number - this 
-                    // will look like a failed REQUIRED module later, so overall 
-                    // attempt will fail
+                if (module.klass == null) {
+                    /*
+                     * an exception occurred during class lookup - overall
+                     * attempt must fail a little trick: increase the REQUIRED's
+                     * number - this will look like a failed REQUIRED module
+                     * later, so overall attempt will fail
+                     */
                     ++total[REQUIRED];
                     break;
-                } else {
-                    ++total[modules[i].getFlag()];
-                    // something happened after the class was loaded
-                    if (modules[i].getFlag() == REQUISITE) {
-                        // ... and no need to walk down anymore
-                        break;
-                    }
+                }
+                ++total[module.getFlag()];
+                // something happened after the class was loaded
+                if (module.getFlag() == REQUISITE) {
+                    // ... and no need to walk down anymore
+                    break;
                 }
             }
         }
@@ -331,16 +303,17 @@ public class LoginContext {
         // Let's decide whether we have either overall success or a total failure
         boolean fail = true;
 
-        // Note: 'failed[xxx]!=0' is not enough to check.
-        // Use 'logged[xx] != total[xx]' instead.
-        // This is because some modules might not be counted as 'failed' if
-        // an exception occured during preload()/Class.forName()-ing.
-        // But, such modules still get counted in the total[]. 
+        /*
+         * Note: 'failed[xxx]!=0' is not enough to check.
+         * 
+         * Use 'logged[xx] != total[xx]' instead. This is because some modules
+         * might not be counted as 'failed' if an exception occurred during
+         * preload()/Class.forName()-ing. But, such modules still get counted in
+         * the total[].
+         */
 
-        //
         // if any REQ* module failed - then it's failure
-        if (logged[REQUIRED] != total[REQUIRED]
-                || logged[REQUISITE] != total[REQUISITE]) {
+        if (logged[REQUIRED] != total[REQUIRED] || logged[REQUISITE] != total[REQUISITE]) {
             // fail = true;
         } else {
             if (total[REQUIRED] == 0 && total[REQUISITE] == 0) {
@@ -360,12 +333,13 @@ public class LoginContext {
         total[0] = total[1] = total[2] = total[3] = 0;
         if (!fail) {
             // PHASE 2: 
-            for (int i = 0; i < modules.length; i++) {
-                if (modules[i].klass != null) {
-                    ++total[modules[i].getFlag()];
+
+            for (Module module : modules) {
+                if (module.klass != null) {
+                    ++total[module.getFlag()];
                     try {
-                        modules[i].module.commit();
-                        ++commited[modules[i].getFlag()];
+                        module.module.commit();
+                        ++commited[module.getFlag()];
                     } catch (Throwable ex) {
                         if (firstProblem == null) {
                             firstProblem = ex;
@@ -377,13 +351,14 @@ public class LoginContext {
 
         // need to decide once again
         fail = true;
-        if (commited[REQUIRED] != total[REQUIRED]
-                || commited[REQUISITE] != total[REQUISITE]) {
+        if (commited[REQUIRED] != total[REQUIRED] || commited[REQUISITE] != total[REQUISITE]) {
             //fail = true;
         } else {
             if (total[REQUIRED] == 0 && total[REQUISITE] == 0) {
-                // neither REQUIRED nor REQUISITE was configured.
-                // must have at least one SUFFICIENT or OPTIONAL
+                /*
+                 * neither REQUIRED nor REQUISITE was configured. must have at
+                 * least one SUFFICIENT or OPTIONAL
+                 */
                 if (commited[OPTIONAL] != 0 || commited[SUFFICIENT] != 0) {
                     fail = false;
                 } else {
@@ -395,10 +370,11 @@ public class LoginContext {
         }
 
         if (fail) {
-            // either login() or commit() failed. aborting... 
-            for (int i = 0; i < modules.length; i++) {
+            // either login() or commit() failed. aborting...
+
+            for (Module module : modules) {
                 try {
-                    modules[i].module.abort();
+                    module.module.abort();
                 } catch ( /*LoginException*/Throwable ex) {
                     if (firstProblem == null) {
                         firstProblem = ex;
@@ -411,22 +387,15 @@ public class LoginContext {
             }
             if (firstProblem instanceof LoginException) {
                 throw (LoginException) firstProblem;
-            } else {
-                throw (LoginException) new LoginException(
-                        Messages.getString("auth.37")).initCause(firstProblem); //$NON-NLS-1$
             }
-        } else {
-            loggedIn = true;
+            throw (LoginException) new LoginException(Messages.getString("auth.37")).initCause(firstProblem); //$NON-NLS-1$
         }
-        // return silently - we are logged in
+        loggedIn = true;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void logout() throws LoginException {
-        PrivilegedExceptionAction action = new PrivilegedExceptionAction() {
-            public Object run() throws LoginException {
+        PrivilegedExceptionAction<Void> action = new PrivilegedExceptionAction<Void>() {
+            public Void run() throws LoginException {
                 logoutImpl();
                 return null;
             }
@@ -442,8 +411,10 @@ public class LoginContext {
         }
     }
 
-    // The real implementation of logout() method whose calls are wrapped into 
-    // appropriate doPrivileged calls in logout().
+    /**
+     * The real implementation of logout() method whose calls are wrapped into
+     * appropriate doPrivileged calls in logout().
+     */
     private void logoutImpl() throws LoginException {
         if (subject == null) {
             throw new LoginException(Messages.getString("auth.38")); //$NON-NLS-1$
@@ -451,9 +422,9 @@ public class LoginContext {
         loggedIn = false;
         Throwable firstProblem = null;
         int total = 0;
-        for (int i = 0; i < modules.length; i++) {
+        for (Module module : modules) {
             try {
-                modules[i].module.logout();
+                module.module.logout();
                 ++total;
             } catch (Throwable ex) {
                 if (firstProblem == null) {
@@ -468,30 +439,31 @@ public class LoginContext {
             }
             if (firstProblem instanceof LoginException) {
                 throw (LoginException) firstProblem;
-            } else {
-                throw (LoginException) new LoginException(
-                        Messages.getString("auth.37")).initCause(firstProblem); //$NON-NLS-1$
             }
+            throw (LoginException) new LoginException(Messages.getString("auth.37")).initCause(firstProblem); //$NON-NLS-1$
         }
     }
 
-    // A class that servers as a wrapper for the CallbackHandler when we use 
-    // installed Configuration, but not a passed one. See API docs on the 
-    // LoginContext.<br>
-    // Simply invokes the given handler with the given AccessControlContext. 
+    /**
+     * <p>A class that servers as a wrapper for the CallbackHandler when we use
+     * installed Configuration, but not a passed one. See API docs on the
+     * LoginContext.</p>
+     * 
+     * <p>Simply invokes the given handler with the given AccessControlContext.</p>
+     */
     private class ContextedCallbackHandler implements CallbackHandler {
-        CallbackHandler hiddenHandlerRef;
+        private final CallbackHandler hiddenHandlerRef;
 
         ContextedCallbackHandler(CallbackHandler handler) {
+            super();
             this.hiddenHandlerRef = handler;
         }
 
         public void handle(final Callback[] callbacks) throws IOException,
                 UnsupportedCallbackException {
             try {
-                AccessController.doPrivileged(new PrivilegedExceptionAction() {
-                    public Object run() throws IOException,
-                            UnsupportedCallbackException {
+                AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                    public Void run() throws IOException, UnsupportedCallbackException {
                         hiddenHandlerRef.handle(callbacks);
                         return null;
                     }
@@ -505,7 +477,9 @@ public class LoginContext {
         }
     }
 
-    // A private class that stores an instantiated LoginModule.
+    /** 
+     * A private class that stores an instantiated LoginModule.
+     */
     private final class Module {
 
         // An initial info about the module to be used
@@ -514,11 +488,11 @@ public class LoginContext {
         // A mapping of LoginModuleControlFlag onto a simple int constant
         int flag;
 
-        // The LoginModule intself 
+        // The LoginModule itself 
         LoginModule module;
 
         // A class of the module
-        Class klass;
+        Class<?> klass;
 
         Module(AppConfigurationEntry entry) {
             this.entry = entry;
@@ -539,17 +513,19 @@ public class LoginContext {
             return flag;
         }
 
-        // Loads class of the LoginModule, instantiates it and then 
-        // calls initialize().
-        void create(Subject subject, CallbackHandler callbackHandler,
-                Map sharedState) throws LoginException {
+        /**
+         * Loads class of the LoginModule, instantiates it and then calls
+         * initialize().
+         */
+        void create(Subject subject, CallbackHandler callbackHandler, Map<String, ?> sharedState)
+                throws LoginException {
             String klassName = entry.getLoginModuleName();
             if (klass == null) {
                 try {
                     klass = Class.forName(klassName, false, contextClassLoader);
                 } catch (ClassNotFoundException ex) {
-                    throw (LoginException) new LoginException(
-                            Messages.getString("auth.39", klassName)).initCause(ex); //$NON-NLS-1$
+                    throw (LoginException) new LoginException(Messages.getString(
+                            "auth.39", klassName)).initCause(ex); //$NON-NLS-1$
                 }
             }
 
@@ -557,16 +533,15 @@ public class LoginContext {
                 try {
                     module = (LoginModule) klass.newInstance();
                 } catch (IllegalAccessException ex) {
-                    throw (LoginException) new LoginException(
-                            Messages.getString("auth.3A", klassName)) //$NON-NLS-1$
+                    throw (LoginException) new LoginException(Messages.getString(
+                            "auth.3A", klassName)) //$NON-NLS-1$
                             .initCause(ex);
                 } catch (InstantiationException ex) {
-                    throw (LoginException) new LoginException(
-                            Messages.getString("auth.3A", klassName)) //$NON-NLS-1$
+                    throw (LoginException) new LoginException(Messages.getString(
+                            "auth.3A", klassName)) //$NON-NLS-1$
                             .initCause(ex);
                 }
-                module.initialize(subject, callbackHandler, sharedState, entry
-                        .getOptions());
+                module.initialize(subject, callbackHandler, sharedState, entry.getOptions());
             }
         }
     }

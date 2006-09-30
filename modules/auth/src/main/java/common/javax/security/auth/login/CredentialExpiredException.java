@@ -15,34 +15,16 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth.login;
 
-/**
- * @com.intel.drl.spec_ref
- *
- */
 public class CredentialExpiredException extends CredentialException {
 
-    /**
-	 * @com.intel.drl.spec_ref
-	 */
     private static final long serialVersionUID = -5344739593859737937L;
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     public CredentialExpiredException() {
         super();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public CredentialExpiredException(String message) {
         super(message);
     }

@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth.login;
 
 import java.security.AccessController;
@@ -27,35 +22,26 @@ import javax.security.auth.AuthPermission;
 
 import org.apache.harmony.security.fortress.PolicyUtils;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 public abstract class Configuration {
-     
+
     // the current configuration 
     private static Configuration configuration;
-    
+
     // creates a AuthPermission object with a specify property
     private static final AuthPermission GET_LOGIN_CONFIGURATION = new AuthPermission(
-            "getLoginConfiguration");  //$NON-NLS-1$
+            "getLoginConfiguration"); //$NON-NLS-1$
 
     // creates a AuthPermission object with a specify property
     private static final AuthPermission SET_LOGIN_CONFIGURATION = new AuthPermission(
             "setLoginConfiguration"); //$NON-NLS-1$
-    
+
     // Key to security properties, defining default configuration provider.
     private static final String LOGIN_CONFIGURATION_PROVIDER = "login.configuration.provider"; //$NON-NLS-1$
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     protected Configuration() {
+        super();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static Configuration getConfiguration() {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -63,23 +49,23 @@ public abstract class Configuration {
         }
         return getAccessibleConfiguration();
     }
-    
-    // Reads name of default configuration provider from security.properties,
-    // loads the class and instantiates the provider.<br> 
-    // In case of any exception, wraps it with SecurityException and throws
-    // further.
+
+    /**
+     * Reads name of default configuration provider from security.properties,
+     * loads the class and instantiates the provider.<br> In case of any
+     * exception, wraps it with SecurityException and throws further.
+     */
     private static final Configuration getDefaultProvider() {
-         return (Configuration) AccessController
-                .doPrivileged(new PolicyUtils.ProviderLoader(
-                        LOGIN_CONFIGURATION_PROVIDER, Configuration.class));
+        return AccessController.doPrivileged(new PolicyUtils.ProviderLoader<Configuration>(
+                LOGIN_CONFIGURATION_PROVIDER, Configuration.class));
     }
-    
+
     /**
      * Shortcut accessor for friendly classes, to skip security checks.
      * If active configuration was set to <code>null</code>, tries to load a default 
      * provider, so this method never returns <code>null</code>. <br>
      * This method is synchronized with setConfiguration()
-     */     
+     */
     static Configuration getAccessibleConfiguration() {
         Configuration current = configuration;
         if (current == null) {
@@ -93,9 +79,6 @@ public abstract class Configuration {
         return current;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static void setConfiguration(Configuration configuration) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -104,15 +87,8 @@ public abstract class Configuration {
         Configuration.configuration = configuration;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public abstract AppConfigurationEntry[] getAppConfigurationEntry(
-            String applicationName);
+    public abstract AppConfigurationEntry[] getAppConfigurationEntry(String applicationName);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public abstract void refresh();
 
 }

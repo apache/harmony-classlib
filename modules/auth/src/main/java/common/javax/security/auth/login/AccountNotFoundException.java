@@ -15,35 +15,16 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth.login;
 
-
-/** 
- * @com.intel.drl.spec_ref 
- *
- */
 public class AccountNotFoundException extends AccountException {
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     private static final long serialVersionUID = 1498349563916294614L;
-    
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
+
     public AccountNotFoundException() {
         super();
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     public AccountNotFoundException(String message) {
         super(message);
     }

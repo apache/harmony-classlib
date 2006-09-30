@@ -15,35 +15,16 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth.login;
 
-
-/** 
- * @com.intel.drl.spec_ref 
- * 
- */
 public class AccountLockedException extends AccountException {
-    
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
+
     private static final long serialVersionUID = 8280345554014066334L;
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     public AccountLockedException() {
         super();
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     public AccountLockedException(String message) {
         super(message);
     }

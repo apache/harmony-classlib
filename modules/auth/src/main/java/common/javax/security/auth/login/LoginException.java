@@ -15,36 +15,18 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth.login;
 
 import java.security.GeneralSecurityException;
 
-/**
- * @com.intel.drl.spec_ref
- *
- */
 public class LoginException extends GeneralSecurityException {
 
-    /**
-	 * @com.intel.drl.spec_ref
-	 */
     private static final long serialVersionUID = -4679091624035232488L;
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     public LoginException() {
         super();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public LoginException(String message) {
         super(message);
     }

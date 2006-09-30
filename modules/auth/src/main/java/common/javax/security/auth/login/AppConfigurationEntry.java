@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth.login;
 
 import java.util.Collections;
@@ -27,11 +22,7 @@ import java.util.Map;
 
 import org.apache.harmony.auth.internal.nls.Messages;
 
-/** 
- * @com.intel.drl.spec_ref 
- */
 public class AppConfigurationEntry {
-
 
     // the login module options
     private final Map<String, ?> options;
@@ -42,16 +33,11 @@ public class AppConfigurationEntry {
     // the login module name 
     private final String loginModuleName;
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     public AppConfigurationEntry(String loginModuleName,
-            AppConfigurationEntry.LoginModuleControlFlag controlFlag,
-            Map<String, ?> options) {
+            AppConfigurationEntry.LoginModuleControlFlag controlFlag, Map<String, ?> options) {
 
         if (loginModuleName == null || loginModuleName.length() == 0) {
-            throw new IllegalArgumentException(
-                    Messages.getString("auth.26")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("auth.26")); //$NON-NLS-1$
         }
 
         if (controlFlag == null) {
@@ -67,56 +53,32 @@ public class AppConfigurationEntry {
         this.options = Collections.unmodifiableMap(options);
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     public String getLoginModuleName() {
         return loginModuleName;
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     public LoginModuleControlFlag getControlFlag() {
         return controlFlag;
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     public Map<java.lang.String, ?> getOptions() {
         return options;
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     public static class LoginModuleControlFlag {
 
         // the control flag
         private final String flag;
 
-        /** 
-         * @com.intel.drl.spec_ref 
-         */
         public static final LoginModuleControlFlag REQUIRED = new LoginModuleControlFlag(
                 "LoginModuleControlFlag: required"); //$NON-NLS-1$
 
-        /** 
-         * @com.intel.drl.spec_ref 
-         */
         public static final LoginModuleControlFlag REQUISITE = new LoginModuleControlFlag(
                 "LoginModuleControlFlag: requisite"); //$NON-NLS-1$
 
-        /** 
-         * @com.intel.drl.spec_ref 
-         */
         public static final LoginModuleControlFlag OPTIONAL = new LoginModuleControlFlag(
                 "LoginModuleControlFlag: optional"); //$NON-NLS-1$
 
-        /** 
-         * @com.intel.drl.spec_ref 
-         */
         public static final LoginModuleControlFlag SUFFICIENT = new LoginModuleControlFlag(
                 "LoginModuleControlFlag: sufficient"); //$NON-NLS-1$
 
@@ -125,12 +87,9 @@ public class AppConfigurationEntry {
             this.flag = flag;
         }
 
-        /** 
-         * @com.intel.drl.spec_ref 
-         */
+        @Override
         public String toString() {
             return flag;
         }
     }
-
 }
