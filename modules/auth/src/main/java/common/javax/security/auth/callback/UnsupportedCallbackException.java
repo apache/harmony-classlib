@@ -15,50 +15,25 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth.callback;
 
-/**
- * @com.intel.drl.spec_ref
- *
- */
 public class UnsupportedCallbackException extends Exception {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    private static final long serialVersionUID = -6873556327655666839L; 
+    private static final long serialVersionUID = -6873556327655666839L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private Callback callback;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public UnsupportedCallbackException(Callback callback) {
         super();
         this.callback = callback;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public UnsupportedCallbackException(Callback callback, String message) {
         super(message);
         this.callback = callback;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Callback getCallback() {
         return callback;
     }
-
 }

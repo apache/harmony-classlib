@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Stepan M. Mishura, Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth;
 
 import java.io.IOException;
@@ -32,33 +27,63 @@ import java.util.Set;
 
 import org.apache.harmony.auth.internal.nls.Messages;
 
-/** 
- * @com.intel.drl.spec_ref 
- *
- */
-
 public final class PrivateCredentialPermission extends Permission {
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     private static final long serialVersionUID = 5284372143517237068L;
 
     // allowed action
     private static final String READ = "read"; //$NON-NLS-1$
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     private String credentialClass;
 
     // current offset        
     private transient int offset;
+
     // owners set
     private transient CredOwner[] set;
+    
+    public PrivateCredentialPermission(String name, String action) {
+        super(name);
+        if (READ.equalsIgnoreCase(action)) {
+            initTargetName(name);
+        } else {
+            throw new IllegalArgumentException(Messages.getString("auth.11")); //$NON-NLS-1$
+        }
+    }
 
-    // Initialize a PivateCredentialPermission object and checks that a target name has 
-    // a correct format: CredentialClass 1*(PrincipalClass "PrincipalName")
+    /**
+     * Creates a <code>PrivateCredentialPermission</code> from the Credential Class 
+     * and Set of Principals
+     * 
+     * @param credentialClass - credential class name
+     * @param principals - principal set
+     */
+    PrivateCredentialPermission(String credentialClass, Set<Principal> principals) {
+        super(credentialClass);
+        this.credentialClass = credentialClass;
+
+        set = new CredOwner[principals.size()];
+        for (Principal p : principals) {
+            CredOwner element = new CredOwner(p.getClass().getName(), p.getName());
+            // check for duplicate elements
+            boolean found = false;
+            for (int ii = 0; ii < offset; ii++) {
+                if (set[ii].equals(element)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                set[offset++] = element;
+            }
+        }
+    }
+
+    /**
+     * Initialize a PivateCredentialPermission object and checks that a target
+     * name has a correct format: CredentialClass 1*(PrincipalClass
+     * "PrincipalName")
+     */
     private void initTargetName(String name) {
 
         if (name == null) {
@@ -74,8 +99,7 @@ public final class PrivateCredentialPermission extends Permission {
         // get CredentialClass
         int beg = name.indexOf(' ');
         if (beg == -1) {
-            throw new IllegalArgumentException(
-                    Messages.getString("auth.10")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("auth.10")); //$NON-NLS-1$
         }
         credentialClass = name.substring(0, beg);
 
@@ -88,15 +112,13 @@ public final class PrivateCredentialPermission extends Permission {
             j = name.indexOf('"', i + 2);
 
             if (i == -1 || j == -1 || name.charAt(i + 1) != '"') {
-                throw new IllegalArgumentException(
-                        Messages.getString("auth.10")); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString("auth.10")); //$NON-NLS-1$
             }
         }
 
         // name MUST have one pair at least
         if (count < 1) {
-            throw new IllegalArgumentException(
-                    Messages.getString("auth.10")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("auth.10")); //$NON-NLS-1$
         }
 
         beg = name.indexOf(' ');
@@ -129,60 +151,11 @@ public final class PrivateCredentialPermission extends Permission {
         }
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
-    private void readObject(ObjectInputStream ois) throws IOException,
-            ClassNotFoundException {
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
         ois.defaultReadObject();
         initTargetName(getName());
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
-    public PrivateCredentialPermission(String name, String action) {
-        super(name);
-        if (READ.equalsIgnoreCase(action)) {
-            initTargetName(name);
-        } else {
-            throw new IllegalArgumentException(Messages.getString("auth.11")); //$NON-NLS-1$
-        }
-    }
-
-    /**
-     * Creates a <code>PrivateCredentialPermission</code> from the Credential Class 
-     * and Set of Principals
-     * 
-     * @param credentialClass - credential class name
-     * @param principals - principal set
-     */
-    PrivateCredentialPermission(String credentialClass, Set<Principal> principals) {
-
-        super(credentialClass);
-        this.credentialClass = credentialClass;
-
-        set = new CredOwner[principals.size()];
-        for (Principal p : principals) {
-            CredOwner element = new CredOwner(p.getClass().getName(), p
-                    .getName());
-            // check for duplicate elements
-            boolean found = false;
-            for (int ii = 0; ii < offset; ii++) {
-                if (set[ii].equals(element)) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                set[offset++] = element;
-            }
-        }
-    }
-
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     public String[][] getPrincipals() {
 
         String[][] s = new String[offset][2];
@@ -194,24 +167,15 @@ public final class PrivateCredentialPermission extends Permission {
         return s;
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     @Override
     public String getActions() {
         return READ;
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     public String getCredentialClass() {
         return credentialClass;
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     @Override
     public int hashCode() {
         int hash = 0;
@@ -221,9 +185,6 @@ public final class PrivateCredentialPermission extends Permission {
         return getCredentialClass().hashCode() + hash;
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -236,14 +197,10 @@ public final class PrivateCredentialPermission extends Permission {
 
         PrivateCredentialPermission that = (PrivateCredentialPermission) obj;
 
-        return credentialClass.equals(that.credentialClass) &&
-                (offset == that.offset) &&
-                sameMembers(set, that.set, offset);
+        return credentialClass.equals(that.credentialClass) && (offset == that.offset)
+                && sameMembers(set, that.set, offset);
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     @Override
     public boolean implies(Permission permission) {
 
@@ -279,16 +236,15 @@ public final class PrivateCredentialPermission extends Permission {
         return true;
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     @Override
     public PermissionCollection newPermissionCollection() {
         return null;
     }
-    
-    // Returns true if the two arrays have the same length, 
-    // and every member of one array is contained in another array 
+
+    /**
+     * Returns true if the two arrays have the same length, and every member of
+     * one array is contained in another array
+     */
     private boolean sameMembers(Object[] ar1, Object[] ar2, int length) {
         if (ar1 == null && ar2 == null) {
             return true;
@@ -312,34 +268,23 @@ public final class PrivateCredentialPermission extends Permission {
         return true;
     }
 
-    /** 
-     * @com.intel.drl.spec_ref
-     *
-     */
     private static final class CredOwner implements Serializable {
 
-        /** 
-         * @com.intel.drl.spec_ref 
-         */
         private static final long serialVersionUID = -5607449830436408266L;
 
-        /** 
-         * @com.intel.drl.spec_ref 
-         */
         String principalClass;
 
-        /** 
-         * @com.intel.drl.spec_ref 
-         */
         String principalName;
+
         // whether class name contains wildcards
         private transient boolean isClassWildcard;
+
         // whether pname contains wildcards
         private transient boolean isPNameWildcard;
 
         // Creates a new CredOwner with the specified Principal Class and Principal Name 
         CredOwner(String principalClass, String principalName) {
-
+            super();
             if ("*".equals(principalClass)) { //$NON-NLS-1$
                 isClassWildcard = true;
             }
@@ -349,8 +294,7 @@ public final class PrivateCredentialPermission extends Permission {
             }
 
             if (isClassWildcard && !isPNameWildcard) {
-                throw new IllegalArgumentException(
-                        Messages.getString("auth.12")); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString("auth.12")); //$NON-NLS-1$
             }
 
             this.principalClass = principalClass;
@@ -365,10 +309,8 @@ public final class PrivateCredentialPermission extends Permission {
 
             CredOwner co = (CredOwner) obj;
 
-            if (isClassWildcard
-                    || principalClass.equals(co.principalClass)) {
-                if (isPNameWildcard
-                        || principalName.equals(co.principalName)) {
+            if (isClassWildcard || principalClass.equals(co.principalClass)) {
+                if (isPNameWildcard || principalName.equals(co.principalName)) {
                     return true;
                 }
             }
@@ -379,8 +321,7 @@ public final class PrivateCredentialPermission extends Permission {
         @Override
         public boolean equals(Object obj) {
             return principalClass.equals(((CredOwner) obj).principalClass)
-                    && principalName
-                            .equals(((CredOwner) obj).principalName);
+                    && principalName.equals(((CredOwner) obj).principalName);
         }
 
         // Returns the hash code value for this object.

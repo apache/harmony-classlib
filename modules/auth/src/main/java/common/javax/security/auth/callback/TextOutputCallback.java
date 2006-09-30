@@ -15,56 +15,26 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth.callback;
 
 import java.io.Serializable;
 
 import org.apache.harmony.auth.internal.nls.Messages;
 
-/**
- * @com.intel.drl.spec_ref
- *
- */
 public class TextOutputCallback implements Callback, Serializable {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    private static final long serialVersionUID = 1689502495511663102L; 
+    private static final long serialVersionUID = 1689502495511663102L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static final int INFORMATION = 0;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static final int WARNING = 1;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static final int ERROR = 2;
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     private String message;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private int messageType;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public TextOutputCallback(int messageType, String message) {
         if (messageType > ERROR || messageType < INFORMATION) {
             throw new IllegalArgumentException(Messages.getString("auth.16")); //$NON-NLS-1$
@@ -76,16 +46,10 @@ public class TextOutputCallback implements Callback, Serializable {
         this.message = message;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getMessage() {
         return message;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public int getMessageType() {
         return messageType;
     }

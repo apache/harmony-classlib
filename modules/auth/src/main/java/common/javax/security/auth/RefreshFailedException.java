@@ -15,35 +15,16 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth;
-
-/** 
- * @com.intel.drl.spec_ref 
- * 
- */
 
 public class RefreshFailedException extends Exception {
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     private static final long serialVersionUID = 5058444488565265840L;
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     public RefreshFailedException() {
         super();
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     public RefreshFailedException(String message) {
         super(message);
     }

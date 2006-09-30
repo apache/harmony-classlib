@@ -15,48 +15,25 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth.callback;
 
 import java.io.Serializable;
 import java.util.Locale;
 
-/**
- * @com.intel.drl.spec_ref
- *
- */
 public class LanguageCallback implements Callback, Serializable {
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    private static final long serialVersionUID = 2019050433478903213L; 
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    private static final long serialVersionUID = 2019050433478903213L;
+
     private Locale locale;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public LanguageCallback() {
+        super();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Locale getLocale() {
         return locale;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setLocale(Locale locale) {
         this.locale = locale;
     }

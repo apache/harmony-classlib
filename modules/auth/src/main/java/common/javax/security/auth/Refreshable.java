@@ -15,28 +15,12 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth;
-
-/**
- * @com.intel.drl.spec_ref
- *  
- */
 
 public interface Refreshable {
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
-    public void refresh() throws RefreshFailedException;
+    void refresh() throws RefreshFailedException;
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
-    public boolean isCurrent();
+    boolean isCurrent();
 
 }

@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexey V. Varlamov
-* @version $Revision$
-*/
-
 package javax.security.auth;
 
 import java.security.AccessController;
@@ -31,55 +26,35 @@ import org.apache.harmony.security.fortress.PolicyUtils;
 import org.apache.harmony.auth.DefaultSubjectPolicy;
 import org.apache.harmony.auth.internal.nls.Messages;
 
-
 /**
- * @com.intel.drl.spec_ref
- * 
  * @deprecated Use
- *             {@link java.security.Policy#getPermissions(java.security.ProtectionDomain)
- *             Policy.getPermissions(ProtectionDomain)} and
- *             {@link java.security.ProtectionDomain#ProtectionDomain(java.security.CodeSource, java.security.PermissionCollection, ClassLoader, java.security.Principal[])
- *             ProtectionDomain(CodeSource, PermissionCollection, ClassLoader,
- *             Principal[]} to establish a policy's permissions for a principal.
+ *             {@link java.security.Policy#getPermissions(java.security.ProtectionDomain)}
+ *             and
+ *             {@link java.security.ProtectionDomain#ProtectionDomain(java.security.CodeSource, java.security.PermissionCollection, ClassLoader, java.security.Principal[])}
+ *             to establish a policy's permissions for a principal.
  */
 @Deprecated
-public abstract class Policy 
-{
-
+public abstract class Policy {
     // Key to security properties, defining default policy provider.
     private static final String POLICY_PROVIDER = "auth.policy.provider"; //$NON-NLS-1$
 
     // The AuthPermission required to set custom Policy.
-    private static final AuthPermission SET_POLICY = new AuthPermission(
-            "setPolicy"); //$NON-NLS-1$
+    private static final AuthPermission SET_POLICY = new AuthPermission("setPolicy"); //$NON-NLS-1$
 
     // The AuthPermission required to get current Policy.
-    private static final AuthPermission GET_POLICY = new AuthPermission(
-            "getPolicy"); //$NON-NLS-1$
+    private static final AuthPermission GET_POLICY = new AuthPermission("getPolicy"); //$NON-NLS-1$
 
     // the current policy object
     private static Policy activePolicy;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public abstract PermissionCollection getPermissions(Subject subject,
-            CodeSource cs);
+    public abstract PermissionCollection getPermissions(Subject subject, CodeSource cs);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public abstract void refresh();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     protected Policy() {
+        super();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static Policy getPolicy() {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -90,8 +65,8 @@ public abstract class Policy
     }
 
     /**
-     * Shortcut accessor for friendly classes, to skip security checks.
-     * If active policy was set to <code>null</code>, tries to load a default 
+     * Shortcut accessor for friendly classes, to skip security checks. If
+     * active policy was set to <code>null</code>, tries to load a default
      * provider, so this method never returns <code>null</code>. <br>
      * This method is synchronized with setPolicy()
      */
@@ -99,7 +74,7 @@ public abstract class Policy
         Policy current = activePolicy;
         if (current == null) {
             synchronized (Policy.class) {
-                // double check in case value has been reassigned 
+                // double check in case value has been reassigned
                 // while we've been awaiting monitor
                 if (activePolicy == null) {
                     activePolicy = getDefaultProvider();
@@ -110,14 +85,14 @@ public abstract class Policy
         return current;
     }
 
-    // Reads name of default policy provider from security.properties,
-    // loads the class and instantiates the provider.<br> 
-    // In case of any exception, wraps it with SecurityException and throws
-    // further.
+    /**
+     * Reads name of default policy provider from security.properties, loads the
+     * class and instantiates the provider. In case of any exception, wraps it
+     * with SecurityException and throws further.
+     */
     private static final Policy getDefaultProvider() {
         final String defaultClass = AccessController
-                .doPrivileged(new PolicyUtils.SecurityPropertyAccessor(
-                        POLICY_PROVIDER));
+                .doPrivileged(new PolicyUtils.SecurityPropertyAccessor(POLICY_PROVIDER));
 
         if (defaultClass == null) {
             return new DefaultSubjectPolicy();
@@ -126,11 +101,11 @@ public abstract class Policy
         Object policy = AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
                 try {
-                    return Class.forName(defaultClass, true,
-                            ClassLoader.getSystemClassLoader()).newInstance();
+                    return Class
+                            .forName(defaultClass, true, ClassLoader.getSystemClassLoader())
+                            .newInstance();
                 } catch (Exception e) {
-                    SecurityException se = new SecurityException(
-                            Messages.getString("auth.08")); //$NON-NLS-1$
+                    SecurityException se = new SecurityException(Messages.getString("auth.08")); //$NON-NLS-1$
                     se.initCause(e);
                     throw se;
                 }
@@ -143,9 +118,6 @@ public abstract class Policy
         return (Policy) policy;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static void setPolicy(Policy policy) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {

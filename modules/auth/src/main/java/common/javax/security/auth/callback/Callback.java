@@ -15,17 +15,7 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth.callback;
 
-/**
- * @com.intel.drl.spec_ref
- *
- */
 public interface Callback {
-
 }

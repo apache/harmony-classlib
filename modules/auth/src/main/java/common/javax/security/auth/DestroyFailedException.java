@@ -15,35 +15,16 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth;
-
-/** 
- * @com.intel.drl.spec_ref 
- * 
- */
 
 public class DestroyFailedException extends Exception {
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     private static final long serialVersionUID = -7790152857282749162L;
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     public DestroyFailedException() {
         super();
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     public DestroyFailedException(String message) {
         super(message);
     }

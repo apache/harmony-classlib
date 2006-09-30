@@ -15,28 +15,12 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth;
 
-/** 
- * @com.intel.drl.spec_ref 
- * 
- */
-
 public interface Destroyable {
-    
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
+
     void destroy() throws DestroyFailedException;
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     boolean isDestroyed();
 
 }

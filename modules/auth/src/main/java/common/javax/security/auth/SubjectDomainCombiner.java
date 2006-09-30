@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Stepan M. Mishura
-* @version $Revision$
-*/
-
 package javax.security.auth;
 
 import java.security.DomainCombiner;
@@ -37,6 +32,7 @@ public class SubjectDomainCombiner implements DomainCombiner {
             "getSubjectFromDomainCombiner"); //$NON-NLS-1$
 
     public SubjectDomainCombiner(Subject subject) {
+        super();
         if (subject == null) {
             throw new NullPointerException();
         }
@@ -44,7 +40,6 @@ public class SubjectDomainCombiner implements DomainCombiner {
     }
 
     public Subject getSubject() {
-
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             sm.checkPermission(_GET);
@@ -55,7 +50,6 @@ public class SubjectDomainCombiner implements DomainCombiner {
 
     public ProtectionDomain[] combine(ProtectionDomain[] currentDomains,
             ProtectionDomain[] assignedDomains) {
-
         // get array length for combining protection domains
         int len = 0;
         if (currentDomains != null) {

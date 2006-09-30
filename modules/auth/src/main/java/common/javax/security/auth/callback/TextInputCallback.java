@@ -15,44 +15,22 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth.callback;
 
 import java.io.Serializable;
 
 import org.apache.harmony.auth.internal.nls.Messages;
 
-/**
- * @com.intel.drl.spec_ref
- *
- */
 public class TextInputCallback implements Callback, Serializable {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    private static final long serialVersionUID = -8064222478852811804L; 
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    private static final long serialVersionUID = -8064222478852811804L;
+
     private String defaultText;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private String prompt;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private String inputText;
 
-    // sets the prompt
     private void setPrompt(String prompt) {
         if (prompt == null || prompt.length() == 0) {
             throw new IllegalArgumentException(Messages.getString("auth.14")); //$NON-NLS-1$
@@ -60,7 +38,6 @@ public class TextInputCallback implements Callback, Serializable {
         this.prompt = prompt;
     }
 
-    // sets the default text
     private void setDefaultText(String defaultText) {
         if (defaultText == null || defaultText.length() == 0) {
             throw new IllegalArgumentException(Messages.getString("auth.15")); //$NON-NLS-1$
@@ -68,47 +45,30 @@ public class TextInputCallback implements Callback, Serializable {
         this.defaultText = defaultText;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public TextInputCallback(String prompt) {
+        super();
         setPrompt(prompt);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public TextInputCallback(String prompt, String defaultText) {
+        super();
         setPrompt(prompt);
         setDefaultText(defaultText);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getDefaultText() {
         return defaultText;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getPrompt() {
         return prompt;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getText() {
         return inputText;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setText(String text) {
         this.inputText = text;
     }
-
 }

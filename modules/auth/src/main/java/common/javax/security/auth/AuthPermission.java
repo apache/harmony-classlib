@@ -15,34 +15,21 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth;
 
 import java.security.BasicPermission;
 
 import org.apache.harmony.auth.internal.nls.Messages;
 
-/** 
- * @com.intel.drl.spec_ref 
- * 
- */
-
 public final class AuthPermission extends BasicPermission {
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     private static final long serialVersionUID = 5806031445061587174L;
 
     private static final String CREATE_LOGIN_CONTEXT = "createLoginContext"; //$NON-NLS-1$
 
     private static final String CREATE_LOGIN_CONTEXT_ANY = "createLoginContext.*"; //$NON-NLS-1$
 
-    // inits permission name.  
+    // inits permission name.
     private static String init(String name) {
 
         if (name == null) {
@@ -55,16 +42,10 @@ public final class AuthPermission extends BasicPermission {
         return name;
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     public AuthPermission(String name) {
         super(init(name));
     }
 
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
     public AuthPermission(String name, String actions) {
         super(init(name), actions);
     }

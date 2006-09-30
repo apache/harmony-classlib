@@ -15,56 +15,28 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth.callback;
 
 import java.io.Serializable;
 
 import org.apache.harmony.auth.internal.nls.Messages;
 
-/**
- * @com.intel.drl.spec_ref
- *
- */
 public class ChoiceCallback implements Callback, Serializable {
-    
-    /** 
-     * @com.intel.drl.spec_ref 
-     */
-    private static final long serialVersionUID = -3975664071579892167L; 
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    private static final long serialVersionUID = -3975664071579892167L;
+
     private int defaultChoice;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private String prompt;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private boolean multipleSelectionsAllowed;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private String[] choices;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private int[] selections;
 
-    // sets the choices.
     private void setChoices(String[] choices) {
-        if (choices == null || choices.length == 0){
+        if (choices == null || choices.length == 0) {
             throw new IllegalArgumentException(Messages.getString("auth.1C")); //$NON-NLS-1$
         }
         for (int i = 0; i < choices.length; i++) {
@@ -77,15 +49,13 @@ public class ChoiceCallback implements Callback, Serializable {
 
     }
 
-    // sets the prompt.
     private void setPrompt(String prompt) {
         if (prompt == null || prompt.length() == 0) {
             throw new IllegalArgumentException(Messages.getString("auth.14")); //$NON-NLS-1$
         }
         this.prompt = prompt;
     }
-    
-    // sets the defaultChoice.
+
     private void setDefaultChoice(int defaultChoice) {
         if (0 > defaultChoice || defaultChoice >= choices.length) {
             throw new IllegalArgumentException(Messages.getString("auth.1D")); //$NON-NLS-1$
@@ -93,63 +63,40 @@ public class ChoiceCallback implements Callback, Serializable {
         this.defaultChoice = defaultChoice;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public ChoiceCallback(String prompt, String[] choices, int defaultChoice,
             boolean multipleSelectionsAllowed) {
+        super();
         setPrompt(prompt);
         setChoices(choices);
         setDefaultChoice(defaultChoice);
         this.multipleSelectionsAllowed = multipleSelectionsAllowed;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean allowMultipleSelections() {
         return multipleSelectionsAllowed;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String[] getChoices() {
         return choices;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public int getDefaultChoice() {
         return defaultChoice;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getPrompt() {
         return prompt;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public int[] getSelectedIndexes() {
         return selections;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setSelectedIndex(int selection) {
         this.selections = new int[1];
         this.selections[0] = selection;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setSelectedIndexes(int[] selections) {
         if (!multipleSelectionsAllowed) {
             throw new UnsupportedOperationException();
@@ -159,5 +106,4 @@ public class ChoiceCallback implements Callback, Serializable {
         // this.selections = new int[selections.length]
         //System.arraycopy(selections, 0, this.selections, 0, this.selections.length);
     }
-
 }

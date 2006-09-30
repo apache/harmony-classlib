@@ -15,24 +15,10 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth.callback;
-
-/**
- * @com.intel.drl.spec_ref
- *
- */
 
 public interface CallbackHandler {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void handle(Callback[] callbacks) throws java.io.IOException,
-            UnsupportedCallbackException;
+    void handle(Callback[] callbacks) throws java.io.IOException, UnsupportedCallbackException;
 
 }

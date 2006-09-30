@@ -15,44 +15,22 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth.callback;
 
 import java.io.Serializable;
 
 import org.apache.harmony.auth.internal.nls.Messages;
 
-/**
- * @com.intel.drl.spec_ref
- *
- */
 public class NameCallback implements Callback, Serializable {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    private static final long serialVersionUID = 3770938795909392253L; 
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    private static final long serialVersionUID = 3770938795909392253L;
+
     private String prompt;
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     private String defaultName;
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */ 
+
     private String inputName;
-    
-    // sets the prompt
+
     private void setPrompt(String prompt) {
         if (prompt == null || prompt.length() == 0) {
             throw new IllegalArgumentException(Messages.getString("auth.14")); //$NON-NLS-1$
@@ -60,53 +38,36 @@ public class NameCallback implements Callback, Serializable {
         this.prompt = prompt;
     }
 
-    // sets the default name
     private void setDefaultName(String defaultName) {
         if (defaultName == null || defaultName.length() == 0) {
             throw new IllegalArgumentException(Messages.getString("auth.1E")); //$NON-NLS-1$
         }
         this.defaultName = defaultName;
     }
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     public NameCallback(String prompt) {
+        super();
         setPrompt(prompt);
     }
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     public NameCallback(String prompt, String defaultName) {
+        super();
         setPrompt(prompt);
         setDefaultName(defaultName);
     }
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     public String getPrompt() {
         return prompt;
     }
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     public String getDefaultName() {
         return defaultName;
     }
-    
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void setName(String name){
+
+    public void setName(String name) {
         this.inputName = name;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getName() {
         return inputName;
     }

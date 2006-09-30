@@ -345,24 +345,23 @@ public final class Subject implements Serializable {
 
         private LinkedList<SST> elements;
 
-        //
-        // Is used to define a set type for serialization.
-        //
-        // A type can be principal, priv. or pub. credential set.
-        // The spec. doesn't clearly says that priv. and pub. credential
-        // sets can be serialized and what classes they are.
-        // It is only possible to figure out from writeObject method
-        // comments that priv. credential set is serializable and it is
-        // an instance of SecureSet class. So pub. credential was
-        // implemented by analogy
-        //
-        // Compatibility issue: the class follows its specified serial form.
-        // Also according to the serialization spec. adding new field is a
-        // compatible change. So is ok for principal set (because the default
-        // value for integer is zero). But priv. or pub. credential set
-        // it is not compatible because most probably other implementations
-        // resolve this issue in other way
-        //
+        /*
+         * Is used to define a set type for serialization.
+         * 
+         * A type can be principal, priv. or pub. credential set. The spec.
+         * doesn't clearly says that priv. and pub. credential sets can be
+         * serialized and what classes they are. It is only possible to figure
+         * out from writeObject method comments that priv. credential set is
+         * serializable and it is an instance of SecureSet class. So pub.
+         * credential was implemented by analogy
+         * 
+         * Compatibility issue: the class follows its specified serial form.
+         * Also according to the serialization spec. adding new field is a
+         * compatible change. So is ok for principal set (because the default
+         * value for integer is zero). But priv. or pub. credential set it is
+         * not compatible because most probably other implementations resolve
+         * this issue in other way
+         */
         private int setType;
 
         // Defines principal set for serialization.
@@ -412,8 +411,10 @@ public final class Subject implements Serializable {
             }
         }
 
-        // verifies specified element, checks set state,
-        // and security permission to modify set before adding new element
+        /*
+         * verifies specified element, checks set state, and security permission
+         * to modify set before adding new element
+         */
         @Override
         public boolean add(SST o) {
 
@@ -434,21 +435,20 @@ public final class Subject implements Serializable {
         public Iterator<SST> iterator() {
 
             if (permission == _PRIVATE_CREDENTIALS) {
-
-                // private credential set requires iterator with
-                // additional security check (PrivateCredentialPermission)
+                /*
+                 * private credential set requires iterator with additional
+                 * security check (PrivateCredentialPermission)
+                 */
                 return new SecureIterator(elements.iterator()) {
-
-                    // checks permission to access next private credential
-                    // moves to the next element even SecurityException was thrown
+                    /*
+                     * checks permission to access next private credential moves
+                     * to the next element even SecurityException was thrown
+                     */
                     @Override
                     public SST next() {
-
                         SST obj = iterator.next();
-
                         checkPermission(new PrivateCredentialPermission(obj
                                 .getClass().getName(), principals));
-
                         return obj;
                     }
                 };
@@ -470,8 +470,10 @@ public final class Subject implements Serializable {
             return elements.size();
         }
 
-        // return set with elements that are instances
-        // or subclasses of the specified class
+        /**
+         * return set with elements that are instances or subclasses of the
+         * specified class
+         */
         protected final <E> Set<E> get(final Class<E> c) {
 
             if (c == null) {
@@ -567,7 +569,9 @@ public final class Subject implements Serializable {
             out.defaultWriteObject();
         }
 
-        //Represents iterator for subject's secure set
+        /**
+         * Represents iterator for subject's secure set
+         */
         private class SecureIterator implements Iterator<SST> {
             protected Iterator<SST> iterator;
 
@@ -583,8 +587,10 @@ public final class Subject implements Serializable {
                 return iterator.next();
             }
 
-            // checks set state, and security permission to modify set
-            // before removing current element
+            /**
+             * checks set state, and security permission to modify set before
+             * removing current element
+             */
             public void remove() {
                 checkState();
                 checkPermission(permission);
