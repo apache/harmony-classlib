@@ -15,99 +15,42 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander V. Esin
-* @version $Revision$
-*/
 package org.ietf.jgss;
 
-/**
- * @com.intel.drl.spec_ref
- */
 public interface GSSCredential extends Cloneable {
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static final int ACCEPT_ONLY = 2;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static final int DEFAULT_LIFETIME = 0;
+    static final int ACCEPT_ONLY = 2;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static final int INDEFINITE_LIFETIME = 2147483647;
+    static final int DEFAULT_LIFETIME = 0;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static final int INITIATE_AND_ACCEPT = 0;
+    static final int INDEFINITE_LIFETIME = Integer.MAX_VALUE; // 2147483647;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static final int INITIATE_ONLY = 1;
+    static final int INITIATE_AND_ACCEPT = 0;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void add(GSSName name, int initLifetime, int acceptLifetime,
-            Oid mech, int usage) throws GSSException;
+    static final int INITIATE_ONLY = 1;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void dispose() throws GSSException;
+    void add(GSSName name, int initLifetime, int acceptLifetime, Oid mech, int usage)
+            throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean equals(Object another);
+    void dispose() throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public Oid[] getMechs() throws GSSException;
+    boolean equals(Object another);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public GSSName getName() throws GSSException;
+    Oid[] getMechs() throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public GSSName getName(Oid mech) throws GSSException;
+    GSSName getName() throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public int getRemainingAcceptLifetime(Oid mech) throws GSSException;
+    GSSName getName(Oid mech) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public int getRemainingInitLifetime(Oid mech) throws GSSException;
+    int getRemainingAcceptLifetime(Oid mech) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public int getRemainingLifetime() throws GSSException;
+    int getRemainingInitLifetime(Oid mech) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public int getUsage() throws GSSException;
+    int getRemainingLifetime() throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public int getUsage(Oid mech) throws GSSException;
+    int getUsage() throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public int hashCode();
+    int getUsage(Oid mech) throws GSSException;
+
+    int hashCode();
 }

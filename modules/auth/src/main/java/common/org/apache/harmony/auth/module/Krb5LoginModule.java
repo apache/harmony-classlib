@@ -54,13 +54,11 @@ public class Krb5LoginModule implements LoginModule {
 
     public void initialize(Subject subject, CallbackHandler callbackHandler,
             Map<String, ?> sharedState, Map<String, ?> options) {
-
         // TODO
         this.options = options;
     }
 
     public boolean login() throws LoginException {
-
         //TODO put in doPrivileged
         String kdc = System.getProperty(DEFAULT_KDC);
         String realm = System.getProperty(DEFAULT_REALM);
@@ -85,15 +83,14 @@ public class Krb5LoginModule implements LoginModule {
             kdc = kdc.substring(0, pos);
         }
 
-        PrincipalName cname = new PrincipalName(PrincipalName.NT_UNKNOWN,
-                new String[] { name });
+        PrincipalName cname = new PrincipalName(PrincipalName.NT_UNKNOWN, new String[] { name });
 
-        PrincipalName krbtgt = new PrincipalName(PrincipalName.NT_SRV_XHST,
-                new String[] { "krbtgt", realm }); //$NON-NLS-1$
+        PrincipalName krbtgt = new PrincipalName(PrincipalName.NT_SRV_XHST, new String[] {
+                "krbtgt", realm }); //$NON-NLS-1$
 
         try {
-            Ticket ticket = KrbClient.doAS(InetAddress.getByName(kdc), port,
-                    cname, realm, krbtgt);
+            Ticket ticket = KrbClient.doAS(InetAddress.getByName(kdc), port, cname, realm,
+                    krbtgt);
 
             return true; //FIXME 
         } catch (Exception e) {

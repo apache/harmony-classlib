@@ -15,16 +15,10 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package org.apache.harmony.auth.login;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StreamTokenizer;
@@ -33,6 +27,7 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -41,14 +36,10 @@ import javax.security.auth.login.AppConfigurationEntry;
 import org.apache.harmony.auth.internal.nls.Messages;
 import org.apache.harmony.security.fortress.PolicyUtils;
 
-
-
 /**
  * Auth configuration parser
  */
-
 public class DefaultConfigurationParser {
-
 
     // logging flag for debug
     private static final boolean debug = false;
@@ -57,41 +48,40 @@ public class DefaultConfigurationParser {
      * Reads a login configuration file from a location to a stream,
      * defines applications name and entries
      * 
-     * @param location an URL of a configration file to be loaded
+     * @param location an URL of a configuration file to be loaded
      * @param system properties, used for property expansion
      * @param newConfig 
      * @return Map of applications name and entries
      * @throws Exception error while reading location or file syntax error 
      */
-    public static Map configParser(URL location, 
-                                   Properties system, 
-                                   Map newConfig) 
-            throws IOException, PrivilegedActionException, 
-                   DefaultConfigurationParser.InvalidFormatException {
+    public static Map<String, List<AppConfigurationEntry>> configParser(URL location,
+            Properties system, Map<String, List<AppConfigurationEntry>> newConfig)
+            throws IOException, PrivilegedActionException,
+            DefaultConfigurationParser.InvalidFormatException {
 
-        
-        Reader source = new BufferedReader(new InputStreamReader((InputStream)AccessController
-                    .doPrivileged(new PolicyUtils.URLLoader(location))));
+        Reader source = new BufferedReader(new InputStreamReader(AccessController
+                .doPrivileged(new PolicyUtils.URLLoader(location))));
         try {
-            newConfig =  scanStream(source, newConfig, system);
+            newConfig = scanStream(source, newConfig, system);
         } finally {
-            source.close();  
+            source.close();
         }
-        
-        return newConfig; 
+
+        return newConfig;
     }
-    
+
     /** 
      * Performs the main parsing loop. Starts with creating and configuring a
      * StreamTokenizer instance and then collects result to the passed map
      */
-    private static Map scanStream(Reader source, Map newConfig, Properties system) throws IOException,
-                                    InvalidFormatException{
-        
-        LinkedList entriesList;
-        
+    private static Map<String, List<AppConfigurationEntry>> scanStream(Reader source,
+            Map<String, List<AppConfigurationEntry>> newConfig, Properties system)
+            throws IOException, InvalidFormatException {
+
+        List<AppConfigurationEntry> entriesList;
+
         StreamTokenizer st = new StreamTokenizer(source);
-             
+
         st.slashSlashComments(true);
         st.slashStarComments(true);
         st.eolIsSignificant(false);
@@ -103,12 +93,12 @@ public class DefaultConfigurationParser {
 
         st.nextToken();
         while (st.ttype != StreamTokenizer.TT_EOF) {
-            entriesList = new LinkedList();
+            entriesList = new LinkedList<AppConfigurationEntry>();
 
             String appName = null;
             String loginModuleName = null;
             AppConfigurationEntry.LoginModuleControlFlag flag;
-            HashMap options;
+            Map<String, ?> options;
 
             appName = parseApplicationName(st);
             hasToken(st, '{');
@@ -116,22 +106,22 @@ public class DefaultConfigurationParser {
                 loginModuleName = parseModuleClass(st);
                 flag = parseControlFlag(st);
                 options = parseModuleOptions(st, system);
-                AppConfigurationEntry entry = new AppConfigurationEntry(
-                    loginModuleName, flag, options);
+                AppConfigurationEntry entry = new AppConfigurationEntry(loginModuleName, flag,
+                        options);
                 entriesList.add(entry);
 
                 if (debug) {
-                   System.out.println("loginModuleName: " + loginModuleName); //$NON-NLS-1$
-                   System.out.println("flag: " + flag.toString()); //$NON-NLS-1$
-                   System.out.println("options: " + options.toString()); //$NON-NLS-1$
+                    System.out.println("loginModuleName: " + loginModuleName); //$NON-NLS-1$
+                    System.out.println("flag: " + flag.toString()); //$NON-NLS-1$
+                    System.out.println("options: " + options.toString()); //$NON-NLS-1$
                 }
             }
             hasToken(st, '}');
             hasToken(st, ';');
-        
+
             if (newConfig.containsKey(appName)) {
                 throw new InvalidFormatException(Messages.getString("auth.4B", appName)); //$NON-NLS-1$
-            } 
+            }
             newConfig.put(appName, entriesList);
         }
         return newConfig;
@@ -143,11 +133,11 @@ public class DefaultConfigurationParser {
      * @throws IOException if stream reading failed
      * @throws InvalidFormatException if unexpected or unknown token encountered
      */
-    private static String parseApplicationName(StreamTokenizer st)
-        throws IOException, InvalidFormatException {
+    private static String parseApplicationName(StreamTokenizer st) throws IOException,
+            InvalidFormatException {
 
         if (st.ttype != StreamTokenizer.TT_WORD) {
-            throw new InvalidFormatException(Messages.getString("auth.4C",st.toString())); //$NON-NLS-1$
+            throw new InvalidFormatException(Messages.getString("auth.4C", st.toString())); //$NON-NLS-1$
         }
 
         String appName = st.sval;
@@ -163,8 +153,8 @@ public class DefaultConfigurationParser {
     /**
      * Defines a login module name token
      */
-    private static String parseModuleClass(StreamTokenizer st)
-        throws IOException, InvalidFormatException {
+    private static String parseModuleClass(StreamTokenizer st) throws IOException,
+            InvalidFormatException {
 
         if (st.ttype != StreamTokenizer.TT_WORD) {
             throw new InvalidFormatException(Messages.getString("auth.4E", st.toString())); //$NON-NLS-1$
@@ -175,8 +165,8 @@ public class DefaultConfigurationParser {
     /**
      * Defines a control flag token
      */
-    private static AppConfigurationEntry.LoginModuleControlFlag parseControlFlag(StreamTokenizer st)
-        throws IOException, InvalidFormatException {
+    private static AppConfigurationEntry.LoginModuleControlFlag parseControlFlag(
+            StreamTokenizer st) throws IOException, InvalidFormatException {
 
         st.nextToken();
 
@@ -196,13 +186,13 @@ public class DefaultConfigurationParser {
     /**
      * Defines map of options
      */
-    private static HashMap parseModuleOptions(StreamTokenizer st, Properties system)
-        throws IOException, InvalidFormatException {
+    private static Map<String, ?> parseModuleOptions(StreamTokenizer st, Properties system)
+            throws IOException, InvalidFormatException {
 
-        HashMap options = new HashMap();
+        Map<String, Object> options = new HashMap<String, Object>();
 
         st.nextToken();
-        
+
         while (st.ttype != ';') {
             String key = null;
             String val = null;
@@ -216,12 +206,12 @@ public class DefaultConfigurationParser {
                         try {
                             val = PolicyUtils.expand(st.sval, system);
                         } catch (Exception e) {
-                            //TODO: warning log
-                        } 
+                            e.printStackTrace();
+                        }
                     }
                 } else {
-                    throw new InvalidFormatException(
-                        Messages.getString("auth.50", st.toString())); //$NON-NLS-1$
+                    throw new InvalidFormatException(Messages.getString(
+                            "auth.50", st.toString())); //$NON-NLS-1$
                 }
             } else {
                 throw new InvalidFormatException(Messages.getString("auth.50", st.toString())); //$NON-NLS-1$
@@ -240,8 +230,8 @@ public class DefaultConfigurationParser {
     /**
      * checks current token
      */
-    private static void hasToken(StreamTokenizer st, char ttype)
-        throws IOException, InvalidFormatException {
+    private static void hasToken(StreamTokenizer st, char ttype) throws IOException,
+            InvalidFormatException {
         if (st.ttype == ttype) {
             st.nextToken();
         } else {
@@ -254,10 +244,6 @@ public class DefaultConfigurationParser {
      * 
      */
     public static class InvalidFormatException extends Exception {
-        
-        /**
-         * @serial
-         */
         private static final long serialVersionUID = -1676412136985823379L;
 
         /**
@@ -269,5 +255,4 @@ public class DefaultConfigurationParser {
             super(message);
         }
     }
-
 }

@@ -15,94 +15,37 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander V. Esin
-* @version $Revision$
-*/
 package org.ietf.jgss;
 
-/**
- * @com.intel.drl.spec_ref
- */
 public interface GSSName {
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static final Oid NT_ANONYMOUS = new Oid(new int[] { 1, 3, 6, 1, 5,
-            6, 3 });
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static final Oid NT_EXPORT_NAME = new Oid(new int[] { 1, 3, 6, 1, 5,
-            6, 4 });
+    static final Oid NT_ANONYMOUS = new Oid(new int[] { 1, 3, 6, 1, 5, 6, 3 });
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static final Oid NT_HOSTBASED_SERVICE = new Oid(new int[] { 1, 3, 6,
-            1, 5, 6, 2 });
+    static final Oid NT_EXPORT_NAME = new Oid(new int[] { 1, 3, 6, 1, 5, 6, 4 });
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static final Oid NT_MACHINE_UID_NAME = new Oid(new int[] { 1, 2,
-            840, 113554, 1, 2, 1, 2 });
+    static final Oid NT_HOSTBASED_SERVICE = new Oid(new int[] { 1, 3, 6, 1, 5, 6, 2 });
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static final Oid NT_STRING_UID_NAME = new Oid(new int[] { 1, 2, 840,
-            113554, 1, 2, 1, 3 });
+    static final Oid NT_MACHINE_UID_NAME = new Oid(new int[] { 1, 2, 840, 113554, 1, 2, 1, 2 });
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static final Oid NT_USER_NAME = new Oid(new int[] { 1, 2, 840,
-            113554, 1, 2, 1, 1 });
+    static final Oid NT_STRING_UID_NAME = new Oid(new int[] { 1, 2, 840, 113554, 1, 2, 1, 3 });
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public GSSName canonicalize(Oid mech) throws GSSException;
+    static final Oid NT_USER_NAME = new Oid(new int[] { 1, 2, 840, 113554, 1, 2, 1, 1 });
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean equals(GSSName another) throws GSSException;
+    GSSName canonicalize(Oid mech) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean equals(Object another);
+    boolean equals(GSSName another) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public byte[] export() throws GSSException;
+    boolean equals(Object another);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public Oid getStringNameType() throws GSSException;
+    byte[] export() throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public int hashCode();
+    Oid getStringNameType() throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean isAnonymous();
+    int hashCode();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean isMN();
+    boolean isAnonymous();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public String toString();
+    boolean isMN();
+
+    String toString();
 }

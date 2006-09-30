@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package org.apache.harmony.auth.login;
 
 import java.io.File;
@@ -27,7 +22,7 @@ import java.net.URL;
 import java.security.AccessController;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -36,7 +31,6 @@ import javax.security.auth.login.AppConfigurationEntry;
 import javax.security.auth.login.Configuration;
 
 import org.apache.harmony.security.fortress.PolicyUtils;
-
 
 /**
  * Default Configuration implementation based on login configuration files.
@@ -50,54 +44,50 @@ import org.apache.harmony.security.fortress.PolicyUtils;
  * };
  * </pre>
  */
-
 public class DefaultConfiguration extends Configuration {
 
-    
     // system property for dynamically added login configuration file location.
     private static final String JAVA_SECURITY_LOGIN_CONFIG = "java.security.auth.login.config"; //$NON-NLS-1$
 
     // location of login configuration file
     private static final String LOGIN_CONFIG_URL_PREFIX = "login.config.url."; //$NON-NLS-1$
-    
+
     // default a config file from user's home directory
     private static final String JAVA_LOGIN_CONF_FILE = "file:" + System.getProperty("user.home") + //$NON-NLS-1$ //$NON-NLS-2$
-                                                        + File.separatorChar + ".java.login.config"; //$NON-NLS-1$
+            +File.separatorChar + ".java.login.config"; //$NON-NLS-1$
 
     // creates a AuthPermission object 
-    private static final AuthPermission REFRESH_LOGIN_CONFIGURATION = new AuthPermission("refreshLoginConfiguration"); //$NON-NLS-1$
+    private static final AuthPermission REFRESH_LOGIN_CONFIGURATION = new AuthPermission(
+            "refreshLoginConfiguration"); //$NON-NLS-1$
 
     // set of application entry
-    private Map configutations = Collections.synchronizedMap(new HashMap());
+    private Map<String, List<AppConfigurationEntry>> configutations = Collections
+            .synchronizedMap(new HashMap<String, List<AppConfigurationEntry>>());
 
-     /**
-      * Default a constructor
-      */
+    /**
+     * Default a constructor
+     */
     public DefaultConfiguration() {
+        super();
         try {
             init();
         } catch (Exception e) {
-            // TODO log warning
+            e.printStackTrace();
         }
     }
-    
-    /**
-     * @com.intel.drl.spec_ref 
-     */
-    public AppConfigurationEntry[] getAppConfigurationEntry(
-            String applicationName) {
 
-        LinkedList list = (LinkedList) configutations.get(applicationName);
+    @Override
+    public AppConfigurationEntry[] getAppConfigurationEntry(String applicationName) {
 
-        if (list == null || list.size() == 0) {
+        List<AppConfigurationEntry> list = configutations.get(applicationName);
+
+        if (list == null || list.isEmpty()) {
             return null;
         }
-        return (AppConfigurationEntry[]) list.toArray(new AppConfigurationEntry[list.size()]);
+        return list.toArray(new AppConfigurationEntry[list.size()]);
     }
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+    @Override
     public synchronized void refresh() {
 
         SecurityManager sm = System.getSecurityManager();
@@ -108,42 +98,40 @@ public class DefaultConfiguration extends Configuration {
         try {
             init();
         } catch (Exception e) {
-            //TODO: log warning
+            e.printStackTrace();
         }
     }
-    
-     /**
-      * Initialize a login configuration file
-      */ 
+
+    /**
+     * Initialize a login configuration file
+     */
     private void init() {
 
-        HashMap fresh = new HashMap();
-        Properties system = new Properties((Properties)AccessController
-                                            .doPrivileged(new PolicyUtils.SystemKit()));
+        Map<String, List<AppConfigurationEntry>> fresh = new HashMap<String, List<AppConfigurationEntry>>();
+        Properties system = new Properties(AccessController
+                .doPrivileged(new PolicyUtils.SystemKit()));
         system.setProperty("/", File.separator); //$NON-NLS-1$
-        URL[] policyLocations = PolicyUtils.getPolicyURLs(system,
-                JAVA_SECURITY_LOGIN_CONFIG, LOGIN_CONFIG_URL_PREFIX);
+        URL[] policyLocations = PolicyUtils.getPolicyURLs(system, JAVA_SECURITY_LOGIN_CONFIG,
+                LOGIN_CONFIG_URL_PREFIX);
 
-        for (int i = 0; i < policyLocations.length; i++) {
+        for (URL url : policyLocations) {
             try {
-                fresh.putAll(DefaultConfigurationParser.configParser(
-                        policyLocations[i], system, fresh));
+                fresh.putAll(DefaultConfigurationParser.configParser(url, system, fresh));
             } catch (Exception e) {
                 //TODO: log warning
                 //new SecurityException("Unable to load a login configuration file");
             }
         }
         // if location is not define then get a config file from user's directory 
-         if (policyLocations.length == 0) {
+        if (policyLocations.length == 0) {
             try {
-                fresh.putAll(DefaultConfigurationParser.configParser(new URL(JAVA_LOGIN_CONF_FILE),
-                        system, fresh));
+                fresh.putAll(DefaultConfigurationParser.configParser(new URL(
+                        JAVA_LOGIN_CONF_FILE), system, fresh));
             } catch (Exception e) {
                 //TODO: log warning
                 //throw new SecurityException ("Unable to load a login configuration file");
             }
         }
-         configutations = fresh;
+        configutations = fresh;
     }
-    
 }

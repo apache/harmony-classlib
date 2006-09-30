@@ -15,241 +15,99 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander V. Esin
-* @version $Revision$
-*/
 package org.ietf.jgss;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 
-/**
- * @com.intel.drl.spec_ref
- */
 public interface GSSContext {
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static final int DEFAULT_LIFETIME = 0;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public static final int INDEFINITE_LIFETIME = Integer.MAX_VALUE;//2147483647;
+    static final int DEFAULT_LIFETIME = 0;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public byte[] initSecContext(byte[] inputBuf, int offset, int len)
+    static final int INDEFINITE_LIFETIME = Integer.MAX_VALUE;//2147483647;
+
+    byte[] initSecContext(byte[] inputBuf, int offset, int len) throws GSSException;
+
+    int initSecContext(InputStream inStream, OutputStream outStream) throws GSSException;
+
+    byte[] acceptSecContext(byte[] inToken, int offset, int len) throws GSSException;
+
+    void acceptSecContext(InputStream inStream, OutputStream outStream) throws GSSException;
+
+    boolean isEstablished();
+
+    void dispose() throws GSSException;
+
+    int getWrapSizeLimit(int qop, boolean confReq, int maxTokenSize) throws GSSException;
+
+    byte[] wrap(byte[] inBuf, int offset, int len, MessageProp msgProp) throws GSSException;
+
+    void wrap(InputStream inStream, OutputStream outStream, MessageProp msgProp)
             throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public int initSecContext(InputStream inStream, OutputStream outStream)
+    byte[] unwrap(byte[] inBuf, int offset, int len, MessageProp msgProp) throws GSSException;
+
+    void unwrap(InputStream inStream, OutputStream outStream, MessageProp msgProp)
             throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public byte[] acceptSecContext(byte[] inToken, int offset, int len)
+    byte[] getMIC(byte[] inMsg, int offset, int len, MessageProp msgProp) throws GSSException;
+
+    void getMIC(InputStream inStream, OutputStream outStream, MessageProp msgProp)
             throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void acceptSecContext(InputStream inStream, OutputStream outStream)
+    void verifyMIC(byte[] inToken, int tokOffset, int tokLen, byte[] inMsg, int msgOffset,
+            int msgLen, MessageProp msgProp) throws GSSException;
+
+    void verifyMIC(InputStream tokStream, InputStream msgStream, MessageProp msgProp)
             throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean isEstablished();
+    byte[] export() throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void dispose() throws GSSException;
+    void requestMutualAuth(boolean state) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public int getWrapSizeLimit(int qop, boolean confReq, int maxTokenSize)
-            throws GSSException;
+    void requestReplayDet(boolean state) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public byte[] wrap(byte[] inBuf, int offset, int len, MessageProp msgProp)
-            throws GSSException;
+    void requestSequenceDet(boolean state) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void wrap(InputStream inStream, OutputStream outStream,
-            MessageProp msgProp) throws GSSException;
+    void requestCredDeleg(boolean state) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public byte[] unwrap(byte[] inBuf, int offset, int len, MessageProp msgProp)
-            throws GSSException;
+    void requestAnonymity(boolean state) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void unwrap(InputStream inStream, OutputStream outStream,
-            MessageProp msgProp) throws GSSException;
+    void requestConf(boolean state) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public byte[] getMIC(byte[] inMsg, int offset, int len, MessageProp msgProp)
-            throws GSSException;
+    void requestInteg(boolean state) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void getMIC(InputStream inStream, OutputStream outStream,
-            MessageProp msgProp) throws GSSException;
+    void requestLifetime(int lifetime) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void verifyMIC(byte[] inToken, int tokOffset, int tokLen,
-            byte[] inMsg, int msgOffset, int msgLen, MessageProp msgProp)
-            throws GSSException;
+    void setChannelBinding(ChannelBinding cb) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void verifyMIC(InputStream tokStream, InputStream msgStream,
-            MessageProp msgProp) throws GSSException;
+    boolean getCredDelegState();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public byte[] export() throws GSSException;
+    boolean getMutualAuthState();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void requestMutualAuth(boolean state) throws GSSException;
+    boolean getReplayDetState();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void requestReplayDet(boolean state) throws GSSException;
+    boolean getSequenceDetState();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void requestSequenceDet(boolean state) throws GSSException;
+    boolean getAnonymityState();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void requestCredDeleg(boolean state) throws GSSException;
+    boolean isTransferable() throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void requestAnonymity(boolean state) throws GSSException;
+    boolean isProtReady();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void requestConf(boolean state) throws GSSException;
+    boolean getConfState();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void requestInteg(boolean state) throws GSSException;
+    boolean getIntegState();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void requestLifetime(int lifetime) throws GSSException;
+    int getLifetime();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void setChannelBinding(ChannelBinding cb) throws GSSException;
+    GSSName getSrcName() throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean getCredDelegState();
+    GSSName getTargName() throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean getMutualAuthState();
+    Oid getMech() throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean getReplayDetState();
+    GSSCredential getDelegCred() throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean getSequenceDetState();
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean getAnonymityState();
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean isTransferable() throws GSSException;
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean isProtReady();
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean getConfState();
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean getIntegState();
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public int getLifetime();
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public GSSName getSrcName() throws GSSException;
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public GSSName getTargName() throws GSSException;
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public Oid getMech() throws GSSException;
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public GSSCredential getDelegCred() throws GSSException;
-
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public boolean isInitiator() throws GSSException;
-
+    boolean isInitiator() throws GSSException;
 }

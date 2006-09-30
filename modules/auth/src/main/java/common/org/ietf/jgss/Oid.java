@@ -15,10 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander V. Esin
-* @version $Revision$
-*/
 package org.ietf.jgss;
 
 import java.io.IOException;
@@ -28,32 +24,26 @@ import org.apache.harmony.auth.internal.nls.Messages;
 import org.apache.harmony.security.asn1.ASN1Oid;
 import org.apache.harmony.security.asn1.ObjectIdentifier;
 
-
-/**
- * @com.intel.drl.spec_ref
- */
 public class Oid {
-    
+
     // ASN.1 decoder/encoder
     private static final ASN1Oid ASN1 = ASN1Oid.getInstance();
-    
+
     //inner representation of Object Identifier
     private final ObjectIdentifier oid;
 
     //ASN.1 DER encoding
     private byte[] encoding;
 
-    //ctor for internal usage
     Oid(int[] data) {
+        super();
         oid = new ObjectIdentifier(data);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Oid(byte[] data) throws GSSException {
+        super();
         try {
-            oid = new ObjectIdentifier((int[])ASN1.decode(data));
+            oid = new ObjectIdentifier((int[]) ASN1.decode(data));
         } catch (IOException e) {
             GSSException gsse = new GSSException(GSSException.FAILURE);
             gsse.initCause(e);
@@ -61,10 +51,8 @@ public class Oid {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Oid(InputStream derOid) throws GSSException {
+        super();
         if (derOid == null) {
             throw new NullPointerException();
         }
@@ -78,10 +66,8 @@ public class Oid {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public Oid(String strOid) throws GSSException {
+        super();
         try {
             oid = new ObjectIdentifier(strOid);
         } catch (IllegalArgumentException e) {
@@ -91,9 +77,7 @@ public class Oid {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public boolean equals(Object other) {
         if (this == other) {
             return true;
@@ -104,24 +88,18 @@ public class Oid {
         return oid.equals(((Oid) other).oid);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean containedIn(Oid[] oids) {
         if (oids == null) {
             throw new NullPointerException(Messages.getString("auth.0D")); //$NON-NLS-1$
         }
-        for (int i = 0; i < oids.length; ++i) {
-            if (oid.equals(oids[i].oid)) {
+        for (Oid element : oids) {
+            if (oid.equals(element.oid)) {
                 return true;
             }
         }
         return false;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public byte[] getDER() throws GSSException {
         if (encoding == null) {
             encoding = ASN1.encode(oid.getOid());
@@ -131,16 +109,12 @@ public class Oid {
         return enc;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public String toString() {
         return oid.toString();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public int hashCode() {
         return oid.hashCode();
     }

@@ -15,10 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander V. Esin
-* @version $Revision$
-*/
 package org.ietf.jgss;
 
 import java.security.AccessController;
@@ -26,111 +22,52 @@ import java.security.Provider;
 
 import org.apache.harmony.security.fortress.PolicyUtils;
 
-
-/**
- * @com.intel.drl.spec_ref
- */
 public abstract class GSSManager {
 
     static final String MANAGER = "jgss.spi.manager"; //$NON-NLS-1$
 
     /**
-     * @com.intel.drl.spec_ref The implementation class name should be specified
-     *                         via &quot;jgss.spi.manager&quot; security
-     *                         property.
-     * @throws SecurityException
-     *             if manager instance cannot be created
+     * The implementation class name should be specified via
+     * &quot;jgss.spi.manager&quot; security property.
+     * 
+     * @throws SecurityException if manager instance cannot be created
      */
     public static GSSManager getInstance() {
-        return (GSSManager) AccessController
-                .doPrivileged(new PolicyUtils.ProviderLoader(MANAGER,
-                        GSSManager.class));
+        return AccessController.doPrivileged(new PolicyUtils.ProviderLoader<GSSManager>(
+                MANAGER, GSSManager.class));
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public abstract Oid[] getMechs();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public abstract Oid[] getNamesForMech(Oid mech) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public abstract Oid[] getMechsForName(Oid nameType);
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public abstract GSSName createName(String nameStr, Oid nameType)
-            throws GSSException;
+    public abstract GSSName createName(String nameStr, Oid nameType) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public abstract GSSName createName(byte[] name, Oid nameType)
-            throws GSSException;
+    public abstract GSSName createName(byte[] name, Oid nameType) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public abstract GSSName createName(String nameStr, Oid nameType, Oid mech)
             throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public abstract GSSName createName(byte[] name, Oid nameType, Oid mech)
-            throws GSSException;
+    public abstract GSSName createName(byte[] name, Oid nameType, Oid mech) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public abstract GSSCredential createCredential(int usage)
-            throws GSSException;
+    public abstract GSSCredential createCredential(int usage) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public abstract GSSCredential createCredential(GSSName name, int lifetime,
-            Oid mech, int usage) throws GSSException;
+    public abstract GSSCredential createCredential(GSSName name, int lifetime, Oid mech,
+            int usage) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public abstract GSSCredential createCredential(GSSName name, int lifetime,
-            Oid[] mechs, int usage) throws GSSException;
+    public abstract GSSCredential createCredential(GSSName name, int lifetime, Oid[] mechs,
+            int usage) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public abstract GSSContext createContext(GSSName peer, Oid mech,
-            GSSCredential myCred, int lifetime) throws GSSException;
+    public abstract GSSContext createContext(GSSName peer, Oid mech, GSSCredential myCred,
+            int lifetime) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public abstract GSSContext createContext(GSSCredential myCred)
-            throws GSSException;
+    public abstract GSSContext createContext(GSSCredential myCred) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public abstract GSSContext createContext(byte[] interProcessToken)
-            throws GSSException;
+    public abstract GSSContext createContext(byte[] interProcessToken) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public abstract void addProviderAtFront(Provider p, Oid mech)
-            throws GSSException;
+    public abstract void addProviderAtFront(Provider p, Oid mech) throws GSSException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public abstract void addProviderAtEnd(Provider p, Oid mech)
-            throws GSSException;
+    public abstract void addProviderAtEnd(Provider p, Oid mech) throws GSSException;
 }

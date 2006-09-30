@@ -15,131 +15,86 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander V. Esin
-* @version $Revision$
-*/
 package org.ietf.jgss;
 
-/**
- * @com.intel.drl.spec_ref
- */
 public class MessageProp {
 
-    //privacy state
+    // privacy state
     private boolean privState;
 
-    //quality-of-protection
-    private int qop /*= 0*/;
+    // quality-of-protection
+    private int qop /* = 0 */;
 
-    //duplicate token
+    // duplicate token
     private boolean duplicate;
 
-    //old token
+    // old token
     private boolean old;
 
-    //unseq
+    // unseq
     private boolean unseq;
 
-    //gap
+    // gap
     private boolean gap;
 
-    //minor status
-    private int minorStatus /*= 0*/;
+    // minor status
+    private int minorStatus /* = 0 */;
 
-    //minor status string
+    // minor status string
     private String minorString;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public MessageProp(boolean privState) {
+        super();
         this.privState = privState;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public MessageProp(int qop, boolean privState) {
         this(privState);
         this.qop = qop;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public int getQOP() {
         return qop;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean getPrivacy() {
         return privState;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean isDuplicateToken() {
         return duplicate;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean isOldToken() {
         return old;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean isUnseqToken() {
         return unseq;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public boolean isGapToken() {
         return gap;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public int getMinorStatus() {
         return minorStatus;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getMinorString() {
         return minorString;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setQOP(int qop) {
         this.qop = qop;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public void setPrivacy(boolean privState) {
         this.privState = privState;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void setSupplementaryStates(boolean duplicate, boolean old,
-            boolean unseq, boolean gap, int minorStatus, String minorString) {
+    public void setSupplementaryStates(boolean duplicate, boolean old, boolean unseq,
+            boolean gap, int minorStatus, String minorString) {
         this.duplicate = duplicate;
         this.old = old;
         this.unseq = unseq;

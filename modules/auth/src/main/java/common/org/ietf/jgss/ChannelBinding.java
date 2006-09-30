@@ -15,65 +15,43 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander V. Esin
-* @version $Revision$
-*/
 package org.ietf.jgss;
 
 import java.net.InetAddress;
 import java.util.Arrays;
 
-/**
- * @com.intel.drl.spec_ref
- */
 public class ChannelBinding {
     //initiator address
     private InetAddress initAddr;
 
-    //aceptor address
+    //acceptor address
     private InetAddress acceptAddr;
 
     //application data
     private byte[] appData;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public ChannelBinding(InetAddress initAddr, InetAddress acceptAddr,
-            byte[] appData) {
+    public ChannelBinding(InetAddress initAddr, InetAddress acceptAddr, byte[] appData) {
         this(appData);
         this.initAddr = initAddr;
         this.acceptAddr = acceptAddr;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public ChannelBinding(byte[] appData) {
+        super();
         if (appData != null) {
             this.appData = new byte[appData.length];
             System.arraycopy(appData, 0, this.appData, 0, appData.length);
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public InetAddress getInitiatorAddress() {
         return initAddr;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public InetAddress getAcceptorAddress() {
         return acceptAddr;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public byte[] getApplicationData() {
         byte[] bytes = null;
         if (appData != null) {
@@ -83,9 +61,7 @@ public class ChannelBinding {
         return bytes;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -100,17 +76,14 @@ public class ChannelBinding {
         }
 
         if (acceptAddr != another.acceptAddr
-                && (acceptAddr == null || !acceptAddr
-                        .equals(another.acceptAddr))) {
+                && (acceptAddr == null || !acceptAddr.equals(another.acceptAddr))) {
             return false;
         }
 
         return Arrays.equals(appData, another.appData);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public int hashCode() {
         if (initAddr != null) {
             return initAddr.hashCode();
@@ -120,8 +93,8 @@ public class ChannelBinding {
         }
         if (appData != null) {
             int hashCode = 0;
-            for (int i = 0; i < appData.length; ++i) {
-                hashCode = 31 * hashCode + appData[i];
+            for (byte element : appData) {
+                hashCode = 31 * hashCode + element;
             }
             return hashCode;
         }
