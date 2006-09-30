@@ -182,7 +182,6 @@ public class CollatorTest extends junit.framework.TestCase {
 			if (locales[i].equals(Locale.GERMAN))
 				german = true;
 			// Output the working locale to help diagnose a hang
-			System.out.print(locales[i] + ",");
 			Collator c1 = Collator.getInstance(locales[i]);
 			assertTrue("Doesn't work", c1.compare("a", "b") < 0);
 			assertTrue("Wrong decomposition",
