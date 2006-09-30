@@ -72,6 +72,7 @@ public class PrincipalName {
         return name;
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -86,10 +87,12 @@ public class PrincipalName {
         return type == that.type && Arrays.equals(that.name, name);
     }
 
+    @Override
     public int hashCode() {
         return type + Arrays.hashCode(name);
     }
 
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder("Name: "); //$NON-NLS-1$
 
@@ -110,9 +113,9 @@ public class PrincipalName {
      */
     public static final ASN1Sequence ASN1 = new ASN1Sequence(new ASN1Type[] {
             new ASN1Explicit(0, ASN1Integer.getInstance()),
-            new ASN1Explicit(1,
-                    new ASN1SequenceOf(ASN1StringType.GENERALSTRING)), }) {
+            new ASN1Explicit(1, new ASN1SequenceOf(ASN1StringType.GENERALSTRING)), }) {
 
+        @Override
         protected Object getDecodedObject(BerInputStream in) throws IOException {
 
             Object[] values = (Object[]) in.content;
@@ -120,13 +123,12 @@ public class PrincipalName {
             int type = ASN1Integer.toIntValue(values[0]);
 
             // TODO: list to array conversion should be done by framework
-            List list = (List) values[1];
-            String[] name = new String[list.size()];
-            list.toArray(name);
-
+            List<?> list = (List<?>) values[1];
+            String[] name = list.toArray(new String[list.size()]);
             return new PrincipalName(type, name);
         }
 
+        @Override
         protected void getValues(Object object, Object[] values) {
 
             PrincipalName name = (PrincipalName) object;

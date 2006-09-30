@@ -28,11 +28,11 @@ import org.apache.harmony.security.asn1.ASN1Type;
 public class KerberosTime {
 
     private KerberosTime() {
+        super();
     }
 
     // TODO: should we create encoder that handles fractional seconds?
-    private static final ASN1GeneralizedTime ASN1 = ASN1GeneralizedTime
-            .getInstance();
+    private static final ASN1GeneralizedTime ASN1 = ASN1GeneralizedTime.getInstance();
 
     /**
      * KerberosTime is defined as GeneralizedTime with no fractional seconds

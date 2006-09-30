@@ -15,17 +15,13 @@
  *  limitations under the License.
  */
 
-/**
-* @author Stepan M. Mishura
-* @version $Revision$
-*/
-
 package org.apache.harmony.auth;
 
 import java.io.File;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.CodeSource;
+import java.security.Permission;
 import java.security.PermissionCollection;
 import java.security.Principal;
 import java.security.cert.Certificate;
@@ -33,6 +29,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.security.auth.AuthPermission;
 import javax.security.auth.Policy;
@@ -42,14 +39,13 @@ import org.apache.harmony.security.PolicyEntry;
 import org.apache.harmony.security.fortress.DefaultPolicyParser;
 import org.apache.harmony.security.fortress.PolicyUtils;
 
-
 /**
  * Default implementation for subject-based policy 
  */
+@SuppressWarnings("deprecation")
 public class DefaultSubjectPolicy extends Policy {
 
-    private static final AuthPermission REFRESH_POLICY = new AuthPermission(
-            "refreshPolicy"); //$NON-NLS-1$
+    private static final AuthPermission REFRESH_POLICY = new AuthPermission("refreshPolicy"); //$NON-NLS-1$
 
     // System property for dynamically added policy location.
     private static final String AUTH_SECURITY_POLICY = "java.security.auth.policy"; //$NON-NLS-1$
@@ -61,27 +57,28 @@ public class DefaultSubjectPolicy extends Policy {
     private boolean isInitialized;
 
     // A set of PolicyEntries constituting this Policy.
-    private HashSet set;
+    private Set<PolicyEntry> set;
 
     // A specific parser for a particular policy file format.
     // The implementation of parse thread-safe, so static instance is used 
     private static final DefaultPolicyParser parser = new DefaultPolicyParser();
 
     // empty source object for getPermissions method
-    private static final CodeSource emptySource = new CodeSource(null,
-            (Certificate[]) null);
+    private static final CodeSource emptySource = new CodeSource(null, (Certificate[]) null);
 
     public DefaultSubjectPolicy() {
+        super();
         isInitialized = false;
     }
 
+    @Override
     public PermissionCollection getPermissions(Subject subject, CodeSource cs) {
         if (!isInitialized) {
             init();
         }
 
-        Collection pc = new HashSet();
-        Iterator it = set.iterator();
+        Collection<Permission> pc = new HashSet<Permission>();
+        Iterator<PolicyEntry> it = set.iterator();
 
         if (subject != null) {
             int size = subject.getPrincipals().size();
@@ -93,17 +90,16 @@ public class DefaultSubjectPolicy extends Policy {
             }
 
             while (it.hasNext()) {
-                PolicyEntry ge = (PolicyEntry) it.next();
+                PolicyEntry ge = it.next();
                 if (ge.impliesCodeSource(cs) && ge.impliesPrincipals(p)) {
                     pc.addAll(ge.getPermissions());
                 }
             }
         }
-        // TODO what about caching returned objects??? 
-
         return PolicyUtils.toPermissionCollection(pc);
     }
 
+    @Override
     public void refresh() {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -114,23 +110,19 @@ public class DefaultSubjectPolicy extends Policy {
 
     private synchronized void init() {
 
-        set = new HashSet();
+        set = new HashSet<PolicyEntry>();
 
-        Properties system = new Properties((Properties) AccessController
+        Properties system = new Properties(AccessController
                 .doPrivileged(new PolicyUtils.SystemKit()));
         system.setProperty("/", File.separator); //$NON-NLS-1$
-        URL[] policyLocations = PolicyUtils.getPolicyURLs(system,
-                AUTH_SECURITY_POLICY, POLICY_URL_PREFIX);
+        URL[] policyLocations = PolicyUtils.getPolicyURLs(system, AUTH_SECURITY_POLICY,
+                POLICY_URL_PREFIX);
 
-        for (int i = 0; i < policyLocations.length; i++) {
+        for (URL url : policyLocations) {
             try {
-                //TODO debug log
-                //System.err.println("Parsing policy file: " + policyLocations[i]);
-                set.addAll(parser.parse(policyLocations[i], system));
+                set.addAll(parser.parse(url, system));
             } catch (Exception e) {
-                // TODO log warning
-                //System.err.println("Ignoring policy file: " 
-                //                 + policyLocations[i] + ". Reason:\n"+ e);
+                e.printStackTrace();
             }
         }
 

@@ -29,8 +29,6 @@ import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 
 /**
- * TODO comment me
- * 
  * @see http://www.ietf.org/rfc/rfc4120.txt
  */
 public class Ticket {
@@ -52,14 +50,14 @@ public class Ticket {
         return sname;
     }
 
-    //
-    // Ticket          ::= [APPLICATION 1] SEQUENCE {
-    //     tkt-vno         [0] INTEGER (5),
-    //     realm           [1] Realm,
-    //     sname           [2] PrincipalName,
-    //     enc-part        [3] EncryptedData -- EncTicketPart
-    // }
-    //
+    /**
+     <pre>Ticket          ::= [APPLICATION 1] SEQUENCE {
+     tkt-vno         [0] INTEGER (5),
+     realm           [1] Realm,
+     sname           [2] PrincipalName,
+     enc-part        [3] EncryptedData -- EncTicketPart
+     }</pre>
+     */
     static final ASN1Sequence ASN1 = new ASN1Sequence(new ASN1Type[] {
             new ASN1Explicit(0, ASN1Integer.getInstance()), // tkt-vno
             // TODO should we define Realm type?
@@ -69,6 +67,7 @@ public class Ticket {
             new ASN1Explicit(3, ASN1Any.getInstance()), // ticket 
     }) {
 
+        @Override
         protected Object getDecodedObject(BerInputStream in) throws IOException {
 
             Object[] values = (Object[]) in.content;
@@ -76,6 +75,7 @@ public class Ticket {
             return new Ticket((String) values[1], (PrincipalName) values[2]);
         }
 
+        @Override
         protected void getValues(Object object, Object[] values) {
             throw new RuntimeException(); //FIXME message
         }

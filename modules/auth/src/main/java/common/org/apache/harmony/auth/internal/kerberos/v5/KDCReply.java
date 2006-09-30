@@ -30,8 +30,6 @@ import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 
 /**
- * TODO comment me
- * 
  * @see http://www.ietf.org/rfc/rfc4120.txt
  */
 public class KDCReply {
@@ -57,8 +55,8 @@ public class KDCReply {
 
     private final EncryptedData encPart;
 
-    private KDCReply(int msgType, String crealm, PrincipalName cname,
-            Ticket ticket, EncryptedData encPart) {
+    private KDCReply(int msgType, String crealm, PrincipalName cname, Ticket ticket,
+            EncryptedData encPart) {
         this.msgType = msgType;
         this.cname = cname;
         this.crealm = crealm;
@@ -86,20 +84,22 @@ public class KDCReply {
         return encPart;
     }
 
-    //
-    // KDC-REP         ::= SEQUENCE {
-    //    pvno            [0] INTEGER (5),
-    //    msg-type        [1] INTEGER (11 -- AS -- | 13 -- TGS --),
-    //    padata          [2] SEQUENCE OF PA-DATA OPTIONAL
-    //                            -- NOTE: not empty --,
-    //    crealm          [3] Realm,
-    //    cname           [4] PrincipalName,
-    //    ticket          [5] Ticket,
-    //    enc-part        [6] EncryptedData
-    //                            -- EncASRepPart or EncTGSRepPart,
-    //                            -- as appropriate
-    // }
-    //
+    /**
+     * <pre>
+     *  KDC-REP         ::= SEQUENCE {
+     *       pvno            [0] INTEGER (5),
+     *       msg-type        [1] INTEGER (11 -- AS -- | 13 -- TGS --),
+     *       padata          [2] SEQUENCE OF PA-DATA OPTIONAL
+     *       -- NOTE: not empty --,
+     *       crealm          [3] Realm,
+     *       cname           [4] PrincipalName,
+     *       ticket          [5] Ticket,
+     *       enc-part        [6] EncryptedData
+     *       -- EncASRepPart or EncTGSRepPart,
+     *       -- as appropriate
+     *       }
+     * </pre>
+     */
     static final ASN1Sequence KDC_REP_ASN1 = new ASN1Sequence(new ASN1Type[] {
             new ASN1Explicit(0, ASN1Integer.getInstance()), // pvno
             new ASN1Explicit(1, ASN1Integer.getInstance()), // msg-type
@@ -107,24 +107,25 @@ public class KDCReply {
             // TODO should we define Realm type?
             new ASN1Explicit(3, ASN1StringType.GENERALSTRING), // crealm
             new ASN1Explicit(4, PrincipalName.ASN1), // cname
-            new ASN1Explicit(5, Ticket.TICKET_ASN1), // ticket 
-            new ASN1Explicit(6, EncryptedData.ASN1), // enc-part 
+            new ASN1Explicit(5, Ticket.TICKET_ASN1), // ticket
+            new ASN1Explicit(6, EncryptedData.ASN1), // enc-part
     }) {
         {
             setOptional(2); // padata
         }
 
+        @Override
         protected Object getDecodedObject(BerInputStream in) throws IOException {
 
             Object[] values = (Object[]) in.content;
 
-            return new KDCReply(ASN1Integer.toIntValue(values[1]),
-                    (String) values[3], (PrincipalName) values[4],
-                    (Ticket) values[5], (EncryptedData) values[6]);
+            return new KDCReply(ASN1Integer.toIntValue(values[1]), (String) values[3],
+                    (PrincipalName) values[4], (Ticket) values[5], (EncryptedData) values[6]);
         }
 
+        @Override
         protected void getValues(Object object, Object[] values) {
-            throw new RuntimeException(); //FIXME message
+            throw new RuntimeException(); // FIXME message
         }
     };
 

@@ -27,8 +27,6 @@ import org.apache.harmony.auth.internal.nls.Messages;
 import org.apache.harmony.security.asn1.DerInputStream;
 
 /**
- * TODO comment me
- * 
  * @see http://www.ietf.org/rfc/rfc4120.txt
  */
 public class KrbClient {
@@ -42,21 +40,16 @@ public class KrbClient {
     /**
      * Get credentials from Authentication Service.
      * 
-     * @param address -
-     *            service host
-     * @param port -
-     *            service port
-     * @param cname -
-     *            client's principal identifier
-     * @param realm -
-     *            client's realm
+     * @param address - service host
+     * @param port - service port
+     * @param cname - client's principal identifier
+     * @param realm - client's realm
      * @return - ticket
      */
-    public static Ticket doAS(InetAddress address, int port,
-            PrincipalName cname, String realm, PrincipalName sname) {
+    public static Ticket doAS(InetAddress address, int port, PrincipalName cname, String realm,
+            PrincipalName sname) {
 
-        KDCRequest request = new KDCRequest(KDCRequest.AS_REQ, cname, realm,
-                sname);
+        KDCRequest request = new KDCRequest(KDCRequest.AS_REQ, cname, realm, sname);
 
         try {
             DatagramSocket socket = request.send(address, port);
@@ -81,14 +74,13 @@ public class KrbClient {
             } else if (in.tag == KerberosErrorMessage.ASN1.constrId) {
                 KerberosErrorMessage errMsg = KerberosErrorMessage.decode(in);
                 // auth.52=Error code: {0}
-                throw new RuntimeException(Messages.getString(
-                        "auth.52", errMsg.getErrorCode())); //$NON-NLS-1$
+                throw new RuntimeException(Messages.getString("auth.52", errMsg.getErrorCode())); //$NON-NLS-1$
             } else {
                 new RuntimeException(); //FIXME
             }
 
         } catch (IOException e) {
-            new RuntimeException(); //FIXME 
+            new RuntimeException(e); //FIXME 
         }
 
         return null;

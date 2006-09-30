@@ -57,12 +57,11 @@ public class KerberosErrorMessage {
     private PrincipalName sname;
 
     private String etext;
-    
+
     public KerberosErrorMessage() {
     }
 
-    public static KerberosErrorMessage decode(DerInputStream in)
-            throws IOException {
+    public static KerberosErrorMessage decode(DerInputStream in) throws IOException {
 
         return (KerberosErrorMessage) ASN1.decode(in);
     }
@@ -107,28 +106,28 @@ public class KerberosErrorMessage {
         return etext;
     }
 
-    private static final ASN1Sequence KRB_ERROR = new ASN1Sequence(
-            new ASN1Type[] { new ASN1Explicit(0, ASN1Any.getInstance()), // TODO:ignored
-                    new ASN1Explicit(1, ASN1Any.getInstance()), // TODO: ignored
-                    new ASN1Explicit(2, KerberosTime.getASN1()),// ctime
-                    // TODO should we define Microseconds type?
-                    new ASN1Explicit(3, ASN1Integer.getInstance()), // cusec
-                    new ASN1Explicit(4, KerberosTime.getASN1()),// stime
-                    // TODO should we define Microseconds type?
-                    new ASN1Explicit(5, ASN1Integer.getInstance()), // susec
-                    // TODO should we define Int32 type?
-                    new ASN1Explicit(6, ASN1Integer.getInstance()),// error-code
-                    // TODO should we define Realm type?
-                    new ASN1Explicit(7, ASN1StringType.GENERALSTRING),// crealm
-                    new ASN1Explicit(8, PrincipalName.ASN1),// cname
-                    // TODO should we define Realm type?
-                    new ASN1Explicit(9, ASN1StringType.GENERALSTRING),// realm
-                    new ASN1Explicit(10, PrincipalName.ASN1),// sname
-                    // TODO should we define KerberosString type?
-                    new ASN1Explicit(11, ASN1StringType.GENERALSTRING),// e-text
-                    // TODO: ignored
-                    new ASN1Explicit(12, ASN1OctetString.getInstance()),// e-data
-            }) {
+    private static final ASN1Sequence KRB_ERROR = new ASN1Sequence(new ASN1Type[] {
+            new ASN1Explicit(0, ASN1Any.getInstance()), // TODO:ignored
+            new ASN1Explicit(1, ASN1Any.getInstance()), // TODO: ignored
+            new ASN1Explicit(2, KerberosTime.getASN1()),// ctime
+            // TODO should we define Microseconds type?
+            new ASN1Explicit(3, ASN1Integer.getInstance()), // cusec
+            new ASN1Explicit(4, KerberosTime.getASN1()),// stime
+            // TODO should we define Microseconds type?
+            new ASN1Explicit(5, ASN1Integer.getInstance()), // susec
+            // TODO should we define Int32 type?
+            new ASN1Explicit(6, ASN1Integer.getInstance()),// error-code
+            // TODO should we define Realm type?
+            new ASN1Explicit(7, ASN1StringType.GENERALSTRING),// crealm
+            new ASN1Explicit(8, PrincipalName.ASN1),// cname
+            // TODO should we define Realm type?
+            new ASN1Explicit(9, ASN1StringType.GENERALSTRING),// realm
+            new ASN1Explicit(10, PrincipalName.ASN1),// sname
+            // TODO should we define KerberosString type?
+            new ASN1Explicit(11, ASN1StringType.GENERALSTRING),// e-text
+            // TODO: ignored
+            new ASN1Explicit(12, ASN1OctetString.getInstance()),// e-data
+    }) {
         {
             setOptional(2);// ctime
             setOptional(3);// cusec
@@ -138,6 +137,7 @@ public class KerberosErrorMessage {
             setOptional(12);// e-data
         }
 
+        @Override
         protected Object getDecodedObject(BerInputStream in) throws IOException {
 
             Object[] values = (Object[]) in.content;
@@ -160,12 +160,12 @@ public class KerberosErrorMessage {
             return message;
         }
 
+        @Override
         protected void getValues(Object object, Object[] values) {
-            throw new RuntimeException(
-                    "KerberosErrorMessage encoder is not implemented");
+            throw new RuntimeException("KerberosErrorMessage encoder is not implemented");
         }
     };
 
-    public static final ASN1Explicit ASN1 = new ASN1Explicit(
-            ASN1Constants.CLASS_APPLICATION, 30, KRB_ERROR);
+    public static final ASN1Explicit ASN1 = new ASN1Explicit(ASN1Constants.CLASS_APPLICATION,
+            30, KRB_ERROR);
 }

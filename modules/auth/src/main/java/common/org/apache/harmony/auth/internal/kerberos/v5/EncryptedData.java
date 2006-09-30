@@ -31,8 +31,6 @@ import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 
 /**
- * TODO comment me
- * 
  * @see http://www.ietf.org/rfc/rfc4120.txt
  */
 public class EncryptedData {
@@ -82,49 +80,50 @@ public class EncryptedData {
 
         IvParameterSpec initCipherState;
         switch (etype) {
-        case DES_CBC_CRC:
-            offset = 12;// confounder(8)+CRC-32 checksum(4)
-            // copy of original key
-            initCipherState = new IvParameterSpec(key.getEncoded());
-            break;
-        case DES_CBC_MD4:
-        case DES_CBC_MD5:
-            offset = 24;// confounder(8)+ MD4/5 checksum(16)
-            // all-zero
-            initCipherState = new IvParameterSpec(new byte[] { 0, 0, 0, 0, 0,
-                    0, 0, 0, });
-            break;
-        default:
-            throw new RuntimeException();//FIXME not implemented yet
+            case DES_CBC_CRC:
+                offset = 12;// confounder(8)+CRC-32 checksum(4)
+                // copy of original key
+                initCipherState = new IvParameterSpec(key.getEncoded());
+                break;
+            case DES_CBC_MD4:
+            case DES_CBC_MD5:
+                offset = 24;// confounder(8)+ MD4/5 checksum(16)
+                // all-zero
+                initCipherState = new IvParameterSpec(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, });
+                break;
+            default:
+                throw new RuntimeException();//FIXME not implemented yet
         }
 
         try {
             Cipher dcipher = Cipher.getInstance("DES/CBC/NoPadding");
-            
+
             dcipher.init(Cipher.DECRYPT_MODE, key, initCipherState);
-            
+
             byte[] tmp = dcipher.doFinal(cipher);
-            
+
             // TODO: verify checksum
 
             // cat out: confounder and checksum bytes
             // TODO: how to do the same for padding bytes?
-            byte[] result = new byte[tmp.length-offset];
+            byte[] result = new byte[tmp.length - offset];
             System.arraycopy(tmp, offset, result, 0, result.length);
-            
+
             return result;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    //
-    // EncryptedData   ::= SEQUENCE {
-    //    etype   [0] Int32 -- EncryptionType --,
-    //    kvno    [1] UInt32 OPTIONAL,
-    //    cipher  [2] OCTET STRING -- ciphertext
-    // }
-    //
+    /**
+     * <pre>
+     * EncryptedData   ::= SEQUENCE {
+     *      etype   [0] Int32 -- EncryptionType --,
+     *      kvno    [1] UInt32 OPTIONAL,
+     *      cipher  [2] OCTET STRING -- ciphertext
+     *      }
+     * </pre>
+     */
     static final ASN1Sequence ASN1 = new ASN1Sequence(new ASN1Type[] {
     // TODO should we define Int32 type?
             new ASN1Explicit(0, ASN1Integer.getInstance()), // etype
@@ -136,14 +135,14 @@ public class EncryptedData {
             setOptional(1); // kvno
         }
 
+        @Override
         protected Object getDecodedObject(BerInputStream in) throws IOException {
-
             Object[] values = (Object[]) in.content;
-
-            return new EncryptedData(ASN1Integer.toIntValue(values[0]),
-                    ASN1Integer.toIntValue(values[1]), (byte[]) values[2]);
+            return new EncryptedData(ASN1Integer.toIntValue(values[0]), ASN1Integer
+                    .toIntValue(values[1]), (byte[]) values[2]);
         }
 
+        @Override
         protected void getValues(Object object, Object[] values) {
             throw new RuntimeException(); //FIXME message
         }
