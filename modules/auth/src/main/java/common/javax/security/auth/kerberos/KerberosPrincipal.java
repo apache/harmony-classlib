@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Maxim V. Makarov, Stepan M. Mishura
- * @version $Revision$
- */
 
 package javax.security.auth.kerberos;
 
@@ -32,44 +28,20 @@ import org.apache.harmony.auth.internal.kerberos.v5.PrincipalName;
 import org.apache.harmony.auth.internal.nls.Messages;
 import org.apache.harmony.security.asn1.ASN1StringType;
 
-/**
- * @com.intel.drl.spec_ref
- */
 public final class KerberosPrincipal implements Principal, Serializable {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private static final long serialVersionUID = -7374788026156829911L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static final int KRB_NT_UNKNOWN = 0;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static final int KRB_NT_PRINCIPAL = 1;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static final int KRB_NT_SRV_INST = 2;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static final int KRB_NT_SRV_HST = 3;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static final int KRB_NT_SRV_XHST = 4;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public static final int KRB_NT_UID = 5;
 
     // the full name of principal
@@ -102,16 +74,11 @@ public final class KerberosPrincipal implements Principal, Serializable {
 
         // verify realm name according to RFC 1964(2.1.1 (2))
         // check invalid chars '/', ':' and null
-        if (realm.indexOf('/') != -1 || realm.indexOf(':') != -1
-                || realm.indexOf(0) != -1) {
-            throw new IllegalArgumentException(
-                    Messages.getString("auth.24")); //$NON-NLS-1$
+        if (realm.indexOf('/') != -1 || realm.indexOf(':') != -1 || realm.indexOf(0) != -1) {
+            throw new IllegalArgumentException(Messages.getString("auth.24")); //$NON-NLS-1$
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public KerberosPrincipal(String name) {
         // TODO: If principal name does't specify then a default realm
         // should be read from krb.conf file else IllegalArgumentException
@@ -120,9 +87,6 @@ public final class KerberosPrincipal implements Principal, Serializable {
         type = KRB_NT_PRINCIPAL;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public KerberosPrincipal(String name, int type) {
         // TODO: If principal name does't specify then a default realm
         // should be read from krb.conf file else IllegalArgumentException
@@ -135,39 +99,24 @@ public final class KerberosPrincipal implements Principal, Serializable {
         this.type = type;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     * 
-     * <code>toString</code> in interface <code>Principal</code>
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public String getRealm() {
         return realm;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public int getNameType() {
         return type;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public int hashCode() {
         return getName().hashCode();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -181,22 +130,18 @@ public final class KerberosPrincipal implements Principal, Serializable {
         return (that.name.equals(this.name) && that.type == this.type);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public String toString() {
         return super.toString();
     }
 
-    private void readObject(ObjectInputStream s) throws IOException,
-            ClassNotFoundException {
+    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
 
         s.defaultReadObject();
 
-        PrincipalName principalName = (PrincipalName) PrincipalName.ASN1
-                .decode((byte[]) s.readObject());
-        realm = (String) ASN1StringType.GENERALSTRING.decode((byte[]) s
+        PrincipalName principalName = (PrincipalName) PrincipalName.ASN1.decode((byte[]) s
                 .readObject());
+        realm = (String) ASN1StringType.GENERALSTRING.decode((byte[]) s.readObject());
 
         String[] nameString = principalName.getName();
         StringBuilder buf = new StringBuilder();
@@ -238,8 +183,7 @@ public final class KerberosPrincipal implements Principal, Serializable {
             }
         }
 
-        byte[] enc = PrincipalName.ASN1.encode(new PrincipalName(type,
-                nameString));
+        byte[] enc = PrincipalName.ASN1.encode(new PrincipalName(type, nameString));
         s.writeObject(enc);
 
         enc = ASN1StringType.GENERALSTRING.encode(realm);
