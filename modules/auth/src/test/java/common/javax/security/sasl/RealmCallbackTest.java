@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.security.sasl;
 
 import junit.framework.TestCase;
@@ -28,16 +23,7 @@ import junit.framework.TestCase;
  * Tests for constructors and methods of RealmCallback class
  * 
  */
-
 public class RealmCallbackTest extends TestCase {
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(RealmCallbackTest.class);
-    }
-
-    public RealmCallbackTest(String arg0) {
-        super(arg0);
-    }
     
     private static final String[] prompts = {
             "Prompts",

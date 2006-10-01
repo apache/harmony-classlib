@@ -15,32 +15,21 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.security.sasl;
 
-
-import java.io.IOException;
 import java.security.Provider;
 import java.security.Security;
-import java.util.Map;
 
 import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.TextOutputCallback;
-import javax.security.auth.callback.UnsupportedCallbackException;
-
-import org.apache.harmony.auth.tests.support.SpiEngUtils;
 
 import junit.framework.TestCase;
+
+import org.apache.harmony.auth.tests.support.SpiEngUtils;
 
 /**
  * Test for Sasl class
  * 
  */
-
 public class Sasl4Test extends TestCase {
     private static final String SRVSSRV = "SaslServerFactory.";
 
@@ -48,20 +37,6 @@ public class Sasl4Test extends TestCase {
 
     private Provider [] provs;
     private boolean initProvs = false;
-
-    
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(Sasl4Test.class);
-    }
-
-    /**
-     * Constructor for Sasl4Test.
-     * 
-     * @param arg0
-     */
-    public Sasl4Test(String arg0) {
-        super(arg0);
-    }
 
     @Override
     protected void setUp() throws Exception {
@@ -297,97 +272,5 @@ public class Sasl4Test extends TestCase {
         assertNotNull("Null result for MECH-6", saslS);
         saslS = Sasl.createSaslServer("MECH-5", "protocol", null, null, cbH);
         assertNotNull("Null result for MECH-5", saslS);
-    }
-}
-
-/*
- * Additional class for creating SaslServer object
- */
-
-class mySaslServerFactory implements SaslServerFactory {
-    public mySaslServerFactory() {
-        super();
-    }
-
-    public String[] getMechanismNames(Map prop) {
-        return new String[] { "MECH-1", "MECH-2", "MECH-3", "MECH-4" };
-    }
-
-    public SaslServer createSaslServer(String mech, String protocol,
-            String srvName, Map prop, CallbackHandler hnd) throws SaslException {
-        if (mech == null) {
-            throw new SaslException();
-        }
-        if ("MECH-1".equals(mech)) {
-            throw new SaslException("Incorrect mechanisms");
-        }
-        if (protocol == null) {
-            throw new SaslException("Protocol is null");
-        }
-        TextOutputCallback[] cb = { new TextOutputCallback(
-                TextOutputCallback.INFORMATION, "Information") };
-        try {
-            hnd.handle(cb);
-        } catch (UnsupportedCallbackException e) {
-            throw new SaslException("Incorrect callback handlere", e);
-        } catch (IOException e) {
-            throw new SaslException("Incorrect callback handlere", e);
-        }
-        return new mySaslServer();
-    }
-
-    public class mySaslServer implements SaslServer {
-        public mySaslServer() {
-            super();
-        }
-
-        public void dispose() throws SaslException {
-        }
-
-        public byte[] evaluateResponse(byte[] challenge) throws SaslException {
-            return new byte[0];
-        }
-
-        public String getMechanismName() {
-            return "Server Proba";
-        }
-
-        public Object getNegotiatedProperty(String s) {
-            return "";
-        }
-
-        public String getAuthorizationID() {
-            return "";
-        }
-
-        public boolean isComplete() {
-            return false;
-        }
-
-        public byte[] unwrap(byte[] incoming, int offset, int len)
-                throws SaslException {
-            throw new SaslException();
-        }
-
-        public byte[] wrap(byte[] outgoing, int offset, int len)
-                throws SaslException {
-            return new byte[0];
-        }
-    }
-}
-
-class mySaslServerFactoryExt extends mySaslServerFactory {
-    @Override
-    public String[] getMechanismNames(Map prop) {
-        return new String[] { "MECH-5", "MECH-6" };
-    }
-
-    @Override
-    public SaslServer createSaslServer(String mech, String protocol,
-            String srvName, Map prop, CallbackHandler hnd) throws SaslException {
-        if (mech == null) {
-            throw new SaslException();
-        }
-        return new mySaslServer();
     }
 }

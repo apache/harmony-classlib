@@ -33,13 +33,14 @@ import java.security.SignatureException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import junit.framework.Test;
+import java.util.Date;
+import java.util.Set;
+
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import java.util.*;
 /**
  * Tests implementation of X500PrivateCredential class
  */
+@SuppressWarnings("serial")
 public class X500PrivateCredentialTest extends TestCase {
 
 	X509Certificate cert= new X509Certificate() {
@@ -125,13 +126,13 @@ public class X500PrivateCredentialTest extends TestCase {
         public PublicKey getPublicKey() {
 			return null;
 		}
-		public Set getCriticalExtensionOIDs() {
+		public Set<String> getCriticalExtensionOIDs() {
 			return null;
 		}
 		public byte[] getExtensionValue(String oid) {
 			return null;
 		}
-		public Set getNonCriticalExtensionOIDs() {
+		public Set<String> getNonCriticalExtensionOIDs() {
 			return null;
 		}
 		public boolean hasUnsupportedCriticalExtension() {
@@ -213,13 +214,4 @@ public class X500PrivateCredentialTest extends TestCase {
 			//ignore
 		}
 	}
-
-	public static Test suite() {
-		return new TestSuite(X500PrivateCredentialTest.class);
-	}
-
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(suite());
-	}
-
 }

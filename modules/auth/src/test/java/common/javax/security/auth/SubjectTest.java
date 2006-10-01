@@ -43,7 +43,7 @@ import junit.framework.TestSuite;
 
 
 /**
- * Tests Subject and its innner classes implementation. 
+ * Tests Subject and its inner classes implementation. 
  */
 
 public class SubjectTest extends SecurityTest {
@@ -94,11 +94,7 @@ public class SubjectTest extends SecurityTest {
 
     private final HashSet<Object> h2 = new HashSet<Object>(); // public credentials
 
-    private final HashSet<Object> h3 = new HashSet<Object>(); // private credentials
-
-    public static void main(String[] args) throws Exception {
-        junit.textui.TestRunner.run(javax.security.auth.SubjectTest.suite());
-    }
+    private final HashSet<Object> h3 = new HashSet<Object>(); // private credentials gd
 
     public static Test suite() throws Exception {
 
@@ -600,7 +596,7 @@ public class SubjectTest extends SecurityTest {
             subject1.equals(subject2);
             fail("No expected AccessControlException");
         } catch (AccessControlException e) {
-            assertEquals(e, PrivateCredentialPermission.class);
+            assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
         }
     }
 
@@ -625,7 +621,7 @@ public class SubjectTest extends SecurityTest {
             subThis.getPrivateCredentials().iterator().next();
             fail("No expected AccessControlException");
         } catch (AccessControlException e) {
-            assertEquals(e, PrivateCredentialPermission.class);
+            assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
         }
         subThat.getPrivateCredentials().iterator().next();
 
@@ -634,7 +630,7 @@ public class SubjectTest extends SecurityTest {
             subThis.equals(subThat);
             fail("No expected AccessControlException");
         } catch (AccessControlException e) {
-            assertEquals(e, PrivateCredentialPermission.class);
+            assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
         }
 
         // provided subject doesn't have permission
@@ -642,7 +638,7 @@ public class SubjectTest extends SecurityTest {
             subThat.equals(subThis);
             fail("No expected AccessControlException");
         } catch (AccessControlException e) {
-            assertEquals(e, PrivateCredentialPermission.class);
+            assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
         }
     }
 
@@ -808,7 +804,7 @@ public class SubjectTest extends SecurityTest {
                 fail("No expected AccessControlException");
             }
         } catch (AccessControlException e) {
-            assertEquals(e, PrivateCredentialPermission.class);
+            assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
         }
     }
 
@@ -1455,21 +1451,21 @@ public class SubjectTest extends SecurityTest {
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
                 // PrivateCredentialPermission check goes first
-                assertEquals(e, PrivateCredentialPermission.class);
+                assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
             }
 
             try {
                 set.contains(privCr1);
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
-                assertEquals(e, PrivateCredentialPermission.class);
+                assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
             }
 
             try {
                 set.contains(new Object());
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
-                assertEquals(e, PrivateCredentialPermission.class);
+                assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
             }
 
             assertTrue(set.equals(set));
@@ -1479,7 +1475,7 @@ public class SubjectTest extends SecurityTest {
                 set.equals(hash);
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
-                assertEquals(e, PrivateCredentialPermission.class);
+                assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
             }
 
             set.isEmpty();
@@ -1488,7 +1484,7 @@ public class SubjectTest extends SecurityTest {
                 set.hashCode();
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
-                assertEquals(e, PrivateCredentialPermission.class);
+                assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
             }
 
             try {
@@ -1496,7 +1492,7 @@ public class SubjectTest extends SecurityTest {
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
                 // PrivateCredentialPermission check goes first
-                assertEquals(e, PrivateCredentialPermission.class);
+                assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
             }
 
             try {
@@ -1504,7 +1500,7 @@ public class SubjectTest extends SecurityTest {
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
                 // PrivateCredentialPermission check goes first
-                assertEquals(e, PrivateCredentialPermission.class);
+                assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
             }
 
             try {
@@ -1512,21 +1508,21 @@ public class SubjectTest extends SecurityTest {
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
                 // PrivateCredentialPermission check goes first
-                assertEquals(e, PrivateCredentialPermission.class);
+                assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
             }
 
             try {
                 set.toArray();
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
-                assertEquals(e, PrivateCredentialPermission.class);
+                assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
             }
 
             try {
                 set.toArray(new Object[5]);
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
-                assertEquals(e, PrivateCredentialPermission.class);
+                assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
             }
         }
 
@@ -1572,7 +1568,7 @@ public class SubjectTest extends SecurityTest {
                 try {
                     hash.add(it.next());
                 } catch (AccessControlException e) {
-                    assertEquals(e, PrivateCredentialPermission.class);
+                    assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
                 }
             }
 
@@ -1647,7 +1643,7 @@ public class SubjectTest extends SecurityTest {
                 it.next();
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
-                assertEquals(e, PrivateCredentialPermission.class);
+                assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
             }
 
             subject.getPrincipals().add(p2);
@@ -1669,7 +1665,7 @@ public class SubjectTest extends SecurityTest {
                 sOut.writeObject(subject.getPrivateCredentials());
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
-                assertEquals(e, PrivateCredentialPermission.class);
+                assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
             } finally {
                 sOut.close();
             }
@@ -1691,14 +1687,14 @@ public class SubjectTest extends SecurityTest {
                 subject.getPrivateCredentials(MyClass1.class);
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
-                assertEquals(e, PrivateCredentialPermission.class);
+                assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
             }
 
             try {
                 subject.getPrivateCredentials(MyClass2.class);
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
-                assertEquals(e, PrivateCredentialPermission.class);
+                assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
             }
 
             // subject hash partial permissions (only for MyClass1 class)
@@ -1710,14 +1706,14 @@ public class SubjectTest extends SecurityTest {
                 subject.getPrivateCredentials(MyClass1.class);
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
-                assertEquals(e, PrivateCredentialPermission.class);
+                assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
             }
 
             try {
                 subject.getPrivateCredentials(MyClass2.class);
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
-                assertEquals(e, PrivateCredentialPermission.class);
+                assertEquals(PrivateCredentialPermission.class, e.getPermission().getClass());
             }
 
             // now subject has all permissions 

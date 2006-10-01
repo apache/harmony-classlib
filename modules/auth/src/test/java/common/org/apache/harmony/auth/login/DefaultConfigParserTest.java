@@ -30,6 +30,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -57,7 +58,7 @@ public class DefaultConfigParserTest extends TestCase {
 
 	URL url;
 	
-	LinkedList entriesList;
+	LinkedList<?> entriesList;
 
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(DefaultConfigParserTest.class);
@@ -87,25 +88,25 @@ public class DefaultConfigParserTest extends TestCase {
 	 * @throws Exception
 	 */
 	public final void testConfigParser_01() throws Exception {
-			Map config = null;
-			config = DefaultConfigurationParser.configParser(url, p, new HashMap());
-			entriesList = (LinkedList) config.get("Login1");
+			Map<?, ?> config = null;
+			config = DefaultConfigurationParser.configParser(url, p, new HashMap<String, List<AppConfigurationEntry>>());
+			entriesList = (LinkedList<?>) config.get("Login1");
 			assertNotNull(entriesList);
-			entriesList = (LinkedList) config.get("other");
+			entriesList = (LinkedList<?>) config.get("other");
 			assertNotNull(entriesList);
-			entriesList = (LinkedList) config.get("Login2");
+			entriesList = (LinkedList<?>) config.get("Login2");
 			assertNotNull(entriesList);
-			entriesList = (LinkedList) config.get("Login3");
+			entriesList = (LinkedList<?>) config.get("Login3");
 			assertNotNull(entriesList);
-			entriesList = (LinkedList) config.get("Login4");
+			entriesList = (LinkedList<?>) config.get("Login4");
 			assertNotNull(entriesList);
-			entriesList = (LinkedList) config.get("Login5");
+			entriesList = (LinkedList<?>) config.get("Login5");
 			assertNotNull(entriesList);
-			entriesList = (LinkedList) config.get("Login6");
+			entriesList = (LinkedList<?>) config.get("Login6");
 			assertNotNull(entriesList);
-			entriesList = (LinkedList) config.get("Login7");
+			entriesList = (LinkedList<?>) config.get("Login7");
 			assertNotNull(entriesList);
-			entriesList = (LinkedList) config.get("Login8");
+			entriesList = (LinkedList<?>) config.get("Login8");
 			assertNull(entriesList);
 	}
 
@@ -115,14 +116,14 @@ public class DefaultConfigParserTest extends TestCase {
 	 */
 	public final void testConfigParser_02() throws Exception {
 
-			Map config = DefaultConfigurationParser.configParser(url, p, new HashMap());
-			entriesList = (LinkedList) config.get("Login1");
+			Map<?, ?> config = DefaultConfigurationParser.configParser(url, p, new HashMap<String, List<AppConfigurationEntry>>());
+			entriesList = (LinkedList<?>) config.get("Login1");
 
 			if (entriesList == null || entriesList.size() == 0) {
 			    fail("Unable to read configuration");
 			}
 
-			Iterator i = entriesList.iterator();
+			Iterator<?> i = entriesList.iterator();
 			while (i.hasNext()) {
 				AppConfigurationEntry e = (AppConfigurationEntry) i.next();
 				assertEquals("com.intel.security.auth.module.LoginModule1", e
@@ -132,7 +133,7 @@ public class DefaultConfigParserTest extends TestCase {
 				assertEquals(
 						AppConfigurationEntry.LoginModuleControlFlag.REQUIRED,
 						e.getControlFlag());
-				Map m = new HashMap();
+				Map<String, String> m = new HashMap<String, String>();
 				m.put("debug1", "true");
 				m.put("test1", "false");
 				assertEquals(m, e.getOptions());
@@ -177,7 +178,7 @@ public class DefaultConfigParserTest extends TestCase {
 			os.flush();
 			os.close();
 			try {
-				DefaultConfigurationParser.configParser(file.toURL(), p, new HashMap());
+				DefaultConfigurationParser.configParser(file.toURL(), p, new HashMap<String, List<AppConfigurationEntry>>());
 				fail("no expected InvalidFormatException" + i);
 			} catch (NullPointerException e) {
 				System.out.println(file.getCanonicalPath());

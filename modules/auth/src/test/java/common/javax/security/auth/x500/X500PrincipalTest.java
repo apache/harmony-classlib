@@ -30,9 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * Tests X500Principal class
@@ -1941,14 +1939,6 @@ public class X500PrincipalTest extends TestCase {
         assertEquals("cn=a\nb", s);
     }
 
-    public static Test suite() {
-        return new TestSuite(X500PrincipalTest.class);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
     public static final String[] RFC2253_SPECIAL = new String[] { ",", "=",
             "+", "<", ">", "#", ";" };
 
@@ -2243,14 +2233,14 @@ public class X500PrincipalTest extends TestCase {
         list.add("CN=\\  A  ", "CN=\\  A", "CN=\"  A\"", "cn=a", null,
                 (byte) 0x01); // escaped leading space
         list.add("CN=  A \\ ", "CN=A \\ ", "CN=\"A  \"", "cn=a", null,
-                (byte) 0x01); // escaped traling space
+                (byte) 0x01); // escaped trailing space
 
-        list.add("CN=  \"A\"  ", "CN=A", "CN=A", "cn=a"); // leading & traling spaces
+        list.add("CN=  \"A\"  ", "CN=A", "CN=A", "cn=a"); // leading & trailing spaces
 
         StringBuffer errorMsg = new StringBuffer();
         for (int i = 0; i < list.size(); i++) {
 
-            Object[] obj = (Object[]) list.get(i);
+            Object[] obj = list.get(i);
 
             String dn = (String) obj[0];
             String rfc2253 = (String) obj[1];
@@ -2680,7 +2670,7 @@ public class X500PrincipalTest extends TestCase {
         StringBuffer errorMsg = new StringBuffer();
         for (int i = 0; i < list.size(); i++) {
 
-            Object[] values = (Object[]) list.get(i);
+            Object[] values = list.get(i);
             byte[] encoded = (byte[]) values[0];
             String rfc2253 = (String) values[1];
             String rfc1179 = (String) values[2];
@@ -2735,7 +2725,8 @@ public class X500PrincipalTest extends TestCase {
         }
     }
 
-    public static class TestList extends ArrayList {
+    @SuppressWarnings("serial")
+    public static class TestList extends ArrayList<Object[]> {
         //
         // TODO comment me
         //

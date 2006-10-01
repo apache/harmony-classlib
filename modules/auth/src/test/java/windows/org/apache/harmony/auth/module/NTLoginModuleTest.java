@@ -38,24 +38,14 @@ import org.apache.harmony.auth.module.NTLoginModule;
  */
 public class NTLoginModuleTest extends TestCase {
 
-    /**
-     * Standalone entry point.
-     * @param args
-     */
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(NTLoginModuleTest.class);
-    }
-
     NTLoginModule lm = new NTLoginModule();
 
-    /*
-     * @see TestCase#setUp()
-     */
+    @Override
     protected void setUp() throws Exception {
         Subject subj = new Subject();
         CallbackHandler cbh = new TestCallbackHandler();
-        Map sharedState = new HashMap();
-        Map options = new HashMap();
+        Map<String, ?> sharedState = new HashMap<String, Object>();
+        Map<String, ?> options = new HashMap<String, Object>();
         lm.initialize(subj, cbh, sharedState, options);
     }
 
@@ -72,8 +62,8 @@ public class NTLoginModuleTest extends TestCase {
         // Need new, non initialized instance of LoginModule
         lm = new NTLoginModule();
         
-        Map shared = new HashMap();
-        Map options = new HashMap();
+        Map<String, ?> shared = new HashMap<String, Object>();
+        Map<String, ?> options = new HashMap<String, Object>();
         CallbackHandler cbh = new TestCallbackHandler();
         // must not accept null for subject
         try {

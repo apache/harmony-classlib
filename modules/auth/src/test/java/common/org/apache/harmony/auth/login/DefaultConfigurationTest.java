@@ -108,7 +108,7 @@ public class DefaultConfigurationTest extends TestCase {
 			ents = dc.getAppConfigurationEntry("LoginNew");
 			assertNotNull(ents);
 			assertEquals("com.intel.security.auth.module.LoginModule1", ents[0].getLoginModuleName());
-			Map m = new HashMap();
+			Map<String, String> m = new HashMap<String, String>();
 			m.put("debug", "true");
 			m.put("test", "false");
 			assertEquals(m, ents[0].getOptions());
@@ -149,7 +149,7 @@ public class DefaultConfigurationTest extends TestCase {
 		assertNotNull(ents);
 		ents = dc.getAppConfigurationEntry("Login1");
 		assertNotNull(ents);
-		Map m = new HashMap();
+		Map<String, String> m = new HashMap<String, String>();
 		for (AppConfigurationEntry element : ents) {
 			assertEquals("com.intel.security.auth.module.LoginModule1",
 					element.getLoginModuleName());

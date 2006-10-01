@@ -15,35 +15,21 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.security.sasl;
 
-
-import java.io.IOException;
 import java.security.Provider;
 import java.security.Security;
-import java.util.Map;
 
-import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.NameCallback;
-import javax.security.auth.callback.PasswordCallback;
-import javax.security.auth.callback.TextOutputCallback;
-import javax.security.auth.callback.UnsupportedCallbackException;
-
-import org.apache.harmony.auth.tests.support.SpiEngUtils;
 
 import junit.framework.TestCase;
+
+import org.apache.harmony.auth.tests.support.SpiEngUtils;
 
 /**
  * Test for Sasl class
  * 
  */
-
 public class Sasl3Test extends TestCase {
     private static final String CLNTSRV = "SaslClientFactory.";
 
@@ -197,7 +183,7 @@ public class Sasl3Test extends TestCase {
         assertNotNull("Null result", saslC);
         try {
             saslC.unwrap(null, 1, 1);
-            fail("SaslException sould be thrown");
+            fail("SaslException should be thrown");
         } catch (SaslException e) {
         }
         assertFalse("Incorrect isComplete() result", saslC.isComplete());
@@ -205,7 +191,7 @@ public class Sasl3Test extends TestCase {
         try {
             saslC = Sasl.createSaslClient(new String[] { "NAME-1" }, null,
                     "protocol", null, null, cbH);
-            fail("SaslException sould be thrown");
+            fail("SaslException should be thrown");
         } catch (SaslException e) {
         }
     }
@@ -236,7 +222,7 @@ public class Sasl3Test extends TestCase {
         try {
             saslC = Sasl.createSaslClient(new String[] { "NAME-1" }, null,
                     "protocol", null, null, cbH);
-            fail("SaslException sould be thrown");
+            fail("SaslException should be thrown");
         } catch (SaslException e) {
         }
     }
@@ -280,7 +266,7 @@ public class Sasl3Test extends TestCase {
         assertNotNull("Null result for NAME-2", saslC);
         try {
             saslC.unwrap(null, 1, 1);
-            fail("SaslException sould be thrown");
+            fail("SaslException should be thrown");
         } catch (SaslException e) {
         }
         assertFalse("Incorrect isComplete() result", saslC.isComplete());
@@ -289,7 +275,7 @@ public class Sasl3Test extends TestCase {
         try {
             Sasl.createSaslClient(new String[] { "NAME-1" }, null, "protocol",
                     null, null, cbH);
-            fail("SaslException sould be thrown");
+            fail("SaslException should be thrown");
         } catch (SaslException e) {
         }
         // NAME-6 and NAME-5 were defined in one provider but they are
@@ -298,143 +284,5 @@ public class Sasl3Test extends TestCase {
         saslC = Sasl.createSaslClient(new String[] { "NAME-6", "NAME-5" },
                 null, "protocol", null, null, cbH);
         assertNotNull("Null result for NAME-6 and NAME-5", saslC);
-    }
-}
-
-/*
- * Additional classes for creating SaslClient and SaslServer objects
- */
-
-class mySaslClientFactory implements SaslClientFactory {
-    public mySaslClientFactory() {
-        super();
-    }
-
-    public String[] getMechanismNames(Map prop) {
-        return new String[] { "NAME-1", "NAME-2", "NAME-3", "NAME-4" };
-    }
-
-    public SaslClient createSaslClient(String[] mech, String id,
-            String protocol, String srvName, Map prop, CallbackHandler hnd)
-            throws SaslException {
-        if (mech == null) {
-            throw new SaslException();
-        }
-        if ("NAME-1".equals(mech[0])) {
-            throw new SaslException("Incorrect mechanisms");
-        }
-        if (protocol == null) {
-            throw new SaslException("Protocol is null");
-        }
-        TextOutputCallback[] cb = { new TextOutputCallback(
-                TextOutputCallback.INFORMATION, "Information") };
-        try {
-            hnd.handle(cb);
-        } catch (UnsupportedCallbackException e) {
-            throw new SaslException("Incorrect callback handlere", e);
-        } catch (IOException e) {
-            throw new SaslException("Incorrect callback handlere", e);
-        }
-        return new mySaslClient();
-    }
-
-    public class mySaslClient implements SaslClient {
-        public mySaslClient() {
-            super();
-        }
-
-        public Object getNegotiatedProperty(String s) {
-            return "";
-        }
-
-        public String getMechanismName() {
-            return "Proba";
-        }
-
-        public boolean isComplete() {
-            return false;
-        }
-
-        public boolean hasInitialResponse() {
-            return false;
-        }
-
-        public void dispose() throws SaslException {
-        }
-
-        public byte[] evaluateChallenge(byte[] challenge) throws SaslException {
-            return new byte[0];
-        }
-
-        public byte[] unwrap(byte[] incoming, int offset, int len)
-                throws SaslException {
-            throw new SaslException();
-        }
-
-        public byte[] wrap(byte[] outgoing, int offset, int len)
-                throws SaslException {
-            return new byte[0];
-        }
-    }
-}
-
-class mySaslClientFactoryExt extends mySaslClientFactory {
-    @Override
-    public String[] getMechanismNames(Map prop) {
-        return new String[] { "NAME-5", "NAME-6" };
-    }
-
-    @Override
-    public SaslClient createSaslClient(String[] mech, String id,
-            String protocol, String srvName, Map prop, CallbackHandler hnd)
-            throws SaslException {
-        if (mech == null) {
-            throw new SaslException();
-        }
-        return new mySaslClient();
-    }
-}
-
-class cbHand implements CallbackHandler {
-    public cbHand() {
-    }
-
-    public void handle(Callback[] callbacks) throws IOException,
-            UnsupportedCallbackException {
-        for (Callback element : callbacks) {
-            if (element instanceof NameCallback) {
-                NameCallback nc = (NameCallback) element;
-                nc.setName("Ok");
-            } else if (element instanceof PasswordCallback) {
-                PasswordCallback pc = (PasswordCallback) element;
-                System.err.print(pc.getPrompt());
-                System.err.flush();
-                pc.setPassword(new char[] { 'O', 'k' });
-            } else {
-                throw new UnsupportedCallbackException(element,
-                        "Callback should be NamCallback or PasswordCallback");
-            }
-        }
-    }
-}
-
-class cbHandN implements CallbackHandler {
-    public cbHandN() {
-    }
-
-    public void handle(Callback[] callbacks) throws IOException,
-            UnsupportedCallbackException {
-        for (Callback element : callbacks) {
-            if (element instanceof TextOutputCallback) {
-                TextOutputCallback toc = (TextOutputCallback) element;
-                if (toc.getMessageType() != TextOutputCallback.INFORMATION) {
-                    throw new IOException("Unsupported message type: "
-                            + toc.getMessageType());
-                }
-            } else {
-                throw new UnsupportedCallbackException(element,
-                        "Callback should be TextOutputCallback");
-            }
-        }
     }
 }

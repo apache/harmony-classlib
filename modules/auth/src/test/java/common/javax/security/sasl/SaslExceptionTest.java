@@ -15,13 +15,7 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.security.sasl;
-
 
 import junit.framework.TestCase;
 
@@ -30,19 +24,6 @@ import junit.framework.TestCase;
  * 
  */
 public class SaslExceptionTest extends TestCase {
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(SaslExceptionTest.class);
-    }
-
-    /**
-     * Constructor for SaslExceptionTests.
-     * 
-     * @param arg0
-     */
-    public SaslExceptionTest(String arg0) {
-        super(arg0);
-    }
 
     static String[] msgs = {
             "",
