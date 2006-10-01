@@ -218,12 +218,12 @@ public class SubjectTest extends SecurityTest {
      */
     @SuppressWarnings("unchecked")
     public final void testSubject_3Set_InvalidSet() {
-        HashSet<Object> hash = new HashSet<Object>();
+        HashSet hash = new HashSet();
 
         hash.add(null);
 
         try {
-            new Subject(false, (Set<? extends Principal>)hash, new HashSet<Object>(), new HashSet<Object>());
+            new Subject(false, hash, new HashSet(), new HashSet());
 
             if (!testing) {
                 // possible to add 'null' principal via constructor
@@ -253,7 +253,7 @@ public class SubjectTest extends SecurityTest {
         hash.clear();
         hash.add(new Object());
         try {
-            new Subject(false, (Set<? extends Principal>)hash, new HashSet(), new HashSet());
+            new Subject(false, hash, new HashSet(), new HashSet());
 
             if (!testing) {
                 // possible to add 'null' principal via constructor
