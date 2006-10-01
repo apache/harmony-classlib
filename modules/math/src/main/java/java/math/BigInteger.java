@@ -28,7 +28,6 @@ import org.apache.harmony.math.internal.nls.Messages;
 /**
  * @author Intel Middleware Product Division
  * @author Instituto Tecnologico de Cordoba
- * @ar.org.fitc.spec_ref 
  */
 public class BigInteger extends Number implements Comparable<BigInteger>,
         Serializable {
@@ -77,18 +76,6 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
             new BigInteger(1, 9), TEN };
 
     /* Serialized Fields */
-
-    /** @ar.org.fitc.spec_ref */
-    private int bitCount = -1;
-
-    /** @ar.org.fitc.spec_ref */
-    private int bitLength = -1;
-
-    /** @ar.org.fitc.spec_ref */
-    private int lowestSetBit = -2;
-
-    /** @ar.org.fitc.spec_ref */
-    private int firstNonzeroByteNum = -2;
 
     /** @ar.org.fitc.spec_ref */
     private int signum;
@@ -170,8 +157,8 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
             throw new NumberFormatException(Messages.getString("math.13")); //$NON-NLS-1$
         }
         if (signum == 0) {
-            for (int i = 0; i < magnitude.length; i++) {
-                if (magnitude[i] != 0) {
+            for (byte element : magnitude) {
+                if (element != 0) {
                     // math.14=signum-magnitude mismatch
                     throw new NumberFormatException(Messages.getString("math.14")); //$NON-NLS-1$
                 }
@@ -277,10 +264,9 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     public static BigInteger valueOf(long val) {
         if (val < 0) {
             if(val != -1) {
-            return new BigInteger(-1, -val);
-            } else {
-                return MINUS_ONE;
+                return new BigInteger(-1, -val);
             }
+            return MINUS_ONE;
         } else if (val <= 10) {
             return SMALL_VALUES[(int) val];
         } else {// (val > 10)
@@ -396,8 +382,9 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         int i;
         n = (1 << (n & 31)); // int with 1 set to the needed position
         if (sign < 0) {
-            for (i = 0; (i < intCount) && (digits[i] == 0); i++)
+            for (i = 0; (i < intCount) && (digits[i] == 0); i++) {
                 ;
+            }
             digit = ((i == intCount) ? -digit : ~digit);
         }
         return ((digit & n) != 0);
@@ -441,8 +428,9 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         }
         int i;
         // (sign != 0)  implies that exists some non zero digit 
-        for (i = 0; digits[i] == 0; i++)
+        for (i = 0; digits[i] == 0; i++) {
             ;
+        }
         return ((i << 5) + Integer.numberOfTrailingZeros(digits[i]));
     }
 
@@ -477,11 +465,13 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     }
 
     /** @ar.org.fitc.spec_ref */
+    @Override
     public int intValue() {
         return (sign * digits[0]);
     }
 
     /** @ar.org.fitc.spec_ref */
+    @Override
     public long longValue() {
         long value = (numberLength > 1) ? (((long) digits[1]) << 32)
                 | (digits[0] & 0xFFFFFFFFL) : (digits[0] & 0xFFFFFFFFL);
@@ -489,11 +479,13 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     }
 
     /** @ar.org.fitc.spec_ref */
+    @Override
     public float floatValue() {
         return (float) doubleValue();
     }
 
     /** @ar.org.fitc.spec_ref */
+    @Override
     public double doubleValue() {
         return Conversion.bigInteger2Double(this);
     }
@@ -528,16 +520,19 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     }
 
     /** @ar.org.fitc.spec_ref */
+    @Override
     public int hashCode() {
         return intValue();
     }
 
     /** @ar.org.fitc.spec_ref */
+    @Override
     public boolean equals(Object x) {
         return ((x instanceof BigInteger) && (compareTo((BigInteger) x) == EQUALS));
     }
 
     /** @ar.org.fitc.spec_ref */
+    @Override
     public String toString() {
         return Conversion.toDecimalScaledString(this, 0);
     }
@@ -577,9 +572,9 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
                 && ((val2.numberLength == 1) || ((val2.numberLength == 2) && (val2.digits[1] > 0)))) {
             return BigInteger.valueOf(Division.gcdBinary(val1.longValue(), val2
                     .longValue()));
-        } else {// Now 'val1' and 'val2' will be muttable
-            return Division.gcdBinary(val1.clone(), val2.clone());
         }
+        // Now 'val1' and 'val2' will be muttable
+        return Division.gcdBinary(val1.clone(), val2.clone());
     }
 
     /** @ar.org.fitc.spec_ref */
@@ -626,23 +621,22 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
                 : Elementary.compareArrays(thisDigits, divisorDigits, thisLen);
         if (cmp < 0) {
             return new BigInteger[] { ZERO, this };
-        } else {
-            int thisSign = sign;
-            int quotientLength = thisLen - divisorLen + 1;
-            int remainderLength = divisorLen;
-            int quotientSign = ((thisSign == divisorSign) ? 1 : -1);
-            int quotientDigits[] = new int[quotientLength];
-            int remainderDigits[] = Division.divide(quotientDigits,
-                    quotientLength, thisDigits, thisLen, divisorDigits,
-                    divisorLen);
-            BigInteger result0 = new BigInteger(quotientSign, quotientLength,
-                    quotientDigits);
-            BigInteger result1 = new BigInteger(thisSign, remainderLength,
-                    remainderDigits);
-            result0.cutOffLeadingZeroes();
-            result1.cutOffLeadingZeroes();
-            return new BigInteger[] { result0, result1 };
         }
+        int thisSign = sign;
+        int quotientLength = thisLen - divisorLen + 1;
+        int remainderLength = divisorLen;
+        int quotientSign = ((thisSign == divisorSign) ? 1 : -1);
+        int quotientDigits[] = new int[quotientLength];
+        int remainderDigits[] = Division.divide(quotientDigits,
+                quotientLength, thisDigits, thisLen, divisorDigits,
+                divisorLen);
+        BigInteger result0 = new BigInteger(quotientSign, quotientLength,
+                quotientDigits);
+        BigInteger result1 = new BigInteger(thisSign, remainderLength,
+                remainderDigits);
+        result0.cutOffLeadingZeroes();
+        result1.cutOffLeadingZeroes();
+        return new BigInteger[] { result0, result1 };
     }
 
     /** @ar.org.fitc.spec_ref */
@@ -659,36 +653,32 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         int thisLen = numberLength;
         int divisorLen = divisor.numberLength;
         if (thisLen + divisorLen == 2) {
-            long val = ((long) digits[0] & 0xFFFFFFFFL)
-                    / ((long) divisor.digits[0] & 0xFFFFFFFFL);
+            long val = (digits[0] & 0xFFFFFFFFL)
+                    / (divisor.digits[0] & 0xFFFFFFFFL);
             if (thisSign != divisorSign) {
                 val = -val;
             }
             return valueOf(val);
-        } else {
-            int cmp = ((thisLen != divisorLen) ? ((thisLen > divisorLen) ? 1
-                    : -1) : Elementary.compareArrays(digits, divisor.digits,
-                    thisLen));
-            if (cmp == EQUALS) {
-                return ((thisSign == divisorSign) ? ONE : MINUS_ONE);
-            }
-            if (cmp == LESS) {
-                return ZERO;
-            }
-            int resLength = thisLen - divisorLen + 1;
-            int resDigits[] = new int[resLength];
-            int resSign = ((thisSign == divisorSign) ? 1 : -1);
-            if (divisorLen == 1) {
-                Division.divideArrayByInt(resDigits, digits, thisLen,
-                        divisor.digits[0]);
-            } else {
-                Division.divide(resDigits, resLength, digits, thisLen,
-                        divisor.digits, divisorLen);
-            }
-            BigInteger result = new BigInteger(resSign, resLength, resDigits);
-            result.cutOffLeadingZeroes();
-            return result;
         }
+        int cmp = ((thisLen != divisorLen) ? ((thisLen > divisorLen) ? 1 : -1) : Elementary
+                .compareArrays(digits, divisor.digits, thisLen));
+        if (cmp == EQUALS) {
+            return ((thisSign == divisorSign) ? ONE : MINUS_ONE);
+        }
+        if (cmp == LESS) {
+            return ZERO;
+        }
+        int resLength = thisLen - divisorLen + 1;
+        int resDigits[] = new int[resLength];
+        int resSign = ((thisSign == divisorSign) ? 1 : -1);
+        if (divisorLen == 1) {
+            Division.divideArrayByInt(resDigits, digits, thisLen, divisor.digits[0]);
+        } else {
+            Division.divide(resDigits, resLength, digits, thisLen, divisor.digits, divisorLen);
+        }
+        BigInteger result = new BigInteger(resSign, resLength, resDigits);
+        result.cutOffLeadingZeroes();
+        return result;
     }
 
     /** @ar.org.fitc.spec_ref */
@@ -796,8 +786,9 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
 
     /** Decreases {@code numberLength} if there are zero high elements. */
     final void cutOffLeadingZeroes() {
-        while ((numberLength > 0) && (digits[--numberLength] == 0))
+        while ((numberLength > 0) && (digits[--numberLength] == 0)) {
             ;
+        }
         if (digits[numberLength++] == 0) {
             sign = 0;
         }

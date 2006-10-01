@@ -1554,7 +1554,6 @@ public class BigDecimalArithmeticTest extends TestCase {
         RoundingMode rm = RoundingMode.HALF_UP;
         MathContext mc = new MathContext(precision, rm);
         String res = "3736186567876.876578956958765675671119238118911893939591735";
-        int resScale = 2;
         BigDecimal aNumber = new BigDecimal(new BigInteger(a), aScale);
         BigDecimal result = aNumber.round(mc);
         assertEquals("incorrect quotient value", res, result.toString());

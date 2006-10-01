@@ -87,7 +87,6 @@ public class BigIntegerHashCodeTest extends TestCase {
         byte aBytes[] = {56, 100, -2, -76, 98, 54, 19, 3, -15, 45, 89, -111, 69, 103, 8, -9};
         byte bBytes[] = {56, 100, -2, -76, 89, 45, 91, 3, -15, 45, 89, -111, 69, 103, 8, -9};
         int aSign = 1;
-        int bSign = 1;
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(aSign, bBytes);
         int code1 = aNumber.hashCode();

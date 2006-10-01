@@ -19,7 +19,7 @@ package java.math;
 
 /**
  * The library implements some logical operations over {@code BigInteger}. The
- * operations that porvides are listed below.
+ * operations provided are listed below.
  * <ul type="circle">
  * <li>not</li>
  * <li>and</li>
@@ -86,11 +86,13 @@ class Logical {
         if (val.sign > 0) {
             // ~val = -val + 1
             if (val.digits[val.numberLength - 1] != -1) {
-                for (i = 0; val.digits[i] == -1; i++)
+                for (i = 0; val.digits[i] == -1; i++) {
                     ;
+                }
             } else {
-                for (i = 0; (i < val.numberLength) && (val.digits[i] == -1); i++)
+                for (i = 0; (i < val.numberLength) && (val.digits[i] == -1); i++) {
                     ;
+                }
                 if (i == val.numberLength) {
                     resDigits[i] = 1;
                     return new BigInteger(-val.sign, i + 1, resDigits);

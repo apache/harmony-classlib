@@ -317,9 +317,8 @@ public class BigDecimalConvertTest extends TestCase {
     public void testToBigIntegerExactException() {
         String a = "-123809648392384754573567356745735.63567890295784902768787678287E-10";
         BigDecimal aNumber = new BigDecimal(a);
-        String res = "-123809648392384754573567356745735635678902957849027687876782870000000000000000";
         try {
-            BigInteger result = aNumber.toBigIntegerExact();
+            aNumber.toBigIntegerExact();
             fail("java.lang.ArithmeticException has not been thrown");
         } catch (java.lang.ArithmeticException e) {
             return;
@@ -562,7 +561,7 @@ public class BigDecimalConvertTest extends TestCase {
     public void testValueOfDoubleNaN() {
         double a = Double.NaN;
         try {
-            BigDecimal result = BigDecimal.valueOf(a);
+            BigDecimal.valueOf(a);
             fail("NumberFormatException has not been thrown for Double.NaN");
         } catch (NumberFormatException e) {
             return;

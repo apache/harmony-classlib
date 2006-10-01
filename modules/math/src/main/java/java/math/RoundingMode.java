@@ -20,7 +20,6 @@ package java.math;
 import org.apache.harmony.math.internal.nls.Messages;
 
 /**
- * @ar.org.fitc.spec_ref
  * @author Intel Middleware Product Division
  * @author Instituto Tecnologico de Cordoba
  */

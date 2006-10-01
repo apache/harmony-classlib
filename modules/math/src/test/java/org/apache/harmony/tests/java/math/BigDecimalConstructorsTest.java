@@ -74,7 +74,7 @@ public class BigDecimalConstructorsTest extends TestCase {
         assertEquals("incorrect scale", 0, aNumber.scale());
 
         try {
-            BigDecimal bd = new BigDecimal((BigInteger) null);
+            new BigDecimal((BigInteger) null);
         	fail("No NullPointerException");
         } catch (NullPointerException e) {
         	//expected
@@ -463,7 +463,7 @@ public class BigDecimalConstructorsTest extends TestCase {
     public void testConstrStringExceptionExponentLessIntegerMin() {
         String a = "-238768.787678287e-214748364767876";
         try {
-            BigDecimal aNumber = new BigDecimal(a);
+            new BigDecimal(a);
             fail("NumberFormatException has not been caught");
         } catch (NumberFormatException e) {
         }
@@ -488,8 +488,6 @@ public class BigDecimalConstructorsTest extends TestCase {
      */
     public void testConstrStringExponentIntegerMin() {
         String a = ".238768e-2147483648";
-        int aScale = -2147483638;
-        BigInteger bA = new BigInteger("-238768787678287");
         try {
            new BigDecimal(a);
            fail("NumberFormatException expected");

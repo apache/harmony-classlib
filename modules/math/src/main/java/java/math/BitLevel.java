@@ -23,11 +23,11 @@ package java.math;
  * <ul type="circle">
  * <li>Left Shifting</li>
  * <li>Right Shifting</li>
- * <li>Bit clearingting</li>
+ * <li>Bit clearing</li>
  * <li>Bit setting</li>
  * <li>Bit counting</li>
  * <li>Bit testing</li>
- * <li>Getting of the lowest bit setted</li>
+ * <li>Getting of the lowest bit set</li>
  * </ul>
  * All operations are provided in immutable way, and some in both mutable and
  * immutable.
@@ -47,8 +47,9 @@ class BitLevel {
     static int setTrueCoded(int arr[], final int length) {
         int i;
         // Until the first set bit, the bits are equal (i.e. 0)
-        for (i = 0; (i < length) && (arr[i] == 0); i++)
+        for (i = 0; (i < length) && (arr[i] == 0); i++) {
             ;
+        }
         if (i == length) {
             return 1;
         }
@@ -71,8 +72,9 @@ class BitLevel {
         int i;
 
         if (val.sign < 0) {
-            for (i = 0; val.digits[i] == 0; i++)
+            for (i = 0; val.digits[i] == 0; i++) {
                 ;
+            }
             // We reduce the problem to the positive case.
             if (i == val.numberLength - 1) {
                 highDigit--;
@@ -93,8 +95,9 @@ class BitLevel {
                 bCount += Integer.bitCount(val.digits[i]);
             }
         } else {// (sign < 0)
-            for (i = 0; val.digits[i] == 0; i++)
+            for (i = 0; val.digits[i] == 0; i++) {
                 ;
+            }
             // this digit absorbs the carry
             bCount += Integer.bitCount(-val.digits[i]);
             for (i++; i < val.numberLength; i++) {
@@ -170,8 +173,9 @@ class BitLevel {
         int bitCount = numberOfBits & 31;
         int i;
 
-        for (i = 0; (i < intCount) && (digits[i] == 0); i++)
+        for (i = 0; (i < intCount) && (digits[i] == 0); i++) {
             ;
+        }
         return ((i != intCount) || (digits[i] << (32 - bitCount) != 0));
     }
 
@@ -237,8 +241,9 @@ class BitLevel {
         if (source.sign < 0) {
             // Checking if the dropped bits are zeros (the remainder equals to
             // 0)
-            for (i = 0; (i < intCount) && (source.digits[i] == 0); i++)
+            for (i = 0; (i < intCount) && (source.digits[i] == 0); i++) {
                 ;
+            }
             // If the remainder is not zero, add 1 to the result
             if ((i < intCount)
                     || ((count > 0) && ((source.digits[i] << (32 - count)) != 0))) {

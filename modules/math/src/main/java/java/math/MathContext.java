@@ -25,7 +25,6 @@ import java.io.StreamCorruptedException;
 import org.apache.harmony.math.internal.nls.Messages;
 
 /**
- * @ar.org.fitc.spec_ref
  * @author Intel Middleware Product Division
  * @author Instituto Tecnologico de Cordoba
  */
@@ -117,8 +116,9 @@ public class MathContext implements Serializable {
             throw new IllegalArgumentException(Messages.getString("math.0E")); //$NON-NLS-1$
         }
         // Parsing "precision=" String
-        for (i = 0; (i < chPrecision.length) && (charVal[i] == chPrecision[i]); i++)
+        for (i = 0; (i < chPrecision.length) && (charVal[i] == chPrecision[i]); i++) {
             ;
+        }
 
         if (i < chPrecision.length) {
             // math.0E=bad string format
@@ -140,12 +140,12 @@ public class MathContext implements Serializable {
                     // It parsed all the digits
                     i++;
                     break;
-                } else {// It isn't  a valid digit, and isn't a white space
-                    // math.0E=bad string format
-                    throw new IllegalArgumentException(Messages.getString("math.0E")); //$NON-NLS-1$
                 }
+                // It isn't  a valid digit, and isn't a white space
+                // math.0E=bad string format
+                throw new IllegalArgumentException(Messages.getString("math.0E")); //$NON-NLS-1$
             }
-            // Acumulating the value parsed
+            // Accumulating the value parsed
             this.precision = this.precision * 10 + digit;
             if (this.precision < 0) {
                 // math.0E=bad string format
@@ -155,8 +155,9 @@ public class MathContext implements Serializable {
         } while (true);
         // Parsing "roundingMode="
         for (j = 0; (j < chRoundingMode.length)
-                && (charVal[i] == chRoundingMode[j]); i++, j++)
+                && (charVal[i] == chRoundingMode[j]); i++, j++) {
             ;
+        }
 
         if (j < chRoundingMode.length) {
             // math.0E=bad string format

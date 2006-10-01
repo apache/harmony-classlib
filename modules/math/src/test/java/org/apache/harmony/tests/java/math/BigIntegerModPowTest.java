@@ -43,7 +43,7 @@ public class BigIntegerModPowTest extends TestCase {
 		BigInteger exp = new BigInteger(eSign, eBytes);
 		BigInteger modulus = new BigInteger(mSign, mBytes);
 		try {
-			BigInteger result = aNumber.modPow(exp, modulus);
+			aNumber.modPow(exp, modulus);
 			fail("ArithmeticException has not been caught");
 		} catch (ArithmeticException e) {
 			assertEquals("Improper exception message", "BigInteger: modulus not positive", e.getMessage());
@@ -107,7 +107,7 @@ public class BigIntegerModPowTest extends TestCase {
 		BigInteger aNumber = new BigInteger(aSign, aBytes);
 		BigInteger modulus = new BigInteger(mSign, mBytes);
 		try {
-			BigInteger result = aNumber.modInverse(modulus);
+			aNumber.modInverse(modulus);
 			fail("ArithmeticException has not been caught");
 		} catch (ArithmeticException e) {
 			assertEquals("Improper exception message", "BigInteger: modulus not positive", e.getMessage());
@@ -125,7 +125,7 @@ public class BigIntegerModPowTest extends TestCase {
 		BigInteger aNumber = new BigInteger(aSign, aBytes);
 		BigInteger modulus = new BigInteger(mSign, mBytes);
 		try {
-			BigInteger result = aNumber.modInverse(modulus);
+			aNumber.modInverse(modulus);
 			fail("ArithmeticException has not been caught");
 		} catch (ArithmeticException e) {
 			assertEquals("Improper exception message", "BigInteger not invertible.", e.getMessage());

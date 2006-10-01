@@ -19,7 +19,7 @@ package java.math;
 
 /**
  * Static library that provides the basic arithmetic mutable operations for
- * {@link BigInteger}. The operations that porvides are listed below.
+ * {@link BigInteger}. The operations provided are listed below.
  * <ul type="circle">
  * <li>Addition.</li>
  * <li>Subtraction.</li>
@@ -28,7 +28,7 @@ package java.math;
  * In addition to this, some <i><b>Inplace</b></i> (mutable) methods are provided.
  * 
  * @author Intel Middleware Product Division
- * @author Instituto Tecnológico de Córdoba
+ * @author Instituto Tecnologico de Cordoba
  */
 class Elementary {
 
@@ -46,8 +46,9 @@ class Elementary {
      */
     static int compareArrays(final int[] a, final int[] b, final int size) {
         int i;
-        for (i = size - 1; (i >= 0) && (a[i] == b[i]); i--)
+        for (i = size - 1; (i >= 0) && (a[i] == b[i]); i--) {
             ;
+        }
         return ((i < 0) ? BigInteger.EQUALS
                 : (a[i] & 0xFFFFFFFFL) < (b[i] & 0xFFFFFFFFL) ? BigInteger.LESS
                         : BigInteger.GREATER);
@@ -83,9 +84,8 @@ class Elementary {
                 return ((valueHi == 0) ? new BigInteger(op1Sign, valueLo)
                         : new BigInteger(op1Sign, 2, new int[] { valueLo,
                                 valueHi }));
-            } else {
-                return BigInteger.valueOf((op1Sign < 0) ? (b - a) : (a - b));
             }
+            return BigInteger.valueOf((op1Sign < 0) ? (b - a) : (a - b));
         } else if (op1Sign == op2Sign) {
             resSign = op1Sign;
             // an augend should not be shorter than addend

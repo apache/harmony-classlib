@@ -117,7 +117,7 @@ public class BigDecimalScaleOperationsTest extends TestCase {
         int newScale = 18;
         BigDecimal aNumber = new BigDecimal(new BigInteger(a), aScale);
         try {
-            BigDecimal bNumber = aNumber.setScale(newScale);
+            aNumber.setScale(newScale);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
             assertEquals("Improper exception message", "Rounding necessary", e.getMessage());
@@ -330,7 +330,7 @@ public class BigDecimalScaleOperationsTest extends TestCase {
         int shift = -18;
         BigDecimal aNumber = new BigDecimal(new BigInteger(a), aScale);
         try {
-            BigDecimal bNumber = aNumber.movePointRight(shift);
+            aNumber.movePointRight(shift);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
             assertEquals("Improper exception message", "Underflow", e.getMessage());

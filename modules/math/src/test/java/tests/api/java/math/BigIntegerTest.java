@@ -109,11 +109,12 @@ public class BigIntegerTest extends junit.framework.TestCase {
 		BigInteger bi;
 		int certainty[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 				Integer.MIN_VALUE, Integer.MIN_VALUE + 1, -2, -1 };
-		for (int i = 2; i <= 20; i++)
-			for (int c = 0; c < certainty.length; c++) {
+		for (int i = 2; i <= 20; i++) {
+            for (int c = 0; c < certainty.length; c++) {
 				bi = new BigInteger(i, c, rand); // Create BigInteger
 				assertTrue("Bit length incorrect", bi.bitLength() == i);
 			}
+        }
 	}
 
 	/**
@@ -187,22 +188,26 @@ public class BigIntegerTest extends junit.framework.TestCase {
 	public void test_isProbablePrimeI() {
 		int fails = 0;
 		bi = new BigInteger(20, 20, rand);
-		if (!bi.isProbablePrime(17))
-			fails++;
+		if (!bi.isProbablePrime(17)) {
+            fails++;
+        }
 		bi = new BigInteger("4", 10);
-		if (bi.isProbablePrime(17))
-			fail("isProbablePrime failed for: " + bi);
+		if (bi.isProbablePrime(17)) {
+            fail("isProbablePrime failed for: " + bi);
+        }
 		bi = BigInteger.valueOf(17L * 13L);
-		if (bi.isProbablePrime(17))
-			fail("isProbablePrime failed for: " + bi);
-		for (long a = 2; a < 1000; a++)
-			if (isPrime(a))
-				assertTrue("false negative on prime number <1000", BigInteger
+		if (bi.isProbablePrime(17)) {
+            fail("isProbablePrime failed for: " + bi);
+        }
+		for (long a = 2; a < 1000; a++) {
+            if (isPrime(a)) {
+                assertTrue("false negative on prime number <1000", BigInteger
 						.valueOf(a).isProbablePrime(5));
-			else if (BigInteger.valueOf(a).isProbablePrime(17)) {
+            } else if (BigInteger.valueOf(a).isProbablePrime(17)) {
 				System.out.println("isProbablePrime failed for: " + a);
 				fails++;
 			}
+        }
 		for (int a = 0; a < 1000; a++) {
 			bi = BigInteger.valueOf(rand.nextInt(1000000)).multiply(
 					BigInteger.valueOf(rand.nextInt(1000000)));
@@ -380,8 +385,8 @@ public class BigIntegerTest extends junit.framework.TestCase {
 		BigInteger a = zero, mod, inv;
 		for (int j = 3; j < 50; j++) {
 			mod = BigInteger.valueOf(j);
-			for (int i = -j + 1; i < j; i++)
-				try {
+			for (int i = -j + 1; i < j; i++) {
+                try {
 					a = BigInteger.valueOf(i);
 					inv = a.modInverse(mod);
 					assertTrue("bad inverse: " + a + " inv mod " + mod
@@ -397,11 +402,12 @@ public class BigIntegerTest extends junit.framework.TestCase {
 					assertTrue("should have found inverse for " + a + " mod "
 							+ mod, !one.equals(a.gcd(mod)));
 				}
+            }
 		}
 		for (int j = 1; j < 10; j++) {
 			mod = bi2.add(BigInteger.valueOf(j));
-			for (int i = 0; i < 20; i++)
-				try {
+			for (int i = 0; i < 20; i++) {
+                try {
 					a = bi3.add(BigInteger.valueOf(i));
 					inv = a.modInverse(mod);
 					assertTrue("bad inverse: " + a + " inv mod " + mod
@@ -417,6 +423,7 @@ public class BigIntegerTest extends junit.framework.TestCase {
 					assertTrue("should have found inverse for " + a + " mod "
 							+ mod, !one.equals(a.gcd(mod)));
 				}
+            }
 		}
 	}
 
@@ -763,14 +770,15 @@ public class BigIntegerTest extends junit.framework.TestCase {
 	 * @tests java.math.BigInteger#and(java.math.BigInteger)
 	 */
 	public void test_andLjava_math_BigInteger() {
-		for (int j = 0; j < booleanPairs.length; j++) {
-			BigInteger i1 = booleanPairs[j][0], i2 = booleanPairs[j][1];
+		for (BigInteger[] element : booleanPairs) {
+			BigInteger i1 = element[0], i2 = element[1];
 			BigInteger res = i1.and(i2);
 			assertTrue("symmetry of and", res.equals(i2.and(i1)));
 			int len = Math.max(i1.bitLength(), i2.bitLength()) + 66;
-			for (int i = 0; i < len; i++)
-				assertTrue("and", (i1.testBit(i) && i2.testBit(i)) == res
+			for (int i = 0; i < len; i++) {
+                assertTrue("and", (i1.testBit(i) && i2.testBit(i)) == res
 						.testBit(i));
+            }
 		}
 	}
 
@@ -778,14 +786,15 @@ public class BigIntegerTest extends junit.framework.TestCase {
 	 * @tests java.math.BigInteger#or(java.math.BigInteger)
 	 */
 	public void test_orLjava_math_BigInteger() {
-		for (int j = 0; j < booleanPairs.length; j++) {
-			BigInteger i1 = booleanPairs[j][0], i2 = booleanPairs[j][1];
+		for (BigInteger[] element : booleanPairs) {
+			BigInteger i1 = element[0], i2 = element[1];
 			BigInteger res = i1.or(i2);
 			assertTrue("symmetry of or", res.equals(i2.or(i1)));
 			int len = Math.max(i1.bitLength(), i2.bitLength()) + 66;
-			for (int i = 0; i < len; i++)
-				assertTrue("or", (i1.testBit(i) || i2.testBit(i)) == res
+			for (int i = 0; i < len; i++) {
+                assertTrue("or", (i1.testBit(i) || i2.testBit(i)) == res
 						.testBit(i));
+            }
 		}
 	}
 
@@ -793,14 +802,15 @@ public class BigIntegerTest extends junit.framework.TestCase {
 	 * @tests java.math.BigInteger#xor(java.math.BigInteger)
 	 */
 	public void test_xorLjava_math_BigInteger() {
-		for (int j = 0; j < booleanPairs.length; j++) {
-			BigInteger i1 = booleanPairs[j][0], i2 = booleanPairs[j][1];
+		for (BigInteger[] element : booleanPairs) {
+			BigInteger i1 = element[0], i2 = element[1];
 			BigInteger res = i1.xor(i2);
 			assertTrue("symmetry of xor", res.equals(i2.xor(i1)));
 			int len = Math.max(i1.bitLength(), i2.bitLength()) + 66;
-			for (int i = 0; i < len; i++)
-				assertTrue("xor", (i1.testBit(i) ^ i2.testBit(i)) == res
+			for (int i = 0; i < len; i++) {
+                assertTrue("xor", (i1.testBit(i) ^ i2.testBit(i)) == res
 						.testBit(i));
+            }
 		}
 	}
 
@@ -808,12 +818,13 @@ public class BigIntegerTest extends junit.framework.TestCase {
 	 * @tests java.math.BigInteger#not()
 	 */
 	public void test_not() {
-		for (int j = 0; j < booleanPairs.length; j++) {
-			BigInteger i1 = booleanPairs[j][0];
+		for (BigInteger[] element : booleanPairs) {
+			BigInteger i1 = element[0];
 			BigInteger res = i1.not();
 			int len = i1.bitLength() + 66;
-			for (int i = 0; i < len; i++)
-				assertTrue("not", !i1.testBit(i) == res.testBit(i));
+			for (int i = 0; i < len; i++) {
+                assertTrue("not", !i1.testBit(i) == res.testBit(i));
+            }
 		}
 	}
 
@@ -821,24 +832,27 @@ public class BigIntegerTest extends junit.framework.TestCase {
 	 * @tests java.math.BigInteger#andNot(java.math.BigInteger)
 	 */
 	public void test_andNotLjava_math_BigInteger() {
-		for (int j = 0; j < booleanPairs.length; j++) {
-			BigInteger i1 = booleanPairs[j][0], i2 = booleanPairs[j][1];
+		for (BigInteger[] element : booleanPairs) {
+			BigInteger i1 = element[0], i2 = element[1];
 			BigInteger res = i1.andNot(i2);
 			int len = Math.max(i1.bitLength(), i2.bitLength()) + 66;
-			for (int i = 0; i < len; i++)
-				assertTrue("andNot", (i1.testBit(i) && !i2.testBit(i)) == res
+			for (int i = 0; i < len; i++) {
+                assertTrue("andNot", (i1.testBit(i) && !i2.testBit(i)) == res
 						.testBit(i));
+            }
 			// asymmetrical
-			i1 = booleanPairs[j][1];
-			i2 = booleanPairs[j][0];
+			i1 = element[1];
+			i2 = element[0];
 			res = i1.andNot(i2);
-			for (int i = 0; i < len; i++)
-				assertTrue("andNot reversed",
+			for (int i = 0; i < len; i++) {
+                assertTrue("andNot reversed",
 						(i1.testBit(i) && !i2.testBit(i)) == res.testBit(i));
+            }
 		}
 	}
 
-	protected void setUp() {
+	@Override
+    protected void setUp() {
 		bi1 = new BigInteger("2436798324768978", 16);
 		bi2 = new BigInteger("4576829475724387584378543764555", 16);
 		bi3 = new BigInteger("43987298363278574365732645872643587624387563245",
@@ -919,21 +933,26 @@ public class BigIntegerTest extends junit.framework.TestCase {
 				.add(i)) {
 			BigInteger innerbound = j.add(two);
 			BigInteger k = j.subtract(two);
-			for (; k.compareTo(innerbound) <= 0; k = k.add(one))
-				testDiv(k, i);
+			for (; k.compareTo(innerbound) <= 0; k = k.add(one)) {
+                testDiv(k, i);
+            }
 		}
 	}
 
 	private boolean isPrime(long b) {
-		if (b == 2)
-			return true;
+		if (b == 2) {
+            return true;
+        }
 		// check for div by 2
-		if ((b & 1L) == 0)
-			return false;
-		long maxlen = ((long) Math.sqrt((double) b)) + 2;
-		for (long x = 3; x < maxlen; x += 2)
-			if (b % x == 0)
-				return false;
+		if ((b & 1L) == 0) {
+            return false;
+        }
+		long maxlen = ((long) Math.sqrt(b)) + 2;
+		for (long x = 3; x < maxlen; x += 2) {
+            if (b % x == 0) {
+                return false;
+            }
+        }
 		return true;
 	}
 

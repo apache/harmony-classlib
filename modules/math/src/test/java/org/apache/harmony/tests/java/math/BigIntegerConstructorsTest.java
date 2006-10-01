@@ -38,7 +38,7 @@ public class BigIntegerConstructorsTest extends TestCase {
     public void testConstructorBytesException() {
         byte aBytes[] = {};
         try {
-            BigInteger aNumber = new BigInteger(aBytes);
+            new BigInteger(aBytes);
             fail("NumberFormatException has not been caught");
         } catch (NumberFormatException e) {
             assertEquals("Improper exception message", "Zero length BigInteger", e.getMessage());
@@ -196,7 +196,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         byte aBytes[] = {123, 45, -3, -76};
         int aSign = 3;
         try {
-            BigInteger aNumber = new BigInteger(aSign, aBytes);
+            new BigInteger(aSign, aBytes);
             fail("NumberFormatException has not been caught");
         } catch (NumberFormatException e) {
             assertEquals("Improper exception message", "Invalid signum value", e.getMessage());
@@ -211,7 +211,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         byte aBytes[] = {123, 45, -3, -76};
         int aSign = 0;
         try {
-            BigInteger aNumber = new BigInteger(aSign, aBytes);
+            new BigInteger(aSign, aBytes);
             fail("NumberFormatException has not been caught");
         } catch (NumberFormatException e) {
             assertEquals("Improper exception message", "signum-magnitude mismatch", e.getMessage());
@@ -578,7 +578,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         String value = "9234853876401";
         int radix = 45;
         try {
-            BigInteger aNumber = new BigInteger(value, radix);
+            new BigInteger(value, radix);
             fail("NumberFormatException has not been caught");
         } catch (NumberFormatException e) {
             assertEquals("Improper exception message", "Radix out of range", e.getMessage());
@@ -593,7 +593,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         String value = "   9234853876401";
         int radix = 10;
         try {
-            BigInteger aNumber = new BigInteger(value, radix);
+            new BigInteger(value, radix);
             fail("NumberFormatException has not been caught");
         } catch (NumberFormatException e) {
         }
@@ -607,7 +607,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         String value = "92348$*#78987";
         int radix = 34;
         try {
-            BigInteger aNumber = new BigInteger(value, radix);
+            new BigInteger(value, radix);
             fail("NumberFormatException has not been caught");
         } catch (NumberFormatException e) {
         }
@@ -621,7 +621,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         String value = "98zv765hdsaiy";
         int radix = 20;
         try {
-            BigInteger aNumber = new BigInteger(value, radix);
+            new BigInteger(value, radix);
             fail("NumberFormatException has not been caught");
         } catch (NumberFormatException e) {
         }

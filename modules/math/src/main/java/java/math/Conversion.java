@@ -119,7 +119,7 @@ class Conversion {
         }
         if (numberLength == 1) {
             int highDigit = digits[numberLength - 1];
-            long v = (long) highDigit & 0xFFFFFFFFL;
+            long v = highDigit & 0xFFFFFFFFL;
             if (sign < 0) {
                 v = -v;
             }
@@ -159,8 +159,9 @@ class Conversion {
                 for (i = 0; i < delta && currentChar > 0; i++) {
                     result[--currentChar] = '0';
                 }
-                for (i = tempLen - 1; (i > 0) && (temp[i] == 0); i--)
+                for (i = tempLen - 1; (i > 0) && (temp[i] == 0); i--) {
                     ;
+                }
                 tempLen = i + 1;
                 if ((tempLen == 1) && (temp[0] == 0)) { // the quotient is 0
                     break;
@@ -225,71 +226,70 @@ class Conversion {
                     result1.append(-scale);
                     return result1.toString();
             }
-        } else {
-            // one 32-bit unsigned value may contains 10 decimal digits
-            resLengthInChars = numberLength * 10 + 1 + 7;
-            // Explanation why +1+7:
-            // +1 - one char for sign if needed.
-            // +7 - For "special case 2" (see below) we have 7 free chars for
-            // inserting necessary scaled digits.
-            result = new char[resLengthInChars + 1];
-            // alocated [resLengthInChars+1] charactes.
-            // a free latest character may be used for "special case 1" (see
-            // below)
-            currentChar = resLengthInChars;
-            if (numberLength == 1) {
-                int highDigit = digits[0];
-                if (highDigit < 0) {
-                    long v = (long) highDigit & 0xFFFFFFFFL;
-                    do {
-                        long prev = v;
-                        v /= 10;
-                        result[--currentChar] = (char) (0x0030 + ((int) (prev - v * 10)));
-                    } while (v != 0);
-                } else {
-                    int v = highDigit;
-                    do {
-                        int prev = v;
-                        v /= 10;
-                        result[--currentChar] = (char) (0x0030 + (prev - v * 10));
-                    } while (v != 0);
-                }
+        }
+        // one 32-bit unsigned value may contains 10 decimal digits
+        resLengthInChars = numberLength * 10 + 1 + 7;
+        // Explanation why +1+7:
+        // +1 - one char for sign if needed.
+        // +7 - For "special case 2" (see below) we have 7 free chars for
+        // inserting necessary scaled digits.
+        result = new char[resLengthInChars + 1];
+        // alocated [resLengthInChars+1] charactes.
+        // a free latest character may be used for "special case 1" (see
+        // below)
+        currentChar = resLengthInChars;
+        if (numberLength == 1) {
+            int highDigit = digits[0];
+            if (highDigit < 0) {
+                long v = highDigit & 0xFFFFFFFFL;
+                do {
+                    long prev = v;
+                    v /= 10;
+                    result[--currentChar] = (char) (0x0030 + ((int) (prev - v * 10)));
+                } while (v != 0);
             } else {
-                int temp[] = new int[numberLength];
-                int tempLen = numberLength;
-                System.arraycopy(digits, 0, temp, 0, tempLen);
-                BIG_LOOP: while (true) {
-                    // divide the array of digits by bigRadix and convert
-                    // remainders
-                    // to characters collecting them in the char array
-                    long result11 = 0;
-                    for (int i1 = tempLen - 1; i1 >= 0; i1--) {
-                        long temp1 = (result11 << 32)
-                                + ((long) temp[i1] & 0xFFFFFFFFL);
-                        long res = divideLongByBillion(temp1);
-                        temp[i1] = (int) res;
-                        result11 = (int) (res >> 32);
-                    }
-                    int resDigit = (int) result11;
-                    int previous = currentChar;
-                    do {
-                        result[--currentChar] = (char) (0x0030 + (resDigit % 10));
-                    } while (((resDigit /= 10) != 0) && (currentChar != 0));
-                    int delta = 9 - previous + currentChar;
-                    for (int i = 0; (i < delta) && (currentChar > 0); i++) {
-                        result[--currentChar] = '0';
-                    }
-                    int j = tempLen - 1;
-                    for (; temp[j] == 0; j--) {
-                        if (j == 0) { // means temp[0] == 0
-                            break BIG_LOOP;
-                        }
-                    }
-                    tempLen = j + 1;
+                int v = highDigit;
+                do {
+                    int prev = v;
+                    v /= 10;
+                    result[--currentChar] = (char) (0x0030 + (prev - v * 10));
+                } while (v != 0);
+            }
+        } else {
+            int temp[] = new int[numberLength];
+            int tempLen = numberLength;
+            System.arraycopy(digits, 0, temp, 0, tempLen);
+            BIG_LOOP: while (true) {
+                // divide the array of digits by bigRadix and convert
+                // remainders
+                // to characters collecting them in the char array
+                long result11 = 0;
+                for (int i1 = tempLen - 1; i1 >= 0; i1--) {
+                    long temp1 = (result11 << 32)
+                            + (temp[i1] & 0xFFFFFFFFL);
+                    long res = divideLongByBillion(temp1);
+                    temp[i1] = (int) res;
+                    result11 = (int) (res >> 32);
                 }
-                while (result[currentChar] == '0') {
-                    currentChar++;
+                int resDigit = (int) result11;
+                int previous = currentChar;
+                do {
+                    result[--currentChar] = (char) (0x0030 + (resDigit % 10));
+                } while (((resDigit /= 10) != 0) && (currentChar != 0));
+                int delta = 9 - previous + currentChar;
+                for (int i = 0; (i < delta) && (currentChar > 0); i++) {
+                    result[--currentChar] = '0';
                 }
+                int j = tempLen - 1;
+                for (; temp[j] == 0; j--) {
+                    if (j == 0) { // means temp[0] == 0
+                        break BIG_LOOP;
+                    }
+                }
+                tempLen = j + 1;
+            }
+            while (result[currentChar] == '0') {
+                currentChar++;
             }
         }
         boolean negNumber = (sign < 0);
@@ -314,42 +314,40 @@ class Conversion {
                 }
                 return new String(result, currentChar, resLengthInChars
                         - currentChar + 1);
-            } else {
-                // special case 2
-                for (int j = 2; j < -exponent + 1; j++) {
-                    result[--currentChar] = '0';
-                }
-                result[--currentChar] = '.';
+            }
+            // special case 2
+            for (int j = 2; j < -exponent + 1; j++) {
                 result[--currentChar] = '0';
-                if (negNumber) {
-                    result[--currentChar] = '-';
-                }
-                return new String(result, currentChar, resLengthInChars
-                        - currentChar);
             }
-        } else {
-            int startPoint = currentChar + 1;
-            int endPoint = resLengthInChars;
-            StringBuffer result1 = new StringBuffer(16 + endPoint - startPoint);
+            result[--currentChar] = '.';
+            result[--currentChar] = '0';
             if (negNumber) {
-                result1.append('-');
+                result[--currentChar] = '-';
             }
-            if (endPoint - startPoint >= 1) {
-                result1.append(result[currentChar]);
-                result1.append('.');
-                result1.append(result, currentChar + 1, resLengthInChars
-                        - currentChar - 1);
-            } else {
-                result1.append(result, currentChar, resLengthInChars
-                        - currentChar);
-            }
-            result1.append('E');
-            if (exponent > 0) {
-                result1.append('+');
-            }
-            result1.append(Integer.toString(exponent));
-            return result1.toString();
+            return new String(result, currentChar, resLengthInChars
+                    - currentChar);
         }
+        int startPoint = currentChar + 1;
+        int endPoint = resLengthInChars;
+        StringBuffer result1 = new StringBuffer(16 + endPoint - startPoint);
+        if (negNumber) {
+            result1.append('-');
+        }
+        if (endPoint - startPoint >= 1) {
+            result1.append(result[currentChar]);
+            result1.append('.');
+            result1.append(result, currentChar + 1, resLengthInChars
+                    - currentChar - 1);
+        } else {
+            result1.append(result, currentChar, resLengthInChars
+                    - currentChar);
+        }
+        result1.append('E');
+        if (exponent > 0) {
+            result1.append('+');
+        }
+        result1.append(Integer.toString(exponent));
+        return result1.toString();
     }
 
     /* can process only 32-bit numbers */
@@ -380,26 +378,25 @@ class Conversion {
                     result1.append( (scale == Integer.MIN_VALUE) ? "2147483648" : Integer.toString(-scale)); //$NON-NLS-1$
                     return result1.toString();
             }
-        } else {
-            // one 32-bit unsigned value may contains 10 decimal digits
-            resLengthInChars = 18;
-            // Explanation why +1+7:
-            // +1 - one char for sign if needed.
-            // +7 - For "special case 2" (see below) we have 7 free chars for
-            //  inserting necessary scaled digits.
-            result = new char[resLengthInChars+1];
-            //  alocated [resLengthInChars+1] charactes.
-            // a free latest character may be used for "special case 1" (see below)
-            currentChar = resLengthInChars;
-            long v = value;
-            do {
-                long prev = v;
-                v /= 10;
-                result[--currentChar] = (char) (0x0030 + (prev - v * 10));
-            } while (v != 0);
         }
+        // one 32-bit unsigned value may contains 10 decimal digits
+        resLengthInChars = 18;
+        // Explanation why +1+7:
+        // +1 - one char for sign if needed.
+        // +7 - For "special case 2" (see below) we have 7 free chars for
+        //  inserting necessary scaled digits.
+        result = new char[resLengthInChars+1];
+        //  Allocated [resLengthInChars+1] characters.
+        // a free latest character may be used for "special case 1" (see below)
+        currentChar = resLengthInChars;
+        long v = value;
+        do {
+            long prev = v;
+            v /= 10;
+            result[--currentChar] = (char) (0x0030 + (prev - v * 10));
+        } while (v != 0);
         
-        long exponent = (long)resLengthInChars - (long)currentChar - (long)scale - 1L;
+        long exponent = (long)resLengthInChars - (long)currentChar - scale - 1L;
         if (scale == 0) {
             if (negNumber) {
                 result[--currentChar] = '-';
@@ -418,39 +415,37 @@ class Conversion {
                     result[--currentChar] = '-';
                 }
                 return new String(result, currentChar, resLengthInChars - currentChar + 1);
-            } else {
-                // special case 2
-                for (int j = 2; j < -exponent + 1; j++) {
-                    result[--currentChar] = '0';
-                }
-                result[--currentChar] = '.';
+            }
+            // special case 2
+            for (int j = 2; j < -exponent + 1; j++) {
                 result[--currentChar] = '0';
-                if (negNumber) {
-                    result[--currentChar] = '-';
-                }
-                return new String(result, currentChar, resLengthInChars - currentChar);
             }
-        } else {
-            int startPoint = currentChar + 1;
-            int endPoint = resLengthInChars;
-            StringBuffer result1 = new StringBuffer(16+endPoint-startPoint);
+            result[--currentChar] = '.';
+            result[--currentChar] = '0';
             if (negNumber) {
-                result1.append('-');
+                result[--currentChar] = '-';
             }
-            if (endPoint - startPoint >= 1) {
-                result1.append(result[currentChar]);
-                result1.append('.');
-                result1.append(result,currentChar+1,resLengthInChars - currentChar-1);
-            } else {
-                result1.append(result,currentChar,resLengthInChars - currentChar);
-            }
-            result1.append('E');
-            if (exponent > 0) {
-                result1.append('+');
-            }
-            result1.append(Long.toString(exponent));
-            return result1.toString();
+            return new String(result, currentChar, resLengthInChars - currentChar);
         }
+        int startPoint = currentChar + 1;
+        int endPoint = resLengthInChars;
+        StringBuffer result1 = new StringBuffer(16+endPoint-startPoint);
+        if (negNumber) {
+            result1.append('-');
+        }
+        if (endPoint - startPoint >= 1) {
+            result1.append(result[currentChar]);
+            result1.append('.');
+            result1.append(result,currentChar+1,resLengthInChars - currentChar-1);
+        } else {
+            result1.append(result,currentChar,resLengthInChars - currentChar);
+        }
+        result1.append('E');
+        if (exponent > 0) {
+            result1.append('+');
+        }
+        result1.append(Long.toString(exponent));
+        return result1.toString();
     }
     
     static long divideLongByBillion(long a) {
@@ -515,7 +510,7 @@ class Conversion {
         }
         mantissa >>= 1; // drop the rounding bit
         long resSign = (val.sign < 0) ? 0x8000000000000000L : 0;
-        exponent = ((long) (1023 + exponent) << 52) & 0x7FF0000000000000L;
+        exponent = ((1023 + exponent) << 52) & 0x7FF0000000000000L;
         long result = resSign | exponent | mantissa;
         return Double.longBitsToDouble(result);
     }

@@ -113,7 +113,6 @@ public class BigDecimalTest extends junit.framework.TestCase {
 	 * @tests java.math.BigDecimal#BigDecimal(java.lang.String)
 	 */
 	public void test_constructor_String_empty() {
-		boolean gotNFE = false;
 		try {
 			new BigDecimal("");			
             fail("NumberFormatException expected");

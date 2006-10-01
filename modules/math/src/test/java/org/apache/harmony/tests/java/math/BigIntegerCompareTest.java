@@ -90,7 +90,6 @@ public class BigIntegerCompareTest extends TestCase {
         int bSign = 1;        
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
-        int result = aNumber.compareTo(bNumber);
         assertEquals(-1, aNumber.compareTo(bNumber));
     }
 
@@ -191,7 +190,6 @@ public class BigIntegerCompareTest extends TestCase {
         int aSign = 1;
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = BigInteger.ZERO;
-        int result = aNumber.compareTo(bNumber);
         assertEquals(1, aNumber.compareTo(bNumber));
     }
 
@@ -274,7 +272,7 @@ public class BigIntegerCompareTest extends TestCase {
         int aSign = 1;
         int bSign = 1;        
         BigInteger aNumber = new BigInteger(aSign, aBytes);
-        Object bNumber = (Object)new BigInteger(bSign, bBytes);
+        Object bNumber = new BigInteger(bSign, bBytes);
         assertTrue(aNumber.equals(bNumber));
     }
 
@@ -289,7 +287,7 @@ public class BigIntegerCompareTest extends TestCase {
         int aSign = 1;
         int bSign = 1;        
         BigInteger aNumber = new BigInteger(aSign, aBytes);
-        Object bNumber = (Object)new BigInteger(bSign, bBytes);
+        Object bNumber = new BigInteger(bSign, bBytes);
         assertFalse(aNumber.equals(bNumber));
     }
 

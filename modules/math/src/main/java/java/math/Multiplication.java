@@ -309,7 +309,7 @@ class Multiplication {
         int[] aDigits = val.digits;
         
         if (aNumberLength == 1) {
-            long res = (aDigits[0] & 0xFFFFFFFFL) * ((long)factor);
+            long res = (aDigits[0] & 0xFFFFFFFFL) * (factor);
             int resLo = (int)res;
             int resHi = (int)(res >>> 32);
             return ((resHi == 0)
@@ -386,8 +386,10 @@ class Multiplication {
             return bigFivePows[1].pow(intExp).shiftLeft(intExp);
         }
         // "LARGE POWERS"
-        /* To check if there is free memory to allocate a BigInteger
-         * of the estimated size, measured in bytes: 1 + [exp / log10(2)] */
+        /*
+         * To check if there is free memory to allocate a BigInteger of the
+         * estimated size, measured in bytes: 1 + [exp / log10(2)]
+         */
         long byteArraySize = 1 + (long)(exp / 2.4082399653118496);
         
         if (byteArraySize > Runtime.getRuntime().freeMemory()) {
@@ -397,30 +399,33 @@ class Multiplication {
         if (exp <= Integer.MAX_VALUE) {
             // To calculate:    5^exp * 2^exp
             return bigFivePows[1].pow(intExp).shiftLeft(intExp);
-        } else {/* "HUGE POWERS"
-         * Probably this branch won't be executed
-         * since the power of ten is too big. */
-            // To calculate:    5^exp
-            BigInteger powerOfFive = bigFivePows[1].pow(Integer.MAX_VALUE);
-            BigInteger res = powerOfFive;
-            long longExp = exp - Integer.MAX_VALUE;
-            
-            intExp = (int)(exp % Integer.MAX_VALUE);
-            while (longExp > Integer.MAX_VALUE) {
-                res = res.multiply(powerOfFive);
-                longExp -= Integer.MAX_VALUE;
-            }
-            res = res.multiply(bigFivePows[1].pow(intExp));
-            // To calculate:    5^exp << exp
-            res = res.shiftLeft(Integer.MAX_VALUE);
-            longExp = exp - Integer.MAX_VALUE;
-            while (longExp > Integer.MAX_VALUE) {
-                res = res.shiftLeft(Integer.MAX_VALUE);
-                longExp -= Integer.MAX_VALUE;
-            }
-            res = res.shiftLeft(intExp);
-            return res;
         }
+        /*
+         * "HUGE POWERS"
+         * 
+         * This branch probably won't be executed since the power of ten is too
+         * big.
+         */
+        // To calculate:    5^exp
+        BigInteger powerOfFive = bigFivePows[1].pow(Integer.MAX_VALUE);
+        BigInteger res = powerOfFive;
+        long longExp = exp - Integer.MAX_VALUE;
+        
+        intExp = (int)(exp % Integer.MAX_VALUE);
+        while (longExp > Integer.MAX_VALUE) {
+            res = res.multiply(powerOfFive);
+            longExp -= Integer.MAX_VALUE;
+        }
+        res = res.multiply(bigFivePows[1].pow(intExp));
+        // To calculate:    5^exp << exp
+        res = res.shiftLeft(Integer.MAX_VALUE);
+        longExp = exp - Integer.MAX_VALUE;
+        while (longExp > Integer.MAX_VALUE) {
+            res = res.shiftLeft(Integer.MAX_VALUE);
+            longExp -= Integer.MAX_VALUE;
+        }
+        res = res.shiftLeft(intExp);
+        return res;
     }
     
     /**
@@ -433,12 +438,11 @@ class Multiplication {
     static BigInteger multiplyByFivePow(BigInteger val, int exp) {
         // PRE: exp >= 0
         if (exp < fivePows.length) {
-            return multiplyByPositiveInt(val, fivePows[(int)exp]);
+            return multiplyByPositiveInt(val, fivePows[exp]);
         } else if (exp < bigFivePows.length) {
             return val.multiply(bigFivePows[exp]);
         } else {// Large powers of five
             return val.multiply(bigFivePows[1].pow(exp));
         }
     }
-    
 }

@@ -102,8 +102,9 @@ class Primality {
         // If n < "last prime of table" searches next prime in the table
         if ((n.numberLength == 1) && (n.digits[0] >= 0)
                 && (n.digits[0] < primes[primes.length - 1])) {
-            for (i = 0; n.digits[0] >= primes[i]; i++)
+            for (i = 0; n.digits[0] >= primes[i]; i++) {
                 ;
+            }
             return BIprimes[i];
         }
         /*
@@ -121,8 +122,9 @@ class Primality {
         }
         // To set the improved certainly of Miller-Rabin
         j = startPoint.bitLength();
-        for (certainty = 2; j < BITS[certainty]; certainty++)
+        for (certainty = 2; j < BITS[certainty]; certainty++) {
             ;
+        }
         // To calculate modules: N mod p1, N mod p2, ... for first primes.
         for (i = 0; i < primes.length; i++) {
             modules[i] = Division.remainder(startPoint, primes[i]) - gapSize;
@@ -217,8 +219,9 @@ class Primality {
         int i;
         int bitLength = n.bitLength();
 
-        for (i = 2; bitLength < BITS[i]; i++)
+        for (i = 2; bitLength < BITS[i]; i++) {
             ;
+        }
         certainty = Math.min(i, 1 + ((certainty - 1) >> 1));
 
         return millerRabin(n, certainty);

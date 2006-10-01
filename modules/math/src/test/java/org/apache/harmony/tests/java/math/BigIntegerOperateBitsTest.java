@@ -131,7 +131,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         int number = -7;
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         try {
-            BigInteger result = aNumber.clearBit(number);
+            aNumber.clearBit(number);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
             assertEquals("Improper exception message", "Negative bit address", e.getMessage());
@@ -438,7 +438,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         int number = -7;
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         try {
-            BigInteger result = aNumber.flipBit(number);
+            aNumber.flipBit(number);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
             assertEquals("Improper exception message", "Negative bit address", e.getMessage());
@@ -728,7 +728,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         int number = -7;
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         try {
-            BigInteger result = aNumber.setBit(number);
+            aNumber.setBit(number);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
             assertEquals("Improper exception message", "Negative bit address", e.getMessage());
@@ -1305,7 +1305,7 @@ public class BigIntegerOperateBitsTest extends TestCase {
         int number = -7;
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         try {
-            boolean result = aNumber.testBit(number);
+            aNumber.testBit(number);
             fail("ArithmeticException has not been caught");
         } catch (ArithmeticException e) {
             assertEquals("Improper exception message", "Negative bit address", e.getMessage());

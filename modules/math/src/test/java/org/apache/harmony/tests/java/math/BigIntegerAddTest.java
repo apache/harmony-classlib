@@ -185,8 +185,6 @@ public class BigIntegerAddTest extends TestCase {
     public void testCase8() {
         byte aBytes[] = {10, 20, 30, 40, 50, 60, 70, 10, 20, 30};
         byte bBytes[] = {1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7};
-        int aSign = 1;
-        int bSign = 1;        
         byte rBytes[] = {1, 2, 3, 4, 15, 26, 37, 41, 52, 63, 74, 15, 26, 37};
         BigInteger aNumber = new BigInteger(aBytes);
         BigInteger bNumber = new BigInteger(bBytes);

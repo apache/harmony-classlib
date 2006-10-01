@@ -39,7 +39,7 @@ package java.math;
  *</ul>
  * 
  * @author Intel Middleware Product Division
- * @author Instituto Tecnológico de Córdoba
+ * @author Instituto Tecnologico de Cordoba
  */
 class Division {
 
@@ -88,7 +88,7 @@ class Division {
                 // set guessDigit to the largest unsigned int value
                 guessDigit = -1;
             } else {
-                long product = ((((long) normA[j] & 0xffffffffL) << 32) + ((long) normA[j - 1] & 0xffffffffL));
+                long product = (((normA[j] & 0xffffffffL) << 32) + (normA[j - 1] & 0xffffffffL));
                 long res = Division.divideLongByInt(product, firstDivisorDigit);
                 guessDigit = (int) res; // the quotient of divideLongByInt
                 int rem = (int) (res >> 32); // the remainder of
@@ -106,16 +106,16 @@ class Division {
                             break;
                         }
                         // leftHand always fits in an unsigned long
-                        leftHand = ((long) guessDigit & 0xffffffffL)
-                                * ((long) normB[normBLength - 2] & 0xffffffffL);
+                        leftHand = (guessDigit & 0xffffffffL)
+                                * (normB[normBLength - 2] & 0xffffffffL);
                         /*
                          * rightHand can overflow; in this case the loop
                          * condition will be true in the next step of the loop
                          */
                         rightHand = ((long) rem << 32)
-                                + ((long) normA[j - 2] & 0xffffffffL);
-                        long longR = ((long) rem & 0xffffffffL)
-                                + ((long) firstDivisorDigit & 0xffffffffL);
+                                + (normA[j - 2] & 0xffffffffL);
+                        long longR = (rem & 0xffffffffL)
+                                + (firstDivisorDigit & 0xffffffffL);
                         /*
                          * checks that longR does not fit in an unsigned int;
                          * this ensures that rightHand will overflow unsigned
@@ -134,22 +134,22 @@ class Division {
             if (guessDigit != 0) {
                 int borrow = Division.multiplyAndSubtract(normA, j
                         - normBLength, normB, normBLength,
-                        (long) guessDigit & 0xffffffffL);
+                        guessDigit & 0xffffffffL);
                 // Step D5: check the borrow
                 if (borrow != 0) {
                     // Step D6: compensating addition
                     guessDigit--;
                     long carry = 0;
                     for (int k = 0; k < normBLength; k++) {
-                        carry += ((long) normA[j - normBLength + k] & 0xffffffffL)
-                                + ((long) normB[k] & 0xffffffffL);
+                        carry += (normA[j - normBLength + k] & 0xffffffffL)
+                                + (normB[k] & 0xffffffffL);
                         normA[j - normBLength + k] = (int) carry;
                         carry >>>= 32;
                     }
                 }
             }
             if (quot != null) {
-                quot[i] = (int) guessDigit;
+                quot[i] = guessDigit;
             }
             // Step D7
             j--;
@@ -162,10 +162,9 @@ class Division {
             // reuse normB
             BitLevel.shiftRight(normB, normBLength, normA, 0, divisorShift);
             return normB;
-        } else {
-            System.arraycopy(normA, 0, normB, 0, bLength);
-            return normA;
         }
+        System.arraycopy(normA, 0, normB, 0, bLength);
+        return normA;
     }
 
     /**
@@ -182,10 +181,10 @@ class Division {
             final int divisor) {
 
         long rem = 0;
-        long bLong = (long) divisor & 0xffffffffL;
+        long bLong = divisor & 0xffffffffL;
 
         for (int i = srcLength - 1; i >= 0; i--) {
-            long temp = (rem << 32) | ((long) src[i] & 0xffffffffL);
+            long temp = (rem << 32) | (src[i] & 0xffffffffL);
             long quot;
             if (temp >= 0) {
                 quot = (temp / bLong);
@@ -236,7 +235,7 @@ class Division {
         long result = 0;
 
         for (int i = srcLength - 1; i >= 0; i--) {
-            long temp = (result << 32) + ((long) src[i] & 0xffffffffL);
+            long temp = (result << 32) + (src[i] & 0xffffffffL);
             long res = divideLongByInt(temp, divisor);
             result = (int) (res >> 32);
         }
@@ -268,7 +267,7 @@ class Division {
     static long divideLongByInt(long a, int b) {
         long quot;
         long rem;
-        long bLong = (long) b & 0xffffffffL;
+        long bLong = b & 0xffffffffL;
 
         if (a >= 0) {
             quot = (a / bLong);
@@ -314,8 +313,8 @@ class Division {
         int valLen = val.numberLength;
         int valSign = val.sign;
         if (valLen == 1) {
-            long a = ((long) valDigits[0] & 0xffffffffL);
-            long b = ((long) divisor & 0xffffffffL);
+            long a = (valDigits[0] & 0xffffffffL);
+            long b = (divisor & 0xffffffffL);
             long quo = a / b;
             long rem = a % b;
             if (valSign != divisorSign) {
@@ -326,20 +325,19 @@ class Division {
             }
             return new BigInteger[] { BigInteger.valueOf(quo),
                     BigInteger.valueOf(rem) };
-        } else {
-            int quotientLength = valLen;
-            int quotientSign = ((valSign == divisorSign) ? 1 : -1);
-            int quotientDigits[] = new int[quotientLength];
-            int remainderDigits[];
-            remainderDigits = new int[] { Division.divideArrayByInt(
-                    quotientDigits, valDigits, valLen, divisor) };
-            BigInteger result0 = new BigInteger(quotientSign, quotientLength,
-                    quotientDigits);
-            BigInteger result1 = new BigInteger(valSign, 1, remainderDigits);
-            result0.cutOffLeadingZeroes();
-            result1.cutOffLeadingZeroes();
-            return new BigInteger[] { result0, result1 };
         }
+        int quotientLength = valLen;
+        int quotientSign = ((valSign == divisorSign) ? 1 : -1);
+        int quotientDigits[] = new int[quotientLength];
+        int remainderDigits[];
+        remainderDigits = new int[] { Division.divideArrayByInt(
+                quotientDigits, valDigits, valLen, divisor) };
+        BigInteger result0 = new BigInteger(quotientSign, quotientLength,
+                quotientDigits);
+        BigInteger result1 = new BigInteger(valSign, 1, remainderDigits);
+        result0.cutOffLeadingZeroes();
+        result1.cutOffLeadingZeroes();
+        return new BigInteger[] { result0, result1 };
     }
 
     /**
@@ -360,7 +358,7 @@ class Division {
         int productInt;
 
         for (i = 0; i < bLen; i++) {
-            product = c * ((long) b[i] & 0xffffffffL);
+            product = c * (b[i] & 0xffffffffL);
             productInt = (int) product;
             productInt += carry;
             carry = (int) (product >> 32)
@@ -371,8 +369,8 @@ class Division {
             }
             a[start + i] = productInt;
         }
-        product = ((long) a[start + i] & 0xffffffffL)
-                - ((long) carry & 0xffffffffL);
+        product = (a[start + i] & 0xffffffffL)
+                - (carry & 0xffffffffL);
         a[start + i] = (int) product;
         carry = (int) (product >> 32); // -1 or 0
         return carry;
@@ -701,12 +699,14 @@ class Division {
             t[s] = t[s + 1] + (int) C;
         }
         // skipping leading zeros
-        for (i = t.length - 1; (i > 0) && (t[i] == 0); i--)
+        for (i = t.length - 1; (i > 0) && (t[i] == 0); i--) {
             ;
+        }
 
         if (i == s - 1) {
-            for (; (i >= 0) && (t[i] == n[i]); i--)
+            for (; (i >= 0) && (t[i] == n[i]); i--) {
                 ;
+            }
             lower = (i >= 0) && (t[i] & 0xFFFFFFFFL) < (n[i] & 0xFFFFFFFFL);
         } else {
             lower = (i < s - 1);
