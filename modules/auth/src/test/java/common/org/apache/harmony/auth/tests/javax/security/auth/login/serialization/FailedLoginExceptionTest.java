@@ -37,6 +37,7 @@ public class FailedLoginExceptionTest extends SerializationTest {
         junit.textui.TestRunner.run(FailedLoginExceptionTest.class);
     }
 
+    @Override
     protected Object[] getData() {
         return new Object[] {new FailedLoginException("message")};
     }

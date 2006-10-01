@@ -51,6 +51,7 @@ public class Sasl1Test extends TestCase {
         super(arg0);
     }
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         if (!initProvs) {
@@ -58,12 +59,13 @@ public class Sasl1Test extends TestCase {
             initProvs = true;
         }
         if (provs != null) {
-            for (int i = 0; i < provs.length; i++) {
-                Security.removeProvider(provs[i].getName());
+            for (Provider element : provs) {
+                Security.removeProvider(element.getName());
             }
         }
     }
     
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         if (provs != null) {

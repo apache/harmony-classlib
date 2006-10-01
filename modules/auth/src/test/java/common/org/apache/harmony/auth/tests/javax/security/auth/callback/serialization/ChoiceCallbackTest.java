@@ -41,6 +41,7 @@ public class ChoiceCallbackTest extends SerializationTest implements
         junit.textui.TestRunner.run(ChoiceCallbackTest.class);
     }
 
+    @Override
     protected Object[] getData() {
 
         String prompt = "prompt";

@@ -38,6 +38,7 @@ public class RefreshFailedExceptionTest extends SerializationTest {
         junit.textui.TestRunner.run(RefreshFailedExceptionTest.class);
     }
 
+    @Override
     protected Object[] getData() {
         return new Object[] {new RefreshFailedException("message")};
     }

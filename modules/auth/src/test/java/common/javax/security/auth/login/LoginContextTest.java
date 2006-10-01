@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Stepan M. Mishura
-* @version $Revision$
-*/
-
 package javax.security.auth.login;
 
 import java.security.Security;
@@ -47,10 +42,11 @@ public class LoginContextTest extends SecurityTest {
 
     private static final String moduleName = "moduleName";
 
-    private Subject subject = new Subject();
+    private final Subject subject = new Subject();
 
-    private MyCallbackHandler handler = new MyCallbackHandler();
+    private final MyCallbackHandler handler = new MyCallbackHandler();
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
 
@@ -197,7 +193,7 @@ public class LoginContextTest extends SecurityTest {
      */
     public final void testLC_String_LoginModuleInitialize() throws Exception {
 
-        Hashtable options = new Hashtable();
+        Hashtable<String, ?> options = new Hashtable<String, Object>();
 
         // add required module to the current configuration
         MyConfig.addRequired("MyLoginModule", options);
@@ -212,7 +208,7 @@ public class LoginContextTest extends SecurityTest {
         // only one module must be created
         assertEquals("Number of modules", 1, MyLoginModule.list.size());
 
-        MyLoginModule module = (MyLoginModule) MyLoginModule.list.get(0);
+        MyLoginModule module = MyLoginModule.list.get(0);
 
         // login context instantiates subject object itself. 
         assertNotNull("Subject", module.subject);
@@ -357,7 +353,7 @@ public class LoginContextTest extends SecurityTest {
     public final void testLC_StringCallbackHandler_LoginModuleInitialize()
             throws Exception {
 
-        Hashtable options = new Hashtable();
+        Hashtable<String, ?> options = new Hashtable<String, Object>();
 
         // add required module to the current configuration
         MyConfig.addRequired("MyLoginModule", options);
@@ -372,7 +368,7 @@ public class LoginContextTest extends SecurityTest {
         // only one module must be created
         assertEquals("Number of modules", 1, MyLoginModule.list.size());
 
-        MyLoginModule module = (MyLoginModule) MyLoginModule.list.get(0);
+        MyLoginModule module = MyLoginModule.list.get(0);
 
         // login context instantiates subject object itself. 
         assertNotNull("Subject", module.subject);
@@ -520,7 +516,7 @@ public class LoginContextTest extends SecurityTest {
     public final void testLC_StringSubject_LoginModuleInitialize()
             throws Exception {
 
-        Hashtable options = new Hashtable();
+        Hashtable<String, ?> options = new Hashtable<String, Object>();
 
         // add required module to the current configuration
         MyConfig.addRequired("MyLoginModule", options);
@@ -535,7 +531,7 @@ public class LoginContextTest extends SecurityTest {
         // only one module must be created
         assertEquals("Number of modules", 1, MyLoginModule.list.size());
 
-        MyLoginModule module = (MyLoginModule) MyLoginModule.list.get(0);
+        MyLoginModule module = MyLoginModule.list.get(0);
 
         // login context has provided subject 
         assertTrue("Subject", module.subject == subject);
@@ -666,7 +662,7 @@ public class LoginContextTest extends SecurityTest {
     public final void testLC_StringSubjectCallbackHandler_LoginModuleInitialize()
             throws Exception {
 
-        Hashtable options = new Hashtable();
+        Hashtable<String, ?> options = new Hashtable<String, Object>();
 
         // add required module to the current configuration
         MyConfig.addRequired("MyLoginModule", options);
@@ -681,7 +677,7 @@ public class LoginContextTest extends SecurityTest {
         // only one module must be created
         assertEquals("Number of modules", 1, MyLoginModule.list.size());
 
-        MyLoginModule module = (MyLoginModule) MyLoginModule.list.get(0);
+        MyLoginModule module = MyLoginModule.list.get(0);
 
         // login context has provided subject 
         assertTrue("Subject", module.subject == subject);
@@ -749,12 +745,13 @@ public class LoginContextTest extends SecurityTest {
 
         private String appName;
 
-        private ArrayList entries;
+        private ArrayList<AppConfigurationEntry> entries;
 
         public MyConfig() {
-            entries = new ArrayList();
+            entries = new ArrayList<AppConfigurationEntry>();
         }
 
+        @Override
         public AppConfigurationEntry[] getAppConfigurationEntry(
                 String applicationName) {
 
@@ -763,18 +760,18 @@ public class LoginContextTest extends SecurityTest {
             if (entries != null) {
                 if (entries.size() == 0) {
                     return new AppConfigurationEntry[0];
-                } else {
-                    AppConfigurationEntry[] appEntries = new AppConfigurationEntry[entries
-                            .size()];
-
-                    entries.toArray(appEntries);
-
-                    return appEntries;
                 }
+                AppConfigurationEntry[] appEntries = new AppConfigurationEntry[entries
+                        .size()];
+
+                entries.toArray(appEntries);
+
+                return appEntries;
             }
             return null;
         }
 
+        @Override
         public void refresh() {
         }
 
@@ -801,8 +798,8 @@ public class LoginContextTest extends SecurityTest {
         /**
          * Appends required login module to the current configuration
          */
-        public static void addRequired(String name, Map options) {
-            ArrayList list = ((MyConfig) Configuration.getConfiguration()).entries;
+        public static void addRequired(String name, Map<String, ?> options) {
+            ArrayList<AppConfigurationEntry> list = ((MyConfig) Configuration.getConfiguration()).entries;
 
             AppConfigurationEntry entry = new AppConfigurationEntry(
                     "javax.security.auth.login.LoginContextTest$" + name,
@@ -827,10 +824,10 @@ public class LoginContextTest extends SecurityTest {
 
     public static class MyLoginModule implements LoginModule {
 
-        public static ArrayList list = new ArrayList();
+        public static ArrayList<MyLoginModule> list = new ArrayList<MyLoginModule>();
 
         public static void reset() {
-            list = new ArrayList();
+            list = new ArrayList<MyLoginModule>();
         }
 
         public boolean aborted;
@@ -847,9 +844,9 @@ public class LoginContextTest extends SecurityTest {
 
         public CallbackHandler handler;
 
-        public Map sharedState;
+        public Map<?, ?> sharedState;
 
-        public Map options;
+        public Map<?, ?> options;
 
         public MyLoginModule() {
             list.add(this);
@@ -876,7 +873,7 @@ public class LoginContextTest extends SecurityTest {
         }
 
         public void initialize(Subject subject, CallbackHandler handler,
-                Map sharedState, Map options) {
+                Map<String, ?> sharedState, Map<String, ?> options) {
 
             if (logined || commited || aborted) {
                 throw new AssertionError("MUST be initialized first");
@@ -919,8 +916,8 @@ public class LoginContextTest extends SecurityTest {
             return false;
         }
 
-        public void initialize(Subject arg0, CallbackHandler arg1, Map arg2,
-                Map arg3) {
+        public void initialize(Subject arg0, CallbackHandler arg1, Map<String, ?> arg2,
+                Map<String, ?> arg3) {
         }
 
         public boolean login() throws LoginException {

@@ -59,8 +59,8 @@ public class Sasl2Test extends TestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
         if (mProv != null) {
-            for (int i = 0; i < mProv.length; i++) {
-                Security.removeProvider(mProv[i].getName());
+            for (Provider element : mProv) {
+                Security.removeProvider(element.getName());
             }
         }
     }
@@ -75,8 +75,8 @@ public class Sasl2Test extends TestCase {
     }
 
     private void addProviders() {
-        for (int i = 0; i < mProv.length; i++) {
-            Security.insertProviderAt(mProv[i], 2);
+        for (Provider element : mProv) {
+            Security.insertProviderAt(element, 2);
         }
     }
 
@@ -315,14 +315,14 @@ public class Sasl2Test extends TestCase {
                 (new SpiEngUtils()).new MyProvider("MySaslServerProvider4",
                         "Testing provider SaslServerFactory - 4", SRVSSRV
                                 .concat(mech[0]), fServerClass02) };
-        for (int i = 0; i < mProv.length; i++) {
+        for (Provider element : mProv) {
             for (int j = 1; j < mech.length; j++) {
-                mProv[i].put(SRVSSRV.concat(mech[j]).concat(mech[j]),
+                element.put(SRVSSRV.concat(mech[j]).concat(mech[j]),
                         fServerClass02);
-                mProv[i].put(SRVSSRV.concat(mech[j]).concat(mech[j]),
+                element.put(SRVSSRV.concat(mech[j]).concat(mech[j]),
                         fServerClass01);
             }
-            mProv[i].put(SRVSSRV.concat(mech[0]).concat(mech[0]),
+            element.put(SRVSSRV.concat(mech[0]).concat(mech[0]),
                     fServerClass01);
         }
         addProviders();

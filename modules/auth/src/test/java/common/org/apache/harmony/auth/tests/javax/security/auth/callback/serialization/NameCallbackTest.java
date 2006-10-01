@@ -40,6 +40,7 @@ public class NameCallbackTest extends SerializationTest implements
         junit.textui.TestRunner.run(NameCallbackTest.class);
     }
 
+    @Override
     protected Object[] getData() {
         NameCallback nc = new NameCallback("prmpt", "defName");
         nc.setName("Name");

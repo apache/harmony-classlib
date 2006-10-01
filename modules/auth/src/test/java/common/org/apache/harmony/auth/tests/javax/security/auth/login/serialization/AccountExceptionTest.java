@@ -38,6 +38,7 @@ public class AccountExceptionTest extends SerializationTest {
         junit.textui.TestRunner.run(AccountExceptionTest.class);
     }
 
+    @Override
     protected Object[] getData() {
         return new Object[] {new AccountException("message")};
     }

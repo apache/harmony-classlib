@@ -37,6 +37,7 @@ public class AccountNotFoundExceptionTest extends SerializationTest {
         junit.textui.TestRunner.run(AccountNotFoundExceptionTest.class);
     }
 
+    @Override
     protected Object[] getData() {
         return new Object[] {new AccountNotFoundException("message")};
     }

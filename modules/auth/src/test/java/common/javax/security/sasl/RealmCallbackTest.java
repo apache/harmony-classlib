@@ -87,14 +87,14 @@ public class RealmCallbackTest extends TestCase {
         RealmCallback rCB;
         StringBuffer sb = new StringBuffer("");
         String ss;
-        for (int i = 0; i < prompts.length; i++) {
+        for (String element : prompts) {
             for (int j = 0; j < prompts.length; j++) {
-                rCB = new RealmCallback(prompts[i], defInfo[j]);
+                rCB = new RealmCallback(element, defInfo[j]);
                 assertEquals("Incoorect default info", rCB.getDefaultText(),
                         defInfo[j]);
-                assertEquals("Incorrect prompt", rCB.getPrompt(), prompts[i]);
+                assertEquals("Incorrect prompt", rCB.getPrompt(), element);
                 assertNull("Not null text", rCB.getText());
-                sb.replace(0, sb.length(), prompts[i]);
+                sb.replace(0, sb.length(), element);
                 sb.append(defInfo[j]);
                 ss = sb.toString();
                 rCB.setText(ss);
@@ -131,13 +131,13 @@ public class RealmCallbackTest extends TestCase {
         RealmCallback rCB;
         StringBuffer sb = new StringBuffer("");
         String ss;
-        for (int i = 0; i < prompts.length; i++) {
-            rCB = new RealmCallback(prompts[i]);
+        for (String element : prompts) {
+            rCB = new RealmCallback(element);
             assertNull("Incoorect default info", rCB.getDefaultText());
-            assertEquals("Incorrect prompt", rCB.getPrompt(), prompts[i]);
+            assertEquals("Incorrect prompt", rCB.getPrompt(), element);
             assertNull("Not null text", rCB.getText());
-            sb = new StringBuffer(prompts[i]);
-            sb.replace(0, sb.length(), prompts[i]);
+            sb = new StringBuffer(element);
+            sb.replace(0, sb.length(), element);
             ss = sb.toString();
             rCB.setText(ss);
             assertEquals("Incorrect text", rCB.getText(), ss);

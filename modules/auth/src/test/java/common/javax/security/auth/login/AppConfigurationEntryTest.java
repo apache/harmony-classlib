@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
-
 package javax.security.auth.login;
 
 import java.util.HashMap;
@@ -30,12 +25,7 @@ import junit.framework.TestCase;
 /**
  * Tests AppConfigurationEntry class
  */
-
 public class AppConfigurationEntryTest extends TestCase {
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AppConfigurationEntryTest.class);
-    }
 
     String loginModule = "LoginModule";
 
@@ -43,8 +33,9 @@ public class AppConfigurationEntryTest extends TestCase {
 
     AppConfigurationEntry entry = null;
 
-    Map options = new HashMap();
+    Map<String, Object> options = new HashMap<String, Object>();
 
+    @Override
     public void setUp() {
         options.put("debug", "true");
         options.put("testing", "false");
@@ -106,12 +97,12 @@ public class AppConfigurationEntryTest extends TestCase {
      * test for array of the AppConfigurationEntry and for the method getOptions 
      */
     public void testArrayCtor() {
-        Map options1 = new HashMap();
+        Map<String, Object> options1 = new HashMap<String, Object>();
         options1.put("debug", "false");
         AppConfigurationEntry[] entries = {
                 new AppConfigurationEntry("LoginModule1",AppConfigurationEntry.LoginModuleControlFlag.REQUIRED,options),
                 new AppConfigurationEntry("LoginModule2", AppConfigurationEntry.LoginModuleControlFlag.REQUIRED,options1),
-                new AppConfigurationEntry("LoginModule3",AppConfigurationEntry.LoginModuleControlFlag.OPTIONAL,new HashMap()) };
+                new AppConfigurationEntry("LoginModule3",AppConfigurationEntry.LoginModuleControlFlag.OPTIONAL,new HashMap<String, Object>()) };
 
         assertEquals("LoginModule1", entries[0].getLoginModuleName());
         assertEquals(options, entries[0].getOptions());
@@ -146,11 +137,12 @@ public class AppConfigurationEntryTest extends TestCase {
                 AppConfigurationEntry.LoginModuleControlFlag.SUFFICIENT.toString());
     }
     
+    @SuppressWarnings("unchecked")
     public void testImmutability(){
         AppConfigurationEntry entry = new AppConfigurationEntry("LoginModule",
                 AppConfigurationEntry.LoginModuleControlFlag.REQUIRED, options);
 
-        Map eOptions = entry.getOptions();
+        Map<String, Object> eOptions = (Map<String, Object>)entry.getOptions();
 
         try {
             eOptions.put("a", "b");

@@ -36,6 +36,7 @@ public class AccountExpiredExceptionTest extends SerializationTest {
         junit.textui.TestRunner.run(AccountExpiredExceptionTest.class);
     }
 
+    @Override
     protected Object[] getData() {
         return new Object[] {new AccountExpiredException("message")};
     }

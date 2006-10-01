@@ -72,7 +72,8 @@ public class DefaultConfigParserTest extends TestCase {
 		super(name);
 	}
 
-	public void setUp() throws Exception {
+	@Override
+    public void setUp() throws Exception {
 		p = System.getProperties();
 		File f = new File(fconf);
 		try {
@@ -169,8 +170,8 @@ public class DefaultConfigParserTest extends TestCase {
 			byte[] b = str[i].getBytes();
 			OutputStream os = new FileOutputStream(file);
 
-			for (int j = 0; j < b.length; j++) {
-				os.write(b[j]);
+			for (byte element : b) {
+				os.write(element);
 			}
 
 			os.flush();

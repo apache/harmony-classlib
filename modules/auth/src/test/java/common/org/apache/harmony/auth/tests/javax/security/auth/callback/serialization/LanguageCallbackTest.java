@@ -40,6 +40,7 @@ public class LanguageCallbackTest extends SerializationTest implements
         junit.textui.TestRunner.run(LanguageCallbackTest.class);
     }
 
+    @Override
     protected Object[] getData() {
         LanguageCallback lc = new LanguageCallback();
         lc.setLocale(Locale.UK);

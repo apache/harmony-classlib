@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexey V. Varlamov
-* @version $Revision$
-*/
-
 package javax.security.auth;
 
 import java.io.File;
@@ -43,11 +38,8 @@ import org.apache.harmony.auth.tests.support.TestUtils;
 /**
  * Tests Policy class
  */
+@SuppressWarnings("deprecation")
 public class PolicyTest extends TestCase {
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(PolicyTest.class);
-    }
 
     /**
      * Tests that setPolicy() is properly secured via SecurityManager.
@@ -110,11 +102,13 @@ public class PolicyTest extends TestCase {
 
     public static class TestProvider extends Policy {
 
+        @Override
         public PermissionCollection getPermissions(Subject subject,
                 CodeSource cs) {
             return null;
         }
 
+        @Override
         public void refresh() {
         }
     }
@@ -188,7 +182,7 @@ public class PolicyTest extends TestCase {
         PermissionCollection c;
         Permission per;
         Subject subject;
-        Enumeration e;
+        Enumeration<Permission> e;
         CodeSource source;
 
         String oldProp = System.getProperty(POLICY_PROP);
@@ -237,7 +231,7 @@ public class PolicyTest extends TestCase {
 
             e = p.getPermissions(subject, null).elements();
 
-            per = (Permission) e.nextElement();
+            per = e.nextElement();
             assertFalse("Elements: ", e.hasMoreElements());
             assertEquals("Permission: ", per, new FilePermission("/home/duke",
                     "read, write"));
@@ -265,7 +259,7 @@ public class PolicyTest extends TestCase {
             subject.getPrincipals().add(new MyPrincipal("dummy"));
 
             e = p.getPermissions(subject, source).elements();
-            per = (Permission) e.nextElement();
+            per = e.nextElement();
             assertFalse("Elements: ", e.hasMoreElements());
             assertEquals("Permission: ", per, new RuntimePermission(
                     "createClassLoader"));
@@ -296,7 +290,7 @@ public class PolicyTest extends TestCase {
 
             subject.getPrincipals().add(new OtherPrincipal("other"));
             e = p.getPermissions(subject, null).elements();
-            per = (Permission) e.nextElement();
+            per = e.nextElement();
             assertFalse("Elements: ", e.hasMoreElements());
             assertEquals("Permission: ", per, new AllPermission());
 
@@ -309,8 +303,8 @@ public class PolicyTest extends TestCase {
             e = p.getPermissions(subject, null).elements();
 
             Permission[] get = new Permission[2];
-            get[0] = (Permission) e.nextElement();
-            get[1] = (Permission) e.nextElement();
+            get[0] = e.nextElement();
+            get[1] = e.nextElement();
             assertFalse("Elements: ", e.hasMoreElements());
 
             Permission[] set = new Permission[2];
@@ -333,7 +327,7 @@ public class PolicyTest extends TestCase {
 
         Permission per;
         Subject subject;
-        Enumeration e;
+        Enumeration<Permission> e;
 
         String oldProp = System.getProperty(POLICY_PROP);
         try {
@@ -350,7 +344,7 @@ public class PolicyTest extends TestCase {
 
             e = p.getPermissions(subject, null).elements();
 
-            per = (Permission) e.nextElement();
+            per = e.nextElement();
             assertFalse("Elements: ", e.hasMoreElements());
             assertEquals("Permission: ", per, new FilePermission("/home/duke",
                     "read, write"));
@@ -364,7 +358,7 @@ public class PolicyTest extends TestCase {
 
             e = p.getPermissions(subject, null).elements();
 
-            per = (Permission) e.nextElement();
+            per = e.nextElement();
             assertFalse("Elements: ", e.hasMoreElements());
             assertEquals("Permission: ", per, new RuntimePermission(
                     "createClassLoader"));

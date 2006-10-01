@@ -43,64 +43,86 @@ import java.util.*;
 public class X500PrivateCredentialTest extends TestCase {
 
 	X509Certificate cert= new X509Certificate() {
-		public void checkValidity(){}
-		public void checkValidity(Date date){}
-		public int getVersion() {
+		@Override
+        public void checkValidity(){}
+		@Override
+        public void checkValidity(Date date){}
+		@Override
+        public int getVersion() {
 			return 0;
 		}
-		public BigInteger getSerialNumber() {
+		@Override
+        public BigInteger getSerialNumber() {
 			return null;
 		}
-		public Principal getIssuerDN() {
+		@Override
+        public Principal getIssuerDN() {
 			return null;
 		}
-		public Principal getSubjectDN() {
+		@Override
+        public Principal getSubjectDN() {
 			return null;
 		}
-		public Date getNotBefore() {
+		@Override
+        public Date getNotBefore() {
 			return null;
 		}
-		public Date getNotAfter() {
+		@Override
+        public Date getNotAfter() {
 			return null;
 		}
-		public byte[] getTBSCertificate() throws CertificateEncodingException {
+		@Override
+        public byte[] getTBSCertificate() throws CertificateEncodingException {
 			return null;
 		}
-		public byte[] getSignature() {
+		@Override
+        public byte[] getSignature() {
 			return null;
 		}
-		public String getSigAlgName() {
+		@Override
+        public String getSigAlgName() {
 			return null;
 		}
-		public String getSigAlgOID() {
+		@Override
+        public String getSigAlgOID() {
 			return null;
 		}
-		public byte[] getSigAlgParams() {
+		@Override
+        public byte[] getSigAlgParams() {
 			return null;
 		}
-		public boolean[] getIssuerUniqueID() {
+		@Override
+        public boolean[] getIssuerUniqueID() {
 			return null;
 		}
-		public boolean[] getSubjectUniqueID() {
+		@Override
+        public boolean[] getSubjectUniqueID() {
 			return null;
 		}
-		public boolean[] getKeyUsage() {
+		@Override
+        public boolean[] getKeyUsage() {
 			return null;
 		}
-		public int getBasicConstraints() {
+		@Override
+        public int getBasicConstraints() {
 			return 0;
 		}
-		public byte[] getEncoded() throws CertificateEncodingException {
+		@Override
+        public byte[] getEncoded() throws CertificateEncodingException {
 			return null;
 		}
-		public void verify(PublicKey key) throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
+		@Override
+        public void verify(PublicKey key) throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
 		}
-		public void verify(PublicKey key, String sigProvider) throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
+		@Override
+        public void verify(PublicKey key, String sigProvider) throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
 		}
-		public String toString() {
+		@Override
+        public String toString() {
 			return null;
 		}
-		public PublicKey getPublicKey() {
+		@Override
+        public PublicKey getPublicKey() {
 			return null;
 		}
 		public Set getCriticalExtensionOIDs() {

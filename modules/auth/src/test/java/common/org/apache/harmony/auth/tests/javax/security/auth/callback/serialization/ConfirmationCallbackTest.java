@@ -40,6 +40,7 @@ public class ConfirmationCallbackTest extends SerializationTest implements
         junit.textui.TestRunner.run(ConfirmationCallbackTest.class);
     }
 
+    @Override
     protected Object[] getData() {
         return new Object[] { new ConfirmationCallback("prompt",
                 ConfirmationCallback.INFORMATION,

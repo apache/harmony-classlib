@@ -119,9 +119,9 @@ public class RealmChoiceCallbackTest extends TestCase {
      */ 
     public void test02() {
         RealmChoiceCallback rCCB;
-        for (int i = 0; i < prompts.length; i++) {
-            rCCB = new RealmChoiceCallback(prompts[i], choices, 0, false);
-            assertEquals("Incorrect prompt", rCCB.getPrompt(), prompts[i]);
+        for (String element : prompts) {
+            rCCB = new RealmChoiceCallback(element, choices, 0, false);
+            assertEquals("Incorrect prompt", rCCB.getPrompt(), element);
             String [] ch = rCCB.getChoices();
             assertEquals("Incorrect choices length", ch.length, choices.length);
             for (int j = 0; j < ch.length; j++) {
@@ -141,11 +141,11 @@ public class RealmChoiceCallbackTest extends TestCase {
                 fail("UnsupportedOperationException should be thrown fot non-multiple callback");
             } catch (UnsupportedOperationException e) {
             }
-            for (int j = 0; j < indexes.length; j++) {
-                rCCB.setSelectedIndex(indexes[j]);
+            for (int element0 : indexes) {
+                rCCB.setSelectedIndex(element0);
                 ind = rCCB.getSelectedIndexes();
                 assertEquals("Incorrect index length", ind.length, 1);
-                assertEquals("Incorrect index", ind[0], indexes[j]);
+                assertEquals("Incorrect index", ind[0], element0);
             }
         }        
     }
@@ -159,9 +159,9 @@ public class RealmChoiceCallbackTest extends TestCase {
      */ 
     public void test03() {
         RealmChoiceCallback rCCB;
-        for (int i = 0; i < prompts.length; i++) {
-            rCCB = new RealmChoiceCallback(prompts[i], choices, 0, true);
-            assertEquals("Incorrect prompt", rCCB.getPrompt(), prompts[i]);
+        for (String element : prompts) {
+            rCCB = new RealmChoiceCallback(element, choices, 0, true);
+            assertEquals("Incorrect prompt", rCCB.getPrompt(), element);
             String[] ch = rCCB.getChoices();
             assertEquals("Incorrect choices length", ch.length, choices.length);
             for (int j = 0; j < ch.length; j++) {

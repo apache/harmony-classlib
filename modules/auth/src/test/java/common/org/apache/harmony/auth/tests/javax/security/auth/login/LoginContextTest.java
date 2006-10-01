@@ -54,9 +54,11 @@ public class LoginContextTest extends TestCase {
     }    
     static class MyConfig extends Configuration{
         AppConfigurationEntry[] entries = new AppConfigurationEntry[]{new AppConfigurationEntry(MyModule.class.getName(), LoginModuleControlFlag.REQUIRED, new HashMap())};
+        @Override
         public AppConfigurationEntry[] getAppConfigurationEntry(String name) {
             return entries;
         }
+        @Override
         public void refresh() {
         }
     }
@@ -86,6 +88,7 @@ public class LoginContextTest extends TestCase {
         public String getName() {
             return name;
         }
+        @Override
         public String toString(){
             return name; 
         }

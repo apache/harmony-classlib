@@ -40,6 +40,7 @@ public class UnsupportedCallbackExceptionTest extends SerializationTest {
         junit.textui.TestRunner.run(UnsupportedCallbackExceptionTest.class);
     }
 
+    @Override
     protected Object[] getData() {
         return new Object[] {new UnsupportedCallbackException(nc)};
     }

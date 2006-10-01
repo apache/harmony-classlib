@@ -38,6 +38,7 @@ public class CredentialExceptionTest extends SerializationTest {
         junit.textui.TestRunner.run(CredentialExceptionTest.class);
     }
 
+    @Override
     protected Object[] getData() {
         return new Object[] {new CredentialException("message")};
     }
