@@ -15,10 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Alexander V. Astapchuk
- * @version $Revision$
- */
 package org.apache.harmony.auth;
 
 import java.io.Serializable;
@@ -31,18 +27,12 @@ import org.apache.harmony.auth.internal.nls.Messages;
  */
 public class UnixNumericGroupPrincipal implements Serializable, Principal {
 
-    /**
-     * @serial
-     */
     private static final long serialVersionUID = -535408497353506159L;
 
     // Group id
     private long gid;
     // Group name
     private String gname;
-    // Shows whether the group is primary for a user or not
-    private boolean primary;
-
     /**
      * Creates the object using a String representation of gid.
      * @param gid string representation of gid
@@ -54,7 +44,6 @@ public class UnixNumericGroupPrincipal implements Serializable, Principal {
             throw new NullPointerException(Messages.getString("auth.07")); //$NON-NLS-1$
         }
         this.gid = Long.parseLong(gid);
-        this.primary = primary;
     }
 
     /**
@@ -64,7 +53,6 @@ public class UnixNumericGroupPrincipal implements Serializable, Principal {
      */
     public UnixNumericGroupPrincipal(long gid, boolean primary) {
         this.gid = gid;
-        this.primary = primary;
     }
 
     /**
@@ -76,7 +64,6 @@ public class UnixNumericGroupPrincipal implements Serializable, Principal {
     public UnixNumericGroupPrincipal(long gid, String gname, boolean primary) {
         this.gid = gid;
         this.gname = gname;
-        this.primary = primary;
     }
     
     /**
@@ -103,13 +90,12 @@ public class UnixNumericGroupPrincipal implements Serializable, Principal {
     /**
      * Returns String representation of this object.
      */
+    @Override
     public String toString() {
         if( gname == null ) {
             return "UnixNumericGroupPrincipal, gid=" + gid; //$NON-NLS-1$
         }
-        else {
-            return "UnixNumericGroupPrincipal, gid=" + gid+"; name="+gname; //$NON-NLS-1$ //$NON-NLS-2$
-        }
+        return "UnixNumericGroupPrincipal, gid=" + gid+"; name="+gname; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -117,6 +103,7 @@ public class UnixNumericGroupPrincipal implements Serializable, Principal {
      * The objects are considered equals if they both are of type 
      * UnixNumericGroupPrincipal and have the same gid.
      */
+    @Override
     public boolean equals(Object o) {
         if (o instanceof UnixNumericGroupPrincipal) {
             return ((UnixNumericGroupPrincipal) o).gid == gid;
@@ -127,6 +114,7 @@ public class UnixNumericGroupPrincipal implements Serializable, Principal {
     /**
      * Returns hash code of this object.
      */
+    @Override
     public int hashCode() {
         return (int) gid;
     }

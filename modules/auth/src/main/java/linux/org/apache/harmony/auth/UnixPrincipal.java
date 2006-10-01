@@ -15,10 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Alexander V. Astapchuk
- * @version $Revision$
- */
 package org.apache.harmony.auth;
 
 import java.io.Serializable;
@@ -61,6 +57,7 @@ public class UnixPrincipal implements Serializable, Principal {
     /**
      * Returns string representation of this object
      */
+    @Override
     public String toString() {
         return "UnixPrincipal, name=" + name; //$NON-NLS-1$
     }
@@ -70,6 +67,7 @@ public class UnixPrincipal implements Serializable, Principal {
      * Two pricipal objects are considered equal if they are both of type 
      * UnixPrincipal and their names are equal.
      */
+    @Override
     public boolean equals(Object o) {
         if (o instanceof UnixPrincipal) {
             return name.equals(((UnixPrincipal) o).name);
@@ -80,6 +78,7 @@ public class UnixPrincipal implements Serializable, Principal {
     /**
      * Return hash code of this object.
      */
+    @Override
     public int hashCode() {
         return name.hashCode();
     }

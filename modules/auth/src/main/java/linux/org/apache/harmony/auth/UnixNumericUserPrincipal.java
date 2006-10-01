@@ -15,10 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Alexander V. Astapchuk
- * @version $Revision$
- */
 package org.apache.harmony.auth;
 
 import java.io.Serializable;
@@ -31,9 +27,6 @@ import org.apache.harmony.auth.internal.nls.Messages;
  */
 public class UnixNumericUserPrincipal implements Serializable, Principal {
 
-    /**
-     * @serial
-     */
     private static final long serialVersionUID = -8301723108164907822L;
 
     // User id
@@ -76,6 +69,7 @@ public class UnixNumericUserPrincipal implements Serializable, Principal {
     /**
      * Returns String representation of this object.
      */
+    @Override
     public String toString() {
         return "UnixNumericUserPrincipal, uid=" + uid; //$NON-NLS-1$
     }
@@ -85,6 +79,7 @@ public class UnixNumericUserPrincipal implements Serializable, Principal {
      * The objects are considered equals if they both are of type 
      * UnixNumericUserPrincipal and have the same uid.
      */
+    @Override
     public boolean equals(Object o) {
         if (o instanceof UnixNumericUserPrincipal) {
             return ((UnixNumericUserPrincipal) o).uid == uid;
@@ -95,6 +90,7 @@ public class UnixNumericUserPrincipal implements Serializable, Principal {
     /**
      * Returns hash code of this object.
      */
+    @Override
     public int hashCode() {
         return (int) uid;
     }

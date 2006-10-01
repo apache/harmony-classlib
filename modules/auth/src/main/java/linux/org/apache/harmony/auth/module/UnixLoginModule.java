@@ -15,12 +15,9 @@
  *  limitations under the License.
  */
 
-/**
- * @author Alexander V. Astapchuk
- * @version $Revision$
- */
 package org.apache.harmony.auth.module;
 
+import java.security.Principal;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,8 +41,6 @@ public class UnixLoginModule implements LoginModule {
 
     private Subject subject;
 
-    private Map options;
-
     private UnixPrincipal user;
 
     private UnixNumericUserPrincipal uid;
@@ -58,7 +53,7 @@ public class UnixLoginModule implements LoginModule {
      * @throws NullPointerException if either subject or options is null  
      */
     public void initialize(Subject subject, CallbackHandler callbackHandler,
-            Map sharedState, Map options) {
+            Map<String, ?> sharedState, Map<String, ?> options) {
         if (subject == null) {
             throw new NullPointerException(Messages.getString("auth.03")); //$NON-NLS-1$
         }
@@ -66,9 +61,6 @@ public class UnixLoginModule implements LoginModule {
             throw new NullPointerException(Messages.getString("auth.04")); //$NON-NLS-1$
         }
         this.subject = subject;
-        // callbackHandler - unused
-        // sharedState - unused
-        this.options = options;
     }
 
     /** 
@@ -101,7 +93,7 @@ public class UnixLoginModule implements LoginModule {
         if (subject.isReadOnly()) {
             throw new LoginException(Messages.getString("auth.05")); //$NON-NLS-1$
         }
-        Set ps = subject.getPrincipals();
+        Set<Principal> ps = subject.getPrincipals();
 
         if (!ps.contains(user)) {
             ps.add(user);
@@ -112,9 +104,9 @@ public class UnixLoginModule implements LoginModule {
         if (!ps.contains(gid)) {
             ps.add(gid);
         }
-        for (int i = 0; i < gids.length; i++) {
-            if (!ps.contains(gids[i])) {
-                ps.add(gids[i]);
+        for (UnixNumericGroupPrincipal element : gids) {
+            if (!ps.contains(element)) {
+                ps.add(element);
             }
         }
         return true;
@@ -133,13 +125,13 @@ public class UnixLoginModule implements LoginModule {
      * then clears clears an info store in its own fields.
      */
     public boolean logout() throws LoginException {
-        Set ps = subject.getPrincipals();
+        Set<Principal> ps = subject.getPrincipals();
         ps.remove(user);
         ps.remove(uid);
         ps.remove(gid);
         if (gids != null) {
-            for (int i = 0; i < gids.length; i++) {
-                ps.remove(gids[i]);
+            for (UnixNumericGroupPrincipal element : gids) {
+                ps.remove(element);
             }
         }
         clear();

@@ -15,10 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Alexander V. Astapchuk
- * @version $Revision$
- */
 package org.apache.harmony.auth.module;
 
 /** 
@@ -131,8 +127,9 @@ public class UnixSystem {
     /**
      * Returns string representation of this object
      */
+    @Override
     public String toString() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("UnixSystem: \n"); //$NON-NLS-1$
         buf.append("uid:gid=").append(uid).append(":").append(gid); //$NON-NLS-1$ //$NON-NLS-2$
         buf.append("="); //$NON-NLS-1$
