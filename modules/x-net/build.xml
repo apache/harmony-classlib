@@ -38,6 +38,7 @@
     <target name="test" depends="build, compile-tests, run-tests" />
 
     <target name="clean">
+        <delete file="${hy.jdk}/jre/lib/boot/${hy.x-net.packaging.jarname}.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.x-net.bin.test}" />

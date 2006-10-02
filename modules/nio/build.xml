@@ -51,6 +51,7 @@
     </target>
 
     <target name="clean">
+        <delete file="${hy.jdk}/jre/lib/boot/nio.jar" />
         <delete includeemptydirs="true" failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.nio.bin.test}" />

@@ -38,6 +38,7 @@
     <target name="test" depends="build, compile-tests, run-tests" />
 
     <target name="clean">
+        <delete file="${hy.jdk}/jre/lib/boot/${hy.nio_char.packaging.jarname}.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.nio_char.bin.test}" />

@@ -44,6 +44,7 @@
     <target name="test" depends="build, run-tests" />
 
     <target name="clean">
+        <delete file="${hy.jdk}/jre/lib/boot/${hy.swing.packaging.jarname}.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.swing.bin.test}" />

@@ -36,6 +36,7 @@
     <target name="test" depends="build, compile-tests, run-tests" />
 
     <target name="clean">
+        <delete file="${hy.jdk}/jre/lib/boot/sql.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.sql.bin.test}" />

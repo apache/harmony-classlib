@@ -88,6 +88,7 @@
     <target name="test" depends="build, compile-tests, run-tests" />
 
     <target name="clean">
+        <delete file="${hy.jdk}/jre/lib/boot/archive.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.archive.bin.test}" />

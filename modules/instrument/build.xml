@@ -65,6 +65,7 @@
     </target>
 
     <target name="clean">
+        <delete file="${hy.jdk}/jre/lib/boot/instrument.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.instrument.bin.test}" />

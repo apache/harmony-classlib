@@ -62,6 +62,7 @@
     </target>
 
     <target name="clean">
+        <delete file="${hy.jdk}/jre/lib/boot/${hy.auth.packaging.jarname}.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.auth.bin.test}" />
