@@ -28,7 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.archive.internal.nls.Messages;
 import org.apache.harmony.luni.util.PriviAction;
 import org.apache.harmony.luni.util.Util;
 
@@ -54,8 +54,8 @@ class InitManifest {
     InitManifest(InputStream is, Attributes main, Map<String, Attributes> entries, Map<String, byte[]> chunks,
             String verString) throws IOException {
         encoding = AccessController.doPrivileged(new PriviAction<String>(
-                "manifest.read.encoding"));
-        if ("".equals(encoding)) {
+                "manifest.read.encoding")); //$NON-NLS-1$
+        if ("".equals(encoding)) { //$NON-NLS-1$
             encoding = null;
         }
 
@@ -72,7 +72,7 @@ class InitManifest {
 
         // Check for version attribute
         if (verString != null && main.getValue(verString) == null) {
-            throw new IOException(Msg.getString("K0009", verString));
+            throw new IOException(Messages.getString("archive.2D", verString)); //$NON-NLS-1$
         }
 
         list.clear();
@@ -82,8 +82,8 @@ class InitManifest {
             it = list.iterator();
             String line = it.next();
             if (line.length() < 7
-                    || !line.substring(0, 5).toLowerCase().equals("name:")) {
-                throw new IOException(Msg.getString("K000a"));
+                    || !line.substring(0, 5).toLowerCase().equals("name:")) { //$NON-NLS-1$
+                throw new IOException(Messages.getString("archive.23")); //$NON-NLS-1$
             }
             // Name: length required space char
             String name = line.substring(6, line.length());
@@ -156,8 +156,8 @@ class InitManifest {
                     return out.toByteArray();
                 }
                 if (inbufCount == inbuf.length && in.available() == 0) {
-                    /* KA000 = "line too long" */
-                    throw new IOException(Msg.getString("KA000"));
+                    /* archive.2E = "line too long" */
+                    throw new IOException(Messages.getString("archive.2E")); //$NON-NLS-1$
                 }
                 inbufPos = 0;
             }
@@ -225,8 +225,8 @@ class InitManifest {
                     return lines.size() != 0;
                 }
                 if (inbufCount == inbuf.length && in.available() == 0) {
-                    /* KA000 = "line too long" */
-                    throw new IOException(Msg.getString("KA000"));
+                    /* archive.2E = "line too long" */
+                    throw new IOException(Messages.getString("archive.2E")); //$NON-NLS-1$
                 }
                 inbufPos = 0;
             }
@@ -274,7 +274,7 @@ class InitManifest {
         String header;
         int hdrIdx = line.indexOf(':');
         if (hdrIdx < 1) {
-            throw new IOException(Msg.getString("K000b", line));
+            throw new IOException(Messages.getString("archive.2F", line)); //$NON-NLS-1$
         }
         header = line.substring(0, hdrIdx);
         Attributes.Name name = attributeNames.get(header);
@@ -287,7 +287,7 @@ class InitManifest {
             attributeNames.put(header, name);
         }
         if (hdrIdx + 1 >= line.length() || line.charAt(hdrIdx + 1) != ' ') {
-            throw new IOException(Msg.getString("K000b", line));
+            throw new IOException(Messages.getString("archive.2F", line)); //$NON-NLS-1$
         }
         // +2 due to required SPACE char
         current.put(name, line.substring(hdrIdx + 2, line.length()));

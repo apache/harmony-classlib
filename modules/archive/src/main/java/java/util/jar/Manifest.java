@@ -141,7 +141,7 @@ public class Manifest implements Cloneable {
 		private static final byte[] sepBuf = new byte[] { '\r', '\n' };
 
 		private static final Attributes.Name nameAttribute = new Attributes.Name(
-				"Name", false);
+				"Name", false); //$NON-NLS-1$
 
 		byte[] oneByte = new byte[1];
 
@@ -159,7 +159,7 @@ public class Manifest implements Cloneable {
 		private void writeEntry(Attributes.Name name, String value)
 				throws IOException {
 			int offset = 0, limit = LIMIT;
-			byte[] out = (name.toString() + ": ").getBytes("ISO8859_1");
+			byte[] out = (name.toString() + ": ").getBytes("ISO8859_1"); //$NON-NLS-1$ //$NON-NLS-2$
 			if (out.length > limit) {
 				while (out.length - offset >= limit) {
 					int len = out.length - offset;
@@ -227,10 +227,10 @@ public class Manifest implements Cloneable {
 		void write(Manifest manifest, OutputStream out) throws IOException {
 			os = out;
 			String encoding = AccessController
-					.doPrivileged(new PriviAction<String>("manifest.write.encoding"));
+					.doPrivileged(new PriviAction<String>("manifest.write.encoding")); //$NON-NLS-1$
 			if (encoding != null) {
-				if ("".equals(encoding)) {
-                    encoding = "UTF8";
+				if ("".equals(encoding)) { //$NON-NLS-1$
+                    encoding = "UTF8"; //$NON-NLS-1$
                 }
 				charset = Charset.forName(encoding);				
 			}

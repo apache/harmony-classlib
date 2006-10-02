@@ -47,7 +47,7 @@ public class JarInputStream extends ZipInputStream {
             throws IOException {
         super(stream);
         if (verify) {
-            verifier = new JarVerifier("JarInputStream");
+            verifier = new JarVerifier("JarInputStream"); //$NON-NLS-1$
         }
         if ((mEntry = getNextJarEntry()) == null) {
             return;
@@ -73,7 +73,7 @@ public class JarInputStream extends ZipInputStream {
 
         } else {
             Attributes temp = new Attributes(3);
-            temp.map.put("hidden", null);
+            temp.map.put("hidden", null); //$NON-NLS-1$
             mEntry.setAttributes(temp);
             /*
              * if not from the first entry, we will not get enough

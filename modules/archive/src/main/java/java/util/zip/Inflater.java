@@ -17,7 +17,7 @@
 
 package java.util.zip;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.archive.internal.nls.Messages;
 
 
 /**
@@ -176,7 +176,7 @@ public class Inflater {
 			needsDictionary = false;
 			int result = inflateImpl(buf, off, nbytes, streamHandle);
 			if (needsDictionary && neededDict) {
-                throw new DataFormatException(Msg.getString("K0324"));
+                throw new DataFormatException(Messages.getString("archive.27")); //$NON-NLS-1$
             }
 			return result;
 		}

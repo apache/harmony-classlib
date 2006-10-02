@@ -22,7 +22,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.archive.internal.nls.Messages;
 
 /**
  * The GZIPInputStream class is used to read data stored in the GZIP format.
@@ -67,7 +67,7 @@ public class GZIPInputStream extends java.util.zip.InflaterInputStream {
 		byte[] header = new byte[10];
 		readFully(header, 0, header.length);
 		if (getShort(header, 0) != GZIP_MAGIC) {
-            throw new IOException(Msg.getString("K0020"));
+            throw new IOException(Messages.getString("archive.1F")); //$NON-NLS-1$;
         }
 		int flags = header[3];
 		boolean hcrc = (flags & FHCRC) != 0;
@@ -102,7 +102,7 @@ public class GZIPInputStream extends java.util.zip.InflaterInputStream {
 			readFully(header, 0, 2);
 			int crc16 = getShort(header, 0);
 			if ((crc.getValue() & 0xffff) != crc16) {
-                throw new IOException(Msg.getString("K0077"));
+                throw new IOException(Messages.getString("archive.20")); //$NON-NLS-1$
             }
 			crc.reset();
 		}
@@ -157,10 +157,10 @@ public class GZIPInputStream extends java.util.zip.InflaterInputStream {
 				}
 				readFully(b, size, b.length - size);
 				if (getLong(b, 0) != crc.getValue()) {
-                    throw new IOException(Msg.getString("K0077"));
+                    throw new IOException(Messages.getString("archive.20")); //$NON-NLS-1$
                 }
 				if ((int) getLong(b, 4) != inf.getTotalOut()) {
-                    throw new IOException(Msg.getString("K00ae"));
+                    throw new IOException(Messages.getString("archive.21")); //$NON-NLS-1$
                 }
 			}
 			return val;

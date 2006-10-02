@@ -27,7 +27,7 @@ import java.security.PrivilegedAction;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.archive.internal.nls.Messages;
 import org.apache.harmony.luni.util.Util;
 
 /**
@@ -116,9 +116,9 @@ public class ZipFile implements ZipConstants {
 		if (result != 0) {
 			switch (result) {
 			case 1:
-				throw new ZipException(Msg.getString("K01c3", fileName));
+				throw new ZipException(Messages.getString("archive.24", fileName)); //$NON-NLS-1$
 			case 2:
-				throw new ZipException(Msg.getString("K01c4", fileName));
+				throw new ZipException(Messages.getString("archive.25", fileName)); //$NON-NLS-1$
 			default:
 				throw new OutOfMemoryError();
 			}

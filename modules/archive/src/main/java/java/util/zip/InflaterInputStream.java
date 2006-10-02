@@ -23,7 +23,7 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.archive.internal.nls.Messages;
 
 /**
  * InflaterOuputStream read data which has been compressed using the DEFLATE
@@ -123,9 +123,9 @@ public class InflaterInputStream extends FilterInputStream {
 	 */
 	@Override
     public int read(byte[] buffer, int off, int nbytes) throws IOException {
-		/* [MSG "K0059", "Stream is closed"] */
+		/* archive.1E=Stream is closed */
 		if (closed) {
-            throw new IOException(Msg.getString("K0059"));
+            throw new IOException(Messages.getString("archive.1E")); //$NON-NLS-1$
         }
 
 		if (null == buffer) {
@@ -179,7 +179,7 @@ public class InflaterInputStream extends FilterInputStream {
 
 	protected void fill() throws IOException {
 		if (closed) {
-            throw new IOException(Msg.getString("K0059"));
+            throw new IOException(Messages.getString("archive.1E")); //$NON-NLS-1$
         }
 		if ((len = in.read(buf)) > 0) {
             inf.setInput(buf, 0, len);
@@ -223,7 +223,8 @@ public class InflaterInputStream extends FilterInputStream {
 	@Override
     public int available() throws IOException {
 		if (closed) {
-            throw new IOException(Msg.getString("K0059"));
+            // archive.1E=Stream is closed
+            throw new IOException(Messages.getString("archive.1E")); //$NON-NLS-1$
         }
 		if (eof) {
             return 0;

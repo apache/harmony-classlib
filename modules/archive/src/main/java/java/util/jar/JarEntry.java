@@ -183,7 +183,7 @@ public class JarEntry extends ZipEntry {
         CertPath certPath = null;
         if (!isFactoryChecked) {
             try {
-                factory = CertificateFactory.getInstance("X.509");
+                factory = CertificateFactory.getInstance("X.509"); //$NON-NLS-1$
             } catch (CertificateException ex) {
                 // do nothing
             } finally {

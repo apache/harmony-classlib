@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Vector;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.archive.internal.nls.Messages;
 
 /**
  * ZipOuputStream is used to write ZipEntries to the underlying stream. Output
@@ -96,7 +96,7 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 	 */
 	public void closeEntry() throws IOException {
 		if (cDir == null) {
-            throw new IOException(Msg.getString("K0059"));
+            throw new IOException(Messages.getString("archive.1E")); //$NON-NLS-1$
         }
 		if (currentEntry == null) {
             return;
@@ -108,10 +108,10 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 		// Verify values for STORED types
 		if (currentEntry.getMethod() == STORED) {
 			if (crc.getValue() != currentEntry.crc) {
-                throw new ZipException(Msg.getString("K0077"));
+                throw new ZipException(Messages.getString("archive.20")); //$NON-NLS-1$
             }
 			if (currentEntry.size != crc.tbytes) {
-                throw new ZipException(Msg.getString("K00ae"));
+                throw new ZipException(Messages.getString("archive.21")); //$NON-NLS-1$
             }
 		}
 		curOffset = LOCHDR;
@@ -182,13 +182,13 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 	@Override
     public void finish() throws IOException {
 		if (out == null) {
-            throw new IOException(Msg.getString("K0059"));
+            throw new IOException(Messages.getString("archive.1E")); //$NON-NLS-1$
         }
 		if (cDir == null) {
             return;
         }
 		if (entries.size() == 0) {
-            throw new ZipException(Msg.getString("K00b6"));
+            throw new ZipException(Messages.getString("archive.28")); //$NON-NLS-1$;
         }
 		if (currentEntry != null) {
             closeEntry();
@@ -233,31 +233,31 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 		if (ze.getMethod() == STORED
 				|| (compressMethod == STORED && ze.getMethod() == -1)) {
 			if (ze.crc == -1) {
-                /* [MSG "K0077", "Crc mismatch"] */
-				throw new ZipException(Msg.getString("K0077"));
+                /* [MSG "archive.20", "Crc mismatch"] */
+                throw new ZipException(Messages.getString("archive.20")); //$NON-NLS-1$
             }
 			if (ze.size == -1 && ze.compressedSize == -1) {
-                /* [MSG "K00ae", "Size mismatch"] */
-				throw new ZipException(Msg.getString("K00ae"));
+                /* [MSG "archive.21", "Size mismatch"] */
+                throw new ZipException(Messages.getString("archive.21")); //$NON-NLS-1$
             }
 			if (ze.size != ze.compressedSize && ze.compressedSize != -1
 					&& ze.size != -1) {
-                /* [MSG "K00ae", "Size mismatch"] */
-				throw new ZipException(Msg.getString("K00ae"));
+                /* [MSG "archive.21", "Size mismatch"] */
+                throw new ZipException(Messages.getString("archive.21")); //$NON-NLS-1$
             }
 		}
-		/* [MSG "K0059", "Stream is closed"] */
+        /* [MSG "archive.1E", "Stream is closed"] */
 		if (cDir == null) {
-            throw new IOException(Msg.getString("K0059"));
+            throw new IOException(Messages.getString("archive.1E")); //$NON-NLS-1$
         }
 		if (entries.contains(ze.name)) {
-            /* [MSG "K0066", "Entry already exists: {0}"] */
-			throw new ZipException(Msg.getString("K0066", ze.name));
+            /* [MSG "archive.29", "Entry already exists: {0}"] */
+            throw new ZipException(Messages.getString("archive.29", ze.name)); //$NON-NLS-1$
         }
 		nameLength = utf8Count(ze.name);
 		if (nameLength > 0xffff) {
-            /* [MSG "K01a7", "Name too long: {0}"] */
-			throw new IllegalArgumentException(Msg.getString("K01a7", ze.name));
+            /* [MSG "archive.2A", "Name too long: {0}"] */
+            throw new IllegalArgumentException(Messages.getString("archive.2A", ze.name)); //$NON-NLS-1$
         }
 
 		def.setLevel(compressLevel);
@@ -310,7 +310,7 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 	 */
 	public void setComment(String comment) {
 		if (comment.length() > 0xFFFF) {
-            throw new IllegalArgumentException(Msg.getString("K0068"));
+            throw new IllegalArgumentException(Messages.getString("archive.2B")); //$NON-NLS-1$
         }
 		this.comment = comment;
 	}
@@ -376,8 +376,8 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 		}
 
 		if (currentEntry == null) {
-            /* [MSG "K00ab", "No active entry"] */
-            throw new ZipException(Msg.getString("K00ab"));
+            /* [MSG "archive.2C", "No active entry"] */
+            throw new ZipException(Messages.getString("archive.2C")); //$NON-NLS-1$
         }
 
 		if (currentEntry.getMethod() == STORED) {

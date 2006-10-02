@@ -22,7 +22,7 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.archive.internal.nls.Messages;
 
 /**
  * The DeflaterOutputStream class implements a stream filter for the writing of
@@ -166,7 +166,7 @@ public class DeflaterOutputStream extends FilterOutputStream {
 	@Override
     public void write(byte[] buffer, int off, int nbytes) throws IOException {
 		if (done) {
-            throw new IOException(Msg.getString("K0007"));
+            throw new IOException(Messages.getString("archive.26")); //$NON-NLS-1$
         }
 		// avoid int overflow, check null buf
 		if (off <= buffer.length && nbytes >= 0 && off >= 0

@@ -35,9 +35,9 @@ import java.util.zip.ZipFile;
  */
 public class JarFile extends ZipFile {
 
-    public static final String MANIFEST_NAME = "META-INF/MANIFEST.MF";
+    public static final String MANIFEST_NAME = "META-INF/MANIFEST.MF"; //$NON-NLS-1$
 
-    static final String META_DIR = "META-INF/";
+    static final String META_DIR = "META-INF/"; //$NON-NLS-1$
 
     private Manifest manifest;
 
@@ -304,11 +304,11 @@ public class JarFile extends ZipFile {
                 } else if (verifier != null
                         && entryName.length() > dirLength
                         && (entryName.regionMatches(true,
-                                entryName.length() - 3, ".SF", 0, 3)
+                                entryName.length() - 3, ".SF", 0, 3) //$NON-NLS-1$
                                 || entryName.regionMatches(true, entryName
-                                        .length() - 4, ".DSA", 0, 4) || entryName
+                                        .length() - 4, ".DSA", 0, 4) || entryName //$NON-NLS-1$
                                 .regionMatches(true, entryName.length() - 4,
-                                        ".RSA", 0, 4))) {
+                                        ".RSA", 0, 4))) { //$NON-NLS-1$
                     signed = true;
                     InputStream is = super.getInputStream(entry);
                     byte[] buf = new byte[is.available()];

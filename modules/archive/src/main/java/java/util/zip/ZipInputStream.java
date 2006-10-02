@@ -25,7 +25,7 @@ import java.io.PushbackInputStream;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.archive.internal.nls.Messages;
 import org.apache.harmony.luni.util.Util;
 
 /**
@@ -93,14 +93,14 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
 	 */
 	public void closeEntry() throws IOException {
 		if (zipClosed) {
-            throw new IOException(Msg.getString("K0059"));
+            throw new IOException(Messages.getString("archive.1E")); //$NON-NLS-1$
         }
 		if (currentEntry == null) {
             return;
         }
 		if (currentEntry instanceof java.util.jar.JarEntry) {
 			Attributes temp = ((JarEntry) currentEntry).getAttributes();
-			if (temp != null && temp.containsKey("hidden")) {
+			if (temp != null && temp.containsKey("hidden")) { //$NON-NLS-1$
                 return;
             }
 		}
@@ -123,17 +123,17 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
 		if (hasDD) {
 			in.read(hdrBuf, 0, EXTHDR);
 			if (getLong(hdrBuf, 0) != EXTSIG) {
-                throw new ZipException(Msg.getString("K0020"));
+                throw new ZipException(Messages.getString("archive.1F")); //$NON-NLS-1$
             }
 			currentEntry.crc = getLong(hdrBuf, EXTCRC);
 			currentEntry.compressedSize = getLong(hdrBuf, EXTSIZ);
 			currentEntry.size = getLong(hdrBuf, EXTLEN);
 		}
 		if (currentEntry.crc != crc.getValue()) {
-            throw new ZipException(Msg.getString("K0077"));
+            throw new ZipException(Messages.getString("archive.20")); //$NON-NLS-1$
         }
 		if (currentEntry.compressedSize != inB || currentEntry.size != out) {
-            throw new ZipException(Msg.getString("K00ae"));
+            throw new ZipException(Messages.getString("archive.21")); //$NON-NLS-1$
         }
 
 		inf.reset();
@@ -179,7 +179,7 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
 		}
 		int version = getShort(hdrBuf, 0) & 0xff;
 		if (version > ZIPLocalHeaderVersionNeeded) {
-            throw new ZipException(Msg.getString("K0008"));
+            throw new ZipException(Messages.getString("archive.22")); //$NON-NLS-1$
         }
 		int flags = getShort(hdrBuf, LOCFLG - LOCVER);
 		hasDD = ((flags & ZIPDataDescriptorFlag) == ZIPDataDescriptorFlag);
@@ -194,7 +194,7 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
 		}
 		int flen = getShort(hdrBuf, LOCNAM - LOCVER);
 		if (flen == 0) {
-            throw new ZipException(Msg.getString("K000a"));
+            throw new ZipException(Messages.getString("archive.23")); //$NON-NLS-1$
         }
 		int elen = getShort(hdrBuf, LOCEXT - LOCVER);
 
@@ -250,7 +250,7 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
 	@Override
     public int read(byte[] buffer, int start, int length) throws IOException {
 		if (zipClosed) {
-            throw new IOException(Msg.getString("K0059"));
+            throw new IOException(Messages.getString("archive.1E")); //$NON-NLS-1$
         }
 		if (inf.finished() || currentEntry == null) {
             return -1;
@@ -334,7 +334,7 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
 	@Override
     public int available() throws IOException {
 		if (zipClosed) {
-            throw new IOException(Msg.getString("K0059"));
+            throw new IOException(Messages.getString("archive.1E")); //$NON-NLS-1$
         }
 		if (currentEntry == null) {
             return 1;

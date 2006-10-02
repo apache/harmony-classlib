@@ -20,6 +20,8 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.harmony.archive.internal.nls.Messages;
+
 public class CodecEncoding {
 	/**
 	 * The canonical encodings are defined to allow a single byte to represent
@@ -101,10 +103,10 @@ public class CodecEncoding {
 		// Sanity check to make sure that no-one's been buggering with
 		// the canonical codecs, which would really cause havoc
 		if (canonicalCodec.length != 116) 
-			throw new Error("Canonical encodings have been incorrectly modified");
+			throw new Error(Messages.getString("archive.00")); //$NON-NLS-1$
 		if (value < 0) {
 			throw new IllegalArgumentException(
-					"Encoding cannot be less than zero");
+					Messages.getString("archive.01")); //$NON-NLS-1$
 		} else if (value == 0) {
 			return defaultCodec;
 		} else if (value <= 115) {
@@ -112,13 +114,13 @@ public class CodecEncoding {
 		} else if (value == 116) {
 			int code = in.read();
 			if (code == -1)
-				throw new EOFException("End of buffer read whilst trying to decode codec");
+				throw new EOFException(Messages.getString("archive.02")); //$NON-NLS-1$
 			int d = (code & 0x01);
 			int s = (code >> 1 & 0x03);
 			int b = (code >> 3 & 0x07) + 1; // this might result in an invalid number, but it's checked in the Codec constructor
 			code = in.read();
 			if (code == -1)
-				throw new EOFException("End of buffer read whilst trying to decode codec");
+				throw new EOFException(Messages.getString("archive.03")); //$NON-NLS-1$
 			int h = code + 1;
 			// This handles the special cases for invalid combinations of data.
 			return new BHSDCodec(b,h,s,d);			
@@ -130,7 +132,7 @@ public class CodecEncoding {
 			boolean bdef = (offset >> 4 & 1) == 1;
 			// If both A and B use the default encoding, what's the point of having a run of default values followed by default values
 			if (adef && bdef)
-				throw new Pack200Exception("ADef and BDef should never both be true");
+				throw new Pack200Exception(Messages.getString("archive.04")); //$NON-NLS-1$
 			int kb = (kbflag ? in.read() : 3);
 			int k = (kb+1) * (int)Math.pow(16, kx);
 			Codec aCodec, bCodec;
@@ -169,7 +171,7 @@ public class CodecEncoding {
             Codec tCodec = getCodec(in.read(),in,defaultCodec);
             return new PopulationCodec(fCodec,uCodec,tCodec);
 		} else {
-			throw new Pack200Exception("Invalid codec encoding byte (" + value + ") found" );
+            throw new Pack200Exception(Messages.getString("archive.05", value)); //$NON-NLS-1$
 		}
 	}
 }

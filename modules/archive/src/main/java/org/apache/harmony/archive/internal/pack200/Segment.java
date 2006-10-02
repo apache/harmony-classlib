@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.harmony.archive.internal.nls.Messages;
+
 /**
  * A Pack200 archive consists of one (or more) segments. Each segment is
  * standalone, in the sense that every segment has the magic number header;
@@ -104,12 +106,12 @@ public class Segment {
 			throws IOException, Pack200Exception {
 		int total = in.read(data);
 		if (total == -1)
-			throw new EOFException("Failed to read any data from input stream");
+			throw new EOFException(Messages.getString("archive.0E")); //$NON-NLS-1$
 		while (total < data.length) {
 			int delta = in.read(data, total, data.length - total);
 			if (delta == -1)
 				throw new EOFException(
-						"Failed to read some data from input stream");
+						Messages.getString("archive.0D")); //$NON-NLS-1$
 			total += delta;
 		}
 	}
@@ -480,7 +482,7 @@ public class Segment {
 		attributeDefinitionLayout = parseReferences("attr_definition_layout",
 				in, Codec.UNSIGNED5, attributeDefinitionCount, cpUTF8);
 		if (attributeDefinitionCount > 0)
-			throw new Error("No idea what the adc is for yet");
+            throw new Error(Messages.getString("archive.0C")); //$NON-NLS-1$
 	}
 
 	private void parseBcBands(InputStream in) {
@@ -497,8 +499,7 @@ public class Segment {
 				classAttrCount++;
 		}
 		if (classAttrCount > 0)
-			throw new Error(
-					"There are attribute flags, and I don't know what to do with them");
+		    throw new Error(Messages.getString("archive.0A")); //$NON-NLS-1$
 		debug("unimplemented class_attr_count");
 		debug("unimplemented class_attr_indexes");
 		debug("unimplemented class_attr_calls");
@@ -643,7 +644,7 @@ public class Segment {
 				Codec.UDELTA5, cpDescriptorCount, cpSignature);
 		cpDescriptor = new String[cpDescriptorCount];
 		for (int i = 0; i < cpDescriptorCount; i++) {
-			cpDescriptor[i] = cpDescriptorNames[i] + ":" + cpDescriptorTypes[i];
+			cpDescriptor[i] = cpDescriptorNames[i] + ":" + cpDescriptorTypes[i]; //$NON-NLS-1$
 		}
 	}
 
@@ -819,7 +820,7 @@ public class Segment {
 			Pack200Exception {
 		// TODO Update codec.decode -> decodeScalar
 		cpUTF8 = new String[cpUTF8Count];
-		cpUTF8[0] = "";
+		cpUTF8[0] = ""; //$NON-NLS-1$
 		int[] prefix = new int[cpUTF8Count];
 		int[] suffix = new int[cpUTF8Count];
 		if (cpUTF8Count > 0) {
@@ -1106,7 +1107,7 @@ public class Segment {
 			int index = decode[i];
 			if (index < 0 || index >= reference.length)
 				throw new Pack200Exception(
-						"Something has gone wrong during parsing references");
+                        Messages.getString("archive.06")); //$NON-NLS-1$
 			result[i] = reference[index];
 		}
 		return result;
@@ -1161,7 +1162,7 @@ public class Segment {
 				magic.length);
 		for (int m = 0; m < magic.length; m++)
 			if (word[m] != magic[m])
-				throw new Error("Bad header");
+                throw new Error(Messages.getString("archive.07")); //$NON-NLS-1$
 		setMinorVersion((int) decodeScalar("archive_minver", in,
 				Codec.UNSIGNED5));
 		setMajorVersion((int) decodeScalar("archive_majver", in,
@@ -1284,7 +1285,7 @@ public class Segment {
 	 */
 	private void setMajorVersion(int version) throws Pack200Exception {
 		if (version != 150)
-			throw new Pack200Exception("Invalid segment major version");
+            throw new Pack200Exception(Messages.getString("archive.08")); //$NON-NLS-1$
 		major = version;
 	}
 
@@ -1298,7 +1299,7 @@ public class Segment {
 	 */
 	private void setMinorVersion(int version) throws Pack200Exception {
 		if (version != 7)
-			throw new Pack200Exception("Invalid segment minor version");
+            throw new Pack200Exception(Messages.getString("archive.09")); //$NON-NLS-1$
 		minor = version;
 	}
 

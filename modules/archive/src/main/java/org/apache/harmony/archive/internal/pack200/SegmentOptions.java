@@ -16,6 +16,8 @@
  */
 package org.apache.harmony.archive.internal.pack200;
 
+import org.apache.harmony.archive.internal.nls.Messages;
+
 /**
  * Stores the combinations of bit flags that can be used in the segment header
  * options. Whilst this could be defined in {@link Segment}, it's cleaner to
@@ -72,7 +74,7 @@ public class SegmentOptions {
 	 */
 	public SegmentOptions(int options) throws Pack200Exception {
 		if ((options & UNUSED) != 0)
-			throw new Pack200Exception("Some unused flags are non-zero");
+			throw new Pack200Exception(Messages.getString("archive.14")); //$NON-NLS-1$
 		this.options = options;
 	}
 

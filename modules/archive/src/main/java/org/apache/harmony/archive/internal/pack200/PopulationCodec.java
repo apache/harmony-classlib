@@ -20,6 +20,8 @@ package org.apache.harmony.archive.internal.pack200;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.harmony.archive.internal.nls.Messages;
+
 public class PopulationCodec extends Codec {
 	private Codec favouredCodec;
 	private Codec tokenCodec;
@@ -34,7 +36,7 @@ public class PopulationCodec extends Codec {
 
 	public PopulationCodec(Codec favouredCodec, int l, Codec unvafouredCodec) {
 		if (l >= 256 || l <=0)
-			throw new IllegalArgumentException("L must be between 1..255");
+			throw new IllegalArgumentException(Messages.getString("archive.0F")); //$NON-NLS-1$
 		this.favouredCodec = favouredCodec;
 		this.l = l;
 		this.unvafouredCodec = unvafouredCodec;
@@ -42,13 +44,13 @@ public class PopulationCodec extends Codec {
 
 	@Override
 	public long decode(InputStream in) throws IOException, Pack200Exception {
-		throw new Pack200Exception("Population encoding does not work unless the number of elements are known");
+		throw new Pack200Exception(Messages.getString("archive.10")); //$NON-NLS-1$
 	}
 
 	@Override
 	public long decode(InputStream in, long last) throws IOException,
 			Pack200Exception {
-		throw new Pack200Exception("Population encoding does not work unless the number of elements are known");
+		throw new Pack200Exception(Messages.getString("archive.10")); //$NON-NLS-1$
 	}
 
 	@Override
@@ -86,7 +88,7 @@ public class PopulationCodec extends Codec {
 						tokenCodec = codec;
 				}
 				if (tokenCodec == null)
-					throw new Pack200Exception("Cannot calculate token codec from " + k + " and " + l);
+					throw new Pack200Exception(Messages.getString("archive.11", new Integer(k), new Integer(l))); //$NON-NLS-1$
 			}
 		}
 		// read favourites

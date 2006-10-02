@@ -33,8 +33,8 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 
+import org.apache.harmony.archive.internal.nls.Messages;
 import org.apache.harmony.luni.util.Base64;
-import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.security.utils.JarUtils;
 
 /**
@@ -173,20 +173,20 @@ class JarVerifier {
         Certificate[] certificatesArray = new Certificate[certs.size()];
         certs.toArray(certificatesArray);
 
-        String algorithms = attributes.getValue("Digest-Algorithms");
+        String algorithms = attributes.getValue("Digest-Algorithms"); //$NON-NLS-1$
         if (algorithms == null) {
-            algorithms = "SHA SHA1";
+            algorithms = "SHA SHA1"; //$NON-NLS-1$
         }
         StringTokenizer tokens = new StringTokenizer(algorithms);
         while (tokens.hasMoreTokens()) {
             String algorithm = tokens.nextToken();
-            String hash = attributes.getValue(algorithm + "-Digest");
+            String hash = attributes.getValue(algorithm + "-Digest"); //$NON-NLS-1$
             if (hash == null) {
                 continue;
             }
             byte[] hashBytes;
             try {
-                hashBytes = hash.getBytes("ISO8859_1");
+                hashBytes = hash.getBytes("ISO8859_1"); //$NON-NLS-1$
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e.toString());
             }
@@ -242,7 +242,7 @@ class JarVerifier {
         Iterator<String> it = metaEntries.keySet().iterator();
         while (it.hasNext()) {
             String key = it.next();
-            if (key.endsWith(".DSA") || key.endsWith(".RSA")) {
+            if (key.endsWith(".DSA") || key.endsWith(".RSA")) { //$NON-NLS-1$ //$NON-NLS-2$
                 verifyCertificate(key);
                 // Check for recursive class load
                 if (metaEntries == null) {
@@ -260,7 +260,7 @@ class JarVerifier {
     private void verifyCertificate(String certFile) {
         // Found Digital Sig, .SF should already have been read
         String signatureFile = certFile.substring(0, certFile.lastIndexOf('.'))
-                + ".SF";
+                + ".SF"; //$NON-NLS-1$
         byte[] sfBytes = metaEntries.get(signatureFile);
         if (sfBytes == null) {
             return;
@@ -277,9 +277,9 @@ class JarVerifier {
         } catch (IOException e) {
             return;
         } catch (GeneralSecurityException e) {
-            /* [MSG "K00eb", "{0} failed verification of {1}"] */
+            /* [MSG "archive.30", "{0} failed verification of {1}"] */
             throw new SecurityException(
-                    Msg.getString("K00eb", jarName, signatureFile));
+                    Messages.getString("archive.30", jarName, signatureFile)); //$NON-NLS-1$
         }
 
         // Verify manifest hash in .sf file
@@ -287,15 +287,15 @@ class JarVerifier {
         HashMap<String, Attributes> hm = new HashMap<String, Attributes>();
         try {
             new InitManifest(new ByteArrayInputStream(sfBytes), attributes, hm,
-                    null, "Signature-Version");
+                    null, "Signature-Version"); //$NON-NLS-1$
         } catch (IOException e) {
             return;
         }
 
         boolean createdBySigntool = false;
-        String createdByValue = attributes.getValue("Created-By");
+        String createdByValue = attributes.getValue("Created-By"); //$NON-NLS-1$
         if (createdByValue != null) {
-            createdBySigntool = createdByValue.indexOf("signtool") != -1;
+            createdBySigntool = createdByValue.indexOf("signtool") != -1; //$NON-NLS-1$
         }
 
         // Use .SF to verify the mainAttributes of the manifest
@@ -304,12 +304,12 @@ class JarVerifier {
         // such verification.
         // FIXME: The meaning of createdBySigntool
         if (mainAttributesChunk != null && !createdBySigntool) {
-            String digestAttribute = "-Digest-Manifest-Main-Attributes";
+            String digestAttribute = "-Digest-Manifest-Main-Attributes"; //$NON-NLS-1$
             if (!verify(attributes, digestAttribute, mainAttributesChunk,
                     false, true)) {
-                /* [MSG "K00eb", "{0} failed verification of {1}"] */
+                /* [MSG "archive.30", "{0} failed verification of {1}"] */
                 throw new SecurityException(
-                    Msg.getString("K00eb", jarName, signatureFile));
+                        Messages.getString("archive.30", jarName, signatureFile)); //$NON-NLS-1$
             }
         }
 
@@ -318,8 +318,8 @@ class JarVerifier {
             return;
         }
         // Use .SF to verify the whole manifest
-        String digestAttribute = createdBySigntool ? "-Digest"
-                : "-Digest-Manifest";
+        String digestAttribute = createdBySigntool ? "-Digest" //$NON-NLS-1$
+                : "-Digest-Manifest"; //$NON-NLS-1$
         if (!verify(attributes, digestAttribute, manifest, false, false)) {
             Iterator<Map.Entry<String, Attributes>> it = hm.entrySet()
                     .iterator();
@@ -329,11 +329,11 @@ class JarVerifier {
                 if (chunk == null) {
                     return;
                 }
-                if (!verify(entry.getValue(), "-Digest", chunk,
+                if (!verify(entry.getValue(), "-Digest", chunk, //$NON-NLS-1$
                         createdBySigntool, false)) {
-                    /* [MSG "K00ec", "{0} has invalid digest for {1} in {2}"] */
+                    /* [MSG "archive.31", "{0} has invalid digest for {1} in {2}"] */
                     throw new SecurityException(
-                        Msg.getString("K00ec",
+                        Messages.getString("archive.31", //$NON-NLS-1$
                             new Object[] { signatureFile, entry.getKey(), jarName }));
                 }
             }
@@ -372,8 +372,8 @@ class JarVerifier {
     void verifySignatures(VerifierEntry entry, ZipEntry zipEntry) {
         byte[] digest = entry.digest.digest();
         if (!MessageDigest.isEqual(digest, Base64.decode(entry.hash))) {
-            /* [MSG "K00ec", "{0} has invalid digest for {1} in {2}"] */
-            throw new SecurityException(Msg.getString("K00ec", new Object[] {
+            /* [MSG "archive.31", "{0} has invalid digest for {1} in {2}"] */
+            throw new SecurityException(Messages.getString("archive.31", new Object[] { //$NON-NLS-1$
                     JarFile.MANIFEST_NAME, zipEntry.getName(), jarName }));
         }
         verifiedEntries.put(zipEntry.getName(), entry.certificates);
@@ -395,9 +395,9 @@ class JarVerifier {
 
     private boolean verify(Attributes attributes, String entry, byte[] data,
             boolean ignoreSecondEndline, boolean ignorable) {
-        String algorithms = attributes.getValue("Digest-Algorithms");
+        String algorithms = attributes.getValue("Digest-Algorithms"); //$NON-NLS-1$
         if (algorithms == null) {
-            algorithms = "SHA SHA1";
+            algorithms = "SHA SHA1"; //$NON-NLS-1$
         }
         StringTokenizer tokens = new StringTokenizer(algorithms);
         while (tokens.hasMoreTokens()) {
@@ -422,7 +422,7 @@ class JarVerifier {
             byte[] b = md.digest();
             byte[] hashBytes;
             try {
-                hashBytes = hash.getBytes("ISO8859_1");
+                hashBytes = hash.getBytes("ISO8859_1"); //$NON-NLS-1$
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e.toString());
             }

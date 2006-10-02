@@ -19,6 +19,8 @@ package org.apache.harmony.archive.internal.pack200;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.harmony.archive.internal.nls.Messages;
+
 /**
  * A run codec is a grouping of two nested codecs; K values are decoded from
  * the first codec, and the remaining codes are decoded from the remaining
@@ -36,9 +38,9 @@ public class RunCodec extends Codec {
 
 	public RunCodec(int k, Codec aCodec, Codec bCodec) throws Pack200Exception {
 		if (k <= 0)
-			throw new Pack200Exception("Cannot have a RunCodec for a negative number of numbers");
+			throw new Pack200Exception(Messages.getString("archive.12")); //$NON-NLS-1$
 		if (aCodec == null || bCodec == null)
-			throw new Pack200Exception("Must supply both codecs for a RunCodec");
+			throw new Pack200Exception(Messages.getString("archive.13")); //$NON-NLS-1$
 		this.k = k;
 		this.aCodec = aCodec;
 		this.bCodec = bCodec;
@@ -62,6 +64,6 @@ public class RunCodec extends Codec {
     
 	@Override
     public String toString() {
-		return "RunCodec[k="+k+";aCodec="+aCodec+"bCodec="+bCodec+"]";
+        return "RunCodec[k="+k+";aCodec="+aCodec+"bCodec="+bCodec+"]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 	}
 }

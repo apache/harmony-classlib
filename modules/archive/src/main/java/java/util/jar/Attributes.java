@@ -36,52 +36,52 @@ public class Attributes implements Cloneable, Map<Object, Object> {
 
         private int hashCode;
 
-        public static final Name CLASS_PATH = new Name("Class-Path", false);
+        public static final Name CLASS_PATH = new Name("Class-Path", false); //$NON-NLS-1$
 
         public static final Name MANIFEST_VERSION = new Name(
-                "Manifest-Version", false);
+                "Manifest-Version", false); //$NON-NLS-1$
 
-        public static final Name MAIN_CLASS = new Name("Main-Class", false);
+        public static final Name MAIN_CLASS = new Name("Main-Class", false); //$NON-NLS-1$
 
         public static final Name SIGNATURE_VERSION = new Name(
-                "Signature-Version", false);
+                "Signature-Version", false); //$NON-NLS-1$
 
-        public static final Name CONTENT_TYPE = new Name("Content-Type", false);
+        public static final Name CONTENT_TYPE = new Name("Content-Type", false); //$NON-NLS-1$
 
-        public static final Name SEALED = new Name("Sealed", false);
+        public static final Name SEALED = new Name("Sealed", false); //$NON-NLS-1$
 
         public static final Name IMPLEMENTATION_TITLE = new Name(
-                "Implementation-Title", false);
+                "Implementation-Title", false); //$NON-NLS-1$
 
         public static final Name IMPLEMENTATION_VERSION = new Name(
-                "Implementation-Version", false);
+                "Implementation-Version", false); //$NON-NLS-1$
 
         public static final Name IMPLEMENTATION_VENDOR = new Name(
-                "Implementation-Vendor", false);
+                "Implementation-Vendor", false); //$NON-NLS-1$
 
         public static final Name SPECIFICATION_TITLE = new Name(
-                "Specification-Title", false);
+                "Specification-Title", false); //$NON-NLS-1$
 
         public static final Name SPECIFICATION_VERSION = new Name(
-                "Specification-Version", false);
+                "Specification-Version", false); //$NON-NLS-1$
 
         public static final Name SPECIFICATION_VENDOR = new Name(
-                "Specification-Vendor", false);
+                "Specification-Vendor", false); //$NON-NLS-1$
 
-        public static final Name EXTENSION_LIST = new Name("Extension-List",
+        public static final Name EXTENSION_LIST = new Name("Extension-List", //$NON-NLS-1$
                 false);
 
-        public static final Name EXTENSION_NAME = new Name("Extension-Name",
+        public static final Name EXTENSION_NAME = new Name("Extension-Name", //$NON-NLS-1$
                 false);
 
         public static final Name EXTENSION_INSTALLATION = new Name(
-                "Extension-Installation", false);
+                "Extension-Installation", false); //$NON-NLS-1$
 
         public static final Name IMPLEMENTATION_VENDOR_ID = new Name(
-                "Implementation-Vendor-Id", false);
+                "Implementation-Vendor-Id", false); //$NON-NLS-1$
 
         public static final Name IMPLEMENTATION_URL = new Name(
-                "Implementation-URL", false);
+                "Implementation-URL", false); //$NON-NLS-1$
 
         public Name(String s) {
             int i = s.length();
