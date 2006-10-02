@@ -40,7 +40,6 @@ public class PasswordCallbackTest extends SerializationTest implements
         junit.textui.TestRunner.run(PasswordCallbackTest.class);
     }
 
-    @Override
     protected Object[] getData() {
         char[] pwd = {'a', 'b', 'c'};
         PasswordCallback p = new PasswordCallback("prmpt", true);

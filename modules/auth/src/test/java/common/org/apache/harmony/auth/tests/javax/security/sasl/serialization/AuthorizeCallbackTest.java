@@ -40,7 +40,6 @@ public class AuthorizeCallbackTest extends SerializationTest implements
             "New String",
             "Long stringID. Long stringID. Long stringID. Long stringID. Long stringID. Long stringID. Long stringID. Long stringID. Long stringID. Long stringID. Long stringID. Long stringID. Long stringID. Long stringID. Long stringID. Long stringID. Long stringID." };
 
-    @Override
     protected Object[] getData() {
         String msg = null;
         return new Object[] { new AuthorizeCallback(msg, msg),

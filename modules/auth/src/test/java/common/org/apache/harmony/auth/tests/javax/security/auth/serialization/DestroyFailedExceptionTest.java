@@ -37,7 +37,6 @@ public class DestroyFailedExceptionTest extends SerializationTest {
         junit.textui.TestRunner.run(DestroyFailedExceptionTest.class);
     }
 
-    @Override
     protected Object[] getData() {
         return new Object[] {new DestroyFailedException("message")};
     }

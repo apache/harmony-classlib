@@ -37,7 +37,6 @@ public class AuthPermissionTest extends TestCase {
     }
 
    
-    @Override
     protected void setUp() throws Exception {
         ap = new AuthPermission("name");
         ap1 = new AuthPermission("createLoginContext");

@@ -15,7 +15,13 @@
  *  limitations under the License.
  */
 
+/**
+* @author Vera Y. Petrashkova
+* @version $Revision$
+*/
+
 package javax.security.sasl;
+
 
 import java.security.Provider;
 import java.security.Security;
@@ -27,11 +33,24 @@ import junit.framework.TestCase;
  * Test for Sasl class
  * 
  */
+
 public class Sasl1Test extends TestCase {
+
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(Sasl1Test.class);
+    }
+
     private Provider [] provs;
     private boolean initProvs = false;
+    /**
+     * Constructor for Sasl2Test.
+     * 
+     * @param arg0
+     */
+    public Sasl1Test(String arg0) {
+        super(arg0);
+    }
 
-    @Override
     protected void setUp() throws Exception {
         super.setUp();
         if (!initProvs) {
@@ -39,13 +58,12 @@ public class Sasl1Test extends TestCase {
             initProvs = true;
         }
         if (provs != null) {
-            for (Provider element : provs) {
-                Security.removeProvider(element.getName());
+            for (int i = 0; i < provs.length; i++) {
+                Security.removeProvider(provs[i].getName());
             }
         }
     }
     
-    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         if (provs != null) {
@@ -64,7 +82,7 @@ public class Sasl1Test extends TestCase {
      * All providers are previously removed.
      */
     public void testGetClient() {    
-        Enumeration<?> en = Sasl.getSaslClientFactories();
+        Enumeration en = Sasl.getSaslClientFactories();
         assertNotNull("List of SaslClientFactories should not be null", en);
         assertFalse("List of SaslClientFactories should not haves elements", en
                 .hasMoreElements());
@@ -79,7 +97,7 @@ public class Sasl1Test extends TestCase {
      * All providers are previously removed.
      */
     public void testGetSertver() {
-        Enumeration<?> en = Sasl.getSaslServerFactories();
+        Enumeration en = Sasl.getSaslServerFactories();
         assertNotNull("List of SaslServerFactories should not be null", en);
         assertFalse("List of SaslServerFactories should not have elements", en
                 .hasMoreElements());

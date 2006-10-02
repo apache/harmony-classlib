@@ -40,7 +40,6 @@ public class TextInputCallbackTest extends SerializationTest implements
         junit.textui.TestRunner.run(TextInputCallbackTest.class);
     }
 
-    @Override
     protected Object[] getData() {
         TextInputCallback t = new TextInputCallback("prmpt","defText");
         t.setText("new text");

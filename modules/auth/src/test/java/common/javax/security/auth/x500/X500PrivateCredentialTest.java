@@ -33,106 +33,83 @@ import java.security.SignatureException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.Date;
-import java.util.Set;
-
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import java.util.*;
 /**
  * Tests implementation of X500PrivateCredential class
  */
-@SuppressWarnings("serial")
 public class X500PrivateCredentialTest extends TestCase {
 
 	X509Certificate cert= new X509Certificate() {
-		@Override
-        public void checkValidity(){}
-		@Override
-        public void checkValidity(Date date){}
-		@Override
-        public int getVersion() {
+		public void checkValidity(){}
+		public void checkValidity(Date date){}
+		public int getVersion() {
 			return 0;
 		}
-		@Override
-        public BigInteger getSerialNumber() {
+		public BigInteger getSerialNumber() {
 			return null;
 		}
-		@Override
-        public Principal getIssuerDN() {
+		public Principal getIssuerDN() {
 			return null;
 		}
-		@Override
-        public Principal getSubjectDN() {
+		public Principal getSubjectDN() {
 			return null;
 		}
-		@Override
-        public Date getNotBefore() {
+		public Date getNotBefore() {
 			return null;
 		}
-		@Override
-        public Date getNotAfter() {
+		public Date getNotAfter() {
 			return null;
 		}
-		@Override
-        public byte[] getTBSCertificate() throws CertificateEncodingException {
+		public byte[] getTBSCertificate() throws CertificateEncodingException {
 			return null;
 		}
-		@Override
-        public byte[] getSignature() {
+		public byte[] getSignature() {
 			return null;
 		}
-		@Override
-        public String getSigAlgName() {
+		public String getSigAlgName() {
 			return null;
 		}
-		@Override
-        public String getSigAlgOID() {
+		public String getSigAlgOID() {
 			return null;
 		}
-		@Override
-        public byte[] getSigAlgParams() {
+		public byte[] getSigAlgParams() {
 			return null;
 		}
-		@Override
-        public boolean[] getIssuerUniqueID() {
+		public boolean[] getIssuerUniqueID() {
 			return null;
 		}
-		@Override
-        public boolean[] getSubjectUniqueID() {
+		public boolean[] getSubjectUniqueID() {
 			return null;
 		}
-		@Override
-        public boolean[] getKeyUsage() {
+		public boolean[] getKeyUsage() {
 			return null;
 		}
-		@Override
-        public int getBasicConstraints() {
+		public int getBasicConstraints() {
 			return 0;
 		}
-		@Override
-        public byte[] getEncoded() throws CertificateEncodingException {
+		public byte[] getEncoded() throws CertificateEncodingException {
 			return null;
 		}
-		@Override
-        public void verify(PublicKey key) throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
+		public void verify(PublicKey key) throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
 		}
-		@Override
-        public void verify(PublicKey key, String sigProvider) throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
+		public void verify(PublicKey key, String sigProvider) throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
 		}
-		@Override
-        public String toString() {
+		public String toString() {
 			return null;
 		}
-		@Override
-        public PublicKey getPublicKey() {
+		public PublicKey getPublicKey() {
 			return null;
 		}
-		public Set<String> getCriticalExtensionOIDs() {
+		public Set getCriticalExtensionOIDs() {
 			return null;
 		}
 		public byte[] getExtensionValue(String oid) {
 			return null;
 		}
-		public Set<String> getNonCriticalExtensionOIDs() {
+		public Set getNonCriticalExtensionOIDs() {
 			return null;
 		}
 		public boolean hasUnsupportedCriticalExtension() {
@@ -214,4 +191,13 @@ public class X500PrivateCredentialTest extends TestCase {
 			//ignore
 		}
 	}
+
+	public static Test suite() {
+		return new TestSuite(X500PrivateCredentialTest.class);
+	}
+
+	public static void main(String[] args) {
+		junit.textui.TestRunner.run(suite());
+	}
+
 }

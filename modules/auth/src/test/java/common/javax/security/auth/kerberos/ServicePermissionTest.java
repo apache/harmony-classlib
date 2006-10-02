@@ -15,6 +15,11 @@
  *  limitations under the License.
  */
 
+/**
+* @author Maxim V. Makarov
+* @version $Revision$
+*/
+
 package javax.security.auth.kerberos;
 
 import java.security.AllPermission;
@@ -27,11 +32,17 @@ import java.util.NoSuchElementException;
 
 import junit.framework.TestCase;
 
+
+
 /** 
  * Tests ServicePermission class implementation.
  */
 public class ServicePermissionTest extends TestCase {
-
+    
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(ServicePermissionTest.class);
+    }
+    
     /**
      * @tests javax.security.auth.kerberos.ServicePermission#ServicePermission(
      *        java.lang.String,java.lang.String)
@@ -224,7 +235,7 @@ public class ServicePermissionTest extends TestCase {
 		} catch (NoSuchElementException e) {
 		}
 
-        Enumeration<?> en = pc.elements();
+        Enumeration en = pc.elements();
         assertNotNull(en);
         assertFalse(en.hasMoreElements());
         
@@ -240,7 +251,7 @@ public class ServicePermissionTest extends TestCase {
         pc.add(sp2);
         pc.add(sp3);
         en = pc.elements();
-        Collection<Object> c = new ArrayList<Object>();
+        Collection c = new ArrayList();
         while (en.hasMoreElements())
         {
             c.add(en.nextElement());
@@ -272,8 +283,8 @@ public class ServicePermissionTest extends TestCase {
                 "Accept, initiatE" //  first & last upper case
         };
 
-        for (String element : validActions) {
-            new ServicePermission("*", element);
+        for (int i = 0; i < validActions.length; i++) {
+            new ServicePermission("*", validActions[i]);
         }
 
         String[] invalidActions = new String[] { "accept initiate", // space
@@ -284,11 +295,11 @@ public class ServicePermissionTest extends TestCase {
                 "accept,", // ','
                 " ,accept" // ','
         };
-        for (String element : invalidActions) {
+        for (int i = 0; i < invalidActions.length; i++) {
             try {
-                new ServicePermission("*", element);
+                new ServicePermission("*", invalidActions[i]);
                 fail("No expected IllegalArgumentException for action: "
-                        + element);
+                        + invalidActions[i]);
             } catch (IllegalArgumentException e) {
             }
         }

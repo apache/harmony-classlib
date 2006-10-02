@@ -33,7 +33,6 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class PrivateCredentialPermissionTest extends SerializationTest {
 
-    @Override
     protected Object[] getData() {
         return new Object[] {new PrivateCredentialPermission("a.b.Cred a.c.Princ \"duke\"", "read")};
     }

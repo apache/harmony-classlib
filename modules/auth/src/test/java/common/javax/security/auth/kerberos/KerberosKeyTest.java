@@ -143,15 +143,15 @@ public class KerberosKeyTest extends TestCase {
         // TODO add "pianist@EXAMPLE.COM" and "Juri ... @ATHENA.MIT.EDU"
         };
 
-        for (Object[] element : testcases) {
+        for (int i = 0; i < testcases.length; i++) {
             KerberosPrincipal kp = new KerberosPrincipal(
-                    (String) element[0], 1);
+                    (String) testcases[i][0], 1);
 
-            key = new KerberosKey(kp, ((String) element[1]).toCharArray(),
+            key = new KerberosKey(kp, ((String) testcases[i][1]).toCharArray(),
                     "DES");
 
-            assertTrue("Testcase: " + (String) element[0], Arrays.equals(
-                    (byte[]) element[2], key.getEncoded()));
+            assertTrue("Testcase: " + (String) testcases[i][0], Arrays.equals(
+                    (byte[]) testcases[i][2], key.getEncoded()));
         }
     }
 

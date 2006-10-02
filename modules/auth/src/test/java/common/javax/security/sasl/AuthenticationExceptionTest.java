@@ -75,10 +75,10 @@ public class AuthenticationExceptionTest extends TestCase {
      */
     public void testAuthenticationException02() {
         AuthenticationException tE;
-        for (String element : msgs) {
-            tE = new AuthenticationException(element);
-            assertEquals("getMessage() must return: ".concat(element), tE
-                    .getMessage(), element);
+        for (int i = 0; i < msgs.length; i++) {
+            tE = new AuthenticationException(msgs[i]);
+            assertEquals("getMessage() must return: ".concat(msgs[i]), tE
+                    .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
             try {
                 throw tE;
@@ -127,10 +127,10 @@ public class AuthenticationExceptionTest extends TestCase {
      */
     public void testAuthenticationException05() {
         AuthenticationException tE;
-        for (String element : msgs) {
-            tE = new AuthenticationException(element, null);
-            assertEquals("getMessage() must return: ".concat(element), tE
-                    .getMessage(), element);
+        for (int i = 0; i < msgs.length; i++) {
+            tE = new AuthenticationException(msgs[i], null);
+            assertEquals("getMessage() must return: ".concat(msgs[i]), tE
+                    .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
             try {
                 throw tE;
@@ -169,14 +169,14 @@ public class AuthenticationExceptionTest extends TestCase {
      */
     public void testAuthenticationException07() {
         AuthenticationException tE;
-        for (String element : msgs) {
-            tE = new AuthenticationException(element, tCause);
+        for (int i = 0; i < msgs.length; i++) {
+            tE = new AuthenticationException(msgs[i], tCause);
             String getM = tE.getMessage();
             String toS = tCause.toString();
-            if (element.length() > 0) {
-                assertTrue("getMessage() must contain ".concat(element), getM
-                        .indexOf(element) != -1);
-                if (!getM.equals(element)) {
+            if (msgs[i].length() > 0) {
+                assertTrue("getMessage() must contain ".concat(msgs[i]), getM
+                        .indexOf(msgs[i]) != -1);
+                if (!getM.equals(msgs[i])) {
                     assertTrue("getMessage() should contain ".concat(toS), getM
                             .indexOf(toS) != -1);
                 }
@@ -205,18 +205,18 @@ public class AuthenticationExceptionTest extends TestCase {
         AuthenticationException eT;
         eT = new AuthenticationException();
         assertNotNull("Incorrect null string", eT.toString());
-        for (String element : msgs) {
-            eT = new AuthenticationException(element);
+        for (int i = 0; i < msgs.length; i++) {
+            eT = new AuthenticationException(msgs[i]);
             assertTrue("Incorrect result string", eT.toString()
-                    .indexOf(element) >= 0);
+                    .indexOf(msgs[i]) >= 0);
 
-            for (Throwable element0 : th) {
-                eT = new AuthenticationException(element, element0);
+            for (int j = 0; j < th.length; j++) {
+                eT = new AuthenticationException(msgs[i], th[j]);
                 assertTrue("Incorrect result string", eT.toString().indexOf(
-                        element) >= 0);
-                if (element0 != null) {
+                        msgs[i]) >= 0);
+                if (th[j] != null) {
                     assertTrue("Incorrect result string", eT.toString()
-                            .indexOf(element0.toString()) >= 0);
+                            .indexOf(th[j].toString()) >= 0);
                 }
             }
         }

@@ -15,6 +15,11 @@
  *  limitations under the License.
  */
 
+/**
+* @author Vera Y. Petrashkova
+* @version $Revision$
+*/
+
 package javax.security.sasl;
 
 import junit.framework.TestCase;
@@ -23,7 +28,16 @@ import junit.framework.TestCase;
  * Tests for constructors and methods of RealmCallback class
  * 
  */
+
 public class RealmCallbackTest extends TestCase {
+
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(RealmCallbackTest.class);
+    }
+
+    public RealmCallbackTest(String arg0) {
+        super(arg0);
+    }
     
     private static final String[] prompts = {
             "Prompts",
@@ -73,14 +87,14 @@ public class RealmCallbackTest extends TestCase {
         RealmCallback rCB;
         StringBuffer sb = new StringBuffer("");
         String ss;
-        for (String element : prompts) {
+        for (int i = 0; i < prompts.length; i++) {
             for (int j = 0; j < prompts.length; j++) {
-                rCB = new RealmCallback(element, defInfo[j]);
+                rCB = new RealmCallback(prompts[i], defInfo[j]);
                 assertEquals("Incoorect default info", rCB.getDefaultText(),
                         defInfo[j]);
-                assertEquals("Incorrect prompt", rCB.getPrompt(), element);
+                assertEquals("Incorrect prompt", rCB.getPrompt(), prompts[i]);
                 assertNull("Not null text", rCB.getText());
-                sb.replace(0, sb.length(), element);
+                sb.replace(0, sb.length(), prompts[i]);
                 sb.append(defInfo[j]);
                 ss = sb.toString();
                 rCB.setText(ss);
@@ -117,13 +131,13 @@ public class RealmCallbackTest extends TestCase {
         RealmCallback rCB;
         StringBuffer sb = new StringBuffer("");
         String ss;
-        for (String element : prompts) {
-            rCB = new RealmCallback(element);
+        for (int i = 0; i < prompts.length; i++) {
+            rCB = new RealmCallback(prompts[i]);
             assertNull("Incoorect default info", rCB.getDefaultText());
-            assertEquals("Incorrect prompt", rCB.getPrompt(), element);
+            assertEquals("Incorrect prompt", rCB.getPrompt(), prompts[i]);
             assertNull("Not null text", rCB.getText());
-            sb = new StringBuffer(element);
-            sb.replace(0, sb.length(), element);
+            sb = new StringBuffer(prompts[i]);
+            sb.replace(0, sb.length(), prompts[i]);
             ss = sb.toString();
             rCB.setText(ss);
             assertEquals("Incorrect text", rCB.getText(), ss);

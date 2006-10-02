@@ -79,12 +79,12 @@ public class AuthorizeCallbackTest extends TestCase {
                 "another authorizedIDs",
                 "some long string for authorized IDs some long string for authorized IDs some long string for authorized IDs" };
         AuthorizeCallback auth;
-        for (String element : authenticationIDs) {
-            for (String element0 : authorizedIDs) {
-                auth = new AuthorizeCallback(element,
-                        element0);
-                assertEquals(auth.getAuthenticationID(), element);
-                assertEquals(auth.getAuthorizationID(), element0);
+        for (int i = 0; i < authenticationIDs.length; i++) {
+            for (int j = 0; j < authorizedIDs.length; j++) {
+                auth = new AuthorizeCallback(authenticationIDs[i],
+                        authorizedIDs[j]);
+                assertEquals(auth.getAuthenticationID(), authenticationIDs[i]);
+                assertEquals(auth.getAuthorizationID(), authorizedIDs[j]);
                 assertNull(auth.getAuthorizedID());
                 assertFalse(auth.isAuthorized());
 
@@ -96,19 +96,19 @@ public class AuthorizeCallbackTest extends TestCase {
                 assertNull(auth.getAuthorizedID());
                 assertFalse(auth.isAuthorized());
 
-                for (String element1 : newAuthorizedIDs) {
-                    auth.setAuthorizedID(element1);
+                for (int l = 0; l < newAuthorizedIDs.length; l++) {
+                    auth.setAuthorizedID(newAuthorizedIDs[l]);
                     assertNull(auth.getAuthorizedID());
                     auth.setAuthorized(true);
                     assertFalse(auth.getAuthorizedID().equals(
                             auth.getAuthorizationID()));
-                    assertEquals(auth.getAuthorizedID(), element1);
-                    auth.setAuthorizedID(element1 + " ZZZ");
+                    assertEquals(auth.getAuthorizedID(), newAuthorizedIDs[l]);
+                    auth.setAuthorizedID(newAuthorizedIDs[l] + " ZZZ");
                     assertFalse(auth.getAuthorizedID().equals(
                             auth.getAuthorizationID()));
                     assertFalse(auth.getAuthorizedID().equals(
-                            element1));
-                    assertEquals(auth.getAuthorizedID(), element1
+                            newAuthorizedIDs[l]));
+                    assertEquals(auth.getAuthorizedID(), newAuthorizedIDs[l]
                             + " ZZZ");
 
                     auth.setAuthorized(false);

@@ -15,6 +15,11 @@
  *  limitations under the License.
  */
 
+/**
+* @author Maxim V. Makarov
+* @version $Revision$
+*/
+
 package javax.security.auth.kerberos;
 
 import java.security.AllPermission;
@@ -34,6 +39,10 @@ import junit.framework.TestCase;
  * Tests DelegationPermission class implementation.
  */
 public class DelegationPermissionTest extends TestCase {
+
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(DelegationPermissionTest.class);
+    }
 
     /**
      * testing of a correct ctor
@@ -111,7 +120,6 @@ public class DelegationPermissionTest extends TestCase {
     } 
     
     // testing of the equals method
-    @SuppressWarnings("serial")
     public void testEquals() {
         DelegationPermission dp1 = new DelegationPermission("\"AAA\" \"BBB\"");
         DelegationPermission dp2 = new DelegationPermission("\"AAA\" \"BBB\"");
@@ -191,7 +199,7 @@ public class DelegationPermissionTest extends TestCase {
 		} catch (NoSuchElementException e) {
 		}
 
-        Enumeration<?> en = pc.elements();
+        Enumeration en = pc.elements();
         assertNotNull(en);
         assertFalse(en.hasMoreElements());
         
@@ -206,7 +214,7 @@ public class DelegationPermissionTest extends TestCase {
         assertFalse(en.hasMoreElements());
         pc.add(sp2);
         en = pc.elements();
-        Collection<Object> c = new ArrayList<Object>();
+        Collection c = new ArrayList();
         while (en.hasMoreElements())
         {
             c.add(en.nextElement());

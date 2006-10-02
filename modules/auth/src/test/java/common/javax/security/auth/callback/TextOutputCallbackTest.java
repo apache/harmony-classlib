@@ -51,8 +51,8 @@ public class TextOutputCallbackTest extends TestCase {
     public final void testTextOutputCallback_02() {
         int[] m = { TextOutputCallback.INFORMATION, TextOutputCallback.WARNING,
                 TextOutputCallback.ERROR };
-        for (int element : m) {
-            text = new TextOutputCallback(element, "message");
+        for (int i = 0; i < m.length; i++) {
+            text = new TextOutputCallback(m[i], "message");
         }
     }
 

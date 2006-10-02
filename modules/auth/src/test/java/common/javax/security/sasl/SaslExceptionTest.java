@@ -15,7 +15,13 @@
  *  limitations under the License.
  */
 
+/**
+* @author Vera Y. Petrashkova
+* @version $Revision$
+*/
+
 package javax.security.sasl;
+
 
 import junit.framework.TestCase;
 
@@ -24,6 +30,19 @@ import junit.framework.TestCase;
  * 
  */
 public class SaslExceptionTest extends TestCase {
+
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(SaslExceptionTest.class);
+    }
+
+    /**
+     * Constructor for SaslExceptionTests.
+     * 
+     * @param arg0
+     */
+    public SaslExceptionTest(String arg0) {
+        super(arg0);
+    }
 
     static String[] msgs = {
             "",
@@ -65,10 +84,10 @@ public class SaslExceptionTest extends TestCase {
      */
     public void testSaslException02() {
         SaslException tE;
-        for (String element : msgs) {
-            tE = new SaslException(element);
-            assertEquals("getMessage() must return: ".concat(element), tE
-                    .getMessage(), element);
+        for (int i = 0; i < msgs.length; i++) {
+            tE = new SaslException(msgs[i]);
+            assertEquals("getMessage() must return: ".concat(msgs[i]), tE
+                    .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
             try {
                 throw tE;
@@ -117,10 +136,10 @@ public class SaslExceptionTest extends TestCase {
      */
     public void testSaslException05() {
         SaslException tE;
-        for (String element : msgs) {
-            tE = new SaslException(element, null);
-            assertEquals("getMessage() must return: ".concat(element), tE
-                    .getMessage(), element);
+        for (int i = 0; i < msgs.length; i++) {
+            tE = new SaslException(msgs[i], null);
+            assertEquals("getMessage() must return: ".concat(msgs[i]), tE
+                    .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
             try {
                 throw tE;
@@ -164,14 +183,14 @@ public class SaslExceptionTest extends TestCase {
      */
     public void testSaslException07() {
         SaslException tE;
-        for (String element : msgs) {
-            tE = new SaslException(element, tCause);
+        for (int i = 0; i < msgs.length; i++) {
+            tE = new SaslException(msgs[i], tCause);
             String getM = tE.getMessage();
             String toS = tCause.toString();
-            if (element.length() > 0) {
-                assertTrue("getMessage() must contain ".concat(element), getM
-                        .indexOf(element) != -1);
-                if (!getM.equals(element)) {
+            if (msgs[i].length() > 0) {
+                assertTrue("getMessage() must contain ".concat(msgs[i]), getM
+                        .indexOf(msgs[i]) != -1);
+                if (!getM.equals(msgs[i])) {
                     assertTrue("getMessage() should contain ".concat(toS), getM
                             .indexOf(toS) != -1);
                 }
@@ -206,18 +225,18 @@ public class SaslExceptionTest extends TestCase {
         SaslException eT;
         eT = new SaslException();
         assertNotNull("Incorrect null string", eT.toString());
-        for (String element : msgs) {
-            eT = new SaslException(element);
+        for (int i = 0; i < msgs.length; i++) {
+            eT = new SaslException(msgs[i]);
             assertTrue("Incorrect result string", eT.toString()
-                    .indexOf(element) >= 0);
+                    .indexOf(msgs[i]) >= 0);
 
-            for (Throwable element0 : th) {
-                eT = new SaslException(element, element0);
+            for (int j = 0; j < th.length; j++) {
+                eT = new SaslException(msgs[i], th[j]);
                 assertTrue("Incorrect result string", eT.toString().indexOf(
-                        element) >= 0);
-                if (element0 != null) {
+                        msgs[i]) >= 0);
+                if (th[j] != null) {
                     assertTrue("Incorrect result string", eT.toString()
-                            .indexOf(element0.toString()) >= 0);
+                            .indexOf(th[j].toString()) >= 0);
                 }
             }
         }
@@ -256,8 +275,8 @@ public class SaslExceptionTest extends TestCase {
         Throwable eT1;
         eT = new SaslException();
 
-        for (String element : msgs) {
-            eT = new SaslException(element);
+        for (int i = 0; i < msgs.length; i++) {
+            eT = new SaslException(msgs[i]);
 
             for (int l = (thUpd.length - 1); l >= 0; l--) {
                 try {
@@ -288,21 +307,21 @@ public class SaslExceptionTest extends TestCase {
         eT = new SaslException();
 
         boolean mod = false;
-        for (String element : msgs) {
-            for (Throwable element0 : th) {
+        for (int i = 0; i < msgs.length; i++) {
+            for (int j = 0; j < th.length; j++) {
                 mod = false;
-                for (Throwable element1 : thUpd) {
-                    eT = new SaslException(element, element0);
+                for (int l = 0; l < thUpd.length; l++) {
+                    eT = new SaslException(msgs[i], th[j]);
                     try {
-                        eT1 = eT.initCause(element1);
+                        eT1 = eT.initCause(thUpd[l]);
                         assertEquals(eT1, eT);
                         mod = true;
-                        if ((element0 == null) && !mod) {
+                        if ((th[j] == null) && !mod) {
                             assertEquals("Incorrect cause", eT.getCause(),
-                                    element1);
+                                    thUpd[l]);
                         }
                     } catch (IllegalStateException e) {
-                        if ((element0 == null) && !mod) {
+                        if ((th[j] == null) && !mod) {
                             fail("Unexpected exception: " + e);
                         }
                     }

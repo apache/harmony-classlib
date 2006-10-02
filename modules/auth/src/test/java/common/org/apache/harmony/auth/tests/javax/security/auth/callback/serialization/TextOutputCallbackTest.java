@@ -40,7 +40,6 @@ public class TextOutputCallbackTest extends SerializationTest implements
         junit.textui.TestRunner.run(TextOutputCallbackTest.class);
     }
 
-    @Override
     protected Object[] getData() {
         return new Object[] { new TextOutputCallback(
                 TextOutputCallback.INFORMATION, "message") };

@@ -38,7 +38,7 @@ public class LoginContextTest extends TestCase {
         MyPrincipal pri = new MyPrincipal();
         HashSet<Principal> set = new HashSet<Principal>();
         set.add(pri);
-        Subject sub = new Subject(false, set, new HashSet<Object>(), new HashSet<Object>());
+        Subject sub = new Subject(false, set, new HashSet(), new HashSet());
         Configuration.setConfiguration(new MyConfig());
         LoginContext context = new LoginContext("moduleName", sub);
         context.login();
@@ -53,18 +53,16 @@ public class LoginContextTest extends TestCase {
         assertNotNull(context.getSubject());
     }    
     static class MyConfig extends Configuration{
-        AppConfigurationEntry[] entries = new AppConfigurationEntry[]{new AppConfigurationEntry(MyModule.class.getName(), LoginModuleControlFlag.REQUIRED, new HashMap<String, Object>())};
-        @Override
+        AppConfigurationEntry[] entries = new AppConfigurationEntry[]{new AppConfigurationEntry(MyModule.class.getName(), LoginModuleControlFlag.REQUIRED, new HashMap())};
         public AppConfigurationEntry[] getAppConfigurationEntry(String name) {
             return entries;
         }
-        @Override
         public void refresh() {
         }
     }
     public static class MyModule implements LoginModule{
         Subject sub;
-        public MyModule(){
+        public void MyModule(){
         }
         public boolean abort() throws LoginException {
             return false;
@@ -88,7 +86,6 @@ public class LoginContextTest extends TestCase {
         public String getName() {
             return name;
         }
-        @Override
         public String toString(){
             return name; 
         }

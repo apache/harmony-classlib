@@ -43,7 +43,6 @@ public class RealmChoiceCallbackTest extends SerializationTest implements
             "t"};
 
     public static final int [] idx = {2, 3};
-    @Override
     protected Object[] getData() {
         Object [] oo = {
                 new RealmChoiceCallback(msgs[0], msgs, 0, true),
@@ -52,8 +51,9 @@ public class RealmChoiceCallbackTest extends SerializationTest implements
                 new RealmChoiceCallback(msgs[2], msgs, 0, false)
 
         };        
-for (Object element : oo) {
-            RealmChoiceCallback rc = (RealmChoiceCallback)element;           
+//       
+        for (int i = 0; i < oo.length; i++) {
+            RealmChoiceCallback rc = (RealmChoiceCallback)oo[i];           
             if (rc.allowMultipleSelections()) {
                 rc.setSelectedIndexes(idx);
             } else {

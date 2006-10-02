@@ -55,8 +55,8 @@ public class ConfirmationCallbackTest extends TestCase {
      */
     public final void testConfirmationCallback_01() throws IllegalArgumentException {
         try {
-            for (int element : mt) {
-                cc = new ConfirmationCallback(element, ot[1], dopt[1]);
+            for (int i = 0; i < mt.length; i++) {
+                cc = new ConfirmationCallback(mt[i], ot[1], dopt[1]);
             }
         } catch (IllegalArgumentException e){}
     }

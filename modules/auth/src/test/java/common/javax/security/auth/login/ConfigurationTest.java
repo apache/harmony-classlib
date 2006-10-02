@@ -54,8 +54,7 @@ public class ConfigurationTest extends TestCase {
 			enableAccess = enable;
 		}
 
-		@Override
-        public void checkPermission(Permission p) {
+		public void checkPermission(Permission p) {
 			if (p instanceof AuthPermission && checkTarget.equals(p)) {
 				checkAsserted = true;
 				if (!enableAccess) {
@@ -76,14 +75,12 @@ public class ConfigurationTest extends TestCase {
 	 */
 	public static class ConfTestProvider extends Configuration {
 
-		@Override
-        public AppConfigurationEntry[] getAppConfigurationEntry(
+		public AppConfigurationEntry[] getAppConfigurationEntry(
 				String applicationName) {
 			return null;
 		}
 
-		@Override
-        public void refresh() {
+		public void refresh() {
 		}
 	}
 
@@ -95,8 +92,7 @@ public class ConfigurationTest extends TestCase {
 
 	Configuration oldConfiguration = Configuration.getConfiguration();
 
-	@Override
-    public void tearDown() {
+	public void tearDown() {
 		System.setSecurityManager(old);
 		Configuration.setConfiguration(oldConfiguration);
 	}

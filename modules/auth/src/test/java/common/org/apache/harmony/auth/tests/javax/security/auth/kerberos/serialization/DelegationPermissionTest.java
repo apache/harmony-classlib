@@ -33,7 +33,6 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
  */
 public class DelegationPermissionTest extends SerializationTest {
 
-    @Override
     protected Object[] getData() {
         return new Object[] {
                 new DelegationPermission("\"AAA\" \"BBB\"", "action"),

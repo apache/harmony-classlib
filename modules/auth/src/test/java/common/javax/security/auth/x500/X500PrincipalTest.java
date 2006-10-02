@@ -30,7 +30,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * Tests X500Principal class
@@ -1939,6 +1941,14 @@ public class X500PrincipalTest extends TestCase {
         assertEquals("cn=a\nb", s);
     }
 
+    public static Test suite() {
+        return new TestSuite(X500PrincipalTest.class);
+    }
+
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(suite());
+    }
+
     public static final String[] RFC2253_SPECIAL = new String[] { ",", "=",
             "+", "<", ">", "#", ";" };
 
@@ -2053,15 +2063,15 @@ public class X500PrincipalTest extends TestCase {
         list.add("CN=,ST=", "CN=,ST=", "CN=, ST="); // empty value for both RDNs
         list.add("CN=;ST=B", "CN=,ST=B", "CN=, ST=B"); // empty value for 1 RDN
         list.add("CN=;ST=", "CN=,ST=", "CN=, ST="); // empty value for both RDNs
-        for (String element : RFC2253_SPECIAL) {
+        for (int i = 0; i < RFC2253_SPECIAL.length; i++) {
             // \special
-            list.add("CN=\\" + element,
-                    "CN=\\" + element, "CN=\"" + element
+            list.add("CN=\\" + RFC2253_SPECIAL[i],
+                    "CN=\\" + RFC2253_SPECIAL[i], "CN=\"" + RFC2253_SPECIAL[i]
                             + "\"");
 
             // A + \special + B
-            list.add("CN=A\\" + element + "B", "CN=A\\"
-                    + element + "B", "CN=\"A" + element
+            list.add("CN=A\\" + RFC2253_SPECIAL[i] + "B", "CN=A\\"
+                    + RFC2253_SPECIAL[i] + "B", "CN=\"A" + RFC2253_SPECIAL[i]
                     + "B\"");
         }
 
@@ -2171,24 +2181,24 @@ public class X500PrincipalTest extends TestCase {
         //
         list.add("CN=\"\"", "CN=", "CN="); // empty quoted string
         list.add("CN=\"A\"", "CN=A", "CN=A"); // "A"
-        for (String element : RFC2253_SPECIAL) {
+        for (int i = 0; i < RFC2253_SPECIAL.length; i++) {
             // "special" => \special
-            list.add("CN=\"" + element + "\"", "CN=\\"
-                    + element, "CN=\"" + element + "\"");
+            list.add("CN=\"" + RFC2253_SPECIAL[i] + "\"", "CN=\\"
+                    + RFC2253_SPECIAL[i], "CN=\"" + RFC2253_SPECIAL[i] + "\"");
 
             // "A + special + B" => A + \special + B
-            list.add("CN=\"A" + element + "B\"", "CN=A\\"
-                    + element + "B", "CN=\"A" + element
+            list.add("CN=\"A" + RFC2253_SPECIAL[i] + "B\"", "CN=A\\"
+                    + RFC2253_SPECIAL[i] + "B", "CN=\"A" + RFC2253_SPECIAL[i]
                     + "B\"");
         }
-        for (String element : RFC2253_SPECIAL) {
+        for (int i = 0; i < RFC2253_SPECIAL.length; i++) {
             // "\special" => \special
-            list.add("CN=\"\\" + element + "\"", "CN=\\"
-                    + element, "CN=\"" + element + "\"");
+            list.add("CN=\"\\" + RFC2253_SPECIAL[i] + "\"", "CN=\\"
+                    + RFC2253_SPECIAL[i], "CN=\"" + RFC2253_SPECIAL[i] + "\"");
 
             // "A + \special + B" => A + \special + B
-            list.add("CN=\"A\\" + element + "B\"", "CN=A\\"
-                    + element + "B", "CN=\"A" + element
+            list.add("CN=\"A\\" + RFC2253_SPECIAL[i] + "B\"", "CN=A\\"
+                    + RFC2253_SPECIAL[i] + "B", "CN=\"A" + RFC2253_SPECIAL[i]
                     + "B\"");
         }
         list.add("CN=\"\\\"\"", "CN=\\\"", "CN=\"\\\"\"", null, (byte) 0x02); // "\""
@@ -2233,14 +2243,14 @@ public class X500PrincipalTest extends TestCase {
         list.add("CN=\\  A  ", "CN=\\  A", "CN=\"  A\"", "cn=a", null,
                 (byte) 0x01); // escaped leading space
         list.add("CN=  A \\ ", "CN=A \\ ", "CN=\"A  \"", "cn=a", null,
-                (byte) 0x01); // escaped trailing space
+                (byte) 0x01); // escaped traling space
 
-        list.add("CN=  \"A\"  ", "CN=A", "CN=A", "cn=a"); // leading & trailing spaces
+        list.add("CN=  \"A\"  ", "CN=A", "CN=A", "cn=a"); // leading & traling spaces
 
         StringBuffer errorMsg = new StringBuffer();
         for (int i = 0; i < list.size(); i++) {
 
-            Object[] obj = list.get(i);
+            Object[] obj = (Object[]) list.get(i);
 
             String dn = (String) obj[0];
             String rfc2253 = (String) obj[1];
@@ -2296,9 +2306,9 @@ public class X500PrincipalTest extends TestCase {
 
                             System.out.println("\nI " + i);
                             byte[] enc = p.getEncoded();
-                            for (byte element : enc) {
+                            for (int j = 0; j < enc.length; j++) {
                                 System.out.print(", 0x"
-                                        + Integer.toHexString(element));
+                                        + Integer.toHexString(enc[j]));
                             }
                         }
                     }
@@ -2386,11 +2396,11 @@ public class X500PrincipalTest extends TestCase {
         };
 
         StringBuffer errorMsg = new StringBuffer();
-        for (String element : illegalDN) {
+        for (int i = 0; i < illegalDN.length; i++) {
 
             try {
-                new X500Principal(element);
-                errorMsg.append("No IllegalArgumentException: '" + element
+                new X500Principal(illegalDN[i]);
+                errorMsg.append("No IllegalArgumentException: '" + illegalDN[i]
                         + "'\n");
             } catch (IllegalArgumentException e) {
             }
@@ -2670,7 +2680,7 @@ public class X500PrincipalTest extends TestCase {
         StringBuffer errorMsg = new StringBuffer();
         for (int i = 0; i < list.size(); i++) {
 
-            Object[] values = list.get(i);
+            Object[] values = (Object[]) list.get(i);
             byte[] encoded = (byte[]) values[0];
             String rfc2253 = (String) values[1];
             String rfc1179 = (String) values[2];
@@ -2725,8 +2735,7 @@ public class X500PrincipalTest extends TestCase {
         }
     }
 
-    @SuppressWarnings("serial")
-    public static class TestList extends ArrayList<Object[]> {
+    public static class TestList extends ArrayList {
         //
         // TODO comment me
         //
@@ -2767,7 +2776,7 @@ public class X500PrincipalTest extends TestCase {
         // TODO comment me
         //
 
-        private static final byte[] emptyMask = new byte[] { 0x00 };
+        private static byte[] emptyMask = new byte[] { 0x00 };
 
         public void add(byte[] encoding, String rfc2253, String rfc1779,
                 String canonical) {

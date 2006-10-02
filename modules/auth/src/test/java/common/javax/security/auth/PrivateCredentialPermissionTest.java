@@ -14,6 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+/**
+* @author Maxim V. Makarov
+* @version $Revision$
+*/
 
 package javax.security.auth;
 
@@ -39,6 +43,19 @@ public class PrivateCredentialPermissionTest extends TestCase {
     String s_that;
 
     String s_this;
+
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(PrivateCredentialPermissionTest.class);
+    }
+
+    /**
+     * Constructor for PrivateCredentialPermissionTest.
+     * 
+     * @param name
+     */
+    public PrivateCredentialPermissionTest(String name) {
+        super(name);
+    }
 
     /**
      * [C1 P1 "duke"] implies [C1 P1 "duke" P2 "nuke"]. 
@@ -630,7 +647,7 @@ public class PrivateCredentialPermissionTest extends TestCase {
 
         MyPrincipal mp = new MyPrincipal("duke");
         MyPrincipal mp1 = new MyPrincipal("nuke");
-        HashSet<Principal> hash = new HashSet<Principal>();
+        HashSet hash = new HashSet();
         hash.add(mp);
         hash.add(mp1);
 
@@ -644,7 +661,7 @@ public class PrivateCredentialPermissionTest extends TestCase {
         assertTrue(p2.implies(p1));
 
         PrivateCredentialPermission p3 = new PrivateCredentialPermission(
-                "java.lang.Object", new HashSet<Principal>());
+                "java.lang.Object", new HashSet());
 
         PrivateCredentialPermission p4 = new PrivateCredentialPermission(
                 "java.lang.Object * \"*\"", "read");
@@ -680,9 +697,9 @@ public class PrivateCredentialPermissionTest extends TestCase {
                 "a b  \"c\"" // two spaces between principal class and name
         };
 
-        for (String element : illegalTargetNames) {
+        for (int i = 0; i < illegalTargetNames.length; i++) {
             try {
-                new PrivateCredentialPermission(element, "read");
+                new PrivateCredentialPermission(illegalTargetNames[i], "read");
                 fail("No expected IllegalArgumentException");
             } catch (IllegalArgumentException e) {
             }

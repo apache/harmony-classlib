@@ -33,7 +33,6 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class SubjectTest extends SerializationTest {
 
-    @Override
     protected Object[] getData() {
 
         Subject subject = new Subject();

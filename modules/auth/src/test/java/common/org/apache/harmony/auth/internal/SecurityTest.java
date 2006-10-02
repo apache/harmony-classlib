@@ -15,6 +15,11 @@
  *  limitations under the License.
  */
 
+/**
+* @author Stepan M. Mishura
+* @version $Revision$
+*/
+
 package org.apache.harmony.auth.internal;
 
 import java.security.AccessControlContext;
@@ -22,7 +27,6 @@ import java.security.AccessControlException;
 import java.security.AllPermission;
 import java.security.Permission;
 import java.security.Permissions;
-import java.security.Principal;
 import java.security.ProtectionDomain;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -47,6 +51,7 @@ import junit.framework.TestCase;
  * please notify the author before using it 
  * 
  */
+
 public class SecurityTest extends TestCase {
 
     public static boolean testing = false;
@@ -67,14 +72,12 @@ public class SecurityTest extends TestCase {
         denyMode(); //set default mode
     }
 
-    @Override
     protected void runTest() throws Throwable {
         if (System.getSecurityManager() != null) {
             fail("There MUST be no security manager installed!");
         }
 
         SecurityManager sm = new SecurityManager() {
-            @Override
             public void checkPermission(Permission permission) {
                 //System.out.println("P: " + permission);
                 if (mode) { //deny mode
@@ -117,7 +120,7 @@ public class SecurityTest extends TestCase {
      * @param permission - permission class for comparing
      */
     public final void assertEquals(AccessControlException exception,
-            Class<AuthPermission> permission) {
+            Class permission) {
         if (!permission.isInstance(exception.getPermission())) {
             fail("No expected " + permission.getName());
         }
@@ -187,7 +190,7 @@ public class SecurityTest extends TestCase {
         /**
          * Tested <code>set</code>. Must be initialized in derived class 
          */
-        public Set<?> set;
+        public Set set;
 
         /**
          * Set's <code>element</code>. Must be initialized in derived class
@@ -202,7 +205,6 @@ public class SecurityTest extends TestCase {
             super(name);
         }
 
-        @Override
         protected void setUp() throws Exception {
             super.setUp();
 
@@ -226,10 +228,9 @@ public class SecurityTest extends TestCase {
          * 
          * Expected: must return true
          */
-        @SuppressWarnings("unchecked")
         public void testHasNext() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
 
             assertTrue("Set is not empty", set.iterator().hasNext());
         }
@@ -253,12 +254,11 @@ public class SecurityTest extends TestCase {
          * 
          * Expected: no exception, returned element is equals to added
          */
-        @SuppressWarnings("unchecked")
         public void testNext() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
 
-            Iterator<?> it = set.iterator();
+            Iterator it = set.iterator();
 
             assertEquals("Element", it.next(), element);
             assertFalse("Next element", it.hasNext());
@@ -269,12 +269,11 @@ public class SecurityTest extends TestCase {
          * 
          * Expected: NoSuchElementException
          */
-        @SuppressWarnings("unchecked")
         public void testNext_NoSuchElementException() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
 
-            Iterator<?> it = set.iterator();
+            Iterator it = set.iterator();
 
             it.next();
             try {
@@ -289,12 +288,11 @@ public class SecurityTest extends TestCase {
          * 
          * Expected: no exception, size must be 0
          */
-        @SuppressWarnings("unchecked")
         public void testRemove() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
 
-            Iterator<?> it = set.iterator();
+            Iterator it = set.iterator();
 
             it.next();
             it.remove();
@@ -324,10 +322,9 @@ public class SecurityTest extends TestCase {
          * 
          * Expected: IllegalStateException
          */
-        @SuppressWarnings("unchecked")
         public void testRemove_IllegalStateException_NoNext() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
 
             try {
                 set.iterator().remove();
@@ -341,12 +338,11 @@ public class SecurityTest extends TestCase {
          * 
          * Expected: IllegalStateException
          */
-        @SuppressWarnings("unchecked")
         public void testRemove_IllegalStateException_2Remove() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
 
-            Iterator<?> it = set.iterator();
+            Iterator it = set.iterator();
 
             it.next();
             it.remove();
@@ -362,7 +358,6 @@ public class SecurityTest extends TestCase {
      * Tests iterator interface for read only set
      * 
      */
-    @SuppressWarnings("unchecked")
     public static class ReadOnlyIteratorTest extends IteratorTest {
 
         public void setReadOnly() {
@@ -373,7 +368,6 @@ public class SecurityTest extends TestCase {
         /**
          * @see org.apache.harmony.auth.internal.SecurityTest.IteratorTest#testHasNext_EmptySet()
          */
-        @Override
         public void testHasNext_EmptySet() {
             setReadOnly();
             super.testHasNext_EmptySet();
@@ -382,11 +376,9 @@ public class SecurityTest extends TestCase {
         /**
          * @see org.apache.harmony.auth.internal.SecurityTest.IteratorTest#testHasNext()
          */
-        @SuppressWarnings("unchecked")
-        @Override
         public void testHasNext() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
 
             assertTrue("Set is not empty", set.iterator().hasNext());
@@ -395,7 +387,6 @@ public class SecurityTest extends TestCase {
         /**
          * @see org.apache.harmony.auth.internal.SecurityTest.IteratorTest#testNext_EmptySet_NoSuchElementException()
          */
-        @Override
         public void testNext_EmptySet_NoSuchElementException() {
             setReadOnly();
             super.testNext_EmptySet_NoSuchElementException();
@@ -404,13 +395,12 @@ public class SecurityTest extends TestCase {
         /**
          * @see org.apache.harmony.auth.internal.SecurityTest.IteratorTest#testNext()
          */
-        @Override
         public void testNext() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
 
-            Iterator<?> it = set.iterator();
+            Iterator it = set.iterator();
 
             assertEquals("Element", it.next(), element);
             assertFalse("Next element", it.hasNext());
@@ -419,13 +409,12 @@ public class SecurityTest extends TestCase {
         /**
          * @see org.apache.harmony.auth.internal.SecurityTest.IteratorTest#testNext_NoSuchElementException()
          */
-        @Override
         public void testNext_NoSuchElementException() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
 
-            Iterator<?> it = set.iterator();
+            Iterator it = set.iterator();
 
             it.next();
             try {
@@ -440,13 +429,12 @@ public class SecurityTest extends TestCase {
          * 
          * Expected: IllegalStateException
          */
-        @Override
         public void testRemove() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
 
-            Iterator<?> it = set.iterator();
+            Iterator it = set.iterator();
 
             it.next();
             try {
@@ -459,7 +447,6 @@ public class SecurityTest extends TestCase {
         /**
          * @see org.apache.harmony.auth.internal.SecurityTest.IteratorTest#testRemove_EmptySet_IllegalStateException()
          */
-        @Override
         public void testRemove_EmptySet_IllegalStateException() {
             setReadOnly();
             super.testRemove_EmptySet_IllegalStateException();
@@ -471,10 +458,9 @@ public class SecurityTest extends TestCase {
          * 
          * Expected: IllegalStateException
          */
-        @Override
         public void testRemove_IllegalStateException_NoNext() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
 
             try {
@@ -489,12 +475,11 @@ public class SecurityTest extends TestCase {
          * 
          * Expected: IllegalStateException
          */
-        @Override
         public void testRemove_IllegalStateException_2Remove() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
 
-            Iterator<?> it = set.iterator();
+            Iterator it = set.iterator();
 
             it.next();
             setReadOnly();
@@ -510,7 +495,6 @@ public class SecurityTest extends TestCase {
      * Tests iterator interface for secure set
      * 
      */
-    @SuppressWarnings("unchecked")
     public static class SecureIteratorTest extends IteratorTest {
 
         public void setSecure() {
@@ -521,7 +505,6 @@ public class SecurityTest extends TestCase {
         /**
          * @see org.apache.harmony.auth.internal.SecurityTest.IteratorTest#testHasNext_EmptySet()
          */
-        @Override
         public void testHasNext_EmptySet() {
             setSecure();
             super.testHasNext_EmptySet();
@@ -530,9 +513,8 @@ public class SecurityTest extends TestCase {
         /**
          * @see org.apache.harmony.auth.internal.SecurityTest.IteratorTest#testHasNext()
          */
-        @Override
         public void testHasNext() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
 
             assertTrue("Set is not empty", set.iterator().hasNext());
@@ -541,7 +523,6 @@ public class SecurityTest extends TestCase {
         /**
          * @see org.apache.harmony.auth.internal.SecurityTest.IteratorTest#testNext_EmptySet_NoSuchElementException()
          */
-        @Override
         public void testNext_EmptySet_NoSuchElementException() {
             setSecure();
             super.testNext_EmptySet_NoSuchElementException();
@@ -550,12 +531,11 @@ public class SecurityTest extends TestCase {
         /**
          * @see org.apache.harmony.auth.internal.SecurityTest.IteratorTest#testNext_NoSuchElementException()
          */
-        @Override
         public void testNext_NoSuchElementException() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
 
-            Iterator<?> it = set.iterator();
+            Iterator it = set.iterator();
 
             it.next();
             try {
@@ -568,12 +548,11 @@ public class SecurityTest extends TestCase {
         /**
          * @see org.apache.harmony.auth.internal.SecurityTest.IteratorTest#testNext()
          */
-        @Override
         public void testNext() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
 
-            Iterator<?> it = set.iterator();
+            Iterator it = set.iterator();
 
             assertEquals("Element", it.next(), element);
             assertFalse("Next element", it.hasNext());
@@ -584,12 +563,11 @@ public class SecurityTest extends TestCase {
          * 
          * Expected: AccessControlException
          */
-        @Override
         public void testRemove() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
 
-            Iterator<?> it = set.iterator();
+            Iterator it = set.iterator();
 
             it.next();
             try {
@@ -606,7 +584,6 @@ public class SecurityTest extends TestCase {
          * 
          * Expected: AccessControlException instead IllegalStateException for empty set
          */
-        @Override
         public void testRemove_EmptySet_IllegalStateException() {
 
             setSecure();
@@ -623,10 +600,9 @@ public class SecurityTest extends TestCase {
          * 
          * Expected: AccessControlException instead IllegalStateException
          */
-        @Override
         public void testRemove_IllegalStateException_NoNext() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
 
             try {
@@ -642,11 +618,10 @@ public class SecurityTest extends TestCase {
          * 
          * Expected: AccessControlException
          */
-        @Override
         public void testRemove_IllegalStateException_2Remove() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
 
-            Iterator<?> it = set.iterator();
+            Iterator it = set.iterator();
 
             it.next();
             setSecure();
@@ -659,13 +634,12 @@ public class SecurityTest extends TestCase {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public static class SetTest extends SecurityTest {
 
         /**
          * Tested <code>set</code>. Must be initialized in derived class 
          */
-        public Set<?> set;
+        public Set set;
 
         /**
          * Set's <code>element</code>. Must be initialized in derived class
@@ -675,9 +649,8 @@ public class SecurityTest extends TestCase {
         /**
          * Is used as collection parameter
          */
-        public HashSet<Object> hash = new HashSet<Object>();
+        public HashSet hash = new HashSet();
 
-        @Override
         protected void setUp() throws Exception {
             super.setUp();
 
@@ -693,13 +666,13 @@ public class SecurityTest extends TestCase {
         // Testing: boolean Set.add(Object o)
         //
         public void testAdd_NewElement() {
-            assertTrue("Adding new element", ((Set<Object>)set).add(element));
+            assertTrue("Adding new element", set.add(element));
             assertEquals("Size", 1, set.size());
         }
 
         public void testAdd_ExistingElement() {
-            ((Set<Object>)set).add(element);
-            assertFalse("Adding existing element", ((Set<Object>)set).add(element));
+            set.add(element);
+            assertFalse("Adding existing element", set.add(element));
             assertEquals("Size", 1, set.size());
         }
 
@@ -709,25 +682,25 @@ public class SecurityTest extends TestCase {
 
         public void testAddAll_NullParameter() {
             try {
-                ((Set<Object>)set).addAll(null);
+                set.addAll(null);
                 fail("No expected NullPointerException");
             } catch (NullPointerException npe) {
             }
         }
 
         public void testAddAll_EmptySet() {
-            assertFalse("Adding empty set", ((Set<Object>)set).addAll(new HashSet<Object>()));
+            assertFalse("Adding empty set", set.addAll(new HashSet()));
             assertEquals("Size", 0, set.size());
         }
 
         public void testAddAll_NewElement() {
-            assertTrue("Adding new element", ((Set<Object>)set).addAll(hash));
+            assertTrue("Adding new element", set.addAll(hash));
             assertEquals("Size", 1, set.size());
         }
 
         public void testAddAll_ExistingElement() {
-            ((Set<Object>)set).add(element);
-            assertFalse("Adding existing element", ((Set<Object>)set).addAll(hash));
+            set.add(element);
+            assertFalse("Adding existing element", set.addAll(hash));
             assertEquals("Size", 1, set.size());
         }
 
@@ -740,7 +713,7 @@ public class SecurityTest extends TestCase {
         }
 
         public void testClear_NotEmptySet() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             set.clear();
             assertEquals("Set MUST be empty", 0, set.size());
         }
@@ -753,7 +726,7 @@ public class SecurityTest extends TestCase {
         }
 
         public void testContains_ExistingElement() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             assertTrue("Set contains element", set.contains(element));
         }
 
@@ -769,7 +742,7 @@ public class SecurityTest extends TestCase {
         }
 
         public void testContainsAll_EmptySet() {
-            assertTrue("Empty set", set.containsAll(new HashSet<Object>()));
+            assertTrue("Empty set", set.containsAll(new HashSet()));
         }
 
         public void testContainsAll_NotExistingElement() {
@@ -777,7 +750,7 @@ public class SecurityTest extends TestCase {
         }
 
         public void testContainsAll_ExistingElement() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             assertTrue("Set contains element", set.containsAll(hash));
         }
 
@@ -790,7 +763,7 @@ public class SecurityTest extends TestCase {
         }
 
         public void testIsEmpty_NotEmptySet() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             assertFalse("Set is not empty", set.isEmpty());
         }
 
@@ -804,9 +777,8 @@ public class SecurityTest extends TestCase {
             assertNotNull("Iterator", set.iterator());
         }
 
-        @SuppressWarnings("unchecked")
         public void testIterator_NotEmptySet() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             assertNotNull("Iterator", set.iterator());
         }
 
@@ -820,7 +792,7 @@ public class SecurityTest extends TestCase {
         }
 
         public void testRemove_ExistingElement() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             assertTrue("Removing element", set.remove(element));
             assertEquals("Size", 0, set.size());
         }
@@ -839,7 +811,7 @@ public class SecurityTest extends TestCase {
 
         public void testRemoveAll_NullParameter_NotEmptySet() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             try {
                 set.removeAll(null);
                 fail("No expected NullPointerException");
@@ -848,13 +820,13 @@ public class SecurityTest extends TestCase {
         }
 
         public void testRemoveAll_EmptySet() {
-            assertFalse("Removing empty set", set.removeAll(new HashSet<Object>()));
+            assertFalse("Removing empty set", set.removeAll(new HashSet()));
             assertEquals("Size", 0, set.size());
         }
 
         public void testRemoveAll_NotEmptySet() {
-            ((Set<Object>)set).add(element);
-            assertFalse("Removing empty set", set.removeAll(new HashSet<Object>()));
+            set.add(element);
+            assertFalse("Removing empty set", set.removeAll(new HashSet()));
             assertEquals("Size", 1, set.size());
         }
 
@@ -864,7 +836,7 @@ public class SecurityTest extends TestCase {
         }
 
         public void testRemoveAll_ExistingElement() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             assertTrue("Removing elements", set.removeAll(hash));
             assertEquals("Size", 0, set.size());
         }
@@ -887,7 +859,7 @@ public class SecurityTest extends TestCase {
 
         public void testRetainAll_NullParameter_NotEmptySet() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             try {
                 set.retainAll(null);
                 fail("No expected NullPointerException");
@@ -896,13 +868,13 @@ public class SecurityTest extends TestCase {
         }
 
         public void testRetainAll_EmptySet() {
-            assertFalse("Removing all elements", set.retainAll(new HashSet<Object>()));
+            assertFalse("Removing all elements", set.retainAll(new HashSet()));
             assertEquals("Size", 0, set.size());
         }
 
         public void testRetainAll_NotEmptySet() {
-            ((Set<Object>)set).add(element);
-            assertTrue("Removing all elements", set.retainAll(new HashSet<Object>()));
+            set.add(element);
+            assertTrue("Removing all elements", set.retainAll(new HashSet()));
             assertEquals("Size", 0, set.size());
         }
 
@@ -912,7 +884,7 @@ public class SecurityTest extends TestCase {
         }
 
         public void testRetainAll_ExistingElement() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             assertFalse("Removing elements", set.retainAll(hash));
             assertEquals("Size", 1, set.size());
         }
@@ -925,27 +897,26 @@ public class SecurityTest extends TestCase {
         }
 
         public void testToArray_NotEmptySet() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             assertEquals("Set is not empty", set.toArray().length, 1);
             assertTrue("Set element", set.toArray()[0] == element);
         }
 
         public void testToArray_Immutability() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             set.toArray()[0] = null;
             assertTrue("Element", set.toArray()[0] == element);
         }
 
         //TODO test Object[] Set.toArray(Object[] a)
     }
-    
-    @SuppressWarnings("unchecked")
+
     public static class UnsupportedNullTest extends SecurityTest {
 
         /**
          * Tested <code>set</code>. Must be initialized in derived class 
          */
-        public Set<?> set;
+        public Set set;
 
         /**
          * Set's <code>element</code>. Must be initialized in derived class
@@ -955,9 +926,8 @@ public class SecurityTest extends TestCase {
         /**
          * Is used as collection parameter
          */
-        public HashSet<?> hash = new HashSet<Object>();
+        public HashSet hash = new HashSet();
 
-        @Override
         protected void setUp() throws Exception {
             super.setUp();
 
@@ -995,7 +965,7 @@ public class SecurityTest extends TestCase {
 
             if (testing) {
                 try {
-                    ((Set<Object>)set).addAll(hash);
+                    set.addAll(hash);
                     // priv/pub credentials set: no NullPointerException
                 } catch (NullPointerException e) {
                     assertEquals("Size", 0, set.size());
@@ -1004,7 +974,7 @@ public class SecurityTest extends TestCase {
                 }
             } else {
                 try {
-                    ((Set<Object>)set).addAll(hash);
+                    set.addAll(hash);
                     fail("No expected NullPointerException");
                 } catch (NullPointerException e) {
                 }
@@ -1036,7 +1006,7 @@ public class SecurityTest extends TestCase {
         }
 
         public void testRetainAll_NotEmptySet() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             try {
                 assertTrue("Retaining NULL element", set.retainAll(hash));
             } catch (NullPointerException npe) {
@@ -1044,14 +1014,13 @@ public class SecurityTest extends TestCase {
             assertEquals("Set is empty", 0, set.size());
         }
     }
-    
-    @SuppressWarnings("unchecked")
+
     public static class IneligibleElementTest extends SecurityTest {
 
         /**
          * Tested <code>set</code>. Must be initialized in derived class 
          */
-        public Set<?> set;
+        public Set set;
 
         /**
          * Set's <code>element</code>. Must be initialized in derived class
@@ -1061,7 +1030,7 @@ public class SecurityTest extends TestCase {
         /**
          * Is used as collection parameter
          */
-        public HashSet<?> hash = new HashSet<Object>();
+        public HashSet hash = new HashSet();
 
         /**
          * Set's <code>ineligible element</code>. Must be initialized in derived class
@@ -1071,9 +1040,8 @@ public class SecurityTest extends TestCase {
         /**
          * Is used as collection parameter
          */
-        public HashSet<Object> iHash = new HashSet<Object>();
+        public HashSet iHash = new HashSet();
 
-        @Override
         protected void setUp() throws Exception {
             super.setUp();
 
@@ -1091,7 +1059,7 @@ public class SecurityTest extends TestCase {
         public void testAdd() {
 
             try {
-                ((Set<Object>)set).add(iElement);
+                set.add(iElement);
 
                 fail("No expected ClassCastException or IllegalArgumentException");
             } catch (ClassCastException e) {
@@ -1113,7 +1081,7 @@ public class SecurityTest extends TestCase {
             }
 
             try {
-                ((Set<Object>)set).add(new Object());
+                set.add(new Object());
 
                 if (!testing) {
                     // all Class sets - no exception
@@ -1127,7 +1095,7 @@ public class SecurityTest extends TestCase {
         public void testAddAll() {
 
             try {
-                ((Set<Object>)set).addAll(iHash);
+                set.addAll(iHash);
 
                 fail("No expected ClassCastException or IllegalArgumentException");
             } catch (ClassCastException e) {
@@ -1188,7 +1156,7 @@ public class SecurityTest extends TestCase {
 
         public void testRetainAll_NotEmptySet_IneligibleElement() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             try {
                 assertTrue("Retaining ineligible element", set.retainAll(iHash));
             } catch (ClassCastException e) {
@@ -1197,7 +1165,7 @@ public class SecurityTest extends TestCase {
             assertEquals("Now set is empty", 0, set.size());
         }
     }
-    @SuppressWarnings("unchecked")
+
     public static class ReadOnlySetTest extends SetTest {
 
         public void setReadOnly() {
@@ -1205,74 +1173,66 @@ public class SecurityTest extends TestCase {
                     "setReadOnly MUST be implemented in derived class");
         }
 
-        @Override
         public void testAdd_ExistingElement() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
 
             try {
-                ((Set<Object>)set).add(element);
+                set.add(element);
                 fail("No expected IllegalStateException");
             } catch (IllegalStateException e) {
             }
         }
 
-        @Override
         public void testAdd_NewElement() {
 
             setReadOnly();
             try {
-                ((Set<Object>)set).add(element);
+                set.add(element);
                 fail("No expected IllegalStateException");
             } catch (IllegalStateException e) {
             }
         }
 
-        @Override
         public void testAddAll_EmptySet() {
             setReadOnly();
             super.testAddAll_EmptySet();
         }
 
-        @Override
         public void testAddAll_ExistingElement() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
             try {
-                ((Set<Object>)set).addAll(hash);
+                set.addAll(hash);
                 fail("No expected IllegalStateException");
             } catch (IllegalStateException e) {
             }
         }
 
-        @Override
         public void testAddAll_NewElement() {
             setReadOnly();
             try {
-                ((Set<Object>)set).addAll(hash);
+                set.addAll(hash);
                 fail("No expected IllegalStateException");
             } catch (IllegalStateException e) {
             }
         }
 
-        @Override
         public void testAddAll_NullParameter() {
             setReadOnly();
             super.testAddAll_NullParameter();
         }
 
-        @Override
         public void testClear_EmptySet() {
             setReadOnly();
             super.testClear_EmptySet();
         }
 
-        @Override
         public void testClear_NotEmptySet() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
 
             try {
@@ -1282,74 +1242,63 @@ public class SecurityTest extends TestCase {
             }
         }
 
-        @Override
         public void testContains_ExistingElement() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
             assertTrue("Set contains element", set.contains(element));
         }
 
-        @Override
         public void testContains_NotExistingElement() {
             setReadOnly();
             super.testContains_NotExistingElement();
         }
 
-        @Override
         public void testContainsAll_EmptySet() {
             setReadOnly();
             super.testContainsAll_EmptySet();
         }
 
-        @Override
         public void testContainsAll_ExistingElement() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
             assertTrue("Set contains element", set.containsAll(hash));
         }
 
-        @Override
         public void testContainsAll_NotExistingElement() {
             setReadOnly();
             super.testContainsAll_NotExistingElement();
         }
 
-        @Override
         public void testContainsAll_NullParameter() {
             setReadOnly();
             super.testContainsAll_NullParameter();
         }
 
-        @Override
         public void testIsEmpty_EmptySet() {
             setReadOnly();
             super.testIsEmpty_EmptySet();
         }
 
-        @Override
         public void testIsEmpty_NotEmptySet() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
             assertFalse("Set is not empty", set.isEmpty());
         }
 
-        @Override
         public void testIterator_EmptySet() {
             setReadOnly();
             super.testIterator_EmptySet();
         }
 
-        @Override
         public void testIterator_NotEmptySet() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
             assertNotNull("Iterator", set.iterator());
         }
 
-        @Override
         public void testRemove_ExistingElement() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
 
             try {
@@ -1359,22 +1308,19 @@ public class SecurityTest extends TestCase {
             }
         }
 
-        @Override
         public void testRemove_NotExistingElement() {
             setReadOnly();
             super.testRemove_NotExistingElement();
         }
 
-        @Override
         public void testRemoveAll_EmptySet() {
             setReadOnly();
             super.testRemoveAll_EmptySet();
         }
 
-        @Override
         public void testRemoveAll_ExistingElement() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
 
             try {
@@ -1384,30 +1330,26 @@ public class SecurityTest extends TestCase {
             }
         }
 
-        @Override
         public void testRemoveAll_NotEmptySet() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
-            set.removeAll(new HashSet<Object>());
+            set.removeAll(new HashSet());
         }
 
-        @Override
         public void testRemoveAll_NotExistingElement() {
             setReadOnly();
             super.testRemoveAll_NotExistingElement();
         }
 
-        @Override
         public void testRemoveAll_NullParameter_EmptySet() {
             setReadOnly();
             super.testRemoveAll_NullParameter_EmptySet();
         }
 
-        @Override
         public void testRemoveAll_NullParameter_NotEmptySet() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
 
             try {
@@ -1417,47 +1359,41 @@ public class SecurityTest extends TestCase {
             }
         }
 
-        @Override
         public void testRetainAll_EmptySet() {
             setReadOnly();
             super.testRetainAll_EmptySet();
         }
 
-        @Override
         public void testRetainAll_ExistingElement() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
             set.retainAll(hash);
         }
 
-        @Override
         public void testRetainAll_NotEmptySet() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
 
             try {
-                set.retainAll(new HashSet<Object>());
+                set.retainAll(new HashSet());
                 fail("No expected IllegalStateException");
             } catch (IllegalStateException e) {
             }
         }
 
-        @Override
         public void testRetainAll_NotExistingElement() {
             setReadOnly();
             super.testRetainAll_NotExistingElement();
         }
 
-        @Override
         public void testRetainAll_NullParameter_EmptySet() {
             setReadOnly();
             super.testRetainAll_NullParameter_EmptySet();
         }
 
-        @Override
         public void testRetainAll_NullParameter_NotEmptySet() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
 
             try {
@@ -1467,31 +1403,28 @@ public class SecurityTest extends TestCase {
             }
         }
 
-        @Override
         public void testToArray_EmptySet() {
             setReadOnly();
             super.testToArray_EmptySet();
         }
 
-        @Override
         public void testToArray_Immutability() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
 
             set.toArray()[0] = null;
             assertTrue("Element", set.toArray()[0] == element);
         }
 
-        @Override
         public void testToArray_NotEmptySet() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setReadOnly();
 
             assertEquals("Set is not empty", set.toArray().length, 1);
             assertTrue("Set element", set.toArray()[0] == element);
         }
     }
-    @SuppressWarnings("unchecked")
+
     public static class SecureSetTest extends SetTest {
 
         public void setSecure() {
@@ -1508,80 +1441,72 @@ public class SecurityTest extends TestCase {
         //            }
         //        }
 
-        @Override
         public void testAdd_ExistingElement() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
 
             try {
-                ((Set<Object>)set).add(element);
+                set.add(element);
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
                 assertEquals(e, AuthPermission.class);
             }
         }
 
-        @Override
         public void testAdd_NewElement() {
 
             setSecure();
             try {
-                ((Set<Object>)set).add(element);
+                set.add(element);
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
                 assertEquals(e, AuthPermission.class);
             }
         }
 
-        @Override
         public void testAddAll_EmptySet() {
             setSecure();
             super.testAddAll_EmptySet();
         }
 
-        @Override
         public void testAddAll_ExistingElement() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
 
             try {
-                ((Set<Object>)set).addAll(hash);
+                set.addAll(hash);
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
                 assertEquals(e, AuthPermission.class);
             }
         }
 
-        @Override
         public void testAddAll_NewElement() {
 
             setSecure();
             try {
-                ((Set<Object>)set).addAll(hash);
+                set.addAll(hash);
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
                 assertEquals(e, AuthPermission.class);
             }
         }
 
-        @Override
         public void testAddAll_NullParameter() {
             setSecure();
             super.testAddAll_NullParameter();
         }
 
-        @Override
         public void testClear_EmptySet() {
             setSecure();
             super.testClear_EmptySet();
         }
 
-        @Override
         public void testClear_NotEmptySet() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
 
             try {
@@ -1592,74 +1517,63 @@ public class SecurityTest extends TestCase {
             }
         }
 
-        @Override
         public void testContains_ExistingElement() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
             assertTrue("Set contains element", set.contains(element));
         }
 
-        @Override
         public void testContains_NotExistingElement() {
             setSecure();
             super.testContains_NotExistingElement();
         }
 
-        @Override
         public void testContainsAll_EmptySet() {
             setSecure();
             super.testContainsAll_EmptySet();
         }
 
-        @Override
         public void testContainsAll_ExistingElement() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
             assertTrue("Set contains element", set.containsAll(hash));
         }
 
-        @Override
         public void testContainsAll_NotExistingElement() {
             setSecure();
             super.testContainsAll_NotExistingElement();
         }
 
-        @Override
         public void testContainsAll_NullParameter() {
             setSecure();
             super.testContainsAll_NullParameter();
         }
 
-        @Override
         public void testIsEmpty_EmptySet() {
             setSecure();
             super.testIsEmpty_EmptySet();
         }
 
-        @Override
         public void testIsEmpty_NotEmptySet() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
             assertFalse("Set is not empty", set.isEmpty());
         }
 
-        @Override
         public void testIterator_EmptySet() {
             setSecure();
             super.testIterator_EmptySet();
         }
 
-        @Override
         public void testIterator_NotEmptySet() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
             assertNotNull("Iterator", set.iterator());
         }
 
-        @Override
         public void testRemove_ExistingElement() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
 
             try {
@@ -1670,22 +1584,19 @@ public class SecurityTest extends TestCase {
             }
         }
 
-        @Override
         public void testRemove_NotExistingElement() {
             setSecure();
             super.testRemove_NotExistingElement();
         }
 
-        @Override
         public void testRemoveAll_EmptySet() {
             setSecure();
             super.testRemoveAll_EmptySet();
         }
 
-        @Override
         public void testRemoveAll_ExistingElement() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
 
             try {
@@ -1696,31 +1607,27 @@ public class SecurityTest extends TestCase {
             }
         }
 
-        @Override
         public void testRemoveAll_NotEmptySet() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
 
-            assertFalse("Removing empty set", set.removeAll(new HashSet<Object>()));
+            assertFalse("Removing empty set", set.removeAll(new HashSet()));
             assertEquals("Size", 1, set.size());
         }
 
-        @Override
         public void testRemoveAll_NotExistingElement() {
             setSecure();
             super.testRemoveAll_NotExistingElement();
         }
 
-        @Override
         public void testRemoveAll_NullParameter_EmptySet() {
             setSecure();
             super.testRemoveAll_NullParameter_EmptySet();
         }
 
-        @Override
         public void testRemoveAll_NullParameter_NotEmptySet() {
 
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
 
             try {
@@ -1730,49 +1637,43 @@ public class SecurityTest extends TestCase {
             }
         }
 
-        @Override
         public void testRetainAll_EmptySet() {
             setSecure();
             super.testRetainAll_EmptySet();
         }
 
-        @Override
         public void testRetainAll_ExistingElement() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
 
             assertFalse("Removing elements", set.retainAll(hash));
             assertEquals("Size", 1, set.size());
         }
 
-        @Override
         public void testRetainAll_NotEmptySet() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
 
             try {
-                set.retainAll(new HashSet<Object>());
+                set.retainAll(new HashSet());
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
                 assertEquals(e, AuthPermission.class);
             }
         }
 
-        @Override
         public void testRetainAll_NotExistingElement() {
             setSecure();
             super.testRetainAll_NotExistingElement();
         }
 
-        @Override
         public void testRetainAll_NullParameter_EmptySet() {
             setSecure();
             super.testRetainAll_NullParameter_EmptySet();
         }
 
-        @Override
         public void testRetainAll_NullParameter_NotEmptySet() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
 
             try {
@@ -1782,24 +1683,21 @@ public class SecurityTest extends TestCase {
             }
         }
 
-        @Override
         public void testToArray_EmptySet() {
             setSecure();
             super.testToArray_EmptySet();
         }
 
-        @Override
         public void testToArray_Immutability() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
 
             set.toArray()[0] = null;
             assertTrue("Element", set.toArray()[0] == element);
         }
 
-        @Override
         public void testToArray_NotEmptySet() {
-            ((Set<Object>)set).add(element);
+            set.add(element);
             setSecure();
 
             assertEquals("Set is not empty", set.toArray().length, 1);
@@ -1820,11 +1718,10 @@ public class SecurityTest extends TestCase {
         public Object obj3;
 
         // Set of objects that are not equal to obj1, obj2, obj3
-        public Vector<Object> notEqual;
+        public Vector notEqual;
 
         // Checks that references to testing objects are different
         // because we are not going to test Object.equals(Object)
-        @Override
         protected void setUp() throws Exception {
             super.setUp();
 
@@ -1858,7 +1755,7 @@ public class SecurityTest extends TestCase {
         }
 
         public void testEquals_NotEqual() {
-            for (Enumeration<Object> e = notEqual.elements(); e.hasMoreElements();) {
+            for (Enumeration e = notEqual.elements(); e.hasMoreElements();) {
                 assertFalse(obj1.equals(e.nextElement()));
             }
         }
@@ -1891,7 +1788,7 @@ public class SecurityTest extends TestCase {
 
             
             // init obj3
-            HashSet<MyClass1> hash = new HashSet<MyClass1>();
+            HashSet hash = new HashSet();
 
             hash.add(element1);
             hash.add(element2);
@@ -1899,19 +1796,19 @@ public class SecurityTest extends TestCase {
             obj3 = hash;
 
             // init obj3
-            HashSet<Principal> hash1 = new HashSet<Principal>();
+            HashSet hash1 = new HashSet();
             hash1.add(element1);
             hash1.add(new MyClass1());
             Subject s1 = new Subject(false, hash1, hash1, hash1);
 
-            HashSet<MyClass2> hash2 = new HashSet<MyClass2>();
+            HashSet hash2 = new HashSet();
             hash1.add(element2);
             hash1.add(new MyClass2());
             Subject s2 = new Subject(false, hash2, hash2, hash2);
 
             Subject s3 = new Subject();
 
-            notEqual = new Vector<Object>();
+            notEqual = new Vector();
             
             notEqual.add(s1.getPrincipals());
             notEqual.add(s1.getPrivateCredentials());
@@ -1934,7 +1831,7 @@ public class SecurityTest extends TestCase {
             notEqual.add(s3.getPrivateCredentials(MyClass1.class));
             notEqual.add(s3.getPublicCredentials(MyClass1.class));
 
-            notEqual.add(new HashSet<Object>());
+            notEqual.add(new HashSet());
             notEqual.add(new Object());
         }
     }

@@ -80,88 +80,73 @@ public class GSSManagerTest extends TestCase {
 
     public static class TestManager extends GSSManager {
 
-        @Override
         public void addProviderAtEnd(Provider p, Oid mech) throws GSSException {
         }
 
-        @Override
         public void addProviderAtFront(Provider p, Oid mech)
             throws GSSException {
         }
 
-        @Override
         public GSSContext createContext(byte[] interProcessToken)
             throws GSSException {
             return null;
         }
 
-        @Override
         public GSSContext createContext(GSSCredential myCred)
             throws GSSException {
             return null;
         }
 
-        @Override
         public GSSContext createContext(GSSName peer, Oid mech,
                                         GSSCredential myCred, int lifetime)
             throws GSSException {
             return null;
         }
 
-        @Override
         public GSSCredential createCredential(GSSName name, int lifetime,
                                               Oid mech, int usage)
             throws GSSException {
             return null;
         }
 
-        @Override
         public GSSCredential createCredential(GSSName name, int lifetime,
                                               Oid[] mechs, int usage)
             throws GSSException {
             return null;
         }
 
-        @Override
         public GSSCredential createCredential(int usage) throws GSSException {
             return null;
         }
 
-        @Override
         public GSSName createName(byte[] name, Oid nameType, Oid mech)
             throws GSSException {
             return null;
         }
 
-        @Override
         public GSSName createName(byte[] name, Oid nameType)
             throws GSSException {
             return null;
         }
 
-        @Override
         public GSSName createName(String nameStr, Oid nameType, Oid mech)
             throws GSSException {
             return null;
         }
 
-        @Override
         public GSSName createName(String nameStr, Oid nameType)
             throws GSSException {
             return null;
         }
 
-        @Override
         public Oid[] getMechs() {
             return null;
         }
 
-        @Override
         public Oid[] getMechsForName(Oid nameType) {
             return null;
         }
 
-        @Override
         public Oid[] getNamesForMech(Oid mech) throws GSSException {
             return null;
         }

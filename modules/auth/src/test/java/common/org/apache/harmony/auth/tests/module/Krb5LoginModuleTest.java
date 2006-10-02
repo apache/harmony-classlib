@@ -50,12 +50,11 @@ public class Krb5LoginModuleTest extends TestCase {
     private KrbServer server;
 
     // module options
-    private final TreeMap<String, String> options = new TreeMap<String, String>();
+    private TreeMap<String, String> options = new TreeMap<String, String>();
 
     /**
      * Sets system env. properties and optionaly starts local mock server
      */
-    @Override
     protected void setUp() throws Exception {
 
         // save old system properties
@@ -80,7 +79,6 @@ public class Krb5LoginModuleTest extends TestCase {
     /**
      * Shuts down local server and restore system env. properties
      */
-    @Override
     protected void tearDown() throws Exception {
         if (server != null) {
             // shut down local server
@@ -169,7 +167,6 @@ public class Krb5LoginModuleTest extends TestCase {
 
         public byte[] respond;
 
-        @Override
         public void run() {
 
             try {

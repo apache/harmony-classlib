@@ -38,7 +38,6 @@ public class AccountLockedExceptionTest extends SerializationTest {
         junit.textui.TestRunner.run(AccountLockedExceptionTest.class);
     }
 
-    @Override
     protected Object[] getData() {
         return new Object[] {new AccountLockedException("message")};
     }

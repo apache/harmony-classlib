@@ -73,7 +73,6 @@ public class SpiEngUtils {
         return res;
     }
 
-    @SuppressWarnings("serial")
     public class MyProvider extends Provider {
 
         public MyProvider(String name, String info, String key, String clName) {

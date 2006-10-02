@@ -15,13 +15,17 @@
  *  limitations under the License.
  */
 
+/**
+* @author Alexander V. Astapchuk
+* @version $Revision$
+*/
+
 package javax.security.auth.login;
 
 import java.io.IOException;
 import java.net.URL;
 import java.security.AccessControlContext;
 import java.security.AccessController;
-import java.security.BasicPermission;
 import java.security.CodeSource;
 import java.security.DomainCombiner;
 import java.security.Permission;
@@ -62,6 +66,10 @@ public class LoginContextTest_1 extends TestCase {
     private static final int REQUISITE = 2;
 
     private static final int SUFFICIENT = 3;
+
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(LoginContextTest_1.class);
+    }
 
     /**
      * Converts short (local) class names (like TestLoginModule) into the 
@@ -114,13 +122,13 @@ public class LoginContextTest_1 extends TestCase {
     private static final class TestConfig extends Configuration {
         private String name;
 
-        private final ArrayList<AppConfigurationEntry> entries = new ArrayList<AppConfigurationEntry>();
+        private ArrayList entries = new ArrayList();
 
         // A map 'name'=>'some specific configuration'
-        private final HashMap<String, Configuration> configs = new HashMap<String, Configuration>();
+        private HashMap configs = new HashMap();
 
         // An array which keeps track of the configuration names requested.
-        private final ArrayList<String> requests = new ArrayList<String>();
+        private ArrayList requests = new ArrayList();
 
         public TestConfig() {
         }
@@ -129,7 +137,6 @@ public class LoginContextTest_1 extends TestCase {
             this.name = name;
         }
 
-        @Override
         public AppConfigurationEntry[] getAppConfigurationEntry(String appName) {
 
             if (!requests.contains(appName)) {
@@ -138,7 +145,7 @@ public class LoginContextTest_1 extends TestCase {
 
             if (name == null || !name.equals(appName)) {
 
-                Configuration conf = configs.get(appName);
+                Configuration conf = (Configuration) configs.get(appName);
                 if (conf != null) {
                     return conf.getAppConfigurationEntry(appName);
                 }
@@ -154,7 +161,6 @@ public class LoginContextTest_1 extends TestCase {
             return ret;
         }
 
-        @Override
         public void refresh() {
             // do nothing
         }
@@ -166,31 +172,31 @@ public class LoginContextTest_1 extends TestCase {
         String addRequired(String name) {
             return add(name,
                     AppConfigurationEntry.LoginModuleControlFlag.REQUIRED,
-                    new HashMap<String, Object>());
+                    new HashMap());
         }
 
         String addOptional(String name) {
             return add(name,
                     AppConfigurationEntry.LoginModuleControlFlag.OPTIONAL,
-                    new HashMap<String, Object>());
+                    new HashMap());
         }
 
         String addSufficient(String name) {
             return add(name,
                     AppConfigurationEntry.LoginModuleControlFlag.SUFFICIENT,
-                    new HashMap<String, Object>());
+                    new HashMap());
         }
 
         String addRequisite(String name) {
-            return add(name, LoginModuleControlFlag.REQUISITE, new HashMap<String, Object>());
+            return add(name, LoginModuleControlFlag.REQUISITE, new HashMap());
         }
 
-        String add(int type, String name, Map<String, ?> options) {
+        String add(int type, String name, Map options) {
             return add(name, mapControlFlag(type), options);
         }
 
         String add(String name,
-                AppConfigurationEntry.LoginModuleControlFlag flag, Map<String, ?> options) {
+                AppConfigurationEntry.LoginModuleControlFlag flag, Map options) {
             String fullName = getGlobalClassName(name);
             AppConfigurationEntry entry = new AppConfigurationEntry(fullName,
                     flag, options);
@@ -220,7 +226,7 @@ public class LoginContextTest_1 extends TestCase {
 
         public static String addInstalled(int type, String name) {
             return ((TestConfig) Configuration.getConfiguration()).add(type,
-                    name, new HashMap<String, Object>());
+                    name, new HashMap());
         }
 
         public static void clear() {
@@ -308,7 +314,7 @@ public class LoginContextTest_1 extends TestCase {
         public static LoginException staticLE;
 
         //
-        protected static ArrayList<TestLoginModule> instances = new ArrayList<TestLoginModule>();
+        protected static ArrayList instances = new ArrayList();
 
         private boolean initCalled;
 
@@ -335,7 +341,7 @@ public class LoginContextTest_1 extends TestCase {
          * returns <code>i</code> item from the list of tracked items.
          */
         static TestLoginModule get(int i) {
-            return instances.get(i);
+            return (TestLoginModule) instances.get(i);
         }
 
         /**
@@ -458,7 +464,7 @@ public class LoginContextTest_1 extends TestCase {
          * See javax.security.auth.spi.LoginModule.initialize()
          */
         public void initialize(Subject subject,
-                CallbackHandler callbackHandler, Map<String, ?> sharedState, Map<String, ?> options) {
+                CallbackHandler callbackHandler, Map sharedState, Map options) {
 
             this.cbHandler = callbackHandler;
             initCalled = true;
@@ -597,7 +603,7 @@ public class LoginContextTest_1 extends TestCase {
      * created.<br>
      */
     public static class TestCallbackHandler implements CallbackHandler {
-        protected static ArrayList<TestCallbackHandler> instances = new ArrayList<TestCallbackHandler>();
+        protected static ArrayList instances = new ArrayList();
 
         /**
          * Returns number of the instances tracked.
@@ -629,7 +635,6 @@ public class LoginContextTest_1 extends TestCase {
         }
     }
 
-    @Override
     protected void setUp() throws Exception {
         super.setUp();
         Configuration.setConfiguration(new TestConfig());
@@ -808,12 +813,11 @@ public class LoginContextTest_1 extends TestCase {
      * Make sure that the proper (context) class loader is used.
      */
     public void testLogin_minus1() throws Exception {
-        final ArrayList<String> requests = new ArrayList<String>();
+        final ArrayList requests = new ArrayList();
         ClassLoader saveCCL = Thread.currentThread().getContextClassLoader();
 
         ClassLoader testClassLoader = new ClassLoader() {
-            @Override
-            protected synchronized Class<?> loadClass(String klassName,
+            protected synchronized Class loadClass(String klassName,
                     boolean resolve) throws ClassNotFoundException {
                 requests.add(klassName);
                 return super.loadClass(klassName, resolve);
@@ -1823,7 +1827,7 @@ public class LoginContextTest_1 extends TestCase {
         final DomainCombiner dc = new SubjectDomainCombiner(dummySubj);
         AccessControlContext acc = new AccessControlContext(AccessController
                 .getContext(), dc);
-        PrivilegedExceptionAction<?> action = new PrivilegedExceptionAction<Object>() {
+        PrivilegedExceptionAction action = new PrivilegedExceptionAction() {
             public Object run() throws Exception {
                 implTestContextUsage(true, dc);
                 return null;
@@ -1845,7 +1849,7 @@ public class LoginContextTest_1 extends TestCase {
         final DomainCombiner dc = new SubjectDomainCombiner(dummySubj);
         AccessControlContext acc = new AccessControlContext(AccessController
                 .getContext(), dc);
-        PrivilegedExceptionAction<?> action = new PrivilegedExceptionAction<Object>() {
+        PrivilegedExceptionAction action = new PrivilegedExceptionAction() {
             public Object run() throws Exception {
                 implTestContextUsage(false, dc);
                 return null;
@@ -1896,7 +1900,6 @@ public class LoginContextTest_1 extends TestCase {
             accCtor = AccessController.getContext();
         }
 
-        @Override
         public void handle(Callback[] cbs) {
             accHandle = AccessController.getContext();
         }
@@ -1955,14 +1958,12 @@ public class LoginContextTest_1 extends TestCase {
             accCtor = AccessController.getContext();
         }
 
-        @Override
         public void initialize(Subject subject,
-                CallbackHandler callbackHandler, Map<String, ?> sharedState, Map<String, ?> options) {
+                CallbackHandler callbackHandler, Map sharedState, Map options) {
             accInit = AccessController.getContext();
             super.initialize(subject, callbackHandler, sharedState, options);
         }
 
-        @Override
         public boolean login() throws LoginException {
             accLogin = AccessController.getContext();
             if (cbHandler != null) {
@@ -1977,19 +1978,16 @@ public class LoginContextTest_1 extends TestCase {
             return super.login();
         }
 
-        @Override
         public boolean commit() throws LoginException {
             accCommit = AccessController.getContext();
             return super.commit();
         }
 
-        @Override
         public boolean logout() throws LoginException {
             accLogout = AccessController.getContext();
             return super.logout();
         }
 
-        @Override
         public boolean abort() throws LoginException {
             accAbort = AccessController.getContext();
             return super.abort();
@@ -2101,9 +2099,9 @@ public class LoginContextTest_1 extends TestCase {
      * @return <code>true</code> is the name is in the list, 
      * <code>false</code> otherwise. 
      */
-    private static boolean lookupAuthPermission(ArrayList<Permission> al, String name) {
+    private static boolean lookupAuthPermission(ArrayList al, String name) {
         for (int i = 0; i < al.size(); i++) {
-            Permission p = al.get(i);
+            Permission p = (Permission) al.get(i);
             if (p instanceof AuthPermission && name.equals(p.getName())) {
                 return true;
             }
@@ -2117,20 +2115,19 @@ public class LoginContextTest_1 extends TestCase {
     public void testSecurityManagerUsage() throws Exception {
         // 1. create a special-purpose SecurityManager which keeps track 
         // of Permissions checked
-        final ArrayList<Permission> requests = new ArrayList<Permission>();
+        final ArrayList requests = new ArrayList();
         // a list of permissions allowed - just to make sure I'll be able to 
         // set security manager back.
-        final ArrayList<BasicPermission> allowedPerms = new ArrayList<BasicPermission>();
+        final ArrayList allowedPerms = new ArrayList();
         //
         allowedPerms.add(new RuntimePermission("setIO"));
         allowedPerms.add(new RuntimePermission("setSecurityManager"));
         //
         SecurityManager sm = new SecurityManager() {
-            @Override
             public void checkPermission(Permission p) {
                 requests.add(p);
                 for (int i = 0; i < allowedPerms.size(); i++) {
-                    Permission good = allowedPerms.get(i);
+                    Permission good = (Permission) allowedPerms.get(i);
                     if (good.equals(p)) {
                         return;
                     }
@@ -2153,7 +2150,7 @@ public class LoginContextTest_1 extends TestCase {
         try {
             System.setSecurityManager(sm);
 
-            AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            AccessController.doPrivileged(new PrivilegedAction() {
                 public Object run() {
                     implTestSecurityManagerUsage(requests, allowedPerms);
                     return null;
@@ -2174,8 +2171,8 @@ public class LoginContextTest_1 extends TestCase {
      * @param requests
      * @param allowedPerms
      */
-    private void implTestSecurityManagerUsage(ArrayList<Permission> requests,
-            ArrayList<BasicPermission> allowedPerms) {
+    private void implTestSecurityManagerUsage(ArrayList requests,
+            ArrayList allowedPerms) {
         String configPermName = "createLoginContext." + CONFIG_NAME;
         String otherPermName = "createLoginContext.other";
         String dummyName = "no such name";

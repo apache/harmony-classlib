@@ -167,10 +167,10 @@ public class OidTest extends TestCase {
                 "2.2.-1", // negative third subidentifier
         };
 
-        for (String element : testcase) {
+        for (int i = 0; i < testcase.length; i++) {
             try {
-                new Oid(element);
-                fail("No expected GSSException for oid string: " + element);
+                new Oid(testcase[i]);
+                fail("No expected GSSException for oid string: " + testcase[i]);
             } catch (GSSException e) {
                 assertEquals(GSSException.FAILURE, e.getMajor());
                 assertEquals(0, e.getMinor());

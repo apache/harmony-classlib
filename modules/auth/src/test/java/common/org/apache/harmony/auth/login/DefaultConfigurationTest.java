@@ -64,16 +64,14 @@ public class DefaultConfigurationTest extends TestCase {
 	String oldp1 = null;
 	String oldp2 = null;
 
-	@Override
-    public void setUp() throws Exception {
+	public void setUp() throws Exception {
 		createConfFile();
 		
 		oldp1 = Security.getProperty("login.config.url.1");
 		oldp2 = Security.getProperty("login.config.url.2");
 	}
 
-	@Override
-    public void tearDown() throws Exception {
+	public void tearDown() throws Exception {
 		System.setSecurityManager(old);
 
 		TestUtils.setSystemProperty("login.config.url.1", oldp1);
@@ -108,7 +106,7 @@ public class DefaultConfigurationTest extends TestCase {
 			ents = dc.getAppConfigurationEntry("LoginNew");
 			assertNotNull(ents);
 			assertEquals("com.intel.security.auth.module.LoginModule1", ents[0].getLoginModuleName());
-			Map<String, String> m = new HashMap<String, String>();
+			Map m = new HashMap();
 			m.put("debug", "true");
 			m.put("test", "false");
 			assertEquals(m, ents[0].getOptions());
@@ -116,14 +114,14 @@ public class DefaultConfigurationTest extends TestCase {
 
 			ents = dc.getAppConfigurationEntry("Login1");
 			assertNotNull(ents);
-			for (AppConfigurationEntry element : ents) {
+			for (int i = 0; i < ents.length; i++) {
 				assertEquals("com.intel.security.auth.module.LoginModule1",
-						element.getLoginModuleName());
+						ents[i].getLoginModuleName());
 				m.clear();
 				m.put("debug1", "true");
 				m.put("test1", "false");
-				assertEquals(m, element.getOptions());
-				assertEquals("LoginModuleControlFlag: required", element
+				assertEquals(m, ents[i].getOptions());
+				assertEquals("LoginModuleControlFlag: required", ents[i]
 						.getControlFlag().toString());
 			}
 			
@@ -149,15 +147,15 @@ public class DefaultConfigurationTest extends TestCase {
 		assertNotNull(ents);
 		ents = dc.getAppConfigurationEntry("Login1");
 		assertNotNull(ents);
-		Map<String, String> m = new HashMap<String, String>();
-		for (AppConfigurationEntry element : ents) {
+		Map m = new HashMap();
+		for (int i = 0; i < ents.length; i++) {
 			assertEquals("com.intel.security.auth.module.LoginModule1",
-					element.getLoginModuleName());
+					ents[i].getLoginModuleName());
 			m.clear();
 			m.put("debug1", "true");
 			m.put("test1", "false");
-			assertEquals(m, element.getOptions());
-			assertEquals("LoginModuleControlFlag: required", element
+			assertEquals(m, ents[i].getOptions());
+			assertEquals("LoginModuleControlFlag: required", ents[i]
 					.getControlFlag().toString());
 		}
 		
@@ -233,8 +231,8 @@ public class DefaultConfigurationTest extends TestCase {
 		byte[] b = newConfFile.getBytes();
 
 		OutputStream os = new FileOutputStream(defaultConfFile);
-		for (byte element : b) {
-			os.write(element);
+		for (int j = 0; j < b.length; j++) {
+			os.write(b[j]);
 		}
 		os.flush();
 		os.close();
@@ -259,8 +257,7 @@ public class DefaultConfigurationTest extends TestCase {
 			enableAccess = enable;
 		}
 
-		@Override
-        public void checkPermission(Permission p) {
+		public void checkPermission(Permission p) {
 			if (p instanceof AuthPermission && checkTarget.equals(p)) {
 				checkAsserted = true;
 				if (!enableAccess) {

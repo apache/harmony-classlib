@@ -37,7 +37,6 @@ public class CredentialNotFoundExceptionTest extends SerializationTest {
         junit.textui.TestRunner.run(CredentialNotFoundExceptionTest.class);
     }
 
-    @Override
     protected Object[] getData() {
         return new Object[] {new CredentialNotFoundException("message")};
     }
