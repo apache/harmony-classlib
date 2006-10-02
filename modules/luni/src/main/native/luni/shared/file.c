@@ -70,6 +70,8 @@ Java_java_io_File_listImpl (JNIEnv * env, jobject recv, jbyteArray path)
   I_32 numEntries = 0;
   UDATA findhandle;
   jarray answer = NULL;
+  jclass javaClass = NULL;
+
   dirList = NULL;
   currentEntry = NULL;
 
@@ -123,9 +125,13 @@ Java_java_io_File_listImpl (JNIEnv * env, jobject recv, jbyteArray path)
   if (numEntries == 0)
     return NULL;
 
+  javaClass = JCL_CACHE_GET (env, CLS_array_of_byte);
+  javaClass = (*env)->NewLocalRef(env, javaClass);
+  if (javaClass == NULL) {
+      return NULL;
+  }
   answer =
-    (*env)->NewObjectArray (env, numEntries,
-                            JCL_CACHE_GET (env, CLS_array_of_byte), NULL);
+    (*env)->NewObjectArray (env, numEntries, javaClass, NULL);
 cleanup:
   for (index = 0; index < numEntries; index++)
     {

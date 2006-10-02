@@ -155,6 +155,11 @@ Java_java_util_zip_ZipFile_getEntryImpl (JNIEnv * env, jobject recv,
     }
 
   entryClass = JCL_CACHE_GET (env, CLS_java_util_zip_ZipEntry);
+  entryClass = (*env)->NewLocalRef(env, entryClass);
+  if (entryClass == NULL) {
+    zip_freeZipEntry (PORTLIB, &zipEntry);
+    return (jobject) NULL;
+  }
   mid = JCL_CACHE_GET (env, MID_java_util_zip_ZipEntry_init);
   /* Build a new ZipEntry from the C struct */
   java_ZipEntry = ((*env)->NewObject (env, entryClass, mid, entryName, NULL,
@@ -227,11 +232,12 @@ Java_java_util_zip_ZipFile_ntvinit (JNIEnv * env, jclass cls)
   jmethodID mid;
   jfieldID descriptorFID;
   jclass javaClass;
+  jclass weakJavaClass;
   JCLZipFileLink *zipfileHandles;
 
   javaClass = (*env)->FindClass (env, "java/util/zip/ZipEntry");
-  javaClass = (*env)->NewWeakGlobalRef (env, javaClass);
-  if (!javaClass)
+  weakJavaClass = (*env)->NewWeakGlobalRef (env, javaClass);
+  if (!weakJavaClass)
     return;
   mid =
     ((*env)->
@@ -239,7 +245,7 @@ Java_java_util_zip_ZipFile_ntvinit (JNIEnv * env, jclass cls)
                   "(Ljava/lang/String;Ljava/lang/String;[BJJJJIJJ)V"));
   if (!mid)
     return;
-  JCL_CACHE_SET (env, CLS_java_util_zip_ZipEntry, javaClass);
+  JCL_CACHE_SET (env, CLS_java_util_zip_ZipEntry, weakJavaClass);
   JCL_CACHE_SET (env, MID_java_util_zip_ZipEntry_init, mid);
 
   descriptorFID = (*env)->GetFieldID (env, cls, "descriptor", "J");
@@ -351,6 +357,10 @@ Java_java_util_zip_ZipFile_00024ZFEnum_getNextEntry (JNIEnv * env,
     }
 
   javaClass = JCL_CACHE_GET (env, CLS_java_util_zip_ZipEntry);
+  javaClass = (*env)->NewLocalRef(env, javaClass);
+  if (javaClass == NULL) {
+      return NULL;
+  }
   mid = JCL_CACHE_GET (env, MID_java_util_zip_ZipEntry_init);
   java_ZipEntry = ((*env)->NewObject (env, javaClass, mid, entryName, NULL,     /* comment */
                                       extra,
