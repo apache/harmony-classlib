@@ -86,30 +86,8 @@ main_initializeJavaHome (HyPortLibrary * portLib,
   char *javaHomeModifiablePart = NULL;
   char *p;
   IDATA retval = -1;
-  I_32 rc;
-  UDATA isUpper = TRUE;
-  char *envvars = "JAVA_HOME\0java_home\0";
-  char *envvar;
 
   PORT_ACCESS_FROM_PORT (portLib);
-
-  for (envvar = envvars; *envvar; envvar += strlen (envvar) + 1)
-    {
-      rc = hysysinfo_get_env (envvar, NULL, 0);
-      if (rc > 0)
-        {
-          *finalJavaHome = strBufferEnsure (portLib, *finalJavaHome, rc);
-          if (*finalJavaHome == NULL)
-            return -1;
-          hysysinfo_get_env (envvar,
-                             (*finalJavaHome)->data +
-                             strlen ((*finalJavaHome)->data), rc);
-          (*finalJavaHome)->remaining -= rc;
-          return 0;
-        }
-    }
-
-  /* Compute the proper value for the var. */
 
   if ((argc < 1) || !argv)
     return -1;

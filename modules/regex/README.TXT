@@ -75,7 +75,6 @@ Copy the contents of the deploy\jre directory of the class libraries into deploy
 Set up the environment variables in the following way: 
 
 + PATH must point to the location of Ant. 
-+ JAVA_HOME must point to the location of the Harmony execution environment
 + CLASSPATH must point to the Eclipse* compiler .jar files, to the Harmony class libraries, and to kernel.jar
   from the Harmony execution environment. An example of the CLASSPATH variable on Windows*:
 
@@ -151,7 +150,6 @@ Verify the values for the following environment variables:
 
 + PATH must point to the location of Ant. 
 + CLASSPATH must point to the location of JUnit classes (normally, junit.jar).
-+ JAVA_HOME must point to the Harmony execution environment.
 + <EXTRACT_DIR>/Harmony/make/external_tools.properties must contain valid
 paths to JUnit and Xerces implementation classes (normally "junit.jar", "xercesImpl.jar" and "xml-apis.jar").
 

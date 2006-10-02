@@ -212,15 +212,6 @@ as described in the documentation above.
 Troubleshooting & Known Problems
 --------------------------------
 
-The java launcher has a bug which makes it sensitive to the JAVA_HOME
-environment setting. Until this bug is fixed users should be aware that When
-running Java applications with the built class library components on a
-compatible VM the JAVA_HOME variable should either be unset or else explicitly
-set to EXTRACT_DIR>/deploy/jdk/jre. Any other value risks crashing
-the launcher. 
-
-                                  ----------
-
 Linux users may need to install an appropriate libc compatibility patch to their
 operating system if they see the following error message when attempting to run
 a Java application with the built class library components on a compatible VM :

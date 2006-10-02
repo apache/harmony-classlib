@@ -181,7 +181,7 @@
                jvm="${harmony.vm.exe}"
                errorproperty="tests.failed"
                failureproperty="tests.failed">
-            <env key="JAVA_HOME" value="${hy.jdk}/jre" />
+
             <env key="LD_LIBRARY_PATH" value="" />
             <!-- required to be unset on Linux -->
 

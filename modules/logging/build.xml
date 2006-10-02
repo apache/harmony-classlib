@@ -136,8 +136,6 @@
         	<!-- Required by various tests that set security manager etc -->
             <jvmarg value="-Djava.security.policy=../../support/src/test/resources/config/testing.policy" />
 
-            <env key="JAVA_HOME" value="${test.jre.home}"/>
-
             <jvmarg value="-Xbootclasspath/a:${hy.logging.bin.internal}"/>
 
             <classpath>

@@ -397,7 +397,6 @@
                    dir="${basedir}"
                    jvm="${test.jre.home}/bin/java">
 
-                <env key="JAVA_HOME" value="${test.jre.home}"/>
                 <junit-elements />
 
                 <formatter type="xml" />

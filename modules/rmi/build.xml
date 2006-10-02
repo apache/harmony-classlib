@@ -189,7 +189,6 @@
                    
                 <jvmarg value="-Djava.security.policy=make/all.policy"/>
 
-                <env key="JAVA_HOME" value="${test.jre.home}"/>
                 <junit-elements />
 
                 <classpath>

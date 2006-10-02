@@ -123,8 +123,6 @@
                dir="${basedir}"
                jvm="${test.jre.home}/bin/java">
 
-            <env key="JAVA_HOME" value="${test.jre.home}"/>
-
             <classpath>
                 <pathelement path="${hy.sound.bin.test}"/>
             </classpath>
