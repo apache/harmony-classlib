@@ -97,7 +97,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_write
                          (IDATA) nbytes);
   if (isCopy == JNI_TRUE)
     {
-      (*env)->ReleaseByteArrayElements (env, byteArray, bytes, 0);
+      (*env)->ReleaseByteArrayElements (env, byteArray, bytes, JNI_ABORT);
     }
 
   return result;
