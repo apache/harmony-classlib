@@ -21,6 +21,8 @@ package javax.naming;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 /**
  * A <code>NamingException</code> is the basic exception thrown by the naming
  * classes. There are numerous subclasses of it which are used to further
@@ -138,7 +140,8 @@ public class NamingException extends Exception {
                 }
                 remainingName = remainingName.add(s);
             } catch (InvalidNameException e) {
-                throw new IllegalArgumentException("Found invalid name, reason: " + e); //$NON-NLS-1$
+                // jndi.10=Found invalid name, reason: {0}
+                throw new IllegalArgumentException(Messages.getString("jndi.10", e));  //$NON-NLS-1$
             }
         }
     }
@@ -218,7 +221,8 @@ public class NamingException extends Exception {
                 }
                 remainingName = remainingName.addAll(n);
             } catch (InvalidNameException e) {
-                throw new IllegalArgumentException("Found invalid name, reason: " + e); //$NON-NLS-1$
+                // jndi.10=Found invalid name, reason: {0}
+                throw new IllegalArgumentException(Messages.getString("jndi.10", e));  //$NON-NLS-1$
             }
         }
     }
@@ -284,7 +288,8 @@ public class NamingException extends Exception {
     public void printStackTrace() {
         if (null != rootException) {
             System.err.print(super.toString());
-            System.err.print(". The stack trace of the root exception is: "); //$NON-NLS-1$
+            // jndi.err.00=. The stack trace of the root exception is:
+            System.err.print(Messages.getString("jndi.err.00"));  //$NON-NLS-1$
             rootException.printStackTrace();
         } else {
             super.printStackTrace();
@@ -302,7 +307,8 @@ public class NamingException extends Exception {
     public void printStackTrace(PrintStream p) {
         if (null != rootException) {
             p.print(super.toString());
-            p.print(". The stack trace of the root exception is: "); //$NON-NLS-1$
+            // jndi.err.00=. The stack trace of the root exception is:
+            p.print(Messages.getString("jndi.err.00"));  //$NON-NLS-1$
             rootException.printStackTrace(p);
         } else {
             super.printStackTrace(p);
@@ -320,30 +326,31 @@ public class NamingException extends Exception {
     public void printStackTrace(PrintWriter p) {
         if (null != rootException) {
             p.print(super.toString());
-            p.print(". The stack trace of the root exception is: "); //$NON-NLS-1$
+            // jndi.err.00=. The stack trace of the root exception is:
+            p.print(Messages.getString("jndi.err.00"));  //$NON-NLS-1$
             rootException.printStackTrace(p);
         } else {
             super.printStackTrace(p);
         }
     }
-	
+    
     /*
      *  (non-Javadoc)
      * @see java.lang.Throwable#getCause()
      */
-	@Override
+    @Override
     public Throwable getCause() {
-		return super.getCause();
-	}
+        return super.getCause();
+    }
 
     /*
      *  (non-Javadoc)
      * @see java.lang.Throwable#initCause(Throwable)
      */
-	@Override
+    @Override
     public Throwable initCause(Throwable cause) {
-		return super.initCause(cause);
-	}
+        return super.initCause(cause);
+    }
 
     /*
      * -------------------------------------------------------------------

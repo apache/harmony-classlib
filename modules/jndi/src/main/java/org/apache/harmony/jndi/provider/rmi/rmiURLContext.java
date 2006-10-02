@@ -29,6 +29,7 @@ import javax.naming.NamingException;
 
 import javax.naming.spi.ResolveResult;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
 import org.apache.harmony.jndi.provider.GenericURLContext;
 
 import org.apache.harmony.jndi.provider.rmi.registry.RegistryContext;
@@ -80,8 +81,9 @@ public class rmiURLContext extends GenericURLContext {
     protected ResolveResult getRootURLContext(
             String url, Hashtable<?, ?> environment) throws NamingException {
         if (!url.startsWith(RegistryContext.RMI_URL_PREFIX)) {
+            // jndi.74=Not an RMI URL, incorrect prefix: {0}
             throw new IllegalArgumentException(
-                    "Not an RMI URL, incorrect prefix: " + url);
+                    Messages.getString("jndi.74", url)); //$NON-NLS-1$
         }
         int length = url.length();
         int start = RegistryContext.RMI_URL_PREFIX.length();
@@ -117,9 +119,10 @@ public class rmiURLContext extends GenericURLContext {
                     try {
                         port = Integer.parseInt(url.substring(portStart, end));
                     } catch (NumberFormatException e) {
+                        // jndi.75=Invalid port number in URL: {0}
                         throw (IllegalArgumentException)
-                                new IllegalArgumentException("Invalid port "
-                                    + "number in URL: " + url).initCause(e);
+                                new IllegalArgumentException(Messages.getString("jndi.75", //$NON-NLS-1$
+                                    url)).initCause(e);
                     }
                 }
 

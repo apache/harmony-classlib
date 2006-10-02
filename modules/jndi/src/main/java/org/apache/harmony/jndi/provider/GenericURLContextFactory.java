@@ -31,6 +31,8 @@ import javax.naming.NamingException;
 
 import javax.naming.spi.ObjectFactory;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 
 /**
  * Base class for URL naming context factory implementations.
@@ -115,8 +117,8 @@ public abstract class GenericURLContextFactory implements ObjectFactory {
                 String[] strings = (String[]) obj;
 
                 if (strings.length < 1) {
-                    throw new ConfigurationException(
-                            "obj is an empty string array");
+                    // jndi.2C=obj is an empty string array
+                    throw new ConfigurationException(Messages.getString("jndi.2C")); //$NON-NLS-1$
                 }
 
                 NamingException exception = null;
@@ -137,8 +139,8 @@ public abstract class GenericURLContextFactory implements ObjectFactory {
             }
 
             // Unknown object type.
-            throw new IllegalArgumentException("obj is neither null, "
-                    + "nor a string, nor a string array: " + obj);
+            // jndi.2D=obj is neither null, nor a string, nor a string array: {0}
+            throw new IllegalArgumentException(Messages.getString("jndi.2D", obj)); //$NON-NLS-1$
         } finally {
             context.close();
         }

@@ -132,41 +132,41 @@ public class ProviderConstants {
         for (int i = 0; i < 256; i++) {
             rrTypeNames[i] = String.valueOf(i);
         }
-        rrTypeNames[A_TYPE] = "A";
-        rrTypeNames[NS_TYPE] = "NS";
+        rrTypeNames[A_TYPE] = "A"; //$NON-NLS-1$
+        rrTypeNames[NS_TYPE] = "NS"; //$NON-NLS-1$
         //rrTypeNames[MD_TYPE] = "MD";
         //rrTypeNames[MF_TYPE] = "MF";
-        rrTypeNames[CNAME_TYPE] = "CNAME";
-        rrTypeNames[SOA_TYPE] = "SOA";
+        rrTypeNames[CNAME_TYPE] = "CNAME"; //$NON-NLS-1$
+        rrTypeNames[SOA_TYPE] = "SOA"; //$NON-NLS-1$
         //rrTypeNames[MB_TYPE] = "MB";
         //rrTypeNames[MG_TYPE] = "MG";
         //rrTypeNames[MR_TYPE] = "MR";
         //rrTypeNames[NULL_TYPE] = "NULL";
         //rrTypeNames[WKS_TYPE] = "WKS";
-        rrTypeNames[PTR_TYPE] = "PTR";
-        rrTypeNames[HINFO_TYPE] = "HINFO";
+        rrTypeNames[PTR_TYPE] = "PTR"; //$NON-NLS-1$
+        rrTypeNames[HINFO_TYPE] = "HINFO"; //$NON-NLS-1$
         //rrTypeNames[MINFO_TYPE] = "MINFO";
-        rrTypeNames[MX_TYPE] = "MX";
-        rrTypeNames[TXT_TYPE] = "TXT";
-        rrTypeNames[AAAA_TYPE] = "AAAA";
-        rrTypeNames[SRV_TYPE] = "SRV";
+        rrTypeNames[MX_TYPE] = "MX"; //$NON-NLS-1$
+        rrTypeNames[TXT_TYPE] = "TXT"; //$NON-NLS-1$
+        rrTypeNames[AAAA_TYPE] = "AAAA"; //$NON-NLS-1$
+        rrTypeNames[SRV_TYPE] = "SRV"; //$NON-NLS-1$
         //rrTypeNames[AXFR_QTYPE] = "AXFR";
         //rrTypeNames[MAILB_QTYPE] = "MAILB";
         //rrTypeNames[MAILA_QTYPE] = "MAILA";
-        rrTypeNames[ANY_QTYPE] = "*";
+        rrTypeNames[ANY_QTYPE] = "*"; //$NON-NLS-1$
 
         // Resource Record classes
         rrClassNames = new String[256];
         for (int i = 0; i < 256; i++) {
             rrClassNames[i] = String.valueOf(i);
         }
-        rrClassNames[IN_CLASS] = "IN";
-        rrClassNames[HS_CLASS] = "HS";
-        rrClassNames[ANY_QCLASS] = "*";
+        rrClassNames[IN_CLASS] = "IN"; //$NON-NLS-1$
+        rrClassNames[HS_CLASS] = "HS"; //$NON-NLS-1$
+        rrClassNames[ANY_QCLASS] = "*"; //$NON-NLS-1$
 
         // Root zone name
         try {
-            ROOT_ZONE_NAME_OBJ = (DNSName) ((new DNSNameParser()).parse("."));
+            ROOT_ZONE_NAME_OBJ = (DNSName) ((new DNSNameParser()).parse(".")); //$NON-NLS-1$
         } catch (InvalidNameException e) {
             // ignore
         }

@@ -29,6 +29,8 @@ import java.util.Vector;
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 
 /**
  * Represents the name in Domain Name System. The most significant part is the
@@ -140,11 +142,12 @@ public class DNSName implements Name, Cloneable {
         Enumeration<String> enum2;
 
         if (name == null) {
-            throw new NullPointerException("The name is null");
+            // jndi.2E=The name is null
+            throw new NullPointerException(Messages.getString("jndi.2E")); //$NON-NLS-1$
         }
         if (!(name instanceof DNSName)) {
-            throw new ClassCastException(
-                    "Given name is not an instance of DNSName class");
+            // jndi.2F=Given name is not an instance of DNSName class
+            throw new ClassCastException(Messages.getString("jndi.2F")); //$NON-NLS-1$
         }
         nameToCompareWith = (DNSName) name;
         enum1 = this.getAll();
@@ -313,8 +316,8 @@ public class DNSName implements Name, Cloneable {
      */
     public Name add(int posn, String comp) throws InvalidNameException {
         if (!componentIsOk(comp)) {
-            throw new InvalidNameException(comp + " can't be used as a " +
-                    "component for DNS name");
+            // jndi.30={0} can't be used as a component for DNS name
+            throw new InvalidNameException(Messages.getString("jndi.30", comp)); //$NON-NLS-1$
         }
         components.insertElementAt(comp, posn);
         return this;
@@ -330,8 +333,8 @@ public class DNSName implements Name, Cloneable {
      */
     public Name add(String comp) throws InvalidNameException {
         if (!componentIsOk(comp)) {
-            throw new InvalidNameException(comp + " can't be used as a " +
-                    "component for DNS name");
+            // jndi.30={0} can't be used as a component for DNS name 
+            throw new InvalidNameException(Messages.getString("jndi.30", comp));//$NON-NLS-1$
         }
         components.addElement(comp);
         return this;
@@ -350,8 +353,8 @@ public class DNSName implements Name, Cloneable {
         Vector<String> newComps;
 
         if (!(name instanceof DNSName)) {
-            throw new InvalidNameException("Given name is not an instance of " +
-                    "DNSName class");
+            // jndi.31=Given name is not an instance of DNSName class
+            throw new InvalidNameException(Messages.getString("jndi.31")); //$NON-NLS-1$
         }
         newComps = ((DNSName) name).components;
         components.addAll(posn, newComps);
@@ -370,8 +373,8 @@ public class DNSName implements Name, Cloneable {
         Vector<String> newComps;
 
         if (!(name instanceof DNSName)) {
-            throw new InvalidNameException("Given name is not an instance of " +
-                    "DNSName class");
+            // jndi.31=Given name is not an instance of DNSName class
+            throw new InvalidNameException(Messages.getString("jndi.31")); //$NON-NLS-1$
         }
         newComps = ((DNSName) name).components;
         components.addAll(newComps);
@@ -405,7 +408,7 @@ public class DNSName implements Name, Cloneable {
      * @return <code>true</code> or <code>false</code>
      */
     static boolean componentIsOk(String comp) {
-        if (comp.indexOf(".") != -1 || comp.length() >
+        if (comp.indexOf(".") != -1 || comp.length() > //$NON-NLS-1$
                 ProviderConstants.LABEL_MAX_CHARS)
         {
             return false;

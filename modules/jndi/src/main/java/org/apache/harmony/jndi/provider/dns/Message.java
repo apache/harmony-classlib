@@ -27,6 +27,8 @@ package org.apache.harmony.jndi.provider.dns;
 import java.util.Vector;
 import java.util.Enumeration;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 /**
  * This class represents a domain protocol message.
  * 
@@ -154,7 +156,8 @@ public class Message {
 
         // basic check
         if (buffer == null) {
-            throw new DomainProtocolException("buffer is null");
+            // jndi.32=buffer is null
+            throw new DomainProtocolException(Messages.getString("jndi.32")); //$NON-NLS-1$
         }
         // ID
         idx = ProviderMgr.write16Int(id, buffer, idx);
@@ -234,8 +237,8 @@ public class Message {
         int arCnt;
 
         if (mesObj == null) {
-            throw new DomainProtocolException(
-                    "The value of parameter mesObj is null");
+            // jndi.58=The value of parameter mesObj is null
+            throw new DomainProtocolException(Messages.getString("jndi.58")); //$NON-NLS-1$
         }
         // header section
         // ID
@@ -312,46 +315,46 @@ public class Message {
     public String toString() {
         StringBuffer sb = new StringBuffer();
 
-        sb.append("ID=" + id + "\n");
+        sb.append("ID=" + id + "\n"); //$NON-NLS-1$ //$NON-NLS-2$
         if (qr) {
-            sb.append(" QR");
+            sb.append(" QR"); //$NON-NLS-1$
         }
-        sb.append(" OPCODE=" + opCode);
+        sb.append(" OPCODE=" + opCode); //$NON-NLS-1$
         if (aa) {
-            sb.append(" AA");
+            sb.append(" AA"); //$NON-NLS-1$
         }
         if (tc) {
-            sb.append(" TC");
+            sb.append(" TC"); //$NON-NLS-1$
         }
         if (rd) {
-            sb.append(" RD");
+            sb.append(" RD"); //$NON-NLS-1$
         }
         if (ra) {
-            sb.append(" RA");
+            sb.append(" RA"); //$NON-NLS-1$
         }
-        sb.append(" RCODE=" + rCode);
-        sb.append("\n");
-        sb.append("QDCOUNT=" + qdCount);
+        sb.append(" RCODE=" + rCode); //$NON-NLS-1$
+        sb.append("\n"); //$NON-NLS-1$
+        sb.append("QDCOUNT=" + qdCount); //$NON-NLS-1$
         for (int i = 0; i < questionRecords.size(); i++) {
-            sb.append("\n");
+            sb.append("\n"); //$NON-NLS-1$
             sb.append(questionRecords.elementAt(i).toString());
         }
-        sb.append("\n");
-        sb.append(" ANCOUNT=" + anCount);
+        sb.append("\n"); //$NON-NLS-1$
+        sb.append(" ANCOUNT=" + anCount); //$NON-NLS-1$
         for (int i = 0; i < answerRRs.size(); i++) {
-            sb.append("\n");
+            sb.append("\n"); //$NON-NLS-1$
             sb.append(answerRRs.elementAt(i).toString());
         }
-        sb.append("\n");
-        sb.append(" NSCOUNT=" + nsCount);
+        sb.append("\n"); //$NON-NLS-1$
+        sb.append(" NSCOUNT=" + nsCount); //$NON-NLS-1$
         for (int i = 0; i < authorityRRs.size(); i++) {
-            sb.append("\n");
+            sb.append("\n"); //$NON-NLS-1$
             sb.append(authorityRRs.elementAt(i).toString());
         }
-        sb.append("\n");
-        sb.append(" ARCOUNT=" + arCount);
+        sb.append("\n"); //$NON-NLS-1$
+        sb.append(" ARCOUNT=" + arCount); //$NON-NLS-1$
         for (int i = 0; i < additionalRRs.size(); i++) {
-            sb.append("\n");
+            sb.append("\n"); //$NON-NLS-1$
             sb.append(additionalRRs.elementAt(i).toString());
         }
         return sb.toString();

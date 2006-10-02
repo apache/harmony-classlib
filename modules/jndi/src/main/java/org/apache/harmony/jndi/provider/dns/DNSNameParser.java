@@ -28,6 +28,8 @@ import javax.naming.InvalidNameException;
 import javax.naming.Name;
 import javax.naming.NameParser;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 /**
  * DNS name parser
  * @author Alexei Zakharov
@@ -61,39 +63,42 @@ public class DNSNameParser implements NameParser {
         DNSName dnsName = new DNSName();
 
         if (name == null) {
-            throw new InvalidNameException("Given name is null");
+            // jndi.2E=The name is null
+            throw new InvalidNameException(Messages.getString("jndi.2E")); //$NON-NLS-1$
         }
         if (name.length() > 255) {
-            throw new InvalidNameException("The length of the name is more" +
-                    " than 255 characters");
+            // jndi.54=The length of the name is more than 255 characters
+            throw new InvalidNameException(Messages.getString("jndi.54")); //$NON-NLS-1$
         }
-        st = new StringTokenizer(name, ".", true);
+        st = new StringTokenizer(name, ".", true); //$NON-NLS-1$
         while (st.hasMoreTokens()) {
             String comp = st.nextToken();
 
-            if (comp.equals(".")) {
+            if (comp.equals(".")) { //$NON-NLS-1$
                 if (lastTokenWasDilim) {
                     // two delimiters one after another
+                    // jndi.55=Null label is not the rightmost one
                     throw new InvalidNameException(
-                            "Null label is not the rightmost one");
+                            Messages.getString("jndi.55")); //$NON-NLS-1$
                 }
                 lastTokenWasDilim = true;
                 if (dnsName.size() == 0 && st.hasMoreTokens()) {
-                    throw new InvalidNameException("DNS name shouldn't " +
-                            "start with a dot"); 
+                    // jndi.56=DNS name shouldn't start with a dot
+                    throw new InvalidNameException(Messages.getString("jndi.56")); //$NON-NLS-1$
                 }
             }
             else {
                 if (comp.length() > 63) {
-                    throw new InvalidNameException("The length of " +
-                            comp + " label is more than 63 characters");
+                    // jndi.57=The length of {0} label is more than 63 characters
+                    throw new InvalidNameException(
+                            Messages.getString("jndi.57", comp)); //$NON-NLS-1$
                 }
                 dnsName.add(0, comp);
                 lastTokenWasDilim = false;
             }
         }
         if (lastTokenWasDilim) {
-            dnsName.add(0, "");
+            dnsName.add(0, ""); //$NON-NLS-1$
         }
         return dnsName;
     }

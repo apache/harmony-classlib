@@ -37,6 +37,7 @@ import javax.naming.StringRefAddr;
 import javax.naming.spi.InitialContextFactory;
 import javax.naming.spi.ObjectFactory;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
 import org.apache.harmony.jndi.provider.rmi.rmiURLContextFactory;
 
 
@@ -75,8 +76,8 @@ public class RegistryContextFactory
         if (obj instanceof Context) {
             return (Context) obj;
         }
-        throw new NotContextException("Object instantiated using the "
-                + "URL specified in environment is not a context: " + url);
+        // jndi.76=Object instantiated using the URL specified in environment is not a context: {0}
+        throw new NotContextException(Messages.getString("jndi.76", url)); //$NON-NLS-1$
     }
 
     /**
@@ -96,7 +97,8 @@ public class RegistryContextFactory
         int size = reference.size();
 
         if (size < 1) {
-            throw new ConfigurationException("Reference is empty");
+            // jndi.77=Reference is empty
+            throw new ConfigurationException(Messages.getString("jndi.77")); //$NON-NLS-1$
         }
         Vector<Object> urls = new Vector<Object>(size);
 
@@ -111,8 +113,8 @@ public class RegistryContextFactory
         size = urls.size();
 
         if (size < 1) {
-            throw new ConfigurationException(
-                    "Reference contains no valid addresses");
+            // jndi.78=Reference contains no valid addresses
+            throw new ConfigurationException(Messages.getString("jndi.78")); //$NON-NLS-1$
         }
         Object ret = new rmiURLContextFactory().getObjectInstance(
                 urls.toArray(new String[size]), name, nameCtx, environment);

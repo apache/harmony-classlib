@@ -30,6 +30,8 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.OperationNotSupportedException;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 /**
  * A simple attribute of a directory entry.
  * <p>
@@ -221,14 +223,14 @@ public class BasicAttribute implements Attribute {
                         // If all elements are equal, they are equal
                         return true;
                     }
-					// Not equal if different length
-					return false;
+                    // Not equal if different length
+                    return false;
                 }
-				// Not equal if this can be inferred from their class names
-				return false;
+                // Not equal if this can be inferred from their class names
+                return false;
             }
-			// If not both of them are array, do a normal "equals"
-			return obj1.equals(obj2);
+            // If not both of them are array, do a normal "equals"
+            return obj1.equals(obj2);
         } else {
             // Not equal if only one of them is null
             return false;
@@ -274,9 +276,10 @@ public class BasicAttribute implements Attribute {
             values.add(index, val);
         } else {
             if (contains(val)) {
-                throw new IllegalStateException("Value already exists."); //$NON-NLS-1$
+                // jndi.16=Value already exists.
+                throw new IllegalStateException(Messages.getString("jndi.16"));  //$NON-NLS-1$
             }
-			values.add(index, val);
+            values.add(index, val);
         }
     }
 
@@ -284,17 +287,17 @@ public class BasicAttribute implements Attribute {
         if (ordered) {
             return values.add(val); // always true
         }
-		if (contains(val)) {
-		    return false;
-		}
-		return values.add(val); // always true
+        if (contains(val)) {
+            return false;
+        }
+        return values.add(val); // always true
     }
 
     public void clear() {
         values.clear();
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     @Override
     public Object clone() {
         try {
@@ -302,7 +305,8 @@ public class BasicAttribute implements Attribute {
             attr.values = (Vector<Object>) this.values.clone();
             return attr;
         } catch (CloneNotSupportedException e) {
-            throw new AssertionError("Failed to clone object of BasicAttribute class."); //$NON-NLS-1$
+            // jndi.17=Failed to clone object of BasicAttribute class.
+            throw new AssertionError(Messages.getString("jndi.17"));  //$NON-NLS-1$
         }
     }
 
@@ -319,9 +323,10 @@ public class BasicAttribute implements Attribute {
 
     public Object get() throws NamingException {
         if (0 == values.size()) {
-            throw new NoSuchElementException("No values available."); //$NON-NLS-1$
+            // jndi.18=No values available.
+            throw new NoSuchElementException(Messages.getString("jndi.18"));  //$NON-NLS-1$
         }
-		return values.get(0);
+        return values.get(0);
     }
 
     public Object get(int index) throws NamingException {
@@ -333,11 +338,13 @@ public class BasicAttribute implements Attribute {
     }
 
     public DirContext getAttributeDefinition() throws NamingException {
-        throw new OperationNotSupportedException("BasicAttribute does not support this operation."); //$NON-NLS-1$
+        // jndi.19=BasicAttribute does not support this operation.
+        throw new OperationNotSupportedException(Messages.getString("jndi.19"));  //$NON-NLS-1$
     }
 
     public DirContext getAttributeSyntaxDefinition() throws NamingException {
-        throw new OperationNotSupportedException("BasicAttribute does not support this operation."); //$NON-NLS-1$
+        // jndi.19=BasicAttribute does not support this operation.
+        throw new OperationNotSupportedException(Messages.getString("jndi.19"));  //$NON-NLS-1$
     }
 
     public String getID() {
@@ -366,7 +373,8 @@ public class BasicAttribute implements Attribute {
 
     public Object set(int index, Object val) {
         if (!ordered && contains(val)) {
-            throw new IllegalStateException("Value already exists."); //$NON-NLS-1$
+            // jndi.16=Value already exists.
+            throw new IllegalStateException(Messages.getString("jndi.16"));  //$NON-NLS-1$
         }
         return values.set(index, val);
     }

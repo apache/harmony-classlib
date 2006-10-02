@@ -19,6 +19,8 @@ package javax.naming.directory;
 
 import java.io.Serializable;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 /**
  * This class is a combination of a modification code and attribute.
  * <p>
@@ -73,23 +75,22 @@ public class ModificationItem implements Serializable {
     /**
      * Constructs a <code>ModificaitionItem</code> instance with all parameters.
      * 
-     * @param operation		an operation code chosen from <code>DirContext.ADD_ATTRIBUTE</code>,
-     * 						<code>DirContext.REPLACE_ATTRIBUTE</code>, 
+     * @param operation     an operation code chosen from <code>DirContext.ADD_ATTRIBUTE</code>,
+     *                      <code>DirContext.REPLACE_ATTRIBUTE</code>, 
      *                      <code>DirContext.REMOVE_ATTRIBUTE</code>
-     * @param attribute		the <code>Attribute</code> or value that is the 
-     * 						source of the modification
+     * @param attribute     the <code>Attribute</code> or value that is the 
+     *                      source of the modification
      */
     public ModificationItem(int operation, Attribute attribute) {
         if (null == attribute) {
-            throw new IllegalArgumentException("Non-null attribute is required for modification"); //$NON-NLS-1$
+            // jndi.13=Non-null attribute is required for modification
+            throw new IllegalArgumentException(Messages.getString("jndi.13"));  //$NON-NLS-1$
         }
         if (!(DirContext.ADD_ATTRIBUTE == operation
             || DirContext.REPLACE_ATTRIBUTE == operation
             || DirContext.REMOVE_ATTRIBUTE == operation)) {
-            throw new IllegalArgumentException(
-                "Modification code " //$NON-NLS-1$
-                    + operation
-                    + " must be one of DirContext.ADD_ATTRIBUTE, DirContext.REPLACE_ATTRIBUTE and DirContext.REMOVE_ATTRIBUTE"); //$NON-NLS-1$
+            // jndi.14=Modification code {0} must be one of DirContext.ADD_ATTRIBUTE, DirContext.REPLACE_ATTRIBUTE and DirContext.REMOVE_ATTRIBUTE
+            throw new IllegalArgumentException(Messages.getString("jndi.14", operation));  //$NON-NLS-1$
         }
         this.mod_op = operation;
         this.attr = attribute;
@@ -105,7 +106,7 @@ public class ModificationItem implements Serializable {
      * Gets the <code>Attribute</code> or value that is the source of the 
      * modification.
      * 
-     * @return 				the <code>Attribute</code> or value that is the
+     * @return              the <code>Attribute</code> or value that is the
      *                      source of the modification
      */
     public Attribute getAttribute() {
@@ -115,9 +116,9 @@ public class ModificationItem implements Serializable {
     /**
      * Gets the operation code.
      * 
-     * @return 				an operation code chosen from <code>
+     * @return              an operation code chosen from <code>
      *                      DirContext.ADD_ATTRIBUTE</code>, <code>
-     * 						DirContext.REPLACE_ATTRIBUTE</code>, <code>
+     *                      DirContext.REPLACE_ATTRIBUTE</code>, <code>
      *                      DirContext.REMOVE_ATTRIBUTE</code>
      */
     public int getModificationOp() {
@@ -134,8 +135,8 @@ public class ModificationItem implements Serializable {
      * Returns string representations of this <code>ModificationItem</code> 
      * instance.
      *
-     * @return 				a concatenation of string values for the operation 
-     * 						and the attribute
+     * @return              a concatenation of string values for the operation 
+     *                      and the attribute
      */
     @Override
     public String toString() {

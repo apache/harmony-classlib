@@ -27,6 +27,8 @@ import java.util.Vector;
 import java.util.Hashtable;
 import java.util.Enumeration;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 
 /**
  * Represents DNS resolver's SLIST - the structure to keep the collected
@@ -347,7 +349,8 @@ class SList {
         Vector<Server> result = new Vector<Server>();
         
         if (name == null) {
-            throw new NullPointerException("hostname is null");
+            // jndi.34=hostname is null
+            throw new NullPointerException(Messages.getString("jndi.34")); //$NON-NLS-1$
         }
         for (int i = 0; i < servers.size(); i++) {
             Server curServ = servers.get(i);
@@ -533,9 +536,9 @@ class SList {
         @Override
         public String toString() {
             if (this.serverName != null) {
-                return serverName + ":" + serverPort; 
+                return serverName + ":" + serverPort;  //$NON-NLS-1$
             }
-            return serverIP + ":" + serverPort;
+            return serverIP + ":" + serverPort; //$NON-NLS-1$
         }
     }
 

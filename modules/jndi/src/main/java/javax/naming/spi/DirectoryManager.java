@@ -47,6 +47,7 @@ import javax.naming.spi.DirStateFactory.Result;
 
 import org.apache.harmony.jndi.internal.EnvironmentReader;
 import org.apache.harmony.jndi.internal.UrlParser;
+import org.apache.harmony.jndi.internal.nls.Messages;
 
 /**
  * The <code>DirectoryManager</code> class cannot be instantiated. All its
@@ -149,7 +150,7 @@ public class DirectoryManager extends NamingManager {
         if (factory instanceof DirObjectFactory) {
             return ((DirObjectFactory) factory).getObjectInstance(o, n, c, h, a);
         }
-		return factory.getObjectInstance(o, n, c, h);
+        return factory.getObjectInstance(o, n, c, h);
     }
 
     private static Object getObjectInstanceByObjectFactory(Object o, Name n, Context c,
@@ -249,8 +250,9 @@ public class DirectoryManager extends NamingManager {
                 if (e instanceof NamingException) {
                     throw (NamingException) e;
                 }
+                // jndi.21=Failed to create object instance
                 NamingException nex =
-                    new NamingException("Failed to create object instance"); //$NON-NLS-1$
+                    new NamingException(Messages.getString("jndi.21"));  //$NON-NLS-1$
                 nex.setRootCause(e);
                 throw nex;
             }
@@ -268,7 +270,7 @@ public class DirectoryManager extends NamingManager {
             factory =
                 (ObjectFactory) classForName(ref.getFactoryClassName()).newInstance();
         } catch (ClassNotFoundException e) {
-        	// Ignored.
+            // Ignored.
         }
 
         // try load the factory from its class location
@@ -437,7 +439,7 @@ public class DirectoryManager extends NamingManager {
                         true,
                         Thread.currentThread().getContextClassLoader());
                 } catch (ClassNotFoundException e) {
-                	// Could happen.
+                    // Could happen.
                 }
                 // try system class loader second
                 try {
@@ -446,7 +448,7 @@ public class DirectoryManager extends NamingManager {
                         true,
                         ClassLoader.getSystemClassLoader());
                 } catch (ClassNotFoundException e1) {
-                	// Not found here either.
+                    // Not found here either.
                 }
                 // return null, if fail to load class
                 return null;
@@ -454,7 +456,8 @@ public class DirectoryManager extends NamingManager {
         });
 
         if (cls == null) {
-            throw new ClassNotFoundException("class " + className + " not found"); //$NON-NLS-1$ //$NON-NLS-2$
+            // jndi.1C=class {0} not found
+            throw new ClassNotFoundException(Messages.getString("jndi.1C", className));  //$NON-NLS-1$
         }
 
         return cls;

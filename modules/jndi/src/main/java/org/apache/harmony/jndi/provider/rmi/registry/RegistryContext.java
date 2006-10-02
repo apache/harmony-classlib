@@ -65,6 +65,8 @@ import javax.naming.ServiceUnavailableException;
 import javax.naming.StringRefAddr;
 import javax.naming.spi.NamingManager;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 
 /**
  * RMI Registry context implementation.
@@ -79,24 +81,24 @@ public class RegistryContext implements Context, Referenceable {
      * for specifying that RMI security manager should be installed.
      */
     public static final String SECURITY_MANAGER =
-            "java.naming.rmi.security.manager";
+            "java.naming.rmi.security.manager"; //$NON-NLS-1$
 
     /**
      * Constant that holds the name of the environment property
      * for specifying the name of {@link RMIClientSocketFactory} class.
      */
     public static final String CLIENT_SOCKET_FACTORY =
-            "org.apache.harmony.jndi.provider.rmi.registry.clientSocketFactory";
+            "org.apache.harmony.jndi.provider.rmi.registry.clientSocketFactory"; //$NON-NLS-1$
 
     /**
      * Prefix for RMI URLs.
      */
-    public static final String RMI_URL_PREFIX = "rmi:";
+    public static final String RMI_URL_PREFIX = "rmi:"; //$NON-NLS-1$
 
     /**
      * Address type for RMI context references.
      */
-    public static final String ADDRESS_TYPE = "URL";
+    public static final String ADDRESS_TYPE = "URL"; //$NON-NLS-1$
 
     /**
      * Name parser.
@@ -152,7 +154,7 @@ public class RegistryContext implements Context, Referenceable {
      * @throws  NamingException
      *          If some naming error occurs.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public RegistryContext(String host, int port, Hashtable<?, ?> environment)
             throws NamingException {
         this.host = host;
@@ -177,16 +179,19 @@ public class RegistryContext implements Context, Referenceable {
                         clientSocketFactoryName, true, Thread.currentThread()
                                 .getContextClassLoader()).newInstance();
             } catch (ClassNotFoundException e) {
+                // jndi.79=RMI Client Socket Factory cannot be instantiated
                 throw (ConfigurationException) new ConfigurationException(
-                        "RMI Client Socket Factory cannot be instantiated")
+                        Messages.getString("jndi.79")) //$NON-NLS-1$
                                 .initCause(e);
             } catch (InstantiationException e) {
+                // jndi.79=RMI Client Socket Factory cannot be instantiated
                 throw (ConfigurationException) new ConfigurationException(
-                        "RMI Client Socket Factory cannot be instantiated")
+                        Messages.getString("jndi.79")) //$NON-NLS-1$
                                 .initCause(e);
             } catch (IllegalAccessException e) {
+                // jndi.79=RMI Client Socket Factory cannot be instantiated
                 throw (NoPermissionException) new NoPermissionException(
-                        "RMI Client Socket Factory cannot be instantiated")
+                        Messages.getString("jndi.79")) //$NON-NLS-1$
                                 .initCause(e);
             }
         }
@@ -200,7 +205,7 @@ public class RegistryContext implements Context, Referenceable {
      * @param   context
      *          Context to copy.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     protected RegistryContext(RegistryContext context) {
         host = context.host;
         port = context.port;
@@ -222,8 +227,9 @@ public class RegistryContext implements Context, Referenceable {
         try {
             return getObjectInstance(stringName, registry.lookup(stringName));
         } catch (NotBoundException e) {
+            // jndi.7A=Name is not bound: {0}
             throw (NameNotFoundException) new NameNotFoundException(
-                    "Name is not bound: " + stringName).initCause(e);
+                    Messages.getString("jndi.7A", stringName)).initCause(e); //$NON-NLS-1$
         } catch (RemoteException e) {
             throw (NamingException) newNamingException(e).fillInStackTrace();
         }
@@ -255,15 +261,17 @@ public class RegistryContext implements Context, Referenceable {
      */
     public void bind(Name name, Object obj) throws NamingException {
         if (name.isEmpty()) {
-            throw new InvalidNameException("Cannot bind empty name");
+            // jndi.7B=Cannot bind empty name
+            throw new InvalidNameException(Messages.getString("jndi.7B")); //$NON-NLS-1$
         }
         String stringName = getMyComponents(name);
 
         try {
             registry.bind(stringName, getStateToBind(stringName, obj));
         } catch (AlreadyBoundException e) {
+            // jndi.7C=Name is already bound: {0}
             throw (NameAlreadyBoundException) new NameAlreadyBoundException(
-                    "Name is already bound: " + stringName).initCause(e);
+                    Messages.getString("jndi.7C", stringName)).initCause(e); //$NON-NLS-1$
         } catch (RemoteException e) {
             throw (NamingException) newNamingException(e).fillInStackTrace();
         }
@@ -281,7 +289,8 @@ public class RegistryContext implements Context, Referenceable {
      */
     public void rebind(Name name, Object obj) throws NamingException {
         if (name.isEmpty()) {
-            throw new InvalidNameException("Cannot rebind empty name");
+            // jndi.7D=Cannot rebind empty name
+            throw new InvalidNameException(Messages.getString("jndi.7D")); //$NON-NLS-1$
         }
         String stringName = getMyComponents(name);
 
@@ -304,7 +313,8 @@ public class RegistryContext implements Context, Referenceable {
      */
     public void unbind(Name name) throws NamingException {
         if (name.isEmpty()) {
-            throw new InvalidNameException("Cannot unbind empty name");
+            // jndi.7E=Cannot unbind empty name
+            throw new InvalidNameException(Messages.getString("jndi.7E")); //$NON-NLS-1$
         }
         String stringName = getMyComponents(name);
 
@@ -329,8 +339,8 @@ public class RegistryContext implements Context, Referenceable {
      */
     public Context createSubcontext(Name name)
             throws OperationNotSupportedException {
-        throw new OperationNotSupportedException("RMI Registry "
-                + "is a flat context and doesn't support subcontexts");
+        // jndi.7F=RMI Registry is a flat context and doesn't support subcontexts
+        throw new OperationNotSupportedException(Messages.getString("jndi.7F")); //$NON-NLS-1$
     }
 
     /**
@@ -345,8 +355,8 @@ public class RegistryContext implements Context, Referenceable {
      */
     public void destroySubcontext(Name name)
             throws OperationNotSupportedException {
-        throw new OperationNotSupportedException("RMI Registry "
-                + "is a flat context and doesn't support subcontexts");
+        // jndi.7F=RMI Registry is a flat context and doesn't support subcontexts
+        throw new OperationNotSupportedException(Messages.getString("jndi.7F")); //$NON-NLS-1$
     }
 
     /**
@@ -387,13 +397,14 @@ public class RegistryContext implements Context, Referenceable {
 
         if (obj instanceof Context) {
             try {
-                return ((Context) obj).list("");
+                return ((Context) obj).list(""); //$NON-NLS-1$
             } finally {
                 ((Context) obj).close();
             }
         }
+        // jndi.80=Name specifies an object that is not a context: {0}
         throw new NotContextException(
-                "Name specifies an object that is not a context: " + name);
+                Messages.getString("jndi.80", name)); //$NON-NLS-1$
     }
 
     /**
@@ -419,13 +430,14 @@ public class RegistryContext implements Context, Referenceable {
 
         if (obj instanceof Context) {
             try {
-                return ((Context) obj).listBindings("");
+                return ((Context) obj).listBindings(""); //$NON-NLS-1$
             } finally {
                 ((Context) obj).close();
             }
         }
+        // jndi.80=Name specifies an object that is not a context: {0}
         throw new NotContextException(
-                "Name specifies an object that is not a context: " + name);
+                Messages.getString("jndi.80", name)); //$NON-NLS-1$
     }
 
     /**
@@ -469,7 +481,7 @@ public class RegistryContext implements Context, Referenceable {
      * {@inheritDoc}
      */
     public String getNameInNamespace() {
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /**
@@ -510,15 +522,15 @@ public class RegistryContext implements Context, Referenceable {
      */
     public Reference getReference() throws NamingException {
         if (reference == null) {
-            if ((host == null) || (host.equals("localhost"))) {
+            if ((host == null) || (host.equals("localhost"))) { //$NON-NLS-1$
+                // jndi.81=Cannot create reference for RMI registry that is being accessed using localhost
                 throw new ConfigurationException(
-                        "Cannot create reference for RMI registry "
-                        + "that is being accessed using localhost");
+                        Messages.getString("jndi.81")); //$NON-NLS-1$
             }
             reference = new Reference(
                     RegistryContext.class.getName(),
-                    new StringRefAddr(ADDRESS_TYPE, RMI_URL_PREFIX + "//"
-                            + host + ((port > 0) ? (":" + port) : "")),
+                    new StringRefAddr(ADDRESS_TYPE, RMI_URL_PREFIX + "//" //$NON-NLS-1$
+                            + host + ((port > 0) ? (":" + port) : "")), //$NON-NLS-1$ //$NON-NLS-2$
                     RegistryContextFactory.class.getName(), null);
         }
         return (Reference) reference.clone();
@@ -602,9 +614,8 @@ public class RegistryContext implements Context, Referenceable {
             return new RemoteReferenceWrapper(
                     ((Referenceable) obj).getReference());
         }
-
-        throw new IllegalArgumentException("Cannot bind to RMI Registry object "
-                + "that is neither Remote nor Reference nor Referenceable");
+        // jndi.82=Cannot bind to RMI Registry object that is neither Remote nor Reference nor Referenceable
+        throw new IllegalArgumentException(Messages.getString("jndi.82")); //$NON-NLS-1$
     }
 
     /**
@@ -642,8 +653,9 @@ public class RegistryContext implements Context, Referenceable {
         } catch (RemoteException e) {
             throw e;
         } catch (Exception e) {
+            // jndi.83=NamingManager.getObjectInstance() failed
             throw (NamingException) new NamingException(
-                    "NamingManager.getObjectInstance() failed").initCause(e);
+                    Messages.getString("jndi.83")).initCause(e); //$NON-NLS-1$
         }
     }
 
@@ -676,7 +688,7 @@ public class RegistryContext implements Context, Referenceable {
      *
      * @return  Generated {@link NamingException} exception.
      */
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("deprecation") //$NON-NLS-1$
     protected NamingException newNamingException(Throwable e) {
         NamingException ret =
                   (e instanceof AccessException)
@@ -717,8 +729,9 @@ public class RegistryContext implements Context, Referenceable {
             try {
                 System.setSecurityManager(new RMISecurityManager());
             } catch (SecurityException e) {
+                // jndi.84=Cannot install RMISecurityManager
                 throw (NoPermissionException) new NoPermissionException(
-                        "Cannot install RMISecurityManager").initCause(e);
+                        Messages.getString("jndi.84")).initCause(e); //$NON-NLS-1$
             }
         }
     }

@@ -24,6 +24,8 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 /**
  * A <code>CompoundName</code> is a series of string elements, and it represents 
  * a name in a naming service within a single namespace. Typically these 
@@ -52,21 +54,21 @@ import java.util.Vector;
  * The following properties are all optional:
  * <ul>
  * <li>
- * jndi.syntax.escape -		Escape sequence,The escape sequence is used to escape 
- * 							a quote, separator or escape. When preceded itself by 
- * 							the escape sequence it is treated as ordinary characters.
- * 							When it is followed by chars which are not quote or 
- * 							separator strings then it is treated as ordinary characters</li>
+ * jndi.syntax.escape -     Escape sequence,The escape sequence is used to escape 
+ *                          a quote, separator or escape. When preceded itself by 
+ *                          the escape sequence it is treated as ordinary characters.
+ *                          When it is followed by chars which are not quote or 
+ *                          separator strings then it is treated as ordinary characters</li>
  * <li>
- * jndi.syntax.beginquote -	Used as start of quoted string (Defaults to endquote)</li>
+ * jndi.syntax.beginquote - Used as start of quoted string (Defaults to endquote)</li>
  * <li>
- * jndi.syntax.endquote - 	Used as end of quoted string (Defaults to beginquote)</li>
+ * jndi.syntax.endquote -   Used as end of quoted string (Defaults to beginquote)</li>
  * <li>
- * jndi.syntax.beginquote2 -	Additionally used as start of quoted string 
- * 							(Defaults to endquote2)</li>
+ * jndi.syntax.beginquote2 -    Additionally used as start of quoted string 
+ *                          (Defaults to endquote2)</li>
  * <li>
- * jndi.syntax.endquote2 - 	Additionally used as end of quoted string 
- * 							(Defaults to beginquote2)</li>
+ * jndi.syntax.endquote2 -  Additionally used as end of quoted string 
+ *                          (Defaults to beginquote2)</li>
  * </ul>
  * <p>
  * When a non-escaped quote appears at the start of an element it must be matched at the
@@ -80,11 +82,11 @@ import java.util.Vector;
  * <p>
  * <ul>
  * <li>
- * jndi.syntax.ignorecase -	If 'true' then ignore case when name elements are compared.
- *  						If false or not set then case is important.</li>
+ * jndi.syntax.ignorecase - If 'true' then ignore case when name elements are compared.
+ *                          If false or not set then case is important.</li>
  * <li>
- * jndi.syntax.trimblanks -	If 'true' then ignore leading & trailing blanks when name elements are compared.
- * 							If false or not set then blanks are important.</li>
+ * jndi.syntax.trimblanks - If 'true' then ignore leading & trailing blanks when name elements are compared.
+ *                          If false or not set then blanks are important.</li>
  * </ul></p>
  * <p>
  * These 2 properties relate to names where the syntax includes attribute/content 
@@ -307,10 +309,10 @@ public class CompoundName implements Name {
      * Constructs a <code>CompoundName</code> with supplied <code>Enumeration</code> 
      * and <code>Properties</code>
      * 
-     * @param elements		an enumeration of name elements, cannot be null
-     * @param props			the properties, cannot be null but may be empty. 
-     * 						If empty, the direction defaults to flat and no 
-     * 						other properties are required.
+     * @param elements      an enumeration of name elements, cannot be null
+     * @param props         the properties, cannot be null but may be empty. 
+     *                      If empty, the direction defaults to flat and no 
+     *                      other properties are required.
      */
     protected CompoundName(Enumeration<String> elements, Properties props) {
         if (null == props || null == elements) {
@@ -328,12 +330,12 @@ public class CompoundName implements Name {
      * and <code>Properties</code>,  taking the supplied <code>s</code> and 
      * breaking it down into its elements. 
      *
-     * @param s				a string containing the full compound name
-     * @param props			the properties, cannot be null but may be empty for a flat name
+     * @param s             a string containing the full compound name
+     * @param props         the properties, cannot be null but may be empty for a flat name
      * @throws InvalidNameException 
-     * 						thrown if the supplied <code>String s</code> is invalid
+     *                      thrown if the supplied <code>String s</code> is invalid
      * @throws NullPointerException 
-     * 						thrown if the supplied <code>String s</code> is null
+     *                      thrown if the supplied <code>String s</code> is null
      */
     public CompoundName(String s, Properties props) throws InvalidNameException {
         if (null == s || null == props) {
@@ -359,16 +361,16 @@ public class CompoundName implements Name {
         //if direction value must equals to one of FLAT, LEFT_TO_RIGHT and RIGHT_TO_LEFT, exception throwed 
         if (!LEFT_TO_RIGHT.equals(direction)
                 && !RIGHT_TO_LEFT.equals(direction) && !FLAT.equals(direction)) {
-            throw new IllegalArgumentException(
-                    "Illegal direction property value, which must be one of right_to_left, left_to_right or flat"); //$NON-NLS-1$
+            // jndi.04=Illegal direction property value, which must be one of right_to_left, left_to_right or flat
+            throw new IllegalArgumentException(Messages.getString("jndi.04"));  //$NON-NLS-1$
         }
         flat = FLAT.equals(direction);
 
         separatorString = flat ? NULL_STRING : props.getProperty(SEPARATOR);
-        //		if direction is not FLAT, separator must be set
+        //      if direction is not FLAT, separator must be set
         if (null == separatorString && !flat) {
-            throw new IllegalArgumentException(
-                    "jndi.syntax.separator property must be set when jndi.syntax.direction is not flat"); //$NON-NLS-1$
+            // jndi.05=jndi.syntax.separator property must be set when jndi.syntax.direction is not flat
+            throw new IllegalArgumentException(Messages.getString("jndi.05"));  //$NON-NLS-1$
         }
         separatorString2 = (flat || null == (property = props
                 .getProperty(SEPARATOR2))) ? NULL_STRING : property;
@@ -464,8 +466,8 @@ public class CompoundName implements Name {
                 pos += escapeString.length();
                 if (pos == s.length()) {
                     //if this escape char is last character, throw exception
-                    throw new InvalidNameException("The " + escapeString //$NON-NLS-1$
-                            + " cannot be at end of the component"); //$NON-NLS-1$
+                    // jndi.06=The {0} cannot be at end of the component
+                    throw new InvalidNameException(Messages.getString("jndi.06", escapeString));  //$NON-NLS-1$
                 }
                 // if one escape char followed by a special char, append the
                 // special char to current element
@@ -489,9 +491,8 @@ public class CompoundName implements Name {
                 pos += addBuffer(element, sepAvaString, true);
                 status = INIT_STATUS;
             } else if (status == QUOTEEND_STATUS) {
-                throw new InvalidNameException(
-                        s
-                                + ": close quote must appears at end of component in quoted string"); //$NON-NLS-1$
+                // jndi.07={0}: close quote must appears at end of component in quoted string
+                throw new InvalidNameException(Messages.getString("jndi.07", s));  //$NON-NLS-1$
             } else {
                 status = status == INIT_STATUS ? NORMAL_STATUS : status;
                 element.append(s.charAt(pos++));
@@ -501,8 +502,8 @@ public class CompoundName implements Name {
             hasNotNullElement = hasNotNullElement || element.length() > 0;
             addElement(element);
         } else {
-            throw new InvalidNameException(s
-                    + ": close quote is required for quoted string"); //$NON-NLS-1$
+            // jndi.08={0}: close quote is required for quoted string
+            throw new InvalidNameException(Messages.getString("jndi.08", s));  //$NON-NLS-1$
         }
         if (!hasNotNullElement) {
             elem.remove(elem.size() - 1);
@@ -627,8 +628,8 @@ public class CompoundName implements Name {
 
     public Name addAll(int index, Name name) throws InvalidNameException {
         if (!(name instanceof CompoundName)) {
-            throw new InvalidNameException(name.toString()
-                    + " is not a compound name."); //$NON-NLS-1$
+            // jndi.09={0} is not a compound name.
+            throw new InvalidNameException(Messages.getString("jndi.09", name.toString()));  //$NON-NLS-1$
         }
         validateIndex(index, true);
         Enumeration<String> enumeration = name.getAll();
@@ -640,7 +641,8 @@ public class CompoundName implements Name {
 
     public Name add(String element) throws InvalidNameException {
         if (element == null) {
-            throw new InvalidNameException("A flat name can only have a single component");
+            // jndi.0A=A flat name can only have a single component
+            throw new InvalidNameException(Messages.getString("jndi.0A")); //$NON-NLS-1$
         }
         elem.add(element);
         return this;
@@ -648,19 +650,20 @@ public class CompoundName implements Name {
 
     /**
      * Insert an element within this CompoundName at the specified index.
-     * @return 				this <code>CompoundName</code>.
-     * @param element 		the String to insert
-     * @param index			the index of the element to insert - must be greater 
-     * 						than or equal to 0 and less than size().
+     * @return              this <code>CompoundName</code>.
+     * @param element       the String to insert
+     * @param index         the index of the element to insert - must be greater 
+     *                      than or equal to 0 and less than size().
      * @throws ArrayIndexOutOfBoundsException 
-     * 						thrown when the index is invalid.
+     *                      thrown when the index is invalid.
      * @throws InvalidNameException 
-     * 						thrown if the insertion of the element results in 
-     * 						this <code>CompoundName</code> becoming invalid.
+     *                      thrown if the insertion of the element results in 
+     *                      this <code>CompoundName</code> becoming invalid.
      */
     public Name add(int index, String element) throws InvalidNameException {
         if (element == null) {
-            throw new InvalidNameException("A flat name can only zero or one component");
+            // jndi.0B=A flat name can only zero or one component
+            throw new InvalidNameException(Messages.getString("jndi.0B")); //$NON-NLS-1$
         }
         validateIndex(index, true);
         elem.add(index, element);
@@ -670,14 +673,14 @@ public class CompoundName implements Name {
     /**
      * Delete an element from this <code>CompoundName</code>.
      * 
-     * @return 				the deleted element
-     * @param index			the index of the element to delete - must be greater 
-     * 						than or equal to 0 and less than size().
+     * @return              the deleted element
+     * @param index         the index of the element to delete - must be greater 
+     *                      than or equal to 0 and less than size().
      * @throws ArrayIndexOutOfBoundsException 
-     * 						thrown when the index is invalid.
+     *                      thrown when the index is invalid.
      * @throws InvalidNameException 
-     * 						thrown if the deletion of the element results in 
-     * 						this <code>CompoundName</code> becoming invalid.
+     *                      thrown if the deletion of the element results in 
+     *                      this <code>CompoundName</code> becoming invalid.
      */
     public Object remove(int index) throws InvalidNameException {
         validateIndex(index, false);
@@ -747,7 +750,7 @@ public class CompoundName implements Name {
      * One of them is of a type which is a private class and cannot therefore
      * be specified or implemented and so will be excluded from our deliverable.
      * The one protected field which we can spec and implement is as follows:
-     * 		protected Properties mySyntax - The properties associated with a CompoundName.
+     *      protected Properties mySyntax - The properties associated with a CompoundName.
      
      
      * 
@@ -773,16 +776,16 @@ public class CompoundName implements Name {
      * a <code>CompoundName</code>. Other than that the comparison is the same 
      * as that for a <code>CompositeName</code>.</p>
      * 
-     * @return  				a negative number means this is less than the 
-     *						supplied Object <code>o</code>. 
-     *						a positive number means this is greater than the 
-     *						supplied Object <code>o</code>.
-     *         				zero means the two objects are equal. 
-     * @param  o				the object to compare - cannot be null. 
+     * @return                  a negative number means this is less than the 
+     *                      supplied Object <code>o</code>. 
+     *                      a positive number means this is greater than the 
+     *                      supplied Object <code>o</code>.
+     *                      zero means the two objects are equal. 
+     * @param  o                the object to compare - cannot be null. 
      * @throws ClassCastException 
-     *						when <code>o</code> is not a compatible class that 
-     *						can be compared or if the object to compare 
-     *						<code>o</code> is null.
+     *                      when <code>o</code> is not a compatible class that 
+     *                      can be compared or if the object to compare 
+     *                      <code>o</code> is null.
      */
     public int compareTo(Object o) {
         if (!(o instanceof CompoundName)) {
@@ -821,7 +824,7 @@ public class CompoundName implements Name {
      * If jndi.syntax.ignorecase is set to true then use the lowercase version 
      * of the element to calculate its hashcode.</p>
      * 
-     * @return 				the hashcode of this object.
+     * @return              the hashcode of this object.
      */
     @Override
     public int hashCode() {
@@ -1001,9 +1004,9 @@ public class CompoundName implements Name {
  * field (see above).
  */
 class NameImpl {
-	protected NameImpl() {
-		super();
-	}
+    protected NameImpl() {
+        super();
+    }
 }
 
 

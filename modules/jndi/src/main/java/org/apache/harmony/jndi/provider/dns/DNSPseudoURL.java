@@ -25,6 +25,8 @@ package org.apache.harmony.jndi.provider.dns;
 
 import java.util.StringTokenizer;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 /**
  * Represents a DNS pseudo URL.
  * @author Alexei Zakharov
@@ -32,9 +34,9 @@ import java.util.StringTokenizer;
  */
 public class DNSPseudoURL {
 
-    private String host = "localhost";
+    private String host = "localhost"; //$NON-NLS-1$
     private int port = ProviderConstants.DEFAULT_DNS_PORT;
-    private String domain = ".";
+    private String domain = "."; //$NON-NLS-1$
     private boolean hostIpWasGiven = false;
 
     /**
@@ -58,31 +60,36 @@ public class DNSPseudoURL {
         String token;
 
         if (strForm == null) {
-            throw new NullPointerException("strForm is null");
+            // jndi.67=strForm is null
+            throw new NullPointerException(Messages.getString("jndi.67")); //$NON-NLS-1$
         }
-        st = new StringTokenizer(strForm, "/", true);
+        st = new StringTokenizer(strForm, "/", true); //$NON-NLS-1$
         if (!st.hasMoreTokens()) {
-            throw new IllegalArgumentException("Empty URL");
+            // jndi.68=Empty URL
+            throw new IllegalArgumentException(Messages.getString("jndi.68")); //$NON-NLS-1$
         }
         // scheme
         token = st.nextToken();
-        if (!token.equals("dns:")) {
-            throw new IllegalArgumentException("Specified scheme is not dns");
+        if (!token.equals("dns:")) { //$NON-NLS-1$
+            // jndi.69=Specified scheme is not dns
+            throw new IllegalArgumentException(Messages.getString("jndi.69")); //$NON-NLS-1$
         }
         // host
         if (st.hasMoreTokens()) {
             token = st.nextToken();
-            if (!token.equals("/") || !st.hasMoreTokens()) { 
-                throw new IllegalArgumentException("Bad URL syntax");
+            if (!token.equals("/") || !st.hasMoreTokens()) {  //$NON-NLS-1$
+                // jndi.6A=Bad URL syntax
+                throw new IllegalArgumentException(Messages.getString("jndi.6A")); //$NON-NLS-1$
             }
             token = st.nextToken();
-            if (token.equals("/")) {
+            if (token.equals("/")) { //$NON-NLS-1$
                 // host[:port] was given
                 if (!st.hasMoreElements()) {
-                    throw new IllegalArgumentException("Bad URL syntax");
+                    // jndi.6A=Bad URL syntax
+                    throw new IllegalArgumentException(Messages.getString("jndi.6A")); //$NON-NLS-1$
                 }
                 token = st.nextToken();
-                st2 = new StringTokenizer(token, ":");
+                st2 = new StringTokenizer(token, ":"); //$NON-NLS-1$
                 host = st2.nextToken();
                 try {
                     ProviderMgr.parseIpStr(host);
@@ -97,8 +104,9 @@ public class DNSPseudoURL {
                 // domain
                 if (st.hasMoreTokens()) {
                     token = st.nextToken();
-                    if (!token.equals("/") || !st.hasMoreTokens()) {
-                        throw new IllegalArgumentException("Bad URL syntax");
+                    if (!token.equals("/") || !st.hasMoreTokens()) { //$NON-NLS-1$
+                        // jndi.6A=Bad URL syntax
+                        throw new IllegalArgumentException(Messages.getString("jndi.6A")); //$NON-NLS-1$
                     }
                     domain = ProviderMgr.normalizeName(st.nextToken());
                 }
@@ -108,8 +116,9 @@ public class DNSPseudoURL {
             }
             // extra
             if (st.hasMoreTokens()) {
+                // jndi.66=Extra characters encountered at the end of the URL
                 throw new IllegalArgumentException(
-                        "Extra characters encountered at the end of the URL");
+                        Messages.getString("jndi.66")); //$NON-NLS-1$
             }
         }
     }

@@ -24,6 +24,8 @@
 package org.apache.harmony.jndi.provider.dns;
 
 import java.util.StringTokenizer;
+
+import org.apache.harmony.jndi.internal.nls.Messages;
 //import java.util.logging.Logger;
 
 /**
@@ -62,7 +64,8 @@ public class ProviderMgr {
         if (name != null) {
             // initial check
             if (buffer == null) {
-                throw new NullPointerException("buffer is null");
+                // jndi.32=buffer is null
+                throw new NullPointerException(Messages.getString("jndi.32")); //$NON-NLS-1$
             }
             if (startIdx > buffer.length || startIdx < 0) {
                 throw new ArrayIndexOutOfBoundsException();
@@ -73,7 +76,7 @@ public class ProviderMgr {
             //           "The syntax of the domain name " +
             //            name + " does not conform to RFC 1035");
             //}
-            st = new StringTokenizer(name, ".");
+            st = new StringTokenizer(name, "."); //$NON-NLS-1$
             while (st.hasMoreTokens()) {
                 String token = st.nextToken();
                 byte[] tokenBytes;
@@ -85,8 +88,8 @@ public class ProviderMgr {
                 tokenBytes = token.getBytes();
                 tokenBytesLen = tokenBytes.length;
                 if (tokenBytesLen > ProviderConstants.LABEL_MAX_CHARS) {
-                    throw new DomainProtocolException("The domain label is " +
-                            "too long: " + token);
+                    // jndi.64=The domain label is too long: {0}
+                    throw new DomainProtocolException(Messages.getString("jndi.64", token)); //$NON-NLS-1$
                 }
                 if (idx + tokenBytesLen + 1 > buffer.length) {
                     throw new ArrayIndexOutOfBoundsException();
@@ -96,9 +99,9 @@ public class ProviderMgr {
                     buffer[idx++] = tokenBytes[i];
                 }
                 if (idx - startIdx + 1 > ProviderConstants.NAME_MAX_CHARS) {
-                    throw new DomainProtocolException("The domain name " +
-                            "is more than " + ProviderConstants.NAME_MAX_CHARS +
-                            " octets long: " + name);
+                    // jndi.5A=The domain name is more than {0} octets long: {1}
+                    throw new DomainProtocolException(
+                            Messages.getString("jndi.5A", ProviderConstants.NAME_MAX_CHARS, name)); //$NON-NLS-1$
                 }
             }
             // every domain name should end with an zero octet
@@ -123,10 +126,12 @@ public class ProviderMgr {
         boolean firstTime = true;
 
         if (mesBytes == null) {
-            throw new NullPointerException("Input byte array is null");
+            // jndi.5B=Input byte array is null
+            throw new NullPointerException(Messages.getString("jndi.5B")); //$NON-NLS-1$
         }
         if (result == null) {
-            throw new NullPointerException("The result string buffer is null");
+            // jndi.5C=The result string buffer is null
+            throw new NullPointerException(Messages.getString("jndi.5C")); //$NON-NLS-1$
         }
         while (true) {
             int n = parse8Int(mesBytes, idx++);
@@ -148,12 +153,12 @@ public class ProviderMgr {
             }
             // plain label
             if (n > ProviderConstants.LABEL_MAX_CHARS) {
-                throw new DomainProtocolException("Domain label is too " +
-                        " long");
+                // jndi.59=Domain label is too long.
+                throw new DomainProtocolException(Messages.getString("jndi.59")); //$NON-NLS-1$
             }
             if (idx + n > mesBytes.length) {
-                throw new DomainProtocolException("Truncated data while " +
-                        " parsing the domain name");
+                // jndi.5D=Truncated data while parsing the domain name
+                throw new DomainProtocolException(Messages.getString("jndi.5D")); //$NON-NLS-1$
             }
             // append parsed label
             if (firstTime) {
@@ -182,8 +187,8 @@ public class ProviderMgr {
         if (name1 == null || name2 == null) {
             return 0;
         }
-        st1 = new StringTokenizer(name1, ".");
-        st2 = new StringTokenizer(name2, ".");
+        st1 = new StringTokenizer(name1, "."); //$NON-NLS-1$
+        st2 = new StringTokenizer(name2, "."); //$NON-NLS-1$
         while (st1.hasMoreTokens() && st2.hasMoreTokens()) {
             if (st1.nextToken().equalsIgnoreCase(st2.nextToken())) {
                 k++;
@@ -205,14 +210,14 @@ public class ProviderMgr {
         if (name == null) {
             return null;
         }
-        if (name.trim().equals(".") || name.trim().length() == 0) {
-            return ".";
+        if (name.trim().equals(".") || name.trim().length() == 0) { //$NON-NLS-1$
+            return "."; //$NON-NLS-1$
         }
         n = name.indexOf('.');
         if (n != -1 && name.length() > n + 1)  {
             return name.substring(n + 1, name.length());
         }
-        return ".";
+        return "."; //$NON-NLS-1$
     }
 
     /**
@@ -307,10 +312,12 @@ public class ProviderMgr {
         int idx = startIdx;
 
         if (value == null || buffer == null) {
-            throw new NullPointerException("value or buffer is null");
+            // jndi.5E=value or buffer is null
+            throw new NullPointerException(Messages.getString("jndi.5E")); //$NON-NLS-1$
         }
         if (value.length() > 255) {
-            throw new DomainProtocolException("Character string is too long");
+            // jndi.5F=Character string is too long
+            throw new DomainProtocolException(Messages.getString("jndi.5F")); //$NON-NLS-1$
         }
         bytes = value.getBytes();
         buffer[idx++] = (byte) bytes.length; 
@@ -333,7 +340,8 @@ public class ProviderMgr {
         int len;
 
         if (mesBytes == null || result == null) {
-            throw new NullPointerException("mesBytes or result is null");
+            // jndi.60=mesBytes or result is null
+            throw new NullPointerException(Messages.getString("jndi.60")); //$NON-NLS-1$
         }
         len = mesBytes[startIdx];
         result.append(new String(mesBytes, startIdx + 1, len));
@@ -383,11 +391,11 @@ public class ProviderMgr {
      */
     public static boolean namesAreEqual(String name1, String name2)
     {
-        if (!name1.endsWith(".")) {
-            name1 += ".";
+        if (!name1.endsWith(".")) { //$NON-NLS-1$
+            name1 += "."; //$NON-NLS-1$
         }
-        if (!name2.endsWith(".")) {
-            name2 += ".";
+        if (!name2.endsWith(".")) { //$NON-NLS-1$
+            name2 += "."; //$NON-NLS-1$
         }
         return name1.equalsIgnoreCase(name2);
     }
@@ -430,8 +438,8 @@ public class ProviderMgr {
         if (zone == null) {
             return zone;
         }
-        return zone.endsWith(".") ? zone.toLowerCase() :
-                zone.toLowerCase() + ".";
+        return zone.endsWith(".") ? zone.toLowerCase() : //$NON-NLS-1$
+                zone.toLowerCase() + "."; //$NON-NLS-1$
     }
     
 
@@ -447,14 +455,14 @@ public class ProviderMgr {
         StringBuffer sb = new StringBuffer();
 
         if (ip == null || ip.length < 4) {
-            throw new IllegalArgumentException("Given array is null or has the"+
-                    " length less than four");
+            // jndi.61=Given array is null or has the length less than four
+            throw new IllegalArgumentException(Messages.getString("jndi.61")); //$NON-NLS-1$
         }
         for (int i = 0; i < 4; i++) {
             if (i > 0) {
-                sb.append(".");
+                sb.append("."); //$NON-NLS-1$
             }
-            sb.append("" + ((ip[i]) & 0xff));
+            sb.append("" + ((ip[i]) & 0xff)); //$NON-NLS-1$
         }
         return sb.toString();
     }
@@ -471,12 +479,13 @@ public class ProviderMgr {
     public static byte[] parseIpStr(String ipStr) {
         StringTokenizer st;
         byte[] b = new byte[4];
-        final String errMsg1 = "Given string is not in appropriate format"; 
+        // jndi.62=Given string is not in appropriate format
+        final String errMsg1 = Messages.getString("jndi.62");  //$NON-NLS-1$
 
         if (ipStr != null) {
             int k = 0;
 
-            st = new StringTokenizer(ipStr, ".");
+            st = new StringTokenizer(ipStr, "."); //$NON-NLS-1$
             while (st.hasMoreTokens()) {
                 String token = st.nextToken();
                 int n;
@@ -492,8 +501,8 @@ public class ProviderMgr {
                 throw new IllegalArgumentException(errMsg1);
             }
         } else {
-            throw new NullPointerException(
-                    "Given string representation is null");
+            // jndi.63=Given string representation is null
+            throw new NullPointerException(Messages.getString("jndi.63")); //$NON-NLS-1$
         }
         return b;
     }

@@ -25,6 +25,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 /**
  * A <code>CompositeName</code> represents a name in a naming service which 
  * spans multiple namespaces. For example the name 
@@ -223,7 +225,8 @@ public class CompositeName implements Name {
                     status = OUT_OF_QUOTE;
                     continue;
                 }
-                throw new InvalidNameException("End quote is not at the end of element"); //$NON-NLS-1$
+                // jndi.0C=End quote is not at the end of element
+                throw new InvalidNameException(Messages.getString("jndi.0C"));  //$NON-NLS-1$
             }
 
             if (c == '\\') {
@@ -237,7 +240,8 @@ public class CompositeName implements Name {
                         buf.append(nc);
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    throw new InvalidNameException("Escape cannot be at the end of element"); //$NON-NLS-1$
+                    // jndi.0D=Escape cannot be at the end of element
+                    throw new InvalidNameException(Messages.getString("jndi.0D"));  //$NON-NLS-1$
                 }
                 continue;
             }
@@ -267,7 +271,8 @@ public class CompositeName implements Name {
 
         // check end status
         if (status != OUT_OF_QUOTE && status != QUOTE_ENDED) {
-            throw new InvalidNameException("Wrong quote usage."); //$NON-NLS-1$
+            // jndi.0E=Wrong quote usage.
+            throw new InvalidNameException(Messages.getString("jndi.0E"));  //$NON-NLS-1$
         }
         return l;
     }
@@ -355,7 +360,8 @@ public class CompositeName implements Name {
             throw new NullPointerException();
         }
         if (!(name instanceof CompositeName)) {
-            throw new InvalidNameException("Must be a CompositeName"); //$NON-NLS-1$
+            // jndi.0F=Must be a CompositeName
+            throw new InvalidNameException(Messages.getString("jndi.0F"));  //$NON-NLS-1$
         }
 
         Enumeration<String> enumeration = name.getAll();
@@ -370,7 +376,8 @@ public class CompositeName implements Name {
             throw new NullPointerException();
         }
         if (!(name instanceof CompositeName)) {
-            throw new InvalidNameException("Must be a CompositeName"); //$NON-NLS-1$
+            // jndi.0F=Must be a CompositeName
+            throw new InvalidNameException(Messages.getString("jndi.0F"));  //$NON-NLS-1$
         }
 
         if (index < 0 || index > elems.size()) {

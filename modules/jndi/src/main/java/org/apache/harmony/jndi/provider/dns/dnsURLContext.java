@@ -32,6 +32,8 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 /**
  * DNS context that is capable of serving requests with DNS URL's given as
  * names.
@@ -137,7 +139,8 @@ public class dnsURLContext extends DNSContext {
      */
     private void process(String name) throws NamingException {
         if (name == null) {
-            throw new NullPointerException("name is null");
+            // jndi.2E=The name is null
+            throw new NullPointerException(Messages.getString("jndi.2E")); //$NON-NLS-1$
         }
         addToEnvironment(Context.PROVIDER_URL, name);
     }

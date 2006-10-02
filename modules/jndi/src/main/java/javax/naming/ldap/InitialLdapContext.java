@@ -23,6 +23,8 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.NamingException;
 import javax.naming.NotContextException;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 /**
  * This is used as the starting context when the LDAPv3 extended functionality
  * provided by the <code>javax.naming.ldap</code> package is required.
@@ -83,7 +85,7 @@ public class InitialLdapContext
      * @param cs                the connection controls which may be null
      * @throws NamingException  If an error is encountered.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public InitialLdapContext(Hashtable<?, ?> h, Control[] cs)
         throws NamingException {
         super(true);
@@ -125,7 +127,8 @@ public class InitialLdapContext
      */
     private LdapContext getDefaultInitLdapContext() throws NamingException {
         if (!(super.defaultInitCtx instanceof LdapContext)) {
-            throw new NotContextException("Expected an LdapContext object."); //$NON-NLS-1$
+            // jndi.1D=Expected an LdapContext object.
+            throw new NotContextException(Messages.getString("jndi.1D"));  //$NON-NLS-1$
         }
         return (LdapContext) super.defaultInitCtx;
     }

@@ -40,6 +40,8 @@ import javax.naming.directory.SearchResult;
 import javax.naming.spi.DirectoryManager;
 import javax.naming.spi.ResolveResult;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 
 /**
  * Base class for URL directory context implementations.
@@ -78,8 +80,9 @@ public abstract class GenericURLDirContext
     public void bind(Name name, Object obj, Attributes attrs)
             throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -116,8 +119,9 @@ public abstract class GenericURLDirContext
     public void rebind(Name name, Object obj, Attributes attrs)
             throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -154,8 +158,9 @@ public abstract class GenericURLDirContext
     public DirContext createSubcontext(Name name, Attributes attrs)
             throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -189,8 +194,9 @@ public abstract class GenericURLDirContext
      */
     public Attributes getAttributes(Name name) throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -224,8 +230,9 @@ public abstract class GenericURLDirContext
     public Attributes getAttributes(Name name, String[] attrIds)
             throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -260,8 +267,9 @@ public abstract class GenericURLDirContext
     public void modifyAttributes(Name name, int mod_op, Attributes attrs)
             throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -298,8 +306,9 @@ public abstract class GenericURLDirContext
     public void modifyAttributes(Name name, ModificationItem[] mods)
             throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -335,8 +344,9 @@ public abstract class GenericURLDirContext
      */
     public DirContext getSchema(Name name) throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -370,8 +380,9 @@ public abstract class GenericURLDirContext
     public DirContext getSchemaClassDefinition(Name name)
             throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -406,8 +417,9 @@ public abstract class GenericURLDirContext
     public NamingEnumeration<SearchResult> search(Name name, Attributes matchingAttributes)
             throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -444,8 +456,9 @@ public abstract class GenericURLDirContext
     public NamingEnumeration<SearchResult> search(Name name, Attributes matchingAttributes,
             String[] attributesToReturn) throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -483,8 +496,9 @@ public abstract class GenericURLDirContext
     public NamingEnumeration<SearchResult> search(Name name, String filter,
             SearchControls cons) throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -519,8 +533,9 @@ public abstract class GenericURLDirContext
     public NamingEnumeration<SearchResult> search(Name name, String filterExpr,
             Object[] filterArgs, SearchControls cons) throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {

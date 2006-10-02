@@ -33,6 +33,8 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 /**
  * Contains service methods that are used for transporting DNS messages from
  * DNS client to DNS server and vice versa.
@@ -80,8 +82,9 @@ public class TransportMgr {
         try {
             srvAddrArr = ProviderMgr.parseIpStr(server);
         } catch (IllegalArgumentException e) {
+            // jndi.40=Unable to connect: bad IP address
             throw new DomainProtocolException(
-                    "Unable to connect: bad IP address");
+                    Messages.getString("jndi.40")); //$NON-NLS-1$
         }
         try {
             dSocket = new DatagramSocket();
@@ -94,13 +97,15 @@ public class TransportMgr {
             inPacket = new DatagramPacket(inBuf, inBufLen, srvAddr, serverPort);
             dSocket.receive(inPacket);
         } catch (IllegalStateException e) {
+            // jndi.41=Error while querying DNS server
             throw new DomainProtocolException(
-                    "Error while querying DNS server", e);
+                    Messages.getString("jndi.41"), e); //$NON-NLS-1$
         } catch (SocketTimeoutException e) {
             throw (e);
         } catch (IOException e) {
+            // jndi.41=Error while querying DNS server
             throw new DomainProtocolException(
-                    "Error while querying DNS server", e);
+                    Messages.getString("jndi.41"), e); //$NON-NLS-1$
         } finally {
             if (dSocket != null) {
                 dSocket.close();
@@ -109,7 +114,8 @@ public class TransportMgr {
         if (inPacket != null) {
             return inPacket.getLength();
         }
-        throw new DomainProtocolException("unknown error");
+        // jndi.42=unknown error
+        throw new DomainProtocolException(Messages.getString("jndi.42")); //$NON-NLS-1$
     }
 
     /**
@@ -155,8 +161,9 @@ public class TransportMgr {
         try {
             srvAddrArr = ProviderMgr.parseIpStr(server);
         } catch (IllegalArgumentException e) {
+            // jndi.40=Unable to connect: bad IP address
             throw new DomainProtocolException(
-                    "Unable to connect: bad IP address");
+                    Messages.getString("jndi.40")); //$NON-NLS-1$
         }
         try {
             srvAddr = InetAddress.getByAddress(srvAddrArr);
@@ -171,21 +178,25 @@ public class TransportMgr {
             iStream.read(tmpArr, 0, 2);
             inLen = ProviderMgr.parse16Int(tmpArr, 0);
             if (inLen > inBufLen) {
-                throw new DomainProtocolException("Output buffer is too small");
+                // jndi.43=Output buffer is too small
+                throw new DomainProtocolException(Messages.getString("jndi.43")); //$NON-NLS-1$
             }
             actualLen = iStream.read(inBuf, 0, inLen);
             if (actualLen != inLen) {
+                // jndi.44=Error while receiving message over TCP
                 throw new DomainProtocolException(
-                        "Error while receiving message over TCP");
+                        Messages.getString("jndi.44")); //$NON-NLS-1$
             }
         } catch (IllegalStateException e) {
+            // jndi.41=Error while querying DNS server
             throw new DomainProtocolException(
-                    "Error while querying DNS server", e);
+                    Messages.getString("jndi.41"), e); //$NON-NLS-1$
         } catch (SocketTimeoutException e) {
             throw (e);
         } catch (IOException e) {
+            // jndi.41=Error while querying DNS server
             throw new DomainProtocolException(
-                    "Error while querying DNS server", e);
+                    Messages.getString("jndi.41"), e); //$NON-NLS-1$
         } finally {
             if (socket != null && !socket.isClosed()) {
                 try {

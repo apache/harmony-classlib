@@ -38,6 +38,8 @@ import javax.naming.OperationNotSupportedException;
 import javax.naming.spi.NamingManager;
 import javax.naming.spi.ResolveResult;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 
 /**
  * Base class for URL naming context implementations.
@@ -70,7 +72,7 @@ public abstract class GenericURLContext implements Context {
      * @param   environment
      *          Environment to copy.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     protected GenericURLContext(Hashtable<?, ?> environment) {
         super();
         if (environment == null) {
@@ -85,8 +87,9 @@ public abstract class GenericURLContext implements Context {
      */
     public Object lookup(Name name) throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -119,8 +122,9 @@ public abstract class GenericURLContext implements Context {
      */
     public Object lookupLink(Name name) throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -153,8 +157,9 @@ public abstract class GenericURLContext implements Context {
      */
     public void bind(Name name, Object obj) throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -189,8 +194,9 @@ public abstract class GenericURLContext implements Context {
      */
     public void rebind(Name name, Object obj) throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -225,8 +231,9 @@ public abstract class GenericURLContext implements Context {
      */
     public void unbind(Name name) throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -261,8 +268,9 @@ public abstract class GenericURLContext implements Context {
      */
     public Context createSubcontext(Name name) throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -295,8 +303,9 @@ public abstract class GenericURLContext implements Context {
      */
     public void destroySubcontext(Name name) throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -334,29 +343,31 @@ public abstract class GenericURLContext implements Context {
      */
     public void rename(Name oldName, Name newName) throws NamingException {
         if (!(oldName instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + oldName);
+                    Messages.getString("jndi.26", oldName)); //$NON-NLS-1$
         }
 
         if (!(newName instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + newName);
+                    Messages.getString("jndi.26", newName)); //$NON-NLS-1$
         }
 
         if ((oldName.size() == 1) ^ (newName.size() != 1)) {
-            throw new OperationNotSupportedException("Renaming of names "
-                    + "of which one has only one component, and another "
-                    + "has more than one component is not supported: "
-                    + oldName + " -> " + newName);
+            // jndi.27=Renaming of names of which one has only one component, + 
+            //         and another has more than one component is not supported: {0} -> {1}
+            throw new OperationNotSupportedException(
+                    Messages.getString("jndi.27", oldName, newName)); //$NON-NLS-1$
         }
 
         if (oldName.size() == 1) {
              rename(oldName.get(0), newName.get(0));
         } else {
             if (!urlEquals(oldName.get(0), oldName.get(0))) {
-                throw new OperationNotSupportedException("Renaming of names "
-                        + "using different URLs as their first components "
-                        + "is not supported: " + oldName + " -> " + newName);
+                // jndi.28=Renaming of names using different URLs as their first components is not supported: {0} -> {1}
+                throw new OperationNotSupportedException(
+                        Messages.getString("jndi.28", oldName, newName)); //$NON-NLS-1$
             }
             Context context = getContinuationContext(oldName);
 
@@ -381,9 +392,9 @@ public abstract class GenericURLContext implements Context {
         String newPrefix = getURLPrefix(newName);
 
         if(!urlEquals(oldPrefix, newPrefix)) {
-            throw new OperationNotSupportedException("Renaming of names "
-                    + "using different URL prefixes is not supported: "
-                    + oldName + " -> " + newName);
+            // jndi.29=Renaming of names using different URL prefixes is not supported: {0} -> {1}
+            throw new OperationNotSupportedException(
+                    Messages.getString("jndi.29", oldName, newName)); //$NON-NLS-1$
         }
         ResolveResult result = getRootURLContext(oldName, environment);
         Context context = (Context) result.getResolvedObj();
@@ -401,8 +412,9 @@ public abstract class GenericURLContext implements Context {
      */
     public NamingEnumeration<NameClassPair> list(Name name) throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -436,8 +448,9 @@ public abstract class GenericURLContext implements Context {
      */
     public NamingEnumeration<Binding> listBindings(Name name) throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -471,8 +484,9 @@ public abstract class GenericURLContext implements Context {
      */
     public NameParser getNameParser(Name name) throws NamingException {
         if (!(name instanceof CompositeName)) {
+            // jndi.26=URL context can't accept non-composite name: {0}
             throw new InvalidNameException(
-                    "URL context can't accept non-composite name: " + name);
+                    Messages.getString("jndi.26", name)); //$NON-NLS-1$
         }
 
         if (name.size() == 1) {
@@ -520,7 +534,7 @@ public abstract class GenericURLContext implements Context {
      * {@inheritDoc}
      */
     public String getNameInNamespace() {
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /**
@@ -673,11 +687,12 @@ public abstract class GenericURLContext implements Context {
     protected String getURLPrefix(String url) throws NamingException {
         int index = url.indexOf(':');
         if (index < 0) {
-            throw new OperationNotSupportedException("Invalid URL: " + url);
+            // jndi.2A=Invalid URL: {0}
+            throw new OperationNotSupportedException(Messages.getString("jndi.2A", url)); //$NON-NLS-1$
         }
         index++;
 
-        if (url.startsWith("//", index)) {
+        if (url.startsWith("//", index)) { //$NON-NLS-1$
             int slashPos = url.indexOf('/', index + 2);
             index = ((slashPos >= 0) ? slashPos : url.length());
         }
@@ -761,7 +776,8 @@ public abstract class GenericURLContext implements Context {
                 int next = i + 2;
 
                 if (next > length) {
-                    new IllegalArgumentException("Invalid URL format: " + str);
+                    //jndi.2B=Invalid URL format: {0}
+                    new IllegalArgumentException(Messages.getString("jndi.2B", str)); //$NON-NLS-1$
                 }
 
                 try {
@@ -769,8 +785,9 @@ public abstract class GenericURLContext implements Context {
                             Integer.parseInt(str.substring(i, next), 16);
                 } catch (NumberFormatException e) {
                     throw (IllegalArgumentException)
+                            //  jndi.2B=Invalid URL format: {0}
                             new IllegalArgumentException(
-                                    "Invalid URL format: " + str).initCause(e);
+                                    Messages.getString("jndi.2B", str)).initCause(e); //$NON-NLS-1$
                 }
 
                 i = next;

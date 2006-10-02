@@ -25,6 +25,8 @@ package org.apache.harmony.jndi.provider.dns;
 
 import java.util.StringTokenizer;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 /**
  * Represents domain protocol Resource Record
  * 
@@ -99,7 +101,8 @@ public class ResourceRecord {
 
         // basic checking
         if (buffer == null) {
-            throw new DomainProtocolException("buffer is null");
+            // jndi.32=buffer is null
+            throw new DomainProtocolException(Messages.getString("jndi.32")); //$NON-NLS-1$
         }
         // NAME
         idx = ProviderMgr.writeName(name, buffer, idx);
@@ -132,13 +135,13 @@ public class ResourceRecord {
             }
         }
         else if (rrType == ProviderConstants.SOA_TYPE) {
-            StringTokenizer st = new StringTokenizer((String) rData, " ");
+            StringTokenizer st = new StringTokenizer((String) rData, " "); //$NON-NLS-1$
             String token;
             int idx0 = idx; // saving RDLENGTH position
 
             if (st.countTokens() != 7) {
-                throw new DomainProtocolException(
-                        "Invalid number of fields while parsing SOA record");
+                // jndi.35=Invalid number of fields while parsing SOA record
+                throw new DomainProtocolException(Messages.getString("jndi.35")); //$NON-NLS-1$
             }
             idx += 2; // skip RDLENGTH for now
             // RDATA
@@ -161,20 +164,22 @@ public class ResourceRecord {
                 }
             }
             catch (NumberFormatException e) {
+                // jndi.36=Error while parsing SOA record
                 throw new DomainProtocolException(
-                        "Error while parsing SOA record", e);
+                        Messages.getString("jndi.36"), e); //$NON-NLS-1$
             }
             // RDLENGTH
             ProviderMgr.write16Int(idx - 2 - idx0, buffer, idx0);
         }
         else if (rrType == ProviderConstants.MX_TYPE) {
-            StringTokenizer st = new StringTokenizer((String) rData, " ");
+            StringTokenizer st = new StringTokenizer((String) rData, " "); //$NON-NLS-1$
             String token;
             int idx0 = idx; // saving RDLENGTH position
 
             if (st.countTokens() != 2) {
+                // jndi.37=Invalid number of fields while parsing MX record
                 throw new DomainProtocolException(
-                        "Invalid number of fields while parsing MX record");
+                        Messages.getString("jndi.37")); //$NON-NLS-1$
             }
             idx += 2; // skip RDLENGTH for now
             // PREFERENCE
@@ -183,8 +188,9 @@ public class ResourceRecord {
                 ProviderMgr.write16Int(Integer.parseInt(token), buffer, idx);
             }
             catch (NumberFormatException e) {
+                // jndi.38=Error while parsing MX record
                 throw new DomainProtocolException(
-                        "Error while parsing MX record", e);
+                        Messages.getString("jndi.38"), e); //$NON-NLS-1$
             }
             // EXCHANGE
             token = st.nextToken();
@@ -193,13 +199,14 @@ public class ResourceRecord {
             ProviderMgr.write16Int(idx - 2 - idx0, buffer, idx0);
         }
         else if (rrType == ProviderConstants.HINFO_TYPE) {
-            StringTokenizer st = new StringTokenizer((String) rData, " ");
+            StringTokenizer st = new StringTokenizer((String) rData, " "); //$NON-NLS-1$
             String token;
             int idx0 = idx; // saving RDLENGTH position
 
             if (st.countTokens() != 2) {
+                // jndi.39=Invalid number of fields while parsing HINFO record
                 throw new DomainProtocolException(
-                        "Invalid number of fields while parsing HINFO record");
+                        Messages.getString("jndi.39")); //$NON-NLS-1$
             }
             idx += 2; // skip RDLENGTH for now
             // CPU
@@ -214,7 +221,7 @@ public class ResourceRecord {
         else if (rrType == ProviderConstants.TXT_TYPE) {
             // character string with preceding length octet
             int idx0 = idx;
-            StringTokenizer st = new StringTokenizer((String) rData, " ");
+            StringTokenizer st = new StringTokenizer((String) rData, " "); //$NON-NLS-1$
 
             idx += 2;
             // RDATA
@@ -222,27 +229,30 @@ public class ResourceRecord {
                 String token = st.nextToken();
 
                 if (token.getBytes().length > 255) {
+                    // jndi.3A=The length of character string exceed 255 octets
                     throw new DomainProtocolException(
-                            "The length of character string exceed 255 octets");
+                            Messages.getString("jndi.3A")); //$NON-NLS-1$
                 }
                 idx = ProviderMgr.writeCharString(token, buffer, idx);
             }
             if (idx - 2 - idx0 > 65535) {
+                // jndi.3B=Length of TXT field exceed 65535
                 throw new DomainProtocolException(
-                        "Length of TXT field exceed 65535");
+                        Messages.getString("jndi.3B")); //$NON-NLS-1$
             }
             // RDLENGTH
             ProviderMgr.write16Int(idx - 2 - idx0, buffer, idx0);
         }
         else if (rrType == ProviderConstants.SRV_TYPE) {
-            StringTokenizer st = new StringTokenizer((String) rData, " ");
+            StringTokenizer st = new StringTokenizer((String) rData, " "); //$NON-NLS-1$
             String token;
             int idx0 = idx; // saving RDLENGTH position
 
             idx += 2;
             if (st.countTokens() != 4) {
+                // jndi.3C=Invalid number of fields while parsing SRV record
                 throw new DomainProtocolException(
-                        "Invalid number of fields while parsing SRV record");
+                        Messages.getString("jndi.3C")); //$NON-NLS-1$
             }
             // RDATA
 
@@ -257,8 +267,9 @@ public class ResourceRecord {
                 }
             }
             catch (NumberFormatException e) {
+                // jndi.3D=Error while parsing SRV record
                 throw new DomainProtocolException(
-                        "Error while parsing SRV record", e);
+                        Messages.getString("jndi.3D"), e); //$NON-NLS-1$
             }
             // TARGET
             token = st.nextToken();
@@ -271,9 +282,9 @@ public class ResourceRecord {
             byte[] bytes;
             
             if (!(rData instanceof byte[])) {
+                // jndi.3E=RDATA for unknown record type {0} should have value of byte[] type
                 throw new DomainProtocolException(
-                        "RDATA for unknown record type " + rrType +
-                        " should have value of byte[] type");
+                        Messages.getString("jndi.3E", rrType)); //$NON-NLS-1$
             }
             bytes = (byte[]) rData;
             // RDLENGTH
@@ -307,7 +318,8 @@ public class ResourceRecord {
         Object rDat = null; 
 
         if (resultRR == null) {
-            throw new NullPointerException("Given resultRR is null");
+            // jndi.3F=Given resultRR is null
+            throw new NullPointerException(Messages.getString("jndi.3F")); //$NON-NLS-1$
         }
         // NAME
         idx = ProviderMgr.parseName(mesBytes, idx, nameSB);
@@ -355,7 +367,7 @@ public class ResourceRecord {
             preference = ProviderMgr.parse16Int(mesBytes, idx);
             idx += 2;
             idx = ProviderMgr.parseName(mesBytes, idx, name);
-            rDat = "" + preference + " " +
+            rDat = "" + preference + " " + //$NON-NLS-1$ //$NON-NLS-2$
                     ProviderMgr.normalizeName(name.toString());
         }
         else if (rrType == ProviderConstants.SOA_TYPE) {
@@ -379,9 +391,9 @@ public class ResourceRecord {
             idx += 4;
             minimum = ProviderMgr.parse32Int(mesBytes, idx);
             idx += 4;
-            rDat = ProviderMgr.normalizeName(mName.toString()) + " " +
-                    ProviderMgr.normalizeName(rName.toString()) + " " +
-                    serial + " " + refresh + " " + retry + " " + expire + " " +
+            rDat = ProviderMgr.normalizeName(mName.toString()) + " " + //$NON-NLS-1$
+                    ProviderMgr.normalizeName(rName.toString()) + " " + //$NON-NLS-1$
+                    serial + " " + refresh + " " + retry + " " + expire + " " + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                     minimum;
         }
         else if (rrType == ProviderConstants.TXT_TYPE) {
@@ -408,7 +420,7 @@ public class ResourceRecord {
             StringBuffer res = new StringBuffer();
 
             idx = ProviderMgr.parseCharString(mesBytes, idx, res);
-            res.append(" ");
+            res.append(" "); //$NON-NLS-1$
             idx = ProviderMgr.parseCharString(mesBytes, idx, res);
             rDat = res.toString();
         }
@@ -425,7 +437,7 @@ public class ResourceRecord {
             port = ProviderMgr.parse16Int(mesBytes, idx);
             idx += 2;
             idx = ProviderMgr.parseName(mesBytes, idx, name);
-            rDat = "" + priority + " " + weight + " " + port + " " +
+            rDat = "" + priority + " " + weight + " " + port + " " + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                     ProviderMgr.normalizeName(name.toString());
         }
         // TODO add more Resource Record types here
@@ -445,13 +457,13 @@ public class ResourceRecord {
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append(name);
-        sb.append(" ");
+        sb.append(" "); //$NON-NLS-1$
         sb.append(ProviderConstants.rrTypeNames[rrType]);
-        sb.append(" ");
+        sb.append(" "); //$NON-NLS-1$
         sb.append(rrClass);
-        sb.append(" ");
-        sb.append("TTL=" + ttl);
-        sb.append(" ");
+        sb.append(" "); //$NON-NLS-1$
+        sb.append("TTL=" + ttl); //$NON-NLS-1$
+        sb.append(" "); //$NON-NLS-1$
         sb.append(rData.toString());
         return sb.toString();
     }

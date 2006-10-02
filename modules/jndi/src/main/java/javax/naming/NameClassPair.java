@@ -20,6 +20,8 @@ package javax.naming;
 
 import java.io.Serializable;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 /**
  * <code>NameClassPair</code> associates a name in a naming service with a 
  * specified class name and also with a relative flag. In JNDI, 
@@ -111,7 +113,8 @@ public class NameClassPair implements Serializable {
      */
     public NameClassPair(String name, String className, boolean relative) {
         if (name == null) {
-            throw new IllegalArgumentException("name must not be null");
+            // jndi.00=name must not be null
+            throw new IllegalArgumentException(Messages.getString("jndi.00")); //$NON-NLS-1$
         }
         this.name = name;
         this.className = className;
@@ -168,7 +171,8 @@ public class NameClassPair implements Serializable {
      */
     public void setName(String name) {
         if (name == null) {
-            throw new IllegalArgumentException("name must not be null");
+            // jndi.00=name must not be null
+            throw new IllegalArgumentException(Messages.getString("jndi.00")); //$NON-NLS-1$
         }
         this.name = name;
     }
@@ -191,8 +195,8 @@ public class NameClassPair implements Serializable {
      */
     public String getNameInNamespace() {
         if (fullName == null) {
-            throw new UnsupportedOperationException(
-                    "full name doesn't apply to this binding");
+            // jndi.01=full name doesn't apply to this binding
+            throw new UnsupportedOperationException(Messages.getString("jndi.01")); //$NON-NLS-1$
         }
         return fullName;
     }

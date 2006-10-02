@@ -18,6 +18,8 @@
 
 package javax.naming;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 /**
  * This is a type of <code>Reference</code> used to point to an address of type
  * "LinkAddress" where the address given is actually the string representation 
@@ -99,13 +101,15 @@ public class LinkRef extends Reference {
      */
     public String getLinkName() throws NamingException {
         if (!LinkRef.class.getName().equals(this.getClassName())) {
-            throw new MalformedLinkException("This is an invalid LinkRef object!"); //$NON-NLS-1$
+            // jndi.11=This is an invalid LinkRef object\!
+            throw new MalformedLinkException(Messages.getString("jndi.11"));  //$NON-NLS-1$
         }
         try {
             RefAddr addr = get(ADDR_TYPE);
             if (null == addr) {
+                // jndi.12=There is no address with type: {0}
                 throw new MalformedLinkException(
-                    "There is no address with type: " + ADDR_TYPE); //$NON-NLS-1$
+                        Messages.getString("jndi.12", ADDR_TYPE));  //$NON-NLS-1$
             }
             return (String) addr.getContent();
         } catch (NullPointerException e) {

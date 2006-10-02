@@ -39,6 +39,7 @@ import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.naming.ServiceUnavailableException;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
 import org.apache.harmony.jndi.provider.dns.SList.Server;
 
 //import org.apache.harmony.util.logging.LogConst;
@@ -273,13 +274,16 @@ public class Resolver implements Runnable {
 
         
         if (name == null) {
-            throw new NullPointerException("name is null");
+            // jndi.2E=The name is null
+            throw new NullPointerException(Messages.getString("jndi.2E")); //$NON-NLS-1$
         }
         if (types == null) {
-            throw new NullPointerException("types is null");
+            // jndi.6B=types is null
+            throw new NullPointerException(Messages.getString("jndi.6B")); //$NON-NLS-1$
         }
         if (classes == null) {
-            throw new NullPointerException("classes is null");
+            // jndi.6C=classes is null
+            throw new NullPointerException(Messages.getString("jndi.6C")); //$NON-NLS-1$
         }
         for (int element : classes) {
             for (int element0 : types) {
@@ -326,14 +330,14 @@ public class Resolver implements Runnable {
             // query remote DNS servers
 
             // determine work zone 
-            if (qName != null && !qName.equals(".")) {
+            if (qName != null && !qName.equals(".")) { //$NON-NLS-1$
                 workZone = qName;
                 // support for SRV-style qNames 
-                while (workZone.startsWith("_")) {
+                while (workZone.startsWith("_")) { //$NON-NLS-1$
                     workZone = ProviderMgr.getParentName(workZone);
                 }
             } else {
-                workZone = ".";
+                workZone = "."; //$NON-NLS-1$
             }
             //if (LogConst.DEBUG) {
             //    ProviderMgr.logger.fine("Lookup: new workZone is " +
@@ -398,8 +402,8 @@ public class Resolver implements Runnable {
                             //if (LogConst.DEBUG) {                            
                             //    ProviderMgr.logger.fine("Lookup: name error");
                             //}
-                            throw new NameNotFoundException("The name " + name +
-                                    " has not been found");
+                            // jndi.6D=Name {0} was not found
+                            throw new NameNotFoundException(Messages.getString("jndi.6D", name)); //$NON-NLS-1$
                         }
                         else if (report.aliasInfoWasReceived) {
                             // alias received
@@ -431,12 +435,12 @@ public class Resolver implements Runnable {
                                     break;
                                 }
                             }
-                            if (qName != null && !qName.equals("."))
+                            if (qName != null && !qName.equals(".")) //$NON-NLS-1$
                             {
                                 workZone = qName;
                             }
                             else {
-                                workZone = ".";
+                                workZone = "."; //$NON-NLS-1$
                             }
                             visitedServers = new Hashtable<Server, Object>();
                             for (int k = 0; k < report.records.size(); k++) {
@@ -510,7 +514,7 @@ public class Resolver implements Runnable {
                         //if (LogConst.DEBUG) {                            
                         //    ProviderMgr.logger.fine("Lookup: no idea");
                         //}
-                        if (!workZone.equals(".")) {
+                        if (!workZone.equals(".")) { //$NON-NLS-1$
                             workZone = ProviderMgr.getParentName(workZone);
                             //if (LogConst.DEBUG) {                            
                             //    ProviderMgr.logger.fine(
@@ -577,11 +581,12 @@ public class Resolver implements Runnable {
         //SList slist = SList.getInstance();
         
         if (name == null) {
-            throw new NullPointerException("name is null");
+            // jndi.2E=The name is null
+            throw new NullPointerException(Messages.getString("jndi.2E")); //$NON-NLS-1$
         }
         // if given name is SRV style name where domain name is prefixed 
         // with _Proto
-        if (name.startsWith("_")) {
+        if (name.startsWith("_")) { //$NON-NLS-1$
             int n = name.indexOf('.');
 
             if (n != -1) {
@@ -590,11 +595,11 @@ public class Resolver implements Runnable {
                     name = name.substring(n + 1, name.length());
                 } else {
                     // nonsense
-                    name = ".";
+                    name = "."; //$NON-NLS-1$
                 }
             } else {
                 // nonsense
-                name = ".";
+                name = "."; //$NON-NLS-1$
             }
         }
         enum1 = lookup(name, new int[] {ProviderConstants.NS_TYPE}, 
@@ -613,7 +618,7 @@ public class Resolver implements Runnable {
                 qClassArr[0] = rr.getRRClass();
             } else if (rr.getRRType() == ProviderConstants.SOA_TYPE) {
                 StringTokenizer st = new StringTokenizer(
-                        (String) rr.getRData(), " ");
+                        (String) rr.getRData(), " "); //$NON-NLS-1$
 
                 if (st.hasMoreTokens()) {
                     authoritativeServers.add(st.nextToken());
@@ -688,8 +693,8 @@ public class Resolver implements Runnable {
                             completeAnswer = true;
                             break;
                         case ProviderConstants.NAME_ERROR:
-                            throw new NameNotFoundException("Name " + name +
-                                    " was not found");
+                            // jndi.6D=Name {0} was not found
+                            throw new NameNotFoundException(Messages.getString("jndi.6D", name)); //$NON-NLS-1$
                         case ProviderConstants.SERVER_FAILURE:
                         case ProviderConstants.FORMAT_ERROR:
                         case ProviderConstants.NOT_IMPLEMENTED:
@@ -713,8 +718,9 @@ public class Resolver implements Runnable {
         
         if (!completeAnswer) {
             // found nothing
+            // jndi.6E=Unable to perform zone transfer
             throw new ServiceUnavailableException(
-                    "Unable to perform zone transfer");
+                    Messages.getString("jndi.6E")); //$NON-NLS-1$
         }
         // SRV _Proto prefix support - filter all records that don't have given
         // _Proto field
@@ -724,7 +730,7 @@ public class Resolver implements Runnable {
             for (int i = 0; i < answerVect.size(); i++) {
                 ResourceRecord rr = answerVect.elementAt(i);
                 StringTokenizer st = new StringTokenizer(rr.getName(),
-                        ".");
+                        "."); //$NON-NLS-1$
                 String token = null;
                 boolean valid = false;
 
@@ -763,10 +769,12 @@ public class Resolver implements Runnable {
         SList slist = SList.getInstance();
 
         if (name == null && ip == null) {
-            throw new NullPointerException("Both name and IP are null");
+            // jndi.6F=Both name and IP are null
+            throw new NullPointerException(Messages.getString("jndi.6F")); //$NON-NLS-1$
         }
         if (zoneName == null) {
-            throw new NullPointerException("zoneName is null");
+            // jndi.70=zoneName is null
+            throw new NullPointerException(Messages.getString("jndi.70")); //$NON-NLS-1$
         }
         // if IP is not given and we don't know this server yet
         // try to determine IP from underlying OS services
@@ -824,7 +832,8 @@ public class Resolver implements Runnable {
       
         // determine a question
         if (!request.getQuestionRecords().hasMoreElements()) {
-            throw new IllegalArgumentException("no question record");
+            // jndi.71=no question record
+            throw new IllegalArgumentException(Messages.getString("jndi.71")); //$NON-NLS-1$
         }
         qRecord = request.getQuestionRecords().nextElement();
         // preparing a domain protocol message
@@ -1073,15 +1082,16 @@ public class Resolver implements Runnable {
 
         // Check the ID.
         if (request.getId() != answer.getId()) {
-            throw new DomainProtocolException(
-                    "Request and Answer have different ids");
+            // jndi.72=Request and Answer have different ids
+            throw new DomainProtocolException(Messages.getString("jndi.72")); //$NON-NLS-1$
         }
         
         // Determine a question.
         if (questions.hasMoreElements()) {
             question = questions.nextElement();
         } else {
-            throw new IllegalArgumentException("no question record");
+            // jndi.73=no question record
+            throw new IllegalArgumentException(Messages.getString("jndi.73")); //$NON-NLS-1$
         }
         // If name error occurred - no extra processing needed.
         if (answer.getRCode() == ProviderConstants.NAME_ERROR) {
@@ -1337,7 +1347,7 @@ public class Resolver implements Runnable {
             }
             for (int i = 0; i < records.size(); i++) {
                 ResourceRecord rr = records.elementAt(i);
-                String key = rr.getName() + " " + rr.getRRClass() + " " +
+                String key = rr.getName() + " " + rr.getRRClass() + " " + //$NON-NLS-1$ //$NON-NLS-2$
                         rr.getRRType();
                 long ttl = rr.getTtl();
                 Vector<ResourceRecord> objToUpdateTTL = new Vector<ResourceRecord>();
@@ -1349,7 +1359,7 @@ public class Resolver implements Runnable {
                 // look forward for records with the same NAME CLASS TYPE
                 for (int j = i; j < records.size(); j++) {
                     ResourceRecord rr2 = records.elementAt(j);
-                    String key2 = rr2.getName() + " " + rr2.getRRClass() + " " +
+                    String key2 = rr2.getName() + " " + rr2.getRRClass() + " " + //$NON-NLS-1$ //$NON-NLS-2$
                             rr2.getRRType();
                     long ttl2 = rr2.getTtl();
     

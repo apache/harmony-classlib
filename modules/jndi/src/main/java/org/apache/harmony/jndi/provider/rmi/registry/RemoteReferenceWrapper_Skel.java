@@ -28,13 +28,15 @@
  */
 package org.apache.harmony.jndi.provider.rmi.registry;
 
-@SuppressWarnings("deprecation")
+import org.apache.harmony.jndi.internal.nls.Messages;
+
+@SuppressWarnings("deprecation") //$NON-NLS-1$
 public final class RemoteReferenceWrapper_Skel implements java.rmi.server.Skeleton {
 
     private static final long interfaceHash = 2534274963554139942L;
 
     private static final java.rmi.server.Operation[] operations = {
-        new java.rmi.server.Operation("javax.naming.Reference getReference()")
+        new java.rmi.server.Operation("javax.naming.Reference getReference()") //$NON-NLS-1$
     };
 
     public java.rmi.server.Operation[] getOperations() {
@@ -46,12 +48,14 @@ public final class RemoteReferenceWrapper_Skel implements java.rmi.server.Skelet
             if (hash == 3529874867989176284L) {
                 opnum = 0;
             } else {
-                throw new java.rmi.UnmarshalException("Invalid method hash: " + hash);
+                // jndi.87=Invalid method hash: {0}
+                throw new java.rmi.UnmarshalException(Messages.getString("jndi.87", hash)); //$NON-NLS-1$
             }
         } else {
             if (hash != interfaceHash) {
+                // jndi.88=Interface hash mismatch, expected: {0}, received: {1}
                 throw new java.rmi.server.SkeletonMismatchException(
-                        "Interface hash mismatch, expected: " + interfaceHash + ", received: " + hash);
+                        Messages.getString("jndi.88", interfaceHash , hash)); //$NON-NLS-1$
             }
         }
 
@@ -69,14 +73,16 @@ public final class RemoteReferenceWrapper_Skel implements java.rmi.server.Skelet
                 java.io.ObjectOutput out = call.getResultStream(true);
                 out.writeObject($result);
             } catch (java.io.IOException e) {
-                throw new java.rmi.MarshalException("Error marshalling return", e);
+                // jndi.89=Error marshalling return
+                throw new java.rmi.MarshalException(Messages.getString("jndi.89"), e); //$NON-NLS-1$
             }
 
             break;
         }
 
         default:
-            throw new java.rmi.UnmarshalException("Invalid method number: " + opnum);
+            // jndi.8A=Invalid method number: {0}
+            throw new java.rmi.UnmarshalException(Messages.getString("jndi.8A", opnum)); //$NON-NLS-1$
         }
     }
 }

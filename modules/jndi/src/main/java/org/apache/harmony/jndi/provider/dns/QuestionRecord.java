@@ -23,6 +23,8 @@
 
 package org.apache.harmony.jndi.provider.dns;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 
 /**
  * Represents domain protocol Question Record
@@ -78,7 +80,8 @@ public class QuestionRecord {
 
         // basic checkings
         if (buffer == null) {
-            throw new DomainProtocolException("buffer is null");
+            // jndi.32=buffer is null
+            throw new DomainProtocolException(Messages.getString("jndi.32")); //$NON-NLS-1$
         }
         if (startIdx >= buffer.length || startIdx < 0) {
             throw new ArrayIndexOutOfBoundsException();
@@ -111,7 +114,8 @@ public class QuestionRecord {
         StringBuffer nameSB = new StringBuffer();
 
         if (resultQR == null) {
-            throw new NullPointerException("Given resultQR is null");
+            // jndi.33=Given resultQR is null
+            throw new NullPointerException(Messages.getString("jndi.33")); //$NON-NLS-1$
         }
         // name
         idx = ProviderMgr.parseName(mesBytes, idx , nameSB);
@@ -141,9 +145,9 @@ public class QuestionRecord {
             qClassStr = String.valueOf(qClass);
         }
         sb.append(qClassStr);
-        sb.append(" ");
+        sb.append(" "); //$NON-NLS-1$
         sb.append(qTypeStr);
-        sb.append(" ");
+        sb.append(" "); //$NON-NLS-1$
         sb.append(qName);
         return sb.toString();
     }

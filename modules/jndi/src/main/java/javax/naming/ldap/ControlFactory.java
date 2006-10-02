@@ -25,6 +25,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import org.apache.harmony.jndi.internal.EnvironmentReader;
+import org.apache.harmony.jndi.internal.nls.Messages;
 
 /**
  * This abstract class is used for factories which create controls as used in 
@@ -40,7 +41,7 @@ public abstract class ControlFactory {
      * Constructs a <code>ControlFactory</code> instance with no parameters.
      */
     protected ControlFactory() {
-    	super();
+        super();
     }
 
     /**
@@ -139,8 +140,8 @@ public abstract class ControlFactory {
         });
 
         if (cls == null) {
-            throw new ClassNotFoundException(
-                "class " + className + " not found"); //$NON-NLS-1$ //$NON-NLS-2$
+            // jndi.1C=class {0} not found
+            throw new ClassNotFoundException(Messages.getString("jndi.1C", className));  //$NON-NLS-1$
         }
 
         return cls;

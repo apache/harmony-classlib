@@ -22,6 +22,7 @@ import javax.naming.spi.NamingManager;
 
 import org.apache.harmony.jndi.internal.UrlParser;
 import org.apache.harmony.jndi.internal.EnvironmentReader;
+import org.apache.harmony.jndi.internal.nls.Messages;
 
 /**
  * An <code>InitialContext</code> object is required as the starting context
@@ -175,7 +176,7 @@ public class InitialContext implements Context {
      *                          the context 
      * @throws NamingException  If failed to create an InitialContext.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void internalInit(Hashtable<?, ?> env) throws NamingException {
 
         // 1. Read the environment parameter used to create this Context
@@ -235,7 +236,7 @@ public class InitialContext implements Context {
         if (!this.gotDefault) {
             this.defaultInitCtx = NamingManager.getInitialContext(myProps);
             if (null == this.defaultInitCtx) {
-                throw new NoInitialContextException("Failed to create an initial context."); //$NON-NLS-1$
+                throw new NoInitialContextException("Failed to create an initial context.");  //$NON-NLS-1$
             }
             this.gotDefault = true;
         }
@@ -285,7 +286,7 @@ public class InitialContext implements Context {
         if (0 < name.size()) {
             return getURLOrDefaultInitCtx(name.get(0));
         }
-		return getDefaultInitCtx();
+        return getDefaultInitCtx();
     }
 
     /**
@@ -319,7 +320,8 @@ public class InitialContext implements Context {
         }
 
         if (null == name) {
-            throw new NullPointerException("null"); //$NON-NLS-1$
+            // jndi.00=name must not be null
+            throw new NullPointerException(Messages.getString("jndi.00"));  //$NON-NLS-1$
         }
 
         // If the name has components
@@ -426,10 +428,11 @@ public class InitialContext implements Context {
 
     public Name composeName(Name name, Name prefix) throws NamingException {
         if (null == name) {
-            throw new InvalidNameException("Invalid name."); //$NON-NLS-1$
+            // jndi.02=Invalid name.
+            throw new InvalidNameException(Messages.getString("jndi.02"));  //$NON-NLS-1$
         }
         if (prefix == null) {
-        	prefix = new CompositeName("");
+            prefix = new CompositeName(""); //$NON-NLS-1$
         }
         Name comName = (Name) prefix.clone();
         comName.addAll(name);
@@ -439,10 +442,11 @@ public class InitialContext implements Context {
     public String composeName(String name, String prefix)
         throws NamingException {
         if (null == name) {
-            throw new InvalidNameException("Invalid name."); //$NON-NLS-1$
+            // jndi.02=Invalid name.
+            throw new InvalidNameException(Messages.getString("jndi.02"));  //$NON-NLS-1$
         }
         if (prefix == null) {
-        	prefix = "";
+            prefix = ""; //$NON-NLS-1$
         }
         return composeName(new CompositeName(name), new CompositeName(prefix))
             .toString();
@@ -466,7 +470,7 @@ public class InitialContext implements Context {
 
     public void close() throws NamingException {
         if (this.gotDefault) {
-        	getDefaultInitCtx().close();
+            getDefaultInitCtx().close();
         }
     }
 

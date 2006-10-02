@@ -56,6 +56,8 @@ import javax.naming.directory.SearchResult;
 import javax.naming.spi.DirectoryManager;
 import javax.naming.spi.NamingManager;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 /**
  * This class represents DNS context. This is the main class and the main entry
  * point to DNS service provider for JNDI.
@@ -70,15 +72,15 @@ public class DNSContext implements DirContext, Cloneable {
 
     // some environment property names
     public static final String LOOKUP_ATTR =
-            "org.apache.harmony.jndi.provider.dns.lookup.attr";
+            "org.apache.harmony.jndi.provider.dns.lookup.attr"; //$NON-NLS-1$
     public static final String RECURSION =
-            "org.apache.harmony.jndi.provider.dns.recursion";
+            "org.apache.harmony.jndi.provider.dns.recursion"; //$NON-NLS-1$
     public static final String TIMEOUT_INITIAL =
-            "org.apache.harmony.jndi.provider.dns.timeout.initial";
+            "org.apache.harmony.jndi.provider.dns.timeout.initial"; //$NON-NLS-1$
     public static final String TIMEOUT_RETRIES =
-            "org.apache.harmony.jndi.provider.dns.timeout.retries";
+            "org.apache.harmony.jndi.provider.dns.timeout.retries"; //$NON-NLS-1$
     public static final String THREADS_MAX =
-            "org.apache.harmony.jndi.provider.dns.threads.max";
+            "org.apache.harmony.jndi.provider.dns.threads.max"; //$NON-NLS-1$
 
     // used in internal methods
     private static final int NAME_CLASS_SWT = 1;
@@ -113,12 +115,13 @@ public class DNSContext implements DirContext, Cloneable {
      * @throws NullPointerException if the environment is null
      *  
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     DNSContext(Hashtable<?, ?> env) throws NamingException
     {
         nameParser = new DNSNameParser();
         if (env == null) {
-           throw new NullPointerException("environment is null");
+           // jndi.45=environment is null 
+           throw new NullPointerException(Messages.getString("jndi.45")); //$NON-NLS-1$
         }
         this.environment = (Hashtable<Object, Object>) env.clone();
         parseBoolProp(Context.AUTHORITATIVE);
@@ -177,7 +180,7 @@ public class DNSContext implements DirContext, Cloneable {
         boolean val = false;
 
         if (tmp != null) {
-            if (tmp instanceof String && tmp.equals("true")) {
+            if (tmp instanceof String && tmp.equals("true")) { //$NON-NLS-1$
                 val = true;
             }
             if (paramName.equals(Context.AUTHORITATIVE)) {
@@ -205,15 +208,15 @@ public class DNSContext implements DirContext, Cloneable {
             tmp = environment.get(LOOKUP_ATTR);
             if (tmp instanceof String) {
                 lookupAttr = (String) tmp;
-                k = lookupAttr.indexOf(" ");
+                k = lookupAttr.indexOf(" "); //$NON-NLS-1$
                 if (k > -1) {
                     recClassName = lookupAttr.substring(0, k);
 
                     lookupAttrClass = ProviderMgr.getRecordClassNumber(
                             recClassName);
                     if (lookupAttrClass == -1) {
-                        throw new ConfigurationException("DNS class " +
-                                recClassName + " is not supported");
+                        // jndi.46=DNS class {0} is not supported
+                        throw new ConfigurationException(Messages.getString("jndi.46", recClassName));//$NON-NLS-1$
                     }
                     recTypeName = lookupAttr.substring(k).trim();
                 }
@@ -224,8 +227,9 @@ public class DNSContext implements DirContext, Cloneable {
                 }
                 lookupAttrType = ProviderMgr.getRecordTypeNumber(recTypeName);
                 if (lookupAttrType == -1) {
-                    throw new ConfigurationException("DNS type " +
-                            recTypeName + " is not supported");
+                    // jndi.47=DNS type {0} is not supported
+                    throw new ConfigurationException(
+                            Messages.getString("jndi.47", recTypeName)); //$NON-NLS-1$
                 }
             }
         }
@@ -242,7 +246,7 @@ public class DNSContext implements DirContext, Cloneable {
         if (environment.containsKey(Context.PROVIDER_URL)) {
             tmp = environment.get(Context.PROVIDER_URL);
             if (tmp instanceof String) {
-                StringTokenizer st = new StringTokenizer((String) tmp, " ");
+                StringTokenizer st = new StringTokenizer((String) tmp, " "); //$NON-NLS-1$
                 
                 while (st.hasMoreTokens()) {
                     String token = st.nextToken();
@@ -267,16 +271,15 @@ public class DNSContext implements DirContext, Cloneable {
                                     nameParser.parse(dnsURL.getDomain());
 
                             if (name2.compareTo(contextName) != 0) {
+                                // jndi.48=conflicting domains: {0} and {1}
                                 throw new ConfigurationException(
-                                        "conflicting domains: " +
-                                        contextName + " and " +
-                                        name2);
+                                        Messages.getString("jndi.48", contextName, name2)); //$NON-NLS-1$
                             }
                         }
                     } catch (IllegalArgumentException e) {
+                        // jndi.49=Unable to parse DNS URL {0}. {1}
                         throw new ConfigurationException(
-                                "Unable to parse DNS URL " +
-                                token + ". " + e.getMessage());
+                                Messages.getString("jndi.49", token, e.getMessage())); //$NON-NLS-1$
                     }
                 }
             }
@@ -293,7 +296,7 @@ public class DNSContext implements DirContext, Cloneable {
      * @param ancestorCtx an ancestor context to read all internal properties from
      * @param name name of newly created context in the ancestor context
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     DNSContext(DNSContext ancestorCtx, DNSName name) {
         this.contextName = (DNSName) name.clone();
         this.nameParser = ancestorCtx.nameParser;
@@ -334,9 +337,10 @@ public class DNSContext implements DirContext, Cloneable {
         if (obj instanceof DNSContext) {
             throw new OperationNotSupportedException();
         } else if (obj instanceof DirContext) {
-            ((DirContext) obj).modifyAttributes("", arg1, arg2);
+            ((DirContext) obj).modifyAttributes("", arg1, arg2); //$NON-NLS-1$
         } else {
-            throw new NotContextException("found object is not a DirContext"); 
+            // jndi.4A=found object is not a DirContext
+            throw new NotContextException(Messages.getString("jndi.4A"));  //$NON-NLS-1$
         }
     }
 
@@ -366,9 +370,10 @@ public class DNSContext implements DirContext, Cloneable {
         if (obj instanceof DNSContext) {
             throw new OperationNotSupportedException();
         } else if (obj instanceof DirContext) {
-            ((DirContext) obj).modifyAttributes("", arg1, arg2);
+            ((DirContext) obj).modifyAttributes("", arg1, arg2); //$NON-NLS-1$
         } else {
-            throw new NotContextException("found object is not a DirContext"); 
+            // jndi.4A=found object is not a DirContext
+            throw new NotContextException(Messages.getString("jndi.4A"));  //$NON-NLS-1$
         }
     }
 
@@ -382,9 +387,10 @@ public class DNSContext implements DirContext, Cloneable {
         if (obj instanceof DNSContext) {
             throw new OperationNotSupportedException();
         } else if (obj instanceof DirContext) {
-            return ((DirContext) obj).getSchema("");
+            return ((DirContext) obj).getSchema(""); //$NON-NLS-1$
         } else {
-            throw new NotContextException("found object is not a DirContext"); 
+            // jndi.4A=found object is not a DirContext
+            throw new NotContextException(Messages.getString("jndi.4A"));  //$NON-NLS-1$
         }
     }
 
@@ -400,9 +406,10 @@ public class DNSContext implements DirContext, Cloneable {
         if (obj instanceof DNSContext) {
             throw new OperationNotSupportedException();
         } else if (obj instanceof DirContext) {
-            return ((DirContext) obj).getSchemaClassDefinition("");
+            return ((DirContext) obj).getSchemaClassDefinition(""); //$NON-NLS-1$
         } else {
-            throw new NotContextException("found object is not a DirContext"); 
+            // jndi.4A=found object is not a DirContext
+            throw new NotContextException(Messages.getString("jndi.4A"));  //$NON-NLS-1$
         }
     }
 
@@ -416,9 +423,10 @@ public class DNSContext implements DirContext, Cloneable {
         if (obj instanceof DNSContext) {
             throw new OperationNotSupportedException();
         } else if (obj instanceof DirContext) {
-            return ((DirContext) obj).getSchema("");
+            return ((DirContext) obj).getSchema(""); //$NON-NLS-1$
         } else {
-            throw new NotContextException("found object is not a DirContext"); 
+            // jndi.4A=found object is not a DirContext
+            throw new NotContextException(Messages.getString("jndi.4A"));  //$NON-NLS-1$
         }
     }
 
@@ -434,9 +442,10 @@ public class DNSContext implements DirContext, Cloneable {
         if (obj instanceof DNSContext) {
             throw new OperationNotSupportedException();
         } else if (obj instanceof DirContext) {
-            return ((DirContext) obj).getSchemaClassDefinition("");
+            return ((DirContext) obj).getSchemaClassDefinition(""); //$NON-NLS-1$
         } else {
-            throw new NotContextException("found object is not a DirContext"); 
+            // jndi.4A=found object is not a DirContext
+            throw new NotContextException(Messages.getString("jndi.4A"));  //$NON-NLS-1$
         }
     }
 
@@ -452,9 +461,10 @@ public class DNSContext implements DirContext, Cloneable {
         if (obj instanceof DNSContext) {
             throw new OperationNotSupportedException();
         } else if (obj instanceof DirContext) {
-            ((DirContext) obj).modifyAttributes("", arg1);
+            ((DirContext) obj).modifyAttributes("", arg1); //$NON-NLS-1$
         } else {
-            throw new NotContextException("found object is not a DirContext"); 
+            // jndi.4A=found object is not a DirContext
+            throw new NotContextException(Messages.getString("jndi.4A"));  //$NON-NLS-1$
         }
     }
 
@@ -469,9 +479,10 @@ public class DNSContext implements DirContext, Cloneable {
         if (obj instanceof DNSContext) {
             throw new OperationNotSupportedException();
         } else if (obj instanceof DirContext) {
-            ((DirContext) obj).modifyAttributes("", arg1);
+            ((DirContext) obj).modifyAttributes("", arg1); //$NON-NLS-1$
         } else {
-            throw new NotContextException("found object is not a DirContext"); 
+            // jndi.4A=found object is not a DirContext
+            throw new NotContextException(Messages.getString("jndi.4A"));  //$NON-NLS-1$
         }
     }
 
@@ -487,9 +498,10 @@ public class DNSContext implements DirContext, Cloneable {
         if (obj instanceof DNSContext) {
             throw new OperationNotSupportedException();
         } else if (obj instanceof DirContext) {
-            return ((DirContext) obj).search("", arg1);
+            return ((DirContext) obj).search("", arg1); //$NON-NLS-1$
         } else {
-            throw new NotContextException("found object is not a DirContext"); 
+            // jndi.4A=found object is not a DirContext
+            throw new NotContextException(Messages.getString("jndi.4A"));  //$NON-NLS-1$
         }
     }
 
@@ -505,9 +517,10 @@ public class DNSContext implements DirContext, Cloneable {
         if (obj instanceof DNSContext) {
             throw new OperationNotSupportedException();
         } else if (obj instanceof DirContext) {
-            return ((DirContext) obj).search("", arg1);
+            return ((DirContext) obj).search("", arg1); //$NON-NLS-1$
         } else {
-            throw new NotContextException("found object is not a DirContext"); 
+            // jndi.4A=found object is not a DirContext
+            throw new NotContextException(Messages.getString("jndi.4A"));  //$NON-NLS-1$
         }
     }
 
@@ -548,7 +561,8 @@ public class DNSContext implements DirContext, Cloneable {
         if (pair.context instanceof DirContext) {
             ((DirContext) pair.context).bind(pair.name, arg1, arg2);
         } else {
-            throw new NotContextException("found object is not a DirContext"); 
+            // jndi.4A=found object is not a DirContext
+            throw new NotContextException(Messages.getString("jndi.4A"));  //$NON-NLS-1$
         }
     }
 
@@ -569,7 +583,8 @@ public class DNSContext implements DirContext, Cloneable {
         if (pair.context instanceof DirContext) {
             ((DirContext) pair.context).rebind(pair.name, arg1, arg2);
         } else {
-            throw new NotContextException("found object is not a DirContext"); 
+            // jndi.4A=found object is not a DirContext
+            throw new NotContextException(Messages.getString("jndi.4A"));  //$NON-NLS-1$
         }
     }
 
@@ -632,7 +647,8 @@ public class DNSContext implements DirContext, Cloneable {
 
         // analyze given name object
         if (name == null) {
-            throw new NullPointerException("The name is null");
+            // jndi.2E=The name is null
+            throw new NullPointerException(Messages.getString("jndi.2E")); //$NON-NLS-1$
         }
         else if (name.size() == 0) {
             // attributes of the current context are requested
@@ -661,8 +677,8 @@ public class DNSContext implements DirContext, Cloneable {
             //}
         }
         else {
-            throw new InvalidNameException("Only instances of CompositeName " +
-                    "class or DNSName class are acceptable");
+            // jndi.4B=Only instances of CompositeName class or DNSName class are acceptable
+            throw new InvalidNameException(Messages.getString("jndi.4B")); //$NON-NLS-1$
         }
 
         // we should have correct nameToLookFor at this point
@@ -700,8 +716,9 @@ public class DNSContext implements DirContext, Cloneable {
                         classInt =
                                 ProviderMgr.getRecordClassNumber(classStr); 
                         if (classInt == -1) {
+                            // jndi.4C=Unknown record class: {0}
                             throw new InvalidAttributeIdentifierException(
-                                    "Unknown record class: " + classStr);
+                                    Messages.getString("jndi.4C", classStr)); //$NON-NLS-1$
                         }
                         classesSet.add(new Integer(classInt));
                         typeStr = element.substring(k, element.length())
@@ -714,8 +731,9 @@ public class DNSContext implements DirContext, Cloneable {
                     }
                     typesInt = ProviderMgr.getRecordTypeNumber(typeStr);
                     if (typesInt == -1) {
+                        // jndi.4D=Unknown record type: {0}
                         throw new InvalidAttributeIdentifierException(
-                                "Unknown record type: " + typeStr);
+                                Messages.getString("jndi.4D", typeStr)); //$NON-NLS-1$
                     }
                     typesSet.add(new Integer(typesInt));
                 }
@@ -790,7 +808,8 @@ public class DNSContext implements DirContext, Cloneable {
         if (pair.context instanceof DirContext) {
             return ((DirContext) pair.context).createSubcontext(pair.name, arg1);
         }
-        throw new NotContextException("found object is not a DirContext");
+        // jndi.4A=found object is not a DirContext
+        throw new NotContextException(Messages.getString("jndi.4A")); //$NON-NLS-1$
     }
 
     /** 
@@ -805,9 +824,10 @@ public class DNSContext implements DirContext, Cloneable {
         if (obj instanceof DNSContext) {
             throw new OperationNotSupportedException();
         } else if (obj instanceof DirContext) {
-            return ((DirContext) obj).search("", arg1, arg2);
+            return ((DirContext) obj).search("", arg1, arg2); //$NON-NLS-1$
         } else {
-            throw new NotContextException("found object is not a DirContext"); 
+            // jndi.4A=found object is not a DirContext
+            throw new NotContextException(Messages.getString("jndi.4A"));  //$NON-NLS-1$
         }
     }
 
@@ -823,9 +843,10 @@ public class DNSContext implements DirContext, Cloneable {
         if (obj instanceof DNSContext) {
             throw new OperationNotSupportedException();
         } else if (obj instanceof DirContext) {
-            return ((DirContext) obj).search("", arg1, arg2);
+            return ((DirContext) obj).search("", arg1, arg2); //$NON-NLS-1$
         } else {
-            throw new NotContextException("found object is not a DirContext"); 
+            // jndi.4A=found object is not a DirContext
+            throw new NotContextException(Messages.getString("jndi.4A"));  //$NON-NLS-1$
         }
     }
 
@@ -841,9 +862,10 @@ public class DNSContext implements DirContext, Cloneable {
         if (obj instanceof DNSContext) {
             throw new OperationNotSupportedException();
         } else if (obj instanceof DirContext) {
-            return ((DirContext) obj).search("", arg1, arg2);
+            return ((DirContext) obj).search("", arg1, arg2); //$NON-NLS-1$
         } else {
-            throw new NotContextException("found object is not a DirContext"); 
+            // jndi.4A=found object is not a DirContext
+            throw new NotContextException(Messages.getString("jndi.4A"));  //$NON-NLS-1$
         }
     }
 
@@ -859,9 +881,10 @@ public class DNSContext implements DirContext, Cloneable {
         if (obj instanceof DNSContext) {
             throw new OperationNotSupportedException();
         } else if (obj instanceof DirContext) {
-            return ((DirContext) obj).search("", arg1, arg2);
+            return ((DirContext) obj).search("", arg1, arg2); //$NON-NLS-1$
         } else {
-            throw new NotContextException("found object is not a DirContext"); 
+            // jndi.4A=found object is not a DirContext
+            throw new NotContextException(Messages.getString("jndi.4A"));  //$NON-NLS-1$
         }
     }
 
@@ -877,9 +900,10 @@ public class DNSContext implements DirContext, Cloneable {
         if (obj instanceof DNSContext) {
             throw new OperationNotSupportedException();
         } else if (obj instanceof DirContext) {
-            return ((DirContext) obj).search("", arg1, arg2, arg3);
+            return ((DirContext) obj).search("", arg1, arg2, arg3); //$NON-NLS-1$
         } else {
-            throw new NotContextException("found object is not a DirContext"); 
+            // jndi.4A=found object is not a DirContext
+            throw new NotContextException(Messages.getString("jndi.4A"));  //$NON-NLS-1$
         }
     }
 
@@ -895,9 +919,10 @@ public class DNSContext implements DirContext, Cloneable {
         if (obj instanceof DNSContext) {
             throw new OperationNotSupportedException();
         } else if (obj instanceof DirContext) {
-            return ((DirContext) obj).search("", arg1, arg2, arg3);
+            return ((DirContext) obj).search("", arg1, arg2, arg3); //$NON-NLS-1$
         } else {
-            throw new NotContextException("found object is not a DirContext"); 
+            // jndi.4A=found object is not a DirContext
+            throw new NotContextException(Messages.getString("jndi.4A"));  //$NON-NLS-1$
         }
     }
 
@@ -957,7 +982,8 @@ public class DNSContext implements DirContext, Cloneable {
         if (pair.context instanceof Context) {
             ((Context) pair.context).destroySubcontext(pair.name);
         } else {
-            throw new NotContextException("found object is not a Context"); 
+            // jndi.4E=found object is not a Context
+            throw new NotContextException(Messages.getString("jndi.4E"));  //$NON-NLS-1$
         }
     }
 
@@ -976,7 +1002,8 @@ public class DNSContext implements DirContext, Cloneable {
         if (pair.context instanceof Context) {
             ((Context) pair.context).unbind(pair.name);
         } else {
-            throw new NotContextException("found object is not a Context"); 
+            // jndi.4E=found object is not a Context
+            throw new NotContextException(Messages.getString("jndi.4E"));  //$NON-NLS-1$
         }
     }
 
@@ -1021,7 +1048,8 @@ public class DNSContext implements DirContext, Cloneable {
         Name nameObj = null;
         
         if (nameStr == null) {
-            throw new NullPointerException("The name is null");
+            // jndi.2E=The name is null
+            throw new NullPointerException(Messages.getString("jndi.2E")); //$NON-NLS-1$
         }
         nameObj = new CompositeName(nameStr);
         if (nameObj.size() == 1) {
@@ -1101,7 +1129,8 @@ public class DNSContext implements DirContext, Cloneable {
 
         // analyze given name object
         if (name == null) {
-            throw new NullPointerException("The name is null");
+            // jndi.2E=The name is null
+            throw new NullPointerException(Messages.getString("jndi.2E")); //$NON-NLS-1$
         }
         else if (name.size() == 0) {
             // attributes of the current context are requested
@@ -1130,8 +1159,8 @@ public class DNSContext implements DirContext, Cloneable {
             //}
         }
         else {
-            throw new InvalidNameException("Only instances of CompositeName " +
-                    "class or DNSName class are acceptable");
+            // jndi.4B=Only instances of CompositeName class or DNSName class are acceptable
+            throw new InvalidNameException(Messages.getString("jndi.4B")); //$NON-NLS-1$
         }
         // we should have correct nameToLookFor at this point
         types[0] = lookupAttrType;
@@ -1188,7 +1217,7 @@ public class DNSContext implements DirContext, Cloneable {
         DNSName nameToLookFor = (DNSName) composeName(name, contextName);
         final DNSContext resolvedCtx = new DNSContext(this, nameToLookFor);
         // namespace border violation, need to ask NNS
-        RefAddr refAddr = new RefAddr("nns") {
+        RefAddr refAddr = new RefAddr("nns") { //$NON-NLS-1$
             private static final long serialVersionUID = 8654740210501193418L;
             
             DNSContext context = (DNSContext) resolvedCtx.clone();
@@ -1211,7 +1240,7 @@ public class DNSContext implements DirContext, Cloneable {
             // (the sign of the next naming system)
             if (resolvedName != null &&
                     resolvedName.get(resolvedName.size() - 1)
-                            .equals(""))
+                            .equals("")) //$NON-NLS-1$
             {
                 resolvedName.remove(resolvedName.size() - 1);
             }
@@ -1228,7 +1257,7 @@ public class DNSContext implements DirContext, Cloneable {
         }
         resolvedName.add(nameToLookFor.toString());
         // the sign of the next naming system
-        resolvedName.add("");
+        resolvedName.add(""); //$NON-NLS-1$
         cpe.setResolvedName(resolvedName);
         cpe.setResolvedObj(ref);
         return cpe;
@@ -1254,7 +1283,7 @@ public class DNSContext implements DirContext, Cloneable {
             else {
                 clssTypeStr =
                         ProviderConstants.rrClassNames[curRec.getRRClass()] +
-                        " " + 
+                        " " +  //$NON-NLS-1$
                         ProviderConstants.rrTypeNames[curRec.getRRType()];
             }
             oldAttr = attrs.get(clssTypeStr);
@@ -1299,7 +1328,8 @@ public class DNSContext implements DirContext, Cloneable {
         if (pair.context instanceof Context) {
             ((Context) pair.context).bind(pair.name, arg1);
         } else {
-            throw new NotContextException("found object is not a Context"); 
+            // jndi.4E=found object is not a Context
+            throw new NotContextException(Messages.getString("jndi.4E"));  //$NON-NLS-1$
         }
     }
 
@@ -1318,7 +1348,8 @@ public class DNSContext implements DirContext, Cloneable {
         if (pair.context instanceof Context) {
             ((Context) pair.context).rebind(pair.name, arg1);
         } else {
-            throw new NotContextException("found object is not a Context"); 
+            // jndi.4E=found object is not a Context
+            throw new NotContextException(Messages.getString("jndi.4E"));  //$NON-NLS-1$
         }
     }
 
@@ -1354,7 +1385,8 @@ public class DNSContext implements DirContext, Cloneable {
         if (pair.context instanceof Context) {
             return ((Context) pair.context).createSubcontext(pair.name);
         }
-        throw new NotContextException("found object is not a Context");
+        // jndi.4E=found object is not a Context
+        throw new NotContextException(Messages.getString("jndi.4E")); //$NON-NLS-1$
     }
 
     /** 
@@ -1379,8 +1411,8 @@ public class DNSContext implements DirContext, Cloneable {
         {
             ((Context) pair1.context).rename(pair1.name, pair2.name);
         } else {
-            throw new NotContextException("found object is not a Context or " +
-                    "target contexts are not equal"); 
+            // jndi.4F=found object is not a Context or target contexts are not equal
+            throw new NotContextException(Messages.getString("jndi.4F")); //$NON-NLS-1$
         }
     }
 
@@ -1397,16 +1429,18 @@ public class DNSContext implements DirContext, Cloneable {
         Object obj;
 
         if (name == null) {
-            throw new NullPointerException("name is null");
+            // jndi.2E=The name is null
+            throw new NullPointerException(Messages.getString("jndi.2E")); //$NON-NLS-1$
         }
         obj = lookup(name);
         if (obj instanceof DNSContext) {
             return nameParser;
         }
         else if (obj instanceof Context) {
-            return ((Context) obj).getNameParser("");
+            return ((Context) obj).getNameParser(""); //$NON-NLS-1$
         }
-        throw new NotContextException("Found object is not a context");
+        // jndi.4E=found object is not a Context
+        throw new NotContextException(Messages.getString("jndi.4E")); //$NON-NLS-1$
     }
 
     /**
@@ -1425,16 +1459,18 @@ public class DNSContext implements DirContext, Cloneable {
         Object obj;
 
         if (name == null) {
-            throw new NullPointerException("name is null");
+            // jndi.2E=The name is null
+            throw new NullPointerException(Messages.getString("jndi.2E")); //$NON-NLS-1$
         }
         obj = lookup(name);
         if (obj instanceof DNSContext) {
             return nameParser;
         }
         else if (obj instanceof Context) {
-            return ((Context) obj).getNameParser("");
+            return ((Context) obj).getNameParser(""); //$NON-NLS-1$
         }
-        throw new NotContextException("Found object is not a context");
+        // jndi.4E=found object is not a Context
+        throw new NotContextException(Messages.getString("jndi.4E")); //$NON-NLS-1$
     }
 
     /**
@@ -1497,7 +1533,7 @@ public class DNSContext implements DirContext, Cloneable {
      * resolver's cache since we are sure the cache is up to date and contains
      * absolutely all records from target zone
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private <T> NamingEnumeration<T> list_common(Name name, int contentSwt)
             throws NamingException
     {
@@ -1507,11 +1543,12 @@ public class DNSContext implements DirContext, Cloneable {
         NamingEnumeration<T> result = null;
 
         if (contentSwt != 1 && contentSwt != 2) {
-            throw new IllegalArgumentException(
-                    "contentSwt should be equal to 1 or 2");
+            // jndi.50=contentSwt should be equal to 1 or 2
+            throw new IllegalArgumentException(Messages.getString("jndi.50")); //$NON-NLS-1$
         }
         if (name == null) {
-            throw new NullPointerException("name is null");
+            // jndi.2E=The name is null
+            throw new NullPointerException(Messages.getString("jndi.2E")); //$NON-NLS-1$
         }
         // analyze given name object
         else if (name.size() == 0) {
@@ -1541,8 +1578,7 @@ public class DNSContext implements DirContext, Cloneable {
             //}
         }
         else {
-            throw new InvalidNameException("Only instances of CompositeName " +
-                    "class or DNSName class are acceptable");
+            throw new InvalidNameException(Messages.getString("jndi.4B")); //$NON-NLS-1$
         }
         // we should have correct nameToLookFor at this point
         if (remainingName != null) {
@@ -1697,7 +1733,8 @@ public class DNSContext implements DirContext, Cloneable {
         Name name2 = null;
         
         if (name == null || prefix == null) {
-            throw new NullPointerException("Given name of prefix is null");
+            // jndi.51=Given name of prefix is null
+            throw new NullPointerException(Messages.getString("jndi.51")); //$NON-NLS-1$
         }
         if (name.length() == 0) {
             return prefix;
@@ -1748,7 +1785,8 @@ public class DNSContext implements DirContext, Cloneable {
         Name result = null;
 
         if (name == null || prefix == null) {
-            throw new NullPointerException("The name or prefix given is null");
+            // jndi.51=Given name of prefix is null
+            throw new NullPointerException(Messages.getString("jndi.51")); //$NON-NLS-1$
         }
         if (name.size() == 0) {
             return prefix;
@@ -1821,18 +1859,18 @@ public class DNSContext implements DirContext, Cloneable {
             boolean prefixIsRoot = (prefix.compareTo(rootZone) == 0); 
             boolean nameIsRoot = (name.compareTo(rootZone) == 0);
             boolean nameStartsFromRoot =
-                name.get(0).equals(""); 
+                name.get(0).equals("");  //$NON-NLS-1$
 
             if (nameStartsFromRoot) {
-                throw new NamingException("Can't append an absolute " +
-                        "DNS name");
+                // jndi.52=Can't append an absolute DNS name
+                throw new NamingException(Messages.getString("jndi.52")); //$NON-NLS-1$
             }
             if (prefixIsRoot && nameIsRoot) {
                 result = (DNSName) rootZone.clone();
             }
             else if (!prefixIsRoot && nameIsRoot) {
-                throw new NamingException("Root domain should " +
-                        "be the rightmost one");
+                // jndi.53=Root domain should be the rightmost one
+                throw new NamingException(Messages.getString("jndi.53")); //$NON-NLS-1$
             }
             else {
                 result = new DNSName();
@@ -1841,8 +1879,8 @@ public class DNSContext implements DirContext, Cloneable {
             }
         }
         else {
-            throw new NamingException("Only instances of DNSName class " +
-                    "or CompositeName class are acceptable");
+            // jndi.4B=Only instances of CompositeName class or DNSName class are acceptable
+            throw new NamingException(Messages.getString("jndi.4B")); //$NON-NLS-1$
         }
         return result;
     }
@@ -1860,27 +1898,28 @@ public class DNSContext implements DirContext, Cloneable {
     private String concatenateDNSNames(String comp1, String comp2)
             throws NamingException
     {
-        boolean comp1IsRoot = comp1.equals(".");
-        boolean comp2IsRoot = comp2.equals(".");
+        boolean comp1IsRoot = comp1.equals("."); //$NON-NLS-1$
+        boolean comp2IsRoot = comp2.equals("."); //$NON-NLS-1$
         String composition = null;
 
         nameParser.parse(comp1);
         nameParser.parse(comp2);
-        if (comp1.endsWith(".")) {
-            throw new NamingException("Can't append an absolute DNS name");
+        if (comp1.endsWith(".")) { //$NON-NLS-1$
+            // jndi.52=Can't append an absolute DNS name
+            throw new NamingException(Messages.getString("jndi.52")); //$NON-NLS-1$
         }
         if (comp1IsRoot && comp2IsRoot) {
-            composition = ".";
+            composition = "."; //$NON-NLS-1$
         }
         else if (!comp1IsRoot && comp2IsRoot) {
-            composition = comp1 + ".";
+            composition = comp1 + "."; //$NON-NLS-1$
         }
         else if (comp1IsRoot && !comp2IsRoot) {
-            throw new NamingException("Root domain should " +
-                    "be the rightmost one");
+            // jndi.53=Root domain should be the rightmost one
+            throw new NamingException(Messages.getString("jndi.53")); //$NON-NLS-1$
         }
         else {
-            composition = comp1 + "."  + comp2;
+            composition = comp1 + "."  + comp2; //$NON-NLS-1$
         }
         return composition;
     }
@@ -1930,7 +1969,7 @@ public class DNSContext implements DirContext, Cloneable {
         }
         remainingName = cmpName.get(cmpName.size() - 1);
         nameToLookFor = (CompositeName) cmpName.getPrefix(cmpName.size() - 1);
-        nameToLookFor.add("");
+        nameToLookFor.add(""); //$NON-NLS-1$
         obj = lookup(nameToLookFor);
         return new ContextNamePair(obj, remainingName);
     }

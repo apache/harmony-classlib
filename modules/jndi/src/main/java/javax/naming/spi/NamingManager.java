@@ -29,6 +29,7 @@ import javax.naming.CannotProceedException;
 import javax.naming.Context;
 import org.apache.harmony.jndi.internal.EnvironmentReader;
 import org.apache.harmony.jndi.internal.UrlParser;
+import org.apache.harmony.jndi.internal.nls.Messages;
 
 import javax.naming.Name;
 import javax.naming.NamingException;
@@ -133,8 +134,8 @@ public class NamingManager {
             SecurityException, NamingException {
 
         if (null != NamingManager.icfb) {
-            throw new IllegalStateException(
-                    "InitialContextFactoryBuilder cannot be reset"); //$NON-NLS-1$
+            // jndi.1E=InitialContextFactoryBuilder cannot be reset
+            throw new IllegalStateException(Messages.getString("jndi.1E"));  //$NON-NLS-1$
         }
 
         // check security access
@@ -179,8 +180,8 @@ public class NamingManager {
             SecurityException, NamingException {
 
         if (null != NamingManager.ofb) {
-            throw new IllegalStateException(
-                    "ObjectFactoryBuilder cannot be reset"); //$NON-NLS-1$
+            // jndi.1F=ObjectFactoryBuilder cannot be reset
+            throw new IllegalStateException(Messages.getString("jndi.1F"));  //$NON-NLS-1$
         }
 
         // check security access
@@ -235,9 +236,9 @@ public class NamingManager {
             throw e;
         } catch (Exception e) {
             // failed, throw NoInitialContextException
+            // jndi.20=Failed to create InitialContext using factory specified in hashtable {0}
             NamingException nex = new NoInitialContextException(
-                    "Failed to create InitialContext using factory specified in hashtable " //$NON-NLS-1$
-                            + h);
+                    Messages.getString("jndi.20", h));  //$NON-NLS-1$
             nex.setRootCause(e);
             throw nex;
         }
@@ -449,8 +450,8 @@ public class NamingManager {
                 if (e instanceof NamingException) {
                     throw (NamingException) e;
                 }
-                NamingException nex = new NamingException(
-                        "Failed to create object instance"); //$NON-NLS-1$
+                // jndi.21=Failed to create object instance
+                NamingException nex = new NamingException(Messages.getString("jndi.21"));  //$NON-NLS-1$
                 nex.setRootCause(e);
                 throw nex;
             }
@@ -666,8 +667,9 @@ public class NamingManager {
                 throw e;
             } catch (Exception e) {
                 // other exception, throw as NamingException
+                // jndi.22=other exception happens: {0}
                 NamingException nex = new NamingException(
-                        "other exception happens: " + e.toString()); //$NON-NLS-1$
+                        Messages.getString("jndi.22", e.toString()));  //$NON-NLS-1$
                 nex.setRootCause(e);
                 throw nex;
             }
@@ -714,7 +716,7 @@ public class NamingManager {
      *             if the resolved object is null or if a context cannot be
      *             obtained from it either directly or indirectly.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public static Context getContinuationContext(CannotProceedException cpe)
             throws NamingException {
 
@@ -785,8 +787,9 @@ public class NamingManager {
                 });
 
         if (cls == null) {
+            // jndi.1C=class {0} not found
             throw new ClassNotFoundException(
-                    "class " + className + " not found"); //$NON-NLS-1$ //$NON-NLS-2$
+                    Messages.getString("jndi.1C", className));  //$NON-NLS-1$
         }
 
         return cls;

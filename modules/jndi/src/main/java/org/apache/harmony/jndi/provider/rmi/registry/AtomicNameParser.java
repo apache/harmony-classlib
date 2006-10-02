@@ -48,7 +48,7 @@ public class AtomicNameParser implements NameParser {
      * Static initializer for {@link #syntax}.
      */
     static {
-        syntax.put("jndi.syntax.direction", "flat");
+        syntax.put("jndi.syntax.direction", "flat"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

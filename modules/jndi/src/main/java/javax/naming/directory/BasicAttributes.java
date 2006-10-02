@@ -28,6 +28,8 @@ import java.util.Hashtable;
 import java.util.Enumeration;
 import javax.naming.NamingEnumeration;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 /**
  * A simple implementation of the <code>Attributes</code> interface.
  * <p>
@@ -167,7 +169,7 @@ public class BasicAttributes implements Attributes {
 
             return new BasicNamingEnumeration<String>(v.elements());
         }
-		return new BasicNamingEnumeration<String>(this.attrMap.keys());
+        return new BasicNamingEnumeration<String>(this.attrMap.keys());
     }
 
     public boolean isCaseIgnored() {
@@ -237,7 +239,7 @@ public class BasicAttributes implements Attributes {
      *
      * @return              a deep copy of this attribute collection
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     @Override
     public Object clone() {
         try {
@@ -245,7 +247,8 @@ public class BasicAttributes implements Attributes {
             c.attrMap = (Hashtable<String,Attribute>) this.attrMap.clone();
             return c;
         } catch (CloneNotSupportedException e) {
-            throw new AssertionError("Failed to clone object of BasicAttributes class."); //$NON-NLS-1$
+            // jndi.15=Failed to clone object of BasicAttributes class.
+            throw new AssertionError(Messages.getString("jndi.15"));  //$NON-NLS-1$
         }
     }
 

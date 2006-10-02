@@ -21,6 +21,8 @@ import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 /**
  * A <code>Reference</code> contains the class of the object which is referenced
  * together with a list of all the addresses at which this object may be found.
@@ -267,7 +269,7 @@ public class Reference implements Cloneable, Serializable {
      * 
      * @return              a deep clone of this object
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     @Override
     public Object clone() {
         try {
@@ -275,7 +277,8 @@ public class Reference implements Cloneable, Serializable {
             r.addrs = (Vector<RefAddr>) this.addrs.clone();
             return r;
         } catch (CloneNotSupportedException e) {
-            throw new AssertionError("Failed to clone object of Reference class."); //$NON-NLS-1$
+            // jndi.03=Failed to clone object of Reference class.
+            throw new AssertionError(Messages.getString("jndi.03"));  //$NON-NLS-1$
         }
     }
 

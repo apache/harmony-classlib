@@ -28,6 +28,8 @@ import javax.naming.NoInitialContextException;
 import javax.naming.NotContextException;
 import javax.naming.directory.SearchResult;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 /**
  * This is the root context for directory service operations.
  * 
@@ -50,7 +52,7 @@ public class InitialDirContext extends InitialContext implements DirContext {
      * properties.
      * 
      * @throws NamingException
-     * 						If failed to a construct new instance.
+     *                      If failed to a construct new instance.
      */
     public InitialDirContext() throws NamingException {
         super();
@@ -62,33 +64,33 @@ public class InitialDirContext extends InitialContext implements DirContext {
      * to construct a new <code>InitialDirContext</code> instance before all 
      * environment parameters are known. 
      * 
-     * @param flag			If flag is true, the new instance is created but 
-     * 						not initialized. In this case the subclass
-     * 						constructor is expected to call <code>init</code>
+     * @param flag          If flag is true, the new instance is created but 
+     *                      not initialized. In this case the subclass
+     *                      constructor is expected to call <code>init</code>
      *                      after the environment parameters are known. If flag
      *                      is false, a new instance is created and initialized
      *                      with no environment parameters.
      * @throws NamingException
-     * 						If failed to construct new instance.
+     *                      If failed to construct new instance.
      */
     protected InitialDirContext(boolean flag) throws NamingException {
-    	super(flag);
+        super(flag);
     }
 
     /**
      * Constructs a new <code>InitialDirContext</code> instance with 
      * environment properties.
      * 
-     * @param hashtable		Contains the enironment parameters. This constructor 
-     * 						will not change the hashtable or keep a reference to 
-     * 						it. The hashtable parameter may be null.
+     * @param hashtable     Contains the enironment parameters. This constructor 
+     *                      will not change the hashtable or keep a reference to 
+     *                      it. The hashtable parameter may be null.
      * @throws NamingException
-     * 						If failed to construct a new instance.
+     *                      If failed to construct a new instance.
      * @see InitialContext
      */
     public InitialDirContext(Hashtable<?, ?> hashtable)
             throws NamingException {
-    	super(hashtable);
+        super(hashtable);
     }
 
     /*
@@ -110,9 +112,11 @@ public class InitialDirContext extends InitialContext implements DirContext {
         if (ctx instanceof DirContext) {
             return (DirContext) ctx;
         } else if (null == ctx) {
-            throw new NoInitialContextException("Cannot create initial context."); //$NON-NLS-1$
+            // jndi.1A=Cannot create initial context.
+            throw new NoInitialContextException(Messages.getString("jndi.1A"));  //$NON-NLS-1$
         } else {
-            throw new NotContextException("DirContext object is required."); //$NON-NLS-1$
+            // jndi.1B=DirContext object is required.
+            throw new NotContextException(Messages.getString("jndi.1B"));  //$NON-NLS-1$
         }
     }
 

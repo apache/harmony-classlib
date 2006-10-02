@@ -28,7 +28,9 @@
  */
 package org.apache.harmony.jndi.provider.rmi.registry;
 
-@SuppressWarnings("deprecation")
+import org.apache.harmony.jndi.internal.nls.Messages;
+
+@SuppressWarnings("deprecation") //$NON-NLS-1$
 public final class RemoteReferenceWrapper_Stub extends java.rmi.server.RemoteStub
         implements org.apache.harmony.jndi.provider.rmi.registry.RemoteReference, java.rmi.Remote {
 
@@ -39,16 +41,16 @@ public final class RemoteReferenceWrapper_Stub extends java.rmi.server.RemoteStu
     private static boolean useNewInvoke;
 
     private static final java.rmi.server.Operation[] operations = {
-        new java.rmi.server.Operation("javax.naming.Reference getReference()")
+        new java.rmi.server.Operation("javax.naming.Reference getReference()") //$NON-NLS-1$
     };
 
     private static java.lang.reflect.Method $method_getReference_0;
 
     static {
         try {
-            java.rmi.server.RemoteRef.class.getMethod("invoke", new java.lang.Class[] {java.rmi.Remote.class, java.lang.reflect.Method.class, java.lang.Object[].class, long.class});
+            java.rmi.server.RemoteRef.class.getMethod("invoke", new java.lang.Class[] {java.rmi.Remote.class, java.lang.reflect.Method.class, java.lang.Object[].class, long.class}); //$NON-NLS-1$
 
-            $method_getReference_0 = org.apache.harmony.jndi.provider.rmi.registry.RemoteReference.class.getMethod("getReference", new java.lang.Class[] {});
+            $method_getReference_0 = org.apache.harmony.jndi.provider.rmi.registry.RemoteReference.class.getMethod("getReference", new java.lang.Class[] {}); //$NON-NLS-1$
 
             useNewInvoke = true;
         } catch (java.lang.NoSuchMethodException e) {
@@ -82,9 +84,11 @@ public final class RemoteReferenceWrapper_Stub extends java.rmi.server.RemoteStu
                 java.io.ObjectInput in = call.getInputStream();
                 $result = (javax.naming.Reference) in.readObject();
             } catch (java.io.IOException e) {
-                throw new java.rmi.UnmarshalException("Error unmarshalling return value", e);
+                // jndi.85=Error unmarshalling return value
+                throw new java.rmi.UnmarshalException(Messages.getString("jndi.85"), e); //$NON-NLS-1$
             } catch (java.lang.ClassNotFoundException e) {
-                throw new java.rmi.UnmarshalException("Error unmarshalling return value", e);
+                // jndi.85=Error unmarshalling return value
+                throw new java.rmi.UnmarshalException(Messages.getString("jndi.85"), e); //$NON-NLS-1$
             } finally {
                 ref.done(call);
             }
@@ -97,7 +101,8 @@ public final class RemoteReferenceWrapper_Stub extends java.rmi.server.RemoteStu
         } catch (javax.naming.NamingException e) {
             throw e;
         } catch (java.lang.Exception e) {
-            throw new java.rmi.UnexpectedException("Undeclared checked exception", e);
+            // jndi.86=Undeclared checked exception
+            throw new java.rmi.UnexpectedException(Messages.getString("jndi.86"), e); //$NON-NLS-1$
         }
     }
 }

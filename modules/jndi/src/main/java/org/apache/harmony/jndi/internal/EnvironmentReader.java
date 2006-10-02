@@ -40,6 +40,8 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.ldap.LdapContext;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 /**
  * This is a utility class that reads environment properties.
  * 
@@ -53,7 +55,7 @@ public final class EnvironmentReader {
 
     // Not allowed to create an instance
     private EnvironmentReader() {
-    	super();
+        super();
     }
 
     /*
@@ -217,8 +219,9 @@ public final class EnvironmentReader {
             e = cl.getResources(name);
         } catch (IOException ex) {
             // Unexpected ClassLoader exception
+            // jndi.23=Failed to load JNDI resource files.
             ConfigurationException newEx =
-                new ConfigurationException("Failed to load JNDI resource files."); //$NON-NLS-1$
+                new ConfigurationException(Messages.getString("jndi.23"));  //$NON-NLS-1$
             newEx.setRootCause(ex);
             throw newEx;
         }
@@ -237,8 +240,9 @@ public final class EnvironmentReader {
                 }
             } catch (IOException ex) {
                 // Can't read this resource file
+                // jndi.24=Failed to read JNDI resource files.
                 ConfigurationException newEx =
-                    new ConfigurationException("Failed to read JNDI resource files."); //$NON-NLS-1$
+                    new ConfigurationException(Messages.getString("jndi.24"));  //$NON-NLS-1$
                 newEx.setRootCause(ex);
                 throw newEx;
             } finally {
@@ -331,8 +335,9 @@ public final class EnvironmentReader {
                 mergeEnvironment(p, existingProps, true);
             } catch (PrivilegedActionException e) {
                 // Can't read "java.home"/lib/jndi.properties
+                // jndi.25=Failed to read JNDI resource files in java home library.
                 ConfigurationException newEx =
-                    new ConfigurationException("Failed to read JNDI resource files in java home library."); //$NON-NLS-1$
+                    new ConfigurationException(Messages.getString("jndi.25"));  //$NON-NLS-1$
                 newEx.setRootCause(e.getException());
                 throw newEx;
             } finally {
@@ -464,7 +469,7 @@ public final class EnvironmentReader {
     private static class SystemPropertiesSource implements JNDIPropertiesSource {
 
         public SystemPropertiesSource() {
-        	super();
+            super();
         }
 
         public String getProperty(final String propName) {

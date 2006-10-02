@@ -30,6 +30,8 @@ import javax.naming.Name;
 import javax.naming.NamingException;
 import javax.naming.spi.ObjectFactory;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 
 /**
  * Factory to create DNS URL contexts.
@@ -51,7 +53,7 @@ public class dnsURLContextFactory implements ObjectFactory {
      * @throws NamingException if such exception was encountered 
      * @see ObjectFactory#getObjectInstance(Object, Name, Context, Hashtable)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public Object getObjectInstance(Object obj, Name name, Context nameCtx,
             Hashtable<?, ?> environment) throws NamingException
     {
@@ -76,8 +78,8 @@ public class dnsURLContextFactory implements ObjectFactory {
             newEnv.put(Context.PROVIDER_URL, sb.toString());
             return new DNSContext(newEnv);
         } else {
-            throw new IllegalArgumentException(
-                    "obj should be either null, String or array of String");
+            // jndi.65=obj should be either null, String or array of String
+            throw new IllegalArgumentException(Messages.getString("jndi.65")); //$NON-NLS-1$
         }
     }
 
