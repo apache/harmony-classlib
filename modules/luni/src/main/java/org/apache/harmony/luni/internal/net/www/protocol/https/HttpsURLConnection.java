@@ -34,6 +34,7 @@ import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSocket;
 
 import org.apache.harmony.luni.internal.net.www.protocol.http.HttpURLConnection;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * HttpsURLConnection implementation.
@@ -59,7 +60,7 @@ public class HttpsURLConnection extends javax.net.ssl.HttpsURLConnection {
     @Override
     public String getCipherSuite() {
         if (sslSocket == null) {
-            throw new IllegalStateException("Connection has not been established yet.");
+            throw new IllegalStateException(Messages.getString("luni.00")); //$NON-NLS-1$
         }
         return sslSocket.getSession().getCipherSuite();
     }
@@ -67,7 +68,7 @@ public class HttpsURLConnection extends javax.net.ssl.HttpsURLConnection {
     @Override
     public Certificate[] getLocalCertificates() {
         if (sslSocket == null) {
-            throw new IllegalStateException("Connection has not been established yet.");
+            throw new IllegalStateException(Messages.getString("luni.00")); //$NON-NLS-1$
         }
         return sslSocket.getSession().getLocalCertificates();
     }
@@ -75,7 +76,7 @@ public class HttpsURLConnection extends javax.net.ssl.HttpsURLConnection {
     @Override
     public Certificate[] getServerCertificates() throws SSLPeerUnverifiedException {
         if (sslSocket == null) {
-            throw new IllegalStateException("Connection has not been established yet.");
+            throw new IllegalStateException(Messages.getString("luni.00")); //$NON-NLS-1$
         }
         return sslSocket.getSession().getPeerCertificates();
     }
@@ -83,7 +84,7 @@ public class HttpsURLConnection extends javax.net.ssl.HttpsURLConnection {
     @Override
     public Principal getPeerPrincipal() throws SSLPeerUnverifiedException {
         if (sslSocket == null) {
-            throw new IllegalStateException("Connection has not been established yet.");
+            throw new IllegalStateException(Messages.getString("luni.00")); //$NON-NLS-1$
         }
         return sslSocket.getSession().getPeerPrincipal();
     }
@@ -91,7 +92,7 @@ public class HttpsURLConnection extends javax.net.ssl.HttpsURLConnection {
     @Override
     public Principal getLocalPrincipal() {
         if (sslSocket == null) {
-            throw new IllegalStateException("Connection has not been established yet.");
+            throw new IllegalStateException(Messages.getString("luni.00")); //$NON-NLS-1$
         }
         return sslSocket.getSession().getLocalPrincipal();
     }
@@ -346,6 +347,10 @@ public class HttpsURLConnection extends javax.net.ssl.HttpsURLConnection {
      */
     private class HttpsEngine extends HttpURLConnection {
 
+        // In case of using proxy this field indicates
+        // if it is a SSL Tunnel establishing stage
+        private boolean makingSSLTunnel;
+
         protected HttpsEngine(URL url, int port) {
             super(url, port);
         }
@@ -359,9 +364,60 @@ public class HttpsURLConnection extends javax.net.ssl.HttpsURLConnection {
             if (connected) {
                 return;
             }
-            super.connect();
-            // TODO make SSL Tunnel in case of using the proxy
-            setUpTransportIO(wrapConnection(socket));
+            if (usingProxy() && !makingSSLTunnel) {
+                // SSL Tunnel through the proxy was not established yet, do so
+                makingSSLTunnel = true;
+                // first - make the connection
+                super.connect();
+                // keep request method
+                String save_meth = method;
+                // make SSL Tunnel
+                method = "CONNECT"; //$NON-NLS-1$
+                try {
+                    doRequest();
+                    endRequest();
+                } finally {
+                    // restore initial request method
+                    method = save_meth;
+                }
+                if (!connected) {
+                    throw new IOException(Messages.getString("luni.01", //$NON-NLS-1$
+                            responseMessage, responseCode));
+                }
+                // if there are some remaining data in the stream - read it out
+                InputStream is = socket.getInputStream();
+                while (is.available() != 0) {
+                    is.read();
+                }
+                makingSSLTunnel = false;
+            } else {
+                // no need in SSL tunnel
+                super.connect();
+            }
+            if (!makingSSLTunnel) {
+                setUpTransportIO(wrapConnection(socket));
+            }
+        }
+
+        protected String requestString() {
+            if (usingProxy()) {
+                if (makingSSLTunnel) {
+                    // we are making the SSL Tunneling, return remotehost:port
+                    int port = url.getPort();
+                    return (port > 0)
+                        ? url.getHost()+":"+port //$NON-NLS-1$
+                        : url.getHost();
+                } else {
+                    // we has made SSL Tunneling, return /requested.data
+                    String file = url.getFile();
+                    if (file == null || file.length() == 0) {
+                        file = "/"; //$NON-NLS-1$
+                    }
+                    return file;
+                }
+            } else {
+                return super.requestString();
+            }
         }
 
         /**
@@ -376,7 +432,7 @@ public class HttpsURLConnection extends javax.net.ssl.HttpsURLConnection {
             sslSocket.setUseClientMode(true);
             sslSocket.startHandshake();
             if (!getHostnameVerifier().verify(hostname, sslSocket.getSession())) {
-                throw new IOException("Hostname <" + hostname + "> was not verified.");
+                throw new IOException(Messages.getString("luni.02", hostname)); //$NON-NLS-1$
             }
             return sslSocket;
         }
