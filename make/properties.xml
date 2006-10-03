@@ -18,6 +18,9 @@
  -->
 
 <project name="Common Platform definitions" default="echo" basedir="..">
+    <description>
+        Ant file of common properties to be imported by other ant files
+    </description>
 
     <!-- Javac properties -->
     <!-- Set compiler to org.eclipse.jdt.core.JDTCompilerAdapter to use ECJ. -->
@@ -130,7 +133,8 @@
     <property name="lcms.home" value="/usr" />
     <property name="jpeg.home" value="/usr" />
 
-    <target name="echo" depends="svn-prop, svn-info" >
+    <target name="echo" depends="svn-prop, svn-info"
+            description="Display the properties defined by this ant file" >
         <echo>
 Harmony javac properties:
 
