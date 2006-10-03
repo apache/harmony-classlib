@@ -31,17 +31,16 @@ import java.beans.SimpleBeanInfo;
  */
 
 public class GrannyBeanBeanInfo extends SimpleBeanInfo {
-    
+
     public GrannyBeanBeanInfo() {
         super();
     }
-    
+
+    @Override
     public PropertyDescriptor[] getPropertyDescriptors() {
         try {
-            return new PropertyDescriptor[] {
-                new PropertyDescriptor("grannyText", GrannyBean.class,
-                        "getText", "setText")
-            };
+            return new PropertyDescriptor[] { new PropertyDescriptor(
+                    "grannyText", GrannyBean.class, "getText", "setText") };
         } catch (IntrospectionException ie) {
             System.out.println("in GrannyBeanBeanInfo.getPropertyDescriptors: "
                     + ie.getMessage());

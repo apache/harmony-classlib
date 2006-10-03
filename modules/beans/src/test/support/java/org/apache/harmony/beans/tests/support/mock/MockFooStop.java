@@ -23,20 +23,20 @@ import java.io.Serializable;
  * test Introspector
  */
 public class MockFooStop implements Serializable {
-	private String label;
+    private String label;
 
-	/**
-	 * @return Returns the label.
-	 */
-	public String getLabel() {
-		return label;
-	}
+    /**
+     * @return Returns the label.
+     */
+    public String getLabel() {
+        return label;
+    }
 
-	/**
-	 * @param label
-	 *            The label to set.
-	 */
-	public void setLabel(String label) {
-		this.label = label;
-	}
+    /**
+     * @param label
+     *            The label to set.
+     */
+    public void setLabel(String label) {
+        this.label = label;
+    }
 }

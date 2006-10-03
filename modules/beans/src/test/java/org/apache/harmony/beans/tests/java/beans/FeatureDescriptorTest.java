@@ -28,254 +28,255 @@ import junit.framework.TestCase;
  */
 public class FeatureDescriptorTest extends TestCase {
 
-	private FeatureDescriptor fd;
+    private FeatureDescriptor fd;
 
-	protected void setUp() throws Exception {
-		super.setUp();
-		fd = new FeatureDescriptor();
-	}
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        fd = new FeatureDescriptor();
+    }
 
-	public void testFeatureDescriptor() {
-		assertNull(fd.getDisplayName());
-		assertNull(fd.getName());
-		assertNull(fd.getShortDescription());
+    public void testFeatureDescriptor() {
+        assertNull(fd.getDisplayName());
+        assertNull(fd.getName());
+        assertNull(fd.getShortDescription());
 
-		assertNotNull(fd.attributeNames());
+        assertNotNull(fd.attributeNames());
 
-		assertFalse(fd.isExpert());
-		assertFalse(fd.isHidden());
-		assertFalse(fd.isPreferred());
-	}
+        assertFalse(fd.isExpert());
+        assertFalse(fd.isHidden());
+        assertFalse(fd.isPreferred());
+    }
 
-	public void testSetDisplayName() {
-		String displayName = "FeatureDescriptor.displayName";
-		fd.setDisplayName(displayName);
-		assertSame(displayName, fd.getDisplayName());
-		assertNull(fd.getName());
-		assertSame(displayName, fd.getShortDescription());
+    public void testSetDisplayName() {
+        String displayName = "FeatureDescriptor.displayName";
+        fd.setDisplayName(displayName);
+        assertSame(displayName, fd.getDisplayName());
+        assertNull(fd.getName());
+        assertSame(displayName, fd.getShortDescription());
 
-		assertNotNull(fd.attributeNames());
+        assertNotNull(fd.attributeNames());
 
-		assertFalse(fd.isExpert());
-		assertFalse(fd.isHidden());
-		assertFalse(fd.isPreferred());
-	}
+        assertFalse(fd.isExpert());
+        assertFalse(fd.isHidden());
+        assertFalse(fd.isPreferred());
+    }
 
-	public void testSetDisplayName_DisplayNameNull() {
-		String displayName = null;
-		fd.setDisplayName(displayName);
-		assertNull(fd.getDisplayName());
-		assertNull(fd.getName());
-		assertNull(fd.getShortDescription());
+    public void testSetDisplayName_DisplayNameNull() {
+        String displayName = null;
+        fd.setDisplayName(displayName);
+        assertNull(fd.getDisplayName());
+        assertNull(fd.getName());
+        assertNull(fd.getShortDescription());
 
-		assertNotNull(fd.attributeNames());
+        assertNotNull(fd.attributeNames());
 
-		assertFalse(fd.isExpert());
-		assertFalse(fd.isHidden());
-		assertFalse(fd.isPreferred());
-	}
+        assertFalse(fd.isExpert());
+        assertFalse(fd.isHidden());
+        assertFalse(fd.isPreferred());
+    }
 
-	public void testSetExpert_False() {
-		fd.setExpert(false);
-		assertFalse(fd.isExpert());
+    public void testSetExpert_False() {
+        fd.setExpert(false);
+        assertFalse(fd.isExpert());
 
-		assertNull(fd.getDisplayName());
-		assertNull(fd.getName());
-		assertNull(fd.getShortDescription());
+        assertNull(fd.getDisplayName());
+        assertNull(fd.getName());
+        assertNull(fd.getShortDescription());
 
-		assertNotNull(fd.attributeNames());
+        assertNotNull(fd.attributeNames());
 
-		assertFalse(fd.isHidden());
-		assertFalse(fd.isPreferred());
-	}
+        assertFalse(fd.isHidden());
+        assertFalse(fd.isPreferred());
+    }
 
-	public void testSetExpert_True() {
-		fd.setExpert(true);
-		assertTrue(fd.isExpert());
+    public void testSetExpert_True() {
+        fd.setExpert(true);
+        assertTrue(fd.isExpert());
 
-		assertNull(fd.getDisplayName());
-		assertNull(fd.getName());
-		assertNull(fd.getShortDescription());
+        assertNull(fd.getDisplayName());
+        assertNull(fd.getName());
+        assertNull(fd.getShortDescription());
 
-		assertNotNull(fd.attributeNames());
+        assertNotNull(fd.attributeNames());
 
-		assertFalse(fd.isHidden());
-		assertFalse(fd.isPreferred());
-	}
+        assertFalse(fd.isHidden());
+        assertFalse(fd.isPreferred());
+    }
 
-	public void testSetHidden_False() {
-		fd.setHidden(false);
-		assertFalse(fd.isHidden());
+    public void testSetHidden_False() {
+        fd.setHidden(false);
+        assertFalse(fd.isHidden());
 
-		assertNull(fd.getDisplayName());
-		assertNull(fd.getName());
-		assertNull(fd.getShortDescription());
+        assertNull(fd.getDisplayName());
+        assertNull(fd.getName());
+        assertNull(fd.getShortDescription());
 
-		assertNotNull(fd.attributeNames());
+        assertNotNull(fd.attributeNames());
 
-		assertFalse(fd.isExpert());
-		assertFalse(fd.isPreferred());
-	}
+        assertFalse(fd.isExpert());
+        assertFalse(fd.isPreferred());
+    }
 
-	public void testSetHidden_True() {
-		fd.setHidden(true);
-		assertTrue(fd.isHidden());
+    public void testSetHidden_True() {
+        fd.setHidden(true);
+        assertTrue(fd.isHidden());
 
-		assertNull(fd.getDisplayName());
-		assertNull(fd.getName());
-		assertNull(fd.getShortDescription());
+        assertNull(fd.getDisplayName());
+        assertNull(fd.getName());
+        assertNull(fd.getShortDescription());
 
-		assertNotNull(fd.attributeNames());
+        assertNotNull(fd.attributeNames());
 
-		assertFalse(fd.isExpert());
-		assertFalse(fd.isPreferred());
-	}
+        assertFalse(fd.isExpert());
+        assertFalse(fd.isPreferred());
+    }
 
-	public void testSetName() {
-		String name = "FeatureDescriptor.name";
-		fd.setName(name);
-		assertSame(name, fd.getName());
+    public void testSetName() {
+        String name = "FeatureDescriptor.name";
+        fd.setName(name);
+        assertSame(name, fd.getName());
 
-		assertSame(name, fd.getDisplayName());
-		assertSame(name, fd.getShortDescription());
+        assertSame(name, fd.getDisplayName());
+        assertSame(name, fd.getShortDescription());
 
-		assertNotNull(fd.attributeNames());
+        assertNotNull(fd.attributeNames());
 
-		assertFalse(fd.isExpert());
-		assertFalse(fd.isHidden());
-		assertFalse(fd.isPreferred());
-	}
+        assertFalse(fd.isExpert());
+        assertFalse(fd.isHidden());
+        assertFalse(fd.isPreferred());
+    }
 
-	public void testSetName_null() {
-		fd.setName("FeatureDescriptor.name");
-		fd.setName(null);
-		assertNull(fd.getName());
+    public void testSetName_null() {
+        fd.setName("FeatureDescriptor.name");
+        fd.setName(null);
+        assertNull(fd.getName());
 
-		assertNull(fd.getDisplayName());
-		assertNull(fd.getShortDescription());
+        assertNull(fd.getDisplayName());
+        assertNull(fd.getShortDescription());
 
-		assertNotNull(fd.attributeNames());
+        assertNotNull(fd.attributeNames());
 
-		assertFalse(fd.isExpert());
-		assertFalse(fd.isHidden());
-		assertFalse(fd.isPreferred());
-	}
+        assertFalse(fd.isExpert());
+        assertFalse(fd.isHidden());
+        assertFalse(fd.isPreferred());
+    }
 
-	public void testSetPreferred_False() {
-		fd.setPreferred(false);
-		assertFalse(fd.isPreferred());
+    public void testSetPreferred_False() {
+        fd.setPreferred(false);
+        assertFalse(fd.isPreferred());
 
-		assertNull(fd.getDisplayName());
-		assertNull(fd.getName());
-		assertNull(fd.getShortDescription());
+        assertNull(fd.getDisplayName());
+        assertNull(fd.getName());
+        assertNull(fd.getShortDescription());
 
-		assertNotNull(fd.attributeNames());
+        assertNotNull(fd.attributeNames());
 
-		assertFalse(fd.isExpert());
-		assertFalse(fd.isHidden());
-	}
+        assertFalse(fd.isExpert());
+        assertFalse(fd.isHidden());
+    }
 
-	public void testSetPreferred_True() {
-		fd.setPreferred(true);
-		assertTrue(fd.isPreferred());
+    public void testSetPreferred_True() {
+        fd.setPreferred(true);
+        assertTrue(fd.isPreferred());
 
-		assertNull(fd.getDisplayName());
-		assertNull(fd.getName());
-		assertNull(fd.getShortDescription());
+        assertNull(fd.getDisplayName());
+        assertNull(fd.getName());
+        assertNull(fd.getShortDescription());
 
-		assertNotNull(fd.attributeNames());
+        assertNotNull(fd.attributeNames());
 
-		assertFalse(fd.isExpert());
-		assertFalse(fd.isHidden());
-	}
+        assertFalse(fd.isExpert());
+        assertFalse(fd.isHidden());
+    }
 
-	public void testSetShortDescription() {
-		String shortDesc = "FeatureDescriptor.ShortDescription";
-		fd.setShortDescription(shortDesc);
-		assertSame(shortDesc, fd.getShortDescription());
+    public void testSetShortDescription() {
+        String shortDesc = "FeatureDescriptor.ShortDescription";
+        fd.setShortDescription(shortDesc);
+        assertSame(shortDesc, fd.getShortDescription());
 
-		assertNull(fd.getDisplayName());
-		assertNull(fd.getName());
+        assertNull(fd.getDisplayName());
+        assertNull(fd.getName());
 
-		assertNotNull(fd.attributeNames());
+        assertNotNull(fd.attributeNames());
 
-		assertFalse(fd.isExpert());
-		assertFalse(fd.isHidden());
-		assertFalse(fd.isPreferred());
-	}
+        assertFalse(fd.isExpert());
+        assertFalse(fd.isHidden());
+        assertFalse(fd.isPreferred());
+    }
 
-	public void testSetShortDescription_ShortDescNull() {
-		String shortDesc = "FeatureDescriptor.ShortDescription";
-		fd.setShortDescription(shortDesc);
-		assertSame(shortDesc, fd.getShortDescription());
-		fd.setShortDescription(null);
-		assertNull(fd.getShortDescription());
+    public void testSetShortDescription_ShortDescNull() {
+        String shortDesc = "FeatureDescriptor.ShortDescription";
+        fd.setShortDescription(shortDesc);
+        assertSame(shortDesc, fd.getShortDescription());
+        fd.setShortDescription(null);
+        assertNull(fd.getShortDescription());
 
-		assertNull(fd.getDisplayName());
-		assertNull(fd.getName());
+        assertNull(fd.getDisplayName());
+        assertNull(fd.getName());
 
-		assertNotNull(fd.attributeNames());
+        assertNotNull(fd.attributeNames());
 
-		assertFalse(fd.isExpert());
-		assertFalse(fd.isHidden());
-		assertFalse(fd.isPreferred());
-	}
+        assertFalse(fd.isExpert());
+        assertFalse(fd.isHidden());
+        assertFalse(fd.isPreferred());
+    }
 
-	public void testSetValue() {
-		String[] attributeNames = { "Blue", "Yellow", "Red", };
-		Object[] values = { "Blue.value", "Yellow.value", "Red.value", };
-		for (int i = 0; i < attributeNames.length; i++) {
-			fd.setValue(attributeNames[i], values[i]);
-		}
+    public void testSetValue() {
+        String[] attributeNames = { "Blue", "Yellow", "Red", };
+        Object[] values = { "Blue.value", "Yellow.value", "Red.value", };
+        for (int i = 0; i < attributeNames.length; i++) {
+            fd.setValue(attributeNames[i], values[i]);
+        }
 
-		for (int i = 0; i < attributeNames.length; i++) {
-			assertSame(values[i], fd.getValue(attributeNames[i]));
-		}
-	}
+        for (int i = 0; i < attributeNames.length; i++) {
+            assertSame(values[i], fd.getValue(attributeNames[i]));
+        }
+    }
 
-	public void testSetValue_ExistAttribute() {
-		String attributeName = "blue";
-		Object value = "Anyone";
-		fd.setValue(attributeName, value);
-		assertSame(value, fd.getValue(attributeName));
+    public void testSetValue_ExistAttribute() {
+        String attributeName = "blue";
+        Object value = "Anyone";
+        fd.setValue(attributeName, value);
+        assertSame(value, fd.getValue(attributeName));
 
-		Object newValue = "Another";
-		fd.setValue(attributeName, newValue);
-		assertSame(newValue, fd.getValue(attributeName));
-	}
+        Object newValue = "Another";
+        fd.setValue(attributeName, newValue);
+        assertSame(newValue, fd.getValue(attributeName));
+    }
 
-	public void testSetValue_ValueNull() {
-		String attributeName = "blue";
-		Object value = "Anyone";
-		fd.setValue(attributeName, value);
-		assertSame(value, fd.getValue(attributeName));
+    public void testSetValue_ValueNull() {
+        String attributeName = "blue";
+        Object value = "Anyone";
+        fd.setValue(attributeName, value);
+        assertSame(value, fd.getValue(attributeName));
 
-		Object newValue = null;
-		try {
-			fd.setValue(attributeName, newValue);
-			fail("Should throw NullPointerException.");
-		} catch (NullPointerException e) {
-		}
-	}
+        Object newValue = null;
+        try {
+            fd.setValue(attributeName, newValue);
+            fail("Should throw NullPointerException.");
+        } catch (NullPointerException e) {
+        }
+    }
 
-	public void testattributeNames() {
-		assertFalse(fd.attributeNames().hasMoreElements());
+    public void testattributeNames() {
+        assertFalse(fd.attributeNames().hasMoreElements());
 
-		String[] attributeNames = { "Blue", "Yellow", "Red", };
-		Object[] values = { "Blue.value", "Yellow.value", "Red.value", };
-		for (int i = 0; i < attributeNames.length; i++) {
-			fd.setValue(attributeNames[i], values[i]);
-		}
-		Enumeration<String> names = fd.attributeNames();
-		Hashtable<String, Object> table = new Hashtable<String, Object>();
-		while (names.hasMoreElements()) {
-			String name = names.nextElement();
-			table.put(name, fd.getValue(name));
-		}
+        String[] attributeNames = { "Blue", "Yellow", "Red", };
+        Object[] values = { "Blue.value", "Yellow.value", "Red.value", };
+        for (int i = 0; i < attributeNames.length; i++) {
+            fd.setValue(attributeNames[i], values[i]);
+        }
+        Enumeration<String> names = fd.attributeNames();
+        Hashtable<String, Object> table = new Hashtable<String, Object>();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement();
+            table.put(name, fd.getValue(name));
+        }
 
-		assertEquals(attributeNames.length, table.size());
-		for (int i = 0; i < attributeNames.length; i++) {
-			assertTrue(table.containsKey(attributeNames[i]));
-		}
-	}
+        assertEquals(attributeNames.length, table.size());
+        for (String element : attributeNames) {
+            assertTrue(table.containsKey(element));
+        }
+    }
 }

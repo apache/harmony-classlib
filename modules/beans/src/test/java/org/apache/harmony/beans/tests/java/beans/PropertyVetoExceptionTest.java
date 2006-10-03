@@ -33,39 +33,41 @@ import org.apache.harmony.testframework.serialization.SerializationTest.Serializ
  */
 public class PropertyVetoExceptionTest extends TestCase {
 
-	private PropertyChangeEvent event;
+    private PropertyChangeEvent event;
 
-	protected void setUp() throws Exception {
-		super.setUp();
-		MockJavaBean myBean = new MockJavaBean("Bean_PropertyVetoExceptionTest");
-		event = new PropertyChangeEvent(myBean, "propertyOne", "value_old",
-				"value_one");
-	}
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        MockJavaBean myBean = new MockJavaBean("Bean_PropertyVetoExceptionTest");
+        event = new PropertyChangeEvent(myBean, "propertyOne", "value_old",
+                "value_one");
+    }
 
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
 
-	public void testPropertyVetoException() {
-		String message = "testPropertyVetoException";
-		PropertyVetoException e = new PropertyVetoException(message, event);
-		assertSame(message, e.getMessage());
-		assertSame(event, e.getPropertyChangeEvent());
-	}
+    public void testPropertyVetoException() {
+        String message = "testPropertyVetoException";
+        PropertyVetoException e = new PropertyVetoException(message, event);
+        assertSame(message, e.getMessage());
+        assertSame(event, e.getPropertyChangeEvent());
+    }
 
-	public void testPropertyVetoException_MessageNull() {
-		String message = null;
-		PropertyVetoException e = new PropertyVetoException(message, event);
-		assertNull(e.getMessage());
-		assertSame(event, e.getPropertyChangeEvent());
-	}
+    public void testPropertyVetoException_MessageNull() {
+        String message = null;
+        PropertyVetoException e = new PropertyVetoException(message, event);
+        assertNull(e.getMessage());
+        assertSame(event, e.getPropertyChangeEvent());
+    }
 
-	public void testPropertyVetoException_EventNull() {
-		String message = "testPropertyVetoException";
-		PropertyVetoException e = new PropertyVetoException(message, null);
-		assertSame(message, e.getMessage());
-		assertNull(e.getPropertyChangeEvent());
-	}
+    public void testPropertyVetoException_EventNull() {
+        String message = "testPropertyVetoException";
+        PropertyVetoException e = new PropertyVetoException(message, null);
+        assertSame(message, e.getMessage());
+        assertNull(e.getPropertyChangeEvent());
+    }
 
     // comparator for PropertyVetoException objects
     private static final SerializableAssert comparator = new SerializableAssert() {

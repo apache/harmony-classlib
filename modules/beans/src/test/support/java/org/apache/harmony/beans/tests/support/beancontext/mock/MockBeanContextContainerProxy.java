@@ -25,14 +25,14 @@ import java.beans.beancontext.BeanContextContainerProxy;
  */
 public class MockBeanContextContainerProxy implements BeanContextContainerProxy {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.beancontext.BeanContextContainerProxy#getContainer()
-	 */
-	public Container getContainer() {
-		// Auto-generated method stub
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.beancontext.BeanContextContainerProxy#getContainer()
+     */
+    public Container getContainer() {
+        // Auto-generated method stub
+        return null;
+    }
 
 }

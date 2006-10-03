@@ -25,23 +25,23 @@ import java.beans.beancontext.BeanContextProxy;
  */
 public class MockBeanContextProxy implements BeanContextProxy {
 
-	private BeanContextChild bcc;
+    private BeanContextChild bcc;
 
-	public MockBeanContextProxy() {
-		this(null);
-	}
+    public MockBeanContextProxy() {
+        this(null);
+    }
 
-	public MockBeanContextProxy(BeanContextChild bcc) {
-		this.bcc = bcc;
-	}
+    public MockBeanContextProxy(BeanContextChild bcc) {
+        this.bcc = bcc;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.beancontext.BeanContextProxy#getBeanContextProxy()
-	 */
-	public BeanContextChild getBeanContextProxy() {
-		return bcc;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.beancontext.BeanContextProxy#getBeanContextProxy()
+     */
+    public BeanContextChild getBeanContextProxy() {
+        return bcc;
+    }
 
 }

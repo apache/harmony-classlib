@@ -26,28 +26,28 @@ import java.io.Serializable;
  * Mock of VetoableChangeListener
  */
 public class MockVetoableChangeListenerS implements VetoableChangeListener,
-		Serializable {
+        Serializable {
 
-	public PropertyChangeEvent lastEvent;
+    public PropertyChangeEvent lastEvent;
 
-	public String id;
+    public String id;
 
-	public MockVetoableChangeListenerS(String id) {
-		this.id = id;
-	}
+    public MockVetoableChangeListenerS(String id) {
+        this.id = id;
+    }
 
-	public void clearLastEvent() {
-		lastEvent = null;
-	}
+    public void clearLastEvent() {
+        lastEvent = null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.VetoableChangeListener#vetoableChange(java.beans.PropertyChangeEvent)
-	 */
-	public void vetoableChange(PropertyChangeEvent evt)
-			throws PropertyVetoException {
-		lastEvent = evt;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.VetoableChangeListener#vetoableChange(java.beans.PropertyChangeEvent)
+     */
+    public void vetoableChange(PropertyChangeEvent evt)
+            throws PropertyVetoException {
+        lastEvent = evt;
+    }
 
 }

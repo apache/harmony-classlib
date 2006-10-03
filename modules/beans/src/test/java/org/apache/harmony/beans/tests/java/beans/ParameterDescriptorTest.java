@@ -26,17 +26,17 @@ import junit.framework.TestCase;
  */
 public class ParameterDescriptorTest extends TestCase {
 
-	public void testParameterDescriptor() {
-		ParameterDescriptor pd = new ParameterDescriptor();
-		assertNull(pd.getDisplayName());
-		assertNull(pd.getName());
-		assertNull(pd.getShortDescription());
+    public void testParameterDescriptor() {
+        ParameterDescriptor pd = new ParameterDescriptor();
+        assertNull(pd.getDisplayName());
+        assertNull(pd.getName());
+        assertNull(pd.getShortDescription());
 
-		assertNotNull(pd.attributeNames());
+        assertNotNull(pd.attributeNames());
 
-		assertFalse(pd.isExpert());
-		assertFalse(pd.isHidden());
-		assertFalse(pd.isPreferred());
-	}
+        assertFalse(pd.isExpert());
+        assertFalse(pd.isHidden());
+        assertFalse(pd.isPreferred());
+    }
 
 }

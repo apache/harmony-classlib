@@ -29,96 +29,96 @@ import java.beans.beancontext.BeanContextServiceProviderBeanInfo;
  * Mock of BeanContextServiceProviderBeanInfo
  */
 public class MockBeanContextServiceProviderBeanInfo implements
-		BeanContextServiceProviderBeanInfo {
+        BeanContextServiceProviderBeanInfo {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.beancontext.BeanContextServiceProviderBeanInfo#getServicesBeanInfo()
-	 */
-	public BeanInfo[] getServicesBeanInfo() {
-		// Auto-generated method stub
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.beancontext.BeanContextServiceProviderBeanInfo#getServicesBeanInfo()
+     */
+    public BeanInfo[] getServicesBeanInfo() {
+        // Auto-generated method stub
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.BeanInfo#getBeanDescriptor()
-	 */
-	public BeanDescriptor getBeanDescriptor() {
-		// Auto-generated method stub
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.BeanInfo#getBeanDescriptor()
+     */
+    public BeanDescriptor getBeanDescriptor() {
+        // Auto-generated method stub
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.BeanInfo#getEventSetDescriptors()
-	 */
-	public EventSetDescriptor[] getEventSetDescriptors() {
-		// Auto-generated method stub
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.BeanInfo#getEventSetDescriptors()
+     */
+    public EventSetDescriptor[] getEventSetDescriptors() {
+        // Auto-generated method stub
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.BeanInfo#getDefaultEventIndex()
-	 */
-	public int getDefaultEventIndex() {
-		// Auto-generated method stub
-		return 0;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.BeanInfo#getDefaultEventIndex()
+     */
+    public int getDefaultEventIndex() {
+        // Auto-generated method stub
+        return 0;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.BeanInfo#getPropertyDescriptors()
-	 */
-	public PropertyDescriptor[] getPropertyDescriptors() {
-		// Auto-generated method stub
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.BeanInfo#getPropertyDescriptors()
+     */
+    public PropertyDescriptor[] getPropertyDescriptors() {
+        // Auto-generated method stub
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.BeanInfo#getDefaultPropertyIndex()
-	 */
-	public int getDefaultPropertyIndex() {
-		// Auto-generated method stub
-		return 0;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.BeanInfo#getDefaultPropertyIndex()
+     */
+    public int getDefaultPropertyIndex() {
+        // Auto-generated method stub
+        return 0;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.BeanInfo#getMethodDescriptors()
-	 */
-	public MethodDescriptor[] getMethodDescriptors() {
-		// Auto-generated method stub
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.BeanInfo#getMethodDescriptors()
+     */
+    public MethodDescriptor[] getMethodDescriptors() {
+        // Auto-generated method stub
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.BeanInfo#getAdditionalBeanInfo()
-	 */
-	public BeanInfo[] getAdditionalBeanInfo() {
-		// Auto-generated method stub
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.BeanInfo#getAdditionalBeanInfo()
+     */
+    public BeanInfo[] getAdditionalBeanInfo() {
+        // Auto-generated method stub
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.BeanInfo#getIcon(int)
-	 */
-	public Image getIcon(int iconKind) {
-		// Auto-generated method stub
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.BeanInfo#getIcon(int)
+     */
+    public Image getIcon(int iconKind) {
+        // Auto-generated method stub
+        return null;
+    }
 
 }

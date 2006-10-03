@@ -25,13 +25,13 @@ import junit.framework.TestSuite;
  */
 public class AllTests {
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Tests for org.apache.harmony.beans");
-		// $JUnit-BEGIN$
-		suite.addTestSuite(ArrayPersistenceDelegateTest.class);
-		suite.addTestSuite(ClassPersistenceDelegateTest.class);
-		suite.addTestSuite(StringPersistenceDelegateTest.class);
-		// $JUnit-END$
-		return suite;
-	}
+    public static Test suite() {
+        TestSuite suite = new TestSuite("Tests for org.apache.harmony.beans");
+        // $JUnit-BEGIN$
+        suite.addTestSuite(ArrayPersistenceDelegateTest.class);
+        suite.addTestSuite(ClassPersistenceDelegateTest.class);
+        suite.addTestSuite(StringPersistenceDelegateTest.class);
+        // $JUnit-END$
+        return suite;
+    }
 }

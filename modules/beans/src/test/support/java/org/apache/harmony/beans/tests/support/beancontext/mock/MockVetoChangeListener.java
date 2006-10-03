@@ -26,21 +26,21 @@ import java.beans.VetoableChangeListener;
  */
 public class MockVetoChangeListener implements VetoableChangeListener {
 
-	public PropertyChangeEvent lastEvent;
+    public PropertyChangeEvent lastEvent;
 
-	public void clearLastEvent() {
-		lastEvent = null;
-	}
+    public void clearLastEvent() {
+        lastEvent = null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.VetoableChangeListener#vetoableChange(java.beans.PropertyChangeEvent)
-	 */
-	public void vetoableChange(PropertyChangeEvent evt)
-			throws PropertyVetoException {
-		lastEvent = evt;
-		throw new PropertyVetoException("NO CHANGE ALLOWED", evt);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.VetoableChangeListener#vetoableChange(java.beans.PropertyChangeEvent)
+     */
+    public void vetoableChange(PropertyChangeEvent evt)
+            throws PropertyVetoException {
+        lastEvent = evt;
+        throw new PropertyVetoException("NO CHANGE ALLOWED", evt);
+    }
 
 }

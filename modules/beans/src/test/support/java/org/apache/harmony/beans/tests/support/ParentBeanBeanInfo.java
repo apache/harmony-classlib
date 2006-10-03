@@ -31,22 +31,21 @@ import java.beans.SimpleBeanInfo;
  */
 
 public class ParentBeanBeanInfo extends SimpleBeanInfo {
-    
+
     public ParentBeanBeanInfo() {
         super();
     }
-    
+
+    @Override
     public PropertyDescriptor[] getPropertyDescriptors() {
         try {
-            return new PropertyDescriptor[] {
-                new PropertyDescriptor("parentText", ParentBean.class,
-                        "getText", "setText")
-            };
+            return new PropertyDescriptor[] { new PropertyDescriptor(
+                    "parentText", ParentBean.class, "getText", "setText") };
         } catch (IntrospectionException ie) {
             System.out.println("in ParentBeanBeanInfo.getPropertyDescriptors: "
                     + ie.getMessage());
             return null;
         }
-        
+
     }
 }

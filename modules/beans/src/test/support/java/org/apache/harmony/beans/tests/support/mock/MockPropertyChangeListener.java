@@ -21,18 +21,18 @@ package org.apache.harmony.beans.tests.support.mock;
  * TODO Type description
  */
 public interface MockPropertyChangeListener {
-	/*
-	 * fire MockPropertyChange event.
-	 */
+    /*
+     * fire MockPropertyChange event.
+     */
 
-	public void mockPropertyChange(MockPropertyChangeEvent e);
+    public void mockPropertyChange(MockPropertyChangeEvent e);
 
-	public void mockPropertyChange2(MockPropertyChangeEvent e);
+    public void mockPropertyChange2(MockPropertyChangeEvent e);
 
-	public void mockPropertyChange3(MockPropertyChangeEvent e);
+    public void mockPropertyChange3(MockPropertyChangeEvent e);
 
-	public void mockNotAEventObject(MockFakeEvent event);
+    public void mockNotAEventObject(MockFakeEvent event);
 
-	public void mockPropertyChange_Invalid();
+    public void mockPropertyChange_Invalid();
 
 }

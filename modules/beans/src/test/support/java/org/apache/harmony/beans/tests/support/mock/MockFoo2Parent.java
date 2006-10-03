@@ -21,14 +21,14 @@ package org.apache.harmony.beans.tests.support.mock;
  * test for DefaultPersistenceDelegate
  */
 public class MockFoo2Parent {
-	private int i = 0;
+    private int i = 0;
 
-	public void set(int i) {
-		this.i = i;
-	}
+    public void set(int i) {
+        this.i = i;
+    }
 
-	public int get() {
-		return this.i;
-	}
+    public int get() {
+        return this.i;
+    }
 
 }

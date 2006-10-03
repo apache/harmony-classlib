@@ -28,7 +28,9 @@ import java.beans.PropertyEditor;
  */
 public class FozzzEditor implements PropertyEditor {
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.beans.PropertyEditor#addPropertyChangeListener(java.beans.PropertyChangeListener)
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -36,7 +38,9 @@ public class FozzzEditor implements PropertyEditor {
 
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.beans.PropertyEditor#getAsText()
      */
     public String getAsText() {
@@ -44,7 +48,9 @@ public class FozzzEditor implements PropertyEditor {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.beans.PropertyEditor#getCustomEditor()
      */
     public Component getCustomEditor() {
@@ -52,7 +58,9 @@ public class FozzzEditor implements PropertyEditor {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.beans.PropertyEditor#getJavaInitializationString()
      */
     public String getJavaInitializationString() {
@@ -60,7 +68,9 @@ public class FozzzEditor implements PropertyEditor {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.beans.PropertyEditor#getTags()
      */
     public String[] getTags() {
@@ -68,7 +78,9 @@ public class FozzzEditor implements PropertyEditor {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.beans.PropertyEditor#getValue()
      */
     public Object getValue() {
@@ -76,7 +88,9 @@ public class FozzzEditor implements PropertyEditor {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.beans.PropertyEditor#isPaintable()
      */
     public boolean isPaintable() {
@@ -84,15 +98,20 @@ public class FozzzEditor implements PropertyEditor {
         return false;
     }
 
-    /* (non-Javadoc)
-     * @see java.beans.PropertyEditor#paintValue(java.awt.Graphics, java.awt.Rectangle)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.PropertyEditor#paintValue(java.awt.Graphics,
+     *      java.awt.Rectangle)
      */
     public void paintValue(Graphics graphics, Rectangle box) {
         // TO DO Auto-generated method stub
 
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.beans.PropertyEditor#removePropertyChangeListener(java.beans.PropertyChangeListener)
      */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
@@ -100,7 +119,9 @@ public class FozzzEditor implements PropertyEditor {
 
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.beans.PropertyEditor#setAsText(java.lang.String)
      */
     public void setAsText(String text) throws IllegalArgumentException {
@@ -108,7 +129,9 @@ public class FozzzEditor implements PropertyEditor {
 
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.beans.PropertyEditor#setValue(java.lang.Object)
      */
     public void setValue(Object value) {
@@ -116,7 +139,9 @@ public class FozzzEditor implements PropertyEditor {
 
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.beans.PropertyEditor#supportsCustomEditor()
      */
     public boolean supportsCustomEditor() {
@@ -125,5 +150,3 @@ public class FozzzEditor implements PropertyEditor {
     }
 
 }
-
- 

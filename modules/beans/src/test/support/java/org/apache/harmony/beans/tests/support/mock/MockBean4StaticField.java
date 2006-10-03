@@ -17,28 +17,29 @@
 package org.apache.harmony.beans.tests.support.mock;
 
 public class MockBean4StaticField {
-	public static MockBean4StaticField inst = new MockBean4StaticField(999);
+    public static MockBean4StaticField inst = new MockBean4StaticField(999);
 
-	private int v;
+    private int v;
 
-	public boolean equals(Object o) {
-		return (o.getClass().equals(this.getClass()) && this.v == ((MockBean4StaticField) o).v);
-	}
+    @Override
+    public boolean equals(Object o) {
+        return (o.getClass().equals(this.getClass()) && this.v == ((MockBean4StaticField) o).v);
+    }
 
-	public MockBean4StaticField() {
-		v = 1;
-	}
+    public MockBean4StaticField() {
+        v = 1;
+    }
 
-	public MockBean4StaticField(int i) {
-		v = i;
-	}
+    public MockBean4StaticField(int i) {
+        v = i;
+    }
 
-	public int getV() {
-		return v;
-	}
+    public int getV() {
+        return v;
+    }
 
-	public void setV(int v) {
-		this.v = v;
-	}
+    public void setV(int v) {
+        this.v = v;
+    }
 
 }

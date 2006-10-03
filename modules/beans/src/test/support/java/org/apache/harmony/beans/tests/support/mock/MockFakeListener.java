@@ -21,5 +21,5 @@ package org.apache.harmony.beans.tests.support.mock;
  * test java.beans
  */
 public interface MockFakeListener {
-	public void mockPropertyChange(MockPropertyChangeEvent e);
+    public void mockPropertyChange(MockPropertyChangeEvent e);
 }

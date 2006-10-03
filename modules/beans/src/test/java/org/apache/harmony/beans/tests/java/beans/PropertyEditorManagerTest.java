@@ -201,7 +201,8 @@ public class PropertyEditorManagerTest extends TestCase {
         try {
             editor.setAsText(null);
             fail("Should throw a Exception");
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     public void testBoolEditor_setAsText_Invalid() {
@@ -209,7 +210,8 @@ public class PropertyEditorManagerTest extends TestCase {
         try {
             editor.setAsText("***true***");
             fail("Should throw a IllegalArgumentException");
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {
+        }
     }
 
     public void testByteEditor() {
@@ -227,7 +229,8 @@ public class PropertyEditorManagerTest extends TestCase {
         try {
             editor.setAsText(null);
             fail("Should throw a NumberFormatException");
-        } catch (NumberFormatException e) {}
+        } catch (NumberFormatException e) {
+        }
     }
 
     public void testByteEditor_invalid() {
@@ -235,7 +238,8 @@ public class PropertyEditorManagerTest extends TestCase {
         try {
             editor.setAsText("invalid");
             fail("Should throw a NumberFormatException");
-        } catch (NumberFormatException e) {}
+        } catch (NumberFormatException e) {
+        }
     }
 
     public void testByteEditor_invalid2() {
@@ -243,7 +247,8 @@ public class PropertyEditorManagerTest extends TestCase {
         try {
             editor.setAsText("128");
             fail("Should throw a NumberFormatException");
-        } catch (NumberFormatException e) {}
+        } catch (NumberFormatException e) {
+        }
     }
 
     public void testDoubleEditor() {
@@ -261,7 +266,8 @@ public class PropertyEditorManagerTest extends TestCase {
         try {
             editor.setAsText(null);
             fail("Should throw a NullPointerException");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
     }
 
     public void testDoubleEditor_SetAsText_Invalid() {
@@ -269,7 +275,8 @@ public class PropertyEditorManagerTest extends TestCase {
         try {
             editor.setAsText("invalid");
             fail("Should throw a NumberFormatException");
-        } catch (NumberFormatException e) {}
+        } catch (NumberFormatException e) {
+        }
     }
 
     public void testFloatEditor() {
@@ -288,7 +295,8 @@ public class PropertyEditorManagerTest extends TestCase {
         try {
             editor.setAsText(null);
             fail("Should throw a NullPointerException");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
     }
 
     public void testFloatEditor_SetAsText_Invalid() {
@@ -296,7 +304,8 @@ public class PropertyEditorManagerTest extends TestCase {
         try {
             editor.setAsText("invalid");
             fail("Should throw a NumberFormatException");
-        } catch (NumberFormatException e) {}
+        } catch (NumberFormatException e) {
+        }
     }
 
     public void testLongEditor() {
@@ -315,7 +324,8 @@ public class PropertyEditorManagerTest extends TestCase {
         try {
             editor.setAsText(null);
             fail("Should throw a NumberFormatException");
-        } catch (NumberFormatException e) {}
+        } catch (NumberFormatException e) {
+        }
     }
 
     public void testLongEditor_SetAsText_Invalid() {
@@ -323,7 +333,8 @@ public class PropertyEditorManagerTest extends TestCase {
         try {
             editor.setAsText("invalid");
             fail("Should throw a NumberFormatException");
-        } catch (NumberFormatException e) {}
+        } catch (NumberFormatException e) {
+        }
     }
 
     public void testShortEditor() {
@@ -343,7 +354,8 @@ public class PropertyEditorManagerTest extends TestCase {
         try {
             editor.setAsText(null);
             fail("Should throw a NumberFormatException");
-        } catch (NumberFormatException e) {}
+        } catch (NumberFormatException e) {
+        }
     }
 
     public void testShortEditor_SetAsText_Invalid() {
@@ -351,7 +363,8 @@ public class PropertyEditorManagerTest extends TestCase {
         try {
             editor.setAsText("invalid");
             fail("Should throw a NumberFormatException");
-        } catch (NumberFormatException e) {}
+        } catch (NumberFormatException e) {
+        }
     }
 
     public void testIntegerEditor() {
@@ -370,7 +383,8 @@ public class PropertyEditorManagerTest extends TestCase {
         try {
             editor.setAsText(null);
             fail("Should throw a NumberFormatException");
-        } catch (NumberFormatException e) {}
+        } catch (NumberFormatException e) {
+        }
     }
 
     public void testIntegerEditor_SetAsText_Invalid() {
@@ -428,7 +442,7 @@ public class PropertyEditorManagerTest extends TestCase {
          * @see java.beans.PropertyEditor#addPropertyChangeListener(java.beans.PropertyChangeListener)
          */
         public void addPropertyChangeListener(PropertyChangeListener listener) {
-        // TO DO Auto-generated method stub
+            // TO DO Auto-generated method stub
 
         }
 
@@ -499,7 +513,7 @@ public class PropertyEditorManagerTest extends TestCase {
          *      java.awt.Rectangle)
          */
         public void paintValue(Graphics graphics, Rectangle box) {
-        // TO DO Auto-generated method stub
+            // TO DO Auto-generated method stub
 
         }
 
@@ -509,7 +523,7 @@ public class PropertyEditorManagerTest extends TestCase {
          * @see java.beans.PropertyEditor#removePropertyChangeListener(java.beans.PropertyChangeListener)
          */
         public void removePropertyChangeListener(PropertyChangeListener listener) {
-        // TO DO Auto-generated method stub
+            // TO DO Auto-generated method stub
 
         }
 
@@ -519,7 +533,7 @@ public class PropertyEditorManagerTest extends TestCase {
          * @see java.beans.PropertyEditor#setAsText(java.lang.String)
          */
         public void setAsText(String text) throws IllegalArgumentException {
-        // TO DO Auto-generated method stub
+            // TO DO Auto-generated method stub
 
         }
 
@@ -529,7 +543,7 @@ public class PropertyEditorManagerTest extends TestCase {
          * @see java.beans.PropertyEditor#setValue(java.lang.Object)
          */
         public void setValue(Object value) {
-        // TO DO Auto-generated method stub
+            // TO DO Auto-generated method stub
 
         }
 
@@ -553,7 +567,7 @@ public class PropertyEditorManagerTest extends TestCase {
          * @see java.beans.PropertyEditor#addPropertyChangeListener(java.beans.PropertyChangeListener)
          */
         public void addPropertyChangeListener(PropertyChangeListener listener) {
-        // TO DO Auto-generated method stub
+            // TO DO Auto-generated method stub
 
         }
 
@@ -624,7 +638,7 @@ public class PropertyEditorManagerTest extends TestCase {
          *      java.awt.Rectangle)
          */
         public void paintValue(Graphics graphics, Rectangle box) {
-        // TO DO Auto-generated method stub
+            // TO DO Auto-generated method stub
 
         }
 
@@ -634,7 +648,7 @@ public class PropertyEditorManagerTest extends TestCase {
          * @see java.beans.PropertyEditor#removePropertyChangeListener(java.beans.PropertyChangeListener)
          */
         public void removePropertyChangeListener(PropertyChangeListener listener) {
-        // TO DO Auto-generated method stub
+            // TO DO Auto-generated method stub
 
         }
 
@@ -644,7 +658,7 @@ public class PropertyEditorManagerTest extends TestCase {
          * @see java.beans.PropertyEditor#setAsText(java.lang.String)
          */
         public void setAsText(String text) throws IllegalArgumentException {
-        // TO DO Auto-generated method stub
+            // TO DO Auto-generated method stub
 
         }
 
@@ -654,7 +668,7 @@ public class PropertyEditorManagerTest extends TestCase {
          * @see java.beans.PropertyEditor#setValue(java.lang.Object)
          */
         public void setValue(Object value) {
-        // TO DO Auto-generated method stub
+            // TO DO Auto-generated method stub
 
         }
 

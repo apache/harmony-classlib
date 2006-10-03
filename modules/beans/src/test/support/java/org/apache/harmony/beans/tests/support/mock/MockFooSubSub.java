@@ -22,20 +22,20 @@ package org.apache.harmony.beans.tests.support.mock;
  */
 public class MockFooSubSub extends MockFooSub {
 
-	private int flags;
+    private int flags;
 
-	/**
-	 * @return Returns the flags.
-	 */
-	public int getFlags() {
-		return flags;
-	}
+    /**
+     * @return Returns the flags.
+     */
+    public int getFlags() {
+        return flags;
+    }
 
-	/**
-	 * @param flags
-	 *            The flags to set.
-	 */
-	public void setFlags(int flags) {
-		this.flags = flags;
-	}
+    /**
+     * @param flags
+     *            The flags to set.
+     */
+    public void setFlags(int flags) {
+        this.flags = flags;
+    }
 }

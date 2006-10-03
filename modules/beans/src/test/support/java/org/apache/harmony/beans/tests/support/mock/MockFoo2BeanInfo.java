@@ -26,17 +26,18 @@ import java.beans.SimpleBeanInfo;
  */
 public class MockFoo2BeanInfo extends SimpleBeanInfo {
 
-	public PropertyDescriptor[] getPropertyDescriptors() {
-		PropertyDescriptor[] pds = new PropertyDescriptor[1];
-		try {
-			PropertyDescriptor pd = new PropertyDescriptor("prop",
-					MockFoo2.class, "myget", "myset");
-			pd.setName(pd.getName() + ".BeanInfo");
-			pds[0] = pd;
-		} catch (IntrospectionException e) {
-			throw new Error(e);
-		}
-		return pds;
-	}
+    @Override
+    public PropertyDescriptor[] getPropertyDescriptors() {
+        PropertyDescriptor[] pds = new PropertyDescriptor[1];
+        try {
+            PropertyDescriptor pd = new PropertyDescriptor("prop",
+                    MockFoo2.class, "myget", "myset");
+            pd.setName(pd.getName() + ".BeanInfo");
+            pds[0] = pd;
+        } catch (IntrospectionException e) {
+            throw new Error(e);
+        }
+        return pds;
+    }
 
 }

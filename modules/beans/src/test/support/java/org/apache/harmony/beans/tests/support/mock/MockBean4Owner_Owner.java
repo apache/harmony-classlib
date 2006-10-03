@@ -17,22 +17,23 @@
 package org.apache.harmony.beans.tests.support.mock;
 
 public class MockBean4Owner_Owner {
-	private int v = 1;
+    private int v = 1;
 
-	public void loading() {
-		v = 999;
-	}
+    public void loading() {
+        v = 999;
+    }
 
-	public int getV() {
-		return v;
-	}
+    public int getV() {
+        return v;
+    }
 
-	public void setV(int v) {
-		this.v = v;
-	}
+    public void setV(int v) {
+        this.v = v;
+    }
 
-	public boolean equals(Object o) {
-		return (o != null && this.getClass() == o.getClass() && this.v == ((MockBean4Owner_Owner) o).v);
-	}
+    @Override
+    public boolean equals(Object o) {
+        return (o != null && this.getClass() == o.getClass() && this.v == ((MockBean4Owner_Owner) o).v);
+    }
 
 }

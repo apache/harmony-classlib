@@ -26,31 +26,32 @@ import java.beans.VetoableChangeListener;
  */
 public class NonSerializedVCListener implements VetoableChangeListener {
 
-	String propertyName;
+    String propertyName;
 
-	public NonSerializedVCListener(String propertyName) {
-		this.propertyName = propertyName;
-	}
+    public NonSerializedVCListener(String propertyName) {
+        this.propertyName = propertyName;
+    }
 
-	public boolean equals(Object o) {
-		if (!(o instanceof NonSerializedVCListener)) {
-			return false;
-		}
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof NonSerializedVCListener)) {
+            return false;
+        }
 
-		NonSerializedVCListener other = (NonSerializedVCListener) o;
-		return (this.propertyName == null ? other.propertyName == null
-				: this.propertyName.equals(other.propertyName));
-	}
+        NonSerializedVCListener other = (NonSerializedVCListener) o;
+        return (this.propertyName == null ? other.propertyName == null
+                : this.propertyName.equals(other.propertyName));
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.VetoableChangeListener#vetoableChange(java.beans.PropertyChangeEvent)
-	 */
-	public void vetoableChange(PropertyChangeEvent event)
-			throws PropertyVetoException {
-		// TODO Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.VetoableChangeListener#vetoableChange(java.beans.PropertyChangeEvent)
+     */
+    public void vetoableChange(PropertyChangeEvent event)
+            throws PropertyVetoException {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
 }

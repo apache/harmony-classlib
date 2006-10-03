@@ -21,42 +21,43 @@
  */
 package org.apache.harmony.beans.tests.support;
 
-import java.util.Map;
+import java.io.FileReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
 
-import java.io.FileReader;
-
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.XMLReader;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
- * This class is used by XMLEncoderTest for handling SAX parser events. 
+ * This class is used by XMLEncoderTest for handling SAX parser events.
+ * 
  * @author Alexei Zakharov
  */
 public class TestEventHandler extends DefaultHandler {
-   
+
     public Tag root = null;
-    
+
     private Tag currentTag = null;
 
-    
+    @Override
     public void startDocument() {
     }
 
+    @Override
     public void endDocument() {
     }
 
+    @Override
     public void startElement(String uri, String name, String qName,
-            Attributes atts)
-    {
+            Attributes atts) {
         Tag theTag = new Tag(name, currentTag);
 
         theTag.fillAttributes(atts);
@@ -69,18 +70,17 @@ public class TestEventHandler extends DefaultHandler {
         currentTag = theTag;
     }
 
-
+    @Override
     public void endElement(String uri, String name, String qName)
-            throws SAXException 
-    {
+            throws SAXException {
         if (!name.equals(currentTag.name)) {
             throw new SAXException("unexpected closing tag: " + name);
         }
         currentTag = currentTag.parent;
     }
 
-
-    public void characters (char ch[], int start, int length) {
+    @Override
+    public void characters(char ch[], int start, int length) {
         currentTag.content.append(ch, start, length);
     }
 
@@ -91,7 +91,7 @@ public class TestEventHandler extends DefaultHandler {
         FileReader reader;
         String saxParserClassName = System.getProperty("org.xml.sax.driver");
 
-        if(saxParserClassName == null) {
+        if (saxParserClassName == null) {
             saxParserClassName = "org.apache.xerces.parsers.SAXParser";
         }
         xmlReader = XMLReaderFactory.createXMLReader(saxParserClassName);
@@ -106,18 +106,21 @@ public class TestEventHandler extends DefaultHandler {
         System.out.println(handler.root.toString());
     }
 
-    
     static class Tag {
         String name;
-        HashMap<String, String> attributes =
-                new LinkedHashMap<String, String>();
+
+        HashMap<String, String> attributes = new LinkedHashMap<String, String>();
+
         HashSet<Tag> innerTags = new LinkedHashSet<Tag>();
+
         Tag parent = null;
+
         StringBuffer content = new StringBuffer();
+
         boolean ignoreJavaVersion = true;
 
         public Tag(String name, Tag parent) {
-            this.name = name; 
+            this.name = name;
             this.parent = parent;
         }
 
@@ -125,53 +128,50 @@ public class TestEventHandler extends DefaultHandler {
             for (int i = 0; i < attrs.getLength(); i++) {
                 String name = attrs.getLocalName(i);
                 String value = attrs.getValue(i);
-                
+
                 attributes.put(name, value);
             }
         }
 
+        @Override
         public boolean equals(Object obj) {
             Iterator<Map.Entry<String, String>> it;
             Iterator<Tag> itTag;
             Tag tag;
-            
+
             if (!(obj instanceof Tag)) {
                 return false;
             }
             tag = (Tag) obj;
-            
+
             // name
             if (!name.equals(tag.name)) {
                 return false;
             }
-            
+
             // attributes
-            if (attributes.entrySet().size() !=
-                    tag.attributes.entrySet().size()) {
+            if (attributes.entrySet().size() != tag.attributes.entrySet()
+                    .size()) {
                 return false;
             }
             it = attributes.entrySet().iterator();
-         
+
             while (it.hasNext()) {
                 Map.Entry<String, String> entry = it.next();
-                Iterator<Map.Entry<String, String>> it2 =
-                        tag.attributes.entrySet().iterator();
+                Iterator<Map.Entry<String, String>> it2 = tag.attributes
+                        .entrySet().iterator();
                 boolean found = false;
-                
+
                 while (it2.hasNext()) {
                     Map.Entry<String, String> entry2 = it2.next();
-                    
+
                     if (entry2.getKey().equals(entry.getKey())) {
-                        if (ignoreJavaVersion &&
-                            tag.name.equals("java") &&
-                            entry.getKey().equals("version"))
-                        {
+                        if (ignoreJavaVersion && tag.name.equals("java")
+                                && entry.getKey().equals("version")) {
                             // ignore java version
                             found = true;
                             break;
-                        }
-                        else if (entry2.getValue().equals(entry.getValue()))
-                        {
+                        } else if (entry2.getValue().equals(entry.getValue())) {
                             // values are the same
                             found = true;
                             break;
@@ -182,7 +182,7 @@ public class TestEventHandler extends DefaultHandler {
                     return false;
                 }
             }
-        
+
             // inner tags
             if (innerTags.size() != tag.innerTags.size()) {
                 return false;
@@ -192,10 +192,10 @@ public class TestEventHandler extends DefaultHandler {
                 Tag innerTag = itTag.next();
                 Iterator<Tag> itTag2 = tag.innerTags.iterator();
                 boolean found = false;
-                
+
                 while (itTag2.hasNext()) {
                     Tag innerTag2 = itTag2.next();
-                    
+
                     if (innerTag.equals(innerTag2)) {
                         found = true;
                         break;
@@ -208,17 +208,18 @@ public class TestEventHandler extends DefaultHandler {
             return true;
         }
 
+        @Override
         public String toString() {
             StringBuffer sb = new StringBuffer();
             Iterator<Map.Entry<String, String>> it;
-            
+
             sb.append('<' + name);
             it = attributes.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry<String, String> entry = it.next();
-                
-                sb.append(" " + entry.getKey() + "=\"" + entry.getValue() + 
-                        "\"");
+
+                sb.append(" " + entry.getKey() + "=\"" + entry.getValue()
+                        + "\"");
             }
             if (innerTags.isEmpty() && content.length() == 0) {
                 sb.append("/>\n");
@@ -240,5 +241,5 @@ public class TestEventHandler extends DefaultHandler {
             return sb.toString();
         }
     }
-    
+
 }

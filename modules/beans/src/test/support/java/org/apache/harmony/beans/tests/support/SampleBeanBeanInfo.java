@@ -24,20 +24,18 @@ package org.apache.harmony.beans.tests.support;
 import java.beans.MethodDescriptor;
 import java.beans.SimpleBeanInfo;
 
-
 /**
  * @author Maxim V. Berkultsev
  * @version $Revision: 1.2.6.3 $
  */
 
 public class SampleBeanBeanInfo extends SimpleBeanInfo {
-    
+
+    @Override
     public MethodDescriptor[] getMethodDescriptors() {
         try {
-            return new MethodDescriptor[] {
-                new MethodDescriptor(
-                        SampleBean.class.getDeclaredMethod("getX", (Class[])null))
-            };
+            return new MethodDescriptor[] { new MethodDescriptor(
+                    SampleBean.class.getDeclaredMethod("getX", (Class[]) null)) };
         } catch (Exception e) {
             return null;
         }

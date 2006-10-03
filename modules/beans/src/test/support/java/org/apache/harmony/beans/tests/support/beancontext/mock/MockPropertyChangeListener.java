@@ -25,19 +25,19 @@ import java.beans.PropertyChangeListener;
  */
 public class MockPropertyChangeListener implements PropertyChangeListener {
 
-	public PropertyChangeEvent lastEvent;
+    public PropertyChangeEvent lastEvent;
 
-	public void clearLastEvent() {
-		lastEvent = null;
-	}
+    public void clearLastEvent() {
+        lastEvent = null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-	 */
-	public void propertyChange(PropertyChangeEvent evt) {
-		lastEvent = evt;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+     */
+    public void propertyChange(PropertyChangeEvent evt) {
+        lastEvent = evt;
+    }
 
 }

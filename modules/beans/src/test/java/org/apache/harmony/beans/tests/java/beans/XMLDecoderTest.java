@@ -18,9 +18,9 @@
 package org.apache.harmony.beans.tests.java.beans;
 
 import java.beans.ExceptionListener;
+import java.beans.Introspector;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
-import java.beans.Introspector;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,6 +29,7 @@ import java.util.Vector;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.apache.harmony.beans.tests.java.beans.EncoderTest.SampleBean;
 import org.apache.harmony.beans.tests.java.beans.XMLEncoderTest.DependencyBean;
 import org.apache.harmony.beans.tests.support.mock.MockBean4Codec;
@@ -59,12 +60,13 @@ public class XMLDecoderTest extends TestCase {
     }
 
     static class MockClassLoader extends ClassLoader {
+        @Override
         public Class<?> loadClass(String name) throws ClassNotFoundException {
             throw new ClassNotFoundException();
         }
-        
-        protected Class<?> findClass(String name)
-                throws ClassNotFoundException {
+
+        @Override
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
             throw new ClassNotFoundException();
         }
 
@@ -79,15 +81,15 @@ public class XMLDecoderTest extends TestCase {
                 exceptions.addElement(e);
             }
         };
-        
-        dec = new XMLDecoder(new ByteArrayInputStream(xml123bytes), this,
-              el, Thread.currentThread().getContextClassLoader());
+
+        dec = new XMLDecoder(new ByteArrayInputStream(xml123bytes), this, el,
+                Thread.currentThread().getContextClassLoader());
         assertEquals(Integer.valueOf("1"), dec.readObject());
         assertEquals(0, exceptions.size());
         dec.close();
-        
-        dec = new XMLDecoder(new ByteArrayInputStream(xml123bytes), this,
-              el, new MockClassLoader());
+
+        dec = new XMLDecoder(new ByteArrayInputStream(xml123bytes), this, el,
+                new MockClassLoader());
         try {
             dec.readObject();
             assertTrue(exceptions.size() > 0);
@@ -379,9 +381,7 @@ public class XMLDecoderTest extends TestCase {
     /*
      * The test checks the code generation for XML from MainTest.xml
      * 
-     public void testMain() {
-     decode("xml/MainTest.xml");
-     }
+     * public void testMain() { decode("xml/MainTest.xml"); }
      */
 
     /**

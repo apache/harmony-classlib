@@ -38,7 +38,7 @@ public class BeanContextServiceRevokedEventTest extends TestCase {
 
     private static class MockBeanContextServiceRevokedEvent extends
             BeanContextServiceRevokedEvent {
-        
+
         static final long serialVersionUID = -705194281645674622L;
 
         /**
@@ -115,7 +115,7 @@ public class BeanContextServiceRevokedEventTest extends TestCase {
         assertTrue(event.isServiceClass(BeanContext.class));
         assertFalse(event.isServiceClass(Integer.class));
 
-        //Regression for HARMONY-1516
+        // Regression for HARMONY-1516
         assertFalse(event.isServiceClass(null));
     }
 

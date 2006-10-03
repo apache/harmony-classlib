@@ -21,20 +21,20 @@ package org.apache.harmony.beans.tests.support.mock;
  * A bean that has get/set method different from getXXX and setXXX.
  */
 public class MockFoo2 extends MockFoo2Parent {
-	private int prop1;
+    private int prop1;
 
-	public MockFoo2() {
-	}
+    public MockFoo2() {
+    }
 
-	public MockFoo2(int prop) {
-		this.prop1 = prop;
-	}
+    public MockFoo2(int prop) {
+        this.prop1 = prop;
+    }
 
-	public int myget() {
-		return this.prop1;
-	}
+    public int myget() {
+        return this.prop1;
+    }
 
-	public void myset(int prop) {
-		this.prop1 = prop;
-	}
+    public void myset(int prop) {
+        this.prop1 = prop;
+    }
 }

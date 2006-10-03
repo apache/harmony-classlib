@@ -23,158 +23,159 @@ import java.beans.Customizer;
 import java.beans.PropertyChangeListener;
 import java.util.HashSet;
 
-import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
-
 import junit.framework.TestCase;
+
+import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
 
 /**
  * Unit test for BeanDescriptor.
  */
 public class BeanDescriptorTest extends TestCase {
 
-	/*
-	 * @see TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
+    /*
+     * @see TestCase#setUp()
+     */
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+    }
 
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
+    /*
+     * @see TestCase#tearDown()
+     */
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
 
-	/*
-	 * Class under test for void BeanDescriptor(Class)
-	 */
-	public void testBeanDescriptorClass() {
-		String beanName = "BeanDescriptorTest.bean";
-		MockJavaBean bean = new MockJavaBean(beanName);
-		Class beanClass = bean.getClass();
-		BeanDescriptor bd = new BeanDescriptor(beanClass);
+    /*
+     * Class under test for void BeanDescriptor(Class)
+     */
+    public void testBeanDescriptorClass() {
+        String beanName = "BeanDescriptorTest.bean";
+        MockJavaBean bean = new MockJavaBean(beanName);
+        Class beanClass = bean.getClass();
+        BeanDescriptor bd = new BeanDescriptor(beanClass);
 
-		assertSame(beanClass, bd.getBeanClass());
-		String displayName = beanClass.getName().substring(
-				beanClass.getName().lastIndexOf('.') + 1);
-		assertEquals(displayName, bd.getDisplayName());
-		assertEquals(displayName, bd.getName());
-		assertEquals(displayName, bd.getShortDescription());
+        assertSame(beanClass, bd.getBeanClass());
+        String displayName = beanClass.getName().substring(
+                beanClass.getName().lastIndexOf('.') + 1);
+        assertEquals(displayName, bd.getDisplayName());
+        assertEquals(displayName, bd.getName());
+        assertEquals(displayName, bd.getShortDescription());
 
-		assertNotNull(bd.attributeNames());
-		assertFalse(bd.isExpert());
-		assertFalse(bd.isHidden());
-		assertFalse(bd.isPreferred());
-	}
+        assertNotNull(bd.attributeNames());
+        assertFalse(bd.isExpert());
+        assertFalse(bd.isHidden());
+        assertFalse(bd.isPreferred());
+    }
 
-	public void testBeanDescriptorClass_Null() {
-		try {
-			new BeanDescriptor(null);
-			fail("Should throw NullPointerException.");
-		} catch (NullPointerException e) {
-		}
-	}
+    public void testBeanDescriptorClass_Null() {
+        try {
+            new BeanDescriptor(null);
+            fail("Should throw NullPointerException.");
+        } catch (NullPointerException e) {
+        }
+    }
 
-	/*
-	 * Class under test for void BeanDescriptor(Class, Class)
-	 */
-	public void testBeanDescriptorClassClass() {
-		/*
-		 * String beanName = "BeanDescriptorTest.bean"; MockJavaBean bean = new
-		 * MockJavaBean(beanName); Class beanClass = bean.getClass(); Customizer
-		 * customizer = new MyCustomizer(); Class cusClass =
-		 * customizer.getClass(); BeanDescriptor bd = new
-		 * BeanDescriptor(beanClass, cusClass);
-		 * 
-		 * assertSame(beanClass, bd.getBeanClass()); assertSame(cusClass,
-		 * bd.getCustomizerClass());
-		 * 
-		 * String displayName = beanClass.getName().substring(
-		 * beanClass.getName().lastIndexOf('.') + 1); assertEquals(displayName,
-		 * bd.getDisplayName()); assertEquals(displayName, bd.getName());
-		 * assertEquals(displayName, bd.getShortDescription());
-		 * 
-		 * assertNotNull(bd.attributeNames()); assertFalse(bd.isExpert());
-		 * assertFalse(bd.isHidden()); assertFalse(bd.isPreferred());
-		 */
-	}
+    /*
+     * Class under test for void BeanDescriptor(Class, Class)
+     */
+    public void testBeanDescriptorClassClass() {
+        /*
+         * String beanName = "BeanDescriptorTest.bean"; MockJavaBean bean = new
+         * MockJavaBean(beanName); Class beanClass = bean.getClass(); Customizer
+         * customizer = new MyCustomizer(); Class cusClass =
+         * customizer.getClass(); BeanDescriptor bd = new
+         * BeanDescriptor(beanClass, cusClass);
+         * 
+         * assertSame(beanClass, bd.getBeanClass()); assertSame(cusClass,
+         * bd.getCustomizerClass());
+         * 
+         * String displayName = beanClass.getName().substring(
+         * beanClass.getName().lastIndexOf('.') + 1); assertEquals(displayName,
+         * bd.getDisplayName()); assertEquals(displayName, bd.getName());
+         * assertEquals(displayName, bd.getShortDescription());
+         * 
+         * assertNotNull(bd.attributeNames()); assertFalse(bd.isExpert());
+         * assertFalse(bd.isHidden()); assertFalse(bd.isPreferred());
+         */
+    }
 
-	public void testBeanDescriptorClassClass_BeanClassNull() {
-		/*
-		 * Class beanClass = null; Customizer customizer = new MyCustomizer();
-		 * Class cusClass = customizer.getClass(); try { BeanDescriptor bd = new
-		 * BeanDescriptor(beanClass, cusClass); fail("Should throw
-		 * NullPointerException"); } catch (NullPointerException e) { }
-		 */
-	}
+    public void testBeanDescriptorClassClass_BeanClassNull() {
+        /*
+         * Class beanClass = null; Customizer customizer = new MyCustomizer();
+         * Class cusClass = customizer.getClass(); try { BeanDescriptor bd = new
+         * BeanDescriptor(beanClass, cusClass); fail("Should throw
+         * NullPointerException"); } catch (NullPointerException e) { }
+         */
+    }
 
-	public void testBeanDescriptorClassClass_CustomizerClassNull() {
-		String beanName = "BeanDescriptorTest.bean";
-		MockJavaBean bean = new MockJavaBean(beanName);
-		Class beanClass = bean.getClass();
-		Class cusClass = null;
-		BeanDescriptor bd = new BeanDescriptor(beanClass, cusClass);
+    public void testBeanDescriptorClassClass_CustomizerClassNull() {
+        String beanName = "BeanDescriptorTest.bean";
+        MockJavaBean bean = new MockJavaBean(beanName);
+        Class beanClass = bean.getClass();
+        Class cusClass = null;
+        BeanDescriptor bd = new BeanDescriptor(beanClass, cusClass);
 
-		assertSame(beanClass, bd.getBeanClass());
-		assertNull(bd.getCustomizerClass());
+        assertSame(beanClass, bd.getBeanClass());
+        assertNull(bd.getCustomizerClass());
 
-		String displayName = beanClass.getName().substring(
-				beanClass.getName().lastIndexOf('.') + 1);
-		assertEquals(displayName, bd.getDisplayName());
-		assertEquals(displayName, bd.getName());
-		assertEquals(displayName, bd.getShortDescription());
+        String displayName = beanClass.getName().substring(
+                beanClass.getName().lastIndexOf('.') + 1);
+        assertEquals(displayName, bd.getDisplayName());
+        assertEquals(displayName, bd.getName());
+        assertEquals(displayName, bd.getShortDescription());
 
-		assertNotNull(bd.attributeNames());
-		assertFalse(bd.isExpert());
-		assertFalse(bd.isHidden());
-		assertFalse(bd.isPreferred());
-	}
+        assertNotNull(bd.attributeNames());
+        assertFalse(bd.isExpert());
+        assertFalse(bd.isHidden());
+        assertFalse(bd.isPreferred());
+    }
 
     class MyCustomizer extends Component implements Customizer {
 
-		HashSet listeners;
+        HashSet listeners;
 
-		Object bean;
+        Object bean;
 
-		public MyCustomizer() {
-			this.listeners = new HashSet();
-			this.bean = null;
-		}
+        public MyCustomizer() {
+            this.listeners = new HashSet();
+            this.bean = null;
+        }
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.beans.Customizer#addPropertyChangeListener(java.beans.PropertyChangeListener)
-		 */
-		public void addPropertyChangeListener(PropertyChangeListener listener) {
-			this.listeners.add(listener);
-		}
+        /*
+         * (non-Javadoc)
+         * 
+         * @see java.beans.Customizer#addPropertyChangeListener(java.beans.PropertyChangeListener)
+         */
+        @Override
+        public void addPropertyChangeListener(PropertyChangeListener listener) {
+            this.listeners.add(listener);
+        }
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.beans.Customizer#removePropertyChangeListener(java.beans.PropertyChangeListener)
-		 */
-		public void removePropertyChangeListener(PropertyChangeListener listener) {
-			this.listeners.remove(listener);
-		}
+        /*
+         * (non-Javadoc)
+         * 
+         * @see java.beans.Customizer#removePropertyChangeListener(java.beans.PropertyChangeListener)
+         */
+        @Override
+        public void removePropertyChangeListener(PropertyChangeListener listener) {
+            this.listeners.remove(listener);
+        }
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.beans.Customizer#setObject(java.lang.Object)
-		 */
-		public void setObject(Object bean) {
-			this.bean = bean;
-		}
-	}
-    
-    
-    
+        /*
+         * (non-Javadoc)
+         * 
+         * @see java.beans.Customizer#setObject(java.lang.Object)
+         */
+        public void setObject(Object bean) {
+            this.bean = bean;
+        }
+    }
+
     /**
-     * @tests java.beans.BeanDescriptor#BeanDescriptor(
-     *        java.lang.Class)
+     * @tests java.beans.BeanDescriptor#BeanDescriptor( java.lang.Class)
      */
     public void test_Ctor1_NullPointerExpection() {
         try {
@@ -186,8 +187,7 @@ public class BeanDescriptorTest extends TestCase {
     }
 
     /**
-     * @tests java.beans.BeanDescriptor#BeanDescriptor(
-     *        java.lang.Class,
+     * @tests java.beans.BeanDescriptor#BeanDescriptor( java.lang.Class,
      *        java.lang.Class)
      */
     public void test_Ctor2_NullPointerExpection() {
@@ -198,12 +198,12 @@ public class BeanDescriptorTest extends TestCase {
         } catch (NullPointerException e) {
         }
     }
-    
+
     /**
      * The test checks the method testNullaryConstructor()
      */
     public void testNullaryConstructor() {
-        BeanDescriptor bd= new BeanDescriptor(String.class);
+        BeanDescriptor bd = new BeanDescriptor(String.class);
         assertEquals(bd.getName(), "String");
     }
 }

@@ -60,7 +60,7 @@ public class BeanContextServicesSupportTest extends TestCase {
             BeanContextServicesSupport {
 
         static final long serialVersionUID = -5521269152428572350L;
-        
+
         public MethodInvocationRecords records;
 
         public MockBeanContextServicesSupport() {
@@ -107,6 +107,7 @@ public class BeanContextServicesSupportTest extends TestCase {
          * 
          * @see java.beans.beancontext.BeanContextSupport#initialize()
          */
+        @Override
         public void initialize() {
             super.initialize();
             if (records == null) {
@@ -121,6 +122,7 @@ public class BeanContextServicesSupportTest extends TestCase {
          * @see java.beans.beancontext.BeanContextServicesSupport#addService(java.lang.Class,
          *      java.beans.beancontext.BeanContextServiceProvider, boolean)
          */
+        @Override
         public boolean addService(Class serviceClass,
                 BeanContextServiceProvider bcsp, boolean fireEvent) {
             return super.addService(serviceClass, bcsp, fireEvent);
@@ -132,6 +134,7 @@ public class BeanContextServicesSupportTest extends TestCase {
          * @see java.beans.beancontext.BeanContextSupport#childJustRemovedHook(java.lang.Object,
          *      java.beans.beancontext.BeanContextSupport.BCSChild)
          */
+        @Override
         protected void childJustRemovedHook(Object child, BCSChild bcsc) {
             super.childJustRemovedHook(child, bcsc);
             records.add("childJustRemovedHook", child, bcsc, null);
@@ -143,6 +146,7 @@ public class BeanContextServicesSupportTest extends TestCase {
          * @see java.beans.beancontext.BeanContextServicesSupport#createBCSSServiceProvider(java.lang.Class,
          *      java.beans.beancontext.BeanContextServiceProvider)
          */
+        @Override
         protected BCSSServiceProvider createBCSSServiceProvider(Class sc,
                 BeanContextServiceProvider bcsp) {
             BCSSServiceProvider result = super.createBCSSServiceProvider(sc,
@@ -177,6 +181,7 @@ public class BeanContextServicesSupportTest extends TestCase {
          * 
          * @see java.beans.beancontext.BeanContextServicesListener#serviceAvailable(java.beans.beancontext.BeanContextServiceAvailableEvent)
          */
+        @Override
         public void serviceAvailable(BeanContextServiceAvailableEvent bcssae) {
             super.serviceAvailable(bcssae);
             records.add("serviceAvailable", bcssae, null);
@@ -187,6 +192,7 @@ public class BeanContextServicesSupportTest extends TestCase {
          * 
          * @see java.beans.beancontext.BeanContextServiceRevokedListener#serviceRevoked(java.beans.beancontext.BeanContextServiceRevokedEvent)
          */
+        @Override
         public void serviceRevoked(BeanContextServiceRevokedEvent bcssre) {
             super.serviceRevoked(bcssre);
             records.add("serviceRevoked", bcssre, null);
@@ -387,11 +393,11 @@ public class BeanContextServicesSupportTest extends TestCase {
     }
 
     public void testBcsPreDeserializationHook() {
-    // covered by serialization test
+        // covered by serialization test
     }
 
     public void testBcsPreSerializationHook() {
-    // covered by serialization test
+        // covered by serialization test
     }
 
     /*
@@ -505,11 +511,11 @@ public class BeanContextServicesSupportTest extends TestCase {
     }
 
     public void testCreateBCSChild() {
-    // coverd in super's testcase
+        // coverd in super's testcase
     }
 
     public void testCreateBCSSServiceProvider() {
-    // coverd by addService
+        // coverd by addService
     }
 
     /*
@@ -672,14 +678,26 @@ public class BeanContextServicesSupportTest extends TestCase {
         MockBeanContextServicesSupport support = new MockBeanContextServicesSupport();
         Iterator iter = support.getCurrentServiceSelectors(Collection.class);
         assertNull(iter);
-        //Regression for HARMONY-1397
+        // Regression for HARMONY-1397
         class TestServiceProvider implements BeanContextServiceProvider {
-            public Object getService(BeanContextServices p0, Object p1, Class p2, Object p3) {return null;}
-            public void releaseService(BeanContextServices p0, Object p1, Object p2) {}
-            public Iterator getCurrentServiceSelectors(BeanContextServices p0, Class p1) {return null;}
+            public Object getService(BeanContextServices p0, Object p1,
+                    Class p2, Object p3) {
+                return null;
+            }
+
+            public void releaseService(BeanContextServices p0, Object p1,
+                    Object p2) {
+            }
+
+            public Iterator getCurrentServiceSelectors(BeanContextServices p0,
+                    Class p1) {
+                return null;
+            }
         }
-        support.addService(BeanContextServicesSupportTest.class, new TestServiceProvider());
-        assertNotNull(support.getCurrentServiceSelectors(BeanContextServicesSupportTest.class));
+        support.addService(BeanContextServicesSupportTest.class,
+                new TestServiceProvider());
+        assertNotNull(support
+                .getCurrentServiceSelectors(BeanContextServicesSupportTest.class));
     }
 
     public void testGetCurrentServiceSelectors() {
@@ -872,11 +890,11 @@ public class BeanContextServicesSupportTest extends TestCase {
     }
 
     public void testInitialize() {
-    // covered by other testcases
+        // covered by other testcases
     }
 
     public void testInitializeBeanContextResources() {
-    // covered by super testcases, nothing more to test here
+        // covered by super testcases, nothing more to test here
     }
 
     public void testReleaseBeanContextResources()
@@ -1242,11 +1260,11 @@ public class BeanContextServicesSupportTest extends TestCase {
     }
 
     public void testServiceAvailable() {
-    // covered by testAddService
+        // covered by testAddService
     }
 
     public void testServiceRevoked() {
-    // covered by testRemoveService
+        // covered by testRemoveService
     }
 
     public void testSerialization() throws IOException, ClassNotFoundException {

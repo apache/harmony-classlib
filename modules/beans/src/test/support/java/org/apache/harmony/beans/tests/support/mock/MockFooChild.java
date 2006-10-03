@@ -17,35 +17,34 @@
 
 package org.apache.harmony.beans.tests.support.mock;
 
-
 /**
  * test Introspector
  */
 public class MockFooChild extends MockFoo {
-	private String childName;
+    private String childName;
 
-	/**
-	 * @return Returns the childName.
-	 */
-	public String getChildName() {
-		return childName;
-	}
+    /**
+     * @return Returns the childName.
+     */
+    public String getChildName() {
+        return childName;
+    }
 
-	/**
-	 * @param childName
-	 *            The childName to set.
-	 */
-	public void setChildName(String childName) {
-		this.childName = childName;
-	}
+    /**
+     * @param childName
+     *            The childName to set.
+     */
+    public void setChildName(String childName) {
+        this.childName = childName;
+    }
 
-	public void addMockPropertyChangeListener(
-			MockPropertyChangeListener listener) {
+    public void addMockPropertyChangeListener(
+            MockPropertyChangeListener listener) {
 
-	}
+    }
 
-	public void removeMockPropertyChangeListener(
-			MockPropertyChangeListener listener) {
+    public void removeMockPropertyChangeListener(
+            MockPropertyChangeListener listener) {
 
-	}
+    }
 }

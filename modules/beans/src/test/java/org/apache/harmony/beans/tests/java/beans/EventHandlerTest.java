@@ -285,7 +285,8 @@ public class EventHandlerTest extends TestCase {
         try {
             EventHandler.create(null, target, "setCalled");
             fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
     }
 
     /*
@@ -296,7 +297,8 @@ public class EventHandlerTest extends TestCase {
         try {
             EventHandler.create(MockButton.class, target, "setCalled");
             fail("Should throw IllegalArgumentException.");
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {
+        }
     }
 
     /*
@@ -307,7 +309,8 @@ public class EventHandlerTest extends TestCase {
             EventHandler
                     .create(PropertyChangeListener.class, null, "setCalled");
             fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
     }
 
     /*
@@ -322,7 +325,8 @@ public class EventHandlerTest extends TestCase {
         try {
             button.setLabel("new label value");
             fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
         assertTrue(Proxy.isProxyClass(proxy.getClass()));
     }
 
@@ -338,7 +342,8 @@ public class EventHandlerTest extends TestCase {
         try {
             button.setLabel("new label value");
             fail("Should throw IndexOutOfBoundsException.");
-        } catch (IndexOutOfBoundsException e) {}
+        } catch (IndexOutOfBoundsException e) {
+        }
         assertTrue(Proxy.isProxyClass(proxy.getClass()));
     }
 
@@ -368,7 +373,8 @@ public class EventHandlerTest extends TestCase {
         try {
             EventHandler.create(null, target, "text", "source.label");
             fail("Should throw NullPointerException");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
     }
 
     /*
@@ -379,7 +385,8 @@ public class EventHandlerTest extends TestCase {
             EventHandler.create(PropertyChangeListener.class, null, "text",
                     "source.label");
             fail("Should throw NullPointerException");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
     }
 
     /*
@@ -397,7 +404,8 @@ public class EventHandlerTest extends TestCase {
         try {
             button.setLabel(newLabel);
             fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
     }
 
     /*
@@ -416,7 +424,8 @@ public class EventHandlerTest extends TestCase {
         try {
             button.setLabel(newLabel);
             fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
     }
 
     /*
@@ -434,7 +443,8 @@ public class EventHandlerTest extends TestCase {
         try {
             button.setLabel(newLabel);
             fail("Should throw NullPointerException.");
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     /*
@@ -453,7 +463,8 @@ public class EventHandlerTest extends TestCase {
         try {
             button.setLabel(newLabel);
             fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
     }
 
     /*
@@ -498,7 +509,8 @@ public class EventHandlerTest extends TestCase {
             EventHandler.create(Serializable.class, target, "text",
                     "source.label", "propertyChange");
             fail("Should throw ClassCastException.");
-        } catch (ClassCastException e) {}
+        } catch (ClassCastException e) {
+        }
     }
 
     /*
@@ -509,7 +521,8 @@ public class EventHandlerTest extends TestCase {
             EventHandler.create(PropertyChangeListener.class, null, "text",
                     "source.label", "propertyChange");
             fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
     }
 
     /*
@@ -528,7 +541,8 @@ public class EventHandlerTest extends TestCase {
         try {
             button.setLabel(newLabel);
             fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
     }
 
     /*
@@ -547,7 +561,8 @@ public class EventHandlerTest extends TestCase {
         try {
             button.setLabel(newLabel);
             fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
     }
 
     /*
@@ -566,7 +581,8 @@ public class EventHandlerTest extends TestCase {
         try {
             button.setLabel(newLabel);
             fail("Should throw NullPointerException.");
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     /*
@@ -585,7 +601,8 @@ public class EventHandlerTest extends TestCase {
         try {
             button.setLabel(newLabel);
             fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
     }
 
     /*
@@ -752,7 +769,8 @@ public class EventHandlerTest extends TestCase {
         try {
             button.setLabel(newLabel);
             fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
 
     }
 
@@ -1144,7 +1162,8 @@ public class EventHandlerTest extends TestCase {
 
         private int intValue = -1;
 
-        public InvocationObject() {}
+        public InvocationObject() {
+        }
 
         public void doSomething() {
             logMethodCall(this, "doSomething", new Object[] {});

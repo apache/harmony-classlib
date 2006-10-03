@@ -117,8 +117,8 @@ public class ExpressionTest extends TestCase {
         assertSame(arg3, t.getArguments()[2]);
         assertSame(arg4, t.getArguments()[3]);
 
-        assertEquals("<unbound>=ExpressionTest$MockParent.method(" +
-                "\"string1\", Object, \"string3\", Integer);", t.toString());
+        assertEquals("<unbound>=ExpressionTest$MockParent.method("
+                + "\"string1\", Object, \"string3\", Integer);", t.toString());
     }
 
     /*
@@ -143,14 +143,14 @@ public class ExpressionTest extends TestCase {
         Object arg = new Object();
         Object[] oa = new Object[] { arg };
         Expression t = new Expression(target, "method", oa);
-        
+
         assertSame(target, t.getTarget());
         assertSame("method", t.getMethodName());
         assertSame(oa, t.getArguments());
         assertSame(arg, t.getArguments()[0]);
-        
-        assertEquals("<unbound>=ExpressionTest$MockParent.method(Object);",
-                t.toString());
+
+        assertEquals("<unbound>=ExpressionTest$MockParent.method(Object);", t
+                .toString());
     }
 
     /*
@@ -178,8 +178,7 @@ public class ExpressionTest extends TestCase {
         assertSame("new", t.getMethodName());
         assertSame(oa, t.getArguments());
 
-        assertEquals("<unbound>=Class.new(Object);",
-                t.toString());
+        assertEquals("<unbound>=Class.new(Object);", t.toString());
     }
 
     /*
@@ -206,8 +205,8 @@ public class ExpressionTest extends TestCase {
         assertSame("method", t.getMethodName());
         assertEquals(0, t.getArguments().length);
 
-        assertEquals("<unbound>=ExpressionTest$MockParent.method();",
-                t.toString());
+        assertEquals("<unbound>=ExpressionTest$MockParent.method();", t
+                .toString());
     }
 
     /*
@@ -223,8 +222,8 @@ public class ExpressionTest extends TestCase {
         assertSame(oa, t.getArguments());
         assertNull(t.getArguments()[0]);
 
-        assertEquals("<unbound>=ExpressionTest$MockParent.method(null);",
-                t.toString());
+        assertEquals("<unbound>=ExpressionTest$MockParent.method(null);", t
+                .toString());
     }
 
     /*
@@ -248,9 +247,9 @@ public class ExpressionTest extends TestCase {
         assertSame(arg2, t.getArguments()[1]);
         assertSame(arg3, t.getArguments()[2]);
         assertSame(arg4, t.getArguments()[3]);
-        
-        assertEquals("Object=ExpressionTest$MockParent.method(" +
-                "\"mama\", Object, Object, Long);", t.toString());
+
+        assertEquals("Object=ExpressionTest$MockParent.method("
+                + "\"mama\", Object, Object, Long);", t.toString());
     }
 
     /*
@@ -276,7 +275,7 @@ public class ExpressionTest extends TestCase {
      */
     public void testConstructor_Value_ArrayTarget() throws Exception {
         Integer val = new Integer(69);
-        Object target = new Integer[] { val }; 
+        Object target = new Integer[] { val };
         Object arg = new Integer(0);
         Object[] oa = new Object[] { arg };
         Expression t = new Expression(val, target, "get", oa);
@@ -837,30 +836,29 @@ public class ExpressionTest extends TestCase {
      * 
      * Note: decided by definition position! should be ambiguous.
      */
-//    public void testGetValue_EqualSpecificMethods() throws Exception {
-//        MockObject mo = new MockObject(false);
-//        Object[] arguments = new Object[] { new MockObject(false),
-//                new MockObject(false) };
-//        Expression t = new Expression(mo, "equalSpecificMethod", arguments);
-//        assertEquals("equalSpecificMethod1", t.getValue());
-//        MockObject.assertCalled("equalSpecificMethod1", arguments);
-//    }
-
+    // public void testGetValue_EqualSpecificMethods() throws Exception {
+    // MockObject mo = new MockObject(false);
+    // Object[] arguments = new Object[] { new MockObject(false),
+    // new MockObject(false) };
+    // Expression t = new Expression(mo, "equalSpecificMethod", arguments);
+    // assertEquals("equalSpecificMethod1", t.getValue());
+    // MockObject.assertCalled("equalSpecificMethod1", arguments);
+    // }
     /*
      * Test the method getValue() with two equal specific methods but one
      * declaring thrown exception.
      * 
      * Note: decided by definition position! should call the one with exception.
      */
-//    public void testGetValue_EqualSpecificMethodsException() throws Exception {
-//        MockObject mo = new MockObject(false);
-//        Object[] arguments = new Object[] { new MockObject(false),
-//                new MockObject(false), new Object() };
-//        Expression t = new Expression(mo, "equalSpecificMethod", arguments);
-//        assertEquals("equalSpecificMethod3", t.getValue());
-//        MockObject.assertCalled("equalSpecificMethod3", arguments);
-//    }
-
+    // public void testGetValue_EqualSpecificMethodsException() throws Exception
+    // {
+    // MockObject mo = new MockObject(false);
+    // Object[] arguments = new Object[] { new MockObject(false),
+    // new MockObject(false), new Object() };
+    // Expression t = new Expression(mo, "equalSpecificMethod", arguments);
+    // assertEquals("equalSpecificMethod3", t.getValue());
+    // MockObject.assertCalled("equalSpecificMethod3", arguments);
+    // }
     /*
      * Super class of MockObject.
      */
@@ -971,12 +969,12 @@ public class ExpressionTest extends TestCase {
             throw new NullPointerException();
         }
 
-//        public Object methodB(Integer i) {
-//            reset();
-//            calledMethod = "methodB1";
-//            receivedArguments.add(i);
-//            return calledMethod;
-//        }
+        // public Object methodB(Integer i) {
+        // reset();
+        // calledMethod = "methodB1";
+        // receivedArguments.add(i);
+        // return calledMethod;
+        // }
 
         public Object methodB(int i) {
             reset();
@@ -1019,40 +1017,42 @@ public class ExpressionTest extends TestCase {
             return calledMethod;
         }
 
-//        public Object equalSpecificMethod(MockObject o, MockParent p) {
-//            reset();
-//            calledMethod = "equalSpecificMethod1";
-//            receivedArguments.add(o);
-//            receivedArguments.add(p);
-//            return calledMethod;
-//        }
+        // public Object equalSpecificMethod(MockObject o, MockParent p) {
+        // reset();
+        // calledMethod = "equalSpecificMethod1";
+        // receivedArguments.add(o);
+        // receivedArguments.add(p);
+        // return calledMethod;
+        // }
 
-//        public Object equalSpecificMethod(MockParent p, MockObject o) {
-//            reset();
-//            calledMethod = "equalSpecificMethod2";
-//            receivedArguments.add(p);
-//            receivedArguments.add(o);
-//            return calledMethod;
-//        }
+        // public Object equalSpecificMethod(MockParent p, MockObject o) {
+        // reset();
+        // calledMethod = "equalSpecificMethod2";
+        // receivedArguments.add(p);
+        // receivedArguments.add(o);
+        // return calledMethod;
+        // }
 
-//        public Object equalSpecificMethod(MockObject o, MockParent p, Object o2) {
-//            reset();
-//            calledMethod = "equalSpecificMethod3";
-//            receivedArguments.add(o);
-//            receivedArguments.add(p);
-//            receivedArguments.add(o2);
-//            return calledMethod;
-//        }
+        // public Object equalSpecificMethod(MockObject o, MockParent p, Object
+        // o2) {
+        // reset();
+        // calledMethod = "equalSpecificMethod3";
+        // receivedArguments.add(o);
+        // receivedArguments.add(p);
+        // receivedArguments.add(o2);
+        // return calledMethod;
+        // }
 
-//        public Object equalSpecificMethod(MockParent p, MockObject o, Object o2)
-//                throws Exception {
-//            reset();
-//            calledMethod = "equalSpecificMethod4";
-//            receivedArguments.add(p);
-//            receivedArguments.add(o);
-//            receivedArguments.add(o2);
-//            return calledMethod;
-//        }
+        // public Object equalSpecificMethod(MockParent p, MockObject o, Object
+        // o2)
+        // throws Exception {
+        // reset();
+        // calledMethod = "equalSpecificMethod4";
+        // receivedArguments.add(p);
+        // receivedArguments.add(o);
+        // receivedArguments.add(o2);
+        // return calledMethod;
+        // }
 
         public static Class forName(String o) {
             reset();

@@ -24,59 +24,61 @@ import java.beans.PropertyDescriptor;
 import java.beans.SimpleBeanInfo;
 import java.lang.reflect.Method;
 
-
 /**
  * test Introspector
  */
 public class MockFooChildBeanInfo extends SimpleBeanInfo {
 
-	Class clazz = MockFooChild.class;
+    Class clazz = MockFooChild.class;
 
-	String suffix = ".MockFooChildBeanInfo";
+    String suffix = ".MockFooChildBeanInfo";
 
-	public PropertyDescriptor[] getPropertyDescriptors() {
-		PropertyDescriptor[] pds = new PropertyDescriptor[1];
-		try {
-			PropertyDescriptor pd = new PropertyDescriptor("childName", clazz);
-			pd.setName(pd.getName() + suffix);
-			pds[0] = pd;
-		} catch (IntrospectionException e) {
-			e.printStackTrace();
-		}
-		return pds;
-	}
+    @Override
+    public PropertyDescriptor[] getPropertyDescriptors() {
+        PropertyDescriptor[] pds = new PropertyDescriptor[1];
+        try {
+            PropertyDescriptor pd = new PropertyDescriptor("childName", clazz);
+            pd.setName(pd.getName() + suffix);
+            pds[0] = pd;
+        } catch (IntrospectionException e) {
+            e.printStackTrace();
+        }
+        return pds;
+    }
 
-	public MethodDescriptor[] getMethodDescriptors() {
-		MethodDescriptor[] mds = new MethodDescriptor[2];
-		try {
-			Method getMethod = clazz.getMethod("getChildName", (Class[])null);
-			Method setMethod = clazz.getMethod("setChildName",
-					new Class[] { String.class });
-			mds[0] = new MethodDescriptor(getMethod);
-			mds[0].setName(mds[0].getName() + suffix);
+    @Override
+    public MethodDescriptor[] getMethodDescriptors() {
+        MethodDescriptor[] mds = new MethodDescriptor[2];
+        try {
+            Method getMethod = clazz.getMethod("getChildName", (Class[]) null);
+            Method setMethod = clazz.getMethod("setChildName",
+                    new Class[] { String.class });
+            mds[0] = new MethodDescriptor(getMethod);
+            mds[0].setName(mds[0].getName() + suffix);
 
-			mds[1] = new MethodDescriptor(setMethod);
-			mds[1].setName(mds[1].getName() + suffix);
+            mds[1] = new MethodDescriptor(setMethod);
+            mds[1].setName(mds[1].getName() + suffix);
 
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		}
-		return mds;
-	}
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return mds;
+    }
 
-	public EventSetDescriptor[] getEventSetDescriptors() {
-		EventSetDescriptor[] esds = new EventSetDescriptor[1];
-		try {
-			EventSetDescriptor esd = new EventSetDescriptor(clazz,
-					"mockPropertyChange", MockPropertyChangeListener.class,
-					"mockPropertyChange");
-			esd.setName(esd.getName() + suffix);
-			esds[0] = esd;
-		} catch (IntrospectionException e) {
-			e.printStackTrace();
-		}
-		return esds;
-	}
+    @Override
+    public EventSetDescriptor[] getEventSetDescriptors() {
+        EventSetDescriptor[] esds = new EventSetDescriptor[1];
+        try {
+            EventSetDescriptor esd = new EventSetDescriptor(clazz,
+                    "mockPropertyChange", MockPropertyChangeListener.class,
+                    "mockPropertyChange");
+            esd.setName(esd.getName() + suffix);
+            esds[0] = esd;
+        } catch (IntrospectionException e) {
+            e.printStackTrace();
+        }
+        return esds;
+    }
 }

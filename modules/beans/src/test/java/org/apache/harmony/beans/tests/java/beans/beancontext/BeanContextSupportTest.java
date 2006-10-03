@@ -73,7 +73,7 @@ import tests.util.SerializationTester;
 public class BeanContextSupportTest extends TestCase {
 
     private static class MockBeanContextSupport extends BeanContextSupport {
-        
+
         static final long serialVersionUID = -4165267256277214588L;
 
         public transient MethodInvocationRecords records;
@@ -333,7 +333,7 @@ public class BeanContextSupportTest extends TestCase {
     private static class BadChild implements BeanContextChild, BeanContextProxy {
 
         public void setBeanContext(BeanContext bc) throws PropertyVetoException {
-        // Auto-generated method stub
+            // Auto-generated method stub
         }
 
         public BeanContext getBeanContext() {
@@ -343,22 +343,22 @@ public class BeanContextSupportTest extends TestCase {
 
         public void addPropertyChangeListener(String name,
                 PropertyChangeListener pcl) {
-        // Auto-generated method stub
+            // Auto-generated method stub
         }
 
         public void removePropertyChangeListener(String name,
                 PropertyChangeListener pcl) {
-        // Auto-generated method stub
+            // Auto-generated method stub
         }
 
         public void addVetoableChangeListener(String name,
                 VetoableChangeListener vcl) {
-        // Auto-generated method stub
+            // Auto-generated method stub
         }
 
         public void removeVetoableChangeListener(String name,
                 VetoableChangeListener vcl) {
-        // Auto-generated method stub
+            // Auto-generated method stub
         }
 
         public BeanContextChild getBeanContextProxy() {
@@ -785,11 +785,11 @@ public class BeanContextSupportTest extends TestCase {
     }
 
     public void testChildJustAddedHook() {
-    // covered by testAdd
+        // covered by testAdd
     }
 
     public void testChildJustRemovedHook() {
-    // covered by testRemove
+        // covered by testRemove
     }
 
     public void testClassEquals() {
@@ -893,11 +893,11 @@ public class BeanContextSupportTest extends TestCase {
     }
 
     public void testCreateBCSChild() {
-    // covered by testAdd
+        // covered by testAdd
     }
 
     public void testDeserialize() {
-    // covered by testBcsPreDeserializationHook()
+        // covered by testBcsPreDeserializationHook()
     }
 
     public void testDontUseGui() {
@@ -914,15 +914,15 @@ public class BeanContextSupportTest extends TestCase {
     }
 
     public void testFireChildrenAdded() {
-    // covered by testAdd
+        // covered by testAdd
     }
 
     public void testFireChildrenRemoved() {
-    // covered by testRemove
+        // covered by testRemove
     }
 
     public void testGetBeanContextPeer() {
-    // covered by testConstructor
+        // covered by testConstructor
     }
 
     public void testGetChildBeanContextChild_NullParam() {
@@ -937,20 +937,22 @@ public class BeanContextSupportTest extends TestCase {
                 .publicGetChildBeanContextChild(child);
         assertSame(child, result);
 
-        //Regression for HARMONY-1393
-		class TestBeanException extends BeanContextChildSupport implements BeanContextProxy {
-			private BeanContextChildSupport childSupport = new BeanContextChildSupport();
-			public BeanContextChild getBeanContextProxy() {
-				return childSupport;
-			}
-		}
-		TestBeanException bean = new TestBeanException();
-		try {
-			MockBeanContextSupport.publicGetChildBeanContextChild(bean);
-			fail("IllegalArgumentException expected");
-		} catch (IllegalArgumentException e) {
-			//expected
-		}
+        // Regression for HARMONY-1393
+        class TestBeanException extends BeanContextChildSupport implements
+                BeanContextProxy {
+            private BeanContextChildSupport childSupport = new BeanContextChildSupport();
+
+            public BeanContextChild getBeanContextProxy() {
+                return childSupport;
+            }
+        }
+        TestBeanException bean = new TestBeanException();
+        try {
+            MockBeanContextSupport.publicGetChildBeanContextChild(bean);
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
     }
 
     public void testGetChildBeanContextChild_BeanContextProxy() {
@@ -1195,7 +1197,7 @@ public class BeanContextSupportTest extends TestCase {
     }
 
     public void testInitialize() {
-    // covered by other testcases
+        // covered by other testcases
     }
 
     public void testInstantiateChild_NullParam() throws IOException,
@@ -1270,26 +1272,26 @@ public class BeanContextSupportTest extends TestCase {
     }
 
     public void testNeedsGui_ComponentChild() {
-    /*
-     * MockBeanContextSupport support = new MockBeanContextSupport();
-     * assertFalse(support.needsGui());
-     * 
-     * Component child = new Component() {/* mock
-     */
-    // };
-    /*
-     * support.add(child); assertTrue(support.needsGui());
-     */
+        /*
+         * MockBeanContextSupport support = new MockBeanContextSupport();
+         * assertFalse(support.needsGui());
+         * 
+         * Component child = new Component() {/* mock
+         */
+        // };
+        /*
+         * support.add(child); assertTrue(support.needsGui());
+         */
     }
 
     public void testNeedsGui_ContainerChild() {
-    // MockBeanContextSupport support = new MockBeanContextSupport();
-    // assertFalse(support.needsGui());
-    //
-    // Container child = new Container() {/* mock */
-    // };
-    // support.add(child);
-    // assertTrue(support.needsGui());
+        // MockBeanContextSupport support = new MockBeanContextSupport();
+        // assertFalse(support.needsGui());
+        //
+        // Container child = new Container() {/* mock */
+        // };
+        // support.add(child);
+        // assertTrue(support.needsGui());
     }
 
     public void testNeedsGui_VisibilityChild() {
@@ -1302,12 +1304,12 @@ public class BeanContextSupportTest extends TestCase {
     }
 
     public void testNeedsGui_VisiblePeer() {
-    // MockBeanContextSupport peer = new MockBeanContextSupport();
-    // peer.add(new Container() {/* mock */
-    // });
-    // MockBeanContextSupport support = new MockBeanContextSupport(peer);
-    //
-    // assertTrue(support.needsGui());
+        // MockBeanContextSupport peer = new MockBeanContextSupport();
+        // peer.add(new Container() {/* mock */
+        // });
+        // MockBeanContextSupport support = new MockBeanContextSupport(peer);
+        //
+        // assertTrue(support.needsGui());
     }
 
     public void testOkToUseGui() {
@@ -1716,7 +1718,7 @@ public class BeanContextSupportTest extends TestCase {
     }
 
     public void testSerialize() {
-    // covered by testBcsPreSerializationHook
+        // covered by testBcsPreSerializationHook
     }
 
     public void testSetDesignTime() {
@@ -1796,7 +1798,7 @@ public class BeanContextSupportTest extends TestCase {
     }
 
     public void testSize() {
-    // covered by other testcases
+        // covered by other testcases
     }
 
     /*
@@ -1814,16 +1816,16 @@ public class BeanContextSupportTest extends TestCase {
         array = support.toArray();
         assertEquals(3, array.length);
         int count = 0;
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] instanceof Integer) {
-                assertEquals(new Integer(1000), array[i]);
+        for (Object element : array) {
+            if (element instanceof Integer) {
+                assertEquals(new Integer(1000), element);
                 count += 1;
             }
-            if (array[i] instanceof String) {
-                assertEquals("a child", array[i]);
+            if (element instanceof String) {
+                assertEquals("a child", element);
                 count += 2;
             }
-            if (array[i] instanceof MockBeanContextChild) {
+            if (element instanceof MockBeanContextChild) {
                 count += 4;
             }
         }
@@ -1872,8 +1874,8 @@ public class BeanContextSupportTest extends TestCase {
         assertNotSame(in, out);
         List expected = Arrays.asList(new String[] { "a", "b", "c" });
         assertEquals(expected.size(), out.length);
-        for (int i = 0; i < out.length; i++) {
-            assertTrue(expected.contains(out[i]));
+        for (String element : out) {
+            assertTrue(expected.contains(element));
         }
     }
 
@@ -1890,8 +1892,8 @@ public class BeanContextSupportTest extends TestCase {
         assertSame(in, out);
         List expected = Arrays.asList(new String[] { "a", "b", "c" });
         assertEquals(expected.size(), out.length);
-        for (int i = 0; i < out.length; i++) {
-            assertTrue(expected.contains(out[i]));
+        for (String element : out) {
+            assertTrue(expected.contains(element));
         }
     }
 
@@ -1915,11 +1917,11 @@ public class BeanContextSupportTest extends TestCase {
     }
 
     public void testValidatePendingAdd() {
-    // coverd by testAdd
+        // coverd by testAdd
     }
 
     public void testValidatePendingRemove() {
-    // coverd by testRemove
+        // coverd by testRemove
     }
 
     public void testVetoableChange() throws PropertyVetoException {
@@ -1947,7 +1949,7 @@ public class BeanContextSupportTest extends TestCase {
     }
 
     public void testWriteChildren() {
-    // covered by testReadChildren()
+        // covered by testReadChildren()
     }
 
     public void testSerialization_NoPeer() throws IOException,

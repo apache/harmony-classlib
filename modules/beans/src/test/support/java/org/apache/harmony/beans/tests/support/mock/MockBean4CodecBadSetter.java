@@ -19,11 +19,12 @@ package org.apache.harmony.beans.tests.support.mock;
 
 public class MockBean4CodecBadSetter extends MockBean4Codec {
 
-	public MockBean4CodecBadSetter() {
-		super();
-	}
+    public MockBean4CodecBadSetter() {
+        super();
+    }
 
-	public void setName(String name) {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void setName(String name) {
+        throw new UnsupportedOperationException();
+    }
 }

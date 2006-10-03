@@ -29,7 +29,7 @@ import java.util.EventListener;
  */
 
 public interface MisprintListenerr extends EventListener {
-    
+
     public void fireMisprintEvent(MisprintEvent me);
     // public void fireMisprint2Event(MisprintEvent me);
 }

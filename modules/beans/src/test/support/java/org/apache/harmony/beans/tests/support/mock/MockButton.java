@@ -25,53 +25,53 @@ import java.io.Serializable;
  * This is a mock bean for EventHandler test.
  */
 public class MockButton implements Serializable {
-	String name;
+    String name;
 
-	String label;
+    String label;
 
-	PropertyChangeSupport support;
+    PropertyChangeSupport support;
 
-	static public String defaultName = "MockButton 1";
+    static public String defaultName = "MockButton 1";
 
-	public MockButton() {
-		this.name = defaultName;
-		this.label = this.name;
-		this.support = new PropertyChangeSupport(this);
-	}
+    public MockButton() {
+        this.name = defaultName;
+        this.label = this.name;
+        this.support = new PropertyChangeSupport(this);
+    }
 
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		this.support.addPropertyChangeListener(listener);
-	}
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        this.support.addPropertyChangeListener(listener);
+    }
 
-	/**
-	 * @return Returns the label.
-	 */
-	public String getLabel() {
-		return label;
-	}
+    /**
+     * @return Returns the label.
+     */
+    public String getLabel() {
+        return label;
+    }
 
-	/**
-	 * @param label
-	 *            The label to set.
-	 */
-	public void setLabel(String label) {
-		this.support.firePropertyChange("label", this.label, label);
-		this.label = label;
-	}
+    /**
+     * @param label
+     *            The label to set.
+     */
+    public void setLabel(String label) {
+        this.support.firePropertyChange("label", this.label, label);
+        this.label = label;
+    }
 
-	/**
-	 * @return Returns the name.
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * @return Returns the name.
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @param name
-	 *            The name to set.
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * @param name
+     *            The name to set.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
 }

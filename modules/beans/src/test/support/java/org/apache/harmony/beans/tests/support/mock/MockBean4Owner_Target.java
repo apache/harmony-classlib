@@ -17,17 +17,18 @@
 package org.apache.harmony.beans.tests.support.mock;
 
 public class MockBean4Owner_Target {
-	MockBean4Owner_Owner v;
+    MockBean4Owner_Owner v;
 
-	public MockBean4Owner_Owner getV() {
-		return v;
-	}
+    public MockBean4Owner_Owner getV() {
+        return v;
+    }
 
-	public void setV(MockBean4Owner_Owner v) {
-		this.v = v;
-	}
+    public void setV(MockBean4Owner_Owner v) {
+        this.v = v;
+    }
 
-	public boolean equals(Object o) {
-		return (this.getClass() == o.getClass() && this.v == ((MockBean4Owner_Target) o).v);
-	}
+    @Override
+    public boolean equals(Object o) {
+        return (this.getClass() == o.getClass() && this.v == ((MockBean4Owner_Target) o).v);
+    }
 }

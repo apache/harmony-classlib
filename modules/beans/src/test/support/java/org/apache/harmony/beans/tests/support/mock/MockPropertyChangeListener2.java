@@ -21,9 +21,9 @@ package org.apache.harmony.beans.tests.support.mock;
  * test java.beans
  */
 public interface MockPropertyChangeListener2 {
-	/*
-	 * fire MockPropertyChange event.
-	 */
-	public void mockPropertyChange(
-			org.apache.harmony.beans.tests.support.mock.MockPropertyChangeEvent e);
+    /*
+     * fire MockPropertyChange event.
+     */
+    public void mockPropertyChange(
+            org.apache.harmony.beans.tests.support.mock.MockPropertyChangeEvent e);
 }

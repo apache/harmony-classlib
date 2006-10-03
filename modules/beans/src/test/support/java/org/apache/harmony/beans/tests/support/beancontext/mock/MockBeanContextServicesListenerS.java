@@ -26,30 +26,30 @@ import java.io.Serializable;
  * Mock of BeanContextServicesListener
  */
 public class MockBeanContextServicesListenerS implements
-		BeanContextServicesListener, Serializable {
+        BeanContextServicesListener, Serializable {
 
-	public String id;
+    public String id;
 
-	public MockBeanContextServicesListenerS(String id) {
-		this.id = id;
-	}
+    public MockBeanContextServicesListenerS(String id) {
+        this.id = id;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.beancontext.BeanContextServicesListener#serviceAvailable(java.beans.beancontext.BeanContextServiceAvailableEvent)
-	 */
-	public void serviceAvailable(BeanContextServiceAvailableEvent bcsae) {
-		// nothing
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.beancontext.BeanContextServicesListener#serviceAvailable(java.beans.beancontext.BeanContextServiceAvailableEvent)
+     */
+    public void serviceAvailable(BeanContextServiceAvailableEvent bcsae) {
+        // nothing
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.beancontext.BeanContextServiceRevokedListener#serviceRevoked(java.beans.beancontext.BeanContextServiceRevokedEvent)
-	 */
-	public void serviceRevoked(BeanContextServiceRevokedEvent bcsre) {
-		// nothing
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.beancontext.BeanContextServiceRevokedListener#serviceRevoked(java.beans.beancontext.BeanContextServiceRevokedEvent)
+     */
+    public void serviceRevoked(BeanContextServiceRevokedEvent bcsre) {
+        // nothing
+    }
 
 }

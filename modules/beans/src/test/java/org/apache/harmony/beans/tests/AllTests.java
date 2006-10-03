@@ -25,16 +25,19 @@ import junit.framework.TestSuite;
  */
 public class AllTests {
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.suite());
-	}
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(AllTests.suite());
+    }
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Beans test suites");
-		// $JUnit-BEGIN$
-		suite.addTest(org.apache.harmony.beans.tests.java.beans.AllTests.suite());
-		suite.addTest(org.apache.harmony.beans.tests.java.beans.beancontext.AllTests.suite());
-		// $JUnit-END$
-		return suite;
-	}
+    public static Test suite() {
+        TestSuite suite = new TestSuite("Beans test suites");
+        // $JUnit-BEGIN$
+        suite.addTest(org.apache.harmony.beans.tests.java.beans.AllTests
+                .suite());
+        suite
+                .addTest(org.apache.harmony.beans.tests.java.beans.beancontext.AllTests
+                        .suite());
+        // $JUnit-END$
+        return suite;
+    }
 }

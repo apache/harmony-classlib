@@ -26,36 +26,37 @@ import java.io.Serializable;
  * test VetoableChangeSupport
  */
 public class SerializedVCListener implements Serializable,
-		VetoableChangeListener {
+        VetoableChangeListener {
 
-	String propertyName;
+    String propertyName;
 
-	String name;
+    String name;
 
-	public SerializedVCListener(String propertyName) {
-		this.propertyName = propertyName;
-	}
+    public SerializedVCListener(String propertyName) {
+        this.propertyName = propertyName;
+    }
 
-	public boolean equals(Object o) {
-		if (!(o instanceof SerializedVCListener)) {
-			return false;
-		}
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof SerializedVCListener)) {
+            return false;
+        }
 
-		SerializedVCListener other = (SerializedVCListener) o;
-		return ((this.name == null ? other.name == null : this.name
-				.equals(other.name)) && (this.propertyName == null ? other.propertyName == null
-				: this.propertyName.equals(other.propertyName)));
-	}
+        SerializedVCListener other = (SerializedVCListener) o;
+        return ((this.name == null ? other.name == null : this.name
+                .equals(other.name)) && (this.propertyName == null ? other.propertyName == null
+                : this.propertyName.equals(other.propertyName)));
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.VetoableChangeListener#vetoableChange(java.beans.PropertyChangeEvent)
-	 */
-	public void vetoableChange(PropertyChangeEvent event)
-			throws PropertyVetoException {
-		// TODO Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.VetoableChangeListener#vetoableChange(java.beans.PropertyChangeEvent)
+     */
+    public void vetoableChange(PropertyChangeEvent event)
+            throws PropertyVetoException {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
 }

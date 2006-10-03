@@ -24,51 +24,51 @@ import java.beans.Visibility;
  */
 public class MockVisibility implements Visibility {
 
-	public boolean avoidingGui;
+    public boolean avoidingGui;
 
-	public boolean needsGui;
+    public boolean needsGui;
 
-	public boolean okToUseGui;
+    public boolean okToUseGui;
 
-	public MockVisibility(boolean avoiding, boolean needs) {
-		this.avoidingGui = avoiding;
-		this.needsGui = needs;
-	}
+    public MockVisibility(boolean avoiding, boolean needs) {
+        this.avoidingGui = avoiding;
+        this.needsGui = needs;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.Visibility#avoidingGui()
-	 */
-	public boolean avoidingGui() {
-		return avoidingGui;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.Visibility#avoidingGui()
+     */
+    public boolean avoidingGui() {
+        return avoidingGui;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.Visibility#dontUseGui()
-	 */
-	public void dontUseGui() {
-		okToUseGui = false;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.Visibility#dontUseGui()
+     */
+    public void dontUseGui() {
+        okToUseGui = false;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.Visibility#needsGui()
-	 */
-	public boolean needsGui() {
-		return needsGui;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.Visibility#needsGui()
+     */
+    public boolean needsGui() {
+        return needsGui;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.Visibility#okToUseGui()
-	 */
-	public void okToUseGui() {
-		okToUseGui = true;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.Visibility#okToUseGui()
+     */
+    public void okToUseGui() {
+        okToUseGui = true;
+    }
 
 }

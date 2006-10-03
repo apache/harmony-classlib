@@ -29,7 +29,7 @@ import java.util.EventObject;
  */
 
 public class MisprintEvent extends EventObject {
-    
+
     public MisprintEvent(Object object) {
         super(object);
     }

@@ -56,8 +56,7 @@ public class PropertyEditorSupportTest extends TestCase {
      */
     public void testPropertyEditorSupportObject() {
         MockSource source = new MockSource();
-        PropertyEditorSupport support = new PropertyEditorSupport(
-                source);
+        PropertyEditorSupport support = new PropertyEditorSupport(source);
 
         assertEquals("null", support.getAsText());
         assertNull(support.getValue());
@@ -97,8 +96,7 @@ public class PropertyEditorSupportTest extends TestCase {
     public void testAddPropertyChangeListener_source() {
         MockTarget target = new MockTarget();
         MockSource source = new MockSource();
-        PropertyEditorSupport support = new PropertyEditorSupport(
-                source);
+        PropertyEditorSupport support = new PropertyEditorSupport(source);
         support.addPropertyChangeListener(EventHandler.create(
                 PropertyChangeListener.class, target, "eventSource", "source"));
         support.firePropertyChange();
@@ -226,7 +224,8 @@ public class PropertyEditorSupportTest extends TestCase {
         try {
             support.setAsText("string");
             fail("IllegalArgumentException expected");
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {
+        }
 
         support = new PropertyEditorSupport();
         support.setValue(new String());
@@ -294,7 +293,7 @@ public class PropertyEditorSupportTest extends TestCase {
         } catch (NullPointerException e) {
         }
     }
-    
+
     public static class MockSource {
 
         String id;
@@ -314,7 +313,8 @@ public class PropertyEditorSupportTest extends TestCase {
         }
 
         /**
-         * @param id The id to set.
+         * @param id
+         *            The id to set.
          */
         public void setId(String id) {
             this.id = id;
@@ -328,7 +328,8 @@ public class PropertyEditorSupportTest extends TestCase {
         }
 
         /**
-         * @param text The text to set.
+         * @param text
+         *            The text to set.
          */
         public void setText(String text) {
             this.text = text;
@@ -397,6 +398,7 @@ public class PropertyEditorSupportTest extends TestCase {
             this.eventSource = eventSource;
         }
 
+        @Override
         public boolean equals(Object o) {
             if (!(o instanceof MockTarget)) {
                 return false;

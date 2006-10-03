@@ -24,16 +24,16 @@ import java.util.EventObject;
  */
 public class MockPropertyChangeEvent extends EventObject {
 
-	/**
-	 * Comment for <code>serialVersionUID</code>
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * Comment for <code>serialVersionUID</code>
+     */
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * @param source
-	 */
-	public MockPropertyChangeEvent(Object source) {
-		super(source);
-	}
+    /**
+     * @param source
+     */
+    public MockPropertyChangeEvent(Object source) {
+        super(source);
+    }
 
 }

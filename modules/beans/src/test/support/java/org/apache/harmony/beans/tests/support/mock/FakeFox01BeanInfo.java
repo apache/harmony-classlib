@@ -30,62 +30,67 @@ import java.lang.reflect.Method;
  */
 public class FakeFox01BeanInfo extends SimpleBeanInfo {
 
-	Class clazz = FakeFox01.class;
+    Class clazz = FakeFox01.class;
 
-	String suffix = "." + clazz.getName();
+    String suffix = "." + clazz.getName();
 
-	public BeanDescriptor getBeanDescriptor() {
-		BeanDescriptor beanDesc = new BeanDescriptor(clazz);
-		beanDesc.setDisplayName(beanDesc.getDisplayName() + suffix);
-		return beanDesc;
-	}
+    @Override
+    public BeanDescriptor getBeanDescriptor() {
+        BeanDescriptor beanDesc = new BeanDescriptor(clazz);
+        beanDesc.setDisplayName(beanDesc.getDisplayName() + suffix);
+        return beanDesc;
+    }
 
-	public MethodDescriptor[] getMethodDescriptors() {
-		Method get = null;
-		Method set = null;
-		try {
-			get = clazz.getMethod("getFox01", (Class[])null);
-			set = clazz.getMethod("setFox01", new Class[] { String.class });
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		}
+    @Override
+    public MethodDescriptor[] getMethodDescriptors() {
+        Method get = null;
+        Method set = null;
+        try {
+            get = clazz.getMethod("getFox01", (Class[]) null);
+            set = clazz.getMethod("setFox01", new Class[] { String.class });
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
 
-		MethodDescriptor getDesc = new MethodDescriptor(get);
-		getDesc.setDisplayName(getDesc.getDisplayName() + suffix);
-		MethodDescriptor setDesc = new MethodDescriptor(set);
-		setDesc.setDisplayName(setDesc.getDisplayName() + suffix);
-		return new MethodDescriptor[] { getDesc, setDesc };
-	}
+        MethodDescriptor getDesc = new MethodDescriptor(get);
+        getDesc.setDisplayName(getDesc.getDisplayName() + suffix);
+        MethodDescriptor setDesc = new MethodDescriptor(set);
+        setDesc.setDisplayName(setDesc.getDisplayName() + suffix);
+        return new MethodDescriptor[] { getDesc, setDesc };
+    }
 
-	public PropertyDescriptor[] getPropertyDescriptors() {
-		PropertyDescriptor propertyDesc = null;
-		try {
-			propertyDesc = new PropertyDescriptor("fox01", clazz);
-			propertyDesc.setDisplayName(propertyDesc.getDisplayName() + suffix);
-		} catch (IntrospectionException e) {
-			e.printStackTrace();
-		}
-		return new PropertyDescriptor[] { propertyDesc };
-	}
+    @Override
+    public PropertyDescriptor[] getPropertyDescriptors() {
+        PropertyDescriptor propertyDesc = null;
+        try {
+            propertyDesc = new PropertyDescriptor("fox01", clazz);
+            propertyDesc.setDisplayName(propertyDesc.getDisplayName() + suffix);
+        } catch (IntrospectionException e) {
+            e.printStackTrace();
+        }
+        return new PropertyDescriptor[] { propertyDesc };
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.BeanInfo#getDefaultEventIndex()
-	 */
-	public int getDefaultEventIndex() {
-		return -1;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.BeanInfo#getDefaultEventIndex()
+     */
+    @Override
+    public int getDefaultEventIndex() {
+        return -1;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.BeanInfo#getDefaultPropertyIndex()
-	 */
-	public int getDefaultPropertyIndex() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.BeanInfo#getDefaultPropertyIndex()
+     */
+    @Override
+    public int getDefaultPropertyIndex() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 }

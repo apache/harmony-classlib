@@ -25,27 +25,27 @@ import java.io.Serializable;
  * Mock of PropertyChangeListener
  */
 public class MockPropertyChangeListenerS implements PropertyChangeListener,
-		Serializable {
+        Serializable {
 
-	public PropertyChangeEvent lastEvent;
+    public PropertyChangeEvent lastEvent;
 
-	public String id;
+    public String id;
 
-	public MockPropertyChangeListenerS(String id) {
-		this.id = id;
-	}
+    public MockPropertyChangeListenerS(String id) {
+        this.id = id;
+    }
 
-	public void clearLastEvent() {
-		lastEvent = null;
-	}
+    public void clearLastEvent() {
+        lastEvent = null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-	 */
-	public void propertyChange(PropertyChangeEvent evt) {
-		lastEvent = evt;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+     */
+    public void propertyChange(PropertyChangeEvent evt) {
+        lastEvent = evt;
+    }
 
 }

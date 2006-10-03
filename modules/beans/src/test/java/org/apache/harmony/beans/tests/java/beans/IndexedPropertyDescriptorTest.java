@@ -21,9 +21,9 @@ import java.beans.IndexedPropertyDescriptor;
 import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
 
-import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
-
 import junit.framework.TestCase;
+
+import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
 
 /**
  * Unit test for IndexedPropertyDescriptor.
@@ -351,12 +351,12 @@ public class IndexedPropertyDescriptorTest extends TestCase {
         assertFalse(ipd.isHidden());
         assertFalse(ipd.isPreferred());
 
-        //Regression for HARMONY-1236
+        // Regression for HARMONY-1236
         try {
             new IndexedPropertyDescriptor("0xDFRF", Float.TYPE);
             fail("IntrospectionException expected");
         } catch (IntrospectionException e) {
-            //expected
+            // expected
         }
     }
 
@@ -367,7 +367,8 @@ public class IndexedPropertyDescriptorTest extends TestCase {
         try {
             new IndexedPropertyDescriptor(propertyName, beanClass);
             fail("Should throw IntrospectionException");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     public void testIndexedPropertyDescriptorStringClass_PropertyNameEmpty()
@@ -377,7 +378,8 @@ public class IndexedPropertyDescriptorTest extends TestCase {
         try {
             new IndexedPropertyDescriptor(propertyName, beanClass);
             fail("Should throw IntrospectionException");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     public void testIndexedPropertyDescriptorStringClass_PropertyNameInvalid()
@@ -387,7 +389,8 @@ public class IndexedPropertyDescriptorTest extends TestCase {
         try {
             new IndexedPropertyDescriptor(propertyName, beanClass);
             fail("Should throw IntrospectionException");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     public void testIndexedPropertyDescriptorStringClass_NotIndexedProperty()
@@ -397,7 +400,8 @@ public class IndexedPropertyDescriptorTest extends TestCase {
         try {
             new IndexedPropertyDescriptor(propertyName, beanClass);
             fail("Should throw IntrospectionException");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     public void testIndexedPropertyDescriptorStringClass_ClassNull()
@@ -407,7 +411,8 @@ public class IndexedPropertyDescriptorTest extends TestCase {
         try {
             new IndexedPropertyDescriptor(propertyName, beanClass);
             fail("Should throw IntrospectionException");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     /*
@@ -478,7 +483,8 @@ public class IndexedPropertyDescriptorTest extends TestCase {
                     "get" + propertyName, "set" + propertyName, "get"
                             + propertyName, "set" + propertyName);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     public void testIndexedPropertyDescriptorStringClassStringStringStringString_propEmpty() {
@@ -489,7 +495,8 @@ public class IndexedPropertyDescriptorTest extends TestCase {
                     "set" + propertyName, "get" + propertyName, "set"
                             + propertyName);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     public void testIndexedPropertyDescriptorStringClassStringStringStringString_propInvalid()
@@ -515,7 +522,8 @@ public class IndexedPropertyDescriptorTest extends TestCase {
                     + propertyName, "set" + propertyName, "get" + propertyName,
                     "set" + propertyName);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     public void testIndexedPropertyDescriptorStringClassStringStringStringString_ReadMethodNull()
@@ -595,7 +603,8 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             new IndexedPropertyDescriptor(propertyName, beanClass, "get"
                     + propertyName, "set" + propertyName, null, null);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     /**
@@ -766,7 +775,8 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             new IndexedPropertyDescriptor(null, readMethod, writeMethod,
                     indexedReadMethod, indexedWriteMethod);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     /*
@@ -790,7 +800,8 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             new IndexedPropertyDescriptor("", readMethod, writeMethod,
                     indexedReadMethod, indexedWriteMethod);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     public void testIndexedPropertyDescriptorStringMethodMethodMethodMethod_propInvalid()
@@ -913,7 +924,8 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             new IndexedPropertyDescriptor(propertyName, readMethod,
                     writeMethod, null, null);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
 
     }
 
@@ -1083,7 +1095,8 @@ public class IndexedPropertyDescriptorTest extends TestCase {
         try {
             ipd.setIndexedReadMethod(readMethod);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     /*
@@ -1111,7 +1124,8 @@ public class IndexedPropertyDescriptorTest extends TestCase {
         try {
             ipd.setIndexedReadMethod(writeMethod);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     /*
@@ -1141,7 +1155,8 @@ public class IndexedPropertyDescriptorTest extends TestCase {
         try {
             ipd.setIndexedReadMethod(voidMethod);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     public void testSetIndexedWriteMethod_null() throws IntrospectionException,
@@ -1209,7 +1224,8 @@ public class IndexedPropertyDescriptorTest extends TestCase {
         try {
             ipd.setIndexedWriteMethod(indexedReadMethod);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     /*
@@ -1236,7 +1252,8 @@ public class IndexedPropertyDescriptorTest extends TestCase {
         try {
             ipd.setIndexedWriteMethod(badArgType);
             fail("Should throw IntrospectionException");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     public void testSetIndexedWriteMethod_return()
@@ -1285,7 +1302,8 @@ public class IndexedPropertyDescriptorTest extends TestCase {
         try {
             ipd.setIndexedWriteMethod(badArgType);
             fail("Should throw IntrospectionException");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     class NotJavaBean {

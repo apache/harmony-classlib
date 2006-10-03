@@ -82,7 +82,8 @@ public class IntrospectorTest extends TestCase {
         try {
             Class.forName("java.beans.Introspector").newInstance();
             fail("No exception is thrown on new Introspector() call");
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     /**
@@ -130,23 +131,23 @@ public class IntrospectorTest extends TestCase {
         assertNotNull(info);
         EventSetDescriptor[] descriptors = info.getEventSetDescriptors();
         assertNotNull(descriptors);
-        for (int i = 0; i < descriptors.length; ++i) {
-            Method m = descriptors[i].getAddListenerMethod();
+        for (EventSetDescriptor element : descriptors) {
+            Method m = element.getAddListenerMethod();
             if (m != null) {
                 Class[] exceptionTypes = m.getExceptionTypes();
                 boolean found = false;
 
-                for (int j = 0; j < exceptionTypes.length; ++j) {
-                    if (exceptionTypes[j]
+                for (Class element0 : exceptionTypes) {
+                    if (element0
                             .equals(TooManyListenersException.class)) {
-                        assertTrue(descriptors[i].isUnicast());
+                        assertTrue(element.isUnicast());
                         found = true;
                         break;
                     }
                 }
 
                 if (!found) {
-                    assertFalse(descriptors[i].isUnicast());
+                    assertFalse(element.isUnicast());
                 }
             }
         }
@@ -213,18 +214,21 @@ public class IntrospectorTest extends TestCase {
         try {
             Introspector.getBeanInfo((java.lang.Class) null);
             fail("getBeanInfo should throw NullPointerException");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
 
         try {
             Introspector.getBeanInfo((java.lang.Class) null,
                     (java.lang.Class) null);
             fail("getBeanInfo should throw NullPointerException");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
 
         try {
             Introspector.getBeanInfo((java.lang.Class) null, 0);
             fail("getBeanInfo should throw NullPointerException");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
     }
 
     /**
@@ -324,7 +328,8 @@ public class IntrospectorTest extends TestCase {
         try {
             Introspector.flushFromCaches(null);
             fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
     }
 
     /*
@@ -347,20 +352,20 @@ public class IntrospectorTest extends TestCase {
         assertEquals(methods.length, methodDesc.length);
         ArrayList methodList = new ArrayList();
 
-        for (int i = 0; i < methods.length; i++) {
-            methodList.add(methods[i]);
+        for (Method element : methods) {
+            methodList.add(element);
         }
 
-        for (int i = 0; i < methodDesc.length; i++) {
-            assertTrue(methodList.contains(methodDesc[i].getMethod()));
+        for (MethodDescriptor element : methodDesc) {
+            assertTrue(methodList.contains(element.getMethod()));
         }
 
         PropertyDescriptor[] propertyDesc = info.getPropertyDescriptors();
         assertEquals(1, propertyDesc.length);
-        for (int i = 0; i < propertyDesc.length; i++) {
-            if (propertyDesc[i].getName().equals("class")) {
-                assertNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+        for (PropertyDescriptor element : propertyDesc) {
+            if (element.getName().equals("class")) {
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
             }
         }
 
@@ -391,7 +396,8 @@ public class IntrospectorTest extends TestCase {
         try {
             Introspector.getBeanInfo(null);
             fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
     }
 
     /*
@@ -414,8 +420,8 @@ public class IntrospectorTest extends TestCase {
         MethodDescriptor[] mds = info.getMethodDescriptors();
         assertEquals(2, mds.length);
 
-        for (int i = 0; i < mds.length; i++) {
-            assertTrue(mds[i].getName().endsWith("Name"));
+        for (MethodDescriptor element : mds) {
+            assertTrue(element.getName().endsWith("Name"));
         }
     }
 
@@ -425,11 +431,11 @@ public class IntrospectorTest extends TestCase {
         PropertyDescriptor[] pds = info.getPropertyDescriptors();
         boolean name = false;
         boolean label = false;
-        for (int i = 0; i < pds.length; i++) {
-            if (pds[i].getName().equals("name")) {
+        for (PropertyDescriptor element : pds) {
+            if (element.getName().equals("name")) {
                 name = true;
             }
-            if (pds[i].getName().equals("label")) {
+            if (element.getName().equals("label")) {
                 label = true;
             }
         }
@@ -443,7 +449,8 @@ public class IntrospectorTest extends TestCase {
         try {
             Introspector.getBeanInfo(null, MockFooStop.class);
             fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
     }
 
     /*
@@ -454,7 +461,8 @@ public class IntrospectorTest extends TestCase {
         try {
             Introspector.getBeanInfo(MockButton.class, MockFooStop.class);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     /*
@@ -466,8 +474,8 @@ public class IntrospectorTest extends TestCase {
                 Introspector.USE_ALL_BEANINFO);
         PropertyDescriptor[] pds = info.getPropertyDescriptors();
         int parentProperty = 0;
-        for (int i = 0; i < pds.length; i++) {
-            String name = pds[i].getName();
+        for (PropertyDescriptor element : pds) {
+            String name = element.getName();
             if (name.startsWith("text")) {
                 parentProperty++;
                 assertEquals("text.MockFooSubBeanInfo", name);
@@ -483,8 +491,8 @@ public class IntrospectorTest extends TestCase {
         MethodDescriptor[] mds = info.getMethodDescriptors();
         int parentMethodGet = 0;
         int parentMethodSet = 0;
-        for (int i = 0; i < mds.length; i++) {
-            String name = mds[i].getName();
+        for (MethodDescriptor element : mds) {
+            String name = element.getName();
             if (name.startsWith("getText")) {
                 parentMethodGet++;
                 assertEquals("getText.MockFooSubBeanInfo", name);
@@ -505,8 +513,8 @@ public class IntrospectorTest extends TestCase {
                 Introspector.USE_ALL_BEANINFO);
         EventSetDescriptor[] esds = info.getEventSetDescriptors();
         assertEquals(1, esds.length);
-        for (int i = 0; i < esds.length; i++) {
-            String name = esds[i].getName();
+        for (EventSetDescriptor element : esds) {
+            String name = element.getName();
             assertEquals("mockPropertyChange.MockFooSubBeanInfo", name);
         }
     }
@@ -520,8 +528,8 @@ public class IntrospectorTest extends TestCase {
                 Introspector.IGNORE_IMMEDIATE_BEANINFO);
         PropertyDescriptor[] pds = info.getPropertyDescriptors();
         int fromParent = 0;
-        for (int i = 0; i < pds.length; i++) {
-            String name = pds[i].getName();
+        for (PropertyDescriptor element : pds) {
+            String name = element.getName();
             if (name.startsWith("childName")) {
                 fromParent++;
                 assertEquals("childName.MockFooChildBeanInfo", name);
@@ -540,8 +548,8 @@ public class IntrospectorTest extends TestCase {
         MethodDescriptor[] mds = info.getMethodDescriptors();
         int parentMethodGet = 0;
         int parentMethodSet = 0;
-        for (int i = 0; i < mds.length; i++) {
-            String name = mds[i].getName();
+        for (MethodDescriptor element : mds) {
+            String name = element.getName();
             if (name.startsWith("getChildName")) {
                 parentMethodGet++;
                 assertEquals("getChildName.MockFooChildBeanInfo", name);
@@ -565,8 +573,8 @@ public class IntrospectorTest extends TestCase {
                 Introspector.IGNORE_IMMEDIATE_BEANINFO);
         EventSetDescriptor[] esds = info.getEventSetDescriptors();
         assertEquals(1, esds.length);
-        for (int i = 0; i < esds.length; i++) {
-            String name = esds[i].getName();
+        for (EventSetDescriptor element : esds) {
+            String name = element.getName();
             assertEquals("mockPropertyChange.MockFooChildBeanInfo", name);
         }
     }
@@ -580,8 +588,8 @@ public class IntrospectorTest extends TestCase {
                 Introspector.IGNORE_ALL_BEANINFO);
         PropertyDescriptor[] pds = info.getPropertyDescriptors();
         int text = 0;
-        for (int i = 0; i < pds.length; i++) {
-            String name = pds[i].getName();
+        for (PropertyDescriptor element : pds) {
+            String name = element.getName();
             if (name.startsWith("text")) {
                 text++;
                 assertEquals("text", name);
@@ -600,8 +608,8 @@ public class IntrospectorTest extends TestCase {
         MethodDescriptor[] mds = info.getMethodDescriptors();
         int getMethod = 0;
         int setMethod = 0;
-        for (int i = 0; i < mds.length; i++) {
-            String name = mds[i].getName();
+        for (MethodDescriptor element : mds) {
+            String name = element.getName();
             if (name.startsWith("getText")) {
                 getMethod++;
                 assertEquals("getText", name);
@@ -669,8 +677,8 @@ public class IntrospectorTest extends TestCase {
 
         BeanInfo info = Introspector.getBeanInfo(MockFooLabel.class);
         PropertyDescriptor[] pds = info.getPropertyDescriptors();
-        for (int i = 0; i < pds.length; i++) {
-            String name = pds[i].getName();
+        for (PropertyDescriptor element : pds) {
+            String name = element.getName();
             assertEquals(name, "text.MockFooLabelBeanInfo");
         }
 
@@ -694,15 +702,15 @@ public class IntrospectorTest extends TestCase {
         PropertyDescriptor[] propertyDesc = info.getPropertyDescriptors();
         assertEquals(2, propertyDesc.length);
 
-        for (int i = 0; i < propertyDesc.length; i++) {
-            if (propertyDesc[i].getName().equals("class")) {
-                assertNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+        for (PropertyDescriptor element : propertyDesc) {
+            if (element.getName().equals("class")) {
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
             } else {
-                assertEquals("fox101", propertyDesc[i].getName());
-                assertEquals("setFox101", propertyDesc[i].getWriteMethod()
+                assertEquals("fox101", element.getName());
+                assertEquals("setFox101", element.getWriteMethod()
                         .getName());
-                assertEquals("getFox101", propertyDesc[i].getReadMethod()
+                assertEquals("getFox101", element.getReadMethod()
                         .getName());
             }
         }
@@ -722,16 +730,16 @@ public class IntrospectorTest extends TestCase {
         PropertyDescriptor[] propertyDesc = info.getPropertyDescriptors();
         assertEquals(2, propertyDesc.length);
 
-        for (int i = 0; i < propertyDesc.length; i++) {
-            if (propertyDesc[i].getName().equals("class")) {
-                assertNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+        for (PropertyDescriptor element : propertyDesc) {
+            if (element.getName().equals("class")) {
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
             } else {
-                assertEquals("fox201", propertyDesc[i].getName());
-                assertEquals(String.class.getName(), propertyDesc[i]
+                assertEquals("fox201", element.getName());
+                assertEquals(String.class.getName(), element
                         .getPropertyType().getName());
-                assertNotNull(propertyDesc[i].getWriteMethod().getName());
-                assertNotNull(propertyDesc[i].getReadMethod().getName());
+                assertNotNull(element.getWriteMethod().getName());
+                assertNotNull(element.getReadMethod().getName());
             }
         }
     }
@@ -750,16 +758,16 @@ public class IntrospectorTest extends TestCase {
         PropertyDescriptor[] propertyDesc = info.getPropertyDescriptors();
         assertEquals(2, propertyDesc.length);
 
-        for (int i = 0; i < propertyDesc.length; i++) {
-            if (propertyDesc[i].getName().equals("class")) {
-                assertNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+        for (PropertyDescriptor element : propertyDesc) {
+            if (element.getName().equals("class")) {
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
             } else {
-                assertEquals("fox201", propertyDesc[i].getName());
-                assertEquals(Integer.class.getName(), propertyDesc[i]
+                assertEquals("fox201", element.getName());
+                assertEquals(Integer.class.getName(), element
                         .getPropertyType().getName());
-                assertNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
             }
         }
     }
@@ -778,16 +786,16 @@ public class IntrospectorTest extends TestCase {
         PropertyDescriptor[] propertyDesc = info.getPropertyDescriptors();
         assertEquals(2, propertyDesc.length);
 
-        for (int i = 0; i < propertyDesc.length; i++) {
-            if (propertyDesc[i].getName().equals("class")) {
-                assertNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+        for (PropertyDescriptor element : propertyDesc) {
+            if (element.getName().equals("class")) {
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
             } else {
-                assertEquals("fox301", propertyDesc[i].getName());
-                assertEquals(Integer.class.getName(), propertyDesc[i]
+                assertEquals("fox301", element.getName());
+                assertEquals(Integer.class.getName(), element
                         .getPropertyType().getName());
-                assertNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
             }
         }
     }
@@ -804,19 +812,19 @@ public class IntrospectorTest extends TestCase {
         PropertyDescriptor[] propertyDesc = info.getPropertyDescriptors();
         assertEquals(2, propertyDesc.length);
 
-        for (int i = 0; i < propertyDesc.length; i++) {
-            if (propertyDesc[i].getName().equals("class")) {
-                assertNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+        for (PropertyDescriptor element : propertyDesc) {
+            if (element.getName().equals("class")) {
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
             } else {
-                IndexedPropertyDescriptor indexedDesc = (IndexedPropertyDescriptor) propertyDesc[i];
-                assertEquals("fox401", propertyDesc[i].getName());
-                assertEquals(String[].class.getName(), propertyDesc[i]
+                IndexedPropertyDescriptor indexedDesc = (IndexedPropertyDescriptor) element;
+                assertEquals("fox401", element.getName());
+                assertEquals(String[].class.getName(), element
                         .getPropertyType().getName());
                 assertEquals(String.class.getName(), indexedDesc
                         .getIndexedPropertyType().getName());
-                assertNotNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+                assertNotNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
                 assertNotNull(indexedDesc.getIndexedReadMethod());
                 assertNotNull(indexedDesc.getIndexedWriteMethod());
             }
@@ -835,16 +843,16 @@ public class IntrospectorTest extends TestCase {
         PropertyDescriptor[] propertyDesc = info.getPropertyDescriptors();
         assertEquals(2, propertyDesc.length);
 
-        for (int i = 0; i < propertyDesc.length; i++) {
-            if (propertyDesc[i].getName().equals("class")) {
-                assertNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+        for (PropertyDescriptor element : propertyDesc) {
+            if (element.getName().equals("class")) {
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
             } else {
-                assertEquals("fox401", propertyDesc[i].getName());
-                assertEquals(Integer[].class.getName(), propertyDesc[i]
+                assertEquals("fox401", element.getName());
+                assertEquals(Integer[].class.getName(), element
                         .getPropertyType().getName());
-                assertNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
             }
         }
     }
@@ -862,17 +870,17 @@ public class IntrospectorTest extends TestCase {
         PropertyDescriptor[] propertyDesc = info.getPropertyDescriptors();
         assertEquals(2, propertyDesc.length);
 
-        for (int i = 0; i < propertyDesc.length; i++) {
-            if (propertyDesc[i].getName().equals("class")) {
-                assertNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+        for (PropertyDescriptor element : propertyDesc) {
+            if (element.getName().equals("class")) {
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
             } else {
-                IndexedPropertyDescriptor indexedDesc = (IndexedPropertyDescriptor) propertyDesc[i];
-                assertEquals("fox501", propertyDesc[i].getName());
-                assertEquals(String[].class.getName(), propertyDesc[i]
+                IndexedPropertyDescriptor indexedDesc = (IndexedPropertyDescriptor) element;
+                assertEquals("fox501", element.getName());
+                assertEquals(String[].class.getName(), element
                         .getPropertyType().getName());
-                assertNotNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+                assertNotNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
                 assertNotNull(indexedDesc.getIndexedReadMethod());
                 assertNull(indexedDesc.getIndexedWriteMethod());
                 assertEquals(String.class.getName(), indexedDesc
@@ -894,17 +902,17 @@ public class IntrospectorTest extends TestCase {
         PropertyDescriptor[] propertyDesc = info.getPropertyDescriptors();
         assertEquals(2, propertyDesc.length);
 
-        for (int i = 0; i < propertyDesc.length; i++) {
-            if (propertyDesc[i].getName().equals("class")) {
-                assertNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+        for (PropertyDescriptor element : propertyDesc) {
+            if (element.getName().equals("class")) {
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
             } else {
-                IndexedPropertyDescriptor indexedDesc = (IndexedPropertyDescriptor) propertyDesc[i];
-                assertEquals("fox501", propertyDesc[i].getName());
-                assertEquals(String[].class.getName(), propertyDesc[i]
+                IndexedPropertyDescriptor indexedDesc = (IndexedPropertyDescriptor) element;
+                assertEquals("fox501", element.getName());
+                assertEquals(String[].class.getName(), element
                         .getPropertyType().getName());
-                assertNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
                 assertNull(indexedDesc.getIndexedReadMethod());
                 assertNotNull(indexedDesc.getIndexedWriteMethod());
                 assertEquals(String.class.getName(), indexedDesc
@@ -926,16 +934,16 @@ public class IntrospectorTest extends TestCase {
         PropertyDescriptor[] propertyDesc = info.getPropertyDescriptors();
         assertEquals(2, propertyDesc.length);
 
-        for (int i = 0; i < propertyDesc.length; i++) {
-            if (propertyDesc[i].getName().equals("class")) {
-                assertNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+        for (PropertyDescriptor element : propertyDesc) {
+            if (element.getName().equals("class")) {
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
             } else {
-                IndexedPropertyDescriptor indexedDesc = (IndexedPropertyDescriptor) propertyDesc[i];
-                assertEquals("fox501", propertyDesc[i].getName());
-                assertNull(propertyDesc[i].getPropertyType());
-                assertNull(propertyDesc[i].getWriteMethod());
-                assertNull(propertyDesc[i].getReadMethod());
+                IndexedPropertyDescriptor indexedDesc = (IndexedPropertyDescriptor) element;
+                assertEquals("fox501", element.getName());
+                assertNull(element.getPropertyType());
+                assertNull(element.getWriteMethod());
+                assertNull(element.getReadMethod());
                 assertNull(indexedDesc.getIndexedReadMethod());
                 assertNotNull(indexedDesc.getIndexedWriteMethod());
                 assertEquals(Integer.class.getName(), indexedDesc
@@ -962,10 +970,10 @@ public class IntrospectorTest extends TestCase {
         PropertyDescriptor[] propertyDesc = info.getPropertyDescriptors();
         assertEquals(1, propertyDesc.length);
 
-        for (int i = 0; i < propertyDesc.length; i++) {
-            if (propertyDesc[i].getName().equals("class")) {
-                assertNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+        for (PropertyDescriptor element : propertyDesc) {
+            if (element.getName().equals("class")) {
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
             }
         }
     }
@@ -989,10 +997,10 @@ public class IntrospectorTest extends TestCase {
         PropertyDescriptor[] propertyDesc = info.getPropertyDescriptors();
         assertEquals(2, propertyDesc.length);
 
-        for (int i = 0; i < propertyDesc.length; i++) {
-            if (propertyDesc[i].getName().equals("class")) {
-                assertNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+        for (PropertyDescriptor element : propertyDesc) {
+            if (element.getName().equals("class")) {
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
             }
         }
     }
@@ -1010,10 +1018,10 @@ public class IntrospectorTest extends TestCase {
         PropertyDescriptor[] propertyDesc = info.getPropertyDescriptors();
         assertEquals(1, propertyDesc.length);
 
-        for (int i = 0; i < propertyDesc.length; i++) {
-            if (propertyDesc[i].getName().equals("class")) {
-                assertNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+        for (PropertyDescriptor element : propertyDesc) {
+            if (element.getName().equals("class")) {
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
             }
         }
     }
@@ -1037,10 +1045,10 @@ public class IntrospectorTest extends TestCase {
         PropertyDescriptor[] propertyDesc = info.getPropertyDescriptors();
         assertEquals(1, propertyDesc.length);
 
-        for (int i = 0; i < propertyDesc.length; i++) {
-            if (propertyDesc[i].getName().equals("class")) {
-                assertNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+        for (PropertyDescriptor element : propertyDesc) {
+            if (element.getName().equals("class")) {
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
             }
         }
     }
@@ -1073,10 +1081,10 @@ public class IntrospectorTest extends TestCase {
 
         PropertyDescriptor[] propertyDesc = info.getPropertyDescriptors();
         assertEquals(2, propertyDesc.length);
-        for (int i = 0; i < propertyDesc.length; i++) {
-            if (propertyDesc[i].getName().equals("class")) {
-                assertNull(propertyDesc[i].getWriteMethod());
-                assertNotNull(propertyDesc[i].getReadMethod());
+        for (PropertyDescriptor element : propertyDesc) {
+            if (element.getName().equals("class")) {
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
             }
         }
     }
@@ -1097,9 +1105,9 @@ public class IntrospectorTest extends TestCase {
 
         PropertyDescriptor[] propertyDesc = info.getPropertyDescriptors();
         assertEquals(1, propertyDesc.length);
-        for (int i = 0; i < propertyDesc.length; i++) {
-            if (propertyDesc[i].getName().equals("fox02")) {
-                assertEquals("fox02.beaninfo", propertyDesc[i].getDisplayName());
+        for (PropertyDescriptor element : propertyDesc) {
+            if (element.getName().equals("fox02")) {
+                assertEquals("fox02.beaninfo", element.getDisplayName());
             }
         }
     }
@@ -1263,9 +1271,11 @@ public class IntrospectorTest extends TestCase {
                     try {
                         Introspector.getBeanInfoSearchPath();
                         fail("Should throw NullPointerException.");
-                    } catch (NullPointerException e) {}
+                    } catch (NullPointerException e) {
+                    }
                 }
-            } catch (SecurityException e) {}
+            } catch (SecurityException e) {
+            }
         } finally {
             try {
                 System.setSecurityManager(dfl);
@@ -1303,7 +1313,8 @@ public class IntrospectorTest extends TestCase {
         } finally {
             try {
                 System.setSecurityManager(dfl);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
     }
 
@@ -1340,7 +1351,8 @@ public class IntrospectorTest extends TestCase {
         }
     }
 
-    public static class Bean3BeanInfo extends SimpleBeanInfo {}
+    public static class Bean3BeanInfo extends SimpleBeanInfo {
+    }
 
     /*
      * 
@@ -1454,7 +1466,8 @@ public class IntrospectorTest extends TestCase {
 
     static class FakeFox101 extends FakeFox10 {
 
-        public void setFox101(String value) {}
+        public void setFox101(String value) {
+        }
 
         public String getFox101() {
             return null;
@@ -1463,7 +1476,8 @@ public class IntrospectorTest extends TestCase {
 
     static class FakeFox20 {
 
-        public void setFox201(String value) {}
+        public void setFox201(String value) {
+        }
     }
 
     static class FakeFox201 extends FakeFox20 {
@@ -1489,7 +1503,8 @@ public class IntrospectorTest extends TestCase {
 
     static class FakeFox301 extends FakeFox30 {
 
-        public void setFox301(String value) {}
+        public void setFox301(String value) {
+        }
 
     }
 

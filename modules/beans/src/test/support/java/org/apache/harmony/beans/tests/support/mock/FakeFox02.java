@@ -22,20 +22,20 @@ package org.apache.harmony.beans.tests.support.mock;
  * Introspector.getBeanInfo(Class, int)
  */
 public class FakeFox02 {
-	String fox02;
+    String fox02;
 
-	/**
-	 * @return Returns the fox02.
-	 */
-	public String getFox02() {
-		return fox02;
-	}
+    /**
+     * @return Returns the fox02.
+     */
+    public String getFox02() {
+        return fox02;
+    }
 
-	/**
-	 * @param fox02
-	 *            The fox02 to set.
-	 */
-	public void setFox02(String fox02) {
-		this.fox02 = fox02;
-	}
+    /**
+     * @param fox02
+     *            The fox02 to set.
+     */
+    public void setFox02(String fox02) {
+        this.fox02 = fox02;
+    }
 }

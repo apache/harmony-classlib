@@ -146,7 +146,8 @@ public class StatementTest extends TestCase {
     /**
      * 
      */
-    public static void methodWithIntArray(int[] array) {}
+    public static void methodWithIntArray(int[] array) {
+    }
 
     /**
      * 

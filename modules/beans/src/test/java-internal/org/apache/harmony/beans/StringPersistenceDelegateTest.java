@@ -29,6 +29,7 @@ public class StringPersistenceDelegateTest extends TestCase {
 
     private java_lang_StringPersistenceDelegate pd = null;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         pd = new java_lang_StringPersistenceDelegate();

@@ -27,13 +27,13 @@ package org.apache.harmony.beans.tests.support;
  */
 
 public class GrannyBean {
-    
+
     private String text = "GrannyBean";
-    
+
     public String getText() {
         return text;
     }
-    
+
     public void setText(String text) {
         this.text = text;
     }

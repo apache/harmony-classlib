@@ -23,18 +23,17 @@ import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeListenerProxy;
 import java.beans.VetoableChangeSupport;
-
 import java.beans.beancontext.BeanContextChildSupport;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
+
 import org.apache.harmony.beans.tests.support.beancontext.mock.MockVetoableChangeListener;
 import org.apache.harmony.beans.tests.support.mock.NonSerializedVCListener;
 import org.apache.harmony.beans.tests.support.mock.SerializedVCListener;
@@ -183,7 +182,8 @@ public class VetoableChangeSupportTest extends TestCase {
         try {
             support.addVetoableChangeListener(propertyName, proxy);
             fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
     }
 
     /*
@@ -327,8 +327,8 @@ public class VetoableChangeSupportTest extends TestCase {
         assertEquals(2, listeners1.length);
         assertEquals(0, listeners2.length);
         assertEquals(0, listeners3.length);
-        for (int i = 0; i < listeners1.length; i++) {
-            assertSame(proxy, listeners1[i]);
+        for (VetoableChangeListener element : listeners1) {
+            assertSame(proxy, element);
         }
     }
 
@@ -359,8 +359,8 @@ public class VetoableChangeSupportTest extends TestCase {
         assertEquals(2, listeners1.length);
         assertEquals(0, listeners2.length);
         assertEquals(0, listeners3.length);
-        for (int i = 0; i < listeners1.length; i++) {
-            assertTrue((proxy == listeners1[i]) || (proxy2 == listeners1[i]));
+        for (VetoableChangeListener element : listeners1) {
+            assertTrue((proxy == element) || (proxy2 == element));
         }
     }
 
@@ -1133,41 +1133,42 @@ public class VetoableChangeSupportTest extends TestCase {
     }
 
     public void testFireVetoableChangeException_revert_event() {
-	        final VetoableChangeSupport support = new VetoableChangeSupport(new Object());
-		final StringBuffer sb = new StringBuffer();
-		final String A_IN = "a", B_IN="b", A_THROW="A", B_THROW="B";
+        final VetoableChangeSupport support = new VetoableChangeSupport(
+                new Object());
+        final StringBuffer sb = new StringBuffer();
+        final String A_IN = "a", B_IN = "b", A_THROW = "A", B_THROW = "B";
 
-                support.addVetoableChangeListener(new VetoableChangeListener() {
-                        public void vetoableChange(PropertyChangeEvent e) throws PropertyVetoException {
-                      		sb.append(A_IN);
-                                if(sb.length() == 4) {
-					sb.append(A_THROW);
-                                        throw new PropertyVetoException(A_THROW, e);
-                                }
-                        }
-                });
-
-                
-                support.addVetoableChangeListener(new VetoableChangeListener() {
-                        public void vetoableChange(PropertyChangeEvent e) throws PropertyVetoException {
-				sb.append(B_IN);
-                                if(sb.length() == 2) {
-					sb.append(B_THROW);
-                                        throw new PropertyVetoException(B_THROW, e);
-                                }
-                        }
-                });
-
-
-                try {
-			support.fireVetoableChange("propName", 0, 1);
-                } catch(PropertyVetoException pve) {
-			assertTrue("Illegal sequence:"+sb, sb.toString().equals("abBaAb"));
-			String message = pve.getMessage();
-			assertTrue("Illegal exception:"+message, message.equals(B_THROW));
-			return;
+        support.addVetoableChangeListener(new VetoableChangeListener() {
+            public void vetoableChange(PropertyChangeEvent e)
+                    throws PropertyVetoException {
+                sb.append(A_IN);
+                if (sb.length() == 4) {
+                    sb.append(A_THROW);
+                    throw new PropertyVetoException(A_THROW, e);
                 }
-		assertFalse("Unreachable path:"+sb, true);
+            }
+        });
+
+        support.addVetoableChangeListener(new VetoableChangeListener() {
+            public void vetoableChange(PropertyChangeEvent e)
+                    throws PropertyVetoException {
+                sb.append(B_IN);
+                if (sb.length() == 2) {
+                    sb.append(B_THROW);
+                    throw new PropertyVetoException(B_THROW, e);
+                }
+            }
+        });
+
+        try {
+            support.fireVetoableChange("propName", 0, 1);
+        } catch (PropertyVetoException pve) {
+            assertTrue("Illegal sequence:" + sb, sb.toString().equals("abBaAb"));
+            String message = pve.getMessage();
+            assertTrue("Illegal exception:" + message, message.equals(B_THROW));
+            return;
+        }
+        assertFalse("Unreachable path:" + sb, true);
     }
 
     /*
@@ -1561,7 +1562,8 @@ public class VetoableChangeSupportTest extends TestCase {
         try {
             vcs.fireVetoableChange(vlistener.vetoedPropName, 0, 1);
             fail("PropertyVetoException expected");
-        } catch (PropertyVetoException ok) {}
+        } catch (PropertyVetoException ok) {
+        }
 
         assertEquals(1, vlistener.event.getOldValue());
         assertEquals(0, vlistener.event.getNewValue());
@@ -1837,7 +1839,8 @@ public class VetoableChangeSupportTest extends TestCase {
         try {
             new VetoableChangeSupport(null);
             fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
     }
 
     /**
@@ -1873,7 +1876,8 @@ public class VetoableChangeSupportTest extends TestCase {
         VetoableChangeSupport vcs = new VetoableChangeSupport("bean1");
         VetoableChangeListener vcl = new VetoableChangeListener() {
 
-            public void vetoableChange(PropertyChangeEvent pce) {}
+            public void vetoableChange(PropertyChangeEvent pce) {
+            }
         };
         vcs.addVetoableChangeListener(vcl);
         VetoableChangeListener[] vcls = vcs.getVetoableChangeListeners();
@@ -1890,7 +1894,8 @@ public class VetoableChangeSupportTest extends TestCase {
         VetoableChangeSupport vcs = new VetoableChangeSupport("bean1");
         VetoableChangeListener vcl = new VetoableChangeListener() {
 
-            public void vetoableChange(PropertyChangeEvent pce) {}
+            public void vetoableChange(PropertyChangeEvent pce) {
+            }
         };
         vcs.addVetoableChangeListener("property1", vcl);
         VetoableChangeListener[] vcls = vcs
@@ -1908,7 +1913,8 @@ public class VetoableChangeSupportTest extends TestCase {
         VetoableChangeSupport vcs = new VetoableChangeSupport("bean1");
         VetoableChangeListener vcl = new VetoableChangeListener() {
 
-            public void vetoableChange(PropertyChangeEvent pce) {}
+            public void vetoableChange(PropertyChangeEvent pce) {
+            }
         };
         vcs.addVetoableChangeListener("property1", vcl);
         VetoableChangeListener[] vcls = vcs.getVetoableChangeListeners();

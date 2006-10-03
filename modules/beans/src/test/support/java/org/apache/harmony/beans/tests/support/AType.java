@@ -27,7 +27,7 @@ package org.apache.harmony.beans.tests.support;
  */
 
 public class AType {
-    
+
     public Object go() {
         return new Object();
     }

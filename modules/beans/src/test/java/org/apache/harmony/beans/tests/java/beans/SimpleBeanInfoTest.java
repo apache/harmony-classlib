@@ -17,66 +17,66 @@
 
 package org.apache.harmony.beans.tests.java.beans;
 
+import java.beans.BeanInfo;
 import java.beans.SimpleBeanInfo;
 
 import junit.framework.TestCase;
-
 
 /**
  * Unit test for SimpleBeanInfo
  */
 public class SimpleBeanInfoTest extends TestCase {
 
-	public void testGetAdditionalBeanInfo() {
-		SimpleBeanInfo info = new SimpleBeanInfo();
-		assertNull(info.getAdditionalBeanInfo());
-	}
+    public void testGetAdditionalBeanInfo() {
+        SimpleBeanInfo info = new SimpleBeanInfo();
+        assertNull(info.getAdditionalBeanInfo());
+    }
 
-	public void testGetBeanDescriptor() {
-		SimpleBeanInfo info = new SimpleBeanInfo();
-		assertNull(info.getBeanDescriptor());
-	}
+    public void testGetBeanDescriptor() {
+        SimpleBeanInfo info = new SimpleBeanInfo();
+        assertNull(info.getBeanDescriptor());
+    }
 
-	public void testGetDefaultEventIndex() {
-		SimpleBeanInfo info = new SimpleBeanInfo();
-		assertEquals(-1, info.getDefaultEventIndex());
-	}
+    public void testGetDefaultEventIndex() {
+        SimpleBeanInfo info = new SimpleBeanInfo();
+        assertEquals(-1, info.getDefaultEventIndex());
+    }
 
-	public void testGetDefaultPropertyIndex() {
-		SimpleBeanInfo info = new SimpleBeanInfo();
-		assertEquals(-1, info.getDefaultPropertyIndex());
-	}
+    public void testGetDefaultPropertyIndex() {
+        SimpleBeanInfo info = new SimpleBeanInfo();
+        assertEquals(-1, info.getDefaultPropertyIndex());
+    }
 
-	public void testGetEventSetDescriptors() {
-		SimpleBeanInfo info = new SimpleBeanInfo();
-		assertNull(info.getEventSetDescriptors());
-	}
+    public void testGetEventSetDescriptors() {
+        SimpleBeanInfo info = new SimpleBeanInfo();
+        assertNull(info.getEventSetDescriptors());
+    }
 
-	public void testGetIcon() {
-		SimpleBeanInfo info = new SimpleBeanInfo();
-		assertNull(info.getIcon(SimpleBeanInfo.ICON_COLOR_16x16));
-	}
+    public void testGetIcon() {
+        SimpleBeanInfo info = new SimpleBeanInfo();
+        assertNull(info.getIcon(BeanInfo.ICON_COLOR_16x16));
+    }
 
-	public void testGetMethodDescriptors() {
-		SimpleBeanInfo info = new SimpleBeanInfo();
-		assertNull(info.getMethodDescriptors());
-	}
+    public void testGetMethodDescriptors() {
+        SimpleBeanInfo info = new SimpleBeanInfo();
+        assertNull(info.getMethodDescriptors());
+    }
 
-	public void testGetPropertyDescriptors() {
-		SimpleBeanInfo info = new SimpleBeanInfo();
-		assertNull(info.getPropertyDescriptors());
-	}
+    public void testGetPropertyDescriptors() {
+        SimpleBeanInfo info = new SimpleBeanInfo();
+        assertNull(info.getPropertyDescriptors());
+    }
 
-    // Depends on AWT functionality that is currently stubbed out. 
-//	public void testLoadImage() {
-//		// TODO The bahavior is not implemented
-//		MockSimpleBeanInfo info = new MockSimpleBeanInfo();
-//		Image image = info.loadImage("/gif/harmony-logo.gif");
-//		// assertTrue(image instanceof Image);
-//
-//        // TODO The bahavior is not implemented
-//        SimpleBeanInfo sbi = new SimpleBeanInfo();
-//        image = sbi.loadImage("/gif/test.gif");
-//        // assertNotNull(image);
-//    }
+    // Depends on AWT functionality that is currently stubbed out.
+    // public void testLoadImage() {
+    // // TODO The bahavior is not implemented
+    // MockSimpleBeanInfo info = new MockSimpleBeanInfo();
+    // Image image = info.loadImage("/gif/harmony-logo.gif");
+    // // assertTrue(image instanceof Image);
+    //
+    // // TODO The bahavior is not implemented
+    // SimpleBeanInfo sbi = new SimpleBeanInfo();
+    // image = sbi.loadImage("/gif/test.gif");
+    // // assertNotNull(image);
+    // }
 }

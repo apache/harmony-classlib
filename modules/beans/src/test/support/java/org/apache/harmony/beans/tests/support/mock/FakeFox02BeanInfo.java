@@ -27,22 +27,23 @@ import java.beans.SimpleBeanInfo;
  */
 public class FakeFox02BeanInfo extends SimpleBeanInfo {
 
-	public FakeFox02BeanInfo() {
-		super();
-	}
+    public FakeFox02BeanInfo() {
+        super();
+    }
 
-	public FakeFox02BeanInfo(String param) {
-		super();
-	}
+    public FakeFox02BeanInfo(String param) {
+        super();
+    }
 
-	public PropertyDescriptor[] getPropertyDescriptors() {
-		PropertyDescriptor pd = null;
-		try {
-			pd = new PropertyDescriptor("fox02", FakeFox02.class);
-			pd.setDisplayName("fox02.beaninfo");
-		} catch (IntrospectionException e) {
+    @Override
+    public PropertyDescriptor[] getPropertyDescriptors() {
+        PropertyDescriptor pd = null;
+        try {
+            pd = new PropertyDescriptor("fox02", FakeFox02.class);
+            pd.setDisplayName("fox02.beaninfo");
+        } catch (IntrospectionException e) {
 
-		}
-		return new PropertyDescriptor[] { pd };
-	}
+        }
+        return new PropertyDescriptor[] { pd };
+    }
 }

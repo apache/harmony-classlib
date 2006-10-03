@@ -29,8 +29,8 @@ import java.beans.PropertyChangeListener;
  * @version $Revision: 1.2.6.3 $
  */
 
-public class NonSerializablePropertyChangeListener
-        implements PropertyChangeListener {
+public class NonSerializablePropertyChangeListener implements
+        PropertyChangeListener {
 
     public void propertyChange(PropertyChangeEvent event) {
     }

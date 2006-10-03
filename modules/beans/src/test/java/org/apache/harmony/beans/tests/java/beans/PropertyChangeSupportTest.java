@@ -21,21 +21,22 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeListenerProxy;
 import java.beans.PropertyChangeSupport;
-import java.io.Serializable;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
-import tests.util.SerializationTester;
 
 import org.apache.harmony.beans.tests.support.NonSerializablePropertyChangeListener;
 import org.apache.harmony.beans.tests.support.SerializablePropertyChangeListener;
+
+import tests.util.SerializationTester;
 
 /**
  * Test class PropertyeChangeSupport.
@@ -1302,7 +1303,8 @@ public class PropertyChangeSupportTest extends TestCase {
 
         private transient boolean called = false;
 
-        public MockPropertyChangeListener() {}
+        public MockPropertyChangeListener() {
+        }
 
         public MockPropertyChangeListener(Object src, String propName,
                 Object oldValue, Object newValue) {
@@ -1352,42 +1354,44 @@ public class PropertyChangeSupportTest extends TestCase {
      */
     static class MockPropertyChangeListener2 implements PropertyChangeListener {
 
-        public void propertyChange(PropertyChangeEvent event) {}
+        public void propertyChange(PropertyChangeEvent event) {
+        }
     }
 
     /*
-     * Mock PropertyChangeListener that modifies the listener set on notification. 
+     * Mock PropertyChangeListener that modifies the listener set on
+     * notification.
      */
     static class MockPropertyChangeListener3 implements PropertyChangeListener {
 
-    	PropertyChangeSupport changeSupport;
-    	
-    	public MockPropertyChangeListener3(PropertyChangeSupport changeSupport) {
-    		super();
-    		this.changeSupport = changeSupport;
-    	}
-    	
-    	/* On property changed event modify the listener set */
-		public void propertyChange(PropertyChangeEvent event) {
-			changeSupport.addPropertyChangeListener(
-				new PropertyChangeListener(){
-					public void propertyChange(PropertyChangeEvent event) {
-						// Empty							
-					}
-				}
-			);
-		}
+        PropertyChangeSupport changeSupport;
+
+        public MockPropertyChangeListener3(PropertyChangeSupport changeSupport) {
+            super();
+            this.changeSupport = changeSupport;
+        }
+
+        /* On property changed event modify the listener set */
+        public void propertyChange(PropertyChangeEvent event) {
+            changeSupport
+                    .addPropertyChangeListener(new PropertyChangeListener() {
+                        public void propertyChange(PropertyChangeEvent event) {
+                            // Empty
+                        }
+                    });
+        }
     }
 
     /**
-     * Regression test for concurrent modification of listener set 
+     * Regression test for concurrent modification of listener set
      */
     public void testConcurrentModification() {
-    	PropertyChangeSupport changeSupport = new PropertyChangeSupport("bogus");
-    	MockPropertyChangeListener3 changeListener = new MockPropertyChangeListener3(changeSupport);
-    	changeSupport.firePropertyChange("bogus property", "previous", "newer");
+        PropertyChangeSupport changeSupport = new PropertyChangeSupport("bogus");
+        MockPropertyChangeListener3 changeListener = new MockPropertyChangeListener3(
+                changeSupport);
+        changeSupport.firePropertyChange("bogus property", "previous", "newer");
     }
-    
+
     /**
      * @tests java.beans.PropertyChangeSupport#PropertyChangeSupport(
      *        java.lang.Object)
@@ -1422,7 +1426,8 @@ public class PropertyChangeSupportTest extends TestCase {
 
         PropertyChangeListener lis1 = new PropertyChangeListener() {
 
-            public void propertyChange(PropertyChangeEvent event) {}
+            public void propertyChange(PropertyChangeEvent event) {
+            }
         };
 
         PropertyChangeListener lis2 = new PropertyChangeListenerProxy("name",
@@ -1445,7 +1450,8 @@ public class PropertyChangeSupportTest extends TestCase {
         // Regerssion for HARMONY-320
         PropertyChangeListener listener = new PropertyChangeListener() {
 
-            public void propertyChange(PropertyChangeEvent arg0) {}
+            public void propertyChange(PropertyChangeEvent arg0) {
+            }
         };
 
         PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -1496,8 +1502,8 @@ public class PropertyChangeSupportTest extends TestCase {
             oos = new ObjectOutputStream(new FileOutputStream("x.ser"));
             PropertyChangeSupport pcs = new PropertyChangeSupport("bean");
             if (array != null && array.length > 0) {
-                for (int i = 0; i < array.length; ++i) {
-                    pcs.addPropertyChangeListener(array[i]);
+                for (PropertyChangeListener element : array) {
+                    pcs.addPropertyChangeListener(element);
                 }
             }
             oos.writeObject(pcs);
@@ -1516,7 +1522,8 @@ public class PropertyChangeSupportTest extends TestCase {
         }
     }
 
-    private PropertyChangeListener[] readPropertyChangeListeners() throws Exception {
+    private PropertyChangeListener[] readPropertyChangeListeners()
+            throws Exception {
         ObjectInputStream ois = null;
         PropertyChangeSupport pcs = null;
         try {

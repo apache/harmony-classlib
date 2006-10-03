@@ -22,28 +22,29 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.beans.SimpleBeanInfo;
 
-
 public class MockFooLabelBeanInfo extends SimpleBeanInfo {
-	Class clazz = MockFooLabel.class;
+    Class clazz = MockFooLabel.class;
 
-	String suffix = ".MockFooLabelBeanInfo";
+    String suffix = ".MockFooLabelBeanInfo";
 
-	public BeanDescriptor getBeanDescriptor() {
-		BeanDescriptor beanDesc = new BeanDescriptor(clazz);
-		beanDesc.setName(beanDesc.getName() + suffix);
-		return beanDesc;
-	}
+    @Override
+    public BeanDescriptor getBeanDescriptor() {
+        BeanDescriptor beanDesc = new BeanDescriptor(clazz);
+        beanDesc.setName(beanDesc.getName() + suffix);
+        return beanDesc;
+    }
 
-	public PropertyDescriptor[] getPropertyDescriptors() {
-		PropertyDescriptor[] pds = new PropertyDescriptor[1];
-		try {
-			PropertyDescriptor pd = new PropertyDescriptor("text", clazz);
-			pd.setName(pd.getName() + suffix);
-			pds[0] = pd;
-		} catch (IntrospectionException e) {
-			e.printStackTrace();
-		}
-		return pds;
-	}
+    @Override
+    public PropertyDescriptor[] getPropertyDescriptors() {
+        PropertyDescriptor[] pds = new PropertyDescriptor[1];
+        try {
+            PropertyDescriptor pd = new PropertyDescriptor("text", clazz);
+            pd.setName(pd.getName() + suffix);
+            pds[0] = pd;
+        } catch (IntrospectionException e) {
+            e.printStackTrace();
+        }
+        return pds;
+    }
 
 }

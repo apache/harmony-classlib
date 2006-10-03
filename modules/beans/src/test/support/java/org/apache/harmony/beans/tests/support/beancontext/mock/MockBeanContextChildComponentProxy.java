@@ -23,16 +23,16 @@ import java.awt.Component;
  * Mock of BeanContextChildComponentProxy
  */
 public class MockBeanContextChildComponentProxy implements
-		java.beans.beancontext.BeanContextChildComponentProxy {
+        java.beans.beancontext.BeanContextChildComponentProxy {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.beancontext.BeanContextChildComponentProxy#getComponent()
-	 */
-	public Component getComponent() {
-		// Auto-generated method stub
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.beancontext.BeanContextChildComponentProxy#getComponent()
+     */
+    public Component getComponent() {
+        // Auto-generated method stub
+        return null;
+    }
 
 }

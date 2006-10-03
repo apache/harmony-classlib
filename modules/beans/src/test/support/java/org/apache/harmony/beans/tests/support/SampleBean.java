@@ -31,140 +31,149 @@ import java.util.Vector;
  */
 
 public class SampleBean {
-    
+
     private String text = null;
+
     private String otherText = null;
+
     private SampleBean bean = null;
+
     private int x = 0;
+
     private double[] smth;
+
     private Object[] smthObjs;
+
     private Vector listeners;
-    
+
     public SampleBean() {
         this.text = null;
     }
-    
+
     public SampleBean(String text) {
         this.text = text;
         this.otherText = "Constructor with args";
     }
-    
+
     protected SampleBean(String text, SampleBean bean) {
         this.text = text;
         this.bean = bean;
     }
-    
+
     public String getText() {
         return text;
     }
-    
+
     public void setText(String text) {
         this.text = text;
     }
-    
+
     public SampleBean getObject() {
         return bean;
     }
-    
+
     public void setObject(SampleBean bean) {
         this.bean = bean;
     }
-    
+
     public String getOtherText() {
         return otherText;
     }
-    
+
     public void setOtherText(String value) {
         this.otherText = value;
     }
-    
+
     public int getX() {
         return x;
     }
-    
+
     public void setX(int value) {
         this.x = value;
     }
-    
+
     public double getSmthByIdx(int i) {
         return smth[i];
     }
-    
+
     public void setSmthByIdx(int i, double value) {
         smth[i] = value;
     }
-    
+
     public double[] getSmth() {
         return this.smth;
     }
-    
+
     public void setSmth(double[] value) {
         this.smth = value;
     }
-    
+
     public Object getObjectByIdx(int i) {
         return smthObjs[i];
     }
-    
+
     public void setObjectByIdx(int i, Object value) {
         this.smthObjs[i] = value;
     }
-    
+
     public Object[] getObjects() {
         return smthObjs;
     }
-    
+
     public void setObjects(Object[] value) {
         this.smthObjs = value;
     }
-    
+
+    @Override
     public boolean equals(Object other) {
-        if(other instanceof SampleBean) {
+        if (other instanceof SampleBean) {
             SampleBean sb = (SampleBean) other;
-            if((sb.bean == null) && (bean == null)) {
+            if ((sb.bean == null) && (bean == null)) {
                 return true;
-            } else if((sb.bean != null) && (bean != null)) {
+            } else if ((sb.bean != null) && (bean != null)) {
                 return true;
-            } else return false;
+            } else {
+                return false;
+            }
         }
         return false;
     }
-    
+
     public static SampleBean create(String text, SampleBean bean) {
         return new SampleBean(text, bean);
     }
-    
+
     public void addSampleListener(SampleListener listener)
             throws TooManyListenersException {
-        if(listeners == null) {
+        if (listeners == null) {
             listeners = new Vector();
         }
-        
-        if(listeners.size() >= 100) {
+
+        if (listeners.size() >= 100) {
             throw new TooManyListenersException(
                     "Number of listeners could not exceed 100");
         } else {
             listeners.add(listener);
         }
     }
-    
+
     public void removeSampleListener(SampleListener listener) {
-        if(listeners != null) {
+        if (listeners != null) {
             listeners.remove(listener);
         }
     }
-    
+
     public SampleListener[] getSampleListeners() {
-        if(listeners != null) {
+        if (listeners != null) {
             SampleListener[] result = new SampleListener[listeners.size()];
-            
+
             Iterator i = listeners.iterator();
-            
+
             int idx = 0;
-            while(i.hasNext()) {
+            while (i.hasNext()) {
                 result[idx++] = (SampleListener) i.next();
             }
-            
+
             return result;
         } else {
             return new SampleListener[] {};

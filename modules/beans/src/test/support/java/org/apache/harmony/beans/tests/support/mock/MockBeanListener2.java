@@ -22,7 +22,7 @@ package org.apache.harmony.beans.tests.support.mock;
  */
 public class MockBeanListener2 implements MockPropertyChangeListener2 {
 
-	public void mockPropertyChange(
-			org.apache.harmony.beans.tests.support.mock.MockPropertyChangeEvent e) {
-	}
+    public void mockPropertyChange(
+            org.apache.harmony.beans.tests.support.mock.MockPropertyChangeEvent e) {
+    }
 }

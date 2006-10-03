@@ -17,7 +17,7 @@
 
 package org.apache.harmony.beans.tests.support;
 
-import java.beans.*;
+import java.beans.PropertyEditorSupport;
 
 public class StringEditor extends PropertyEditorSupport {
 
@@ -29,6 +29,7 @@ public class StringEditor extends PropertyEditorSupport {
         super();
     }
 
+    @Override
     public void setAsText(String text) {
         setValue(text);
     }

@@ -24,21 +24,21 @@ import java.beans.beancontext.BeanContextServiceRevokedListener;
  * Mock of BeanContextServiceRevokedListener
  */
 public class MockBeanContextServiceRevokedListener implements
-		BeanContextServiceRevokedListener {
+        BeanContextServiceRevokedListener {
 
-	public BeanContextServiceRevokedEvent lastEvent;
+    public BeanContextServiceRevokedEvent lastEvent;
 
-	public void clearLastEvent() {
-		lastEvent = null;
-	}
+    public void clearLastEvent() {
+        lastEvent = null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.beancontext.BeanContextServiceRevokedListener#serviceRevoked(java.beans.beancontext.BeanContextServiceRevokedEvent)
-	 */
-	public void serviceRevoked(BeanContextServiceRevokedEvent bcsre) {
-		lastEvent = bcsre;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.beancontext.BeanContextServiceRevokedListener#serviceRevoked(java.beans.beancontext.BeanContextServiceRevokedEvent)
+     */
+    public void serviceRevoked(BeanContextServiceRevokedEvent bcsre) {
+        lastEvent = bcsre;
+    }
 
 }

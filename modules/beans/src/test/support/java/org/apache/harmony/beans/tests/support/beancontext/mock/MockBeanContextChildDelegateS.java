@@ -29,64 +29,64 @@ import java.io.Serializable;
  * Delegate to BeanContextChildSupport
  */
 public class MockBeanContextChildDelegateS implements BeanContextChild,
-		Serializable {
+        Serializable {
 
-	public String id;
+    public String id;
 
-	public BeanContextChildSupport support = new BeanContextChildSupport(this);
+    public BeanContextChildSupport support = new BeanContextChildSupport(this);
 
-	public MockBeanContextChildDelegateS(String id) {
-		this.id = id;
-	}
+    public MockBeanContextChildDelegateS(String id) {
+        this.id = id;
+    }
 
-	/**
-	 * @param name
-	 * @param pcl
-	 */
-	public void addPropertyChangeListener(String name,
-			PropertyChangeListener pcl) {
-		support.addPropertyChangeListener(name, pcl);
-	}
+    /**
+     * @param name
+     * @param pcl
+     */
+    public void addPropertyChangeListener(String name,
+            PropertyChangeListener pcl) {
+        support.addPropertyChangeListener(name, pcl);
+    }
 
-	/**
-	 * @param name
-	 * @param vcl
-	 */
-	public void addVetoableChangeListener(String name,
-			VetoableChangeListener vcl) {
-		support.addVetoableChangeListener(name, vcl);
-	}
+    /**
+     * @param name
+     * @param vcl
+     */
+    public void addVetoableChangeListener(String name,
+            VetoableChangeListener vcl) {
+        support.addVetoableChangeListener(name, vcl);
+    }
 
-	/**
-	 * @return
-	 */
-	public BeanContext getBeanContext() {
-		return support.getBeanContext();
-	}
+    /**
+     * @return
+     */
+    public BeanContext getBeanContext() {
+        return support.getBeanContext();
+    }
 
-	/**
-	 * @param name
-	 * @param pcl
-	 */
-	public void removePropertyChangeListener(String name,
-			PropertyChangeListener pcl) {
-		support.removePropertyChangeListener(name, pcl);
-	}
+    /**
+     * @param name
+     * @param pcl
+     */
+    public void removePropertyChangeListener(String name,
+            PropertyChangeListener pcl) {
+        support.removePropertyChangeListener(name, pcl);
+    }
 
-	/**
-	 * @param name
-	 * @param vcl
-	 */
-	public void removeVetoableChangeListener(String name,
-			VetoableChangeListener vcl) {
-		support.removeVetoableChangeListener(name, vcl);
-	}
+    /**
+     * @param name
+     * @param vcl
+     */
+    public void removeVetoableChangeListener(String name,
+            VetoableChangeListener vcl) {
+        support.removeVetoableChangeListener(name, vcl);
+    }
 
-	/**
-	 * @param bc
-	 * @throws java.beans.PropertyVetoException
-	 */
-	public void setBeanContext(BeanContext bc) throws PropertyVetoException {
-		support.setBeanContext(bc);
-	}
+    /**
+     * @param bc
+     * @throws java.beans.PropertyVetoException
+     */
+    public void setBeanContext(BeanContext bc) throws PropertyVetoException {
+        support.setBeanContext(bc);
+    }
 }

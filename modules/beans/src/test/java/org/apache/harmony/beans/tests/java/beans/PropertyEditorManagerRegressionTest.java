@@ -17,9 +17,10 @@
 
 package org.apache.harmony.beans.tests.java.beans;
 
-import java.beans.*;
+import java.beans.PropertyEditor;
+import java.beans.PropertyEditorManager;
+
 import junit.framework.TestCase;
-import org.apache.harmony.beans.tests.support.StringEditor;
 
 /**
  * Regression test for PropertyEditorManager

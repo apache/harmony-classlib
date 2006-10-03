@@ -30,13 +30,12 @@ import java.beans.SimpleBeanInfo;
  */
 
 public class StandardBean2BeanInfo extends SimpleBeanInfo {
-    
+
+    @Override
     public BeanInfo[] getAdditionalBeanInfo() {
         try {
-            return new BeanInfo[] {
-                GrannyBeanBeanInfo.class.newInstance(),
-                GrannyBeanBeanInfo.class.newInstance()
-            };
+            return new BeanInfo[] { GrannyBeanBeanInfo.class.newInstance(),
+                    GrannyBeanBeanInfo.class.newInstance() };
         } catch (Exception e) {
             return null;
         }

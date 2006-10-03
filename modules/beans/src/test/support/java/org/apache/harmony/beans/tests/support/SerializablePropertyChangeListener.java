@@ -30,8 +30,8 @@ import java.io.Serializable;
  * @version $Revision: 1.2.6.3 $
  */
 
-public class SerializablePropertyChangeListener
-        implements PropertyChangeListener, Serializable {
+public class SerializablePropertyChangeListener implements
+        PropertyChangeListener, Serializable {
 
     public void propertyChange(PropertyChangeEvent event) {
     }

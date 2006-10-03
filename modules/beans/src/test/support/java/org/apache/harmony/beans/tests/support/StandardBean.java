@@ -27,29 +27,30 @@ package org.apache.harmony.beans.tests.support;
  */
 
 public class StandardBean {
-    
+
     private String text = "none";
+
     private StandardBean bean = null;
-    
+
     public StandardBean() {
     }
-    
+
     public StandardBean(String text) {
         this.text = text;
     }
-    
+
     public String getText() {
         return text;
     }
-    
+
     public void setText(String text) {
         this.text = text;
     }
-    
+
     public StandardBean getPeer() {
         return bean;
     }
-    
+
     public void setPeer(StandardBean bean) {
         this.bean = bean;
     }

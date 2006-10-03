@@ -28,125 +28,125 @@ import java.beans.PropertyEditor;
  */
 public class FozzEditor implements PropertyEditor {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.PropertyEditor#addPropertyChangeListener(java.beans.PropertyChangeListener)
-	 */
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		// TO DO Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.PropertyEditor#addPropertyChangeListener(java.beans.PropertyChangeListener)
+     */
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        // TO DO Auto-generated method stub
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.PropertyEditor#getAsText()
-	 */
-	public String getAsText() {
-		// TO DO Auto-generated method stub
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.PropertyEditor#getAsText()
+     */
+    public String getAsText() {
+        // TO DO Auto-generated method stub
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.PropertyEditor#getCustomEditor()
-	 */
-	public Component getCustomEditor() {
-		// TO DO Auto-generated method stub
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.PropertyEditor#getCustomEditor()
+     */
+    public Component getCustomEditor() {
+        // TO DO Auto-generated method stub
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.PropertyEditor#getJavaInitializationString()
-	 */
-	public String getJavaInitializationString() {
-		// TO DO Auto-generated method stub
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.PropertyEditor#getJavaInitializationString()
+     */
+    public String getJavaInitializationString() {
+        // TO DO Auto-generated method stub
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.PropertyEditor#getTags()
-	 */
-	public String[] getTags() {
-		// TO DO Auto-generated method stub
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.PropertyEditor#getTags()
+     */
+    public String[] getTags() {
+        // TO DO Auto-generated method stub
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.PropertyEditor#getValue()
-	 */
-	public Object getValue() {
-		// TO DO Auto-generated method stub
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.PropertyEditor#getValue()
+     */
+    public Object getValue() {
+        // TO DO Auto-generated method stub
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.PropertyEditor#isPaintable()
-	 */
-	public boolean isPaintable() {
-		// TO DO Auto-generated method stub
-		return false;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.PropertyEditor#isPaintable()
+     */
+    public boolean isPaintable() {
+        // TO DO Auto-generated method stub
+        return false;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.PropertyEditor#paintValue(java.awt.Graphics,
-	 *      java.awt.Rectangle)
-	 */
-	public void paintValue(Graphics graphics, Rectangle box) {
-		// TO DO Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.PropertyEditor#paintValue(java.awt.Graphics,
+     *      java.awt.Rectangle)
+     */
+    public void paintValue(Graphics graphics, Rectangle box) {
+        // TO DO Auto-generated method stub
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.PropertyEditor#removePropertyChangeListener(java.beans.PropertyChangeListener)
-	 */
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		// TO DO Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.PropertyEditor#removePropertyChangeListener(java.beans.PropertyChangeListener)
+     */
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        // TO DO Auto-generated method stub
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.PropertyEditor#setAsText(java.lang.String)
-	 */
-	public void setAsText(String text) throws IllegalArgumentException {
-		// TO DO Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.PropertyEditor#setAsText(java.lang.String)
+     */
+    public void setAsText(String text) throws IllegalArgumentException {
+        // TO DO Auto-generated method stub
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.PropertyEditor#setValue(java.lang.Object)
-	 */
-	public void setValue(Object value) {
-		// TO DO Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.PropertyEditor#setValue(java.lang.Object)
+     */
+    public void setValue(Object value) {
+        // TO DO Auto-generated method stub
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.PropertyEditor#supportsCustomEditor()
-	 */
-	public boolean supportsCustomEditor() {
-		// TO DO Auto-generated method stub
-		return false;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.PropertyEditor#supportsCustomEditor()
+     */
+    public boolean supportsCustomEditor() {
+        // TO DO Auto-generated method stub
+        return false;
+    }
 
 }

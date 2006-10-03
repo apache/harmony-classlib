@@ -22,13 +22,13 @@ package org.apache.harmony.beans.tests.support.mock;
  * Introspector.getBeanInfo(Class, int)
  */
 public class FakeFox01 extends FakeFox {
-	String fox01;
+    String fox01;
 
-	public String getFox01() {
-		return fox01;
-	}
+    public String getFox01() {
+        return fox01;
+    }
 
-	public void setFox01(String fox01) {
-		this.fox01 = fox01;
-	}
+    public void setFox01(String fox01) {
+        this.fox01 = fox01;
+    }
 }

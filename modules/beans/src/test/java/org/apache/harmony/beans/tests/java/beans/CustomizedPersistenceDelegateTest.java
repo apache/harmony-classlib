@@ -37,6 +37,7 @@ public class CustomizedPersistenceDelegateTest extends TestCase {
 
     private MockEncoder enc = null;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         enc = new MockEncoder();
@@ -74,6 +75,7 @@ public class CustomizedPersistenceDelegateTest extends TestCase {
                 new MyHandler(1));
         PersistenceDelegate pd = new PersistenceDelegate() {
 
+            @Override
             public Expression instantiate(Object o, Encoder e) {
                 return new Expression(o, ClassLoader.class,
                         "getSystemClassLoader", null);
@@ -166,21 +168,25 @@ public class CustomizedPersistenceDelegateTest extends TestCase {
 
     static class MockEncoder extends Encoder {
 
+        @Override
         public void writeObject(Object o) {
             // System.out.println("write object: " + o);
             super.writeObject(o);
         }
 
+        @Override
         public PersistenceDelegate getPersistenceDelegate(Class<?> type) {
             // System.out.println("getPersistenceDelegate for " + type);
             return super.getPersistenceDelegate(type);
         }
 
+        @Override
         public void writeExpression(Expression oldExp) {
             // System.out.println("Expression: " + oldExp);
             super.writeExpression(oldExp);
         }
 
+        @Override
         public void writeStatement(Statement oldStat) {
             // System.out.println("Statement: " + oldStat);
             if (oldStat.getMethodName().equals("add")) {
@@ -189,6 +195,7 @@ public class CustomizedPersistenceDelegateTest extends TestCase {
             super.writeStatement(oldStat);
         }
 
+        @Override
         public Object get(Object o) {
             // StackTraceElement[] stack = new Throwable().getStackTrace();
             // new Throwable().printStackTrace();
@@ -273,6 +280,7 @@ public class CustomizedPersistenceDelegateTest extends TestCase {
             return new MockBean();
         }
 
+        @Override
         public String toString() {
             return str;
         }

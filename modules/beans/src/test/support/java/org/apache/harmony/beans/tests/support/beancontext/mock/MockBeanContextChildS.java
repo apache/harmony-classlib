@@ -29,89 +29,91 @@ import java.io.Serializable;
  */
 public class MockBeanContextChildS implements BeanContextChild, Serializable {
 
-	public String id;
+    public String id;
 
-	private BeanContext ctx;
+    private BeanContext ctx;
 
-	public MockBeanContextChildS(String id) {
-		this.id = id;
-	}
+    public MockBeanContextChildS(String id) {
+        this.id = id;
+    }
 
-	public boolean equals(Object o) {
-		if (o instanceof MockBeanContextChildS) {
-			return id.equals(((MockBeanContextChildS) o).id);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof MockBeanContextChildS) {
+            return id.equals(((MockBeanContextChildS) o).id);
+        }
+        return false;
+    }
 
-	public int hashCode() {
-		return id.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.beancontext.BeanContextChild#setBeanContext(java.beans.beancontext.BeanContext)
-	 */
-	public void setBeanContext(BeanContext bc) throws PropertyVetoException {
-		ctx = bc;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.beancontext.BeanContextChild#setBeanContext(java.beans.beancontext.BeanContext)
+     */
+    public void setBeanContext(BeanContext bc) throws PropertyVetoException {
+        ctx = bc;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.beancontext.BeanContextChild#getBeanContext()
-	 */
-	public BeanContext getBeanContext() {
-		return ctx;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.beancontext.BeanContextChild#getBeanContext()
+     */
+    public BeanContext getBeanContext() {
+        return ctx;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.beancontext.BeanContextChild#addPropertyChangeListener(java.lang.String,
-	 *      java.beans.PropertyChangeListener)
-	 */
-	public void addPropertyChangeListener(String name,
-			PropertyChangeListener pcl) {
-		// Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.beancontext.BeanContextChild#addPropertyChangeListener(java.lang.String,
+     *      java.beans.PropertyChangeListener)
+     */
+    public void addPropertyChangeListener(String name,
+            PropertyChangeListener pcl) {
+        // Auto-generated method stub
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.beancontext.BeanContextChild#removePropertyChangeListener(java.lang.String,
-	 *      java.beans.PropertyChangeListener)
-	 */
-	public void removePropertyChangeListener(String name,
-			PropertyChangeListener pcl) {
-		// Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.beancontext.BeanContextChild#removePropertyChangeListener(java.lang.String,
+     *      java.beans.PropertyChangeListener)
+     */
+    public void removePropertyChangeListener(String name,
+            PropertyChangeListener pcl) {
+        // Auto-generated method stub
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.beancontext.BeanContextChild#addVetoableChangeListener(java.lang.String,
-	 *      java.beans.VetoableChangeListener)
-	 */
-	public void addVetoableChangeListener(String name,
-			VetoableChangeListener vcl) {
-		// Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.beancontext.BeanContextChild#addVetoableChangeListener(java.lang.String,
+     *      java.beans.VetoableChangeListener)
+     */
+    public void addVetoableChangeListener(String name,
+            VetoableChangeListener vcl) {
+        // Auto-generated method stub
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.beancontext.BeanContextChild#removeVetoableChangeListener(java.lang.String,
-	 *      java.beans.VetoableChangeListener)
-	 */
-	public void removeVetoableChangeListener(String name,
-			VetoableChangeListener vcl) {
-		// Auto-generated method stub
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.beancontext.BeanContextChild#removeVetoableChangeListener(java.lang.String,
+     *      java.beans.VetoableChangeListener)
+     */
+    public void removeVetoableChangeListener(String name,
+            VetoableChangeListener vcl) {
+        // Auto-generated method stub
 
-	}
+    }
 
 }

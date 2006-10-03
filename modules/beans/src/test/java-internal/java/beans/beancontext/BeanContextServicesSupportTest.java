@@ -21,96 +21,105 @@
  */
 package java.beans.beancontext;
 
-import java.beans.beancontext.BeanContextServices;
-import java.beans.beancontext.BeanContextServicesSupport;
-import java.beans.beancontext.BeanContextServiceProvider;
+import java.util.Locale;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * Test class for java.beans.beancontext.BeanContextServicesSupport.<p>
- *
+ * Test class for java.beans.beancontext.BeanContextServicesSupport.
+ * <p>
+ * 
  * @author Sergey A. Krivenko
  * @version $Revision: 1.5.2.2 $
  */
 
 public class BeanContextServicesSupportTest extends TestCase {
 
-    /** STANDARD BEGINNING **/
+    /** STANDARD BEGINNING * */
 
     /**
-     * No arguments constructor to enable serialization.<p>
+     * No arguments constructor to enable serialization.
+     * <p>
      */
     public BeanContextServicesSupportTest() {
         super();
     }
 
     /**
-     * Constructs this test case with the given name.<p>
-     *
-     * @param name - The name for this test case.<p>
+     * Constructs this test case with the given name.
+     * <p>
+     * 
+     * @param name -
+     *            The name for this test case.
+     *            <p>
      */
     public BeanContextServicesSupportTest(String name) {
         super(name);
     }
 
-    /** TEST CONSTRUCTORS **/
+    /** TEST CONSTRUCTORS * */
 
-    /** 
-     * Test constructor with BeanContextServices, Locale, boolean, 
-     * boolean parameters.<p>
-     *
+    /**
+     * Test constructor with BeanContextServices, Locale, boolean, boolean
+     * parameters.
+     * <p>
+     * 
      * @see BeanContextServicesSupport#BeanContextServicesSupport(
-     * BeanContextServices, Locale, boolean, boolean)
+     *      BeanContextServices, Locale, boolean, boolean)
      */
     public void testConstructorBeanContextServicesLocalebooleanboolean() {
         new BeanContextServicesSupport(null, null, true, true);
     }
 
-    /** 
+    /**
      * Test constructor with BeanContextServices, Locale, boolean parameters
-     *
+     * 
      * @see BeanContextServicesSupport#BeanContextServicesSupport(
-     * BeanContextServices, Locale, boolean)
+     *      BeanContextServices, Locale, boolean)
      */
     public void testConstructorBeanContextServicesLocaleboolean() {
         new BeanContextServicesSupport(null, null, true);
     }
 
-    /** 
-     * Test constructor with BeanContextServices, Locale parameters.<p>
-     *
+    /**
+     * Test constructor with BeanContextServices, Locale parameters.
+     * <p>
+     * 
      * @see BeanContextServicesSupport#BeanContextServicesSupport(
-     * BeanContextServices, Locale)
+     *      BeanContextServices, Locale)
      */
     public void testConstructorBeanContextServicesLocale() {
         new BeanContextServicesSupport(null, null);
     }
 
-    /** 
-     * Test constructor with BeanContextServices parameter.<p>
-     *
+    /**
+     * Test constructor with BeanContextServices parameter.
+     * <p>
+     * 
      * @see BeanContextServicesSupport#BeanContextServicesSupport(
-     * BeanContextServices)
+     *      BeanContextServices)
      */
     public void testConstructorBeanContextServices() {
         new BeanContextServicesSupport(null);
     }
 
-    /** * Test constructor with no parameters.<p>
-     *
+    /**
+     * * Test constructor with no parameters.
+     * <p>
+     * 
      * @see BeanContextServicesSupport#BeanContextServicesSupport()
      */
     public void testConstructor() {
         new BeanContextServicesSupport();
     }
 
-    /** TEST METHODS **/
+    /** TEST METHODS * */
 
     /**
-     * Test method createBCSChild() with Object, Object parameters.<p>
+     * Test method createBCSChild() with Object, Object parameters.
+     * <p>
      */
     public void testCreateBCSChildObjectObject() {
         // Just call the method
@@ -119,7 +128,9 @@ public class BeanContextServicesSupportTest extends TestCase {
     }
 
     /**
-     * Test method addService() with Class, BeanContextServiceProvider, boolean parameters.<p>
+     * Test method addService() with Class, BeanContextServiceProvider, boolean
+     * parameters.
+     * <p>
      */
     public void testAddServiceClassBeanContextServiceProviderboolean() {
         // Instantiate services and add service
@@ -130,7 +141,9 @@ public class BeanContextServicesSupportTest extends TestCase {
     }
 
     /**
-     * Test method revokeService() with Class, BeanContextServiceProvider, boolean parameters.<p>
+     * Test method revokeService() with Class, BeanContextServiceProvider,
+     * boolean parameters.
+     * <p>
      */
     public void testRevokeServiceClassBeanContextServiceProviderboolean() {
         // Instantiate services, add and remove service
@@ -143,7 +156,9 @@ public class BeanContextServicesSupportTest extends TestCase {
     }
 
     /**
-     * Test method addService() with Class, BeanContextServiceProvider parameters.<p>
+     * Test method addService() with Class, BeanContextServiceProvider
+     * parameters.
+     * <p>
      */
     public void testAddServiceClassBeanContextServiceProvider() {
         // Instantiate services and add service
@@ -152,7 +167,8 @@ public class BeanContextServicesSupportTest extends TestCase {
     }
 
     /**
-     * Test method hasService() with Class parameter.<p>
+     * Test method hasService() with Class parameter.
+     * <p>
      */
     public void testHasServiceClass() {
         // Instantiate services and add service
@@ -164,7 +180,8 @@ public class BeanContextServicesSupportTest extends TestCase {
     }
 
     /**
-     * Test method getBeanContextServicesPeer() with no parameters.<p>
+     * Test method getBeanContextServicesPeer() with no parameters.
+     * <p>
      */
     public void testGetBeanContextServicesPeer() {
         // Instantiate services
@@ -175,7 +192,8 @@ public class BeanContextServicesSupportTest extends TestCase {
     }
 
     /**
-     * Test method releaseBeanContextResources() with no parameters.<p>
+     * Test method releaseBeanContextResources() with no parameters.
+     * <p>
      */
     public void testReleaseBeanContextResources() {
         // Instantiate services
@@ -186,63 +204,75 @@ public class BeanContextServicesSupportTest extends TestCase {
     }
 
     /**
-     * Test method initializeBeanContextResources() with no parameters.<p>
+     * Test method initializeBeanContextResources() with no parameters.
+     * <p>
      */
     public void testInitializeBeanContextResources() {
         // Instantiate services
         BeanContextServicesSupport sup = new BeanContextServicesSupport();
         sup.initializeBeanContextResources();
 
-        //if (sup.proxy == null) {
-        //fail("The resources are not initialized");
-        //}
+        // if (sup.proxy == null) {
+        // fail("The resources are not initialized");
+        // }
     }
 
     /**
-     * Test method hasService() with Class=null parameter.<p>
+     * Test method hasService() with Class=null parameter.
+     * <p>
      */
     public void test_hasServiceLjava_lang_Class() {
         BeanContextServicesSupport obj = new BeanContextServicesSupport();
         try {
             obj.hasService(null);
             fail("NullPointerException expected");
-        } catch (NullPointerException t) {}
+        } catch (NullPointerException t) {
+        }
     }
 
     /**
-     * Test method removeBeanContextServicesListener() with BeanContextServicesListener=null parameter.<p>
+     * Test method removeBeanContextServicesListener() with
+     * BeanContextServicesListener=null parameter.
+     * <p>
      */
     public void test_removeBeanContextServicesListenerLjava_beans_beancontext_BeanContextServicesListener() {
         BeanContextServicesSupport obj = new BeanContextServicesSupport();
         try {
             obj.removeBeanContextServicesListener(null);
             fail("NullPointerException expected");
-        } catch (NullPointerException t) {}
+        } catch (NullPointerException t) {
+        }
     }
 
     /**
-     * Test method serviceAvailable() with BeanContextServiceAvailableEvent=null parameter.<p>
+     * Test method serviceAvailable() with BeanContextServiceAvailableEvent=null
+     * parameter.
+     * <p>
      */
     public void test_serviceAvailableLjava_beans_beancontext_BeanContextServiceAvailableEvent() {
         BeanContextServicesSupport obj = new BeanContextServicesSupport();
         try {
             obj.serviceAvailable(null);
             fail("NullPointerException expected");
-        } catch (NullPointerException t) {}
+        } catch (NullPointerException t) {
+        }
     }
 
     /**
-     * Test method serviceRevoked() with BeanContextServiceRevokedEvent=null parameter.<p>
+     * Test method serviceRevoked() with BeanContextServiceRevokedEvent=null
+     * parameter.
+     * <p>
      */
     public void test_serviceRevokedLjava_beans_beancontext_BeanContextServiceRevokedEvent() {
         BeanContextServicesSupport obj = new BeanContextServicesSupport();
         try {
             obj.serviceRevoked(null);
             fail("NullPointerException expected");
-        } catch (NullPointerException t) {}
+        } catch (NullPointerException t) {
+        }
     }
 
-    /** UTILITY METHODS **/
+    /** UTILITY METHODS * */
 
     /**
      * Fake implementation of provider
@@ -264,23 +294,28 @@ public class BeanContextServicesSupportTest extends TestCase {
             }
 
             public void releaseService(BeanContextServices bcs,
-                    Object requestor, Object service) {}
+                    Object requestor, Object service) {
+            }
         };
     }
 
-    /** STANDARD ENDING **/
+    /** STANDARD ENDING * */
 
     /**
-     * Start testing from the command line.<p>
+     * Start testing from the command line.
+     * <p>
      */
     public static Test suite() {
         return new TestSuite(BeanContextServicesSupportTest.class);
     }
 
     /**
-     * Start testing from the command line.<p>
-     *
-     * @param args - Command line parameters.<p>
+     * Start testing from the command line.
+     * <p>
+     * 
+     * @param args -
+     *            Command line parameters.
+     *            <p>
      */
     public static void main(String args[]) {
         junit.textui.TestRunner.run(suite());

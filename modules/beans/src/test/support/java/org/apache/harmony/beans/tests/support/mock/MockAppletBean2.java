@@ -24,37 +24,38 @@ import java.io.Serializable;
  * test java.beans.Beans
  */
 public class MockAppletBean2 extends Applet implements Serializable {
-	static final long serialVersionUID = 1L;
+    static final long serialVersionUID = 1L;
 
-	private String propertyOne;
+    private String propertyOne;
 
-	private boolean initBeenCalled;
+    private boolean initBeenCalled;
 
-	public void init() {
-		super.init();
-		this.initBeenCalled = true;
-	}
+    @Override
+    public void init() {
+        super.init();
+        this.initBeenCalled = true;
+    }
 
-	public boolean initHasBeenCalled() {
-		return this.initBeenCalled;
-	}
+    public boolean initHasBeenCalled() {
+        return this.initBeenCalled;
+    }
 
-	public void setInitHasBeenCalled(boolean value) {
-		this.initBeenCalled = value;
-	}
+    public void setInitHasBeenCalled(boolean value) {
+        this.initBeenCalled = value;
+    }
 
-	/**
-	 * @return Returns the propertyOne.
-	 */
-	public String getPropertyOne() {
-		return propertyOne;
-	}
+    /**
+     * @return Returns the propertyOne.
+     */
+    public String getPropertyOne() {
+        return propertyOne;
+    }
 
-	/**
-	 * @param propertyOne
-	 *            The propertyOne to set.
-	 */
-	public void setPropertyOne(String propertyOne) {
-		this.propertyOne = propertyOne;
-	}
+    /**
+     * @param propertyOne
+     *            The propertyOne to set.
+     */
+    public void setPropertyOne(String propertyOne) {
+        this.propertyOne = propertyOne;
+    }
 }

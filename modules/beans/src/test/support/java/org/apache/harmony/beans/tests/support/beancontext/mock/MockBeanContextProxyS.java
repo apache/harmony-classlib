@@ -26,34 +26,36 @@ import java.io.Serializable;
  */
 public class MockBeanContextProxyS implements BeanContextProxy, Serializable {
 
-	private String id;
+    private String id;
 
-	private BeanContextChild bcc;
+    private BeanContextChild bcc;
 
-	public MockBeanContextProxyS(String id, BeanContextChild bcc) {
-		this.id = id;
-		this.bcc = bcc;
-	}
+    public MockBeanContextProxyS(String id, BeanContextChild bcc) {
+        this.id = id;
+        this.bcc = bcc;
+    }
 
-	public boolean equals(Object o) {
-		if (o instanceof MockBeanContextProxyS) {
-			MockBeanContextProxyS other = (MockBeanContextProxyS) o;
-			return id.equals(other.id) && bcc.equals(other.bcc);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof MockBeanContextProxyS) {
+            MockBeanContextProxyS other = (MockBeanContextProxyS) o;
+            return id.equals(other.id) && bcc.equals(other.bcc);
+        }
+        return false;
+    }
 
-	public int hashCode() {
-		return id.hashCode() + bcc.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return id.hashCode() + bcc.hashCode();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.beancontext.BeanContextProxy#getBeanContextProxy()
-	 */
-	public BeanContextChild getBeanContextProxy() {
-		return bcc;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.beancontext.BeanContextProxy#getBeanContextProxy()
+     */
+    public BeanContextChild getBeanContextProxy() {
+        return bcc;
+    }
 
 }

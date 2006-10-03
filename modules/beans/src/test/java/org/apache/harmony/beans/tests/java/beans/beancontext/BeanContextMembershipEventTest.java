@@ -42,7 +42,7 @@ public class BeanContextMembershipEventTest extends TestCase {
             BeanContextMembershipEvent {
 
         static final long serialVersionUID = -4761911723636245515L;
-        
+
         /**
          * @param bc
          * @param changes

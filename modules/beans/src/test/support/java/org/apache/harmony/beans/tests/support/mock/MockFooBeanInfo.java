@@ -24,15 +24,16 @@ import java.beans.SimpleBeanInfo;
  * test for DefaultPersistenceDelegate
  */
 public class MockFooBeanInfo extends SimpleBeanInfo {
-	private Class clazz = MockFoo.class;
+    private Class clazz = MockFoo.class;
 
-	private String suffix = ".BeanInfo";
+    private String suffix = ".BeanInfo";
 
-	public BeanDescriptor getBeanDescriptor() {
-		BeanDescriptor beanDesc = new BeanDescriptor(clazz);
-		beanDesc.setName(beanDesc.getName() + suffix);
-		// beanDesc.setValue("persistenceDelegate", new
-		// EncoderTest.VerbosePD());
-		return beanDesc;
-	}
+    @Override
+    public BeanDescriptor getBeanDescriptor() {
+        BeanDescriptor beanDesc = new BeanDescriptor(clazz);
+        beanDesc.setName(beanDesc.getName() + suffix);
+        // beanDesc.setValue("persistenceDelegate", new
+        // EncoderTest.VerbosePD());
+        return beanDesc;
+    }
 }

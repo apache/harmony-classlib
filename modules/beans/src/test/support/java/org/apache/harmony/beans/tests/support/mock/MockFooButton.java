@@ -23,20 +23,20 @@ import java.io.Serializable;
  * Test the default bean info search path.
  */
 public class MockFooButton implements Serializable {
-	private String text;
+    private String text;
 
-	/**
-	 * @return Returns the text.
-	 */
-	public String getText() {
-		return text;
-	}
+    /**
+     * @return Returns the text.
+     */
+    public String getText() {
+        return text;
+    }
 
-	/**
-	 * @param text
-	 *            The text to set.
-	 */
-	public void setText(String text) {
-		this.text = text;
-	}
+    /**
+     * @param text
+     *            The text to set.
+     */
+    public void setText(String text) {
+        this.text = text;
+    }
 }

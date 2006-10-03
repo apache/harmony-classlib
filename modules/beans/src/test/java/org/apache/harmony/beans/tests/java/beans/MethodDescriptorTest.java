@@ -21,9 +21,9 @@ import java.beans.MethodDescriptor;
 import java.beans.ParameterDescriptor;
 import java.lang.reflect.Method;
 
-import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
-
 import junit.framework.TestCase;
+
+import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
 
 /**
  * Unit test for MethodDescriptor
@@ -33,6 +33,7 @@ public class MethodDescriptorTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
@@ -40,6 +41,7 @@ public class MethodDescriptorTest extends TestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }
@@ -51,12 +53,13 @@ public class MethodDescriptorTest extends TestCase {
             NoSuchMethodException {
         String beanName = "MethodDescriptorTest.bean";
         MockJavaBean bean = new MockJavaBean(beanName);
-        Method method = bean.getClass().getMethod("getBeanName", (Class[])null);
+        Method method = bean.getClass()
+                .getMethod("getBeanName", (Class[]) null);
         MethodDescriptor md = new MethodDescriptor(method);
 
         assertSame(method, md.getMethod());
         assertNull(md.getParameterDescriptors());
-        
+
         assertEquals(method.getName(), md.getDisplayName());
         assertEquals(method.getName(), md.getName());
         assertEquals(method.getName(), md.getShortDescription());
@@ -140,7 +143,7 @@ public class MethodDescriptorTest extends TestCase {
         assertFalse(md.isHidden());
         assertFalse(md.isPreferred());
     }
-    
+
     /**
      * @tests java.beans.MethodDescriptor#MethodDescriptor(
      *        java.lang.reflect.Method)
@@ -156,8 +159,7 @@ public class MethodDescriptorTest extends TestCase {
 
     /**
      * @tests java.beans.MethodDescriptor#MethodDescriptor(
-     *        java.lang.reflect.Method,
-     *        java.beans.ParameterDescriptor[])
+     *        java.lang.reflect.Method, java.beans.ParameterDescriptor[])
      */
     public void test_Ctor2_NullPointerExpection() {
         try {

@@ -25,33 +25,33 @@ import java.beans.beancontext.BeanContextServicesListener;
  * Mock of BeanContextServicesListener
  */
 public class MockBeanContextServicesListener implements
-		BeanContextServicesListener {
+        BeanContextServicesListener {
 
-	public BeanContextServiceAvailableEvent lastAvailableEvent;
+    public BeanContextServiceAvailableEvent lastAvailableEvent;
 
-	public BeanContextServiceRevokedEvent lastRevokedEvent;
+    public BeanContextServiceRevokedEvent lastRevokedEvent;
 
-	public void clearLastEvent() {
-		lastAvailableEvent = null;
-		lastRevokedEvent = null;
-	}
+    public void clearLastEvent() {
+        lastAvailableEvent = null;
+        lastRevokedEvent = null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.beancontext.BeanContextServicesListener#serviceAvailable(java.beans.beancontext.BeanContextServiceAvailableEvent)
-	 */
-	public void serviceAvailable(BeanContextServiceAvailableEvent bcsae) {
-		lastAvailableEvent = bcsae;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.beancontext.BeanContextServicesListener#serviceAvailable(java.beans.beancontext.BeanContextServiceAvailableEvent)
+     */
+    public void serviceAvailable(BeanContextServiceAvailableEvent bcsae) {
+        lastAvailableEvent = bcsae;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.beancontext.BeanContextServiceRevokedListener#serviceRevoked(java.beans.beancontext.BeanContextServiceRevokedEvent)
-	 */
-	public void serviceRevoked(BeanContextServiceRevokedEvent bcsre) {
-		lastRevokedEvent = bcsre;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.beancontext.BeanContextServiceRevokedListener#serviceRevoked(java.beans.beancontext.BeanContextServiceRevokedEvent)
+     */
+    public void serviceRevoked(BeanContextServiceRevokedEvent bcsre) {
+        lastRevokedEvent = bcsre;
+    }
 
 }

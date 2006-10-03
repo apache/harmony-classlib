@@ -27,136 +27,136 @@ import java.util.TimeZone;
 
 public class MockBean4CodecAdv extends MockBean4Codec {
 
-	String id;
+    String id;
 
-	ArrayList arraylist = new ArrayList();
+    ArrayList arraylist = new ArrayList();
 
-	Calendar calendar = Calendar.getInstance();
+    Calendar calendar = Calendar.getInstance();
 
-	Currency currency = Currency.getInstance(Locale.US);
+    Currency currency = Currency.getInstance(Locale.US);
 
-	Date date = new Date();
+    Date date = new Date();
 
-	Locale locale = Locale.US;
+    Locale locale = Locale.US;
 
-	Properties properties = new Properties();
+    Properties properties = new Properties();
 
-	TimeZone timezone = TimeZone.getTimeZone("GMT+8");
+    TimeZone timezone = TimeZone.getTimeZone("GMT+8");
 
-	/**
-	 * 
-	 */
-	public MockBean4CodecAdv(String id) {
-		super();
-		this.id = id;
-	}
+    /**
+     * 
+     */
+    public MockBean4CodecAdv(String id) {
+        super();
+        this.id = id;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	/**
-	 * @return Returns the arraylist.
-	 */
-	public ArrayList getArraylist() {
-		return arraylist;
-	}
+    /**
+     * @return Returns the arraylist.
+     */
+    public ArrayList getArraylist() {
+        return arraylist;
+    }
 
-	/**
-	 * @param arraylist
-	 *            The arraylist to set.
-	 */
-	public void setArraylist(ArrayList arraylist) {
-		this.arraylist = arraylist;
-	}
+    /**
+     * @param arraylist
+     *            The arraylist to set.
+     */
+    public void setArraylist(ArrayList arraylist) {
+        this.arraylist = arraylist;
+    }
 
-	/**
-	 * @return Returns the calendar.
-	 */
-	public Calendar getCalendar() {
-		return calendar;
-	}
+    /**
+     * @return Returns the calendar.
+     */
+    public Calendar getCalendar() {
+        return calendar;
+    }
 
-	/**
-	 * @param calendar
-	 *            The calendar to set.
-	 */
-	public void setCalendar(Calendar calendar) {
-		this.calendar = calendar;
-	}
+    /**
+     * @param calendar
+     *            The calendar to set.
+     */
+    public void setCalendar(Calendar calendar) {
+        this.calendar = calendar;
+    }
 
-	/**
-	 * @return Returns the currency.
-	 */
-	public Currency getCurrency() {
-		return currency;
-	}
+    /**
+     * @return Returns the currency.
+     */
+    public Currency getCurrency() {
+        return currency;
+    }
 
-	/**
-	 * @param currency
-	 *            The currency to set.
-	 */
-	public void setCurrency(Currency currency) {
-		this.currency = currency;
-	}
+    /**
+     * @param currency
+     *            The currency to set.
+     */
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
 
-	/**
-	 * @return Returns the date.
-	 */
-	public Date getDate() {
-		return date;
-	}
+    /**
+     * @return Returns the date.
+     */
+    public Date getDate() {
+        return date;
+    }
 
-	/**
-	 * @param date
-	 *            The date to set.
-	 */
-	public void setDate(Date date) {
-		this.date = date;
-	}
+    /**
+     * @param date
+     *            The date to set.
+     */
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
-	/**
-	 * @return Returns the locale.
-	 */
-	public Locale getLocale() {
-		return locale;
-	}
+    /**
+     * @return Returns the locale.
+     */
+    public Locale getLocale() {
+        return locale;
+    }
 
-	/**
-	 * @param locale
-	 *            The locale to set.
-	 */
-	public void setLocale(Locale locale) {
-		this.locale = locale;
-	}
+    /**
+     * @param locale
+     *            The locale to set.
+     */
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
 
-	/**
-	 * @return Returns the properties.
-	 */
-	public Properties getProperties() {
-		return properties;
-	}
+    /**
+     * @return Returns the properties.
+     */
+    public Properties getProperties() {
+        return properties;
+    }
 
-	/**
-	 * @param properties
-	 *            The properties to set.
-	 */
-	public void setProperties(Properties properties) {
-		this.properties = properties;
-	}
+    /**
+     * @param properties
+     *            The properties to set.
+     */
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+    }
 
-	/**
-	 * @return Returns the timezone.
-	 */
-	public TimeZone getTimezone() {
-		return timezone;
-	}
+    /**
+     * @return Returns the timezone.
+     */
+    public TimeZone getTimezone() {
+        return timezone;
+    }
 
-	/**
-	 * @param timezone
-	 *            The timezone to set.
-	 */
-	public void setTimezone(TimeZone timezone) {
-		this.timezone = timezone;
-	}
+    /**
+     * @param timezone
+     *            The timezone to set.
+     */
+    public void setTimezone(TimeZone timezone) {
+        this.timezone = timezone;
+    }
 }

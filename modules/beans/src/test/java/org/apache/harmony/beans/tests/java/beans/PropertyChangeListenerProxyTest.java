@@ -28,51 +28,52 @@ import junit.framework.TestCase;
  */
 public class PropertyChangeListenerProxyTest extends TestCase {
 
-	PropertyChangeListenerProxy proxy;
+    PropertyChangeListenerProxy proxy;
 
-	PropertyChangeListener listener = new MockPropertyChangeListener();
+    PropertyChangeListener listener = new MockPropertyChangeListener();
 
-	String name = "mock";
+    String name = "mock";
 
-	static PropertyChangeEvent event = null;
+    static PropertyChangeEvent event = null;
 
-	protected void setUp() throws Exception {
-		super.setUp();
-		proxy = new PropertyChangeListenerProxy(name, listener);
-	}
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        proxy = new PropertyChangeListenerProxy(name, listener);
+    }
 
-	public void testPropertyChangeListenerProxy() {
-		proxy = new PropertyChangeListenerProxy(null, listener);
-		assertSame(listener, proxy.getListener());
-		assertNull(proxy.getPropertyName());
-		PropertyChangeEvent newevent = new PropertyChangeEvent(new Object(),
-				"name", new Object(), new Object());
-		proxy.propertyChange(newevent);
-		assertSame(newevent, event);
-		proxy = new PropertyChangeListenerProxy(name, null);
-		assertSame(name, proxy.getPropertyName());
-		assertNull(proxy.getListener());
-		try {
-			proxy.propertyChange(new PropertyChangeEvent(new Object(), "name",
-					new Object(), new Object()));
+    public void testPropertyChangeListenerProxy() {
+        proxy = new PropertyChangeListenerProxy(null, listener);
+        assertSame(listener, proxy.getListener());
+        assertNull(proxy.getPropertyName());
+        PropertyChangeEvent newevent = new PropertyChangeEvent(new Object(),
+                "name", new Object(), new Object());
+        proxy.propertyChange(newevent);
+        assertSame(newevent, event);
+        proxy = new PropertyChangeListenerProxy(name, null);
+        assertSame(name, proxy.getPropertyName());
+        assertNull(proxy.getListener());
+        try {
+            proxy.propertyChange(new PropertyChangeEvent(new Object(), "name",
+                    new Object(), new Object()));
             fail("NullPointerException expected");
-		} catch (NullPointerException e) {
-		}
+        } catch (NullPointerException e) {
+        }
 
-		proxy = new PropertyChangeListenerProxy(name, listener);
-		assertSame(listener, proxy.getListener());
-		assertSame(name, proxy.getPropertyName());
-		newevent = new PropertyChangeEvent(new Object(), "name", new Object(),
-				new Object());
-		assertSame(name, proxy.getPropertyName());
-		proxy.propertyChange(newevent);
-		assertSame(newevent, event);
-	}
+        proxy = new PropertyChangeListenerProxy(name, listener);
+        assertSame(listener, proxy.getListener());
+        assertSame(name, proxy.getPropertyName());
+        newevent = new PropertyChangeEvent(new Object(), "name", new Object(),
+                new Object());
+        assertSame(name, proxy.getPropertyName());
+        proxy.propertyChange(newevent);
+        assertSame(newevent, event);
+    }
 
-	public void testPropertyChange() {
-		proxy.propertyChange(null);
-		assertNull(event);
-	}
+    public void testPropertyChange() {
+        proxy.propertyChange(null);
+        assertNull(event);
+    }
 
     /**
      * Regression for HARMONY-407
@@ -83,14 +84,15 @@ public class PropertyChangeListenerProxyTest extends TestCase {
         try {
             proxy.propertyChange(null);
             fail("NullPointerException expected");
-        } catch (NullPointerException e) {}
-    }         
+        } catch (NullPointerException e) {
+        }
+    }
 
     public static class MockPropertyChangeListener implements
-			PropertyChangeListener {
-		public void propertyChange(PropertyChangeEvent newevent) {
-			event = newevent;
-		}
-	}
+            PropertyChangeListener {
+        public void propertyChange(PropertyChangeEvent newevent) {
+            event = newevent;
+        }
+    }
 
 }

@@ -27,7 +27,7 @@ package org.apache.harmony.beans.tests.support;
  */
 
 public class SampleException extends Exception {
-    
+
     public SampleException(String msg) {
     }
 }

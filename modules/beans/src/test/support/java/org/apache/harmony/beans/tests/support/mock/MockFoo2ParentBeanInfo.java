@@ -24,16 +24,16 @@ import java.beans.PropertyDescriptor;
  * test for DefaultPersistenceDelegate
  */
 public class MockFoo2ParentBeanInfo {
-	public PropertyDescriptor[] getPropertyDescriptors() {
-		PropertyDescriptor[] pds = new PropertyDescriptor[1];
-		try {
-			PropertyDescriptor pd = new PropertyDescriptor("prop",
-					MockFoo2.class, "get", "set");
-			pd.setName(pd.getName() + ".BeanInfo");
-			pds[0] = pd;
-		} catch (IntrospectionException e) {
-			throw new Error(e);
-		}
-		return pds;
-	}
+    public PropertyDescriptor[] getPropertyDescriptors() {
+        PropertyDescriptor[] pds = new PropertyDescriptor[1];
+        try {
+            PropertyDescriptor pd = new PropertyDescriptor("prop",
+                    MockFoo2.class, "get", "set");
+            pd.setName(pd.getName() + ".BeanInfo");
+            pds[0] = pd;
+        } catch (IntrospectionException e) {
+            throw new Error(e);
+        }
+        return pds;
+    }
 }

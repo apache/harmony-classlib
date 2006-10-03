@@ -29,52 +29,56 @@ import java.io.Serializable;
  */
 
 public class SerializableBean implements Serializable {
-    
+
     private int value;
+
     private String text = null;
+
     private Integer iValue = null;
+
     private int[] intArray;
+
     private String[] strArray;
-    
+
     public SerializableBean() {
     }
-    
+
     public SerializableBean(String text) {
         this.text = text;
     }
-    
+
     public String getText() {
         return this.text;
     }
-    
+
     public Integer getIValue() {
         return iValue;
     }
-    
+
     public void setIValue(Integer iValue) {
         this.iValue = iValue;
     }
-    
+
     public int getValue() {
         return value;
     }
-    
+
     public void setValue(int value) {
         this.value = value;
     }
-    
+
     public int[] getIntArray() {
         return intArray;
     }
-    
+
     public void setIntArray(int[] intArray) {
         this.intArray = intArray;
     }
-    
+
     public String[] getStrArray() {
         return strArray;
     }
-    
+
     public void setStrArray(String[] strArray) {
         this.strArray = strArray;
     }

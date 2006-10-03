@@ -26,24 +26,24 @@ import java.beans.beancontext.BeanContext;
  */
 public class MockAppletInitializer implements AppletInitializer {
 
-	private boolean activateBeenCalled;
+    private boolean activateBeenCalled;
 
-	private boolean initializeBeenCalled;
+    private boolean initializeBeenCalled;
 
-	public boolean activateHasBeenCalled() {
-		return this.activateBeenCalled;
-	}
+    public boolean activateHasBeenCalled() {
+        return this.activateBeenCalled;
+    }
 
-	public boolean initializeHasBeenCalled() {
-		return this.initializeBeenCalled;
-	}
+    public boolean initializeHasBeenCalled() {
+        return this.initializeBeenCalled;
+    }
 
-	public void activate(Applet newApplet) {
-		this.activateBeenCalled = true;
-	}
+    public void activate(Applet newApplet) {
+        this.activateBeenCalled = true;
+    }
 
-	public void initialize(Applet appletBean, BeanContext context) {
-		this.initializeBeenCalled = true;
-	}
+    public void initialize(Applet appletBean, BeanContext context) {
+        this.initializeBeenCalled = true;
+    }
 
 }

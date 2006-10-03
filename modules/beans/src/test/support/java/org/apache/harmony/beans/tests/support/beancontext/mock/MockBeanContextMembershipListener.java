@@ -24,38 +24,38 @@ import java.beans.beancontext.BeanContextMembershipListener;
  * Mock of BeanContextMembershipListener
  */
 public class MockBeanContextMembershipListener implements
-		BeanContextMembershipListener {
+        BeanContextMembershipListener {
 
-	public boolean lastEventAdd = false;
+    public boolean lastEventAdd = false;
 
-	public boolean lastEventRemove = false;
+    public boolean lastEventRemove = false;
 
-	public BeanContextMembershipEvent lastEvent;
+    public BeanContextMembershipEvent lastEvent;
 
-	public void clearLastEvent() {
-		lastEventAdd = false;
-		lastEventRemove = false;
-		lastEvent = null;
-	}
+    public void clearLastEvent() {
+        lastEventAdd = false;
+        lastEventRemove = false;
+        lastEvent = null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.beancontext.BeanContextMembershipListener#childrenAdded(java.beans.beancontext.BeanContextMembershipEvent)
-	 */
-	public void childrenAdded(BeanContextMembershipEvent bcme) {
-		lastEventAdd = true;
-		lastEvent = bcme;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.beancontext.BeanContextMembershipListener#childrenAdded(java.beans.beancontext.BeanContextMembershipEvent)
+     */
+    public void childrenAdded(BeanContextMembershipEvent bcme) {
+        lastEventAdd = true;
+        lastEvent = bcme;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.beancontext.BeanContextMembershipListener#childrenRemoved(java.beans.beancontext.BeanContextMembershipEvent)
-	 */
-	public void childrenRemoved(BeanContextMembershipEvent bcme) {
-		lastEventRemove = true;
-		lastEvent = bcme;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.beancontext.BeanContextMembershipListener#childrenRemoved(java.beans.beancontext.BeanContextMembershipEvent)
+     */
+    public void childrenRemoved(BeanContextMembershipEvent bcme) {
+        lastEventRemove = true;
+        lastEvent = bcme;
+    }
 
 }

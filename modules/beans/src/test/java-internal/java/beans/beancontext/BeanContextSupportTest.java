@@ -21,9 +21,7 @@
  */
 package java.beans.beancontext;
 
-import java.beans.beancontext.BeanContextSupport;
-import java.beans.beancontext.BeanContextMembershipEvent;
-import java.beans.beancontext.BeanContextMembershipListener;
+import java.util.Locale;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -32,9 +30,6 @@ import junit.framework.TestSuite;
 /**
  * Test class for java.beans.beancontext.BeanContextSupport.
  * <p>
- * 
- * @author Sergey A. Krivenko
- * @version $Revision: 1.4.4.2 $
  */
 
 public class BeanContextSupportTest extends TestCase {
@@ -53,8 +48,9 @@ public class BeanContextSupportTest extends TestCase {
      * Constructs this test case with the given name.
      * <p>
      * 
-     * @param name - The name for this test case.
-     *        <p>
+     * @param name -
+     *            The name for this test case.
+     *            <p>
      */
     public BeanContextSupportTest(String name) {
         super(name);
@@ -159,26 +155,22 @@ public class BeanContextSupportTest extends TestCase {
      * <p>
      */
     public void testRetainAllCollection() {
-    /*
-     * // Create an instance and add one child BeanContextSupport sup =
-     * new BeanContextSupport(); BeanContextChildSupport ch = new
-     * BeanContextChildSupport(); sup.add(ch);
-     *  // Create collection with an instance of the child that was
-     * added java.util.Collection col = new java.util.ArrayList();
-     * col.add(ch);
-     *  // Remove all children that are not in the collection // The
-     * collection must remain unchanged if (sup.retainAll(col)) {
-     * fail("False should be returned"); }
-     *  // Just one child must be present if (sup.size() != 1) {
-     * fail("The size of the collection must be 1"); }
-     *  // Add a new child in the collection and remove the old one
-     * col.clear(); col.add(new Object());
-     *  // Remove all children that are not in the collection // The
-     * collection must have 0 elements after that if
-     * (!sup.retainAll(col)) { fail("True should be returned"); }
-     *  // No children must be present if (sup.size() != 0) { fail("The
-     * size of the collection must be 0"); }
-     */
+        /*
+         * // Create an instance and add one child BeanContextSupport sup = new
+         * BeanContextSupport(); BeanContextChildSupport ch = new
+         * BeanContextChildSupport(); sup.add(ch); // Create collection with an
+         * instance of the child that was added java.util.Collection col = new
+         * java.util.ArrayList(); col.add(ch); // Remove all children that are
+         * not in the collection // The collection must remain unchanged if
+         * (sup.retainAll(col)) { fail("False should be returned"); } // Just
+         * one child must be present if (sup.size() != 1) { fail("The size of
+         * the collection must be 1"); } // Add a new child in the collection
+         * and remove the old one col.clear(); col.add(new Object()); // Remove
+         * all children that are not in the collection // The collection must
+         * have 0 elements after that if (!sup.retainAll(col)) { fail("True
+         * should be returned"); } // No children must be present if (sup.size() !=
+         * 0) { fail("The size of the collection must be 0"); }
+         */
     }
 
     /**
@@ -186,23 +178,20 @@ public class BeanContextSupportTest extends TestCase {
      * <p>
      */
     public void testRemoveAllCollection() {
-    /*
-     * // Create an instance and add one child BeanContextSupport sup =
-     * new BeanContextSupport(); BeanContextChildSupport ch = new
-     * BeanContextChildSupport(); sup.add(ch);
-     *  // Create collection with an instance of an arbitrary child
-     * java.util.Collection col = new java.util.ArrayList(); col.add(new
-     * Object());
-     *  // Remove all children that are in the collection // The
-     * collection should not change after that if (sup.removeAll(col)) {
-     * fail("False should be returned"); }
-     *  // Add a child that is a member of the BeanContext col.add(ch);
-     *  // Remove all children that are in the collection // The
-     * collection should change after that if (!sup.removeAll(col)) {
-     * fail("True should be returned"); }
-     *  // No children must be present if (sup.size() != 0) { fail("The
-     * size of the collection must be 0 but is " + sup.size()); }
-     */
+        /*
+         * // Create an instance and add one child BeanContextSupport sup = new
+         * BeanContextSupport(); BeanContextChildSupport ch = new
+         * BeanContextChildSupport(); sup.add(ch); // Create collection with an
+         * instance of an arbitrary child java.util.Collection col = new
+         * java.util.ArrayList(); col.add(new Object()); // Remove all children
+         * that are in the collection // The collection should not change after
+         * that if (sup.removeAll(col)) { fail("False should be returned"); } //
+         * Add a child that is a member of the BeanContext col.add(ch); //
+         * Remove all children that are in the collection // The collection
+         * should change after that if (!sup.removeAll(col)) { fail("True should
+         * be returned"); } // No children must be present if (sup.size() != 0) {
+         * fail("The size of the collection must be 0 but is " + sup.size()); }
+         */
     }
 
     /**
@@ -210,23 +199,20 @@ public class BeanContextSupportTest extends TestCase {
      * <p>
      */
     public void testContainsAllCollection() {
-    /*
-     * // Create an instance and add two children BeanContextSupport sup =
-     * new BeanContextSupport(); BeanContextChildSupport ch = new
-     * BeanContextChildSupport(); Object obj = new Object();
-     * sup.add(ch); sup.add(obj);
-     *  // Create collection with BCS children that just were added
-     * java.util.Collection col = new java.util.ArrayList();
-     * 
-     * for (java.util.Iterator it = sup.bcsChildren(); it.hasNext(); ) {
-     * col.add(it.next()); }
-     *  // Two collections have the same elements if
-     * (!sup.containsAll(col)) { fail("True should be returned"); }
-     * 
-     * sup.remove(obj);
-     *  // Now they are different if (sup.containsAll(col)) {
-     * fail("False should be returned"); }
-     */
+        /*
+         * // Create an instance and add two children BeanContextSupport sup =
+         * new BeanContextSupport(); BeanContextChildSupport ch = new
+         * BeanContextChildSupport(); Object obj = new Object(); sup.add(ch);
+         * sup.add(obj); // Create collection with BCS children that just were
+         * added java.util.Collection col = new java.util.ArrayList();
+         * 
+         * for (java.util.Iterator it = sup.bcsChildren(); it.hasNext(); ) {
+         * col.add(it.next()); } // Two collections have the same elements if
+         * (!sup.containsAll(col)) { fail("True should be returned"); }
+         * 
+         * sup.remove(obj); // Now they are different if (sup.containsAll(col)) {
+         * fail("False should be returned"); }
+         */
     }
 
     /**
@@ -234,17 +220,16 @@ public class BeanContextSupportTest extends TestCase {
      * <p>
      */
     public void testAddAllCollection() {
-    /*
-     * // Create an instance and add two children BeanContextSupport sup =
-     * new BeanContextSupport();
-     *  // Create collection with two elements java.util.Collection col =
-     * new java.util.ArrayList(); col.add(new
-     * BeanContextChildSupport()); col.add(new Object());
-     *  // Place two children into the BeanContext if (!sup.addAll(col)) {
-     * fail("True should be returned"); }
-     *  // Two children must be present if (sup.size() != 2) { fail("The
-     * size of the collection must be 2 but is " + sup.size()); }
-     */
+        /*
+         * // Create an instance and add two children BeanContextSupport sup =
+         * new BeanContextSupport(); // Create collection with two elements
+         * java.util.Collection col = new java.util.ArrayList(); col.add(new
+         * BeanContextChildSupport()); col.add(new Object()); // Place two
+         * children into the BeanContext if (!sup.addAll(col)) { fail("True
+         * should be returned"); } // Two children must be present if
+         * (sup.size() != 2) { fail("The size of the collection must be 2 but is " +
+         * sup.size()); }
+         */
     }
 
     /**
@@ -415,24 +400,22 @@ public class BeanContextSupportTest extends TestCase {
      * Test method vetoableChange() with PropertyChangeEvent parameter.
      * <p>
      */
-//    public void testVetoableChangePropertyChangeEvent() {
-//        /** @todo: not implemented yet in the class * */
-//         Create BeanContext instance
-//        BeanContextSupport sup = new BeanContextSupport();
-//         sup.vetoableChange(null);
-//    }
-
+    // public void testVetoableChangePropertyChangeEvent() {
+    // /** @todo: not implemented yet in the class * */
+    // Create BeanContext instance
+    // BeanContextSupport sup = new BeanContextSupport();
+    // sup.vetoableChange(null);
+    // }
     /**
      * Test method propertyChange() with PropertyChangeEvent parameter.
      * <p>
      */
-//    public void testPropertyChangePropertyChangeEvent() {
-//        /** @todo: not implemented yet in the class * */
-//        // Create BeanContext instance
-//        BeanContextSupport sup = new BeanContextSupport();
-//        // sup.propertyChange(null);
-//    }
-
+    // public void testPropertyChangePropertyChangeEvent() {
+    // /** @todo: not implemented yet in the class * */
+    // // Create BeanContext instance
+    // BeanContextSupport sup = new BeanContextSupport();
+    // // sup.propertyChange(null);
+    // }
     /**
      * Test method isEmpty() with no parameters.
      * <p>
@@ -454,15 +437,14 @@ public class BeanContextSupportTest extends TestCase {
      * <p>
      */
     public void testClear() {
-    /*
-     * // Create BeanContext instance BeanContextSupport sup = new
-     * BeanContextSupport();
-     *  // Add a child and then clear sup.add(new Object());
-     * sup.clear();
-     * 
-     * if (!sup.isEmpty()) { fail("The collection of children should be
-     * empty"); }
-     */
+        /*
+         * // Create BeanContext instance BeanContextSupport sup = new
+         * BeanContextSupport(); // Add a child and then clear sup.add(new
+         * Object()); sup.clear();
+         * 
+         * if (!sup.isEmpty()) { fail("The collection of children should be
+         * empty"); }
+         */
     }
 
     /**
@@ -473,7 +455,8 @@ public class BeanContextSupportTest extends TestCase {
         // Create BeanContext instance
         BeanContextSupport sup = new BeanContextSupport();
 
-        assertEquals("The size of the collection should be equal to 0", 0, sup.size());
+        assertEquals("The size of the collection should be equal to 0", 0, sup
+                .size());
 
         sup.add(new Object());
 
@@ -491,7 +474,8 @@ public class BeanContextSupportTest extends TestCase {
         try {
             obj.getResourceAsStream(new String(), null);
             fail("NullPointerException expected");
-        } catch (NullPointerException t) {}
+        } catch (NullPointerException t) {
+        }
     }
 
     /**
@@ -504,20 +488,24 @@ public class BeanContextSupportTest extends TestCase {
         try {
             obj.getResourceAsStream(null, null);
             fail("NullPointerException expected");
-        } catch (NullPointerException t) {}
+        } catch (NullPointerException t) {
+        }
     }
 
     /**
      * Test method vetoableChange() with PropertyChangeEvent=null parameter.
      * <p>
-     * @throws Exception 
+     * 
+     * @throws Exception
      */
-    public void test_vetoableChangeLjava_beans_PropertyChangeEvent() throws Exception {
+    public void test_vetoableChangeLjava_beans_PropertyChangeEvent()
+            throws Exception {
         BeanContextSupport obj = new BeanContextSupport();
         try {
             obj.vetoableChange(null);
             fail("NullPointerException expected");
-        } catch (NullPointerException t) {}
+        } catch (NullPointerException t) {
+        }
     }
 
     /**
@@ -530,7 +518,8 @@ public class BeanContextSupportTest extends TestCase {
         try {
             obj.getResource("", null);
             fail("NullPointerException expected");
-        } catch (NullPointerException t) {}
+        } catch (NullPointerException t) {
+        }
     }
 
     /**
@@ -543,7 +532,8 @@ public class BeanContextSupportTest extends TestCase {
         try {
             obj.getResource(null, null);
             fail("NullPointerException expected");
-        } catch (NullPointerException t) {}
+        } catch (NullPointerException t) {
+        }
     }
 
     /** UTILITY METHODS * */
@@ -554,9 +544,11 @@ public class BeanContextSupportTest extends TestCase {
     private BeanContextMembershipListener getBeanContextMembershipListener() {
         return new BeanContextMembershipListener() {
 
-            public void childrenAdded(BeanContextMembershipEvent bcme) {}
+            public void childrenAdded(BeanContextMembershipEvent bcme) {
+            }
 
-            public void childrenRemoved(BeanContextMembershipEvent bcme) {}
+            public void childrenRemoved(BeanContextMembershipEvent bcme) {
+            }
         };
     }
 
@@ -574,8 +566,9 @@ public class BeanContextSupportTest extends TestCase {
      * Start testing from the command line.
      * <p>
      * 
-     * @param args - Command line parameters.
-     *        <p>
+     * @param args -
+     *            Command line parameters.
+     *            <p>
      */
     public static void main(String args[]) {
         junit.textui.TestRunner.run(suite());

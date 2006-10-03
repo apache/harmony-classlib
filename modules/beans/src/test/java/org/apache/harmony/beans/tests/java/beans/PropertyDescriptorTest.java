@@ -19,14 +19,14 @@ package org.apache.harmony.beans.tests.java.beans;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.beans.PropertyEditorSupport;
 import java.beans.PropertyEditor;
+import java.beans.PropertyEditorSupport;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
-import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
-
 import junit.framework.TestCase;
+
+import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
 
 /**
  * Unit test for PropertyDescriptor.
@@ -236,7 +236,8 @@ public class PropertyDescriptorTest extends TestCase {
         try {
             new PropertyDescriptor(propertyName, beanClass);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException exception) {}
+        } catch (IntrospectionException exception) {
+        }
     }
 
     public void testPropertyDescriptorStringClass_PropertyNameNull() {
@@ -244,7 +245,8 @@ public class PropertyDescriptorTest extends TestCase {
         try {
             new PropertyDescriptor(null, beanClass);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException exception) {}
+        } catch (IntrospectionException exception) {
+        }
     }
 
     public void testPropertyDescriptorStringClass_BeanClassNull()
@@ -253,7 +255,8 @@ public class PropertyDescriptorTest extends TestCase {
         try {
             new PropertyDescriptor(propertyName, null);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException exception) {}
+        } catch (IntrospectionException exception) {
+        }
     }
 
     public void testPropertyDescriptorStringClass_PropertyNameInvalid() {
@@ -262,7 +265,8 @@ public class PropertyDescriptorTest extends TestCase {
         try {
             new PropertyDescriptor(propertyName, beanClass);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException exception) {}
+        } catch (IntrospectionException exception) {
+        }
     }
 
     public void testPropertyDescriptorStringClass_ProtectedGetter() {
@@ -271,7 +275,8 @@ public class PropertyDescriptorTest extends TestCase {
         try {
             new PropertyDescriptor(propertyName, beanClass);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException exception) {}
+        } catch (IntrospectionException exception) {
+        }
     }
 
     /*
@@ -311,7 +316,8 @@ public class PropertyDescriptorTest extends TestCase {
             new PropertyDescriptor(null, beanClass, "get" + propertyName, "set"
                     + propertyName);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     public void testPropertyDescriptorStringClassStringString_BeanClassNull()
@@ -322,7 +328,8 @@ public class PropertyDescriptorTest extends TestCase {
             new PropertyDescriptor(propertyName, beanClass, "get"
                     + propertyName, "set" + propertyName);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     public void testPropertyDescriptorStringClassStringString_ReadMethodNull()
@@ -359,7 +366,8 @@ public class PropertyDescriptorTest extends TestCase {
             new PropertyDescriptor(propertyName, beanClass, "getXX", "set"
                     + propertyName);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     public void testPropertyDescriptorStringClassStringString_WriteMethodNull()
@@ -396,7 +404,8 @@ public class PropertyDescriptorTest extends TestCase {
             new PropertyDescriptor(propertyName, beanClass, "get"
                     + propertyName, "");
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
 
     }
 
@@ -408,7 +417,8 @@ public class PropertyDescriptorTest extends TestCase {
             new PropertyDescriptor(propertyName, beanClass, "get"
                     + propertyName, "setXXX");
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
 
     }
 
@@ -458,7 +468,8 @@ public class PropertyDescriptorTest extends TestCase {
         try {
             new PropertyDescriptor(null, readMethod, writeMethod);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
 
     }
 
@@ -506,7 +517,8 @@ public class PropertyDescriptorTest extends TestCase {
         try {
             new PropertyDescriptor(propertyName, readMethod, writeMethod);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
 
     }
 
@@ -554,7 +566,8 @@ public class PropertyDescriptorTest extends TestCase {
         try {
             new PropertyDescriptor(propertyName, readMethod, writeMethod);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
 
     }
 
@@ -574,9 +587,9 @@ public class PropertyDescriptorTest extends TestCase {
         assertEquals(pd.getWriteMethod().getName(), "setPropertyOne"); //$NON-NLS-1$			
 
         pd = new PropertyDescriptor(
-                "prop1", SubMockJavaBean.class, "getPropertyOne", null); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "prop1", SubMockJavaBean.class, "getPropertyOne", null); //$NON-NLS-1$ //$NON-NLS-2$ 
         assertEquals(pd.getReadMethod().getName(), "getPropertyOne"); //$NON-NLS-1$
-        assertNull(pd.getWriteMethod()); //$NON-NLS-1$		
+        assertNull(pd.getWriteMethod()); 
     }
 
     public void testSetReadMethod() throws SecurityException,
@@ -638,7 +651,8 @@ public class PropertyDescriptorTest extends TestCase {
         try {
             pd.setReadMethod(readMethod);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     /**
@@ -657,7 +671,8 @@ public class PropertyDescriptorTest extends TestCase {
         try {
             pd.setReadMethod(readMethod);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     /**
@@ -681,7 +696,8 @@ public class PropertyDescriptorTest extends TestCase {
         try {
             pd.setReadMethod(readMethod);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     /**
@@ -748,7 +764,8 @@ public class PropertyDescriptorTest extends TestCase {
         try {
             pd.setWriteMethod(writeMethod);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     /**
@@ -770,7 +787,8 @@ public class PropertyDescriptorTest extends TestCase {
         try {
             pd.setWriteMethod(writeMethod);
             fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {}
+        } catch (IntrospectionException e) {
+        }
     }
 
     public void testSetBound_true() throws SecurityException,
@@ -918,7 +936,7 @@ public class PropertyDescriptorTest extends TestCase {
         new PropertyDescriptor("fox01", FakeFox01.class);
     }
 
-    //Regression test for HARMONY-237
+    // Regression test for HARMONY-237
     public void testIntrospectionExpections() {
         try {
             new PropertyDescriptor(null, null);
@@ -964,10 +982,10 @@ public class PropertyDescriptorTest extends TestCase {
             assertEquals("bad property name", e.getMessage());
         }
     }
-    
+
     public void testCreatePropertyEditor() throws IntrospectionException {
-        PropertyDescriptor pd =
-                new PropertyDescriptor("propertyOne", MockJavaBean.class);
+        PropertyDescriptor pd = new PropertyDescriptor("propertyOne",
+                MockJavaBean.class);
         PropertyEditor pe;
 
         pe = pd.createPropertyEditor(this);
@@ -991,10 +1009,10 @@ public class PropertyDescriptorTest extends TestCase {
 
     }
 
-    public void testCreatePropertyEditor_Invalid() throws
-            IntrospectionException {
-        PropertyDescriptor pd =
-                new PropertyDescriptor("propertyOne", MockJavaBean.class);
+    public void testCreatePropertyEditor_Invalid()
+            throws IntrospectionException {
+        PropertyDescriptor pd = new PropertyDescriptor("propertyOne",
+                MockJavaBean.class);
 
         try {
             pd.setPropertyEditorClass(InvalidPropertyEditor.class);
@@ -1013,14 +1031,14 @@ public class PropertyDescriptorTest extends TestCase {
         }
     }
 
-
     static class FakeFox01 {
 
         public String getFox01() {
             return null;
         }
 
-        public void setFox01(String value) {}
+        public void setFox01(String value) {
+        }
     }
 
     class MockBeanPropertyDesc implements Serializable {
@@ -1056,10 +1074,10 @@ public class PropertyDescriptorTest extends TestCase {
         private static final long serialVersionUID = 7423254295680570566L;
         //
     }
-    
 
     public static class CoolPropertyEditor extends PropertyEditorSupport {
         String str;
+
         String suffix;
 
         public CoolPropertyEditor() {
@@ -1085,13 +1103,11 @@ public class PropertyDescriptorTest extends TestCase {
         }
     }
 
-
     public static class InvalidPropertyEditor extends PropertyEditorSupport {
         // there is no valid constructors
         public InvalidPropertyEditor(Object arg1, Object arg2) {
         }
     }
-
 
     public static class InvalidPropertyEditor2 {
         // is not assignable from PropertyEditor

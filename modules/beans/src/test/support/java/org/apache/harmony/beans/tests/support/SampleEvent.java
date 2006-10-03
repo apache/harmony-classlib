@@ -29,26 +29,27 @@ import java.util.EventObject;
  */
 
 public class SampleEvent extends EventObject {
-    
+
     private int i = 7;
+
     private static int j = 7;
-    
+
     public SampleEvent(Object object) {
         super(object);
     }
-    
+
     public int getI() {
         return i;
     }
-    
+
     public void setI(int j) {
         j = i;
     }
-    
+
     public static int getJ() {
         return j;
     }
-    
+
     public static void setJ(int i) {
         j = i;
     }

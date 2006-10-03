@@ -29,6 +29,7 @@ public class ClassPersistenceDelegateTest extends TestCase {
 
     private java_lang_ClassPersistenceDelegate pd = null;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         pd = new java_lang_ClassPersistenceDelegate();
@@ -64,7 +65,6 @@ public class ClassPersistenceDelegateTest extends TestCase {
         assertEquals(1, exp.getArguments().length);
         assertNull(exp.getArguments()[0]);
     }
-
 
     public void testInstantiate_Class() throws Exception {
         Expression exp = pd.instantiate(Class.class, new Encoder());

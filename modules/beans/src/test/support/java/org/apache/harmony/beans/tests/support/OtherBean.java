@@ -27,16 +27,16 @@ package org.apache.harmony.beans.tests.support;
  */
 
 public class OtherBean {
-    
+
     public void addSaampleListener(SampleListener listener) {
     }
-    
+
     public void removeSampleListener(SampleListener listener) {
     }
-    
+
     public void setNumber(int a) {
     }
-    
+
     public void set(int a) {
     }
 }

@@ -26,199 +26,200 @@ import junit.framework.Assert;
  */
 public class MethodInvocationRecords extends Assert {
 
-	public static final Object IGNORE = "IGNORE";
+    public static final Object IGNORE = "IGNORE";
 
-	private ArrayList records = new ArrayList();
+    private ArrayList records = new ArrayList();
 
-	private int assertIndex = 0;
+    private int assertIndex = 0;
 
-	public void clear() {
-		records.clear();
-		assertIndex = 0;
-	}
+    public void clear() {
+        records.clear();
+        assertIndex = 0;
+    }
 
-	public void add(String methodName, Object returnValue) {
-		ArrayList rec = new ArrayList();
-		rec.add(methodName);
-		rec.add(returnValue);
-		records.add(rec);
-	}
+    public void add(String methodName, Object returnValue) {
+        ArrayList rec = new ArrayList();
+        rec.add(methodName);
+        rec.add(returnValue);
+        records.add(rec);
+    }
 
-	public void add(String methodName, Object arg1, Object returnValue) {
-		ArrayList rec = new ArrayList();
-		rec.add(methodName);
-		rec.add(arg1);
-		rec.add(returnValue);
-		records.add(rec);
-	}
+    public void add(String methodName, Object arg1, Object returnValue) {
+        ArrayList rec = new ArrayList();
+        rec.add(methodName);
+        rec.add(arg1);
+        rec.add(returnValue);
+        records.add(rec);
+    }
 
-	public void add(String methodName, Object arg1, Object arg2,
-			Object returnValue) {
-		ArrayList rec = new ArrayList();
-		rec.add(methodName);
-		rec.add(arg1);
-		rec.add(arg2);
-		rec.add(returnValue);
-		records.add(rec);
-	}
+    public void add(String methodName, Object arg1, Object arg2,
+            Object returnValue) {
+        ArrayList rec = new ArrayList();
+        rec.add(methodName);
+        rec.add(arg1);
+        rec.add(arg2);
+        rec.add(returnValue);
+        records.add(rec);
+    }
 
-	public void add(String methodName, Object arg1, Object arg2, Object arg3,
-			Object returnValue) {
-		ArrayList rec = new ArrayList();
-		rec.add(methodName);
-		rec.add(arg1);
-		rec.add(arg2);
-		rec.add(arg3);
-		rec.add(returnValue);
-		records.add(rec);
-	}
+    public void add(String methodName, Object arg1, Object arg2, Object arg3,
+            Object returnValue) {
+        ArrayList rec = new ArrayList();
+        rec.add(methodName);
+        rec.add(arg1);
+        rec.add(arg2);
+        rec.add(arg3);
+        rec.add(returnValue);
+        records.add(rec);
+    }
 
-	public void add(String methodName, Object arg1, Object arg2, Object arg3,
-			Object arg4, Object returnValue) {
-		ArrayList rec = new ArrayList();
-		rec.add(methodName);
-		rec.add(arg1);
-		rec.add(arg2);
-		rec.add(arg3);
-		rec.add(arg4);
-		rec.add(returnValue);
-		records.add(rec);
-	}
+    public void add(String methodName, Object arg1, Object arg2, Object arg3,
+            Object arg4, Object returnValue) {
+        ArrayList rec = new ArrayList();
+        rec.add(methodName);
+        rec.add(arg1);
+        rec.add(arg2);
+        rec.add(arg3);
+        rec.add(arg4);
+        rec.add(returnValue);
+        records.add(rec);
+    }
 
-	public void assertRecord(String methodName, Object returnValue) {
-		ArrayList rec = (ArrayList) records.get(assertIndex++);
-		int count = 0;
-		assertEquals(methodName, rec.get(count++));
-		if (returnValue != IGNORE) {
-			assertEquals(returnValue, rec.get(count++));
-		} else {
-			count++;
-		}
-		assertEquals(count, rec.size());
-	}
+    public void assertRecord(String methodName, Object returnValue) {
+        ArrayList rec = (ArrayList) records.get(assertIndex++);
+        int count = 0;
+        assertEquals(methodName, rec.get(count++));
+        if (returnValue != IGNORE) {
+            assertEquals(returnValue, rec.get(count++));
+        } else {
+            count++;
+        }
+        assertEquals(count, rec.size());
+    }
 
-	public void assertRecord(String methodName, Object arg1, Object returnValue) {
-		ArrayList rec = (ArrayList) records.get(assertIndex++);
-		int count = 0;
-		assertEquals(methodName, rec.get(count++));
-		if (arg1 != IGNORE) {
-			assertEquals(arg1, rec.get(count++));
-		} else {
-			count++;
-		}
-		if (returnValue != IGNORE) {
-			assertEquals(returnValue, rec.get(count++));
-		} else {
-			count++;
-		}
-		assertEquals(count, rec.size());
-	}
+    public void assertRecord(String methodName, Object arg1, Object returnValue) {
+        ArrayList rec = (ArrayList) records.get(assertIndex++);
+        int count = 0;
+        assertEquals(methodName, rec.get(count++));
+        if (arg1 != IGNORE) {
+            assertEquals(arg1, rec.get(count++));
+        } else {
+            count++;
+        }
+        if (returnValue != IGNORE) {
+            assertEquals(returnValue, rec.get(count++));
+        } else {
+            count++;
+        }
+        assertEquals(count, rec.size());
+    }
 
-	public void assertRecord(String methodName, Object arg1, Object arg2,
-			Object returnValue) {
-		ArrayList rec = (ArrayList) records.get(assertIndex++);
-		int count = 0;
-		assertEquals(methodName, rec.get(count++));
-		if (arg1 != IGNORE) {
-			assertEquals(arg1, rec.get(count++));
-		} else {
-			count++;
-		}
-		if (arg2 != IGNORE) {
-			assertEquals(arg2, rec.get(count++));
-		} else {
-			count++;
-		}
-		if (returnValue != IGNORE) {
-			assertEquals(returnValue, rec.get(count++));
-		} else {
-			count++;
-		}
-		assertEquals(count, rec.size());
-	}
+    public void assertRecord(String methodName, Object arg1, Object arg2,
+            Object returnValue) {
+        ArrayList rec = (ArrayList) records.get(assertIndex++);
+        int count = 0;
+        assertEquals(methodName, rec.get(count++));
+        if (arg1 != IGNORE) {
+            assertEquals(arg1, rec.get(count++));
+        } else {
+            count++;
+        }
+        if (arg2 != IGNORE) {
+            assertEquals(arg2, rec.get(count++));
+        } else {
+            count++;
+        }
+        if (returnValue != IGNORE) {
+            assertEquals(returnValue, rec.get(count++));
+        } else {
+            count++;
+        }
+        assertEquals(count, rec.size());
+    }
 
-	public void assertRecord(String methodName, Object arg1, Object arg2,
-			Object arg3, Object returnValue) {
-		ArrayList rec = (ArrayList) records.get(assertIndex++);
-		int count = 0;
-		assertEquals(methodName, rec.get(count++));
-		if (arg1 != IGNORE) {
-			assertEquals(arg1, rec.get(count++));
-		} else {
-			count++;
-		}
-		if (arg2 != IGNORE) {
-			assertEquals(arg2, rec.get(count++));
-		} else {
-			count++;
-		}
-		if (arg3 != IGNORE) {
-			assertEquals(arg3, rec.get(count++));
-		} else {
-			count++;
-		}
-		if (returnValue != IGNORE) {
-			assertEquals(returnValue, rec.get(count++));
-		} else {
-			count++;
-		}
-		assertEquals(count, rec.size());
-	}
+    public void assertRecord(String methodName, Object arg1, Object arg2,
+            Object arg3, Object returnValue) {
+        ArrayList rec = (ArrayList) records.get(assertIndex++);
+        int count = 0;
+        assertEquals(methodName, rec.get(count++));
+        if (arg1 != IGNORE) {
+            assertEquals(arg1, rec.get(count++));
+        } else {
+            count++;
+        }
+        if (arg2 != IGNORE) {
+            assertEquals(arg2, rec.get(count++));
+        } else {
+            count++;
+        }
+        if (arg3 != IGNORE) {
+            assertEquals(arg3, rec.get(count++));
+        } else {
+            count++;
+        }
+        if (returnValue != IGNORE) {
+            assertEquals(returnValue, rec.get(count++));
+        } else {
+            count++;
+        }
+        assertEquals(count, rec.size());
+    }
 
-	public void assertRecord(String methodName, Object arg1, Object arg2,
-			Object arg3, Object arg4, Object returnValue) {
-		ArrayList rec = (ArrayList) records.get(assertIndex++);
-		int count = 0;
-		assertEquals(methodName, rec.get(count++));
-		if (arg1 != IGNORE) {
-			assertEquals(arg1, rec.get(count++));
-		} else {
-			count++;
-		}
-		if (arg2 != IGNORE) {
-			assertEquals(arg2, rec.get(count++));
-		} else {
-			count++;
-		}
-		if (arg3 != IGNORE) {
-			assertEquals(arg3, rec.get(count++));
-		} else {
-			count++;
-		}
-		if (arg4 != IGNORE) {
-			assertEquals(arg4, rec.get(count++));
-		} else {
-			count++;
-		}
-		if (returnValue != IGNORE) {
-			assertEquals(returnValue, rec.get(count++));
-		} else {
-			count++;
-		}
-		assertEquals(count, rec.size());
-	}
+    public void assertRecord(String methodName, Object arg1, Object arg2,
+            Object arg3, Object arg4, Object returnValue) {
+        ArrayList rec = (ArrayList) records.get(assertIndex++);
+        int count = 0;
+        assertEquals(methodName, rec.get(count++));
+        if (arg1 != IGNORE) {
+            assertEquals(arg1, rec.get(count++));
+        } else {
+            count++;
+        }
+        if (arg2 != IGNORE) {
+            assertEquals(arg2, rec.get(count++));
+        } else {
+            count++;
+        }
+        if (arg3 != IGNORE) {
+            assertEquals(arg3, rec.get(count++));
+        } else {
+            count++;
+        }
+        if (arg4 != IGNORE) {
+            assertEquals(arg4, rec.get(count++));
+        } else {
+            count++;
+        }
+        if (returnValue != IGNORE) {
+            assertEquals(returnValue, rec.get(count++));
+        } else {
+            count++;
+        }
+        assertEquals(count, rec.size());
+    }
 
-	public void assertEndOfRecords() {
-		assertEquals(assertIndex, records.size());
-	}
+    public void assertEndOfRecords() {
+        assertEquals(assertIndex, records.size());
+    }
 
-	public String getMethodName() {
-		ArrayList rec = (ArrayList) records.get(assertIndex);
-		return (String) rec.get(0);
-	}
+    public String getMethodName() {
+        ArrayList rec = (ArrayList) records.get(assertIndex);
+        return (String) rec.get(0);
+    }
 
-	public Object getArg(int i) {
-		ArrayList rec = (ArrayList) records.get(assertIndex);
-		return rec.get(i + 1);
-	}
+    public Object getArg(int i) {
+        ArrayList rec = (ArrayList) records.get(assertIndex);
+        return rec.get(i + 1);
+    }
 
-	public Object getReturnValue(int i) {
-		ArrayList rec = (ArrayList) records.get(assertIndex);
-		return rec.get(rec.size() - 1);
-	}
+    public Object getReturnValue(int i) {
+        ArrayList rec = (ArrayList) records.get(assertIndex);
+        return rec.get(rec.size() - 1);
+    }
 
-	public String toString() {
-		return records.toString();
-	}
+    @Override
+    public String toString() {
+        return records.toString();
+    }
 
 }

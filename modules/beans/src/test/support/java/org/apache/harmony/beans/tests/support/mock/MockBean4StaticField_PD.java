@@ -22,17 +22,18 @@ import java.beans.PersistenceDelegate;
 
 public class MockBean4StaticField_PD extends PersistenceDelegate {
 
-	public Expression instantiate(Object oldInstance, Encoder out) {
-		Expression exp = null;
+    @Override
+    public Expression instantiate(Object oldInstance, Encoder out) {
+        Expression exp = null;
 
-		try {
-			exp = new Expression(MockBean4StaticField.class.getField("inst"),
-					"get", new Object[] { null });
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        try {
+            exp = new Expression(MockBean4StaticField.class.getField("inst"),
+                    "get", new Object[] { null });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		return exp;
-	}
+        return exp;
+    }
 
 }

@@ -21,37 +21,37 @@ package org.apache.harmony.beans.tests.support.mock;
  * Test PropertyEditorManager
  */
 public class Foz {
-	private String name;
+    private String name;
 
-	private String text;
+    private String text;
 
-	/**
-	 * @return Returns the name.
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * @return Returns the name.
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @param name
-	 *            The name to set.
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * @param name
+     *            The name to set.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * @return Returns the text.
-	 */
-	public String getText() {
-		return text;
-	}
+    /**
+     * @return Returns the text.
+     */
+    public String getText() {
+        return text;
+    }
 
-	/**
-	 * @param text
-	 *            The text to set.
-	 */
-	public void setText(String text) {
-		this.text = text;
-	}
+    /**
+     * @param text
+     *            The text to set.
+     */
+    public void setText(String text) {
+        this.text = text;
+    }
 }

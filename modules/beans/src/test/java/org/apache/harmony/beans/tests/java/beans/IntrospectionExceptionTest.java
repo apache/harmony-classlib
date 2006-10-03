@@ -57,7 +57,7 @@ public class IntrospectionExceptionTest extends TestCase {
         SerializationTest.verifyGolden(this, new IntrospectionException(
                 "IntrospectionExceptionTest"));
     }
-    
+
     public void testIntrospectionExceptionMessage() {
         // Regression for HARMONY-235
         IntrospectionException e = new IntrospectionException("test message");
