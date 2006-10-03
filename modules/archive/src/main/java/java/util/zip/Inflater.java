@@ -168,6 +168,9 @@ public class Inflater {
 		// avoid int overflow, check null buf
 		if (off <= buf.length && nbytes >= 0 && off >= 0
 				&& buf.length - off >= nbytes) {
+            if (nbytes == 0)
+                return 0;
+
 			if (streamHandle == -1) {
                 throw new IllegalStateException();
             }

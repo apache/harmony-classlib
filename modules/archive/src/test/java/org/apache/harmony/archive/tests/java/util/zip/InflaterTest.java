@@ -702,4 +702,15 @@ public class InflaterTest extends junit.framework.TestCase {
         assertEquals(compressedDataLength, inf.getTotalOut());
         assertEquals(14, inf.getBytesWritten());
     }
+
+    /**
+     * @tests java.util.zip.Deflater#inflate(byte[], int, int)
+     */
+    public void testInflate() throws Exception {
+        // Regression for HARMONY-81 
+        Inflater inf = new Inflater();
+        int res = inf.inflate(new byte[0], 0, 0);
+
+        assertEquals(0, res);
+    }
 }
