@@ -78,7 +78,11 @@
 
     </target>
 
-    <target name="-check-unix" if="is.unix">
+    <target name="-check-unix" if="with.awt.swing">
+            <antcall target="--check-unix" />
+    </target>
+
+    <target name="--check-unix" if="is.unix">
         
         <property name="lcms.msg"
                   value="liblcms development package not installed
