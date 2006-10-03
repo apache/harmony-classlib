@@ -258,6 +258,10 @@ Generating snapshot zip
         <md5sum file="${deploy.zip}" />
     </target>
 
+    <target name="check-depends">
+        <ant antfile="make/depends.xml" inheritall="false" target="check" />
+    </target>
+
     <target name="fetch-depends">
         <ant antfile="make/depends.xml" inheritall="false" target="download" />
     </target>

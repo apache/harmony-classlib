@@ -126,6 +126,10 @@
     </condition>
     <property name="make.command" value="make" />
 
+    <property name="png.home" value="/usr" />
+    <property name="lcms.home" value="/usr" />
+    <property name="jpeg.home" value="/usr" />
+
     <target name="echo" depends="svn-prop, svn-info" >
         <echo>
 Harmony javac properties:

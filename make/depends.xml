@@ -29,7 +29,8 @@
     <import file="${basedir}/make/properties.xml" />
 
     <target name="check" description="Check whether dependencies are available"
-            depends="-check,-create-unsigned-bcprov-jar,-check-win" />
+            depends="-check,-create-unsigned-bcprov-jar,
+                     -check-win,-check-unix" />
 
     <target name="-check">
 
@@ -74,6 +75,66 @@
     <target name="-check-win" if="is.windows">
         
 	<check-one-file src="${msvcr71.url}" dest="${msvcr71.dll}" />
+
+    </target>
+
+    <target name="-check-unix" if="is.unix">
+        
+        <property name="lcms.msg"
+                  value="liblcms development package not installed
+${line.separator}For Debian/Ubuntu try: apt-get install liblcms1-dev" />
+        <mkdir dir="depends/libs/build/lcms" />
+        <check-one-link src="${lcms.home}/lib/liblcms.a"
+                        dest="depends/libs/build/lcms/liblcms.ia32"
+                        message="${lcms.msg}" />
+        <check-one-link src="${lcms.home}/include/icc34.h"
+                        dest="depends/libs/build/lcms/icc34.h"
+                        message="${lcms.msg}" />
+        <check-one-link src="${lcms.home}/include/lcms.h"
+                        dest="depends/libs/build/lcms/lcms.h"
+                        message="${lcms.msg}" />
+
+
+        <property name="png.msg"
+                  value="libpng development package not installed
+${line.separator}For Debian/Ubuntu try: apt-get install libpng12-dev" />
+        <mkdir dir="depends/libs/build/png" />
+        <check-one-link src="${png.home}/lib/libpng.a"
+                        dest="depends/libs/build/png/libpng.ia32"
+                        message="${png.msg}" />
+        <check-one-link src="${png.home}/include/pngconf.h"
+                        dest="depends/libs/build/png/pngconf.h"
+                        message="${png.msg}" />
+        <check-one-link src="${png.home}/include/png.h"
+                        dest="depends/libs/build/png/png.h"
+                        message="${png.msg}" />
+
+
+        <property name="jpeg.msg"
+                  value="libjpeg development package not installed
+${line.separator}For Debian/Ubuntu try: apt-get install libjpeg62-dev" />
+        <mkdir dir="depends/libs/build/jpeg" />
+        <check-one-link src="${jpeg.home}/lib/libjpeg.a"
+                        dest="depends/libs/build/jpeg/libjpeg.ia32"
+                        message="${jpeg.msg}" />
+        <check-one-link src="${jpeg.home}/include/jconfig.h"
+                        dest="depends/libs/build/jpeg/jconfig.lnx"
+                        message="${jpeg.msg}" />
+        <check-one-link src="${jpeg.home}/include/jpeglib.h"
+                        dest="depends/libs/build/jpeg/jpeglib.h"
+                        message="${jpeg.msg}" />
+        <check-one-link src="${jpeg.home}/include/jpeglib.h"
+                        dest="depends/libs/build/jpeg/jpeglib.h"
+                        message="${jpeg.msg}" />
+        <check-one-link src="${jpeg.home}/include/jpeglib.h"
+                        dest="depends/libs/build/jpeg/jpeglib.h"
+                        message="${jpeg.msg}" />
+        <check-one-link src="${jpeg.home}/include/jmorecfg.h"
+                        dest="depends/libs/build/jpeg/jmorecfg.h"
+                        message="${jpeg.msg}" />
+        <check-one-link src="${jpeg.home}/include/jerror.h"
+                        dest="depends/libs/build/jpeg/jerror.h"
+                        message="${jpeg.msg}" />
 
     </target>
 
@@ -234,4 +295,51 @@ than the Apache License v2.
              manifest="${bcprov.dir}/temp/META-INF/MANIFEST.MF" />
 	<delete dir="${bcprov.dir}/temp" />
     </target>
+
+    <macrodef name="check-one-link">
+        <attribute name="src" />
+        <attribute name="dest" />
+        <attribute name="message" />
+        <sequential>
+            <echo>Checking for @{dest}</echo>
+	    <available file="@{dest}" type="file"
+                       property="@{dest}.exists" />
+	    <available file="@{src}" type="file"
+                       property="@{src}.exists" />
+	    <fail>
+		<condition>
+                    <and>
+		        <not>
+			    <isset property="@{dest}.exists" />
+                        </not>
+                        <not>
+			    <isset property="@{src}.exists" />
+		        </not>
+                    </and>
+		</condition>
+...
+
+Missing dependency.  The file from:
+
+  @{src}
+
+should be linked to:
+
+  @{dest}
+
+But @{src} doesn't exist.
+@{message}
+            </fail>
+            <antcall target="-really-link">
+                <param name="src" value="@{src}" />
+                <param name="dest" value="@{dest}" />
+            </antcall>
+        </sequential>
+    </macrodef>
+
+    <target name="-really-link" unless="${dest}.exists">
+        <echo>Linking ${dest}</echo>
+        <symlink resource="${src}" link="${dest}" />
+    </target>
+
 </project>
