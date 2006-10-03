@@ -23,8 +23,7 @@
 package org.apache.harmony.security.tests.java.security.cert;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.security.Provider;
 import java.security.cert.CertPath;
 import java.security.cert.Certificate;
@@ -39,6 +38,8 @@ import junit.framework.TestCase;
 import org.apache.harmony.security.tests.support.SpiEngUtils;
 import org.apache.harmony.security.tests.support.cert.TestUtils;
 
+import tests.support.resource.Support_Resources;
+
 /**
  * Tests for <code>CertificateFactory</code> class methods
  */
@@ -51,7 +52,7 @@ public class CertificateFactory3Test extends TestCase {
 
     private static String defaultType = CertificateFactory1Test.defaultType;
 
-    public static String fileCertPathPki = "java/security/cert/serialization/CertPath.PkiPath";
+    public static String fileCertPathPki = "java/security/cert/CertPath.PkiPath";
 
     private static boolean X509Support = false;
 
@@ -64,12 +65,6 @@ public class CertificateFactory3Test extends TestCase {
         defaultProviderName = X509Support ? defaultProvider.getName() : null;
 
         NotSupportMsg = defaultType.concat(" is not supported");
-
-        fileCertPathPki = SpiEngUtils.getFileName(
-                org.apache.harmony.security.tests.support.TestUtils.TEST_ROOT,
-                fileCertPathPki);
-        fileCertPathPki = fileCertPathPki.replace('/', File.separatorChar);
-
     }
 
     private static CertificateFactory[] initCertFs() throws Exception {
@@ -156,7 +151,8 @@ public class CertificateFactory3Test extends TestCase {
         assertNotNull("CertificateFactory objects were not created", certFs);
         for (int i = 0; i < certFs.length; i++) {
             CertPath certPath = null;
-            FileInputStream fis = new FileInputStream(fileCertPathPki);
+            InputStream fis = Support_Resources
+                    .getResourceStream(fileCertPathPki);
             certPath = certFs[i].generateCertPath(fis, "PkiPath");
             fis.close();
             assertEquals(defaultType, certPath.getType());
@@ -183,7 +179,8 @@ public class CertificateFactory3Test extends TestCase {
                     .next());
 
             CertPath certPath = null;
-            FileInputStream fis = new FileInputStream(fileCertPathPki);
+            InputStream fis = Support_Resources
+                    .getResourceStream(fileCertPathPki);
             certPath = certFs[i].generateCertPath(fis);
             fis.close();
             assertEquals(defaultType, certPath.getType());

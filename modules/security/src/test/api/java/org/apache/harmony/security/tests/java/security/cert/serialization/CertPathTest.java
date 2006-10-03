@@ -22,7 +22,6 @@
 
 package org.apache.harmony.security.tests.java.security.cert.serialization;
 
-import java.io.FileInputStream;
 import java.io.ObjectStreamException;
 import java.security.cert.CertPath;
 import java.security.cert.CertificateFactory;
@@ -32,6 +31,8 @@ import junit.framework.TestCase;
 import org.apache.harmony.security.tests.support.cert.MyCertPath;
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
+import tests.support.resource.Support_Resources;
+
 /**
  * Tests for <code>CertPath</code> serialization
  */
@@ -40,16 +41,8 @@ public class CertPathTest extends TestCase {
     //Certificate/CertPath type to be created during testing
     private static final String certType = "X.509";
 
-    // CertPath encoding name, defines input file names used during testing
-    private static final String certPathEncoding = "PkiPath";
-
-    /**
-     * Input file name used for <code>CertPath</code> instance generation
-     */
-    private static final String certPathFileName =
-        org.apache.harmony.security.tests.support.TestUtils.TEST_ROOT +
-        "java/security/cert/serialization/CertPath." +
-        certPathEncoding; //TODO move me to other folder
+    //Input file name used for <code>CertPath</code> instance generation
+    private static final String certPathFileName = "java/security/cert/CertPath.PkiPath";
 
     //
     // Tests
@@ -62,8 +55,8 @@ public class CertPathTest extends TestCase {
 
         CertificateFactory cf = CertificateFactory.getInstance(certType);
 
-        CertPath certPath = cf.generateCertPath(new FileInputStream(
-                certPathFileName));
+        CertPath certPath = cf.generateCertPath(Support_Resources
+                .getResourceStream(certPathFileName));
 
         SerializationTest.verifySelf(certPath);
     }
@@ -75,8 +68,8 @@ public class CertPathTest extends TestCase {
 
         CertificateFactory cf = CertificateFactory.getInstance(certType);
 
-        CertPath certPath = cf.generateCertPath(new FileInputStream(
-                certPathFileName));
+        CertPath certPath = cf.generateCertPath(Support_Resources
+                .getResourceStream(certPathFileName));
 
         SerializationTest.verifyGolden(this, certPath);
     }
