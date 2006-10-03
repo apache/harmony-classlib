@@ -228,23 +228,23 @@ ${line.separator}For Debian/Ubuntu try: apt-get install libjpeg62-dev" />
                 <param name="src" value="@{src}" />
                 <param name="dest" value="@{dest}" />
             </antcall>
-            <checksum file="@{dest}" property="new.md5" />
-            <condition property="md5.verified" value="true">
-                <equals arg1="${new.md5}" arg2="@{md5}" />
+            <checksum file="@{dest}" property="@{dest}.md5" />
+            <condition property="@{dest}.md5.verified" value="true">
+                <equals arg1="${@{dest}.md5}" arg2="@{md5}" />
             </condition>
             <antcall target="-remove-file-if-bad">
                 <param name="jar" value="@{dest}" />
             </antcall>
-	    <fail unless="md5.verified">
+	    <fail unless="@{dest}.md5.verified">
 ...
 
 File @{dest} has incorrect md5 checksum.  Expected:
   @{md5}
 found:
-  ${new.md5}
+  ${@{dest}.md5}
 
             </fail>
-            <echo>Checksum verified (${md5.verified})</echo>
+            <echo>Checksum verified (${@{dest}.md5.verified})</echo>
         </sequential>
     </macrodef>
 
@@ -253,7 +253,7 @@ found:
 	<get src="${src}" dest="${dest}" usetimestamp="true" verbose="true" />
     </target>
 
-    <target name="-remove-file-if-bad" unless="md5.verified">
+    <target name="-remove-file-if-bad" unless="${dest}.md5.verified">
         <delete file="${dest}" />
     </target>
 
