@@ -127,12 +127,11 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
     boolean isBound = false;
 
     // lock for read and write
-    private final Object readLock = new Object();
+    private class ReadLock {}
+    private final Object readLock = new ReadLock();
 
-    private final Object writeLock = new Object();
-
-    // lock for status
-    // private final Object statusLock = new Object();
+    private class WriteLock {}
+    private final Object writeLock = new WriteLock();
 
     // this content is a point used to set in connect_withtimeout() in pending
     // mode

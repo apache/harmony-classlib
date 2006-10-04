@@ -45,7 +45,8 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
      */
     private List<SelectionKey> keyList = new ArrayList<SelectionKey>();
 
-    private final Object blockingLock = new Object();
+    private class BlockingLock {}
+    private final Object blockingLock = new BlockingLock();
 
     boolean isBlocking = true;
 

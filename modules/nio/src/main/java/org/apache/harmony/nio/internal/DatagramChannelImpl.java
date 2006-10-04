@@ -87,10 +87,12 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorHandl
     boolean isBound = false;
 
     // lock for read and receive
-    private final Object readLock = new Object();
+    private class ReadLock {}
+    private final Object readLock = new ReadLock();
 
     // lock for write and send
-    private final Object writeLock = new Object();
+    private class WriteLock {}
+    private final Object writeLock = new WriteLock();
 
     // used to store the trafficClass value which is simply returned
     // as the value that was set. We also need it to pass it to methods
