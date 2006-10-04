@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import tests.support.Support_Configuration;
@@ -149,5 +150,25 @@ public class Support_Resources {
         }
         
         return is;
+    }
+    
+    /**
+     * Util method to get absolute path to resource file
+     * 
+     * @param name - name of resource file
+     * @return - path to resource
+     */
+    public static String getAbsoluteResourcePath(String name) {
+
+        URL url = ClassLoader.getSystemClassLoader().getResource(name);
+        if (url == null) {
+            throw new RuntimeException("Failed to load resource: " + name);
+        }
+
+        try {
+            return new File(url.toURI()).getAbsolutePath();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException("Failed to load resource: " + name);
+        }
     }
 }
