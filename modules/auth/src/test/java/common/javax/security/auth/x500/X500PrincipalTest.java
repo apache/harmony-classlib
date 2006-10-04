@@ -23,7 +23,6 @@
 package javax.security.auth.x500;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -33,6 +32,7 @@ import java.util.Locale;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import tests.support.resource.Support_Resources;
 
 /**
  * Tests X500Principal class
@@ -49,17 +49,6 @@ public class X500PrincipalTest extends TestCase {
 
     private boolean testing = false;
 
-    static String outputPath = System.getProperty("RESOURCE_DIR",
-            "test/common/unit");
-
-    static String inputFile = outputPath + File.separator + "javax"
-            + File.separator + "security" + File.separator + "auth"
-            + File.separator + "x500" + File.separator + "inputdata";
-
-    static String inputFile0 = outputPath + File.separator + "javax"
-            + File.separator + "security" + File.separator + "auth"
-            + File.separator + "x500" + File.separator + "inputdata.0";
-
     public void testStreamPosition() throws Exception {
         //this encoding is read from the file
         /*byte [] mess = {0x30, 0x30, 
@@ -69,7 +58,8 @@ public class X500PrincipalTest extends TestCase {
          };
          */
 
-        InputStream is = new FileInputStream(inputFile0);
+        InputStream is = Support_Resources
+                .getResourceStream("X500PrincipalTest.0.dat");
         X500Principal principal = new X500Principal(is);
         String s = principal.toString();
         assertEquals("CN=A, CN=B, CN=A, CN=B", s);
@@ -89,7 +79,8 @@ public class X500PrincipalTest extends TestCase {
          };
          */
 
-        InputStream is = new FileInputStream(inputFile);
+        InputStream is = Support_Resources
+                .getResourceStream("X500PrincipalTest.1.dat");
         X500Principal principal = new X500Principal(is);
         String s = principal.toString();
         assertEquals("CN=A, CN=B, CN=A, CN=B", s);
@@ -147,7 +138,8 @@ public class X500PrincipalTest extends TestCase {
          0x31, 0x0A, 0x30, 0x08, 0x06, 0x03, 0x55, 0x04, 0x03, 0x13, 0x01, 0x42, 0x31, 0x0A, 0x30, 0x08, 0x06, 0x03, 0x55, 0x04, 0x03, 0x13, 0x01, 0x41
          };
          */
-        InputStream is = new FileInputStream(inputFile);
+        InputStream is = Support_Resources
+                .getResourceStream("X500PrincipalTest.1.dat");
         X500Principal principal = new X500Principal(is);
         String s = principal.toString();
         assertEquals("CN=A, CN=B, CN=A, CN=B", s);
