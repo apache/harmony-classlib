@@ -39,6 +39,7 @@ import junit.framework.TestCase;
 import org.apache.harmony.auth.login.DefaultConfigurationParser;
 import org.apache.harmony.auth.login.DefaultConfigurationParser.InvalidFormatException;
 
+import tests.support.resource.Support_Resources;
 
 /**
  * Tests parser implementation for default configuration.
@@ -46,12 +47,8 @@ import org.apache.harmony.auth.login.DefaultConfigurationParser.InvalidFormatExc
 
 public class DefaultConfigParserTest extends TestCase {
 
-    static String outputPath = System.getProperty("RESOURCE_DIR", "test/common/unit");
-    
-    static String fconf = outputPath + File.separator + "org" + 
-        File.separator + "apache" + File.separator + "harmony" + 
-        File.separator + "auth" + File.separator + "login" +
-        File.separator + "auth.conf";
+    static String fconf = Support_Resources
+            .getAbsoluteResourcePath("auth.conf");
     
 	Properties p;
 

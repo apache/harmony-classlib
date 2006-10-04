@@ -39,6 +39,7 @@ import junit.framework.TestCase;
 import org.apache.harmony.auth.tests.support.TestUtils;
 import org.apache.harmony.auth.login.DefaultConfiguration;
 
+import tests.support.resource.Support_Resources;
 
 /**
  * Tests default configuration implementation.  
@@ -48,12 +49,8 @@ public class DefaultConfigurationTest extends TestCase {
 
     private static final String LOGIN_CONFIG = "java.security.auth.login.config";
     
-    static String outputPath = System.getProperty("RESOURCE_DIR", "test/common/unit");
-    
-    static String otherConfFile = outputPath + File.separator + "org" + 
-        File.separator + "apache" + File.separator + "harmony" + 
-        File.separator + "auth" + File.separator + "login" +
-        File.separator + "auth.conf";
+    static String otherConfFile = Support_Resources
+            .getAbsoluteResourcePath("auth.conf");
 
 	private static File defaultConfFile;
 
