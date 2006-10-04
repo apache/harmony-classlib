@@ -22,7 +22,6 @@
 
 package javax.security.auth;
 
-import java.io.File;
 import java.io.FilePermission;
 import java.net.URL;
 import java.security.AllPermission;
@@ -38,6 +37,8 @@ import junit.framework.TestCase;
 
 import org.apache.harmony.auth.tests.support.SecurityChecker;
 import org.apache.harmony.auth.tests.support.TestUtils;
+
+import tests.support.resource.Support_Resources;
 
 
 /**
@@ -170,16 +171,11 @@ public class PolicyTest extends TestCase {
     //
     //
 
-    static String outputPath = System.getProperty("RESOURCE_DIR", "test"
-            + File.separator + "common" + File.separator + "unit");
+    static String inputFile1 = Support_Resources
+            .getAbsoluteResourcePath("auth_policy1.txt");
 
-    static String inputFile1 = outputPath + File.separator + "javax"
-            + File.separator + "security" + File.separator + "auth"
-            + File.separator + "auth_policy1.txt";
-
-    static String inputFile2 = outputPath + File.separator + "javax"
-            + File.separator + "security" + File.separator + "auth"
-            + File.separator + "auth_policy2.txt";
+    static String inputFile2 = Support_Resources
+            .getAbsoluteResourcePath("auth_policy2.txt");
 
     private static final String POLICY_PROP = "java.security.auth.policy";
     
