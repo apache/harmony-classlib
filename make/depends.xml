@@ -72,8 +72,7 @@
 
     </target>
 
-    <target name="-check-win" if="is.windows"
-            depends="-really-check-win,-awt-tar-extract" />
+    <target name="-check-win" if="is.windows" depends="-really-check-win" />
 
     <target name="-really-check-win" if="is.windows">
         
@@ -84,6 +83,8 @@
 	<uptodate property="awtdeps.uptodate"
                   srcfile="${awtdeps.tar}"
                   targetfile="${awtdeps.testfile}" />
+
+        <antcall target="-awt-tar-extract" />
 
     </target>
 
