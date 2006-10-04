@@ -163,7 +163,7 @@ class Compiler {
         // If there is a problem invoking the method, simply dump the trace for
         // now
         try {
-            printUsageMth.invoke(mainInst, null);
+            printUsageMth.invoke(mainInst);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
