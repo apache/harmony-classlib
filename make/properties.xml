@@ -57,7 +57,10 @@
 
     <!-- Conditions for different architectures -->
     <condition property="is.x86_64">
-        <equals arg1="x86_64" arg2="${os.arch}"/>
+        <or>
+            <equals arg1="x86_64" arg2="${os.arch}"/>
+            <equals arg1="amd64" arg2="${os.arch}"/>
+        </or>
     </condition>
     <condition property="is.x86">
         <or>
@@ -70,14 +73,13 @@
     </condition>
     <condition property="is.64bit">
         <or>
-            <os arch="ia64" />
-            <equals arg1="x86_64" arg2="${os.arch}"/>
+            <isset property="is.ia64" />
+            <isset property="is.x86_64" />
         </or>
     </condition>
     <condition property="is.32bit">
         <or>
-            <os arch="x86"/>
-            <equals arg1="i386" arg2="${os.arch}"/>
+            <isset property="is.x86" />
         </or>
     </condition>
     <condition property="hy.bits" value="32">
@@ -91,6 +93,9 @@
             <isset property="is.x86" />
             <isset property="is.32bit" />
         </and>
+    </condition>
+    <condition property="hy.arch" value="x86_64">
+        <isset property="is.x86_64" />
     </condition>
     <property name="hy.arch" value="${os.arch}" />
     
@@ -138,6 +143,7 @@
         <echo>
 Harmony javac properties:
 
+  hy.javac.compiler = ${hy.javac.compiler}
   hy.javac.target = ${hy.javac.target}
   hy.javac.source = ${hy.javac.source}
   hy.javac.debug  = ${hy.javac.debug}
@@ -163,6 +169,10 @@ Harmony platform properties:
   exe.suffix = ${exe.suffix}
   shlib.suffix = ${shlib.suffix}
   make.command = ${make.command}
+
+  hy.hdk = ${hy.hdk}
+  hy.cflags = ${hy.cflags}
+  hy.arch.define = ${hy.arch.define}
 
 
 The following property is only set if the "svn-prop" target has been
