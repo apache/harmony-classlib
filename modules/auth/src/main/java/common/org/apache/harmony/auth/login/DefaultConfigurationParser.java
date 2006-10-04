@@ -206,7 +206,7 @@ public class DefaultConfigurationParser {
                         try {
                             val = PolicyUtils.expand(st.sval, system);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            // ignore 
                         }
                     }
                 } else {
