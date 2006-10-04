@@ -163,12 +163,6 @@
 
             <!--jvmarg value="-showversion"/-->
 
-            <!-- Required for running the serialization unit tests -->
-            <!-- Note: will be deleted after improving             -->
-            <!-- SerializationTest support class: all resource     -->
-            <!-- files will be placed on the classpath             -->
-            <jvmarg value="-DRESOURCE_DIR=${hy.auth.src.test.java}"/>
-
             <!-- to pick up junit.jar -->
             <jvmarg value="-Xbootclasspath/a:${hy.auth.bin.test}${path.separator}../../${junit.jar}${path.separator}${hy.hdk}/build/test/support.jar"/>
 
