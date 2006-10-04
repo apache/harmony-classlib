@@ -72,17 +72,22 @@
 
     </target>
 
-    <target name="-check-win" if="is.windows">
+    <target name="-check-win" if="is.windows"
+            depends="-really-check-win,-awt-tar-extract" />
+
+    <target name="-really-check-win" if="is.windows">
         
 	<check-one-file src="${msvcr71.url}" dest="${msvcr71.dll}" />
 
+        <check-one-file src="${awtdeps.url}" dest="${awtdeps.tar}" />
+
+	<uptodate property="awtdeps.uptodate"
+                  srcfile="${awtdeps.tar}"
+                  targetfile="${awtdeps.testfile}" />
+
     </target>
 
-    <target name="-check-unix" if="with.awt.swing">
-            <antcall target="--check-unix" />
-    </target>
-
-    <target name="--check-unix" if="is.unix">
+    <target name="-check-unix" if="is.unix">
         
         <property name="lcms.msg"
                   value="liblcms development package not installed
@@ -214,6 +219,10 @@ ${line.separator}For Debian/Ubuntu try: apt-get install libjpeg62-dev" />
 	<download-one-file src="${msvcr71.url}" dest="${msvcr71.dll}"
                            md5="${msvcr71.md5}" />
 
+	<mkdir dir="${awtdeps.dir}" />
+	<download-one-file src="${awtdeps.url}" dest="${awtdeps.tar}"
+                           md5="${awtdeps.md5}" />
+
     </target>
 
     <macrodef name="download-one-file">
@@ -298,6 +307,14 @@ than the Apache License v2.
 	<jar destfile="${bcprov.jar}" basedir="${bcprov.dir}/temp"
              manifest="${bcprov.dir}/temp/META-INF/MANIFEST.MF" />
 	<delete dir="${bcprov.dir}/temp" />
+    </target>
+
+    <target name="-awt-tar-extract" unless="awtdeps.uptodate">
+        <echo>Extracting awt dependencies</echo>
+	<untar src="${awtdeps.tar}" dest="${awtdeps.extract.dir}"
+               compression="gzip" />
+        <echo file="${awtdeps.testfile}"
+              message="${awtdeps.tar} extracted${line.separator}" />
     </target>
 
     <macrodef name="check-one-link">
