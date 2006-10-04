@@ -100,6 +100,12 @@ public class JSParameters {
     // name of the provider to work with keystore
     private String ksProviderName;
 
+    // class name of the provider to work with message digests
+    private String mdProvider;
+
+    // name of the provider to work with message digests
+    private String mdProviderName;
+
     // timestamp authority URL
     private URI tsaURI;
     
@@ -115,6 +121,15 @@ public class JSParameters {
     // topic to print help on
     private String helpTopic;
 
+    // true if signature file name is processed by FileNameGenerator
+    // false if the name that the user has set is unchanged.
+    private boolean isSFNameProcessed; 
+    
+    // algorithm of the key used to sign data 
+    private String keyAlg;
+    
+    // algorithm of the signature used
+    private String sigAlg;
     
     // set the fields of the JSParameters object to default values
     void setDefault(){
@@ -145,6 +160,9 @@ public class JSParameters {
         altSigner = null;        
         altSignerPath = null;
         helpTopic = null;        
+        isSFNameProcessed = false;
+        keyAlg = null;
+        sigAlg = null;
     }
     
     // Getters and setters down here
@@ -233,6 +251,13 @@ public class JSParameters {
     }
 
     /**
+     * @param keyAlg
+     */
+    void setKeyAlg(String keyAlg) {
+        this.keyAlg = keyAlg;
+    }
+
+    /**
      * @param keyPass
      */
     public void setKeyPass(char[] keyPass) {
@@ -275,10 +300,18 @@ public class JSParameters {
     }
 
     /**
+     * @param sigAlg
+     */
+    void setSigAlg(String sigAlg) {
+        this.sigAlg = sigAlg;
+    }
+
+    /**
      * @param sigFileName
      */
     public void setSigFileName(String sigFileName) {
         this.sigFileName = sigFileName;
+        isSFNameProcessed = false;
     }
 
     /**
@@ -424,6 +457,13 @@ public class JSParameters {
     /**
      * @return
      */
+    String getKeyAlg() {
+        return keyAlg;
+    }
+
+    /**
+     * @return
+     */
     char[] getKeyPass() {
         return keyPass;
     }
@@ -467,7 +507,20 @@ public class JSParameters {
     /**
      * @return
      */
+    String getSigAlg() {
+        return sigAlg;
+    }
+
+    /**
+     * @return
+     */
     String getSigFileName() {
+        // If the file name is not processed by FileNameGenerator.
+        if (!isSFNameProcessed) {
+            sigFileName = FileNameGenerator
+                    .generateFileName(sigFileName, alias);
+            isSFNameProcessed = true;
+        }
         return sigFileName;
     }
 
