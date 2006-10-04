@@ -1,4 +1,6 @@
 Manifest-Version: 1.0
+Specification-Title: Java Platform API Specification
+Specification-Version: 1.5
 Implementation-Title: Apache Harmony
 Implementation-Vendor: The Apache Software Foundation
 Implementation-Vendor-Id: org.apache.harmony
@@ -10,7 +12,6 @@ Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Eclipse-ExtensibleAPI: true
-Specification-Title: Java Platform API Specification
 Import-Package: com.ibm.icu.lang,
  java.lang.annotation,
  java.math,
