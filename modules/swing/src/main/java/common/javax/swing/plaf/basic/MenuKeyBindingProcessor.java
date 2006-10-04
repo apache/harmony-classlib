@@ -259,7 +259,7 @@ class MenuKeyBindingProcessor implements KeyEventDispatcher {
                 return;
             }
             try {
-                fireCanceled.invoke(popup, NO_CLASSES_NO_ARGUMENTS);
+                fireCanceled.invoke(popup, (Object[])NO_CLASSES_NO_ARGUMENTS);
             } catch (IllegalArgumentException e) {
             } catch (IllegalAccessException e) {
             } catch (InvocationTargetException e) {}
