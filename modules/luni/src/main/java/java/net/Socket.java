@@ -51,7 +51,8 @@ public class Socket {
 
     private boolean isOutputShutdown = false;
 
-    private Object connectLock = new Object();
+    private class ConnectLock {}
+    private Object connectLock = new ConnectLock();
 
     private Proxy proxy;
 

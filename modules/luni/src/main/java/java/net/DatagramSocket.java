@@ -46,7 +46,8 @@ public class DatagramSocket {
 
 	private boolean isClosed = false;
 
-	Object lock = new Object();
+    private class Lock {}
+	private Object lock = new Lock();
 
 	/**
 	 * Constructs a datagram socket, bound to any available port on the

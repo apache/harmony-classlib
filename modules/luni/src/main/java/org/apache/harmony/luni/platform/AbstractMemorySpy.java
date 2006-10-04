@@ -37,7 +37,8 @@ abstract class AbstractMemorySpy implements IMemorySpy {
 
 	protected ReferenceQueue<Object> notifyQueue = new ReferenceQueue<Object>();
 
-	protected Object lock = new Object();
+    private class Lock {}
+	protected Object lock = new Lock();
 
 	final class AddressWrapper {
 		final PlatformAddress shadow;

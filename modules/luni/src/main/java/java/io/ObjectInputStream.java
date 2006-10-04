@@ -53,7 +53,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             new byte[0]);
 
     // To put into objectsRead when reading unsharedObject
-    private static final Object UNSHARED_OBJ = new Object();
+    private static final Object UNSHARED_OBJ = new Object();  //$NON-LOCK-1$
 
     // If the receiver has already read & not consumed a TC code
     private boolean hasPushbackTC;

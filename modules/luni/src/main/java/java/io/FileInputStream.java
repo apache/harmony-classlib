@@ -45,7 +45,8 @@ public class FileInputStream extends InputStream implements Closeable {
 
     private IFileSystem fileSystem = Platform.getFileSystem();
 
-    private Object repositioningLock = new Object();
+    private class RepositioningLock {}
+    private Object repositioningLock = new RepositioningLock();
 
     /**
      * Constructs a new FileInputStream on the File <code>file</code>. If the

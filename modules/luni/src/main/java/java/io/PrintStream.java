@@ -43,7 +43,8 @@ public class PrintStream extends FilterOutputStream implements Appendable,
 	/**
 	 * protect writes to the underlying stream.
 	 */
-	private Object lock = new Object();
+    private class Lock {} 
+	private Object lock = new Lock();
 
 	/**
 	 * indicates whether or not this PrintStream has incurred an error.

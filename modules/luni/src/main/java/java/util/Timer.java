@@ -302,7 +302,7 @@ public class Timer {
 
 	// Used to finalize thread
 	@SuppressWarnings("unused")
-    private Object finalizer = new Object() {
+    private Object finalizer = new Object() {  //$NON-LOCK-1$
 		@Override
         public void finalize() {
 			synchronized (impl) {

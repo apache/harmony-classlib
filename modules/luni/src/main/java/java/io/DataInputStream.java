@@ -409,7 +409,8 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 
 	static final int MAX_BUF_SIZE = 8192;
 
-	static final Object cacheLock = new Object();
+    private static class CacheLock {}
+	static final Object cacheLock = new CacheLock();
 	
 	static boolean useShared = true;
 

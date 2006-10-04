@@ -78,7 +78,7 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
      * differentiate a literal 'null' key value pair from an empty spot in the
      * map.
      */
-    private static final Object NULL_OBJECT = new Object();
+    private static final Object NULL_OBJECT = new Object();  //$NON-LOCK-1$
 
     static class IdentityHashMapEntry<K, V> extends MapEntry<K, V> {
         IdentityHashMapEntry(K theKey, V theValue) {
