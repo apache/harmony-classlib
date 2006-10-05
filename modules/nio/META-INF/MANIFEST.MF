@@ -5,7 +5,6 @@ Implementation-Title: Apache Harmony
 Implementation-Vendor: The Apache Software Foundation
 Implementation-Vendor-Id: org.apache.harmony
 Implementation-URL: http://incubator.apache.org/harmony
-Implementation-Version: 1.5
 Bundle-ManifestVersion: 2
 Bundle-Name: Harmony NIO
 Bundle-SymbolicName: org.apache.harmony.nio
