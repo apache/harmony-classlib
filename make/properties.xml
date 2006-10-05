@@ -88,14 +88,14 @@
     <property name="hy.bits" value="64" />
 
     <!-- Normalized architecture name -->
+    <condition property="hy.arch" value="x86_64">
+        <isset property="is.x86_64" />
+    </condition>
     <condition property="hy.arch" value="x86">
         <and>
             <isset property="is.x86" />
             <isset property="is.32bit" />
         </and>
-    </condition>
-    <condition property="hy.arch" value="x86_64">
-        <isset property="is.x86_64" />
     </condition>
     <property name="hy.arch" value="${os.arch}" />
     
