@@ -51,12 +51,16 @@ import org.apache.harmony.security.x509.AuthorityKeyIdentifier;
 import org.apache.harmony.security.x509.Certificate;
 import org.apache.harmony.security.x509.CertificateIssuer;
 import org.apache.harmony.security.x509.CertificateList;
+import org.apache.harmony.security.x509.CRLNumber;
+import org.apache.harmony.security.x509.DistributionPointName;
 import org.apache.harmony.security.x509.Extension;
 import org.apache.harmony.security.x509.Extensions;
 import org.apache.harmony.security.x509.GeneralName;
 import org.apache.harmony.security.x509.GeneralNames;
+import org.apache.harmony.security.x509.IssuingDistributionPoint;
 import org.apache.harmony.security.x509.InvalidityDate;
 import org.apache.harmony.security.x509.ReasonCode;
+import org.apache.harmony.security.x509.ReasonFlags;
 import org.apache.harmony.security.x509.SubjectPublicKeyInfo;
 import org.apache.harmony.security.x509.TBSCertList;
 import org.apache.harmony.security.x509.TBSCertificate;
@@ -135,9 +139,8 @@ public class X509CRLImplTest extends TestCase {
             crlExtensions = new Extensions(
                 Arrays.asList(new Extension[] {
                     // CRL Number Extension
-                    new Extension("2.5.29.20", 
-                            ASN1Integer.getInstance().encode(
-                                BigInteger.valueOf(4444).toByteArray())),
+                    new Extension("2.5.29.20", Extension.NON_CRITICAL,
+                        new CRLNumber(BigInteger.valueOf(4444))),
                     // Authority Key Identifier
                     new Extension("2.5.29.35", false, 
                         new AuthorityKeyIdentifier(
@@ -150,6 +153,20 @@ public class X509CRLImplTest extends TestCase {
                             })), 
                             // authorityCertSerialNumber
                             certSerialNumber2)),
+                    // Issuing Distribution Point
+                    new Extension("2.5.29.28", Extension.CRITICAL,
+                        new IssuingDistributionPoint(
+                            new DistributionPointName(new GeneralNames(
+                                Arrays.asList(new GeneralName[] {
+                                    new GeneralName(1, "rfc@822.Name"),
+                                    new GeneralName(2, "dNSName"),
+                                    new GeneralName(4, "O=Organization"),
+                                    new GeneralName(6, "http://uniform.Resource.Id"),
+                                    new GeneralName(7, "255.255.255.0"),
+                                    new GeneralName(8, "1.2.3.4444.55555")
+                                }))),
+                            new ReasonFlags(new boolean[] {true, true, false, false, true, true})
+                            )),
                 }));
         } catch (Exception e) {
             e.printStackTrace();

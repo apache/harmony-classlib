@@ -51,20 +51,44 @@ import org.apache.harmony.security.asn1.BerOutputStream;
  *  </pre>
  */
 public class ReasonFlags {
-
-    boolean[] flags;
     
+    /**
+     * The names of the reasons.
+     */
+    public static final String[] REASONS = {
+        "unused", //$NON-NLS-1$
+        "keyCompromise", //$NON-NLS-1$
+        "cACompromise", //$NON-NLS-1$
+        "affiliationChanged", //$NON-NLS-1$
+        "superseded", //$NON-NLS-1$
+        "cessationOfOperation", //$NON-NLS-1$
+        "certificateHold", //$NON-NLS-1$
+        "privilegeWithdrawn", //$NON-NLS-1$
+        "aACompromise" //$NON-NLS-1$
+    };
+
+    // the value of extension
+    private boolean[] flags;
+    
+    /**
+     * Creates the extension object corresponding to the given flags.
+     */
     public ReasonFlags(boolean[] flags) {
         this.flags = flags;
     }
-    
-    public static ASN1BitString ASN1 = new ASN1BitString.ASN1NamedBitList() {
+
+    /**
+     * ASN.1 Encoder/Decoder.
+     */
+    public static ASN1BitString ASN1 = 
+                            new ASN1BitString.ASN1NamedBitList(REASONS.length) {
         public Object getDecodedObject(BerInputStream in) throws IOException {
             return new ReasonFlags((boolean[]) super.getDecodedObject(in));
         }
         
         public void setEncodingContent(BerOutputStream out) {
             out.content = ((ReasonFlags) out.content).flags;
+            super.setEncodingContent(out);
         }
     };
 }

@@ -21,6 +21,7 @@ import java.io.IOException;
 
 import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.asn1.ASN1Boolean;
+import org.apache.harmony.security.asn1.ASN1Explicit;
 import org.apache.harmony.security.asn1.ASN1Implicit;
 import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1Type;
@@ -64,16 +65,12 @@ public class IssuingDistributionPoint extends ExtensionValue {
     /**
      * Creates the extension object on the base of its encoded form.
      */
-    public IssuingDistributionPoint(byte[] encoding) throws IOException {
-        super(encoding);
+    public static IssuingDistributionPoint decode(byte[] encoding) 
+            throws IOException {
         IssuingDistributionPoint idp =
             (IssuingDistributionPoint) ASN1.decode(encoding);
-        this.distributionPoint = idp.distributionPoint;
-        this.onlyContainsUserCerts = idp.onlyContainsUserCerts;
-        this.onlyContainsCACerts = idp.onlyContainsCACerts;
-        this.onlySomeReasons = idp.onlySomeReasons;
-        this.indirectCRL = idp.indirectCRL;
-        this.onlyContainsAttributeCerts = idp.onlyContainsAttributeCerts;
+        idp.encoding = encoding;
+        return idp;
     }
 
     /**
@@ -172,7 +169,8 @@ public class IssuingDistributionPoint extends ExtensionValue {
      */
     public static ASN1Type ASN1 = new ASN1Sequence(
             new ASN1Type[] {
-                new ASN1Implicit(0, DistributionPointName.ASN1),
+                // ASN.1 prohibits implicitly tagged CHOICE
+                new ASN1Explicit(0, DistributionPointName.ASN1),
                 new ASN1Implicit(1, ASN1Boolean.getInstance()),
                 new ASN1Implicit(2, ASN1Boolean.getInstance()),
                 new ASN1Implicit(3, ReasonFlags.ASN1),
