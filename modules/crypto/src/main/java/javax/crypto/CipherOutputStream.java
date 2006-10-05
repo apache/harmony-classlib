@@ -104,8 +104,10 @@ public class CipherOutputStream extends FilterOutputStream {
         } catch (IllegalBlockSizeException e) {
             throw new IOException(e.getMessage());
         } finally {
-            out.flush();
-            out.close();
+            if (out != null) {
+                out.flush();
+                out.close();
+            }
         }
     }
 }
