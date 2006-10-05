@@ -141,12 +141,6 @@ ${line.separator}For Debian/Ubuntu try: apt-get install libjpeg62-dev" />
         <check-one-link src="${jpeg.home}/include/jpeglib.h"
                         dest="depends/libs/build/jpeg/jpeglib.h"
                         message="${jpeg.msg}" />
-        <check-one-link src="${jpeg.home}/include/jpeglib.h"
-                        dest="depends/libs/build/jpeg/jpeglib.h"
-                        message="${jpeg.msg}" />
-        <check-one-link src="${jpeg.home}/include/jpeglib.h"
-                        dest="depends/libs/build/jpeg/jpeglib.h"
-                        message="${jpeg.msg}" />
         <check-one-link src="${jpeg.home}/include/jmorecfg.h"
                         dest="depends/libs/build/jpeg/jmorecfg.h"
                         message="${jpeg.msg}" />
