@@ -31,14 +31,17 @@
         <excludesfile name="${hy.hdk}/build/patternsets/security-kernel.txt" />
     </fileset>
 
+    <fileset id="tests" dir="${hy.accessibility.bin.test}"/>
+
     <property file="../../make/depends.properties" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
-    <target name="test" depends="build, compile-tests, run-tests" />
+    <target name="test" depends="build, compile-tests, test-jar, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.accessibility.packaging.jarname}.jar" />
+        <delete file="${hy.jdk}/build/test/${hy.accessibility.packaging.jarname}_tests.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset dir="${hy.accessibility.bin.test}" />
@@ -77,9 +80,20 @@
     </target>
 
     <target name="build-jar" depends="svn-info">
+        <mkdir dir="${hy.jdk}/jre/lib/boot"/>
         <jar destfile="${hy.jdk}/jre/lib/boot/${hy.accessibility.packaging.jarname}.jar"
              manifest="${hy.accessibility}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="test-jar" depends="svn-info">
+	<mkdir dir="${hy.jdk}/build/test"/>
+        <jar destfile="${hy.jdk}/build/test/${hy.accessibility.packaging.jarname}_tests.jar">
+            <fileset refid="tests" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -125,7 +139,7 @@
                dir="${basedir}"
                jvm="${test.jre.home}/bin/java">
 
-            <jvmarg value="-Xbootclasspath/a:${hy.accessibility.bin.test}${path.separator}../../${junit.jar}${path.separator}${hy.hdk}/build/test/support.jar"/>
+            <jvmarg value="-Xbootclasspath/a:${hy.jdk}/build/test/${hy.accessibility.packaging.jarname}_tests.jar${path.separator}../../${junit.jar}${path.separator}${hy.hdk}/build/test/support.jar"/>
 
             <formatter type="xml" />
 
