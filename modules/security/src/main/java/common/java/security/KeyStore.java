@@ -1032,8 +1032,7 @@ public class KeyStore {
          *  
          */
         public String toString() {
-            return "TrustedCertificateEntry: \n".concat(trustCertificate //$NON-NLS-1$
-                    .toString());
+            return "Trusted certificate entry:\n" + trustCertificate; //$NON-NLS-1$
         }
     }
 }

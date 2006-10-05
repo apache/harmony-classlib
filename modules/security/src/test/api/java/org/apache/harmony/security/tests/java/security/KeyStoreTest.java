@@ -27,7 +27,21 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.Provider;
 import java.security.Security;
+import java.security.SignatureException;
+import java.security.Principal;
+import java.security.PublicKey;
+import java.security.InvalidKeyException;
+import java.security.NoSuchProviderException;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
+import java.security.cert.X509Certificate;
+import java.util.Date;
+import java.util.Set;
+import java.math.BigInteger;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -243,5 +257,99 @@ public class KeyStoreTest extends TestCase {
         // check if it is NOT a private key 
         assertFalse(keyStore.entryInstanceOf(alias,
                 KeyStore.PrivateKeyEntry.class));
+    }
+
+    /**
+     * @tests java.security.KeyStore.TrustedCertificateEntry.toString()
+     */
+    public void testKeyStoreTCToString() {
+    	   // Regression for HARMONY-1542
+    	   // no exception expected
+        class TestX509Certificate extends X509Certificate {
+            private static final long serialVersionUID = 1L;
+            public void checkValidity() throws CertificateExpiredException,CertificateNotYetValidException {}
+            public void checkValidity(Date p) throws CertificateExpiredException, CertificateNotYetValidException {}
+            public int getVersion() {
+                    return 0;
+            }
+            public BigInteger getSerialNumber() {
+                    return null;
+            }
+            public Principal getIssuerDN() {
+                    return null;
+            }
+            public Principal getSubjectDN() {
+                    return null;
+            }
+            public Date getNotBefore() {
+                    return null;
+            }
+            public Date getNotAfter() {
+                    return null;
+            }
+            public byte[] getTBSCertificate() throws CertificateEncodingException {
+                    return null;
+            }
+            public byte[] getSignature() {
+                    return null;
+            }
+            public String getSigAlgName() {
+                    return null;
+            }
+            public String getSigAlgOID() {
+                    return null;
+            }
+            public byte[] getSigAlgParams() {
+                    return null;
+            }
+            public boolean[] getIssuerUniqueID() {
+                    return null;
+            }
+            public boolean[] getSubjectUniqueID() {
+                    return null;
+            }
+            public boolean[] getKeyUsage() {
+                    return null;
+            }
+            public int getBasicConstraints() {
+                    return 0;
+            }
+            public byte[] getEncoded() throws CertificateEncodingException {
+                    return null;
+            }
+            public void verify(PublicKey p)
+                    throws CertificateException,
+                    NoSuchAlgorithmException,
+                    InvalidKeyException,
+                    NoSuchProviderException,
+                    SignatureException 
+            {}
+            public void verify(PublicKey p0, String p1)
+                    throws CertificateException,
+                    NoSuchAlgorithmException,
+                    InvalidKeyException,
+                    NoSuchProviderException,
+                    SignatureException 
+            {}
+            public String toString() {
+                    return null;
+            }
+            public PublicKey getPublicKey() {
+                    return null;
+            }
+            public boolean hasUnsupportedCriticalExtension() {
+                    return false;
+            }
+            public Set getCriticalExtensionOIDs() {
+                    return null;
+            }
+            public Set getNonCriticalExtensionOIDs() {
+                    return null;
+            }
+            public byte[] getExtensionValue(String p) {
+                    return null;
+            }
+        }
+        assertNotNull(new KeyStore.TrustedCertificateEntry(new TestX509Certificate()).toString());
     }
 }
