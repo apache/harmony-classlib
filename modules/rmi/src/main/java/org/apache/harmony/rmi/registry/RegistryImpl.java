@@ -94,7 +94,7 @@ public class RegistryImpl extends RemoteServer implements Registry {
         Registry reg = new RegistryImpl(port, null, null);
 
         // do not let VM exit
-        Object obj = new Object();
+        Object obj = new Object();  //$NON-LOCK-1$
 
         synchronized(obj) {
             obj.wait();

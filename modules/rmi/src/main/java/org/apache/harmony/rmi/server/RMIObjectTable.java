@@ -46,7 +46,8 @@ final class RMIObjectTable {
      * Object using for synchronization, because we should change
      * 2 tables simultaneously.
      */
-    private Object tablesLock = new Object();
+    private class TablesLock {}
+    private Object tablesLock = new TablesLock();
 
     /**
      * Adds specified info to the table if there are no elements with the

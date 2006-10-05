@@ -79,7 +79,8 @@ public class ExportManager {
     private static int nonSystemObjsNum = 0;
 
     // lock object for working with active calls
-    private static Object callsLock = new Object();
+    private static class CallsLock {}
+    private static Object callsLock = new CallsLock();
 
     /**
      * Exports specified remote object through pre-initialized UnicastServerRef.

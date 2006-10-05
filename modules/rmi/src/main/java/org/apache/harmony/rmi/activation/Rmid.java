@@ -251,7 +251,8 @@ public class Rmid extends RemoteServer implements ActivationSystem,
      */
     private static String logFolder = RMIConstants.DEFAULT_LOG_FOLDER;
 
-    private Object lock = new Object();
+    private class Lock {}
+    private Object lock = new Lock();
 
     /**
      * The name of the monitor class for RMID.

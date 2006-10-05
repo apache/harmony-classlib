@@ -48,7 +48,8 @@ public final class UID implements Serializable {
     private static long lastCreationTime = System.currentTimeMillis();
 
     // Lock object for synchronization.
-    private static final Object lock = new Object();
+    private static class Lock {}
+    private static final Object lock = new Lock();
 
     // unique identifier for this VM.
     private static final int vmUnique = lock.hashCode();

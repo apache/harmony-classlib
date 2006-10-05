@@ -122,7 +122,7 @@ public final class Matcher implements MatchResult {
                                 replacementPos = res.length();
                             }
 
-                            replacementParts.add(new Object() {
+                            replacementParts.add(new Object() {  //$NON-LOCK-1$
                                 private final int grN = gr;
 
                                 public String toString() {

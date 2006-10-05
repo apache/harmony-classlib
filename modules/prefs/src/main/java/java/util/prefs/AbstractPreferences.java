@@ -71,6 +71,7 @@ public abstract class AbstractPreferences extends Preferences {
     /**
      * The object used to lock this node. 
      */
+    private class Lock {}
     protected final Object lock;
     
     /**
@@ -156,7 +157,7 @@ public abstract class AbstractPreferences extends Preferences {
         cachedNode = new HashMap<String, AbstractPreferences>();
         nodeName = name;
         parentPref = parent;
-        lock = new Object();
+        lock = new Lock();
         userNode = root.userNode;
     }
 

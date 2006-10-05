@@ -50,7 +50,8 @@ public class TcpConnection extends ClientConnection {
     private boolean available;
 
     // lock object for synchtonization
-    private Object lock = new Object();
+    private class Lock {}
+    private Object lock = new Lock();
 
     // when this connection could be closed (if it's available)
     private long expiration;

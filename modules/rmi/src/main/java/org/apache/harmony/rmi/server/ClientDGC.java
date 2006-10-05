@@ -288,7 +288,8 @@ class ClientDGC {
         private Set cleanSet = Collections.synchronizedSet(new HashSet());
 
         // Object for tables synchronization.
-        private Object tablesLock = new Object();
+        private class TablesLock {}
+        private Object tablesLock = new TablesLock();
 
         // When to renew leases.
         private long renewTime;

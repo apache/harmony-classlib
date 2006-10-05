@@ -73,7 +73,8 @@ public class ServerConnectionManager implements Runnable {
     private int activeCallsNum = 0;
 
     // lock object for working with active calls
-    private Object callsLock = new Object();
+    private class CallsLock {}
+    private Object callsLock = new CallsLock();
 
     /*
      * Default wait time after 5 consecutive failed accept attempts
