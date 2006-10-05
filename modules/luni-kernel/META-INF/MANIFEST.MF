@@ -20,6 +20,4 @@ Import-Package: java.io,
 Export-Package: java.lang,
  java.lang.reflect,
  java.lang.ref,
- org.apache.harmony.kernel.vm,
- sun.misc
-
+ org.apache.harmony.kernel.vm
