@@ -248,7 +248,7 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
     public static final String DISABLED_ICON_CHANGED_PROPERTY = "disabledIcon";
     public static final String DISABLED_SELECTED_ICON_CHANGED_PROPERTY = "disabledSelectedIcon";
 
-    private static final Object ALL_ACTION_PROPERTIES = new Object() {
+    private static final Object ALL_ACTION_PROPERTIES = new Object() {  //$NON-LOCK-1$
         public boolean equals(final Object o) {
             return true;
         }

@@ -29,7 +29,7 @@ import java.awt.image.ReplicateScaleFilter;
 
 public abstract class Image {
 
-    public static final Object UndefinedProperty = new Object();
+    public static final Object UndefinedProperty = new Object();  //$NON-LOCK-1$
 
     public static final int SCALE_DEFAULT = 1;
 
@@ -84,4 +84,5 @@ public abstract class Image {
         return capabilities;
     }
 }
+
 

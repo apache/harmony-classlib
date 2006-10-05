@@ -879,7 +879,8 @@ public abstract class Component
      * The lock object for private component's data
      * which don't affect the component hierarchy
      */
-    private final transient Object componentLock = new Object();
+    private class ComponentLock {}
+    private final transient Object componentLock = new ComponentLock();
 
     static {
         PrivilegedAction<String[]> action = new PrivilegedAction<String[]>() {
@@ -4404,7 +4405,7 @@ public abstract class Component
 
         accessor.set("toolkit", Toolkit.getDefaultToolkit());
         accessor.set("behaviour", createBehavior());
-        accessor.set("componentLock", new Object());
+        accessor.set("componentLock", new Object());  //$NON-LOCK-1$
     }
 
     final void onDrawImage(Image image, Point destLocation, Dimension destSize, Rectangle source) {

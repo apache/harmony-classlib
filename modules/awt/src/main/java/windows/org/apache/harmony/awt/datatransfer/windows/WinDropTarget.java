@@ -66,7 +66,8 @@ public class WinDropTarget implements DropTargetContextPeer, Runnable {
     private int dragState;
     private int dropAction;
     private DropTargetEvent currentEvent;
-    private final Object dropMonitor = new Object();
+    private class DropMonitor {}
+    private final Object dropMonitor = new DropMonitor();
 
     private final WinDTK dtk;
     

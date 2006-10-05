@@ -104,7 +104,7 @@ public class JMenu extends JMenuItem implements Accessible, MenuElement {
 
     private static final String UI_CLASS_ID = "MenuUI";
 
-    private static final Object ALL_ACTION_PROPERTIES = new Object() {
+    private static final Object ALL_ACTION_PROPERTIES = new Object() {  //$NON-LOCK-1$
         public boolean equals(final Object o) {
             return !Action.ACCELERATOR_KEY.equals(o);
         }

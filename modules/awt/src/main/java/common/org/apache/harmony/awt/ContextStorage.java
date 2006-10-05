@@ -39,7 +39,8 @@ public final class ContextStorage {
     private WTK wtk;
     private GraphicsEnvironment graphicsEnvironment;
 
-    private final Object contextLock = new Object();
+    private class ContextLock {}
+    private final Object contextLock = new ContextLock();
     private final Synchronizer synchronizer = new Synchronizer();
 
     public static void activateMultiContextMode() {

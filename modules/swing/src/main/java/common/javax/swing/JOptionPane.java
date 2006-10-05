@@ -65,7 +65,8 @@ public class JOptionPane extends JComponent implements Accessible {
     };
 
     private class ClosingInternalFrameListener extends InternalFrameAdapter {
-        public final Object lock = new Object();
+        private class Lock {}
+        public final Object lock = new Lock();
 
         public void internalFrameClosed(final InternalFrameEvent e) {
             synchronized (lock) {

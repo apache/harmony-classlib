@@ -33,7 +33,7 @@ public class JRadioButton extends JToggleButton {
     private static final String UI_CLASS_ID = "RadioButtonUI";
 
     // this constant is also used by JCheckBox
-    static final Object NO_ICON_ACTION_PROPERTIES = new Object() {
+    static final Object NO_ICON_ACTION_PROPERTIES = new Object() {  //$NON-LOCK-1$
         public boolean equals(final Object o) {
             return !Action.SMALL_ICON.equals(o);
         }

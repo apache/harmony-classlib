@@ -33,7 +33,8 @@ import java.util.LinkedList;
 public abstract class NativeEventQueue {
     
     private ShutdownWatchdog shutdownWatchdog;
-    private final Object eventMonitor = new Object();
+    private class EventMonitor {}
+    private final Object eventMonitor = new EventMonitor();
     private final LinkedList eventQueue = new LinkedList();
 
     public static abstract class Task {

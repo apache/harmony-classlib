@@ -59,7 +59,7 @@ public class EventQueue {
         }
 
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
-        final Object notifier = new Object();
+        final Object notifier = new Object();  //$NON-LOCK-1$
         InvocationEvent event = new InvocationEvent(
                 toolkit, runnable, notifier, true);
 

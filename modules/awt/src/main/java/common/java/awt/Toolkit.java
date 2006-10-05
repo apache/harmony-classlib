@@ -115,7 +115,8 @@ public abstract class Toolkit {
 
     private final Map<NativeWindow, Window> windowFocusProxyMap = new HashMap<NativeWindow, Window>();
 
-    final Object awtTreeLock = new Object();
+    private class AWTTreeLock {}
+    final Object awtTreeLock = new AWTTreeLock();
     private final Synchronizer synchronizer = ContextStorage.getSynchronizer();
     final ShutdownWatchdog shutdownWatchdog = new ShutdownWatchdog();
 
@@ -1445,7 +1446,8 @@ public abstract class Toolkit {
          * with concurrently running lock-free iterator loop
          */
         private LinkedHashSet<Component> windows = new LinkedHashSet<Component>();
-        private final Object lock = new Object();
+        private class Lock {}
+        private final Object lock = new Lock();
 
         @SuppressWarnings("unchecked")
         void add(Component w) {

@@ -83,7 +83,7 @@ public class ORAddress {
             return new ORAddress();
         }
 
-        private final Object foo = new Object();
+        private final Object foo = new Object();  //$NON-LOCK-1$
 
         protected void getValues(Object object, Object[] values) {
             values[0] = foo;

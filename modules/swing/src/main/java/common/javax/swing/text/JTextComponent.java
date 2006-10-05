@@ -458,7 +458,7 @@ public abstract class JTextComponent extends JComponent implements Scrollable,
      */
     public static final String DEFAULT_KEYMAP = "default";
 
-    private static final Object DEFAULT_ACTION_KEY = new Object();
+    private static final Object DEFAULT_ACTION_KEY = new Object();  //$NON-LOCK-1$
     // last focused text component
     private static JTextComponent focusedComponent;
     // class to store all keymaps,which were added to JTextComponent

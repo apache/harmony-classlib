@@ -169,7 +169,8 @@ public class WinSystemProperties implements SystemProperties {
 
     private Font defaultFont;
 
-    private final Object cacheLock = new Object();
+    private class CacheLock {}
+    private final Object cacheLock = new CacheLock();
 
     public int getSystemColorARGB(int index) {
         synchronized (cacheLock) {
