@@ -40,9 +40,9 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.apache.harmony.crypto.internal.NullCipherSpi;
 import org.apache.harmony.crypto.internal.nls.Messages;
 import org.apache.harmony.security.fortress.Engine;
-
 
 /**
  * @com.intel.drl.spec_ref
@@ -127,6 +127,12 @@ public class Cipher {
      */
     protected Cipher(CipherSpi cipherSpi, Provider provider,
             String transformation) {
+        if (cipherSpi == null) {
+            throw new NullPointerException();
+        }
+        if (!(cipherSpi instanceof NullCipherSpi) && provider == null) {
+            throw new NullPointerException();
+        }
         this.provider = provider;
         this.transformation = transformation;
         this.spiImpl = cipherSpi;

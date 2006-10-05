@@ -31,6 +31,7 @@ import java.security.spec.AlgorithmParameterSpec;
 import java.util.Arrays;
 
 import javax.crypto.Cipher;
+import javax.crypto.CipherSpi;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.ShortBufferException;
@@ -38,6 +39,7 @@ import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 
 import tests.support.resource.Support_Resources;
+import org.apache.harmony.crypto.tests.support.MyCipher;
 
 public class CipherTest extends junit.framework.TestCase {
 
@@ -435,5 +437,38 @@ public class CipherTest extends junit.framework.TestCase {
         } catch (NoSuchAlgorithmException e) {
         }
     }
-    
+
+    /**
+     * @tests javax.crypto.Cipher#Cipher(CipherSpi cipherSpi, Provider provider,
+     *        String transformation)
+     */
+    public void test_Ctor() throws Exception {
+        // Regression for Harmony-1184
+        try {
+            new testCipher(null, null, "s");
+            fail("NullPointerException expected");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            new testCipher(new MyCipher(), null, "s");
+            fail("NullPointerException expected for 'null' provider");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            new testCipher(null, new Provider("qwerty", 1.0, "qwerty") {}, "s");
+            fail("NullPointerException expected for 'null' cipherSpi");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    class testCipher extends Cipher {
+        testCipher(CipherSpi c, Provider p, String s) {
+            super(c, p, s);
+        }
+    }
 }
