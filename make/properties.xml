@@ -63,10 +63,15 @@
         </or>
     </condition>
     <condition property="is.x86">
-        <or>
-            <os arch="x86"/>
-            <os arch="i386"/>
-        </or>
+	<and>
+	    <not>
+                <isset property="is.x86_64" />
+            </not>
+            <or>
+                <os arch="x86"/>
+                <os arch="i386"/>
+            </or>
+        </and>
     </condition>
     <condition property="is.ia64">
         <os arch="ia64" />
