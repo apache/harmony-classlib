@@ -103,7 +103,8 @@ public class Resolver implements Runnable {
     // the list of host names that should be resolved
     private final Vector<ThreadListEntry> hostnamesToResolve = new Vector<ThreadListEntry>();
     // semaphore that controls access to both lists above
-    private final Object threadListSemaphore = new Object();
+    private class ThreadListSemaphore {}
+    private final Object threadListSemaphore = new ThreadListSemaphore();
     
     // <---- Constructor's section
     
@@ -978,7 +979,7 @@ public class Resolver implements Runnable {
                             // correct message has been received
                             slist.updateEntry(workZone, curServer,
                                     responseTime);
-                            visitedServers.put(curServer, new Object());
+                            visitedServers.put(curServer, new Object());  //$NON-LOCK-1$
                             if (!answerSectionIsTruncated) {
                                 correctAnswer = true;
                                 break;
@@ -989,21 +990,21 @@ public class Resolver implements Runnable {
                             //        errMsg);
                             slist.updateEntry(workZone, curServer,
                                     SList.SERVER_FAILURE);
-                            visitedServers.put(curServer, new Object());
+                            visitedServers.put(curServer, new Object());  //$NON-LOCK-1$
                         } else if (rCode == ProviderConstants.FORMAT_ERROR) {
                             // removing server from list
                             //ProviderMgr.logger.warning("Format error. " +
                             //        errMsg);
                             slist.updateEntry(workZone, curServer,
                                     SList.SERVER_FAILURE);
-                            visitedServers.put(curServer, new Object());
+                            visitedServers.put(curServer, new Object());  //$NON-LOCK-1$
                         } else if (rCode == ProviderConstants.NAME_ERROR) {
                             //ProviderMgr.logger.warning("Name error. " +
                             //        errMsg);
                             if (receivedMes.isAA()) {
                                 slist.updateEntry(workZone, curServer,
                                         responseTime);
-                                visitedServers.put(curServer, new Object());
+                                visitedServers.put(curServer, new Object());  //$NON-LOCK-1$
                                 correctAnswer = true;
                                 //if (LogConst.DEBUG) {                            
                                 //    ProviderMgr.logger.fine(
@@ -1016,7 +1017,7 @@ public class Resolver implements Runnable {
                             // name error. Probably it is misconfigured.
                             slist.updateEntry(workZone, curServer,
                                     SList.SERVER_FAILURE);
-                            visitedServers.put(curServer, new Object());
+                            visitedServers.put(curServer, new Object());  //$NON-LOCK-1$
                             //if (LogConst.DEBUG) {                            
                             //    ProviderMgr.logger.fine(
                             //            "Not authoritative answer. " +
@@ -1027,13 +1028,13 @@ public class Resolver implements Runnable {
                             //        errMsg);
                             slist.updateEntry(workZone, curServer,
                                     SList.SERVER_FAILURE);
-                            visitedServers.put(curServer, new Object());
+                            visitedServers.put(curServer, new Object());  //$NON-LOCK-1$
                         } else if (rCode == ProviderConstants.REFUSED) {
                             //ProviderMgr.logger.warning("Refused. " +
                             //        errMsg);
                             slist.updateEntry(workZone, curServer,
                                     SList.SERVER_FAILURE);
-                            visitedServers.put(curServer, new Object());
+                            visitedServers.put(curServer, new Object());  //$NON-LOCK-1$
                         }
                     } catch (DomainProtocolException e) {
                         // removing this server from SLIST
