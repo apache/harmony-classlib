@@ -197,7 +197,7 @@ GLOBAL(struct jpeg_compress_struct *) ios_create_compress(JNIEnv *env) {
     //-- create compress struct
     cinfo = malloc(sizeof(struct jpeg_compress_struct));
     if (!cinfo) {
-        throwNewOutOfMemoryError("Unable to allocate memory for IJG structures");
+        throwNewOutOfMemoryError(env, "Unable to allocate memory for IJG structures");
         return 0;
     }
 
@@ -205,7 +205,7 @@ GLOBAL(struct jpeg_compress_struct *) ios_create_compress(JNIEnv *env) {
     err_mgr = malloc(sizeof(enc_error_mgr));
     if (!err_mgr) {
         free(cinfo);
-        throwNewOutOfMemoryError("Unable to allocate memory for IJG structures");
+        throwNewOutOfMemoryError(env, "Unable to allocate memory for IJG structures");
         return 0;
     }
     
@@ -221,7 +221,7 @@ GLOBAL(struct jpeg_compress_struct *) ios_create_compress(JNIEnv *env) {
     if (!dest_mgr) {
         free(cinfo);
         free(err_mgr);
-        throwNewOutOfMemoryError("Unable to allocate memory for IJG structures");
+        throwNewOutOfMemoryError(env, "Unable to allocate memory for IJG structures");
         return 0;
     }
     cinfo->dest = dest_mgr;
@@ -232,7 +232,7 @@ GLOBAL(struct jpeg_compress_struct *) ios_create_compress(JNIEnv *env) {
         free(cinfo);
         free(err_mgr);
         free(dest_mgr);
-        throwNewOutOfMemoryError("Unable to allocate memory for IJG structures");
+        throwNewOutOfMemoryError(env, "Unable to allocate memory for IJG structures");
         return 0;
     }
     cinfo->client_data = client_data;
@@ -243,7 +243,7 @@ GLOBAL(struct jpeg_compress_struct *) ios_create_compress(JNIEnv *env) {
         free(err_mgr);
         free(dest_mgr);
         free(client_data);
-        throwNewOutOfMemoryError("Unable to allocate memory for IJG structures");
+        throwNewOutOfMemoryError(env, "Unable to allocate memory for IJG structures");
         return 0;
     }
     dest_mgr->next_output_byte = client_data->jpeg_buffer;
@@ -327,7 +327,7 @@ Java_org_apache_harmony_x_imageio_plugins_jpeg_JPEGImageWriter_setIOS(JNIEnv *en
     }
     cdata->ios = (*env)->NewGlobalRef(env, iosObj);
     if (cdata->ios == NULL) {
-        throwNewOutOfMemoryError("Unable to allocate memory for IJG structures");
+        throwNewOutOfMemoryError(env, "Unable to allocate memory for IJG structures");
         return;
     }
     cinfo->dest->next_output_byte = cdata->jpeg_buffer;
@@ -360,7 +360,7 @@ Java_org_apache_harmony_x_imageio_plugins_jpeg_JPEGImageWriter_encode(JNIEnv *en
     row_pointer = (JSAMPROW) malloc(width * numBands);
 
     if (!row_pointer) {
-        throwNewOutOfMemoryError("Unable to allocate memory for IJG structures");
+        throwNewOutOfMemoryError(env, "Unable to allocate memory for IJG structures");
         return FALSE;
     }
 
