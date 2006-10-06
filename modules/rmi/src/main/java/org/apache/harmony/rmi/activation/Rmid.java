@@ -503,7 +503,7 @@ public class Rmid extends RemoteServer implements ActivationSystem,
         try {
             Rmid rmid = new Rmid(port);
             
-            // rmi.log.43=RMID instace created: {0} 
+            // rmi.log.43=RMID instance created: {0} 
             rLog.log(commonDebugLevel, Messages.getString("rmi.log.43", rmid)); //$NON-NLS-1$
             Thread.sleep(Long.MAX_VALUE);
         } catch (Throwable t) {
