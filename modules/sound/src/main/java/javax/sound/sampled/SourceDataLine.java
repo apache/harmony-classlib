@@ -17,39 +17,12 @@
 
 package javax.sound.sampled;
 
-public abstract class Control {
+public interface SourceDataLine extends DataLine {
+    
+    void open(AudioFormat format) throws LineUnavailableException;
 
-    static class Type {
-        private String name;
+    void open(AudioFormat format, int bufferSize)
+            throws LineUnavailableException;
 
-        protected Type(String name) {
-            this.name = name;
-        }
-
-        public final boolean equals(Object obj) {
-            throw new Error("Not yet imlemented");
-        }
-
-        public final int hashCode() {
-            throw new Error("Not yet imlemented");
-        }
-
-        public final String toString() {
-            throw new Error("Not yet imlemented");
-        }
-    }
-
-    private Control.Type type;
-
-    protected Control(Control.Type type) {
-        this.type = type;
-    }
-
-    public Control.Type getType() {
-        return this.type;
-    }
-
-    public String toString() {
-        throw new Error("Not yet imlemented");
-    }
+    int write(byte[] b, int off, int len);
 }

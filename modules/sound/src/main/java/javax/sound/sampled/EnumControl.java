@@ -17,39 +17,38 @@
 
 package javax.sound.sampled;
 
-public abstract class Control {
-
-    static class Type {
-        private String name;
+public abstract class EnumControl extends Control {
+    public static class Type extends Control.Type {
+        public static final Type REVERB = new Type("REVERB");
 
         protected Type(String name) {
-            this.name = name;
-        }
-
-        public final boolean equals(Object obj) {
-            throw new Error("Not yet imlemented");
-        }
-
-        public final int hashCode() {
-            throw new Error("Not yet imlemented");
-        }
-
-        public final String toString() {
-            throw new Error("Not yet imlemented");
+            super(name);
         }
     }
 
-    private Control.Type type;
+    private Object[] values;
 
-    protected Control(Control.Type type) {
-        this.type = type;
+    private Object value;
+
+    protected EnumControl(EnumControl.Type type, Object[] values, Object value) {
+        super(type);
+        this.value = value;
+        this.values = values;
     }
 
-    public Control.Type getType() {
-        return this.type;
+    public void setValue(Object value) {
+        this.value = value;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public Object[] getValues() {
+        return values;
     }
 
     public String toString() {
-        throw new Error("Not yet imlemented");
+        throw new Error("Not yet implemented");
     }
 }

@@ -17,39 +17,19 @@
 
 package javax.sound.sampled;
 
-public abstract class Control {
+import java.security.BasicPermission;
 
-    static class Type {
-        private String name;
+public class AudioPermission extends BasicPermission {
+    //FIXME
+    /*
+     * a static final serialVersionUID field is required
+     */
 
-        protected Type(String name) {
-            this.name = name;
-        }
-
-        public final boolean equals(Object obj) {
-            throw new Error("Not yet imlemented");
-        }
-
-        public final int hashCode() {
-            throw new Error("Not yet imlemented");
-        }
-
-        public final String toString() {
-            throw new Error("Not yet imlemented");
-        }
+    public AudioPermission(String name) {
+        super(name);
     }
 
-    private Control.Type type;
-
-    protected Control(Control.Type type) {
-        this.type = type;
-    }
-
-    public Control.Type getType() {
-        return this.type;
-    }
-
-    public String toString() {
-        throw new Error("Not yet imlemented");
+    public AudioPermission(String name, String actions) {
+        super(name, actions);
     }
 }

@@ -17,39 +17,26 @@
 
 package javax.sound.sampled;
 
-public abstract class Control {
+import java.io.IOException;
 
-    static class Type {
-        private String name;
+public interface Clip extends DataLine {
+    static final int LOOP_CONTINUOUSLY = -1;
 
-        protected Type(String name) {
-            this.name = name;
-        }
+    int getFrameLength();
 
-        public final boolean equals(Object obj) {
-            throw new Error("Not yet imlemented");
-        }
+    long getMicrosecondLength();
 
-        public final int hashCode() {
-            throw new Error("Not yet imlemented");
-        }
+    void loop(int count);
 
-        public final String toString() {
-            throw new Error("Not yet imlemented");
-        }
-    }
+    void open(AudioFormat format, byte[] data, int offset, int bufferSize)
+            throws LineUnavailableException;
 
-    private Control.Type type;
+    void open(AudioInputStream stream) throws LineUnavailableException,
+            IOException;
 
-    protected Control(Control.Type type) {
-        this.type = type;
-    }
+    void setFramePosition(int frames);
 
-    public Control.Type getType() {
-        return this.type;
-    }
+    void setLoopPoints(int start, int end);
 
-    public String toString() {
-        throw new Error("Not yet imlemented");
-    }
+    void setMicrosecondPosition(long microseconds);
 }

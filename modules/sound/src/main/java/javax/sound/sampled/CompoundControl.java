@@ -17,39 +17,26 @@
 
 package javax.sound.sampled;
 
-public abstract class Control {
-
-    static class Type {
-        private String name;
-
+public abstract class CompoundControl extends Control {
+    public static class Type extends Control.Type {
         protected Type(String name) {
-            this.name = name;
-        }
-
-        public final boolean equals(Object obj) {
-            throw new Error("Not yet imlemented");
-        }
-
-        public final int hashCode() {
-            throw new Error("Not yet imlemented");
-        }
-
-        public final String toString() {
-            throw new Error("Not yet imlemented");
+            super(name);
         }
     }
 
-    private Control.Type type;
+    private Control[] memberControls;
 
-    protected Control(Control.Type type) {
-        this.type = type;
+    protected CompoundControl(CompoundControl.Type type,
+            Control[] memberControls) {
+        super(type);
+        this.memberControls = memberControls;
     }
 
-    public Control.Type getType() {
-        return this.type;
+    public Control[] getMemberControls() {
+        return this.memberControls;
     }
 
     public String toString() {
-        throw new Error("Not yet imlemented");
+        throw new Error("Not yet implemented");
     }
 }
