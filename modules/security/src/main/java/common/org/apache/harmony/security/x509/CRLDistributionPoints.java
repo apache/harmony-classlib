@@ -22,7 +22,8 @@
 
 package org.apache.harmony.security.x509;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,7 +34,7 @@ import org.apache.harmony.security.internal.nls.Messages;
 
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work 
- * with the CRL Distribution Points which is the part of X.509 CRL
+ * with the CRL Distribution Points which is the part of X.509 Certificate
  * (as specified in RFC 3280 -
  *  Internet X.509 Public Key Infrastructure.
  *  Certificate and Certificate Revocation List (CRL) Profile.
@@ -94,7 +95,13 @@ public class CRLDistributionPoints extends ExtensionValue {
         }
         return encoding;
     }
-    
+
+    public static CRLDistributionPoints decode(byte[] encoding) 
+            throws IOException {
+        CRLDistributionPoints cdp = (CRLDistributionPoints) ASN1.decode(encoding);
+        return cdp;
+    }
+
     /**
      * Custom X.509 decoder.
      */
@@ -108,9 +115,7 @@ public class CRLDistributionPoints extends ExtensionValue {
 
         public Collection getValues(Object object) {
             CRLDistributionPoints dps = (CRLDistributionPoints) object;
-            return (dps.distributionPoints == null) 
-                                        ? new ArrayList() 
-                                        : dps.distributionPoints;
+            return dps.distributionPoints;
         }
     };
 }

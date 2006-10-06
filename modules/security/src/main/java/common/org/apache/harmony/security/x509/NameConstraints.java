@@ -57,7 +57,7 @@ import org.apache.harmony.security.internal.nls.Messages;
  * @see org.apache.harmony.security.x509.GeneralSubtree
  * @see org.apache.harmony.security.x509.GeneralName
  */
-public class NameConstraints {
+public class NameConstraints extends ExtensionValue {
 
     // the value of permittedSubtrees field of the structure
     private final GeneralSubtrees permittedSubtrees;
@@ -112,6 +112,10 @@ public class NameConstraints {
                             GeneralSubtrees excludedSubtrees, byte[] encoding) {
         this(permittedSubtrees, excludedSubtrees);
         this.encoding = encoding;
+    }
+
+    public static NameConstraints decode(byte[] encoding) throws IOException {
+        return (NameConstraints) ASN1.decode(encoding);
     }
     
     /**
@@ -267,7 +271,7 @@ public class NameConstraints {
         }
         return true;
     }
-    
+
     /**
      * X.509 NameConstraints encoder/decoder.
      */

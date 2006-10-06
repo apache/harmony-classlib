@@ -22,6 +22,7 @@
 
 package org.apache.harmony.security.x509;
 
+import org.apache.harmony.security.asn1.ASN1Any;
 import org.apache.harmony.security.asn1.ASN1Oid;
 import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1Type;
@@ -86,7 +87,10 @@ public class PolicyInformation {
      * ASN.1 DER X.509 PolicyInformation encoder/decoder class.
      */
     public static final ASN1Sequence ASN1 = new ASN1Sequence(
-            new ASN1Type[] { ASN1Oid.getInstance() }) {
+            new ASN1Type[] { ASN1Oid.getInstance(), ASN1Any.getInstance() }) {
+        {
+            setOptional(1);
+        }
 
         protected Object getDecodedObject(BerInputStream in) {
             Object[] values = (Object[]) in.content;

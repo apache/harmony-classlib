@@ -112,6 +112,7 @@ public class X509CertImplTest extends TestCase {
         ObjectIdentifier.toIntArray("1.3.6.1.4.1.311.10.3.3"), // MS Server Gated Cryptography
         ObjectIdentifier.toIntArray("2.16.840.1.113730.4.1"), // Netscape Server Gated Cryptography
     });
+    static NameConstraints nameConstraints;
     int extnBCLen = 5;
     static GeneralNames extnSANames;
     static GeneralNames extnIANames;
@@ -127,10 +128,27 @@ public class X509CertImplTest extends TestCase {
                     new GeneralName(7, "255.255.255.0"),
                     new GeneralName(8, "1.2.3.4444.55555")
             }));
+            GeneralSubtrees permittedNames = new GeneralSubtrees()
+                    .addSubtree(new GeneralSubtree(
+                            new GeneralName(1, "rfc@822.Name"), 1, 2))
+                    .addSubtree(new GeneralSubtree(
+                            new GeneralName(2, "dNSName")))
+                    .addSubtree(new GeneralSubtree(
+                            new GeneralName(8, "1.2.3.4444.55555"), 2));
+            GeneralSubtrees excludedNames = new GeneralSubtrees()
+                    .addSubtree(new GeneralSubtree(
+                            new GeneralName(1, "rfc@822.BadName"), 1, 2))
+                    .addSubtree(new GeneralSubtree(
+                            new GeneralName(2, "BadDNSName")))
+                    .addSubtree(new GeneralSubtree(
+                            new GeneralName(8, "2.3.4.4444.222"), 2));
+            nameConstraints = 
+                new NameConstraints(permittedNames, excludedNames);
         } catch (IOException e) {
             // should not be thrown
             e.printStackTrace();
             extnSANames = new GeneralNames();
+            nameConstraints = new NameConstraints();
         }
         extnIANames = extnSANames;
 
@@ -162,8 +180,7 @@ public class X509CertImplTest extends TestCase {
         new Extension("2.5.29.17", true, 
                 new AlternativeName(AlternativeName.SUBJECT, extnSANames)),
         // Name Constraints
-        new Extension("2.5.29.30", true, 
-                new NameConstraints().getEncoded()),
+        new Extension("2.5.29.30", true, nameConstraints),
         // Policy Constraints
         new Extension("2.5.29.36", true, new PolicyConstraints(1, 2)),
         // Extended Key Usage
@@ -184,10 +201,13 @@ public class X509CertImplTest extends TestCase {
                 new AlternativeName(AlternativeName.ISSUER, extnSANames)),
         // CRL Distribution Points
         new Extension("2.5.29.31", false, 
-                new ASN1Sequence(new ASN1Type[] {}) {
-                    protected void getValues(Object object, Object[] values) {
-                    }
-                }.encode(null)),
+                new CRLDistributionPoints(Arrays.asList(new DistributionPoint[] {
+                    new DistributionPoint(
+                        new DistributionPointName(extnSANames), 
+                        new ReasonFlags(extnKeyUsage),
+                        extnSANames
+                        ),
+                }))),
         // Authority Key Identifier
         new Extension("2.5.29.35", false, 
                 new AuthorityKeyIdentifier(

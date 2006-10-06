@@ -80,12 +80,13 @@ public class GeneralSubtrees {
      * @param   subtree:    GeneralSubtree
      * @return
      */
-    public void addSubtree(GeneralSubtree subtree) {
+    public GeneralSubtrees addSubtree(GeneralSubtree subtree) {
         encoding = null;
         if (generalSubtrees == null) {
             generalSubtrees = new ArrayList();
         }
         generalSubtrees.add(subtree);
+        return this;
     }
 
     /**

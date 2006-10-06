@@ -51,7 +51,7 @@ import org.apache.harmony.security.asn1.BerInputStream;
 public class GeneralNames {
 
     // the values of GeneralName
-    protected List generalNames;
+    private List generalNames;
     // the ASN.1 encoded form of GeneralNames
     private byte[] encoding;
     
@@ -147,6 +147,21 @@ public class GeneralNames {
             encoding = ASN1.encode(this);
         }
         return encoding;
+    }
+
+    /**
+     * Places the string representation of extension value
+     * into the StringBuffer object.
+     */
+    public void dumpValue(StringBuffer buffer, String prefix) {
+        if (generalNames == null) {
+            return;
+        }
+        for (Iterator it=generalNames.iterator(); it.hasNext();) {
+            buffer.append(prefix);
+            buffer.append(it.next());
+            buffer.append('\n');
+        }
     }
 
     /**

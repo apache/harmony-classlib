@@ -91,9 +91,11 @@ public class Extension {
     // crl extensions:
     public static final int[] ISSUING_DISTR_POINT = {2, 5, 29, 28};
     // crl entry extensions:
+    public static final int[] CRL_NUMBER = {2, 5, 29, 20};
     public static final int[] CERTIFICATE_ISSUER = {2, 5, 29, 29};
     public static final int[] INVALIDITY_DATE = {2, 5, 29, 24};
     public static final int[] REASON_CODE = {2, 5, 29, 21};
+    public static final int[] ISSUING_DISTR_POINTS = {2, 5, 29, 28};
     
     // the value of extnID field of the structure
     private final int[] extnID;
@@ -297,6 +299,8 @@ public class Extension {
                     AlternativeName.SUBJECT, extnValue);
         } else if (oidEquals(extnID, BASIC_CONSTRAINTS)) {
             extnValueObject = new BasicConstraints(extnValue);
+        } else if (oidEquals(extnID, NAME_CONSTRAINTS)) {
+            extnValueObject = NameConstraints.decode(extnValue);
         } else if (oidEquals(extnID, CERTIFICATE_POLICIES)) {
             extnValueObject = CertificatePolicies.decode(extnValue);
         } else if (oidEquals(extnID, AUTH_KEY_ID)) {
@@ -309,8 +313,18 @@ public class Extension {
             extnValueObject = new InhibitAnyPolicy(extnValue);
         } else if (oidEquals(extnID, CERTIFICATE_ISSUER)) {
             extnValueObject = new CertificateIssuer(extnValue);
+        } else if (oidEquals(extnID, CRL_DISTR_POINTS)) {
+            extnValueObject = CRLDistributionPoints.decode(extnValue);
         } else if (oidEquals(extnID, CERTIFICATE_ISSUER)) {
             extnValueObject = new ReasonCode(extnValue);
+        } else if (oidEquals(extnID, INVALIDITY_DATE)) {
+            extnValueObject = new InvalidityDate(extnValue);
+        } else if (oidEquals(extnID, REASON_CODE)) {
+            extnValueObject = new ReasonCode(extnValue);
+        } else if (oidEquals(extnID, CRL_NUMBER)) {
+            extnValueObject = new CRLNumber(extnValue);
+        } else if (oidEquals(extnID, ISSUING_DISTR_POINTS)) {
+            extnValueObject = IssuingDistributionPoint.decode(extnValue);
         }
     }
 
