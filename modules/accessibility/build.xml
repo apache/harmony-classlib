@@ -26,9 +26,14 @@
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
     <fileset id="classes" dir="${hy.build}">
-        <includesfile name="${hy.accessibility}/make/patternset.txt" />
-        <excludesfile name="${hy.hdk}/build/patternsets/luni-kernel.txt" />
-        <excludesfile name="${hy.hdk}/build/patternsets/security-kernel.txt" />
+        <or>
+            <present targetdir="${hy.accessibility.src.main.java}" />
+            <present targetdir="${hy.accessibility.src.main.java}">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
+        </or>
     </fileset>
 
     <fileset id="tests" dir="${hy.accessibility.bin.test}"/>
