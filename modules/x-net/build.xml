@@ -26,9 +26,14 @@
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
     <fileset id="classes" dir="${hy.build}">
-        <includesfile name="${hy.x-net}/make/patternset.txt" />
-        <excludesfile name="${hy.hdk}/build/patternsets/luni-kernel.txt" />
-        <excludesfile name="${hy.hdk}/build/patternsets/security-kernel.txt" />
+        <or>
+            <present targetdir="${hy.x-net.src.main.java}" />
+            <present targetdir="${hy.x-net.src.main.java}">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
+        </or>
     </fileset>
 
     <property file="../../make/depends.properties" />
@@ -51,8 +56,8 @@
         <mkdir dir="${hy.build}" />
 
         <javac sourcepath=""
-            srcdir="${hy.x-net.src.main.java}"
-            destdir="${hy.build}"
+               srcdir="${hy.x-net.src.main.java}"
+               destdir="${hy.build}"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
                source="${hy.javac.source}" 
