@@ -26,19 +26,30 @@
     <!-- set global properties for this build. -->
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
-    <fileset id="classes" dir="${hy.build}">
-        <includesfile name="${hy.security}/make/patternset.txt" />
-        <excludesfile name="${hy.hdk}/build/patternsets/luni-kernel.txt" />
-        <excludesfile name="${hy.hdk}/build/patternsets/security-kernel.txt" />
-    </fileset>
-
-    <property file="../../make/depends.properties" />
-
     <property name="hy.security.src.main.java.platform"
               value="${hy.security.src.main.java}/../${hy.os}" />
 
     <property name="hy.security.src.test.java.platform"
               value="${hy.security.src.test.java}/../${hy.os}" />
+
+    <fileset id="classes" dir="${hy.build}">
+        <or>
+            <present targetdir="${hy.security.src.main.java}" />
+            <present targetdir="${hy.security.src.main.java}">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
+            <present targetdir="${hy.security.src.main.java.platform}" />
+            <present targetdir="${hy.security.src.main.java.platform}">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
+        </or>
+    </fileset>
+
+    <property file="../../make/depends.properties" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
