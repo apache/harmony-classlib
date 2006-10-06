@@ -311,8 +311,8 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
                     loaderLog.log(RMILog.VERBOSE,
                             Messages.getString("rmi.log.32", name)); //$NON-NLS-1$
                 }
-                // rmi.log.33=Could not load class {0}(access to loader for codebase "{1}" denied).
-                throw new ClassNotFoundException(Messages.getString("rmi.log.33", //$NON-NLS-1$
+                // rmi.94=Could not load class {0}(access to loader for codebase "{1}" denied).
+                throw new ClassNotFoundException(Messages.getString("rmi.94", //$NON-NLS-1$
                         name, ((codebase == null) ? "" : codebase)), ex);//$NON-NLS-1$
                         
             }

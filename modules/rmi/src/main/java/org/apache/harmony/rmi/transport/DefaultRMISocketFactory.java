@@ -166,8 +166,8 @@ public class DefaultRMISocketFactory extends RMISocketFactory
                             } // Falling through to HTTP connection attempt.
                         }
                     } else {
-                        // rmi.log.119=Connection to [{0}:{1}] timed out
-                        throw new NoRouteToHostException(Messages.getString("rmi.log.119", //$NON-NLS-1$
+                        // rmi.95=Connection to [{0}:{1}] timed out
+                        throw new NoRouteToHostException(Messages.getString("rmi.95", //$NON-NLS-1$
                                 host, port));
                     }
                 } else if (proxyTransportLog.isLoggable(RMILog.BRIEF)) {

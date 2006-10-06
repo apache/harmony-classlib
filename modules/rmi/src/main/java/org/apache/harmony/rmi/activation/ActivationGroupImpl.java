@@ -209,8 +209,8 @@ public class ActivationGroupImpl extends ActivationGroup {
             UnknownObjectException, RemoteException {
         ActiveObject ao = (ActiveObject) active_objects.get(id);
         if (ao == null) {
-            // rmi.log.8D=Object was not registered or already deactivated.
-            throw new UnknownObjectException(Messages.getString("rmi.log.8D")); //$NON-NLS-1$
+            // rmi.93=Object was not registered or already deactivated.
+            throw new UnknownObjectException(Messages.getString("rmi.93")); //$NON-NLS-1$
         }
 
         Activatable.unexportObject(ao.getImpl(), false);
