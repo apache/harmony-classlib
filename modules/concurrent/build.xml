@@ -26,9 +26,20 @@
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
     <fileset id="classes" dir="${hy.build}">
-        <includesfile name="${hy.concurrent}/make/patternset.txt" />
-        <excludesfile name="${hy.hdk}/build/patternsets/luni-kernel.txt" />
-        <excludesfile name="${hy.hdk}/build/patternsets/security-kernel.txt" />
+        <or>
+            <present targetdir="src/main/java" />
+            <present targetdir="src/main/java">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
+            <present targetdir="standard/src/main/java" />
+            <present targetdir="standard/src/main/java">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
+        </or>
     </fileset>
 
     <target name="build" depends="compile-java, build-jar" />
