@@ -25,15 +25,26 @@
     <!-- set global properties for this build. -->
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
+    <property name="hy.nio.src.test.java.platform"
+              value="${hy.nio.src.test.java}/../${hy.os}" />
+
     <fileset id="classes" dir="${hy.build}">
-        <includesfile name="${hy.nio}/make/patternset.txt" />
-        <excludesfile name="${hy.hdk}/build/patternsets/luni-kernel.txt" />
-        <excludesfile name="${hy.hdk}/build/patternsets/security-kernel.txt" />
+        <or>
+            <present targetdir="${hy.nio.src.main.java}" />
+            <present targetdir="${hy.nio.src.main.java}">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
+            <present targetdir="${hy.nio.src.main.java.platform}" />
+            <present targetdir="${hy.nio.src.main.java.platform}">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
+        </or>
     </fileset>
-
-        <property name="hy.nio.src.test.java.platform"
-                  value="${hy.nio.src.test.java}/../${hy.os}" />
-
+    
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
     <target name="test" depends="build, compile-tests, run-tests" />
