@@ -134,10 +134,3 @@ class DefaultSSLContext {
         return null;
     }
 }
-
-class ContextImpl extends SSLContext {
-    public ContextImpl(SSLContextSpi contextSpi, Provider provider,
-            String protocol) {
-        super(contextSpi, provider, protocol);
-    }
-}

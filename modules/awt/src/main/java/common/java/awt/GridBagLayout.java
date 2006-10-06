@@ -23,23 +23,6 @@ package java.awt;
 import java.io.Serializable;
 import java.util.*;
 
-class GridBagLayoutInfo {
-
-    int widths[];
-    int heights[];
-
-    GridBagLayoutInfo(int widths[], int heights[]) {
-        this.widths = widths;
-        this.heights = heights;
-    }
-
-    void update(int widths[], int heights[]) {
-        this.widths = widths;
-        this.heights = heights;
-    }
-
-}
-
 public class GridBagLayout implements LayoutManager2, Serializable {
     private static final long serialVersionUID = 8838754796412211005L;
 

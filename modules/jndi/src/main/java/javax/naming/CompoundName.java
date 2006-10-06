@@ -998,15 +998,3 @@ public class CompoundName implements Name {
         return true;
     }
 }
-
-/**
- * A useless class required to satisfy the requirement for an 'impl'
- * field (see above).
- */
-class NameImpl {
-    protected NameImpl() {
-        super();
-    }
-}
-
-
