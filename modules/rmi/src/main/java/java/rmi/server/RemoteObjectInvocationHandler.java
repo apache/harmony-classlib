@@ -30,6 +30,7 @@ import java.rmi.Remote;
 import java.rmi.UnexpectedException;
 
 import org.apache.harmony.rmi.common.RMIHash;
+import org.apache.harmony.rmi.internal.nls.Messages;
 
 
 /**
@@ -50,8 +51,8 @@ public class RemoteObjectInvocationHandler extends RemoteObject
         super(ref);
 
         if (ref == null) {
-            throw new NullPointerException(
-                    "RemoteRef parameter could not be null.");
+            // rmi.20=RemoteRef parameter could not be null.
+            throw new NullPointerException(Messages.getString("rmi.20")); //$NON-NLS-1$
         }
     }
 
@@ -65,8 +66,8 @@ public class RemoteObjectInvocationHandler extends RemoteObject
         if (m.getDeclaringClass() == Object.class) {
             return invokeObjectMethod(proxy, m, args);
         } else if (!(proxy instanceof Remote)) {
-            throw new IllegalArgumentException(
-                    "Proxy does not implement Remote interface.");
+            // rmi.21=Proxy does not implement Remote interface.
+            throw new IllegalArgumentException(Messages.getString("rmi.21")); //$NON-NLS-1$
         } else {
             return invokeRemoteMethod(proxy, m, args);
         }
@@ -76,8 +77,9 @@ public class RemoteObjectInvocationHandler extends RemoteObject
      * @com.intel.drl.spec_ref
      */
     private void readObjectNoData() throws InvalidObjectException {
-        throw new InvalidObjectException("No data in stream for class "
-                + this.getClass().getName());
+        // rmi.22=No data in stream for class {0} 
+        throw new InvalidObjectException(Messages.getString("rmi.22", //$NON-NLS-1$
+                this.getClass().getName()));
     }
 
     /*
@@ -86,30 +88,30 @@ public class RemoteObjectInvocationHandler extends RemoteObject
     private Object invokeObjectMethod(Object proxy, Method m, Object[] args) {
         String mName = m.getName();
 
-        if (mName.equals("hashCode")) {
+        if (mName.equals("hashCode")) { //$NON-NLS-1$
             // return result of hashCode method call from RemoteObject class
             return new Integer(hashCode());
-        } else if (mName.equals("equals")) {
+        } else if (mName.equals("equals")) { //$NON-NLS-1$
             Object obj = args[0];
             return new Boolean((proxy == obj) // the same object?
                     || (obj != null && Proxy.isProxyClass(obj.getClass())
                             && equals(Proxy.getInvocationHandler(obj))));
-        } else if (mName.equals("toString")) {
+        } else if (mName.equals("toString")) { //$NON-NLS-1$
             Class[] interf = proxy.getClass().getInterfaces();
 
             if (interf.length == 0) {
-                return "Proxy[" + toString() + "]";
+                return "Proxy[" + toString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
             }
-            String str = "Proxy[interf:[";
+            String str = "Proxy[interf:["; //$NON-NLS-1$
 
             for (int i = 0; i < interf.length - 1; ++i) {
-                str += interf[i].getName() + ", ";
+                str += interf[i].getName() + ", "; //$NON-NLS-1$
             }
-            return str + interf[interf.length - 1].getName() + "], "
-                    + toString() + "]";
+            return str + interf[interf.length - 1].getName() + "], " //$NON-NLS-1$
+                    + toString() + "]"; //$NON-NLS-1$
         } else {
-            throw new IllegalArgumentException(
-                    "Illegal method from Object class: " + m);
+            // rmi.23=Illegal method from Object class: {0}
+            throw new IllegalArgumentException(Messages.getString("rmi.23", m)); //$NON-NLS-1$
         }
     }
 
@@ -133,7 +135,8 @@ public class RemoteObjectInvocationHandler extends RemoteObject
                     throw ex;
                 }
             }
-            throw new UnexpectedException("Unexpected exception", ex);
+            // rmi.24=Unexpected exception
+            throw new UnexpectedException(Messages.getString("rmi.24"), ex); //$NON-NLS-1$
         }
     }
 }

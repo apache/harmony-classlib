@@ -30,6 +30,7 @@ import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.ObjID;
 import java.rmi.server.RemoteRef;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.registry.RegistryImpl;
 import org.apache.harmony.rmi.remoteref.UnicastRef;
 import org.apache.harmony.rmi.remoteref.UnicastRef2;
@@ -56,7 +57,8 @@ public final class LocateRegistry {
                                           RMIServerSocketFactory ssf)
             throws RemoteException {
         if (port < 0) {
-            throw new IllegalArgumentException("Port value out of range: " + port);
+            // rmi.15=Port value out of range: {0}
+            throw new IllegalArgumentException(Messages.getString("rmi.15", port)); //$NON-NLS-1$
         }
         return new RegistryImpl(port, csf, ssf);
     }
@@ -72,7 +74,7 @@ public final class LocateRegistry {
             try {
                 host = InetAddress.getLocalHost().getHostName();
             } catch (UnknownHostException uhe) {
-                host = "localhost";
+                host = "localhost"; //$NON-NLS-1$
             }
         }
 
@@ -82,7 +84,7 @@ public final class LocateRegistry {
 
         try {
             Class regClass = Class.forName(
-                    "org.apache.harmony.rmi.registry.RegistryImpl_Stub");
+                    "org.apache.harmony.rmi.registry.RegistryImpl_Stub"); //$NON-NLS-1$
             RemoteRef ref;
 
             if (csf == null) {
@@ -95,7 +97,8 @@ public final class LocateRegistry {
                     new Class[] { RemoteRef.class }).newInstance(
                             new Object[] { ref });
         } catch (Exception ex) {
-            throw new RemoteException("Unable to get registry.", ex);
+            // rmi.16=Unable to get registry.
+            throw new RemoteException(Messages.getString("rmi.16"), ex); //$NON-NLS-1$
         }
     }
 

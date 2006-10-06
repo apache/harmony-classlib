@@ -137,7 +137,7 @@ public class HttpOutboundSocket extends SocketWrapper
      * {@inheritDoc}
      */
     public String toString() {
-        return ("HttpOutboundSocket[" + s.toString() + ", "
-                + host + ':' + port + ", " + (cgi ? "" : "non-") + "CGI]");
+        return ("HttpOutboundSocket[" + s.toString() + ", " //$NON-NLS-1$ //$NON-NLS-2$
+                + host + ':' + port + ", " + (cgi ? "" : "non-") + "CGI]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
 }

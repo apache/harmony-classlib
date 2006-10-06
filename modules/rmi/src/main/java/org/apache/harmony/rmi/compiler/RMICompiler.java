@@ -34,6 +34,7 @@ import java.util.StringTokenizer;
 import org.apache.harmony.rmi.common.JavaCompiler;
 import org.apache.harmony.rmi.common.JavaCompilerException;
 import org.apache.harmony.rmi.common.RMIUtil;
+import org.apache.harmony.rmi.internal.nls.Messages;
 
 
 /**
@@ -339,7 +340,7 @@ public final class RMICompiler implements RmicConstants, RmicStrings {
         boolean verbose = false;
         boolean depend = false;
         boolean optionsPresent = (numArgs > 0);
-        String destinationDir = ".";
+        String destinationDir = "."; //$NON-NLS-1$
 
         ArrayList javacOptionsList = new ArrayList();
 
@@ -387,8 +388,8 @@ public final class RMICompiler implements RmicConstants, RmicStrings {
                     // If parameter is available,
                     // add options to javacOptionsList.
                     String target = args[++i].intern();
-                    String source = (((target == "1.1") || (target == "1.2"))
-                            ? "1.3" : target);
+                    String source = (((target == "1.1") || (target == "1.2")) //$NON-NLS-1$ //$NON-NLS-2$
+                            ? "1.3" : target); //$NON-NLS-1$
 
                     javacOptionsList.add(optionSource);
                     javacOptionsList.add(source);
@@ -484,7 +485,8 @@ public final class RMICompiler implements RmicConstants, RmicStrings {
         // Print warnings.
         if (warnings) {
             for (Iterator i = warningTags.values().iterator(); i.hasNext(); ) {
-                System.err.println("WARNING: " + i.next());
+                // rmi.console.1A=WARNING: {0}
+                System.err.println(Messages.getString("rmi.console.1A", i.next())); //$NON-NLS-1$
             }
         }
 
@@ -579,11 +581,13 @@ public final class RMICompiler implements RmicConstants, RmicStrings {
                         cls = Class.forName(className);
                         classes[i] = cls;
                     } catch (ClassNotFoundException e) {
+                        // rmi.55=Class not found: {0}
                         throw new RMICompilerException(
-                                "Class not found: " + e.getMessage(), e);
+                                Messages.getString("rmi.55", e.getMessage()), e); //$NON-NLS-1$
                     } catch (LinkageError e) {
+                        // rmi.57=Class loading error: {0}
                         throw new RMICompilerException(
-                                "Class loading error: " + e.getMessage(), e);
+                                Messages.getString("rmi.57", e.getMessage()), e); //$NON-NLS-1$
                     }
                 }
 
@@ -623,8 +627,9 @@ public final class RMICompiler implements RmicConstants, RmicStrings {
                     writer.write(stub.getStubSource());
                     writer.close();
                 } catch (IOException e) {
+                    // rmi.58=Can't write file {0}
                     throw new RMICompilerException(
-                            "Can't write file " + stubFile.getName(), e);
+                            Messages.getString("rmi.58", stubFile.getName()), e); //$NON-NLS-1$
                 }
 
                 if (version != VERSION_V12) {
@@ -634,8 +639,9 @@ public final class RMICompiler implements RmicConstants, RmicStrings {
                         writer.write(stub.getSkeletonSource());
                         writer.close();
                     } catch (IOException e) {
+                        // rmi.58=Can't write file {0}
                         throw new RMICompilerException(
-                                "Can't write file " + skelFile.getName(), e);
+                                Messages.getString("rmi.58", skelFile.getName()), e); //$NON-NLS-1$
                     }
                 }
             }
@@ -661,10 +667,12 @@ public final class RMICompiler implements RmicConstants, RmicStrings {
                         .compile(javacOptions, files);
 
                 if (ret != 0) {
-                    throw new RMICompilerException("Javac failed, code " + ret);
+                    // rmi.59=Javac failed, code {0}
+                    throw new RMICompilerException(Messages.getString("rmi.59", ret)); //$NON-NLS-1$
                 }
             } catch (JavaCompilerException e) {
-                throw new RMICompilerException("Can't run Javac: " + e, e);
+                // rmi.5A=Can't run Javac: {0}
+                throw new RMICompilerException(Messages.getString("rmi.5A", e), e); //$NON-NLS-1$
             }
         } finally {
 
@@ -765,7 +773,7 @@ public final class RMICompiler implements RmicConstants, RmicStrings {
      */
     private static void error(String message, String arg)
             throws RMICompilerException {
-        error(message.replaceAll("%s", arg));
+        error(message.replaceAll("%s", arg)); //$NON-NLS-1$
     }
 
     /**
@@ -782,7 +790,7 @@ public final class RMICompiler implements RmicConstants, RmicStrings {
      *              by <code>%s</code> substrings.
      */
     private void addWarning(String tag, String message) {
-        warningTags.put(tag, message.replaceAll("%s", tag));
+        warningTags.put(tag, message.replaceAll("%s", tag)); //$NON-NLS-1$
     }
 
     /**

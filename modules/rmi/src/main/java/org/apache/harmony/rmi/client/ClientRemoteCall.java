@@ -35,6 +35,7 @@ import java.rmi.server.RemoteCall;
 import java.rmi.server.UID;
 
 import org.apache.harmony.rmi.common.RMILog;
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.remoteref.UnicastRef;
 import org.apache.harmony.rmi.transport.RMIObjectInputStream;
 import org.apache.harmony.rmi.transport.RMIObjectOutputStream;
@@ -156,7 +157,8 @@ public class ClientRemoteCall implements RemoteCall, RMIProtocolConstants {
      */
     public void executeCall() throws Exception {
         if (isClosed) {
-            throw new RemoteException("Remote call is already closed.");
+            // rmi.38=Remote call is already closed.
+            throw new RemoteException(Messages.getString("rmi.38")); //$NON-NLS-1$
         }
         byte data;
 
@@ -164,8 +166,8 @@ public class ClientRemoteCall implements RemoteCall, RMIProtocolConstants {
             // read input
             if ((data = (new DataInputStream(conn.getInputStream())).readByte())
                     != CALL_OK) {
-                throw new UnmarshalException(
-                        "Unknown call status response: " + data);
+                // rmi.39=Unknown call status response: {0}
+                throw new UnmarshalException(Messages.getString("rmi.39", data)); //$NON-NLS-1$
             }
 
             // read return value id
@@ -174,13 +176,14 @@ public class ClientRemoteCall implements RemoteCall, RMIProtocolConstants {
         } catch (UnmarshalException re) {
             throw re;
         } catch (IOException ioe) {
-            throw new UnmarshalException("Unable to read call return header: ",
+            // rmi.3A=Unable to read call return header:
+            throw new UnmarshalException(Messages.getString("rmi.3A"), //$NON-NLS-1$
                     ioe);
         }
 
         if (data != RETURN_VAL && data != RETURN_EX) {
-            throw new UnmarshalException(
-                    "Unknown call result response: " + data);
+            // rmi.3B=Unknown call result response: {0}
+            throw new UnmarshalException(Messages.getString("rmi.3B", data)); //$NON-NLS-1$
         }
         uid = UID.read(oin);
 
@@ -205,7 +208,7 @@ public class ClientRemoteCall implements RemoteCall, RMIProtocolConstants {
      * @return string representation of this RemoteCall
      */
     public String toString() {
-        return "ClientRemoteCall: " + conn;
+        return "ClientRemoteCall: " + conn; //$NON-NLS-1$
     }
 
     /*
@@ -220,11 +223,12 @@ public class ClientRemoteCall implements RemoteCall, RMIProtocolConstants {
         try {
             obj = oin.readObject();
         } catch (IOException ioe) {
-            throw new UnmarshalException("IOException occured while "
-                    + "unmarshalling returned exception", ioe);
+            // rmi.3C=IOException occured while unmarshalling returned exception
+            throw new UnmarshalException(Messages.getString("rmi.3C"), ioe); //$NON-NLS-1$
+                    
         } catch (ClassNotFoundException cnfe) {
-            throw new UnmarshalException("ClassNotFoundException occured "
-                    + "while unmarshalling returned exception", cnfe);
+            // rmi.3D=ClassNotFoundException occured while unmarshalling returned exception
+            throw new UnmarshalException(Messages.getString("rmi.3D"), cnfe); //$NON-NLS-1$
         }
 
         if (obj instanceof Exception) {
@@ -242,8 +246,8 @@ public class ClientRemoteCall implements RemoteCall, RMIProtocolConstants {
                 }
 
                 if (!ok) {
-                    resEx = new UnexpectedException(
-                            "Remote method threw unexpected exception", resEx);
+                    // rmi.3E=Remote method threw unexpected exception
+                    resEx = new UnexpectedException(Messages.getString("rmi.3E"), resEx); //$NON-NLS-1$
                 }
             }
 
@@ -259,12 +263,12 @@ public class ClientRemoteCall implements RemoteCall, RMIProtocolConstants {
             // logs exception from server
             if (UnicastRef.clientCallsLog.isLoggable(RMILog.BRIEF)) {
                 UnicastRef.clientCallsLog.log(RMILog.BRIEF,
-                        "Outbound remote call to " + conn +
-                        " received exception: ", resEx);
+                        Messages.getString("rmi.log.92", conn), resEx); //$NON-NLS-1$
             }
             throw resEx;
         } else {
-            throw new UnexpectedException("Not Exception type thrown: " + obj);
+            // rmi.3F=Not Exception type thrown: {0}
+            throw new UnexpectedException(Messages.getString("rmi.3F", obj)); //$NON-NLS-1$
         }
     }
 }

@@ -42,6 +42,7 @@ import java.security.PrivilegedExceptionAction;
 import java.util.Hashtable;
 
 import org.apache.harmony.rmi.common.RMILog;
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.transport.RMIObjectInputStream;
 
 
@@ -79,27 +80,34 @@ public class ActivationGroupImpl extends ActivationGroup {
      * ActivationGroupID -> ActivationGroupDesc -> incarnation
      */
     public static void main(String args[]) {
-        rlog.log(RMILog.VERBOSE, "ActivationGroupImpl.main: ");
+        // rmi.log.4C=ActivationGroupImpl.main:
+        rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.4C")); //$NON-NLS-1$
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new RMISecurityManager());
         }
 
         try {
-            rlog.log(RMILog.VERBOSE, "System.in.available = "
-                    + System.in.available());
+            // rmi.log.4F=System.in.available = {0}
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.4F", //$NON-NLS-1$
+                    System.in.available()));
 
             RMIObjectInputStream ois = new RMIObjectInputStream(
                     new BufferedInputStream(System.in));
-            rlog.log(RMILog.VERBOSE, "ois = " + ois);
+            // rmi.log.55=ois = {0}
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.55", ois)); //$NON-NLS-1$
             ActivationGroupID agid = (ActivationGroupID) ois.readObject();
-            rlog.log(RMILog.VERBOSE, "agid = " + agid);
+            // rmi.log.57=agid = {0}
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.57", agid)); //$NON-NLS-1$
             ActivationGroupDesc agdesc = (ActivationGroupDesc) ois.readObject();
-            rlog.log(RMILog.VERBOSE, "agdesc = " + agdesc);
+            // rmi.log.74=agdesc = {0}
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.74", agdesc)); //$NON-NLS-1$
             long incarnation = ois.readLong();
-            rlog.log(RMILog.VERBOSE, "incarnation=" + incarnation);
+            // rmi.log.7B=incarnation = {0}
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.7B", incarnation)); //$NON-NLS-1$
             ActivationGroup.createGroup(agid, agdesc, incarnation);
         } catch (Throwable t) {
-            rlog.log(RMILog.VERBOSE, ": " + "Exception: " + t);
+            // rmi.log.7C=: Exception: {0}
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.7C", t)); //$NON-NLS-1$
             t.printStackTrace();
         }
     }
@@ -110,37 +118,38 @@ public class ActivationGroupImpl extends ActivationGroup {
     public MarshalledObject newInstance(final ActivationID aid,
             final ActivationDesc adesc) throws ActivationException {
 
-        rlog.log(RMILog.VERBOSE, "ActivationGroupImpl" + ": "
-                + "ActivationGroupImpl.newInstance started.");
+        // rmi.log.83=ActivationGroupImpl: ActivationGroupImpl.newInstance started.
+        rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.83")); //$NON-NLS-1$
         // Checking that we try to activate object in correct group.
         if (!groupID.equals(adesc.getGroupID())) {
-            throw new ActivationException(
-                    "Attempt to activate object from different group.");
+            // rmi.36=Attempt to activate object from different group.
+            throw new ActivationException(Messages.getString("rmi.36")); //$NON-NLS-1$
         }
 
         if (isGroupActive == false) {
-            throw new ActivationException(
-                    "Attempt to activate object in inactive group.");
+            // rmi.37=Attempt to activate object in inactive group.
+            throw new ActivationException(Messages.getString("rmi.37")); //$NON-NLS-1$
         }
 
         /**
          */
 
         ActiveObject ao = (ActiveObject) active_objects.get(aid);
-        rlog.log(RMILog.VERBOSE, "ActivationGroupImpl" + ": "
-                + "active object = " + ao);
+        // rmi.log.84=ActivationGroupImpl: active object = {0}
+        rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.84", ao)); //$NON-NLS-1$
 
         if (ao != null) {
             return ao.remote_object_stub;
         }
         try {
 
-            rlog.log(RMILog.VERBOSE, "Ready to load active class: [location="
-                    + adesc.getLocation() + "; name=" + adesc.getClassName()
-                    + "]");
+            // rmi.log.85=Ready to load active class: [location={0}; name={1}]
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.85", //$NON-NLS-1$
+                    adesc.getLocation(), adesc.getClassName()));
             final Class aclass = RMIClassLoader.loadClass(adesc.getLocation(),
                     adesc.getClassName());
-            rlog.log(RMILog.VERBOSE, "active class = " + aclass);
+            // rmi.log.86=active class = {0}
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.86", aclass)); //$NON-NLS-1$
 
             Remote rmt = (Remote) AccessController
                     .doPrivileged(new PrivilegedExceptionAction() {
@@ -148,8 +157,8 @@ public class ActivationGroupImpl extends ActivationGroup {
                         public Object run() throws Exception {
                             Constructor aconstructor = aclass
                                     .getDeclaredConstructor(special_constructor_parameters);
-                            rlog.log(RMILog.VERBOSE,
-                                    "Activatable Constructor: " + aconstructor);
+                            // rmi.log.87=Activatable Constructor: {0}
+                            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.87", aconstructor)); //$NON-NLS-1$
 
                             aconstructor.setAccessible(true);
 
@@ -160,21 +169,27 @@ public class ActivationGroupImpl extends ActivationGroup {
                         }
                     });
 
-            rlog.log(RMILog.VERBOSE, "rmt.getClass = " + rmt.getClass());
+            // rmi.log.88=rmt.getClass = {0}
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.88", rmt.getClass())); //$NON-NLS-1$
 
-            rlog.log(RMILog.VERBOSE, "newInstance: Remote Object = " + rmt);
+            // rmi.log.89=newInstance: Remote Object = {0}
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.89", rmt)); //$NON-NLS-1$
 
             ao = new ActiveObject(rmt);
-            rlog.log(RMILog.VERBOSE, "active object  = " + ao);
+            // rmi.log.91=active object = {0}
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.91", ao)); //$NON-NLS-1$
 
             active_objects.put(aid, ao);
-            rlog.log(RMILog.VERBOSE, "ao was put into Hashtable");
-            rlog.log(RMILog.VERBOSE, "calling newInstance of the superclass.");
+            // rmi.log.8A=ao was put into Hashtable
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.8A")); //$NON-NLS-1$
+            // rmi.log.8B=calling newInstance of the superclass.
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.8B")); //$NON-NLS-1$
 
             super.activeObject(aid, ao.remote_object_stub);
             return ao.remote_object_stub;
         } catch (Throwable t) {
-            rlog.log(RMILog.VERBOSE, "Exception: " + t, t);
+            // rmi.log.44=Exception: {0}
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.44", t), t); //$NON-NLS-1$
             return null;
         }
     }
@@ -186,15 +201,16 @@ public class ActivationGroupImpl extends ActivationGroup {
             throws RemoteException, ActivationException {
         super(agid);
         groupID = agid;
-        rlog.log(RMILog.VERBOSE, "ActivationGroup was constructed.");
+        // rmi.log.8C=ActivationGroup was constructed.
+        rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.8C")); //$NON-NLS-1$
     }
 
     public boolean inactiveObject(ActivationID id) throws ActivationException,
             UnknownObjectException, RemoteException {
         ActiveObject ao = (ActiveObject) active_objects.get(id);
         if (ao == null) {
-            throw new UnknownObjectException(
-                    "Object was not registered or already deactivated.");
+            // rmi.log.8D=Object was not registered or already deactivated.
+            throw new UnknownObjectException(Messages.getString("rmi.log.8D")); //$NON-NLS-1$
         }
 
         Activatable.unexportObject(ao.getImpl(), false);
@@ -217,18 +233,18 @@ public class ActivationGroupImpl extends ActivationGroup {
 
         ActiveObject(Remote rmt) {
 
-            rlog.log(RMILog.VERBOSE, "ActiveObject" + ": "
-                    + "ActiveObject.<init>:");
+            // rmi.log.8E=ActiveObject: ActiveObject.<init>:
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.8E")); //$NON-NLS-1$ //$NON-NLS-2$
             remote_object_impl = rmt;
             try {
 
                 remote_object_stub = new MarshalledObject(rmt);
-                rlog.log(RMILog.VERBOSE, "ActiveObject" + ": "
-                        + "remote_object_impl = " + remote_object_impl
-                        + "; remote_object_stub=" + remote_object_stub);
+                // rmi.log.8F=ActiveObject: remote_object_impl = {0}; remote_object_stub={1}
+                rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.8F", //$NON-NLS-1$
+                        remote_object_impl, remote_object_stub));
             } catch (Throwable t) {
-                rlog.log(RMILog.VERBOSE, "ActiveObject" + ": "
-                        + "Failed to marshal remote stub: " + t);
+                // rmi.log.90=ActiveObject: Failed to marshal remote stub: {0}
+                rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.90", t)); //$NON-NLS-1$
                 t.printStackTrace();
             }
         }

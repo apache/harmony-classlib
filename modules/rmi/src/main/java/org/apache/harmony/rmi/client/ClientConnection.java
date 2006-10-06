@@ -36,6 +36,7 @@ import java.rmi.server.UID;
 
 import org.apache.harmony.rmi.common.RMILog;
 import org.apache.harmony.rmi.common.RMIUtil;
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.transport.Endpoint;
 import org.apache.harmony.rmi.transport.RMIProtocolConstants;
 
@@ -85,8 +86,8 @@ public abstract class ClientConnection implements RMIProtocolConstants {
             out = new BufferedOutputStream(s.getOutputStream());
             in = new BufferedInputStream(s.getInputStream());
         } catch (IOException ioe) {
-            throw new ConnectException(
-                    "Unable to establish connection to server", ioe);
+            // rmi.40=Unable to establish connection to server
+            throw new ConnectException(Messages.getString("rmi.40"), ioe); //$NON-NLS-1$
         }
         serverProtocolAck();
     }
@@ -114,7 +115,8 @@ public abstract class ClientConnection implements RMIProtocolConstants {
         }
 
         if (dgcLog.isLoggable(RMILog.VERBOSE)) {
-            dgcLog.log(RMILog.VERBOSE, "Sent DGC ack to " + ep + " for " + uid);
+            // rmi.log.93=Sent DGC ack to {0} for {1}
+            dgcLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.93", ep, uid)); //$NON-NLS-1$
         }
     }
 
@@ -141,13 +143,14 @@ public abstract class ClientConnection implements RMIProtocolConstants {
             dout.writeInt(RMI_HEADER);
             dout.writeShort(PROTOCOL_VER);
         } catch (IOException ioe) {
-            throw new ConnectIOException(
-                    "Unable to write RMI protocol header", ioe);
+            // rmi.41=Unable to write RMI protocol header
+            throw new ConnectIOException(Messages.getString("rmi.41"), ioe); //$NON-NLS-1$
         }
 
         if (transportLog.isLoggable(RMILog.VERBOSE)) {
-            transportLog.log(RMILog.VERBOSE, "Using protocol version "
-                    + PROTOCOL_VER);
+            // rmi.log.94=Using protocol version {0}
+            transportLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.94", //$NON-NLS-1$
+                    PROTOCOL_VER));
         }
     }
 
@@ -256,6 +259,6 @@ public abstract class ClientConnection implements RMIProtocolConstants {
      * @return string representation of this connection
      */
     public String toString() {
-        return RMIUtil.getShortName(getClass()) + ": endpoint:" + ep;
+        return RMIUtil.getShortName(getClass()) + ": endpoint:" + ep; //$NON-NLS-1$
     }
 }

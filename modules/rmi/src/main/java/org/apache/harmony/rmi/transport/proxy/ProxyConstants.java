@@ -37,12 +37,12 @@ interface ProxyConstants extends RMIProperties {
     /**
      * HTTP end-of-line string.
      */
-    String EOLN = "\r\n";
+    String EOLN = "\r\n"; //$NON-NLS-1$
 
     /**
      * HTTP POST request signature.
      */
-    String HTTP_REQUEST_SIGNATURE = "POST ";
+    String HTTP_REQUEST_SIGNATURE = "POST "; //$NON-NLS-1$
 
     /**
      * Length of {@link #HTTP_REQUEST_SIGNATURE} string.
@@ -52,17 +52,17 @@ interface ProxyConstants extends RMIProperties {
     /**
      * HTTP response header signature.
      */
-    String HTTP_RESPONSE_HEADER_SIGNATURE = "HTTP/1.0 200 ";
+    String HTTP_RESPONSE_HEADER_SIGNATURE = "HTTP/1.0 200 "; //$NON-NLS-1$
 
     /**
      * HTTP response header.
      */
-    String HTTP_RESPONSE_HEADER = HTTP_RESPONSE_HEADER_SIGNATURE + "OK";
+    String HTTP_RESPONSE_HEADER = HTTP_RESPONSE_HEADER_SIGNATURE + "OK"; //$NON-NLS-1$
 
     /**
      * Content-Length header string signature.
      */
-    String CONTENT_LENGTH_SIGNATURE = "Content-Length:";
+    String CONTENT_LENGTH_SIGNATURE = "Content-Length:"; //$NON-NLS-1$
 
     /**
      * Length of {@link #CONTENT_LENGTH_SIGNATURE} string.

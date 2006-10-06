@@ -36,6 +36,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
+
 
 /**
  * Generates class and method hash codes neccessary for RMI.
@@ -72,11 +74,13 @@ public final class RMIHash {
 
             return getHash(buffer.toByteArray());
         } catch (IOException e) {
-            throw new RMIHashException("Failed to calculate hash for method "
-                    + method, e);
+            // rmi.42=Failed to calculate hash for method {0}
+            throw new RMIHashException(Messages.getString("rmi.42", //$NON-NLS-1$
+                    method), e);
         } catch (NoSuchAlgorithmException e) {
-            throw new RMIHashException("Failed to calculate hash for method "
-                    + method, e);
+            // rmi.42=Failed to calculate hash for method {0}
+            throw new RMIHashException(Messages.getString("rmi.42", //$NON-NLS-1$
+                    method), e);
         }
     }
 
@@ -96,8 +100,9 @@ public final class RMIHash {
         try {
             return getInterfaceHash(getSortedMethodMap(cls.getMethods()));
         } catch (RMIHashException e) {
-            throw new RMIHashException("Failed to calculate interface hash "
-                    + "for class" + cls, e.getCause());
+            // rmi.43=Failed to calculate interface hash for class {0}
+            throw new RMIHashException(Messages.getString("rmi.43", //$NON-NLS-1$
+                    cls), e.getCause());
         }
     }
 
@@ -143,11 +148,11 @@ public final class RMIHash {
 
             return getHash(buffer.toByteArray());
         } catch (IOException e) {
-            throw new RMIHashException("Failed to calculate interface hash "
-                    + "for specified set of methods", e);
+            // rmi.44=Failed to calculate interface hash for specified set of methods
+            throw new RMIHashException(Messages.getString("rmi.44"), e); //$NON-NLS-1$
         } catch (NoSuchAlgorithmException e) {
-            throw new RMIHashException("Failed to calculate interface hash "
-                    + "for specified set of methods", e);
+            // rmi.44=Failed to calculate interface hash for specified set of methods
+            throw new RMIHashException(Messages.getString("rmi.44"), e); //$NON-NLS-1$
         }
     }
 
@@ -203,7 +208,7 @@ public final class RMIHash {
      *          Should never occur.
      */
     private static long getHash(byte[] buffer) throws NoSuchAlgorithmException {
-        byte[] digest = MessageDigest.getInstance("SHA-1").digest(buffer);
+        byte[] digest = MessageDigest.getInstance("SHA-1").digest(buffer); //$NON-NLS-1$
 
         long hash = 0;
 

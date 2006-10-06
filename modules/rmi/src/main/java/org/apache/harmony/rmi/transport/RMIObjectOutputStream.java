@@ -33,6 +33,7 @@ import java.rmi.server.UID;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.server.ExportManager;
 
 
@@ -194,8 +195,8 @@ public class RMIObjectOutputStream extends ObjectOutputStream {
                 writeChar(((Character) obj).charValue());
             } else if (cl == Void.TYPE) {
             } else {
-                throw new IOException("Unable to serialize primitive class: "
-                        + cl);
+                // rmi.7E=Unable to serialize primitive class: {0}
+                throw new IOException(Messages.getString("rmi.7E", cl));//$NON-NLS-1$
             }
         } else {
             writeObject(obj);

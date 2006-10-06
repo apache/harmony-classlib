@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
+
 
 /**
  * Allows for execution of external applications as subprocesses.
@@ -44,7 +46,7 @@ public final class SubProcess {
      * Default argument to {@link #tell(String)}
      * and expect {@link #expect(String)} methods.
      */
-    public static final String READY_STRING = "PROCESS_READY";
+    public static final String READY_STRING = "PROCESS_READY"; //$NON-NLS-1$
 
     /**
      * Process.
@@ -451,8 +453,8 @@ public final class SubProcess {
      */
     public void tell(String str) throws IllegalStateException, IOException {
         if (dataOutput == null) {
-            throw new IllegalStateException(
-                    "Subprocess output stream control disabled");
+            // rmi.48=Subprocess output stream control disabled
+            throw new IllegalStateException(Messages.getString("rmi.48")); //$NON-NLS-1$
         }
         tell(dataOutput, str);
     }
@@ -593,8 +595,8 @@ public final class SubProcess {
     public void expect(String str, boolean whole, boolean ignoreCase)
             throws IllegalStateException, IOException {
         if (dataInput == null) {
-            throw new IllegalStateException(
-                    "Subprocess input stream control disabled");
+            // rmi.49=Subprocess input stream control disabled
+            throw new IllegalStateException(Messages.getString("rmi.49")); //$NON-NLS-1$
         }
         expect(dataInput, str, whole, ignoreCase);
     }
@@ -656,8 +658,8 @@ public final class SubProcess {
     public void expectError(String str, boolean whole, boolean ignoreCase)
             throws IllegalStateException, IOException {
         if (dataError == null) {
-            throw new IllegalStateException(
-                    "Subprocess error stream control disabled");
+            // rmi.4A=Subprocess error stream control disabled
+            throw new IllegalStateException(Messages.getString("rmi.4A")); //$NON-NLS-1$
         }
         expect(dataError, str, whole, ignoreCase);
     }
@@ -820,10 +822,12 @@ public final class SubProcess {
                         output.flush();
                     }
                 }
+                // rmi.4B=read(byte[]) returned unexpected value: {0}
                 assert (len == -1)
-                        : ("read(byte[]) returned unexpected value: " + len);
+                        : (Messages.getString("rmi.4B", len)); //$NON-NLS-1$
             } catch (IOException e) {
-                System.err.print("StreamPipe error: ");
+                // rmi.console.07=StreamPipe error:
+                System.err.print(Messages.getString("rmi.console.07")); //$NON-NLS-1$
                 e.printStackTrace();
             }
         }

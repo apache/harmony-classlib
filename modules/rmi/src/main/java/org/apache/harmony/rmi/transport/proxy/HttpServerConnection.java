@@ -31,6 +31,7 @@ import java.rmi.UnmarshalException;
 import java.rmi.server.UID;
 
 import org.apache.harmony.rmi.common.RMILog;
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.server.ServerConnection;
 import org.apache.harmony.rmi.server.ServerConnectionManager;
 
@@ -73,32 +74,36 @@ public class HttpServerConnection extends ServerConnection
             int header = din.readInt();
 
             if (header != RMI_HEADER) {
-                throw new UnmarshalException("Unknown header: " + header);
+                // rmi.82=Unknown header: {0}
+                throw new UnmarshalException(Messages.getString("rmi.82", header)); //$NON-NLS-1$
             }
 
             // read RMI protocol version
             short ver = din.readShort();
 
             if (ver != PROTOCOL_VER) {
-                throw new UnmarshalException("Unknown RMI protocol version: "
-                        + ver);
+                // rmi.83=Unknown RMI protocol version: {0}
+                throw new UnmarshalException(Messages.getString("rmi.83", ver));//$NON-NLS-1$
             }
         } catch (IOException ioe) {
-            throw new UnmarshalException("Unable to read RMI protocol header",
+            // rmi.84=Unable to read RMI protocol header
+            throw new UnmarshalException(Messages.getString("rmi.84"), //$NON-NLS-1$
                     ioe);
         }
 
         if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
-            proxyTransportLog.log(RMILog.VERBOSE, "Using protocol version "
-                    + PROTOCOL_VER);
+            // rmi.85=Using protocol version {0}
+            proxyTransportLog.log(RMILog.VERBOSE, Messages.getString("rmi.85", //$NON-NLS-1$
+                    PROTOCOL_VER));
         }
 
         // read protocol type
         if (din.readByte() == SINGLEOP_PROTOCOL) {
 
             if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
+                // rmi.86=Using singleop RMI protocol
                 proxyTransportLog.log(RMILog.VERBOSE,
-                        "Using singleop RMI protocol");
+                        Messages.getString("rmi.86")); //$NON-NLS-1$
             }
         } else {
             return -1;
@@ -125,8 +130,9 @@ public class HttpServerConnection extends ServerConnection
 
         if (data == -1) {
             if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
+                // rmi.log.123=Connection [{0}] is closed
                 proxyTransportLog.log(RMILog.VERBOSE,
-                        "Connection [" + toString() + "] is closed");
+                        Messages.getString("rmi.log.123", toString())); //$NON-NLS-1$
             }
             return -1;
         }
@@ -134,8 +140,8 @@ public class HttpServerConnection extends ServerConnection
 
         if (data == PING_MSG) {
             if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
-                proxyTransportLog.log(RMILog.VERBOSE,
-                        "Got ping request");
+                // rmi.log.124=Got ping request
+                proxyTransportLog.log(RMILog.VERBOSE,Messages.getString("rmi.log.124")); //$NON-NLS-1$
             }
             releaseInputStream();
 
@@ -145,8 +151,8 @@ public class HttpServerConnection extends ServerConnection
             return -1;
         } else if (data == DGCACK_MSG) {
             if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
-                proxyTransportLog.log(RMILog.VERBOSE,
-                        "Got DGC ack request");
+                // rmi.log.125=Got DGC ack request
+                proxyTransportLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.125")); //$NON-NLS-1$
             }
             dgcUnregisterUID(UID.read(new DataInputStream(in)));
             releaseInputStream();
@@ -154,16 +160,17 @@ public class HttpServerConnection extends ServerConnection
             return -1;
         } else if (data == CALL_MSG) {
             if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
-                proxyTransportLog.log(RMILog.VERBOSE,
-                        "Got call request");
+                // rmi.log.126=Got call request
+                proxyTransportLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.126")); //$NON-NLS-1$
             }
             return data;
         } else {
             if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
-                proxyTransportLog.log(RMILog.VERBOSE,
-                        "Unknown request got: " + data);
+                // rmi.log.127=Unknown request got: {0}
+                proxyTransportLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.127", data)); //$NON-NLS-1$
             }
-            throw new RemoteException("Unknown message got: " + data);
+            // rmi.87=Unknown message got: {0}
+            throw new RemoteException(Messages.getString("rmi.87", data)); //$NON-NLS-1$
         }
     }
 
@@ -185,6 +192,6 @@ public class HttpServerConnection extends ServerConnection
      * @return string representation of this connection
      */
     public String toString() {
-        return "HttpServerConnection: remote endpoint:" + ep;
+        return "HttpServerConnection: remote endpoint:" + ep; //$NON-NLS-1$
     }
 }

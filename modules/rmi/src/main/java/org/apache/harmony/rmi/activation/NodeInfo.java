@@ -36,9 +36,9 @@ public class NodeInfo {
     private static final int INACTIVE_STATE = 2;
 
     private static final String []STATES = {
-        "(registered)",
-        "(active)",
-        "(inactive)"
+        "(registered)", //$NON-NLS-1$
+        "(active)", //$NON-NLS-1$
+        "(inactive)" //$NON-NLS-1$
     };
 
     /**
@@ -84,6 +84,6 @@ public class NodeInfo {
      * @return String representation of this node consisting of its ID and state.
      */
     public String toString() {
-        return id + ": " + STATES[state];
+        return id + ": " + STATES[state]; //$NON-NLS-1$
     }
 }

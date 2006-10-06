@@ -41,7 +41,7 @@ public interface RemoteRef extends Externalizable {
 
     /** @com.intel.drl.spec_ref */
     public static final String packagePrefix =
-            "org.apache.harmony.rmi.remoteref";
+            "org.apache.harmony.rmi.remoteref"; //$NON-NLS-1$
 
     /**
      * @com.intel.drl.spec_ref

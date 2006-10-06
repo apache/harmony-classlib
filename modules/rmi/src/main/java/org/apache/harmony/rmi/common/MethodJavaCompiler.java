@@ -46,7 +46,7 @@ public class MethodJavaCompiler extends JavaCompiler {
     /**
      * Default name of a method to call in a compiler class.
      */
-    public static final String DEFAULT_COMPILER_METHOD = "main";
+    public static final String DEFAULT_COMPILER_METHOD = "main"; //$NON-NLS-1$
 
     /**
      * Compiler method signature.

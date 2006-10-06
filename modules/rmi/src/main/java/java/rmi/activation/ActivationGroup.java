@@ -34,6 +34,7 @@ import java.security.AccessController;
 
 import org.apache.harmony.rmi.common.GetStringPropAction;
 import org.apache.harmony.rmi.common.RMILog;
+import org.apache.harmony.rmi.internal.nls.Messages;
 
 
 /**
@@ -100,13 +101,13 @@ public abstract class ActivationGroup extends UnicastRemoteObject
             Thread.sleep(500);
         } catch (Throwable t) {
         }
-        rlog.log(RMILog.VERBOSE, "ActivationGroup.activeObject: " + id
-                + "; " + mobj);
-        rlog.log(RMILog.VERBOSE, "monitor: " + monitor);
+        // rmi.log.14=ActivationGroup.activeObject: {0}; {1}
+        rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.14", id, mobj)); //$NON-NLS-1$
+        // rmi.log.15=monitor: {0}
+        rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.15", monitor)); //$NON-NLS-1$
         monitor.activeObject(id, mobj);
-        rlog
-                .log(RMILog.VERBOSE,
-                        "ActivationGroup.activeObject finished.");
+        // rmi.log.16=ActivationGroup.activeObject finished.
+        rlog.log(RMILog.VERBOSE,Messages.getString("rmi.log.16")); //$NON-NLS-1$
     }
 
     /**
@@ -121,8 +122,9 @@ public abstract class ActivationGroup extends UnicastRemoteObject
     public static synchronized ActivationGroup createGroup(
             ActivationGroupID id, ActivationGroupDesc desc, long incarnation)
             throws ActivationException {
-        rlog.log(RMILog.VERBOSE, "ActivationGroup.createGroup [id=" + id
-                + ", desc=" + desc + ", incarnation=" + incarnation);
+        // rmi.log.17=ActivationGroup.createGroup [id={0}, desc={1}, incarnation={2}
+        rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.17", //$NON-NLS-1$ 
+                new Object[]{id, desc, incarnation})); 
 
         SecurityManager sm = System.getSecurityManager();
 
@@ -136,19 +138,21 @@ public abstract class ActivationGroup extends UnicastRemoteObject
          * otherwise.
          */
         String group_CN = (desc.getClassName() == null) ?
-                "org.apache.harmony.rmi.activation.ActivationGroupImpl"
+                "org.apache.harmony.rmi.activation.ActivationGroupImpl" //$NON-NLS-1$
                 : desc.getClassName();
-
-        rlog.log(RMILog.VERBOSE, "group_CN = " + group_CN);
+        // rmi.log.18=group_CN = {0}
+        rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.18", group_CN)); //$NON-NLS-1$
 
         if (current_AG != null) {
-            throw new ActivationException(
-                    "The ActivationGroup for this VM already exists.");
+            // rmi.11=The ActivationGroup for this VM already exists.
+            throw new ActivationException(Messages.getString("rmi.11")); //$NON-NLS-1$
         }
         try {
-            rlog.log(RMILog.VERBOSE, "Ready to load ActivationGroupImpl class");
+            // rmi.log.19=Ready to load ActivationGroupImpl class
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.19")); //$NON-NLS-1$
             Class cl = RMIClassLoader.loadClass(desc.getLocation(), group_CN);
-            rlog.log(RMILog.VERBOSE, "ag class = " + cl);
+            // rmi.log.1A=ag class = {0}
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.1A", cl)); //$NON-NLS-1$
 
             Class[] special_constructor_parameter_classes = {
                     ActivationGroupID.class, MarshalledObject.class };
@@ -158,26 +162,33 @@ public abstract class ActivationGroup extends UnicastRemoteObject
             Object[] constructor_parameters = { id, desc.getData() };
             ActivationGroup ag = (ActivationGroup) constructor
                     .newInstance(constructor_parameters);
-            rlog.log(RMILog.VERBOSE, "ag = " + ag);
+            // rmi.log.1B=ag = {0}
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.1B", ag)); //$NON-NLS-1$
             current_AS = id.getSystem();
-            rlog.log(RMILog.VERBOSE, "current_AS = " + current_AS);
+            // rmi.log.1C=current_AS = {0}
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.1C", current_AS)); //$NON-NLS-1$
 
             ag.incarnation = incarnation;
-            rlog.log(RMILog.VERBOSE, "ag.incarnation = " + ag.incarnation);
+            // rmi.log.1D=ag.incarnation = {0}
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.1D", ag.incarnation)); //$NON-NLS-1$
 
             ag.monitor = current_AS.activeGroup(id, ag, incarnation);
-            rlog.log(RMILog.VERBOSE, "ag.monitor = " + ag.monitor);
+            // rmi.log.1E=ag.monitor = {0}
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.1E", ag.monitor)); //$NON-NLS-1$
 
             current_AG = ag;
             current_AGID = id;
             isGroupCreated = true;
 
         } catch (Throwable t) {
-            rlog.log(RMILog.VERBOSE, "Exception in createGroup: " + t);
+            // rmi.log.1F=Exception in createGroup: {0}
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.1F", t)); //$NON-NLS-1$
             t.printStackTrace();
-            throw new ActivationException("Unable to create group.", t);
+            // rmi.12=Unable to create group.
+            throw new ActivationException(Messages.getString("rmi.12"), t); //$NON-NLS-1$
         }
-        rlog.log(RMILog.VERBOSE, "Group created: " + current_AG);
+        // rmi.log.20=Group created: {0}
+        rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.20", current_AG)); //$NON-NLS-1$
 
         return current_AG;
     }
@@ -194,32 +205,34 @@ public abstract class ActivationGroup extends UnicastRemoteObject
      */
     public static synchronized ActivationSystem getSystem()
             throws ActivationException {
-        rlog.log(RMILog.VERBOSE,
-                "---------- ActivationGroup.getSystem() ----------");
+        // rmi.log.21=---------- ActivationGroup.getSystem() ----------
+        rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.21")); //$NON-NLS-1$
         System.out.flush();
 
         try {
             if (current_AS == null) {
 
                 String port = (String)AccessController.doPrivileged(
-                        new GetStringPropAction("java.rmi.activation.port",
-                                                ActivationSystem.SYSTEM_PORT+""));
+                        new GetStringPropAction("java.rmi.activation.port", //$NON-NLS-1$
+                                                ActivationSystem.SYSTEM_PORT+"")); //$NON-NLS-1$
 
-                current_AS = (ActivationSystem) Naming.lookup("//:" + port
-                        + "/java.rmi.activation.ActivationSystem");
-                rlog.log(RMILog.VERBOSE,
-                        "Activation System was got using Naming.lookup() at port "
-                                + port);
+                current_AS = (ActivationSystem) Naming.lookup("//:" + port //$NON-NLS-1$
+                        + "/java.rmi.activation.ActivationSystem"); //$NON-NLS-1$
+                // rmi.log.22=Activation System was got using Naming.lookup() at port {0}
+                rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.22", port)); //$NON-NLS-1$
             }
         } catch (Throwable t) {
-            throw new ActivationException("getSystem fails.", t);
+            // rmi.13=getSystem fails.
+            throw new ActivationException(Messages.getString("rmi.13"), t); //$NON-NLS-1$
         }
-        rlog.log(RMILog.VERBOSE, "current_AS = " + current_AS);
-        rlog.log(RMILog.VERBOSE, "current_AS.ref = "
-                + ((RemoteObject) current_AS).getRef());
+        // rmi.log.1C=current_AS = {0}
+        rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.1C", current_AS)); //$NON-NLS-1$
+        // rmi.log.23=current_AS.ref = {0}
+        rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.23", //$NON-NLS-1$
+                ((RemoteObject) current_AS).getRef()));
 
-        rlog.log(RMILog.VERBOSE,
-                "---------- END -> ActivationGroup.getSystem() ----------");
+        // rmi.log.24=---------- END -> ActivationGroup.getSystem() ----------
+        rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.24")); //$NON-NLS-1$
 
         return current_AS;
     }
@@ -247,8 +260,8 @@ public abstract class ActivationGroup extends UnicastRemoteObject
     public static synchronized void setSystem(ActivationSystem system)
             throws ActivationException {
         if (current_AS != null) {
-            throw new ActivationException(
-                    "The ActivationSystem for this ActivationGroup was already defined.");
+            // rmi.14=The ActivationSystem for this ActivationGroup was already defined.
+            throw new ActivationException(Messages.getString("rmi.14")); //$NON-NLS-1$
         }
         current_AS = system;
     }

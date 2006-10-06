@@ -27,6 +27,7 @@ import java.io.PrintStream;
 import java.util.logging.LoggingPermission;
 
 import org.apache.harmony.rmi.common.RMILog;
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.server.ServerConnectionManager;
 
 
@@ -61,8 +62,8 @@ public abstract class RemoteServer extends RemoteObject {
         String host = ServerConnectionManager.getClientHost();
 
         if (host == null) {
-            throw new ServerNotActiveException(
-                    "There are no in-progress RMI calls in this thread.");
+            // rmi.19=There are no in-progress RMI calls in this thread.
+            throw new ServerNotActiveException(Messages.getString("rmi.19")); //$NON-NLS-1$
         }
         return host;
     }
@@ -81,7 +82,7 @@ public abstract class RemoteServer extends RemoteObject {
         SecurityManager mgr = System.getSecurityManager();
 
         if (mgr != null) {
-            mgr.checkPermission(new LoggingPermission("control", null));
+            mgr.checkPermission(new LoggingPermission("control", null)); //$NON-NLS-1$
         }
         RMILog.getServerCallsLog().setOutputStream(out);
     }

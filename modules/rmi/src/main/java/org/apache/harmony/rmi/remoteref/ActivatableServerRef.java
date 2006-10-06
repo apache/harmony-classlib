@@ -77,7 +77,7 @@ public class ActivatableServerRef extends UnicastServerRef2 {
      * rules should be applied to this remote reference.
      */
     public String getRefClass(ObjectOutput out) {
-        return "ActivatableServerRef";
+        return "ActivatableServerRef"; //$NON-NLS-1$
     }
 
     /**

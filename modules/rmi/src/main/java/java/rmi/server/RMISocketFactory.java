@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.transport.DefaultRMISocketFactory;
 
 
@@ -84,7 +85,8 @@ public abstract class RMISocketFactory
         }
 
         if (globalRsf == null) {
-            throw new IOException("RMISocketFactory has been already set.");
+            // rmi.1F=RMISocketFactory has been already set.
+            throw new IOException(Messages.getString("rmi.1F")); //$NON-NLS-1$
         }
         globalRsf = rsf;
     }

@@ -86,7 +86,7 @@ public class LogStream extends PrintStream {
      */
     @Deprecated
     public String toString() {
-        return "LogStream[" + name + "]";
+        return "LogStream[" + name + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -111,7 +111,7 @@ public class LogStream extends PrintStream {
             } else {
                 if (isFirstByte) {
                     isFirstByte = false;
-                    print(toString() + ":");
+                    print(toString() + ":"); //$NON-NLS-1$
                 }
                 super.write(b);
             }
@@ -147,11 +147,11 @@ public class LogStream extends PrintStream {
         }
         levelStr = levelStr.trim().toUpperCase();
 
-        if (levelStr.equals("SILENT")) {
+        if (levelStr.equals("SILENT")) { //$NON-NLS-1$
             return SILENT;
-        } else if (levelStr.equals("BRIEF")) {
+        } else if (levelStr.equals("BRIEF")) { //$NON-NLS-1$
             return BRIEF;
-        } else if (levelStr.equals("VERBOSE")) {
+        } else if (levelStr.equals("VERBOSE")) { //$NON-NLS-1$
             return VERBOSE;
         } else {
             try {

@@ -52,6 +52,7 @@ import java.rmi.server.RMIClassLoaderSpi;
 import org.apache.harmony.rmi.common.GetStringPropAction;
 import org.apache.harmony.rmi.common.RMILog;
 import org.apache.harmony.rmi.common.RMIProperties;
+import org.apache.harmony.rmi.internal.nls.Messages;
 
 
 /**
@@ -93,10 +94,11 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
                                 ClassLoader defaultLoader)
             throws MalformedURLException, ClassNotFoundException {
         if (loaderLog.isLoggable(RMILog.VERBOSE)) {
-            loaderLog.log(RMILog.VERBOSE, "Loading proxy class: interf=["
-                    + Arrays.asList(interf) + "], codebase=\""
-                    + ((codebase == null) ? "" : codebase)
-                    + "\", defaultLoader=" + defaultLoader);
+            // rmi.log.25=Loading proxy class: interf=[{0}], codebase="{1}", defaultLoader={2}
+            loaderLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.25", //$NON-NLS-1$
+                    new Object[]{Arrays.asList(interf),
+                        ((codebase == null) ? "" : codebase), //$NON-NLS-1$
+                        defaultLoader}));
         }
         Class[] interfCl = new Class[interf.length];
         ClassLoader codebaseLoader = null;
@@ -106,10 +108,9 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
             codebaseLoader = getClassLoader1(codebase);
         } catch (SecurityException se) {
             if (loaderLog.isLoggable(RMILog.BRIEF)) {
-                loaderLog.log(RMILog.BRIEF,
-                        "Could not obtain classloader for codebase \""
-                        + ((codebase == null) ? "" : codebase)
-                        + "\" (access denied).");
+                // rmi.log.26=Could not obtain classloader for codebase "{0}" (access denied).
+                loaderLog.log(RMILog.BRIEF, Messages.getString("rmi.log.26", //$NON-NLS-1$
+                        ((codebase == null) ? "" : codebase))); //$NON-NLS-1$
             }
             ex = se;
         }
@@ -123,10 +124,10 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
                             defaultLoader);
                 } catch (Exception ex1) {
                     if (loaderLog.isLoggable(RMILog.VERBOSE)) {
-                        loaderLog.log(RMILog.VERBOSE,
-                                "Unable to load interface " + interf[i]
-                                + " via default loader " + defaultLoader + ":"
-                                + ex1);
+                        // rmi.log.27=Unable to load interface {0} via default loader {1}:{2}
+                        loaderLog.log(RMILog.VERBOSE, Messages.getString(
+                                "rmi.log.27", new Object[] { interf[i], //$NON-NLS-1$
+                                        defaultLoader, ex1 }));
                     }
                     failed = true;
                 }
@@ -139,9 +140,9 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
                     Thread.currentThread().getContextClassLoader();
 
                 if (loaderLog.isLoggable(RMILog.VERBOSE)) {
-                    loaderLog.log(RMILog.VERBOSE,
-                        "Trying thread context classloader ("
-                        + curLoader + ").");
+                    // rmi.log.28=Trying thread context classloader ({0}).
+                    loaderLog.log(RMILog.VERBOSE, Messages.getString(
+                            "rmi.log.28", curLoader)); //$NON-NLS-1$
                 }
                 codebaseLoader = curLoader;
 
@@ -153,24 +154,23 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
                             codebaseLoader);
                 } catch (Exception ex1) {
                     if (loaderLog.isLoggable(RMILog.BRIEF)) {
-                        loaderLog.log(RMILog.BRIEF,
-                                "Unable to load interface " + interf[i]
-                                + " via " + codebaseLoader);
+                        // rmi.log.29=Unable to load interface {0} via {1}
+                        loaderLog.log(RMILog.BRIEF, Messages.getString(
+                                "rmi.log.29", interf[i], codebaseLoader)); //$NON-NLS-1$
                     }
 
                     if (ex != null) {
-                        String msg = "Could not load proxy class "
-                            + "(access to loader for codebase \""
-                            + ((codebase == null) ? "" : codebase)
-                            + "\" denied).";
+                        // rmi.log.2A=Could not load proxy class (access to loader for codebase "{0}" denied).
+                        String msg = Messages.getString("rmi.log.2A", //$NON-NLS-1$
+                                ((codebase == null) ? "" : codebase)); //$NON-NLS-1$
 
                         if (loaderLog.isLoggable(RMILog.BRIEF)) {
                             loaderLog.log(RMILog.BRIEF, msg);
                         }
                         throw new ClassNotFoundException(msg, ex);
                     } else {
-                        throw new ClassNotFoundException(
-                                "Unable to load proxy class", ex1);
+                        // rmi.25=Unable to load proxy class
+                        throw new ClassNotFoundException(Messages.getString("rmi.25"), ex1); //$NON-NLS-1$
                     }
                 }
             }
@@ -191,10 +191,9 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
                     interfLoader = loader;
                 } else if (!interfLoader.equals(loader)) {
                     if (loaderLog.isLoggable(RMILog.BRIEF)) {
-                        loaderLog.log(RMILog.BRIEF, "Non-public interface "
-                                + interfCl[i] + " is loaded by another loader ("
-                                + loader + ") then others (" + interfLoader
-                                + ")");
+                        // rmi.log.2B=Non-public interface {0} is loaded by another loader ({1}) then others ({2})
+                        loaderLog.log(RMILog.BRIEF, Messages.getString("rmi.log.2B", //$NON-NLS-1$
+                                new Object[] { interfCl[i], loader, interfLoader }));
                     }
                     sameLoader = false;
                 }
@@ -209,26 +208,27 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
                 proxyCl = Proxy.getProxyClass(codebaseLoader, interfCl);
 
                 if (loaderLog.isLoggable(RMILog.BRIEF)) {
-                    loaderLog.log(RMILog.BRIEF, "Loaded proxy class "
-                            + proxyCl + " via " + codebaseLoader);
+                    // rmi.log.2C=Loaded proxy class {0} via {1}
+                    loaderLog.log(RMILog.BRIEF, Messages.getString("rmi.log.2C", //$NON-NLS-1$
+                            proxyCl, codebaseLoader));
                 }
             } catch (IllegalArgumentException iae) {
                 try {
                     proxyCl = Proxy.getProxyClass(defaultLoader, interfCl);
 
                     if (loaderLog.isLoggable(RMILog.BRIEF)) {
-                        loaderLog.log(RMILog.BRIEF, "Loaded proxy class "
-                                + proxyCl + " via " + defaultLoader);
+                        // rmi.log.2C=Loaded proxy class {0} via {1}
+                        loaderLog.log(RMILog.BRIEF, Messages.getString("rmi.log.2C", //$NON-NLS-1$
+                                proxyCl, defaultLoader));
                     }
                 } catch (IllegalArgumentException iae1) {
                     if (loaderLog.isLoggable(RMILog.BRIEF)) {
-                        loaderLog.log(RMILog.BRIEF,
-                                "Unable to load proxy class via both "
-                                + "loaders (" + codebaseLoader + ", "
-                                + defaultLoader + ")");
+                        // rmi.log.2D=Unable to load proxy class via both loaders ({0}, {1})
+                        loaderLog.log(RMILog.BRIEF, Messages.getString("rmi.log.2D", //$NON-NLS-1$
+                                codebaseLoader, defaultLoader));
                     }
-                    throw new ClassNotFoundException(
-                            "Unable to load proxy class", iae1);
+                    // rmi.25=Unable to load proxy class
+                    throw new ClassNotFoundException(Messages.getString("rmi.25"), iae1); //$NON-NLS-1$
                 }
             }
             return proxyCl;
@@ -240,12 +240,14 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
             Class proxyCl = Proxy.getProxyClass(interfLoader, interfCl);
 
             if (loaderLog.isLoggable(RMILog.BRIEF)) {
-                loaderLog.log(RMILog.BRIEF, "Loaded proxy class "
-                        + proxyCl + " via " + interfLoader);
+                // rmi.log.2C=Loaded proxy class {0} via {1}
+                loaderLog.log(RMILog.BRIEF, Messages.getString("rmi.log.2C", //$NON-NLS-1$
+                        proxyCl, interfLoader));
             }
             return proxyCl;
         }
-        throw new LinkageError("Unable to load proxy class");
+        // rmi.25=Unable to load proxy class
+        throw new LinkageError(Messages.getString("rmi.25")); //$NON-NLS-1$
     }
 
     /**
@@ -256,9 +258,10 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
                            ClassLoader defaultLoader)
             throws MalformedURLException, ClassNotFoundException {
         if (loaderLog.isLoggable(RMILog.VERBOSE)) {
-            loaderLog.log(RMILog.VERBOSE, "Loading class: name=\"" + name
-                    + "\", codebase=\"" + ((codebase == null) ? "" : codebase)
-                    + "\", defaultLoader=" + defaultLoader);
+            // rmi.log.2E=Loading class: name="{0}", codebase="{1}", defaultLoader={2}
+            loaderLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.2E", //$NON-NLS-1$
+                    new Object[]{name, ((codebase == null) ? "" : codebase), //$NON-NLS-1$
+                    defaultLoader}));
         }
 
         try {
@@ -266,8 +269,9 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
                 Class c = Class.forName(name, false, defaultLoader);
 
                 if (loaderLog.isLoggable(RMILog.BRIEF)) {
-                    loaderLog.log(RMILog.BRIEF, "Loaded class: " + name
-                            + " via default loader: " + defaultLoader);
+                    // rmi.log.2F=Loaded class: {0} via default loader: {1}
+                    loaderLog.log(RMILog.BRIEF, Messages.getString("rmi.log.2F", //$NON-NLS-1$
+                            name, defaultLoader));
                 }
                 return c;
             }
@@ -282,9 +286,8 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
         } catch (SecurityException se) {
             if (loaderLog.isLoggable(RMILog.BRIEF)) {
                 loaderLog.log(RMILog.BRIEF,
-                        "Could not obtain classloader for codebase \""
-                        + ((codebase == null) ? "" : codebase)
-                        + "\" (access denied).");
+                        Messages.getString("rmi.log.30", //$NON-NLS-1$
+                        ((codebase == null) ? "" : codebase))); //$NON-NLS-1$
             }
             ex = se;
         }
@@ -295,36 +298,36 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
                     Thread.currentThread().getContextClassLoader();
 
             if (loaderLog.isLoggable(RMILog.VERBOSE)) {
+                // rmi.log.31=Trying thread context classloader ({0}).
                 loaderLog.log(RMILog.VERBOSE,
-                        "Trying thread context classloader ("
-                        + curLoader + ").");
+                        Messages.getString("rmi.log.31", curLoader)); //$NON-NLS-1$
             }
 
             try {
                 c = Class.forName(name, false, curLoader);
             } catch (ClassNotFoundException cnfe1) {
                 if (loaderLog.isLoggable(RMILog.VERBOSE)) {
+                    // rmi.log.32=Could not load class {0} via thread context classloader (access to codebase loader is denied).
                     loaderLog.log(RMILog.VERBOSE,
-                            "Could not load class " + name
-                            + " via thread context classloader "
-                            + "(access to codebase loader is denied).");
+                            Messages.getString("rmi.log.32", name)); //$NON-NLS-1$
                 }
-                throw new ClassNotFoundException("Could not load class " + name
-                        + "(access to loader for codebase \""
-                        + ((codebase == null) ? "" : codebase) + "\" denied).",
-                        ex);
+                // rmi.log.33=Could not load class {0}(access to loader for codebase "{1}" denied).
+                throw new ClassNotFoundException(Messages.getString("rmi.log.33", //$NON-NLS-1$
+                        name, ((codebase == null) ? "" : codebase)), ex);//$NON-NLS-1$
+                        
             }
 
             if (loaderLog.isLoggable(RMILog.BRIEF)) {
-                loaderLog.log(RMILog.BRIEF, "Loaded class: " + name
-                        + " via thread context classloader.");
+                // rmi.log.34=Loaded class: {0} via thread context classloader.
+                loaderLog.log(RMILog.BRIEF, Messages.getString("rmi.log.34", name)); //$NON-NLS-1$
             }
         } else {
             c = Class.forName(name, false, codebaseLoader);
 
             if (loaderLog.isLoggable(RMILog.VERBOSE)) {
-                loaderLog.log(RMILog.VERBOSE, "Loaded class: " + name
-                        + " via " + codebaseLoader);
+                // rmi.log.35=Loaded class: {0} via {1}
+                loaderLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.35", //$NON-NLS-1$
+                        name, codebaseLoader));
             }
         }
         return c;
@@ -384,7 +387,7 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
         if (mgr == null) {
             return Thread.currentThread().getContextClassLoader();
         }
-        mgr.checkPermission(new RuntimePermission("getClassLoader"));
+        mgr.checkPermission(new RuntimePermission("getClassLoader")); //$NON-NLS-1$
         return getClassLoader1(codebase);
     }
 
@@ -515,7 +518,7 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
         addURLsPerms(urls, perms, true);
 
         // grant permission for ClassLoader creation
-        perms.add(new RuntimePermission("createClassLoader"));
+        perms.add(new RuntimePermission("createClassLoader")); //$NON-NLS-1$
 
         // create AccessControlContext from created Permissions
         ProtectionDomain[] domains;
@@ -575,7 +578,7 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
                 if (!str.endsWith(File.separator)) {
                     perms.add(perm);
                 } else {
-                    perms.add(new FilePermission(str + "-", "read"));
+                    perms.add(new FilePermission(str + "-", "read")); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             } else {
                 perms.add(perm);
@@ -591,7 +594,7 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
 
                     if (host != null) {
                         perms.add(new SocketPermission(host,
-                                "connect, accept"));
+                                "connect, accept")); //$NON-NLS-1$
                     }
                 }
             }
@@ -637,10 +640,10 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
         if (urls == null || urls.length == 0) {
             return null;
         }
-        String str = "";
+        String str = ""; //$NON-NLS-1$
 
         for (int i = 0; i < urls.length - 1; ++i) {
-            str += urls[i].toExternalForm() + " ";
+            str += urls[i].toExternalForm() + " "; //$NON-NLS-1$
         }
         return str + urls[urls.length - 1].toExternalForm();
     }
@@ -700,7 +703,7 @@ public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
          * @return string representation of this loader
          */
         public String toString() {
-            return getClass().getName() + "[annot:\"" + annot + "\"]";
+            return getClass().getName() + "[annot:\"" + annot + "\"]"; //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

@@ -40,6 +40,7 @@ import org.apache.harmony.rmi.common.GetBooleanPropAction;
 import org.apache.harmony.rmi.common.GetLongPropAction;
 import org.apache.harmony.rmi.common.GetStringPropAction;
 import org.apache.harmony.rmi.common.RMIProperties;
+import org.apache.harmony.rmi.internal.nls.Messages;
 
 
 /**
@@ -167,14 +168,15 @@ public class Endpoint {
             s = DefaultRMISocketFactory.getNonNullClientFactory(csf)
                     .createSocket(host, port);
         } catch (java.net.UnknownHostException uhe) {
+            // rmi.80=Unable to connect to server {0}
             throw new java.rmi.UnknownHostException(
-                    "Unable to connect to server " + toString(), uhe);
+                    Messages.getString("rmi.80", toString()), uhe); //$NON-NLS-1$
         } catch (java.net.ConnectException ce) {
             throw new java.rmi.ConnectException(
-                    "Unable to connect to server " + toString(), ce);
+                    Messages.getString("rmi.80", toString()), ce); //$NON-NLS-1$
         } catch (IOException ioe) {
             throw new ConnectIOException(
-                    "Unable to connect to server " + toString(), ioe);
+                    Messages.getString("rmi.80", toString()), ioe); //$NON-NLS-1$
         }
         return s;
     }
@@ -319,16 +321,16 @@ public class Endpoint {
      * @return string representation of this Endpoint
      */
     public String toString() {
-        String str = "[" + host + ":" + port;
+        String str = "[" + host + ":" + port; //$NON-NLS-1$ //$NON-NLS-2$
 
         if (csf != null) {
-            str += ", csf: " + csf;
+            str += ", csf: " + csf; //$NON-NLS-1$
         }
 
         if (ssf != null) {
-            str += ", ssf: " + ssf;
+            str += ", ssf: " + ssf; //$NON-NLS-1$
         }
-        return str  + "]";
+        return str  + "]"; //$NON-NLS-1$
     }
 
     /*
@@ -394,7 +396,7 @@ public class Endpoint {
         String addr = iaddr.getHostAddress();
         FQDNGetter getter = new FQDNGetter(addr);
         Thread fqdnThread = (Thread) AccessController.doPrivileged(
-                new CreateThreadAction(getter, "FQDN getter.", true));
+                new CreateThreadAction(getter, "FQDN getter.", true)); //$NON-NLS-1$
 
         try {
             synchronized (getter) {

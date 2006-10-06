@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.harmony.rmi.common.RMILog;
+import org.apache.harmony.rmi.internal.nls.Messages;
 
 
 /**
@@ -107,8 +108,9 @@ public class HttpInputStream extends FilterInputStream
             available--;
 
             if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
+                // rmi.log.128=Read 1 byte, {0} remaining.
                 proxyTransportLog.log(RMILog.VERBOSE,
-                        "Read 1 byte, " + available + " remaining.");
+                        Messages.getString("rmi.log.128", available )); //$NON-NLS-1$
             }
         }
 
@@ -133,13 +135,15 @@ public class HttpInputStream extends FilterInputStream
 
         int readSize = in.read(b, off, len);
 
-        assert (readSize <= len) : "readSize is greater than len";
+        // rmi.8D=readSize is greater than len
+        assert (readSize <= len) : Messages.getString("rmi.8D"); //$NON-NLS-1$
 
         available -= readSize;
 
+        // rmi.log.129=Read {0} bytes, {1} remaining.
         if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
-            proxyTransportLog.log(RMILog.VERBOSE,
-                    "Read " + readSize + " bytes, " + available + " remaining.");
+            proxyTransportLog.log(RMILog.VERBOSE,Messages.getString("rmi.log.129", //$NON-NLS-1$
+                    readSize, available ));
         }
 
         return readSize;
@@ -175,23 +179,27 @@ public class HttpInputStream extends FilterInputStream
         String expectHeader;
 
         if (inbound) {
-            expectName = "POST request";
+            expectName = "POST request"; //$NON-NLS-1$
             expectHeader = HTTP_REQUEST_SIGNATURE;
         } else {
-            expectName = "HTTP response";
+            expectName = "HTTP response"; //$NON-NLS-1$
             expectHeader = HTTP_RESPONSE_HEADER_SIGNATURE;
         }
 
         String[] errorMessages = {
-                ("Unable to read header data, couldn't find " + expectName),
-                "Unable to read header data, Content-Length not specified",
-                "Unable to read input stream data, no data found"
+                // rmi.log.12A=Unable to read header data, couldn't find {0}
+                Messages.getString("rmi.log.12A", expectName), //$NON-NLS-1$
+                // rmi.log.12B=Unable to read header data, Content-Length not specified
+                Messages.getString("rmi.log.12B"), //$NON-NLS-1$
+                // rmi.log.12C=Unable to read input stream data, no data found
+                Messages.getString("rmi.log.12C") //$NON-NLS-1$
         };
 
         // Looking for headers phases sequentially.
         for (int phase = 0; ; phase++) {
+            // rmi.89=Incorrect phase: {0}
             assert ((phase >= 0) && (phase <= 2))
-                    : ("Incorrect phase: " + phase);
+                    : (Messages.getString("rmi.89", phase)); //$NON-NLS-1$
 
             String expectSubject;
             String expectString;
@@ -204,7 +212,7 @@ public class HttpInputStream extends FilterInputStream
                 expectStringLength = expectHeader.length();
                 break;
             case 1:
-                expectSubject = "Content-Length specification";
+                expectSubject = "Content-Length specification"; //$NON-NLS-1$
                 expectString = CONTENT_LENGTH_SIGNATURE;
                 expectStringLength = CONTENT_LENGTH_SIGNATURE_LENGTH;
                 break;
@@ -231,8 +239,8 @@ public class HttpInputStream extends FilterInputStream
 
                 // Diagnostic print.
                 if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
-                    proxyTransportLog.log(RMILog.VERBOSE,
-                            "Header line received: [" + line + "].");
+                    // rmi.log.12D=Header line received: [{0}].
+                    proxyTransportLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.12D", line )); //$NON-NLS-1$
                 }
 
                 // Checking for empty line.
@@ -242,8 +250,8 @@ public class HttpInputStream extends FilterInputStream
                     } else { // phase == 2
                         // Empty line found, end of headers, everything's fine.
                         if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
-                            proxyTransportLog.log(RMILog.VERBOSE,
-                                    "Input stream data found, stream ready.");
+                            // rmi.log.12E=Input stream data found, stream ready.
+                            proxyTransportLog.log(RMILog.VERBOSE,Messages.getString("rmi.log.12E")); //$NON-NLS-1$
                         }
                         return;
                     }
@@ -265,8 +273,9 @@ public class HttpInputStream extends FilterInputStream
                 if (line.regionMatches(
                         (phase == 1), 0, expectString, 0, expectStringLength)) {
                     if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
+                        // rmi.log.12F={0} found.
                         proxyTransportLog.log(RMILog.VERBOSE,
-                                expectSubject + " found.");
+                                Messages.getString("rmi.log.12F", expectSubject)); //$NON-NLS-1$
                     }
 
                     if (phase == 1) {
@@ -275,19 +284,21 @@ public class HttpInputStream extends FilterInputStream
                             available = Integer.parseInt(
                                     line.substring(expectStringLength).trim());
                         } catch (NumberFormatException e) {
+                            // rmi.8A=Content-Length specified incorrectly: {0}
                             throw new IOException(
-                                    "Content-Length specified incorrectly: "
-                                    + line);
+                                    Messages.getString("rmi.8A", line));//$NON-NLS-1$
                         }
 
                         if (available < 0) {
+                            // rmi.8B=Invalid Content-Length: {0}
                             throw new IOException(
-                                    "Invalid Content-Length: " + available);
+                                    Messages.getString("rmi.8B", available)); //$NON-NLS-1$
                         }
 
                         if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
+                            // rmi.8C=Content-Length received: {0}
                             proxyTransportLog.log(RMILog.VERBOSE,
-                                    "Content-Length received: " + available);
+                                    Messages.getString("rmi.8C", available)); //$NON-NLS-1$
                         }
                     }
                     // Move to the next phase.

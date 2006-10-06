@@ -79,6 +79,6 @@ public class ActivationGroupID implements Serializable {
 
      */
     public String toString() {
-        return "ActivationGroupID[" + uid + "; " + system + "]";
+        return "ActivationGroupID[" + uid + "; " + system + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 }

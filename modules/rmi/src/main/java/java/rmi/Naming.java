@@ -24,6 +24,8 @@ import java.net.URISyntaxException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
+
 public final class Naming {
 
     // This class could not be instantiated.
@@ -32,12 +34,13 @@ public final class Naming {
 
     public static String[] list(String name) throws RemoteException, MalformedURLException {
         if (name == null) {
-            throw new NullPointerException("URL could not be null.");
+            // rmi.00=URL could not be null.
+            throw new NullPointerException(Messages.getString("rmi.00")); //$NON-NLS-1$
         }
         RegistryURL url = getRegistryURL(name, true);
         Registry reg = LocateRegistry.getRegistry(url.host, url.port);
         String[] names = reg.list();
-        String regName = "//" + ((url.host == null) ? "" : url.host) + ":" + url.port + "/";
+        String regName = "//" + ((url.host == null) ? "" : url.host) + ":" + url.port + "/"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
         for (int i = 0; i < names.length; ++i) {
             names[i] = regName + names[i];
@@ -48,7 +51,8 @@ public final class Naming {
     public static void rebind(String name, Remote obj) throws RemoteException,
             MalformedURLException {
         if (name == null) {
-            throw new NullPointerException("URL could not be null.");
+            // rmi.00=URL could not be null.
+            throw new NullPointerException(Messages.getString("rmi.00")); //$NON-NLS-1$
         }
         RegistryURL url = getRegistryURL(name, false);
         Registry reg = LocateRegistry.getRegistry(url.host, url.port);
@@ -58,7 +62,8 @@ public final class Naming {
     public static void unbind(String name) throws RemoteException, NotBoundException,
             MalformedURLException {
         if (name == null) {
-            throw new NullPointerException("URL could not be null.");
+            // rmi.00=URL could not be null.
+            throw new NullPointerException(Messages.getString("rmi.00")); //$NON-NLS-1$
         }
         RegistryURL url = getRegistryURL(name, false);
         Registry reg = LocateRegistry.getRegistry(url.host, url.port);
@@ -68,7 +73,8 @@ public final class Naming {
     public static void bind(String name, Remote obj) throws AlreadyBoundException,
             MalformedURLException, RemoteException {
         if (name == null) {
-            throw new NullPointerException("URL could not be null.");
+            // rmi.00=URL could not be null.
+            throw new NullPointerException(Messages.getString("rmi.00")); //$NON-NLS-1$
         }
         RegistryURL url = getRegistryURL(name, false);
         Registry reg = LocateRegistry.getRegistry(url.host, url.port);
@@ -78,7 +84,8 @@ public final class Naming {
     public static Remote lookup(String name) throws NotBoundException, MalformedURLException,
             RemoteException {
         if (name == null) {
-            throw new NullPointerException("URL could not be null.");
+            // rmi.00=URL could not be null.
+            throw new NullPointerException(Messages.getString("rmi.00")); //$NON-NLS-1$
         }
         RegistryURL url = getRegistryURL(name, false);
         Registry reg = LocateRegistry.getRegistry(url.host, url.port);
@@ -95,35 +102,37 @@ public final class Naming {
         try {
             uri = new URI(strUrl);
         } catch (URISyntaxException use) {
-            throw new MalformedURLException("Invalid URL \"" + strUrl + "\":" + use);
+            // rmi.01=Invalid URL "{0}":{1}
+            throw new MalformedURLException(Messages.getString("rmi.01", strUrl, use)); //$NON-NLS-1$
         }
         String prot = uri.getScheme();
 
-        if ((prot != null) && !prot.toLowerCase().equals("rmi")) {
-            throw new MalformedURLException("Non-rmi protocol in URL \"" + strUrl + "\": "
-                    + prot);
+        if ((prot != null) && !prot.toLowerCase().equals("rmi")) { //$NON-NLS-1$
+            // rmi.02=Non-rmi protocol in URL "{0}": {1}
+            throw new MalformedURLException(Messages.getString("rmi.02", strUrl, prot)); //$NON-NLS-1$
         }
 
         if (uri.getUserInfo() != null) {
-            throw new MalformedURLException("Invalid character ('@') in URL \"" + strUrl
-                    + "\" host part.");
+            // rmi.03=Invalid character ('@') in URL "{0}" host part.
+            throw new MalformedURLException(Messages.getString("rmi.03", strUrl)); //$NON-NLS-1$
         } else if (uri.getQuery() != null) {
-            throw new MalformedURLException("Invalid character ('?') in URL \"" + strUrl
-                    + "\" name part.");
+            // rmi.04=Invalid character ('?') in URL "{0}" name part.
+            throw new MalformedURLException(Messages.getString("rmi.04", strUrl)); //$NON-NLS-1$
         } else if (uri.getFragment() != null) {
-            throw new MalformedURLException("Invalid character ('#') in URL \"" + strUrl
-                    + "\" name part.");
+            // rmi.05=Invalid character ('\#') in URL "{0}" name part.
+            throw new MalformedURLException(Messages.getString("rmi.05", strUrl)); //$NON-NLS-1$
         }
         int port = uri.getPort();
         String auth = uri.getAuthority();
 
-        if (auth != null && auth.startsWith(":") && auth.length() != 1) {
+        if (auth != null && auth.startsWith(":") && auth.length() != 1) { //$NON-NLS-1$
             // to handle URLs like "rmi://:1099/xxx"
             try {
                 port = Integer.parseInt(auth.substring(1));
             } catch (NumberFormatException nfe) {
-                throw new MalformedURLException("Invalid port number in URL \"" + strUrl
-                        + "\": " + auth.substring(1));
+                // rmi.06=Invalid port number in URL "{0}": {0}
+                throw new MalformedURLException(
+                        Messages.getString("rmi.06", strUrl, auth.substring(1))); //$NON-NLS-1$
             }
         }
 
@@ -134,18 +143,18 @@ public final class Naming {
 
         if (!ignoreEmptyNames) {
             if (path == null || path.length() == 0) {
-                throw new MalformedURLException("Name could not be empty (URL: \"" + strUrl
-                        + "\").");
+                // rmi.07=Name could not be empty (URL: "{0}").
+                throw new MalformedURLException(Messages.getString("rmi.07", strUrl)); //$NON-NLS-1$
             }
         }
 
-        if (path != null && path.startsWith("/")) {
+        if (path != null && path.startsWith("/")) { //$NON-NLS-1$
             path = path.substring(1);
         }
         String host = uri.getHost();
 
         if (host == null) {
-            host = "localhost";
+            host = "localhost"; //$NON-NLS-1$
         }
         return new RegistryURL(host, port, path);
     }

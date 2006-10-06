@@ -10,14 +10,16 @@
  */
 package org.apache.harmony.rmi.server;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
+
 
 public final class DGCImpl_Skel implements java.rmi.server.Skeleton {
 
     private static final long interfaceHash = -669196253586618813L;
 
     private static final java.rmi.server.Operation[] operations = {
-        new java.rmi.server.Operation("void clean(java.rmi.server.ObjID[], long, java.rmi.dgc.VMID, boolean)"),
-        new java.rmi.server.Operation("java.rmi.dgc.Lease dirty(java.rmi.server.ObjID[], long, java.rmi.dgc.Lease)")
+        new java.rmi.server.Operation("void clean(java.rmi.server.ObjID[], long, java.rmi.dgc.VMID, boolean)"), //$NON-NLS-1$
+        new java.rmi.server.Operation("java.rmi.dgc.Lease dirty(java.rmi.server.ObjID[], long, java.rmi.dgc.Lease)") //$NON-NLS-1$
     };
 
     public java.rmi.server.Operation[] getOperations() {
@@ -26,8 +28,9 @@ public final class DGCImpl_Skel implements java.rmi.server.Skeleton {
 
     public void dispatch(java.rmi.Remote obj, java.rmi.server.RemoteCall call, int opnum, long hash) throws java.lang.Exception {
         if (hash != interfaceHash) {
+            // rmi.2D=Interface hash mismatch, expected: {0}, received: {1}
             throw new java.rmi.server.SkeletonMismatchException(
-                    "Interface hash mismatch, expected: " + interfaceHash + ", received: " + hash);
+                    Messages.getString("rmi.2D", interfaceHash, hash)); //$NON-NLS-1$
         }
 
         org.apache.harmony.rmi.server.DGCImpl server = (org.apache.harmony.rmi.server.DGCImpl) obj;
@@ -48,9 +51,11 @@ public final class DGCImpl_Skel implements java.rmi.server.Skeleton {
                 $param_VMID_3 = (java.rmi.dgc.VMID) in.readObject();
                 $param_boolean_4 = in.readBoolean();
             } catch (java.io.IOException e) {
-                throw new java.rmi.UnmarshalException("Error unmarshalling arguments", e);
+                // rmi.2C=Error unmarshalling arguments
+                throw new java.rmi.UnmarshalException(Messages.getString("rmi.2C"), e); //$NON-NLS-1$
             } catch (java.lang.ClassNotFoundException e) {
-                throw new java.rmi.UnmarshalException("Error unmarshalling arguments", e);
+                // rmi.2C=Error unmarshalling arguments
+                throw new java.rmi.UnmarshalException(Messages.getString("rmi.2C"), e); //$NON-NLS-1$
             } finally {
                 call.releaseInputStream();
             }
@@ -60,7 +65,8 @@ public final class DGCImpl_Skel implements java.rmi.server.Skeleton {
             try {
                 call.getResultStream(true);
             } catch (java.io.IOException e) {
-                throw new java.rmi.MarshalException("Error marshalling return", e);
+                // rmi.2A=Error marshalling return
+                throw new java.rmi.MarshalException(Messages.getString("rmi.2A"), e); //$NON-NLS-1$
             }
 
             break;
@@ -78,9 +84,11 @@ public final class DGCImpl_Skel implements java.rmi.server.Skeleton {
                 $param_long_2 = in.readLong();
                 $param_Lease_3 = (java.rmi.dgc.Lease) in.readObject();
             } catch (java.io.IOException e) {
-                throw new java.rmi.UnmarshalException("Error unmarshalling arguments", e);
+                // rmi.2C=Error unmarshalling arguments
+                throw new java.rmi.UnmarshalException(Messages.getString("rmi.2C"), e); //$NON-NLS-1$
             } catch (java.lang.ClassNotFoundException e) {
-                throw new java.rmi.UnmarshalException("Error unmarshalling arguments", e);
+                // rmi.2C=Error unmarshalling arguments
+                throw new java.rmi.UnmarshalException(Messages.getString("rmi.2C"), e); //$NON-NLS-1$
             } finally {
                 call.releaseInputStream();
             }
@@ -91,14 +99,16 @@ public final class DGCImpl_Skel implements java.rmi.server.Skeleton {
                 java.io.ObjectOutput out = call.getResultStream(true);
                 out.writeObject($result);
             } catch (java.io.IOException e) {
-                throw new java.rmi.MarshalException("Error marshalling return", e);
+                // rmi.2A=Error marshalling return
+                throw new java.rmi.MarshalException(Messages.getString("rmi.2A"), e); //$NON-NLS-1$
             }
 
             break;
         }
 
         default:
-            throw new java.rmi.UnmarshalException("Invalid method number: " + opnum);
+            // rmi.2B=Invalid method number: {0}
+            throw new java.rmi.UnmarshalException(Messages.getString("rmi.2B", opnum)); //$NON-NLS-1$
         }
     }
 }

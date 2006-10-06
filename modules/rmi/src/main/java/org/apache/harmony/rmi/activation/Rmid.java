@@ -78,6 +78,7 @@ import org.apache.harmony.rmi.common.GetStringPropAction;
 import org.apache.harmony.rmi.common.RMIConstants;
 import org.apache.harmony.rmi.common.RMILog;
 import org.apache.harmony.rmi.common.RMIProperties;
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.remoteref.UnicastServerRef;
 import org.apache.harmony.rmi.server.ExportManager;
 import org.apache.harmony.rmi.transport.RMIObjectOutputStream;
@@ -275,28 +276,31 @@ public class Rmid extends RemoteServer implements ActivationSystem,
              */
             synchronized (lock) {
                 internalRegistry = LocateRegistry.createRegistry(port);
-                rLog.log(commonDebugLevel, "Registry created: "
-                        + internalRegistry);
-                rLog
-                        .log(commonDebugLevel,
-                                "Creating Activation System on port "
-                                        + port + ".");
+                // rmi.log.38=Registry created: {0}
+                rLog.log(commonDebugLevel, Messages.getString("rmi.log.38", //$NON-NLS-1$
+                        internalRegistry));
+                // rmi.log.39=Creating Activation System on port {0}.
+                rLog.log(commonDebugLevel, Messages.getString("rmi.log.39", //$NON-NLS-1$
+                        port));
 
                 UnicastServerRef usr = new UnicastServerRef(port, null,
                         null, new ObjID(RMIConstants.ACTIVATION_SYSTEM_ID));
 
                 thisStub = ExportManager.exportObject(this, usr, false);
-
-                rLog.log(commonDebugLevel, "stub's ref = "
-                        + ((RemoteObject) thisStub).getRef());
+                // rmi.log.3A=stub's ref = {0}
+                rLog.log(commonDebugLevel, Messages.getString("rmi.log.3A", //$NON-NLS-1$
+                        ((RemoteObject) thisStub).getRef()));
                 this.ref = ((RemoteStub) thisStub).getRef();
 
-                String activationSystemURL = "rmi://:" + port
-                        + "/java.rmi.activation.ActivationSystem";
-                rLog.log(commonDebugLevel, "URL = " + activationSystemURL);
-                rLog.log(commonDebugLevel, "Stub = " + thisStub);
+                String activationSystemURL = "rmi://:" + port //$NON-NLS-1$
+                        + "/java.rmi.activation.ActivationSystem"; //$NON-NLS-1$
+                // rmi.log.3B=URL = {0}
+                rLog.log(commonDebugLevel, Messages.getString("rmi.log.3B", activationSystemURL)); //$NON-NLS-1$
+                // rmi.log.3C=Stub = {0}
+                rLog.log(commonDebugLevel, Messages.getString("rmi.log.3C", thisStub)); //$NON-NLS-1$
                 Naming.rebind(activationSystemURL, thisStub);
-                rLog.log(commonDebugLevel, "Rebind was successful.");
+                // rmi.log.3D=Rebind was successful.
+                rLog.log(commonDebugLevel, Messages.getString("rmi.log.3D")); //$NON-NLS-1$
 
                 groupIDByActivationID = new Hashtable();
                 groupInfoByGroupId = new Hashtable();
@@ -304,8 +308,9 @@ public class Rmid extends RemoteServer implements ActivationSystem,
                 if (startMonitor) {
                     rmidMonitor = RmidMonitorFactory
                             .getRmidMonitor(monitorClassName);
-                    rLog.log(commonDebugLevel, "RmidMonitor created: "
-                            + rmidMonitor);
+                    // rmi.log.3E=RmidMonitor created: {0}
+                    rLog.log(commonDebugLevel, Messages.getString("rmi.log.3E", //$NON-NLS-1$
+                            rmidMonitor));
                     /*
                      * Failed to obtain RmidMonitor.
                      */
@@ -317,7 +322,8 @@ public class Rmid extends RemoteServer implements ActivationSystem,
                 restore();
             }
         } catch (Throwable t) {
-            rLog.log(commonDebugLevel, "Exception in RMID: " + t);
+            // rmi.log.3F=Exception in RMID: {0}
+            rLog.log(commonDebugLevel, Messages.getString("rmi.log.3F", t)); //$NON-NLS-1$
             t.printStackTrace();
             System.exit(1);
         }
@@ -379,21 +385,21 @@ public class Rmid extends RemoteServer implements ActivationSystem,
         if (activationDebug) {
             commonDebugLevel = RMILog.VERBOSE;
         }
-
+        // rmi.log.40=\nThe following properties were set on RMID:
         rLog.log(commonDebugLevel,
-                "\nThe following properties were set on RMID: " + "\n"
+                Messages.getString("rmi.log.40") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
                         + RMIProperties.ACTIVATION_EXECTIMEOUT_PROP
-                        + " = " + groupStartTimeout + "\n"
+                        + " = " + groupStartTimeout + "\n" //$NON-NLS-1$ //$NON-NLS-2$
                         + RMIProperties.ACTIVATION_SNAPSHOTINTERVAL_PROP
-                        + " = " + snapshotInterval + "\n"
-                        + RMIProperties.ACTIVATION_LOG_DEBUG_PROP + " = "
-                        + loggingDebug + "\n"
-                        + RMIProperties.MAXSTARTGROUP_PROP + " = "
-                        + maxConcurrentStartingGroups + "\n"
-                        + RMIProperties.ACTIVATION_DEBUGEXEC_PROP + " = "
-                        + activationDebug + "\n"
+                        + " = " + snapshotInterval + "\n" //$NON-NLS-1$ //$NON-NLS-2$
+                        + RMIProperties.ACTIVATION_LOG_DEBUG_PROP + " = " //$NON-NLS-1$
+                        + loggingDebug + "\n" //$NON-NLS-1$
+                        + RMIProperties.MAXSTARTGROUP_PROP + " = " //$NON-NLS-1$
+                        + maxConcurrentStartingGroups + "\n" //$NON-NLS-1$
+                        + RMIProperties.ACTIVATION_DEBUGEXEC_PROP + " = " //$NON-NLS-1$
+                        + activationDebug + "\n" //$NON-NLS-1$
                         + RMIProperties.ACTIVATION_MONITOR_CLASS_NAME_PROP
-                        + " = " + monitorClassName);
+                        + " = " + monitorClassName); //$NON-NLS-1$
 
         /*
          * The ArrayList for temporary holding of "-C" options.
@@ -407,11 +413,10 @@ public class Rmid extends RemoteServer implements ActivationSystem,
 
             String argument = args[i];
 
-            if (argument.equals("-port")) {
+            if (argument.equals("-port")) { //$NON-NLS-1$
                 if (i + 1 >= args.length) {
-                    System.out.println(
-                            "Insufficient arguments: "
-                           +"port should be specified.");
+                    // rmi.console.02=Insufficient arguments: port should be specified.
+                    System.out.println(Messages.getString("rmi.console.02")); //$NON-NLS-1$
                     printUsage();
                     System.exit(1);
                 }
@@ -419,44 +424,47 @@ public class Rmid extends RemoteServer implements ActivationSystem,
                 try {
                     port = Integer.parseInt(args[i + 1]);
                 } catch (NumberFormatException nfe) {
-                    System.out.println("Malformed port number.");
+                    // rmi.console.03=Malformed port number.
+                    System.out.println(Messages.getString("rmi.console.03")); //$NON-NLS-1$
                     printUsage();
                     System.exit(1);
                 }
                 i++;
-            } else if (argument.equals("-log")) {
+            } else if (argument.equals("-log")) { //$NON-NLS-1$
                 if (i + 1 >= args.length) {
-                    System.out
-                            .println("Insufficient arguments: "
-                                    +"log folder should be specified.");
+                    // rmi.console.04=Insufficient arguments: log folder should be specified.
+                    System.out.println(Messages.getString("rmi.console.04")); //$NON-NLS-1$
                     printUsage();
                     System.exit(1);
                 }
                 logFolder = args[i + 1];
                 i++;
-            } else if (argument.equals("-stop")) {
+            } else if (argument.equals("-stop")) { //$NON-NLS-1$
                 try {
                     ActivationSystem system = ActivationGroup.getSystem();
                     system.shutdown();
-                    rLog.log(commonDebugLevel, "RMID was shut down");
+                    // rmi.log.41=RMID was shut down
+                    rLog.log(commonDebugLevel, Messages.getString("rmi.log.41")); //$NON-NLS-1$
                     return;
                 } catch (Throwable t) {
                     t.printStackTrace();
                     System.exit(1);
                 }
-            } else if (argument.equals("-C")) {
+            } else if (argument.equals("-C")) { //$NON-NLS-1$
                 tmpGroupArgs.add(args[i].substring(2));
-            } else if (argument.equals("-help")) {
+            } else if (argument.equals("-help")) { //$NON-NLS-1$
                 printUsage();
                 return;
-            } else if (argument.equals("-monitor")) {
-                rLog.log(commonDebugLevel, "Monitor option selected.");
+            } else if (argument.equals("-monitor")) { //$NON-NLS-1$
+                // rmi.log.42=Monitor option selected.
+                rLog.log(commonDebugLevel, Messages.getString("rmi.log.42")); //$NON-NLS-1$
                 startMonitor = true;
             } else {
                 /*
                  * Illegal option found.
                  */
-                System.out.println("Illegal option: " + argument);
+                // rmi.console.05=Illegal option: {0}
+                System.out.println(Messages.getString("rmi.console.05", argument)); //$NON-NLS-1$
                 printUsage();
                 System.exit(1);
             }
@@ -483,8 +491,9 @@ public class Rmid extends RemoteServer implements ActivationSystem,
         AccessController.doPrivileged(new PrivilegedAction() {
             public Object run() {
                 if (!dir.exists() && !dir.mkdir()) {
-                    System.out.println("Cannot create log folder: "
-                            + logFolder);
+                    //rmi.console.06=Cannot create log folder: {0}
+                    System.out.println(Messages.getString("rmi.console.06", //$NON-NLS-1$
+                            logFolder));
                     System.exit(1);
                 }
                 return null;
@@ -493,11 +502,13 @@ public class Rmid extends RemoteServer implements ActivationSystem,
 
         try {
             Rmid rmid = new Rmid(port);
-
-            rLog.log(commonDebugLevel, "RMID instace created: " + rmid);
+            
+            // rmi.log.43=RMID instace created: {0} 
+            rLog.log(commonDebugLevel, Messages.getString("rmi.log.43", rmid)); //$NON-NLS-1$
             Thread.sleep(Long.MAX_VALUE);
         } catch (Throwable t) {
-            rLog.log(commonDebugLevel, "Exception: " + t);
+            // rmi.log.44=Exception: {0}
+            rLog.log(commonDebugLevel, Messages.getString("rmi.log.44", t)); //$NON-NLS-1$
             t.printStackTrace();
             System.exit(1);
         }
@@ -522,14 +533,15 @@ public class Rmid extends RemoteServer implements ActivationSystem,
         ActivationGroupID agid = new ActivationGroupID(this);
         ActivationGroupInfo agi = new ActivationGroupInfo(agid, agdesc);
         if (groupInfoByGroupId.containsKey(agid)) {
-            throw new ActivationException(
-                    "This group is already registered.");
+            // rmi.2E=This group is already registered.
+            throw new ActivationException(Messages.getString("rmi.2E")); //$NON-NLS-1$
         }
         groupInfoByGroupId.put(agid, agi);
         if (!restoreLock) {
-            writeDelta(Delta.PUT, "group", agid, agdesc);
-            rLog.log(persistenceDebugLevel, "Delta was saved: "
-                    + Delta.PUT + "," + "group" + ", " + agid + ", "
+            writeDelta(Delta.PUT, "group", agid, agdesc); //$NON-NLS-1$
+            // rmi.log.45=Delta was saved:
+            rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.45") //$NON-NLS-1$
+                    + Delta.PUT + "," + "group" + ", " + agid + ", " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                     + agdesc);
         }
 
@@ -540,29 +552,33 @@ public class Rmid extends RemoteServer implements ActivationSystem,
             ActivationInstantiator group, long incarnation)
             throws UnknownGroupException, ActivationException {
         waitStartup();
-        rLog.log(commonDebugLevel, "Rmid.activeGroup: " + gID + "; "
-                + group + "; " + incarnation);
-        rLog.log(commonDebugLevel, "groupID2groupInfo_H = "
-                + groupInfoByGroupId);
+        // rmi.log.46=Rmid.activeGroup: {0}, {1}, {2}
+        rLog.log(commonDebugLevel, Messages.getString("rmi.log.46", //$NON-NLS-1$
+                new Object[]{gID, group, incarnation}));
+        // rmi.log.47=groupID2groupInfo_H = {0}
+        rLog.log(commonDebugLevel, Messages.getString("rmi.log.47", //$NON-NLS-1$
+                groupInfoByGroupId));
 
         ActivationGroupInfo agi = (ActivationGroupInfo) groupInfoByGroupId
                 .get(gID);
-        rLog
-                .log(commonDebugLevel, "Rmid.activeGroup group info =  "
-                        + agi);
+        // rmi.log.48=Rmid.activeGroup group info =  {0}
+        rLog.log(commonDebugLevel, Messages.getString("rmi.log.48", agi));//$NON-NLS-1$
+                        
 
         if (agi == null) {
-            throw new UnknownGroupException("Group is not registered: "
-                    + gID);
+            // rmi.2F=Group is not registered: {0}
+            throw new UnknownGroupException(Messages.getString("rmi.2F", gID)); //$NON-NLS-1$
         } else if (agi.isActive()) {
-            throw new ActivationException("Group is already active: "
-                    + gID);
+            // rmi.30=Group is already active: {0}
+            throw new ActivationException(Messages.getString("rmi.30", gID)); //$NON-NLS-1$
         }
 
-        rLog.log(commonDebugLevel, "ready to execute agi.active()");
+        // rmi.log.49=ready to execute agi.active()
+        rLog.log(commonDebugLevel, Messages.getString("rmi.log.49")); //$NON-NLS-1$
 
         agi.active(group, incarnation);
-        rLog.log(commonDebugLevel, "Rmid.activeGroup finished. ");
+        // rmi.log.4A=Rmid.activeGroup finished.
+        rLog.log(commonDebugLevel, Messages.getString("rmi.log.4A")); //$NON-NLS-1$
 
         return this;
     }
@@ -587,8 +603,8 @@ public class Rmid extends RemoteServer implements ActivationSystem,
         ActivationDesc adesc = info.getActivationDesc(aID);
 
         if (adesc == null) {
-            throw new UnknownObjectException(
-                    "No ActivationDesc for ActivationID " + aID);
+            // rmi.31=No ActivationDesc for ActivationID {0}
+            throw new UnknownObjectException(Messages.getString("rmi.31", aID)); //$NON-NLS-1$
         }
         return adesc;
     }
@@ -607,29 +623,35 @@ public class Rmid extends RemoteServer implements ActivationSystem,
         ActivationGroupInfo agi = (ActivationGroupInfo) groupInfoByGroupId
                 .get(agid);
         if (agi == null) {
-            throw new UnknownObjectException(
-                    "No ActivationGroupDesc for ActivationGroupID " + agid);
+            // rmi.32=No ActivationGroupDesc for ActivationGroupID {0}
+            throw new UnknownObjectException(Messages.getString("rmi.32", agid)); //$NON-NLS-1$
         }
         return agi.getActivationGroupDesc();
     }
 
     public ActivationID registerObject(ActivationDesc adesc) {
         waitStartup();
-        rLog.log(commonDebugLevel,
-                "ActivationSystemImpl.registerObject():");
+        // rmi.log.4B=ActivationSystemImpl.registerObject():
+        rLog.log(commonDebugLevel,Messages.getString("rmi.log.4B")); //$NON-NLS-1$
         ActivationGroupID agid = adesc.getGroupID();
-        rLog.log(commonDebugLevel, "agid : " + agid);
-        rLog.log(commonDebugLevel, "Activator stub = " + thisStub);
+        // rmi.log.4C=agid : {0}
+        rLog.log(commonDebugLevel, Messages.getString("rmi.log.4C", agid)); //$NON-NLS-1$
+        // rmi.log.4D=Activator stub = {0}
+        rLog.log(commonDebugLevel, Messages.getString("rmi.log.4D", thisStub)); //$NON-NLS-1$
         ActivationID aid = new ActivationID((Activator) thisStub);
-        rLog.log(commonDebugLevel, "aid : " + aid);
-        rLog.log(commonDebugLevel, "agid : " + agid);
+        // rmi.log.4E=aid : {0}
+        rLog.log(commonDebugLevel, Messages.getString("rmi.log.4E", aid)); //$NON-NLS-1$
+        // rmi.log.4C=agid : {0}
+        rLog.log(commonDebugLevel, Messages.getString("rmi.log.4C", agid)); //$NON-NLS-1$
 
         ActivationGroupInfo info = (ActivationGroupInfo) groupInfoByGroupId
                 .get(agid);
-        rLog.log(commonDebugLevel, "ActivationGroupInfo = " + info);
+        // rmi.log.50=ActivationGroupInfo = {0}
+        rLog.log(commonDebugLevel, Messages.getString("rmi.log.50", info)); //$NON-NLS-1$
 
         info.registerObject(aid, adesc);
-        rLog.log(commonDebugLevel, "Activation desc was added.");
+        // rmi.log.51=Activation desc was added.
+        rLog.log(commonDebugLevel, Messages.getString("rmi.log.51")); //$NON-NLS-1$
         return aid;
 
     }
@@ -654,7 +676,8 @@ public class Rmid extends RemoteServer implements ActivationSystem,
 
     public void shutdown() {
         synchronized (lock) {
-            rLog.log(commonDebugLevel, "The Rmid is going to shutdown");
+            // rmi.log.52=The Rmid is going to shutdown
+            rLog.log(commonDebugLevel, Messages.getString("rmi.log.52")); //$NON-NLS-1$
 
             Enumeration enumeration = groupInfoByGroupId.elements();
             while (enumeration.hasMoreElements()) {
@@ -663,12 +686,13 @@ public class Rmid extends RemoteServer implements ActivationSystem,
                             .nextElement();
                     agi.shutdown();
                 } catch (Throwable t) {
-                    rLog.log(commonDebugLevel,
-                            "Exception in Rmid.shutdown: " + t);
+                    // rmi.log.53=Exception in Rmid.shutdown: {0}
+                    rLog.log(commonDebugLevel,Messages.getString("rmi.log.53", t)); //$NON-NLS-1$
                     t.printStackTrace();
                 }
             }
-            rLog.log(commonDebugLevel, "...... Done.");
+            // rmi.log.54=...... Done.
+            rLog.log(commonDebugLevel, Messages.getString("rmi.log.54")); //$NON-NLS-1$
             System.exit(0);
         }
     }
@@ -680,8 +704,8 @@ public class Rmid extends RemoteServer implements ActivationSystem,
         ActivationGroupInfo agi = (ActivationGroupInfo) groupInfoByGroupId
                 .remove(id);
         if (agi == null) {
-            throw new UnknownGroupException(
-                    "Attempt to unregister unknown group " + id);
+            // rmi.34=Attempt to unregister unknown group {0}
+            throw new UnknownGroupException(Messages.getString("rmi.34", id)); //$NON-NLS-1$
         }
         agi.unregister();
     }
@@ -708,22 +732,26 @@ public class Rmid extends RemoteServer implements ActivationSystem,
             throws RemoteException, UnknownObjectException {
         waitStartup();
 
-        rLog
-                .log(commonDebugLevel, "Rmid.activeObject: " + id + "; "
-                        + obj);
+        // rmi.log.56=Rmid.activeObject: {0}; {1}
+        rLog.log(commonDebugLevel, Messages.getString("rmi.log.56", //$NON-NLS-1$
+                id, obj));
         ActivationGroupID agid = (ActivationGroupID) groupIDByActivationID
                 .get(id);
-        rLog.log(commonDebugLevel, "agid = " + agid);
+        // rmi.log.57=agid = {0}
+        rLog.log(commonDebugLevel, Messages.getString("rmi.log.57", agid)); //$NON-NLS-1$
 
         ActivationGroupInfo agi = (ActivationGroupInfo) groupInfoByGroupId
                 .get(agid);
-        rLog.log(commonDebugLevel, "agi = " + agi);
+        // rmi.log.58=agi = {0}
+        rLog.log(commonDebugLevel, Messages.getString("rmi.log.58", agi)); //$NON-NLS-1$
 
         ObjectInfo oi = (ObjectInfo) agi.objectInfoByActivationID.get(id);
-        rLog.log(commonDebugLevel, "oi=" + oi);
+        // rmi.log.59=oi= {0}
+        rLog.log(commonDebugLevel, Messages.getString("rmi.log.59", oi)); //$NON-NLS-1$
 
         oi.active();
-        rLog.log(commonDebugLevel, "Rmid.activeObject finished.");
+        // rmi.log.5A=Rmid.activeObject finished.
+        rLog.log(commonDebugLevel, Messages.getString("rmi.log.5A")); //$NON-NLS-1$
     }
 
     public void inactiveGroup(ActivationGroupID id, long incarnation) {
@@ -753,15 +781,18 @@ public class Rmid extends RemoteServer implements ActivationSystem,
             throws ActivationException, UnknownObjectException,
             RemoteException {
         waitStartup();
-        rLog.log(commonDebugLevel, "ActivatorImpl.activate(" + id + ", "
-                + force + ")");
+        // rmi.log.5B=ActivatorImpl.activate({0}; {1})
+        rLog.log(commonDebugLevel, Messages.getString("rmi.log.5B", //$NON-NLS-1$
+                id, force));
 
         ActivationGroupID agid = (ActivationGroupID) groupIDByActivationID
                 .get(id);
-        rLog.log(commonDebugLevel, "agid: " + agid);
+        // rmi.log.57=agid = {0}
+        rLog.log(commonDebugLevel, Messages.getString("rmi.log.57", agid)); //$NON-NLS-1$
         ActivationGroupInfo info = (ActivationGroupInfo) groupInfoByGroupId
                 .get(agid);
-        rLog.log(commonDebugLevel, "info = " + info);
+        // rmi.log.5C=info = {0}
+        rLog.log(commonDebugLevel, Messages.getString("rmi.log.5C", info)); //$NON-NLS-1$
 
         return info.activateObject(id, force);
     }
@@ -840,30 +871,34 @@ public class Rmid extends RemoteServer implements ActivationSystem,
             objectInfoByActivationID.put(id, oi);
 
             if (!restoreLock) {
-                writeDelta(Delta.PUT, "object", id, desc);
-                rLog
-                        .log(persistenceDebugLevel,
-                                "New delta was generated.");
+                writeDelta(Delta.PUT, "object", id, desc); //$NON-NLS-1$
+                // rmi.log.5D=New delta was generated.
+                rLog.log(persistenceDebugLevel, Messages
+                        .getString("rmi.log.5D")); //$NON-NLS-1$
             }
         }
 
         public synchronized MarshalledObject activateObject(
                 ActivationID id, boolean force)
                 throws ActivationException, RemoteException {
-
-            rLog.log(commonDebugLevel, "GroupInfo: id=" + id + "; force="
-                    + force);
+            
+            // rmi.log.5E=GroupInfo: id={0}; force={1}
+            rLog.log(commonDebugLevel, Messages.getString("rmi.log.5E", //$NON-NLS-1$
+                id, force));
 
             if (!isActive) {
                 activateGroup();
-                rLog.log(commonDebugLevel, "Group was activated.");
+                // rmi.log.5F=Group was activated.
+                rLog.log(commonDebugLevel, Messages.getString("rmi.log.5F")); //$NON-NLS-1$
             } else {
-                rLog.log(commonDebugLevel, "Group was reused.");
+                // rmi.log.60=Group was reused.
+                rLog.log(commonDebugLevel, Messages.getString("rmi.log.60")); //$NON-NLS-1$
             }
 
             ObjectInfo oi = (ObjectInfo) objectInfoByActivationID.get(id);
-            rLog.log(commonDebugLevel, "activation_instantiator = "
-                    + activationInstantiator);
+            // rmi.log.61=activation_instantiator = {0}
+            rLog.log(commonDebugLevel, Messages.getString("rmi.log.61", //$NON-NLS-1$
+                    activationInstantiator));
 
             Exception signalException = null;
             try {
@@ -876,9 +911,8 @@ public class Rmid extends RemoteServer implements ActivationSystem,
             }
 
             if (signalException == null) {
-                rLog.log(commonDebugLevel,
-                        "The group seems to be dead: Killing "
-                                + "process, reactivating group.");
+                // rmi.log.62=The group seems to be dead: Killing process, reactivating group.
+                rLog.log(commonDebugLevel, Messages.getString("rmi.log.62")); //$NON-NLS-1$
 
                 if (process != null) {
                     process.destroy();
@@ -888,7 +922,8 @@ public class Rmid extends RemoteServer implements ActivationSystem,
                 activateGroup();
                 return oi.activate(activationInstantiator);
             }
-            throw new ActivationException("Exception: ", signalException);
+            // rmi.35=Exception:
+            throw new ActivationException(Messages.getString("rmi.35"), signalException); //$NON-NLS-1$
         }
 
         public synchronized void activateGroup() {
@@ -909,7 +944,7 @@ public class Rmid extends RemoteServer implements ActivationSystem,
                 if (cmd != null) {
                     al.add(cmd);
                 } else {
-                    al.add("java");
+                    al.add("java"); //$NON-NLS-1$
                 }
                 al.addAll(Arrays.asList(options));
             } else {
@@ -918,41 +953,41 @@ public class Rmid extends RemoteServer implements ActivationSystem,
                  * Getting properties that affect group VM execution.
                  */
                 String javaVmNameVal = (String) AccessController.doPrivileged(
-                        new GetStringPropAction("java.vm.name"));
+                        new GetStringPropAction("java.vm.name")); //$NON-NLS-1$
 
                 String javaHomeVal = (String) AccessController.doPrivileged(
-                        new GetStringPropAction("java.home"));
+                        new GetStringPropAction("java.home")); //$NON-NLS-1$
 
                 String javaClassPathVal = (String) AccessController.doPrivileged(
-                        new GetStringPropAction("java.class.path"));
+                        new GetStringPropAction("java.class.path")); //$NON-NLS-1$
 
                 String policy = (String) AccessController.doPrivileged(
-                        new GetStringPropAction("java.security.policy"));
+                        new GetStringPropAction("java.security.policy")); //$NON-NLS-1$
 
                 String bootClassPathVal = (String)
                         AccessController.doPrivileged(new GetStringPropAction(
-                            (javaVmNameVal.equals("J9")
-                                           ? "org.apache.harmony.boot.class.path"
-                                            : "sun.boot.class.path")));
+                            (javaVmNameVal.equals("J9") //$NON-NLS-1$
+                                           ? "org.apache.harmony.boot.class.path" //$NON-NLS-1$
+                                            : "sun.boot.class.path"))); //$NON-NLS-1$
 
                 String executable = new File(new File(
-                        javaHomeVal, "bin"), "java").getPath();
+                        javaHomeVal, "bin"), "java").getPath(); //$NON-NLS-1$ //$NON-NLS-2$
 
                 // Add name of Java executable to run.
                 al.add(executable);
 
                 if (bootClassPathVal != null) {
-                    al.add("-Xbootclasspath:" + bootClassPathVal);
+                    al.add("-Xbootclasspath:" + bootClassPathVal); //$NON-NLS-1$
                 }
 
                 if (javaClassPathVal != null) {
-                    al.add("-classpath");
+                    al.add("-classpath"); //$NON-NLS-1$
                     al.add(javaClassPathVal);
                 }
 
                 if (policy != null) {
                     // Apply security policy.
-                    al.add("-Djava.security.policy=" + policy);
+                    al.add("-Djava.security.policy=" + policy); //$NON-NLS-1$
                 }
             }
 
@@ -960,15 +995,16 @@ public class Rmid extends RemoteServer implements ActivationSystem,
              * Passing the "-C" options to the ActivationGroup VM.
              */
             for (int i = 0; i < groupArgs.length; i++) {
-                rLog.log(commonDebugLevel,
-                        "Option was passed through \'-C\': "
-                                + groupArgs[i]);
+                // rmi.log.63=Option was passed through '-C': {0}
+                rLog.log(commonDebugLevel,Messages.getString("rmi.log.63", //$NON-NLS-1$
+                                groupArgs[i]));
                 al.add(groupArgs[i]);
             }
 
-            al.add("org.apache.harmony.rmi.activation.ActivationGroupImpl");
+            al.add("org.apache.harmony.rmi.activation.ActivationGroupImpl"); //$NON-NLS-1$
             args = (String[]) al.toArray(new String[al.size()]);
-            rLog.log(commonDebugLevel, "args = " + Arrays.asList(args));
+            // rmi.log.64=args = {0} 
+            rLog.log(commonDebugLevel, Messages.getString("rmi.log.64", Arrays.asList(args))); //$NON-NLS-1$
 
             try {
                 final String[] argsLocal = args;
@@ -987,8 +1023,9 @@ public class Rmid extends RemoteServer implements ActivationSystem,
                 new DebugThread(in).start();
                 new DebugThread(err).start();
 
-                rLog.log(commonDebugLevel, "ActivationGroup started: "
-                        + process);
+                // rmi.log.65=ActivationGroup started: {0}
+                rLog.log(commonDebugLevel, Messages.getString("rmi.log.65", //$NON-NLS-1$
+                        process));
                 incarnation++;
 
                 OutputStream os = process.getOutputStream();
@@ -997,20 +1034,25 @@ public class Rmid extends RemoteServer implements ActivationSystem,
 
                 oos.writeObject(agid);
 
-                rLog.log(commonDebugLevel, "Agid written: " + agid);
+                // rmi.log.66=Agid written: {0}
+                rLog.log(commonDebugLevel, Messages.getString("rmi.log.66", agid)); //$NON-NLS-1$
                 oos.writeObject(agdesc);
-                rLog.log(commonDebugLevel, "Agdesc written: " + agdesc);
+                // rmi.log.67=Agdesc written: {0}
+                rLog.log(commonDebugLevel, Messages.getString("rmi.log.67", agdesc)); //$NON-NLS-1$
 
                 oos.writeLong(incarnation);
-                rLog.log(commonDebugLevel, "incarnation written: "
-                        + incarnation);
+                // rmi.log.68=incarnation written: {0}
+                rLog.log(commonDebugLevel, Messages.getString("rmi.log.68", //$NON-NLS-1$
+                        incarnation));
 
                 oos.flush();
-                rLog.log(commonDebugLevel, "flushed ");
+                // rmi.log.69=flushed
+                rLog.log(commonDebugLevel, Messages.getString("rmi.log.69")); //$NON-NLS-1$
 
                 oos.close();
                 os.close();
-                rLog.log(commonDebugLevel, "closed ");
+                // rmi.log.6A=closed
+                rLog.log(commonDebugLevel, Messages.getString("rmi.log.6A")); //$NON-NLS-1$
 
                 if (activationInstantiator == null) {
                     try {
@@ -1020,8 +1062,8 @@ public class Rmid extends RemoteServer implements ActivationSystem,
                 }
                 startingGroups++;
             } catch (Throwable t) {
-                rLog.log(commonDebugLevel,
-                        "Cannot start ActivationGroup.\n Exception: " + t);
+                // rmi.log.6B=Cannot start ActivationGroup.\n Exception: {0}
+                rLog.log(commonDebugLevel, Messages.getString("rmi.log.6B", t)); //$NON-NLS-1$
                 t.printStackTrace();
             }
         }
@@ -1032,15 +1074,15 @@ public class Rmid extends RemoteServer implements ActivationSystem,
          */
         public synchronized void active(ActivationInstantiator ai,
                 long incarnation) {
-            rLog.log(commonDebugLevel,
-                    "ActivationGroupInfo.activeGroup[ActInst=" + ai
-                            + "; incarn=" + incarnation + "]");
+            // rmi.log.6C=ActivationGroupInfo.activeGroup[ActInst={0}; incarn={1}]
+            rLog.log(commonDebugLevel, Messages.getString("rmi.log.6C", ai, //$NON-NLS-1$
+                    incarnation));
             activationInstantiator = ai;
             notify();
 
             if (this.incarnation != incarnation) {
-                throw new RuntimeException(
-                        "Different incarnations of this group happened.");
+                // rmi.33=Different incarnations of this group happened.
+                throw new RuntimeException(Messages.getString("rmi.33")); //$NON-NLS-1$
             }
             activationInstantiator = ai;
             isActive = true;
@@ -1048,8 +1090,8 @@ public class Rmid extends RemoteServer implements ActivationSystem,
             if (startMonitor) {
                 rmidMonitor.activeGroup(agid);
             }
-            rLog.log(commonDebugLevel,
-                    "ActivationGroupInfo.activeGroup finished.");
+            // rmi.log.6D=ActivationGroupInfo.activeGroup finished.
+            rLog.log(commonDebugLevel, Messages.getString("rmi.log.6D")); //$NON-NLS-1$
         }
 
         public ActivationGroupDesc getActivationGroupDesc() {
@@ -1096,7 +1138,7 @@ public class Rmid extends RemoteServer implements ActivationSystem,
         }
 
         public String toString() {
-            return "GroupInfo[ ActivationGroupID = " + agid + "]";
+            return "GroupInfo[ ActivationGroupID = " + agid + "]"; //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
@@ -1127,19 +1169,18 @@ public class Rmid extends RemoteServer implements ActivationSystem,
                 ActivationInstantiator ai) throws ActivationException,
                 RemoteException {
 
-            rLog.log(commonDebugLevel,
-                    "ObjectInfo.activate started. Act Inst = " + ai);
+            // rmi.log.6E=ObjectInfo.activate started. Act Inst = {0}
+            rLog.log(commonDebugLevel,Messages.getString("rmi.log.6E", ai)); //$NON-NLS-1$
 
             if (cachedInstance != null) {
-                rLog.log(commonDebugLevel,
-                        "Subsequent call to activate, returning "
-                                + "cached instance.");
+                // rmi.log.6F=Subsequent call to activate, returning cached instance.
+                rLog.log(commonDebugLevel, Messages.getString("rmi.log.6F")); //$NON-NLS-1$
                 return cachedInstance;
             }
 
             MarshalledObject mo = ai.newInstance(id, desc);
-            rLog.log(commonDebugLevel, "ObjectInfo.activate completed: "
-                    + mo);
+            // rmi.log.70=ObjectInfo.activate completed: {0}
+            rLog.log(commonDebugLevel, Messages.getString("rmi.log.70", mo)); //$NON-NLS-1$
 
             return mo;
         }
@@ -1233,8 +1274,8 @@ public class Rmid extends RemoteServer implements ActivationSystem,
                         out.writeObject(new Delta(op, name, key, val));
                         out.close();
                         fos.close();
-                        rLog.log(persistenceDebugLevel,
-                                "Delta was written.");
+                        // rmi.log.71=Delta was written.
+                        rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.71")); //$NON-NLS-1$
                     } catch (Throwable t) {
                         t.printStackTrace();
                         System.exit(1);
@@ -1279,8 +1320,9 @@ public class Rmid extends RemoteServer implements ActivationSystem,
                                 ObjectInputStream in = new ObjectInputStream(
                                         fis);
                                 Delta d = (Delta) in.readObject();
+                                // rmi.log.72=A delta was restored: {0}
                                 rLog.log(persistenceDebugLevel,
-                                        "A delta was restored: " + d);
+                                        Messages.getString("rmi.log.72", d)); //$NON-NLS-1$
                             }
                         }
                     } catch (EOFException eofe) {
@@ -1293,7 +1335,8 @@ public class Rmid extends RemoteServer implements ActivationSystem,
                 }
             });
         } catch (Throwable t) {
-            rLog.log(persistenceDebugLevel, "Exception in restore: " + t);
+            // rmi.log.73=Exception in restore: {0}
+            rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.73", t)); //$NON-NLS-1$
             t.printStackTrace();
             /*
              * Returning Activation System into initial state:
@@ -1332,11 +1375,11 @@ public class Rmid extends RemoteServer implements ActivationSystem,
 
         public String toString() {
             try {
-                return "Delta: " + op + "," + name + ", " + mkey.get()
-                        + ", " + mval.get();
+                return "Delta: " + op + "," + name + ", " + mkey.get() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                        + ", " + mval.get(); //$NON-NLS-1$
             } catch (Throwable t) {
                 t.printStackTrace();
-                return "" + t;
+                return "" + t; //$NON-NLS-1$
             }
         }
 
@@ -1354,56 +1397,63 @@ public class Rmid extends RemoteServer implements ActivationSystem,
             name = in.readUTF();
             mkey = (MarshalledObject) in.readObject();
             mval = (MarshalledObject) in.readObject();
-            rLog.log(persistenceDebugLevel, "Delta: Data read: " + op
-                    + ", " + name + ", " + mkey.get() + ", " + mval.get());
+            // rmi.log.75=Delta: Data read: 
+            rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.75") + op //$NON-NLS-1$
+                    + ", " + name + ", " + mkey.get() + ", " + mval.get()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
             if (op == PUT) {
-                if (name.equals("group")) {
+                if (name.equals("group")) { //$NON-NLS-1$
                     ActivationGroupID agid = (ActivationGroupID) mkey
                             .get();
-                    rLog.log(persistenceDebugLevel, "Restore agid: "
-                            + agid);
+                    // rmi.log.76=Restore agid: {0}
+                    rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.76", //$NON-NLS-1$
+                            agid));
                     ActivationGroupDesc agdesc = (ActivationGroupDesc) mval
                             .get();
 
                     ActivationGroupInfo agi = new ActivationGroupInfo(
                             agid, agdesc);
-                    rLog.log(persistenceDebugLevel, "Restore agi: " + agi);
+                    // rmi.log.77=Restore agi: {0}
+                    rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.77", agi)); //$NON-NLS-1$
                     groupInfoByGroupId.put(agid, agi);
-                    rLog.log(persistenceDebugLevel,
-                            "The data were put into groupID2groupInfo_H");
+                    // rmi.log.78=The data were put into groupID2groupInfo_H
+                    rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.78")); //$NON-NLS-1$
                 }
-                if (name.equals("object")) {
-                    rLog.log(persistenceDebugLevel,
-                            "Trying to restore ActivationID:");
+                if (name.equals("object")) { //$NON-NLS-1$
+                    // rmi.log.79=Trying to restore ActivationID:
+                    rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.79")); //$NON-NLS-1$
                     ActivationID aid = (ActivationID) mkey.get();
-                    rLog.log(persistenceDebugLevel, "aid = " + aid);
+                    // rmi.log.0F=aid = {0}
+                    rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.0F", aid)); //$NON-NLS-1$
                     ActivationDesc adesc = (ActivationDesc) mval.get();
-                    rLog.log(persistenceDebugLevel, "adesc = " + adesc);
+                    // rmi.log.7A=adesc = {0}
+                    rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.7A", adesc)); //$NON-NLS-1$
 
                     ActivationGroupID agid = adesc.getGroupID();
-                    rLog.log(persistenceDebugLevel, "agid = " + agid);
+                    // rmi.log.57=agid = {0}
+                    rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.57", agid)); //$NON-NLS-1$
 
                     ActivationGroupInfo agi =
                         (ActivationGroupInfo) groupInfoByGroupId.get(agid);
-                    rLog.log(persistenceDebugLevel, "agi = " + agi);
+                    // rmi.log.58=agi = {0}
+                    rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.58", agi)); //$NON-NLS-1$
 
                     groupIDByActivationID.put(aid, agid);
 
                     agi.registerObject(aid, adesc);
-                    rLog.log(persistenceDebugLevel,
-                            "Object was registered.");
-                    rLog.log(persistenceDebugLevel,
-                            "Object was put into hashtable.");
+                    // rmi.log.7D=Object was registered.
+                    rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.7D")); //$NON-NLS-1$
+                    // rmi.log.7E=Object was put into hashtable.
+                    rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.7E")); //$NON-NLS-1$
                 }
             }
 
             if (op == REMOVE) {
-                if (name.equals("object")) {
+                if (name.equals("object")) { //$NON-NLS-1$
                     groupIDByActivationID.remove(mkey.get());
                 }
 
-                if (name.equals("group")) {
+                if (name.equals("group")) { //$NON-NLS-1$
                     groupInfoByGroupId.remove(mkey.get());
                 }
             }
@@ -1447,9 +1497,12 @@ public class Rmid extends RemoteServer implements ActivationSystem,
             Hashtable h0 = (Hashtable) in.readObject();
             Hashtable h1 = (Hashtable) in.readObject();
 
-            rLog.log(persistenceDebugLevel, "Restore: ");
-            rLog.log(persistenceDebugLevel, "h0 = " + h0);
-            rLog.log(persistenceDebugLevel, "h1 = " + h1);
+            // rmi.log.7F=Restore:
+            rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.7F")); //$NON-NLS-1$
+            // rmi.log.80=h0 = {0}
+            rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.80", h0)); //$NON-NLS-1$
+            // rmi.log.81=h1 = {0}
+            rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.81", h1)); //$NON-NLS-1$
 
             Enumeration e0 = h0.keys();
             while (e0.hasMoreElements()) {
@@ -1457,19 +1510,22 @@ public class Rmid extends RemoteServer implements ActivationSystem,
                 MarshalledObject mo_agid = (MarshalledObject) e0
                         .nextElement();
                 ActivationGroupID agid = (ActivationGroupID) mo_agid.get();
-                rLog.log(persistenceDebugLevel, "Restore agid: " + agid);
+                // rmi.log.76=Restore agid: {0}
+                rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.76", agid)); //$NON-NLS-1$
 
                 ActivationGroupDesc agdesc = (ActivationGroupDesc) h0
                         .get(mo_agid);
 
-                rLog.log(persistenceDebugLevel, "Restore agdesc: "
-                        + agdesc);
+                // rmi.log.82=Restore agdesc: {0}
+                rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.82", //$NON-NLS-1$
+                        agdesc));
                 ActivationGroupInfo agi = new ActivationGroupInfo(agid,
                         agdesc);
-                rLog.log(persistenceDebugLevel, "Restore agi: " + agi);
+                // rmi.log.77=Restore agi: {0}
+                rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.77") + agi); //$NON-NLS-1$
                 groupInfoByGroupId.put(agid, agi);
-                rLog.log(persistenceDebugLevel,
-                        "The data were put into groupID2groupInfo_H");
+                // rmi.log.78=The data were put into groupID2groupInfo_H
+                rLog.log(persistenceDebugLevel, Messages.getString("rmi.log.78")); //$NON-NLS-1$
             }
 
             Enumeration e1 = h1.keys();

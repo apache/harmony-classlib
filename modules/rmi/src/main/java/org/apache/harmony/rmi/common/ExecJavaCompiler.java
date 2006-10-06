@@ -36,24 +36,24 @@ public class ExecJavaCompiler extends JavaCompiler {
     /**
      * Default name of a program to execute.
      */
-    public static final String DEFAULT_COMPILER_PROGRAM = "javac";
+    public static final String DEFAULT_COMPILER_PROGRAM = "javac"; //$NON-NLS-1$
 
     /**
      * Name of the system variable specifying the Java location.
      */
-    public static final String JAVA_HOME_VARIABLE = "JAVA_HOME";
+    public static final String JAVA_HOME_VARIABLE = "JAVA_HOME"; //$NON-NLS-1$
 
     /**
      * Path from {@link #JAVA_HOME_VARIABLE JAVA_HOME}
      * to {@linkplain #JAVA_COMPILER_PATTERN Javac executable}.
      */
-    public static final String JAVA_COMPILER_PATH = "bin";
+    public static final String JAVA_COMPILER_PATH = "bin"; //$NON-NLS-1$
 
     /**
      * File name pattern describing Javac executable file name.
      */
     public static final String JAVA_COMPILER_PATTERN =
-            "((javac)|(JAVAC))(|(\\.(exe|EXE)))";
+            "((javac)|(JAVAC))(|(\\.(exe|EXE)))"; //$NON-NLS-1$
 
     /**
      * Creates uninitialized instance of this class.
@@ -100,7 +100,7 @@ public class ExecJavaCompiler extends JavaCompiler {
     public ExecJavaCompiler(String programName) throws JavaCompilerException {
         compilerOptions = new String[] { (programName == null)
                 ? getFileFromVariable(JAVA_HOME_VARIABLE, JAVA_COMPILER_PATH,
-                        JAVA_COMPILER_PATTERN, "Java compiler").getPath()
+                        JAVA_COMPILER_PATTERN, "Java compiler").getPath() //$NON-NLS-1$
                 : programName };
     }
 

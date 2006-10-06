@@ -28,6 +28,7 @@ import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 
 import org.apache.harmony.rmi.common.RMILog;
+import org.apache.harmony.rmi.internal.nls.Messages;
 
 
 /**
@@ -62,8 +63,8 @@ class RmidMonitorFactory {
 
         try {
             final Class cl = Class.forName(className);
-
-            rLog.log(Rmid.commonDebugLevel, "RMID Monitor class = " + cl);
+            // rmi.log.36=RMID Monitor class = {0}
+            rLog.log(Rmid.commonDebugLevel, Messages.getString("rmi.log.36", cl)); //$NON-NLS-1$
 
             return (RmidMonitor) AccessController
                     .doPrivileged(new PrivilegedExceptionAction() {

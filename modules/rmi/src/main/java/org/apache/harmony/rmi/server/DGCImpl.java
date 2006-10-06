@@ -39,6 +39,7 @@ import org.apache.harmony.rmi.common.CreateThreadAction;
 import org.apache.harmony.rmi.common.GetLongPropAction;
 import org.apache.harmony.rmi.common.RMILog;
 import org.apache.harmony.rmi.common.RMIProperties;
+import org.apache.harmony.rmi.internal.nls.Messages;
 
 
 /**
@@ -91,7 +92,8 @@ class DGCImpl implements DGC {
             vmid = new VMID();
 
             if (dgcLog.isLoggable(RMILog.VERBOSE)) {
-                dgcLog.log(RMILog.VERBOSE, "Created new VMID: " + vmid);
+                // rmi.log.10E=Created new VMID: {0}
+                dgcLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.10E", vmid)); //$NON-NLS-1$
             }
         }
         long duration = lease.getValue();
@@ -115,15 +117,16 @@ class DGCImpl implements DGC {
             if (expTracker == null) {
                 (expTracker = (Thread) AccessController.doPrivileged(
                         new CreateThreadAction(new ExpirationTracker(),
-                                "ExpirationTracker", true))).start();
+                                "ExpirationTracker", true))).start(); //$NON-NLS-1$
             }
 
             for (int i = 0; i < ids.length; ++i) {
                 s.add(ids[i]);
 
                 if (dgcLog.isLoggable(RMILog.VERBOSE)) {
-                    dgcLog.log(RMILog.VERBOSE, "Added " + ids[i]
-                            + ", " + vmid + ", duration = " + duration);
+                    // rmi.log.10F=Added {0}, {1}, duration ={2}
+                    dgcLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.10F", //$NON-NLS-1$
+                            new Object[]{ids[i], vmid, duration}));
                 }
             }
 
@@ -144,7 +147,8 @@ class DGCImpl implements DGC {
         }
 
         if (dgcLog.isLoggable(RMILog.VERBOSE)) {
-            dgcLog.log(RMILog.VERBOSE, "Updated " + vmid);
+            // rmi.log.110=Updated {0}
+            dgcLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.110", vmid)); //$NON-NLS-1$
         }
         return l;
     }
@@ -169,8 +173,9 @@ class DGCImpl implements DGC {
                         s.remove(ids[i]);
 
                         if (dgcLog.isLoggable(RMILog.VERBOSE)) {
-                            dgcLog.log(RMILog.VERBOSE, "Removed " + ids[i]
-                                    + ", " + vmid);
+                            // rmi.log.111=Removed {0},{1}
+                            dgcLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.111", //$NON-NLS-1$
+                                    ids[i], vmid));
                         }
                     }
                 }
@@ -189,7 +194,8 @@ class DGCImpl implements DGC {
                 vmidTable.remove(vmid);
 
                 if (dgcLog.isLoggable(RMILog.VERBOSE)) {
-                    dgcLog.log(RMILog.VERBOSE, "Removed " + vmid);
+                    // rmi.log.112=Removed {0}
+                    dgcLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.112", vmid)); //$NON-NLS-1$
                 }
             }
         }
@@ -242,8 +248,8 @@ class DGCImpl implements DGC {
 
                             if (info != null
                                     && dgcLog.isLoggable(RMILog.VERBOSE)) {
-                                dgcLog.log(RMILog.VERBOSE, "Lease for "
-                                        + info.id + ", " + vmid + " expired.");
+                                dgcLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.113", //$NON-NLS-1$
+                                        info.id, vmid));
                             }
                         }
                     }

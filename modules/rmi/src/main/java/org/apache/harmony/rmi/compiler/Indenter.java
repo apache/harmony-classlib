@@ -22,6 +22,8 @@
  */
 package org.apache.harmony.rmi.compiler;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
+
 
 /**
  * Provides dynamic 4-space indents usable for source code generation.
@@ -39,7 +41,7 @@ final class Indenter {
     /**
      * String used for indentation.
      */
-    private final String stepString = "    ";
+    private final String stepString = "    "; //$NON-NLS-1$
 
     /**
      * Length of {@linkplain #stepString indentation string}.
@@ -149,7 +151,7 @@ final class Indenter {
      */
     String hIncrease(int steps) {
         increase(steps);
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /**
@@ -178,7 +180,7 @@ final class Indenter {
      */
     String hDecrease(int steps) throws IndexOutOfBoundsException {
         decrease(steps);
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /**
@@ -251,9 +253,9 @@ final class Indenter {
      */
     String assertEmpty() throws IllegalStateException {
         if (currentIndent.length() != 0) {
-            throw new IllegalStateException(
-                    "Indenter assertion failed: current indent is not empty");
+            // rmi.56=Indenter assertion failed: current indent is not empty
+            throw new IllegalStateException(Messages.getString("rmi.56")); //$NON-NLS-1$
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 }

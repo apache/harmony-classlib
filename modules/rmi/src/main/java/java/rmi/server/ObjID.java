@@ -88,7 +88,7 @@ public final class ObjID implements Serializable {
      * @com.intel.drl.spec_ref
      */
     public String toString() {
-        return "ObjID[" + objNum + ", " + space + "]";
+        return "ObjID[" + objNum + ", " + space + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     /**

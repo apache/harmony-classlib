@@ -41,7 +41,7 @@ public interface LoaderHandler {
      * @com.intel.drl.spec_ref
      */
     @Deprecated
-    public static final String packagePrefix = "org.apache.harmony.rmi";
+    public static final String packagePrefix = "org.apache.harmony.rmi"; //$NON-NLS-1$
 
     /**
      * @com.intel.drl.spec_ref

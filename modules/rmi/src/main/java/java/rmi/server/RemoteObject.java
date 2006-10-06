@@ -32,6 +32,7 @@ import java.rmi.Remote;
 import java.rmi.UnmarshalException;
 
 import org.apache.harmony.rmi.common.RMIUtil;
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.server.ExportManager;
 
 
@@ -75,7 +76,7 @@ public abstract class RemoteObject implements Remote, Serializable {
     public String toString() {
         String clName = RMIUtil.getShortName(getClass());
         return (ref == null) ? clName
-                : clName + "[" + ref.remoteToString() + "]";
+                : clName + "[" + ref.remoteToString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -115,8 +116,8 @@ public abstract class RemoteObject implements Remote, Serializable {
     private void writeObject(ObjectOutputStream out)
             throws IOException {
         if (ref == null) {
-            throw new MarshalException(
-                    "Invalid remote object: RemoteRef = null");
+            // rmi.17=Invalid remote object: RemoteRef = null
+            throw new MarshalException(Messages.getString("rmi.17")); //$NON-NLS-1$
         }
         String refType = ref.getRefClass(out);
 
@@ -124,7 +125,7 @@ public abstract class RemoteObject implements Remote, Serializable {
             out.writeUTF(refType);
             ref.writeExternal(out);
         } else {
-            out.writeUTF("");
+            out.writeUTF(""); //$NON-NLS-1$
             out.writeObject(ref);
         }
     }
@@ -148,13 +149,13 @@ public abstract class RemoteObject implements Remote, Serializable {
             // well-known RemoteRef types
             // TODO: the following line is a temporary solution. Line after
             //       that should be uncommented later.
-            String refClName = "org.apache.harmony.rmi.remoteref." + refName;
+            String refClName = "org.apache.harmony.rmi.remoteref." + refName; //$NON-NLS-1$
             //String refClName = RemoteRef.packagePrefix + "." + refName;
             ref = ((RemoteRef) Class.forName(refClName).newInstance());
             ref.readExternal(in);
         } catch (Exception ex) {
-            throw new UnmarshalException("Unable to create RemoteRef instance",
-                    ex);
+            // rmi.18=Unable to create RemoteRef instance
+            throw new UnmarshalException(Messages.getString("rmi.18"), ex);//$NON-NLS-1$
         }
     }
 }

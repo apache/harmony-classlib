@@ -35,6 +35,7 @@ import org.apache.harmony.rmi.client.ClientConnectionManager;
 import org.apache.harmony.rmi.common.GetLongPropAction;
 import org.apache.harmony.rmi.common.RMILog;
 import org.apache.harmony.rmi.common.RMIProperties;
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.transport.Endpoint;
 
 
@@ -96,8 +97,8 @@ public class TcpConnection extends ClientConnection {
             out.flush();
 
             if (tcpTransportLog.isLoggable(RMILog.VERBOSE)) {
-                tcpTransportLog.log(RMILog.VERBOSE,
-                        "Using stream RMI protocol");
+                // rmi.90=Using stream RMI protocol
+                tcpTransportLog.log(RMILog.VERBOSE,Messages.getString("rmi.90")); //$NON-NLS-1$
             }
 
             // set handshakeTimeout
@@ -114,10 +115,11 @@ public class TcpConnection extends ClientConnection {
             int ack = din.readByte();
 
             if (ack != PROTOCOL_ACK) {
+                // rmi.log.137=Protocol version {0} is not supported.
+                // rmi.log.13C=Unknown protocol response: {0}
                 throw new ConnectIOException((ack == PROTOCOL_NOT_SUPPORTED)
-                        ? ("Protocol version " + STREAM_PROTOCOL
-                        + " is not supported.") : ("Unknown protocol response: "
-                        + ack));
+                        ? (Messages.getString("rmi.log.137", STREAM_PROTOCOL)) //$NON-NLS-1$
+                        : (Messages.getString("rmi.log.13C",ack))); //$NON-NLS-1$
             }
 
             // read host and port
@@ -125,8 +127,9 @@ public class TcpConnection extends ClientConnection {
             int port = din.readInt();
 
             if (tcpTransportLog.isLoggable(RMILog.VERBOSE)) {
+                // rmi.log.138=Server is seeing us as {0}:{1}
                 tcpTransportLog.log(RMILog.VERBOSE,
-                        "Server is seeing us as " + host + ":" + port);
+                        Messages.getString("rmi.log.138", host, port)); //$NON-NLS-1$
             }
 
             // restore original value of soTimeout
@@ -144,8 +147,9 @@ public class TcpConnection extends ClientConnection {
             throw re;
         } catch (IOException ioe) {
             close();
+            // rmi.92=Unable to acknowledge protocol with server
             throw new ConnectIOException(
-                    "Unable to acknowledge protocol with server", ioe);
+                    Messages.getString("rmi.92"), ioe); //$NON-NLS-1$
         }
 
         // protocol is agreed
@@ -180,8 +184,9 @@ public class TcpConnection extends ClientConnection {
             ackResp = in.read();
         } catch (IOException ioe) {
             if (tcpTransportLog.isLoggable(RMILog.BRIEF)) {
+                // rmi.log.139=Ping request for {0} failed.
                 tcpTransportLog.log(RMILog.BRIEF,
-                        "Ping request for " + toString() + " failed.");
+                        Messages.getString("rmi.log.139", toString())); //$NON-NLS-1$
             }
             close(false);
             return false;
@@ -189,9 +194,10 @@ public class TcpConnection extends ClientConnection {
 
         if (ackResp != PING_ACK) {
             if (tcpTransportLog.isLoggable(RMILog.BRIEF)) {
+                // rmi.log.13A=Unknown response to ping request for {0}:{1}
                 tcpTransportLog.log(RMILog.BRIEF,
-                        "Unknown response to ping request for " + toString()
-                        + ": " + ackResp);
+                        Messages.getString("rmi.log.13A", toString(), //$NON-NLS-1$
+                        ackResp));
             }
             close(false);
             return false;
@@ -202,8 +208,9 @@ public class TcpConnection extends ClientConnection {
         }
 
         if (tcpTransportLog.isLoggable(RMILog.BRIEF)) {
+            // rmi.log.13B=Reusing {0}...
             tcpTransportLog.log(RMILog.BRIEF,
-                    "Reusing " + toString() + "...");
+                    Messages.getString("rmi.log.13B", toString())); //$NON-NLS-1$
         }
         return true;
     }

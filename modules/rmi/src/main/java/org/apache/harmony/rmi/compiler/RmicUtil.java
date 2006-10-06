@@ -25,6 +25,7 @@ package org.apache.harmony.rmi.compiler;
 import java.io.File;
 
 import org.apache.harmony.rmi.common.RMIUtil;
+import org.apache.harmony.rmi.internal.nls.Messages;
 
 
 /**
@@ -84,7 +85,7 @@ final class RmicUtil implements RmicConstants {
      */
     static String getObjectParameterString(Class cls, String varName) {
         return (cls.isPrimitive()
-                ? ("new " + RMIUtil.getWrappingClass(cls).getName()
+                ? ("new " + RMIUtil.getWrappingClass(cls).getName() //$NON-NLS-1$
                 + '(' + varName + ')') : varName);
     }
 
@@ -123,7 +124,7 @@ final class RmicUtil implements RmicConstants {
      */
     static String getHandlingType(Class cls) {
         return (cls.isPrimitive()
-                ? firstLetterToUpperCase(cls.getName()) : "Object");
+                ? firstLetterToUpperCase(cls.getName()) : "Object"); //$NON-NLS-1$
     }
 
     /**
@@ -150,8 +151,8 @@ final class RmicUtil implements RmicConstants {
         // For primitive types, use respective special read method.
         // For non-primitive types, use readObject() and cast (if not Object).
         return (((!cls.isPrimitive() && (cls != Object.class))
-                ? ('(' + RMIUtil.getCanonicalName(cls) + ") ") : "")
-                + streamName + ".read" + getHandlingType(cls) + "()");
+                ? ('(' + RMIUtil.getCanonicalName(cls) + ") ") : "") //$NON-NLS-1$ //$NON-NLS-2$
+                + streamName + ".read" + getHandlingType(cls) + "()"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -178,7 +179,7 @@ final class RmicUtil implements RmicConstants {
             String streamName) {
         // For primitive types, use respective special write method.
         // For non-primitive types, use writeObject().
-        return (streamName + ".write" + getHandlingType(cls)
+        return (streamName + ".write" + getHandlingType(cls) //$NON-NLS-1$
                 + '(' + varName +')');
     }
 
@@ -208,13 +209,13 @@ final class RmicUtil implements RmicConstants {
         }
 
         // For all other types, create the respective cast statement.
-        StringBuffer buffer = new StringBuffer("((");
+        StringBuffer buffer = new StringBuffer("(("); //$NON-NLS-1$
         buffer.append(RMIUtil.getCanonicalName(RMIUtil.getWrappingClass(cls)));
-        buffer.append(") " + varName + ')');
+        buffer.append(") " + varName + ')'); //$NON-NLS-1$
 
         // For primitive types, include case to primitive type.
         if (cls.isPrimitive()) {
-            buffer.append('.' + cls.getName() + "Value()");
+            buffer.append('.' + cls.getName() + "Value()"); //$NON-NLS-1$
         }
 
         return buffer.toString();
@@ -238,11 +239,11 @@ final class RmicUtil implements RmicConstants {
      */
     static File getPackageDir(String base, String packageName)
             throws RMICompilerException {
-        File dir = new File(base, (packageName != null) ? packageName : "");
+        File dir = new File(base, (packageName != null) ? packageName : ""); //$NON-NLS-1$
 
         if (dir.exists() ? !dir.isDirectory() : !dir.mkdirs()) {
-            throw new RMICompilerException(
-                    "Can't create target directory: " + dir);
+            // rmi.4E=Can't create target directory: {0}
+            throw new RMICompilerException(Messages.getString("rmi.4E", dir)); //$NON-NLS-1$
         }
 
         return dir;
@@ -270,7 +271,8 @@ final class RmicUtil implements RmicConstants {
 
         if (file.exists()
                 ? !(file.isFile() && file.canWrite()) : !dir.canWrite()) {
-            throw new RMICompilerException("Can't create file: " + file);
+            // rmi.4F=Can't create file: {0}
+            throw new RMICompilerException(Messages.getString("rmi.4F", file)); //$NON-NLS-1$
         }
 
         return file;

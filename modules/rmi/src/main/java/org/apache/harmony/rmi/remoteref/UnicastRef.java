@@ -41,6 +41,7 @@ import org.apache.harmony.rmi.client.ClientConnection;
 import org.apache.harmony.rmi.client.ClientConnectionManager;
 import org.apache.harmony.rmi.client.ClientRemoteCall;
 import org.apache.harmony.rmi.common.RMILog;
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.server.RemoteRefBase;
 import org.apache.harmony.rmi.transport.Endpoint;
 import org.apache.harmony.rmi.transport.RMIObjectInputStream;
@@ -120,8 +121,9 @@ public class UnicastRef extends RemoteRefBase {
         logClientCall(obj, m.toString());
 
         if (clientRefLog.isLoggable(RMILog.BRIEF)) {
-            clientRefLog.log(RMILog.BRIEF, "New call: method = [" + m
-                    + "], hash = " + h);
+            // rmi.log.100=New call: method = [{0}], hash = {1}
+            clientRefLog.log(RMILog.BRIEF, Messages.getString("rmi.log.100", //$NON-NLS-1$
+                m, h));
         }
 
         // initiate a new call
@@ -142,8 +144,8 @@ public class UnicastRef extends RemoteRefBase {
                     }
                 }
             } catch (IOException ioe) {
-                throw new MarshalException("I/O error occured while "
-                        + "marshalling arguments", ioe);
+                // rmi.6F=I/O error occured while marshalling arguments
+                throw new MarshalException(Messages.getString("rmi.6F"), ioe); //$NON-NLS-1$
             }
 
             // execute the call
@@ -158,12 +160,11 @@ public class UnicastRef extends RemoteRefBase {
                 try {
                     toReturn = oin.readRMIObject(m.getReturnType(), null);
                 } catch (IOException ioe) {
-                    throw new UnmarshalException("IOException occured while "
-                            + "unmarshalling return value", ioe);
+                    // rmi.70=IOException occured while unmarshalling return value
+                    throw new UnmarshalException(Messages.getString("rmi.70"), ioe); //$NON-NLS-1$
                 } catch (ClassNotFoundException cnfe) {
-                    throw new UnmarshalException(
-                            "ClassNotFoundException occured "
-                            + "while unmarshalling return value", cnfe);
+                    // rmi.71=ClassNotFoundException occured while unmarshalling return value
+                    throw new UnmarshalException(Messages.getString("rmi.71"), cnfe); //$NON-NLS-1$
                 }
             }
         } catch (IOException ioe) {
@@ -178,7 +179,7 @@ public class UnicastRef extends RemoteRefBase {
      * @see RemoteRef.getRefClass(ObjectOutput)
      */
     public String getRefClass(ObjectOutput out) {
-        return "UnicastRef";
+        return "UnicastRef"; //$NON-NLS-1$
     }
 
     /**
@@ -218,9 +219,9 @@ public class UnicastRef extends RemoteRefBase {
             throws RemoteException {
         if (opnum != -1) {
             if (clientRefLog.isLoggable(RMILog.BRIEF)) {
-                clientRefLog.log(RMILog.BRIEF, "New call: method = ["
-                        + op[opnum].toString() + "], opnum = " + opnum
-                        + ", hash = " + hash);
+                // rmi.log.101=New call: method = [{0}], opnum = {1}, hash = {2}
+                clientRefLog.log(RMILog.BRIEF, Messages.getString("rmi.log.101", //$NON-NLS-1$
+                        new Object[]{op[opnum].toString(), opnum, hash}));
             }
             logClientCall(obj, op[opnum].toString());
         }
@@ -228,7 +229,8 @@ public class UnicastRef extends RemoteRefBase {
         RemoteCall call = new ClientRemoteCall(conn);
 
         if (clientRefLog.isLoggable(RMILog.VERBOSE)) {
-            clientRefLog.log(RMILog.VERBOSE, "Created new call " + call);
+            //rmi.log.102=Created new call {0}
+            clientRefLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.102", call)); //$NON-NLS-1$
         }
 
         try {
@@ -243,7 +245,8 @@ public class UnicastRef extends RemoteRefBase {
             return call;
         } catch (IOException ioe) {
             done(call);
-            throw new MarshalException("Unable to marshal call header", ioe);
+            // rmi.72=Unable to marshal call header
+            throw new MarshalException(Messages.getString("rmi.72"), ioe); //$NON-NLS-1$
         }
     }
 
@@ -252,7 +255,8 @@ public class UnicastRef extends RemoteRefBase {
      */
     public void invoke(RemoteCall call) throws Exception {
         if (clientRefLog.isLoggable(RMILog.VERBOSE)) {
-            clientRefLog.log(RMILog.VERBOSE, "Execute call " + call);
+            // rmi.log.103=Execute call {0}
+            clientRefLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.103", call)); //$NON-NLS-1$
         }
         call.releaseOutputStream();
         call.executeCall();
@@ -263,7 +267,8 @@ public class UnicastRef extends RemoteRefBase {
      */
     public void done(RemoteCall call) throws RemoteException {
         if (clientRefLog.isLoggable(RMILog.VERBOSE)) {
-            clientRefLog.log(RMILog.VERBOSE, "Finalize call " + call);
+            // rmi.log.104=Finalize call {0}
+            clientRefLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.104", call)); //$NON-NLS-1$
         }
 
         try {
@@ -275,9 +280,9 @@ public class UnicastRef extends RemoteRefBase {
     // Logs remote method call on client side.
     private void logClientCall(Remote obj, String m) {
         if (clientCallsLog.isLoggable(RMILog.VERBOSE)) {
-            clientCallsLog.log(RMILog.VERBOSE,
-                    "Outbound remote call to endpoint:" + ep + ": method:[" + m
-                    + "], obj:[" + obj + "].");
+            // rmi.log.105=Outbound remote call to endpoint:{0}: method:[{1}], obj:[{2}].
+            clientCallsLog.log(RMILog.VERBOSE,Messages.getString("rmi.log.105", //$NON-NLS-1$
+                    new Object[]{ ep, m, obj}));
         }
     }
 }

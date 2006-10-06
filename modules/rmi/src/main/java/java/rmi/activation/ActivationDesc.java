@@ -25,6 +25,8 @@ package java.rmi.activation;
 import java.io.Serializable;
 import java.rmi.MarshalledObject;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
+
 
 /**
  * @com.intel.drl.spec_ref
@@ -73,8 +75,8 @@ public final class ActivationDesc implements Serializable {
         ActivationGroupID currentGID = ActivationGroup.currentGroupID();
 
         if (currentGID == null) {
-            throw new ActivationException(
-                    "The default group for this JVM is inactive.");
+            // rmi.0D=The default group for this JVM is inactive.
+            throw new ActivationException(Messages.getString("rmi.0D")); //$NON-NLS-1$
         }
 
         this.groupID = currentGID;
@@ -93,8 +95,8 @@ public final class ActivationDesc implements Serializable {
         ActivationGroupID currentGID = ActivationGroup.currentGroupID();
 
         if (currentGID == null) {
-            throw new ActivationException(
-                    "The default group for this JVM is inactive.");
+            // rmi.0D=The default group for this JVM is inactive.
+            throw new ActivationException(Messages.getString("rmi.0D")); //$NON-NLS-1$
         }
 
         this.groupID = currentGID;
@@ -111,7 +113,8 @@ public final class ActivationDesc implements Serializable {
             String location, MarshalledObject data) {
 
         if (groupID == null) {
-            throw new IllegalArgumentException("The groupID can't be null.");
+            // rmi.10=The groupID can't be null.
+            throw new IllegalArgumentException(Messages.getString("rmi.10")); //$NON-NLS-1$
         }
 
         this.groupID = groupID;
@@ -128,7 +131,8 @@ public final class ActivationDesc implements Serializable {
             String location, MarshalledObject data, boolean restart) {
 
         if (groupID == null) {
-            throw new IllegalArgumentException("The groupID can't be null.");
+            // rmi.10=The groupID can't be null.
+            throw new IllegalArgumentException(Messages.getString("rmi.10")); //$NON-NLS-1$
         }
         this.groupID = groupID;
         this.className = className;

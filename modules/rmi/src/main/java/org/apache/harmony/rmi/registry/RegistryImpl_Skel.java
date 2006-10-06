@@ -10,17 +10,19 @@
  */
 package org.apache.harmony.rmi.registry;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
+
 
 public final class RegistryImpl_Skel implements java.rmi.server.Skeleton {
 
     private static final long interfaceHash = 4905912898345647071L;
 
     private static final java.rmi.server.Operation[] operations = {
-        new java.rmi.server.Operation("void bind(java.lang.String, java.rmi.Remote)"),
-        new java.rmi.server.Operation("java.lang.String list()[]"),
-        new java.rmi.server.Operation("java.rmi.Remote lookup(java.lang.String)"),
-        new java.rmi.server.Operation("void rebind(java.lang.String, java.rmi.Remote)"),
-        new java.rmi.server.Operation("void unbind(java.lang.String)")
+        new java.rmi.server.Operation("void bind(java.lang.String, java.rmi.Remote)"), //$NON-NLS-1$
+        new java.rmi.server.Operation("java.lang.String list()[]"), //$NON-NLS-1$
+        new java.rmi.server.Operation("java.rmi.Remote lookup(java.lang.String)"), //$NON-NLS-1$
+        new java.rmi.server.Operation("void rebind(java.lang.String, java.rmi.Remote)"), //$NON-NLS-1$
+        new java.rmi.server.Operation("void unbind(java.lang.String)") //$NON-NLS-1$
     };
 
     public java.rmi.server.Operation[] getOperations() {
@@ -40,12 +42,12 @@ public final class RegistryImpl_Skel implements java.rmi.server.Skeleton {
             } else if (hash == 7305022919901907578L) {
                 opnum = 4;
             } else {
-                throw new java.rmi.UnmarshalException("Invalid method hash: " + hash);
+                throw new java.rmi.UnmarshalException(Messages.getString("rmi.28", hash)); //$NON-NLS-1$
             }
         } else {
             if (hash != interfaceHash) {
                 throw new java.rmi.server.SkeletonMismatchException(
-                        "Interface hash mismatch, expected: " + interfaceHash + ", received: " + hash);
+                        Messages.getString("rmi.29", interfaceHash, hash)); //$NON-NLS-1$
             }
         }
 
@@ -63,9 +65,9 @@ public final class RegistryImpl_Skel implements java.rmi.server.Skeleton {
                 $param_String_1 = (java.lang.String) in.readObject();
                 $param_Remote_2 = (java.rmi.Remote) in.readObject();
             } catch (java.io.IOException e) {
-                throw new java.rmi.UnmarshalException("Error unmarshalling arguments", e);
+                throw new java.rmi.UnmarshalException(Messages.getString("rmi.2C"), e); //$NON-NLS-1$
             } catch (java.lang.ClassNotFoundException e) {
-                throw new java.rmi.UnmarshalException("Error unmarshalling arguments", e);
+                throw new java.rmi.UnmarshalException(Messages.getString("rmi.2C"), e); //$NON-NLS-1$
             } finally {
                 call.releaseInputStream();
             }
@@ -75,7 +77,7 @@ public final class RegistryImpl_Skel implements java.rmi.server.Skeleton {
             try {
                 call.getResultStream(true);
             } catch (java.io.IOException e) {
-                throw new java.rmi.MarshalException("Error marshalling return", e);
+                throw new java.rmi.MarshalException(Messages.getString("rmi.2A"), e); //$NON-NLS-1$
             }
 
             break;
@@ -91,7 +93,7 @@ public final class RegistryImpl_Skel implements java.rmi.server.Skeleton {
                 java.io.ObjectOutput out = call.getResultStream(true);
                 out.writeObject($result);
             } catch (java.io.IOException e) {
-                throw new java.rmi.MarshalException("Error marshalling return", e);
+                throw new java.rmi.MarshalException(Messages.getString("rmi.2A"), e); //$NON-NLS-1$
             }
 
             break;
@@ -105,9 +107,9 @@ public final class RegistryImpl_Skel implements java.rmi.server.Skeleton {
                 java.io.ObjectInput in = call.getInputStream();
                 $param_String_1 = (java.lang.String) in.readObject();
             } catch (java.io.IOException e) {
-                throw new java.rmi.UnmarshalException("Error unmarshalling arguments", e);
+                throw new java.rmi.UnmarshalException(Messages.getString("rmi.2C"), e); //$NON-NLS-1$
             } catch (java.lang.ClassNotFoundException e) {
-                throw new java.rmi.UnmarshalException("Error unmarshalling arguments", e);
+                throw new java.rmi.UnmarshalException(Messages.getString("rmi.2C"), e); //$NON-NLS-1$
             } finally {
                 call.releaseInputStream();
             }
@@ -118,7 +120,7 @@ public final class RegistryImpl_Skel implements java.rmi.server.Skeleton {
                 java.io.ObjectOutput out = call.getResultStream(true);
                 out.writeObject($result);
             } catch (java.io.IOException e) {
-                throw new java.rmi.MarshalException("Error marshalling return", e);
+                throw new java.rmi.MarshalException(Messages.getString("rmi.2A"), e); //$NON-NLS-1$
             }
 
             break;
@@ -134,9 +136,9 @@ public final class RegistryImpl_Skel implements java.rmi.server.Skeleton {
                 $param_String_1 = (java.lang.String) in.readObject();
                 $param_Remote_2 = (java.rmi.Remote) in.readObject();
             } catch (java.io.IOException e) {
-                throw new java.rmi.UnmarshalException("Error unmarshalling arguments", e);
+                throw new java.rmi.UnmarshalException(Messages.getString("rmi.2C"), e); //$NON-NLS-1$
             } catch (java.lang.ClassNotFoundException e) {
-                throw new java.rmi.UnmarshalException("Error unmarshalling arguments", e);
+                throw new java.rmi.UnmarshalException(Messages.getString("rmi.2C"), e); //$NON-NLS-1$
             } finally {
                 call.releaseInputStream();
             }
@@ -146,7 +148,7 @@ public final class RegistryImpl_Skel implements java.rmi.server.Skeleton {
             try {
                 call.getResultStream(true);
             } catch (java.io.IOException e) {
-                throw new java.rmi.MarshalException("Error marshalling return", e);
+                throw new java.rmi.MarshalException(Messages.getString("rmi.2A"), e); //$NON-NLS-1$
             }
 
             break;
@@ -160,9 +162,9 @@ public final class RegistryImpl_Skel implements java.rmi.server.Skeleton {
                 java.io.ObjectInput in = call.getInputStream();
                 $param_String_1 = (java.lang.String) in.readObject();
             } catch (java.io.IOException e) {
-                throw new java.rmi.UnmarshalException("Error unmarshalling arguments", e);
+                throw new java.rmi.UnmarshalException(Messages.getString("rmi.2C"), e); //$NON-NLS-1$
             } catch (java.lang.ClassNotFoundException e) {
-                throw new java.rmi.UnmarshalException("Error unmarshalling arguments", e);
+                throw new java.rmi.UnmarshalException(Messages.getString("rmi.2C"), e); //$NON-NLS-1$
             } finally {
                 call.releaseInputStream();
             }
@@ -172,14 +174,14 @@ public final class RegistryImpl_Skel implements java.rmi.server.Skeleton {
             try {
                 call.getResultStream(true);
             } catch (java.io.IOException e) {
-                throw new java.rmi.MarshalException("Error marshalling return", e);
+                throw new java.rmi.MarshalException(Messages.getString("rmi.2A"), e); //$NON-NLS-1$
             }
 
             break;
         }
 
         default:
-            throw new java.rmi.UnmarshalException("Invalid method number: " + opnum);
+            throw new java.rmi.UnmarshalException(Messages.getString("rmi.2B", opnum)); //$NON-NLS-1$
         }
     }
 }

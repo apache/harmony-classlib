@@ -33,6 +33,7 @@ import java.security.AccessController;
 
 import org.apache.harmony.rmi.common.CreateThreadAction;
 import org.apache.harmony.rmi.common.InterruptThreadAction;
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.remoteref.UnicastServerRef;
 
 
@@ -62,7 +63,8 @@ public class ExportManager {
                     new RMIReference(dgcImpl), ClientDGC.DGC_ID, dgcRef, null);
             exportedObjs.add(dgcInfo);
         } catch (Exception ex) {
-            throw new Error("Unable to initialize DGC.", ex);
+            // rmi.7D=Unable to initialize DGC.
+            throw new Error(Messages.getString("rmi.7D"), ex); //$NON-NLS-1$
         }
     }
 
@@ -141,8 +143,8 @@ public class ExportManager {
                                       boolean isSystem)
             throws RemoteException {
         if (isExported(obj)) {
-            throw new ExportException(
-                    "Object " + obj + " has already been exported.");
+            // rmi.7B=Object {0} has already been exported.
+            throw new ExportException(Messages.getString("rmi.7B", obj)); //$NON-NLS-1$
         }
         Remote stub = sref.exportObject(obj, null, useProxyStubs, startListen,
                 isSystem);
@@ -154,7 +156,7 @@ public class ExportManager {
         if (scav == null) {
             (scav = (Thread) AccessController.doPrivileged(
                     new CreateThreadAction(new Scavenger(),
-                            "Scavenger", false))).start();
+                            "Scavenger", false))).start(); //$NON-NLS-1$
         }
 
         if (isSystem) {
@@ -187,8 +189,8 @@ public class ExportManager {
         RMIObjectInfo info = exportedObjs.getByRef(ref);
 
         if (info == null) {
-            throw new NoSuchObjectException(
-                    "Object " + obj + " is not exported.");
+            // rmi.7C=Object {0} is not exported.
+            throw new NoSuchObjectException(Messages.getString("rmi.7C", obj)); //$NON-NLS-1$
         }
         boolean succeeded = info.sref.unexportObject(force);
 
@@ -220,8 +222,8 @@ public class ExportManager {
         RMIObjectInfo info = exportedObjs.getByRef(new RMIReference(obj));
 
         if (info == null) {
-            throw new NoSuchObjectException(
-                    "Object " + obj + " is not exported.");
+            // rmi.7C=Object {0} is not exported.
+            throw new NoSuchObjectException(Messages.getString("rmi.7C", obj)); //$NON-NLS-1$
         }
         return info.stub;
     }
@@ -259,7 +261,7 @@ public class ExportManager {
             if (scav == null) {
                 (scav = (Thread) AccessController.doPrivileged(
                         new CreateThreadAction(new Scavenger(),
-                                "Scavenger", false))).start();
+                                "Scavenger", false))).start(); //$NON-NLS-1$
             }
         }
     }

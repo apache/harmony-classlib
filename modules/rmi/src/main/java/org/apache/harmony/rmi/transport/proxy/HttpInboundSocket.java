@@ -91,7 +91,7 @@ public class HttpInboundSocket extends SocketWrapper {
      * {@inheritDoc}
      */
     public String toString() {
-        return ("HttpInboundSocket[" + s.toString() + ", "
+        return ("HttpInboundSocket[" + s.toString() + ", " //$NON-NLS-1$ //$NON-NLS-2$
                 + host + ':' + port + ']');
     }
 }

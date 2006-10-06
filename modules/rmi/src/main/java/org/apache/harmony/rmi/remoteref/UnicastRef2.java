@@ -91,7 +91,7 @@ public class UnicastRef2 extends UnicastRef {
      * @see RemoteRef.getRefClass(ObjectOutput)
      */
     public String getRefClass(ObjectOutput out) {
-        return "UnicastRef2";
+        return "UnicastRef2"; //$NON-NLS-1$
     }
 
     /**

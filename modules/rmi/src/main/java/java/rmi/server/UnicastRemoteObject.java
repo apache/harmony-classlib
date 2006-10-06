@@ -28,6 +28,7 @@ import java.rmi.NoSuchObjectException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.remoteref.UnicastServerRef;
 import org.apache.harmony.rmi.remoteref.UnicastServerRef2;
 import org.apache.harmony.rmi.server.ExportManager;
@@ -83,7 +84,8 @@ public class UnicastRemoteObject extends RemoteServer {
             clonedObj.export();
             return clonedObj;
         } catch (RemoteException re) {
-            throw new ServerCloneException("Unable to clone the object", re);
+            // rmi.1A=Unable to clone the object
+            throw new ServerCloneException(Messages.getString("rmi.1A"), re); //$NON-NLS-1$
         }
     }
 

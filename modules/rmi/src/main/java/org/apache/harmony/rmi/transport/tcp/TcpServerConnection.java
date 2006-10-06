@@ -34,6 +34,7 @@ import java.security.AccessController;
 import org.apache.harmony.rmi.common.GetLongPropAction;
 import org.apache.harmony.rmi.common.RMILog;
 import org.apache.harmony.rmi.common.RMIProperties;
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.server.ServerConnection;
 import org.apache.harmony.rmi.server.ServerConnectionManager;
 
@@ -84,32 +85,36 @@ public class TcpServerConnection extends ServerConnection {
             int header = din.readInt();
 
             if (header != RMI_HEADER) {
-                throw new UnmarshalException("Unknown header: " + header);
+                // rmi.82=Unknown header: {0}
+                throw new UnmarshalException(Messages.getString("rmi.82", header)); //$NON-NLS-1$
             }
 
             // read RMI protocol version
             short ver = din.readShort();
 
             if (ver != PROTOCOL_VER) {
-                throw new UnmarshalException("Unknown RMI protocol version: "
-                        + ver);
+                // rmi.83=Unknown RMI protocol version: {0}
+                throw new UnmarshalException(Messages.getString("rmi.83", ver)); //$NON-NLS-1$
             }
         } catch (IOException ioe) {
-            throw new UnmarshalException("Unable to read RMI protocol header",
+            // rmi.84=Unable to read RMI protocol header
+            throw new UnmarshalException(Messages.getString("rmi.84"), //$NON-NLS-1$
                     ioe);
         }
 
         if (tcpTransportLog.isLoggable(RMILog.VERBOSE)) {
-            tcpTransportLog.log(RMILog.VERBOSE, "Using protocol version "
-                    + PROTOCOL_VER);
+            // rmi.85=Using protocol version {0}
+            tcpTransportLog.log(RMILog.VERBOSE, Messages.getString("rmi.85", //$NON-NLS-1$
+                    PROTOCOL_VER));
         }
         DataOutputStream dout = new DataOutputStream(out);
 
         // read protocol type
         if (din.readByte() == STREAM_PROTOCOL) {
             if (tcpTransportLog.isLoggable(RMILog.VERBOSE)) {
+                // rmi.90=Using stream RMI protocol
                 tcpTransportLog.log(RMILog.VERBOSE,
-                        "Using stream RMI protocol");
+                        Messages.getString("rmi.90")); //$NON-NLS-1$
             }
         } else {
             dout.writeByte(PROTOCOL_NOT_SUPPORTED);
@@ -128,8 +133,9 @@ public class TcpServerConnection extends ServerConnection {
         dout.flush();
 
         if (tcpTransportLog.isLoggable(RMILog.VERBOSE)) {
+            // rmi.log.136=Server is seeing client as {0}:{1}
             tcpTransportLog.log(RMILog.VERBOSE,
-                    "Server is seeing client as " + host + ":" + port);
+                    Messages.getString("rmi.log.136", host, port)); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         // read host and port
@@ -155,8 +161,9 @@ public class TcpServerConnection extends ServerConnection {
 
             if (data == -1) {
                 if (tcpTransportLog.isLoggable(RMILog.BRIEF)) {
+                    // rmi.log.123=Connection [{0}] is closed
                     tcpTransportLog.log(RMILog.BRIEF,
-                            "Connection [" + toString() + "] is closed");
+                            Messages.getString("rmi.log.123", toString())); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 return -1;
             }
@@ -164,8 +171,9 @@ public class TcpServerConnection extends ServerConnection {
 
             if (data == PING_MSG) {
                 if (tcpTransportLog.isLoggable(RMILog.VERBOSE)) {
+                    // rmi.log.124=Got ping request
                     tcpTransportLog.log(RMILog.VERBOSE,
-                            "Got ping request");
+                            Messages.getString("rmi.log.124")); //$NON-NLS-1$
                 }
 
                 // send ping ack
@@ -173,22 +181,26 @@ public class TcpServerConnection extends ServerConnection {
                 dout.flush();
             } else if (data == DGCACK_MSG) {
                 if (tcpTransportLog.isLoggable(RMILog.VERBOSE)) {
+                    // rmi.log.125=Got DGC ack request
                     tcpTransportLog.log(RMILog.VERBOSE,
-                            "Got DGC ack request");
+                            Messages.getString("rmi.log.125")); //$NON-NLS-1$
                 }
                 dgcUnregisterUID(UID.read(new DataInputStream(in)));
             } else if (data == CALL_MSG) {
                 if (tcpTransportLog.isLoggable(RMILog.VERBOSE)) {
+                    // rmi.log.126=Got call request
                     tcpTransportLog.log(RMILog.VERBOSE,
-                            "Got call request");
+                            Messages.getString("rmi.log.126")); //$NON-NLS-1$
                 }
                 return data;
             } else {
                 if (tcpTransportLog.isLoggable(RMILog.BRIEF)) {
+                    // rmi.log.127=Unknown request got: {0}
                     tcpTransportLog.log(RMILog.BRIEF,
-                            "Unknown request got: " + data);
+                            Messages.getString("rmi.log.127", data)); //$NON-NLS-1$
                 }
-                throw new RemoteException("Unknown message got: " + data);
+                // rmi.91=Unknown message got: {0}
+                throw new RemoteException(Messages.getString("rmi.91", data)); //$NON-NLS-1$
             }
         }
     }
@@ -199,6 +211,6 @@ public class TcpServerConnection extends ServerConnection {
      * @return string representation of this connection
      */
     public String toString() {
-        return "TcpServerConnection: remote endpoint:" + ep;
+        return "TcpServerConnection: remote endpoint:" + ep; //$NON-NLS-1$
     }
 }

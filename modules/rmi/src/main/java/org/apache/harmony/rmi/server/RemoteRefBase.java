@@ -78,8 +78,8 @@ public abstract class RemoteRefBase implements RemoteRef {
      * @see RemoteRef.remoteToString()
      */
     public String remoteToString() {
-        return getRefClass(null) + "[endpoint:[" + ep + "]"
-                + ((isLocal) ? "(local)" : "(remote)") + ", " + objId + "]";
+        return getRefClass(null) + "[endpoint:[" + ep + "]" //$NON-NLS-1$ //$NON-NLS-2$
+                + ((isLocal) ? "(local)" : "(remote)") + ", " + objId + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
 
     /**

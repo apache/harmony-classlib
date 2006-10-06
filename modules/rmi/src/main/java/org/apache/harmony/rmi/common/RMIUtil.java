@@ -44,6 +44,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
+
 
 /**
  * Utility class for RMI implementation.
@@ -131,7 +133,7 @@ public final class RMIUtil {
     public static String getCanonicalName(Class cls) {
         if (cls.isArray()) {
             // Use recursion to create name for array class.
-            return (getCanonicalName(cls.getComponentType()) + "[]");
+            return (getCanonicalName(cls.getComponentType()) + "[]"); //$NON-NLS-1$
         }
         Class declaring = cls.getDeclaringClass();
 
@@ -155,7 +157,7 @@ public final class RMIUtil {
     public static String getShortCanonicalName(Class cls) {
         if (cls.isArray()) {
             // Use recursion to create name for array class.
-            return (getShortCanonicalName(cls.getComponentType()) + "[]");
+            return (getShortCanonicalName(cls.getComponentType()) + "[]"); //$NON-NLS-1$
         }
 
         // The last dot in full name separates class name from package name.
@@ -180,7 +182,7 @@ public final class RMIUtil {
     public static String getShortName(Class cls) {
         if (cls.isArray()) {
             // Use recursion to create name for array class.
-            return (getShortName(cls.getComponentType()) + "[]");
+            return (getShortName(cls.getComponentType()) + "[]"); //$NON-NLS-1$
         }
         String name = cls.getName();
         int index = name.lastIndexOf('.');
@@ -204,7 +206,7 @@ public final class RMIUtil {
     public static String getSimpleName(Class cls) {
         if (cls.isArray()) {
             // Use recursion to create name for array class.
-            return (getSimpleName(cls.getComponentType()) + "[]");
+            return (getSimpleName(cls.getComponentType()) + "[]"); //$NON-NLS-1$
         }
         String name = cls.getName();
         Class declaring = cls.getDeclaringClass();
@@ -231,23 +233,23 @@ public final class RMIUtil {
      */
     public static String getSystemName(Class cls) {
         if (cls == boolean.class) {
-            return "Z";
+            return "Z"; //$NON-NLS-1$
         } else if (cls == char.class) {
-            return "C";
+            return "C"; //$NON-NLS-1$
         } else if (cls == byte.class) {
-            return "B";
+            return "B"; //$NON-NLS-1$
         } else if (cls == short.class) {
-            return "S";
+            return "S"; //$NON-NLS-1$
         } else if (cls == int.class) {
-            return "I";
+            return "I"; //$NON-NLS-1$
         } else if (cls == long.class) {
-            return "J";
+            return "J"; //$NON-NLS-1$
         } else if (cls == float.class) {
-            return "F";
+            return "F"; //$NON-NLS-1$
         } else if (cls == double.class) {
-            return "D";
+            return "D"; //$NON-NLS-1$
         } else if (cls == void.class) {
-            return "V";
+            return "V"; //$NON-NLS-1$
         } else { // Object type.
             String className = cls.getName().replace('.', '/');
 
@@ -313,7 +315,7 @@ public final class RMIUtil {
         // Append names of parameter types.
         for (int i = 0; i < parameters.length; i++) {
             if (i > 0) {
-                buffer.append(", ");
+                buffer.append(", "); //$NON-NLS-1$
             }
             buffer.append(getCanonicalName(parameters[i]));
         }
@@ -339,7 +341,7 @@ public final class RMIUtil {
 
         // Create signature suffix for array types.
         while (cls.isArray()) {
-            suffix.append("[]");
+            suffix.append("[]"); //$NON-NLS-1$
             cls = cls.getComponentType();
         }
         return (getCanonicalName(cls) + ' '
@@ -366,7 +368,7 @@ public final class RMIUtil {
 
         // Append short names of parameter types.
         for (int i = 0; i < parameters.length; i++) {
-            buffer.append(((i > 0) ? ", " : "")
+            buffer.append(((i > 0) ? ", " : "") //$NON-NLS-1$ //$NON-NLS-2$
                     + getShortCanonicalName(parameters[i]));
         }
         return buffer.append(')').toString();
@@ -391,8 +393,9 @@ public final class RMIUtil {
             throws IllegalArgumentException {
         if (!iface.isInterface()) {
             // This is not an interface.
-            throw new IllegalArgumentException(iface.getName()
-                    + " is not an interface");
+            // rmi.45={0} is not an interface
+            throw new IllegalArgumentException(Messages.getString("rmi.45", //$NON-NLS-1$
+                    iface.getName()));
         }
 
         if (!Remote.class.isAssignableFrom(iface)) {
@@ -415,10 +418,9 @@ public final class RMIUtil {
                 if (((Class) j.next()).isAssignableFrom(RemoteException.class))
                     continue methods;
             }
-            throw new IllegalArgumentException(iface.getName()
-                    + " is not a valid remote interface: method "
-                    + getBasicMethodSignature(method)
-                    + " must throw java.rmi.RemoteException");
+            // rmi.46={0} is not a valid remote interface: method {1} must throw java.rmi.RemoteException
+            throw new IllegalArgumentException(Messages.getString(
+                    "rmi.46", iface.getName(), getBasicMethodSignature(method))); //$NON-NLS-1$
         }
         return true;
     }
@@ -546,7 +548,8 @@ public final class RMIUtil {
                 }
             }
         }
-        throw new IllegalArgumentException("The specified class is not remote");
+        // rmi.47=The specified class is not remote
+        throw new IllegalArgumentException(Messages.getString("rmi.47")); //$NON-NLS-1$
     }
 
     /**

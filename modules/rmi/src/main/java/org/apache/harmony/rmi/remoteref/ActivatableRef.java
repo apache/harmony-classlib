@@ -40,6 +40,7 @@ import java.rmi.server.RemoteStub;
 
 import org.apache.harmony.rmi.common.RMILog;
 import org.apache.harmony.rmi.common.RMIUtil;
+import org.apache.harmony.rmi.internal.nls.Messages;
 
 
 /**
@@ -93,12 +94,12 @@ public class ActivatableRef extends UnicastRef2 {
             throws StubNotFoundException {
 
         String cn = desc.getClassName();
-        String stubName = "";
+        String stubName = ""; //$NON-NLS-1$
 
         try {
             Class cl = RMIClassLoader.loadClass(desc.getLocation(), cn);
             Class rcl = RMIUtil.getRemoteClass(cl);
-            stubName = rcl.getName() + "_Stub";
+            stubName = rcl.getName() + "_Stub"; //$NON-NLS-1$
             Class stubClass = RMIClassLoader.loadClass((String) null, stubName);
             Constructor constructor = stubClass.getConstructor(new Class[] { RemoteRef.class });
             RemoteStub stub = (RemoteStub) constructor.newInstance(new Object[] {
@@ -107,7 +108,8 @@ public class ActivatableRef extends UnicastRef2 {
             return stub;
 
         } catch (Exception ex) {
-            throw new StubNotFoundException("Stub " + stubName + " not found.",
+            // rmi.68=Stub {0} not found.
+            throw new StubNotFoundException(Messages.getString("rmi.68", stubName), //$NON-NLS-1$ //$NON-NLS-2$
                     ex);
         }
     }
@@ -117,7 +119,7 @@ public class ActivatableRef extends UnicastRef2 {
      * The getRefClass method returns "ActivatableRef" String.
      */
     public String getRefClass(ObjectOutput objectoutput) {
-        return "ActivatableRef";
+        return "ActivatableRef"; //$NON-NLS-1$
     }
 
     /**
@@ -129,7 +131,7 @@ public class ActivatableRef extends UnicastRef2 {
         out.writeObject(id);
 
         if (ref == null) {
-            out.writeUTF("");
+            out.writeUTF(""); //$NON-NLS-1$
         } else {
             out.writeUTF(ref.getRefClass(out));
             ref.writeExternal(out);
@@ -145,16 +147,17 @@ public class ActivatableRef extends UnicastRef2 {
 
         String s = in.readUTF();
 
-        if (s.equals("")) {
+        if (s.equals("")) { //$NON-NLS-1$
             return;
         }
-        Class extRefTypeClass = Class.forName(RemoteRef.packagePrefix +"."+ s);
+        Class extRefTypeClass = Class.forName(RemoteRef.packagePrefix +"."+ s); //$NON-NLS-1$
 
         try {
             ref = (RemoteRef)extRefTypeClass.newInstance();
         }
         catch(Throwable  t) {
-            throw new ClassNotFoundException("Instantiation failed.", t);
+            // rmi.73=Instantiation failed.
+            throw new ClassNotFoundException(Messages.getString("rmi.73"), t); //$NON-NLS-1$
         }
         ref.readExternal(in);
     }
@@ -168,16 +171,20 @@ public class ActivatableRef extends UnicastRef2 {
         Exception signal_exception  = null;
         RemoteRef rref;
 
-        rlog.log(RMILog.VERBOSE, "$$$$$$$$$ ActivatableRef.invoke: "+obj+", "+method+";");
+        // rmi.log.106=$$$$$$$$$ ActivatableRef.invoke:
+        rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.106")+obj+", "+method+";"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         if(ref == null) {
-            rlog.log(RMILog.VERBOSE, "ref == null");
+            // rmi.log.107=ref == null
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.107")); //$NON-NLS-1$
 
             RemoteStub stub = (RemoteStub)id.activate(false); //ToDo Check whether it returns Remote or RemoteStub
-            rlog.log(RMILog.VERBOSE, "stub = "+stub);
+            // rmi.log.3C=Stub = {0}
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.3C", stub)); //$NON-NLS-1$
 
             ActivatableRef aref = (ActivatableRef)stub.getRef();
-            rlog.log(RMILog.VERBOSE, "aref = "+aref);
+            // rmi.log.108=aref = {0}
+            rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.108", aref)); //$NON-NLS-1$
 
             ref = aref.ref; // Global variable stored for next calls
             rref = aref.ref; // local variable
@@ -203,7 +210,8 @@ public class ActivatableRef extends UnicastRef2 {
             signal_exception = t;
         }
 
-        rlog.log(RMILog.VERBOSE, "signal_exception = "+signal_exception);
+        // rmi.log.109=signal_exception = {0}
+        rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.109", signal_exception)); //$NON-NLS-1$
 
         if (signal_exception == null) {
             RemoteStub stub = (RemoteStub)id.activate(true);

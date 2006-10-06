@@ -32,6 +32,7 @@ import org.apache.harmony.rmi.common.GetLongPropAction;
 import org.apache.harmony.rmi.common.GetStringPropAction;
 import org.apache.harmony.rmi.common.RMIConstants;
 import org.apache.harmony.rmi.common.RMILog;
+import org.apache.harmony.rmi.internal.nls.Messages;
 
 
 /**
@@ -87,12 +88,13 @@ public final class Proxy implements ProxyConstants {
             proxyPort = (-1);
             enableDirect = isDirectEnabled();
         }
-
+        // rmi.log.11D=Proxy configuration:
+        // rmi.log.11E=proxy disabled, direct HTTP connections
         if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
-            proxyTransportLog.log(RMILog.VERBOSE, "Proxy configuration: "
+            proxyTransportLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.11D") //$NON-NLS-1$
                     + (proxySet ? (proxyHost + ':' + proxyPort)
-                            : ("proxy disabled, direct HTTP connections "
-                                + (enableDirect ? "enabled" : "disabled")
+                            : (Messages.getString("rmi.log.11E") //$NON-NLS-1$
+                                + (enableDirect ? "enabled" : "disabled") //$NON-NLS-1$ //$NON-NLS-2$
                                 + '.')));
         }
     }
@@ -152,7 +154,8 @@ public final class Proxy implements ProxyConstants {
         } else if (enableDirect) {
             return new Socket(host, port);
         } else {
-            throw new NoRouteToHostException("HTTP proxy is not set");
+            // rmi.81=HTTP proxy is not set
+            throw new NoRouteToHostException(Messages.getString("rmi.81")); //$NON-NLS-1$
         }
     }
 

@@ -82,14 +82,14 @@ public final class VMID implements Serializable {
      * each byte.
      */
     public String toString() {
-        String str = "VMID[";
+        String str = "VMID["; //$NON-NLS-1$
 
         for (int i = 0; i < addr.length; ++i) {
             int ibyte = addr[i] & 255; // quick way to have a module of the byte
 
-            str += ((ibyte < 16) ? "0" : "") + Integer.toString(ibyte, 16);
+            str += ((ibyte < 16) ? "0" : "") + Integer.toString(ibyte, 16); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        return str + ", " + uid + "]";
+        return str + ", " + uid + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

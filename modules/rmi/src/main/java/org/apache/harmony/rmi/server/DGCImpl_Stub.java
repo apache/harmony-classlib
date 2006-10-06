@@ -10,6 +10,8 @@
  */
 package org.apache.harmony.rmi.server;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
+
 
 public final class DGCImpl_Stub extends java.rmi.server.RemoteStub
         implements java.rmi.dgc.DGC {
@@ -17,8 +19,8 @@ public final class DGCImpl_Stub extends java.rmi.server.RemoteStub
     private static final long interfaceHash = -669196253586618813L;
 
     private static final java.rmi.server.Operation[] operations = {
-        new java.rmi.server.Operation("void clean(java.rmi.server.ObjID[], long, java.rmi.dgc.VMID, boolean)"),
-        new java.rmi.server.Operation("java.rmi.dgc.Lease dirty(java.rmi.server.ObjID[], long, java.rmi.dgc.Lease)")
+        new java.rmi.server.Operation("void clean(java.rmi.server.ObjID[], long, java.rmi.dgc.VMID, boolean)"), //$NON-NLS-1$
+        new java.rmi.server.Operation("java.rmi.dgc.Lease dirty(java.rmi.server.ObjID[], long, java.rmi.dgc.Lease)") //$NON-NLS-1$
     };
 
     public DGCImpl_Stub() {
@@ -42,7 +44,7 @@ public final class DGCImpl_Stub extends java.rmi.server.RemoteStub
                 out.writeObject($param_VMID_3);
                 out.writeBoolean($param_boolean_4);
             } catch (java.io.IOException e) {
-                throw new java.rmi.MarshalException("Error marshalling arguments", e);
+                throw new java.rmi.MarshalException(Messages.getString("rmi.26"), e); //$NON-NLS-1$
             }
 
             ref.invoke(call);
@@ -53,7 +55,7 @@ public final class DGCImpl_Stub extends java.rmi.server.RemoteStub
         } catch (java.rmi.RemoteException e) {
             throw e;
         } catch (java.lang.Exception e) {
-            throw new java.rmi.UnexpectedException("Undeclared checked exception", e);
+            throw new java.rmi.UnexpectedException(Messages.getString("rmi.0C"), e); //$NON-NLS-1$
         }
     }
 
@@ -69,7 +71,7 @@ public final class DGCImpl_Stub extends java.rmi.server.RemoteStub
                 out.writeLong($param_long_2);
                 out.writeObject($param_Lease_3);
             } catch (java.io.IOException e) {
-                throw new java.rmi.MarshalException("Error marshalling arguments", e);
+                throw new java.rmi.MarshalException(Messages.getString("rmi.26"), e); //$NON-NLS-1$
             }
 
             ref.invoke(call);
@@ -80,9 +82,9 @@ public final class DGCImpl_Stub extends java.rmi.server.RemoteStub
                 java.io.ObjectInput in = call.getInputStream();
                 $result = (java.rmi.dgc.Lease) in.readObject();
             } catch (java.io.IOException e) {
-                throw new java.rmi.UnmarshalException("Error unmarshalling return value", e);
+                throw new java.rmi.UnmarshalException(Messages.getString("rmi.27"), e); //$NON-NLS-1$
             } catch (java.lang.ClassNotFoundException e) {
-                throw new java.rmi.UnmarshalException("Error unmarshalling return value", e);
+                throw new java.rmi.UnmarshalException(Messages.getString("rmi.27"), e); //$NON-NLS-1$
             } finally {
                 ref.done(call);
             }
@@ -93,7 +95,7 @@ public final class DGCImpl_Stub extends java.rmi.server.RemoteStub
         } catch (java.rmi.RemoteException e) {
             throw e;
         } catch (java.lang.Exception e) {
-            throw new java.rmi.UnexpectedException("Undeclared checked exception", e);
+            throw new java.rmi.UnexpectedException(Messages.getString("rmi.0C"), e); //$NON-NLS-1$
         }
     }
 }

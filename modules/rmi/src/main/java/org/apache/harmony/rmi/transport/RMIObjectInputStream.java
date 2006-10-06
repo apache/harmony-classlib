@@ -32,6 +32,7 @@ import java.security.PrivilegedAction;
 
 import org.apache.harmony.rmi.common.GetBooleanPropAction;
 import org.apache.harmony.rmi.common.RMIProperties;
+import org.apache.harmony.rmi.internal.nls.Messages;
 
 
 /**
@@ -193,7 +194,8 @@ public class RMIObjectInputStream extends ObjectInputStream {
                 } else if (cl == Void.TYPE) {
                     return null;
                 } else {
-                    throw new IOException("Unknown primitive class: " + cl);
+                    // rmi.7F=Unknown primitive class: {0}
+                    throw new IOException(Messages.getString("rmi.7F", cl)); //$NON-NLS-1$
                 }
             } else {
                 return readObject();

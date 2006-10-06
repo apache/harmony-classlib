@@ -81,7 +81,7 @@ public class RMILog implements RMIProperties {
      * @return RMILog for logging remote calls on server side
      */
     public static RMILog getServerCallsLog() {
-        return getLog("harmony.rmi.server.call",
+        return getLog("harmony.rmi.server.call", //$NON-NLS-1$
                 getBoolean(LOGSERVER_PROP) ? VERBOSE : SILENT);
     }
 
@@ -93,7 +93,7 @@ public class RMILog implements RMIProperties {
      * @return RMILog for logging remote calls on client side
      */
     public static RMILog getClientCallsLog() {
-        return getLog("harmony.rmi.client.call",
+        return getLog("harmony.rmi.client.call", //$NON-NLS-1$
                 getBoolean(LOGCLIENT_PROP) ? VERBOSE : SILENT);
     }
 
@@ -105,7 +105,7 @@ public class RMILog implements RMIProperties {
      * @return RMILog for logging remote reference activity on server side
      */
     public static RMILog getServerRefLog() {
-        return getLog("harmony.rmi.server.ref", getString(SERVERLOGLEVEL_PROP));
+        return getLog("harmony.rmi.server.ref", getString(SERVERLOGLEVEL_PROP)); //$NON-NLS-1$
     }
 
     /**
@@ -116,7 +116,7 @@ public class RMILog implements RMIProperties {
      * @return RMILog for logging remote reference activity on client side
      */
     public static RMILog getClientRefLog() {
-        return getLog("harmony.rmi.client.ref", getString(CLIENTLOGLEVEL_PROP));
+        return getLog("harmony.rmi.client.ref", getString(CLIENTLOGLEVEL_PROP)); //$NON-NLS-1$
     }
 
     /**
@@ -127,7 +127,7 @@ public class RMILog implements RMIProperties {
      * @return RMILog for logging DGC activity
      */
     public static RMILog getDGCLog() {
-        return getLog("harmony.rmi.dgc", getString(DGCLOGLEVEL_PROP));
+        return getLog("harmony.rmi.dgc", getString(DGCLOGLEVEL_PROP)); //$NON-NLS-1$
     }
 
     /**
@@ -138,7 +138,7 @@ public class RMILog implements RMIProperties {
      * @return RMILog for logging activity of default RMIClassLoader provider
      */
     public static RMILog getLoaderLog() {
-        return getLog("harmony.rmi.loader", getString(LOADERLOGLEVEL_PROP));
+        return getLog("harmony.rmi.loader", getString(LOADERLOGLEVEL_PROP)); //$NON-NLS-1$
     }
 
     /**
@@ -149,7 +149,7 @@ public class RMILog implements RMIProperties {
      * @return RMILog for logging transport-layer activity
      */
     public static RMILog getTransportLog() {
-        return getLog("harmony.rmi.transport.misc",
+        return getLog("harmony.rmi.transport.misc", //$NON-NLS-1$
                 getString(TRANSPORTLOGLEVEL_PROP));
     }
 
@@ -161,7 +161,7 @@ public class RMILog implements RMIProperties {
      * @return RMILog for logging TCP binding/connection activity
      */
     public static RMILog getTcpTransportLog() {
-        return getLog("harmony.rmi.transport.tcp",
+        return getLog("harmony.rmi.transport.tcp", //$NON-NLS-1$
                 getString(TRANSPORTTCPLOGLEVEL_PROP));
     }
 
@@ -173,7 +173,7 @@ public class RMILog implements RMIProperties {
      * @return RMILog for logging HTTP connections activity
      */
     public static RMILog getProxyTransportLog() {
-        return getLog("harmony.rmi.transport.proxy",
+        return getLog("harmony.rmi.transport.proxy", //$NON-NLS-1$
                 getString(TRANSPORTPROXYLOGLEVEL_PROP));
     }
 
@@ -184,7 +184,7 @@ public class RMILog implements RMIProperties {
      * @return RMILog for logging remote calls on server side
      */
     public static RMILog getActivationLog() {
-        return getLog("harmony.rmi.activation", getString(ACTIVATIONLOGLEVEL_PROP));
+        return getLog("harmony.rmi.activation", getString(ACTIVATIONLOGLEVEL_PROP)); //$NON-NLS-1$
     }
 
     /**
@@ -253,11 +253,11 @@ public class RMILog implements RMIProperties {
         }
         levelStr = levelStr.trim().toUpperCase();
 
-        if (levelStr.equals("SILENT")) {
+        if (levelStr.equals("SILENT")) { //$NON-NLS-1$
             return SILENT;
-        } else if (levelStr.equals("BRIEF")) {
+        } else if (levelStr.equals("BRIEF")) { //$NON-NLS-1$
             return BRIEF;
-        } else if (levelStr.equals("VERBOSE")) {
+        } else if (levelStr.equals("VERBOSE")) { //$NON-NLS-1$
             return VERBOSE;
         }
         Level logLevel = Level.OFF;
@@ -302,7 +302,7 @@ public class RMILog implements RMIProperties {
         if (isLoggable(l)) {
             String[] logSrc = getLogSource();
             logger.logp(l, logSrc[0], logSrc[1],
-                    Thread.currentThread().getName() + ": " + msg);
+                    Thread.currentThread().getName() + ": " + msg); //$NON-NLS-1$
         }
     }
 
@@ -318,7 +318,7 @@ public class RMILog implements RMIProperties {
         if (isLoggable(l)) {
             String[] logSrc = getLogSource();
             logger.logp(l, logSrc[0], logSrc[1],
-                    Thread.currentThread().getName() + ": " + msg, t);
+                    Thread.currentThread().getName() + ": " + msg, t); //$NON-NLS-1$
         }
     }
 

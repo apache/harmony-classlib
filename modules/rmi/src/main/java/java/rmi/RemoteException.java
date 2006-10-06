@@ -20,6 +20,8 @@ package java.rmi;
 
 import java.io.IOException;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
+
 public class RemoteException extends IOException {
     private static final long serialVersionUID = -5148567311918794206L;
 
@@ -50,6 +52,6 @@ public class RemoteException extends IOException {
         if (detail == null) {
             return super.getMessage();
         }
-        return super.getMessage() + "; nested exception is:\n\t" + detail;
+        return Messages.getString("rmi.08", super.getMessage(),detail); //$NON-NLS-1$
     }
 }

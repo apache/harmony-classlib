@@ -213,7 +213,7 @@ final class RMIObjectInfo {
                                         }
                                     }, acc);
                         }
-                    }, "Unreferenced", false, false)));
+                    }, "Unreferenced", false, false))); //$NON-NLS-1$
             uThread.setContextClassLoader(loader);
             uThread.start();
         }

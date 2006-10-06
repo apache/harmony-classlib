@@ -38,12 +38,12 @@ public class EclipseJavaCompiler extends MethodJavaCompiler {
      * Eclipse Compiler class name.
      */
     public static final String ECLIPSE_COMPILER_CLASS_NAME =
-            "org.eclipse.jdt.internal.compiler.batch.Main";
+            "org.eclipse.jdt.internal.compiler.batch.Main"; //$NON-NLS-1$
 
     /**
      * Eclipse Compiler method name.
      */
-    protected final static String ECLIPSE_COMPILER_METHOD_NAME = "compile";
+    protected final static String ECLIPSE_COMPILER_METHOD_NAME = "compile"; //$NON-NLS-1$
 
     /**
      * Eclipse Compiler method signature.
@@ -54,19 +54,19 @@ public class EclipseJavaCompiler extends MethodJavaCompiler {
     /**
      * Name of the environment variable specifying the Eclipse location.
      */
-    public static final String ECLIPSE_HOME_VARIABLE = "ECLIPSE_HOME";
+    public static final String ECLIPSE_HOME_VARIABLE = "ECLIPSE_HOME"; //$NON-NLS-1$
 
     /**
      * Path from {@link #ECLIPSE_HOME_VARIABLE ECLIPSE_HOME}
      * to {@linkplain #ECLIPSE_JAR_PATTERN Eclipse Compiler JAR}.
      */
-    public static final String ECLIPSE_JAR_PATH = "plugins";
+    public static final String ECLIPSE_JAR_PATH = "plugins"; //$NON-NLS-1$
 
     /**
      * File name pattern describing Eclipse Compiler JAR file name.
      */
     public static final String ECLIPSE_JAR_PATTERN =
-            "^org.eclipse.jdt.core_.+\\.jar$";
+            "^org.eclipse.jdt.core_.+\\.jar$"; //$NON-NLS-1$
 
     /**
      * Creates instance of this class, equivalent to
@@ -114,7 +114,7 @@ public class EclipseJavaCompiler extends MethodJavaCompiler {
                     getClassLoaderFromJarFile(
                     getFileFromVariable(ECLIPSE_HOME_VARIABLE,
                             ECLIPSE_JAR_PATH, ECLIPSE_JAR_PATTERN,
-                            "Eclipse Compiler JAR")));
+                            "Eclipse Compiler JAR"))); //$NON-NLS-1$
         }
 
         compilerMethod = getMethod(compilerClass, ECLIPSE_COMPILER_METHOD_NAME,

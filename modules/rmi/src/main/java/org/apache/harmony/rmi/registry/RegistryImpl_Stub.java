@@ -10,6 +10,8 @@
  */
 package org.apache.harmony.rmi.registry;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
+
 
 public final class RegistryImpl_Stub extends java.rmi.server.RemoteStub
         implements java.rmi.registry.Registry, java.rmi.Remote {
@@ -21,11 +23,11 @@ public final class RegistryImpl_Stub extends java.rmi.server.RemoteStub
     private static boolean useNewInvoke;
 
     private static final java.rmi.server.Operation[] operations = {
-        new java.rmi.server.Operation("void bind(java.lang.String, java.rmi.Remote)"),
-        new java.rmi.server.Operation("java.lang.String list()[]"),
-        new java.rmi.server.Operation("java.rmi.Remote lookup(java.lang.String)"),
-        new java.rmi.server.Operation("void rebind(java.lang.String, java.rmi.Remote)"),
-        new java.rmi.server.Operation("void unbind(java.lang.String)")
+        new java.rmi.server.Operation("void bind(java.lang.String, java.rmi.Remote)"), //$NON-NLS-1$
+        new java.rmi.server.Operation("java.lang.String list()[]"), //$NON-NLS-1$
+        new java.rmi.server.Operation("java.rmi.Remote lookup(java.lang.String)"), //$NON-NLS-1$
+        new java.rmi.server.Operation("void rebind(java.lang.String, java.rmi.Remote)"), //$NON-NLS-1$
+        new java.rmi.server.Operation("void unbind(java.lang.String)") //$NON-NLS-1$
     };
 
     private static java.lang.reflect.Method $method_bind_0;
@@ -36,13 +38,13 @@ public final class RegistryImpl_Stub extends java.rmi.server.RemoteStub
 
     static {
         try {
-            java.rmi.server.RemoteRef.class.getMethod("invoke", new java.lang.Class[] {java.rmi.Remote.class, java.lang.reflect.Method.class, java.lang.Object[].class, long.class});
+            java.rmi.server.RemoteRef.class.getMethod("invoke", new java.lang.Class[] {java.rmi.Remote.class, java.lang.reflect.Method.class, java.lang.Object[].class, long.class}); //$NON-NLS-1$
 
-            $method_bind_0 = java.rmi.registry.Registry.class.getMethod("bind", new java.lang.Class[] {java.lang.String.class, java.rmi.Remote.class});
-            $method_list_1 = java.rmi.registry.Registry.class.getMethod("list", new java.lang.Class[] {});
-            $method_lookup_2 = java.rmi.registry.Registry.class.getMethod("lookup", new java.lang.Class[] {java.lang.String.class});
-            $method_rebind_3 = java.rmi.registry.Registry.class.getMethod("rebind", new java.lang.Class[] {java.lang.String.class, java.rmi.Remote.class});
-            $method_unbind_4 = java.rmi.registry.Registry.class.getMethod("unbind", new java.lang.Class[] {java.lang.String.class});
+            $method_bind_0 = java.rmi.registry.Registry.class.getMethod("bind", new java.lang.Class[] {java.lang.String.class, java.rmi.Remote.class}); //$NON-NLS-1$
+            $method_list_1 = java.rmi.registry.Registry.class.getMethod("list", new java.lang.Class[] {}); //$NON-NLS-1$
+            $method_lookup_2 = java.rmi.registry.Registry.class.getMethod("lookup", new java.lang.Class[] {java.lang.String.class}); //$NON-NLS-1$
+            $method_rebind_3 = java.rmi.registry.Registry.class.getMethod("rebind", new java.lang.Class[] {java.lang.String.class, java.rmi.Remote.class}); //$NON-NLS-1$
+            $method_unbind_4 = java.rmi.registry.Registry.class.getMethod("unbind", new java.lang.Class[] {java.lang.String.class}); //$NON-NLS-1$
 
             useNewInvoke = true;
         } catch (java.lang.NoSuchMethodException e) {
@@ -72,7 +74,7 @@ public final class RegistryImpl_Stub extends java.rmi.server.RemoteStub
                     out.writeObject($param_String_1);
                     out.writeObject($param_Remote_2);
                 } catch (java.io.IOException e) {
-                    throw new java.rmi.MarshalException("Error marshalling arguments", e);
+                    throw new java.rmi.MarshalException(Messages.getString("rmi.26"), e); //$NON-NLS-1$
                 }
 
                 ref.invoke(call);
@@ -86,7 +88,7 @@ public final class RegistryImpl_Stub extends java.rmi.server.RemoteStub
         } catch (java.rmi.AlreadyBoundException e) {
             throw e;
         } catch (java.lang.Exception e) {
-            throw new java.rmi.UnexpectedException("Undeclared checked exception", e);
+            throw new java.rmi.UnexpectedException(Messages.getString("rmi.0C"), e); //$NON-NLS-1$
         }
     }
 
@@ -108,9 +110,9 @@ public final class RegistryImpl_Stub extends java.rmi.server.RemoteStub
                     java.io.ObjectInput in = call.getInputStream();
                     $result = (java.lang.String[]) in.readObject();
                 } catch (java.io.IOException e) {
-                    throw new java.rmi.UnmarshalException("Error unmarshalling return value", e);
+                    throw new java.rmi.UnmarshalException(Messages.getString("rmi.27"), e); //$NON-NLS-1$
                 } catch (java.lang.ClassNotFoundException e) {
-                    throw new java.rmi.UnmarshalException("Error unmarshalling return value", e);
+                    throw new java.rmi.UnmarshalException(Messages.getString("rmi.27"), e); //$NON-NLS-1$
                 } finally {
                     ref.done(call);
                 }
@@ -122,7 +124,7 @@ public final class RegistryImpl_Stub extends java.rmi.server.RemoteStub
         } catch (java.rmi.RemoteException e) {
             throw e;
         } catch (java.lang.Exception e) {
-            throw new java.rmi.UnexpectedException("Undeclared checked exception", e);
+            throw new java.rmi.UnexpectedException(Messages.getString("rmi.0C"), e); //$NON-NLS-1$
         }
     }
 
@@ -140,7 +142,7 @@ public final class RegistryImpl_Stub extends java.rmi.server.RemoteStub
                     java.io.ObjectOutput out = call.getOutputStream();
                     out.writeObject($param_String_1);
                 } catch (java.io.IOException e) {
-                    throw new java.rmi.MarshalException("Error marshalling arguments", e);
+                    throw new java.rmi.MarshalException(Messages.getString("rmi.26"), e); //$NON-NLS-1$
                 }
 
                 ref.invoke(call);
@@ -151,9 +153,9 @@ public final class RegistryImpl_Stub extends java.rmi.server.RemoteStub
                     java.io.ObjectInput in = call.getInputStream();
                     $result = (java.rmi.Remote) in.readObject();
                 } catch (java.io.IOException e) {
-                    throw new java.rmi.UnmarshalException("Error unmarshalling return value", e);
+                    throw new java.rmi.UnmarshalException(Messages.getString("rmi.27"), e); //$NON-NLS-1$
                 } catch (java.lang.ClassNotFoundException e) {
-                    throw new java.rmi.UnmarshalException("Error unmarshalling return value", e);
+                    throw new java.rmi.UnmarshalException(Messages.getString("rmi.27"), e); //$NON-NLS-1$
                 } finally {
                     ref.done(call);
                 }
@@ -167,7 +169,7 @@ public final class RegistryImpl_Stub extends java.rmi.server.RemoteStub
         } catch (java.rmi.NotBoundException e) {
             throw e;
         } catch (java.lang.Exception e) {
-            throw new java.rmi.UnexpectedException("Undeclared checked exception", e);
+            throw new java.rmi.UnexpectedException(Messages.getString("rmi.0C"), e); //$NON-NLS-1$
         }
     }
 
@@ -185,7 +187,7 @@ public final class RegistryImpl_Stub extends java.rmi.server.RemoteStub
                     out.writeObject($param_String_1);
                     out.writeObject($param_Remote_2);
                 } catch (java.io.IOException e) {
-                    throw new java.rmi.MarshalException("Error marshalling arguments", e);
+                    throw new java.rmi.MarshalException(Messages.getString("rmi.26"), e); //$NON-NLS-1$
                 }
 
                 ref.invoke(call);
@@ -197,7 +199,7 @@ public final class RegistryImpl_Stub extends java.rmi.server.RemoteStub
         } catch (java.rmi.RemoteException e) {
             throw e;
         } catch (java.lang.Exception e) {
-            throw new java.rmi.UnexpectedException("Undeclared checked exception", e);
+            throw new java.rmi.UnexpectedException(Messages.getString("rmi.0C"), e); //$NON-NLS-1$
         }
     }
 
@@ -214,7 +216,7 @@ public final class RegistryImpl_Stub extends java.rmi.server.RemoteStub
                     java.io.ObjectOutput out = call.getOutputStream();
                     out.writeObject($param_String_1);
                 } catch (java.io.IOException e) {
-                    throw new java.rmi.MarshalException("Error marshalling arguments", e);
+                    throw new java.rmi.MarshalException(Messages.getString("rmi.26"), e); //$NON-NLS-1$
                 }
 
                 ref.invoke(call);
@@ -228,7 +230,7 @@ public final class RegistryImpl_Stub extends java.rmi.server.RemoteStub
         } catch (java.rmi.NotBoundException e) {
             throw e;
         } catch (java.lang.Exception e) {
-            throw new java.rmi.UnexpectedException("Undeclared checked exception", e);
+            throw new java.rmi.UnexpectedException(Messages.getString("rmi.0C"), e); //$NON-NLS-1$
         }
     }
 }

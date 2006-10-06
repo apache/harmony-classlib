@@ -26,6 +26,7 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 
 import org.apache.harmony.rmi.common.RMILog;
+import org.apache.harmony.rmi.internal.nls.Messages;
 
 
 /**
@@ -73,15 +74,17 @@ public class RMIReference extends WeakReference {
 
 
                 if (DGCImpl.dgcLog.isLoggable(RMILog.VERBOSE)) {
-                    DGCImpl.dgcLog.log(RMILog.VERBOSE, "Strongly referenced "
-                            + strongRef);
+                    // rmi.log.9F=Strongly referenced {0}
+                    DGCImpl.dgcLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.9F", //$NON-NLS-1$
+                            strongRef));
                 }
             }
         } else {
             if (strongRef != null
                     && DGCImpl.dgcLog.isLoggable(RMILog.VERBOSE)) {
-                DGCImpl.dgcLog.log(RMILog.VERBOSE, "Weakly referenced "
-                        + strongRef);
+                // rmi.log.10D=Weakly referenced {0}
+                DGCImpl.dgcLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.10D", //$NON-NLS-1$
+                        strongRef));
             }
             strongRef = null;
         }

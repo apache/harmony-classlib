@@ -29,6 +29,7 @@ import java.security.AccessController;
 
 import org.apache.harmony.rmi.common.GetBooleanPropAction;
 import org.apache.harmony.rmi.common.RMILog;
+import org.apache.harmony.rmi.internal.nls.Messages;
 
 
 /**
@@ -57,9 +58,8 @@ public class HttpProxyRMISocketFactory extends ProxyRMISocketFactory
         if (((Boolean) AccessController.doPrivileged(new GetBooleanPropAction(
                 DISABLE_PLAIN_HTTP_PROP))).booleanValue()) {
             if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
-                proxyTransportLog.log(RMILog.VERBOSE,
-                        "Plain HTTP connections disabled, "
-                        + "trying CGI connection.");
+                // rmi.log.131=Plain HTTP connections disabled, trying CGI connection.
+                proxyTransportLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.131")); //$NON-NLS-1$
             }
         } else {
             try {
@@ -67,18 +67,18 @@ public class HttpProxyRMISocketFactory extends ProxyRMISocketFactory
                 s = new HttpOutboundSocket(proxy, host, port, false);
 
                 if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
+                    // rmi.log.132=Plain HTTP connection to [{0}:{1}] from port {2} succeeded.
                     proxyTransportLog.log(RMILog.VERBOSE,
-                            "Plain HTTP connection to [" + host + ':' + port
-                            + "] from port " + s.getLocalPort()+ " succeeded.");
+                            Messages.getString("rmi.log.132", new Object[]{host, port, s.getLocalPort()})); //$NON-NLS-1$
                 }
 
                 return s;
             } catch (IOException e) {
                 if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
+                    // rmi.log.133=Plain HTTP connection to [{0}:{1}] failed: {2}. Trying CGI connection.
                     proxyTransportLog.log(RMILog.VERBOSE,
-                            "Plain HTTP connection to ["
-                            + host + ':' + port + "] failed: " + e
-                            + ". Trying CGI connection.");
+                            Messages.getString("rmi.log.133", //$NON-NLS-1$
+                            new Object[]{ host, port, e}));
                 }
             }
         }
@@ -88,16 +88,18 @@ public class HttpProxyRMISocketFactory extends ProxyRMISocketFactory
             s = new HttpOutboundSocket(proxy, host, port, true);
 
             if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
+                // rmi.log.134=CGI HTTP connection to [{0}:{1}] from port {2} succeeded.
                 proxyTransportLog.log(RMILog.VERBOSE,
-                        "CGI HTTP connection to [" + host + ':' + port
-                        + "] from port " + s.getLocalPort()+ " succeeded.");
+                        Messages.getString("rmi.log.134", //$NON-NLS-1$
+                                new Object[]{host, port, s.getLocalPort()}));
             }
             return s;
         } catch (IOException e) {
             if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
+                // rmi.log.135=CGI HTTP connection to [{0}:{1}] failed: {2}
                 proxyTransportLog.log(RMILog.VERBOSE,
-                        "CGI HTTP connection to ["
-                        + host + ':' + port + "] failed: " + e);
+                        Messages.getString("rmi.log.135", //$NON-NLS-1$
+                        new Object[]{ host, port, e}));
             }
             throw e;
         }

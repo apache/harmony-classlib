@@ -35,6 +35,7 @@ import java.util.Set;
 
 import org.apache.harmony.rmi.common.CreateThreadAction;
 import org.apache.harmony.rmi.common.RMILog;
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.transport.Endpoint;
 import org.apache.harmony.rmi.transport.proxy.HttpInboundSocket;
 import org.apache.harmony.rmi.transport.proxy.HttpServerConnection;
@@ -132,8 +133,8 @@ public class ServerConnectionManager implements Runnable {
         }
         mgr = new ServerConnectionManager(ep);
         ((Thread) AccessController.doPrivileged(
-                new CreateThreadAction(mgr, "ServerConnectionManager["
-                        + mgr.getEndpoint() + "]", true))).start();
+                new CreateThreadAction(mgr, "ServerConnectionManager[" //$NON-NLS-1$
+                        + mgr.getEndpoint() + "]", true))).start(); //$NON-NLS-1$
         if (tmpl == null) {
             tmpl = Endpoint.createTemplate(ep);
         }
@@ -268,12 +269,13 @@ public class ServerConnectionManager implements Runnable {
          * (see comment for CreateThreadAction class).
          */
         Thread connThread = (Thread) AccessController.doPrivileged(
-                new CreateThreadAction(conn, "Call from " + conn.ep, true,
+                new CreateThreadAction(conn, "Call from " + conn.ep, true, //$NON-NLS-1$
                         false));
         connThread.start();
 
         if (transportLog.isLoggable(RMILog.VERBOSE)) {
-            transportLog.log(RMILog.VERBOSE, "Accepted " + conn);
+            // rmi.log.10A=Accepted {0}
+            transportLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.10A", conn)); //$NON-NLS-1$
         }
         return conn;
     }

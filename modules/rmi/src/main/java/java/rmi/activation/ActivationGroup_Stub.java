@@ -10,6 +10,8 @@
  */
 package java.rmi.activation;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
+
 
 public final class ActivationGroup_Stub extends java.rmi.server.RemoteStub
         implements java.rmi.activation.ActivationInstantiator, java.rmi.Remote {
@@ -20,10 +22,10 @@ public final class ActivationGroup_Stub extends java.rmi.server.RemoteStub
 
     static {
         try {
-            $method_newInstance_0 = java.rmi.activation.ActivationInstantiator.class.getMethod("newInstance", new java.lang.Class[] {java.rmi.activation.ActivationID.class, java.rmi.activation.ActivationDesc.class});
+            $method_newInstance_0 = java.rmi.activation.ActivationInstantiator.class.getMethod("newInstance", new java.lang.Class[] {java.rmi.activation.ActivationID.class, java.rmi.activation.ActivationDesc.class}); //$NON-NLS-1$
         } catch (java.lang.NoSuchMethodException e) {
-            throw new java.lang.NoSuchMethodError(
-                    "Stub class initialization failed: java.rmi.activation.ActivationGroup_Stub");
+            // rmi.0B=Stub class initialization failed: java.rmi.activation.ActivationGroup_Stub
+            throw new java.lang.NoSuchMethodError(Messages.getString("rmi.0B")); //$NON-NLS-1$
         }
     }
 
@@ -44,7 +46,8 @@ public final class ActivationGroup_Stub extends java.rmi.server.RemoteStub
         } catch (java.rmi.activation.ActivationException e) {
             throw e;
         } catch (java.lang.Exception e) {
-            throw new java.rmi.UnexpectedException("Undeclared checked exception", e);
+            // rmi.0C=Undeclared checked exception
+            throw new java.rmi.UnexpectedException(Messages.getString("rmi.0C"), e); //$NON-NLS-1$
         }
     }
 }

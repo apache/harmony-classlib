@@ -41,6 +41,7 @@ import java.security.PrivilegedExceptionAction;
 
 import org.apache.harmony.rmi.common.RMILog;
 import org.apache.harmony.rmi.common.RMIUtil;
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.remoteref.UnicastServerRef;
 import org.apache.harmony.rmi.transport.Endpoint;
 import org.apache.harmony.rmi.transport.RMIObjectInputStream;
@@ -125,7 +126,8 @@ public abstract class ServerConnection
                 try {
                     id = ObjID.read(oin);
                 } catch (IOException ioe) {
-                    throw new UnmarshalException("Unable to read Object ID",
+                    // rmi.74=Unable to read Object ID
+                    throw new UnmarshalException(Messages.getString("rmi.74"), //$NON-NLS-1$
                             ioe);
                 }
                 RMIObjectInfo info = ExportManager.getInfo(id);
@@ -133,8 +135,9 @@ public abstract class ServerConnection
 
                 if (info == null) {
                     sref = null;
+                    // rmi.75=No objects with {0} exported.
                     exToReturn = new NoSuchObjectException(
-                            "No objects with " + id + " exported.");
+                            Messages.getString("rmi.75",id)); //$NON-NLS-1$
                 } else {
                     sref = info.sref;
 
@@ -144,8 +147,9 @@ public abstract class ServerConnection
 
                     if (ServerConnectionManager.transportLog.isLoggable(
                             RMILog.VERBOSE)) {
+                        // rmi.76=Dispatch call for processing
                         ServerConnectionManager.transportLog.log(RMILog.VERBOSE,
-                                "Dispatch call for processing");
+                                Messages.getString("rmi.76")); //$NON-NLS-1$
                     }
 
                     // Dispatch the call for processing
@@ -174,8 +178,9 @@ public abstract class ServerConnection
                         IOException ioe = (IOException) pae.getException();
 
                         if (ioe instanceof RemoteException) {
-                            exToReturn = new ServerException(
-                                    "RemoteException occurred in server thread",
+                            // rmi.77=RemoteException occurred in server thread
+                            exToReturn = new ServerException(Messages
+                                    .getString("rmi.77"), //$NON-NLS-1$
                                     ioe);
                         } else {
                             throw ioe;
@@ -189,9 +194,9 @@ public abstract class ServerConnection
                     sCall.releaseInputStream();
                     if (ServerConnectionManager.transportLog.isLoggable(
                             RMILog.VERBOSE)) {
+                        // rmi.log.10B=Return exception to the client: {0}
                         ServerConnectionManager.transportLog.log(RMILog.VERBOSE,
-                                "Return exception to the client: "
-                                + exToReturn);
+                                Messages.getString("rmi.log.10B", exToReturn));//$NON-NLS-1$
                     }
                     DataOutputStream dout = new DataOutputStream(out);
                     RMIObjectOutputStream oout;
@@ -274,8 +279,9 @@ public abstract class ServerConnection
         } catch (IOException e) {
             if (ServerConnectionManager.transportLog.isLoggable(
                     RMILog.VERBOSE)) {
+                // rmi.log.10C=Note: close operation produced exception:
                 ServerConnectionManager.transportLog.log(RMILog.VERBOSE,
-                        "Note: close operation produced exception: ", e);
+                        Messages.getString("rmi.log.10C"), e); //$NON-NLS-1$
             }
         }
     }
@@ -327,6 +333,6 @@ public abstract class ServerConnection
      * @return string representation of this connection
      */
     public String toString() {
-        return RMIUtil.getShortName(getClass()) + ": remote endpoint:" + ep;
+        return RMIUtil.getShortName(getClass()) + ": remote endpoint:" + ep; //$NON-NLS-1$
     }
 }

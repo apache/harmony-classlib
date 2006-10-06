@@ -82,6 +82,6 @@ public class UnicastServerRef2 extends UnicastServerRef {
      * @see RemoteRef.getRefClass(ObjectOutput)
      */
     public String getRefClass(ObjectOutput out) {
-        return "UnicastServerRef2";
+        return "UnicastServerRef2"; //$NON-NLS-1$
     }
 }

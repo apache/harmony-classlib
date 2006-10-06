@@ -36,6 +36,7 @@ import org.apache.harmony.rmi.common.ClassList;
 import org.apache.harmony.rmi.common.RMIHash;
 import org.apache.harmony.rmi.common.RMIHashException;
 import org.apache.harmony.rmi.common.RMIUtil;
+import org.apache.harmony.rmi.internal.nls.Messages;
 
 
 /**
@@ -137,7 +138,8 @@ final class ClassStub implements RmicConstants {
     ClassStub(int version, Class cls) throws RMICompilerException {
         // Check version.
         if ((version < MIN_VERSION) || (version > MAX_VERSION)) {
-            throw new RMICompilerException("Incorrect version specified.");
+            // rmi.50=Incorrect version specified.
+            throw new RMICompilerException(Messages.getString("rmi.50")); //$NON-NLS-1$
         }
 
         // Set appropriate version flags.
@@ -158,29 +160,28 @@ final class ClassStub implements RmicConstants {
             vCompat = true;
             break;
         default:
-            throw new RMICompilerException("Version currently unsupported.");
+            // rmi.51=Version currently unsupported.
+            throw new RMICompilerException(Messages.getString("rmi.51")); //$NON-NLS-1$
         }
 
         className = RMIUtil.getCanonicalName(cls);
 
         // Check if the specified class is interface.
         if (cls.isInterface()) {
-            throw new RMICompilerException("Class " + className
-                    + " is interface, and so does not need an RMI stub.");
+            // rmi.52=Class {0} is interface, and so does not need an RMI stub.
+            throw new RMICompilerException(Messages.getString("rmi.52", className)); //$NON-NLS-1$
         }
 
         // Check if the specified class is remote.
         if (!Remote.class.isAssignableFrom(cls)) {
-            throw new RMICompilerException("Class " + className
-                    + " does not implement a remote interface,"
-                    + " and so does not need an RMI stub.");
+            // rmi.53=Class {0} does not implement a remote interface, and so does not need an RMI stub.
+            throw new RMICompilerException(Messages.getString("rmi.53", className)); //$NON-NLS-1$
         }
 
         // Check if the specified class implements any remote interfaces.
         if (!new ClassList(cls.getInterfaces()).contains(Remote.class)) {
-            throw new RMICompilerException("Class " + className
-                    + " does not directly implement a remote interface,"
-                    + " and so does not need an RMI stub.");
+            // rmi.54=Class {0} does not directly implement a remote interface, and so does not need an RMI stub.
+            throw new RMICompilerException(Messages.getString("rmi.54", className)); //$NON-NLS-1$
         }
 
         // Initialize class variables.
@@ -243,7 +244,8 @@ final class ClassStub implements RmicConstants {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
-            throw new RMICompilerException("Class not found: " + className);
+            // rmi.55=Class not found: {0}
+            throw new RMICompilerException(Messages.getString("rmi.55", className)); //$NON-NLS-1$
         }
     }
 
@@ -273,17 +275,17 @@ final class ClassStub implements RmicConstants {
     String getStubSource() {
         indenter = new Indenter();
 
-        return (getStubHeader("stub") + getPackageStatement() + EOLN
+        return (getStubHeader("stub") + getPackageStatement() + EOLN //$NON-NLS-1$
                 + getStubClassDeclaration() + indenter.hIncrease()
-                + (v12 ? (EOLN + getSerialVersionUID()) : "")
+                + (v12 ? (EOLN + getSerialVersionUID()) : "") //$NON-NLS-1$
                 + (v11 ? (EOLN + getInterfaceHash() + (methodsExist
-                        ? ((vCompat ? EOLN + getNewInvoke() : "")
-                        + EOLN + getOperationsArrayDeclaration()) : "")) : "")
+                        ? ((vCompat ? EOLN + getNewInvoke() : "") //$NON-NLS-1$
+                        + EOLN + getOperationsArrayDeclaration()) : "")) : "") //$NON-NLS-1$ //$NON-NLS-2$
                 + ((v12 && methodsExist) ? (EOLN
                         + getMethodVariablesDeclaration() + EOLN
-                        + getStaticInitializationBlock()) : "") + EOLN
+                        + getStaticInitializationBlock()) : "") + EOLN //$NON-NLS-1$
                 + getStubConstructors()
-                + (methodsExist ? getMethodImplementations() : "")
+                + (methodsExist ? getMethodImplementations() : "") //$NON-NLS-1$
                 + indenter.decrease() + '}' + EOLN + indenter.assertEmpty());
     }
 
@@ -295,7 +297,7 @@ final class ClassStub implements RmicConstants {
     String getSkeletonSource() {
         indenter = new Indenter();
 
-        return (getStubHeader("skeleton") + getPackageStatement() + EOLN
+        return (getStubHeader("skeleton") + getPackageStatement() + EOLN //$NON-NLS-1$
                 + getSkeletonClassDeclaration()
                 + indenter.hIncrease() + EOLN + getInterfaceHash() + EOLN
                 + getOperationsArrayDeclaration() + EOLN
@@ -313,15 +315,15 @@ final class ClassStub implements RmicConstants {
      * @return  Stub/skeleton header.
      */
     private String getStubHeader(String type) {
-        return ("/*" + EOLN + " * RMI " + type + " class" + EOLN
-                + " * for class " + className + EOLN
-                + " * Compatible with stub protocol version "
-                + (v11 ? "1.1" : "") + (vCompat ? "/" : "")
-                + (v12 ? "1.2" : "") + EOLN + " *" + EOLN
-                + " * Generated by DRL RMI Compiler (rmic)." + EOLN
-                + " *" + EOLN + " * DO NOT EDIT!!!" + EOLN
-                + " * Contents subject to change without notice!" + EOLN
-                + " */" + EOLN);
+        return ("/*" + EOLN + " * RMI " + type + " class" + EOLN //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + " * for class " + className + EOLN //$NON-NLS-1$
+                + " * Compatible with stub protocol version " //$NON-NLS-1$
+                + (v11 ? "1.1" : "") + (vCompat ? "/" : "") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                + (v12 ? "1.2" : "") + EOLN + " *" + EOLN //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + " * Generated by DRL RMI Compiler (rmic)." + EOLN //$NON-NLS-1$
+                + " *" + EOLN + " * DO NOT EDIT!!!" + EOLN //$NON-NLS-1$ //$NON-NLS-2$
+                + " * Contents subject to change without notice!" + EOLN //$NON-NLS-1$
+                + " */" + EOLN); //$NON-NLS-1$
     }
 
     /**
@@ -331,8 +333,8 @@ final class ClassStub implements RmicConstants {
      * @return  <code>package</code> statement for stub/skeleton class.
      */
     private String getPackageStatement() {
-        return ((packageName == null) ? ""
-                : ("package " + packageName + ';' + EOLN + EOLN));
+        return ((packageName == null) ? "" //$NON-NLS-1$
+                : ("package " + packageName + ';' + EOLN + EOLN)); //$NON-NLS-1$
     }
 
     /**
@@ -342,16 +344,16 @@ final class ClassStub implements RmicConstants {
      * @return  Stub class declaration statement.
      */
     private String getStubClassDeclaration() {
-        StringBuffer buffer = new StringBuffer("public final class "
-                + stubName + " extends java.rmi.server.RemoteStub" + EOLN
-                + indenter.tIncrease(2) + "implements ");
+        StringBuffer buffer = new StringBuffer("public final class " //$NON-NLS-1$
+                + stubName + " extends java.rmi.server.RemoteStub" + EOLN //$NON-NLS-1$
+                + indenter.tIncrease(2) + "implements "); //$NON-NLS-1$
 
         // Add implemented interfaces list.
         for (int i = 0; i < interfaces.length; i++) {
-            buffer.append(((i > 0) ? ", " : "" ) + interfaces[i].getName());
+            buffer.append(((i > 0) ? ", " : "" ) + interfaces[i].getName()); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
-        buffer.append(" {" + EOLN);
+        buffer.append(" {" + EOLN); //$NON-NLS-1$
 
         return buffer.toString();
     }
@@ -363,8 +365,8 @@ final class ClassStub implements RmicConstants {
      * @return  Skeleton class declaration statement.
      */
     private String getSkeletonClassDeclaration() {
-        return ("public final class " + skelName
-                + " implements java.rmi.server.Skeleton {" + EOLN);
+        return ("public final class " + skelName //$NON-NLS-1$
+                + " implements java.rmi.server.Skeleton {" + EOLN); //$NON-NLS-1$
     }
 
     /**
@@ -375,7 +377,7 @@ final class ClassStub implements RmicConstants {
      */
     private String getSerialVersionUID() {
         return (indenter.indent()
-                    + "private static final long serialVersionUID = 2;" + EOLN);
+                    + "private static final long serialVersionUID = 2;" + EOLN); //$NON-NLS-1$
     }
 
     /**
@@ -385,8 +387,8 @@ final class ClassStub implements RmicConstants {
      * @return  <code>interfaceHash</code> declaration statement.
      */
     private String getInterfaceHash() {
-        return (indenter.indent() + "private static final long "
-                + interfaceHashVarName + " = " + interfaceHash + "L;" + EOLN);
+        return (indenter.indent() + "private static final long " //$NON-NLS-1$
+                + interfaceHashVarName + " = " + interfaceHash + "L;" + EOLN); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -397,7 +399,7 @@ final class ClassStub implements RmicConstants {
      */
     private String getNewInvoke() {
         return (indenter.indent()
-                + "private static boolean " + useNewInvoke + ';'+ EOLN);
+                + "private static boolean " + useNewInvoke + ';'+ EOLN); //$NON-NLS-1$
     }
 
     /**
@@ -408,21 +410,21 @@ final class ClassStub implements RmicConstants {
      */
     private String getOperationsArrayDeclaration() {
         StringBuffer buffer = new StringBuffer(indenter.indent()
-                + "private static final java.rmi.server.Operation[]"
-                + " operations = {");
+                + "private static final java.rmi.server.Operation[]" //$NON-NLS-1$
+                + " operations = {"); //$NON-NLS-1$
 
         if (methodsExist) {
             buffer.append(EOLN + indenter.hIncrease());
 
             for (Iterator i = methods.iterator(); i.hasNext(); ) {
                 buffer.append(((MethodStub) i.next()).getOpsArrayElement()
-                        + (i.hasNext() ? "," : "" ) + EOLN);
+                        + (i.hasNext() ? "," : "" ) + EOLN); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
             buffer.append(indenter.decrease());
         }
 
-        buffer.append("};" + EOLN);
+        buffer.append("};" + EOLN); //$NON-NLS-1$
 
         return buffer.toString();
     }
@@ -435,9 +437,9 @@ final class ClassStub implements RmicConstants {
      */
     private String getOperationsMethod() {
         return (indenter.indent()
-                + "public java.rmi.server.Operation[] getOperations() {" + EOLN
+                + "public java.rmi.server.Operation[] getOperations() {" + EOLN //$NON-NLS-1$
                 + indenter.tIncrease()
-                + "return (java.rmi.server.Operation[]) operations.clone();"
+                + "return (java.rmi.server.Operation[]) operations.clone();" //$NON-NLS-1$
                 + EOLN + indenter.indent() + '}' + EOLN);
     }
 
@@ -449,12 +451,12 @@ final class ClassStub implements RmicConstants {
      */
     private String getDispatchMethod() {
         StringBuffer buffer = new StringBuffer(indenter.indent()
-                + "public void dispatch(java.rmi.Remote obj, "
-                + "java.rmi.server.RemoteCall call, int opnum, long hash) "
-                + "throws java.lang.Exception {" + EOLN + indenter.hIncrease());
+                + "public void dispatch(java.rmi.Remote obj, " //$NON-NLS-1$
+                + "java.rmi.server.RemoteCall call, int opnum, long hash) " //$NON-NLS-1$
+                + "throws java.lang.Exception {" + EOLN + indenter.hIncrease()); //$NON-NLS-1$
 
         if (vCompat) {
-            buffer.append(indenter.indent() + "if (opnum < 0) {" + EOLN
+            buffer.append(indenter.indent() + "if (opnum < 0) {" + EOLN //$NON-NLS-1$
                     + indenter.increase());
 
             if (methodsExist) {
@@ -464,40 +466,40 @@ final class ClassStub implements RmicConstants {
                 buffer.append('{' + EOLN + indenter.increase());
             }
 
-            buffer.append("throw new java.rmi.UnmarshalException("
-                    + "\"Invalid method hash: \" + hash);" + EOLN
+            buffer.append("throw new java.rmi.UnmarshalException(" //$NON-NLS-1$
+                    + "\"Invalid method hash: \" + hash);" + EOLN //$NON-NLS-1$
                     + indenter.decrease() + '}' + EOLN
-                    + (methodsExist ? (indenter.tDecrease() + "} else {") : "")
+                    + (methodsExist ? (indenter.tDecrease() + "} else {") : "") //$NON-NLS-1$ //$NON-NLS-2$
                     + EOLN);
         }
 
-        buffer.append(indenter.indent() + "if (hash != interfaceHash) {" + EOLN
+        buffer.append(indenter.indent() + "if (hash != interfaceHash) {" + EOLN //$NON-NLS-1$
                 + indenter.increase()
-                + "throw new java.rmi.server.SkeletonMismatchException(" + EOLN
+                + "throw new java.rmi.server.SkeletonMismatchException(" + EOLN //$NON-NLS-1$
                 + indenter.tIncrease(2)
-                + "\"Interface hash mismatch, expected: \" + interfaceHash"
-                + " + \", received: \" + hash);" + EOLN
+                + "\"Interface hash mismatch, expected: \" + interfaceHash" //$NON-NLS-1$
+                + " + \", received: \" + hash);" + EOLN //$NON-NLS-1$
                 + indenter.decrease() + '}' + EOLN + ((vCompat && methodsExist)
-                        ? (indenter.decrease() + '}' + EOLN) : "") + EOLN
-                + indenter.indent() + className + " server = "
-                    + '(' + className + ") obj;" + EOLN + EOLN);
+                        ? (indenter.decrease() + '}' + EOLN) : "") + EOLN //$NON-NLS-1$
+                + indenter.indent() + className + " server = " //$NON-NLS-1$
+                    + '(' + className + ") obj;" + EOLN + EOLN); //$NON-NLS-1$
 
         if (methodsExist) {
-            buffer.append(indenter.indent() + "switch (opnum) {" + EOLN);
+            buffer.append(indenter.indent() + "switch (opnum) {" + EOLN); //$NON-NLS-1$
 
             for (Iterator i = methods.iterator(); i.hasNext(); ) {
                 buffer.append(EOLN + ((MethodStub) i.next()).getDispatchCase());
             }
 
-            buffer.append(EOLN + indenter.indent() + "default:" + EOLN);
+            buffer.append(EOLN + indenter.indent() + "default:" + EOLN); //$NON-NLS-1$
 
             indenter.increase();
         }
 
         buffer.append(indenter.indent()
-                + "throw new java.rmi.UnmarshalException("
-                + "\"Invalid method number: \" + opnum);" + EOLN
-                + (methodsExist ? (indenter.decrease() + '}' + EOLN) : "")
+                + "throw new java.rmi.UnmarshalException(" //$NON-NLS-1$
+                + "\"Invalid method number: \" + opnum);" + EOLN //$NON-NLS-1$
+                + (methodsExist ? (indenter.decrease() + '}' + EOLN) : "") //$NON-NLS-1$
                 + indenter.decrease() + '}' + EOLN);
 
         return buffer.toString();
@@ -527,15 +529,15 @@ final class ClassStub implements RmicConstants {
      */
     private String getStaticInitializationBlock() {
         StringBuffer buffer = new StringBuffer(indenter.indent()
-                + "static {" + EOLN + indenter.increase() + "try {" + EOLN
+                + "static {" + EOLN + indenter.increase() + "try {" + EOLN //$NON-NLS-1$ //$NON-NLS-2$
                 + indenter.hIncrease());
 
         if (vCompat) {
             buffer.append(indenter.indent()
-                    + "java.rmi.server.RemoteRef.class.getMethod(\"invoke\", "
-                    + "new java.lang.Class[] {java.rmi.Remote.class, "
-                    + "java.lang.reflect.Method.class, java.lang.Object[].class"
-                    + ", long.class});" + EOLN + EOLN);
+                    + "java.rmi.server.RemoteRef.class.getMethod(\"invoke\", " //$NON-NLS-1$
+                    + "new java.lang.Class[] {java.rmi.Remote.class, " //$NON-NLS-1$
+                    + "java.lang.reflect.Method.class, java.lang.Object[].class" //$NON-NLS-1$
+                    + ", long.class});" + EOLN + EOLN); //$NON-NLS-1$
         }
 
         for (Iterator i = methods.iterator(); i.hasNext(); ) {
@@ -543,16 +545,16 @@ final class ClassStub implements RmicConstants {
         }
 
         buffer.append((vCompat ? (EOLN + indenter.indent() + useNewInvoke
-                + " = true;" + EOLN) : "") + indenter.decrease()
-                + "} catch (java.lang.NoSuchMethodException e) {" + EOLN
+                + " = true;" + EOLN) : "") + indenter.decrease() //$NON-NLS-1$ //$NON-NLS-2$
+                + "} catch (java.lang.NoSuchMethodException e) {" + EOLN //$NON-NLS-1$
                 + indenter.increase()
-                + (vCompat ? (useNewInvoke + " = false;")
-                        : ("throw new java.lang.NoSuchMethodError(" + EOLN
+                + (vCompat ? (useNewInvoke + " = false;") //$NON-NLS-1$
+                        : ("throw new java.lang.NoSuchMethodError(" + EOLN //$NON-NLS-1$
                                 + indenter.tIncrease(2)
-                                + "\"Stub class initialization failed: "
+                                + "\"Stub class initialization failed: " //$NON-NLS-1$
                                 + ((packageName != null)
-                                        ? (packageName + '.') : "")
-                                + stubName + "\");")) + EOLN
+                                        ? (packageName + '.') : "") //$NON-NLS-1$
+                                + stubName + "\");")) + EOLN //$NON-NLS-1$
                 + indenter.decrease() + '}' + EOLN
                 + indenter.decrease() + '}' + EOLN);
 
@@ -569,14 +571,14 @@ final class ClassStub implements RmicConstants {
         StringBuffer buffer = new StringBuffer();
 
         if (v11) {
-            buffer.append(indenter.indent() + "public " + stubName
-                    + "() {" + EOLN + indenter.tIncrease() + "super();" + EOLN
+            buffer.append(indenter.indent() + "public " + stubName //$NON-NLS-1$
+                    + "() {" + EOLN + indenter.tIncrease() + "super();" + EOLN //$NON-NLS-1$ //$NON-NLS-2$
                     + indenter.indent() + '}' + EOLN + EOLN);
         }
 
-        buffer.append(indenter.indent() + "public " + stubName
-                + "(java.rmi.server.RemoteRef ref) {" + EOLN
-                + indenter.tIncrease() + "super(ref);" + EOLN
+        buffer.append(indenter.indent() + "public " + stubName //$NON-NLS-1$
+                + "(java.rmi.server.RemoteRef ref) {" + EOLN //$NON-NLS-1$
+                + indenter.tIncrease() + "super(ref);" + EOLN //$NON-NLS-1$
                 + indenter.indent() + '}' + EOLN);
 
         return buffer.toString();
@@ -754,7 +756,7 @@ final class ClassStub implements RmicConstants {
          */
         String getOpsArrayElement() {
             return (indenter.indent() +
-                        "new java.rmi.server.Operation(\"" + longSign + "\")");
+                        "new java.rmi.server.Operation(\"" + longSign + "\")"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         /**
@@ -764,9 +766,9 @@ final class ClassStub implements RmicConstants {
          * @return  Hash checking code for this method..
          */
         String getHashCheck() {
-            return ("if (hash == " + hash + "L) {" + EOLN
-                    + indenter.tIncrease() + "opnum = " + number + ';' + EOLN
-                    + indenter.indent() + "} else ");
+            return ("if (hash == " + hash + "L) {" + EOLN //$NON-NLS-1$ //$NON-NLS-2$
+                    + indenter.tIncrease() + "opnum = " + number + ';' + EOLN //$NON-NLS-1$
+                    + indenter.indent() + "} else "); //$NON-NLS-1$
         }
 
         /**
@@ -777,7 +779,7 @@ final class ClassStub implements RmicConstants {
          */
         String getDispatchCase() {
             StringBuffer buffer = new StringBuffer(indenter.indent()
-                    + "case " + number + ": {    // " + shortSign + EOLN + EOLN
+                    + "case " + number + ": {    // " + shortSign + EOLN + EOLN //$NON-NLS-1$ //$NON-NLS-2$
                     + indenter.hIncrease());
 
             if (numParams > 0) {
@@ -788,15 +790,15 @@ final class ClassStub implements RmicConstants {
                 }
 
                 // Access input stream.
-                buffer.append(EOLN + indenter.indent() + "try {" + EOLN
-                        + indenter.increase() + "java.io.ObjectInput "
-                        + inputStreamName + " = call.getInputStream();" + EOLN);
+                buffer.append(EOLN + indenter.indent() + "try {" + EOLN //$NON-NLS-1$
+                        + indenter.increase() + "java.io.ObjectInput " //$NON-NLS-1$
+                        + inputStreamName + " = call.getInputStream();" + EOLN); //$NON-NLS-1$
 
                 boolean objectParametersExist = false;
 
                 // Add parameters initialization, read them from the stream.
                 for (int i = 0; i < numParams; i++) {
-                    buffer.append(indenter.indent() + paramNames[i] + " = "
+                    buffer.append(indenter.indent() + paramNames[i] + " = " //$NON-NLS-1$
                             + RmicUtil.getReadObjectString(parameters[i],
                                     inputStreamName) + ';' + EOLN);
 
@@ -807,46 +809,46 @@ final class ClassStub implements RmicConstants {
 
                 // Add catch block.
                 buffer.append(indenter.tDecrease()
-                        + "} catch (java.io.IOException e) {" + EOLN
+                        + "} catch (java.io.IOException e) {" + EOLN //$NON-NLS-1$
                         + indenter.indent()
-                        + "throw new java.rmi.UnmarshalException("
-                        + "\"Error unmarshalling arguments\", e);" + EOLN
+                        + "throw new java.rmi.UnmarshalException(" //$NON-NLS-1$
+                        + "\"Error unmarshalling arguments\", e);" + EOLN //$NON-NLS-1$
                         + (objectParametersExist ? (indenter.tDecrease()
-                        + "} catch (java.lang.ClassNotFoundException e) {"
+                        + "} catch (java.lang.ClassNotFoundException e) {" //$NON-NLS-1$
                         + EOLN + indenter.indent()
-                        + "throw new java.rmi.UnmarshalException("
-                        + "\"Error unmarshalling arguments\", e);" + EOLN) : "")
-                        + indenter.tDecrease() + "} finally {" + EOLN);
+                        + "throw new java.rmi.UnmarshalException(" //$NON-NLS-1$
+                        + "\"Error unmarshalling arguments\", e);" + EOLN) : "") //$NON-NLS-1$ //$NON-NLS-2$
+                        + indenter.tDecrease() + "} finally {" + EOLN); //$NON-NLS-1$
             }
             // Release input stream.
             buffer.append(indenter.indent()
-                    + "call.releaseInputStream();" + EOLN);
+                    + "call.releaseInputStream();" + EOLN); //$NON-NLS-1$
 
             if (numParams > 0) {
                 buffer.append(indenter.decrease() + '}' + EOLN);
             }
 
             buffer.append(EOLN + indenter.indent() + ((retType != void.class)
-                    ? (retTypeName + ' ' + retVarName + " = ") : "")
-                    + "server." + name + '(');
+                    ? (retTypeName + ' ' + retVarName + " = ") : "") //$NON-NLS-1$ //$NON-NLS-2$
+                    + "server." + name + '('); //$NON-NLS-1$
 
             for (int i = 0; i < numParams; i++) {
-                buffer.append(((i > 0) ? ", " : "") + paramNames[i]);
+                buffer.append(((i > 0) ? ", " : "") + paramNames[i]); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
-            buffer.append(");" + EOLN + EOLN + indenter.indent() + "try {"
+            buffer.append(");" + EOLN + EOLN + indenter.indent() + "try {" //$NON-NLS-1$ //$NON-NLS-2$
                     + EOLN + indenter.increase() + ((retType != void.class)
-                    ? ("java.io.ObjectOutput " + outputStreamName + " = ") : "")
-                    + "call.getResultStream(true);" + EOLN
+                    ? ("java.io.ObjectOutput " + outputStreamName + " = ") : "") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    + "call.getResultStream(true);" + EOLN //$NON-NLS-1$
                     + ((retType != void.class) ? (indenter.indent()
                             + RmicUtil.getWriteObjectString(retType, retVarName,
-                                    outputStreamName) + ';' + EOLN) : "")
-                    + indenter.decrease() + "} catch (java.io.IOException e) {"
+                                    outputStreamName) + ';' + EOLN) : "") //$NON-NLS-1$
+                    + indenter.decrease() + "} catch (java.io.IOException e) {" //$NON-NLS-1$
                     + EOLN + indenter.tIncrease()
-                    + "throw new java.rmi.MarshalException("
-                    + "\"Error marshalling return\", e);" + EOLN
+                    + "throw new java.rmi.MarshalException(" //$NON-NLS-1$
+                    + "\"Error marshalling return\", e);" + EOLN //$NON-NLS-1$
                     + indenter.indent() + '}' + EOLN + EOLN
-                    + indenter.indent() + "break;" + EOLN
+                    + indenter.indent() + "break;" + EOLN //$NON-NLS-1$
                     + indenter.decrease() + '}' + EOLN);
 
             return buffer.toString();
@@ -860,7 +862,7 @@ final class ClassStub implements RmicConstants {
          */
         String getVariableDecl() {
             return (indenter.indent()
-                    + "private static java.lang.reflect.Method"
+                    + "private static java.lang.reflect.Method" //$NON-NLS-1$
                     + ' ' + varName + ';' + EOLN);
         }
 
@@ -872,18 +874,18 @@ final class ClassStub implements RmicConstants {
          */
         String getVariableInit() {
             StringBuffer buffer = new StringBuffer(indenter.indent()
-                    + varName + " = " + interfaceName + ".class.getMethod(\""
-                    + name + "\", new java.lang.Class[] {");
+                    + varName + " = " + interfaceName + ".class.getMethod(\"" //$NON-NLS-1$ //$NON-NLS-2$
+                    + name + "\", new java.lang.Class[] {"); //$NON-NLS-1$
 
             if (numParams > 0) {
                 // Write method parameters.
                 for (int i = 0; i < numParams; i++) {
-                    buffer.append(((i > 0) ? ", " : "")
-                            + paramClassNames[i] + ".class");
+                    buffer.append(((i > 0) ? ", " : "") //$NON-NLS-1$ //$NON-NLS-2$
+                            + paramClassNames[i] + ".class"); //$NON-NLS-1$
                 }
             }
 
-            buffer.append("});" + EOLN);
+            buffer.append("});" + EOLN); //$NON-NLS-1$
 
             return buffer.toString();
         }
@@ -896,13 +898,13 @@ final class ClassStub implements RmicConstants {
          */
         String getStubImpl() {
             return (getStubImplHeader()
-                    + (vCompat ? (indenter.indent() + "if (" + useNewInvoke
-                            + ") {" + EOLN + indenter.hIncrease()) : "")
-                    + (v12 ? getStubImplCodeV12() : "") + (vCompat
-                            ? (indenter.tDecrease() + "} else {" + EOLN) : "")
-                    + (v11 ? getStubImplCodeV11() : "")
-                    + (vCompat ? (indenter.decrease() + '}' + EOLN) : "")
-                    + (throwsException ? "" : (indenter.hDecrease()
+                    + (vCompat ? (indenter.indent() + "if (" + useNewInvoke //$NON-NLS-1$
+                            + ") {" + EOLN + indenter.hIncrease()) : "") //$NON-NLS-1$ //$NON-NLS-2$
+                    + (v12 ? getStubImplCodeV12() : "") + (vCompat //$NON-NLS-1$
+                            ? (indenter.tDecrease() + "} else {" + EOLN) : "") //$NON-NLS-1$ //$NON-NLS-2$
+                    + (v11 ? getStubImplCodeV11() : "") //$NON-NLS-1$
+                    + (vCompat ? (indenter.decrease() + '}' + EOLN) : "") //$NON-NLS-1$
+                    + (throwsException ? "" : (indenter.hDecrease() //$NON-NLS-1$
                             + getStubImplCatchBlock()))
                     + indenter.decrease() + '}' + EOLN);
         }
@@ -915,27 +917,27 @@ final class ClassStub implements RmicConstants {
          */
         private String getStubImplHeader() {
             StringBuffer buffer = new StringBuffer(indenter.indent()
-                    + "// Implementation of " + shortSign + EOLN
-                    + indenter.indent() + "public " + retTypeName
+                    + "// Implementation of " + shortSign + EOLN //$NON-NLS-1$
+                    + indenter.indent() + "public " + retTypeName //$NON-NLS-1$
                     + ' ' + name + '(');
 
             // Write method parameters.
             for (int i = 0; i < numParams; i++) {
-                buffer.append(((i > 0) ? ", " : "")
+                buffer.append(((i > 0) ? ", " : "") //$NON-NLS-1$ //$NON-NLS-2$
                         + paramClassNames[i] + ' ' + paramNames[i]);
             }
 
-            buffer.append(')' + EOLN + indenter.tIncrease(2) + "throws ");
+            buffer.append(')' + EOLN + indenter.tIncrease(2) + "throws "); //$NON-NLS-1$
 
             // Write exceptions declared thrown.
             for (Iterator i = exceptions.iterator(); i.hasNext(); ) {
                 buffer.append(((Class) i.next()).getName()
-                        + (i.hasNext() ? ", " : "" ));
+                        + (i.hasNext() ? ", " : "" )); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
-            buffer.append(" {" + EOLN + indenter.hIncrease()
-                    + (throwsException ? "" : (indenter.indent()
-                            + "try {" + EOLN + indenter.hIncrease())));
+            buffer.append(" {" + EOLN + indenter.hIncrease() //$NON-NLS-1$
+                    + (throwsException ? "" : (indenter.indent() //$NON-NLS-1$
+                            + "try {" + EOLN + indenter.hIncrease()))); //$NON-NLS-1$
 
             return buffer.toString();
         }
@@ -948,15 +950,15 @@ final class ClassStub implements RmicConstants {
          */
         private String getStubImplCodeV11() {
             StringBuffer buffer = new StringBuffer(indenter.indent()
-                    + "java.rmi.server.RemoteCall call = "
-                    + "ref.newCall((java.rmi.server.RemoteObject) this, "
-                    + "operations, " + number + ", " + interfaceHashVarName
-                    + ");" + EOLN);
+                    + "java.rmi.server.RemoteCall call = " //$NON-NLS-1$
+                    + "ref.newCall((java.rmi.server.RemoteObject) this, " //$NON-NLS-1$
+                    + "operations, " + number + ", " + interfaceHashVarName //$NON-NLS-1$ //$NON-NLS-2$
+                    + ");" + EOLN); //$NON-NLS-1$
 
             if (numParams > 0) {
-                buffer.append(EOLN + indenter.indent() + "try {" + EOLN
-                    + indenter.increase() + "java.io.ObjectOutput "
-                    + outputStreamName + " = call.getOutputStream();" + EOLN);
+                buffer.append(EOLN + indenter.indent() + "try {" + EOLN //$NON-NLS-1$
+                    + indenter.increase() + "java.io.ObjectOutput " //$NON-NLS-1$
+                    + outputStreamName + " = call.getOutputStream();" + EOLN); //$NON-NLS-1$
 
                 for (int i = 0; i < numParams; i++) {
                     buffer.append(indenter.indent()
@@ -966,42 +968,42 @@ final class ClassStub implements RmicConstants {
                 }
 
                 buffer.append(indenter.decrease()
-                        + "} catch (java.io.IOException e) {" + EOLN
+                        + "} catch (java.io.IOException e) {" + EOLN //$NON-NLS-1$
                         + indenter.tIncrease()
-                        + "throw new java.rmi.MarshalException("
-                        + "\"Error marshalling arguments\", e);" + EOLN
+                        + "throw new java.rmi.MarshalException(" //$NON-NLS-1$
+                        + "\"Error marshalling arguments\", e);" + EOLN //$NON-NLS-1$
                         + indenter.indent() + '}' + EOLN);
             }
 
             buffer.append(EOLN + indenter.indent()
-                    + "ref.invoke(call);" + EOLN);
+                    + "ref.invoke(call);" + EOLN); //$NON-NLS-1$
 
             if (retType != void.class) {
                 buffer.append(EOLN + indenter.indent()
                         + retTypeName + ' ' + retVarName + ';' + EOLN + EOLN
-                        + indenter.indent() + "try {" + EOLN
-                        + indenter.increase() + "java.io.ObjectInput "
-                        + inputStreamName + " = call.getInputStream();" + EOLN
-                        + indenter.indent() + retVarName + " = "
+                        + indenter.indent() + "try {" + EOLN //$NON-NLS-1$
+                        + indenter.increase() + "java.io.ObjectInput " //$NON-NLS-1$
+                        + inputStreamName + " = call.getInputStream();" + EOLN //$NON-NLS-1$
+                        + indenter.indent() + retVarName + " = " //$NON-NLS-1$
                         + RmicUtil.getReadObjectString(retType, inputStreamName)
                         + ';' + EOLN + indenter.decrease()
-                        + "} catch (java.io.IOException e) {" + EOLN
+                        + "} catch (java.io.IOException e) {" + EOLN //$NON-NLS-1$
                         + indenter.tIncrease()
-                        + "throw new java.rmi.UnmarshalException("
-                        + "\"Error unmarshalling return value\", e);" + EOLN
+                        + "throw new java.rmi.UnmarshalException(" //$NON-NLS-1$
+                        + "\"Error unmarshalling return value\", e);" + EOLN //$NON-NLS-1$
                         + (!retType.isPrimitive() ? (indenter.indent()
-                        + "} catch (java.lang.ClassNotFoundException e) {"
+                        + "} catch (java.lang.ClassNotFoundException e) {" //$NON-NLS-1$
                         + EOLN + indenter.tIncrease()
-                        + "throw new java.rmi.UnmarshalException("
-                        + "\"Error unmarshalling return value\", e);" + EOLN)
-                        : "") + indenter.indent() + "} finally {" + EOLN
-                        + indenter.tIncrease() + "ref.done(call);" + EOLN
+                        + "throw new java.rmi.UnmarshalException(" //$NON-NLS-1$
+                        + "\"Error unmarshalling return value\", e);" + EOLN) //$NON-NLS-1$
+                        : "") + indenter.indent() + "} finally {" + EOLN //$NON-NLS-1$ //$NON-NLS-2$
+                        + indenter.tIncrease() + "ref.done(call);" + EOLN //$NON-NLS-1$
                         + indenter.indent() + '}' + EOLN + EOLN
-                        + indenter.indent() + "return " + retVarName + ';'
+                        + indenter.indent() + "return " + retVarName + ';' //$NON-NLS-1$
                         + EOLN);
             } else {
                 buffer.append(EOLN + indenter.indent()
-                        + "ref.done(call);" + EOLN);
+                        + "ref.done(call);" + EOLN); //$NON-NLS-1$
             }
 
             return buffer.toString();
@@ -1017,30 +1019,30 @@ final class ClassStub implements RmicConstants {
             StringBuffer buffer = new StringBuffer(indenter.indent());
 
             if (retType != void.class) {
-                buffer.append("java.lang.Object " + retVarName + " = ");
+                buffer.append("java.lang.Object " + retVarName + " = "); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
-            buffer.append("ref.invoke(this, " + varName + ", ");
+            buffer.append("ref.invoke(this, " + varName + ", "); //$NON-NLS-1$ //$NON-NLS-2$
 
             if (numParams > 0) {
-                buffer.append("new java.lang.Object[] {");
+                buffer.append("new java.lang.Object[] {"); //$NON-NLS-1$
 
                 // Write invocation parameters.
                 for (int i = 0; i < numParams; i++) {
-                    buffer.append(((i > 0) ? ", " : "")
+                    buffer.append(((i > 0) ? ", " : "") //$NON-NLS-1$ //$NON-NLS-2$
                             + RmicUtil.getObjectParameterString(
                                     parameters[i], paramNames[i]));
                 }
                 buffer.append('}');
             } else {
-                buffer.append("null");
+                buffer.append("null"); //$NON-NLS-1$
             }
 
-            buffer.append(", " + hash + "L);" + EOLN);
+            buffer.append(", " + hash + "L);" + EOLN); //$NON-NLS-1$ //$NON-NLS-2$
 
             // Write return statement.
             if (retType != void.class) {
-                buffer.append(indenter.indent() + "return "
+                buffer.append(indenter.indent() + "return " //$NON-NLS-1$
                         + RmicUtil.getReturnObjectString(retType, retVarName)
                         + ';' + EOLN);
             }
@@ -1058,16 +1060,16 @@ final class ClassStub implements RmicConstants {
             StringBuffer buffer = new StringBuffer();
 
             for (Iterator i = catches.iterator(); i.hasNext(); ) {
-                buffer.append(indenter.indent() + "} catch ("
-                        + ((Class) i.next()).getName() + " e) {" + EOLN
-                        + indenter.tIncrease() + "throw e;" + EOLN);
+                buffer.append(indenter.indent() + "} catch (" //$NON-NLS-1$
+                        + ((Class) i.next()).getName() + " e) {" + EOLN //$NON-NLS-1$
+                        + indenter.tIncrease() + "throw e;" + EOLN); //$NON-NLS-1$
             }
 
             buffer.append(indenter.indent()
-                    + "} catch (java.lang.Exception e) {" + EOLN
+                    + "} catch (java.lang.Exception e) {" + EOLN //$NON-NLS-1$
                     + indenter.tIncrease()
-                    + "throw new java.rmi.UnexpectedException("
-                    + "\"Undeclared checked exception\", e);" + EOLN
+                    + "throw new java.rmi.UnexpectedException(" //$NON-NLS-1$
+                    + "\"Undeclared checked exception\", e);" + EOLN //$NON-NLS-1$
                     + indenter.indent() + '}' + EOLN);
 
             return buffer.toString();

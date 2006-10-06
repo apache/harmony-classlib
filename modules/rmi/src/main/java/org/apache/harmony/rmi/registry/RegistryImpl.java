@@ -38,6 +38,7 @@ import java.rmi.AccessException;
 import java.rmi.registry.Registry;
 
 import org.apache.harmony.rmi.common.RMIUtil;
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.remoteref.UnicastServerRef;
 import org.apache.harmony.rmi.remoteref.UnicastServerRef2;
 import org.apache.harmony.rmi.server.ExportManager;
@@ -72,7 +73,7 @@ public class RegistryImpl extends RemoteServer implements Registry {
      */
     public static void main(String[] args) throws Exception {
         String usage =
-            "Usage: java org.apache.harmony.rmi.registry.RegistryImpl <port>";
+            "Usage: java org.apache.harmony.rmi.registry.RegistryImpl <port>"; //$NON-NLS-1$
         int port = REGISTRY_PORT;
 
         if (args.length > 1) {
@@ -82,7 +83,8 @@ public class RegistryImpl extends RemoteServer implements Registry {
             try {
                 port = Integer.parseInt(args[0]);
             } catch (NumberFormatException nfe) {
-                System.out.println("Invalid port number " + args[0]);
+                // rmi.console.1B=Invalid port number {0}
+                System.out.println(Messages.getString("rmi.console.1B", args[0])); //$NON-NLS-1$
                 System.out.println(usage);
                 System.exit(-1);
             }
@@ -141,13 +143,15 @@ public class RegistryImpl extends RemoteServer implements Registry {
     public void rebind(String name, Remote obj)
             throws RemoteException, AccessException {
         if (name == null) {
-            throw new NullPointerException("name could not be null.");
+            // rmi.5D=name could not be null.
+            throw new NullPointerException(Messages.getString("rmi.5D")); //$NON-NLS-1$
         }
 
         if (obj == null) {
-            throw new NullPointerException("obj could not be null.");
+            // rmi.5C=obj could not be null.
+            throw new NullPointerException(Messages.getString("rmi.5C")); //$NON-NLS-1$
         }
-        checkAccess("RegistryImpl.rebind");
+        checkAccess("RegistryImpl.rebind"); //$NON-NLS-1$
         table.put(name, obj);
     }
 
@@ -157,18 +161,20 @@ public class RegistryImpl extends RemoteServer implements Registry {
     public void bind(String name, Remote obj)
             throws RemoteException, AlreadyBoundException, AccessException {
         if (name == null) {
-            throw new NullPointerException("name could not be null.");
+            // rmi.5D=name could not be null.
+            throw new NullPointerException(Messages.getString("rmi.5D")); //$NON-NLS-1$
         }
 
         if (obj == null) {
-            throw new NullPointerException("obj could not be null.");
+            // rmi.5C=obj could not be null.
+            throw new NullPointerException(Messages.getString("rmi.5C")); //$NON-NLS-1$
         }
 
         if (table.containsKey(name)) {
-            throw new AlreadyBoundException(
-                    "There is already binding to the name " + name + ".");
+            // rmi.5E=There is already binding to the name {0}.
+            throw new AlreadyBoundException(Messages.getString("rmi.5E", name)); //$NON-NLS-1$
         }
-        checkAccess("RegistryImpl.bind");
+        checkAccess("RegistryImpl.bind"); //$NON-NLS-1$
         table.put(name, obj);
     }
 
@@ -178,13 +184,15 @@ public class RegistryImpl extends RemoteServer implements Registry {
     public Remote lookup(String name)
             throws RemoteException, NotBoundException, AccessException {
         if (name == null) {
-            throw new NullPointerException("name could not be null.");
+            // rmi.5D=name could not be null.
+            throw new NullPointerException(Messages.getString("rmi.5D")); //$NON-NLS-1$
         }
         Remote ref = (Remote) table.get(name);
 
         if (ref == null) {
-            throw new NotBoundException("Name " + name
-                    + " is not associated with any remote reference.");
+            // rmi.5F=Name {0} is not associated with any remote reference.
+            throw new NotBoundException(Messages.getString("rmi.5F", name)); //$NON-NLS-1$
+
         }
         return ref;
     }
@@ -195,13 +203,14 @@ public class RegistryImpl extends RemoteServer implements Registry {
     public void unbind(String name)
             throws RemoteException, NotBoundException, AccessException {
         if (name == null) {
-            throw new NullPointerException("name could not be null.");
+            // rmi.5D=name could not be null.
+            throw new NullPointerException(Messages.getString("rmi.5D")); //$NON-NLS-1$
         }
-        checkAccess("RegistryImpl.unbind");
+        checkAccess("RegistryImpl.unbind"); //$NON-NLS-1$
 
         if (table.remove(name) == null) {
-            throw new NotBoundException("Name " + name
-                    + " is not associated with any remote reference.");
+            // rmi.5F=Name {0} is not associated with any remote reference.
+            throw new NotBoundException(Messages.getString("rmi.5F", name)); //$NON-NLS-1$
         }
     }
 
@@ -234,13 +243,12 @@ public class RegistryImpl extends RemoteServer implements Registry {
 
         try {
             if (!RMIUtil.isLocalHost(hostName)) {
-                throw new AccessException(registryMethod
-                        + " from non-local host " + hostName
-                        + " is not allowed");
+                // rmi.60={0} from non-local host {1} is not allowed
+                throw new AccessException(Messages.getString("rmi.60", registryMethod, hostName)); //$NON-NLS-1$
             }
         } catch (UnknownHostException uhe) {
-            throw new AccessException(registryMethod
-                    + " from unknown host is not allowed", uhe);
+            // rmi.61={0} from unknown host is not allowed
+            throw new AccessException(Messages.getString("rmi.61", registryMethod), uhe); //$NON-NLS-1$
         }
     }
 }

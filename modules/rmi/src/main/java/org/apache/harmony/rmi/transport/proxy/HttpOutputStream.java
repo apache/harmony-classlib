@@ -31,6 +31,7 @@ import java.security.AccessController;
 import org.apache.harmony.rmi.common.GetStringPropAction;
 import org.apache.harmony.rmi.common.RMIConstants;
 import org.apache.harmony.rmi.common.RMILog;
+import org.apache.harmony.rmi.internal.nls.Messages;
 
 
 /**
@@ -159,7 +160,8 @@ public class HttpOutputStream extends ByteArrayOutputStream
      */
     public synchronized void close() throws IOException {
         if (isClosed) {
-            throw new IOException("Repeated attempt to close HttpOutputStream");
+            // rmi.88=Repeated attempt to close HttpOutputStream
+            throw new IOException(Messages.getString("rmi.88")); //$NON-NLS-1$
         }
 
         // Port the outbound connection is established to.
@@ -187,16 +189,16 @@ public class HttpOutputStream extends ByteArrayOutputStream
         //          Proxy-Connection: keep-alive
         //          Content-Length: LENGTH
         out.writeBytes((inbound ? HTTP_RESPONSE_HEADER :
-                (HTTP_REQUEST_SIGNATURE + "http://" + host + ':' + connectPort
-                    + '/' + (cgi ? ("cgi-bin/java-rmi?forward=" + port) : "")
-                    + " HTTP/1.1" + EOLN
-                + "Cache-Control: no-cache" + EOLN + "Pragma: no-cache" + EOLN
-                + "Host: " + host + ':' + connectPort + EOLN
-                + "Proxy-Connection: keep-alive" + EOLN
-                + "User-Agent: DRL/" + (String) AccessController.doPrivileged(
-                        new GetStringPropAction("java.version")))) + EOLN);
+                (HTTP_REQUEST_SIGNATURE + "http://" + host + ':' + connectPort //$NON-NLS-1$
+                    + '/' + (cgi ? ("cgi-bin/java-rmi?forward=" + port) : "") //$NON-NLS-1$ //$NON-NLS-2$
+                    + " HTTP/1.1" + EOLN //$NON-NLS-1$
+                + "Cache-Control: no-cache" + EOLN + "Pragma: no-cache" + EOLN //$NON-NLS-1$ //$NON-NLS-2$
+                + "Host: " + host + ':' + connectPort + EOLN //$NON-NLS-1$
+                + "Proxy-Connection: keep-alive" + EOLN //$NON-NLS-1$
+                + "User-Agent: DRL/" + (String) AccessController.doPrivileged( //$NON-NLS-1$
+                        new GetStringPropAction("java.version")))) + EOLN); //$NON-NLS-1$
 
-        out.writeBytes("Content-type: application/octet-stream" + EOLN
+        out.writeBytes("Content-type: application/octet-stream" + EOLN //$NON-NLS-1$
                 + CONTENT_LENGTH_SIGNATURE + ' ' + count + EOLN + EOLN);
         out.write(buf, 0, count);
         out.flush();
@@ -207,9 +209,9 @@ public class HttpOutputStream extends ByteArrayOutputStream
 
         if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
             proxyTransportLog.log(RMILog.VERBOSE,
-                    "HTTP " + (inbound ? "response" : "request")
-                    + ((host != null) ? (" to [" + host + ':' + port + ']')
-                            : "") + " sent.");
+                    "HTTP " + (inbound ? "response" : "request") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    + ((host != null) ? (" to [" + host + ':' + port + ']') //$NON-NLS-1$
+                            : "") + " sent."); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 }

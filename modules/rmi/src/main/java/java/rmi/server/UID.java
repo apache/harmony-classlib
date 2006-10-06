@@ -92,9 +92,9 @@ public final class UID implements Serializable {
      * @com.intel.drl.spec_ref
      */
     public String toString() {
-        return "UID[" + Integer.toString(unique, 16) + ":"
-                      + Long.toString(time, 16) + ":"
-                      + Integer.toString(count, 16) + "]";
+        return "UID[" + Integer.toString(unique, 16) + ":" //$NON-NLS-1$ //$NON-NLS-2$
+                      + Long.toString(time, 16) + ":" //$NON-NLS-1$
+                      + Integer.toString(count, 16) + "]"; //$NON-NLS-1$
     }
 
     /**

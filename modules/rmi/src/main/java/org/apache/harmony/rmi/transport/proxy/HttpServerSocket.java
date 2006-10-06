@@ -28,6 +28,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import org.apache.harmony.rmi.common.RMILog;
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.transport.SocketWrapper;
 
 
@@ -77,9 +78,10 @@ public class HttpServerSocket extends ServerSocket implements ProxyConstants {
         Socket s = super.accept();
 
         if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
-            proxyTransportLog.log(RMILog.VERBOSE, "Inbound connection from ["
-                    + s.getInetAddress().getHostName() + ':' + s.getPort()
-                    + "] to port " + s.getLocalPort() + " detected.");
+            // rmi.log.11F=Inbound connection from [{0}:{1}] to port {2} detected.
+            proxyTransportLog.log(RMILog.VERBOSE, Messages.getString("rmi.log.11F", //$NON-NLS-1$
+                    new Object[]{s.getInetAddress().getHostName(), s.getPort(),
+                        s.getLocalPort()}));
         }
 
         // Detect if incoming request is using HTTP or direct socket.
@@ -113,15 +115,17 @@ public class HttpServerSocket extends ServerSocket implements ProxyConstants {
 
         if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
             proxyTransportLog.log(RMILog.VERBOSE,
-                    "Inbound connection signature: ["
-                    + new String(buffer) + "].");
+                    Messages.getString("rmi.log.120", new String(buffer)));//$NON-NLS-1$
         }
 
         if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
-            proxyTransportLog.log(RMILog.VERBOSE,
-                    (isHttp ? "HTTP" : "Direct socket") + " connection from ["
-                    + s.getInetAddress().getHostName() + ':' + s.getPort()
-                    + "] to port " + s.getLocalPort() + " detected.");
+            // rmi.log.121=Direct socket
+            // rmi.log.122= connection from [{0}:{1}] to port {2} detected.
+            proxyTransportLog.log(RMILog.VERBOSE, (isHttp ? "HTTP" : Messages //$NON-NLS-1$
+                    .getString("rmi.log.121")) //$NON-NLS-1$
+                    + Messages.getString("rmi.log.122", //$NON-NLS-1$ 
+                            new Object[] { s.getInetAddress().getHostName(),
+                                    s.getPort(), s.getLocalPort() }));
         }
 
         // Direct socket must be wrapped to avoid losing already read data.
@@ -133,6 +137,6 @@ public class HttpServerSocket extends ServerSocket implements ProxyConstants {
      * {@inheritDoc}
      */
     public String toString() {
-        return ("HttpServerSocket[" + super.toString() + "]");
+        return ("HttpServerSocket[" + super.toString() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

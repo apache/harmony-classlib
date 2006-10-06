@@ -35,67 +35,67 @@ interface RmicConstants {
      * System-dependent end-of-line string
      * {@link System#getProperty(String) System.getProperty("line.separator")}.
      */
-    String EOLN = System.getProperty("line.separator");
+    String EOLN = System.getProperty("line.separator"); //$NON-NLS-1$
 
     /**
      * Stub classes name suffix (<code>_Stub</code>).
      */
-    String stubSuffix = "_Stub";
+    String stubSuffix = "_Stub"; //$NON-NLS-1$
 
     /**
      * Skeleton classes name suffix (<code>_Skel</code>).
      */
-    String skelSuffix = "_Skel";
+    String skelSuffix = "_Skel"; //$NON-NLS-1$
 
     /**
      * Java source files name suffix (<code>.java</code>).
      */
-    String javaSuffix = ".java";
+    String javaSuffix = ".java"; //$NON-NLS-1$
 
     /**
      * Java class files name suffix (<code>.class</code>).
      */
-    String classSuffix = ".class";
+    String classSuffix = ".class"; //$NON-NLS-1$
 
     /**
      * Method variables name prefix.
      */
-    String methodVarPrefix = "$method_";
+    String methodVarPrefix = "$method_"; //$NON-NLS-1$
 
     /**
      * Parameters name prefix.
      */
-    String paramPrefix = "$param_";
+    String paramPrefix = "$param_"; //$NON-NLS-1$
 
     /**
      * Array type prefix in parameter name.
      */
-    String arrayPrefix = "arrayOf_";
+    String arrayPrefix = "arrayOf_"; //$NON-NLS-1$
 
     /**
      * Return result variable name.
      */
-    String retVarName = "$result";
+    String retVarName = "$result"; //$NON-NLS-1$
 
     /**
      * interfaceHash variable name.
      */
-    String interfaceHashVarName = "interfaceHash";
+    String interfaceHashVarName = "interfaceHash"; //$NON-NLS-1$
 
     /**
      * useNewInvoke variable name.
      */
-    String useNewInvoke = "useNewInvoke";
+    String useNewInvoke = "useNewInvoke"; //$NON-NLS-1$
 
     /**
      * Input object stream name.
      */
-    String inputStreamName = "in";
+    String inputStreamName = "in"; //$NON-NLS-1$
 
     /**
      * Output object stream name.
      */
-    String outputStreamName = "out";
+    String outputStreamName = "out"; //$NON-NLS-1$
 
     /**
      * Version was not set, initial version value.

@@ -47,6 +47,7 @@ import org.apache.harmony.rmi.common.CreateThreadAction;
 import org.apache.harmony.rmi.common.GetLongPropAction;
 import org.apache.harmony.rmi.common.InterruptThreadAction;
 import org.apache.harmony.rmi.common.RMIProperties;
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.remoteref.UnicastRef;
 import org.apache.harmony.rmi.transport.Endpoint;
 
@@ -102,7 +103,7 @@ class ClientDGC {
     // Thread detecting object which were garbage-collected.
     private static Thread roDetector = (Thread) AccessController.doPrivileged(
             new CreateThreadAction(new RemovedObjectsDetector(),
-                    "RemovedObjectsDetector", true));
+                    "RemovedObjectsDetector", true)); //$NON-NLS-1$
 
     // Timer handling events waiting for DGC ack messages.
     private static final Timer dgcAckTimer =
@@ -122,9 +123,10 @@ class ClientDGC {
         // Initialize DGC implementation stub-class.
         try {
             dgcStubClass = Class.forName(
-                "org.apache.harmony.rmi.server.DGCImpl_Stub");
+                "org.apache.harmony.rmi.server.DGCImpl_Stub"); //$NON-NLS-1$
         } catch (Exception ex) {
-            throw new Error("Unable to initialize ClientDGC.", ex);
+            // rmi.78=Unable to initialize ClientDGC.
+            throw new Error(Messages.getString("rmi.78"), ex); //$NON-NLS-1$
         }
 
         // Start the thread detecting garbage-collected objects.
@@ -150,7 +152,7 @@ class ClientDGC {
         if (lRenewer == null) {
             (lRenewer = (Thread) AccessController.doPrivileged(
                     new CreateThreadAction(new LeaseRenewer(),
-                            "LeaseRenewer", true))).start();
+                            "LeaseRenewer", true))).start(); //$NON-NLS-1$
         }
     }
 
@@ -324,7 +326,8 @@ class ClientDGC {
                         new Class[] { RemoteRef.class }).newInstance(
                                 new Object[] { new UnicastRef(ep, DGC_ID) });
             } catch (Exception ex) {
-                throw new Error("Unable to initialized DGC stub.", ex);
+                // rmi.79=Unable to initialized DGC stub.
+                throw new Error(Messages.getString("rmi.79"), ex); //$NON-NLS-1$
             }
         }
 
@@ -405,7 +408,7 @@ class ClientDGC {
                 if (cleanCaller == null) {
                     (cleanCaller = ((Thread) AccessController.doPrivileged(
                             new CreateThreadAction(new CleanCaller(this),
-                                    "CleanCaller for " + ep, true)))).start();
+                                    "CleanCaller for " + ep, true)))).start(); //$NON-NLS-1$
                 } else {
                     AccessController.doPrivileged(
                             new InterruptThreadAction(cleanCaller));

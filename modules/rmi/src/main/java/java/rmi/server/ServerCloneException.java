@@ -22,6 +22,8 @@
  */
 package java.rmi.server;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
+
 
 /**
  * @com.intel.drl.spec_ref
@@ -68,7 +70,8 @@ public class ServerCloneException extends CloneNotSupportedException {
         if (detail == null) {
             return super.getMessage();
         } else {
-            return super.getMessage() + " Caused by: " + detail.getMessage();
+            // rmi.1E={0} Caused by: {1}
+            return Messages.getString("rmi.1E", super.getMessage(), detail.getMessage()); //$NON-NLS-1$
         }
     }
 }

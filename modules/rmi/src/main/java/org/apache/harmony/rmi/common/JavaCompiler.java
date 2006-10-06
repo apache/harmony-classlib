@@ -25,6 +25,8 @@ package org.apache.harmony.rmi.common;
 import java.io.File;
 import java.io.FilenameFilter;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
+
 
 /**
  * Representation of a Java Compiler.
@@ -53,7 +55,7 @@ public abstract class JavaCompiler implements RMIProperties {
      */
     public int compile(String commandLine) throws JavaCompilerException {
         return compile((commandLine != null)
-                ? commandLine.trim().split("\\s") : new String[0]);
+                ? commandLine.trim().split("\\s") : new String[0]); //$NON-NLS-1$
     }
 
     /**
@@ -200,8 +202,8 @@ public abstract class JavaCompiler implements RMIProperties {
         }
 
         if (parent == null) {
-            throw new JavaCompilerException(
-                    variableName + " variable not found");
+            // rmi.4C={0} variable not found
+            throw new JavaCompilerException(Messages.getString("rmi.4C", variableName)); //$NON-NLS-1$
         }
 
         File[] files = new File(parent, path).listFiles(
@@ -213,7 +215,8 @@ public abstract class JavaCompiler implements RMIProperties {
                 });
 
         if ((files == null) || (files.length < 1)) {
-            throw new JavaCompilerException(name + " not found");
+            // rmi.4D={0} not found
+            throw new JavaCompilerException(Messages.getString("rmi.4D", name)); //$NON-NLS-1$
         }
         return files[0];
     }
@@ -278,9 +281,10 @@ public abstract class JavaCompiler implements RMIProperties {
                     System.getProperty(JAVA_COMPILER_METHOD_PROPERTY);
 
             if (verbose) {
-                System.err.println("NOTE: Using compiler class: " +
+                // rmi.console.08=NOTE: Using compiler class: 
+                System.err.println(Messages.getString("rmi.console.08") + //$NON-NLS-1$
                         compilerClassName + ((compilerMethodName != null)
-                                ? (", method: " + compilerMethodName) : ""));
+                                ? (", method: " + compilerMethodName) : "")); //$NON-NLS-1$ //$NON-NLS-2$
             }
             return new MethodJavaCompiler(
                     compilerClassName, compilerMethodName);
@@ -292,8 +296,9 @@ public abstract class JavaCompiler implements RMIProperties {
 
         if (executableName != null) {
             if (verbose) {
-                System.err.println("NOTE: Using compiler executable: " +
-                        executableName);
+                // rmi.console.09=NOTE: Using compiler executable: {0}
+                System.err.println(Messages.getString("rmi.console.09", //$NON-NLS-1$
+                        executableName));
             }
             return new ExecJavaCompiler(executableName);
         }
@@ -303,13 +308,14 @@ public abstract class JavaCompiler implements RMIProperties {
             JavaCompiler compiler = new EclipseJavaCompiler();
 
             if (verbose) {
-                System.err.println("NOTE: Using Eclipse Compiler");
+                // rmi.console.0A=NOTE: Using Eclipse Compiler
+                System.err.println(Messages.getString("rmi.console.0A")); //$NON-NLS-1$
             }
             return compiler;
         } catch (JavaCompilerException e) {
             if (verbose) {
-                System.err.println(
-                        "NOTE: Eclipse Compiler class not found: " + e);
+                // rmi.console.0B=NOTE: Eclipse Compiler class not found: {0}
+                System.err.println(Messages.getString("rmi.console.0B", e)); //$NON-NLS-1$
             }
         }
 
@@ -318,13 +324,14 @@ public abstract class JavaCompiler implements RMIProperties {
             JavaCompiler compiler = new ExecJavaCompiler(true);
 
             if (verbose) {
-                System.err.println("NOTE: Using JAVA_HOME Javac compiler");
+                // rmi.console.0C=NOTE: Using JAVA_HOME Javac compiler
+                System.err.println(Messages.getString("rmi.console.0C")); //$NON-NLS-1$
             }
             return compiler;
         } catch (JavaCompilerException e) {
             if (verbose) {
-                System.err.println(
-                        "NOTE: JAVA_HOME Javac compiler not found: " + e);
+                // rmi.console.0D=NOTE: JAVA_HOME Javac compiler not found: {0}
+                System.err.println(Messages.getString("rmi.console.0D", e)); //$NON-NLS-1$
             }
         }
 

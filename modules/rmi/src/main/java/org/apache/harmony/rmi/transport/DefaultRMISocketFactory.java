@@ -38,6 +38,7 @@ import org.apache.harmony.rmi.common.GetBooleanPropAction;
 import org.apache.harmony.rmi.common.GetLongPropAction;
 import org.apache.harmony.rmi.common.RMILog;
 import org.apache.harmony.rmi.common.RMIProperties;
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.transport.proxy.HttpProxyRMISocketFactory;
 import org.apache.harmony.rmi.transport.proxy.Proxy;
 import org.apache.harmony.rmi.transport.proxy.ProxyRMISocketFactory;
@@ -102,8 +103,9 @@ public class DefaultRMISocketFactory extends RMISocketFactory
      */
     public Socket createSocket(String host, int port) throws IOException {
         if (proxyTransportLog.isLoggable(RMILog.BRIEF)) {
+            // rmi.log.114=Creating socket to [{0}:{1}].
             proxyTransportLog.log(RMILog.BRIEF,
-                    "Creating socket to [" + host + ':' + port + "].");
+                    Messages.getString("rmi.log.114", host, port)); //$NON-NLS-1$
         }
         Socket s = null;
         Proxy proxy = new Proxy();
@@ -111,10 +113,10 @@ public class DefaultRMISocketFactory extends RMISocketFactory
         if (disableDirectSocket) {
             // If direct connections are disabled, fallback to proxy connection.
             if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
+                // rmi.log.115=Direct socket connections disabled, trying proxy connection to [{0}:{1}].
                 proxyTransportLog.log(RMILog.VERBOSE,
-                        "Direct socket connections disabled, "
-                        + "trying proxy connection to ["
-                        + host + ':' + port + "].");
+                        Messages.getString("rmi.log.115", //$NON-NLS-1$
+                                host, port));
             }
         } else {
             if (disableHttp || !(proxy.isSet())) {
@@ -122,7 +124,8 @@ public class DefaultRMISocketFactory extends RMISocketFactory
                 s = directRsf.createSocket(host, port);
 
                 if (s == null) {
-                    String msg = "Unable to connect to [" + host + ':' + port
+                    // rmi.log.116=Unable to connect to [
+                    String msg = Messages.getString("rmi.log.116") + host + ':' + port //$NON-NLS-1$
                             + ']';
                     if (proxyTransportLog.isLoggable(RMILog.BRIEF)) {
                         proxyTransportLog.log(RMILog.BRIEF, msg);
@@ -142,9 +145,9 @@ public class DefaultRMISocketFactory extends RMISocketFactory
                 if (s == null) {
                     // Direct socket attempt failed.
                     if (proxyTransportLog.isLoggable(RMILog.BRIEF)) {
-                        proxyTransportLog.log(RMILog.BRIEF,
-                                "Direct socket connection to ["
-                                + host + ':' + port + "] failed.");
+                        // rmi.log.117=Direct socket connection to [{0}:{1}] failed.
+                        proxyTransportLog.log(RMILog.BRIEF, Messages.getString(
+                                "rmi.log.117", host, port)); //$NON-NLS-1$
                     }
 
                     if (ex != null) {
@@ -156,19 +159,21 @@ public class DefaultRMISocketFactory extends RMISocketFactory
                             throw ex;
                         } else {
                             if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
+                                // rmi.log.118=Trying proxy connection to [{1}:{1}].
                                 proxyTransportLog.log(RMILog.VERBOSE,
-                                        "Trying proxy connection to ["
-                                        + host + ':' + port + "].");
+                                        Messages.getString("rmi.log.118", //$NON-NLS-1$
+                                        host, port ));
                             } // Falling through to HTTP connection attempt.
                         }
                     } else {
-                        throw new NoRouteToHostException("Connection "
-                                + "to [" + host + ':' + port + "] timed out");
+                        // rmi.log.119=Connection to [{0}:{1}] timed out
+                        throw new NoRouteToHostException(Messages.getString("rmi.log.119", //$NON-NLS-1$
+                                host, port));
                     }
                 } else if (proxyTransportLog.isLoggable(RMILog.BRIEF)) {
+                    // rmi.log.11A=Direct socket connection to [{0}:{1}] from port {2} succeeded.
                     proxyTransportLog.log(RMILog.BRIEF,
-                            "Direct socket connection to [" + host + ':' + port
-                            + "] from port " + s.getLocalPort()+ " succeeded.");
+                            Messages.getString("rmi.log.11A", new Object[]{host, port, s.getLocalPort()})); //$NON-NLS-1$
                 }
             }
         }
@@ -178,8 +183,8 @@ public class DefaultRMISocketFactory extends RMISocketFactory
             s = proxyRsf.createSocket(proxy, host, port);
 
             if (s == null) {
-                String msg = "Proxy connection to [" + host + ':' + port
-                        + "] failed";
+                // rmi.log.11B=Proxy connection to [{0}:{1}] failed
+                String msg = Messages.getString("rmi.log.11B", host, port); //$NON-NLS-1$
                 if (proxyTransportLog.isLoggable(RMILog.BRIEF)) {
                     proxyTransportLog.log(RMILog.BRIEF, msg);
                 }
@@ -188,9 +193,9 @@ public class DefaultRMISocketFactory extends RMISocketFactory
             }
 
             if (proxyTransportLog.isLoggable(RMILog.BRIEF)) {
-                proxyTransportLog.log(RMILog.BRIEF,
-                        "Proxy connection to [" + host + ':' + port
-                        + "] from port " + s.getLocalPort()+ " succeeded.");
+                // rmi.log.11C=Proxy connection to [{0}:{1}] from port {2} succeeded.
+                proxyTransportLog.log(RMILog.BRIEF,Messages.getString("rmi.log.11C", //$NON-NLS-1$
+                        new Object[]{host, port, s.getLocalPort()}));
             }
         }
         return s;

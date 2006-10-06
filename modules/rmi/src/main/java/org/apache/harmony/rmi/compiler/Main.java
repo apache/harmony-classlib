@@ -22,6 +22,8 @@
  */
 package org.apache.harmony.rmi.compiler;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
+
 
 /**
  * Launcher engine for RMI Compiler.
@@ -46,13 +48,15 @@ public final class Main implements RmicConstants {
             if ((message != null) && message.startsWith(EOLN)) {
                 System.out.println(message);
             } else {
-                System.out.println("RMIC Error: "
-                        + ((message != null) ? message : ""));
+                // rmi.console.18=RMIC Error: {0}
+                System.out.println(Messages.getString("rmi.console.18", //$NON-NLS-1$
+                        ((message != null) ? message : ""))); //$NON-NLS-1$
                 e.printStackTrace(System.out);
                 System.exit(-1);
             }
         } catch (Throwable e) {
-            System.out.println("RMIC Error: Unexpected exception:" + e);
+            // rmi.console.19=RMIC Error: Unexpected exception:{0}
+            System.out.println(Messages.getString("rmi.console.19", e)); //$NON-NLS-1$
             e.printStackTrace(System.out);
             System.exit(-1);
         }

@@ -30,6 +30,7 @@ import java.rmi.RemoteException;
 
 import org.apache.harmony.rmi.client.ClientConnection;
 import org.apache.harmony.rmi.common.RMILog;
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.transport.Endpoint;
 
 
@@ -69,8 +70,8 @@ public class HttpConnection extends ClientConnection
             dout.flush();
 
             if (proxyTransportLog.isLoggable(RMILog.VERBOSE)) {
-                proxyTransportLog.log(RMILog.VERBOSE,
-                        "Using singleop RMI protocol");
+                // rmi.log.130=Using singleop RMI protocol
+                proxyTransportLog.log(RMILog.VERBOSE,Messages.getString("rmi.log.130")); //$NON-NLS-1$
             }
             dout.flush();
         } catch (RemoteException re) {
@@ -78,8 +79,8 @@ public class HttpConnection extends ClientConnection
             throw re;
         } catch (IOException ioe) {
             close();
-            throw new ConnectIOException(
-                    "Unable to acknowledge protocol with server", ioe);
+            // rmi.8E=Unable to acknowledge protocol with server
+            throw new ConnectIOException(Messages.getString("rmi.8E"), ioe); //$NON-NLS-1$
         }
 
         // protocol is agreed
@@ -104,7 +105,8 @@ public class HttpConnection extends ClientConnection
      * Always throws error because this connection is not reusable.
      */
     public boolean reuse() {
-        throw new Error(toString() + " is not reusable.");
+        // rmi.8F={0} is not reusable.
+        throw new Error(Messages.getString("rmi.8F", toString())); //$NON-NLS-1$
     }
 
     /**
@@ -127,6 +129,7 @@ public class HttpConnection extends ClientConnection
      * Always throws error because this connection is not reusable.
      */
     public long getExpiration() {
-        throw new Error(toString() + " is not reusable.");
+        // rmi.8F={0} is not reusable.
+        throw new Error(Messages.getString("rmi.8F", toString())); //$NON-NLS-1$
     }
 }

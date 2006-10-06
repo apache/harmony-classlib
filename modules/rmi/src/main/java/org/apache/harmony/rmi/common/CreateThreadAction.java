@@ -75,7 +75,7 @@ public class CreateThreadAction implements PrivilegedAction {
     private static final ThreadGroup nonSystemGroup = (ThreadGroup)
             AccessController.doPrivileged(new PrivilegedAction() {
                 public Object run() {
-                    return new ThreadGroup(systemGroup, "RMI Group");
+                    return new ThreadGroup(systemGroup, "RMI Group"); //$NON-NLS-1$
                 }
             });
 

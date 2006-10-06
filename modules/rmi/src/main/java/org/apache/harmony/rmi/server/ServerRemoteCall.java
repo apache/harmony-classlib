@@ -30,6 +30,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.rmi.server.RemoteCall;
 
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.transport.RMIObjectInputStream;
 import org.apache.harmony.rmi.transport.RMIObjectOutputStream;
 import org.apache.harmony.rmi.transport.RMIProtocolConstants;
@@ -122,8 +123,8 @@ public class ServerRemoteCall implements RemoteCall, RMIProtocolConstants {
     public ObjectOutput getResultStream(boolean success)
             throws IOException, StreamCorruptedException {
         if (hasResStream) {
-            throw new StreamCorruptedException(
-                    "getResultStream() method has already been called.");
+            // rmi.7A=getResultStream() method has already been called.
+            throw new StreamCorruptedException(Messages.getString("rmi.7A")); //$NON-NLS-1$
         }
         (new DataOutputStream(conn.getOutputStream())).writeByte(CALL_OK);
 
@@ -169,7 +170,7 @@ public class ServerRemoteCall implements RemoteCall, RMIProtocolConstants {
      * @return string representation of this RemoteCall
      */
     public String toString() {
-        return "ServerRemoteCall: connection: " + conn;
+        return "ServerRemoteCall: connection: " + conn; //$NON-NLS-1$
     }
 
     /**

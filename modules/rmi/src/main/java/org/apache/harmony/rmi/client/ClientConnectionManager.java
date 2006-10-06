@@ -36,6 +36,7 @@ import org.apache.harmony.rmi.common.CreateThreadAction;
 import org.apache.harmony.rmi.common.GetLongPropAction;
 import org.apache.harmony.rmi.common.RMILog;
 import org.apache.harmony.rmi.common.RMIProperties;
+import org.apache.harmony.rmi.internal.nls.Messages;
 import org.apache.harmony.rmi.transport.Endpoint;
 import org.apache.harmony.rmi.transport.proxy.HttpConnection;
 import org.apache.harmony.rmi.transport.proxy.HttpOutboundSocket;
@@ -70,7 +71,7 @@ public final class ClientConnectionManager {
     static {
         ConnectionsCollector coll = new ConnectionsCollector();
         ((Thread) AccessController.doPrivileged(new CreateThreadAction(
-                coll, "ConnectionsCollector", true))).start();
+                coll, "ConnectionsCollector", true))).start(); //$NON-NLS-1$
     }
 
     /**
@@ -185,9 +186,9 @@ public final class ClientConnectionManager {
 
                                     if (tcpTransportLog.isLoggable(
                                             RMILog.VERBOSE)) {
+                                        // rmi.log.37={0} connection timeout is expired
                                         tcpTransportLog.log(RMILog.VERBOSE,
-                                            conn.toString()
-                                            + " connection timeout is expired");
+                                            Messages.getString("rmi.log.37", conn.toString())); //$NON-NLS-1$
                                     }
                                     continue;
                                 }

@@ -31,6 +31,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import org.apache.harmony.rmi.DefaultRMIClassLoaderSpi;
+import org.apache.harmony.rmi.internal.nls.Messages;
 
 
 /**
@@ -43,11 +44,11 @@ import org.apache.harmony.rmi.DefaultRMIClassLoaderSpi;
 public class RMIClassLoader {
 
     // The name of property for custom RMIClassLoaderSpi.
-    private static final String spiProp = "java.rmi.server.RMIClassLoaderSpi";
+    private static final String spiProp = "java.rmi.server.RMIClassLoaderSpi"; //$NON-NLS-1$
 
     // The name of resource for custom RMIClassLoaderSpi.
     private static final String spiResource =
-            "META-INF/services/java.rmi.server.RMIClassLoaderSpi";
+            "META-INF/services/java.rmi.server.RMIClassLoaderSpi"; //$NON-NLS-1$
 
     /*
      * Default RMIClassLoaderSpi instance.
@@ -151,7 +152,7 @@ public class RMIClassLoader {
         SecurityManager mgr = System.getSecurityManager();
 
         if (mgr != null) {
-            mgr.checkPermission(new RuntimePermission("setFactory"));
+            mgr.checkPermission(new RuntimePermission("setFactory")); //$NON-NLS-1$
         }
         return defaultSpi;
     }
@@ -163,7 +164,7 @@ public class RMIClassLoader {
         String spi = System.getProperty(spiProp);
 
         if (spi != null) {
-            if (spi.equals("default")) {
+            if (spi.equals("default")) { //$NON-NLS-1$
                 return defaultSpi;
             }
 
@@ -171,17 +172,16 @@ public class RMIClassLoader {
                 return (RMIClassLoaderSpi) (Class.forName(spi, false,
                         ClassLoader.getSystemClassLoader()).newInstance());
             } catch (Exception ex) {
-                throw new Error(
-                        "Unable to initialize RMIClassLoaderSpi instance " + spi
-                        + ", specified in " + spiProp + " property", ex);
+                // rmi.1B=Unable to initialize RMIClassLoaderSpi instance {0}, specified in {1} property
+                throw new Error(Messages.getString("rmi.1B", spi, spiProp), ex); //$NON-NLS-1$
             }
         }
 
         try {
             spi = getSpiFromResource();
         } catch (IOException ioe) {
-            throw new Error("Unable to get RMIClassLoaderSpi name from "
-                    + "resource " + spiResource, ioe);
+            // rmi.1C=Unable to get RMIClassLoaderSpi name from resource {0}
+            throw new Error(Messages.getString("rmi.1C", spiResource), ioe); //$NON-NLS-1$
         }
 
         if (spi != null) {
@@ -189,9 +189,8 @@ public class RMIClassLoader {
                 return (RMIClassLoaderSpi) (Class.forName(spi, true,
                         ClassLoader.getSystemClassLoader()).newInstance());
             } catch (Exception ex) {
-                throw new Error(
-                        "Unable to initialize RMIClassLoaderSpi instance " + spi
-                        + ", specified in " + spiResource + " resource", ex);
+                // rmi.1D=Unable to initialize RMIClassLoaderSpi instance {0}, specified in {1} resource
+                throw new Error(Messages.getString("rmi.1D", spi, spiResource), ex); //$NON-NLS-1$
             }
         }
         return defaultSpi;
@@ -216,12 +215,12 @@ public class RMIClassLoader {
         Object obj = null;
         byte[] buf = new byte[in.available()];
         in.read(buf);
-        String str = new String(buf, "UTF-8");
-        StringTokenizer tok = new StringTokenizer(str, "\n\r");
+        String str = new String(buf, "UTF-8"); //$NON-NLS-1$
+        StringTokenizer tok = new StringTokenizer(str, "\n\r"); //$NON-NLS-1$
 
         while (tok.hasMoreTokens()) {
             String spiName = tok.nextToken();
-            int idx = spiName.indexOf("#");
+            int idx = spiName.indexOf("#"); //$NON-NLS-1$
 
             if (idx != -1) {
                 // this is commented line
@@ -238,6 +237,6 @@ public class RMIClassLoader {
         }
 
         // we did not found any uncommented non-empty lines
-        return "";
+        return ""; //$NON-NLS-1$
     }
 }

@@ -70,6 +70,6 @@ public class ActivationException extends Exception {
      * @com.intel.drl.spec_ref
      */
     public String getMessage() {
-        return super.getMessage() + "[detail throwable = " + detail + "] ";
+        return super.getMessage() + "[detail throwable = " + detail + "] "; //$NON-NLS-1$ //$NON-NLS-2$
     }
 }
