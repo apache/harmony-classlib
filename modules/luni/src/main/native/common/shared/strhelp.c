@@ -108,8 +108,9 @@ prop_alloc(HyPortLibrary * portLibrary, key_value_pair* property,
                       char* start, char* delim, char* end) 
 {
     PORT_ACCESS_FROM_PORT (portLibrary);
-    size_t keyLength = delim - start;
-    size_t valueLength = end - delim - 1;
+    /* missing delimiter means the whole line is the key and value is empty */
+    size_t keyLength = (delim ? delim : end) - start;
+    size_t valueLength = delim ? end - delim - 1 : 0;
     property->key = hymem_allocate_memory (keyLength + 1);
     property->value = hymem_allocate_memory (valueLength + 1);
     if (!property->key || !property->value)
@@ -118,7 +119,9 @@ prop_alloc(HyPortLibrary * portLibrary, key_value_pair* property,
     }
     memcpy (property->key, start, keyLength);
     property->key[keyLength] = '\0';
-    memcpy (property->value, delim + 1, valueLength);
+    if (delim) {
+        memcpy (property->value, delim + 1, valueLength);
+    }
     property->value[valueLength] = '\0';
 
     return 1;
@@ -173,7 +176,8 @@ properties_load(HyPortLibrary * portLibrary, const char *filename,
         goto finish;
     }
 
-    start = delim = end = scanCursor;
+    start = end = scanCursor;
+    delim = NULL;
     scanLimit = scanCursor + fileSize;
 
     do {
@@ -184,7 +188,10 @@ properties_load(HyPortLibrary * portLibrary, const char *filename,
                     end = scanCursor;
                     goto read_line;
                 case '=':
-                    delim = scanCursor;
+                    /* remember only first occurrence which is not key itself */
+                    if (delim == NULL && scanCursor > start) {
+                        delim = scanCursor;
+                    }
                 default:
                     ++scanCursor;
                     continue;
@@ -192,11 +199,11 @@ properties_load(HyPortLibrary * portLibrary, const char *filename,
         }
 
 read_line:
-        if (*start != '#' && *start != '!' && delim > start) 
+        if (scanCursor > start && start != delim && *start != '#' && *start != '!')  
+            /* line is not empty, well formed and not commented out */
         {
-            /*line is not commented out and is well-formed*/
-            if (end < delim) {
-                /*the last line does not end with the line separator*/
+            if (end == start) {
+                /* the last line ends with EOF */
                 end = scanLimit;
             }
             if (count == arraySize) 
@@ -217,7 +224,8 @@ read_line:
             }
             ++count;
         }   
-        start = delim = end = ++scanCursor;
+        start = end = ++scanCursor;
+        delim = NULL;
     }
     while (scanCursor < scanLimit);
 

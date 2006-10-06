@@ -23,6 +23,7 @@
 #include "hyport.h"             /* for port library */
 #include "hyexelibnls.h"        /* nls strings */
 #include "libhlp.h"             /* defaults and environment variables and string buffer functions */
+#include "strhelp.h"            /* for properties file parsing */
 #include <string.h>
 #include <stdlib.h>
 
@@ -51,15 +52,13 @@
 static int invocation
 PROTOTYPE ((HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
             jint version, jboolean ignoreUnrecognized, char *mainClass,
-            UDATA classArg, int isJvmSubDir, char *propertiesFileName,
+            UDATA classArg, char *propertiesFileName,
             int isStandaloneJar, char *vmdllsubdir));
 static int createVMArgs
-PROTOTYPE ((HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
+PROTOTYPE ((HyPortLibrary * portLibrary, int argc, char **argv,
             jint version, jboolean ignoreUnrecognized,
             JavaVMInitArgs * vm_args,
-            jint (JNICALL ** CreateJavaVM) (JavaVM **, JNIEnv **,
-                                            JavaVMInitArgs *),
-            int isJvmSubDir, UDATA classArg, char *propertiesFileName,
+            UDATA classArg, char *propertiesFileName,
             int isStandaloneJar, char **mainClassJar, char *vmdllsubdir));
 char *VMCALL vmdll_parseCmdLine
 PROTOTYPE ((HyPortLibrary * portLibrary, UDATA lastLegalArg, char **argv));
@@ -78,14 +77,11 @@ PROTOTYPE ((HyPortLibrary * portLibrary, int count, char *newPathToAdd[], char *
 int main_runJavaMain
 PROTOTYPE ((JNIEnv * env, char *mainClassName, int nameIsUTF, int java_argc,
             char **java_argv, HyPortLibrary * portLibrary));
-jint readPropertiesFile
-PROTOTYPE ((HyPortLibrary * portLibrary, char *propertiesFileName,
-            char **fileContentsPtr));
 static I_32 initDefaultDefines
 PROTOTYPE ((HyPortLibrary * portLib, void **vmOptionsTable, int argc,
             char **argv, int jarArg, HyStringBuffer ** classPathInd,
             HyStringBuffer ** javaHomeInd,
-            HyStringBuffer ** javaLibraryPathInd, int isJvmSubDir,
+            HyStringBuffer ** javaLibraryPathInd,
             char *vmdllsubdir, int *vmOptionsCount));
 
 #if defined(WIN32)
@@ -117,7 +113,6 @@ gpProtectedMain (struct haCmdlineOptions *args)
   UDATA classArg = argc;
   int i;
   char *vmdllsubdir;
-  int isJvmSubDir = 0;
   char *vmiPath = NULL;
   char *newPathToAdd;
   char *propertiesFileName = NULL;
@@ -361,10 +356,9 @@ gpProtectedMain (struct haCmdlineOptions *args)
   /* main launcher processing in this function */
   if (invocation
       (PORTLIB, argc, argv, handle, JNI_VERSION_1_4, JNI_TRUE, mainClass,
-       classArg, isJvmSubDir, propertiesFileName, isStandaloneJar,
-       vmdllsubdir))
+       classArg, propertiesFileName, isStandaloneJar, vmdllsubdir))
     {
-      hytty_printf (PORTLIB, "FAILED.\n");
+      hytty_printf (PORTLIB, "FAILED to invoke JVM.\n");
       goto bail;
     }
 
@@ -601,7 +595,7 @@ vmdlldir_parseCmdLine (HyPortLibrary * portLibrary, UDATA lastLegalArg,
 static int
 invocation (HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
             jint version, jboolean ignoreUnrecognized, char *mainClass,
-            UDATA classArg, int isJvmSubDir, char *propertiesFileName,
+            UDATA classArg, char *propertiesFileName,
             int isStandaloneJar, char *vmdllsubdir)
 {
   JavaVMInitArgs vm_args;
@@ -615,10 +609,18 @@ invocation (HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
   PORT_ACCESS_FROM_PORT (portLibrary);
 
   mainClassJar = NULL;
+
+  if (hysl_lookup_name
+      (handle, "JNI_CreateJavaVM", (UDATA *) &CreateJavaVM, "iLLL"))
+  {
+      hytty_printf (PORTLIB, "Failed to find JNI_CreateJavaVM in DLL\n");
+      return 1;
+  }
+
   
-  if (createVMArgs(portLibrary, argc, argv, handle, version, ignoreUnrecognized, &vm_args,
-                        &CreateJavaVM, isJvmSubDir, classArg, propertiesFileName,
-                        isStandaloneJar, &mainClassJar, vmdllsubdir)) {
+  if (createVMArgs(portLibrary, argc, argv, version, ignoreUnrecognized, 
+                    &vm_args, classArg, propertiesFileName, 
+                    isStandaloneJar, &mainClassJar, vmdllsubdir)) {
      return 1;
    }
        
@@ -724,19 +726,14 @@ invocation (HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
 }
 
  /**
- * Converts command-line arguments into a format compatible with JNI invocation API,
- * and looks up the JNI_CreateJavaVM() function in dll/shared library specified by
- * handle.
+ * Converts command-line arguments into a format compatible with JNI invocation API.
  *
  * @param[in] portLibrary The port library.
  * @param[in] argc  The number of arguments passed to program on the command line.
  * @param[in] argv  The values of command-line arguments.
- * @param[in] handle The VM dll handle opened via the port library.
  * @param[in] version The invocation API version to test.
  * @param[in] ignoreUnrecognized A hint to the JNI to ignore/fail on unrecognized args.
  * @param[in/out] vm_args Receives the newly converted JavaVMInitArgs (must be freed by caller).
- * @param[in/out] CreateJavaVM Receives the address of the JNI_CreateJavaVM() function. 
- * @param[in] isJvmSubDir The indicator to show we are using a subdirectory for the VM
  * @param[in] classArg The index to mainClass in the array of launcher args. 
  * @param[in] propertiesFileName The properties file path and FileName. 
  * @param[out] mainClassJar The class to run if running Jar file. 
@@ -746,196 +743,178 @@ invocation (HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
 
 static int
 createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
-              UDATA handle, jint version, jboolean ignoreUnrecognized,
+              jint version, jboolean ignoreUnrecognized,
               JavaVMInitArgs * vm_args,
-              jint (JNICALL ** CreateJavaVM) (JavaVM **, JNIEnv **,
-                                              JavaVMInitArgs *),
-              int isJvmSubDir, UDATA classArg, char *propertiesFileName,
+              UDATA classArg, char *propertiesFileName,
               int isStandaloneJar, char **mainClassJar, char *vmdllsubdir)
 {
   JavaVMOption *options;
   char *exeName;
   char *endPathPtr;
-  int lengthExeName;
-  UDATA i = 0;
-  int j = 0;
-  int k = 0;
-  int l = 0;
-  char *fileContents = NULL;
-  char **fileContentsPtr = &fileContents;
-  int rc = 0;
-  char *lineDelimiter = NULL;
-  char *equalsDelimiter = NULL;
-  char *startOfLine = NULL;
-  char *lineStr[20];
-  char *expandedLineStr[20];
-  int linecount = 0;
-  int noOfLauncherHomes;
-  int offset;
+  UDATA i;
+  unsigned int j;
+  unsigned int k;
+  unsigned int l;
+  key_value_pair * props = NULL;
+  U_32 propcount = 0;
+  unsigned int optcount = 0; /* number of specific options to VM */
   char *classPath;
-  int useDefaultJarRunner = 0;
+  int vmJarRunner = -1; /* index of jarMainClass property */
+  int ignoreBCP = 0;
   HyStringBuffer *javaHome = NULL, *classPath2 = NULL, *javaLibraryPath =
     NULL;
   char *portLibOptionStr = NULL;
+
+  static char* subst_items[] = {"%LAUNCHER_HOME%", "%VM_DIR%"};
+  static size_t subst_item_lens[] = {15, 8};
+  static unsigned int subst_num = 2; 
+
+  char* subst_values[2];
+  size_t subst_value_lens[2];
 
   PORT_ACCESS_FROM_PORT (portLibrary);
   /* get the path to the executable */
   hysysinfo_get_executable_name (argv[0], &exeName);
   endPathPtr = strrchr (exeName, DIR_SEPERATOR);
   endPathPtr[0] = '\0';
-  lengthExeName = strlen (exeName);
 
-  /* read in vm_args from properties file */
-  rc = readPropertiesFile (portLibrary, propertiesFileName, fileContentsPtr);
-  if (rc == 0)
-    {
-      lineDelimiter = strstr (fileContents, PLATFORM_LINE_DELIMITER);
-      startOfLine = fileContents;
-      /* note this logic means you need a line feed at the end of every line */
-      /* you cannot have a line ending with the end of file character       */
-      while (lineDelimiter)
-        {
-          /* Hammer the line delimiter to be a null */
-          *lineDelimiter = '\0';
-          if (*startOfLine == '-')
-            {
-              lineStr[linecount] = startOfLine;
-              //printf ("linecount %d  = %s\n",linecount, lineStr[linecount]); 
-              linecount++;
-            }
-          else if (isStandaloneJar)
-            {
-              if (strncmp (startOfLine, "jarMainClass", 12) == 0)
-                {
-                  *mainClassJar = hymem_allocate_memory (strlen(startOfLine + 13) + 1);
-                    
-                  strcpy (*mainClassJar, startOfLine + 13);
-                  useDefaultJarRunner = 1;
-                }
-            }
-          startOfLine = lineDelimiter + strlen (PLATFORM_LINE_DELIMITER);
+  subst_values[0] = exeName;
+  subst_value_lens[0] = strlen(exeName);
+  subst_values[1] = vmdllsubdir ? vmdllsubdir : "";
+  subst_value_lens[1] = vmdllsubdir ? strlen(vmdllsubdir) : 0;
 
-          lineDelimiter = lineDelimiter + strlen (PLATFORM_LINE_DELIMITER);
-          lineDelimiter = strstr (lineDelimiter, PLATFORM_LINE_DELIMITER);
-        }
-    }
-  /* now expand strings with %LAUNCHER_HOME% */
-  for (l = 0; l < linecount; l++)
-    {
-      offset = 0x00;
-      noOfLauncherHomes = 0;
+   /* read in vm_args from properties file */
+   properties_load(portLibrary, propertiesFileName, &props, &propcount);
 
-      /* count number of instances of %LAUNCHER_HOME% in String */
-      while ( (equalsDelimiter =
-             strstr (lineStr[l] + offset, "%LAUNCHER_HOME%")) )
-        {
-          noOfLauncherHomes++;
-          offset = equalsDelimiter - lineStr[l] + 15;
-          //printf("counter = %d\n",noOfLauncherHomes);
-        }
-      /* Allocate memory for expanding string */
-      if ( (equalsDelimiter = strstr (lineStr[l], "%LAUNCHER_HOME%")) )
-        {
-          expandedLineStr[l] =
-            hymem_allocate_memory (strlen (lineStr[l]) +
-                                   (lengthExeName * noOfLauncherHomes));
-          if (expandedLineStr[l] == NULL)
-            {
-              /* HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY=Internal VM error: Out of memory\n */
-              PORTLIB->nls_printf (PORTLIB, HYNLS_ERROR,
-                                   HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY);
-              return 1;
-            }
-        }
-      /* fill in expanded string */
-      offset = 0;
-      *expandedLineStr[l] = '\0';
-      while (equalsDelimiter = strstr (lineStr[l], "%LAUNCHER_HOME%"))
-        {
-          /* Hammer the line delimiter to be a null */
-          *equalsDelimiter = '\0';
-          strcat (expandedLineStr[l], lineStr[l]);
-          strcat (expandedLineStr[l], exeName);
-          //printf ("expandedLineStr[l] = %s\n", expandedLineStr[l]);
-          lineStr[l] = equalsDelimiter + 15;
-        }
+   if (propcount != 0) {
+       /* Check if we need to filter "-Xbootclasspath" options out from properties. */
+       for (i = 1; i < classArg; i++)
+       {
+           if (strncmp (argv[i], "-Xbootclasspath:", 16) == 0) {
+               ignoreBCP = 1;
+               break;
+           }
+       }
+   }
 
-      if (noOfLauncherHomes == 0)
-        {
-          expandedLineStr[l] = lineStr[l];
-        }
-      else
-        {
-          strcat (expandedLineStr[l], lineStr[l]);
-          //printf ("expandedLineStr[l] = %s\n", expandedLineStr[l]);
-        }
-    }
+   for (l = 0; l < propcount; l++) 
+   {
+       /* only pass arguments starting with '-' to JNI_CreateJavaVM */
+       if (props[l].key[0] == '-') 
+       {
+           /* if running jar file there is special handling for java.class.path later */
+           /* Ignore classpath defines for -jar */
+           /* XXX -cp is accepted ??? */
+           /* if user overrides bootclasspath, skip bootclasspath defines */
+           if ( (isStandaloneJar && 0 == strcmp (props[l].key, "-Djava.class.path"))
+               || (ignoreBCP && 0 == strncmp (props[l].key, "-Xbootclasspath", 15)) )
+           {
+               props[l].key[0] = '\0';
+               continue;
+           }
+           ++optcount;
+       } 
+       else if (isStandaloneJar && 0 == strcmp(props[l].key, "jarMainClass"))
+       {
+           vmJarRunner = l;
+       }
+   }
+
+   if (isStandaloneJar)
+   {
+       char* runner = (vmJarRunner == -1) ? 
+            HARMONY_JARRUNNER_CLASSNAME : props[vmJarRunner].value;
+
+       *mainClassJar = hymem_allocate_memory (strlen(runner) + 1);
+       if (*mainClassJar == NULL)
+       {
+           PORTLIB->nls_printf (PORTLIB, HYNLS_ERROR,
+                HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY);
+           return 1;
+       }
+       strcpy (*mainClassJar, runner);
+   }
+
+   /* allocate space for entries from command line, properties file, */
+   /* 3 defaults plus the port library option */
+   options = hymem_allocate_memory((classArg + optcount + 4) * sizeof (*options));
+
+   if (options == NULL)
+   {
+       portLibrary->nls_printf (portLibrary, HYNLS_ERROR,
+           HYNLS_EXELIB_VM_STARTUP_ERR_OUT_OF_MEMORY);
+
+       hytty_err_printf (PORTLIB, "Failed to allocate memory for options\n");
+       return 1;
+   }
+
+   for (l = 0, j = 0; l < propcount; l++)
+   {
+       HyStringBuffer * lineBuf = NULL;
+       char *pos, *start;
+       int firstPass = 0;
+
+       if (props[l].key[0] != '-') {
+           continue;
+       }
+
+       /* format argument string as "key = value" */
+       start = pos = props[l].key;
+       do {
+           /* search & replace %XXX% in key and value, if any. */
+           while ( (pos = strchr(pos, '%')) )
+           {
+               int found = 0;
+               for (k = 0; k < subst_num; k++) 
+               {
+                   if (0 == strncmp(subst_items[k], pos, subst_item_lens[k])) {
+                       *pos = '\0';
+                       lineBuf = strBufferCat(PORTLIB, lineBuf, start);
+                       *pos = '%'; 
+                       lineBuf = strBufferCat(PORTLIB, lineBuf, subst_values[k]);
+                       start = (pos += subst_item_lens[k]);
+                       found = 1;
+                       break;
+                   }
+               }
+               if (!found) ++pos;
+           }
+           lineBuf = strBufferCat(PORTLIB, lineBuf, start);
+
+           /* key is processed in the first pass, check if we need next iteration. */
+           if (0 != firstPass++ || *props[l].value == '\0') 
+           {
+               break;
+           }
+           lineBuf = strBufferCat(PORTLIB, lineBuf, "=");
+           start = pos = props[l].value;
+       }
+       while (1);
+
+       if (lineBuf == NULL) {
+           PORTLIB->nls_printf (PORTLIB, HYNLS_ERROR,
+               HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY);
+           return 1;
+       }
+
+       /* FIXME: buffer leak ignored */
+       options[j].optionString = lineBuf->data; 
+       options[j].extraInfo = NULL;
+       ++j;
+   }
+
+   properties_free(PORTLIB, props);
     
-  if (isStandaloneJar)
-    {
-      if (useDefaultJarRunner == 0)
-        {
-          *mainClassJar = hymem_allocate_memory (sizeof(HARMONY_JARRUNNER_CLASSNAME) + 1);
-          if (*mainClassJar == NULL)
-            {
-              /* HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY=Internal VM error: Out of memory\n */
-              PORTLIB->nls_printf (PORTLIB, HYNLS_ERROR,
-                                   HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY);
-              return 1;
-            }
-          strcpy (*mainClassJar, HARMONY_JARRUNNER_CLASSNAME);
-        }
-    }
-  /* entries from command line, properties file, 3 defaults plus the port library option */
-  options =
-    hymem_allocate_memory ((argc + linecount + 4) * sizeof (*options));
-
-  if (options == NULL)
-    {
-      /* HYNLS_EXELIB_VM_STARTUP_ERR_OUT_OF_MEMORY=Internal VM error\: VM startup error: Out of memory\n */
-      portLibrary->nls_printf (portLibrary, HYNLS_ERROR,
-                               HYNLS_EXELIB_VM_STARTUP_ERR_OUT_OF_MEMORY);
-
-      hytty_err_printf (PORTLIB, "Failed to allocate memory for options\n");
-      return 1;
-    }
-
-  if (rc == 0)                  /* there is a properties file */
-    {
-      for (k = 0, j = 0; k < linecount; k++)
-        {
-          /* if jar file there is special handling for java.class.path later */
-          /* Ignore classpath defines for -jar */
-          if (isStandaloneJar)
-            {
-              if (strncmp (lineStr[k], "-Djava.class.path=", 18) != 0)
-                {
-                  options[j].optionString = expandedLineStr[k];
-                  options[j].extraInfo = NULL;
-                  j++;
-                }
-            }
-          else
-            {
-              options[j].optionString = expandedLineStr[k];
-              options[j].extraInfo = NULL;
-              j++;
-            }
-        }
-    }
-
-  /* only pass arguments starting with '-' to JNI_CreateJavaVM */
-  /* but note parameters to program might have '-'             */
-  for (i = 1; i < classArg; i++)
-    {
-      if (('-' == argv[i][0]) && (strncmp (argv[i], "-jar", 4) != 0) &&
-          (strncmp (argv[i], "-vmdir:", 7) != 0)
-          && (strncmp (argv[i], "-vm:", 4) != 0))
-        {
+   for (i = 1; i < classArg; i++)
+   {
+       if ( (strcmp (argv[i], "-jar") != 0) 
+           && (strncmp (argv[i], "-vmdir:", 7) != 0)
+           && (strncmp (argv[i], "-vm:", 4) != 0) )
+       {
           /* special coding for -classpath and -cp */
           /* they get passed to the vm as -Djava.class.path */
-          if ((strncmp (argv[i], "-cp", 3) == 0)
-              || (strncmp (argv[i], "-classpath", 9) == 0))
+          if ((strcmp (argv[i], "-cp") == 0)
+              || (strcmp (argv[i], "-classpath") == 0))
             {
               classPath = hymem_allocate_memory (strlen (argv[i + 1]) + 20);
               if (classPath == NULL)
@@ -963,7 +942,7 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
   /* Check that the minimum required -D options have been included.  If not, calculate and add the defaults */
   initDefaultDefines (portLibrary, (void **)&options, argc, argv,
                       isStandaloneJar ? classArg : 0, &classPath2, &javaHome,
-                      &javaLibraryPath, isJvmSubDir, vmdllsubdir, &j);
+                      &javaLibraryPath, vmdllsubdir, &j);
 
   // Slam in the pointer to the HyPortLibrary
   portLibOptionStr = hymem_allocate_memory (strlen(PORT_LIB_OPTION) + 1);
@@ -991,13 +970,6 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
   //  {
   //    printf ("%s\n",vm_args->options[j]);
   //  }
-
-  if (hysl_lookup_name
-      (handle, "JNI_CreateJavaVM", (UDATA *) CreateJavaVM, "iLLL"))
-    {
-      hytty_printf (PORTLIB, "Failed to find JNI_CreateJavaVM in DLL\n");
-      return 1;
-    }
 
   return 0;
 }
@@ -1293,81 +1265,6 @@ done:
   return rc;
 }
 
-/**
-  * Read the properties file specified by <tt>propertiesFileName</tt> into  <tt>file contents</tt> pointer.
-  *
-  * @param portLibrary - The port library used to interact with the platform.
-  * @param propertiesFileName - The file from which to read data using hyfile* functions.
-  * @param fileContents- A pointer to memory containing the property file entries.
-  *
-  * @return JNI_OK on success, or a JNI error code on failure.
-  */
-jint
-readPropertiesFile (HyPortLibrary * portLibrary, char *propertiesFileName,
-                    char **fileContentsPtr)
-{
-  PORT_ACCESS_FROM_PORT (portLibrary);
-  IDATA propsFD = -1;
-  I_64 seekResult;
-  char *fileContents = NULL;
-  IDATA fileSize;
-  IDATA bytesRemaining;
-  jint returnCode = JNI_OK;
-  char *writeCursor;
-
-  /* Determine the file size, fail if > 2G */
-  seekResult = hyfile_length (propertiesFileName);
-  if ((seekResult <= 0) || (seekResult > 0x7FFFFFFF))
-    {
-      return JNI_ERR;
-    }
-  fileSize = (IDATA) seekResult;
-
-  /* Open the properties file */
-  propsFD = hyfile_open (propertiesFileName, (I_32) HyOpenRead, (I_32) 0);
-  if (propsFD == -1)
-    {
-      /* Could not open the file */
-      return JNI_ERR;
-    }
-
-  /* Allocate temporary storage */
-  fileContents = hymem_allocate_memory (fileSize);
-  if (!fileContents)
-    {
-      return JNI_ENOMEM;
-    }
-
-  /* Initialize the read state */
-  bytesRemaining = fileSize;
-  writeCursor = fileContents;
-
-  /* Suck the file into memory */
-  while (bytesRemaining > 0)
-    {
-      IDATA bytesRead = hyfile_read (propsFD, writeCursor, bytesRemaining);
-      if (bytesRead == -1)
-        {
-          /* Read failed */
-          returnCode = JNI_ERR;
-          goto bail;
-        }
-
-      /* Advance the read state */
-      bytesRemaining -= bytesRead;
-      writeCursor += bytesRead;
-    }
-  *fileContentsPtr = fileContents;
-
-bail:
-  if (propsFD != -1)
-    {
-      hyfile_close (propsFD);
-    }
-
-  return returnCode;
-}
-
 void
 dumpVersionInfo (HyPortLibrary * portLib)
 {
@@ -1384,7 +1281,7 @@ static I_32
 initDefaultDefines (HyPortLibrary * portLib, void **vmOptionsTable, int argc,
                     char **argv, int jarArg, HyStringBuffer ** classPathInd,
                     HyStringBuffer ** javaHomeInd,
-                    HyStringBuffer ** javaLibraryPathInd, int isJvmSubDir,
+                    HyStringBuffer ** javaLibraryPathInd,
                     char *vmdllsubdir, int *vmOptionsCount)
 {
   extern char *getDefineArgument (char *, char *);
