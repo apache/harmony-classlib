@@ -34,7 +34,7 @@ import org.apache.harmony.luni.util.Msg;
  * 
  * @since 1.5
  */
-class AbstractStringBuilder {
+abstract class AbstractStringBuilder {
 
     static final int INITIAL_CAPACITY = 16;
 
