@@ -2597,9 +2597,8 @@ public final class Character implements Serializable, Comparable<Character> {
         // the spec says.RI's Character type values skip the value 17.
         if (type <= Character.FORMAT) {
             return type;
-        } else {
-            return (type + 1);
         }
+        return (type + 1);
     }
 
     /**
@@ -2637,9 +2636,8 @@ public final class Character implements Serializable, Comparable<Character> {
         byte UCDirectionality = UCharacter.getDirectionality(codePoint);       
         if (UCDirectionality == -1) {
             return -1;
-        } else {
-            return DIRECTIONALITY[UCDirectionality];
         }
+        return DIRECTIONALITY[UCDirectionality];
     }
 
     /**

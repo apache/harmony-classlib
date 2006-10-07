@@ -17,9 +17,7 @@
 
 package java.util;
 
-
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -32,7 +30,6 @@ import java.util.zip.ZipFile;
 
 import org.apache.harmony.luni.internal.locale.Country;
 import org.apache.harmony.luni.internal.locale.Language;
-
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
@@ -47,8 +44,6 @@ import org.apache.harmony.luni.util.PriviAction;
 public final class Locale implements Cloneable, Serializable {
 	
 	private static final long serialVersionUID = 9149081749638150636L;
-
-	transient private String countryCode, languageCode, variantCode;
 
 	private static Locale[] availableLocales;
 
@@ -173,6 +168,10 @@ public final class Locale implements Cloneable, Serializable {
 				.doPrivileged(new PriviAction<String>("user.variant", "")); //$NON-NLS-1$ //$NON-NLS-2$
 		defaultLocale = new Locale(language, region, variant);
 	}
+    
+    private transient String countryCode;
+    private transient String languageCode;
+    private transient String variantCode;
 
 	/**
 	 * Constructs a default which is used during static initialization of the
