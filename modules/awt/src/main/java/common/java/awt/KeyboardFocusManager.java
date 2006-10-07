@@ -28,17 +28,16 @@ import java.beans.PropertyChangeSupport;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeSupport;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
-import org.apache.harmony.awt.ListenerList;
 
-
-public abstract class KeyboardFocusManager
-implements KeyEventDispatcher, KeyEventPostProcessor {
+public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEventPostProcessor {
 
     public static final int FORWARD_TRAVERSAL_KEYS = 0;
 
@@ -85,9 +84,9 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
 
     private static Window prevFocusedWindow;
 
-    final ListenerList<KeyEventDispatcher> keyEventDispatchers = new ListenerList<KeyEventDispatcher>();
+    private final Vector<KeyEventDispatcher> keyEventDispatchers = new Vector<KeyEventDispatcher>();
 
-    final ListenerList<KeyEventPostProcessor> keyEventPostProcessors = new ListenerList<KeyEventPostProcessor>();
+    private final Vector<KeyEventPostProcessor> keyEventPostProcessors = new Vector<KeyEventPostProcessor>();
 
     private PropertyChangeSupport propertyChangeSupport;
 
@@ -104,11 +103,11 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
     }
 
     public void addKeyEventDispatcher(KeyEventDispatcher dispatcher) {
-        keyEventDispatchers.addUserListener(dispatcher);
+        keyEventDispatchers.add(dispatcher);
     }
 
     public void addKeyEventPostProcessor(KeyEventPostProcessor processor) {
-        keyEventPostProcessors.addUserListener(processor);
+        keyEventPostProcessors.add(processor);
     }
 
     public void addPropertyChangeListener(String propertyName,
@@ -274,11 +273,11 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
     }
 
     protected List<KeyEventDispatcher> getKeyEventDispatchers() {
-        return keyEventDispatchers.getUserListeners();
+        return new ArrayList<KeyEventDispatcher>(keyEventDispatchers);
     }
 
     protected List<KeyEventPostProcessor> getKeyEventPostProcessors() {
-        return keyEventPostProcessors.getUserListeners();
+        return new ArrayList<KeyEventPostProcessor>(keyEventPostProcessors);
     }
 
     public Component getPermanentFocusOwner() {
@@ -313,11 +312,11 @@ implements KeyEventDispatcher, KeyEventPostProcessor {
     }
 
     public void removeKeyEventDispatcher(KeyEventDispatcher dispatcher) {
-       keyEventDispatchers.removeUserListener(dispatcher);
+       keyEventDispatchers.remove(dispatcher);
     }
 
     public void removeKeyEventPostProcessor(KeyEventPostProcessor processor) {
-        keyEventPostProcessors.removeUserListener(processor);
+        keyEventPostProcessors.remove(processor);
     }
 
     public void removePropertyChangeListener(String propertyName,

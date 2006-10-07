@@ -14,86 +14,61 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Pavel Dolgov
- * @version $Revision$
- */
+
 package org.apache.harmony.awt;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.EventListener;
 
 import junit.framework.TestCase;
 
-/**
- * ListenerListTest
- */
 public class ListenerListTest extends TestCase {
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(ListenerListTest.class);
-    }
-
-    public void testAddSystemListener() {
-    }
-
-    public void testAddUserListener() {
-    }
-
-    public void testRemoveUserListener() {
-    }
-
-    public void testGetUserListeners() {
-    }
-
-    public void testGetUserIterator() {
-    }
-
-    public void testGetSystemIterator() {
-    }
-
     static class SerializableListener implements EventListener, Serializable {
-    };
+        private static final long serialVersionUID = 1L;
+    }
 
     public void testSerialize() {
+        ListenerList<EventListener> list = new ListenerList<EventListener>();
 
-        ListenerList list = new ListenerList();
-
-        list.addUserListener(new EventListener() {});
+        list.addUserListener(new EventListener() {
+        });
         assertTrue(list.getUserIterator().hasNext());
 
         list.addSystemListener(new SerializableListener());
         assertTrue(list.getSystemIterator().hasNext());
 
-        ListenerList restored = writeAndRead(list);
+        ListenerList<EventListener> restored = writeAndRead(list);
         assertFalse(restored.getUserIterator().hasNext());
         assertTrue(restored.getSystemIterator().hasNext());
 
     }
 
-    ListenerList writeAndRead(ListenerList original) {
+    @SuppressWarnings("unchecked")
+    ListenerList<EventListener> writeAndRead(ListenerList<EventListener> original) {
         try {
-            File tempFile = File.createTempFile("save", ".object");
-
-            FileOutputStream fos = new FileOutputStream(tempFile);
-
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            ByteArrayOutputStream byteStream = new ByteArrayOutputStream(512);
+            ObjectOutputStream oos = new ObjectOutputStream(byteStream);
             oos.writeObject(original);
+            oos.flush();
             oos.close();
 
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(byteStream
+                    .toByteArray()));
 
-            FileInputStream fis = new FileInputStream(tempFile);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-
-            ListenerList restored = (ListenerList)ois.readObject();
-            tempFile.delete();
+            ListenerList<EventListener> restored = (ListenerList<EventListener>) ois
+                    .readObject();
             return restored;
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new AssertionError(e);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new AssertionError(e);
         }
-
     }
 }

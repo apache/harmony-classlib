@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Pavel Dolgov
- * @version $Revision$
- */
+
 package org.apache.harmony.awt;
 
 import java.io.IOException;
@@ -36,20 +33,24 @@ import java.util.List;
  * 2. To ensure call for all listeners as atomic operation
  * 3. To support system listeners that are needed for built-in AWT components
  */
-public class ListenerList<T> implements Serializable {
+public class ListenerList<T extends EventListener> implements Serializable {
     private static final long serialVersionUID = 9180703263299648154L;
 
-    private transient ArrayList<EventListener> systemList;
+    private transient ArrayList<T> systemList;
     private transient ArrayList<T> userList;
+    
+    public ListenerList() {
+        super();
+    }
 
     /**
      * Adds system listener to this list.
      *
      * @param listener - listener to be added.
      */
-    public void addSystemListener(EventListener listener) {
+    public void addSystemListener(T listener) {
         if (systemList == null) {
-            systemList = new ArrayList<EventListener>();
+            systemList = new ArrayList<T>();
         }
         systemList.add(listener);
     }
@@ -102,7 +103,7 @@ public class ListenerList<T> implements Serializable {
      * @param emptyArray - empty array, it's for deriving particular listeners class.
      * @return array of all user listeners.
      */
-    public EventListener[] getUserListeners(EventListener[] emptyArray){
+    public <AT> AT[] getUserListeners(AT[] emptyArray){
         synchronized (this) {
             return (userList != null ? userList.toArray(emptyArray) : emptyArray);
 
@@ -140,7 +141,7 @@ public class ListenerList<T> implements Serializable {
      *
      * @return iterator for system listeners.
      */
-    public Iterator<EventListener> getSystemIterator() {
+    public Iterator<T> getSystemIterator() {
         return systemList.iterator();
     }
 
@@ -174,7 +175,7 @@ public class ListenerList<T> implements Serializable {
 
         stream.defaultReadObject();
 
-        systemList = (ArrayList<EventListener>)stream.readObject();
+        systemList = (ArrayList<T>)stream.readObject();
         userList = (ArrayList<T>)stream.readObject();
     }
 

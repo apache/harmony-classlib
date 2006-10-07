@@ -14,32 +14,29 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Pavel Dolgov
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.util.EventListener;
 
 import org.apache.harmony.awt.ListenerList;
 
-
-final class AWTListenerList extends ListenerList {
+final class AWTListenerList<T extends EventListener> extends ListenerList<T> {
     private static final long serialVersionUID = -2622077171532840953L;
 
     private final Component owner;
 
     AWTListenerList(Component owner) {
+        super();
         this.owner = owner;
     }
 
-    public void addUserListener(EventListener listener) {
+    @Override
+    public void addUserListener(T listener) {
         super.addUserListener(listener);
 
         if (owner != null) {
             owner.deprecatedEventHandler = false;
         }
     }
-
 }

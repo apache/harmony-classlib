@@ -20,14 +20,12 @@
  */
 package java.awt;
 
-import java.awt.Toolkit;
 import java.awt.event.FocusEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
@@ -106,15 +104,12 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
 
     private boolean preProcessKeyEvent(KeyEvent ke) {
         // first pass event to every key event dispatcher:
-        if (keyEventDispatchers != null) {
-            Iterator<?> it = keyEventDispatchers.getUserIterator();
-            while (it.hasNext()) {
-                KeyEventDispatcher ked = (KeyEventDispatcher)it.next();
-                if (ked.dispatchKeyEvent(ke)) {
-                    return true;
-                }
+        for (KeyEventDispatcher ked : getKeyEventDispatchers()) {
+            if (ked.dispatchKeyEvent(ke)) {
+                return true;
             }
         }
+
         return false;
     }
 
@@ -432,15 +427,12 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
     @Override
     public boolean postProcessKeyEvent(KeyEvent ke) {
         // pass event to every key event postprocessor:
-        if (keyEventPostProcessors != null) {
-            Iterator<?> it = keyEventPostProcessors.getUserIterator();
-            while (it.hasNext()) {
-                KeyEventPostProcessor kep = (KeyEventPostProcessor) it.next();
-                if (kep.postProcessKeyEvent(ke)) {
-                    return true;
-                }
+        for (KeyEventPostProcessor kep : getKeyEventPostProcessors()) {
+            if (kep.postProcessKeyEvent(ke)) {
+                return true;
             }
         }
+        
         // postprocess the event if no KeyEventPostProcessor dispatched it
         if (!ke.isConsumed()) {
             handleShortcut(ke);
