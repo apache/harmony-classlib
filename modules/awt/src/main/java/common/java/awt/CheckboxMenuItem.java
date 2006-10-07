@@ -14,30 +14,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt;
 
-import java.awt.event.*;
-import java.util.*;
-import javax.accessibility.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.EventListener;
+import javax.accessibility.Accessible;
+import javax.accessibility.AccessibleAction;
+import javax.accessibility.AccessibleContext;
+import javax.accessibility.AccessibleRole;
+import javax.accessibility.AccessibleValue;
 
 public class CheckboxMenuItem extends MenuItem implements ItemSelectable, Accessible {
     private static final long serialVersionUID = 6190621106981774043L;
 
-    private final AWTListenerList itemListeners = new AWTListenerList(null);
+    private final AWTListenerList<ItemListener> itemListeners = new AWTListenerList<ItemListener>();
 
     private boolean checked;
 
-    protected class AccessibleAWTCheckboxMenuItem extends AccessibleAWTMenuItem
-            implements AccessibleAction, AccessibleValue {
+    protected class AccessibleAWTCheckboxMenuItem extends AccessibleAWTMenuItem implements
+            AccessibleAction, AccessibleValue {
         private static final long serialVersionUID = -1122642964303476L;
 
         @Override
         public boolean doAccessibleAction(int i) {
-            return false; //do nothing
+            return false; // do nothing
         }
 
         @Override
@@ -84,24 +86,14 @@ public class CheckboxMenuItem extends MenuItem implements ItemSelectable, Access
         public boolean setCurrentAccessibleValue(Number n) {
             return false;
         }
-
     }
 
     public CheckboxMenuItem() throws HeadlessException {
-        toolkit.lockAWT();
-        try {
-        } finally {
-            toolkit.unlockAWT();
-        }
+        super();
     }
 
     public CheckboxMenuItem(String label) throws HeadlessException {
         this(label, false);
-        toolkit.lockAWT();
-        try {
-        } finally {
-            toolkit.unlockAWT();
-        }
     }
 
     public CheckboxMenuItem(String label, boolean state) throws HeadlessException {
@@ -145,13 +137,13 @@ public class CheckboxMenuItem extends MenuItem implements ItemSelectable, Access
 
     @Override
     public String paramString() {
-        /* The format of paramString is based on 1.5 release behavior 
-         * which can be revealed using the following code:
-         *
+        /*
+         * The format of paramString is based on 1.5 release behavior which can
+         * be revealed using the following code:
+         * 
          * CheckboxMenuItem obj = new CheckboxMenuItem("Label", true);
          * System.out.println(obj.toString());
          */
-
         toolkit.lockAWT();
         try {
             return super.paramString() + (checked ? ",checked" : "");
@@ -178,6 +170,7 @@ public class CheckboxMenuItem extends MenuItem implements ItemSelectable, Access
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         if (ItemListener.class.isAssignableFrom(listenerType)) {
@@ -195,7 +188,7 @@ public class CheckboxMenuItem extends MenuItem implements ItemSelectable, Access
     }
 
     public ItemListener[] getItemListeners() {
-        return (ItemListener[]) itemListeners.getUserListeners(new ItemListener[0]);
+        return itemListeners.getUserListeners(new ItemListener[0]);
     }
 
     @Override
@@ -208,13 +201,11 @@ public class CheckboxMenuItem extends MenuItem implements ItemSelectable, Access
     }
 
     protected void processItemEvent(ItemEvent e) {
-        for (Iterator i = itemListeners.getUserIterator(); i.hasNext();) {
-            ItemListener listener = (ItemListener) i.next();
-
+        for (ItemListener listener : itemListeners.getUserListeners()) {
             switch (e.getID()) {
-            case ItemEvent.ITEM_STATE_CHANGED:
-                listener.itemStateChanged(e);
-                break;
+                case ItemEvent.ITEM_STATE_CHANGED:
+                    listener.itemStateChanged(e);
+                    break;
             }
         }
     }
@@ -227,7 +218,6 @@ public class CheckboxMenuItem extends MenuItem implements ItemSelectable, Access
     @Override
     void itemSelected(long when, int modifiers) {
         checked = !checked;
-
         super.itemSelected(when, modifiers);
     }
 
@@ -236,5 +226,4 @@ public class CheckboxMenuItem extends MenuItem implements ItemSelectable, Access
         int state = checked ? ItemEvent.SELECTED : ItemEvent.DESELECTED;
         return new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED, getLabel(), state);
     }
-
 }

@@ -14,36 +14,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Dmitry A. Durnev
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.util.EventListener;
-import java.util.Iterator;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleState;
 import javax.accessibility.AccessibleStateSet;
 import javax.accessibility.AccessibleValue;
-
 import org.apache.harmony.awt.ScrollbarStateController;
 import org.apache.harmony.awt.state.ScrollbarState;
 
-
 public class Scrollbar extends Component implements Adjustable, Accessible {
-
     private static final long serialVersionUID = 8451667562882310543L;
 
-    protected class AccessibleAWTScrollBar
-    extends Component.AccessibleAWTComponent
-    implements AccessibleValue {
-
+    protected class AccessibleAWTScrollBar extends Component.AccessibleAWTComponent implements
+            AccessibleValue {
         private static final long serialVersionUID = -344337268523697807L;
 
         @Override
@@ -58,12 +48,12 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
                 AccessibleStateSet aStateSet = super.getAccessibleStateSet();
                 AccessibleState aState = null;
                 switch (getOrientation()) {
-                case VERTICAL:
-                    aState = AccessibleState.VERTICAL;
-                    break;
-                case HORIZONTAL:
-                    aState = AccessibleState.HORIZONTAL;
-                    break;
+                    case VERTICAL:
+                        aState = AccessibleState.VERTICAL;
+                        break;
+                    case HORIZONTAL:
+                        aState = AccessibleState.HORIZONTAL;
+                        break;
                 }
                 if (aState != null) {
                     aStateSet.add(aState);
@@ -95,7 +85,6 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
             setValue(n.intValue());
             return true;
         }
-
     }
 
     public static final int HORIZONTAL = 0;
@@ -103,16 +92,28 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
     public static final int VERTICAL = 1;
 
     final static int MAX = Integer.MAX_VALUE;
-    private final AWTListenerList adjustmentListeners = new AWTListenerList(this);
+
+    private final AWTListenerList<AdjustmentListener> adjustmentListeners = new AWTListenerList<AdjustmentListener>(
+            this);
+
     private int blockIncrement;
+
     private int unitIncrement;
+
     private int maximum;
+
     private int minimum;
+
     private int orientation;
+
     private int value;
+
     private transient boolean valueIsAdjusting;
+
     private int visibleAmount;
+
     final transient State state = new State();
+
     private final transient ScrollbarStateController stateController;
 
     public Scrollbar() throws HeadlessException {
@@ -133,8 +134,8 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
         }
     }
 
-    public Scrollbar(int orientation, int value,
-                     int visible, int min, int max) throws HeadlessException {
+    public Scrollbar(int orientation, int value, int visible, int min, int max)
+            throws HeadlessException {
         toolkit.lockAWT();
         try {
             setOrientation(orientation);
@@ -142,7 +143,6 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
             setUnitIncrement(1);
             setBlockIncrement(10);
             stateController = new ScrollbarStateController(state) {
-
                 @Override
                 protected void fireEvent() {
                     generateEvent();
@@ -155,7 +155,7 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
 
                 @Override
                 protected void repaint() {
-                   doRepaint();
+                    doRepaint();
                 }
 
                 @Override
@@ -176,13 +176,18 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
     }
 
     class State extends Component.ComponentState implements ScrollbarState {
-
         private final Rectangle decreaseRect = new Rectangle();
+
         private final Rectangle increaseRect = new Rectangle();
+
         private final Rectangle sliderRect = new Rectangle();
+
         private final Rectangle trackRect = new Rectangle();
+
         private final Rectangle upperTrackRect = new Rectangle();
+
         private final Rectangle lowerTrackRect = new Rectangle();
+
         private int trackSize;
 
         public boolean isDecreasePressed() {
@@ -232,7 +237,7 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
         }
 
         public void setIncreaseRect(Rectangle r) {
-           increaseRect.setRect(r);
+            increaseRect.setRect(r);
         }
 
         public void setDecreaseRect(Rectangle r) {
@@ -244,7 +249,7 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
         }
 
         public void setTrackSize(int size) {
-          trackSize = size;
+            trackSize = size;
         }
 
         public Adjustable getAdjustable() {
@@ -260,7 +265,7 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
         }
 
         public void setTrackBounds(Rectangle r) {
-           trackRect.setBounds(r);
+            trackRect.setBounds(r);
         }
 
         public ComponentOrientation getComponentOrientation() {
@@ -303,7 +308,6 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
             toolkit.theme.calculateScrollbar(state);
         }
     }
-
 
     public int getValue() {
         toolkit.lockAWT();
@@ -452,16 +456,11 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
          * System.out.println(new Scrollbar());
          * System.out.println(new Scrollbar(Scrollbar.HORIZONTAL));
          */
-
         toolkit.lockAWT();
         try {
-            return (super.paramString() +
-                    ",val=" + getValue() +
-                    ",vis=" + getVisibleAmount() +
-                    ",min=" + getMinimum() +
-                    ",max=" + getMaximum() +
-                    (getOrientation() == HORIZONTAL ? ",horz" : ",vert") +
-                    ",isAdjusting=" + getValueIsAdjusting());
+            return (super.paramString() + ",val=" + getValue() + ",vis=" + getVisibleAmount()
+                    + ",min=" + getMinimum() + ",max=" + getMaximum()
+                    + (getOrientation() == HORIZONTAL ? ",horz" : ",vert") + ",isAdjusting=" + getValueIsAdjusting());
         } finally {
             toolkit.unlockAWT();
         }
@@ -517,8 +516,7 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
     public void setOrientation(int orientation) {
         toolkit.lockAWT();
         try {
-            if ((orientation != HORIZONTAL) &&
-                (orientation != VERTICAL)) {
+            if ((orientation != HORIZONTAL) && (orientation != VERTICAL)) {
                 throw new IllegalArgumentException("illegal scrollbar orientation");
             }
             this.orientation = orientation;
@@ -571,12 +569,13 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
     public void setVisibleAmount(int newAmount) {
         toolkit.lockAWT();
         try {
-           setValues(value, newAmount, minimum, maximum);
+            setValues(value, newAmount, minimum, maximum);
         } finally {
             toolkit.unlockAWT();
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         if (AdjustmentListener.class.isAssignableFrom(listenerType)) {
@@ -594,15 +593,12 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
     }
 
     public AdjustmentListener[] getAdjustmentListeners() {
-        return (AdjustmentListener[]) adjustmentListeners.
-        getUserListeners(new AdjustmentListener[0]);
+        return adjustmentListeners.getUserListeners(new AdjustmentListener[0]);
     }
 
     @Override
     protected void processEvent(AWTEvent e) {
-        if (toolkit.eventTypeLookup.getEventMask(e) ==
-            AWTEvent.ADJUSTMENT_EVENT_MASK) {
-
+        if (toolkit.eventTypeLookup.getEventMask(e) == AWTEvent.ADJUSTMENT_EVENT_MASK) {
             processAdjustmentEvent((AdjustmentEvent) e);
         } else {
             super.processEvent(e);
@@ -610,13 +606,11 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
     }
 
     protected void processAdjustmentEvent(AdjustmentEvent e) {
-        for (Iterator i = adjustmentListeners.getUserIterator(); i.hasNext();) {
-            AdjustmentListener listener = (AdjustmentListener) i.next();
-
+        for (AdjustmentListener listener : adjustmentListeners.getUserListeners()) {
             switch (e.getID()) {
-            case AdjustmentEvent.ADJUSTMENT_VALUE_CHANGED:
-                listener.adjustmentValueChanged(e);
-                break;
+                case AdjustmentEvent.ADJUSTMENT_VALUE_CHANGED:
+                    listener.adjustmentValueChanged(e);
+                    break;
             }
         }
     }
@@ -673,10 +667,8 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
             return;
         }
         setValueIsAdjusting(stateController.isSliderDragged());
-
-        postEvent(new AdjustmentEvent(this,
-                AdjustmentEvent.ADJUSTMENT_VALUE_CHANGED, type, value,
-                getValueIsAdjusting()));
+        postEvent(new AdjustmentEvent(this, AdjustmentEvent.ADJUSTMENT_VALUE_CHANGED, type,
+                value, getValueIsAdjusting()));
     }
 
     @Override
@@ -689,24 +681,18 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
         state.reset();
     }
 
-    void setValuesImpl(int value, int visible, int min, int max,
-                       boolean repaint) {
+    void setValuesImpl(int value, int visible, int min, int max, boolean repaint) {
         int oldValue = this.value;
         int oldMin = minimum;
-
         minimum = Math.min(min, MAX - 1);
         maximum = Math.max(minimum + 1, max);
         if (maximum - minimum < 0) {
             maximum = minimum + MAX;
         }
-
         visibleAmount = Math.max(1, visible);
         visibleAmount = Math.min(maximum - minimum, visibleAmount);
-
-
         this.value = Math.max(minimum, value);
         this.value = Math.min(this.value, maximum - visibleAmount);
-
         repaint &= (oldValue != this.value) || (oldMin != minimum);
         if (repaint) {
             doRepaint();

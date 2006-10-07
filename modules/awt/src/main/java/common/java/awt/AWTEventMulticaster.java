@@ -14,30 +14,53 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt;
 
-import java.awt.event.*;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.HierarchyBoundsListener;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
+import java.awt.event.InputMethodEvent;
+import java.awt.event.InputMethodListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.awt.event.TextEvent;
+import java.awt.event.TextListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-
+import java.lang.reflect.Array;
 import java.util.EventListener;
 import java.util.LinkedList;
-import java.lang.reflect.Array;
 
-public class AWTEventMulticaster implements
-        ComponentListener, ContainerListener, FocusListener, KeyListener,
-        MouseListener, MouseMotionListener, WindowListener, WindowFocusListener,
-        WindowStateListener, ActionListener, ItemListener, AdjustmentListener,
-        TextListener, InputMethodListener, HierarchyListener, HierarchyBoundsListener,
-        MouseWheelListener
-{
+public class AWTEventMulticaster implements ComponentListener, ContainerListener,
+        FocusListener, KeyListener, MouseListener, MouseMotionListener, WindowListener,
+        WindowFocusListener, WindowStateListener, ActionListener, ItemListener,
+        AdjustmentListener, TextListener, InputMethodListener, HierarchyListener,
+        HierarchyBoundsListener, MouseWheelListener {
 
     protected final EventListener a;
+
     protected final EventListener b;
 
     protected static EventListener addInternal(EventListener a, EventListener b) {
@@ -61,22 +84,24 @@ public class AWTEventMulticaster implements
     }
 
     protected static void save(ObjectOutputStream s, String k, EventListener l)
-            throws IOException
-    {
+            throws IOException {
         s.writeChars(k);
         s.writeObject(l);
     }
 
-    public static <T extends EventListener> T[] getListeners(EventListener l, Class<T> listenerType)
-            throws ClassCastException {
+    @SuppressWarnings("unchecked")
+    public static <T extends EventListener> T[] getListeners(EventListener l,
+            Class<T> listenerType) throws ClassCastException {
         if (l == null) {
-            return (T[]) java.lang.reflect.Array.newInstance(listenerType, 0);
+            return (T[]) Array.newInstance(listenerType, 0);
         }
         return addListeners(l, listenerType, new LinkedList<T>()).toArray(
-                (T[]) java.lang.reflect.Array.newInstance(listenerType, 0));
+                (T[]) Array.newInstance(listenerType, 0));
     }
 
-    private static <T extends EventListener> LinkedList<T> addListeners(EventListener l, Class<T> listenerType, LinkedList<T> list) {
+    @SuppressWarnings("unchecked")
+    private static <T extends EventListener> LinkedList<T> addListeners(EventListener l,
+            Class<T> listenerType, LinkedList<T> list) {
         if (l instanceof AWTEventMulticaster) {
             AWTEventMulticaster ml = (AWTEventMulticaster) l;
 
@@ -84,7 +109,7 @@ public class AWTEventMulticaster implements
             addListeners(ml.b, listenerType, list);
         } else {
             if (l.getClass().isAssignableFrom(listenerType)) {
-                list.add((T)l);
+                list.add((T) l);
             }
         }
 
@@ -116,8 +141,7 @@ public class AWTEventMulticaster implements
     }
 
     public static HierarchyBoundsListener add(HierarchyBoundsListener a,
-            HierarchyBoundsListener b)
-    {
+            HierarchyBoundsListener b) {
         return (HierarchyBoundsListener) addInternal(a, b);
     }
 
@@ -153,7 +177,6 @@ public class AWTEventMulticaster implements
         return (KeyListener) addInternal(a, b);
     }
 
-
     public static MouseListener add(MouseListener a, MouseListener b) {
         return (MouseListener) addInternal(a, b);
     }
@@ -161,7 +184,6 @@ public class AWTEventMulticaster implements
     public static AdjustmentListener add(AdjustmentListener a, AdjustmentListener b) {
         return (AdjustmentListener) addInternal(a, b);
     }
-
 
     public static MouseListener remove(MouseListener l, MouseListener oldl) {
         return (MouseListener) removeInternal(l, oldl);
@@ -192,8 +214,7 @@ public class AWTEventMulticaster implements
     }
 
     public static HierarchyBoundsListener remove(HierarchyBoundsListener l,
-            HierarchyBoundsListener oldl)
-    {
+            HierarchyBoundsListener oldl) {
         return (HierarchyBoundsListener) removeInternal(l, oldl);
     }
 
@@ -597,5 +618,4 @@ public class AWTEventMulticaster implements
             ((WindowStateListener) b).windowStateChanged(e);
         }
     }
-
 }

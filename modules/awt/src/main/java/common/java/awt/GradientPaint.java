@@ -14,48 +14,43 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Denis M. Kishenko
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.ColorModel;
-import java.awt.image.DataBufferInt;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
 
 public class GradientPaint implements Paint {
-
     /**
-     * The start point color 
+     * The start point color
      */
     Color color1;
-    
+
     /**
      * The end color point
      */
     Color color2;
-    
+
     /**
      * The location of the start point
      */
     Point2D point1;
-    
+
     /**
      * The location of the end point
      */
     Point2D point2;
-    
+
     /**
-     * The indicator of cycle filling. If TRUE filling repeated outside points stripe, if FALSE solid color filling outside.
+     * The indicator of cycle filling. If TRUE filling repeated outside points
+     * stripe, if FALSE solid color filling outside.
      */
     boolean cyclic;
 
-    public GradientPaint(Point2D point1, Color color1, Point2D point2, Color color2, boolean cyclic) {
+    public GradientPaint(Point2D point1, Color color1, Point2D point2, Color color2,
+            boolean cyclic) {
         this.point1 = point1;
         this.point2 = point2;
         this.color1 = color1;
@@ -63,7 +58,8 @@ public class GradientPaint implements Paint {
         this.cyclic = cyclic;
     }
 
-    public GradientPaint(float x1, float y1, Color color1, float x2, float y2, Color color2, boolean cyclic) {
+    public GradientPaint(float x1, float y1, Color color1, float x2, float y2, Color color2,
+            boolean cyclic) {
         this(new Point2D.Float(x1, y1), color1, new Point2D.Float(x2, y2), color2, cyclic);
     }
 
@@ -75,7 +71,8 @@ public class GradientPaint implements Paint {
         this(point1, color1, point2, color2, false);
     }
 
-    public PaintContext createContext(ColorModel cm, Rectangle deviceBounds, Rectangle2D userBounds, AffineTransform t, RenderingHints hints) {
+    public PaintContext createContext(ColorModel cm, Rectangle deviceBounds,
+            Rectangle2D userBounds, AffineTransform t, RenderingHints hints) {
         return new GradientPaintContext(cm, t, point1, color1, point2, color2, cyclic);
     }
 
@@ -104,5 +101,4 @@ public class GradientPaint implements Paint {
     public boolean isCyclic() {
         return cyclic;
     }
-
 }

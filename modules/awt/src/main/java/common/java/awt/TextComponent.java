@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.event.FocusEvent;
@@ -33,8 +30,6 @@ import java.awt.event.TextListener;
 import java.text.BreakIterator;
 import java.util.EventListener;
 import java.util.HashMap;
-import java.util.Iterator;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
@@ -52,7 +47,6 @@ import javax.swing.text.PlainDocument;
 import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
 import javax.swing.text.Position.Bias;
-
 import org.apache.harmony.awt.state.TextComponentState;
 import org.apache.harmony.awt.text.AWTTextAction;
 import org.apache.harmony.awt.text.ActionNames;
@@ -63,65 +57,55 @@ import org.apache.harmony.awt.text.TextFactory;
 import org.apache.harmony.awt.text.TextKit;
 
 public class TextComponent extends Component implements Accessible {
-
     private static final long serialVersionUID = -2214773872412987419L;
 
     /**
      * Maps KeyEvents to keyboard actions
      */
     static class KeyMap {
-
         private static final HashMap<AWTKeyStroke, Object> actions = new HashMap<AWTKeyStroke, Object>();
-
         static {
             add(KeyEvent.VK_ENTER, 0, ActionNames.insertBreakAction);
             add(KeyEvent.VK_TAB, 0, ActionNames.insertTabAction);
             add(KeyEvent.VK_DELETE, 0, ActionNames.deleteNextCharAction);
             add(KeyEvent.VK_BACK_SPACE, 0, ActionNames.deletePrevCharAction);
-
             add(KeyEvent.VK_LEFT, 0, ActionNames.backwardAction);
             add(KeyEvent.VK_RIGHT, 0, ActionNames.forwardAction);
             add(KeyEvent.VK_UP, 0, ActionNames.upAction);
             add(KeyEvent.VK_DOWN, 0, ActionNames.downAction);
-
             add(KeyEvent.VK_HOME, 0, ActionNames.beginLineAction);
             add(KeyEvent.VK_END, 0, ActionNames.endLineAction);
             add(KeyEvent.VK_PAGE_UP, 0, ActionNames.pageUpAction);
             add(KeyEvent.VK_PAGE_DOWN, 0, ActionNames.pageDownAction);
-
             add(KeyEvent.VK_RIGHT, InputEvent.CTRL_MASK, ActionNames.nextWordAction);
             add(KeyEvent.VK_LEFT, InputEvent.CTRL_MASK, ActionNames.previousWordAction);
             add(KeyEvent.VK_PAGE_UP, InputEvent.CTRL_MASK, ActionNames.beginAction);
             add(KeyEvent.VK_PAGE_DOWN, InputEvent.CTRL_MASK, ActionNames.endAction);
             add(KeyEvent.VK_HOME, InputEvent.CTRL_MASK, ActionNames.beginAction);
             add(KeyEvent.VK_END, InputEvent.CTRL_MASK, ActionNames.endAction);
-
             add(KeyEvent.VK_LEFT, InputEvent.SHIFT_MASK, ActionNames.selectionBackwardAction);
             add(KeyEvent.VK_RIGHT, InputEvent.SHIFT_MASK, ActionNames.selectionForwardAction);
             add(KeyEvent.VK_UP, InputEvent.SHIFT_MASK, ActionNames.selectionUpAction);
             add(KeyEvent.VK_DOWN, InputEvent.SHIFT_MASK, ActionNames.selectionDownAction);
-
             add(KeyEvent.VK_HOME, InputEvent.SHIFT_MASK, ActionNames.selectionBeginLineAction);
             add(KeyEvent.VK_END, InputEvent.SHIFT_MASK, ActionNames.selectionEndLineAction);
             add(KeyEvent.VK_PAGE_UP, InputEvent.SHIFT_MASK, ActionNames.selectionPageUpAction);
-            add(KeyEvent.VK_PAGE_DOWN, InputEvent.SHIFT_MASK, ActionNames.selectionPageDownAction);
-
-            add(KeyEvent.VK_LEFT, InputEvent.CTRL_MASK|InputEvent.SHIFT_MASK,
+            add(KeyEvent.VK_PAGE_DOWN, InputEvent.SHIFT_MASK,
+                    ActionNames.selectionPageDownAction);
+            add(KeyEvent.VK_LEFT, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK,
                     ActionNames.selectionPreviousWordAction);
-            add(KeyEvent.VK_RIGHT, InputEvent.CTRL_MASK|InputEvent.SHIFT_MASK,
+            add(KeyEvent.VK_RIGHT, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK,
                     ActionNames.selectionNextWordAction);
-            add(KeyEvent.VK_PAGE_UP, InputEvent.CTRL_MASK|InputEvent.SHIFT_MASK,
+            add(KeyEvent.VK_PAGE_UP, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK,
                     ActionNames.selectionBeginAction);
-            add(KeyEvent.VK_PAGE_DOWN, InputEvent.CTRL_MASK|InputEvent.SHIFT_MASK,
+            add(KeyEvent.VK_PAGE_DOWN, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK,
                     ActionNames.selectionEndAction);
             add(KeyEvent.VK_A, InputEvent.CTRL_MASK, ActionNames.selectAllAction);
-
             add(KeyEvent.VK_INSERT, InputEvent.SHIFT_MASK, ActionNames.pasteAction);
             add(KeyEvent.VK_V, InputEvent.CTRL_MASK, ActionNames.pasteAction);
             add(KeyEvent.VK_INSERT, InputEvent.CTRL_MASK, ActionNames.copyAction);
             add(KeyEvent.VK_C, InputEvent.CTRL_MASK, ActionNames.copyAction);
             add(KeyEvent.VK_X, InputEvent.CTRL_MASK, ActionNames.cutAction);
-
         }
 
         private static void add(int vk, int mask, String actionName) {
@@ -130,13 +114,12 @@ public class TextComponent extends Component implements Accessible {
         }
 
         static AWTTextAction getAction(KeyEvent e) {
-            return (AWTTextAction)actions.get(AWTKeyStroke.getAWTKeyStrokeForEvent(e));
+            return (AWTTextAction) actions.get(AWTKeyStroke.getAWTKeyStrokeForEvent(e));
         }
     }
 
-    protected class AccessibleAWTTextComponent extends AccessibleAWTComponent
-    implements AccessibleText, TextListener {
-
+    protected class AccessibleAWTTextComponent extends AccessibleAWTComponent implements
+            AccessibleText, TextListener {
         private static final long serialVersionUID = 3631432373506317811L;
 
         public AccessibleAWTTextComponent() {
@@ -196,22 +179,20 @@ public class TextComponent extends Component implements Accessible {
         public String getAfterIndex(int part, int index) {
             int offset = 0;
             switch (part) {
-            case AccessibleText.CHARACTER:
-                return (index == document.getLength()) ? null
-                        : getCharacter(index + 1);
-            case AccessibleText.WORD:
-                try {
-                    offset = getWordEnd(index) + 1;
-                    offset = getWordEnd(offset + 1);
-                } catch (final BadLocationException e) {
+                case AccessibleText.CHARACTER:
+                    return (index == document.getLength()) ? null : getCharacter(index + 1);
+                case AccessibleText.WORD:
+                    try {
+                        offset = getWordEnd(index) + 1;
+                        offset = getWordEnd(offset + 1);
+                    } catch (final BadLocationException e) {
+                        return null;
+                    }
+                    return getWord(offset);
+                case AccessibleText.SENTENCE:
+                    // not implemented yet
+                default:
                     return null;
-                }
-                return getWord(offset);
-            case AccessibleText.SENTENCE:
-                // not implemented yet
-
-            default:
-                return null;
             }
         }
 
@@ -220,38 +201,38 @@ public class TextComponent extends Component implements Accessible {
                 return null; // compatibility
             }
             switch (part) {
-            case AccessibleText.CHARACTER:
-                return getCharacter(index);
-            case AccessibleText.WORD:
-                return getWord(index);
-            case AccessibleText.SENTENCE:
-                return getLine(index);
-            default:
-                return null;
+                case AccessibleText.CHARACTER:
+                    return getCharacter(index);
+                case AccessibleText.WORD:
+                    return getWord(index);
+                case AccessibleText.SENTENCE:
+                    return getLine(index);
+                default:
+                    return null;
             }
         }
 
         public String getBeforeIndex(int part, int index) {
             int offset = 0;
             switch (part) {
-            case AccessibleText.CHARACTER:
-                return (index == 0) ? null : getCharacter(index - 1);
-            case AccessibleText.WORD:
-                try {
-                    offset = getWordStart(index) - 1;
-                    offset = getWordStart(offset - 1);
-                } catch (final BadLocationException e) {
+                case AccessibleText.CHARACTER:
+                    return (index == 0) ? null : getCharacter(index - 1);
+                case AccessibleText.WORD:
+                    try {
+                        offset = getWordStart(index) - 1;
+                        offset = getWordStart(offset - 1);
+                    } catch (final BadLocationException e) {
+                        return null;
+                    }
+                    return (offset < 0) ? null : getWord(offset);
+                case AccessibleText.SENTENCE:
+                    BreakIterator bi = BreakIterator.getSentenceInstance();
+                    bi.setText(getText());
+                    offset = bi.preceding(index);
+                    offset = bi.previous() + 1;
+                    return (offset < 0) ? null : getLine(offset);
+                default:
                     return null;
-                }
-                return (offset < 0) ? null : getWord(offset);
-            case AccessibleText.SENTENCE:
-                BreakIterator bi = BreakIterator.getSentenceInstance();
-                bi.setText(getText());
-                offset = bi.preceding(index);
-                offset = bi.previous() + 1;
-                return (offset < 0) ? null : getLine(offset);
-            default:
-                return null;
             }
         }
 
@@ -262,9 +243,7 @@ public class TextComponent extends Component implements Accessible {
 
         public void textValueChanged(TextEvent e) {
             // TODO: implement
-
         }
-
     }
 
     /**
@@ -272,7 +251,6 @@ public class TextComponent extends Component implements Accessible {
      * key typed events
      */
     final class KeyHandler implements KeyListener {
-
         public void keyPressed(KeyEvent e) {
             performAction(e);
         }
@@ -282,7 +260,7 @@ public class TextComponent extends Component implements Accessible {
 
         public void keyTyped(KeyEvent e) {
             if (insertCharacter(e)) {
-//                repaint();
+                //                repaint();
             } else {
                 performAction(e);
             }
@@ -302,7 +280,7 @@ public class TextComponent extends Component implements Accessible {
         }
 
         void performAction(KeyEvent e) {
-            AWTTextAction action = KeyMap.getAction(e);            
+            AWTTextAction action = KeyMap.getAction(e);
             if (action != null) {
                 performTextAction(action);
                 e.consume();
@@ -314,7 +292,6 @@ public class TextComponent extends Component implements Accessible {
      * Handles Document changes, updates view
      */
     final class DocumentHandler implements DocumentListener {
-
         private Rectangle getScrollPosition() {
             Rectangle pos = getClient();
             pos.translate(scrollPosition.x, scrollPosition.y);
@@ -326,17 +303,13 @@ public class TextComponent extends Component implements Accessible {
                 // update view only when component is "viewable"
                 return;
             }
-
-            getRootView().insertUpdate(e, getScrollPosition(),
-                    getRootView().getViewFactory());
-
+            getRootView().insertUpdate(e, getScrollPosition(), getRootView().getViewFactory());
             updateBidiInfo();
             generateEvent();
         }
 
         private void updateBidiInfo() {
             // TODO catch BIDI chars here
-
         }
 
         public void removeUpdate(DocumentEvent e) {
@@ -344,8 +317,7 @@ public class TextComponent extends Component implements Accessible {
                 // update view only when component is "viewable"
                 return;
             }
-            getRootView().removeUpdate(e, getScrollPosition(), getRootView()
-                    .getViewFactory());
+            getRootView().removeUpdate(e, getScrollPosition(), getRootView().getViewFactory());
             generateEvent();
         }
 
@@ -354,8 +326,7 @@ public class TextComponent extends Component implements Accessible {
                 // update view only when component is "viewable"
                 return;
             }
-            getRootView().changedUpdate(e, getScrollPosition(),
-                    getRootView().getViewFactory());
+            getRootView().changedUpdate(e, getScrollPosition(), getRootView().getViewFactory());
             generateEvent();
         }
 
@@ -367,130 +338,123 @@ public class TextComponent extends Component implements Accessible {
     /**
      * Implements all necessary document/view/caret operations for text handling
      */
-    class TextKitImpl implements TextKit, ViewFactory,
-                RootViewContext.ViewFactoryGetter {
+    class TextKitImpl implements TextKit, ViewFactory, RootViewContext.ViewFactoryGetter {
+        public boolean isEditable() {
+            return TextComponent.this.isEditable();
+        }
 
-            public boolean isEditable() {
-                return TextComponent.this.isEditable();
-            }
-
-            public void replaceSelectedText(String text) {
-                int dot = caret.getDot();
-                int mark = caret.getMark();
-                try {
-                    int start = Math.min(dot, mark);
-                    int length = Math.abs(dot - mark);
-                    document.replace(start, length, text, null);
-                } catch (final BadLocationException e) { }
-            }
-
-            public TextCaret getCaret() {
-                return caret;
-            }
-
-            public Document getDocument() {
-                return document;
-            }
-
-            public String getSelectedText() {
-                String s = null;
-                int dot = caret.getDot();
-                int mark = caret.getMark();
-                if (dot == mark) {
-                    return null;
-                }
-                try {
-                    s = document.getText(Math.min(dot, mark), Math.abs(dot - mark));
-                } catch (final BadLocationException e) { }
-                return s;
-            }
-
-            public int getSelectionStart() {
-                return Math.min(caret.getDot(), caret.getMark());
-            }
-
-            public int getSelectionEnd() {
-                return Math.max(caret.getDot(), caret.getMark());
-            }
-
-            public Rectangle getVisibleRect() {
-                return new Rectangle(-scrollPosition.x, -scrollPosition.y, w, h);
-            }
-
-            public View getRootView() {
-                return rootViewContext.getView();
-            }
-
-            public Rectangle modelToView(int pos) throws BadLocationException {
-                return modelToView(pos, Bias.Forward);
-            }
-
-            public Rectangle modelToView(int pos, Bias bias)
-            throws BadLocationException {
-                Rectangle mRect = getModelRect();
-                if (mRect.isEmpty()) {
-                    return null;
-                }
-                Shape shape = getRootView().modelToView(pos, mRect, bias);
-                if (shape != null) {
-                    return shape.getBounds();
-                }
-                return null;
-            }
-
-            public Component getComponent() {
-                return TextComponent.this;
-            }
-
-            public int viewToModel(Point p, Bias[] biasRet) {
-                return getRootView().viewToModel(p.x, p.y, getModelRect(), biasRet);
-            }
-
-            public void scrollRectToVisible(Rectangle rect) {
-                TextComponent.this.scrollRectToVisible(rect);
-            }
-
-            public boolean isScrollBarArea(int x, int y) {
-                return false;
-            }
-
-            public void addCaretListeners(EventListener listener) {
-                // do nothing
-
-            }
-
-            public void paintLayeredHighlights(Graphics g, int p0, int p1,
-                                               Shape shape, View view) {
-                caret.getHighlighter().paintLayeredHighlights(g, p0, p1,
-                                                              shape, view);
-            }
-
-            public void revalidate() {
-                TextComponent.this.revalidate();
-            }
-
-            public Color getDisabledTextColor() {
-                return SystemColor.textInactiveText;
-            }
-
-            public Color getSelectedTextColor() {
-                return SystemColor.textHighlightText;
-            }
-
-            public View create(Element element) {
-                // do nothing
-                return null;
-            }
-
-            public ViewFactory getViewFactory() {
-                return this;
+        public void replaceSelectedText(String text) {
+            int dot = caret.getDot();
+            int mark = caret.getMark();
+            try {
+                int start = Math.min(dot, mark);
+                int length = Math.abs(dot - mark);
+                document.replace(start, length, text, null);
+            } catch (final BadLocationException e) {
             }
         }
 
+        public TextCaret getCaret() {
+            return caret;
+        }
 
-    class State extends Component.ComponentState
-    implements TextComponentState {
+        public Document getDocument() {
+            return document;
+        }
 
+        public String getSelectedText() {
+            String s = null;
+            int dot = caret.getDot();
+            int mark = caret.getMark();
+            if (dot == mark) {
+                return null;
+            }
+            try {
+                s = document.getText(Math.min(dot, mark), Math.abs(dot - mark));
+            } catch (final BadLocationException e) {
+            }
+            return s;
+        }
+
+        public int getSelectionStart() {
+            return Math.min(caret.getDot(), caret.getMark());
+        }
+
+        public int getSelectionEnd() {
+            return Math.max(caret.getDot(), caret.getMark());
+        }
+
+        public Rectangle getVisibleRect() {
+            return new Rectangle(-scrollPosition.x, -scrollPosition.y, w, h);
+        }
+
+        public View getRootView() {
+            return rootViewContext.getView();
+        }
+
+        public Rectangle modelToView(int pos) throws BadLocationException {
+            return modelToView(pos, Bias.Forward);
+        }
+
+        public Rectangle modelToView(int pos, Bias bias) throws BadLocationException {
+            Rectangle mRect = getModelRect();
+            if (mRect.isEmpty()) {
+                return null;
+            }
+            Shape shape = getRootView().modelToView(pos, mRect, bias);
+            if (shape != null) {
+                return shape.getBounds();
+            }
+            return null;
+        }
+
+        public Component getComponent() {
+            return TextComponent.this;
+        }
+
+        public int viewToModel(Point p, Bias[] biasRet) {
+            return getRootView().viewToModel(p.x, p.y, getModelRect(), biasRet);
+        }
+
+        public void scrollRectToVisible(Rectangle rect) {
+            TextComponent.this.scrollRectToVisible(rect);
+        }
+
+        public boolean isScrollBarArea(int x, int y) {
+            return false;
+        }
+
+        public void addCaretListeners(EventListener listener) {
+            // do nothing
+        }
+
+        public void paintLayeredHighlights(Graphics g, int p0, int p1, Shape shape, View view) {
+            caret.getHighlighter().paintLayeredHighlights(g, p0, p1, shape, view);
+        }
+
+        public void revalidate() {
+            TextComponent.this.revalidate();
+        }
+
+        public Color getDisabledTextColor() {
+            return SystemColor.textInactiveText;
+        }
+
+        public Color getSelectedTextColor() {
+            return SystemColor.textHighlightText;
+        }
+
+        public View create(Element element) {
+            // do nothing
+            return null;
+        }
+
+        public ViewFactory getViewFactory() {
+            return this;
+        }
+    }
+
+    class State extends Component.ComponentState implements TextComponentState {
         final Dimension textSize = new Dimension();
 
         public String getText() {
@@ -510,30 +474,33 @@ public class TextComponent extends Component implements Accessible {
             return super.isEnabled() && isEditable();
         }
 
-        public Rectangle getClient() {            
+        public Rectangle getClient() {
             return TextComponent.this.getClient();
         }
 
-        public Insets getInsets() {            
+        public Insets getInsets() {
             return getNativeInsets();
         }
-
     }
 
     protected volatile transient TextListener textListener;
 
-    private final AWTListenerList textListeners = new AWTListenerList(this);
+    private final AWTListenerList<TextListener> textListeners = new AWTListenerList<TextListener>(
+            this);
 
     AbstractDocument document;
+
     final transient TextCaret caret;
+
     final transient RootViewContext rootViewContext;
 
     final Point scrollPosition = new Point();
-    private boolean editable;
-    private final Insets BORDER = new Insets(2, 2, 2, 2);
-    private final State state;
 
-//    StringBuffer text = new StringBuffer();
+    private boolean editable;
+
+    private final Insets BORDER = new Insets(2, 2, 2, 2);
+
+    private final State state;
 
     TextComponent() {
         state = new State();
@@ -541,25 +508,19 @@ public class TextComponent extends Component implements Accessible {
         dispatchToIM = true; // had been disabled by createBehavior()
         setFont(new Font("DialogInput", Font.PLAIN, 12)); // QUICK FIX
         document = new PlainDocument();
-
-//        text = new StringBuffer();
-
+        //        text = new StringBuffer();
         setTextKit(new TextKitImpl());
-
         rootViewContext = createRootViewContext();
         rootViewContext.getView().append(createView());
         rootViewContext.getView().setSize(w, h);
-
         caret = createCaret();
         setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-
         addAWTMouseListener(getMouseHandler());
         addAWTMouseMotionListener(getMotionHandler());
-        addAWTFocusListener((FocusListener)caret);
+        addAWTFocusListener((FocusListener) caret);
         addAWTKeyListener(new KeyHandler());
         // document handler must be added after caret's listener has been added!
         document.addDocumentListener(new DocumentHandler());
-
     }
 
     /**
@@ -567,7 +528,7 @@ public class TextComponent extends Component implements Accessible {
      * To be overridden.
      */
     MouseMotionListener getMotionHandler() {
-        return (MouseMotionListener)caret;
+        return (MouseMotionListener) caret;
     }
 
     /**
@@ -575,7 +536,7 @@ public class TextComponent extends Component implements Accessible {
      * To be overridden.
      */
     MouseListener getMouseHandler() {
-        return (MouseListener)caret;
+        return (MouseListener) caret;
     }
 
     /**
@@ -594,14 +555,11 @@ public class TextComponent extends Component implements Accessible {
      * @return this component's root view
      */
     private RootViewContext createRootViewContext() {
-
         TextFactory factory = TextFactory.getTextFactory();
         RootViewContext c = factory.createRootView(null);
-
         c.setComponent(this);
         c.setDocument(document);
-        c.setViewFactoryGetter((TextKitImpl)getTextKit());
-
+        c.setViewFactoryGetter((TextKitImpl) getTextKit());
         return c;
     }
 
@@ -631,14 +589,12 @@ public class TextComponent extends Component implements Accessible {
 
     @Override
     public void addNotify() {
-//        toolkit.lockAWT();
-//        try {
-            super.addNotify();
-            
-            
-//        } finally {
-//            toolkit.unlockAWT();
-//        }
+        //        toolkit.lockAWT();
+        //        try {
+        super.addNotify();
+        //        } finally {
+        //            toolkit.unlockAWT();
+        //        }
         //      ajust caret position if was invalid
         int maxPos = document.getLength();
         if (getCaretPosition() > maxPos) {
@@ -673,13 +629,11 @@ public class TextComponent extends Component implements Accessible {
          * which can be revealed by the following code:
          * System.out.println(new TextField());
          */
-
         toolkit.lockAWT();
         try {
-            return (super.paramString() + ",text=" + getText() +
-                    (isEditable() ? ",editable" : "") +
-                    ",selection=" + getSelectionStart() +
-                    "-" + getSelectionEnd());
+            return (super.paramString() + ",text=" + getText()
+                    + (isEditable() ? ",editable" : "") + ",selection=" + getSelectionStart()
+                    + "-" + getSelectionEnd());
         } finally {
             toolkit.unlockAWT();
         }
@@ -725,7 +679,8 @@ public class TextComponent extends Component implements Accessible {
             try {
                 int length = getSelectionEnd() - getSelectionStart();
                 s = document.getText(getSelectionStart(), length);
-            } catch (final BadLocationException e) { }
+            } catch (final BadLocationException e) {
+            }
             return s;
         } finally {
             toolkit.unlockAWT();
@@ -822,40 +777,40 @@ public class TextComponent extends Component implements Accessible {
     }
 
     public void setSelectionEnd(int selectionEnd) {
-//        toolkit.lockAWT();
-//        try {
-            selectionEnd = Math.min(selectionEnd, document.getLength());
-            int start = getSelectionStart();
-            if (selectionEnd < start) {
-                caret.setDot(selectionEnd, caret.getDotBias());
-            } else {
-               caret.setDot(start, caret.getDotBias());
-               caret.moveDot(Math.max(start, selectionEnd), caret.getDotBias());
-            }
-//        } finally {
-//            toolkit.unlockAWT();
-//        }
+        //        toolkit.lockAWT();
+        //        try {
+        selectionEnd = Math.min(selectionEnd, document.getLength());
+        int start = getSelectionStart();
+        if (selectionEnd < start) {
+            caret.setDot(selectionEnd, caret.getDotBias());
+        } else {
+            caret.setDot(start, caret.getDotBias());
+            caret.moveDot(Math.max(start, selectionEnd), caret.getDotBias());
+        }
+        //        } finally {
+        //            toolkit.unlockAWT();
+        //        }
     }
 
     public void setSelectionStart(int selectionStart) {
-//        toolkit.lockAWT();
-//        try {
-            selectionStart = Math.max(selectionStart, 0);
-            int end = getSelectionEnd();
-            if (selectionStart > end) {
-                caret.setDot(selectionStart, caret.getDotBias());
-            } else {
-               caret.setDot(end, caret.getDotBias());
-               caret.moveDot(Math.min(end, selectionStart), caret.getDotBias());
-            }
-//        } finally {
-//            toolkit.unlockAWT();
-//        }
+        //        toolkit.lockAWT();
+        //        try {
+        selectionStart = Math.max(selectionStart, 0);
+        int end = getSelectionEnd();
+        if (selectionStart > end) {
+            caret.setDot(selectionStart, caret.getDotBias());
+        } else {
+            caret.setDot(end, caret.getDotBias());
+            caret.moveDot(Math.min(end, selectionStart), caret.getDotBias());
+        }
+        //        } finally {
+        //            toolkit.unlockAWT();
+        //        }
     }
 
     public void setText(String text) {
         toolkit.lockAWT();
-        try {            
+        try {
             if (text == null) {
                 text = "";
             }
@@ -873,11 +828,12 @@ public class TextComponent extends Component implements Accessible {
                 // return caret back to emulate "no movement"
                 caret.setDot(oldCaretPos, caret.getDotBias());
             }
-        } catch (BadLocationException e) {            
+        } catch (BadLocationException e) {
             e.printStackTrace();
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         if (TextListener.class.isAssignableFrom(listenerType)) {
@@ -890,7 +846,6 @@ public class TextComponent extends Component implements Accessible {
         textListeners.addUserListener(l);
         // for compatibility only:
         textListener = AWTEventMulticaster.add(textListener, l);
-
     }
 
     public void removeTextListener(TextListener l) {
@@ -900,7 +855,7 @@ public class TextComponent extends Component implements Accessible {
     }
 
     public TextListener[] getTextListeners() {
-        return (TextListener[]) textListeners.getUserListeners(new TextListener[0]);
+        return textListeners.getUserListeners(new TextListener[0]);
     }
 
     @Override
@@ -913,13 +868,11 @@ public class TextComponent extends Component implements Accessible {
     }
 
     protected void processTextEvent(TextEvent e) {
-        for (Iterator<?> i = textListeners.getUserIterator(); i.hasNext();) {
-            TextListener listener = (TextListener) i.next();
-
+        for (TextListener listener : textListeners.getUserListeners()) {
             switch (e.getID()) {
-            case TextEvent.TEXT_VALUE_CHANGED:
-                listener.textValueChanged(e);
-                break;
+                case TextEvent.TEXT_VALUE_CHANGED:
+                    listener.textValueChanged(e);
+                    break;
             }
         }
     }
@@ -937,10 +890,8 @@ public class TextComponent extends Component implements Accessible {
         if ((viewSize.height <= 0) || (viewSize.width <= 0)) {
             return; // FIX
         }
-
         int dx;
         int dy;
-
         r.x -= ins.left;
         r.y -= ins.top;
         if (r.x > 0) {
@@ -960,7 +911,6 @@ public class TextComponent extends Component implements Accessible {
         } else {
             dx = 0;
         }
-
         if (r.y > 0) {
             if (r.y + r.height > viewSize.height) {
                 int dy2 = r.y + r.height - viewSize.height;
@@ -978,13 +928,10 @@ public class TextComponent extends Component implements Accessible {
         } else {
             dy = 0;
         }
-
         if (dx != 0 || dy != 0) {
             int x = viewPos.x + dx;
             int y = viewPos.y + dy;
-
             Point point = new Point(x, y);
-
             setViewPosition(point);
             repaint();
         }
@@ -997,7 +944,7 @@ public class TextComponent extends Component implements Accessible {
     void setViewPosition(Point point) {
         scrollPosition.setLocation(-point.x, -point.y);
     }
-    
+
     /**
      * Gets current scroll position
      */
@@ -1007,9 +954,8 @@ public class TextComponent extends Component implements Accessible {
 
     Rectangle getClient() {
         Insets insets = getInsets();
-        return new Rectangle(insets.left, insets.top,
-                w - insets.right - insets.left,
-                h - insets.top - insets.bottom);
+        return new Rectangle(insets.left, insets.top, w - insets.right - insets.left, h
+                - insets.top - insets.bottom);
     }
 
     /**
@@ -1032,15 +978,10 @@ public class TextComponent extends Component implements Accessible {
 
     @Override
     void prepaint(Graphics g) {
-
         toolkit.theme.drawTextComponentBackground(g, state);
-
         g.setFont(getFont());
-        g.setColor(isEnabled() ? getForeground() :
-                   SystemColor.textInactiveText);
-
+        g.setColor(isEnabled() ? getForeground() : SystemColor.textInactiveText);
         Rectangle r = getModelRect();
-
         rootViewContext.getView().setSize(r.width, r.height);
         Rectangle client = getClient();
         Shape oldClip = g.getClip();
@@ -1072,7 +1013,6 @@ public class TextComponent extends Component implements Accessible {
         bi.setText(getText());
         int end = bi.following(index);
         int start = bi.preceding(end - 1);
-
         try {
             result = document.getText(start, end - start);
         } catch (BadLocationException e) {
@@ -1091,7 +1031,6 @@ public class TextComponent extends Component implements Accessible {
             result = document.getText(start, length);
         } catch (final BadLocationException e) {
         }
-
         return result;
     }
 
@@ -1105,7 +1044,6 @@ public class TextComponent extends Component implements Accessible {
     }
 
     private int getWordEnd(final int pos) throws BadLocationException {
-
         BreakIterator bi = BreakIterator.getWordInstance();
         int length = document.getLength();
         if (pos < 0 || pos > length) {
@@ -1116,16 +1054,13 @@ public class TextComponent extends Component implements Accessible {
         return (pos < bi.last()) ? bi.following(pos) : pos;
     }
 
-    private int getWordStart(final int pos)
-            throws BadLocationException {
-
+    private int getWordStart(final int pos) throws BadLocationException {
         BreakIterator bi = BreakIterator.getWordInstance();
         int length = document.getLength();
         if (pos < 0 || pos > length) {
             throwException("No word at " + pos, pos);
         }
         String content = null;
-
         content = document.getText(0, length);
         bi.setText(content);
         int iteratorWordStart = pos;
@@ -1138,24 +1073,22 @@ public class TextComponent extends Component implements Accessible {
         return iteratorWordStart;
     }
 
-    private static void throwException(final String s, final int i)
-            throws BadLocationException {
+    private static void throwException(final String s, final int i) throws BadLocationException {
         throw new BadLocationException(s, i);
     }
 
     @Override
-    void setEnabledImpl(boolean value) {        
+    void setEnabledImpl(boolean value) {
         super.setEnabledImpl(value);
         if (isShowing()) {
             repaint();
         }
     }
-    
+
     @Override
     void postprocessEvent(AWTEvent e, long eventMask) {
         // have to call system listeners without AWT lock
         // to avoid deadlocks in code common with UI text
-        
         if (eventMask == AWTEvent.FOCUS_EVENT_MASK) {
             preprocessFocusEvent((FocusEvent) e);
         } else if (eventMask == AWTEvent.KEY_EVENT_MASK) {
@@ -1168,9 +1101,8 @@ public class TextComponent extends Component implements Accessible {
             super.postprocessEvent(e, eventMask);
         }
     }
-    
+
     void performTextAction(AWTTextAction action) {
         action.performAction(getTextKit());
     }
-    
 }

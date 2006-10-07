@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Dmitry A. Durnev
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.event.ItemEvent;
@@ -25,8 +22,6 @@ import java.awt.event.ItemListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.EventListener;
-import java.util.Iterator;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleAction;
 import javax.accessibility.AccessibleContext;
@@ -34,21 +29,19 @@ import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleState;
 import javax.accessibility.AccessibleStateSet;
 import javax.accessibility.AccessibleValue;
-
 import org.apache.harmony.awt.ButtonStateController;
 import org.apache.harmony.awt.FieldsAccessor;
 import org.apache.harmony.awt.state.CheckboxState;
 
-
 public class Checkbox extends Component implements ItemSelectable, Accessible {
     private static final long serialVersionUID = 7270714317450821763L;
 
-    protected class AccessibleAWTCheckbox
-            extends Component.AccessibleAWTComponent
-            implements ItemListener, AccessibleAction, AccessibleValue {
+    protected class AccessibleAWTCheckbox extends Component.AccessibleAWTComponent implements
+            ItemListener, AccessibleAction, AccessibleValue {
         private static final long serialVersionUID = 7881579233144754107L;
 
         public AccessibleAWTCheckbox() {
+            super();
             // define default constructor explicitly just to make it public
             // add listener to be able to fire property changes:
             addItemListener(this);
@@ -84,16 +77,14 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
             AccessibleState oldValue = null;
             AccessibleState newValue = null;
             switch (e.getStateChange()) {
-            case ItemEvent.SELECTED:
-                newValue = checkedState;
-                break;
-            case ItemEvent.DESELECTED:
-                oldValue = checkedState;
-                break;
+                case ItemEvent.SELECTED:
+                    newValue = checkedState;
+                    break;
+                case ItemEvent.DESELECTED:
+                    oldValue = checkedState;
+                    break;
             }
-            firePropertyChange(AccessibleContext.ACCESSIBLE_STATE_PROPERTY,
-                               oldValue, newValue);
-
+            firePropertyChange(AccessibleContext.ACCESSIBLE_STATE_PROPERTY, oldValue, newValue);
         }
 
         public int getAccessibleActionCount() {
@@ -123,12 +114,14 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
         public boolean setCurrentAccessibleValue(Number arg0) {
             return false;
         }
-
     }
 
-    final class State extends Component.ComponentState implements CheckboxState {
+    private final class State extends Component.ComponentState implements CheckboxState {
+        private final Dimension textSize = new Dimension();
 
-        final Dimension textSize = new Dimension();
+        State() {
+            super();
+        }
 
         public boolean isChecked() {
             return checked;
@@ -161,14 +154,18 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
         }
     }
 
+    private final AWTListenerList<ItemListener> itemListeners = new AWTListenerList<ItemListener>(
+            this);
 
-    private final AWTListenerList itemListeners = new AWTListenerList(this);
-    private String label = null;
-    private CheckboxGroup group = null;
-    boolean checked = false;
-    final transient State state = new State();
-    final transient ButtonStateController stateController;
+    private String label;
 
+    private CheckboxGroup group;
+
+    private boolean checked;
+
+    private final transient State state = new State();
+
+    private final transient ButtonStateController stateController;
 
     public Checkbox() throws HeadlessException {
         this(new String(), null, false);
@@ -186,7 +183,6 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
             this.group = group;
             setState(state);
             stateController = createStateController();
-
             addAWTMouseListener(stateController);
             addAWTKeyListener(stateController);
             addAWTFocusListener(stateController);
@@ -195,13 +191,10 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
         }
     }
 
-
     private void generateEvent() {
         setState(!getState());
         int stateChange = (checked ? ItemEvent.SELECTED : ItemEvent.DESELECTED);
-        postEvent(new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED,
-                                this, stateChange));
-
+        postEvent(new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED, this, stateChange));
     }
 
     public Checkbox(String label) throws HeadlessException {
@@ -222,8 +215,7 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
         }
     }
 
-    public Checkbox(String label, boolean state, CheckboxGroup group)
-    throws HeadlessException {
+    public Checkbox(String label, boolean state, CheckboxGroup group) throws HeadlessException {
         this(label, group, state);
         toolkit.lockAWT();
         try {
@@ -231,8 +223,6 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
             toolkit.unlockAWT();
         }
     }
-
-
 
     public boolean getState() {
         toolkit.lockAWT();
@@ -269,11 +259,9 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
          * which can be revealed by the following code:
          * System.out.println(new Checkbox());
          */
-
         toolkit.lockAWT();
         try {
-            return super.paramString() +
-            ",label=" + label + ",state=" + checked;
+            return super.paramString() + ",label=" + label + ",state=" + checked;
         } finally {
             toolkit.unlockAWT();
         }
@@ -315,9 +303,7 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
             CheckboxGroup oldGroup = this.group;
             this.group = group;
             if (checked) {
-                if ((oldGroup != null) &&
-                    (oldGroup.getSelectedCheckbox() == this)) {
-
+                if ((oldGroup != null) && (oldGroup.getSelectedCheckbox() == this)) {
                     oldGroup.setSelectedCheckbox(null);
                 }
                 if (group != null) {
@@ -369,6 +355,7 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
         repaint();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         toolkit.lockAWT();
@@ -403,7 +390,7 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
     public ItemListener[] getItemListeners() {
         toolkit.lockAWT();
         try {
-            return (ItemListener[]) itemListeners.getUserListeners(new ItemListener[0]);
+            return itemListeners.getUserListeners(new ItemListener[0]);
         } finally {
             toolkit.unlockAWT();
         }
@@ -413,8 +400,7 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
     protected void processEvent(AWTEvent e) {
         toolkit.lockAWT();
         try {
-            if (toolkit.eventTypeLookup.getEventMask(e) ==
-                AWTEvent.ITEM_EVENT_MASK) {
+            if (toolkit.eventTypeLookup.getEventMask(e) == AWTEvent.ITEM_EVENT_MASK) {
                 processItemEvent((ItemEvent) e);
             } else {
                 super.processEvent(e);
@@ -427,13 +413,11 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
     protected void processItemEvent(ItemEvent e) {
         toolkit.lockAWT();
         try {
-            for (Iterator i = itemListeners.getUserIterator(); i.hasNext();) {
-                ItemListener listener = (ItemListener) i.next();
-
+            for (ItemListener listener : itemListeners.getUserListeners()) {
                 switch (e.getID()) {
-                case ItemEvent.ITEM_STATE_CHANGED:
-                    listener.itemStateChanged(e);
-                    break;
+                    case ItemEvent.ITEM_STATE_CHANGED:
+                        listener.itemStateChanged(e);
+                        break;
                 }
             }
         } finally {
@@ -481,24 +465,21 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
     }
 
     ButtonStateController createStateController() {
-
         return new ButtonStateController(this) {
             @Override
             protected void fireEvent() {
                 generateEvent();
-            }};
+            }
+        };
     }
 
-    private void readObject(ObjectInputStream stream)
-            throws IOException, ClassNotFoundException {
-
+    private void readObject(ObjectInputStream stream) throws IOException,
+            ClassNotFoundException {
         stream.defaultReadObject();
-
         FieldsAccessor accessor = new FieldsAccessor(Button.class, this);
         accessor.set("stateController", createStateController());
         accessor.set("state", new State());
     }
-
 
     @Override
     AccessibleContext createAccessibleContext() {

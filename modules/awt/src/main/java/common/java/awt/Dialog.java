@@ -14,22 +14,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Pavel Dolgov
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
-
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleState;
 import javax.accessibility.AccessibleStateSet;
-
 
 public class Dialog extends Window {
     private static final long serialVersionUID = 5920926903803293709L;
@@ -43,6 +38,7 @@ public class Dialog extends Window {
             restoreActive = active;
             super.runModalLoop();
         }
+
         @Override
         public void endModalLoop() {
             if (restoreActive != null) {
@@ -79,7 +75,6 @@ public class Dialog extends Window {
                 toolkit.unlockAWT();
             }
         }
-
     }
 
     public Dialog(Frame owner, String title, boolean modal, GraphicsConfiguration gc) {
@@ -175,7 +170,8 @@ public class Dialog extends Window {
     protected String paramString() {
         toolkit.lockAWT();
         try {
-            return super.paramString() + ",title=" + getTitle() + (isResizable() ? ",resizable" : "") + (isModal() ? ",modal" : "");
+            return super.paramString() + ",title=" + getTitle()
+                    + (isResizable() ? ",resizable" : "") + (isModal() ? ",modal" : "");
         } finally {
             toolkit.unlockAWT();
         }
@@ -185,7 +181,7 @@ public class Dialog extends Window {
     public void dispose() {
         toolkit.lockAWT();
         try {
-            if(modalContext != null && modalContext.isModalLoopRunning()) {
+            if (modalContext != null && modalContext.isModalLoopRunning()) {
                 modalContext.endModalLoop();
             }
             super.dispose();
@@ -214,9 +210,7 @@ public class Dialog extends Window {
         }
     }
 
-    /**
-     * @deprecated
-     */
+    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public void hide() {
@@ -227,7 +221,8 @@ public class Dialog extends Window {
             toolkit.unlockAWT();
         }
     }
-    
+
+    @SuppressWarnings("deprecation")
     void hideImpl() {
         if (modalContext != null && modalContext.isModalLoopRunning()) {
             modalContext.endModalLoop();
@@ -236,16 +231,15 @@ public class Dialog extends Window {
             super.hide();
         }
     }
-    
-    /**
-     * @deprecated
-     */
+
+    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public void show() {
         showImpl();
     }
 
+    @SuppressWarnings("deprecation")
     void showImpl() {
         if (isModal()) {
             if (EventQueue.isDispatchThread()) {
@@ -266,8 +260,7 @@ public class Dialog extends Window {
                     toolkit.unlockAWT();
                 }
             }
-        }
-        else {
+        } else {
             super.show();
         }
     }
@@ -314,14 +307,13 @@ public class Dialog extends Window {
     public void setModal(boolean modal) {
         toolkit.lockAWT();
         try {
-            if(modal == isModal()) {
+            if (modal == isModal()) {
                 return;
             }
-
-            if(isVisible()) {
-                throw new IllegalComponentStateException("Cannot change the modality while the dialog is visible");
+            if (isVisible()) {
+                throw new IllegalComponentStateException(
+                        "Cannot change the modality while the dialog is visible");
             }
-
             modalContext = modal ? new DialogModalContext() : null;
         } finally {
             toolkit.unlockAWT();
@@ -338,7 +330,6 @@ public class Dialog extends Window {
         }
     }
 
-
     @Override
     public void setTitle(String title) {
         super.setTitle(title);
@@ -354,13 +345,13 @@ public class Dialog extends Window {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void showModal() {
         Collection<Window> otherWindows;
         Window active;
         toolkit.lockAWT();
         try {
-            active = KeyboardFocusManager.
-                getCurrentKeyboardFocusManager().getActiveWindow();
+            active = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
             otherWindows = disableOtherWindows();
             super.show();
         } finally {
@@ -373,15 +364,14 @@ public class Dialog extends Window {
     private Collection<Window> disableOtherWindows() {
         Iterator<?> i = toolkit.windows.iterator();
         LinkedList<Window> result = new LinkedList<Window>();
-        while(i.hasNext()) {
+        while (i.hasNext()) {
             Object obj = i.next();
-            if(obj instanceof Window) {
-                Window w = (Window)obj;
-                if(w.isEnabled() && w != this) {
+            if (obj instanceof Window) {
+                Window w = (Window) obj;
+                if (w.isEnabled() && w != this) {
                     w.setEnabled(false);
                     result.add(w);
                 }
-
             }
         }
         return result;
@@ -414,7 +404,7 @@ public class Dialog extends Window {
     void runModalLoop() {
         modalContext.runModalLoop();
     }
-    
+
     void endModalLoop() {
         modalContext.endModalLoop();
     }

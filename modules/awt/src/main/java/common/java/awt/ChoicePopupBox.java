@@ -14,17 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Dmitry A. Durnev
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-
 import org.apache.harmony.awt.ChoiceStyle;
 import org.apache.harmony.awt.PeriodicTimer;
 import org.apache.harmony.awt.ScrollStateController;
@@ -33,56 +29,64 @@ import org.apache.harmony.awt.ScrollbarStateController;
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.state.ListState;
 
-
 /**
  * Helper class: popup window containing list of
  * Choice items, implements popup and scrolling list behavior
  * of Choice component
  */
 class ChoicePopupBox extends PopupBox {
-
     private final Choice choice;
-    
+
     /**
      * how many items to scroll on PgUp/PgDn
      */
     final static int PAGE_SIZE = 8;
-    
+
     /**
      * how many ticks to skip when scroll speed is minimum
      */
     final static int MAX_SKIP = 12;
-    
+
     int selectedItem;
+
     int focusedItem;
-    
+
     /**
      * fields for dragging/scrolling behavior implementation
      */
     private int scrollLocation;
+
     transient ScrollPaneAdjustable vAdj;
+
     Scrollable scrollable;
+
     ScrollStateController scrollController;
+
     ScrollbarStateController scrollbarController;
+
     boolean scroll;
+
     private boolean scrollDragged;
 
     /**
      * fields for scrolling animation
      */
-    private PeriodicTimer dragScrollTimer;
+    private final PeriodicTimer dragScrollTimer;
+
     private int dragScrollSpeed;
+
     private Runnable dragScrollHandler;
+
     private int nSkip; // scroll every nSkip ticks
-    
+
     private final ChoiceListState listState;
+
     private final ChoiceStyle style;
 
     /**
      * List state implementation
      */
     class ChoiceListState extends Choice.ComponentState implements ListState {
-
         ChoiceListState() {
             choice.super();
         }
@@ -104,7 +108,6 @@ class ChoicePopupBox extends PopupBox {
             return choice.getItemCount();
         }
 
-
         public boolean isSelected(int idx) {
             return (selectedItem == idx);
         }
@@ -122,12 +125,11 @@ class ChoicePopupBox extends PopupBox {
             return ChoicePopupBox.this.getSize();
         }
     }
-    
+
     /**
      * Scrolling behavior implementation
      */
     class ChoiceScrollable implements Scrollable {
-
         public Adjustable getVAdjustable() {
             return vAdj;
         }
@@ -146,7 +148,6 @@ class ChoicePopupBox extends PopupBox {
 
         public void setLocation(Point p) {
             scrollLocation = p.y;
-
         }
 
         public Component getComponent() {
@@ -154,8 +155,7 @@ class ChoicePopupBox extends PopupBox {
         }
 
         public Dimension getSize() {
-            return new Dimension(getWidth(),
-                                 choice.getItemHeight() * choice.getItemCount());
+            return new Dimension(getWidth(), choice.getItemHeight() * choice.getItemCount());
         }
 
         public void doRepaint() {
@@ -170,10 +170,8 @@ class ChoicePopupBox extends PopupBox {
             return 0;
         }
 
-        public void setAdjustableSizes(Adjustable adj, int vis, int min,
-                                       int max) {
+        public void setAdjustableSizes(Adjustable adj, int vis, int min, int max) {
             vAdj.setSizes(vis, min, max);
-
         }
 
         public int getAdjustableMode(Adjustable adj) {
@@ -195,7 +193,6 @@ class ChoicePopupBox extends PopupBox {
         public void doRepaint(Rectangle r) {
             repaint(r);
         }
-
     }
 
     public ChoicePopupBox(Choice choice) {
@@ -204,6 +201,7 @@ class ChoicePopupBox extends PopupBox {
         style = choice.popupStyle;
         vAdj = new ScrollPaneAdjustable(choice, Adjustable.VERTICAL) {
             private static final long serialVersionUID = 2280561825998835980L;
+
             @Override
             void repaintComponent(Rectangle r) {
                 if (isVisible()) {
@@ -217,8 +215,7 @@ class ChoicePopupBox extends PopupBox {
         scrollbarController = vAdj.getStateController();
         vAdj.addAdjustmentListener(scrollController);
         nSkip = MAX_SKIP;
-        dragScrollTimer = new PeriodicTimer(25l,
-                                            getAsyncHandler(getDragScrollHandler()));
+        dragScrollTimer = new PeriodicTimer(25l, getAsyncHandler(getDragScrollHandler()));
     }
 
     public int getWidth() {
@@ -233,14 +230,14 @@ class ChoicePopupBox extends PopupBox {
         if (dragScrollHandler == null) {
             dragScrollHandler = new Runnable() {
                 int n;
+
                 public void run() {
                     if (n++ % nSkip == 0) {
-                    int selItem = focusedItem + (dragScrollSpeed /
-                            Math.abs(dragScrollSpeed));
-                    selectItem(selItem, false);
-                    vAdj.setValue(vAdj.getValue() + dragScrollSpeed);
+                        int selItem = focusedItem
+                                + (dragScrollSpeed / Math.abs(dragScrollSpeed));
+                        selectItem(selItem, false);
+                        vAdj.setValue(vAdj.getValue() + dragScrollSpeed);
                     }
-
                 }
             };
         }
@@ -285,10 +282,9 @@ class ChoicePopupBox extends PopupBox {
     Rectangle getItemBounds(int pos) {
         int itemHeight = choice.getItemHeight();
         Point p = new Point(0, pos * itemHeight);
-        Rectangle itemRect = new Rectangle(p, new Dimension(getWidth(),
-                                                            itemHeight));
+        Rectangle itemRect = new Rectangle(p, new Dimension(getWidth(), itemHeight));
         itemRect.translate(0, scrollLocation);
-        return  itemRect;
+        return itemRect;
     }
 
     /**
@@ -306,18 +302,13 @@ class ChoicePopupBox extends PopupBox {
             count = PAGE_SIZE;
             scroll = true;
         }
-
         int height = count * itemHeight;
         Rectangle screenBounds = choice.getGraphicsConfiguration().getBounds();
         Point screenLoc = choice.getLocationOnScreen();
-        int x = style.getPopupX(screenLoc.x, itemWidth, choiceWidth,
-                                screenBounds.width);
+        int x = style.getPopupX(screenLoc.x, itemWidth, choiceWidth, screenBounds.width);
         int y = calcY(screenLoc.y, height, screenBounds.height);
-
         return new Rectangle(x, y, itemWidth, height);
     }
-
-
 
     /**
      * Places list popup window below or above Choice component
@@ -354,23 +345,20 @@ class ChoicePopupBox extends PopupBox {
      * @return current popup window bounds
      */
     Rectangle getBounds() {
-        return new Rectangle(new Point(),
-                             getSize());
+        return new Rectangle(new Point(), getSize());
     }
-
 
     @Override
     void onKeyEvent(int eventId, int vKey, long when, int modifiers) {
         if (eventId == KeyEvent.KEY_PRESSED) {
             switch (vKey) {
-            case KeyEvent.VK_ESCAPE:
-                hide();
-                break;
-
-            case KeyEvent.VK_ENTER:
-                hide();
-                choice.selectAndFire(selectedItem);
-                break;
+                case KeyEvent.VK_ESCAPE:
+                    hide();
+                    break;
+                case KeyEvent.VK_ENTER:
+                    hide();
+                    choice.selectAndFire(selectedItem);
+                    break;
             }
         }
     }
@@ -408,21 +396,18 @@ class ChoicePopupBox extends PopupBox {
             return;
         }
         int itemHeight = choice.getItemHeight();
-
         int dy = ((y < 0) ? -y : (y - h));
         nSkip = Math.max(1, MAX_SKIP - 5 * dy / itemHeight);
         dragScrollSpeed = itemHeight * (y / Math.abs(y));
         dragScrollTimer.start();
-
     }
 
     /**
      * Handles all mouse events on popup window
      */
     @Override
-    void onMouseEvent(int eventId, Point where, int mouseButton, long when,
-                      int modifiers, int wheelRotation) {
-
+    void onMouseEvent(int eventId, Point where, int mouseButton, long when, int modifiers,
+            int wheelRotation) {
         if (scroll && (eventId == MouseEvent.MOUSE_WHEEL)) {
             processMouseWheel(where, when, modifiers, wheelRotation);
             return;
@@ -435,65 +420,59 @@ class ChoicePopupBox extends PopupBox {
         int y = where.y;
         int index = (y - scrollLocation) / choice.getItemHeight();
         switch (eventId) {
-        case MouseEvent.MOUSE_PRESSED:
-            break;
-        case MouseEvent.MOUSE_DRAGGED:
-            // scroll on mouse drag
-            if ((modifiers & InputEvent.BUTTON1_DOWN_MASK) != 0) {
-                dragScroll(y);
-            }
-        case MouseEvent.MOUSE_MOVED:
-            if ((index < 0) || (index >= choice.getItemCount()) ||
-                (index == selectedItem)) {
-                return;
-            }
-            boolean select = getBounds().contains(where);
-            if ((y >= 0) && (y < getHeight())) {
-                selectItem(index, select); //hot track
-            }
-            break;
-        case MouseEvent.MOUSE_RELEASED:
-            if (button1) {
-                hide();
-                choice.selectAndFire(index);
-            }
-            break;
+            case MouseEvent.MOUSE_PRESSED:
+                break;
+            case MouseEvent.MOUSE_DRAGGED:
+                // scroll on mouse drag
+                if ((modifiers & InputEvent.BUTTON1_DOWN_MASK) != 0) {
+                    dragScroll(y);
+                }
+            case MouseEvent.MOUSE_MOVED:
+                if ((index < 0) || (index >= choice.getItemCount()) || (index == selectedItem)) {
+                    return;
+                }
+                boolean select = getBounds().contains(where);
+                if ((y >= 0) && (y < getHeight())) {
+                    selectItem(index, select); //hot track
+                }
+                break;
+            case MouseEvent.MOUSE_RELEASED:
+                if (button1) {
+                    hide();
+                    choice.selectAndFire(index);
+                }
+                break;
         }
     }
-    
+
     /**
      * Mouse wheel event processing by vertical scrollbar
      */
-    private void processMouseWheel(Point where, long when,
-                                   int modifiers, int wheelRotation) {
-        MouseWheelEvent mwe = new MouseWheelEvent(choice, MouseEvent.MOUSE_WHEEL,
-                                                  when, modifiers, where.x,
-                                                  where.y, 0, false,
-                                                  MouseWheelEvent.WHEEL_UNIT_SCROLL,
-                                                  1, wheelRotation);
+    private void processMouseWheel(Point where, long when, int modifiers, int wheelRotation) {
+        MouseWheelEvent mwe = new MouseWheelEvent(choice, MouseEvent.MOUSE_WHEEL, when,
+                modifiers, where.x, where.y, 0, false, MouseWheelEvent.WHEEL_UNIT_SCROLL, 1,
+                wheelRotation);
         scrollController.mouseWheelMoved(mwe);
     }
 
     /**
      * Mouse event processing by vertical scrollbar
      */
-    private void processMouseEvent(int id, Point where, int button,
-                                   long when, int modifiers) {
-        MouseEvent me = new MouseEvent(choice, id, when,
-                                       modifiers, where.x, where.y,
-                                       0, false, button);
+    private void processMouseEvent(int id, Point where, int button, long when, int modifiers) {
+        MouseEvent me = new MouseEvent(choice, id, when, modifiers, where.x, where.y, 0, false,
+                button);
         switch (id) {
-        case MouseEvent.MOUSE_PRESSED:
-            scrollDragged = true;
-            scrollbarController.mousePressed(me);
-            break;
-        case MouseEvent.MOUSE_RELEASED:
-            scrollDragged = false;
-            scrollbarController.mouseReleased(me);
-            break;
-        case MouseEvent.MOUSE_DRAGGED:
-            scrollbarController.mouseDragged(me);
-            break;
+            case MouseEvent.MOUSE_PRESSED:
+                scrollDragged = true;
+                scrollbarController.mousePressed(me);
+                break;
+            case MouseEvent.MOUSE_RELEASED:
+                scrollDragged = false;
+                scrollbarController.mouseReleased(me);
+                break;
+            case MouseEvent.MOUSE_DRAGGED:
+                scrollbarController.mouseDragged(me);
+                break;
         }
     }
 
@@ -545,7 +524,6 @@ class ChoicePopupBox extends PopupBox {
         }
         return true;
     }
-
 
     @Override
     void hide() {

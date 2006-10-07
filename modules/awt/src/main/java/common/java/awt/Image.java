@@ -43,7 +43,7 @@ public abstract class Image {
 
     protected float accelerationPriority = 0.5f;
 
-    private static ImageCapabilities capabilities = new ImageCapabilities(false);
+    private static final ImageCapabilities capabilities = new ImageCapabilities(false);
 
     public abstract Object getProperty(String name, ImageObserver observer);
 

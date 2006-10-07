@@ -14,33 +14,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt;
 
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.EventListener;
-import java.util.Iterator;
-
-import javax.accessibility.*;
-
+import javax.accessibility.Accessible;
+import javax.accessibility.AccessibleAction;
+import javax.accessibility.AccessibleContext;
+import javax.accessibility.AccessibleRole;
+import javax.accessibility.AccessibleValue;
 import org.apache.harmony.awt.ButtonStateController;
 import org.apache.harmony.awt.FieldsAccessor;
 import org.apache.harmony.awt.state.ButtonState;
 
-
 public class Button extends Component implements Accessible {
     private static final long serialVersionUID = -8774683716313001058L;
 
-    protected class AccessibleAWTButton extends AccessibleAWTComponent implements AccessibleAction, AccessibleValue {
+    protected class AccessibleAWTButton extends AccessibleAWTComponent implements
+            AccessibleAction, AccessibleValue {
         private static final long serialVersionUID = -5932203980244017102L;
 
         protected AccessibleAWTButton() {
-
+            super();
         }
 
         public int getAccessibleActionCount() {
@@ -63,7 +62,7 @@ public class Button extends Component implements Accessible {
         }
 
         public Number getCurrentAccessibleValue() {
-            return new Integer(0);
+            return Integer.valueOf(0);
         }
 
         public boolean setCurrentAccessibleValue(Number n) {
@@ -71,11 +70,11 @@ public class Button extends Component implements Accessible {
         }
 
         public Number getMinimumAccessibleValue() {
-            return new Integer(0);
+            return Integer.valueOf(0);
         }
 
         public Number getMaximumAccessibleValue() {
-            return new Integer(0);
+            return Integer.valueOf(0);
         }
 
         @Override
@@ -97,10 +96,12 @@ public class Button extends Component implements Accessible {
         public AccessibleValue getAccessibleValue() {
             return this;
         }
-
     }
 
-    class State extends Component.ComponentState implements ButtonState {
+    private class State extends Component.ComponentState implements ButtonState {
+        State() {
+            super();
+        }
 
         public String getText() {
             return label;
@@ -126,12 +127,16 @@ public class Button extends Component implements Accessible {
     }
 
     private String actionCommand;
-    private String label;
-    private final Dimension labelSize;
-    private final transient ButtonStateController stateController;
-    private final AWTListenerList actionListeners;
 
-    final transient State state = new State();
+    private String label;
+
+    private final Dimension labelSize;
+
+    private final transient ButtonStateController stateController;
+
+    private final AWTListenerList<ActionListener> actionListeners;
+
+    private final transient State state = new State();
 
     public Button(String label) throws HeadlessException {
         toolkit.lockAWT();
@@ -139,9 +144,8 @@ public class Button extends Component implements Accessible {
             this.label = label;
             labelSize = new Dimension();
             actionCommand = null;
-            actionListeners = new AWTListenerList(this);
+            actionListeners = new AWTListenerList<ActionListener>(this);
             stateController = createStateController();
-
             addAWTMouseListener(stateController);
             addAWTKeyListener(stateController);
             addAWTFocusListener(stateController);
@@ -226,6 +230,7 @@ public class Button extends Component implements Accessible {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         if (ActionListener.class.isAssignableFrom(listenerType)) {
@@ -240,11 +245,10 @@ public class Button extends Component implements Accessible {
 
     public void removeActionListener(ActionListener l) {
         actionListeners.removeUserListener(l);
-
     }
 
     public ActionListener[] getActionListeners() {
-        return (ActionListener[]) actionListeners.getUserListeners(new ActionListener[0]);
+        return actionListeners.getUserListeners(new ActionListener[0]);
     }
 
     @Override
@@ -257,13 +261,11 @@ public class Button extends Component implements Accessible {
     }
 
     protected void processActionEvent(ActionEvent e) {
-        for (Iterator i = actionListeners.getUserIterator(); i.hasNext();) {
-            ActionListener listener = (ActionListener) i.next();
-
+        for (ActionListener listener : actionListeners.getUserListeners()) {
             switch (e.getID()) {
-            case ActionEvent.ACTION_PERFORMED:
-                listener.actionPerformed(e);
-                break;
+                case ActionEvent.ACTION_PERFORMED:
+                    listener.actionPerformed(e);
+                    break;
             }
         }
     }
@@ -272,8 +274,8 @@ public class Button extends Component implements Accessible {
     protected String paramString() {
         toolkit.lockAWT();
         try {
-            return (super.paramString() + ",label=" + label + "," +
-                    (stateController.isPressed() ? "pressed" : "unpressed"));
+            return (super.paramString() + ",label=" + label + "," + (stateController
+                    .isPressed() ? "pressed" : "unpressed"));
         } finally {
             toolkit.unlockAWT();
         }
@@ -304,8 +306,8 @@ public class Button extends Component implements Accessible {
     }
 
     void generateEvent(long timestamp, int modifiers) {
-        postEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
-                getActionCommand(), timestamp, modifiers));
+        postEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, getActionCommand(),
+                timestamp, modifiers));
     }
 
     @Override
@@ -345,19 +347,17 @@ public class Button extends Component implements Accessible {
     }
 
     ButtonStateController createStateController() {
-
         return new ButtonStateController(this) {
             @Override
             protected void fireEvent() {
                 generateEvent(getWhen(), getMod());
-            }};
+            }
+        };
     }
 
-    private void readObject(ObjectInputStream stream)
-            throws IOException, ClassNotFoundException {
-
+    private void readObject(ObjectInputStream stream) throws IOException,
+            ClassNotFoundException {
         stream.defaultReadObject();
-
         FieldsAccessor accessor = new FieldsAccessor(Button.class, this);
         accessor.set("stateController", createStateController());
         accessor.set("state", new State());

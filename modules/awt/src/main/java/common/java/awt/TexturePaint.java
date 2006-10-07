@@ -14,14 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Denis M. Kishenko
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -29,18 +25,13 @@ import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
 import java.awt.image.DataBufferUShort;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
-
-import org.apache.harmony.awt.gl.AwtImageBackdoorAccessor;
 
 public class TexturePaint implements Paint {
-
     /**
      * The BufferedImage object used as texture  
      */
     BufferedImage img;
-    
+
     /**
      * The Rectangle2D bounds of texture piece to be painted  
      */
@@ -55,33 +46,29 @@ public class TexturePaint implements Paint {
         return img;
     }
 
-    public PaintContext createContext(ColorModel cm, Rectangle device, Rectangle2D user, AffineTransform t, RenderingHints hints) {
+    public PaintContext createContext(ColorModel cm, Rectangle device, Rectangle2D user,
+            AffineTransform t, RenderingHints hints) {
         Object value = hints.get(RenderingHints.KEY_INTERPOLATION);
-        boolean bilinear = (value != null) && (value != RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-
+        boolean bilinear = (value != null)
+                && (value != RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         int type = img.getType();
         DataBuffer buf = img.getRaster().getDataBuffer();
         if (buf instanceof DataBufferInt) {
-            if (type == BufferedImage.TYPE_INT_ARGB ||
-                type == BufferedImage.TYPE_INT_ARGB_PRE ||
-                type == BufferedImage.TYPE_INT_BGR ||
-                type == BufferedImage.TYPE_INT_RGB)
-            {
+            if (type == BufferedImage.TYPE_INT_ARGB || type == BufferedImage.TYPE_INT_ARGB_PRE
+                    || type == BufferedImage.TYPE_INT_BGR || type == BufferedImage.TYPE_INT_RGB) {
                 if (bilinear) {
                     return new TexturePaintContext.IntBilinear(img, anchor, t);
                 }
                 return new TexturePaintContext.IntSimple(img, anchor, t);
             }
-        } else
-        if (buf instanceof DataBufferByte) {
+        } else if (buf instanceof DataBufferByte) {
             if (type == BufferedImage.TYPE_BYTE_GRAY) {
                 if (bilinear) {
                     return new TexturePaintContext.ByteBilinear(img, anchor, t);
                 }
                 return new TexturePaintContext.ByteSimple(img, anchor, t);
             }
-        } else
-        if (buf instanceof DataBufferUShort) {
+        } else if (buf instanceof DataBufferUShort) {
             if (type == BufferedImage.TYPE_USHORT_GRAY) {
                 if (bilinear) {
                     return new TexturePaintContext.ShortBilinear(img, anchor, t);
@@ -106,5 +93,4 @@ public class TexturePaint implements Paint {
     public Rectangle2D getAnchorRect() {
         return anchor;
     }
-
 }

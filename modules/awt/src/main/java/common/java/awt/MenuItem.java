@@ -14,40 +14,37 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Pavel Dolgov
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Array;
 import java.util.EventListener;
-import java.util.Iterator;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleAction;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleValue;
-
 import org.apache.harmony.awt.state.MenuItemState;
 
-
 public class MenuItem extends MenuComponent implements Accessible {
-
     private static final long serialVersionUID = -21757335363267194L;
 
     private String label;
+
     private MenuShortcut shortcut;
+
     private long enabledEvents;
+
     private boolean enabled;
+
     private String actionCommand;
-    private final AWTListenerList actionListeners = new AWTListenerList(null);
 
-    protected class AccessibleAWTMenuItem extends AccessibleAWTMenuComponent
-            implements AccessibleAction, AccessibleValue {
+    private final AWTListenerList<ActionListener> actionListeners = new AWTListenerList<ActionListener>();
 
+    protected class AccessibleAWTMenuItem extends AccessibleAWTMenuComponent implements
+            AccessibleAction, AccessibleValue {
         private static final long serialVersionUID = -217847831945965825L;
 
         @Override
@@ -108,7 +105,6 @@ public class MenuItem extends MenuComponent implements Accessible {
         public boolean setCurrentAccessibleValue(Number n) {
             return false;
         }
-
     }
 
     /**
@@ -116,53 +112,68 @@ public class MenuItem extends MenuComponent implements Accessible {
      */
     class State implements MenuItemState {
         private Rectangle textBounds;
+
         private Rectangle shortcutBounds;
+
         private Rectangle itemBounds;
 
         public String getText() {
             return MenuItem.this.getLabel();
         }
+
         public Rectangle getTextBounds() {
             return textBounds;
         }
+
         public void setTextBounds(int x, int y, int w, int h) {
             textBounds = new Rectangle(x, y, w, h);
         }
+
         public boolean isMenu() {
             return MenuItem.this instanceof Menu;
         }
+
         public boolean isChecked() {
-            return (MenuItem.this instanceof CheckboxMenuItem) &&
-                    ((CheckboxMenuItem)MenuItem.this).getState();
+            return (MenuItem.this instanceof CheckboxMenuItem)
+                    && ((CheckboxMenuItem) MenuItem.this).getState();
         }
+
         public boolean isEnabled() {
             return enabled;
         }
+
         public String getShortcut() {
             return (shortcut != null ? shortcut.toString() : "");
         }
+
         public Rectangle getShortcutBounds() {
             return shortcutBounds;
         }
+
         public void setShortcutBounds(int x, int y, int w, int h) {
             shortcutBounds = new Rectangle(x, y, w, h);
         }
+
         public boolean isCheckBox() {
             return (MenuItem.this instanceof CheckboxMenuItem);
         }
+
         public boolean isSeparator() {
             String label = MenuItem.this.getLabel();
             return label != null && label.equals("-");
         }
+
         public Dimension getMenuSize() {
             if (MenuItem.this instanceof Menu) {
-                return ((Menu)MenuItem.this).getSize();
+                return ((Menu) MenuItem.this).getSize();
             }
             return null;
         }
+
         public Rectangle getItemBounds() {
             return itemBounds;
         }
+
         public void setItemBounds(int x, int y, int w, int h) {
             itemBounds = new Rectangle(x, y, w, h);
         }
@@ -245,13 +256,14 @@ public class MenuItem extends MenuComponent implements Accessible {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         toolkit.lockAWT();
         try {
             if (ActionListener.class.isAssignableFrom(listenerType)) {
                 return (T[]) getActionListeners();
             }
-            return (T[]) java.lang.reflect.Array.newInstance(listenerType, 0);
+            return (T[]) Array.newInstance(listenerType, 0);
         } finally {
             toolkit.unlockAWT();
         }
@@ -259,16 +271,14 @@ public class MenuItem extends MenuComponent implements Accessible {
 
     @Override
     public String paramString() {
-        /* The format of paramString is based on 1.5 release behavior 
-         * which can be revealed using the following code:
-         *
-         * MenuItem obj = new MenuItem("Label", 
-         *      new MenuShortcut(KeyEvent.VK_A));
-         * obj.setActionCommand("Action");
-         * obj.disable();
-         * System.out.println(obj.toString());
+        /*
+         * The format of paramString is based on 1.5 release behavior which can
+         * be revealed using the following code:
+         * 
+         * MenuItem obj = new MenuItem("Label", new
+         * MenuShortcut(KeyEvent.VK_A)); obj.setActionCommand("Action");
+         * obj.disable(); System.out.println(obj.toString());
          */
-
         toolkit.lockAWT();
         try {
             String result = super.paramString() + ",label=" + label;
@@ -375,17 +385,15 @@ public class MenuItem extends MenuComponent implements Accessible {
     }
 
     public ActionListener[] getActionListeners() {
-        return (ActionListener[]) actionListeners.getUserListeners(new ActionListener[0]);
+        return actionListeners.getUserListeners(new ActionListener[0]);
     }
 
     protected void processActionEvent(ActionEvent event) {
-        for (Iterator i = actionListeners.getUserIterator(); i.hasNext();) {
-            ActionListener listener = (ActionListener) i.next();
-
+        for (ActionListener listener : actionListeners.getUserListeners()) {
             switch (event.getID()) {
-            case ActionEvent.ACTION_PERFORMED:
-                listener.actionPerformed(event);
-                break;
+                case ActionEvent.ACTION_PERFORMED:
+                    listener.actionPerformed(event);
+                    break;
             }
         }
     }
@@ -443,13 +451,12 @@ public class MenuItem extends MenuComponent implements Accessible {
     void itemSelected(long when, int modifiers) {
         AWTEvent event = createEvent(when, modifiers);
         toolkit.getSystemEventQueueImpl().postEvent(event);
-
         super.itemSelected(when, modifiers);
     }
 
     AWTEvent createEvent(long when, int modifiers) {
-        return new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
-                getActionCommand(), when, modifiers);
+        return new ActionEvent(this, ActionEvent.ACTION_PERFORMED, getActionCommand(), when,
+                modifiers);
     }
 
     @Override

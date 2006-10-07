@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Dmitry A. Durnev, Michael Danilov
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.dnd.DropTarget;
@@ -57,10 +54,12 @@ import java.io.ObjectInputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EventListener;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -70,14 +69,12 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleComponent;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleState;
 import javax.accessibility.AccessibleStateSet;
-
 import org.apache.harmony.awt.ClipRegion;
 import org.apache.harmony.awt.FieldsAccessor;
 import org.apache.harmony.awt.gl.MultiRectArea;
@@ -86,9 +83,7 @@ import org.apache.harmony.awt.text.TextFieldKit;
 import org.apache.harmony.awt.text.TextKit;
 import org.apache.harmony.awt.wtk.NativeWindow;
 
-
-public abstract class Component
-        implements ImageObserver, MenuContainer, Serializable {
+public abstract class Component implements ImageObserver, MenuContainer, Serializable {
     private static final long serialVersionUID = -7644114512714619750L;
 
     public static final float TOP_ALIGNMENT = 0.0f;
@@ -101,25 +96,21 @@ public abstract class Component
 
     public static final float RIGHT_ALIGNMENT = 1.0f;
 
-    private static final Class<Component> componentClass = Component.class;
     private static final Hashtable<Class<?>, Boolean> childClassesFlags = new Hashtable<Class<?>, Boolean>();
 
-    private static final ComponentPeer peer = new ComponentPeer(){
+    private static final ComponentPeer peer = new ComponentPeer() {
     };
 
     private static final boolean incrementalImageUpdate;
 
     final transient Toolkit toolkit = Toolkit.getDefaultToolkit();
 
-    protected abstract class AccessibleAWTComponent
-            extends AccessibleContext
-            implements Serializable, AccessibleComponent {
+    protected abstract class AccessibleAWTComponent extends AccessibleContext implements
+            Serializable, AccessibleComponent {
         private static final long serialVersionUID = 642321655757800191L;
 
         protected class AccessibleAWTComponentHandler implements ComponentListener {
-
             protected AccessibleAWTComponentHandler() {
-
             }
 
             public void componentHidden(ComponentEvent e) {
@@ -127,37 +118,31 @@ public abstract class Component
                     return;
                 }
                 firePropertyChange(AccessibleContext.ACCESSIBLE_STATE_PROPERTY,
-                                   AccessibleState.VISIBLE, null);
-
+                        AccessibleState.VISIBLE, null);
             }
 
             public void componentMoved(ComponentEvent e) {
-
             }
 
             public void componentResized(ComponentEvent e) {
-
             }
 
             public void componentShown(ComponentEvent e) {
                 if (behaviour.isLightweight()) {
                     return;
                 }
-                firePropertyChange(AccessibleContext.ACCESSIBLE_STATE_PROPERTY,
-                                   null, AccessibleState.VISIBLE);
-
+                firePropertyChange(AccessibleContext.ACCESSIBLE_STATE_PROPERTY, null,
+                        AccessibleState.VISIBLE);
             }
-
         }
-        protected class AccessibleAWTFocusHandler implements FocusListener {
 
+        protected class AccessibleAWTFocusHandler implements FocusListener {
             public void focusGained(FocusEvent e) {
                 if (behaviour.isLightweight()) {
                     return;
                 }
-                firePropertyChange(AccessibleContext.ACCESSIBLE_STATE_PROPERTY,
-                                   null, AccessibleState.FOCUSED);
-
+                firePropertyChange(AccessibleContext.ACCESSIBLE_STATE_PROPERTY, null,
+                        AccessibleState.FOCUSED);
             }
 
             public void focusLost(FocusEvent e) {
@@ -165,9 +150,8 @@ public abstract class Component
                     return;
                 }
                 firePropertyChange(AccessibleContext.ACCESSIBLE_STATE_PROPERTY,
-                                   AccessibleState.FOCUSED, null);
+                        AccessibleState.FOCUSED, null);
             }
-
         }
 
         protected ComponentListener accessibleAWTComponentHandler;
@@ -210,6 +194,7 @@ public abstract class Component
                 toolkit.unlockAWT();
             }
         }
+
         public Accessible getAccessibleAt(Point arg0) {
             toolkit.lockAWT();
             try {
@@ -458,8 +443,7 @@ public abstract class Component
                     return aParent;
                 }
                 Container parent = getParent();
-                return  (parent instanceof Accessible ?
-                                          (Accessible)parent : null);
+                return (parent instanceof Accessible ? (Accessible) parent : null);
             } finally {
                 toolkit.unlockAWT();
             }
@@ -567,14 +551,17 @@ public abstract class Component
                 toolkit.unlockAWT();
             }
         }
-
     }
 
     protected class BltBufferStrategy extends BufferStrategy {
         protected VolatileImage[] backBuffers;
+
         protected BufferCapabilities caps;
+
         protected int width;
+
         protected int height;
+
         protected boolean validatedContents;
 
         protected BltBufferStrategy(int numBuffers, BufferCapabilities caps) {
@@ -582,6 +569,7 @@ public abstract class Component
                 throw new RuntimeException("Method is not implemented");
             }
         }
+
         @Override
         public boolean contentsLost() {
             if (true) {
@@ -589,6 +577,7 @@ public abstract class Component
             }
             return false;
         }
+
         @Override
         public boolean contentsRestored() {
             if (true) {
@@ -596,15 +585,18 @@ public abstract class Component
             }
             return false;
         }
+
         protected void createBackBuffers(int numBuffers) {
             if (true) {
                 throw new RuntimeException("Method is not implemented");
             }
         }
+
         @Override
         public BufferCapabilities getCapabilities() {
-            return (BufferCapabilities)caps.clone();
+            return (BufferCapabilities) caps.clone();
         }
+
         @Override
         public Graphics getDrawGraphics() {
             if (true) {
@@ -612,11 +604,13 @@ public abstract class Component
             }
             return null;
         }
+
         protected void revalidate() {
             if (true) {
                 throw new RuntimeException("Method is not implemented");
             }
         }
+
         @Override
         public void show() {
             if (true) {
@@ -627,21 +621,25 @@ public abstract class Component
 
     protected class FlipBufferStrategy extends BufferStrategy {
         protected BufferCapabilities caps;
+
         protected Image drawBuffer;
+
         protected VolatileImage drawVBuffer;
+
         protected int numBuffers;
+
         protected boolean validatedContents;
 
         protected FlipBufferStrategy(int numBuffers, BufferCapabilities caps)
                 throws AWTException {
-            if (!(Component.this instanceof Window)
-                    && !(Component.this instanceof Canvas)) {
+            if (!(Component.this instanceof Window) && !(Component.this instanceof Canvas)) {
                 throw new ClassCastException("OnlyCanvas or Window is allowed");
             }
             // TODO: throw new AWTException("Capabilities are not supported");
             this.numBuffers = numBuffers;
-            this.caps = (BufferCapabilities)caps.clone();
+            this.caps = (BufferCapabilities) caps.clone();
         }
+
         @Override
         public boolean contentsLost() {
             if (true) {
@@ -649,6 +647,7 @@ public abstract class Component
             }
             return false;
         }
+
         @Override
         public boolean contentsRestored() {
             if (true) {
@@ -656,45 +655,49 @@ public abstract class Component
             }
             return false;
         }
+
         protected void createBuffers(int numBuffers, BufferCapabilities caps)
                 throws AWTException {
             if (numBuffers < 2) {
-                throw new IllegalArgumentException(
-                        "Number of buffers must be greater than one");
+                throw new IllegalArgumentException("Number of buffers must be greater than one");
             }
             if (!caps.isPageFlipping()) {
                 throw new IllegalArgumentException(
                         "Buffer capabilities should support flipping");
             }
             if (!Component.this.behaviour.isDisplayable()) {
-                throw new IllegalStateException(
-                        "Component should be displayable");
+                throw new IllegalStateException("Component should be displayable");
             }
             // TODO: throw new AWTException("Capabilities are not supported");
             if (true) {
                 throw new RuntimeException("Method is not implemented");
             }
         }
-        protected  void destroyBuffers() {
+
+        protected void destroyBuffers() {
             if (true) {
                 throw new RuntimeException("Method is not implemented");
             }
         }
+
         protected void flip(BufferCapabilities.FlipContents flipAction) {
             if (true) {
                 throw new RuntimeException("Method is not implemented");
             }
         }
+
         protected Image getBackBuffer() {
             if (true) {
                 throw new RuntimeException("Method is not implemented");
             }
             return null;
         }
+
         @Override
         public BufferCapabilities getCapabilities() {
-            return (BufferCapabilities)caps.clone();
+            return (BufferCapabilities) caps.clone();
         }
+
         @Override
         public Graphics getDrawGraphics() {
             if (true) {
@@ -702,11 +705,13 @@ public abstract class Component
             }
             return null;
         }
+
         protected void revalidate() {
             if (true) {
                 throw new RuntimeException("Method is not implemented");
             }
         }
+
         @Override
         public void show() {
             if (true) {
@@ -719,7 +724,6 @@ public abstract class Component
      * The internal component's state utilized by the visual theme
      */
     class ComponentState implements State {
-
         private Dimension defaultMinimumSize = new Dimension();
 
         public boolean isEnabled() {
@@ -760,6 +764,7 @@ public abstract class Component
             return foreColor != null;
         }
 
+        @SuppressWarnings("deprecation")
         public FontMetrics getFontMetrics() {
             return toolkit.getFontMetrics(Component.this.getFont());
         }
@@ -800,55 +805,97 @@ public abstract class Component
     private transient AccessibleContext accessibleContext;
 
     final transient ComponentBehavior behaviour;
+
     Container parent;
 
     private String name;
+
     private boolean autoName = true;
+
     private Font font;
+
     private Color backColor;
+
     private Color foreColor;
 
     boolean deprecatedEventHandler = true;
 
-    private long enabledEvents = 0;
-    private long enabledAWTEvents = 0;
+    private long enabledEvents;
 
-    private final AWTListenerList componentListeners = new AWTListenerList(this);
-    private final AWTListenerList focusListeners = new AWTListenerList(this);
-    private final AWTListenerList hierarchyListeners = new AWTListenerList(this);
-    private final AWTListenerList hierarchyBoundsListeners = new AWTListenerList(this);
-    private final AWTListenerList keyListeners = new AWTListenerList(this);
-    private final AWTListenerList mouseListeners = new AWTListenerList(this);
-    private final AWTListenerList mouseMotionListeners = new AWTListenerList(this);
-    private final AWTListenerList mouseWheelListeners = new AWTListenerList(this);
-    private final AWTListenerList inputMethodListeners = new AWTListenerList(this);
+    private long enabledAWTEvents;
 
-    int x = 0;
-    int y = 0;
-    int w = 0;
-    int h = 0;
+    private final AWTListenerList<ComponentListener> componentListeners = new AWTListenerList<ComponentListener>(
+            this);
 
-    private Dimension maximumSize = null;
-    private Dimension minimumSize = null;
-    private Dimension preferredSize = null;
+    private final AWTListenerList<FocusListener> focusListeners = new AWTListenerList<FocusListener>(
+            this);
+
+    private final AWTListenerList<HierarchyListener> hierarchyListeners = new AWTListenerList<HierarchyListener>(
+            this);
+
+    private final AWTListenerList<HierarchyBoundsListener> hierarchyBoundsListeners = new AWTListenerList<HierarchyBoundsListener>(
+            this);
+
+    private final AWTListenerList<KeyListener> keyListeners = new AWTListenerList<KeyListener>(
+            this);
+
+    private final AWTListenerList<MouseListener> mouseListeners = new AWTListenerList<MouseListener>(
+            this);
+
+    private final AWTListenerList<MouseMotionListener> mouseMotionListeners = new AWTListenerList<MouseMotionListener>(
+            this);
+
+    private final AWTListenerList<MouseWheelListener> mouseWheelListeners = new AWTListenerList<MouseWheelListener>(
+            this);
+
+    private final AWTListenerList<InputMethodListener> inputMethodListeners = new AWTListenerList<InputMethodListener>(
+            this);
+
+    int x;
+
+    int y;
+
+    int w;
+
+    int h;
+
+    private Dimension maximumSize;
+
+    private Dimension minimumSize;
+
+    private Dimension preferredSize;
+
     private int boundsMaskParam;
 
     private boolean ignoreRepaint;
+
     private boolean enabled = true;
+
     private boolean inputMethodsEnabled = true;
+
     transient boolean dispatchToIM = true;
-    private boolean focusable = true;       //By default, all Components return true from isFocusable() method
+
+    private boolean focusable = true; // By default, all Components return
+
+    // true from isFocusable() method
     boolean visible = true;
 
     private boolean calledSetFocusable;
+
     private boolean overridenIsFocusable = true;
+
     private boolean focusTraversalKeysEnabled = true;
-    /**  Possible keys are: FORWARD_TRAVERSAL_KEYS, 
-     * BACKWARD_TRAVERSAL_KEYS, UP_CYCLE_TRAVERSAL_KEYS */
+
+    /**
+     * Possible keys are: FORWARD_TRAVERSAL_KEYS, BACKWARD_TRAVERSAL_KEYS,
+     * UP_CYCLE_TRAVERSAL_KEYS
+     */
     private final Map<Integer, Set<? extends AWTKeyStroke>> traversalKeys = new HashMap<Integer, Set<? extends AWTKeyStroke>>();
+
     int[] traversalIDs;
 
     private Locale locale;
+
     private ComponentOrientation orientation;
 
     private PropertyChangeSupport propertyChangeSupport;
@@ -856,52 +903,59 @@ public abstract class Component
     private ArrayList<PopupMenu> popups;
 
     private boolean coalescer;
+
     private Hashtable<Integer, LinkedList<AWTEvent>> eventsTable;
+
     /** Cashed reference used during EventQueue.postEvent() */
     private LinkedList<AWTEvent> eventsList;
 
     private int hierarchyChangingCounter;
+
     private boolean wasShowing;
+
     private boolean wasDisplayable;
 
     Cursor cursor;
+
     DropTarget dropTarget;
 
     private boolean mouseExitedExpected;
 
     transient MultiRectArea repaintRegion;
+
     transient RedrawManager redrawManager;
+
     private boolean valid;
 
     private HashMap<Image, ImageParameters> updatedImages;
 
-    /** 
-     * The lock object for private component's data
-     * which don't affect the component hierarchy
+    /**
+     * The lock object for private component's data which don't affect the
+     * component hierarchy
      */
-    private class ComponentLock {}
-    private final transient Object componentLock = new ComponentLock();
+    private class ComponentLock {
+    }
 
+    private final transient Object componentLock = new ComponentLock();
     static {
         PrivilegedAction<String[]> action = new PrivilegedAction<String[]>() {
             public String[] run() {
-                String properties [] = new String[2];
-                properties[0] = 
-                    System.getProperty("awt.image.redrawrate", "100");
-                properties[1] = 
-                    System.getProperty("awt.image.incrementaldraw", "true");
+                String properties[] = new String[2];
+                properties[0] = System.getProperty("awt.image.redrawrate", "100");
+                properties[1] = System.getProperty("awt.image.incrementaldraw", "true");
                 return properties;
-            }};
-
+            }
+        };
         String properties[] = AccessController.doPrivileged(action);
-
-        int rate;
-
-        try {
-            rate = Integer.decode(properties[0]).intValue();
-        } catch (NumberFormatException e) {
-            rate = 100;
-        }
+        // FIXME: rate is never used, can this code and the get property above
+        // be removed?
+        // int rate;
+        //
+        // try {
+        // rate = Integer.decode(properties[0]).intValue();
+        // } catch (NumberFormatException e) {
+        // rate = 100;
+        // }
         incrementalImageUpdate = properties[1].equals("true");
     }
 
@@ -910,15 +964,12 @@ public abstract class Component
         try {
             orientation = ComponentOrientation.UNKNOWN;
             redrawManager = null;
-            traversalIDs = this instanceof Container ?
-                    KeyboardFocusManager.contTraversalIDs : 
-                        KeyboardFocusManager.compTraversalIDs;
+            traversalIDs = this instanceof Container ? KeyboardFocusManager.contTraversalIDs
+                    : KeyboardFocusManager.compTraversalIDs;
             for (int element : traversalIDs) {
                 traversalKeys.put(new Integer(element), null);
             }
-
             behaviour = createBehavior();
-
             deriveCoalescerFlag();
         } finally {
             toolkit.unlockAWT();
@@ -928,38 +979,32 @@ public abstract class Component
     /**
      * Determine that the class inherited from Component declares the method
      * coalesceEvents(), and put the results to the childClassesFlags map
-     *
+     * 
      */
     private void deriveCoalescerFlag() {
         Class<?> thisClass = getClass();
         boolean flag = true;
-
-        synchronized(childClassesFlags) {
+        synchronized (childClassesFlags) {
             Boolean flagWrapper = childClassesFlags.get(thisClass);
-
             if (flagWrapper == null) {
                 Method coalesceMethod = null;
-
-                for (Class<?> c = thisClass; c != componentClass; c = c.getSuperclass()) {
+                for (Class<?> c = thisClass; c != Component.class; c = c.getSuperclass()) {
                     try {
-                        coalesceMethod = c.getDeclaredMethod("coalesceEvents",
-                                new Class[] {Class.forName("java.awt.AWTEvent"), 
-                                Class.forName("java.awt.AWTEvent")});
+                        coalesceMethod = c.getDeclaredMethod("coalesceEvents", new Class[] {
+                                Class.forName("java.awt.AWTEvent"),
+                                Class.forName("java.awt.AWTEvent") });
                     } catch (Exception e) {
                     }
-
                     if (coalesceMethod != null) {
                         break;
                     }
                 }
-
                 flag = (coalesceMethod != null);
-                childClassesFlags.put(thisClass, new Boolean(flag));
+                childClassesFlags.put(thisClass, Boolean.valueOf(flag));
             } else {
                 flag = flagWrapper.booleanValue();
             }
         }
-
         coalescer = flag;
         if (flag) {
             eventsTable = new Hashtable<Integer, LinkedList<AWTEvent>>();
@@ -987,7 +1032,6 @@ public abstract class Component
             if ((name == null) && autoName) {
                 name = autoName();
             }
-
             return name;
         } finally {
             toolkit.unlockAWT();
@@ -996,24 +1040,21 @@ public abstract class Component
 
     String autoName() {
         String name = getClass().getName();
-
         if (name.indexOf("$") != -1) {
             return null;
         }
-
         int number = toolkit.autoNumber.nextComponent++;
         name = name.substring(name.lastIndexOf(".") + 1) + Integer.toString(number);
-
         return name;
     }
 
     @Override
     public String toString() {
-        /* The format is based on 1.5 release behavior 
-         * which can be revealed by the following code:
+        /*
+         * The format is based on 1.5 release behavior which can be revealed by
+         * the following code:
          * 
-         * Component c = new Component(){};
-         * c.setVisible(false);
+         * Component c = new Component(){}; c.setVisible(false);
          * System.out.println(c);
          */
         toolkit.lockAWT();
@@ -1058,9 +1099,6 @@ public abstract class Component
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public Dimension size() {
         toolkit.lockAWT();
@@ -1081,34 +1119,32 @@ public abstract class Component
     }
 
     /**
-     * @return the nearest heavyweight ancestor in hierarchy
-     * or <code>null</code> if not found
+     * @return the nearest heavyweight ancestor in hierarchy or
+     *         <code>null</code> if not found
      */
     Component getHWAncestor() {
         return (parent != null ? parent.getHWSurface() : null);
     }
 
     /**
-     * @return heavyweight component that is equal to or is a nearest 
-     * heavyweight container of the
-     * current component, or <code>null</code> if not found
+     * @return heavyweight component that is equal to or is a nearest
+     *         heavyweight container of the current component, or
+     *         <code>null</code> if not found
      */
     Component getHWSurface() {
         Component parent;
-
-        for (parent = this; (parent != null) && (parent.isLightweight()); parent = parent.getParent()) {
+        for (parent = this; (parent != null) && (parent.isLightweight()); parent = parent
+                .getParent()) {
             ;
         }
-
         return parent;
     }
 
     Window getWindowAncestor() {
         Component par;
-        for ( par = this; par != null && !(par instanceof Window); par = par.getParent()) {
+        for (par = this; par != null && !(par instanceof Window); par = par.getParent()) {
             ;
         }
-
         return (Window) par;
     }
 
@@ -1118,7 +1154,7 @@ public abstract class Component
         setRedrawManager();
     }
 
-    void setRedrawManager () {
+    void setRedrawManager() {
         redrawManager = getRedrawManager();
     }
 
@@ -1163,7 +1199,7 @@ public abstract class Component
 
     String getIndentStr(int indent) {
         char[] ind = new char[indent];
-        for (int i=0; i < indent; ind[i++] = ' ') {
+        for (int i = 0; i < indent; ind[i++] = ' ') {
             ;
         }
         return new String(ind);
@@ -1172,7 +1208,7 @@ public abstract class Component
     public void list(PrintStream out) {
         toolkit.lockAWT();
         try {
-            //default indent = 1
+            // default indent = 1
             list(out, 1);
         } finally {
             toolkit.unlockAWT();
@@ -1224,9 +1260,6 @@ public abstract class Component
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void resize(int width, int height) {
         toolkit.lockAWT();
@@ -1238,9 +1271,6 @@ public abstract class Component
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void resize(Dimension size) {
         toolkit.lockAWT();
@@ -1260,9 +1290,6 @@ public abstract class Component
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void disable() {
         toolkit.lockAWT();
@@ -1274,9 +1301,6 @@ public abstract class Component
         fireAccessibleStateChange(AccessibleState.ENABLED, false);
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void enable() {
         toolkit.lockAWT();
@@ -1288,23 +1312,18 @@ public abstract class Component
         fireAccessibleStateChange(AccessibleState.ENABLED, true);
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void enable(boolean b) {
         toolkit.lockAWT();
         try {
             if (b) {
                 enable();
-            }
-            else {
+            } else {
                 disable();
             }
         } finally {
             toolkit.unlockAWT();
         }
-
     }
 
     public Point getLocation(Point rv) {
@@ -1360,9 +1379,6 @@ public abstract class Component
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public Point location() {
         toolkit.lockAWT();
@@ -1377,11 +1393,8 @@ public abstract class Component
         toolkit.lockAWT();
         try {
             prepare4HierarchyChange();
-
             behaviour.addNotify();
-
             finishHierarchyChange(this, parent, 0);
-
             if (dropTarget != null) {
                 dropTarget.addNotify(peer);
             }
@@ -1427,13 +1440,10 @@ public abstract class Component
         return toolkit.awtTreeLock;
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public boolean action(Event evt, Object what) {
-        //to be overridden: do nothing,
-        //just return false to propagate event up to the parent container
+        // to be overridden: do nothing,
+        // just return false to propagate event up to the parent container
         return false;
     }
 
@@ -1476,9 +1486,6 @@ public abstract class Component
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public Rectangle bounds() {
         toolkit.lockAWT();
@@ -1510,10 +1517,10 @@ public abstract class Component
     protected AWTEvent coalesceEvents(AWTEvent existingEvent, AWTEvent newEvent) {
         toolkit.lockAWT();
         try {
-            //Nothing to do:
+            // Nothing to do:
             // 1. Mouse events coalesced at WTK level
             // 2. Paint events handled by RedrawManager
-            //This method is for overriding only
+            // This method is for overriding only
             return null;
         } finally {
             toolkit.unlockAWT();
@@ -1527,11 +1534,9 @@ public abstract class Component
     AWTEvent getRelativeEvent(int id) {
         Integer idWrapper = new Integer(id);
         eventsList = eventsTable.get(idWrapper);
-
         if (eventsList == null) {
             eventsList = new LinkedList<AWTEvent>();
             eventsTable.put(idWrapper, eventsList);
-
             return null;
         }
         if (eventsList.isEmpty()) {
@@ -1564,19 +1569,16 @@ public abstract class Component
     public Image createImage(int width, int height) {
         toolkit.lockAWT();
         try {
-            if(!isDisplayable()) {
+            if (!isDisplayable()) {
                 return null;
             }
-
             GraphicsConfiguration gc = getGraphicsConfiguration();
             if (gc == null) {
                 return null;
             }
-            
             ColorModel cm = gc.getColorModel(Transparency.OPAQUE);
             WritableRaster wr = cm.createCompatibleWritableRaster(width, height);
             Image image = new BufferedImage(cm, wr, cm.isAlphaPremultiplied(), null);
-
             fillImageBackground(image, width, height);
             return image;
         } finally {
@@ -1585,20 +1587,17 @@ public abstract class Component
     }
 
     public VolatileImage createVolatileImage(int width, int height, ImageCapabilities caps)
-        throws AWTException {
+            throws AWTException {
         toolkit.lockAWT();
         try {
-            if(!isDisplayable()) {
+            if (!isDisplayable()) {
                 return null;
             }
-            
             GraphicsConfiguration gc = getGraphicsConfiguration();
             if (gc == null) {
                 return null;
             }
-            
             VolatileImage image = gc.createCompatibleVolatileImage(width, height, caps);
-
             fillImageBackground(image, width, height);
             return image;
         } finally {
@@ -1609,17 +1608,14 @@ public abstract class Component
     public VolatileImage createVolatileImage(int width, int height) {
         toolkit.lockAWT();
         try {
-            if(!isDisplayable()) {
+            if (!isDisplayable()) {
                 return null;
             }
-            
             GraphicsConfiguration gc = getGraphicsConfiguration();
             if (gc == null) {
                 return null;
             }
-            
             VolatileImage image = gc.createCompatibleVolatileImage(width, height);
-
             fillImageBackground(image, width, height);
             return image;
         } finally {
@@ -1629,8 +1625,8 @@ public abstract class Component
 
     /**
      * Fill the image being created by createImage() or createVolatileImage()
-     * with the component's background color to prepare it for
-     * double-buffered painting
+     * with the component's background color to prepare it for double-buffered
+     * painting
      */
     private void fillImageBackground(Image image, int width, int height) {
         Graphics gr = image.getGraphics();
@@ -1639,9 +1635,6 @@ public abstract class Component
         gr.dispose();
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void deliverEvent(Event evt) {
         postEvent(evt);
@@ -1654,11 +1647,10 @@ public abstract class Component
         } finally {
             toolkit.unlockAWT();
         }
-        //Implemented in Container
+        // Implemented in Container
     }
 
-    private void firePropertyChangeImpl (String propertyName, Object oldValue,
-                                         Object newValue) {
+    private void firePropertyChangeImpl(String propertyName, Object oldValue, Object newValue) {
         PropertyChangeSupport pcs;
         synchronized (componentLock) {
             if (propertyChangeSupport == null) {
@@ -1674,59 +1666,37 @@ public abstract class Component
     }
 
     protected void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
-        firePropertyChangeImpl(propertyName, Boolean.valueOf(oldValue), Boolean.valueOf(newValue));
+        firePropertyChangeImpl(propertyName, Boolean.valueOf(oldValue), Boolean
+                .valueOf(newValue));
     }
 
-    protected void firePropertyChange(final String propertyName, final Object oldValue, final Object newValue) {
+    protected void firePropertyChange(final String propertyName, final Object oldValue,
+            final Object newValue) {
         firePropertyChangeImpl(propertyName, oldValue, newValue);
     }
 
-    public void firePropertyChange(String propertyName,
-                                   byte oldValue,
-                                   byte newValue) {
-        firePropertyChangeImpl(propertyName,
-                           new Byte(oldValue),
-                           new Byte(newValue));
+    public void firePropertyChange(String propertyName, byte oldValue, byte newValue) {
+        firePropertyChangeImpl(propertyName, new Byte(oldValue), new Byte(newValue));
     }
 
-    public void firePropertyChange(String propertyName,
-                                   char oldValue,
-                                   char newValue) {
-        firePropertyChangeImpl(propertyName,
-                           new Character(oldValue),
-                           new Character(newValue));
+    public void firePropertyChange(String propertyName, char oldValue, char newValue) {
+        firePropertyChangeImpl(propertyName, new Character(oldValue), new Character(newValue));
     }
 
-    public void firePropertyChange(String propertyName,
-                                   short oldValue,
-                                   short newValue) {
-        firePropertyChangeImpl(propertyName,
-                           new Short(oldValue),
-                           new Short(newValue));
+    public void firePropertyChange(String propertyName, short oldValue, short newValue) {
+        firePropertyChangeImpl(propertyName, new Short(oldValue), new Short(newValue));
     }
 
-    public void firePropertyChange(String propertyName,
-                                   long oldValue,
-                                   long newValue) {
-        firePropertyChangeImpl(propertyName,
-                           new Long(oldValue),
-                           new Long(newValue));
+    public void firePropertyChange(String propertyName, long oldValue, long newValue) {
+        firePropertyChangeImpl(propertyName, new Long(oldValue), new Long(newValue));
     }
 
-    public void firePropertyChange(String propertyName,
-                                   float oldValue,
-                                   float newValue) {
-        firePropertyChangeImpl(propertyName,
-                           new Float(oldValue),
-                           new Float(newValue));
+    public void firePropertyChange(String propertyName, float oldValue, float newValue) {
+        firePropertyChangeImpl(propertyName, new Float(oldValue), new Float(newValue));
     }
 
-    public void firePropertyChange(String propertyName,
-                                   double oldValue,
-                                   double newValue) {
-        firePropertyChangeImpl(propertyName,
-                           new Double(oldValue),
-                           new Double(newValue));
+    public void firePropertyChange(String propertyName, double oldValue, double newValue) {
+        firePropertyChangeImpl(propertyName, new Double(oldValue), new Double(newValue));
     }
 
     public float getAlignmentX() {
@@ -1822,12 +1792,10 @@ public abstract class Component
         try {
             if (cursor != null) {
                 return cursor;
-            }
-            else if (parent != null) {
+            } else if (parent != null) {
                 return parent.getCursor();
             }
             return Cursor.getDefaultCursor();
-
         } finally {
             toolkit.unlockAWT();
         }
@@ -1845,7 +1813,7 @@ public abstract class Component
     public Container getFocusCycleRootAncestor() {
         toolkit.lockAWT();
         try {
-            for (Container c = parent;  c != null ; c = c.getParent()) {
+            for (Container c = parent; c != null; c = c.getParent()) {
                 if (c.isFocusCycleRoot()) {
                     return c;
                 }
@@ -1856,19 +1824,21 @@ public abstract class Component
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Set<AWTKeyStroke> getFocusTraversalKeys(int id) {
         toolkit.lockAWT();
         try {
             Integer kId = new Integer(id);
             KeyboardFocusManager.checkTraversalKeysID(traversalKeys, kId);
-            Set<AWTKeyStroke> keys = null;
-            Object value = traversalKeys.get(kId);
-            keys = value instanceof Set ? (Set) value :
-                parent != null ? parent.getFocusTraversalKeys(id) : null;
-            if (keys == null) {
-                keys = KeyboardFocusManager.getCurrentKeyboardFocusManager().getDefaultFocusTraversalKeys(id);
+            Set<? extends AWTKeyStroke> keys = traversalKeys.get(kId);
+            if (keys == null && parent != null) {
+                keys = parent.getFocusTraversalKeys(id);
             }
-            return keys;
+            if (keys == null) {
+                keys = KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                        .getDefaultFocusTraversalKeys(id);
+            }
+            return (Set<AWTKeyStroke>) keys;
         } finally {
             toolkit.unlockAWT();
         }
@@ -1883,6 +1853,7 @@ public abstract class Component
         }
     }
 
+    @SuppressWarnings("deprecation")
     public FontMetrics getFontMetrics(Font f) {
         return toolkit.getFontMetrics(f);
     }
@@ -1905,12 +1876,9 @@ public abstract class Component
             if (!isDisplayable()) {
                 return null;
             }
-
             Graphics g = behaviour.getGraphics(0, 0, w, h);
-
             g.setColor(foreColor);
             g.setFont(font);
-
             return g;
         } finally {
             toolkit.unlockAWT();
@@ -1989,7 +1957,8 @@ public abstract class Component
             Point p = new Point();
             if (isShowing()) {
                 Component comp;
-                for (comp = this; comp != null && !(comp instanceof Window); comp=comp.getParent()){
+                for (comp = this; comp != null && !(comp instanceof Window); comp = comp
+                        .getParent()) {
                     p.translate(comp.getX(), comp.getY());
                 }
                 if (comp instanceof Window) {
@@ -2004,9 +1973,6 @@ public abstract class Component
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public ComponentPeer getPeer() {
         toolkit.lockAWT();
@@ -2055,49 +2021,40 @@ public abstract class Component
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public boolean gotFocus(Event evt, Object what) {
-
-        //to be overridden: do nothing,
-        //just return false to propagate event up to the parent container
+        // to be overridden: do nothing,
+        // just return false to propagate event up to the parent container
         return false;
-
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public boolean handleEvent(Event evt) {
         switch (evt.id) {
-        case Event.ACTION_EVENT:
-            return action(evt, evt.arg);
-        case Event.GOT_FOCUS:
-            return gotFocus(evt, null);
-        case Event.LOST_FOCUS:
-            return lostFocus(evt, null);
-        case Event.MOUSE_DOWN:
-            return mouseDown(evt, evt.x, evt.y);
-        case Event.MOUSE_DRAG:
-            return mouseDrag(evt, evt.x, evt.y);
-        case Event.MOUSE_ENTER:
-            return mouseEnter(evt, evt.x, evt.y);
-        case Event.MOUSE_EXIT:
-            return mouseExit(evt, evt.x, evt.y);
-        case Event.MOUSE_MOVE:
-            return mouseMove(evt, evt.x, evt.y);
-        case Event.MOUSE_UP:
-            return mouseUp(evt, evt.x, evt.y);
-        case Event.KEY_ACTION:
-        case Event.KEY_PRESS:
-            return keyDown(evt, evt.key);
-        case Event.KEY_ACTION_RELEASE:
-        case Event.KEY_RELEASE:
-            return keyUp(evt, evt.key);
-
+            case Event.ACTION_EVENT:
+                return action(evt, evt.arg);
+            case Event.GOT_FOCUS:
+                return gotFocus(evt, null);
+            case Event.LOST_FOCUS:
+                return lostFocus(evt, null);
+            case Event.MOUSE_DOWN:
+                return mouseDown(evt, evt.x, evt.y);
+            case Event.MOUSE_DRAG:
+                return mouseDrag(evt, evt.x, evt.y);
+            case Event.MOUSE_ENTER:
+                return mouseEnter(evt, evt.x, evt.y);
+            case Event.MOUSE_EXIT:
+                return mouseExit(evt, evt.x, evt.y);
+            case Event.MOUSE_MOVE:
+                return mouseMove(evt, evt.x, evt.y);
+            case Event.MOUSE_UP:
+                return mouseUp(evt, evt.x, evt.y);
+            case Event.KEY_ACTION:
+            case Event.KEY_PRESS:
+                return keyDown(evt, evt.key);
+            case Event.KEY_ACTION_RELEASE:
+            case Event.KEY_RELEASE:
+                return keyUp(evt, evt.key);
         }
         return false;// event not handled
     }
@@ -2111,9 +2068,6 @@ public abstract class Component
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void hide() {
         toolkit.lockAWT();
@@ -2121,27 +2075,19 @@ public abstract class Component
             if (!visible) {
                 return;
             }
-
             prepare4HierarchyChange();
-
             visible = false;
             moveFocusOnHide();
             behaviour.setVisible(false);
-
             postEvent(new ComponentEvent(this, ComponentEvent.COMPONENT_HIDDEN));
-
             finishHierarchyChange(this, parent, 0);
             notifyInputMethod(null);
-
             invalidateRealParent();
         } finally {
             toolkit.unlockAWT();
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public boolean inside(int x, int y) {
         toolkit.lockAWT();
@@ -2157,7 +2103,6 @@ public abstract class Component
         try {
             valid = false;
             resetDefaultSize();
-
             invalidateRealParent();
         } finally {
             toolkit.unlockAWT();
@@ -2180,7 +2125,6 @@ public abstract class Component
         } finally {
             toolkit.unlockAWT();
         }
-
     }
 
     public boolean isDisplayable() {
@@ -2195,7 +2139,7 @@ public abstract class Component
     public boolean isDoubleBuffered() {
         toolkit.lockAWT();
         try {
-            //false by default
+            // false by default
             return false;
         } finally {
             toolkit.unlockAWT();
@@ -2213,9 +2157,9 @@ public abstract class Component
 
     /**
      * "Recursive" isEnabled().
-     * @return true if
-     * not only component itself is enabled but its
-     * heavyweight parent is also "indirectly" enabled
+     * 
+     * @return true if not only component itself is enabled but its heavyweight
+     *         parent is also "indirectly" enabled
      */
     boolean isIndirectlyEnabled() {
         Component comp = this;
@@ -2223,7 +2167,7 @@ public abstract class Component
             if (!comp.isLightweight() && !comp.isEnabled()) {
                 return false;
             }
-            comp =  comp.getRealParent();
+            comp = comp.getRealParent();
         }
         return true;
     }
@@ -2234,10 +2178,12 @@ public abstract class Component
         }
         return isIndirectlyEnabled();
     }
+
     /**
      * Gets only parent of a child component, but not owner of a window.
+     * 
      * @return parent of child component, null if component is a top-level
-     * (Window instance)
+     *         (Window instance)
      */
     Container getRealParent() {
         return (!(this instanceof Window) ? getParent() : null);
@@ -2261,15 +2207,13 @@ public abstract class Component
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public boolean isFocusTraversable() {
         toolkit.lockAWT();
         try {
             overridenIsFocusable = false;
-            return focusable; //a Component must either be both focusable and focus traversable, or neither
+            return focusable; // a Component must either be both focusable and
+            // focus traversable, or neither
         } finally {
             toolkit.unlockAWT();
         }
@@ -2301,6 +2245,7 @@ public abstract class Component
             toolkit.unlockAWT();
         }
     }
+
     public boolean isLightweight() {
         toolkit.lockAWT();
         try {
@@ -2328,44 +2273,30 @@ public abstract class Component
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public boolean keyDown(Event evt, int key) {
-
-        //to be overridden: do nothing,
-        //just return false to propagate event up to the parent container
+        // to be overridden: do nothing,
+        // just return false to propagate event up to the parent container
         return false;
-
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public boolean keyUp(Event evt, int key) {
-        //to be overridden: do nothing,
-        //just return false to propagate event up to the parent container
+        // to be overridden: do nothing,
+        // just return false to propagate event up to the parent container
         return false;
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void layout() {
         toolkit.lockAWT();
         try {
-            //Implemented in Container
+            // Implemented in Container
         } finally {
             toolkit.unlockAWT();
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public Component locate(int x, int y) {
         toolkit.lockAWT();
@@ -2379,88 +2310,55 @@ public abstract class Component
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public boolean lostFocus(Event evt, Object what) {
-
-        //to be overridden: do nothing,
-        //just return false to propagate event up to the parent container
+        // to be overridden: do nothing,
+        // just return false to propagate event up to the parent container
         return false;
-
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public boolean mouseDown(Event evt, int x, int y) {
-
-        //to be overridden: do nothing,
-        //just return false to propagate event up to the parent container
+        // to be overridden: do nothing,
+        // just return false to propagate event up to the parent container
         return false;
-
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public boolean mouseDrag(Event evt, int x, int y) {
-
-        //to be overridden: do nothing,
-        //just return false to propagate event up to the parent container
+        // to be overridden: do nothing,
+        // just return false to propagate event up to the parent container
         return false;
-
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public boolean mouseEnter(Event evt, int x, int y) {
-        //to be overridden: do nothing,
-        //just return false to propagate event up to the parent container
+        // to be overridden: do nothing,
+        // just return false to propagate event up to the parent container
         return false;
-
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public boolean mouseExit(Event evt, int x, int y) {
-        //to be overridden: do nothing,
-        //just return false to propagate event up to the parent container
+        // to be overridden: do nothing,
+        // just return false to propagate event up to the parent container
         return false;
-
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public boolean mouseMove(Event evt, int x, int y) {
-        //to be overridden: do nothing,
-        //just return false to propagate event up to the parent container
+        // to be overridden: do nothing,
+        // just return false to propagate event up to the parent container
         return false;
-
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public boolean mouseUp(Event evt, int x, int y) {
-        //to be overridden: do nothing,
-        //just return false to propagate event up to the parent container
+        // to be overridden: do nothing,
+        // just return false to propagate event up to the parent container
         return false;
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void move(int x, int y) {
         toolkit.lockAWT();
@@ -2472,9 +2370,6 @@ public abstract class Component
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void nextFocus() {
         toolkit.lockAWT();
@@ -2486,30 +2381,26 @@ public abstract class Component
     }
 
     protected String paramString() {
-        /* The format is based on 1.5 release behavior 
-         * which can be revealed by the following code:
+        /*
+         * The format is based on 1.5 release behavior which can be revealed by
+         * the following code:
          * 
-         * Component c = new Component(){};
-         * c.setVisible(false);
+         * Component c = new Component(){}; c.setVisible(false);
          * System.out.println(c);
          */
         toolkit.lockAWT();
         try {
-            return getName() + "," + getX() + "," + getY() + "," + getWidth() 
-                    + "x" + getHeight() + (!isVisible() ? ",hidden" : "");
+            return getName() + "," + getX() + "," + getY() + "," + getWidth() + "x"
+                    + getHeight() + (!isVisible() ? ",hidden" : "");
         } finally {
             toolkit.unlockAWT();
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
+    @SuppressWarnings("deprecation")
     public boolean postEvent(Event evt) {
-
         boolean handled = handleEvent(evt);
-
         if (handled) {
             return true;
         }
@@ -2525,9 +2416,7 @@ public abstract class Component
             evt.translate(x, y);
             par.postEvent(evt);
         }
-
         return false;
-
     }
 
     public boolean prepareImage(Image image, ImageObserver observer) {
@@ -2555,13 +2444,9 @@ public abstract class Component
                 dropTarget.removeNotify(peer);
             }
             prepare4HierarchyChange();
-
             moveFocus();
-
             behaviour.removeNotify();
-
             finishHierarchyChange(this, parent, 0);
-
             removeNotifyInputContext();
         } finally {
             toolkit.unlockAWT();
@@ -2591,9 +2476,7 @@ public abstract class Component
         // don't use transferFocus(), but query focus traversal policy directly
         // and if it returns null, transfer focus up cycle
         // and find next focusable component there
-
-        KeyboardFocusManager kfm = KeyboardFocusManager
-                .getCurrentKeyboardFocusManager();
+        KeyboardFocusManager kfm = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         Container root = kfm.getCurrentFocusCycleRoot();
         Component nextComp = this;
         boolean success = !isFocusOwner();
@@ -2603,8 +2486,7 @@ public abstract class Component
                 // so focus will be lost in some time
                 return;
             }
-            nextComp = root.getFocusTraversalPolicy().getComponentAfter(root,
-                    nextComp);
+            nextComp = root.getFocusTraversalPolicy().getComponentAfter(root, nextComp);
             if (nextComp == this) {
                 nextComp = null; // avoid looping
             }
@@ -2613,7 +2495,7 @@ public abstract class Component
             } else {
                 nextComp = root;
                 root = root.getFocusCycleRootAncestor();
-                //if no acceptable component is found at all - clear global
+                // if no acceptable component is found at all - clear global
                 // focus owner
                 if (root == null) {
                     if (nextComp instanceof Window) {
@@ -2629,19 +2511,21 @@ public abstract class Component
     }
 
     /**
-     * For Container there's a difference between moving focus
-     * when being made invisible or made unfocusable in
-     * some other way, because when container is made invisible, component
-     * still remains visible, i. e. its hide() or setVisible() is not called.
+     * For Container there's a difference between moving focus when being made
+     * invisible or made unfocusable in some other way, because when container
+     * is made invisible, component still remains visible, i. e. its hide() or
+     * setVisible() is not called.
      */
     void moveFocusOnHide() {
         moveFocus();
     }
+
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         getPropertyChangeSupport().removePropertyChangeListener(listener);
     }
 
-    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+    public void removePropertyChangeListener(String propertyName,
+            PropertyChangeListener listener) {
         getPropertyChangeSupport().removePropertyChangeListener(propertyName, listener);
     }
 
@@ -2651,7 +2535,6 @@ public abstract class Component
             if (width <= 0 || height <= 0 || (redrawManager == null) || !isShowing()) {
                 return;
             }
-
             if (behaviour instanceof LWBehavior) {
                 if (parent == null || !parent.visible || !parent.behaviour.isDisplayable()) {
                     return;
@@ -2673,7 +2556,6 @@ public abstract class Component
                 }
                 toolkit.getSystemEventQueueCore().notifyEventMonitor(toolkit);
             }
-
         } finally {
             toolkit.unlockAWT();
         }
@@ -2738,16 +2620,12 @@ public abstract class Component
                 return false;
             }
             return requestFocusImpl(temporary, false, false);
-
         } finally {
             toolkit.unlockAWT();
         }
     }
 
-    boolean requestFocusImpl(boolean temporary,
-                             boolean crossWindow,
-                             boolean rejectionRecovery) {
-
+    boolean requestFocusImpl(boolean temporary, boolean crossWindow, boolean rejectionRecovery) {
         if (!rejectionRecovery && isFocusOwner()) {
             return true;
         }
@@ -2759,8 +2637,8 @@ public abstract class Component
         if (!isShowing() || !isFocusable() || !wnd.isFocusableWindow()) {
             return false;
         }
-        return KeyboardFocusManager.getCurrentKeyboardFocusManager()
-        .requestFocus(this, temporary, crossWindow, true);
+        return KeyboardFocusManager.getCurrentKeyboardFocusManager().requestFocus(this,
+                temporary, crossWindow, true);
     }
 
     public boolean requestFocusInWindow() {
@@ -2772,9 +2650,6 @@ public abstract class Component
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void reshape(int x, int y, int w, int h) {
         toolkit.lockAWT();
@@ -2803,9 +2678,7 @@ public abstract class Component
         int oldY = this.y;
         int oldW = this.w;
         int oldH = this.h;
-
         setBoundsFields(x, y, w, h, bMask);
-
         // Moved
         if ((oldX != this.x) || (oldY != this.y)) {
             invalidateRealParent();
@@ -2827,7 +2700,7 @@ public abstract class Component
     /**
      * Calls InputContextImpl.notifyClientWindowChanged.
      */
-    void notifyInputMethod(Rectangle bounds) {        
+    void notifyInputMethod(Rectangle bounds) {
         // only Window actually notifies IM of bounds change
     }
 
@@ -2897,21 +2770,21 @@ public abstract class Component
         if (isDisplayable() && isShowing()) {
             Rectangle absRect = new Rectangle(getLocationOnScreen(), getSize());
             Point absPointerPos = toolkit.dispatcher.mouseDispatcher.getPointerPos();
-
             if (absRect.contains(absPointerPos)) {
-                //set Cursor only on top-level Windows(on X11)
+                // set Cursor only on top-level Windows(on X11)
                 Window topLevelWnd = getWindowAncestor();
                 if (topLevelWnd != null) {
-                    Point pointerPos = MouseDispatcher.convertPoint(null, absPointerPos, topLevelWnd);
-                    Component compUnderCursor = topLevelWnd.findComponentAt(
-                            pointerPos);
-                    //if (compUnderCursor == this || compUnderCursor.getCursorAncestor() == this) {
-                        NativeWindow wnd = topLevelWnd.getNativeWindow();
-                        if (compUnderCursor != null && wnd != null) {
-                            compUnderCursor.getRealCursor().getNativeCursor()
-                                    .setCursor(wnd.getId());
-                        }
-                    //}
+                    Point pointerPos = MouseDispatcher.convertPoint(null, absPointerPos,
+                            topLevelWnd);
+                    Component compUnderCursor = topLevelWnd.findComponentAt(pointerPos);
+                    // if (compUnderCursor == this ||
+                    // compUnderCursor.getCursorAncestor() == this) {
+                    NativeWindow wnd = topLevelWnd.getNativeWindow();
+                    if (compUnderCursor != null && wnd != null) {
+                        compUnderCursor.getRealCursor().getNativeCursor()
+                                .setCursor(wnd.getId());
+                    }
+                    // }
                 }
             }
         }
@@ -2920,7 +2793,7 @@ public abstract class Component
     /**
      * Gets the ancestor Cursor if Component is disabled (directly or via an
      * ancestor) even if Cursor is explicitly set
-     *
+     * 
      * @return actual Cursor to be displayed
      */
     Cursor getRealCursor() {
@@ -2929,9 +2802,9 @@ public abstract class Component
     }
 
     /**
-     * Gets the ancestor(or component itself) whose cursor is set when pointer is
-     * inside component
-     *
+     * Gets the ancestor(or component itself) whose cursor is set when pointer
+     * is inside component
+     * 
      * @return actual Cursor to be displayed
      */
     Component getCursorAncestor() {
@@ -2991,7 +2864,7 @@ public abstract class Component
 
     private void fireAccessibleStateChange(AccessibleState state, boolean value) {
         if (behaviour.isLightweight()) {
-                return;
+            return;
         }
         AccessibleContext ac = getAccessibleContext();
         if (ac != null) {
@@ -3002,8 +2875,8 @@ public abstract class Component
             } else {
                 oldValue = state;
             }
-            ac.firePropertyChange(AccessibleContext.ACCESSIBLE_STATE_PROPERTY,
-                                  oldValue, newValue);
+            ac.firePropertyChange(AccessibleContext.ACCESSIBLE_STATE_PROPERTY, oldValue,
+                    newValue);
         }
     }
 
@@ -3014,15 +2887,14 @@ public abstract class Component
         try {
             Integer kId = new Integer(id);
             KeyboardFocusManager.checkTraversalKeysID(traversalKeys, kId);
-            Map<Integer, Set<AWTKeyStroke>> keys = new HashMap<Integer, Set<AWTKeyStroke>>();
+            Map<Integer, Set<? extends AWTKeyStroke>> keys = new HashMap<Integer, Set<? extends AWTKeyStroke>>();
             for (int kid : traversalIDs) {
                 Integer key = new Integer(kid);
                 keys.put(key, getFocusTraversalKeys(kid));
             }
-            KeyboardFocusManager.checkKeyStrokes(traversalIDs, keys,
-                                                 kId, (Set<AWTKeyStroke>)keystrokes);
+            KeyboardFocusManager.checkKeyStrokes(traversalIDs, keys, kId, keystrokes);
             oldTraversalKeys = traversalKeys.get(new Integer(id));
-            //put a copy of keystrokes object into map:
+            // put a copy of keystrokes object into map:
             Set<? extends AWTKeyStroke> newKeys = keystrokes;
             if (keystrokes != null) {
                 newKeys = new HashSet<AWTKeyStroke>(keystrokes);
@@ -3030,18 +2902,18 @@ public abstract class Component
             traversalKeys.put(kId, newKeys);
             String direction = "";
             switch (id) {
-            case KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS:
-                direction = "forward";
-                break;
-            case KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS:
-                direction = "backward";
-                break;
-            case KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS:
-                direction = "upCycle";
-                break;
-            case KeyboardFocusManager.DOWN_CYCLE_TRAVERSAL_KEYS:
-                direction = "downCycle";
-                break;
+                case KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS:
+                    direction = "forward";
+                    break;
+                case KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS:
+                    direction = "backward";
+                    break;
+                case KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS:
+                    direction = "upCycle";
+                    break;
+                case KeyboardFocusManager.DOWN_CYCLE_TRAVERSAL_KEYS:
+                    direction = "downCycle";
+                    break;
             }
             propName = direction + propName;
         } finally {
@@ -3059,8 +2931,8 @@ public abstract class Component
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("focusTraversalKeysEnabled",
-                oldFocusTraversalKeysEnabled, focusTraversalKeysEnabled);
+        firePropertyChange("focusTraversalKeysEnabled", oldFocusTraversalKeysEnabled,
+                focusTraversalKeysEnabled);
     }
 
     public void setFocusable(boolean focusable) {
@@ -3119,8 +2991,9 @@ public abstract class Component
     }
 
     /**
-     * Invalidate the component if it inherits the font from the parent. 
-     * This method is overridden in Container.
+     * Invalidate the component if it inherits the font from the parent. This
+     * method is overridden in Container.
+     * 
      * @return true if the component was invalidated, false otherwise
      */
     boolean propagateFont() {
@@ -3197,14 +3070,11 @@ public abstract class Component
     }
 
     public void setVisible(boolean b) {
-        // show() & hide() are not deprecated for Window, 
+        // show() & hide() are not deprecated for Window,
         // so have to call them from setVisible()
         show(b);
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void show() {
         toolkit.lockAWT();
@@ -3212,28 +3082,20 @@ public abstract class Component
             if (visible) {
                 return;
             }
-
             prepare4HierarchyChange();
-
             mapToDisplay(true);
             validate();
-
             visible = true;
             behaviour.setVisible(true);
             postEvent(new ComponentEvent(this, ComponentEvent.COMPONENT_SHOWN));
-
             finishHierarchyChange(this, parent, 0);
             notifyInputMethod(new Rectangle(x, y, w, h));
-
             invalidateRealParent();
         } finally {
             toolkit.unlockAWT();
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void show(boolean b) {
         if (b) {
@@ -3254,14 +3116,13 @@ public abstract class Component
         if (root == null) {
             root = getFocusCycleRootAncestor();
         }
-        //transfer focus up cycle if root is unreachable
+        // transfer focus up cycle if root is unreachable
         Component comp = this;
-        while ((root != null) &&
-                !(root.isFocusCycleRoot() && root.isShowing() &&
-                  root.isEnabled() && root.isFocusable())) {
+        while ((root != null)
+                && !(root.isFocusCycleRoot() && root.isShowing() && root.isEnabled() && root
+                        .isFocusable())) {
             comp = root;
             root = root.getFocusCycleRootAncestor();
-
         }
         if (root == null) {
             return;
@@ -3269,13 +3130,12 @@ public abstract class Component
         FocusTraversalPolicy policy = root.getFocusTraversalPolicy();
         Component nextComp = null;
         switch (dir) {
-        case KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS:
-            nextComp = policy.getComponentAfter(root, comp);
-            break;
-        case KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS:
-            nextComp = policy.getComponentBefore(root, comp);
-            break;
-
+            case KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS:
+                nextComp = policy.getComponentAfter(root, comp);
+                break;
+            case KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS:
+                nextComp = policy.getComponentBefore(root, comp);
+                break;
         }
         if (nextComp != null) {
             nextComp.requestFocus(false);
@@ -3312,7 +3172,6 @@ public abstract class Component
                 nextComp = newRoot instanceof Window ? newRoot.getFocusTraversalPolicy()
                         .getDefaultComponent(newRoot) : newRoot;
                 newRoot = newRoot.getFocusCycleRootAncestor();
-
                 if (nextComp == null) {
                     break;
                 }
@@ -3321,8 +3180,7 @@ public abstract class Component
                     break;
                 }
                 kfm.setGlobalCurrentFocusCycleRoot(newRoot);
-            }
-            while (!success);
+            } while (!success);
             if (!success && root != newRoot) {
                 kfm.setGlobalCurrentFocusCycleRoot(root);
             }
@@ -3347,7 +3205,7 @@ public abstract class Component
         valid = true;
     }
 
-    NativeWindow getNativeWindow(){
+    NativeWindow getNativeWindow() {
         return behaviour.getNativeWindow();
     }
 
@@ -3381,9 +3239,8 @@ public abstract class Component
     public Dimension getMaximumSize() {
         toolkit.lockAWT();
         try {
-            return isMaximumSizeSet() ?
-                    new Dimension(maximumSize) : 
-                        new Dimension(Short.MAX_VALUE, Short.MAX_VALUE);
+            return isMaximumSizeSet() ? new Dimension(maximumSize) : new Dimension(
+                    Short.MAX_VALUE, Short.MAX_VALUE);
         } finally {
             toolkit.unlockAWT();
         }
@@ -3398,9 +3255,6 @@ public abstract class Component
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public Dimension minimumSize() {
         toolkit.lockAWT();
@@ -3410,8 +3264,7 @@ public abstract class Component
             }
             Dimension defSize = getDefaultMinimumSize();
             if (defSize == null) {
-                defSize = (isDisplayable() ? new Dimension(1, 1) :
-                                             new Dimension(w, h));
+                defSize = (isDisplayable() ? new Dimension(1, 1) : new Dimension(w, h));
             }
             return new Dimension(defSize);
         } finally {
@@ -3428,9 +3281,6 @@ public abstract class Component
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public Dimension preferredSize() {
         toolkit.lockAWT();
@@ -3456,7 +3306,6 @@ public abstract class Component
             if (oldMaximumSize != null) {
                 oldMaximumSize = oldMaximumSize.getSize();
             }
-
             if (this.maximumSize == null) {
                 if (maximumSize != null) {
                     this.maximumSize = new Dimension(maximumSize);
@@ -3471,9 +3320,7 @@ public abstract class Component
         } finally {
             toolkit.unlockAWT();
         }
-
         firePropertyChange("maximumSize", oldMaximumSize, this.maximumSize);
-
         toolkit.lockAWT();
         try {
             invalidateRealParent();
@@ -3490,7 +3337,6 @@ public abstract class Component
             if (oldMinimumSize != null) {
                 oldMinimumSize = oldMinimumSize.getSize();
             }
-
             if (this.minimumSize == null) {
                 if (minimumSize != null) {
                     this.minimumSize = new Dimension(minimumSize);
@@ -3505,9 +3351,7 @@ public abstract class Component
         } finally {
             toolkit.unlockAWT();
         }
-
         firePropertyChange("minimumSize", oldMinimumSize, this.minimumSize);
-
         toolkit.lockAWT();
         try {
             invalidateRealParent();
@@ -3524,7 +3368,6 @@ public abstract class Component
             if (oldPreferredSize != null) {
                 oldPreferredSize = oldPreferredSize.getSize();
             }
-
             if (this.preferredSize == null) {
                 if (preferredSize != null) {
                     this.preferredSize = new Dimension(preferredSize);
@@ -3539,9 +3382,7 @@ public abstract class Component
         } finally {
             toolkit.unlockAWT();
         }
-
         firePropertyChange("preferredSize", oldPreferredSize, this.preferredSize);
-
         toolkit.lockAWT();
         try {
             invalidateRealParent();
@@ -3554,33 +3395,29 @@ public abstract class Component
         if (parent == null) {
             return null;
         }
-
         return parent.getRedrawManager();
     }
 
     /**
-     * @return true
-     * if component has a focusable peer
+     * @return true if component has a focusable peer
      */
     boolean isPeerFocusable() {
-        //The recommendations for Windows and Unix are that
-        //Canvases, Labels, Panels, Scrollbars, ScrollPanes, Windows,
-        //and lightweight Components have non-focusable peers,
-        //and all other Components have focusable peers.
+        // The recommendations for Windows and Unix are that
+        // Canvases, Labels, Panels, Scrollbars, ScrollPanes, Windows,
+        // and lightweight Components have non-focusable peers,
+        // and all other Components have focusable peers.
         if (this instanceof Canvas || this instanceof Label || this instanceof Panel
                 || this instanceof Scrollbar || this instanceof ScrollPane
-                || this instanceof Window || isLightweight())
-        {
+                || this instanceof Window || isLightweight()) {
             return false;
         }
         return true;
     }
 
     /**
-     * @return true
-     * if focusability was explicitly set
-     * via a call to setFocusable() or via overriding
-     * isFocusable() or isFocusTraversable()
+     * @return true if focusability was explicitly set via a call to
+     *         setFocusable() or via overriding isFocusable() or
+     *         isFocusTraversable()
      */
     boolean isFocusabilityExplicitlySet() {
         return calledSetFocusable || overridenIsFocusable;
@@ -3635,34 +3472,29 @@ public abstract class Component
     }
 
     void prepareChildren4HierarchyChange() {
-        //To be inherited by Container
+        // To be inherited by Container
     }
 
-    void finishHierarchyChange(Component changed, 
-                               Container changedParent, 
-                               int ancestorFlags) {
+    void finishHierarchyChange(Component changed, Container changedParent, int ancestorFlags) {
         if (--hierarchyChangingCounter == 0) {
             int changeFlags = ancestorFlags;
-
             if (wasShowing != isShowing()) {
                 changeFlags |= HierarchyEvent.SHOWING_CHANGED;
             }
             if (wasDisplayable != isDisplayable()) {
                 changeFlags |= HierarchyEvent.DISPLAYABILITY_CHANGED;
             }
-
             if (changeFlags > 0) {
-                postEvent(new HierarchyEvent(this, HierarchyEvent.HIERARCHY_CHANGED,
-                        changed, changedParent, changeFlags));
+                postEvent(new HierarchyEvent(this, HierarchyEvent.HIERARCHY_CHANGED, changed,
+                        changedParent, changeFlags));
             }
             finishChildrenHierarchyChange(changed, changedParent, ancestorFlags);
         }
     }
 
-    void finishChildrenHierarchyChange(Component changed, 
-                                       Container changedParent,
-                                       int ancestorFlags) {
-        //To be inherited by Container
+    void finishChildrenHierarchyChange(Component changed, Container changedParent,
+            int ancestorFlags) {
+        // To be inherited by Container
     }
 
     void postHierarchyBoundsEvents(Component changed, int id) {
@@ -3670,7 +3502,7 @@ public abstract class Component
     }
 
     void spreadHierarchyBoundsEvents(Component changed, int id) {
-        //To be inherited by Container
+        // To be inherited by Container
     }
 
     public final void dispatchEvent(AWTEvent e) {
@@ -3678,13 +3510,11 @@ public abstract class Component
             return;
         }
         if (e instanceof PaintEvent) {
-                toolkit.dispatchAWTEvent(e);
-                processPaintEvent((PaintEvent) e);
-                return;
+            toolkit.dispatchAWTEvent(e);
+            processPaintEvent((PaintEvent) e);
+            return;
         }
-        KeyboardFocusManager kfm = 
-            KeyboardFocusManager.getCurrentKeyboardFocusManager();
-
+        KeyboardFocusManager kfm = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         if (!e.dispatchedByKFM && kfm.dispatchEvent(e)) {
             return;
         }
@@ -3698,22 +3528,15 @@ public abstract class Component
                 }
             }
         }
-            
-        if (inputMethodsEnabled && dispatchToIM && e.isPosted &&
-            dispatchEventToIM(e)) {
+        if (inputMethodsEnabled && dispatchToIM && e.isPosted && dispatchEventToIM(e)) {
             return;
-        }            
+        }
         if (e.getID() == WindowEvent.WINDOW_ICONIFIED) {
             notifyInputMethod(null);
         }
-            
         AWTEvent.EventDescriptor descriptor = toolkit.eventTypeLookup.getEventDescriptor(e);
-
         toolkit.dispatchAWTEvent(e);
         if (descriptor != null) {
-
-
-
             if (isEventEnabled(descriptor.eventMask)
                     || (getListeners(descriptor.listenerType).length > 0)) {
                 processEvent(e);
@@ -3722,8 +3545,6 @@ public abstract class Component
             if (!e.isConsumed() && ((enabledAWTEvents & descriptor.eventMask) != 0)) {
                 postprocessEvent(e, descriptor.eventMask);
             }
-
-
         }
         postDeprecatedEvent(e);
     }
@@ -3762,62 +3583,45 @@ public abstract class Component
     }
 
     private void preprocessInputMethodEvent(InputMethodEvent e) {
-        processInputMethodEventImpl(e, inputMethodListeners.getSystemIterator());
-    }
-
-    private void processInputMethodEventImpl(InputMethodEvent e, Iterator<?> i) {
-        while(i.hasNext()) {
-            InputMethodListener listener = (InputMethodListener) i.next();
-            switch (e.getID()) {
-            case InputMethodEvent.CARET_POSITION_CHANGED:
-                listener.caretPositionChanged(e);
-                break;
-            case InputMethodEvent.INPUT_METHOD_TEXT_CHANGED:
-                listener.inputMethodTextChanged(e);
-                break;
-            }
-        }
+        processInputMethodEventImpl(e, inputMethodListeners.getSystemListeners());
     }
 
     private void preprocessMouseWheelEvent(MouseWheelEvent e) {
-        processMouseWheelEventImpl(e, mouseWheelListeners.getSystemIterator());
+        processMouseWheelEventImpl(e, mouseWheelListeners.getSystemListeners());
     }
 
-    private void processMouseWheelEventImpl(MouseWheelEvent e, Iterator<?> i) {
-        while(i.hasNext()) {
-            MouseWheelListener listener = (MouseWheelListener) i.next();
+    private void processMouseWheelEventImpl(MouseWheelEvent e, Collection<MouseWheelListener> c) {
+        for (MouseWheelListener listener : c) {
             switch (e.getID()) {
-            case MouseEvent.MOUSE_WHEEL:
-                listener.mouseWheelMoved(e);
-                break;
+                case MouseEvent.MOUSE_WHEEL:
+                    listener.mouseWheelMoved(e);
+                    break;
             }
         }
-
     }
 
     private void preprocessComponentEvent(ComponentEvent e) {
-        processComponentEventImpl(e, componentListeners.getSystemIterator());
+        processComponentEventImpl(e, componentListeners.getSystemListeners());
     }
 
     void preprocessMouseMotionEvent(MouseEvent e) {
-        processMouseMotionEventImpl(e,  mouseMotionListeners.getSystemIterator());
+        processMouseMotionEventImpl(e, mouseMotionListeners.getSystemListeners());
     }
 
     void preprocessMouseEvent(MouseEvent e) {
-        processMouseEventImpl(e,  mouseListeners.getSystemIterator());
+        processMouseEventImpl(e, mouseListeners.getSystemListeners());
     }
 
     void preprocessKeyEvent(KeyEvent e) {
-        processKeyEventImpl(e,  keyListeners.getSystemIterator());
+        processKeyEventImpl(e, keyListeners.getSystemListeners());
     }
 
     void preprocessFocusEvent(FocusEvent e) {
-        processFocusEventImpl(e,  focusListeners.getSystemIterator());
+        processFocusEventImpl(e, focusListeners.getSystemListeners());
     }
 
     protected void processEvent(AWTEvent e) {
         long eventMask = toolkit.eventTypeLookup.getEventMask(e);
-
         if (eventMask == AWTEvent.COMPONENT_EVENT_MASK) {
             processComponentEvent((ComponentEvent) e);
         } else if (eventMask == AWTEvent.FOCUS_EVENT_MASK) {
@@ -3839,6 +3643,7 @@ public abstract class Component
         }
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         if (ComponentListener.class.isAssignableFrom(listenerType)) {
             return (T[]) getComponentListeners();
@@ -3861,27 +3666,22 @@ public abstract class Component
         } else if (PropertyChangeListener.class.isAssignableFrom(listenerType)) {
             return (T[]) getPropertyChangeListeners();
         }
-
-        return (T[]) java.lang.reflect.Array.newInstance(listenerType, 0);
+        return (T[]) Array.newInstance(listenerType, 0);
     }
 
     private void processPaintEvent(PaintEvent event) {
         if (redrawManager == null) {
             return;
         }
-
         Rectangle clipRect = event.getUpdateRect();
         if ((clipRect.width <= 0) || (clipRect.height <= 0)) {
             return;
         }
-
         Graphics g = getGraphics();
         if (g == null) {
             return;
         }
-
         initGraphics(g, event);
-
         if (!getIgnoreRepaint()) {
             if (event.getID() == PaintEvent.PAINT) {
                 paint(g);
@@ -3889,18 +3689,16 @@ public abstract class Component
                 update(g);
             }
         }
-
         g.dispose();
     }
 
     void initGraphics(Graphics g, PaintEvent e) {
         Rectangle clip = e.getUpdateRect();
         if (clip instanceof ClipRegion) {
-            g.setClip(((ClipRegion)clip).getClip());
+            g.setClip(((ClipRegion) clip).getClip());
         } else {
             g.setClip(clip);
         }
-
         if (isPrepainter()) {
             prepaint(g);
         } else if (!isLightweight() && (e.getID() == PaintEvent.PAINT)) {
@@ -3935,13 +3733,10 @@ public abstract class Component
     }
 
     /*
-     * For use in MouseDispatcher only.
-     * Really it checks not only mouse events.
+     * For use in MouseDispatcher only. Really it checks not only mouse events.
      */
     boolean isMouseEventEnabled(long eventMask) {
-        return
-            (isEventEnabled(eventMask) ||
-            (enabledAWTEvents & eventMask) != 0);
+        return (isEventEnabled(eventMask) || (enabledAWTEvents & eventMask) != 0);
     }
 
     boolean isEventEnabled(long eventMask) {
@@ -3961,7 +3756,7 @@ public abstract class Component
     }
 
     public ComponentListener[] getComponentListeners() {
-        return (ComponentListener[]) componentListeners.getUserListeners(new ComponentListener[0]);
+        return componentListeners.getUserListeners(new ComponentListener[0]);
     }
 
     public void addComponentListener(ComponentListener l) {
@@ -3973,34 +3768,30 @@ public abstract class Component
     }
 
     protected void processComponentEvent(ComponentEvent e) {
-        processComponentEventImpl(e, componentListeners.getUserIterator());
+        processComponentEventImpl(e, componentListeners.getUserListeners());
     }
 
-    private void processComponentEventImpl(ComponentEvent e, Iterator<?> i) {
-
-        while (i.hasNext()) {
-            ComponentListener listener = (ComponentListener) i.next();
-
+    private void processComponentEventImpl(ComponentEvent e, Collection<ComponentListener> c) {
+        for (ComponentListener listener : c) {
             switch (e.getID()) {
-            case ComponentEvent.COMPONENT_HIDDEN:
-                listener.componentHidden(e);
-                break;
-            case ComponentEvent.COMPONENT_MOVED:
-                listener.componentMoved(e);
-                break;
-            case ComponentEvent.COMPONENT_RESIZED:
-                listener.componentResized(e);
-                break;
-            case ComponentEvent.COMPONENT_SHOWN:
-                listener.componentShown(e);
-                break;
+                case ComponentEvent.COMPONENT_HIDDEN:
+                    listener.componentHidden(e);
+                    break;
+                case ComponentEvent.COMPONENT_MOVED:
+                    listener.componentMoved(e);
+                    break;
+                case ComponentEvent.COMPONENT_RESIZED:
+                    listener.componentResized(e);
+                    break;
+                case ComponentEvent.COMPONENT_SHOWN:
+                    listener.componentShown(e);
+                    break;
             }
         }
-
     }
 
     public FocusListener[] getFocusListeners() {
-        return (FocusListener[]) focusListeners.getUserListeners(new FocusListener[0]);
+        return focusListeners.getUserListeners(new FocusListener[0]);
     }
 
     public void addFocusListener(FocusListener l) {
@@ -4017,26 +3808,24 @@ public abstract class Component
     }
 
     protected void processFocusEvent(FocusEvent e) {
-        processFocusEventImpl(e, focusListeners.getUserIterator());
+        processFocusEventImpl(e, focusListeners.getUserListeners());
     }
 
-    private void processFocusEventImpl(FocusEvent e, Iterator<?> i) {
-        while (i.hasNext()) {
-            FocusListener listener = (FocusListener) i.next();
-
+    private void processFocusEventImpl(FocusEvent e, Collection<FocusListener> c) {
+        for (FocusListener listener : c) {
             switch (e.getID()) {
-            case FocusEvent.FOCUS_GAINED:
-                listener.focusGained(e);
-                break;
-            case FocusEvent.FOCUS_LOST:
-                listener.focusLost(e);
-                break;
+                case FocusEvent.FOCUS_GAINED:
+                    listener.focusGained(e);
+                    break;
+                case FocusEvent.FOCUS_LOST:
+                    listener.focusLost(e);
+                    break;
             }
         }
     }
 
     public HierarchyListener[] getHierarchyListeners() {
-        return (HierarchyListener[]) hierarchyListeners.getUserListeners(new HierarchyListener[0]);
+        return hierarchyListeners.getUserListeners(new HierarchyListener[0]);
     }
 
     public void addHierarchyListener(HierarchyListener l) {
@@ -4048,20 +3837,17 @@ public abstract class Component
     }
 
     protected void processHierarchyEvent(HierarchyEvent e) {
-        for (Iterator<?> i = hierarchyListeners.getUserIterator(); i.hasNext();) {
-            HierarchyListener listener = (HierarchyListener) i.next();
-
+        for (HierarchyListener listener : hierarchyListeners.getUserListeners()) {
             switch (e.getID()) {
-            case HierarchyEvent.HIERARCHY_CHANGED:
-                listener.hierarchyChanged(e);
-                break;
+                case HierarchyEvent.HIERARCHY_CHANGED:
+                    listener.hierarchyChanged(e);
+                    break;
             }
         }
     }
 
     public HierarchyBoundsListener[] getHierarchyBoundsListeners() {
-        return (HierarchyBoundsListener[])
-                hierarchyBoundsListeners.getUserListeners(new HierarchyBoundsListener[0]);
+        return hierarchyBoundsListeners.getUserListeners(new HierarchyBoundsListener[0]);
     }
 
     public void addHierarchyBoundsListener(HierarchyBoundsListener l) {
@@ -4073,22 +3859,20 @@ public abstract class Component
     }
 
     protected void processHierarchyBoundsEvent(HierarchyEvent e) {
-        for (Iterator<?> i = hierarchyBoundsListeners.getUserIterator(); i.hasNext();) {
-            HierarchyBoundsListener listener = (HierarchyBoundsListener) i.next();
-
+        for (HierarchyBoundsListener listener : hierarchyBoundsListeners.getUserListeners()) {
             switch (e.getID()) {
-            case HierarchyEvent.ANCESTOR_MOVED:
-                listener.ancestorMoved(e);
-                break;
-            case HierarchyEvent.ANCESTOR_RESIZED:
-                listener.ancestorResized(e);
-                break;
+                case HierarchyEvent.ANCESTOR_MOVED:
+                    listener.ancestorMoved(e);
+                    break;
+                case HierarchyEvent.ANCESTOR_RESIZED:
+                    listener.ancestorResized(e);
+                    break;
             }
         }
     }
 
     public KeyListener[] getKeyListeners() {
-        return (KeyListener[]) keyListeners.getUserListeners(new KeyListener[0]);
+        return keyListeners.getUserListeners(new KeyListener[0]);
     }
 
     public void addKeyListener(KeyListener l) {
@@ -4105,29 +3889,27 @@ public abstract class Component
     }
 
     protected void processKeyEvent(KeyEvent e) {
-        processKeyEventImpl(e, keyListeners.getUserIterator());
+        processKeyEventImpl(e, keyListeners.getUserListeners());
     }
 
-    private void processKeyEventImpl(KeyEvent e, Iterator<?> i) {
-        while (i.hasNext()) {
-            KeyListener listener = (KeyListener) i.next();
-
+    private void processKeyEventImpl(KeyEvent e, Collection<KeyListener> c) {
+        for (KeyListener listener : c) {
             switch (e.getID()) {
-            case KeyEvent.KEY_PRESSED:
-                listener.keyPressed(e);
-                break;
-            case KeyEvent.KEY_RELEASED:
-                listener.keyReleased(e);
-                break;
-            case KeyEvent.KEY_TYPED:
-                listener.keyTyped(e);
-                break;
+                case KeyEvent.KEY_PRESSED:
+                    listener.keyPressed(e);
+                    break;
+                case KeyEvent.KEY_RELEASED:
+                    listener.keyReleased(e);
+                    break;
+                case KeyEvent.KEY_TYPED:
+                    listener.keyTyped(e);
+                    break;
             }
         }
     }
 
     public MouseListener[] getMouseListeners() {
-        return (MouseListener[]) mouseListeners.getUserListeners(new MouseListener[0]);
+        return mouseListeners.getUserListeners(new MouseListener[0]);
     }
 
     public void addMouseListener(MouseListener l) {
@@ -4164,51 +3946,46 @@ public abstract class Component
     }
 
     protected void processMouseEvent(MouseEvent e) {
-        processMouseEventImpl(e,  mouseListeners.getUserIterator());
+        processMouseEventImpl(e, mouseListeners.getUserListeners());
     }
 
-    private void processMouseEventImpl(MouseEvent e, Iterator<?> i) {
-        while(i.hasNext()) {
-            MouseListener listener = (MouseListener) i.next();
-
+    private void processMouseEventImpl(MouseEvent e, Collection<MouseListener> c) {
+        for (MouseListener listener : c) {
             switch (e.getID()) {
-            case MouseEvent.MOUSE_CLICKED:
-                listener.mouseClicked(e);
-                break;
-            case MouseEvent.MOUSE_ENTERED:
-                listener.mouseEntered(e);
-                break;
-            case MouseEvent.MOUSE_EXITED:
-                listener.mouseExited(e);
-                break;
-            case MouseEvent.MOUSE_PRESSED:
-                listener.mousePressed(e);
-                break;
-            case MouseEvent.MOUSE_RELEASED:
-                listener.mouseReleased(e);
-                break;
+                case MouseEvent.MOUSE_CLICKED:
+                    listener.mouseClicked(e);
+                    break;
+                case MouseEvent.MOUSE_ENTERED:
+                    listener.mouseEntered(e);
+                    break;
+                case MouseEvent.MOUSE_EXITED:
+                    listener.mouseExited(e);
+                    break;
+                case MouseEvent.MOUSE_PRESSED:
+                    listener.mousePressed(e);
+                    break;
+                case MouseEvent.MOUSE_RELEASED:
+                    listener.mouseReleased(e);
+                    break;
             }
         }
     }
 
-    private void processMouseMotionEventImpl(MouseEvent e, Iterator<?> i) {
-        while (i.hasNext()) {
-            MouseMotionListener listener = (MouseMotionListener) i.next();
-
+    private void processMouseMotionEventImpl(MouseEvent e, Collection<MouseMotionListener> c) {
+        for (MouseMotionListener listener : c) {
             switch (e.getID()) {
-            case MouseEvent.MOUSE_DRAGGED:
-                listener.mouseDragged(e);
-                break;
-            case MouseEvent.MOUSE_MOVED:
-                listener.mouseMoved(e);
-                break;
+                case MouseEvent.MOUSE_DRAGGED:
+                    listener.mouseDragged(e);
+                    break;
+                case MouseEvent.MOUSE_MOVED:
+                    listener.mouseMoved(e);
+                    break;
             }
         }
     }
 
     public MouseMotionListener[] getMouseMotionListeners() {
-        return (MouseMotionListener[])
-                mouseMotionListeners.getUserListeners(new MouseMotionListener[0]);
+        return mouseMotionListeners.getUserListeners(new MouseMotionListener[0]);
     }
 
     public void addMouseMotionListener(MouseMotionListener l) {
@@ -4220,12 +3997,11 @@ public abstract class Component
     }
 
     protected void processMouseMotionEvent(MouseEvent e) {
-        processMouseMotionEventImpl(e, mouseMotionListeners.getUserIterator());
+        processMouseMotionEventImpl(e, mouseMotionListeners.getUserListeners());
     }
 
     public MouseWheelListener[] getMouseWheelListeners() {
-        return (MouseWheelListener[])
-                mouseWheelListeners.getUserListeners(new MouseWheelListener[0]);
+        return mouseWheelListeners.getUserListeners(new MouseWheelListener[0]);
     }
 
     public void addMouseWheelListener(MouseWheelListener l) {
@@ -4237,12 +4013,11 @@ public abstract class Component
     }
 
     protected void processMouseWheelEvent(MouseWheelEvent e) {
-        processMouseWheelEventImpl(e, mouseWheelListeners.getUserIterator());
+        processMouseWheelEventImpl(e, mouseWheelListeners.getUserListeners());
     }
 
     public InputMethodListener[] getInputMethodListeners() {
-        return (InputMethodListener[])
-                inputMethodListeners.getUserListeners(new InputMethodListener[0]);
+        return inputMethodListeners.getUserListeners(new InputMethodListener[0]);
     }
 
     public void addInputMethodListener(InputMethodListener l) {
@@ -4254,16 +4029,19 @@ public abstract class Component
     }
 
     protected void processInputMethodEvent(InputMethodEvent e) {
-        for (Iterator<?> i = inputMethodListeners.getUserIterator(); i.hasNext();) {
-            InputMethodListener listener = (InputMethodListener) i.next();
+        processInputMethodEventImpl(e, inputMethodListeners.getUserListeners());
+    }
 
+    private void processInputMethodEventImpl(InputMethodEvent e,
+            Collection<InputMethodListener> c) {
+        for (InputMethodListener listener : c) {
             switch (e.getID()) {
-            case InputMethodEvent.CARET_POSITION_CHANGED:
-                listener.caretPositionChanged(e);
-                break;
-            case InputMethodEvent.INPUT_METHOD_TEXT_CHANGED:
-                listener.inputMethodTextChanged(e);
-                break;
+                case InputMethodEvent.CARET_POSITION_CHANGED:
+                    listener.caretPositionChanged(e);
+                    break;
+                case InputMethodEvent.INPUT_METHOD_TEXT_CHANGED:
+                    listener.inputMethodTextChanged(e);
+                    break;
             }
         }
     }
@@ -4271,28 +4049,23 @@ public abstract class Component
     public Point getMousePosition() throws HeadlessException {
         Toolkit.checkHeadless();
         Point absPointerPos = MouseInfo.getPointerInfo().getLocation();
-        Window winUnderPtr =
-            toolkit.dispatcher.mouseDispatcher.findWindowAt(absPointerPos);
-        Point pointerPos =
-            MouseDispatcher.convertPoint(null,
-                                         absPointerPos, winUnderPtr);
+        Window winUnderPtr = toolkit.dispatcher.mouseDispatcher.findWindowAt(absPointerPos);
+        Point pointerPos = MouseDispatcher.convertPoint(null, absPointerPos, winUnderPtr);
         boolean isUnderPointer = false;
         if (winUnderPtr == null) {
             return null;
         }
         isUnderPointer = winUnderPtr.isComponentAt(this, pointerPos);
-
         if (isUnderPointer) {
             return MouseDispatcher.convertPoint(null, absPointerPos, this);
         }
         return null;
     }
 
-
     /**
      * Set native caret at the given position <br>
-     * Note: this method takes AWT lock inside
-     * because it walks through the component hierarchy
+     * Note: this method takes AWT lock inside because it walks through the
+     * component hierarchy
      */
     void setCaretPos(final int x, final int y) {
         Runnable r = new Runnable() {
@@ -4308,8 +4081,7 @@ public abstract class Component
         if (Thread.currentThread() instanceof EventDispatchThread) {
             r.run();
         } else {
-            toolkit.getSystemEventQueueImpl().postEvent(
-                    new InvocationEvent(this, r));
+            toolkit.getSystemEventQueueImpl().postEvent(new InvocationEvent(this, r));
         }
     }
 
@@ -4346,7 +4118,6 @@ public abstract class Component
 
     // to be overridden in standard components such as Button and List
     void resetDefaultSize() {
-
     }
 
     ComponentBehavior createBehavior() {
@@ -4362,19 +4133,20 @@ public abstract class Component
     }
 
     /**
-     * Called when native resource for this component is created
-     * (for heawyweights only)
+     * Called when native resource for this component is created (for
+     * heavyweights only)
      */
     void nativeWindowCreated(NativeWindow win) {
         // to be overridden
     }
 
     /**
-     * Determine the component's area hidden behind the windows 
-     * that have higher Z-order, including windows of other applications
-     * @param part - the part of the component to determine its hidden area, 
-     * or null for the whole component
-     * @return the calculated region, or null if it cannot be determined 
+     * Determine the component's area hidden behind the windows that have higher
+     * Z-order, including windows of other applications
+     * 
+     * @param part - the part of the component to determine its hidden area, or
+     *        null for the whole component
+     * @return the calculated region, or null if it cannot be determined
      */
     MultiRectArea getObscuredRegion(Rectangle part) {
         if (!visible || parent == null || !parent.visible) {
@@ -4387,7 +4159,6 @@ public abstract class Component
         if (r.isEmpty()) {
             return null;
         }
-
         r.translate(x, y);
         MultiRectArea ret = parent.getObscuredRegion(r);
         if (ret != null) {
@@ -4396,21 +4167,17 @@ public abstract class Component
         return ret;
     }
 
-    private void readObject(ObjectInputStream stream)
-            throws IOException, ClassNotFoundException {
-
+    private void readObject(ObjectInputStream stream) throws IOException,
+            ClassNotFoundException {
         stream.defaultReadObject();
-
         FieldsAccessor accessor = new FieldsAccessor(Component.class, this);
-
         accessor.set("toolkit", Toolkit.getDefaultToolkit());
         accessor.set("behaviour", createBehavior());
-        accessor.set("componentLock", new Object());  //$NON-LOCK-1$
+        accessor.set("componentLock", new Object()); // $NON-LOCK-1$
     }
 
     final void onDrawImage(Image image, Point destLocation, Dimension destSize, Rectangle source) {
         ImageParameters imageParams;
-
         if (updatedImages == null) {
             updatedImages = new HashMap<Image, ImageParameters>();
         }
@@ -4426,16 +4193,15 @@ public abstract class Component
         toolkit.lockAWT();
         try {
             boolean done = false;
-          if((infoflags & (ALLBITS | FRAMEBITS)) != 0){
-            done = true;
-          }else if((infoflags & SOMEBITS) != 0 && incrementalImageUpdate){
-            done = true;
-          }
-
-          if(done) {
-            repaint();
-        }
-          return (infoflags & (ABORT | ALLBITS)) == 0;
+            if ((infoflags & (ALLBITS | FRAMEBITS)) != 0) {
+                done = true;
+            } else if ((infoflags & SOMEBITS) != 0 && incrementalImageUpdate) {
+                done = true;
+            }
+            if (done) {
+                repaint();
+            }
+            return (infoflags & (ABORT | ALLBITS)) == 0;
         } finally {
             toolkit.unlockAWT();
         }
@@ -4443,14 +4209,12 @@ public abstract class Component
 
     private void invalidateRealParent() {
         Container realParent = getRealParent();
-
         if ((realParent != null) && realParent.isValid()) {
             realParent.invalidate();
         }
     }
 
     private class ImageParameters {
-
         private final LinkedList<DrawingParameters> drawingParams = new LinkedList<DrawingParameters>();
 
         Dimension size = new Dimension(Component.this.w, Component.this.h);
@@ -4464,9 +4228,10 @@ public abstract class Component
         }
 
         class DrawingParameters {
-
             Point destLocation;
+
             Dimension destSize;
+
             Rectangle source;
 
             DrawingParameters(Point destLocation, Dimension destSize, Rectangle source) {
@@ -4482,9 +4247,7 @@ public abstract class Component
                     this.source = null;
                 }
             }
-
         }
-
     }
 
     /**
@@ -4512,7 +4275,7 @@ public abstract class Component
     void setTextFieldKit(TextFieldKit kit) {
         textFieldKit = kit;
     }
-    
+
     /**
      * Dispatches input & focus events to input method
      * context.
@@ -4525,20 +4288,11 @@ public abstract class Component
             return false;
         }
         int id = e.getID();
-        boolean isInputEvent = 
-            ((id >= KeyEvent.KEY_FIRST) && 
-             (id <= KeyEvent.KEY_LAST)) ||
-            ((id >= MouseEvent.MOUSE_FIRST) &&
-             (id <= MouseEvent.MOUSE_LAST));
-        
-        if ( ((id >= FocusEvent.FOCUS_FIRST) &&
-              (id <= FocusEvent.FOCUS_LAST)) ||
-              isInputEvent) {
-            
+        boolean isInputEvent = ((id >= KeyEvent.KEY_FIRST) && (id <= KeyEvent.KEY_LAST))
+                || ((id >= MouseEvent.MOUSE_FIRST) && (id <= MouseEvent.MOUSE_LAST));
+        if (((id >= FocusEvent.FOCUS_FIRST) && (id <= FocusEvent.FOCUS_LAST)) || isInputEvent) {
             ic.dispatchEvent(e);
-            
         }
-        
         return e.isConsumed();
     }
 }

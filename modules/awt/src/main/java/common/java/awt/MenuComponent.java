@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Pavel Dolgov
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.event.FocusListener;
@@ -25,39 +22,35 @@ import java.awt.event.MouseEvent;
 import java.awt.peer.MenuComponentPeer;
 import java.io.Serializable;
 import java.util.Locale;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleComponent;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleSelection;
 import javax.accessibility.AccessibleStateSet;
-
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.state.MenuItemState;
 import org.apache.harmony.awt.state.MenuState;
 
-
 public abstract class MenuComponent implements Serializable {
-
     private static final long serialVersionUID = -4536902356223894379L;
 
-
     private String name;
+
     private Font font;
+
     MenuContainer parent;
 
     boolean deprecatedEventHandler = true;
 
     private int selectedItemIndex;
+
     private AccessibleContext accessibleContext;
 
     final Toolkit toolkit = Toolkit.getDefaultToolkit();
 
-    protected abstract class AccessibleAWTMenuComponent extends
-            AccessibleContext implements Serializable, AccessibleComponent,
-            AccessibleSelection {
-
+    protected abstract class AccessibleAWTMenuComponent extends AccessibleContext implements
+            Serializable, AccessibleComponent, AccessibleSelection {
         private static final long serialVersionUID = -4269533416223798698L;
 
         public void addFocusListener(FocusListener listener) {
@@ -210,7 +203,6 @@ public abstract class MenuComponent implements Serializable {
                 if (aParent instanceof MenuComponent) {
                     MenuComponent parent = (MenuComponent) aParent;
                     int count = parent.getItemCount();
-
                     for (int i = 0; i < count; i++) {
                         MenuComponent comp = parent.getItem(i);
                         if (comp instanceof Accessible) {
@@ -276,7 +268,6 @@ public abstract class MenuComponent implements Serializable {
      * utilized by the visual theme
      */
     class State implements MenuState {
-
         Dimension size;
 
         Dimension getSize() {
@@ -289,34 +280,43 @@ public abstract class MenuComponent implements Serializable {
         public int getWidth() {
             return getSize().width;
         }
+
         public int getHeight() {
             return getSize().height;
         }
+
         public Font getFont() {
             return MenuComponent.this.getFont();
         }
+
         public int getItemCount() {
             return MenuComponent.this.getItemCount();
         }
+
         public int getSelectedItemIndex() {
             return MenuComponent.this.getSelectedItemIndex();
         }
+
         public boolean isFontSet() {
             return MenuComponent.this.isFontSet();
         }
+
+        @SuppressWarnings("deprecation")
         public FontMetrics getFontMetrics(Font f) {
             return MenuComponent.this.toolkit.getFontMetrics(f);
         }
+
         public Point getLocation() {
             return MenuComponent.this.getLocation();
         }
+
         public MenuItemState getItem(int index) {
             MenuItem item = MenuComponent.this.getItem(index);
             return item.itemState;
         }
+
         public void setSize(int w, int h) {
             this.size = new Dimension(w, h);
-
         }
 
         void calculate() {
@@ -325,8 +325,8 @@ public abstract class MenuComponent implements Serializable {
         }
 
         void reset() {
-            for (int i=0; i < getItemCount(); i++) {
-                ((MenuItem.State)getItem(i)).reset();
+            for (int i = 0; i < getItemCount(); i++) {
+                ((MenuItem.State) getItem(i)).reset();
             }
         }
     }
@@ -336,7 +336,6 @@ public abstract class MenuComponent implements Serializable {
      * keyboard and mouse events to the menu component itself
      */
     class MenuPopupBox extends PopupBox {
-
         private final Point lastMousePos = new Point();
 
         @Override
@@ -355,14 +354,12 @@ public abstract class MenuComponent implements Serializable {
         }
 
         @Override
-        void onMouseEvent(int eventId, Point where, int mouseButton, long when,
-                int modifiers, int wheelRotation) {
-
+        void onMouseEvent(int eventId, Point where, int mouseButton, long when, int modifiers,
+                int wheelRotation) {
             // prevent conflict of mouse and keyboard
             // when sub-menu drops down due to keyboard navigation
-            if (lastMousePos.equals(where) &&
-                    (eventId == MouseEvent.MOUSE_MOVED ||
-                     eventId == MouseEvent.MOUSE_ENTERED)) {
+            if (lastMousePos.equals(where)
+                    && (eventId == MouseEvent.MOUSE_MOVED || eventId == MouseEvent.MOUSE_ENTERED)) {
                 return;
             }
             lastMousePos.setLocation(where);
@@ -374,7 +371,6 @@ public abstract class MenuComponent implements Serializable {
         toolkit.lockAWT();
         try {
             Toolkit.checkHeadless();
-
             name = autoName();
             selectedItemIndex = -1;
         } finally {
@@ -423,7 +419,6 @@ public abstract class MenuComponent implements Serializable {
         toolkit.lockAWT();
         try {
             processEvent(event);
-
             if (deprecatedEventHandler) {
                 postDeprecatedEvent(event);
             }
@@ -459,9 +454,7 @@ public abstract class MenuComponent implements Serializable {
         return toolkit.awtTreeLock;
     }
 
-    /**
-     * @deprecated
-     */
+    @SuppressWarnings("deprecation")
     @Deprecated
     public boolean postEvent(Event e) {
         toolkit.lockAWT();
@@ -512,9 +505,8 @@ public abstract class MenuComponent implements Serializable {
     }
 
     boolean isFontSet() {
-        return font != null ||
-                ((parent instanceof MenuComponent) &&
-                ((MenuComponent)parent).isFontSet());
+        return font != null
+                || ((parent instanceof MenuComponent) && ((MenuComponent) parent).isFontSet());
     }
 
     boolean hasDefaultFont() {
@@ -524,7 +516,7 @@ public abstract class MenuComponent implements Serializable {
     protected void processEvent(AWTEvent event) {
         toolkit.lockAWT();
         try {
-        // do nothing
+            // do nothing
         } finally {
             toolkit.unlockAWT();
         }
@@ -579,7 +571,7 @@ public abstract class MenuComponent implements Serializable {
         for (int i = 0; i < getItemCount(); i++) {
             MenuItem mi = getItem(i);
             if (mi instanceof Menu) {
-                mi = ((Menu)mi).getShortcutMenuItemImpl(ms);
+                mi = ((Menu) mi).getShortcutMenuItemImpl(ms);
                 if (mi != null) {
                     return mi;
                 }
@@ -649,7 +641,7 @@ public abstract class MenuComponent implements Serializable {
             return null;
         }
         MenuItem item = getItem(selectedItemIndex);
-        return (item instanceof Menu) ? (Menu)item : null;
+        return (item instanceof Menu) ? (Menu) item : null;
     }
 
     /**
@@ -670,17 +662,14 @@ public abstract class MenuComponent implements Serializable {
             return;
         }
         if (selectedItemIndex >= 0 && getItem(selectedItemIndex) instanceof Menu) {
-            ((Menu)getItem(selectedItemIndex)).hide();
+            ((Menu) getItem(selectedItemIndex)).hide();
         }
-
         MultiRectArea clip = getUpdateClip(index, selectedItemIndex);
         selectedItemIndex = index;
-
         Graphics gr = getGraphics(clip);
         if (gr != null) {
             paint(gr);
         }
-
         if (showSubMenu) {
             showSubMenu(selectedItemIndex);
         }
@@ -704,9 +693,8 @@ public abstract class MenuComponent implements Serializable {
         }
         int i = selected;
         do {
-            i = (forward ? (i+1) : (i+count-1)) % count;
+            i = (forward ? (i + 1) : (i + count - 1)) % count;
             i %= count;
-
             MenuItem item = getItem(i);
             if (!"-".equals(item.getLabel())) {
                 selectItem(i, showSubMenu);
@@ -721,7 +709,7 @@ public abstract class MenuComponent implements Serializable {
         }
         MenuItem item = getItem(index);
         if (item instanceof Menu) {
-            Menu menu = ((Menu)getItem(index));
+            Menu menu = ((Menu) getItem(index));
             if (menu.getItemCount() == 0) {
                 return;
             }
@@ -736,10 +724,10 @@ public abstract class MenuComponent implements Serializable {
      */
     MenuBar getMenuBar() {
         if (parent instanceof MenuBar) {
-            return (MenuBar)parent;
+            return (MenuBar) parent;
         }
         if (parent instanceof MenuComponent) {
-            return ((MenuComponent)parent).getMenuBar();
+            return ((MenuComponent) parent).getMenuBar();
         }
         return null;
     }
@@ -762,7 +750,6 @@ public abstract class MenuComponent implements Serializable {
      */
     final MultiRectArea getUpdateClip(int index1, int index2) {
         MultiRectArea clip = new MultiRectArea();
-
         if (index1 >= 0) {
             clip.add(getItemRect(index1));
         }
@@ -784,7 +771,7 @@ public abstract class MenuComponent implements Serializable {
     void hide() {
         selectedItemIndex = -1;
         if (parent instanceof MenuComponent) {
-            ((MenuComponent)parent).itemHidden(this);
+            ((MenuComponent) parent).itemHidden(this);
         }
     }
 
@@ -818,14 +805,11 @@ public abstract class MenuComponent implements Serializable {
 
     String autoName() {
         String name = getClass().getName();
-
         if (name.indexOf("$") != -1) {
             return null;
         }
-
         int number = toolkit.autoNumber.nextMenuComponent++;
         name = name.substring(name.lastIndexOf(".") + 1) + Integer.toString(number);
-
         return name;
     }
 
@@ -833,7 +817,7 @@ public abstract class MenuComponent implements Serializable {
      * Creates the Graphics object for the pop-up box of this menu component
      * @param clip - the clip to set on this Graphics
      * @return - the created Graphics object, 
-     * or null if such object is not avaiable.
+     * or null if such object is not available.
      */
     Graphics getGraphics(MultiRectArea clip) {
         // to be overridden
@@ -847,4 +831,3 @@ public abstract class MenuComponent implements Serializable {
         return null;
     }
 }
-

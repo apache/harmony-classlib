@@ -14,50 +14,62 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Dmitry A. Durnev
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.InvocationEvent;
 import java.io.Serializable;
-import java.util.Iterator;
-
+import java.util.Collection;
 import org.apache.harmony.awt.ScrollbarStateController;
 import org.apache.harmony.awt.state.ScrollbarState;
 import org.apache.harmony.awt.wtk.NativeWindow;
 
-
 public class ScrollPaneAdjustable implements Adjustable, Serializable {
-
     private static final long serialVersionUID = -3359745691033257079L;
 
-    private static final String errorStr = "Can be set by scrollpane only";
-    private final AWTListenerList adjustmentListeners = new AWTListenerList(null);
+    private final AWTListenerList<AdjustmentListener> adjustmentListeners = new AWTListenerList<AdjustmentListener>();
+
     private final int orientation;
+
     private final Component comp;
+
     private int value;
+
     private int visibleAmount;
+
     private int minimum;
+
     private int maximum;
+
     private int unitIncrement;
+
     private int blockIncrement;
+
     private boolean valueIsAdjusting;
-    private ScrollbarStateController stateController;
+
+    private final ScrollbarStateController stateController;
+
     private final Rectangle bounds = new Rectangle();
-    final transient State state = new State();
-    private boolean callAWTListener = false;
+
+    private final transient State state = new State();
+
+    private boolean callAWTListener;
 
     class State implements ScrollbarState {
         private final Rectangle decreaseRect = new Rectangle();
+
         private final Rectangle increaseRect = new Rectangle();
+
         private final Rectangle sliderRect = new Rectangle();
+
         private final Rectangle trackRect = new Rectangle();
+
         private final Rectangle upperTrackRect = new Rectangle();
+
         private final Rectangle lowerTrackRect = new Rectangle();
+
         private int trackSize;
 
         public Adjustable getAdjustable() {
@@ -105,7 +117,7 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
         }
 
         public void setTrackBounds(Rectangle r) {
-           trackRect.setBounds(r);
+            trackRect.setBounds(r);
         }
 
         public Rectangle getUpperTrackBounds() {
@@ -133,11 +145,11 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
         }
 
         public void setIncreaseRect(Rectangle r) {
-           increaseRect.setRect(r);
+            increaseRect.setRect(r);
         }
 
         public void setTrackSize(int size) {
-          trackSize = size;
+            trackSize = size;
         }
 
         public int getTrackSize() {
@@ -153,7 +165,7 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
         public Rectangle getIncreaseRect() {
             return increaseRect;
         }
- 
+
         public Rectangle getDecreaseRect() {
             return decreaseRect;
         }
@@ -226,13 +238,11 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
 
         public void setValue(int type, int value) {
             ScrollPaneAdjustable.this.setValue(type, value);
-
         }
 
         public boolean isTextColorSet() {
             return false;
         }
-
     }
 
     ScrollPaneAdjustable(Component comp, int orientation) {
@@ -241,7 +251,6 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
         unitIncrement = 1;
         blockIncrement = 1;
         stateController = new ScrollbarStateController(state) {
-
             @Override
             protected void fireEvent() {
                 generateEvent();
@@ -254,7 +263,7 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
 
             @Override
             protected void repaint() {
-               doRepaint();
+                doRepaint();
             }
 
             @Override
@@ -315,23 +324,21 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
          * System.out.println(new ScrollPane().getVAdjustable());
          * System.out.println(new ScrollPane().getHAdjustable());
          */
-
         String orientStr = "";
         switch (orientation) {
-        case Adjustable.HORIZONTAL:
-            orientStr = "horizontal";
-            break;
-        case Adjustable.VERTICAL:
-            orientStr = "vertical";
-            break;
-        case Adjustable.NO_ORIENTATION:
-            orientStr = "no orientation";
-            break;
+            case Adjustable.HORIZONTAL:
+                orientStr = "horizontal";
+                break;
+            case Adjustable.VERTICAL:
+                orientStr = "vertical";
+                break;
+            case Adjustable.NO_ORIENTATION:
+                orientStr = "no orientation";
+                break;
         }
-        return (orientStr + ",val=" + value + ",vis=" + visibleAmount +
-                ",[" + minimum + ".." + maximum + "]" +
-                ",unit=" + unitIncrement + ",block=" + blockIncrement +
-                ",isAdjusting=" + valueIsAdjusting);
+        return (orientStr + ",val=" + value + ",vis=" + visibleAmount + ",[" + minimum + ".."
+                + maximum + "]" + ",unit=" + unitIncrement + ",block=" + blockIncrement
+                + ",isAdjusting=" + valueIsAdjusting);
     }
 
     public void setBlockIncrement(int b) {
@@ -339,11 +346,11 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
     }
 
     public void setMaximum(int max) {
-        throw new AWTError(errorStr);
+        throw new AWTError("Can be set by scrollpane only");
     }
 
     public void setMinimum(int min) {
-        throw new AWTError(errorStr);
+        throw new AWTError("Can be set by scrollpane only");
     }
 
     public void setUnitIncrement(int u) {
@@ -355,7 +362,7 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
     }
 
     public void setVisibleAmount(int vis) {
-        throw new AWTError(errorStr);
+        throw new AWTError("Can be set by scrollpane only");
     }
 
     public void addAdjustmentListener(AdjustmentListener l) {
@@ -367,8 +374,7 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
     }
 
     public AdjustmentListener[] getAdjustmentListeners() {
-        return (AdjustmentListener[]) adjustmentListeners.
-        getUserListeners(new AdjustmentListener[0]);
+        return adjustmentListeners.getUserListeners(new AdjustmentListener[0]);
     }
 
     final Rectangle getBounds() {
@@ -418,25 +424,20 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
 
     private void postAdjustmentEvent(final int type) {
         // create and post invocation event here:
-        comp.postEvent(new InvocationEvent(ScrollPaneAdjustable.this,
-                                                 new Runnable() {
+        comp.postEvent(new InvocationEvent(ScrollPaneAdjustable.this, new Runnable() {
             public void run() {
-                AdjustmentEvent event = new AdjustmentEvent(
-                                ScrollPaneAdjustable.this,
-                                AdjustmentEvent.ADJUSTMENT_VALUE_CHANGED, type,
-                                value, getValueIsAdjusting());
+                AdjustmentEvent event = new AdjustmentEvent(ScrollPaneAdjustable.this,
+                        AdjustmentEvent.ADJUSTMENT_VALUE_CHANGED, type, value,
+                        getValueIsAdjusting());
                 if (callAWTListener) {
                     comp.toolkit.lockAWT();
                     try {
-                        processAdjustmentEvent(event,
-                                               adjustmentListeners.getSystemIterator());
+                        processAdjustmentEvent(event, adjustmentListeners.getSystemListeners());
                     } finally {
                         comp.toolkit.unlockAWT();
                     }
                 }
-                processAdjustmentEvent(event,
-                                       adjustmentListeners.getUserIterator());
-
+                processAdjustmentEvent(event, adjustmentListeners.getUserListeners());
             }
         }));
     }
@@ -463,18 +464,14 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
         }
     }
 
-    void processAdjustmentEvent(AdjustmentEvent e, Iterator i) {
-
-        while (i.hasNext()) {
-            AdjustmentListener listener = (AdjustmentListener) i.next();
-
+    void processAdjustmentEvent(AdjustmentEvent e, Collection<AdjustmentListener> c) {
+        for (AdjustmentListener listener : c) {
             switch (e.getID()) {
-            case AdjustmentEvent.ADJUSTMENT_VALUE_CHANGED:
-                listener.adjustmentValueChanged(e);
-                break;
+                case AdjustmentEvent.ADJUSTMENT_VALUE_CHANGED:
+                    listener.adjustmentValueChanged(e);
+                    break;
             }
         }
-
     }
 
     void setValue(int type, int val) {
@@ -483,7 +480,6 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
         if (oldVal != value) {
             Rectangle oldRect = new Rectangle(state.getSliderRect());
             comp.toolkit.theme.layoutScrollbar(state); //TODO: FIXME
-
             Rectangle paintRect = oldRect.union(state.getSliderRect());
             paintRect.grow(0, 1);
             postAdjustmentEvent(type);
@@ -499,6 +495,4 @@ public class ScrollPaneAdjustable implements Adjustable, Serializable {
     ScrollbarStateController getStateController() {
         return stateController;
     }
-
-
 }

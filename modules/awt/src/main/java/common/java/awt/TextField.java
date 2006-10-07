@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.event.ActionEvent;
@@ -25,8 +22,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.EventListener;
-import java.util.Iterator;
-
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleState;
 import javax.accessibility.AccessibleStateSet;
@@ -35,7 +30,6 @@ import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.View;
-
 import org.apache.harmony.awt.text.AWTTextAction;
 import org.apache.harmony.awt.text.ActionNames;
 import org.apache.harmony.awt.text.ActionSet;
@@ -43,11 +37,8 @@ import org.apache.harmony.awt.text.PropertyNames;
 import org.apache.harmony.awt.text.TextFactory;
 import org.apache.harmony.awt.text.TextFieldKit;
 
-
 public class TextField extends TextComponent {
-
     protected class AccessibleAWTTextField extends AccessibleAWTTextComponent {
-
         private static final long serialVersionUID = 6219164359235943158L;
 
         @Override
@@ -56,15 +47,12 @@ public class TextField extends TextComponent {
             set.add(AccessibleState.SINGLE_LINE);
             return set;
         }
-
-
     }
 
     /**
      * Implementation of text field specific text operations
      */
     final class TextFieldKitImpl implements TextFieldKit {
-
         /**
          * used in horizontal text scrolling
          */
@@ -82,12 +70,10 @@ public class TextField extends TextComponent {
          */
         public BoundedRangeModel getHorizontalVisibility() {
             if (boundedRangeModel == null) {
-                int prefWidth = (int) rootViewContext.getView().
-                                getPreferredSpan(View.X_AXIS);
+                int prefWidth = (int) rootViewContext.getView().getPreferredSpan(View.X_AXIS);
                 int value = getMaxScrollOffset();
                 int max = Math.max(prefWidth, value);
                 boundedRangeModel = new DefaultBoundedRangeModel(value, max - value, 0, max);
-
                 boundedRangeModel.addChangeListener(new ChangeListener() {
                     public void stateChanged(ChangeEvent e) {
                         scrollPosition.x = -boundedRangeModel.getValue();
@@ -108,17 +94,16 @@ public class TextField extends TextComponent {
         public Insets getInsets() {
             return TextField.this.getNativeInsets();
         }
-
     }
 
     private static final long serialVersionUID = -2966288784432217853L;
 
-    private final AWTListenerList actionListeners = new AWTListenerList(this);
+    private final AWTListenerList<ActionListener> actionListeners = new AWTListenerList<ActionListener>(
+            this);
 
-    private int columns = 0;
+    private int columns;
 
-    private char echoChar = 0;
-
+    private char echoChar;
 
     public TextField(String text) throws HeadlessException {
         this(text, (text != null ? text.length() : 0));
@@ -152,13 +137,13 @@ public class TextField extends TextComponent {
         toolkit.lockAWT();
         try {
             Toolkit.checkHeadless();
-            setTextFieldKit(new TextFieldKitImpl());            
+            setTextFieldKit(new TextFieldKitImpl());
             this.columns = Math.max(0, columns);
             addAWTKeyListener(new KeyAdapter() {
                 @Override
                 public void keyPressed(KeyEvent e) {
-                    if ((e.getKeyCode() == KeyEvent.VK_ENTER) &&
-                        !e.isAltDown() && !e.isControlDown()) {
+                    if ((e.getKeyCode() == KeyEvent.VK_ENTER) && !e.isAltDown()
+                            && !e.isControlDown()) {
                         generateActionEvent(e.getWhen(), e.getModifiers());
                     }
                 }
@@ -174,7 +159,7 @@ public class TextField extends TextComponent {
         document.putProperty(PropertyNames.FILTER_NEW_LINES, Boolean.TRUE);
         setText(getText()); // remove all new lines in already existing text
         toolkit.lockAWT();
-        try {            
+        try {
             super.addNotify();
         } finally {
             toolkit.unlockAWT();
@@ -265,7 +250,6 @@ public class TextField extends TextComponent {
             return null;
         }
         return new Dimension(fm.charWidth('_') * cols + 6, fm.getHeight() + 6);
-
     }
 
     /**
@@ -280,7 +264,6 @@ public class TextField extends TextComponent {
             if ((columns > 0)) {
                 return minimumSize(columns);
             }
-
             return super.minimumSize();
         } finally {
             toolkit.unlockAWT();
@@ -296,7 +279,6 @@ public class TextField extends TextComponent {
          * tf.setEchoChar('q');
          * System.out.println(tf);
          */
-
         toolkit.lockAWT();
         try {
             String paramStr = super.paramString();
@@ -339,7 +321,6 @@ public class TextField extends TextComponent {
             if (columns > 0) {
                 return preferredSize(columns);
             }
-
             return super.preferredSize();
         } finally {
             toolkit.unlockAWT();
@@ -394,14 +375,12 @@ public class TextField extends TextComponent {
         repaint();
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void setEchoCharacter(char ch) {
         setEchoChar(ch);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         if (ActionListener.class.isAssignableFrom(listenerType)) {
@@ -419,7 +398,7 @@ public class TextField extends TextComponent {
     }
 
     public ActionListener[] getActionListeners() {
-        return (ActionListener[]) actionListeners.getUserListeners(new ActionListener[0]);
+        return actionListeners.getUserListeners(new ActionListener[0]);
     }
 
     @Override
@@ -432,13 +411,11 @@ public class TextField extends TextComponent {
     }
 
     protected void processActionEvent(ActionEvent e) {
-        for (Iterator i = actionListeners.getUserIterator(); i.hasNext();) {
-            ActionListener listener = (ActionListener) i.next();
-
+        for (ActionListener listener : actionListeners.getUserListeners()) {
             switch (e.getID()) {
-            case ActionEvent.ACTION_PERFORMED:
-                listener.actionPerformed(e);
-                break;
+                case ActionEvent.ACTION_PERFORMED:
+                    listener.actionPerformed(e);
+                    break;
             }
         }
     }
@@ -470,13 +447,11 @@ public class TextField extends TextComponent {
             return null;
         }
         return getDefaultMinimumSize();
-
     }
 
     private void generateActionEvent(long when, int modifiers) {
-        postEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
-                                  getText(), when, modifiers));
-
+        postEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, getText(), when,
+                modifiers));
     }
 
     /**
@@ -500,7 +475,6 @@ public class TextField extends TextComponent {
             brm.setValue(oldValue - (insets.left - x) - 2);
             repaint();
         }
-
     }
 
     /**
@@ -519,8 +493,8 @@ public class TextField extends TextComponent {
      */
     final int getMaxScrollOffset() {
         Insets ins = getNativeInsets();
-        int prefWidth = (int) rootViewContext.getView().
-        getPreferredSpan(View.X_AXIS) + ins.left + ins.right;
+        int prefWidth = (int) rootViewContext.getView().getPreferredSpan(View.X_AXIS)
+                + ins.left + ins.right;
         int width = getWidth();
         int diff = prefWidth - width;
         return (diff >= 0) ? diff + 1 : 0;
@@ -530,12 +504,12 @@ public class TextField extends TextComponent {
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTTextField();
     }
-    
+
     @Override
-    String autoName() {        
+    String autoName() {
         return ("textfield" + toolkit.autoNumber.nextTextField++);
     }
-    
+
     /**
      * Handles text actions.
      * Ignores new line insertion into text.
@@ -546,5 +520,4 @@ public class TextField extends TextComponent {
             super.performTextAction(action);
         }
     }
-    
 }

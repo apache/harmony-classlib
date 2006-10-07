@@ -14,26 +14,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Dmitry A. Durnev
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
-
 import org.apache.harmony.awt.ScrollStateController;
 import org.apache.harmony.awt.Scrollable;
 import org.apache.harmony.awt.theme.DefaultButton;
 
-
 public class ScrollPane extends Container implements Accessible {
-
     private static final long serialVersionUID = 7956609840827222915L;
 
     public static final int SCROLLBARS_AS_NEEDED = 0;
@@ -43,22 +36,27 @@ public class ScrollPane extends Container implements Accessible {
     public static final int SCROLLBARS_NEVER = 2;
 
     final static int HSCROLLBAR_HEIGHT = 16;
+
     final static int VSCROLLBAR_WIDTH = 16;
+
     final static int BORDER_SIZE = 2;
-    private final static Insets defInsets = new Insets(BORDER_SIZE, BORDER_SIZE,
-                                                       BORDER_SIZE, BORDER_SIZE);
+
+    private final static Insets defInsets = new Insets(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE,
+            BORDER_SIZE);
 
     private int scrollbarDisplayPolicy;
+
     private boolean wheelScrollingEnabled;
 
     private ScrollPaneAdjustable hAdjustable;
+
     private ScrollPaneAdjustable vAdjustable;
 
     private final ScrollStateController stateController;
+
     private final Scrollable scrollable;
 
     protected class AccessibleAWTScrollPane extends AccessibleAWTContainer {
-
         private static final long serialVersionUID = 6100703663886637L;
 
         protected AccessibleAWTScrollPane() {
@@ -71,7 +69,6 @@ public class ScrollPane extends Container implements Accessible {
     }
 
     class SPScrollable implements Scrollable {
-
         public Adjustable getVAdjustable() {
             return vAdjustable;
         }
@@ -111,7 +108,6 @@ public class ScrollPane extends Container implements Accessible {
 
         public void doRepaint() {
             ScrollPane.this.doRepaint();
-
         }
 
         public int getAdjustableWidth() {
@@ -124,7 +120,6 @@ public class ScrollPane extends Container implements Accessible {
 
         public void setAdjustableSizes(Adjustable adj, int vis, int min, int max) {
             ((ScrollPaneAdjustable) adj).setSizes(vis, min, max);
-
         }
 
         public int getAdjustableMode(Adjustable adj) {
@@ -132,8 +127,7 @@ public class ScrollPane extends Container implements Accessible {
         }
 
         public void setAdjustableBounds(Adjustable adj, Rectangle r) {
-            ((ScrollPaneAdjustable)adj).setBounds(r);
-
+            ((ScrollPaneAdjustable) adj).setBounds(r);
         }
 
         public int getWidth() {
@@ -147,9 +141,7 @@ public class ScrollPane extends Container implements Accessible {
         public void doRepaint(Rectangle r) {
             ScrollPane.this.doRepaint(r);
         }
-
     }
-
 
     public ScrollPane() throws HeadlessException {
         this(SCROLLBARS_AS_NEEDED);
@@ -165,13 +157,12 @@ public class ScrollPane extends Container implements Accessible {
         try {
             Toolkit.checkHeadless();
             switch (scrollbarDisplayPolicy) {
-            case SCROLLBARS_ALWAYS:
-            case SCROLLBARS_AS_NEEDED:
-            case SCROLLBARS_NEVER:
-                break;
-            default:
-                throw new IllegalArgumentException("illegal scrollbar " +
-                        "display policy");
+                case SCROLLBARS_ALWAYS:
+                case SCROLLBARS_AS_NEEDED:
+                case SCROLLBARS_NEVER:
+                    break;
+                default:
+                    throw new IllegalArgumentException("illegal scrollbar " + "display policy");
             }
             this.scrollbarDisplayPolicy = scrollbarDisplayPolicy;
             setWheelScrollingEnabled(true);
@@ -215,35 +206,30 @@ public class ScrollPane extends Container implements Accessible {
          * which can be revealed by the following code:
          * System.out.println(new ScrollPane());
          */
-
         toolkit.lockAWT();
         try {
             Point scrollPos = new Point();
             try {
                 scrollPos = getScrollPosition();
             } catch (NullPointerException npe) {
-
             }
             Insets ins = getInsets();
-            String strPolicy ="";
+            String strPolicy = "";
             switch (getScrollbarDisplayPolicy()) {
-            case SCROLLBARS_ALWAYS:
-                strPolicy = "always";
-                break;
-            case SCROLLBARS_AS_NEEDED:
-                strPolicy = "as-needed";
-                break;
-            case SCROLLBARS_NEVER:
-                strPolicy = "never";
-                break;
-
+                case SCROLLBARS_ALWAYS:
+                    strPolicy = "always";
+                    break;
+                case SCROLLBARS_AS_NEEDED:
+                    strPolicy = "as-needed";
+                    break;
+                case SCROLLBARS_NEVER:
+                    strPolicy = "never";
+                    break;
             }
-            return (super.paramString() +
-                    ",ScrollPosition=(" + scrollPos.x + "," + scrollPos.x + ")" +
-                    ",Insets=(" + ins.left + "," + ins.top + "," +
-                    ins.right + "," + ins.bottom + ")" +
-                    ",ScrollbarDisplayPolicy=" + strPolicy +
-                    ",wheelScrollingEnabled=" + isWheelScrollingEnabled());
+            return (super.paramString() + ",ScrollPosition=(" + scrollPos.x + "," + scrollPos.x
+                    + ")" + ",Insets=(" + ins.left + "," + ins.top + "," + ins.right + ","
+                    + ins.bottom + ")" + ",ScrollbarDisplayPolicy=" + strPolicy
+                    + ",wheelScrollingEnabled=" + isWheelScrollingEnabled());
         } finally {
             toolkit.unlockAWT();
         }
@@ -262,17 +248,13 @@ public class ScrollPane extends Container implements Accessible {
     protected boolean eventTypeEnabled(int type) {
         toolkit.lockAWT();
         try {
-            return (isWheelScrollingEnabled() &&
-                    (type == MouseEvent.MOUSE_WHEEL));
+            return (isWheelScrollingEnabled() && (type == MouseEvent.MOUSE_WHEEL));
         } finally {
             toolkit.unlockAWT();
         }
-
     }
 
-    /**
-     * @deprecated
-     */
+    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public void layout() {
@@ -302,7 +284,6 @@ public class ScrollPane extends Container implements Accessible {
         }
     }
 
-
     @Override
     protected void processMouseWheelEvent(MouseWheelEvent e) {
         toolkit.lockAWT();
@@ -321,7 +302,6 @@ public class ScrollPane extends Container implements Accessible {
             if (index > 0) {
                 throw new IllegalArgumentException("position greater than 0");
             }
-
             if (getComponentCount() > 0) {
                 remove(0);
             }
@@ -347,7 +327,6 @@ public class ScrollPane extends Container implements Accessible {
         } finally {
             toolkit.unlockAWT();
         }
-
     }
 
     public Point getScrollPosition() {
@@ -417,7 +396,7 @@ public class ScrollPane extends Container implements Accessible {
             super.printComponents(g);
         } finally {
             toolkit.unlockAWT();
-        }       
+        }
     }
 
     @Override
@@ -429,7 +408,6 @@ public class ScrollPane extends Container implements Accessible {
         } finally {
             toolkit.unlockAWT();
         }
-
     }
 
     public void setScrollPosition(Point p) {
@@ -476,7 +454,6 @@ public class ScrollPane extends Container implements Accessible {
         } finally {
             toolkit.unlockAWT();
         }
-
     }
 
     @Override
@@ -494,8 +471,7 @@ public class ScrollPane extends Container implements Accessible {
         g.setColor(getBackground());
         g.fillRect(0, 0, w, h);
         // draw pressed button frame:
-        DefaultButton.drawButtonFrame(g, new Rectangle(new Point(),
-                                                       getSize()), true);
+        DefaultButton.drawButtonFrame(g, new Rectangle(new Point(), getSize()), true);
         vAdjustable.prepaint(g);
         hAdjustable.prepaint(g);
     }
@@ -545,10 +521,8 @@ public class ScrollPane extends Container implements Accessible {
         doRepaint(new Rectangle(new Point(), getSize()));
     }
 
-
     @Override
     AccessibleContext createAccessibleContext() {
         return new AccessibleAWTScrollPane();
     }
 }
-

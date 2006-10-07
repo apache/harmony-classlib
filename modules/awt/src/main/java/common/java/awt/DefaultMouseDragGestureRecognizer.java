@@ -14,29 +14,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Pavel Dolgov
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
 import java.awt.dnd.MouseDragGestureRecognizer;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-class DefaultMouseDragGestureRecognizer extends
-        MouseDragGestureRecognizer {
-    
+class DefaultMouseDragGestureRecognizer extends MouseDragGestureRecognizer {
     private boolean active;
 
-    protected DefaultMouseDragGestureRecognizer(
-            DragSource ds, Component c, int act, DragGestureListener dgl) {
+    protected DefaultMouseDragGestureRecognizer(DragSource ds, Component c, int act,
+            DragGestureListener dgl) {
         super(ds, c, act, dgl);
-        
-        events = new ArrayList();
+        events = new ArrayList<InputEvent>();
     }
 
     @Override
@@ -51,7 +46,7 @@ class DefaultMouseDragGestureRecognizer extends
         }
         events.add(e);
         int distance = 2; // TODO: use desktop property 
-        MouseEvent e0 = (MouseEvent)events.get(0);
+        MouseEvent e0 = (MouseEvent) events.get(0);
         if (e0.getPoint().distance(e.getPoint()) >= distance) {
             if (sourceActions != DnDConstants.ACTION_NONE) {
                 active = true;
@@ -59,7 +54,7 @@ class DefaultMouseDragGestureRecognizer extends
             }
         }
     }
-    
+
     @Override
     public void mouseReleased(MouseEvent e) {
         active = false;

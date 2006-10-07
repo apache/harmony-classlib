@@ -14,46 +14,41 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Pavel Dolgov
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
-
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.state.MenuState;
 
-
-
 public class Menu extends MenuItem implements MenuContainer, Accessible {
-
     private static final long serialVersionUID = -8809584163345499784L;
+
     final static int LAST_ELEMENT = Integer.MAX_VALUE;
+
     private final ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
+
     private final Point location = new Point();
+
     private final Dimension size = new Dimension();
 
     private final boolean tearOff;
+
     final MenuPopupBox popupBox = new MenuPopupBox();
 
     protected class AccessibleAWTMenu extends AccessibleAWTMenuItem {
-
         private static final long serialVersionUID = 5228160894980069094L;
 
         @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.MENU;
         }
-
     }
 
     /**
@@ -64,30 +59,38 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
         public int getWidth() {
             return Menu.this.getWidth();
         }
+
         @Override
         public int getHeight() {
             return Menu.this.getHeight();
         }
+
         @Override
         public Font getFont() {
             return Menu.this.getFont();
         }
+
         @Override
         public int getItemCount() {
             return Menu.this.getItemCount();
         }
+
         @Override
         public int getSelectedItemIndex() {
             return Menu.this.getSelectedItemIndex();
         }
+
         @Override
         public boolean isFontSet() {
             return Menu.this.isFontSet();
         }
+
+        @SuppressWarnings("deprecation")
         @Override
         public FontMetrics getFontMetrics(Font f) {
             return Menu.this.toolkit.getFontMetrics(f);
         }
+
         @Override
         public Point getLocation() {
             return Menu.this.location;
@@ -174,7 +177,7 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
         toolkit.lockAWT();
         try {
             while (!menuItems.isEmpty()) {
-                removeImpl(menuItems.size()-1);
+                removeImpl(menuItems.size() - 1);
             }
         } finally {
             toolkit.unlockAWT();
@@ -210,7 +213,6 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
         if (oldParent != null) {
             oldParent.remove(item);
         }
-
         item.setParent(this);
         if (index >= menuItems.size()) {
             menuItems.add(item);
@@ -354,30 +356,27 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
         location.x = x;
         location.y = y;
         selectItem(-1, true);
-
         PopupBox parentBox = null;
         if (parent instanceof MenuComponent) {
-            parentBox = ((MenuComponent)parent).getPopupBox();
+            parentBox = ((MenuComponent) parent).getPopupBox();
         }
-
         size.setSize(toolkit.theme.calculateMenuSize(menuState));
-
         popupBox.setParent(parentBox);
         popupBox.setModal(modal);
         popupBox.show(location, size, getOwnerWindow());
     }
 
     Window getOwnerWindow() {
-        for (MenuContainer cont = getParent(); cont != null; ) {
+        for (MenuContainer cont = getParent(); cont != null;) {
             if (cont instanceof Component) {
-                return ((Component)cont).getWindowAncestor();
+                return ((Component) cont).getWindowAncestor();
             }
             if (cont instanceof Menu) {
-                cont = ((Menu)cont).parent;
+                cont = ((Menu) cont).parent;
                 continue;
             }
             if (cont instanceof MenuBar) {
-                return (Window)((MenuBar)cont).parent;
+                return (Window) ((MenuBar) cont).parent;
             }
         }
         return null;
@@ -389,7 +388,6 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
         for (int i = 0; i < getItemCount(); i++) {
             getItem(i).hide();
         }
-
         popupBox.hide();
     }
 
@@ -405,15 +403,12 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
 
     @Override
     void onMouseEvent(int eventId, Point where, int mouseButton, long when, int modifiers) {
-        if (eventId == MouseEvent.MOUSE_PRESSED ||
-                eventId == MouseEvent.MOUSE_MOVED ||
-                eventId == MouseEvent.MOUSE_DRAGGED) {
+        if (eventId == MouseEvent.MOUSE_PRESSED || eventId == MouseEvent.MOUSE_MOVED
+                || eventId == MouseEvent.MOUSE_DRAGGED) {
             int index = toolkit.theme.getMenuItemIndex(menuState, where);
-
             if (index >= 0 || getSelectedSubmenu() == null) {
                 selectItem(index);
             }
-
         } else if (eventId == MouseEvent.MOUSE_RELEASED) {
             int index = toolkit.theme.getMenuItemIndex(menuState, where);
             selectItem(index);
@@ -453,7 +448,7 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
             case KeyEvent.VK_LEFT:
                 if (parent instanceof Menu) {
                     hide();
-                }else {
+                } else {
                     menuBar = getMenuBar();
                     if (menuBar != null) {
                         menuBar.onKeyEvent(eventId, vKey, when, modifiers);
@@ -465,7 +460,7 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
                 selectNextItem(vKey == KeyEvent.VK_DOWN, false);
                 break;
             case KeyEvent.VK_ENTER:
-                if (selected >=0) {
+                if (selected >= 0) {
                     fireItemAction(selected, when, modifiers);
                 } else {
                     hide();
@@ -499,10 +494,10 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
     }
 
     void collectShortcuts(HashSet<MenuShortcut> shortcuts) {
-        for (int i=0; i<menuItems.size(); i++) {
+        for (int i = 0; i < menuItems.size(); i++) {
             MenuItem item = menuItems.get(i);
             if (item instanceof Menu) {
-                ((Menu)item).collectShortcuts(shortcuts);
+                ((Menu) item).collectShortcuts(shortcuts);
             } else {
                 MenuShortcut ms = item.getShortcut();
                 if (ms != null) {
@@ -512,4 +507,3 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
         }
     }
 }
-

@@ -117,7 +117,19 @@ public class ListenerList<T extends EventListener> implements Serializable {
      */
     public List<T> getUserListeners() {
         synchronized (this) {
+            if (userList == null || userList.isEmpty()) {
+                return Collections.emptyList();
+            }
             return new ArrayList<T>(userList);
+        }
+    }
+    
+    public List<T> getSystemListeners() {
+        synchronized (this) {
+            if (systemList == null || systemList.isEmpty()) {
+                return Collections.emptyList();
+            }
+            return new ArrayList<T>(systemList);
         }
     }
 

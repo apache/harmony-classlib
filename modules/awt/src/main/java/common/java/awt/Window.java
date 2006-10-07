@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Dmitry A. Durnev
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.event.WindowEvent;
@@ -37,29 +34,36 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleState;
 import javax.accessibility.AccessibleStateSet;
-
 import org.apache.harmony.awt.AWTPermissionCollection;
 import org.apache.harmony.awt.FieldsAccessor;
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.im.InputMethodContext;
 import org.apache.harmony.awt.wtk.NativeWindow;
 
-
 public class Window extends Container implements Accessible {
-
     private static final long serialVersionUID = 4497834738069338734L;
-    private final AWTListenerList windowFocusListeners = new AWTListenerList(this);
-    private final AWTListenerList windowListeners = new AWTListenerList(this);
-    private final AWTListenerList windowStateListeners = new AWTListenerList(this);
+
+    private final AWTListenerList<WindowFocusListener> windowFocusListeners = new AWTListenerList<WindowFocusListener>(
+            this);
+
+    private final AWTListenerList<WindowListener> windowListeners = new AWTListenerList<WindowListener>(
+            this);
+
+    private final AWTListenerList<WindowStateListener> windowStateListeners = new AWTListenerList<WindowStateListener>(
+            this);
+
     private final ArrayList<Window> ownedWindows = new ArrayList<Window>();
+
     private transient Component focusOwner;
-    private boolean focusableWindowState = true;//By default, all Windows have a focusable Window state of true
+
+    private boolean focusableWindowState = true;// By default, all Windows have
+                                                // a focusable Window state of
+                                                // true
 
     private Insets nativeInsets = new Insets(0, 0, 0, 0);
 
@@ -68,21 +72,24 @@ public class Window extends Container implements Accessible {
 
     // Properties of Frame and Dialog
     private String title;
+
     private boolean resizable;
+
     private boolean undecorated;
+
     private boolean alwaysOnTop;
+
     boolean locationByPlatform;
 
     /** The window is popup menu or tooltip (for internal use) */
     private boolean popup;
-    
+
     /**
-     * Focus proxy native window actually has native focus
-     * when this Window(Frame) is active, but some other
-     * (owned) Window is focused
+     * Focus proxy native window actually has native focus when this
+     * Window(Frame) is active, but some other (owned) Window is focused
      */
     private transient NativeWindow focusProxy;
-    
+
     /**
      * Component which has requested focus last
      */
@@ -90,15 +97,15 @@ public class Window extends Container implements Accessible {
 
     private final transient GraphicsConfiguration graphicsConfiguration;
 
-    private boolean opened = false;
-    private boolean disposed = false;
+    private boolean opened;
+
+    private boolean disposed;
 
     boolean painted;
-    
+
     private transient InputContext inputContext;
 
-    protected  class AccessibleAWTWindow extends AccessibleAWTContainer {
-
+    protected class AccessibleAWTWindow extends AccessibleAWTContainer {
         private static final long serialVersionUID = 4215068635060671780L;
 
         @Override
@@ -127,7 +134,6 @@ public class Window extends Container implements Accessible {
                 toolkit.unlockAWT();
             }
         }
-
     }
 
     public Window(Window owner) {
@@ -142,41 +148,36 @@ public class Window extends Container implements Accessible {
     private void addWindow(Window window) {
         ownedWindows.add(window);
     }
-    
+
     public Window(Window owner, GraphicsConfiguration gc) {
         toolkit.lockAWT();
         try {
-            if (! (this instanceof Frame) && ! (this instanceof EmbeddedWindow)) {
+            if (!(this instanceof Frame) && !(this instanceof EmbeddedWindow)) {
                 if (owner == null) {
                     throw new IllegalArgumentException("null owner window");
                 }
                 owner.addWindow(this);
             }
-
             parent = owner; // window's parent is the same as owner(by spec)
             graphicsConfiguration = getGraphicsConfiguration(gc);
             warningString = getWarningStringImpl();
-
             super.setLayout(new BorderLayout());
-
             if (owner == null) {
                 setBackground(getDefaultBackground());
                 setForeground(getDefaultForeground());
             }
-
             visible = false;
-            focusCycleRoot = true; //FIXME
+            focusCycleRoot = true; // FIXME
             // Top-levels initialize their focus traversal policies
             // using the context default policy.
             // The context default policy is established by
             // using KeyboardFocusManager.setDefaultFocusTraversalPolicy().
-            setFocusTraversalPolicy(KeyboardFocusManager.getCurrentKeyboardFocusManager().
-                    getDefaultFocusTraversalPolicy());
-
+            setFocusTraversalPolicy(KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                    .getDefaultFocusTraversalPolicy());
             redrawManager = new RedrawManager(this);
-
-            setFont(new Font("dialog", Font.PLAIN, 12));        //TODO: fix it
-            cursor = Cursor.getDefaultCursor(); //for Window cursor is always set(non-null)
+            setFont(new Font("dialog", Font.PLAIN, 12)); // TODO: fix it
+            cursor = Cursor.getDefaultCursor(); // for Window cursor is always
+                                                // set(non-null)
         } finally {
             toolkit.unlockAWT();
         }
@@ -185,9 +186,9 @@ public class Window extends Container implements Accessible {
     NativeWindow getFocusProxy() {
         return focusProxy;
     }
-    
+
     public Window(Frame owner) {
-        this( (Window) owner);
+        this((Window) owner);
         toolkit.lockAWT();
         try {
         } finally {
@@ -205,7 +206,6 @@ public class Window extends Container implements Accessible {
         toolkit.lockAWT();
         try {
             super.addNotify();
-
             focusProxy = toolkit.createFocusProxyNativeWindow(this);
         } finally {
             toolkit.unlockAWT();
@@ -217,7 +217,6 @@ public class Window extends Container implements Accessible {
         toolkit.lockAWT();
         try {
             disposeFocusProxy();
-
             super.removeNotify();
         } finally {
             toolkit.unlockAWT();
@@ -243,9 +242,8 @@ public class Window extends Container implements Accessible {
     public void setCursor(Cursor cursor) {
         toolkit.lockAWT();
         try {
-            //for Window cursor is always set(non-null)
-            super.setCursor(
-                    cursor != null ? cursor : Cursor.getDefaultCursor());
+            // for Window cursor is always set(non-null)
+            super.setCursor(cursor != null ? cursor : Cursor.getDefaultCursor());
         } finally {
             toolkit.unlockAWT();
         }
@@ -290,7 +288,8 @@ public class Window extends Container implements Accessible {
             toolkit.unlockAWT();
         }
         if (true) {
-            throw new RuntimeException("Method is not implemented"); //TODO: implement
+            throw new RuntimeException("Method is not implemented"); // TODO:
+                                                                        // implement
         }
         return;
     }
@@ -300,14 +299,12 @@ public class Window extends Container implements Accessible {
         try {
             if (!disposed) {
                 prepare4HierarchyChange();
-
                 hide();
                 disposeOwnedWindows();
                 mapToDisplay(false);
                 disposed = true;
                 opened = false;
                 disposeInputContext();
-
                 finishHierarchyChange(this, parent, 0);
                 postEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSED));
             }
@@ -326,8 +323,7 @@ public class Window extends Container implements Accessible {
     }
 
     /**
-     * Remove focus proxy native window
-     * from map which is stored in Toolkit
+     * Remove focus proxy native window from map which is stored in Toolkit
      */
     private void disposeFocusProxy() {
         if (focusProxy != null) {
@@ -337,17 +333,15 @@ public class Window extends Container implements Accessible {
     }
 
     /**
-     * dispose all owned windows explicitly
-     * to remove them from Toolkit's map
+     * dispose all owned windows explicitly to remove them from Toolkit's map
      */
     private void disposeOwnedWindows() {
-        for (int i=0; i < ownedWindows.size(); i++) {
+        for (int i = 0; i < ownedWindows.size(); i++) {
             Window win = ownedWindows.get(i);
             if (win != null) {
                 win.dispose();
             }
         }
-
     }
 
     public BufferStrategy getBufferStrategy() {
@@ -357,7 +351,8 @@ public class Window extends Container implements Accessible {
             toolkit.unlockAWT();
         }
         if (true) {
-            throw new RuntimeException("Method is not implemented"); //TODO: implement
+            throw new RuntimeException("Method is not implemented"); // TODO:
+                                                                        // implement
         }
         return null;
     }
@@ -366,7 +361,7 @@ public class Window extends Container implements Accessible {
     public final Container getFocusCycleRootAncestor() {
         toolkit.lockAWT();
         try {
-            //Always returns null because Windows have no ancestors
+            // Always returns null because Windows have no ancestors
             return null;
         } finally {
             toolkit.unlockAWT();
@@ -384,7 +379,7 @@ public class Window extends Container implements Accessible {
 
     @Override
     public Set<AWTKeyStroke> getFocusTraversalKeys(int id) {
-        //why override?
+        // why override?
         toolkit.lockAWT();
         try {
             return super.getFocusTraversalKeys(id);
@@ -399,12 +394,11 @@ public class Window extends Container implements Accessible {
         try {
             if (graphicsConfiguration != null) {
                 return graphicsConfiguration;
-            } else
-            if (parent != null) {
+            } else if (parent != null) {
                 return parent.getGraphicsConfiguration();
             } else {
-                return GraphicsEnvironment.getLocalGraphicsEnvironment().
-                    getDefaultScreenDevice().getDefaultConfiguration();
+                return GraphicsEnvironment.getLocalGraphicsEnvironment()
+                        .getDefaultScreenDevice().getDefaultConfiguration();
             }
         } finally {
             toolkit.unlockAWT();
@@ -462,7 +456,7 @@ public class Window extends Container implements Accessible {
     public final boolean isFocusCycleRoot() {
         toolkit.lockAWT();
         try {
-            //Every Window is, by default, a "focus cycle root".
+            // Every Window is, by default, a "focus cycle root".
             return true;
         } finally {
             toolkit.unlockAWT();
@@ -472,17 +466,17 @@ public class Window extends Container implements Accessible {
     public final boolean isFocusableWindow() {
         toolkit.lockAWT();
         try {
-            return getFocusableWindowState() && ( isActivateable() ||
-                    getFrameDialogOwner().isShowing() && focusTraversalCycleNotEmpty());
+            return getFocusableWindowState()
+                    && (isActivateable() || getFrameDialogOwner().isShowing()
+                            && focusTraversalCycleNotEmpty());
         } finally {
             toolkit.unlockAWT();
         }
     }
 
     final boolean isActivateable() {
-        return (this instanceof Frame) ||
-                (this instanceof Dialog) ||
-                (this instanceof EmbeddedWindow);
+        return (this instanceof Frame) || (this instanceof Dialog)
+                || (this instanceof EmbeddedWindow);
     }
 
     private boolean focusTraversalCycleNotEmpty() {
@@ -490,11 +484,11 @@ public class Window extends Container implements Accessible {
     }
 
     /**
-     * Gets the nearest ancestor "activateable" window
-     * which is typically Frame or Dialog
+     * Gets the nearest ancestor "activateable" window which is typically Frame
+     * or Dialog
      */
     Window getFrameDialogOwner() {
-        for (Window o = this; ; o = (Window) o.parent) {
+        for (Window o = this;; o = (Window) o.parent) {
             if ((o == null) || o.isActivateable()) {
                 return o;
             }
@@ -520,7 +514,7 @@ public class Window extends Container implements Accessible {
     public boolean postEvent(Event evt) {
         toolkit.lockAWT();
         try {
-            //do not propagate event to parent(owner) window:
+            // do not propagate event to parent(owner) window:
             return handleEvent(evt);
         } finally {
             toolkit.unlockAWT();
@@ -560,8 +554,9 @@ public class Window extends Container implements Accessible {
         try {
             // if the Window has never been focused, focus should be set to the
             // Window's initial Component to focus
-            return (focusOwner != null) && (focusOwner != this) ? focusOwner :
-                (isFocusableWindow() ? getFocusTraversalPolicy().getInitialComponent(this) : null);
+            return (focusOwner != null) && (focusOwner != this) ? focusOwner
+                    : (isFocusableWindow() ? getFocusTraversalPolicy()
+                            .getInitialComponent(this) : null);
         } finally {
             toolkit.unlockAWT();
         }
@@ -575,8 +570,9 @@ public class Window extends Container implements Accessible {
     public final void setFocusCycleRoot(boolean value) {
         toolkit.lockAWT();
         try {
-            //Does nothing because Windows must always be roots of a focus traversal cycle.
-            //The passed-in value is ignored.
+            // Does nothing because Windows must always be roots of a focus
+            // traversal cycle.
+            // The passed-in value is ignored.
         } finally {
             toolkit.unlockAWT();
         }
@@ -652,7 +648,6 @@ public class Window extends Container implements Accessible {
         return warningString;
     }
 
-
     private final String getWarningStringImpl() {
         SecurityManager sm = System.getSecurityManager();
         if (sm == null) {
@@ -661,12 +656,11 @@ public class Window extends Container implements Accessible {
         if (sm.checkTopLevelWindow(this)) {
             return null;
         }
-
         PrivilegedAction<String> action = new PrivilegedAction<String>() {
             public String run() {
                 return System.getProperty("awt.appletWarning", "Warning: Java window");
-            }};
-
+            }
+        };
         return AccessController.doPrivileged(action);
     }
 
@@ -697,7 +691,6 @@ public class Window extends Container implements Accessible {
             if (!isDisplayable()) {
                 mapToDisplay(true);
             }
-
             setSize(getPreferredSize());
             validate();
             getNativeWindow().setPacked(true);
@@ -715,15 +708,13 @@ public class Window extends Container implements Accessible {
         }
     }
 
-    public final void setAlwaysOnTop(boolean alwaysOnTop)
-            throws SecurityException {
+    public final void setAlwaysOnTop(boolean alwaysOnTop) throws SecurityException {
         boolean wasAlwaysOnTop;
         toolkit.lockAWT();
         try {
             if (this.alwaysOnTop == alwaysOnTop) {
                 return;
             }
-
             SecurityManager sm = System.getSecurityManager();
             if (sm != null) {
                 sm.checkPermission(AWTPermissionCollection.SET_WINDOW_ALWAYS_ON_TOP_PERMISSION);
@@ -734,7 +725,6 @@ public class Window extends Container implements Accessible {
             if (win != null) {
                 win.setAlwaysOnTop(alwaysOnTop);
             }
-
         } finally {
             toolkit.unlockAWT();
         }
@@ -742,8 +732,8 @@ public class Window extends Container implements Accessible {
     }
 
     /**
-     * Called by AWT in response to
-     * native event "insets changed" on this Window
+     * Called by AWT in response to native event "insets changed" on this Window
+     * 
      * @param insets new native insets
      */
     void setNativeInsets(Insets insets) {
@@ -751,7 +741,6 @@ public class Window extends Container implements Accessible {
             return;
         }
         nativeInsets = (Insets) insets.clone();
-
         validateMenuBar();
         invalidate();
         validate();
@@ -763,14 +752,13 @@ public class Window extends Container implements Accessible {
 
     @Override
     Insets getNativeInsets() {
-        return (Insets)nativeInsets.clone();
+        return (Insets) nativeInsets.clone();
     }
 
     @Override
     void setBounds(int x, int y, int w, int h, int bMask, boolean updateBehavior) {
         boolean resized = ((w != this.w) || (h != this.h));
         super.setBounds(x, y, w, h, bMask, updateBehavior);
-
         if (visible && resized && !updateBehavior) {
             validate();
         }
@@ -812,7 +800,7 @@ public class Window extends Container implements Accessible {
         try {
             oldState = focusableWindowState;
             focusableWindowState = state;
-            //call cb here to make window natively non-focusable
+            // call cb here to make window natively non-focusable
             NativeWindow win = getNativeWindow();
             if (win != null) {
                 win.setFocusable(state);
@@ -823,21 +811,19 @@ public class Window extends Container implements Accessible {
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("focusableWindowState",
-                oldState, focusableWindowState);
+        firePropertyChange("focusableWindowState", oldState, focusableWindowState);
     }
 
     /**
-     * If this is a focused window then
-     * attempt to focus the most recently focused Component 
-     * of this Window's owner
-     * or clear global focus owner if attempt fails
+     * If this is a focused window then attempt to focus the most recently
+     * focused Component of this Window's owner or clear global focus owner if
+     * attempt fails
      */
     private void moveFocusToOwner() {
-
         if (isFocused()) {
             Component compToFocus = null;
-            for (Window wnd = getOwner(); wnd != null && compToFocus == null; wnd = wnd.getOwner()) {
+            for (Window wnd = getOwner(); wnd != null && compToFocus == null; wnd = wnd
+                    .getOwner()) {
                 compToFocus = wnd.getMostRecentFocusOwner();
                 if (compToFocus != null && !compToFocus.requestFocusImpl(false, true, false)) {
                     compToFocus = null;
@@ -846,7 +832,6 @@ public class Window extends Container implements Accessible {
             if (compToFocus == null) {
                 KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwner();
             }
-
         }
     }
 
@@ -862,27 +847,25 @@ public class Window extends Container implements Accessible {
             int centerY = (minY + maxY) / 2;
             int x = centerX;
             int y = centerY;
-
-            //if comp is null or not showing, then set location
-            //relative to "component" of 1-pixel size located
-            //at the center of the screen
+            // if comp is null or not showing, then set location
+            // relative to "component" of 1-pixel size located
+            // at the center of the screen
             Point loc = new Point(centerX, centerY);
             int compX = loc.x;
             Dimension compSize = new Dimension();
-
             if ((c != null) && c.isShowing()) {
                 loc = c.getLocationOnScreen();
                 compX = loc.x;
                 compSize = c.getSize();
             }
-            //first get center coords:
+            // first get center coords:
             loc.translate(compSize.width / 2, compSize.height / 2);
-            //now get upper-left corner coords:
+            // now get upper-left corner coords:
             int w = getWidth(), h = getHeight();
             loc.translate(-w / 2, -h / 2);
-            //check if screenRect contains new window
-            //bounds rectangle and if not - change location
-            //of window to fit into screenRect
+            // check if screenRect contains new window
+            // bounds rectangle and if not - change location
+            // of window to fit into screenRect
             x = Math.max(loc.x, minX);
             y = Math.max(loc.y, minY);
             int right = x + w, bottom = y + h;
@@ -891,10 +874,9 @@ public class Window extends Container implements Accessible {
             }
             if (bottom > maxY) {
                 y -= bottom - maxY;
-
-                //If the bottom of the component is offscreen,
-                //the window is placed to the side of the Component
-                //that is closest to the center of the screen.
+                // If the bottom of the component is offscreen,
+                // the window is placed to the side of the Component
+                // that is closest to the center of the screen.
                 int compRight = compX + compSize.width;
                 int distRight = Math.abs(compRight - centerX);
                 int distLeft = Math.abs(centerX - compX);
@@ -906,7 +888,6 @@ public class Window extends Container implements Accessible {
                 }
             }
             setLocation(x, y);
-
         } finally {
             toolkit.unlockAWT();
         }
@@ -919,7 +900,8 @@ public class Window extends Container implements Accessible {
             if (win != null) {
                 win.toBack();
             }
-            //TODO?: reset the focused Window(this or any of owners) to the top-most Window in the VM
+            // TODO?: reset the focused Window(this or any of owners) to the
+            // top-most Window in the VM
         } finally {
             toolkit.unlockAWT();
         }
@@ -948,10 +930,10 @@ public class Window extends Container implements Accessible {
         if (this.undecorated == undecorated) {
             return;
         }
-        if(isDisplayable()) {
-            throw new IllegalComponentStateException("Cannot change the decorations while the window is visible");
+        if (isDisplayable()) {
+            throw new IllegalComponentStateException(
+                    "Cannot change the decorations while the window is visible");
         }
-
         this.undecorated = undecorated;
     }
 
@@ -960,8 +942,9 @@ public class Window extends Container implements Accessible {
     }
 
     void setPopup(boolean popup) {
-        if(isDisplayable()) {
-            throw new IllegalComponentStateException("Cannot change the decorations while the window is visible");
+        if (isDisplayable()) {
+            throw new IllegalComponentStateException(
+                    "Cannot change the decorations while the window is visible");
         }
         this.popup = popup;
     }
@@ -972,8 +955,9 @@ public class Window extends Container implements Accessible {
 
     /**
      * Set title for Frame or Dialog<br>
-     * It does lockAWT() properly so there's no need
-     * to synchronize the calls of this method
+     * It does lockAWT() properly so there's no need to synchronize the calls of
+     * this method
+     * 
      * @param title - value to set
      */
     void setTitle(String title) {
@@ -1004,7 +988,6 @@ public class Window extends Container implements Accessible {
 
     void setRequestedFocus(Component component) {
         requestedFocus = component;
-
     }
 
     Component getRequestedFocus() {
@@ -1017,14 +1000,15 @@ public class Window extends Container implements Accessible {
     }
 
     /**
-     * Gets the default Cursor if Window is disabled
-     * even if Cursor is explicitly set
+     * Gets the default Cursor if Window is disabled even if Cursor is
+     * explicitly set
+     * 
      * @return actual Cursor to be displayed
      * @see Component.getRealCursor()
      */
     @Override
     Cursor getRealCursor() {
-       return isEnabled() ? getCursor() : Cursor.getDefaultCursor();
+        return isEnabled() ? getCursor() : Cursor.getDefaultCursor();
     }
 
     @Override
@@ -1046,17 +1030,15 @@ public class Window extends Container implements Accessible {
     }
 
     public WindowFocusListener[] getWindowFocusListeners() {
-        return (WindowFocusListener[])
-                windowFocusListeners.getUserListeners(new WindowFocusListener[0]);
+        return windowFocusListeners.getUserListeners(new WindowFocusListener[0]);
     }
 
     public WindowListener[] getWindowListeners() {
-        return (WindowListener[]) windowListeners.getUserListeners(new WindowListener[0]);
+        return windowListeners.getUserListeners(new WindowListener[0]);
     }
 
     public WindowStateListener[] getWindowStateListeners() {
-        return (WindowStateListener[])
-                windowStateListeners.getUserListeners(new WindowStateListener[0]);
+        return windowStateListeners.getUserListeners(new WindowStateListener[0]);
     }
 
     public void removeWindowFocusListener(WindowFocusListener l) {
@@ -1071,6 +1053,7 @@ public class Window extends Container implements Accessible {
         windowStateListeners.removeUserListener(l);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         if (WindowFocusListener.class.isAssignableFrom(listenerType)) {
@@ -1087,7 +1070,6 @@ public class Window extends Container implements Accessible {
     @Override
     protected void processEvent(AWTEvent e) {
         long eventMask = toolkit.eventTypeLookup.getEventMask(e);
-
         if (eventMask == AWTEvent.WINDOW_EVENT_MASK) {
             processWindowEvent((WindowEvent) e);
         } else if (eventMask == AWTEvent.WINDOW_STATE_EVENT_MASK) {
@@ -1102,29 +1084,28 @@ public class Window extends Container implements Accessible {
     protected void processWindowEvent(WindowEvent e) {
         for (Iterator<?> i = windowListeners.getUserIterator(); i.hasNext();) {
             WindowListener listener = (WindowListener) i.next();
-
             switch (e.getID()) {
-            case WindowEvent.WINDOW_ACTIVATED:
-                listener.windowActivated(e);
-                break;
-            case WindowEvent.WINDOW_CLOSED:
-                listener.windowClosed(e);
-                break;
-            case WindowEvent.WINDOW_CLOSING:
-                listener.windowClosing(e);
-                break;
-            case WindowEvent.WINDOW_DEACTIVATED:
-                listener.windowDeactivated(e);
-                break;
-            case WindowEvent.WINDOW_DEICONIFIED:
-                listener.windowDeiconified(e);
-                break;
-            case WindowEvent.WINDOW_ICONIFIED:
-                listener.windowIconified(e);
-                break;
-            case WindowEvent.WINDOW_OPENED:
-                listener.windowOpened(e);
-                break;
+                case WindowEvent.WINDOW_ACTIVATED:
+                    listener.windowActivated(e);
+                    break;
+                case WindowEvent.WINDOW_CLOSED:
+                    listener.windowClosed(e);
+                    break;
+                case WindowEvent.WINDOW_CLOSING:
+                    listener.windowClosing(e);
+                    break;
+                case WindowEvent.WINDOW_DEACTIVATED:
+                    listener.windowDeactivated(e);
+                    break;
+                case WindowEvent.WINDOW_DEICONIFIED:
+                    listener.windowDeiconified(e);
+                    break;
+                case WindowEvent.WINDOW_ICONIFIED:
+                    listener.windowIconified(e);
+                    break;
+                case WindowEvent.WINDOW_OPENED:
+                    listener.windowOpened(e);
+                    break;
             }
         }
     }
@@ -1132,14 +1113,13 @@ public class Window extends Container implements Accessible {
     protected void processWindowFocusEvent(WindowEvent e) {
         for (Iterator<?> i = windowFocusListeners.getUserIterator(); i.hasNext();) {
             WindowFocusListener listener = (WindowFocusListener) i.next();
-
             switch (e.getID()) {
-            case WindowEvent.WINDOW_GAINED_FOCUS:
-                listener.windowGainedFocus(e);
-                break;
-            case WindowEvent.WINDOW_LOST_FOCUS:
-                listener.windowLostFocus(e);
-                break;
+                case WindowEvent.WINDOW_GAINED_FOCUS:
+                    listener.windowGainedFocus(e);
+                    break;
+                case WindowEvent.WINDOW_LOST_FOCUS:
+                    listener.windowLostFocus(e);
+                    break;
             }
         }
     }
@@ -1147,11 +1127,10 @@ public class Window extends Container implements Accessible {
     protected void processWindowStateEvent(WindowEvent e) {
         for (Iterator<?> i = windowStateListeners.getUserIterator(); i.hasNext();) {
             WindowStateListener listener = (WindowStateListener) i.next();
-
             switch (e.getID()) {
-            case WindowEvent.WINDOW_STATE_CHANGED:
-                listener.windowStateChanged(e);
-                break;
+                case WindowEvent.WINDOW_STATE_CHANGED:
+                    listener.windowStateChanged(e);
+                    break;
             }
         }
     }
@@ -1172,20 +1151,16 @@ public class Window extends Container implements Accessible {
     }
 
     private GraphicsConfiguration getGraphicsConfiguration(GraphicsConfiguration gc) {
-
         if (gc == null) {
             Toolkit.checkHeadless();
-            GraphicsEnvironment ge  = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             gc = ge.getDefaultScreenDevice().getDefaultConfiguration();
-        }
-        else if (GraphicsEnvironment.isHeadless()) {
+        } else if (GraphicsEnvironment.isHeadless()) {
             throw new IllegalArgumentException("Graphics environment is headless");
         }
-
         if (gc.getDevice().getType() != GraphicsDevice.TYPE_RASTER_SCREEN) {
             throw new IllegalArgumentException("Not a screen device");
         }
-
         return gc;
     }
 
@@ -1216,10 +1191,9 @@ public class Window extends Container implements Accessible {
     }
 
     /**
-     * Called immediately after native window
-     * has been created. Updates native window state
-     * & properties to make them correspond to Java
-     * Window state/properties
+     * Called immediately after native window has been created. Updates native
+     * window state & properties to make them correspond to Java Window
+     * state/properties
      */
     @Override
     void nativeWindowCreated(NativeWindow win) {
@@ -1230,15 +1204,15 @@ public class Window extends Container implements Accessible {
     }
 
     /**
-     * Returns icon image of the owner frame. 
-     * This method is overridden as public in the class Frame
+     * Returns icon image of the owner frame. This method is overridden as
+     * public in the class Frame
      */
     Image getIconImage() {
         toolkit.lockAWT();
         try {
             for (Container c = parent; c != null; c = c.parent) {
                 if (c instanceof Frame) {
-                    return ((Frame)c).getIconImage();
+                    return ((Frame) c).getIconImage();
                 }
             }
             return null;
@@ -1253,8 +1227,8 @@ public class Window extends Container implements Accessible {
             return null;
         }
         Insets ins = getNativeInsets();
-        Rectangle r = new Rectangle(ins.left, ins.top,
-                w - ins.left - ins.right, h - ins.top - ins.bottom);
+        Rectangle r = new Rectangle(ins.left, ins.top, w - ins.left - ins.right, h - ins.top
+                - ins.bottom);
         if (part != null) {
             r = r.intersection(part);
         }
@@ -1264,24 +1238,20 @@ public class Window extends Container implements Accessible {
         return behaviour.getNativeWindow().getObscuredRegion(r);
     }
 
-    private void readObject(ObjectInputStream stream)
-            throws IOException, ClassNotFoundException {
-
+    private void readObject(ObjectInputStream stream) throws IOException,
+            ClassNotFoundException {
         stream.defaultReadObject();
-
         FieldsAccessor accessor = new FieldsAccessor(Window.class, this);
         accessor.set("graphicsConfiguration", getGraphicsConfiguration(null));
-
         visible = false;
         redrawManager = new RedrawManager(this);
     }
-    
+
     @Override
     void notifyInputMethod(Rectangle bounds) {
         InputContext ic = getInputContext();
         if (ic instanceof InputMethodContext) {
-            ((InputMethodContext)ic).notifyClientWindowChange(bounds);
+            ((InputMethodContext) ic).notifyClientWindowChange(bounds);
         }
     }
-    
 }

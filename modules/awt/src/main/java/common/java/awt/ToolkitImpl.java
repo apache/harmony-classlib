@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Pavel Dolgov, Michael Danilov
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.datatransfer.Clipboard;
@@ -34,14 +31,11 @@ import java.net.URL;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
-
 import org.apache.harmony.awt.datatransfer.DTK;
 import org.apache.harmony.awt.gl.*;
 import org.apache.harmony.awt.gl.image.*;
 
-
 class ToolkitImpl extends Toolkit {
-
     static final Hashtable<Serializable, Image> imageCache = new Hashtable<Serializable, Image>();
 
     @Override
@@ -68,13 +62,13 @@ class ToolkitImpl extends Toolkit {
     public int checkImage(Image image, int width, int height, ImageObserver observer) {
         lockAWT();
         try {
-            if(width == 0 || height == 0){
+            if (width == 0 || height == 0) {
                 return ImageObserver.ALLBITS;
             }
-            if(!(image instanceof OffscreenImage)){
+            if (!(image instanceof OffscreenImage)) {
                 return ImageObserver.ALLBITS;
             }
-            OffscreenImage oi = (OffscreenImage)image;
+            OffscreenImage oi = (OffscreenImage) image;
             return oi.checkImage(observer);
         } finally {
             unlockAWT();
@@ -95,8 +89,8 @@ class ToolkitImpl extends Toolkit {
     public Image createImage(byte[] imagedata, int imageoffset, int imagelength) {
         lockAWT();
         try {
-            return new OffscreenImage(new ByteArrayDecodingImageSource(imagedata,
-                    imageoffset, imagelength));
+            return new OffscreenImage(new ByteArrayDecodingImageSource(imagedata, imageoffset,
+                    imagelength));
         } finally {
             unlockAWT();
         }
@@ -126,15 +120,16 @@ class ToolkitImpl extends Toolkit {
     public ColorModel getColorModel() throws HeadlessException {
         lockAWT();
         try {
-            return GraphicsEnvironment.getLocalGraphicsEnvironment().
-                    getDefaultScreenDevice().getDefaultConfiguration().
-                    getColorModel();
+            return GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+                    .getDefaultConfiguration().getColorModel();
         } finally {
             unlockAWT();
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
+    @Deprecated
     public FontMetrics getFontMetrics(Font font) {
         lockAWT();
         try {
@@ -148,13 +143,13 @@ class ToolkitImpl extends Toolkit {
     public boolean prepareImage(Image image, int width, int height, ImageObserver observer) {
         lockAWT();
         try {
-            if(width == 0 || height == 0){
+            if (width == 0 || height == 0) {
                 return true;
             }
-            if(!(image instanceof OffscreenImage)){
+            if (!(image instanceof OffscreenImage)) {
                 return true;
             }
-            OffscreenImage oi = (OffscreenImage)image;
+            OffscreenImage oi = (OffscreenImage) image;
             return oi.prepareImage(observer);
         } finally {
             unlockAWT();
@@ -204,8 +199,7 @@ class ToolkitImpl extends Toolkit {
 
     @Override
     protected CheckboxMenuItemPeer createCheckboxMenuItem(CheckboxMenuItem a0)
-            throws HeadlessException
-    {
+            throws HeadlessException {
         lockAWT();
         try {
             checkHeadless();
@@ -238,15 +232,13 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    public DragSourceContextPeer createDragSourceContextPeer(
-            DragGestureEvent dge) throws InvalidDnDOperationException {
+    public DragSourceContextPeer createDragSourceContextPeer(DragGestureEvent dge)
+            throws InvalidDnDOperationException {
         return dtk.createDragSourceContextPeer(dge);
     }
 
     @Override
-    protected FileDialogPeer createFileDialog(FileDialog a0)
-            throws HeadlessException
-    {
+    protected FileDialogPeer createFileDialog(FileDialog a0) throws HeadlessException {
         lockAWT();
         try {
             checkHeadless();
@@ -333,9 +325,7 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected PopupMenuPeer createPopupMenu(PopupMenu a0)
-            throws HeadlessException
-    {
+    protected PopupMenuPeer createPopupMenu(PopupMenu a0) throws HeadlessException {
         lockAWT();
         try {
             checkHeadless();
@@ -346,9 +336,7 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected ScrollPanePeer createScrollPane(ScrollPane a0)
-            throws HeadlessException
-    {
+    protected ScrollPanePeer createScrollPane(ScrollPane a0) throws HeadlessException {
         lockAWT();
         try {
             checkHeadless();
@@ -359,9 +347,7 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected ScrollbarPeer createScrollbar(Scrollbar a0)
-            throws HeadlessException
-    {
+    protected ScrollbarPeer createScrollbar(Scrollbar a0) throws HeadlessException {
         lockAWT();
         try {
             checkHeadless();
@@ -372,9 +358,7 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    protected TextFieldPeer createTextField(TextField a0)
-            throws HeadlessException
-    {
+    protected TextFieldPeer createTextField(TextField a0) throws HeadlessException {
         lockAWT();
         try {
             checkHeadless();
@@ -395,7 +379,9 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
+    @Deprecated
     public String[] getFontList() {
         lockAWT();
         try {
@@ -405,7 +391,9 @@ class ToolkitImpl extends Toolkit {
         return null;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
+    @Deprecated
     protected FontPeer getFontPeer(String a0, int a1) {
         lockAWT();
         try {
@@ -420,15 +408,14 @@ class ToolkitImpl extends Toolkit {
         return getImage(filename, this);
     }
 
-    static Image getImage(String filename, Toolkit toolkit){
-        synchronized(imageCache) {
+    static Image getImage(String filename, Toolkit toolkit) {
+        synchronized (imageCache) {
             Image im = imageCache.get(filename);
-            if(im == null){
-                try{
+            if (im == null) {
+                try {
                     im = toolkit.createImage(filename);
                     imageCache.put(filename, im);
-                }catch(Exception e){
-
+                } catch (Exception e) {
                 }
             }
             return im;
@@ -441,14 +428,13 @@ class ToolkitImpl extends Toolkit {
     }
 
     static Image getImage(URL url, Toolkit toolkit) {
-        synchronized(imageCache) {
+        synchronized (imageCache) {
             Image im = imageCache.get(url);
-            if(im == null){
-                try{
+            if (im == null) {
+                try {
                     im = toolkit.createImage(url);
                     imageCache.put(url, im);
-                }catch(Exception e){
-
+                } catch (Exception e) {
                 }
             }
             return im;
@@ -469,8 +455,8 @@ class ToolkitImpl extends Toolkit {
     public int getScreenResolution() throws HeadlessException {
         lockAWT();
         try {
-            return ((GLGraphicsDevice)GraphicsEnvironment.getLocalGraphicsEnvironment().
-                    getDefaultScreenDevice()).getResolution().width;
+            return ((GLGraphicsDevice) GraphicsEnvironment.getLocalGraphicsEnvironment()
+                    .getDefaultScreenDevice()).getResolution().width;
         } finally {
             unlockAWT();
         }
@@ -480,8 +466,8 @@ class ToolkitImpl extends Toolkit {
     public Dimension getScreenSize() throws HeadlessException {
         lockAWT();
         try {
-            DisplayMode dm =  GraphicsEnvironment.getLocalGraphicsEnvironment().
-                    getDefaultScreenDevice().getDisplayMode();
+            DisplayMode dm = GraphicsEnvironment.getLocalGraphicsEnvironment()
+                    .getDefaultScreenDevice().getDisplayMode();
             return new Dimension(dm.getWidth(), dm.getHeight());
         } finally {
             unlockAWT();
@@ -493,17 +479,13 @@ class ToolkitImpl extends Toolkit {
         lockAWT();
         try {
             checkHeadless();
-
             SecurityManager security = System.getSecurityManager();
-
             if (security != null) {
                 security.checkSystemClipboardAccess();
             }
-
             if (systemClipboard == null) {
                 systemClipboard = DTK.getDTK().getNativeClipboard();
             }
-
             return systemClipboard;
         } finally {
             unlockAWT();
@@ -511,8 +493,8 @@ class ToolkitImpl extends Toolkit {
     }
 
     @Override
-    public Map<java.awt.font.TextAttribute, ?> mapInputMethodHighlight(InputMethodHighlight highlight)
-            throws HeadlessException {
+    public Map<java.awt.font.TextAttribute, ?> mapInputMethodHighlight(
+            InputMethodHighlight highlight) throws HeadlessException {
         lockAWT();
         try {
             return mapInputMethodHighlightImpl(highlight);
@@ -525,5 +507,4 @@ class ToolkitImpl extends Toolkit {
     protected EventQueue getSystemEventQueueImpl() {
         return getSystemEventQueueCore().getActiveEventQueue();
     }
-
 }

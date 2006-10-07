@@ -71,7 +71,6 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
-
 import org.apache.harmony.awt.ChoiceStyle;
 import org.apache.harmony.awt.ComponentInternals;
 import org.apache.harmony.awt.ContextStorage;
@@ -95,35 +94,44 @@ import org.apache.harmony.awt.wtk.Synchronizer;
 import org.apache.harmony.awt.wtk.WTK;
 import org.apache.harmony.awt.wtk.WindowFactory;
 
-
 public abstract class Toolkit {
-
     private static final String RECOURCE_PATH = "org.apache.harmony.awt.resources.AWTProperties";
 
     private static final ResourceBundle properties = loadResources(RECOURCE_PATH);
 
     final Dispatcher dispatcher;
+
     private EventQueueCore systemEventQueueCore;
+
     final EventDispatchThread dispatchThread;
+
     NativeEventThread nativeThread;
+
     private final AWTEventsManager awtEventsManager;
+
     /* key = nativeWindow, value = Component, should be Map<NativeWindow, Component> */
     private final Map<NativeWindow, Object> windowComponentMap = new HashMap<NativeWindow, Object>();
-    /* key = nativeWindow, value = MenuComponent */
 
+    /* key = nativeWindow, value = MenuComponent */
     private final Map<NativeWindow, Object> windowPopupMap = new HashMap<NativeWindow, Object>();
 
     private final Map<NativeWindow, Window> windowFocusProxyMap = new HashMap<NativeWindow, Window>();
 
-    private class AWTTreeLock {}
+    private class AWTTreeLock {
+    }
+
     final Object awtTreeLock = new AWTTreeLock();
+
     private final Synchronizer synchronizer = ContextStorage.getSynchronizer();
+
     final ShutdownWatchdog shutdownWatchdog = new ShutdownWatchdog();
 
     final Theme theme = createTheme();
 
     final AutoNumber autoNumber = new AutoNumber();
+
     final AWTEvent.EventTypeLookup eventTypeLookup = new AWTEvent.EventTypeLookup();
+
     final Frame.AllFrames allFrames = new Frame.AllFrames();
 
     KeyboardFocusManager currentKeyboardFocusManager;
@@ -131,6 +139,7 @@ public abstract class Toolkit {
     MouseEventPreprocessor mouseEventPreprocessor;
 
     NativeClipboard systemClipboard = null;
+
     private NativeClipboard systemSelection = null;
 
     private boolean bDynamicLayoutSet = true;
@@ -155,11 +164,11 @@ public abstract class Toolkit {
 
     final WindowList windows = new WindowList();
 
-    private WTK wtk = null;
+    private WTK wtk;
+
     final DTK dtk;
 
     private final class ComponentInternalsImpl extends ComponentInternals {
-
         @Override
         public NativeWindow getNativeWindow(Component component) {
             lockAWT();
@@ -230,8 +239,8 @@ public abstract class Toolkit {
         }
 
         @Override
-        public void unsafeInvokeAndWait(Runnable runnable)
-                throws InterruptedException, InvocationTargetException {
+        public void unsafeInvokeAndWait(Runnable runnable) throws InterruptedException,
+                InvocationTargetException {
             Toolkit.this.unsafeInvokeAndWait(runnable);
         }
 
@@ -256,7 +265,7 @@ public abstract class Toolkit {
         }
 
         @Override
-        public TextFieldKit getTextFieldKit(Component comp)  {
+        public TextFieldKit getTextFieldKit(Component comp) {
             lockAWT();
             try {
                 return comp.getTextFieldKit();
@@ -281,8 +290,7 @@ public abstract class Toolkit {
         }
 
         @Override
-        public void setMouseEventPreprocessor(
-                MouseEventPreprocessor preprocessor) {
+        public void setMouseEventPreprocessor(MouseEventPreprocessor preprocessor) {
             lockAWT();
             try {
                 mouseEventPreprocessor = preprocessor;
@@ -342,7 +350,7 @@ public abstract class Toolkit {
 
         @Override
         public void setDesktopProperty(String name, Object value) {
-            Toolkit.this.setDesktopProperty(name, value);            
+            Toolkit.this.setDesktopProperty(name, value);
         }
 
         @Override
@@ -352,12 +360,12 @@ public abstract class Toolkit {
 
         @Override
         public void endModalLoop(Dialog dlg) {
-            dlg.endModalLoop();            
+            dlg.endModalLoop();
         }
 
         @Override
         public void setVisibleFlag(Component comp, boolean visible) {
-            comp.visible = visible;            
+            comp.visible = visible;
         }
     }
 
@@ -401,9 +409,8 @@ public abstract class Toolkit {
      *                                      can be called from layoutContainer()
      *                                      for layout managers
      */
-    final void unsafeInvokeAndWait(Runnable runnable)
-            throws InterruptedException, InvocationTargetException
-    {
+    final void unsafeInvokeAndWait(Runnable runnable) throws InterruptedException,
+            InvocationTargetException {
         synchronizer.storeStateAndFree();
         try {
             EventQueue.invokeAndWait(runnable);
@@ -430,8 +437,8 @@ public abstract class Toolkit {
             if (properties != null) {
                 try {
                     retVal = properties.getString(propName);
-                } catch(MissingResourceException e) {
-                } catch(ClassCastException e) {
+                } catch (MissingResourceException e) {
+                } catch (ClassCastException e) {
                 }
             }
             return (retVal == null) ? defVal : retVal;
@@ -441,7 +448,7 @@ public abstract class Toolkit {
     }
 
     public static Toolkit getDefaultToolkit() {
-        synchronized(ContextStorage.getContextLock()) {
+        synchronized (ContextStorage.getContextLock()) {
             if (ContextStorage.shutdownPending()) {
                 return null;
             }
@@ -457,11 +464,9 @@ public abstract class Toolkit {
             } finally {
                 staticUnlockAWT();
             }
-            
-            
-        //TODO: read system property named awt.toolkit
-        //and create an instance of the specified class,
-        //by default use ToolkitImpl
+            //TODO: read system property named awt.toolkit
+            //and create an instance of the specified class,
+            //by default use ToolkitImpl
         }
     }
 
@@ -472,7 +477,7 @@ public abstract class Toolkit {
     private static ResourceBundle loadResources(String path) {
         try {
             return ResourceBundle.getBundle(path);
-        } catch(MissingResourceException e) {
+        } catch (MissingResourceException e) {
             return null;
         }
     }
@@ -490,21 +495,21 @@ public abstract class Toolkit {
     }
 
     Component getComponentById(long id) {
-        if(id == 0) {
+        if (id == 0) {
             return null;
         }
         return (Component) windowComponentMap.get(getWindowFactory().getWindowById(id));
     }
 
     PopupBox getPopupBoxById(long id) {
-        if(id == 0) {
+        if (id == 0) {
             return null;
         }
         return (PopupBox) windowPopupMap.get(getWindowFactory().getWindowById(id));
     }
 
     Window getFocusProxyOwnerById(long id) {
-        if(id == 0) {
+        if (id == 0) {
             return null;
         }
         return windowFocusProxyMap.get(getWindowFactory().getWindowById(id));
@@ -525,16 +530,12 @@ public abstract class Toolkit {
             new EventQueue(this); // create the system EventQueue
             dispatcher = new Dispatcher(this);
             final String className = getWTKClassName();
-
             desktopProperties = new HashMap<String, Object>();
             desktopPropsSupport = new PropertyChangeSupport(this);
-
             awtEventsManager = new AWTEventsManager();
             dispatchThread = new EventDispatchThread(this, dispatcher);
             nativeThread = new NativeEventThread();
-            
             dtk = DTK.getDTK();
-
             NativeEventThread.Init init = new NativeEventThread.Init() {
                 public WTK init() {
                     wtk = createWTK(className);
@@ -546,7 +547,6 @@ public abstract class Toolkit {
                 }
             };
             nativeThread.start(init);
-            
             dispatchThread.start();
             wtk.getNativeEventQueue().awake();
         } finally {
@@ -586,13 +586,15 @@ public abstract class Toolkit {
 
     protected abstract CheckboxPeer createCheckbox(Checkbox a0) throws HeadlessException;
 
-    protected abstract CheckboxMenuItemPeer createCheckboxMenuItem(CheckboxMenuItem a0) throws HeadlessException;
+    protected abstract CheckboxMenuItemPeer createCheckboxMenuItem(CheckboxMenuItem a0)
+            throws HeadlessException;
 
     protected abstract ChoicePeer createChoice(Choice a0) throws HeadlessException;
 
     protected abstract DialogPeer createDialog(Dialog a0) throws HeadlessException;
 
-    public abstract DragSourceContextPeer createDragSourceContextPeer(DragGestureEvent a0) throws InvalidDnDOperationException;
+    public abstract DragSourceContextPeer createDragSourceContextPeer(DragGestureEvent a0)
+            throws InvalidDnDOperationException;
 
     protected abstract FileDialogPeer createFileDialog(FileDialog a0) throws HeadlessException;
 
@@ -646,14 +648,15 @@ public abstract class Toolkit {
 
     protected abstract EventQueue getSystemEventQueueImpl();
 
-    public abstract Map<java.awt.font.TextAttribute, ?> mapInputMethodHighlight(InputMethodHighlight highlight) throws HeadlessException;
+    public abstract Map<java.awt.font.TextAttribute, ?> mapInputMethodHighlight(
+            InputMethodHighlight highlight) throws HeadlessException;
 
-    Map<java.awt.font.TextAttribute, ?> mapInputMethodHighlightImpl(InputMethodHighlight highlight)
-            throws HeadlessException {
+    Map<java.awt.font.TextAttribute, ?> mapInputMethodHighlightImpl(
+            InputMethodHighlight highlight) throws HeadlessException {
         checkHeadless();
         HashMap<java.awt.font.TextAttribute, ?> map = new HashMap<java.awt.font.TextAttribute, Object>();
         wtk.getSystemProperties().mapInputMethodHighlight(highlight, map);
-        return Collections.<java.awt.font.TextAttribute, Object>unmodifiableMap(map);
+        return Collections.<java.awt.font.TextAttribute, Object> unmodifiableMap(map);
     }
 
     public void addPropertyChangeListener(String propName, PropertyChangeListener l) {
@@ -671,7 +674,8 @@ public abstract class Toolkit {
     }
 
     protected java.awt.peer.MouseInfoPeer getMouseInfoPeer() {
-        return new MouseInfoPeer() {};
+        return new MouseInfoPeer() {
+        };
     }
 
     protected LightweightPeer createComponent(Component a0) {
@@ -712,7 +716,8 @@ public abstract class Toolkit {
         desktopPropsSupport.removePropertyChangeListener(propName, l);
     }
 
-    public Cursor createCustomCursor(Image img, Point hotSpot, String name) throws IndexOutOfBoundsException, HeadlessException {
+    public Cursor createCustomCursor(Image img, Point hotSpot, String name)
+            throws IndexOutOfBoundsException, HeadlessException {
         lockAWT();
         try {
             checkHeadless();
@@ -756,19 +761,16 @@ public abstract class Toolkit {
             if (desktopProperties.isEmpty()) {
                 initializeDesktopProperties();
             }
-
             if (propName.equals("awt.dynamicLayoutSupported")) {
                 // dynamicLayoutSupported is special case
                 return Boolean.valueOf(isDynamicLayoutActive());
             }
-
             Object val = desktopProperties.get(propName);
             if (val == null) {
                 // try to lazily load prop value
                 // just for compatibility, our lazilyLoad is empty
                 val = lazilyLoadDesktopProperty(propName);
             }
-
             return val;
         } finally {
             unlockAWT();
@@ -781,7 +783,6 @@ public abstract class Toolkit {
         } finally {
             unlockAWT();
         }
-
         if (true) {
             throw new RuntimeException("Method is not implemented"); //TODO: implement
         }
@@ -814,7 +815,6 @@ public abstract class Toolkit {
         } finally {
             unlockAWT();
         }
-
         if (true) {
             throw new RuntimeException("Method is not implemented"); //TODO: implement
         }
@@ -844,26 +844,22 @@ public abstract class Toolkit {
     EventQueueCore getSystemEventQueueCore() {
         return systemEventQueueCore;
     }
-    
+
     void setSystemEventQueueCore(EventQueueCore core) {
         systemEventQueueCore = core;
     }
-    
+
     public Clipboard getSystemSelection() throws HeadlessException {
         lockAWT();
         try {
             checkHeadless();
-
             SecurityManager security = System.getSecurityManager();
-
             if (security != null) {
                 security.checkSystemClipboardAccess();
             }
-
             if (systemSelection == null) {
                 systemSelection = dtk.getNativeSelection();
             }
-
             return systemSelection;
         } finally {
             unlockAWT();
@@ -883,7 +879,6 @@ public abstract class Toolkit {
         lockAWT();
         try {
             checkHeadless();
-
             // always return true
             return true;
         } finally {
@@ -895,7 +890,6 @@ public abstract class Toolkit {
         lockAWT();
         try {
             checkHeadless();
-
             return bDynamicLayoutSet;
         } finally {
             unlockAWT();
@@ -906,7 +900,6 @@ public abstract class Toolkit {
         lockAWT();
         try {
             checkHeadless();
-
             return wtk.getWindowFactory().isWindowStateSupported(state);
         } finally {
             unlockAWT();
@@ -930,10 +923,8 @@ public abstract class Toolkit {
         lockAWT();
         try {
             oldVal = getDesktopProperty(propName);
-
             userPropSet.add(propName);
             desktopProperties.put(propName, value);
-
         } finally {
             unlockAWT();
         }
@@ -944,7 +935,6 @@ public abstract class Toolkit {
         lockAWT();
         try {
             checkHeadless();
-
             bDynamicLayoutSet = dynamic;
         } finally {
             unlockAWT();
@@ -957,7 +947,6 @@ public abstract class Toolkit {
         } finally {
             unlockAWT();
         }
-
         if (true) {
             throw new RuntimeException("Method is not implemented"); //TODO: implement
         }
@@ -982,9 +971,8 @@ public abstract class Toolkit {
 
     private WTK createWTK(String clsName) {
         WTK newWTK = null;
-
         try {
-            newWTK = (WTK)Class.forName(clsName).newInstance();
+            newWTK = (WTK) Class.forName(clsName).newInstance();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -1009,15 +997,12 @@ public abstract class Toolkit {
         if (recentNativeWindowComponent == null) {
             return;
         }
-
         if (recentNativeWindowComponent instanceof Component) {
             windowComponentMap.put(win, recentNativeWindowComponent);
-            ((Component)recentNativeWindowComponent).nativeWindowCreated(win);
-
-        } else if(recentNativeWindowComponent instanceof PopupBox) {
+            ((Component) recentNativeWindowComponent).nativeWindowCreated(win);
+        } else if (recentNativeWindowComponent instanceof PopupBox) {
             windowPopupMap.put(win, recentNativeWindowComponent);
         }
-
         recentNativeWindowComponent = null;
     }
 
@@ -1027,82 +1012,63 @@ public abstract class Toolkit {
      */
     boolean onWindowCreated(long winId) {
         nativeWindowCreated(getWindowFactory().getWindowById(winId));
-
         return false;
     }
 
     NativeWindow createEmbeddedNativeWindow(EmbeddedWindow ew) {
         windows.add(ew);
-
         CreationParams cp = new CreationParams();
-
         cp.child = true;
         cp.disabled = false;
         cp.name = "EmbeddedWindow";
-
         cp.parentId = ew.nativeWindowId;
         cp.x = 0;
         cp.y = 0;
-
         Dimension size = getWindowFactory().getWindowSizeById(ew.nativeWindowId);
-
         cp.w = size.width;
         cp.h = size.height;
-
         recentNativeWindowComponent = ew;
         NativeWindow win = getWindowFactory().createWindow(cp);
         nativeWindowCreated(win);
-
         shutdownWatchdog.setWindowListEmpty(false);
-
         return win;
     }
-
 
     NativeWindow createNativeWindow(Component c) {
         if (c instanceof Window) {
             windows.add(c);
         }
-
         Component parent = null;
         Point location = c.getLocation();
-
         CreationParams cp = new CreationParams();
-
         cp.child = !(c instanceof Window);
         cp.disabled = !c.isEnabled();
-
         if (c instanceof Window) {
-            Window w = (Window)c;
+            Window w = (Window) c;
             cp.resizable = w.isResizable();
             cp.undecorated = w.isUndecorated();
             parent = w.getOwner();
             cp.locationByPlatform = w.locationByPlatform;
-
             if (c instanceof Frame) {
-                Frame frame = (Frame)c;
+                Frame frame = (Frame) c;
                 int state = frame.getExtendedState();
                 cp.name = frame.getTitle();
                 cp.iconified = (state & Frame.ICONIFIED) != 0;
-
                 cp.maximizedState = 0;
-                if ( (state & Frame.MAXIMIZED_BOTH) != 0) {
+                if ((state & Frame.MAXIMIZED_BOTH) != 0) {
                     cp.maximizedState |= cp.MAXIMIZED;
                 }
-                if ( (state & Frame.MAXIMIZED_HORIZ) != 0) {
+                if ((state & Frame.MAXIMIZED_HORIZ) != 0) {
                     cp.maximizedState |= cp.MAXIMIZED_HORIZ;
                 }
-                if ( (state & Frame.MAXIMIZED_VERT) != 0) {
+                if ((state & Frame.MAXIMIZED_VERT) != 0) {
                     cp.maximizedState |= cp.MAXIMIZED_VERT;
                 }
-
                 cp.decorType = CreationParams.DECOR_TYPE_FRAME;
-
             } else if (c instanceof Dialog) {
-                Dialog dlg = (Dialog)c;
+                Dialog dlg = (Dialog) c;
                 cp.name = dlg.getTitle();
                 cp.decorType = CreationParams.DECOR_TYPE_DIALOG;
-
             } else if (w.isPopup()) {
                 cp.decorType = CreationParams.DECOR_TYPE_POPUP;
             } else {
@@ -1111,11 +1077,9 @@ public abstract class Toolkit {
         } else {
             parent = c.getHWAncestor();
             cp.name = c.getName();
-
             //set location relative to the nearest heavy weight ancestor
             location = MouseDispatcher.convertPoint(c, 0, 0, parent);
         }
-
         if (parent != null) {
             NativeWindow nativeParent = parent.getNativeWindow();
             if (nativeParent == null) {
@@ -1127,26 +1091,21 @@ public abstract class Toolkit {
             }
             cp.parentId = nativeParent.getId();
         }
-
         cp.x = location.x;
         cp.y = location.y;
         cp.w = c.getWidth();
         cp.h = c.getHeight();
-
         recentNativeWindowComponent = c;
         NativeWindow win = getWindowFactory().createWindow(cp);
         nativeWindowCreated(win);
-
         if (c instanceof Window) {
             shutdownWatchdog.setWindowListEmpty(false);
         }
-
         return win;
     }
 
     void removeNativeWindow(NativeWindow w) {
         Component comp = (Component) windowComponentMap.get(w);
-
         if ((comp != null) && (comp instanceof Window)) {
             windows.remove(comp);
         }
@@ -1154,9 +1113,7 @@ public abstract class Toolkit {
     }
 
     NativeWindow createPopupNativeWindow(PopupBox popup) {
-
         CreationParams cp = new CreationParams();
-
         cp.child = popup.isMenuBar();
         cp.disabled = false;
         cp.resizable = false;
@@ -1166,26 +1123,20 @@ public abstract class Toolkit {
         cp.maximizedState = 0;
         cp.decorType = CreationParams.DECOR_TYPE_POPUP;
         NativeWindow nativeParent;
-
         if (popup.getParent() != null) {
             nativeParent = popup.getParent().getNativeWindow();
         } else {
             nativeParent = popup.getOwner().getNativeWindow();
         }
-
         assert nativeParent != null;
-
         cp.parentId = nativeParent.getId();
-
         cp.x = popup.getLocation().x;
         cp.y = popup.getLocation().y;
         cp.w = popup.getSize().width;
         cp.h = popup.getSize().height;
-
         recentNativeWindowComponent = popup;
         NativeWindow win = getWindowFactory().createWindow(cp);
         nativeWindowCreated(win);
-
         return win;
     }
 
@@ -1194,9 +1145,7 @@ public abstract class Toolkit {
     }
 
     NativeWindow createFocusProxyNativeWindow(Window owner) {
-
         CreationParams cp = new CreationParams();
-
         cp.child = true;
         cp.disabled = false;
         cp.resizable = false;
@@ -1206,15 +1155,12 @@ public abstract class Toolkit {
         cp.maximizedState = 0;
         cp.decorType = CreationParams.DECOR_TYPE_NONE;
         cp.parentId = owner.getNativeWindow().getId();
-
         cp.x = -10;
         cp.y = -10;
         cp.w = 1;
         cp.h = 1;
-
         NativeWindow win = getWindowFactory().createWindow(cp);
         windowFocusProxyMap.put(win, owner);
-
         return win;
     }
 
@@ -1222,7 +1168,7 @@ public abstract class Toolkit {
         windowFocusProxyMap.remove(w);
     }
 
-    NativeEventQueue getNativeEventQueue(){
+    NativeEventQueue getNativeEventQueue() {
         return wtk.getNativeEventQueue();
     }
 
@@ -1235,6 +1181,7 @@ public abstract class Toolkit {
     NativeCursor createNativeCursor(int type) {
         return wtk.getCursorFactory().getCursor(type);
     }
+
     /**
      * Returns a shared instance of implementation of org.apache.harmony.awt.wtk.NativeCursor
      * for current platform for custom cursor
@@ -1258,11 +1205,9 @@ public abstract class Toolkit {
         lockAWT();
         try {
             SecurityManager security = System.getSecurityManager();
-
             if (security != null) {
                 security.checkPermission(awtEventsManager.permission);
             }
-
             awtEventsManager.addAWTEventListener(listener, eventMask);
         } finally {
             unlockAWT();
@@ -1273,11 +1218,9 @@ public abstract class Toolkit {
         lockAWT();
         try {
             SecurityManager security = System.getSecurityManager();
-
             if (security != null) {
                 security.checkPermission(awtEventsManager.permission);
             }
-
             awtEventsManager.removeAWTEventListener(listener);
         } finally {
             unlockAWT();
@@ -1288,11 +1231,9 @@ public abstract class Toolkit {
         lockAWT();
         try {
             SecurityManager security = System.getSecurityManager();
-
             if (security != null) {
                 security.checkPermission(awtEventsManager.permission);
             }
-
             return awtEventsManager.getAWTEventListeners();
         } finally {
             unlockAWT();
@@ -1303,11 +1244,9 @@ public abstract class Toolkit {
         lockAWT();
         try {
             SecurityManager security = System.getSecurityManager();
-
             if (security != null) {
                 security.checkPermission(awtEventsManager.permission);
             }
-
             return awtEventsManager.getAWTEventListeners(eventMask);
         } finally {
             unlockAWT();
@@ -1321,14 +1260,12 @@ public abstract class Toolkit {
     private static Theme createTheme() {
         String osName = System.getProperty("os.name").toLowerCase();
         String packageBase = "org.apache.harmony.awt.theme", win = "windows", lin = "linux";
-
         PrivilegedAction<String> action = new PrivilegedAction<String>() {
             public String run() {
                 return System.getProperty("awt.theme");
-            }};
-
+            }
+        };
         String className = AccessController.doPrivileged(action);
-
         if (className == null) {
             if (osName.startsWith(lin)) {
                 className = packageBase + "." + lin + ".LinuxTheme";
@@ -1336,22 +1273,19 @@ public abstract class Toolkit {
                 className = packageBase + "." + win + ".WinTheme";
             }
         }
-
         if (className != null) {
             try {
-                return (Theme)Class.forName(className).newInstance();
+                return (Theme) Class.forName(className).newInstance();
             } catch (Exception e) {
             }
         }
-
         return new Theme();
     }
-    
-    final class AWTEventsManager {
 
+    final class AWTEventsManager {
         AWTPermission permission = new AWTPermission("listenToAllAWTEvents");
 
-        private final AWTListenerList listeners = new AWTListenerList(null);
+        private final AWTListenerList<AWTEventListenerProxy> listeners = new AWTListenerList<AWTEventListenerProxy>();
 
         void addAWTEventListener(AWTEventListener listener, long eventMask) {
             if (listener != null) {
@@ -1361,12 +1295,9 @@ public abstract class Toolkit {
 
         void removeAWTEventListener(AWTEventListener listener) {
             if (listener != null) {
-                for (Iterator<?> i = listeners.getUserIterator(); i.hasNext();) {
-                    AWTEventListenerProxy proxy = (AWTEventListenerProxy) i.next();
-
+                for (AWTEventListenerProxy proxy : listeners.getUserListeners()) {
                     if (listener == proxy.getListener()) {
                         listeners.removeUserListener(proxy);
-
                         return;
                     }
                 }
@@ -1375,63 +1306,68 @@ public abstract class Toolkit {
 
         AWTEventListener[] getAWTEventListeners() {
             HashSet<EventListener> listenersSet = new HashSet<EventListener>();
-
-            for (Iterator<?> i = listeners.getUserIterator(); i.hasNext();) {
-                listenersSet.add(((AWTEventListenerProxy) i.next()).getListener());
+            for (AWTEventListenerProxy proxy : listeners.getUserListeners()) {
+                listenersSet.add(proxy.getListener());
             }
-
-            return listenersSet.toArray(new AWTEventListener[0]);
+            return listenersSet.toArray(new AWTEventListener[listenersSet.size()]);
         }
 
         AWTEventListener[] getAWTEventListeners(long eventMask) {
             HashSet<EventListener> listenersSet = new HashSet<EventListener>();
-
-            for (Iterator<?> i = listeners.getUserIterator(); i.hasNext();) {
-                AWTEventListenerProxy listenerProxy = (AWTEventListenerProxy) i.next();
-
-                if ((listenerProxy.getEventMask() & eventMask) == eventMask) {
-                    listenersSet.add(listenerProxy.getListener());
+            for (AWTEventListenerProxy proxy : listeners.getUserListeners()) {
+                if ((proxy.getEventMask() & eventMask) == eventMask) {
+                    listenersSet.add(proxy.getListener());
                 }
             }
-
-            return listenersSet.toArray(new AWTEventListener[0]);
+            return listenersSet.toArray(new AWTEventListener[listenersSet.size()]);
         }
 
         void dispatchAWTEvent(AWTEvent event) {
             AWTEvent.EventDescriptor descriptor = eventTypeLookup.getEventDescriptor(event);
-
             if (descriptor == null) {
                 return;
             }
-
-            for (Iterator<?> i = listeners.getUserIterator(); i.hasNext();) {
-                AWTEventListenerProxy listenerProxy = (AWTEventListenerProxy) i.next();
-
-                if ((listenerProxy.getEventMask() & descriptor.eventMask) != 0) {
-                    listenerProxy.eventDispatched(event);
+            for (AWTEventListenerProxy proxy : listeners.getUserListeners()) {
+                if ((proxy.getEventMask() & descriptor.eventMask) != 0) {
+                    proxy.eventDispatched(event);
                 }
             }
         }
-
     }
 
     static final class AutoNumber {
         int nextComponent = 0;
+
         int nextCanvas = 0;
+
         int nextPanel = 0;
+
         int nextWindow = 0;
+
         int nextFrame = 0;
+
         int nextDialog = 0;
+
         int nextButton = 0;
+
         int nextMenuComponent = 0;
+
         int nextLabel = 0;
+
         int nextCheckBox = 0;
+
         int nextScrollbar = 0;
+
         int nextScrollPane = 0;
+
         int nextList = 0;
+
         int nextChoice = 0;
+
         int nextFileDialog = 0;
+
         int nextTextArea = 0;
+
         int nextTextField = 0;
     }
 
@@ -1439,14 +1375,16 @@ public abstract class Toolkit {
      * Thread-safe collection of Window objects
      */
     static final class WindowList {
-
         /**
          * If a non-dispatch thread adds/removes a window,
          * this set it is replaced to avoid the possible conflict
          * with concurrently running lock-free iterator loop
          */
         private LinkedHashSet<Component> windows = new LinkedHashSet<Component>();
-        private class Lock {}
+
+        private class Lock {
+        }
+
         private final Object lock = new Lock();
 
         @SuppressWarnings("unchecked")
@@ -1455,7 +1393,7 @@ public abstract class Toolkit {
                 if (isDispatchThread()) {
                     windows.add(w);
                 } else {
-                    windows = (LinkedHashSet<Component>)windows.clone();
+                    windows = (LinkedHashSet<Component>) windows.clone();
                     windows.add(w);
                 }
             }
@@ -1467,15 +1405,15 @@ public abstract class Toolkit {
                 if (isDispatchThread()) {
                     windows.remove(w);
                 } else {
-                    windows = (LinkedHashSet<Component>)windows.clone();
+                    windows = (LinkedHashSet<Component>) windows.clone();
                     windows.remove(w);
                 }
             }
         }
 
-        Iterator<?> iterator() {
+        Iterator<Component> iterator() {
             synchronized (lock) {
-                return new ReadOnlyIterator(windows.iterator());
+                return new ReadOnlyIterator<Component>(windows.iterator());
             }
         }
 

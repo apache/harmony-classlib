@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Alexey A. Petrenko
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.font.GlyphVector;
@@ -32,14 +29,11 @@ import java.text.AttributedCharacterIterator;
 import java.util.Map;
 
 public abstract class Graphics2D extends Graphics {
-    // Constructors
-
     protected Graphics2D() {
+        super();
     }
 
-    // Abstract methods
-
-    public abstract void addRenderingHints(Map<?,?> hints);
+    public abstract void addRenderingHints(Map<?, ?> hints);
 
     public abstract void clip(Shape s);
 
@@ -101,7 +95,7 @@ public abstract class Graphics2D extends Graphics {
 
     public abstract void setRenderingHint(RenderingHints.Key key, Object value);
 
-    public abstract void setRenderingHints(Map<?,?> hints);
+    public abstract void setRenderingHints(Map<?, ?> hints);
 
     public abstract void setStroke(Stroke s);
 
@@ -116,6 +110,7 @@ public abstract class Graphics2D extends Graphics {
     @Override
     public abstract void translate(int x, int y);
 
+    @Override
     public void fill3DRect(int x, int y, int width, int height, boolean raised) {
         // According to the spec, color should be used instead of paint,
         // so Graphics.fill3DRect resets paint and
@@ -125,6 +120,7 @@ public abstract class Graphics2D extends Graphics {
         setPaint(savedPaint);
     }
 
+    @Override
     public void draw3DRect(int x, int y, int width, int height, boolean raised) {
         // According to the spec, color should be used instead of paint,
         // so Graphics.draw3DRect resets paint and

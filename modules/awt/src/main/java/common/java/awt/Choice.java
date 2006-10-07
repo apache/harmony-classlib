@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Dmitry A. Durnev
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.event.FocusEvent;
@@ -28,9 +25,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.font.FontRenderContext;
+import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.Iterator;
-import java.util.ArrayList;
+
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleAction;
 import javax.accessibility.AccessibleContext;
@@ -40,29 +38,28 @@ import org.apache.harmony.awt.ButtonStateController;
 import org.apache.harmony.awt.ChoiceStyle;
 import org.apache.harmony.awt.state.ChoiceState;
 
-
 public class Choice extends Component implements ItemSelectable, Accessible {
     private static final long serialVersionUID = -4075310674757313071L;
 
-    private final static int BORDER_SIZE = 2;
-    final static Insets INSETS = new Insets(BORDER_SIZE, BORDER_SIZE,
-                                            BORDER_SIZE, BORDER_SIZE);
+    private static final int BORDER_SIZE = 2;
 
-    private final AWTListenerList itemListeners = new AWTListenerList(this);
+    static final Insets INSETS = new Insets(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE);
 
-    private final ArrayList<String> items = new ArrayList<String>();
-
+    final ChoiceStyle popupStyle;
+    
     int selectedIndex = -1;
+
+    private final AWTListenerList<ItemListener> itemListeners = new AWTListenerList<ItemListener>(
+            this);
+
+    private final java.util.List<String> items = new ArrayList<String>();
 
     private final State state;
 
     private final ChoiceStateController stateController;
 
-    final ChoiceStyle popupStyle;
-
-    protected class AccessibleAWTChoice
-            extends Component.AccessibleAWTComponent
-            implements AccessibleAction {
+    protected class AccessibleAWTChoice extends Component.AccessibleAWTComponent implements
+            AccessibleAction {
         private static final long serialVersionUID = 7175603582428509322L;
 
         public AccessibleAWTChoice() {
@@ -73,10 +70,12 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.COMBO_BOX;
         }
+
         @Override
         public AccessibleAction getAccessibleAction() {
             return this;
         }
+
         public int getAccessibleActionCount() {
             return 0;
         }
@@ -91,11 +90,10 @@ public class Choice extends Component implements ItemSelectable, Accessible {
 
     }
 
-
-    class State extends Component.ComponentState
-            implements ChoiceState {
+    class State extends Component.ComponentState implements ChoiceState {
 
         final Dimension textSize = new Dimension();
+
         public boolean isPressed() {
             return stateController.isPressed();
         }
@@ -122,8 +120,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
 
     }
 
-    class ChoiceStateController extends ButtonStateController
-    implements MouseWheelListener {
+    class ChoiceStateController extends ButtonStateController implements MouseWheelListener {
 
         /**
          * popup window containing list of items
@@ -151,39 +148,40 @@ public class Choice extends Component implements ItemSelectable, Accessible {
             int blockSize = ChoicePopupBox.PAGE_SIZE - 1;
             int count = getItemCount();
             switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP:
-                if (alt) {
-                    popup();
+                case KeyEvent.VK_UP:
+                    if (alt) {
+                        popup();
+                        break;
+                    }
+                case KeyEvent.VK_LEFT:
+                    changeSelection(-1);
                     break;
-                }
-            case KeyEvent.VK_LEFT:
-                changeSelection(-1);
-                break;
-            case KeyEvent.VK_DOWN:
-                if (alt) {
-                    popup();
+                case KeyEvent.VK_DOWN:
+                    if (alt) {
+                        popup();
+                        break;
+                    }
+                case KeyEvent.VK_RIGHT:
+                    changeSelection(1);
                     break;
-                }
-            case KeyEvent.VK_RIGHT:
-                changeSelection(1);
-                break;
-            case KeyEvent.VK_PAGE_UP:
-                changeSelection(-blockSize);
-                break;
-            case KeyEvent.VK_PAGE_DOWN:
-                changeSelection(blockSize);
-                break;
-            case KeyEvent.VK_HOME:
-                changeSelection(-getSelectedIndex());
-                break;
-            case KeyEvent.VK_END:
-                changeSelection(count  - getSelectedIndex());
-                break;
+                case KeyEvent.VK_PAGE_UP:
+                    changeSelection(-blockSize);
+                    break;
+                case KeyEvent.VK_PAGE_DOWN:
+                    changeSelection(blockSize);
+                    break;
+                case KeyEvent.VK_HOME:
+                    changeSelection(-getSelectedIndex());
+                    break;
+                case KeyEvent.VK_END:
+                    changeSelection(count - getSelectedIndex());
+                    break;
             }
         }
 
         /**
          * Moves selection up(incr &lt; 0) or down(incr &gt; 0)
+         * 
          * @param incr distance from the current item in items
          */
         void changeSelection(int incr) {
@@ -209,8 +207,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         }
 
         /**
-         * Shows popup list if it's not visible,
-         * hides otherwise        
+         * Shows popup list if it's not visible, hides otherwise
          */
         private void popup() {
             if (!popup.isVisible()) {
@@ -224,12 +221,12 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         public void mousePressed(MouseEvent me) {
             super.mousePressed(me);
             // TODO: show/hide popup here
-//            if (me.getButton() != MouseEvent.BUTTON1) {
-//                return;
-//            }
-//            if (me.isPopupTrigger()) {
-//                popup();
-//            }
+            // if (me.getButton() != MouseEvent.BUTTON1) {
+            // return;
+            // }
+            // if (me.isPopupTrigger()) {
+            // popup();
+            // }
         }
 
         public void mouseWheelMoved(MouseWheelEvent e) {
@@ -240,10 +237,12 @@ public class Choice extends Component implements ItemSelectable, Accessible {
 
     /**
      * Creates customized choice
-     * @param choiceStyle style of custom choice:
-     * defines custom list popup window location and size 
+     * 
+     * @param choiceStyle style of custom choice: defines custom list popup
+     *        window location and size
      */
     Choice(ChoiceStyle choiceStyle) {
+        super();
         state = new State();
         popupStyle = choiceStyle;
         stateController = new ChoiceStateController();
@@ -257,8 +256,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
     public Choice() throws HeadlessException {
         this(new ChoiceStyle() {
 
-            public int getPopupX(int x, int width, int choiceWidth,
-                                 int screenWidth) {
+            public int getPopupX(int x, int width, int choiceWidth, int screenWidth) {
                 return x;
             }
 
@@ -382,9 +380,9 @@ public class Choice extends Component implements ItemSelectable, Accessible {
 
     @Override
     protected String paramString() {
-        /* The format is based on 1.5 release behavior 
-         * which can be revealed by the following code:
-         * System.out.println(new Choice());
+        /*
+         * The format is based on 1.5 release behavior which can be revealed by
+         * the following code: System.out.println(new Choice());
          */
 
         toolkit.lockAWT();
@@ -399,7 +397,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         toolkit.lockAWT();
         try {
             if (items.size() > 0) {
-                return new Object[] {items.get(selectedIndex)};
+                return new Object[] { items.get(selectedIndex) };
             }
             return null;
         } finally {
@@ -472,8 +470,8 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         toolkit.lockAWT();
         try {
             if (pos >= items.size() || pos < 0) {
-                throw new IllegalArgumentException
-                    ("specified position is greater than the number of items");
+                throw new IllegalArgumentException(
+                        "specified position is greater than the number of items");
             }
             selectedIndex = pos;
             repaint();
@@ -494,6 +492,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         if (ItemListener.class.isAssignableFrom(listenerType)) {
@@ -511,7 +510,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
     }
 
     public ItemListener[] getItemListeners() {
-        return (ItemListener[]) itemListeners.getUserListeners(new ItemListener[0]);
+        return itemListeners.getUserListeners(new ItemListener[0]);
     }
 
     @Override
@@ -528,9 +527,9 @@ public class Choice extends Component implements ItemSelectable, Accessible {
             ItemListener listener = (ItemListener) i.next();
 
             switch (e.getID()) {
-            case ItemEvent.ITEM_STATE_CHANGED:
-                listener.itemStateChanged(e);
-                break;
+                case ItemEvent.ITEM_STATE_CHANGED:
+                    listener.itemStateChanged(e);
+                    break;
             }
         }
     }
@@ -546,8 +545,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
     }
 
     /**
-     * Widest list item must fit into Choice minimum
-     * size
+     * Widest list item must fit into Choice minimum size
      */
     @Override
     Dimension getDefaultMinimumSize() {
@@ -562,13 +560,11 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         minSize.height = fm.getHeight() + vGap + 1;
         minSize.width = hGap + 16; // TODO: use arrow button size
 
-        FontRenderContext frc =
-            ((Graphics2D)getGraphics()).getFontRenderContext();
-        int maxItemWidth = 5; //TODO: take width of some char
+        FontRenderContext frc = ((Graphics2D) getGraphics()).getFontRenderContext();
+        int maxItemWidth = 5; // TODO: take width of some char
         for (int i = 0; i < items.size(); i++) {
             String item = getItem(i);
-            int itemWidth =
-                font.getStringBounds(item, frc).getBounds().width;
+            int itemWidth = font.getStringBounds(item, frc).getBounds().width;
             if (itemWidth > maxItemWidth) {
                 maxItemWidth = itemWidth;
             }
@@ -576,7 +572,6 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         minSize.width += maxItemWidth;
         return minSize;
     }
-
 
     @Override
     boolean isPrepainter() {
@@ -588,13 +583,13 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         toolkit.theme.drawChoice(g, state);
     }
 
-
     @Override
     void setFontImpl(Font f) {
         super.setFontImpl(f);
         setSize(getWidth(), getDefaultMinimumSize().height);
     }
 
+    @SuppressWarnings("deprecation")
     int getItemHeight() {
         FontMetrics fm = toolkit.getFontMetrics(getFont());
         int itemHeight = fm.getHeight() + 2;
@@ -602,13 +597,13 @@ public class Choice extends Component implements ItemSelectable, Accessible {
     }
 
     void fireItemEvent() {
-        postEvent(new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED,
-                                getSelectedItem(), ItemEvent.SELECTED));
+        postEvent(new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED, getSelectedItem(),
+                ItemEvent.SELECTED));
     }
 
     /**
-     * This method is necessary because <code> public select(int) </code>
-     * should not fire any events
+     * This method is necessary because <code> public select(int) </code> should
+     * not fire any events
      */
     void selectAndFire(int idx) {
         if (idx == getSelectedIndex()) {
@@ -620,8 +615,9 @@ public class Choice extends Component implements ItemSelectable, Accessible {
 
     /**
      * Gets the nearest valid index
+     * 
      * @param idx any integer value
-     * @return valid item index nearest to idx 
+     * @return valid item index nearest to idx
      */
     int getValidIndex(int idx) {
         return Math.min(getItemCount() - 1, Math.max(0, idx));

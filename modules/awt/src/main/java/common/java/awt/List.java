@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Dmitry A. Durnev
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.event.ActionEvent;
@@ -36,56 +33,63 @@ import java.util.EventListener;
 import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.Locale;
-
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleSelection;
 import javax.accessibility.AccessibleState;
 import javax.accessibility.AccessibleStateSet;
-
 import org.apache.harmony.awt.ScrollStateController;
 import org.apache.harmony.awt.Scrollable;
 import org.apache.harmony.awt.state.ListState;
 
-
 public class List extends Component implements ItemSelectable, Accessible {
-
     private static final long serialVersionUID = -3304312411574666869L;
+
     private final static int BORDER_SIZE = 2;
-    private final AWTListenerList actionListeners = new AWTListenerList(this);
-    private final AWTListenerList itemListeners = new AWTListenerList(this);
+
+    private final AWTListenerList<ActionListener> actionListeners = new AWTListenerList<ActionListener>(
+            this);
+
+    private final AWTListenerList<ItemListener> itemListeners = new AWTListenerList<ItemListener>(
+            this);
 
     private int rows;
 
     private boolean multipleMode;
 
     private final ArrayList<String> items = new ArrayList<String>();
+
     private final ArrayList<Integer> selection = new ArrayList<Integer>();
 
     private int visibleIndex = -1;
+
     private int currentIndex; // "focused" item index
 
     private final ListStateController stateController;
+
     private final ListScrollable scrollable;
+
     private final State state;
 
     private final ScrollPaneAdjustable hAdjustable;
+
     private final ScrollPaneAdjustable vAdjustable;
 
     private transient Point scrollLocation;
+
     private transient int prefWidth;
 
-    protected class AccessibleAWTList extends AccessibleAWTComponent
-    implements AccessibleSelection, ItemListener, ActionListener {
-
+    protected class AccessibleAWTList extends AccessibleAWTComponent implements
+            AccessibleSelection, ItemListener, ActionListener {
         private static final long serialVersionUID = 7924617370136012829L;
 
-        protected class AccessibleAWTListChild extends AccessibleAWTComponent
-        implements Accessible {
-
+        protected class AccessibleAWTListChild extends AccessibleAWTComponent implements
+                Accessible {
             private static final long serialVersionUID = 4412022926028300317L;
-            private int accessibleIndexInParent;
+
+            private final int accessibleIndexInParent;
+
             private List parent;
 
             public AccessibleAWTListChild(List parent, int indexInParent) {
@@ -278,6 +282,7 @@ public class List extends Component implements ItemSelectable, Accessible {
             addActionListener(this);
             addItemListener(this);
         }
+
         public int getAccessibleSelectionCount() {
             return getSelectedIndexes().length;
         }
@@ -308,7 +313,6 @@ public class List extends Component implements ItemSelectable, Accessible {
             } finally {
                 toolkit.unlockAWT();
             }
-
         }
 
         public void addAccessibleSelection(int i) {
@@ -343,12 +347,10 @@ public class List extends Component implements ItemSelectable, Accessible {
 
         public void itemStateChanged(ItemEvent e) {
             // TODO: find out why listen to ItemEvents
-
         }
 
         public void actionPerformed(ActionEvent e) {
             // TODO: find out why listen to ActionEvents
-
         }
 
         @Override
@@ -396,11 +398,10 @@ public class List extends Component implements ItemSelectable, Accessible {
         }
     }
 
-    class ListStateController extends ScrollStateController
-    implements MouseListener, KeyListener, FocusListener,
-    MouseMotionListener {
-
+    class ListStateController extends ScrollStateController implements MouseListener,
+            KeyListener, FocusListener, MouseMotionListener {
         boolean scrollPressed;
+
         public ListStateController(Scrollable scrollable) {
             super(scrollable);
         }
@@ -413,12 +414,10 @@ public class List extends Component implements ItemSelectable, Accessible {
 
         public void mouseEntered(MouseEvent e) {
             // nothing to do
-
         }
 
         public void mouseExited(MouseEvent e) {
             // nothing to do
-
         }
 
         public void mousePressed(MouseEvent e) {
@@ -436,8 +435,7 @@ public class List extends Component implements ItemSelectable, Accessible {
                 if (checkIdx(idx)) {
                     requestFocus();
                     boolean selected = isIndexSelected(idx);
-                    int sel = selected ? ItemEvent.DESELECTED
-                                      : ItemEvent.SELECTED;
+                    int sel = selected ? ItemEvent.DESELECTED : ItemEvent.SELECTED;
                     if (!selected) {
                         select(idx);
                     } else {
@@ -445,11 +443,10 @@ public class List extends Component implements ItemSelectable, Accessible {
                     }
                     fireItemEvent(sel);
                 }
-            } else if (vAdjustable.getBounds().contains(pt) ||
-                       hAdjustable.getBounds().contains(pt)) {
+            } else if (vAdjustable.getBounds().contains(pt)
+                    || hAdjustable.getBounds().contains(pt)) {
                 scrollPressed = true;
             }
-
         }
 
         public void mouseReleased(MouseEvent e) {
@@ -460,48 +457,46 @@ public class List extends Component implements ItemSelectable, Accessible {
             assert isFocusOwner() : "Key event for unfocused component";
             int keyCode = e.getKeyCode();
             switch (keyCode) {
-            case KeyEvent.VK_UP:
-                scrollByUnit(vAdjustable, -1);
-                break;
-            case KeyEvent.VK_LEFT:
-                scrollByUnit(hAdjustable, -1);
-                break;
-            case KeyEvent.VK_DOWN:
-                scrollByUnit(vAdjustable, 1);
-                break;
-            case KeyEvent.VK_RIGHT:
-                scrollByUnit(hAdjustable, 1);
-                break;
-            case KeyEvent.VK_PAGE_UP:
-                scrollByBlock(-1);
-                break;
-            case KeyEvent.VK_PAGE_DOWN:
-                scrollByBlock(1);
-                break;
-            case KeyEvent.VK_HOME:
-                selectVisible(0);
-                break;
-            case KeyEvent.VK_END:
-                int lastIdx = getItemCount() - 1;
-                selectVisible(lastIdx);
-                break;
-            case KeyEvent.VK_ENTER:
-                fireActionEvent(e.getWhen(), e.getModifiers());
-                break;
-            case KeyEvent.VK_SPACE:
-                if (isMultipleMode()) {
-                    boolean deselect = isIndexSelected(currentIndex);
-                    if (deselect) {
-                        deselect(currentIndex);
-                    } else {
-                        select(currentIndex);
+                case KeyEvent.VK_UP:
+                    scrollByUnit(vAdjustable, -1);
+                    break;
+                case KeyEvent.VK_LEFT:
+                    scrollByUnit(hAdjustable, -1);
+                    break;
+                case KeyEvent.VK_DOWN:
+                    scrollByUnit(vAdjustable, 1);
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    scrollByUnit(hAdjustable, 1);
+                    break;
+                case KeyEvent.VK_PAGE_UP:
+                    scrollByBlock(-1);
+                    break;
+                case KeyEvent.VK_PAGE_DOWN:
+                    scrollByBlock(1);
+                    break;
+                case KeyEvent.VK_HOME:
+                    selectVisible(0);
+                    break;
+                case KeyEvent.VK_END:
+                    int lastIdx = getItemCount() - 1;
+                    selectVisible(lastIdx);
+                    break;
+                case KeyEvent.VK_ENTER:
+                    fireActionEvent(e.getWhen(), e.getModifiers());
+                    break;
+                case KeyEvent.VK_SPACE:
+                    if (isMultipleMode()) {
+                        boolean deselect = isIndexSelected(currentIndex);
+                        if (deselect) {
+                            deselect(currentIndex);
+                        } else {
+                            select(currentIndex);
+                        }
+                        fireItemEvent(deselect ? ItemEvent.DESELECTED : ItemEvent.SELECTED);
                     }
-                    fireItemEvent(deselect ? ItemEvent.DESELECTED :
-                        ItemEvent.SELECTED);
-                }
-                break;
+                    break;
             }
-
         }
 
         private void selectVisible(int idx) {
@@ -520,7 +515,6 @@ public class List extends Component implements ItemSelectable, Accessible {
         private void scrollByBlock(int val) {
             int itemsPerBlock = getClient().height / getItemSize().height;
             scrollByUnit(vAdjustable, val * itemsPerBlock);
-
         }
 
         private void scrollByUnit(Adjustable adj, int val) {
@@ -539,12 +533,10 @@ public class List extends Component implements ItemSelectable, Accessible {
 
         public void keyReleased(KeyEvent e) {
             // nothing to do
-
         }
 
         public void keyTyped(KeyEvent e) {
             // nothing to do
-
         }
 
         public void fireActionEvent(long when, int mod) {
@@ -552,12 +544,12 @@ public class List extends Component implements ItemSelectable, Accessible {
                 return;
             }
             postEvent(new ActionEvent(List.this, ActionEvent.ACTION_PERFORMED,
-                                      getItem(currentIndex), when, mod));
+                    getItem(currentIndex), when, mod));
         }
 
         public void fireItemEvent(int sel) {
             postEvent(new ItemEvent(List.this, ItemEvent.ITEM_STATE_CHANGED,
-                                    getItem(currentIndex), sel));
+                    getItem(currentIndex), sel));
         }
 
         public void focusGained(FocusEvent e) {
@@ -577,7 +569,6 @@ public class List extends Component implements ItemSelectable, Accessible {
             if (checkIdx(idx)) {
                 selectVisible(idx);
             }
-
         }
 
         private boolean checkIdx(int idx) {
@@ -587,11 +578,9 @@ public class List extends Component implements ItemSelectable, Accessible {
         public void mouseMoved(MouseEvent e) {
             // nothing to do
         }
-
     }
 
     class ListScrollable implements Scrollable {
-
         public Adjustable getVAdjustable() {
             return vAdjustable;
         }
@@ -633,7 +622,6 @@ public class List extends Component implements ItemSelectable, Accessible {
 
         public void setAdjustableSizes(Adjustable adj, int vis, int min, int max) {
             ((ScrollPaneAdjustable) adj).setSizes(vis, min, max);
-
         }
 
         public int getAdjustableMode(Adjustable adj) {
@@ -664,11 +652,9 @@ public class List extends Component implements ItemSelectable, Accessible {
         public void doRepaint(Rectangle r) {
             List.this.doRepaint(r);
         }
-
     }
 
     class State extends ComponentState implements ListState {
-
         public Rectangle getItemBounds(int idx) {
             return List.this.getItemBounds(idx);
         }
@@ -692,8 +678,8 @@ public class List extends Component implements ItemSelectable, Accessible {
         public int getCurrentIndex() {
             return List.this.getCurrentIndex();
         }
-
     }
+
     public List(int rows) throws HeadlessException {
         this(rows, false);
         toolkit.lockAWT();
@@ -716,16 +702,14 @@ public class List extends Component implements ItemSelectable, Accessible {
         toolkit.lockAWT();
         try {
             Toolkit.checkHeadless();
-            this.rows = ( (rows != 0) ? rows : 4);
+            this.rows = ((rows != 0) ? rows : 4);
             this.multipleMode = multipleMode;
-
             scrollLocation = new Point();
             hAdjustable = new ScrollPaneAdjustable(this, Adjustable.HORIZONTAL);
             vAdjustable = new ScrollPaneAdjustable(this, Adjustable.VERTICAL);
             scrollable = new ListScrollable();
             stateController = new ListStateController(scrollable);
             state = new State();
-
             addAWTMouseListener(stateController);
             addAWTMouseMotionListener(stateController);
             addAWTKeyListener(stateController);
@@ -746,7 +730,6 @@ public class List extends Component implements ItemSelectable, Accessible {
         } finally {
             toolkit.unlockAWT();
         }
-
     }
 
     public void add(String item, int index) {
@@ -786,7 +769,7 @@ public class List extends Component implements ItemSelectable, Accessible {
             items.remove(position);
             // decrease all selected indices greater than position
             // by 1, because items list is shifted to the left
-            for (int i=0; i < selection.size(); i++) {
+            for (int i = 0; i < selection.size(); i++) {
                 Integer idx = selection.get(i);
                 int val = idx.intValue();
                 if (val > position) {
@@ -837,7 +820,6 @@ public class List extends Component implements ItemSelectable, Accessible {
         } finally {
             toolkit.unlockAWT();
         }
-
     }
 
     public String getItem(int index) {
@@ -909,15 +891,12 @@ public class List extends Component implements ItemSelectable, Accessible {
             if (!isDisplayable()) {
                 return new Dimension();
             }
-
             int maxItemWidth = minSize.width;
-            FontRenderContext frc =
-                ((Graphics2D)getGraphics()).getFontRenderContext();
+            FontRenderContext frc = ((Graphics2D) getGraphics()).getFontRenderContext();
             Font font = getFont();
             for (int i = 0; i < items.size(); i++) {
                 String item = getItem(i);
-                int itemWidth =
-                    font.getStringBounds(item, frc).getBounds().width;
+                int itemWidth = font.getStringBounds(item, frc).getBounds().width;
                 if (itemWidth > maxItemWidth) {
                     maxItemWidth = itemWidth;
                 }
@@ -1155,7 +1134,7 @@ public class List extends Component implements ItemSelectable, Accessible {
             Integer[] selArr = new Integer[selection.size()];
             selection.toArray(selArr);
             int[] intArr = new int[selArr.length];
-            for(int i = 0; i < selArr.length; i++) {
+            for (int i = 0; i < selArr.length; i++) {
                 intArr[i] = selArr[i].intValue();
             }
             return intArr;
@@ -1184,7 +1163,7 @@ public class List extends Component implements ItemSelectable, Accessible {
             String[] selItemsArr = new String[size];
             Integer[] selArr = new Integer[size];
             selection.toArray(selArr);
-            for(int i = 0; i < selItemsArr.length; i++) {
+            for (int i = 0; i < selItemsArr.length; i++) {
                 selItemsArr[i] = items.get(selArr[i].intValue());
             }
             return selItemsArr;
@@ -1246,7 +1225,7 @@ public class List extends Component implements ItemSelectable, Accessible {
         toolkit.lockAWT();
         try {
             visibleIndex = index;
-            if (!isDisplayable() || !isIdxValid(index) ) {
+            if (!isDisplayable() || !isIdxValid(index)) {
                 return;
             }
             // scroll if necessary
@@ -1256,8 +1235,7 @@ public class List extends Component implements ItemSelectable, Accessible {
             if (dy < 0) {
                 stateController.updateAdjValue(vAdjustable, dy);
             }
-            dy = itemRect.y + itemRect.height -
-            (clientRect.y + clientRect.height);
+            dy = itemRect.y + itemRect.height - (clientRect.y + clientRect.height);
             if (dy > 0) {
                 stateController.updateAdjValue(vAdjustable, dy);
             }
@@ -1296,7 +1274,6 @@ public class List extends Component implements ItemSelectable, Accessible {
             // repaint only item's rectangle & old "focused" item's rect
             doRepaint(getMinRect(index, currentIndex));
             currentIndex = index;
-
         } finally {
             toolkit.unlockAWT();
         }
@@ -1332,6 +1309,7 @@ public class List extends Component implements ItemSelectable, Accessible {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         if (ActionListener.class.isAssignableFrom(listenerType)) {
@@ -1352,8 +1330,7 @@ public class List extends Component implements ItemSelectable, Accessible {
     }
 
     public ActionListener[] getActionListeners() {
-        return (ActionListener[])
-        actionListeners.getUserListeners(new ActionListener[0]);
+        return actionListeners.getUserListeners(new ActionListener[0]);
     }
 
     public void addItemListener(ItemListener l) {
@@ -1365,14 +1342,12 @@ public class List extends Component implements ItemSelectable, Accessible {
     }
 
     public ItemListener[] getItemListeners() {
-        return (ItemListener[])
-        itemListeners.getUserListeners(new ItemListener[0]);
+        return itemListeners.getUserListeners(new ItemListener[0]);
     }
 
     @Override
     protected void processEvent(AWTEvent e) {
         long eventMask = toolkit.eventTypeLookup.getEventMask(e);
-
         if (eventMask == AWTEvent.ACTION_EVENT_MASK) {
             processActionEvent((ActionEvent) e);
         } else if (eventMask == AWTEvent.ITEM_EVENT_MASK) {
@@ -1385,11 +1360,10 @@ public class List extends Component implements ItemSelectable, Accessible {
     protected void processItemEvent(ItemEvent e) {
         for (Iterator<?> i = itemListeners.getUserIterator(); i.hasNext();) {
             ItemListener listener = (ItemListener) i.next();
-
             switch (e.getID()) {
-            case ItemEvent.ITEM_STATE_CHANGED:
-                listener.itemStateChanged(e);
-                break;
+                case ItemEvent.ITEM_STATE_CHANGED:
+                    listener.itemStateChanged(e);
+                    break;
             }
         }
     }
@@ -1397,11 +1371,10 @@ public class List extends Component implements ItemSelectable, Accessible {
     protected void processActionEvent(ActionEvent e) {
         for (Iterator<?> i = actionListeners.getUserIterator(); i.hasNext();) {
             ActionListener listener = (ActionListener) i.next();
-
             switch (e.getID()) {
-            case ActionEvent.ACTION_PERFORMED:
-                listener.actionPerformed(e);
-                break;
+                case ActionEvent.ACTION_PERFORMED:
+                    listener.actionPerformed(e);
+                    break;
             }
         }
     }
@@ -1462,13 +1435,13 @@ public class List extends Component implements ItemSelectable, Accessible {
 
     private Rectangle getItemBounds(int pos) {
         Dimension itemSize = getItemSize();
-        Point p = new Point(BORDER_SIZE,
-                            pos * itemSize.height + BORDER_SIZE);
+        Point p = new Point(BORDER_SIZE, pos * itemSize.height + BORDER_SIZE);
         Rectangle itemRect = new Rectangle(p, itemSize);
         itemRect.translate(scrollLocation.x, scrollLocation.y);
-        return  itemRect;
+        return itemRect;
     }
 
+    @SuppressWarnings("deprecation")
     private Dimension getItemSize() {
         FontMetrics fm = toolkit.getFontMetrics(getFont());
         int itemHeight = fm.getHeight() + 2;
@@ -1476,7 +1449,7 @@ public class List extends Component implements ItemSelectable, Accessible {
     }
 
     private int getItemIndex(int y) {
-       return (y - BORDER_SIZE - scrollLocation.y) / getItemSize().height;
+        return (y - BORDER_SIZE - scrollLocation.y) / getItemSize().height;
     }
 
     private int getCurrentIndex() {
@@ -1485,10 +1458,8 @@ public class List extends Component implements ItemSelectable, Accessible {
 
     private Rectangle getClient() {
         Insets ins = getNativeInsets();
-
-        return new Rectangle(ins.left, ins.top,
-                             getWidth() - (ins.left + ins.right),
-                             getHeight() - (ins.top + ins.bottom));
+        return new Rectangle(ins.left, ins.top, getWidth() - (ins.left + ins.right),
+                getHeight() - (ins.top + ins.bottom));
     }
 
     @Override
@@ -1496,9 +1467,7 @@ public class List extends Component implements ItemSelectable, Accessible {
         if (!isDisplayable()) {
             return super.getInsets();
         }
-        Insets insets = new Insets(BORDER_SIZE, BORDER_SIZE,
-                                   BORDER_SIZE, BORDER_SIZE);
-
+        Insets insets = new Insets(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE);
         return insets;
     }
 
@@ -1545,4 +1514,3 @@ public class List extends Component implements ItemSelectable, Accessible {
         return new AccessibleAWTList();
     }
 }
-

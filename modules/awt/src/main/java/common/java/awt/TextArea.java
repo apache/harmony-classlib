@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Michael Danilov
- * @version $Revision$
- */
+
 package java.awt;
 
 import java.awt.event.InputEvent;
@@ -27,23 +24,18 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleState;
 import javax.accessibility.AccessibleStateSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.View;
-
 import org.apache.harmony.awt.ScrollStateController;
 import org.apache.harmony.awt.Scrollable;
 import org.apache.harmony.awt.text.TextFactory;
 import org.apache.harmony.awt.wtk.NativeWindow;
 
-
 public class TextArea extends TextComponent {
-
     protected class AccessibleAWTTextArea extends AccessibleAWTTextComponent {
-
         private static final long serialVersionUID = 3472827823632144419L;
 
         @Override
@@ -52,15 +44,12 @@ public class TextArea extends TextComponent {
             set.add(AccessibleState.MULTI_LINE);
             return set;
         }
-
-
     }
 
     /**
      * Scrolling behavior implementation
      */
     class TextScrollable implements Scrollable {
-
         public Adjustable getVAdjustable() {
             return vAdjustable;
         }
@@ -94,7 +83,6 @@ public class TextArea extends TextComponent {
 
         public void doRepaint() {
             TextArea.this.doRepaint();
-
         }
 
         public int getAdjustableWidth() {
@@ -111,22 +99,21 @@ public class TextArea extends TextComponent {
 
         public int getAdjustableMode(Adjustable adj) {
             switch (getScrollbarVisibility()) {
-            case SCROLLBARS_BOTH:
-                return Scrollable.ALWAYS;
-            case SCROLLBARS_HORIZONTAL_ONLY:
-                return Scrollable.HORIZONTAL_ONLY;
-            case SCROLLBARS_NONE:
-                return Scrollable.NEVER;
-            case SCROLLBARS_VERTICAL_ONLY:
-                return Scrollable.VERTICAL_ONLY;
-            default:
-                return Scrollable.NEVER;
+                case SCROLLBARS_BOTH:
+                    return Scrollable.ALWAYS;
+                case SCROLLBARS_HORIZONTAL_ONLY:
+                    return Scrollable.HORIZONTAL_ONLY;
+                case SCROLLBARS_NONE:
+                    return Scrollable.NEVER;
+                case SCROLLBARS_VERTICAL_ONLY:
+                    return Scrollable.VERTICAL_ONLY;
+                default:
+                    return Scrollable.NEVER;
             }
         }
 
         public void setAdjustableBounds(Adjustable adj, Rectangle r) {
-            ((ScrollPaneAdjustable)adj).setBounds(r);
-
+            ((ScrollPaneAdjustable) adj).setBounds(r);
         }
 
         public int getWidth() {
@@ -140,7 +127,6 @@ public class TextArea extends TextComponent {
         public void doRepaint(Rectangle r) {
             TextArea.this.doRepaint(r);
         }
-
     }
 
     /**
@@ -150,9 +136,13 @@ public class TextArea extends TextComponent {
      */
     class MouseEventFilter implements MouseListener, MouseMotionListener {
         private final MouseListener mListener;
+
         private final MouseMotionListener mmListener;
+
         private boolean inside = true;
+
         boolean clientDrag;
+
         boolean scrollDrag;
 
         public MouseEventFilter(MouseListener ml, MouseMotionListener mml) {
@@ -170,7 +160,6 @@ public class TextArea extends TextComponent {
             } else {
                 setDefaultCursor();
             }
-
         }
 
         public void mouseEntered(MouseEvent e) {
@@ -222,7 +211,6 @@ public class TextArea extends TextComponent {
                 setDefaultCursor();
                 inside = false;
             }
-
         }
 
         private void setDefaultCursor() {
@@ -236,7 +224,6 @@ public class TextArea extends TextComponent {
             }
             Cursor.getDefaultCursor().getNativeCursor().setCursor(wnd.getId());
         }
-
     }
 
     private static final long serialVersionUID = 3692302836626095722L;
@@ -256,11 +243,14 @@ public class TextArea extends TextComponent {
     private int scrollbarVisibility = SCROLLBARS_BOTH;
 
     private ScrollPaneAdjustable hAdjustable;
-    private ScrollPaneAdjustable vAdjustable;
-    private final ScrollStateController stateController;
-    private final Scrollable scrollable;
-    private MouseEventFilter filter;
 
+    private ScrollPaneAdjustable vAdjustable;
+
+    private final ScrollStateController stateController;
+
+    private final Scrollable scrollable;
+
+    private MouseEventFilter filter;
 
     public TextArea() throws HeadlessException {
         this(new String(), 0, 0, SCROLLBARS_BOTH);
@@ -272,18 +262,16 @@ public class TextArea extends TextComponent {
     }
 
     public TextArea(String text, int rows, int columns, int scrollbars)
-    throws HeadlessException {
+            throws HeadlessException {
         super();
         toolkit.lockAWT();
         try {
             Toolkit.checkHeadless();
-
             setFont(new Font("Dialog", Font.PLAIN, 12)); // QUICK FIX
             setText(text);
             this.rows = Math.max(0, rows);
             this.columns = Math.max(0, columns);
-            if ((scrollbars < SCROLLBARS_BOTH) ||
-                (scrollbars > SCROLLBARS_NONE)) {
+            if ((scrollbars < SCROLLBARS_BOTH) || (scrollbars > SCROLLBARS_NONE)) {
                 scrollbars = SCROLLBARS_BOTH;
             }
             scrollbarVisibility = scrollbars;
@@ -297,7 +285,6 @@ public class TextArea extends TextComponent {
             scrollable = new TextScrollable();
             stateController = new ScrollStateController(scrollable);
             addScrolling();
-
         } finally {
             toolkit.unlockAWT();
         }
@@ -308,17 +295,16 @@ public class TextArea extends TextComponent {
      */
     private void setFocusTraversalKeys() {
         int id = KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS;
-        Set set = new HashSet(getFocusTraversalKeys(id));
+        Set<AWTKeyStroke> set = new HashSet<AWTKeyStroke>(getFocusTraversalKeys(id));
         AWTKeyStroke tab = AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB, 0);
         AWTKeyStroke shiftTab = AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_TAB,
-                                                             InputEvent.SHIFT_DOWN_MASK);
+                InputEvent.SHIFT_DOWN_MASK);
         set.remove(tab);
         setFocusTraversalKeys(id, set);
         id = KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS;
-        set = new HashSet(getFocusTraversalKeys(id));
+        set = new HashSet<AWTKeyStroke>(getFocusTraversalKeys(id));
         set.remove(shiftTab);
         setFocusTraversalKeys(id, set);
-
     }
 
     /**
@@ -333,8 +319,7 @@ public class TextArea extends TextComponent {
     }
 
     private boolean noHorizontalScroll() {
-        return ((scrollbarVisibility == SCROLLBARS_NONE) ||
-                (scrollbarVisibility == SCROLLBARS_VERTICAL_ONLY));
+        return ((scrollbarVisibility == SCROLLBARS_NONE) || (scrollbarVisibility == SCROLLBARS_VERTICAL_ONLY));
     }
 
     public TextArea(String text, int rows, int columns) throws HeadlessException {
@@ -370,18 +355,18 @@ public class TextArea extends TextComponent {
         } catch (BadLocationException e) {
             throw new RuntimeException(e);
         }
-//        toolkit.lockAWT();
-//        try {
-            if (isDisplayable()) {
-                // update caret position on text append
-                int newCaretPos = document.getLength();
-                if (caret.getDot() != newCaretPos) {
-                    caret.setDot(newCaretPos, caret.getDotBias());
-                }
+        //        toolkit.lockAWT();
+        //        try {
+        if (isDisplayable()) {
+            // update caret position on text append
+            int newCaretPos = document.getLength();
+            if (caret.getDot() != newCaretPos) {
+                caret.setDot(newCaretPos, caret.getDotBias());
             }
-//        } finally {
-//            toolkit.unlockAWT();
-//        }
+        }
+        //        } finally {
+        //            toolkit.unlockAWT();
+        //        }
     }
 
     public void insert(String str, int pos) {
@@ -391,21 +376,21 @@ public class TextArea extends TextComponent {
         } catch (BadLocationException e) {
             throw new IndexOutOfBoundsException();
         }
-//        toolkit.lockAWT();
-//        try {
-            if (isDisplayable()) {
-                // update caret position on text insertion
-                int newCaretPos = pos + str.length();
-                if (caret.getDot() != newCaretPos) {
-                    caret.setDot(newCaretPos, caret.getDotBias());
-                }
-            } else if (caret.getDot() != oldPos) {
-                // move caret back:
-                caret.setDot(oldPos, caret.getDotBias());
+        //        toolkit.lockAWT();
+        //        try {
+        if (isDisplayable()) {
+            // update caret position on text insertion
+            int newCaretPos = pos + str.length();
+            if (caret.getDot() != newCaretPos) {
+                caret.setDot(newCaretPos, caret.getDotBias());
             }
-//        } finally {
-//            toolkit.unlockAWT();
-//        }
+        } else if (caret.getDot() != oldPos) {
+            // move caret back:
+            caret.setDot(oldPos, caret.getDotBias());
+        }
+        //        } finally {
+        //            toolkit.unlockAWT();
+        //        }
     }
 
     @Override
@@ -418,9 +403,6 @@ public class TextArea extends TextComponent {
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void appendText(String str) {
         append(str);
@@ -521,7 +503,6 @@ public class TextArea extends TextComponent {
             if ((rows > 0) && (columns > 0)) {
                 return minimumSize(rows, columns);
             }
-
             return super.minimumSize();
         } finally {
             toolkit.unlockAWT();
@@ -552,27 +533,25 @@ public class TextArea extends TextComponent {
          * which can be revealed by the following code:
          * System.out.println(new TextArea());
          */
-
         toolkit.lockAWT();
         try {
             String strScrollbarVis = null;
             switch (getScrollbarVisibility()) {
-            case SCROLLBARS_BOTH:
-                strScrollbarVis = "both";
-                break;
-            case SCROLLBARS_HORIZONTAL_ONLY:
-                strScrollbarVis = "horizontal only";
-                break;
-            case SCROLLBARS_NONE:
-                strScrollbarVis = "none";
-                break;
-            case SCROLLBARS_VERTICAL_ONLY:
-                strScrollbarVis = "vertical only";
-                break;
+                case SCROLLBARS_BOTH:
+                    strScrollbarVis = "both";
+                    break;
+                case SCROLLBARS_HORIZONTAL_ONLY:
+                    strScrollbarVis = "horizontal only";
+                    break;
+                case SCROLLBARS_NONE:
+                    strScrollbarVis = "none";
+                    break;
+                case SCROLLBARS_VERTICAL_ONLY:
+                    strScrollbarVis = "vertical only";
+                    break;
             }
-            return (super.paramString() + ",rows=" + getRows() +
-                    ",columns=" + getColumns() +
-                    ",scrollbarVisibility=" + strScrollbarVis);
+            return (super.paramString() + ",rows=" + getRows() + ",columns=" + getColumns()
+                    + ",scrollbarVisibility=" + strScrollbarVis);
         } finally {
             toolkit.unlockAWT();
         }
@@ -590,9 +569,7 @@ public class TextArea extends TextComponent {
             if ((rows > 0) && (columns > 0)) {
                 return preferredSize(rows, columns);
             }
-
             return super.preferredSize();
-
         } finally {
             toolkit.unlockAWT();
         }
@@ -636,7 +613,6 @@ public class TextArea extends TextComponent {
                 // move caret back:
                 caret.setDot(oldPos, caret.getDotBias());
             }
-
         } finally {
             toolkit.unlockAWT();
         }
@@ -690,7 +666,6 @@ public class TextArea extends TextComponent {
             return null;
         }
         return getDefaultMinimumSize();
-
     }
 
     /**
@@ -702,11 +677,8 @@ public class TextArea extends TextComponent {
         if ((fm == null) || !isDisplayable()) {
             return null;
         }
-
         int avWidth = fm.charWidth('_'); // take width of an 'average' character
-
-        return new Dimension( avWidth * columns + 4,
-                             (fm.getHeight() + 1) * rows + 4);
+        return new Dimension(avWidth * columns + 4, (fm.getHeight() + 1) * rows + 4);
     }
 
     /**
@@ -838,8 +810,7 @@ public class TextArea extends TextComponent {
      * @return mouse event filter for caret
      */
     MouseEventFilter createFilter() {
-        filter = new MouseEventFilter((MouseListener)caret,
-                                      (MouseMotionListener)caret);
+        filter = new MouseEventFilter((MouseListener) caret, (MouseMotionListener) caret);
         return filter;
     }
 
@@ -858,11 +829,9 @@ public class TextArea extends TextComponent {
         }
         return filter;
     }
-    
+
     @Override
-    String autoName() {        
+    String autoName() {
         return ("text" + toolkit.autoNumber.nextTextArea++);
     }
-    
 }
-
