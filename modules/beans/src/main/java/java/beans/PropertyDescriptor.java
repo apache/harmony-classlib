@@ -180,7 +180,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
 
     @Override
     public boolean equals(Object object) {
-        boolean result = (object != null);
+        boolean result = (object != null && object instanceof PropertyDescriptor);
         if (result) {
             PropertyDescriptor pd = (PropertyDescriptor) object;
 

@@ -53,6 +53,19 @@ public class PropertyDescriptorTest extends TestCase {
         assertFalse(pd.equals(null));
     }
 
+    // Regression test for H-1763
+    public void testEqualsRegression1763() throws IntrospectionException {
+        String propertyName = "PropertyOne";
+        Class beanClass = MockJavaBean.class;
+        PropertyDescriptor pd = new PropertyDescriptor(propertyName, beanClass);
+
+        try {
+            pd.equals(propertyName);
+        } catch (ClassCastException e) {
+            fail("Equals throws ClassCastException");
+        }
+    }
+
     public void testEquals_ReadMethod() throws IntrospectionException,
             SecurityException, NoSuchMethodException {
         String propertyName = "PropertyOne";
