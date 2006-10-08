@@ -155,7 +155,16 @@ public class TransferHandler implements Serializable {
         try {
             result = new PropertyDescriptor(propertyName, c.getClass());
         } catch (IntrospectionException e) {
-
+            try {
+                BeanInfo bi = Introspector.getBeanInfo(c.getClass());
+                PropertyDescriptor pds[] = bi.getPropertyDescriptors();
+                for (int i = 0; i < pds.length; i++) {
+                    if (pds[i].getName().equals(propertyName)) {
+                        return pds[i];
+                    }
+                }
+            } catch (IntrospectionException e1) {
+            }
         }
         return result;
     }
@@ -299,4 +308,5 @@ public class TransferHandler implements Serializable {
         return COPY_ACTION;
     }
 }
+
 
