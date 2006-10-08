@@ -23,17 +23,14 @@ import java.beans.EventHandler;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.EventListener;
 import java.util.EventObject;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
-
 import org.apache.harmony.beans.tests.support.SampleEvent;
 import org.apache.harmony.beans.tests.support.SampleListener;
 import org.apache.harmony.beans.tests.support.mock.MockButton;
@@ -131,7 +128,7 @@ public class EventHandlerTest extends TestCase {
 
         Method m = SampleListener.class.getMethod("fireSampleEvent",
                 new Class[] { SampleEvent.class });
-        handler.invoke(proxy, m, null);
+        handler.invoke(proxy, m, new Object[] {new SampleEvent("")});
 
         assertEquals(invocationObject, handler.getTarget());
         assertEquals("doSomething", getMethodName());
@@ -227,10 +224,10 @@ public class EventHandlerTest extends TestCase {
      * 
      */
     public static Test suite() {
-        // TestSuite suite = new TestSuite();
-        // suite.addTest(new
-        // EventHandlerTest("testCreateForStaticMethodAsPropertyGetter"));
-        // return suite;
+//         TestSuite suite = new TestSuite();
+//         
+//         suite.addTest(new EventHandlerTest("testInvokeWithNullPropertyName"));
+//         return suite;
         return new TestSuite(EventHandlerTest.class);
     }
 
@@ -423,8 +420,8 @@ public class EventHandlerTest extends TestCase {
         String newLabel = "New Value: set text.";
         try {
             button.setLabel(newLabel);
-            fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {
+            fail("Should throw RuntimeException.");
+        } catch (RuntimeException e) {
         }
     }
 
@@ -463,7 +460,7 @@ public class EventHandlerTest extends TestCase {
         try {
             button.setLabel(newLabel);
             fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {
+        } catch (RuntimeException e) {
         }
     }
 
@@ -506,10 +503,10 @@ public class EventHandlerTest extends TestCase {
     public void testCreateClassObjectStringStringString_ClassInvalid() {
         MockTarget target = new MockTarget();
         try {
-            EventHandler.create(Serializable.class, target, "text",
+            EventHandler.create(String.class, target, "text",
                     "source.label", "propertyChange");
-            fail("Should throw ClassCastException.");
-        } catch (ClassCastException e) {
+            fail("Should throw IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {
         }
     }
 
@@ -560,8 +557,8 @@ public class EventHandlerTest extends TestCase {
         String newLabel = "New Value: set text.";
         try {
             button.setLabel(newLabel);
-            fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {
+            fail("Should throw RuntimeException.");
+        } catch (RuntimeException e) {
         }
     }
 
@@ -600,8 +597,8 @@ public class EventHandlerTest extends TestCase {
         String newLabel = "New Value: set text.";
         try {
             button.setLabel(newLabel);
-            fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {
+            fail("Should throw RuntimeException.");
+        } catch (RuntimeException e) {
         }
     }
 
@@ -751,8 +748,8 @@ public class EventHandlerTest extends TestCase {
         String newLabel = "New Value: set text.";
         try {
             button.setLabel(newLabel);
-            fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {
+            fail("Should throw RuntimeException.");
+        } catch (RuntimeException e) {
 
         }
     }
@@ -768,8 +765,8 @@ public class EventHandlerTest extends TestCase {
         String newLabel = "New Value: set text.";
         try {
             button.setLabel(newLabel);
-            fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {
+            fail("Should throw RuntimeException.");
+        } catch (RuntimeException e) {
         }
 
     }
