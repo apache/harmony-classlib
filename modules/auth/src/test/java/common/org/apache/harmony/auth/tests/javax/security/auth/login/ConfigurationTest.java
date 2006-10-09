@@ -20,26 +20,32 @@
 * @version $Revision$
 */
 
-package javax.security.auth.login;
+package org.apache.harmony.auth.tests.javax.security.auth.login;
 
 import java.security.Permission;
 import java.security.Security;
 
 import javax.security.auth.AuthPermission;
+import javax.security.auth.login.AppConfigurationEntry;
+import javax.security.auth.login.Configuration;
 
 import junit.framework.TestCase;
+
+import org.apache.harmony.auth.tests.support.TestUtils;
+
+import tests.support.resource.Support_Resources;
 
 /**
  * Tests Configuration class
  */
-
 public class ConfigurationTest extends TestCase {
+
+    // system property to specify another login configuration file 
+    private static final String AUTH_LOGIN_CONFIG = "java.security.auth.login.config";
 
 	/**
 	 * Easy the SecurityManager class
-	 * 
 	 */
-
 	class MySecurityManager extends SecurityManager {
 
 		public boolean enableAccess;
@@ -71,7 +77,6 @@ public class ConfigurationTest extends TestCase {
 
 	/**
 	 * Ease the configuration class
-	 * 
 	 */
 	public static class ConfTestProvider extends Configuration {
 
@@ -84,18 +89,36 @@ public class ConfigurationTest extends TestCase {
 		}
 	}
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(ConfigurationTest.class);
-	}
+    // installed security manager 
+    SecurityManager oldSM;
 
-	SecurityManager old = System.getSecurityManager();
+    // default implementation of Configuration class
+    Configuration defaultConfig;
 
-	Configuration oldConfiguration = Configuration.getConfiguration();
+    // value of java.security.auth.login.config system property
+    private String oldAuthConfig;
 
-	public void tearDown() {
-		System.setSecurityManager(old);
-		Configuration.setConfiguration(oldConfiguration);
-	}
+    @Override
+    protected void setUp() {
+
+        // point to some existing file to be read 
+        String testConfig = Support_Resources
+                .getAbsoluteResourcePath("auth.conf");
+        oldAuthConfig = System.setProperty(AUTH_LOGIN_CONFIG, "=" + testConfig);
+
+        defaultConfig = Configuration.getConfiguration();
+
+        oldSM = System.getSecurityManager();
+    }
+
+    @Override
+    protected void tearDown() {
+
+        TestUtils.setSystemProperty(AUTH_LOGIN_CONFIG, oldAuthConfig);
+
+        System.setSecurityManager(oldSM);
+        Configuration.setConfiguration(defaultConfig);
+    }
 
 	/**
 	 * Tests that setConfiguration() is properly secured via SecurityManager.
@@ -165,4 +188,8 @@ public class ConfigurationTest extends TestCase {
 					(oldProvider == null) ? "" : oldProvider);
 		}
 	}
+    
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(ConfigurationTest.class);
+    }
 }
