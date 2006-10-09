@@ -92,12 +92,3 @@ final class AppletThread extends Thread {
     
 }
 
-abstract class Command {
-    final String name;
-    
-    Command(String name) {
-        this.name = name;
-    }
-    
-    abstract void run();
-}
