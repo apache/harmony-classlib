@@ -26,12 +26,14 @@ import java.io.ByteArrayInputStream;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.cert.CertPath;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import org.apache.harmony.luni.util.Base64;
 
 import junit.framework.TestCase;
@@ -48,56 +50,142 @@ import junit.framework.TestCase;
 public class CertificateFactory_ImplTest extends TestCase {
 
     /**
-     * Base64 encoded PKCS7 SignedObject containing two X.509 CRLs.
+     * Base64 encoded PKCS7 SignedObject containing two X.509 
+     * Certificates and CRLs.
      */
     private static String pkcs7so =
-          "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";
+          "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"
+        + "8jLlMQA=";
+
+    /**
+     * Base64 encoded PkiPath object containing 2 X.509 certificates.
+     */
+    private static String pkiPath =
+          "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";
+
+    /**
+     * Base64 encoded X.509 CRL.
+     */
+    private static String x509crl = 
+          "MIHWMIGWAgEBMAkGByqGSM44BAMwFTETMBEGA1UEChMKQ1JMIElzc3Vl"
+        + "chcNMDYwOTA1MDk1MzA4WhcNMDYwOTA1MDk1NDQ4WjBAMD4CAgIrFw0w"
+        + "NjA5MDUwOTUzMDhaMCkwCgYDVR0VBAMKAQEwGwYDVR0YBBQYEjIwMDYw"
+        + "OTA1MDk1MzA4Ljg5WqAPMA0wCwYDVR0UBAQCAhFcMAkGByqGSM44BAMD"
+        + "MAAwLQIUJ1KAJumw8mOpGXT/FS5K9WwOBRICFQCR+ez59x9GH3sKoByC"
+        + "IooeR20Q3Q==";
+
+    /**
+     * Base64 encoded X.509 Certificate.
+     */
+    private static String x509cert = 
+          "MIICkzCCAlOgAwIBAgICAiswCQYHKoZIzjgEAzAdMRswGQYDVQQKExJD"
+        + "ZXJ0aWZpY2F0ZSBJc3N1ZXIwIxcNMDYwOTA4MDU1NzUxWhgSMjMzNjEx"
+        + "MTAxMTM4NTUuNjJaMB0xGzAZBgNVBAoTEkNlcnRpZmljYXRlIElzc3Vl"
+        + "cjCCAbgwggEsBgcqhkjOOAQBMIIBHwKBgQD9f1OBHXUSKVLfSpwu7OTn"
+        + "9hG3UjzvRADDHj+AtlEmaUVdQCJR+1k9jVj6v8X1ujD2y5tVbNeBO4Ad"
+        + "NG/yZmC3a5lQpaSfn+gEexAiwk+7qdf+t8Yb+DtX58aophUPBPuD9tPF"
+        + "HsMCNVQTWhaRMvZ1864rYdcq7/IiAxmd0UgBxwIVAJdgUI8VIwvMspK5"
+        + "gqLrhAvwWBz1AoGBAPfhoIXWmz3ey7yrXDa4V7l5lK+7+jrqgvlXTAs9"
+        + "B4JnUVlXjrrUWU/mcQcQgYC0SRZxI+hMKBYTt88JMozIpuE8FnqLVHyN"
+        + "KOCjrh4rs6Z1kW6jfwv6ITVi8ftiegEkO8yk8b6oUZCJqIPf4VrlnwaS"
+        + "i2ZegHtVJWQBTDv+z0kqA4GFAAKBgQDyCA7AK6Kep2soxt8tIsWWkafb"
+        + "YdueAkeBNnm46H0OteFa80HMuJjKJ0LjlPrdjFMARKyW/GATtQhghY/M"
+        + "rINAHmKcX5QjL1DkuJKDNggLHqj5D6efsWmLKwLvmviWLzWtjh7YGBZe"
+        + "Lt0ezu2q49aKcOzkkDsCSsMz09u9284L6qMeMBwwGgYDVR0RAQH/BBAw"
+        + "DoEMcmZjQDgyMi5OYW1lMAkGByqGSM44BAMDLwAwLAIUO+JWKWai/8Si"
+        + "2oEfhKSobLttYeYCFFO5YVDvtnmVVnvQTtUvrPpsaxJR";
+
+    /**
+     * Base64 encoded Private Key used for data signing.
+     * This data is not directly used in the test, but it could be
+     * useful in future in case of implementation of additional 
+     * testing data structures.
+     */
+    private static String b64PrivateKeySpec =
+          "MIIBSwIBADCCASwGByqGSM44BAEwggEfAoGBAP1/U4EddRIpUt9KnC7s"
+        + "5Of2EbdSPO9EAMMeP4C2USZpRV1AIlH7WT2NWPq/xfW6MPbLm1Vs14E7"
+        + "gB00b/JmYLdrmVClpJ+f6AR7ECLCT7up1/63xhv4O1fnxqimFQ8E+4P2"
+        + "08UewwI1VBNaFpEy9nXzrith1yrv8iIDGZ3RSAHHAhUAl2BQjxUjC8yy"
+        + "krmCouuEC/BYHPUCgYEA9+GghdabPd7LvKtcNrhXuXmUr7v6OuqC+VdM"
+        + "Cz0HgmdRWVeOutRZT+ZxBxCBgLRJFnEj6EwoFhO3zwkyjMim4TwWeotU"
+        + "fI0o4KOuHiuzpnWRbqN/C/ohNWLx+2J6ASQ7zKTxvqhRkImog9/hWuWf"
+        + "BpKLZl6Ae1UlZAFMO/7PSSoEFgIUS24w346zv1ic3wsLOHzxQnf9aX0=";
 
     /**
      * Base64 encoded Public Key for signature verification.
-     * Key corresponds to the CRLs and Certificates in PKCS7 SignedObject.
      */
     private static String b64PublicKeySpec =
           "MIIBuDCCASwGByqGSM44BAEwggEfAoGBAP1/U4EddRIpUt9KnC7s5Of2"
@@ -107,10 +195,10 @@ public class CertificateFactory_ImplTest extends TestCase {
         + "ouuEC/BYHPUCgYEA9+GghdabPd7LvKtcNrhXuXmUr7v6OuqC+VdMCz0H"
         + "gmdRWVeOutRZT+ZxBxCBgLRJFnEj6EwoFhO3zwkyjMim4TwWeotUfI0o"
         + "4KOuHiuzpnWRbqN/C/ohNWLx+2J6ASQ7zKTxvqhRkImog9/hWuWfBpKL"
-        + "Zl6Ae1UlZAFMO/7PSSoDgYUAAoGBAPBBWamz9YtVRtOOQz1/oJQMZzrN"
-        + "wjyol/b56lmw4eBFQDR4AqvX8LLhTKHTtTk3NLQOwmN/OjyShqaXBC5b"
-        + "2n6D8OkLKefffNBO5sGunXk5ncHY1x/bj+/54meIVQPsR4hV5eKCXq6K"
-        + "v/6XDTgo6O2bo2HPeeJA4slLBgbD9Lmn";
+        + "Zl6Ae1UlZAFMO/7PSSoDgYUAAoGBAPIIDsArop6nayjG3y0ixZaRp9th"
+        + "254CR4E2ebjofQ614VrzQcy4mMonQuOU+t2MUwBErJb8YBO1CGCFj8ys"
+        + "g0AeYpxflCMvUOS4koM2CAseqPkPp5+xaYsrAu+a+JYvNa2OHtgYFl4u"
+        + "3R7O7arj1opw7OSQOwJKwzPT273bzgvq";
 
     /**
      * The name of the algorithm used for Certificate/CRL signing.
@@ -140,8 +228,32 @@ public class CertificateFactory_ImplTest extends TestCase {
         }
     }
 
+    // array contains allowed PEM delimiters
+    private static String[][] good = {
+        {"-----BEGIN\n", "\n-----END"},
+        {"-----BEGIN-----\n", "\n-----END-----"},
+        {"-----BEGIN PEM ENCODED DATA STRUCTURE-----\n", "\n-----END-----"},
+        {"-----BEGIN MEANINGLESS SEPARATOR\n", "\n-----END PEM"},
+    };
+
+    // array contains not allowed PEM delimiters
+    private static String[][] bad = {
+        {"----BEGI\n", "\n-----END"},
+        {"-----BEGI\n", "\n----END"},
+        {"-----BEGI\n", "\n-----END"},
+        {"-----BEGIN\n", "\n-----EN"},
+        {"-----BEGIN", "\n-----END"},
+        {"-----BEGIN\n", "-----END"},
+    };
+
+    // array contains bad PEM encoded content.
+    private static String[] bad_content = {
+        "MIIHDwYJ", "ABCD", "\r\n\r\n", "\n\r", ""
+    };
+
     /**
      * generateCRLs method testing.
+     * Generates CRLs on the base of PKCS7 SignedData Object
      */
     public void testGenerateCRLs() throws Exception {
         CertificateFactory factory = CertificateFactory.getInstance("X.509");
@@ -160,6 +272,454 @@ public class CertificateFactory_ImplTest extends TestCase {
             for (Iterator i = crls.iterator(); i.hasNext();) {
                 ((X509CRL) i.next()).verify(publicKey);
             }
+        }
+    }
+
+    /**
+     * generateCRL/generateCertificate method testing.
+     * Tries to generates single CRL/Certificate 
+     * on the base of PKCS7 SignedData Object.
+     */
+    public void testGenerateCRL() throws Exception {
+        CertificateFactory factory = CertificateFactory.getInstance("X.509");
+
+        ByteArrayInputStream bais = new ByteArrayInputStream(
+                Base64.decode(pkcs7so.getBytes()));
+        try {
+            factory.generateCRL(bais);
+            fail("Expected exception was not thrown");
+        } catch (Exception e) { }
+        bais = new ByteArrayInputStream(Base64.decode(pkcs7so.getBytes()));
+        try {
+            factory.generateCertificate(bais);
+            fail("Expected exception was not thrown");
+        } catch (Exception e) { }
+    }
+
+    /**
+     * Generates CRLs on the base of PEM encoding.
+     */
+    public void testGenerateBase64CRL() throws Exception {
+        CertificateFactory factory = CertificateFactory.getInstance("X.509");
+        ByteArrayInputStream bais;
+        
+        for (int i=0; i<good.length; i++) {
+            bais = new ByteArrayInputStream(
+                    (good[i][0] + x509crl + good[i][1]).getBytes());
+
+            X509CRL crl = (X509CRL) factory.generateCRL(bais);
+            assertNotNull("Factory returned null on correct data", crl);
+
+            if (publicKey != null) {
+                // verify the signatures
+                crl.verify(publicKey);
+            }
+        }
+
+        for (int i=0; i<bad_content.length; i++) {
+            bais = new ByteArrayInputStream(
+                    (good[0][0] + bad_content[i] + good[0][1]).getBytes());
+            try {
+                factory.generateCRL(bais);
+                fail("Expected exception was not thrown");
+            } catch (Exception e) { 
+                // e.printStackTrace();
+            }
+        }
+
+        for (int i=0; i<bad.length; i++) {
+            bais = new ByteArrayInputStream(
+                    (bad[i][0] + x509crl + bad[i][1]).getBytes());
+            try {
+                factory.generateCRL(bais);
+                fail("Expected exception was not thrown");
+            } catch (Exception e) { }
+        }
+    }
+
+    private void verifyCRLs(Collection crls) throws Exception {
+        if (publicKey != null) {
+            // verify the signatures
+            for (Iterator it = crls.iterator(); it.hasNext();) {
+                ((X509CRL) it.next()).verify(publicKey);
+            }
+        }
+    };
+
+    private void verifyCertificates(Collection certs) throws Exception {
+        if (publicKey != null) {
+            // verify the signatures
+            for (Iterator it = certs.iterator(); it.hasNext();) {
+                ((X509Certificate) it.next()).verify(publicKey);
+            }
+        }
+    };
+
+    /**
+     * generateCRLs method testing.
+     * Generates CRLs on the base of consequent 
+     * PEM X.509(ASN.1)/X.509(ASN.1)/PKCS7 forms.
+     */
+    public void testGenerateBase64CRLs() throws Exception {
+        CertificateFactory factory = CertificateFactory.getInstance("X.509");
+            
+        // ------------------------ Test Data -----------------------------
+        // encoding describing codes
+        int pem_x509 = 0, asn_x509 = 1, pem_pkcs = 2, asn_pkcs = 3, 
+            bad = 4, npe_bad = 5, npe_bad2 = 6, num_of_variants = 7;
+        // error code, marks sequences as throwing exceptions
+        int error = 999;
+        // test sequences
+        int[][] sequences = {
+            {pem_x509, pem_x509}, 
+            {pem_x509, asn_x509}, 
+            {pem_x509, asn_x509, pem_x509}, 
+            {asn_x509, asn_x509}, 
+            {asn_x509, pem_x509}, 
+            {asn_x509, pem_x509, asn_x509},
+            // -1 means that only 1 (-(-1)) CRL will be generated 
+            // on the base of this encodings sequence
+            {-1, pem_x509, pem_pkcs},
+            {-1, pem_x509, bad},
+            // {-1/*-error*/, pem_x509, npe_bad2},
+            // {-1/*-error*/, pem_x509, npe_bad},
+            {-2, pem_pkcs, pem_x509}, // 2 CRLs are expected
+            {-2, pem_pkcs, bad},
+            {-2, pem_pkcs, npe_bad},
+            {-2, pem_pkcs, npe_bad2},
+            {-1, asn_x509, pem_pkcs},
+            {-1, asn_x509, bad},
+            // {-1/*-error*/, asn_x509, npe_bad},
+            // {-1/*-error*/, asn_x509, npe_bad2},
+            // exception is expected
+            {-error, bad},
+            {-error, bad, asn_x509},
+            {-error, npe_bad}, 
+            {-error, npe_bad2}, 
+        };
+        // actual encodings
+        byte[][] data = new byte[num_of_variants][];
+        data[pem_x509] = (good[0][0] + x509crl + good[0][1] + "\n").getBytes();
+        data[asn_x509] = Base64.decode(x509crl.getBytes());
+        data[pem_pkcs] = (good[0][0] + pkcs7so + good[0][1] + "\n").getBytes();
+        data[asn_pkcs] = Base64.decode(pkcs7so.getBytes());
+        data[bad] = new byte[] {0, 1, 1, 1, 1, 1, 0, 1};
+        data[npe_bad] = new byte[] {0, 1, 1, 1, 1, 1, 1, 0};
+        data[npe_bad2] = new byte[] {48, 0, 3, 4, 5, 6, 7};
+
+        // -------------------------- Test --------------------------------
+        // Tests CRL generation on the base of sequences of heterogeneous
+        // data format
+        for (int i=0; i<sequences.length; i++) { // for each of the sequences..
+            // expected size og generated CRL collection
+            int expected_size = (sequences[i][0] < 0)
+                ? -sequences[i][0]
+                : sequences[i].length;
+            // compute the size of the encoding described by sequence
+            int encoding_size = 0;
+            //System.out.print("Sequence:");
+            for (int j=0; j<sequences[i].length; j++) {
+                //System.out.print(" "+sequences[i][j]);
+                if (sequences[i][j] >= 0) {
+                    encoding_size += data[sequences[i][j]].length;
+                }
+            }
+            //System.out.println("");
+            // create the encoding of described sequence
+            byte[] encoding = new byte[encoding_size];
+            int position = 0;
+            for (int j=0; j<sequences[i].length; j++) {
+                if (sequences[i][j] >= 0) {
+                    System.arraycopy(
+                            data[sequences[i][j]], 0, // from
+                            encoding, position, // to
+                            data[sequences[i][j]].length); // length
+                    position += data[sequences[i][j]].length;
+                }
+            }
+
+            if (expected_size == error) { // exception throwing test
+                try {
+                    factory.generateCRLs(new ByteArrayInputStream(encoding));
+                    fail("Expected exception was not thrown");
+                } catch (Exception e) { }
+            } else {
+                Collection crls =
+                    factory.generateCRLs(new ByteArrayInputStream(encoding));
+                assertNotNull("Factory returned null on correct data", crls);
+                assertEquals("The size of collection differs from expected",
+                        expected_size, crls.size());
+                verifyCRLs(crls);
+            }
+        }
+    }
+
+    /**
+     * generateCertificates method testing.
+     * Generates Certificates on the base of consequent 
+     * PEM X.509(ASN.1)/X.509(ASN.1)/PKCS7 forms.
+     */
+    public void testGenerateBase64Certificates() throws Exception {
+        CertificateFactory factory = CertificateFactory.getInstance("X.509");
+            
+        // ------------------------ Test Data -----------------------------
+        // encoding describing codes
+        int pem_x509 = 0, asn_x509 = 1, pem_pkcs = 2, asn_pkcs = 3, 
+            bad = 4, bad1 = 5, bad2 = 6, num_of_variants = 7;
+        // error code, marks sequences as throwing exceptions
+        int error = 999;
+        // test sequences
+        int[][] sequences = {
+            {pem_x509, pem_x509}, 
+            {pem_x509, asn_x509}, 
+            {pem_x509, asn_x509, pem_x509}, 
+            {asn_x509, asn_x509}, 
+            {asn_x509, pem_x509}, 
+            {asn_x509, pem_x509, asn_x509},
+            // -1 means that only 1 (-(-1)) Certificate will be generated 
+            // on the base of this encodings sequence
+            // {-1/*-error*/, pem_x509, pem_pkcs},
+            // {-1/*-error*/, pem_x509, bad},
+            {-2, pem_pkcs, pem_x509}, // 2 Certificates are expected
+            {-2, pem_pkcs, bad},
+            {-2, pem_pkcs, bad1},
+            {-2, pem_pkcs, bad2},
+            // {-1/*-error*/, asn_x509, pem_pkcs},
+            // {-1/*-error*/, asn_x509, bad},
+            // {-1/*-error*/, asn_x509, bad1},
+            // {-1/*-error*/, pem_x509, bad1},
+            // {-1/*-error*/, asn_x509, bad2},
+            // {-1/*-error*/, pem_x509, bad2},
+            // exception is expected
+            {-error, bad},
+            {-error, bad, asn_x509},
+            {-error, bad1}, 
+            {-error, bad2}, 
+        };
+        // actual encodings
+        byte[][] data = new byte[num_of_variants][];
+        data[pem_x509] = (good[0][0] + x509cert + good[0][1] + "\n").getBytes();
+        data[asn_x509] = Base64.decode(x509cert.getBytes());
+        data[pem_pkcs] = (good[0][0] + pkcs7so + good[0][1] + "\n").getBytes();
+        data[asn_pkcs] = Base64.decode(pkcs7so.getBytes());
+        data[bad] = new byte[] {0, 1, 1, 1, 1, 1, 0, 1};
+        data[bad1] = new byte[] {0, 1, 1, 1, 1, 1, 1, 0};
+        data[bad2] = new byte[] {48, 0, 3, 4, 5, 6, 7};
+
+        // -------------------------- Test --------------------------------
+        // Tests Certificate generation on the base of sequences of heterogeneous
+        // data format
+        for (int i=0; i<sequences.length; i++) { // for each of the sequences..
+            // expected size og generated Certificate collection
+            int expected_size = (sequences[i][0] < 0)
+                ? -sequences[i][0]
+                : sequences[i].length;
+            // compute the size of the encoding described by sequence
+            int encoding_size = 0;
+            //System.out.print("Sequence:");
+            for (int j=0; j<sequences[i].length; j++) {
+                //System.out.print(" "+sequences[i][j]);
+                if (sequences[i][j] >= 0) {
+                    encoding_size += data[sequences[i][j]].length;
+                }
+            }
+            //System.out.println("");
+            // create the encoding of described sequence
+            byte[] encoding = new byte[encoding_size];
+            int position = 0;
+            for (int j=0; j<sequences[i].length; j++) {
+                if (sequences[i][j] >= 0) {
+                    System.arraycopy(
+                            data[sequences[i][j]], 0, // from
+                            encoding, position, // to
+                            data[sequences[i][j]].length); // length
+                    position += data[sequences[i][j]].length;
+                }
+            }
+
+            if (expected_size == error) { // exception throwing test
+                try {
+                    factory.generateCertificates(new ByteArrayInputStream(encoding));
+                    fail("Expected exception was not thrown");
+                } catch (Exception e) { }
+            } else {
+                Collection certs =
+                    factory.generateCertificates(new ByteArrayInputStream(encoding));
+                assertNotNull("Factory returned null on correct data", certs);
+                assertEquals("The size of collection differs from expected",
+                        expected_size, certs.size());
+                verifyCertificates(certs);
+            }
+        }
+    }
+
+    /**
+     * Generates CRLs/Certificates on the base of PEM PKCS7 encoding.
+     */
+    public void testGenerateBase64PKCS7() throws Exception {
+        CertificateFactory factory = CertificateFactory.getInstance("X.509");
+        
+        ByteArrayInputStream bais;
+        for (int i=0; i<good.length; i++) {
+            bais = new ByteArrayInputStream(
+                    (good[i][0] + pkcs7so + good[i][1]).getBytes());
+            Collection crls = factory.generateCRLs(bais);
+            assertNotNull("Factory returned null on correct PKCS7 data", crls);
+            assertEquals("The size of collection differs from expected",
+                    2, crls.size());
+            if (publicKey != null) {
+                // verify the signatures
+                for (Iterator it = crls.iterator(); it.hasNext();) {
+                    ((X509CRL) it.next()).verify(publicKey);
+                }
+            }
+            bais = new ByteArrayInputStream(
+                    (good[i][0] + pkcs7so + good[i][1]).getBytes());
+            Collection certs = factory.generateCertificates(bais);
+            assertNotNull("Factory returned null on correct PKCS7 data", certs);
+            assertEquals("The size of collection differs from expected",
+                    2, certs.size());
+            if (publicKey != null) {
+                // verify the signatures
+                for (Iterator it = certs.iterator(); it.hasNext();) {
+                    ((X509Certificate) it.next()).verify(publicKey);
+                }
+            }
+        }
+
+        for (int i=0; i<bad_content.length; i++) {
+            bais = new ByteArrayInputStream(
+                    (good[0][0] + bad_content[i] + good[0][1]).getBytes());
+            try {
+                factory.generateCertificates(bais);
+                fail("Expected exception was not thrown");
+            } catch (Exception e) { }
+            bais = new ByteArrayInputStream(
+                    (good[0][0] + bad_content[i] + good[0][1]).getBytes());
+            try {
+                factory.generateCRLs(bais);
+                fail("Expected exception was not thrown");
+            } catch (Exception e) { }
+        }
+
+        for (int i=0; i<bad.length; i++) {
+            bais = new ByteArrayInputStream(
+                    (bad[i][0] + pkcs7so + bad[i][1]).getBytes());
+            try {
+                factory.generateCRLs(bais);
+                fail("Expected exception was not thrown");
+            } catch (Exception e) { }
+            bais = new ByteArrayInputStream(
+                    (bad[i][0] + pkcs7so + bad[i][1]).getBytes());
+            try {
+                factory.generateCertificates(bais);
+                fail("Expected exception was not thrown");
+            } catch (Exception e) { }
+        }
+    }
+
+    /**
+     * Generates CertPaths on the base of PEM PkiPath/PKCS7 encoding.
+     */
+    public void testGenerateBase64CertPath() throws Exception {
+        CertificateFactory factory = CertificateFactory.getInstance("X.509");
+        
+        ByteArrayInputStream bais;
+        List certificates;
+        for (int i=0; i<good.length; i++) {
+            bais = new ByteArrayInputStream(
+                    (good[i][0] + pkiPath + good[i][1]).getBytes());
+
+            certificates = factory.generateCertPath(bais).getCertificates();
+            assertEquals("The size of the list differs from expected",
+                    2, certificates.size());
+
+            if (publicKey != null) {
+                // verify the signatures
+                for (Iterator it = certificates.iterator(); it.hasNext();) {
+                    ((X509Certificate) it.next()).verify(publicKey);
+                }
+            }
+
+            bais = new ByteArrayInputStream(
+                    (good[i][0] + pkiPath + good[i][1]).getBytes());
+
+            certificates = 
+                factory.generateCertPath(bais, "PkiPath").getCertificates();
+            assertEquals("The size of the list differs from expected",
+                    2, certificates.size());
+
+            if (publicKey != null) {
+                // verify the signatures
+                for (Iterator it = certificates.iterator(); it.hasNext();) {
+                    ((X509Certificate) it.next()).verify(publicKey);
+                }
+            }
+
+            bais = new ByteArrayInputStream(
+                    (good[i][0] + pkcs7so + good[i][1]).getBytes());
+
+            certificates = 
+                factory.generateCertPath(bais, "PKCS7").getCertificates();
+            assertEquals("The size of the list differs from expected",
+                    2, certificates.size());
+
+            if (publicKey != null) {
+                // verify the signatures
+                for (Iterator it = certificates.iterator(); it.hasNext();) {
+                    ((X509Certificate) it.next()).verify(publicKey);
+                }
+            }
+        }
+
+        // testing empty PkiPath structure (ASN.1 such as 0x30, 0x00)
+        bais = new ByteArrayInputStream(
+                (good[0][0] + "MAB=" + good[0][1]).getBytes()); // "MABCDEFG"
+        assertEquals("The size of the list differs from expected",
+                0, factory.generateCertPath(bais, "PkiPath")
+                                .getCertificates().size());
+
+        // testing with bad PEM content
+        for (int i=0; i<bad_content.length; i++) {
+            bais = new ByteArrayInputStream(
+                    (good[0][0] + bad_content[i] + good[0][1]).getBytes());
+            try {
+                factory.generateCertPath(bais);
+                fail("Expected exception was not thrown");
+            } catch (Exception e) { }
+            bais = new ByteArrayInputStream(
+                    (good[0][0] + bad_content[i] + good[0][1]).getBytes());
+            try {
+                factory.generateCertPath(bais, "PkiPath");
+                fail("Expected exception was not thrown");
+            } catch (Exception e) { }
+            bais = new ByteArrayInputStream(
+                    (good[0][0] + bad_content[i] + good[0][1]).getBytes());
+            try {
+                factory.generateCertPath(bais, "PKCS7");
+                fail("Expected exception was not thrown");
+            } catch (Exception e) { }
+        }
+
+        for (int i=0; i<bad.length; i++) {
+            bais = new ByteArrayInputStream(
+                    (bad[i][0] + pkiPath + bad[i][1]).getBytes());
+            try {
+                factory.generateCertPath(bais);
+                fail("Expected exception was not thrown");
+            } catch (Exception e) { }
+            bais = new ByteArrayInputStream(
+                    (bad[i][0] + pkiPath + bad[i][1]).getBytes());
+            try {
+                factory.generateCertPath(bais, "PkiPath");
+                fail("Expected exception was not thrown");
+            } catch (Exception e) { }
+            bais = new ByteArrayInputStream(
+                    (bad[i][0] + pkcs7so + bad[i][1]).getBytes());
+            try {
+                factory.generateCertPath(bais, "PKCS7");
+                fail("Expected exception was not thrown");
+            } catch (Exception e) { }
         }
     }
 
@@ -209,6 +769,12 @@ public class CertificateFactory_ImplTest extends TestCase {
                 ((X509Certificate) i.next()).verify(publicKey);
             }
         }
+
+        // testing empty PkiPath structure (ASN.1 such as 0x30, 0x00)
+        bais = new ByteArrayInputStream(new byte[] {(byte) 0x30, 0x00});
+        assertEquals("The size of the list differs from expected",
+                0, factory.generateCertPath(bais, "PkiPath")
+                                .getCertificates().size());
     }
 
 }
