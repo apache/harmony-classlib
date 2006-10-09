@@ -135,7 +135,7 @@ public abstract class ResourceBundle {
 					"_" + Locale.getDefault(), true, loader)) != null) {
                 return bundle;
             }
-			throw new MissingResourceException(null, bundleName, ""); //$NON-NLS-1$
+			throw new MissingResourceException(null, bundleName + '_' + locale, ""); //$NON-NLS-1$
 		}
         throw new NullPointerException();
 	}
@@ -161,7 +161,7 @@ public abstract class ResourceBundle {
 			if ((bundle = handleGetBundle(bundleName, localeName, true, loader)) != null) {
                 return bundle;
             }
-			throw new MissingResourceException(null, bundleName, ""); //$NON-NLS-1$
+			throw new MissingResourceException(null, bundleName + '_' + locale , ""); //$NON-NLS-1$
 		}
         throw new NullPointerException();
 	}

@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -149,6 +150,35 @@ public class ResourceBundleTest extends junit.framework.TestCase {
 		assertEquals("Wrong value child1", 
 				"frFRVARChildValue1", bundle.getString("child1"));
 	}
+
+    public void test_getBundle_getClassName() {
+        // Regression test for Harmony-1759
+        Locale locale = Locale.GERMAN;
+        String nonExistentBundle = "Non-ExistentBundle";
+        try {
+            ResourceBundle.getBundle(nonExistentBundle, locale, this.getClass()
+                    .getClassLoader());
+            fail("MissingResourceException expected!");
+        } catch (MissingResourceException e) {
+            assertEquals(nonExistentBundle + "_" + locale, e.getClassName());
+        }
+        
+        try {
+            ResourceBundle.getBundle(nonExistentBundle, locale);
+            fail("MissingResourceException expected!");
+        } catch (MissingResourceException e) {
+            assertEquals(nonExistentBundle + "_" + locale, e.getClassName());
+        }
+
+        locale = Locale.getDefault();
+        try {
+            ResourceBundle.getBundle(nonExistentBundle);
+            fail("MissingResourceException expected!");
+        } catch (MissingResourceException e) {
+            assertEquals(nonExistentBundle + "_" + locale, e.getClassName());
+        }
+
+    }
 
 	protected void setUp() {
 	}

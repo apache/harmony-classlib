@@ -17,6 +17,7 @@
 
 package tests.api.java.util;
 
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -46,8 +47,8 @@ public class MissingResourceExceptionTest extends junit.framework.TestCase {
 		try {
 			ResourceBundle.getBundle("Non-ExistentBundle");
 		} catch (MissingResourceException e) {
-			assertEquals("Returned incorrect class name", "Non-ExistentBundle", e.getClassName()
-					);
+			assertEquals("Returned incorrect class name", "Non-ExistentBundle"
+                    + '_' + Locale.getDefault(), e.getClassName());
 		}
 	}
 
