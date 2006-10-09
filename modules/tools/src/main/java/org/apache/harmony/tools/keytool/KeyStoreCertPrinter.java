@@ -340,7 +340,7 @@ public class KeyStoreCertPrinter {
     private static String formatBytes(byte[] bytes) {
         int i;
         // The method is expected to format mostly message digest results and
-        // åhe length of the String repesenting a SHA1 digest printed in
+        // the length of the String repesenting a SHA1 digest printed in
         // the way: "0A:1B:C3:D4:....:E5" is the biggest and is 59.
         StringBuffer buffer = new StringBuffer(59);
         int length;

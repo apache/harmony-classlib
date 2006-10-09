@@ -565,7 +565,7 @@ class ArgumentsParser {
                 // if the newly generated certificate should be signed with 
                 // another certificate chain from the keystore. 
                 if (issuerAlias != null && !param.isSecretKey()) {
-                    // Ñheck if the issuer password was entered. If not, try storepass.
+                    // Check if the issuer password was entered. If not, try storepass.
                     // If it's not ok, prompt the user.
                     if (param.getIssuerPass() == null) {
                         param.setIssuerPass(tryStorePassAsKeyPass(keyStore, issuerAlias,
