@@ -58,8 +58,18 @@ class RangeSet extends LeafSet {
             return AbstractCharClass.intersects(chars, ((CharSet) set)
                     .getChar());
         } else if (set instanceof RangeSet) {
-            return AbstractCharClass.intersects(chars, ((RangeSet) set).chars);
+            return AbstractCharClass.intersects(chars, ((RangeSet) set)
+                    .chars);
+        } else if (set instanceof SupplRangeSet) { 
+            return AbstractCharClass.intersects(chars, ((SupplRangeSet) set)
+                    .getChars());
+        } else if (set instanceof SupplCharSet) {
+            return false;
         }
         return true;
+    }
+    
+    protected AbstractCharClass getChars() {
+        return chars;
     }
 }

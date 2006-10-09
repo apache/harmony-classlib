@@ -41,6 +41,70 @@ class EmptySet extends LeafSet {
         return 0;
     }
 
+    public int find(int stringIndex, CharSequence testString,
+            MatchResultImpl matchResult) {
+        int strLength = matchResult.getRightBound();
+        int startStr = matchResult.getLeftBound();
+        
+        while (stringIndex <= strLength) {
+            
+            //check for supplementary codepoints
+            if (stringIndex < strLength) {
+                char low = testString.charAt(stringIndex);
+                
+                if (Character.isLowSurrogate(low)) {
+                    
+                   if (stringIndex > startStr) {
+                       char high = testString.charAt(stringIndex - 1);
+                       if (Character.isHighSurrogate(high)) {
+                           stringIndex++;
+                           continue;
+                       }
+                   }
+                }
+            }
+            
+            if (next.matches(stringIndex, testString, matchResult) >= 0) {
+                return stringIndex;
+            }
+            stringIndex++;
+        }
+        
+        return -1;
+    }
+
+    public int findBack(int stringIndex, int startSearch,
+            CharSequence testString, MatchResultImpl matchResult) {
+        int strLength = matchResult.getRightBound();
+        int startStr = matchResult.getLeftBound();
+        
+        while (startSearch >= stringIndex) {
+            
+            //check for supplementary codepoints
+            if (startSearch < strLength) {
+                char low = testString.charAt(startSearch);
+                
+                if (Character.isLowSurrogate(low)) {
+                
+                   if (startSearch > startStr) {
+                      char high = testString.charAt(startSearch - 1);
+                      if (Character.isHighSurrogate(high)) {
+                          startSearch--;
+                          continue;
+                      }
+                   }
+                }
+            }
+            
+            if (next.matches(startSearch, testString, matchResult) >= 0) {
+                return startSearch;
+            }
+            startSearch--;        
+        }
+        
+        return -1;
+    }
+    
     /*
      * @see java.util.regex.AbstractSet#getName()
      */

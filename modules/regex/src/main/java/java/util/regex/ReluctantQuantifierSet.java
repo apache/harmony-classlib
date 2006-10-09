@@ -36,7 +36,6 @@ class ReluctantQuantifierSet extends LeafQuantifierSet {
 
     public int matches(int stringIndex, CharSequence testString,
             MatchResultImpl matchResult) {
-        int i = 0;
         int shift = 0;
 
         do {

@@ -124,9 +124,6 @@ class Lexer {
      */
     static final int MAX_HANGUL_DECOMPOSITION_LENGTH = 3;
         
-    //maximum value of codepoint for basic multilingual pane of Unicode
-    static final int MAX_CODEPOINT_BASIC_MULTILINGUAL_PANE = 0xFFFF;
-        
     /*
      * Following constants are needed for Hangul canonical decomposition.
      * Hangul decomposition algorithm and constants are taken according
@@ -364,8 +361,8 @@ class Lexer {
         singleDecompTable = SingleDecompositions.getHashSingleDecompositions();
         singleDecompTableSize = singleDecompTable.size;
         
-        for (int i = 0; i < inputLength; i += Lexer.charCount(ch)) {
-            ch = Lexer.codePointAt(inputChars, i);
+        for (int i = 0; i < inputLength; i += Character.charCount(ch)) {
+            ch = Character.codePointAt(inputChars, i);
             inputCodePoints[inputCodePointsIndex++] = ch;
         }
                         
@@ -426,7 +423,7 @@ class Lexer {
          * Translating into UTF-16 encoding
          */
         for (int i = 0; i < decompHangulIndex; i++) {
-            result.append(Lexer.toChars(decompHangul[i]));
+            result.append(Character.toChars(decompHangul[i]));
         }
         
         return result.toString();
@@ -444,7 +441,7 @@ class Lexer {
     static int [] getCanonicalOrder(int [] inputInts, int length) {                      
         int inputLength = (length < inputInts.length)
                           ? length
-                          :    inputInts.length;
+                          : inputInts.length;
         
         /*
          * Simple bubble-sort algorithm.
@@ -510,19 +507,23 @@ class Lexer {
             reread = false;
             // read next character analize it and construct token:
             // //
-            lookAhead = (index < pattern.length) ? pattern[nextIndex()] : 0;
+            
+            lookAhead = (index < pattern.length) ? nextCodePoint() : 0;
             lookAheadST = null;
 
             if (mode == Lexer.MODE_ESCAPE) {
                 if (lookAhead == '\\') {
+                    
+                    //need not care about supplementary codepoints here 
                     lookAhead = (index < pattern.length) ? pattern[nextIndex()]
                             : 0;
 
                     switch (lookAhead) {
                     case 'E': {
                     	mode = saved_mode;
+                        
                         lookAhead = (index <= pattern.length - 2) 
-                                    ? pattern[nextIndex()] 
+                                    ? nextCodePoint() 
                                     : 0;
                         break;
                     }
@@ -539,7 +540,8 @@ class Lexer {
             }
 
             if (lookAhead == '\\') {
-                lookAhead = (index < pattern.length - 2) ? pattern[nextIndex()]
+                
+                lookAhead = (index < pattern.length - 2) ? nextCodePoint()
                         : -1;
                 switch (lookAhead) {
                 case -1:
@@ -648,6 +650,8 @@ class Lexer {
                     break;
                 case 'c': {
                     if (index < pattern.length - 2) {
+                        
+                        //need not care about supplementary codepoints here
                         lookAhead = (pattern[nextIndex()] & 0x1f);
                         break;
                     } else {
@@ -962,6 +966,8 @@ class Lexer {
      * Returns true if current character is plain token.
      */
     public static boolean isLetter(int ch) {
+        
+        //all supplementary codepoints have integer value that is >= 0;
         return ch >= 0;
     }
 
@@ -975,6 +981,28 @@ class Lexer {
         return !isEmpty() && !isSpecial() && isLetter(ch);
     }
 
+    /*
+     * Note that Character class methods
+     * isHighSurrogate(), isLowSurrogate()
+     * take char parameter while we need an int
+     * parameter without truncation to char value
+     */
+    public boolean isHighSurrogate() {
+        return (ch <= 0xDBFF) && (ch >= 0xD800);
+    }
+    
+    public boolean isLowSurrogate() {
+        return (ch <= 0xDFFF) && (ch >= 0xDC00);
+    }
+
+    public static boolean isHighSurrogate(int ch) {
+        return (ch <= 0xDBFF) && (ch >= 0xD800);
+    }
+    
+    public static boolean isLowSurrogate(int ch) {
+        return (ch <= 0xDFFF) && (ch >= 0xDC00);
+    }
+    
     /**
      * Process hexadecimal integer. 
      */
@@ -1030,7 +1058,7 @@ class Lexer {
     }
 
     /**
-     * Process expression flags givent with (?idmsux-idmsux)
+     * Process expression flags given with (?idmsux-idmsux)
      */
     private int readFlags() {
         char ch;
@@ -1163,7 +1191,7 @@ class Lexer {
      * "3.12 Conjoining Jamo Behavior".
      * 
      * @param ch - given Hangul syllable
-     * @return canonical decoposition of ch.
+     * @return canonical decomposition of ch.
      */
     static int [] getHangulDecomposition(int ch) {
         int SIndex = ch - SBase;
@@ -1201,59 +1229,6 @@ class Lexer {
                ? 0
                : canClass;
     }
-    
-    /**
-     * Simple stub to Character.charCount().
-     * 
-     * @param - ch Unicode codepoint
-     * @return number of chars that are occupied by Unicode
-     *         codepoint ch in UTF-16 encoding.
-     */
-    final static int charCount(int ch) {
-            
-        //return Character.charCount(ch);
-        return 1;
-    }
-    
-    /**
-     * Simple stub to Character.codePointAt().
-     * 
-     * @param - source  
-     * @param - index 
-     * @return Unicode codepoint at given index at source.
-     *         Note that codepoint can reside in two adjacent chars.
-     */
-    final static int codePointAt(char [] source, int index) {
-        
-        //return Character.codePointAt(source, index);
-        return source[index];
-    }
-    
-    /**
-     * Simple stub to Character.toChars().
-     * 
-     * @param - ch Unicode codepoint
-     * @return UTF-16 encoding of given code point.
-     */
-    final static char [] toChars(int ch) {            
-        
-        //return Character.toChars(ch);
-        return new char [] {(char) ch};
-    }
-    
-    /**
-     * Simple stub to Character.isSurrogatePair().
-     * 
-     * @param high high-surrogate char
-     * @param low low-surrogate char
-     * @return true if high and low compose an UTF-16 encoding
-     *         of some Unicode codepoint (we call such codepoint "surrogate")
-     */
-    final static boolean isSurrogatePair(char high, char low) {
-        
-        //return Character.isSurrogatePair(char, low)
-        return false;
-    }
 
     /**
      * Tests if given codepoint is a canonical decomposition of another
@@ -1284,38 +1259,25 @@ class Lexer {
     static boolean hasDecompositionNonNullCanClass(int ch) {
         return ch == 0x0340 | ch == 0x0341 | ch == 0x0343 | ch == 0x0344;
     }
-    
-    /**
-     * Reads next Unicode codepoint.
-     * 
-     * @return current Unicode codepoint and moves string
-     *         index to the next one.
-     */
-    int nextChar() {
-           int ch = 0;
         
-           if (!this.isEmpty()) {
-               char nextChar = (char) lookAhead;
-               char curChar = (char) ch;
-               
-               if (Lexer.isSurrogatePair(curChar, nextChar)){                                   
-                   
-                   /*
-                    * Note that it's slow to create new arrays each time
-                    * when calling to nextChar(). This should be optimized
-                    * later when we will actively use surrogate codepoints.
-                    * You can consider this as simple stub.
-                    */
-                   char [] curCodePointUTF16 = new char [] {curChar, nextChar};
-                ch = Lexer.codePointAt(curCodePointUTF16, 0);                
-                next();
-                next();
-            } else {
-                ch = next();    
+    private int nextCodePoint() {
+        char high = pattern[nextIndex()];
+        
+        if (Character.isHighSurrogate(high)) {
+            
+            //low and high char may be delimetered by spaces
+            int lowExpectedIndex = prevNW + 1;
+            
+            if (lowExpectedIndex < pattern.length) { 
+                char low = pattern[lowExpectedIndex];
+                if (Character.isLowSurrogate(low)) {
+                    nextIndex();
+                    return Character.toCodePoint(high, low);
+                }
             }
-        } 
+        }
         
-           return ch;
+        return (int) high;
     }
     
     /**
@@ -1331,7 +1293,7 @@ class Lexer {
          //Lexer.getCanonicalClass(ch) == 0
          boolean isBoundary = (canClass == canonClassesTableSize);
  
-            return isBoundary;
+         return isBoundary;
     }
        
     /**

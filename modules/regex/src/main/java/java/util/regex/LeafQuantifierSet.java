@@ -53,7 +53,7 @@ class LeafQuantifierSet extends QuantifierSet {
                 return shift;
             }
 
-            stringIndex--;
+            stringIndex -= leaf.charCount();
         }
         return -1;
     }
