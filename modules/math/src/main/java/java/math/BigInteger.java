@@ -75,6 +75,9 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
             new BigInteger(1, 6), new BigInteger(1, 7), new BigInteger(1, 8),
             new BigInteger(1, 9), TEN };
 
+    /**/
+    private transient int firstNonzeroDigit = -2;
+    
     /* Serialized Fields */
 
     /** @ar.org.fitc.spec_ref */
@@ -170,7 +173,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
             digits = new int[] { 0 };
         } else {
             sign = signum;
-            putBytesToIntegers(magnitude, false);
+            putBytesPositiveToIntegers(magnitude);
             cutOffLeadingZeroes();
         }
     }
@@ -183,11 +186,10 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         }
         if (val[0] < 0) {
             sign = -1;
-            putBytesToIntegers(val, true);
-            BitLevel.setTrueCoded(digits, numberLength);
+            putBytesNegativeToIntegers(val);
         } else {
             sign = 1;
-            putBytesToIntegers(val, false);
+            putBytesPositiveToIntegers(val);
         }
         cutOffLeadingZeroes();
     }
@@ -276,15 +278,13 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
 
     /** @ar.org.fitc.spec_ref */
     public byte[] toByteArray() {
+        if( this.sign == 0 ){
+            return new byte[]{0};
+        }
         BigInteger temp = this;
         int bitLen = bitLength();
-        int bytesLen = (bitLen == 0) ? 1 : ((bitLen + 1) >> 3)
-                + (((bitLen + 1) & 7) == 0 ? 0 : 1);
-        if (sign < 0) {
-            temp = clone();
-            // Convert from the true coded form to the two's complement one
-            BitLevel.setTrueCoded(temp.digits, numberLength);
-        }
+        int iThis = getFirstNonzeroDigit();
+        int bytesLen = (bitLen >> 3) + 1;
         /* Puts the little-endian int array representing the magnitude
          * of this BigInteger into the big-endian byte array. */
         byte[] bytes = new byte[bytesLen];
@@ -303,6 +303,30 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
             hB = bytesLen & 3;
             highBytes = (hB == 0) ? 4 : hB;
         }
+        
+        digitIndex = iThis;
+        bytesLen -= iThis << 2;
+        
+        if (sign < 0) {
+            digit = -temp.digits[digitIndex];
+            digitIndex++;
+            if(digitIndex == numberLength){
+                bytesInInteger = highBytes;
+            }
+            for (int i = 0; i < bytesInInteger; i++, digit >>= 8) {
+                bytes[--bytesLen] = (byte) digit;
+            }
+            while( bytesLen > firstByteNumber ){
+                digit = ~temp.digits[digitIndex];
+                digitIndex++;
+                if(digitIndex == numberLength){
+                    bytesInInteger = highBytes;
+                }
+                for (int i = 0; i < bytesInInteger; i++, digit >>= 8) {
+                    bytes[--bytesLen] = (byte) digit;
+                }
+            }
+        } else {
         while (bytesLen > firstByteNumber) {
             digit = temp.digits[digitIndex];
             digitIndex++;
@@ -312,6 +336,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
             for (int i = 0; i < bytesInInteger; i++, digit >>= 8) {
                 bytes[--bytesLen] = (byte) digit;
             }
+        }
         }
         return bytes;
     }
@@ -382,34 +407,34 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         int i;
         n = (1 << (n & 31)); // int with 1 set to the needed position
         if (sign < 0) {
-            for (i = 0; (i < intCount) && (digits[i] == 0); i++) {
-                ;
+            int firstNonZeroDigit = getFirstNonzeroDigit();
+            if (  intCount < firstNonZeroDigit  ){
+                return false;
+            }else if( firstNonZeroDigit == intCount ){
+                digit = -digit;
+            }else{
+                digit = ~digit;
             }
-            digit = ((i == intCount) ? -digit : ~digit);
         }
         return ((digit & n) != 0);
     }
 
     /** @ar.org.fitc.spec_ref */
     public BigInteger setBit(int n) {
-        if (n < 0) {
-            // math.15=Negative bit address
-            throw new ArithmeticException(Messages.getString("math.15")); //$NON-NLS-1$
+        if( !testBit( n ) ){
+            return BitLevel.flipBit(this, n);
+        }else{
+            return this;
         }
-        int intCount = n >> 5; // count of integers: count / 32
-        return (((sign < 0) && (intCount >= numberLength)) ? this : BitLevel
-                .changeBit(this, intCount, n & 31, 2));
     }
 
     /** @ar.org.fitc.spec_ref */
     public BigInteger clearBit(int n) {
-        if (n < 0) {
-            // math.15=Negative bit address
-            throw new ArithmeticException(Messages.getString("math.15")); //$NON-NLS-1$
+        if( testBit( n ) ){
+            return BitLevel.flipBit(this, n);
+        }else{
+            return this;
         }
-        int intCount = n >> 5;
-        return (((sign == 0) || ((sign > 0) && (intCount >= numberLength))) ? this
-                : BitLevel.changeBit(this, intCount, n & 31, 3));
     }
 
     /** @ar.org.fitc.spec_ref */
@@ -418,7 +443,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
             // math.15=Negative bit address
             throw new ArithmeticException(Messages.getString("math.15")); //$NON-NLS-1$
         }
-        return BitLevel.changeBit(this, n >> 5, n & 31, 1);
+        return BitLevel.flipBit(this, n);
     }
 
     /** @ar.org.fitc.spec_ref */
@@ -426,11 +451,8 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         if (sign == 0) {
             return -1;
         }
-        int i;
         // (sign != 0)  implies that exists some non zero digit 
-        for (i = 0; digits[i] == 0; i++) {
-            ;
-        }
+        int i = getFirstNonzeroDigit();
         return ((i << 5) + Integer.numberOfTrailingZeros(digits[i]));
     }
 
@@ -461,7 +483,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
 
     /** @ar.org.fitc.spec_ref */
     public BigInteger andNot(BigInteger val) {
-        return Logical.and(this, Logical.not(val));
+        return Logical.andNot(this, val);
     }
 
     /** @ar.org.fitc.spec_ref */
@@ -800,19 +822,14 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     }
 
     /**
-     * Puts a big-endian byte array into a little-endian int array 
-     * representing non-negative "digits" of a big integer number.
+     * Puts a big-endian byte array into a little-endian int array.
      */
-    private void putBytesToIntegers(byte[] byteValues, boolean isNegative) {
+    private void putBytesPositiveToIntegers(byte[] byteValues) {
         int bytesLen = byteValues.length;
         int highBytes = bytesLen & 3;
         numberLength = (bytesLen >> 2) + ((highBytes == 0) ? 0 : 1);
         digits = new int[numberLength];
         int i = 0;
-        // Set the highest element of an int array negative if needed
-        if (isNegative) {
-            digits[numberLength - 1] = -1;
-        }
         // Put bytes to the int array starting from the end of the byte array
         while (bytesLen > highBytes) {
             digits[i++] = (byteValues[--bytesLen] & 0xFF)
@@ -826,6 +843,69 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         }
     }
 
+    /**
+     * Puts a big-endian byte array into a little-endian applying two complement.
+     */
+    private void putBytesNegativeToIntegers(byte[] byteValues) {
+        int bytesLen = byteValues.length;
+        int highBytes = bytesLen & 3;
+        numberLength = (bytesLen >> 2) + ((highBytes == 0) ? 0 : 1);
+        digits = new int[numberLength];
+        int i = 0;
+        //Setting the sign
+        digits [numberLength -1] = -1;
+        // Put bytes to the int array starting from the end of the byte array
+        while (bytesLen > highBytes) {
+            digits[i] = (byteValues[--bytesLen] & 0xFF)
+                    | (byteValues[--bytesLen] & 0xFF) << 8
+                    | (byteValues[--bytesLen] & 0xFF) << 16
+                    | (byteValues[--bytesLen] & 0xFF) << 24;
+            if ( digits[i] != 0 ) {
+                digits[i] = -digits[i];
+                firstNonzeroDigit = i;
+                i++;
+                while (bytesLen > highBytes) {
+                    digits[i] = (byteValues[--bytesLen] & 0xFF)
+                            | (byteValues[--bytesLen] & 0xFF) << 8
+                            | (byteValues[--bytesLen] & 0xFF) << 16
+                            | (byteValues[--bytesLen] & 0xFF) << 24;
+                    digits[i] = ~digits[i];
+                    i++;
+                }
+                break;
+            }
+            i++;
+        }
+        if( highBytes != 0 ){
+            // Put the first bytes in the highest element of the int array
+            if ( firstNonzeroDigit != -2  ){
+                for (int j = 0; j < bytesLen; j++) {
+                    digits[i] = (digits[i] << 8) | (byteValues[j] & 0xFF);
+                }
+                digits[i] = ~digits[i];
+            }else{
+                for (int j = 0; j < bytesLen; j++) {
+                    digits[i] = (digits[i] << 8) | (byteValues[j] & 0xFF);
+                }
+                digits[i] = -digits[i];
+            }
+        }
+    }
+    
+    int getFirstNonzeroDigit(){
+        if( firstNonzeroDigit == -2 ){
+            int i;
+            if( this.sign == 0  ){
+                i = -1;
+            } else{
+                for(i=0; digits[i]==0; i++)
+                    ;
+            }
+            firstNonzeroDigit = i;
+        }
+        return firstNonzeroDigit;
+    }
+    
     /**
      * Returns a clone of {@code this}.
      * @return a copy of {@code this}, so that {@code equals(clone()) == true}.
@@ -842,7 +922,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
             ClassNotFoundException {
         in.defaultReadObject();
         sign = signum;
-        putBytesToIntegers(magnitude, false);
+        putBytesPositiveToIntegers(magnitude);
         cutOffLeadingZeroes();
     }
 

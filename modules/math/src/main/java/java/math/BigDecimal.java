@@ -1938,6 +1938,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
             // math.0B=null unscaled value
             throw new StreamCorruptedException(Messages.getString("math.0B")); //$NON-NLS-1$
         }
+        bitLength = getUnscaledValue().bitLength();
     }
 
     private BigInteger getUnscaledValue() {

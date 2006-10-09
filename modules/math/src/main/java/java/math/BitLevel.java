@@ -40,27 +40,6 @@ class BitLevel {
     /** Just to denote that this class can't be instantied. */
     private BitLevel() {}
 
-    /**
-     * Converts bits represented by an int array from two's complementary code
-     * to true one and vice versa. Performs ~value + 1.
-     */
-    static int setTrueCoded(int arr[], final int length) {
-        int i;
-        // Until the first set bit, the bits are equal (i.e. 0)
-        for (i = 0; (i < length) && (arr[i] == 0); i++) {
-            ;
-        }
-        if (i == length) {
-            return 1;
-        }
-        // The digit that cointains the first set bit is (arithmetic) negated
-        arr[i] = -arr[i];
-        // From this position, the bits are (boolean) negated
-        for (i++; i < length; i++) {
-            arr[i] = ~arr[i];
-        }
-        return 0;
-    }
 
     /** @see BigInteger#bitLength() */
     static int bitLength(BigInteger val) {
@@ -69,12 +48,9 @@ class BitLevel {
         }
         int bLength = (val.numberLength << 5);
         int highDigit = val.digits[val.numberLength - 1];
-        int i;
 
         if (val.sign < 0) {
-            for (i = 0; val.digits[i] == 0; i++) {
-                ;
-            }
+            int i = val.getFirstNonzeroDigit();
             // We reduce the problem to the positive case.
             if (i == val.numberLength - 1) {
                 highDigit--;
@@ -88,16 +64,17 @@ class BitLevel {
     /** @see BigInteger#bitCount() */
     static int bitCount(BigInteger val) {
         int bCount = 0;
-        int i;
 
-        if (val.sign >= 0) {
-            for (i = 0; i < val.numberLength; i++) {
+        if (val.sign == 0) {
+            return 0;
+        }
+        
+        int i = val.getFirstNonzeroDigit();;
+        if (val.sign > 0) {
+            for ( ; i < val.numberLength; i++) {
                 bCount += Integer.bitCount(val.digits[i]);
             }
         } else {// (sign < 0)
-            for (i = 0; val.digits[i] == 0; i++) {
-                ;
-            }
             // this digit absorbs the carry
             bCount += Integer.bitCount(-val.digits[i]);
             for (i++; i < val.numberLength; i++) {
@@ -116,50 +93,6 @@ class BitLevel {
     static boolean testBit(BigInteger val, int n) {
         // PRE: 0 <= n < val.bitLength()
         return ((val.digits[n >> 5] & (1 << (n & 31))) != 0);
-    }
-
-    /**
-     * Changes a bit in the BigInteger depending on the operation.
-     * 
-     * @param intCount the number of an element in the array to change bit in
-     * @param bitNumber the bit's number in the intCount element
-     * @param operation's code: 1 for flipBit(), 2 for setBit(), 3 for
-     *        clearBit()
-     */
-    static BigInteger changeBit(BigInteger n, final int intCount,
-            int bitNumber, final int operation) {
-        int resSign = (n.sign == 0) ? 1 : n.sign;
-        int resLength;
-        resLength = Math.max(intCount, n.numberLength);
-        // increase length for a possible carry in the second
-        // BitLevel.setTrueCoded();
-        resLength++;
-        int resDigits[] = new int[resLength];
-        for (int i = n.numberLength; i < resLength; i++) {
-            resDigits[i] = 0;
-        }
-        System.arraycopy(n.digits, 0, resDigits, 0, n.numberLength);
-        if (n.sign < 0) {
-            BitLevel.setTrueCoded(resDigits, resLength);
-        }
-        bitNumber = 1 << bitNumber;
-        switch (operation) {
-            case 1: // flip bit
-                resDigits[intCount] ^= bitNumber;
-                break;
-            case 2: // set bit
-                resDigits[intCount] |= bitNumber;
-                break;
-            case 3: // clear bit
-                resDigits[intCount] &= ~bitNumber;
-                break;
-        }
-        if (n.sign < 0) {
-            BitLevel.setTrueCoded(resDigits, resLength);
-        }
-        BigInteger result = new BigInteger(resSign, resLength, resDigits);
-        result.cutOffLeadingZeroes();
-        return result;
     }
 
     /**
@@ -190,16 +123,6 @@ class BitLevel {
         BigInteger result = new BigInteger(source.sign, resLength, resDigits);
         result.cutOffLeadingZeroes();
         return result;
-    }
-
-    /**
-     * Performs {@code val <<= count}.
-     */
-    static void inplaceShiftLeft(BigInteger val, int count) {
-        int intCount = count >> 5; // count of integers
-        val.numberLength -= intCount;
-        shiftLeft(val.digits, val.digits, intCount, count & 31);
-        val.cutOffLeadingZeroes();
     }
 
     /**
@@ -299,4 +222,53 @@ class BitLevel {
         }
     }
 
+    /**
+     * Performs a flipBit on the BigInteger, returning a BigInteger with the the
+     * specified bit flipped.
+     * @param intCount: the index of the element of the digits array where the operation will be performed
+     * @param bitNumber: the bit's position in the intCount element
+     */
+    static BigInteger flipBit(BigInteger val, int n){
+        int resSign = (val.sign == 0) ? 1 : val.sign;
+        int intCount = n >> 5;
+        int bitN = n & 31;
+        int resLength = Math.max(intCount + 1, val.numberLength) + 1;
+        int resDigits[] = new int[resLength];
+        int i;
+        
+        int bitNumber = 1 << bitN;
+        System.arraycopy(val.digits, 0, resDigits, 0, val.numberLength);
+        
+        if (val.sign < 0) {
+            if (intCount >= val.numberLength) {
+                resDigits[intCount] = bitNumber;
+            } else {
+                //val.sign<0 y intCount < val.numberLength
+                int firstNonZeroDigit = val.getFirstNonzeroDigit();
+                if (intCount > firstNonZeroDigit) {
+                    resDigits[intCount] ^= bitNumber;
+                } else if (intCount < firstNonZeroDigit) {
+                    resDigits[intCount] = -bitNumber;
+                    for (i=intCount + 1; i < firstNonZeroDigit; i++) {
+                        resDigits[i]=-1;
+                    }
+                    resDigits[i] = resDigits[i]--;
+                } else {
+                    i = intCount;
+                    resDigits[i] = -((-resDigits[intCount]) ^ bitNumber);
+                    if (resDigits[i] == 0) {
+                        for (i++; resDigits[i] == -1 ; i++) {
+                            resDigits[i] = 0;
+                        }
+                        resDigits[i]++;
+                    }
+                }
+            }
+        } else {//case where val is positive
+            resDigits[intCount] ^= bitNumber;
+        }
+        BigInteger result = new BigInteger(resSign, resLength, resDigits);
+        result.cutOffLeadingZeroes();
+        return result;
+    }
 }

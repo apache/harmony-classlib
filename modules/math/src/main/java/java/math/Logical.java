@@ -23,6 +23,7 @@ package java.math;
  * <ul type="circle">
  * <li>not</li>
  * <li>and</li>
+ * <li>andNot</li>
  * <li>or</li>
  * <li>xor</li>
  * </ul>
@@ -32,53 +33,17 @@ package java.math;
 class Logical {
 
     /** Just to denote that this class can't be instantied. */
+    
     private Logical() {}
 
-    /**
-     * Implements the element by element bitwise operations on two integer
-     * arrays. Arrays can be processed partially starting from 0 element.
-     * 
-     * @param dest the result array
-     * @param a the first source array
-     * @param aLen the number of elements of 'a' to be processed
-     * @param b the second source array
-     * @param bLen the number of elements of 'b' to be processed
-     */
-    static void bitOperation(int dest[], int a[], int aLen, int b[], int bLen,
-            int operation) {
-        int i = 0;
-
-        switch (operation) {
-            case 1: // and
-                for (; i < bLen; i++) {
-                    dest[i] = a[i] & b[i];
-                }
-                break;
-            case 2: // not
-                for (; i < bLen; i++) {
-                    dest[i] = ~b[i];
-                }
-                break;
-            case 3: // or
-                for (; i < bLen; i++) {
-                    dest[i] = a[i] | b[i];
-                }
-                break;
-            case 4: // xor
-                for (; i < bLen; i++) {
-                    dest[i] = a[i] ^ b[i];
-                }
-                break;
-        }
-        while (i < aLen) {
-            dest[i] = a[i++];
-        }
-    }
 
     /** @see BigInteger#not() */
     static BigInteger not(BigInteger val) {
         if (val.sign == 0) {
             return BigInteger.MINUS_ONE;
+        }
+        if (val.equals(BigInteger.MINUS_ONE)) {
+            return BigInteger.ZERO;
         }
         int resDigits[] = new int[val.numberLength + 1];
         int i;
@@ -108,7 +73,7 @@ class Logical {
         }
         // Now, the carry/borrow can be absorbed
         resDigits[i] = val.digits[i] + val.sign;
-        // Coping the remaining unchanged digit
+        // Copying the remaining unchanged digit
         for (i++; i < val.numberLength; i++) {
             resDigits[i] = val.digits[i];
         }
@@ -117,209 +82,490 @@ class Logical {
 
     /** @see BigInteger#and(BigInteger) */
     static BigInteger and(BigInteger val, BigInteger that) {
-        // This let us to throw an eventual NullPointerException if (that ==
-        // null)
-        if (that.sign == 0) {
+        if (that.sign == 0 || val.sign == 0) {
             return BigInteger.ZERO;
         }
+        if (that.equals(BigInteger.MINUS_ONE)){
+            return val;
+        }
+        if (val.equals(BigInteger.MINUS_ONE)) {
+            return that;
+        }
+        
+        if (val.sign > 0) {
+            if (that.sign > 0) {
+                return andPositive(val, that);
+            } else {
+                return andDiffSigns(val, that);
+            }
+        } else {
+            if (that.sign > 0) {
+                return andDiffSigns(that, val);
+            } else if (val.numberLength > that.numberLength) {
+                return andNegative(val, that);
+            } else {
+                return andNegative(that, val);
+            }
+        }
+    }
+    
+    /** @return sign = 1, magnitude = val.magnitude & that.magnitude*/
+    static BigInteger andPositive(BigInteger val, BigInteger that) {
+        // PRE: both arguments are positive
+        int resLength = Math.min(val.numberLength, that.numberLength);
+        int i = Math.max(val.getFirstNonzeroDigit(), that.getFirstNonzeroDigit());
+        
+        if (i >= resLength) {
+            return BigInteger.ZERO;
+        }
+        
+        int resDigits[] = new int[resLength];
+        for ( ; i < resLength; i++) {
+            resDigits[i] = val.digits[i] & that.digits[i];
+        }
+        
+        BigInteger result = new BigInteger(1, resLength, resDigits);
+        result.cutOffLeadingZeroes();
+        return result;
+    }
+
+    /** @return sign = positive.magnitude & magnitude = -negative.magnitude */
+    static BigInteger andDiffSigns(BigInteger positive, BigInteger negative) {
+        // PRE: positive is positive and negative is negative
+        int iPos = positive.getFirstNonzeroDigit();
+        int iNeg = negative.getFirstNonzeroDigit();
+        
+        // Look if the trailing zeros of the negative will "blank" all
+        // the positive digits
+        if (iNeg >= positive.numberLength) {
+            return BigInteger.ZERO;
+        }
+        int resLength = positive.numberLength;
+        int resDigits[] = new int[resLength];
+        
+        // Must start from max(iPos, iNeg)
+        int i = Math.max(iPos, iNeg);
+        if (i == iNeg) {
+            resDigits[i] = -negative.digits[i] & positive.digits[i];
+            i++;
+        }
+        int limit = Math.min(negative.numberLength, positive.numberLength);
+        for ( ; i < limit; i++) {
+            resDigits[i] = ~negative.digits[i] & positive.digits[i];
+        }
+        // if the negative was shorter must copy the remaining digits
+        // from positive
+        if (i >= negative.numberLength) {
+            for ( ; i < positive.numberLength; i++) {
+                resDigits[i] = positive.digits[i];
+            }
+        } // else positive ended and must "copy" virtual 0's, do nothing then
+        
+        BigInteger result = new BigInteger(1, resLength, resDigits);
+        result.cutOffLeadingZeroes();
+        return result;
+    }
+    
+    /** @return sign = -1, magnitude = -(-longer.magnitude & -shorter.magnitude)*/
+    static BigInteger andNegative(BigInteger longer, BigInteger shorter) {
+        // PRE: longer and shorter are negative
+        // PRE: longer has at least as many digits as shorter
+        int iLonger = longer.getFirstNonzeroDigit();
+        int iShorter = shorter.getFirstNonzeroDigit();
+        
+        // Does shorter matter?
+        if (iLonger >= shorter.numberLength) {
+            return longer;
+        }
+        
+        int resLength;
+        int resDigits[];
+        int i = Math.max(iShorter, iLonger);
+        int digit;
+        if (iShorter > iLonger) {
+            digit = -shorter.digits[i] & ~longer.digits[i];
+        } else if (iShorter < iLonger) {
+            digit = ~shorter.digits[i] & -longer.digits[i];
+        } else {
+            digit = -shorter.digits[i] & -longer.digits[i];
+        }
+        if (digit == 0) {
+            for (i++; i < shorter.numberLength && (digit = ~(longer.digits[i] | shorter.digits[i])) == 0; i++)
+                ;  // digit = ~longer.digits[i] & ~shorter.digits[i]
+            if (digit == 0) {
+                // shorter has only the remaining virtual sign bits
+                for ( ; i < longer.numberLength && (digit = ~longer.digits[i]) == 0; i++)
+                    ;
+                if (digit == 0) {
+                    resLength = longer.numberLength + 1;
+                    resDigits = new int[resLength];
+                    resDigits[resLength - 1] = 1;
+
+                    BigInteger result = new BigInteger(-1, resLength, resDigits);
+                    return result;
+                }
+            }
+        }
+        resLength = longer.numberLength;
+                resDigits = new int[resLength];
+        resDigits[i] = -digit;
+        for (i++; i < shorter.numberLength; i++){
+            // resDigits[i] = ~(~longer.digits[i] & ~shorter.digits[i];)
+            resDigits[i] = longer.digits[i] | shorter.digits[i];
+        }
+        // shorter has only the remaining virtual sign bits
+        for( ; i < longer.numberLength; i++){
+            resDigits[i] = longer.digits[i];
+        }
+        
+        BigInteger result = new BigInteger(-1, resLength, resDigits);
+        return result;
+    }
+    
+    /** @see BigInteger#andNot(BigInteger) */
+    static BigInteger andNot(BigInteger val, BigInteger that) {
         if (val.sign == 0) {
             return BigInteger.ZERO;
         }
-        int resSign = (val.sign & that.sign);
-        int resLength;
-        int resDigits[];
-        int valNeg[] = null;
-        int thatNeg[] = null;
-
-        if (val.sign < 0) {
-            valNeg = new int[val.numberLength];
-            System.arraycopy(val.digits, 0, valNeg, 0, val.numberLength);
+        if (that.sign == 0 ) {
+            return val;
         }
-        if (that.sign < 0) {
-            thatNeg = new int[that.numberLength];
-            System.arraycopy(that.digits, 0, thatNeg, 0, that.numberLength);
+        if (val.equals(BigInteger.MINUS_ONE)) {
+            return that.not();
         }
-        // some cases when either val or that is positive
-        if ((val.sign > 0) || (that.sign > 0)) {
-            if ((val.sign > 0) && (that.sign > 0)) {
-                // both are positive;
-                // the number of digits to AND is the length of the shorter
-                // array
-                int andLen = Math.min(val.numberLength, that.numberLength);
-                resLength = andLen;
-                resDigits = new int[resLength];
-                bitOperation(resDigits, val.digits, andLen, that.digits,
-                        andLen, 1);
-            } else {
-                if (val.numberLength > that.numberLength) {
-                    // val is longer than that
+        if (that.equals(BigInteger.MINUS_ONE)){
+            return BigInteger.ZERO;
+        }
+        
+        //if val == that, return 0
+        
                     if (val.sign > 0) {
-                        // val is positive and that is negative;
-                        // all digits should be and'ed
-                        resLength = val.numberLength;
-                        resDigits = new int[resLength];
-                        BitLevel.setTrueCoded(thatNeg, that.numberLength);
-                        bitOperation(resDigits, val.digits, val.numberLength,
-                                thatNeg, that.numberLength, 1);
-                    } else {
-                        // val is negative and that is positive
-                        // the number of digits to AND is the length of the
-                        // 'that' array
-                        resLength = that.numberLength;
-                        resDigits = new int[resLength];
-                        BitLevel.setTrueCoded(valNeg, val.numberLength);
-                        bitOperation(resDigits, valNeg, that.numberLength,
-                                that.digits, that.numberLength, 1);
+            if (that.sign > 0) {
+                return andNotPositive(val, that);
+            } else {
+                return andNotPositiveNegative(val, that);
                     }
                 } else {
-                    // val is shorter than that
-                    if (val.sign > 0) {
-                        // val is positive and that is negative;
-                        // the number of digits to AND is the length of the
-                        // 'val' array
-                        resLength = val.numberLength; // + 1?
-                        resDigits = new int[resLength];
-                        BitLevel.setTrueCoded(thatNeg, that.numberLength);
-                        bitOperation(resDigits, thatNeg, val.numberLength,
-                                val.digits, val.numberLength, 1);
-                    } else {
-                        // val is negative and that is positive
-                        // the number of digits to AND is the length of the
-                        // 'that' array
-                        resLength = that.numberLength;
-                        resDigits = new int[resLength];
-                        BitLevel.setTrueCoded(valNeg, val.numberLength);
-                        bitOperation(resDigits, that.digits, that.numberLength,
-                                valNeg, val.numberLength, 1);
-                    }
+            if (that.sign > 0) {
+                return andNotNegativePositive(val, that);
+            } else  {
+                return andNotNegative(val, that);
+            }
+        }
+    }
+    
+    /** @return sign = 1, magnitude = val.magnitude & ~that.magnitude*/
+    static BigInteger andNotPositive(BigInteger val, BigInteger that) {
+        // PRE: both arguments are positive
+        int resDigits[] = new int[val.numberLength];
+        
+        int limit = Math.min(val.numberLength, that.numberLength);
+        int i;
+        for (i = val.getFirstNonzeroDigit(); i < limit; i++) {
+            resDigits[i] = val.digits[i] & ~that.digits[i];
+        }
+        for ( ; i < val.numberLength; i++) {
+            resDigits[i] = val.digits[i];
+        }
+        
+        BigInteger result = new BigInteger(1, val.numberLength, resDigits);
+        result.cutOffLeadingZeroes();
+        return result;
+    }
+    
+    /** @return sign = 1, magniutde = positive.magnitude & ~(-negative.magnitude)*/
+    static BigInteger andNotPositiveNegative(BigInteger positive, BigInteger negative) {
+        // PRE: positive > 0 && negative < 0
+        int iNeg = negative.getFirstNonzeroDigit();
+        int iPos = positive.getFirstNonzeroDigit();
+        
+        if (iNeg >= positive.numberLength) {
+            return positive;
+        }
+        
+        int resLength = Math.min(positive.numberLength, negative.numberLength);
+        int resDigits[] = new int[resLength];
+        
+        // Always start from first non zero of positive
+        int i = iPos;
+        for ( ; i < iNeg; i++) {
+            // resDigits[i] = positive.digits[i] & -1 (~0)
+            resDigits[i] = positive.digits[i];
+        }
+        if (i == iNeg) {
+            resDigits[i] = positive.digits[i] & (negative.digits[i] - 1);
+            i++;
+        }
+        for ( ; i < resLength; i++) {
+            // resDigits[i] = positive.digits[i] & ~(~negative.digits[i]);
+            resDigits[i] = positive.digits[i] & negative.digits[i];
+        }
+        
+        BigInteger result = new BigInteger(1, resLength, resDigits);
+        result.cutOffLeadingZeroes();
+        return result;
+    }
+    
+    /** @return sign = -1, magnitude = -(-negative.magnitude & ~positive.magnitude)*/
+    static BigInteger andNotNegativePositive(BigInteger negative, BigInteger positive) {
+        // PRE: negative < 0 && positive > 0
+        int resLength;
+        int resDigits[];
+        int limit;
+        int digit;
+        
+        int iNeg = negative.getFirstNonzeroDigit();
+        int iPos = positive.getFirstNonzeroDigit();
+        
+        if (iNeg >= positive.numberLength) {
+            return negative;
+        }
+        
+        resLength = Math.max(negative.numberLength, positive.numberLength);
+        int i = iNeg;
+        if (iPos > iNeg) {
+            resDigits = new int[resLength];
+            limit = Math.min(negative.numberLength, iPos);
+            for ( ; i < limit; i++) {
+                // 1st case:  resDigits [i] = -(-negative.digits[i] & (~0))
+                // otherwise: resDigits[i] = ~(~negative.digits[i] & ~0)  ;
+                resDigits[i] = negative.digits[i];
+            }
+            if (i == negative.numberLength) {
+                for (i = iPos; i < positive.numberLength; i++) {
+                    // resDigits[i] = ~(~positive.digits[i] & -1);
+                    resDigits[i] = positive.digits[i];
                 }
             }
         } else {
-            // cases when both numbers are negative or
-            // either val or that is positive but both are of the same length
-            if (val.sign < 0) {
-                BitLevel.setTrueCoded(valNeg, val.numberLength);
+            digit = -negative.digits[i] & ~positive.digits[i];
+            if (digit == 0) {
+                limit = Math.min(positive.numberLength, negative.numberLength);
+                for (i++; i < limit && (digit = ~(negative.digits[i] | positive.digits[i])) == 0; i++)
+                    ; // digit = ~negative.digits[i] & ~positive.digits[i]
+                if (digit == 0) {
+                    // the shorter has only the remaining virtual sign bits
+                    for ( ; i < positive.numberLength && (digit = ~positive.digits[i]) == 0; i++)
+                        ; // digit = -1 & ~positive.digits[i]
+                    for ( ; i < negative.numberLength && (digit = ~negative.digits[i]) == 0; i++)
+                        ; // digit = ~negative.digits[i] & ~0
+                    if (digit == 0) {
+                        resLength++;
+                        resDigits = new int[resLength];
+                        resDigits[resLength - 1] = 1;
+                        
+                        BigInteger result = new BigInteger(-1, resLength, resDigits);
+                        return result;
+                    }
+                }
             }
-            if (that.sign < 0) {
-                BitLevel.setTrueCoded(thatNeg, that.numberLength);
-            }
-            // The resulting length should have one extra element
-            // for possible carry = 1 returned from BitLevel.setTrueCoded for a
-            // negative number
-            resLength = 1 + Math.max(val.numberLength, that.numberLength);
-            resDigits = new int[resLength];
-            if (val.numberLength >= that.numberLength) {
-                bitOperation(resDigits, (valNeg == null) ? val.digits : valNeg,
-                        val.numberLength, (thatNeg == null) ? that.digits
-                                : thatNeg, that.numberLength, 1);
-            } else {
-                bitOperation(resDigits, (thatNeg == null) ? that.digits
-                        : thatNeg, that.numberLength,
-                        (valNeg == null) ? val.digits : valNeg,
-                        val.numberLength, 1);
-            }
+                        resDigits = new int[resLength];
+            resDigits[i] = -digit;
+            i++;
+                    }
+        
+        limit = Math.min(positive.numberLength, negative.numberLength);
+        for ( ; i < limit; i++) {
+            //resDigits[i] = ~(~negative.digits[i] & ~positive.digits[i]);
+            resDigits[i] = negative.digits[i] | positive.digits[i];
         }
-        if (resSign < 0) {
-            resDigits[resLength - 1] = BitLevel.setTrueCoded(resDigits,
-                    resLength);
+        // Actually one of the next two cycles will be executed
+        for ( ; i < negative.numberLength; i++) {
+            resDigits[i] = negative.digits[i];
+                }
+        for ( ; i < positive.numberLength; i++) {
+            resDigits[i] = positive.digits[i];
         }
-        BigInteger result = new BigInteger(resSign, resLength, resDigits);
+        
+        BigInteger result = new BigInteger(-1, resLength, resDigits);
+        return result;
+            }
+    
+    /** @return sign = 1, magnitude = -val.magnitude & ~(-that.magnitude)*/
+    static BigInteger andNotNegative(BigInteger val, BigInteger that) {
+        // PRE: val < 0 && that < 0
+        int iVal = val.getFirstNonzeroDigit();
+        int iThat = that.getFirstNonzeroDigit();
+        
+        if (iVal >= that.numberLength) {
+            return BigInteger.ZERO;
+        }
+        
+        int resLength = that.numberLength;
+        int resDigits[] = new int[resLength];
+        int limit;
+        int i = iVal;
+        if (iVal < iThat) {
+            // resDigits[i] = -val.digits[i] & -1;
+            resDigits[i] = -val.digits[i];
+            limit = Math.min(val.numberLength, iThat);
+            for (i++; i < limit; i++) {
+                // resDigits[i] = ~val.digits[i] & -1;
+                resDigits[i] = ~val.digits[i];
+            }
+            if (i == val.numberLength) {
+                for ( ; i < iThat; i++) {
+                    // resDigits[i] = -1 & -1;
+                    resDigits[i] = -1;
+                }
+                // resDigits[i] = -1 & ~-that.digits[i];
+                resDigits[i] = that.digits[i] - 1;
+        } else {
+                // resDigits[i] = ~val.digits[i] & ~-that.digits[i];
+                resDigits[i] = ~val.digits[i] & (that.digits[i] - 1);
+            }
+        } else if (iThat < iVal ) {
+            // resDigits[i] = -val.digits[i] & ~~that.digits[i];
+            resDigits[i] = -val.digits[i] & that.digits[i];
+        } else {
+            // resDigits[i] = -val.digits[i] & ~-that.digits[i];
+            resDigits[i] = -val.digits[i] & (that.digits[i] - 1);
+            }
+        
+        limit = Math.min(val.numberLength, that.numberLength);
+        for (i++; i < limit; i++) {
+            // resDigits[i] = ~val.digits[i] & ~~that.digits[i];
+            resDigits[i] = ~val.digits[i] & that.digits[i];
+        }
+        for ( ; i < that.numberLength; i++) {
+            // resDigits[i] = -1 & ~~that.digits[i];
+            resDigits[i] = that.digits[i];
+        }
+        
+        BigInteger result = new BigInteger(1, resLength, resDigits);
         result.cutOffLeadingZeroes();
         return result;
     }
 
     /** @see BigInteger#or(BigInteger) */
     static BigInteger or(BigInteger val, BigInteger that) {
+        if (that.equals(BigInteger.MINUS_ONE) || val.equals(BigInteger.MINUS_ONE)) {
+            return BigInteger.MINUS_ONE;
+        }
         if (that.sign == 0) {
             return val;
         }
         if (val.sign == 0) {
             return that;
         }
-        int resSign = (val.sign | that.sign);
-        int resLength;
-        int resDigits[];
-        int valNeg[] = null;
-        int thatNeg[] = null;
 
-        // some cases when either val or that is negative
-        if ((val.sign < 0) || (that.sign < 0)) {
-            if (val.sign < 0) {
-                valNeg = new int[val.numberLength];
-                System.arraycopy(val.digits, 0, valNeg, 0, val.numberLength);
-            }
-            if (that.sign < 0) {
-                thatNeg = new int[that.numberLength];
-                System.arraycopy(that.digits, 0, thatNeg, 0, that.numberLength);
-            }
-            if ((val.sign < 0) && (that.sign < 0)) {
-                // both are negative
-                int orLen = Math.min(val.numberLength, that.numberLength);
-                resLength = orLen + 1;
-                resDigits = new int[resLength];
-                BitLevel.setTrueCoded(valNeg, orLen);
-                BitLevel.setTrueCoded(thatNeg, orLen);
-                bitOperation(resDigits, valNeg, orLen, thatNeg, orLen, 3);
-                resDigits[resLength - 1] = -1;
-            } else {
-                if (val.numberLength > that.numberLength) {
-                    // val is longer than that
                     if (val.sign > 0) {
-                        // val is positive and that is negative
-                        resLength = that.numberLength + 1;
-                        resDigits = new int[resLength];
-                        BitLevel.setTrueCoded(thatNeg, that.numberLength);
-                        bitOperation(resDigits, val.digits, that.numberLength,
-                                thatNeg, that.numberLength, 3);
-                        resDigits[resLength - 1] = -1;
+            if (that.sign > 0) {
+                if (val.numberLength > that.numberLength) {
+                    return orPositive(val, that);
                     } else {
-                        // val is negative and that is positive
-                        resLength = val.numberLength;
-                        resDigits = new int[resLength];
-                        BitLevel.setTrueCoded(valNeg, val.numberLength);
-                        bitOperation(resDigits, valNeg, val.numberLength,
-                                that.digits, that.numberLength, 3);
+                    return orPositive(that, val);
                     }
                 } else {
-                    // that is longer than val
-                    if (val.sign > 0) {
-                        // val is positive and that is negative
-                        resLength = that.numberLength; // + 1?
-                        resDigits = new int[resLength];
-                        BitLevel.setTrueCoded(thatNeg, that.numberLength);
-                        bitOperation(resDigits, thatNeg, that.numberLength,
-                                val.digits, val.numberLength, 3);
+                return orDiffSigns(val, that);
+            }
                     } else {
-                        // that is positive and val is negative
-                        resLength = val.numberLength + 1;
-                        resDigits = new int[resLength];
-                        BitLevel.setTrueCoded(valNeg, val.numberLength);
-                        bitOperation(resDigits, that.digits, val.numberLength,
-                                valNeg, val.numberLength, 3);
-                        resDigits[resLength - 1] = -1;
+            if (that.sign > 0) {
+                return orDiffSigns(that, val);
+            } else if (that.getFirstNonzeroDigit() > val.getFirstNonzeroDigit()) {
+                return orNegative(that, val);
+            } else {
+                return orNegative(val, that);
                     }
                 }
             }
+    
+    /** @return sign = 1, magnitude = longer.magnitude | shorter.magnitude*/
+    static BigInteger orPositive(BigInteger longer, BigInteger shorter) {
+        // PRE: longer and shorter are positive;
+        // PRE: longer has at least as many digits as shorter
+        int resLength = longer.numberLength;
+        int resDigits[] = new int[resLength];
+        
+        int i = Math.min(longer.getFirstNonzeroDigit(), shorter.getFirstNonzeroDigit());
+        for (i = 0; i < shorter.numberLength; i++) {
+            resDigits[i] = longer.digits[i] | shorter.digits[i];
+        }
+        for ( ; i < resLength; i++) {
+            resDigits[i] = longer.digits[i];
+        }
+        
+        BigInteger result = new BigInteger(1, resLength, resDigits);
+        return result;
+    }
+    
+    /** @return sign = -1, magnitude = -(-val.magnitude | -that.magnitude) */
+    static BigInteger orNegative(BigInteger val, BigInteger that){
+        // PRE: val and that are negative;
+        // PRE: val has at least as many trailing zeros digits as that
+        int iThat = that.getFirstNonzeroDigit();
+        int iVal = val.getFirstNonzeroDigit();
+        int i;
+        
+        if (iVal >= that.numberLength) {
+            return that;
+        }else if (iThat >= val.numberLength) {
+            return val;
+        }
+        
+        int resLength = Math.min(val.numberLength, that.numberLength);
+        int resDigits[] = new int[resLength];
+        
+        //Looking for the first non-zero digit of the result
+        if (iThat == iVal) {
+            resDigits[iVal] = -(-val.digits[iVal] | -that.digits[iVal]);
+            i = iVal;
         } else {
-            // cases when both numbers are positive and
-            // either val or that is negative but both are of the same length
-            resLength = Math.max(val.numberLength, that.numberLength);
-            resDigits = new int[resLength];
-            if (val.numberLength >= that.numberLength) {
-                bitOperation(resDigits, (valNeg == null) ? val.digits : valNeg,
-                        val.numberLength, (thatNeg == null) ? that.digits
-                                : thatNeg, that.numberLength, 3);
-            } else {
-                bitOperation(resDigits, (thatNeg == null) ? that.digits
-                        : thatNeg, that.numberLength,
-                        (valNeg == null) ? val.digits : valNeg,
-                        val.numberLength, 3);
+            for (i = iThat; i < iVal; i++) {
+                resDigits[i] = that.digits[i];
             }
+            resDigits[i] = that.digits[i] & (val.digits[i] - 1);
         }
-        if (resSign < 0) {
-            BitLevel.setTrueCoded(resDigits, resLength);
+        
+        for (i++; i < resLength; i++) {
+            resDigits[i] = val.digits[i] & that.digits[i];
         }
-        BigInteger result = new BigInteger(resSign, resLength, resDigits);
+        
+        BigInteger result = new BigInteger(-1, resLength, resDigits);
+        result.cutOffLeadingZeroes();
+        return result;
+    }
+    
+    /** @return sign = -1, magnitude = -(positive.magnitude | -negative.magnitude) */
+    static BigInteger orDiffSigns(BigInteger positive, BigInteger negative){
+        // Jumping over the least significative zero bits
+        int iNeg = negative.getFirstNonzeroDigit();
+        int iPos = positive.getFirstNonzeroDigit();
+        int i;
+        
+        // Look if the trailing zeros of the positive will "copy" all
+        // the negative digits
+        if (iPos >= negative.numberLength) {
+            return negative;
+        }
+        int resLength = negative.numberLength;
+        int resDigits[] = new int[resLength];
+        
+        if (iNeg < iPos ) {
+            // We know for sure that this will
+            // be the first non zero digit in the result
+            // resDigits[first non zero] = - (-negative.digits[i])
+            i = iNeg;
+            resDigits[i] = negative.digits[i];
+        } else if (iPos < iNeg) {
+            i = iPos;
+            resDigits[i] = -positive.digits[i];
+        } else {// iNeg == iPos
+            // Applying two complement to negative and to result
+            i = iPos;
+            resDigits[i] = -(-negative.digits[i] | positive.digits[i]);
+        }
+        int limit = Math.min(negative.numberLength, positive.numberLength);
+        for (i++ ; i < limit; i++) {
+            // Applying two complement to negative and to result
+            // resDigits[i] = ~(~negative.digits[i] | positive.digits[i] );
+            resDigits[i] = negative.digits[i] & ~positive.digits[i];
+        }
+        for( ; i < negative.numberLength; i++) {
+            resDigits[i] = negative.digits[i];
+        }
+        
+        BigInteger result = new BigInteger(-1, resLength, resDigits);
         result.cutOffLeadingZeroes();
         return result;
     }
@@ -332,47 +578,208 @@ class Logical {
         if (val.sign == 0) {
             return that;
         }
-        int resSign = (val.sign == that.sign) ? 1 : -1;
+        if (that.equals(BigInteger.MINUS_ONE)) {
+            return val.not();
+        }
+        if (val.equals(BigInteger.MINUS_ONE)) {
+            return that.not();
+        }
+        
+        if (val.sign > 0) {
+            if (that.sign > 0) {
+                if (val.numberLength > that.numberLength) {
+                    return xorPositive(val, that);
+                } else {
+                    return xorPositive(that, val);
+                }
+            } else {
+                return xorDiffSigns(val, that);
+            }
+        } else {
+            if (that.sign > 0) {
+                return xorDiffSigns(that, val);
+            } else if (that.getFirstNonzeroDigit() > val.getFirstNonzeroDigit()) {
+                return xorNegative(that, val);
+            } else {
+                return xorNegative(val, that);
+            }
+        }
+    }
+    
+    /** @return sign = 0, magnitude = longer.magnitude | shorter.magnitude */
+    static BigInteger xorPositive(BigInteger longer, BigInteger shorter) {
+        // PRE: longer and shorter are positive;
+        // PRE: longer has at least as many digits as shorter
+        int resLength = longer.numberLength;
+        int resDigits[] = new int[resLength];
+        int i = Math.min(longer.getFirstNonzeroDigit(), shorter.getFirstNonzeroDigit());
+        for ( ; i < shorter.numberLength; i++) {
+            resDigits[i] = longer.digits[i] ^ shorter.digits[i];
+        }
+        for( ; i < longer.numberLength; i++ ){
+            resDigits[i] = longer.digits[i];
+        }
+        
+        BigInteger result = new BigInteger(1, resLength, resDigits);
+        result.cutOffLeadingZeroes();
+        return result;
+    }
+    
+    /** @return sign = 0, magnitude = -val.magnitude ^ -that.magnitude */
+    static BigInteger xorNegative(BigInteger val, BigInteger that){
+        // PRE: val and that are negative
+        // PRE: val has at least as many trailing zero digits as that
         int resLength = Math.max(val.numberLength, that.numberLength);
         int resDigits[] = new int[resLength];
-        int valNeg[] = null;
-        int thatNeg[] = null;
-        if (val.sign < 0) {
-            valNeg = new int[val.numberLength];
-            System.arraycopy(val.digits, 0, valNeg, 0, val.numberLength);
-            BitLevel.setTrueCoded(valNeg, val.numberLength);
+        int iVal = val.getFirstNonzeroDigit();
+        int iThat = that.getFirstNonzeroDigit();
+        int i = iThat;
+        int limit;
+        
+        
+        if (iVal == iThat) {
+            resDigits[i] = -val.digits[i] ^ -that.digits[i];
+        } else {
+            resDigits[i] = -that.digits[i];
+            limit = Math.min(that.numberLength, iVal);
+            for (i++; i < limit; i++) {
+                resDigits[i] = ~that.digits[i];
+            }
+            // Remains digits in that?
+            if (i == that.numberLength) {
+                //Jumping over the remaining zero to the first non one
+                for ( ;i < iVal; i++) {
+                    //resDigits[i] = 0 ^ -1;
+                    resDigits[i] = -1;
+                }
+                //resDigits[i] = -val.digits[i] ^ -1;
+                resDigits[i] = val.digits[i] - 1;
+            } else {
+                resDigits[i] = -val.digits[i] ^ ~that.digits[i];
+            }
         }
-        if (that.sign < 0) {
-            thatNeg = new int[that.numberLength];
-            System.arraycopy(that.digits, 0, thatNeg, 0, that.numberLength);
-            BitLevel.setTrueCoded(thatNeg, that.numberLength);
+        
+        limit = Math.min(val.numberLength, that.numberLength);
+        //Perform ^ between that al val until that ends
+        for (i++; i < limit; i++) {
+            //resDigits[i] = ~val.digits[i] ^ ~that.digits[i];
+            resDigits[i] = val.digits[i] ^ that.digits[i];
         }
-        // First make XOR for N elements where N is the length of a shorter
-        // array.
-        int opLen = Math.min(val.numberLength, that.numberLength);
-        bitOperation(resDigits, (valNeg == null) ? val.digits : valNeg, opLen,
-                (thatNeg == null) ? that.digits : thatNeg, opLen, 4);
-        // Then define top elements.
-        if (val.numberLength != that.numberLength) {
+        //Perform ^ between val digits and -1 until val ends
+        for ( ; i < val.numberLength; i++) {
+            //resDigits[i] = ~val.digits[i] ^ -1  ;
+            resDigits[i] = val.digits[i] ;
+        }
+        for ( ; i < that.numberLength; i++) {
+            //resDigits[i] = -1 ^ ~that.digits[i] ;
+            resDigits[i] = that.digits[i];
+        }
+        
+        BigInteger result = new BigInteger(1, resLength, resDigits);
+        result.cutOffLeadingZeroes();
+        return result;
+    }
+    
+    /** @return sign = 1, magnitude = -(positive.magnitude ^ -negative.magnitude)*/
+    static BigInteger xorDiffSigns(BigInteger positive, BigInteger negative){
+        int resLength = Math.max(negative.numberLength, positive.numberLength);
+        int resDigits[];
+        int iNeg = negative.getFirstNonzeroDigit();
+        int iPos = positive.getFirstNonzeroDigit();
             int i;
-            for (i = opLen; i < resLength; i++) {
-                if (val.sign == that.sign) {
-                    // the numbers have the same signs
-                    resDigits[i] = ((val.numberLength > that.numberLength)
-                    ? (valNeg == null) ? val.digits[i] : ~valNeg[i]
-                            : (thatNeg == null) ? that.digits[i] : ~thatNeg[i]);
+        int limit;
+        
+        //The first
+        if (iNeg < iPos) {
+            resDigits = new int[resLength];
+            i = iNeg;
+            //resDigits[i] = -(-negative.digits[i]);
+            resDigits[i] = negative.digits[i];
+            limit = Math.min(negative.numberLength, iPos);
+            //Skip the positive digits while they are zeros
+            for (i++; i < limit; i++) {
+                //resDigits[i] = ~(~negative.digits[i]);
+                resDigits[i] = negative.digits[i];
+            }
+            //if the negative has no more elements, must fill the
+            //result with the remaining digits of the positive
+            if (i == negative.numberLength) {
+                for ( ; i < positive.numberLength; i++) {
+                    //resDigits[i] = ~(positive.digits[i] ^ -1) -> ~(~positive.digits[i])
+                    resDigits[i] = positive.digits[i];
+                }
+            }
+        } else if (iPos < iNeg) {
+            resDigits = new int[resLength];
+            i = iPos;
+            //Applying two complement to the first non-zero digit of the result
+            resDigits[i] = -positive.digits[i];
+            limit = Math.min(positive.numberLength, iNeg);
+            for (i++; i < limit; i++) {
+                //Continue applying two complement the result
+                resDigits[i] = ~positive.digits[i];
+            }
+            //When the first non-zero digit of the negative is reached, must apply
+            //two complement (arithmetic negation) to it, and then operate
+            if (i == iNeg) {
+                resDigits[i] = ~(positive.digits[i] ^ -negative.digits[i]);
+                i++;
+            } else {
+                //if the positive has no more elements must fill the remaining digits with
+                //the negative ones
+                for ( ; i < iNeg; i++) {
+                    // resDigits[i] = ~(0 ^ 0)
+                    resDigits[i] = -1;
+                }
+                for ( ; i < negative.numberLength; i++) {
+                    //resDigits[i] = ~(~negative.digts[i] ^ 0)
+                    resDigits[i] = negative.digits[i];
+                }
+            }
                 } else {
-                    // the numbers have different signs
-                    resDigits[i] = ((val.numberLength >= that.numberLength)
-                    ? (val.sign < 0) ? valNeg[i] : ~val.digits[i]
-                            : (val.sign < 0) ? ~that.digits[i] : thatNeg[i]);
+            int digit;
+            //The first non-zero digit of the positive and negative are the same
+            i = iNeg;
+            digit = positive.digits[i] ^ -negative.digits[i];
+            if (digit == 0) {
+                limit = Math.min(positive.numberLength, negative.numberLength);
+                for (i++; i < limit && (digit = positive.digits[i] ^ ~negative.digits[i]) == 0; i++)
+                    ;
+                if (digit == 0) {
+                    // shorter has only the remaining virtual sign bits
+                    for ( ; i < positive.numberLength && (digit = ~positive.digits[i]) == 0; i++)
+                        ;
+                    for ( ; i < negative.numberLength && (digit = ~negative.digits[i]) == 0; i++)
+                        ;
+                    if (digit == 0) {
+                        resLength = resLength + 1;
+                        resDigits = new int[resLength];
+                        resDigits[resLength - 1] = 1;
+                        
+                        BigInteger result = new BigInteger(-1, resLength, resDigits);
+                        return result;
                 }
             }
         }
-        if (resSign < 0) {
-            BitLevel.setTrueCoded(resDigits, resLength);
+            resDigits = new int[resLength];
+            resDigits[i] = -digit;
+            i++;
         }
-        BigInteger result = new BigInteger(resSign, resLength, resDigits);
+        
+        limit = Math.min(negative.numberLength, positive.numberLength);
+        for ( ; i < limit; i++) {
+            resDigits[i] = ~(~negative.digits[i] ^ positive.digits[i]);
+        }
+        for ( ; i < positive.numberLength; i++) {
+            // resDigits[i] = ~(positive.digits[i] ^ -1)
+            resDigits[i] = positive.digits[i];
+        }
+        for ( ; i < negative.numberLength; i++) { 
+            // resDidigts[i] = ~(0 ^ ~negative.digits[i])
+            resDigits[i] = negative.digits[i];
+        }
+        
+        BigInteger result = new BigInteger(-1, resLength, resDigits);
         result.cutOffLeadingZeroes();
         return result;
     }
