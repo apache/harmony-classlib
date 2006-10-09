@@ -67,10 +67,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getByteArr
   jboolean isCopy;
   jbyte *bytes = (*env)->GetByteArrayElements (env, byteArray, &isCopy);
   memcpy (bytes + offset, (const void *) address, (size_t) length);
-  if (isCopy == JNI_TRUE)
-    {
-      (*env)->ReleaseByteArrayElements (env, byteArray, bytes, 0);
-    }
+  (*env)->ReleaseByteArrayElements (env, byteArray, bytes, 0);
 }
 
 JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getCharArray
@@ -78,10 +75,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getCharArr
   jboolean isCopy;
   jchar *dest = (*env)->GetCharArrayElements (env, jdest, &isCopy);
   memcpy (dest + offset, (const void *) address, (size_t) length);
-  if (isCopy == JNI_TRUE)
-    {
-      (*env)->ReleaseCharArrayElements (env, jdest, dest, 0);
-    }
+  (*env)->ReleaseCharArrayElements (env, jdest, dest, 0);
   }
 
 JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setByteArray
@@ -91,10 +85,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setByteArr
   jboolean isCopy;
   jbyte *bytes = (*env)->GetByteArrayElements (env, byteArray, &isCopy);
   memcpy ((void *) address, (const jbyte *) bytes + offset, (size_t) length);
-  if (isCopy == JNI_TRUE)
-    {
-      (*env)->ReleaseByteArrayElements (env, byteArray, bytes, JNI_ABORT);
-    }
+  (*env)->ReleaseByteArrayElements (env, byteArray, bytes, JNI_ABORT);
 }
 
 JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setCharArray
@@ -102,10 +93,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setCharArr
   jboolean isCopy;
   jchar *src = (*env)->GetCharArrayElements (env, jsrc, &isCopy);
   memcpy ((void *) address, (const jchar *) src + offset, (size_t) length);
-  if (isCopy == JNI_TRUE)
-    {
-      (*env)->ReleaseCharArrayElements (env, jsrc, src, JNI_ABORT);
-    }
+  (*env)->ReleaseCharArrayElements (env, jsrc, src, JNI_ABORT);
   }
 
 JNIEXPORT jbyte JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getByte

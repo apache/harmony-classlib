@@ -71,10 +71,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_readI
   result =
     (jlong) hyfile_read ((IDATA) fd, (void *) (bytes + offset),
                          (IDATA) nbytes);
-  if (isCopy == JNI_TRUE)
-    {
-      (*env)->ReleaseByteArrayElements (env, byteArray, bytes, 0);
-    }
+  (*env)->ReleaseByteArrayElements (env, byteArray, bytes, 0);
 
   return result;
 }
@@ -95,10 +92,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_write
   result =
     (jlong) hyfile_write ((IDATA) fd, (void *) (bytes + offset),
                          (IDATA) nbytes);
-  if (isCopy == JNI_TRUE)
-    {
-      (*env)->ReleaseByteArrayElements (env, byteArray, bytes, JNI_ABORT);
-    }
+   (*env)->ReleaseByteArrayElements (env, byteArray, bytes, JNI_ABORT);
 
   return result;
 }
@@ -273,9 +267,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_ttyRe
     jlong result;
 
     result = (jlong) hytty_get_chars((char *)(bytes + offset), (IDATA) nbytes);
-    if (isCopy == JNI_TRUE) {
-        (*env)->ReleaseByteArrayElements (env, byteArray, bytes, 0);
-    }
+    (*env)->ReleaseByteArrayElements (env, byteArray, bytes, 0);
 
     return result;
 }

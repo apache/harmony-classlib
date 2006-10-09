@@ -61,10 +61,7 @@ byte2str (JNIEnv * env, const jbyteArray jkey)
     keyStr[i] = keyByte[i++];
   keyStr[i] = '\0';
 
-  if (isCopy == JNI_TRUE)
-    {
-      (*env)->ReleasePrimitiveArrayCritical (env, jkey, keyByte, JNI_ABORT);
-    }
+  (*env)->ReleasePrimitiveArrayCritical (env, jkey, keyByte, JNI_ABORT);
   return keyStr;
 }
 
@@ -117,10 +114,7 @@ JNIEXPORT jbyteArray JNICALL
   if (localErrorCode !=
       java_util_prefs_RegistryPreferencesImpl_RETURN_SUCCESS)
     {
-      if (isCopy == JNI_TRUE)
-	{
 	  (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, err, 0);
-	}
       RegCloseKey (hKey);
       hymem_free_memory (keyStr);
       return NULL;
@@ -130,10 +124,7 @@ JNIEXPORT jbyteArray JNICALL
   localErrorCode = checkErrorCode (errorCode);
   RegCloseKey (hKey);
   hymem_free_memory (keyStr);
-  if (isCopy == JNI_TRUE)
-    {
-      (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, err, 0);
-    }
+  (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, err, 0);
   err[java_util_prefs_RegistryPreferencesImpl_ERROR_CODE] = localErrorCode;
   if (localErrorCode !=
       java_util_prefs_RegistryPreferencesImpl_RETURN_SUCCESS)
@@ -181,11 +172,8 @@ JNIEXPORT void JNICALL Java_java_util_prefs_RegistryPreferencesImpl_putValue
   if (localErrorCode !=
       java_util_prefs_RegistryPreferencesImpl_RETURN_SUCCESS)
     {
-      if (isCopy == JNI_TRUE)
-	{
 	  (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray,
 						 0);
-	}
       return;
     }
 
@@ -194,10 +182,7 @@ JNIEXPORT void JNICALL Java_java_util_prefs_RegistryPreferencesImpl_putValue
   err = RegSetValueEx (hKey, keyStr, 0, REG_SZ, valueByte, valueLen);
   errArray[java_util_prefs_RegistryPreferencesImpl_ERROR_CODE] =
     checkErrorCode (err);
-  if (isCopy == JNI_TRUE)
-    {
       (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray, 0);
-    }
   hymem_free_memory (keyStr);
   hymem_free_memory (valueByte);
   RegCloseKey (hKey);
@@ -226,11 +211,8 @@ JNIEXPORT void JNICALL Java_java_util_prefs_RegistryPreferencesImpl_removeKey
        checkErrorCode (err)) !=
       java_util_prefs_RegistryPreferencesImpl_RETURN_SUCCESS)
     {
-      if (isCopy == JNI_TRUE)
-	{
 	  (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray,
 						 0);
-	}
       return;
     }
 
@@ -238,10 +220,7 @@ JNIEXPORT void JNICALL Java_java_util_prefs_RegistryPreferencesImpl_removeKey
   err = RegDeleteValue (hKey, keyStr);
   errArray[java_util_prefs_RegistryPreferencesImpl_ERROR_CODE] =
     checkErrorCode (err);
-  if (isCopy == JNI_TRUE)
-    {
       (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray, 0);
-    }
   hymem_free_memory (keyStr);
   RegCloseKey (hKey);
   return;
@@ -273,11 +252,8 @@ JNIEXPORT jobjectArray JNICALL
        checkErrorCode (err)) !=
       java_util_prefs_RegistryPreferencesImpl_RETURN_SUCCESS)
     {
-      if (isCopy == JNI_TRUE)
-	{
 	  (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray,
 						 0);
-	}
       return NULL;
     }
 
@@ -288,11 +264,8 @@ JNIEXPORT jobjectArray JNICALL
        checkErrorCode (err)) !=
       java_util_prefs_RegistryPreferencesImpl_RETURN_SUCCESS)
     {
-      if (isCopy == JNI_TRUE)
-	{
 	  (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray,
 						 0);
-	}
       RegCloseKey (hKey);
       return NULL;
     }
@@ -317,10 +290,7 @@ JNIEXPORT jobjectArray JNICALL
 	    checkErrorCode (err);
 	}
     }
-  if (isCopy == JNI_TRUE)
-    {
-      (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray, 0);
-    }
+  (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray, 0);
   hymem_free_memory (value);
   RegCloseKey (hKey);
   return result;
@@ -348,11 +318,8 @@ JNIEXPORT void JNICALL Java_java_util_prefs_RegistryPreferencesImpl_removeNode
        checkErrorCode (err)) !=
       java_util_prefs_RegistryPreferencesImpl_RETURN_SUCCESS)
     {
-      if (isCopy == JNI_TRUE)
-	{
 	  (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray,
 						 0);
-	}
       return;
     }
 
@@ -360,10 +327,7 @@ JNIEXPORT void JNICALL Java_java_util_prefs_RegistryPreferencesImpl_removeNode
   err = RegDeleteKey (hKey, nameStr);
   errArray[java_util_prefs_RegistryPreferencesImpl_ERROR_CODE] =
     checkErrorCode (err);
-  if (isCopy == JNI_TRUE)
-    {
-      (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray, 0);
-    }
+  (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray, 0);
   hymem_free_memory (nameStr);
   RegCloseKey (hKey);
   return;
@@ -392,11 +356,8 @@ JNIEXPORT jboolean JNICALL
        checkErrorCode (err)) !=
       java_util_prefs_RegistryPreferencesImpl_RETURN_SUCCESS)
     {
-      if (isCopy == JNI_TRUE)
-	{
 	  (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray,
 						 0);
-	}
       return JNI_FALSE;
     }
 
@@ -407,10 +368,7 @@ JNIEXPORT jboolean JNICALL
   errArray[java_util_prefs_RegistryPreferencesImpl_ERROR_CODE] =
     checkErrorCode (err);
 
-  if (isCopy == JNI_TRUE)
-    {
-      (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray, 0);
-    }
+  (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray, 0);
 
   hymem_free_memory (name);
   RegCloseKey (hKey);
@@ -450,11 +408,8 @@ Java_java_util_prefs_RegistryPreferencesImpl_getChildNames (JNIEnv * env,
        checkErrorCode (err)) !=
       java_util_prefs_RegistryPreferencesImpl_RETURN_SUCCESS)
     {
-      if (isCopy == JNI_TRUE)
-	{
 	  (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray,
 						 0);
-	}
       return NULL;
     }
 
@@ -465,11 +420,8 @@ Java_java_util_prefs_RegistryPreferencesImpl_getChildNames (JNIEnv * env,
        checkErrorCode (err)) !=
       java_util_prefs_RegistryPreferencesImpl_RETURN_SUCCESS)
     {
-      if (isCopy == JNI_TRUE)
-	{
 	  (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray,
 						 0);
-	}
       RegCloseKey (hKey);
       return NULL;
     }
@@ -495,10 +447,7 @@ Java_java_util_prefs_RegistryPreferencesImpl_getChildNames (JNIEnv * env,
 	}
     }
 
-  if (isCopy == JNI_TRUE)
-    {
-      (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray, 0);
-    }
+  (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray, 0);
   hymem_free_memory (value);
   RegCloseKey (hKey);
   return result;
@@ -524,21 +473,15 @@ JNIEXPORT void JNICALL Java_java_util_prefs_RegistryPreferencesImpl_flushPrefs
        checkErrorCode (err)) !=
       java_util_prefs_RegistryPreferencesImpl_RETURN_SUCCESS)
     {
-      if (isCopy == JNI_TRUE)
-	{
 	  (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray,
 						 0);
-	}
       return;
     }
 
   errArray[java_util_prefs_RegistryPreferencesImpl_ERROR_CODE] =
     checkErrorCode (RegFlushKey (hKey));
 
-  if (isCopy == JNI_TRUE)
-    {
-      (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray, 0);
-    }
+  (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, errArray, 0);
   RegCloseKey (hKey);
   return;
 }

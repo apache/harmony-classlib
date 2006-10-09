@@ -70,10 +70,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getByteArr
   jboolean isCopy;
   jbyte *bytes = (*env)->GetByteArrayElements (env, byteArray, &isCopy);
   memcpy (bytes + offset, (const void *) ((IDATA) address), (size_t) length);
-  if (isCopy == JNI_TRUE)
-    {
-      (*env)->ReleaseByteArrayElements (env, byteArray, bytes, 0);
-    }
+  (*env)->ReleaseByteArrayElements (env, byteArray, bytes, 0);
 }
 
 JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setByteArray
@@ -84,10 +81,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setByteArr
   jbyte *bytes = (*env)->GetByteArrayElements (env, byteArray, &isCopy);
   memcpy ((void *) ((IDATA) address),
 	  (const jbyte *) ((IDATA) bytes + offset), (size_t) length);
-  if (isCopy == JNI_TRUE)
-    {
-      (*env)->ReleaseByteArrayElements (env, byteArray, bytes, JNI_ABORT);
-    }
+  (*env)->ReleaseByteArrayElements (env, byteArray, bytes, JNI_ABORT);
 }
 
 JNIEXPORT jbyte JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getByte
