@@ -95,59 +95,47 @@ public class JarURLConnectionTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.JarURLConnection#getJarFile()
 	 */
-	public void test_getJarFile() {
+         public void test_getJarFile()
+             throws MalformedURLException,IOException {
 		URL url = null;
-		try {
-			url = new URL("jar:"
-					+ Support_Resources.getResourceURL("/JUC/lf.jar!/missing"));
-		} catch (MalformedURLException e) {
-			fail("Unexpected MalformedURLException : " + e.getMessage());
-		} catch (java.io.IOException e) {
-			fail("Unexpected IOException : " + e.getMessage());
-		}
+                url = new URL("jar:"
+                              + Support_Resources.getResourceURL("/JUC/lf.jar!/missing"));
+
 		JarURLConnection connection = null;
-		try {
-			connection = (JarURLConnection) url.openConnection();
-		} catch (IOException e) {
-			fail("Unexpected IOException : " + e.getMessage());
-		}
-		int exception = 0;
+                connection = (JarURLConnection) url.openConnection();
 		try {
 			connection.connect();
+                        fail("Did not throw exception on connect");
 		} catch (IOException e) {
-			exception = 1;
+                        // expected
 		}
-		assertEquals("Did not throw exception on connect", 1, exception);
-		exception = 0;
+
 		try {
 			connection.getJarFile();
+                        fail("Did not throw exception after connect");
 		} catch (IOException e) {
-			exception = 1;
+                        // expected
 		}
-		assertEquals("Did not throw exception after connect", 1, exception);
+
 		File resources = Support_Resources.createTempFolder();
-		try {
-			Support_Resources.copyFile(resources, null, "hyts_att.jar");
-			File file = new File(resources.toString() + "/hyts_att.jar");
-			URL fUrl1 = new URL("jar:file:" + file.getPath() + "!/");
-			JarURLConnection con1 = (JarURLConnection) fUrl1.openConnection();
-			ZipFile jf1 = con1.getJarFile();
-			JarURLConnection con2 = (JarURLConnection) fUrl1.openConnection();
-			ZipFile jf2 = con2.getJarFile();
-			assertTrue("file: JarFiles not the same", jf1 == jf2);
-			jf1.close();
-			assertTrue("File should exist", file.exists());
-			new URL("jar:" + Support_Resources.getResourceURL("/JUC/lf.jar!/"));
-			con1 = (JarURLConnection) fUrl1.openConnection();
-			jf1 = con1.getJarFile();
-			con2 = (JarURLConnection) fUrl1.openConnection();
-			jf2 = con2.getJarFile();
-			assertTrue("http: JarFiles not the same", jf1 == jf2);
-			jf1.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("Unexpected exception : " + e.getMessage());
-		}
+
+                Support_Resources.copyFile(resources, null, "hyts_att.jar");
+                File file = new File(resources.toString() + "/hyts_att.jar");
+                URL fUrl1 = new URL("jar:file:" + file.getPath() + "!/");
+                JarURLConnection con1 = (JarURLConnection) fUrl1.openConnection();
+                ZipFile jf1 = con1.getJarFile();
+                JarURLConnection con2 = (JarURLConnection) fUrl1.openConnection();
+                ZipFile jf2 = con2.getJarFile();
+                assertTrue("file: JarFiles not the same", jf1 == jf2);
+                jf1.close();
+                assertTrue("File should exist", file.exists());
+                new URL("jar:" + Support_Resources.getResourceURL("/JUC/lf.jar!/"));
+                con1 = (JarURLConnection) fUrl1.openConnection();
+                jf1 = con1.getJarFile();
+                con2 = (JarURLConnection) fUrl1.openConnection();
+                jf2 = con2.getJarFile();
+                assertTrue("http: JarFiles not the same", jf1 == jf2);
+                jf1.close();
 	}
 
 	/**
