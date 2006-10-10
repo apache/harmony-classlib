@@ -31,7 +31,7 @@ public interface AppletContext {
 
     public Applet getApplet(String name);
 
-    public Enumeration getApplets();
+    public Enumeration<Applet> getApplets();
 
     public AudioClip getAudioClip(URL url);
 
@@ -39,7 +39,7 @@ public interface AppletContext {
 
     public InputStream getStream(String key);
 
-    public Iterator getStreamKeys();
+    public Iterator<String> getStreamKeys();
 
     public void setStream(String key, InputStream stream) throws IOException;
 
