@@ -21,9 +21,10 @@
  */
 
 #include "lcms.h"
-
 #include "icc34.h"
-
+#ifndef cmsFLAGS_NOTCACHE
+#define cmsFLAGS_NOTCACHE (0)
+#endif
 
 
 // Just a useful macro
