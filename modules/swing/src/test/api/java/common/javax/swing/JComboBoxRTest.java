@@ -20,9 +20,14 @@
  */
 package javax.swing;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import junit.framework.TestCase;
 
 public class JComboBoxRTest extends TestCase {
+    private boolean eventFired;
+
     public void testJComboBox() throws Exception {
         new JComboBox();
     }
@@ -41,8 +46,8 @@ public class JComboBoxRTest extends TestCase {
     public void testKeyboardActionsEnabled() throws Exception {
         JComboBox cb = new JComboBox(new String[] {"1", "2", "4"});
         checkActionState(cb, "hidePopup", false);
-        checkActionState(cb, "enterPressed", false);
-        checkActionState(cb, "selectPrevious", false);
+        checkActionState(cb, "enterPressed", true);
+        checkActionState(cb, "selectPrevious", true);
 
         checkActionState(cb, "togglePopup", true);
         checkActionState(cb, "spacePopup", true);
@@ -53,5 +58,18 @@ public class JComboBoxRTest extends TestCase {
         Action action = cb.getActionMap().get(actionName);
         assertNotNull(action);
         assertEquals(expectedState, action.isEnabled());
+    }
+    
+    public void testSetSelectedItem() {
+        // regression test HARMONY-1533
+        String item = "item";
+        JComboBox jcb = new JComboBox(new String[]{item});
+        jcb.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent ae) {
+                eventFired = true;               
+            }            
+        });
+        jcb.setSelectedItem(item);
+        assertTrue("action performed", eventFired);
     }
 }

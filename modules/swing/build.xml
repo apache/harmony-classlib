@@ -198,7 +198,6 @@
                     <exclude name="javax/swing/text/ViewTestHelpers.java"/>
                     <exclude name="javax/swing/text/View_ForwardUpdateRTest.java"/>
 
-                    <exclude name="javax/swing/JComboBoxRTest.java"/>
                     <exclude name="javax/swing/JComboBoxTest.java"/>
                     <exclude name="javax/swing/JComponentTest.java"/>
                     <exclude name="javax/swing/JMenuTest.java"/>

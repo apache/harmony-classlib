@@ -294,8 +294,13 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
                 dataModel.setSelectedItem(element);
             } else if (isEditable && element != null && !element.equals(getEditor().getItem())) {
                 getEditor().setItem(element);
+            } else {
+                // fire action event even if selection is not changed
+                fireActionEvent();
             }
         }
+
+        
     }
 
     public Object getSelectedItem() {
