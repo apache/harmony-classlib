@@ -131,8 +131,7 @@
         </javac>
     </target>
 
-    <target name="run-tests" depends="compile-tests,copy-test-resources"
-            if="with.awt.swing">
+    <target name="run-tests" depends="compile-tests,copy-test-resources">
 
         <mkdir dir="${hy.tests.reports}" />
 

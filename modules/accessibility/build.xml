@@ -129,7 +129,7 @@
         </javac>
     </target>
 
-    <target name="run-tests" if="with.awt.swing">
+    <target name="run-tests">
 
         <mkdir dir="${hy.tests.reports}" />
 

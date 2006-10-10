@@ -108,9 +108,7 @@
     </target>
 
     <target name="build-native"
-        depends="-build-native-linux,-build-native-windows"
-        if="with.awt.swing">
-
+        depends="-build-native-linux,-build-native-windows">
         <make dir="${hy.awt.src.main.native}/lcmm/${hy.os}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -244,7 +242,7 @@
         </copy>    
     </target>
 
-    <target name="run-tests" if="with.awt.swing">
+    <target name="run-tests">
 
         <mkdir dir="${hy.tests.reports}" />
 
