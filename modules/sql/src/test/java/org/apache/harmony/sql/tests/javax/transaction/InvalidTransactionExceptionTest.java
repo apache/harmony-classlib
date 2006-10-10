@@ -42,7 +42,7 @@ public class InvalidTransactionExceptionTest extends TestCase {
 				aInvalidTransactionException = new InvalidTransactionException(
 						init1[i]);
 				if (theExceptions[i] != null)
-					assertTrue(false);
+					fail();
 				assertEquals(i + "  Final state mismatch",
 						aInvalidTransactionException.getMessage(),
 						theFinalStates1[i]);
@@ -74,7 +74,7 @@ public class InvalidTransactionExceptionTest extends TestCase {
 			try {
 				aInvalidTransactionException = new InvalidTransactionException();
 				if (theExceptions[i] != null)
-					assertTrue(false);
+					fail();
 				assertEquals(i + "  Final state mismatch",
 						aInvalidTransactionException.getMessage(),
 						theFinalStates1[i]);

@@ -46,7 +46,7 @@ public class BatchUpdateExceptionTest extends TestCase {
 			try {
 				aBatchUpdateException = new BatchUpdateException();
 				if (theExceptions[i] != null)
-					assertTrue(false);
+					fail();
 				assertEquals(i + " Final state mismatch: ",
 						aBatchUpdateException.getErrorCode(),
 						theFinalStates1[i]);
@@ -90,7 +90,7 @@ public class BatchUpdateExceptionTest extends TestCase {
 			try {
 				aBatchUpdateException = new BatchUpdateException(init1[i]);
 				if (theExceptions[i] != null)
-					assertTrue(false);
+					fail();
 				assertEquals(i + " Final state mismatch: ",
 						aBatchUpdateException.getErrorCode(),
 						theFinalStates1[i]);
@@ -143,7 +143,7 @@ public class BatchUpdateExceptionTest extends TestCase {
 				aBatchUpdateException = new BatchUpdateException(init1[i],
 						init2[i]);
 				if (theExceptions[i] != null)
-					assertTrue(false);
+					fail();
 				assertEquals(i + " Final state mismatch: ",
 						aBatchUpdateException.getErrorCode(),
 						theFinalStates1[i]);
@@ -198,7 +198,7 @@ public class BatchUpdateExceptionTest extends TestCase {
 				aBatchUpdateException = new BatchUpdateException(init1[i],
 						init2[i], init3[i]);
 				if (theExceptions[i] != null)
-					assertTrue(false);
+					fail();
 				assertEquals(i + " Final state mismatch: ",
 						aBatchUpdateException.getErrorCode(),
 						theFinalStates1[i]);
@@ -254,7 +254,7 @@ public class BatchUpdateExceptionTest extends TestCase {
 				aBatchUpdateException = new BatchUpdateException(init1[i],
 						init2[i], init3[i], init4[i]);
 				if (theExceptions[i] != null)
-					assertTrue(false);
+					fail();
 				assertEquals(i + " Final state mismatch: ",
 						aBatchUpdateException.getErrorCode(),
 						theFinalStates1[i]);

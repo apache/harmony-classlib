@@ -61,7 +61,7 @@ public class DataTruncationTest extends TestCase {
 				aDataTruncation = new DataTruncation(init1[i], init2[i],
 						init3[i], init4[i], init5[i]);
 				if (theExceptions[i] != null)
-					assertTrue(false);
+					fail();
 				assertEquals(i + "  Final state mismatch", aDataTruncation
 						.getSQLState(), theFinalStates1[i]);
 				assertEquals(i + "  Final state mismatch", aDataTruncation
