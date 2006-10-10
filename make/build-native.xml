@@ -80,6 +80,8 @@
         <ant dir="modules/awt" antfile="build.xml" target="build-native" />    	
         <ant dir="modules/security" antfile="build.xml" target="build-native" />    	
         <ant dir="modules/instrument" antfile="build.xml" target="build-native" />    	
+        <ant dir="modules/imageio" antfile="build.xml" target="build-native" />    	
+        <ant dir="modules/print" antfile="build.xml" target="build-native" />    	
     </target>
 
 
