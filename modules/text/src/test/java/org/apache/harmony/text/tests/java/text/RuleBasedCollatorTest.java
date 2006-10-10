@@ -17,6 +17,7 @@
 
 package org.apache.harmony.text.tests.java.text;
 
+import java.text.CharacterIterator;
 import java.text.CollationElementIterator;
 import java.text.CollationKey;
 import java.text.Collator;
@@ -121,7 +122,7 @@ public class RuleBasedCollatorTest extends TestCase {
      * Class under test for java.text.CollationElementIterator
      * getCollationElementIterator(java.lang.String)
      */
-    public void testGetCollationElementIteratorString() {
+    public void testGetCollationElementIteratorString() throws Exception {
         {
             Locale locale = new Locale("es", "", "TRADITIONAL");
             RuleBasedCollator coll = (RuleBasedCollator) Collator
@@ -157,13 +158,20 @@ public class RuleBasedCollatorTest extends TestCase {
                 assertEquals(e_offset[i++], offset);
             }
         }
+        //Regression for HARMONY-1352
+        try {
+            new RuleBasedCollator("< a< b< c< d").getCollationElementIterator((String)null);
+            fail("NullPointerException expected");
+        } catch (NullPointerException e) {
+            //expected
+        }
     }
 
     /*
      * Class under test for java.text.CollationElementIterator
      * getCollationElementIterator(java.text.CharacterIterator)
      */
-    public void testGetCollationElementIteratorCharacterIterator() {
+    public void testGetCollationElementIteratorCharacterIterator() throws Exception {
         {
             Locale locale = new Locale("es", "", "TRADITIONAL");
             RuleBasedCollator coll = (RuleBasedCollator) Collator
@@ -201,6 +209,13 @@ public class RuleBasedCollatorTest extends TestCase {
                 offset = iterator.getOffset();
                 assertEquals(e_offset[i++], offset);
             }
+        }
+        //Regression for HARMONY-1352
+        try {
+            new RuleBasedCollator("< a< b< c< d").getCollationElementIterator((CharacterIterator)null);
+            fail("NullPointerException expected");
+        } catch (NullPointerException e) {
+            //expected
         }
     }
 

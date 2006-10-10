@@ -90,6 +90,8 @@ public class RuleBasedCollator extends Collator {
 	 */
 	public CollationElementIterator getCollationElementIterator(
 			CharacterIterator source) {
+		if (source == null)
+			throw new NullPointerException();
 		return new CollationElementIterator(
 				((com.ibm.icu.text.RuleBasedCollator) this.icuColl)
 						.getCollationElementIterator(source));
@@ -103,6 +105,8 @@ public class RuleBasedCollator extends Collator {
 	 * @return a <code>CollationElementIterator</code> for the given String
 	 */
 	public CollationElementIterator getCollationElementIterator(String source) {
+		if (source == null)
+			throw new NullPointerException();
 		return new CollationElementIterator(
 				((com.ibm.icu.text.RuleBasedCollator) this.icuColl)
 						.getCollationElementIterator(source));
