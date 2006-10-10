@@ -19,6 +19,8 @@ package org.apache.harmony.misc.accessors;
 
 import java.util.HashMap;
 
+import org.apache.harmony.misc.internal.nls.Messages;
+
 /**
  * This class is a performance optimization aid which provides the low-level
  * access to arrays. It contains the following groups of methods:
@@ -64,7 +66,7 @@ public class ArrayAccessor {
 
     static ArrayAccessor getInstance() {
         if (instance == null) {
-            System.loadLibrary("accessors");
+            System.loadLibrary("accessors"); //$NON-NLS-1$
             instance = new ArrayAccessor();
         }
         return instance;
@@ -111,7 +113,8 @@ public class ArrayAccessor {
         if (type == Double.TYPE) {
             return new double[size];
         }
-        throw new IllegalArgumentException("Non primitive type " + type);
+        // misc.1=Non primitive type {0}
+        throw new IllegalArgumentException(Messages.getString("misc.1", type)); //$NON-NLS-1$
     }
 
     /**
@@ -228,7 +231,8 @@ public class ArrayAccessor {
     private static LockedArray lockArray(Object array, boolean longLock) {
         synchronized (objectLockMap) {
             if (objectLockMap.get(array) != null) {
-                throw new RuntimeException("array is already locked/pinned");
+                // misc.2=array is already locked/pinned
+                throw new RuntimeException(Messages.getString("misc.2")); //$NON-NLS-1$
             }
             long addr = 0;
             if (longLock) {
@@ -251,7 +255,8 @@ public class ArrayAccessor {
                 addr = staticLockArray(array);
             }
             if (addr == 0) {
-                throw new RuntimeException("lock failed");
+                // misc.3=lock failed
+                throw new RuntimeException(Messages.getString("misc.3")); //$NON-NLS-1$
             }
             LockedArray la = new LockedArray(array, addr, longLock);
             objectLockMap.put(array, la);
@@ -332,7 +337,8 @@ public class ArrayAccessor {
      */
     public final int getArrayElementSize(Class arrayClass) {
         if (!arrayClass.isArray()) {
-            throw new RuntimeException("not an array Class");
+            // misc.4=not an array Class
+            throw new RuntimeException(Messages.getString("misc.4")); //$NON-NLS-1$
         }
         if (arrayClass == byte[].class || arrayClass == boolean[].class) {
             return 1;

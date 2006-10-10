@@ -17,6 +17,8 @@
 
 package org.apache.harmony.misc.accessors;
 
+import org.apache.harmony.misc.internal.nls.Messages;
+
 /**
  * Factory for all accessors. This class is used to get the instances of various
  * accessor classes methods. 
@@ -35,7 +37,8 @@ public class AccessorFactory {
         Class callerClass = ThreadStackAccessor.getInstance().getCallerClass(5);
         ClassLoader callingClassLoader = callerClass.getClassLoader();
         if (!(classLoader == null ? callingClassLoader == null : classLoader.equals(callingClassLoader))) {
-            throw new SecurityException("User code is not allowed to get accessors, caller class: " + callerClass);
+            // misc.5=User code is not allowed to get accessors, caller class: {0}
+            throw new SecurityException(Messages.getString("misc.5", callerClass)); //$NON-NLS-1$
         }
     }
 

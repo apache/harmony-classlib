@@ -17,6 +17,8 @@
 
 package org.apache.harmony.misc.accessors;
 
+import org.apache.harmony.misc.internal.nls.Messages;
+
 /**
  * The class describes low level memory operation for memory allocation/deallocation
  * and access.
@@ -30,7 +32,7 @@ public class MemoryAccessor {
     private static MemoryAccessor instance;
     static MemoryAccessor getInstance() {
         if (instance == null) {
-            System.loadLibrary("accessors");
+            System.loadLibrary("accessors"); //$NON-NLS-1$
             instance = new MemoryAccessor();
         }
         return instance;
@@ -87,7 +89,8 @@ public class MemoryAccessor {
         case 8:
             return findFirstDiffReorder64(addr1, addr2, size);
         }
-        throw new IllegalArgumentException("bad elemSize");
+        // misc.0=bad elemSize
+        throw new IllegalArgumentException(Messages.getString("misc.0")); //$NON-NLS-1$
     }
 
     private native long findFirstDiff(long addr1, long addr2, long size);

@@ -66,7 +66,7 @@ public class ObjectAccessor {
     private static ObjectAccessor instance;
     static ObjectAccessor getInstance() {
         if (instance == null) {
-            System.loadLibrary("accessors");
+            System.loadLibrary("accessors"); //$NON-NLS-1$
             instance = new ObjectAccessor();
         }
         return instance;
@@ -588,14 +588,14 @@ public class ObjectAccessor {
 
     private static long getMethodID(Class c, String name, Class[] parameterTypes, boolean isStatic) {
         try {
-            String sig = "(";
+            String sig = "("; //$NON-NLS-1$
             for (int i=0; i < parameterTypes.length; i++) {
                 sig += getSystemName(parameterTypes[i]);
             }
-            sig += ")";
+            sig += ")"; //$NON-NLS-1$
             if (name == null) {
-                name = "<init>";
-                sig += "V";
+                name = "<init>"; //$NON-NLS-1$
+                sig += "V"; //$NON-NLS-1$
             } else {
                 Method m = c.getDeclaredMethod(name, parameterTypes);
                 sig += getSystemName(m.getReturnType());
@@ -830,23 +830,23 @@ public class ObjectAccessor {
 
     private static final String getSystemName(Class cls) {
         if (cls == boolean.class) {
-            return "Z";
+            return "Z"; //$NON-NLS-1$
         } else if (cls == char.class) {
-            return "C";
+            return "C"; //$NON-NLS-1$
         } else if (cls == byte.class) {
-            return "B";
+            return "B"; //$NON-NLS-1$
         } else if (cls == short.class) {
-            return "S";
+            return "S"; //$NON-NLS-1$
         } else if (cls == int.class) {
-            return "I";
+            return "I"; //$NON-NLS-1$
         } else if (cls == long.class) {
-            return "J";
+            return "J"; //$NON-NLS-1$
         } else if (cls == float.class) {
-            return "F";
+            return "F"; //$NON-NLS-1$
         } else if (cls == double.class) {
-            return "D";
+            return "D"; //$NON-NLS-1$
         } else if (cls == void.class) {
-            return "V";
+            return "V"; //$NON-NLS-1$
         } else { // Object type.
             String className = cls.getName().replace('.', '/');
             // Add reference to non-array reference types.

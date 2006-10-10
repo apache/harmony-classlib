@@ -20,6 +20,8 @@ package org.apache.harmony.misc.accessors;
 import java.nio.ByteOrder;
 import java.io.UnsupportedEncodingException;
 
+import org.apache.harmony.misc.internal.nls.Messages;
+
 /**
  * This class allows to copy data from String objects to native buffers, and
  * construct String objects from native strings. This allows to pass and receive
@@ -34,7 +36,7 @@ public class StringAccessor {
 
     static StringAccessor getInstance() {
         if (instance == null) {
-            System.loadLibrary("accessors");
+            System.loadLibrary("accessors"); //$NON-NLS-1$
             instance = new StringAccessor();
         }
         return instance;
@@ -232,13 +234,14 @@ public class StringAccessor {
         }
         try {
             if (byteOrder == 1) {
-                cmpTo = new String(cmpTo.getBytes("UTF-16BE"), "UTF-16BE");
+                cmpTo = new String(cmpTo.getBytes("UTF-16BE"), "UTF-16BE"); //$NON-NLS-1$ //$NON-NLS-2$
             } else {
-                cmpTo = new String(cmpTo.getBytes("UTF-16LE"), "UTF-16LE");
+                cmpTo = new String(cmpTo.getBytes("UTF-16LE"), "UTF-16LE"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         } catch (UnsupportedEncodingException e) {
             throw new InternalError(
-                    "Failed to get UTF-16 support, this is a bug");
+                    // misc.6=Failed to get UTF-16 support, this is a bug
+                    Messages.getString("misc.6")); //$NON-NLS-1$
         }
         return strObj.compareTo(cmpTo);
     }
