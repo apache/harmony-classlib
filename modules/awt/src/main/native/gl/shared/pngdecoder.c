@@ -49,7 +49,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_image_PngDecoder_initIDs
  */
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_image_PngDecoder_decode
 (JNIEnv *env, jobject obj, jbyteArray jInput, jint bytesInBuffer, jlong hDecoder) {  
-  png_decoder_info_ptr decoderInfo = (png_decoder_info_ptr) hDecoder;
+  png_decoder_info_ptr decoderInfo = (png_decoder_info_ptr) ((IDATA)hDecoder);
   
   // Init decoder if needed
   if(!decoderInfo) {
@@ -92,7 +92,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_image_PngDecoder_decode
   if(decoderInfo->doneDecoding)
     destroyPng(&decoderInfo);
 
-  return (jlong) decoderInfo;
+  return (jlong) ((IDATA)decoderInfo);
 }
 
 /*
@@ -102,7 +102,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_image_PngDecoder_decode
  */
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_image_PngDecoder_releaseNativeDecoder
 (JNIEnv *env, jclass cls, jlong hDecoder) {
-  png_decoder_info_ptr decoderInfo = (png_decoder_info_ptr) hDecoder;
+  png_decoder_info_ptr decoderInfo = (png_decoder_info_ptr) ((IDATA)hDecoder);
 }
 
 void releaseArrays(png_decoder_info_ptr decoderInfo) {

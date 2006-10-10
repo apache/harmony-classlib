@@ -21,6 +21,7 @@
  */
 
 #include "gifdecoder.h"
+#include "hycomp.h"
 
 /*
  * Class:     org_apache_harmony_awt_gl_image_GifDecoder
@@ -78,7 +79,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_image_GifDecoder_releaseNa
 (JNIEnv *env, jclass cls, jlong hDecoder) {
   // Cleanup if image was truncated
   if(hDecoder)
-    free((GifDecoder *) hDecoder);
+    free((GifDecoder *) ((IDATA)hDecoder));
 }
 
 /*
@@ -96,7 +97,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_awt_gl_image_GifDecoder_decode
  jobject currBlock) {
 
   GIF_RETVAL retval = STATUS_OK;
-  GifDecoder *decoder = getDecoder(env, obj, dataStream, (GifDecoder*) hDecoder);
+  GifDecoder *decoder = getDecoder(env, obj, dataStream, (GifDecoder*) ((IDATA)hDecoder));
   int scanlinesDecoded;    
 
   decoder->input = decoder->inputPtr = 
@@ -210,7 +211,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_awt_gl_image_GifDecoder_decode
     decoder = NULL;    
   }
 
-  (*env)->SetLongField(env, obj, img_GIF_hNativeDecoderID, (jlong) decoder);
+  (*env)->SetLongField(env, obj, img_GIF_hNativeDecoderID, (jlong) ((IDATA)decoder));
 
   return scanlinesDecoded;
 }

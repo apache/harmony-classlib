@@ -284,7 +284,7 @@ static void toIntRGB(unsigned char *in, unsigned char *out, int lengthInPixels) 
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_image_JpegDecoder_releaseNativeDecoder
 (JNIEnv *env, jclass cls, jlong hglDecompress) {
   // Cleanup if image was truncated
-  gl_decompress_struct *glDecompress = (gl_decompress_struct*) hglDecompress;
+  gl_decompress_struct *glDecompress = (gl_decompress_struct*) ((IDATA)hglDecompress);
   if(glDecompress) {
     gl_decompress_struct_destroy(glDecompress);
     free(glDecompress);
@@ -310,7 +310,9 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_awt_gl_image_JpegDecoder_decod
   jbyteArray byteOut = NULL;
   jintArray intOut = NULL;
 
-  gl_decompress_struct *glDecompress = (gl_decompress_struct*) hglDecompress;
+  gl_decompress_struct *glDecompress =
+    (gl_decompress_struct*) ((IDATA)hglDecompress);
+
   if(glDecompress == NULL) {
     gl_decompress_struct_init(&glDecompress);
     if(glDecompress == NULL) { // Out of memory
@@ -322,7 +324,7 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_awt_gl_image_JpegDecoder_decod
   // Silently skip data if EOF already encountered
   if(glDecompress->srcMgr.at_eof) {
     (*env)->SetIntField(env, obj, img_JPEG_bytesConsumedID, bytesInBuffer);
-        (*env)->SetLongField(env, obj, img_JPEG_hNativeDecoderID, (jlong) glDecompress);
+    (*env)->SetLongField(env, obj, img_JPEG_hNativeDecoderID, (jlong) ((IDATA)glDecompress));
     RETURN_JAVA_ARRAY;
     }
 
@@ -383,7 +385,7 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_awt_gl_image_JpegDecoder_decod
         assert(0); // This is illegal
 
       (*env)->SetIntField(env, obj, img_JPEG_bytesConsumedID, consumed);
-            (*env)->SetLongField(env, obj, img_JPEG_hNativeDecoderID, (jlong) glDecompress);
+      (*env)->SetLongField(env, obj, img_JPEG_hNativeDecoderID, (jlong) ((IDATA)glDecompress));
       RETURN_JAVA_ARRAY;
         }
     } // if(glDecompress->srcMgr.skip_input_bytes)
@@ -503,7 +505,7 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_awt_gl_image_JpegDecoder_decod
 
         if(glDecompress->srcMgr.decoding_done) { // Decoding done, just keep eating input data
       (*env)->SetIntField(env, obj, img_JPEG_bytesConsumedID, consumed);
-        (*env)->SetLongField(env, obj, img_JPEG_hNativeDecoderID, (jlong) glDecompress);
+      (*env)->SetLongField(env, obj, img_JPEG_hNativeDecoderID, (jlong) ((IDATA)glDecompress));
       RETURN_JAVA_ARRAY;
         }
 
@@ -594,6 +596,6 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_awt_gl_image_JpegDecoder_decod
     glDecompress->srcMgr.valid_buffer_length = (int) glDecompress->srcMgr.base.bytes_in_buffer;
  
   (*env)->SetIntField(env, obj, img_JPEG_bytesConsumedID, consumed);
-    (*env)->SetLongField(env, obj, img_JPEG_hNativeDecoderID, (jlong) glDecompress);
+  (*env)->SetLongField(env, obj, img_JPEG_hNativeDecoderID, (jlong) ((IDATA)glDecompress));
   RETURN_JAVA_ARRAY;
 }

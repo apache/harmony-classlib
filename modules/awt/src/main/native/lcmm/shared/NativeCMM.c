@@ -59,8 +59,8 @@ JNIEXPORT jlong JNICALL
     if(hProfile == NULL)
         newCMMException(env, errMsg); // Throw java exception if error occured
 
-    // Return obtained handle
-  return (jlong) hProfile;
+  // Return obtained handle
+  return (jlong) ((IDATA)hProfile);
 }
 
 /*
@@ -71,7 +71,7 @@ JNIEXPORT jlong JNICALL
 JNIEXPORT void JNICALL 
     Java_org_apache_harmony_awt_gl_color_NativeCMM_cmmCloseProfile(JNIEnv *env, jclass cls, jlong profileID)
 {
-    cmsHPROFILE hProfile = (cmsHPROFILE) profileID;
+  cmsHPROFILE hProfile = (cmsHPROFILE) ((IDATA)profileID);
 
     if(!cmsCloseProfile(hProfile))
         newCMMException(env, errMsg); // Throw java exception if error occured
@@ -85,7 +85,7 @@ JNIEXPORT void JNICALL
 JNIEXPORT jint JNICALL 
     Java_org_apache_harmony_awt_gl_color_NativeCMM_cmmGetProfileSize(JNIEnv *env, jclass cls, jlong profileID)
 {
-    cmsHPROFILE hProfile = (cmsHPROFILE) profileID;
+  cmsHPROFILE hProfile = (cmsHPROFILE) ((IDATA)profileID);
   return (jint) cmmGetProfileSize(hProfile);
 }
 
@@ -100,7 +100,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_color_NativeCMM_cmmGetProf
     jlong profileID,
     jbyteArray data)
 {
-    cmsHPROFILE hProfile = (cmsHPROFILE) profileID;
+    cmsHPROFILE hProfile = (cmsHPROFILE) ((IDATA)profileID);
     unsigned profileSize = (unsigned) (*env)->GetArrayLength (env, data);
     jbyte *byteData = (*env)->GetByteArrayElements(env, data, 0);
 
@@ -119,7 +119,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_color_NativeCMM_cmmGetProf
 {
   size_t dataSize = (*env)->GetArrayLength(env, data);
     icTagSignature ts = tagSignature;
-  cmsHPROFILE hProfile = (cmsHPROFILE) profileID;
+    cmsHPROFILE hProfile = (cmsHPROFILE) ((IDATA)profileID);
     jbyte *byteData = (*env)->GetByteArrayElements (env, data, 0);
 
 
@@ -146,7 +146,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_awt_gl_color_NativeCMM_cmmGetProf
 
     long size;
     icTagSignature ts = tagSignature;
-    cmsHPROFILE hProfile = (cmsHPROFILE) profileID;
+    cmsHPROFILE hProfile = (cmsHPROFILE) ((IDATA)profileID);
 
     if (ts == HEADER_TAG_ID) {
         size = HEADER_SIZE;
@@ -168,7 +168,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_awt_gl_color_NativeCMM_cmmGetProf
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_color_NativeCMM_cmmSetProfileElement
   (JNIEnv *env, jclass cls, jlong profileID, jint tagSignature, jbyteArray data)
 {
-    cmsHPROFILE hProfile = (cmsHPROFILE) profileID;
+    cmsHPROFILE hProfile = (cmsHPROFILE) ((IDATA)profileID);
     jbyte *byteData = (*env)->GetByteArrayElements (env, data, 0);
     size_t dataSize = (*env)->GetArrayLength(env, data);
     icTagSignature ts = tagSignature;
@@ -206,7 +206,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_color_NativeCMM_cmmCreate
     // Convert to appropriate size
     cmsHPROFILE *profileHandles = malloc(sizeof(cmsHPROFILE)*nProfiles);
     for(i=0; i<nProfiles; i++) {
-        profileHandles[i] = (cmsHPROFILE) profileHandlesData[i];
+      profileHandles[i] = (cmsHPROFILE) ((IDATA)profileHandlesData[i]);
     }
 
   // XXX - Todo - consider getting all rendering intents
@@ -223,7 +223,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_color_NativeCMM_cmmCreate
   if(xform == NULL) 
     newCMMException(env, "Can't create ICC transform"); // Throw java exception
 
-  return (jlong) xform;
+  return (jlong) ((IDATA)xform);
 }
 
 /*
@@ -234,7 +234,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_color_NativeCMM_cmmCreate
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_color_NativeCMM_cmmDeleteTransform
   (JNIEnv *env, jclass cls, jlong transformHandle)
 {
-    cmsHTRANSFORM xform = (cmsHTRANSFORM) transformHandle;
+    cmsHTRANSFORM xform = (cmsHTRANSFORM) ((IDATA)transformHandle);
 
     if(xform != NULL) {
         cmsDeleteTransform(xform);
@@ -344,7 +344,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_color_NativeCMM_cmmTransla
   BOOL copyAlpha = FALSE;
   BOOL fillAlpha = FALSE;
 
-    cmsHTRANSFORM xform = (cmsHTRANSFORM) transformHandle;
+    cmsHTRANSFORM xform = (cmsHTRANSFORM) ((IDATA)transformHandle);
 
 
     srcFormat = getImageFormat(env, src);
