@@ -270,6 +270,9 @@
 
                 <fileset dir="${hy.awt.src.test.api}/java/common">
                     <include name="**/*Test*.java"/>
+                    <!-- Failing with SEGV in XmuLookupStandardColormap -->
+                    <exclude name="java/awt/ToolkitRTest.java" />
+
                     <exclude name="java/awt/AWTTestCase.java"/>
                     <exclude name="java/awt/ButtonTest.java"/>
                     <exclude name="java/awt/SerializeTestCase.java"/>
