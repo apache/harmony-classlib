@@ -624,7 +624,7 @@ public class BasicTreeUI extends TreeUI {
     protected CellRendererPane rendererPane;
     protected Dimension preferredSize;
     protected AbstractLayoutCache treeState;
-    protected Hashtable drawingCache;
+    protected Hashtable<javax.swing.tree.TreePath, java.lang.Boolean> drawingCache;
     protected AbstractLayoutCache.NodeDimensions nodeDimensions;
     protected TreeModel treeModel;
     protected TreeSelectionModel treeSelectionModel;
@@ -1011,7 +1011,7 @@ public class BasicTreeUI extends TreeUI {
 
     protected void prepareForUIInstall() {
         preferredSize = new Dimension();
-        drawingCache = new Hashtable();
+        drawingCache = new Hashtable<javax.swing.tree.TreePath, java.lang.Boolean>();
 
         treeState = createLayoutCache();
         nodeDimensions = createNodeDimensions();

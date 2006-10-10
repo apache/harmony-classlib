@@ -34,25 +34,28 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.filechooser.FileFilter;
 
 public class BasicDirectoryModel extends AbstractListModel implements PropertyChangeListener {
-    private Vector fileList;
+    private Vector<java.io.File> fileList;
     private JFileChooser fc;
-    private final Comparator fileComparator = new Comparator() {
-        public int compare(final Object o1, final Object o2) {
-            File file1 = (File)o1;
-            File file2 = (File)o2;
-
-            return lt(file1, file2) ? -1 : 1;
+    private final Comparator<File> fileComparator = new Comparator<File>() {
+        public int compare(final File o1, final File o2) {
+            return lt(o1, o2) ? -1 : 1;
         }
     };
 
-    public Vector getFiles() {
+    private final class FileComparator<T extends File> implements Comparator<T> {
+        public int compare(final T o1, final T o2) {
+            return lt(o1, o2) ? -1 : 1;
+        }
+    };
+
+    public Vector<java.io.File> getFiles() {
         return fileList;
     }
 
     public BasicDirectoryModel(final JFileChooser filechooser) {
         fc = filechooser;
         fc.addPropertyChangeListener(this);
-        fileList = new Vector();
+        fileList = new Vector<java.io.File>();
     }
 
     public Object getElementAt(final int index) {
@@ -76,7 +79,7 @@ public class BasicDirectoryModel extends AbstractListModel implements PropertyCh
     public void invalidateFileCache() {
     }
 
-    public Vector getDirectories() {
+    public Vector<java.io.File> getDirectories() {
         return null;
     }
 
@@ -139,7 +142,7 @@ public class BasicDirectoryModel extends AbstractListModel implements PropertyCh
     public void intervalRemoved(final ListDataEvent e) {
     }
 
-    protected void sort(final Vector v) {
+    protected void sort(final Vector<? extends java.io.File> v) {
         Collections.sort(v, fileComparator);
     }
 

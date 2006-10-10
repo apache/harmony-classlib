@@ -147,7 +147,7 @@ public class Timer implements Serializable {
         return (timerTask != null);
     }
 
-    public EventListener[] getListeners(final Class listenersClass) {
+    public <T extends java.util.EventListener> T[] getListeners(final Class<T> listenersClass) {
         return listenerList.getListeners(listenersClass);
     }
 

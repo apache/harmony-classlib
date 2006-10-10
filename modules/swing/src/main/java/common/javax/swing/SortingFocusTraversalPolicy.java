@@ -30,7 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class SortingFocusTraversalPolicy extends InternalFrameFocusTraversalPolicy {
-    private Comparator comparator;
+    private Comparator<? super java.awt.Component> comparator;
     private boolean isImplicitDownCycleTraversal = true;
 
     private final NextComponentFinder afterComponentFinder = new NextComponentFinder() {
@@ -118,7 +118,7 @@ public class SortingFocusTraversalPolicy extends InternalFrameFocusTraversalPoli
         }
     };
 
-    public SortingFocusTraversalPolicy(final Comparator comparator) {
+    public SortingFocusTraversalPolicy(final Comparator<? super java.awt.Component> comparator) {
         setComparator(comparator);
     }
 
@@ -164,11 +164,11 @@ public class SortingFocusTraversalPolicy extends InternalFrameFocusTraversalPoli
         return isImplicitDownCycleTraversal;
     }
 
-    protected void setComparator(final Comparator c) {
+    protected void setComparator(final Comparator<? super java.awt.Component> c) {
         comparator = c;
     }
 
-    protected Comparator getComparator() {
+    protected Comparator<? super java.awt.Component> getComparator() {
         return comparator;
     }
 

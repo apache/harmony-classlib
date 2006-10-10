@@ -44,7 +44,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.UIResource;
 
-public class UIDefaults extends Hashtable {
+public class UIDefaults extends Hashtable<Object, Object> {
 
     public static interface ActiveValue {
         Object createValue(UIDefaults uiDefaults);
@@ -354,16 +354,18 @@ public class UIDefaults extends Hashtable {
         });
     }
 
-    public Class getUIClass(final String name) {
+    public Class<? extends javax.swing.plaf.ComponentUI> getUIClass(final String name) {
         return getUIClass(name, ClassLoader.getSystemClassLoader());
     }
 
-    public Class getUIClass(final String name, final ClassLoader classLoader) {
+    public Class<? extends javax.swing.plaf.ComponentUI> getUIClass(final String name, final ClassLoader classLoader) {
         try {
             if (classLoader == null) {
-                return Class.forName((String)get(name), false, classLoader);
+                return (Class<? extends javax.swing.plaf.ComponentUI>)
+                        Class.forName((String)get(name), false, classLoader);
             } else {
-                return classLoader.loadClass((String)get(name));
+                return (Class<? extends javax.swing.plaf.ComponentUI>)
+                        classLoader.loadClass((String)get(name));
             }
         } catch (final ClassNotFoundException e) {
             StringWriter writer = new StringWriter();

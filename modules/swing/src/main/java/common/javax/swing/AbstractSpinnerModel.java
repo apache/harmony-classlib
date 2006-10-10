@@ -58,7 +58,7 @@ public abstract class AbstractSpinnerModel implements SpinnerModel {
         }
     }
 
-    public EventListener[] getListeners(final Class listenerType) {
+    public <T extends java.util.EventListener> T[] getListeners(final Class<T> listenerType) {
         return listenerList.getListeners(listenerType);
     }
 }

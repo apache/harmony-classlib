@@ -609,8 +609,8 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
             }
         }
 
-        private Class getColumnClass() {
-            Class columnClass =  JTable.this.getColumnClass(getEditingColumn());
+        private Class<?> getColumnClass() {
+            Class<?> columnClass =  JTable.this.getColumnClass(getEditingColumn());
             return columnClass == Object.class ? String.class : columnClass;
         }
     }
@@ -893,7 +893,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         }
     }
 
-    public void setDefaultRenderer(final Class columnClass, final TableCellRenderer renderer) {
+    public void setDefaultRenderer(final Class<?> columnClass, final TableCellRenderer renderer) {
         if (renderer != null) {
             defaultRenderersByColumnClass.put(columnClass, renderer);
         } else {
@@ -901,11 +901,11 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         }
     }
 
-    public TableCellRenderer getDefaultRenderer(final Class columnClass) {
+    public TableCellRenderer getDefaultRenderer(final Class<?> columnClass) {
         return (TableCellRenderer)getClosestClass(columnClass, defaultRenderersByColumnClass);
     }
 
-    public void setDefaultEditor(final Class columnClass, final TableCellEditor editor) {
+    public void setDefaultEditor(final Class<?> columnClass, final TableCellEditor editor) {
         if (editor != null) {
             defaultEditorsByColumnClass.put(columnClass, editor);
         } else {
@@ -913,7 +913,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         }
     }
 
-    public TableCellEditor getDefaultEditor(final Class columnClass) {
+    public TableCellEditor getDefaultEditor(final Class<?> columnClass) {
         return (TableCellEditor)getClosestClass(columnClass, defaultEditorsByColumnClass);
     }
 

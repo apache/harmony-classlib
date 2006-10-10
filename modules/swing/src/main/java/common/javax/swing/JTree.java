@@ -588,13 +588,13 @@ public class JTree extends JComponent implements Scrollable, Accessible {
         setShowsRootHandles(true);
     }
 
-    public JTree(final Vector value) {
+    public JTree(final Vector<?> value) {
         this(createTreeModel(value));
         setRootVisible(false);
         setShowsRootHandles(true);
     }
 
-    public JTree(final Hashtable value) {
+    public JTree(final Hashtable<?,?> value) {
         this(createTreeModel(value));
         setRootVisible(false);
         setShowsRootHandles(true);
@@ -906,7 +906,7 @@ public class JTree extends JComponent implements Scrollable, Accessible {
         return getSelectionModel().isRowSelected(row);
     }
 
-    public Enumeration getExpandedDescendants(final TreePath parent) {
+    public Enumeration<TreePath> getExpandedDescendants(final TreePath parent) {
         final Enumeration toggled = getDescendantToggledPaths(parent);
         if (toggled == null) {
             return null;
@@ -1355,7 +1355,7 @@ public class JTree extends JComponent implements Scrollable, Accessible {
         getSelectionModel().resetRowSelection();
     }
 
-    protected Enumeration getDescendantToggledPaths(final TreePath parent) {
+    protected Enumeration<TreePath> getDescendantToggledPaths(final TreePath parent) {
         if (parent == null) {
             return null;
         }
@@ -1390,7 +1390,7 @@ public class JTree extends JComponent implements Scrollable, Accessible {
         };
     }
 
-    protected void removeDescendantToggledPaths(final Enumeration toRemove) {
+    protected void removeDescendantToggledPaths(final Enumeration<TreePath> toRemove) {
         if (toRemove == null) {
             return;
         }

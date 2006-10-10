@@ -44,7 +44,7 @@ public abstract class AbstractListModel implements ListModel, Serializable {
         return (ListDataListener[])getListeners(ListDataListener.class);
     }
 
-    public EventListener[] getListeners(final Class listenerType) {
+    public <T extends java.util.EventListener> T[] getListeners(final Class<T> listenerType) {
         return listenerList.getListeners(listenerType);
     }
 

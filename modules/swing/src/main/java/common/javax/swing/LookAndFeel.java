@@ -107,7 +107,7 @@ public abstract class LookAndFeel {
         }
     }
 
-    public static Object makeIcon(final Class c, final String path) {
+    public static Object makeIcon(final Class<?> c, final String path) {
         return new UIDefaults.LazyValue() {
             public Object createValue(final UIDefaults uiDefaults) {
                 URL resource = c.getResource(path);

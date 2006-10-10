@@ -76,7 +76,7 @@ public class BasicFileChooserUI extends FileChooserUI {
     }
 
     protected class BasicFileView extends FileView {
-        protected Hashtable iconCache = new Hashtable();
+        protected Hashtable<java.io.File, javax.swing.Icon> iconCache = new Hashtable<java.io.File, javax.swing.Icon>();
 
         public BasicFileView() {
         }

@@ -57,7 +57,7 @@ public class JLayeredPane extends JComponent implements Accessible {
     /**
      *  The hash table used to store layers for components.
      */
-    private Hashtable componentToLayer;
+    private Hashtable<java.awt.Component, java.lang.Integer> componentToLayer;
 
     static {
         DEFAULT_LAYER = new Integer(DELAULT_LAYER_NUMBER);
@@ -148,9 +148,9 @@ public class JLayeredPane extends JComponent implements Accessible {
      */
     //XXX: 1.5 migration: uncomment
     //protected Hashtable<Component,Integer> getComponentToLayer()
-    protected Hashtable getComponentToLayer() {
+    protected Hashtable<java.awt.Component, java.lang.Integer> getComponentToLayer() {
         if (componentToLayer == null) {
-            componentToLayer = new Hashtable();
+            componentToLayer = new Hashtable<java.awt.Component, java.lang.Integer>();
         }
 
         return componentToLayer;

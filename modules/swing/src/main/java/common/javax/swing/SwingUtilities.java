@@ -207,7 +207,7 @@ public class SwingUtilities implements SwingConstants {
         return (Container)ancestor;
     }
 
-    public static Container getAncestorOfClass(final Class wantedClass, final Component component) {
+    public static Container getAncestorOfClass(final Class<?> wantedClass, final Component component) {
         if (component == null || wantedClass == null) {
             return null;
         }

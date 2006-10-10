@@ -26,14 +26,14 @@ import java.util.List;
 
 public class SpinnerListModel extends AbstractSpinnerModel implements Serializable {
     private static final String[] DEFAULT_VALUES = {"empty"};
-    private List values;
+    private List<?> values;
     private int index = 0;
 
     public SpinnerListModel() {
         this(Arrays.asList(DEFAULT_VALUES));
     }
 
-    public SpinnerListModel(final List values) {
+    public SpinnerListModel(final List<?> values) {
         if (values == null || values.size() <= 0) {
             throw new IllegalArgumentException("SpinnerListModel(List) expects non-null non-empty List");
         }
@@ -47,11 +47,11 @@ public class SpinnerListModel extends AbstractSpinnerModel implements Serializab
         this.values = Arrays.asList(values);
     }
 
-    public List getList() {
+    public List<?> getList() {
         return values;
     }
 
-    public void setList(final List list) {
+    public void setList(final List<?> list) {
         if (list == null || list.size() <= 0) {
             throw new IllegalArgumentException("");
         }

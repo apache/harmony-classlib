@@ -61,7 +61,7 @@ public class DefaultSingleSelectionModel implements Serializable, SingleSelectio
         listenerList.remove(ChangeListener.class, l);
     }
 
-    public EventListener[] getListeners(final Class listenerType) {
+    public <T extends java.util.EventListener> T[] getListeners(final Class<T> listenerType) {
         return listenerList.getListeners(listenerType);
     }
 

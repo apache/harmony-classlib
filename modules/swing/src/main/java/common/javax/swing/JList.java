@@ -388,7 +388,7 @@ public class JList extends JComponent implements Scrollable, Accessible {
         putListData((DefaultListModel)getModel(), listData);
     }
 
-    public JList(final Vector listData) {
+    public JList(final Vector<?> listData) {
         this(new DefaultListModel());
         putListData((DefaultListModel)getModel(), listData);
     }
@@ -443,7 +443,7 @@ public class JList extends JComponent implements Scrollable, Accessible {
     }
 
 
-    public void setListData(final Vector listData) {
+    public void setListData(final Vector<?> listData) {
         DefaultListModel defaultModel = new DefaultListModel();
         putListData(defaultModel, listData);
 

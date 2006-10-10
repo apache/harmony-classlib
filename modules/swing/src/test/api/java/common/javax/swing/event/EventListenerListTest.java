@@ -117,9 +117,9 @@ public class EventListenerListTest extends SwingTestCase {
     }
 
     public void testRemove() {
-        EventListener listener1 = new ConcreteListener("1");
-        EventListener listener2 = new ConcreteListener("2");
-        EventListener listener3 = new ConcreteListener("3");
+        ConcreteListener listener1 = new ConcreteListener("1");
+        ConcreteListener listener2 = new ConcreteListener("2");
+        ConcreteListener listener3 = new ConcreteListener("3");
 
         list.add(ConcreteListener.class, listener1);
         list.add(ConcreteListener.class, listener2);
@@ -285,9 +285,9 @@ public class EventListenerListTest extends SwingTestCase {
      * Class under test for int getListenerCount()
      */
     public void testGetListenerCount() {
-        EventListener listener1 = new ConcreteListener("1");
-        EventListener listener2 = new ConcreteListener("2");
-        EventListener listener3 = new ConcreteListener("3");
+        ConcreteListener listener1 = new ConcreteListener("1");
+        ConcreteListener listener2 = new ConcreteListener("2");
+        ConcreteListener listener3 = new ConcreteListener("3");
 
         assertTrue(list.getListenerCount() == 0);
 
@@ -307,7 +307,7 @@ public class EventListenerListTest extends SwingTestCase {
 
     public void testWriteObject() throws IOException {
         ConcreteListener listener1 = new ConcreteSerializableListener("1");
-        ConcreteListener listener2 = new ConcreteSerializableListener("2");
+        ConcreteSerializableListener listener2 = new ConcreteSerializableListener("2");
         ConcreteListener listener3 = new ConcreteListener("3");
         list.add(ConcreteListener.class, listener1);
         list.add(ConcreteSerializableListener.class, listener2);

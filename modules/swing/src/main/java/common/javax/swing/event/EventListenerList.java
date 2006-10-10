@@ -32,7 +32,10 @@ public class EventListenerList implements Serializable {
 
     protected transient Object[] listenerList = new Object[0];
 
-    public synchronized void remove(final Class listenerClass, final EventListener listener) {
+    public synchronized <T extends java.util.EventListener> void remove(
+            final Class<T> listenerClass,
+            final T listener
+    ) {
         if (listener == null) {
             return;
         }
@@ -54,7 +57,10 @@ public class EventListenerList implements Serializable {
         }
     }
 
-    public synchronized void add(final Class listenerClass, final EventListener listener) {
+    public synchronized <T extends java.util.EventListener> void add(
+            final Class<T> listenerClass,
+            final T listener
+    ) {
         if (listener == null) {
             return;
         }
@@ -67,16 +73,16 @@ public class EventListenerList implements Serializable {
         listenerList = newList;
     }
 
-    public EventListener[] getListeners(final Class listenerClass) {
+    public <T extends java.util.EventListener> T[] getListeners(final Class<T> listenerClass) {
         int numClassListeners = getListenerCount(listenerClass);
-        EventListener[] listeners = (EventListener[]) (Array.newInstance(
+        T[] listeners = (T[]) (Array.newInstance(
                 listenerClass, numClassListeners));
         if (numClassListeners > 0) {
             for (int innerIndex = 0, outerIndex = 0;
                     outerIndex < numClassListeners; innerIndex += 2) {
 
                 if (listenerList[innerIndex] == listenerClass) {
-                    listeners[numClassListeners - 1 - outerIndex] = (EventListener) listenerList[innerIndex + 1];
+                    listeners[numClassListeners - 1 - outerIndex] = (T) listenerList[innerIndex + 1];
                     ++outerIndex;
                 }
             }
@@ -106,7 +112,7 @@ public class EventListenerList implements Serializable {
         return listenerList;
     }
 
-    public int getListenerCount(final Class listenerClass) {
+    public int getListenerCount(final Class<?> listenerClass) {
         int counter = 0;
         for (int i = 0; i < listenerList.length; i += 2){
             if (listenerList[i] == listenerClass) {

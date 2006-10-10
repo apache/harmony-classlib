@@ -86,7 +86,7 @@ public class DefaultBoundedRangeModel extends Object implements
         return extent;
     }
 
-    public EventListener[] getListeners(final Class c) {
+    public <T extends java.util.EventListener> T[] getListeners(final Class<T> c) {
         return listenerList.getListeners(c);
     }
 

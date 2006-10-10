@@ -62,7 +62,7 @@ public class DefaultListModel extends AbstractListModel {
         return internalStorage.elementAt(index);
     }
 
-    public Enumeration elements() {
+    public Enumeration<?> elements() {
         return internalStorage.elements();
     }
 

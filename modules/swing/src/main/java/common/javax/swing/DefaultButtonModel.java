@@ -46,7 +46,7 @@ public class DefaultButtonModel implements ButtonModel, Serializable {
     protected EventListenerList listenerList = new EventListenerList();
 
 
-    public EventListener[] getListeners(final Class listenersClass) {
+    public <T extends java.util.EventListener> T[] getListeners(final Class<T> listenersClass) {
         return listenerList.getListeners(listenersClass);
     }
 

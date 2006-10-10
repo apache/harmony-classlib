@@ -480,8 +480,8 @@ public abstract class JComponent extends Container implements Serializable {
         vetoableChangeSupport.fireVetoableChange(property, oldValue, newValue);
     }
 
-    public EventListener[] getListeners(final Class listenersClass) {
-        EventListener[] result = super.getListeners(listenersClass);
+    public <T extends java.util.EventListener> T[] getListeners(final Class<T> listenersClass) {
+        T[] result = super.getListeners(listenersClass);
         if (!Utilities.isEmptyArray(result)) {
             return result;
         }
@@ -492,7 +492,7 @@ public abstract class JComponent extends Container implements Serializable {
         }
 
         if (VetoableChangeListener.class.isAssignableFrom(listenersClass)) {
-            result = getVetoableChangeListeners();
+            result = (T[]) getVetoableChangeListeners();
         }
         return result;
     }

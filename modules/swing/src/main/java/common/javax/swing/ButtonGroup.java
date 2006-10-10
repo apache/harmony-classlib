@@ -26,7 +26,7 @@ import java.util.Vector;
 
 public class ButtonGroup implements Serializable {
 
-    protected Vector buttons = new Vector();
+    protected Vector<javax.swing.AbstractButton> buttons = new Vector<javax.swing.AbstractButton>();
 
     private ButtonModel selection;
 
@@ -52,7 +52,7 @@ public class ButtonGroup implements Serializable {
         return buttons.size();
     }
 
-    public Enumeration getElements() {
+    public Enumeration<javax.swing.AbstractButton> getElements() {
         return buttons.elements();
     }
 

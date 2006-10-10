@@ -175,7 +175,7 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
     public JComboBox(final Object[] items) {
         this(new DefaultComboBoxModel(items));
     }
-    public JComboBox(final Vector items) {
+    public JComboBox(final Vector<?> items) {
         this(new DefaultComboBoxModel(items));
     }
 
