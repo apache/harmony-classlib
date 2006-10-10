@@ -25,62 +25,58 @@ public class URITest extends junit.framework.TestCase {
 
 	private URI[] uris;
 
-	private URI[] getUris() {
+	private URI[] getUris() throws URISyntaxException {
 
 		if (uris != null)
 			return uris;
 		else {
-			try {
-				uris = new URI[] {
-						// single arg constructor
-						new URI(
-								"http://user%60%20info@host/a%20path?qu%60%20ery#fr%5E%20ag"),
-						// escaped octets for illegal chars
-						new URI(
-								"http://user%C3%9F%C2%A3info@host:80/a%E2%82%ACpath?qu%C2%A9%C2%AEery#fr%C3%A4%C3%A8g"),
-						// escaped octets for unicode chars
-						new URI(
-								"ascheme://user\u00DF\u00A3info@host:0/a\u20ACpath?qu\u00A9\u00AEery#fr\u00E4\u00E8g"),
-						// unicode chars equivalent to = new
-						// URI("ascheme://user\u00df\u00a3info@host:0/a\u0080path?qu\u00a9\u00aeery#fr\u00e4\u00e8g"),
-
-						// multiple arg constructors
-						new URI("http", "user%60%20info", "host", 80,
-								"/a%20path", "qu%60%20ery", "fr%5E%20ag"),
-						// escaped octets for illegal
-						new URI("http", "user%C3%9F%C2%A3info", "host", -1,
-								"/a%E2%82%ACpath", "qu%C2%A9%C2%AEery",
-								"fr%C3%A4%C3%A8g"),
-     					// escaped octets for unicode
-						new URI("ascheme", "user\u00DF\u00A3info", "host", 80,
-								"/a\u20ACpath", "qu\u00A9\u00AEery",
-								"fr\u00E4\u00E8g"),
-						// unicode chars equivalent to = new
-						// URI("ascheme", "user\u00df\u00a3info", "host", 80, "/a\u0080path", "qu\u00a9\u00aeery", "fr\u00e4\u00e8g"),
-						new URI("http", "user` info", "host", 81, "/a path",
-								"qu` ery", "fr^ ag"), // illegal chars
-						new URI("http", "user%info", "host", 0, "/a%path",
-								"que%ry", "f%rag"), 
-						// % as illegal char, not escaped octet
-
-						// urls with undefined components
-						new URI("mailto", "user@domain.com", null),
-						// no host, path, query or fragment
-						new URI("../adirectory/file.html#"),
-						// relative path with empty fragment;
-						new URI("news", "comp.infosystems.www.servers.unix",
-								null), //
-						new URI(null, null, null, "fragment"), // only fragment
-						new URI("telnet://server.org"), // only host
-						new URI("http://reg:istry?query"),
-						// malformed hostname, therefore registry-based,
-						// with query
-						new URI("file:///c:/temp/calculate.pl?"),
-						// empty authority, non empty path, empty query
-				};
-			} catch (URISyntaxException e) {
-				fail("Unexpected Exception:" + e);
-			}
+                        uris = new URI[] {
+                            // single arg constructor
+                            new URI(
+                                    "http://user%60%20info@host/a%20path?qu%60%20ery#fr%5E%20ag"),
+                            // escaped octets for illegal chars
+                            new URI(
+                                    "http://user%C3%9F%C2%A3info@host:80/a%E2%82%ACpath?qu%C2%A9%C2%AEery#fr%C3%A4%C3%A8g"),
+                            // escaped octets for unicode chars
+                            new URI(
+                                    "ascheme://user\u00DF\u00A3info@host:0/a\u20ACpath?qu\u00A9\u00AEery#fr\u00E4\u00E8g"),
+                            // unicode chars equivalent to = new
+                            // URI("ascheme://user\u00df\u00a3info@host:0/a\u0080path?qu\u00a9\u00aeery#fr\u00e4\u00e8g"),
+                            
+                            // multiple arg constructors
+                            new URI("http", "user%60%20info", "host", 80,
+                                    "/a%20path", "qu%60%20ery", "fr%5E%20ag"),
+                            // escaped octets for illegal
+                            new URI("http", "user%C3%9F%C2%A3info", "host", -1,
+                                    "/a%E2%82%ACpath", "qu%C2%A9%C2%AEery",
+                                    "fr%C3%A4%C3%A8g"),
+                            // escaped octets for unicode
+                            new URI("ascheme", "user\u00DF\u00A3info", "host", 80,
+                                    "/a\u20ACpath", "qu\u00A9\u00AEery",
+                                    "fr\u00E4\u00E8g"),
+                            // unicode chars equivalent to = new
+                            // URI("ascheme", "user\u00df\u00a3info", "host", 80, "/a\u0080path", "qu\u00a9\u00aeery", "fr\u00e4\u00e8g"),
+                            new URI("http", "user` info", "host", 81, "/a path",
+                                    "qu` ery", "fr^ ag"), // illegal chars
+                            new URI("http", "user%info", "host", 0, "/a%path",
+                                    "que%ry", "f%rag"), 
+                            // % as illegal char, not escaped octet
+                            
+                            // urls with undefined components
+                            new URI("mailto", "user@domain.com", null),
+                            // no host, path, query or fragment
+                            new URI("../adirectory/file.html#"),
+                            // relative path with empty fragment;
+                            new URI("news", "comp.infosystems.www.servers.unix",
+                                    null), //
+                            new URI(null, null, null, "fragment"), // only fragment
+                            new URI("telnet://server.org"), // only host
+                            new URI("http://reg:istry?query"),
+                            // malformed hostname, therefore registry-based,
+                            // with query
+                            new URI("file:///c:/temp/calculate.pl?"),
+                            // empty authority, non empty path, empty query
+                        };
 			return uris;
 		}
 	}
@@ -758,16 +754,12 @@ public class URITest extends junit.framework.TestCase {
 				null, "server.org", "reg:istry", null, };
 
 		for (int i = 0; i < uris.length; i++) {
-			try {
-				String result = uris[i].getAuthority();
-				if (getAuthorityResults[i] != result
-						&& !getAuthorityResults[i].equals(result))
-					fail("Error: For URI \"" + uris[i].toString()
-							+ "\", getAuthority() returned: " + result
-							+ ", expected: " + getAuthorityResults[i]);
-			} catch (Exception e) {
-				fail("Unexpected " + e.toString());
-			}
+                    String result = uris[i].getAuthority();
+                    if (getAuthorityResults[i] != result
+                        && !getAuthorityResults[i].equals(result))
+                        fail("Error: For URI \"" + uris[i].toString()
+                             + "\", getAuthority() returned: " + result
+                             + ", expected: " + getAuthorityResults[i]);
 		}
 		//regression test for HARMONY-1119
 		assertNull(new URI(null, null, null, 127, null, null, null).getAuthority());
@@ -776,47 +768,43 @@ public class URITest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.URI#getAuthority()
 	 */
-	public void test_getAuthority2() {
+	public void test_getAuthority2() throws Exception {
 		// tests for URIs with empty string authority component
+
+                URI uri = new URI("file:///tmp/");
+                assertNull("Authority not null for URI: " + uri, uri.getAuthority());
+                assertNull("Host not null for URI " + uri, uri.getHost());
+                assertEquals("testA, toString() returned incorrect value",
+                             "file:///tmp/", uri.toString());
+
+                uri = new URI("file", "", "/tmp", "frag");
+                assertNull("Authority not null for URI: " + uri, uri.getAuthority());
+                assertNull("Host not null for URI " + uri, uri.getHost());
+                assertEquals("testB, toString() returned incorrect value",
+                             "file:///tmp#frag", uri.toString());
+
+                uri = new URI("file", "", "/tmp", "query", "frag");
+                assertNull("Authority not null for URI: " + uri, uri.getAuthority());
+                assertNull("Host not null for URI " + uri, uri.getHost());
+                assertEquals("test C, toString() returned incorrect value",
+                             "file:///tmp?query#frag", uri.toString());
+
+                // after normalization the host string info may be lost since the
+                // uri string is reconstructed
+                uri = new URI("file", "", "/tmp/a/../b/c", "query", "frag");
+                URI uri2 = uri.normalize();
+                assertNull("Authority not null for URI: " + uri2, uri
+                           .getAuthority());
+                assertNull("Host not null for URI " + uri2, uri.getHost());
+                assertEquals("test D, toString() returned incorrect value",
+                             "file:///tmp/a/../b/c?query#frag", uri.toString());
+                assertEquals("test E, toString() returned incorrect value",
+                             "file:/tmp/b/c?query#frag", uri2.toString());
+
+		// the empty string host will give URISyntaxException
+		// for the 7 arg constructor
 		try {
-			URI uri = new URI("file:///tmp/");
-			assertNull("Authority not null for URI: " + uri, uri.getAuthority());
-			assertNull("Host not null for URI " + uri, uri.getHost());
-			assertEquals("testA, toString() returned incorrect value",
-					"file:///tmp/", uri.toString());
-
-			uri = new URI("file", "", "/tmp", "frag");
-			assertNull("Authority not null for URI: " + uri, uri.getAuthority());
-			assertNull("Host not null for URI " + uri, uri.getHost());
-			assertEquals("testB, toString() returned incorrect value",
-					"file:///tmp#frag", uri.toString());
-
-			uri = new URI("file", "", "/tmp", "query", "frag");
-			assertNull("Authority not null for URI: " + uri, uri.getAuthority());
-			assertNull("Host not null for URI " + uri, uri.getHost());
-			assertEquals("test C, toString() returned incorrect value",
-					"file:///tmp?query#frag", uri.toString());
-
-			// after normalization the host string info may be lost since the
-			// uri string is reconstructed
-			uri = new URI("file", "", "/tmp/a/../b/c", "query", "frag");
-			URI uri2 = uri.normalize();
-			assertNull("Authority not null for URI: " + uri2, uri
-					.getAuthority());
-			assertNull("Host not null for URI " + uri2, uri.getHost());
-			assertEquals("test D, toString() returned incorrect value",
-					"file:///tmp/a/../b/c?query#frag", uri.toString());
-			assertEquals("test E, toString() returned incorrect value",
-					"file:/tmp/b/c?query#frag", uri2.toString());
-
-		} catch (Exception e) {
-			fail("Unexpected " + e.toString());
-		}
-
-		// the empty string host will give URISyntaxException for the 7 arg
-		// constructor
-		try {
-			URI uri = new URI("file", "user", "", 80, "/path", "query", "frag");
+			uri = new URI("file", "user", "", 80, "/path", "query", "frag");
 			fail("Expected URISyntaxException");
 		} catch (URISyntaxException e) {
 		}
@@ -825,7 +813,7 @@ public class URITest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.URI#getFragment()
 	 */
-	public void test_getFragment() {
+	public void test_getFragment() throws Exception {
 		URI[] uris = getUris();
 
 		String[] getFragmentResults = { "fr^ ag", "fr\u00E4\u00E8g", // =
@@ -836,23 +824,19 @@ public class URITest extends junit.framework.TestCase {
 				"fr^ ag", "f%rag", null, "", null, "fragment", null, null, null };
 
 		for (int i = 0; i < uris.length; i++) {
-			try {
-				String result = uris[i].getFragment();
-				if (getFragmentResults[i] != result
-						&& !getFragmentResults[i].equals(result))
-					fail("Error: For URI \"" + uris[i].toString()
-							+ "\", getFragment() returned: " + result
+                        String result = uris[i].getFragment();
+                        if (getFragmentResults[i] != result
+                            && !getFragmentResults[i].equals(result))
+                            fail("Error: For URI \"" + uris[i].toString()
+                                 + "\", getFragment() returned: " + result
 							+ ", expected: " + getFragmentResults[i]);
-			} catch (Exception e) {
-				fail("Unexpected " + e.toString());
-			}
 		}
 	}
 
 	/**
 	 * @tests java.net.URI#getHost()
 	 */
-	public void test_getHost() {
+	public void test_getHost() throws Exception {
 		URI[] uris = getUris();
 
 		String[] getHostResults = { "host", "host", "host", "host", "host",
@@ -860,24 +844,19 @@ public class URITest extends junit.framework.TestCase {
 				null, null };
 
 		for (int i = 0; i < uris.length; i++) {
-			try {
-				String result = uris[i].getHost();
-				if (getHostResults[i] != result
-						&& !getHostResults[i].equals(result))
-					fail("Error: For URI \"" + uris[i].toString()
-							+ "\", getHost() returned: " + result
-							+ ", expected: " + getHostResults[i]);
-			} catch (Exception e) {
-				fail("Unexpected " + e.toString());
-				e.printStackTrace();
-			}
+                        String result = uris[i].getHost();
+                        if (getHostResults[i] != result
+                            && !getHostResults[i].equals(result))
+                            fail("Error: For URI \"" + uris[i].toString()
+                                 + "\", getHost() returned: " + result
+                                 + ", expected: " + getHostResults[i]);
 		}
 	}
 
 	/**
 	 * @tests java.net.URI#getPath()
 	 */
-	public void test_getPath() {
+	public void test_getPath() throws Exception {
 		URI[] uris = getUris();
 
 		String[] getPathResults = { "/a path",
@@ -889,76 +868,64 @@ public class URITest extends junit.framework.TestCase {
 				"", "", "", "/c:/temp/calculate.pl" };
 
 		for (int i = 0; i < uris.length; i++) {
-			try {
-				String result = uris[i].getPath();
-				if (getPathResults[i] != result
-						&& !getPathResults[i].equals(result))
-					fail("Error: For URI \"" + uris[i].toString()
-							+ "\", getPath() returned: " + result
-							+ ", expected: " + getPathResults[i]);
-			} catch (Exception e) {
-				fail("Unexpected " + e.toString());
-			}
+			String result = uris[i].getPath();
+                        if (getPathResults[i] != result
+                            && !getPathResults[i].equals(result))
+                            fail("Error: For URI \"" + uris[i].toString()
+                                 + "\", getPath() returned: " + result
+                                 + ", expected: " + getPathResults[i]);
 		}
 	}
 
 	/**
 	 * @tests java.net.URI#getPort()
 	 */
-	public void test_getPort() {
+	public void test_getPort() throws Exception {
 		URI[] uris = getUris();
 
 		int[] getPortResults = { -1, 80, 0, 80, -1, 80, 81, 0, -1, -1, -1, -1,
 				-1, -1, -1 };
 
 		for (int i = 0; i < uris.length; i++) {
-			try {
-				int result = uris[i].getPort();
-				assertTrue("Error: For URI \"" + uris[i].toString()
-						+ "\", getPort() returned: " + result + ", expected: "
-						+ getPortResults[i], result == getPortResults[i]);
-			} catch (Exception e) {
-				fail("Unexpected " + e.toString());
-			}
+			int result = uris[i].getPort();
+                        assertTrue("Error: For URI \"" + uris[i].toString()
+                                   + "\", getPort() returned: " + result + ", expected: "
+                                   + getPortResults[i], result == getPortResults[i]);
 		}
 	}
 
 	/**
 	 * @tests java.net.URI#getPort()
 	 */
-	public void test_getPort2() {
-		// if port value is negative, the authority should be consider regirty
-		// based.
-		try {
-			URI uri = new URI("http://myhost:-8096/site/index.html");
-			assertEquals("TestA, returned wrong port value,", -1, uri.getPort());
-			assertEquals("TestA, returned wrong host value,", null, uri
-					.getHost());
-			try {
-				uri.parseServerAuthority();
-				fail("TestA, Expected URISyntaxException");
-			} catch (URISyntaxException e) {
-			}
+	public void test_getPort2() throws Exception {
+		// if port value is negative, the authority should be
+		// consider regirty based.
 
-			uri = new URI("http", "//myhost:-8096", null);
-			assertEquals("TestB returned wrong port value,", -1, uri.getPort());
-			assertEquals("TestB returned wrong host value,", null, uri
-					.getHost());
-			try {
-				uri.parseServerAuthority();
-				fail("TestB, Expected URISyntaxException");
-			} catch (URISyntaxException e) {
-			}
+                URI uri = new URI("http://myhost:-8096/site/index.html");
+                assertEquals("TestA, returned wrong port value,", -1, uri.getPort());
+                assertEquals("TestA, returned wrong host value,", null, uri
+                             .getHost());
+                try {
+                        uri.parseServerAuthority();
+                        fail("TestA, Expected URISyntaxException");
+                } catch (URISyntaxException e) {
+                }
 
-		} catch (Exception e) {
-			fail("Unexpected Exception, " + e);
-		}
+                uri = new URI("http", "//myhost:-8096", null);
+                assertEquals("TestB returned wrong port value,", -1, uri.getPort());
+                assertEquals("TestB returned wrong host value,", null, uri
+                             .getHost());
+                try {
+                        uri.parseServerAuthority();
+                        fail("TestB, Expected URISyntaxException");
+                } catch (URISyntaxException e) {
+                }
 	}
 
 	/**
 	 * @tests java.net.URI#getQuery()
 	 */
-	public void test_getQuery() {
+	public void test_getQuery() throws Exception {
 		URI[] uris = getUris();
 
 		String[] getQueryResults = { "qu` ery", "qu\u00A9\u00AEery", // =
@@ -969,23 +936,19 @@ public class URITest extends junit.framework.TestCase {
 				"qu` ery", "que%ry", null, null, null, null, null, "query", "" };
 
 		for (int i = 0; i < uris.length; i++) {
-			try {
-				String result = uris[i].getQuery();
-				if (getQueryResults[i] != result
-						&& !getQueryResults[i].equals(result))
-					fail("Error: For URI \"" + uris[i].toString()
-							+ "\", getQuery() returned: " + result
-							+ ", expected: " + getQueryResults[i]);
-			} catch (Exception e) {
-				fail("Unexpected " + e.toString());
-			}
+                        String result = uris[i].getQuery();
+                        if (getQueryResults[i] != result
+                            && !getQueryResults[i].equals(result))
+                                fail("Error: For URI \"" + uris[i].toString()
+                                     + "\", getQuery() returned: " + result
+                                     + ", expected: " + getQueryResults[i]);
 		}
 	}
 
 	/**
 	 * @tests java.net.URI#getRawAuthority()
 	 */
-	public void test_getRawAuthority() {
+	public void test_getRawAuthority() throws Exception {
 		URI[] uris = getUris();
 
 		String[] getRawAuthorityResults = {
@@ -1000,23 +963,19 @@ public class URITest extends junit.framework.TestCase {
 				null, null, "server.org", "reg:istry", null };
 
 		for (int i = 0; i < uris.length; i++) {
-			try {
-				String result = uris[i].getRawAuthority();
-				if (getRawAuthorityResults[i] != result
-						&& !getRawAuthorityResults[i].equals(result))
-					fail("Error: For URI \"" + uris[i].toString()
-							+ "\", getRawAuthority() returned: " + result
-							+ ", expected: " + getRawAuthorityResults[i]);
-			} catch (Exception e) {
-				fail("Unexpected " + e.toString());
-			}
+                        String result = uris[i].getRawAuthority();
+                        if (getRawAuthorityResults[i] != result
+                            && !getRawAuthorityResults[i].equals(result))
+                                fail("Error: For URI \"" + uris[i].toString()
+                                     + "\", getRawAuthority() returned: " + result
+                                     + ", expected: " + getRawAuthorityResults[i]);
 		}
 	}
 
 	/**
 	 * @tests java.net.URI#getRawFragment()
 	 */
-	public void test_getRawFragment() {
+	public void test_getRawFragment() throws Exception {
 		URI[] uris = getUris();
 
 		String[] getRawFragmentResults = { "fr%5E%20ag",
@@ -1029,23 +988,19 @@ public class URITest extends junit.framework.TestCase {
 				null, null };
 
 		for (int i = 0; i < uris.length; i++) {
-			try {
-				String result = uris[i].getRawFragment();
-				if (getRawFragmentResults[i] != result
-						&& !getRawFragmentResults[i].equals(result))
-					fail("Error: For URI \"" + uris[i].toString()
-							+ "\", getRawFragment() returned: " + result
-							+ ", expected: " + getRawFragmentResults[i]);
-			} catch (Exception e) {
-				fail("Unexpected " + e.toString());
-			}
+                        String result = uris[i].getRawFragment();
+                        if (getRawFragmentResults[i] != result
+                            && !getRawFragmentResults[i].equals(result))
+                            fail("Error: For URI \"" + uris[i].toString()
+                                 + "\", getRawFragment() returned: " + result
+                                 + ", expected: " + getRawFragmentResults[i]);
 		}
 	}
 
 	/**
 	 * @tests java.net.URI#getRawPath()
 	 */
-	public void test_getRawPath() {
+	public void test_getRawPath() throws Exception {
 		URI[] uris = getUris();
 
 		String[] getRawPathResults = { "/a%20path",
@@ -1058,23 +1013,19 @@ public class URITest extends junit.framework.TestCase {
 				null, "", "", "", "/c:/temp/calculate.pl" };
 
 		for (int i = 0; i < uris.length; i++) {
-			try {
-				String result = uris[i].getRawPath();
-				if (getRawPathResults[i] != result
-						&& !getRawPathResults[i].equals(result))
-					fail("Error: For URI \"" + uris[i].toString()
-							+ "\", getRawPath() returned: " + result
-							+ ", expected: " + getRawPathResults[i]);
-			} catch (Exception e) {
-				fail("Unexpected " + e.toString());
-			}
+                        String result = uris[i].getRawPath();
+                        if (getRawPathResults[i] != result
+                            && !getRawPathResults[i].equals(result))
+                                fail("Error: For URI \"" + uris[i].toString()
+                                     + "\", getRawPath() returned: " + result
+                                     + ", expected: " + getRawPathResults[i]);
 		}
 	}
 
 	/**
 	 * @tests java.net.URI#getRawQuery()
 	 */
-	public void test_getRawQuery() {
+	public void test_getRawQuery() throws Exception {
 		URI[] uris = getUris();
 
 		String[] getRawQueryResults = {
@@ -1088,16 +1039,12 @@ public class URITest extends junit.framework.TestCase {
 				"query", "" };
 
 		for (int i = 0; i < uris.length; i++) {
-			try {
-				String result = uris[i].getRawQuery();
-				if (getRawQueryResults[i] != result
-						&& !getRawQueryResults[i].equals(result))
-					fail("Error: For URI \"" + uris[i].toString()
-							+ "\", getRawQuery() returned: " + result
-							+ ", expected: " + getRawQueryResults[i]);
-			} catch (Exception e) {
-				fail("Unexpected " + e.toString());
-			}
+                        String result = uris[i].getRawQuery();
+                        if (getRawQueryResults[i] != result
+                            && !getRawQueryResults[i].equals(result))
+                                fail("Error: For URI \"" + uris[i].toString()
+                                     + "\", getRawQuery() returned: " + result
+                                     + ", expected: " + getRawQueryResults[i]);
 		}
 
 	}
@@ -1105,7 +1052,7 @@ public class URITest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.URI#getRawSchemeSpecificPart()
 	 */
-	public void test_getRawSchemeSpecificPart() {
+	public void test_getRawSchemeSpecificPart() throws Exception {
 		URI[] uris = getUris();
 
 		String[] getRawSspResults = {
@@ -1124,22 +1071,18 @@ public class URITest extends junit.framework.TestCase {
 				"///c:/temp/calculate.pl?" };
 
 		for (int i = 0; i < uris.length; i++) {
-			try {
-				String result = uris[i].getRawSchemeSpecificPart();
-				if (!getRawSspResults[i].equals(result))
-					fail("Error: For URI \"" + uris[i].toString()
-							+ "\", getRawSchemeSpecificPart() returned: "
-							+ result + ", expected: " + getRawSspResults[i]);
-			} catch (Exception e) {
-				fail("Unexpected " + e.toString());
-			}
+                        String result = uris[i].getRawSchemeSpecificPart();
+                        if (!getRawSspResults[i].equals(result))
+                               fail("Error: For URI \"" + uris[i].toString()
+                                    + "\", getRawSchemeSpecificPart() returned: "
+                                    + result + ", expected: " + getRawSspResults[i]);
 		}
 	}
 
 	/**
 	 * @tests java.net.URI#getRawUserInfo()
 	 */
-	public void test_getRawUserInfo() {
+	public void test_getRawUserInfo() throws URISyntaxException {
 		URI[] uris = getUris();
 
 		String[] getRawUserInfoResults = {
@@ -1153,23 +1096,19 @@ public class URITest extends junit.framework.TestCase {
 				null, null };
 
 		for (int i = 0; i < uris.length; i++) {
-			try {
-				String result = uris[i].getRawUserInfo();
-				if (getRawUserInfoResults[i] != result
-						&& !getRawUserInfoResults[i].equals(result))
-					fail("Error: For URI \"" + uris[i].toString()
-							+ "\", getRawUserInfo() returned: " + result
-							+ ", expected: " + getRawUserInfoResults[i]);
-			} catch (Exception e) {
-				fail("Unexpected " + e.toString());
-			}
+                        String result = uris[i].getRawUserInfo();
+                        if (getRawUserInfoResults[i] != result
+                            && !getRawUserInfoResults[i].equals(result))
+                                fail("Error: For URI \"" + uris[i].toString()
+                                     + "\", getRawUserInfo() returned: " + result
+                                     + ", expected: " + getRawUserInfoResults[i]);
 		}
 	}
 
 	/**
 	 * @tests java.net.URI#getScheme()
 	 */
-	public void test_getScheme() {
+	public void test_getScheme() throws Exception {
 		URI[] uris = getUris();
 
 		String[] getSchemeResults = { "http", "http", "ascheme", "http",
@@ -1177,23 +1116,19 @@ public class URITest extends junit.framework.TestCase {
 				null, "telnet", "http", "file" };
 
 		for (int i = 0; i < uris.length; i++) {
-			try {
-				String result = uris[i].getScheme();
-				if (getSchemeResults[i] != result
-						&& !getSchemeResults[i].equals(result))
-					fail("Error: For URI \"" + uris[i].toString()
-							+ "\", getScheme() returned: " + result
-							+ ", expected: " + getSchemeResults[i]);
-			} catch (Exception e) {
-				fail("Unexpected " + e.toString());
-			}
+                        String result = uris[i].getScheme();
+                        if (getSchemeResults[i] != result
+                            && !getSchemeResults[i].equals(result))
+                                fail("Error: For URI \"" + uris[i].toString()
+                                     + "\", getScheme() returned: " + result
+                                     + ", expected: " + getSchemeResults[i]);
 		}
 	}
 
 	/**
 	 * @tests java.net.URI#getSchemeSpecificPart()
 	 */
-	public void test_getSchemeSpecificPart() {
+	public void test_getSchemeSpecificPart() throws Exception {
 		URI[] uris = getUris();
 
 		String[] getSspResults = {
@@ -1213,15 +1148,11 @@ public class URITest extends junit.framework.TestCase {
 				"///c:/temp/calculate.pl?" };
 
 		for (int i = 0; i < uris.length; i++) {
-			try {
-				String result = uris[i].getSchemeSpecificPart();
-				if (!getSspResults[i].equals(result))
-					fail("Error: For URI \"" + uris[i].toString()
-							+ "\", getSchemeSpecificPart() returned: " + result
-							+ ", expected: " + getSspResults[i]);
-			} catch (Exception e) {
-				fail("Unexpected " + e.toString());
-			}
+                        String result = uris[i].getSchemeSpecificPart();
+                        if (!getSspResults[i].equals(result))
+                                fail("Error: For URI \"" + uris[i].toString()
+                                     + "\", getSchemeSpecificPart() returned: " + result
+                                     + ", expected: " + getSspResults[i]);
 		}
 
 	}
@@ -1229,7 +1160,7 @@ public class URITest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.URI#getUserInfo()
 	 */
-	public void test_getUserInfo() {
+	public void test_getUserInfo() throws Exception {
 		URI[] uris = getUris();
 
 		String[] getUserInfoResults = {
@@ -1244,23 +1175,19 @@ public class URITest extends junit.framework.TestCase {
 				null };
 
 		for (int i = 0; i < uris.length; i++) {
-			try {
-				String result = uris[i].getUserInfo();
-				if (getUserInfoResults[i] != result
-						&& !getUserInfoResults[i].equals(result))
-					fail("Error: For URI \"" + uris[i].toString()
-							+ "\", getUserInfo() returned: " + result
-							+ ", expected: " + getUserInfoResults[i]);
-			} catch (Exception e) {
-				fail("Unexpected " + e.toString());
-			}
+                        String result = uris[i].getUserInfo();
+                        if (getUserInfoResults[i] != result
+                            && !getUserInfoResults[i].equals(result))
+                                fail("Error: For URI \"" + uris[i].toString()
+                                     + "\", getUserInfo() returned: " + result
+                                     + ", expected: " + getUserInfoResults[i]);
 		}
 	}
 
 	/**
 	 * @tests java.net.URI#hashCode()
 	 */
-	public void test_hashCode() {
+	public void test_hashCode() throws Exception {
 		String[][] hashCodeData = new String[][] {
 				{ "", "" }, // null frags
 				{ "/path", "/path#frag" },
@@ -1318,15 +1245,11 @@ public class URITest extends junit.framework.TestCase {
 				false, false, true, true, true, false, false, true, false, };
 
 		for (int i = 0; i < hashCodeResults.length; i++) {
-			try {
-				URI b = new URI(hashCodeData[i][0]);
-				URI r = new URI(hashCodeData[i][1]);
-				assertEquals("Error in hashcode equals results for"
-						+ b.toString() + " " + r.toString(),
-						hashCodeResults[i], b.hashCode() == r.hashCode());
-			} catch (Exception e) {
-				fail("Exception during hashcode testing" + e);
-			}
+                        URI b = new URI(hashCodeData[i][0]);
+                        URI r = new URI(hashCodeData[i][1]);
+                        assertEquals("Error in hashcode equals results for"
+                                     + b.toString() + " " + r.toString(),
+                                     hashCodeResults[i], b.hashCode() == r.hashCode());
 		}
 
 	}
@@ -1334,7 +1257,7 @@ public class URITest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.URI#isAbsolute()
 	 */
-	public void test_isAbsolute() {
+	public void test_isAbsolute() throws URISyntaxException {
 		String[] isAbsoluteData = new String[] { "mailto:user@ca.ibm.com",
 				"urn:isbn:123498989h", "news:software.ibm.com",
 				"http://www.amazon.ca", "file:///d:/temp/results.txt",
@@ -1346,20 +1269,16 @@ public class URITest extends junit.framework.TestCase {
 				false, false, false, false, false, false, false };
 
 		for (int i = 0; i < isAbsoluteData.length; i++) {
-			try {
-				boolean result = new URI(isAbsoluteData[i]).isAbsolute();
-				assertEquals("new URI(" + isAbsoluteData[i] + ").isAbsolute()",
-						results[i], result);
-			} catch (URISyntaxException e) {
-				fail("Unexpected Exception: " + e);
-			}
+                       boolean result = new URI(isAbsoluteData[i]).isAbsolute();
+                       assertEquals("new URI(" + isAbsoluteData[i] + ").isAbsolute()",
+                                    results[i], result);
 		}
 	}
 
 	/**
 	 * @tests java.net.URI#isOpaque()
 	 */
-	public void test_isOpaque() {
+	public void test_isOpaque() throws URISyntaxException {
 		String[] isOpaqueData = new String[] { "mailto:user@ca.ibm.com",
 				"urn:isbn:123498989h", "news:software.ibm.com",
 				"http://www.amazon.ca", "file:///d:/temp/results.txt",
@@ -1371,20 +1290,16 @@ public class URITest extends junit.framework.TestCase {
 				true, false, false, false, false, false, false, false };
 
 		for (int i = 0; i < isOpaqueData.length; i++) {
-			try {
-				boolean result = new URI(isOpaqueData[i]).isOpaque();
-				assertEquals("new URI(" + isOpaqueData[i] + ").isOpaque()",
-						results[i], result);
-			} catch (URISyntaxException e) {
-				fail("Unexpected Exception: " + e);
-			}
+                    boolean result = new URI(isOpaqueData[i]).isOpaque();
+                    assertEquals("new URI(" + isOpaqueData[i] + ").isOpaque()",
+                                 results[i], result);
 		}
 	}
 
 	/**
 	 * @tests java.net.URI#normalize()
 	 */
-	public void test_normalize() {
+	public void test_normalize() throws Exception {
 
 		String[] normalizeData = new String[] {
 				// normal
@@ -1436,28 +1351,21 @@ public class URITest extends junit.framework.TestCase {
 				"..", "../g", "b/c/g", "../c/e", "../c/", };
 
 		for (int i = 0; i < normalizeData.length; i++) {
-			try {
-				URI test = new URI(normalizeData[i]);
-				String result = test.normalize().toString();
-				assertEquals("Normalized incorrectly, ", normalizeResults[i],
-						result.toString());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+                        URI test = new URI(normalizeData[i]);
+                        String result = test.normalize().toString();
+                        assertEquals("Normalized incorrectly, ", normalizeResults[i],
+                                     result.toString());
 		}
 	}
 
 	/**
 	 * @tests java.net.URI#normalize()
 	 */
-	public void test_normalize2() {
+	public void test_normalize2() throws URISyntaxException {
 		URI uri1 = null, uri2 = null;
-		try {
-			uri1 = new URI("file:/D:/one/two/../../three");
-			uri2 = uri1.normalize();
-		} catch (URISyntaxException e) {
-			fail("Unexpected URISyntaxException");
-		}
+                uri1 = new URI("file:/D:/one/two/../../three");
+                uri2 = uri1.normalize();
+
 		assertEquals("Normalized to incorrect URI", "file:/D:/three", uri2
 				.toString());
 		assertEquals("Resolved URI is not absolute", true, uri2.isAbsolute());
@@ -1469,101 +1377,89 @@ public class URITest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.URI#normalize()
 	 */
-	public void test_normalize3() {
+	public void test_normalize3() throws URISyntaxException {
 		// return same URI if it has a normalized path already
 		URI uri1 = null, uri2 = null;
-		try {
-			uri1 = new URI("http://host/D:/one/two/three");
-			uri2 = uri1.normalize();
-		} catch (URISyntaxException e) {
-			fail("Unexpected URISyntaxException, " + e);
-		}
+                uri1 = new URI("http://host/D:/one/two/three");
+                uri2 = uri1.normalize();
 		assertSame("Failed to return same URI after normalization", uri1, uri2);
 
 		// try with empty path
-		try {
-			uri1 = new URI("http", "host", null, "fragment");
-			uri2 = uri1.normalize();
-		} catch (URISyntaxException e) {
-			fail("Unexpected URISyntaxException, " + e);
-		}
+                uri1 = new URI("http", "host", null, "fragment");
+                uri2 = uri1.normalize();
 		assertSame("Failed to return same URI after normalization", uri1, uri2);
 	}
 
 	/**
 	 * @tests java.net.URI#parseServerAuthority()
 	 */
-	public void test_parseServerAuthority() {
+	public void test_parseServerAuthority() throws URISyntaxException {
 		// registry based uris
 		URI[] uris = null;
-		try {
-			uris = new URI[] {
-					// port number not digits
-					new URI("http://foo:bar/file#fragment"),
-					new URI("http", "//foo:bar/file", "fragment"),
+                uris = new URI[] {
+                    // port number not digits
+                    new URI("http://foo:bar/file#fragment"),
+                    new URI("http", "//foo:bar/file", "fragment"),
+                    
+                    // unicode char in the hostname = new URI("http://host\u00dfname/")
+                    new URI("http://host\u00DFname/"),
+                    
+                    new URI("http", "//host\u00DFname/", null), 
+                    // = new URI("http://host\u00dfname/", null),
+                    
+                    // escaped octets in host name
+                    new URI("http://host%20name/"),
+                    new URI("http", "//host%20name/", null),
+                    
+                    // missing host name, port number
+                    new URI("http://joe@:80"), 
+                    
+                    // missing host name, no port number
+                    new URI("http://user@/file?query#fragment"),
+                    
+                    new URI("//host.com:80err"), // malformed port number
+                    new URI("//host.com:81e%Abrr"),
 					
-					// unicode char in the hostname = new URI("http://host\u00dfname/")
-					new URI("http://host\u00DFname/"),
-					
-					new URI("http", "//host\u00DFname/", null), 
-					// = new URI("http://host\u00dfname/", null),
-					
-					// escaped octets in host name
-					new URI("http://host%20name/"),
-					new URI("http", "//host%20name/", null),
-					
-					// missing host name, port number
-					new URI("http://joe@:80"), 
+                    // malformed ipv4 address
+                    new URI("telnet", "//256.197.221.200", null), 
+                    
+                    new URI("telnet://198.256.221.200"),
+                    new URI("//te%ae.com"), // misc ..
+                    new URI("//:port"),
+                    new URI("//:80"),
+                    
+                    // last label has to start with alpha char
+                    new URI("//fgj234fkgj.jhj.123."),
+                    
+                    new URI("//fgj234fkgj.jhj.123"),
+                    
+                    // '-' cannot be first or last charcter in a label
+                    new URI("//-domain.name"), 
+                    new URI("//domain.name-"),
+                    new URI("//domain-"),
+                    
+                    // illegal char in host name
+                    new URI("//doma*in"), 
+                    
+                    // host expected
+                    new URI("http://:80/"),
+                    new URI("http://user@/"),
+                    
+                    // ipv6 address not enclosed in "[]"
+                    new URI("http://3ffe:2a00:100:7031:22:1:80:89/"),
+                    
+                    // expected ipv6 addresses to be enclosed in "[]"
+                    new URI("http", "34::56:78", "/path", "query", "fragment"),
+                    
+                    // expected host
+                    new URI("http", "user@", "/path", "query", "fragment")
+                };
+                // these URIs do not have valid server based authorities,
+                // but single arg, 3 and 5 arg constructors
+                // parse them as valid registry based authorities
 
-					// missing host name, no port number
-					new URI("http://user@/file?query#fragment"),
-
-					new URI("//host.com:80err"), // malformed port number
-					new URI("//host.com:81e%Abrr"),
-					
-					// malformed ipv4 address
-					new URI("telnet", "//256.197.221.200", null), 
-
-					new URI("telnet://198.256.221.200"),
-					new URI("//te%ae.com"), // misc ..
-					new URI("//:port"),
-					new URI("//:80"),
-					
-					// last label has to start with alpha char
-					new URI("//fgj234fkgj.jhj.123."),
-
-					new URI("//fgj234fkgj.jhj.123"),
-					
-					// '-' cannot be first or last charcter in a label
-					new URI("//-domain.name"), 
-					new URI("//domain.name-"),
-					new URI("//domain-"),
-					
-					// illegal char in host name
-					new URI("//doma*in"), 
-					
-					// host expected
-					new URI("http://:80/"),
-					new URI("http://user@/"),
-					
-					// ipv6 address not enclosed in "[]"
-					new URI("http://3ffe:2a00:100:7031:22:1:80:89/"),
-
-					// expected ipv6 addresses to be enclosed in "[]"
-					new URI("http", "34::56:78", "/path", "query", "fragment"),
-					
-					// expected host
-					new URI("http", "user@", "/path", "query", "fragment")
-			};
-		} catch (URISyntaxException e) {
-			// these URIs do not have valid server based authorities,
-			// but single arg, 3 and 5 arg constructors
-			// parse them as valid registry based authorities
-			fail("Unexpected Exception;" + e);
-		}
-
-		// exception should occur when parseServerAuthority is requested on
-		// these uris
+		// exception should occur when parseServerAuthority is
+		// requested on these uris
 		for (int i = 0; i < uris.length; i++) {
 			try {
 				URI uri = uris[i].parseServerAuthority();
@@ -1574,19 +1470,15 @@ public class URITest extends junit.framework.TestCase {
 		}
 
 		// valid Server based authorities
-		try {
-			new URI("http", "3ffe:2a00:100:7031:2e:1:80:80", "/path",
-					"fragment").parseServerAuthority();
-			new URI("http", "host:80", "/path", "query", "fragment")
-					.parseServerAuthority();
-			new URI("http://[::3abc:4abc]:80/").parseServerAuthority();
-			new URI("http", "34::56:78", "/path", "fragment")
-					.parseServerAuthority();
-			new URI("http", "[34:56::78]:80", "/path", "fragment")
-					.parseServerAuthority();
-		} catch (URISyntaxException e) {
-			fail("Unexpected URISyntaxException: " + e);
-		}
+                new URI("http", "3ffe:2a00:100:7031:2e:1:80:80", "/path",
+                        "fragment").parseServerAuthority();
+                new URI("http", "host:80", "/path", "query", "fragment")
+                    .parseServerAuthority();
+                new URI("http://[::3abc:4abc]:80/").parseServerAuthority();
+                new URI("http", "34::56:78", "/path", "fragment")
+                    .parseServerAuthority();
+                new URI("http", "[34:56::78]:80", "/path", "fragment")
+                    .parseServerAuthority();
 
 		// invalid authorities (neither server nor registry)
 		try {
@@ -1672,43 +1564,37 @@ public class URITest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.URI#relativize(java.net.URI)
 	 */
-	public void test_relativize2() {
-		try {
-			URI a = new URI("http://host/dir");
-			URI b = new URI("http://host/dir/file?query");
-			assertEquals("relativized incorrectly,", new URI("file?query"), a
-					.relativize(b));
+	public void test_relativize2() throws Exception {
+                URI a = new URI("http://host/dir");
+                URI b = new URI("http://host/dir/file?query");
+                assertEquals("relativized incorrectly,", new URI("file?query"), a
+                             .relativize(b));
 
-			// one URI with empty host
-			a = new URI("file:///~/dictionary");
-			b = new URI("file://tools/~/dictionary");
-			assertEquals("relativized incorrectly,", new URI(
-					"file://tools/~/dictionary"), a.relativize(b));
-			assertEquals("relativized incorrectly,", new URI(
-					"file:///~/dictionary"), b.relativize(a));
+                // one URI with empty host
+                a = new URI("file:///~/dictionary");
+                b = new URI("file://tools/~/dictionary");
+                assertEquals("relativized incorrectly,",
+                             new URI(
+                                     "file://tools/~/dictionary"), a.relativize(b));
+                assertEquals("relativized incorrectly,",
+                             new URI(
+                                     "file:///~/dictionary"), b.relativize(a));
 
-			// two URIs with empty hosts
-			b = new URI("file:///~/therasus");
-			assertEquals("relativized incorrectly,", new URI(
-					"file:///~/therasus"), a.relativize(b));
-			assertEquals("relativized incorrectly,", new URI(
-					"file:///~/dictionary"), b.relativize(a));
-		} catch (Exception e) {
-			fail("Unexpected Exception, " + e);
-		}
+                // two URIs with empty hosts
+                b = new URI("file:///~/therasus");
+                assertEquals("relativized incorrectly,",
+                             new URI("file:///~/therasus"), a.relativize(b));
+                assertEquals("relativized incorrectly,",
+                             new URI("file:///~/dictionary"), b.relativize(a));
 	}
 
 	/**
 	 * @tests java.net.URI#resolve(java.net.URI)
 	 */
-	public void test_resolve() {
+	public void test_resolve() throws URISyntaxException {
 		URI uri1 = null, uri2 = null;
-		try {
-			uri1 = new URI("file:/D:/one/two/three");
-			uri2 = uri1.resolve(new URI(".."));
-		} catch (URISyntaxException e) {
-			fail("Unexpected URISyntaxException");
-		}
+                uri1 = new URI("file:/D:/one/two/three");
+                uri2 = uri1.resolve(new URI(".."));
 
 		assertEquals("Resolved to incorrect URI", "file:/D:/one/", uri2
 				.toString());
@@ -1778,7 +1664,7 @@ public class URITest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.URI#toASCIIString()
 	 */
-	public void test_toASCIIString() {
+	public void test_toASCIIString() throws Exception {
 		URI[] uris = getUris();
 
 		String[] toASCIIStringResults0 = new String[] {
@@ -1796,15 +1682,11 @@ public class URITest extends junit.framework.TestCase {
 				"file:///c:/temp/calculate.pl?" };
 
 		for (int i = 0; i < uris.length; i++) {
-			try {
-				String result = uris[i].toASCIIString();
-				assertTrue("Error: For URI \"" + uris[i].toString()
-						+ "\", toASCIIString() returned: " + result
-						+ ", expected: " + toASCIIStringResults0[i], result
-						.equals(toASCIIStringResults0[i]));
-			} catch (Exception e) {
-				fail("Unexpected " + e.toString());
-			}
+                        String result = uris[i].toASCIIString();
+                        assertTrue("Error: For URI \"" + uris[i].toString()
+                                   + "\", toASCIIString() returned: " + result
+                                   + ", expected: " + toASCIIStringResults0[i], result
+                                   .equals(toASCIIStringResults0[i]));
 		}
 
 		String[] toASCIIStringData = new String[] {
@@ -1821,23 +1703,19 @@ public class URITest extends junit.framework.TestCase {
 				"mailto://user@domain.com", "mailto://user%C3%9F@domain.com", };
 
 		for (int i = 0; i < toASCIIStringData.length; i++) {
-			try {
-				URI test = new URI(toASCIIStringData[i]);
-				String result = test.toASCIIString();
-				assertTrue("Error: new URI(\"" + toASCIIStringData[i]
-						+ "\").toASCIIString() returned: " + result
-						+ ", expected: " + toASCIIStringResults[i], result
-						.equals(toASCIIStringResults[i]));
-			} catch (Exception e) {
-				fail("Unexpected " + e.toString());
-			}
+                        URI test = new URI(toASCIIStringData[i]);
+                        String result = test.toASCIIString();
+                        assertTrue("Error: new URI(\"" + toASCIIStringData[i]
+                                   + "\").toASCIIString() returned: " + result
+                                   + ", expected: " + toASCIIStringResults[i], result
+                                   .equals(toASCIIStringResults[i]));
 		}
 	}
 
 	/**
 	 * @tests java.net.URI#toString()
 	 */
-	public void test_toString() {
+	public void test_toString() throws Exception {
 		URI[] uris = getUris();
 
 		String[] toStringResults = {
@@ -1857,21 +1735,17 @@ public class URITest extends junit.framework.TestCase {
 				"file:///c:/temp/calculate.pl?" };
 
 		for (int i = 0; i < uris.length; i++) {
-			try {
-				String result = uris[i].toString();
-				assertTrue("Error: For URI \"" + uris[i].toString()
-						+ "\", toString() returned: " + result + ", expected: "
-						+ toStringResults[i], result.equals(toStringResults[i]));
-			} catch (Exception e) {
-				fail("Unexpected " + e.toString());
-			}
+                        String result = uris[i].toString();
+                        assertTrue("Error: For URI \"" + uris[i].toString()
+                                   + "\", toString() returned: " + result + ", expected: "
+                                   + toStringResults[i], result.equals(toStringResults[i]));
 		}
 	}
 
 	/**
 	 * @tests java.net.URI#toURL()
 	 */
-	public void test_toURL() {
+	public void test_toURL() throws Exception {
 		String absoluteuris[] = new String[] { "mailto:user@ca.ibm.com",
 				"urn:isbn:123498989h", "news:software.ibm.com",
 				"http://www.amazon.ca", "file:///d:/temp/results.txt",
@@ -1886,8 +1760,6 @@ public class URITest extends junit.framework.TestCase {
 				new URI(absoluteuris[i]).toURL();
 			} catch (MalformedURLException e) {
 				// not all the URIs can be translated into valid URLs
-			} catch (Exception e) {
-				fail("Unexpected Exception" + e);
 			}
 
 		for (int i = 0; i < relativeuris.length; i++)
@@ -1895,8 +1767,6 @@ public class URITest extends junit.framework.TestCase {
 				new URI(relativeuris[i]).toURL();
 				fail("Expected IllegalArgumentException not thrown");
 			} catch (IllegalArgumentException e) {
-			} catch (Exception e) {
-				fail("Unexpected Exception" + e);
 			}
 	}
 
