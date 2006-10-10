@@ -5,5 +5,14 @@ Bundle-SymbolicName: org.apache.harmony.x.imageio
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Import-Package: java.awt
+Import-Package: java.awt,
+ java.awt.color,
+ java.awt.geom,
+ java.awt.image,
+ java.io,
+ java.lang,
+ java.net,
+ java.nio,
+ java.util,
+ org.apache.harmony.awt.gl.image
 Export-Package: javax.imageio
