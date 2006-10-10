@@ -311,9 +311,7 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 			try {
 				DatagramPacket thePacket = new DatagramPacket(buf, 1,
 						new mySocketAddress());
-				assertFalse(
-						"No exception when constructing using unsupported SocketAddress subclass",
-						true);
+				fail("No exception when constructing using unsupported SocketAddress subclass");
 			} catch (IllegalArgumentException ex) {
 			}
 
@@ -322,9 +320,7 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 
 			try {
 				DatagramPacket thePacket = new DatagramPacket(buf, 1, null);
-				assertFalse(
-						"No exception when constructing address using null",
-						true);
+				fail("No exception when constructing address using null");
 			} catch (IllegalArgumentException ex) {
 			}
 
@@ -359,9 +355,7 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 			try {
 				DatagramPacket thePacket = new DatagramPacket(buf, 1, 1,
 						new mySocketAddress());
-				assertFalse(
-						"No exception when constructing using unsupported SocketAddress subclass",
-						true);
+				fail("No exception when constructing using unsupported SocketAddress subclass");
 			} catch (IllegalArgumentException ex) {
 			}
 
@@ -370,9 +364,7 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 
 			try {
 				DatagramPacket thePacket = new DatagramPacket(buf, 1, 1, null);
-				assertFalse(
-						"No exception when constructing address using null",
-						true);
+				fail("No exception when constructing address using null");
 			} catch (IllegalArgumentException ex) {
 			}
 
@@ -429,9 +421,7 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 			DatagramPacket thePacket = new DatagramPacket(buf, 1);
 			try {
 				thePacket.setSocketAddress(new mySocketAddress());
-				assertFalse(
-						"No exception when setting address using unsupported SocketAddress subclass",
-						true);
+				fail("No exception when setting address using unsupported SocketAddress subclass");
 			} catch (IllegalArgumentException ex) {
 			}
 
@@ -440,8 +430,7 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 			thePacket = new DatagramPacket(buf, 1);
 			try {
 				thePacket.setSocketAddress(null);
-				assertFalse("No exception when setting address using null",
-						true);
+				fail("No exception when setting address using null");
 			} catch (IllegalArgumentException ex) {
 			}
 

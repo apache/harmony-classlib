@@ -105,7 +105,7 @@ public class DataFlavorTest extends TestCase {
             DataFlavor.tryToLoadClass("java.lang.Thread", null);
             assertTrue(true);
         } catch (ClassNotFoundException e) {
-            assertTrue(false);
+            fail();
         }
     }
 
@@ -150,7 +150,7 @@ public class DataFlavorTest extends TestCase {
 
         try {
             new DataFlavor("x/y class=java.lang.String", "z");
-            assertTrue(false);
+            fail();
         } catch (IllegalArgumentException e) {
             assertTrue(true);
         }
@@ -170,19 +170,19 @@ public class DataFlavorTest extends TestCase {
             assertEquals(new DataFlavor("x/y; class=java.lang.String").getRepresentationClass(),
                     String.class);
         } catch (ClassNotFoundException e1) {
-            assertTrue(false);
+            fail();
         }
 
         try {
             new DataFlavor("x/y class=java.lang.String", "z");
-            assertTrue(false);
+            fail();
         } catch (IllegalArgumentException e) {
             assertTrue(true);
         }
 
         try {
             new DataFlavor("x/y; class=java.lang.Strng");
-            assertTrue(false);
+            fail();
         } catch (ClassNotFoundException e) {
             assertTrue(true);
         }
@@ -206,12 +206,12 @@ public class DataFlavorTest extends TestCase {
                     Thread.currentThread().getContextClassLoader()).getRepresentationClass(),
                     String.class);
         } catch (ClassNotFoundException e1) {
-            assertTrue(false);
+            fail();
         }
 
         try {
             new DataFlavor("x/y class=java.lang.String", "z");
-            assertTrue(false);
+            fail();
         } catch (IllegalArgumentException e) {
             assertTrue(true);
         }

@@ -384,9 +384,7 @@ public class MulticastSocketTest extends SocketTestCase {
 				groupSockAddr = new InetSocketAddress(InetAddress
 						.getByName("255.255.255.255"), groupPort);
 				mss.joinGroup(groupSockAddr, null);
-				assertFalse(
-						"Did not get exception when group is not a multicast address",
-						true);
+				fail("Did not get exception when group is not a multicast address");
 			} catch (IOException e) {
 			}
 
@@ -398,9 +396,7 @@ public class MulticastSocketTest extends SocketTestCase {
 				group = InetAddress.getByName("224.0.0.3");
 				groupSockAddr = new InetSocketAddress(group, groupPort);
 				mss.joinGroup(groupSockAddr, null);
-				assertFalse(
-						"Did not get exception when joining group is not allowed",
-						true);
+				fail( "Did not get exception when joining group is not allowed");
 			} catch (SecurityException e) {
 			}
 			System.setSecurityManager(null);
@@ -645,9 +641,7 @@ public class MulticastSocketTest extends SocketTestCase {
 				group = InetAddress.getByName("255.255.255.255");
 				groupSockAddr = new InetSocketAddress(group, groupPort);
 				mss.leaveGroup(groupSockAddr, null);
-				assertFalse(
-						"Did not get exception when group is not a multicast address",
-						true);
+				fail("Did not get exception when group is not a multicast address");
 			} catch (IOException e) {
 			}
 
@@ -659,9 +653,7 @@ public class MulticastSocketTest extends SocketTestCase {
 				group = InetAddress.getByName("224.0.0.3");
 				groupSockAddr = new InetSocketAddress(group, groupPort);
 				mss.leaveGroup(groupSockAddr, null);
-				assertFalse(
-						"Did not get exception when joining group is not allowed",
-						true);
+				fail("Did not get exception when joining group is not allowed");
 			} catch (SecurityException e) {
 			}
 			System.setSecurityManager(null);

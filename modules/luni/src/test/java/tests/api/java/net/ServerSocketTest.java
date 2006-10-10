@@ -436,9 +436,7 @@ public class ServerSocketTest extends SocketTestCase {
 						Support_PortManager.getNextPort());
 				theSocket.bind(theAddress);
 				theSocket2.bind(theAddress);
-				assertFalse(
-						"No exception binding to address that is not available",
-						true);
+				fail("No exception binding to address that is not available");
 			} catch (IOException ex) {
 			}
 			theSocket.close();
@@ -463,9 +461,7 @@ public class ServerSocketTest extends SocketTestCase {
 			theSocket = new ServerSocket();
 			try {
 				theSocket.bind(new mySocketAddress());
-				assertFalse(
-						"No exception when binding using unsupported SocketAddress subclass",
-						true);
+				fail("No exception when binding using unsupported SocketAddress subclass");
 			} catch (IllegalArgumentException ex) {
 			}
 			theSocket.close();
@@ -527,9 +523,7 @@ public class ServerSocketTest extends SocketTestCase {
 						Support_PortManager.getNextPort());
 				theSocket.bind(theAddress, 5);
 				theSocket2.bind(theAddress, 5);
-				assertFalse(
-						"No exception binding to address that is not available",
-						true);
+				fail("No exception binding to address that is not available");
 			} catch (IOException ex) {
 			}
 			theSocket.close();

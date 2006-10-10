@@ -1084,8 +1084,8 @@ public class SocketTest extends SocketTestCase {
 			theSocket.bind(new InetSocketAddress(InetAddress
 					.getByAddress(Support_Configuration.nonLocalAddressBytes),
 					Support_PortManager.getNextPort()));
-			assertFalse("No exception when binding to bad address:"
-					+ theSocket.getLocalSocketAddress().toString(), true);
+			fail("No exception when binding to bad address:"
+		  	     + theSocket.getLocalSocketAddress().toString());
 		} catch (IOException ex) {
 		}
 		theSocket.close();
@@ -1147,9 +1147,7 @@ public class SocketTest extends SocketTestCase {
 					Support_PortManager.getNextPort());
 			theSocket.bind(theAddress);
 			theSocket2.bind(theAddress);
-			assertFalse(
-					"No exception binding to address that is not available",
-					true);
+			fail("No exception binding to address that is not available");
 		} catch (IOException ex) {
 		}
 		theSocket.close();

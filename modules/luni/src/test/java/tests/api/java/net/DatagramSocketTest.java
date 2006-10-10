@@ -1162,9 +1162,7 @@ public class DatagramSocketTest extends SocketTestCase {
 								.getNextPort());
 				theSocket.bind(theAddress);
 				theSocket2.bind(theAddress);
-				assertFalse(
-						"No exception binding to address that is not available",
-						true);
+				fail("No exception binding to address that is not available");
 			} catch (SocketException ex) {
 			}
 			theSocket.close();
@@ -1174,9 +1172,7 @@ public class DatagramSocketTest extends SocketTestCase {
 			theSocket = new DatagramSocket(null);
 			try {
 				theSocket.bind(new mySocketAddress());
-				assertFalse(
-						"No exception when binding using unsupported SocketAddress subclass",
-						true);
+				fail("No exception when binding using unsupported SocketAddress subclass");
 			} catch (IllegalArgumentException ex) {
 			}
 			theSocket.close();

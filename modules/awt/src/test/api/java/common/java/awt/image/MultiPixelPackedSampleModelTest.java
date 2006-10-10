@@ -356,13 +356,13 @@ public class MultiPixelPackedSampleModelTest extends TestCase {
         try {
             sm = mppsmb1.createSubsetSampleModel(null);
         } catch (RasterFormatException e) {
-            assertTrue(false);
+            fail();
         }
 
         try {
             sm = mppsmb1.createSubsetSampleModel(bands);
         } catch (RasterFormatException e) {
-            assertTrue(false);
+            fail();
         }
 
         try {

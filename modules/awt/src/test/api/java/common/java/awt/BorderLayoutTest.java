@@ -429,7 +429,7 @@ public class BorderLayoutTest extends AWTTestCase {
 
         try {
             layout.getLayoutComponent("Z");
-            assertTrue(false);
+            fail();
         } catch (IllegalArgumentException e) {
             assertTrue(true);
         }

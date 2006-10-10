@@ -60,7 +60,7 @@ public class SystemFlavorMapTest extends TestCase {
             assertEquals(SystemFlavorMap.decodeDataFlavor(null), null);
             assertEquals(SystemFlavorMap.decodeDataFlavor("z"), null);
         } catch (ClassNotFoundException e) {
-            assertTrue(false);
+            fail();
         }
 
         try {
@@ -68,7 +68,7 @@ public class SystemFlavorMapTest extends TestCase {
                     "org.apache.harmony.awt.datatransfer" +
                     ":application/x-java-serialized-object; class=Ing"),
                     DataFlavor.stringFlavor);
-            assertTrue(false);
+            fail();
         } catch (ClassNotFoundException e) {
             assertTrue(true);
         }
