@@ -1168,7 +1168,7 @@ public class VetoableChangeSupportTest extends TestCase {
             assertTrue("Illegal exception:" + message, message.equals(B_THROW));
             return;
         }
-        assertFalse("Unreachable path:" + sb, true);
+        fail("Unreachable path:" + sb);
     }
 
     /*
