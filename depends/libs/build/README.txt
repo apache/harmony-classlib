@@ -3,7 +3,7 @@ Dependencies for AWT
 
 For Debian/Ubuntu, it should be possible to run:
 
-  sh depends/libs/build/fetch-awt-depends.sh
+  ant fetch-depends
 
 to construct the dependency tree.
 
