@@ -46,17 +46,13 @@ public class ZipFileTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.zip.ZipFile#ZipFile(java.io.File, int)
 	 */
-	public void test_ConstructorLjava_io_FileI() {
-		try {
-			zfile.close(); // about to reopen the same temp file
-			File file = new File(tempFileName);
-			ZipFile zip = new ZipFile(file, ZipFile.OPEN_DELETE
-					| ZipFile.OPEN_READ);
-			zip.close();
-			assertTrue("Zip should not exist", !file.exists());
-		} catch (IOException e) {
-			fail("Unexpected exception: " + e);
-		}
+	public void test_ConstructorLjava_io_FileI() throws IOException {
+                zfile.close(); // about to reopen the same temp file
+                File file = new File(tempFileName);
+                ZipFile zip = new ZipFile(file, ZipFile.OPEN_DELETE
+                                          | ZipFile.OPEN_READ);
+                zip.close();
+                assertTrue("Zip should not exist", !file.exists());
 	}
 
 	/**
@@ -75,46 +71,37 @@ public class ZipFileTest extends junit.framework.TestCase {
 		return zip.getEntry("File1.txt");
 	}
 
-	protected ZipFile test_finalize2(File file) {
-		try {
-			return new ZipFile(file);
-		} catch (IOException e) {
-			fail("Unexpected exception: " + e);
-		}
-		return null;
+	protected ZipFile test_finalize2(File file) throws IOException {
+                return new ZipFile(file);
 	}
 
 	/**
 	 * @tests java.util.zip.ZipFile#finalize()
 	 */
-	public void test_finalize() {
-		try {
-			InputStream in = Support_Resources.getStream("hyts_ZipFile.zip");
-			File file = Support_Resources.createTempFile(".jar");
-			OutputStream out = new FileOutputStream(file);
-			int result;
-			byte[] buf = new byte[4096];
-			while ((result = in.read(buf)) != -1) {
+	public void test_finalize() throws IOException {
+            InputStream in = Support_Resources.getStream("hyts_ZipFile.zip");
+            File file = Support_Resources.createTempFile(".jar");
+            OutputStream out = new FileOutputStream(file);
+            int result;
+            byte[] buf = new byte[4096];
+            while ((result = in.read(buf)) != -1) {
                 out.write(buf, 0, result);
             }
-			in.close();
-			out.close();
-			/*
-			 * ZipFile zip = new ZipFile(file); ZipEntry entry1 =
-			 * zip.getEntry("File1.txt"); assertNotNull("Did not find entry",
-			 * entry1); entry1 = null; zip = null;
-			 */
+            in.close();
+            out.close();
+            /*
+             * ZipFile zip = new ZipFile(file); ZipEntry entry1 =
+             * zip.getEntry("File1.txt"); assertNotNull("Did not find entry",
+             * entry1); entry1 = null; zip = null;
+             */
 
-			assertNotNull("Did not find entry",
-					test_finalize1(test_finalize2(file)));
-			System.gc();
-			System.gc();
-			System.runFinalization();
-			file.delete();
-			assertTrue("Zip should not exist", !file.exists());
-		} catch (IOException e) {
-			fail("Unexpected exception: " + e);
-		}
+            assertNotNull("Did not find entry",
+                          test_finalize1(test_finalize2(file)));
+            System.gc();
+            System.gc();
+            System.runFinalization();
+            file.delete();
+            assertTrue("Zip should not exist", !file.exists());
 	}
 
 	/**
@@ -163,7 +150,7 @@ public class ZipFileTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.zip.ZipFile#getEntry(java.lang.String)
 	 */
-	public void test_getEntryLjava_lang_String() {
+	public void test_getEntryLjava_lang_String() throws IOException {
 		// Test for method java.util.zip.ZipEntry
 		// java.util.zip.ZipFile.getEntry(java.lang.String)
 		java.util.zip.ZipEntry zentry = zfile.getEntry("File1.txt");
@@ -172,38 +159,34 @@ public class ZipFileTest extends junit.framework.TestCase {
 		zentry = zfile.getEntry("testdir1/File1.txt");
 		assertNotNull("Could not obtain ZipEntry: testdir1/File1.txt",
 				zentry);
-		try {
-			int r;
-			InputStream in;
-			zentry = zfile.getEntry("testdir1/");
-			assertNotNull("Could not obtain ZipEntry: testdir1/", zentry);
-			in = zfile.getInputStream(zentry);
-			assertNotNull("testdir1/ should not have null input stream",
-					in);
-			r = in.read();
-			in.close();
-			assertEquals("testdir1/ should not contain data", -1, r);
+                int r;
+                InputStream in;
+                zentry = zfile.getEntry("testdir1/");
+                assertNotNull("Could not obtain ZipEntry: testdir1/", zentry);
+                in = zfile.getInputStream(zentry);
+                assertNotNull("testdir1/ should not have null input stream",
+                              in);
+                r = in.read();
+                in.close();
+                assertEquals("testdir1/ should not contain data", -1, r);
+                
+                zentry = zfile.getEntry("testdir1");
+                assertNotNull("Could not obtain ZipEntry: testdir1", zentry);
+                in = zfile.getInputStream(zentry);
+                assertNotNull("testdir1 should not have null input stream", in);
+                r = in.read();
+                in.close();
+                assertEquals("testdir1 should not contain data", -1, r);
 
-			zentry = zfile.getEntry("testdir1");
-			assertNotNull("Could not obtain ZipEntry: testdir1", zentry);
-			in = zfile.getInputStream(zentry);
-			assertNotNull("testdir1 should not have null input stream", in);
-			r = in.read();
-			in.close();
-			assertEquals("testdir1 should not contain data", -1, r);
-
-			zentry = zfile.getEntry("testdir1/testdir1");
-			assertNotNull("Could not obtain ZipEntry: testdir1/testdir1",
-					zentry);
-			in = zfile.getInputStream(zentry);
-			byte[] buf = new byte[256];
-			r = in.read(buf);
-			in.close();
-			assertEquals("incorrect contents", "This is also text", new String(buf, 0, r)
-					);
-		} catch (IOException e) {
-			fail("Unexpected: " + e);
-		}
+                zentry = zfile.getEntry("testdir1/testdir1");
+                assertNotNull("Could not obtain ZipEntry: testdir1/testdir1",
+                              zentry);
+                in = zfile.getInputStream(zentry);
+                byte[] buf = new byte[256];
+                r = in.read(buf);
+                in.close();
+                assertEquals("incorrect contents",
+                             "This is also text", new String(buf, 0, r));
 	}
 
 	/**
