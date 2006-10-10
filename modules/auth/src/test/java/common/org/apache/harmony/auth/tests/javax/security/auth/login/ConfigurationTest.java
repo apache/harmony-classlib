@@ -43,6 +43,9 @@ public class ConfigurationTest extends TestCase {
     // system property to specify another login configuration file 
     private static final String AUTH_LOGIN_CONFIG = "java.security.auth.login.config";
 
+    // security property to specify default configuration implementation 
+    private static final String LOGIN_CONFIG_PROVIDER = "login.configuration.provider";
+
 	/**
 	 * Easy the SecurityManager class
 	 */
@@ -164,30 +167,44 @@ public class ConfigurationTest extends TestCase {
 	 * Tests loading of a default provider, both valid and invalid class
 	 * references.
 	 */
-	public void testLoadDefaultProvider() {
-		String Configuration_PROVIDER = "login.configuration.provider";
-		String oldProvider = Security.getProperty(Configuration_PROVIDER);
-		try {
-			Security.setProperty(Configuration_PROVIDER, ConfTestProvider.class.getName());
-			Configuration.setConfiguration(null);
-			Configuration p = Configuration.getConfiguration();
-			assertNotNull(p);
-			assertEquals(ConfTestProvider.class.getName(), p.getClass().getName());
+    public void test_loadDefaultProvider() {
 
-			Security.setProperty(Configuration_PROVIDER, "a.b.c.D");
-			Configuration.setConfiguration(null);
+        String oldProvider = Security.getProperty(LOGIN_CONFIG_PROVIDER);
+        try {
+            // test: loading custom test provider
+            Security.setProperty(LOGIN_CONFIG_PROVIDER, ConfTestProvider.class
+                    .getName());
+            Configuration.setConfiguration(null); // reset config
+            assertEquals(ConfTestProvider.class, Configuration
+                    .getConfiguration().getClass());
+
+            // test: loading absent class as test provider
+            Security.setProperty(LOGIN_CONFIG_PROVIDER, "ThereIsNoSuchClass");
+            Configuration.setConfiguration(null); // reset config
             try {
-                p = Configuration.getConfiguration();
+                Configuration.getConfiguration();
                 fail("No SecurityException on failed provider");
-            } catch (Exception ok) {
+            } catch (SecurityException ok) {
                 assertTrue(ok.getCause() instanceof ClassNotFoundException);
             }
 
-		} finally {
-			Security.setProperty(Configuration_PROVIDER,
-					(oldProvider == null) ? "" : oldProvider);
-		}
-	}
+            // test: loading wrong class as test provider
+            // a name of this unit test is used as config provider
+            Security.setProperty(LOGIN_CONFIG_PROVIDER, this.getClass()
+                    .getName());
+            Configuration.setConfiguration(null);// reset config
+            try {
+                Configuration.getConfiguration();
+                fail("No expected ClassCastException");
+            } catch (ClassCastException ok) {
+            }
+
+        } finally {
+            //TODO reset security property if oldProvider==null
+            Security.setProperty(LOGIN_CONFIG_PROVIDER,
+                    (oldProvider == null) ? "" : oldProvider);
+        }
+    }
     
     public static void main(String[] args) {
         junit.textui.TestRunner.run(ConfigurationTest.class);
