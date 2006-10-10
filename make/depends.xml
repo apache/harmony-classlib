@@ -98,7 +98,8 @@
         <property name="lcms.msg"
                   value="liblcms development package not installed
 ${line.separator}See depends/libs/build/README.txt for further details.
-${line.separator}For Debian/Ubuntu try: apt-get install liblcms1-dev" />
+${line.separator}For Debian/Ubuntu try: apt-get install liblcms1-dev
+${line.separator}For Fedora try: yum install lcms-devel" />
         <mkdir dir="depends/libs/build/lcms" />
         <check-one-link src="${lcms.home}/lib/liblcms.a"
                         dest="depends/libs/build/lcms/liblcms.${hack.arch}"
@@ -114,7 +115,8 @@ ${line.separator}For Debian/Ubuntu try: apt-get install liblcms1-dev" />
         <property name="png.msg"
                   value="libpng development package not installed
 ${line.separator}See depends/libs/build/README.txt for further details.
-${line.separator}For Debian/Ubuntu try: apt-get install libpng12-dev" />
+${line.separator}For Debian/Ubuntu try: apt-get install libpng12-dev
+${line.separator}For Fedora try: yum install libpng-devel" />
         <mkdir dir="depends/libs/build/png" />
         <check-one-link src="${png.home}/lib/libpng.a"
                         dest="depends/libs/build/png/libpng.${hack.arch}"
@@ -130,7 +132,8 @@ ${line.separator}For Debian/Ubuntu try: apt-get install libpng12-dev" />
         <property name="jpeg.msg"
                   value="libjpeg development package not installed
 ${line.separator}See depends/libs/build/README.txt for further details.
-${line.separator}For Debian/Ubuntu try: apt-get install libjpeg62-dev" />
+${line.separator}For Debian/Ubuntu try: apt-get install libjpeg62-dev
+${line.separator}For Fedora try: yum install libjpeg-devel" />
         <mkdir dir="depends/libs/build/jpeg" />
         <check-one-link src="${jpeg.home}/lib/libjpeg.a"
                         dest="depends/libs/build/jpeg/libjpeg.${hack.arch}"
