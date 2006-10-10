@@ -87,7 +87,7 @@ public class CipherSpiTest extends TestCase {
         CipherSpi cSpi = new myCipherSpi();
         try {
             cSpi.engineGetKeySize(null);
-            assertTrue("UnsupportedOperationException must be thrown", false);
+            fail("UnsupportedOperationException must be thrown");
         } catch (UnsupportedOperationException e) {
         }
     }
@@ -100,7 +100,7 @@ public class CipherSpiTest extends TestCase {
         CipherSpi cSpi = new myCipherSpi();
         try {
             cSpi.engineWrap(null);
-            assertTrue("UnsupportedOperationException must be thrown", false);
+            fail("UnsupportedOperationException must be thrown");
         } catch (UnsupportedOperationException e) {
         }
     }
@@ -113,7 +113,7 @@ public class CipherSpiTest extends TestCase {
         CipherSpi cSpi = new myCipherSpi();
         try {
             cSpi.engineUnwrap(new byte[0], "", 0);
-            assertTrue("UnsupportedOperationException must be thrown", false);
+            fail("UnsupportedOperationException must be thrown");
         } catch (UnsupportedOperationException e) {
         }
     }
