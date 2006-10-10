@@ -17,37 +17,36 @@
 
 package java.text;
 
-
 /**
  * A ParseException is thrown when the String being parsed is not in the correct
  * form.
  */
 public class ParseException extends Exception {
 
-	private static final long serialVersionUID = 2703218443322787634L;
+    private static final long serialVersionUID = 2703218443322787634L;
 
-	private int errorOffset;
+    private int errorOffset;
 
-	/**
-	 * Constructs a new instance of this class with its walkback, message and
-	 * the location of the error filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 * @param location
-	 *            int The index at which the parse exception occurred.
-	 */
-	public ParseException(String detailMessage, int location) {
-		super(detailMessage);
-		errorOffset = location;
-	}
+    /**
+     * Constructs a new instance of this class with its walkback, message and
+     * the location of the error filled in.
+     * 
+     * @param detailMessage
+     *            String The detail message for the exception.
+     * @param location
+     *            int The index at which the parse exception occurred.
+     */
+    public ParseException(String detailMessage, int location) {
+        super(detailMessage);
+        errorOffset = location;
+    }
 
-	/**
-	 * Answers the index at which the parse exception occurred.
-	 * 
-	 * @return int The index of the parse exception.
-	 */
-	public int getErrorOffset() {
-		return errorOffset;
-	}
+    /**
+     * Answers the index at which the parse exception occurred.
+     * 
+     * @return int The index of the parse exception.
+     */
+    public int getErrorOffset() {
+        return errorOffset;
+    }
 }

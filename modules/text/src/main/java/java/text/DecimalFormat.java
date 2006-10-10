@@ -87,7 +87,7 @@ public class DecimalFormat extends NumberFormat {
      *                when the pattern cannot be parsed
      */
     public DecimalFormat(String pattern, DecimalFormatSymbols value) {
-        symbols = (DecimalFormatSymbols)value.clone();
+        symbols = (DecimalFormatSymbols) value.clone();
         Locale locale = (Locale) this.getInternalField("locale", symbols); //$NON-NLS-1$
         icuSymbols = new com.ibm.icu.text.DecimalFormatSymbols(locale);
         copySymbols(icuSymbols, symbols);
@@ -137,6 +137,7 @@ public class DecimalFormat extends NumberFormat {
      * 
      * @see java.lang.Cloneable
      */
+    @Override
     public Object clone() {
         DecimalFormat clone = (DecimalFormat) super.clone();
         clone.dform = (com.ibm.icu.text.DecimalFormat) dform.clone();
@@ -156,6 +157,7 @@ public class DecimalFormat extends NumberFormat {
      * 
      * @see #hashCode
      */
+    @Override
     public boolean equals(Object object) {
         if (this == object) {
             return true;
@@ -183,6 +185,7 @@ public class DecimalFormat extends NumberFormat {
      * @exception IllegalArgumentException
      *                when the object cannot be formatted by this Format
      */
+    @Override
     public AttributedCharacterIterator formatToCharacterIterator(Object object) {
         if (object == null) {
             throw new NullPointerException();
@@ -204,6 +207,7 @@ public class DecimalFormat extends NumberFormat {
      *            the FieldPosition
      * @return the StringBuffer parameter <code>buffer</code>
      */
+    @Override
     public StringBuffer format(double value, StringBuffer buffer,
             FieldPosition position) {
         return dform.format(value, buffer, position);
@@ -223,6 +227,7 @@ public class DecimalFormat extends NumberFormat {
      *            the FieldPosition
      * @return the StringBuffer parameter <code>buffer</code>
      */
+    @Override
     public StringBuffer format(long value, StringBuffer buffer,
             FieldPosition position) {
         return dform.format(value, buffer, position);
@@ -244,6 +249,7 @@ public class DecimalFormat extends NumberFormat {
      * @throws IllegalArgumentException
      *             if the given number is not instance of <code>Number</code>
      */
+    @Override
     public final StringBuffer format(Object number, StringBuffer toAppendTo,
             FieldPosition pos) {
         if (!(number instanceof Number)) {
@@ -254,9 +260,8 @@ public class DecimalFormat extends NumberFormat {
         }
         if (number instanceof BigInteger || number instanceof BigDecimal) {
             return dform.format(number, toAppendTo, pos);
-        } else {
-            return super.format(number, toAppendTo, pos);
         }
+        return super.format(number, toAppendTo, pos);
     }
 
     /**
@@ -274,6 +279,7 @@ public class DecimalFormat extends NumberFormat {
      * @return currency of DecimalFormatSymbols used by this decimal format
      * @see DecimalFormatSymbols#getCurrency()
      */
+    @Override
     public Currency getCurrency() {
         if (dform.getCurrency() == null) {
             return null;
@@ -344,6 +350,7 @@ public class DecimalFormat extends NumberFormat {
      * 
      * @see #equals
      */
+    @Override
     public int hashCode() {
         return dform.hashCode();
     }
@@ -384,6 +391,7 @@ public class DecimalFormat extends NumberFormat {
      *            If set to true, all the resulting number will be of type
      *            java.lang.Integer except some special cases.
      */
+    @Override
     public void setParseIntegerOnly(boolean value) {
         dform.setParseIntegerOnly(value);
     }
@@ -395,6 +403,7 @@ public class DecimalFormat extends NumberFormat {
      * @return true if this <code>DecimalFormat</code>'s all resulting number
      *         will be of type <code>java.lang.Integer</code>
      */
+    @Override
     public boolean isParseIntegerOnly() {
         return dform.isParseIntegerOnly();
     }
@@ -417,6 +426,7 @@ public class DecimalFormat extends NumberFormat {
      *         error. The result will be a Long if the parsed number is an
      *         integer in the range of a long, otherwise the result is a Double.
      */
+    @Override
     public Number parse(String string, ParsePosition position) {
         Number number = dform.parse(string, position);
         if (null == number) {
@@ -438,19 +448,16 @@ public class DecimalFormat extends NumberFormat {
                 return new BigDecimal(number.toString());
             }
             return number;
-        } else {
-            if ((number instanceof com.ibm.icu.math.BigDecimal)
-                    || (number instanceof BigInteger)) {
-                return new Double(number.doubleValue());
-            }
-
-            if (this.isParseIntegerOnly()
-                    && number.equals(NEGATIVE_ZERO_DOUBLE)) {
-                return new Long(0);
-            }
-            return number;
-
         }
+        if ((number instanceof com.ibm.icu.math.BigDecimal)
+                || (number instanceof BigInteger)) {
+            return new Double(number.doubleValue());
+        }
+
+        if (this.isParseIntegerOnly() && number.equals(NEGATIVE_ZERO_DOUBLE)) {
+            return new Long(0);
+        }
+        return number;
 
     }
 
@@ -461,7 +468,7 @@ public class DecimalFormat extends NumberFormat {
      *            the DecimalFormatSymbols
      */
     public void setDecimalFormatSymbols(DecimalFormatSymbols value) {
-        if (value != null){
+        if (value != null) {
             symbols = (DecimalFormatSymbols) value.clone();
             icuSymbols = dform.getDecimalFormatSymbols();
             copySymbols(icuSymbols, symbols);
@@ -476,6 +483,7 @@ public class DecimalFormat extends NumberFormat {
      * @param currency
      * @see DecimalFormatSymbols#setCurrency(Currency)
      */
+    @Override
     public void setCurrency(Currency currency) {
         dform.setCurrency(com.ibm.icu.util.Currency.getInstance(currency
                 .getCurrencyCode()));
@@ -512,6 +520,7 @@ public class DecimalFormat extends NumberFormat {
      *            true if uses grouping,false otherwise.
      * 
      */
+    @Override
     public void setGroupingUsed(boolean value) {
         dform.setGroupingUsed(value);
     }
@@ -521,6 +530,7 @@ public class DecimalFormat extends NumberFormat {
      * 
      * @return true if grouping is used,false otherwise.
      */
+    @Override
     public boolean isGroupingUsed() {
         return dform.isGroupingUsed();
     }
@@ -534,6 +544,7 @@ public class DecimalFormat extends NumberFormat {
      * @param value
      *            the maximum number of fraction digits
      */
+    @Override
     public void setMaximumFractionDigits(int value) {
         super.setMaximumFractionDigits(value);
         dform.setMaximumFractionDigits(value);
@@ -548,6 +559,7 @@ public class DecimalFormat extends NumberFormat {
      * @param value
      *            the maximum number of integer digits
      */
+    @Override
     public void setMaximumIntegerDigits(int value) {
         super.setMaximumIntegerDigits(value);
         dform.setMaximumIntegerDigits(value);
@@ -560,6 +572,7 @@ public class DecimalFormat extends NumberFormat {
      * @param value
      *            the minimum number of fraction digits
      */
+    @Override
     public void setMinimumFractionDigits(int value) {
         super.setMinimumFractionDigits(value);
         dform.setMinimumFractionDigits(value);
@@ -572,6 +585,7 @@ public class DecimalFormat extends NumberFormat {
      * @param value
      *            the minimum number of integer digits
      */
+    @Override
     public void setMinimumIntegerDigits(int value) {
         super.setMinimumIntegerDigits(value);
         dform.setMinimumIntegerDigits(value);
@@ -683,12 +697,13 @@ public class DecimalFormat extends NumberFormat {
             new ObjectStreamField("serialVersionOnStream", int.class), }; //$NON-NLS-1$
 
     /**
-     * Writes serialized fields following serialized forms specified by Java specification. 
+     * Writes serialized fields following serialized forms specified by Java
+     * specification.
      * 
      * @param stream
-     *              the output stream to write serialized bytes
+     *            the output stream to write serialized bytes
      * @throws IOException
-     *              if some I/O error occurs
+     *             if some I/O error occurs
      * @throws ClassNotFoundException
      */
     private void writeObject(ObjectOutputStream stream) throws IOException,
@@ -732,14 +747,15 @@ public class DecimalFormat extends NumberFormat {
     }
 
     /**
-     * Reads serialized fields following serialized forms specified by Java specification.
+     * Reads serialized fields following serialized forms specified by Java
+     * specification.
      * 
      * @param stream
-     *              the input stream to read serialized bytes
+     *            the input stream to read serialized bytes
      * @throws IOException
-     *              if some I/O error occurs
+     *             if some I/O error occurs
      * @throws ClassNotFoundException
-     *              if some class of serilized objects or fields cannot be found
+     *             if some class of serilized objects or fields cannot be found
      */
     private void readObject(ObjectInputStream stream) throws IOException,
             ClassNotFoundException {
@@ -773,7 +789,7 @@ public class DecimalFormat extends NumberFormat {
         this.serialVersionOnStream = fields.get("serialVersionOnStream", 0); //$NON-NLS-1$
 
         Locale locale = (Locale) getInternalField("locale", symbols); //$NON-NLS-1$
-        dform = new com.ibm.icu.text.DecimalFormat("", // pattern, //$NON-NLS-1$
+        dform = new com.ibm.icu.text.DecimalFormat("", //$NON-NLS-1$
                 new com.ibm.icu.text.DecimalFormatSymbols(locale));
         setInternalField("useExponentialNotation", dform, new Boolean( //$NON-NLS-1$
                 useExponentialNotation));
@@ -801,7 +817,7 @@ public class DecimalFormat extends NumberFormat {
                 || super.getMaximumFractionDigits() > Integer.MAX_VALUE
                 || super.getMinimumIntegerDigits() > Integer.MAX_VALUE) {
             // text.09=The deserialized date is invalid
-            throw new InvalidObjectException(Messages.getString("text.09"));  //$NON-NLS-1$
+            throw new InvalidObjectException(Messages.getString("text.09")); //$NON-NLS-1$
         }
         if (serialVersionOnStream < 3) {
             setMaximumIntegerDigits(super.getMinimumIntegerDigits());
@@ -819,19 +835,21 @@ public class DecimalFormat extends NumberFormat {
     /*
      * Copies decimal format symbols from text object to ICU one.
      * 
-     * @param icu the object which recieves the new values.
-     * @param dfs the object which contains the new values.
+     * @param icu the object which recieves the new values. @param dfs the
+     * object which contains the new values.
      */
     private void copySymbols(final com.ibm.icu.text.DecimalFormatSymbols icu,
-                             final DecimalFormatSymbols dfs) {
+            final DecimalFormatSymbols dfs) {
         icu.setCurrency(com.ibm.icu.util.Currency.getInstance(dfs.getCurrency()
-                                                              .getCurrencyCode()));
+                .getCurrencyCode()));
         icu.setCurrencySymbol(dfs.getCurrencySymbol());
         icu.setDecimalSeparator(dfs.getDecimalSeparator());
         icu.setDigit(dfs.getDigit());
         icu.setGroupingSeparator(dfs.getGroupingSeparator());
         icu.setInfinity(dfs.getInfinity());
-        icu.setInternationalCurrencySymbol(dfs.getInternationalCurrencySymbol());
+        icu
+                .setInternationalCurrencySymbol(dfs
+                        .getInternationalCurrencySymbol());
         icu.setMinusSign(dfs.getMinusSign());
         icu.setMonetaryDecimalSeparator(dfs.getMonetaryDecimalSeparator());
         icu.setNaN(dfs.getNaN());

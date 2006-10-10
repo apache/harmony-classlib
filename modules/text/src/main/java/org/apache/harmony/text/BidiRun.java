@@ -17,39 +17,39 @@
 
 package org.apache.harmony.text;
 
-
 /**
  * TODO: type description
  */
 public class BidiRun {
-	private final int start;
+    private final int start;
 
-	private final int limit;
+    private final int limit;
 
-	private final int level;
+    private final int level;
 
-	public BidiRun(int start, int limit, int level) {
-		this.start = start;
-		this.limit = limit;
-		this.level = level;
-	}
+    public BidiRun(int start, int limit, int level) {
+        this.start = start;
+        this.limit = limit;
+        this.level = level;
+    }
 
-	public int getLevel() {
-		return level;
-	}
+    public int getLevel() {
+        return level;
+    }
 
-	public int getLimit() {
-		return limit;
-	}
+    public int getLimit() {
+        return limit;
+    }
 
-	public int getStart() {
-		return start;
-	}
+    public int getStart() {
+        return start;
+    }
 
-	public boolean equals(Object o) {
-		return o == null || o.getClass() != BidiRun.class ? false
-				: this.start == ((BidiRun) o).start
-						&& this.limit == ((BidiRun) o).limit
-						&& this.level == ((BidiRun) o).level;
-	}
+    @Override
+    public boolean equals(Object o) {
+        return o == null || o.getClass() != BidiRun.class ? false
+                : this.start == ((BidiRun) o).start
+                        && this.limit == ((BidiRun) o).limit
+                        && this.level == ((BidiRun) o).level;
+    }
 }

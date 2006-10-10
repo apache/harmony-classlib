@@ -17,7 +17,6 @@
 
 package java.text;
 
-
 /**
  * CharacterIterator is used to sequence over a group of characters. The
  * iteration starts at the begin index in the group of character and continues
@@ -25,90 +24,90 @@ package java.text;
  */
 public interface CharacterIterator extends Cloneable {
 
-	/**
-	 * A constant which indicates there is no character.
-	 */
-	public static char DONE = '\uffff';
+    /**
+     * A constant which indicates there is no character.
+     */
+    public static char DONE = '\uffff';
 
-	/**
-	 * Answers a new CharacterIterator with the same properties.
-	 * 
-	 * @return a shallow copy of this CharacterIterator
-	 * 
-	 * @see java.lang.Cloneable
-	 */
-	public Object clone();
+    /**
+     * Answers a new CharacterIterator with the same properties.
+     * 
+     * @return a shallow copy of this CharacterIterator
+     * 
+     * @see java.lang.Cloneable
+     */
+    public Object clone();
 
-	/**
-	 * Answers the character at the current index.
-	 * 
-	 * @return the current character, or DONE if the current index is past the
-	 *         end
-	 */
-	public char current();
+    /**
+     * Answers the character at the current index.
+     * 
+     * @return the current character, or DONE if the current index is past the
+     *         end
+     */
+    public char current();
 
-	/**
-	 * Sets the current position to the begin index and answers the character at
-	 * the begin index.
-	 * 
-	 * @return the character at the begin index
-	 */
-	public char first();
+    /**
+     * Sets the current position to the begin index and answers the character at
+     * the begin index.
+     * 
+     * @return the character at the begin index
+     */
+    public char first();
 
-	/**
-	 * Answers the begin index.
-	 * 
-	 * @return the index of the first character to iterate
-	 */
-	public int getBeginIndex();
+    /**
+     * Answers the begin index.
+     * 
+     * @return the index of the first character to iterate
+     */
+    public int getBeginIndex();
 
-	/**
-	 * Answers the end index.
-	 * 
-	 * @return the index one past the last character to iterate
-	 */
-	public int getEndIndex();
+    /**
+     * Answers the end index.
+     * 
+     * @return the index one past the last character to iterate
+     */
+    public int getEndIndex();
 
-	/**
-	 * Answers the current index.
-	 * 
-	 * @return the current index
-	 */
-	public int getIndex();
+    /**
+     * Answers the current index.
+     * 
+     * @return the current index
+     */
+    public int getIndex();
 
-	/**
-	 * Sets the current position to the end index - 1 and answers the character
-	 * at the current position.
-	 * 
-	 * @return the character before the end index
-	 */
-	public char last();
+    /**
+     * Sets the current position to the end index - 1 and answers the character
+     * at the current position.
+     * 
+     * @return the character before the end index
+     */
+    public char last();
 
-	/**
-	 * Increments the current index and returns the character at the new index.
-	 * 
-	 * @return the character at the next index, or DONE if the next index is
-	 *         past the end
-	 */
-	public char next();
+    /**
+     * Increments the current index and returns the character at the new index.
+     * 
+     * @return the character at the next index, or DONE if the next index is
+     *         past the end
+     */
+    public char next();
 
-	/**
-	 * Decrements the current index and returns the character at the new index.
-	 * 
-	 * @return the character at the previous index, or DONE if the previous
-	 *         index is past the beginning
-	 */
-	public char previous();
+    /**
+     * Decrements the current index and returns the character at the new index.
+     * 
+     * @return the character at the previous index, or DONE if the previous
+     *         index is past the beginning
+     */
+    public char previous();
 
-	/**
-	 * Sets the current index.
-	 * 
-	 * @return the character at the new index, or DONE if the index is past the
-	 *         end
-	 * 
-	 * @exception IllegalArgumentException
-	 *                when the new index is less than the begin index or greater
-	 *                than the end index
-	 */
-	public char setIndex(int location);
+    /**
+     * Sets the current index.
+     * 
+     * @return the character at the new index, or DONE if the index is past the
+     *         end
+     * 
+     * @exception IllegalArgumentException
+     *                when the new index is less than the begin index or greater
+     *                than the end index
+     */
+    public char setIndex(int location);
 }

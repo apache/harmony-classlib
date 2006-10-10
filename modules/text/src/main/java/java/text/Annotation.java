@@ -17,23 +17,23 @@
 
 package java.text;
 
-
 /**
  * Annotation
  */
 public class Annotation {
 
-	private Object value;
+    private Object value;
 
-	public Annotation(Object attribute) {
-		value = attribute;
-	}
+    public Annotation(Object attribute) {
+        value = attribute;
+    }
 
-	public Object getValue() {
-		return value;
-	}
+    public Object getValue() {
+        return value;
+    }
 
-	public String toString() {
-		return getClass().getName() + "[value=" + value + ']'; //$NON-NLS-1$
-	}
+    @Override
+    public String toString() {
+        return getClass().getName() + "[value=" + value + ']'; //$NON-NLS-1$
+    }
 }
