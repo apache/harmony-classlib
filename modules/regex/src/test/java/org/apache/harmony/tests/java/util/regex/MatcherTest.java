@@ -582,7 +582,7 @@ public class MatcherTest extends TestCase {
 		assertFalse(Pattern.matches("[\\p{Lu}a-d]", "k"));
 		assertTrue(Pattern.matches("[a-d\\p{Lu}]", "K"));
 
-//        assertTrue(Pattern.matches("[\\p{L}&&[^\\p{Lu}&&[^K]]]", "K"));
+		assertTrue(Pattern.matches("[\\p{L}&&[^\\p{Lu}&&[^K]]]", "K"));
 		assertFalse(Pattern.matches("[\\p{L}&&[^\\p{Lu}&&[^G]]]", "K"));
 
 	}

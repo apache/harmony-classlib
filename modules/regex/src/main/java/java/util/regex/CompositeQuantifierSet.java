@@ -71,7 +71,7 @@ class CompositeQuantifierSet extends LeafQuantifierSet {
             if (shift >= 0) {
                 return shift;
             }
-            stringIndex -= leaf.charCount();
+            stringIndex--;
         }
         return -1;
 

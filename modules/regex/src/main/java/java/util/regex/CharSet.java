@@ -45,48 +45,41 @@ class CharSet extends LeafSet {
 
     public int find(int strIndex, CharSequence testString,
             MatchResultImpl matchResult) {
-        if (testString instanceof String) {
-            String testStr = (String) testString;
-            int strLength = matchResult.getRightBound();
+        boolean res = false;
+        String testStr = testString.toString();
+        int strLength = matchResult.getRightBound();
 
-            while (strIndex < strLength) {
-                strIndex = testStr.indexOf(ch, strIndex);
-                if (strIndex < 0)
-                    return -1;
-                if (next.matches(strIndex + 1, testString, matchResult) >= 0) {
-                    return strIndex;
-                }
-                strIndex++;
+        while (strIndex < strLength) {
+            strIndex = testStr.indexOf(ch, strIndex);
+            if (strIndex < 0)
+                return -1;
+            if (next.matches(strIndex + 1, testString, matchResult) >= 0) {
+                return strIndex;
             }
-            
-            return -1;
+            strIndex++;
         }
-        
-        return super.find(strIndex, testString, matchResult); 
+
+        return -1;
     }
 
     public int findBack(int strIndex, int lastIndex, CharSequence testString,
             MatchResultImpl matchResult) {
-        if (testString instanceof String) {
-            String testStr = (String) testString;
+        String testStr = testString.toString();
 
-            while (lastIndex >= strIndex) {
-                lastIndex = testStr.lastIndexOf(ch, lastIndex);
-                if (lastIndex < 0 || lastIndex < strIndex) {
-                    return -1;
-                }
-
-                if (next.matches(lastIndex + 1, testString, matchResult) >= 0) {
-                    return lastIndex;
-                }
-
-                lastIndex--;
+        while (lastIndex >= strIndex) {
+            lastIndex = testStr.lastIndexOf(ch, lastIndex);
+            if (lastIndex < 0 || lastIndex < strIndex) {
+                return -1;
             }
 
-            return -1;
+            if (next.matches(lastIndex + 1, testString, matchResult) >= 0) {
+                return lastIndex;
+            }
+
+            lastIndex--;
         }
-        
-        return super.findBack(strIndex, lastIndex, testString, matchResult);
+
+        return -1;
     }
 
     protected String getName() {
@@ -102,10 +95,6 @@ class CharSet extends LeafSet {
             return ((CharSet) set).getChar() == ch;
         } else if (set instanceof RangeSet) {
             return ((RangeSet) set).accepts(0, Character.toString(ch)) > 0;
-        } else if (set instanceof SupplRangeSet) {
-            return ((SupplRangeSet) set).contains(ch);
-        } else if (set instanceof SupplCharSet) {
-            return false;
         }
 
         return true;

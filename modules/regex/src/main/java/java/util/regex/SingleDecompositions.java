@@ -19,7 +19,7 @@ package java.util.regex;
 
 /**
  * This class gives us a hashtable that contains information about
- * symbols that are one symbol decompositions that is 
+ * symbols that have decomposition and canonical class 0 that is 
  * generated from
  * http://www.unicode.org/Public/4.0-Update/UnicodeData-4.0.0.txt.
  */

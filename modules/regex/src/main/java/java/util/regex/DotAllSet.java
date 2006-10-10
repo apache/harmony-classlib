@@ -27,48 +27,17 @@ package java.util.regex;
  * @author Nikolay A. Kuznetsov
  * @version $Revision: 1.6.2.2 $
  */
-class DotAllSet extends JointSet {
+class DotAllSet extends LeafSet {
 
-	public int matches(int stringIndex, CharSequence testString,
-	    MatchResultImpl matchResult) {
-	    int strLength = matchResult.getRightBound();
-	        
-	    if (stringIndex + 1 > strLength) {
-	        matchResult.hitEnd = true;
-	        return -1;
-	    }
-	        
-	    char high = testString.charAt(stringIndex);
-	            
-	    if (Character.isHighSurrogate(high) && (stringIndex + 2 <= strLength)) {
-	        char low = testString.charAt(stringIndex + 1);
-	            
-	        if (Character.isSurrogatePair(high, low)) {
-	            return next.matches(stringIndex + 2, testString, matchResult);
-	        }
-	    }    
-	    return next.matches(stringIndex + 1, testString, matchResult);
-	}        
+    public int accepts(int strIndex, CharSequence testString) {
+        return 1;
+    }
 
     protected String getName() {
         return "DotAll"; //$NON-NLS-1$
     }
 
-        
-    public AbstractSet getNext() {
-        return this.next;
-    }
-        
-    public void setNext(AbstractSet next) {
-        this.next = next;
-    }
-    
     public int getType() {
         return AbstractSet.TYPE_DOTSET;
-    }
-    
-        
-    public boolean hasConsumed(MatchResultImpl matchResult) {         
-        return true;
     }
 }

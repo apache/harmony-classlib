@@ -41,11 +41,6 @@ class UCIRangeSet extends LeafSet {
         this.alt = cs.alt;
     }
 
-    public UCIRangeSet(AbstractCharClass cc) {
-        this.chars = cc.getInstance();
-        this.alt = cc.alt;
-    }
-  
     public int accepts(int strIndex, CharSequence testString) {
         return (chars.contains(Character.toLowerCase(Character
                 .toUpperCase(testString.charAt(strIndex))))) ? 1 : -1;

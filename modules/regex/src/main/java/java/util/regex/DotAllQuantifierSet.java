@@ -28,9 +28,9 @@ package java.util.regex;
  * @author Nikolay A. Kuznetsov
  * @version $Revision: 1.8.2.2 $
  */
-class DotAllQuantifierSet extends QuantifierSet {
+class DotAllQuantifierSet extends LeafQuantifierSet {
 
-    public DotAllQuantifierSet(AbstractSet innerSet, AbstractSet next, int type) {
+    public DotAllQuantifierSet(LeafSet innerSet, AbstractSet next, int type) {
         super(innerSet, next, type);
     }
 
@@ -53,9 +53,5 @@ class DotAllQuantifierSet extends QuantifierSet {
         } else {
             return -1;
         }
-    }
-    
-    protected String getName() {
-        return "<DotAllQuant>";
     }
 }

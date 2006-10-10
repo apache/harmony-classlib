@@ -44,7 +44,7 @@ class UnifiedQuantifierSet extends LeafQuantifierSet {
             MatchResultImpl matchResult) {
         while (stringIndex + leaf.charCount() <= matchResult.getRightBound()
                 && leaf.accepts(stringIndex, testString) > 0)
-            stringIndex += leaf.charCount();
+            stringIndex++;
 
         return next.matches(stringIndex, testString, matchResult);
     }
@@ -54,11 +54,11 @@ class UnifiedQuantifierSet extends LeafQuantifierSet {
         int startSearch = next.find(stringIndex, testString, matchResult);
         if (startSearch < 0)
             return -1;
-        int newSearch = startSearch - leaf.charCount();
+        int newSearch = startSearch - 1;
         while (newSearch >= stringIndex
                 && leaf.accepts(newSearch, testString) > 0) {
             startSearch = newSearch;
-            newSearch -= leaf.charCount();
+            newSearch--;
         }
 
         return startSearch;

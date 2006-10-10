@@ -132,22 +132,17 @@ public class SplitTest extends TestCase {
 		assertEquals("c", s[3]);
 		assertEquals("d", s[4]);
 		assertEquals("", s[5]);
-    }
 
-    public void testSplitSupplementaryWithEmptyString() {
-        
-        /*
-         * See http://www.unicode.org/reports/tr18/#Supplementary_Characters
-         * We have to treat text as code points not code units.
-         */
-        Pattern p = Pattern.compile("");
-        String s[];
+		// Match with a surrogate pair .. strangely splits the surrogate pair. I
+		// would have expected
+		// the third matched string to be "\ud869\uded6" (aka \u2a6d6)
 		s = p.split("a\ud869\uded6b", -1);
-        assertEquals(5, s.length);
+		assertEquals(6, s.length);
 		assertEquals("", s[0]);
 		assertEquals("a", s[1]);
-        assertEquals("\ud869\uded6", s[2]);
-        assertEquals("b", s[3]);                
-        assertEquals("", s[4]);        
+		assertEquals("\ud869", s[2]);
+		assertEquals("\uded6", s[3]);
+		assertEquals("b", s[4]);
+		assertEquals("", s[5]);
 	}
 }

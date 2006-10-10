@@ -37,26 +37,8 @@ import java.util.ListResourceBundle;
 abstract class AbstractCharClass extends SpecialToken {
     protected boolean alt;
 
-    protected boolean altSurrogates;
-    
-    //Character.MAX_SURROGATE - Character.MIN_SURROGATE + 1
-    static int SURROGATE_CARDINALITY = 2048;
-    
-    BitSet lowHighSurrogates = new BitSet(SURROGATE_CARDINALITY);
-    
-    AbstractCharClass charClassWithoutSurrogates = null;
-    
-    AbstractCharClass charClassWithSurrogates = null;
-    
     static PredefinedCharacterClasses charClasses = new PredefinedCharacterClasses();
 
-    /*
-     * Indicates if this class may contain supplementary Unicode codepoints.
-     * If this flag is specified it doesn't mean that this class contains
-     * supplementary characters but may contain.
-     */
-    protected boolean mayContainSupplCodepoints = false;
-    
     /**
      * Returns true if this char class contains character specified;
      * 
@@ -74,21 +56,7 @@ abstract class AbstractCharClass extends SpecialToken {
     protected BitSet getBits() {
         return null;
     }
-    
-    protected BitSet getLowHighSurrogates() {
-        return lowHighSurrogates;
-    }
 
-    public boolean hasLowHighSurrogates() {
-        return altSurrogates
-               ? lowHighSurrogates.nextClearBit(0) < SURROGATE_CARDINALITY
-               : lowHighSurrogates.nextSetBit(0) < SURROGATE_CARDINALITY;
-    }
-    
-    public boolean mayContainSupplCodepoints() {
-        return mayContainSupplCodepoints; 
-    }
-    
     public int getType() {
         return SpecialToken.TOK_CHARCLASS;
     }
@@ -96,55 +64,7 @@ abstract class AbstractCharClass extends SpecialToken {
     public AbstractCharClass getInstance() {
         return this;
     }
-    
-    public AbstractCharClass getSurrogates() {
-        
-        if (charClassWithSurrogates == null) {
-            final BitSet lHS = getLowHighSurrogates();
 
-            charClassWithSurrogates = new AbstractCharClass() {
-                public boolean contains(int ch) {
-                    int index = ch - Character.MIN_SURROGATE;
-
-                    return ((index >= 0) 
-                            && (index < AbstractCharClass.SURROGATE_CARDINALITY)) 
-                           ? this.altSurrogates ^ lHS.get(index)
-                           : false;
-                }
-            };
-            charClassWithSurrogates.setNegative(this.altSurrogates);
-        }
-        
-        return charClassWithSurrogates;
-    }
-    
-    public AbstractCharClass getWithoutSurrogates() {
-        if (charClassWithoutSurrogates == null) {            
-            final BitSet lHS = getLowHighSurrogates();
-            final AbstractCharClass thisClass = this; 
-
-            charClassWithoutSurrogates = new AbstractCharClass() {
-                public boolean contains(int ch) {
-                    int index = ch - Character.MIN_SURROGATE;
-
-                    boolean containslHS = ((index >= 0) 
-                            && (index < AbstractCharClass.SURROGATE_CARDINALITY)) 
-                           ? this.altSurrogates ^ lHS.get(index)
-                           : false;
-                    
-                    
-                    return thisClass.contains(ch) 
-                           && !containslHS;
-                }
-            };
-            charClassWithoutSurrogates.setNegative(isNegative());
-            charClassWithoutSurrogates.mayContainSupplCodepoints 
-                = mayContainSupplCodepoints;
-        }
-        
-        return charClassWithoutSurrogates;
-    }
-    
     public boolean hasUCI() {
         return false;
     }
@@ -162,13 +82,8 @@ abstract class AbstractCharClass extends SpecialToken {
      * @see #union(CharClass)
      */
     public AbstractCharClass setNegative(boolean value) {
-        if (alt ^ value) {
+        if (alt ^ value)
             alt = !alt;
-            altSurrogates = !altSurrogates;
-        }
-        if (!mayContainSupplCodepoints) {
-            mayContainSupplCodepoints = true;
-        }
         return this;
     }
 
@@ -180,11 +95,11 @@ abstract class AbstractCharClass extends SpecialToken {
     // Static methods and predefined classes
     // -----------------------------------------------------------------
     
-    public static boolean intersects(int ch1, int ch2) {
+    public static boolean intersects(char ch1, char ch2) {
         return ch1 == ch2;
     }
 
-    public static boolean intersects(AbstractCharClass cc, int ch) {
+    public static boolean intersects(AbstractCharClass cc, char ch) {
         return cc.contains(ch);
     }
 
@@ -227,10 +142,7 @@ abstract class AbstractCharClass extends SpecialToken {
 
     static class LazyNonDigit extends LazyDigit {
         protected AbstractCharClass computeValue() {
-            AbstractCharClass chCl = super.computeValue().setNegative(true);
-            
-            chCl.mayContainSupplCodepoints = true;
-            return chCl;
+            return super.computeValue().setNegative(true);
         }
     }
 
@@ -243,10 +155,7 @@ abstract class AbstractCharClass extends SpecialToken {
 
     static class LazyNonSpace extends LazySpace {
         protected AbstractCharClass computeValue() {
-            AbstractCharClass chCl = super.computeValue().setNegative(true);
-            
-            chCl.mayContainSupplCodepoints = true;
-            return chCl;
+            return super.computeValue().setNegative(true);
         }
     }
 
@@ -259,10 +168,7 @@ abstract class AbstractCharClass extends SpecialToken {
 
     static class LazyNonWord extends LazyWord {
         protected AbstractCharClass computeValue() {
-            AbstractCharClass chCl = super.computeValue().setNegative(true);
-            
-            chCl.mayContainSupplCodepoints = true;
-            return chCl;
+            return super.computeValue().setNegative(true);
         }
     }
 
@@ -345,8 +251,7 @@ abstract class AbstractCharClass extends SpecialToken {
         }
 
         public AbstractCharClass computeValue() {
-            AbstractCharClass chCl = new CharClass().add(start, end);
-            return chCl;
+            return new CharClass().add(start, end);
         }
     }
 
@@ -358,85 +263,45 @@ abstract class AbstractCharClass extends SpecialToken {
 
     static class LazyCategoryScope extends LazyCharClass {
         int category;
-        
-        boolean mayContainSupplCodepoints;
 
-        boolean containsAllSurrogates;
-        
-        public LazyCategoryScope(int cat, boolean mayContainSupplCodepoints) {
-            this.mayContainSupplCodepoints = mayContainSupplCodepoints;
+        public LazyCategoryScope(int cat) {
             this.category = cat;
         }
 
-        public LazyCategoryScope(int cat, boolean mayContainSupplCodepoints,
-                boolean containsAllSurrogates) {
-            this.containsAllSurrogates = containsAllSurrogates;
-            this.mayContainSupplCodepoints = mayContainSupplCodepoints;
-            this.category = cat;
-        }
-        
         protected AbstractCharClass computeValue() {
-            AbstractCharClass chCl = new UnicodeCategoryScope(category);            
-            if (containsAllSurrogates) {
-                chCl.lowHighSurrogates.set(0, SURROGATE_CARDINALITY);
-            }
-
-            chCl.mayContainSupplCodepoints = mayContainSupplCodepoints;;
-            return chCl;
+            return new UnicodeCategoryScope(category);
         }
     }
 
     static class LazyCategory extends LazyCharClass {
         int category;
 
-        boolean mayContainSupplCodepoints;
-        
-        boolean containsAllSurrogates;
-        
-        public LazyCategory(int cat, boolean mayContainSupplCodepoints) {
-            this.mayContainSupplCodepoints = mayContainSupplCodepoints;
+        public LazyCategory(int cat) {
             this.category = cat;
         }
-        public LazyCategory(int cat, boolean mayContainSupplCodepoints,
-                boolean containsAllSurrogates) {
-            this.containsAllSurrogates = containsAllSurrogates;
-            this.mayContainSupplCodepoints = mayContainSupplCodepoints;
-            this.category = cat;
-        }
-        
+
         protected AbstractCharClass computeValue() {
-            AbstractCharClass chCl = new UnicodeCategory(category);            
-            if (containsAllSurrogates) {
-                chCl.lowHighSurrogates.set(0, SURROGATE_CARDINALITY);
-            }
-            chCl.mayContainSupplCodepoints = mayContainSupplCodepoints;;
-            return chCl;
+            return new UnicodeCategory(category);
         }
     }
 
     static class LazyJavaLowerCase extends LazyCharClass {
         protected AbstractCharClass computeValue() {
-            AbstractCharClass chCl = new AbstractCharClass() {
+            return new AbstractCharClass() {
                 public boolean contains(int ch) {
-                    return Character.isLowerCase(ch);
+                    return Character.isLowerCase((char) ch);
                 }
             };
-            
-            chCl.mayContainSupplCodepoints = true;            
-            return chCl;
         }
     }
 
     static class LazyJavaUpperCase extends LazyCharClass {
         protected AbstractCharClass computeValue() {
-            AbstractCharClass chCl = new AbstractCharClass() {
+            return new AbstractCharClass() {
                 public boolean contains(int ch) {
-                    return Character.isUpperCase(ch);
+                    return Character.isUpperCase((char) ch);
                 }
             };
-            
-            chCl.mayContainSupplCodepoints = true;            
-            return chCl;
         }
     }
 
@@ -444,7 +309,7 @@ abstract class AbstractCharClass extends SpecialToken {
         protected AbstractCharClass computeValue() {
             return new AbstractCharClass() {
                 public boolean contains(int ch) {
-                    return Character.isWhitespace(ch);
+                    return Character.isWhitespace((char) ch);
                 }
             };
         }
@@ -454,7 +319,7 @@ abstract class AbstractCharClass extends SpecialToken {
         protected AbstractCharClass computeValue() {
             return new AbstractCharClass() {
                 public boolean contains(int ch) {
-                    return Character.isMirrored(ch);
+                    return Character.isMirrored((char) ch);
                 }
             };
         }
@@ -462,41 +327,31 @@ abstract class AbstractCharClass extends SpecialToken {
     
     static class LazyJavaDefined extends LazyCharClass {
         protected AbstractCharClass computeValue() {
-            AbstractCharClass chCl = new AbstractCharClass() {
+            return new AbstractCharClass() {
                 public boolean contains(int ch) {
-                    return Character.isDefined(ch);
+                    return Character.isDefined((char) ch);
                 }
             };
-            chCl.lowHighSurrogates.set(0, SURROGATE_CARDINALITY);
-            
-            chCl.mayContainSupplCodepoints = true;            
-            return chCl;
         }
     }
 
     static class LazyJavaDigit extends LazyCharClass {
         protected AbstractCharClass computeValue() {
-            AbstractCharClass chCl = new AbstractCharClass() {
+            return new AbstractCharClass() {
                 public boolean contains(int ch) {
-                    return Character.isDigit(ch);
+                    return Character.isDigit((char) ch);
                 }
             };
-            
-            chCl.mayContainSupplCodepoints = true;            
-            return chCl;
         }
     }
 
     static class LazyJavaIdentifierIgnorable extends LazyCharClass {
         protected AbstractCharClass computeValue() {
-            AbstractCharClass chCl = new AbstractCharClass() {
+            return new AbstractCharClass() {
                 public boolean contains(int ch) {
-                    return Character.isIdentifierIgnorable(ch);
+                    return Character.isIdentifierIgnorable((char) ch);
                 }
             };
-            
-            chCl.mayContainSupplCodepoints = true;            
-            return chCl;
         }
     }
 
@@ -504,7 +359,7 @@ abstract class AbstractCharClass extends SpecialToken {
         protected AbstractCharClass computeValue() {
             return new AbstractCharClass() {
                 public boolean contains(int ch) {
-                    return Character.isISOControl(ch);
+                    return Character.isISOControl((char) ch);
                 }
             };
         }
@@ -512,53 +367,41 @@ abstract class AbstractCharClass extends SpecialToken {
 
     static class LazyJavaJavaIdentifierPart extends LazyCharClass {
         protected AbstractCharClass computeValue() {
-            AbstractCharClass chCl = new AbstractCharClass() {
+            return new AbstractCharClass() {
                 public boolean contains(int ch) {
-                    return Character.isJavaIdentifierPart(ch);
+                    return Character.isJavaIdentifierPart((char) ch);
                 }
             };
-            
-            chCl.mayContainSupplCodepoints = true;            
-            return chCl;
         }
     }
 
     static class LazyJavaJavaIdentifierStart extends LazyCharClass {
         protected AbstractCharClass computeValue() {
-            AbstractCharClass chCl = new AbstractCharClass() {
+            return new AbstractCharClass() {
                 public boolean contains(int ch) {
-                    return Character.isJavaIdentifierStart(ch);
+                    return Character.isJavaIdentifierStart((char) ch);
                 }
             };
-            
-            chCl.mayContainSupplCodepoints = true;            
-            return chCl;        
         }
     }
 
     static class LazyJavaLetter extends LazyCharClass {
         protected AbstractCharClass computeValue() {
-            AbstractCharClass chCl = new AbstractCharClass() {
+            return new AbstractCharClass() {
                 public boolean contains(int ch) {
-                    return Character.isLetter(ch);
+                    return Character.isLetter((char) ch);
                 }
             };
-            
-            chCl.mayContainSupplCodepoints = true;            
-            return chCl;
         }
     }
 
     static class LazyJavaLetterOrDigit extends LazyCharClass {
         protected AbstractCharClass computeValue() {
-            AbstractCharClass chCl = new AbstractCharClass() {
+            return new AbstractCharClass() {
                 public boolean contains(int ch) {
-                    return Character.isLetterOrDigit(ch);
+                    return Character.isLetterOrDigit((char) ch);
                 }
             };
-            
-            chCl.mayContainSupplCodepoints = true;            
-            return chCl;
         }
     }
 
@@ -566,7 +409,7 @@ abstract class AbstractCharClass extends SpecialToken {
         protected AbstractCharClass computeValue() {
             return new AbstractCharClass() {
                 public boolean contains(int ch) {
-                    return Character.isSpaceChar(ch);
+                    return Character.isSpaceChar((char) ch);
                 }
             };
         }
@@ -576,7 +419,7 @@ abstract class AbstractCharClass extends SpecialToken {
         protected AbstractCharClass computeValue() {
             return new AbstractCharClass() {
                 public boolean contains(int ch) {
-                    return Character.isTitleCase(ch);
+                    return Character.isTitleCase((char) ch);
                 }
             };
         }
@@ -584,30 +427,24 @@ abstract class AbstractCharClass extends SpecialToken {
 
     static class LazyJavaUnicodeIdentifierPart extends LazyCharClass {
         protected AbstractCharClass computeValue() {
-            AbstractCharClass chCl = new AbstractCharClass() {
+            return new AbstractCharClass() {
                 public boolean contains(int ch) {
-                    return Character.isUnicodeIdentifierPart(ch);
+                    return Character.isUnicodeIdentifierPart((char) ch);
                 }
             };
-            
-            chCl.mayContainSupplCodepoints = true;            
-            return chCl;
         }
     }
 
     static class LazyJavaUnicodeIdentifierStart extends LazyCharClass {
         protected AbstractCharClass computeValue() {
-            AbstractCharClass chCl = new AbstractCharClass() {
+            return new AbstractCharClass() {
                 public boolean contains(int ch) {
-                    return Character.isUnicodeIdentifierStart(ch);
+                    return Character.isUnicodeIdentifierStart((char) ch);
                 }
             };
-            
-            chCl.mayContainSupplCodepoints = true;            
-            return chCl;        
         }
     }
-    
+
     /**
      * character classes generated from 
      * http://www.unicode.org/reports/tr18/
@@ -783,43 +620,44 @@ abstract class AbstractCharClass extends SpecialToken {
                 { "ArabicPresentationForms-B", new LazyRange(0xFE70, 0xFEFF) }, //$NON-NLS-1$
                 { "HalfwidthandFullwidthForms", new LazyRange(0xFF00, 0xFFEF) }, //$NON-NLS-1$
                 { "Specials", new LazySpecialsBlock() }, //$NON-NLS-1$
-                { "Cn", new LazyCategory(Character.UNASSIGNED, true) },
-                { "IsL", new LazyCategoryScope(0x3E, true) },
-                { "Lu", new LazyCategory(Character.UPPERCASE_LETTER, true) },
-                { "Ll", new LazyCategory(Character.LOWERCASE_LETTER, true) },
-                { "Lt", new LazyCategory(Character.TITLECASE_LETTER, false) },
-                { "Lm", new LazyCategory(Character.MODIFIER_LETTER, false) },
-                { "Lo", new LazyCategory(Character.OTHER_LETTER, true) },
-                { "IsM", new LazyCategoryScope(0x1C0, true) },
-                { "Mn", new LazyCategory(Character.NON_SPACING_MARK, true) },
-                { "Me", new LazyCategory(Character.ENCLOSING_MARK, false) },
-                { "Mc", new LazyCategory(Character.COMBINING_SPACING_MARK, true) },
-                { "N", new LazyCategoryScope(0xE00, true) },
-                { "Nd", new LazyCategory(Character.DECIMAL_DIGIT_NUMBER, true) },
-                { "Nl", new LazyCategory(Character.LETTER_NUMBER, true) },
-                { "No", new LazyCategory(Character.OTHER_NUMBER, true) },
-                { "IsZ", new LazyCategoryScope(0x7000, false) },
-                { "Zs", new LazyCategory(Character.SPACE_SEPARATOR, false) },
-                { "Zl", new LazyCategory(Character.LINE_SEPARATOR, false) },
-                { "Zp", new LazyCategory(Character.PARAGRAPH_SEPARATOR, false) },
-                { "IsC", new LazyCategoryScope(0xF0000, true, true) },
-                { "Cc", new LazyCategory(Character.CONTROL, false) },
-                { "Cf", new LazyCategory(Character.FORMAT, true) },
-                { "Co", new LazyCategory(Character.PRIVATE_USE, true) },
-                { "Cs", new LazyCategory(Character.SURROGATE, false, true) },
-                { "IsP", new LazyCategoryScope(0xF8000, true) },
-                { "Pd", new LazyCategory(Character.DASH_PUNCTUATION, false) },
-                { "Ps", new LazyCategory(Character.START_PUNCTUATION, false) },
-                { "Pe", new LazyCategory(Character.END_PUNCTUATION, false) },
-                { "Pc", new LazyCategory(Character.CONNECTOR_PUNCTUATION, false) },
-                { "Po", new LazyCategory(Character.OTHER_PUNCTUATION, true) },
-                { "IsS", new LazyCategoryScope(0x7E000000, true) },
-                { "Sm", new LazyCategory(Character.MATH_SYMBOL, true) },
-                { "Sc", new LazyCategory(Character.CURRENCY_SYMBOL, false) },
-                { "Sk", new LazyCategory(Character.MODIFIER_SYMBOL, false) },
-                { "So", new LazyCategory(Character.OTHER_SYMBOL, true) },
-                { "Pi", new LazyCategory(Character.INITIAL_QUOTE_PUNCTUATION, false) },
-                { "Pf", new LazyCategory(Character.FINAL_QUOTE_PUNCTUATION, false) } };
+                { "Cn", new LazyCategory(Character.UNASSIGNED) }, //$NON-NLS-1$
+                { "IsL", new LazyCategoryScope(0x3E) }, //$NON-NLS-1$
+                { "Lu", new LazyCategory(Character.UPPERCASE_LETTER) }, //$NON-NLS-1$
+                { "Ll", new LazyCategory(Character.LOWERCASE_LETTER) }, //$NON-NLS-1$
+                { "Lt", new LazyCategory(Character.TITLECASE_LETTER) }, //$NON-NLS-1$
+                { "Lm", new LazyCategory(Character.MODIFIER_LETTER) }, //$NON-NLS-1$
+                { "Lo", new LazyCategory(Character.OTHER_LETTER) }, //$NON-NLS-1$
+                { "IsM", new LazyCategoryScope(0x1C0) }, //$NON-NLS-1$
+                { "Mn", new LazyCategory(Character.NON_SPACING_MARK) }, //$NON-NLS-1$
+                { "Me", new LazyCategory(Character.ENCLOSING_MARK) }, //$NON-NLS-1$
+                { "Mc", new LazyCategory(Character.COMBINING_SPACING_MARK) }, //$NON-NLS-1$
+                { "N", new LazyCategoryScope(0xE00) }, //$NON-NLS-1$
+                { "Nd", new LazyCategory(Character.DECIMAL_DIGIT_NUMBER) }, //$NON-NLS-1$
+                { "Nl", new LazyCategory(Character.LETTER_NUMBER) }, //$NON-NLS-1$
+                { "No", new LazyCategory(Character.OTHER_NUMBER) }, //$NON-NLS-1$
+                { "IsZ", new LazyCategoryScope(0x7000) }, //$NON-NLS-1$
+                { "Zs", new LazyCategory(Character.SPACE_SEPARATOR) }, //$NON-NLS-1$
+                { "Zl", new LazyCategory(Character.LINE_SEPARATOR) }, //$NON-NLS-1$
+                { "Zp", new LazyCategory(Character.PARAGRAPH_SEPARATOR) }, //$NON-NLS-1$
+                { "IsC", new LazyCategoryScope(0xF0000) }, //$NON-NLS-1$
+                { "Cc", new LazyCategory(Character.CONTROL) }, //$NON-NLS-1$
+                { "Cf", new LazyCategory(Character.FORMAT) }, //$NON-NLS-1$
+                { "Co", new LazyCategory(Character.PRIVATE_USE) }, //$NON-NLS-1$
+                { "Cs", new LazyCategory(Character.SURROGATE) }, //$NON-NLS-1$
+                { "IsP", new LazyCategoryScope(0xF8000) }, //$NON-NLS-1$
+                { "Pd", new LazyCategory(Character.DASH_PUNCTUATION) }, //$NON-NLS-1$
+                { "Ps", new LazyCategory(Character.START_PUNCTUATION) }, //$NON-NLS-1$
+                { "Pe", new LazyCategory(Character.END_PUNCTUATION) }, //$NON-NLS-1$
+                { "Pc", new LazyCategory(Character.CONNECTOR_PUNCTUATION) }, //$NON-NLS-1$
+                { "Po", new LazyCategory(Character.OTHER_PUNCTUATION) }, //$NON-NLS-1$
+                { "IsS", new LazyCategoryScope(0x7E000000) }, //$NON-NLS-1$
+                { "Sm", new LazyCategory(Character.MATH_SYMBOL) }, //$NON-NLS-1$
+                { "Sc", new LazyCategory(Character.CURRENCY_SYMBOL) }, //$NON-NLS-1$
+                { "Sk", new LazyCategory(Character.MODIFIER_SYMBOL) }, //$NON-NLS-1$
+                { "So", new LazyCategory(Character.OTHER_SYMBOL) }, //$NON-NLS-1$
+                { "Pi", new LazyCategory(Character.INITIAL_QUOTE_PUNCTUATION) }, //$NON-NLS-1$
+                { "Pf", new LazyCategory(Character.FINAL_QUOTE_PUNCTUATION) } }; //$NON-NLS-1$
+
         public Object[][] getContents() {
             return contents;
         }

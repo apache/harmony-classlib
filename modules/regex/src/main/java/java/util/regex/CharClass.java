@@ -40,8 +40,6 @@ class CharClass extends AbstractCharClass {
     // Flag indicates if there are unicode supplements
     boolean hasUCI = false;
 
-    boolean invertedSurrogates = false;
-    
     boolean inverted = false;
 
     boolean hideBits = false;
@@ -63,10 +61,6 @@ class CharClass extends AbstractCharClass {
         setNegative(negative);
     }
 
-    /*
-     * We can use this method safely even if nonBitSet != null 
-     * due to specific of range constrcutions in regular expressions.
-     */
     public CharClass add(int ch) {
         if (ci) {
             if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')) {
@@ -77,151 +71,52 @@ class CharClass extends AbstractCharClass {
                 }
             } else if (uci && ch > 128) {
                 hasUCI = true;
-                ch = Character.toLowerCase(Character.toUpperCase(ch));
+                ch = Character.toLowerCase(Character.toUpperCase((char) ch));
                 // return this;
             }
         }
-        
-        if (Lexer.isHighSurrogate(ch) || Lexer.isLowSurrogate(ch)) {      
-            if (!invertedSurrogates) {
-                lowHighSurrogates.set(ch - Character.MIN_SURROGATE);
-            } else {
-                lowHighSurrogates.clear(ch - Character.MIN_SURROGATE);
-            }
-        }
-        
         if (!inverted) {
             bits.set(ch);
         } else
-            bits.clear(ch);
+            bits.clear();
 
-        if (!mayContainSupplCodepoints && Character.isSupplementaryCodePoint(ch)) {
-            mayContainSupplCodepoints = true;
-        }
-        
         return this;
     }
 
-    /*
-     * The difference between add(AbstarctCharClass) and union(AbstractCharClass)
-     * is that add() is used for constructions like "[^abc\\d]"
-     * (this pattern doesn't match "1")
-     * while union is used for constructions like "[^abc[\\d]]"
-     * (this pattern matches "1").
-     */
     public CharClass add(final AbstractCharClass cc) {
-
-        if (!mayContainSupplCodepoints && cc.mayContainSupplCodepoints) {
-            mayContainSupplCodepoints = true;
-        }
-        
-        if (!invertedSurrogates) {
-                
-            //A | !B = ! ((A ^ B) & B)
-            if (cc.altSurrogates) {
-                lowHighSurrogates.xor(cc.getLowHighSurrogates());
-                lowHighSurrogates.and(cc.getLowHighSurrogates());
-                altSurrogates = !altSurrogates;
-                invertedSurrogates = true;
-                    
-            //A | B    
-            } else {
-                lowHighSurrogates.or(cc.getLowHighSurrogates());
-            }
-        } else {
-                
-            //!A | !B = !(A & B) 
-            if (cc.altSurrogates) {
-                lowHighSurrogates.and(cc.getLowHighSurrogates());
-                    
-            //!A | B = !(A & !B)
-            } else {
-                lowHighSurrogates.andNot(cc.getLowHighSurrogates());
-            }
-        }
-                
-        if (!hideBits && cc.getBits() != null) {
+        if (cc.getBits() != null) {
             if (!inverted) {
-                
-                //A | !B = ! ((A ^ B) & B)
                 if (cc.isNegative()) {
                     bits.xor(cc.getBits());
                     bits.and(cc.getBits());
                     alt = !alt;
                     inverted = true;
-                    
-                //A | B    
                 } else {
                     bits.or(cc.getBits());
                 }
             } else {
-                
-                //!A | !B = !(A & B) 
                 if (cc.isNegative()) {
                     bits.and(cc.getBits());
-                    
-                //!A | B = !(A & !B)
                 } else {
                     bits.andNot(cc.getBits());
                 }
             }
-        } else {           
-            final boolean curAlt = alt;
-            
+        } else {
             if (nonBitSet == null) {
-                
-                if (curAlt && !inverted && bits.isEmpty()) {
-                    nonBitSet = new AbstractCharClass() {
-                        public boolean contains(int ch) {
-                            return cc.contains(ch);
-                        }
-                    };
-                    //alt = true;
-                } else {
-                    
-                    /*
-                     * We keep the value of alt unchanged for 
-                     * constructions like [^[abc]fgb] by using
-                     * the formula a ^ b == !a ^ !b.
-                     */
-                    if (curAlt) { 
-                        nonBitSet = new AbstractCharClass() {
-                            public boolean contains(int ch) {
-                                return !((curAlt ^ bits.get(ch)) 
-                                    || ((curAlt ^ inverted) ^ cc.contains(ch)));
-                            }
-                        };
-                        //alt = true
-                    } else {
-                        nonBitSet = new AbstractCharClass() {
-                            public boolean contains(int ch) {
-                                return (curAlt ^ bits.get(ch)) 
-                                    || ((curAlt ^ inverted) ^ cc.contains(ch));
-                            }
-                        };
-                        //alt = false
+                // hide bits true at the moment
+                nonBitSet = new AbstractCharClass() {
+                    public boolean contains(int ch) {
+                        return cc.contains(ch) || bits.get(ch);
                     }
-                }
-                
-                hideBits = true;                
+                };
+                hideBits = true;
             } else {
                 final AbstractCharClass nb = nonBitSet;
-                
-                if (curAlt) {
-                    nonBitSet = new AbstractCharClass() {
-                        public boolean contains(int ch) {
-                            return !(curAlt ^ (nb.contains(ch) || cc.contains(ch)));
-                        }
-                    };
-                    //alt = true
-                } else {
-                    nonBitSet = new AbstractCharClass() {
-                        public boolean contains(int ch) {
-                            return curAlt ^ (nb.contains(ch) || cc.contains(ch));
-                        }
-                    };
-                    //alt = false                    
-                }
+                nonBitSet = new AbstractCharClass() {
+                    public boolean contains(int ch) {
+                        return nb.contains(ch) || cc.contains(ch);
+                    }
+                };
             }
         }
 
@@ -231,11 +126,7 @@ class CharClass extends AbstractCharClass {
     public CharClass add(int st, int end) {
         if (st > end)
             throw new IllegalArgumentException();
-        if (!ci 
-                
-                //no intersection with surrogate characters
-                && (end < Character.MIN_SURROGATE 
-                        || st > Character.MAX_SURROGATE)) {
+        if (!ci) {
             if (!inverted) {
                 bits.set(st, end + 1);
             } else {
@@ -248,247 +139,81 @@ class CharClass extends AbstractCharClass {
         }
         return this;
     }
-    
+
     // OR operation
     public void union(final AbstractCharClass clazz) {
-        if (!mayContainSupplCodepoints 
-                && clazz.mayContainSupplCodepoints) {
-            mayContainSupplCodepoints = true;
-        }
-        
         if (clazz.hasUCI())
             this.hasUCI = true;
-        
-
-        if (altSurrogates ^ clazz.altSurrogates) {
-                
-            //!A | B = !(A & !B) 
-            if (altSurrogates) {
-                lowHighSurrogates.andNot(clazz.getLowHighSurrogates());
-                
-            //A | !B = !((A ^ B) & B)
-            } else {
-                lowHighSurrogates.xor(clazz.getLowHighSurrogates());
-                lowHighSurrogates.and(clazz.getLowHighSurrogates());
-                altSurrogates = true;
-            }
-                
-        } else {
-                
-            //!A | !B = !(A & B)
-            if (altSurrogates) {
-                lowHighSurrogates.and(clazz.getLowHighSurrogates());
-                
-            //A | B
-            } else {
-                lowHighSurrogates.or(clazz.getLowHighSurrogates());
-            }
-        }
-        
         if (!hideBits && clazz.getBits() != null) {
             if (alt ^ clazz.isNegative()) {
-                
-                //!A | B = !(A & !B) 
                 if (alt) {
                     bits.andNot(clazz.getBits());
-                
-                //A | !B = !((A ^ B) & B)
                 } else {
                     bits.xor(clazz.getBits());
                     bits.and(clazz.getBits());
-                    alt = true;
                 }
-                
+                alt = true;
             } else {
-                
-                //!A | !B = !(A & B)
-                 if (alt) {
+                if (alt) {
                     bits.and(clazz.getBits());
-                
-                 //A | B
-                 } else {
+                } else {
                     bits.or(clazz.getBits());
                 }
             }
         } else {
-            final boolean curAlt = alt;
-
             if (nonBitSet == null) {
-                
-                if (!inverted && bits.isEmpty()) {
-                    if (curAlt) {
-                        nonBitSet = new AbstractCharClass() {
-                            public boolean contains(int ch) {
-                                return !clazz.contains(ch);
-                            }
-                        };
-                        //alt = true
-                    } else {
-                        nonBitSet = new AbstractCharClass() {
-                            public boolean contains(int ch) {
-                                return clazz.contains(ch);
-                            }
-                        };
-                        //alt = false
+                nonBitSet = new AbstractCharClass() {
+                    public boolean contains(int ch) {
+                        return clazz.contains(ch) || bits.get(ch);
                     }
-                } else {
-                    
-                    if (curAlt) {
-                        nonBitSet = new AbstractCharClass() {
-                            public boolean contains(int ch) {
-                                return !(clazz.contains(ch) || (curAlt ^ bits.get(ch)));
-                            }
-                        };
-                        //alt = true
-                    } else {
-                        nonBitSet = new AbstractCharClass() {
-                            public boolean contains(int ch) {
-                                return clazz.contains(ch) || (curAlt ^ bits.get(ch));
-                            }
-                        };
-                        //alt = false                        
-                    }
-                }
+                };
                 hideBits = true;
             } else {
                 final AbstractCharClass nb = nonBitSet;
-                
-                if (curAlt) {
-                    nonBitSet = new AbstractCharClass() {
-                        public boolean contains(int ch) {
-                            return !((curAlt ^ nb.contains(ch)) || clazz.contains(ch));
-                        }
-                    };
-                    //alt = true
-                } else {
-                    nonBitSet = new AbstractCharClass() {
-                        public boolean contains(int ch) {
-                            return (curAlt ^ nb.contains(ch)) || clazz.contains(ch);
-                        }
-                    };
-                    //alt = false                    
-                }
+                nonBitSet = new AbstractCharClass() {
+                    public boolean contains(int ch) {
+                        return nb.contains(ch) || clazz.contains(ch);
+                    }
+                };
             }
         }
     }
 
     // AND operation
     public void intersection(final AbstractCharClass clazz) {
-        if (!mayContainSupplCodepoints 
-                && clazz.mayContainSupplCodepoints) {
-            mayContainSupplCodepoints = true;
-        }
-        
         if (clazz.hasUCI())
             this.hasUCI = true;
-        
-        if (altSurrogates ^ clazz.altSurrogates) {
-                
-            //!A & B = ((A ^ B) & B)
-            if (altSurrogates) {
-                lowHighSurrogates.xor(clazz.getLowHighSurrogates());
-                lowHighSurrogates.and(clazz.getLowHighSurrogates());
-                altSurrogates = false;
-                
-            //A & !B
-            } else {
-                lowHighSurrogates.andNot(clazz.getLowHighSurrogates());
-            }
-        } else {
-                
-            //!A & !B = !(A | B)
-            if (altSurrogates) {
-                lowHighSurrogates.or(clazz.getLowHighSurrogates());
-                    
-            //A & B
-            } else {
-                lowHighSurrogates.and(clazz.getLowHighSurrogates());
-            }
-        }
-        
         if (!hideBits && clazz.getBits() != null) {
-            
             if (alt ^ clazz.isNegative()) {
-                
-                //!A & B = ((A ^ B) & B)
                 if (alt) {
                     bits.xor(clazz.getBits());
                     bits.and(clazz.getBits());
-                    alt = false;
-                
-                //A & !B
+                    setNegative(false);
                 } else {
                     bits.andNot(clazz.getBits());
                 }
             } else {
-                
-                //!A & !B = !(A | B)
                 if (alt) {
                     bits.or(clazz.getBits());
-                    
-                //A & B
                 } else {
                     bits.and(clazz.getBits());
                 }
             }
         } else {
-            final boolean curAlt = alt;
-            
-            if (nonBitSet == null) {            
-                
-                if (!inverted && bits.isEmpty()) {
-                    if (curAlt) {
-                        nonBitSet = new AbstractCharClass() {
-                            public boolean contains(int ch) {
-                                return !clazz.contains(ch);
-                            }
-                        };
-                        //alt = true
-                    } else {
-                        nonBitSet = new AbstractCharClass() {
-                            public boolean contains(int ch) {
-                                return clazz.contains(ch);
-                            }
-                        };
-                        //alt = false
+            if (nonBitSet == null) {
+                nonBitSet = new AbstractCharClass() {
+                    public boolean contains(int ch) {
+                        return bits.get(ch) && clazz.contains(ch);
                     }
-                } else {
-                    
-                    if (curAlt) {
-                        nonBitSet = new AbstractCharClass() {
-                            public boolean contains(int ch) {
-                                return !(clazz.contains(ch) && (curAlt ^ bits.get(ch)));
-                            }
-                        };
-                        //alt = true
-                    } else {
-                        nonBitSet = new AbstractCharClass() {
-                            public boolean contains(int ch) {
-                                return clazz.contains(ch) && (curAlt ^ bits.get(ch));
-                            }
-                        };
-                        //alt = false                        
-                    }
-                }
+                };
                 hideBits = true;
             } else {
                 final AbstractCharClass nb = nonBitSet;
-                
-                if (curAlt) {
-                    nonBitSet = new AbstractCharClass() {
-                        public boolean contains(int ch) {
-                            return !((curAlt ^ nb.contains(ch)) && clazz.contains(ch));
-                        }
-                    };
-                    //alt = true
-                } else {
-                    nonBitSet = new AbstractCharClass() {
-                        public boolean contains(int ch) {
-                            return (curAlt ^ nb.contains(ch)) && clazz.contains(ch);
-                        }
-                    };
-                    //alt = false                    
-                }
+                nonBitSet = new AbstractCharClass() {
+                    public boolean contains(int ch) {
+                        return nb.contains(ch) && clazz.contains(ch);
+                    }
+                };
             }
         }
     }
@@ -519,15 +244,9 @@ class CharClass extends AbstractCharClass {
         return bits;
     }
 
-    protected BitSet getLowHighSurrogates() {
-        return lowHighSurrogates;
-    }
-
     public AbstractCharClass getInstance() {
-       
         if (nonBitSet == null) {
             final BitSet bs = getBits();
-            
             AbstractCharClass res = new AbstractCharClass() {
                 public boolean contains(int ch) {
                     return this.alt ^ bs.get(ch);
@@ -537,7 +256,7 @@ class CharClass extends AbstractCharClass {
                     StringBuffer temp = new StringBuffer();
                     for (int i = bs.nextSetBit(0); i >= 0; i = bs
                             .nextSetBit(i + 1)) {
-                        temp.append(Character.toChars(i));
+                        temp.append((char) i);
                         temp.append('|');
                     }
 
@@ -554,11 +273,10 @@ class CharClass extends AbstractCharClass {
         }
     }
 
-    //for debugging purposes only
     public String toString() {
         StringBuffer temp = new StringBuffer();
         for (int i = bits.nextSetBit(0); i >= 0; i = bits.nextSetBit(i + 1)) {
-            temp.append(Character.toChars(i));
+            temp.append((char) i);
             temp.append('|');
         }
 
