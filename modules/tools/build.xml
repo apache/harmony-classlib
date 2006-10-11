@@ -138,6 +138,7 @@
 
             <classpath>
                 <pathelement path="${hy.tools.bin.test}"/>
+                <pathelement path="${hy.jdk}/lib/tools.jar"/>
             </classpath>
             <classpath location="../../build/tests" />
 

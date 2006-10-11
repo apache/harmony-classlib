@@ -76,8 +76,13 @@ public class KeyStoreLoaderSaver {
                 ksFile = new File(uri);
             } catch (URISyntaxException e) {
                 ksFile = new File(path);
+            } catch (IllegalArgumentException e){
+                ksFile = new File(path);
             }
             
+            if (!ksFile.exists()) {
+                throw new IOException("Keystore file does not exist");
+            }
             if (ksFile.length() == 0) {
                 throw new IOException("Keystore file exists but is empty");
             }
