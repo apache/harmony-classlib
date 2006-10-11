@@ -52,16 +52,24 @@ public class ExtensionValue {
      * Places the string representation of extension value
      * into the StringBuffer object.
      */
-    public void dumpValue(StringBuffer buffer) {
-        buffer.append("Unparseable extension value:\n");
+    public void dumpValue(StringBuffer buffer, String prefix) {
+        buffer.append(prefix).append("Unparseable extension value:\n"); //$NON-NLS-1$
         if (encoding == null) {
             encoding = getEncoded();
         }
         if (encoding == null) {
-            buffer.append("NULL\n");
+            buffer.append("NULL\n"); //$NON-NLS-1$
         } else {
-            buffer.append(Array.toString(encoding, ""));
+            buffer.append(Array.toString(encoding, prefix));
         }
+    }
+
+    /**
+     * Places the string representation of extension value
+     * into the StringBuffer object.
+     */
+    public void dumpValue(StringBuffer buffer) {
+        dumpValue(buffer, ""); //$NON-NLS-1$
     };
 }
 

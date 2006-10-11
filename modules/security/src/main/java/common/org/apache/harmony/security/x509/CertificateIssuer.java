@@ -70,18 +70,18 @@ public class CertificateIssuer extends ExtensionValue {
      * Places the string representation of extension value
      * into the StringBuffer object.
      */
-    public void dumpValue(StringBuffer buffer) {
-        buffer.append("Certificate Issuer: ");
+    public void dumpValue(StringBuffer buffer, String prefix) {
+        buffer.append(prefix).append("Certificate Issuer: "); //$NON-NLS-1$
         if (issuer == null) {
             try {
                 issuer = getIssuer();
             } catch (IOException e) {
                 // incorrect extension value encoding
-                buffer.append("Unparseable (incorrect!) extension value:\n");
+                buffer.append("Unparseable (incorrect!) extension value:\n"); //$NON-NLS-1$
                 super.dumpValue(buffer);
             }
         }
-        buffer.append(issuer).append("\n");
+        buffer.append(issuer).append('\n');
     }
 
     /**

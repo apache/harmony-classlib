@@ -91,6 +91,30 @@ public class DistributionPoint {
     }
 
     /**
+     * Places the string representation of extension value
+     * into the StringBuffer object.
+     */
+    public void dumpValue(StringBuffer buffer, String prefix) {
+        buffer.append(prefix);
+        buffer.append("Distribution Point: [\n"); //$NON-NLS-1$
+        if (distributionPoint != null) {
+            distributionPoint.dumpValue(buffer, prefix + "  "); //$NON-NLS-1$
+        }
+        if (reasons != null) {
+            reasons.dumpValue(buffer, prefix + "  "); //$NON-NLS-1$
+        }
+        if (cRLIssuer != null) {
+            buffer.append(prefix);
+            buffer.append("  CRL Issuer: [\n"); //$NON-NLS-1$
+            cRLIssuer.dumpValue(buffer, prefix + "    "); //$NON-NLS-1$
+            buffer.append(prefix);
+            buffer.append("  ]\n"); //$NON-NLS-1$
+        }
+        buffer.append(prefix);
+        buffer.append("]\n"); //$NON-NLS-1$
+    }
+
+    /**
      * Custom X.509 decoder.
      */
     public static final ASN1Sequence ASN1 = new ASN1Sequence(new ASN1Type[] {

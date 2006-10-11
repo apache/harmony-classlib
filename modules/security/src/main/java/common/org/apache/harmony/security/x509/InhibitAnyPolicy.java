@@ -77,8 +77,9 @@ public class InhibitAnyPolicy extends ExtensionValue {
      * Places the string representation of extension value
      * into the StringBuffer object.
      */
-    public void dumpValue(StringBuffer buffer) {
-        buffer.append("Inhibit Any-Policy: ").append(skipCerts).append("\n");
+    public void dumpValue(StringBuffer buffer, String prefix) {
+        buffer.append(prefix).append("Inhibit Any-Policy: ") //$NON-NLS-1$
+            .append(skipCerts).append('\n');
     }
 }
 

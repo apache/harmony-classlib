@@ -328,6 +328,72 @@ public class Extension {
         }
     }
 
+    /**
+     * Places the string representation into the StringBuffer object.
+     */
+    public void dumpValue(StringBuffer buffer, String prefix) {
+        buffer.append("OID: ").append(getExtnID()) //$NON-NLS-1$
+            .append(", Critical: ").append(critical).append('\n'); //$NON-NLS-1$
+        if (!valueDecoded) {
+            try {
+                decodeExtensionValue();
+            } catch (IOException e) { }
+        }
+        if (extnValueObject != null) {
+            extnValueObject.dumpValue(buffer, prefix);
+            return;
+        }
+        // else: dump unparsed hex representation
+        buffer.append(prefix);
+        if (oidEquals(extnID, SUBJ_DIRECTORY_ATTRS)) {
+            buffer.append("Subject Directory Attributes Extension"); //$NON-NLS-1$
+        } else if (oidEquals(extnID, SUBJ_KEY_ID)) {
+            buffer.append("Subject Key Identifier Extension"); //$NON-NLS-1$
+        } else if (oidEquals(extnID, KEY_USAGE)) {
+            buffer.append("Key Usage Extension"); //$NON-NLS-1$
+        } else if (oidEquals(extnID, PRIVATE_KEY_USAGE_PERIOD)) {
+            buffer.append("Private Key Usage Period Extension"); //$NON-NLS-1$
+        } else if (oidEquals(extnID, SUBJECT_ALT_NAME)) {
+            buffer.append("Subject Alternative Name Extension"); //$NON-NLS-1$
+        } else if (oidEquals(extnID, ISSUER_ALTERNATIVE_NAME)) {
+            buffer.append("Issuer Alternative Name Extension"); //$NON-NLS-1$
+        } else if (oidEquals(extnID, BASIC_CONSTRAINTS)) {
+            buffer.append("Basic Constraints Extension"); //$NON-NLS-1$
+        } else if (oidEquals(extnID, NAME_CONSTRAINTS)) {
+            buffer.append("Name Constraints Extension"); //$NON-NLS-1$
+        } else if (oidEquals(extnID, CRL_DISTR_POINTS)) {
+            buffer.append("CRL Distribution Points Extension"); //$NON-NLS-1$
+        } else if (oidEquals(extnID, CERTIFICATE_POLICIES)) {
+            buffer.append("Certificate Policies Extension"); //$NON-NLS-1$
+        } else if (oidEquals(extnID, POLICY_MAPPINGS)) {
+            buffer.append("Policy Mappings Extension"); //$NON-NLS-1$
+        } else if (oidEquals(extnID, AUTH_KEY_ID)) {
+            buffer.append("Authority Key Identifier Extension"); //$NON-NLS-1$
+        } else if (oidEquals(extnID, POLICY_CONSTRAINTS)) {
+            buffer.append("Policy Constraints Extension"); //$NON-NLS-1$
+        } else if (oidEquals(extnID, EXTENDED_KEY_USAGE)) {
+            buffer.append("Extended Key Usage Extension"); //$NON-NLS-1$
+        } else if (oidEquals(extnID, INHIBIT_ANY_POLICY)) {
+            buffer.append("Inhibit Any-Policy Extension"); //$NON-NLS-1$
+        } else if (oidEquals(extnID, AUTHORITY_INFO_ACCESS)) {
+            buffer.append("Authority Information Access Extension"); //$NON-NLS-1$
+        } else if (oidEquals(extnID, SUBJECT_INFO_ACCESS)) {
+            buffer.append("Subject Information Access Extension"); //$NON-NLS-1$
+        } else if (oidEquals(extnID, INVALIDITY_DATE)) {
+            buffer.append("Invalidity Date Extension"); //$NON-NLS-1$
+        } else if (oidEquals(extnID, CRL_NUMBER)) {
+            buffer.append("CRL Number Extension"); //$NON-NLS-1$
+        } else if (oidEquals(extnID, REASON_CODE)) {
+            buffer.append("Reason Code Extension"); //$NON-NLS-1$
+        } else {
+            buffer.append("Unknown Extension"); //$NON-NLS-1$
+        }
+        buffer.append('\n').append(prefix)
+            .append("Unparsed Extension Value:\n"); //$NON-NLS-1$
+        buffer.append(Array.toString(extnValue, prefix));
+    }
+
+
     // Compares two OIDs
     private static boolean oidEquals(int[] oid1, int[] oid2) {
         int length = oid1.length;

@@ -123,6 +123,23 @@ public class PolicyConstraints extends ExtensionValue {
     }
 
     /**
+     * Places the string representation of extension value 
+     * into the StringBuffer object.
+     */
+    public void dumpValue(StringBuffer buffer, String prefix) {
+        buffer.append(prefix).append("PolicyConstraints: [\n"); //$NON-NLS-1$
+        if (requireExplicitPolicy != null) {
+            buffer.append(prefix).append("  requireExplicitPolicy: ") //$NON-NLS-1$
+                .append(requireExplicitPolicy).append('\n');
+        }
+        if (inhibitPolicyMapping != null) {
+            buffer.append(prefix).append("  inhibitPolicyMapping: ") //$NON-NLS-1$
+                .append(inhibitPolicyMapping).append('\n');
+        }
+        buffer.append(prefix).append("]\n"); //$NON-NLS-1$
+    }
+
+    /**
      * X.509 PolicyConstraints encoder/decoder.
      */
     public static final ASN1Sequence ASN1 = new ASN1Sequence(new ASN1Type[] {

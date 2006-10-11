@@ -88,41 +88,41 @@ public class ReasonCode extends ExtensionValue {
      * Places the string representation of extension value
      * into the StringBuffer object.
      */
-    public void dumpValue(StringBuffer buffer) {
-        buffer.append("Reason Code [\n  ");
+    public void dumpValue(StringBuffer buffer, String prefix) {
+        buffer.append(prefix).append("Reason Code: [ "); //$NON-NLS-1$
         switch (code) {
             case UNSPECIFIED:
-                buffer.append("unspecified");
+                buffer.append("unspecified"); //$NON-NLS-1$
                 break;
             case KEY_COMPROMISE:
-                buffer.append("keyCompromise");
+                buffer.append("keyCompromise"); //$NON-NLS-1$
                 break;
             case CA_COMPROMISE:
-                buffer.append("cACompromise");
+                buffer.append("cACompromise"); //$NON-NLS-1$
                 break;
             case AFFILIATION_CHANGED:
-                buffer.append("affiliationChanged");
+                buffer.append("affiliationChanged"); //$NON-NLS-1$
                 break;
             case SUPERSEDED:
-                buffer.append("superseded");
+                buffer.append("superseded"); //$NON-NLS-1$
                 break;
             case CESSATION_OF_OPERATION:
-                buffer.append("cessationOfOperation");
+                buffer.append("cessationOfOperation"); //$NON-NLS-1$
                 break;
             case CERTIFICATE_HOLD:
-                buffer.append("certificateHold");
+                buffer.append("certificateHold"); //$NON-NLS-1$
                 break;
             case REMOVE_FROM_CRL:
-                buffer.append("removeFromCRL");
+                buffer.append("removeFromCRL"); //$NON-NLS-1$
                 break;
             case PRIVILEGE_WITHDRAWN:
-                buffer.append("privilegeWithdrawn");
+                buffer.append("privilegeWithdrawn"); //$NON-NLS-1$
                 break;
             case AA_COMPROMISE:
-                buffer.append("aACompromise");
+                buffer.append("aACompromise"); //$NON-NLS-1$
                 break;
         }
-        buffer.append("\n]\n");
+        buffer.append(" ]\n"); //$NON-NLS-1$
     }
 
     /**

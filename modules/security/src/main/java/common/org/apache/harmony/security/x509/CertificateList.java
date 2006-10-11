@@ -27,6 +27,7 @@ import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.asn1.BitString;
+import org.apache.harmony.security.utils.Array;
 
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work 
@@ -113,17 +114,9 @@ public class CertificateList {
 
     public String toString() {
         StringBuffer res = new StringBuffer();
-        res.append("X509 CertList: \n["); //$NON-NLS-1$
-        res.append("\n  tbsCertList:\n  ["); //$NON-NLS-1$
-        res.append(tbsCertList.toString());
-        res.append("\n  ]"); //$NON-NLS-1$
-        res.append("\n  signatureAlgorithm:\n  ["); //$NON-NLS-1$
-        res.append(signatureAlgorithm.toString());
-        res.append("\n  ]"); //$NON-NLS-1$
-        res.append("\n  signatureValue:\n  ["); //$NON-NLS-1$
-        //res.append(Arrays.toString(signatureValue));
-        res.append("\n  ]"); //$NON-NLS-1$
-        res.append("\n]"); //$NON-NLS-1$
+        tbsCertList.dumpValue(res);
+        res.append("\nSignature Value:\n"); //$NON-NLS-1$
+        res.append(Array.toString(signatureValue, "")); //$NON-NLS-1$
         return res.toString();
     }
     

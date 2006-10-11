@@ -23,6 +23,7 @@
 package org.apache.harmony.security.x509;
 
 import java.math.BigInteger;
+import javax.security.auth.x500.X500Principal;
 
 import org.apache.harmony.security.asn1.ASN1BitString;
 import org.apache.harmony.security.asn1.ASN1Explicit;
@@ -249,6 +250,47 @@ public class TBSCertificate {
             encoding = ASN1.encode(this);
         }
         return encoding;
+    }
+
+    /**
+     * Places the string representation into the StringBuffer object.
+     */
+    public void dumpValue(StringBuffer buffer) {
+        buffer.append('[');
+        buffer.append("\n  Version: V").append(version+1); //$NON-NLS-1$
+        buffer.append("\n  Subject: ") //$NON-NLS-1$
+            .append(subject.getName(X500Principal.RFC2253));
+        buffer.append("\n  Signature Algorithm: "); //$NON-NLS-1$
+        signature.dumpValue(buffer);
+        buffer.append("\n  Key: "); //$NON-NLS-1$
+        buffer.append(subjectPublicKeyInfo.getPublicKey().toString());
+        buffer.append("\n  Validity: [From: "); //$NON-NLS-1$
+        buffer.append(validity.getNotBefore());
+        buffer.append("\n               To: "); //$NON-NLS-1$
+        buffer.append(validity.getNotAfter()).append(']');
+        buffer.append("\n  Issuer: "); //$NON-NLS-1$
+        buffer.append(issuer.getName(X500Principal.RFC2253));
+        buffer.append("\n  Serial Number: "); //$NON-NLS-1$
+        buffer.append(serialNumber);
+        if (issuerUniqueID != null) {
+            buffer.append("\n  Issuer Id: "); //$NON-NLS-1$
+            for (int i=0; i<issuerUniqueID.length; i++) {
+                buffer.append(issuerUniqueID[i] ? '1' : '0');
+            }
+        }
+        if (subjectUniqueID != null) {
+            buffer.append("\n  Subject Id: "); //$NON-NLS-1$
+            for (int i=0; i<subjectUniqueID.length; i++) {
+                buffer.append(subjectUniqueID[i] ? '1' : '0');
+            }
+        }
+        if (extensions != null) {
+            buffer.append("\n\n  Extensions: "); //$NON-NLS-1$
+            buffer.append("[\n"); //$NON-NLS-1$
+            extensions.dumpValue(buffer, "    "); //$NON-NLS-1$
+            buffer.append("  ]"); //$NON-NLS-1$
+        }
+        buffer.append("\n]"); //$NON-NLS-1$
     }
 
     /**

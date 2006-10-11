@@ -159,9 +159,22 @@ public class IssuingDistributionPoint extends ExtensionValue {
      * Places the string representation of extension value
      * into the StringBuffer object.
      */
-    public void dumpValue(StringBuffer buffer) {
-        buffer.append("Invalidity Date\n");
-        super.dumpValue(buffer);
+    public void dumpValue(StringBuffer buffer, String prefix) {
+        buffer.append(prefix).append("Issuing Distribution Point: [\n"); //$NON-NLS-1$
+        if (distributionPoint != null) {
+            distributionPoint.dumpValue(buffer, "  " + prefix); //$NON-NLS-1$
+        }
+        buffer.append(prefix).append("  onlyContainsUserCerts: ") //$NON-NLS-1$
+            .append(onlyContainsUserCerts).append('\n');
+        buffer.append(prefix).append("  onlyContainsCACerts: ") //$NON-NLS-1$
+            .append(onlyContainsCACerts).append('\n');
+        if (onlySomeReasons != null) {
+            onlySomeReasons.dumpValue(buffer, prefix + "  "); //$NON-NLS-1$
+        }
+        buffer.append(prefix).append("  indirectCRL: ") //$NON-NLS-1$
+            .append(indirectCRL).append('\n');
+        buffer.append(prefix).append("  onlyContainsAttributeCerts: ") //$NON-NLS-1$
+            .append(onlyContainsAttributeCerts).append('\n');
     }
 
     /**

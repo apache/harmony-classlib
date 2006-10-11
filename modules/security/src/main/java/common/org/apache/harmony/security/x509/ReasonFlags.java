@@ -78,6 +78,23 @@ public class ReasonFlags {
     }
 
     /**
+     * Places the string representation of extension value
+     * into the StringBuffer object.
+     */
+    public void dumpValue(StringBuffer buffer, String prefix) {
+        buffer.append(prefix);
+        buffer.append("ReasonFlags [\n"); //$NON-NLS-1$
+        for (int i=0; i<flags.length; i++) {
+            if (flags[i]) {
+                buffer.append(prefix).append("  ") //$NON-NLS-1$
+                    .append(REASONS[i]).append('\n');
+            }
+        }
+        buffer.append(prefix);
+        buffer.append("]\n"); //$NON-NLS-1$
+    }
+    
+    /**
      * ASN.1 Encoder/Decoder.
      */
     public static ASN1BitString ASN1 = 

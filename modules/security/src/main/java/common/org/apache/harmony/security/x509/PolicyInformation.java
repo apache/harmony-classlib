@@ -84,6 +84,15 @@ public class PolicyInformation {
     }
 
     /**
+     * Places the string representation of extension value 
+     * into the StringBuffer object.
+     */
+    public void dumpValue(StringBuffer buffer) {
+        buffer.append("Policy Identifier [") //$NON-NLS-1$
+            .append(policyIdentifier).append(']');
+    }
+
+    /**
      * ASN.1 DER X.509 PolicyInformation encoder/decoder class.
      */
     public static final ASN1Sequence ASN1 = new ASN1Sequence(

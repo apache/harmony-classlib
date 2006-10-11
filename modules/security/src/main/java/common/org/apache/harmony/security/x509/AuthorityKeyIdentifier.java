@@ -31,6 +31,7 @@ import org.apache.harmony.security.asn1.ASN1OctetString;
 import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
+import org.apache.harmony.security.utils.Array;
 
 /**
  * The class incapsulates the ASN.1 DER encoding/decoding work
@@ -78,6 +79,28 @@ public class AuthorityKeyIdentifier extends ExtensionValue {
             encoding = ASN1.encode(this);
         }
         return encoding;
+    }
+
+    /**
+     * Places the string representation of extension value 
+     * into the StringBuffer object.
+     */
+    public void dumpValue(StringBuffer buffer, String prefix) {
+        buffer.append(prefix).append("AuthorityKeyIdentifier [\n"); //$NON-NLS-1$
+        if (keyIdentifier != null) {
+            buffer.append(prefix).append("  keyIdentifier:\n"); //$NON-NLS-1$
+            buffer.append(Array.toString(keyIdentifier, prefix + "    ")); //$NON-NLS-1$
+        }
+        if (authorityCertIssuer != null) {
+            buffer.append(prefix).append("  authorityCertIssuer: [\n"); //$NON-NLS-1$
+            authorityCertIssuer.dumpValue(buffer, prefix + "    "); //$NON-NLS-1$
+            buffer.append(prefix).append("  ]\n"); //$NON-NLS-1$
+        }
+        if (authorityCertSerialNumber != null) {
+            buffer.append(prefix).append("  authorityCertSerialNumber: ") //$NON-NLS-1$
+                .append(authorityCertSerialNumber).append('\n');
+        }
+        buffer.append(prefix).append("]\n"); //$NON-NLS-1$
     }
 
     public static ASN1Type ASN1 = new ASN1Sequence(

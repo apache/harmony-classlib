@@ -453,7 +453,7 @@ public class X509CRLImpl extends X509CRL {
      * method documentation for more info
      */
     public String toString() {
-        return "X509CRLImpl: " + crl.toString(); //$NON-NLS-1$
+        return crl.toString();
     }
 
     // ---------------------------------------------------------------------

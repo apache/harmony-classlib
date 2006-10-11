@@ -24,6 +24,7 @@ package org.apache.harmony.security.x509;
 
 import java.util.Arrays;
 
+import org.apache.harmony.crypto.utils.AlgNameMapper;
 import org.apache.harmony.security.asn1.ASN1Any;
 import org.apache.harmony.security.asn1.ASN1Oid;
 import org.apache.harmony.security.asn1.ASN1Sequence;
@@ -51,6 +52,8 @@ public class AlgorithmIdentifier {
 
     // the value of algorithm field
     private String algorithm;
+    // the name of the algorithm
+    private String algorithmName;
     // the value of parameters field
     private byte[] parameters;
     // the encoding of AlgorithmIdentifier value
@@ -95,6 +98,22 @@ public class AlgorithmIdentifier {
     }
 
     /**
+     * Returns the name of the algorithm corresponding to
+     * its OID. If there is no the such correspondence,
+     * algorithm OID is returned.
+     * @return  algorithm
+     */
+    public String getAlgorithmName() {
+        if (algorithmName == null) {
+            algorithmName = AlgNameMapper.map2AlgName(algorithm);
+            if (algorithmName == null) {
+                algorithmName = algorithm;
+            }
+        }
+        return algorithmName;
+    }
+
+    /**
      * Returns the value of parameters field of the structure.
      * @return  parameters
      */
@@ -124,6 +143,20 @@ public class AlgorithmIdentifier {
                     : Arrays.equals(parameters, algid.parameters));
     }
     
+    /**
+     * Places the string representation into the StringBuffer object.
+     */
+    public void dumpValue(StringBuffer buffer) {
+        buffer.append(getAlgorithmName());
+        if (parameters == null) {
+            buffer.append(", no params, "); //$NON-NLS-1$
+        } else {
+            buffer.append(", params unparsed, "); //$NON-NLS-1$
+        }
+        buffer.append("OID = "); //$NON-NLS-1$
+        buffer.append(getAlgorithm());
+    }
+
     /**
      * Custom AlgorithmIdentifier DER encoder/decoder
      */

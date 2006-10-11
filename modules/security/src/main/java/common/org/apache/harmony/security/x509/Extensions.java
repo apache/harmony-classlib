@@ -385,6 +385,21 @@ public class Extensions {
                             && (extensions.size() == extns.extensions.size()))
                 );
     }
+    
+    /**
+     * Places the string representation into the StringBuffer object.
+     */
+    public void dumpValue(StringBuffer buffer, String prefix) {
+        if (extensions == null) {
+            return;
+        }
+        int num = 1;
+        for (Extension extension: extensions) {
+            buffer.append('\n').append(prefix)
+                .append('[').append(num++).append("]: "); //$NON-NLS-1$
+            extension.dumpValue(buffer, prefix);
+        }
+    }
 
     /**
      * Custom X.509 Extensions decoder.

@@ -85,8 +85,8 @@ public class ExtendedKeyUsage extends ExtensionValue {
      * Places the string representation of extension value
      * into the StringBuffer object.
      */
-    public void dumpValue(StringBuffer buffer) {
-        buffer.append("Extended Key Usage: ");
+    public void dumpValue(StringBuffer buffer, String prefix) {
+        buffer.append(prefix).append("Extended Key Usage: "); //$NON-NLS-1$
         if (keys == null) {
             try {
                 keys = getExtendedKeyUsage();
@@ -96,14 +96,14 @@ public class ExtendedKeyUsage extends ExtensionValue {
                 return;
             }
         }
-        buffer.append("[");
+        buffer.append('[');
         for (Iterator it=keys.iterator(); it.hasNext();) {
-            buffer.append(" \"").append(it.next()).append("\"");
+            buffer.append(" \"").append(it.next()).append('"'); //$NON-NLS-1$
             if (it.hasNext()) {
-                buffer.append(",");
+                buffer.append(',');
             }
         }
-        buffer.append(" ]\n");
+        buffer.append(" ]\n"); //$NON-NLS-1$
     }
 
     /**

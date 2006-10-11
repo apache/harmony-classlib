@@ -25,6 +25,7 @@ package org.apache.harmony.security.x509;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.security.asn1.ASN1SequenceOf;
@@ -114,6 +115,21 @@ public class CertificatePolicies extends ExtensionValue {
             encoding = ASN1.encode(this);
         }
         return encoding;
+    }
+
+    /**
+     * Places the string representation of extension value 
+     * into the StringBuffer object.
+     */
+    public void dumpValue(StringBuffer buffer, String prefix) {
+        buffer.append(prefix).append("CertificatePolicies [\n"); //$NON-NLS-1$
+        for (Iterator it=policyInformations.iterator(); it.hasNext();) {
+            buffer.append(prefix);
+            buffer.append("  "); //$NON-NLS-1$
+            ((PolicyInformation) it.next()).dumpValue(buffer);
+            buffer.append('\n');
+        }
+        buffer.append(prefix).append("]\n"); //$NON-NLS-1$
     }
 
     /**

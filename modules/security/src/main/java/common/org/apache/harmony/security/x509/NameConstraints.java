@@ -273,6 +273,31 @@ public class NameConstraints extends ExtensionValue {
     }
 
     /**
+     * Places the string representation of extension value
+     * into the StringBuffer object.
+     */
+    public void dumpValue(StringBuffer buffer, String prefix) {
+        buffer.append(prefix).append("Name Constraints: [\n"); //$NON-NLS-1$
+        if (permittedSubtrees != null) {
+            buffer.append(prefix).append("  Permitted: [\n"); //$NON-NLS-1$
+            for (Iterator it=permittedSubtrees.getSubtrees().iterator();
+                    it.hasNext();) {
+                ((GeneralSubtree) it.next()).dumpValue(buffer, prefix + "    "); //$NON-NLS-1$
+            }
+            buffer.append(prefix).append("  ]\n"); //$NON-NLS-1$
+        }
+        if (excludedSubtrees != null) {
+            buffer.append(prefix).append("  Excluded: [\n"); //$NON-NLS-1$
+            for (Iterator it=excludedSubtrees.getSubtrees().iterator();
+                    it.hasNext();) {
+                ((GeneralSubtree) it.next()).dumpValue(buffer, prefix + "    "); //$NON-NLS-1$
+            }
+            buffer.append(prefix).append("  ]\n"); //$NON-NLS-1$
+        }
+        buffer.append('\n').append(prefix).append("]\n"); //$NON-NLS-1$
+    }
+    
+    /**
      * X.509 NameConstraints encoder/decoder.
      */
     public static final ASN1Sequence ASN1 = new ASN1Sequence(new ASN1Type[] {

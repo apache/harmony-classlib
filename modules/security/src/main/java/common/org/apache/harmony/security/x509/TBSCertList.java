@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
@@ -153,6 +154,22 @@ public class TBSCertList {
                     : crlEntryExtensions.equals(rcert.crlEntryExtensions));
         }
 
+        /**
+         * Places the string representation of extension value
+         * into the StringBuffer object.
+         */
+        public void dumpValue(StringBuffer buffer, String prefix) {
+            buffer.append(prefix).append("Certificae Serial Number: ") //$NON-NLS-1$
+                .append(userCertificate).append('\n');
+            buffer.append(prefix).append("Revocation Date: ") //$NON-NLS-1$
+                .append(revocationDate);
+            if (crlEntryExtensions != null) {
+                buffer.append('\n').append(prefix)
+                    .append("CRL Entry Extensions: ["); //$NON-NLS-1$
+                crlEntryExtensions.dumpValue(buffer, prefix + "  "); //$NON-NLS-1$
+                buffer.append(prefix).append(']');
+            }
+        }
         
         public static ASN1Sequence ASN1 = new ASN1Sequence(
                 new ASN1Type[] {ASN1Integer.getInstance(), Time.ASN1,
@@ -340,6 +357,37 @@ public class TBSCertList {
             && ((crlExtensions == null)
                     ? tbscert.crlExtensions == null
                     : crlExtensions.equals(tbscert.crlExtensions));
+    }
+
+    /**
+     * Places the string representation of extension value
+     * into the StringBuffer object.
+     */
+    public void dumpValue(StringBuffer buffer) {
+        buffer.append("X.509 CRL v").append(version); //$NON-NLS-1$
+        buffer.append("\nSignature Algorithm: ["); //$NON-NLS-1$
+        signature.dumpValue(buffer);
+        buffer.append(']');
+        buffer.append("\nIssuer: ").append(issuer.getName(X500Principal.RFC2253)); //$NON-NLS-1$
+        buffer.append("\n\nThis Update: ").append(thisUpdate); //$NON-NLS-1$
+        buffer.append("\nNext Update: ").append(nextUpdate).append('\n'); //$NON-NLS-1$
+        if (revokedCertificates != null) {
+            buffer.append("\nRevoked Certificates: ") //$NON-NLS-1$
+                .append(revokedCertificates.size()).append(" ["); //$NON-NLS-1$
+            int number = 1;
+            for (Iterator it = revokedCertificates.iterator();it.hasNext();) {
+                buffer.append("\n  [").append(number++).append(']'); //$NON-NLS-1$
+                ((RevokedCertificate) it.next()).dumpValue(buffer, "  "); //$NON-NLS-1$
+                buffer.append('\n');
+            }
+            buffer.append("]\n"); //$NON-NLS-1$
+        }
+        if (crlExtensions != null) {
+            buffer.append("\nCRL Extensions: ") //$NON-NLS-1$
+                .append(crlExtensions.size()).append(" ["); //$NON-NLS-1$
+            crlExtensions.dumpValue(buffer, "  "); //$NON-NLS-1$
+            buffer.append("]\n"); //$NON-NLS-1$
+        }
     }
 
     /**

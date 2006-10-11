@@ -103,6 +103,21 @@ public class CRLDistributionPoints extends ExtensionValue {
     }
 
     /**
+     * Places the string representation of extension value
+     * into the StringBuffer object.
+     */
+    public void dumpValue(StringBuffer buffer, String prefix) {
+        buffer.append(prefix).append("CRL Distribution Points: [\n"); //$NON-NLS-1$
+        int number = 0;
+        for (Iterator it=distributionPoints.iterator();
+                it.hasNext();) {
+            buffer.append(prefix).append("  [").append(++number).append("]\n"); //$NON-NLS-1$ //$NON-NLS-2$
+            ((DistributionPoint) it.next()).dumpValue(buffer, prefix + "  "); //$NON-NLS-1$
+        }
+        buffer.append(prefix).append("]\n"); //$NON-NLS-1$
+    }
+    
+    /**
      * Custom X.509 decoder.
      */
     public static final ASN1Type ASN1 = 
