@@ -29,7 +29,7 @@ import java.util.Map;
 final class Parameters {
 
     /** applet parameters provided by &lt;param&gt; tags */
-    final Map parameters;
+    final Map<String, String> parameters;
     /** the location the document comes from */
     final URL documentBase;
     /** document's id from the host application */
@@ -53,7 +53,7 @@ final class Parameters {
                 int documentId,
                 URL codeBase,
                 String className,
-                Map parameters,
+                Map<String, String> parameters,
                 String name,
                 Object container) {
 
@@ -69,7 +69,7 @@ final class Parameters {
     }
 
     String getParameter(String name) {
-        return (String)parameters.get(name);
+        return parameters.get(name);
     }
 
 }

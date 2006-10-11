@@ -154,6 +154,7 @@ public final class Launcher implements Callback {
         
         
         f.addWindowListener(new WindowAdapter() {
+            @Override
             public void windowClosing(WindowEvent e) {
                 Launcher.this.hide();
                 e.getWindow().dispose();
@@ -187,7 +188,7 @@ public final class Launcher implements Callback {
                            documentId,
                            codeBase,
                            className,
-                           new HashMap(),
+                           new HashMap<String, String>(),
                            className,
                            placeholder); 
         
@@ -213,6 +214,7 @@ public final class Launcher implements Callback {
             this.margin = margin;
         }
         
+        @Override
         public void paint(Graphics g) {
 
             super.paint(g);
@@ -228,12 +230,16 @@ public final class Launcher implements Callback {
             g.drawLine(w - offset, offset, w - offset, h - offset);
         }
 
+        @SuppressWarnings("deprecation")
+        @Deprecated
+        @Override
         public void layout() {
             Component child = getComponent(0);
 
             child.setBounds(offset + margin, offset+1, getWidth() - 2*(offset + margin), getHeight() - 2*offset-1);
         }
         
+        @Override
         public Dimension getPreferredSize() {
             Component child = getComponent(0);
             Dimension size = child.getPreferredSize();

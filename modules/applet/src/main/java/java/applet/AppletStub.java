@@ -24,17 +24,16 @@ import java.net.URL;
 
 public interface AppletStub {
 
-    public URL getCodeBase();
+    URL getCodeBase();
 
-    public void appletResize(int width, int height);
+    void appletResize(int width, int height);
 
-    public AppletContext getAppletContext();
+    AppletContext getAppletContext();
 
-    public URL getDocumentBase();
+    URL getDocumentBase();
 
-    public String getParameter(String name);
+    String getParameter(String name);
 
-    public boolean isActive();
+    boolean isActive();
 
 }
-

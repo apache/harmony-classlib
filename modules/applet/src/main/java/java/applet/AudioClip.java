@@ -22,11 +22,10 @@ package java.applet;
 
 public interface AudioClip {
 
-    public void stop();
+    void stop();
 
-    public void loop();
+    void loop();
 
-    public void play();
+    void play();
 
 }
-

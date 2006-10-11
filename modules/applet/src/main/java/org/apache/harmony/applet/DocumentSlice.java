@@ -33,6 +33,8 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Collection of applets running in one document and loaded from the same code base,
@@ -43,8 +45,8 @@ final class DocumentSlice implements AppletContext {
     final CodeBase codeBase;
     final Document document;
     
-    private final ArrayList proxies = new ArrayList();
-    private final HashMap streams = new HashMap();
+    private final List<Proxy> proxies = new ArrayList<Proxy>();
+    private final Map<String, InputStream> streams = new HashMap<String, InputStream>();
     
     
     DocumentSlice(Document doc, CodeBase codeBase) {
@@ -62,24 +64,21 @@ final class DocumentSlice implements AppletContext {
     void remove(Proxy p) {
         codeBase.factory.remove(p);
 
-        boolean empty = false;
+        boolean empty;
         synchronized (proxies) {
             proxies.remove(p);
-            empty = (proxies.size() == 0);
+            empty = proxies.isEmpty();
         }
         if (empty) {
             codeBase.remove(this);
             document.remove(this);
         }
     }
-    /*
-     * @see java.applet.AppletContext#getApplet(java.lang.String)
-     */
+
     public Applet getApplet(String name) {
         
         synchronized (proxies) {
-            for (Iterator it = proxies.iterator(); it.hasNext();) {
-                Proxy p = (Proxy)it.next();
+            for (Proxy p : proxies) {
                 if (p.params.name.equals(name)) {
                     return p.getApplet();
                 }
@@ -88,15 +87,11 @@ final class DocumentSlice implements AppletContext {
         }
     }
 
-    /* (non-Javadoc)
-     * @see java.applet.AppletContext#getApplets()
-     */
-    public Enumeration getApplets() {
+    public Enumeration<Applet> getApplets() {
         
         synchronized (proxies) {
-            ArrayList applets = new ArrayList();
-            for (Iterator it = proxies.iterator(); it.hasNext();) {
-                Proxy p = (Proxy)it.next();
+            ArrayList<Applet> applets = new ArrayList<Applet>();
+            for (Proxy p : proxies) {
                 Applet a = p.getApplet();
                 if (a != null) {
                     applets.add(a);
@@ -106,47 +101,32 @@ final class DocumentSlice implements AppletContext {
         }
     }
 
-    /* (non-Javadoc)
-     * @see java.applet.AppletContext#getAudioClip(java.net.URL)
-     */
     public AudioClip getAudioClip(URL url) {
         return new AudioClipImpl(url);
     }
 
-    /* (non-Javadoc)
-     * @see java.applet.AppletContext#getImage(java.net.URL)
-     */
     public Image getImage(URL url) {
         return Toolkit.getDefaultToolkit().getImage(url);
     }
 
-    /* (non-Javadoc)
-     * @see java.applet.AppletContext#getStream(java.lang.String)
-     */
     public InputStream getStream(String key) {
 
         synchronized (streams) {
-            return (InputStream)streams.get(key);
+            return streams.get(key);
         }
     }
 
-    /* (non-Javadoc)
-     * @see java.applet.AppletContext#getStreamKeys()
-     */
-    public Iterator getStreamKeys() {
+    public Iterator<String> getStreamKeys() {
 
         synchronized (streams) {
-            ArrayList keys = new ArrayList();
-            for(Iterator i = streams.keySet().iterator(); i.hasNext(); ) {
-                keys.add(i.next());
+            ArrayList<String> keys = new ArrayList<String>();
+            for (String string : streams.keySet()) {
+                keys.add(string);
             }
             return keys.iterator();
         }
     }
 
-    /* (non-Javadoc)
-     * @see java.applet.AppletContext#setStream(java.lang.String, java.io.InputStream)
-     */
     public void setStream(String key, InputStream stream) throws IOException {
 
         synchronized (streams) {
@@ -154,23 +134,14 @@ final class DocumentSlice implements AppletContext {
         }
     }
 
-    /* (non-Javadoc)
-     * @see java.applet.AppletContext#showDocument(java.net.URL, java.lang.String)
-     */
     public void showDocument(URL url, String target) {
         codeBase.factory.showDocument(this, url, target);
     }
 
-    /* (non-Javadoc)
-     * @see java.applet.AppletContext#showDocument(java.net.URL)
-     */
     public void showDocument(URL url) {
         this.showDocument(url, null);
     }
 
-    /* (non-Javadoc)
-     * @see java.applet.AppletContext#showStatus(java.lang.String)
-     */
     public void showStatus(String status) {
         codeBase.factory.showStatus(this, status);
     }

@@ -64,6 +64,7 @@ class Proxy implements AppletStub {
                 mainThread.start();
             }
             mainThread.postCommand(new Command("create") {
+                @Override
                 public void run() {
                     createImpl();
                 }});
@@ -102,6 +103,7 @@ class Proxy implements AppletStub {
             startImpl();
         } else {
             mainThread.postCommand(new Command("start") {
+                @Override
                 public void run() {
                     startImpl();
                 }});
@@ -121,6 +123,7 @@ class Proxy implements AppletStub {
             stopImpl();
         } else {
             mainThread.postCommand(new Command("stop") {
+                @Override
                 public void run() {
                     stopImpl();
                 }});
@@ -140,6 +143,7 @@ class Proxy implements AppletStub {
             initImpl();
         } else {
             mainThread.postCommand(new Command("init") {
+                @Override
                 public void run() {
                     initImpl();
                 }});
@@ -158,6 +162,7 @@ class Proxy implements AppletStub {
             destroyImpl();
         } else {
             mainThread.postCommand(new Command("destroy") {
+                @Override
                 public void run() {
                     destroyImpl();
                 }});
@@ -176,6 +181,7 @@ class Proxy implements AppletStub {
             disposeImpl();
         } else {
             mainThread.postCommand(new Command("dispose") {
+                @Override
                 public void run() {
                     disposeImpl();
                 }});
@@ -199,7 +205,7 @@ class Proxy implements AppletStub {
     }
     
     private Applet createApplet() {
-        Class appletClass;
+        Class<?> appletClass;
         try {
             appletClass = docSlice.codeBase.classLoader.loadClass(params.className);
         } catch (ClassNotFoundException e) {
@@ -208,52 +214,33 @@ class Proxy implements AppletStub {
 
         try {
             return (Applet)appletClass.newInstance();
-
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
-    
-    /* (non-Javadoc)
-     * @see java.applet.AppletStub#getCodeBase()
-     */
+
     public URL getCodeBase() {
         return docSlice.codeBase.codeBase;
     }
 
-    /* (non-Javadoc)
-     * @see java.applet.AppletStub#appletResize(int, int)
-     */
     public void appletResize(int width, int height) {
         docSlice.codeBase.factory.appletResize(this, width, height);
     }
 
-    /* (non-Javadoc)
-     * @see java.applet.AppletStub#getAppletContext()
-     */
     public AppletContext getAppletContext() {
         return docSlice;
     }
 
-    /* (non-Javadoc)
-     * @see java.applet.AppletStub#getDocumentBase()
-     */
     public URL getDocumentBase() {
         return docSlice.document.docBase;
     }
 
-    /* (non-Javadoc)
-     * @see java.applet.AppletStub#getParameter(java.lang.String)
-     */
     public String getParameter(String name) {
         return params.getParameter(name);
     }
 
-    /* (non-Javadoc)
-     * @see java.applet.AppletStub#isActive()
-     */
     public boolean isActive() {
         return active;
     }

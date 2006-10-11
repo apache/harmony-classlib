@@ -23,7 +23,6 @@ package org.apache.harmony.applet;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -32,9 +31,9 @@ import java.util.Map;
 final class Factory {
     
     private final Callback callback;
-    private final Map codeBases = Collections.synchronizedMap(new HashMap());
-    private final Map allProxies = Collections.synchronizedMap(new HashMap());
-    private final Map documents = Collections.synchronizedMap(new HashMap());
+    private final Map<URL, CodeBase> codeBases = Collections.synchronizedMap(new HashMap<URL, CodeBase>());
+    private final Map<Integer, Proxy> allProxies = Collections.synchronizedMap(new HashMap<Integer, Proxy>());
+    private final Map<Integer, Document> documents = Collections.synchronizedMap(new HashMap<Integer, Document>());
     
     Factory(Callback callback) {
         this.callback = callback;
@@ -42,7 +41,7 @@ final class Factory {
     
     CodeBase getCodeBase(URL url) {
         synchronized(codeBases) {
-            CodeBase cb = (CodeBase)codeBases.get(url);
+            CodeBase cb = codeBases.get(url);
             if (cb == null) {
                 cb = new CodeBase(url, this);
                 codeBases.put(url, cb);
@@ -60,7 +59,7 @@ final class Factory {
     }
 
     void dispose(int id) {
-        Proxy p = (Proxy)allProxies.get(new Integer(id));
+        Proxy p = allProxies.get(new Integer(id));
         if (p == null) {
             return;
         }
@@ -73,7 +72,7 @@ final class Factory {
         synchronized(documents) {
             Document doc;
             Integer objDocId = new Integer(docId);
-            doc = (Document)documents.get(objDocId);
+            doc = documents.get(objDocId);
             if (doc == null) {
                 doc = new Document(this, docBase, docId);
                 documents.put(objDocId, doc);
@@ -94,28 +93,28 @@ final class Factory {
     }
     
     void start(int id) {
-        Proxy p = (Proxy)allProxies.get(new Integer(id));
+        Proxy p = allProxies.get(new Integer(id));
         if (p != null) {
             p.start();
         }
     }
     
     void stop(int id) {
-        Proxy p = (Proxy)allProxies.get(new Integer(id));
+        Proxy p = allProxies.get(new Integer(id));
         if (p != null) {
             p.stop();
         }
     }
     
     void init(int id) {
-        Proxy p = (Proxy)allProxies.get(new Integer(id));
+        Proxy p = allProxies.get(new Integer(id));
         if (p != null) {
             p.init();
         }
     }
     
     void destroy(int id) {
-        Proxy p = (Proxy)allProxies.get(new Integer(id));
+        Proxy p = allProxies.get(new Integer(id));
         if (p != null) {
             p.destroy();
         }
@@ -142,16 +141,14 @@ final class Factory {
     }
     
     void dump() {
-        for (Iterator it = allProxies.values().iterator(); it.hasNext(); ) {
-            Proxy p = (Proxy)it.next();
+        for (Proxy p : allProxies.values()) {
             System.err.println("app " + p.params.id + " " + 
                     " cb " + p.docSlice.codeBase.hashCode() + " " +
                     " doc " + p.params.documentId + " " +
                     p.params.codeBase + p.params.className + " " + 
                     (p.isActive() ? "active" : "stopped"));
         }
-        for (Iterator it = codeBases.values().iterator(); it.hasNext(); ) {
-            CodeBase cb = (CodeBase)it.next();
+        for (CodeBase cb : codeBases.values()) {
             System.err.println("cb " + cb.hashCode() + " " + cb.threadGroup);
         }
     }

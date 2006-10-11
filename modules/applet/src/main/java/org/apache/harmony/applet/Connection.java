@@ -20,15 +20,13 @@
  */
 package org.apache.harmony.applet;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.URL;
 import java.util.HashMap;
-
+import java.util.Map;
 import org.apache.harmony.awt.ContextStorage;
 
 
@@ -169,7 +167,7 @@ public class Connection implements Callback {
     }
     
     /**
-     * command synopsys:<br>
+     * command synopsis:<br>
      * CREATE id parentWindowId className docBase docId codeBase<br>
      *   NAME name_in_document<br>
      *   PARAM name value<br>
@@ -185,7 +183,7 @@ public class Connection implements Callback {
         int docId;
         URL codeBase;
         String name = null;
-        HashMap parameters = new HashMap();
+        Map<String, String> parameters = new HashMap<String, String>();
         
         try {
             id = Integer.parseInt(args[1]);

@@ -21,19 +21,17 @@
 package org.apache.harmony.applet;
 
 import java.net.URL;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Representation of browser's (or other host app's) document that contains applets
  */
-
 final class Document {
 
     final URL docBase;
     final int id;
-    private final Set slices = Collections.synchronizedSet(new HashSet());
+    private final Set<DocumentSlice> slices = new HashSet<DocumentSlice>();
     final Factory factory;
 
     Document(Factory factory, URL url, int id) {
@@ -43,7 +41,9 @@ final class Document {
     }
     
     void add(DocumentSlice ds) {
-        slices.add(ds);
+        synchronized (slices) {
+            slices.add(ds);
+        }
     }
     
     void remove(DocumentSlice ds) {

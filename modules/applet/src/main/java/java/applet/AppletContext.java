@@ -29,25 +29,24 @@ import java.util.Iterator;
 
 public interface AppletContext {
 
-    public Applet getApplet(String name);
+    Applet getApplet(String name);
 
-    public Enumeration<Applet> getApplets();
+    Enumeration<Applet> getApplets();
 
-    public AudioClip getAudioClip(URL url);
+    AudioClip getAudioClip(URL url);
 
-    public Image getImage(URL url);
+    Image getImage(URL url);
 
-    public InputStream getStream(String key);
+    InputStream getStream(String key);
 
-    public Iterator<String> getStreamKeys();
+    Iterator<String> getStreamKeys();
 
-    public void setStream(String key, InputStream stream) throws IOException;
+    void setStream(String key, InputStream stream) throws IOException;
 
-    public void showDocument(URL url, String target);
+    void showDocument(URL url, String target);
 
-    public void showDocument(URL url);
+    void showDocument(URL url);
 
-    public void showStatus(String status);
+    void showStatus(String status);
 
 }
-

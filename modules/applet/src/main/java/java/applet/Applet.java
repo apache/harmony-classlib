@@ -1,9 +1,10 @@
 /*
- *  Copyright 2005 - 2006 The Apache Software Foundation or its licensors, as applicable.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -61,10 +62,12 @@ public class Applet extends Panel {
             super();
         }
         
+        @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.FRAME;
         }
         
+        @Override
         public AccessibleStateSet getAccessibleStateSet() {
             AccessibleStateSet set = super.getAccessibleStateSet();
             Window owner = null;
@@ -91,27 +94,33 @@ public class Applet extends Panel {
     }
 
     public void init() {
-        // do nothing by specefication
+        // do nothing by specification
     }
 
     public void start() {
-        // do nothing by specefication
+        // do nothing by specification
     }
 
     public void destroy() {
-        // do nothing by specefication
+        // do nothing by specification
     }
 
     public void stop() {
-        // do nothing by specefication
+        // do nothing by specification
     }
 
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public void resize(int width, int height) {
         synchronized(appletLock) {
             stub.appletResize(width, height);
         }
     }
 
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    @Override
     public void resize(Dimension d) {
         synchronized(appletLock) {
             stub.appletResize(d.width, d.height);
@@ -124,6 +133,7 @@ public class Applet extends Panel {
         }
     }
 
+    @Override
     public AccessibleContext getAccessibleContext() {
         synchronized(appletLock) {
             if (accessibleContext == null) {
@@ -140,7 +150,7 @@ public class Applet extends Panel {
     }
 
     public String getAppletInfo() {
-        // return null by specefication
+        // return null by specification
         return null;
     }
 
@@ -166,6 +176,7 @@ public class Applet extends Panel {
         return getAppletContext().getImage(appendURL(url, name));
     }
 
+    @Override
     public Locale getLocale() {
         return super.getLocale();
     }
@@ -177,7 +188,7 @@ public class Applet extends Panel {
     }
 
     public String[][] getParameterInfo() {
-        // return null by specefication
+        // return null by specification
         return null;
     }
 
@@ -234,4 +245,3 @@ public class Applet extends Panel {
     }
 
 }
-

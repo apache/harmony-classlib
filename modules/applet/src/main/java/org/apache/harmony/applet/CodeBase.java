@@ -37,8 +37,7 @@ final class CodeBase {
     final ContextThreadGroup threadGroup;
     final Factory factory;
 
-    // Document -> DocumentSlice
-    private final IdentityHashMap docSlices = new IdentityHashMap();
+    private final IdentityHashMap<Document, DocumentSlice> docSlices = new IdentityHashMap<Document, DocumentSlice>();
     
     CodeBase(URL url, Factory factory) {
         this.codeBase = url;
@@ -50,7 +49,7 @@ final class CodeBase {
     
     DocumentSlice getDocumentSlice(Document doc) {
         synchronized(docSlices) {
-            DocumentSlice slice = (DocumentSlice)docSlices.get(doc);
+            DocumentSlice slice = docSlices.get(doc);
             if (slice == null) {
                 slice = new DocumentSlice(doc, this);
                 docSlices.put(doc, slice);

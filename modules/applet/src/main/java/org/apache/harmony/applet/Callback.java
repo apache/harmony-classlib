@@ -27,9 +27,9 @@ import java.net.URL;
  */
 interface Callback {
 
-    public void showDocument(int documentId, URL url, String target);
+    void showDocument(int documentId, URL url, String target);
 
-    public void showStatus(int documentId, String status);
+    void showStatus(int documentId, String status);
 
-    public void appletResize(int appletId, int width, int height);
+    void appletResize(int appletId, int width, int height);
 }

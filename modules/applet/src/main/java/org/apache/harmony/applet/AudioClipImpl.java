@@ -29,6 +29,7 @@ import java.net.URL;
  */
 public class AudioClipImpl implements AudioClip {
     
+    @SuppressWarnings("unused") // TODO remove once used
     private final URL url;
     
     // TODO: introduce AudioClipPeer when sound API will be available
@@ -44,29 +45,20 @@ public class AudioClipImpl implements AudioClip {
         }
         this.url = url;
     }
-    
-    /* (non-Javadoc)
-     * @see java.applet.AudioClip#stop()
-     */
+
     public void stop() {
         // TODO: implement when sound API will be available
-        if (true) throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
-    /* (non-Javadoc)
-     * @see java.applet.AudioClip#loop()
-     */
     public void loop() {
         // TODO: implement when sound API will be available
-        if (true) throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
-    /* (non-Javadoc)
-     * @see java.applet.AudioClip#play()
-     */
     public void play() {
         // TODO: implement when sound API will be available
-        if (true) throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
 }

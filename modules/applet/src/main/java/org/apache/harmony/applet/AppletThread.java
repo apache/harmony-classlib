@@ -29,28 +29,23 @@ import java.util.LinkedList;
  * Thread that initializes applet and performs commands from the host application
  */
 final class AppletThread extends Thread {
-    
-    private final Proxy proxy;
-
     private final Object monitor = new Object();
-    private final List commandQueue = Collections.synchronizedList(new LinkedList());
+    private final List<Command> commandQueue = Collections.synchronizedList(new LinkedList<Command>());
     
-    private boolean doExit = false;
+    private boolean doExit;
     
     AppletThread(Proxy proxy) {
         super(proxy.docSlice.codeBase.threadGroup, "Applet-" + proxy.params.className);
-        
-        this.proxy = proxy;
         setContextClassLoader(proxy.docSlice.codeBase.classLoader);
     }
     
+    @Override
     public void run() {
 
         while (true) {
             
             while( !commandQueue.isEmpty()) {
-                Command command = (Command)commandQueue.remove(0);
-                
+                Command command = commandQueue.remove(0);
                 command.run();
             }
             
@@ -64,7 +59,10 @@ final class AppletThread extends Thread {
                         return;
                     }
                 } catch (InterruptedException e) {
-                    // TODO: handle difference between intensional and unexpected interruptions
+                    // set the interrupt state
+                    interrupt();
+                    // the thread was interrupted, so we end it
+                    return;
                 }
             }
         }
@@ -91,4 +89,3 @@ final class AppletThread extends Thread {
     }
     
 }
-
