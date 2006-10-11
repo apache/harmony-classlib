@@ -212,66 +212,49 @@ public class LookAndFeelTest extends SwingTestCase {
         assertFalse(lf.getSupportsWindowDecorations());
     }
 
-    public void testInstallProperty() {
+    public void testInstallProperty() throws Exception {
         if (!isHarmony()) {
             return;
         }
         JComponent comp1 = new JPanel();
         JButton comp2 = new JButton();
 
-        try {
-            LookAndFeel.installProperty(comp1, "opaque", Boolean.TRUE);
-            assertEquals("opaque", true, comp1.isOpaque());
-            LookAndFeel.installProperty(comp1, "opaque", Boolean.FALSE);
-            assertEquals("opaque", false, comp1.isOpaque());
-            comp1.setOpaque(true);
-            LookAndFeel.installProperty(comp1, "opaque", Boolean.FALSE);
-            assertEquals("opaque", true, comp1.isOpaque());
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+        LookAndFeel.installProperty(comp1, "opaque", Boolean.TRUE);
+        assertEquals("opaque", true, comp1.isOpaque());
+        LookAndFeel.installProperty(comp1, "opaque", Boolean.FALSE);
+        assertEquals("opaque", false, comp1.isOpaque());
+        comp1.setOpaque(true);
+        LookAndFeel.installProperty(comp1, "opaque", Boolean.FALSE);
+        assertEquals("opaque", true, comp1.isOpaque());
 
-        try {
-            LookAndFeel.installProperty(comp2, "opaque", Boolean.TRUE);
-            assertEquals("opaque", true, comp2.isOpaque());
-            LookAndFeel.installProperty(comp2, "opaque", Boolean.FALSE);
-            assertEquals("opaque", false, comp2.isOpaque());
-            comp1.setOpaque(true);
-            LookAndFeel.installProperty(comp2, "opaque", Boolean.FALSE);
-            assertEquals("opaque", false, comp2.isOpaque());
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+        LookAndFeel.installProperty(comp2, "opaque", Boolean.TRUE);
+        assertEquals("opaque", true, comp2.isOpaque());
+        LookAndFeel.installProperty(comp2, "opaque", Boolean.FALSE);
+        assertEquals("opaque", false, comp2.isOpaque());
+        comp1.setOpaque(true);
+        LookAndFeel.installProperty(comp2, "opaque", Boolean.FALSE);
+        assertEquals("opaque", false, comp2.isOpaque());
 
-        boolean thrown = false;
         try {
             LookAndFeel.installProperty(comp1, "iconTextGap", Boolean.TRUE);
-        } catch (Throwable e) {
-            thrown = true;
-            assertTrue("exception of proper type is thrown", e instanceof IllegalArgumentException);
+            fail("IllegalArgumentException shall be thrown");
+        } catch (IllegalArgumentException e) {
+            // expected
         }
-        assertTrue("exception is thrown", thrown);
 
-        thrown = false;
         try {
             LookAndFeel.installProperty(comp2, "iconTextGap", Boolean.TRUE);
-        } catch (Throwable e) {
-            thrown = true;
-            assertTrue("exception of proper type is thrown", e instanceof ClassCastException);
-        }
-        assertTrue("exception is thrown", thrown);
-
-        try {
-            LookAndFeel.installProperty(comp2, "iconTextGap", new Integer(0));
-            assertEquals("iconTextGap", 0, comp2.getIconTextGap());
-            LookAndFeel.installProperty(comp2, "iconTextGap", new Integer(120));
-            assertEquals("iconTextGap", 120, comp2.getIconTextGap());
-            comp2.setIconTextGap(300);
-            LookAndFeel.installProperty(comp2, "iconTextGap", new Integer(120));
-            assertEquals("iconTextGap", 300, comp2.getIconTextGap());
-        } catch (Exception e) {
-            fail(e.getMessage());
+            fail("ClassCastException shall be thrown");
+        } catch (ClassCastException e) {
+            // expected
         }
 
+        LookAndFeel.installProperty(comp2, "iconTextGap", new Integer(0));
+        assertEquals("iconTextGap", 0, comp2.getIconTextGap());
+        LookAndFeel.installProperty(comp2, "iconTextGap", new Integer(120));
+        assertEquals("iconTextGap", 120, comp2.getIconTextGap());
+        comp2.setIconTextGap(300);
+        LookAndFeel.installProperty(comp2, "iconTextGap", new Integer(120));
+        assertEquals("iconTextGap", 300, comp2.getIconTextGap());
     }
 }
