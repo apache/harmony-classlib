@@ -1368,8 +1368,8 @@ public class URITest extends junit.framework.TestCase {
 
 		assertEquals("Normalized to incorrect URI", "file:/D:/three", uri2
 				.toString());
-		assertEquals("Resolved URI is not absolute", true, uri2.isAbsolute());
-		assertEquals("Resolved URI is opaque", false, uri2.isOpaque());
+		assertTrue("Resolved URI is not absolute", uri2.isAbsolute());
+		assertFalse("Resolved URI is opaque", uri2.isOpaque());
 		assertEquals("Resolved URI has incorrect scheme  specific part",
 				"/D:/three", uri2.getRawSchemeSpecificPart());
 	}
@@ -1598,8 +1598,8 @@ public class URITest extends junit.framework.TestCase {
 
 		assertEquals("Resolved to incorrect URI", "file:/D:/one/", uri2
 				.toString());
-		assertEquals("Resolved URI is not absolute", true, uri2.isAbsolute());
-		assertEquals("Resolved URI is opaque", false, uri2.isOpaque());
+		assertTrue("Resolved URI is not absolute", uri2.isAbsolute());
+		assertFalse("Resolved URI is opaque", uri2.isOpaque());
 		assertEquals("Resolved URI has incorrect scheme  specific part",
 				"/D:/one/", uri2.getRawSchemeSpecificPart());
 	}

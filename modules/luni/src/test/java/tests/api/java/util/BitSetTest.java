@@ -126,7 +126,7 @@ public class BitSetTest extends junit.framework.TestCase {
 		bs.set(bs.size() - 1);
 		bs.clear();
 		assertEquals("Test2: Wrong length", 0, bs.length());
-		assertEquals("Test2: isEmpty() returned incorrect value", true, bs
+		assertTrue("Test2: isEmpty() returned incorrect value", bs
 				.isEmpty());
 		assertEquals("Test2: cardinality() returned incorrect value", 0, bs
 				.cardinality());
@@ -855,64 +855,64 @@ public class BitSetTest extends junit.framework.TestCase {
 		bs.set(450);
 
 		BitSet bs2 = new BitSet(8);
-		assertEquals("Test1: intersects() returned incorrect value", false, bs
+		assertFalse("Test1: intersects() returned incorrect value", bs
 				.intersects(bs2));
-		assertEquals("Test1: intersects() returned incorrect value", false, bs2
+		assertFalse("Test1: intersects() returned incorrect value", bs2
 				.intersects(bs));
 
 		bs2.set(4);
-		assertEquals("Test2: intersects() returned incorrect value", false, bs
+		assertFalse("Test2: intersects() returned incorrect value", bs
 				.intersects(bs2));
-		assertEquals("Test2: intersects() returned incorrect value", false, bs2
+		assertFalse("Test2: intersects() returned incorrect value", bs2
 				.intersects(bs));
 
 		bs2.clear();
 		bs2.set(5);
-		assertEquals("Test3: intersects() returned incorrect value", true, bs
+		assertTrue("Test3: intersects() returned incorrect value", bs
 				.intersects(bs2));
-		assertEquals("Test3: intersects() returned incorrect value", true, bs2
+		assertTrue("Test3: intersects() returned incorrect value", bs2
 				.intersects(bs));
 
 		bs2.clear();
 		bs2.set(63);
-		assertEquals("Test4: intersects() returned incorrect value", true, bs
+		assertTrue("Test4: intersects() returned incorrect value", bs
 				.intersects(bs2));
-		assertEquals("Test4: intersects() returned incorrect value", true, bs2
+		assertTrue("Test4: intersects() returned incorrect value", bs2
 				.intersects(bs));
 
 		bs2.clear();
 		bs2.set(80);
-		assertEquals("Test5: intersects() returned incorrect value", true, bs
+		assertTrue("Test5: intersects() returned incorrect value", bs
 				.intersects(bs2));
-		assertEquals("Test5: intersects() returned incorrect value", true, bs2
+		assertTrue("Test5: intersects() returned incorrect value", bs2
 				.intersects(bs));
 
 		bs2.clear();
 		bs2.set(127);
-		assertEquals("Test6: intersects() returned incorrect value", true, bs
+		assertTrue("Test6: intersects() returned incorrect value", bs
 				.intersects(bs2));
-		assertEquals("Test6: intersects() returned incorrect value", true, bs2
+		assertTrue("Test6: intersects() returned incorrect value", bs2
 				.intersects(bs));
 
 		bs2.clear();
 		bs2.set(192);
-		assertEquals("Test7: intersects() returned incorrect value", true, bs
+		assertTrue("Test7: intersects() returned incorrect value", bs
 				.intersects(bs2));
-		assertEquals("Test7: intersects() returned incorrect value", true, bs2
+		assertTrue("Test7: intersects() returned incorrect value", bs2
 				.intersects(bs));
 
 		bs2.clear();
 		bs2.set(450);
-		assertEquals("Test8: intersects() returned incorrect value", true, bs
+		assertTrue("Test8: intersects() returned incorrect value", bs
 				.intersects(bs2));
-		assertEquals("Test8: intersects() returned incorrect value", true, bs2
+		assertTrue("Test8: intersects() returned incorrect value", bs2
 				.intersects(bs));
 
 		bs2.clear();
 		bs2.set(500);
-		assertEquals("Test9: intersects() returned incorrect value", false, bs
+		assertFalse("Test9: intersects() returned incorrect value", bs
 				.intersects(bs2));
-		assertEquals("Test9: intersects() returned incorrect value", false, bs2
+		assertFalse("Test9: intersects() returned incorrect value", bs2
 				.intersects(bs));
 	}
 
@@ -1223,34 +1223,34 @@ public class BitSetTest extends junit.framework.TestCase {
 	 */
 	public void test_isEmpty() {
 		BitSet bs = new BitSet(500);
-		assertEquals("Test: isEmpty() returned wrong value", true, bs.isEmpty());
+		assertTrue("Test: isEmpty() returned wrong value", bs.isEmpty());
 
 		// at bitset element 0
 		bs.set(3);
-		assertEquals("Test0: isEmpty() returned wrong value", false, bs
+		assertFalse("Test0: isEmpty() returned wrong value", bs
 				.isEmpty());
 
 		// at bitset element 1
 		bs.clear();
 		bs.set(12);
-		assertEquals("Test1: isEmpty() returned wrong value", false, bs
+		assertFalse("Test1: isEmpty() returned wrong value", bs
 				.isEmpty());
 
 		// at bitset element 2
 		bs.clear();
 		bs.set(128);
-		assertEquals("Test2: isEmpty() returned wrong value", false, bs
+		assertFalse("Test2: isEmpty() returned wrong value", bs
 				.isEmpty());
 
 		// boundary testing
 		bs.clear();
 		bs.set(459);
-		assertEquals("Test3: isEmpty() returned wrong value", false, bs
+		assertFalse("Test3: isEmpty() returned wrong value", bs
 				.isEmpty());
 
 		bs.clear();
 		bs.set(511);
-		assertEquals("Test4: isEmpty() returned wrong value", false, bs
+		assertFalse("Test4: isEmpty() returned wrong value", bs
 				.isEmpty());
 	}
 

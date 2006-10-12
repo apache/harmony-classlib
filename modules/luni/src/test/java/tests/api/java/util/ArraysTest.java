@@ -536,7 +536,7 @@ public class ArraysTest extends junit.framework.TestCase {
 		boolean d[] = new boolean[1000];
 		Arrays.fill(d, true);
 		for (int i = 0; i < d.length; i++)
-			assertTrue("Failed to fill boolean array correctly", d[i] == true);
+			assertTrue("Failed to fill boolean array correctly", d[i]);
 	}
 
 	/**

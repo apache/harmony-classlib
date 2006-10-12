@@ -127,7 +127,7 @@ public class DataOutputStreamTest extends junit.framework.TestCase {
 			openDataInputStream();
 			boolean c = dis.readBoolean();
 			dis.close();
-			assertTrue("Incorrect boolean written", c == true);
+			assertTrue("Incorrect boolean written", c);
 		} catch (IOException e) {
 			fail("Exception during writeBoolean test : " + e.getMessage());
 		}

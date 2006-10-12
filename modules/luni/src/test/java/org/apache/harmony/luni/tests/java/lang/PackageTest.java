@@ -322,13 +322,13 @@ public class PackageTest extends junit.framework.TestCase {
 			c = Class.forName("p.C", true, ucl);
 			Package p = c.getPackage();
 			assertTrue("Package isCompatibleWith fails with lower version", p
-					.isCompatibleWith("2.1.9.") == true);
+					.isCompatibleWith("2.1.9."));
 			assertTrue("Package isCompatibleWith fails with same version (1)",
-					p.isCompatibleWith("2.2.0") == true);
+					p.isCompatibleWith("2.2.0"));
 			assertTrue("Package isCompatibleWith fails with same version (2)",
-					p.isCompatibleWith("2.2") == true);
-			assertTrue("Package isCompatibleWith fails with higher version", p
-					.isCompatibleWith("2.2.0.0.1") == false);
+					p.isCompatibleWith("2.2"));
+			assertFalse("Package isCompatibleWith fails with higher version",
+                                    p.isCompatibleWith("2.2.0.0.1"));
 		} catch (Exception e) {
 			fail("Exception during isCompatibleWith test : " + e.getMessage());
 		}
@@ -350,7 +350,7 @@ public class PackageTest extends junit.framework.TestCase {
 			ucl = new java.net.URLClassLoader(urls, null);
 			c = Class.forName("p.q.C", true, ucl);
 			assertTrue("Package isSealed returns wrong boolean", c.getPackage()
-					.isSealed() == true);
+					.isSealed());
 
 		} catch (Exception e) {
 			fail("Exception during isSealed test : " + e.getMessage());
@@ -373,14 +373,13 @@ public class PackageTest extends junit.framework.TestCase {
 			urls[0] = resourceURL;
 			ucl = new java.net.URLClassLoader(urls, null);
 			c = Class.forName("p.C", true, ucl);
-			assertTrue(
-					"Package isSealed returns wrong boolean (1)",
-					c.getPackage().isSealed(new URL("file:/" + resPath + "/")) == false);
+			assertFalse("Package isSealed returns wrong boolean (1)",
+                                    c.getPackage().isSealed(new URL("file:/" + resPath + "/")));
 			assertTrue("Package isSealed returns wrong boolean (2)",
 					c.getPackage()
 							.isSealed(
 									new URL("file:/" + resPath
-											+ "/Package/hyts_c.jar")) == true);
+											+ "/Package/hyts_c.jar")));
 		} catch (Exception e) {
 			fail("Exception during isSealed test : " + e.getMessage());
 		}

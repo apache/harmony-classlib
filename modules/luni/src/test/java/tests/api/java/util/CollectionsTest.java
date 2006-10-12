@@ -786,32 +786,32 @@ public class CollectionsTest extends junit.framework.TestCase {
 		// test replace for an element that is not in the list
 		boolean result = Collections.replaceAll(list, new Character('1'),
 				new Character('Z'));
-		assertEquals("Test1: Collections.replaceAll() returned wrong result",
-				false, result);
+		assertFalse("Test1: Collections.replaceAll() returned wrong result",
+				result);
 		assertEquals("Test2 : ReplaceAll modified the list incorrectly",
 				string1, getString(list));
 
 		// test replace for an element that is in the list
 		result = Collections.replaceAll(list, new Character('S'),
 				new Character('K'));
-		assertEquals("Test3: Collections.replaceAll() returned wrong result",
-				true, result);
+		assertTrue("Test3: Collections.replaceAll() returned wrong result",
+				result);
 		assertEquals("Test4: ReplaceAll modified the list incorrectly",
 				(string1 = string1.replace('S', 'K')), getString(list));
 
 		// test replace for the last element in the list
 		result = Collections.replaceAll(list, new Character('Z'),
 				new Character('N'));
-		assertEquals("Test5: Collections.replaceAll() returned wrong result",
-				true, result);
+		assertTrue("Test5: Collections.replaceAll() returned wrong result",
+				result);
 		assertEquals("Test6: ReplaceAll modified the list incorrectly",
 				(string1 = string1.replace('Z', 'N')), getString(list));
 
 		// test replace for the first element in the list
 		result = Collections.replaceAll(list, new Character('A'),
 				new Character('B'));
-		assertEquals("Test7: Collections.replaceAll() returned wrong result",
-				true, result);
+		assertTrue("Test7: Collections.replaceAll() returned wrong result",
+				result);
 		assertEquals("Test8: ReplaceAll modified the list incorrectly",
 				(string1 = string1.replace('A', 'B')), getString(list));
 
@@ -822,8 +822,8 @@ public class CollectionsTest extends junit.framework.TestCase {
 		}
 		smallList.set(4, new Integer(5));
 		result = Collections.replaceAll(smallList, new Integer(5), null);
-		assertEquals("Test9: Collections.replaceAll() returned wrong result",
-				true, result);
+		assertTrue("Test9: Collections.replaceAll() returned wrong result",
+				result);
 		for (int i = 0; i < smallList.size(); i++) {
 			if (i == 4 || i == 5)
 				assertSame("Test9: ReplaceAll didn't replace element at " + i,
@@ -836,8 +836,8 @@ public class CollectionsTest extends junit.framework.TestCase {
 
 		// test replacing null elements with another value
 		result = Collections.replaceAll(smallList, null, new Integer(99));
-		assertEquals("Test10: Collections.replaceAll() returned wrong result",
-				true, result);
+		assertTrue("Test10: Collections.replaceAll() returned wrong result",
+				result);
 
 		for (int i = 0; i < smallList.size(); i++) {
 			if (i == 4 || i == 5)

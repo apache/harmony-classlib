@@ -97,7 +97,7 @@ public class PrintStreamTest extends junit.framework.TestCase {
 				}
 			});
 			os.print(fileString.substring(0, 501));
-			assertTrue("Checkerror should return true", os.checkError() == true);
+			assertTrue("Checkerror should return true", os.checkError());
 		} catch (Exception e) {
 			fail("Exception raised : " + e.getMessage());
 		}
@@ -312,7 +312,7 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		dis = new java.io.DataInputStream(new java.io.ByteArrayInputStream(bos
 				.toByteArray()));
 		try {
-			assertTrue("Incorrect boolean written", dis.readBoolean() == true);
+			assertTrue("Incorrect boolean written", dis.readBoolean());
 		} catch (java.io.IOException e) {
 			fail("Exception during test : " + e.getMessage());
 		}

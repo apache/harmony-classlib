@@ -529,7 +529,7 @@ public class ScannerTest extends TestCase {
         } catch (IllegalStateException e) {
             // Expected
         }
-        assertEquals(true, s.nextBoolean());
+        assertTrue(s.nextBoolean());
         result = s.match();
         assertEquals(0, result.start());
         assertEquals(4, result.end());
@@ -537,7 +537,7 @@ public class ScannerTest extends TestCase {
         assertEquals(4, result.end(0));
         assertEquals("True", result.group());
         assertEquals(0, result.groupCount());
-        assertEquals(false, s.nextBoolean());
+        assertFalse(s.nextBoolean());
         try {
             s.nextBoolean();
             fail("should throw NoSuchElementException");
@@ -552,7 +552,7 @@ public class ScannerTest extends TestCase {
         }
         
         s = new Scanner("True faLse");
-        assertEquals(true, s.nextBoolean());
+        assertTrue(s.nextBoolean());
         result = s.match();
         assertEquals(0, result.start());
         assertEquals(4, result.end());
@@ -576,7 +576,7 @@ public class ScannerTest extends TestCase {
         assertEquals(0, result.groupCount());
         
         s = new Scanner("True fase");
-        assertEquals(true, s.nextBoolean());
+        assertTrue(s.nextBoolean());
         assertEquals(0, result.groupCount());
         try {
             s.nextBoolean();
@@ -592,7 +592,7 @@ public class ScannerTest extends TestCase {
         }
         
         s = new Scanner("True fase");
-        assertEquals(true, s.nextBoolean());
+        assertTrue(s.nextBoolean());
         try {
             s.next((Pattern)null);
             fail("Should throw NullPointerException");
