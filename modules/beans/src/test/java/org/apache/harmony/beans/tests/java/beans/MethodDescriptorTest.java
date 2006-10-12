@@ -148,7 +148,7 @@ public class MethodDescriptorTest extends TestCase {
      * @tests java.beans.MethodDescriptor#MethodDescriptor(
      *        java.lang.reflect.Method)
      */
-    public void test_Ctor1_NullPointerExpection() {
+    public void test_Ctor1_NullPointerException() {
         try {
             // Regression for HARMONY-226
             new MethodDescriptor(null);
@@ -161,7 +161,7 @@ public class MethodDescriptorTest extends TestCase {
      * @tests java.beans.MethodDescriptor#MethodDescriptor(
      *        java.lang.reflect.Method, java.beans.ParameterDescriptor[])
      */
-    public void test_Ctor2_NullPointerExpection() {
+    public void test_Ctor2_NullPointerException() {
         try {
             // Regression for HARMONY-226
             new MethodDescriptor(null, new ParameterDescriptor[0]);

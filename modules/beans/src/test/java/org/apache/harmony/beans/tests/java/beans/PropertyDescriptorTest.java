@@ -950,7 +950,7 @@ public class PropertyDescriptorTest extends TestCase {
     }
 
     // Regression test for HARMONY-237
-    public void testIntrospectionExpections() {
+    public void testIntrospectionExceptions() {
         try {
             new PropertyDescriptor(null, null);
             fail("Constructor PropertyDescriptor(null,null) should "

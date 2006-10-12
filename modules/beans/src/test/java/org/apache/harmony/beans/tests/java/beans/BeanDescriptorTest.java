@@ -177,7 +177,7 @@ public class BeanDescriptorTest extends TestCase {
     /**
      * @tests java.beans.BeanDescriptor#BeanDescriptor( java.lang.Class)
      */
-    public void test_Ctor1_NullPointerExpection() {
+    public void test_Ctor1_NullPointerException() {
         try {
             // Regression for HARMONY-225
             new BeanDescriptor(null);
@@ -190,7 +190,7 @@ public class BeanDescriptorTest extends TestCase {
      * @tests java.beans.BeanDescriptor#BeanDescriptor( java.lang.Class,
      *        java.lang.Class)
      */
-    public void test_Ctor2_NullPointerExpection() {
+    public void test_Ctor2_NullPointerException() {
         try {
             // Regression for HARMONY-225
             new BeanDescriptor(null, String.class);

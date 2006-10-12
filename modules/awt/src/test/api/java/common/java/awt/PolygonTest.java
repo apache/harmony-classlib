@@ -77,31 +77,31 @@ public class PolygonTest extends ShapeTestCase {
     public void testCreate3() {
         try {
             new Polygon(null, new int[]{1, 2}, 2);
-            fail("Expected expection NullPointerException");
+            fail("Expected exception NullPointerException");
         } catch(NullPointerException e) {
         }
 
         try {
             new Polygon(new int[]{1, 2}, null, 2);
-            fail("Expected expection NullPointerException");
+            fail("Expected exception NullPointerException");
         } catch(NullPointerException e) {
         }
 
         try {
             new Polygon(new int[]{1, 2}, new int[]{1, 2, 4, 5}, 3);
-            fail("Expected expection IndexOutOfBoundsException");
+            fail("Expected exception IndexOutOfBoundsException");
         } catch(IndexOutOfBoundsException e) {
         }
 
         try {
             new Polygon(new int[]{1, 2}, new int[]{1, 2, 4, 5}, 5);
-            fail("Expected expection IndexOutOfBoundsException");
+            fail("Expected exception IndexOutOfBoundsException");
         } catch(IndexOutOfBoundsException e) {
         }
 
         try {
             new Polygon(new int[]{1, 2}, new int[]{1, 2, 4, 5}, -1);
-            fail("Expected expection NegativeArraySizeException");
+            fail("Expected exception NegativeArraySizeException");
         } catch(NegativeArraySizeException e) {
         }
     }
