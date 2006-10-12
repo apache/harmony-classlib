@@ -41,16 +41,14 @@
           target: windows-properties              
          ================================= -->
     <target name="windows-properties" if="is.windows">
-        <!-- FIXME: consistent platform names should be used -->
-        <property name="target.platform" value="win.IA32" />
+        <property name="target.platform" value="windows" />
     </target>
 
     <!-- ================================= 
           target: linux-properties              
          ================================= -->
     <target name="linux-properties" if="is.linux">
-        <!-- FIXME: consistent platform names should be used -->
-        <property name="target.platform" value="linux.IA32" />
+        <property name="target.platform" value="linux" />
     </target>
 	
     <!-- ================================= 
@@ -88,8 +86,9 @@
         <exec executable="doxygen${exe.suffix}" dir="..">
             <arg line="doc/vminterface/natives.cfg" />
             <env key="HARMONY_DOC_DIR" value="${basedir}" />
-            <env key="HARMONY_NATIVE_SRC_DIR" value="${basedir}/../native-src/${target.platform}" />
-            <env key="HARMONY_NATIVE_SHARED_SRC_DIR" value="${basedir}/../native-src/shared" />
+            <env key="HARMONY_LUNI_NATIVES_DIR" value="${basedir}/../modules/luni/src/main/native" />
+            <env key="HARMONY_ARCHIVE_NATIVES_DIR" value="${basedir}/../modules/archive/src/main/native" />
+            <env key="HARMONY_TARGET_PLATFORM" value="${target.platform}" />
         </exec>
     </target>
 
