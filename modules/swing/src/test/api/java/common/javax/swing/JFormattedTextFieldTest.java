@@ -437,7 +437,7 @@ public class JFormattedTextFieldTest extends SwingTestCase {
         try {
            tf.commitEdit();
         } catch (ParseException e) {
-            assertTrue("Unexcepted exception: ", false);
+            assertTrue("Unexpected exception: ", false);
         }
         assertEquals(new Long(678), tf.getValue());
     }

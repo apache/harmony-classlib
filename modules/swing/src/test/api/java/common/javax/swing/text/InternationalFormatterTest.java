@@ -92,7 +92,7 @@ public class InternationalFormatterTest extends SwingTestCase {
         try {
             clone = formatter.clone();
         } catch (CloneNotSupportedException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
 
         assertTrue(clone instanceof InternationalFormatter);
@@ -123,7 +123,7 @@ public class InternationalFormatterTest extends SwingTestCase {
             formatter.setMinimum(new Long(20));
             assertEquals(new Long(21), formatter.stringToValue("21"));
         } catch (ParseException e) {
-            assertTrue("Unexcepted exception: ", false);
+            assertTrue("Unexpected exception: ", false);
         }
 
         try {
@@ -154,7 +154,7 @@ public class InternationalFormatterTest extends SwingTestCase {
             formatter.setMinimum(null);
             assertEquals(Boolean.TRUE, formatter.stringToValue("true"));
         } catch (ParseException e) {
-            assertTrue("Unexcepted exception: ", false);
+            assertTrue("Unexpected exception: ", false);
         }
     }
 
@@ -178,7 +178,7 @@ public class InternationalFormatterTest extends SwingTestCase {
             value = new Integer(345);
             assertEquals(format.format(value), formatter.valueToString(value));
         } catch (ParseException e) {
-            assertTrue("Unexcepted exception: ", false);
+            assertTrue("Unexpected exception: ", false);
         }
     }
 

@@ -150,7 +150,7 @@ public class JEditorPane_MultithreadedTest extends TestCase {
             doc.insertString(0, "testReplaceSelection", as1);
             doc.insertString(4, "INSERT", as2);
         } catch (final BadLocationException e) {
-            assertFalse("unexcepted exception :" + e.getMessage(), true);
+            assertFalse("unexpected exception :" + e.getMessage(), true);
         }
         SwingUtilities.invokeAndWait(new Runnable() {
             public void run() {

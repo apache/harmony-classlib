@@ -62,7 +62,7 @@ public class DefaultFormatterTest extends SwingTestCase {
         try {
             clone = formatter.clone();
         } catch (CloneNotSupportedException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
 
         assertTrue(clone instanceof DefaultFormatter);
@@ -88,7 +88,7 @@ public class DefaultFormatterTest extends SwingTestCase {
             value = new Integer(123);
             assertEquals(value.toString(), formatter.valueToString(value));
         } catch (ParseException e) {
-            assertTrue("Unexcepted exception: " + e.getMessage(), false);
+            assertTrue("Unexpected exception: " + e.getMessage(), false);
         }
     }
 
@@ -192,7 +192,7 @@ public class DefaultFormatterTest extends SwingTestCase {
 
             assertEquals(numFormatter, ftf.getFormatter());
         } catch(BadLocationException e) {
-            assertTrue("Unexcepted exception: " + e.getMessage(), false);
+            assertTrue("Unexpected exception: " + e.getMessage(), false);
         }
     }
 
@@ -217,7 +217,7 @@ public class DefaultFormatterTest extends SwingTestCase {
             assertEquals("789xxx456", ftf.getText());
             assertEquals(formatter, ftf.getFormatter());
         } catch(BadLocationException e) {
-            assertTrue("Unexcepted exception: " + e.getMessage(), false);
+            assertTrue("Unexpected exception: " + e.getMessage(), false);
         }
     }
 
@@ -242,7 +242,7 @@ public class DefaultFormatterTest extends SwingTestCase {
             assertEquals("java.lang.String",
                          formatter.stringToValue("546").getClass().getName());
         } catch (ParseException e) {
-            assertTrue("Unexcepted exception: " + e.getMessage(), false);
+            assertTrue("Unexpected exception: " + e.getMessage(), false);
         }
 
         try {

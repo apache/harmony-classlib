@@ -68,7 +68,7 @@ public class MaskFormatterTest extends SwingTestCase {
             assertEquals(mask, formatter.getMask());
             checkMainProperties();
         } catch (ParseException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
         //API says that's it's possible ParseException in this constructor.
         //I don't know when it's possible.
@@ -81,7 +81,7 @@ public class MaskFormatterTest extends SwingTestCase {
             assertEquals(mask, formatter.getMask());
             assertEquals("0xa-B", formatter.stringToValue("0xa-B"));
         } catch (ParseException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
 
         try {
@@ -100,7 +100,7 @@ public class MaskFormatterTest extends SwingTestCase {
             assertEquals("#2", formatter.getInvalidCharacters());
             formatter.stringToValue("rrrr5");
         } catch (ParseException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
 
         try {
@@ -125,7 +125,7 @@ public class MaskFormatterTest extends SwingTestCase {
             assertEquals("AAA$%$abc^^^***",
                          formatter.valueToString("AAA"));
         } catch (ParseException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
     }
 
@@ -140,7 +140,7 @@ public class MaskFormatterTest extends SwingTestCase {
             assertEquals("456$%$6bc^^^&&&",
                          formatter.valueToString("456$%$6"));
         } catch (ParseException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
     }
 
@@ -151,7 +151,7 @@ public class MaskFormatterTest extends SwingTestCase {
             assertEquals("012345678abc", formatter.getValidCharacters());
             formatter.stringToValue("acb4");
         } catch (ParseException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
 
         try {
@@ -184,7 +184,7 @@ public class MaskFormatterTest extends SwingTestCase {
             assertEquals("4155551212", formatter.stringToValue(text));
 
         } catch (ParseException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
     }
 
@@ -196,7 +196,7 @@ public class MaskFormatterTest extends SwingTestCase {
             assertEquals(placeholder, formatter.getPlaceholder());
             assertEquals("26-ka-sd", formatter.valueToString("26"));
         } catch (ParseException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
     }
 
@@ -209,7 +209,7 @@ public class MaskFormatterTest extends SwingTestCase {
             assertEquals(placeholder, formatter.getPlaceholder());
             assertEquals("21-ka-sd", formatter.valueToString("21"));
         } catch (ParseException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
     }
 
@@ -230,7 +230,7 @@ public class MaskFormatterTest extends SwingTestCase {
             formatter.setPlaceholderCharacter('*');
             assertEquals("-^23-**-**", formatter.valueToString("23"));
         } catch (ParseException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
     }
 
@@ -239,7 +239,7 @@ public class MaskFormatterTest extends SwingTestCase {
             formatter.setMask("'Uw''et'67H'H");
             formatter.stringToValue("Uw'et678H");
         } catch (ParseException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
     }
 
@@ -249,7 +249,7 @@ public class MaskFormatterTest extends SwingTestCase {
             assertEquals("567'", formatter.getMask());
             assertEquals("567", formatter.stringToValue("567"));
         } catch (ParseException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
         try {
             formatter.stringToValue("567'");
@@ -266,7 +266,7 @@ public class MaskFormatterTest extends SwingTestCase {
             formatter.setValueContainsLiteralCharacters(false);
             assertEquals("U4567'H", formatter.valueToString("7"));
         } catch (ParseException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
     }
 
@@ -303,7 +303,7 @@ public class MaskFormatterTest extends SwingTestCase {
            formatter.setPlaceholder("aaaaa");
            formatter.setPlaceholderCharacter('x');
         } catch (ParseException e) {
-            assertTrue("Unexcepted exception: " + e.getMessage(), false);
+            assertTrue("Unexpected exception: " + e.getMessage(), false);
         }
     }
 }

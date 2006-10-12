@@ -120,9 +120,9 @@ public class TransferHandlerTest extends SwingTestCase {
             assertEquals(Color.RED, transferable.getTransferData(
                                      transferable.getTransferDataFlavors()[0]));
         } catch (UnsupportedFlavorException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         } catch (IOException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
 
         JTextArea distArea = new JTextArea();
@@ -166,7 +166,7 @@ public class TransferHandlerTest extends SwingTestCase {
                                  new DataFlavor[] {flavor}));
 
         } catch (ClassNotFoundException e) {
-            assertFalse("Unexcepted exception : " + e.getMessage(), true);
+            assertFalse("Unexpected exception : " + e.getMessage(), true);
         }
     }
 
@@ -182,7 +182,7 @@ public class TransferHandlerTest extends SwingTestCase {
                          + "class=java.lang.String");
 
         } catch (ClassNotFoundException e) {
-            assertFalse("Unexcepted exception : " + e.getMessage(), true);
+            assertFalse("Unexpected exception : " + e.getMessage(), true);
         }
 
         try {
@@ -210,7 +210,7 @@ public class TransferHandlerTest extends SwingTestCase {
                          + "class=java.awt.Color");
 
         } catch (ClassNotFoundException e) {
-            assertFalse("Unexcepted exception : " + e.getMessage(), true);
+            assertFalse("Unexpected exception : " + e.getMessage(), true);
         }
 
         try {

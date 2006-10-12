@@ -121,7 +121,7 @@ public class StateEditTest extends SwingTestCase {
         } catch (CannotRedoException e) {
             bWasException = true;
         }
-        assertTrue("ExceptedException", bWasException);
+        assertTrue("ExpectedException", bWasException);
         se1.undo();
 
         obj.wasCallRestore = false;

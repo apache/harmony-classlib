@@ -151,7 +151,7 @@ public class Utils {
             return input.readObject();
         } catch (Exception e) {
              e.printStackTrace();
-             TestCase.assertFalse("unexcepted Exception", true);
+             TestCase.assertFalse("unexpected Exception", true);
         }
 
         return null;
@@ -346,7 +346,7 @@ public class Utils {
                                          .getResourceAsStream(name)));
         } catch (IOException e) {
             e.printStackTrace();
-            TestCase.assertFalse("Unexcepted IOException", true);
+            TestCase.assertFalse("Unexpected IOException", true);
         }
     }
 

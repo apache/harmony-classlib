@@ -62,9 +62,9 @@ public class JPasswordFieldTest extends SwingTestCase {
         try {
            data = transferable.getTransferData(flavor);
         } catch (UnsupportedFlavorException e) {
-            assertTrue("Unexcepted exception: ", false);
+            assertTrue("Unexpected exception: ", false);
         } catch (IOException e) {
-            assertTrue("Unexcepted exception: ", false);
+            assertTrue("Unexpected exception: ", false);
         }
         return data;
     }
@@ -174,7 +174,7 @@ public class JPasswordFieldTest extends SwingTestCase {
            assertEquals("", pf.getText(1, 0));
            assertEquals("c", pf.getText(2, 1));
         } catch (BadLocationException e) {
-            assertTrue("Unexcepted exception: ", false);
+            assertTrue("Unexpected exception: ", false);
         }
 
         try {

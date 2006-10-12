@@ -134,7 +134,7 @@ public class JTextComponent_MultithreadedTest extends TestCase {
 
             sample = jtc.getUI().modelToView(jtc, 3);
         } catch (BadLocationException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
 
         assertNotNull(sample);
@@ -234,7 +234,7 @@ public class JTextComponent_MultithreadedTest extends TestCase {
 
             rect = jep.modelToView(101);
         } catch (BadLocationException e) {
-            assertFalse("Unexcepted exception :" + e.getMessage(), true);
+            assertFalse("Unexpected exception :" + e.getMessage(), true);
         }
 
         scrollableIncrementTest(jep, rect);

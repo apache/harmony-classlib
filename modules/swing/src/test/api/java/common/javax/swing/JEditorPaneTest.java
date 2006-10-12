@@ -85,7 +85,7 @@ public class JEditorPaneTest extends SwingTestCase {
         try {
             tmpUrl = new URL("http://www.apache.org/");
         } catch (final MalformedURLException e) {
-            assertFalse("unexcepted exception :" + e.getMessage(), true);
+            assertFalse("unexpected exception :" + e.getMessage(), true);
         }
         TEST_URL = tmpUrl;
     }
@@ -284,7 +284,7 @@ public class JEditorPaneTest extends SwingTestCase {
             doc.insertString(0, "testReplaceSelection", as1);
             doc.insertString(4, "INSERT", as2);
         } catch (final BadLocationException e) {
-            assertFalse("unexcepted exception :" + e.getMessage(), true);
+            assertFalse("unexpected exception :" + e.getMessage(), true);
         }
         //temporarily commented-out: HTMLEditorKit not implemented
         //jep.setEditorKit(new RTFEditorKit());
@@ -433,7 +433,7 @@ public class JEditorPaneTest extends SwingTestCase {
         try {
             jep = new JEditorPane("http://www.apache.org/");
         } catch (IOException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
         checkBaseValues("javax.swing.text.html.HTMLDocument",
                         "javax.swing.text.html.HTMLEditorKit", "text/html",
@@ -459,7 +459,7 @@ public class JEditorPaneTest extends SwingTestCase {
         try {
             jep = new JEditorPane(TEST_URL);
         } catch (IOException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
         checkBaseValues("javax.swing.text.html.HTMLDocument",
                         "javax.swing.text.html.HTMLEditorKit", "text/html",
@@ -574,7 +574,7 @@ public class JEditorPaneTest extends SwingTestCase {
         try {
             jep.setPage(TEST_URL);
         } catch (final IOException e) {
-            assertTrue("Unexcepted exception :" + e.getMessage(), false);
+            assertTrue("Unexpected exception :" + e.getMessage(), false);
         }
         //assertEquals(TEST_URL, jep.getPage());
     }
@@ -587,7 +587,7 @@ public class JEditorPaneTest extends SwingTestCase {
         try {
             jep.setPage(testUrlString);
         } catch (final IOException e) {
-            assertTrue("Unexcepted exception :" + e.getMessage(), false);
+            assertTrue("Unexpected exception :" + e.getMessage(), false);
         }
         assertEquals(testUrlString, jep.getPage().toString());
     }
@@ -601,7 +601,7 @@ public class JEditorPaneTest extends SwingTestCase {
             //4825653
             //System.out.println(jep.getDocument().getProperty(Document.StreamDescriptionProperty));
         } catch (final IOException e) {
-            assertFalse("Unexcepted exception: " + e.getMessage(), true);
+            assertFalse("Unexpected exception: " + e.getMessage(), true);
         }
     }*/
 
@@ -615,13 +615,13 @@ public class JEditorPaneTest extends SwingTestCase {
         try {
             jep.read(stream, "text/html");
         } catch (IOException e) {
-            assertFalse("Unexcepted exception :", true);
+            assertFalse("Unexpected exception :", true);
         }
         assertEquals("text/html", jep.getContentType());
         /*
           * String docContent = null; try { Document doc = jep.getDocument();
           * docContent = doc.getText(0, doc.getLength()); }
-          * catch(BadLocationException e){ assertFalse("Unexcepted exception :",
+          * catch(BadLocationException e){ assertFalse("Unexpected exception :",
           * true); } System.out.println("_____" + docContent + "_____"); String
           * temp = " \nThank you for the quote you sentreguarding account
           * #99999999999999. &160;I just have a couple of questions.Please let
@@ -653,7 +653,7 @@ public class JEditorPaneTest extends SwingTestCase {
         try {
             jep.read(stream, "text/plain");
         } catch (IOException e) {
-            assertFalse("Unexcepted exception :", true);
+            assertFalse("Unexpected exception :", true);
         }
         assertEquals("text/plain", jep.getContentType());
         String docContent = null;
@@ -670,7 +670,7 @@ public class JEditorPaneTest extends SwingTestCase {
         try {
             jep.read(stream, "text/rtf");
         } catch (IOException e) {
-            assertFalse("Unexcepted exception :", true);
+            assertFalse("Unexpected exception :", true);
         }
         assertEquals("text/rtf", jep.getContentType());
         String docContent = null;
@@ -678,7 +678,7 @@ public class JEditorPaneTest extends SwingTestCase {
             Document doc = jep.getDocument();
             docContent = doc.getText(0, doc.getLength());
         } catch (BadLocationException e) {
-            assertFalse("Unexcepted exception :", true);
+            assertFalse("Unexpected exception :", true);
         }
         assertEquals("blablabla\n", docContent);
     }

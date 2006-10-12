@@ -193,7 +193,7 @@ public class JTextComponent_IMLocationTest extends SwingWaitTestCase {
             }
 
         } catch(BadLocationException e){
-            assertFalse("unexceptedException",true);
+            assertFalse("unexpectedException",true);
         }
     }
 

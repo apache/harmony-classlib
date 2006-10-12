@@ -67,7 +67,7 @@ public class NamingEventTest extends TestCase {
 
         try {
             new NamingEvent(null, NamingEvent.OBJECT_CHANGED, binding1, binding2, "anything");
-            fail("IllegalArgumentException excepted");
+            fail("IllegalArgumentException expected");
         } catch (IllegalArgumentException e) {
         }
     }

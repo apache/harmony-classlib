@@ -127,7 +127,7 @@ public class DTDTest extends TestCase {
             }
 
           } catch (IOException e) {
-              assertFalse("Unexcepted IOException", true);
+              assertFalse("Unexpected IOException", true);
           }
     }
 

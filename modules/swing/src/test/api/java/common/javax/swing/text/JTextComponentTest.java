@@ -431,7 +431,7 @@ public class JTextComponentTest extends SwingTestCase {
             s = e.getMessage();
         }
 
-        assertFalse("Unexcepted exception: " + s, bWasException);
+        assertFalse("Unexpected exception: " + s, bWasException);
         assertTrue(str.equals("Com"));
     }
 

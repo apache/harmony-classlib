@@ -125,7 +125,7 @@ public class JFormattedTextField_AbstractFormatterTest extends SwingTestCase {
         try {
             clone = formatter.clone();
         } catch (CloneNotSupportedException e) {
-            assertTrue("UnexceptedException: " + e.getMessage(), false);
+            assertTrue("UnexpectedException: " + e.getMessage(), false);
         }
         assertTrue(clone instanceof JFormattedTextField.AbstractFormatter);
         assertNull(((JFormattedTextField.AbstractFormatter)clone)

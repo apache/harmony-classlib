@@ -115,7 +115,7 @@ public class PasswordViewTest extends SwingTestCase {
            assertEquals(textWidth,
                         view.drawSelectedText(g, 0, y, 0, length));
         } catch (BadLocationException e) {
-            assertTrue("Unexcepted exception: ", false);
+            assertTrue("Unexpected exception: ", false);
         }
         if (isHarmony()) {
             assertEquals(color, g.getColor());
@@ -132,7 +132,7 @@ public class PasswordViewTest extends SwingTestCase {
            assertEquals(textWidth,
                         view.drawSelectedText(g, 0, y, 0, length));
                    } catch (BadLocationException e) {
-            assertTrue("Unexcepted exception: ", false);
+            assertTrue("Unexpected exception: ", false);
         }
         if (isHarmony()) {
             assertEquals(old, g.getColor());

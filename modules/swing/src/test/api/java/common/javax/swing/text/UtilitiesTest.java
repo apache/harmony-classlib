@@ -224,7 +224,7 @@ public class UtilitiesTest extends SwingTestCase {
                 try {
                     doc.getText(start, (end - start), seg);
                 } catch (BadLocationException e) {
-                    assertTrue("Unexcepted Exception: " + e.getMessage(), false);
+                    assertTrue("Unexpected Exception: " + e.getMessage(), false);
                 }
                 FontMetrics fm = g.getFontMetrics();
                 assertEquals(Utilities.drawTabbedText(seg, 23, 24, g, te, j),
@@ -265,7 +265,7 @@ public class UtilitiesTest extends SwingTestCase {
                 try {
                     doc.getText(start, end - start, seg);
                 } catch (BadLocationException e) {
-                    assertTrue("Unexcepted Exception: " + e.getMessage(), false);
+                    assertTrue("Unexpected Exception: " + e.getMessage(), false);
                 }
                 assertEquals(Utilities.getTabbedTextWidth(seg, fm, 23, te, j),
                              getTabbedTextWidth(seg, fm, 23, te, j));
@@ -333,7 +333,7 @@ public class UtilitiesTest extends SwingTestCase {
             try {
                 doc.getText(start, (end - start), seg);
             } catch (BadLocationException e) {
-                assertTrue("Unexcepted Exception: " + e.getMessage(), false);
+                assertTrue("Unexpected Exception: " + e.getMessage(), false);
             }
             int textOffset = start + 9;
 
@@ -386,7 +386,7 @@ public class UtilitiesTest extends SwingTestCase {
             try {
                 doc.getText(start, (end - start), seg);
             } catch (BadLocationException e) {
-                assertTrue("Unexcepted Exception: " + e.getMessage(), false);
+                assertTrue("Unexpected Exception: " + e.getMessage(), false);
             }
 
             int offset = start + 8;
@@ -428,7 +428,7 @@ public class UtilitiesTest extends SwingTestCase {
             try {
                 doc.getText(start, (end - start), seg);
             } catch (BadLocationException e) {
-                assertTrue("Unexcepted Exception: " + e.getMessage(), false);
+                assertTrue("Unexpected Exception: " + e.getMessage(), false);
             }
 
             int textWidth = Utilities.getTabbedTextWidth(seg, fm, 23, te,
@@ -468,7 +468,7 @@ public class UtilitiesTest extends SwingTestCase {
             try {
                 doc.getText(start, (end - start), seg);
             } catch (BadLocationException e) {
-                assertTrue("Unexcepted Exception: " + e.getMessage(), false);
+                assertTrue("Unexpected Exception: " + e.getMessage(), false);
             }
             int offset = start + 6;
             int textWidth = Utilities.getTabbedTextWidth(seg, fm, 23, te,
@@ -531,7 +531,7 @@ public class UtilitiesTest extends SwingTestCase {
                 try {
                     doc.getText(start, (end - start), seg);
                 } catch (BadLocationException e) {
-                    assertTrue("Unexcepted Exception: " + e.getMessage(), false);
+                    assertTrue("Unexpected Exception: " + e.getMessage(), false);
                 }
 
                 int textWidth = Utilities
@@ -667,7 +667,7 @@ public class UtilitiesTest extends SwingTestCase {
                         + appendix);
 
             } catch (BadLocationException e) {
-                assertFalse("Unexcepted exception: " + e.getMessage(), true);
+                assertFalse("Unexpected exception: " + e.getMessage(), true);
             }
             assertEquals(utilAboveT, utilAbove);
             assertEquals(utilAbove1T, utilAbove1);

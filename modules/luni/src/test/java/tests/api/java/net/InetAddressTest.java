@@ -377,7 +377,7 @@ public class InetAddressTest extends junit.framework.TestCase {
 			InetAddress addr = InetAddress.getByAddress(addressStr, ipAddress);
 			addr = InetAddress.getByAddress(ipAddress);
 		} catch (UnknownHostException e) {
-			fail("Unexcepted problem creating IP Address "
+			fail("Unexpected problem creating IP Address "
 					+ ipAddress.length);
 		}
 
@@ -388,7 +388,7 @@ public class InetAddressTest extends junit.framework.TestCase {
 			InetAddress addr = InetAddress.getByAddress(addressStr, ipAddress2);
 			addr = InetAddress.getByAddress(ipAddress);
 		} catch (UnknownHostException e) {
-			fail("Unexcepted problem creating IP Address "
+			fail("Unexpected problem creating IP Address "
 					+ ipAddress.length);
 		}
 	}
