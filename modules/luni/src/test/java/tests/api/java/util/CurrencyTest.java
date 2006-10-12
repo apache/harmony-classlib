@@ -139,9 +139,9 @@ public class CurrencyTest extends junit.framework.TestCase {
 		// one with Korean country but an India language
 		// this method should return the currency codes in that case
 		Locale.setDefault(new Locale("kr", "KR"));
-		assertEquals("currK.getSymbol()", currK.getSymbol(), "KRW");
-		assertEquals("currI.getSymbol()", currI.getSymbol(), "INR");
-		assertEquals("currUS.getSymbol()", currUS.getSymbol(), "USD");
+		assertEquals("currK.getSymbol()", "KRW", currK.getSymbol());
+		assertEquals("currI.getSymbol()", "INR", currI.getSymbol());
+		assertEquals("currUS.getSymbol()", "USD", currUS.getSymbol());
 	}
 
 	/**

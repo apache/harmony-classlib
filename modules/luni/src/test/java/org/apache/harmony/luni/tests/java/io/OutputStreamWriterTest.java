@@ -50,7 +50,7 @@ public class OutputStreamWriterTest extends TestCase {
 			// ok
 		}
 		String result = out.getEncoding();
-		assertEquals(result, "UnicodeBigUnmarked");
+		assertEquals("UnicodeBigUnmarked", result);
 
 	}
 }

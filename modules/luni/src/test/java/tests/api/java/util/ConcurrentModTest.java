@@ -42,7 +42,7 @@ public class ConcurrentModTest extends TestCase {
 		al.add(three);
 		al.add(four);
 		List sub = al.subList(1, 3);
-		assertEquals(sub.size(), 2);
+		assertEquals(2, sub.size());
 		// the sub.get(1) is 3.0
 		assertTrue(((Double) sub.get(1)).doubleValue() <= 3.0);
 		assertTrue(((Double) sub.get(1)).doubleValue() > 2.0);
@@ -72,7 +72,7 @@ public class ConcurrentModTest extends TestCase {
 		al.add(three);
 		al.add(four);
 		List sub = al.subList(1, 3);
-		assertEquals(sub.size(), 2);
+		assertEquals(2, sub.size());
 		// the sub.get(1) is 3.0
 		assertTrue(((Double) sub.get(1)).doubleValue() <= 3.0);
 		assertTrue(((Double) sub.get(1)).doubleValue() > 2.0);
@@ -102,7 +102,7 @@ public class ConcurrentModTest extends TestCase {
 		al.add(three);
 		al.add(four);
 		List sub = al.subList(1, 3);
-		assertEquals(sub.size(), 2);
+		assertEquals(2, sub.size());
 		// the sub.get(1) is 3.0
 		assertTrue(((Double) sub.get(1)).doubleValue() <= 3.0);
 		assertTrue(((Double) sub.get(1)).doubleValue() > 2.0);
@@ -132,7 +132,7 @@ public class ConcurrentModTest extends TestCase {
 		al.add(three);
 		al.add(four);
 		List sub = al.subList(1, 3);
-		assertEquals(sub.size(), 2);
+		assertEquals(2, sub.size());
 		// the sub.get(1) is 3.0
 		assertTrue(((Double) sub.get(1)).doubleValue() <= 3.0);
 		assertTrue(((Double) sub.get(1)).doubleValue() > 2.0);
@@ -162,7 +162,7 @@ public class ConcurrentModTest extends TestCase {
 		al.add(three);
 		al.add(four);
 		List sub = al.subList(1, 3);
-		assertEquals(sub.size(), 2);
+		assertEquals(2, sub.size());
 		// the sub.get(1) is 3.0
 		assertTrue(((Double) sub.get(1)).doubleValue() <= 3.0);
 		assertTrue(((Double) sub.get(1)).doubleValue() > 2.0);

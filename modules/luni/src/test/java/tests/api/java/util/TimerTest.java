@@ -294,7 +294,7 @@ public class TimerTest extends junit.framework.TestCase {
         Timer t = null;
         try {
             t = new Timer();
-            assertEquals(t.purge(), 0);
+            assertEquals(0, t.purge());
 
             TimerTestTask[] tasks = new TimerTestTask[100];
             int[] delayTime = { 50, 80, 20, 70, 40, 10, 90, 30, 60 };
@@ -313,7 +313,7 @@ public class TimerTest extends junit.framework.TestCase {
             }
 
             assertTrue(t.purge() <= 50);
-            assertEquals(t.purge(), 0);
+            assertEquals(0, t.purge());
         } finally {
             if (t != null) {
                 t.cancel();

@@ -233,7 +233,7 @@ public class FileOutputStreamTest extends junit.framework.TestCase {
 		fos.flush();
 		fos.close();
 		FileOutputStream f = new FileOutputStream(tmpfile, true);
-		assertEquals(f.getChannel().position(), 10); 
+		assertEquals(10, f.getChannel().position()); 
     }
 
     /**

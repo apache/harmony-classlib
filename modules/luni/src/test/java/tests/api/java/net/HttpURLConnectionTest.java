@@ -127,7 +127,7 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
 		List newHeader = (List) headers.get("whatever");
 		assertNotNull(newHeader);
 
-		assertEquals(newHeader.get(0), "you like");
+		assertEquals("you like", newHeader.get(0));
 
 		try {
 			// the map should be unmodifiable

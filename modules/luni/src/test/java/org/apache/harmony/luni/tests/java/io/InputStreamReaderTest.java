@@ -68,7 +68,7 @@ public class InputStreamReaderTest extends TestCase {
             // ok
         }
         String result = in.getEncoding();
-        assertEquals(result, "UnicodeBigUnmarked");
+        assertEquals("UnicodeBigUnmarked", result);
 
     }
 

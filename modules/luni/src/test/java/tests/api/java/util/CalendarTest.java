@@ -450,7 +450,7 @@ public class CalendarTest extends junit.framework.TestCase {
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
 
-        assertEquals(cal.getTimeInMillis(), 6017546357372606464L);
+        assertEquals(6017546357372606464L, cal.getTimeInMillis());
     }
 
 	protected void setUp() {

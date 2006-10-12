@@ -363,7 +363,7 @@ public class URLConnectionTest extends junit.framework.TestCase {
 		List header = (List) headers.get("whatever");
 		assertNotNull(header);
 
-		assertEquals(header.get(0), "you like");
+		assertEquals("you like", header.get(0));
 
 		assertTrue(headers.size() >= 1);
 
@@ -968,7 +968,7 @@ public class URLConnectionTest extends junit.framework.TestCase {
         URLConnection uc = new URL("http://localhost").openConnection();
         assertEquals(0, uc.getConnectTimeout());
         uc.setConnectTimeout(0);
-        assertEquals(uc.getConnectTimeout(),0);
+        assertEquals(0, uc.getConnectTimeout());
         try{
             uc.setConnectTimeout(-100);
             fail("should throw IllegalArgumentException");
