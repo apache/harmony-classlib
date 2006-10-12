@@ -20,8 +20,10 @@
 * @version $Revision$
 */
 
-package javax.security.auth.callback;
+package org.apache.harmony.auth.tests.javax.security.auth.callback;
 
+
+import javax.security.auth.callback.PasswordCallback;
 
 import junit.framework.TestCase;
 

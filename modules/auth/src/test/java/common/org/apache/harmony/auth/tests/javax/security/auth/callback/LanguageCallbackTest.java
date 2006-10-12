@@ -20,10 +20,12 @@
 * @version $Revision$
 */
 
-package javax.security.auth.callback;
+package org.apache.harmony.auth.tests.javax.security.auth.callback;
 
 
 import java.util.Locale;
+
+import javax.security.auth.callback.LanguageCallback;
 
 import junit.framework.TestCase;
 
