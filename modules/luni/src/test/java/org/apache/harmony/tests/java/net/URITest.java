@@ -40,7 +40,7 @@ public class URITest extends TestCase {
 		// if port value is negative, the authority should be considered registry-based.
 		URI uri = new URI("http://host:-8096/path/index.html");
 		assertEquals("Assert 2: returned wrong port value,", -1, uri.getPort());
-		assertEquals("Assert 3: returned wrong host value,", null, uri.getHost());
+		assertNull("Assert 3: returned wrong host value,", uri.getHost());
 		try {
 			uri.parseServerAuthority();
 			fail("Assert 4: Expected URISyntaxException");
@@ -50,7 +50,7 @@ public class URITest extends TestCase {
 		
 		uri = new URI("http","//myhost:-8096", null);
 		assertEquals("Assert 5: returned wrong port value,", -1, uri.getPort());
-		assertEquals("Assert 6: returned wrong host value,", null, uri.getHost());
+		assertNull("Assert 6: returned wrong host value,", uri.getHost());
 		try {
 			uri.parseServerAuthority();
 			fail("Assert 7: Expected URISyntaxException");

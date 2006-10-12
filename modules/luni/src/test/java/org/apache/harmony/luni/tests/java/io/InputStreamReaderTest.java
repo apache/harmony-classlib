@@ -31,7 +31,7 @@ public class InputStreamReaderTest extends TestCase {
         in = new InputStreamReader(new ByteArrayInputStream(b), "UTF-16BE");
         in.close();
         String result = in.getEncoding();
-        assertEquals(null, result);
+        assertNull(result);
     }
 
     /**

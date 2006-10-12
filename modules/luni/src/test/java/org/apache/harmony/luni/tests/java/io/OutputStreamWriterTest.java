@@ -38,7 +38,7 @@ public class OutputStreamWriterTest extends TestCase {
 			fail("Should not throw IOException");
 		}
 		String result = out.getEncoding();
-		assertEquals(null, result);
+		assertNull(result);
 	}
 
 	public void testGetEncoding_NotHistorical() {

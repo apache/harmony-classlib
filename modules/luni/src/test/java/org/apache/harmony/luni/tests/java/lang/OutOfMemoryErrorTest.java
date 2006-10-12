@@ -25,8 +25,8 @@ public class OutOfMemoryErrorTest extends junit.framework.TestCase {
 	public void test_Constructor() {
 		// Test for method java.lang.OutOfMemoryError()
 	    Error e = new OutOfMemoryError();
-        assertEquals(null, e.getCause());
-        assertEquals(null, e.getMessage());
+        assertNull(e.getCause());
+        assertNull(e.getMessage());
 	}
 
 	/**
@@ -35,12 +35,12 @@ public class OutOfMemoryErrorTest extends junit.framework.TestCase {
 	public void test_ConstructorLjava_lang_String() {
 		// Test for method java.lang.OutOfMemoryError(java.lang.String)
 		Error e = new OutOfMemoryError(null);
-        assertEquals(null, e.getMessage());
-        assertEquals(null, e.getCause());
+        assertNull(e.getMessage());
+        assertNull(e.getCause());
         
         e= new OutOfMemoryError("msg");
         assertEquals("msg", e.getMessage());
-        assertEquals(null, e.getCause());
+        assertNull(e.getCause());
 	}
 
 }

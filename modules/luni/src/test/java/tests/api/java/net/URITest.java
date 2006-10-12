@@ -903,7 +903,7 @@ public class URITest extends junit.framework.TestCase {
 
                 URI uri = new URI("http://myhost:-8096/site/index.html");
                 assertEquals("TestA, returned wrong port value,", -1, uri.getPort());
-                assertEquals("TestA, returned wrong host value,", null, uri
+                assertNull("TestA, returned wrong host value,", uri
                              .getHost());
                 try {
                         uri.parseServerAuthority();
@@ -913,7 +913,7 @@ public class URITest extends junit.framework.TestCase {
 
                 uri = new URI("http", "//myhost:-8096", null);
                 assertEquals("TestB returned wrong port value,", -1, uri.getPort());
-                assertEquals("TestB returned wrong host value,", null, uri
+                assertNull("TestB returned wrong host value,", uri
                              .getHost());
                 try {
                         uri.parseServerAuthority();

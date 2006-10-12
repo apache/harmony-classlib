@@ -268,8 +268,8 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 	 */
 	public void test_getByNameLjava_lang_String() {
 		try {
-			assertTrue("validate null handled ok", null == NetworkInterface
-					.getByName(null));
+			assertNull("validate null handled ok",
+                                   NetworkInterface.getByName(null));
 			fail("getByName did not throw NullPointerException for null argument");
 		} catch (NullPointerException e) {
 		} catch (Exception e) {
@@ -278,9 +278,8 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 		}
 
 		try {
-			assertTrue(
-					"validate handled ok if we ask for name not associated with any interface",
-					null == NetworkInterface.getByName("8not a name4"));
+			assertNull("validate handled ok if we ask for name not associated with any interface",
+                                   NetworkInterface.getByName("8not a name4"));
 		} catch (Exception e) {
 			fail("getByName, unknown inetAddress - raised exception : "
 					+ e.getMessage());
@@ -331,8 +330,8 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 		addressBytes[3] = 0;
 
 		try {
-			assertTrue("validate null handled ok", null == NetworkInterface
-					.getByInetAddress(null));
+			assertNull("validate null handled ok",
+                                   NetworkInterface.getByInetAddress(null));
 			fail("should not get here if getByInetAddress throws "
 					+ "NullPointerException if null passed in");
 		} catch (NullPointerException e) {
@@ -342,9 +341,8 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 		}
 
 		try {
-			assertTrue(
-					"validate handled ok if we ask for address not associated with any interface",
-					null == NetworkInterface.getByInetAddress(InetAddress
+			assertNull("validate handled ok if we ask for address not associated with any interface",
+                                   NetworkInterface.getByInetAddress(InetAddress
 							.getByAddress(addressBytes)));
 		} catch (Exception e) {
 			fail("getByInetAddress, unknown inetAddress threw exception : " + e);
