@@ -825,6 +825,8 @@ public class KeyStore {
         // Store password
         private char[] password;
 
+        private boolean isDestroyed = false;
+
         /**
          * 
          *  
@@ -838,7 +840,7 @@ public class KeyStore {
          *  
          */
         public synchronized char[] getPassword() {
-            if (password == null) {
+            if (isDestroyed) {
                 throw new IllegalStateException(Messages.getString("security.36")); //$NON-NLS-1$
             }
             return password;
@@ -849,8 +851,11 @@ public class KeyStore {
          *  
          */
         public synchronized void destroy() throws DestroyFailedException {
-            Arrays.fill(password, '\u0000');
-            password = null;
+            isDestroyed = true;
+            if (password != null) {
+                Arrays.fill(password, '\u0000');
+                password = null;
+            }
         }
 
         /**
@@ -858,7 +863,7 @@ public class KeyStore {
          *  
          */
         public synchronized boolean isDestroyed() {
-            return (password == null);
+            return isDestroyed;
         }
     }
 

@@ -230,6 +230,15 @@ public class KeyStoreTest extends TestCase {
         }
     }
 
+    /**
+     * @test java.security.KeyStore.PasswordProtectionn.getPassword()
+     */
+    public void testKeyStorePPGetPassword() {
+        // Regression for HARMONY-1539
+        // no exception expected
+        assertNull(new KeyStore.PasswordProtection(null).getPassword());
+    }
+
 
     /*
      * @tests java.security.KeyStoreSpi.engineEntryInstanceOf(String, Class<? extends Entry>)
