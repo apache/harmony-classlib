@@ -23,6 +23,7 @@ package org.apache.harmony.x.imageio.plugins.jpeg;
 
 import javax.imageio.ImageReader;
 import javax.imageio.ImageReadParam;
+import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.ImageReaderSpi;
@@ -51,36 +52,43 @@ public class JPEGImageReader extends ImageReader {
         super(imageReaderSpi);
     }
 
+    @Override
     public int getHeight(int i) throws IOException {
         //-- TODO imlement
         throw new UnsupportedOperationException("not implemented yet");
     }
 
+    @Override
     public int getWidth(int i) throws IOException {
         //-- TODO imlement
         throw new UnsupportedOperationException("not implemented yet");
     }
 
+    @Override
     public int getNumImages(boolean b) throws IOException {
         //-- TODO imlement
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public Iterator getImageTypes(int i) throws IOException {
+    @Override
+    public Iterator<ImageTypeSpecifier> getImageTypes(int i) throws IOException {
         //-- TODO imlement
         throw new UnsupportedOperationException("not implemented yet");
     }
 
+    @Override
     public IIOMetadata getStreamMetadata() throws IOException {
         //-- TODO imlement
         throw new UnsupportedOperationException("not implemented yet");
     }
 
+    @Override
     public IIOMetadata getImageMetadata(int i) throws IOException {
         //-- TODO imlement
         throw new UnsupportedOperationException("not implemented yet");
     }
 
+    @Override
     public BufferedImage read(int i, ImageReadParam imageReadParam) throws IOException {
         if (iis == null) {
             throw new IllegalArgumentException("input stream == null");
@@ -93,10 +101,12 @@ public class JPEGImageReader extends ImageReader {
         return image.getBufferedImage();
     }
 
+    @Override
     public BufferedImage read(int i) throws IOException {
         return read(i, null);
     }
 
+    @Override
     public void setInput(Object input, boolean seekForwardOnly, boolean ignoreMetadata) {
         super.setInput(input, seekForwardOnly, ignoreMetadata);
         iis = (ImageInputStream) input;

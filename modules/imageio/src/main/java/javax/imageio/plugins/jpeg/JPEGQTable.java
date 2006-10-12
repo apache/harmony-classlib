@@ -69,11 +69,11 @@ public class JPEGQTable {
         if (table.length != SIZE) {
             throw new IllegalArgumentException("illegal table size: " + table.length);
         }
-        theTable = (int[]) table.clone();
+        theTable = table.clone();
     }
 
     public int[] getTable() {
-        return (int[]) theTable.clone();
+        return theTable.clone();
     }
 
     public JPEGQTable getScaledInstance(float scaleFactor, boolean forceBaseline) {
@@ -94,6 +94,7 @@ public class JPEGQTable {
         return new JPEGQTable(table);
     }
 
+    @Override
     public String toString() {
         //-- TODO more informative info
         return "JPEGQTable";

@@ -156,6 +156,7 @@ public class ImageTypeSpecifier {
         throw new UnsupportedOperationException("Not supported yet");
     }
 
+    @Override
     public boolean equals(Object o) {
         boolean rt = false;
         if (o instanceof ImageTypeSpecifier) {

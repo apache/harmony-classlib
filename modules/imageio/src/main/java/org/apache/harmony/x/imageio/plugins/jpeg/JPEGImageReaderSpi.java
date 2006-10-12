@@ -20,19 +20,12 @@
  */
 package org.apache.harmony.x.imageio.plugins.jpeg;
 
-
+import java.io.IOException;
+import java.util.Locale;
+import javax.imageio.ImageReader;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.spi.ServiceRegistry;
-import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
-
-import org.apache.harmony.awt.gl.image.DecodingImageSource;
-import org.apache.harmony.awt.gl.image.JpegDecoder;
-import org.apache.harmony.awt.gl.image.OffscreenImage;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Locale;
 
 public class JPEGImageReaderSpi extends ImageReaderSpi {
 
@@ -54,6 +47,7 @@ public class JPEGImageReaderSpi extends ImageReaderSpi {
     }
 
 
+    @Override
     public boolean canDecodeInput(Object source) throws IOException {
         ImageInputStream markable = (ImageInputStream) source;
         try {
@@ -75,15 +69,18 @@ public class JPEGImageReaderSpi extends ImageReaderSpi {
         return false;
     }
 
+    @Override
     public ImageReader createReaderInstance(Object extension) throws IOException {
         return new JPEGImageReader(this);
     }
 
+    @Override
     public String getDescription(Locale locale) {
         return "DRL JPEG decoder";
     }
 
-    public void onRegistration(ServiceRegistry registry, Class category) {
+    @Override
+    public void onRegistration(ServiceRegistry registry, Class<?> category) {
         // super.onRegistration(registry, category);
     }
 }

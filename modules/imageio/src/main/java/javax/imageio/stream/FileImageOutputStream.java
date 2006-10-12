@@ -39,6 +39,7 @@ public class FileImageOutputStream extends ImageOutputStreamImpl {
         file = raf;
     }
 
+    @Override
     public void write(int b) throws IOException {
         checkClosed();
         // according to the spec for ImageOutputStreamImpl#flushBits()
@@ -47,6 +48,7 @@ public class FileImageOutputStream extends ImageOutputStreamImpl {
         streamPos++;
     }
 
+    @Override
     public void write(byte[] b, int off, int len) throws IOException {
         checkClosed();
         // according to the spec for ImageOutputStreamImpl#flushBits()
@@ -55,6 +57,7 @@ public class FileImageOutputStream extends ImageOutputStreamImpl {
         streamPos += len;
     }
 
+    @Override
     public int read() throws IOException {
         checkClosed();
         int rt = file.read();
@@ -64,6 +67,7 @@ public class FileImageOutputStream extends ImageOutputStreamImpl {
         return rt;
     }
 
+    @Override
     public int read(byte[] b, int off, int len) throws IOException {
         checkClosed();
         int rt = file.read(b, off, len);
@@ -73,6 +77,7 @@ public class FileImageOutputStream extends ImageOutputStreamImpl {
         return rt;
     }
 
+    @Override
     public long length() {
         try {
             checkClosed();
@@ -82,6 +87,7 @@ public class FileImageOutputStream extends ImageOutputStreamImpl {
         }
     }
 
+    @Override
     public void seek(long pos) throws IOException {
         //-- checkClosed() is performed in super.seek()
         super.seek(pos);
@@ -89,6 +95,7 @@ public class FileImageOutputStream extends ImageOutputStreamImpl {
         streamPos = file.getFilePointer();
     }
 
+    @Override
     public void close() throws IOException {
         super.close();
         file.close();

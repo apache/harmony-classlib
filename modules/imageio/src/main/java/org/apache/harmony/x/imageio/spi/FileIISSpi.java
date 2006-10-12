@@ -28,22 +28,24 @@ import java.io.IOException;
 import java.util.Locale;
 
 public class FileIISSpi extends ImageInputStreamSpi {
-
     private static final String vendor = "Apache";
+
     private static final String ver = "0.1";
-    private static final Class clazz = File.class;
 
     public FileIISSpi() {
-        super(vendor, ver, clazz);
+        super(vendor, ver, File.class);
     }
 
-    public ImageInputStream createInputStreamInstance(Object input, boolean useCache, File cacheDir) throws IOException {
-        if (clazz.isInstance(input)) {
+    @Override
+    public ImageInputStream createInputStreamInstance(Object input, boolean useCache,
+            File cacheDir) throws IOException {
+        if (File.class.isInstance(input)) {
             return new FileImageOutputStream((File) input);
         }
-        throw new IllegalArgumentException("input is not an instance of " + clazz);
+        throw new IllegalArgumentException("input is not an instance of java.io.File");
     }
 
+    @Override
     public String getDescription(Locale locale) {
         return "File IIS Spi";
     }

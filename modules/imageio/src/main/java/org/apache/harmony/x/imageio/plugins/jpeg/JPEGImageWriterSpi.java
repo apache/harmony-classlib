@@ -39,14 +39,17 @@ public class JPEGImageWriterSpi extends ImageWriterSpi {
                 JPEGSpiConsts.extraImageMetadataFormatNames, JPEGSpiConsts.extraImageMetadataFormatClassNames);
     }
 
+    @Override
     public boolean canEncodeImage(ImageTypeSpecifier imageTypeSpecifier) {
         return true;
     }
 
+    @Override
     public ImageWriter createWriterInstance(Object o) throws IOException {
         return new JPEGImageWriter(this);
     }
 
+    @Override
     public String getDescription(Locale locale) {
         return "DRL JPEG Encoder";
     }

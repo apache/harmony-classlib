@@ -20,10 +20,9 @@
  */
 package javax.imageio.stream;
 
-import java.nio.ByteOrder;
-import java.io.IOException;
 import java.io.EOFException;
-import java.util.Stack;
+import java.io.IOException;
+import java.nio.ByteOrder;
 
 public abstract class ImageInputStreamImpl implements ImageInputStream {
 
@@ -35,7 +34,7 @@ public abstract class ImageInputStreamImpl implements ImageInputStream {
 
     private boolean closed = false;
 
-    private PositionStack posStack = new PositionStack();
+    private final PositionStack posStack = new PositionStack();
 
     public ImageInputStreamImpl() {}
 
@@ -300,11 +299,14 @@ public abstract class ImageInputStreamImpl implements ImageInputStream {
 
     }
 
+    @Override
     protected void finalize() throws Throwable {
-        if (!closed) try {
-            close();
-        } finally {
-            super.finalize();
+        if (!closed) {
+            try {
+                close();
+            } finally {
+                super.finalize();
+            }
         }
     }
 

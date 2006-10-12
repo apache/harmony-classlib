@@ -42,11 +42,11 @@ public abstract class IIOServiceProvider implements RegisterableService {
         throw new UnsupportedOperationException("Not supported yet");
     }
 
-    public void onRegistration(ServiceRegistry registry, Class category) {
+    public void onRegistration(ServiceRegistry registry, Class<?> category) {
         // the default impl. does nothing
     }
 
-    public void onDeregistration(ServiceRegistry registry, Class category) {
+    public void onDeregistration(ServiceRegistry registry, Class<?> category) {
         throw new UnsupportedOperationException("Not supported yet");
     }
 

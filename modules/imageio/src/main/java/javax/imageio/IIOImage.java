@@ -30,11 +30,10 @@ public class IIOImage {
 
     protected RenderedImage image;
     protected Raster raster;
-    protected List thumbnails;
+    protected List<? extends BufferedImage> thumbnails;
     protected IIOMetadata metadata;
 
-
-    public IIOImage(RenderedImage image, List thumbnails, IIOMetadata metadata) {
+    public IIOImage(RenderedImage image, List<? extends BufferedImage> thumbnails, IIOMetadata metadata) {
         if (image == null) {
             throw new IllegalArgumentException("image should not be NULL");
         }
@@ -44,7 +43,7 @@ public class IIOImage {
         this.metadata = metadata;
     }
 
-    public IIOImage(Raster raster, List thumbnails, IIOMetadata metadata) {
+    public IIOImage(Raster raster, List<? extends BufferedImage> thumbnails, IIOMetadata metadata) {
         if (raster == null) {
             throw new IllegalArgumentException("raster should not be NULL");
         }
@@ -88,16 +87,16 @@ public class IIOImage {
 
     public BufferedImage getThumbnail(int index) {
         if (thumbnails != null) {
-            return (BufferedImage) thumbnails.get(index);
+            return thumbnails.get(index);
         }
         throw new IndexOutOfBoundsException("no thumbnails were set");
     }
 
-    public List getThumbnails() {
+    public List<? extends BufferedImage> getThumbnails() {
         return thumbnails;
     }
 
-    public void setThumbnails(List thumbnails) {
+    public void setThumbnails(List<? extends BufferedImage> thumbnails) {
         this.thumbnails = thumbnails;
     }
 

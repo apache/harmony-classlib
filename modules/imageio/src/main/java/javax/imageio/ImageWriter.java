@@ -20,15 +20,14 @@
  */
 package javax.imageio;
 
-import javax.imageio.metadata.IIOMetadata;
-import javax.imageio.spi.ImageWriterSpi;
+import java.awt.image.RenderedImage;
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 import javax.imageio.event.IIOWriteProgressListener;
 import javax.imageio.event.IIOWriteWarningListener;
-import java.io.IOException;
-import java.awt.image.RenderedImage;
-import java.util.Locale;
-import java.util.List;
-import java.util.Iterator;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.spi.ImageWriterSpi;
 
 /**
  * TODO: Implement the rest of methods
@@ -39,9 +38,9 @@ public abstract class ImageWriter implements ImageTranscoder {
     protected Locale locale;
     protected ImageWriterSpi originatingProvider;
     protected Object output;
-    protected List progressListeners;
-    protected List warningListeners;
-    protected List warningLocales;
+    protected List<IIOWriteProgressListener> progressListeners;
+    protected List<IIOWriteWarningListener> warningListeners;
+    protected List<Locale> warningLocales;
 
 
     protected ImageWriter(ImageWriterSpi originatingProvider) {
@@ -61,8 +60,7 @@ public abstract class ImageWriter implements ImageTranscoder {
 
     protected void processImageStarted(int imageIndex) {
         if (null != progressListeners) {
-            for (Iterator iterator = progressListeners.iterator(); iterator.hasNext();) {
-                IIOWriteProgressListener listener = (IIOWriteProgressListener) iterator.next();
+            for (IIOWriteProgressListener listener : progressListeners) {
                 listener.imageStarted(this, imageIndex);
             }
         }
@@ -70,8 +68,7 @@ public abstract class ImageWriter implements ImageTranscoder {
 
     protected void processImageProgress(float percentageDone) {
         if (null != progressListeners) {
-            for (Iterator iterator = progressListeners.iterator(); iterator.hasNext();) {
-                IIOWriteProgressListener listener = (IIOWriteProgressListener) iterator.next();
+            for (IIOWriteProgressListener listener : progressListeners) {
                 listener.imageProgress(this, percentageDone);
             }
         }
@@ -79,8 +76,7 @@ public abstract class ImageWriter implements ImageTranscoder {
 
     protected void processImageComplete() {
         if (null != progressListeners) {
-            for (Iterator iterator = progressListeners.iterator(); iterator.hasNext();) {
-                IIOWriteProgressListener listener = (IIOWriteProgressListener) iterator.next();
+            for (IIOWriteProgressListener listener : progressListeners) {
                 listener.imageComplete(this);
             }
         }
@@ -91,8 +87,7 @@ public abstract class ImageWriter implements ImageTranscoder {
             throw new NullPointerException("warning message should not be NULL");
         }
         if (null != warningListeners) {
-            for (Iterator iterator = warningListeners.iterator(); iterator.hasNext();) {
-                IIOWriteWarningListener listener = (IIOWriteWarningListener) iterator.next();
+            for (IIOWriteWarningListener listener : warningListeners) {
                 listener.warningOccurred(this, imageIndex, warning);
             }
         }
@@ -108,8 +103,8 @@ public abstract class ImageWriter implements ImageTranscoder {
             if (null != spi) {
                 Class[] outTypes = spi.getOutputTypes();
                 boolean supported = false;
-                for(int i = 0; i < outTypes.length; i++) {
-                    if (outTypes[i].isInstance(output)) {
+                for (Class<?> element : outTypes) {
+                    if (element.isInstance(output)) {
                         supported = true;
                         break;
                     }

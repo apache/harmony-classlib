@@ -52,13 +52,13 @@ public abstract class ImageReader {
 
     protected Locale locale;
 
-    protected List warningListeners;
+    protected List<IIOReadWarningListener> warningListeners;
 
-    protected List warningLocales;
+    protected List<Locale> warningLocales;
 
-    protected List progressListeners;
+    protected List<IIOReadProgressListener> progressListeners;
 
-    protected List updateListeners;
+    protected List<IIOReadUpdateListener> updateListeners;
 
     protected ImageReader(ImageReaderSpi originatingProvider) {
         this.originatingProvider = originatingProvider;
@@ -88,8 +88,8 @@ public abstract class ImageReader {
         ImageReaderSpi spi = getOriginatingProvider();
         if (null != spi) {
             Class[] outTypes = spi.getInputTypes();
-            for(int i = 0; i < outTypes.length; i++) {
-                if (outTypes[i].isInstance(input)) {
+            for (Class<?> element : outTypes) {
+                if (element.isInstance(input)) {
                     return true;
                 }
             }
@@ -151,7 +151,7 @@ public abstract class ImageReader {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public abstract Iterator getImageTypes(int imageIndex) throws IOException;
+    public abstract Iterator<ImageTypeSpecifier> getImageTypes(int imageIndex) throws IOException;
 
     public ImageReadParam getDefaultReadParam() {
         throw new UnsupportedOperationException("Not implemented yet");
@@ -159,7 +159,7 @@ public abstract class ImageReader {
 
     public abstract IIOMetadata getStreamMetadata() throws IOException;
 
-    public IIOMetadata getStreamMetadata(String formatName, Set nodeNames)
+    public IIOMetadata getStreamMetadata(String formatName, Set<String> nodeNames)
             throws IOException {
         throw new UnsupportedOperationException("Not implemented yet");
     }
@@ -167,7 +167,7 @@ public abstract class ImageReader {
     public abstract IIOMetadata getImageMetadata(int imageIndex) throws IOException;
 
     public IIOMetadata getImageMetadata(int imageIndex, String formatName,
-                                        Set nodeNames) throws IOException {
+                                        Set<String> nodeNames) throws IOException {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -181,7 +181,7 @@ public abstract class ImageReader {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public Iterator readAll(Iterator params) throws IOException {
+    public Iterator<IIOImage> readAll(Iterator<? extends ImageReadParam> params) throws IOException {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -428,7 +428,7 @@ public abstract class ImageReader {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    protected static BufferedImage getDestination(ImageReadParam param, Iterator imageTypes,
+    protected static BufferedImage getDestination(ImageReadParam param, Iterator<ImageTypeSpecifier> imageTypes,
                                               int width,
                                               int height)
                                        throws IIOException {

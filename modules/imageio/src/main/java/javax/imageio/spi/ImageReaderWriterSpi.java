@@ -61,7 +61,7 @@ public abstract class ImageReaderWriterSpi extends IIOServiceProvider
         }
 
         if (pluginClassName == null) {
-            throw new NullPointerException("Plugin class name cannot bu NULL");
+            throw new NullPointerException("Plugin class name cannot be NULL");
         }
 
 

@@ -63,6 +63,7 @@ public class JPEGImageWriter extends ImageWriter {
         initWriterIds(ImageOutputStream.class);
     }
 
+    @Override
     public void write(IIOMetadata iioMetadata, IIOImage iioImage, ImageWriteParam param)
             throws IOException {
 
@@ -153,6 +154,7 @@ public class JPEGImageWriter extends ImageWriter {
                 null, cinfo);
     }
 
+    @Override
     public void dispose() {
         super.dispose();
         if (cinfo != 0) {
@@ -171,14 +173,17 @@ public class JPEGImageWriter extends ImageWriter {
         throw new UnsupportedOperationException("not supported yet");
     }
 
+    @Override
     public IIOMetadata convertStreamMetadata(IIOMetadata iioMetadata, ImageWriteParam imageWriteParam) {
         throw new UnsupportedOperationException("not supported yet");
     }
 
+    @Override
     public IIOMetadata convertImageMetadata(IIOMetadata iioMetadata, ImageTypeSpecifier imageTypeSpecifier, ImageWriteParam imageWriteParam) {
         throw new UnsupportedOperationException("not supported yet");
     }
 
+    @Override
     public void setOutput(Object output) {
         super.setOutput(output);
         ios = (ImageOutputStream) output;
@@ -202,7 +207,7 @@ public class JPEGImageWriter extends ImageWriter {
      * Inits methods Ids for native to java callbacks
      * @param iosClass
      */
-    private native static void initWriterIds(Class iosClass);
+    private native static void initWriterIds(Class<ImageOutputStream> iosClass);
 
     /**
      * Inits compression objects
@@ -241,6 +246,7 @@ public class JPEGImageWriter extends ImageWriter {
      * Callback for getting a next scanline
      * @param scanline scan line number
      */
+    @SuppressWarnings("unused")
     private void getScanLine(int scanline) {
         //-- TODO: processImageProgress in ImageWriter
         Raster child = sourceRaster.createChild(srcXOff,

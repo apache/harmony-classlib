@@ -70,10 +70,10 @@ public final class ImageIO {
             throw new IllegalArgumentException("input source cannot be NULL");
         }
 
-        Iterator it = registry.getServiceProviders(ImageInputStreamSpi.class, true);
+        Iterator<ImageInputStreamSpi> it = registry.getServiceProviders(ImageInputStreamSpi.class, true);
 
         while (it.hasNext()) {
-            ImageInputStreamSpi spi = (ImageInputStreamSpi) it.next();
+            ImageInputStreamSpi spi = it.next();
             if (spi.getInputClass().isInstance(input)) {
                 return spi.createInputStreamInstance(input);
             }
@@ -87,10 +87,10 @@ public final class ImageIO {
             throw new IllegalArgumentException("output destination cannot be NULL");
         }
 
-        Iterator it = registry.getServiceProviders(ImageOutputStreamSpi.class, true);
+        Iterator<ImageOutputStreamSpi> it = registry.getServiceProviders(ImageOutputStreamSpi.class, true);
 
         while (it.hasNext()) {
-            ImageOutputStreamSpi spi = (ImageOutputStreamSpi) it.next();
+            ImageOutputStreamSpi spi = it.next();
             if (spi.getOutputClass().isInstance(output)) {
                 return spi.createOutputStreamInstance(output);
             }
@@ -106,39 +106,39 @@ public final class ImageIO {
         throw new UnsupportedOperationException("Not supported yet");
     }
 
-    public static Iterator getImageReaders(Object input) {
+    public static Iterator<ImageReader> getImageReaders(Object input) {
         if (input == null) {
             throw new NullPointerException("input cannot be NULL");
         }
 
-        Iterator it = registry.getServiceProviders(ImageReaderSpi.class,
+        Iterator<ImageReaderSpi> it = registry.getServiceProviders(ImageReaderSpi.class,
                 new CanReadFilter(input), true);
 
         return new SpiIteratorToReadersIteratorWrapper(it);
     }
 
-    public static Iterator getImageReadersByFormatName(String formatName) {
+    public static Iterator<ImageReader> getImageReadersByFormatName(String formatName) {
         if (formatName == null) {
             throw new NullPointerException("format name cannot be NULL");
         }
 
-        Iterator it = registry.getServiceProviders(ImageReaderSpi.class,
+        Iterator<ImageReaderSpi> it = registry.getServiceProviders(ImageReaderSpi.class,
                 new FormatFilter(formatName), true);
 
         return new SpiIteratorToReadersIteratorWrapper(it);
     }
 
-    public static Iterator getImageReadersBySuffix(String fileSuffix) {
+    public static Iterator<ImageReader> getImageReadersBySuffix(String fileSuffix) {
         if (fileSuffix == null) {
             throw new NullPointerException("suffix cannot be NULL");
         }
-        Iterator it = registry.getServiceProviders(ImageReaderSpi.class,
+        Iterator<ImageReaderSpi> it = registry.getServiceProviders(ImageReaderSpi.class,
                 new SuffixFilter(fileSuffix), true);
 
         return new SpiIteratorToReadersIteratorWrapper(it);
     }
 
-    public static Iterator getImageReadersByMIMEType(String MIMEType) {
+    public static Iterator<ImageReader> getImageReadersByMIMEType(String MIMEType) {
         throw new UnsupportedOperationException("Not supported yet");
     }
 
@@ -150,27 +150,27 @@ public final class ImageIO {
         throw new UnsupportedOperationException("Not supported yet");
     }
 
-    public static Iterator getImageWritersByFormatName(String formatName) {
+    public static Iterator<ImageWriter> getImageWritersByFormatName(String formatName) {
         if (formatName == null) {
             throw new NullPointerException("format name cannot be NULL");
         }
 
-        Iterator it = registry.getServiceProviders(ImageWriterSpi.class,
+        Iterator<ImageWriterSpi> it = registry.getServiceProviders(ImageWriterSpi.class,
                 new FormatFilter(formatName), true);
 
         return new SpiIteratorToWritersIteratorWrapper(it);
     }
 
-    public static Iterator getImageWritersBySuffix(String fileSuffix) {
+    public static Iterator<ImageWriter> getImageWritersBySuffix(String fileSuffix) {
         if (fileSuffix == null) {
             throw new NullPointerException("suffix cannot be NULL");
         }
-        Iterator it = registry.getServiceProviders(ImageWriterSpi.class,
+        Iterator<ImageWriterSpi> it = registry.getServiceProviders(ImageWriterSpi.class,
                 new SuffixFilter(fileSuffix), true);
         return new SpiIteratorToWritersIteratorWrapper(it);
     }
 
-    public static Iterator getImageWritersByMIMEType(String MIMEType) {
+    public static Iterator<ImageWriter> getImageWritersByMIMEType(String MIMEType) {
         throw new UnsupportedOperationException("Not supported yet");
     }
 
@@ -182,7 +182,7 @@ public final class ImageIO {
         throw new UnsupportedOperationException("Not supported yet");
     }
 
-    public static Iterator getImageWriters(ImageTypeSpecifier type,
+    public static Iterator<ImageWriter> getImageWriters(ImageTypeSpecifier type,
                                            String formatName) {
         if (type == null) {
             throw new NullPointerException("type cannot be NULL");
@@ -192,13 +192,13 @@ public final class ImageIO {
             throw new NullPointerException("format name cannot be NULL");
         }
 
-        Iterator it = registry.getServiceProviders(ImageWriterSpi.class,
+        Iterator<ImageWriterSpi> it = registry.getServiceProviders(ImageWriterSpi.class,
                 new FormatAndEncodeFilter(type, formatName), true);
 
         return new SpiIteratorToWritersIteratorWrapper(it);
     }
 
-    public static Iterator getImageTranscoders(ImageReader reader,
+    public static Iterator<ImageTranscoder> getImageTranscoders(ImageReader reader,
                                                ImageWriter writer) {
         throw new UnsupportedOperationException("Not supported yet");
     }
@@ -238,9 +238,9 @@ public final class ImageIO {
             throw new IllegalArgumentException("output cannot be NULL");
         }
 
-        Iterator it = getImageWriters(ImageTypeSpecifier.createFromRenderedImage(im), formatName);
+        Iterator<ImageWriter> it = getImageWriters(ImageTypeSpecifier.createFromRenderedImage(im), formatName);
         if (it.hasNext()) {
-            ImageWriter writer = (ImageWriter) it.next();
+            ImageWriter writer = it.next();
             writer.setOutput(output);
             writer.write(im);
             output.flush();
@@ -313,6 +313,7 @@ public final class ImageIO {
             this.type = type;
         }
 
+        @Override
         public boolean filter(Object provider) {
             ImageWriterSpi spi = (ImageWriterSpi) provider;
             return super.filter(provider) && spi.canEncodeImage(type);
@@ -358,17 +359,17 @@ public final class ImageIO {
     /**
      * Wraps Spi's iterator to ImageWriter iterator
      */
-    static class SpiIteratorToWritersIteratorWrapper implements Iterator {
+    static class SpiIteratorToWritersIteratorWrapper implements Iterator<ImageWriter> {
 
-        private Iterator backend;
+        private Iterator<ImageWriterSpi> backend;
 
-        public SpiIteratorToWritersIteratorWrapper(Iterator backend) {
+        public SpiIteratorToWritersIteratorWrapper(Iterator<ImageWriterSpi> backend) {
             this.backend = backend;
         }
 
-        public Object next() {
+        public ImageWriter next() {
             try {
-                return ((ImageWriterSpi) backend.next()).createWriterInstance();
+                return backend.next().createWriterInstance();
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
@@ -387,16 +388,16 @@ public final class ImageIO {
     /**
      * Wraps spi's iterator to ImageReader iterator
      */
-    static class SpiIteratorToReadersIteratorWrapper implements Iterator {
-        private Iterator backend;
+    static class SpiIteratorToReadersIteratorWrapper implements Iterator<ImageReader> {
+        private Iterator<ImageReaderSpi> backend;
 
-        public SpiIteratorToReadersIteratorWrapper(Iterator backend) {
+        public SpiIteratorToReadersIteratorWrapper(Iterator<ImageReaderSpi> backend) {
             this.backend = backend;
         }
 
-        public Object next() {
+        public ImageReader next() {
             try {
-                return ((ImageReaderSpi) backend.next()).createReaderInstance();
+                return backend.next().createReaderInstance();
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;

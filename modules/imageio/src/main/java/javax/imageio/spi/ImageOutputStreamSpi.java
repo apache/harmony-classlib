@@ -21,25 +21,23 @@
 package javax.imageio.spi;
 
 import javax.imageio.stream.ImageOutputStream;
-import java.util.Locale;
 import java.io.IOException;
 import java.io.File;
 
-public abstract class ImageOutputStreamSpi extends IIOServiceProvider
-        implements RegisterableService {
-
-    protected Class outputClass;
+public abstract class ImageOutputStreamSpi extends IIOServiceProvider implements
+        RegisterableService {
+    protected Class<?> outputClass;
 
     protected ImageOutputStreamSpi() {
         throw new UnsupportedOperationException("Not supported yet");
     }
 
-    public ImageOutputStreamSpi(String vendorName, String version, Class outputClass) {
+    public ImageOutputStreamSpi(String vendorName, String version, Class<?> outputClass) {
         super(vendorName, version);
         this.outputClass = outputClass;
     }
 
-    public Class getOutputClass() {
+    public Class<?> getOutputClass() {
         return outputClass;
     }
 
@@ -51,11 +49,10 @@ public abstract class ImageOutputStreamSpi extends IIOServiceProvider
         return false; // def
     }
 
-    public ImageOutputStream createOutputStreamInstance(Object output)
-                                             throws IOException {
+    public ImageOutputStream createOutputStreamInstance(Object output) throws IOException {
         return createOutputStreamInstance(output, true, null);
     }
 
     public abstract ImageOutputStream createOutputStreamInstance(Object output,
-                    boolean useCache, File cacheDir) throws IOException;
+            boolean useCache, File cacheDir) throws IOException;
 }

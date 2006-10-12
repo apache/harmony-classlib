@@ -75,6 +75,7 @@ public class ImageReadParam extends IIOParam {
         this.destinationBands = destinationBands;
     }
 
+    @Override
     public void setDestinationType(ImageTypeSpecifier destinationType) {
         this.destinationType = destinationType;
     }

@@ -29,25 +29,24 @@ import java.io.RandomAccessFile;
 import java.util.Locale;
 
 public class RAFIOSSpi extends ImageOutputStreamSpi {
-
     private static final String vendor = "Apache";
-    private static final String ver = "0.1";
-    private static final Class clazz = RandomAccessFile.class;
 
+    private static final String ver = "0.1";
 
     public RAFIOSSpi() {
-        super(vendor, ver, clazz);
+        super(vendor, ver, RandomAccessFile.class);
     }
 
-    public ImageOutputStream createOutputStreamInstance(Object output,
-                                                        boolean useCache,
-                                                        File cacheDir) throws IOException {
+    @Override
+    public ImageOutputStream createOutputStreamInstance(Object output, boolean useCache,
+            File cacheDir) throws IOException {
         if (output instanceof RandomAccessFile) {
-            return new FileImageOutputStream((RandomAccessFile)output);
+            return new FileImageOutputStream((RandomAccessFile) output);
         }
-        throw new IllegalArgumentException("output is not instance of File");
+        throw new IllegalArgumentException("output is not instance of java.io.RandomAccessFile");
     }
 
+    @Override
     public String getDescription(Locale locale) {
         return "RandomAccessFile IOS Spi";
     }

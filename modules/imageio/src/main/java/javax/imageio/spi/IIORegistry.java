@@ -20,16 +20,13 @@
  */
 package javax.imageio.spi;
 
-import org.apache.harmony.x.imageio.plugins.jpeg.JPEGImageWriterSpi;
-import org.apache.harmony.x.imageio.plugins.jpeg.JPEGImageReaderSpi;
-import org.apache.harmony.x.imageio.spi.FileIOSSpi;
-import org.apache.harmony.x.imageio.spi.RAFIOSSpi;
-import org.apache.harmony.x.imageio.spi.FileIISSpi;
-import org.apache.harmony.x.imageio.spi.RAFIISSpi;
-
 import java.util.Arrays;
-
-import org.apache.harmony.awt.datatransfer.*;
+import org.apache.harmony.x.imageio.plugins.jpeg.JPEGImageReaderSpi;
+import org.apache.harmony.x.imageio.plugins.jpeg.JPEGImageWriterSpi;
+import org.apache.harmony.x.imageio.spi.FileIISSpi;
+import org.apache.harmony.x.imageio.spi.FileIOSSpi;
+import org.apache.harmony.x.imageio.spi.RAFIISSpi;
+import org.apache.harmony.x.imageio.spi.RAFIOSSpi;
 
 /**
  * @author Rustem V. Rafikov
@@ -37,7 +34,7 @@ import org.apache.harmony.awt.datatransfer.*;
  */
 public final class IIORegistry extends ServiceRegistry {
 
-    private static volatile IIORegistry instance;
+    private static IIORegistry instance;
 
     private static final Class[] CATEGORIES = new Class[] {
         javax.imageio.spi.ImageWriterSpi.class,
@@ -48,7 +45,7 @@ public final class IIORegistry extends ServiceRegistry {
     };
 
     private IIORegistry() {
-        super(Arrays.asList(CATEGORIES).iterator());
+        super(Arrays.<Class<?>>asList(CATEGORIES).iterator());
         registerBuiltinSpis();
         registerApplicationClasspathSpis();
     }
@@ -65,14 +62,12 @@ public final class IIORegistry extends ServiceRegistry {
 
     public static IIORegistry getDefaultInstance() {
         // TODO implement own instance for each ThreadGroup (see also ThreadLocal)
-        if (instance == null) {
-            synchronized(IIORegistry.class) {
-                if (instance == null) {
-                    instance = new IIORegistry();
-                }
+        synchronized (IIORegistry.class) {
+            if (instance == null) {
+                instance = new IIORegistry();
             }
+            return instance;
         }
-        return instance;
     }
 
     public void registerApplicationClasspathSpis() {
