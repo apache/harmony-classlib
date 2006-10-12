@@ -49,6 +49,10 @@ public final class CryptoProvider extends Provider {
 
         final String SIGN_ALIAS = "SHA1withDSA"; //$NON-NLS-1$
 
+
+        final String KEYF_NAME = 
+                 "org.apache.harmony.security.provider.crypto.DSAKeyFactoryImpl"; //$NON-NLS-1$
+
         AccessController.doPrivileged(new java.security.PrivilegedAction() {
 
             public Object run() {
@@ -77,6 +81,11 @@ public final class CryptoProvider extends Provider {
                 put("Alg.Alias.Signature.1.2.840.10040.4.3", SIGN_ALIAS); //$NON-NLS-1$
                 put("Alg.Alias.Signature.1.3.14.3.2.13", SIGN_ALIAS); //$NON-NLS-1$
                 put("Alg.Alias.Signature.1.3.14.3.2.27", SIGN_ALIAS); //$NON-NLS-1$
+
+//                put("KeyFactory.DSA", KEYF_NAME); //$NON-NLS-1$
+//                put("KeyFactory.DSA ImplementedIn", "Software"); //$NON-NLS-1$ //$NON-NLS-2$
+//                put("Alg.Alias.KeyFactory.1.3.14.3.2.12", "DSA"); //$NON-NLS-1$ //$NON-NLS-2$
+//                put("Alg.Alias.KeyFactory.1.2.840.10040.4.1", "DSA"); //$NON-NLS-1$ //$NON-NLS-2$
 
                 return null;
             }
