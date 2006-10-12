@@ -34,6 +34,8 @@ import junit.framework.TestCase;
 import org.apache.harmony.security.tests.support.SpiEngUtils;
 import org.apache.harmony.security.tests.support.TestUtils;
 
+import tests.support.resource.Support_Resources;
+
 
 /**
  * Tests for <code>Provider</code> constructor and methods
@@ -54,20 +56,10 @@ public class ProviderTest extends TestCase {
     /*
      * Class under test for void load(InputStream)
      */
-    public final void testLoadInputStream() {
-        FileInputStream fis = null;
-        String fileName = SpiEngUtils.getFileName(TestUtils.TEST_ROOT,
-                "java/security/Provider.prop.dat");
-        try {
-            fis = new FileInputStream(fileName);
-        } catch (FileNotFoundException e) {
-            fail(e.toString());
-        }
-        try {
-            p.load(fis);    
-        } catch (IOException e) {
-            fail(e.toString());
-        }
+    public final void testLoadInputStream() throws IOException {
+
+        p.load(Support_Resources
+                .getResourceStream("java/security/Provider.prop.dat"));    
 
         if (!"value 1".equals(p.getProperty("Property 1").trim()) ||
                 !"className".equals(p.getProperty("serviceName.algName").trim()) ||    
