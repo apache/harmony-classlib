@@ -53,7 +53,7 @@ import junit.framework.TestCase;
 /**
  * Unit tests for LoginContext
  */
-public class LoginContextTest_1 extends TestCase {
+public class LoginContext1Test extends TestCase {
 
     private static final String CONFIG_NAME = "testConfiguration";
 
@@ -68,7 +68,7 @@ public class LoginContextTest_1 extends TestCase {
     private static final int SUFFICIENT = 3;
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(LoginContextTest_1.class);
+        junit.textui.TestRunner.run(LoginContext1Test.class);
     }
 
     /**
@@ -80,7 +80,7 @@ public class LoginContextTest_1 extends TestCase {
      * @return fully qualified name
      */
     private static String getGlobalClassName(String shortName) {
-        return LoginContextTest_1.class.getName() + "$" + shortName;
+        return LoginContext1Test.class.getName() + "$" + shortName;
     }
 
     /**
