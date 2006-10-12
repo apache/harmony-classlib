@@ -22,18 +22,12 @@
 
 package org.apache.harmony.security.tests.support;
 
-import java.io.File;
 import java.util.Properties;
 
 /**
  * Test utility class
- * 
  */
 public class TestUtils {
-    /**
-     * Relative (to the project home) test root path
-     */
-    public static final String TEST_ROOT = System.getProperty("RESOURCE_DIR", "test/common/unit")+ File.separator;
 
     /**
      * No need to instantiate

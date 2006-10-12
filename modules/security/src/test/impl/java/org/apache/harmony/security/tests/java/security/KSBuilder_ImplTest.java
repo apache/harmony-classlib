@@ -40,19 +40,16 @@ import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Enumeration;
 
+import junit.framework.TestCase;
+
 import org.apache.harmony.security.tests.support.KeyStoreTestSupport;
 import org.apache.harmony.security.tests.support.SpiEngUtils;
 import org.apache.harmony.security.tests.support.TestKeyPair;
-import org.apache.harmony.security.tests.support.TestUtils;
 import org.apache.harmony.security.tests.support.tmpCallbackHandler;
-
-import junit.framework.TestCase;
 
 /**
  * Tests for <code>KeyStore.Builder</code> class
- * 
  */
-
 public class KSBuilder_ImplTest extends TestCase {
 
     private static char[] pass =  {'s','t','o','r','e','p','w','d'};
@@ -69,65 +66,32 @@ public class KSBuilder_ImplTest extends TestCase {
 
     private static Provider defaultProvider = null;
     
-    private static String fileEmpty = "java/security/KSEmpty.dat";
-    private static String fileName = "java/security/KStmp.dat";
-    private static String dirName = "java/security";
-    
     static {
         defaultProvider = SpiEngUtils.isSupport(
                 KeyStoreTestSupport.defaultType, KeyStoreTestSupport.srvKeyStore);
         JKSSupported = (defaultProvider != null);
-        fileEmpty = SpiEngUtils.getFileName(TestUtils.TEST_ROOT,
-                fileEmpty);
-        fileName = SpiEngUtils.getFileName(TestUtils.TEST_ROOT,
-                fileName);
-        dirName = SpiEngUtils.getFileName(TestUtils.TEST_ROOT, dirName);        
     }
 
-    private boolean isCreateKS;
-    // Creates empty KeyStoreand loads it to file    
-    private void createKS()throws Exception {
-        isCreateKS = false;
+    // Creates empty KeyStore and loads it to file    
+    private File createKS() throws Exception {
         FileOutputStream fos = null;
+        File ff = File.createTempFile("KSBuilder_ImplTest", "keystore");
+        ff.deleteOnExit();
         try {
-            File ff = new File(fileName);
-            if (ff.exists()) {
-                ff.delete();
-                if (!ff.createNewFile()) {
-                    isCreateKS = false;
-                    return;
-                }                
-            }            
+
             KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
             fos = new FileOutputStream(ff);
             ks.load(null, null);
             ks.store(fos, pass);
-            isCreateKS = true;
         } finally {
             if (fos != null) {
                 try {
                     fos.close();
                 } catch (IOException e) {
-                    isCreateKS = false;
                 }
             }
         }
-    }
-
-    private void deleteKS() {
-        File ff = new File(fileName);
-        if (ff.exists()) {
-            ff.delete();
-            isCreateKS = false;
-        }            
-    }
-    
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        deleteKS();
+        return ff;
     }
 
     /*
@@ -273,8 +237,8 @@ public class KSBuilder_ImplTest extends TestCase {
             fail(defaultType + " type is not supported");
             return;
         }
-        File fl = new File(fileEmpty);
-        assertTrue("There is no file: ".concat(fileEmpty), fl.exists());
+        File fl = File.createTempFile("KSBuilder_ImplTest", "keystore");
+        fl.deleteOnExit();
         KeyStore.Builder ksB;
         KeyStore.Builder ksB1;
         KeyStore ks = null;
@@ -308,13 +272,15 @@ public class KSBuilder_ImplTest extends TestCase {
         }
         try {
             KeyStore.Builder.newInstance(defaultType, defaultProvider,
-                    new File(fileName.concat("zzz")), protPass);
+                    new File(fl.getAbsolutePath().concat("should_absent")),
+                    protPass);
             fail("IllegalArgumentException must be thrown when file does not exist");
         } catch (IllegalArgumentException e) {
         }
         try {
+            // 'file' param points to directory
             KeyStore.Builder.newInstance(defaultType, defaultProvider,
-                    new File(dirName), protPass);
+                    fl.getParentFile(), protPass);
             fail("IllegalArgumentException must be thrown when file does not exist");
         } catch (IllegalArgumentException e) {
         }
@@ -325,9 +291,8 @@ public class KSBuilder_ImplTest extends TestCase {
             fail("KeyStoreException must be throw because file is empty");
         } catch (KeyStoreException e) {
         }
-        createKS();
-        assertTrue("Not create KS", isCreateKS);
-        fl = new File(fileName);
+
+        fl = createKS();
         KeyStore.ProtectionParameter [] pp = { myPP, protPass, callbackHand };
         for (int i = 0; i < pp.length; i++) {
             if (i == 0) {

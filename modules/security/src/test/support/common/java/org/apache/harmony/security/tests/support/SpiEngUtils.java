@@ -59,20 +59,6 @@ public class SpiEngUtils {
         }
     }
 
-    public static String getFileName(String dir, String name) {
-        String res = dir;
-        if (res.charAt(res.length() - 1) == '/') {
-            res = res.substring(0, res.length() - 1);
-        }
-        char[] mm = { File.separatorChar };
-        String sp = String.copyValueOf(mm);
-        StringTokenizer st = new StringTokenizer(name, "/");
-        while (st.hasMoreElements()) {
-            res = res.concat(sp).concat((String) st.nextElement());
-        }
-        return res;
-    }
-
     public class MyProvider extends Provider {
 
         public MyProvider(String name, String info, String key, String clName) {
