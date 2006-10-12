@@ -739,9 +739,16 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
      * @see #read(byte[], int, int)
      */
     public void write(byte[] buffer, int offset, int count) throws IOException {
-    	if (count > buffer.length - offset || count < 0 || offset < 0) {
+    	if (null == buffer) {
+    		throw new NullPointerException();
+    	}
+        if (count < 0 || offset < 0 || count > buffer.length - offset) {
             throw new IndexOutOfBoundsException();
         }
+        if (0 == count){
+        	return;
+        }
+        openCheck();
         synchronized (repositionLock) {
             fileSystem.write(fd.descriptor, buffer, offset, count);
         }
