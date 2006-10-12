@@ -253,7 +253,7 @@ public abstract class Identity implements Principal, Serializable {
         if (sm != null) {
             sm.checkSecurityAccess("printIdentity"); //$NON-NLS-1$
         }
-        String s = this.name;
+        String s = (this.name == null? "" : this.name);
         if (scope != null) {
             s += " [" + scope.getName() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
         }

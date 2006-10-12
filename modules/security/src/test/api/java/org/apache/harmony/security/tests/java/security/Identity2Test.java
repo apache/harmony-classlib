@@ -288,6 +288,8 @@ public class Identity2Test extends junit.framework.TestCase {
        		assertNotNull(sub.toString());
        		assertTrue("The String returned is not valid", sub.toString()
        				.length() > 0);
+       	    // Regression for HARMONY-1566
+       	    assertNotNull(new IdentitySubclass().toString());
 	}
 
 	/**
