@@ -20,6 +20,7 @@ package org.apache.harmony.auth.login;
 import java.io.File;
 import java.net.URL;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,7 @@ import javax.security.auth.AuthPermission;
 import javax.security.auth.login.AppConfigurationEntry;
 import javax.security.auth.login.Configuration;
 
+import org.apache.harmony.auth.internal.nls.Messages;
 import org.apache.harmony.security.fortress.PolicyUtils;
 
 /**
@@ -52,10 +54,6 @@ public class DefaultConfiguration extends Configuration {
     // location of login configuration file
     private static final String LOGIN_CONFIG_URL_PREFIX = "login.config.url."; //$NON-NLS-1$
 
-    // default a config file from user's home directory
-    private static final String JAVA_LOGIN_CONF_FILE = "file:" + System.getProperty("user.home") + //$NON-NLS-1$ //$NON-NLS-2$
-            +File.separatorChar + ".java.login.config"; //$NON-NLS-1$
-
     // creates a AuthPermission object 
     private static final AuthPermission REFRESH_LOGIN_CONFIGURATION = new AuthPermission(
             "refreshLoginConfiguration"); //$NON-NLS-1$
@@ -69,11 +67,8 @@ public class DefaultConfiguration extends Configuration {
      */
     public DefaultConfiguration() {
         super();
-        try {
-            init();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        init();
     }
 
     @Override
@@ -95,11 +90,8 @@ public class DefaultConfiguration extends Configuration {
             sm.checkPermission(REFRESH_LOGIN_CONFIGURATION);
         }
         configutations.clear();
-        try {
-            init();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        init();
     }
 
     /**
@@ -122,11 +114,30 @@ public class DefaultConfiguration extends Configuration {
                 //new SecurityException("Unable to load a login configuration file");
             }
         }
+        
         // if location is not define then get a config file from user's directory 
         if (policyLocations.length == 0) {
+            
+            // check presence of ${user.home}/.java.login.config
+            File userLoginConfig = AccessController
+                    .doPrivileged(new PrivilegedAction<File>() {
+                        public File run() {
+                            File f = new File(System.getProperty("user.home") + //$NON-NLS-1$
+                                    File.separatorChar + ".java.login.config"); //$NON-NLS-1$
+                            if (f.exists()) {
+                                return f;
+                            }
+                            return null;
+                        }
+                    });
+            if (userLoginConfig == null) {
+                // auth.53: Unable to locate a login configuration
+                throw new SecurityException(Messages.getString("auth.53")); //$NON-NLS-1$
+            }
+            
             try {
-                fresh.putAll(DefaultConfigurationParser.configParser(new URL(
-                        JAVA_LOGIN_CONF_FILE), system, fresh));
+                fresh.putAll(DefaultConfigurationParser.configParser(
+                        userLoginConfig.toURL(), system, fresh));
             } catch (Exception e) {
                 //TODO: log warning
                 //throw new SecurityException ("Unable to load a login configuration file");

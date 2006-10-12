@@ -22,6 +22,10 @@
 
 package org.apache.harmony.auth.tests.support;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.security.Security;
 import java.util.Properties;
 
 /**
@@ -76,5 +80,41 @@ public class TestUtils {
             properties.setProperty(key, value);
         }
         System.setProperties(properties);
+    }
+    
+    /**
+     * Creates security properties file.
+     * 
+     * The method puts to the file all initial security providers and adds
+     * passed custom properties.
+     * 
+     * @param props -
+     *            security properties to be added to properties file
+     * @return path to created file.
+     * @throws IOException
+     *             if failed to create the file
+     */
+    public static String createJavaPropertiesFile(Properties props)
+            throws IOException {
+
+        File f = File.createTempFile("java", "security");
+        f.deleteOnExit();
+
+        FileOutputStream out = new FileOutputStream(f);
+
+        Properties propsToFlush = new Properties(props);
+        
+        int i = 1;
+        String provider = "security.provider.1";
+        while (Security.getProperty(provider) != null) {
+            propsToFlush.setProperty(provider, Security.getProperty(provider));
+            provider = "security.provider." + i++;
+        }
+
+        propsToFlush.store(out, null);
+
+        out.close();
+
+        return f.getAbsolutePath();
     }
 }

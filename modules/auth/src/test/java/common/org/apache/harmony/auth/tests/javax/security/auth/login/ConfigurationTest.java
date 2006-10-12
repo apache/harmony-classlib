@@ -22,8 +22,10 @@
 
 package org.apache.harmony.auth.tests.javax.security.auth.login;
 
+import java.io.File;
 import java.security.Permission;
 import java.security.Security;
+import java.util.Properties;
 
 import javax.security.auth.AuthPermission;
 import javax.security.auth.login.AppConfigurationEntry;
@@ -33,6 +35,7 @@ import junit.framework.TestCase;
 
 import org.apache.harmony.auth.tests.support.TestUtils;
 
+import tests.support.Support_Exec;
 import tests.support.resource.Support_Resources;
 
 /**
@@ -174,13 +177,13 @@ public class ConfigurationTest extends TestCase {
             // test: loading custom test provider
             Security.setProperty(LOGIN_CONFIG_PROVIDER, ConfTestProvider.class
                     .getName());
-            Configuration.setConfiguration(null); // reset config
+            Configuration.setConfiguration(null); // reset default config
             assertEquals(ConfTestProvider.class, Configuration
                     .getConfiguration().getClass());
 
             // test: loading absent class as test provider
             Security.setProperty(LOGIN_CONFIG_PROVIDER, "ThereIsNoSuchClass");
-            Configuration.setConfiguration(null); // reset config
+            Configuration.setConfiguration(null); // reset default config
             try {
                 Configuration.getConfiguration();
                 fail("No SecurityException on failed provider");
@@ -192,7 +195,7 @@ public class ConfigurationTest extends TestCase {
             // a name of this unit test is used as config provider
             Security.setProperty(LOGIN_CONFIG_PROVIDER, this.getClass()
                     .getName());
-            Configuration.setConfiguration(null);// reset config
+            Configuration.setConfiguration(null);// reset default config
             try {
                 Configuration.getConfiguration();
                 fail("No expected ClassCastException");
@@ -205,7 +208,58 @@ public class ConfigurationTest extends TestCase {
                     (oldProvider == null) ? "" : oldProvider);
         }
     }
-    
+
+    /**
+     * Tests reading config files by default provider
+     */
+    public void test_defaultProvider() throws Exception {
+
+        // test: there are no config files to be read
+        // Regression for HARMONY-1715
+
+        // no login.config.url.N security properties should be set
+        String javaSecurityFile = TestUtils
+                .createJavaPropertiesFile(new Properties());
+
+        // tmp user home to avoid presence of ${user.home}/.java.login.config
+        String tmpUserHome = System.getProperty("java.io.tmpdir")
+                + File.separatorChar + "tmpUserHomeForConfigurationTest";
+        File dir = new File(tmpUserHome);
+        if (!dir.exists()) {
+            dir.mkdirs();
+            dir.deleteOnExit();
+        }
+        String javaLoginConfig = tmpUserHome + File.separatorChar
+                + ".java.login.config";
+        assertFalse("There should be no login config file: " + javaLoginConfig,
+                new File(javaLoginConfig).exists());
+
+        String[] arg = new String[] { "-Duser.home=" + tmpUserHome,
+                "-Djava.security.properties=" + javaSecurityFile,
+                NoConfigFileToBeRead.class.getName() };
+
+        Support_Exec.execJava(arg, null, true);
+    }
+
+    public static class NoConfigFileToBeRead {
+
+        // the test is based on assumption that security properties 
+        // login.config.url.N are unset and there is no file
+        // ${user.home}/.java.login.config
+        public static void main(String[] args) {
+
+            //reset path to alternative configuration file
+            TestUtils.setSystemProperty(AUTH_LOGIN_CONFIG, null);
+
+            Configuration.setConfiguration(null); // reset default config
+            try {
+                Configuration.getConfiguration();
+                TestCase.fail("No expected SecurityException");
+            } catch (SecurityException e) {
+            }
+        }
+    }
+
     public static void main(String[] args) {
         junit.textui.TestRunner.run(ConfigurationTest.class);
     }

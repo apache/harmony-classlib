@@ -179,6 +179,7 @@
 
             <classpath>
                 <pathelement path="${hy.auth.src.test.resources}"/>
+                <pathelement path="${hy.auth.bin.test}"/>
             </classpath>
 
             <formatter type="xml" />

@@ -87,19 +87,12 @@ public class DefaultConfigurationTest extends TestCase {
 	 * XXX: load a default config file
 	 */
 	public static void testLoadConfigFile() throws Exception {
-			DefaultConfiguration dc = null;
-			dc = new DefaultConfiguration();
-			assertNotNull(dc);
-			ents = dc.getAppConfigurationEntry("Login1");
-			assertNull(ents);
-			ents = dc.getAppConfigurationEntry(null);
-			assertNull(ents);
 			Security.setProperty("login.config.url.1", "file:"
 					+ defaultConfFile.getCanonicalPath());
 			Security.setProperty("login.config.url.2", "file:"
 					+ new File(otherConfFile).getCanonicalPath());
 
-			dc = new DefaultConfiguration();
+            DefaultConfiguration dc = new DefaultConfiguration();
 			ents = dc.getAppConfigurationEntry("LoginNew");
 			assertNotNull(ents);
 			assertEquals("com.intel.security.auth.module.LoginModule1", ents[0].getLoginModuleName());
