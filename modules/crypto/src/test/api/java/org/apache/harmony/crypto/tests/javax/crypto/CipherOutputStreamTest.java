@@ -31,7 +31,16 @@ public class CipherOutputStreamTest extends junit.framework.TestCase {
                     .getInstance("DES/CBC/PKCS5Padding")).close();
             fail("IllegalStateException expected");
         } catch (IllegalStateException e) {
-            //expected
+            // expected
+        }
+
+        CipherOutputStream ch = new CipherOutputStream((OutputStream) null) {};
+        try {
+            new CipherOutputStream(ch, Cipher
+                    .getInstance("DES/CBC/PKCS5Padding")).close();
+            fail("IllegalStateException expected");
+        } catch (IllegalStateException e) {
+            // expected
         }
     }
 }

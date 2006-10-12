@@ -95,9 +95,14 @@ public class CipherOutputStream extends FilterOutputStream {
     public void close() throws IOException {
         byte[] result;
         try {
-            result = cipher.doFinal();
-            if (result != null) {
-                out.write(result);
+            if (cipher != null) {
+                result = cipher.doFinal();
+                if (result != null) {
+                    out.write(result);
+                }
+            }
+            if (out != null) {
+                out.flush();
             }
         } catch (BadPaddingException e) {
             throw new IOException(e.getMessage());
@@ -105,7 +110,6 @@ public class CipherOutputStream extends FilterOutputStream {
             throw new IOException(e.getMessage());
         } finally {
             if (out != null) {
-                out.flush();
                 out.close();
             }
         }
