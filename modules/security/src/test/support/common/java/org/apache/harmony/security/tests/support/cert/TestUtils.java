@@ -24,7 +24,6 @@ package org.apache.harmony.security.tests.support.cert;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -47,6 +46,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import tests.support.resource.Support_Resources;
+
 /**
  * java.security.cert test utilities
  * 
@@ -57,9 +58,8 @@ public class TestUtils {
     // Key store type used during testing
     private static final String keyStoreType = "BKS";
     // The file name prefix to load keystore from
-    private static final String keyStoreFileName =
-        org.apache.harmony.security.tests.support.TestUtils.TEST_ROOT +
-        "test." + keyStoreType + ".ks";
+    private static final String keyStoreFileName = "test." + keyStoreType
+            + ".ks";
     //
     // The file name suffixes to load keystore from
     //  *.ks1 - keystore containing untrusted cerificates only
@@ -151,9 +151,8 @@ public class TestUtils {
             KeyStore ks = KeyStore.getInstance(keyStoreType);
             if (initialize) {
                 String fileName = keyStoreFileName + testKeyStoreType;
-                bis = new BufferedInputStream(
-                            new FileInputStream(fileName));
-                ks.load(bis, storepass);
+                ks.load(Support_Resources.getResourceStream(fileName),
+                        storepass);
             }
             return ks;
         } catch (Exception e) {
