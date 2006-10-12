@@ -20,7 +20,9 @@
 * @version $Revision$
 */
 
-package javax.security.sasl;
+package org.apache.harmony.auth.tests.javax.security.sasl;
+
+import javax.security.sasl.AuthorizeCallback;
 
 import junit.framework.TestCase;
 

@@ -20,20 +20,19 @@
 * @version $Revision$
 */
 
-package javax.security.sasl;
-
+package org.apache.harmony.auth.tests.javax.security.sasl;
 
 import java.security.Provider;
 import java.security.Security;
 import java.util.Enumeration;
 
+import javax.security.sasl.Sasl;
+
 import junit.framework.TestCase;
 
 /**
  * Test for Sasl class
- * 
  */
-
 public class Sasl1Test extends TestCase {
 
     public static void main(String[] args) {

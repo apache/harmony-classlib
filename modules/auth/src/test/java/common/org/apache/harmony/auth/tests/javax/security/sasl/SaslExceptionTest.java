@@ -20,14 +20,14 @@
 * @version $Revision$
 */
 
-package javax.security.sasl;
+package org.apache.harmony.auth.tests.javax.security.sasl;
 
+import javax.security.sasl.SaslException;
 
 import junit.framework.TestCase;
 
 /**
  * Tests for constructors and methods of SaslException class
- * 
  */
 public class SaslExceptionTest extends TestCase {
 

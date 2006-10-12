@@ -20,8 +20,7 @@
 * @version $Revision$
 */
 
-package javax.security.sasl;
-
+package org.apache.harmony.auth.tests.javax.security.sasl;
 
 import java.io.IOException;
 import java.security.Provider;
@@ -34,16 +33,18 @@ import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.TextOutputCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
-
-import org.apache.harmony.auth.tests.support.SpiEngUtils;
+import javax.security.sasl.Sasl;
+import javax.security.sasl.SaslClient;
+import javax.security.sasl.SaslClientFactory;
+import javax.security.sasl.SaslException;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.auth.tests.support.SpiEngUtils;
+
 /**
  * Test for Sasl class
- * 
  */
-
 public class Sasl3Test extends TestCase {
     private static final String CLNTSRV = "SaslClientFactory.";
 
