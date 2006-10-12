@@ -20,7 +20,7 @@
 * @version $Revision$
 */
 
-package org.apache.harmony.auth.tests.javax.security.sasl;
+package javax.security.sasl;
 
 import java.io.IOException;
 import java.security.Provider;
