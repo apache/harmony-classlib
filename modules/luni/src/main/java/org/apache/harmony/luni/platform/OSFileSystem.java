@@ -154,9 +154,6 @@ class OSFileSystem extends OSComponent implements IFileSystem {
 
 	public long write(long fileDescriptor, byte[] bytes, int offset, int length)
 			throws IOException {
-		if (bytes == null) {
-			throw new NullPointerException();
-		}
 		long bytesWritten = writeImpl(fileDescriptor, bytes, offset, length);
 		if (bytesWritten < 0) {
 			throw new IOException();
