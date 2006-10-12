@@ -91,12 +91,13 @@ public class ClassTest extends junit.framework.TestCase {
      * @tests java.lang.Class#forName(java.lang.String)
      */
     public void test_forNameLjava_lang_String() throws Exception {
-        assertSame("Class for name failed for java.lang.Object", Object.class, Class
-                .forName("java.lang.Object"));
-        assertSame("Class for name failed for [[Ljava.lang.Object;", Object[][].class, Class
-                .forName("[[Ljava.lang.Object;"));
+        assertSame("Class for name failed for java.lang.Object",
+                   Object.class, Class.forName("java.lang.Object"));
+        assertSame("Class for name failed for [[Ljava.lang.Object;",
+                   Object[][].class, Class.forName("[[Ljava.lang.Object;"));
 
-        assertSame("Class for name failed for [I", int[].class, Class.forName("[I"));
+        assertSame("Class for name failed for [I",
+                   int[].class, Class.forName("[I"));
 
         try {
             Class.forName("int");
@@ -153,7 +154,8 @@ public class ClassTest extends junit.framework.TestCase {
      * @tests java.lang.Class#getClasses()
      */
     public void test_getClasses() {
-        assertEquals("Incorrect class array returned", 2, ClassTest.class.getClasses().length);
+        assertEquals("Incorrect class array returned",
+                     2, ClassTest.class.getClasses().length);
     }
 
     /**
@@ -218,8 +220,8 @@ public class ClassTest extends junit.framework.TestCase {
                 if (combiner.isPriviledged())
                     return;
                 checkMemberAccess++;
-                assertTrue(reason + " unexpected class: " + cls, cls == checkClass);
-                assertTrue(reason + "unexpected type: " + type, type == checkType);
+                assertEquals(reason + " unexpected class", checkClass, cls);
+                assertEquals(reason + "unexpected type", checkType, type);
             }
 
             @Override
@@ -230,18 +232,17 @@ public class ClassTest extends junit.framework.TestCase {
                 String name = checkClass.getName();
                 int index = name.lastIndexOf('.');
                 String checkPackage = name.substring(0, index);
-                assertTrue(reason + " unexpected package: " + packageName, packageName
-                        .equals(checkPackage));
+                assertEquals(reason + " unexpected package",
+                             checkPackage,  packageName);
             }
 
             public void assertProperCalls() {
-                assertTrue(reason + " unexpected checkPermission count: " + checkPermission,
-                        checkPermission == 0);
-                assertTrue(
-                        reason + " unexpected checkMemberAccess count: " + checkMemberAccess,
-                        checkMemberAccess == 1);
-                assertTrue(reason + " unexpected checkPackageAccess count: "
-                        + checkPackageAccess, checkPackageAccess == 1);
+                assertEquals(reason + " unexpected checkPermission count",
+                             0, checkPermission);
+                assertEquals(reason + " unexpected checkMemberAccess count",
+                             1, checkMemberAccess);
+                assertEquals(reason + " unexpected checkPackageAccess count",
+                             1, checkPackageAccess);
             }
         }
 
@@ -347,31 +348,23 @@ public class ClassTest extends junit.framework.TestCase {
     /**
      * @tests java.lang.Class#getConstructor(java.lang.Class[])
      */
-    public void test_getConstructor$Ljava_lang_Class() {
+    public void test_getConstructor$Ljava_lang_Class()
+        throws NoSuchMethodException {
+        TestClass.class.getConstructor(new Class[0]);
         try {
-            TestClass.class.getConstructor(new Class[0]);
-            try {
-                TestClass.class.getConstructor(Object.class);
-            } catch (NoSuchMethodException e) {
-                // Correct - constructor with obj is private
-                return;
-            }
+            TestClass.class.getConstructor(Object.class);
             fail("Found private constructor");
         } catch (NoSuchMethodException e) {
-            fail("Exception during getConstructor test : " + e.getMessage());
+            // Correct - constructor with obj is private
         }
     }
 
     /**
      * @tests java.lang.Class#getConstructors()
      */
-    public void test_getConstructors() {
-        try {
-            Constructor[] c = TestClass.class.getConstructors();
-            assertEquals("Incorrect number of constructors returned", 1, c.length);
-        } catch (Exception e) {
-            fail("Exception during getDeclaredConstructor test:" + e.toString());
-        }
+    public void test_getConstructors() throws Exception {
+        Constructor[] c = TestClass.class.getConstructors();
+        assertEquals("Incorrect number of constructors returned", 1, c.length);
     }
 
     /**
@@ -415,7 +408,6 @@ public class ClassTest extends junit.framework.TestCase {
         f = SubTestClass.class.getDeclaredFields();
         // Declared fields do not include inherited
         assertEquals("Returned incorrect number of fields", 0, f.length);
-
     }
 
     /**
@@ -457,7 +449,6 @@ public class ClassTest extends junit.framework.TestCase {
             fail("Private field access failed to throw exception");
         } catch (NoSuchFieldException e) {
             // Correct
-            return;
         }
     }
 
@@ -466,10 +457,10 @@ public class ClassTest extends junit.framework.TestCase {
      */
     public void test_getFields() throws Exception {
         Field[] f = TestClass.class.getFields();
-        assertTrue("Incorrect number of fields returned: " + f.length, f.length == 2);
+        assertEquals("Incorrect number of fields", 2, f.length);
         f = SubTestClass.class.getFields();
         // Check inheritance of pub fields
-        assertTrue("Incorrect number of fields returned: " + f.length, f.length == 2);
+        assertEquals("Incorrect number of fields", 2, f.length);
     }
 
     /**
@@ -508,11 +499,11 @@ public class ClassTest extends junit.framework.TestCase {
      */
     public void test_getMethods() throws Exception {
         Method[] m = TestClass.class.getMethods();
-        assertTrue("Returned incorrect number of methods: " + m.length,
-                m.length == 2 + Object.class.getMethods().length);
+        assertEquals("Returned incorrect number of methods",
+                     2 + Object.class.getMethods().length, m.length);
         m = SubTestClass.class.getMethods();
-        assertTrue("Returned incorrect number of sub-class methods: " + m.length,
-                m.length == 2 + Object.class.getMethods().length);
+        assertEquals("Returned incorrect number of sub-class methods",
+                     2 + Object.class.getMethods().length, m.length);
         // Number of inherited methods
     }
 
@@ -603,29 +594,16 @@ public class ClassTest extends junit.framework.TestCase {
     /**
      * @tests java.lang.Class#isArray()
      */
-    public void test_isArray() {
+    public void test_isArray() throws ClassNotFoundException {
         assertTrue("Non-array type claims to be.", !int.class.isArray());
         Class<?> clazz = null;
-        try {
-            clazz = Class.forName("[I");
-        } catch (ClassNotFoundException e) {
-            fail("Should be able to find the class [I");
-        }
+        clazz = Class.forName("[I");
         assertTrue("int Array type claims not to be.", clazz.isArray());
 
-        try {
-            clazz = Class.forName("[Ljava.lang.Object;");
-        } catch (ClassNotFoundException e) {
-            fail("Should be able to find the class [Ljava.lang.Object;");
-        }
-
+        clazz = Class.forName("[Ljava.lang.Object;");
         assertTrue("Object Array type claims not to be.", clazz.isArray());
 
-        try {
-            clazz = Class.forName("java.lang.Object");
-        } catch (ClassNotFoundException e) {
-            fail("Should be able to find the class java.lang.Object");
-        }
+        clazz = Class.forName("java.lang.Object");
         assertTrue("Non-array Object type claims to be.", !clazz.isArray());
     }
 
@@ -651,35 +629,18 @@ public class ClassTest extends junit.framework.TestCase {
     /**
      * @tests java.lang.Class#isInterface()
      */
-    public void test_isInterface() {
+    public void test_isInterface() throws ClassNotFoundException {
         assertTrue("Prim type claims to be interface.", !int.class.isInterface());
         Class<?> clazz = null;
-        try {
-            clazz = Class.forName("[I");
-        } catch (ClassNotFoundException e) {
-            fail("Should be able to find the class [I");
-        }
+        clazz = Class.forName("[I");
         assertTrue("Prim Array type claims to be interface.", !clazz.isInterface());
 
-        try {
-            clazz = Class.forName("java.lang.Runnable");
-        } catch (ClassNotFoundException e) {
-            fail("Should be able to find the class java.lang.Runnable");
-        }
+        clazz = Class.forName("java.lang.Runnable");
         assertTrue("Interface type claims not to be interface.", clazz.isInterface());
-
-        try {
-            clazz = Class.forName("java.lang.Object");
-        } catch (ClassNotFoundException e) {
-            fail("Should be able to find the class java.lang.Object");
-        }
+        clazz = Class.forName("java.lang.Object");
         assertTrue("Object type claims to be interface.", !clazz.isInterface());
 
-        try {
-            clazz = Class.forName("[Ljava.lang.Object;");
-        } catch (ClassNotFoundException e) {
-            fail("Should be able to find the class [Ljava.lang.Object;");
-        }
+        clazz = Class.forName("[Ljava.lang.Object;");
         assertTrue("Array type claims to be interface.", !clazz.isInterface());
     }
 
@@ -698,76 +659,41 @@ public class ClassTest extends junit.framework.TestCase {
     /**
      * @tests java.lang.Class#newInstance()
      */
-    public void test_newInstance() {
+    public void test_newInstance() throws Exception {
         Class<?> clazz = null;
+        clazz = Class.forName("java.lang.Object");
+        assertNotNull("new object instance was null", clazz.newInstance());
+
+        clazz = Class.forName("java.lang.Throwable");
+        assertSame("new Throwable instance was not a throwable",
+                   clazz, clazz.newInstance().getClass());
+
+        clazz = Class.forName("java.lang.Integer");
         try {
-            try {
-                clazz = Class.forName("java.lang.Object");
-            } catch (ClassNotFoundException e) {
-                fail("Should be able to find the class java.lang.Object");
-            }
-            assertNotNull("new object instance was null", clazz.newInstance());
-        } catch (Exception e) {
-            fail("Unexpected exception " + e + " in newInstance()");
+            clazz.newInstance();
+            fail("Exception for instantiating a newInstance with no default constructor is not thrown");
+        } catch (InstantiationException e) {
+            // expected
         }
-        try {
-            try {
-                clazz = Class.forName("java.lang.Throwable");
-            } catch (ClassNotFoundException e) {
-                fail("Should be able to find the class java.lang.Throwable");
-            }
-            assertTrue("new Throwable instance was not a throwable", clazz.newInstance()
-                    .getClass() == clazz);
-        } catch (Exception e) {
-            fail("Unexpected exception " + e + " in newInstance()");
-        }
-        int r = 0;
-        try {
-            try {
-                clazz = Class.forName("java.lang.Integer");
-            } catch (ClassNotFoundException e) {
-                fail("Should be able to find the class java.lang.Integer");
-            }
-            assertTrue("Allowed to do newInstance, when no default constructor", clazz
-                    .newInstance() != null
-                    || clazz.newInstance() == null);
-        } catch (Exception e) {
-            r = 1;
-        }
-        assertEquals(
-                "Exception for instantiating a newInstance with no default constructor is not thrown",
-                1, r);
     }
 
     /**
      * @tests java.lang.Class#toString()
      */
-    public void test_toString() {
-        assertTrue("Class toString printed wrong value:" + int.class.toString(), int.class
-                .toString().equals("int"));
+    public void test_toString() throws ClassNotFoundException {
+        assertEquals("Class toString printed wrong value",
+                     "int", int.class.toString());
         Class<?> clazz = null;
-        try {
-            clazz = Class.forName("[I");
-        } catch (ClassNotFoundException e) {
-            fail("Should be able to find the class [I");
-        }
-        assertTrue("Class toString printed wrong value:" + clazz.toString(), clazz.toString()
-                .equals("class [I"));
+        clazz = Class.forName("[I");
+        assertEquals("Class toString printed wrong value",
+                     "class [I", clazz.toString());
 
-        try {
-            clazz = Class.forName("java.lang.Object");
-        } catch (ClassNotFoundException e) {
-            fail("Should be able to find the class java.lang.Object");
-        }
-        assertTrue("Class toString printed wrong value:" + clazz.toString(), clazz.toString()
-                .equals("class java.lang.Object"));
+        clazz = Class.forName("java.lang.Object");
+        assertEquals("Class toString printed wrong value",
+                     "class java.lang.Object", clazz.toString());
 
-        try {
-            clazz = Class.forName("[Ljava.lang.Object;");
-        } catch (ClassNotFoundException e) {
-            fail("Should be able to find the class [Ljava.lang.Object;");
-        }
-        assertTrue("Class toString printed wrong value:" + clazz.toString(), clazz.toString()
-                .equals("class [Ljava.lang.Object;"));
+        clazz = Class.forName("[Ljava.lang.Object;");
+        assertEquals("Class toString printed wrong value",
+                     "class [Ljava.lang.Object;", clazz.toString());
     }
 }
