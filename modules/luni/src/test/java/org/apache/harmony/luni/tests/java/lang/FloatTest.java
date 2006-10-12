@@ -403,6 +403,385 @@ public class FloatTest extends TestCase {
         doTestCompareRawBits("1.0E+39", 0x7f800000, "Infinity");
         doTestCompareRawBits("-1.0E+39", 0xff800000, "-Infinity");
     }
+    
+    /**
+     * @tests java.lang.Float#parseFloat(java.lang.String)
+     */
+    public void test_parseFloat_LString_Unusual() {
+        float actual;
+        float expected;
+        
+        actual = Float.parseFloat("0x00000000000000000000000000000000000000000.0000000000000000000000000000000000000p0000000000000000000000000000000000");
+        assertEquals("Returned incorrect value", 0.0f, actual);
+                
+        actual = Float.parseFloat("+0Xfffff.fffffffffffffffffffffffffffffffp+99F");
+        assertEquals("Returned incorrect value", 6.64614E35f, actual);
+        
+        actual = Float.parseFloat("-0X.123456789abcdefp+99f");
+        assertEquals("Returned incorrect value", -4.5072022E28f, actual);
+        
+        actual = Float.parseFloat("-0X123456789abcdef.p+1f");
+        assertEquals("Returned incorrect value", -1.63971062E17f, actual);
+        
+        actual = Float.parseFloat("-0X000000000000000000000000000001abcdef.0000000000000000000000000001abefp00000000000000000000000000000000000000000004f");
+        assertEquals("Returned incorrect value", -4.48585472E8f, actual);
+        
+        actual = Float.parseFloat("0X0.00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001234p600f");
+        assertEquals("Returned incorrect value", 5.907252E33f, actual);
+        
+        actual = Float.parseFloat("0x1.p9223372036854775807");
+        assertEquals("Returned incorrect value", Float.POSITIVE_INFINITY, actual);
+        
+        actual = Float.parseFloat("0x1.p9223372036854775808");
+        assertEquals("Returned incorrect value", Float.POSITIVE_INFINITY, actual);
+        
+        actual = Float.parseFloat("0x10.p9223372036854775808");
+        assertEquals("Returned incorrect value", Float.POSITIVE_INFINITY, actual);
+        
+        actual = Float.parseFloat("0xabcd.ffffffffp+2000");
+        assertEquals("Returned incorrect value", Float.POSITIVE_INFINITY, actual);
+        
+        actual = Float.parseFloat("0x1.p-9223372036854775808");
+        assertEquals("Returned incorrect value", 0.0f, actual);
+        
+        actual = Float.parseFloat("0x1.p-9223372036854775809");
+        assertEquals("Returned incorrect value", 0.0f, actual);
+        
+        actual = Float.parseFloat("0x.1p-9223372036854775809");
+        assertEquals("Returned incorrect value", 0.0f, actual);
+    }
+    
+    /**
+     * @tests java.lang.Float#parseFloat(java.lang.String)
+     */
+    public void test_parseFloat_LString_NormalPositiveExponent() {
+        int[] expecteds = {
+                0x3991a2b4,                0x43cc0247,                0x47909009,
+                0x4ac0c009,                0x4e109005,                0x5140c005,
+                0x5458d805,                0x57848402,                0x5a909002,
+                0x5da8a802,                0x60c0c002,                0x63cccc02,
+                0x66e4e402,                0x69f0f002,                0x6d048401,
+                0x70109001,                0x73169601,                0x76810810,
+                0x79840840,                0x7c8a08a0,                0x7f800000,
+                0x7f800000,                0x7f800000,                0x7f800000,
+                0x7f800000,
+        };
+        
+        for (int i = 0; i < expecteds.length; i++) {
+            int part = i * 6;
+            String inputString = "0x" + part + "." + part + "0123456789abcdefp" + part;
+
+            float actual = Float.parseFloat(inputString);
+            float expected = Float.intBitsToFloat(expecteds[i]);
+
+            String expectedString = Integer.toHexString(Float.floatToIntBits(expected));
+            String actualString = Integer.toHexString(Float.floatToIntBits(actual));
+            String errorMsg = i + "th input string is:<" + inputString
+            + ">.The expected result should be:<" + expectedString
+            + ">, but was: <" + actualString + ">. ";
+            
+            assertEquals(errorMsg, expected, actual);
+        }
+    }
+    
+    /**
+     * @tests java.lang.Float#parseFloat(java.lang.String)
+     */
+    public void test_parseFloat_LString_NormalNegativeExponent() {
+        int[] expecteds = {
+                0x3991a2b4,
+                0x3d6e0247,
+                0x3aa0a009,
+                0x37848405,
+                0x3420a005,
+                0x30d4d405,
+                0x2d848402,
+                0x2a129202,
+                0x26acac02,
+                0x2346c602,
+                0x1fe0e002,
+                0x1c6eee02,
+                0x19048401,
+                0x15919101,
+                0x12189801,
+                0xf028828,
+                0xb890890,
+                0x80c88c8,
+                0x4930930,
+                0x1198998,
+                0x28028,
+                0x51c,
+                0xb,
+                0x0,
+                0x0,
+        };
+        
+        for (int i = 0; i < expecteds.length; i++) {
+            int part = i * 7;
+            String inputString = "0x" + part + "." + part + "0123456789abcdefp-"  + part;
+
+            float actual = Float.parseFloat(inputString);
+            float expected = Float.intBitsToFloat(expecteds[i]);
+            
+            String expectedString = Integer.toHexString(Float.floatToIntBits(expected));
+            String actualString = Integer.toHexString(Float.floatToIntBits(actual));
+            String errorMsg = i + "th input string is:<" + inputString
+            + ">.The expected result should be:<" + expectedString
+            + ">, but was: <" + actualString + ">. ";
+            
+            assertEquals(errorMsg, expected, actual);
+        }
+    }
+    
+    /**
+     * @tests java.lang.Float#parseFloat(java.lang.String)
+     */
+    public void test_parseFloat_LString_MaxNormalBoundary() {
+        int[] expecteds ={
+                0x7f7fffff,
+                0x7f7fffff,
+                0x7f7fffff,
+                0x7f800000,
+                0x7f800000,
+                0x7f800000,
+                
+                0xff7fffff,
+                0xff7fffff,
+                0xff7fffff,
+                0xff800000,
+                0xff800000,
+                0xff800000,
+        };
+        
+        String[] inputs = {
+                "0x1.fffffep127",
+                "0x1.fffffe000000000000000000000000000000000000000000000001p127",
+                "0x1.fffffeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp127",
+                "0x1.ffffffp127",
+                "0x1.ffffff000000000000000000000000000000000000000000000001p127",
+                "0x1.ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp127",
+                
+                "-0x1.fffffep127",
+                "-0x1.fffffe000000000000000000000000000000000000000000000001p127",
+                "-0x1.fffffeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp127",
+                "-0x1.ffffffp127",
+                "-0x1.ffffff000000000000000000000000000000000000000000000001p127",
+                "-0x1.ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp127",
+        };
+        
+        for (int i = 0; i < inputs.length; i++) {
+            float actual = Float.parseFloat(inputs[i]);
+            float expected = Float.intBitsToFloat(expecteds[i]);
+            
+            String expectedString = Integer.toHexString(Float.floatToIntBits(expected));
+            String actualString = Integer.toHexString(Float.floatToIntBits(actual));
+            String errorMsg = i + "th input string is:<" + inputs[i]
+            + ">.The expected result should be:<" + expectedString
+            + ">, but was: <" + actualString + ">. ";
+            
+            assertEquals(errorMsg, expected, actual);
+        }
+    }
+    
+    /**
+     * @tests java.lang.Float#parseFloat(java.lang.String)
+     */
+    public void test_parseFloat_LString_MinNormalBoundary() {
+        int expecteds[] = {
+                0x800000,
+                0x800000,
+                0x800000,
+                0x800000,
+                0x800001,
+                0x800001,
+                
+                0x80800000,
+                0x80800000,
+                0x80800000,
+                0x80800000,
+                0x80800001,
+                0x80800001,
+        };
+        
+        String inputs[] = {
+                "0x1.0p-126",
+                "0x1.00000000000000000000000000000000000000000000001p-126",
+                "0x1.000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+                "0x1.000001p-126",
+                "0x1.000001000000000000000000000000000000000000000001p-126",
+                "0x1.000001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+                
+                "-0x1.0p-126",
+                "-0x1.00000000000000000000000000000000000000000000001p-126",
+                "-0x1.000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+                "-0x1.000001p-126",
+                "-0x1.000001000000000000000000000000000000000000000001p-126",
+                "-0x1.000001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+        };
+        
+        for (int i = 0; i < inputs.length; i++) {
+            float actual = Float.parseFloat(inputs[i]);
+            float expected = Float.intBitsToFloat(expecteds[i]);
+            
+            String expectedString = Integer.toHexString(Float.floatToIntBits(expected));
+            String actualString = Integer.toHexString(Float.floatToIntBits(actual));
+            String errorMsg = i + "th input string is:<" + inputs[i]
+            + ">.The expected result should be:<" + expectedString
+            + ">, but was: <" + actualString + ">. ";
+            
+            assertEquals(errorMsg, expected, actual);
+        }
+    }
+    
+    /**
+     * @tests java.lang.Float#parseFloat(java.lang.String)
+     */
+    public void test_parseFloat_LString_MaxSubNormalBoundary() {
+        int expecteds[] = {
+                0x7fffff,
+                0x7fffff,
+                0x7fffff,
+                0x800000,
+                0x800000,
+                0x800000,
+                
+                0x807fffff,
+                0x807fffff,
+                0x807fffff,
+                0x80800000,
+                0x80800000,
+                0x80800000,
+        };
+        
+        String inputs[] = {
+                "0x0.fffffep-126",
+                "0x0.fffffe000000000000000000000000000000000000000000000000000001p-126",
+                "0x0.fffffefffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+                "0x0.ffffffp-126",
+                "0x0.ffffff0000000000000000000000000000000000000000000000000000001p-126",
+                "0x0.ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+                
+                "-0x0.fffffep-126",
+                "-0x0.fffffe000000000000000000000000000000000000000000000000000001p-126",
+                "-0x0.fffffefffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+                "-0x0.ffffffp-126",
+                "-0x0.ffffff0000000000000000000000000000000000000000000000000000001p-126",
+                "-0x0.ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+        };
+        
+        for (int i = 0; i < inputs.length; i++) {
+            float actual = Float.parseFloat(inputs[i]);
+            float expected = Float.intBitsToFloat(expecteds[i]);
+            
+            String expectedString = Integer.toHexString(Float.floatToIntBits(expected));
+            String actualString = Integer.toHexString(Float.floatToIntBits(actual));
+            String errorMsg = i + "th input string is:<" + inputs[i]
+            + ">.The expected result should be:<" + expectedString
+            + ">, but was: <" + actualString + ">. ";
+            
+            assertEquals(errorMsg, expected, actual);
+        }
+    }
+    
+    /**
+     * @tests java.lang.Float#parseFloat(java.lang.String)
+     */
+    public void test_parseFloat_LString_MinSubNormalBoundary() {
+        int expecteds[] = {
+                0x1,
+                0x1,
+                0x1,
+                0x2,
+                0x2,
+                0x2,
+                
+                0x80000001,
+                0x80000001,
+                0x80000001,
+                0x80000002,
+                0x80000002,
+                0x80000002,
+        };
+        
+        String inputs[] = {
+                "0x0.000002p-126",
+                "0x0.00000200000000000000000000000000000000000001p-126",
+                "0x0.000002ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+                "0x0.000003p-126",
+                "0x0.000003000000000000000000000000000000000000001p-126",
+                "0x0.000003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+                
+                "-0x0.000002p-126",
+                "-0x0.00000200000000000000000000000000000000000001p-126",
+                "-0x0.000002ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+                "-0x0.000003p-126",
+                "-0x0.000003000000000000000000000000000000000000001p-126",
+                "-0x0.000003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+        };
+        
+        for (int i = 0; i < inputs.length; i++) {
+            float actual = Float.parseFloat(inputs[i]);
+            float expected = Float.intBitsToFloat(expecteds[i]);
+            
+            String expectedString = Integer.toHexString(Float.floatToIntBits(expected));
+            String actualString = Integer.toHexString(Float.floatToIntBits(actual));
+            String errorMsg = i + "th input string is:<" + inputs[i]
+            + ">.The expected result should be:<" + expectedString
+            + ">, but was: <" + actualString + ">. ";
+            
+            assertEquals(errorMsg, expected, actual);
+        }
+    }
+
+    /**
+     * @tests java.lang.Float#parseFloat(java.lang.String)
+     */
+    public void test_parseFloat_LString_ZeroBoundary() {
+        int expecteds[] = {
+                0x0,
+                0x0,
+                0x0,
+                0x0,
+                0x1,
+                0x1,
+                
+                0x80000000,
+                0x80000000,
+                0x80000000,
+                0x80000000,
+                0x80000001,
+                0x80000001,
+        };
+        
+        String inputs[] = {
+                "0x0.000000000000000p-126",   
+                "0x0.000000000000000000000000000000000000000000000001p-126",
+                "0x0.000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+                "0x0.000001p-126",
+                "0x0.000001000000000000000000000000000000000000000001p-126",
+                "0x0.000001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+                
+                "-0x0.000000000000000p-126",   
+                "-0x0.000000000000000000000000000000000000000000000001p-126",
+                "-0x0.000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+                "-0x0.000001p-126",
+                "-0x0.000001000000000000000000000000000000000000000001p-126",
+                "-0x0.000001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+        };
+        
+        for (int i = 0; i < inputs.length; i++) {
+            float actual = Float.parseFloat(inputs[i]);
+            float expected = Float.intBitsToFloat(expecteds[i]);
+            
+            String expectedString = Integer.toHexString(Float.floatToIntBits(expected));
+            String actualString = Integer.toHexString(Float.floatToIntBits(actual));
+            String errorMsg = i + "th input string is:<" + inputs[i]
+            + ">.The expected result should be:<" + expectedString
+            + ">, but was: <" + actualString + ">. ";
+            
+            assertEquals(errorMsg, expected, actual);
+        }
+    }
 
     /**
      * @tests java.lang.Float#shortValue()

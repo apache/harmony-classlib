@@ -301,6 +301,12 @@ public final class FloatingPointParser {
 		if ((last == 'y') || (last == 'N')) {
 			return parseFltName(s, length);
 		}
+        
+        // See if it could be a hexadecimal representation
+        if (s.toLowerCase().indexOf("0x") != -1) { //$NON-NLS-1$
+            return HexStringParser.parseFloat(s);
+        }
+        
 		StringExponentPair info = initialParse(s, length);
 
 		float result = parseFltImpl(info.s, info.e);
