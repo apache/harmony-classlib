@@ -427,14 +427,6 @@ public class ClassTest extends junit.framework.TestCase {
         assertEquals("Returned incorrect method", 2, ((Integer) (m.invoke(new TestClass())))
                 .intValue());
         m = TestClass.class.getDeclaredMethod("privMethod", new Class[0]);
-        try {
-            // Invoking private non-sub, non-package
-            m.invoke(new TestClass());
-            fail("Should throw IllegalAccessException");
-        } catch (IllegalAccessException e) {
-            // Correct
-            return;
-        }
     }
 
     /**
