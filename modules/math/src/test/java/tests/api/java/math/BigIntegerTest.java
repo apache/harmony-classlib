@@ -850,6 +850,26 @@ public class BigIntegerTest extends junit.framework.TestCase {
             }
 		}
 	}
+    
+
+     public void testClone() {
+        // Regression test for HARMONY-1770
+        MyBigInteger myBigInteger = new MyBigInteger("12345");
+        myBigInteger = (MyBigInteger) myBigInteger.clone();
+    }
+
+    static class MyBigInteger extends BigInteger implements Cloneable {
+        public MyBigInteger(String val) {
+            super(val);
+        }
+        public Object clone() {
+            try {
+                return super.clone();
+            } catch (CloneNotSupportedException e) {
+                return null;
+            }
+        }
+    }
 
 	@Override
     protected void setUp() {
