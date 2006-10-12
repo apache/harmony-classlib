@@ -596,7 +596,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
                     .longValue()));
         }
         // Now 'val1' and 'val2' will be muttable
-        return Division.gcdBinary(val1.clone(), val2.clone());
+        return Division.gcdBinary(val1.copy(), val2.copy());
     }
 
     /** @ar.org.fitc.spec_ref */
@@ -906,15 +906,13 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         return firstNonzeroDigit;
     }
     
-    /**
-     * Returns a clone of {@code this}.
-     * @return a copy of {@code this}, so that {@code equals(clone()) == true}.
+    /*
+     * Returns a copy of the current instance to achieve immutability
      */
-    @Override
-    protected BigInteger clone() {
-        int[] clonedDigits = new int[numberLength];
-        System.arraycopy(digits, 0, clonedDigits, 0, numberLength);
-        return new BigInteger(sign, numberLength, clonedDigits);
+    BigInteger copy() {
+        int[] copyDigits = new int[numberLength];
+        System.arraycopy(digits, 0, copyDigits, 0, numberLength);
+        return new BigInteger(sign, numberLength, copyDigits);
     }
 
     /** @ar.org.fitc.spec_ref */

@@ -145,7 +145,7 @@ class Primality {
             // primes
             for (j = 0; j < gapSize; j++) {
                 if (!isDivisible[j]) {
-                    probPrime = startPoint.clone();
+                    probPrime = startPoint.copy();
                     Elementary.inplaceAdd(probPrime, j);
 
                     if (millerRabin(probPrime, certainty)) {

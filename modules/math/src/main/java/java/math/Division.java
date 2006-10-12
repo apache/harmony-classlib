@@ -614,8 +614,8 @@ class Division {
     static BigInteger pow2ModPow(BigInteger base, BigInteger exponent, int j) {
         // PRE: (base > 0), (exponent > 0) and (j > 0)
         BigInteger res = BigInteger.ONE;
-        BigInteger e = exponent.clone();
-        BigInteger baseMod2toN = base.clone();
+        BigInteger e = exponent.copy();
+        BigInteger baseMod2toN = base.copy();
         BigInteger res2;
         /*
          * If 'base' is odd then it's coprime with 2^j and phi(2^j) = 2^(j-1);
@@ -627,7 +627,7 @@ class Division {
         inplaceModPow2(baseMod2toN, j);
 
         for (int i = e.bitLength() - 1; i >= 0; i--) {
-            res2 = res.clone();
+            res2 = res.copy();
             inplaceModPow2(res2, j);
             res = res.multiply(res2);
             if (BitLevel.testBit(e, i)) {
