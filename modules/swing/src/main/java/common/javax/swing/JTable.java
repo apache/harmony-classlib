@@ -1152,7 +1152,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return getModel().getColumnName(convertColumnIndexToModel(viewIndex));
     }
 
-    public Class getColumnClass(final int viewIndex) {
+    public Class<?> getColumnClass(final int viewIndex) {
         return getModel().getColumnClass(convertColumnIndexToModel(viewIndex));
     }
 

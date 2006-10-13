@@ -28,32 +28,7 @@ import javax.swing.text.Element;
 
 public class FormSubmitEvent extends HTMLFrameHyperlinkEvent {
 
-    public static class MethodType {
-        // TODO: Uncomment along with transition to 1.5
-        // public static enum MethodType extends Enum<MethodType> {
-
-        public static final MethodType GET = new MethodType();
-        public static final MethodType POST = new MethodType();
-
-        private MethodType() {
-        }
-
-        public static MethodType valueOf(final String name) {
-            if ("GET".equals(name)) {
-                return GET;
-            } else if ("POST".equals(name)) {
-                return POST;
-            }
-            throw new IllegalArgumentException("parameter has to be GET or POST");
-        }
-
-        public static final MethodType[] values() {
-            MethodType[] result = new MethodType[2];
-            result[0] = GET;
-            result[1] = POST;
-            return result;
-        }
-    }
+    public static enum MethodType {GET, POST}
 
     private String data;
     private MethodType method;

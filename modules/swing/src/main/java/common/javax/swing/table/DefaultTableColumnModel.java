@@ -39,7 +39,7 @@ import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 
 public class DefaultTableColumnModel implements TableColumnModel, PropertyChangeListener, ListSelectionListener, Serializable {
-    protected Vector tableColumns = new Vector();
+    protected Vector<TableColumn> tableColumns = new Vector<TableColumn>();
     protected ListSelectionModel selectionModel;
     protected int columnMargin = 1;
     protected EventListenerList listenerList = new EventListenerList();
@@ -220,7 +220,7 @@ public class DefaultTableColumnModel implements TableColumnModel, PropertyChange
         return (TableColumnModelListener[])listenerList.getListeners(TableColumnModelListener.class);
     }
 
-    public EventListener[] getListeners(final Class listenerType) {
+    public <T extends EventListener> T[] getListeners(final Class<T> listenerType) {
         return listenerList.getListeners(listenerType);
     }
 

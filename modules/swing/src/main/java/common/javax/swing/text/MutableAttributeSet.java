@@ -32,7 +32,7 @@ public interface MutableAttributeSet extends AttributeSet {
 
     void removeAttributes(AttributeSet attrSet);
 
-    void removeAttributes(Enumeration attrNames);
+    void removeAttributes(Enumeration<?> attrNames);
 
     void setResolveParent(AttributeSet parent);
 

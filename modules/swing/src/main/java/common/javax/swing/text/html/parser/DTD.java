@@ -32,10 +32,10 @@ public class DTD implements DTDConstants {
 
     public String name;
 
-    public Vector elements = new Vector();
+    public Vector<Element> elements = new Vector<Element>();
 
-    public Hashtable elementHash = new Hashtable();
-    public Hashtable entityHash = new Hashtable();
+    public Hashtable<String, Element> elementHash = new Hashtable<String, Element>();
+    public Hashtable<Object, Entity> entityHash = new Hashtable<Object, Entity>();
 
     public final Element pcdata;
     public final Element html;
@@ -161,8 +161,8 @@ public class DTD implements DTDConstants {
     public void read(final DataInputStream stream) throws IOException {
         ObjectInputStream is = new ObjectInputStream(stream);
         try {
-            elementHash = (Hashtable)is.readObject();
-            elements = (Vector)is.readObject();
+            elementHash = (Hashtable<String, Element>)is.readObject();
+            elements = (Vector<Element>)is.readObject();
             int size = is.readInt();
             for (int i = 0; i < size; i ++) {
                 String name = (String)is.readObject();

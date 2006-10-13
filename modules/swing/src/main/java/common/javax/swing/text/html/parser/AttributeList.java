@@ -29,7 +29,7 @@ public final class AttributeList implements DTDConstants, Serializable {
 
     public int type;
 
-    public Vector values;
+    public Vector<?> values;
 
     public int modifier;
 
@@ -41,7 +41,7 @@ public final class AttributeList implements DTDConstants, Serializable {
                          final int type,
                          final int modifier,
                          final String value,
-                         final Vector values,
+                         final Vector<?> values,
                          final AttributeList next) {
         this.name = name;
         this.type = type;
@@ -137,7 +137,7 @@ public final class AttributeList implements DTDConstants, Serializable {
         return value;
     }
 
-    public Enumeration getValues() {
+    public Enumeration<?> getValues() {
         return values.elements();
     }
 

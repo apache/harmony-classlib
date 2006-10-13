@@ -33,7 +33,7 @@ public interface TableColumnModel {
     void setColumnMargin(int margin);
     int getColumnMargin();
     int getColumnCount();
-    public Enumeration getColumns();
+    public Enumeration<TableColumn> getColumns();
     int getColumnIndex(Object columnIdentifier);
     TableColumn getColumn(int columnIndex);
     int getColumnIndexAtX(int xPosition);

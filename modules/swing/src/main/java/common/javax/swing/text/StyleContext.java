@@ -119,7 +119,7 @@ public class StyleContext
                     ChangeListener.class);
         }
 
-        public EventListener[] getListeners(final Class listenerType) {
+        public <T extends EventListener> T[] getListeners(final Class<T> listenerType) {
             return listenerList.getListeners(listenerType);
         }
 
@@ -582,7 +582,7 @@ public class StyleContext
         return (Style)styles.getAttribute(name);
     }
 
-    public Enumeration getStyleNames() {
+    public Enumeration<?> getStyleNames() {
         return styles.getAttributeNames();
     }
 

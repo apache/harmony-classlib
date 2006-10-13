@@ -50,7 +50,7 @@ public interface AttributeSet {
 
     int getAttributeCount();
 
-    Enumeration getAttributeNames();
+    Enumeration<?> getAttributeNames();
 
     AttributeSet getResolveParent();
 

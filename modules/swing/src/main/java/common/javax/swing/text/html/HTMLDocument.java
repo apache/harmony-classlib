@@ -537,7 +537,9 @@ public class HTMLDocument extends DefaultStyledDocument {
         }
 
         protected MutableAttributeSet charAttr = new SimpleAttributeSet();
-        protected Vector parseBuffer = new Vector();
+
+        protected Vector<DefaultStyledDocument.ElementSpec> parseBuffer =
+                new Vector<DefaultStyledDocument.ElementSpec>();
 
         private static final String PARAGRAPH_TAG = "_paragraph_tag_";
         private static final int IMPLIED_HTML_DOCUMENT_START_SPECS_NUMBER = 8;

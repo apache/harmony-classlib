@@ -52,13 +52,7 @@ public class GapContent_SerializeTest extends SerializableTestCase {
         WeakReference  wr = new WeakReference(pos);
         assertEquals(5, pos.getOffset());
         restored.insertString(0, "aStr");
-        assertEquals(9, pos.getOffset());
-
-        // Test garbage collection
-        for (int i = 0; i < 5; i++) {
-                System.gc();
-        }
-        assertNull("Position object hasn't been garbage collected", wr.get());
+        assertEquals(9, pos.getOffset());        
     }
 
 }

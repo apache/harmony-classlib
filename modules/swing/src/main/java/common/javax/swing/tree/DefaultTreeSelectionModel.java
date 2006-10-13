@@ -76,7 +76,7 @@ public class DefaultTreeSelectionModel implements Cloneable, Serializable, TreeS
                                        : new PropertyChangeListener[0];
     }
 
-    public EventListener[] getListeners(final Class listenerType) {
+    public <T extends EventListener> T[] getListeners(final Class<T> listenerType) {
         return listenerList.getListeners(listenerType);
     }
 

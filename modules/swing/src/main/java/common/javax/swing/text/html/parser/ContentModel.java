@@ -247,9 +247,9 @@ public final class ContentModel implements Serializable {
      * If content is null, nothing will be added to elemVec.
      */
 
-    public void getElements(final Vector elemVec) {
+    public void getElements(final Vector<Element> elemVec) {
         if (content instanceof Element) {
-            elemVec.add(content);
+            elemVec.add((Element)content);
         } else if (content != null) {
             ((ContentModel)content).getElements(elemVec);
         }

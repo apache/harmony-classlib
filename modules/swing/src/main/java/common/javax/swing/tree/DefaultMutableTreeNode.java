@@ -29,7 +29,7 @@ import java.util.NoSuchElementException;
 import java.util.Vector;
 
 public class DefaultMutableTreeNode implements Cloneable, MutableTreeNode, Serializable {
-    public static final Enumeration EMPTY_ENUMERATION = new Vector().elements();
+    public static final Enumeration<TreeNode> EMPTY_ENUMERATION = new Vector<TreeNode>().elements();
 
     protected MutableTreeNode parent;
     protected Vector children;

@@ -467,12 +467,6 @@ public class DefaultCaretTest extends SwingTestCase {
             assertEquals(EvLList.length, dc.getChangeListeners().length);
         //dc.addChangeListener(ChL1);
         //dc.addChangeListener(ChL2);
-        try {
-            EvLList = dc.getListeners(JFrame.class);
-            assertTrue(false);
-        } catch (ClassCastException e) {
-            assertTrue(true);
-        }
     }
 
     /*

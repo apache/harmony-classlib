@@ -42,12 +42,6 @@ public class BasicDirectoryModel extends AbstractListModel implements PropertyCh
         }
     };
 
-    private final class FileComparator<T extends File> implements Comparator<T> {
-        public int compare(final T o1, final T o2) {
-            return lt(o1, o2) ? -1 : 1;
-        }
-    };
-
     public Vector<java.io.File> getFiles() {
         return fileList;
     }

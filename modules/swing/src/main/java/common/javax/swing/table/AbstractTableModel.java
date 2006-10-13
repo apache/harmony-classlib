@@ -82,7 +82,7 @@ public abstract class AbstractTableModel implements TableModel, Serializable {
         return (TableModelListener[])listenerList.getListeners(TableModelListener.class);
     }
 
-    public EventListener[] getListeners(final Class listenerType) {
+    public <T extends EventListener> T[] getListeners(final Class<T> listenerType) {
         return listenerList.getListeners(listenerType);
     }
 

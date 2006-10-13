@@ -340,7 +340,7 @@ public abstract class AbstractLayoutCache implements RowMapper {
     public abstract TreePath getPathForRow(int row);
     public abstract int getRowForPath(TreePath path);
     public abstract TreePath getPathClosestTo(int x, int y);
-    public abstract Enumeration getVisiblePathsFrom(TreePath path);
+    public abstract Enumeration<TreePath> getVisiblePathsFrom(TreePath path);
     public abstract int getVisibleChildCount(TreePath path);
     public abstract void setExpandedState(TreePath path, boolean isExpanded);
     public abstract boolean getExpandedState(TreePath path);

@@ -1008,7 +1008,7 @@ public class DefaultStyledDocument extends AbstractDocument
         return getStyleContext().getStyle(name);
     }
 
-    public Enumeration getStyleNames() {
+    public Enumeration<?> getStyleNames() {
         return getStyleContext().getStyleNames();
     }
 

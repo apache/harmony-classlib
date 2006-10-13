@@ -627,8 +627,8 @@ public class DefaultCaret extends Rectangle implements Caret, FocusListener,
         return dotBias;
     }
 
-    public EventListener[] getListeners(final Class c) {
-        EventListener[] evL = null;
+    public <T extends EventListener> T[] getListeners(final Class<T> c) {
+        T[] evL = null;
         try {
             evL = listenerList.getListeners(c);
         } catch (final ClassCastException e) {

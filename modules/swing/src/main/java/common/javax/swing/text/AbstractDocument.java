@@ -327,7 +327,7 @@ public abstract class AbstractDocument implements Document, Serializable {
 
         AttributeSet removeAttributes(AttributeSet old, AttributeSet toDelete);
 
-        AttributeSet removeAttributes(AttributeSet old, Enumeration names);
+        AttributeSet removeAttributes(AttributeSet old, Enumeration<?> names);
 
     }
 
@@ -335,7 +335,7 @@ public abstract class AbstractDocument implements Document, Serializable {
         Element[] elements =  new Element[0];
 
         private final SearchElement searchElem = new SearchElement();
-        private final Comparator comparator = new ElementComparator();
+        private final Comparator<Object> comparator = new ElementComparator();
 
         public BranchElement(final Element parent,
                              final AttributeSet attributes) {
@@ -948,7 +948,7 @@ public abstract class AbstractDocument implements Document, Serializable {
     private transient AttributeContext context;
     private transient Position docEnd;
     private DocumentFilter docFilter;
-    private Dictionary docProperties = new Hashtable();
+    private Dictionary<Object, Object> docProperties = new Hashtable<Object, Object>();
     private transient Position docStart;
     private transient DocumentFilter.FilterBypass filterBypasser;
 
@@ -1030,7 +1030,7 @@ public abstract class AbstractDocument implements Document, Serializable {
                 .getListeners(DocumentListener.class);
     }
 
-    public Dictionary getDocumentProperties() {
+    public Dictionary<Object, Object> getDocumentProperties() {
         return docProperties;
     }
 
@@ -1042,7 +1042,7 @@ public abstract class AbstractDocument implements Document, Serializable {
         return content.length() - 1;
     }
 
-    public EventListener[] getListeners(final Class listenerType) {
+    public <T extends EventListener> T[] getListeners(final Class<T> listenerType) {
         return listenerList.getListeners(listenerType);
     }
 
@@ -1173,7 +1173,7 @@ public abstract class AbstractDocument implements Document, Serializable {
         this.docFilter = filter;
     }
 
-    public void setDocumentProperties(final Dictionary properties) {
+    public void setDocumentProperties(final Dictionary<Object, Object> properties) {
         this.docProperties = properties;
     }
 

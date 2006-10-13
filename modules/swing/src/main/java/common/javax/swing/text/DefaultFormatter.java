@@ -204,7 +204,7 @@ public class DefaultFormatter extends JFormattedTextField.AbstractFormatter
         return overwriteMode;
     }
 
-    public Class getValueClass() {
+    public Class<?> getValueClass() {
         return valueClass;
     }
 
@@ -230,7 +230,7 @@ public class DefaultFormatter extends JFormattedTextField.AbstractFormatter
         this.overwriteMode = overwriteMode;
     }
 
-    public void setValueClass(final Class valueClass) {
+    public void setValueClass(final Class<?> valueClass) {
         this.valueClass = valueClass;
     }
 
