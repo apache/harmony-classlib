@@ -70,7 +70,7 @@ public class PreferencesTest extends TestCase {
 		assertEquals("System Preference Node: " + p.absolutePath(), p
 				.toString());
 		assertEquals(0, p.childrenNames().length);
-		assertEquals(p.keys().length, 0);
+		assertEquals(0, p.keys().length);
 		parent.removeNode();
 		try {
 			p = Preferences.userNodeForPackage(null);
@@ -89,7 +89,7 @@ public class PreferencesTest extends TestCase {
 		assertEquals("System Preference Node: " + p.absolutePath(), p
 				.toString());
 		// assertEquals(0, p.childrenNames().length);
-		// assertEquals(p.keys().length, 0);
+		// assertEquals(0, p.keys().length);
 	}
 
 	public void testConsts() {
@@ -109,7 +109,7 @@ public class PreferencesTest extends TestCase {
 		assertEquals("lang", p.name());
 		assertEquals("User Preference Node: " + p.absolutePath(), p.toString());
 		assertEquals(0, p.childrenNames().length);
-		assertEquals(p.keys().length, 0);
+		assertEquals(0, p.keys().length);
 
 		try {
 			p = Preferences.userNodeForPackage(null);
