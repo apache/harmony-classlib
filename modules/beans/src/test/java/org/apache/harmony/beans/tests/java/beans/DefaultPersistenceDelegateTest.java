@@ -353,7 +353,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
         assertEquals("new", e.getMethodName());
         assertEquals(2, e.getArguments().length);
         assertEquals(new Integer(2), e.getArguments()[0]);
-        assertEquals(null, e.getArguments()[1]);
+        assertNull(e.getArguments()[1]);
     }
 
     /*
@@ -475,7 +475,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
         assertEquals(0, exp.getArguments().length);
 
         // should have called get()
-        assertEquals(null, CallVerificationStack.getInstance().pop());
+        assertNull(CallVerificationStack.getInstance().pop());
 
         // should have called writeExpression()
         exp = (Expression) CallVerificationStack.getInstance().pop();
@@ -546,7 +546,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
         assertEquals(0, exp.getArguments().length);
 
         // should have called get()
-        assertEquals(null, CallVerificationStack.getInstance().pop());
+        assertNull(CallVerificationStack.getInstance().pop());
 
         // should have called writeExpression()
         exp = (Expression) CallVerificationStack.getInstance().pop();

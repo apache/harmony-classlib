@@ -252,7 +252,7 @@ public class PropertyEditorSupportTest extends TestCase {
         PropertyEditorSupport support = new PropertyEditorSupport();
         support.setValue(null);
 
-        assertEquals(null, support.getValue());
+        assertNull(support.getValue());
         assertEquals("null", support.getAsText());
 
         assertNull(support.getCustomEditor());

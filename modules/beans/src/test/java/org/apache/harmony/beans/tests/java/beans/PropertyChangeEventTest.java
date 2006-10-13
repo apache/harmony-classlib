@@ -54,7 +54,7 @@ public class PropertyChangeEventTest extends TestCase {
         PropertyChangeEvent event = new PropertyChangeEvent(src, null, null,
                 null);
         assertSame(src, event.getSource());
-        assertEquals(null, event.getPropertyName());
+        assertNull(event.getPropertyName());
         assertSame(null, event.getOldValue());
         assertSame(null, event.getNewValue());
         assertNull(event.getPropagationId());
@@ -71,7 +71,7 @@ public class PropertyChangeEventTest extends TestCase {
         PropertyChangeEvent event = new PropertyChangeEvent(src, null,
                 oldValue, newValue);
         assertSame(src, event.getSource());
-        assertEquals(null, event.getPropertyName());
+        assertNull(event.getPropertyName());
         assertSame(oldValue, event.getOldValue());
         assertSame(newValue, event.getNewValue());
         assertNull(event.getPropagationId());

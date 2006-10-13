@@ -1043,7 +1043,7 @@ public class StatementTest extends TestCase {
         }
 
         public static void assertNotCalled() {
-            assertEquals(null, calledMethod);
+            assertNull(calledMethod);
             assertTrue(receivedArguments.isEmpty());
         }
     }

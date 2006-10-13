@@ -74,7 +74,7 @@ public class BeanContextServiceRevokedEventTest extends TestCase {
         assertNull(event.getServiceClass());
         assertSame(services, event.getSource());
         assertSame(services, event.getSourceAsBeanContextServices());
-        assertEquals(true, event.isCurrentServiceInvalidNow());
+        assertTrue(event.isCurrentServiceInvalidNow());
         try {
             event.isServiceClass(Integer.class);
             fail("NPE expected");
@@ -90,7 +90,7 @@ public class BeanContextServiceRevokedEventTest extends TestCase {
         assertSame(BeanContext.class, event.getServiceClass());
         assertSame(services, event.getSource());
         assertSame(services, event.getSourceAsBeanContextServices());
-        assertEquals(true, event.isCurrentServiceInvalidNow());
+        assertTrue(event.isCurrentServiceInvalidNow());
     }
 
     public void testGetSourceAsBeanContextServices() {
@@ -123,10 +123,10 @@ public class BeanContextServiceRevokedEventTest extends TestCase {
         BeanContextServices services = new MockBeanContextServices();
         BeanContextServiceRevokedEvent event = new MockBeanContextServiceRevokedEvent(
                 services, BeanContext.class, true);
-        assertEquals(true, event.isCurrentServiceInvalidNow());
+        assertTrue(event.isCurrentServiceInvalidNow());
         event = new MockBeanContextServiceRevokedEvent(services,
                 BeanContext.class, false);
-        assertEquals(false, event.isCurrentServiceInvalidNow());
+        assertFalse(event.isCurrentServiceInvalidNow());
     }
 
     public void testSerialization() throws IOException, ClassNotFoundException {

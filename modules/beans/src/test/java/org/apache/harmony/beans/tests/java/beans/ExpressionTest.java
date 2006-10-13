@@ -703,7 +703,7 @@ public class ExpressionTest extends TestCase {
     public void testGetValue_UnboundedAmbitiousStaticMethod() throws Exception {
         Object[] arguments = new Object[] { "test" };
         Expression t = new Expression(MockObject.class, "forName", arguments);
-        assertEquals(null, t.getValue());
+        assertNull(t.getValue());
         MockObject.assertCalled("forName", arguments);
 
         t = new Expression(String.class, "forName",
@@ -1068,7 +1068,7 @@ public class ExpressionTest extends TestCase {
         }
 
         public static void assertNotCalled() {
-            assertEquals(null, calledMethod);
+            assertNull(calledMethod);
             assertTrue(receivedArguments.isEmpty());
         }
     }

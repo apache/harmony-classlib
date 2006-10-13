@@ -193,7 +193,7 @@ public class XMLDecoderTest extends TestCase {
         assertEquals(127, b.getB());
         assertSame(b, b.getBackRef());
         assertEquals(new Byte((byte) 127), b.getBobj());
-        assertEquals(false, b.isBool());
+        assertFalse(b.isBool());
         assertEquals(Boolean.TRUE, b.getBoolobj());
         assertEquals(Exception.class, b.getBornFriend().getClazz());
         assertEquals(888, b.getBornFriend().getZarr()[0]);

@@ -645,8 +645,8 @@ public class IndexedPropertyDescriptorTest extends TestCase {
         Class beanClass = MockJavaBean.class;
         IndexedPropertyDescriptor ipd = new IndexedPropertyDescriptor(
                 propertyName, beanClass, null, null, null, null);
-        assertEquals(null, ipd.getIndexedPropertyType());
-        assertEquals(null, ipd.getPropertyType());
+        assertNull(ipd.getIndexedPropertyType());
+        assertNull(ipd.getPropertyType());
         assertNull(ipd.getReadMethod());
         assertNull(ipd.getIndexedReadMethod());
     }
