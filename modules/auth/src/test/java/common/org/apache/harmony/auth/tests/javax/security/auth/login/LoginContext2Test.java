@@ -30,7 +30,7 @@ import javax.security.auth.spi.LoginModule;
 
 import junit.framework.TestCase;
 
-public class LoginContextTest extends TestCase {
+public class LoginContext2Test extends TestCase {
     private static final String VALID_NAME = "name1";
     private static final String INVALID_NAME = "name2";
 
