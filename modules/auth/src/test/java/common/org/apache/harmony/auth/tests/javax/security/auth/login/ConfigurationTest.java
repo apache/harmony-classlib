@@ -23,7 +23,6 @@
 package org.apache.harmony.auth.tests.javax.security.auth.login;
 
 import java.io.File;
-import java.security.Permission;
 import java.security.Security;
 import java.util.Properties;
 
@@ -33,6 +32,7 @@ import javax.security.auth.login.Configuration;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.auth.tests.support.SecurityChecker;
 import org.apache.harmony.auth.tests.support.TestUtils;
 
 import tests.support.Support_Exec;
@@ -48,38 +48,6 @@ public class ConfigurationTest extends TestCase {
 
     // security property to specify default configuration implementation 
     private static final String LOGIN_CONFIG_PROVIDER = "login.configuration.provider";
-
-	/**
-	 * Easy the SecurityManager class
-	 */
-	class MySecurityManager extends SecurityManager {
-
-		public boolean enableAccess;
-
-		public Permission checkTarget;
-
-		public boolean checkAsserted;
-
-		public MySecurityManager(Permission target, boolean enable) {
-			checkAsserted = false;
-			checkTarget = target;
-			enableAccess = enable;
-		}
-
-		public void checkPermission(Permission p) {
-			if (p instanceof AuthPermission && checkTarget.equals(p)) {
-				checkAsserted = true;
-				if (!enableAccess) {
-					throw new SecurityException();
-				}
-			}
-		}
-
-		public MySecurityManager reset() {
-			checkAsserted = false;
-			return this;
-		}
-	}
 
 	/**
 	 * Ease the configuration class
@@ -130,7 +98,7 @@ public class ConfigurationTest extends TestCase {
 	 * Tests that setConfiguration() is properly secured via SecurityManager.
 	 */
 	public void testSetConfiguration() {
-		MySecurityManager checker = new MySecurityManager(new AuthPermission(
+        SecurityChecker checker = new SecurityChecker(new AuthPermission(
 				"setLoginConfiguration"), true);
 		System.setSecurityManager(checker);
 		Configuration custom = new ConfTestProvider();
@@ -152,7 +120,7 @@ public class ConfigurationTest extends TestCase {
 	 */
 	public void testGetConfiguration() {
 		Configuration.setConfiguration(new ConfTestProvider());
-		MySecurityManager checker = new MySecurityManager(new AuthPermission(
+        SecurityChecker checker = new SecurityChecker(new AuthPermission(
 				"getLoginConfiguration"), true);
 		System.setSecurityManager(checker);
 		Configuration.getConfiguration();
