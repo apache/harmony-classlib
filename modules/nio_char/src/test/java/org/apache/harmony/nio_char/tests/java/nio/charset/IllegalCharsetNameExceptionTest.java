@@ -49,7 +49,7 @@ public class IllegalCharsetNameExceptionTest extends TestCase {
 
 		ex = new IllegalCharsetNameException(null);
 		assertNull(ex.getCause());
-		assertEquals(ex.getCharsetName(), null);
+		assertNull(ex.getCharsetName());
 		assertTrue(ex.getMessage().indexOf("null") != -1);
 
 	}

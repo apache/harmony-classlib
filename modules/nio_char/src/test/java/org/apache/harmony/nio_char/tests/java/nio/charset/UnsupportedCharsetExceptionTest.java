@@ -49,7 +49,7 @@ public class UnsupportedCharsetExceptionTest extends TestCase {
 
 		ex = new UnsupportedCharsetException(null);
 		assertNull(ex.getCause());
-		assertEquals(ex.getCharsetName(), null);
+		assertNull(ex.getCharsetName());
 		assertTrue(ex.getMessage().indexOf("null") != -1);
 	}
 

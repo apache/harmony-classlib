@@ -92,7 +92,7 @@ public class AbstractBufferTest extends TestCase {
 
         assertEquals(baseBuf.hasRemaining(), baseBuf.position() < baseBuf.limit());
         baseBuf.position(baseBuf.limit());
-        assertEquals(baseBuf.hasRemaining(), false);
+        assertFalse(baseBuf.hasRemaining());
 
         // restore state
         baseBuf.limit(oldLimit);

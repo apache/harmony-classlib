@@ -105,7 +105,7 @@ public class BufferTest extends TestCase {
 
         assertEquals(buf.hasRemaining(), buf.position() < buf.limit());
         buf.position(buf.limit());
-        assertEquals(buf.hasRemaining(), false);
+        assertFalse(buf.hasRemaining());
 
         // restore state
         buf.limit(oldLimit);
