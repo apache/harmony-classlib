@@ -459,7 +459,7 @@ public class JTextComponent_AccessibleJTextComponentTest extends
 
     public void testGetSelectedText() throws Exception {
         jtc.setCaretPosition(5);
-        assertEquals(null, accessible.getSelectedText());
+        assertNull(accessible.getSelectedText());
         jtc.moveCaretPosition(8);
         assertEquals("Com", accessible.getSelectedText());
 

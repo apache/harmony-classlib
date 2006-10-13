@@ -238,11 +238,11 @@ public class StyleConstantsTest extends TestCase {
     }
 
     public void testIsBold() {
-        assertTrue(false == StyleConstants.isBold(SimpleAttributeSet.EMPTY));
+        assertFalse(StyleConstants.isBold(SimpleAttributeSet.EMPTY));
         putAttribute(StyleConstants.Bold, Boolean.TRUE);
-        assertTrue(true == StyleConstants.isBold(attr));
+        assertTrue(StyleConstants.isBold(attr));
         putAttribute(StyleConstants.Bold, Boolean.FALSE);
-        assertTrue(false == StyleConstants.isBold(attr));
+        assertFalse(StyleConstants.isBold(attr));
     }
 
     public void testItalic() {
@@ -255,11 +255,11 @@ public class StyleConstantsTest extends TestCase {
     }
 
     public void testIsItalic() {
-        assertTrue(false == StyleConstants.isItalic(SimpleAttributeSet.EMPTY));
+        assertFalse(StyleConstants.isItalic(SimpleAttributeSet.EMPTY));
         putAttribute(StyleConstants.Italic, Boolean.TRUE);
-        assertTrue(true == StyleConstants.isItalic(attr));
+        assertTrue(StyleConstants.isItalic(attr));
         putAttribute(StyleConstants.Italic, Boolean.FALSE);
-        assertTrue(false == StyleConstants.isItalic(attr));
+        assertFalse(StyleConstants.isItalic(attr));
     }
 
     public void testStrikeThrough() {
@@ -272,12 +272,11 @@ public class StyleConstantsTest extends TestCase {
     }
 
     public void testIsStrikeThrough() {
-        assertTrue(
-            false == StyleConstants.isStrikeThrough(SimpleAttributeSet.EMPTY));
+        assertFalse(StyleConstants.isStrikeThrough(SimpleAttributeSet.EMPTY));
         putAttribute(StyleConstants.StrikeThrough, Boolean.TRUE);
-        assertTrue(true == StyleConstants.isStrikeThrough(attr));
+        assertTrue(StyleConstants.isStrikeThrough(attr));
         putAttribute(StyleConstants.StrikeThrough, Boolean.FALSE);
-        assertTrue(false == StyleConstants.isStrikeThrough(attr));
+        assertFalse(StyleConstants.isStrikeThrough(attr));
     }
 
     public void testSubscript() {
@@ -290,12 +289,11 @@ public class StyleConstantsTest extends TestCase {
     }
 
     public void testIsSubscript() {
-        assertTrue(
-            false == StyleConstants.isSubscript(SimpleAttributeSet.EMPTY));
+        assertFalse(StyleConstants.isSubscript(SimpleAttributeSet.EMPTY));
         putAttribute(StyleConstants.Subscript, Boolean.TRUE);
-        assertTrue(true == StyleConstants.isSubscript(attr));
+        assertTrue(StyleConstants.isSubscript(attr));
         putAttribute(StyleConstants.Subscript, Boolean.FALSE);
-        assertTrue(false == StyleConstants.isSubscript(attr));
+        assertFalse(StyleConstants.isSubscript(attr));
     }
 
     public void testSuperscript() {
@@ -308,12 +306,11 @@ public class StyleConstantsTest extends TestCase {
     }
 
     public void testIsSuperscript() {
-        assertTrue(
-            false == StyleConstants.isSuperscript(SimpleAttributeSet.EMPTY));
+        assertFalse(StyleConstants.isSuperscript(SimpleAttributeSet.EMPTY));
         putAttribute(StyleConstants.Superscript, Boolean.TRUE);
-        assertTrue(true == StyleConstants.isSuperscript(attr));
+        assertTrue(StyleConstants.isSuperscript(attr));
         putAttribute(StyleConstants.Superscript, Boolean.FALSE);
-        assertTrue(false == StyleConstants.isSuperscript(attr));
+        assertFalse(StyleConstants.isSuperscript(attr));
     }
 
     public void testUnderline() {
@@ -326,12 +323,11 @@ public class StyleConstantsTest extends TestCase {
     }
 
     public void testIsUnderline() {
-        assertTrue(
-            false == StyleConstants.isUnderline(SimpleAttributeSet.EMPTY));
+        assertFalse(StyleConstants.isUnderline(SimpleAttributeSet.EMPTY));
         putAttribute(StyleConstants.Underline, Boolean.TRUE);
-        assertTrue(true == StyleConstants.isUnderline(attr));
+        assertTrue(StyleConstants.isUnderline(attr));
         putAttribute(StyleConstants.Underline, Boolean.FALSE);
-        assertTrue(false == StyleConstants.isUnderline(attr));
+        assertFalse(StyleConstants.isUnderline(attr));
     }
 
     public void testSetFirstLineIndent() {
@@ -417,72 +413,60 @@ public class StyleConstantsTest extends TestCase {
     public void testSetBold() {
         attr.removeAttributes(attr);
         StyleConstants.setBold(attr, true);
-        assertTrue(
-            true == ((Boolean)attr.getAttribute(
+        assertTrue(((Boolean)attr.getAttribute(
                         StyleConstants.Bold)).booleanValue());
         StyleConstants.setBold(attr, false);
-        assertTrue(
-            false == ((Boolean)attr.getAttribute(
+        assertFalse(((Boolean)attr.getAttribute(
                          StyleConstants.Bold)).booleanValue());
     }
 
     public void testSetItalic() {
         attr.removeAttributes(attr);
         StyleConstants.setItalic(attr, true);
-        assertTrue(
-            true == ((Boolean)attr.getAttribute(
+        assertTrue(((Boolean)attr.getAttribute(
                         StyleConstants.Italic)).booleanValue());
         StyleConstants.setItalic(attr, false);
-        assertTrue(
-            false == ((Boolean)attr.getAttribute(
+        assertFalse(((Boolean)attr.getAttribute(
                          StyleConstants.Italic)).booleanValue());
     }
 
     public void testSetStrikeThrough() {
         attr.removeAttributes(attr);
         StyleConstants.setStrikeThrough(attr, true);
-        assertTrue(
-            true == ((Boolean)attr.getAttribute(
+        assertTrue(((Boolean)attr.getAttribute(
                         StyleConstants.StrikeThrough)).booleanValue());
         StyleConstants.setStrikeThrough(attr, false);
-        assertTrue(
-            false == ((Boolean)attr.getAttribute(
+        assertFalse(((Boolean)attr.getAttribute(
                          StyleConstants.StrikeThrough)).booleanValue());
     }
 
     public void testSetSubscript() {
         attr.removeAttributes(attr);
         StyleConstants.setSubscript(attr, true);
-        assertTrue(
-            true == ((Boolean)attr.getAttribute(
+        assertTrue(((Boolean)attr.getAttribute(
                         StyleConstants.Subscript)).booleanValue());
         StyleConstants.setSubscript(attr, false);
-        assertTrue(
-            false == ((Boolean)attr.getAttribute(
+        assertFalse(((Boolean)attr.getAttribute(
                          StyleConstants.Subscript)).booleanValue());
     }
 
     public void testSetSuperscript() {
         attr.removeAttributes(attr);
         StyleConstants.setSuperscript(attr, true);
-        assertTrue(
-            true == ((Boolean)attr.getAttribute(
+        assertTrue(((Boolean)attr.getAttribute(
                         StyleConstants.Superscript)).booleanValue());
         StyleConstants.setSuperscript(attr, false);
-        assertTrue(
-            false == ((Boolean)attr.getAttribute(
+        assertFalse(((Boolean)attr.getAttribute(
                          StyleConstants.Superscript)).booleanValue());
     }
 
     public void testSetUnderline() {
         attr.removeAttributes(attr);
         StyleConstants.setUnderline(attr, true);
-        assertTrue(
-            true == ((Boolean)attr.getAttribute(
+        assertTrue(((Boolean)attr.getAttribute(
                         StyleConstants.Underline)).booleanValue());
         StyleConstants.setUnderline(attr, false);
-        assertTrue(
-            false == ((Boolean)attr.getAttribute(
+        assertFalse(((Boolean)attr.getAttribute(
                          StyleConstants.Underline)).booleanValue());
     }
 

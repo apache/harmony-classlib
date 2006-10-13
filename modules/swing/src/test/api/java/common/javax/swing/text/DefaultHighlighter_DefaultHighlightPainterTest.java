@@ -118,7 +118,7 @@ public class DefaultHighlighter_DefaultHighlightPainterTest extends TestCase {
         assertEquals(Color.red,lp.getColor());
         lp = new DefaultHighlighter.DefaultHighlightPainter(null);
         assertNotNull(lp);
-        assertEquals(null,lp.getColor());
+        assertNull(lp.getColor());
     }
 
     private String incString(final String s, final int i ){

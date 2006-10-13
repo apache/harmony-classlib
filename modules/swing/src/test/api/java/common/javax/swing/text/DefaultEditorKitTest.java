@@ -43,7 +43,7 @@ public class DefaultEditorKitTest extends EditorKitTest {
     }
 
     public void testCreateCaret() {
-        assertEquals("Caret", null, kit.createCaret());
+        assertNull("Caret", kit.createCaret());
     }
 
     public void testCreateDefaultDocument() {
@@ -51,9 +51,9 @@ public class DefaultEditorKitTest extends EditorKitTest {
         assertTrue("document's type", doc instanceof PlainDocument);
         assertEquals("document's length", 0, doc.getLength());
         assertEquals("number of root elements", 2, doc.getRootElements().length);
-        assertEquals("document's title", null, doc
+        assertNull("document's title", doc
                 .getProperty(Document.TitleProperty));
-        assertEquals("document's StreamDescription", null, doc
+        assertNull("document's StreamDescription", doc
                 .getProperty(Document.StreamDescriptionProperty));
     }
 
@@ -94,7 +94,7 @@ public class DefaultEditorKitTest extends EditorKitTest {
     }
 
     public void testGetViewFactory() {
-        assertEquals("ViewFactory", null, kit.getViewFactory());
+        assertNull("ViewFactory", kit.getViewFactory());
     }
 
     public void testActionSharing() {

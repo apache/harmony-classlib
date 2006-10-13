@@ -136,7 +136,7 @@ public class TextActionTest extends SwingTestCase {
         assertTrue("action is enabled initially", action2.isEnabled());
 
         assertEquals("Number of keys", 0, action3.getKeys().length);
-        assertEquals("name ", null, action3.getValue(Action.NAME));
+        assertNull("name ", action3.getValue(Action.NAME));
         assertTrue("action is enabled initially", action3.isEnabled());
     }
 

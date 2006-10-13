@@ -120,7 +120,7 @@ public class JTextComponent_AccessibleJTextComponent_variousTextTest extends Tes
         assertEquals("test",accessible.getAfterIndex(AccessibleText.WORD,8));
         assertEquals("LALALA\n",
                 accessible.getAfterIndex(AccessibleText.SENTENCE, 8));
-        assertEquals(null,accessible.getAfterIndex(AccessibleText.SENTENCE,
+        assertNull(accessible.getAfterIndex(AccessibleText.SENTENCE,
                 jtc.getDocument().getLength() -2));
 
         assertEquals(" ",accessible.getBeforeIndex(AccessibleText.CHARACTER,4));
@@ -137,7 +137,7 @@ public class JTextComponent_AccessibleJTextComponent_variousTextTest extends Tes
         assertEquals("this",accessible.getBeforeIndex(AccessibleText.WORD,8));
         assertEquals("In\n",
                 accessible.getBeforeIndex(AccessibleText.SENTENCE, 8));
-        assertEquals(null,accessible.getBeforeIndex(AccessibleText.SENTENCE, 1));
+        assertNull(accessible.getBeforeIndex(AccessibleText.SENTENCE, 1));
     }
 
 

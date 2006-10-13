@@ -220,8 +220,8 @@ public class JTextComponent_MultithreadedTest extends TestCase {
             jf.pack();
         }
 
-        assertEquals(false, jep.getScrollableTracksViewportHeight());
-        assertEquals(false, jep.getScrollableTracksViewportWidth());
+        assertFalse(jep.getScrollableTracksViewportHeight());
+        assertFalse(jep.getScrollableTracksViewportWidth());
         assertEquals(jep.getPreferredSize(), jep
                 .getPreferredScrollableViewportSize());
 

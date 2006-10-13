@@ -440,10 +440,10 @@ public class JTextComponentTest extends SwingTestCase {
         jtc.select(5, 8);
         jtc.replaceSelection(null);
         assertEquals("JTextponent", jtc.getText());
-        assertEquals(null, jtc.getSelectedText());
+        assertNull(jtc.getSelectedText());
         jtc.select(5, 8);
         jtc.replaceSelection("XXX");
-        assertEquals(null, jtc.getSelectedText());
+        assertNull(jtc.getSelectedText());
         assertEquals("JTextXXXent", jtc.getText());
 
         jtc.setText("JTextComponent");
@@ -594,21 +594,21 @@ public class JTextComponentTest extends SwingTestCase {
 
     public void testSetIsEditable() throws Exception {
 
-        assertEquals(true, jtc.isEditable());
+        assertTrue(jtc.isEditable());
         jtc.setEditable(false);
         assertEqualsPropertyChangeEvent("editable", new Boolean(true),
                 new Boolean(false), pChListener.event);
-        assertEquals(false, jtc.isEditable());
+        assertFalse(jtc.isEditable());
 
     }
 
     public void testSetGetDragEnabled() throws Exception {
         /*
          * class RunnableCase0 extends RunnableWrap { public void run() {
-         * assertEquals(false,jtc.getDragEnabled());
+         * assertFalse(jtc.getDragEnabled());
          * assertNotNull(jtc.getTransferHandler()); TransferHandler th =
          * jtc.getTransferHandler(); jtc.setDragEnabled(true);
-         * assertEquals(true,jtc.getDragEnabled());
+         * assertTrue(jtc.getDragEnabled());
          * assertNotNull(jtc.getTransferHandler());
          * assertEquals(th,jtc.getTransferHandler());
          * jtc.setText("JTextComponent"); jtc.select(5,8); } }
@@ -704,7 +704,7 @@ public class JTextComponentTest extends SwingTestCase {
 
         jtc.setSelectionStart(8);
         jtc.setSelectionEnd(5);
-        assertEquals(null, jtc.getSelectedText());
+        assertNull(jtc.getSelectedText());
         assertEquals(5, jtc.getSelectionStart());
         assertEquals(5, jtc.getSelectionEnd());
         assertEquals(5, jtc.getCaret().getDot());
@@ -733,7 +733,7 @@ public class JTextComponentTest extends SwingTestCase {
         assertEquals(3, jtc.getCaret().getMark());
         assertEquals(3, jtc.getSelectionStart());
         assertEquals(3, jtc.getSelectionEnd());
-        assertEquals(null, jtc.getSelectedText());
+        assertNull(jtc.getSelectedText());
 
         jtc.setSelectionStart(8);
         assertEquals(8, jtc.getCaret().getDot());
@@ -875,14 +875,14 @@ public class JTextComponentTest extends SwingTestCase {
 //        jtc.setCaretPosition(5);
 //        jtc.paste();
 //        assertEquals("XXX", getClipboardString(jtc));
-//        assertEquals(null, jtc.getSelectedText());
+//        assertNull(jtc.getSelectedText());
 //        assertEquals("JTextXXXComponent", jtc.getText());
 //
 //        jtc.select(10, 14);
 //        setClipboardString(jtc, "YYY");
 //        jtc.paste();
 //        assertEquals("YYY", getClipboardString(jtc));
-//        assertEquals(null, jtc.getSelectedText());
+//        assertNull(jtc.getSelectedText());
 //        assertEquals("JTextXXXCoYYYent", jtc.getText());
 //
 //        jtc.select(14, 16);
@@ -890,7 +890,7 @@ public class JTextComponentTest extends SwingTestCase {
 //        jtc.paste();
 //        assertEquals("", getClipboardString(jtc));
 //        //TODO ??
-//        assertEquals(null, jtc.getSelectedText());
+//        assertNull(jtc.getSelectedText());
 //        assertEquals("JTextXXXCoYYYe", jtc.getText());
     }
 
@@ -902,13 +902,13 @@ public class JTextComponentTest extends SwingTestCase {
 //        setClipboardString(jtc, "XXX");
 //        jtc.cut();
 //        assertEquals("XXX", getClipboardString(jtc));
-//        assertEquals(null, jtc.getSelectedText());
+//        assertNull(jtc.getSelectedText());
 //        assertEquals("JTextComponent", jtc.getText());
 //
 //        jtc.select(4, 8);
 //        jtc.cut();
 //        assertEquals("tCom", getClipboardString(jtc));
-//        assertEquals(null, jtc.getSelectedText());
+//        assertNull(jtc.getSelectedText());
 //        assertEquals("JTexponent", jtc.getText());
     }
 
@@ -943,7 +943,7 @@ public class JTextComponentTest extends SwingTestCase {
 //        setClipboardString(jtc, "XXX");
 //        jtc.copy();
 //        assertEquals("XXX", getClipboardString(jtc));
-//        assertEquals(null, jtc.getSelectedText());
+//        assertNull(jtc.getSelectedText());
 //        assertEquals("JTextComponent", jtc.getText());
 //
 //        jtc.select(4, 8);
@@ -966,23 +966,23 @@ public class JTextComponentTest extends SwingTestCase {
         Keymap keyMap5 = JTextComponent.addKeymap("Fifth", keyMap2);
         assertEquals(keyMap, keyMap1.getResolveParent());
         assertEquals(keyMap2.getResolveParent(), keyMap1);
-        assertEquals(keyMap3.getResolveParent(), null);
-        assertEquals(keyMap4.getResolveParent(), null);
+        assertNull(keyMap3.getResolveParent());
+        assertNull(keyMap4.getResolveParent());
         assertEquals(keyMap1, JTextComponent.getKeymap("First"));
         assertEquals(keyMap2, JTextComponent.getKeymap("Second"));
         assertEquals(keyMap3, JTextComponent.getKeymap("Third"));
-        assertEquals(null, JTextComponent.getKeymap("Fourth"));
+        assertNull(JTextComponent.getKeymap("Fourth"));
 
         JTextComponent.removeKeymap("First");
-        assertEquals(null, JTextComponent.getKeymap("First"));
+        assertNull(JTextComponent.getKeymap("First"));
         //assertEquals(keyMap,JTextComponent.getKeymap("Second").//TODO
         //      getResolveParent());
         JTextComponent.removeKeymap("Second");
         JTextComponent.removeKeymap("Third");
         JTextComponent.removeKeymap("Fifth");
-        assertEquals(null, JTextComponent.getKeymap("Second"));
-        assertEquals(null, JTextComponent.getKeymap("Third"));
-        assertEquals(null, JTextComponent.getKeymap("Fifth"));
+        assertNull(JTextComponent.getKeymap("Second"));
+        assertNull(JTextComponent.getKeymap("Third"));
+        assertNull(JTextComponent.getKeymap("Fifth"));
 
     }
 
@@ -1040,7 +1040,7 @@ public class JTextComponentTest extends SwingTestCase {
         assertEquals(actions[1], k.getAction(keyStroke3));
         assertEquals(actions[0], k.getAction(keyStroke5));
         assertEquals(actions[0], k.getAction(keyStroke6));
-        assertEquals(null, k.getAction(keyStroke4));
+        assertNull(k.getAction(keyStroke4));
 
         assertEquals(3, k.getKeyStrokesForAction(actions[0]).length);
         assertEquals(1, k.getKeyStrokesForAction(actions[1]).length);
@@ -1051,7 +1051,7 @@ public class JTextComponentTest extends SwingTestCase {
         isElement(k.getKeyStrokesForAction(actions[0]), keyStroke6, 1);
         isElement(k.getKeyStrokesForAction(actions[1]), keyStroke3, 1);
         isElement(k.getKeyStrokesForAction(actions[2]), keyStroke2, 1);
-        assertEquals(null, k.getKeyStrokesForAction(actions[3]));
+        assertNull(k.getKeyStrokesForAction(actions[3]));
     }
 
     public void testConstants() {
@@ -1110,7 +1110,7 @@ public class JTextComponentTest extends SwingTestCase {
         assertEquals(color, jtc1.getSelectionColor());
         assertEquals(color, jtc1.getSelectedTextColor());
         assertEquals(color, jtc1.getDisabledTextColor());
-        assertEquals(null, jtc1.getSelectedText());
+        assertNull(jtc1.getSelectedText());
         assertEquals(0, jtc1.getCaretPosition());
         assertEquals(new Insets(10, 20, 30, 40), jtc1.getMargin());
         assertNotSame("KeyMap", jtc1.getKeymap().getName());

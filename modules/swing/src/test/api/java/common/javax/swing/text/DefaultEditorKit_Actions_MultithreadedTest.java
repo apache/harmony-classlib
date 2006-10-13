@@ -188,7 +188,7 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
         JTextArea c = getInitedComponent(10, 15, text);
         assertEquals("selected text ", "89\nas", c.getSelectedText());
         performAction(c, action);
-        assertEquals("selected text ", null, c.getSelectedText());
+        assertNull("selected text ", c.getSelectedText());
     }
 
     public void testToggleComponentOrientationPerformed() throws Exception {
@@ -279,49 +279,49 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
         Action action = getAction(DefaultEditorKit.pageDownAction);
         JTextArea c = getInitedComponent(4, 6, text);
         performAction(c, action, null);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 35, c.getCaretPosition());
 
         performAction(c, action, null);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 48, c.getCaretPosition());
 
         performAction(c, action, null);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 56, c.getCaretPosition());
 
         performAction(c, action, null);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 78, c.getCaretPosition());
 
         action = getAction(DefaultEditorKit.pageUpAction);
         performAction(c, action, null);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 50, c.getCaretPosition());
 
         performAction(c, action, null);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 35, c.getCaretPosition());
 
         action = getAction(DefaultEditorKit.pageUpAction);
         performAction(c, action, null);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 6, c.getCaretPosition());
 
         action = getAction(DefaultEditorKit.pageUpAction);
         performAction(c, action, null);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 6, c.getCaretPosition());
 
         action = getAction(DefaultEditorKit.pageDownAction);
         performAction(c, action, null);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 35, c.getCaretPosition());
 
         action = getAction(DefaultEditorKit.pageUpAction);
         c = getInitedComponent(0, text);
         performAction(c, action, null);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 0, c.getCaretPosition());
 
         action = getAction(DefaultEditorKit.selectionPageDownAction);
@@ -346,7 +346,7 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
 
         c = getInitedComponent(10, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 10, c.getCaretPosition());
     }
 
@@ -374,12 +374,12 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
         Action action = getAction(DefaultEditorKit.endParagraphAction);
         JTextArea c = getInitedComponent(6, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 14, c.getCaretPosition());
 
         c = getInitedComponent(16, text);
         performAction(c, action);
-        assertEquals("resulted string", null, c.getSelectedText());
+        assertNull("resulted string", c.getSelectedText());
         assertEquals("caret position", 19, c.getCaretPosition());
 
         action = getAction(DefaultEditorKit.selectionEndParagraphAction);
@@ -395,7 +395,7 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
 
         c = getInitedComponent(0, null);
         performAction(c, action);
-        assertEquals("resulted string", null, c.getSelectedText());
+        assertNull("resulted string", c.getSelectedText());
     }
 
     public void testBeginParagraphActionPerformed() throws Exception {
@@ -403,12 +403,12 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
         Action action = getAction(DefaultEditorKit.beginParagraphAction);
         JTextArea c = getInitedComponent(6, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 0, c.getCaretPosition());
 
         c = getInitedComponent(16, text);
         performAction(c, action);
-        assertEquals("resulted string", null, c.getSelectedText());
+        assertNull("resulted string", c.getSelectedText());
         assertEquals("caret position", 14, c.getCaretPosition());
 
         action = getAction(DefaultEditorKit.selectionBeginParagraphAction);
@@ -424,7 +424,7 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
 
         c = getInitedComponent(0, null);
         performAction(c, action);
-        assertEquals("resulted string", null, c.getSelectedText());
+        assertNull("resulted string", c.getSelectedText());
     }
 
     public void testBeginWordActionPerformed() throws Exception {
@@ -432,17 +432,17 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
         Action action = getAction(DefaultEditorKit.beginWordAction);
         JTextArea c = getInitedComponent(13, 15, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 13, c.getCaretPosition());
 
         c = getInitedComponent(1, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 0, c.getCaretPosition());
 
         c = getInitedComponent(0, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 0, c.getCaretPosition());
 
         action = getAction(DefaultEditorKit.selectionBeginWordAction);
@@ -463,7 +463,7 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
 
         c = getInitedComponent(0, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 0, c.getCaretPosition());
     }
 
@@ -472,17 +472,17 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
         Action action = getAction(DefaultEditorKit.endWordAction);
         JTextArea c = getInitedComponent(13, 15, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 17, c.getCaretPosition());
 
         c = getInitedComponent(25, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 26, c.getCaretPosition());
 
         c = getInitedComponent(26, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 26, c.getCaretPosition());
 
         action = getAction(DefaultEditorKit.selectionEndWordAction);
@@ -498,7 +498,7 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
 
         c = getInitedComponent(26, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 26, c.getCaretPosition());
     }
 
@@ -507,23 +507,23 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
         Action action = getAction(DefaultEditorKit.previousWordAction);
         JTextArea c = getInitedComponent(13, 15, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 13, c.getCaretPosition());
 
         c = getInitedComponent(1, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 0, c.getCaretPosition());
 
         c = getInitedComponent(0, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 0, c.getCaretPosition());
 
         action = getAction(DefaultEditorKit.selectionPreviousWordAction);
         c = getInitedComponent(13, 17, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 13, c.getCaretPosition());
 
         c = getInitedComponent(15, 17, text);
@@ -538,7 +538,7 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
 
         c = getInitedComponent(0, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 0, c.getCaretPosition());
     }
 
@@ -547,17 +547,17 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
         Action action = getAction(DefaultEditorKit.nextWordAction);
         JTextArea c = getInitedComponent(13, 15, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 18, c.getCaretPosition());
 
         c = getInitedComponent(25, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 26, c.getCaretPosition());
 
         c = getInitedComponent(26, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 26, c.getCaretPosition());
 
         action = getAction(DefaultEditorKit.selectionNextWordAction);
@@ -573,7 +573,7 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
 
         c = getInitedComponent(26, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 26, c.getCaretPosition());
     }
 
@@ -582,12 +582,12 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
         String text = "0123456789\n12341234\n12341234";
         JTextArea c = getInitedComponent(14, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 11, c.getCaretPosition());
 
         c = getInitedComponent(8, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 0, c.getCaretPosition());
 
         action = getAction(DefaultEditorKit.selectionBeginLineAction);
@@ -598,7 +598,7 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
 
         c = getInitedComponent(0, null);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 0, c.getCaretPosition());
     }
 
@@ -607,12 +607,12 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
         String text = "0123456789\n12341234\n12341234";
         JTextArea c = getInitedComponent(14, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 19, c.getCaretPosition());
 
         c = getInitedComponent(10, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 10, c.getCaretPosition());
 
         action = getAction(DefaultEditorKit.selectionEndLineAction);
@@ -623,7 +623,7 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
 
         c = getInitedComponent(0, null);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 0, c.getCaretPosition());
     }
 
@@ -632,12 +632,12 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
         String text = "0123456789\n12341234\n12341234";
         JTextArea c = getInitedComponent(8, 14, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 28, c.getCaretPosition());
 
         c = getInitedComponent(0, null);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 0, c.getCaretPosition());
 
         action = getAction(DefaultEditorKit.selectionEndAction);
@@ -649,7 +649,7 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
 
         c = getInitedComponent(0, null);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 0, c.getCaretPosition());
     }
 
@@ -658,12 +658,12 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
         String text = "0123456789\n12341234\n12341234";
         JTextArea c = getInitedComponent(8, 14, text);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 0, c.getCaretPosition());
 
         c = getInitedComponent(0, null);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 0, c.getCaretPosition());
 
         action = getAction(DefaultEditorKit.selectionBeginAction);
@@ -675,7 +675,7 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
 
         c = getInitedComponent(0, null);
         performAction(c, action);
-        assertEquals("selected string", null, c.getSelectedText());
+        assertNull("selected string", c.getSelectedText());
         assertEquals("caret position", 0, c.getCaretPosition());
     }
 
@@ -696,7 +696,7 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
 
         c = getInitedComponent(0, null);
         performAction(c, action);
-        assertEquals("resulted string", null, c.getSelectedText());
+        assertNull("resulted string", c.getSelectedText());
     }
 
     public void testSelectLineActionPerformed() throws Exception {
@@ -713,7 +713,7 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
 
         c = getInitedComponent(0, null);
         performAction(c, action);
-        assertEquals("resulted string", null, c.getSelectedText());
+        assertNull("resulted string", c.getSelectedText());
     }
 
     public void testSelectParagraphActionPerformed() throws Exception {
@@ -748,7 +748,7 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
 
         c = getInitedComponent(0, null);
         performAction(c, action);
-        assertEquals("resulted string", null, c.getSelectedText());
+        assertNull("resulted string", c.getSelectedText());
     }
 
     public void testDeleteNextCharActionPerformed() throws Exception {
@@ -877,17 +877,17 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
         JTextArea c = getInitedComponent(8, text);
         performAction(c, action, null);
         assertEquals("caret position", 9, c.getCaretPosition());
-        assertEquals("selected text ", null, c.getSelectedText());
+        assertNull("selected text ", c.getSelectedText());
 
         c = getInitedComponent(text.length(), text);
         performAction(c, action, null);
         assertEquals("caret position", text.length(), c.getCaretPosition());
-        assertEquals("selected text ", null, c.getSelectedText());
+        assertNull("selected text ", c.getSelectedText());
 
         c = getInitedComponent(5, 7, text);
         performAction(c, action, null);
         assertEquals("caret position", 8, c.getCaretPosition());
-        assertEquals("selected text ", null, c.getSelectedText());
+        assertNull("selected text ", c.getSelectedText());
     }
 
     public void testNextVisualPositionActionPerformedCaretBackward() throws Exception {
@@ -896,17 +896,17 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
         JTextArea c = getInitedComponent(8, text);
         performAction(c, action);
         assertEquals("caret position", 7, c.getCaretPosition());
-        assertEquals("selected text ", null, c.getSelectedText());
+        assertNull("selected text ", c.getSelectedText());
 
         c = getInitedComponent(0, text);
         performAction(c, action);
         assertEquals("caret position", 0, c.getCaretPosition());
-        assertEquals("selected text ", null, c.getSelectedText());
+        assertNull("selected text ", c.getSelectedText());
 
         c = getInitedComponent(5, 7, text);
         performAction(c, action);
         assertEquals("caret position", 6, c.getCaretPosition());
-        assertEquals("selected text ", null, c.getSelectedText());
+        assertNull("selected text ", c.getSelectedText());
     }
 
     public void testNextVisualPositionActionPerformedSelectionForward() throws Exception {
@@ -920,7 +920,7 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
         c = getInitedComponent(text.length(), text);
         performAction(c, action);
         assertEquals("caret position", text.length(), c.getCaretPosition());
-        assertEquals("selected text ", null, c.getSelectedText());
+        assertNull("selected text ", c.getSelectedText());
 
         c = getInitedComponent(3, 7, text);
         performAction(c, action);
@@ -939,7 +939,7 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
         c = getInitedComponent(0, text);
         performAction(c, action);
         assertEquals("caret position", 0, c.getCaretPosition());
-        assertEquals("selected text ", null, c.getSelectedText());
+        assertNull("selected text ", c.getSelectedText());
 
         c = getInitedComponent(8, 5, text);
         performAction(c, action);
@@ -953,16 +953,16 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
         JTextArea c = getInitedComponent(15, text);
         performAction(c, action);
         assertEquals("caret position", 2, c.getCaretPosition());
-        assertEquals("selected text ", null, c.getSelectedText());
+        assertNull("selected text ", c.getSelectedText());
 
         performAction(c, action);
         assertEquals("caret position", 2, c.getCaretPosition());
-        assertEquals("selected text ", null, c.getSelectedText());
+        assertNull("selected text ", c.getSelectedText());
 
         c = getInitedComponent(24, 26, text);
         performAction(c, action);
         assertEquals("caret position", 17, c.getCaretPosition());
-        assertEquals("selected text ", null, c.getSelectedText());
+        assertNull("selected text ", c.getSelectedText());
     }
 
     public void testNextVisualPositionActionPerformedCaretDown() throws Exception {
@@ -973,14 +973,14 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
         assertEquals("magic caret pos", new Point(48, 0), c.getCaret()
                      .getMagicCaretPosition());
         assertEquals("caret position", 17, c.getCaretPosition());
-        assertEquals("selected text ", null, c.getSelectedText());
+        assertNull("selected text ", c.getSelectedText());
 
         c = getInitedComponent(text.length(), text);
         performAction(c, action);
         assertEquals("magic caret pos", 48, c.getCaret()
                      .getMagicCaretPosition().x);
         assertEquals("caret position", text.length(), c.getCaretPosition());
-        assertEquals("selected text ", null, c.getSelectedText());
+        assertNull("selected text ", c.getSelectedText());
 
         c = getInitedComponent(5, 7, text);
         performAction(c, action);
@@ -990,7 +990,7 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
         assertEquals("magic caret pos", new Point(42, 0), c.getCaret()
                      .getMagicCaretPosition());
         assertEquals("caret position", 25, c.getCaretPosition());
-        assertEquals("selected text ", null, c.getSelectedText());
+        assertNull("selected text ", c.getSelectedText());
     }
 
     public void testNextVisualPositionActionPerformedSelectionUp() throws Exception {
@@ -1022,7 +1022,7 @@ public class DefaultEditorKit_Actions_MultithreadedTest extends BasicSwingTestCa
         c = getInitedComponent(text.length(), text);
         performAction(c, action);
         assertEquals("caret position", text.length(), c.getCaretPosition());
-        assertEquals("selected text ", null, c.getSelectedText());
+        assertNull("selected text ", c.getSelectedText());
 
         c = getInitedComponent(5, 7, text);
         performAction(c, action);

@@ -246,7 +246,7 @@ public class DefaultCaretTest extends SwingTestCase {
 
         dc.deinstall(jta);
 
-        assertEquals(null, dc.getComponent());
+        assertNull(dc.getComponent());
         assertEquals(i, jta.getListeners(MouseListener.class).length + 1);
         assertEquals(j, jta.getListeners(MouseMotionListener.class).length + 1);
         assertEquals(k, jta.getListeners(FocusListener.class).length + 1);
@@ -978,7 +978,7 @@ public class DefaultCaretTest extends SwingTestCase {
 
         assertEquals("Dot=(4, Backward) Mark=(4, Backward)", dc1.toString());
         assertTrue(jta.equals(dc.getComponent()));
-        assertEquals(true, dc1.isSelectionVisible());
+        assertTrue(dc1.isSelectionVisible());
         assertEquals(100, dc1.getBlinkRate());
         assertTrue(dc1.getMagicCaretPosition().equals(new Point(200, 300)));
         assertTrue(dc1.getSelectionPainter() instanceof DefaultHighlighter.DefaultHighlightPainter);

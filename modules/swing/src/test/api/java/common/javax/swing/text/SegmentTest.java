@@ -135,14 +135,14 @@ public class SegmentTest extends TestCase {
      */
     public void testSegment() {
         s = new Segment();
-        assertEquals(null, s.array);
+        assertNull(s.array);
         assertEquals(0, s.count);
         assertEquals(0, s.offset);
     }
 
     public void testIsPartialReturn() {
         // Default state must be FALSE
-        assertEquals(false, s.isPartialReturn());
+        assertFalse(s.isPartialReturn());
     }
 
     public void testSetIndex() {
@@ -169,7 +169,7 @@ public class SegmentTest extends TestCase {
 
     public void testSetPartialReturn() {
         s.setPartialReturn(true);
-        assertEquals(true, s.isPartialReturn());
+        assertTrue(s.isPartialReturn());
     }
 
     /*
