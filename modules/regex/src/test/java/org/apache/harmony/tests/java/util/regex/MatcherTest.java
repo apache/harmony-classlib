@@ -546,7 +546,7 @@ public class MatcherTest extends TestCase {
 		assertEquals("1", mat.group(2));
 		assertEquals("1", mat.group(1));
 		assertEquals("1", mat.group(4));
-		assertEquals(null, mat.group(3));
+		assertNull(mat.group(3));
 
 	}
 

@@ -80,7 +80,7 @@ public class MarshalledObjectTest extends TestCase {
      *          If some error occurs.
      */
     public void testGet() throws Exception {
-        assertTrue(new MarshalledObject(null).get() == null);
+        assertNull(new MarshalledObject(null).get());
         String str = new String("TEST");
         assertEquals(str, new MarshalledObject(str).get());
         Hashtable ht = new Hashtable();
