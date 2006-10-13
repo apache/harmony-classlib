@@ -886,7 +886,7 @@ public class DefaultTreeModelTest extends SwingTestCase {
         if (isHarmony()) {
             assertEquals(0, model.getPathToRoot(null).length);
         } else {
-            assertEquals(null, model.getPathToRoot(null));
+            assertNull(model.getPathToRoot(null));
         }
 
         assertTrue(Arrays.equals(new TreeNode[] {node1}, model.getPathToRoot(node1)));

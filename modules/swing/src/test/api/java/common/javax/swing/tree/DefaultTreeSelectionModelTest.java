@@ -1167,7 +1167,7 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
 
         model.setSelectionPath(null);
         assertEquals(0, model.getSelectionCount());
-        assertEquals(null, treeSelectionListener.event.getNewLeadSelectionPath());
+        assertNull(treeSelectionListener.event.getNewLeadSelectionPath());
         assertEquals(1, treeSelectionListener.event.getPaths().length);
         assertFalse(treeSelectionListener.event.isAddedPath(0));
         treeSelectionListener.reset();
@@ -1279,7 +1279,7 @@ public class DefaultTreeSelectionModelTest extends SwingTestCase {
 
         assertNotNull(treeSelectionListener.event);
         assertEquals(path4, treeSelectionListener.event.getOldLeadSelectionPath());
-        assertEquals(null, treeSelectionListener.event.getNewLeadSelectionPath());
+        assertNull(treeSelectionListener.event.getNewLeadSelectionPath());
         assertEquals(3, treeSelectionListener.event.getPaths().length);
         assertTrue(treeSelectionListener.event.isAddedPath(0));
         assertTrue(treeSelectionListener.event.isAddedPath(1));
