@@ -180,11 +180,11 @@ public class StreamHandlerTest extends TestCase {
 		StreamHandler h = new StreamHandler();
 		assertSame(h.getLevel(), Level.INFO);
 		assertTrue(h.getFormatter() instanceof SimpleFormatter);
-		assertEquals(h.getFilter(), null);
-		assertEquals(h.getEncoding(), null);
+		assertNull(h.getFilter());
+		assertNull(h.getEncoding());
 		h.publish(new LogRecord(Level.SEVERE, "test"));
 		assertTrue(CallVerificationStack.getInstance().empty());
-		assertEquals(h.getEncoding(), null);
+		assertNull(h.getEncoding());
 	}
 
 	/*
@@ -287,8 +287,8 @@ public class StreamHandlerTest extends TestCase {
 				new MockFormatter2());
 		assertSame(h.getLevel(), Level.INFO);
 		assertTrue(h.getFormatter() instanceof MockFormatter2);
-		assertEquals(h.getFilter(), null);
-		assertEquals(h.getEncoding(), null);
+		assertNull(h.getFilter());
+		assertNull(h.getEncoding());
 	}
 
 	/*

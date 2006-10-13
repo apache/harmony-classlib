@@ -164,10 +164,10 @@ public class ConsoleHandlerTest extends TestCase {
 		ConsoleHandler h = new ConsoleHandler();
 		assertSame(h.getLevel(), Level.INFO);
 		assertTrue(h.getFormatter() instanceof SimpleFormatter);
-		assertEquals(h.getFilter(), null);
-		assertEquals(h.getEncoding(), null);
+		assertNull(h.getFilter());
+		assertNull(h.getEncoding());
 		h.publish(new LogRecord(Level.SEVERE, "test"));
-		assertEquals(h.getEncoding(), null);
+		assertNull(h.getEncoding());
 	}
 
 	/*

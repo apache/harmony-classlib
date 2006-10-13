@@ -456,7 +456,7 @@ public class FileHandlerTest extends TestCase {
 				.PropertiesToInputStream(props));
 		handler = new FileHandler();
 		assertEquals(Level.ALL, handler.getLevel());
-		assertEquals(null, handler.getFilter());
+		assertNull(handler.getFilter());
 		assertTrue(handler.getFormatter() instanceof XMLFormatter);
 		assertNull(handler.getEncoding());
 		handler.close();

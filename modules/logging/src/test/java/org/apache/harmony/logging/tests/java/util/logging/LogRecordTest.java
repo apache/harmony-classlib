@@ -147,15 +147,15 @@ public class LogRecordTest extends TestCase {
 		lr = new LogRecord(Level.SEVERE, MSG);
 		lr.setSourceMethodName(null);
 		logger.log(lr);
-		assertEquals(null, handler.getSourceClassName());
-		assertEquals(null, handler.getSourceMethodName());
+		assertNull(handler.getSourceClassName());
+		assertNull(handler.getSourceMethodName());
 
 		// only set source class to null
 		lr = new LogRecord(Level.SEVERE, MSG);
 		lr.setSourceClassName(null);
 		logger.log(lr);
-		assertEquals(null, handler.getSourceClassName());
-		assertEquals(null, handler.getSourceMethodName());
+		assertNull(handler.getSourceClassName());
+		assertNull(handler.getSourceMethodName());
 
 		// set both
 		lr = new LogRecord(Level.SEVERE, MSG);
@@ -163,7 +163,7 @@ public class LogRecordTest extends TestCase {
 		lr.setSourceMethodName(null);
 		logger.log(lr);
 		assertEquals("className", handler.getSourceClassName());
-		assertEquals(null, handler.getSourceMethodName());
+		assertNull(handler.getSourceMethodName());
 
 		// test if LogRecord is constructed in another class, and is published
 		// by Logger

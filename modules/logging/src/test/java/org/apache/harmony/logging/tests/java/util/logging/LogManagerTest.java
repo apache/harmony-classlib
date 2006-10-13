@@ -413,7 +413,7 @@ public class LogManagerTest extends TestCase {
 		root = mockManager.getLogger("");
 		checkPropertyNull(mockManager);
 		assertEquals(0, root.getHandlers().length);
-		assertEquals(null, root.getLevel());
+		assertNull(root.getLevel());
 		mockManager.readConfiguration(EnvironmentHelper.PropertiesToInputStream(props));
 		assertEquals(Level.FINE, root.getLevel());
 		checkProperty(mockManager);
@@ -489,7 +489,7 @@ public class LogManagerTest extends TestCase {
 //	public void testReadConfiguration() throws SecurityException, IOException {
 //          FIXME: move the support_exec
 //			Logger foo = new MockLogger("foo", null);
-//			assertEquals(null, foo.getLevel());
+//			assertNull(foo.getLevel());
 //			assertTrue(mockManager.addLogger(foo));
 //
 //			Logger fo = new MockLogger("foo2", null);
@@ -505,7 +505,7 @@ public class LogManagerTest extends TestCase {
 //			// level DO has effect
 //			assertEquals(Level.WARNING, foo.getLevel());
 //			// for non specifed logger, level is reset to null
-//			assertEquals(null, fo.getLevel());
+//			assertNull(fo.getLevel());
 //
 //			// read properties don't affect handler
 //			assertNotSame(Level.OFF, h.getLevel());
@@ -521,7 +521,7 @@ public class LogManagerTest extends TestCase {
 		InputStream stream = EnvironmentHelper.PropertiesToInputStream(props);
 
 		Logger foo = new MockLogger(FOO, null);
-		assertEquals(null, foo.getLevel());
+		assertNull(foo.getLevel());
 		assertTrue(mockManager.addLogger(foo));
 
 		Logger fo = new MockLogger("LogManagerTestFoo2", null);
@@ -540,7 +540,7 @@ public class LogManagerTest extends TestCase {
 		assertEquals(Level.WARNING, foo.getLevel());
 
 		// for non specifed logger, level is reset to null
-		assertEquals(null, fo.getLevel());
+		assertNull(fo.getLevel());
 
 		// read properties don't affect handler
 		assertNotSame(Level.OFF, h.getLevel());
@@ -568,11 +568,11 @@ public class LogManagerTest extends TestCase {
 				.getLogger("testReadConfigurationInputStream_root.foo2");
 
 		manager.addLogger(logger);
-		assertEquals(null, logger.getLevel());
+		assertNull(logger.getLevel());
 		assertEquals(0, logger.getHandlers().length);
 		assertSame(root, logger.getParent());
 
-		assertEquals(null, logger2.getLevel());
+		assertNull(logger2.getLevel());
 		assertEquals(0, logger2.getHandlers().length);
 		assertSame(root, logger2.getParent());
 		// if (!hasConfigClass) {
@@ -584,7 +584,7 @@ public class LogManagerTest extends TestCase {
 		manager.readConfiguration(stream);
 		assertEquals(Level.FINE, root.getLevel());
 		assertEquals(2, root.getHandlers().length);
-		assertEquals(null, logger.getLevel());
+		assertNull(logger.getLevel());
 		assertEquals(0, logger.getHandlers().length);
 		stream.close();
 	}
@@ -650,7 +650,7 @@ public class LogManagerTest extends TestCase {
 		mockManager.readConfiguration(EnvironmentHelper.PropertiesToInputStream(props));
 		assertNotNull(mockManager.getProperty("handlers"));
 		Logger foo = new MockLogger(FOO, null);
-		assertEquals(null, foo.getLevel());
+		assertNull(foo.getLevel());
         assertEquals(0, foo.getHandlers().length);
 		foo.setLevel(Level.ALL);
 		foo.addHandler(new ConsoleHandler());
@@ -665,7 +665,7 @@ public class LogManagerTest extends TestCase {
 		assertNull(mockManager.getProperty("handlers"));
 
 		// level is null
-		assertEquals(null, foo.getLevel());
+		assertNull(foo.getLevel());
 		// handlers are all closed
 		assertEquals(0, foo.getHandlers().length);
 
@@ -827,7 +827,7 @@ public class LogManagerTest extends TestCase {
 				e.printStackTrace();
 			}
 			checkProperty(manager);
-			assertEquals(root.getHandlers()[0].getLevel(), null);
+			assertNull(root.getHandlers()[0].getLevel());
 			assertEquals(1, root.getHandlers().length);
 			assertEquals(Level.INFO, root.getLevel());
 

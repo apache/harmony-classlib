@@ -133,7 +133,7 @@ public class LoggerTest extends TestCase {
 		assertNull(mlog.getFilter());
 		assertEquals(0, mlog.getHandlers().length);
 		assertNull(mlog.getLevel());
-		assertEquals(null, mlog.getName());
+		assertNull(mlog.getName());
 		assertNull(mlog.getParent());
 		assertNull(mlog.getResourceBundle());
 		assertNull(mlog.getResourceBundleName());
@@ -187,7 +187,7 @@ public class LoggerTest extends TestCase {
 			assertNull(alog.getFilter());
 			assertEquals(0, alog.getHandlers().length);
 			assertNull(alog.getLevel());
-			assertEquals(null, alog.getName());
+			assertNull(alog.getName());
 			assertNull(alog.getParent().getParent());
 			assertNull(alog.getResourceBundle());
 			assertNull(alog.getResourceBundleName());
@@ -209,7 +209,7 @@ public class LoggerTest extends TestCase {
 		assertNull(alog.getFilter());
 		assertEquals(0, alog.getHandlers().length);
 		assertNull(alog.getLevel());
-		assertEquals(null, alog.getName());
+		assertNull(alog.getName());
 		assertNull(alog.getParent().getParent());
 		assertEquals(VALID_VALUE, alog.getResourceBundle().getString(VALID_KEY));
 		assertEquals(alog.getResourceBundleName(), VALID_RESOURCE_BUNDLE);
@@ -226,7 +226,7 @@ public class LoggerTest extends TestCase {
 		assertNull(alog.getFilter());
 		assertEquals(0, alog.getHandlers().length);
 		assertNull(alog.getLevel());
-		assertEquals(null, alog.getName());
+		assertNull(alog.getName());
 		assertNull(alog.getParent().getParent());
 		assertNull(alog.getResourceBundle());
 		assertNull(alog.getResourceBundleName());
@@ -1242,10 +1242,10 @@ public class LoggerTest extends TestCase {
 	 */
 	public void testGetName_Null() {
 		Logger log = Logger.getAnonymousLogger();
-		assertEquals(null, log.getName());
+		assertNull(log.getName());
 
 		Logger mlog = new MockLogger(null, null);
-		assertEquals(null, mlog.getName());
+		assertNull(mlog.getName());
 	}
 
 	/*
@@ -1268,7 +1268,7 @@ public class LoggerTest extends TestCase {
 		assertNull(log.getResourceBundle());
 
 		Logger mlog = new MockLogger(null, null);
-		assertEquals(null, mlog.getResourceBundle());
+		assertNull(mlog.getResourceBundle());
 	}
 
 	/*
@@ -1280,7 +1280,7 @@ public class LoggerTest extends TestCase {
 		assertEquals(VALID_RESOURCE_BUNDLE, log.getResourceBundleName());
 
 		Logger mlog = new MockLogger(null, null);
-		assertEquals(null, mlog.getResourceBundleName());
+		assertNull(mlog.getResourceBundleName());
 	}
 
 	/*
@@ -1291,7 +1291,7 @@ public class LoggerTest extends TestCase {
 		assertNull(log.getResourceBundleName());
 
 		Logger mlog = new MockLogger(null, null);
-		assertEquals(null, mlog.getResourceBundleName());
+		assertNull(mlog.getResourceBundleName());
 	}
 
 	/*
@@ -1471,7 +1471,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.FINER);
 		assertEquals(r.getParameters().length, 1);
-		assertEquals(r.getParameters()[0], null);
+		assertNull(r.getParameters()[0]);
 		assertSame(r.getThrown(), null);
 	}
 
@@ -1656,7 +1656,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.FINER);
 		assertEquals(r.getParameters().length, 1);
-		assertEquals(r.getParameters()[0], null);
+		assertNull(r.getParameters()[0]);
 		assertSame(r.getThrown(), null);
 	}
 
@@ -1676,7 +1676,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.CONFIG);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 
 		this.sharedLogger.setLevel(Level.INFO);
@@ -1698,13 +1698,13 @@ public class LoggerTest extends TestCase {
 		LogRecord r = (LogRecord) CallVerificationStack.getInstance().pop();
 		assertTrue(CallVerificationStack.getInstance().empty());
 		assertSame(r.getLoggerName(), child.getName());
-		assertEquals(r.getMessage(), null);
+		assertNull(r.getMessage());
 		assertSame(r.getResourceBundleName(), parent.getResourceBundleName());
 		assertSame(r.getResourceBundle(), parent.getResourceBundle());
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.CONFIG);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 
 		this.sharedLogger.setLevel(Level.INFO);
@@ -1728,7 +1728,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.FINE);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 
 		this.sharedLogger.setLevel(Level.CONFIG);
@@ -1750,13 +1750,13 @@ public class LoggerTest extends TestCase {
 		LogRecord r = (LogRecord) CallVerificationStack.getInstance().pop();
 		assertTrue(CallVerificationStack.getInstance().empty());
 		assertSame(r.getLoggerName(), child.getName());
-		assertEquals(r.getMessage(), null);
+		assertNull(r.getMessage());
 		assertSame(r.getResourceBundleName(), parent.getResourceBundleName());
 		assertSame(r.getResourceBundle(), parent.getResourceBundle());
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.FINE);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 
 		this.sharedLogger.setLevel(Level.CONFIG);
@@ -1780,7 +1780,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.FINER);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 
 		this.sharedLogger.setLevel(Level.FINE);
@@ -1802,13 +1802,13 @@ public class LoggerTest extends TestCase {
 		LogRecord r = (LogRecord) CallVerificationStack.getInstance().pop();
 		assertTrue(CallVerificationStack.getInstance().empty());
 		assertSame(r.getLoggerName(), child.getName());
-		assertEquals(r.getMessage(), null);
+		assertNull(r.getMessage());
 		assertSame(r.getResourceBundleName(), parent.getResourceBundleName());
 		assertSame(r.getResourceBundle(), parent.getResourceBundle());
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.FINER);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 
 		this.sharedLogger.setLevel(Level.FINE);
@@ -1832,7 +1832,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.FINEST);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 
 		this.sharedLogger.setLevel(Level.FINER);
@@ -1854,13 +1854,13 @@ public class LoggerTest extends TestCase {
 		LogRecord r = (LogRecord) CallVerificationStack.getInstance().pop();
 		assertTrue(CallVerificationStack.getInstance().empty());
 		assertSame(r.getLoggerName(), child.getName());
-		assertEquals(r.getMessage(), null);
+		assertNull(r.getMessage());
 		assertSame(r.getResourceBundleName(), parent.getResourceBundleName());
 		assertSame(r.getResourceBundle(), parent.getResourceBundle());
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.FINEST);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 
 		this.sharedLogger.setLevel(Level.FINER);
@@ -1884,7 +1884,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.INFO);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 
 		this.sharedLogger.setLevel(Level.WARNING);
@@ -1906,13 +1906,13 @@ public class LoggerTest extends TestCase {
 		LogRecord r = (LogRecord) CallVerificationStack.getInstance().pop();
 		assertTrue(CallVerificationStack.getInstance().empty());
 		assertSame(r.getLoggerName(), child.getName());
-		assertEquals(r.getMessage(), null);
+		assertNull(r.getMessage());
 		assertSame(r.getResourceBundleName(), parent.getResourceBundleName());
 		assertSame(r.getResourceBundle(), parent.getResourceBundle());
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.INFO);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 
 		this.sharedLogger.setLevel(Level.WARNING);
@@ -1936,7 +1936,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.WARNING);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 
 		this.sharedLogger.setLevel(Level.SEVERE);
@@ -1958,13 +1958,13 @@ public class LoggerTest extends TestCase {
 		LogRecord r = (LogRecord) CallVerificationStack.getInstance().pop();
 		assertTrue(CallVerificationStack.getInstance().empty());
 		assertSame(r.getLoggerName(), child.getName());
-		assertEquals(r.getMessage(), null);
+		assertNull(r.getMessage());
 		assertSame(r.getResourceBundleName(), parent.getResourceBundleName());
 		assertSame(r.getResourceBundle(), parent.getResourceBundle());
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.WARNING);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 
 		this.sharedLogger.setLevel(Level.SEVERE);
@@ -1988,7 +1988,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.SEVERE);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 
 		this.sharedLogger.setLevel(Level.OFF);
@@ -2010,13 +2010,13 @@ public class LoggerTest extends TestCase {
 		LogRecord r = (LogRecord) CallVerificationStack.getInstance().pop();
 		assertTrue(CallVerificationStack.getInstance().empty());
 		assertSame(r.getLoggerName(), child.getName());
-		assertEquals(r.getMessage(), null);
+		assertNull(r.getMessage());
 		assertSame(r.getResourceBundleName(), parent.getResourceBundleName());
 		assertSame(r.getResourceBundle(), parent.getResourceBundle());
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.SEVERE);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 
 		this.sharedLogger.setLevel(Level.OFF);
@@ -2040,7 +2040,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.INFO);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 
 		this.sharedLogger.log(Level.CONFIG, "log(Level, String) msg");
@@ -2064,13 +2064,13 @@ public class LoggerTest extends TestCase {
 		LogRecord r = (LogRecord) CallVerificationStack.getInstance().pop();
 		assertTrue(CallVerificationStack.getInstance().empty());
 		assertSame(r.getLoggerName(), child.getName());
-		assertEquals(r.getMessage(), null);
+		assertNull(r.getMessage());
 		assertSame(r.getResourceBundleName(), parent.getResourceBundleName());
 		assertSame(r.getResourceBundle(), parent.getResourceBundle());
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.INFO);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 	}
 
@@ -2131,14 +2131,14 @@ public class LoggerTest extends TestCase {
 		LogRecord r = (LogRecord) CallVerificationStack.getInstance().pop();
 		assertTrue(CallVerificationStack.getInstance().empty());
 		assertSame(r.getLoggerName(), child.getName());
-		assertEquals(r.getMessage(), null);
+		assertNull(r.getMessage());
 		assertSame(r.getResourceBundleName(), parent.getResourceBundleName());
 		assertSame(r.getResourceBundle(), parent.getResourceBundle());
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.INFO);
 		assertEquals(1, r.getParameters().length);
-		assertEquals(null, r.getParameters()[0]);
+		assertNull(r.getParameters()[0]);
 		assertSame(r.getThrown(), null);
 	}
 
@@ -2203,13 +2203,13 @@ public class LoggerTest extends TestCase {
 		LogRecord r = (LogRecord) CallVerificationStack.getInstance().pop();
 		assertTrue(CallVerificationStack.getInstance().empty());
 		assertSame(r.getLoggerName(), child.getName());
-		assertEquals(r.getMessage(), null);
+		assertNull(r.getMessage());
 		assertSame(r.getResourceBundleName(), parent.getResourceBundleName());
 		assertSame(r.getResourceBundle(), parent.getResourceBundle());
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.INFO);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 	}
 
@@ -2244,7 +2244,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.INFO);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), t);
 
 		this.sharedLogger.log(Level.CONFIG,
@@ -2270,13 +2270,13 @@ public class LoggerTest extends TestCase {
 		LogRecord r = (LogRecord) CallVerificationStack.getInstance().pop();
 		assertTrue(CallVerificationStack.getInstance().empty());
 		assertSame(r.getLoggerName(), child.getName());
-		assertEquals(r.getMessage(), null);
+		assertNull(r.getMessage());
 		assertSame(r.getResourceBundleName(), parent.getResourceBundleName());
 		assertSame(r.getResourceBundle(), parent.getResourceBundle());
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.INFO);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 	}
 
@@ -2310,7 +2310,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), "sourceClass");
 		assertSame(r.getSourceMethodName(), "sourceMethod");
 		assertSame(r.getLevel(), Level.INFO);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 
 		this.sharedLogger.logp(Level.CONFIG, "sourceClass", "sourceMethod",
@@ -2336,13 +2336,13 @@ public class LoggerTest extends TestCase {
 		LogRecord r = (LogRecord) CallVerificationStack.getInstance().pop();
 		assertTrue(CallVerificationStack.getInstance().empty());
 		assertSame(r.getLoggerName(), child.getName());
-		assertEquals(r.getMessage(), null);
+		assertNull(r.getMessage());
 		assertSame(r.getResourceBundleName(), parent.getResourceBundleName());
 		assertSame(r.getResourceBundle(), parent.getResourceBundle());
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.INFO);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 	}
 
@@ -2406,14 +2406,14 @@ public class LoggerTest extends TestCase {
 		LogRecord r = (LogRecord) CallVerificationStack.getInstance().pop();
 		assertTrue(CallVerificationStack.getInstance().empty());
 		assertSame(r.getLoggerName(), child.getName());
-		assertEquals(r.getMessage(), null);
+		assertNull(r.getMessage());
 		assertSame(r.getResourceBundleName(), parent.getResourceBundleName());
 		assertSame(r.getResourceBundle(), parent.getResourceBundle());
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.INFO);
 		assertEquals(1, r.getParameters().length);
-		assertEquals(null, r.getParameters()[0]);
+		assertNull(r.getParameters()[0]);
 		assertSame(r.getThrown(), null);
 	}
 
@@ -2481,13 +2481,13 @@ public class LoggerTest extends TestCase {
 		LogRecord r = (LogRecord) CallVerificationStack.getInstance().pop();
 		assertTrue(CallVerificationStack.getInstance().empty());
 		assertSame(r.getLoggerName(), child.getName());
-		assertEquals(r.getMessage(), null);
+		assertNull(r.getMessage());
 		assertSame(r.getResourceBundleName(), parent.getResourceBundleName());
 		assertSame(r.getResourceBundle(), parent.getResourceBundle());
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.INFO);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 	}
 
@@ -2524,7 +2524,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), "sourceClass");
 		assertSame(r.getSourceMethodName(), "sourceMethod");
 		assertSame(r.getLevel(), Level.INFO);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), t);
 
 		this.sharedLogger.logp(Level.CONFIG, "sourceClass", "sourceMethod",
@@ -2551,13 +2551,13 @@ public class LoggerTest extends TestCase {
 		LogRecord r = (LogRecord) CallVerificationStack.getInstance().pop();
 		assertTrue(CallVerificationStack.getInstance().empty());
 		assertSame(r.getLoggerName(), child.getName());
-		assertEquals(r.getMessage(), null);
+		assertNull(r.getMessage());
 		assertSame(r.getResourceBundleName(), parent.getResourceBundleName());
 		assertSame(r.getResourceBundle(), parent.getResourceBundle());
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.INFO);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 	}
 
@@ -2593,7 +2593,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), "sourceClass");
 		assertSame(r.getSourceMethodName(), "sourceMethod");
 		assertSame(r.getLevel(), Level.INFO);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 
 		this.sharedLogger.logrb(Level.CONFIG, "sourceClass", "sourceMethod",
@@ -2616,12 +2616,12 @@ public class LoggerTest extends TestCase {
 		LogRecord r = (LogRecord) CallVerificationStack.getInstance().pop();
 		assertTrue(CallVerificationStack.getInstance().empty());
 		assertSame(r.getLoggerName(), this.sharedLogger.getName());
-		assertEquals(r.getMessage(), null);
+		assertNull(r.getMessage());
 		assertSame(r.getResourceBundleName(), null);
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.INFO);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 	}
 
@@ -2658,7 +2658,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), "sourceClass");
 		assertSame(r.getSourceMethodName(), "sourceMethod");
 		assertSame(r.getLevel(), Level.ALL);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 	}
 
@@ -2710,13 +2710,13 @@ public class LoggerTest extends TestCase {
 		LogRecord r = (LogRecord) CallVerificationStack.getInstance().pop();
 		assertTrue(CallVerificationStack.getInstance().empty());
 		assertSame(r.getLoggerName(), this.sharedLogger.getName());
-		assertEquals(r.getMessage(), null);
+		assertNull(r.getMessage());
 		assertSame(r.getResourceBundleName(), null);
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.INFO);
 		assertEquals(1, r.getParameters().length);
-		assertEquals(null, r.getParameters()[0]);
+		assertNull(r.getParameters()[0]);
 		assertSame(r.getThrown(), null);
 	}
     
@@ -2828,12 +2828,12 @@ public class LoggerTest extends TestCase {
 		LogRecord r = (LogRecord) CallVerificationStack.getInstance().pop();
 		assertTrue(CallVerificationStack.getInstance().empty());
 		assertSame(r.getLoggerName(), this.sharedLogger.getName());
-		assertEquals(r.getMessage(), null);
+		assertNull(r.getMessage());
 		assertSame(r.getResourceBundleName(), null);
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.INFO);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 	}
 
@@ -2905,7 +2905,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), "sourceClass");
 		assertSame(r.getSourceMethodName(), "sourceMethod");
 		assertSame(r.getLevel(), Level.parse("1611"));
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), t);
 		assertNull(Level.parse("1611").getResourceBundleName());
 
@@ -2933,12 +2933,12 @@ public class LoggerTest extends TestCase {
 		LogRecord r = (LogRecord) CallVerificationStack.getInstance().pop();
 		assertTrue(CallVerificationStack.getInstance().empty());
 		assertSame(r.getLoggerName(), this.sharedLogger.getName());
-		assertEquals(r.getMessage(), null);
+		assertNull(r.getMessage());
 		assertSame(r.getResourceBundleName(), null);
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.INFO);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 	}
 
@@ -2982,7 +2982,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), "sourceClass");
 		assertSame(r.getSourceMethodName(), "sourceMethod");
 		assertSame(r.getLevel(), Level.ALL);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), t);
 	}
 
@@ -3006,7 +3006,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.INFO);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 	}
 
@@ -3064,7 +3064,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.INFO);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 	}
 
@@ -3091,7 +3091,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.INFO);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 	}
 
@@ -3121,7 +3121,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.INFO);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 
 		// set the child logger to disabling level
@@ -3264,7 +3264,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.FINE);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 		assertNull(child.getLevel());
 
@@ -3335,7 +3335,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.FINE);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 		assertNull(child.getResourceBundle());
 		assertNull(child.getResourceBundleName());
@@ -3368,7 +3368,7 @@ public class LoggerTest extends TestCase {
 		assertSame(r.getSourceClassName(), null);
 		assertSame(r.getSourceMethodName(), null);
 		assertSame(r.getLevel(), Level.FINE);
-		assertEquals(null, r.getParameters());
+		assertNull(r.getParameters());
 		assertSame(r.getThrown(), null);
 		assertNull(child.getResourceBundle());
 		assertNull(child.getResourceBundleName());

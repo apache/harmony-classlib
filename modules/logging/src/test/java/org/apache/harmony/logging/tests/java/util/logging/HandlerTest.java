@@ -511,7 +511,7 @@ public class HandlerTest extends TestCase {
 			h.reportError(null, null, 0);
 			assertEquals(0, CallVerificationStack.getInstance().popInt());
 			assertSame(null, CallVerificationStack.getInstance().pop());
-			assertEquals(null, CallVerificationStack.getInstance().pop());
+			assertNull(CallVerificationStack.getInstance().pop());
 		} catch (SecurityException e) {
 			fail("Should not throw SecurityException!");
 		} finally {

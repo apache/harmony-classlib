@@ -174,8 +174,8 @@ public class SocketHandlerTest extends TestCase {
 		h = new SocketHandler("127.0.0.1", 6666);
 		assertSame(h.getLevel(), Level.ALL);
 		assertTrue(h.getFormatter() instanceof XMLFormatter);
-		assertEquals(h.getFilter(), null);
-		assertEquals(h.getEncoding(), null);
+		assertNull(h.getFilter());
+		assertNull(h.getEncoding());
 		h.close();
 		// ensure the thread exits and the port becomes available again
 		thread.getReadString();
@@ -208,8 +208,8 @@ public class SocketHandlerTest extends TestCase {
 		h = new SocketHandler();
 		assertSame(h.getLevel(), Level.ALL);
 		assertTrue(h.getFormatter() instanceof XMLFormatter);
-		assertEquals(h.getFilter(), null);
-		assertEquals(h.getEncoding(), null);
+		assertNull(h.getFilter());
+		assertNull(h.getEncoding());
 		h.close();
 		// ensure the thread exits and the port becomes available again
 		thread.getReadString();
@@ -325,10 +325,10 @@ public class SocketHandlerTest extends TestCase {
 		h = new SocketHandler();
 		assertSame(h.getLevel(), Level.ALL);
 		assertTrue(h.getFormatter() instanceof XMLFormatter);
-		assertEquals(h.getFilter(), null);
-		assertEquals(h.getEncoding(), null);
+		assertNull(h.getFilter());
+		assertNull(h.getEncoding());
 		h.publish(new LogRecord(Level.SEVERE, "test"));
-		assertEquals(h.getEncoding(), null);
+		assertNull(h.getEncoding());
 		h.close();
 		// ensure the thread exits and the port becomes available again
 		thread.getReadString();
@@ -341,10 +341,10 @@ public class SocketHandlerTest extends TestCase {
 		h = new SocketHandler("127.0.0.1", 6666);
 		assertSame(h.getLevel(), Level.ALL);
 		assertTrue(h.getFormatter() instanceof XMLFormatter);
-		assertEquals(h.getFilter(), null);
-		assertEquals(h.getEncoding(), null);
+		assertNull(h.getFilter());
+		assertNull(h.getEncoding());
 		h.publish(new LogRecord(Level.SEVERE, "test"));
-		assertEquals(h.getEncoding(), null);
+		assertNull(h.getEncoding());
 		h.close();
 		// ensure the thread exits and the port becomes available again
 		thread.getReadString();
