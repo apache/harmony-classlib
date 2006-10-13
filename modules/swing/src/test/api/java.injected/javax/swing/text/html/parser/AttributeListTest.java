@@ -53,13 +53,13 @@ public class AttributeListTest extends TestCase {
     public void testAttributeListConstr2() {
         assertEquals(0, next.modifier);
         assertEquals("second", next.name);
-        assertEquals(null, next.next);
+        assertNull(next.next);
         assertEquals(0, next.type);
-        assertEquals(null, next.value);
-        assertEquals(null, next.values);
+        assertNull(next.value);
+        assertNull(next.values);
 
         AttributeList attributeList = new AttributeList(null);
-        assertEquals(null, attributeList.name);
+        assertNull(attributeList.name);
 
         attributeList = new AttributeList("AAA");
         assertEquals("AAA", attributeList.name);
