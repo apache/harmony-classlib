@@ -92,7 +92,7 @@ public class HashAttributeTest extends TestCase {
                             +att1+", att2 = "+att2,
                                         att1 == att2 );
             assertTrue("Attribute set doesn't contain added attribute value",
-                            aset.containsValue(PrintQuality.HIGH) == true );
+                            aset.containsValue(PrintQuality.HIGH));
         }else{
             fail("add() == false");
         }
@@ -110,11 +110,11 @@ public class HashAttributeTest extends TestCase {
 
         Attribute att = new Copies(10);
         aset.add(att);
-        assertTrue(aset.add(att) == false);
+        assertFalse(aset.add(att));
 
         att = Sides.DUPLEX;
         aset.add(att);
-        assertTrue(aset.add(att) == false);
+        assertFalse(aset.add(att));
 
     }
 
@@ -209,7 +209,7 @@ public class HashAttributeTest extends TestCase {
         aset.add(SheetCollate.COLLATED);
         if (aset.get(SheetCollate.class) != null) {
             aset.clear();
-            assertEquals(null, aset.get(SheetCollate.class));
+            assertNull(aset.get(SheetCollate.class));
         } else {
             fail("add() or get() works wrong");
         }
@@ -218,8 +218,8 @@ public class HashAttributeTest extends TestCase {
         aset.add(ColorSupported.SUPPORTED);
         if ( !aset.isEmpty() ) {
             aset.clear();
-            assertEquals(null, aset.get(SheetCollate.class));
-            assertEquals(null, aset.get(ColorSupported.class));
+            assertNull(aset.get(SheetCollate.class));
+            assertNull(aset.get(ColorSupported.class));
         } else {
             fail("add() or isEmpty() works wrong");
         }

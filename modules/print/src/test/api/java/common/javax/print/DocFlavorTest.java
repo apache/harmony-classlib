@@ -98,7 +98,7 @@ public void testGetParameter() {
     DocFlavor f =
             new DocFlavor("TEXT/plain; BBB=par1; aaa=par2 (comments)", "[B");
     assertEquals(f.getParameter("bbb"), new String("par1"));
-    assertEquals(f.getParameter("absent"), null);
+    assertNull(f.getParameter("absent"));
 }
 
 public void testGetRepresentationClassName() {

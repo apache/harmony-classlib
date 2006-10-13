@@ -215,8 +215,8 @@ public class AbstractPreferencesTest extends TestCase {
 		assertEquals("testClearValue", pref.get("testClearKey", null));
 		assertEquals("testClearValue1", pref.get("testClearKey1", null));
 		pref.clear();
-		assertEquals(null, pref.get("testClearKey", null));
-		assertEquals(null, pref.get("testClearKey1", null));
+		assertNull(pref.get("testClearKey", null));
+		assertNull(pref.get("testClearKey1", null));
 	}
 
 	public void testGet() throws BackingStoreException {
@@ -260,8 +260,8 @@ public class AbstractPreferencesTest extends TestCase {
 
 		pref.put("testGetBooleanKey", "false");
 		pref.put("testGetBooleanKey2", "value");
-		assertEquals(false, pref.getBoolean("testGetBooleanKey", true));
-		assertEquals(true, pref.getBoolean("testGetBooleanKey2", true));
+		assertFalse(pref.getBoolean("testGetBooleanKey", true));
+		assertTrue(pref.getBoolean("testGetBooleanKey2", true));
 	}
 
 	public void testPutByteArray() {
@@ -621,7 +621,7 @@ public class AbstractPreferencesTest extends TestCase {
 		}
 		pref.putBoolean("testPutBooleanKey", false);
 		assertEquals("false", pref.get("testPutBooleanKey", null));
-		assertEquals(false, pref.getBoolean("testPutBooleanKey", true));
+		assertFalse(pref.getBoolean("testPutBooleanKey", true));
 	}
 
 	public void testPutDouble() {

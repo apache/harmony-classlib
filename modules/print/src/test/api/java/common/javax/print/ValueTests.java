@@ -112,7 +112,7 @@ public void testSimpleDoc() {
     assertEquals(doc.getDocFlavor(), DocFlavor.INPUT_STREAM.GIF);
     try {
         assertTrue(doc.getPrintData() instanceof java.io.InputStream);
-        assertEquals(doc.getReaderForText(), null);
+        assertNull(doc.getReaderForText());
         assertEquals(doc.getStreamForBytes(), reader);
     } catch(Exception e) {
         e.printStackTrace();
@@ -225,7 +225,7 @@ public void testStreamPrintService() {
     }
     assertTrue(flg);
     streamService.dispose();
-    assertEquals(streamService.isDisposed(), true);
+    assertTrue(streamService.isDisposed());
 }
 
 public void testStreamServicePrinting() {

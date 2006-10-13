@@ -206,7 +206,7 @@ public class MediaSizeTest extends TestCase {
         assertEquals(MediaSizeName.JIS_B0, ms.getMediaSizeName());
 
         ms = new MediaSize(30, 30, MediaSize.INCH);
-        assertEquals(null, ms.getMediaSizeName());
+        assertNull(ms.getMediaSizeName());
     }
 
     /*
