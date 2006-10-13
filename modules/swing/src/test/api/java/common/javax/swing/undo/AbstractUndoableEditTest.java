@@ -73,7 +73,7 @@ public class AbstractUndoableEditTest extends TestCase {
         obj.die();
 
         if (BasicSwingTestCase.isHarmony()) {
-            assertEquals(false, isAlive(obj));
+            assertFalse(isAlive(obj));
         }
 
         boolean wasException = false;
@@ -98,7 +98,7 @@ public class AbstractUndoableEditTest extends TestCase {
         obj.redo();
 
         if (BasicSwingTestCase.isHarmony()) {
-            assertEquals(true, hasBeenDone(obj));
+            assertTrue(hasBeenDone(obj));
         }
 
         if (!obj.canRedo()) {
@@ -116,7 +116,7 @@ public class AbstractUndoableEditTest extends TestCase {
         obj.undo();
 
         if (BasicSwingTestCase.isHarmony()) {
-            assertEquals(false, hasBeenDone(obj));
+            assertFalse(hasBeenDone(obj));
         }
 
         if (!obj.canUndo()) {
@@ -135,7 +135,7 @@ public class AbstractUndoableEditTest extends TestCase {
             assertEquals(isAlive(obj) && !hasBeenDone(obj), obj.canRedo());
         }
         obj.die();
-        assertEquals(false, obj.canRedo());
+        assertFalse(obj.canRedo());
     }
 
     public void testCanUndo() {
@@ -143,11 +143,11 @@ public class AbstractUndoableEditTest extends TestCase {
             assertEquals(isAlive(obj) && hasBeenDone(obj), obj.canUndo());
         }
         obj.die();
-        assertEquals(false, obj.canUndo());
+        assertFalse(obj.canUndo());
     }
 
     public void testIsSignificant() {
-        assertEquals(true, obj.isSignificant());
+        assertTrue(obj.isSignificant());
     }
 
     public void testGetPresentationName() {
@@ -195,11 +195,11 @@ public class AbstractUndoableEditTest extends TestCase {
     }
 
     public void testAddEdit() {
-        assertEquals(false, obj.addEdit(null));
+        assertFalse(obj.addEdit(null));
     }
 
     public void testReplaceEdit() {
-        assertEquals(false, obj.replaceEdit(null));
+        assertFalse(obj.replaceEdit(null));
     }
 
 }

@@ -389,7 +389,7 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
     }
 
     public void testLastEdit() {
-        assertEquals(null, ce.lastEdit());
+        assertNull(ce.lastEdit());
 
         TestUndoableEdit.counter = 0;
         final int n = 10;
