@@ -422,9 +422,9 @@ public class KeyStore2Test extends junit.framework.TestCase {
         keyTest.setKeyEntry("alias2", privateKey, pssWord, cert);
 
 		assertTrue("isCertificateEntry method returns false for a certificate",
-				keyTest.isCertificateEntry("alias1") == true);
-		assertTrue("isCertificateEntry method returns true for noncertificate",
-				keyTest.isCertificateEntry("alias2") == false);
+				keyTest.isCertificateEntry("alias1"));
+		assertFalse("isCertificateEntry method returns true for noncertificate",
+				keyTest.isCertificateEntry("alias2"));
 	}
 
 	/**
@@ -446,9 +446,9 @@ public class KeyStore2Test extends junit.framework.TestCase {
         keyTest.setKeyEntry("alias2", privateKey, pssWord, cert);
 
 		assertTrue("isKeyEntry method returns false for a certificate", keyTest
-				.isKeyEntry("alias2") == true);
-		assertTrue("isKeyEntry method returns true for noncertificate", keyTest
-				.isKeyEntry("alias1") == false);
+				.isKeyEntry("alias2"));
+		assertFalse("isKeyEntry method returns true for noncertificate", keyTest
+				.isKeyEntry("alias1"));
 	}
 
 	/**
@@ -463,11 +463,11 @@ public class KeyStore2Test extends junit.framework.TestCase {
 		keyTest.load(in, pssWord);
 		in.close();
 		assertTrue("alias1 is not a certificate", keyTest
-				.isCertificateEntry("alias1") == true);
+				.isCertificateEntry("alias1"));
 		assertTrue("alias2 is not a keyEntry",
-				keyTest.isKeyEntry("alias2") == true);
+				keyTest.isKeyEntry("alias2"));
 		assertTrue("alias3 is not a certificate", keyTest
-				.isCertificateEntry("alias3") == true);
+				.isCertificateEntry("alias3"));
 
 		// test with null password
 		keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -475,11 +475,11 @@ public class KeyStore2Test extends junit.framework.TestCase {
 		keyTest.load(in, null);
 		in.close();
 		assertTrue("alias1 is not a certificate", keyTest
-				.isCertificateEntry("alias1") == true);
+				.isCertificateEntry("alias1"));
 		assertTrue("alias2 is not a keyEntry",
-				keyTest.isKeyEntry("alias2") == true);
+				keyTest.isKeyEntry("alias2"));
 		assertTrue("alias3 is not a certificate", keyTest
-				.isCertificateEntry("alias3") == true);
+				.isCertificateEntry("alias3"));
 
 		keyTest = KeyStore.getInstance(KeyStore.getDefaultType());
 		InputStream v1in = Support_Resources.getStream("hyts_ks.bks");
@@ -508,7 +508,7 @@ public class KeyStore2Test extends junit.framework.TestCase {
 		keyTest.setCertificateEntry("alias1", cert);
 		assertTrue(
 				"the entry specified by the alias alias1 is not a certificate",
-				keyTest.isCertificateEntry("alias1") == true);
+				keyTest.isCertificateEntry("alias1"));
 		java.security.cert.Certificate resultCert = keyTest
 				.getCertificate("alias1");
 		assertTrue(

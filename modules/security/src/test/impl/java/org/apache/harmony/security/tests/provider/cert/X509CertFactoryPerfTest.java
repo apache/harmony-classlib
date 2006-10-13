@@ -795,8 +795,8 @@ public class X509CertFactoryPerfTest extends TestCase {
      * hasUnsupportedCriticalExtension() method testing.
      */
     public void testHasUnsupportedCriticalExtension() {
-        assertEquals("Incorrect value of hasUnsupportedCriticalExtension", 
-                true, certificate.hasUnsupportedCriticalExtension());
+        assertTrue("Incorrect value of hasUnsupportedCriticalExtension", 
+                certificate.hasUnsupportedCriticalExtension());
 
         if (!certificate.hasUnsupportedCriticalExtension()) {
             fail("Incorrect value of hasUnsupportedCriticalExtension");

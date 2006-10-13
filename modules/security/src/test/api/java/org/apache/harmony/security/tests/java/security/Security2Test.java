@@ -385,8 +385,8 @@ public class Security2Test extends junit.framework.TestCase {
 		filter = new Hashtable();
 		filter.put("Provider.id name", "DRLCertFactory");
 		provTest = Security.getProviders(filter);
-        assertEquals("Filter : <Provider.id name, DRLCertFactory >",
-                null, provTest);
+        assertNull("Filter : <Provider.id name, DRLCertFactory >",
+                provTest);
 
 		// exception - no attribute name after the service.algorithm yet we
 		// still supply an expected value. This is not valid.

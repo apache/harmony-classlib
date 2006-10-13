@@ -379,8 +379,8 @@ public class CertPathValidator1Test extends TestCase {
         } catch (CertPathValidatorException e) {
         }        
         certPV = new myCertPathValidator(null, null, null);
-        assertEquals("Incorrect algorithm", certPV.getAlgorithm(), null);
-        assertEquals("Incorrect provider", certPV.getProvider(), null);
+        assertNull("Incorrect algorithm", certPV.getAlgorithm());
+        assertNull("Incorrect provider", certPV.getProvider());
         try {
             certPV.validate(null, null);
             fail("NullPointerException must be thrown");

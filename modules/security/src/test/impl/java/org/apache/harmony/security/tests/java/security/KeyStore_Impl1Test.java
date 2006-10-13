@@ -809,7 +809,7 @@ public class KeyStore_Impl1Test extends TestCase {
                     assertEquals("Incorrect certificate", cc[t], certs[t]);                    
                 }
             }
-            assertEquals(kss[i].getCertificateAlias(cert), null);
+            assertNull(kss[i].getCertificateAlias(cert));
             String ss = kss[i].getCertificateAlias(certs[0]);
             boolean ans = false;
             for (int j = 1; j < aliases.length; j++)  {
