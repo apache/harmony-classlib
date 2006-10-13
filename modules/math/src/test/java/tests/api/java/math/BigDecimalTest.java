@@ -289,25 +289,25 @@ public class BigDecimalTest extends junit.framework.TestCase {
 	public void test_equalsLjava_lang_Object() {
 		BigDecimal equal1 = new BigDecimal(1.00D);
 		BigDecimal equal2 = new BigDecimal("1.0");
-		assertTrue("1.00 and 1.0 should not be equal",
-				equal1.equals(equal2) == false);
+		assertFalse("1.00 and 1.0 should not be equal",
+				equal1.equals(equal2));
 		equal2 = new BigDecimal(1.01D);
-		assertTrue("1.00 and 1.01 should not be equal",
-				equal1.equals(equal2) == false);
+		assertFalse("1.00 and 1.01 should not be equal",
+				equal1.equals(equal2));
 		equal2 = new BigDecimal("1.00");
-		assertTrue("1.00D and 1.00 should not be equal",
-				equal1.equals(equal2) == false);
+		assertFalse("1.00D and 1.00 should not be equal",
+				equal1.equals(equal2));
 		BigInteger val = new BigInteger("100");
 		equal1 = new BigDecimal("1.00");
 		equal2 = new BigDecimal(val, 2);
 		assertTrue("1.00(string) and 1.00(bigInteger) should be equal", equal1
-				.equals(equal2) == true);
+				.equals(equal2));
 		equal1 = new BigDecimal(100D);
 		equal2 = new BigDecimal("2.34576");
-		assertTrue("100D and 2.34576 should not be equal", equal1
-				.equals(equal2) == false);
-		assertTrue("bigDecimal 100D does not equal string 23415", equal1
-				.equals("23415") == false);
+		assertFalse("100D and 2.34576 should not be equal", equal1
+				.equals(equal2));
+		assertFalse("bigDecimal 100D does not equal string 23415", equal1
+				.equals("23415"));
 	}
 
 	/**
