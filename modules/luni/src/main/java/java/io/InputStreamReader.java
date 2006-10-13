@@ -22,7 +22,10 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CoderResult;
 import java.nio.charset.CodingErrorAction;
+import java.nio.charset.MalformedInputException;
+import java.nio.charset.UnmappableCharacterException;
 import java.security.AccessController;
 import java.util.HashMap;
 
@@ -64,7 +67,9 @@ public class InputStreamReader extends Reader {
 		this.in = in;
 		String encoding = AccessController
 				.doPrivileged(new PriviAction<String>("file.encoding", "ISO8859_1")); //$NON-NLS-1$//$NON-NLS-2$
-		decoder = Charset.forName(encoding).newDecoder();
+		decoder = Charset.forName(encoding).newDecoder().onMalformedInput(
+                CodingErrorAction.REPLACE).onUnmappableCharacter(
+                CodingErrorAction.REPLACE);
 		chars.limit(0);
 	}
 
@@ -129,7 +134,9 @@ public class InputStreamReader extends Reader {
 	public InputStreamReader(InputStream in, Charset charset) {
 		super(in);
 		this.in = in;
-		decoder = charset.newDecoder();
+		decoder = charset.newDecoder().onMalformedInput(
+                CodingErrorAction.REPLACE).onUnmappableCharacter(
+                CodingErrorAction.REPLACE);
 		chars.limit(0);
 	}
 
@@ -171,7 +178,8 @@ public class InputStreamReader extends Reader {
 	/*
 	 * helper for getEncoding()
 	 */
-	static class HistoricalNamesUtil {
+	@SuppressWarnings("nls")
+    static class HistoricalNamesUtil {
 		private static HashMap<String, String> historicalNames = new HashMap<String, String>();
 		static {
 			historicalNames.put("Big5-HKSCS", "Big5_HKSCS");
@@ -440,7 +448,19 @@ public class InputStreamReader extends Reader {
 			} else {
 				bytes.limit(read);
 			}
-			decoder.decode(bytes, chars, endOfInput);
+			CoderResult result = decoder.decode(bytes, chars, endOfInput);
+            if(result.isMalformed()){
+                throw new MalformedInputException(result.length());
+            }else if(result.isUnmappable()){
+                throw new UnmappableCharacterException(result.length());
+            }
+            if(endOfInput){
+             // FIXME: should flush at first, but seems ICU has a bug that 
+             // it will throw IAE if some malform/unmappable bytes found during
+             // decoding
+             //   result = decoder.flush(chars);
+                decoder.reset();
+            }
 			bytes.clear();
 		} while (read > 0 && chars.position() == 0);
 		chars.flip();

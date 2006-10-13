@@ -25,8 +25,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
+import java.nio.charset.MalformedInputException;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
@@ -49,6 +52,7 @@ public class InputStreamReaderTest extends TestCase {
 	public String fileString = "Test_All_Tests\nTest_java_io_BufferedInputStream\nTest_java_io_BufferedOutputStream\nTest_java_io_ByteArrayInputStream\nTest_java_io_ByteArrayOutputStream\nTest_java_io_DataInputStream\n";
 
 	static class LimitedByteArrayInputStream extends ByteArrayInputStream {
+        
 		// A ByteArrayInputStream that only returns a single byte per read
 		byte[] bytes;
 
@@ -158,9 +162,39 @@ public class InputStreamReaderTest extends TestCase {
      * Regression for Harmony-411
      */
     public void testRead1() throws IOException {
+        // if the decoder is constructed by InputStreamReader itself, the decoder's 
+        // default error action is REPLACE
         InputStreamReader isr = new InputStreamReader(new ByteArrayInputStream(
                 new byte[] { -32, -96 }), "UTF-8");
         assertEquals("read() return incorrect value", 65533, isr.read());
+        
+        InputStreamReader isr2 = new InputStreamReader(new ByteArrayInputStream(
+                new byte[] { -32, -96 }), Charset.forName("UTF-8"));
+        assertEquals("read() return incorrect value", 65533, isr2.read());
+        
+        // if the decoder is passed in, keep its status intacted
+        CharsetDecoder decoder = Charset.forName("UTF-8").newDecoder();
+        decoder.onMalformedInput(CodingErrorAction.REPORT);
+        InputStreamReader isr3 = new InputStreamReader(new ByteArrayInputStream(
+                new byte[] { -32, -96 }), decoder);
+        try{
+           isr3.read();
+           fail("Should throw MalformedInputException");
+        }catch(MalformedInputException e){
+            //expected
+        }
+        
+        CharsetDecoder decoder2 = Charset.forName("UTF-8").newDecoder();
+        decoder2.onMalformedInput(CodingErrorAction.IGNORE);
+        InputStreamReader isr4 = new InputStreamReader(new ByteArrayInputStream(
+                new byte[] { -32, -96 }), decoder2);
+        assertEquals("read() return incorrect value", -1, isr4.read());
+        
+        CharsetDecoder decoder3 = Charset.forName("UTF-8").newDecoder();
+        decoder3.onMalformedInput(CodingErrorAction.REPLACE);
+        InputStreamReader isr5 = new InputStreamReader(new ByteArrayInputStream(
+                new byte[] { -32, -96 }), decoder3);
+        assertEquals("read() return incorrect value", 65533, isr5.read());
     }
 
 	/*
@@ -344,7 +378,7 @@ public class InputStreamReaderTest extends TestCase {
 			fail();
 		} catch (NullPointerException e) {
 		}
-		InputStreamReader reader2 = new InputStreamReader(in, decoder);
+        InputStreamReader reader2 = new InputStreamReader(in, decoder);
 		assertEquals(Charset.forName(reader2.getEncoding()), decoder.charset());
 		reader2.close();
 	}
@@ -452,7 +486,7 @@ public class InputStreamReaderTest extends TestCase {
 	/**
 	 * @tests java.io.InputStreamReader#read()
 	 */
-	public void test_read() {
+	public void test_read() throws IOException{
 		// Test for method int java.io.InputStreamReader.read()
 		try {
 			int c = is.read();
@@ -465,55 +499,32 @@ public class InputStreamReaderTest extends TestCase {
 		} catch (IOException e) {
 			fail("Exception during read test : " + e.getMessage());
 		}
+        
+        // Regression for HARMONY-166
+        InputStream in;
+        InputStreamReader reader;
 
-		try {
-			LimitedByteArrayInputStream in = new LimitedByteArrayInputStream(0);
-			InputStreamReader reader = new InputStreamReader(in, "UTF-16BE");
-			assertTrue("Incorrect byte UTF-16BE", reader.read() == '\u6172');
-		} catch (UnsupportedEncodingException e) {
-			// Can't test without the converter
-			System.out.println(e);
-		} catch (IOException e) {
-			fail("UTF-16BE unexpected 1: " + e);
-		}
-		try {
-			LimitedByteArrayInputStream in = new LimitedByteArrayInputStream(0);
-			InputStreamReader reader = new InputStreamReader(in, "UTF-16LE");
-			assertTrue("Incorrect byte UTF-16BE", reader.read() == '\u7261');
-		} catch (UnsupportedEncodingException e) {
-			// Can't test without the converter
-		} catch (IOException e) {
-			fail("UTF-16BE unexpected 2: " + e);
-		}
-		try {
-			LimitedByteArrayInputStream in = new LimitedByteArrayInputStream(1);
-			InputStreamReader reader = new InputStreamReader(in, "UTF-16");
-			assertTrue("Incorrect byte UTF-16BE", reader.read() == '\u7261');
-		} catch (UnsupportedEncodingException e) {
-			// Can't test without the converter
-		} catch (IOException e) {
-			fail("UTF-16BE unexpected 3: " + e);
-		}
+        in = new LimitedByteArrayInputStream(0);
+        reader = new InputStreamReader(in, "UTF-16BE");
+        assertEquals("Incorrect byte UTF-16BE", '\u6172', reader.read());
 
-		try {
-			LimitedByteArrayInputStream in = new LimitedByteArrayInputStream(2);
-			InputStreamReader reader = new InputStreamReader(in, "ISO2022JP");
-			int ch = reader.read();
-			assertTrue("Incorrect byte ISO2022JP 1: " + ch, ch == '\u4e5d');
-			ch = reader.read();
-			assertTrue("Incorrect byte ISO2022JP 2: " + ch, ch == '\u7b2c');
-		} catch (UnsupportedEncodingException e) {
-			// Can't test without the converter
-			System.out.println(e);
-		} catch (IOException e) {
-			fail("ISO2022JP unexpected: " + e);
-		}
+        in = new LimitedByteArrayInputStream(0);
+        reader = new InputStreamReader(in, "UTF-16LE");
+        assertEquals("Incorrect byte UTF-16BE", '\u7261', reader.read());
 
+        in = new LimitedByteArrayInputStream(1);
+        reader = new InputStreamReader(in, "UTF-16");
+        assertEquals("Incorrect byte UTF-16BE", '\u7261', reader.read());
+
+        in = new LimitedByteArrayInputStream(2);
+        reader = new InputStreamReader(in, "ISO2022JP");
+        assertEquals("Incorrect byte ISO2022JP 1", '\u4e5d', reader.read());
+        assertEquals("Incorrect byte ISO2022JP 2", '\u7b2c', reader.read());
 	}
 
 	/**
-	 * @tests java.io.InputStreamReader#read(char[], int, int)
-	 */
+     * @tests java.io.InputStreamReader#read(char[], int, int)
+     */
 	public void test_read$CII() {
 		// Test for method int java.io.InputStreamReader.read(char [], int, int)
 		try {
@@ -541,4 +552,6 @@ public class InputStreamReaderTest extends TestCase {
 			fail("Exception during ready test : " + e.getMessage());
 		}
 	}
+    
+    
 }
