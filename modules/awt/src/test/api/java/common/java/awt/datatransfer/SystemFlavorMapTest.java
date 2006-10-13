@@ -36,7 +36,7 @@ public class SystemFlavorMapTest extends TestCase {
     public final void testEncodeJavaMIMEType() {
         assertEquals(SystemFlavorMap.encodeJavaMIMEType("z"), 
                 "org.apache.harmony.awt.datatransfer:z");
-        assertEquals(SystemFlavorMap.encodeJavaMIMEType(null), null);
+        assertNull(SystemFlavorMap.encodeJavaMIMEType(null));
     }
 
     public final void testDecodeJavaMIMEType() {
@@ -47,7 +47,7 @@ public class SystemFlavorMapTest extends TestCase {
                 "org.apache.harmony.awt.datatransfer:" +
                 "application/x-java-serialized-object;" +
                 " class=\"java.lang.String\"");
-        assertEquals(SystemFlavorMap.encodeDataFlavor(null), null);
+        assertNull(SystemFlavorMap.encodeDataFlavor(null));
     }
 
     public final void testDecodeDataFlavor() {
@@ -57,8 +57,8 @@ public class SystemFlavorMapTest extends TestCase {
                     "application/x-java-serialized-object;" +
                     " class=\"java.lang.String\""),
                     DataFlavor.stringFlavor);
-            assertEquals(SystemFlavorMap.decodeDataFlavor(null), null);
-            assertEquals(SystemFlavorMap.decodeDataFlavor("z"), null);
+            assertNull(SystemFlavorMap.decodeDataFlavor(null));
+            assertNull(SystemFlavorMap.decodeDataFlavor("z"));
         } catch (ClassNotFoundException e) {
             fail();
         }

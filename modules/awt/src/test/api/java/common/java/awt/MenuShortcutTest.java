@@ -40,17 +40,17 @@ public class MenuShortcutTest extends TestCase {
         MenuShortcut u = new MenuShortcut(KeyEvent.VK_U, false);
 
         assertEquals(KeyEvent.VK_SPACE, s.getKey());
-        assertEquals(false, s.usesShiftModifier());
+        assertFalse(s.usesShiftModifier());
         assertEquals("Ctrl+Space", s.toString());
         assertEquals("key=32", s.paramString());
 
         assertEquals(KeyEvent.VK_T, t.getKey());
-        assertEquals(true, t.usesShiftModifier());
+        assertTrue(t.usesShiftModifier());
         assertEquals("Ctrl+Shift+T", t.toString());
         assertEquals("key=84,usesShiftModifier", t.paramString());
 
         assertEquals(KeyEvent.VK_U, u.getKey());
-        assertEquals(false, u.usesShiftModifier());
+        assertFalse(u.usesShiftModifier());
         assertEquals("Ctrl+U", u.toString());
         assertEquals("key=85", u.paramString());
 

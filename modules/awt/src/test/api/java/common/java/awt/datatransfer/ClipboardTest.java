@@ -38,7 +38,7 @@ public class ClipboardTest extends TestCase {
     }
 
     public final void testClipboard() {
-        assertEquals(new Clipboard(null).getName(), null);
+        assertNull(new Clipboard(null).getName());
         assertEquals(new Clipboard("Clipboard").getName(), "Clipboard");
     }
 

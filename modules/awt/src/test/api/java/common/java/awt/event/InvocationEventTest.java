@@ -39,7 +39,7 @@ public class InvocationEventTest extends TestCase {
 
         assertEquals(event.getSource(), button);
         assertEquals(event.getID(), InvocationEvent.INVOCATION_DEFAULT);
-        assertEquals(event.getException(), null);
+        assertNull(event.getException());
         assertFalse(event.getWhen() == 0l);
     }
 
@@ -53,7 +53,7 @@ public class InvocationEventTest extends TestCase {
 
         assertEquals(event.getSource(), button);
         assertEquals(event.getID(), InvocationEvent.INVOCATION_DEFAULT);
-        assertEquals(event.getException(), null);
+        assertNull(event.getException());
         assertFalse(event.getWhen() == 0l);
     }
 
@@ -68,7 +68,7 @@ public class InvocationEventTest extends TestCase {
 
         assertEquals(event.getSource(), button);
         assertEquals(event.getID(), InvocationEvent.INVOCATION_DEFAULT);
-        assertEquals(event.getException(), null);
+        assertNull(event.getException());
         assertFalse(event.getWhen() == 0l);
     }
 

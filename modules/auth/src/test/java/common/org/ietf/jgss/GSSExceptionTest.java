@@ -97,7 +97,7 @@ public class GSSExceptionTest extends TestCase {
     public void testGetMinorString() {
         GSSException gssException= new GSSException(GSSException.BAD_NAME);
         String minorString= gssException.getMinorString();
-        assertEquals(null,  minorString );
+        assertNull(minorString);
     }
         
     public void testGetMinorString_0() {
@@ -115,14 +115,14 @@ public class GSSExceptionTest extends TestCase {
     public void testGetMinorString_2() {
         GSSException gssException= new GSSException(GSSException.BAD_NAME, 0, "Bad day today");
         String minorString= gssException.getMinorString();
-        assertEquals(null,  minorString );
+        assertNull(minorString);
     }
     
     public void testGetMinorString_3() {
         GSSException gssException= new GSSException(GSSException.BAD_NAME);
         gssException.setMinor(0, "Bad day today");
         String minorString= gssException.getMinorString();
-        assertEquals(null,  minorString );
+        assertNull(minorString);
     }
     
     public void testGetMessage() {

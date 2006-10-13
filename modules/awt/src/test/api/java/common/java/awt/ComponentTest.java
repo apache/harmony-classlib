@@ -331,7 +331,7 @@ public class ComponentTest extends TestCase {
 
     private void createFrameAndWait() {
         createRobot();
-        assertTrue(frame == null);
+        assertNull(frame);
         frame = new Frame();
         frame.setBounds(0, 0, 100, 100);
         myTestComp.setBounds(0, 0, 30, 50);
@@ -625,7 +625,7 @@ public class ComponentTest extends TestCase {
         int eventId = Event.WINDOW_DESTROY;
         createRobot();
         robot.setAutoDelay(250);
-        assertTrue(frame == null);
+        assertNull(frame);
         frame = new MyFrame();
 
         frame.setBounds(0, 0, 100, 100);
@@ -662,7 +662,7 @@ public class ComponentTest extends TestCase {
         int eventId = Event.WINDOW_ICONIFY;
         createRobot();
         robot.setAutoDelay(250);
-        assertTrue(frame == null);
+        assertNull(frame);
         frame = new MyFrame();
 
         frame.setBounds(0, 0, 200, 200);
@@ -693,7 +693,7 @@ public class ComponentTest extends TestCase {
         createRobot();
         int eventId =  Event.WINDOW_MOVED;
         robot.setAutoDelay(250);
-        assertTrue(frame == null);
+        assertNull(frame);
         frame = new MyFrame();
 
         frame.setBounds(0, 0, 200, 200);

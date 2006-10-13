@@ -65,9 +65,9 @@ public class GradientPaintTest extends TestCase {
 
     public void testGetCyclic() {
         gp = new GradientPaint(1, 2, Color.green, 3, 4, Color.blue, true);
-        assertEquals(true, gp.isCyclic());
+        assertTrue(gp.isCyclic());
         gp = new GradientPaint(1, 2, Color.green, 3, 4, Color.blue, false);
-        assertEquals(false, gp.isCyclic());
+        assertFalse(gp.isCyclic());
     }
 
     public static void main(String[] args) {

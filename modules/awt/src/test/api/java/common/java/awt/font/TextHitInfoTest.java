@@ -85,8 +85,8 @@ public class TextHitInfoTest extends TestCase
 
     public void testIsLeadingEdge() throws Exception
     {
-        assertEquals(false, t3.isLeadingEdge());
-        assertEquals(true, l4.isLeadingEdge());
+        assertFalse(t3.isLeadingEdge());
+        assertTrue(l4.isLeadingEdge());
     }
 
     public void testHashCode() throws Exception
@@ -111,13 +111,13 @@ public class TextHitInfoTest extends TestCase
     public void testTrailing() throws Exception
     {
         assertEquals(4, TextHitInfo.trailing(4).getCharIndex());
-        assertEquals(false, TextHitInfo.trailing(-1).isLeadingEdge());
+        assertFalse(TextHitInfo.trailing(-1).isLeadingEdge());
     }
 
     public void testLeading() throws Exception
     {
         assertEquals(4, TextHitInfo.leading(4).getCharIndex());
-        assertEquals(true, TextHitInfo.leading(1).isLeadingEdge());
+        assertTrue(TextHitInfo.leading(1).isLeadingEdge());
     }
 
     public void testBeforeOffset() throws Exception

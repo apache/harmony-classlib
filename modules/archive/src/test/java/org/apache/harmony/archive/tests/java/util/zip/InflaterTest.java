@@ -76,7 +76,7 @@ public class InflaterTest extends junit.framework.TestCase {
 			}
 			assertTrue(
 					"the method finished() returned false when no more data needs to be decompressed",
-					inflate.finished() == true);
+					inflate.finished());
 		} catch (DataFormatException e) {
 			fail("Invalid input to be decompressed");
 		}
@@ -430,16 +430,16 @@ public class InflaterTest extends junit.framework.TestCase {
 		}
 		assertTrue(
 				"method needsDictionary returned false when dictionary was used in deflater",
-				inflateDiction.needsDictionary() == true);
+				inflateDiction.needsDictionary());
 
 		// testing without dictionary
 		Inflater inflate = new Inflater();
 		try {
 			inflate.setInput(outPutBuff1);
 			inflate.inflate(outPutInf);
-			assertTrue(
+			assertFalse(
 					"method needsDictionary returned true when dictionary was not used in deflater",
-					inflate.needsDictionary() == false);
+					inflate.needsDictionary());
 		} catch (DataFormatException e) {
 			fail(
 					"Input to inflate is invalid or corrupted - needsDictionary");
@@ -462,20 +462,20 @@ public class InflaterTest extends junit.framework.TestCase {
 		Inflater inflate = new Inflater();
 		assertTrue(
 				"needsInput give the wrong boolean value as a result of no input buffer",
-				inflate.needsInput() == true);
+				inflate.needsInput());
 
 		byte byteArray[] = { 2, 3, 4, 't', 'y', 'u', 'e', 'w', 7, 6, 5, 9 };
 		inflate.setInput(byteArray);
-		assertTrue(
+		assertFalse(
 				"methodNeedsInput returned true when the input buffer is full",
-				inflate.needsInput() == false);
+				inflate.needsInput());
 
 		inflate.reset();
 		byte byteArrayEmpty[] = new byte[0];
 		inflate.setInput(byteArrayEmpty);
 		assertTrue(
 				"needsInput give wrong boolean value as a result of an empty input buffer",
-				inflate.needsInput() == true);
+				inflate.needsInput());
 	}
 
 	/**

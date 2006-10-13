@@ -150,7 +150,7 @@ public class MessagePropTest extends TestCase {
     public void testGetMinorString() {
         MessageProp mp= new MessageProp(true);
         String s= mp.getMinorString();
-        assertEquals(null, s);
+        assertNull(s);
     }
     
     public void testGetMinorString_0() {

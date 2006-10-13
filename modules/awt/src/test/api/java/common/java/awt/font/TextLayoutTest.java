@@ -295,7 +295,7 @@ public class TextLayoutTest extends TestCase
     public void testGetCaretShapes() throws Exception
     {
         Shape[] shapes = tl.getCaretShapes(1);
-        assertEquals(shapes[1], null);
+        assertNull(shapes[1]);
 
         PathIterator it1 = shapes[0].getPathIterator(null);
         PathIterator it2 = tl.getCaretShape(TextHitInfo.trailing(0)).getPathIterator(null);
@@ -418,61 +418,61 @@ public class TextLayoutTest extends TestCase
     public void testGetNextLeftHit() throws Exception
     {
         TextHitInfo i1 = tl.getNextLeftHit(0);
-        assertEquals(i1, null);
+        assertNull(i1);
 
         TextHitInfo i2 = tl.getNextLeftHit(4);
         assertEquals(3, i2.getCharIndex());
-        assertEquals(true, i2.isLeadingEdge());
+        assertTrue(i2.isLeadingEdge());
     }
 
     public void testGetNextLeftHit1() throws Exception
     {
         TextHitInfo i1 = tl.getNextLeftHit(TextHitInfo.leading(0));
-        assertEquals(i1, null);
+        assertNull(i1);
 
         TextHitInfo i2 = tl.getNextLeftHit(TextHitInfo.trailing(3));
         assertEquals(3, i2.getCharIndex());
-        assertEquals(true, i2.isLeadingEdge());
+        assertTrue(i2.isLeadingEdge());
     }
 
     public void testGetNextLeftHit2() throws Exception
     {
         TextHitInfo i1 = tl.getNextLeftHit(0, TextLayout.DEFAULT_CARET_POLICY);
-        assertEquals(i1, null);
+        assertNull(i1);
 
         TextHitInfo i2 = tl.getNextLeftHit(4, TextLayout.DEFAULT_CARET_POLICY);
         assertEquals(3, i2.getCharIndex());
-        assertEquals(true, i2.isLeadingEdge());
+        assertTrue(i2.isLeadingEdge());
     }
 
     public void testGetNextRightHit() throws Exception
     {
         TextHitInfo i1 = tl.getNextRightHit(tl.getCharacterCount());
-        assertEquals(i1, null);
+        assertNull(i1);
 
         TextHitInfo i2 = tl.getNextRightHit(4);
         assertEquals(5, i2.getCharIndex());
-        assertEquals(true, i2.isLeadingEdge());
+        assertTrue(i2.isLeadingEdge());
     }
 
     public void testGetNextRightHit1() throws Exception
     {
         TextHitInfo i1 = tl.getNextRightHit(TextHitInfo.trailing(tl.getCharacterCount()-1));
-        assertEquals(i1, null);
+        assertNull(i1);
 
         TextHitInfo i2 = tl.getNextRightHit(TextHitInfo.leading(4));
         assertEquals(5, i2.getCharIndex());
-        assertEquals(true, i2.isLeadingEdge());
+        assertTrue(i2.isLeadingEdge());
     }
 
     public void testGetNextRightHit2() throws Exception
     {
         TextHitInfo i1 = tl.getNextRightHit(tl.getCharacterCount(), TextLayout.DEFAULT_CARET_POLICY);
-        assertEquals(i1, null);
+        assertNull(i1);
 
         TextHitInfo i2 = tl.getNextRightHit(4, TextLayout.DEFAULT_CARET_POLICY);
         assertEquals(5, i2.getCharIndex());
-        assertEquals(true, i2.isLeadingEdge());
+        assertTrue(i2.isLeadingEdge());
     }
 
     public void testGetOutline() throws Exception
@@ -632,12 +632,12 @@ public class TextLayoutTest extends TestCase
 
     public void testIsLeftToRight() throws Exception
     {
-        assertEquals(true, tl.isLeftToRight());
+        assertTrue(tl.isLeftToRight());
     }
 
     public void testIsVertical() throws Exception
     {
-        assertEquals(false, tl.isVertical());
+        assertFalse(tl.isVertical());
     }
 
     public void testGetStrongCaret() throws Exception

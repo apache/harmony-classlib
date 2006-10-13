@@ -77,7 +77,7 @@ public class BasicStrokeTest extends TestCase {
         assertEquals(BasicStroke.CAP_SQUARE, bs.getEndCap());
         assertEquals(BasicStroke.JOIN_MITER, bs.getLineJoin());
         assertEquals(10.0f, bs.getMiterLimit(), 0.0f);
-        assertEquals(null, bs.getDashArray());
+        assertNull(bs.getDashArray());
         assertEquals(0.0f, bs.getDashPhase(), 0.0f);
     }
 

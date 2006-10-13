@@ -63,7 +63,7 @@ public class ButtonTest extends TestCase {
 
     public void testGetSetLabel() {
         button.setLabel(null);
-        assertTrue(button.getLabel() == null);
+        assertNull(button.getLabel());
         Dimension nullSize = button.getPreferredSize();
 
         button.setLabel("Button");
@@ -73,7 +73,7 @@ public class ButtonTest extends TestCase {
     public void testGetSetActionCommand() {
         assertTrue(button.getActionCommand() == "Button");
         button.setLabel(null);
-        assertTrue(button.getActionCommand() == null);
+        assertNull(button.getActionCommand());
 
         button.setActionCommand("Button Command");
         assertTrue(button.getActionCommand() == "Button Command");

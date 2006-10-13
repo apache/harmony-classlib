@@ -119,7 +119,7 @@ public class AppConfigurationEntryTest extends TestCase {
         assertEquals("LoginModule2", entries[1].getLoginModuleName());
         assertEquals(options1, entries[1].getOptions());
         assertEquals("LoginModule3", entries[2].getLoginModuleName());
-        assertEquals(true, entries[2].getOptions().isEmpty());
+        assertTrue(entries[2].getOptions().isEmpty());
 
     }
 

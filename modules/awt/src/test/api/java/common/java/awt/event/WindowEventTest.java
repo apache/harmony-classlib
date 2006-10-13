@@ -34,7 +34,7 @@ public class WindowEventTest extends TestCase {
         assertEquals(event.getSource(), window);
         assertEquals(event.getID(), WindowEvent.WINDOW_ACTIVATED);
         assertEquals(event.getWindow(), window);
-        assertEquals(event.getOppositeWindow(), null);
+        assertNull(event.getOppositeWindow());
         assertEquals(event.getOldState(), Frame.NORMAL);
         assertEquals(event.getNewState(), Frame.NORMAL);
     }
@@ -60,7 +60,7 @@ public class WindowEventTest extends TestCase {
         assertEquals(event.getSource(), window);
         assertEquals(event.getID(), WindowEvent.WINDOW_ACTIVATED);
         assertEquals(event.getWindow(), window);
-        assertEquals(event.getOppositeWindow(), null);
+        assertNull(event.getOppositeWindow());
         assertEquals(event.getOldState(), Frame.MAXIMIZED_BOTH);
         assertEquals(event.getNewState(), Frame.MAXIMIZED_HORIZ);
     }

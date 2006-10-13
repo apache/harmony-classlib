@@ -425,7 +425,7 @@ public class BorderLayoutTest extends AWTTestCase {
         assertEquals(layout.getLayoutComponent(BorderLayout.WEST), w);
         assertEquals(layout.getLayoutComponent(BorderLayout.CENTER), c);
         assertEquals(layout.getLayoutComponent(BorderLayout.EAST), e);
-        assertEquals(layout.getLayoutComponent(BorderLayout.PAGE_START), null);
+        assertNull(layout.getLayoutComponent(BorderLayout.PAGE_START));
 
         try {
             layout.getLayoutComponent("Z");
@@ -488,8 +488,8 @@ public class BorderLayoutTest extends AWTTestCase {
         assertEquals(BorderLayout.WEST, layout.getConstraints(w));
         assertEquals(BorderLayout.CENTER, layout.getConstraints(c));
         assertEquals(BorderLayout.EAST, layout.getConstraints(e));
-        assertEquals(null, layout.getConstraints(null));
-        assertEquals(null, layout.getConstraints(new Button("Z")));
+        assertNull(layout.getConstraints(null));
+        assertNull(layout.getConstraints(new Button("Z")));
     }
 
 }

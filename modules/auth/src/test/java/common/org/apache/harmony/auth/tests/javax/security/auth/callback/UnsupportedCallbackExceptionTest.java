@@ -77,8 +77,8 @@ public class UnsupportedCallbackExceptionTest extends TestCase {
      */
     public final void testUnsupportedCallbackException_03() {
         UnsupportedCallbackException ce = new UnsupportedCallbackException(null, null);
-        assertEquals (null, ce.getMessage());
-        assertEquals(null, ce.getCallback());
+        assertNull(ce.getMessage());
+        assertNull(ce.getCallback());
         try {
             throw ce;
         }catch (Exception e){

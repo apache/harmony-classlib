@@ -144,7 +144,7 @@ public class SubjectTest extends SecurityTest {
     public final void testSubject() {
         Subject subject = new Subject();
 
-        assertEquals("Read only state", false, subject.isReadOnly());
+        assertFalse("Read only state", subject.isReadOnly());
         assertEquals("Principals set", 0, subject.getPrincipals().size());
 
         assertEquals("Private credential set", 0, subject
@@ -161,7 +161,7 @@ public class SubjectTest extends SecurityTest {
 
         Subject subject = new Subject(false, h1, h2, h3);
 
-        assertEquals("Read only state", false, subject.isReadOnly());
+        assertFalse("Read only state", subject.isReadOnly());
         assertEquals("Principals set", h1, subject.getPrincipals());
 
         assertEquals("Private credential set", h3, subject
@@ -173,7 +173,7 @@ public class SubjectTest extends SecurityTest {
         // the same but for read only subject        
         subject = new Subject(true, h1, h2, h3);
 
-        assertEquals("Read only state", true, subject.isReadOnly());
+        assertTrue("Read only state", subject.isReadOnly());
 
         assertEquals("Principals set", 1, subject.getPrincipals().size());
 
@@ -823,15 +823,15 @@ public class SubjectTest extends SecurityTest {
         Subject subject = new Subject();
 
         // check initialized value
-        assertEquals("Read only state", false, subject.isReadOnly());
+        assertFalse("Read only state", subject.isReadOnly());
 
         // set the subject as read only
         subject.setReadOnly();
-        assertEquals("Read only state", true, subject.isReadOnly());
+        assertTrue("Read only state", subject.isReadOnly());
 
         // anyway invoke it again to verify subject's state
         subject.setReadOnly();
-        assertEquals("Read only state", true, subject.isReadOnly());
+        assertTrue("Read only state", subject.isReadOnly());
     }
 
     public final void testToString() {

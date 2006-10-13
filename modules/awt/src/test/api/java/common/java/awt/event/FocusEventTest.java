@@ -33,8 +33,8 @@ public class FocusEventTest extends TestCase {
         assertEquals(event.getSource(), button);
         assertEquals(event.getID(), FocusEvent.FOCUS_GAINED);
         assertEquals(event.getComponent(), button);
-        assertEquals(event.getOppositeComponent(), null);
-        assertEquals(event.isTemporary(), false);
+        assertNull(event.getOppositeComponent());
+        assertFalse(event.isTemporary());
     }
 
     public final void testFocusEventComponentintboolean() {
@@ -44,8 +44,8 @@ public class FocusEventTest extends TestCase {
         assertEquals(event.getSource(), button);
         assertEquals(event.getID(), FocusEvent.FOCUS_LOST);
         assertEquals(event.getComponent(), button);
-        assertEquals(event.getOppositeComponent(), null);
-        assertEquals(event.isTemporary(), true);
+        assertNull(event.getOppositeComponent());
+        assertTrue(event.isTemporary());
     }
 
     public final void testFocusEventComponentintbooleanComponent() {
@@ -56,7 +56,7 @@ public class FocusEventTest extends TestCase {
         assertEquals(event.getID(), FocusEvent.FOCUS_LOST);
         assertEquals(event.getComponent(), button);
         assertEquals(event.getOppositeComponent(), button);
-        assertEquals(event.isTemporary(), true);
+        assertTrue(event.isTemporary());
     }
 
 }

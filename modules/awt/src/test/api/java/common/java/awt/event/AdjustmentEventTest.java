@@ -35,7 +35,7 @@ public class AdjustmentEventTest extends TestCase {
         assertEquals(event.getAdjustable(), adj);
         assertEquals(event.getValue(), 10);
         assertEquals(event.getAdjustmentType(), AdjustmentEvent.UNIT_DECREMENT);
-        assertEquals(event.getValueIsAdjusting(), false);
+        assertFalse(event.getValueIsAdjusting());
     }
 
     public final void testAdjustmentEventAdjustableintintintboolean() {
@@ -47,7 +47,7 @@ public class AdjustmentEventTest extends TestCase {
         assertEquals(event.getAdjustable(), adj);
         assertEquals(event.getValue(), 11);
         assertEquals(event.getAdjustmentType(), AdjustmentEvent.BLOCK_DECREMENT);
-        assertEquals(event.getValueIsAdjusting(), true);
+        assertTrue(event.getValueIsAdjusting());
     }
 
     public final void testParamString() {

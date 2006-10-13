@@ -37,11 +37,11 @@ public class InputMethodEventTest extends TestCase {
 
         assertEquals(event.getSource(), button);
         assertEquals(event.getID(), InputMethodEvent.CARET_POSITION_CHANGED);
-        assertEquals(event.getText(), null);
+        assertNull(event.getText());
         assertEquals(event.getWhen(), 0);
-        assertEquals(event.getCaret(), null);
+        assertNull(event.getCaret());
         assertEquals(event.getCommittedCharacterCount(), 0);
-        assertEquals(event.getVisiblePosition(), null);
+        assertNull(event.getVisiblePosition());
         assertFalse(event.isConsumed());
 
         boolean wrongID = false;
@@ -65,9 +65,9 @@ public class InputMethodEventTest extends TestCase {
         assertEquals(event.getID(), InputMethodEvent.INPUT_METHOD_TEXT_CHANGED);
         assertEquals(event.getText(), text);
         assertEquals(event.getWhen(), 0);
-        assertEquals(event.getCaret(), null);
+        assertNull(event.getCaret());
         assertEquals(event.getCommittedCharacterCount(), 0);
-        assertEquals(event.getVisiblePosition(), null);
+        assertNull(event.getVisiblePosition());
         assertFalse(event.isConsumed());
 
         boolean wrongID = false;
@@ -111,9 +111,9 @@ public class InputMethodEventTest extends TestCase {
         assertEquals(event.getID(), InputMethodEvent.INPUT_METHOD_TEXT_CHANGED);
         assertEquals(event.getText(), text);
         assertEquals(event.getWhen(), 1000000000);
-        assertEquals(event.getCaret(), null);
+        assertNull(event.getCaret());
         assertEquals(event.getCommittedCharacterCount(), 0);
-        assertEquals(event.getVisiblePosition(), null);
+        assertNull(event.getVisiblePosition());
         assertFalse(event.isConsumed());
 
         boolean wrongID = false;

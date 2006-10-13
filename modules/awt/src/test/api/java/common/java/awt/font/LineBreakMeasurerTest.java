@@ -128,7 +128,7 @@ public class LineBreakMeasurerTest extends TestCase
         assertEquals(2, l1.getCharacterCount());
         assertEquals(11, l2.getCharacterCount());
         assertEquals(11, l3.getCharacterCount());
-        assertEquals(null, l4);
+        assertNull(l4);
     }
 
     public void testNextLayout1() throws Exception
@@ -140,7 +140,7 @@ public class LineBreakMeasurerTest extends TestCase
         TextLayout l5 = measurer.nextLayout(500, 25, false);
 
         assertEquals(2, l1.getCharacterCount());
-        assertEquals(null, l2);
+        assertNull(l2);
         assertEquals(18, l3.getCharacterCount());
         assertEquals(1, l4.getCharacterCount());
         assertEquals(3, l5.getCharacterCount());
