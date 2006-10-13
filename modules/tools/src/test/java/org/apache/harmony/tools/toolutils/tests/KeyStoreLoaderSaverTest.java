@@ -26,7 +26,7 @@ import org.apache.harmony.tools.toolutils.KeyStoreLoaderSaver;
 public class KeyStoreLoaderSaverTest extends TestCase {
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(KeyStoreLoaderSaver.class);
+        junit.textui.TestRunner.run(KeyStoreLoaderSaverTest.class);
     }
 
     /**
