@@ -16,9 +16,9 @@
  */
 
 /**
-* @author Maxim V. Makarov
-* @version $Revision$
-*/
+ * @author Maxim V. Makarov
+ * @version $Revision$
+ */
 
 package org.apache.harmony.auth.tests.javax.security.auth.login;
 
@@ -57,14 +57,19 @@ public class AppConfigurationEntryTest extends TestCase {
      * 
      */
     public void testCtor_01() {
-        entry = new AppConfigurationEntry(loginModule,AppConfigurationEntry.LoginModuleControlFlag.REQUIRED, options);
+        entry = new AppConfigurationEntry(loginModule,
+                AppConfigurationEntry.LoginModuleControlFlag.REQUIRED, options);
         assertEquals("LoginModule", entry.getLoginModuleName());
         assertEquals(msg + "required", entry.getControlFlag().toString());
-        entry = new AppConfigurationEntry(loginModule,AppConfigurationEntry.LoginModuleControlFlag.REQUISITE, options);
+        entry = new AppConfigurationEntry(loginModule,
+                AppConfigurationEntry.LoginModuleControlFlag.REQUISITE, options);
         assertEquals(msg + "requisite", entry.getControlFlag().toString());
-        entry = new AppConfigurationEntry(loginModule,AppConfigurationEntry.LoginModuleControlFlag.OPTIONAL, options);
+        entry = new AppConfigurationEntry(loginModule,
+                AppConfigurationEntry.LoginModuleControlFlag.OPTIONAL, options);
         assertEquals(msg + "optional", entry.getControlFlag().toString());
-        entry = new AppConfigurationEntry(loginModule,AppConfigurationEntry.LoginModuleControlFlag.SUFFICIENT,options);
+        entry = new AppConfigurationEntry(loginModule,
+                AppConfigurationEntry.LoginModuleControlFlag.SUFFICIENT,
+                options);
         assertEquals(msg + "sufficient", entry.getControlFlag().toString());
     }
 
@@ -75,12 +80,16 @@ public class AppConfigurationEntryTest extends TestCase {
     public void testCtor_02() {
 
         try {
-            entry = new AppConfigurationEntry(null,AppConfigurationEntry.LoginModuleControlFlag.REQUIRED,options);
+            entry = new AppConfigurationEntry(null,
+                    AppConfigurationEntry.LoginModuleControlFlag.REQUIRED,
+                    options);
             fail("Expected IllegalArgumentException");
         } catch (IllegalArgumentException e) {
         }
         try {
-            entry = new AppConfigurationEntry("",AppConfigurationEntry.LoginModuleControlFlag.REQUIRED,options);
+            entry = new AppConfigurationEntry("",
+                    AppConfigurationEntry.LoginModuleControlFlag.REQUIRED,
+                    options);
             fail("Expected IllegalArgumentException");
         } catch (IllegalArgumentException e1) {
         }
@@ -110,9 +119,15 @@ public class AppConfigurationEntryTest extends TestCase {
         Map options1 = new HashMap();
         options1.put("debug", "false");
         AppConfigurationEntry[] entries = {
-                new AppConfigurationEntry("LoginModule1",AppConfigurationEntry.LoginModuleControlFlag.REQUIRED,options),
-                new AppConfigurationEntry("LoginModule2", AppConfigurationEntry.LoginModuleControlFlag.REQUIRED,options1),
-                new AppConfigurationEntry("LoginModule3",AppConfigurationEntry.LoginModuleControlFlag.OPTIONAL,new HashMap()) };
+                new AppConfigurationEntry("LoginModule1",
+                        AppConfigurationEntry.LoginModuleControlFlag.REQUIRED,
+                        options),
+                new AppConfigurationEntry("LoginModule2",
+                        AppConfigurationEntry.LoginModuleControlFlag.REQUIRED,
+                        options1),
+                new AppConfigurationEntry("LoginModule3",
+                        AppConfigurationEntry.LoginModuleControlFlag.OPTIONAL,
+                        new HashMap()) };
 
         assertEquals("LoginModule1", entries[0].getLoginModuleName());
         assertEquals(options, entries[0].getOptions());
@@ -129,25 +144,33 @@ public class AppConfigurationEntryTest extends TestCase {
      */
     public void testControlFlags() {
         assertEquals(AppConfigurationEntry.LoginModuleControlFlag.class,
-                AppConfigurationEntry.LoginModuleControlFlag.REQUIRED.getClass());
+                AppConfigurationEntry.LoginModuleControlFlag.REQUIRED
+                        .getClass());
         assertEquals(AppConfigurationEntry.LoginModuleControlFlag.class,
-                AppConfigurationEntry.LoginModuleControlFlag.REQUISITE.getClass());
+                AppConfigurationEntry.LoginModuleControlFlag.REQUISITE
+                        .getClass());
         assertEquals(AppConfigurationEntry.LoginModuleControlFlag.class,
-                AppConfigurationEntry.LoginModuleControlFlag.OPTIONAL.getClass());
+                AppConfigurationEntry.LoginModuleControlFlag.OPTIONAL
+                        .getClass());
         assertEquals(AppConfigurationEntry.LoginModuleControlFlag.class,
-                AppConfigurationEntry.LoginModuleControlFlag.SUFFICIENT.getClass());
+                AppConfigurationEntry.LoginModuleControlFlag.SUFFICIENT
+                        .getClass());
 
         assertEquals(msg + "required",
-                AppConfigurationEntry.LoginModuleControlFlag.REQUIRED.toString());
+                AppConfigurationEntry.LoginModuleControlFlag.REQUIRED
+                        .toString());
         assertEquals(msg + "requisite",
-                AppConfigurationEntry.LoginModuleControlFlag.REQUISITE.toString());
+                AppConfigurationEntry.LoginModuleControlFlag.REQUISITE
+                        .toString());
         assertEquals(msg + "optional",
-                AppConfigurationEntry.LoginModuleControlFlag.OPTIONAL.toString());
+                AppConfigurationEntry.LoginModuleControlFlag.OPTIONAL
+                        .toString());
         assertEquals(msg + "sufficient",
-                AppConfigurationEntry.LoginModuleControlFlag.SUFFICIENT.toString());
+                AppConfigurationEntry.LoginModuleControlFlag.SUFFICIENT
+                        .toString());
     }
-    
-    public void testImmutability(){
+
+    public void testImmutability() {
         AppConfigurationEntry entry = new AppConfigurationEntry("LoginModule",
                 AppConfigurationEntry.LoginModuleControlFlag.REQUIRED, options);
 
