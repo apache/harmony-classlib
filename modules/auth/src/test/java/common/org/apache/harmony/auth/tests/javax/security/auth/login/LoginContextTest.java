@@ -36,14 +36,14 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
-import org.apache.harmony.auth.internal.SecurityTest;
+import junit.framework.TestCase;
 
 
 /**
  * Tests LoginContext class
  */
 
-public class LoginContextTest extends SecurityTest {
+public class LoginContextTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(LoginContextTest.class);
