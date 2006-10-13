@@ -88,7 +88,7 @@ public class AccessibleJComponentTest extends SwingTestCase {
         JPanel panel2 = new JPanel();
         JPanel panel3 = new JPanel();
 
-        assertTrue(aContext.getAccessibleChild(0) == null);
+        assertNull(aContext.getAccessibleChild(0));
 
         panel.add(panel1);
         panel.add(panel2);

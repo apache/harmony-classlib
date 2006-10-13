@@ -92,17 +92,17 @@ public class DefaultButtonModelTest extends SwingTestCase {
 
     public void testDefaultButtonModel() {
         assertEquals("default mnemonic ", 0, buttonModel.getMnemonic());
-        assertEquals("default action command ", null, buttonModel.getActionCommand());
+        assertNull("default action command ", buttonModel.getActionCommand());
         assertEquals("default actionListeners array ", 0, buttonModel.getActionListeners().length);
         assertEquals("default changeListeners array ", 0, buttonModel.getChangeListeners().length);
         assertEquals("default itemListeners array ", 0, buttonModel.getItemListeners().length);
-        assertEquals("default group ", null, buttonModel.getGroup());
-        assertEquals("default selected objects array ", null, buttonModel.getSelectedObjects());
-        assertEquals("default armed state ", false, buttonModel.isArmed());
-        assertEquals("default enabled state ", true, buttonModel.isEnabled());
-        assertEquals("default pressed state ", false, buttonModel.isPressed());
-        assertEquals("default rollover state ", false, buttonModel.isRollover());
-        assertEquals("default selected state ", false, buttonModel.isSelected());
+        assertNull("default group ", buttonModel.getGroup());
+        assertNull("default selected objects array ", buttonModel.getSelectedObjects());
+        assertFalse("default armed state ", buttonModel.isArmed());
+        assertTrue("default enabled state ", buttonModel.isEnabled());
+        assertFalse("default pressed state ", buttonModel.isPressed());
+        assertFalse("default rollover state ", buttonModel.isRollover());
+        assertFalse("default selected state ", buttonModel.isSelected());
     }
 
     public void testGetListeners() {
@@ -238,7 +238,7 @@ public class DefaultButtonModelTest extends SwingTestCase {
         ButtonGroup group1 = new ButtonGroup();
         ButtonGroup group2 = new ButtonGroup();
         ButtonGroup group3 = new ButtonGroup();
-        assertEquals("default group ", null, buttonModel.getGroup());
+        assertNull("default group ", buttonModel.getGroup());
 
         buttonModel.setGroup(group1);
         assertEquals("group ", group1, buttonModel.getGroup());
@@ -251,7 +251,7 @@ public class DefaultButtonModelTest extends SwingTestCase {
     }
 
     public void testGetGroup() {
-        assertEquals("default group ", null, buttonModel.getGroup());
+        assertNull("default group ", buttonModel.getGroup());
     }
 
     public void testSetActionCommand() {
@@ -259,7 +259,7 @@ public class DefaultButtonModelTest extends SwingTestCase {
         String command2 = "command2";
         String command3 = "command3";
 
-        assertEquals("default action command ", null, buttonModel.getActionCommand());
+        assertNull("default action command ", buttonModel.getActionCommand());
 
         buttonModel.setActionCommand(command1);
         assertEquals("action command ", command1, buttonModel.getActionCommand());
@@ -272,11 +272,11 @@ public class DefaultButtonModelTest extends SwingTestCase {
     }
 
     public void testGetActionCommand() {
-        assertEquals("default action command ", null, buttonModel.getActionCommand());
+        assertNull("default action command ", buttonModel.getActionCommand());
     }
 
     public void testGetSelectedObjects() {
-        assertEquals("selected objects ", null, buttonModel.getSelectedObjects());
+        assertNull("selected objects ", buttonModel.getSelectedObjects());
     }
 
     public void testRemoveItemListener() {
@@ -372,8 +372,8 @@ public class DefaultButtonModelTest extends SwingTestCase {
         assertEquals("event fired ", event2, listener2.eventHappened);
 
         buttonModel.fireItemStateChanged(null);
-        assertEquals("event fired ", null, listener1.eventHappened);
-        assertEquals("event fired ", null, listener2.eventHappened);
+        assertNull("event fired ", listener1.eventHappened);
+        assertNull("event fired ", listener2.eventHappened);
     }
 
     public void testFireActionPerformed1() {
@@ -395,8 +395,8 @@ public class DefaultButtonModelTest extends SwingTestCase {
         assertEquals("event fired ", event2, listener2.eventHappened);
 
         buttonModel.fireActionPerformed(null);
-        assertEquals("event fired ", null, listener1.eventHappened);
-        assertEquals("event fired ", null, listener2.eventHappened);
+        assertNull("event fired ", listener1.eventHappened);
+        assertNull("event fired ", listener2.eventHappened);
     }
 
     public void testFireActionPerformed2() {
@@ -407,8 +407,8 @@ public class DefaultButtonModelTest extends SwingTestCase {
         buttonModel.addActionListener(listener2);
         buttonModel.setPressed(true);
         buttonModel.setArmed(true);
-        assertTrue("actionListeners aren't triggered", listener1.eventHappened == null);
-        assertTrue("actionListeners aren't triggered", listener1.eventHappened == null);
+        assertNull("actionListeners aren't triggered", listener1.eventHappened);
+        assertNull("actionListeners aren't triggered", listener1.eventHappened);
         buttonModel.setPressed(false);
         assertTrue("actionListeners are triggered", listener1.eventHappened != null);
         assertTrue("actionListeners are triggered", listener2.eventHappened != null);
@@ -581,10 +581,10 @@ public class DefaultButtonModelTest extends SwingTestCase {
         listener4.eventHappened = null;
         buttonModel.setSelected(value2);
         assertEquals("Selected  ", value2, buttonModel.isSelected());
-        assertEquals("event wasn't fired ", null, listener1.eventHappened);
-        assertEquals("event wasn't fired ", null, listener2.eventHappened);
-        assertEquals("event wasn't fired ", null, listener3.eventHappened);
-        assertEquals("event wasn't fired ", null, listener4.eventHappened);
+        assertNull("event wasn't fired ", listener1.eventHappened);
+        assertNull("event wasn't fired ", listener2.eventHappened);
+        assertNull("event wasn't fired ", listener3.eventHappened);
+        assertNull("event wasn't fired ", listener4.eventHappened);
 
         buttonModel.setEnabled(true);
         buttonModel.setSelected(false);
@@ -619,8 +619,8 @@ public class DefaultButtonModelTest extends SwingTestCase {
         listener2.eventHappened = null;
         buttonModel.setRollover(value2);
         assertEquals("Rollover ", value2, buttonModel.isRollover());
-        assertEquals("event wasn't fired ", null, listener1.eventHappened);
-        assertEquals("event wasn't fired ", null, listener2.eventHappened);
+        assertNull("event wasn't fired ", listener1.eventHappened);
+        assertNull("event wasn't fired ", listener2.eventHappened);
 
         buttonModel.setEnabled(true);
         buttonModel.setRollover(false);
@@ -657,8 +657,8 @@ public class DefaultButtonModelTest extends SwingTestCase {
         listener2.eventHappened = null;
         buttonModel.setPressed(value2);
         assertEquals("Pressed ", value2, buttonModel.isPressed());
-        assertEquals("event wasn't fired ", null, listener1.eventHappened);
-        assertEquals("event wasn't fired ", null, listener2.eventHappened);
+        assertNull("event wasn't fired ", listener1.eventHappened);
+        assertNull("event wasn't fired ", listener2.eventHappened);
         buttonModel.setArmed(true);
         buttonModel.setPressed(true);
         listener3.eventHappened = null;
@@ -698,8 +698,8 @@ public class DefaultButtonModelTest extends SwingTestCase {
         listener2.eventHappened = null;
         buttonModel.setEnabled(value2);
         assertEquals("Enabled ", value2, buttonModel.isEnabled());
-        assertEquals("event wasn't fired ", null, listener1.eventHappened);
-        assertEquals("event wasn't fired ", null, listener2.eventHappened);
+        assertNull("event wasn't fired ", listener1.eventHappened);
+        assertNull("event wasn't fired ", listener2.eventHappened);
 
 
         buttonModel.setEnabled(true);
@@ -749,8 +749,8 @@ public class DefaultButtonModelTest extends SwingTestCase {
         listener2.eventHappened = null;
         buttonModel.setArmed(value2);
         assertEquals("Armed ", value2, buttonModel.isArmed());
-        assertEquals("event wasn't fired ", null, listener1.eventHappened);
-        assertEquals("event wasn't fired ", null, listener2.eventHappened);
+        assertNull("event wasn't fired ", listener1.eventHappened);
+        assertNull("event wasn't fired ", listener2.eventHappened);
 
         buttonModel.setEnabled(true);
         buttonModel.setArmed(false);
@@ -797,23 +797,23 @@ public class DefaultButtonModelTest extends SwingTestCase {
     }
 
     public void testIsSelected() {
-        assertEquals("default selected state ", false, buttonModel.isSelected());
+        assertFalse("default selected state ", buttonModel.isSelected());
     }
 
     public void testIsRollover() {
-        assertEquals("default rollover state ", false, buttonModel.isRollover());
+        assertFalse("default rollover state ", buttonModel.isRollover());
     }
 
     public void testIsPressed() {
-        assertEquals("default pressed state ", false, buttonModel.isPressed());
+        assertFalse("default pressed state ", buttonModel.isPressed());
     }
 
     public void testIsEnabled() {
-        assertEquals("default enabled state ", true, buttonModel.isEnabled());
+        assertTrue("default enabled state ", buttonModel.isEnabled());
     }
 
     public void testIsArmed() {
-        assertEquals("default armed state ", false, buttonModel.isArmed());
+        assertFalse("default armed state ", buttonModel.isArmed());
     }
 
     public void testGetMnemonic() {

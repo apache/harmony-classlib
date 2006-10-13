@@ -220,20 +220,20 @@ public class LookAndFeelTest extends SwingTestCase {
         JButton comp2 = new JButton();
 
         LookAndFeel.installProperty(comp1, "opaque", Boolean.TRUE);
-        assertEquals("opaque", true, comp1.isOpaque());
+        assertTrue("opaque", comp1.isOpaque());
         LookAndFeel.installProperty(comp1, "opaque", Boolean.FALSE);
-        assertEquals("opaque", false, comp1.isOpaque());
+        assertFalse("opaque", comp1.isOpaque());
         comp1.setOpaque(true);
         LookAndFeel.installProperty(comp1, "opaque", Boolean.FALSE);
-        assertEquals("opaque", true, comp1.isOpaque());
+        assertTrue("opaque", comp1.isOpaque());
 
         LookAndFeel.installProperty(comp2, "opaque", Boolean.TRUE);
-        assertEquals("opaque", true, comp2.isOpaque());
+        assertTrue("opaque", comp2.isOpaque());
         LookAndFeel.installProperty(comp2, "opaque", Boolean.FALSE);
-        assertEquals("opaque", false, comp2.isOpaque());
+        assertFalse("opaque", comp2.isOpaque());
         comp1.setOpaque(true);
         LookAndFeel.installProperty(comp2, "opaque", Boolean.FALSE);
-        assertEquals("opaque", false, comp2.isOpaque());
+        assertFalse("opaque", comp2.isOpaque());
 
         try {
             LookAndFeel.installProperty(comp1, "iconTextGap", Boolean.TRUE);

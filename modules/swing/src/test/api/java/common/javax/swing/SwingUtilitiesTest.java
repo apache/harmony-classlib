@@ -363,7 +363,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
         result = SwingUtilities.notifyAction(action, KeyStroke.getKeyStroke('a'), event, this, modifiers);
         assertFalse(result);
         assertFalse(event.isConsumed());
-        assertTrue(action.eventHappened == null);
+        assertNull(action.eventHappened);
 
         action.setEnabled(true);
         result = SwingUtilities.notifyAction(action, KeyStroke.getKeyStroke('a'), event, this, modifiers);
@@ -385,7 +385,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
         assertTrue(result);
         assertFalse(event.isConsumed());
         assertTrue(action.eventHappened != null);
-        assertTrue(action.eventHappened.getActionCommand() == null);
+        assertNull(action.eventHappened.getActionCommand());
 
         event = new KeyEvent(source, 0, 0, modifiers, KeyEvent.VK_UNDEFINED, KeyEvent.CHAR_UNDEFINED);
         action.setEnabled(false);
@@ -393,7 +393,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
         assertFalse(result);
         assertFalse(event.isConsumed());
         assertTrue(action.eventHappened != null);
-        assertTrue(action.eventHappened.getActionCommand() == null);
+        assertNull(action.eventHappened.getActionCommand());
     }
 
     public void testConvertMouseEvent() {
@@ -843,9 +843,9 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
         Component component3 = new JPanel();
         JPanel panel4 = new JPanel();
 
-        assertTrue(SwingUtilities.getAncestorNamed(name1, null) == null);
-        assertTrue(SwingUtilities.getAncestorNamed(null, component3) == null);
-        assertTrue(SwingUtilities.getAncestorNamed(null, null) == null);
+        assertNull(SwingUtilities.getAncestorNamed(name1, null));
+        assertNull(SwingUtilities.getAncestorNamed(null, component3));
+        assertNull(SwingUtilities.getAncestorNamed(null, null));
 
         panel4.add(panel1);
         panel1.add(panel2);
@@ -855,13 +855,13 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
         window.add(component2);
 
         assertTrue(SwingUtilities.getAncestorNamed(name3, component1) == panel1);
-        assertTrue(SwingUtilities.getAncestorNamed(name6, component1) == null);
+        assertNull(SwingUtilities.getAncestorNamed(name6, component1));
         assertTrue(SwingUtilities.getAncestorNamed(name2, component1) == window);
-        assertTrue(SwingUtilities.getAncestorNamed(name5, component1) == null);
+        assertNull(SwingUtilities.getAncestorNamed(name5, component1));
         assertTrue(SwingUtilities.getAncestorNamed(name2, panel1) == window);
         assertTrue(SwingUtilities.getAncestorNamed(name2, component2) == window);
         assertTrue(SwingUtilities.getAncestorNamed(name5, component3) == panel3);
-        assertTrue(SwingUtilities.getAncestorNamed(null, component1) == null);
+        assertNull(SwingUtilities.getAncestorNamed(null, component1));
     }
 
     public void testGetAncestorOfClass() {
@@ -873,9 +873,9 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
         Component component2 = new Panel();
         Component component3 = new Panel();
 
-        assertTrue(SwingUtilities.getAncestorOfClass(JPanel.class, null) == null);
-        assertTrue(SwingUtilities.getAncestorOfClass(null, component3) == null);
-        assertTrue(SwingUtilities.getAncestorOfClass(null, null) == null);
+        assertNull(SwingUtilities.getAncestorOfClass(JPanel.class, null));
+        assertNull(SwingUtilities.getAncestorOfClass(null, component3));
+        assertNull(SwingUtilities.getAncestorOfClass(null, null));
 
         panel1.add(panel2);
         panel2.add(component1);
@@ -887,7 +887,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
         assertTrue(SwingUtilities.getAncestorOfClass(JPanel.class, component1) == panel2);
         assertTrue(SwingUtilities.getAncestorOfClass(JPanel.class, panel2) == panel1);
         assertTrue(SwingUtilities.getAncestorOfClass(Window.class, component2) == window);
-        assertTrue(SwingUtilities.getAncestorOfClass(Window.class, component3) == null);
+        assertNull(SwingUtilities.getAncestorOfClass(Window.class, component3));
         assertTrue(SwingUtilities.getAncestorOfClass(JPanel.class, component3) == panel3);
 
         class CustomPanel extends JPanel {
@@ -946,7 +946,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
         window.getContentPane().add(component2);
 
         assertEquals(window.getRootPane(), SwingUtilities.getRootPane(component1));
-        assertEquals(null, SwingUtilities.getRootPane(component3));
+        assertNull(SwingUtilities.getRootPane(component3));
         assertEquals(window.getRootPane(), SwingUtilities.getRootPane(component2));
         assertEquals(window.getRootPane(), SwingUtilities.getRootPane(window));
         assertSame(pane, SwingUtilities.getRootPane(pane));
@@ -961,11 +961,11 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
 
         component.setInputMap(JComponent.WHEN_FOCUSED, null);
         component.setInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, null);
-        assertTrue(SwingUtilities.getUIInputMap(component, JComponent.WHEN_FOCUSED) == null);
+        assertNull(SwingUtilities.getUIInputMap(component, JComponent.WHEN_FOCUSED));
         SwingUtilities.replaceUIInputMap(component, JComponent.WHEN_FOCUSED, uiInputMap1);
         SwingUtilities.replaceUIInputMap(component, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, uiInputMap2);
-        assertTrue(SwingUtilities.getUIInputMap(component, JComponent.WHEN_FOCUSED) == null);
-        assertTrue(SwingUtilities.getUIInputMap(component, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT) == null);
+        assertNull(SwingUtilities.getUIInputMap(component, JComponent.WHEN_FOCUSED));
+        assertNull(SwingUtilities.getUIInputMap(component, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
 
         component.setInputMap(JComponent.WHEN_FOCUSED, initialMap);
         component.setInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, anotherMap);
@@ -978,7 +978,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
 
         anotherMap.setParent(null);
         initialMap.setParent(anotherMap);
-        assertTrue(SwingUtilities.getUIInputMap(component, JComponent.WHEN_FOCUSED) == null);
+        assertNull(SwingUtilities.getUIInputMap(component, JComponent.WHEN_FOCUSED));
         SwingUtilities.replaceUIInputMap(component, JComponent.WHEN_FOCUSED, uiInputMap2);
         assertTrue(SwingUtilities.getUIInputMap(component, JComponent.WHEN_FOCUSED) == uiInputMap2);
     }
@@ -991,15 +991,15 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
         InputMap anotherMap = new InputMap();
 
         component.setInputMap(JComponent.WHEN_FOCUSED, null);
-        assertTrue(SwingUtilities.getUIInputMap(component, JComponent.WHEN_FOCUSED) == null);
-        assertTrue(SwingUtilities.getUIInputMap(component, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT) == null);
+        assertNull(SwingUtilities.getUIInputMap(component, JComponent.WHEN_FOCUSED));
+        assertNull(SwingUtilities.getUIInputMap(component, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
         component.setInputMap(JComponent.WHEN_FOCUSED, uiInputMap1);
-        assertTrue(SwingUtilities.getUIInputMap(component, JComponent.WHEN_FOCUSED) == null);
+        assertNull(SwingUtilities.getUIInputMap(component, JComponent.WHEN_FOCUSED));
         component.setInputMap(JComponent.WHEN_FOCUSED, anotherMap);
         component.setInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, anotherMap);
-        assertTrue(SwingUtilities.getUIInputMap(component, JComponent.WHEN_FOCUSED) == null);
+        assertNull(SwingUtilities.getUIInputMap(component, JComponent.WHEN_FOCUSED));
         anotherMap.setParent(initialMap);
-        assertTrue(SwingUtilities.getUIInputMap(component, JComponent.WHEN_FOCUSED) == null);
+        assertNull(SwingUtilities.getUIInputMap(component, JComponent.WHEN_FOCUSED));
         anotherMap.setParent(uiInputMap1);
         assertTrue(SwingUtilities.getUIInputMap(component, JComponent.WHEN_FOCUSED) == uiInputMap1);
         assertTrue(SwingUtilities.getUIInputMap(component, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT) == uiInputMap1);
@@ -1022,9 +1022,9 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
         ActionMap anotherMap = new ActionMap();
 
         component.setActionMap(null);
-        assertTrue(SwingUtilities.getUIActionMap(component) == null);
+        assertNull(SwingUtilities.getUIActionMap(component));
         SwingUtilities.replaceUIActionMap(component, uiActionMap1);
-        assertTrue(SwingUtilities.getUIActionMap(component) == null);
+        assertNull(SwingUtilities.getUIActionMap(component));
 
         component.setActionMap(initialMap);
         SwingUtilities.replaceUIActionMap(component, uiActionMap1);
@@ -1033,7 +1033,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
         assertTrue(SwingUtilities.getUIActionMap(component) == uiActionMap2);
 
         initialMap.setParent(anotherMap);
-        assertTrue(SwingUtilities.getUIActionMap(component) == null);
+        assertNull(SwingUtilities.getUIActionMap(component));
         SwingUtilities.replaceUIActionMap(component, uiActionMap2);
         assertTrue(SwingUtilities.getUIActionMap(component) == uiActionMap2);
     }
@@ -1046,13 +1046,13 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
         ActionMap anotherMap = new ActionMap();
 
         component.setActionMap(null);
-        assertTrue(SwingUtilities.getUIActionMap(component) == null);
+        assertNull(SwingUtilities.getUIActionMap(component));
         component.setActionMap(uiActionMap1);
-        assertTrue(SwingUtilities.getUIActionMap(component) == null);
+        assertNull(SwingUtilities.getUIActionMap(component));
         component.setActionMap(anotherMap);
-        assertTrue(SwingUtilities.getUIActionMap(component) == null);
+        assertNull(SwingUtilities.getUIActionMap(component));
         anotherMap.setParent(initialMap);
-        assertTrue(SwingUtilities.getUIActionMap(component) == null);
+        assertNull(SwingUtilities.getUIActionMap(component));
         anotherMap.setParent(uiActionMap1);
         assertTrue(SwingUtilities.getUIActionMap(component) == uiActionMap1);
         uiActionMap1.setParent(uiActionMap2);
@@ -1094,8 +1094,8 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
 
         Component component2 = new Container();
         panel.add(component2);
-        assertTrue("inAccessible component not found in parent",
-                SwingUtilities.getAccessibleChild(panel, 1) == null);
+        assertNull("inAccessible component not found in parent",
+                SwingUtilities.getAccessibleChild(panel, 1));
 
         Component component3  = new JPanel();
         panel.add(component3);
@@ -1142,7 +1142,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
         Component component2 = new JButton();
         Component component3 = new JButton();
 
-        assertTrue(SwingUtilities.windowForComponent(component1) == null);
+        assertNull(SwingUtilities.windowForComponent(component1));
 
         panel1.add(panel2);
         panel2.add(component1);
@@ -1152,7 +1152,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
 
         assertTrue(SwingUtilities.windowForComponent(component1) == window);
         assertTrue(SwingUtilities.windowForComponent(component2) == window);
-        assertTrue(SwingUtilities.windowForComponent(component3) == null);
+        assertNull(SwingUtilities.windowForComponent(component3));
         assertTrue(SwingUtilities.windowForComponent(window) != window);
     }
 
@@ -1173,7 +1173,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
         }
         assertTrue(thrown);
         */
-        assertTrue(SwingUtilities.getWindowAncestor(component1) == null);
+        assertNull(SwingUtilities.getWindowAncestor(component1));
 
         panel1.add(panel2);
         panel2.add(component1);
@@ -1183,7 +1183,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
 
         assertTrue(SwingUtilities.getWindowAncestor(component1) == window);
         assertTrue(SwingUtilities.getWindowAncestor(component2) == window);
-        assertTrue(SwingUtilities.getWindowAncestor(component3) == null);
+        assertNull(SwingUtilities.getWindowAncestor(component3));
         assertTrue(SwingUtilities.getWindowAncestor(window) != window);
     }
 
@@ -1381,7 +1381,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
         assertTrue(SwingUtilities.getDeepestComponentAt(window.getContentPane(), 10, 10) == component1);
         assertTrue(SwingUtilities.getDeepestComponentAt(window.getContentPane(), 100, 20) == component3);
         assertTrue(SwingUtilities.getDeepestComponentAt(window.getContentPane(), 110, 20) == component2);
-        assertTrue(SwingUtilities.getDeepestComponentAt(window.getContentPane(), 210, 20) == null);
+        assertNull(SwingUtilities.getDeepestComponentAt(window.getContentPane(), 210, 20));
         assertTrue(SwingUtilities.getDeepestComponentAt(window, 100, 20) == window);
     }
 
@@ -1417,7 +1417,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
 
         assertEquals(window1, SwingUtilities.getRoot(panel1));
         assertEquals(window1, SwingUtilities.getRoot(panel2));
-        assertEquals(null, SwingUtilities.getRoot(panel3));
+        assertNull(SwingUtilities.getRoot(panel3));
         assertEquals(window2, SwingUtilities.getRoot(panel4));
         assertEquals(window1, SwingUtilities.getRoot(window1));
         assertEquals(window2, SwingUtilities.getRoot(window2));
@@ -1527,32 +1527,32 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
         action1.event = null;
         result = SwingUtilities.processKeyBindings(event2);
         assertTrue(result);
-        assertTrue("event2: wrong actionPerformed called for parent", action1.event == null);
+        assertNull("event2: wrong actionPerformed called for parent", action1.event);
         assertTrue("event2: right actionPerformed called for parent", action2.event != null);
         assertFalse(event2.isConsumed());
 
         action2.event = null;
         result = SwingUtilities.processKeyBindings(event3);
         assertTrue(result);
-        assertTrue("event3: actionPerformed called for parent", action1.event == null);
-        assertTrue("event3: actionPerformed called for brother", action2.event == null);
+        assertNull("event3: actionPerformed called for parent", action1.event);
+        assertNull("event3: actionPerformed called for brother", action2.event);
         assertTrue("event3: actionPerformed called for component", action3.event != null);
         assertFalse(event3.isConsumed());
 
         action3.event = null;
         result = SwingUtilities.processKeyBindings(event4);
         assertTrue(result);
-        assertTrue("event4: actionPerformed called for parent", action1.event == null);
-        assertTrue("event4: actionPerformed called for brother", action2.event == null);
-        assertTrue("event4: actionPerformed called for component", action3.event == null);
+        assertNull("event4: actionPerformed called for parent", action1.event);
+        assertNull("event4: actionPerformed called for brother", action2.event);
+        assertNull("event4: actionPerformed called for component", action3.event);
         assertTrue("event4: actionPerformed called for brother", action41.event != null);
-        assertTrue("event4: actionPerformed called for brother", action42.event == null);
+        assertNull("event4: actionPerformed called for brother", action42.event);
         assertFalse(event4.isConsumed());
 
         result = SwingUtilities.processKeyBindings(event5);
         assertTrue(result);
         assertTrue("event5: actionPerformed called for parent", action51.event != null);
-        assertTrue("event5: actionPerformed called for parent", action53.event == null);
+        assertNull("event5: actionPerformed called for parent", action53.event);
         assertFalse(event5.isConsumed());
 
         JComponent panel1 = new JPanel();
@@ -1566,7 +1566,7 @@ public class SwingUtilitiesTest extends SwingTestCase implements SwingConstants{
         result = SwingUtilities.processKeyBindings(event6);
         assertTrue(result);
         assertTrue("event5: actionPerformed called for parent", action52.event != null);
-        assertTrue("event5: actionPerformed called for parent", action54.event == null);
+        assertNull("event5: actionPerformed called for parent", action54.event);
         assertFalse(event5.isConsumed());
     }
 

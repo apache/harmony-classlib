@@ -238,7 +238,7 @@ public class JAppletTest extends SwingTestCase {
 
         // test setting rootPane to null
         applet.setRootPane(null);
-        assertTrue(applet.getRootPane() == null);
+        assertNull(applet.getRootPane());
         assertTrue("rootPane is removed from the container", applet.getComponentCount() == 0);
     }
 
@@ -260,14 +260,14 @@ public class JAppletTest extends SwingTestCase {
      *     JMenuBar getJMenuBar()
      */
     public void testSetGetJMenuBarJMenuBar() {
-        assertEquals(null, applet.getJMenuBar());
+        assertNull(applet.getJMenuBar());
 
         JMenuBar menuBar = new JMenuBar();
         applet.setJMenuBar(menuBar);
         assertTrue(applet.getJMenuBar() == menuBar);
 
         applet.setJMenuBar(null);
-        assertTrue(applet.getJMenuBar() == null);
+        assertNull(applet.getJMenuBar());
     }
 
     /*
@@ -291,7 +291,7 @@ public class JAppletTest extends SwingTestCase {
         } catch (IllegalComponentStateException e) {
             ok = true;
         } finally {
-            assertEquals(true, ok);
+            assertTrue(ok);
         }
         // layeredPane cannot be null, even after setLayeredPane(null)
         assertTrue(applet.getLayeredPane() != null);
@@ -310,9 +310,9 @@ public class JAppletTest extends SwingTestCase {
                    c instanceof JApplet.AccessibleJApplet);
         assertTrue("AccessibleRole is ok",
                 c.getAccessibleRole() == AccessibleRole.FRAME);
-        assertTrue("AccessibleName is ok", c.getAccessibleName() == null);
-        assertTrue("AccessibleDescription is ok",
-                c.getAccessibleDescription() == null);
+        assertNull("AccessibleName is ok", c.getAccessibleName());
+        assertNull("AccessibleDescription is ok",
+                c.getAccessibleDescription());
         assertTrue("AccessibleChildrenCount == 1",
                    c.getAccessibleChildrenCount() == 1);
     }
@@ -393,7 +393,7 @@ public class JAppletTest extends SwingTestCase {
         } catch (IllegalComponentStateException e) {
             ok = true;
         } finally {
-            assertEquals(true, ok);
+            assertTrue(ok);
         }
         // contentPane cannot be null, even after setContentPane(null)
         assertTrue(applet.getContentPane() != null);
@@ -423,7 +423,7 @@ public class JAppletTest extends SwingTestCase {
         } catch (NullPointerException e) {
             ok = true;
         } finally {
-            assertEquals(true, ok);
+            assertTrue(ok);
         }
         // glassPane cannot be null, even after setGlassPane(null)
         assertTrue(applet.getGlassPane() != null);

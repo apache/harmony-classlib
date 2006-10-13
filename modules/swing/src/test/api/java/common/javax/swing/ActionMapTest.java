@@ -125,8 +125,8 @@ public class ActionMapTest extends SwingTestCase {
         Action action2 = new ActionProxy();
         Action action3 = new ActionProxy();
 
-        assertTrue(map.get("1") == null);
-        assertTrue(map.get("2") == null);
+        assertNull(map.get("1"));
+        assertNull(map.get("2"));
 
         map.put("1", action1);
         map.put("2", action1);
@@ -137,7 +137,7 @@ public class ActionMapTest extends SwingTestCase {
         assertTrue(map.get("1") == action2);
 
         map.put("1", null);
-        assertTrue(map.get("1") == null);
+        assertNull(map.get("1"));
 
         map.clear();
         ActionMap childMap = new ActionMap();
@@ -160,7 +160,7 @@ public class ActionMapTest extends SwingTestCase {
         ActionMap parent2 = new ActionMap();
         ActionMap parent3 = null;
 
-        assertTrue(map.getParent() == null);
+        assertNull(map.getParent());
 
         map.setParent(parent1);
         assertTrue(map.getParent() == parent1);
@@ -182,11 +182,11 @@ public class ActionMapTest extends SwingTestCase {
         assertTrue(map.get("2") == action2);
 
         map.remove("2");
-        assertTrue(map.get("2") == null);
+        assertNull(map.get("2"));
         assertTrue(map.get("1") == action1);
 
         map.remove("1");
-        assertTrue(map.get("1") == null);
+        assertNull(map.get("1"));
         assertTrue(map.size() == 0);
     }
 

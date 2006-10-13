@@ -419,7 +419,7 @@ public class BorderFactoryTest extends SwingTestCase {
 
         LineBorder border =  (LineBorder)BorderFactory.createLineBorder(color, thickness);
         assertEquals("Thickness coinsides", thickness, border.getThickness());
-        assertEquals("RoundedCorners coinsides", false, border.getRoundedCorners());
+        assertFalse("RoundedCorners coinsides", border.getRoundedCorners());
         assertEquals("Colors coinsides", color, border.getLineColor());
     }
 

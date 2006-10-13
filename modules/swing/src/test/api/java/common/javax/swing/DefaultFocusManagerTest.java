@@ -76,7 +76,7 @@ public class DefaultFocusManagerTest extends TestCase {
 
     //TODO: Is not clear how this method should work
     public void testCompareTabOrder() throws Exception {
-        assertEquals(false, focusManager.compareTabOrder((Component)components.get(1), (Component)components.get(2)));
+        assertFalse(focusManager.compareTabOrder((Component)components.get(1), (Component)components.get(2)));
     }
 
 

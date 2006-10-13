@@ -55,7 +55,7 @@ public class ButtonGroupTest extends TestCase {
 
     public void testButtonGroup() {
         assertEquals("initial number of buttons", 0, group.getButtonCount());
-        assertEquals("initial selection", null, group.getSelection());
+        assertNull("initial selection", group.getSelection());
         assertTrue("initial enumeration isn't null", group.getElements() != null);
         assertFalse("initial enumeration is empty", group.getElements().hasMoreElements());
     }
@@ -68,27 +68,27 @@ public class ButtonGroupTest extends TestCase {
         assertSame(group, model.getGroup());
         assertEquals("number of buttons", 1, group.getButtonCount());
         assertEquals("selection", buttons[0].getModel(), group.getSelection());
-        assertEquals("selected model", true, buttons[0].getModel().isSelected());
+        assertTrue("selected model", buttons[0].getModel().isSelected());
 
         group.add(buttons[0]);
         assertEquals("number of buttons", 2, group.getButtonCount());
         assertEquals("selection", buttons[0].getModel(), group.getSelection());
-        assertEquals("selected model", true, buttons[0].getModel().isSelected());
+        assertTrue("selected model", buttons[0].getModel().isSelected());
 
         buttons[3].setSelected(true);
         group.add(buttons[3]);
         assertEquals("number of buttons", 3, group.getButtonCount());
         assertEquals("selection", buttons[0].getModel(), group.getSelection());
-        assertEquals("selected model", true, buttons[0].getModel().isSelected());
-        assertEquals("unselected model", false, buttons[3].getModel().isSelected());
+        assertTrue("selected model", buttons[0].getModel().isSelected());
+        assertFalse("unselected model", buttons[3].getModel().isSelected());
 
         buttons[4].setSelected(true);
         group.add(buttons[4]);
         assertEquals("number of buttons", 4, group.getButtonCount());
         assertEquals("selection", buttons[0].getModel(), group.getSelection());
-        assertEquals("selected model", true, buttons[0].getModel().isSelected());
-        assertEquals("unselected model", false, buttons[4].getModel().isSelected());
-        assertEquals("unselected model", false, buttons[3].getModel().isSelected());
+        assertTrue("selected model", buttons[0].getModel().isSelected());
+        assertFalse("unselected model", buttons[4].getModel().isSelected());
+        assertFalse("unselected model", buttons[3].getModel().isSelected());
         
         group.add(null);
     }
@@ -108,10 +108,10 @@ public class ButtonGroupTest extends TestCase {
 
         group.remove(buttons[0]);
         assertEquals("number of buttons", 3, group.getButtonCount());
-        assertEquals("selection", null, group.getSelection());
+        assertNull("selection", group.getSelection());
 
         buttons[0].setSelected(true);
-        assertEquals("selection", null, group.getSelection());
+        assertNull("selection", group.getSelection());
 
         group.remove(buttons[0]);
         assertEquals("number of buttons", 2, group.getButtonCount());
@@ -121,7 +121,7 @@ public class ButtonGroupTest extends TestCase {
         assertEquals("number of buttons", 2, group.getButtonCount());
 
         group.remove(buttons[3]);
-        assertEquals("selection", null, group.getSelection());
+        assertNull("selection", group.getSelection());
         group.remove(buttons[4]);
         assertEquals("number of buttons", 0, group.getButtonCount());
         
@@ -153,10 +153,10 @@ public class ButtonGroupTest extends TestCase {
         group.add(buttons[1]);
         group.add(buttons[3]);
         group.add(buttons[4]);
-        assertEquals("initial selection", null, group.getSelection());
+        assertNull("initial selection", group.getSelection());
 
         group.setSelected(buttons[0].getModel(), false);
-        assertEquals("selection", null, group.getSelection());
+        assertNull("selection", group.getSelection());
 
         group.setSelected(buttons[4].getModel(), true);
         assertEquals("selection", buttons[4].getModel(), group.getSelection());
@@ -228,16 +228,16 @@ public class ButtonGroupTest extends TestCase {
         group.add(buttons[0]);
         buttons[3].setSelected(true);
         group.add(buttons[3]);
-        assertEquals("selected model", true, group.isSelected(buttons[0].getModel()));
-        assertEquals("unselected model", false, group.isSelected(buttons[3].getModel()));
+        assertTrue("selected model", group.isSelected(buttons[0].getModel()));
+        assertFalse("unselected model", group.isSelected(buttons[3].getModel()));
         assertEquals("selection", buttons[0].getModel(), group.getSelection());
-        assertEquals("selected model", true, buttons[0].getModel().isSelected());
-        assertEquals("unselected model", false, buttons[3].getModel().isSelected());
+        assertTrue("selected model", buttons[0].getModel().isSelected());
+        assertFalse("unselected model", buttons[3].getModel().isSelected());
 
         buttons[1].setSelected(true);
         buttons[2].setSelected(true);
-        assertEquals("selected model", false, group.isSelected(buttons[1].getModel()));
-        assertEquals("selected model", false, group.isSelected(buttons[2].getModel()));
+        assertFalse("selected model", group.isSelected(buttons[1].getModel()));
+        assertFalse("selected model", group.isSelected(buttons[2].getModel()));
 
     }
 

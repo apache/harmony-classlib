@@ -119,7 +119,7 @@ public class AbstractActionTest extends SwingTestCase {
             }
         };
 
-        assertEquals("icon initialized properly", null, action.getValue(Action.SMALL_ICON));
+        assertNull("icon initialized properly", action.getValue(Action.SMALL_ICON));
         assertEquals("name initialized properly", "ActionName", action.getValue(Action.NAME));
         assertTrue("enabled property init state is true", action.isEnabled());
     }
@@ -133,8 +133,8 @@ public class AbstractActionTest extends SwingTestCase {
             }
         };
 
-        assertEquals("icon initialized properly", null, action.getValue(Action.SMALL_ICON));
-        assertEquals("name initialized properly", null, action.getValue(Action.NAME));
+        assertNull("icon initialized properly", action.getValue(Action.SMALL_ICON));
+        assertNull("name initialized properly", action.getValue(Action.NAME));
         assertTrue("enabled property init state is true", action.isEnabled());
     }
 
@@ -145,8 +145,8 @@ public class AbstractActionTest extends SwingTestCase {
         String value2 = "value2";
         PropertyChangeController changeListener = new PropertyChangeController();
 
-        assertEquals("value is not stored initially", null, action.getValue(name1));
-        assertEquals("value is not stored initially", null, action.getValue(name2));
+        assertNull("value is not stored initially", action.getValue(name1));
+        assertNull("value is not stored initially", action.getValue(name2));
 
         action.addPropertyChangeListener(changeListener);
         action.putValue(name1, value1);
@@ -161,7 +161,7 @@ public class AbstractActionTest extends SwingTestCase {
 
         changeListener.reset();
         action.putValue(name1, null);
-        assertEquals("value is stored properly", null, action.getValue(name1));
+        assertNull("value is stored properly", action.getValue(name1));
         assertEquals("value is stored properly", value2, action.getValue(name2));
         changeListener.checkLastPropertyFired(action, name1, value1, null);
     }
@@ -172,8 +172,8 @@ public class AbstractActionTest extends SwingTestCase {
         String value1 = "value1";
         String value2 = "value2";
 
-        assertEquals("value is not stored initially", null, action.getValue(name1));
-        assertEquals("value is not stored initially", null, action.getValue(name2));
+        assertNull("value is not stored initially", action.getValue(name1));
+        assertNull("value is not stored initially", action.getValue(name2));
 
         action.putValue(name1, value1);
         assertEquals("value is stored properly", value1, action.getValue(name1));
@@ -183,7 +183,7 @@ public class AbstractActionTest extends SwingTestCase {
         assertEquals("value is stored properly", value2, action.getValue(name2));
 
         action.putValue(name1, null);
-        assertEquals("value is stored properly", null, action.getValue(name1));
+        assertNull("value is stored properly", action.getValue(name1));
         assertEquals("value is stored properly", value2, action.getValue(name2));
     }
 

@@ -101,7 +101,7 @@ public class InternalFrameFocusTraversalPolicyTest extends SwingTestCase {
      */
     public void testGetInitialComponent() {
         // no components in the frame, shold return null
-        assertTrue("null", policy.getInitialComponent(frame) == null);
+        assertNull("null", policy.getInitialComponent(frame));
 
         // test with 'null' parameter
         boolean ok = false;

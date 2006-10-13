@@ -223,7 +223,7 @@ public class AbstractButtonTest extends SwingTestCase {
         button.setEnabled(true);
         assertFalse("event's not been fired ", listener1.isChanged());
         assertFalse("event's not been fired ", listener2.isChanged());
-        assertTrue("event's not been fired ", listener3.eventHappened == null);
+        assertNull("event's not been fired ", listener3.eventHappened);
         listener1.reset();
         listener2.reset();
     }
@@ -251,11 +251,11 @@ public class AbstractButtonTest extends SwingTestCase {
 
         button.setBorderPainted(false);
         button.paintBorder(button.getGraphics());
-        assertEquals("painted", false, border.haveBeenPainted);
+        assertFalse("painted", border.haveBeenPainted);
 
         button.setBorderPainted(true);
         button.paintBorder(button.getGraphics());
-        assertEquals("painted", true, border.haveBeenPainted);
+        assertTrue("painted", border.haveBeenPainted);
     }
 
     public void testImageUpdate() {
@@ -320,7 +320,7 @@ public class AbstractButtonTest extends SwingTestCase {
         button.setText(text);
         button.setSelected(false);
 
-        assertTrue("no selected objects", button.getSelectedObjects() == null);
+        assertNull("no selected objects", button.getSelectedObjects());
 
         button.setSelected(true);
         assertTrue("there are selected objects", button.getSelectedObjects() != null && button.getSelectedObjects().length > 0);
@@ -334,13 +334,13 @@ public class AbstractButtonTest extends SwingTestCase {
         button.setAction(action1);
 
         assertEquals("action ", action1, button.getAction());
-        assertEquals("enabled ", true, button.isEnabled());
-        assertEquals("enabled ", true, action1.isEnabled());
+        assertTrue("enabled ", button.isEnabled());
+        assertTrue("enabled ", action1.isEnabled());
 
         action1.setEnabled(false);
         assertFalse(button.isEnabled());
-        assertEquals("enabled ", false, button.isEnabled());
-        assertEquals("enabled ", false, action1.isEnabled());
+        assertFalse("enabled ", button.isEnabled());
+        assertFalse("enabled ", action1.isEnabled());
 
         assertEquals("icon ", icon1, button.getIcon());
         action1.putValue(Action.SMALL_ICON, icon2);
@@ -365,7 +365,7 @@ public class AbstractButtonTest extends SwingTestCase {
 
         button.setAction(action2);
         action1.putValue(Action.SHORT_DESCRIPTION, text4);
-        assertEquals("ToolTipText ", null, button.getToolTipText());
+        assertNull("ToolTipText ", button.getToolTipText());
         action2.putValue(Action.SHORT_DESCRIPTION, text4);
         assertEquals("ToolTipText ", text4, button.getToolTipText());
     }
@@ -423,7 +423,7 @@ public class AbstractButtonTest extends SwingTestCase {
         listener2.reset();
 
         button.setText(null);
-        assertEquals("text ", null, button.getText());
+        assertNull("text ", button.getText());
     }
 
     public void testSetText2() {
@@ -569,12 +569,12 @@ public class AbstractButtonTest extends SwingTestCase {
         action1.putValue(Action.MNEMONIC_KEY, new Integer(1));
         button.setAction(action1);
 
-        assertEquals("enabled ", true, button.isEnabled());
-        assertEquals("enabled ", true, action1.isEnabled());
+        assertTrue("enabled ", button.isEnabled());
+        assertTrue("enabled ", action1.isEnabled());
         action1.setEnabled(false);
         button.isEnabled();
-        assertEquals("enabled ", false, button.isEnabled());
-        assertEquals("enabled ", false, action1.isEnabled());
+        assertFalse("enabled ", button.isEnabled());
+        assertFalse("enabled ", action1.isEnabled());
 
         assertEquals("icon ", icon1, button.getIcon());
         action1.putValue(Action.SMALL_ICON, icon2);
@@ -657,7 +657,7 @@ public class AbstractButtonTest extends SwingTestCase {
 
         button.setAction(action2);
         action1.putValue(Action.SHORT_DESCRIPTION, text4);
-        assertEquals("ToolTipText ", null, button.getToolTipText());
+        assertNull("ToolTipText ", button.getToolTipText());
         action2.putValue(Action.SHORT_DESCRIPTION, text4);
         assertEquals("ToolTipText ", text4, button.getToolTipText());
     }
@@ -672,7 +672,7 @@ public class AbstractButtonTest extends SwingTestCase {
             }
         };
 
-        assertEquals("default action ", null, button.getAction());
+        assertNull("default action ", button.getAction());
 
         button.setAction(action1);
         assertEquals("action ", action1, button.getAction());
@@ -880,7 +880,7 @@ public class AbstractButtonTest extends SwingTestCase {
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
 
-        assertEquals("default Selected Icon ", null, button.getSelectedIcon());
+        assertNull("default Selected Icon ", button.getSelectedIcon());
 
         button.setSelectedIcon(icon1);
         assertEquals("Selected Icon ", icon1, button.getSelectedIcon());
@@ -893,7 +893,7 @@ public class AbstractButtonTest extends SwingTestCase {
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
 
-        assertEquals("default Rollover Selected Icon ", null, button.getRolloverSelectedIcon());
+        assertNull("default Rollover Selected Icon ", button.getRolloverSelectedIcon());
 
         button.setRolloverSelectedIcon(icon1);
         assertEquals("Rollover Selected Icon ", icon1, button.getRolloverSelectedIcon());
@@ -906,7 +906,7 @@ public class AbstractButtonTest extends SwingTestCase {
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
 
-        assertEquals("default Rollover Icon ", null, button.getRolloverIcon());
+        assertNull("default Rollover Icon ", button.getRolloverIcon());
 
         button.setRolloverIcon(icon1);
         assertEquals("Rollover Icon ", icon1, button.getRolloverIcon());
@@ -919,7 +919,7 @@ public class AbstractButtonTest extends SwingTestCase {
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
 
-        assertEquals("default Pressed Icon ", null, button.getPressedIcon());
+        assertNull("default Pressed Icon ", button.getPressedIcon());
 
         button.setPressedIcon(icon1);
         assertEquals("Pressed Icon ", icon1, button.getPressedIcon());
@@ -932,7 +932,7 @@ public class AbstractButtonTest extends SwingTestCase {
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
 
-        assertEquals("default Icon ", null, button.getIcon());
+        assertNull("default Icon ", button.getIcon());
 
         button.setIcon(icon1);
         assertEquals("Icon ", icon1, button.getIcon());
@@ -946,7 +946,7 @@ public class AbstractButtonTest extends SwingTestCase {
         Icon icon2 = createNewIcon();
         Icon icon3 = createNewIcon();
 
-        assertEquals("default Icon ", null, button.getDisabledSelectedIcon());
+        assertNull("default Icon ", button.getDisabledSelectedIcon());
 
         button.setDisabledSelectedIcon(icon1);
         assertEquals("DisabledSelected Icon ", icon1, button.getDisabledSelectedIcon());
@@ -988,7 +988,7 @@ public class AbstractButtonTest extends SwingTestCase {
         Icon icon1 = createNewIcon();
         Icon icon2 = createNewIcon();
 
-        assertEquals("default Icon ", null, button.getDisabledIcon());
+        assertNull("default Icon ", button.getDisabledIcon());
 
         button.setDisabledIcon(icon1);
         assertEquals("Disabled Icon ", icon1, button.getDisabledIcon());
@@ -1840,9 +1840,9 @@ public class AbstractButtonTest extends SwingTestCase {
         listener3.eventHappened = null;
 
         button.setSelected(false);
-        assertTrue("event's not been fired ", listener1.eventHappened == null);
-        assertTrue("event's not been fired ", listener2.eventHappened == null);
-        assertTrue("event's not been fired ", listener3.eventHappened == null);
+        assertNull("event's not been fired ", listener1.eventHappened);
+        assertNull("event's not been fired ", listener2.eventHappened);
+        assertNull("event's not been fired ", listener3.eventHappened);
         listener1.eventHappened = null;
         listener2.eventHappened = null;
 
@@ -1864,16 +1864,16 @@ public class AbstractButtonTest extends SwingTestCase {
     }
 
     public void testIsSelected() {
-        assertEquals("default Selected", false, button.isSelected());
+        assertFalse("default Selected", button.isSelected());
 
         button.setSelected(true);
-        assertEquals("Selected", true, button.isSelected());
+        assertTrue("Selected", button.isSelected());
 
         button.setSelected(false);
-        assertEquals("Selected", false, button.isSelected());
+        assertFalse("Selected", button.isSelected());
 
         button.setSelected(true);
-        assertEquals("Selected", true, button.isSelected());
+        assertTrue("Selected", button.isSelected());
     }
 
     public void testSetRolloverEnabled() {
@@ -1902,16 +1902,16 @@ public class AbstractButtonTest extends SwingTestCase {
     }
 
     public void testIsRolloverEnabled() {
-        assertEquals("default RolloverEnabled", false, button.isRolloverEnabled());
+        assertFalse("default RolloverEnabled", button.isRolloverEnabled());
 
         button.setRolloverEnabled(true);
-        assertEquals("RolloverEnabled", true, button.isRolloverEnabled());
+        assertTrue("RolloverEnabled", button.isRolloverEnabled());
 
         button.setRolloverEnabled(false);
-        assertEquals("RolloverEnabled", false, button.isRolloverEnabled());
+        assertFalse("RolloverEnabled", button.isRolloverEnabled());
 
         button.setRolloverEnabled(true);
-        assertEquals("RolloverEnabled", true, button.isRolloverEnabled());
+        assertTrue("RolloverEnabled", button.isRolloverEnabled());
     }
 
     public void testSetFocusPainted() {
@@ -1942,16 +1942,16 @@ public class AbstractButtonTest extends SwingTestCase {
     }
 
     public void testIsFocusPainted() {
-        assertEquals("default FocusPainted", true, button.isFocusPainted());
+        assertTrue("default FocusPainted", button.isFocusPainted());
 
         button.setFocusPainted(false);
-        assertEquals("FocusPainted", false, button.isFocusPainted());
+        assertFalse("FocusPainted", button.isFocusPainted());
 
         button.setFocusPainted(true);
-        assertEquals("FocusPainted", true, button.isFocusPainted());
+        assertTrue("FocusPainted", button.isFocusPainted());
 
         button.setFocusPainted(false);
-        assertEquals("FocusPainted", false, button.isFocusPainted());
+        assertFalse("FocusPainted", button.isFocusPainted());
     }
 
     public void testSetContentAreaFilled() {
@@ -1980,16 +1980,16 @@ public class AbstractButtonTest extends SwingTestCase {
     }
 
     public void testIsContentAreaFilled() {
-        assertEquals("default ContentAreaFilled", true, button.isContentAreaFilled());
+        assertTrue("default ContentAreaFilled", button.isContentAreaFilled());
 
         button.setContentAreaFilled(false);
-        assertEquals("ContentAreaFilled", false, button.isContentAreaFilled());
+        assertFalse("ContentAreaFilled", button.isContentAreaFilled());
 
         button.setContentAreaFilled(true);
-        assertEquals("ContentAreaFilled", true, button.isContentAreaFilled());
+        assertTrue("ContentAreaFilled", button.isContentAreaFilled());
 
         button.setContentAreaFilled(false);
-        assertEquals("ContentAreaFilled", false, button.isContentAreaFilled());
+        assertFalse("ContentAreaFilled", button.isContentAreaFilled());
     }
 
     public void testSetBorderPainted() {
@@ -2018,16 +2018,16 @@ public class AbstractButtonTest extends SwingTestCase {
     }
 
     public void testIsBorderPainted() {
-        assertEquals("default BorderPainted", true, button.isBorderPainted());
+        assertTrue("default BorderPainted", button.isBorderPainted());
 
         button.setBorderPainted(false);
-        assertEquals("BorderPainted", false, button.isBorderPainted());
+        assertFalse("BorderPainted", button.isBorderPainted());
 
         button.setBorderPainted(true);
-        assertEquals("BorderPainted", true, button.isBorderPainted());
+        assertTrue("BorderPainted", button.isBorderPainted());
 
         button.setBorderPainted(false);
-        assertEquals("BorderPainted", false, button.isBorderPainted());
+        assertFalse("BorderPainted", button.isBorderPainted());
     }
 
     /*
@@ -2152,12 +2152,12 @@ public class AbstractButtonTest extends SwingTestCase {
 
         button.setDisplayedMnemonicIndex(5);
         listener1.checkPropertyFired(button, "displayedMnemonicIndex", new Integer(2), new Integer(5));
-        assertTrue("state event's not been fired ", listener2.eventHappened == null);
+        assertNull("state event's not been fired ", listener2.eventHappened);
         listener1.reset();
 
         button.setDisplayedMnemonicIndex(5);
         assertFalse("state event's not been fired ", listener1.isChanged());
-        assertTrue("state event's not been fired ", listener2.eventHappened == null);
+        assertNull("state event's not been fired ", listener2.eventHappened);
 
         boolean thrown = false;
         try {

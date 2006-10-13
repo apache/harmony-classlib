@@ -158,7 +158,7 @@ public class UIDefaultsTest extends SwingTestCase {
         assertEquals(2, uiDefaults.size());
         assertEquals("aaa", uiDefaults.get("1"));
         assertEquals("", uiDefaults.get("2"));
-        assertEquals(null, uiDefaults.getIcon("2"));
+        assertNull(uiDefaults.getIcon("2"));
 
         uiDefaults.put("3", new UIDefaults.ProxyLazyValue("java.lang.Integer", "decode", new String[] { "43" }));
         assertEquals(3, uiDefaults.size());
@@ -223,7 +223,7 @@ public class UIDefaultsTest extends SwingTestCase {
     public void testGetValueFromResourceBundle() {
         String bundleName = "javax.swing.TestBundle";
         
-        assertEquals(null, uiDefaults.get("OptionPane.okButtonText"));
+        assertNull(uiDefaults.get("OptionPane.okButtonText"));
 
         propertyChangeController = new PropertyChangeController();
         uiDefaults.addPropertyChangeListener(propertyChangeController);
@@ -260,7 +260,7 @@ public class UIDefaultsTest extends SwingTestCase {
         assertEquals("3v", uid.getString("3"));
 
         uiDefaults.put("key", null);
-        assertEquals(null, uiDefaults.get("key"));
+        assertNull(uiDefaults.get("key"));
     }
 
     public void testErrorGetUI() {
@@ -297,7 +297,7 @@ public class UIDefaultsTest extends SwingTestCase {
 
         String bundleName = "javax.swing.TestBundle";
 
-        assertEquals(null, uiDefaults.get("OptionPane.titleText"));
+        assertNull(uiDefaults.get("OptionPane.titleText"));
         uiDefaults.addResourceBundle(bundleName);
         assertEquals(ResourceBundle.getBundle(bundleName, Locale.GERMAN).getString("OptionPane.titleText"),
                 uiDefaults.getString("OptionPane.titleText", Locale.GERMAN));

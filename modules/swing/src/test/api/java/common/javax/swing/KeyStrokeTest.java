@@ -39,39 +39,39 @@ public class KeyStrokeTest extends SwingTestCase {
         assertEquals("keyChar's correct", KeyEvent.CHAR_UNDEFINED, keyStroke.getKeyChar());
         assertEquals("keyCode's correct", KeyEvent.VK_INSERT, keyStroke.getKeyCode());
         assertEquals("modifiers are correct", 0, keyStroke.getModifiers());
-        assertEquals("onKeyRelease is correct", false, keyStroke.isOnKeyRelease());
+        assertFalse("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         keyStroke = KeyStroke.getKeyStroke("control DELETE");
         assertEquals("keyChar's correct", KeyEvent.CHAR_UNDEFINED, keyStroke.getKeyChar());
         assertEquals("keyCode's correct", KeyEvent.VK_DELETE, keyStroke.getKeyCode());
         assertTrue("modifiers are correct", (keyStroke.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0);
-        assertEquals("onKeyRelease is correct", false, keyStroke.isOnKeyRelease());
+        assertFalse("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         keyStroke = KeyStroke.getKeyStroke("alt shift X");
         assertEquals("keyChar's correct", KeyEvent.CHAR_UNDEFINED, keyStroke.getKeyChar());
         assertEquals("keyCode's correct", KeyEvent.VK_X, keyStroke.getKeyCode());
         assertTrue("modifiers are correct", (keyStroke.getModifiers() & InputEvent.ALT_DOWN_MASK) != 0);
         assertTrue("modifiers are correct", (keyStroke.getModifiers() & InputEvent.SHIFT_DOWN_MASK) != 0);
-        assertEquals("onKeyRelease is correct", false, keyStroke.isOnKeyRelease());
+        assertFalse("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         keyStroke = KeyStroke.getKeyStroke("altGraph X");
         assertEquals("keyChar's correct", KeyEvent.CHAR_UNDEFINED, keyStroke.getKeyChar());
         assertEquals("keyCode's correct", KeyEvent.VK_X, keyStroke.getKeyCode());
         assertTrue("modifiers are correct", (keyStroke.getModifiers() & InputEvent.ALT_GRAPH_DOWN_MASK) != 0);
-        assertEquals("onKeyRelease is correct", false, keyStroke.isOnKeyRelease());
+        assertFalse("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         keyStroke = KeyStroke.getKeyStroke("alt shift released X");
         assertEquals("keyChar's correct", KeyEvent.CHAR_UNDEFINED, keyStroke.getKeyChar());
         assertEquals("keyCode's correct", KeyEvent.VK_X, keyStroke.getKeyCode());
         assertTrue("modifiers are correct", (keyStroke.getModifiers() & InputEvent.ALT_DOWN_MASK) != 0);
         assertTrue("modifiers are correct", (keyStroke.getModifiers() & InputEvent.SHIFT_DOWN_MASK) != 0);
-        assertEquals("onKeyRelease is correct", true, keyStroke.isOnKeyRelease());
+        assertTrue("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         keyStroke = KeyStroke.getKeyStroke("typed a");
         assertEquals("keyChar's correct", 'a', keyStroke.getKeyChar());
         assertEquals("keyCode's correct", 0, keyStroke.getKeyCode());
         assertEquals("modifiers are correct", 0, keyStroke.getModifiers());
-        assertEquals("onKeyRelease is correct", false, keyStroke.isOnKeyRelease());
+        assertFalse("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         KeyStroke keyStroke1 = KeyStroke.getKeyStroke("typed a");
         KeyStroke keyStroke2 = KeyStroke.getKeyStroke("typed a");
@@ -86,19 +86,19 @@ public class KeyStrokeTest extends SwingTestCase {
         assertEquals("keyChar's correct", 'A', keyStroke.getKeyChar());
         assertEquals("keyCode's correct", 0, keyStroke.getKeyCode());
         assertTrue("modifiers are correct", (InputEvent.ALT_DOWN_MASK & keyStroke.getModifiers()) != 0);
-        assertEquals("onKeyRelease is correct", false, keyStroke.isOnKeyRelease());
+        assertFalse("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         keyStroke = KeyStroke.getKeyStroke(new Character('t'), InputEvent.CTRL_DOWN_MASK);
         assertEquals("keyChar's correct", 't', keyStroke.getKeyChar());
         assertEquals("keyCode's correct", 0, keyStroke.getKeyCode());
         assertTrue("modifiers are correct", (InputEvent.CTRL_DOWN_MASK & keyStroke.getModifiers()) != 0);
-        assertEquals("onKeyRelease is correct", false, keyStroke.isOnKeyRelease());
+        assertFalse("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         keyStroke = KeyStroke.getKeyStroke(new Character('_'), InputEvent.SHIFT_DOWN_MASK);
         assertEquals("keyChar's correct", '_', keyStroke.getKeyChar());
         assertEquals("keyCode's correct", 0, keyStroke.getKeyCode());
         assertTrue("modifiers are correct", (InputEvent.SHIFT_DOWN_MASK & keyStroke.getModifiers()) != 0);
-        assertEquals("onKeyRelease is correct", false, keyStroke.isOnKeyRelease());
+        assertFalse("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         KeyStroke keyStroke1 = KeyStroke.getKeyStroke(new Character('_'), InputEvent.SHIFT_DOWN_MASK);
         KeyStroke keyStroke2 = KeyStroke.getKeyStroke(new Character('_'), InputEvent.SHIFT_DOWN_MASK);
@@ -113,21 +113,21 @@ public class KeyStrokeTest extends SwingTestCase {
         assertEquals("keyChar's correct", KeyEvent.CHAR_UNDEFINED, keyStroke.getKeyChar());
         assertEquals("keyCode's correct", KeyEvent.VK_B, keyStroke.getKeyCode());
         assertTrue("modifiers are correct", (InputEvent.SHIFT_DOWN_MASK & keyStroke.getModifiers()) != 0);
-        assertEquals("onKeyRelease is correct", false, keyStroke.isOnKeyRelease());
+        assertFalse("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         event = new KeyEvent(source, KeyEvent.KEY_RELEASED, 0, InputEvent.SHIFT_DOWN_MASK, KeyEvent.VK_C, 'C');
         keyStroke = KeyStroke.getKeyStrokeForEvent(event);
         assertEquals("keyChar's correct", KeyEvent.CHAR_UNDEFINED, keyStroke.getKeyChar());
         assertEquals("keyCode's correct", KeyEvent.VK_C, keyStroke.getKeyCode());
         assertTrue("modifiers are correct", (InputEvent.SHIFT_DOWN_MASK & keyStroke.getModifiers()) != 0);
-        assertEquals("onKeyRelease is correct", true, keyStroke.isOnKeyRelease());
+        assertTrue("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         event = new KeyEvent(source, KeyEvent.KEY_TYPED, 0, InputEvent.SHIFT_DOWN_MASK, KeyEvent.VK_UNDEFINED, 'T');
         keyStroke = KeyStroke.getKeyStrokeForEvent(event);
         assertEquals("keyChar's correct", 'T', keyStroke.getKeyChar());
         assertEquals("keyCode's correct", KeyEvent.VK_UNDEFINED, keyStroke.getKeyCode());
         assertTrue("modifiers are correct", (InputEvent.SHIFT_DOWN_MASK & keyStroke.getModifiers()) != 0);
-        assertEquals("onKeyRelease is correct", false, keyStroke.isOnKeyRelease());
+        assertFalse("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         KeyStroke keyStroke1 = KeyStroke.getKeyStrokeForEvent(event);
         KeyStroke keyStroke2 = KeyStroke.getKeyStrokeForEvent(event);
@@ -142,19 +142,19 @@ public class KeyStrokeTest extends SwingTestCase {
         assertEquals("keyChar's correct", KeyEvent.CHAR_UNDEFINED, keyStroke.getKeyChar());
         assertEquals("keyCode's correct", KeyEvent.VK_0, keyStroke.getKeyCode());
         assertTrue("modifiers are correct", (InputEvent.ALT_DOWN_MASK & keyStroke.getModifiers()) != 0);
-        assertEquals("onKeyRelease is correct", true, keyStroke.isOnKeyRelease());
+        assertTrue("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK, false);
         assertEquals("keyChar's correct", KeyEvent.CHAR_UNDEFINED, keyStroke.getKeyChar());
         assertEquals("keyCode's correct", KeyEvent.VK_A, keyStroke.getKeyCode());
         assertTrue("modifiers are correct", (InputEvent.CTRL_DOWN_MASK & keyStroke.getModifiers()) != 0);
-        assertEquals("onKeyRelease is correct", false, keyStroke.isOnKeyRelease());
+        assertFalse("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK, true);
         assertEquals("keyChar's correct", KeyEvent.CHAR_UNDEFINED, keyStroke.getKeyChar());
         assertEquals("keyCode's correct", KeyEvent.VK_SHIFT, keyStroke.getKeyCode());
         assertTrue("modifiers are correct", (InputEvent.SHIFT_DOWN_MASK & keyStroke.getModifiers()) != 0);
-        assertEquals("onKeyRelease is correct", true, keyStroke.isOnKeyRelease());
+        assertTrue("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         KeyStroke keyStroke1 = KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK, true);
         KeyStroke keyStroke2 = KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK, true);
@@ -169,19 +169,19 @@ public class KeyStrokeTest extends SwingTestCase {
         assertEquals("keyChar's correct", KeyEvent.CHAR_UNDEFINED, keyStroke.getKeyChar());
         assertEquals("keyCode's correct", KeyEvent.VK_0, keyStroke.getKeyCode());
         assertTrue("modifiers are correct", (InputEvent.ALT_DOWN_MASK & keyStroke.getModifiers()) != 0);
-        assertEquals("onKeyRelease is correct", false, keyStroke.isOnKeyRelease());
+        assertFalse("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK);
         assertEquals("keyChar's correct", KeyEvent.CHAR_UNDEFINED, keyStroke.getKeyChar());
         assertEquals("keyCode's correct", KeyEvent.VK_A, keyStroke.getKeyCode());
         assertTrue("modifiers are correct", (InputEvent.CTRL_DOWN_MASK & keyStroke.getModifiers()) != 0);
-        assertEquals("onKeyRelease is correct", false, keyStroke.isOnKeyRelease());
+        assertFalse("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK);
         assertEquals("keyChar's correct", KeyEvent.CHAR_UNDEFINED, keyStroke.getKeyChar());
         assertEquals("keyCode's correct", KeyEvent.VK_SHIFT, keyStroke.getKeyCode());
         assertTrue("modifiers are correct", (InputEvent.SHIFT_DOWN_MASK & keyStroke.getModifiers()) != 0);
-        assertEquals("onKeyRelease is correct", false, keyStroke.isOnKeyRelease());
+        assertFalse("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         KeyStroke keyStroke1 = KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK);
         KeyStroke keyStroke2 = KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK);
@@ -199,19 +199,19 @@ public class KeyStrokeTest extends SwingTestCase {
         assertEquals("keyChar's correct", KeyEvent.CHAR_UNDEFINED, keyStroke.getKeyChar());
         assertEquals("keyCode's correct", 0, keyStroke.getKeyCode());
         assertEquals("modifiers are correct", 0, keyStroke.getModifiers());
-        assertEquals("onKeyRelease is correct", false, keyStroke.isOnKeyRelease());
+        assertFalse("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         keyStroke = KeyStroke.getKeyStroke('a', true);
         assertEquals("keyChar's correct", 'a', keyStroke.getKeyChar());
         assertEquals("keyCode's correct", 0, keyStroke.getKeyCode());
         assertEquals("modifiers are correct", 0, keyStroke.getModifiers());
-        assertEquals("onKeyRelease is correct", true, keyStroke.isOnKeyRelease());
+        assertTrue("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         keyStroke = KeyStroke.getKeyStroke('T', true);
         assertEquals("keyChar's correct", 'T', keyStroke.getKeyChar());
         assertEquals("keyCode's correct", 0, keyStroke.getKeyCode());
         assertEquals("modifiers are correct", 0, keyStroke.getModifiers());
-        assertEquals("onKeyRelease is correct", true, keyStroke.isOnKeyRelease());
+        assertTrue("onKeyRelease is correct", keyStroke.isOnKeyRelease());
     }
 
     /*
@@ -222,19 +222,19 @@ public class KeyStrokeTest extends SwingTestCase {
         assertEquals("keyChar's correct", KeyEvent.CHAR_UNDEFINED, keyStroke.getKeyChar());
         assertEquals("keyCode's correct", 0, keyStroke.getKeyCode());
         assertEquals("modifiers are correct", 0, keyStroke.getModifiers());
-        assertEquals("onKeyRelease is correct", false, keyStroke.isOnKeyRelease());
+        assertFalse("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         keyStroke = KeyStroke.getKeyStroke('a');
         assertEquals("keyChar's correct", 'a', keyStroke.getKeyChar());
         assertEquals("keyCode's correct", 0, keyStroke.getKeyCode());
         assertEquals("modifiers are correct", 0, keyStroke.getModifiers());
-        assertEquals("onKeyRelease is correct", false, keyStroke.isOnKeyRelease());
+        assertFalse("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         keyStroke = KeyStroke.getKeyStroke('T');
         assertEquals("keyChar's correct", 'T', keyStroke.getKeyChar());
         assertEquals("keyCode's correct", 0, keyStroke.getKeyCode());
         assertEquals("modifiers are correct", 0, keyStroke.getModifiers());
-        assertEquals("onKeyRelease is correct", false, keyStroke.isOnKeyRelease());
+        assertFalse("onKeyRelease is correct", keyStroke.isOnKeyRelease());
 
         KeyStroke keyStroke1 = KeyStroke.getKeyStroke('a');
         KeyStroke keyStroke2 = KeyStroke.getKeyStroke('a');

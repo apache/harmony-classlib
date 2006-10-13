@@ -61,18 +61,18 @@ public class AccessibleJButtonTest extends BasicSwingTestCase {
     }
 
     public void testGetAccessibleKeyBinding() {
-        assertEquals("AccessibleKeyBinding ", null, aContext.getAccessibleKeyBinding());
+        assertNull("AccessibleKeyBinding ", aContext.getAccessibleKeyBinding());
     }
 
     public void testGetAccessibleText() {
-        assertEquals("AccessibleText ", null, aContext.getAccessibleText());
+        assertNull("AccessibleText ", aContext.getAccessibleText());
     }
 
     public void testGetToolTipText() {
         String text1 = "do what you feel";
         String text2 = "what you need to do";
         button.setText(text1);
-        assertEquals("ToolTipText ", null, aContext.getToolTipText());
+        assertNull("ToolTipText ", aContext.getToolTipText());
         button.setToolTipText(text2);
         assertEquals("ToolTipText ", text2, aContext.getToolTipText());
     }
@@ -80,7 +80,7 @@ public class AccessibleJButtonTest extends BasicSwingTestCase {
     public void testGetAccessibleIcon() {
         ImageIcon icon1 = new ImageIcon(new BufferedImage(10, 10, BufferedImage.TYPE_BYTE_GRAY));
         ImageIcon icon2 = new ImageIcon(new BufferedImage(10, 10, BufferedImage.TYPE_BYTE_GRAY));
-        assertEquals("AccessibleIcon", null, aContext.getAccessibleIcon());
+        assertNull("AccessibleIcon", aContext.getAccessibleIcon());
 
         button.setIcon(icon1);
         assertEquals("number of AccessibleIcons", 1, aContext.getAccessibleIcon().length);
@@ -143,9 +143,9 @@ public class AccessibleJButtonTest extends BasicSwingTestCase {
     }
 
     public void testDoAccessibleAction() {
-        assertEquals("AccessibleAction result", true, aContext.doAccessibleAction(0));
-        assertEquals("AccessibleAction result", false, aContext.doAccessibleAction(1));
-        assertEquals("AccessibleAction result", false, aContext.doAccessibleAction(-1));
+        assertTrue("AccessibleAction result", aContext.doAccessibleAction(0));
+        assertFalse("AccessibleAction result", aContext.doAccessibleAction(1));
+        assertFalse("AccessibleAction result", aContext.doAccessibleAction(-1));
     }
 
     public void testGetAccessibleName() {
@@ -167,7 +167,7 @@ public class AccessibleJButtonTest extends BasicSwingTestCase {
 
     public void testGetAccessibleActionDescription() {
         assertEquals("AccessibleActionDescription", "click", aContext.getAccessibleActionDescription(0));
-        assertEquals("AccessibleActionDescription", null, aContext.getAccessibleActionDescription(1));
+        assertNull("AccessibleActionDescription", aContext.getAccessibleActionDescription(1));
     }
 
     public void testGetCurrentAccessibleValue() {
@@ -195,23 +195,23 @@ public class AccessibleJButtonTest extends BasicSwingTestCase {
         PropertyChangeController listener = new PropertyChangeController();
         aContext.addPropertyChangeListener(listener);
 
-        assertEquals("returned value", true, aContext.setCurrentAccessibleValue(new Integer(100)));
+        assertTrue("returned value", aContext.setCurrentAccessibleValue(new Integer(100)));
         assertEquals("CurrentAccessibleValue", new Integer(1), aContext.getCurrentAccessibleValue());
-        assertEquals("button selected state", true, button.isSelected());
+        assertTrue("button selected state", button.isSelected());
 
         listener.checkPropertyFired(aContext, "AccessibleState", null, AccessibleState.SELECTED);
         listener.checkPropertyFired(aContext, "AccessibleValue", new Integer(0), new Integer(1));
         listener.reset();
 
-        assertEquals("returned value", true, aContext.setCurrentAccessibleValue(new Integer(0)));
+        assertTrue("returned value", aContext.setCurrentAccessibleValue(new Integer(0)));
         assertEquals("CurrentAccessibleValue", new Integer(0), aContext.getCurrentAccessibleValue());
-        assertEquals("button selected state", false, button.isSelected());
+        assertFalse("button selected state", button.isSelected());
 
         listener.checkPropertyFired(aContext, "AccessibleState", AccessibleState.SELECTED, null);
         listener.checkPropertyFired(aContext, "AccessibleValue", new Integer(1), new Integer(0));
         listener.reset();
 
-        assertEquals("returned value", true, aContext.setCurrentAccessibleValue(new Integer(0)));
+        assertTrue("returned value", aContext.setCurrentAccessibleValue(new Integer(0)));
         assertFalse("no event's fired ", listener.isChanged());
     }
 
@@ -250,47 +250,47 @@ public class AccessibleJButtonTest extends BasicSwingTestCase {
     }
 
     public void testGetCharacterBounds() {
-        assertEquals("CharacterBounds", null, aContext.getCharacterBounds(0));
+        assertNull("CharacterBounds", aContext.getCharacterBounds(0));
         button.setText("text");
-        assertEquals("CharacterBounds", null, aContext.getCharacterBounds(1));
+        assertNull("CharacterBounds", aContext.getCharacterBounds(1));
     }
 
     public void testGetSelectedText() {
-        assertEquals("SelectedText", null, aContext.getSelectedText());
+        assertNull("SelectedText", aContext.getSelectedText());
         button.setText("text");
-        assertEquals("SelectedText", null, aContext.getSelectedText());
+        assertNull("SelectedText", aContext.getSelectedText());
         button.setSelected(true);
-        assertEquals("SelectedText", null, aContext.getSelectedText());
+        assertNull("SelectedText", aContext.getSelectedText());
     }
 
     public void testGetAfterIndex() {
-        assertEquals("AfterIndex", null, aContext.getAfterIndex(AccessibleText.CHARACTER, 0));
-        assertEquals("AfterIndex", null, aContext.getAfterIndex(AccessibleText.WORD, 0));
-        assertEquals("AfterIndex", null, aContext.getAfterIndex(AccessibleText.SENTENCE, 0));
+        assertNull("AfterIndex", aContext.getAfterIndex(AccessibleText.CHARACTER, 0));
+        assertNull("AfterIndex", aContext.getAfterIndex(AccessibleText.WORD, 0));
+        assertNull("AfterIndex", aContext.getAfterIndex(AccessibleText.SENTENCE, 0));
         button.setText("Just give me the light. and start the show");
-        assertEquals("AfterIndex", null, aContext.getAfterIndex(AccessibleText.CHARACTER, 6));
+        assertNull("AfterIndex", aContext.getAfterIndex(AccessibleText.CHARACTER, 6));
     }
 
     public void testGetAtIndex() {
-        assertEquals("AtIndex", null, aContext.getAtIndex(AccessibleText.CHARACTER, 0));
-        assertEquals("AtIndex", null, aContext.getAtIndex(AccessibleText.WORD, 0));
-        assertEquals("AtIndex", null, aContext.getAtIndex(AccessibleText.SENTENCE, 0));
+        assertNull("AtIndex", aContext.getAtIndex(AccessibleText.CHARACTER, 0));
+        assertNull("AtIndex", aContext.getAtIndex(AccessibleText.WORD, 0));
+        assertNull("AtIndex", aContext.getAtIndex(AccessibleText.SENTENCE, 0));
         button.setText("Just give me the light. and start the show");
-        assertEquals("AtIndex", null, aContext.getAtIndex(AccessibleText.CHARACTER, 6));
+        assertNull("AtIndex", aContext.getAtIndex(AccessibleText.CHARACTER, 6));
     }
 
     public void testGetBeforeIndex() {
-        assertEquals("BeforeIndex", null, aContext.getBeforeIndex(AccessibleText.CHARACTER, 0));
-        assertEquals("BeforeIndex", null, aContext.getBeforeIndex(AccessibleText.WORD, 0));
-        assertEquals("BeforeIndex", null, aContext.getBeforeIndex(AccessibleText.SENTENCE, 0));
+        assertNull("BeforeIndex", aContext.getBeforeIndex(AccessibleText.CHARACTER, 0));
+        assertNull("BeforeIndex", aContext.getBeforeIndex(AccessibleText.WORD, 0));
+        assertNull("BeforeIndex", aContext.getBeforeIndex(AccessibleText.SENTENCE, 0));
         button.setText("Just give me the light. and start the show");
-        assertEquals("BeforeIndex", null, aContext.getBeforeIndex(AccessibleText.CHARACTER, 6));
+        assertNull("BeforeIndex", aContext.getBeforeIndex(AccessibleText.CHARACTER, 6));
     }
 
     public void testGetCharacterAttribute() {
-        assertEquals("CharacterAttribute", null, aContext.getCharacterAttribute(0));
+        assertNull("CharacterAttribute", aContext.getCharacterAttribute(0));
         button.setText("text");
-        assertEquals("CharacterAttribute", null, aContext.getCharacterAttribute(1));
+        assertNull("CharacterAttribute", aContext.getCharacterAttribute(1));
     }
 
 }

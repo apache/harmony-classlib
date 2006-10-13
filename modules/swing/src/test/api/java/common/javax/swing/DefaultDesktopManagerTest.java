@@ -320,7 +320,7 @@ public class DefaultDesktopManagerTest extends SwingTestCase {
 
         // test ordinary deactivate
         manager.deactivateFrame(frame);
-        assertTrue("deactivated", desktop.getSelectedFrame() == null);
+        assertNull("deactivated", desktop.getSelectedFrame());
 
         // test deactivate of the internal frame without desktop pane
         manager.deactivateFrame(new JInternalFrame());

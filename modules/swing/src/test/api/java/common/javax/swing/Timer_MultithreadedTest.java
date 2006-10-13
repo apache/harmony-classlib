@@ -238,8 +238,7 @@ public class Timer_MultithreadedTest extends TestCase {
         timer.start();
         listener2.waitAction(500);
 
-        assertEquals("ActionListener's ActionPerformed didn't invoke ", null,
-                     listener2.action);
+        assertNull("ActionListener's ActionPerformed didn't invoke ", listener2.action);
 
         listener2.reset();
         listener2.waitAction(1000);
@@ -323,8 +322,7 @@ public class Timer_MultithreadedTest extends TestCase {
         timer = new Timer(10, listener);
 
         listener.waitAction(200);
-        assertEquals("ActionListener's ActionPerformed didn't invoke ", null,
-                     listener.action);
+        assertNull("ActionListener's ActionPerformed didn't invoke ", listener.action);
 
         timer.start();
         listener.waitAction(1500);
@@ -335,8 +333,7 @@ public class Timer_MultithreadedTest extends TestCase {
         listener.reset();
         listener.waitAction(100);
 
-        assertEquals("ActionListener's ActionPerformed didn't invoke ", null,
-                     listener.action);
+        assertNull("ActionListener's ActionPerformed didn't invoke ", listener.action);
     }
 
     public void testStart() {
@@ -344,8 +341,7 @@ public class Timer_MultithreadedTest extends TestCase {
         timer = new Timer(10, listener);
 
         listener.waitAction(200);
-        assertEquals("ActionListener's ActionPerformed didn't invoke ", null,
-                     listener.action);
+        assertNull("ActionListener's ActionPerformed didn't invoke ", listener.action);
 
         timer.start();
         listener.waitAction(500);
@@ -357,8 +353,7 @@ public class Timer_MultithreadedTest extends TestCase {
         timer.setInitialDelay(1000);
         timer.start();
         listener.waitAction(500);
-        assertEquals("ActionListener's ActionPerformed didn't invoke ", null,
-                     listener.action);
+        assertNull("ActionListener's ActionPerformed didn't invoke ", listener.action);
 
         // testing the right order of timers being triggered
         ConcreteActionListener listener1 = new ConcreteActionListener("1");
@@ -405,8 +400,7 @@ public class Timer_MultithreadedTest extends TestCase {
         timer = new Timer(10, listener);
 
         listener.waitAction(200);
-        assertEquals("ActionListener's ActionPerformed didn't invoke ", null,
-                     listener.action);
+        assertNull("ActionListener's ActionPerformed didn't invoke ", listener.action);
 
         timer.start();
         listener.waitAction(1500);
@@ -417,8 +411,7 @@ public class Timer_MultithreadedTest extends TestCase {
         timer.restart();
         listener.reset();
         listener.waitAction(250);
-        assertEquals("ActionListener's ActionPerformed didn't invoke ", null,
-                     listener.action);
+        assertNull("ActionListener's ActionPerformed didn't invoke ", listener.action);
         listener.waitAction(500);
         assertTrue("ActionListener's ActionPerformed invoked ",
                    listener.action != null);

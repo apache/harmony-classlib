@@ -260,7 +260,7 @@ public class ImageIconTest extends SwingTestCase {
         assertEquals("image", image1, icon.getImage());
 
         icon = new ImageIcon(image2);
-        assertEquals("description", null, icon.getDescription());
+        assertNull("description", icon.getDescription());
         assertEquals("loaded", MediaTracker.COMPLETE, icon.getImageLoadStatus());
         assertEquals("image", image2, icon.getImage());
     }
@@ -274,7 +274,7 @@ public class ImageIconTest extends SwingTestCase {
         assertNull("image", icon.getImage());
         assertEquals("height", -1, icon.getIconHeight());
         assertEquals("width", -1, icon.getIconWidth());
-        assertEquals("description", null, icon.getDescription());
+        assertNull("description", icon.getDescription());
         assertEquals("loaded", 0, icon.getImageLoadStatus());
     }
 

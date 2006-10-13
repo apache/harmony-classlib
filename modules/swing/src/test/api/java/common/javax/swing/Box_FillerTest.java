@@ -55,9 +55,9 @@ public class Box_FillerTest extends SwingTestCase {
 
         filler = new Box.Filler(null, null, null);
 
-        assertEquals("Minimum size initialized correctly ", null, filler.getMinimumSize());
-        assertEquals("Preferred size initialized correctly ", null, filler.getPreferredSize());
-        assertEquals("Maximum size initialized correctly ", null, filler.getMaximumSize());
+        assertNull("Minimum size initialized correctly ", filler.getMinimumSize());
+        assertNull("Preferred size initialized correctly ", filler.getPreferredSize());
+        assertNull("Maximum size initialized correctly ", filler.getMaximumSize());
 
         assertFalse("Opaqueness initialized correctly", filler.isOpaque());
     }
