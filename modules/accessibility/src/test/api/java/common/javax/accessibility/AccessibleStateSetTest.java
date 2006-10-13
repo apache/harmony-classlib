@@ -95,7 +95,7 @@ public class AccessibleStateSetTest extends SwingTestCase {
     public void testClear() throws Exception {
 
         stateSet.clear();
-        assertTrue("Cleared set should be empty", stateSet.states.size() == 0);
+        assertEquals("Cleared set should be empty", 0, stateSet.states.size());
 
         stateSet.states = null;
         stateSet.clear();
@@ -114,7 +114,8 @@ public class AccessibleStateSetTest extends SwingTestCase {
 
     public void testToArray() throws Exception {
         AccessibleState[] statesReturnedArray = stateSet.toArray();
-        assertTrue("Returned array size don't match", statesReturnedArray.length == statesArray.length);
+        assertEquals("Returned array size don't match",
+                     statesArray.length, statesReturnedArray.length);
         for (int i = 0; i < statesReturnedArray.length; i++)
             assertEquals("Returned element mismatch:" + i, statesArray[i], statesReturnedArray[i]);
         stateSet.states = null;
