@@ -139,9 +139,8 @@ public class NumberFormatTest extends junit.framework.TestCase {
         assertEquals(
                 "Test5: NumberFormat.getIntegerInstance().getMaximumFractionDigits() returned wrong value",
                 0, format.getMaximumFractionDigits());
-        assertEquals(
-                "Test6: NumberFormat.getIntegerInstance().isParseIntegerOnly() returned wrong value",
-                true, format.isParseIntegerOnly());
+        assertTrue("Test6: NumberFormat.getIntegerInstance().isParseIntegerOnly() returned wrong value",
+                format.isParseIntegerOnly());
 
         // try with a locale that has a different integer pattern
         format = (DecimalFormat) NumberFormat.getIntegerInstance(arLocale);
@@ -161,9 +160,9 @@ public class NumberFormatTest extends junit.framework.TestCase {
         assertEquals(
                 "Test11: NumberFormat.getIntegerInstance(new Locale(\"ar\", \"AE\")).getMaximumFractionDigits() returned wrong value",
                 0, format.getMaximumFractionDigits());
-        assertEquals(
-                "Test12: NumberFormat.getIntegerInstance(new Locale(\"ar\", \"AE\")).isParseIntegerOnly() returned wrong value",
-                true, format.isParseIntegerOnly());
+        assertTrue(
+                   "Test12: NumberFormat.getIntegerInstance(new Locale(\"ar\", \"AE\")).isParseIntegerOnly() returned wrong value",
+                   format.isParseIntegerOnly());
     }
 
     /**

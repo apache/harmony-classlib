@@ -29,7 +29,7 @@ public class FieldPositionTest extends junit.framework.TestCase {
 		FieldPosition fpos = new FieldPosition(DateFormat.MONTH_FIELD);
 		assertEquals("Test1: Constructor failed to set field identifier!",
 				DateFormat.MONTH_FIELD, fpos.getField());
-		assertEquals("Constructor failed to set field attribute!", null, fpos
+		assertNull("Constructor failed to set field attribute!", fpos
 				.getFieldAttribute());
 	}
 
