@@ -43,21 +43,15 @@ public class StartupShutdownTest extends TestCase {
     SubProcess rmiregistry;
 
     public void testStartup() throws Exception {
-        try {
-            rmid = JavaInvoker.invokeSimilar((String[]) null,
-                    "org.apache.harmony.rmi.activation.Rmid",
-                    (String[]) null, true, true);
-            rmid.pipeError();
-            rmid.pipeInput();
-            rmid.closeOutput();
-            Thread.sleep(5000);
-            ActivationSystem as = ActivationGroup.getSystem();
+        rmid = JavaInvoker.invokeSimilar((String[]) null,
+                "org.apache.harmony.rmi.activation.Rmid",
+                (String[]) null, true, true);
+        rmid.pipeError();
+        rmid.pipeInput();
+        rmid.closeOutput();
+        Thread.sleep(5000);
+        ActivationSystem as = ActivationGroup.getSystem();
 
-            rmid.destroy();
-        } catch (Throwable t) {
-            System.out.println("Unexpected exception: " + t);
-            t.printStackTrace();
-            fail("Unexpected exception: " + t);
-        }
+        rmid.destroy();
     }
 }

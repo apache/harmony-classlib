@@ -155,10 +155,6 @@ public class ConnectionTest extends RMITestBase {
             System.out.println("Expecting READY from server");
             server.expect();
             server.pipeInput();
-        } catch (Exception e) {
-            System.err.print("Unexpected exception in main thread: ");
-            e.printStackTrace();
-            fail("Unexpected exception in main thread: " + e);
         } finally {
             if (server != null) {
                 System.out.println("Destroying server");
@@ -379,12 +375,7 @@ public class ConnectionTest extends RMITestBase {
             SubProcess.tellOut();
         } finally {
             System.err.println("Test server closing.");
-            try {
-                unexportObjects();
-            } catch (Exception e) {
-                System.err.print("Unexpected exception while unexporting: ");
-                e.printStackTrace();
-            }
+            unexportObjects();
         }
         System.err.println("Test server exiting.");
     }

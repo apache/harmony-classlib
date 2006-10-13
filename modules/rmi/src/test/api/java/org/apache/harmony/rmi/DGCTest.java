@@ -186,9 +186,6 @@ public class DGCTest extends RMITestBase {
 
             System.out.println("test0: waiting for server to return");
             assertEquals("Test server return", 0, server.waitFor());
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected exception: " + e);
         } finally {
             if (registry != null) {
                 registry.destroy();
@@ -226,9 +223,6 @@ public class DGCTest extends RMITestBase {
             server.pipeError();
             server.closeOutput();
             assertEquals("Test server return", 0, server.waitFor());
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected exception: " + e);
         } finally {
             if (server != null) {
                 server.destroy();
