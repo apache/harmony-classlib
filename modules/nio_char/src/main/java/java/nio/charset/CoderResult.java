@@ -152,8 +152,8 @@ public class CoderResult {
 				return r;
 			}
 		}
-        // niochar.08=The length must be positive.
-		throw new IllegalArgumentException(Messages.getString("niochar.08"));  //$NON-NLS-1$
+        // niochar.08=The length must be positive: {0}.
+		throw new IllegalArgumentException(Messages.getString("niochar.08", length));  //$NON-NLS-1$
 	}
 
 	/**
@@ -181,8 +181,8 @@ public class CoderResult {
 				return r;
 			}
 		}
-        // niochar.08=The length must be positive.
-		throw new IllegalArgumentException(Messages.getString("niochar.08"));  //$NON-NLS-1$
+        // niochar.08=The length must be positive: {0}.
+		throw new IllegalArgumentException(Messages.getString("niochar.08", length));  //$NON-NLS-1$
 	}
 
 	/**
