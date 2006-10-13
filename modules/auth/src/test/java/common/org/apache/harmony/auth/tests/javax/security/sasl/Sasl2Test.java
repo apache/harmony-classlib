@@ -20,7 +20,7 @@
 * @version $Revision$
 */
 
-package javax.security.sasl;
+package org.apache.harmony.auth.tests.javax.security.sasl;
 
 import java.security.Provider;
 import java.security.Security;
@@ -50,11 +50,14 @@ public class Sasl2Test extends TestCase {
 
     Provider[] mProv;
 
-    private static final String fClientClass01 = "javax.security.sasl.myClientFactory01";
+    private static final String fClientClass01 = myClientFactory01.class
+            .getName();
 
-    private static final String fServerClass01 = "javax.security.sasl.myServerFactory01";
+    private static final String fServerClass01 = myServerFactory01.class
+            .getName();
 
-    private static final String fServerClass02 = "javax.security.sasl.myServerFactory02";
+    private static final String fServerClass02 = myServerFactory02.class
+            .getName();
 
     /*
      * @see TestCase#tearDown()
@@ -515,68 +518,70 @@ public class Sasl2Test extends TestCase {
                 mProv.length);
     }
 
-}
-
-class myServerFactory01 implements SaslServerFactory {
-    public myServerFactory01() {
-        super();
-    }
-
-    public String[] getMechanismNames(Map map) {
-        return new String[] { "aaaa", "dddddddddddd",
-                "llllllllll sssssssss aaaaaaaaaaa c" };
-    }
-
-    public SaslServer createSaslServer(String mech, String prot,
-            String srvName, Map prop, CallbackHandler ch) throws SaslException {
-        return null;
-    }
-}
-
-class myServerFactory02 implements SaslServerFactory {
-    public myServerFactory02() {
-        super();
-    }
-
-    public String[] getMechanismNames(Map map) {
-        return null;
-    }
-
-    public SaslServer createSaslServer(String mech, String prot,
-            String srvName, Map prop, CallbackHandler ch) throws SaslException {
-        if (prot == null) {
-            throw new SaslException("Protocol is null");
+    /*
+     * Support classes 
+     */
+    public static class myServerFactory01 implements SaslServerFactory {
+        public myServerFactory01() {
+            super();
         }
-        return null;
-    }
-}
 
-class myClientFactory01 implements SaslClientFactory {
-    public myClientFactory01() {
-        super();
-    }
+        public String[] getMechanismNames(Map map) {
+            return new String[] { "aaaa", "dddddddddddd",
+                    "llllllllll sssssssss aaaaaaaaaaa c" };
+        }
 
-    public String[] getMechanismNames(Map map) {
-        return new String[] { "a1", "a2", "a3", "a4", "a5" };
-    }
-
-    public SaslClient createSaslClient(String[] mech, String prot, String auth,
-            String srvName, Map prop, CallbackHandler ch) throws SaslException {
-        return null;
-    }
-}
-
-class myClientFactory02 implements SaslClientFactory {
-    public myClientFactory02() {
-        super();
+        public SaslServer createSaslServer(String mech, String prot,
+                String srvName, Map prop, CallbackHandler ch) throws SaslException {
+            return null;
+        }
     }
 
-    public String[] getMechanismNames(Map map) {
-        return new String[] { "a11", "a22", "a33", "a44", "a55", "" };
+    public static class myServerFactory02 implements SaslServerFactory {
+        public myServerFactory02() {
+            super();
+        }
+
+        public String[] getMechanismNames(Map map) {
+            return null;
+        }
+
+        public SaslServer createSaslServer(String mech, String prot,
+                String srvName, Map prop, CallbackHandler ch) throws SaslException {
+            if (prot == null) {
+                throw new SaslException("Protocol is null");
+            }
+            return null;
+        }
     }
 
-    public SaslClient createSaslClient(String[] mech, String prot, String auth,
-            String srvName, Map prop, CallbackHandler ch) throws SaslException {
-        return null;
+    public static class myClientFactory01 implements SaslClientFactory {
+        public myClientFactory01() {
+            super();
+        }
+
+        public String[] getMechanismNames(Map map) {
+            return new String[] { "a1", "a2", "a3", "a4", "a5" };
+        }
+
+        public SaslClient createSaslClient(String[] mech, String prot, String auth,
+                String srvName, Map prop, CallbackHandler ch) throws SaslException {
+            return null;
+        }
+    }
+
+    public static class myClientFactory02 implements SaslClientFactory {
+        public myClientFactory02() {
+            super();
+        }
+
+        public String[] getMechanismNames(Map map) {
+            return new String[] { "a11", "a22", "a33", "a44", "a55", "" };
+        }
+
+        public SaslClient createSaslClient(String[] mech, String prot, String auth,
+                String srvName, Map prop, CallbackHandler ch) throws SaslException {
+            return null;
+        }
     }
 }

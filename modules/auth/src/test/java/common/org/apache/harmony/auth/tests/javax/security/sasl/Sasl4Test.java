@@ -20,7 +20,7 @@
 * @version $Revision$
 */
 
-package javax.security.sasl;
+package org.apache.harmony.auth.tests.javax.security.sasl;
 
 import java.io.IOException;
 import java.security.Provider;
@@ -45,7 +45,7 @@ import org.apache.harmony.auth.tests.support.SpiEngUtils;
 public class Sasl4Test extends TestCase {
     private static final String SRVSSRV = "SaslServerFactory.";
 
-    private static final String fServerClass = "javax.security.sasl.mySaslServerFactory";
+    private static final String fServerClass = mySaslServerFactory.class.getName();
 
     private Provider [] provs;
     private boolean initProvs = false;
@@ -123,7 +123,7 @@ public class Sasl4Test extends TestCase {
                                 .concat("MECH-2"), fServerClass) };
         addProviders();
 
-        CallbackHandler cbH = new cbHand();
+        CallbackHandler cbH = new Sasl3Test.cbHand();
         try {
             Sasl.createSaslServer(null, null, null, null, cbH);
             fail("NullPointerException should be thrown when mechanisms is null");
@@ -134,7 +134,7 @@ public class Sasl4Test extends TestCase {
             fail("SaslException should be thrown when CallbackHandler is wrong");
         } catch (SaslException e) {
         }
-        cbH = new cbHandN();
+        cbH = new Sasl3Test.cbHandN();
         try {
             Sasl.createSaslServer("MECH-1", "protocol", null, null, cbH);
             fail("SaslException should be thrown when mechamisms is wrong");
@@ -188,7 +188,7 @@ public class Sasl4Test extends TestCase {
                                 .concat("MECH-2"), fServerClass) };
         addProviders();
 
-        CallbackHandler cbH = new cbHandN();
+        CallbackHandler cbH = new Sasl3Test.cbHandN();
         SaslServer saslS = Sasl.createSaslServer("MECH-2", "protocol", null,
                 null, cbH);
         assertNotNull("Null result", saslS);
@@ -226,7 +226,7 @@ public class Sasl4Test extends TestCase {
                         .concat("MECH-1"), fServerClass) };
         mProv[0].put(SRVSSRV.concat("MECH-2"), fServerClass);
         addProviders();
-        CallbackHandler cbH = new cbHandN();
+        CallbackHandler cbH = new Sasl3Test.cbHandN();
         SaslServer saslS = Sasl.createSaslServer("MECH-2", "protocol", null,
                 null, cbH);
         assertNotNull("Null result for MECH-2", saslS);
@@ -266,7 +266,7 @@ public class Sasl4Test extends TestCase {
         mProv[2].put(SRVSSRV.concat("MECH-5"), fServerClass);
         addProviders();
 
-        CallbackHandler cbH = new cbHandN();
+        CallbackHandler cbH = new Sasl3Test.cbHandN();
 
         SaslServer saslS;
         // try to create SaslServer for wrong mechanism
@@ -297,94 +297,93 @@ public class Sasl4Test extends TestCase {
         saslS = Sasl.createSaslServer("MECH-5", "protocol", null, null, cbH);
         assertNotNull("Null result for MECH-5", saslS);
     }
-}
 
-/*
- * Additional class for creating SaslServer object
- */
-
-class mySaslServerFactory implements SaslServerFactory {
-    public mySaslServerFactory() {
-        super();
-    }
-
-    public String[] getMechanismNames(Map prop) {
-        return new String[] { "MECH-1", "MECH-2", "MECH-3", "MECH-4" };
-    }
-
-    public SaslServer createSaslServer(String mech, String protocol,
-            String srvName, Map prop, CallbackHandler hnd) throws SaslException {
-        if (mech == null) {
-            throw new SaslException();
-        }
-        if ("MECH-1".equals(mech)) {
-            throw new SaslException("Incorrect mechanisms");
-        }
-        if (protocol == null) {
-            throw new SaslException("Protocol is null");
-        }
-        TextOutputCallback[] cb = { new TextOutputCallback(
-                TextOutputCallback.INFORMATION, "Information") };
-        try {
-            hnd.handle(cb);
-        } catch (UnsupportedCallbackException e) {
-            throw new SaslException("Incorrect callback handlere", e);
-        } catch (IOException e) {
-            throw new SaslException("Incorrect callback handlere", e);
-        }
-        return new mySaslServer();
-    }
-
-    public class mySaslServer implements SaslServer {
-        public mySaslServer() {
+    /*
+     * Additional class for creating SaslServer object
+     */
+    public static class mySaslServerFactory implements SaslServerFactory {
+        public mySaslServerFactory() {
             super();
         }
 
-        public void dispose() throws SaslException {
+        public String[] getMechanismNames(Map prop) {
+            return new String[] { "MECH-1", "MECH-2", "MECH-3", "MECH-4" };
         }
 
-        public byte[] evaluateResponse(byte[] challenge) throws SaslException {
-            return new byte[0];
+        public SaslServer createSaslServer(String mech, String protocol,
+                String srvName, Map prop, CallbackHandler hnd) throws SaslException {
+            if (mech == null) {
+                throw new SaslException();
+            }
+            if ("MECH-1".equals(mech)) {
+                throw new SaslException("Incorrect mechanisms");
+            }
+            if (protocol == null) {
+                throw new SaslException("Protocol is null");
+            }
+            TextOutputCallback[] cb = { new TextOutputCallback(
+                    TextOutputCallback.INFORMATION, "Information") };
+            try {
+                hnd.handle(cb);
+            } catch (UnsupportedCallbackException e) {
+                throw new SaslException("Incorrect callback handlere", e);
+            } catch (IOException e) {
+                throw new SaslException("Incorrect callback handlere", e);
+            }
+            return new mySaslServer();
         }
 
-        public String getMechanismName() {
-            return "Server Proba";
-        }
+        public class mySaslServer implements SaslServer {
+            public mySaslServer() {
+                super();
+            }
 
-        public Object getNegotiatedProperty(String s) {
-            return "";
-        }
+            public void dispose() throws SaslException {
+            }
 
-        public String getAuthorizationID() {
-            return "";
-        }
+            public byte[] evaluateResponse(byte[] challenge) throws SaslException {
+                return new byte[0];
+            }
 
-        public boolean isComplete() {
-            return false;
-        }
+            public String getMechanismName() {
+                return "Server Proba";
+            }
 
-        public byte[] unwrap(byte[] incoming, int offset, int len)
-                throws SaslException {
-            throw new SaslException();
-        }
+            public Object getNegotiatedProperty(String s) {
+                return "";
+            }
 
-        public byte[] wrap(byte[] outgoing, int offset, int len)
-                throws SaslException {
-            return new byte[0];
+            public String getAuthorizationID() {
+                return "";
+            }
+
+            public boolean isComplete() {
+                return false;
+            }
+
+            public byte[] unwrap(byte[] incoming, int offset, int len)
+                    throws SaslException {
+                throw new SaslException();
+            }
+
+            public byte[] wrap(byte[] outgoing, int offset, int len)
+                    throws SaslException {
+                return new byte[0];
+            }
         }
     }
-}
 
-class mySaslServerFactoryExt extends mySaslServerFactory {
-    public String[] getMechanismNames(Map prop) {
-        return new String[] { "MECH-5", "MECH-6" };
-    }
-
-    public SaslServer createSaslServer(String mech, String protocol,
-            String srvName, Map prop, CallbackHandler hnd) throws SaslException {
-        if (mech == null) {
-            throw new SaslException();
+    public static class mySaslServerFactoryExt extends mySaslServerFactory {
+        public String[] getMechanismNames(Map prop) {
+            return new String[] { "MECH-5", "MECH-6" };
         }
-        return new mySaslServer();
+
+        public SaslServer createSaslServer(String mech, String protocol,
+                String srvName, Map prop, CallbackHandler hnd) throws SaslException {
+            if (mech == null) {
+                throw new SaslException();
+            }
+            return new mySaslServer();
+        }
     }
 }

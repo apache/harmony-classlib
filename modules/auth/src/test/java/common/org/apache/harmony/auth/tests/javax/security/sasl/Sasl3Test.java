@@ -20,7 +20,7 @@
 * @version $Revision$
 */
 
-package javax.security.sasl;
+package org.apache.harmony.auth.tests.javax.security.sasl;
 
 import java.io.IOException;
 import java.security.Provider;
@@ -48,7 +48,7 @@ import org.apache.harmony.auth.tests.support.SpiEngUtils;
 public class Sasl3Test extends TestCase {
     private static final String CLNTSRV = "SaslClientFactory.";
 
-    private static final String fClientClass = "javax.security.sasl.mySaslClientFactory";
+    private static final String fClientClass = mySaslClientFactory.class.getName();;
 
     private Provider [] provs;
     private boolean initProvs = false;
@@ -298,139 +298,139 @@ public class Sasl3Test extends TestCase {
                 null, "protocol", null, null, cbH);
         assertNotNull("Null result for NAME-6 and NAME-5", saslC);
     }
-}
+    
+    /*
+     * Additional classes for creating SaslClient and SaslServer objects
+     */
 
-/*
- * Additional classes for creating SaslClient and SaslServer objects
- */
-
-class mySaslClientFactory implements SaslClientFactory {
-    public mySaslClientFactory() {
-        super();
-    }
-
-    public String[] getMechanismNames(Map prop) {
-        return new String[] { "NAME-1", "NAME-2", "NAME-3", "NAME-4" };
-    }
-
-    public SaslClient createSaslClient(String[] mech, String id,
-            String protocol, String srvName, Map prop, CallbackHandler hnd)
-            throws SaslException {
-        if (mech == null) {
-            throw new SaslException();
-        }
-        if ("NAME-1".equals(mech[0])) {
-            throw new SaslException("Incorrect mechanisms");
-        }
-        if (protocol == null) {
-            throw new SaslException("Protocol is null");
-        }
-        TextOutputCallback[] cb = { new TextOutputCallback(
-                TextOutputCallback.INFORMATION, "Information") };
-        try {
-            hnd.handle(cb);
-        } catch (UnsupportedCallbackException e) {
-            throw new SaslException("Incorrect callback handlere", e);
-        } catch (IOException e) {
-            throw new SaslException("Incorrect callback handlere", e);
-        }
-        return new mySaslClient();
-    }
-
-    public class mySaslClient implements SaslClient {
-        public mySaslClient() {
+    public static class mySaslClientFactory implements SaslClientFactory {
+        public mySaslClientFactory() {
             super();
         }
 
-        public Object getNegotiatedProperty(String s) {
-            return "";
+        public String[] getMechanismNames(Map prop) {
+            return new String[] { "NAME-1", "NAME-2", "NAME-3", "NAME-4" };
         }
 
-        public String getMechanismName() {
-            return "Proba";
-        }
-
-        public boolean isComplete() {
-            return false;
-        }
-
-        public boolean hasInitialResponse() {
-            return false;
-        }
-
-        public void dispose() throws SaslException {
-        }
-
-        public byte[] evaluateChallenge(byte[] challenge) throws SaslException {
-            return new byte[0];
-        }
-
-        public byte[] unwrap(byte[] incoming, int offset, int len)
+        public SaslClient createSaslClient(String[] mech, String id,
+                String protocol, String srvName, Map prop, CallbackHandler hnd)
                 throws SaslException {
-            throw new SaslException();
+            if (mech == null) {
+                throw new SaslException();
+            }
+            if ("NAME-1".equals(mech[0])) {
+                throw new SaslException("Incorrect mechanisms");
+            }
+            if (protocol == null) {
+                throw new SaslException("Protocol is null");
+            }
+            TextOutputCallback[] cb = { new TextOutputCallback(
+                    TextOutputCallback.INFORMATION, "Information") };
+            try {
+                hnd.handle(cb);
+            } catch (UnsupportedCallbackException e) {
+                throw new SaslException("Incorrect callback handlere", e);
+            } catch (IOException e) {
+                throw new SaslException("Incorrect callback handlere", e);
+            }
+            return new mySaslClient();
         }
 
-        public byte[] wrap(byte[] outgoing, int offset, int len)
-                throws SaslException {
-            return new byte[0];
-        }
-    }
-}
+        public class mySaslClient implements SaslClient {
+            public mySaslClient() {
+                super();
+            }
 
-class mySaslClientFactoryExt extends mySaslClientFactory {
-    public String[] getMechanismNames(Map prop) {
-        return new String[] { "NAME-5", "NAME-6" };
-    }
+            public Object getNegotiatedProperty(String s) {
+                return "";
+            }
 
-    public SaslClient createSaslClient(String[] mech, String id,
-            String protocol, String srvName, Map prop, CallbackHandler hnd)
-            throws SaslException {
-        if (mech == null) {
-            throw new SaslException();
-        }
-        return new mySaslClient();
-    }
-}
+            public String getMechanismName() {
+                return "Proba";
+            }
 
-class cbHand implements CallbackHandler {
-    public cbHand() {
-    }
+            public boolean isComplete() {
+                return false;
+            }
 
-    public void handle(Callback[] callbacks) throws IOException,
-            UnsupportedCallbackException {
-        for (int i = 0; i < callbacks.length; i++) {
-            if (callbacks[i] instanceof NameCallback) {
-                NameCallback nc = (NameCallback) callbacks[i];
-                nc.setName("Ok");
-            } else if (callbacks[i] instanceof PasswordCallback) {
-                PasswordCallback pc = (PasswordCallback) callbacks[i];
-                System.err.print(pc.getPrompt());
-                System.err.flush();
-                pc.setPassword(new char[] { 'O', 'k' });
-            } else {
-                throw new UnsupportedCallbackException(callbacks[i],
-                        "Callback should be NamCallback or PasswordCallback");
+            public boolean hasInitialResponse() {
+                return false;
+            }
+
+            public void dispose() throws SaslException {
+            }
+
+            public byte[] evaluateChallenge(byte[] challenge) throws SaslException {
+                return new byte[0];
+            }
+
+            public byte[] unwrap(byte[] incoming, int offset, int len)
+                    throws SaslException {
+                throw new SaslException();
+            }
+
+            public byte[] wrap(byte[] outgoing, int offset, int len)
+                    throws SaslException {
+                return new byte[0];
             }
         }
     }
-}
 
-class cbHandN implements CallbackHandler {
-    public cbHandN() {
+    public static class mySaslClientFactoryExt extends mySaslClientFactory {
+        public String[] getMechanismNames(Map prop) {
+            return new String[] { "NAME-5", "NAME-6" };
+        }
+
+        public SaslClient createSaslClient(String[] mech, String id,
+                String protocol, String srvName, Map prop, CallbackHandler hnd)
+                throws SaslException {
+            if (mech == null) {
+                throw new SaslException();
+            }
+            return new mySaslClient();
+        }
     }
 
-    public void handle(Callback[] callbacks) throws IOException,
-            UnsupportedCallbackException {
-        for (int i = 0; i < callbacks.length; i++) {
-            if (callbacks[i] instanceof TextOutputCallback) {
-                TextOutputCallback toc = (TextOutputCallback) callbacks[i];
-                if (toc.getMessageType() != TextOutputCallback.INFORMATION) {
-                    throw new IOException("Unsupported message type: "
-                            + toc.getMessageType());
+    public static class cbHand implements CallbackHandler {
+        public cbHand() {
+        }
+
+        public void handle(Callback[] callbacks) throws IOException,
+                UnsupportedCallbackException {
+            for (int i = 0; i < callbacks.length; i++) {
+                if (callbacks[i] instanceof NameCallback) {
+                    NameCallback nc = (NameCallback) callbacks[i];
+                    nc.setName("Ok");
+                } else if (callbacks[i] instanceof PasswordCallback) {
+                    PasswordCallback pc = (PasswordCallback) callbacks[i];
+                    System.err.print(pc.getPrompt());
+                    System.err.flush();
+                    pc.setPassword(new char[] { 'O', 'k' });
+                } else {
+                    throw new UnsupportedCallbackException(callbacks[i],
+                            "Callback should be NamCallback or PasswordCallback");
                 }
-            } else {
-                throw new UnsupportedCallbackException(callbacks[i],
-                        "Callback should be TextOutputCallback");
+            }
+        }
+    }
+
+    public static class cbHandN implements CallbackHandler {
+        public cbHandN() {
+        }
+
+        public void handle(Callback[] callbacks) throws IOException,
+                UnsupportedCallbackException {
+            for (int i = 0; i < callbacks.length; i++) {
+                if (callbacks[i] instanceof TextOutputCallback) {
+                    TextOutputCallback toc = (TextOutputCallback) callbacks[i];
+                    if (toc.getMessageType() != TextOutputCallback.INFORMATION) {
+                        throw new IOException("Unsupported message type: "
+                                + toc.getMessageType());
+                    }
+                } else {
+                    throw new UnsupportedCallbackException(callbacks[i],
+                            "Callback should be TextOutputCallback");
+                }
             }
         }
     }
