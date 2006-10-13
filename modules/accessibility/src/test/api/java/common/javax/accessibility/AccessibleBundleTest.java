@@ -47,7 +47,8 @@ public class AccessibleBundleTest extends BasicSwingTestCase {
                          bundle.toString(), bundle.toDisplayString());
         }
         bundle.key = "ShouldNotFindSuchAString";
-        assertEquals("Not bundled DisplayString should match itself", bundle.toDisplayString(), "ShouldNotFindSuchAString");
+        assertEquals("Not bundled DisplayString should match itself",
+                     "ShouldNotFindSuchAString", bundle.toDisplayString());
 
         testExceptionalCase(new ExceptionalCase() {
             public void exceptionalAction() throws Exception {
