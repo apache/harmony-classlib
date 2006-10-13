@@ -20,7 +20,7 @@
 * @version $Revision$
 */
 
-package javax.security.auth.login;
+package org.apache.harmony.auth.tests.javax.security.auth.login;
 
 import java.security.Security;
 import java.util.ArrayList;
@@ -30,6 +30,10 @@ import java.util.Map;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.login.AppConfigurationEntry;
+import javax.security.auth.login.Configuration;
+import javax.security.auth.login.LoginContext;
+import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
 import org.apache.harmony.auth.internal.SecurityTest;
@@ -151,7 +155,7 @@ public class LoginContextTest extends SecurityTest {
 
         try {
             Security.setProperty("auth.login.defaultCallbackHandler",
-                    "javax.security.auth.login.LoginContextTest");
+                    LoginContextTest.class.getName());
 
             new LoginContext(moduleName);
             fail("No expected ClassCastException");
@@ -174,7 +178,7 @@ public class LoginContextTest extends SecurityTest {
         try {
             Security
                     .setProperty("auth.login.defaultCallbackHandler",
-                            "javax.security.auth.login.LoginContextTest$MyCallbackHandler");
+                            MyCallbackHandler.class.getName());
 
             new LoginContext(moduleName);
 
@@ -233,7 +237,7 @@ public class LoginContextTest extends SecurityTest {
         try {
             Security
                     .setProperty("auth.login.defaultCallbackHandler",
-                            "javax.security.auth.login.LoginContextTest$MyCallbackHandler");
+                            MyCallbackHandler.class.getName());
 
             context = new LoginContext(moduleName);
 
@@ -334,7 +338,7 @@ public class LoginContextTest extends SecurityTest {
         try {
             Security
                     .setProperty("auth.login.defaultCallbackHandler",
-                            "javax.security.auth.login.LoginContextTest$MyCallbackHandler");
+                            MyCallbackHandler.class.getName());
 
             new LoginContext(moduleName, handler);
 
@@ -496,7 +500,7 @@ public class LoginContextTest extends SecurityTest {
         try {
             Security
                     .setProperty("auth.login.defaultCallbackHandler",
-                            "javax.security.auth.login.LoginContextTest$MyCallbackHandler");
+                            MyCallbackHandler.class.getName());
 
             new LoginContext(moduleName, subject);
 
@@ -556,7 +560,7 @@ public class LoginContextTest extends SecurityTest {
         try {
             Security
                     .setProperty("auth.login.defaultCallbackHandler",
-                            "javax.security.auth.login.LoginContextTest$MyCallbackHandler");
+                            MyCallbackHandler.class.getName());
 
             context = new LoginContext(moduleName, subject);
 
@@ -805,7 +809,7 @@ public class LoginContextTest extends SecurityTest {
             ArrayList list = ((MyConfig) Configuration.getConfiguration()).entries;
 
             AppConfigurationEntry entry = new AppConfigurationEntry(
-                    "javax.security.auth.login.LoginContextTest$" + name,
+                    LoginContextTest.class.getName() + '$' + name,
                     javax.security.auth.login.AppConfigurationEntry.LoginModuleControlFlag.REQUIRED,
                     options);
 

@@ -20,10 +20,11 @@
 * @version $Revision$
 */
 
-package javax.security.auth.login;
+package org.apache.harmony.auth.tests.javax.security.auth.login;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.security.auth.login.AppConfigurationEntry;
 
 import junit.framework.TestCase;
 

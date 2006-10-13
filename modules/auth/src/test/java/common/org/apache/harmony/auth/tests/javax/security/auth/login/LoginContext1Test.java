@@ -20,7 +20,7 @@
 * @version $Revision$
 */
 
-package javax.security.auth.login;
+package org.apache.harmony.auth.tests.javax.security.auth.login;
 
 import java.io.IOException;
 import java.net.URL;
@@ -45,6 +45,10 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.AppConfigurationEntry.LoginModuleControlFlag;
+import javax.security.auth.login.AppConfigurationEntry;
+import javax.security.auth.login.Configuration;
+import javax.security.auth.login.LoginContext;
+import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
 import junit.framework.TestCase;
@@ -1895,7 +1899,7 @@ public class LoginContext1Test extends TestCase {
             return (TestCallbackHandler_Contexted) instances.get(0);
         }
 
-        TestCallbackHandler_Contexted() {
+        public TestCallbackHandler_Contexted() {
             super();
             accCtor = AccessController.getContext();
         }
