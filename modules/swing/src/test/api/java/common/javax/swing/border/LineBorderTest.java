@@ -246,14 +246,14 @@ public class LineBorderTest extends SwingTestCase {
     public void testCreateGrayLineBorder() {
         LineBorder border = (LineBorder)LineBorder.createGrayLineBorder();
         assertEquals("Thickness coinsides", 1, border.getThickness());
-        assertEquals("RoundedCorners coinsides", false, border.getRoundedCorners());
+        assertFalse("RoundedCorners coinsides", border.getRoundedCorners());
         assertEquals("Colors coinsides", Color.gray, border.getLineColor());
     }
 
     public void testCreateBlackLineBorder() {
         LineBorder border = (LineBorder)LineBorder.createBlackLineBorder();
         assertEquals("Thickness coinsides", 1, border.getThickness());
-        assertEquals("RoundedCorners coinsides", false, border.getRoundedCorners());
+        assertFalse("RoundedCorners coinsides", border.getRoundedCorners());
         assertEquals("Colors coinsides", Color.black, border.getLineColor());
     }
 

@@ -186,9 +186,9 @@ public class CompoundBorderTest extends SwingTestCase {
 
         assertEquals("Borders coinside", border1, border4.getOutsideBorder());
         assertEquals("Borders coinside", border2, border5.getOutsideBorder());
-        assertEquals("Borders coinside", null, border6.getOutsideBorder());
+        assertNull("Borders coinside", border6.getOutsideBorder());
         assertEquals("Borders coinside", border2, border7.getOutsideBorder());
-        assertEquals("Borders coinside", null, border8.getOutsideBorder());
+        assertNull("Borders coinside", border8.getOutsideBorder());
     }
 
     public void testGetInsideBorder() {
@@ -204,8 +204,8 @@ public class CompoundBorderTest extends SwingTestCase {
 
         assertEquals("Borders coinside", border2, border4.getInsideBorder());
         assertEquals("Borders coinside", border3, border5.getInsideBorder());
-        assertEquals("Borders coinside", null, border6.getInsideBorder());
-        assertEquals("Borders coinside", null, border7.getInsideBorder());
+        assertNull("Borders coinside", border6.getInsideBorder());
+        assertNull("Borders coinside", border7.getInsideBorder());
         assertEquals("Borders coinside", border3, border8.getInsideBorder());
     }
 
@@ -226,11 +226,9 @@ public class CompoundBorderTest extends SwingTestCase {
 
         resurrectedBorder = (CompoundBorder)serializeObject(border4);
         assertNotNull(resurrectedBorder);
-        assertEquals("Deserialized values coinsides",
-                resurrectedBorder.getOutsideBorder(),
-                null);
-        assertEquals("Deserialized values coinsides",
-                resurrectedBorder.getInsideBorder(),
-                null);
+        assertNull("Deserialized values coinsides",
+                resurrectedBorder.getOutsideBorder());
+        assertNull("Deserialized values coinsides",
+                resurrectedBorder.getInsideBorder());
     }
 }
