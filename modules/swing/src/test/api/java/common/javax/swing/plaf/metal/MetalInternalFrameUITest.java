@@ -174,7 +174,7 @@ public class MetalInternalFrameUITest extends SwingTestCase {
         ui.uninstallComponents();
         assertFalse("titlePane uninstalled",
                     belongs(ui.getNorthPane(), frame.getComponents()));
-        assertTrue("northPane == null", ui.getNorthPane() == null);
+        assertNull("northPane == null", ui.getNorthPane());
     }
 
     /*

@@ -116,7 +116,7 @@ public class BasicInternalFrameUITest extends SwingTestCase {
         ui.uninstallComponents();
         assertFalse("titlePane uninstalled",
                     belongs(ui.titlePane, frame.getComponents()));
-        assertTrue("northPane == null", ui.getNorthPane() == null);
+        assertNull("northPane == null", ui.getNorthPane());
     }
 
     /*
@@ -149,17 +149,17 @@ public class BasicInternalFrameUITest extends SwingTestCase {
         ui.uninstallDefaults();
 
         assertTrue("background", frame.getBackground() != null);
-        assertTrue("border", frame.getBorder() == null);
-        assertTrue("frameIcon", frame.getFrameIcon() == null);
-        assertTrue("layout", frame.getLayout() == null);
-        assertTrue("layout", ui.internalFrameLayout == null);
+        assertNull("border", frame.getBorder());
+        assertNull("frameIcon", frame.getFrameIcon());
+        assertNull("layout", frame.getLayout());
+        assertNull("layout", ui.internalFrameLayout);
 
         // test uninstallDefaults() with user-set values
         frame.setBorder(BorderFactory.createEmptyBorder());
         frame.setLayout(new BorderLayout());
         ui.uninstallDefaults();
         assertTrue("background", frame.getBorder() != null);
-        assertTrue("layout", frame.getLayout() == null);
+        assertNull("layout", frame.getLayout());
     }
 
     /*
@@ -172,15 +172,15 @@ public class BasicInternalFrameUITest extends SwingTestCase {
         frame.setUI(ui);
         ui.uninstallKeyboardActions();
         int listenersCount = frame.getInternalFrameListeners().length;
-        assertTrue("no UIActionMap", SwingUtilities.getUIActionMap(frame) == null);
+        assertNull("no UIActionMap", SwingUtilities.getUIActionMap(frame));
 
         ui.installKeyboardActions();
         assertTrue("UIActionMap installed",
                    SwingUtilities.getUIActionMap(frame) != null);
         assertTrue("internalFrameListener istalled",
                 frame.getInternalFrameListeners().length == listenersCount + 1);
-        assertTrue("inputMap not installed", SwingUtilities.getUIInputMap(frame,
-                   JComponent.WHEN_IN_FOCUSED_WINDOW) == null);
+        assertNull("inputMap not installed", SwingUtilities.getUIInputMap(frame,
+                   JComponent.WHEN_IN_FOCUSED_WINDOW));
     }
 
     /*
@@ -199,11 +199,11 @@ public class BasicInternalFrameUITest extends SwingTestCase {
                   JComponent.WHEN_IN_FOCUSED_WINDOW) != null);
 
         ui.uninstallKeyboardActions();
-        assertTrue("no UIActionMap", SwingUtilities.getUIActionMap(frame) == null);
+        assertNull("no UIActionMap", SwingUtilities.getUIActionMap(frame));
         assertTrue("internalFrameListener unistalled",
                 frame.getInternalFrameListeners().length == listenersCount - 1);
-        assertTrue("inputMap uninstalled", SwingUtilities.getUIInputMap(frame,
-                   JComponent.WHEN_IN_FOCUSED_WINDOW) == null);
+        assertNull("inputMap uninstalled", SwingUtilities.getUIInputMap(frame,
+                   JComponent.WHEN_IN_FOCUSED_WINDOW));
     }
 
     /*
@@ -301,8 +301,8 @@ public class BasicInternalFrameUITest extends SwingTestCase {
     public void testSetupMenuOpenKey() {
         frame.setUI(ui);
 
-        assertTrue("inputMap not installed", SwingUtilities.getUIInputMap(frame,
-                   JComponent.WHEN_IN_FOCUSED_WINDOW) == null);
+        assertNull("inputMap not installed", SwingUtilities.getUIInputMap(frame,
+                   JComponent.WHEN_IN_FOCUSED_WINDOW));
 
         // "InternalFrame.windowBindings" is empty - inputMap is not installed
         final String key = "InternalFrame.windowBindings";
@@ -350,8 +350,8 @@ public class BasicInternalFrameUITest extends SwingTestCase {
     public void testCreateWestPane() {
         frame.setUI(ui);
 
-        assertTrue("null", ui.createWestPane(frame) == null);
-        assertTrue("null", ui.createWestPane(null) == null);
+        assertNull("null", ui.createWestPane(frame));
+        assertNull("null", ui.createWestPane(null));
     }
 
     /*
@@ -360,8 +360,8 @@ public class BasicInternalFrameUITest extends SwingTestCase {
     public void testCreateSouthPane() {
         frame.setUI(ui);
 
-        assertTrue("null", ui.createSouthPane(frame) == null);
-        assertTrue("null", ui.createSouthPane(null) == null);
+        assertNull("null", ui.createSouthPane(frame));
+        assertNull("null", ui.createSouthPane(null));
     }
 
     /*
@@ -385,8 +385,8 @@ public class BasicInternalFrameUITest extends SwingTestCase {
     public void testCreateEastPane() {
         frame.setUI(ui);
 
-        assertTrue("null", ui.createEastPane(frame) == null);
-        assertTrue("null", ui.createEastPane(null) == null);
+        assertNull("null", ui.createEastPane(frame));
+        assertNull("null", ui.createEastPane(null));
     }
 
     /*
@@ -629,7 +629,7 @@ public class BasicInternalFrameUITest extends SwingTestCase {
         JButton comp = new JButton("ok");
 
         // null by default
-        assertTrue("null by default", ui.getWestPane() == null);
+        assertNull("null by default", ui.getWestPane());
 
         // general setting
         ui.setWestPane(comp);
@@ -639,7 +639,7 @@ public class BasicInternalFrameUITest extends SwingTestCase {
 
         // setting to null
         ui.setWestPane(null);
-        assertTrue("was set", ui.getWestPane() == null);
+        assertNull("was set", ui.getWestPane());
     }
 
     /*
@@ -652,7 +652,7 @@ public class BasicInternalFrameUITest extends SwingTestCase {
         JButton comp = new JButton("ok");
 
         // null by default
-        assertTrue("null by default", ui.getSouthPane() == null);
+        assertNull("null by default", ui.getSouthPane());
 
         // general setting
         ui.setSouthPane(comp);
@@ -662,7 +662,7 @@ public class BasicInternalFrameUITest extends SwingTestCase {
 
         // setting to null
         ui.setSouthPane(null);
-        assertTrue("was set", ui.getSouthPane() == null);
+        assertNull("was set", ui.getSouthPane());
     }
 
     /*
@@ -685,7 +685,7 @@ public class BasicInternalFrameUITest extends SwingTestCase {
 
         // setting to null
         ui.setNorthPane(null);
-        assertTrue("was set", ui.getNorthPane() == null);
+        assertNull("was set", ui.getNorthPane());
     }
 
     /*
@@ -698,7 +698,7 @@ public class BasicInternalFrameUITest extends SwingTestCase {
         JButton comp = new JButton("ok");
 
         // null by default
-        assertTrue("null by default", ui.getEastPane() == null);
+        assertNull("null by default", ui.getEastPane());
 
         // general setting
         ui.setEastPane(comp);
@@ -708,7 +708,7 @@ public class BasicInternalFrameUITest extends SwingTestCase {
 
         // setting to null
         ui.setEastPane(null);
-        assertTrue("was set", ui.getEastPane() == null);
+        assertNull("was set", ui.getEastPane());
     }
 
     /*
@@ -818,7 +818,7 @@ public class BasicInternalFrameUITest extends SwingTestCase {
 
         DesktopManager manager2 = ui.getDesktopManager();
         assertTrue("the same object", manager1 == manager2);
-        assertTrue("no desktop pane", frame.getDesktopPane() == null);
+        assertNull("no desktop pane", frame.getDesktopPane());
 
         // the desktop pane is set
         JDesktopPane desktop = new JDesktopPane();

@@ -269,7 +269,7 @@ public class BasicToolBarUITest extends SwingTestCase {
 
         toolBar.setFloatable(false);
         ui.dragTo(position1, origin);
-        assertTrue(ui.dragWindow == null);
+        assertNull(ui.dragWindow);
         toolBar.setFloatable(true);
 
         ui.dragTo(position1, origin);
@@ -296,7 +296,7 @@ public class BasicToolBarUITest extends SwingTestCase {
         toolBar.setFloatable(false);
         ui.dragTo(position1, origin);
         ui.floatAt(position1, origin);
-        assertTrue(ui.floatingWindow == null);
+        assertNull(ui.floatingWindow);
         toolBar.setFloatable(true);
 
         ui.dragTo(position1, origin);

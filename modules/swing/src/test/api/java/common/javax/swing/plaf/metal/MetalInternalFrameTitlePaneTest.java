@@ -176,8 +176,8 @@ public class MetalInternalFrameTitlePaneTest extends SwingTestCase {
         TestMetalInternalFrameTitlePane pane = new TestMetalInternalFrameTitlePane(frame);
         pane.assembleSystemMenu();
 
-        assertTrue("windowMenu == null", pane.getWindowMenu() == null);
-        assertTrue("menuBar == null", pane.getMenuBar() == null);
+        assertNull("windowMenu == null", pane.getWindowMenu());
+        assertNull("menuBar == null", pane.getMenuBar());
     }
 
     /*

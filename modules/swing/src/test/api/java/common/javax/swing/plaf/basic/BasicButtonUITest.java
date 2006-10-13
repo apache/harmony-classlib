@@ -189,10 +189,10 @@ public class BasicButtonUITest extends SwingTestCase {
 
         ui.uninstallUI(button);
         assertTrue("there are no property listeners", button.getPropertyChangeListeners().length == 0);
-        assertTrue("there ain't no border", null == button.getBorder());
+        assertNull("there ain't no border", button.getBorder());
         assertTrue("there are no change listeners", button.getChangeListeners().length == 0);
         assertTrue("no RegisteredKeyStrokes installed", button.getRegisteredKeyStrokes().length == 0);
-        assertEquals("opaque", true, button.isOpaque());
+        assertTrue("opaque", button.isOpaque());
 
         button.setOpaque(false);
         ui.installUI(button);
@@ -210,7 +210,7 @@ public class BasicButtonUITest extends SwingTestCase {
     public void testInstallUninstallUI2() {
         JButton button = new JButton();
         BasicButtonUI buttonUI = new BasicButtonUI();
-        assertEquals("opaque", true, button.isOpaque());
+        assertTrue("opaque", button.isOpaque());
         UIManager.put("Button.background", new ColorUIResource(Color.red));
         UIManager.put("Button.foreground", new ColorUIResource(Color.yellow));
         Font font = new FontUIResource(button.getFont().deriveFont(100f));

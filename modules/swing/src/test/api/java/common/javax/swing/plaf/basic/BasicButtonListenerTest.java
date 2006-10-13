@@ -139,11 +139,11 @@ public class BasicButtonListenerTest extends SwingTestCase {
             assertEquals("Armed", Boolean.FALSE, changeListener.states.get(1));
             assertEquals("Pressed", Boolean.FALSE, changeListener.states.get(2));
             assertEquals("Armed", Boolean.FALSE, changeListener.states.get(3));
-            assertEquals("Pressed", false, button.getModel().isPressed());
+            assertFalse("Pressed", button.getModel().isPressed());
         }
 
-        assertEquals("Armed", false, button.getModel().isArmed());
-        assertEquals("Rollover", true, button.getModel().isRollover());
+        assertFalse("Armed", button.getModel().isArmed());
+        assertTrue("Rollover", button.getModel().isRollover());
     }
 
 

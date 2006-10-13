@@ -121,7 +121,7 @@ public class MetalCheckBoxUITest extends MetalRadioButtonUITest {
         assertEquals("focusColor ", Color.yellow, publicUI.getFocusColor());
         assertEquals("disabledTextColor ", Color.red, publicUI.getDisabledTextColor());
         assertEquals("font", font, button.getFont());
-        assertEquals("border", null, button.getBorder());
+        assertNull("border", button.getBorder());
         assertEquals("icon", icon, publicUI.getDefaultIcon());
     }
 

@@ -66,17 +66,17 @@ public class ComponentUITest extends SwingTestCase {
 
     public void testGetPreferredSize() {
         JPanel panel = new JPanel();
-        assertTrue(componentUI.getPreferredSize(panel) == null);
+        assertNull(componentUI.getPreferredSize(panel));
     }
 
     public void testGetMinimumSize() {
         JPanel panel = new JPanel();
-        assertTrue(componentUI.getMinimumSize(panel) == null);
+        assertNull(componentUI.getMinimumSize(panel));
     }
 
     public void testGetMaximumSize() {
         JPanel panel = new JPanel();
-        assertTrue(componentUI.getMaximumSize(panel) == null);
+        assertNull(componentUI.getMaximumSize(panel));
     }
 
     // "contains" method is beeing tested by MyComponentTest.testContainsintint()
@@ -87,7 +87,7 @@ public class ComponentUITest extends SwingTestCase {
         JPanel panel = new JPanel();
 
         Accessible child = componentUI.getAccessibleChild(panel, 0);
-        assertTrue(child == null);
+        assertNull(child);
 
         JPanel panel1 = new JPanel();
         JPanel panel2 = new JPanel();

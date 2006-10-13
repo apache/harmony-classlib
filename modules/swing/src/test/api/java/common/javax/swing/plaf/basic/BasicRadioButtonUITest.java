@@ -155,7 +155,7 @@ public class BasicRadioButtonUITest extends SwingTestCase {
         assertEquals("background", Color.blue, button.getBackground());
         assertEquals("foreground", Color.cyan, button.getForeground());
         assertEquals("font", font, button.getFont());
-        assertEquals("border", null, button.getBorder());
+        assertNull("border", button.getBorder());
         assertEquals("margin", margin, button.getMargin());
     }
 

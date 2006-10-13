@@ -55,12 +55,12 @@ public class BasicOptionPaneUI_ButtonAreaLayoutTest extends SwingTestCase {
         layout = new BasicOptionPaneUI.ButtonAreaLayout(syncAll1, padding1);
         assertEquals("syncAll", syncAll1, layout.getSyncAllWidths());
         assertEquals("padding", padding1, layout.getPadding());
-        assertEquals("CentersChildren", true, layout.getCentersChildren());
+        assertTrue("CentersChildren", layout.getCentersChildren());
 
         layout = new BasicOptionPaneUI.ButtonAreaLayout(syncAll2, padding2);
         assertEquals("syncAll", syncAll2, layout.getSyncAllWidths());
         assertEquals("padding", padding2, layout.getPadding());
-        assertEquals("CentersChildren", true, layout.getCentersChildren());
+        assertTrue("CentersChildren", layout.getCentersChildren());
     }
 
     public void testSetGetSyncAllWidths() {
@@ -90,7 +90,7 @@ public class BasicOptionPaneUI_ButtonAreaLayoutTest extends SwingTestCase {
         boolean centersChildren2 = false;
 
         layout = new BasicOptionPaneUI.ButtonAreaLayout(true, 0);
-        assertEquals("CentersChildren", true, layout.getCentersChildren());
+        assertTrue("CentersChildren", layout.getCentersChildren());
 
         layout.setCentersChildren(centersChildren1);
         assertEquals("CentersChildren", centersChildren1, layout.getCentersChildren());

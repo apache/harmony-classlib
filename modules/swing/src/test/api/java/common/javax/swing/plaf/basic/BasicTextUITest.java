@@ -280,7 +280,7 @@ public class BasicTextUITest extends SwingTestCase {
         assertEquals(jta, rootView.getContainer());
         assertEquals(doc.getLength() + 1, rootView.getEndOffset());
         assertEquals(ui, rootView.getViewFactory());
-        assertEquals(null, rootView.getParent());
+        assertNull(rootView.getParent());
         /*
          * Next Functionality is not required try { rootView.setParent(new
          * PlainView(rootElement)); } catch (Error error) { bWasException =

@@ -254,11 +254,11 @@ public class BasicTabbedPaneUITest extends SwingTestCase {
     }
 
     public void testGetMaximumSize() {
-        assertEquals(null, ui.getMaximumSize(tabbed));
+        assertNull(ui.getMaximumSize(tabbed));
     }
 
     public void testGetMinimumSize() {
-        assertEquals(null, ui.getMinimumSize(tabbed));
+        assertNull(ui.getMinimumSize(tabbed));
     }
 
     public void testGetNextTabIndex() {

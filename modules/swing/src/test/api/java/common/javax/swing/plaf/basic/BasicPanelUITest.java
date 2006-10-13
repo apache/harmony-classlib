@@ -83,7 +83,7 @@ public class BasicPanelUITest extends TestCase {
 
     public void testInstallUI() {
         JPanel panel = new JPanel();
-        assertEquals("opaque", true, panel.isOpaque());
+        assertTrue("opaque", panel.isOpaque());
         UIManager.put("Panel.background", new ColorUIResource(Color.red));
         UIManager.put("Panel.foreground", new ColorUIResource(Color.yellow));
         Border border2 = new BorderUIResource(BorderFactory.createEmptyBorder());
@@ -95,7 +95,7 @@ public class BasicPanelUITest extends TestCase {
         assertEquals(Color.red, panel.getBackground());
         assertEquals(Color.yellow, panel.getForeground());
         assertEquals(border2, panel.getBorder());
-        assertEquals("opaque", false, panel.isOpaque());
+        assertFalse("opaque", panel.isOpaque());
 
         Border border1 = BorderFactory.createEmptyBorder();
         panel.setBorder(border1);
