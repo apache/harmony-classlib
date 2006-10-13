@@ -122,7 +122,7 @@ public class JFrameTest extends SwingTestCase {
     public void testJFrame() {
         frame = new JFrame();
         assertEquals("title is empty", "", frame.getTitle());
-        assertEquals("JFrame is invisible by default", false, frame.isVisible());
+        assertFalse("JFrame is invisible by default", frame.isVisible());
         assertTrue(frame.getLocale() == JComponent.getDefaultLocale());
 
         // how to test throwing of HeadlessException
@@ -186,7 +186,7 @@ public class JFrameTest extends SwingTestCase {
         } catch (IllegalArgumentException e) {
             ok = true;
         } finally {
-            assertEquals(true, ok);
+            assertTrue(ok);
         }
 
         // if JFrame.EXIT_ON_CLOSE has been specified and the SecurityManager
@@ -221,10 +221,10 @@ public class JFrameTest extends SwingTestCase {
      */
      public void testSetIsDefaultLookAndFeelDecorated() {
          // test for default value
-         assertEquals(false, JFrame.isDefaultLookAndFeelDecorated());
+         assertFalse(JFrame.isDefaultLookAndFeelDecorated());
 
          JFrame.setDefaultLookAndFeelDecorated(true);
-         assertEquals(true, JFrame.isDefaultLookAndFeelDecorated());
+         assertTrue(JFrame.isDefaultLookAndFeelDecorated());
 
         // restore default value
         JFrame.setDefaultLookAndFeelDecorated(false);
@@ -256,13 +256,13 @@ public class JFrameTest extends SwingTestCase {
         // would be nice to test non-default gc here
         frame = new JFrame(title, gc);
         assertEquals("Title is set properly", title, frame.getTitle());
-        assertEquals("JFrame is invisible by default", false, frame.isVisible());
+        assertFalse("JFrame is invisible by default", frame.isVisible());
         assertTrue(frame.getLocale() == JComponent.getDefaultLocale());
         assertTrue(frame.getGraphicsConfiguration() == gc);
 
         frame = new JFrame(null, null);
-        assertEquals("null instead of title can be used", null, frame.getTitle());
-        assertEquals("JFrame is invisible by default", false, frame.isVisible());
+        assertNull("null instead of title can be used", frame.getTitle());
+        assertFalse("JFrame is invisible by default", frame.isVisible());
         assertTrue(frame.getLocale() == JComponent.getDefaultLocale());
         assertTrue(frame.getGraphicsConfiguration() == gc);
 
@@ -280,12 +280,12 @@ public class JFrameTest extends SwingTestCase {
         // test with valid title
         frame = new JFrame(title);
         assertEquals("Title is set properly", title, frame.getTitle());
-        assertEquals("JFrame is invisible by default", false, frame.isVisible());
+        assertFalse("JFrame is invisible by default", frame.isVisible());
         assertTrue(frame.getLocale() == JComponent.getDefaultLocale());
 
         frame = new JFrame((String)null);
-        assertEquals("null instead of title can be used", null, frame.getTitle());
-        assertEquals("JFrame is invisible by default", false, frame.isVisible());
+        assertNull("null instead of title can be used", frame.getTitle());
+        assertFalse("JFrame is invisible by default", frame.isVisible());
         assertTrue(frame.getLocale() == JComponent.getDefaultLocale());
 
         // how to test throwing of HeadlessException
@@ -304,13 +304,13 @@ public class JFrameTest extends SwingTestCase {
         // would be nice to test non-default gc here
         frame = new JFrame(gc);
         assertEquals("title is empty", "", frame.getTitle());
-        assertEquals("JFrame is invisible by default", false, frame.isVisible());
+        assertFalse("JFrame is invisible by default", frame.isVisible());
         assertTrue(frame.getLocale() == JComponent.getDefaultLocale());
         assertTrue(frame.getGraphicsConfiguration() == gc);
 
         frame = new JFrame((GraphicsConfiguration)null);
         assertEquals("title is empty", "", frame.getTitle());
-        assertEquals("JFrame is invisible by default", false, frame.isVisible());
+        assertFalse("JFrame is invisible by default", frame.isVisible());
         assertTrue(frame.getLocale() == JComponent.getDefaultLocale());
         assertTrue(frame.getGraphicsConfiguration() == gc);
 
@@ -373,7 +373,7 @@ public class JFrameTest extends SwingTestCase {
 
         // test setting rootPane to null
         frame.setRootPane(null);
-        assertTrue(frame.getRootPane() == null);
+        assertNull(frame.getRootPane());
         assertTrue("rootPane is removed from the container", frame.getComponentCount() == 0);
     }
 
@@ -395,14 +395,14 @@ public class JFrameTest extends SwingTestCase {
      *     JMenuBar getJMenuBar()
      */
     public void testSetGetJMenuBar() {
-        assertEquals(null, frame.getJMenuBar());
+        assertNull(frame.getJMenuBar());
 
         JMenuBar menuBar = new JMenuBar();
         frame.setJMenuBar(menuBar);
         assertTrue(frame.getJMenuBar() == menuBar);
 
         frame.setJMenuBar(null);
-        assertTrue(frame.getJMenuBar() == null);
+        assertNull(frame.getJMenuBar());
     }
 
     /*
@@ -426,7 +426,7 @@ public class JFrameTest extends SwingTestCase {
         } catch (IllegalComponentStateException e) {
             ok = true;
         } finally {
-            assertEquals(true, ok);
+            assertTrue(ok);
         }
         // layeredPane cannot be null, even after setLayeredPane(null)
         assertTrue(frame.getLayeredPane() != null);
@@ -444,8 +444,8 @@ public class JFrameTest extends SwingTestCase {
         assertTrue("class is ok", c instanceof JFrame.AccessibleJFrame);
         assertTrue("AccessibleRole is ok",
                 c.getAccessibleRole() == AccessibleRole.FRAME);
-        assertTrue("AccessibleDescription is ok",
-                c.getAccessibleDescription() == null);
+        assertNull("AccessibleDescription is ok",
+                c.getAccessibleDescription());
         assertTrue("AccessibleChildrenCount == 1",
                    c.getAccessibleChildrenCount() == 1);
 
@@ -572,7 +572,7 @@ public class JFrameTest extends SwingTestCase {
         } catch (IllegalComponentStateException e) {
             ok = true;
         } finally {
-            assertEquals(true, ok);
+            assertTrue(ok);
         }
         // contentPane cannot be null, even after setContentPane(null)
         assertTrue(frame.getContentPane() != null);
@@ -602,7 +602,7 @@ public class JFrameTest extends SwingTestCase {
         } catch (NullPointerException e) {
             ok = true;
         } finally {
-            assertEquals(true, ok);
+            assertTrue(ok);
         }
         // glassPane cannot be null, even after setGlassPane(null)
         assertTrue(frame.getGlassPane() != null);

@@ -112,21 +112,21 @@ public class JRootPaneTest extends SwingTestCase {
     }
 
     public void testSetGetMenuBar() {
-        assertEquals(null, rootPane.getMenuBar());
+        assertNull(rootPane.getMenuBar());
 
         JMenuBar menuBar = new JMenuBar();
         rootPane.setMenuBar(menuBar);
         assertTrue(rootPane.getMenuBar() == menuBar);
 
         rootPane.setMenuBar(null);
-        assertTrue(rootPane.getMenuBar() == null);
+        assertNull(rootPane.getMenuBar());
     }
 
     public void testJRootPaneConstructor() {
         assertTrue(rootPane.getContentPane() != null);
         assertTrue(rootPane.getLayeredPane() != null);
         assertTrue(rootPane.getGlassPane() != null);
-        assertTrue(rootPane.getDefaultButton() == null);
+        assertNull(rootPane.getDefaultButton());
     }
 
     public void testSetGetContentPane() {
@@ -148,7 +148,7 @@ public class JRootPaneTest extends SwingTestCase {
         } catch (IllegalComponentStateException e) {
             thrown = true;
         } finally {
-            assertEquals(true, thrown);
+            assertTrue(thrown);
         }
 
         assertTrue(rootPane.getLayeredPane() != null);
@@ -167,21 +167,21 @@ public class JRootPaneTest extends SwingTestCase {
         } catch (NullPointerException e) {
             thrown = true;
         } finally {
-            assertEquals(true, thrown);
+            assertTrue(thrown);
         }
 
         assertTrue(rootPane.getGlassPane() != null);
     }
 
     public void testSetGetJMenuBar() {
-        assertEquals(null, rootPane.getJMenuBar());
+        assertNull(rootPane.getJMenuBar());
 
         JMenuBar menuBar = new JMenuBar();
         rootPane.setJMenuBar(menuBar);
         assertTrue(rootPane.getJMenuBar() == menuBar);
 
         rootPane.setJMenuBar(null);
-        assertTrue(rootPane.getJMenuBar() == null);
+        assertNull(rootPane.getJMenuBar());
     }
 
     public void testSetGetUI() {
@@ -217,15 +217,15 @@ public class JRootPaneTest extends SwingTestCase {
         } catch (IllegalArgumentException e) {
             ok = true;
         } finally {
-            assertEquals(true, ok);
+            assertTrue(ok);
         }
 
         // test that this is a bound property
         MyPropertyChangeListener listener = new MyPropertyChangeListener();
         rootPane.addPropertyChangeListener("windowDecorationStyle", listener);
-        assertEquals(false, listener.ok);
+        assertFalse(listener.ok);
         rootPane.setWindowDecorationStyle(JRootPane.ERROR_DIALOG);
-        assertEquals(true, listener.ok);
+        assertTrue(listener.ok);
         frame.dispose();
     }
 
@@ -269,21 +269,21 @@ public class JRootPaneTest extends SwingTestCase {
     }
 
     public void testSetGetDefaultButton() {
-        assertTrue(rootPane.getDefaultButton() == null);
+        assertNull(rootPane.getDefaultButton());
 
         JButton button = new JButton();
         rootPane.setDefaultButton(button);
         assertTrue(rootPane.getDefaultButton() == button);
 
         rootPane.setDefaultButton(null);
-        assertTrue(rootPane.getDefaultButton() == null);
+        assertNull(rootPane.getDefaultButton());
 
         // test that this is a bound property
         MyPropertyChangeListener listener = new MyPropertyChangeListener();
         rootPane.addPropertyChangeListener("defaultButton", listener);
-        assertEquals(false, listener.ok);
+        assertFalse(listener.ok);
         rootPane.setDefaultButton(button);
-        assertEquals(true, listener.ok);
+        assertTrue(listener.ok);
 
         rootPane.setDefaultButton(null);
         button.setDefaultCapable(false);
@@ -368,7 +368,7 @@ public class JRootPaneTest extends SwingTestCase {
         TestRootPane root = new TestRootPane();
         JComponent content = (JComponent)root.createContentPane();
         assertTrue(content != null);
-        assertEquals(true, content.isOpaque());
+        assertTrue(content.isOpaque());
         assertTrue(content.getLayout() instanceof BorderLayout);
     }
 
@@ -379,11 +379,11 @@ public class JRootPaneTest extends SwingTestCase {
         TestRootPane root = new TestRootPane();
         JComponent glass = (JComponent)root.createGlassPane();
         assertTrue(glass != null);
-        assertEquals(false, glass.isVisible());
+        assertFalse(glass.isVisible());
 
         // there is nothing about default opacity in the docs,
         // but it really must be false
-        assertEquals(false, glass.isOpaque());
+        assertFalse(glass.isOpaque());
     }
 
     /*
@@ -405,9 +405,9 @@ public class JRootPaneTest extends SwingTestCase {
                    c instanceof JRootPane.AccessibleJRootPane);
         assertTrue("AccessibleRole is ok",
                    c.getAccessibleRole() == AccessibleRole.ROOT_PANE);
-        assertTrue("AccessibleName is ok", c.getAccessibleName() == null);
-        assertTrue("AccessibleDescription is ok",
-                   c.getAccessibleDescription() == null);
+        assertNull("AccessibleName is ok", c.getAccessibleName());
+        assertNull("AccessibleDescription is ok",
+                   c.getAccessibleDescription());
 
         rootPane.add(new JPanel());
         rootPane.getLayeredPane().add(new JPanel());

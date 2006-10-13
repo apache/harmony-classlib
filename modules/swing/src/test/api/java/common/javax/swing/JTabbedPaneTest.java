@@ -305,7 +305,7 @@ public class JTabbedPaneTest extends SwingTestCase {
         assertEquals("result", comp, result);
         assertEquals("index", 3, tabbed.indexOfComponent(comp));
         assertEquals("title", "label", tabbed.getTitleAt(3));
-        assertEquals("tip", null, tabbed.getToolTipTextAt(3));
+        assertNull("tip", tabbed.getToolTipTextAt(3));
 
         class UIResourceButton extends JButton implements UIResource {
         }
@@ -327,7 +327,7 @@ public class JTabbedPaneTest extends SwingTestCase {
         assertEquals("result", comp, result);
         assertEquals("index", 2, tabbed.indexOfComponent(comp));
         assertEquals("title", "label", tabbed.getTitleAt(2));
-        assertEquals("tip", null, tabbed.getToolTipTextAt(2));
+        assertNull("tip", tabbed.getToolTipTextAt(2));
     }
 
     /*
@@ -358,8 +358,7 @@ public class JTabbedPaneTest extends SwingTestCase {
         tabbed.add(comp, constraints);
         assertEquals("title", "labelName",
                      tabbed.getTitleAt(tabbed.indexOfComponent(comp)));
-        assertEquals("icon", null,
-                     tabbed.getIconAt(tabbed.indexOfComponent(comp)));
+        assertNull("icon", tabbed.getIconAt(tabbed.indexOfComponent(comp)));
         tabbed.remove(comp);
     }
 
@@ -393,8 +392,7 @@ public class JTabbedPaneTest extends SwingTestCase {
             assertEquals("title", "labelName",
                          tabbed.getTitleAt(tabbed.indexOfComponent(comp)));
         }
-        assertEquals("icon", null,
-                     tabbed.getIconAt(tabbed.indexOfComponent(comp)));
+        assertNull("icon", tabbed.getIconAt(tabbed.indexOfComponent(comp)));
         tabbed.remove(comp);
     }
 
@@ -408,7 +406,7 @@ public class JTabbedPaneTest extends SwingTestCase {
         assertEquals("result", comp, result);
         assertEquals("index", 3, tabbed.indexOfComponent(comp));
         assertEquals("title", "label", tabbed.getTitleAt(3));
-        assertEquals("tip", null, tabbed.getToolTipTextAt(3));
+        assertNull("tip", tabbed.getToolTipTextAt(3));
     }
 
     /*
@@ -440,7 +438,7 @@ public class JTabbedPaneTest extends SwingTestCase {
 
         assertEquals("index", 3, tabbed.indexOfComponent(comp));
         assertEquals("title", "label", tabbed.getTitleAt(3));
-        assertEquals("tip", null, tabbed.getToolTipTextAt(3));
+        assertNull("tip", tabbed.getToolTipTextAt(3));
     }
 
     /*
@@ -453,7 +451,7 @@ public class JTabbedPaneTest extends SwingTestCase {
         assertEquals("index", 3, tabbed.indexOfComponent(comp));
         assertEquals("title", "label", tabbed.getTitleAt(3));
         assertEquals("icon", someIcon, tabbed.getIconAt(3));
-        assertEquals("tip", null, tabbed.getToolTipTextAt(3));
+        assertNull("tip", tabbed.getToolTipTextAt(3));
     }
 
     /*
@@ -493,7 +491,7 @@ public class JTabbedPaneTest extends SwingTestCase {
         assertEquals(tabbed.getBoundsAt(1), tabbed.getUI().getTabBounds(tabbed, 1));
 
         tabbed.setUI(null);
-        assertEquals(null, tabbed.getBoundsAt(1));
+        assertNull(tabbed.getBoundsAt(1));
     }
 
     /*
@@ -852,13 +850,13 @@ public class JTabbedPaneTest extends SwingTestCase {
         tabbed.add(comp);
         int index = tabbed.indexOfComponent(comp);
 
-        assertEquals("by default", null, tabbed.getToolTipTextAt(index));
+        assertNull("by default", tabbed.getToolTipTextAt(index));
 
         tabbed.setToolTipTextAt(index, "newTip");
         assertEquals("newTip", tabbed.getToolTipTextAt(index));
 
         tabbed.setToolTipTextAt(index, null);
-        assertEquals(null, tabbed.getToolTipTextAt(index));
+        assertNull(tabbed.getToolTipTextAt(index));
     }
 
     public void testSetGetUI() {

@@ -91,7 +91,7 @@ public class JToolBarTest extends SwingTestCase {
         toolBar = new JToolBar();
         toolBar.setName(null);
         assertEquals(JToolBar.HORIZONTAL, toolBar.getOrientation());
-        assertEquals(null, toolBar.getName());
+        assertNull(toolBar.getName());
         assertNotNull(toolBar.getUI());
         assertNotNull(toolBar.getLayout());
     }
@@ -99,7 +99,7 @@ public class JToolBarTest extends SwingTestCase {
     public void testJToolBarint() {
         toolBar = new JToolBar(JToolBar.VERTICAL);
         assertEquals(JToolBar.VERTICAL, toolBar.getOrientation());
-        assertEquals(null, toolBar.getName());
+        assertNull(toolBar.getName());
         assertNotNull(toolBar.getUI());
         assertNotNull(toolBar.getLayout());
 
@@ -163,7 +163,7 @@ public class JToolBarTest extends SwingTestCase {
         assertSame(c1, toolBar.getComponentAtIndex(0));
         assertSame(c2, toolBar.getComponentAtIndex(1));
         assertTrue(toolBar.getComponentAtIndex(2) instanceof JToolBar.Separator);
-        assertEquals(null, toolBar.getComponentAtIndex(toolBar.getComponentCount()));
+        assertNull(toolBar.getComponentAtIndex(toolBar.getComponentCount()));
     }
 
     public void testSetGetMargin() {

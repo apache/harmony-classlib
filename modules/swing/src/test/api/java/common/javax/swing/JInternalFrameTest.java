@@ -1103,7 +1103,7 @@ public class JInternalFrameTest extends SwingTestCase {
 
         // test setting rootPane to null
         frame.setRootPane(null);
-        assertTrue(frame.getRootPane() == null);
+        assertNull(frame.getRootPane());
         assertTrue("rootPane is not removed from the container", frame.getComponentCount() == 1);
     }
 
@@ -1128,7 +1128,7 @@ public class JInternalFrameTest extends SwingTestCase {
      * @deprecated
      */
     public void testSetGetMenuBar() {
-        assertEquals(null, frame.getMenuBar());
+        assertNull(frame.getMenuBar());
         MyPropertyChangeListener listener = new MyPropertyChangeListener();
         frame.addPropertyChangeListener(JInternalFrame.MENU_BAR_PROPERTY, listener);
 
@@ -1138,7 +1138,7 @@ public class JInternalFrameTest extends SwingTestCase {
         assertTrue("menuBar is a bound property", listener.ok);
 
         frame.setMenuBar(null);
-        assertTrue(frame.getMenuBar() == null);
+        assertNull(frame.getMenuBar());
     }
 
     /*
@@ -1147,7 +1147,7 @@ public class JInternalFrameTest extends SwingTestCase {
      *     JMenuBar getJMenuBar()
      */
     public void testSetGetJMenuBar() {
-        assertEquals(null, frame.getJMenuBar());
+        assertNull(frame.getJMenuBar());
         MyPropertyChangeListener listener = new MyPropertyChangeListener();
         frame.addPropertyChangeListener(JInternalFrame.MENU_BAR_PROPERTY, listener);
 
@@ -1157,7 +1157,7 @@ public class JInternalFrameTest extends SwingTestCase {
         assertTrue("menuBar is a bound property", listener.ok);
 
         frame.setJMenuBar(null);
-        assertTrue(frame.getJMenuBar() == null);
+        assertNull(frame.getJMenuBar());
     }
 
     /*
@@ -1181,7 +1181,7 @@ public class JInternalFrameTest extends SwingTestCase {
         } catch (IllegalComponentStateException e) {
             ok = true;
         } finally {
-            assertEquals(true, ok);
+            assertTrue(ok);
         }
         // layeredPane cannot be null, even after setLayeredPane(null)
         assertTrue(frame.getLayeredPane() != null);
@@ -1205,7 +1205,7 @@ public class JInternalFrameTest extends SwingTestCase {
         assertTrue("desktopIcon is set", frame.getDesktopIcon() == icon);
 
         frame.setDesktopIcon(null);
-        assertTrue("desktopIcon is null", frame.getDesktopIcon() == null);
+        assertNull("desktopIcon is null", frame.getDesktopIcon());
     }
 
     /*
@@ -1213,7 +1213,7 @@ public class JInternalFrameTest extends SwingTestCase {
      */
     public void testGetDesktopPane() {
         // no desktopPane
-        assertTrue("desktopPane is null by default", frame.getDesktopPane() == null);
+        assertNull("desktopPane is null by default", frame.getDesktopPane());
 
         //JInternalFrame.JDesktopIcon icon = new JInternalFrame.JDesktopIcon(frame);
         //frame.setDesktopIcon(icon);
@@ -1225,7 +1225,7 @@ public class JInternalFrameTest extends SwingTestCase {
 
         // frame is removed from desktopPane
         desktop.remove(frame);
-        assertTrue("desktopPane is null", frame.getDesktopPane() == null);
+        assertNull("desktopPane is null", frame.getDesktopPane());
 
         // icon is added to desktoPane
         desktop.add(frame.getDesktopIcon());
@@ -1235,7 +1235,7 @@ public class JInternalFrameTest extends SwingTestCase {
         // default implementation crashes here
         //desktop.remove(frame.getDesktopIcon());
         //frame.setDesktopIcon(null);
-        //assertTrue("desktopPane is null", frame.getDesktopPane() == null);
+        //assertNull("desktopPane is null", frame.getDesktopPane());
     }
 
     /*
@@ -1252,7 +1252,7 @@ public class JInternalFrameTest extends SwingTestCase {
         assertTrue("frameIcon is set", frame.getFrameIcon() == icon);
 
         frame.setFrameIcon(null);
-        assertTrue("frameIcon is set to null", frame.getFrameIcon() == null);
+        assertNull("frameIcon is set to null", frame.getFrameIcon());
     }
 
     /*
@@ -1303,8 +1303,8 @@ public class JInternalFrameTest extends SwingTestCase {
                    value.getMaximumAccessibleValue().intValue() == Integer.MAX_VALUE);
 
         // test other methods
-        assertTrue("AccessibleDescription is ok",
-                c.getAccessibleDescription() == null);
+        assertNull("AccessibleDescription is ok",
+                c.getAccessibleDescription());
         assertTrue("AccessibleChildrenCount == 1",
                    c.getAccessibleChildrenCount() == 1);
     }
@@ -1328,7 +1328,7 @@ public class JInternalFrameTest extends SwingTestCase {
 
         // test setting null title
         frame.setTitle(null);
-        assertTrue("Title is set to null", frame.getTitle() == null);
+        assertNull("Title is set to null", frame.getTitle());
     }
 
     /*
@@ -1457,7 +1457,7 @@ public class JInternalFrameTest extends SwingTestCase {
         } catch (IllegalComponentStateException e) {
             ok = true;
         } finally {
-            assertEquals(true, ok);
+            assertTrue(ok);
         }
         // contentPane cannot be null, even after setContentPane(null)
         assertTrue(frame.getContentPane() != null);
@@ -1487,7 +1487,7 @@ public class JInternalFrameTest extends SwingTestCase {
         } catch (NullPointerException e) {
             ok = true;
         } finally {
-            assertEquals(true, ok);
+            assertTrue(ok);
         }
         // glassPane cannot be null, even after setGlassPane(null)
         assertTrue(frame.getGlassPane() != null);
@@ -1576,7 +1576,7 @@ public class JInternalFrameTest extends SwingTestCase {
      * Class under test for String getWarningString()
      */
     public void testGetWarningString() {
-        assertTrue("getWarningString() always returns null", frame.getWarningString() == null);
+        assertNull("getWarningString() always returns null", frame.getWarningString());
     }
 
     /*
@@ -1598,7 +1598,7 @@ public class JInternalFrameTest extends SwingTestCase {
      * Class under test for Container getFocusCycleRootAncestor()
      */
     public void testGetFocusCycleRootAncestor() {
-        assertTrue("always returns null", frame.getFocusCycleRootAncestor() == null);
+        assertNull("always returns null", frame.getFocusCycleRootAncestor());
     }
 
     /*

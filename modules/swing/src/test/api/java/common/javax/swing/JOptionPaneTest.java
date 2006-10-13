@@ -81,7 +81,7 @@ public class JOptionPaneTest extends SwingTestCase {
         assertEquals("message", "JOptionPane message", pane.getMessage());
         assertEquals("message type", JOptionPane.PLAIN_MESSAGE, pane.getMessageType());
         assertEquals("option type", JOptionPane.DEFAULT_OPTION, pane.getOptionType());
-        assertEquals("icon", null, pane.getIcon());
+        assertNull("icon", pane.getIcon());
         assertTrue("options", pane.getOptions() == null || pane.getOptions().length == 0);
         assertNull("initial value", pane.getInitialValue());
         assertEquals("input value", JOptionPane.UNINITIALIZED_VALUE, pane.getInputValue());
@@ -98,9 +98,9 @@ public class JOptionPaneTest extends SwingTestCase {
         assertEquals("message", message, pane.getMessage());
         assertEquals("message type", JOptionPane.PLAIN_MESSAGE, pane.getMessageType());
         assertEquals("option type", JOptionPane.DEFAULT_OPTION, pane.getOptionType());
-        assertEquals("icon", null, pane.getIcon());
+        assertNull("icon", pane.getIcon());
         assertTrue("options", pane.getOptions() == null || pane.getOptions().length == 0);
-        assertEquals("initial value", null, pane.getInitialValue());
+        assertNull("initial value", pane.getInitialValue());
         assertEquals("input value", JOptionPane.UNINITIALIZED_VALUE, pane.getInputValue());
     }
 
@@ -116,9 +116,9 @@ public class JOptionPaneTest extends SwingTestCase {
         assertEquals("message", message, pane.getMessage());
         assertEquals("message type", messageType1, pane.getMessageType());
         assertEquals("option type", JOptionPane.DEFAULT_OPTION, pane.getOptionType());
-        assertEquals("icon", null, pane.getIcon());
+        assertNull("icon", pane.getIcon());
         assertTrue("options", pane.getOptions() == null || pane.getOptions().length == 0);
-        assertEquals("initial value", null, pane.getInitialValue());
+        assertNull("initial value", pane.getInitialValue());
         assertEquals("input value", JOptionPane.UNINITIALIZED_VALUE, pane.getInputValue());
 
         boolean thrown = false;
@@ -144,9 +144,9 @@ public class JOptionPaneTest extends SwingTestCase {
         assertEquals("message", message, pane.getMessage());
         assertEquals("message type", messageType1, pane.getMessageType());
         assertEquals("option type", optionType1, pane.getOptionType());
-        assertEquals("icon", null, pane.getIcon());
+        assertNull("icon", pane.getIcon());
         assertTrue("options", pane.getOptions() == null || pane.getOptions().length == 0);
-        assertEquals("initial value", null, pane.getInitialValue());
+        assertNull("initial value", pane.getInitialValue());
         assertEquals("input value", JOptionPane.UNINITIALIZED_VALUE, pane.getInputValue());
 
         boolean thrown = false;
@@ -184,7 +184,7 @@ public class JOptionPaneTest extends SwingTestCase {
         assertEquals("option type", optionType1, pane.getOptionType());
         assertEquals("icon", icon1, pane.getIcon());
         assertTrue("options", pane.getOptions() == null || pane.getOptions().length == 0);
-        assertEquals("initial value", null, pane.getInitialValue());
+        assertNull("initial value", pane.getInitialValue());
         assertEquals("input value", JOptionPane.UNINITIALIZED_VALUE, pane.getInputValue());
 
         boolean thrown = false;
@@ -234,7 +234,7 @@ public class JOptionPaneTest extends SwingTestCase {
         assertEquals("options", options1.length, pane.getOptions().length);
         assertEquals("options", options1[0], pane.getOptions()[0]);
         assertEquals("options", options1[1], pane.getOptions()[1]);
-        assertEquals("initial value", null, pane.getInitialValue());
+        assertNull("initial value", pane.getInitialValue());
         assertEquals("input value", JOptionPane.UNINITIALIZED_VALUE, pane.getInputValue());
 
         boolean thrown = false;
@@ -328,7 +328,7 @@ public class JOptionPaneTest extends SwingTestCase {
         assertEquals("options", options1.length, pane.getOptions().length);
         assertEquals("options", options2[0], pane.getOptions()[0]);
         assertEquals("options", options2[1], pane.getOptions()[1]);
-        assertEquals("initial value", null, pane.getInitialValue());
+        assertNull("initial value", pane.getInitialValue());
 
         pane = new JOptionPane(message, messageType1, optionType1, icon1, null, initialSelection);
         assertEquals("message", message, pane.getMessage());
@@ -586,8 +586,8 @@ public class JOptionPaneTest extends SwingTestCase {
         JPanel panel = new JPanel();
         JDesktopPane frame = new JDesktopPane();
         String title = "title-title";
-        assertEquals("frame", null, JOptionPane.getDesktopPaneForComponent(null));
-        assertEquals("frame", null, JOptionPane.getDesktopPaneForComponent(panel));
+        assertNull("frame", JOptionPane.getDesktopPaneForComponent(null));
+        assertNull("frame", JOptionPane.getDesktopPaneForComponent(panel));
         frame.add(panel);
         assertEquals("frame", frame, JOptionPane.getDesktopPaneForComponent(panel));
     }
@@ -676,12 +676,12 @@ public class JOptionPaneTest extends SwingTestCase {
 
         pane.setIcon(null);
         listener1.checkPropertyFired(pane, "icon", icon2, null);
-        assertEquals("icon", null, pane.getIcon());
+        assertNull("icon", pane.getIcon());
         listener1.reset();
     }
 
     public void testGetIcon() {
-        assertEquals("icon", null, pane.getIcon());
+        assertNull("icon", pane.getIcon());
     }
 
     public void testSetValue() {
@@ -862,7 +862,7 @@ public class JOptionPaneTest extends SwingTestCase {
                 Boolean.TRUE);
         assertEquals("SelectionValues", buttons2, pane.getSelectionValues());
         assertTrue("SelectionValues", buttons2 == pane.getSelectionValues());
-        assertEquals("wantsInput", true, pane.getWantsInput());
+        assertTrue("wantsInput", pane.getWantsInput());
 
         pane.setWantsInput(false);
         listener1.reset();
@@ -873,7 +873,7 @@ public class JOptionPaneTest extends SwingTestCase {
                 Boolean.TRUE);
         assertEquals("SelectionValues", buttons3, pane.getSelectionValues());
         assertTrue("SelectionValues", buttons3 == pane.getSelectionValues());
-        assertEquals("wantsInput", true, pane.getWantsInput());
+        assertTrue("wantsInput", pane.getWantsInput());
 
         pane.setWantsInput(false);
         listener1.reset();
@@ -883,7 +883,7 @@ public class JOptionPaneTest extends SwingTestCase {
                                      Boolean.TRUE);
         assertEquals("SelectionValues", buttons3, pane.getSelectionValues());
         assertTrue("SelectionValues", buttons3 == pane.getSelectionValues());
-        assertEquals("wantsInput", true, pane.getWantsInput());
+        assertTrue("wantsInput", pane.getWantsInput());
 
         pane = new JOptionPane();
         pane.setWantsInput(false);
@@ -985,13 +985,13 @@ public class JOptionPaneTest extends SwingTestCase {
         pane.setWantsInput(true);
         listener1.checkPropertyFired(pane, "wantsInput",
                            Boolean.FALSE, Boolean.TRUE);
-        assertEquals("wants input", true, pane.getWantsInput());
+        assertTrue("wants input", pane.getWantsInput());
         listener1.reset();
 
         pane.setWantsInput(false);
         listener1.checkPropertyFired(pane, "wantsInput",
                            Boolean.TRUE, Boolean.FALSE);
-        assertEquals("wants input", false, pane.getWantsInput());
+        assertFalse("wants input", pane.getWantsInput());
         listener1.reset();
 
         pane.setWantsInput(false);
@@ -1000,7 +1000,7 @@ public class JOptionPaneTest extends SwingTestCase {
     }
 
     public void testGetWantsInput() {
-        assertEquals("wants input", false, pane.getWantsInput());
+        assertFalse("wants input", pane.getWantsInput());
     }
 
 }

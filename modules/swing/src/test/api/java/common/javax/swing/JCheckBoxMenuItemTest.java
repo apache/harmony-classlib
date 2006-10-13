@@ -43,7 +43,7 @@ public class JCheckBoxMenuItemTest extends JMenuItemTest {
     public void testJCheckBoxMenuItem() {
         assertFalse(menuItem.isSelected());
         assertTrue("default buttonModel ", button.getModel() instanceof ToggleButtonModel);
-        assertEquals("icon ", null, button.getIcon());
+        assertNull("icon ", button.getIcon());
         assertEquals("text ", "", button.getText());
         assertFalse("default FocusPainted", menuItem.isFocusPainted());
 
@@ -78,7 +78,7 @@ public class JCheckBoxMenuItemTest extends JMenuItemTest {
         menuItem = new JCheckBoxMenuItem(text);
         assertFalse(menuItem.isSelected());
         assertTrue("default buttonModel ", button.getModel() instanceof ToggleButtonModel);
-        assertEquals("icon ", null, menuItem.getIcon());
+        assertNull("icon ", menuItem.getIcon());
         assertEquals("text ", text, menuItem.getText());
 
         assertEquals(SwingConstants.LEADING, button.getHorizontalAlignment());
@@ -135,8 +135,8 @@ public class JCheckBoxMenuItemTest extends JMenuItemTest {
         assertEquals("text ", text, menuItem.getText());
         assertEquals("action", action, menuItem.getAction());
         assertEquals("command ", command, menuItem.getActionCommand());
-        assertEquals("selected ", false, menuItem.isSelected());
-        assertEquals("enabled ", true, menuItem.isEnabled());
+        assertFalse("selected ", menuItem.isSelected());
+        assertTrue("enabled ", menuItem.isEnabled());
         assertEquals("accelerator ", accelerator, menuItem.getAccelerator());
 
         action.setEnabled(false);
@@ -146,18 +146,18 @@ public class JCheckBoxMenuItemTest extends JMenuItemTest {
         assertEquals("text ", text, menuItem.getText());
         assertEquals("action", action, menuItem.getAction());
         assertEquals("command ", command, menuItem.getActionCommand());
-        assertEquals("selected ", false, menuItem.isSelected());
-        assertEquals("enabled ", false, menuItem.isEnabled());
+        assertFalse("selected ", menuItem.isSelected());
+        assertFalse("enabled ", menuItem.isEnabled());
         assertFalse("default FocusPainted", menuItem.isFocusPainted());
 
         menuItem = new JCheckBoxMenuItem((Action)null);
 
-        assertEquals("icon ", null, menuItem.getIcon());
-        assertEquals("text ", null, menuItem.getText());
-        assertEquals("action", null, menuItem.getAction());
-        assertEquals("command ", null, menuItem.getActionCommand());
-        assertEquals("selected ", false, menuItem.isSelected());
-        assertEquals("enabled ", true, menuItem.isEnabled());
+        assertNull("icon ", menuItem.getIcon());
+        assertNull("text ", menuItem.getText());
+        assertNull("action", menuItem.getAction());
+        assertNull("command ", menuItem.getActionCommand());
+        assertFalse("selected ", menuItem.isSelected());
+        assertTrue("enabled ", menuItem.isEnabled());
 
         assertTrue("default buttonModel ", button.getModel() instanceof ToggleButtonModel);
 

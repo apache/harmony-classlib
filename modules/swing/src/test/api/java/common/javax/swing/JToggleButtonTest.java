@@ -200,8 +200,8 @@ public class JToggleButtonTest extends SwingTestCase {
         assertEquals("text ", text, button.getText());
         assertEquals("action", action, button.getAction());
         assertEquals("command ", command, button.getActionCommand());
-        assertEquals("selected ", false, button.isSelected());
-        assertEquals("enabled ", true, button.isEnabled());
+        assertFalse("selected ", button.isSelected());
+        assertTrue("enabled ", button.isEnabled());
 
         action.setEnabled(false);
         button = new JToggleButton(action);
@@ -210,17 +210,17 @@ public class JToggleButtonTest extends SwingTestCase {
         assertEquals("text ", text, button.getText());
         assertEquals("action", action, button.getAction());
         assertEquals("command ", command, button.getActionCommand());
-        assertEquals("selected ", false, button.isSelected());
-        assertEquals("enabled ", false, button.isEnabled());
+        assertFalse("selected ", button.isSelected());
+        assertFalse("enabled ", button.isEnabled());
 
         button = new JToggleButton((Action)null);
 
-        assertEquals("icon ", null, button.getIcon());
-        assertEquals("text ", null, button.getText());
-        assertEquals("action", null, button.getAction());
-        assertEquals("command ", null, button.getActionCommand());
-        assertEquals("selected ", false, button.isSelected());
-        assertEquals("enabled ", true, button.isEnabled());
+        assertNull("icon ", button.getIcon());
+        assertNull("text ", button.getText());
+        assertNull("action", button.getAction());
+        assertNull("command ", button.getActionCommand());
+        assertFalse("selected ", button.isSelected());
+        assertTrue("enabled ", button.isEnabled());
 
         assertTrue("button model is of the proper type", button.getModel() instanceof JToggleButton.ToggleButtonModel);
     }

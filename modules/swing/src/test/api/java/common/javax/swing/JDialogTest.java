@@ -118,7 +118,7 @@ public class JDialogTest extends SwingTestCase {
      * Auxiliary method to check JDialog correctness after constructor's call.
      */
     protected void checkDialogCorrectness(final JDialog dialog, final String title, final boolean modal) {
-        assertEquals("JDialog is invisible by default", false, dialog.isVisible());
+        assertFalse("JDialog is invisible by default", dialog.isVisible());
         assertTrue("locale is set", dialog.getLocale() == JComponent.getDefaultLocale());
         assertTrue("owner is not null", dialog.getOwner() != null);
 
@@ -216,10 +216,10 @@ public class JDialogTest extends SwingTestCase {
      */
      public void testSetIsDefaultLookAndFeelDecorated() {
         // test for default value
-        assertEquals(false, JDialog.isDefaultLookAndFeelDecorated());
+        assertFalse(JDialog.isDefaultLookAndFeelDecorated());
 
         JDialog.setDefaultLookAndFeelDecorated(true);
-        assertEquals(true, JDialog.isDefaultLookAndFeelDecorated());
+        assertTrue(JDialog.isDefaultLookAndFeelDecorated());
 
         // restore default value
         JDialog.setDefaultLookAndFeelDecorated(false);
@@ -529,7 +529,7 @@ public class JDialogTest extends SwingTestCase {
 
         // test setting rootPane to null
         dialog.setRootPane(null);
-        assertTrue(dialog.getRootPane() == null);
+        assertNull(dialog.getRootPane());
         assertTrue("rootPane is removed from the container", dialog.getComponentCount() == 0);
     }
 
@@ -551,14 +551,14 @@ public class JDialogTest extends SwingTestCase {
      *     JMenuBar getJMenuBar()
      */
     public void testSetGetJMenuBarJMenuBar() {
-        assertEquals(null, dialog.getJMenuBar());
+        assertNull(dialog.getJMenuBar());
 
         JMenuBar menuBar = new JMenuBar();
         dialog.setJMenuBar(menuBar);
         assertTrue(dialog.getJMenuBar() == menuBar);
 
         dialog.setJMenuBar(null);
-        assertTrue(dialog.getJMenuBar() == null);
+        assertNull(dialog.getJMenuBar());
     }
 
     /*
@@ -582,7 +582,7 @@ public class JDialogTest extends SwingTestCase {
         } catch (IllegalComponentStateException e) {
             ok = true;
         } finally {
-            assertEquals(true, ok);
+            assertTrue(ok);
         }
         // layeredPane cannot be null, even after setLayeredPane(null)
         assertTrue(dialog.getLayeredPane() != null);
@@ -600,13 +600,13 @@ public class JDialogTest extends SwingTestCase {
         assertTrue("class is ok", c instanceof JDialog.AccessibleJDialog);
         assertTrue("AccessibleRole is ok",
                 c.getAccessibleRole() == AccessibleRole.DIALOG);
-        assertTrue("AccessibleDescription is ok",
-                c.getAccessibleDescription() == null);
+        assertNull("AccessibleDescription is ok",
+                c.getAccessibleDescription());
         assertTrue("AccessibleChildrenCount == 1",
                    c.getAccessibleChildrenCount() == 1);
 
         // test getAccessibleName()
-        assertTrue("AccessibleName is ok", c.getAccessibleName() == null);
+        assertNull("AccessibleName is ok", c.getAccessibleName());
         dialog.setTitle("aa");
         assertTrue("AccessibleName is ok", c.getAccessibleName() == "aa");
 
@@ -726,7 +726,7 @@ public class JDialogTest extends SwingTestCase {
         } catch (IllegalComponentStateException e) {
             ok = true;
         } finally {
-            assertEquals(true, ok);
+            assertTrue(ok);
         }
         // contentPane cannot be null, even after setContentPane(null)
         assertTrue(dialog.getContentPane() != null);
@@ -757,7 +757,7 @@ public class JDialogTest extends SwingTestCase {
         } catch (NullPointerException e) {
             ok = true;
         } finally {
-            assertEquals(true, ok);
+            assertTrue(ok);
         }
         // glassPane cannot be null, even after setGlassPane(null)
         assertTrue(dialog.getGlassPane() != null);

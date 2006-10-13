@@ -117,16 +117,16 @@ public class JRadioButtonTest extends SwingTestCase {
         button.setAction(action1);
 
         assertEquals("action ", action1, button.getAction());
-        assertEquals("enabled ", true, button.isEnabled());
-        assertEquals("enabled ", true, action1.isEnabled());
+        assertTrue("enabled ", button.isEnabled());
+        assertTrue("enabled ", action1.isEnabled());
         action1.setEnabled(false);
         button.isEnabled();
-        assertEquals("enabled ", false, button.isEnabled());
-        assertEquals("enabled ", false, action1.isEnabled());
+        assertFalse("enabled ", button.isEnabled());
+        assertFalse("enabled ", action1.isEnabled());
 
-        assertEquals("icon ", null, button.getIcon());
+        assertNull("icon ", button.getIcon());
         action1.putValue(Action.SMALL_ICON, icon2);
-        assertEquals("icon ", null, button.getIcon());
+        assertNull("icon ", button.getIcon());
 
         if (isHarmony()) {
             assertEquals("mnemonic ", 1, button.getMnemonic());
@@ -144,7 +144,7 @@ public class JRadioButtonTest extends SwingTestCase {
 
         button.setAction(action2);
         action1.putValue(Action.SHORT_DESCRIPTION, text4);
-        assertEquals("ToolTipText ", null, button.getToolTipText());
+        assertNull("ToolTipText ", button.getToolTipText());
         action2.putValue(Action.SHORT_DESCRIPTION, text4);
         assertEquals("ToolTipText ", text4, button.getToolTipText());
     }
@@ -180,21 +180,21 @@ public class JRadioButtonTest extends SwingTestCase {
         action.setEnabled(false);
         button = new JRadioButton(action);
 
-        assertEquals("icon ", null, button.getIcon());
+        assertNull("icon ", button.getIcon());
         assertEquals("text ", text, button.getText());
         assertEquals("action", action, button.getAction());
         assertEquals("command ", command, button.getActionCommand());
-        assertEquals("selected ", false, button.isSelected());
-        assertEquals("enabled ", false, button.isEnabled());
+        assertFalse("selected ", button.isSelected());
+        assertFalse("enabled ", button.isEnabled());
 
         button = new JRadioButton((Action)null);
 
-        assertEquals("icon ", null, button.getIcon());
-        assertEquals("text ", null, button.getText());
-        assertEquals("action", null, button.getAction());
-        assertEquals("command ", null, button.getActionCommand());
-        assertEquals("selected ", false, button.isSelected());
-        assertEquals("enabled ", true, button.isEnabled());
+        assertNull("icon ", button.getIcon());
+        assertNull("text ", button.getText());
+        assertNull("action", button.getAction());
+        assertNull("command ", button.getActionCommand());
+        assertFalse("selected ", button.isSelected());
+        assertTrue("enabled ", button.isEnabled());
     }
 
     /*

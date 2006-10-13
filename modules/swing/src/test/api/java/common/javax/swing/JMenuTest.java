@@ -109,7 +109,7 @@ public class JMenuTest extends JMenuItemTest {
      */
     public void testJMenu() {
         assertTrue("default buttonModel ", button.getModel() instanceof DefaultButtonModel);
-        assertEquals("icon ", null, button.getIcon());
+        assertNull("icon ", button.getIcon());
         assertEquals("text ", "", button.getText());
         assertFalse("default FocusPainted", menuItem.isFocusPainted());
         assertTrue(menuItem.isFocusable());
@@ -136,7 +136,7 @@ public class JMenuTest extends JMenuItemTest {
         String text = "texttext";
         button = menuItem = menu = new JMenu(text);
         assertTrue("default buttonModel ", button.getModel() instanceof DefaultButtonModel);
-        assertEquals("icon ", null, button.getIcon());
+        assertNull("icon ", button.getIcon());
         assertEquals("text ", text, button.getText());
         assertFalse("default FocusPainted", menuItem.isFocusPainted());
         assertEquals(menu, menuItem.getComponent());
@@ -166,7 +166,7 @@ public class JMenuTest extends JMenuItemTest {
         String text = "texttext";
         button = menuItem = menu = new JMenu(text, true);
         assertTrue("default buttonModel ", button.getModel() instanceof DefaultButtonModel);
-        assertEquals("icon ", null, button.getIcon());
+        assertNull("icon ", button.getIcon());
         assertEquals("text ", text, button.getText());
         assertFalse("default FocusPainted", menuItem.isFocusPainted());
         assertEquals(menu, menuItem.getComponent());
@@ -215,8 +215,8 @@ public class JMenuTest extends JMenuItemTest {
         assertEquals("text ", text, menuItem.getText());
         assertEquals("action", action, menuItem.getAction());
         assertEquals("command ", command, menuItem.getActionCommand());
-        assertEquals("selected ", false, menuItem.isSelected());
-        assertEquals("enabled ", true, menuItem.isEnabled());
+        assertFalse("selected ", menuItem.isSelected());
+        assertTrue("enabled ", menuItem.isEnabled());
         assertNull("accelerator ", menuItem.getAccelerator());
         assertTrue(menuItem.isFocusable());
         assertEquals(200, menu.getDelay());
@@ -228,18 +228,18 @@ public class JMenuTest extends JMenuItemTest {
         assertEquals("text ", text, menuItem.getText());
         assertEquals("action", action, menuItem.getAction());
         assertEquals("command ", command, menuItem.getActionCommand());
-        assertEquals("selected ", false, menuItem.isSelected());
-        assertEquals("enabled ", false, menuItem.isEnabled());
+        assertFalse("selected ", menuItem.isSelected());
+        assertFalse("enabled ", menuItem.isEnabled());
         assertFalse("default FocusPainted", menuItem.isFocusPainted());
 
         button = menuItem = menu = new JMenu((Action)null);
 
-        assertEquals("icon ", null, menuItem.getIcon());
-        assertEquals("text ", null, menuItem.getText());
-        assertEquals("action", null, menuItem.getAction());
-        assertEquals("command ", null, menuItem.getActionCommand());
-        assertEquals("selected ", false, menuItem.isSelected());
-        assertEquals("enabled ", true, menuItem.isEnabled());
+        assertNull("icon ", menuItem.getIcon());
+        assertNull("text ", menuItem.getText());
+        assertNull("action", menuItem.getAction());
+        assertNull("command ", menuItem.getActionCommand());
+        assertFalse("selected ", menuItem.isSelected());
+        assertTrue("enabled ", menuItem.isEnabled());
 
         assertEquals(menu, menuItem.getComponent());
         assertEquals(0, menu.getItemCount());
@@ -775,8 +775,8 @@ public class JMenuTest extends JMenuItemTest {
         assertEquals("text ", text, menuItem1.getText());
         assertNull("action", menuItem1.getAction());
         assertEquals("command ", text, menuItem1.getActionCommand());
-        assertEquals("selected ", false, menuItem1.isSelected());
-        assertEquals("enabled ", true, menuItem1.isEnabled());
+        assertFalse("selected ", menuItem1.isSelected());
+        assertTrue("enabled ", menuItem1.isEnabled());
         assertNull("accelerator ", menuItem1.getAccelerator());
 
         JMenuItem menuItem2 = menu.createActionComponent(action);
@@ -785,8 +785,8 @@ public class JMenuTest extends JMenuItemTest {
         assertEquals("text ", text, menuItem2.getText());
         assertNull("action", menuItem1.getAction());
         assertEquals("command ", text, menuItem2.getActionCommand());
-        assertEquals("selected ", false, menuItem2.isSelected());
-        assertEquals("enabled ", true, menuItem2.isEnabled());
+        assertFalse("selected ", menuItem2.isSelected());
+        assertTrue("enabled ", menuItem2.isEnabled());
         assertNull("accelerator ", menuItem2.getAccelerator());
     }
 
@@ -890,7 +890,7 @@ public class JMenuTest extends JMenuItemTest {
     public void testGetMenuComponent() {
         JMenuItem item1 = new JMenuItem();
         JMenuItem item2 = new JMenuItem();
-        assertEquals(null, menu.getMenuComponent(0));
+        assertNull(menu.getMenuComponent(0));
         menu.add(item1);
         assertEquals(item1, menu.getMenuComponent(0));
         menu.add(item2);
@@ -914,7 +914,7 @@ public class JMenuTest extends JMenuItemTest {
     public void testGetItem() {
         JMenuItem item1 = new JMenuItem();
         JMenuItem item2 = new JMenuItem();
-        assertEquals(null, menu.getItem(0));
+        assertNull(menu.getItem(0));
         menu.add(item1);
         assertEquals(item1, menu.getItem(0));
         menu.add(item2);
@@ -1314,26 +1314,26 @@ public class JMenuTest extends JMenuItemTest {
         button.setAction(action1);
 
         assertEquals("action ", action1, button.getAction());
-        assertEquals("enabled ", true, button.isEnabled());
-        assertEquals("enabled ", true, action1.isEnabled());
+        assertTrue("enabled ", button.isEnabled());
+        assertTrue("enabled ", action1.isEnabled());
         action1.setEnabled(false);
         button.isEnabled();
-        assertEquals("enabled ", false, button.isEnabled());
-        assertEquals("enabled ", false, action1.isEnabled());
+        assertFalse("enabled ", button.isEnabled());
+        assertFalse("enabled ", action1.isEnabled());
 
         assertEquals("icon ", icon1, button.getIcon());
         action1.putValue(Action.SMALL_ICON, icon2);
         assertEquals("icon ", icon2, button.getIcon());
         button.setIcon(icon2);
         action1.putValue(Action.SMALL_ICON, null);
-        assertEquals("icon ", null, button.getIcon());
+        assertNull("icon ", button.getIcon());
 
         if (isHarmony()) {
             assertEquals("mnemonic ", 1, button.getMnemonic());
             action1.putValue(Action.MNEMONIC_KEY, new Integer(27));
             assertEquals("mnemonic ", 27, button.getMnemonic());
             action1.putValue(Action.ACCELERATOR_KEY, ks1);
-            assertEquals("accelerator ", null, menuItem.getAccelerator());
+            assertNull("accelerator ", menuItem.getAccelerator());
         }
 
         assertEquals("text ", text1, button.getText());
@@ -1349,11 +1349,11 @@ public class JMenuTest extends JMenuItemTest {
         action2.putValue(Action.ACCELERATOR_KEY, ks2);
         button.setAction(action2);
         action1.putValue(Action.SHORT_DESCRIPTION, text4);
-        assertEquals("ToolTipText ", null, button.getToolTipText());
+        assertNull("ToolTipText ", button.getToolTipText());
         if (isHarmony()) {
             action2.putValue(Action.SHORT_DESCRIPTION, text4);
             assertEquals("ToolTipText ", text4, button.getToolTipText());
-            assertEquals("accelerator ", null, menuItem.getAccelerator());
+            assertNull("accelerator ", menuItem.getAccelerator());
         }
 
     }

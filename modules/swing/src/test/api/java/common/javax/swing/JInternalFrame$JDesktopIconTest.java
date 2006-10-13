@@ -131,14 +131,14 @@ public class JInternalFrame$JDesktopIconTest extends SwingTestCase {
 
         // test set to null
         icon.setInternalFrame(null);
-        assertTrue(icon.getInternalFrame() == null);
+        assertNull(icon.getInternalFrame());
     }
 
     /*
      * Class under test for JDesktopPane getDesktopPane()
      */
     public void testGetDesktopPane() {
-        assertTrue("null by default", icon.getDesktopPane() == null);
+        assertNull("null by default", icon.getDesktopPane());
 
         // test when not iconified
         JDesktopPane desktop = new JDesktopPane();
@@ -197,8 +197,8 @@ public class JInternalFrame$JDesktopIconTest extends SwingTestCase {
                    value.getMaximumAccessibleValue().intValue() == Integer.MAX_VALUE);
 
         // test other methods
-        assertTrue("AccessibleDescription is ok",
-                c.getAccessibleDescription() == null);
+        assertNull("AccessibleDescription is ok",
+                c.getAccessibleDescription());
         assertTrue("AccessibleChildrenCount == 2",
                    c.getAccessibleChildrenCount() == 2);
     }

@@ -95,8 +95,8 @@ public class JButtonTest extends AbstractButtonTest {
         assertEquals("text ", text, button.getText());
         assertEquals("action", action, button.getAction());
         assertEquals("command ", command, button.getActionCommand());
-        assertEquals("selected ", false, button.isSelected());
-        assertEquals("enabled ", true, button.isEnabled());
+        assertFalse("selected ", button.isSelected());
+        assertTrue("enabled ", button.isEnabled());
 
         action.setEnabled(false);
         button = new JButton(action);
@@ -105,17 +105,17 @@ public class JButtonTest extends AbstractButtonTest {
         assertEquals("text ", text, button.getText());
         assertEquals("action", action, button.getAction());
         assertEquals("command ", command, button.getActionCommand());
-        assertEquals("selected ", false, button.isSelected());
-        assertEquals("enabled ", false, button.isEnabled());
+        assertFalse("selected ", button.isSelected());
+        assertFalse("enabled ", button.isEnabled());
 
         button = new JButton((Action)null);
 
-        assertEquals("icon ", null, button.getIcon());
-        assertEquals("text ", null, button.getText());
-        assertEquals("action", null, button.getAction());
-        assertEquals("command ", null, button.getActionCommand());
-        assertEquals("selected ", false, button.isSelected());
-        assertEquals("enabled ", true, button.isEnabled());
+        assertNull("icon ", button.getIcon());
+        assertNull("text ", button.getText());
+        assertNull("action", button.getAction());
+        assertNull("command ", button.getActionCommand());
+        assertFalse("selected ", button.isSelected());
+        assertTrue("enabled ", button.isEnabled());
 
         assertTrue("button model is of the proper type", button.getModel() instanceof DefaultButtonModel);
     }
@@ -126,7 +126,7 @@ public class JButtonTest extends AbstractButtonTest {
     public void testJButtonString() {
         String text = "texttext";
         jbutton = new JButton(text);
-        assertEquals("icon ", null, jbutton.getIcon());
+        assertNull("icon ", jbutton.getIcon());
         assertEquals("text ", text, jbutton.getText());
     }
 
@@ -135,7 +135,7 @@ public class JButtonTest extends AbstractButtonTest {
      */
     public void testJButton() {
         assertNotNull("default buttonModel ", button.getModel());
-        assertEquals("icon ", null, jbutton.getIcon());
+        assertNull("icon ", jbutton.getIcon());
         assertEquals("text ", "", jbutton.getText());
     }
 
@@ -164,7 +164,7 @@ public class JButtonTest extends AbstractButtonTest {
 
         jbutton.removeNotify();
         assertFalse("is not defaultButton now ", jbutton.isDefaultButton());
-        assertTrue("rootPane now 've no default jbutton ", pane.getDefaultButton() == null);
+        assertNull("rootPane now 've no default jbutton ", pane.getDefaultButton());
     }
 
     public void testGetUIClassID() {
@@ -208,17 +208,17 @@ public class JButtonTest extends AbstractButtonTest {
 
         jbutton.configurePropertiesFromAction(null);
 
-        assertEquals("icon ", null, jbutton.getIcon());
-        assertEquals("text ", null, jbutton.getText());
-        assertEquals("action", null, jbutton.getAction());
-        assertEquals("command ", null, jbutton.getActionCommand());
-        assertEquals("selected ", false, jbutton.isSelected());
-        assertEquals("enabled ", true, jbutton.isEnabled());
+        assertNull("icon ", jbutton.getIcon());
+        assertNull("text ", jbutton.getText());
+        assertNull("action", jbutton.getAction());
+        assertNull("command ", jbutton.getActionCommand());
+        assertFalse("selected ", jbutton.isSelected());
+        assertTrue("enabled ", jbutton.isEnabled());
     }
 
     public void testSetDefaultCapable() {
         jbutton.setDefaultCapable(false);
-        assertEquals("DefaultCapable", false, jbutton.isDefaultCapable());
+        assertFalse("DefaultCapable", jbutton.isDefaultCapable());
 
         PropertyChangeController listener = new PropertyChangeController();
         jbutton.addPropertyChangeListener(listener);
@@ -232,7 +232,7 @@ public class JButtonTest extends AbstractButtonTest {
     }
 
     public void testIsDefaultCapable() {
-        assertEquals("initial DefaultCapable value", true, jbutton.isDefaultCapable());
+        assertTrue("initial DefaultCapable value", jbutton.isDefaultCapable());
     }
 
     public void testIsDefaultButton() {

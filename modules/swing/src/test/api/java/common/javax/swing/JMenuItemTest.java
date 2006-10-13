@@ -99,7 +99,7 @@ public class JMenuItemTest extends AbstractButtonTest {
      */
     public void testJMenuItem() {
         assertTrue("default buttonModel ", button.getModel() instanceof DefaultButtonModel);
-        assertEquals("icon ", null, button.getIcon());
+        assertNull("icon ", button.getIcon());
         assertEquals("text ", "", button.getText());
         assertFalse("default FocusPainted", menuItem.isFocusPainted());
         assertFalse(menuItem.isFocusable());
@@ -135,7 +135,7 @@ public class JMenuItemTest extends AbstractButtonTest {
         String text = "texttext";
         menuItem = new JMenuItem(text);
         assertTrue("default buttonModel ", button.getModel() instanceof DefaultButtonModel);
-        assertEquals("icon ", null, menuItem.getIcon());
+        assertNull("icon ", menuItem.getIcon());
         assertEquals("text ", text, menuItem.getText());
         assertFalse(menuItem.isFocusable());
 
@@ -173,8 +173,8 @@ public class JMenuItemTest extends AbstractButtonTest {
         assertEquals("text ", text, menuItem.getText());
         assertEquals("action", action, menuItem.getAction());
         assertEquals("command ", command, menuItem.getActionCommand());
-        assertEquals("selected ", false, menuItem.isSelected());
-        assertEquals("enabled ", true, menuItem.isEnabled());
+        assertFalse("selected ", menuItem.isSelected());
+        assertTrue("enabled ", menuItem.isEnabled());
         assertEquals("accelerator ", accelerator, menuItem.getAccelerator());
         assertFalse(menuItem.isFocusable());
 
@@ -185,18 +185,18 @@ public class JMenuItemTest extends AbstractButtonTest {
         assertEquals("text ", text, menuItem.getText());
         assertEquals("action", action, menuItem.getAction());
         assertEquals("command ", command, menuItem.getActionCommand());
-        assertEquals("selected ", false, menuItem.isSelected());
-        assertEquals("enabled ", false, menuItem.isEnabled());
+        assertFalse("selected ", menuItem.isSelected());
+        assertFalse("enabled ", menuItem.isEnabled());
         assertFalse("default FocusPainted", menuItem.isFocusPainted());
 
         menuItem = new JMenuItem((Action)null);
 
-        assertEquals("icon ", null, menuItem.getIcon());
-        assertEquals("text ", null, menuItem.getText());
-        assertEquals("action", null, menuItem.getAction());
-        assertEquals("command ", null, menuItem.getActionCommand());
-        assertEquals("selected ", false, menuItem.isSelected());
-        assertEquals("enabled ", true, menuItem.isEnabled());
+        assertNull("icon ", menuItem.getIcon());
+        assertNull("text ", menuItem.getText());
+        assertNull("action", menuItem.getAction());
+        assertNull("command ", menuItem.getActionCommand());
+        assertFalse("selected ", menuItem.isSelected());
+        assertTrue("enabled ", menuItem.isEnabled());
 
         assertTrue("menuItem model is of the proper type", menuItem.getModel() instanceof DefaultButtonModel);
 
@@ -233,7 +233,7 @@ public class JMenuItemTest extends AbstractButtonTest {
         String text = "texttext";
         menuItem = new JMenuItem(text, mnemonic);
         assertTrue("menuItem model is of the proper type", menuItem.getModel() instanceof DefaultButtonModel);
-        assertEquals("icon ", null, menuItem.getIcon());
+        assertNull("icon ", menuItem.getIcon());
         assertEquals("mnemonic ", mnemonic, menuItem.getMnemonic());
         assertEquals("text ", text, menuItem.getText());
         assertFalse("default FocusPainted", menuItem.isFocusPainted());
@@ -708,19 +708,19 @@ public class JMenuItemTest extends AbstractButtonTest {
         button.setAction(action1);
 
         assertEquals("action ", action1, button.getAction());
-        assertEquals("enabled ", true, button.isEnabled());
-        assertEquals("enabled ", true, action1.isEnabled());
+        assertTrue("enabled ", button.isEnabled());
+        assertTrue("enabled ", action1.isEnabled());
         action1.setEnabled(false);
         button.isEnabled();
-        assertEquals("enabled ", false, button.isEnabled());
-        assertEquals("enabled ", false, action1.isEnabled());
+        assertFalse("enabled ", button.isEnabled());
+        assertFalse("enabled ", action1.isEnabled());
 
         assertEquals("icon ", icon1, button.getIcon());
         action1.putValue(Action.SMALL_ICON, icon2);
         assertEquals("icon ", icon2, button.getIcon());
         button.setIcon(icon2);
         action1.putValue(Action.SMALL_ICON, null);
-        assertEquals("icon ", null, button.getIcon());
+        assertNull("icon ", button.getIcon());
 
         if (isHarmony()) {
             assertEquals("mnemonic ", 1, button.getMnemonic());
@@ -743,7 +743,7 @@ public class JMenuItemTest extends AbstractButtonTest {
         action2.putValue(Action.ACCELERATOR_KEY, ks2);
         button.setAction(action2);
         action1.putValue(Action.SHORT_DESCRIPTION, text4);
-        assertEquals("ToolTipText ", null, button.getToolTipText());
+        assertNull("ToolTipText ", button.getToolTipText());
         if (isHarmony()) {
             action2.putValue(Action.SHORT_DESCRIPTION, text4);
             assertEquals("ToolTipText ", text4, button.getToolTipText());

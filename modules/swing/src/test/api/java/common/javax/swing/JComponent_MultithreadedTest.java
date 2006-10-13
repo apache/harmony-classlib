@@ -138,17 +138,17 @@ public class JComponent_MultithreadedTest extends BasicSwingTestCase {
         panel1.setInputVerifier(verifier);
         panel2.setVerifyInputWhenFocusTarget(true);
         requestFocusForComponent(panel2);
-        assertEquals("verifier's invoked ", true, verifier.invoked);
-        assertEquals("focus's gained ", true, panel2.isFocusOwner());
+        assertTrue("verifier's invoked ", verifier.invoked);
+        assertTrue("focus's gained ", panel2.isFocusOwner());
         verifier.invoked = false;
 
         requestFocusForComponent(panel1);
-        assertEquals("focus's gained ", true, panel1.isFocusOwner());
+        assertTrue("focus's gained ", panel1.isFocusOwner());
 
         panel2.setVerifyInputWhenFocusTarget(false);
         requestFocusForComponent(panel2);
-        assertEquals("verifier's not invoked ", false, verifier.invoked);
-        assertEquals("focus's gained ", true, panel2.isFocusOwner());
+        assertFalse("verifier's not invoked ", verifier.invoked);
+        assertTrue("focus's gained ", panel2.isFocusOwner());
     }
 
     /*
@@ -173,23 +173,23 @@ public class JComponent_MultithreadedTest extends BasicSwingTestCase {
         panel1.setInputVerifier(verifier);
         panel2.setVerifyInputWhenFocusTarget(true);
         assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel2));
-        assertEquals("verifier's invoked ", true, verifier.invoked);
-        assertEquals("focus's gained ", true, panel2.isFocusOwner());
+        assertTrue("verifier's invoked ", verifier.invoked);
+        assertTrue("focus's gained ", panel2.isFocusOwner());
         verifier.invoked = false;
 
         assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel1));
-        assertEquals("focus's gained ", true, panel1.isFocusOwner());
+        assertTrue("focus's gained ", panel1.isFocusOwner());
 
         panel2.setVerifyInputWhenFocusTarget(false);
         assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel2));
-        assertEquals("verifier's not invoked ", false, verifier.invoked);
-        assertEquals("focus's gained ", true, panel2.isFocusOwner());
+        assertFalse("verifier's not invoked ", verifier.invoked);
+        assertTrue("focus's gained ", panel2.isFocusOwner());
 
         panel1.setVerifyInputWhenFocusTarget(true);
         panel2.setInputVerifier(verifier2);
         assertFalse("focus can be gained ", requestFocusInWindowForComponent(panel1, true));
-        assertEquals("verifier's invoked ", true, verifier2.invoked);
-        assertEquals("focus's gained ", false, panel1.isFocusOwner());
+        assertTrue("verifier's invoked ", verifier2.invoked);
+        assertFalse("focus's gained ", panel1.isFocusOwner());
         verifier.invoked = false;
     }
 
@@ -214,34 +214,34 @@ public class JComponent_MultithreadedTest extends BasicSwingTestCase {
         panel1.setInputVerifier(verifier);
         panel2.setVerifyInputWhenFocusTarget(true);
         requestFocusForComponent(panel2, false);
-        assertEquals("verifier's invoked ", true, verifier.invoked);
-        assertEquals("focus's gained ", true, panel2.isFocusOwner());
+        assertTrue("verifier's invoked ", verifier.invoked);
+        assertTrue("focus's gained ", panel2.isFocusOwner());
         verifier.invoked = false;
 
         requestFocusForComponent(panel1, false);
-        assertEquals("focus's gained ", true, panel1.isFocusOwner());
+        assertTrue("focus's gained ", panel1.isFocusOwner());
 
         panel2.setVerifyInputWhenFocusTarget(false);
         requestFocusForComponent(panel2, false);
-        assertEquals("verifier's not invoked ", false, verifier.invoked);
-        assertEquals("focus's gained ", true, panel2.isFocusOwner());
+        assertFalse("verifier's not invoked ", verifier.invoked);
+        assertTrue("focus's gained ", panel2.isFocusOwner());
 
         requestFocusForComponent(panel1, false);
-        assertEquals("focus's gained ", true, panel1.isFocusOwner());
+        assertTrue("focus's gained ", panel1.isFocusOwner());
 
         panel2.setVerifyInputWhenFocusTarget(true);
         requestFocusForComponent(panel2, true);
-        assertEquals("verifier's invoked ", true, verifier.invoked);
-        assertEquals("focus's gained ", true, panel2.isFocusOwner());
+        assertTrue("verifier's invoked ", verifier.invoked);
+        assertTrue("focus's gained ", panel2.isFocusOwner());
         verifier.invoked = false;
 
         requestFocusForComponent(panel1, true);
-        assertEquals("focus's gained ", true, panel1.isFocusOwner());
+        assertTrue("focus's gained ", panel1.isFocusOwner());
 
         panel2.setVerifyInputWhenFocusTarget(false);
         requestFocusForComponent(panel2, true);
-        assertEquals("verifier's not invoked ", false, verifier.invoked);
-        assertEquals("focus's gained ", true, panel2.isFocusOwner());
+        assertFalse("verifier's not invoked ", verifier.invoked);
+        assertTrue("focus's gained ", panel2.isFocusOwner());
     }
 
     /*
@@ -266,40 +266,40 @@ public class JComponent_MultithreadedTest extends BasicSwingTestCase {
         panel1.setInputVerifier(verifier);
         panel2.setVerifyInputWhenFocusTarget(true);
         assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel2, false));
-        assertEquals("verifier's invoked ", true, verifier.invoked);
-        assertEquals("focus's gained ", true, panel2.isFocusOwner());
+        assertTrue("verifier's invoked ", verifier.invoked);
+        assertTrue("focus's gained ", panel2.isFocusOwner());
         verifier.invoked = false;
 
         assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel1, false));
-        assertEquals("focus's gained ", true, panel1.isFocusOwner());
+        assertTrue("focus's gained ", panel1.isFocusOwner());
 
         panel2.setVerifyInputWhenFocusTarget(false);
         assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel2, false));
-        assertEquals("verifier's not invoked ", false, verifier.invoked);
-        assertEquals("focus's gained ", true, panel2.isFocusOwner());
+        assertFalse("verifier's not invoked ", verifier.invoked);
+        assertTrue("focus's gained ", panel2.isFocusOwner());
 
         assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel1, false));
-        assertEquals("focus's gained ", true, panel1.isFocusOwner());
+        assertTrue("focus's gained ", panel1.isFocusOwner());
 
         panel2.setVerifyInputWhenFocusTarget(true);
         assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel2, true));
-        assertEquals("verifier's invoked ", true, verifier.invoked);
-        assertEquals("focus's gained ", true, panel2.isFocusOwner());
+        assertTrue("verifier's invoked ", verifier.invoked);
+        assertTrue("focus's gained ", panel2.isFocusOwner());
         verifier.invoked = false;
 
         assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel1, true));
-        assertEquals("focus's gained ", true, panel1.isFocusOwner());
+        assertTrue("focus's gained ", panel1.isFocusOwner());
 
         panel2.setVerifyInputWhenFocusTarget(false);
         assertTrue("focus can be gained ", requestFocusInWindowForComponent(panel2, true));
-        assertEquals("verifier's not invoked ", false, verifier.invoked);
-        assertEquals("focus's gained ", true, panel2.isFocusOwner());
+        assertFalse("verifier's not invoked ", verifier.invoked);
+        assertTrue("focus's gained ", panel2.isFocusOwner());
 
         panel1.setVerifyInputWhenFocusTarget(true);
         panel2.setInputVerifier(verifier2);
         assertFalse("focus can be gained ", requestFocusInWindowForComponent(panel1, true));
-        assertEquals("verifier's invoked ", true, verifier2.invoked);
-        assertEquals("focus's gained ", false, panel1.isFocusOwner());
+        assertTrue("verifier's invoked ", verifier2.invoked);
+        assertFalse("focus's gained ", panel1.isFocusOwner());
         verifier.invoked = false;
     }
 
@@ -321,17 +321,17 @@ public class JComponent_MultithreadedTest extends BasicSwingTestCase {
         panel1.setInputVerifier(verifier);
         panel2.setVerifyInputWhenFocusTarget(true);
         grabFocusForComponent(panel2);
-        assertEquals("verifier's invoked ", true, verifier.invoked);
-        assertEquals("focus's gained ", true, panel2.isFocusOwner());
+        assertTrue("verifier's invoked ", verifier.invoked);
+        assertTrue("focus's gained ", panel2.isFocusOwner());
         verifier.invoked = false;
 
         grabFocusForComponent(panel1);
-        assertEquals("focus's gained ", true, panel1.isFocusOwner());
+        assertTrue("focus's gained ", panel1.isFocusOwner());
 
         panel2.setVerifyInputWhenFocusTarget(false);
         grabFocusForComponent(panel2);
-        assertEquals("verifier's not invoked ", false, verifier.invoked);
-        assertEquals("focus's gained ", true, panel2.isFocusOwner());
+        assertFalse("verifier's not invoked ", verifier.invoked);
+        assertTrue("focus's gained ", panel2.isFocusOwner());
     }
 
     public void testRequestDefaultFocus() throws Exception {
@@ -375,15 +375,15 @@ public class JComponent_MultithreadedTest extends BasicSwingTestCase {
         panel3.setFocusCycleRoot(false);
         panel3.setFocusTraversalPolicy(policy);
         requestDefaultFocusForComponent(panel3, window);
-        assertEquals("focus's gained ", true, window.isFocusOwner());
+        assertTrue("focus's gained ", window.isFocusOwner());
 
         panel3.setFocusCycleRoot(true);
         requestDefaultFocusForComponent(panel3, panel4);
-        assertEquals("focus's gained ", true, panel4.isFocusOwner());
+        assertTrue("focus's gained ", panel4.isFocusOwner());
 
         panel3.setFocusCycleRoot(false);
         requestDefaultFocusForComponent(panel3, window);
-        assertEquals("focus's gained ", false, window.isFocusOwner());
+        assertFalse("focus's gained ", window.isFocusOwner());
     }
 
     public void testUpdateUI() throws Exception {

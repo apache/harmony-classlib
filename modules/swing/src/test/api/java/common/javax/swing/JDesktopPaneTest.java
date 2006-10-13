@@ -147,13 +147,13 @@ public class JDesktopPaneTest extends SwingTestCase {
     public void testSetGetSelectedFrame() {
         JInternalFrame f = new JInternalFrame();
 
-        assertTrue("null by default", desktop.getSelectedFrame() == null);
+        assertNull("null by default", desktop.getSelectedFrame());
 
         desktop.setSelectedFrame(f);
         assertTrue("is set", desktop.getSelectedFrame() == f);
 
         desktop.setSelectedFrame(null);
-        assertTrue("is set to null", desktop.getSelectedFrame() == null);
+        assertNull("is set to null", desktop.getSelectedFrame());
     }
 
     /*

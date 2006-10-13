@@ -127,7 +127,7 @@ public class JWindowTest extends SwingTestCase {
         window = new JWindow();
 
         assertTrue("owner is not null", window.getOwner() != null);
-        assertEquals("JWindow is invisible by default", false, window.isVisible());
+        assertFalse("JWindow is invisible by default", window.isVisible());
         assertTrue(window.getLocale() == JComponent.getDefaultLocale());
         assertFalse("window is not focusable", window.isFocusableWindow());
         assertTrue(window.getContentPane().getLayout() instanceof BorderLayout);
@@ -187,7 +187,7 @@ public class JWindowTest extends SwingTestCase {
         window = new JWindow(owner, gc);
         assertTrue("owner is set", window.getOwner() == owner);
         assertTrue(window.getGraphicsConfiguration() == gc);
-        assertEquals("JWindow is invisible by default", false, window.isVisible());
+        assertFalse("JWindow is invisible by default", window.isVisible());
         assertTrue(window.getLocale() == JComponent.getDefaultLocale());
         assertFalse("window is not focusable", window.isFocusableWindow());
 
@@ -195,7 +195,7 @@ public class JWindowTest extends SwingTestCase {
         window = new JWindow(owner, (GraphicsConfiguration)null);
         assertTrue("owner is set", window.getOwner() == owner);
         assertTrue(window.getGraphicsConfiguration() == gc);
-        assertEquals("JWindow is invisible by default", false, window.isVisible());
+        assertFalse("JWindow is invisible by default", window.isVisible());
         assertTrue(window.getLocale() == JComponent.getDefaultLocale());
         assertFalse("window is not focusable", window.isFocusableWindow());
 
@@ -203,7 +203,7 @@ public class JWindowTest extends SwingTestCase {
         window = new JWindow(null, gc);
         assertTrue("owner is not null", window.getOwner() != null);
         assertTrue(window.getGraphicsConfiguration() == gc);
-        assertEquals("JWindow is invisible by default", false, window.isVisible());
+        assertFalse("JWindow is invisible by default", window.isVisible());
         assertTrue(window.getLocale() == JComponent.getDefaultLocale());
         assertFalse("window is not focusable", window.isFocusableWindow());
 
@@ -211,7 +211,7 @@ public class JWindowTest extends SwingTestCase {
         window = new JWindow(null, null);
         assertTrue("owner is not null", window.getOwner() != null);
         assertTrue(window.getGraphicsConfiguration() == window.getOwner().getGraphicsConfiguration());
-        assertEquals("JWindow is invisible by default", false, window.isVisible());
+        assertFalse("JWindow is invisible by default", window.isVisible());
         assertTrue(window.getLocale() == JComponent.getDefaultLocale());
         assertFalse("window is not focusable", window.isFocusableWindow());
     }
@@ -225,14 +225,14 @@ public class JWindowTest extends SwingTestCase {
 
         // test with the correct owner
         assertTrue("owner is set", window.getOwner() == owner);
-        assertEquals("JWindow is invisible by default", false, window.isVisible());
+        assertFalse("JWindow is invisible by default", window.isVisible());
         assertTrue(window.getLocale() == JComponent.getDefaultLocale());
         assertFalse("window is not focusable", window.isFocusableWindow());
 
         // test with owner = null
         window = new JWindow((Window)null);
         assertTrue("owner is not null", window.getOwner() != null);
-        assertEquals("JWindow is invisible by default", false, window.isVisible());
+        assertFalse("JWindow is invisible by default", window.isVisible());
         assertTrue(window.getLocale() == JComponent.getDefaultLocale());
         assertFalse("window is not focusable", window.isFocusableWindow());
     }
@@ -248,7 +248,7 @@ public class JWindowTest extends SwingTestCase {
         // would be nice to test non-default gc here
         window = new JWindow(gc);
         assertTrue("owner is not null", window.getOwner() != null);
-        assertEquals("JWindow is invisible by default", false, window.isVisible());
+        assertFalse("JWindow is invisible by default", window.isVisible());
         assertTrue(window.getLocale() == JComponent.getDefaultLocale());
         assertFalse("window is not focusable", window.isFocusableWindow());
         assertTrue(window.getGraphicsConfiguration() == gc);
@@ -256,7 +256,7 @@ public class JWindowTest extends SwingTestCase {
         // test with gc == null
         window = new JWindow((GraphicsConfiguration)null);
         assertTrue("owner is not null", window.getOwner() != null);
-        assertEquals("JWindow is invisible by default", false, window.isVisible());
+        assertFalse("JWindow is invisible by default", window.isVisible());
         assertTrue(window.getLocale() == JComponent.getDefaultLocale());
         assertFalse("window is not focusable", window.isFocusableWindow());
         assertTrue(window.getGraphicsConfiguration() == gc);
@@ -271,14 +271,14 @@ public class JWindowTest extends SwingTestCase {
 
         // test with the correct owner
         assertTrue("owner is set", window.getOwner() == owner);
-        assertEquals("JWindow is invisible by default", false, window.isVisible());
+        assertFalse("JWindow is invisible by default", window.isVisible());
         assertTrue(window.getLocale() == JComponent.getDefaultLocale());
         assertFalse("window is not focusable", window.isFocusableWindow());
 
         // test with owner = null
         window = new JWindow((Frame)null);
         assertTrue("owner is not null", window.getOwner() != null);
-        assertEquals("JWindow is invisible by default", false, window.isVisible());
+        assertFalse("JWindow is invisible by default", window.isVisible());
         assertTrue(window.getLocale() == JComponent.getDefaultLocale());
         assertFalse("window is not focusable", window.isFocusableWindow());
     }
@@ -338,7 +338,7 @@ public class JWindowTest extends SwingTestCase {
 
         // test setting rootPane to null
         window.setRootPane(null);
-        assertTrue(window.getRootPane() == null);
+        assertNull(window.getRootPane());
         assertTrue("rootPane is removed from the container", window.getComponentCount() == 0);
     }
 
@@ -375,7 +375,7 @@ public class JWindowTest extends SwingTestCase {
         } catch (IllegalComponentStateException e) {
             ok = true;
         } finally {
-            assertEquals(true, ok);
+            assertTrue(ok);
         }
         // layeredPane cannot be null, even after setLayeredPane(null)
         assertTrue(window.getLayeredPane() != null);
@@ -394,9 +394,9 @@ public class JWindowTest extends SwingTestCase {
                    c instanceof JWindow.AccessibleJWindow);
         assertTrue("AccessibleRole is ok",
                 c.getAccessibleRole() == AccessibleRole.WINDOW);
-        assertTrue("AccessibleName is ok", c.getAccessibleName() == null);
-        assertTrue("AccessibleDescription is ok",
-                c.getAccessibleDescription() == null);
+        assertNull("AccessibleName is ok", c.getAccessibleName());
+        assertNull("AccessibleDescription is ok",
+                c.getAccessibleDescription());
         assertTrue("AccessibleChildrenCount == 1",
                    c.getAccessibleChildrenCount() == 1);
     }
@@ -477,7 +477,7 @@ public class JWindowTest extends SwingTestCase {
         } catch (IllegalComponentStateException e) {
             ok = true;
         } finally {
-            assertEquals(true, ok);
+            assertTrue(ok);
         }
         // contentPane cannot be null, even after setContentPane(null)
         assertTrue(window.getContentPane() != null);
@@ -507,7 +507,7 @@ public class JWindowTest extends SwingTestCase {
         } catch (NullPointerException e) {
             ok = true;
         } finally {
-            assertEquals(true, ok);
+            assertTrue(ok);
         }
         // glassPane cannot be null, even after setGlassPane(null)
         assertTrue(window.getGlassPane() != null);

@@ -60,7 +60,7 @@ public class JToolTipTest extends SwingTestCase {
     }
 
     public void testSetGetComponent() throws Exception {
-        assertEquals(null, tooltip.getComponent());
+        assertNull(tooltip.getComponent());
         propertyChangeController = new PropertyChangeController();
         tooltip.addPropertyChangeListener(propertyChangeController);
         JButton button = new JButton("b");

@@ -562,28 +562,28 @@ public class JComponentTest extends SwingTestCase {
 
         action1.eventHeard = null;
         component3.processKeyEvent(event22);
-        assertTrue("event2: wrong actionPerformed called for parent", action1.eventHeard == null);
+        assertNull("event2: wrong actionPerformed called for parent", action1.eventHeard);
         assertTrue("event2: right actionPerformed called for parent", action2.eventHeard != null);
         assertTrue(event22.isConsumed());
 
         action2.eventHeard = null;
         component3.processKeyEvent(event33);
-        assertTrue("event3: actionPerformed called for parent", action1.eventHeard == null);
-        assertTrue("event3: actionPerformed called for brother", action2.eventHeard == null);
+        assertNull("event3: actionPerformed called for parent", action1.eventHeard);
+        assertNull("event3: actionPerformed called for brother", action2.eventHeard);
         assertTrue("event3: actionPerformed called for component", action3.eventHeard != null);
         assertTrue(event33.isConsumed());
 
         action3.eventHeard = null;
         component3.processKeyEvent(event42);
-        assertTrue("event4: actionPerformed called for parent", action1.eventHeard == null);
-        assertTrue("event4: actionPerformed called for brother", action2.eventHeard == null);
-        assertTrue("event4: actionPerformed called for component", action3.eventHeard == null);
-        assertTrue("event4: actionPerformed called for brother", action41.eventHeard == null);
+        assertNull("event4: actionPerformed called for parent", action1.eventHeard);
+        assertNull("event4: actionPerformed called for brother", action2.eventHeard);
+        assertNull("event4: actionPerformed called for component", action3.eventHeard);
+        assertNull("event4: actionPerformed called for brother", action41.eventHeard);
         assertTrue("event4: actionPerformed called for brother", action43.eventHeard != null);
         assertTrue(event42.isConsumed());
 
         component3.processKeyEvent(event51);
-        assertTrue("event5: actionPerformed called for parent", action51.eventHeard == null);
+        assertNull("event5: actionPerformed called for parent", action51.eventHeard);
         assertTrue("event5: actionPerformed called for parent", action53.eventHeard != null);
         assertTrue(event51.isConsumed());
 
@@ -598,7 +598,7 @@ public class JComponentTest extends SwingTestCase {
         action52.eventHeard = null;
         action54.eventHeard = null;
         panel2.processKeyEvent(event6);
-        assertTrue("event6: actionPerformed called for parent", action52.eventHeard == null);
+        assertNull("event6: actionPerformed called for parent", action52.eventHeard);
         assertTrue("event6: actionPerformed called for parent", action54.eventHeard != null);
         assertTrue(event6.isConsumed());
 
@@ -607,7 +607,7 @@ public class JComponentTest extends SwingTestCase {
         event6 = new KeyEvent(editor, KeyEvent.KEY_PRESSED, 0, 0, KeyEvent.VK_ENTER, '\n');
         panel1.processKeyEvent(event6);
         assertTrue("event6: actionPerformed called for parent", action52.eventHeard != null);
-        assertTrue("event6: actionPerformed called for parent", action54.eventHeard == null);
+        assertNull("event6: actionPerformed called for parent", action54.eventHeard);
         assertTrue(event6.isConsumed());
     }
 
@@ -768,7 +768,7 @@ public class JComponentTest extends SwingTestCase {
         PropertyChangeController changeListener = new PropertyChangeController();
 
         panel.addPropertyChangeListener(changeListener);
-        assertTrue(panel.getBorder() == null);
+        assertNull(panel.getBorder());
 
         Border newBorder1 = new EmptyBorder(10, 10, 10, 10);
         Border newBorder2 = new EmptyBorder(20, 20, 20, 20);
@@ -809,7 +809,7 @@ public class JComponentTest extends SwingTestCase {
     }
 
     public void testGetBorder() {
-        assertTrue(panel.getBorder() == null);
+        assertNull(panel.getBorder());
     }
 
     public void testGetAlignmentX() {
@@ -1115,7 +1115,7 @@ public class JComponentTest extends SwingTestCase {
         Object value2 = "property2";
         String key1 = "value1";
 
-        assertTrue(panel.getClientProperty(key1) == null);
+        assertNull(panel.getClientProperty(key1));
         assertFalse("event's not fired", changeListener.isChanged());
 
         panel.putClientProperty(key1, value1);
@@ -1130,7 +1130,7 @@ public class JComponentTest extends SwingTestCase {
 
         panel.putClientProperty(key1, null);
         changeListener.checkLastPropertyFired(panel, key1, value2, null);
-        assertTrue(panel.getClientProperty(key1) == null);
+        assertNull(panel.getClientProperty(key1));
         changeListener.reset();
     }
 
@@ -1521,7 +1521,7 @@ public class JComponentTest extends SwingTestCase {
         TransferHandler handler1 = new TransferHandler("1");
         TransferHandler handler2 = new TransferHandler("1");
 
-        assertEquals("transferHandler is not set by default ", null, panel.getTransferHandler());
+        assertNull("transferHandler is not set by default ", panel.getTransferHandler());
 
         panel1.setTransferHandler(handler1);
         assertEquals("transferHandler's set properly ", handler1, panel1.getTransferHandler());
@@ -1560,7 +1560,7 @@ public class JComponentTest extends SwingTestCase {
         assertTrue(panel.getActionForKeyStroke(keyStroke3) == action3);
 
         panel.registerKeyboardAction(null, command3, keyStroke3, JComponent.WHEN_FOCUSED);
-        assertTrue(panel.getActionForKeyStroke(keyStroke3) == null);
+        assertNull(panel.getActionForKeyStroke(keyStroke3));
     }
 
     public void testProcessKeyBinding() throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
@@ -1589,14 +1589,14 @@ public class JComponentTest extends SwingTestCase {
         assertTrue(result);
 
         result = panel.processKeyBinding(keyStroke2, keyEvent2, JComponent.WHEN_FOCUSED, true);
-        assertTrue(action2.eventHeard == null);
+        assertNull(action2.eventHeard);
         assertFalse(result);
 
         result = panel.processKeyBinding(keyStroke2, keyEvent2, JComponent.WHEN_IN_FOCUSED_WINDOW, false);
-        assertTrue(action2.eventHeard == null);
+        assertNull(action2.eventHeard);
         assertFalse(result);
         result = panel.processKeyBinding(keyStroke2, keyEvent2, JComponent.WHEN_IN_FOCUSED_WINDOW, true);
-        assertTrue(action2.eventHeard == null);
+        assertNull(action2.eventHeard);
         assertFalse(result);
 
         result = panel.processKeyBinding(keyStroke2, keyEvent2, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, false);
@@ -1613,7 +1613,7 @@ public class JComponentTest extends SwingTestCase {
 
         result = panel.processKeyBinding(keyStroke3, keyEvent3, JComponent.WHEN_IN_FOCUSED_WINDOW, true);
         assertTrue(action3.eventHeard != null && action3.eventHeard.getActionCommand() == command3);
-        assertEquals(result, true);
+        assertTrue(result);
 
         Action action = new AbstractAction() {
             public void actionPerformed(final ActionEvent e) {
@@ -1623,17 +1623,17 @@ public class JComponentTest extends SwingTestCase {
         panel.getActionMap().put("asdasda", action);
         action.setEnabled(false);
         result = panel.processKeyBinding(keyStroke4, keyEvent4, JComponent.WHEN_IN_FOCUSED_WINDOW, true);
-        assertEquals(result, false);
+        assertFalse(result);
 
         action.setEnabled(true);
         panel.setEnabled(false);
         result = panel.processKeyBinding(keyStroke4, keyEvent4, JComponent.WHEN_IN_FOCUSED_WINDOW, true);
-        assertEquals(result, false);
+        assertFalse(result);
 
         panel.setEnabled(true);
         panel.setVisible(false);
         result = panel.processKeyBinding(keyStroke4, keyEvent4, JComponent.WHEN_IN_FOCUSED_WINDOW, true);
-        assertEquals(result, true);
+        assertTrue(result);
     }
 
     public void testGetActionForKeyStroke() {
@@ -1659,7 +1659,7 @@ public class JComponentTest extends SwingTestCase {
         assertTrue(panel.getActionForKeyStroke(keyStroke3) == action3);
 
         panel.registerKeyboardAction(null, keyStroke3, JComponent.WHEN_FOCUSED);
-        assertTrue(panel.getActionForKeyStroke(keyStroke3) == null);
+        assertNull(panel.getActionForKeyStroke(keyStroke3));
   }
 
     /*
@@ -1685,24 +1685,24 @@ public class JComponentTest extends SwingTestCase {
         assertTrue(panel.getActionForKeyStroke(keyStroke3) == action3);
 
         panel.unregisterKeyboardAction(keyStroke1);
-        assertTrue(panel.getActionForKeyStroke(keyStroke1) == null);
+        assertNull(panel.getActionForKeyStroke(keyStroke1));
         assertTrue(panel.getActionForKeyStroke(keyStroke2) == action2);
         assertTrue(panel.getActionForKeyStroke(keyStroke3) == action3);
 
         panel.unregisterKeyboardAction(keyStroke2);
-        assertTrue(panel.getActionForKeyStroke(keyStroke1) == null);
-        assertTrue(panel.getActionForKeyStroke(keyStroke2) == null);
+        assertNull(panel.getActionForKeyStroke(keyStroke1));
+        assertNull(panel.getActionForKeyStroke(keyStroke2));
         assertTrue(panel.getActionForKeyStroke(keyStroke3) == action3);
 
         panel.unregisterKeyboardAction(keyStroke3);
-        assertTrue(panel.getActionForKeyStroke(keyStroke1) == null);
-        assertTrue(panel.getActionForKeyStroke(keyStroke2) == null);
-        assertTrue(panel.getActionForKeyStroke(keyStroke3) == null);
+        assertNull(panel.getActionForKeyStroke(keyStroke1));
+        assertNull(panel.getActionForKeyStroke(keyStroke2));
+        assertNull(panel.getActionForKeyStroke(keyStroke3));
 
         panel.registerKeyboardAction(action1, keyStroke1, JComponent.WHEN_FOCUSED);
         panel.registerKeyboardAction(action2, keyStroke1, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         panel.unregisterKeyboardAction(keyStroke1);
-        assertTrue(panel.getActionForKeyStroke(keyStroke1) == null);
+        assertNull(panel.getActionForKeyStroke(keyStroke1));
         assertTrue(panel.getActionMap().size() == 0);
     }
 
@@ -1805,16 +1805,16 @@ public class JComponentTest extends SwingTestCase {
         assertTrue(panel.getActionForKeyStroke(keyStroke3) == action3);
 
         panel.resetKeyboardActions();
-        assertTrue(panel.getActionForKeyStroke(keyStroke1) == null);
-        assertTrue(panel.getActionForKeyStroke(keyStroke2) == null);
-        assertTrue(panel.getActionForKeyStroke(keyStroke3) == null);
+        assertNull(panel.getActionForKeyStroke(keyStroke1));
+        assertNull(panel.getActionForKeyStroke(keyStroke2));
+        assertNull(panel.getActionForKeyStroke(keyStroke3));
     }
 
     public void testGetRootPane() {
         JFrame mainFrame = new JFrame();
         JRootPane rootPane = new JRootPane();
 
-        assertTrue(panel.getRootPane() == null);
+        assertNull(panel.getRootPane());
 
         mainFrame.getContentPane().add(panel);
         assertTrue(panel.getRootPane() != null);
@@ -1825,7 +1825,7 @@ public class JComponentTest extends SwingTestCase {
         assertTrue(panel.getRootPane() == rootPane);
 
         rootPane.getContentPane().remove(panel);
-        assertTrue(panel.getRootPane() == null);
+        assertNull(panel.getRootPane());
         mainFrame.dispose();
     }
 
@@ -1869,7 +1869,7 @@ public class JComponentTest extends SwingTestCase {
             }
         };
 
-        assertEquals("There's not inputVerifier set by default", null, panel.getInputVerifier());
+        assertNull("There's not inputVerifier set by default", panel.getInputVerifier());
 
         panel.setInputVerifier(verifier1);
         assertEquals("InputVerifier set properly: ", verifier1, panel.getInputVerifier());
@@ -1899,7 +1899,7 @@ public class JComponentTest extends SwingTestCase {
         assertTrue(panel.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT) == map3);
 
         panel.setInputMap(JComponent.WHEN_FOCUSED, null);
-        assertTrue(panel.getInputMap(JComponent.WHEN_FOCUSED) == null);
+        assertNull(panel.getInputMap(JComponent.WHEN_FOCUSED));
 
         boolean isThrown = false;
         try {
@@ -2033,7 +2033,7 @@ public class JComponentTest extends SwingTestCase {
         assertTrue(panel.getToolTipText().equals(toolTipText2));
 
         panel.setToolTipText(null);
-        assertTrue(panel.getToolTipText() == null);
+        assertNull(panel.getToolTipText());
     }
 
     /*
@@ -2043,7 +2043,7 @@ public class JComponentTest extends SwingTestCase {
         String toolTipText1 = "toolTipText1";
         String toolTipText2 = "toolTipText2";
 
-        assertTrue(panel.getToolTipText() == null);
+        assertNull(panel.getToolTipText());
 
         panel.setToolTipText(toolTipText1);
         assertTrue(panel.getToolTipText().equals(toolTipText1));
@@ -2052,7 +2052,7 @@ public class JComponentTest extends SwingTestCase {
         assertTrue(panel.getToolTipText().equals(toolTipText2));
 
         panel.setToolTipText(null);
-        assertTrue(panel.getToolTipText() == null);
+        assertNull(panel.getToolTipText());
     }
 
     /*
@@ -2063,7 +2063,7 @@ public class JComponentTest extends SwingTestCase {
         String toolTipText1 = "toolTipText1";
         String toolTipText2 = "toolTipText2";
 
-        assertTrue(panel.getToolTipText(event) == null);
+        assertNull(panel.getToolTipText(event));
 
         panel.setToolTipText(toolTipText1);
         assertTrue(panel.getToolTipText(event).equals(toolTipText1));
@@ -2074,8 +2074,8 @@ public class JComponentTest extends SwingTestCase {
         assertTrue(panel.getToolTipText(null).equals(toolTipText2));
 
         panel.setToolTipText(null);
-        assertTrue(panel.getToolTipText(event) == null);
-        assertTrue(panel.getToolTipText(null) == null);
+        assertNull(panel.getToolTipText(event));
+        assertNull(panel.getToolTipText(null));
     }
 
     public void testGetToolTipLocation() {
@@ -2083,8 +2083,8 @@ public class JComponentTest extends SwingTestCase {
         int y = 200;
         MouseEvent event = new MouseEvent(panel, 0, 0, 0, x, y, 0, false);
 
-        assertTrue(panel.getToolTipLocation(event) == null);
-        assertTrue(panel.getToolTipLocation(null) == null);
+        assertNull(panel.getToolTipLocation(event));
+        assertNull(panel.getToolTipLocation(null));
     }
 
     public void testCreateToolTip() {
@@ -2093,17 +2093,17 @@ public class JComponentTest extends SwingTestCase {
 
         toolTip = panel.createToolTip();
         assertTrue(toolTip.getComponent() == panel);
-        assertTrue(toolTip.getTipText() == null);
+        assertNull(toolTip.getTipText());
 
         panel.setToolTipText(toolTipText1);
         toolTip = panel.createToolTip();
         assertTrue(toolTip.getComponent() == panel);
-        assertTrue(toolTip.getTipText() == null);
+        assertNull(toolTip.getTipText());
 
         JPanel panel2 = new JPanel();
         toolTip = panel2.createToolTip();
         assertTrue(toolTip.getComponent() == panel2);
-        assertTrue(toolTip.getTipText() == null);
+        assertNull(toolTip.getTipText());
     }
 
     /*
@@ -2251,7 +2251,7 @@ public class JComponentTest extends SwingTestCase {
         JFrame mainFrame = new JFrame();
         JDialog dialog = new JDialog();
 
-        assertTrue(panel.getTopLevelAncestor() == null);
+        assertNull(panel.getTopLevelAncestor());
 
         mainFrame.getContentPane().add(panel);
         assertTrue(panel.getTopLevelAncestor() == mainFrame);
@@ -2260,7 +2260,7 @@ public class JComponentTest extends SwingTestCase {
         assertTrue(panel.getTopLevelAncestor() == dialog);
 
         dialog.getContentPane().remove(panel);
-        assertTrue(panel.getTopLevelAncestor() == null);
+        assertNull(panel.getTopLevelAncestor());
         mainFrame.dispose();
     }
 
@@ -2291,17 +2291,17 @@ public class JComponentTest extends SwingTestCase {
         container.setFocusCycleRoot(true);
         container.setFocusTraversalPolicy(new DefaultFocusTraversalPolicy());
         panel1.setNextFocusableComponent(panel2);
-        assertEquals(null, container.getFocusTraversalPolicy().getComponentBefore(container, panel1));
+        assertNull(container.getFocusTraversalPolicy().getComponentBefore(container, panel1));
         assertEquals(panel2, container.getFocusTraversalPolicy().getComponentAfter(container, panel1));
         assertEquals(panel1, container.getFocusTraversalPolicy().getComponentBefore(container, panel2));
-        assertEquals(null, container.getFocusTraversalPolicy().getComponentAfter(container, panel2));
+        assertNull(container.getFocusTraversalPolicy().getComponentAfter(container, panel2));
     }
 
     public void testGetNextFocusableComponent() {
         JComponent panel1 = new JPanel();
         JComponent panel2 = new JPanel();
 
-        assertEquals("default nextFocusableComponent isn't set ", null, panel.getNextFocusableComponent());
+        assertNull("default nextFocusableComponent isn't set ", panel.getNextFocusableComponent());
 
         panel.setNextFocusableComponent(panel1);
         assertEquals("nextFocusableComponent set correctly ", panel1, panel.getNextFocusableComponent());
@@ -2384,26 +2384,26 @@ public class JComponentTest extends SwingTestCase {
     }
 
     public void testIsRequestFocusEnabled() {
-        assertEquals("default value for requestFocusEnabled ", true, panel.isRequestFocusEnabled());
+        assertTrue("default value for requestFocusEnabled ", panel.isRequestFocusEnabled());
     }
 
     public void testSetRequestFocusEnabled() {
         panel.setRequestFocusEnabled(false);
-        assertEquals("value for requestFocusEnabled set correctly ", false, panel.isRequestFocusEnabled());
+        assertFalse("value for requestFocusEnabled set correctly ", panel.isRequestFocusEnabled());
 
         panel.setRequestFocusEnabled(true);
-        assertEquals("value for requestFocusEnabled set correctly ", true, panel.isRequestFocusEnabled());
+        assertTrue("value for requestFocusEnabled set correctly ", panel.isRequestFocusEnabled());
     }
 
     public void testSetDoubleBuffered() {
         panel.setDoubleBuffered(true);
-        assertEquals("now panel is doubleBuffered ", true, panel.isDoubleBuffered());
+        assertTrue("now panel is doubleBuffered ", panel.isDoubleBuffered());
 
         panel.setDoubleBuffered(false);
-        assertEquals("now panel is not doubleBuffered ", false, panel.isDoubleBuffered());
+        assertFalse("now panel is not doubleBuffered ", panel.isDoubleBuffered());
 
         panel.setDoubleBuffered(true);
-        assertEquals("now panel is doubleBuffered ", true, panel.isDoubleBuffered());
+        assertTrue("now panel is doubleBuffered ", panel.isDoubleBuffered());
     }
 
     /*
@@ -2526,25 +2526,25 @@ public class JComponentTest extends SwingTestCase {
     }
 
     public void testIsValidateRoot() {
-        assertEquals("isValidateRoot always returns false ", false, panel.isValidateRoot());
+        assertFalse("isValidateRoot always returns false ", panel.isValidateRoot());
     }
 
     public void testIsOptimizedDrawingEnabled() {
-        assertEquals("isOptimizedDrawingEnabled always returns true ", true, panel.isOptimizedDrawingEnabled());
+        assertTrue("isOptimizedDrawingEnabled always returns true ", panel.isOptimizedDrawingEnabled());
     }
 
     public void testIsManagingFocus() {
-        assertEquals("isManagingFocus always returns false ", false, panel.isManagingFocus());
+        assertFalse("isManagingFocus always returns false ", panel.isManagingFocus());
     }
 
     public void testGetVerifyInputWhenFocusTarget() {
-        assertEquals("default verifyInputWhenFocusTarget value", true, panel.getVerifyInputWhenFocusTarget());
+        assertTrue("default verifyInputWhenFocusTarget value", panel.getVerifyInputWhenFocusTarget());
 
         panel.setVerifyInputWhenFocusTarget(false);
-        assertEquals("verifyInputWhenFocusTarget value set properly ", false, panel.getVerifyInputWhenFocusTarget());
+        assertFalse("verifyInputWhenFocusTarget value set properly ", panel.getVerifyInputWhenFocusTarget());
 
         panel.setVerifyInputWhenFocusTarget(true);
-        assertEquals("verifyInputWhenFocusTarget value set properly ", true, panel.getVerifyInputWhenFocusTarget());
+        assertTrue("verifyInputWhenFocusTarget value set properly ", panel.getVerifyInputWhenFocusTarget());
     }
 
     public void testSetAutoscrolls() {
@@ -2615,7 +2615,7 @@ public class JComponentTest extends SwingTestCase {
             listener1.checkPropertyFired(panel, "inheritsPopupMenu",
                                          Boolean.FALSE, Boolean.TRUE);
         }
-        assertEquals("InheritsPopupMenu", true, panel.getInheritsPopupMenu());
+        assertTrue("InheritsPopupMenu", panel.getInheritsPopupMenu());
         listener1.reset();
 
         panel.setInheritsPopupMenu(false);
@@ -2623,7 +2623,7 @@ public class JComponentTest extends SwingTestCase {
             listener1.checkPropertyFired(panel, "inheritsPopupMenu",
                                          Boolean.TRUE, Boolean.FALSE);
         }
-        assertEquals("InheritsPopupMenu", false, panel.getInheritsPopupMenu());
+        assertFalse("InheritsPopupMenu", panel.getInheritsPopupMenu());
         listener1.reset();
 
         panel.setInheritsPopupMenu(false);
@@ -2631,7 +2631,7 @@ public class JComponentTest extends SwingTestCase {
     }
 
     public void testGetInheritsPopupMenu() {
-        assertEquals("InheritsPopupMenu", false, panel.getInheritsPopupMenu());
+        assertFalse("InheritsPopupMenu", panel.getInheritsPopupMenu());
     }
 
     public void testSetComponentPopupMenu() {
@@ -2663,7 +2663,7 @@ public class JComponentTest extends SwingTestCase {
     }
 
     public void testGetComponentPopupMenu() {
-        assertEquals("ComponentPopupMenu", null, panel.getComponentPopupMenu());
+        assertNull("ComponentPopupMenu", panel.getComponentPopupMenu());
 
         JPanel parent = new JPanel();
         parent.add(panel);
@@ -2682,13 +2682,13 @@ public class JComponentTest extends SwingTestCase {
         assertEquals("ComponentPopupMenu", popup2, panel.getComponentPopupMenu());
 
         panel.setInheritsPopupMenu(false);
-        assertEquals("ComponentPopupMenu", null, panel.getComponentPopupMenu());
+        assertNull("ComponentPopupMenu", panel.getComponentPopupMenu());
     }
 
     public void testGetPopupLocation() {
         panel.setPreferredSize(new Dimension(100, 100));
         MouseEvent event = new MouseEvent(panel, 0, 0, 0, 10, 20, 1, true);
-        assertEquals("PopupLocation", null, panel.getPopupLocation(event));
+        assertNull("PopupLocation", panel.getPopupLocation(event));
     }
 
     private void removeListeners(final JComponent comp, final Class c) {

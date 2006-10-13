@@ -108,23 +108,23 @@ public class JPanelTest extends SwingTestCase {
      */
     public void testJPanelboolean() {
         panel = new JPanel(true);
-        assertTrue(panel.isOpaque() == true);
+        assertTrue(panel.isOpaque());
         assertTrue(panel.getLayout().getClass() == FlowLayout.class);
-        assertTrue(panel.isDoubleBuffered() == true);
+        assertTrue(panel.isDoubleBuffered());
 
         panel = new JPanel(false);
-        assertTrue(panel.isOpaque() == true);
+        assertTrue(panel.isOpaque());
         assertTrue(panel.getLayout().getClass() == FlowLayout.class);
-        assertTrue(panel.isDoubleBuffered() == false);
+        assertFalse(panel.isDoubleBuffered());
     }
 
     /*
      * Class under test for void JPanel()
      */
     public void testJPanel() {
-        assertTrue(panel.isOpaque() == true);
+        assertTrue(panel.isOpaque());
         assertTrue(panel.getLayout().getClass() == FlowLayout.class);
-        assertTrue(panel.isDoubleBuffered() == true);
+        assertTrue(panel.isDoubleBuffered());
     }
 
     /*

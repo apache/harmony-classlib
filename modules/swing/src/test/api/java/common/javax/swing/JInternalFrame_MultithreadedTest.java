@@ -140,7 +140,7 @@ public class JInternalFrame_MultithreadedTest extends BasicSwingTestCase {
         frame.getContentPane().add(def, BorderLayout.SOUTH);
         frame.getContentPane().add(some, BorderLayout.CENTER);
 
-        assertTrue("null by default", frame.getMostRecentFocusOwner() == null);
+        assertNull("null by default", frame.getMostRecentFocusOwner());
 
         class MyFocusTraversalPolicy extends SortingFocusTraversalPolicy {
             Component initial;
@@ -198,7 +198,7 @@ public class JInternalFrame_MultithreadedTest extends BasicSwingTestCase {
         frame.getContentPane().add(comp2, BorderLayout.SOUTH);
         frame.getContentPane().add(comp3, BorderLayout.CENTER);
 
-        assertTrue("== null", frame.getFocusOwner() == null);
+        assertNull("== null", frame.getFocusOwner());
 
         createAndShowRootFrame();
 
@@ -209,6 +209,6 @@ public class JInternalFrame_MultithreadedTest extends BasicSwingTestCase {
 
         // frame is not selected
         setSelectedFrame(frame, false);
-        assertTrue("== null", frame.getFocusOwner() == null);
+        assertNull("== null", frame.getFocusOwner());
     }
 }

@@ -162,15 +162,15 @@ public class JLayeredPaneTest extends SwingTestCase {
 
     public void testIsOptimizedDrawingEnabled() {
         // no components
-        assertEquals(true, layered.isOptimizedDrawingEnabled());
+        assertTrue(layered.isOptimizedDrawingEnabled());
 
         // 1 component
         layered.add(new JPanel());
-        assertEquals(true, layered.isOptimizedDrawingEnabled());
+        assertTrue(layered.isOptimizedDrawingEnabled());
 
         // many components
         addComponents();
-        assertEquals(false, layered.isOptimizedDrawingEnabled());
+        assertFalse(layered.isOptimizedDrawingEnabled());
     }
 
     public void testHighestLayer() {
@@ -212,9 +212,9 @@ public class JLayeredPaneTest extends SwingTestCase {
                    c instanceof JLayeredPane.AccessibleJLayeredPane);
         assertTrue("AccessibleRole is ok",
                 c.getAccessibleRole() == AccessibleRole.LAYERED_PANE);
-        assertTrue("AccessibleName is ok", c.getAccessibleName() == null);
-        assertTrue("AccessibleDescription is ok",
-                   c.getAccessibleDescription() == null);
+        assertNull("AccessibleName is ok", c.getAccessibleName());
+        assertNull("AccessibleDescription is ok",
+                   c.getAccessibleDescription());
         assertTrue("AccessibleChildrenCount == 0",
                    c.getAccessibleChildrenCount() == 0);
     }
@@ -471,9 +471,9 @@ public class JLayeredPaneTest extends SwingTestCase {
     public void testGetLayeredPaneAboveComponent() {
         // can't use c5_0 and others because they have
         // previous JLayeredPane as their parent
-        assertEquals(null, JLayeredPane.getLayeredPaneAbove(new JPanel()));
+        assertNull(JLayeredPane.getLayeredPaneAbove(new JPanel()));
 
-        assertEquals(null, JLayeredPane.getLayeredPaneAbove(null));
+        assertNull(JLayeredPane.getLayeredPaneAbove(null));
 
         addComponents();
         assertTrue(JLayeredPane.getLayeredPaneAbove(c5_0) == layered);

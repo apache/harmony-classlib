@@ -170,7 +170,7 @@ public class JTreeTest extends BasicSwingTestCase {
 
         assertNotNull(tree.selectionModel);
         assertNull(tree.selectionRedirector);
-        assertEquals(null, tree.treeModel);
+        assertNull(tree.treeModel);
         if (isHarmony()) {
             assertNotNull(tree.treeModelListener);
         } else {

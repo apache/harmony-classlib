@@ -475,8 +475,8 @@ public class JPopupMenuTest extends SwingTestCase {
         assertEquals("text ", text, menuItem.getText());
         assertNull("action", menuItem.getAction());
         assertEquals("command ", text, menuItem.getActionCommand());
-        assertEquals("selected ", false, menuItem.isSelected());
-        assertEquals("enabled ", true, menuItem.isEnabled());
+        assertFalse("selected ", menuItem.isSelected());
+        assertTrue("enabled ", menuItem.isEnabled());
     }
 
     /*
