@@ -139,12 +139,12 @@ public class DNSContextTest extends TestCase {
         env.put(DNSContext.THREADS_MAX, "17");
         env.put(Context.PROVIDER_URL, "dns://superdns.com/intel.com");
         context = (DNSContext)new DNSContextFactory().getInitialContext(env);
-        assertEquals(true, TestMgr.getBoolField(context, "authoritative"));
+        assertTrue(TestMgr.getBoolField(context, "authoritative"));
         assertEquals(ProviderConstants.A_TYPE,
                 TestMgr.getIntField(context, "lookupAttrType"));
         assertEquals(ProviderConstants.IN_CLASS,
                 TestMgr.getIntField(context, "lookupAttrClass"));
-        assertEquals(true, TestMgr.getBoolField(context, "recursion"));
+        assertTrue(TestMgr.getBoolField(context, "recursion"));
         assertEquals(5000, TestMgr.getIntField(context, "timeoutInitial"));
         assertEquals(5, TestMgr.getIntField(context, "timeoutRetries"));
         assertEquals(17, TestMgr.getIntField(context, "maxThreads"));
@@ -154,12 +154,12 @@ public class DNSContextTest extends TestCase {
         env.put(DNSContext.RECURSION, "trueee");
         env.remove(DNSContext.THREADS_MAX);
         context = (DNSContext)new DNSContextFactory().getInitialContext(env);
-        assertEquals(false, TestMgr.getBoolField(context, "authoritative"));
+        assertFalse(TestMgr.getBoolField(context, "authoritative"));
         assertEquals(ProviderConstants.MX_TYPE,
                 TestMgr.getIntField(context, "lookupAttrType"));
         assertEquals(ProviderConstants.IN_CLASS,
                 TestMgr.getIntField(context, "lookupAttrClass"));
-        assertEquals(false, TestMgr.getBoolField(context, "recursion"));
+        assertFalse(TestMgr.getBoolField(context, "recursion"));
         assertEquals(ProviderConstants.DEFAULT_MAX_THREADS,
                 TestMgr.getIntField(context, "maxThreads"));
 
@@ -243,7 +243,7 @@ public class DNSContextTest extends TestCase {
         // remove from environment
         context.removeFromEnvironment(DNSContext.TIMEOUT_INITIAL);
         env2 = context.getEnvironment();
-        assertEquals(null, env2.get(DNSContext.TIMEOUT_INITIAL));        
+        assertNull(env2.get(DNSContext.TIMEOUT_INITIAL));        
     }
     
 //    public void testConstructCannotProceedException() {

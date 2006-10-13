@@ -57,7 +57,7 @@ public class NameClassPairTest extends TestCase {
 		p = new NameClassPair("name2", "class2", false);
 		assertEquals("name2", p.getName());
 		assertEquals("class2", p.getClassName());
-		assertEquals(false, p.isRelative());
+		assertFalse(p.isRelative());
 	}
 
 	public void testConstructor_NullValue() {
@@ -65,14 +65,14 @@ public class NameClassPairTest extends TestCase {
 
 		p = new NameClassPair("name1", null);
 		assertEquals("name1", p.getName());
-		assertTrue(null == p.getClassName());
+		assertNull(p.getClassName());
 	}
 
 	public void testConstructor_DefaultRelativeValue() {
 		NameClassPair p;
 
 		p = new NameClassPair("name1", null);
-		assertEquals(true, p.isRelative());
+		assertTrue(p.isRelative());
 	}
 
 	public void testToString() {
@@ -103,6 +103,6 @@ public class NameClassPairTest extends TestCase {
 
 		p = new NameClassPair("name1", null, true);
 		p.setRelative(false);
-		assertEquals(false, p.isRelative());
+		assertFalse(p.isRelative());
 	}
 }

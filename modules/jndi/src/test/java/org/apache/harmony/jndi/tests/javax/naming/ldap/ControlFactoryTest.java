@@ -115,7 +115,7 @@ public class ControlFactoryTest extends TestCase {
 		Control newControl = ControlFactory.getControlInstance(null, context,
 				new Hashtable<Object, Object>());
 
-		assertEquals(null, newControl);
+		assertNull(newControl);
 		assertSame(null, newControl);
 	}
 

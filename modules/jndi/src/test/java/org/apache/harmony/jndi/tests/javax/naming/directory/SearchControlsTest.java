@@ -38,9 +38,9 @@ public class SearchControlsTest extends TestCase {
 		assertEquals(SearchControls.ONELEVEL_SCOPE, ctrl.getSearchScope());
 		assertEquals(0, ctrl.getCountLimit());
 		assertEquals(0, ctrl.getTimeLimit());
-		assertEquals(null, ctrl.getReturningAttributes());
-		assertEquals(false, ctrl.getDerefLinkFlag());
-		assertEquals(false, ctrl.getReturningObjFlag());
+		assertNull(ctrl.getReturningAttributes());
+		assertFalse(ctrl.getDerefLinkFlag());
+		assertFalse(ctrl.getReturningObjFlag());
 	}
 
 	/*
@@ -57,8 +57,8 @@ public class SearchControlsTest extends TestCase {
 		assertEquals(200, ctrl.getTimeLimit());
 		assertTrue(Arrays.equals(new String[] { "id1", "id2" }, ctrl
 				.getReturningAttributes()));
-		assertEquals(true, ctrl.getDerefLinkFlag());
-		assertEquals(true, ctrl.getReturningObjFlag());
+		assertTrue(ctrl.getDerefLinkFlag());
+		assertTrue(ctrl.getReturningObjFlag());
 	}
 
 	public void testSearchControls_Illegal_Scope() {
@@ -101,8 +101,8 @@ public class SearchControlsTest extends TestCase {
 		assertEquals(200, ctrl.getTimeLimit());
 		assertTrue(Arrays.equals(new String[] { "id1", "id2" }, ctrl
 				.getReturningAttributes()));
-		assertEquals(true, ctrl.getDerefLinkFlag());
-		assertEquals(true, ctrl.getReturningObjFlag());
+		assertTrue(ctrl.getDerefLinkFlag());
+		assertTrue(ctrl.getReturningObjFlag());
 	}
 
 	/*

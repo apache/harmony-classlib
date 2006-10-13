@@ -40,7 +40,7 @@ public class SearchResultTest extends TestCase {
 		assertEquals("name", r.getName());
 		assertEquals("obj", r.getObject());
 		assertEquals(attrs, r.getAttributes());
-		assertEquals(true, r.isRelative());
+		assertTrue(r.isRelative());
 	}
 
 	/*
@@ -55,7 +55,7 @@ public class SearchResultTest extends TestCase {
 		assertEquals("name", r.getName());
 		assertEquals("obj", r.getObject());
 		assertEquals(attrs, r.getAttributes());
-		assertEquals(false, r.isRelative());
+		assertFalse(r.isRelative());
 	}
 
 	/*
@@ -70,7 +70,7 @@ public class SearchResultTest extends TestCase {
 		assertEquals("name", r.getName());
 		assertEquals("obj", r.getObject());
 		assertEquals(attrs, r.getAttributes());
-		assertEquals(true, r.isRelative());
+		assertTrue(r.isRelative());
 	}
 
 	/*
@@ -85,7 +85,7 @@ public class SearchResultTest extends TestCase {
 		assertEquals("name", r.getName());
 		assertEquals("obj", r.getObject());
 		assertEquals(attrs, r.getAttributes());
-		assertEquals(false, r.isRelative());
+		assertFalse(r.isRelative());
 	}
 
 	public void testSearchResult_NullAttributes() {
@@ -105,7 +105,7 @@ public class SearchResultTest extends TestCase {
 		SearchResult r;
 
 		r = new SearchResult("name", "obj", null);
-		assertEquals(null, r.getAttributes());
+		assertNull(r.getAttributes());
 		r.setAttributes(attrs);
 		assertEquals(attrs, r.getAttributes());
 	}

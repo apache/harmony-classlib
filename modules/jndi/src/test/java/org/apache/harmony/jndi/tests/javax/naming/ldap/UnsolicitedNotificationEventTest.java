@@ -78,7 +78,7 @@ public class UnsolicitedNotificationEventTest extends TestCase {
 				src, null);
 
 		assertEquals(src, event.getSource());
-		assertEquals(null, event.getNotification());
+		assertNull(event.getNotification());
 	}
 
 	public void testDispatch() {

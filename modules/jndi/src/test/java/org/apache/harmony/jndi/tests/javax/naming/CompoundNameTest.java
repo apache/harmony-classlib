@@ -1310,15 +1310,15 @@ public class CompoundNameTest extends TestCase {
 		CompoundName name;
 
 		name = new CompoundName("a/b/c/d", props);
-		assertTrue(false == name.isEmpty());
+		assertFalse(name.isEmpty());
 		name.remove(0);
-		assertTrue(false == name.isEmpty());
+		assertFalse(name.isEmpty());
 		name.remove(0);
-		assertTrue(false == name.isEmpty());
+		assertFalse(name.isEmpty());
 		name.remove(0);
-		assertTrue(false == name.isEmpty());
+		assertFalse(name.isEmpty());
 		name.remove(0);
-		assertTrue(true == name.isEmpty());
+		assertTrue(name.isEmpty());
 	}
 
 	public void testStartsWith() throws InvalidNameException {

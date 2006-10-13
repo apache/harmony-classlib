@@ -63,7 +63,7 @@ public class NamingManagerExploreTest extends TestCase {
 		String obj = "String object";
 		context.bind(name, obj);
 
-		assertEquals(InvokeRecord.getLatestUrlSchema(), null);
+		assertNull(InvokeRecord.getLatestUrlSchema());
 	}
 
 	public void testFactoryBuilder_name() throws IllegalStateException,
@@ -92,7 +92,7 @@ public class NamingManagerExploreTest extends TestCase {
 		String obj = "Name object";
 		context.bind(name, obj);
 
-		assertEquals(InvokeRecord.getLatestUrlSchema(), null);
+		assertNull(InvokeRecord.getLatestUrlSchema());
 	}
 
 	class MyInitialContext extends InitialContext {

@@ -57,7 +57,7 @@ public class BindingTest extends TestCase {
 		assertEquals("name1", p.getName());
 		assertEquals("java.lang.Integer", p.getClassName());
 		assertEquals(new Integer(1), p.getObject());
-		assertEquals(true, p.isRelative());
+		assertTrue(p.isRelative());
 	}
 
 	public void testConstructor_NullValue() {
@@ -65,15 +65,15 @@ public class BindingTest extends TestCase {
 
 		p = new Binding("name1", null, null);
 		assertEquals("name1", p.getName());
-		assertTrue(null == p.getClassName());
-		assertTrue(null == p.getObject());
+		assertNull(p.getClassName());
+		assertNull(p.getObject());
 	}
 
 	public void testConstructor_DefaultRelativeValue() {
 		Binding p;
 
 		p = new Binding("name1", null);
-		assertEquals(true, p.isRelative());
+		assertTrue(p.isRelative());
 	}
 
 	public void testToString() {

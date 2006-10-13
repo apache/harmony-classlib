@@ -37,13 +37,13 @@ public class DNSPseudoURLTest extends TestCase {
 
         url = new DNSPseudoURL("dns://super.puper.server.ru:54/sub.domain.com");
         assertEquals("super.puper.server.ru", url.getHost());
-        assertEquals(false, url.isHostIpGiven());
+        assertFalse(url.isHostIpGiven());
         assertEquals(54, url.getPort());
         assertEquals("sub.domain.com.", url.getDomain());
 
         url = new DNSPseudoURL("dns://123.456.678.1/example.com.");
         assertEquals("123.456.678.1", url.getHost());
-        assertEquals(true, url.isHostIpGiven());
+        assertTrue(url.isHostIpGiven());
         assertEquals(53, url.getPort());
         assertEquals("example.com.", url.getDomain());
         
@@ -60,19 +60,19 @@ public class DNSPseudoURLTest extends TestCase {
 
         url = new DNSPseudoURL("dns://www.mydomain.ru");
         assertEquals("www.mydomain.ru", url.getHost());
-        assertEquals(false, url.isHostIpGiven());
+        assertFalse(url.isHostIpGiven());
         assertEquals(53, url.getPort());
         assertEquals(".", url.getDomain());
 
         url = new DNSPseudoURL("dns:/mydomain.org");
         assertEquals("localhost", url.getHost());
-        assertEquals(false, url.isHostIpGiven());
+        assertFalse(url.isHostIpGiven());
         assertEquals(53, url.getPort());
         assertEquals("mydomain.org.", url.getDomain());
 
         url = new DNSPseudoURL("dns:");
         assertEquals("localhost", url.getHost());
-        assertEquals(false, url.isHostIpGiven());
+        assertFalse(url.isHostIpGiven());
         assertEquals(53, url.getPort());
         assertEquals(".", url.getDomain());
     }

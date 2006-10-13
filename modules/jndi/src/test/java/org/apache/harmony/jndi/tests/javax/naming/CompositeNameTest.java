@@ -297,7 +297,7 @@ public class CompositeNameTest extends TestCase {
 		name.add(null);
 		assertEquals(name.size(), oldSize + 2);
 		try {
-			assertEquals(null, name.getSuffix(4).toString());
+			assertNull(name.getSuffix(4).toString());
 			fail();
 		} catch (NullPointerException e) {
 		}
