@@ -52,7 +52,9 @@
         <call-modules target="test" />
     </target>
 
-    <target name="gen-report">
+    <target name="gen-report" depends="full-report,short-report" />
+
+    <target name="full-report" unless="short.report" >
         <junitreport todir="${tests.output}">
             <fileset dir="${tests.output}">
                 <include name="TEST*-*.xml"/>
@@ -63,6 +65,20 @@
         <!-- use this property just to get the slashes to display right in the echo -->
         <property name="display-location" location="${tests.output}/html/index.html"/>
         <echo message="The test report is in ${display-location}"/>
+    </target>
+
+    <target name="short-report" if="short.report" >
+        <junitreport todir="${tests.output}">
+            <fileset dir="${tests.output}" includes="TEST*-*.xml">
+                <containsregexp expression='(errors|failures)="[1-9]' />
+                <exclude name="TESTS-TestSuites.xml" />
+            </fileset>
+            <report format="frames" todir="${tests.output}/html"/>
+        </junitreport>
+
+        <!-- use this property just to get the slashes to display right in the echo -->
+        <property name="display-location" location="${tests.output}/html/index.html"/>
+        <echo message="The short test report is in ${display-location}"/>
     </target>
 
     <target name="support-jar" depends="compile-support">
