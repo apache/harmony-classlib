@@ -57,6 +57,7 @@ public class HttpURLConnectionTest extends TestCase {
             return serverSocket.getLocalPort();
         }
 
+        @Override
         public void run() {
             try {
                 synchronized (bound) {
@@ -82,6 +83,7 @@ public class HttpURLConnectionTest extends TestCase {
             super(name);
         }
 
+        @Override
         public void run() {
             try {
                 Socket socket = serverSocket.accept();
@@ -132,6 +134,7 @@ public class HttpURLConnectionTest extends TestCase {
             this.proxy_port = proxy_port;
         }
 
+        @Override
         public java.util.List<Proxy> select(URI uri) {
             Proxy proxy = Proxy.NO_PROXY;
             if (("localhost".equals(uri.getHost()))
@@ -144,6 +147,7 @@ public class HttpURLConnectionTest extends TestCase {
             return result;
         }
 
+        @Override
         public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
             // do nothing
         }
@@ -257,6 +261,7 @@ public class HttpURLConnectionTest extends TestCase {
     public void testProxyAuthorization() throws Exception {
         // Set up test Authenticator
         Authenticator.setDefault(new Authenticator() {
+            @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(
                     "user", "password".toCharArray());

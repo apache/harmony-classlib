@@ -112,15 +112,16 @@ public class URLConnectionTest extends TestCase {
             // expected
         }
     }
-}
+    
+    static class MockURLConnection extends URLConnection {
 
-class MockURLConnection extends URLConnection {
+        public MockURLConnection(URL url) {
+            super(url);
+        }
 
-    public MockURLConnection(URL url) {
-        super(url);
-    }
-
-    public void connect() {
-        connected = true;
+        @Override
+        public void connect() {
+            connected = true;
+        }
     }
 }
