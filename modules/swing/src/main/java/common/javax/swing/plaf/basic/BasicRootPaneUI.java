@@ -32,6 +32,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
@@ -67,7 +68,8 @@ public class BasicRootPaneUI extends RootPaneUI
         }
 
         public boolean isEnabled() {
-            return root.getDefaultButton().isEnabled();
+            JButton defaultButton = root.getDefaultButton();
+            return (defaultButton == null) ? false : defaultButton.isEnabled();
         }
 
         public void actionPerformed(final ActionEvent e) {
