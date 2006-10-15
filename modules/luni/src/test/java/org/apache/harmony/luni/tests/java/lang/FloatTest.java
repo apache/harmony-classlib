@@ -409,46 +409,45 @@ public class FloatTest extends TestCase {
      */
     public void test_parseFloat_LString_Unusual() {
         float actual;
-        float expected;
         
         actual = Float.parseFloat("0x00000000000000000000000000000000000000000.0000000000000000000000000000000000000p0000000000000000000000000000000000");
-        assertEquals("Returned incorrect value", 0.0f, actual);
+        assertEquals("Returned incorrect value", 0.0f, actual, 0.0F);
                 
         actual = Float.parseFloat("+0Xfffff.fffffffffffffffffffffffffffffffp+99F");
-        assertEquals("Returned incorrect value", 6.64614E35f, actual);
+        assertEquals("Returned incorrect value", 6.64614E35f, actual, 0.0F);
         
         actual = Float.parseFloat("-0X.123456789abcdefp+99f");
-        assertEquals("Returned incorrect value", -4.5072022E28f, actual);
+        assertEquals("Returned incorrect value", -4.5072022E28f, actual, 0.0F);
         
         actual = Float.parseFloat("-0X123456789abcdef.p+1f");
-        assertEquals("Returned incorrect value", -1.63971062E17f, actual);
+        assertEquals("Returned incorrect value", -1.63971062E17f, actual, 0.0F);
         
         actual = Float.parseFloat("-0X000000000000000000000000000001abcdef.0000000000000000000000000001abefp00000000000000000000000000000000000000000004f");
-        assertEquals("Returned incorrect value", -4.48585472E8f, actual);
+        assertEquals("Returned incorrect value", -4.48585472E8f, actual, 0.0F);
         
         actual = Float.parseFloat("0X0.00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001234p600f");
-        assertEquals("Returned incorrect value", 5.907252E33f, actual);
+        assertEquals("Returned incorrect value", 5.907252E33f, actual, 0.0F);
         
         actual = Float.parseFloat("0x1.p9223372036854775807");
-        assertEquals("Returned incorrect value", Float.POSITIVE_INFINITY, actual);
+        assertEquals("Returned incorrect value", Float.POSITIVE_INFINITY, actual, 0.0F);
         
         actual = Float.parseFloat("0x1.p9223372036854775808");
-        assertEquals("Returned incorrect value", Float.POSITIVE_INFINITY, actual);
+        assertEquals("Returned incorrect value", Float.POSITIVE_INFINITY, actual, 0.0F);
         
         actual = Float.parseFloat("0x10.p9223372036854775808");
-        assertEquals("Returned incorrect value", Float.POSITIVE_INFINITY, actual);
+        assertEquals("Returned incorrect value", Float.POSITIVE_INFINITY, actual, 0.0F);
         
         actual = Float.parseFloat("0xabcd.ffffffffp+2000");
-        assertEquals("Returned incorrect value", Float.POSITIVE_INFINITY, actual);
+        assertEquals("Returned incorrect value", Float.POSITIVE_INFINITY, actual, 0.0F);
         
         actual = Float.parseFloat("0x1.p-9223372036854775808");
-        assertEquals("Returned incorrect value", 0.0f, actual);
+        assertEquals("Returned incorrect value", 0.0f, actual, 0.0F);
         
         actual = Float.parseFloat("0x1.p-9223372036854775809");
-        assertEquals("Returned incorrect value", 0.0f, actual);
+        assertEquals("Returned incorrect value", 0.0f, actual, 0.0F);
         
         actual = Float.parseFloat("0x.1p-9223372036854775809");
-        assertEquals("Returned incorrect value", 0.0f, actual);
+        assertEquals("Returned incorrect value", 0.0f, actual, 0.0F);
     }
     
     /**
@@ -480,7 +479,7 @@ public class FloatTest extends TestCase {
             + ">.The expected result should be:<" + expectedString
             + ">, but was: <" + actualString + ">. ";
             
-            assertEquals(errorMsg, expected, actual);
+            assertEquals(errorMsg, expected, actual, 0.0F);
         }
     }
     
@@ -529,7 +528,7 @@ public class FloatTest extends TestCase {
             + ">.The expected result should be:<" + expectedString
             + ">, but was: <" + actualString + ">. ";
             
-            assertEquals(errorMsg, expected, actual);
+            assertEquals(errorMsg, expected, actual, 0.0F);
         }
     }
     
@@ -579,7 +578,7 @@ public class FloatTest extends TestCase {
             + ">.The expected result should be:<" + expectedString
             + ">, but was: <" + actualString + ">. ";
             
-            assertEquals(errorMsg, expected, actual);
+            assertEquals(errorMsg, expected, actual, 0.0F);
         }
     }
     
@@ -629,7 +628,7 @@ public class FloatTest extends TestCase {
             + ">.The expected result should be:<" + expectedString
             + ">, but was: <" + actualString + ">. ";
             
-            assertEquals(errorMsg, expected, actual);
+            assertEquals(errorMsg, expected, actual, 0.0F);
         }
     }
     
@@ -679,7 +678,7 @@ public class FloatTest extends TestCase {
             + ">.The expected result should be:<" + expectedString
             + ">, but was: <" + actualString + ">. ";
             
-            assertEquals(errorMsg, expected, actual);
+            assertEquals(errorMsg, expected, actual, 0.0F);
         }
     }
     
@@ -729,7 +728,7 @@ public class FloatTest extends TestCase {
             + ">.The expected result should be:<" + expectedString
             + ">, but was: <" + actualString + ">. ";
             
-            assertEquals(errorMsg, expected, actual);
+            assertEquals(errorMsg, expected, actual, 0.0F);
         }
     }
 
@@ -779,7 +778,7 @@ public class FloatTest extends TestCase {
             + ">.The expected result should be:<" + expectedString
             + ">, but was: <" + actualString + ">. ";
             
-            assertEquals(errorMsg, expected, actual);
+            assertEquals(errorMsg, expected, actual, 0.0F);
         }
     }
 

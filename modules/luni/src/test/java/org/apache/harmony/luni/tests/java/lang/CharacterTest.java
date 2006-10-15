@@ -636,7 +636,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#Character(char)
      */
     public void test_ConstructorC() {
-        // Test for method java.lang.Character(char)
         assertEquals("Constructor failed", 'T', new Character('T').charValue());
     }
 
@@ -644,7 +643,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#charValue()
      */
     public void test_charValue() {
-        // Test for method char java.lang.Character.charValue()
         assertEquals("Incorrect char value returned", 'T', new Character('T')
                 .charValue());
     }
@@ -653,8 +651,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#compareTo(java.lang.Character)
      */
     public void test_compareToLjava_lang_Character() {
-        // Test for method int
-        // java.lang.Character.compareTo(java.lang.Character)
         Character c = new Character('c');
         Character x = new Character('c');
         Character y = new Character('b');
@@ -673,7 +669,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#digit(char, int)
      */
     public void test_digitCI() {
-        // Test for method int java.lang.Character.digit(char, int)
         assertEquals("Returned incorrect digit", 1, Character.digit('1', 10));
         assertEquals("Returned incorrect digit", 15, Character.digit('F', 16));
     }
@@ -709,8 +704,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#forDigit(int, int)
      */
     public void test_forDigitII() {
-        // Test for method char java.lang.Character.forDigit(int, int)
-
         char hexChars[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
                 'a', 'b', 'c', 'd', 'e', 'f' };
         for (int i = 0; i < hexChars.length; i++) {
@@ -732,7 +725,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#getNumericValue(char)
      */
     public void test_getNumericValueC() {
-        // Test for method int java.lang.Character.getNumericValue(char)
         assertEquals("Returned incorrect numeric value 1", 1, Character
                 .getNumericValue('1'));
         assertEquals("Returned incorrect numeric value 2", 15, Character
@@ -785,7 +777,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#getType(char)
      */
     public void test_getTypeC() {
-        // Test for method int java.lang.Character.getType(char)
         assertTrue("Returned incorrect type for: \n",
                 Character.getType('\n') == Character.CONTROL);
         assertTrue("Returned incorrect type for: 1",
@@ -921,7 +912,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#hashCode()
      */
     public void test_hashCode() {
-        // Test for method int java.lang.Character.hashCode()
         assertEquals("Incorrect hash returned",
                 89, new Character('Y').hashCode());
     }
@@ -930,7 +920,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#isDefined(char)
      */
     public void test_isDefinedC() {
-        // Test for method boolean java.lang.Character.isDefined(char)
         assertTrue("Defined character returned false", Character.isDefined('v'));
         assertTrue("Defined character returned false", Character
                 .isDefined('\u6039'));
@@ -953,7 +942,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#isDigit(char)
      */
     public void test_isDigitC() {
-        // Test for method boolean java.lang.Character.isDigit(char)
         assertTrue("Digit returned false", Character.isDigit('1'));
         assertTrue("Non-Digit returned false", !Character.isDigit('A'));
     }
@@ -997,8 +985,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#isIdentifierIgnorable(char)
      */
     public void test_isIdentifierIgnorableC() {
-        // Test for method boolean
-        // java.lang.Character.isIdentifierIgnorable(char)
         assertTrue("Ignorable whitespace returned false", Character
                 .isIdentifierIgnorable('\u0007'));
         assertTrue("Ignorable non - whitespace  control returned false",
@@ -1101,8 +1087,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#isJavaIdentifierPart(char)
      */
     public void test_isJavaIdentifierPartC() {
-        // Test for method boolean
-        // java.lang.Character.isJavaIdentifierPart(char)
         assertTrue("letter returned false", Character.isJavaIdentifierPart('l'));
         assertTrue("currency returned false", Character
                 .isJavaIdentifierPart('$'));
@@ -1166,8 +1150,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#isJavaIdentifierStart(char)
      */
     public void test_isJavaIdentifierStartC() {
-        // Test for method boolean
-        // java.lang.Character.isJavaIdentifierStart(char)
         assertTrue("letter returned false", Character
                 .isJavaIdentifierStart('l'));
         assertTrue("currency returned false", Character
@@ -1219,7 +1201,6 @@ public class CharacterTest extends TestCase {
      */
     @SuppressWarnings("deprecation")
     public void test_isJavaLetterC() {
-        // Test for method boolean java.lang.Character.isJavaLetter(char)
         assertTrue("letter returned false", Character.isJavaLetter('l'));
         assertTrue("currency returned false", Character.isJavaLetter('$'));
         assertTrue("connecting char returned false", Character
@@ -1236,7 +1217,6 @@ public class CharacterTest extends TestCase {
      */
     @SuppressWarnings("deprecation")
     public void test_isJavaLetterOrDigitC() {
-        // Test for method boolean java.lang.Character.isJavaLetterOrDigit(char)
         assertTrue("letter returned false", Character.isJavaLetterOrDigit('l'));
         assertTrue("currency returned false", Character
                 .isJavaLetterOrDigit('$'));
@@ -1250,7 +1230,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#isLetter(char)
      */
     public void test_isLetterC() {
-        // Test for method boolean java.lang.Character.isLetter(char)
         assertTrue("Letter returned false", Character.isLetter('L'));
         assertTrue("Non-Letter returned true", !Character.isLetter('9'));
     }
@@ -1275,7 +1254,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#isLetterOrDigit(char)
      */
     public void test_isLetterOrDigitC() {
-        // Test for method boolean java.lang.Character.isLetterOrDigit(char)
         assertTrue("Digit returned false", Character.isLetterOrDigit('9'));
         assertTrue("Letter returned false", Character.isLetterOrDigit('K'));
         assertTrue("Control returned true", !Character.isLetterOrDigit('\n'));
@@ -1308,7 +1286,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#isLowerCase(char)
      */
     public void test_isLowerCaseC() {
-        // Test for method boolean java.lang.Character.isLowerCase(char)
         assertTrue("lower returned false", Character.isLowerCase('a'));
         assertTrue("upper returned true", !Character.isLowerCase('T'));
     }
@@ -1342,7 +1319,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#isSpaceChar(char)
      */
     public void test_isSpaceCharC() {
-        // Test for method boolean java.lang.Character.isSpaceChar(char)
         assertTrue("space returned false", Character.isSpaceChar('\u0020'));
         assertTrue("non-space returned true", !Character.isSpaceChar('\n'));
     }
@@ -1367,8 +1343,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#isTitleCase(char)
      */
     public void test_isTitleCaseC() {
-        // Test for method boolean java.lang.Character.isTitleCase(char)
-
         char[] tChars = { (char) 0x01c5, (char) 0x01c8, (char) 0x01cb,
                 (char) 0x01f2, (char) 0x1f88, (char) 0x1f89, (char) 0x1f8a,
                 (char) 0x1f8b, (char) 0x1f8c, (char) 0x1f8d, (char) 0x1f8e,
@@ -1415,8 +1389,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#isUnicodeIdentifierPart(char)
      */
     public void test_isUnicodeIdentifierPartC() {
-        // Test for method boolean
-        // java.lang.Character.isUnicodeIdentifierPart(char)
         assertTrue("'a' returned false", Character.isUnicodeIdentifierPart('a'));
         assertTrue("'2' returned false", Character.isUnicodeIdentifierPart('2'));
         assertTrue("'+' returned true", !Character.isUnicodeIdentifierPart('+'));
@@ -1473,8 +1445,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#isUnicodeIdentifierStart(char)
      */
     public void test_isUnicodeIdentifierStartC() {
-        // Test for method boolean
-        // java.lang.Character.isUnicodeIdentifierStart(char)
         assertTrue("'a' returned false", Character
                 .isUnicodeIdentifierStart('a'));
         assertTrue("'2' returned true", !Character
@@ -1515,7 +1485,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#isUpperCase(char)
      */
     public void test_isUpperCaseC() {
-        // Test for method boolean java.lang.Character.isUpperCase(char)
         assertTrue("Incorrect case value", !Character.isUpperCase('t'));
         assertTrue("Incorrect case value", Character.isUpperCase('T'));
     }
@@ -1539,7 +1508,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#isWhitespace(char)
      */
     public void test_isWhitespaceC() {
-        // Test for method boolean java.lang.Character.isWhitespace(char)
         assertTrue("space returned false", Character.isWhitespace('\n'));
         assertTrue("non-space returned true", !Character.isWhitespace('T'));
     }
@@ -1601,7 +1569,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#toLowerCase(char)
      */
     public void test_toLowerCaseC() {
-        // Test for method char java.lang.Character.toLowerCase(char)
         assertEquals("Failed to change case", 't', Character.toLowerCase('T'));
     }
     
@@ -1609,7 +1576,7 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#toLowerCase(int)
      */
     public void test_toLowerCase_I() {
-        assertEquals((int)'t', Character.toLowerCase((int)'T'));
+        assertEquals('t', Character.toLowerCase((int)'T'));
         
         assertEquals(0x10428, Character.toLowerCase(0x10400));
         assertEquals(0x10428, Character.toLowerCase(0x10428));
@@ -1623,16 +1590,13 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#toString()
      */
     public void test_toString() {
-        // Test for method java.lang.String java.lang.Character.toString()
-        assertEquals("Incorrect String returned", "T", new Character('T').toString()
-                );
+        assertEquals("Incorrect String returned", "T", new Character('T').toString());
     }
 
     /**
      * @tests java.lang.Character#toTitleCase(char)
      */
     public void test_toTitleCaseC() {
-        // Test for method char java.lang.Character.toTitleCase(char)
         assertEquals("Incorrect title case for a",
                 'A', Character.toTitleCase('a'));
         assertEquals("Incorrect title case for A",
@@ -1645,9 +1609,9 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#toTitleCase(int)
      */
     public void test_toTitleCase_I() {
-        assertEquals((int)'A', Character.toTitleCase((int)'a'));
-        assertEquals((int)'A', Character.toTitleCase((int)'A'));
-        assertEquals((int)'1', Character.toTitleCase((int)'1'));
+        assertEquals('A', Character.toTitleCase((int)'a'));
+        assertEquals('A', Character.toTitleCase((int)'A'));
+        assertEquals('1', Character.toTitleCase((int)'1'));
         
         assertEquals(0x10400, Character.toTitleCase(0x10428));
         assertEquals(0x10400, Character.toTitleCase(0x10400));
@@ -1673,9 +1637,9 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#toUpperCase(int)
      */
     public void test_toUpperCase_I() {
-        assertEquals((int)'A', Character.toUpperCase((int)'a'));
-        assertEquals((int)'A', Character.toUpperCase((int)'A'));
-        assertEquals((int)'1', Character.toUpperCase((int)'1'));
+        assertEquals('A', Character.toUpperCase((int)'a'));
+        assertEquals('A', Character.toUpperCase((int)'A'));
+        assertEquals('1', Character.toUpperCase((int)'1'));
         
         assertEquals(0x10400, Character.toUpperCase(0x10428));
         assertEquals(0x10400, Character.toUpperCase(0x10400));
@@ -1688,7 +1652,6 @@ public class CharacterTest extends TestCase {
      * @tests java.lang.Character#getDirectionality(int)
      */
     public void test_isDirectionaliy_I(){
-        //assertTrue(false);
         assertEquals(Character.DIRECTIONALITY_UNDEFINED, Character
                 .getDirectionality(0xFFFE));
         assertEquals(Character.DIRECTIONALITY_UNDEFINED, Character

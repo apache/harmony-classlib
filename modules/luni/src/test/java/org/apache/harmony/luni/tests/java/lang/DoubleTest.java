@@ -630,80 +630,80 @@ public class DoubleTest extends TestCase {
         double expected;
 
         actual = Double.parseDouble("0x0.0p0D");
-        assertEquals("Returned incorrect value", 0.0d, actual);
+        assertEquals("Returned incorrect value", 0.0d, actual, 0.0D);
 
         actual = Double.parseDouble("0xa.ap+9d");
-        assertEquals("Returned incorrect value", 5440.0d, actual);
+        assertEquals("Returned incorrect value", 5440.0d, actual, 0.0D);
 
         actual = Double.parseDouble("+0Xb.10ap8");
-        assertEquals("Returned incorrect value", 2832.625d, actual);
+        assertEquals("Returned incorrect value", 2832.625d, actual, 0.0D);
 
         actual = Double.parseDouble("-0X.a0P2D");
-        assertEquals("Returned incorrect value", -2.5d, actual);
+        assertEquals("Returned incorrect value", -2.5d, actual, 0.0D);
 
         actual = Double.parseDouble("\r 0x22.1p2d \t");
-        assertEquals("Returned incorrect value", 136.25d, actual);
+        assertEquals("Returned incorrect value", 136.25d, actual, 0.0D);
 
         actual = Double.parseDouble("0x1.0p-1");
-        assertEquals("Returned incorrect value", 0.5, actual);
+        assertEquals("Returned incorrect value", 0.5, actual, 0.0D);
 
         actual = Double
                 .parseDouble("0x00000000000000000000000000000000001.0p-1");
-        assertEquals("Returned incorrect value", 0.5, actual);
+        assertEquals("Returned incorrect value", 0.5, actual, 0.0D);
 
          actual = Double.parseDouble("0x1.0p-00000000000000000000000000001");
-         assertEquals("Returned incorrect value", 0.5, actual);
+         assertEquals("Returned incorrect value", 0.5, actual, 0.0D);
 
         actual = Double.parseDouble("0x.100000000000000000000000000000000p1");
-        assertEquals("Returned incorrect value", 0.125, actual);
+        assertEquals("Returned incorrect value", 0.125, actual, 0.0D);
 
         actual = Double.parseDouble("0x0.0p999999999999999999999999999999999999999999999999999999999999999");
-        assertEquals("Returned incorrect value", 0.0, actual);
+        assertEquals("Returned incorrect value", 0.0, actual, 0.0D);
         
         actual = Double.parseDouble("0xf1.0p9999999999999999999999999999999999999999999999999999999999999999");
-        assertEquals("Returned incorrect value", Double.POSITIVE_INFINITY, actual);
+        assertEquals("Returned incorrect value", Double.POSITIVE_INFINITY, actual, 0.0D);
 
         actual = Double.parseDouble("0xffffffffffffffffffffffffffffffffffff.ffffffffffffffffffffffffffffffffffffffffffffffp1");
         expected = Double.longBitsToDouble(0x4900000000000000L);
-        assertEquals("Returned incorrect value", expected, actual);
+        assertEquals("Returned incorrect value", expected, actual, 0.0D);
         
         actual = Double.parseDouble("0x0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001p1600");
         expected = Double.longBitsToDouble(0x7f30000000000000L);
-        assertEquals("Returned incorrect value", expected, actual);
+        assertEquals("Returned incorrect value", expected, actual, 0.0D);
         
         actual = Double.parseDouble("0x0.0p-999999999999999999999999999999999999999999999999999999");
-        assertEquals("Returned incorrect value", 0.0, actual);
+        assertEquals("Returned incorrect value", 0.0, actual, 0.0D);
         
         actual = Double.parseDouble("0xf1.0p-9999999999999999999999999999999999999999999999999999999999999999");
-        assertEquals("Returned incorrect value", 0.0, actual);
+        assertEquals("Returned incorrect value", 0.0, actual, 0.0D);
         
         actual = Double.parseDouble("0x10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000p-1600");
         expected = Double.longBitsToDouble(0xf0000000000000L);
-        assertEquals("Returned incorrect value", expected, actual);
+        assertEquals("Returned incorrect value", expected, actual, 0.0D);
         
         actual = Double.parseDouble("0x1.p9223372036854775807");
-        assertEquals("Returned incorrect value", Double.POSITIVE_INFINITY, actual);
+        assertEquals("Returned incorrect value", Double.POSITIVE_INFINITY, actual, 0.0D);
         
         actual = Double.parseDouble("0x1.p9223372036854775808");
-        assertEquals("Returned incorrect value", Double.POSITIVE_INFINITY, actual);
+        assertEquals("Returned incorrect value", Double.POSITIVE_INFINITY, actual, 0.0D);
         
         actual = Double.parseDouble("0x10.p9223372036854775808");
-        assertEquals("Returned incorrect value", Double.POSITIVE_INFINITY, actual);
+        assertEquals("Returned incorrect value", Double.POSITIVE_INFINITY, actual, 0.0D);
         
         actual = Double.parseDouble("0xabcd.ffffffffp+2000");
-        assertEquals("Returned incorrect value", Double.POSITIVE_INFINITY, actual);
+        assertEquals("Returned incorrect value", Double.POSITIVE_INFINITY, actual, 0.0D);
         
         actual = Double.parseDouble("0x1.p-9223372036854775808");
-        assertEquals("Returned incorrect value", 0.0, actual);
+        assertEquals("Returned incorrect value", 0.0, actual, 0.0D);
         
         actual = Double.parseDouble("0x1.p-9223372036854775809");
-        assertEquals("Returned incorrect value", 0.0, actual);
+        assertEquals("Returned incorrect value", 0.0, actual, 0.0D);
         
         actual = Double.parseDouble("0x.1p-9223372036854775809");
-        assertEquals("Returned incorrect value", 0.0, actual);
+        assertEquals("Returned incorrect value", 0.0, actual, 0.0D);
         
         actual = Double.parseDouble("0xabcd.ffffffffffffffp-2000");
-        assertEquals("Returned incorrect value", 0.0, actual);
+        assertEquals("Returned incorrect value", 0.0, actual, 0.0D);
     }
     
     /**
@@ -763,7 +763,7 @@ public class DoubleTest extends TestCase {
                     + ">.The expected result should be:<" + expectedString
                     + ">, but was: <" + actualString + ">. ";
             
-            assertEquals(errorMsg, expected, actual);
+            assertEquals(errorMsg, expected, actual, 0.0D);
         }
     }
     
@@ -824,7 +824,7 @@ public class DoubleTest extends TestCase {
                     + ">.The expected result should be:<" + expectedString
                     + ">, but was: <" + actualString + ">. ";
             
-            assertEquals(errorMsg, expected, actual);
+            assertEquals(errorMsg, expected, actual, 0.0D);
         }
     }
     
@@ -888,7 +888,7 @@ public class DoubleTest extends TestCase {
                    + ">.The expected result should be:<" + expectedString
                    + ">, but was: <" + actualString + ">. ";
            
-           assertEquals(errorMsg, expected, actual);
+           assertEquals(errorMsg, expected, actual, 0.0D);
        }
     }
     
@@ -952,7 +952,7 @@ public class DoubleTest extends TestCase {
                    + ">.The expected result should be:<" + expectedString
                    + ">, but was: <" + actualString + ">. ";
            
-           assertEquals(errorMsg, expected, actual);
+           assertEquals(errorMsg, expected, actual, 0.0D);
        }
     }
     
@@ -1016,7 +1016,7 @@ public class DoubleTest extends TestCase {
                    + ">.The expected result should be:<" + expectedString
                    + ">, but was: <" + actualString + ">. ";
            
-           assertEquals(errorMsg, expected, actual);
+           assertEquals(errorMsg, expected, actual, 0.0D);
        }
     }
     
@@ -1080,7 +1080,7 @@ public class DoubleTest extends TestCase {
                    + ">.The expected result should be:<" + expectedString
                    + ">, but was: <" + actualString + ">. ";
            
-           assertEquals(errorMsg, expected, actual);
+           assertEquals(errorMsg, expected, actual, 0.0D);
        }
     }
     
@@ -1127,7 +1127,7 @@ public class DoubleTest extends TestCase {
                    + ">.The expected result should be:<" + expectedString
                    + ">, but was: <" + actualString + ">. ";
            
-           assertEquals(errorMsg, expected, actual);
+           assertEquals(errorMsg, expected, actual, 0.0D);
        }
     }
 
