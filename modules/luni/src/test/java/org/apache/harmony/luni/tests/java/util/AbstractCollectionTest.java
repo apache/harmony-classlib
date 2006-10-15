@@ -18,100 +18,234 @@
 package org.apache.harmony.luni.tests.java.util;
 
 import java.util.AbstractCollection;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
+import junit.framework.TestCase;
 
-public class AbstractCollectionTest extends junit.framework.TestCase {
-
-    Collection org;
+public class AbstractCollectionTest extends TestCase {
 
     /**
      * @tests java.util.AbstractCollection#add(java.lang.Object)
      */
     public void test_addLjava_lang_Object() {
-        assertTrue("Nothing to test--unsupported operation", true);
+        AbstractCollection<Object> ac = new AbstractCollection<Object>() {
+
+            @Override
+            public Iterator<Object> iterator() {
+                fail("iterator should not get called");
+                return null;
+            }
+
+            @Override
+            public int size() {
+                fail("size should not get called");
+                return 0;
+            }
+            
+        };
+        try {
+            ac.add(null);
+        } catch (UnsupportedOperationException e) {
+        }
     }
 
     /**
      * @tests java.util.AbstractCollection#addAll(java.util.Collection)
      */
     public void test_addAllLjava_util_Collection() {
-        Collection col = new HashSet();
-        col.addAll(org);
-        assertEquals("Size", 100, col.size());
+        final Collection<String> fixtures = Arrays.asList("0", "1", "2");
+        AbstractCollection<String> ac = new AbstractCollection<String>() {
+
+            @Override
+            public boolean add(String object) {
+                assertTrue(fixtures.contains(object));
+                return true;
+            }
+
+            @Override
+            public Iterator<String> iterator() {
+                fail("iterator should not get called");
+                return null;
+            }
+
+            @Override
+            public int size() {
+                fail("size should not get called");
+                return 0;
+            }
+            
+        };
+        assertTrue(ac.addAll(fixtures));
     }
 
     /**
      * @tests java.util.AbstractCollection#containsAll(java.util.Collection)
      */
     public void test_containsAllLjava_util_Collection() {
-        ArrayList col = new ArrayList(org);
-        assertTrue("Should contain all of the elements it started with", col
-                .containsAll(org));
-        col.remove(5);
-        assertTrue(
-                "Should no longer contain all of the elements it started with",
-                !col.containsAll(org));
+        final Collection<String> fixtures = Arrays.asList("0", "1", "2");
+        AbstractCollection<String> ac = new AbstractCollection<String>() {
+
+            @Override
+            public boolean contains(Object object) {
+                assertTrue(fixtures.contains(object));
+                return true;
+            }
+
+            @Override
+            public Iterator<String> iterator() {
+                fail("iterator should not get called");
+                return null;
+            }
+
+            @Override
+            public int size() {
+                fail("size should not get called");
+                return 0;
+            }
+            
+        };
+        assertTrue(ac.containsAll(fixtures));
     }
 
     /**
      * @tests java.util.AbstractCollection#isEmpty()
      */
     public void test_isEmpty() {
-        Collection col = new ArrayList();
-        assertTrue("Should be empty when created", col.isEmpty());
-        col.addAll(org);
-        assertTrue("Should not be empty", !col.isEmpty());
-        col.clear();
-        assertTrue("Should be empty after clear", col.isEmpty());
+        final boolean[] sizeCalled = new boolean[1];
+        AbstractCollection<Object> ac = new AbstractCollection<Object>(){
+            @Override
+            public Iterator<Object> iterator() {
+                fail("iterator should not get called");
+                return null;
+            }
+            @Override
+            public int size() {
+                sizeCalled[0] = true;
+                return 0;
+            }
+        };
+        assertTrue(ac.isEmpty());
+        assertTrue(sizeCalled[0]);
     }
 
     /**
      * @tests java.util.AbstractCollection#removeAll(java.util.Collection)
      */
     public void test_removeAllLjava_util_Collection() {
-        Collection someCol = new HashSet(org);
-        Collection anotherCol = new HashSet(org);
+        final String[] removed = new String[3];
+        AbstractCollection<String> ac = new AbstractCollection<String>() {
 
-        anotherCol.remove(new Integer(5));
-        someCol.removeAll(anotherCol);
-        assertEquals("Size--wanted 1", 1, someCol.size());
+            @Override
+            public Iterator<String> iterator() {
+                return new Iterator<String>() {
+                    String[] values = new String[] {"0", "1", "2"};
+                    int index;
+                    public boolean hasNext() {
+                        return index < values.length;
+                    }
 
-        someCol.remove(new Integer(5));
-        assertEquals("Size--wanted 0", 0, someCol.size());
+                    public String next() {
+                        return values[index++];
+                    }
+
+                    public void remove() {
+                        removed[index - 1] = values[index - 1];
+                    }
+                    
+                };
+            }
+
+            @Override
+            public int size() {
+                fail("size should not get called");
+                return 0;
+            }
+            
+        };
+        assertTrue(ac.removeAll(Arrays.asList("0", "1", "2")));
+        for (String r : removed) {
+            if (!"0".equals(r) && !"1".equals(r) && !"2".equals(r)) {
+                fail("an unexpected element was removed");
+            }
+        }
     }
 
     /**
      * @tests java.util.AbstractCollection#retainAll(java.util.Collection)
      */
     public void test_retainAllLjava_util_Collection() {
-        Collection someCol = new HashSet(org);
-        Collection anotherCol = new HashSet(org);
+        final String[] removed = new String[1];
+        AbstractCollection<String> ac = new AbstractCollection<String>() {
 
-        anotherCol.remove(new Integer(5));
-        someCol.retainAll(anotherCol);
-        assertEquals("Size--wanted 99", 99, someCol.size());
+            @Override
+            public Iterator<String> iterator() {
+                return new Iterator<String>() {
+                    String[] values = new String[] {"0", "1", "2"};
+                    int index;
+                    public boolean hasNext() {
+                        return index < values.length;
+                    }
 
-        someCol.add(new Integer(5));
-        assertEquals("Size--wanted 100", 100, someCol.size());
+                    public String next() {
+                        return values[index++];
+                    }
+
+                    public void remove() {
+                        removed[index - 1] = values[index - 1];
+                    }
+                    
+                };
+            }
+
+            @Override
+            public int size() {
+                fail("size should not get called");
+                return 0;
+            }
+            
+        };
+        assertTrue(ac.retainAll(Arrays.asList("1", "2")));
+        assertEquals("0", removed[0]);
     }
 
     /**
      * @tests java.util.AbstractCollection#toArray()
      */
     public void test_toArray() {
-        Object[] objArray = org.toArray();
-        assertEquals("Length", 100, objArray.length);
-        HashSet duplicates = new HashSet();
-        for (int i = objArray.length - 1; i >= 0; i--) {
-            assertTrue("The returned array has an incorrect value. At i = " + i
-                    + " got: " + ((Integer) objArray[i]).intValue(), org
-                    .contains(objArray[i]));
-            assertTrue("Duplicate found at i = " + i, !duplicates
-                    .contains(objArray[i]));
-            duplicates.add(objArray[i]);
+        AbstractCollection<String> ac = new AbstractCollection<String>() {
+            @Override
+            public Iterator<String> iterator() {
+                return new Iterator<String>() {
+                    String[] values = new String[] {"0", "1", "2"};
+                    int index;
+                    public boolean hasNext() {
+                        return index < values.length;
+                    }
+
+                    public String next() {
+                        return values[index++];
+                    }
+
+                    public void remove() {
+                        fail("remove should not get called");
+                    }
+                    
+                };
+            }
+            
+            @Override
+            public int size() {
+                return 3;
+            }
+        };
+        
+        Object[] array = ac.toArray();
+        assertEquals(3, array.length);
+        for (Object o : array) {
+            if (!"0".equals(o) && !"1".equals(o) && !"2".equals(o)) {
+                fail("an unexpected element was removed");
+            }
         }
     }
 
@@ -119,59 +253,59 @@ public class AbstractCollectionTest extends junit.framework.TestCase {
      * @tests java.util.AbstractCollection#toArray(java.lang.Object[])
      */
     public void test_toArray$Ljava_lang_Object() {
+        AbstractCollection<String> ac = new AbstractCollection<String>() {
+            @Override
+            public Iterator<String> iterator() {
+                return new Iterator<String>() {
+                    String[] values = new String[] {"0", "1", "2"};
+                    int index;
+                    public boolean hasNext() {
+                        return index < values.length;
+                    }
 
+                    public String next() {
+                        return values[index++];
+                    }
+
+                    public void remove() {
+                        fail("remove should not get called");
+                    }
+                    
+                };
+            }
+            @Override
+            public int size() {
+                return 3;
+            }
+        };
         try {
-            org.toArray(null);
+            ac.toArray(null);
             fail("No expected NullPointerException");
         } catch (NullPointerException e) {
             // expected
         }
 
         try {
-            org.toArray(new String[org.size()]);
+            ac.toArray(new StringBuffer[ac.size()]);
             fail("No expected ArrayStoreException");
         } catch (ArrayStoreException e) {
             // expected
         }
-
-        Object[] objArray = new Object[100];
-        org.toArray(objArray);
-        assertEquals("a) Length", 100, objArray.length);
-        HashSet duplicates = new HashSet();
-        for (int i = objArray.length - 1; i >= 0; i--) {
-            assertTrue("a) The returned array has an incorrect value at i = "
-                    + i, org.contains(objArray[i]));
-            assertTrue("Duplicate found at i = " + i, !duplicates
-                    .contains(objArray[i]));
-            duplicates.add(objArray[i]);
-        }
-
-        Integer[] intArray = new Integer[105];
-        intArray[100] = new Integer(1203);
-        org.toArray(intArray);
-        assertEquals("b) Length", 105, intArray.length);
-        duplicates = new HashSet();
-        for (int i = 99; i >= 0; i--) {
-            assertTrue("b) The returned array has an incorrect value at i = "
-                    + i, org.contains(intArray[i]));
-            assertTrue("Duplicate found at i = " + i, !duplicates
-                    .contains(intArray[i]));
-            duplicates.add(intArray[i]);
-        }
-        assertNull("End of list should be null", intArray[100]);
-
-        intArray = new Integer[1];
-        intArray = (Integer[]) org.toArray(intArray);
-        assertEquals("c) Length", 100, intArray.length);
-        duplicates = new HashSet();
-        for (int i = intArray.length - 1; i >= 0; i--) {
-            assertTrue("c) The returned array has an incorrect value. At i = "
-                    + i + " got: " + intArray[i].intValue(), org
-                    .contains(intArray[i]));
-            assertTrue("Duplicate found at i = " + i, !duplicates
-                    .contains(intArray[i]));
-            duplicates.add(intArray[i]);
-        }
+        
+        String[] a = new String[3];
+        assertSame(a, ac.toArray(a));
+        
+        a = new String[0];
+        assertNotSame(a, ac.toArray(a));
+        a = ac.toArray(a);
+        assertEquals(3, a.length);
+        
+        CharSequence[] csa = new CharSequence[3];
+        ac.toArray(csa);
+        assertEquals(3, csa.length);
+        assertEquals("0", csa[0]);
+        assertEquals("1", csa[1]);
+        assertEquals("2", csa[2]);
     }
 
     /**
@@ -180,13 +314,15 @@ public class AbstractCollectionTest extends junit.framework.TestCase {
     public void test_toString() {
         // see HARMONY-1522
         // collection that returns null iterator(this is against the spec.)
-        AbstractCollection c = new AbstractCollection() {
+        AbstractCollection<?> c = new AbstractCollection<Object>() {
+            @Override
             public int size() {
-                // return not zero to pass 'is empty' check
+                // return non-zero value to pass 'isEmpty' check
                 return 1;
             }
 
-            public Iterator iterator() {
+            @Override
+            public Iterator<Object> iterator() {
                 // this violates the spec.
                 return null;
             }
@@ -199,15 +335,5 @@ public class AbstractCollectionTest extends junit.framework.TestCase {
             fail("No expected NullPointerException");
         } catch (NullPointerException e) {
         }
-    }
-
-    protected void setUp() {
-        org = new HashSet();
-        for (int i = 0; i < 100; i++)
-            org.add(new Integer(i));
-
-    }
-
-    protected void tearDown() {
     }
 }

@@ -43,7 +43,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * implementations may add specific limitations on this method to filter
      * permitted elements. For example, in some implementation, null element may
      * be denied, and NullPointerException will be thrown out. These limitations
-     * should be explicitly documented by specific collection implmentation.
+     * should be explicitly documented by specific collection implementation.
      * 
      * Add operation is not supported in this implementation, and
      * UnsupportedOperationException will always be thrown out.
@@ -52,15 +52,15 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      *            the element to be added.
      * @return true if the collection is changed successfully after invoking
      *         this method. Otherwise, false.
-     * @exception UnsupportedOperationException
+     * @throws UnsupportedOperationException
      *                if add operation is not supported by this class.
-     * @exception NullPointerException
+     * @throws NullPointerException
      *                if null is used to invoke this method, and null is not
      *                permitted by this collection.
-     * @exception ClassCastException
+     * @throws ClassCastException
      *                if the class type of the specified element is not
      *                compatible with the permitted class type.
-     * @exception IllegalArgumentException
+     * @throws IllegalArgumentException
      *                if limitations of this collection prevent the specified
      *                element from being added
      */
@@ -75,9 +75,9 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 *            the Collection of objects
 	 * @return true if this Collection is modified, false otherwise
 	 * 
-	 * @exception UnsupportedOperationException
+	 * @throws UnsupportedOperationException
 	 *                when adding to this Collection is not supported
-	 * @exception NullPointerException
+	 * @throws NullPointerException
 	 *                if null is used to invoke this method
 	 */
 	public boolean addAll(Collection<? extends E> collection) {
@@ -100,7 +100,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * by this collection does not implement the remove method and the collection
      * is not zero length.
      * 
-     * @exception UnsupportedOperationException 
+     * @throws UnsupportedOperationException 
      *                  if this operation is not implemented.
      */
 	public void clear() {
@@ -144,7 +144,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 *            the Collection of objects
 	 * @return true if all objects in the specified Collection are elements of
 	 *         this Collection, false otherwise
-     * @exception NullPointerException
+     * @throws NullPointerException
      *                if null is used to invoke this method
 	 */
 	public boolean containsAll(Collection<?> collection) {
@@ -190,7 +190,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 *            the object to remove
 	 * @return true if this Collection is modified, false otherwise
 	 * 
-	 * @exception UnsupportedOperationException
+	 * @throws UnsupportedOperationException
 	 *                when removing from this Collection is not supported
 	 */
 	public boolean remove(Object object) {
@@ -229,9 +229,9 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 *            the Collection of objects to remove
 	 * @return true if this Collection is modified, false otherwise
 	 * 
-	 * @exception UnsupportedOperationException
+	 * @throws UnsupportedOperationException
 	 *                when removing from this Collection is not supported
-     * @exception NullPointerException
+     * @throws NullPointerException
      *                if null is used to invoke this method
 	 */
 	public boolean removeAll(Collection<?> collection) {
@@ -262,9 +262,9 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 *            the Collection of objects to retain
 	 * @return true if this Collection is modified, false otherwise
 	 * 
-	 * @exception UnsupportedOperationException
+	 * @throws UnsupportedOperationException
 	 *                when removing from this Collection is not supported
-     * @exception NullPointerException
+     * @throws NullPointerException
      *                if null is used to invoke this method
 	 */
 	public boolean retainAll(Collection<?> collection) {
@@ -316,10 +316,10 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 	 *            the array
 	 * @return an array of the elements from this Collection
 	 * 
-	 * @exception ArrayStoreException
+	 * @throws ArrayStoreException
 	 *                when the type of an element in this Collection cannot be
 	 *                stored in the type of the specified array
-     * @exception NullPointerException
+     * @throws NullPointerException
      *                if null is used to invoke this method
 	 */
 	@SuppressWarnings("unchecked")
