@@ -29,8 +29,7 @@
     <import file="${basedir}/make/properties.xml" />
 
     <target name="check" description="Check whether dependencies are available"
-            depends="-check,-create-unsigned-bcprov-jar,
-                     -check-win,-check-unix" />
+            depends="-check,-check-win,-check-unix" />
 
     <target name="-check">
 
@@ -50,7 +49,7 @@
 
 	<check-one-file src="${junit.url}" dest="${junit.jar}" />
 
-	<check-one-file src="${bcprov.url}" dest="${signed.bcprov.jar}" />
+	<check-one-file src="${bcprov.url}" dest="${bcprov.jar}" />
 
 	<check-one-file src="${icu4j.url}" dest="${icu4j.jar}" />
 
@@ -65,10 +64,6 @@
         <check-one-file src="${jetty-util.url}" dest="${jetty-util.jar}" /> 
   
         <check-one-file src="${servlet-api.url}" dest="${servlet-api.jar}" /> 
-
-	<uptodate property="bcprov.uptodate"
-                  srcfile="${signed.bcprov.jar}"
-                  targetfile="${bcprov.jar}" />
 
     </target>
 
@@ -189,8 +184,8 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
                            md5="${junit.md5}" />
 
 	<mkdir dir="${bcprov.dir}" />
-	<download-one-file src="${bcprov.url}" dest="${signed.bcprov.jar}"
-                           md5="${signed.bcprov.md5}" />
+	<download-one-file src="${bcprov.url}" dest="${bcprov.jar}"
+                           md5="${bcprov.md5}" />
 
 	<mkdir dir="${icu4j.dir}" />
 	<download-one-file src="${icu4j.url}" dest="${icu4j.jar}"
@@ -301,19 +296,6 @@ than the Apache License v2.
             </fail>
         </sequential>
     </macrodef>
-
-    <target name="-create-unsigned-bcprov-jar" unless="bcprov.uptodate">
-        <echo>Removing signature from bcprov.jar</echo>
-	<delete dir="${bcprov.dir}/temp" />
-	<unzip src="${signed.bcprov.jar}" dest="${bcprov.dir}/temp">
-	    <patternset>
-		<exclude name="META-INF/BCKEY.SF" />
-	    </patternset>
-	</unzip>
-	<jar destfile="${bcprov.jar}" basedir="${bcprov.dir}/temp"
-             manifest="${bcprov.dir}/temp/META-INF/MANIFEST.MF" />
-	<delete dir="${bcprov.dir}/temp" />
-    </target>
 
     <target name="-awt-tar-extract" unless="awtdeps.uptodate">
         <echo>Extracting awt dependencies</echo>
