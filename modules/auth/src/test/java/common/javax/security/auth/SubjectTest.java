@@ -59,51 +59,48 @@ public class SubjectTest extends SecurityTest {
         }
     };
 
-    PrivilegedAction emptyPAction = new PrivilegedAction() {
+    PrivilegedAction<Object> emptyPAction = new PrivilegedAction<Object>() {
         public Object run() {
             return null;
         }
     };
 
-    PrivilegedExceptionAction emptyPEAction = new PrivilegedExceptionAction() {
+    PrivilegedExceptionAction<Object> emptyPEAction = new PrivilegedExceptionAction<Object>
+    () {
         public Object run() {
             return null;
         }
     };
 
-    PrivilegedAction contextPAction = new PrivilegedAction() {
-        public Object run() {
+    PrivilegedAction<AccessControlContext> contextPAction = new PrivilegedAction<AccessControlContext>() {
+        public AccessControlContext run() {
             return AccessController.getContext();
         }
     };
 
-    PrivilegedExceptionAction contextPEAction = new PrivilegedExceptionAction() {
-        public Object run() {
+    PrivilegedExceptionAction<AccessControlContext> contextPEAction = new PrivilegedExceptionAction<AccessControlContext>() {
+        public AccessControlContext run() {
             return AccessController.getContext();
         }
     };
 
-    PrivilegedAction subjectPAction = new PrivilegedAction() {
-        public Object run() {
+    PrivilegedAction<Subject> subjectPAction = new PrivilegedAction<Subject>() {
+        public Subject run() {
             return Subject.getSubject(AccessController.getContext());
         }
     };
 
-    PrivilegedExceptionAction subjectPEAction = new PrivilegedExceptionAction() {
-        public Object run() {
+    PrivilegedExceptionAction<Subject> subjectPEAction = new PrivilegedExceptionAction<Subject>() {
+        public Subject run() {
             return Subject.getSubject(AccessController.getContext());
         }
     };
 
-    private HashSet h1 = new HashSet(); // principals
+    private final HashSet<Principal> h1 = new HashSet<Principal>(); // principals
 
-    private HashSet h2 = new HashSet(); // public credentials
+    private final HashSet<Object> h2 = new HashSet<Object>(); // public credentials
 
-    private HashSet h3 = new HashSet(); // private credentials
-
-    public static void main(String[] args) throws Exception {
-        junit.textui.TestRunner.run(javax.security.auth.SubjectTest.suite());
-    }
+    private final HashSet<Object> h3 = new HashSet<Object>(); // private credentials
 
     public static Test suite() throws Exception {
 
@@ -200,6 +197,7 @@ public class SubjectTest extends SecurityTest {
      * Testing Subject(boolean,Set,Set,Set) constructor
      * Checks NullPointerException if one of passed set is null
      */
+    @SuppressWarnings("unchecked")
     public final void testSubject_3Set_NPE() {
 
         try {
@@ -225,6 +223,7 @@ public class SubjectTest extends SecurityTest {
      * Testing Subject(boolean,Set,Set,Set) constructor.
      * Parameter set contains an invalid element.
      */
+    @SuppressWarnings("unchecked")
     public final void testSubject_3Set_InvalidSet() {
         HashSet hash = new HashSet();
 
@@ -503,6 +502,7 @@ public class SubjectTest extends SecurityTest {
     /**
      * Tests Subject.equals() method
      */
+    @SuppressWarnings("unchecked")
     public final void testEquals() {
 
         // empty sets
@@ -572,6 +572,7 @@ public class SubjectTest extends SecurityTest {
      * 2)public credential set
      * 3)private credential set
      */
+    @SuppressWarnings("unchecked")
     public final void testEquals_VerifyCheckSequence() {
 
         grantMode(); // no permissions
@@ -653,6 +654,7 @@ public class SubjectTest extends SecurityTest {
     /**
      * Tests Subject.get<set>(Class) methods
      */
+    @SuppressWarnings("unchecked")
     public final void testGetSetClass() {
         HashSet hash = new HashSet();
 
@@ -744,12 +746,13 @@ public class SubjectTest extends SecurityTest {
     /**
      * Tests Subject.getSubject() for associated context (2 subjects)
      */
+    @SuppressWarnings("unchecked")
     public final void test_getSubject_NotSameSubject() {
 
         final HashSet hash = new HashSet();
         hash.add(new MyClass1());
 
-        PrivilegedAction action = new PrivilegedAction() {
+        PrivilegedAction<Object> action = new PrivilegedAction<Object>() {
             public Object run() {
 
                 return Subject.doAs(new Subject(false, hash, hash, hash),
@@ -775,7 +778,7 @@ public class SubjectTest extends SecurityTest {
      */
     public final void test_getSubject_PrivilegedAction() {
 
-        PrivilegedAction action = new PrivilegedAction() {
+        PrivilegedAction<Object> action = new PrivilegedAction<Object>() {
             public Object run() {
                 return AccessController.doPrivileged(subjectPAction);
             }
@@ -1429,7 +1432,7 @@ public class SubjectTest extends SecurityTest {
 
     public static class PermissionTest extends SecurityTest {
 
-        private Subject subject = new Subject();
+        private final Subject subject = new Subject();
 
         /*
          * FIXME??? presence of unaccessible element
@@ -1443,11 +1446,11 @@ public class SubjectTest extends SecurityTest {
             Principal privCr1 = new MyClass1();
             Object privCr2 = new Object();
 
-            HashSet hash = new HashSet();
+            HashSet<Object> hash = new HashSet<Object>();
             hash.add(privCr1);
             hash.add(new Object());
 
-            Set set = subject.getPrivateCredentials();
+            Set<Object> set = subject.getPrivateCredentials();
 
             // Adding is not prohibited
             set.add(privCr1);
@@ -1477,7 +1480,7 @@ public class SubjectTest extends SecurityTest {
             }
 
             assertTrue(set.equals(set));
-            assertFalse(set.equals(new HashSet()));
+            assertFalse(set.equals(new HashSet<Object>()));
             try {
                 // set with equal size initiates iteration
                 set.equals(hash);
@@ -1512,7 +1515,7 @@ public class SubjectTest extends SecurityTest {
             }
 
             try {
-                set.retainAll(new HashSet());
+                set.retainAll(new HashSet<Object>());
                 fail("No expected AccessControlException");
             } catch (AccessControlException e) {
                 // PrivateCredentialPermission check goes first
@@ -1552,26 +1555,26 @@ public class SubjectTest extends SecurityTest {
 
             subject.getPrincipals().add(new MyClass1());
 
-            Set set = subject.getPrivateCredentials();
+            Set<Object> set = subject.getPrivateCredentials();
 
             Object obj1 = new Object();
             Object obj2 = new Object();
             Object obj3 = new Object();
 
             set.add(obj1);
-            set.add(new HashSet());
+            set.add(new HashSet<Object>());
             set.add(obj2);
-            set.add(new HashSet());
+            set.add(new HashSet<Object>());
             set.add(obj3);
 
             grantMode(); // no permissions
 
-            HashSet hash = new HashSet();
+            HashSet<Object> hash = new HashSet<Object>();
 
             grantPermission(new PrivateCredentialPermission(
                     "java.lang.Object * \"*\"", "read"));
 
-            Iterator it = set.iterator();
+            Iterator<Object> it = set.iterator();
             while (it.hasNext()) {
                 try {
                     hash.add(it.next());
@@ -1603,7 +1606,7 @@ public class SubjectTest extends SecurityTest {
                 }
 
                 P p = new P();
-                HashSet hash = new HashSet();
+                HashSet<Principal> hash = new HashSet<Principal>();
                 hash.add(p);
 
                 PrivateCredentialPermission p1 = new PrivateCredentialPermission(
@@ -1620,7 +1623,7 @@ public class SubjectTest extends SecurityTest {
             PrivateCredentialPermission p3 = new PrivateCredentialPermission(
                     "java.lang.Object * \"*\"", "read");
             PrivateCredentialPermission p4 = new PrivateCredentialPermission(
-                    "java.lang.Object", new HashSet());
+                    "java.lang.Object", new HashSet<Principal>());
 
             assertTrue(p3.implies(p4));
         }
@@ -1630,10 +1633,10 @@ public class SubjectTest extends SecurityTest {
             Principal p1 = new MyClass1();
             Principal p2 = new MyClass2();
 
-            HashSet hash = new HashSet();
+            HashSet<Principal> hash = new HashSet<Principal>();
             hash.add(p2);
 
-            Set set = subject.getPrivateCredentials();
+            Set<Object> set = subject.getPrivateCredentials();
 
             set.add(new Object());
 
@@ -1642,7 +1645,7 @@ public class SubjectTest extends SecurityTest {
             grantPermission(new AuthPermission("modifyPrincipals"));
             grantPermission(getPermission("java.lang.Object", hash));
 
-            Iterator it = set.iterator();
+            Iterator<Object> it = set.iterator();
             it.next();
 
             subject.getPrincipals().add(p1);
@@ -1679,6 +1682,7 @@ public class SubjectTest extends SecurityTest {
             }
         }
 
+        @SuppressWarnings("unchecked")
         public void testGetClass() {
 
             HashSet hash = new HashSet();
@@ -1731,10 +1735,10 @@ public class SubjectTest extends SecurityTest {
             subject.getPrivateCredentials(MyClass2.class);
         }
 
-        public PrivateCredentialPermission getPermission(String c, Set p) {
+        public PrivateCredentialPermission getPermission(String c, Set<? extends Principal> p) {
             StringBuffer buf = new StringBuffer(c);
 
-            for (Iterator it = p.iterator(); it.hasNext();) {
+            for (Iterator<? extends Principal> it = p.iterator(); it.hasNext();) {
                 Object o = it.next();
                 buf.append(" ");
                 buf.append(o.getClass().getName());
@@ -1855,15 +1859,7 @@ public class SubjectTest extends SecurityTest {
         }
     }
 
-    /*
-     * 
-     *
-     * 
-     * 
-     * 
-     *  
-     */
-
+    @SuppressWarnings("serial")
     public static class MyClass1 implements Principal, Serializable {
         public String getName() {
             return "MyClass1";
@@ -1876,6 +1872,7 @@ public class SubjectTest extends SecurityTest {
         }
     }
 
+    @SuppressWarnings("serial")
     public static class MyObject implements Serializable {
     }
 
@@ -1919,13 +1916,14 @@ public class SubjectTest extends SecurityTest {
         public static class IteratorReadOnly extends
                 SecurityTest.ReadOnlyIteratorTest {
 
-            private Subject subject = new Subject();
+            private final Subject subject = new Subject();
 
             public IteratorReadOnly() {
                 set = subject.getPrincipals();
                 element = principal;
             }
 
+            @Override
             public void setReadOnly() {
                 subject.setReadOnly();
             }
@@ -1939,6 +1937,7 @@ public class SubjectTest extends SecurityTest {
                 element = principal;
             }
 
+            @Override
             public void setSecure() {
                 denyPermission(new AuthPermission("modifyPrincipals"));
             }
@@ -1971,13 +1970,14 @@ public class SubjectTest extends SecurityTest {
         }
 
         public static class ReadOnlySet extends SecurityTest.ReadOnlySetTest {
-            private Subject subject = new Subject();
+            private final Subject subject = new Subject();
 
             public ReadOnlySet() {
                 set = subject.getPrincipals();
                 element = principal;
             }
 
+            @Override
             public void setReadOnly() {
                 subject.setReadOnly();
             }
@@ -1990,6 +1990,7 @@ public class SubjectTest extends SecurityTest {
                 element = principal;
             }
 
+            @Override
             public void setSecure() {
                 denyPermission(new AuthPermission("modifyPrincipals"));
             }
@@ -2041,6 +2042,7 @@ public class SubjectTest extends SecurityTest {
                 element = principal;
             }
 
+            @Override
             public void testNext_EmptySet_NoSuchElementException() {
 
                 if (testing) {
@@ -2054,6 +2056,7 @@ public class SubjectTest extends SecurityTest {
                 }
             }
 
+            @Override
             public void testNext_NoSuchElementException() {
                 if (testing) {
                     //Unexpected: IndexOutOfBoundsException
@@ -2070,17 +2073,19 @@ public class SubjectTest extends SecurityTest {
         public static class IteratorReadOnly extends
                 SecurityTest.ReadOnlyIteratorTest {
 
-            private Subject subject = new Subject();
+            private final Subject subject = new Subject();
 
             public IteratorReadOnly() {
                 set = subject.getPrivateCredentials();
                 element = principal;
             }
 
+            @Override
             public void setReadOnly() {
                 subject.setReadOnly();
             }
 
+            @Override
             public void testNext_EmptySet_NoSuchElementException() {
 
                 if (testing) {
@@ -2094,6 +2099,7 @@ public class SubjectTest extends SecurityTest {
                 }
             }
 
+            @Override
             public void testNext_NoSuchElementException() {
                 if (testing) {
                     //Unexpected: IndexOutOfBoundsException
@@ -2115,10 +2121,12 @@ public class SubjectTest extends SecurityTest {
                 element = principal;
             }
 
+            @Override
             public void setSecure() {
                 denyPermission(new AuthPermission("modifyPrivateCredentials"));
             }
 
+            @Override
             public void testNext_EmptySet_NoSuchElementException() {
 
                 if (testing) {
@@ -2132,6 +2140,7 @@ public class SubjectTest extends SecurityTest {
                 }
             }
 
+            @Override
             public void testNext_NoSuchElementException() {
                 if (testing) {
                     //Unexpected: IndexOutOfBoundsException
@@ -2162,13 +2171,14 @@ public class SubjectTest extends SecurityTest {
         }
 
         public static class ReadOnlySet extends SecurityTest.ReadOnlySetTest {
-            private Subject subject = new Subject();
+            private final Subject subject = new Subject();
 
             public ReadOnlySet() {
                 set = subject.getPrivateCredentials();
                 element = principal;
             }
 
+            @Override
             public void setReadOnly() {
                 subject.setReadOnly();
             }
@@ -2181,6 +2191,7 @@ public class SubjectTest extends SecurityTest {
                 element = principal;
             }
 
+            @Override
             public void setSecure() {
                 denyPermission(new AuthPermission("modifyPrivateCredentials"));
             }
@@ -2235,13 +2246,14 @@ public class SubjectTest extends SecurityTest {
         public static class IteratorReadOnly extends
                 SecurityTest.ReadOnlyIteratorTest {
 
-            private Subject subject = new Subject();
+            private final Subject subject = new Subject();
 
             public IteratorReadOnly() {
                 set = subject.getPublicCredentials();
                 element = principal;
             }
 
+            @Override
             public void setReadOnly() {
                 subject.setReadOnly();
             }
@@ -2255,6 +2267,7 @@ public class SubjectTest extends SecurityTest {
                 element = principal;
             }
 
+            @Override
             public void setSecure() {
                 denyPermission(new AuthPermission("modifyPublicCredentials"));
             }
@@ -2277,13 +2290,14 @@ public class SubjectTest extends SecurityTest {
         }
 
         public static class ReadOnlySet extends SecurityTest.ReadOnlySetTest {
-            private Subject subject = new Subject();
+            private final Subject subject = new Subject();
 
             public ReadOnlySet() {
                 set = subject.getPublicCredentials();
                 element = principal;
             }
 
+            @Override
             public void setReadOnly() {
                 subject.setReadOnly();
             }
@@ -2296,6 +2310,7 @@ public class SubjectTest extends SecurityTest {
                 element = principal;
             }
 
+            @Override
             public void setSecure() {
                 denyPermission(new AuthPermission("modifyPublicCredentials"));
             }

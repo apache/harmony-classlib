@@ -40,10 +40,6 @@ import junit.framework.TestCase;
  */
 public class DelegationPermissionTest extends TestCase {
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(DelegationPermissionTest.class);
-    }
-
     /**
      * testing of a correct ctor
      */
@@ -120,6 +116,7 @@ public class DelegationPermissionTest extends TestCase {
     } 
     
     // testing of the equals method
+    @SuppressWarnings("serial")
     public void testEquals() {
         DelegationPermission dp1 = new DelegationPermission("\"AAA\" \"BBB\"");
         DelegationPermission dp2 = new DelegationPermission("\"AAA\" \"BBB\"");
@@ -189,24 +186,18 @@ public class DelegationPermissionTest extends TestCase {
     }
 
 	public void testElements() throws Exception {
-	    
         Permission p = new DelegationPermission("\"AAA\" \"BBB\"");
         PermissionCollection pc = p.newPermissionCollection();
-        
-		try {
-			pc.elements().nextElement();
-			fail("expected NoSuchElementException");
-		} catch (NoSuchElementException e) {
-		}
-
-        Enumeration en = pc.elements();
+        try {
+            pc.elements().nextElement();
+            fail("expected NoSuchElementException");
+        } catch (NoSuchElementException e) {
+        }
+        Enumeration<Permission> en = pc.elements();
         assertNotNull(en);
         assertFalse(en.hasMoreElements());
-        
         Permission sp1 = new DelegationPermission("\"DDD\" \"BBB\"");
         Permission sp2 = new DelegationPermission("\"CCC\" \"BBB\"");
-
-        
         pc.add(sp1);
         en = pc.elements();
         assertTrue(en.hasMoreElements());
@@ -214,15 +205,13 @@ public class DelegationPermissionTest extends TestCase {
         assertFalse(en.hasMoreElements());
         pc.add(sp2);
         en = pc.elements();
-        Collection c = new ArrayList();
-        while (en.hasMoreElements())
-        {
+        Collection<Permission> c = new ArrayList<Permission>();
+        while (en.hasMoreElements()) {
             c.add(en.nextElement());
         }
         assertFalse(en.hasMoreElements());
         assertEquals(2, c.size());
         assertTrue(c.contains(sp1) && c.contains(sp2));
-	  
-	}
+    }
 
  }

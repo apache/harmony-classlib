@@ -32,23 +32,16 @@ import java.security.PermissionCollection;
 import java.security.Security;
 import java.security.cert.Certificate;
 import java.util.Enumeration;
-
 import junit.framework.TestCase;
-
 import org.apache.harmony.auth.tests.support.SecurityChecker;
 import org.apache.harmony.auth.tests.support.TestUtils;
-
 import tests.support.resource.Support_Resources;
-
 
 /**
  * Tests Policy class
  */
+@SuppressWarnings("deprecation")
 public class PolicyTest extends TestCase {
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(PolicyTest.class);
-    }
 
     /**
      * Tests that setPolicy() is properly secured via SecurityManager.
@@ -110,12 +103,12 @@ public class PolicyTest extends TestCase {
     }
 
     public static class TestProvider extends Policy {
-
-        public PermissionCollection getPermissions(Subject subject,
-                CodeSource cs) {
+        @Override
+        public PermissionCollection getPermissions(Subject subject, CodeSource cs) {
             return null;
         }
 
+        @Override
         public void refresh() {
         }
     }
@@ -184,7 +177,7 @@ public class PolicyTest extends TestCase {
         PermissionCollection c;
         Permission per;
         Subject subject;
-        Enumeration e;
+        
         CodeSource source;
 
         String oldProp = System.getProperty(POLICY_PROP);
@@ -231,9 +224,9 @@ public class PolicyTest extends TestCase {
             // add required principal's name
             subject.getPrincipals().add(new MyPrincipal("duke"));
 
-            e = p.getPermissions(subject, null).elements();
+            Enumeration<Permission> e = p.getPermissions(subject, null).elements();
 
-            per = (Permission) e.nextElement();
+            per = e.nextElement();
             assertFalse("Elements: ", e.hasMoreElements());
             assertEquals("Permission: ", per, new FilePermission("/home/duke",
                     "read, write"));
@@ -261,7 +254,7 @@ public class PolicyTest extends TestCase {
             subject.getPrincipals().add(new MyPrincipal("dummy"));
 
             e = p.getPermissions(subject, source).elements();
-            per = (Permission) e.nextElement();
+            per = e.nextElement();
             assertFalse("Elements: ", e.hasMoreElements());
             assertEquals("Permission: ", per, new RuntimePermission(
                     "createClassLoader"));
@@ -292,7 +285,7 @@ public class PolicyTest extends TestCase {
 
             subject.getPrincipals().add(new OtherPrincipal("other"));
             e = p.getPermissions(subject, null).elements();
-            per = (Permission) e.nextElement();
+            per = e.nextElement();
             assertFalse("Elements: ", e.hasMoreElements());
             assertEquals("Permission: ", per, new AllPermission());
 
@@ -305,8 +298,8 @@ public class PolicyTest extends TestCase {
             e = p.getPermissions(subject, null).elements();
 
             Permission[] get = new Permission[2];
-            get[0] = (Permission) e.nextElement();
-            get[1] = (Permission) e.nextElement();
+            get[0] = e.nextElement();
+            get[1] = e.nextElement();
             assertFalse("Elements: ", e.hasMoreElements());
 
             Permission[] set = new Permission[2];
@@ -329,7 +322,7 @@ public class PolicyTest extends TestCase {
 
         Permission per;
         Subject subject;
-        Enumeration e;
+        Enumeration<?> e;
 
         String oldProp = System.getProperty(POLICY_PROP);
         try {

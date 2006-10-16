@@ -36,17 +36,13 @@ import junit.framework.TestCase;
  */
 public class PrivateCredentialPermissionTest extends TestCase {
 
-    private PrivateCredentialPermission p_that = null;
+    private PrivateCredentialPermission p_that;
 
-    private PrivateCredentialPermission p_this = null;
+    private PrivateCredentialPermission p_this;
 
     String s_that;
 
     String s_this;
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(PrivateCredentialPermissionTest.class);
-    }
 
     /**
      * Constructor for PrivateCredentialPermissionTest.
@@ -647,7 +643,7 @@ public class PrivateCredentialPermissionTest extends TestCase {
 
         MyPrincipal mp = new MyPrincipal("duke");
         MyPrincipal mp1 = new MyPrincipal("nuke");
-        HashSet hash = new HashSet();
+        HashSet<Principal> hash = new HashSet<Principal>();
         hash.add(mp);
         hash.add(mp1);
 
@@ -661,7 +657,7 @@ public class PrivateCredentialPermissionTest extends TestCase {
         assertTrue(p2.implies(p1));
 
         PrivateCredentialPermission p3 = new PrivateCredentialPermission(
-                "java.lang.Object", new HashSet());
+                "java.lang.Object", new HashSet<Principal>());
 
         PrivateCredentialPermission p4 = new PrivateCredentialPermission(
                 "java.lang.Object * \"*\"", "read");
@@ -697,9 +693,9 @@ public class PrivateCredentialPermissionTest extends TestCase {
                 "a b  \"c\"" // two spaces between principal class and name
         };
 
-        for (int i = 0; i < illegalTargetNames.length; i++) {
+        for (String element : illegalTargetNames) {
             try {
-                new PrivateCredentialPermission(illegalTargetNames[i], "read");
+                new PrivateCredentialPermission(element, "read");
                 fail("No expected IllegalArgumentException");
             } catch (IllegalArgumentException e) {
             }

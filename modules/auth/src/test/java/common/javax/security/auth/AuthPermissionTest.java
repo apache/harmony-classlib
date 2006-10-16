@@ -31,12 +31,9 @@ public class AuthPermissionTest extends TestCase {
 
     private AuthPermission ap;
     private AuthPermission ap1;
-    
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AuthPermissionTest.class);
-    }
 
    
+    @Override
     protected void setUp() throws Exception {
         ap = new AuthPermission("name");
         ap1 = new AuthPermission("createLoginContext");

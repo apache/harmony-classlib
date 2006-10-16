@@ -32,16 +32,11 @@ import java.util.NoSuchElementException;
 
 import junit.framework.TestCase;
 
-
-
 /** 
  * Tests ServicePermission class implementation.
  */
 public class ServicePermissionTest extends TestCase {
-    
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(ServicePermissionTest.class);
-    }
+
     
     /**
      * @tests javax.security.auth.kerberos.ServicePermission#ServicePermission(
@@ -235,7 +230,7 @@ public class ServicePermissionTest extends TestCase {
 		} catch (NoSuchElementException e) {
 		}
 
-        Enumeration en = pc.elements();
+        Enumeration<Permission> en = pc.elements();
         assertNotNull(en);
         assertFalse(en.hasMoreElements());
         
@@ -251,7 +246,7 @@ public class ServicePermissionTest extends TestCase {
         pc.add(sp2);
         pc.add(sp3);
         en = pc.elements();
-        Collection c = new ArrayList();
+        Collection<Permission> c = new ArrayList<Permission>();
         while (en.hasMoreElements())
         {
             c.add(en.nextElement());
@@ -283,8 +278,8 @@ public class ServicePermissionTest extends TestCase {
                 "Accept, initiatE" //  first & last upper case
         };
 
-        for (int i = 0; i < validActions.length; i++) {
-            new ServicePermission("*", validActions[i]);
+        for (String element : validActions) {
+            new ServicePermission("*", element);
         }
 
         String[] invalidActions = new String[] { "accept initiate", // space
@@ -295,11 +290,11 @@ public class ServicePermissionTest extends TestCase {
                 "accept,", // ','
                 " ,accept" // ','
         };
-        for (int i = 0; i < invalidActions.length; i++) {
+        for (String element : invalidActions) {
             try {
-                new ServicePermission("*", invalidActions[i]);
+                new ServicePermission("*", element);
                 fail("No expected IllegalArgumentException for action: "
-                        + invalidActions[i]);
+                        + element);
             } catch (IllegalArgumentException e) {
             }
         }
