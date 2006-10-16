@@ -31,13 +31,16 @@ import java.util.Arrays;
 import org.apache.harmony.awt.gl.AwtImageBackdoorAccessor;
 
 public class LookupOp implements BufferedImageOp, RasterOp {
-    private LookupTable lut;
+    private final LookupTable lut;
     private RenderingHints hints;
-    private boolean canUseIpp;
+    
+    // TODO remove when this field is used
+    @SuppressWarnings("unused")
+    private final boolean canUseIpp;
 
     // We don't create levels/values when it is possible to reuse old
-    private int cachedLevels[] = null;
-    private int cachedValues[] = null;
+    private int cachedLevels[];
+    private int cachedValues[];
     // Number of channels for which cache is valid.
     // If negative number of channels is same as positive but skipAlpha was specified
     private int validForChannels;
@@ -45,7 +48,7 @@ public class LookupOp implements BufferedImageOp, RasterOp {
     static int levelInitializer[] = new int[0x10000];
 
     static {
-        // XXX - todo
+        // TODO
         // System.loadLibrary("imageops");
 
         for (int i=1; i<=0x10000; i++) {
@@ -141,10 +144,11 @@ public class LookupOp implements BufferedImageOp, RasterOp {
             );
         }
 
-        // XXX - todo
+        // TODO
         // if (!canUseIpp || ippFilter(src, dst, BufferedImage.TYPE_CUSTOM, false) != 0)
-            if (slowFilter(src, dst, false) != 0)
+            if (slowFilter(src, dst, false) != 0) {
                 throw new ImagingOpException ("Unable to transform source");
+            }
 
         return dst;
     }
@@ -152,10 +156,11 @@ public class LookupOp implements BufferedImageOp, RasterOp {
     public final BufferedImage filter(BufferedImage src, BufferedImage dst) {
         ColorModel srcCM = src.getColorModel();
 
-        if (srcCM instanceof IndexColorModel)
+        if (srcCM instanceof IndexColorModel) {
             throw new IllegalArgumentException(
                     "Source should not have IndexColorModel"
             );
+        }
 
         // Check if the number of scaling factors matches the number of bands
         int nComponents = srcCM.getNumComponents();
@@ -198,10 +203,11 @@ public class LookupOp implements BufferedImageOp, RasterOp {
             }
         }
 
-        // XXX - todo
+        // TODO
         //if (!canUseIpp || ippFilter(src.getRaster(), dst.getRaster(), src.getType(), skipAlpha) != 0)
-            if (slowFilter(src.getRaster(), dst.getRaster(), skipAlpha) != 0)
+            if (slowFilter(src.getRaster(), dst.getRaster(), skipAlpha) != 0) {
                 throw new ImagingOpException ("Unable to transform source");
+            }
 
         if (finalDst != null) {
             Graphics2D g = finalDst.createGraphics();
@@ -301,8 +307,9 @@ public class LookupOp implements BufferedImageOp, RasterOp {
 
             // Skip last channel if needed, zero values are OK -
             // no changes to the channel information will be done in IPP
-            if ((channelOffset == channels-1 && skipAlpha) || (dataIdx >= data.length))
+            if ((channelOffset == channels-1 && skipAlpha) || (dataIdx >= data.length)) {
                 continue;
+            }
 
             System.arraycopy(levelInitializer, offset, levels, channelBase, nLevels);
             for (int from=0, to=channelBase; from<nLevels; from++, to++) {
@@ -327,8 +334,9 @@ public class LookupOp implements BufferedImageOp, RasterOp {
 
             // Skip last channel if needed, zero values are OK -
             // no changes to the channel information will be done in IPP
-            if ((channelOffset == channels-1 && skipAlpha) || (dataIdx >= data.length))
+            if ((channelOffset == channels-1 && skipAlpha) || (dataIdx >= data.length)) {
                 continue;
+            }
 
             int channelBase = nLevels * channelOffset;
             System.arraycopy(levelInitializer, offset, levels, channelBase, nLevels);
@@ -338,6 +346,8 @@ public class LookupOp implements BufferedImageOp, RasterOp {
         }
     }
 
+    // TODO remove when this method is used
+    @SuppressWarnings("unused")
     private final int ippFilter(
             Raster src, WritableRaster dst,
             int imageType, boolean skipAlpha
@@ -403,13 +413,15 @@ public class LookupOp implements BufferedImageOp, RasterOp {
                     if (
                             srcSM.getDataType() != DataBuffer.TYPE_BYTE ||
                             dstSM.getDataType() != DataBuffer.TYPE_BYTE
-                    )
+                    ) {
                         return slowFilter(src, dst, skipAlpha);
+                    }
 
                     // Have IPP functions for 1, 3 and 4 channels
                     channels = srcSM.getNumBands();
-                    if (!(channels == 1 || channels == 3 || channels == 4))
+                    if (!(channels == 1 || channels == 3 || channels == 4)) {
                         return slowFilter(src, dst, skipAlpha);
+                    }
 
                     srcStride = ((ComponentSampleModel) srcSM).getScanlineStride();
                     dstStride = ((ComponentSampleModel) dstSM).getScanlineStride();
@@ -432,19 +444,22 @@ public class LookupOp implements BufferedImageOp, RasterOp {
                             sppsm1.getDataType() != DataBuffer.TYPE_INT ||
                             sppsm2.getDataType() != DataBuffer.TYPE_INT ||
                             !(channels == 3 || channels == 4)
-                    )
+                    ) {
                         return slowFilter(src, dst, skipAlpha);
+                    }
 
                     // Check compatibility of sample models
                     if (
                             !Arrays.equals(sppsm1.getBitOffsets(), sppsm2.getBitOffsets()) ||
                             !Arrays.equals(sppsm1.getBitMasks(), sppsm2.getBitMasks())
-                    )
+                    ) {
                         return slowFilter(src, dst, skipAlpha);
+                    }
 
                     for (int i=0; i<channels; i++) {
-                        if (sppsm1.getSampleSize(i) != 8)
+                        if (sppsm1.getSampleSize(i) != 8) {
                             return slowFilter(src, dst, skipAlpha);
+                        }
                     }
 
                     channelsOrder = new int[channels];

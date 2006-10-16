@@ -24,8 +24,8 @@
 package java.awt.image;
 
 public class Kernel implements Cloneable {
-    private int xOrigin;
-    private int yOrigin;
+    private final int xOrigin;
+    private final int yOrigin;
     private int width;
     private int height;
     float data[];

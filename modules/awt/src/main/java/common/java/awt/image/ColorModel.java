@@ -539,6 +539,7 @@ public abstract class ColorModel implements Transparency {
         }
     }
 
+    @Override
     public void finalize() {
         // This method is added for the API compatibility
         // Don't need to call super since Object's finalize is always empty

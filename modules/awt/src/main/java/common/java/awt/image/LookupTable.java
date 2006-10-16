@@ -28,14 +28,16 @@ public abstract class LookupTable {
     private int numComponents;
 
     protected LookupTable(int offset, int numComponents) {
-        if (offset < 0)
+        if (offset < 0) {
             throw new IllegalArgumentException(
                     "Offset should be not less than zero"
             );
-        if (numComponents < 1)
+        }
+        if (numComponents < 1) {
             throw new IllegalArgumentException(
                     "Number of components should be positive"
             );
+        }
 
         this.offset = offset;
         this.numComponents = numComponents;

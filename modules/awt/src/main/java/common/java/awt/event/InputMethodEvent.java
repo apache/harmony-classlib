@@ -105,14 +105,17 @@ public class InputMethodEvent extends AWTEvent {
         return when;
     }
 
+    @Override
     public void consume() {
         super.consume();
     }
 
+    @Override
     public boolean isConsumed() {
         return super.isConsumed();
     }
 
+    @Override
     public String paramString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:

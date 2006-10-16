@@ -56,8 +56,8 @@ public class DragSource implements Serializable {
     private static DragSource defaultSource;
     private static DragSourceContext curContext;
 
-    private final ListenerList dragSourceListeners;
-    private final ListenerList dragSourceMotionListeners;
+    private final ListenerList<DragSourceListener> dragSourceListeners;
+    private final ListenerList<DragSourceMotionListener> dragSourceMotionListeners;
 
     static {
         if (GraphicsEnvironment.isHeadless()) {
@@ -102,7 +102,7 @@ public class DragSource implements Serializable {
     }
 
     public static int getDragThreshold() {
-        int threshold = Integer.getInteger("awt.dnd.drag.threshold", -1);
+        int threshold = Integer.getInteger("awt.dnd.drag.threshold", -1).intValue();
 
         if (threshold <= 0) {
             Object val = Toolkit.getDefaultToolkit().getDesktopProperty(
@@ -126,13 +126,12 @@ public class DragSource implements Serializable {
             throw new HeadlessException();
         }
 
-        dragSourceListeners = new ListenerList();
-        dragSourceMotionListeners = new ListenerList();
+        dragSourceListeners = new ListenerList<DragSourceListener>();
+        dragSourceMotionListeners = new ListenerList<DragSourceMotionListener>();
     }
 
     public DragSourceListener[] getDragSourceListeners() {
-        return (DragSourceListener[])
-                dragSourceListeners.getUserListeners(new DragSourceListener[0]);
+        return dragSourceListeners.getUserListeners(new DragSourceListener[0]);
     }
 
     public void addDragSourceListener(DragSourceListener dsl) {
@@ -144,9 +143,7 @@ public class DragSource implements Serializable {
     }
 
     public DragSourceMotionListener[] getDragSourceMotionListeners() {
-        return (DragSourceMotionListener[])
-                dragSourceMotionListeners.getUserListeners(
-                        new DragSourceMotionListener[0]);
+        return dragSourceMotionListeners.getUserListeners(new DragSourceMotionListener[0]);
     }
 
     public void addDragSourceMotionListener(DragSourceMotionListener dsml) {

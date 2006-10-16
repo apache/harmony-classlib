@@ -17,11 +17,13 @@
 
 package java.awt.datatransfer;
 
-import java.awt.*;
+import java.awt.EventQueue;
 import java.io.IOException;
-import java.util.*;
-
-import org.apache.harmony.awt.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import org.apache.harmony.awt.ContextStorage;
+import org.apache.harmony.awt.ListenerList;
 import org.apache.harmony.awt.wtk.Synchronizer;
 
 
@@ -33,13 +35,13 @@ public class Clipboard {
 
     private final String name;
     private final FlavorEventProcessor processor;
-    private final ListenerList listeners;
-    private HashSet<DataFlavor> flavors;
-    private Synchronizer awtSynchronizer;
+    private final ListenerList<FlavorListener> listeners;
+    private Set<DataFlavor> flavors;
+    private final Synchronizer awtSynchronizer;
 
     public Clipboard(String name) {
         this.name = name;
-        listeners = new ListenerList();
+        listeners = new ListenerList<FlavorListener>();
         processor = new FlavorEventProcessor();
         flavors = new HashSet<DataFlavor>();
         awtSynchronizer = ContextStorage.getSynchronizer();
@@ -128,7 +130,7 @@ public class Clipboard {
     }
 
     public FlavorListener[] getFlavorListeners() {
-        return (FlavorListener[]) listeners.getUserListeners(new FlavorListener[0]);
+        return listeners.getUserListeners(new FlavorListener[0]);
     }
 
     private void processFlavorEvent(FlavorEvent e) {

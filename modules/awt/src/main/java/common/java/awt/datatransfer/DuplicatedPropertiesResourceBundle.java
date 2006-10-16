@@ -25,7 +25,7 @@ import java.io.*;
 
 final class DuplicatedPropertiesResourceBundle extends ResourceBundle {
 
-    private Properties properties;
+    private final Properties properties;
 
     public DuplicatedPropertiesResourceBundle(InputStream stream) throws IOException {
         properties = new Properties() {

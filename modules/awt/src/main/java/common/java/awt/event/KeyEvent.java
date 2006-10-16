@@ -488,9 +488,8 @@ public class KeyEvent extends InputEvent {
 
             if (i == (rawName.length - 1)) {
                 break;
-            } else {
-                name += " ";
             }
+            name += " ";
         }
 
         return name;
@@ -513,9 +512,8 @@ public class KeyEvent extends InputEvent {
         Field[] allFields = KeyEvent.class.getDeclaredFields();
 
         try {
-            for (int i = 0; i < allFields.length; i++) {
-                Field field = allFields[i];
-                Class ssalc = field.getType();
+            for (Field field : allFields) {
+                Class<?> ssalc = field.getType();
                 int modifiers = field.getModifiers();
 
                 if (ssalc.isPrimitive() && ssalc.getName().equals("int") &&
@@ -534,9 +532,7 @@ public class KeyEvent extends InputEvent {
         return null;
     }
 
-    /**
-     * @deprecated
-     */
+    @Deprecated
     public KeyEvent(Component src, int id,
                     long when, int modifiers,
                     int keyCode) {
@@ -592,9 +588,8 @@ public class KeyEvent extends InputEvent {
         return keyLocation;
     }
 
-    /**
-     * @deprecated
-     */
+    @Override
+    @Deprecated
     public void setModifiers(int modifiers) {
         super.setModifiers(modifiers);
     }
@@ -605,6 +600,7 @@ public class KeyEvent extends InputEvent {
                     (keyCode == VK_CONTROL) || (keyCode == VK_META) || (keyCode == VK_SHIFT)));
     }
 
+    @Override
     public String paramString() {
         /*
          * The format is based on 1.5 release behavior

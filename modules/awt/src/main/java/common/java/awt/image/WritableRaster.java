@@ -55,38 +55,46 @@ public class WritableRaster extends Raster {
 
     public WritableRaster createWritableChild(int parentX, int parentY, int w,
             int h, int childMinX, int childMinY, int bandList[]) {
-        if (w <= 0 || h <= 0)
+        if (w <= 0 || h <= 0) {
             throw new RasterFormatException("Width or Height of child " +
                     "Raster is less than or equal to zero");
+        }
 
-        if (parentX < this.minX || parentX + w > this.minX + this.width)
+        if (parentX < this.minX || parentX + w > this.minX + this.width) {
             throw new RasterFormatException("parentX disposes outside Raster");
+        }
 
-        if (parentY < this.minY || parentY + h > this.minY + this.height)
+        if (parentY < this.minY || parentY + h > this.minY + this.height) {
             throw new RasterFormatException("parentY disposes outside Raster");
+        }
 
-        if ((long) parentX + w > Integer.MAX_VALUE)
+        if ((long) parentX + w > Integer.MAX_VALUE) {
             throw new RasterFormatException("parentX + w results in " +
                     "integer overflow");
+        }
 
-        if ((long) parentY + h > Integer.MAX_VALUE)
+        if ((long) parentY + h > Integer.MAX_VALUE) {
             throw new RasterFormatException("parentY + h results in " +
                     "integer overflow");
+        }
 
-        if ((long) childMinX + w > Integer.MAX_VALUE)
+        if ((long) childMinX + w > Integer.MAX_VALUE) {
             throw new RasterFormatException("childMinX + w results in " +
                     "integer overflow");
+        }
 
-        if ((long) childMinY + h > Integer.MAX_VALUE)
+        if ((long) childMinY + h > Integer.MAX_VALUE) {
             throw new RasterFormatException("childMinY + h results in " +
                     "integer overflow");
+        }
 
         SampleModel childModel;
 
-        if (bandList == null)
+        if (bandList == null) {
             childModel = sampleModel;
-        else
+        } else {
             childModel = sampleModel.createSubsetSampleModel(bandList);
+        }
 
         int childTranslateX = childMinX - parentX;
         int childTranslateY = childMinY - parentY;
@@ -146,8 +154,9 @@ public class WritableRaster extends Raster {
             h -= maxOffY;
         }
 
-        if (w <= 0 || h <= 0)
+        if (w <= 0 || h <= 0) {
             return;
+        }
 
         switch (sampleModel.getDataType()) {
         case DataBuffer.TYPE_BYTE:
@@ -190,9 +199,10 @@ public class WritableRaster extends Raster {
         int h = inRaster.getHeight();
 
         if (dstX < this.minX || dstX + w > this.minX + this.width ||
-                dstY < this.minY || dstY + h > this.minY + this.height)
+                dstY < this.minY || dstY + h > this.minY + this.height) {
             throw new ArrayIndexOutOfBoundsException("Coordinates are " +
                     "not in bounds");
+        }
 
         int srcX = inRaster.getMinX();
         int srcY = inRaster.getMinY();

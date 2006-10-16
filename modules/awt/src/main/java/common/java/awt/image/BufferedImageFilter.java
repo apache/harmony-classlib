@@ -55,6 +55,7 @@ public class BufferedImageFilter extends ImageFilter implements Cloneable {
         return op;
     }
 
+    @Override
     public void setDimensions(int width, int height) {
         this.width = width;
         this.height = height;
@@ -65,6 +66,7 @@ public class BufferedImageFilter extends ImageFilter implements Cloneable {
         }
     }
 
+    @Override
     public void setColorModel(ColorModel model) {
         if (this.cm != null && this.cm != model && raster != null) {
             forceRGB();
@@ -73,6 +75,7 @@ public class BufferedImageFilter extends ImageFilter implements Cloneable {
         }
     }
 
+    @Override
     public void setPixels(
             int x, int y, int
             w, int h,
@@ -82,6 +85,7 @@ public class BufferedImageFilter extends ImageFilter implements Cloneable {
         setPixels(x, y, w, h, model, pixels, off, scansize, true);
     }
 
+    @Override
     public void setPixels(
             int x, int y,
             int w, int h,
@@ -91,6 +95,7 @@ public class BufferedImageFilter extends ImageFilter implements Cloneable {
         setPixels(x, y, w, h, model, pixels, off, scansize, false);
     }
 
+    @Override
     public void imageComplete(int status) {
         if (status == STATICIMAGEDONE || status == SINGLEFRAMEDONE) {
             BufferedImage bim = new BufferedImage(cm, raster, cm.isAlphaPremultiplied, null);
@@ -172,13 +177,12 @@ public class BufferedImageFilter extends ImageFilter implements Cloneable {
                     //bData = new byte[width*height];
                     canArraycopy = !forcedRGB;
                     break;
-                } else {
-                    transferType = DataBuffer.TYPE_INT;
-                    createRaster(transferType);
-                    //iData = new int[width*height];
-                    canArraycopy = !forcedRGB || model.equals(ColorModel.getRGBdefault());
-                    break;
                 }
+                transferType = DataBuffer.TYPE_INT;
+                createRaster(transferType);
+                //iData = new int[width*height];
+                canArraycopy = !forcedRGB || model.equals(ColorModel.getRGBdefault());
+                break;
             } // And proceed to copy the pixels
             case DataBuffer.TYPE_INT: {
                 if (isByteData) { // There are int data already but the new data are bytes

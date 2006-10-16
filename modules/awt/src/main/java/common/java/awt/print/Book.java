@@ -24,12 +24,12 @@ import java.util.Vector;
 
 public class Book implements Pageable {
 
-    private Vector<innerPage> bookPages;
+    private final Vector<innerPage> bookPages;
 
     // innerPage -  class to describe inner structure of Book
     private class innerPage {
-        private PageFormat pageFormat;
-        private Printable pagePainter;
+        private final PageFormat pageFormat;
+        private final Printable pagePainter;
 
         /* constructor */
         innerPage(Printable painter, PageFormat page) {

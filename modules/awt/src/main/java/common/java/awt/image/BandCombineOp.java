@@ -125,8 +125,9 @@ public class BandCombineOp implements RasterOp {
 
         // XXX - todo
         //if (ippFilter(src, dst) != 0)
-        if (verySlowFilter(src, dst) != 0)
+        if (verySlowFilter(src, dst) != 0) {
             throw new ImagingOpException ("Unable to transform source");
+        }
 
         return dst;
     }
@@ -142,8 +143,9 @@ public class BandCombineOp implements RasterOp {
 
         if (sm instanceof PixelInterleavedSampleModel) {
             // Check PixelInterleavedSampleModel
-            if (sm.getDataType() != DataBuffer.TYPE_BYTE)
+            if (sm.getDataType() != DataBuffer.TYPE_BYTE) {
                 return null;
+            }
 
             ret.channels = sm.getNumBands();
             ret.stride = ((ComponentSampleModel) sm).getScanlineStride();
@@ -154,20 +156,23 @@ public class BandCombineOp implements RasterOp {
             SinglePixelPackedSampleModel sppsm1 = (SinglePixelPackedSampleModel) sm;
 
             ret.channels = sppsm1.getNumBands();
-            if (sppsm1.getDataType() != DataBuffer.TYPE_INT)
+            if (sppsm1.getDataType() != DataBuffer.TYPE_INT) {
                 return null;
+            }
 
             // Check sample models
             for (int i=0; i<ret.channels; i++) {
-                if (sppsm1.getSampleSize(i) != 8)
+                if (sppsm1.getSampleSize(i) != 8) {
                     return null;
+                }
             }
 
             ret.channelsOrder = new int[ret.channels];
             int bitOffsets[] = sppsm1.getBitOffsets();
             for (int i=0; i<ret.channels; i++) {
-                if (bitOffsets[i] % 8 != 0)
+                if (bitOffsets[i] % 8 != 0) {
                     return null;
+                }
 
                 ret.channelsOrder[i] = bitOffsets[i] / 8;
             }
@@ -208,12 +213,14 @@ public class BandCombineOp implements RasterOp {
         int rmxWidth = (srcInfo.channels+1); // width of the reordered matrix
         float reorderedMatrix[] = new float[rmxWidth*dstInfo.channels];
         for (int j=0; j<dstInfo.channels; j++) {
-            if (j >= dstInfo.channelsOrder.length)
+            if (j >= dstInfo.channelsOrder.length) {
                 continue;
+            }
 
             for (int i=0; i<srcInfo.channels; i++) {
-                if (i >= srcInfo.channelsOrder.length)
+                if (i >= srcInfo.channelsOrder.length) {
                     break;
+                }
 
                 reorderedMatrix[dstInfo.channelsOrder[j]*rmxWidth + srcInfo.channelsOrder[i]] =
                         matrix[j][i];
@@ -286,6 +293,8 @@ public class BandCombineOp implements RasterOp {
         return 0;
     }
 
+    //TODO remove when method is used
+    @SuppressWarnings("unused")
     private int ippFilter(Raster src, WritableRaster dst) {
         boolean invertChannels;
         boolean inPlace = (src == dst);
@@ -304,8 +313,9 @@ public class BandCombineOp implements RasterOp {
                   matrix[1][3] == 0 &&
                   matrix[2][3] == 0)
                 )
-        )
+        ) {
             return slowFilter(src, dst);
+        }
 
         SampleModel srcSM = src.getSampleModel();
         SampleModel dstSM = dst.getSampleModel();
@@ -358,8 +368,9 @@ public class BandCombineOp implements RasterOp {
             srcSM instanceof PixelInterleavedSampleModel &&
             dstSM instanceof PixelInterleavedSampleModel
         ) {
-            if (srcBands != 3)
+            if (srcBands != 3) {
                 return slowFilter(src, dst);
+            }
 
             int srcDataType = srcSM.getDataType();
 
@@ -386,8 +397,9 @@ public class BandCombineOp implements RasterOp {
                     pism1.getPixelStride() != 3 ||
                     pism2.getPixelStride() != 3 ||
                     !Arrays.equals(pism1.getBandOffsets(), pism2.getBandOffsets())
-            )
+            ) {
                 return slowFilter(src, dst);
+            }
 
             if (Arrays.equals(pism1.getBandOffsets(), piInvOffsets)) {
                 invertChannels = true;
@@ -436,10 +448,11 @@ public class BandCombineOp implements RasterOp {
                 ippMatrix[i*4+1] = matrix[2-i][1];
                 ippMatrix[i*4+2] = matrix[2-i][0];
 
-                if (mxWidth == 4)
+                if (mxWidth == 4) {
                     ippMatrix[i*4+3] = matrix[2-i][3];
-                else if (mxWidth == 5)
+                } else if (mxWidth == 5) {
                     ippMatrix[i*4+3] = matrix[2-i][4];
+                }
             }
         } else {
             for (int i = 0; i < mxHeight; i++) {
@@ -447,10 +460,11 @@ public class BandCombineOp implements RasterOp {
                 ippMatrix[i*4+1] = matrix[i][1];
                 ippMatrix[i*4+2] = matrix[i][2];
 
-                if (mxWidth == 4)
+                if (mxWidth == 4) {
                     ippMatrix[i*4+3] = matrix[i][3];
-                else if (mxWidth == 5)
+                } else if (mxWidth == 5) {
                     ippMatrix[i*4+3] = matrix[i][4];
+                }
             }
         }
 

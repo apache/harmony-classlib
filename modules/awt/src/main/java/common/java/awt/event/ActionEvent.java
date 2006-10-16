@@ -72,6 +72,7 @@ public class ActionEvent extends AWTEvent {
         return when;
     }
 
+    @Override
     public String paramString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:

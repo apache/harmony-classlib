@@ -64,8 +64,8 @@ public class ICC_ColorSpace extends ColorSpace {
     private ICC_Transform toXYZTransform = null;
     private ICC_Transform fromXYZTransform = null;
 
-    private ColorConverter converter = new ColorConverter();
-    private ColorScaler scaler = new ColorScaler();
+    private final ColorConverter converter = new ColorConverter();
+    private final ColorScaler scaler = new ColorScaler();
     private boolean scalingDataLoaded = false;
 
     private ICC_ColorSpace resolvedDeserializedInst;

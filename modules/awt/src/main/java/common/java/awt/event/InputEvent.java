@@ -171,10 +171,12 @@ public abstract class InputEvent extends ComponentEvent {
         return when;
     }
 
+    @Override
     public void consume() {
         super.consume();
     }
 
+    @Override
     public boolean isConsumed() {
         return super.isConsumed();
     }

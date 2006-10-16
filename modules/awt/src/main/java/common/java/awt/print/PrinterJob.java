@@ -90,11 +90,10 @@ public abstract class PrinterJob {
         /* This code has been developed according to API documentation
          * for Priviledged Blocks. 
          */
-        return (PrinterJob) AccessController.doPrivileged(
-                new PrivilegedAction() {
-            public Object run() {
-                String s;
-                s = System.getProperty("java.awt.printerjob");
+        return AccessController.doPrivileged(
+                new PrivilegedAction<PrinterJob>() {
+            public PrinterJob run() {
+                String s = System.getProperty("java.awt.printerjob");
 
                 if (s == null || s.equals("")){
                     s = "org.apache.harmony.x.print.awt.PSPrinterJob";
@@ -171,6 +170,5 @@ public abstract class PrinterJob {
         }
         return pageDialog(defaultPage());
     }
-
 
 }

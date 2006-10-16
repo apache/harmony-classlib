@@ -41,7 +41,7 @@ public class ConvolveOp implements BufferedImageOp, RasterOp {
     private RenderingHints rhs = null;
 
     static {
-        // XXX - todo
+        // TODO
         //System.loadLibrary("imageops");
     }
 
@@ -90,11 +90,13 @@ public class ConvolveOp implements BufferedImageOp, RasterOp {
     }
 
     public BufferedImage createCompatibleDestImage(BufferedImage src, ColorModel dstCM) {
-        if (dstCM == null)
+        if (dstCM == null) {
             dstCM = src.getColorModel();
+        }
 
-        if (dstCM instanceof IndexColorModel)
+        if (dstCM instanceof IndexColorModel) {
             dstCM = ColorModel.getRGBdefault();
+        }
 
         WritableRaster r =
                 dstCM.isCompatibleSampleModel(src.getSampleModel()) ?
@@ -127,10 +129,11 @@ public class ConvolveOp implements BufferedImageOp, RasterOp {
             );
         }
 
-        // XXX - todo
+        // TODO
         //if (ippFilter(src, dst, BufferedImage.TYPE_CUSTOM) != 0)
-            if (slowFilter(src, dst) != 0)
+            if (slowFilter(src, dst) != 0) {
                 throw new ImagingOpException ("Unable to transform source");
+            }
 
         return dst;
     }
@@ -270,10 +273,11 @@ public class ConvolveOp implements BufferedImageOp, RasterOp {
         }
 
         // Skip alpha channel for TYPE_INT_RGB images
-        // XXX - todo
+        // TODO
         //if (ippFilter(src.getRaster(), dst.getRaster(), src.getType()) != 0)
-            if (slowFilter(src.getRaster(), dst.getRaster()) != 0)
+            if (slowFilter(src.getRaster(), dst.getRaster()) != 0) {
                 throw new ImagingOpException ("Unable to transform source");
+            }
 
         if (finalDst != null) {
             Graphics2D g = finalDst.createGraphics();
@@ -286,6 +290,8 @@ public class ConvolveOp implements BufferedImageOp, RasterOp {
         return finalDst;
     }
 
+    // TODO remove when this method is used
+    @SuppressWarnings("unused")
     private int ippFilter(Raster src, WritableRaster dst, int imageType) {
         int srcStride, dstStride;
         boolean skipChannel = false;
@@ -326,7 +332,7 @@ public class ConvolveOp implements BufferedImageOp, RasterOp {
                 break;
             }
 
-            case BufferedImage.TYPE_USHORT_GRAY: // XXX - TODO - could be done in native code?
+            case BufferedImage.TYPE_USHORT_GRAY: // TODO - could be done in native code?
             case BufferedImage.TYPE_USHORT_565_RGB:
             case BufferedImage.TYPE_USHORT_555_RGB:
             case BufferedImage.TYPE_BYTE_BINARY: {
@@ -345,12 +351,14 @@ public class ConvolveOp implements BufferedImageOp, RasterOp {
                     if (
                             srcSM.getDataType() != DataBuffer.TYPE_BYTE ||
                             dstSM.getDataType() != DataBuffer.TYPE_BYTE
-                    )
+                    ) {
                         return slowFilter(src, dst);
+                    }
 
                     channels = srcSM.getNumBands(); // Have IPP functions for 1, 3 and 4 channels
-                    if (!(channels == 1 || channels == 3 || channels == 4))
+                    if (!(channels == 1 || channels == 3 || channels == 4)) {
                         return slowFilter(src, dst);
+                    }
 
                     srcStride = ((ComponentSampleModel) srcSM).getScanlineStride();
                     dstStride = ((ComponentSampleModel) dstSM).getScanlineStride();
@@ -369,19 +377,22 @@ public class ConvolveOp implements BufferedImageOp, RasterOp {
                             sppsm1.getDataType() != DataBuffer.TYPE_INT ||
                             sppsm2.getDataType() != DataBuffer.TYPE_INT ||
                             !(channels == 3 || channels == 4)
-                    )
+                    ) {
                         return slowFilter(src, dst);
+                    }
 
                     // Check compatibility of sample models
                     if (
                             !Arrays.equals(sppsm1.getBitOffsets(), sppsm2.getBitOffsets()) ||
                             !Arrays.equals(sppsm1.getBitMasks(), sppsm2.getBitMasks())
-                    )
+                    ) {
                         return slowFilter(src, dst);
+                    }
 
                     for (int i=0; i<channels; i++) {
-                        if (sppsm1.getSampleSize(i) != 8)
+                        if (sppsm1.getSampleSize(i) != 8) {
                             return slowFilter(src, dst);
+                        }
                     }
 
                     if (channels == 3) { // Cannot skip channel, don't know which is alpha...

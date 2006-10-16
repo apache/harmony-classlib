@@ -26,7 +26,7 @@ public class StringSelection implements Transferable, ClipboardOwner {
     private static final DataFlavor[] supportedFlavors = { DataFlavor.stringFlavor,
             DataFlavor.plainTextFlavor };
 
-    private String string;
+    private final String string;
 
     public StringSelection(String data) {
         string = data;

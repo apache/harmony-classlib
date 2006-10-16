@@ -47,6 +47,7 @@ public class ComponentEvent extends AWTEvent {
         return (Component) source;
     }
 
+    @Override
     public String paramString() {
         /* The format is based on 1.5 release behavior 
          * which can be revealed by the following code:

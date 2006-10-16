@@ -25,10 +25,10 @@ import java.util.Hashtable;
 
 public class FilteredImageSource implements ImageProducer {
 
-    private ImageProducer source;
-    private ImageFilter filter;
+    private final ImageProducer source;
+    private final ImageFilter filter;
 
-    private Hashtable<ImageConsumer, ImageConsumer> consTable = new Hashtable<ImageConsumer, ImageConsumer>();
+    private final Hashtable<ImageConsumer, ImageConsumer> consTable = new Hashtable<ImageConsumer, ImageConsumer>();
 
     public FilteredImageSource(ImageProducer orig, ImageFilter imgf) {
         source = orig;
@@ -36,7 +36,9 @@ public class FilteredImageSource implements ImageProducer {
     }
 
     public synchronized boolean isConsumer(ImageConsumer ic) {
-        if(ic != null) return consTable.containsKey(ic);
+        if(ic != null) {
+            return consTable.containsKey(ic);
+        }
         return false;
     }
 

@@ -24,7 +24,7 @@ import java.util.Hashtable;
 
 public class CropImageFilter extends ImageFilter {
 
-    private int X, Y, WIDTH, HEIGHT;
+    private final int X, Y, WIDTH, HEIGHT;
 
     public CropImageFilter(int x, int y, int w, int h) {
         X = x;

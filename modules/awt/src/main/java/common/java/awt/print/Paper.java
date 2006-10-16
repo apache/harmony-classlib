@@ -26,7 +26,7 @@ public class Paper implements Cloneable {
 
     private double paperHeight;
     private double paperWidth;
-    private Rectangle2D.Double paperImageableArea;
+    private final Rectangle2D.Double paperImageableArea;
 
     private static final double INCH = 72D;    // inch in pixels
     private static final double INCH2 = 144D;  // double inch
