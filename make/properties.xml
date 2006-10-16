@@ -143,6 +143,9 @@
     <property name="lcms.home" value="/usr" />
     <property name="jpeg.home" value="/usr" />
 
+    <!-- default property for call-modules macro - i.e. all modules -->
+    <property name="build.module" value="*" />
+
     <target name="echo" depends="svn-prop, svn-info"
             description="Display the properties defined by this ant file" >
         <echo>
@@ -246,28 +249,11 @@ properties in preference to these:
     <macrodef name="call-modules">
         <attribute name="target" />
         <sequential>
-            <antcall target="call-modules-all">
-                <param name="target" value="@{target}" />
-            </antcall>
-            <antcall target="call-modules-one">
-                <param name="target" value="@{target}" />
-            </antcall>
+            <subant target="@{target}">
+                <dirset dir="modules" includes="${build.module}" />
+            </subant>
         </sequential>
     </macrodef>
-
-    <target name="call-modules-all" unless="build.module">
-        <subant target="${target}">
-            <fileset dir="modules">
-                <include name="*/build.xml" />
-            </fileset>
-        </subant>
-    </target>
-
-    <target name="call-modules-one" if="build.module">
-        <subant target="${target}">
-            <dirset dir="modules" includes="${build.module}" />
-        </subant>
-    </target>
 
     <!-- macros for modules -->
     <!-- TOFIX move to a shared file in the HDK/build/make directory. -->
