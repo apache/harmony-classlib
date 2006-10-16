@@ -602,7 +602,6 @@ invocation (HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
   JavaVM *jvm;
   JNIEnv *env;
   char *mainClassJar;
-  int javaRc = 0;
   int isNameUTF = 0;
   int rc;
   jint (JNICALL * CreateJavaVM) (JavaVM **, JNIEnv **, JavaVMInitArgs *);
@@ -648,19 +647,15 @@ invocation (HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
           
           if (!jStrObject)
             {
-              (*env)->ExceptionDescribe (env);
-              (*jvm)->DestroyJavaVM (jvm);
               rc = 3;
-              //goto cleanup;
+              goto cleanup;
             }
 
           clazz = (*env)->FindClass (env, "java/lang/Class");
           if (!clazz)
             {
-              (*env)->ExceptionDescribe (env);
-              (*jvm)->DestroyJavaVM (jvm);
               rc = 3;
-              //goto cleanup;
+              goto cleanup;
             }
 
           mID =
@@ -668,10 +663,8 @@ invocation (HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
                                        "(Ljava/lang/String;)Ljava/lang/Class;");
           if (!mID)
             {
-              (*env)->ExceptionDescribe (env);
-              (*jvm)->DestroyJavaVM (jvm);
               rc = 3;
-              //goto cleanup;
+              goto cleanup;
             }
 
           /* ensure that the jar is the first arg passed to the jar runner */
@@ -702,11 +695,12 @@ invocation (HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
             */
         }
 
-      javaRc =
+      rc =
         main_runJavaMain (env, mainClass, isNameUTF, (argc - (classArg + 1)),
                           &argv[classArg + 1], portLibrary);
 
     }
+cleanup:
   if (vm_args.options)
     {
       hymem_free_memory (vm_args.options);
@@ -715,14 +709,14 @@ invocation (HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
     {
       hymem_free_memory (mainClassJar);
     }
-
+  (*jvm)->DetachCurrentThread(jvm);
   (*jvm)->DestroyJavaVM (jvm);
   /*if ((*jvm)->DestroyJavaVM(jvm)) {
      hytty_printf (PORTLIB, "Failed to destroy JVM\n");
      return 1;
      } */
 
-  return 0;
+  return rc;
 }
 
  /**
@@ -1258,8 +1252,6 @@ done:
     {
       if (rc == 0)
         rc = 100;
-
-      (*env)->ExceptionDescribe (env);
     }
 
   return rc;
