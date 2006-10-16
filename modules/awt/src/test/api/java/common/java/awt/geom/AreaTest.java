@@ -20,9 +20,7 @@
  */
 package java.awt.geom;
 
-import junit.framework.TestCase;
-
-public class AreaTest extends TestCase {
+public class AreaTest extends PathIteratorTestCase {
 
     public AreaTest(String name) {
         super(name);
@@ -75,6 +73,14 @@ public class AreaTest extends TestCase {
         } catch (NullPointerException e) {
             // expected
         }
+    }
+    
+    public void testGetPathIterator() {
+        // Regression test HARMONY-1860
+        Area a = new Area();
+        PathIterator path = a.getPathIterator(null);
+        checkPathRule(path, PathIterator.WIND_NON_ZERO);
+        checkPathDone(path, true);
     }
 
 }

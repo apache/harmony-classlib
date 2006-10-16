@@ -24,6 +24,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
+import java.util.NoSuchElementException;
 
 public class Area implements Shape, Cloneable {
 
@@ -31,6 +32,33 @@ public class Area implements Shape, Cloneable {
      * The source Shape object
      */
     Shape s;
+
+    private static class NullIterator implements PathIterator {
+
+        NullIterator() {
+        }
+
+        public int getWindingRule() {
+            return WIND_NON_ZERO;
+        }
+
+        public boolean isDone() {
+            return true;
+        }
+
+        public void next() {
+            // nothing
+        }
+
+        public int currentSegment(double[] coords) {
+            throw new NoSuchElementException("Iterator out of bounds");
+        }
+
+        public int currentSegment(float[] coords) {
+            throw new NoSuchElementException("Iterator out of bounds");
+        }
+
+    }
 
     public Area() {
     }
@@ -88,11 +116,11 @@ public class Area implements Shape, Cloneable {
     }
 
     public PathIterator getPathIterator(AffineTransform t) {
-        return s == null ? null : s.getPathIterator(t);
+        return s == null ? new NullIterator() : s.getPathIterator(t);
     }
 
     public PathIterator getPathIterator(AffineTransform t, double flatness) {
-        return s == null ? null : s.getPathIterator(t, flatness);
+        return s == null ? new NullIterator() : s.getPathIterator(t, flatness);
     }
 
     public void add(Area area) {
