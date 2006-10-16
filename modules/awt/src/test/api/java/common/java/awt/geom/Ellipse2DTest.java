@@ -28,6 +28,18 @@ public class Ellipse2DTest extends ShapeTestCase {
         filterShape = createFilter("^(ellipse).*([.]shape)$", null);
     }
 
+    public void testGetPathIteratorEmpty() {
+        // Regression test HARMONY-1585
+        Ellipse2D e = new Ellipse2D.Double();
+        PathIterator p = e.getPathIterator(null);
+        checkPathMove(p, false, 0, 0, 0.0);
+        checkPathCubic(p, false, 0, 0, 0, 0, 0, 0, 0.0);
+        checkPathCubic(p, false, 0, 0, 0, 0, 0, 0, 0.0);
+        checkPathCubic(p, false, 0, 0, 0, 0, 0, 0, 0.0);
+        checkPathCubic(p, false, 0, 0, 0, 0, 0, 0, 0.0);
+        checkPathClose(p, true);
+    }
+    
     public static void main(String[] args) {
         junit.textui.TestRunner.run(Ellipse2DTest.class);
     }

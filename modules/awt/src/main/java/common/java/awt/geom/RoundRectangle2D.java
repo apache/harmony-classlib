@@ -288,7 +288,7 @@ public abstract class RoundRectangle2D extends RectangularShape {
             this.aw = Math.min(width, rr.getArcWidth());
             this.ah = Math.min(height, rr.getArcHeight());
             this.t = at;
-            if (width <= 0.0 || height <= 0.0 || aw <= 0.0 || ah <= 0.0) {
+            if (width < 0.0 || height < 0.0 || aw < 0.0 || ah < 0.0) {
                 index = points.length;
             }
         }

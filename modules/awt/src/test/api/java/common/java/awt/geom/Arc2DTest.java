@@ -371,6 +371,13 @@ public class Arc2DTest extends ShapeTestCase {
         }
     }
 
+    public void testGetPathIteratorEmpty() {
+        // Regression test HARMONY-1585
+        Arc2D a = new Arc2D.Double();
+        PathIterator p = a.getPathIterator(null);
+        checkPathMove(p, true, 0, 0, 0.0);
+    }
+    
     public static void main(String[] args) {
         junit.textui.TestRunner.run(Arc2DTest.class);
     }

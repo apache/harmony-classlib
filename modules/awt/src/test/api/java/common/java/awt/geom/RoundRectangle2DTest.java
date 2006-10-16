@@ -52,6 +52,22 @@ public class RoundRectangle2DTest extends ShapeTestCase {
         assertEquals(6.0, r.getArcHeight(), 0.0);
     }
 
+    public void testGetPathIteratorEmpty() {
+        // Regression test HARMONY-1585
+        RoundRectangle2D e = new RoundRectangle2D.Double();
+        PathIterator p = e.getPathIterator(null);
+        checkPathMove(p, false, 0, 0, 0.0);
+        checkPathLine(p, false, 0, 0, 0.0);
+        checkPathCubic(p, false, 0, 0, 0, 0, 0, 0, 0.0);
+        checkPathLine(p, false, 0, 0, 0.0);
+        checkPathCubic(p, false, 0, 0, 0, 0, 0, 0, 0.0);
+        checkPathLine(p, false, 0, 0, 0.0);
+        checkPathCubic(p, false, 0, 0, 0, 0, 0, 0, 0.0);
+        checkPathLine(p, false, 0, 0, 0.0);
+        checkPathCubic(p, false, 0, 0, 0, 0, 0, 0, 0.0);
+        checkPathClose(p, true);
+    }
+    
     public static void main(String[] args) {
         junit.textui.TestRunner.run(RoundRectangle2DTest.class);
     }

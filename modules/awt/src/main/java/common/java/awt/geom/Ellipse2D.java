@@ -203,7 +203,7 @@ public abstract class Ellipse2D extends RectangularShape {
             this.width = e.getWidth();
             this.height = e.getHeight();
             this.t = t;
-            if (width <= 0.0 || height <= 0.0) {
+            if (width < 0.0 || height < 0.0) {
                 index = 6;
             }
         }

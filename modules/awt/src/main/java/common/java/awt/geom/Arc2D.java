@@ -341,7 +341,7 @@ public abstract class Arc2D extends RectangularShape {
          * @param at - the AffineTransform object to apply rectangle path
          */
         Iterator(Arc2D a, AffineTransform t) {
-            if (a.isEmpty()) {
+            if (width < 0 || height < 0) {
                 arcCount = 0;
                 lineCount = 0;
                 index = 1;
