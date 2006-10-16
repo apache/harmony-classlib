@@ -22,10 +22,12 @@
 
 package org.apache.harmony.auth.tests.javax.security.auth.login;
 
+import java.io.File;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -38,12 +40,17 @@ import javax.security.auth.spi.LoginModule;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.auth.tests.support.TestUtils;
+
+import tests.support.Support_Exec;
 
 /**
  * Tests LoginContext class
  */
-
 public class LoginContextTest extends TestCase {
+
+    // system property to specify another login configuration file 
+    private static final String AUTH_LOGIN_CONFIG = "java.security.auth.login.config";
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(LoginContextTest.class);
@@ -747,6 +754,59 @@ public class LoginContextTest extends TestCase {
     public final void testGetSubject() {
         //TODO Implement getSubject().
         // test failed login
+    }
+
+    /**
+     * @tests javax.security.auth.login.LoginContext
+     */
+    public void test_LoginContext_defaultConfigProvider() throws Exception {
+
+        // test: LoginContext constructor fails because there are no config
+        // files to be read (the test is modification of test case
+        // in ConfigurationTest)
+
+        // no login.config.url.N security properties should be set
+        String javaSecurityFile = TestUtils
+                .createJavaPropertiesFile(new Properties());
+
+        // tmp user home to avoid presence of ${user.home}/.java.login.config
+        String tmpUserHome = System.getProperty("java.io.tmpdir")
+                + File.separatorChar + "tmpUserHomeForLogingContextTest";
+        File dir = new File(tmpUserHome);
+        if (!dir.exists()) {
+            dir.mkdirs();
+            dir.deleteOnExit();
+        }
+        String javaLoginConfig = tmpUserHome + File.separatorChar
+                + ".java.login.config";
+        assertFalse("There should be no login config file: " + javaLoginConfig,
+                new File(javaLoginConfig).exists());
+
+        String[] arg = new String[] { "-Duser.home=" + tmpUserHome,
+                "-Djava.security.properties=" + javaSecurityFile,
+                NoConfigFileToBeRead.class.getName() };
+
+        Support_Exec.execJava(arg, null, true);
+    }
+
+    public static class NoConfigFileToBeRead {
+
+        // the test is based on assumption that security properties 
+        // login.config.url.N are unset and there is no file
+        // ${user.home}/.java.login.config
+        public static void main(String[] args) throws LoginException {
+
+            //reset path to alternative configuration file
+            TestUtils.setSystemProperty(AUTH_LOGIN_CONFIG, null);
+
+            Configuration.setConfiguration(null); // reset default config
+            try {
+                // Regression for HARMONY-771
+                new LoginContext("0"); 
+                TestCase.fail("No expected SecurityException");
+            } catch (SecurityException e) {
+            }
+        }
     }
 
     private static class MyConfig extends Configuration {
