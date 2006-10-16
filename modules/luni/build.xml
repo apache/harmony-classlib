@@ -284,7 +284,7 @@
         </jar>
     </target>
 
-    <target name="compile-tests">
+    <target name="compile-tests" depends="copy-test-resources">
         <compile-tests description="JUnit Tests" destdir="${hy.luni.bin.test}">
             <javac-elements>
                 <src>
@@ -348,6 +348,15 @@
         <mkdir dir="${hy.build}" />
         <copy todir="${hy.build}" includeemptydirs="false">
             <fileset dir="${hy.luni.src.main.java}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="copy-test-resources">
+        <mkdir dir="${hy.luni.bin.test}" />
+        <copy todir="${hy.luni.bin.test}" includeemptydirs="false">
+            <fileset dir="${hy.luni.src.test.resources}">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>
