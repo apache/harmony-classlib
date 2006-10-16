@@ -45,7 +45,6 @@ public class JarURLConnectionTest extends junit.framework.TestCase {
 		URL u = new URL("jar:"
                 + BASE.toString()+"/lf.jar!/swt.dll");
         juc = (JarURLConnection) u.openConnection();
-        System.out.println(juc.getClass());
         java.util.jar.Attributes a = juc.getJarEntry().getAttributes();
         assertEquals("Returned incorrect Attributes", "SHA MD5", a
                 .get(new java.util.jar.Attributes.Name("Digest-Algorithms")));

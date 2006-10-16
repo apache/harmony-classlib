@@ -50,7 +50,7 @@ import org.apache.harmony.kernel.vm.VM;
  * 
  */
 public class JarURLConnection extends java.net.JarURLConnection {
-	static Hashtable<Object,CacheEntry> jarCache = new Hashtable<Object,CacheEntry>();
+	static Hashtable<String,CacheEntry<? extends JarFile>> jarCache = new Hashtable<String,CacheEntry<?>>();
 
 	InputStream jarInput;
 
@@ -58,24 +58,24 @@ public class JarURLConnection extends java.net.JarURLConnection {
 
 	private JarEntry jarEntry;
 
-	ReferenceQueue cacheQueue = new ReferenceQueue();
+	ReferenceQueue<JarFile> cacheQueue = new ReferenceQueue<JarFile>();
 
-	static TreeSet lru = new TreeSet(new LRUComparitor());
+	static TreeSet<LRUKey> lru = new TreeSet<LRUKey>(new LRUComparitor<LRUKey>());
 
 	static int Limit;
 	static {
 		Limit = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
 					public Integer run() {
-						return Integer.getInteger("jar.cacheSize", 500);
+						return Integer.getInteger("jar.cacheSize", 500); //$NON-NLS-1$
 					}
 				});
 		VM.closeJars();
 	}
 
-	static final class CacheEntry extends WeakReference {
+	static final class CacheEntry<T extends JarFile> extends WeakReference<T>{
 		Object key;
 
-		CacheEntry(Object jar, String key, ReferenceQueue queue) {
+        CacheEntry(T jar, String key, ReferenceQueue<JarFile> queue) {
 			super(jar, queue);
 			this.key = key;
 		}
@@ -99,14 +99,14 @@ public class JarURLConnection extends java.net.JarURLConnection {
 		}
 	}
 
-	static final class LRUComparitor implements Comparator {
+	static final class LRUComparitor<T> implements Comparator<LRUKey> {
 		LRUComparitor() {
 		}
 
 		/**
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */
-		public int compare(Object o1, Object o2) {
+		public int compare(LRUKey o1, LRUKey o2) {
 			if (((LRUKey) o1).ts > ((LRUKey) o2).ts) {
 				return 1;
 			}
@@ -170,11 +170,11 @@ public class JarURLConnection extends java.net.JarURLConnection {
 	 */
 	private void findJarFile() throws IOException {
 		URL jarFileURL = getJarFileURL();
-		if (jarFileURL.getProtocol().equals("file")) {
+		if (jarFileURL.getProtocol().equals("file")) { //$NON-NLS-1$
 			String fileName = jarFileURL.getFile();
 			String host = jarFileURL.getHost();
 			if (host != null && host.length() > 0)
-				fileName = "//" + host + fileName;
+				fileName = "//" + host + fileName; //$NON-NLS-1$
 			jarFile = openJarFile(fileName, fileName, false);
 			return;
 		}
@@ -199,8 +199,8 @@ public class JarURLConnection extends java.net.JarURLConnection {
 			jarFile = AccessController.doPrivileged(new PrivilegedAction<JarFile>() {
 						public JarFile run() {
 							try {
-								File tempJar = File.createTempFile("hyjar_",
-										".tmp", null);
+								File tempJar = File.createTempFile("hyjar_", //$NON-NLS-1$
+										".tmp", null); //$NON-NLS-1$
 								FileOutputStream fos = new FileOutputStream(
 										tempJar);
 								byte[] buf = new byte[4096];
@@ -227,10 +227,10 @@ public class JarURLConnection extends java.net.JarURLConnection {
 
 		JarFile jar = null;
 		if(useCaches){
-		    CacheEntry entry;
-            while ((entry = (CacheEntry) cacheQueue.poll()) != null)
+		    CacheEntry<? extends JarFile> entry;
+            while ((entry = (CacheEntry<? extends JarFile>)cacheQueue.poll()) != null)
                 jarCache.remove(entry.key);
-            entry = (CacheEntry) jarCache.get(key);
+            entry = jarCache.get(key);
             if (entry != null)
                 jar = (JarFile) entry.get();
             if (jar == null && fileString != null) {
@@ -238,7 +238,7 @@ public class JarURLConnection extends java.net.JarURLConnection {
                         + (temp ? ZipFile.OPEN_DELETE : 0);
                 jar = new JarFile(new File(Util.decode(fileString, false)),
                         true, flags);
-                jarCache.put(key, new CacheEntry(jar, key, cacheQueue));
+                jarCache.put(key, new CacheEntry<JarFile>(jar, key, cacheQueue));
             } else {
                 SecurityManager security = System.getSecurityManager();
                 if (security != null)
@@ -246,7 +246,7 @@ public class JarURLConnection extends java.net.JarURLConnection {
                 if (temp)
                     lru.remove(new LRUKey(jar, 0));
             }
-		}else{
+		}else if(fileString != null){
 		    int flags = ZipFile.OPEN_READ + (temp ? ZipFile.OPEN_DELETE : 0);
 		    jar = new JarFile(new File(Util.decode(fileString, false)), true, flags);
 		}
@@ -301,7 +301,7 @@ public class JarURLConnection extends java.net.JarURLConnection {
 		if (jarInput != null)
 			return jarInput;
 		if (jarEntry == null)
-			throw new IOException(Msg.getString("K00fc"));
+			throw new IOException(Msg.getString("K00fc")); //$NON-NLS-1$
 		return jarInput = jarFile.getInputStream(jarEntry);
 	}
 
@@ -316,7 +316,7 @@ public class JarURLConnection extends java.net.JarURLConnection {
 		// it could also return "x-java/jar" which jdk returns but here, we get
 		// it from the URLConnection
 		try {
-			if (url.getFile().endsWith("!/"))
+			if (url.getFile().endsWith("!/")) //$NON-NLS-1$
 				return getJarFileURL().openConnection().getContentType();
 		} catch (IOException ioe) {
 		}
@@ -333,7 +333,7 @@ public class JarURLConnection extends java.net.JarURLConnection {
 	 */
 	public int getContentLength() {
 		try {
-			if (url.getFile().endsWith("!/"))
+			if (url.getFile().endsWith("!/")) //$NON-NLS-1$
 				return getJarFileURL().openConnection().getContentLength();
 		} catch (IOException e) {
 		}
@@ -386,7 +386,7 @@ public class JarURLConnection extends java.net.JarURLConnection {
 	 * Closes the cached files.
 	 */
 	public static void closeCachedFiles() {
-		Enumeration<CacheEntry> elemEnum = jarCache.elements();
+		Enumeration<CacheEntry<? extends JarFile>> elemEnum = jarCache.elements();
 		while (elemEnum.hasMoreElements()) {
 			try {
 				ZipFile zip = (ZipFile) ((CacheEntry) elemEnum.nextElement())
