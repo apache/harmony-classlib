@@ -35,7 +35,7 @@ import org.apache.harmony.tools.toolutils.KeyStoreLoaderSaver;
 /**
  * Class for loading the main keystore, saving ang changing its password.
  */
-public class KeytoolKSLoaderSaver extends KeyStoreLoaderSaver{
+public class KeytoolKSLoaderSaver {
     /**
      * Creates an instance of class KeyStore and loads a keystore to it.
      * param.getStorePass() is used to check the integrity of the keystore. If
@@ -72,15 +72,17 @@ public class KeytoolKSLoaderSaver extends KeyStoreLoaderSaver{
             ksFile = new File(uri);
         } catch (URISyntaxException e) {
             ksFile = new File(param.getStorePath());
+        } catch (IllegalArgumentException e){
+            ksFile = new File(param.getStorePath());
         }
         if (ksFile.exists()) {
             // load an existing store
-            keyStore = loadStore(param.getStorePath(), param.getStoreType(),
-                    param.getStorePass(), ksProvider);
+            keyStore = KeyStoreLoaderSaver.loadStore(param.getStorePath(),
+                    param.getStoreType(), param.getStorePass(), ksProvider);
         } else {
             // create a new store if it doesn't exist
-            keyStore = loadStore(null, param.getStoreType(), param
-                    .getStorePass(), ksProvider);
+            keyStore = KeyStoreLoaderSaver.loadStore(null,
+                    param.getStoreType(), param.getStorePass(), ksProvider);
             param.setNeedSaveKS(true);
         }
         param.setKeyStore(keyStore);
@@ -94,13 +96,13 @@ public class KeytoolKSLoaderSaver extends KeyStoreLoaderSaver{
      * @throws NoSuchAlgorithmException
      * @throws CertificateException
      * @throws IOException
-     * @throws NoSuchProviderException 
+     * @throws NoSuchProviderException
      */
     static void saveStore(KeytoolParameters param) throws KeyStoreException,
             NoSuchAlgorithmException, CertificateException, IOException,
-            NoSuchProviderException{
-        saveStore(param.getKeyStore(), param.getStorePath(), param
-                .getStorePass(), param.isVerbose());
+            NoSuchProviderException {
+        KeyStoreLoaderSaver.saveStore(param.getKeyStore(),
+                param.getStorePath(), param.getStorePass(), param.isVerbose());
     }
 
     /**

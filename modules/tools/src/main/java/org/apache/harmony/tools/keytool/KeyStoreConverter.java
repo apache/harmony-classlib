@@ -26,6 +26,8 @@ import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
 import java.util.Enumeration;
 
+import org.apache.harmony.tools.toolutils.KeyStoreLoaderSaver;
+
 /**
  * Class to convert keystore to another format.
  */
@@ -51,7 +53,7 @@ public class KeyStoreConverter {
         String ksProvider = (param.getConvKsProvider() != null) ? param
                 .getConvKsProvider() : param.getProvider();
         // creating a new keystore
-        KeyStore convertedKS = KeytoolKSLoaderSaver.loadStore(null, param
+        KeyStore convertedKS = KeyStoreLoaderSaver.loadStore(null, param
                 .getConvertedKeyStoreType(), param.getConvertedKeyStorePass(),
                 ksProvider);
 
@@ -121,7 +123,7 @@ public class KeyStoreConverter {
         }
             
         // save the converted keystore
-        KeytoolKSLoaderSaver.saveStore(convertedKS, param
+        KeyStoreLoaderSaver.saveStore(convertedKS, param
                 .getConvertedKeyStorePath(), param.getConvertedKeyStorePass(),
                 param.isVerbose());
     }

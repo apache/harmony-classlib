@@ -26,6 +26,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
 
+import org.apache.harmony.tools.toolutils.KeyStoreLoaderSaver;
+
 /**
  * The class encapsulates paramaters for Keytool most of which are ususally given
  * in command line.
@@ -891,7 +893,7 @@ public class KeytoolParameters {
             NoSuchProviderException, IOException {
         if (cacerts == null) {
             String keyStoreProv = (ksProvider != null) ? ksProvider : provider;
-            cacerts = KeytoolKSLoaderSaver.loadStore(getCacertsPath(),
+            cacerts = KeyStoreLoaderSaver.loadStore(getCacertsPath(),
                     storeType, getCacertsPass(), keyStoreProv);
         }
         return cacerts;
