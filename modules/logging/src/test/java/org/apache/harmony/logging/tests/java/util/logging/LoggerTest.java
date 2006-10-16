@@ -316,6 +316,9 @@ public class LoggerTest extends TestCase {
 			fail("Should throw NullPointerException!");
 		} catch (NullPointerException e) {
 		}
+        Logger logger = Logger.getLogger("", null);
+        assertNull(logger.getResourceBundleName());
+        assertNull(logger.getResourceBundle());        
 	}
 
 	/*

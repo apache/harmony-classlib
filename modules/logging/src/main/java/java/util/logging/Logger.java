@@ -313,6 +313,9 @@ public class Logger {
     private static void updateResourceBundle(Logger l, String resourceBundleName) {
         synchronized (l) {
             if (null == l.getResourceBundleName()) {
+                if(null == resourceBundleName){
+                    return;
+                }
                 /*
                  * load the resource bundle if none is specified
                  * before
