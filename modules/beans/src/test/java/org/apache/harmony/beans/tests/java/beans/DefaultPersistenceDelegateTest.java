@@ -345,15 +345,15 @@ public class DefaultPersistenceDelegateTest extends TestCase {
      */
     public void testInstantiate_NotRegularGetter() throws Exception {
         MockPersistenceDelegate pd = new MockPersistenceDelegate(new String[] {
-                "prop1", "i" });
+                "prop"});
         MockFoo2 b = new MockFoo2(2);
         Expression e = pd.instantiate(b, new Encoder());
+
         assertSame(b, e.getValue());
         assertSame(MockFoo2.class, e.getTarget());
         assertEquals("new", e.getMethodName());
-        assertEquals(2, e.getArguments().length);
+        assertEquals(1, e.getArguments().length);
         assertEquals(new Integer(2), e.getArguments()[0]);
-        assertNull(e.getArguments()[1]);
     }
 
     /*
@@ -361,7 +361,8 @@ public class DefaultPersistenceDelegateTest extends TestCase {
      */
     public void testMutatesTo_NormalNoProperty() {
         MockPersistenceDelegate pd = new MockPersistenceDelegate();
-        assertTrue(pd.mutatesTo("test1", "test2"));
+        
+        assertTrue(pd.mutatesTo("test1", "test1"));
         assertFalse(pd.mutatesTo(new Object(), new Object() {
             public int hashCode() {
                 return super.hashCode();
@@ -377,6 +378,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
     public void testMutatesTo_NormalWithPropertyNoEqualMethod() {
         MockPersistenceDelegate pd = new MockPersistenceDelegate(
                 new String[] { "name" });
+
         assertFalse(pd.mutatesTo(new Object(), new Object() {
             public int hashCode() {
                 return super.hashCode();
@@ -391,6 +393,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
     public void testMutatesTo_NormalWithNullPropertyPublicEqualMethod() {
         MockPersistenceDelegate pd = new MockPersistenceDelegate(
                 new String[] { null });
+
         assertFalse(pd.mutatesTo("test1", "test2"));
     }
 
@@ -400,7 +403,8 @@ public class DefaultPersistenceDelegateTest extends TestCase {
      */
     public void testMutatesTo_NormalWithEmptyPropertyPublicEqualMethod() {
         MockPersistenceDelegate pd = new MockPersistenceDelegate(new String[0]);
-        assertTrue(pd.mutatesTo("test1", "test2"));
+        
+        assertTrue(pd.mutatesTo("test1", "test1"));
     }
 
     /*
@@ -410,6 +414,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
     public void testMutatesTo_NormalWithPropertyPublicEqualMethod() {
         MockPersistenceDelegate pd = new MockPersistenceDelegate(
                 new String[] { "name" });
+
         assertFalse(pd.mutatesTo("test1", "test2"));
         assertTrue(pd.mutatesTo("test1", "test1"));
     }
@@ -421,6 +426,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
     public void testMutatesTo_NormalWithPropertyProtectedEqualMethod() {
         MockPersistenceDelegate pd = new MockPersistenceDelegate(
                 new String[] { "name" });
+
         assertFalse(pd.mutatesTo(new MockPersistenceDelegate(), "test"));
     }
 
@@ -429,14 +435,8 @@ public class DefaultPersistenceDelegateTest extends TestCase {
      */
     public void testMutatesTo_Null() {
         MockPersistenceDelegate pd = new MockPersistenceDelegate();
-        assertFalse(pd.mutatesTo("test", null));
-        assertFalse(pd.mutatesTo(null, null));
-        try {
-            pd.mutatesTo(null, "test");
-            fail("Should throw NullPointerException!");
-        } catch (NullPointerException ex) {
-            // expected
-        }
+
+        assertFalse(pd.mutatesTo(null, "test"));
     }
 
     /*

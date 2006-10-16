@@ -28,16 +28,15 @@ public class MockFoo2BeanInfo extends SimpleBeanInfo {
 
     @Override
     public PropertyDescriptor[] getPropertyDescriptors() {
-        PropertyDescriptor[] pds = new PropertyDescriptor[1];
+        PropertyDescriptor pd = null;
+
         try {
-            PropertyDescriptor pd = new PropertyDescriptor("prop",
+            pd = new PropertyDescriptor("prop",
                     MockFoo2.class, "myget", "myset");
-            pd.setName(pd.getName() + ".BeanInfo");
-            pds[0] = pd;
         } catch (IntrospectionException e) {
             throw new Error(e);
         }
-        return pds;
+        return new PropertyDescriptor[] { pd };
     }
 
 }
