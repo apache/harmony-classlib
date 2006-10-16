@@ -317,7 +317,6 @@
                         <exclude name="tests/api/java/io/OutputStreamWriterTest.java" />
                         <exclude name="tests/api/java/lang/ProcessTest.java" />
                         <exclude name="tests/api/java/net/HttpURLConnectionTest.java" />
-                        <exclude name="tests/api/java/net/JarURLConnectionTest.java" />
                         <exclude name="tests/api/java/net/MulticastSocketTest.java" />
                         <exclude name="tests/api/java/net/SocketImplTest.java" />
                         <exclude name="tests/api/java/net/SocketTest.java" />

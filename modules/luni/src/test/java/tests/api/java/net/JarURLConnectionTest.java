@@ -35,159 +35,138 @@ public class JarURLConnectionTest extends junit.framework.TestCase {
 	JarURLConnection juc;
 
 	URLConnection uc;
+    
+    private static final URL BASE = JarURLConnectionTest.class.getClassLoader().getResource(JarURLConnectionTest.class.getPackage().getName().replace('.', File.separatorChar));
 
 	/**
 	 * @tests java.net.JarURLConnection#getAttributes()
 	 */
-	public void test_getAttributes() {
-		try {
-			URL u = new URL("jar:"
-					+ Support_Resources.getResourceURL("/JUC/lf.jar!/swt.dll"));
-			juc = (JarURLConnection) u.openConnection();
-			java.util.jar.Attributes a = juc.getJarEntry().getAttributes();
-			assertEquals("Returned incorrect Attributes", "SHA MD5", a.get(
-					new java.util.jar.Attributes.Name("Digest-Algorithms"))
-					);
-		} catch (java.io.IOException e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+	public void test_getAttributes() throws Exception{
+		URL u = new URL("jar:"
+                + BASE.toString()+"/lf.jar!/swt.dll");
+        juc = (JarURLConnection) u.openConnection();
+        System.out.println(juc.getClass());
+        java.util.jar.Attributes a = juc.getJarEntry().getAttributes();
+        assertEquals("Returned incorrect Attributes", "SHA MD5", a
+                .get(new java.util.jar.Attributes.Name("Digest-Algorithms")));
 	}
 
 	/**
+	 * @throws Exception 
 	 * @tests java.net.JarURLConnection#getEntryName()
 	 */
-	public void test_getEntryName() {
-		try {
-			URL u = new URL("jar:"
-					+ Support_Resources.getResourceURL("/JUC/lf.jar!/plus.bmp"));
-			juc = (JarURLConnection) u.openConnection();
-			assertEquals("Returned incorrect entryName", "plus.bmp", juc.getEntryName()
-					);
-			u = new URL("jar:"
-					+ Support_Resources.getResourceURL("/JUC/lf.jar!/"));
-			juc = (JarURLConnection) u.openConnection();
-			assertNull("Returned incorrect entryName",
-					juc.getEntryName());
-		} catch (java.io.IOException e) {
-			fail("IOException during test : " + e.getMessage());
-		}
-	}
+	public void test_getEntryName() throws Exception {
+        URL u = new URL("jar:"
+                + BASE.toString()+"/lf.jar!/plus.bmp");
+        juc = (JarURLConnection) u.openConnection();
+        assertEquals("Returned incorrect entryName", "plus.bmp", juc
+                .getEntryName());
+        u = new URL("jar:" + BASE.toString()+"/lf.jar!/");
+        juc = (JarURLConnection) u.openConnection();
+        assertNull("Returned incorrect entryName", juc.getEntryName());
+    }
 
 	/**
 	 * @tests java.net.JarURLConnection#getJarEntry()
 	 */
-	public void test_getJarEntry() {
-		try {
-			URL u = new URL("jar:"
-					+ Support_Resources.getResourceURL("/JUC/lf.jar!/plus.bmp"));
-			juc = (JarURLConnection) u.openConnection();
-			assertEquals("Returned incorrect JarEntry", "plus.bmp", juc.getJarEntry()
-					.getName());
-			u = new URL("jar:"
-					+ Support_Resources.getResourceURL("/JUC/lf.jar!/"));
-			juc = (JarURLConnection) u.openConnection();
-			assertNull("Returned incorrect JarEntry", juc.getJarEntry());
-		} catch (java.io.IOException e) {
-			fail("IOException during test : " + e.getMessage());
-		}
+	public void test_getJarEntry() throws Exception {
+        URL u = new URL("jar:"
+                + BASE.toString()+"/lf.jar!/plus.bmp");
+        juc = (JarURLConnection) u.openConnection();
+        assertEquals("Returned incorrect JarEntry", "plus.bmp", juc
+                .getJarEntry().getName());
+        u = new URL("jar:" + BASE.toString()+"/lf.jar!/");
+        juc = (JarURLConnection) u.openConnection();
+        assertNull("Returned incorrect JarEntry", juc.getJarEntry());
 	}
 
 	/**
-	 * @tests java.net.JarURLConnection#getJarFile()
-	 */
-         public void test_getJarFile()
-             throws MalformedURLException,IOException {
-		URL url = null;
-                url = new URL("jar:"
-                              + Support_Resources.getResourceURL("/JUC/lf.jar!/missing"));
+     * @tests java.net.JarURLConnection#getJarFile()
+     */
+    public void test_getJarFile() throws MalformedURLException, IOException {
+        URL url = null;
+        url = new URL("jar:"
+                + BASE.toString()+"/lf.jar!/missing");
 
-		JarURLConnection connection = null;
-                connection = (JarURLConnection) url.openConnection();
-		try {
-			connection.connect();
-                        fail("Did not throw exception on connect");
-		} catch (IOException e) {
-                        // expected
-		}
-
-		try {
-			connection.getJarFile();
-                        fail("Did not throw exception after connect");
-		} catch (IOException e) {
-                        // expected
-		}
-
-		File resources = Support_Resources.createTempFolder();
-
-                Support_Resources.copyFile(resources, null, "hyts_att.jar");
-                File file = new File(resources.toString() + "/hyts_att.jar");
-                URL fUrl1 = new URL("jar:file:" + file.getPath() + "!/");
-                JarURLConnection con1 = (JarURLConnection) fUrl1.openConnection();
-                ZipFile jf1 = con1.getJarFile();
-                JarURLConnection con2 = (JarURLConnection) fUrl1.openConnection();
-                ZipFile jf2 = con2.getJarFile();
-                assertTrue("file: JarFiles not the same", jf1 == jf2);
-                jf1.close();
-                assertTrue("File should exist", file.exists());
-                new URL("jar:" + Support_Resources.getResourceURL("/JUC/lf.jar!/"));
-                con1 = (JarURLConnection) fUrl1.openConnection();
-                jf1 = con1.getJarFile();
-                con2 = (JarURLConnection) fUrl1.openConnection();
-                jf2 = con2.getJarFile();
-                assertTrue("http: JarFiles not the same", jf1 == jf2);
-                jf1.close();
-	}
-
-	/**
-	 * @tests java.net.JarURLConnection.getJarFile()
-         * 
-         * Regression test for HARMONY-29
-	 */
-	public void test_getJarFile29() throws Exception {
-                File jarFile = File.createTempFile("1+2 3", "test.jar");
-                jarFile.deleteOnExit();
-                JarOutputStream out = new JarOutputStream(new FileOutputStream(jarFile));
-                out.putNextEntry(new ZipEntry("test"));
-                out.closeEntry();
-                out.close();
-
-                JarURLConnection conn = (JarURLConnection) new URL("jar:file:/"+jarFile.getAbsolutePath().replaceAll(" ", "%20")+"!/").openConnection();
-                conn.getJarFile().entries();
+        JarURLConnection connection = null;
+        connection = (JarURLConnection) url.openConnection();
+        try {
+            connection.connect();
+            fail("Did not throw exception on connect");
+        } catch (IOException e) {
+            // expected
         }
 
+        try {
+            connection.getJarFile();
+            fail("Did not throw exception after connect");
+        } catch (IOException e) {
+            // expected
+        }
+
+        File resources = Support_Resources.createTempFolder();
+
+        Support_Resources.copyFile(resources, null, "hyts_att.jar");
+        File file = new File(resources.toString() + "/hyts_att.jar");
+        URL fUrl1 = new URL("jar:file:" + file.getPath() + "!/");
+        JarURLConnection con1 = (JarURLConnection) fUrl1.openConnection();
+        ZipFile jf1 = con1.getJarFile();
+        JarURLConnection con2 = (JarURLConnection) fUrl1.openConnection();
+        ZipFile jf2 = con2.getJarFile();
+        assertTrue("file: JarFiles not the same", jf1 == jf2);
+        jf1.close();
+        assertTrue("File should exist", file.exists());
+        new URL("jar:" + BASE.toString()+"/lf.jar!/");
+        con1 = (JarURLConnection) fUrl1.openConnection();
+        jf1 = con1.getJarFile();
+        con2 = (JarURLConnection) fUrl1.openConnection();
+        jf2 = con2.getJarFile();
+        assertTrue("http: JarFiles not the same", jf1 == jf2);
+        jf1.close();
+    }
+
 	/**
-	 * @tests java.net.JarURLConnection#getJarFileURL()
-	 */
-	public void test_getJarFileURL() {
-		try {
-			URL fileURL = new URL(Support_Resources
-					.getResourceURL("/JUC/lf.jar"));
-			URL u = new URL("jar:"
-					+ Support_Resources.getResourceURL("/JUC/lf.jar!/plus.bmp"));
-			juc = (JarURLConnection) u.openConnection();
-			assertTrue("Returned incorrect file URL", juc.getJarFileURL()
-					.equals(fileURL));
-		} catch (java.io.IOException e) {
-			fail("IOException during test : " + e.getMessage());
-		}
-	}
+     * @tests java.net.JarURLConnection.getJarFile()
+     * 
+     * Regression test for HARMONY-29
+     */
+	public void test_getJarFile29() throws Exception {
+        File jarFile = File.createTempFile("1+2 3", "test.jar");
+        jarFile.deleteOnExit();
+        JarOutputStream out = new JarOutputStream(new FileOutputStream(jarFile));
+        out.putNextEntry(new ZipEntry("test"));
+        out.closeEntry();
+        out.close();
+
+        JarURLConnection conn = (JarURLConnection) new URL("jar:file:/"
+                + jarFile.getAbsolutePath().replaceAll(" ", "%20") + "!/")
+                .openConnection();
+        conn.getJarFile().entries();
+    }
+
+	/**
+     * @tests java.net.JarURLConnection#getJarFileURL()
+     */
+	public void test_getJarFileURL() throws Exception {
+        URL fileURL = new URL(BASE.toString()+"/lf.jar");
+        URL u = new URL("jar:"
+                + BASE.toString()+"/lf.jar!/plus.bmp");
+        juc = (JarURLConnection) u.openConnection();
+        assertTrue("Returned incorrect file URL", juc.getJarFileURL().equals(
+                fileURL));
+    }
 
 	/**
 	 * @tests java.net.JarURLConnection#getMainAttributes()
 	 */
-	public void test_getMainAttributes() {
-		try {
-			URL u = new URL("jar:"
-					+ Support_Resources.getResourceURL("/JUC/lf.jar!/swt.dll"));
-			juc = (JarURLConnection) u.openConnection();
-			java.util.jar.Attributes a = juc.getMainAttributes();
-			assertEquals("Returned incorrect Attributes", 
-					"1.0", a.get(
-					java.util.jar.Attributes.Name.MANIFEST_VERSION));
-		} catch (java.io.IOException e) {
-			fail("IOException during test : " + e.getMessage());
-		}
-	}
+	public void test_getMainAttributes() throws Exception{
+        URL u = new URL("jar:"
+                + BASE.toString()+"/lf.jar!/swt.dll");
+        juc = (JarURLConnection) u.openConnection();
+        java.util.jar.Attributes a = juc.getMainAttributes();
+        assertEquals("Returned incorrect Attributes", "1.0", a
+                .get(java.util.jar.Attributes.Name.MANIFEST_VERSION));
+    }
 
 	protected void setUp() {
 	}
