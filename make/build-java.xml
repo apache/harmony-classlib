@@ -125,6 +125,13 @@ ${built.files.list}
          ================================= -->
     <target name="-compile"
             depends="-copy-kernel-patternsets,-prepare-depends">
+        <fail message="The Eclipse compiler class for Ant could not be found. Please place the ECJ JAR in ANT_HOME/lib. The JAR can copied from CLASSLIB_TRUNK/depends/jars/ecj_3.2 folder after the fetch-depends target has been run.">
+            <condition>
+                <not>
+                    <available classname="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+                </not>
+            </condition>
+        </fail>
         <mkdir dir="${build.output}" />
 
         <javac fork="yes" 

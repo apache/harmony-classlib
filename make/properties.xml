@@ -23,8 +23,8 @@
     </description>
 
     <!-- Javac properties -->
-    <!-- Set compiler to org.eclipse.jdt.core.JDTCompilerAdapter to use ECJ. -->
-    <property name="hy.javac.compiler" value="modern" />
+    <!-- Explicitly set to ECJ as the default compiler. -->
+    <property name="hy.javac.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
     <property name="hy.javac.source" value="1.5" />
     <property name="hy.javac.target" value="1.5" />
     <property name="hy.javac.debug" value="on" />
