@@ -86,6 +86,9 @@
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
+
+            <metainf file="${basedir}/../../NOTICE"/>
+            <metainf file="${basedir}/../../LICENSE"/>            
         </jar>
     </target>
 
